@@ -1,0 +1,733 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 19.08.2013 10:21:59
+
+newmtl 11___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Tulip_01.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Tulip_01.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Tulip_01.png
+
+newmtl 16___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Grass_01.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Grass_01.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Grass_01.png
+
+newmtl 21___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Coconut_Tree_02.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Coconut_Tree_02.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Coconut_Tree_02.png
+
+newmtl 22___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Coconut_Tree_03.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Coconut_Tree_03.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Coconut_Tree_03.png
+
+newmtl 23___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Tree_01.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Tree_01.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Tree_01.png
+
+newmtl 19___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Bush_03.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Bush_03.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Bush_03.png
+
+newmtl 07___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Bush_01.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Bush_01.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Bush_01.png
+
+newmtl 13___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Bush_02.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Bush_02.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Bush_02.png
+
+newmtl 20___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Coconut_Tree_01.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Coconut_Tree_01.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Coconut_Tree_01.png
+
+newmtl 24___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Flower_01.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Flower_01.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Flower_01.png
+
+newmtl 18___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Flower_01a.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Flower_01a.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Flower_01a.png
+
+newmtl 12___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Flower_01b.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Flower_01b.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Flower_01b.png
+
+newmtl 06___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Flower_02.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Flower_02.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Flower_02.png
+
+newmtl 05___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Flower_03.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Flower_03.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Flower_03.png
+
+newmtl 17___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Tulip_02.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Tulip_02.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Tulip_02.png
+
+newmtl 10___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Grass_02.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Grass_02.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Grass_02.png
+
+newmtl 04___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Grass_03.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Grass_03.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Grass_03.png
+
+newmtl 03___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Grass_04.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Grass_04.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Grass_04.png
+
+newmtl 09___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Grass_05.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Grass_05.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Grass_05.png
+
+newmtl 15___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Grass_06.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Grass_06.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Grass_06.png
+
+newmtl 18___Defdault
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Flower_05.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Flower_05.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Flower_05.png
+
+newmtl 24___Deggfault
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Flower_04.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Flower_04.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Flower_04.png
+
+newmtl 12___Defaultg
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Flower_06.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Flower_06.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Flower_06.png
+
+newmtl 06___Defaulht
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Bush_04.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Bush_04.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Bush_04.png
+
+newmtl d
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Clover.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Clover.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Clover.png
+
+newmtl 11___Defaultd
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Clover2.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Clover2.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Clover2.png
+
+newmtl 17___Defaultg
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Oai huong.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Oai huong.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Oai huong.png
+
+newmtl 10___Defaulgt
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl 04___Defauult
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Tree_03.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Tree_03.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Tree_03.png
+
+newmtl 03___Defahult
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Pine.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Pine.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Pine.png
+
+newmtl 09___Defafult
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Goc cay.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Goc cay.png
+
+newmtl 15___Defaggult
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Tree_04.png
+
+newmtl 14___Defauldt
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Tree_05.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Tree_05.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Tree_05.png
+
+newmtl 08___Deffault
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Tree_06.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Tree_06.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Tree_06.png
+
+newmtl 02___Defagult
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Stone.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Stone.png
+
+newmtl 13___Defaulftd
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Hill_02.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Hill_02.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Hill_OPA.png
+
+newmtl 13___Defaulddtd
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Hill_03.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Hill_03.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Hill_OPA.png
+
+newmtl 13___Defaulft
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Hill_DF.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Hill_DF.png
+	map_d E:\TU_WORKING\Thang 8\Tree\Map\Hill_OPA.png
+
+newmtl 07___Defauddlt
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_04.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_04.png
+
+newmtl 02___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_01.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_01.png
+
+newmtl 23___Defaultd
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_10 .png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_10 .png
+
+newmtl 22___Degfault
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_09.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_09.png
+
+newmtl 21___Defaulth
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_08.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_08.png
+
+newmtl 20___Defaultd
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_07.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_07.png
+
+newmtl 19___Defaultf
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_06.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_06.png
+
+newmtl 13___Defaultf
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_05.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_05.png
+
+newmtl 14___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_03.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_03.png
+
+newmtl 08___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_02.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Mushroom_02.png
+
+newmtl 13___Dedfault
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Kenh.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Kenh.png
+
+newmtl 19___Defaulthh
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\TU_WORKING\Thang 8\Tree\Map\Coc chi duong.png
+	map_Kd E:\TU_WORKING\Thang 8\Tree\Map\Coc chi duong.png

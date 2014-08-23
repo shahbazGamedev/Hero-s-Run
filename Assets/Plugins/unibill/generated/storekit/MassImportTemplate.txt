@@ -1,0 +1,3 @@
+SKU	Product ID	Reference Name	Type	Cleared For Sale	Wholesale Price Tier	Displayed Name	Description	Screenshot Path
+DRS-01	com.redlondongames.DragonRunSaga.DoubleCoinsv1	com.redlondongames.DragonRunSaga.DoubleCoinsv1	Non-Consumable	yes	5	Double Coins	Double all coin pickups	
+DRS-01	com.redlondongames.DragonRunSaga.ChestOfCrownsv1	com.redlondongames.DragonRunSaga.ChestOfCrownsv1	Consumable	yes	20	Chest of Crowns	A chestful of crowns	

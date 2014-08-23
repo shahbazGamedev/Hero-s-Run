@@ -1,0 +1,3 @@
+Product ID,Published State,Purchase Type,Auto Translate,Locale; Title; Description,Auto Fill Prices,Price
+com.outlinegames.100goldcoins.v2.c,published,managed_by_android,false,"en_US;Double Coins;Double all coin pickups",true,1990000
+com.redlondongames.DragonRunSaga.ChestOfCrownsv1,published,managed_by_android,false,"en_US;Chest of Crowns;A chestful of crowns",true,1000000
