@@ -1,0 +1,4 @@
+Hover_Happy: 0-60 all
+Hover_Worried: 70-130 all
+Revive: 140-350 noloop
+
