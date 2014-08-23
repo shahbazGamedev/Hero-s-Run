@@ -1,0 +1,9 @@
+WakeUpLeft: 0-15 noloop
+AwakeLookLeft: 20-65 all
+WakeUpRight: 80-95 noloop
+AwakeLookRight: 100-145 all
+HitLowRight: 150-180 noloop
+VictoryRight: 185-235 noloop
+HitLowLeft: 240-270 noloop
+VictoryLeft: 275-325 noloop
+
