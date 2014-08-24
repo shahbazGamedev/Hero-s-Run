@@ -277,7 +277,8 @@ public class GenerateLevel  : MonoBehaviour {
 
 		//If the player starts off on a Start tile, the camera will be looking at the front of player and do a rotation when the player starts running.
 		//However, if the player is not on a Start tile and is starting at a Checkpoint, we want the camera to look at the back of the player (and therefore, there is no need for a rotation when the player starts running).
-		if( si.tileType != TileType.Start )
+		//if( si.tileType != TileType.Start )
+		if( true )
 		{
 			SimpleCamera sc = player.GetComponent<SimpleCamera>();
 			sc.playCutscene(CutsceneType.Checkpoint);

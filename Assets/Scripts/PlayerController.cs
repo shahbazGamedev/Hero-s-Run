@@ -366,7 +366,7 @@ public class PlayerController : BaseClass {
 	
 	public void startRunning()
 	{
-		startRunning( currentTileType == TileType.Start );
+		startRunning( false && currentTileType == TileType.Start );
 	}
 
 	public void startRunning( bool playCutscene )
