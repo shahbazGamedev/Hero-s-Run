@@ -115,7 +115,7 @@ public class LevelData : MonoBehaviour {
 
 			case SunType.Cemetery:
 				skyBoxName = "Skybox Cemetery";
-				lightIntensity = 0.34f;
+				lightIntensity = 0.28f;
 				shadowStrength = 0f;
 				Sun.light.shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 32f,13f,-63f );
