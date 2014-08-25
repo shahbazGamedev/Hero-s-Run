@@ -48,7 +48,6 @@ public class GameEventManager : MonoBehaviour {
 	{
 		op = openingSequence;
 
-		GameManager.Instance.setGameState(GameState.OpeningSequence);
 		weatherManager.setFogTarget( simpleCamera.cutsceneCamera, 30f );
 		weatherManager.setWeatherTarget( op.rainLocation, 0 );
 		weatherManager.activateRain( true );

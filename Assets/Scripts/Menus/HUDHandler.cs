@@ -244,7 +244,7 @@ public class HUDHandler : MonoBehaviour {
 		}
 		
 		//Tap to play label which is displayed when you are ready to run
-		if( gameState == GameState.Menu || gameState == GameState.OpeningSequence )
+		if( gameState == GameState.Menu )
 		{
 			displayRotatedLabel(tapToPlayContent, -4f, 0.4f );
 		}
@@ -502,15 +502,18 @@ public class HUDHandler : MonoBehaviour {
 		//initiate the opening sequence instead.
 		if (GameManager.Instance.getGameState() == GameState.Menu  )
 		{
-			SoundManager.playButtonClick();
-			playerController.startRunning();
-		}
-		else if (GameManager.Instance.getGameState() == GameState.OpeningSequence )
-		{
-			SoundManager.playButtonClick();
-			GameObject gameEventManagerObject = GameObject.FindGameObjectWithTag("GameEventManager");
-			GameEventManager gem = gameEventManagerObject.GetComponent<GameEventManager>();
-			gem.playOpeningSequence();
+			if( playerController.getCurrentTileType() == TileType.Opening )
+			{
+				SoundManager.playButtonClick();
+				GameObject gameEventManagerObject = GameObject.FindGameObjectWithTag("GameEventManager");
+				GameEventManager gem = gameEventManagerObject.GetComponent<GameEventManager>();
+				gem.playOpeningSequence();
+			}
+			else
+			{
+				SoundManager.playButtonClick();
+				playerController.startRunning();
+			}
 		}
 	}
 	

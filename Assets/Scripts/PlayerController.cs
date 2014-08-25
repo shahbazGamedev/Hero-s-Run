@@ -323,7 +323,15 @@ public class PlayerController : BaseClass {
 
 		if( currentTileType != TileType.Opening )
 		{
-			GameManager.Instance.setGameState(GameState.Menu);
+			//Should we display the Tap to Play message right away by changing the game state to GameState.Menu or will the game state be set by another script?
+			if( LevelManager.Instance.getLevelInfo().waitForTapToPlay )
+			{
+				GameManager.Instance.setGameState(GameState.BeforeTapToPlayAllowed);
+			}
+			else
+			{
+				GameManager.Instance.setGameState(GameState.Menu);
+			}
 
 			//Place the character at the start position which is always 0,ground height,0
 			//Calculate the ground height

@@ -13,7 +13,7 @@ public enum GameState {
 	StatsScreen = 6,
 	Menu = 7,
 	Checkpoint = 8,
-	OpeningSequence = 9
+	BeforeTapToPlayAllowed = 9
 }
 
 public enum DifficultyLevel {
@@ -33,7 +33,7 @@ public enum GameMode {
 //This class is a Singleton
 public class GameManager {
 
-	private GameState gameState = GameState.Menu;
+	private GameState gameState = GameState.Unknown;
 	private string versionNumber = System.String.Empty;
 
 	private static GameManager gameManager = null;

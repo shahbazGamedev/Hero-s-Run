@@ -14,6 +14,13 @@ public class CemeteryGateController : MonoBehaviour {
 		audio.Play ();
 		animation.Play("open slowly");
 		animation.PlayQueued("sway in wind");
+		float delay = animation["open slowly"].length;
+		Invoke("displayTapToPlay", delay );		
+	}
+
+	void displayTapToPlay()
+	{
+		GameManager.Instance.setGameState( GameState.Menu );
 	}
 
 }
