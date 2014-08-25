@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-#if UNITY_IPHONE || UNITY_ANDROID
+//#if UNITY_IPHONE || UNITY_ANDROID
 public class UpsightReward
 {
 	public string name { get; private set; }
@@ -36,4 +36,4 @@ public class UpsightReward
 		return string.Format( "[UpsightReward: name={0}, quantity={1}, receipt={2}]", name, quantity, receipt );
 	}
 }
-#endif
+//#endif
