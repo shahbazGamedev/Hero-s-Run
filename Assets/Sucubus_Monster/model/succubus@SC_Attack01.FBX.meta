@@ -1,0 +1,461 @@
+fileFormatVersion: 2
+guid: 425dd1049185ad643ac2a4ee9a13590d
+ModelImporter:
+  serializedVersion: 15
+  fileIDToRecycleName:
+    100000: Castanic_F_R03_Body_Skel003
+    100002: hair01_01
+    100004: hair01_02
+    100006: hair01_03
+    100008: hair01_end
+    100010: hair02_01
+    100012: hair02_02
+    100014: hair02_03
+    100016: hair02_04
+    100018: hair02_end
+    100020: hair03_01
+    100022: hair03_02
+    100024: hair03_03
+    100026: hair03_04
+    100028: hair03_end
+    100030: hair04_01
+    100032: hair04_02
+    100034: hair04_03
+    100036: hair04_04
+    100038: hair04_05
+    100040: hair04_end
+    100042: headusOBJexport004
+    100044: L_eye_angry
+    100046: L_eye_mid
+    100048: L_mouse_smail
+    100050: L_pelvisarm01_B01
+    100052: L_pelvisarm01_B02
+    100054: L_pelvisarm01_B_end
+    100056: L_pelvisarm01_C
+    100058: L_pelvisarm01_C01
+    100060: L_pelvisarm01_C_end
+    100062: L_pelvisarm01_F01
+    100064: L_pelvisarm01_F02
+    100066: L_pelvisarm01_F_end
+    100068: L_pelvisarm01_main
+    100070: L_wing_01
+    100072: L_wing_02
+    100074: L_wing_03
+    100076: L_wing_03_ind01
+    100078: L_wing_03_ind02
+    100080: L_wing_03_ind03
+    100082: L_wing_03_ind04
+    100084: L_wing_03_ind_end
+    100086: L_wing_03_little01
+    100088: L_wing_03_little02
+    100090: L_wing_03_little03(mirrored)
+    100092: L_wing_03_little_end
+    100094: L_wing_03_mid01
+    100096: L_wing_03_mid02
+    100098: L_wing_03_mid03
+    100100: L_wing_03_mid04
+    100102: L_wing_03_mid_end
+    100104: L_wing_03_ring01
+    100106: L_wing_03_ring02
+    100108: L_wing_03_ring03
+    100110: L_wing_03_ring4
+    100112: L_wing_03_ring_end
+    100114: L_wing_03_thumb01
+    100116: L_wing_03_thumb02
+    100118: L_wing_03_thumb03
+    100120: L_wing_03_thumb_End
+    100122: L_wing_03_thumb_End(mirrored)
+    100124: neckring01
+    100126: neckring02
+    100128: neckring_end
+    100130: Object019
+    100132: Object032
+    100134: Object044
+    100136: Object048
+    100138: Object079
+    100140: Object107
+    100142: Object109
+    100144: Object110
+    100146: Object111
+    100148: r014
+    100150: R_eye_engry
+    100152: R_eye_mid
+    100154: R_maouse_sad
+    100156: R_pelvisarm01_B01(mirrored)
+    100158: R_pelvisarm01_B02(mirrored)
+    100160: R_pelvisarm01_B_end(mirrored)
+    100162: R_pelvisarm01_C(mirrored)
+    100164: R_pelvisarm01_C01(mirrored)
+    100166: R_pelvisarm01_C_end(mirrored)
+    100168: R_pelvisarm01_F01(mirrored)
+    100170: R_pelvisarm01_F02(mirrored)
+    100172: R_pelvisarm01_F_end(mirrored)
+    100174: R_pelvisarm01_main(mirrored)
+    100176: R_wing_01(mirrored)
+    100178: R_wing_02(mirrored)
+    100180: R_wing_03(mirrored)
+    100182: R_wing_03_ind01(mirrored)
+    100184: R_wing_03_ind02(mirrored)
+    100186: R_wing_03_ind03(mirrored)
+    100188: R_wing_03_ind_04(mirrored)
+    100190: R_wing_03_ind_end(mirrored)
+    100192: R_wing_03_little01(mirrored)
+    100194: R_wing_03_little02(mirrored)
+    100196: R_wing_03_mid01(mirrored)
+    100198: R_wing_03_mid02(mirrored)
+    100200: R_wing_03_mid03(mirrored)
+    100202: R_wing_03_mid04(mirrored)
+    100204: R_wing_03_mid_end(mirrored)
+    100206: R_wing_03_ring01(mirrored)
+    100208: R_wing_03_ring02(mirrored)
+    100210: R_wing_03_ring03(mirrored)
+    100212: R_wing_03_ring04(mirrored)
+    100214: R_wing_03_ring_end(mirrored)
+    100216: R_wing_03_thumb01(mirrored)
+    100218: R_wing_03_thumb02(mirrored)
+    100220: R_wing_03_thumb03(mirrored)
+    100222: //RootNode
+    100224: Succubus_Weapon
+    100226: Succubus_Weapon_end
+    100228: sucubus
+    100230: sucubus Footsteps
+    100232: sucubus Head
+    100234: sucubus HeadNub
+    100236: sucubus L Calf
+    100238: sucubus L Clavicle
+    100240: sucubus L Finger0
+    100242: sucubus L Finger01
+    100244: sucubus L Finger02
+    100246: sucubus L Finger0Nub
+    100248: sucubus L Finger1
+    100250: sucubus L Finger11
+    100252: sucubus L Finger12
+    100254: sucubus L Finger1Nub
+    100256: sucubus L Finger2
+    100258: sucubus L Finger21
+    100260: sucubus L Finger22
+    100262: sucubus L Finger2Nub
+    100264: sucubus L Finger3
+    100266: sucubus L Finger31
+    100268: sucubus L Finger32
+    100270: sucubus L Finger3Nub
+    100272: sucubus L Finger4
+    100274: sucubus L Finger41
+    100276: sucubus L Finger42
+    100278: sucubus L Finger4Nub
+    100280: sucubus L Foot
+    100282: sucubus L Forearm
+    100284: sucubus L Hand
+    100286: sucubus L Thigh
+    100288: sucubus L Toe0
+    100290: sucubus L Toe0Nub
+    100292: sucubus L UpperArm
+    100294: sucubus Neck
+    100296: sucubus Pelvis
+    100298: sucubus R Calf
+    100300: sucubus R Clavicle
+    100302: sucubus R Finger0
+    100304: sucubus R Finger01
+    100306: sucubus R Finger02
+    100308: sucubus R Finger0Nub
+    100310: sucubus R Finger1
+    100312: sucubus R Finger11
+    100314: sucubus R Finger12
+    100316: sucubus R Finger1Nub
+    100318: sucubus R Finger2
+    100320: sucubus R Finger21
+    100322: sucubus R Finger22
+    100324: sucubus R Finger2Nub
+    100326: sucubus R Finger3
+    100328: sucubus R Finger31
+    100330: sucubus R Finger32
+    100332: sucubus R Finger3Nub
+    100334: sucubus R Finger4
+    100336: sucubus R Finger41
+    100338: sucubus R Finger42
+    100340: sucubus R Finger4Nub
+    100342: sucubus R Foot
+    100344: sucubus R Forearm
+    100346: sucubus R Hand
+    100348: sucubus R Thigh
+    100350: sucubus R Toe0
+    100352: sucubus R Toe0Nub
+    100354: sucubus R UpperArm
+    100356: sucubus Spine
+    100358: sucubus Spine1
+    100360: sucubus Spine2
+    400000: Castanic_F_R03_Body_Skel003
+    400002: hair01_01
+    400004: hair01_02
+    400006: hair01_03
+    400008: hair01_end
+    400010: hair02_01
+    400012: hair02_02
+    400014: hair02_03
+    400016: hair02_04
+    400018: hair02_end
+    400020: hair03_01
+    400022: hair03_02
+    400024: hair03_03
+    400026: hair03_04
+    400028: hair03_end
+    400030: hair04_01
+    400032: hair04_02
+    400034: hair04_03
+    400036: hair04_04
+    400038: hair04_05
+    400040: hair04_end
+    400042: headusOBJexport004
+    400044: L_eye_angry
+    400046: L_eye_mid
+    400048: L_mouse_smail
+    400050: L_pelvisarm01_B01
+    400052: L_pelvisarm01_B02
+    400054: L_pelvisarm01_B_end
+    400056: L_pelvisarm01_C
+    400058: L_pelvisarm01_C01
+    400060: L_pelvisarm01_C_end
+    400062: L_pelvisarm01_F01
+    400064: L_pelvisarm01_F02
+    400066: L_pelvisarm01_F_end
+    400068: L_pelvisarm01_main
+    400070: L_wing_01
+    400072: L_wing_02
+    400074: L_wing_03
+    400076: L_wing_03_ind01
+    400078: L_wing_03_ind02
+    400080: L_wing_03_ind03
+    400082: L_wing_03_ind04
+    400084: L_wing_03_ind_end
+    400086: L_wing_03_little01
+    400088: L_wing_03_little02
+    400090: L_wing_03_little03(mirrored)
+    400092: L_wing_03_little_end
+    400094: L_wing_03_mid01
+    400096: L_wing_03_mid02
+    400098: L_wing_03_mid03
+    400100: L_wing_03_mid04
+    400102: L_wing_03_mid_end
+    400104: L_wing_03_ring01
+    400106: L_wing_03_ring02
+    400108: L_wing_03_ring03
+    400110: L_wing_03_ring4
+    400112: L_wing_03_ring_end
+    400114: L_wing_03_thumb01
+    400116: L_wing_03_thumb02
+    400118: L_wing_03_thumb03
+    400120: L_wing_03_thumb_End
+    400122: L_wing_03_thumb_End(mirrored)
+    400124: neckring01
+    400126: neckring02
+    400128: neckring_end
+    400130: Object019
+    400132: Object032
+    400134: Object044
+    400136: Object048
+    400138: Object079
+    400140: Object107
+    400142: Object109
+    400144: Object110
+    400146: Object111
+    400148: r014
+    400150: R_eye_engry
+    400152: R_eye_mid
+    400154: R_maouse_sad
+    400156: R_pelvisarm01_B01(mirrored)
+    400158: R_pelvisarm01_B02(mirrored)
+    400160: R_pelvisarm01_B_end(mirrored)
+    400162: R_pelvisarm01_C(mirrored)
+    400164: R_pelvisarm01_C01(mirrored)
+    400166: R_pelvisarm01_C_end(mirrored)
+    400168: R_pelvisarm01_F01(mirrored)
+    400170: R_pelvisarm01_F02(mirrored)
+    400172: R_pelvisarm01_F_end(mirrored)
+    400174: R_pelvisarm01_main(mirrored)
+    400176: R_wing_01(mirrored)
+    400178: R_wing_02(mirrored)
+    400180: R_wing_03(mirrored)
+    400182: R_wing_03_ind01(mirrored)
+    400184: R_wing_03_ind02(mirrored)
+    400186: R_wing_03_ind03(mirrored)
+    400188: R_wing_03_ind_04(mirrored)
+    400190: R_wing_03_ind_end(mirrored)
+    400192: R_wing_03_little01(mirrored)
+    400194: R_wing_03_little02(mirrored)
+    400196: R_wing_03_mid01(mirrored)
+    400198: R_wing_03_mid02(mirrored)
+    400200: R_wing_03_mid03(mirrored)
+    400202: R_wing_03_mid04(mirrored)
+    400204: R_wing_03_mid_end(mirrored)
+    400206: R_wing_03_ring01(mirrored)
+    400208: R_wing_03_ring02(mirrored)
+    400210: R_wing_03_ring03(mirrored)
+    400212: R_wing_03_ring04(mirrored)
+    400214: R_wing_03_ring_end(mirrored)
+    400216: R_wing_03_thumb01(mirrored)
+    400218: R_wing_03_thumb02(mirrored)
+    400220: R_wing_03_thumb03(mirrored)
+    400222: //RootNode
+    400224: Succubus_Weapon
+    400226: Succubus_Weapon_end
+    400228: sucubus
+    400230: sucubus Footsteps
+    400232: sucubus Head
+    400234: sucubus HeadNub
+    400236: sucubus L Calf
+    400238: sucubus L Clavicle
+    400240: sucubus L Finger0
+    400242: sucubus L Finger01
+    400244: sucubus L Finger02
+    400246: sucubus L Finger0Nub
+    400248: sucubus L Finger1
+    400250: sucubus L Finger11
+    400252: sucubus L Finger12
+    400254: sucubus L Finger1Nub
+    400256: sucubus L Finger2
+    400258: sucubus L Finger21
+    400260: sucubus L Finger22
+    400262: sucubus L Finger2Nub
+    400264: sucubus L Finger3
+    400266: sucubus L Finger31
+    400268: sucubus L Finger32
+    400270: sucubus L Finger3Nub
+    400272: sucubus L Finger4
+    400274: sucubus L Finger41
+    400276: sucubus L Finger42
+    400278: sucubus L Finger4Nub
+    400280: sucubus L Foot
+    400282: sucubus L Forearm
+    400284: sucubus L Hand
+    400286: sucubus L Thigh
+    400288: sucubus L Toe0
+    400290: sucubus L Toe0Nub
+    400292: sucubus L UpperArm
+    400294: sucubus Neck
+    400296: sucubus Pelvis
+    400298: sucubus R Calf
+    400300: sucubus R Clavicle
+    400302: sucubus R Finger0
+    400304: sucubus R Finger01
+    400306: sucubus R Finger02
+    400308: sucubus R Finger0Nub
+    400310: sucubus R Finger1
+    400312: sucubus R Finger11
+    400314: sucubus R Finger12
+    400316: sucubus R Finger1Nub
+    400318: sucubus R Finger2
+    400320: sucubus R Finger21
+    400322: sucubus R Finger22
+    400324: sucubus R Finger2Nub
+    400326: sucubus R Finger3
+    400328: sucubus R Finger31
+    400330: sucubus R Finger32
+    400332: sucubus R Finger3Nub
+    400334: sucubus R Finger4
+    400336: sucubus R Finger41
+    400338: sucubus R Finger42
+    400340: sucubus R Finger4Nub
+    400342: sucubus R Foot
+    400344: sucubus R Forearm
+    400346: sucubus R Hand
+    400348: sucubus R Thigh
+    400350: sucubus R Toe0
+    400352: sucubus R Toe0Nub
+    400354: sucubus R UpperArm
+    400356: sucubus Spine
+    400358: sucubus Spine1
+    400360: sucubus Spine2
+    2300000: L_eye_angry
+    2300002: L_eye_mid
+    2300004: L_mouse_smail
+    2300006: R_eye_engry
+    2300008: R_eye_mid
+    2300010: R_maouse_sad
+    3300000: L_eye_angry
+    3300002: L_eye_mid
+    3300004: L_mouse_smail
+    3300006: R_eye_engry
+    3300008: R_eye_mid
+    3300010: R_maouse_sad
+    4300000: Object019
+    4300002: Object044
+    4300004: Object048
+    4300006: L_eye_mid
+    4300008: R_eye_mid
+    4300010: L_eye_angry
+    4300012: R_eye_engry
+    4300014: L_mouse_smail
+    4300016: R_maouse_sad
+    4300018: r014
+    4300020: Object079
+    4300022: Object032
+    4300024: Object107
+    4300026: Object109
+    4300028: Object110
+    4300030: Object111
+    4300032: headusOBJexport004
+    7400006: Take 001
+    11100000: //RootNode
+    13700000: headusOBJexport004
+    13700002: Object019
+    13700004: Object032
+    13700006: Object044
+    13700008: Object048
+    13700010: Object079
+    13700012: Object107
+    13700014: Object109
+    13700016: Object110
+    13700018: Object111
+    13700020: r014
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  userData: 

@@ -1,0 +1,221 @@
+fileFormatVersion: 2
+guid: 1a0db60d18927484dae9a101d0fab9d1
+ModelImporter:
+  serializedVersion: 15
+  fileIDToRecycleName:
+    100000: BASE_Center_Tail
+    100002: BASE_Chicken_Root
+    100004: BASE_COG
+    100006: BASE_Crest
+    100008: BASE_Crest_Back
+    100010: BASE_Crest_Front
+    100012: BASE_Crest_Mid
+    100014: BASE_Head
+    100016: BASE_Left_Elbow
+    100018: BASE_Left_Elbow_Feathers
+    100020: BASE_Left_Eye
+    100022: BASE_Left_Hand
+    100024: BASE_Left_Hand_Feathers
+    100026: BASE_Left_Hand_Fingers
+    100028: BASE_Left_Shoulder
+    100030: BASE_Left_Shoulder_Feathers
+    100032: BASE_Left_Tail
+    100034: BASE_Main_Tail
+    100036: BASE_Neck
+    100038: BASE_Neck_Squash
+    100040: BASE_Right_Calf
+    100042: BASE_Right_Calf 1
+    100044: BASE_Right_Elbow
+    100046: BASE_Right_Elbow_Feathers
+    100048: BASE_Right_Eye
+    100050: BASE_Right_foot
+    100052: BASE_Right_foot 1
+    100054: BASE_Right_Hand
+    100056: BASE_Right_Hand_Feathers
+    100058: BASE_Right_Hand_Fingers
+    100060: BASE_Right_Shoulder
+    100062: BASE_Right_Shoulder_Feathers
+    100064: BASE_Right_Tail
+    100066: BASE_Right_Thigh
+    100068: BASE_Right_Thigh1
+    100070: BASE_Spine_01
+    100072: //RootNode
+    100074: Chicken_Mesh
+    100076: Master_Chicken
+    400000: BASE_Center_Tail
+    400002: BASE_Chicken_Root
+    400004: BASE_COG
+    400006: BASE_Crest
+    400008: BASE_Crest_Back
+    400010: BASE_Crest_Front
+    400012: BASE_Crest_Mid
+    400014: BASE_Head
+    400016: BASE_Left_Elbow
+    400018: BASE_Left_Elbow_Feathers
+    400020: BASE_Left_Eye
+    400022: BASE_Left_Hand
+    400024: BASE_Left_Hand_Feathers
+    400026: BASE_Left_Hand_Fingers
+    400028: BASE_Left_Shoulder
+    400030: BASE_Left_Shoulder_Feathers
+    400032: BASE_Left_Tail
+    400034: BASE_Main_Tail
+    400036: BASE_Neck
+    400038: BASE_Neck_Squash
+    400040: BASE_Right_Calf
+    400042: BASE_Right_Calf 1
+    400044: BASE_Right_Elbow
+    400046: BASE_Right_Elbow_Feathers
+    400048: BASE_Right_Eye
+    400050: BASE_Right_foot
+    400052: BASE_Right_foot 1
+    400054: BASE_Right_Hand
+    400056: BASE_Right_Hand_Feathers
+    400058: BASE_Right_Hand_Fingers
+    400060: BASE_Right_Shoulder
+    400062: BASE_Right_Shoulder_Feathers
+    400064: BASE_Right_Tail
+    400066: BASE_Right_Thigh
+    400068: BASE_Right_Thigh1
+    400070: BASE_Spine_01
+    400072: //RootNode
+    400074: Chicken_Mesh
+    400076: Master_Chicken
+    4300000: Chicken_Mesh
+    7400000: A_Chicken_Idle_Pose
+    7400002: A_Chicken_Spawn
+    7400004: A_Chicken_Panic
+    7400006: A_Chicken_Hit
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: Chicken_Mesh
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: A_Chicken_Idle_Pose
+      takeName: Take 001
+      firstFrame: 1
+      lastFrame: 31
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 1
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: A_Chicken_Spawn
+      takeName: Take 001
+      firstFrame: 29
+      lastFrame: 48
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 1
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: A_Chicken_Panic
+      takeName: Take 001
+      firstFrame: 60
+      lastFrame: 84
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 1
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  userData: 

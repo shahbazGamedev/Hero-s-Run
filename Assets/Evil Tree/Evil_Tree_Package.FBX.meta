@@ -1,0 +1,857 @@
+fileFormatVersion: 2
+guid: 5bd953d0117934d699af62cb4a125331
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Bone_L_Eye
+    100002: Bone_L_EyeBrow
+    100004: Bone_L_EyeLid
+    100006: Bone_L_Finger0
+    100008: Bone_L_Finger1
+    100010: Bone_L_Finger2
+    100012: Bone_L_Finger3
+    100014: Bone_L_ForeArm
+    100016: Bone_L_Hand
+    100018: Bone_L_Mouth
+    100020: Bone_L_UpperArm
+    100022: Bone_Lower_Mouth
+    100024: Bone_Nose
+    100026: Bone_R_Eye
+    100028: Bone_R_EyeBrow
+    100030: Bone_R_EyeLid
+    100032: Bone_R_Finger0
+    100034: Bone_R_Finger1
+    100036: Bone_R_Finger2
+    100038: Bone_R_Finger3
+    100040: Bone_R_ForeArm
+    100042: Bone_R_Hand
+    100044: Bone_R_Mouth
+    100046: Bone_R_UpperArm
+    100048: Bone_Root
+    100050: Bone_Trunc_A
+    100052: Bone_Trunc_B
+    100054: Bone_Trunc_C
+    100056: Bone_Upper_Mouth
+    100058: Evil_Tree
+    100060: Evil_Tree_Eyes
+    100062: //RootNode
+    400000: Bone_L_Eye
+    400002: Bone_L_EyeBrow
+    400004: Bone_L_EyeLid
+    400006: Bone_L_Finger0
+    400008: Bone_L_Finger1
+    400010: Bone_L_Finger2
+    400012: Bone_L_Finger3
+    400014: Bone_L_ForeArm
+    400016: Bone_L_Hand
+    400018: Bone_L_Mouth
+    400020: Bone_L_UpperArm
+    400022: Bone_Lower_Mouth
+    400024: Bone_Nose
+    400026: Bone_R_Eye
+    400028: Bone_R_EyeBrow
+    400030: Bone_R_EyeLid
+    400032: Bone_R_Finger0
+    400034: Bone_R_Finger1
+    400036: Bone_R_Finger2
+    400038: Bone_R_Finger3
+    400040: Bone_R_ForeArm
+    400042: Bone_R_Hand
+    400044: Bone_R_Mouth
+    400046: Bone_R_UpperArm
+    400048: Bone_Root
+    400050: Bone_Trunc_A
+    400052: Bone_Trunc_B
+    400054: Bone_Trunc_C
+    400056: Bone_Upper_Mouth
+    400058: Evil_Tree
+    400060: Evil_Tree_Eyes
+    400062: //RootNode
+    4300000: Evil_Tree_Eyes
+    4300002: Evil_Tree
+    7400000: WakeUpLeft
+    7400002: AwakeLookLeft
+    7400004: WakeUpRight
+    7400006: AwakeLookRight
+    7400008: HitLowRight
+    7400010: VictoryRight
+    7400012: HitLowLeft
+    7400014: VictoryLeft
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: Evil_Tree
+    13700002: Evil_Tree_Eyes
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: WakeUpLeft
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 15
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bone_Root
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_EyeBrow
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_EyeLid
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger0
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger1
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger2
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger3
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Lower_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Nose
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_EyeBrow
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_EyeLid
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger0
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger1
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger2
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger3
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Trunc_B
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Trunc_B/Bone_Trunc_C
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Upper_Mouth
+        weight: 1
+      - path: Evil_Tree
+        weight: 1
+      - path: Evil_Tree_Eyes
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: AwakeLookLeft
+      takeName: Take 001
+      firstFrame: 20
+      lastFrame: 65
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 1
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bone_Root
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_EyeBrow
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_EyeLid
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger0
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger1
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger2
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger3
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Lower_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Nose
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_EyeBrow
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_EyeLid
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger0
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger1
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger2
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger3
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Trunc_B
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Trunc_B/Bone_Trunc_C
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Upper_Mouth
+        weight: 1
+      - path: Evil_Tree
+        weight: 1
+      - path: Evil_Tree_Eyes
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: WakeUpRight
+      takeName: Take 001
+      firstFrame: 80
+      lastFrame: 95
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bone_Root
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_EyeBrow
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_EyeLid
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger0
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger1
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger2
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger3
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Lower_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Nose
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_EyeBrow
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_EyeLid
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger0
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger1
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger2
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger3
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Trunc_B
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Trunc_B/Bone_Trunc_C
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Upper_Mouth
+        weight: 1
+      - path: Evil_Tree
+        weight: 1
+      - path: Evil_Tree_Eyes
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: AwakeLookRight
+      takeName: Take 001
+      firstFrame: 100
+      lastFrame: 145
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 1
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bone_Root
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_EyeBrow
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_EyeLid
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger0
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger1
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger2
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger3
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Lower_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Nose
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_EyeBrow
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_EyeLid
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger0
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger1
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger2
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger3
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Trunc_B
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Trunc_B/Bone_Trunc_C
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Upper_Mouth
+        weight: 1
+      - path: Evil_Tree
+        weight: 1
+      - path: Evil_Tree_Eyes
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: HitLowRight
+      takeName: Take 001
+      firstFrame: 150
+      lastFrame: 180
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bone_Root
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_EyeBrow
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_EyeLid
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger0
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger1
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger2
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger3
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Lower_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Nose
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_EyeBrow
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_EyeLid
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger0
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger1
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger2
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger3
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Trunc_B
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Trunc_B/Bone_Trunc_C
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Upper_Mouth
+        weight: 1
+      - path: Evil_Tree
+        weight: 1
+      - path: Evil_Tree_Eyes
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: VictoryRight
+      takeName: Take 001
+      firstFrame: 185
+      lastFrame: 235
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bone_Root
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_EyeBrow
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_EyeLid
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger0
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger1
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger2
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger3
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Lower_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Nose
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_EyeBrow
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_EyeLid
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger0
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger1
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger2
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger3
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Trunc_B
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Trunc_B/Bone_Trunc_C
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Upper_Mouth
+        weight: 1
+      - path: Evil_Tree
+        weight: 1
+      - path: Evil_Tree_Eyes
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: HitLowLeft
+      takeName: Take 001
+      firstFrame: 240
+      lastFrame: 270
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bone_Root
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_EyeBrow
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_EyeLid
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger0
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger1
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger2
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger3
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Lower_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Nose
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_EyeBrow
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_EyeLid
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger0
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger1
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger2
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger3
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Trunc_B
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Trunc_B/Bone_Trunc_C
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Upper_Mouth
+        weight: 1
+      - path: Evil_Tree
+        weight: 1
+      - path: Evil_Tree_Eyes
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: VictoryLeft
+      takeName: Take 001
+      firstFrame: 275
+      lastFrame: 325
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bone_Root
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_EyeBrow
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_EyeLid
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger0
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger1
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger2
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_L_UpperArm/Bone_L_ForeArm/Bone_L_Hand/Bone_L_Finger3
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Lower_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Nose
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_EyeBrow
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_EyeLid
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_Mouth
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger0
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger1
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger2
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_R_UpperArm/Bone_R_ForeArm/Bone_R_Hand/Bone_R_Finger3
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Trunc_B
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Trunc_B/Bone_Trunc_C
+        weight: 1
+      - path: Bone_Root/Bone_Trunc_A/Bone_Upper_Mouth
+        weight: 1
+      - path: Evil_Tree
+        weight: 1
+      - path: Evil_Tree_Eyes
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  additionalBone: 0
+  userData: 

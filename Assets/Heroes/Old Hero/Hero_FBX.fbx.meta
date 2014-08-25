@@ -1,0 +1,854 @@
+fileFormatVersion: 2
+guid: 781f12a7b8153b74b874438c86b1fcd9
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: BASE_BackPack
+    100002: BASE_Face
+    100004: BASE_Hair
+    100006: BASE_Head
+    100008: BASE_Hips
+    100010: BASE_Jaw
+    100012: BASE_Left_Ankle
+    100014: BASE_Left_Ball
+    100016: BASE_Left_Cheek
+    100018: BASE_Left_Clavicle
+    100020: BASE_Left_Elbow
+    100022: BASE_Left_Eyeball
+    100024: BASE_Left_Hand
+    100026: BASE_Left_Hip
+    100028: BASE_Left_Index01
+    100030: BASE_Left_Index02
+    100032: BASE_Left_InEyebrow
+    100034: BASE_Left_Knee
+    100036: BASE_Left_LowerLip
+    100038: BASE_Left_MiddleFinger01
+    100040: BASE_Left_MiddleFinger02
+    100042: BASE_Left_MidEyebrow
+    100044: BASE_Left_OutEyebrow
+    100046: BASE_Left_Pinky01
+    100048: BASE_Left_Pinky02
+    100050: BASE_Left_Puff
+    100052: BASE_Left_RingFinger01
+    100054: BASE_Left_RingFinger02
+    100056: BASE_Left_Shoulder
+    100058: BASE_Left_Smile
+    100060: BASE_Left_Snear
+    100062: BASE_Left_Thumb01
+    100064: BASE_Left_Thumb02
+    100066: BASE_Left_Toe
+    100068: BASE_Left_UpperLid
+    100070: BASE_Left_UpperLip
+    100072: BASE_LowerLip
+    100074: BASE_Master_Root
+    100076: BASE_Neck
+    100078: BASE_Right_Ankle
+    100080: BASE_Right_Ball
+    100082: BASE_Right_Cheek
+    100084: BASE_Right_Clavicle
+    100086: BASE_Right_Elbow
+    100088: BASE_Right_Eyeball
+    100090: BASE_Right_Hand
+    100092: BASE_Right_Hip
+    100094: BASE_Right_Index01
+    100096: BASE_Right_Index02
+    100098: BASE_Right_InEyebrow
+    100100: BASE_Right_Knee
+    100102: BASE_Right_LowerLip
+    100104: BASE_Right_MiddleFinger01
+    100106: BASE_Right_MiddleFinger02
+    100108: BASE_Right_MidEyebrow
+    100110: BASE_Right_OutEyebrow
+    100112: BASE_Right_Pinky01
+    100114: BASE_Right_Pinky02
+    100116: BASE_Right_Puff
+    100118: BASE_Right_RingFinger01
+    100120: BASE_Right_RingFinger02
+    100122: BASE_Right_Shoulder
+    100124: BASE_Right_Smile
+    100126: BASE_Right_Snear
+    100128: BASE_Right_Thumb01
+    100130: BASE_Right_Thumb02
+    100132: BASE_Right_Toe
+    100134: BASE_Right_UpperLid
+    100136: BASE_Right_UpperLip
+    100138: BASE_Root
+    100140: BASE_Spine1
+    100142: BASE_Spine2
+    100144: BASE_Spine3
+    100146: BASE_UpperLip
+    100148: //RootNode
+    100150: Mesh_Hero_BackPack
+    100152: Mesh_Hero_Body
+    100154: Mesh_Hero_Boots
+    100156: Mesh_Hero_Gloves
+    100158: Mesh_Hero_Hairs
+    100160: Mesh_Hero_Robe
+    100162: Mesh_Hero_Tunic
+    400000: BASE_BackPack
+    400002: BASE_Face
+    400004: BASE_Hair
+    400006: BASE_Head
+    400008: BASE_Hips
+    400010: BASE_Jaw
+    400012: BASE_Left_Ankle
+    400014: BASE_Left_Ball
+    400016: BASE_Left_Cheek
+    400018: BASE_Left_Clavicle
+    400020: BASE_Left_Elbow
+    400022: BASE_Left_Eyeball
+    400024: BASE_Left_Hand
+    400026: BASE_Left_Hip
+    400028: BASE_Left_Index01
+    400030: BASE_Left_Index02
+    400032: BASE_Left_InEyebrow
+    400034: BASE_Left_Knee
+    400036: BASE_Left_LowerLip
+    400038: BASE_Left_MiddleFinger01
+    400040: BASE_Left_MiddleFinger02
+    400042: BASE_Left_MidEyebrow
+    400044: BASE_Left_OutEyebrow
+    400046: BASE_Left_Pinky01
+    400048: BASE_Left_Pinky02
+    400050: BASE_Left_Puff
+    400052: BASE_Left_RingFinger01
+    400054: BASE_Left_RingFinger02
+    400056: BASE_Left_Shoulder
+    400058: BASE_Left_Smile
+    400060: BASE_Left_Snear
+    400062: BASE_Left_Thumb01
+    400064: BASE_Left_Thumb02
+    400066: BASE_Left_Toe
+    400068: BASE_Left_UpperLid
+    400070: BASE_Left_UpperLip
+    400072: BASE_LowerLip
+    400074: BASE_Master_Root
+    400076: BASE_Neck
+    400078: BASE_Right_Ankle
+    400080: BASE_Right_Ball
+    400082: BASE_Right_Cheek
+    400084: BASE_Right_Clavicle
+    400086: BASE_Right_Elbow
+    400088: BASE_Right_Eyeball
+    400090: BASE_Right_Hand
+    400092: BASE_Right_Hip
+    400094: BASE_Right_Index01
+    400096: BASE_Right_Index02
+    400098: BASE_Right_InEyebrow
+    400100: BASE_Right_Knee
+    400102: BASE_Right_LowerLip
+    400104: BASE_Right_MiddleFinger01
+    400106: BASE_Right_MiddleFinger02
+    400108: BASE_Right_MidEyebrow
+    400110: BASE_Right_OutEyebrow
+    400112: BASE_Right_Pinky01
+    400114: BASE_Right_Pinky02
+    400116: BASE_Right_Puff
+    400118: BASE_Right_RingFinger01
+    400120: BASE_Right_RingFinger02
+    400122: BASE_Right_Shoulder
+    400124: BASE_Right_Smile
+    400126: BASE_Right_Snear
+    400128: BASE_Right_Thumb01
+    400130: BASE_Right_Thumb02
+    400132: BASE_Right_Toe
+    400134: BASE_Right_UpperLid
+    400136: BASE_Right_UpperLip
+    400138: BASE_Root
+    400140: BASE_Spine1
+    400142: BASE_Spine2
+    400144: BASE_Spine3
+    400146: BASE_UpperLip
+    400148: //RootNode
+    400150: Mesh_Hero_BackPack
+    400152: Mesh_Hero_Body
+    400154: Mesh_Hero_Boots
+    400156: Mesh_Hero_Gloves
+    400158: Mesh_Hero_Hairs
+    400160: Mesh_Hero_Robe
+    400162: Mesh_Hero_Tunic
+    4300000: Mesh_Hero_Gloves
+    4300002: Mesh_Hero_Boots
+    4300004: Mesh_Hero_Tunic
+    4300006: Mesh_Hero_Hairs
+    4300008: Mesh_Hero_BackPack
+    4300010: Mesh_Hero_Robe
+    4300012: Mesh_Hero_Body
+    7400000: Run
+    7400002: Idle
+    7400004: Jump
+    7400006: Land
+    7400008: Jump_Double
+    7400010: Slide_Down
+    7400012: Slide_Loop
+    7400014: Slide_Up
+    7400016: Idle_Look
+    7400018: Sit_Dragon
+    7400020: Death_Wall
+    7400022: Death_River
+    7400024: Stumble
+    7400026: DeathWall_Loop
+    7400028: DeathWall_GetUp
+    7400030: Victory
+    7400032: Victory_Loop
+    7400034: Sprint
+    7400036: Fall
+    7400038: Fall_Loop
+    7400040: Dragon_Happy
+    9500000: //RootNode
+    13700000: Mesh_Hero_BackPack
+    13700002: Mesh_Hero_Body
+    13700004: Mesh_Hero_Boots
+    13700006: Mesh_Hero_Gloves
+    13700008: Mesh_Hero_Hairs
+    13700010: Mesh_Hero_Robe
+    13700012: Mesh_Hero_Tunic
+  materials:
+    importMaterials: 1
+    materialName: 1
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 3
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Run
+      takeName: Take 001
+      firstFrame: 1
+      lastFrame: 20
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: .105122693
+        functionName: Footstep_left
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .559571624
+        functionName: Footstep_right
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Idle
+      takeName: Take 001
+      firstFrame: 32
+      lastFrame: 99
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Jump
+      takeName: Take 001
+      firstFrame: 110
+      lastFrame: 132
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Land
+      takeName: Take 001
+      firstFrame: 132
+      lastFrame: 162
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: .0825174898
+        functionName: Land_sound
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .763051987
+        functionName: Footstep_right
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Jump_Double
+      takeName: Take 001
+      firstFrame: 162
+      lastFrame: 198
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Slide_Down
+      takeName: Take 001
+      firstFrame: 212
+      lastFrame: 227
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Slide_Loop
+      takeName: Take 001
+      firstFrame: 227
+      lastFrame: 255
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Slide_Up
+      takeName: Take 001
+      firstFrame: 255
+      lastFrame: 266
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Idle_Look
+      takeName: Take 001
+      firstFrame: 300
+      lastFrame: 400
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Sit_Dragon
+      takeName: Take 001
+      firstFrame: 405
+      lastFrame: 450
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Death_Wall
+      takeName: Take 001
+      firstFrame: 455
+      lastFrame: 485
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 1
+        functionName: death_completed
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Death_River
+      takeName: Take 001
+      firstFrame: 490
+      lastFrame: 520
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Stumble
+      takeName: Take 001
+      firstFrame: 540
+      lastFrame: 566
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 1
+        functionName: stumble_completed
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: DeathWall_Loop
+      takeName: Take 001
+      firstFrame: 571
+      lastFrame: 680
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: DeathWall_GetUp
+      takeName: Take 001
+      firstFrame: 690
+      lastFrame: 760
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 1
+        functionName: get_up_completed
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Victory
+      takeName: Take 001
+      firstFrame: 770
+      lastFrame: 850
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Victory_Loop
+      takeName: Take 001
+      firstFrame: 850
+      lastFrame: 950
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Sprint
+      takeName: Take 001
+      firstFrame: 955
+      lastFrame: 970
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Fall
+      takeName: Take 001
+      firstFrame: 975
+      lastFrame: 986
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Fall_Loop
+      takeName: Take 001
+      firstFrame: 986
+      lastFrame: 1005
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Dragon_Happy
+      takeName: Take 001
+      firstFrame: 1010
+      lastFrame: 1060
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

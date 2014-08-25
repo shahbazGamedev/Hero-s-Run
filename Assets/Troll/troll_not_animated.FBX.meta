@@ -1,0 +1,193 @@
+fileFormatVersion: 2
+guid: 409a7d53a3f9a4324bfe7fa1e559e900
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Bip001
+    100002: Bip001 Head
+    100004: Bip001 Jaw
+    100006: Bip001 L Calf
+    100008: Bip001 L Clavicle
+    100010: Bip001 L Finger0
+    100012: Bip001 L Finger01
+    100014: Bip001 L Finger1
+    100016: Bip001 L Finger11
+    100018: Bip001 L Finger2
+    100020: Bip001 L Finger21
+    100022: Bip001 L Finger3
+    100024: Bip001 L Finger31
+    100026: Bip001 L Foot
+    100028: Bip001 L Forearm
+    100030: Bip001 L Hand
+    100032: Bip001 L Thigh
+    100034: Bip001 L Toe0
+    100036: Bip001 L UpperArm
+    100038: Bip001 Neck
+    100040: Bip001 Pelvis
+    100042: Bip001 R Calf
+    100044: Bip001 R Clavicle
+    100046: Bip001 R Finger0
+    100048: Bip001 R Finger01
+    100050: Bip001 R Finger1
+    100052: Bip001 R Finger11
+    100054: Bip001 R Finger2
+    100056: Bip001 R Finger21
+    100058: Bip001 R Finger3
+    100060: Bip001 R Finger31
+    100062: Bip001 R Foot
+    100064: Bip001 R Forearm
+    100066: Bip001 R Hand
+    100068: Bip001 R Thigh
+    100070: Bip001 R Toe0
+    100072: Bip001 R UpperArm
+    100074: Bip001 Spine
+    100076: Bip001 Spine1
+    100078: Bip001 Spine2
+    100080: Bone Belly
+    100082: Bone L Ear
+    100084: Bone L Eye
+    100086: Bone L Lips
+    100088: Bone Mass
+    100090: Bone R Ear
+    100092: Bone R Eye
+    100094: Bone R Lips
+    100096: Bone_Book
+    100098: Bone_LBook
+    100100: Bone_RBook
+    100102: Troll
+    100104: //RootNode
+    100106: Troll_Book
+    100108: Troll_Glasses
+    100110: Troll_LEye
+    100112: Troll_Mass
+    100114: Troll_REye
+    400000: Bip001
+    400002: Bip001 Head
+    400004: Bip001 Jaw
+    400006: Bip001 L Calf
+    400008: Bip001 L Clavicle
+    400010: Bip001 L Finger0
+    400012: Bip001 L Finger01
+    400014: Bip001 L Finger1
+    400016: Bip001 L Finger11
+    400018: Bip001 L Finger2
+    400020: Bip001 L Finger21
+    400022: Bip001 L Finger3
+    400024: Bip001 L Finger31
+    400026: Bip001 L Foot
+    400028: Bip001 L Forearm
+    400030: Bip001 L Hand
+    400032: Bip001 L Thigh
+    400034: Bip001 L Toe0
+    400036: Bip001 L UpperArm
+    400038: Bip001 Neck
+    400040: Bip001 Pelvis
+    400042: Bip001 R Calf
+    400044: Bip001 R Clavicle
+    400046: Bip001 R Finger0
+    400048: Bip001 R Finger01
+    400050: Bip001 R Finger1
+    400052: Bip001 R Finger11
+    400054: Bip001 R Finger2
+    400056: Bip001 R Finger21
+    400058: Bip001 R Finger3
+    400060: Bip001 R Finger31
+    400062: Bip001 R Foot
+    400064: Bip001 R Forearm
+    400066: Bip001 R Hand
+    400068: Bip001 R Thigh
+    400070: Bip001 R Toe0
+    400072: Bip001 R UpperArm
+    400074: Bip001 Spine
+    400076: Bip001 Spine1
+    400078: Bip001 Spine2
+    400080: Bone Belly
+    400082: Bone L Ear
+    400084: Bone L Eye
+    400086: Bone L Lips
+    400088: Bone Mass
+    400090: Bone R Ear
+    400092: Bone R Eye
+    400094: Bone R Lips
+    400096: Bone_Book
+    400098: Bone_LBook
+    400100: Bone_RBook
+    400102: Troll
+    400104: //RootNode
+    400106: Troll_Book
+    400108: Troll_Glasses
+    400110: Troll_LEye
+    400112: Troll_Mass
+    400114: Troll_REye
+    2300000: Troll_Glasses
+    2300002: Troll_LEye
+    2300004: Troll_Mass
+    2300006: Troll_REye
+    3300000: Troll_Glasses
+    3300002: Troll_LEye
+    3300004: Troll_Mass
+    3300006: Troll_REye
+    4300000: Troll
+    4300002: Troll_REye
+    4300004: Troll_LEye
+    4300006: Troll_Glasses
+    4300008: Troll_Mass
+    4300010: Troll_Book
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: Troll
+    13700002: Troll_Book
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
