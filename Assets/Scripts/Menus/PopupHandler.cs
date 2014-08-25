@@ -573,11 +573,11 @@ public class PopupHandler : MonoBehaviour {
 		drawButtonWithIcon( buttonText, restoreTransactions, restoreIcon );
 		//Only dislay the More Games button if the Upsight Opt-out option is false. 
 		//If Opt-out is true, the button will do nothing so there is no reason to display it.
-		if( !MyUpsightManager.getUpsightOptOutOption() )
-		{
-			buttonText = new GUIContent( LocalizationManager.Instance.getText("MENU_MORE_GAMES") );
-			drawButtonWithIcon( buttonText, moreGames, restoreIcon );
-		}
+		//if( !MyUpsightManager.getUpsightOptOutOption() )
+		//{
+		//	buttonText = new GUIContent( LocalizationManager.Instance.getText("MENU_MORE_GAMES") );
+		//	drawButtonWithIcon( buttonText, moreGames, restoreIcon );
+		//}
 		buttonText = new GUIContent( PlayerStatsManager.Instance.getDifficultyLevelName() );
 		drawButtonWithIcon( buttonText, changeDifficultyLevel, gameCenterIcon );
 		GUILayout.EndVertical();
@@ -597,7 +597,7 @@ public class PopupHandler : MonoBehaviour {
 	void logout()
 	{
 		//Coppa - when we log out of Facebook, we put the Upsight Opt-out option back to true to be safe.
-		MyUpsightManager.setUpsightOptOutOption( true );
+		//MyUpsightManager.setUpsightOptOutOption( true );
 		FacebookManager.Instance.CallFBLogout();
 		PlayerStatsManager.Instance.setUsesFacebook( false );
 		PlayerStatsManager.Instance.savePlayerStats();
@@ -646,7 +646,7 @@ public class PopupHandler : MonoBehaviour {
 	void moreGames()
 	{
 		//Make a content request for the Upsight more games list
-		Upsight.sendContentRequest( "more_games", true );
+		//Upsight.sendContentRequest( "more_games", true );
 	}
 
 	void changeDifficultyLevel()
