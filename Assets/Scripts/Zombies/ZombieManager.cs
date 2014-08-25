@@ -120,11 +120,18 @@ public class ZombieManager : BaseClass {
 		for( int i=0; i < spawnLocations.Count; i++ )
 		{
 			locationObject = spawnLocations[i];
-			zsd = (ZombieSpawnData) locationObject.GetComponent("ZombieSpawnData");
-			if( zsd != null )
+			if( locationObject != null )
 			{
-				//Debug.LogWarning(  " triggerZombieWave " + i + " delay " + zsd.spawnDelay + " pos " + locationObject.transform.position );
-				StartCoroutine( spawnZombie( locationObject.transform, zsd ) );
+				zsd = (ZombieSpawnData) locationObject.GetComponent("ZombieSpawnData");
+				if( zsd != null )
+				{
+					Debug.LogWarning(  " triggerZombieWave " + i + " delay " + zsd.spawnDelay + " pos " + locationObject.transform.position );
+					StartCoroutine( spawnZombie( locationObject.transform, zsd ) );
+				}
+			}
+			else
+			{
+				Debug.LogWarning( "ZombieManager: triggerZombieWave locationObject is null. spawnLocations.Count: " + spawnLocations.Count  );
 			}
 		}
 	}
