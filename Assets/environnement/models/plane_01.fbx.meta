@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4051614bdb8903e4cab255635715f7a8
+guid: 66f2d16caebb5f04f9bf47c7ed8fd1ba
 ModelImporter:
   serializedVersion: 16
   fileIDToRecycleName:
@@ -7,9 +7,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: eyes
-    4300002: pPlane24
-    4300004: bat_eye
+    4300000: pPlane01
     9500000: //RootNode
   materials:
     importMaterials: 1
