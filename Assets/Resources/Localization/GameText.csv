@@ -61,6 +61,7 @@ CULLIS_GATE_TUTORIAL,Awesome! You activated the first magical portal!,Super ! Tu
 CULLIS_GATE_FOREST,You are leaving the Forest of Oakland for the Cemetery of Darkwood. Foul creatures live there...,Tu quittes la forêt de Oakland pour le cimetière de Darkwood. Des créatures sinistres y habitent...,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CULLIS_GATE_CEMETERY,You are going to cross the Skull gates into Hell. Be careful, no living creature has ever come out alive...,Tu vas traverser le portail menant en enfer. Fais attention, aucune créature vivante n'en est jamais revenue vivant...,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CULLIS_GATE_HELL,You are almost there! You need to throw the Book of Pure Evil into the Volcano of Doom.,Tu y es presque! Tu dois jeter le Livre Maudit dans le Volcan du Désespoir.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+CULLIS_GATE_DEMO_END,Congratulations! You have finished the demo.,Bravo ! Tu as finis la démo.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CHECKPOINT_REACHED,Checkpoint reached!,Point de sauvegarde !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POWER_UP_ZNUKE,Z-Nuke,Z-Nuke,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POWER_UP_DOUBLE_JUMP,Double Jump,Double Saut,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED

@@ -34,15 +34,17 @@ public class CullisGateController : MonoBehaviour {
 
 	public void Activation_complete()
 	{
-		print ("Cullis gate activation complete " );
+		print ("Cullis gate activation complete" );
 		lightEffect.Play();
 		if( playCameraCutscene ) Invoke("playCutscene", 2.2f);
 		bool isGameFinished = LevelManager.Instance.incrementNextLevelToComplete();
 		//Save the player stats before continuing
 		PlayerStatsManager.Instance.savePlayerStats();
-		if( isGameFinished )
+		//if( isGameFinished )
+		if( true )
 		{
-			AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("LEVEL_GAME_COMPLETED"), 0.3f, 5.5f );
+			//AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("LEVEL_GAME_COMPLETED"), 0.3f, 5.5f );
+			AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("CULLIS_GATE_DEMO_END"), 0.3f, 5.5f );
 			Invoke("displayStatsScreen", WAIT_DURATION );
 		}
 		else
