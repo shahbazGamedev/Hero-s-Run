@@ -119,6 +119,7 @@ public class LevelData : MonoBehaviour {
 				shadowStrength = 0f;
 				Sun.light.shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 32f,13f,-63f );
+				Sun.light.color = new Color(0.623f,0.729f,0.882f); //bluish
 				RenderSettings.ambientLight = new Color(0.13f,0.21f,0.3f);
 				break;
 
