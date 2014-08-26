@@ -31,7 +31,7 @@ public class SoundManager : MonoBehaviour {
 
 		//Play the music track that we load from the Resources folder
 		musicSource = gameObject.AddComponent<AudioSource>();
-		musicSource.clip = Resources.Load("Audio/17 Final Test") as AudioClip;
+		musicSource.clip = Resources.Load("Audio/16 To Vaes Dothrak") as AudioClip;
 		musicSource.loop = true;
 		musicSource.volume = MUSIC_VOLUME;
 

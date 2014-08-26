@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 1baa94485bc627649a3322baa9b887d8
 ModelImporter:
-  serializedVersion: 15
+  serializedVersion: 16
   fileIDToRecycleName:
     100000: Bip01 R Foot
     100002: Bip01 R Toe0Nub
@@ -354,6 +354,7 @@ ModelImporter:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
     optimizeGameObjects: 0
+    motionNodeName: 
     animationCompression: 1
     animationRotationError: .5
     animationPositionError: .5
@@ -832,7 +833,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: .00999999978
+    globalScale: 2.51999998
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -865,4 +866,5 @@ ModelImporter:
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 1
+  additionalBone: 0
   userData: 
