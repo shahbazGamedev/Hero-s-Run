@@ -39,7 +39,7 @@ public class PowerUpManager : BaseClass {
 	//Duration is extended by the upgrade level * UPGRADE_DURATION_BOOST
 	const float UPGRADE_DURATION_BOOST = 5; 	//in seconds
 	//Base diameter is the value if upgrade level is 0. It is used by zNuke.
-	const float BASE_DIAMETER = 14f; 	//in meters
+	const float BASE_DIAMETER = 18f; 	//in meters
 	//Impact diameter is extended by the upgrade level * UPGRADE_DIAMETER_BOOST
 	const float UPGRADE_DIAMETER_BOOST = 6f; 	//in meters
 
