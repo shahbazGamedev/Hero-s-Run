@@ -8,23 +8,41 @@ public class Blink : MonoBehaviour {
 	bool eyesAreOpened = true;
 
 	// Use this for initialization
-	void Start () {
-	
-		Invoke("blink", 1f );
+	void OnEnable()
+	{
+		if( Random.value > 0.5f )
+		{
+			eyesAreOpened = true;
+			renderer.material.mainTexture = eyesOpened;
+		}
+		else
+		{
+			eyesAreOpened = false;
+			renderer.material.mainTexture = eyesClosed;
+		}
+		Invoke("blink", 0.2f );
 	}
 	
+	void OnDisable()
+	{
+		CancelInvoke();
+	}
+
 	void blink ()
 	{
 		if( eyesAreOpened )
 		{
 			renderer.material.mainTexture = eyesClosed;
+			//Open eyes after...
+			Invoke("blink", Random.Range(0.3f, 0.8f) );
 		}
 		else
 		{
 			renderer.material.mainTexture = eyesOpened;
+			//Close eyes after...
+			Invoke("blink", Random.Range(1f, 2f) );
 		}
 		eyesAreOpened = !eyesAreOpened;
-		Invoke("blink", Random.Range(0.4f, 1.5f) );
 
 	}
 }
