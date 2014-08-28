@@ -79,8 +79,14 @@ public class PauseMenu : MonoBehaviour {
 			PlayerStatsManager.Instance.setPowerUpSelected( newPowerUp );
 		}
 		//Power-up name
-		GUI.Label( new Rect(margin+buttonSize.x+buttonMargin,popupSize.y * 0.65f,powerUpSize.x,50), PowerUpDisplayData.getPowerUpName(powerUpSelected), selectorStyle );
-		
+		GUI.Label( new Rect(margin+buttonSize.x+buttonMargin,popupSize.y * 0.63f,powerUpSize.x,50), PowerUpDisplayData.getPowerUpName(powerUpSelected), selectorStyle );
+
+		//Power-up how to use
+		int originalSize = selectorStyle.fontSize;
+		selectorStyle.fontSize = (int)(selectorStyle.fontSize * 0.65f);
+		GUI.Label( new Rect(margin+buttonSize.x+buttonMargin,popupSize.y * 0.67f,powerUpSize.x,50), LocalizationManager.Instance.getText("POWER_UP_HOW_TO"), selectorStyle );
+		selectorStyle.fontSize = originalSize;
+
 		Rect areaRect3 = new Rect( (popupSize.x - areaSize.x)/2, popupSize.y * 0.75f, areaSize.x, areaSize.y );
 		GUILayout.BeginArea( areaRect3 );
 		GUILayout.BeginVertical();
