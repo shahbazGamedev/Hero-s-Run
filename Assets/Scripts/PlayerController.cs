@@ -610,12 +610,16 @@ public class PlayerController : BaseClass {
 		//Update distance travelled
 		if( allowDistanceTravelledCalculations )
 		{
-			PlayerStatsManager.Instance.addToDistanceTravelled( Vector3.Distance( transform.position, previousPlayerPosition ) );
+			//Do not take height into consideration for distance travelled
+			Vector3 current = new Vector3(transform.position.x, 0, transform.position.z);
+			Vector3 previous = new Vector3(previousPlayerPosition.x, 0, previousPlayerPosition.z);
+
+			PlayerStatsManager.Instance.addToDistanceTravelled( Vector3.Distance( current, previous ) );
 
 			previousPlayerPosition = transform.position;
 		}
 	}
-
+	
 	void LateUpdate()
 	{
 		if (Time.deltaTime == 0) return;
@@ -2051,7 +2055,6 @@ public class PlayerController : BaseClass {
 		{
 			//Player has successfully completed the current level.
 			Debug.Log ("Checkpoint triggered ");
-			allowDistanceTravelledCalculations = false;
 			//Report score to Game Center if not in the Unity Editor
 			#if !UNITY_EDITOR
 			GameCenterManager.reportLeaderboard( GameCenterManager.DistanceRunAllLevels, PlayerStatsManager.Instance.getDistanceTravelled() );

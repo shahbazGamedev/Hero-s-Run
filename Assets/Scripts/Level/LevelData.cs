@@ -203,6 +203,8 @@ public class LevelData : MonoBehaviour {
 		public int powerUpDensity = 4;
 		[Tooltip("The type of tile that the player will start on.")]
 		public TileType startTile = TileType.Start;
+		[Tooltip("The length in meters of the level. This value is calculated when the level is created.")]
+		public float lengthInMeters = 0;
 		[Header("Road Segments")]
 		public List<RoadSegment> roadSegmentList = new List<RoadSegment>();
 

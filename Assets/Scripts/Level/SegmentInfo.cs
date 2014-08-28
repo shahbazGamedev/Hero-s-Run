@@ -16,6 +16,7 @@ public class SegmentInfo : MonoBehaviour {
 	public bool entranceCrossed = false;
 
 	public bool isCheckpoint = false;
+	public bool isFirstTileOfLevel = false;
 
 	//Display the bezier curve(s) if any.
 	void OnDrawGizmos ()

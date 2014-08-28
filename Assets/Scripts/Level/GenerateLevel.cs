@@ -3,14 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-//Segment theme (Forest, Cemetery or Stone for the time being)
 public enum SegmentTheme {
 		Forest = 0,
-		Stone = 1,
+		Fairyland = 1,
 		Cemetery = 2,
 		Hell = 3,
 		Tutorial = 4,
-		Shared = 5,
+		Volcano = 5,
 		Island = 6
 }
 
@@ -96,7 +95,7 @@ public class GenerateLevel  : MonoBehaviour {
 	Dictionary<TutorialEvent,int> tutorialStartTileIndex = new Dictionary<TutorialEvent, int>(NUMBER_OF_TUTORIALS);
 
 	//To improve performance by preloading prefabs and avoiding reloading tile prefabs that have previously been loaded.
-	const int NUMBER_OF_THEMES = 5; //Island, Hell, Cemetery, Forest and Stone. TUTORIAL does not use tilePrefabsPerTheme.
+	const int NUMBER_OF_THEMES = 6; //Island, Forest, Fairyland, Cemetery, Hell and Volcano. TUTORIAL does not use tilePrefabsPerTheme.
 	Dictionary<SegmentTheme,Dictionary<TileType,GameObject>> tilePrefabsPerTheme  = new Dictionary<SegmentTheme,Dictionary<TileType,GameObject>>(NUMBER_OF_THEMES);
 
 	//For the endless running game mode
@@ -142,26 +141,6 @@ public class GenerateLevel  : MonoBehaviour {
 			}
 		}
 		tilePrefabsPerTheme.Add(theme, themePrefabsDict);
-
-		//Also load tile prefabs from Shared folder if not already done
-		if( !tilePrefabsPerTheme.ContainsKey(SegmentTheme.Shared) )
-		{
-			Object[] sharedPrefabs = Resources.LoadAll("Level/Tiles/Shared/", typeof(GameObject));
-			Dictionary<TileType,GameObject> sharedPrefabsDict = new Dictionary<TileType,GameObject>(sharedPrefabs.Length);
-
-			//Copy to dictionary
-			for(int i = 0; i < sharedPrefabs.Length; i++ )
-			{
-				go = (GameObject)sharedPrefabs[i];
-				SegmentInfo si = go.GetComponent<SegmentInfo>();
-				if( si.tileType != TileType.None )
-				{
-					print ("adding tile to shared dictionary " + si.tileType );
-					sharedPrefabsDict.Add( si.tileType, go );
-				}
-			}
-			tilePrefabsPerTheme.Add(SegmentTheme.Shared, sharedPrefabsDict);
-		}
 
 	}
 
@@ -243,6 +222,8 @@ public class GenerateLevel  : MonoBehaviour {
 			}
 		}
 
+		levelInfo.lengthInMeters = calculateLevelLength();
+
 		//The player controller needs info about the tile the player is on.
 		setFirstTileInfoInPlayer();
 
@@ -262,7 +243,50 @@ public class GenerateLevel  : MonoBehaviour {
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + SpawnCollectibles.realNumberCoinsSpawned );
 		Debug.Log("GenerateLevel-CreateLevel: The suggested number of coins to obtain 2 stars is 30% of stars available : " + Mathf.RoundToInt( SpawnCollectibles.realNumberCoinsSpawned * 0.3f ) );
 		Debug.Log("GenerateLevel-CreateLevel: The suggested number of coins to obtain 3 stars is 60% of stars available : " + Mathf.RoundToInt( SpawnCollectibles.realNumberCoinsSpawned * 0.6f ) );
+		Debug.Log("GenerateLevel-CreateLevel: The level length in meters is : " + levelInfo.lengthInMeters );
 
+	}
+
+	float calculateLevelLength()
+	{
+		float levelLength = 0;
+		GameObject tile;
+		int numberOfTJunctions = 0;
+
+		for(int i = 0; i < worldRoadSegments.Count; i++ )
+		{
+			tile = worldRoadSegments[i];
+			SegmentInfo si = tile.GetComponent<SegmentInfo>();
+			if( si.tileType == TileType.End )
+			{
+				//The cullis gate is 34.6 meters from the start of the tile.
+				//But the checkpoint trigger (which changes the game state) is at 18.2 meters. The trigger depth is 1 meters. So we have, 18.2m - 0.5m - 17.7m.
+				//When the game state is not Normal, the run distance stops being calculated.
+				levelLength = levelLength + 17.7f;
+			}
+			else if( si.tileType == TileType.Checkpoint )
+			{
+				//The checkpoint trigger is 18.2 meters from the start of the tile. The trigger depth is 1 meters. So we have, 18.2m - 0.5m - 17.7m.
+				levelLength = levelLength + 17.7f;
+			}
+			else if( si.tileType == TileType.Start )
+			{
+				//The distance between the player's start position (0,ground height,0) and the end of the tile, is 54.4 meters.
+				levelLength = levelLength + 54.4f;
+			}
+			else
+			{
+				levelLength = levelLength + getTileDepth(si.tileType) * TILE_SIZE;
+			}
+			if( si.tileType == TileType.T_Junction || si.tileType == TileType.T_Junction_Landmark_Cemetery || si.tileType == TileType.T_Junction_River ) numberOfTJunctions++;
+
+		}
+		//T-Junctions create 4 tiles on the left path and 2 tiles on the right path. All the tiles have a depthTileMult of 1.
+		//For the time being, we are calculating the length of the right path only.
+		//So we need to substract the length added by the left path tiles.
+		levelLength = levelLength - (numberOfTJunctions * 4 * TILE_SIZE );
+
+		return levelLength;
 	}
 
 	//The player controller needs info about the tile the player is on.
@@ -281,6 +305,7 @@ public class GenerateLevel  : MonoBehaviour {
 		playerController.currentTilePos = firstTile.transform.position;
 		SegmentInfo si = firstTile.GetComponent<SegmentInfo>();
 		playerController.currentTileType = si.tileType;
+		si.isFirstTileOfLevel = true;
 
 		//If the player starts off on a Start tile, the camera will be looking at the front of player and do a rotation when the player starts running.
 		//However, if the player is not on a Start tile and is starting at a Checkpoint, we want the camera to look at the back of the player (and therefore, there is no need for a rotation when the player starts running).
@@ -352,16 +377,7 @@ public class GenerateLevel  : MonoBehaviour {
 			}
 			else
 			{
-				//Look in the Shared theme
-				tilePrefabs = tilePrefabsPerTheme[SegmentTheme.Shared];
-				if( tilePrefabs.ContainsKey(type) )
-				{
-					prefab = tilePrefabs[type];
-				}
-				else
-				{
-					Debug.LogError("addTile: could not find prefab for the tile type: " + type + " in either the current theme " + currentTheme + " or the Shared theme folder." );
-				}
+				Debug.LogError("addTile: could not find prefab for the tile type: " + type + " in the current theme " + currentTheme + " folder." );
 			}
 
 			tileHeight = calculateTileHeight( prefab.transform.eulerAngles.x,1 ); //From a slope perspective, the slope length is one, even though the tile is longer
@@ -380,128 +396,7 @@ public class GenerateLevel  : MonoBehaviour {
 			go.transform.position = tilePos;
 		} 
 		
-		switch (type)
-		{
-		case TileType.Opening:
-		case TileType.Start:
-		case TileType.Landmark_Fairy_Message:
-		case TileType.Landmark_Broken_Bridge:
-		case TileType.Landmark_Evil_Tree:
-			tileDepthMult = 2;
-			break;
-			
-		case TileType.End:
-			tileDepthMult = 2;
-			break;
-
-		case TileType.Straight:
-			tileDepthMult = 1;
-			break;
-			
-		case TileType.Checkpoint:
-			tileDepthMult = 2;
-			break;
-
-		case TileType.Straight_Double:
-			tileDepthMult = 2;
-			break;
-			
-		case TileType.Straight_Bezier:
-			tileDepthMult = 2;
-			break;
-			
-		case TileType.Straight_Log:
-			tileDepthMult = 1;
-			break;
-			
-		case TileType.Straight_River:
-			tileDepthMult = 1;
-			//Straight_River has a permanent coin pack over the river.
-			//So add those stars to the star counter.
-			SpawnCollectibles.realNumberCoinsSpawned = SpawnCollectibles.realNumberCoinsSpawned + 18;
-			break;
-			
-		case TileType.Straight_River_Crossing:
-			tileDepthMult = 1;
-			//Straight_River_Crossing has a permanent coin pack over the river.
-			//So add those stars to the star counter.
-			SpawnCollectibles.realNumberCoinsSpawned = SpawnCollectibles.realNumberCoinsSpawned + 18;
-			break;
-			
-		case TileType.Straight_River_Log_Crossing:
-			tileDepthMult = 1;
-			//Straight_River_Log_Crossing has a permanent coin pack over the river.
-			//So add those stars to the star counter.
-			SpawnCollectibles.realNumberCoinsSpawned = SpawnCollectibles.realNumberCoinsSpawned + 18;
-			break;
-			
-		case TileType.Straight_River_Triple:
-			tileDepthMult = 2;
-			//Straight_River_Triple has a permanent coin pack over the river.
-			//So add those stars to the star counter.
-			SpawnCollectibles.realNumberCoinsSpawned = SpawnCollectibles.realNumberCoinsSpawned + 18;
-			break;
-			
-		case TileType.Left:
-			tileDepthMult = 1;
-			break;
-			
-		case TileType.Right:
-			tileDepthMult = 1;
-			break;
-			
-		case TileType.Landmark_Windmill:
-			tileDepthMult = 1;
-			break;
-			
-		case TileType.Landmark_Defense_Tower:
-			tileDepthMult = 1;
-			break;
-			
-		case TileType.Landmark_Dragon_Lair:
-			tileDepthMult = 2;
-			break;
-
-		case TileType.Landmark_Dragon_Landing:
-			tileDepthMult = 1;
-			break;
-			
-		case TileType.Landmark_Clocktower:
-			tileDepthMult = 2;
-			break;
-			
-		case TileType.Landmark_Drawbridge:
-			tileDepthMult = 2;
-			break;
-			
-		case TileType.Landmark_Banquet_Hall:
-			tileDepthMult = 2;
-			break;
-			
-		case TileType.Straight_Slope:
-			tileDepthMult = 1;
-			break;
-			
-		case TileType.T_Junction:
-			//The main path assumes the player is always turning right at the T-Junction
-			tileDepthMult = 1;
-			break;
-			
-		case TileType.T_Junction_Landmark_Cemetery:
-			//The Landmark cemetery tile is also a T-Junction
-			//The main path assumes the player is always turning right at the T-Junction
-			tileDepthMult = 1;
-			break;
-			
-		case TileType.T_Junction_River:
-			//The main path assumes the player is always turning right at the T-Junction
-			tileDepthMult = 1;
-			break;
-			
-		default:
-			Debug.LogError("GenerateLevel-addTile: unknown tile type specified: " + type );
-			break;
-		}
+		tileDepthMult= getTileDepth( type );
 
 		previousTileType = getTileSubType(type); //for constructing the level, we use the simpler types like straight, left and right
 		tileEndHeight = tileHeight;
@@ -518,6 +413,58 @@ public class GenerateLevel  : MonoBehaviour {
 
 		return go;
 	}
+
+	int getTileDepth( TileType type )
+	{
+		int depth = 0;
+
+		switch (type)
+		{
+			case TileType.Straight:
+			case TileType.Straight_Log:
+			case TileType.Straight_River:
+			case TileType.Straight_River_Crossing:
+			case TileType.Straight_River_Log_Crossing:
+			case TileType.Left:
+			case TileType.Opening5:
+			case TileType.Right:
+			case TileType.Landmark_Windmill:
+			case TileType.Landmark_Defense_Tower:
+			case TileType.Landmark_Dragon_Landing:
+			case TileType.Straight_Slope:
+			case TileType.T_Junction:
+			case TileType.T_Junction_Landmark_Cemetery:
+			case TileType.T_Junction_River:
+				depth = 1;
+				break;
+			
+			case TileType.Opening:
+			case TileType.Opening2:
+			case TileType.Opening3:
+			case TileType.Opening4:
+			case TileType.Start:
+			case TileType.Landmark_Fairy_Message:
+			case TileType.Landmark_Broken_Bridge:
+			case TileType.Landmark_Evil_Tree:
+			case TileType.End:
+			case TileType.Checkpoint:
+			case TileType.Straight_Double:
+			case TileType.Straight_Bezier:
+			case TileType.Straight_River_Triple:
+			case TileType.Landmark_Dragon_Lair:
+			case TileType.Landmark_Clocktower:
+			case TileType.Landmark_Drawbridge:
+			case TileType.Landmark_Banquet_Hall:
+				depth = 2;
+				break;
+
+		default:
+			Debug.LogError("GenerateLevel-getTileDepth: unknown tile type specified: " + type );
+			break;
+		}
+		return depth;
+	}
+
 
 	//Important: as previousTileType value, use one of the three basic tile types (Straight, Left or Right). Do
 	//not use the precise tile type (such as Straight_double) or else the method ensureTileHasZeroRotation won't work as intended.
@@ -549,15 +496,10 @@ public class GenerateLevel  : MonoBehaviour {
 	{
 		//Step 1 - try to get the tile prefab in the current theme folder
 		GameObject prefab = Resources.Load(currentThemePath + tileName) as GameObject;
-		//Step 2 - if it was not found, look in the shared folder
+		//Step 2 - if it is not found, give an error message
 		if( prefab == null )
 		{
-			prefab = Resources.Load("Level/Tiles/Shared/" + tileName) as GameObject;
-		}
-		//Step 3 - if it is still not found, give an error message
-		if( prefab == null )
-		{
-			Debug.LogError("GenerateLevel-getTilePrefab: Unable to locate the tile named " + tileName + " in either the theme, " + currentThemePath + ", or the shared folder.");
+			Debug.LogError("GenerateLevel-getTilePrefab: Unable to locate the tile named " + tileName + " in the theme, " + currentThemePath + ", folder.");
 		}
 		return prefab;
 	}
@@ -777,16 +719,6 @@ public class GenerateLevel  : MonoBehaviour {
 				randomLandmark = TileType.Landmark_Clocktower;
 				}
 				break;
-			case SegmentTheme.Stone:
-				if( rd < 0.5f)
-				{
-					randomLandmark = TileType.Landmark_Defense_Tower;
-				}
-				else
-				{
-					randomLandmark = TileType.Landmark_Windmill;
-				}
-				break;
 			case SegmentTheme.Hell:
 				if( rd < 0.33f)
 				{
@@ -866,7 +798,10 @@ public class GenerateLevel  : MonoBehaviour {
 			for( int j=0; j < maxIndex; j++ )
 			{
 				TileType tileCreationType = getSegmentTile (roadSegmentList[i].theme);
-				if( tileCreationType != TileType.None ) addTileData( tileCreationType, roadSegmentList[i].theme );
+				if( tileCreationType != TileType.None )
+				{
+					addTileData( tileCreationType, roadSegmentList[i].theme );
+				}
 			}
 			addRoadSegmentEndTile( roadSegmentList[i].endTile, roadSegmentList[i].theme );
 		}
