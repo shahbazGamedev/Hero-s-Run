@@ -233,7 +233,8 @@ public class HUDHandler : MonoBehaviour {
 			if( PlayerStatsManager.Instance.isFirstTimePlaying() ) isFirstTimePlaying = "-t";
 			
 			//GUI.Label ( fpsRect, fps + "-" + LevelManager.Instance.getCurrentLevelIndex() + "-" + PlayerStatsManager.Instance.getPlayerHighScore() + isFirstTimePlaying + "-" + PlayerController.getPlayerSpeed().ToString("N1") + "-" +  PlayerController.getPlayerSpeedBoost().ToString("N1"), fpsStyle );
-			GUI.Label ( fpsRect, fps + "-" + PlayerController.getPlayerSpeed().ToString("N1") + "-" + playerController.currentLane + "-" + playerController.desiredLane + "-tr-" + playerController.tileRotationY + "-" + playerController.getCharacterState() + "-" + playerController.lastSwipe + "-" + playerController.reasonDiedAtTurn + "-" + playerController.moveDirection.x.ToString("N1"),fpsStyle );
+			//GUI.Label ( fpsRect, fps + "-" + PlayerController.getPlayerSpeed().ToString("N1") + "-" + playerController.currentLane + "-" + playerController.desiredLane + "-tr-" + playerController.tileRotationY + "-" + playerController.getCharacterState() + "-" + playerController.lastSwipe + "-" + playerController.reasonDiedAtTurn + "-" + playerController.moveDirection.x.ToString("N1"),fpsStyle );
+			GUI.Label ( fpsRect, fps + "-" + LevelManager.Instance.getNextLevelToComplete(),fpsStyle );
 
 			if(GUI.Button( pauseRect, pauseButtonContent, pauseStyle ))
 			{
@@ -307,21 +308,23 @@ public class HUDHandler : MonoBehaviour {
 
 	void drawDistanceProgressBar()
 	{
+		//The progress bar is only useful in Story mode
+		if( GameManager.Instance.getGameMode() == GameMode.Story )
+		{
+			Vector2 externalprogressBarSize = new Vector2( Screen.width * 0.02f, Screen.width * 0.12f);
+			Vector2 internalprogressBarSize = new Vector2( externalprogressBarSize.x * 0.8f, externalprogressBarSize.y );
+			Vector2 pos = new Vector2( Screen.width - 2 * externalprogressBarSize.x, Screen.height/2f);
 
-		Vector2 externalprogressBarSize = new Vector2( Screen.width * 0.02f, Screen.width * 0.12f);
-		Vector2 internalprogressBarSize = new Vector2( externalprogressBarSize.x * 0.8f, externalprogressBarSize.y );
-		Vector2 pos = new Vector2( Screen.width - 2 * externalprogressBarSize.x, Screen.height/2f);
+			float progress = (float)internalprogressBarSize.y * (1f - (float)(PlayerStatsManager.Instance.getDistanceTravelled())/LevelManager.Instance.getLevelInfo().lengthInMeters);
+			if( progress < 0 ) progress = 0;
 
-		float progress = (float)internalprogressBarSize.y * (1f - (float)(PlayerStatsManager.Instance.getDistanceTravelled())/LevelManager.Instance.getLevelInfo().lengthInMeters);
-		if( progress < 0 ) progress = 0;
-
-		GUI.BeginGroup (new Rect (pos.x, pos.y, externalprogressBarSize.x, externalprogressBarSize.y));
-			// Define progress bar texture within externalDistanceProgressBarStyle under Normal > Background
-			GUI.Box (new Rect (0,0, externalprogressBarSize.x, externalprogressBarSize.y),"", externalDistanceProgressBarStyle);
-			// Define progress bar texture within innerDistanceProgressBarStyle under Normal > Background
-			GUI.Box (new Rect ((externalprogressBarSize.x-internalprogressBarSize.x)/2f,progress, internalprogressBarSize.x, internalprogressBarSize.y),"", internalDistanceProgressBarStyle);
-		GUI.EndGroup ();
-
+			GUI.BeginGroup (new Rect (pos.x, pos.y, externalprogressBarSize.x, externalprogressBarSize.y));
+				// Define progress bar texture within externalDistanceProgressBarStyle under Normal > Background
+				GUI.Box (new Rect (0,0, externalprogressBarSize.x, externalprogressBarSize.y),"", externalDistanceProgressBarStyle);
+				// Define progress bar texture within innerDistanceProgressBarStyle under Normal > Background
+				GUI.Box (new Rect ((externalprogressBarSize.x-internalprogressBarSize.x)/2f,progress, internalprogressBarSize.x, internalprogressBarSize.y),"", internalDistanceProgressBarStyle);
+			GUI.EndGroup ();
+		}
 	}
 
 	void updateFPS()

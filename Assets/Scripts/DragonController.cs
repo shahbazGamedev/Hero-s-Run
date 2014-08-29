@@ -54,7 +54,7 @@ public class DragonController : BaseClass {
 
 	bool followsPlayer = false;
 	public Vector3 forward;
-	float flyingSpeed = 5f;
+	float flyingSpeed = 6f;
 	CharacterController controller;
 	public GameObject dragonFire;
 	public GameObject dragonFireSpotlight;
@@ -77,11 +77,11 @@ public class DragonController : BaseClass {
 	// Update is called once per frame
 	void LateUpdate ()
 	{
-		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && dragonState == DragonState.Fly )
+		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint || GameManager.Instance.getGameState() == GameState.SaveMe ) && dragonState == DragonState.Fly )
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 			
-			if( distance < 45f )
+			if( distance < 32f )
 			{
 				breatheFire( "Attack_001");
 			}
@@ -99,6 +99,7 @@ public class DragonController : BaseClass {
 			transform.LookAt( player );
 			transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 		}
+
 		//1) Get the direction of the zombie
 		forward = transform.TransformDirection(Vector3.forward);			
 		//2) Scale vector based on flying speed
@@ -112,7 +113,7 @@ public class DragonController : BaseClass {
 	public void Arrive( )
 	{
 		print ("*******Dragon arrive");
-		Vector3 arrivalStartPos = new Vector3( -42f, 9f, PlayerController.getPlayerSpeed() * 9f );
+		Vector3 arrivalStartPos = new Vector3( -42f, 5f, PlayerController.getPlayerSpeed() * 7f );
 		Vector3 exactPos = player.TransformPoint(arrivalStartPos);
 		transform.position = exactPos;
 		transform.rotation = Quaternion.Euler( 0, player.transform.eulerAngles.y + 90f, transform.eulerAngles.z );
@@ -149,6 +150,44 @@ public class DragonController : BaseClass {
 		dragonState = DragonState.Fly;
 	}
 
+	void OnEnable()
+	{
+		GameManager.gameStateEvent += GameStateChange;
+		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
+	}
+	
+	void OnDisable()
+	{
+		GameManager.gameStateEvent -= GameStateChange;
+		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
+	}
+	
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	{
+		if( eventType == GameEvent.Start_Moving )
+		{
+		}
+		else if( eventType == GameEvent.Stop_Moving )
+		{
+		} 
+	}
+	
+
+	void GameStateChange( GameState newState )
+	{
+		if( dragonAnimation != null )
+		{
+			if( newState == GameState.Paused )
+			{
+				dragonAnimation.enabled = false;
+
+			}
+			else if( newState == GameState.Normal )
+			{
+				dragonAnimation.enabled = true;
+			}
+		}
+	}
 	private IEnumerator MoveToPosition( float timeToArrive )
 	{
 		//Step 1 - Take position in front of player
