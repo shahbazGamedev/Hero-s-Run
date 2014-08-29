@@ -108,4 +108,12 @@ public class GameManager {
 		gameMode = value;
 	}
 
+	//The global coin multiplier is used to increase (value bigger than 1) or decrease (value smaller than 1) the
+	//percentage chance that coin packs appear in the level.
+	//Also see CoinHandler.
+	public float getGlobalCoinMultiplier()
+	{
+		return 1f;
+	}
+
 }

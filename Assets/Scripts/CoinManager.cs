@@ -6,7 +6,14 @@ public class CoinManager : MonoBehaviour {
 	// Audio - Coin
 	static AudioSource coinAudioSource;
 	public static AudioClip coinPickup;
-	
+	/*
+	The following value (realNumberCoinsSpawned) is printed when the level has been created.
+	It contains the total number of stars available in the randomly generated level.
+	This value is useful because it allows the level designer to specify star objectives that are coherent with the number of stars in the level.
+	Currently, the stars given by breakables, zombies and chickens are not counted in this number.
+	*/
+	public static int realNumberCoinsSpawned = 0;
+
 	void Awake ()
 	{
 		coinAudioSource = gameObject.AddComponent<AudioSource>();

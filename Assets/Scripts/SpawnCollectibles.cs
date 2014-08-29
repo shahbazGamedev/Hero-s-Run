@@ -10,16 +10,6 @@ public class SpawnCollectibles : MonoBehaviour {
 	static GameObject CoinPack_7x1_corner_right = Resources.Load("Coins/CoinPack_7x1_corner_right") as GameObject;
 	static GameObject expensiveCoin = Resources.Load("Coins/Coin_100") as GameObject;
 	bool initialized = false;
-	/*
-	The following value (realNumberCoinsSpawned) is printed when the level has been created.
-	It contains the total number of stars available in the randomly generated level.
-	This value is useful because it allows the level designer to specify star objectives that are coherent with the number of stars in the level.
-	For the time being, the player needs to collect 30% of the stars in the level to get two Stars and
-	60% of the stars in the level to get three Stars.
-	As a reminder, when the player completes a level, even if he did not pick-up any stars, he will have one Star.
-	Currently, the stars given by breakables, zombies and chickens are not counted in this number.
-	*/
-	public static int realNumberCoinsSpawned = 0;
 
 	// Use this for initialization
 	void OnEnable ()
@@ -50,13 +40,13 @@ public class SpawnCollectibles : MonoBehaviour {
 				{
 					//We have a right corner
 					goCorner = (GameObject)Instantiate(CoinPack_7x1_corner_right, Vector3.zero, Quaternion.identity );
-					realNumberCoinsSpawned = realNumberCoinsSpawned + 7;
+					CoinManager.realNumberCoinsSpawned = CoinManager.realNumberCoinsSpawned + 7;
 				}
 				else if( corridorYlocal == 90f )
 				{
 					//We have a left corner
 					goCorner = (GameObject)Instantiate(CoinPack_7x1_corner_left, Vector3.zero, Quaternion.identity );
-					realNumberCoinsSpawned = realNumberCoinsSpawned + 7;
+					CoinManager.realNumberCoinsSpawned = CoinManager.realNumberCoinsSpawned + 7;
 				}
 				goCorner.transform.parent = transform;
 				goCorner.transform.localRotation = Quaternion.Euler(0,0,0);
@@ -99,12 +89,12 @@ public class SpawnCollectibles : MonoBehaviour {
 				if ( Random.Range( 0f, 1f ) < 0.5f )
 				{
 					go = (GameObject)Instantiate(CoinPack_5x1, pos, Quaternion.Euler( 0, corridorY, 0 ) );
-					realNumberCoinsSpawned = realNumberCoinsSpawned + 5;
+					CoinManager.realNumberCoinsSpawned = CoinManager.realNumberCoinsSpawned + 5;
 				}
 				else
 				{
 					go = (GameObject)Instantiate(CoinPack_4x1_1x5, pos, Quaternion.Euler( 0, corridorY, 0 ) );
-					realNumberCoinsSpawned = realNumberCoinsSpawned + 9;
+					CoinManager.realNumberCoinsSpawned = CoinManager.realNumberCoinsSpawned + 9;
 				}
 				go.transform.parent = transform;
 				//Set the local rotation to 0 as well. This is so coins spawned over a slope will be parallel to the floor.
@@ -117,7 +107,7 @@ public class SpawnCollectibles : MonoBehaviour {
 		{
 			Vector3 pos = new Vector3( transform.position.x, transform.position.y + 5.2f, transform.position.z );
 			GameObject go = (GameObject)Instantiate(expensiveCoin, pos, Quaternion.Euler( 0, corridorY, 0 ) );
-			realNumberCoinsSpawned = realNumberCoinsSpawned + 100;
+			CoinManager.realNumberCoinsSpawned = CoinManager.realNumberCoinsSpawned + 100;
 			go.transform.parent = transform;
 
 		}

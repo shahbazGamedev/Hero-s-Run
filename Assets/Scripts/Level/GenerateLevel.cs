@@ -240,9 +240,7 @@ public class GenerateLevel  : MonoBehaviour {
 		}
 
 		Debug.Log("GenerateLevel-CreateLevel: Level " + levelInfo.LevelName + " has been created." );
-		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + SpawnCollectibles.realNumberCoinsSpawned );
-		Debug.Log("GenerateLevel-CreateLevel: The suggested number of coins to obtain 2 stars is 30% of stars available : " + Mathf.RoundToInt( SpawnCollectibles.realNumberCoinsSpawned * 0.3f ) );
-		Debug.Log("GenerateLevel-CreateLevel: The suggested number of coins to obtain 3 stars is 60% of stars available : " + Mathf.RoundToInt( SpawnCollectibles.realNumberCoinsSpawned * 0.6f ) );
+		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.realNumberCoinsSpawned );
 		Debug.Log("GenerateLevel-CreateLevel: The level length in meters is : " + levelInfo.lengthInMeters );
 
 	}
