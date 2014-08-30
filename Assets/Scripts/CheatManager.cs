@@ -29,4 +29,14 @@ public class CheatManager {
 		return false;
 		#endif
 	}
+
+	public bool hasInfinitePowerUps()
+	{
+		#if UNITY_EDITOR
+		return true;
+		#else
+		return false;
+		#endif
+	}
+
 }

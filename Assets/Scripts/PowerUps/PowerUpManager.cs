@@ -214,7 +214,7 @@ public class PowerUpManager : BaseClass {
 				break;
 
 				case PowerUpType.ZNuke:
-				if( PlayerStatsManager.Instance.getPowerUpQuantity(PowerUpType.ZNuke) > 0 )
+				if( PlayerStatsManager.Instance.getPowerUpQuantity(PowerUpType.ZNuke) > 0 || CheatManager.Instance.hasInfinitePowerUps() )
 				{
 					zombieManager.knockbackZombies( getImpactDiameter( pud ) );
 					Debug.Log("PowerUpZNuke - activatePowerUp");
@@ -223,7 +223,7 @@ public class PowerUpManager : BaseClass {
 				break;
 
 				case PowerUpType.MagicBoots:
-				if( PlayerStatsManager.Instance.getPowerUpQuantity(PowerUpType.MagicBoots) > 0 )
+				if( PlayerStatsManager.Instance.getPowerUpQuantity(PowerUpType.MagicBoots) > 0 || CheatManager.Instance.hasInfinitePowerUps() )
 				{
 					playerController.doingDoubleJump = true;
 					playerController.jump();
@@ -233,7 +233,7 @@ public class PowerUpManager : BaseClass {
 				break;
 			
 				case PowerUpType.SlowTime:
-				if( PlayerStatsManager.Instance.getPowerUpQuantity(PowerUpType.SlowTime) > 0 )
+				if( PlayerStatsManager.Instance.getPowerUpQuantity(PowerUpType.SlowTime) > 0 || CheatManager.Instance.hasInfinitePowerUps() )
 				{
 					StopCoroutine( "startTimerSlowTime" );
 					StartCoroutine( "startTimerSlowTime", pud );

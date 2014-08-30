@@ -54,6 +54,10 @@ ModelImporter:
     100096: grass3
     100098: grass4
     100100: support
+    100102: b1
+    100104: rock_Swamp_040
+    100106: rock_Swamp_043
+    100108: rock_Swamp_044
     400000: //RootNode
     400002: polySurface1
     400004: polySurface3
@@ -105,6 +109,10 @@ ModelImporter:
     400096: grass3
     400098: grass4
     400100: support
+    400102: b1
+    400104: rock_Swamp_040
+    400106: rock_Swamp_043
+    400108: rock_Swamp_044
     2300000: //RootNode
     2300002: polySurface1
     2300004: polySurface3
@@ -156,6 +164,10 @@ ModelImporter:
     2300096: grass3
     2300098: grass4
     2300100: support
+    2300102: b1
+    2300104: rock_Swamp_040
+    2300106: rock_Swamp_043
+    2300108: rock_Swamp_044
     3300000: //RootNode
     3300002: polySurface1
     3300004: polySurface3
@@ -207,6 +219,10 @@ ModelImporter:
     3300096: grass3
     3300098: grass4
     3300100: support
+    3300102: b1
+    3300104: rock_Swamp_040
+    3300106: rock_Swamp_043
+    3300108: rock_Swamp_044
     4300000: polySurface4
     4300002: pPlane4
     4300004: rock_Swamp_06
@@ -257,6 +273,10 @@ ModelImporter:
     4300094: grass4
     4300096: bridge_01
     4300098: support
+    4300100: rock_Swamp_040
+    4300102: rock_Swamp_043
+    4300104: rock_Swamp_044
+    4300106: b1
     9500000: //RootNode
   materials:
     importMaterials: 1
