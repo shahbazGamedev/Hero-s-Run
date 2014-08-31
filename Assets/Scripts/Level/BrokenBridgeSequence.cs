@@ -1,15 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FallingTreeSequence : MonoBehaviour {
+public class BrokenBridgeSequence : MonoBehaviour {
 
 	Transform player;
 	PlayerController playerController;
 	Transform fairy;
 	FairyController fairyController;
 
-	public string fairyMessageTextId;
 	bool hasBeenTriggered = false;
+
+	public ParticleSystem fairySpell;
 
 	
 	// Use this for initialization
@@ -29,16 +30,16 @@ public class FallingTreeSequence : MonoBehaviour {
 	public void startSequence()
 	{
 		//Slowdown player and remove player control
-		print ("start tree seq");
+		print ("Start of broken bridge sequence");
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(16f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(20.25f, afterPlayerSlowdown ) );
 	}
 
 	void afterPlayerSlowdown()
 	{
-		print ("after slow down");
 		playerController.anim.SetTrigger("Idle_Look");
 		//Call fairy
+		fairyController.setYRotationOffset( 5f );
 		fairyController.Appear ();
 		Invoke ("step1", 1f );
 	}
@@ -46,7 +47,7 @@ public class FallingTreeSequence : MonoBehaviour {
 	//Fairy tells something to player
 	void step1()
 	{
-		AchievementDisplay.activateDisplayFairy( "Oh my god! the bridge, its broken...", 0.35f, 2.75f );
+		AchievementDisplay.activateDisplayFairy( "By the White Tree! the bridge, its broken...", 0.35f, 2.5f );
 		//Player looks at fairy
 		playerController.lookOverShoulder( 0.4f, 2.75f );
 		Invoke ("step2", 3.5f );
@@ -54,15 +55,28 @@ public class FallingTreeSequence : MonoBehaviour {
 
 	void step2()
 	{
-		makeTreeFall();
-		Invoke ("step3", 3.5f );
+		//Fairy cast spell;
+		fairySpell.Play();
+		audio.Play();
+		Invoke ("step3", 1.5f );
+	}
+
+	void step3()
+	{
+		//Rebuild bridge magically;
+		//To do
+		AchievementDisplay.activateDisplayFairy( "Quickly now! I can hear the troll.", 0.35f, 2.75f );
+		Invoke ("step4", 3.5f );
 	}
 
 	//Make the fairy disappear
-	void step3()
+	//Player starts running again
+	void step4()
 	{
 		fairyController.Disappear ();
 		playerController.allowRunSpeedToIncrease = true;
+		playerController.startRunning(false);
+		fairyController.resetYRotationOffset();
 	}
 
 	void OnEnable()
@@ -95,17 +109,4 @@ public class FallingTreeSequence : MonoBehaviour {
 		}
 	}
 
-	void makeTreeFall()
-	{
-		print ("makeTreeFall");
-		GameObject go = GameObject.FindGameObjectWithTag("FallingTree");
-		//Make the tree fall
-		Rigidbody body = go.rigidbody;
-		body.useGravity = true;
-		float pushPower = 800f;
-		Vector3 force = go.transform.TransformPoint(new Vector3( 0f, 1f, 8f));
-		force.Normalize();
-		force = force * pushPower ;
-		body.AddForceAtPosition(force, new Vector3 (go.transform.position.x,go.transform.position.y + 6f, go.transform.position.z )  );
-	}
 }

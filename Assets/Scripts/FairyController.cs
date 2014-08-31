@@ -68,6 +68,16 @@ public class FairyController : BaseClass {
 		}
 	}
 
+	public void setYRotationOffset( float offset )
+	{
+		yRotationOffset = offset;
+	}
+
+	public void resetYRotationOffset()
+	{
+		yRotationOffset = DEFAULT_Y_ROTATION_OFFSET;
+	}
+
 	private void positionFairy ()
 	{
 		// Calculate the current rotation angles

@@ -442,7 +442,6 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Opening4:
 			case TileType.Start:
 			case TileType.Landmark_Fairy_Message:
-			case TileType.Landmark_Broken_Bridge:
 			case TileType.Landmark_Evil_Tree:
 			case TileType.End:
 			case TileType.Checkpoint:
@@ -456,9 +455,13 @@ public class GenerateLevel  : MonoBehaviour {
 				depth = 2;
 				break;
 
-		default:
-			Debug.LogError("GenerateLevel-getTileDepth: unknown tile type specified: " + type );
-			break;
+			case TileType.Landmark_Broken_Bridge:
+				depth = 3;
+				break;
+
+			default:
+				Debug.LogError("GenerateLevel-getTileDepth: unknown tile type specified: " + type );
+				break;
 		}
 		return depth;
 	}

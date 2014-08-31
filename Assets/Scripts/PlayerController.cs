@@ -558,7 +558,7 @@ public class PlayerController : BaseClass {
 
 	void fall()
 	{
-		if( _characterState == CharacterState.Falling ) return; //ignore, we are already falling
+		if( _characterState == CharacterState.Falling || _characterState == CharacterState.Jumping ) return; //ignore, we are already falling or jumping
 
 		//Remember at what height the player started to fall because this will help us calculate the fall distance.
 		fallStartYPos = transform.position.y;
