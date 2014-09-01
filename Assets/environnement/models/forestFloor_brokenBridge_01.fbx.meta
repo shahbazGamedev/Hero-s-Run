@@ -58,6 +58,14 @@ ModelImporter:
     100104: rock_Swamp_040
     100106: rock_Swamp_043
     100108: rock_Swamp_044
+    100110: rock_Swamp_041
+    100112: rock_Swamp_042
+    100114: rock_Swamp_045
+    100116: rock_Swamp_046
+    100118: rock_Swamp_047
+    100120: rock_Swamp_048
+    100122: rock_Swamp_049
+    100124: polySurface41
     400000: //RootNode
     400002: polySurface1
     400004: polySurface3
@@ -113,6 +121,14 @@ ModelImporter:
     400104: rock_Swamp_040
     400106: rock_Swamp_043
     400108: rock_Swamp_044
+    400110: rock_Swamp_041
+    400112: rock_Swamp_042
+    400114: rock_Swamp_045
+    400116: rock_Swamp_046
+    400118: rock_Swamp_047
+    400120: rock_Swamp_048
+    400122: rock_Swamp_049
+    400124: polySurface41
     2300000: //RootNode
     2300002: polySurface1
     2300004: polySurface3
@@ -168,6 +184,14 @@ ModelImporter:
     2300104: rock_Swamp_040
     2300106: rock_Swamp_043
     2300108: rock_Swamp_044
+    2300110: rock_Swamp_041
+    2300112: rock_Swamp_042
+    2300114: rock_Swamp_045
+    2300116: rock_Swamp_046
+    2300118: rock_Swamp_047
+    2300120: rock_Swamp_048
+    2300122: rock_Swamp_049
+    2300124: polySurface41
     3300000: //RootNode
     3300002: polySurface1
     3300004: polySurface3
@@ -223,6 +247,14 @@ ModelImporter:
     3300104: rock_Swamp_040
     3300106: rock_Swamp_043
     3300108: rock_Swamp_044
+    3300110: rock_Swamp_041
+    3300112: rock_Swamp_042
+    3300114: rock_Swamp_045
+    3300116: rock_Swamp_046
+    3300118: rock_Swamp_047
+    3300120: rock_Swamp_048
+    3300122: rock_Swamp_049
+    3300124: polySurface41
     4300000: polySurface4
     4300002: pPlane4
     4300004: rock_Swamp_06
@@ -277,6 +309,14 @@ ModelImporter:
     4300102: rock_Swamp_043
     4300104: rock_Swamp_044
     4300106: b1
+    4300108: rock_Swamp_041
+    4300110: rock_Swamp_042
+    4300112: rock_Swamp_045
+    4300114: rock_Swamp_046
+    4300116: rock_Swamp_047
+    4300118: rock_Swamp_048
+    4300120: rock_Swamp_049
+    4300122: polySurface41
     9500000: //RootNode
   materials:
     importMaterials: 1
