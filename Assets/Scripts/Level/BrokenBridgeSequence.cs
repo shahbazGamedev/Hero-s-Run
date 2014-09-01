@@ -44,7 +44,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	{
 		playerController.anim.SetTrigger("Idle_Look");
 		//Call fairy
-		fairyController.setYRotationOffset( 5f );
+		fairyController.setYRotationOffset( -10f );
 		fairyController.Appear ();
 		Invoke ("step1", 1f );
 	}
