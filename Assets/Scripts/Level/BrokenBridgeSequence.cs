@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class BrokenBridgeSequence : MonoBehaviour {
 
@@ -11,6 +12,10 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	bool hasBeenTriggered = false;
 
 	public ParticleSystem fairySpell;
+
+	public List<GameObject> bridgeParts = new List<GameObject>();
+	float lastActivateTime = 0;
+	int bridgePartIndex = 0;
 
 	
 	// Use this for initialization
@@ -63,11 +68,29 @@ public class BrokenBridgeSequence : MonoBehaviour {
 
 	void step3()
 	{
-		//Rebuild bridge magically;
-		//To do
+		//Rebuild bridge magically
+		rebuildBridge();
 		AchievementDisplay.activateDisplayFairy( "Quickly now! I can hear the troll.", 0.35f, 2.75f );
-		Invoke ("step4", 3.5f );
+		Invoke ("step4", 4f );
 	}
+
+	void rebuildBridge()
+	{
+		foreach( GameObject go in bridgeParts )
+		{
+			float delay = Random.Range( 0.05f, 0.15f );
+			Invoke ("makeBridgePartActive", lastActivateTime + delay );
+			lastActivateTime = lastActivateTime + delay;
+
+		}
+	}
+
+	void makeBridgePartActive()
+	{
+		bridgeParts[bridgePartIndex].SetActive( true );
+		bridgePartIndex++;
+	}
+
 
 	//Make the fairy disappear
 	//Player starts running again
