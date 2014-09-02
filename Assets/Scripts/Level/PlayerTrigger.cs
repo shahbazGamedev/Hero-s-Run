@@ -21,7 +21,7 @@ public enum GameEvent {
 	Start_Snowing = 16,
 	Stop_Snowing = 17,
 	Fairy_Message = 18,
-	Falling_Tree = 19
+	Broken_Bridge = 19
 }
 
 public class PlayerTrigger : MonoBehaviour {

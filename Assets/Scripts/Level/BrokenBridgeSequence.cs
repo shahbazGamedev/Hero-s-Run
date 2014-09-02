@@ -125,7 +125,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 
 	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
 	{
-		if( eventType == GameEvent.Falling_Tree && !hasBeenTriggered )
+		if( eventType == GameEvent.Broken_Bridge && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
 
