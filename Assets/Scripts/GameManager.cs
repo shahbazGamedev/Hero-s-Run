@@ -116,4 +116,12 @@ public class GameManager {
 		return 1f;
 	}
 
+	//The global stumble multiplier is used to increase (value bigger than 1) or decrease (value smaller than 1) the
+	//percentage chance that a stumble obstacle will appear in the level.
+	public float getGlobalStumbleMultiplier()
+	{
+		return 1f;
+	}
+
+
 }
