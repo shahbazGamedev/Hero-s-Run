@@ -34,9 +34,7 @@ public enum TileType {
 	Straight_Double = 18,
 	Straight_Bezier = 19,
 	Straight_River_Log_Crossing = 20,
-	Straight_River_Triple = 21,
 	Landmark_Banquet_Hall = 22,
-	T_Junction_River = 23,
 	Landmark_Drawbridge = 24,
 	Checkpoint = 25,
 	Opening = 26,
@@ -276,7 +274,7 @@ public class GenerateLevel  : MonoBehaviour {
 			{
 				levelLength = levelLength + getTileDepth(si.tileType) * TILE_SIZE;
 			}
-			if( si.tileType == TileType.T_Junction || si.tileType == TileType.T_Junction_Landmark_Cemetery || si.tileType == TileType.T_Junction_River ) numberOfTJunctions++;
+			if( si.tileType == TileType.T_Junction || si.tileType == TileType.T_Junction_Landmark_Cemetery ) numberOfTJunctions++;
 
 		}
 		//T-Junctions create 4 tiles on the left path and 2 tiles on the right path. All the tiles have a depthTileMult of 1.
@@ -432,7 +430,6 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Straight_Slope:
 			case TileType.T_Junction:
 			case TileType.T_Junction_Landmark_Cemetery:
-			case TileType.T_Junction_River:
 				depth = 1;
 				break;
 			
@@ -447,7 +444,6 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Checkpoint:
 			case TileType.Straight_Double:
 			case TileType.Straight_Bezier:
-			case TileType.Straight_River_Triple:
 			case TileType.Landmark_Dragon_Lair:
 			case TileType.Landmark_Clocktower:
 			case TileType.Landmark_Drawbridge:
@@ -547,7 +543,6 @@ public class GenerateLevel  : MonoBehaviour {
 		
 	        case TileType.T_Junction:
 			case TileType.T_Junction_Landmark_Cemetery:
-			case TileType.T_Junction_River:
 			tilePos.Set ( previousTilePos.x + tileDepth, tileHeight, previousTilePos.z );
 			return tilePos;
 
@@ -656,12 +651,6 @@ public class GenerateLevel  : MonoBehaviour {
 			addTile( TileType.Landmark_Dragon_Lair );
 			break;
 
-		case TileType.Straight_River_Triple:
-			ensureTileHasZeroRotation();
-			addTile( TileType.Straight_River_Triple );
-			addRandomTJunction( TileType.T_Junction_River );
-			break;
-
 		case TileType.T_Junction_Landmark_Cemetery:
 			addRandomTJunction( TileType.T_Junction_Landmark_Cemetery );
 
@@ -755,12 +744,6 @@ public class GenerateLevel  : MonoBehaviour {
 				addTile( TileType.Straight );		
 				break;
 
-			case TileType.Straight_River_Triple:
-				ensureTileHasZeroRotation();
-				addTile( TileType.Straight_River_Triple );
-				addRandomTJunction( TileType.T_Junction_River );
-				break;
-				
 			case TileType.T_Junction_Landmark_Cemetery:
 				addRandomTJunction( TileType.T_Junction_Landmark_Cemetery );
 				break;
@@ -854,7 +837,6 @@ public class GenerateLevel  : MonoBehaviour {
 		case TileType.Straight_River:
 		case TileType.Straight_River_Crossing:
 		case TileType.Straight_River_Log_Crossing:
-		case TileType.Straight_River_Triple:
 		case TileType.Straight_Slope:
 		case TileType.Checkpoint:
 		case TileType.Straight:
@@ -865,7 +847,6 @@ public class GenerateLevel  : MonoBehaviour {
 			
 		case TileType.T_Junction:
 		case TileType.T_Junction_Landmark_Cemetery:
-		case TileType.T_Junction_River:
 		case TileType.Landmark_Defense_Tower:
 		case TileType.Landmark_Windmill:
 		case TileType.Right:
@@ -894,12 +875,6 @@ public class GenerateLevel  : MonoBehaviour {
 			//We want the Dragon Lair tile to have a 0 degree rotation.
 			ensureTileHasZeroRotation2(theme);
 			addTileData(TileType.Landmark_Dragon_Lair, theme);
-			break;
-			
-		case TileType.Straight_River_Triple:
-			ensureTileHasZeroRotation2(theme);
-			addTileData(TileType.Straight_River_Triple, theme);
-			addRandomTJunction2( TileType.T_Junction_River, theme );
 			break;
 			
 		case TileType.T_Junction_Landmark_Cemetery:
@@ -1110,32 +1085,16 @@ public class GenerateLevel  : MonoBehaviour {
 			}
 			else if( rdLog < 0.9f ) //normal value is 0.9f
 			{
-				//Add a double length straight or bezier tile
-				if ( previousTileType == TileType.Straight_Double || previousTileType == TileType.Straight_Bezier )
+				//Add a double length straight tile
+				if ( previousTileType == TileType.Straight_Double )
 				{
 					//Add a normal straight tile. We don't want two of them back to back
 					addTile ( TileType.Straight );
 				}
 				else
 				{
-					if( currentThemePath == "Level/Tiles/Forest/" )
-					{
-						if( Random.value < 0.5f )
-						{
-							//Add a double length straight tile
-							addTile ( TileType.Straight_Double );
-						}
-						else
-						{
-							//Add a double length straight bezier tile
-							addTile ( TileType.Straight_Bezier );
-						}
-					}
-					else
-					{
-						//Add a double length straight tile
-						addTile ( TileType.Straight_Double );
-					}
+					//Add a double length straight tile
+					addTile ( TileType.Straight_Double );
 				}
 			}
 			else
@@ -1282,8 +1241,8 @@ public class GenerateLevel  : MonoBehaviour {
 			}
 			else if( rdLog < 2 ) //normal value is 0.9f
 			{
-				//Add a double length straight or bezier tile
-				if ( previousTileType == TileType.Straight_Double || previousTileType == TileType.Straight_Bezier )
+				//Add a double length straight
+				if ( previousTileType == TileType.Straight_Double )
 				{
 					//Add a normal straight tile. We don't want two of them back to back
 					return TileType.Straight;
@@ -1292,16 +1251,8 @@ public class GenerateLevel  : MonoBehaviour {
 				{
 					if( tileCreationTheme == SegmentTheme.Forest )
 					{
-						if( Random.value < 0.5f )
-						{
-							//Add a double length straight tile
-							return TileType.Straight_Double;
-						}
-						else
-						{
-							//Add a double length straight bezier tile
-							return TileType.Straight_Bezier;
-						}
+						//Add a double length straight tile
+						return TileType.Straight_Double;
 					}
 					else if( tileCreationTheme == SegmentTheme.Cemetery )
 					{
