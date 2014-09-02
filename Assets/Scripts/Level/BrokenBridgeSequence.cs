@@ -61,6 +61,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	void step2()
 	{
 		//Fairy cast spell;
+		fairyController.CastSpell();
 		fairySpell.Play();
 		audio.Play();
 		Invoke ("step3", 1.5f );
@@ -71,7 +72,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 		//Rebuild bridge magically
 		rebuildBridge();
 		AchievementDisplay.activateDisplayFairy( "Quickly now! I can hear the troll.", 0.35f, 2.75f );
-		Invoke ("step4", 4f );
+		Invoke ("step4", 5f );
 	}
 
 	void rebuildBridge()

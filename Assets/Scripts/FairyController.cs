@@ -152,6 +152,12 @@ public class FairyController : BaseClass {
 		fairyState = FairyState.None;
 	}
 
+	public void CastSpell()
+	{
+		fairyAnimation.CrossFade("CastSpell", 0.2f);
+		fairyAnimation.PlayQueued("Hover_Happy");
+	}
+
 	private IEnumerator MoveToPosition( float timeToArrive )
 	{
 		//Step 1 - Take position in front of player
