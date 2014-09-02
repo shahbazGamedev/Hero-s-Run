@@ -69,21 +69,21 @@ public class LevelData : MonoBehaviour {
 			case SunType.Noon:
 				skyBoxName = "CartoonSkybox";
 				lightIntensity = 0.58f;
-				shadowStrength = 0.62f;
+				shadowStrength = 0.5f;
 				sunDirection = Quaternion.Euler( 78f,75f,4f );
 				break;
 				
 			case SunType.Afternoon:
 				skyBoxName = "CartoonSkybox";
 				lightIntensity = 0.54f;
-				shadowStrength = 0.5f;
+				shadowStrength = 0.4f;
 				sunDirection = Quaternion.Euler( 78f,75f,4f );
 				break;
 				
 			case SunType.Sunset:
 				skyBoxName = "Skybox_sunset";
 				lightIntensity = 0.44f;
-				shadowStrength = 0.43f;
+				shadowStrength = 0.4f;
 				sunDirection = Quaternion.Euler( 32f,13f,-63f );
 				break;
 				
