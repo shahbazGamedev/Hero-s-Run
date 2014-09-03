@@ -2239,8 +2239,8 @@ public class PlayerController : BaseClass {
 
 		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, transform.position.z );
 		float distanceTravelled = 0;
-
-		float startSpeed = getPlayerSpeed();
+		float brakeFactor = 0.6f; //brake the player before slowing him down
+		float startSpeed = getPlayerSpeed() * brakeFactor;
 		float endSpeed = SLOW_DOWN_END_SPEED;
 
 		float startBlendFactor = blendFactor;
