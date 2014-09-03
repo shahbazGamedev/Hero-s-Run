@@ -18,20 +18,20 @@ public class BrokenBridgeSequence : MonoBehaviour {
 
 
 	public GameObject hexagon;
-	const float HEXAGON_SIZE = 0.9f;
+	const float HEXAGON_SIZE = 1f;
 	const float HALF_HEXAGON_SIZE = HEXAGON_SIZE/2f;
 
-	float lane3StartLocalPos = 7f; 	//Center lane
+	float lane3StartLocalPos = 6f; 	//Center lane
 	float lane1StartLocalPos; 	//Leftmost lane
 	float lane2StartLocalPos; 	
 	float lane4StartLocalPos; 	
 	float lane5StartLocalPos; 	//Rightmost lane
 
 	int rowIndex = 0;
-	public int numberOfRows = 46;
+	public int numberOfRows = 48;
 	float localBridgeHeight = 1f;
 	public Material semiMaterialized;
-	public List<HexagonRowData> hexagonsActivePerRow = new List<HexagonRowData>(46);
+	public List<HexagonRowData> hexagonsActivePerRow = new List<HexagonRowData>(48);
 
 	// Use this for initialization
 	void Awake () {
@@ -92,7 +92,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 		//Rebuild bridge magically
 		testBridge();
 		AchievementDisplay.activateDisplayFairy( "Quickly now! I can hear the troll.", 0.35f, 2.75f );
-		Invoke ("step4", 5f );
+		Invoke ("step4", 1.25f );
 	}
 
 	void testBridge()
@@ -101,63 +101,80 @@ public class BrokenBridgeSequence : MonoBehaviour {
 		//Create subsequent rows
 		for( int i = 0; i < numberOfRows; i++ )
 		{
-			createRow( i );
+			float delay = Random.Range( 0.08f, 0.12f );
+			Invoke ("createRow", lastActivateTime + delay );
+			lastActivateTime = lastActivateTime + delay;
 		}
 	}
 	
-	void createRow( int rowIndex )
+	void createRow()
 	{
 		GameObject go;
+		rowIndex++;
 
 			//lane 1
 			go = (GameObject)Instantiate(hexagon, Vector3.zero, Quaternion.identity );
 			go.transform.parent = gameObject.transform;
-			go.transform.localPosition = new Vector3( -2f * HEXAGON_SIZE, localBridgeHeight,lane1StartLocalPos + rowIndex * HEXAGON_SIZE );
+			go.transform.localPosition = new Vector3( -2.5f * HEXAGON_SIZE, localBridgeHeight,lane1StartLocalPos + rowIndex * HEXAGON_SIZE );
 			if( !hexagonsActivePerRow[rowIndex].lane1Active )
 			{
 		   		go.renderer.material = semiMaterialized;
 				go.collider.enabled = false;
+				go.SetActive(false);
 			}
 			//lane 2
 			go = (GameObject)Instantiate(hexagon, Vector3.zero, Quaternion.identity );
 			go.transform.parent = gameObject.transform;
-			go.transform.localPosition = new Vector3( -HEXAGON_SIZE, localBridgeHeight,lane2StartLocalPos + rowIndex * HEXAGON_SIZE );
+			go.transform.localPosition = new Vector3( -1.5f * HEXAGON_SIZE, localBridgeHeight,lane2StartLocalPos + rowIndex * HEXAGON_SIZE );
 			if( !hexagonsActivePerRow[rowIndex].lane2Active )
 			{
 				go.renderer.material = semiMaterialized;
 				go.collider.enabled = false;
+				go.SetActive(false);
 			}
 			//lane 3
 			go = (GameObject)Instantiate(hexagon, Vector3.zero, Quaternion.identity );
 			go.transform.parent = gameObject.transform;
-			go.transform.localPosition = new Vector3( 0, localBridgeHeight,lane3StartLocalPos + rowIndex * HEXAGON_SIZE );
+			go.transform.localPosition = new Vector3( -HALF_HEXAGON_SIZE, localBridgeHeight,lane3StartLocalPos + rowIndex * HEXAGON_SIZE );
 			if( !hexagonsActivePerRow[rowIndex].lane3Active )
 			{
 				go.renderer.material = semiMaterialized;
 				go.collider.enabled = false;
+				go.SetActive(false);
 			}
 			//lane 4
 			go = (GameObject)Instantiate(hexagon, Vector3.zero, Quaternion.identity );
 			go.transform.parent = gameObject.transform;
-			go.transform.localPosition = new Vector3( HEXAGON_SIZE, localBridgeHeight,lane4StartLocalPos + rowIndex * HEXAGON_SIZE );
+			go.transform.localPosition = new Vector3( HALF_HEXAGON_SIZE, localBridgeHeight,lane4StartLocalPos + rowIndex * HEXAGON_SIZE );
 			if( !hexagonsActivePerRow[rowIndex].lane4Active )
 			{
 				go.renderer.material = semiMaterialized;
 				go.collider.enabled = false;
+				go.SetActive(false);
 			}
 			//lane 5
 			go = (GameObject)Instantiate(hexagon, Vector3.zero, Quaternion.identity );
 			go.transform.parent = gameObject.transform;
-			go.transform.localPosition = new Vector3( 2f * HEXAGON_SIZE, localBridgeHeight,lane5StartLocalPos + rowIndex * HEXAGON_SIZE );
+			go.transform.localPosition = new Vector3( 1.5f * HEXAGON_SIZE, localBridgeHeight,lane5StartLocalPos + rowIndex * HEXAGON_SIZE );
 			if( !hexagonsActivePerRow[rowIndex].lane5Active )
 			{
 				go.renderer.material = semiMaterialized;
 				go.collider.enabled = false;
+				go.SetActive(false);
 			}
-		print (" BRIDGE " + rowIndex + " center " + hexagonsActivePerRow[rowIndex].lane3Active );
+			//lane 6
+			go = (GameObject)Instantiate(hexagon, Vector3.zero, Quaternion.identity );
+			go.transform.parent = gameObject.transform;
+			go.transform.localPosition = new Vector3( 2.5f * HEXAGON_SIZE, localBridgeHeight,lane5StartLocalPos + rowIndex * HEXAGON_SIZE );
+			if( !hexagonsActivePerRow[rowIndex].lane6Active )
+			{
+				go.renderer.material = semiMaterialized;
+				go.collider.enabled = false;
+				go.SetActive(false);
+			}
 
 	}
-
+	
 	void rebuildBridge()
 	{
 		//foreach( GameObject go in bridgeParts )
@@ -224,6 +241,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 		public bool lane3Active = false;
 		public bool lane4Active = false;
 		public bool lane5Active = false;
+		public bool lane6Active = false;
 	}
 
 }
