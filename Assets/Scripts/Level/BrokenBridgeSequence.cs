@@ -10,9 +10,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	FairyController fairyController;
 
 	bool hasBeenTriggered = false;
-
-	public ParticleSystem fairySpell;
-
+	
 	float lastActivateTime = 0;
 
 	public GameObject hexagon;
@@ -71,35 +69,48 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	//Fairy tells something to player
 	void step1()
 	{
-		AchievementDisplay.activateDisplayFairy( "By the White Tree! the bridge, its broken...", 0.35f, 2.5f );
-		//Player looks at fairy
-		playerController.lookOverShoulder( 0.4f, 2.75f );
-		Invoke ("step2", 3.5f );
+		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_DRAGON_BRIDGE"), 0.35f, 2.75f );
+		Invoke ("step2", 3.25f );
 	}
 
+	//Fairy cast spell;
 	void step2()
 	{
-		//Fairy cast spell;
 		fairyController.CastSpell();
-		fairySpell.Play();
-		audio.Play();
-		Invoke ("step3", 1.5f );
+		Invoke ("step3", 3.3f );
 	}
 
+	//Spell works and bridge is rebuilt
 	void step3()
 	{
-		//Rebuild bridge magically
+		//Rebuild bridge magically row by row
 		rebuildBridge();
-		AchievementDisplay.activateDisplayFairy( "Quickly now! I can hear the troll.", 0.35f, 2.75f );
 		Invoke ("step4", 1.25f );
+	}
+
+	//Fairy tells player to hurry
+	void step4()
+	{
+		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_TROLL_QUICKLY"), 0.35f, 2.75f );
+		Invoke ("step5", 1.25f );
+	}
+
+	//Make the fairy disappear
+	//Player starts running again
+	void step5()
+	{
+		fairyController.Disappear ();
+		playerController.allowRunSpeedToIncrease = true;
+		playerController.startRunning(false);
+		fairyController.resetYRotationOffset();
 	}
 
 	void rebuildBridge()
 	{
 		//Create rows
+		float delay = 0.1f;
 		for( int i = 0; i < hexagonsActivePerRow.Count; i++ )
 		{
-			float delay = Random.Range( 0.08f, 0.12f );
 			Invoke ("createRow", lastActivateTime + delay );
 			lastActivateTime = lastActivateTime + delay;
 		}
@@ -154,17 +165,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 			}
 			rowIndex++;
 	}
-
-	//Make the fairy disappear
-	//Player starts running again
-	void step4()
-	{
-		fairyController.Disappear ();
-		playerController.allowRunSpeedToIncrease = true;
-		playerController.startRunning(false);
-		fairyController.resetYRotationOffset();
-	}
-
+	
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;

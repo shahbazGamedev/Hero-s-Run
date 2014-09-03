@@ -19,6 +19,9 @@ public class FairyController : BaseClass {
 	public ParticleSystem fairyDustFx;
 	public AudioClip fairyDustSound;
 
+	public ParticleSystem fairySpellFx;
+	public AudioClip fairySpellSound;
+
 	Transform player;
 	PlayerController playerController;
 
@@ -156,6 +159,13 @@ public class FairyController : BaseClass {
 	{
 		fairyAnimation.CrossFade("CastSpell", 0.2f);
 		fairyAnimation.PlayQueued("Hover_Happy");
+		Invoke ("playCastSpellFx", 3.3f );
+	}
+
+	void playCastSpellFx()
+	{
+		fairySpellFx.Play();
+		audio.PlayOneShot( fairySpellSound );
 	}
 
 	private IEnumerator MoveToPosition( float timeToArrive )
