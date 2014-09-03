@@ -167,7 +167,15 @@ public class LevelManager {
 	
 	public string getCurrentLevelName()
 	{
-		return currentLevelInfo.LevelName;
+		string levelName = LocalizationManager.Instance.getText( currentLevelInfo.LevelName );
+		if( levelName == "NOT FOUND" ) 
+		{
+			return currentLevelInfo.LevelName;
+		}
+		else
+		{
+			return levelName;
+		}
 	}
 
 	public string getNextLevelName()
@@ -175,11 +183,27 @@ public class LevelManager {
 		int nextLevel = nextLevelToComplete + 1;
 		if( nextLevel < levelData.levelList.Count )
 		{
-			return levelData.levelList[nextLevel].LevelName;
+			string levelName = LocalizationManager.Instance.getText( levelData.levelList[nextLevel].LevelName );
+			if( levelName == "NOT FOUND" ) 
+			{
+				return levelData.levelList[nextLevel].LevelName;
+			}
+			else
+			{
+				return levelName;
+			}
 		}
 		else
 		{
-			return LocalizationManager.Instance.getText( levelData.FinalDestinationName );
+			string levelName = LocalizationManager.Instance.getText( levelData.FinalDestinationName );
+			if( levelName == "NOT FOUND" ) 
+			{
+				return levelData.FinalDestinationName;
+			}
+			else
+			{
+				return levelName;
+			}
 		}
 	}
 
