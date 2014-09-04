@@ -59,6 +59,8 @@ public class DragonController : BaseClass {
 	public GameObject dragonFire;
 	public GameObject dragonFireSpotlight;
 
+	public Transform takeOffLookAtObject;
+
 	void Awake()
 	{
 		//Get a copy of the components
@@ -90,6 +92,15 @@ public class DragonController : BaseClass {
 		}
 	}
 
+	public void takeOff()
+	{
+		dragonState = DragonState.Fly;
+		Vector3 exactPos = transform.TransformPoint(new Vector3( 0,20f,100f));
+		transform.LookAt( exactPos );
+		dragonAnimation.CrossFade("Take_off");				
+		dragonAnimation.PlayQueued("Walk");		
+	}
+
 	void moveDragon()
 	{
 
@@ -100,7 +111,7 @@ public class DragonController : BaseClass {
 			transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 		}
 
-		//1) Get the direction of the zombie
+		//1) Get the direction of the dragon
 		forward = transform.TransformDirection(Vector3.forward);			
 		//2) Scale vector based on flying speed
 		forward = forward * Time.deltaTime * flyingSpeed;

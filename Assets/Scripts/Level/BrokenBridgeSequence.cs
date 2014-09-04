@@ -8,6 +8,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	PlayerController playerController;
 	Transform fairy;
 	FairyController fairyController;
+	DragonController dragonController;
 
 	bool hasBeenTriggered = false;
 	
@@ -40,6 +41,9 @@ public class BrokenBridgeSequence : MonoBehaviour {
 		fairy = fairyObject.transform;
 		fairyController = fairyObject.GetComponent<FairyController>();
 
+		GameObject dragonObject = GameObject.FindGameObjectWithTag("Dragon");
+		dragonController = dragonObject.GetComponent<DragonController>();
+
 		lane1StartLocalPos = lane3StartLocalPos + HEXAGON_SIZE; 	//Leftmost lane
 		lane2StartLocalPos = lane3StartLocalPos + HALF_HEXAGON_SIZE; 	
 		lane4StartLocalPos = lane3StartLocalPos; 	
@@ -54,7 +58,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 		//Slowdown player and remove player control
 		print ("Start of broken bridge sequence");
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(23.4f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(18.4f, afterPlayerSlowdown ) );
 	}
 
 	void afterPlayerSlowdown()
@@ -69,8 +73,8 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	//Fairy tells something to player
 	void step1()
 	{
-		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_DRAGON_BRIDGE"), 0.35f, 2.75f );
-		Invoke ("step2", 3.25f );
+		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_DRAGON_BRIDGE"), 0.35f, 3.6f );
+		Invoke ("step2", 3.75f );
 	}
 
 	//Fairy cast spell;
@@ -85,13 +89,13 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	{
 		//Rebuild bridge magically row by row
 		rebuildBridge();
+		dragonController.takeOff();
 		Invoke ("step4", 1.25f );
 	}
 
 	//Fairy tells player to hurry
 	void step4()
 	{
-		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_TROLL_QUICKLY"), 0.35f, 2.75f );
 		Invoke ("step5", 1.25f );
 	}
 
@@ -108,7 +112,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	void rebuildBridge()
 	{
 		//Create rows
-		float delay = 0.1f;
+		float delay = 0.147f;
 		for( int i = 0; i < hexagonsActivePerRow.Count; i++ )
 		{
 			Invoke ("createRow", lastActivateTime + delay );
@@ -119,7 +123,6 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	void createRow()
 	{
 		GameObject go;
-		print ("createRow " + rowIndex );
 
 			//lane 1
 			if( hexagonsActivePerRow[rowIndex].lane1Active )
