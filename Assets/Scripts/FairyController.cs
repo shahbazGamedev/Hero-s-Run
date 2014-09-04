@@ -159,7 +159,7 @@ public class FairyController : BaseClass {
 	{
 		fairyAnimation.CrossFade("CastSpell", 0.2f);
 		fairyAnimation.PlayQueued("Hover_Happy");
-		Invoke ("playCastSpellFx", 3.3f );
+		Invoke ("playCastSpellFx", 4f );
 	}
 
 	void playCastSpellFx()

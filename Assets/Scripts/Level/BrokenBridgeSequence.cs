@@ -20,7 +20,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 
 	float lane1StartLocalPos; 		//Leftmost lane
 	float lane2StartLocalPos; 	
-	float lane3StartLocalPos = 6f; 	//Center lane
+	float lane3StartLocalPos = 6.7f; 	//Center lane
 	float lane4StartLocalPos; 	
 	float lane5StartLocalPos; 		
 	float lane6StartLocalPos; 		//Rightmost lane
@@ -81,7 +81,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	void step2()
 	{
 		fairyController.CastSpell();
-		Invoke ("step3", 3.3f );
+		Invoke ("step3", 4.2f );
 	}
 
 	//Spell works and bridge is rebuilt
