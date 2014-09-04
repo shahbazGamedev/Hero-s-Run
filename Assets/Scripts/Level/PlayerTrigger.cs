@@ -34,9 +34,11 @@ public class PlayerTrigger : MonoBehaviour {
 	//The optional uniqueGameObjectIdentifier is sent along with the event. The receiver can use it to verify that the event is really destined for him.
 	public GameObject uniqueGameObjectIdentifier;
 
+	public float percentageChanceEventTriggered = 1f;
+
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero" )
+		if( other.name == "Hero" && Random.value <= percentageChanceEventTriggered )
 		{
 			//Send an event to interested classes
 			if(playerEnteredTrigger != null) playerEnteredTrigger(eventType, uniqueGameObjectIdentifier );
