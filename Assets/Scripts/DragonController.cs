@@ -59,7 +59,7 @@ public class DragonController : BaseClass {
 	public GameObject dragonFire;
 	public GameObject dragonFireSpotlight;
 
-	public Transform takeOffLookAtObject;
+	bool allowAttack = true;
 
 	void Awake()
 	{
@@ -81,24 +81,46 @@ public class DragonController : BaseClass {
 	{
 		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint || GameManager.Instance.getGameState() == GameState.SaveMe ) && dragonState == DragonState.Fly )
 		{
-			float distance = Vector3.Distance(player.position,transform.position);
-			
-			if( distance < 32f )
+			if( allowAttack )
 			{
-				breatheFire( "Attack_001");
+				float distance = Vector3.Distance(player.position,transform.position);
+				
+				if( distance < 32f)
+				{
+					breatheFire( "Attack_001");
+				}
 			}
 
 			moveDragon();
 		}
 	}
 
+	public void placeDragon( Transform tile, Vector3 localPosition, Vector3 localRotation, string initialAnimation, float flyingSpeed )
+	{
+		this.flyingSpeed = flyingSpeed;
+		transform.parent = tile;
+		transform.localPosition = localPosition;
+		transform.localRotation = Quaternion.Euler( localRotation );
+		dragonAnimation.Play(initialAnimation);
+	}
+
+	public void enableAttack( bool value )
+	{
+		allowAttack = value;
+	}
+
 	public void takeOff()
 	{
-		dragonState = DragonState.Fly;
-		Vector3 exactPos = transform.TransformPoint(new Vector3( 0,20f,100f));
+		dragonAnimation[ "Run" ].speed = 2f;
+		dragonAnimation.CrossFade("Run", 1f);		
+		Vector3 exactPos = transform.TransformPoint(new Vector3( 0,30f,100f));
 		transform.LookAt( exactPos );
-		dragonAnimation.CrossFade("Take_off");				
-		dragonAnimation.PlayQueued("Walk");		
+		dragonState = DragonState.Fly;
+	}
+
+	public void roar()
+	{
+		audio.Play ();
 	}
 
 	void moveDragon()

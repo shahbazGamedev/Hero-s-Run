@@ -52,6 +52,11 @@ public class BrokenBridgeSequence : MonoBehaviour {
 
 	}
 	
+	void Start()
+	{
+		dragonController.placeDragon( transform.parent, new Vector3( 34.5f, 35.2f, 79.93f), new Vector3( 23, 210, 0), "G_Idle", 12f );
+		dragonController.enableAttack( false );
+	}
 
 	public void startSequence()
 	{
@@ -85,23 +90,18 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	}
 
 	//Spell works and bridge is rebuilt
+	//Dragon takes-off
 	void step3()
 	{
 		//Rebuild bridge magically row by row
 		rebuildBridge();
 		dragonController.takeOff();
-		Invoke ("step4", 1.25f );
+		Invoke ("step4", 2.5f );
 	}
-
-	//Fairy tells player to hurry
-	void step4()
-	{
-		Invoke ("step5", 1.25f );
-	}
-
+	
 	//Make the fairy disappear
 	//Player starts running again
-	void step5()
+	void step4()
 	{
 		fairyController.Disappear ();
 		playerController.allowRunSpeedToIncrease = true;
