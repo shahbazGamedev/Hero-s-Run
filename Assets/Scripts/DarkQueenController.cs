@@ -58,7 +58,7 @@ public class DarkQueenController : BaseClass {
 	public Vector3 forward;
 	float flyingSpeed = 6f;
 	CharacterController controller;
-	GameObject[] listOfLights;
+	Light[] listOfLights;
 
 	void Awake()
 	{
@@ -67,7 +67,6 @@ public class DarkQueenController : BaseClass {
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
 		controller = GetComponent<CharacterController>();
-		listOfLights = GameObject.FindGameObjectsWithTag("DarkQueenLight");
 	}
 
 	// Update is called once per frame
@@ -88,11 +87,12 @@ public class DarkQueenController : BaseClass {
 
 	void shutdownLights()
 	{
-		foreach(GameObject go in listOfLights )
+		listOfLights = FindObjectsOfType(typeof(Light)) as Light[];
+		foreach(Light pussy in listOfLights )
 		{
-			if( Vector3.Distance(transform.position,go.transform.position) < 4f )
+			if( Vector3.Distance(transform.position,pussy.transform.position) < 6f )
 			{
-				go.light.intensity = 0;
+				pussy.light.intensity = 0;
 			}
 		}
 	}
