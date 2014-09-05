@@ -818,7 +818,7 @@ public class PlayerController : BaseClass {
 	{
 		
 		verifySlide();
-		recalculateCurrentLane();
+		//recalculateCurrentLane();
 			
 		// When we reach the apex of the jump
 		if (jumping && !jumpingReachedApex && moveDirection.y <= 0.0)
@@ -2098,27 +2098,27 @@ public class PlayerController : BaseClass {
 		}
 		else if( other.name == "disablePlayerControlTrigger" )
 		{
-			//We do not want the player to be jumping or sliding as he reaches the finish line,
-			//so disable controls as soon he enters the last tile.
-			//Disable run acceleration as well.
-			allowRunSpeedToIncrease = false;
-			enablePlayerControl( false );
-			//If he was sliding, making him run again
-			if ( _characterState == CharacterState.Sliding )
-			{
-				//We are stopping sliding
-				dustPuff.Stop();
-				setCharacterState( CharacterState.Running );
-				anim.SetTrigger(Slide_UpTrigger);
-				audio.Stop();
-			}
 			placePlayerInCenterLane();
 		}
    	}
 	
-	//Make sure the player arrives in the center lane
-	private void placePlayerInCenterLane()
+	//Make sure the player arrives in the center lane without sliding
+	public void placePlayerInCenterLane()
 	{
+		//We do not want the player to be jumping or sliding as he reaches the end location.
+		//Disable run acceleration as well.
+		allowRunSpeedToIncrease = false;
+		enablePlayerControl( false );
+		//If he was sliding, making him run again
+		if ( _characterState == CharacterState.Sliding )
+		{
+			//We are stopping sliding
+			dustPuff.Stop();
+			setCharacterState( CharacterState.Running );
+			anim.SetTrigger(Slide_UpTrigger);
+			audio.Stop();
+		}
+
 		//Clear move direction of any values. If we still have an x component for example, we will drift.
 		moveDirection = new Vector3( 0,0,0 );
 		accelerometerPreviousFrameX = 0;
@@ -2136,8 +2136,6 @@ public class PlayerController : BaseClass {
 			moveDirection.x = -sideMoveSpeed/2f;
 		}
 	}
-	
-
 
 	void OnTriggerStay(Collider other)
 	{
@@ -2270,9 +2268,23 @@ public class PlayerController : BaseClass {
 			forward = forward * Time.deltaTime * runSpeed;
 			//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
 			forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
-			//4) Move the controller
+			//4) Get a unit vector that is orthogonal to the direction of the player
+			Vector3 relativePos = new Vector3(1 , 0 , 0 );
+			Vector3 xPos = transform.TransformPoint(relativePos);
+			Vector3 xVector = xPos - transform.position;
+			//5) Scale the X component based on accelerometer and change lane values
+			xVector = xVector * Time.deltaTime * moveDirection.x;
+			//6) If not on a bezier curve, clamp to the max distance we can travel perpendicularly without
+			//exiting the left or right lanes.
+			if( !usesBezierCurve )
+			{
+				xVector =  Vector3.ClampMagnitude(xVector, Mathf.Abs(getMaxDist()));
+			}
+			//7) Add the X component to the forward direction
+			forward = forward + xVector;
+			//8) Move the controller
 			controller.Move( forward );
-
+			verifyIfDesiredLaneReached();
 			yield return new WaitForFixedUpdate(); 
 		}
 		while ( distanceTravelled <= distance );

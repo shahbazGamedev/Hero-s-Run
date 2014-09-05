@@ -62,6 +62,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	{
 		//Slowdown player and remove player control
 		print ("Start of broken bridge sequence");
+		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
 		StartCoroutine( playerController.slowDownPlayer(18.4f, afterPlayerSlowdown ) );
 	}
