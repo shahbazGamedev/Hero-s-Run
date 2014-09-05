@@ -44,7 +44,9 @@ public enum TileType {
 	Opening4 = 30,
 	Opening5 = 31,
 	Landmark_Fairy_Message = 32,
-	Landmark_Broken_Bridge = 33
+	Landmark_Broken_Bridge = 33,
+	T_Junction_Landmark_Cemetery_Queen = 34,
+	Landmark_Cemetery_Queen = 35
 
 }
 
@@ -430,6 +432,8 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Straight_Slope:
 			case TileType.T_Junction:
 			case TileType.T_Junction_Landmark_Cemetery:
+			case TileType.T_Junction_Landmark_Cemetery_Queen:
+			case TileType.Landmark_Cemetery_Queen:
 				depth = 1;
 				break;
 			
@@ -653,7 +657,10 @@ public class GenerateLevel  : MonoBehaviour {
 
 		case TileType.T_Junction_Landmark_Cemetery:
 			addRandomTJunction( TileType.T_Junction_Landmark_Cemetery );
+			break;
 
+		case TileType.T_Junction_Landmark_Cemetery_Queen:
+			addRandomTJunction( TileType.T_Junction_Landmark_Cemetery_Queen );
 			break;
 
 		case TileType.Landmark_Defense_Tower:
@@ -840,6 +847,7 @@ public class GenerateLevel  : MonoBehaviour {
 		case TileType.Straight_Slope:
 		case TileType.Checkpoint:
 		case TileType.Straight:
+		case TileType.Landmark_Cemetery_Queen:
 			return TileType.Straight;
 
 		case TileType.Left:
@@ -847,6 +855,7 @@ public class GenerateLevel  : MonoBehaviour {
 			
 		case TileType.T_Junction:
 		case TileType.T_Junction_Landmark_Cemetery:
+		case TileType.T_Junction_Landmark_Cemetery_Queen:
 		case TileType.Landmark_Defense_Tower:
 		case TileType.Landmark_Windmill:
 		case TileType.Right:
@@ -879,9 +888,12 @@ public class GenerateLevel  : MonoBehaviour {
 			
 		case TileType.T_Junction_Landmark_Cemetery:
 			addRandomTJunction2( TileType.T_Junction_Landmark_Cemetery, theme );
-			
 			break;
 			
+		case TileType.T_Junction_Landmark_Cemetery_Queen:
+			addRandomTJunction2( TileType.T_Junction_Landmark_Cemetery_Queen, theme );
+			break;
+
 		case TileType.Landmark_Defense_Tower:
 			//We want the Landmark tile to have a 0 degree rotation.
 			ensureTileHasZeroRotation2(theme);

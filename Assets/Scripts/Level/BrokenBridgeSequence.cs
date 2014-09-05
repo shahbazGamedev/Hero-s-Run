@@ -107,15 +107,8 @@ public class BrokenBridgeSequence : MonoBehaviour {
 		playerController.allowRunSpeedToIncrease = true;
 		playerController.startRunning(false);
 		fairyController.resetYRotationOffset();
-		Invoke ("step5", 2.65f );
 	}
-
-	//Tell the player to jump since the bridge is not long enough
-	void step5()
-	{
-		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_JUMP"), 0.35f, 2.25f );
-	}
-
+	
 	void rebuildBridge()
 	{
 		//Create rows
