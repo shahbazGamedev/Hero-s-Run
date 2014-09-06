@@ -313,7 +313,6 @@ public class PlayerController : BaseClass {
 		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
 		powerUpManager = (PowerUpManager) powerUpManagerObject.GetComponent("PowerUpManager");
 
-
 	}
 
 	void Start()
@@ -357,6 +356,27 @@ public class PlayerController : BaseClass {
 				trollController.stopPursuing();
 			}
 		}
+	}
+
+	string getCurrentStateName()
+	{
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Run") ) return "Run";
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Fall") ) return "Fall";
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Land") ) return "Land";
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Double Jump") ) return "Double Jump";
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Jump") ) return "Jump";
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Slide Down") ) return "Slide Down";
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Slide Up") ) return "Slide Up";
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Victory") ) return "Victory";
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("DeathRiver") ) return "DeathRiver";
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("DeathWall") ) return "DeathWall";
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Stumble") ) return "Stumble";
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Fall_Forward") ) return "Fall_Forward";
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Speed") ) return "Speed";
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Look_Back") ) return "Look_Back";
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Idle_Look") ) return "Idle_Look";
+
+		return "Unknown animation state";
 	}
 
 	void determineRunSpeed()
@@ -824,6 +844,7 @@ public class PlayerController : BaseClass {
 		if (jumping && !jumpingReachedApex && moveDirection.y <= 0.0)
 		{
 			jumpingReachedApex = true;
+			print(" Apex: animation state is " + getCurrentStateName() );
 		}
 
 		// Apply gravity
