@@ -72,7 +72,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 		playerController.anim.SetTrigger("Idle_Look");
 		//Call fairy
 		fairyController.setYRotationOffset( -10f );
-		fairyController.Appear ();
+		fairyController.Appear ( FairyEmotion.Worried );
 		Invoke ("step1", 1f );
 	}
 
@@ -113,7 +113,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	void rebuildBridge()
 	{
 		//Create rows
-		float delay = 0.147f;
+		float delay = 0.135f;
 		for( int i = 0; i < hexagonsActivePerRow.Count; i++ )
 		{
 			Invoke ("createRow", lastActivateTime + delay );

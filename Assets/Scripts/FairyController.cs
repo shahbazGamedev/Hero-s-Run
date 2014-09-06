@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum FairyEmotion {
+	Happy = 1,
+	Worried = 2
+}
+
 public class FairyController : BaseClass {
 	
 	enum FairyState {
@@ -130,11 +135,18 @@ public class FairyController : BaseClass {
 		StartCoroutine("MoveToPosition", timeToArrive );
 	}
 
-	public void Appear()
+	public void Appear( FairyEmotion fairyEmotion )
 	{
 		transform.localScale = new Vector3( 1f, 1f, 1f );
 		positionFairy ();
-		fairyAnimation.Play("Hover_Worried");
+		if( fairyEmotion == FairyEmotion.Happy )
+		{
+			fairyAnimation.Play("Hover_Happy");
+		}
+		else
+		{
+			fairyAnimation.Play("Hover_Worried");
+		}
 		gameObject.SetActive( true );
 		appearFx.Play();
 		audio.PlayOneShot( appearSound );

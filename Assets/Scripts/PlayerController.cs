@@ -401,6 +401,7 @@ public class PlayerController : BaseClass {
 	{	
 		previousPlayerPosition = transform.position;
 		allowDistanceTravelledCalculations = true;
+		usesAccelerometer = true;
 
 		//The player starts off running
 		anim.SetTrigger(RunTrigger);
@@ -2142,6 +2143,7 @@ public class PlayerController : BaseClass {
 
 		//Clear move direction of any values. If we still have an x component for example, we will drift.
 		moveDirection = new Vector3( 0,0,0 );
+		usesAccelerometer = false;
 		accelerometerPreviousFrameX = 0;
 		//Side move speed is divided by 2 because it just looks better.
 		if ( currentLane == Lanes.Left )

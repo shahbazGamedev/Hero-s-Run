@@ -52,7 +52,7 @@ public class DarkQueenSequence : MonoBehaviour {
 		playerController.anim.SetTrigger("Idle_Look");
 		//Call fairy
 		fairyController.setYRotationOffset( -10f );
-		fairyController.Appear ();
+		fairyController.Appear ( FairyEmotion.Worried );
 	}
 
 	//Fairy tells something to player

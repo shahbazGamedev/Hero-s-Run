@@ -9,8 +9,9 @@ public class FairyMessage : MonoBehaviour {
 	FairyController fairyController;
 
 	public string fairyMessageTextId;
-
 	
+	public FairyEmotion fairyEmotion;
+
 	// Use this for initialization
 	void Awake () {
 
@@ -28,7 +29,7 @@ public class FairyMessage : MonoBehaviour {
 	public void displayFairyMessage()
 	{
 		//Call fairy
-		fairyController.Appear ();
+		fairyController.Appear ( fairyEmotion );
 
 		playerController.allowRunSpeedToIncrease = false;
 		Invoke ("step1", 1f );

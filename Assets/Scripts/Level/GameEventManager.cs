@@ -125,7 +125,7 @@ public class GameEventManager : MonoBehaviour {
 	//Call fairy
 	void step6()
 	{
-		fairyController.Appear ();
+		fairyController.Appear ( FairyEmotion.Worried );
 		Invoke ("step7", 3f );
 	}
 
