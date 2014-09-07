@@ -38,6 +38,8 @@ public class BrokenBridgeSequence : MonoBehaviour {
 		playerController = playerObject.GetComponent<PlayerController>();
 
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
+		//Important: the fairy may be inactive (because of a previous Disappear() call for example), so make sure to activate her again.
+		fairyObject.SetActive( true );
 		fairy = fairyObject.transform;
 		fairyController = fairyObject.GetComponent<FairyController>();
 

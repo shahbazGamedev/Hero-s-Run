@@ -136,7 +136,7 @@ public class GenerateLevel  : MonoBehaviour {
 			SegmentInfo si = go.GetComponent<SegmentInfo>();
 			if( si.tileType != TileType.None )
 			{
-				Debug.Log ("loadTilePrefabs-adding tile type: " + si.tileType );
+				//Debug.Log ("loadTilePrefabs-adding tile type: " + si.tileType );
 				themePrefabsDict.Add( si.tileType, go );
 			}
 		}
@@ -815,8 +815,8 @@ public class GenerateLevel  : MonoBehaviour {
 		tileData.tileTheme = theme;
 		tileData.tileType = type;
 		levelTileList.Enqueue (tileData);
-		previousTileType = type;
 		previousTileRot = getTileRotation(0);
+		previousTileType = type;
 		//print ("addTileData: adding tile type " + tileData.tileType + " with theme " + tileData.tileTheme + " prev rot " + previousTileRot.eulerAngles );
 	}
 
@@ -919,7 +919,6 @@ public class GenerateLevel  : MonoBehaviour {
 	{
 		float yRot = Mathf.Floor( previousTileRot.eulerAngles.y );
 		TileType subType = getTileSubType( previousTileType );
-		
 		switch (subType)
 		{
 		case TileType.Left:

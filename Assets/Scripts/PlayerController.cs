@@ -845,7 +845,7 @@ public class PlayerController : BaseClass {
 		if (jumping && !jumpingReachedApex && moveDirection.y <= 0.0)
 		{
 			jumpingReachedApex = true;
-			print(" Apex: animation state is " + getCurrentStateName() );
+			//print(" Apex: animation state is " + getCurrentStateName() );
 		}
 
 		// Apply gravity
@@ -1396,7 +1396,7 @@ public class PlayerController : BaseClass {
 								setCharacterState( CharacterState.SideMove );
 								moveDirection.x = currentSideMoveSpeed;
 								audio.PlayOneShot( sideMoveSound );
-								Debug.Log ("moveToSide completed " + isGoingRight + " to lane " + desiredLane );
+								//Debug.Log ("moveToSide completed " + isGoingRight + " to lane " + desiredLane );
 		
 							}
 							else
@@ -1405,7 +1405,7 @@ public class PlayerController : BaseClass {
 								setCharacterState( CharacterState.SideMove );
 								moveDirection.x = -currentSideMoveSpeed;
 								audio.PlayOneShot( sideMoveSound );
-								Debug.Log ("moveToSide completed " + isGoingRight + " to lane " + desiredLane );
+								//Debug.Log ("moveToSide completed " + isGoingRight + " to lane " + desiredLane );
 							}
 						}
 						else if ( currentLane == Lanes.Right && !isGoingRight )
@@ -1414,7 +1414,7 @@ public class PlayerController : BaseClass {
 							setCharacterState( CharacterState.SideMove );
 							moveDirection.x = -currentSideMoveSpeed;
 							audio.PlayOneShot( sideMoveSound );
-							Debug.Log ("moveToSide completed " + isGoingRight + " to lane " + desiredLane );
+							//Debug.Log ("moveToSide completed " + isGoingRight + " to lane " + desiredLane );
 						}
 						else if ( currentLane == Lanes.Left && isGoingRight )
 						{
@@ -1422,7 +1422,7 @@ public class PlayerController : BaseClass {
 							setCharacterState( CharacterState.SideMove );
 							moveDirection.x = currentSideMoveSpeed;
 							audio.PlayOneShot( sideMoveSound );
-							Debug.Log ("moveToSide completed " + isGoingRight + " to lane " + desiredLane );
+							//Debug.Log ("moveToSide completed " + isGoingRight + " to lane " + desiredLane );
 						}
 					}
 				}
