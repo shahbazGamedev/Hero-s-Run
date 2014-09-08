@@ -17,6 +17,7 @@ public class SegmentInfo : MonoBehaviour {
 
 	public bool isCheckpoint = false;
 	public bool isFirstTileOfLevel = false;
+	public float tileEndHeight = 0; //if not zero, the height of the NEXT tile will be adjusted
 
 	//Display the bezier curve(s) if any.
 	void OnDrawGizmos ()

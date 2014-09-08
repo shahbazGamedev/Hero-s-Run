@@ -397,8 +397,15 @@ public class GenerateLevel  : MonoBehaviour {
 		tileDepthMult= getTileDepth( type );
 
 		previousTileType = getTileSubType(type); //for constructing the level, we use the simpler types like straight, left and right
-		tileEndHeight = tileHeight;
 		SegmentInfo si = getSegmentInfo( go );
+		if( si.tileEndHeight != 0 )
+		{
+			tileEndHeight = si.tileEndHeight;
+		}
+		else
+		{
+			tileEndHeight = tileHeight;
+		}
 		si.entranceCrossed = false;
 		si.tile = go;
 		previousTilePos = tilePos;
@@ -1388,7 +1395,9 @@ public class GenerateLevel  : MonoBehaviour {
 		addTile ( TileType.Straight );
 		addTile ( TileType.Right );
 		//Reset values so that the Right path gets constructed normally
-		previousTilePos = tJunction.transform.position;
+		SegmentInfo si = getSegmentInfo( tJunction );
+		float tJunctionTileEndHeight = si.tileEndHeight; //For some T-Junction (notably the one in Fairyland), the end of the tile is lower than the begining of the tile
+		previousTilePos = new Vector3( tJunction.transform.position.x, tJunction.transform.position.y + tJunctionTileEndHeight, tJunction.transform.position.z );
 		previousTileRot = tJunction.transform.rotation;
 		previousTileType = TileType.Right;
 		//Also, add two tiles to the right to avoid the possibility
