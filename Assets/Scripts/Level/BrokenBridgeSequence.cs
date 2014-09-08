@@ -109,7 +109,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	void rebuildBridge()
 	{
 		//Create rows
-		float delay = 0.135f;
+		float delay = 0.1f; //Used to be 0.135 to have jump
 		for( int i = 0; i < hexagonsActivePerRow.Count; i++ )
 		{
 			Invoke ("createRow", lastActivateTime + delay );
