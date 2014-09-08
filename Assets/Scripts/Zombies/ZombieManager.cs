@@ -9,6 +9,7 @@ public class ZombieManager : BaseClass {
 	PlayerController playerController;
 	public ParticleSystem zNukeEffect;
 	public static int numberOfZombieWavesTriggered = 0; //could eventually put that number in the player stats
+	const int NUMBER_STARS_PER_ZOMBIE = 20;
 
 	// Use this for initialization
 	void Awake () {
@@ -49,6 +50,10 @@ public class ZombieManager : BaseClass {
 		zNukeEffect.audio.Play ();
 		zNukeEffect.Play();
 
+		//Count the number of zombies that are knocked back so we can give the player stars.
+		//The more zombies he topples, the more stars he gets.
+		int numberOfZombies = 0;
+
 		Collider[] hitColliders = Physics.OverlapSphere(exactPos, impactDiameter, ZombieMask );
 		for( int i =0; i < hitColliders.Length; i++ )
 		{
@@ -56,7 +61,18 @@ public class ZombieManager : BaseClass {
 			if( zombieController.getZombieState() != ZombieController.ZombieState.Dying )
 			{
 				zombieController.knockbackZombie();
+				numberOfZombies++;
 			}
+		}
+		if( numberOfZombies != 0 )
+		{
+			int totalStars = numberOfZombies * NUMBER_STARS_PER_ZOMBIE;
+			//Give stars
+			PlayerStatsManager.Instance.modifyCoinCount( totalStars );
+			
+			//Display star total picked up icon
+			HUDHandler.displayCoinTotal( totalStars, Color.magenta, false );
+
 		}
 	}
 

@@ -19,7 +19,6 @@ public class TutorialDisplay : BaseClass {
 	public Texture2D device;
 
 	//Generic user message
-	float userMessageStartTime = 0;
 	bool showTutorialMessage = false;
 	GUIContent textContent;
 	float userScreenHeightPercentage = 0;
@@ -173,7 +172,6 @@ public class TutorialDisplay : BaseClass {
 		this.userAngle = userAngle;
 		this.userMessageDuration = userMessageDuration;
 		this.activeTutorial = activeTutorial;
-		this.userMessageStartTime = Time.time;
 		showTutorialMessage = true;
 		textStyle.fixedWidth = Screen.width * 0.8f;
 		textContent = new GUIContent( userText );

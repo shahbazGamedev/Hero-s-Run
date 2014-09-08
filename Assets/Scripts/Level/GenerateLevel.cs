@@ -1643,7 +1643,7 @@ public class GenerateLevel  : MonoBehaviour {
 			{
 				TileData td = levelTileList.Dequeue();
 				setCurrentTheme( td.tileTheme );
-				Debug.LogWarning("tileEntranceCrossed: Adding next level tile of type: " + td.tileType + " theme: " + td.tileTheme );
+				//Debug.LogWarning("tileEntranceCrossed: Adding next level tile of type: " + td.tileType + " theme: " + td.tileTheme );
 				addTile( td.tileType );
 			}
 		}

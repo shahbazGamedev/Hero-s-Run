@@ -8,11 +8,8 @@ public class GameEventManager : MonoBehaviour {
 	SimpleCamera simpleCamera;
 	Transform player;
 	PlayerController playerController;
-	Transform troll;
 	TrollController trollController;
-	Transform fairy;
 	FairyController fairyController;
-	PowerUpManager powerUpManager;
 
 	OpeningSequence op;
 
@@ -27,11 +24,7 @@ public class GameEventManager : MonoBehaviour {
 		lightning = sunlightObject.GetComponent<Lightning>();
 
 		GameObject trollObject = GameObject.FindGameObjectWithTag("Troll");
-		troll = trollObject.transform;
 		trollController = trollObject.GetComponent<TrollController>();
-
-		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
-		powerUpManager = powerUpManagerObject.GetComponent<PowerUpManager>();
 
 		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
 		player = playerObject.transform;
@@ -39,7 +32,6 @@ public class GameEventManager : MonoBehaviour {
 		simpleCamera = player.GetComponent<SimpleCamera>();
 
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
-		fairy = fairyObject.transform;
 		fairyController = fairyObject.GetComponent<FairyController>();
 
 	}

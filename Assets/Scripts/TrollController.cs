@@ -16,8 +16,7 @@ public class TrollController : MonoBehaviour {
 
 	Transform player;
 	PlayerController playerController;
-	SimpleCamera simpleCamera;
-	
+
 	//Sound that plays if the troll sess the player fall into a river
 	public AudioClip laugh;
 
@@ -54,7 +53,6 @@ public class TrollController : MonoBehaviour {
 	{
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		playerController = player.GetComponent<PlayerController>();
-		simpleCamera = player.GetComponent<SimpleCamera>();
 	}
 
 	public void startPursuing ()
@@ -263,7 +261,6 @@ public class TrollController : MonoBehaviour {
 
 		if( wasActive )
 		{
-			//simpleCamera.playCutscene( CutsceneType.Troll );
 			attackPlayer();
 		}
 		else

@@ -8,7 +8,6 @@ public class DarkQueenSequence : MonoBehaviour {
 	PlayerController playerController;
 	Transform fairy;
 	FairyController fairyController;
-	DragonController dragonController;
 	DarkQueenController darkQueenController;
 
 	bool hasBeenTriggered = false;
@@ -24,9 +23,6 @@ public class DarkQueenSequence : MonoBehaviour {
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairy = fairyObject.transform;
 		fairyController = fairyObject.GetComponent<FairyController>();
-
-		GameObject dragonObject = GameObject.FindGameObjectWithTag("Dragon");
-		dragonController = dragonObject.GetComponent<DragonController>();
 
 		GameObject darkQueenObject = GameObject.FindGameObjectWithTag("DarkQueen");
 		darkQueenController = darkQueenObject.GetComponent<DarkQueenController>();

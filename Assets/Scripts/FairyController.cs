@@ -148,7 +148,6 @@ public class FairyController : BaseClass {
 		{
 			fairyAnimation.Play("Hover_Worried");
 		}
-		gameObject.SetActive( true );
 		appearFx.Play();
 		audio.PlayOneShot( appearSound );
 		fairyState = FairyState.Hover;
@@ -164,7 +163,6 @@ public class FairyController : BaseClass {
 
 	public void Disappear_part2()
 	{
-		gameObject.SetActive( false );
 		fairyState = FairyState.None;
 	}
 
@@ -215,7 +213,6 @@ public class FairyController : BaseClass {
 	{
 		//Note: the revive animation plays at 1.2 the speed
 		transform.localScale = new Vector3( 1f, 1f, 1f );
-		gameObject.SetActive( true );
 
 		//Move Fairy to player body and play a sprinkle animation
 		float fairyRotY = player.eulerAngles.y + 205f;

@@ -4,9 +4,7 @@ using System.Collections.Generic;
 
 public class BrokenBridgeSequence : MonoBehaviour {
 
-	Transform player;
 	PlayerController playerController;
-	Transform fairy;
 	FairyController fairyController;
 	DragonController dragonController;
 
@@ -34,13 +32,9 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	void Awake () {
 
 		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		player = playerObject.transform;
 		playerController = playerObject.GetComponent<PlayerController>();
 
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
-		//Important: the fairy may be inactive (because of a previous Disappear() call for example), so make sure to activate her again.
-		fairyObject.SetActive( true );
-		fairy = fairyObject.transform;
 		fairyController = fairyObject.GetComponent<FairyController>();
 
 		GameObject dragonObject = GameObject.FindGameObjectWithTag("Dragon");

@@ -3,9 +3,7 @@ using System.Collections;
 
 public class FairyMessage : MonoBehaviour {
 
-	Transform player;
 	PlayerController playerController;
-	Transform fairy;
 	FairyController fairyController;
 
 	public string fairyMessageTextId;
@@ -16,11 +14,9 @@ public class FairyMessage : MonoBehaviour {
 	void Awake () {
 
 		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		player = playerObject.transform;
 		playerController = playerObject.GetComponent<PlayerController>();
 
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
-		fairy = fairyObject.transform;
 		fairyController = fairyObject.GetComponent<FairyController>();
 
 	}
