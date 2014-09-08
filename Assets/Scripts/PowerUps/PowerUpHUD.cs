@@ -48,7 +48,7 @@ public class PowerUpHUD : MonoBehaviour {
 	//At what height should the icon be displayed
 	float getHeight( int index )
 	{
-		return (0.2f + index * 0.08f ) * Screen.height;
+		return (0.28f + index * 0.08f ) * Screen.height;
 	}
 
 	void OnGUI ()
