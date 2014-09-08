@@ -98,11 +98,7 @@ public class HUDHandler : MonoBehaviour {
 	Texture2D sliderImage;
 	public Texture2D cuteWitch;
 	int distanceMarkerInterval = 250; //in meters
-
-	//For the distance progress bar
-	public GUIStyle externalDistanceProgressBarStyle;
-	public GUIStyle internalDistanceProgressBarStyle;
-
+	
 	float timeScaleBeforePause;
 
 	HUDSaveMe hudSaveMe;
@@ -240,8 +236,6 @@ public class HUDHandler : MonoBehaviour {
 			{
 				pauseGame();
 			}
-
-			drawDistanceProgressBar();
 		}
 		
 		//Countdown related
@@ -305,28 +299,7 @@ public class HUDHandler : MonoBehaviour {
 		}
 		#endif
 	}
-
-	void drawDistanceProgressBar()
-	{
-		//The progress bar is only useful in Story mode
-		if( GameManager.Instance.getGameMode() == GameMode.Story )
-		{
-			Vector2 externalprogressBarSize = new Vector2( Screen.width * 0.02f, Screen.width * 0.12f);
-			Vector2 internalprogressBarSize = new Vector2( externalprogressBarSize.x * 0.8f, externalprogressBarSize.y );
-			Vector2 pos = new Vector2( Screen.width - 2 * externalprogressBarSize.x, Screen.height/2f);
-
-			float progress = (float)internalprogressBarSize.y * (1f - (float)(PlayerStatsManager.Instance.getDistanceTravelled())/LevelManager.Instance.getLevelInfo().lengthInMeters);
-			if( progress < 0 ) progress = 0;
-
-			GUI.BeginGroup (new Rect (pos.x, pos.y, externalprogressBarSize.x, externalprogressBarSize.y));
-				// Define progress bar texture within externalDistanceProgressBarStyle under Normal > Background
-				GUI.Box (new Rect (0,0, externalprogressBarSize.x, externalprogressBarSize.y),"", externalDistanceProgressBarStyle);
-				// Define progress bar texture within innerDistanceProgressBarStyle under Normal > Background
-				GUI.Box (new Rect ((externalprogressBarSize.x-internalprogressBarSize.x)/2f,progress, internalprogressBarSize.x, internalprogressBarSize.y),"", internalDistanceProgressBarStyle);
-			GUI.EndGroup ();
-		}
-	}
-
+	
 	void updateFPS()
 	{
 		//average out the fps over a number of frames

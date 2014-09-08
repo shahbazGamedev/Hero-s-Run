@@ -2794,7 +2794,7 @@ public class PlayerController : BaseClass {
 	public void resurrectMiddle()
 	{
 		//5) Play the revive animation
-		anim.speed = 1.5f;
+		anim.speed = 1.6f;
 		anim.Play( "DeathWall_GetUp" );
 	}
 

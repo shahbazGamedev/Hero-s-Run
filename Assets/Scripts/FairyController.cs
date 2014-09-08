@@ -63,6 +63,7 @@ public class FairyController : BaseClass {
 	{
 		//Get a copy of the components
 		fairyAnimation = (Animation) GetComponent("Animation");
+		fairyAnimation["Revive"].speed = 1.2f;
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
 	}
@@ -212,6 +213,7 @@ public class FairyController : BaseClass {
 
 	public void revivePlayer ()
 	{
+		//Note: the revive animation plays at 1.2 the speed
 		transform.localScale = new Vector3( 1f, 1f, 1f );
 		gameObject.SetActive( true );
 
@@ -223,15 +225,15 @@ public class FairyController : BaseClass {
 		transform.rotation = Quaternion.Euler( 0, fairyRotY, 0 );
 		fairyAnimation.Play("Revive");
 		fairyAnimation.PlayQueued("Hover_Happy", QueueMode.CompleteOthers);
-		Invoke("sprinkleFairyDustStart", 2.05f );
-		Invoke("continueResurection", 5.2f ); //start get up at around frame 285 of the revive animation
+		Invoke("sprinkleFairyDustStart", 1.64f );
+		Invoke("continueResurection", 4.16f ); //start get up at around frame 285 of the revive animation
 	}	
 
 	void sprinkleFairyDustStart()
 	{
 		audio.PlayOneShot( fairyDustSound );
 		fairyDustFx.Play ();
-		Invoke("sprinkleFairyDustStop", 1.2f );
+		Invoke("sprinkleFairyDustStop", 0.96f );
 	}
 
 	void sprinkleFairyDustStop()
