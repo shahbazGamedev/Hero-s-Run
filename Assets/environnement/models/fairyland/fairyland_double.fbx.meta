@@ -49,6 +49,19 @@ ModelImporter:
     100086: pCylinder49
     100088: rock_Swamp_017
     100090: rock_Swamp_018
+    100092: rock_Swamp_020
+    100094: rock_Swamp_021
+    100096: rock_Swamp_022
+    100098: rock_Swamp_023
+    100100: rock_Swamp_024
+    100102: rock_Swamp_025
+    100104: rock_Swamp_026
+    100106: rock_Swamp_027
+    100108: rock_Swamp_028
+    100110: rock_Swamp_029
+    100112: rock_Swamp_030
+    100114: rock_Swamp_031
+    100116: rock_Swamp_032
     400000: CemeteryFloorStraight_01
     400002: //RootNode
     400004: pCube148
@@ -95,6 +108,19 @@ ModelImporter:
     400086: pCylinder49
     400088: rock_Swamp_017
     400090: rock_Swamp_018
+    400092: rock_Swamp_020
+    400094: rock_Swamp_021
+    400096: rock_Swamp_022
+    400098: rock_Swamp_023
+    400100: rock_Swamp_024
+    400102: rock_Swamp_025
+    400104: rock_Swamp_026
+    400106: rock_Swamp_027
+    400108: rock_Swamp_028
+    400110: rock_Swamp_029
+    400112: rock_Swamp_030
+    400114: rock_Swamp_031
+    400116: rock_Swamp_032
     2300000: CemeteryFloorStraight_01
     2300002: pCube148
     2300004: pCube149
@@ -140,6 +166,19 @@ ModelImporter:
     2300084: pCylinder49
     2300086: rock_Swamp_017
     2300088: rock_Swamp_018
+    2300090: rock_Swamp_020
+    2300092: rock_Swamp_021
+    2300094: rock_Swamp_022
+    2300096: rock_Swamp_023
+    2300098: rock_Swamp_024
+    2300100: rock_Swamp_025
+    2300102: rock_Swamp_026
+    2300104: rock_Swamp_027
+    2300106: rock_Swamp_028
+    2300108: rock_Swamp_029
+    2300110: rock_Swamp_030
+    2300112: rock_Swamp_031
+    2300114: rock_Swamp_032
     3300000: CemeteryFloorStraight_01
     3300002: pCube148
     3300004: pCube149
@@ -185,6 +224,19 @@ ModelImporter:
     3300084: pCylinder49
     3300086: rock_Swamp_017
     3300088: rock_Swamp_018
+    3300090: rock_Swamp_020
+    3300092: rock_Swamp_021
+    3300094: rock_Swamp_022
+    3300096: rock_Swamp_023
+    3300098: rock_Swamp_024
+    3300100: rock_Swamp_025
+    3300102: rock_Swamp_026
+    3300104: rock_Swamp_027
+    3300106: rock_Swamp_028
+    3300108: rock_Swamp_029
+    3300110: rock_Swamp_030
+    3300112: rock_Swamp_031
+    3300114: rock_Swamp_032
     4300000: pCube148
     4300002: pCube149
     4300004: pCube150
@@ -230,6 +282,19 @@ ModelImporter:
     4300084: rock_Swamp_017
     4300086: pCylinder49
     4300088: rock_Swamp_018
+    4300090: rock_Swamp_020
+    4300092: rock_Swamp_021
+    4300094: rock_Swamp_022
+    4300096: rock_Swamp_023
+    4300098: rock_Swamp_024
+    4300100: rock_Swamp_025
+    4300102: rock_Swamp_026
+    4300104: rock_Swamp_027
+    4300106: rock_Swamp_028
+    4300108: rock_Swamp_029
+    4300110: rock_Swamp_030
+    4300112: rock_Swamp_031
+    4300114: rock_Swamp_032
     9500000: //RootNode
   materials:
     importMaterials: 1
