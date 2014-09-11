@@ -13,6 +13,11 @@ public class GameEventManager : MonoBehaviour {
 
 	OpeningSequence op;
 
+	TentaclesSequence tentaclesSequence;
+
+	GameState previousGameState = GameState.Unknown;
+
+	Vector3 lastTentaclePosition;
 	
 	// Use this for initialization
 	void Awake () {
@@ -35,6 +40,71 @@ public class GameEventManager : MonoBehaviour {
 		fairyController = fairyObject.GetComponent<FairyController>();
 
 	}
+
+	//Kraken tentacles sequence
+	public void setOpeningSequence( TentaclesSequence tentaclesSequence )
+	{
+		this.tentaclesSequence = tentaclesSequence;
+
+	}
+
+	public void playTentaclesSequence()
+	{
+		print ("Start of tentacles sequence");
+		InvokeRepeating( "startPierceUp", 0.2f, 2f );
+	}
+
+	public void stopTentaclesSequence()
+	{
+		print ("stop tentacles sequence");
+		CancelInvoke( "startPierceUp" );
+		CancelInvoke( "pierceUp" );
+	}
+
+	void startPierceUp()
+	{
+		Invoke( "pierceUp", 0.25f );
+		float attackDistance = 0.81f * PlayerController.getPlayerSpeed();
+		//Pick random X location
+		float xPos;
+		int laneChoice = Random.Range(0, 3);
+		if( laneChoice == 0 )
+		{
+			xPos = -PlayerController.laneLimit;
+		}
+		else if( laneChoice == 1 )
+		{
+			xPos = 0;
+		}
+		else
+		{
+			xPos = PlayerController.laneLimit;
+		}
+		lastTentaclePosition = player.TransformPoint(new Vector3( xPos,-2.9f,attackDistance));
+		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
+		ParticleSystem dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
+		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 3f, lastTentaclePosition.z );
+		dust.Play();
+		GameObject.Destroy( dust, 3f );
+	}
+
+	void pierceUp()
+	{
+		print ("Shooting up tentacle");
+		GameObject go = (GameObject)Instantiate(tentaclesSequence.tentaclePrefab, Vector3.zero, Quaternion.identity );
+		go.transform.position = lastTentaclePosition;
+		go.transform.rotation = player.rotation;
+		go.name = "Fence";
+		LeanTween.moveLocalY(go, go.transform.position.y + 2, 1.15f ).setEase(LeanTweenType.easeOutExpo);
+		go.audio.Play ( (ulong)1.15 );
+		GameObject flyingDebris = (GameObject)Instantiate(tentaclesSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
+		flyingDebris.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 4f, lastTentaclePosition.z );
+		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
+		bo.triggerBreak( player.collider );
+		//We only want to keep the tentacle for a few seconds
+		GameObject.Destroy( go, 3f );
+	}
+
 
 	//ISLAND TOWER OPENING SEQUENCE START
 	public void setOpeningSequence( OpeningSequence openingSequence )
@@ -171,6 +241,26 @@ public class GameEventManager : MonoBehaviour {
 
 	void GameStateChange( GameState newState )
 	{
+		if( newState == GameState.Paused )
+		{
+			CancelInvoke();
+			LeanTween.pause( gameObject );
+		}
+		else if (newState == GameState.Normal )
+		{
+			if( previousGameState == GameState.Countdown )
+			{
+				print ("gros caca " + tentaclesSequence.isSequenceActive );
+				if( tentaclesSequence != null && tentaclesSequence.isSequenceActive )
+				{
+					print ("Restart of tentacles sequence");
+					InvokeRepeating( "startPierceUp", 0.2f, 2f );
+					LeanTween.resume( gameObject );
+				}
+			}
+		}
+		print ("GEM GameStateChange " +previousGameState + " " +  newState);
+		previousGameState = newState;
 	}
 
 	void PlayerStateChange( CharacterState newState )

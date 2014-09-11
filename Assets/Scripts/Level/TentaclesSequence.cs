@@ -21,6 +21,9 @@ public class TentaclesSequence : MonoBehaviour {
 
 	int rowIndex = 0;
 	const int NUMBER_OF_ROWS = 46;
+	GameEventManager gem;
+	public bool isSequenceActive = false;
+	public ParticleSystem tentacleAboutToAppearFx;
 
 	// Use this for initialization
 	void Awake () {
@@ -38,34 +41,26 @@ public class TentaclesSequence : MonoBehaviour {
 	
 	void Start()
 	{
+		//Reset value
+		hasBeenTriggered = false;
+		isSequenceActive = false;
+
+		GameObject gameEventManagerObject = GameObject.FindGameObjectWithTag("GameEventManager");
+		gem = gameEventManagerObject.GetComponent<GameEventManager>();
+		gem.setOpeningSequence( this );
 	}
 
 	public void startSequence()
 	{
-		//Slowdown player and remove player control
-		print ("Start of tentacles sequence");
-		InvokeRepeating( "pierceUp", 0.2f, 2f );
+		isSequenceActive = true;
+		gem.playTentaclesSequence();
 	}
 
-	void pierceUp()
+	public void stopSequence()
 	{
-		print ("Shooting up tentacle");
-		GameObject go = (GameObject)Instantiate(tentaclePrefab, Vector3.zero, Quaternion.identity );
-		float attackDistance = 0.81f * PlayerController.getPlayerSpeed();
-		//Pick random X location
-		float xPos = Random.Range(-1.3f, 1.3f);
-		Vector3 exactPos = player.TransformPoint(new Vector3( xPos,-0.9f-tentacleHalfHeight,attackDistance));
-		go.transform.position = exactPos;
-		go.transform.rotation = player.rotation;
-		go.name = "Fence";
-		LeanTween.moveLocalY(go, go.transform.position.y + tentacleHalfHeight, 1.15f ).setEase(LeanTweenType.easeOutExpo);
-		go.audio.Play ( (ulong)1.15 );
-		//Golden Shower
-		GameObject flyingDebris = (GameObject)Instantiate(debrisPrefab, Vector3.zero, Quaternion.identity );
-		flyingDebris.transform.position = new Vector3( exactPos.x, exactPos.y + 4f, exactPos.z );
-		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
-		bo.triggerBreak( player.collider );
+		isSequenceActive = false;
 	}
+
 
 	//Fairy tells something to player
 	void step1()
@@ -115,19 +110,24 @@ public class TentaclesSequence : MonoBehaviour {
 	{
 		if( newState == CharacterState.Dying )
 		{
-			print ("Player died cancelling invoke repeating");
-			CancelInvoke("pierceUp");
+			//print ("Player died cancelling invoke repeating");
+			//CancelInvoke("pierceUp");
 		}
 	}
 
 	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
 	{
-		if( eventType == GameEvent.Tentacles && !hasBeenTriggered )
+		if( eventType == GameEvent.Start_Kraken && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
 
 			startSequence();
 		}
+		else if( eventType == GameEvent.Stop_Kraken && isSequenceActive )
+		{
+			isSequenceActive = false;
+			gem.stopTentaclesSequence();
+		}
 	}
-	
+
 }
