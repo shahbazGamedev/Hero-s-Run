@@ -63,7 +63,7 @@ public class GameEventManager : MonoBehaviour {
 
 	void startPierceUp()
 	{
-		Invoke( "pierceUp", 0.25f );
+		Invoke( "pierceUp", 0.33f );
 		float attackDistance = 0.81f * PlayerController.getPlayerSpeed();
 		//Pick random X location
 		float xPos;
@@ -91,6 +91,7 @@ public class GameEventManager : MonoBehaviour {
 	void pierceUp()
 	{
 		print ("Shooting up tentacle");
+		playerController.shakeCamera();
 		GameObject go = (GameObject)Instantiate(tentaclesSequence.tentaclePrefab, Vector3.zero, Quaternion.identity );
 		go.transform.position = lastTentaclePosition;
 		go.transform.rotation = player.rotation;

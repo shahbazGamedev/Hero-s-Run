@@ -158,6 +158,8 @@ public class TrollController : MonoBehaviour {
 		smashParticles.transform.position = new Vector3( exactPos.x, exactPos.y, exactPos.z );
 		smashParticles.loop = false;
 		smashParticles.Play();
+		playerController.shakeCamera();
+
 
 		//Once the smash animation completes, the troll will continue to run
 		trollState = TrollState.Running;

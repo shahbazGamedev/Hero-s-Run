@@ -86,22 +86,19 @@ public class SimpleCamera : MonoBehaviour {
 	{
 		if( cameraState == CameraState.Normal )
 		{
+			if( !isCameraLocked )
+			{
+				positionCamera ();
+			}
 			if (shake_intensity > 0)
 			{
-				mainCamera.position = originPosition + Random.insideUnitSphere * shake_intensity;
+				mainCamera.position = mainCamera.position + Random.insideUnitSphere * shake_intensity;
 				mainCamera.rotation = new Quaternion(
-				originRotation.x + Random.Range (-shake_intensity,shake_intensity) * .2f,
-				originRotation.y + Random.Range (-shake_intensity,shake_intensity) * .2f,
-				originRotation.z + Random.Range (-shake_intensity,shake_intensity) * .2f,
-				originRotation.w + Random.Range (-shake_intensity,shake_intensity) * .2f);
+					mainCamera.rotation.x + Random.Range (-shake_intensity,shake_intensity) * .2f,
+					mainCamera.rotation.y + Random.Range (-shake_intensity,shake_intensity) * .2f,
+					mainCamera.rotation.z + Random.Range (-shake_intensity,shake_intensity) * .2f,
+					mainCamera.rotation.w + Random.Range (-shake_intensity,shake_intensity) * .2f);
 				shake_intensity -= shake_decay;
-			}
-			else
-			{
-				if( !isCameraLocked )
-				{
-					positionCamera ();
-				}
 			}
 		}
 	}

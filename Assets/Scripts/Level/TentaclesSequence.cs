@@ -50,7 +50,7 @@ public class TentaclesSequence : MonoBehaviour {
 		gem.setOpeningSequence( this );
 	}
 
-	public void startSequence()
+	void startSequence()
 	{
 		isSequenceActive = true;
 		gem.playTentaclesSequence();
