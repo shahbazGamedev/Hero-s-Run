@@ -35,7 +35,8 @@ public class GameEventManager : MonoBehaviour {
 		fairyController = fairyObject.GetComponent<FairyController>();
 
 	}
-	
+
+	//ISLAND TOWER OPENING SEQUENCE START
 	public void setOpeningSequence( OpeningSequence openingSequence )
 	{
 		op = openingSequence;
@@ -154,6 +155,7 @@ public class GameEventManager : MonoBehaviour {
 	{
 		fairyController.Disappear ();
 	}
+	//ISLAND TOWER OPENING SEQUENCE END
 
 	void OnEnable()
 	{
