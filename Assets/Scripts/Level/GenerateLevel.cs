@@ -46,7 +46,8 @@ public enum TileType {
 	Landmark_Fairy_Message = 32,
 	Landmark_Broken_Bridge = 33,
 	T_Junction_Landmark_Cemetery_Queen = 34,
-	Landmark_Cemetery_Queen = 35
+	Landmark_Cemetery_Queen = 35,
+	Landmark_Magic_Bridge = 36
 
 }
 
@@ -466,6 +467,10 @@ public class GenerateLevel  : MonoBehaviour {
 				depth = 3;
 				break;
 
+			case TileType.Landmark_Magic_Bridge:
+				depth = 4;
+				break;
+
 			default:
 				Debug.LogError("GenerateLevel-getTileDepth: unknown tile type specified: " + type );
 				break;
@@ -855,6 +860,7 @@ public class GenerateLevel  : MonoBehaviour {
 		case TileType.Checkpoint:
 		case TileType.Straight:
 		case TileType.Landmark_Cemetery_Queen:
+		case TileType.Landmark_Magic_Bridge:
 			return TileType.Straight;
 
 		case TileType.Left:

@@ -80,10 +80,10 @@ public class GameEventManager : MonoBehaviour {
 		{
 			xPos = PlayerController.laneLimit;
 		}
-		lastTentaclePosition = player.TransformPoint(new Vector3( xPos,-2.9f,attackDistance));
+		lastTentaclePosition = player.TransformPoint(new Vector3( xPos,-2f,attackDistance));
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
 		ParticleSystem dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
-		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 3f, lastTentaclePosition.z );
+		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 2.1f, lastTentaclePosition.z );
 		dust.Play();
 		GameObject.Destroy( dust, 3f );
 	}
@@ -94,7 +94,7 @@ public class GameEventManager : MonoBehaviour {
 		playerController.shakeCamera();
 		GameObject go = (GameObject)Instantiate(tentaclesSequence.tentaclePrefab, Vector3.zero, Quaternion.identity );
 		go.transform.position = lastTentaclePosition;
-		go.transform.rotation = player.rotation;
+		go.transform.rotation = Quaternion.Euler( 90f, Random.Range (-180f,180f), Random.Range (-6f,6f) );
 		go.name = "Fence";
 		LeanTween.moveLocalY(go, go.transform.position.y + 2, 1.15f ).setEase(LeanTweenType.easeOutExpo);
 		go.audio.Play ( (ulong)1.15 );
