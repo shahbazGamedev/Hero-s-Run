@@ -63,8 +63,8 @@ public class GameEventManager : MonoBehaviour {
 
 	void startPierceUp()
 	{
-		Invoke( "pierceUp", 0.33f );
-		float attackDistance = 0.81f * PlayerController.getPlayerSpeed();
+		Invoke( "pierceUp", 0.4f );
+		float attackDistance = 1.1f * PlayerController.getPlayerSpeed();
 		//Pick random X location
 		float xPos;
 		int laneChoice = Random.Range(0, 3);
