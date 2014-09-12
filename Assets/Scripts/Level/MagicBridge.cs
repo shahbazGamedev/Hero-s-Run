@@ -18,14 +18,14 @@ public class MagicBridge : MonoBehaviour {
 
 	float lane1StartLocalPos; 		//Leftmost lane
 	float lane2StartLocalPos; 	
-	float lane3StartLocalPos = 3.6f; 	//Center lane
+	float lane3StartLocalPos = 3.1f; 	//Center lane
 	float lane4StartLocalPos; 	
 	float lane5StartLocalPos; 		
 	float lane6StartLocalPos; 		//Rightmost lane
 
 	int rowIndex = 0;
 	const int NUMBER_OF_ROWS = 46;
-	float localBridgeHeight = 1f;
+	float localBridgeHeight = -0.75f;
 	public List<HexagonRowData> hexagonsActivePerRow = new List<HexagonRowData>(NUMBER_OF_ROWS);
 
 	// Use this for initialization
