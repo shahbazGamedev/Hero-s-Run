@@ -195,6 +195,8 @@ public class LevelData : MonoBehaviour {
 		[Tooltip("The fog opacity.")]
 		[Range(0, 1f)]
 		public float fogFade = 0.128f;
+		[Tooltip("The fog follows the player. The fogHeightDelta value allows you to adjust the fog height versus the player's height. if the delta is set to 30, the fog center will be 30 meters above the player.")]
+		public float fogHeightDelta = 30f;
 		[Tooltip("The player's initial run speed in m/sec.")]
 		public float RunStartSpeed = 10f;
 		[Tooltip("How fast will the player accelerate.")]

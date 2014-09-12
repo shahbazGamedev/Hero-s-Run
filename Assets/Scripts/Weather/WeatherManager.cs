@@ -49,6 +49,13 @@ public class WeatherManager : BaseClass {
 		print ("setFogTarget: target is now: " + fogTarget.name );
 	}
 
+	public void setFogHeightDelta( float fogHeightDelta )
+	{
+		fogHeight = fogHeightDelta;
+		print ("setFogHeightDelta: height is now: " + fogHeight );
+	}
+
+
 	//The weather effect (rain or snow) follows the target's position. By default, the target is the player, but you can change it
 	//with this function. You could set the target to the cutscene camera for example.
 	public void setWeatherTarget( Transform target, float height )

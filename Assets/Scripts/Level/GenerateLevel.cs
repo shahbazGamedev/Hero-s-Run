@@ -178,6 +178,7 @@ public class GenerateLevel  : MonoBehaviour {
 			GameObject weatherManagerObject = GameObject.FindGameObjectWithTag("WeatherManager");
 			WeatherManager weatherManager = weatherManagerObject.GetComponent<WeatherManager>();
 			weatherManager.setFogTint(levelInfo.fogTint, levelInfo.fogFade );
+			weatherManager.setFogHeightDelta(levelInfo.fogHeightDelta );
 		}
 
 		//Verify if we should include a plane surrounding the tiles (like an ocean)
