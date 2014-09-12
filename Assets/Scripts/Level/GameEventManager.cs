@@ -94,10 +94,12 @@ public class GameEventManager : MonoBehaviour {
 		playerController.shakeCamera();
 		GameObject go = (GameObject)Instantiate(tentaclesSequence.tentaclePrefab, Vector3.zero, Quaternion.identity );
 		go.transform.position = lastTentaclePosition;
-		go.transform.rotation = Quaternion.Euler( 90f, Random.Range (-180f,180f), Random.Range (-6f,6f) );
+		go.transform.rotation = Quaternion.Euler( 0, Random.Range (-180f,180f), Random.Range (-6f,6f) );
 		go.name = "Fence";
+		go.animation.Play("attack");
+		go.animation.PlayQueued("wiggle", QueueMode.CompleteOthers);
 		LeanTween.moveLocalY(go, go.transform.position.y + 2, 1.15f ).setEase(LeanTweenType.easeOutExpo);
-		go.audio.Play ( (ulong)1.15 );
+		go.audio.PlayDelayed(1.15f);
 		GameObject flyingDebris = (GameObject)Instantiate(tentaclesSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
 		flyingDebris.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 4f, lastTentaclePosition.z );
 		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();

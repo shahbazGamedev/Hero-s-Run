@@ -1,0 +1,4 @@
+KrakenAttack: 0-35 noloop
+KrakenWiggle: 35-110 all
+
+
