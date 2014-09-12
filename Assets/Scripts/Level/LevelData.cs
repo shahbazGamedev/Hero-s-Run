@@ -11,7 +11,8 @@ public enum SunType
 	Night = 4,
 	Hell = 5,
 	Overcast = 6,
-	Cemetery = 7
+	Cemetery = 7,
+	Elfland = 8
 }
 
 public class LevelData : MonoBehaviour {
@@ -102,6 +103,15 @@ public class LevelData : MonoBehaviour {
 				Sun.light.shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 38.28f,119.5f,87.52f );
 				Sun.light.color = new Color(0.623f,0.729f,0.882f); //bluish
+				break;
+
+			case SunType.Elfland:
+				skyBoxName = "Overcast2 Skybox";
+				lightIntensity = 0.5f;
+				shadowStrength = 0.3f;
+				Sun.light.shadows = LightShadows.None;
+				sunDirection = Quaternion.Euler( 38.28f,119.5f,87.52f );
+				Sun.light.color = new Color(1f,0.788f,0.647f); //orange
 				break;
 
 			case SunType.Hell:

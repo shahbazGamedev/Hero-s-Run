@@ -185,7 +185,7 @@ public class GenerateLevel  : MonoBehaviour {
 		if( levelInfo.includeSurroundingPlane )
 		{
 			GameObject prefab = Resources.Load( "Level/surroundingPlane") as GameObject;
-			GameObject go = (GameObject)Instantiate(prefab, new Vector3( 0, -15.5f, 0 ), Quaternion.identity );
+			GameObject go = (GameObject)Instantiate(prefab, new Vector3( 0, -30f, 0 ), Quaternion.identity );
 			surroundingPlane = go.transform;
 			if( surroundingPlane.renderer.material != null )
 			{
