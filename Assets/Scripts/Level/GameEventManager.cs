@@ -18,6 +18,8 @@ public class GameEventManager : MonoBehaviour {
 	GameState previousGameState = GameState.Unknown;
 
 	Vector3 lastTentaclePosition;
+	public bool isTentacleSequenceActive = false;
+
 	
 	// Use this for initialization
 	void Awake () {
@@ -51,6 +53,7 @@ public class GameEventManager : MonoBehaviour {
 	public void playTentaclesSequence()
 	{
 		print ("Start of tentacles sequence");
+		isTentacleSequenceActive = true;
 		InvokeRepeating( "startPierceUp", 0.2f, 2f );
 	}
 
@@ -59,6 +62,7 @@ public class GameEventManager : MonoBehaviour {
 		print ("stop tentacles sequence");
 		CancelInvoke( "startPierceUp" );
 		CancelInvoke( "pierceUp" );
+		isTentacleSequenceActive = false;
 	}
 
 	void startPierceUp()
@@ -80,7 +84,19 @@ public class GameEventManager : MonoBehaviour {
 		{
 			xPos = PlayerController.laneLimit;
 		}
-		lastTentaclePosition = player.TransformPoint(new Vector3( xPos,-2f,attackDistance));
+		lastTentaclePosition = player.TransformPoint(new Vector3( xPos,0,attackDistance));
+
+		//Calculate the ground height
+		RaycastHit hit;
+		int layermask = ~(1 << 8); //exclude player which is layer is 8
+		float groundHeight = 0;
+		if (Physics.Raycast(new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 10f, lastTentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
+		{
+			groundHeight = lastTentaclePosition.y + 10f - hit.distance;
+			lastTentaclePosition = new Vector3(lastTentaclePosition.x, groundHeight - 2f, lastTentaclePosition.z);
+			print ("tent " + lastTentaclePosition );
+		}
+
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
 		ParticleSystem dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
 		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 2.1f, lastTentaclePosition.z );
@@ -253,8 +269,7 @@ public class GameEventManager : MonoBehaviour {
 		{
 			if( previousGameState == GameState.Countdown )
 			{
-				print ("gros caca " + tentaclesSequence.isSequenceActive );
-				if( tentaclesSequence != null && tentaclesSequence.isSequenceActive )
+				if( tentaclesSequence != null && isTentacleSequenceActive )
 				{
 					print ("Restart of tentacles sequence");
 					InvokeRepeating( "startPierceUp", 0.2f, 2f );

@@ -7,10 +7,6 @@ public class TentaclesSequence : MonoBehaviour {
 	PlayerController playerController;
 	FairyController fairyController;
 
-
-
-	public static bool hasBeenTriggered = false;
-	
 	float lastActivateTime = 0;
 
 	public GameObject tentaclePrefab;
@@ -22,7 +18,6 @@ public class TentaclesSequence : MonoBehaviour {
 	int rowIndex = 0;
 	const int NUMBER_OF_ROWS = 46;
 	GameEventManager gem;
-	public bool isSequenceActive = false;
 	public ParticleSystem tentacleAboutToAppearFx;
 
 	// Use this for initialization
@@ -34,16 +29,10 @@ public class TentaclesSequence : MonoBehaviour {
 
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
-
-
-
 	}
 	
 	void Start()
 	{
-		//Reset value
-		hasBeenTriggered = false;
-		isSequenceActive = false;
 
 		GameObject gameEventManagerObject = GameObject.FindGameObjectWithTag("GameEventManager");
 		gem = gameEventManagerObject.GetComponent<GameEventManager>();
@@ -52,15 +41,8 @@ public class TentaclesSequence : MonoBehaviour {
 
 	void startSequence()
 	{
-		isSequenceActive = true;
 		gem.playTentaclesSequence();
 	}
-
-	public void stopSequence()
-	{
-		isSequenceActive = false;
-	}
-
 
 	//Fairy tells something to player
 	void step1()
@@ -117,15 +99,12 @@ public class TentaclesSequence : MonoBehaviour {
 
 	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
 	{
-		if( eventType == GameEvent.Start_Kraken && !hasBeenTriggered )
+		if( eventType == GameEvent.Start_Kraken && !gem.isTentacleSequenceActive )
 		{
-			hasBeenTriggered = true;
-
 			startSequence();
 		}
-		else if( eventType == GameEvent.Stop_Kraken && isSequenceActive )
+		else if( eventType == GameEvent.Stop_Kraken && gem.isTentacleSequenceActive )
 		{
-			isSequenceActive = false;
 			gem.stopTentaclesSequence();
 		}
 	}

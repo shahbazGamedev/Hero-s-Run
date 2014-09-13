@@ -9,7 +9,7 @@ public class SoundManager : MonoBehaviour {
 
 	// Audio - Music
 	static AudioSource musicSource;
-	const float MUSIC_VOLUME = 0.4f;
+	const float MUSIC_VOLUME = 0.35f;
 
 	//Audio - Level ambience
 	static AudioSource levelAmbienceSource;
@@ -31,7 +31,7 @@ public class SoundManager : MonoBehaviour {
 
 		//Play the music track that we load from the Resources folder
 		musicSource = gameObject.AddComponent<AudioSource>();
-		musicSource.clip = Resources.Load("Audio/Cemetery Theme") as AudioClip;
+		musicSource.clip = Resources.Load("Audio/18 Royal Pursuit") as AudioClip;
 		musicSource.loop = true;
 		musicSource.volume = MUSIC_VOLUME;
 

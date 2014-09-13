@@ -47,7 +47,9 @@ public enum TileType {
 	Landmark_Broken_Bridge = 33,
 	T_Junction_Landmark_Cemetery_Queen = 34,
 	Landmark_Cemetery_Queen = 35,
-	Landmark_Magic_Bridge = 36
+	Landmark_Magic_Bridge = 36,
+	Landmark_Tomb_Start = 37,
+	Landmark_Tomb_Double = 38
 
 }
 
@@ -461,13 +463,16 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Landmark_Clocktower:
 			case TileType.Landmark_Drawbridge:
 			case TileType.Landmark_Banquet_Hall:
-				depth = 2;
+			case TileType.Landmark_Tomb_Double:
+
+			depth = 2;
 				break;
 
 			case TileType.Landmark_Broken_Bridge:
 				depth = 3;
 				break;
 
+			case TileType.Landmark_Tomb_Start:
 			case TileType.Landmark_Magic_Bridge:
 				depth = 4;
 				break;
@@ -862,6 +867,8 @@ public class GenerateLevel  : MonoBehaviour {
 		case TileType.Straight:
 		case TileType.Landmark_Cemetery_Queen:
 		case TileType.Landmark_Magic_Bridge:
+		case TileType.Landmark_Tomb_Start:
+		case TileType.Landmark_Tomb_Double:
 			return TileType.Straight;
 
 		case TileType.Left:
