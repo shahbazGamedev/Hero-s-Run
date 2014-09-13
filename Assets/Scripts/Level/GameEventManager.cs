@@ -115,7 +115,7 @@ public class GameEventManager : MonoBehaviour {
 		go.animation.Play("attack");
 		go.animation.PlayQueued("wiggle", QueueMode.CompleteOthers);
 		LeanTween.moveLocalY(go, go.transform.position.y + 2, 1.15f ).setEase(LeanTweenType.easeOutExpo);
-		go.audio.PlayDelayed(1.15f);
+		go.audio.PlayDelayed(0.1f);
 		GameObject flyingDebris = (GameObject)Instantiate(tentaclesSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
 		flyingDebris.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 4f, lastTentaclePosition.z );
 		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
