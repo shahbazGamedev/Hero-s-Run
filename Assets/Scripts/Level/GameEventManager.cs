@@ -96,12 +96,13 @@ public class GameEventManager : MonoBehaviour {
 		if (Physics.Raycast(new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 10f, lastTentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
 		{
 			groundHeight = lastTentaclePosition.y + 10f - hit.distance;
+			groundHeight = 0;
 			lastTentaclePosition = new Vector3(lastTentaclePosition.x, groundHeight - 2f, lastTentaclePosition.z);
 		}
 
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
 		ParticleSystem dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
-		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 2.08f, lastTentaclePosition.z );
+		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 2.1f, lastTentaclePosition.z );
 		dust.Play();
 		GameObject.Destroy( dust, 3f );
 	}
@@ -117,8 +118,8 @@ public class GameEventManager : MonoBehaviour {
 		go.name = "Fence";
 		go.animation.Play("attack");
 		go.animation.PlayQueued("wiggle", QueueMode.CompleteOthers);
-		//LeanTween.moveLocalY(go, go.transform.position.y + 2, 1.15f ).setEase(LeanTweenType.easeOutExpo).setOnComplete(pierceDown).setOnCompleteParam( go as Object );
-		LeanTween.moveLocalY(go, go.transform.position.y + 2, 1.15f ).setEase(LeanTweenType.easeOutExpo);
+		LeanTween.moveLocalY(go, go.transform.position.y + 2, 1.15f ).setEase(LeanTweenType.easeOutExpo).setOnComplete(pierceDown).setOnCompleteParam( go as Object );
+		//LeanTween.moveLocalY(go, go.transform.position.y + 2, 1.15f ).setEase(LeanTweenType.easeOutExpo);
 		go.audio.PlayDelayed(0.1f);
 		GameObject flyingDebris = (GameObject)Instantiate(tentaclesSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
 		flyingDebris.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 4f, lastTentaclePosition.z );
@@ -169,12 +170,13 @@ public class GameEventManager : MonoBehaviour {
 		if (Physics.Raycast(new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 10f, lastSideTentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
 		{
 			groundHeight = lastSideTentaclePosition.y + 10f - hit.distance;
+			groundHeight = 0;
 			lastSideTentaclePosition = new Vector3(lastSideTentaclePosition.x, groundHeight - 2f, lastSideTentaclePosition.z);
 		}
 		
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
 		ParticleSystem dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
-		dust.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 2.08f, lastSideTentaclePosition.z );
+		dust.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 2.1f, lastSideTentaclePosition.z );
 		dust.Play();
 		GameObject.Destroy( dust, 3f );
 	}
