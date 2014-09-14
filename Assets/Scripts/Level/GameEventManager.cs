@@ -101,7 +101,7 @@ public class GameEventManager : MonoBehaviour {
 
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
 		ParticleSystem dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
-		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 2.1f, lastTentaclePosition.z );
+		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 2.08f, lastTentaclePosition.z );
 		dust.Play();
 		GameObject.Destroy( dust, 3f );
 	}
@@ -117,6 +117,7 @@ public class GameEventManager : MonoBehaviour {
 		go.name = "Fence";
 		go.animation.Play("attack");
 		go.animation.PlayQueued("wiggle", QueueMode.CompleteOthers);
+		//LeanTween.moveLocalY(go, go.transform.position.y + 2, 1.15f ).setEase(LeanTweenType.easeOutExpo).setOnComplete(pierceDown).setOnCompleteParam( go as Object );
 		LeanTween.moveLocalY(go, go.transform.position.y + 2, 1.15f ).setEase(LeanTweenType.easeOutExpo);
 		go.audio.PlayDelayed(0.1f);
 		GameObject flyingDebris = (GameObject)Instantiate(tentaclesSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
@@ -124,9 +125,16 @@ public class GameEventManager : MonoBehaviour {
 		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
 		bo.triggerBreak( player.collider );
 		//We only want to keep the tentacle for a few seconds
-		GameObject.Destroy( go, 3f );
+		GameObject.Destroy( go, 4f );
 		Invoke( "startPierceUp", 1.2f + Random.value );
 
+	}
+
+	void pierceDown( object go )
+	{
+		GameObject tentacle = go as GameObject;
+		tentacle.animation.CrossFade("attack", 0.4f);
+		LeanTween.moveLocalY( tentacle, tentacle.transform.position.y - 18, 2f ).setEase(LeanTweenType.easeOutExpo);
 	}
 
 	void sideStartPierceUp()
@@ -166,7 +174,7 @@ public class GameEventManager : MonoBehaviour {
 		
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
 		ParticleSystem dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
-		dust.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 2.1f, lastSideTentaclePosition.z );
+		dust.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 2.08f, lastSideTentaclePosition.z );
 		dust.Play();
 		GameObject.Destroy( dust, 3f );
 	}
