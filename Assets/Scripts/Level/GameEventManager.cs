@@ -97,7 +97,7 @@ public class GameEventManager : MonoBehaviour {
 		if (Physics.Raycast(new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 10f, lastTentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
 		{
 			groundHeight = lastTentaclePosition.y + 10f - hit.distance;
-			groundHeight = 0;
+			//groundHeight = 0;
 			lastTentaclePosition = new Vector3(lastTentaclePosition.x, groundHeight - 2f, lastTentaclePosition.z);
 		}
 
@@ -171,7 +171,7 @@ public class GameEventManager : MonoBehaviour {
 		if (Physics.Raycast(new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 10f, lastSideTentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
 		{
 			groundHeight = lastSideTentaclePosition.y + 10f - hit.distance;
-			groundHeight = 0;
+			//groundHeight = 0;
 			lastSideTentaclePosition = new Vector3(lastSideTentaclePosition.x, groundHeight - 2f, lastSideTentaclePosition.z);
 		}
 		

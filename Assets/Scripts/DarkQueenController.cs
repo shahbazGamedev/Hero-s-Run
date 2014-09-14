@@ -23,6 +23,8 @@ public class DarkQueenController : BaseClass {
 	public ParticleSystem fairySpellFx;
 	public AudioClip fairySpellSound;
 
+	public ParticleSystem floatDownFx;
+
 	Transform player;
 	PlayerController playerController;
 
@@ -119,6 +121,12 @@ public class DarkQueenController : BaseClass {
 		}
 	}
 
+	public void floatDown( float height, System.Action callback )
+	{
+		floatDownFx.Play ();
+		LeanTween.moveLocalY(gameObject, gameObject.transform.position.y - height,4f ).setEase(LeanTweenType.easeOutQuad).setOnComplete(callback);
+	}
+	
 	private void positionFairy ()
 	{
 		// Calculate the current rotation angles
