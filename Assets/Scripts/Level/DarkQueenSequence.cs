@@ -65,14 +65,14 @@ public class DarkQueenSequence : MonoBehaviour {
 	//Fairy tells something to player
 	void step1()
 	{
-		AchievementDisplay.activateDisplayFairy( "Oh no! The Dark Queen wants to fuck us.", 0.35f, 3.6f );
+		AchievementDisplay.activateDisplayFairy( "Oh no! It's the dark Queen ...", 0.35f, 3.6f );
 		fairy.audio.PlayOneShot( fairyVO );
 		Invoke ("step2", 5f );
 	}
 
 	void step2()
 	{
-		AchievementDisplay.activateDisplayDarkQueen( "I am going to use my staff to whip your sorry ass.", 0.35f, 3.6f );
+		AchievementDisplay.activateDisplayDarkQueen( "Don't you know that you should never keep your Queen waiting.", 0.35f, 3.6f );
 		darkQueenObject.audio.PlayOneShot( darkQueenVO );
 		darkQueenController.walk( false );
 		Invoke ("step3", 4.2f );
