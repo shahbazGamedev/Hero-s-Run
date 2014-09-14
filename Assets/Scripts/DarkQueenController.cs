@@ -90,9 +90,9 @@ public class DarkQueenController : BaseClass {
 		listOfLights = FindObjectsOfType(typeof(Light)) as Light[];
 		foreach(Light pussy in listOfLights )
 		{
-			if( Vector3.Distance(transform.position,pussy.transform.position) < 6f )
+			if( Vector3.Distance(transform.position,pussy.transform.position) < 2000f )
 			{
-				pussy.light.intensity = 0;
+				if( pussy.name != "Staff Light" ) pussy.light.intensity = 0;
 			}
 		}
 	}
@@ -195,12 +195,12 @@ public class DarkQueenController : BaseClass {
 
 	public void CastSpell()
 	{
-		fairyAnimation.CrossFade("CastSpell", 0.2f);
-		fairyAnimation.PlayQueued("Hover_Happy");
-		Invoke ("playCastSpellFx", 4f );
+		//fairyAnimation.CrossFade("CastSpell", 0.2f);
+		//fairyAnimation.PlayQueued("Hover_Happy");
+		Invoke ("playCastSpellFx", 1f );
 	}
 
-	void playCastSpellFx()
+	public void playCastSpellFx()
 	{
 		fairySpellFx.Play();
 		audio.PlayOneShot( fairySpellSound );

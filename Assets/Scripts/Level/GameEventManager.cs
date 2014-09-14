@@ -20,6 +20,7 @@ public class GameEventManager : MonoBehaviour {
 	Vector3 lastTentaclePosition;
 	Vector3 lastSideTentaclePosition;
 	public bool isTentacleSequenceActive = false;
+	public bool isDarkQueenSequenceActive = false;
 
 	
 	// Use this for initialization

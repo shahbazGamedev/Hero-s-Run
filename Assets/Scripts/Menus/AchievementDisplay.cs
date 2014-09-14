@@ -12,6 +12,7 @@ public class AchievementDisplay : MonoBehaviour {
 	static Texture2D achievementBoxTextureB;
 	static Texture2D achievementImage;
 	static Texture2D fairyImage;
+	static Texture2D darkQueenImage;
 	static Vector2 achievementBoxSize = new Vector2( Screen.width, 0.1f * Screen.height);
 	static float margin = Screen.width * 0.05f;
 	static LTRect achievementBoxRect = new LTRect( -Screen.width, 0.78f * Screen.height, achievementBoxSize.x, achievementBoxSize.y );
@@ -36,6 +37,7 @@ public class AchievementDisplay : MonoBehaviour {
 		//achievementImage is a back up in case the image provided from GameCenter is null
 		achievementImage = Resources.Load("GUI/hero") as Texture2D;
 		fairyImage = Resources.Load("GUI/Fairy_portrait02") as Texture2D;
+		darkQueenImage = Resources.Load("GUI/Dark_Queen_portrait") as Texture2D;
 
 		PopupHandler.changeFontSizeBasedOnResolution( textStyle );
 
@@ -70,6 +72,11 @@ public class AchievementDisplay : MonoBehaviour {
 	public static void activateDisplayFairy( string description, float boxHeight, float waitTime )
 	{
 		activateDisplay( description, fairyImage, boxHeight, waitTime );
+	}
+
+	public static void activateDisplayDarkQueen( string description, float boxHeight, float waitTime )
+	{
+		activateDisplay( description, darkQueenImage, boxHeight, waitTime );
 	}
 
 	public static void activateDisplay( string description, Texture2D image, float boxHeight, float waitTime )

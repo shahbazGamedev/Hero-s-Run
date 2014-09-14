@@ -9,9 +9,12 @@ public class DarkQueenSequence : MonoBehaviour {
 	Transform fairy;
 	FairyController fairyController;
 	DarkQueenController darkQueenController;
+	public AudioClip fairyVO;
+	public AudioClip darkQueenVO;
 
 	bool hasBeenTriggered = false;
-	
+	GameEventManager gem;
+	GameObject darkQueenObject;
 
 	// Use this for initialization
 	void Awake () {
@@ -24,23 +27,29 @@ public class DarkQueenSequence : MonoBehaviour {
 		fairy = fairyObject.transform;
 		fairyController = fairyObject.GetComponent<FairyController>();
 
-		GameObject darkQueenObject = GameObject.FindGameObjectWithTag("DarkQueen");
+		darkQueenObject = GameObject.FindGameObjectWithTag("DarkQueen");
 		darkQueenController = darkQueenObject.GetComponent<DarkQueenController>();
 
 	}
 	
 	void Start()
 	{
+		
+		GameObject gameEventManagerObject = GameObject.FindGameObjectWithTag("GameEventManager");
+		gem = gameEventManagerObject.GetComponent<GameEventManager>();
+		//gem.setOpeningSequence( this );
 	}
 
 	public void startSequence()
 	{
+		if( gem.isDarkQueenSequenceActive ) return;
+
 		//Slowdown player and remove player control
 		print ("Start of dark queen sequence");
+		gem.isDarkQueenSequenceActive = true;
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(24f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(37f, afterPlayerSlowdown ) );
 		darkQueenController.walk( true );
-		Invoke ("stopWalking", 4f );
 	}
 
 	void afterPlayerSlowdown()
@@ -49,37 +58,48 @@ public class DarkQueenSequence : MonoBehaviour {
 		//Call fairy
 		fairyController.setYRotationOffset( -10f );
 		fairyController.Appear ( FairyEmotion.Worried );
+		Invoke ("step1", 1f );
+
 	}
 
 	//Fairy tells something to player
 	void step1()
 	{
-		//AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_DRAGON_BRIDGE"), 0.35f, 3.6f );
-		//Invoke ("step2", 3.75f );
+		AchievementDisplay.activateDisplayFairy( "Oh no! The Dark Queen wants to fuck us.", 0.35f, 3.6f );
+		fairy.audio.PlayOneShot( fairyVO );
+		Invoke ("step2", 5f );
 	}
 
-	void stopWalking()
+	void step2()
 	{
+		AchievementDisplay.activateDisplayDarkQueen( "I am going to use my staff to whip your sorry ass.", 0.35f, 3.6f );
+		darkQueenObject.audio.PlayOneShot( darkQueenVO );
 		darkQueenController.walk( false );
-		//fairyController.CastSpell();
-		//Invoke ("step3", 4.2f );
+		Invoke ("step3", 4.2f );
 	}
 
-	//Spell works and bridge is rebuilt
-	//Dragon takes-off
 	void step3()
 	{
-		Invoke ("step4", 2.5f );
+		darkQueenController.CastSpell();
+		Invoke ("step4", 4.2f );
 	}
-	
+
+
 	//Make the fairy disappear
 	//Player starts running again
 	void step4()
 	{
+		darkQueenController.Disappear();
 		fairyController.Disappear ();
 		playerController.allowRunSpeedToIncrease = true;
 		playerController.startRunning(false);
 		fairyController.resetYRotationOffset();
+		Invoke ("step5", 2f );
+	}
+
+	void step5()
+	{
+		gem.playTentaclesSequence();
 	}
 
 	void OnEnable()

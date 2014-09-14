@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class SpawnCollectibles : MonoBehaviour {
-
+	/*
 	//Make these game objects static as we only want to load them once for all instances
 	static GameObject CoinPack_4x1_1x5 = Resources.Load("Coins/CoinPack_4x1_1x5") as GameObject;
 	static GameObject CoinPack_5x1 = Resources.Load("Coins/CoinPack_5x1") as GameObject;
@@ -14,6 +14,7 @@ public class SpawnCollectibles : MonoBehaviour {
 	// Use this for initialization
 	void OnEnable ()
 	{
+		return;
 		if ( initialized || LevelManager.Instance.isTutorialActive() ) return;
 		initialized = true;
 
@@ -111,5 +112,5 @@ public class SpawnCollectibles : MonoBehaviour {
 			go.transform.parent = transform;
 
 		}
-	}
+	}*/
 }
