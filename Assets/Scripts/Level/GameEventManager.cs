@@ -18,6 +18,7 @@ public class GameEventManager : MonoBehaviour {
 	GameState previousGameState = GameState.Unknown;
 
 	Vector3 lastTentaclePosition;
+	Vector3 lastSideTentaclePosition;
 	public bool isTentacleSequenceActive = false;
 
 	
@@ -47,27 +48,29 @@ public class GameEventManager : MonoBehaviour {
 	public void setOpeningSequence( TentaclesSequence tentaclesSequence )
 	{
 		this.tentaclesSequence = tentaclesSequence;
-
 	}
 
 	public void playTentaclesSequence()
 	{
-		print ("Start of tentacles sequence");
+		print ("Starting tentacles sequence");
 		isTentacleSequenceActive = true;
-		InvokeRepeating( "startPierceUp", 0.2f, 2f );
+		Invoke( "startPierceUp", 1f );
+		Invoke( "sideStartPierceUp", 2f );
 	}
 
 	public void stopTentaclesSequence()
 	{
-		print ("stop tentacles sequence");
+		print ("Stopping tentacles sequence");
 		CancelInvoke( "startPierceUp" );
 		CancelInvoke( "pierceUp" );
+		CancelInvoke( "sideStartPierceUp" );
+		CancelInvoke( "sidePierceUp" );
 		isTentacleSequenceActive = false;
 	}
 
 	void startPierceUp()
 	{
-		Invoke( "pierceUp", 0.4f );
+		Invoke( "pierceUp", 0.33f );
 		float attackDistance = 1.1f * PlayerController.getPlayerSpeed();
 		//Pick random X location
 		float xPos;
@@ -94,7 +97,6 @@ public class GameEventManager : MonoBehaviour {
 		{
 			groundHeight = lastTentaclePosition.y + 10f - hit.distance;
 			lastTentaclePosition = new Vector3(lastTentaclePosition.x, groundHeight - 2f, lastTentaclePosition.z);
-			print ("tent " + lastTentaclePosition );
 		}
 
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
@@ -106,11 +108,12 @@ public class GameEventManager : MonoBehaviour {
 
 	void pierceUp()
 	{
-		print ("Shooting up tentacle");
 		playerController.shakeCamera();
 		GameObject go = (GameObject)Instantiate(tentaclesSequence.tentaclePrefab, Vector3.zero, Quaternion.identity );
 		go.transform.position = lastTentaclePosition;
 		go.transform.rotation = Quaternion.Euler( 0, Random.Range (-180f,180f), Random.Range (-6f,6f) );
+		float randomScale = 1f + 0.4f * Random.value;
+		go.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
 		go.name = "Fence";
 		go.animation.Play("attack");
 		go.animation.PlayQueued("wiggle", QueueMode.CompleteOthers);
@@ -122,7 +125,72 @@ public class GameEventManager : MonoBehaviour {
 		bo.triggerBreak( player.collider );
 		//We only want to keep the tentacle for a few seconds
 		GameObject.Destroy( go, 3f );
+		Invoke( "startPierceUp", 1.2f + Random.value );
+
 	}
+
+	void sideStartPierceUp()
+	{
+		Invoke( "sidePierceUp", 0.33f );
+		float attackDistance = 1.1f * PlayerController.getPlayerSpeed() + Random.Range( -3,1 );
+		//Pick random X location on either side of main path
+		float xPos;
+		int laneChoice = Random.Range(0, 4);
+		if( laneChoice == 0 )
+		{
+			xPos = -2.6f;
+		}
+		else if( laneChoice == 1 )
+		{
+			xPos = -3.9f;
+		}
+		else if( laneChoice == 2 )
+		{
+			xPos = 2.6f;
+		}
+		else
+		{
+			xPos = 3.9f;
+		}
+		lastSideTentaclePosition = player.TransformPoint(new Vector3( xPos,0,attackDistance));
+		
+		//Calculate the ground height
+		RaycastHit hit;
+		int layermask = ~(1 << 8); //exclude player which is layer is 8
+		float groundHeight = 0;
+		if (Physics.Raycast(new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 10f, lastSideTentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
+		{
+			groundHeight = lastSideTentaclePosition.y + 10f - hit.distance;
+			lastSideTentaclePosition = new Vector3(lastSideTentaclePosition.x, groundHeight - 2f, lastSideTentaclePosition.z);
+		}
+		
+		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
+		ParticleSystem dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
+		dust.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 2.1f, lastSideTentaclePosition.z );
+		dust.Play();
+		GameObject.Destroy( dust, 3f );
+	}
+	
+	void sidePierceUp()
+	{
+		GameObject go = (GameObject)Instantiate(tentaclesSequence.tentaclePrefab, Vector3.zero, Quaternion.identity );
+		go.transform.position = lastSideTentaclePosition;
+		go.transform.rotation = Quaternion.Euler( 0, Random.Range (-180f,180f), Random.Range (-6f,6f) );
+		float randomScale = 1f + 0.4f * Random.value;
+		go.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
+		go.animation.Play("attack");
+		go.animation.PlayQueued("wiggle", QueueMode.CompleteOthers);
+		LeanTween.moveLocalY(go, go.transform.position.y + 2, 1.15f ).setEase(LeanTweenType.easeOutExpo);
+		go.audio.PlayDelayed(0.1f);
+		GameObject flyingDebris = (GameObject)Instantiate(tentaclesSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
+		flyingDebris.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 4f, lastSideTentaclePosition.z );
+		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
+		bo.triggerBreak( player.collider );
+		//We only want to keep the tentacle for a few seconds
+		GameObject.Destroy( go, 3f );
+		Invoke( "sideStartPierceUp", 0.8f + Random.value * 1.5f );
+	}
+
 
 
 	//ISLAND TOWER OPENING SEQUENCE START
@@ -272,7 +340,7 @@ public class GameEventManager : MonoBehaviour {
 				if( tentaclesSequence != null && isTentacleSequenceActive )
 				{
 					print ("Restart of tentacles sequence");
-					InvokeRepeating( "startPierceUp", 0.2f, 2f );
+					playTentaclesSequence();
 					LeanTween.resume( gameObject );
 				}
 			}
