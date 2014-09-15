@@ -38,12 +38,7 @@ public class TentaclesSequence : MonoBehaviour {
 		gem = gameEventManagerObject.GetComponent<GameEventManager>();
 		gem.setOpeningSequence( this );
 	}
-
-	void startSequence()
-	{
-		gem.playTentaclesSequence();
-	}
-
+	
 	//Fairy tells something to player
 	void step1()
 	{
@@ -75,38 +70,6 @@ public class TentaclesSequence : MonoBehaviour {
 		fairyController.resetYRotationOffset();
 	}
 	
-
-	void OnEnable()
-	{
-		PlayerController.playerStateChanged += PlayerStateChange;
-		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
-	}
 	
-	void OnDisable()
-	{
-		PlayerController.playerStateChanged -= PlayerStateChange;
-		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
-	}
-	
-	void PlayerStateChange( CharacterState newState )
-	{
-		if( newState == CharacterState.Dying )
-		{
-			//print ("Player died cancelling invoke repeating");
-			//CancelInvoke("pierceUp");
-		}
-	}
-
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
-	{
-		if( eventType == GameEvent.Start_Kraken && !gem.isTentacleSequenceActive )
-		{
-			startSequence();
-		}
-		else if( eventType == GameEvent.Stop_Kraken && gem.isTentacleSequenceActive )
-		{
-			gem.stopTentaclesSequence();
-		}
-	}
 
 }

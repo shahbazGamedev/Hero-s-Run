@@ -71,7 +71,6 @@ public class GameEventManager : MonoBehaviour {
 
 	void startPierceUp()
 	{
-		Invoke( "pierceUp", 0.33f );
 		float attackDistance = 1.1f * PlayerController.getPlayerSpeed();
 		//Pick random X location
 		float xPos;
@@ -99,6 +98,12 @@ public class GameEventManager : MonoBehaviour {
 			groundHeight = lastTentaclePosition.y + 10f - hit.distance;
 			//groundHeight = 0;
 			lastTentaclePosition = new Vector3(lastTentaclePosition.x, groundHeight - 2f, lastTentaclePosition.z);
+			Invoke( "pierceUp", 0.33f );
+		}
+		else
+		{
+			//We did not find the ground. Abort.
+			return;
 		}
 
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
@@ -141,7 +146,6 @@ public class GameEventManager : MonoBehaviour {
 
 	void sideStartPierceUp()
 	{
-		Invoke( "sidePierceUp", 0.33f );
 		float attackDistance = 1.1f * PlayerController.getPlayerSpeed() + Random.Range( -3,1 );
 		//Pick random X location on either side of main path
 		float xPos;
@@ -173,8 +177,14 @@ public class GameEventManager : MonoBehaviour {
 			groundHeight = lastSideTentaclePosition.y + 10f - hit.distance;
 			//groundHeight = 0;
 			lastSideTentaclePosition = new Vector3(lastSideTentaclePosition.x, groundHeight - 2f, lastSideTentaclePosition.z);
+			Invoke( "sidePierceUp", 0.33f );
 		}
-		
+		else
+		{
+			//We did not find the ground. Abort.
+			return;
+		}
+
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
 		ParticleSystem dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
 		dust.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 2.1f, lastSideTentaclePosition.z );
@@ -328,12 +338,14 @@ public class GameEventManager : MonoBehaviour {
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
+		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
 		GameManager.gameStateEvent += GameStateChange;
 	}
 	
 	void OnDisable()
 	{
 		PlayerController.playerStateChanged -= PlayerStateChange;
+		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 		GameManager.gameStateEvent -= GameStateChange;
 	}
 
@@ -365,6 +377,19 @@ public class GameEventManager : MonoBehaviour {
 		if( newState == CharacterState.Dying )
 		{
 			CancelInvoke();
+		}
+	}
+
+
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	{
+		if( eventType == GameEvent.Start_Kraken && !isTentacleSequenceActive )
+		{
+			playTentaclesSequence();
+		}
+		else if( eventType == GameEvent.Stop_Kraken && isTentacleSequenceActive )
+		{
+			stopTentaclesSequence();
 		}
 	}
 
