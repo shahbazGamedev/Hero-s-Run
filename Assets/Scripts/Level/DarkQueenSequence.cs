@@ -48,9 +48,9 @@ public class DarkQueenSequence : MonoBehaviour {
 		print ("Start of dark queen sequence");
 		gem.isDarkQueenSequenceActive = true;
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(37f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(24f, afterPlayerSlowdown ) );
 		//darkQueenController.walk( true );
-		darkQueenController.floatDown( 19.07f, landed );
+		darkQueenController.floatDown( 23.52f, landed );
 	}
 
 	public void landed()
