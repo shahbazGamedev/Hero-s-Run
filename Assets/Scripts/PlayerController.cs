@@ -178,7 +178,7 @@ public class PlayerController : BaseClass {
 	const float MIN_DISTANCE_FOR_FALL = 7f;
 	//When the player falls, we start calculating his fall distance. If the fall distance is greater than FALL_TO_DEATH_DISTANCE, then the player will die.
 	float fallStartYPos = 0;
-	const float FALL_TO_DEATH_DISTANCE = 50f;
+	const float FALL_TO_DEATH_DISTANCE = 60f;
 	//If the fall distance is less than DISTANCE_FOR_LAND_ANIMATION meters, the hero plays the Land animation; above, he plays the Stumble animation.
 	const float DISTANCE_FOR_LAND_ANIMATION = 34f;
 
@@ -2063,14 +2063,6 @@ public class PlayerController : BaseClass {
 				if( riverCoinPack != null ) riverCoinPack.gameObject.SetActive(false);
 				allowDistanceTravelledCalculations = false;
 				managePlayerDeath ( DeathType.Water );
-			}
-		}
-		else if( other.name == "surroundingPlane(Clone)" )
-		{
-			if( _characterState != CharacterState.Dying )
-			{
-				allowDistanceTravelledCalculations = false;
-				managePlayerDeath ( DeathType.Cliff );
 			}
 		}
 		else if( other.name == "Checkpoint" )

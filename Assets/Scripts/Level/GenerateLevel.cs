@@ -465,16 +465,15 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Landmark_Drawbridge:
 			case TileType.Landmark_Banquet_Hall:
 			case TileType.Landmark_Tomb_Double:
-
-			depth = 2;
+				depth = 2;
 				break;
 
+			case TileType.Landmark_Tomb_Start:
 			case TileType.Landmark_Broken_Bridge:
 			case TileType.Start_Fairyland:
 				depth = 3;
 				break;
 
-			case TileType.Landmark_Tomb_Start:
 			case TileType.Landmark_Magic_Bridge:
 				depth = 4;
 				break;

@@ -50,7 +50,7 @@ public class DarkQueenSequence : MonoBehaviour {
 		GameManager.Instance.setGameState(GameState.Checkpoint);
 		StartCoroutine( playerController.slowDownPlayer(37f, afterPlayerSlowdown ) );
 		//darkQueenController.walk( true );
-		darkQueenController.floatDown( 22.35f, landed );
+		darkQueenController.floatDown( 19.07f, landed );
 	}
 
 	public void landed()
