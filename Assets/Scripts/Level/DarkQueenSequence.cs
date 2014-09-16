@@ -132,7 +132,7 @@ public class DarkQueenSequence : MonoBehaviour {
 
 	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
 	{
-		if( eventType == GameEvent.Kill_Fairy && !hasBeenTriggered )
+		if( eventType == GameEvent.Start_DarkQueen_Kraken_Sequence && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
 

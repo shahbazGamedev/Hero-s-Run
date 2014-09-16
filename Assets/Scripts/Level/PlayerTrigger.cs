@@ -22,7 +22,7 @@ public enum GameEvent {
 	Stop_Snowing = 17,
 	Fairy_Message = 18,
 	Broken_Bridge = 19,
-	Kill_Fairy = 20,
+	Start_DarkQueen_Kraken_Sequence = 20,
 	Start_Kraken = 21,
 	Stop_Kraken = 22,
 	Build_Magic_Bridge = 23
