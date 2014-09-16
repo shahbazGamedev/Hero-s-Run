@@ -125,7 +125,7 @@ public class DarkQueenController : BaseClass {
 	{
 		transform.localScale = new Vector3( 1.2f, 1.2f, 1.2f );
 		floatDownFx.Play ();
-		LeanTween.moveLocalY(gameObject, gameObject.transform.position.y - height,4f ).setEase(LeanTweenType.easeOutQuad).setOnComplete(callback);
+		LeanTween.moveLocalY(gameObject, gameObject.transform.localPosition.y - height,4f ).setEase(LeanTweenType.easeOutQuad).setOnComplete(callback);
 	}
 	
 	private void positionFairy ()

@@ -696,6 +696,12 @@ public class GenerateLevel  : MonoBehaviour {
 			addTile( TileType.Landmark_Broken_Bridge );
 			break;
 
+		case TileType.Landmark_Tomb_Start:
+			//We want the Landmark tile to have a 0 degree rotation.
+			ensureTileHasZeroRotation();
+			addTile( TileType.Landmark_Tomb_Start );
+			break;
+
 		default:
 			addTile( roadSegment.endTile );
 			break;
@@ -929,6 +935,12 @@ public class GenerateLevel  : MonoBehaviour {
 			//We want the Landmark tile to have a 0 degree rotation.
 			ensureTileHasZeroRotation2(theme);
 			addTileData(TileType.Landmark_Broken_Bridge, theme );
+			break;
+
+		case TileType.Landmark_Tomb_Start:
+			//We want the Landmark tile to have a 0 degree rotation.
+			ensureTileHasZeroRotation2(theme);
+			addTileData(TileType.Landmark_Tomb_Start, theme );
 			break;
 
 		default:
