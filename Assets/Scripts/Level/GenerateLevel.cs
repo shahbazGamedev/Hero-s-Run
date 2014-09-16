@@ -976,29 +976,9 @@ public class GenerateLevel  : MonoBehaviour {
 		//We want the T-Junction tile to have a 0 degree rotation.
 		ensureTileHasZeroRotation2( theme );
 		//Adding T-Junction
+		//The additional left and right tiles that are associated with a T-Junction
+		//will be added at runtime.
 		addTileData(tJunctionTileType, theme);
-		//Save the previousTilePos and previousTileRot
-		Vector3 tJunctionTilePos = previousTilePos;
-		Quaternion tJunctionTileRot = previousTileRot;
-
-		//Adding 4 tiles to the left of the T-Junction
-		Debug.Log ("Adding LEFT SIDE OF T JUNCTION");
-		previousTileType = TileType.Left;
-		addTileData(TileType.Straight, theme);
-		addTileData(TileType.Right, theme);
-		addTileData(TileType.Straight, theme);
-		addTileData(TileType.Right, theme);
-		Debug.Log ("FINISHED LEFT SIDE OF T JUNCTION");
-
-		//Reset values so that the Right path gets constructed normally
-		previousTilePos = tJunctionTilePos;
-		previousTileRot = tJunctionTileRot;
-		previousTileType = TileType.Right;
-
-		//Also, add two tiles to the right to avoid the possibility
-		//of a second random next T-Junction overlaping this one.
-		addTileData( TileType.Left, theme );
-		addTileData( TileType.Straight, theme );
 	}
 
 	public class TileData
@@ -1669,7 +1649,15 @@ public class GenerateLevel  : MonoBehaviour {
 				TileData td = levelTileList.Dequeue();
 				setCurrentTheme( td.tileTheme );
 				//Debug.LogWarning("tileEntranceCrossed: Adding next level tile of type: " + td.tileType + " theme: " + td.tileTheme );
-				addTile( td.tileType );
+				if( td.tileType == TileType.T_Junction || td.tileType == TileType.T_Junction_Landmark_Cemetery || td.tileType == TileType.T_Junction_Landmark_Cemetery_Queen )
+				{
+					//Because T-Junction construction changes the previous position and rotation values, we cannot do it during the prepareTileList phase.
+					addRandomTJunction( td.tileType );
+				}
+				else
+				{
+					addTile( td.tileType );
+				}
 			}
 		}
 
