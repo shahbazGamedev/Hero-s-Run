@@ -75,7 +75,9 @@ public class DarkQueenController : BaseClass {
 	List<LightData> listOfLights = new List<LightData>(30);
 	const float MAX_DISTANCE_LIGHT_AFFECTED = 180f;
 	public AudioClip darkQueenVO;
+	public AudioClip darkQueenVO_riseFromTheDeep;
 	public DarkQueenSequence dks;
+	public ParticleSystem poisonMist;
 
 
 	void Awake()
@@ -302,6 +304,7 @@ public class DarkQueenController : BaseClass {
 	public void castKrakenSpell()
 	{
 		AchievementDisplay.activateDisplayDarkQueen( "Rise Sister, rise from the deep...", 0.35f, 3.8f );
+		//audio.PlayOneShot( darkQueenVO_riseFromTheDeep );
 		fairyAnimation.Play("DarkQueen_SpellCast");
 		Invoke("playKrakenSpellFX", 0.3f);
 		Invoke("leave", fairyAnimation["DarkQueen_SpellCast"].length );
@@ -311,6 +314,7 @@ public class DarkQueenController : BaseClass {
 	{
 		audio.PlayOneShot( krakenSpellSound );
 		krakenSpellFx.Play();
+		//poisonMist.Play();
 	}
 
 	public void leave()
