@@ -11,6 +11,7 @@ public class TentaclesSequence : MonoBehaviour {
 
 	public GameObject tentaclePrefab;
 	public GameObject debrisPrefab;
+	public GameObject groundDebrisPrefab;
 
 	float tentacleHalfHeight = 2f;
 	Transform player;
