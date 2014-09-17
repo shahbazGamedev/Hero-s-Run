@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
 
 public class DarkQueenController : BaseClass {
 	
@@ -9,6 +11,13 @@ public class DarkQueenController : BaseClass {
 		Leave = 2,
 		Hover = 3,
 		Walk = 4
+	}
+
+	public enum LightStatus {
+		isNormal = 0,
+		isFadingOut = 1,
+		isFadingIn = 2,
+		isFaded = 3
 	}
 
 	//Components
@@ -60,7 +69,9 @@ public class DarkQueenController : BaseClass {
 	public Vector3 forward;
 	float flyingSpeed = 6f;
 	CharacterController controller;
-	Light[] listOfLights;
+
+	List<LightData> listOfLights = new List<LightData>(30);
+	const float MAX_DISTANCE_LIGHT_AFFECTED = 180f;
 
 	void Awake()
 	{
@@ -70,6 +81,12 @@ public class DarkQueenController : BaseClass {
 		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
 		controller = GetComponent<CharacterController>();
 	}
+
+	void Start()
+	{
+		prepareListOfLights();
+	}
+
 
 	// Update is called once per frame
 	void LateUpdate ()
@@ -83,20 +100,103 @@ public class DarkQueenController : BaseClass {
 			forward = forward * Time.deltaTime * flyingSpeed;
 			//3) Move the controller
 			controller.Move( forward );
-			shutdownLights();
 		}
 	}
 
-	void shutdownLights()
+	public class LightData
 	{
-		listOfLights = FindObjectsOfType(typeof(Light)) as Light[];
-		foreach(Light pussy in listOfLights )
+		public Light aLight;
+		public float originalIntensity;
+		public LightStatus lightStatus = LightStatus.isNormal;
+	}
+
+	void prepareListOfLights()
+	{
+		//Get a list of all lights so we can fade them in and out as the dark queen moves
+		LightData ld;
+		listOfLights.Clear();
+		Light[] lightsArray = FindObjectsOfType(typeof(Light)) as Light[];
+		foreach(Light li in lightsArray )
 		{
-			if( Vector3.Distance(transform.position,pussy.transform.position) < 2000f )
+			if( Vector3.Distance(transform.position,li.transform.position) < MAX_DISTANCE_LIGHT_AFFECTED )
 			{
-				if( pussy.name != "Staff Light" ) pussy.light.intensity = 0;
+				if( li.name != "Staff Light" )
+				{
+					ld = new LightData();
+					ld.aLight = li;
+					ld.originalIntensity = li.intensity;
+					listOfLights.Add ( ld );
+				}
 			}
 		}
+		//Also get the sunlight object
+		GameObject Sun = GameObject.FindGameObjectWithTag("Sunlight");
+		ld = new LightData();
+		ld.aLight = Sun.light;
+		ld.originalIntensity = Sun.light.intensity;
+		listOfLights.Add ( ld );
+		
+		
+	}
+
+	public void dimLights( float duration, float finalIntensity )
+	{
+		foreach(LightData ld in listOfLights )
+		{
+			if( ld.lightStatus == LightStatus.isNormal )
+			{
+				StartCoroutine(fadeOutLight( ld, duration, finalIntensity ) );
+			}
+		}
+	}
+
+	public void brightenLights( float duration )
+	{
+		foreach(LightData ld in listOfLights )
+		{
+			if( ld.lightStatus == LightStatus.isFaded )
+			{
+				StartCoroutine(fadeInLight( ld, duration ) );
+			}
+		}
+	}
+
+	public IEnumerator fadeOutLight( LightData ld, float duration, float endIntensity )
+	{
+		float elapsedTime = 0;
+		
+		float startIntensity = ld.originalIntensity;
+		ld.lightStatus = LightStatus.isFadingOut;
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			ld.aLight.intensity =  Mathf.Lerp( startIntensity, endIntensity, elapsedTime/duration );
+			yield return new WaitForFixedUpdate();  
+			
+		} while ( elapsedTime < duration );
+		
+		ld.aLight.intensity = endIntensity;
+		ld.lightStatus = LightStatus.isFaded;
+
+		print ("DarkQueenController-Finished fading out light named " + ld.aLight.name + " to intensity: " + endIntensity );
+	}
+
+	public IEnumerator fadeInLight( LightData ld, float duration )
+	{
+		float elapsedTime = 0;
+		
+		float startIntensity = ld.aLight.intensity;
+		ld.lightStatus = LightStatus.isFadingIn;
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			ld.aLight.intensity =  Mathf.Lerp( startIntensity, ld.originalIntensity, elapsedTime/duration );
+			yield return new WaitForFixedUpdate();  
+			
+		} while ( elapsedTime < duration );
+		ld.aLight.intensity = ld.originalIntensity;
+		ld.lightStatus = LightStatus.isFaded;
+		print ("DarkQueenController-Finished fading in light named " + ld.aLight.name + " to intensity: " + ld.originalIntensity );
 	}
 
 	public void setYRotationOffset( float offset )

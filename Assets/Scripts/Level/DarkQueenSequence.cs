@@ -43,7 +43,7 @@ public class DarkQueenSequence : MonoBehaviour {
 	public void startSequence()
 	{
 		if( gem.isDarkQueenSequenceActive ) return;
-
+		GenerateLevel.surroundingPlane.gameObject.SetActive(false);
 		//Slowdown player and remove player control
 		print ("Start of dark queen sequence");
 		gem.isDarkQueenSequenceActive = true;
@@ -51,6 +51,7 @@ public class DarkQueenSequence : MonoBehaviour {
 		StartCoroutine( playerController.slowDownPlayer(22f, afterPlayerSlowdown ) );
 		//darkQueenController.walk( true );
 		darkQueenController.floatDown( 26.29f, landed );
+		darkQueenController.dimLights( 8f, 0f );
 	}
 
 	public void landed()
@@ -98,6 +99,7 @@ public class DarkQueenSequence : MonoBehaviour {
 	void step4()
 	{
 		darkQueenController.Disappear();
+		darkQueenController.brightenLights( 3f );
 		fairyController.Disappear ();
 		playerController.allowRunSpeedToIncrease = true;
 		playerController.startRunning(false);

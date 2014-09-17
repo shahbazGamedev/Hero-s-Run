@@ -378,6 +378,10 @@ public class GameEventManager : MonoBehaviour {
 		{
 			CancelInvoke();
 		}
+		else if( newState == CharacterState.StartRunning && isTentacleSequenceActive )
+		{
+			playTentaclesSequence();
+		}
 	}
 
 
