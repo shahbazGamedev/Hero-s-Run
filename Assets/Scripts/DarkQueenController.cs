@@ -39,6 +39,8 @@ public class DarkQueenController : BaseClass {
 
 	DarkQueenState darkQueenState = DarkQueenState.None;
 
+	public ParticleSystem krakenSpellFx;
+	public AudioClip krakenSpellSound;
 
 	// The distance in the x-z plane to the target
 	const float DEFAULT_DISTANCE = 0.7f;
@@ -270,13 +272,32 @@ public class DarkQueenController : BaseClass {
 	public void arriveAndCastSpell()
 	{
 		floatDownFx.Play ();
-		Invoke("stopFloatDownFx", fairyAnimation["DarkQueen_Arrive"].length * 2f);
-		fairyAnimation["DarkQueen_Arrive"].speed = 0.4f;
+		fairyAnimation["DarkQueen_Arrive"].speed = 1f;
 		fairyAnimation.Play("DarkQueen_Arrive");
-		fairyAnimation.PlayQueued("DarkQueen_Idle", QueueMode.CompleteOthers);
-		fairyAnimation.PlayQueued("DarkQueen_SpellCast", QueueMode.CompleteOthers);
-		fairyAnimation.PlayQueued("DarkQueen_Leave", QueueMode.CompleteOthers);
+		Invoke("stopFloatDownFx", fairyAnimation["DarkQueen_Arrive"].length );
+		Invoke("playIdleAnimation", fairyAnimation["DarkQueen_Arrive"].length );
+
 	}
+
+	void playIdleAnimation()
+	{
+		fairyAnimation.Play("DarkQueen_Idle");
+		Invoke("castKrakenSpell", fairyAnimation["DarkQueen_Idle"].length);
+	}
+
+	public void castKrakenSpell()
+	{
+		fairyAnimation.Play("DarkQueen_SpellCast");
+		krakenSpellFx.Play();
+		audio.PlayOneShot( krakenSpellSound );
+		Invoke("leave", fairyAnimation["DarkQueen_SpellCast"].length );
+	}
+
+	public void leave()
+	{
+		fairyAnimation.Play("DarkQueen_Leave");
+	}
+
 
 	public void stopFloatDownFx()
 	{
@@ -319,18 +340,7 @@ public class DarkQueenController : BaseClass {
 		darkQueenState = DarkQueenState.None;
 	}
 
-	public void CastSpell()
-	{
-		//fairyAnimation.CrossFade("CastSpell", 0.2f);
-		//fairyAnimation.PlayQueued("Hover_Happy");
-		Invoke ("playCastSpellFx", 1f );
-	}
 
-	public void playCastSpellFx()
-	{
-		fairySpellFx.Play();
-		audio.PlayOneShot( fairySpellSound );
-	}
 
 	private IEnumerator MoveToPosition( float timeToArrive )
 	{

@@ -53,7 +53,7 @@ public class DarkQueenSequence : MonoBehaviour {
 		//darkQueenController.floatDown( 26.29f, landed );
 		darkQueenController.arriveAndCastSpell();
 		
-		darkQueenController.dimLights( 8f, 0f );
+		darkQueenController.dimLights( 6f, 0f );
 	}
 
 	public void landed()
@@ -91,7 +91,7 @@ public class DarkQueenSequence : MonoBehaviour {
 
 	void step3()
 	{
-		darkQueenController.CastSpell();
+		//darkQueenController.CastSpell();
 		Invoke ("step4", 4.2f );
 	}
 
