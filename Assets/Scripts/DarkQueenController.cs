@@ -74,6 +74,9 @@ public class DarkQueenController : BaseClass {
 
 	List<LightData> listOfLights = new List<LightData>(30);
 	const float MAX_DISTANCE_LIGHT_AFFECTED = 180f;
+	public AudioClip darkQueenVO;
+	public DarkQueenSequence dks;
+
 
 	void Awake()
 	{
@@ -82,6 +85,7 @@ public class DarkQueenController : BaseClass {
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
 		controller = GetComponent<CharacterController>();
+		dks = GetComponent<DarkQueenSequence>();
 	}
 
 	void Start()
@@ -272,32 +276,56 @@ public class DarkQueenController : BaseClass {
 	public void arriveAndCastSpell()
 	{
 		floatDownFx.Play ();
-		fairyAnimation["DarkQueen_Arrive"].speed = 1f;
+		float arriveSpeed = 0.3f;
+		fairyAnimation["DarkQueen_Arrive"].speed = arriveSpeed;
 		fairyAnimation.Play("DarkQueen_Arrive");
-		Invoke("stopFloatDownFx", fairyAnimation["DarkQueen_Arrive"].length );
-		Invoke("playIdleAnimation", fairyAnimation["DarkQueen_Arrive"].length );
+		Invoke("playLandAnimation", fairyAnimation["DarkQueen_Arrive"].length/arriveSpeed );
+		dimLights( fairyAnimation["DarkQueen_Arrive"].length/arriveSpeed, 0.1f );
 
+	}
+
+	void playLandAnimation()
+	{
+		AchievementDisplay.activateDisplayDarkQueen( "You should never keep your Queen waiting.", 0.35f, 3.6f );
+		audio.PlayOneShot( darkQueenVO );
+		fairyAnimation.CrossFade("DarkQueen_Land", 0.1f);
+		Invoke("playIdleAnimation", fairyAnimation["DarkQueen_Land"].length);
 	}
 
 	void playIdleAnimation()
 	{
+		floatDownFx.Stop ();
 		fairyAnimation.Play("DarkQueen_Idle");
 		Invoke("castKrakenSpell", fairyAnimation["DarkQueen_Idle"].length);
 	}
 
 	public void castKrakenSpell()
 	{
+		AchievementDisplay.activateDisplayDarkQueen( "Rise Sister, rise from the deep...", 0.35f, 3.8f );
 		fairyAnimation.Play("DarkQueen_SpellCast");
-		krakenSpellFx.Play();
-		audio.PlayOneShot( krakenSpellSound );
+		Invoke("playKrakenSpellFX", 0.3f);
 		Invoke("leave", fairyAnimation["DarkQueen_SpellCast"].length );
+	}
+
+	void playKrakenSpellFX()
+	{
+		audio.PlayOneShot( krakenSpellSound );
+		krakenSpellFx.Play();
 	}
 
 	public void leave()
 	{
+		floatDownFx.Play ();
+		fairyAnimation["DarkQueen_Leave"].speed = 1.2f;
 		fairyAnimation.Play("DarkQueen_Leave");
+		brightenLights( fairyAnimation["DarkQueen_Leave"].length/1.2f );
+		Invoke("playerStartsRunningAgain", fairyAnimation["DarkQueen_Leave"].length/1.2f );
 	}
 
+	public void playerStartsRunningAgain()
+	{
+		dks.step4();
+	}
 
 	public void stopFloatDownFx()
 	{
@@ -332,6 +360,8 @@ public class DarkQueenController : BaseClass {
 		transform.localScale = new Vector3( 0.002f, 0.002f, 0.002f );
 		appearFx.Play();
 		Invoke("Disappear_part2", 2.3f);
+		floatDownFx.Stop ();
+
 	}
 
 	public void Disappear_part2()
