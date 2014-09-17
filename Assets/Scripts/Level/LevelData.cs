@@ -107,7 +107,7 @@ public class LevelData : MonoBehaviour {
 
 			case SunType.Elfland:
 				skyBoxName = "Overcast2 Skybox";
-				lightIntensity = 0.5f;
+				lightIntensity = 0.75f;
 				shadowStrength = 0.3f;
 				Sun.light.shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 38.28f,119.5f,87.52f );
