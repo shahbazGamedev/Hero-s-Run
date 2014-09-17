@@ -269,6 +269,8 @@ public class DarkQueenController : BaseClass {
 
 	public void arriveAndCastSpell()
 	{
+		floatDownFx.Play ();
+		Invoke("stopFloatDownFx", fairyAnimation["DarkQueen_Arrive"].length * 2f);
 		fairyAnimation["DarkQueen_Arrive"].speed = 0.5f;
 		fairyAnimation.Play("DarkQueen_Arrive");
 		fairyAnimation.PlayQueued("DarkQueen_Idle", QueueMode.CompleteOthers);
@@ -276,6 +278,11 @@ public class DarkQueenController : BaseClass {
 		fairyAnimation.PlayQueued("DarkQueen_Leave", QueueMode.CompleteOthers);
 	}
 
+	public void stopFloatDownFx()
+	{
+		floatDownFx.Stop ();
+
+	}
 
 	public void Arrive( float timeToArrive )
 	{
