@@ -304,7 +304,7 @@ public class DarkQueenController : BaseClass {
 	public void castKrakenSpell()
 	{
 		AchievementDisplay.activateDisplayDarkQueen( "Rise Sister, rise from the deep...", 0.35f, 3.8f );
-		//audio.PlayOneShot( darkQueenVO_riseFromTheDeep );
+		audio.PlayOneShot( darkQueenVO_riseFromTheDeep );
 		fairyAnimation.Play("DarkQueen_SpellCast");
 		Invoke("playKrakenSpellFX", 0.3f);
 		Invoke("leave", fairyAnimation["DarkQueen_SpellCast"].length );
@@ -314,7 +314,7 @@ public class DarkQueenController : BaseClass {
 	{
 		audio.PlayOneShot( krakenSpellSound );
 		krakenSpellFx.Play();
-		//poisonMist.Play();
+		poisonMist.Play();
 	}
 
 	public void leave()
