@@ -1,0 +1,4 @@
+DarkQueen_Arrive: 0-115 noloop
+DarkQueen_Idle: 120-180 all
+DarkQueen_SpellCast: 190-310 noloop
+DarkQueen_Leave: 320-440 noloop

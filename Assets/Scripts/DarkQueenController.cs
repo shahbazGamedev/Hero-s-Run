@@ -267,6 +267,16 @@ public class DarkQueenController : BaseClass {
 		transform.position = exactPos;
 	}
 
+	public void arriveAndCastSpell()
+	{
+		fairyAnimation["DarkQueen_Arrive"].speed = 0.5f;
+		fairyAnimation.Play("DarkQueen_Arrive");
+		fairyAnimation.PlayQueued("DarkQueen_Idle", QueueMode.CompleteOthers);
+		fairyAnimation.PlayQueued("DarkQueen_SpellCast", QueueMode.CompleteOthers);
+		fairyAnimation.PlayQueued("DarkQueen_Leave", QueueMode.CompleteOthers);
+	}
+
+
 	public void Arrive( float timeToArrive )
 	{
 		darkQueenState = DarkQueenState.Arrive;
