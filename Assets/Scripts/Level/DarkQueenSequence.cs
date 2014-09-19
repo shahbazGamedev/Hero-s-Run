@@ -42,10 +42,11 @@ public class DarkQueenSequence : MonoBehaviour {
 	public void startSequence()
 	{
 		if( gem.isDarkQueenSequenceActive ) return;
-		GenerateLevel.surroundingPlane.gameObject.SetActive(false);
+		GenerateLevel.enableSurroundingPlane( false );
 		//Slowdown player and remove player control
 		print ("Start of dark queen sequence");
 		gem.isDarkQueenSequenceActive = true;
+		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
 		StartCoroutine( playerController.slowDownPlayer(19f, afterPlayerSlowdown ) );
 		//darkQueenController.walk( true );
