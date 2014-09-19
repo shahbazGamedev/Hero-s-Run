@@ -94,7 +94,7 @@ public class GenerateLevel  : MonoBehaviour {
 	SegmentTheme currentTheme;
 	
 	//The surrounding plane (like an ocean) is always centered with the current tile
-	public static Transform surroundingPlane;
+	static Transform surroundingPlane;
 	
 	const int NUMBER_OF_TUTORIALS = 6; //Change Lane, Jump, Slide, etc.
 	Dictionary<TutorialEvent,int> tutorialStartTileIndex = new Dictionary<TutorialEvent, int>(NUMBER_OF_TUTORIALS);
@@ -1416,6 +1416,11 @@ public class GenerateLevel  : MonoBehaviour {
 		addTile ( TileType.Left );
 		addTile ( TileType.Straight );
 
+	}
+
+	public static void enableSurroundingPlane( bool enable )
+	{
+		if( surroundingPlane != null ) surroundingPlane.gameObject.SetActive( enable );
 	}
 
 	void createTutorialLevel()
