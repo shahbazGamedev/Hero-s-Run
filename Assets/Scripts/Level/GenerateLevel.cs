@@ -1084,7 +1084,7 @@ public class GenerateLevel  : MonoBehaviour {
 					}
 					else
 					{
-						if( currentThemePath == "Level/Tiles/Forest/" || currentThemePath == "Level/Tiles/Hell/" )
+						if( currentThemePath == "Level/Tiles/Forest/" || currentThemePath == "Level/Tiles/Hell/" || currentThemePath == "Level/Tiles/Fairyland/" )
 						{
 							if( Random.value <= 0.4f )
 							{
@@ -1240,7 +1240,7 @@ public class GenerateLevel  : MonoBehaviour {
 					}
 					else
 					{
-						if( tileCreationTheme == SegmentTheme.Forest || tileCreationTheme == SegmentTheme.Hell )
+						if( tileCreationTheme == SegmentTheme.Forest || tileCreationTheme == SegmentTheme.Hell || currentThemePath == "Level/Tiles/Fairyland/")
 						{
 							if( Random.value <= 0.2f )
 							{
