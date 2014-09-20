@@ -2119,6 +2119,7 @@ public class PlayerController : BaseClass {
 	//Make sure the player arrives in the center lane without sliding
 	public void placePlayerInCenterLane()
 	{
+		print ("placePlayerInCenterLane called");
 		//We do not want the player to be jumping or sliding as he reaches the end location.
 		//Disable run acceleration as well.
 		allowRunSpeedToIncrease = false;
