@@ -277,6 +277,7 @@ public class DarkQueenController : BaseClass {
 
 	public void arriveAndCastSpell()
 	{
+		transform.localScale = new Vector3( 1.2f, 1.2f, 1.2f );
 		floatDownFx.Play ();
 		float arriveSpeed = 0.3f;
 		fairyAnimation["DarkQueen_Arrive"].speed = arriveSpeed;

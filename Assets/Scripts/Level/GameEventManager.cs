@@ -21,9 +21,6 @@ public class GameEventManager : MonoBehaviour {
 	Vector3 lastSideTentaclePosition;
 	public bool isTentacleSequenceActive = false;
 	public bool isDarkQueenSequenceActive = false;
-	int numberOfTentaclesSpawned = 0;
-	int numberOfTentaclesToSpawn = 13;
-
 	
 	// Use this for initialization
 	void Awake () {
@@ -50,7 +47,6 @@ public class GameEventManager : MonoBehaviour {
 	//Kraken tentacles sequence
 	public void setOpeningSequence( TentaclesSequence tentaclesSequence )
 	{
-		numberOfTentaclesSpawned = 0;
 		this.tentaclesSequence = tentaclesSequence;
 	}
 
@@ -74,55 +70,50 @@ public class GameEventManager : MonoBehaviour {
 
 	void startPierceUp()
 	{
-		if( numberOfTentaclesSpawned <= numberOfTentaclesToSpawn )
+		float attackDistance = 1.1f * PlayerController.getPlayerSpeed();
+		//Pick random X location
+		float xPos;
+		int laneChoice = Random.Range(0, 3);
+		if( laneChoice == 0 )
 		{
-			numberOfTentaclesSpawned++;
-			float attackDistance = 1.1f * PlayerController.getPlayerSpeed();
-			//Pick random X location
-			float xPos;
-			int laneChoice = Random.Range(0, 3);
-			if( laneChoice == 0 )
-			{
-				xPos = -PlayerController.laneLimit;
-			}
-			else if( laneChoice == 1 )
-			{
-				xPos = 0;
-			}
-			else
-			{
-				xPos = PlayerController.laneLimit;
-			}
-			lastTentaclePosition = player.TransformPoint(new Vector3( xPos,0,attackDistance));
-
-			//Calculate the ground height
-			RaycastHit hit;
-			int layermask = ~(1 << 8); //exclude player which is layer is 8
-			float groundHeight = 0;
-			if (Physics.Raycast(new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 10f, lastTentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
-			{
-				groundHeight = lastTentaclePosition.y + 10f - hit.distance;
-				//groundHeight = 0;
-				lastTentaclePosition = new Vector3(lastTentaclePosition.x, groundHeight - 2f, lastTentaclePosition.z);
-				Invoke( "pierceUp", 0.33f );
-			}
-			else
-			{
-				//We did not find the ground. Abort.
-				return;
-			}
-
-			//Display a sign that a tentacle is going to shoot up from the ground to warn the player
-			ParticleSystem dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
-			dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 2.1f, lastTentaclePosition.z );
-			dust.Play();
-			GameObject.Destroy( dust, 3f );
+			xPos = -PlayerController.laneLimit;
 		}
+		else if( laneChoice == 1 )
+		{
+			xPos = 0;
+		}
+		else
+		{
+			xPos = PlayerController.laneLimit;
+		}
+		lastTentaclePosition = player.TransformPoint(new Vector3( xPos,0,attackDistance));
+
+		//Calculate the ground height
+		RaycastHit hit;
+		int layermask = ~(1 << 8); //exclude player which is layer is 8
+		float groundHeight = 0;
+		if (Physics.Raycast(new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 10f, lastTentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
+		{
+			groundHeight = lastTentaclePosition.y + 10f - hit.distance;
+			//groundHeight = 0;
+			lastTentaclePosition = new Vector3(lastTentaclePosition.x, groundHeight - 2f, lastTentaclePosition.z);
+			Invoke( "pierceUp", 0.33f );
+		}
+		else
+		{
+			//We did not find the ground. Abort.
+			return;
+		}
+
+		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
+		ParticleSystem dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
+		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 2.1f, lastTentaclePosition.z );
+		dust.Play();
+		GameObject.Destroy( dust, 3f );
 	}
 
 	void pierceUp()
 	{
-		print ("numberOfTentaclesSpawned " + numberOfTentaclesSpawned + " " + numberOfTentaclesToSpawn );
 		playerController.shakeCamera();
 		GameObject go = (GameObject)Instantiate(tentaclesSequence.tentaclePrefab, Vector3.zero, Quaternion.identity );
 		go.transform.position = lastTentaclePosition;
@@ -162,53 +153,50 @@ public class GameEventManager : MonoBehaviour {
 
 	void sideStartPierceUp()
 	{
-		if( numberOfTentaclesSpawned <= numberOfTentaclesToSpawn )
+		float attackDistance = 1.1f * PlayerController.getPlayerSpeed() + Random.Range( -3,1 );
+		//Pick random X location on either side of main path
+		float xPos;
+		int laneChoice = Random.Range(0, 4);
+		if( laneChoice == 0 )
 		{
-			float attackDistance = 1.1f * PlayerController.getPlayerSpeed() + Random.Range( -3,1 );
-			//Pick random X location on either side of main path
-			float xPos;
-			int laneChoice = Random.Range(0, 4);
-			if( laneChoice == 0 )
-			{
-				xPos = -2.6f;
-			}
-			else if( laneChoice == 1 )
-			{
-				xPos = -3.9f;
-			}
-			else if( laneChoice == 2 )
-			{
-				xPos = 2.6f;
-			}
-			else
-			{
-				xPos = 3.9f;
-			}
-			lastSideTentaclePosition = player.TransformPoint(new Vector3( xPos,0,attackDistance));
-			
-			//Calculate the ground height
-			RaycastHit hit;
-			int layermask = ~(1 << 8); //exclude player which is layer is 8
-			float groundHeight = 0;
-			if (Physics.Raycast(new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 10f, lastSideTentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
-			{
-				groundHeight = lastSideTentaclePosition.y + 10f - hit.distance;
-				//groundHeight = 0;
-				lastSideTentaclePosition = new Vector3(lastSideTentaclePosition.x, groundHeight - 2f, lastSideTentaclePosition.z);
-				Invoke( "sidePierceUp", 0.33f );
-			}
-			else
-			{
-				//We did not find the ground. Abort.
-				return;
-			}
-
-			//Display a sign that a tentacle is going to shoot up from the ground to warn the player
-			ParticleSystem dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
-			dust.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 2.1f, lastSideTentaclePosition.z );
-			dust.Play();
-			GameObject.Destroy( dust, 3f );
+			xPos = -2.6f;
 		}
+		else if( laneChoice == 1 )
+		{
+			xPos = -3.9f;
+		}
+		else if( laneChoice == 2 )
+		{
+			xPos = 2.6f;
+		}
+		else
+		{
+			xPos = 3.9f;
+		}
+		lastSideTentaclePosition = player.TransformPoint(new Vector3( xPos,0,attackDistance));
+		
+		//Calculate the ground height
+		RaycastHit hit;
+		int layermask = ~(1 << 8); //exclude player which is layer is 8
+		float groundHeight = 0;
+		if (Physics.Raycast(new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 10f, lastSideTentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
+		{
+			groundHeight = lastSideTentaclePosition.y + 10f - hit.distance;
+			//groundHeight = 0;
+			lastSideTentaclePosition = new Vector3(lastSideTentaclePosition.x, groundHeight - 2f, lastSideTentaclePosition.z);
+			Invoke( "sidePierceUp", 0.33f );
+		}
+		else
+		{
+			//We did not find the ground. Abort.
+			return;
+		}
+
+		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
+		ParticleSystem dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
+		dust.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 2.1f, lastSideTentaclePosition.z );
+		dust.Play();
+		GameObject.Destroy( dust, 3f );
 	}
 	
 	void sidePierceUp()
