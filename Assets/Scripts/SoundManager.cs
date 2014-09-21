@@ -9,7 +9,7 @@ public class SoundManager : MonoBehaviour {
 
 	// Audio - Music
 	static AudioSource musicSource;
-	const float MUSIC_VOLUME = 0.35f;
+	const float MUSIC_VOLUME = 0;
 
 	//Audio - Level ambience
 	static AudioSource levelAmbienceSource;
