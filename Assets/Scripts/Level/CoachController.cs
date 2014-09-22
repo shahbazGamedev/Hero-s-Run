@@ -88,6 +88,7 @@ public class CoachController : MonoBehaviour {
 	{
 		allowMove = false;
 		anim.CrossFade(idleAnim.name, 0.7f );
+		audio.Stop();
 	}
 
 	void GameStateChange( GameState newState )
