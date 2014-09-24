@@ -54,7 +54,9 @@ public enum TileType {
 	Landmark_Tomb_Start_2 = 40,
 	Landmark_Tomb_End = 41,
 	Landmark_Cemetery_Coach = 42,
-	Landmark_Graveyard = 43
+	Landmark_Graveyard = 43,
+	Landmark_Graveyard_Start = 44,
+	Landmark_Graveyard_End = 45
 
 }
 
@@ -473,6 +475,8 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Landmark_Broken_Bridge:
 			case TileType.Landmark_Cemetery_Coach:
 			case TileType.Landmark_Graveyard:
+			case TileType.Landmark_Graveyard_Start:
+			case TileType.Landmark_Graveyard_End:
 				depth = 2;
 				break;
 
@@ -889,6 +893,8 @@ public class GenerateLevel  : MonoBehaviour {
 		case TileType.Start_Fairyland:
 		case TileType.Landmark_Cemetery_Coach:
 		case TileType.Landmark_Graveyard:
+		case TileType.Landmark_Graveyard_Start:
+		case TileType.Landmark_Graveyard_End:
 			return TileType.Straight;
 
 		case TileType.Left:
