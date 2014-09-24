@@ -14,6 +14,8 @@ ModelImporter:
     100016: eye2
     100018: hands
     100020: head
+    100022: teetDown
+    100024: teetUp
     400000: //RootNode
     400002: hand
     400004: polySurface15
@@ -25,6 +27,8 @@ ModelImporter:
     400016: eye2
     400018: hands
     400020: head
+    400022: teetDown
+    400024: teetUp
     2300000: hand
     2300002: polySurface15
     2300004: polySurface18
@@ -35,6 +39,8 @@ ModelImporter:
     2300014: eye2
     2300016: hands
     2300018: head
+    2300020: teetDown
+    2300022: teetUp
     3300000: hand
     3300002: polySurface15
     3300004: polySurface18
@@ -45,6 +51,8 @@ ModelImporter:
     3300014: eye2
     3300016: hands
     3300018: head
+    3300020: teetDown
+    3300022: teetUp
     4300000: polySurface18
     4300002: polySurface15
     4300004: pSphere1
@@ -55,6 +63,8 @@ ModelImporter:
     4300014: eye1
     4300016: eye2
     4300018: hands
+    4300020: teetDown
+    4300022: teetUp
     9500000: //RootNode
   materials:
     importMaterials: 1
