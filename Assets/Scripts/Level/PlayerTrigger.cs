@@ -25,7 +25,9 @@ public enum GameEvent {
 	Kill_Fairy = 20,
 	Start_Kraken = 21,
 	Stop_Kraken = 22,
-	Build_Magic_Bridge = 23
+	Build_Magic_Bridge = 23,
+	Start_Zombie_Hands = 24,
+	Stop_Zombie_Hands = 25
 }
 
 public class PlayerTrigger : MonoBehaviour {
