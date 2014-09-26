@@ -8,7 +8,8 @@ public class ZombieHandsSequence : MonoBehaviour {
 	public GameObject debrisPrefab;
 	public GameObject groundDebrisPrefab;
 	public ParticleSystem zombieHandAboutToAppearFx;
-	
+	public ParticleSystem burstOutFx;
+
 	void Start()
 	{
 		GameObject gameEventManagerObject = GameObject.FindGameObjectWithTag("GameEventManager");
