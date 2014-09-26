@@ -291,7 +291,7 @@ public class GameEventManager : MonoBehaviour {
 		
 		//Display a sign that a zombie hand is going to shoot up from the ground to warn the player
 		ParticleSystem dust = (ParticleSystem)Instantiate(zombieHandsSequence.zombieHandAboutToAppearFx, Vector3.zero, Quaternion.identity );
-		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 1.1f, lastTentaclePosition.z );
+		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 1.05f, lastTentaclePosition.z );
 		dust.Play();
 		GameObject.Destroy( dust, 3f );
 
@@ -376,7 +376,7 @@ public class GameEventManager : MonoBehaviour {
 		
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
 		ParticleSystem dust = (ParticleSystem)Instantiate(zombieHandsSequence.zombieHandAboutToAppearFx, Vector3.zero, Quaternion.identity );
-		dust.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 1.1f, lastSideTentaclePosition.z );
+		dust.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 1.05f, lastSideTentaclePosition.z );
 		dust.Play();
 		GameObject.Destroy( dust, 3f );
 
