@@ -4,11 +4,10 @@ using System.Collections.Generic;
 
 public class ZombieHandsSequence : MonoBehaviour {
 
-	public GameObject zombieHandPrefab;
-	public GameObject debrisPrefab;
-	public GameObject groundDebrisPrefab;
-	public ParticleSystem zombieHandAboutToAppearFx;
-	public ParticleSystem burstOutFx;
+	public GameObject zombieHandPrefab; 				//The arm sticking out of the ground
+	public GameObject debrisPrefab;						//The debris (with rigid bodies) that will fly around
+	public ParticleSystem zombieHandAboutToAppearFx;	//The FX to play just before the hand bursts out of the groound
+	public ParticleSystem burstOutFx;					//The FX that plays as the hand bursts out, sending, dust and debris up in the air
 
 	void Start()
 	{
