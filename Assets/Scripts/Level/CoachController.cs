@@ -14,12 +14,17 @@ public class CoachController : MonoBehaviour {
 	public Vector3 forward;
 	public float moveDuration = 12f; //Only move for a short amount of time so the cows don't wander off into the wild ...
 	public bool applyGravity = true;
+	public GameObject leftHorse;
+	public GameObject rightHorse;
+	PlayerController playerController;
 
 	// Use this for initialization
 	void Start () {
 		anim = (Animation) GetComponent("Animation");
 		controller = (CharacterController) GetComponent("CharacterController");
 		playAnim( idleAnim );
+		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+		playerController = playerObject.GetComponent<PlayerController>();
 	}
 	
 	// Update is called once per frame
@@ -61,12 +66,14 @@ public class CoachController : MonoBehaviour {
 	{
 		GameManager.gameStateEvent += GameStateChange;
 		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
+		PlayerController.playerStateChanged += PlayerStateChange;
 	}
 	
 	void OnDisable()
 	{
 		GameManager.gameStateEvent -= GameStateChange;
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
+		PlayerController.playerStateChanged -= PlayerStateChange;
 	}
 
 	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
@@ -84,13 +91,28 @@ public class CoachController : MonoBehaviour {
 		} 
 	}
 
+	void PlayerStateChange( CharacterState newState )
+	{
+		if( newState == CharacterState.Dying )
+		{
+			print ("Player collided with coach horses.");
+			//The player collided with the front of the horses
+			//Stop the coach
+			//Horses go to idles
+			//Coach driver plays a victory animation
+			stopMoving();
+		}
+	}
+
 	void stopMoving()
 	{
 		allowMove = false;
-		anim.CrossFade(idleAnim.name, 0.7f );
+		leftHorse.animation.Stop();
+		rightHorse.animation.CrossFade("idle_01", 0.2f );
+		anim.CrossFade(idleAnim.name, 0.5f );
 		audio.Stop();
 	}
-
+	
 	void GameStateChange( GameState newState )
 	{
 		if( anim != null )
