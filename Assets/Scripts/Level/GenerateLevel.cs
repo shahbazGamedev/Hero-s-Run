@@ -163,6 +163,8 @@ public class GenerateLevel  : MonoBehaviour {
 	{
 		//Reset values
 		worldRoadSegments.Clear();
+		recycledTiles.Clear();
+		levelTileList.Clear();
 		tileCreationIndex = 0;
 		tutorialStartTileIndex.Clear();
 		playerTileIndex = 0;
