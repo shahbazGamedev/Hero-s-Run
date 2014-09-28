@@ -1,73 +1,185 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GhostController : MonoBehaviour {
+public class GhostController : BaseClass {
 	
-	bool allowMove = false;  //The NPC will not start moving until the PlayerTrigger event has been received
-	bool allowControllerUpdate = true;
-	public AnimationClip walkAnim;
-	public AnimationClip idleAnim;
-	public AnimationClip hitAnim;	//If true, the zombie heads for the player (as opposed to staying in its lane).
-	public bool followsPlayer = false;
+	public enum GhostState {
+		None = 0,
+		Arrive = 1,
+		Leave = 2,
+		Hover = 3,
+		Attack = 4
+	}
+	
+	//Components
 
-	float walkSpeed = 25;
-	Animation anim;
-	CharacterController controller;
-	public Vector3 forward;
-	public float moveDuration = 12f; //Only move for a short amount of time so the cows don't wander off into the wild ...
-	public bool applyGravity = true;
+	public ParticleSystem appearFx;
+	public AudioClip appearSound;
+	
 	Transform player;
+	PlayerController playerController;
+	
+	public GhostState ghostState = GhostState.None;
 
-	// Use this for initialization
-	void Start () {
-		anim = (Animation) GetComponent("Animation");
-		//controller = (CharacterController) GetComponent("CharacterController");
-		//playAnim( idleAnim );
+	// The distance in the x-z plane to the target
+	const float DEFAULT_DISTANCE = 2f;
+	float distance = DEFAULT_DISTANCE;
+	
+	// the height we want the ghost to be above the player
+	public const float DEFAULT_HEIGHT = 2.8f;
+	float height = DEFAULT_HEIGHT;
+	
+	//Where to position the ghost relative to the player when appearing next to player
+	Vector3 ghostRelativePos = new Vector3(-0.6f , DEFAULT_HEIGHT , DEFAULT_DISTANCE );
+	
+	// How much we 
+	const float DEFAULT_HEIGHT_DAMPING = 6f;
+	float heightDamping = DEFAULT_HEIGHT_DAMPING;
+	
+	const float DEFAULT_ROTATION_DAMPING = 3f;
+	float rotationDamping = DEFAULT_ROTATION_DAMPING;
+	
+	const float DEFAULT_Y_ROTATION_OFFSET = 168f;
+	float yRotationOffset = DEFAULT_Y_ROTATION_OFFSET;
+	
+	const float DEFAULT_X_ROTATION = 9f;
+	float xRotation = DEFAULT_X_ROTATION;
+	
+	Vector3 xOffset = new Vector3( 0, 0, 0 );
+	
+	void Awake()
+	{
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		followsPlayer = true;
-		allowControllerUpdate = true;
+		playerController = player.GetComponent<PlayerController>();
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		move ();
-	}
-
-	void move()
+	void LateUpdate ()
 	{
-		if( allowMove && allowControllerUpdate )
+		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && ghostState == GhostState.Hover && playerController.getCharacterState() != CharacterState.Dying )
 		{
-			//0) Target the player but we only want the Y rotation
-			if( followsPlayer )
-			{
-				transform.LookAt( player );
-				transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
-			}
-			//1) Get the direction
-			forward = transform.TransformDirection(Vector3.forward);			
-			//2) Scale vector based on run speed
-			forward = forward * Time.smoothDeltaTime * walkSpeed;
-			if( applyGravity ) forward.y -= 16f * Time.deltaTime;
-			//3) Move the controller
-			//controller.Move( forward );
-			transform.position = transform.position + forward;
+			positionGhost ();
 		}
+	}
+	
+	private void positionGhost ()
+	{
+		// Calculate the current rotation angles
+		float wantedRotationAngle = player.eulerAngles.y + yRotationOffset;
+		float wantedHeight = player.position.y + height;
 		
+		float currentRotationAngle = transform.eulerAngles.y;
+		float currentHeight = transform.position.y;
+		
+		// Damp the rotation around the y-axis
+		currentRotationAngle = Mathf.LerpAngle (currentRotationAngle, wantedRotationAngle, rotationDamping * Time.deltaTime);
+		
+		// Damp the height
+		currentHeight = Mathf.Lerp (currentHeight, wantedHeight, heightDamping * Time.deltaTime);
+		
+		// Convert the angle into a rotation
+		Quaternion currentRotation = Quaternion.Euler (0, currentRotationAngle, 0);
+		
+		//Order of rotations is ZXY
+		
+		// Set the position of the ghost on the x-z plane to:
+		// distance meters behind the target
+		transform.position = player.position;
+		transform.position -= currentRotation * Vector3.forward * distance;
+		
+		// Set the height of the ghost
+		transform.position = new Vector3( transform.position.x, currentHeight, transform.position.z );
+		
+		// Always look at the target
+		transform.LookAt (player);
+		
+		//Tilt the camera down
+		transform.rotation = Quaternion.Euler( xRotation, transform.eulerAngles.y, transform.eulerAngles.z );
+		
+		//More ghost slightly to the left
+		Vector3 exactPos = transform.TransformPoint( xOffset );
+		transform.position = exactPos;
 	}
 
-	public void playHitAnim()
+	public void setYRotationOffset( float offset )
 	{
-		anim[hitAnim.name].wrapMode = WrapMode.Once;
-		anim.CrossFade( hitAnim.name, 0.25f );
-		anim.CrossFadeQueued(walkAnim.name, 0.4f );
-		audio.Play();
+		yRotationOffset = offset;
+	}
+	
+	public void resetYRotationOffset()
+	{
+		yRotationOffset = DEFAULT_Y_ROTATION_OFFSET;
 	}
 
-	void playAnim( AnimationClip clip )
+	public void Arrive( float timeToArrive )
 	{
-		anim[clip.name].wrapMode = WrapMode.Loop;
-		anim[clip.name].speed = 1f;
-		anim.Play(clip.name);
+		ghostState = GhostState.Arrive;
+		Vector3 arrivalStartPos = new Vector3( 0, 12f, PlayerController.getPlayerSpeed() * 2f );
+		Vector3 exactPos = player.TransformPoint(arrivalStartPos);
+		transform.position = exactPos;
+		float wantedRotationAngle = player.eulerAngles.y + 180f;
+		transform.rotation = Quaternion.Euler( 0, wantedRotationAngle, transform.eulerAngles.z );
+		StartCoroutine("MoveToPosition", timeToArrive );
+	}
+	
+	public void Appear()
+	{
+		transform.localScale = new Vector3( 1f, 1f, 1f );
+		positionGhost ();
+		//appearFx.Play();
+		//audio.PlayOneShot( appearSound );
+		ghostState = GhostState.Hover;
+	}
+	
+	public void Disappear()
+	{
+		audio.PlayOneShot( appearSound );
+		transform.localScale = new Vector3( 0.002f, 0.002f, 0.002f );
+		appearFx.Play();
+		Invoke("Disappear_part2", 2.3f);
+	}
+	
+	public void Disappear_part2()
+	{
+		ghostState = GhostState.None;
+	}
+
+	private IEnumerator MoveToPosition( float timeToArrive )
+	{
+		//Step 1 - Take position in front of player
+		float startTime = Time.time;
+		float elapsedTime = 0;
+		float startYrot = transform.eulerAngles.y;
+		Vector3 startPosition = transform.position;
+		
+		while ( elapsedTime <= timeToArrive )
+		{
+			elapsedTime = Time.time - startTime;
+			
+			//Percentage of time completed 
+			float fracJourney = elapsedTime / timeToArrive;
+			
+			float yRot = Mathf.LerpAngle( startYrot, player.eulerAngles.y + 180f, fracJourney );
+			transform.eulerAngles = new Vector3 ( transform.eulerAngles.x, yRot, transform.eulerAngles.z );
+			
+			Vector3 exactPos = player.TransformPoint(ghostRelativePos);
+			transform.position = Vector3.Lerp( startPosition, exactPos, fracJourney );
+			
+			//Tilt the fairy down
+			transform.rotation = Quaternion.Euler( -8f, transform.eulerAngles.y, transform.eulerAngles.z );
+			
+			yield return _sync();  
+			
+		}
+		ghostState = GhostState.Hover;
+	}
+	
+
+	private void playAnimation( string animationName, WrapMode mode )
+	{
+		animation[ animationName ].wrapMode = mode;
+		animation[ animationName ].speed = 1f;
+		animation.CrossFade(animationName, 0.1f);
 	}
 
 	void OnEnable()
@@ -84,16 +196,12 @@ public class GhostController : MonoBehaviour {
 
 	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
 	{
-		if( eventType == GameEvent.Start_Ghost )
+		if( eventType == GameEvent.Start_Ghost && ghostState == GhostState.None )
 		{
-			//anim.CrossFade(walkAnim.name, 0.5f );
-			audio.Play();
-			allowMove = true;
-			Invoke( "stopMoving", moveDuration );
+			Arrive( 2.5f );
 		}
-		else if( eventType == GameEvent.Stop_Ghost )
+		else if( eventType == GameEvent.Stop_Ghost && ghostState != GhostState.None )
 		{
-			stopMoving();
 		} 
 	}
 
@@ -102,36 +210,19 @@ public class GhostController : MonoBehaviour {
 		if( other.name == "Hero" )
 		{
 			print ("Player is touching ghost");
-			followsPlayer = false;
-			allowControllerUpdate = false;
-
 		}
 	}
-
-	void stopMoving()
-	{
-		allowMove = false;
-		//anim.CrossFade(idleAnim.name, 0.7f );
-		audio.Stop();
-	}
-
+	
 	void GameStateChange( GameState newState )
 	{
-		if( anim != null )
+		if( newState == GameState.Paused )
 		{
-			if( newState == GameState.Paused )
-			{
-				anim.enabled = false;
-				allowControllerUpdate = false;
-				//controller.enabled = false;
-				
-			}
-			else if( newState == GameState.Normal )
-			{
-				anim.enabled = true;
-				allowControllerUpdate = true;
-				//controller.enabled = true;
-			}
+			animation.enabled = false;
+
+		}
+		else if( newState == GameState.Normal )
+		{
+			animation.enabled = true;
 		}
 	}
 }
