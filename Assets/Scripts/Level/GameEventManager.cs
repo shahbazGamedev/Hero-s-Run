@@ -329,8 +329,9 @@ public class GameEventManager : MonoBehaviour {
 	void zombieHandPierceDown( object go )
 	{
 		GameObject zombieHand = go as GameObject;
-		zombieHand.animation.CrossFade("Search", 0.2f );
-		LeanTween.moveLocalY( zombieHand, zombieHand.transform.position.y - 2, 2.5f ).setEase(LeanTweenType.easeOutExpo).setDelay( 1.2f );
+		zombieHand.animation.Play("FistToSearch" );
+		zombieHand.animation.PlayQueued("Search", QueueMode.CompleteOthers );
+		LeanTween.moveLocalY( zombieHand, zombieHand.transform.position.y - 2, 2.5f ).setEase(LeanTweenType.easeOutExpo).setDelay( 3f );
 	}
 	
 	void sideStartZombieHandPierceUp()

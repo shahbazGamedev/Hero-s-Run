@@ -1,4 +1,5 @@
 ZombieHand_Fist: 2-3 pose
+ZombieHand_FistToSearch: 10-20 no loop
 ZombieHand_Search: 20-120 all
 
 
