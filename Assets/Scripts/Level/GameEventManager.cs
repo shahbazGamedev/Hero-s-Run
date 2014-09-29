@@ -313,7 +313,7 @@ public class GameEventManager : MonoBehaviour {
 		go.name = "Stumble";
 		//go.animation.Play("attack");
 		//go.animation.PlayQueued("wiggle", QueueMode.CompleteOthers);
-		LeanTween.moveLocalY(go, go.transform.position.y + 1, 0.8f ).setEase(LeanTweenType.easeOutExpo).setOnComplete(zombieHandPierceDown).setOnCompleteParam( go as Object );
+		LeanTween.moveLocalY(go, go.transform.position.y + 1, 0.6f ).setEase(LeanTweenType.easeOutExpo).setOnComplete(zombieHandPierceDown).setOnCompleteParam( go as Object );
 
 		go.audio.PlayDelayed(0.1f);
 		GameObject flyingDebris = (GameObject)Instantiate(zombieHandsSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
@@ -329,8 +329,8 @@ public class GameEventManager : MonoBehaviour {
 	void zombieHandPierceDown( object go )
 	{
 		GameObject zombieHand = go as GameObject;
-		//zombieHand.animation.CrossFade("attack", 0.4f);
-		LeanTween.moveLocalY( zombieHand, zombieHand.transform.position.y - 2, 2.5f ).setEase(LeanTweenType.easeOutExpo).setDelay( 1f );
+		zombieHand.animation.CrossFade("Search", 0.2f );
+		LeanTween.moveLocalY( zombieHand, zombieHand.transform.position.y - 2, 2.5f ).setEase(LeanTweenType.easeOutExpo).setDelay( 1.2f );
 	}
 	
 	void sideStartZombieHandPierceUp()

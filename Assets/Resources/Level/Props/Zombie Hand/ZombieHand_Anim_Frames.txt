@@ -1,0 +1,4 @@
+ZombieHand_Fist: 2-3 pose
+ZombieHand_Search: 20-120 all
+
+

@@ -1,0 +1,294 @@
+fileFormatVersion: 2
+guid: 5df70d51c5f3849a69c228d016b45758
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Bone_Bottom
+    100002: Bone_Head
+    100004: Bone_Jaw
+    100006: Bone_L_Brow
+    100008: Bone_L_Eye
+    100010: Bone_L_Finger0A
+    100012: Bone_L_Finger0B
+    100014: Bone_L_Finger0C
+    100016: Bone_L_Finger1A
+    100018: Bone_L_Finger1B
+    100020: Bone_L_Finger1C
+    100022: Bone_L_Finger2A
+    100024: Bone_L_Finger2B
+    100026: Bone_L_Finger2C
+    100028: Bone_L_Finger3A
+    100030: Bone_L_Finger3B
+    100032: Bone_L_Finger3C
+    100034: Bone_L_Forearm
+    100036: Bone_L_Hand
+    100038: Bone_L_UpperArm
+    100040: Bone_Pelvis
+    100042: Bone_R_Brow
+    100044: Bone_R_Eye
+    100046: Bone_R_Finger0A
+    100048: Bone_R_Finger0B
+    100050: Bone_R_Finger0C
+    100052: Bone_R_Finger1A
+    100054: Bone_R_Finger1B
+    100056: Bone_R_Finger1C
+    100058: Bone_R_Finger2A
+    100060: Bone_R_Finger2B
+    100062: Bone_R_Finger2C
+    100064: Bone_R_Finger3A
+    100066: Bone_R_Finger3B
+    100068: Bone_R_Finger3C
+    100070: Bone_R_Forearm
+    100072: Bone_R_Hand
+    100074: Bone_R_UpperArm
+    100076: Bone_Root
+    100078: Bone_Torso
+    100080: cloth
+    100082: eye_L
+    100084: eye_R
+    100086: //RootNode
+    100088: hands
+    100090: head
+    100092: teeth_down
+    100094: teeth_up
+    400000: Bone_Bottom
+    400002: Bone_Head
+    400004: Bone_Jaw
+    400006: Bone_L_Brow
+    400008: Bone_L_Eye
+    400010: Bone_L_Finger0A
+    400012: Bone_L_Finger0B
+    400014: Bone_L_Finger0C
+    400016: Bone_L_Finger1A
+    400018: Bone_L_Finger1B
+    400020: Bone_L_Finger1C
+    400022: Bone_L_Finger2A
+    400024: Bone_L_Finger2B
+    400026: Bone_L_Finger2C
+    400028: Bone_L_Finger3A
+    400030: Bone_L_Finger3B
+    400032: Bone_L_Finger3C
+    400034: Bone_L_Forearm
+    400036: Bone_L_Hand
+    400038: Bone_L_UpperArm
+    400040: Bone_Pelvis
+    400042: Bone_R_Brow
+    400044: Bone_R_Eye
+    400046: Bone_R_Finger0A
+    400048: Bone_R_Finger0B
+    400050: Bone_R_Finger0C
+    400052: Bone_R_Finger1A
+    400054: Bone_R_Finger1B
+    400056: Bone_R_Finger1C
+    400058: Bone_R_Finger2A
+    400060: Bone_R_Finger2B
+    400062: Bone_R_Finger2C
+    400064: Bone_R_Finger3A
+    400066: Bone_R_Finger3B
+    400068: Bone_R_Finger3C
+    400070: Bone_R_Forearm
+    400072: Bone_R_Hand
+    400074: Bone_R_UpperArm
+    400076: Bone_Root
+    400078: Bone_Torso
+    400080: cloth
+    400082: eye_L
+    400084: eye_R
+    400086: //RootNode
+    400088: hands
+    400090: head
+    400092: teeth_down
+    400094: teeth_up
+    4300000: eye_R
+    4300002: eye_L
+    4300004: hands
+    4300006: head
+    4300008: teeth_down
+    4300010: teeth_up
+    4300012: cloth
+    7400000: Hover
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: cloth
+    13700002: eye_L
+    13700004: eye_R
+    13700006: hands
+    13700008: head
+    13700010: teeth_down
+    13700012: teeth_up
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Hover
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 30
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 1
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bone_Root
+        weight: 1
+      - path: Bone_Root/Bone_Bottom
+        weight: 1
+      - path: Bone_Root/Bone_Pelvis
+        weight: 1
+      - path: Bone_Root/Bone_Torso
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_Head
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_Head/Bone_Jaw
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_Head/Bone_L_Brow
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_Head/Bone_L_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_Head/Bone_R_Brow
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_Head/Bone_R_Eye
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_L_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_L_UpperArm/Bone_L_Forearm
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_L_UpperArm/Bone_L_Forearm/Bone_L_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_L_UpperArm/Bone_L_Forearm/Bone_L_Hand/Bone_L_Finger0A
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_L_UpperArm/Bone_L_Forearm/Bone_L_Hand/Bone_L_Finger0A/Bone_L_Finger0B
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_L_UpperArm/Bone_L_Forearm/Bone_L_Hand/Bone_L_Finger0A/Bone_L_Finger0B/Bone_L_Finger0C
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_L_UpperArm/Bone_L_Forearm/Bone_L_Hand/Bone_L_Finger1A
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_L_UpperArm/Bone_L_Forearm/Bone_L_Hand/Bone_L_Finger1A/Bone_L_Finger1B
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_L_UpperArm/Bone_L_Forearm/Bone_L_Hand/Bone_L_Finger1A/Bone_L_Finger1B/Bone_L_Finger1C
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_L_UpperArm/Bone_L_Forearm/Bone_L_Hand/Bone_L_Finger2A
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_L_UpperArm/Bone_L_Forearm/Bone_L_Hand/Bone_L_Finger2A/Bone_L_Finger2B
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_L_UpperArm/Bone_L_Forearm/Bone_L_Hand/Bone_L_Finger2A/Bone_L_Finger2B/Bone_L_Finger2C
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_L_UpperArm/Bone_L_Forearm/Bone_L_Hand/Bone_L_Finger3A
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_L_UpperArm/Bone_L_Forearm/Bone_L_Hand/Bone_L_Finger3A/Bone_L_Finger3B
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_L_UpperArm/Bone_L_Forearm/Bone_L_Hand/Bone_L_Finger3A/Bone_L_Finger3B/Bone_L_Finger3C
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_R_UpperArm
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_R_UpperArm/Bone_R_Forearm
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_R_UpperArm/Bone_R_Forearm/Bone_R_Hand
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_R_UpperArm/Bone_R_Forearm/Bone_R_Hand/Bone_R_Finger0A
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_R_UpperArm/Bone_R_Forearm/Bone_R_Hand/Bone_R_Finger0A/Bone_R_Finger0B
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_R_UpperArm/Bone_R_Forearm/Bone_R_Hand/Bone_R_Finger0A/Bone_R_Finger0B/Bone_R_Finger0C
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_R_UpperArm/Bone_R_Forearm/Bone_R_Hand/Bone_R_Finger1A
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_R_UpperArm/Bone_R_Forearm/Bone_R_Hand/Bone_R_Finger1A/Bone_R_Finger1B
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_R_UpperArm/Bone_R_Forearm/Bone_R_Hand/Bone_R_Finger1A/Bone_R_Finger1B/Bone_R_Finger1C
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_R_UpperArm/Bone_R_Forearm/Bone_R_Hand/Bone_R_Finger2A
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_R_UpperArm/Bone_R_Forearm/Bone_R_Hand/Bone_R_Finger2A/Bone_R_Finger2B
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_R_UpperArm/Bone_R_Forearm/Bone_R_Hand/Bone_R_Finger2A/Bone_R_Finger2B/Bone_R_Finger2C
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_R_UpperArm/Bone_R_Forearm/Bone_R_Hand/Bone_R_Finger3A
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_R_UpperArm/Bone_R_Forearm/Bone_R_Hand/Bone_R_Finger3A/Bone_R_Finger3B
+        weight: 1
+      - path: Bone_Root/Bone_Torso/Bone_R_UpperArm/Bone_R_Forearm/Bone_R_Hand/Bone_R_Finger3A/Bone_R_Finger3B/Bone_R_Finger3C
+        weight: 1
+      - path: cloth
+        weight: 1
+      - path: eye_L
+        weight: 1
+      - path: eye_R
+        weight: 1
+      - path: hands
+        weight: 1
+      - path: head
+        weight: 1
+      - path: teeth_down
+        weight: 1
+      - path: teeth_up
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  additionalBone: 0
+  userData: 
