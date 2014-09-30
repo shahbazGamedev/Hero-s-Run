@@ -16,6 +16,7 @@ public class CoachController : MonoBehaviour {
 	public bool applyGravity = true;
 	public GameObject leftHorse;
 	public GameObject rightHorse;
+	public GameObject coachDriver;
 	PlayerController playerController;
 
 	// Use this for initialization
@@ -67,6 +68,7 @@ public class CoachController : MonoBehaviour {
 		GameManager.gameStateEvent += GameStateChange;
 		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
 		PlayerController.playerStateChanged += PlayerStateChange;
+		coachDriver.animation.Play("CoachDriverDriving");
 	}
 	
 	void OnDisable()
@@ -100,6 +102,8 @@ public class CoachController : MonoBehaviour {
 			//Stop the coach
 			//Horses go to idles
 			//Coach driver plays a victory animation
+			coachDriver.animation.Play("CoachDriverRunOverPlayer");
+			coachDriver.animation.PlayQueued("CoachDriverIdle", QueueMode.CompleteOthers);
 			stopMoving();
 		}
 	}
