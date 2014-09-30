@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameEventManager : MonoBehaviour {
 
@@ -22,8 +23,25 @@ public class GameEventManager : MonoBehaviour {
 	public bool isTentacleSequenceActive = false;
 	public bool isDarkQueenSequenceActive = false;
 
+	const int TENTACLES_FACTORY_SIZE = 4;
+	List<GameObject> tentaclesList = new List<GameObject>( TENTACLES_FACTORY_SIZE );
+	int tentaclesListIndex = 0;
+	List<GameObject> tentaclesGroundDebrisList = new List<GameObject>( TENTACLES_FACTORY_SIZE );
+	int tentaclesGroundDebrisListIndex = 0;
+	List<ParticleSystem> tentaclesDustList = new List<ParticleSystem>( TENTACLES_FACTORY_SIZE );
+	int tentaclesDustListIndex = 0;
+
 	ZombieHandsSequence zombieHandsSequence;
 	bool isZombieHandsSequenceActive = false;
+
+	const int ZOMBIE_HANDS_FACTORY_SIZE = 6;
+	List<GameObject> zombieHandsList = new List<GameObject>( ZOMBIE_HANDS_FACTORY_SIZE );
+	int zombieHandsIndex = 0;
+	List<ParticleSystem> zombieHandsBurtsOutFXList = new List<ParticleSystem>( ZOMBIE_HANDS_FACTORY_SIZE );
+	int zombieHandsBurtsOutFXIndex = 0;
+	List<ParticleSystem> zombieHandsDustList = new List<ParticleSystem>( ZOMBIE_HANDS_FACTORY_SIZE );
+	int zombieHandsDustIndex = 0;
+
 
 	// Use this for initialization
 	void Awake () {
@@ -51,6 +69,55 @@ public class GameEventManager : MonoBehaviour {
 	public void setOpeningSequence( TentaclesSequence tentaclesSequence )
 	{
 		this.tentaclesSequence = tentaclesSequence;
+		createTentaclesFactory();
+	}
+
+	void createTentaclesFactory()
+	{
+		tentaclesList.Clear();
+		tentaclesListIndex = 0;
+		tentaclesGroundDebrisList.Clear();
+		tentaclesGroundDebrisListIndex = 0;
+		tentaclesDustList.Clear();
+		tentaclesDustListIndex = 0;
+
+		ParticleSystem dust;
+		GameObject go;
+		for( int i =0; i < TENTACLES_FACTORY_SIZE; i++ )
+		{
+			go = (GameObject)Instantiate(tentaclesSequence.tentaclePrefab, Vector3.zero, Quaternion.identity );
+			tentaclesList.Add( go );
+
+			go = (GameObject)Instantiate(tentaclesSequence.groundDebrisPrefab, Vector3.zero, Quaternion.identity );
+			tentaclesGroundDebrisList.Add( go );
+
+			dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
+			tentaclesDustList.Add( dust );
+		}
+	}
+
+	GameObject getFactoryTentacle()
+	{
+		GameObject tentacle = tentaclesList[tentaclesListIndex];
+		tentaclesListIndex++;
+		if( tentaclesListIndex == TENTACLES_FACTORY_SIZE ) tentaclesListIndex = 0;
+		return tentacle;
+	}
+
+	GameObject getFactoryGroundDebris()
+	{
+		GameObject groundDebris = tentaclesGroundDebrisList[tentaclesGroundDebrisListIndex];
+		tentaclesGroundDebrisListIndex++;
+		if( tentaclesGroundDebrisListIndex == TENTACLES_FACTORY_SIZE ) tentaclesGroundDebrisListIndex = 0;
+		return groundDebris;
+	}
+
+	ParticleSystem getFactoryTentacleDust()
+	{
+		ParticleSystem dust = tentaclesDustList[tentaclesListIndex];
+		tentaclesDustListIndex++;
+		if( tentaclesDustListIndex == TENTACLES_FACTORY_SIZE ) tentaclesDustListIndex = 0;
+		return dust;
 	}
 
 	public void playTentaclesSequence()
@@ -109,16 +176,15 @@ public class GameEventManager : MonoBehaviour {
 		}
 
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
-		ParticleSystem dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
+		ParticleSystem dust = getFactoryTentacleDust();
 		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 2.1f, lastTentaclePosition.z );
 		dust.Play();
-		GameObject.Destroy( dust, 3f );
 	}
 
 	void pierceUp()
 	{
 		playerController.shakeCamera();
-		GameObject go = (GameObject)Instantiate(tentaclesSequence.tentaclePrefab, Vector3.zero, Quaternion.identity );
+		GameObject go = getFactoryTentacle();
 		go.transform.position = lastTentaclePosition;
 		go.transform.rotation = Quaternion.Euler( 0, Random.Range (-180f,180f), Random.Range (-6f,6f) );
 		float randomScale = 1f + 0.3f * Random.value;
@@ -129,19 +195,18 @@ public class GameEventManager : MonoBehaviour {
 		LeanTween.moveLocalY(go, go.transform.position.y + 2, 1.15f ).setEase(LeanTweenType.easeOutExpo).setOnComplete(pierceDown).setOnCompleteParam( go as Object );
 
 		//Ground debris
-		GameObject groundDebrisObject = (GameObject)Instantiate(tentaclesSequence.groundDebrisPrefab, Vector3.zero, Quaternion.identity );
+		GameObject groundDebrisObject = getFactoryGroundDebris();
 		groundDebrisObject.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 2f, lastTentaclePosition.z );
 		groundDebrisObject.transform.rotation = Quaternion.Euler( 0, Random.Range (-180f,180f), 0 );
 		groundDebrisObject.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
 		LeanTween.moveLocalY(groundDebrisObject, groundDebrisObject.transform.position.y + 0.15f, 0.1f ).setEase(LeanTweenType.easeOutExpo);
 
 		go.audio.PlayDelayed(0.1f);
+
 		GameObject flyingDebris = (GameObject)Instantiate(tentaclesSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
 		flyingDebris.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 4f, lastTentaclePosition.z );
 		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
 		bo.triggerBreak( player.collider );
-		//We only want to keep the tentacle for a few seconds
-		GameObject.Destroy( go, 4f );
 		Invoke( "startPierceUp", 1.2f + Random.value );
 	}
 
@@ -194,15 +259,14 @@ public class GameEventManager : MonoBehaviour {
 		}
 
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
-		ParticleSystem dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
+		ParticleSystem dust = getFactoryTentacleDust();
 		dust.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 2.1f, lastSideTentaclePosition.z );
 		dust.Play();
-		GameObject.Destroy( dust, 3f );
 	}
 	
 	void sidePierceUp()
 	{
-		GameObject go = (GameObject)Instantiate(tentaclesSequence.tentaclePrefab, Vector3.zero, Quaternion.identity );
+		GameObject go = getFactoryTentacle();
 		go.transform.position = lastSideTentaclePosition;
 		go.transform.rotation = Quaternion.Euler( 0, Random.Range (-180f,180f), Random.Range (-6f,6f) );
 		float randomScale = 1f + 0.3f * Random.value;
@@ -212,7 +276,7 @@ public class GameEventManager : MonoBehaviour {
 		LeanTween.moveLocalY(go, go.transform.position.y + 2, 1.15f ).setEase(LeanTweenType.easeOutExpo);
 
 		//Ground debris
-		GameObject groundDebrisObject = (GameObject)Instantiate(tentaclesSequence.groundDebrisPrefab, Vector3.zero, Quaternion.identity );
+		GameObject groundDebrisObject = getFactoryGroundDebris();
 		groundDebrisObject.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 2f, lastSideTentaclePosition.z );
 		groundDebrisObject.transform.rotation = Quaternion.Euler( 0, Random.Range (-180f,180f), 0 );
 		groundDebrisObject.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
@@ -223,8 +287,6 @@ public class GameEventManager : MonoBehaviour {
 		flyingDebris.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 4f, lastSideTentaclePosition.z );
 		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
 		bo.triggerBreak( player.collider );
-		//We only want to keep the tentacle for a few seconds
-		GameObject.Destroy( go, 3f );
 		Invoke( "sideStartPierceUp", 0.8f + Random.value * 1.5f );
 	}
 
@@ -232,8 +294,58 @@ public class GameEventManager : MonoBehaviour {
 	public void setOpeningSequence( ZombieHandsSequence zombieHandsSequence )
 	{
 		this.zombieHandsSequence = zombieHandsSequence;
+		createZombieHandsFactory();
 	}
 	
+	void createZombieHandsFactory()
+	{
+		zombieHandsList.Clear();
+		zombieHandsIndex = 0;
+		zombieHandsBurtsOutFXList.Clear();
+		zombieHandsBurtsOutFXIndex = 0;
+		zombieHandsDustList.Clear();
+		zombieHandsDustIndex = 0;
+		
+		ParticleSystem fx;
+		GameObject go;
+		for( int i =0; i < ZOMBIE_HANDS_FACTORY_SIZE; i++ )
+		{
+			go = (GameObject)Instantiate(zombieHandsSequence.zombieHandPrefab, Vector3.zero, Quaternion.identity );
+			zombieHandsList.Add( go );
+			
+			fx = (ParticleSystem)Instantiate(zombieHandsSequence.burstOutFx, Vector3.zero, Quaternion.identity );
+			zombieHandsBurtsOutFXList.Add( fx );
+
+			fx = (ParticleSystem)Instantiate(zombieHandsSequence.zombieHandAboutToAppearFx, Vector3.zero, Quaternion.identity );
+			zombieHandsDustList.Add( fx );
+			
+		}
+	}
+	
+	GameObject getFactoryZombieHand()
+	{
+		GameObject zombieHand = zombieHandsList[zombieHandsIndex];
+		zombieHandsIndex++;
+		if( zombieHandsIndex == ZOMBIE_HANDS_FACTORY_SIZE ) zombieHandsIndex = 0;
+		return zombieHand;
+	}
+	
+	ParticleSystem getFactoryBurtsOutFX()
+	{
+		ParticleSystem burtsOutFX = zombieHandsBurtsOutFXList[zombieHandsBurtsOutFXIndex];
+		zombieHandsBurtsOutFXIndex++;
+		if( zombieHandsBurtsOutFXIndex == ZOMBIE_HANDS_FACTORY_SIZE ) zombieHandsBurtsOutFXIndex = 0;
+		return burtsOutFX;
+	}
+	
+	ParticleSystem getFactoryZombieHandDust()
+	{
+		ParticleSystem dust = zombieHandsDustList[zombieHandsDustIndex];
+		zombieHandsDustIndex++;
+		if( zombieHandsDustIndex == ZOMBIE_HANDS_FACTORY_SIZE ) zombieHandsDustIndex = 0;
+		return dust;
+	}
+
 	public void playZombieHandsSequence()
 	{
 		print ("Starting zombie hands sequence");
@@ -290,29 +402,24 @@ public class GameEventManager : MonoBehaviour {
 		}
 		
 		//Display a sign that a zombie hand is going to shoot up from the ground to warn the player
-		ParticleSystem dust = (ParticleSystem)Instantiate(zombieHandsSequence.zombieHandAboutToAppearFx, Vector3.zero, Quaternion.identity );
+		ParticleSystem dust = getFactoryZombieHandDust();
 		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 1.05f, lastTentaclePosition.z );
 		dust.Play();
-		GameObject.Destroy( dust, 3f );
 
 		//Send some debris (particles) flying up in the air as the hand bursts out of the ground
-		ParticleSystem burstOutFx = (ParticleSystem)Instantiate(zombieHandsSequence.burstOutFx, Vector3.zero, Quaternion.identity );
+		ParticleSystem burstOutFx = getFactoryBurtsOutFX();
 		burstOutFx.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 1.1f, lastTentaclePosition.z );
 		burstOutFx.Play();
-		GameObject.Destroy( burstOutFx, 3f );
 	}
 	
 	void zombieHandPierceUp()
 	{
-		//playerController.shakeCamera();
-		GameObject go = (GameObject)Instantiate(zombieHandsSequence.zombieHandPrefab, Vector3.zero, Quaternion.identity );
+		GameObject go = getFactoryZombieHand();
 		go.transform.position = lastTentaclePosition;
 		go.transform.rotation = Quaternion.Euler( 0, player.eulerAngles.y + 180f + Random.Range (-6f,7f), Random.Range (-6f,6f) );
 		float randomScale = 1f + 0.5f * Random.value;
 		go.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
 		go.name = "Stumble";
-		//go.animation.Play("attack");
-		//go.animation.PlayQueued("wiggle", QueueMode.CompleteOthers);
 		LeanTween.moveLocalY(go, go.transform.position.y + 1, 0.6f ).setEase(LeanTweenType.easeOutExpo).setOnComplete(zombieHandPierceDown).setOnCompleteParam( go as Object );
 
 		go.audio.PlayDelayed(0.1f);
@@ -321,8 +428,6 @@ public class GameEventManager : MonoBehaviour {
 		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
 		bo.triggerBreak( null );
 
-		//We only want to keep the zombie hand for a few seconds
-		GameObject.Destroy( go, 6f );
 		Invoke( "startZombieHandPierceUp", 1.2f + Random.value );
 	}
 	
@@ -342,19 +447,19 @@ public class GameEventManager : MonoBehaviour {
 		int laneChoice = Random.Range(0, 4);
 		if( laneChoice == 0 )
 		{
-			xPos = -2.6f;
+			xPos = -2.3f;
 		}
 		else if( laneChoice == 1 )
 		{
-			xPos = -3.9f;
+			xPos = -3.3f;
 		}
 		else if( laneChoice == 2 )
 		{
-			xPos = 2.6f;
+			xPos = 2.3f;
 		}
 		else
 		{
-			xPos = 3.9f;
+			xPos = 3.3f;
 		}
 		lastSideTentaclePosition = player.TransformPoint(new Vector3( xPos,0,attackDistance));
 		
@@ -376,27 +481,23 @@ public class GameEventManager : MonoBehaviour {
 		}
 		
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
-		ParticleSystem dust = (ParticleSystem)Instantiate(zombieHandsSequence.zombieHandAboutToAppearFx, Vector3.zero, Quaternion.identity );
+		ParticleSystem dust = getFactoryZombieHandDust();
 		dust.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 1.05f, lastSideTentaclePosition.z );
 		dust.Play();
-		GameObject.Destroy( dust, 3f );
 
 		//Send some debris (particles) flying up in the air as the hand bursts out of the ground
-		ParticleSystem burstOutFx = (ParticleSystem)Instantiate(zombieHandsSequence.burstOutFx, Vector3.zero, Quaternion.identity );
+		ParticleSystem burstOutFx = getFactoryBurtsOutFX();
 		burstOutFx.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 1.1f, lastTentaclePosition.z );
 		burstOutFx.Play();
-		GameObject.Destroy( burstOutFx, 3f );
 	}
 	
 	void zombieHandSidePierceUp()
 	{
-		GameObject go = (GameObject)Instantiate(zombieHandsSequence.zombieHandPrefab, Vector3.zero, Quaternion.identity );
+		GameObject go = getFactoryZombieHand();
 		go.transform.position = lastSideTentaclePosition;
 		go.transform.rotation = Quaternion.Euler( 0, player.eulerAngles.y + 180f + Random.Range (-6f,7f), Random.Range (-6f,6f) );
 		float randomScale = 1f + 0.5f * Random.value;
 		go.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
-		//go.animation.Play("attack");
-		//go.animation.PlayQueued("wiggle", QueueMode.CompleteOthers);
 		LeanTween.moveLocalY(go, go.transform.position.y + 1, 0.8f ).setEase(LeanTweenType.easeOutExpo);
 
 		go.audio.PlayDelayed(0.1f);
@@ -405,8 +506,6 @@ public class GameEventManager : MonoBehaviour {
 		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
 		bo.triggerBreak( null );
 
-		//We only want to keep the zombie hand for a few seconds
-		GameObject.Destroy( go, 3f );
 		Invoke( "sideStartZombieHandPierceUp", 0.8f + Random.value * 1.5f );
 	}
 

@@ -2138,6 +2138,7 @@ public class PlayerController : BaseClass {
 		moveDirection = new Vector3( 0,0,0 );
 		usesAccelerometer = false;
 		accelerometerPreviousFrameX = 0;
+		recalculateCurrentLane();  //make sure our currentLane info is valid
 		//Side move speed is divided by 2 because it just looks better.
 		if ( currentLane == Lanes.Left )
 		{
