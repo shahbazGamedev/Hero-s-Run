@@ -1135,8 +1135,14 @@ public class PlayerController : BaseClass {
 			}
 	
 			//Only allow a jump if we are not already jumping and if we are on the ground
-			if (_characterState != CharacterState.Jumping && _characterState != CharacterState.SideMove && distanceToGround < 0.5f )
+			if (_characterState != CharacterState.Jumping && distanceToGround < 0.5f )
 			{
+				//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
+				moveDirection.x = 0;
+				
+				//Make sure the lane data is correct in case a collision forced us out of our lane
+				recalculateCurrentLane();
+
 				//We are allowed to jump from the slide state.
 				audio.Stop ();							//stop the sliding sound if any
 				dustPuff.Stop();						//stop the dust puff that loops while we are sliding
@@ -1396,6 +1402,9 @@ public class PlayerController : BaseClass {
 		{
 			this.isGoingRight = isGoingRight;
 
+			//Make sure the lane data is correct in case a collision forced us out of our lane
+			recalculateCurrentLane();
+
 			float currentSideMoveSpeed;
 			if( Time.timeScale < 1f )
 			{
@@ -1630,6 +1639,7 @@ public class PlayerController : BaseClass {
 						  to be incremented incorrectly and ultimately, there was no more floor
 						  under the player and he would fall. So instead, I disable and re-enable
 						  overhead obstacles.*/
+
 						deactivateOverheadObstacles( true );
 						setCharacterState( CharacterState.Sliding );
 						dustPuff.loop = true;
