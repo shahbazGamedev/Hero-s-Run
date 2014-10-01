@@ -20,6 +20,8 @@ public class Checkpoint : MonoBehaviour {
 
 	void activateCheckpoint ()
 	{
+		//Reset the number of times the player died in the level
+		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		audio.Play();
 		LevelManager.Instance.incrementNextLevelToComplete();
 		//Save the player stats before continuing

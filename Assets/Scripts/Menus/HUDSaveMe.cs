@@ -13,7 +13,7 @@ public class HUDSaveMe : MonoBehaviour {
 	Rect saveMePopupRect;
 	Rect saveMeButtonRect;
 	Rect tryAgainButtonRect;
-	GUIContent saveMeButtonContent;
+	GUIContent saveMeButtonContent = new GUIContent("");
 	GUIContent tryAgainContent;
 	GUIContent tutorialTitleContent;
 	public GUIStyle saveMeStyle;
@@ -144,14 +144,31 @@ public class HUDSaveMe : MonoBehaviour {
 
 	void renderNormalSaveMe()
 	{
-		Rect numberLivesRect = new Rect( margin,saveMePopupSize.x * 0.1f, saveMePopupSize.x * 0.1f, saveMePopupSize.x * 0.1f );
+		Rect numberLivesRect = new Rect( margin,saveMePopupSize.x * 0.1f, saveMePopupSize.x * 0.36f, saveMePopupSize.x * 0.1f );
 		int currentNumberOfLives = PlayerStatsManager.Instance.getLives();
-		//Calculate the energy cost to revive. It double each time you get revived without restarting the level.
-		float costLives = Mathf.Pow( 2, PlayerStatsManager.Instance.getTimesPlayerRevivedInLevel() );
-		saveMeButtonContent = new GUIContent(currentNumberOfLives.ToString());
+		if( PlayerStatsManager.Instance.getHasInfiniteLives() )
+		{
+			saveMeButtonContent.text = " Lives: " + currentNumberOfLives.ToString() + "*";
+		}
+		else
+		{
+			saveMeButtonContent.text = " Lives: " + currentNumberOfLives.ToString();
+		}
+
 		GUI.BeginGroup(saveMePopupRect);
+
+		TextAnchor currentAnchor = saveMeStyle.alignment;
+		saveMeStyle.alignment = TextAnchor.MiddleLeft;
 		GUI.Label( numberLivesRect, saveMeButtonContent, saveMeStyle );
-		saveMeButtonContent = new GUIContent("Save Me!" + "\n" + costLives.ToString() + "  " );
+
+		//Calculate the energy cost to revive.
+		saveMeStyle.alignment = currentAnchor;
+		float costLives = PlayerStatsManager.Instance.getTimesPlayerRevivedInLevel() + 1;
+		int currentFontSize = saveMeStyle.fontSize;
+		saveMeStyle.fontSize = 	(int)(saveMeStyle.fontSize * 0.8f);
+
+		saveMeButtonContent.text = "Save Me!" + "\n" + "Cost: " + costLives.ToString() + "  ";
+
 		if(GUI.Button( saveMeButtonRect, saveMeButtonContent, saveMeStyle ))
 		{
 			if( PlayerStatsManager.Instance.getLives() >= costLives || PlayerStatsManager.Instance.getHasInfiniteLives() )
@@ -167,7 +184,6 @@ public class HUDSaveMe : MonoBehaviour {
 			{
 				//Show buy popup
 			}
-
 		}
 		//Skip button
 		if(GUI.Button( skipButtonRect, skipButtonContent, saveMeStyle ))
@@ -180,7 +196,8 @@ public class HUDSaveMe : MonoBehaviour {
 			closePopup();
 		}
 		GUI.EndGroup();
-
+		//Reset
+		saveMeStyle.fontSize = currentFontSize;
 	}
 
 	void fadeOutAllAudio( float duration )
