@@ -811,7 +811,7 @@ public class PlayerController : BaseClass {
 			if (angle < 90)
 			{
 				//player swiped RIGHT
-				moveToSide( true );
+				sideSwipe( true );
 				lastSwipe = "RIGHT";
 	        }
 			else if (angle < 180)
@@ -823,7 +823,7 @@ public class PlayerController : BaseClass {
 			else if (angle < 270)
 			{
 				//player swiped LEFT
-				moveToSide( false );
+				sideSwipe( false );
 				lastSwipe = "LEFT";
 			}
 			else
@@ -839,7 +839,6 @@ public class PlayerController : BaseClass {
 	{
 		
 		verifySlide();
-		//recalculateCurrentLane();
 			
 		// When we reach the apex of the jump
 		if (jumping && !jumpingReachedApex && moveDirection.y <= 0.0)
@@ -1065,12 +1064,12 @@ public class PlayerController : BaseClass {
 		//Also support keys for debugging
 		if ( Input.GetKeyDown (KeyCode.LeftArrow) ) 
 		{
-			moveToSide( false );
+			sideSwipe( false );
 			lastSwipe = "LEFT";
 		}
 		else if ( Input.GetKeyDown (KeyCode.RightArrow) ) 
 		{
-			moveToSide( true );
+			sideSwipe( true );
 			lastSwipe = "RIGHT";
 		}
 		else if ( Input.GetKeyDown (KeyCode.DownArrow) ) 
@@ -1247,185 +1246,203 @@ public class PlayerController : BaseClass {
 		}
 	}
 
-	//move the player to the left lane if false,
-	//and to the right lane if true
-	void moveToSide( bool isGoingRight )
+	void sideSwipe( bool isGoingRight )
 	{
 		if( playerControlsEnabled && !usesBezierCurve )
 		{
-			//Only allow side-moves if we are running or jumping or sliding
-	 		if ( _characterState == CharacterState.Running || _characterState == CharacterState.Jumping || _characterState == CharacterState.Sliding )
-			{
-				this.isGoingRight = isGoingRight;
-	
+			if (isInDeadEnd )
+			{	
 				//We want to turn the corner
-				if (isInDeadEnd )
-				{		
-					//You can only turn once
-					if (!deadEndTurnDone)
-					{
-						float sideMoveInitiatedZ = getTurnInitiatedPosition();
+				turnCorner ( isGoingRight );
+			}
+			else
+			{
+				//we want to change lanes
+				changeLane ( isGoingRight );
+			}
+		}
+	}
 
-						//We have 3 cases:
-						//Case 1: Player turned early or normally
-						//Condition: player turned before -1.3 meters (0 is center of tile).
-						//What we want to do: wait until player reaches the next available lane (left, center of right) and then turn
+	void turnCorner( bool isGoingRight )
+	{
+		if ( _characterState == CharacterState.Running || _characterState == CharacterState.Jumping || _characterState == CharacterState.Sliding || _characterState == CharacterState.SideMove || _characterState == CharacterState.Stumbling )
+		{
+			this.isGoingRight = isGoingRight;
 
-						//Case 2: Player turned late
-						//Condition: player turned after +1.3 meters (0 is center of tile), but before +1.9 meters. Math is 1.3 lane width + 0.5 is player radius + 0.1 meters is margin
-						//What we want to do: turn immediately
+			//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
+			moveDirection.x = 0;
 
-						//Case 3: Player turned too late
-						//Condition: player turned after +1.9 meters (0 is center of tile).
-						//What we want to do: kill the player. He missed the turn.
+			//Make sure the lane data is correct in case a collision forced us out of our lane
+			recalculateCurrentLane();
 
-						//Case 3: Player turned too late, we want to kill him
-						if (sideMoveInitiatedZ > 1.9f )
-						{	
-							Debug.LogWarning("moveToSide: game over - player turned too late." );
-							reasonDiedAtTurn = "TURNED TOO LATE";
-							managePlayerDeath ( DeathType.Turn );
-							return;
-						}
+			//You can only turn once
+			if (!deadEndTurnDone)
+			{
+				float sideMoveInitiatedZ = getTurnInitiatedPosition();
 
-						//Case 2: Player turned late, we want to turn now
-						if ( sideMoveInitiatedZ > laneLimit && sideMoveInitiatedZ < 1.9f )
-						{	
-							if ( isGoingRight )
-							{
-								//Verify if the player is doing a side-move in an allowed direction
-								if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight || currentDeadEndType == DeadEndType.RightStraight)
-								{
-									//Turn is valid
-									desiredLane = Lanes.Left;
-									turnNow();
-								}
-								else
-								{
-									//Player turned the wrong way
-									Debug.LogWarning("moveToSide: game over - player turned wrong way too late." );
-									reasonDiedAtTurn = "LATE WRONG WAY 3";
-									managePlayerDeath ( DeathType.Turn );
-								}				
-							}
-							else
-							{
-								if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight )
-								{
-									//Turn is valid
-									desiredLane = Lanes.Right;
-									turnNow();
-								}
-								else
-								{
-									//Player turned the wrong way
-									Debug.LogWarning("moveToSide: game over - player turned wrong way too late." );
-									reasonDiedAtTurn = "LATE WRONG WAY 4";
-									managePlayerDeath ( DeathType.Turn );
-								}
-							}
-							return;
-						}
+				//We have 3 cases:
+				//Case 1: Player turned early or normally
+				//Condition: player turned before -1.3 meters (0 is center of tile).
+				//What we want to do: wait until player reaches the next available lane (left, center of right) and then turn
 
-						//Case 1: Player turned early or normally
-						if (sideMoveInitiatedZ < laneLimit )
-						{	
-							if ( isGoingRight )
-							{
-								//Verify if the player is doing a side-move in an allowed direction
-								if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight || currentDeadEndType == DeadEndType.RightStraight)
-								{
-									//Turn is valid
-									setDesiredLane( sideMoveInitiatedZ );
-								}
-								else
-								{
-									//Player turned the wrong way
-									Debug.LogWarning("moveToSide: game over - player turned wrong way." );
-									reasonDiedAtTurn = "WRONG WAY 1";
-									managePlayerDeath ( DeathType.Turn );
-								}				
-							}
-							else
-							{
-								if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight )
-								{
-									//Turn is valid
-									setDesiredLane( sideMoveInitiatedZ );
-								}
-								else
-								{
-									//Player turned the wrong way
-									Debug.LogWarning("moveToSide: game over - player turned wrong way." );
-									reasonDiedAtTurn = "WRONG WAY 2";
-									managePlayerDeath ( DeathType.Turn );
-								}
-							}
-						}
-					}
-					else
-					{
-						reasonDiedAtTurn = "ALREADY TURNED";
-						Debug.LogWarning("moveToSide: turn denied since player has already turned." );
-	
-					}
+				//Case 2: Player turned late
+				//Condition: player turned after +1.3 meters (0 is center of tile), but before +1.9 meters. Math is 1.3 lane width + 0.5 is player radius + 0.1 meters is margin
+				//What we want to do: turn immediately
+
+				//Case 3: Player turned too late
+				//Condition: player turned after +1.9 meters (0 is center of tile).
+				//What we want to do: kill the player. He missed the turn.
+
+				//Case 3: Player turned too late, we want to kill him
+				if (sideMoveInitiatedZ > 1.9f )
+				{	
+					Debug.LogWarning("turnCorner: game over - player turned too late." );
+					reasonDiedAtTurn = "TURNED TOO LATE";
+					managePlayerDeath ( DeathType.Turn );
+					return;
 				}
-				else
-				{
-					//We are not in a dead end
-					//You can only change lanes while running
-	 				if ( _characterState == CharacterState.Running )
+
+				//Case 2: Player turned late, we want to turn now
+				if ( sideMoveInitiatedZ > laneLimit && sideMoveInitiatedZ < 1.9f )
+				{	
+					if ( isGoingRight )
 					{
-						float currentSideMoveSpeed;
-						if( Time.timeScale < 1f )
+						//Verify if the player is doing a side-move in an allowed direction
+						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight || currentDeadEndType == DeadEndType.RightStraight)
 						{
-							//Player is using a slow time power up.
-							currentSideMoveSpeed = sideMoveSpeed * SLOW_DOWN_FACTOR;
+							//Turn is valid
+							desiredLane = Lanes.Left;
+							turnNow();
 						}
 						else
 						{
-							//Time is normal.
-							currentSideMoveSpeed = sideMoveSpeed;
+							//Player turned the wrong way
+							Debug.LogWarning("turnCorner: game over - player turned wrong way too late." );
+							reasonDiedAtTurn = "LATE WRONG WAY 3";
+							managePlayerDeath ( DeathType.Turn );
+						}				
+					}
+					else
+					{
+						if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight )
+						{
+							//Turn is valid
+							desiredLane = Lanes.Right;
+							turnNow();
 						}
+						else
+						{
+							//Player turned the wrong way
+							Debug.LogWarning("turnCorner: game over - player turned wrong way too late." );
+							reasonDiedAtTurn = "LATE WRONG WAY 4";
+							managePlayerDeath ( DeathType.Turn );
+						}
+					}
+					return;
+				}
 
-						if ( currentLane == Lanes.Center )
+				//Case 1: Player turned early or normally
+				if (sideMoveInitiatedZ < laneLimit )
+				{	
+					if ( isGoingRight )
+					{
+						//Verify if the player is doing a side-move in an allowed direction
+						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight || currentDeadEndType == DeadEndType.RightStraight)
 						{
-							if ( isGoingRight )
-							{
-								desiredLane = Lanes.Right;
-								setCharacterState( CharacterState.SideMove );
-								moveDirection.x = currentSideMoveSpeed;
-								audio.PlayOneShot( sideMoveSound );
-								//Debug.Log ("moveToSide completed " + isGoingRight + " to lane " + desiredLane );
-		
-							}
-							else
-							{
-								desiredLane = Lanes.Left;
-								setCharacterState( CharacterState.SideMove );
-								moveDirection.x = -currentSideMoveSpeed;
-								audio.PlayOneShot( sideMoveSound );
-								//Debug.Log ("moveToSide completed " + isGoingRight + " to lane " + desiredLane );
-							}
+							//Turn is valid
+							setDesiredLane( sideMoveInitiatedZ );
 						}
-						else if ( currentLane == Lanes.Right && !isGoingRight )
+						else
 						{
-							desiredLane = Lanes.Center;
-							setCharacterState( CharacterState.SideMove );
-							moveDirection.x = -currentSideMoveSpeed;
-							audio.PlayOneShot( sideMoveSound );
-							//Debug.Log ("moveToSide completed " + isGoingRight + " to lane " + desiredLane );
+							//Player turned the wrong way
+							Debug.LogWarning("turnCorner: game over - player turned wrong way." );
+							reasonDiedAtTurn = "WRONG WAY 1";
+							managePlayerDeath ( DeathType.Turn );
+						}				
+					}
+					else
+					{
+						if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight )
+						{
+							//Turn is valid
+							setDesiredLane( sideMoveInitiatedZ );
 						}
-						else if ( currentLane == Lanes.Left && isGoingRight )
+						else
 						{
-							desiredLane = Lanes.Center;
-							setCharacterState( CharacterState.SideMove );
-							moveDirection.x = currentSideMoveSpeed;
-							audio.PlayOneShot( sideMoveSound );
-							//Debug.Log ("moveToSide completed " + isGoingRight + " to lane " + desiredLane );
+							//Player turned the wrong way
+							Debug.LogWarning("turnCorner: game over - player turned wrong way." );
+							reasonDiedAtTurn = "WRONG WAY 2";
+							managePlayerDeath ( DeathType.Turn );
 						}
 					}
 				}
+			}
+			else
+			{
+				reasonDiedAtTurn = "ALREADY TURNED";
+				Debug.LogWarning("turnCorner: turn denied since player has already turned." );
+
+			}
+		}
+	}
+
+
+	//move the player to the left lane if false,
+	//and to the right lane if true
+	void changeLane( bool isGoingRight )
+	{
+		//You can only change lanes while running
+		if ( _characterState == CharacterState.Running )
+		{
+			this.isGoingRight = isGoingRight;
+
+			float currentSideMoveSpeed;
+			if( Time.timeScale < 1f )
+			{
+				//Player is using a slow time power up.
+				currentSideMoveSpeed = sideMoveSpeed * SLOW_DOWN_FACTOR;
+			}
+			else
+			{
+				//Time is normal.
+				currentSideMoveSpeed = sideMoveSpeed;
+			}
+
+			if ( currentLane == Lanes.Center )
+			{
+				if ( isGoingRight )
+				{
+					desiredLane = Lanes.Right;
+					setCharacterState( CharacterState.SideMove );
+					moveDirection.x = currentSideMoveSpeed;
+					audio.PlayOneShot( sideMoveSound );
+					//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
+
+				}
+				else
+				{
+					desiredLane = Lanes.Left;
+					setCharacterState( CharacterState.SideMove );
+					moveDirection.x = -currentSideMoveSpeed;
+					audio.PlayOneShot( sideMoveSound );
+					//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
+				}
+			}
+			else if ( currentLane == Lanes.Right && !isGoingRight )
+			{
+				desiredLane = Lanes.Center;
+				setCharacterState( CharacterState.SideMove );
+				moveDirection.x = -currentSideMoveSpeed;
+				audio.PlayOneShot( sideMoveSound );
+				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
+			}
+			else if ( currentLane == Lanes.Left && isGoingRight )
+			{
+				desiredLane = Lanes.Center;
+				setCharacterState( CharacterState.SideMove );
+				moveDirection.x = currentSideMoveSpeed;
+				audio.PlayOneShot( sideMoveSound );
+				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
 			}
 		}
 	}
@@ -2322,8 +2339,6 @@ public class PlayerController : BaseClass {
 		wantToTurn = false;
 		deadEndTurnDone = true;
 		currentLane = desiredLane;
-		//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
-		moveDirection.x = 0;
 		if( currentDeadEndType == DeadEndType.LeftRight )
 		{
 			Debug.Log("PlayerController-turnNow: player turned " + isGoingRight + " at T-Junction." + currentTile.name );
@@ -2857,46 +2872,43 @@ public class PlayerController : BaseClass {
 	//Called every frame to ensure that the critical current lane value is always accurate
 	private void recalculateCurrentLane()
 	{
-		if( !usesBezierCurve && _characterState != CharacterState.Turning && _characterState != CharacterState.Turning_and_sliding && _characterState != CharacterState.SideMove && _characterState != CharacterState.Falling )
-		{
-			float min = -laneLimit + controller.radius;
-			float max = laneLimit - controller.radius;
-			float relativePos = 0;
-			Lanes calculatedLane;
+		float min = -laneLimit + controller.radius;
+		float max = laneLimit - controller.radius;
+		float relativePos = 0;
+		Lanes calculatedLane;
 
-			if( tileRotationY == 0 )
-			{
-				//X axis
-				relativePos = transform.position.x - currentTilePos.x;	
-			}
-			else if( tileRotationY == 90f || tileRotationY == -270f )
-			{
-				//Z axis facing left
-				relativePos = currentTilePos.z - transform.position.z;
-			}
-			else if( tileRotationY == -90f || tileRotationY == 270f )
-			{
-				//Z axis facing right
-				relativePos = transform.position.z - currentTilePos.z;
-			}
-			if( relativePos > min && relativePos < max)
-			{
-				calculatedLane = Lanes.Center;
-			}
-			else if( relativePos < min )
-			{
-				calculatedLane = Lanes.Left;
-			}
-			else
-			{
-				calculatedLane = Lanes.Right;		
-			}
-			if( calculatedLane != currentLane )
-			{
-				Debug.LogWarning("recalculateCurrentLane changed current lane from: " + currentLane + " to: " + calculatedLane );
-				currentLane = calculatedLane;
-				desiredLane = currentLane;
-			}
+		if( tileRotationY == 0 )
+		{
+			//X axis
+			relativePos = transform.position.x - currentTilePos.x;	
+		}
+		else if( tileRotationY == 90f || tileRotationY == -270f )
+		{
+			//Z axis facing left
+			relativePos = currentTilePos.z - transform.position.z;
+		}
+		else if( tileRotationY == -90f || tileRotationY == 270f )
+		{
+			//Z axis facing right
+			relativePos = transform.position.z - currentTilePos.z;
+		}
+		if( relativePos > min && relativePos < max)
+		{
+			calculatedLane = Lanes.Center;
+		}
+		else if( relativePos < min )
+		{
+			calculatedLane = Lanes.Left;
+		}
+		else
+		{
+			calculatedLane = Lanes.Right;		
+		}
+		if( calculatedLane != currentLane )
+		{
+			Debug.LogWarning("recalculateCurrentLane changed current lane from: " + currentLane + " to: " + calculatedLane );
+			currentLane = calculatedLane;
+			desiredLane = currentLane;
 		}
 	}
 	
