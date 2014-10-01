@@ -423,10 +423,11 @@ public class GameEventManager : MonoBehaviour {
 		LeanTween.moveLocalY(go, go.transform.position.y + 1, 0.6f ).setEase(LeanTweenType.easeOutExpo).setOnComplete(zombieHandPierceDown).setOnCompleteParam( go as Object );
 
 		go.audio.PlayDelayed(0.1f);
-		GameObject flyingDebris = (GameObject)Instantiate(zombieHandsSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
-		flyingDebris.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 1.4f, lastTentaclePosition.z );
-		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
-		bo.triggerBreak( null );
+
+		//GameObject flyingDebris = (GameObject)Instantiate(zombieHandsSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
+		//flyingDebris.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 1.4f, lastTentaclePosition.z );
+		//BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
+		//bo.triggerBreak( null );
 
 		Invoke( "startZombieHandPierceUp", 1.2f + Random.value );
 	}
@@ -501,10 +502,11 @@ public class GameEventManager : MonoBehaviour {
 		LeanTween.moveLocalY(go, go.transform.position.y + 1, 0.8f ).setEase(LeanTweenType.easeOutExpo);
 
 		go.audio.PlayDelayed(0.1f);
-		GameObject flyingDebris = (GameObject)Instantiate(zombieHandsSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
-		flyingDebris.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 4f, lastSideTentaclePosition.z );
-		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
-		bo.triggerBreak( null );
+
+		//GameObject flyingDebris = (GameObject)Instantiate(zombieHandsSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
+		//flyingDebris.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 4f, lastSideTentaclePosition.z );
+		//BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
+		//bo.triggerBreak( null );
 
 		Invoke( "sideStartZombieHandPierceUp", 0.8f + Random.value * 1.5f );
 	}

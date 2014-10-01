@@ -418,7 +418,7 @@ ModelImporter:
       name: CoachDriverRunOverPlayer
       takeName: Take 001
       firstFrame: 50
-      lastFrame: 100
+      lastFrame: 160
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -661,8 +661,8 @@ ModelImporter:
     - serializedVersion: 16
       name: CoachDriverIdle
       takeName: Take 001
-      firstFrame: 110
-      lastFrame: 140
+      firstFrame: 170
+      lastFrame: 270
       wrapMode: 2
       orientationOffsetY: 0
       level: 0
