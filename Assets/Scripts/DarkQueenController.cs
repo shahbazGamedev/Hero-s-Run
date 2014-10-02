@@ -29,7 +29,6 @@ public class DarkQueenController : BaseClass {
 
 	DarkQueenState darkQueenState = DarkQueenState.None;
 
-	bool followsPlayer = false;
 	public Vector3 forward;
 	float speed = 6f;
 	CharacterController controller;
@@ -39,7 +38,6 @@ public class DarkQueenController : BaseClass {
 	const float MAX_DISTANCE_LIGHT_AFFECTED = 180f;
 
 	public DarkQueenKrakenSequence dqks;
-	public ParticleSystem poisonMist;
 
 
 	void Awake()
@@ -55,7 +53,6 @@ public class DarkQueenController : BaseClass {
 		prepareListOfLights();
 	}
 
-
 	// Update is called once per frame
 	void LateUpdate ()
 	{
@@ -64,7 +61,7 @@ public class DarkQueenController : BaseClass {
 
 			//1) Get the direction of the dark queen
 			forward = transform.TransformDirection(Vector3.forward);			
-			//2) Scale vector based on flying speed
+			//2) Scale vector based on move speed
 			forward = forward * Time.deltaTime * speed;
 			//3) Move the controller
 			controller.Move( forward );
@@ -103,8 +100,6 @@ public class DarkQueenController : BaseClass {
 		ld.aLight = Sun.light;
 		ld.originalIntensity = Sun.light.intensity;
 		listOfLights.Add ( ld );
-		
-		
 	}
 
 	public void dimLights( float duration, float finalIntensity )
@@ -179,6 +174,7 @@ public class DarkQueenController : BaseClass {
 		}
 	}
 
+	//******************
 
 	public void arriveAndCastSpell()
 	{
@@ -220,7 +216,7 @@ public class DarkQueenController : BaseClass {
 	{
 		audio.PlayOneShot( spellSound );
 		spellFx.Play();
-		poisonMist.Play();
+		dqks.poisonMist.Play();
 	}
 
 	public void leave()
@@ -235,16 +231,6 @@ public class DarkQueenController : BaseClass {
 	public void playerStartsRunningAgain()
 	{
 		dqks.step4();
-	}
-
-	public void Arrive( float timeToArrive )
-	{
-		darkQueenState = DarkQueenState.Arrive;
-		Vector3 arrivalStartPos = new Vector3( -18f, 12f, PlayerController.getPlayerSpeed() * 2f );
-		Vector3 exactPos = player.TransformPoint(arrivalStartPos);
-		transform.position = exactPos;
-		transform.rotation = Quaternion.Euler( 0, player.transform.eulerAngles.y + 90f, transform.eulerAngles.z );
-		StartCoroutine("MoveToPosition", timeToArrive );
 	}
 	
 	public void Disappear()

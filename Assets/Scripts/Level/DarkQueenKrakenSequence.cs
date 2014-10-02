@@ -14,6 +14,8 @@ public class DarkQueenKrakenSequence : MonoBehaviour {
 	public AudioClip VO_DQ_not_keep_waiting;
 	public AudioClip VO_DQ_rise_from_the_deep;
 
+	public ParticleSystem poisonMist;
+
 	bool hasBeenTriggered = false;
 	GameEventManager gem;
 	GameObject darkQueenObject;
