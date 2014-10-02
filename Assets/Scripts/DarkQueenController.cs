@@ -20,14 +20,6 @@ public class DarkQueenController : BaseClass {
 		isFaded = 3
 	}
 
-	//Components
-	Animation fairyAnimation;
-
-	public ParticleSystem appearFx;
-	public AudioClip appearSound;
-	
-	public ParticleSystem fairySpellFx;
-	public AudioClip fairySpellSound;
 
 	public ParticleSystem floatDownFx;
 
@@ -39,31 +31,6 @@ public class DarkQueenController : BaseClass {
 	public ParticleSystem krakenSpellFx;
 	public AudioClip krakenSpellSound;
 
-	// The distance in the x-z plane to the target
-	const float DEFAULT_DISTANCE = 0.7f;
-	float distance = DEFAULT_DISTANCE;
-
-	// the height we want the fairy to be above the player
-	public const float DEFAULT_HEIGHT = 2.1f;
-	float height = DEFAULT_HEIGHT;
-
-	//Where to position the fairt relative to the player when appearing next to player
-	Vector3 fairyRelativePos = new Vector3(-0.6f , DEFAULT_HEIGHT , DEFAULT_DISTANCE );
-
-	// How much we 
-	const float DEFAULT_HEIGHT_DAMPING = 6f;
-	float heightDamping = DEFAULT_HEIGHT_DAMPING;
-
-	const float DEFAULT_ROTATION_DAMPING = 3f;
-	float rotationDamping = DEFAULT_ROTATION_DAMPING;
-
-	const float DEFAULT_Y_ROTATION_OFFSET = 168f;
-	float yRotationOffset = DEFAULT_Y_ROTATION_OFFSET;
-
-	const float DEFAULT_X_ROTATION = 9f;
-	float xRotation = DEFAULT_X_ROTATION;
-
-	Vector3 xOffset = new Vector3( 0.6f, 0, 0 );
 	bool followsPlayer = false;
 	public Vector3 forward;
 	float flyingSpeed = 6f;
@@ -79,8 +46,6 @@ public class DarkQueenController : BaseClass {
 
 	void Awake()
 	{
-		//Get a copy of the components
-		fairyAnimation = (Animation) GetComponent("Animation");
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
 		controller = GetComponent<CharacterController>();
@@ -204,16 +169,6 @@ public class DarkQueenController : BaseClass {
 		print ("DarkQueenController-Finished fading in light named " + ld.aLight.name + " to intensity: " + ld.originalIntensity );
 	}
 
-	public void setYRotationOffset( float offset )
-	{
-		yRotationOffset = offset;
-	}
-
-	public void resetYRotationOffset()
-	{
-		yRotationOffset = DEFAULT_Y_ROTATION_OFFSET;
-	}
-
 	public void walk( bool enable )
 	{
 		if( enable )
@@ -226,61 +181,16 @@ public class DarkQueenController : BaseClass {
 		}
 	}
 
-	public void floatDown( float height, System.Action callback )
-	{
-		transform.localScale = new Vector3( 1.2f, 1.2f, 1.2f );
-		floatDownFx.Play ();
-		LeanTween.moveLocalY(gameObject, gameObject.transform.localPosition.y - height,4f ).setEase(LeanTweenType.easeOutQuad).setOnComplete(callback);
-	}
-	
-	private void positionFairy ()
-	{
-		// Calculate the current rotation angles
-		float wantedRotationAngle = player.eulerAngles.y + yRotationOffset;
-		float wantedHeight = player.position.y + height;
-		
-		float currentRotationAngle = transform.eulerAngles.y;
-		float currentHeight = transform.position.y;
-		
-		// Damp the rotation around the y-axis
-		currentRotationAngle = Mathf.LerpAngle (currentRotationAngle, wantedRotationAngle, rotationDamping * Time.deltaTime);
-		
-		// Damp the height
-		currentHeight = Mathf.Lerp (currentHeight, wantedHeight, heightDamping * Time.deltaTime);
-		
-		// Convert the angle into a rotation
-		Quaternion currentRotation = Quaternion.Euler (0, currentRotationAngle, 0);
-		
-		//Order of rotations is ZXY
-
-		// Set the position of the fairy on the x-z plane to:
-		// distance meters behind the target
-		transform.position = player.position;
-		transform.position -= currentRotation * Vector3.forward * distance;
-		
-		// Set the height of the fairy
-		transform.position = new Vector3( transform.position.x, currentHeight, transform.position.z );
-		
-		// Always look at the target
-		transform.LookAt (player);
-		
-		//Tilt the camera down
-		transform.rotation = Quaternion.Euler( xRotation, transform.eulerAngles.y, transform.eulerAngles.z );
-
-		//More fairy slightly to the left
-		Vector3 exactPos = transform.TransformPoint( xOffset );
-		transform.position = exactPos;
-	}
 
 	public void arriveAndCastSpell()
 	{
 		transform.localScale = new Vector3( 1.2f, 1.2f, 1.2f );
 		floatDownFx.Play ();
 		float arriveSpeed = 0.3f;
-		fairyAnimation["DarkQueen_Arrive"].speed = arriveSpeed;
-		fairyAnimation.Play("DarkQueen_Arrive");
-		Invoke("playLandAnimation", fairyAnimation["DarkQueen_Arrive"].length/arriveSpeed );
-		dimLights( fairyAnimation["DarkQueen_Arrive"].length/arriveSpeed, 0.1f );
+		animation["DarkQueen_Arrive"].speed = arriveSpeed;
+		animation.Play("DarkQueen_Arrive");
+		Invoke("playLandAnimation", animation["DarkQueen_Arrive"].length/arriveSpeed );
+		dimLights( animation["DarkQueen_Arrive"].length/arriveSpeed, 0.1f );
 
 	}
 
@@ -288,24 +198,24 @@ public class DarkQueenController : BaseClass {
 	{
 		AchievementDisplay.activateDisplayDarkQueen( "You should never keep your Queen waiting.", 0.35f, 3.6f );
 		audio.PlayOneShot( darkQueenVO );
-		fairyAnimation.CrossFade("DarkQueen_Land", 0.1f);
-		Invoke("playIdleAnimation", fairyAnimation["DarkQueen_Land"].length);
+		animation.CrossFade("DarkQueen_Land", 0.1f);
+		Invoke("playIdleAnimation", animation["DarkQueen_Land"].length);
 	}
 
 	void playIdleAnimation()
 	{
 		floatDownFx.Stop ();
-		fairyAnimation.Play("DarkQueen_Idle");
-		Invoke("castKrakenSpell", fairyAnimation["DarkQueen_Idle"].length);
+		animation.Play("DarkQueen_Idle");
+		Invoke("castKrakenSpell", animation["DarkQueen_Idle"].length);
 	}
 
 	public void castKrakenSpell()
 	{
 		AchievementDisplay.activateDisplayDarkQueen( "Rise Sister, rise from the deep...", 0.35f, 3.8f );
 		audio.PlayOneShot( darkQueenVO_riseFromTheDeep );
-		fairyAnimation.Play("DarkQueen_SpellCast");
+		animation.Play("DarkQueen_SpellCast");
 		Invoke("playKrakenSpellFX", 0.3f);
-		Invoke("leave", fairyAnimation["DarkQueen_SpellCast"].length );
+		Invoke("leave", animation["DarkQueen_SpellCast"].length );
 	}
 
 	void playKrakenSpellFX()
@@ -318,21 +228,15 @@ public class DarkQueenController : BaseClass {
 	public void leave()
 	{
 		floatDownFx.Play ();
-		fairyAnimation["DarkQueen_Leave"].speed = 1.2f;
-		fairyAnimation.Play("DarkQueen_Leave");
-		brightenLights( fairyAnimation["DarkQueen_Leave"].length/1.2f );
-		Invoke("playerStartsRunningAgain", fairyAnimation["DarkQueen_Leave"].length/1.2f );
+		animation["DarkQueen_Leave"].speed = 1.2f;
+		animation.Play("DarkQueen_Leave");
+		brightenLights( animation["DarkQueen_Leave"].length/1.2f );
+		Invoke("playerStartsRunningAgain", animation["DarkQueen_Leave"].length/1.2f );
 	}
 
 	public void playerStartsRunningAgain()
 	{
 		dqks.step4();
-	}
-
-	public void stopFloatDownFx()
-	{
-		floatDownFx.Stop ();
-
 	}
 
 	public void Arrive( float timeToArrive )
@@ -344,64 +248,12 @@ public class DarkQueenController : BaseClass {
 		transform.rotation = Quaternion.Euler( 0, player.transform.eulerAngles.y + 90f, transform.eulerAngles.z );
 		StartCoroutine("MoveToPosition", timeToArrive );
 	}
-
-	public void Appear()
-	{
-		transform.localScale = new Vector3( 1f, 1f, 1f );
-		positionFairy ();
-		fairyAnimation.Play("Hover_Worried");
-		gameObject.SetActive( true );
-		appearFx.Play();
-		audio.PlayOneShot( appearSound );
-		darkQueenState = DarkQueenState.Hover;
-	}
-
+	
 	public void Disappear()
 	{
-		audio.PlayOneShot( appearSound );
 		transform.localScale = new Vector3( 0.002f, 0.002f, 0.002f );
-		appearFx.Play();
-		Invoke("Disappear_part2", 2.3f);
-		floatDownFx.Stop ();
-
-	}
-
-	public void Disappear_part2()
-	{
 		gameObject.SetActive( false );
 		darkQueenState = DarkQueenState.None;
-	}
-
-
-
-	private IEnumerator MoveToPosition( float timeToArrive )
-	{
-		//Step 1 - Take position in front of player
-		float startTime = Time.time;
-		float elapsedTime = 0;
-		float startYrot = transform.eulerAngles.y;
-		Vector3 startPosition = transform.position;
-		
-		while ( elapsedTime <= timeToArrive )
-		{
-			elapsedTime = Time.time - startTime;
-			
-			//Percentage of time completed 
-			float fracJourney = elapsedTime / timeToArrive;
-			
-			float yRot = Mathf.LerpAngle( startYrot, player.eulerAngles.y + 180f, fracJourney );
-			transform.eulerAngles = new Vector3 ( transform.eulerAngles.x, yRot, transform.eulerAngles.z );
-			
-			Vector3 exactPos = player.TransformPoint(fairyRelativePos);
-			transform.position = Vector3.Lerp( startPosition, exactPos, fracJourney );
-			
-			//Tilt the fairy down
-			transform.rotation = Quaternion.Euler( -8f, transform.eulerAngles.y, transform.eulerAngles.z );
-			
-			yield return _sync();  
-			
-		}
-		darkQueenState = DarkQueenState.Hover;
 	}
 	
 }

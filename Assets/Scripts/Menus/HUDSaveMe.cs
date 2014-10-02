@@ -148,11 +148,11 @@ public class HUDSaveMe : MonoBehaviour {
 		int currentNumberOfLives = PlayerStatsManager.Instance.getLives();
 		if( PlayerStatsManager.Instance.getHasInfiniteLives() )
 		{
-			saveMeButtonContent.text = " Lives: " + currentNumberOfLives.ToString() + "*";
+			saveMeButtonContent.text = " Lives " + currentNumberOfLives.ToString() + "*";
 		}
 		else
 		{
-			saveMeButtonContent.text = " Lives: " + currentNumberOfLives.ToString();
+			saveMeButtonContent.text = " Lives " + currentNumberOfLives.ToString();
 		}
 
 		GUI.BeginGroup(saveMePopupRect);
@@ -167,7 +167,7 @@ public class HUDSaveMe : MonoBehaviour {
 		int currentFontSize = saveMeStyle.fontSize;
 		saveMeStyle.fontSize = 	(int)(saveMeStyle.fontSize * 0.8f);
 
-		saveMeButtonContent.text = "Save Me!" + "\n" + "Cost: " + costLives.ToString() + "  ";
+		saveMeButtonContent.text = "Save Me!" + "\n" + "Cost " + costLives.ToString() + "  ";
 
 		if(GUI.Button( saveMeButtonRect, saveMeButtonContent, saveMeStyle ))
 		{
