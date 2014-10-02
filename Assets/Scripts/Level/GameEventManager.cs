@@ -10,20 +10,25 @@ public class GameEventManager : MonoBehaviour {
 	Transform player;
 	PlayerController playerController;
 	TrollController trollController;
+	Transform fairy;
 	FairyController fairyController;
-
-	OpeningSequence op;
-
-	TentaclesSequence tentaclesSequence;
+	Transform darkQueen;
+	DarkQueenController darkQueenController;
 
 	GameState previousGameState = GameState.Unknown;
+
+	//Island sequence
+	OpeningSequence op;
+
+	//Kraken sequence including Dark Queen
+	TentaclesSequence tentaclesSequence;
+	DarkQueenKrakenSequence darkQueenKrakenSequence;
 
 	Vector3 lastTentaclePosition;
 	Vector3 lastSideTentaclePosition;
 	public bool isTentacleSequenceActive = false;
-	public bool isDarkQueenSequenceActive = false;
 
-	const int TENTACLES_FACTORY_SIZE = 4;
+	const int TENTACLES_FACTORY_SIZE = 6;
 	List<GameObject> tentaclesList = new List<GameObject>( TENTACLES_FACTORY_SIZE );
 	int tentaclesListIndex = 0;
 	List<GameObject> tentaclesGroundDebrisList = new List<GameObject>( TENTACLES_FACTORY_SIZE );
@@ -31,6 +36,7 @@ public class GameEventManager : MonoBehaviour {
 	List<ParticleSystem> tentaclesDustList = new List<ParticleSystem>( TENTACLES_FACTORY_SIZE );
 	int tentaclesDustListIndex = 0;
 
+	//Zombie hands sequence including Dark Queen
 	ZombieHandsSequence zombieHandsSequence;
 	bool isZombieHandsSequenceActive = false;
 
@@ -60,10 +66,113 @@ public class GameEventManager : MonoBehaviour {
 		playerController = playerObject.GetComponent<PlayerController>();
 		simpleCamera = player.GetComponent<SimpleCamera>();
 
-		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
-		fairyController = fairyObject.GetComponent<FairyController>();
+		fairy = GameObject.FindGameObjectWithTag("Fairy").transform;
+		fairyController = fairy.GetComponent<FairyController>();
 
 	}
+
+	//Dark Queen sequence that plays before the Kraken tentacles sequence
+	public void setOpeningSequence( DarkQueenKrakenSequence darkQueenKrakenSequence )
+	{
+		this.darkQueenKrakenSequence = darkQueenKrakenSequence;
+
+		//Note that the Dark Queen is not in the Level scene. She is only in the tiles that use her.
+		darkQueen = GameObject.FindGameObjectWithTag("DarkQueen").transform;
+		darkQueenController = darkQueen.GetComponent<DarkQueenController>();
+	}
+
+	void startDarkQueenKrakenSequence()
+	{
+		print ("Start of dark queen Kraken sequence");
+		isTentacleSequenceActive = true;
+		GenerateLevel.enableSurroundingPlane( false ); //remove because it crosses the tomb ceiling and it does not look nice
+
+		//Slowdown player and remove player control
+		playerController.placePlayerInCenterLane();
+		GameManager.Instance.setGameState(GameState.Checkpoint);
+		StartCoroutine( playerController.slowDownPlayer(19f, afterPlayerSlowdown ) );
+
+		arriveAndCastSpell();
+		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_OH_NO"), 0.35f, 1.8f );
+		fairy.audio.PlayOneShot( darkQueenKrakenSequence.VO_FA_Oh_no );
+		
+	}
+
+	void arriveAndCastSpell()
+	{
+		darkQueen.localScale = new Vector3( 1.2f, 1.2f, 1.2f );
+		darkQueenController.floatDownFx.Play ();
+		float arriveSpeed = 0.3f;
+		darkQueen.animation["DarkQueen_Arrive"].speed = arriveSpeed;
+		darkQueen.animation.Play("DarkQueen_Arrive");
+		Invoke("playLandAnimation", darkQueen.animation["DarkQueen_Arrive"].length/arriveSpeed );
+		darkQueenController.dimLights( darkQueen.animation["DarkQueen_Arrive"].length/arriveSpeed, 0.1f );
+	}
+
+	void afterPlayerSlowdown()
+	{
+		playerController.anim.SetTrigger("Idle_Look");
+		//Call fairy
+		fairyController.setYRotationOffset( -10f );
+		fairyController.Appear ( FairyEmotion.Worried );
+		
+	}
+
+	void playLandAnimation()
+	{
+		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_NOT_KEEP_WAITING"), 0.35f, 3.6f );
+		darkQueen.audio.PlayOneShot( darkQueenKrakenSequence.VO_DQ_not_keep_waiting );
+		darkQueen.animation.CrossFade("DarkQueen_Land", 0.1f);
+		Invoke("playIdleAnimation", darkQueen.animation["DarkQueen_Land"].length);
+	}
+	
+	void playIdleAnimation()
+	{
+		darkQueenController.floatDownFx.Stop ();
+		darkQueen.animation.Play("DarkQueen_Idle");
+		Invoke("castKrakenSpell", darkQueen.animation["DarkQueen_Idle"].length);
+	}
+	
+	void castKrakenSpell()
+	{
+		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_RISE_FROM_THE_DEEP"), 0.35f, 3.8f );
+		darkQueen.audio.PlayOneShot( darkQueenKrakenSequence.VO_DQ_rise_from_the_deep );
+		darkQueen.animation.Play("DarkQueen_SpellCast");
+		Invoke("playKrakenSpellFX", 0.3f);
+		Invoke("leave", darkQueen.animation["DarkQueen_SpellCast"].length );
+	}
+	
+	void playKrakenSpellFX()
+	{
+		darkQueen.audio.PlayOneShot( darkQueenController.spellSound );
+		darkQueenController.spellFx.Play();
+		darkQueenKrakenSequence.poisonMist.Play();
+	}
+	
+	void leave()
+	{
+		darkQueenController.floatDownFx.Play ();
+		darkQueen.animation["DarkQueen_Leave"].speed = 1.2f;
+		darkQueen.animation.Play("DarkQueen_Leave");
+		darkQueenController.brightenLights( darkQueen.animation["DarkQueen_Leave"].length/1.2f );
+		Invoke("playerStartsRunningAgain", darkQueen.animation["DarkQueen_Leave"].length/1.2f );
+	}
+
+	void playerStartsRunningAgain()
+	{
+		darkQueenController.Disappear();
+		fairyController.Disappear ();
+		playerController.allowRunSpeedToIncrease = true;
+		playerController.startRunning(false);
+		fairyController.resetYRotationOffset();
+		Invoke ("activateTentacles", 2f );
+	}
+
+	void activateTentacles()
+	{
+		playTentaclesSequence();
+	}
+	//End - Dark Queen sequence that play before kraken tentacles sequence
 
 	//Kraken tentacles sequence
 	public void setOpeningSequence( TentaclesSequence tentaclesSequence )
@@ -117,6 +226,7 @@ public class GameEventManager : MonoBehaviour {
 		ParticleSystem dust = tentaclesDustList[tentaclesListIndex];
 		tentaclesDustListIndex++;
 		if( tentaclesDustListIndex == TENTACLES_FACTORY_SIZE ) tentaclesDustListIndex = 0;
+		dust.Stop();
 		return dust;
 	}
 
@@ -177,7 +287,7 @@ public class GameEventManager : MonoBehaviour {
 
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
 		ParticleSystem dust = getFactoryTentacleDust();
-		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 2.1f, lastTentaclePosition.z );
+		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 2.12f, lastTentaclePosition.z );
 		dust.Play();
 	}
 
@@ -260,7 +370,7 @@ public class GameEventManager : MonoBehaviour {
 
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
 		ParticleSystem dust = getFactoryTentacleDust();
-		dust.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 2.1f, lastSideTentaclePosition.z );
+		dust.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 2.12f, lastSideTentaclePosition.z );
 		dust.Play();
 	}
 	
@@ -692,7 +802,7 @@ public class GameEventManager : MonoBehaviour {
 	{
 		if( eventType == GameEvent.Start_Kraken && !isTentacleSequenceActive )
 		{
-			playTentaclesSequence();
+			startDarkQueenKrakenSequence();
 		}
 		else if( eventType == GameEvent.Stop_Kraken && isTentacleSequenceActive )
 		{

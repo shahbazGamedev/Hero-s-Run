@@ -24,7 +24,6 @@ public class DarkQueenController : BaseClass {
 	public ParticleSystem spellFx;			//Electric fx that plays when she casts a spell
 	public AudioClip spellSound;			//Sound fx that plays when she casts a spell
 
-	Transform player;
 	PlayerController playerController;
 
 	DarkQueenState darkQueenState = DarkQueenState.None;
@@ -37,15 +36,11 @@ public class DarkQueenController : BaseClass {
 	List<LightData> listOfLights = new List<LightData>(30);
 	const float MAX_DISTANCE_LIGHT_AFFECTED = 180f;
 
-	public DarkQueenKrakenSequence dqks;
-
-
 	void Awake()
 	{
-		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
+		Transform player = GameObject.FindGameObjectWithTag("Player").transform;
+		playerController = player.GetComponent<PlayerController>();
 		controller = GetComponent<CharacterController>();
-		dqks = GetComponent<DarkQueenKrakenSequence>();
 	}
 
 	void Start()
@@ -58,7 +53,6 @@ public class DarkQueenController : BaseClass {
 	{
 		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && darkQueenState == DarkQueenState.Walk && playerController.getCharacterState() != CharacterState.Dying )
 		{
-
 			//1) Get the direction of the dark queen
 			forward = transform.TransformDirection(Vector3.forward);			
 			//2) Scale vector based on move speed
@@ -174,70 +168,11 @@ public class DarkQueenController : BaseClass {
 		}
 	}
 
-	//******************
-
-	public void arriveAndCastSpell()
-	{
-		transform.localScale = new Vector3( 1.2f, 1.2f, 1.2f );
-		floatDownFx.Play ();
-		float arriveSpeed = 0.3f;
-		animation["DarkQueen_Arrive"].speed = arriveSpeed;
-		animation.Play("DarkQueen_Arrive");
-		Invoke("playLandAnimation", animation["DarkQueen_Arrive"].length/arriveSpeed );
-		dimLights( animation["DarkQueen_Arrive"].length/arriveSpeed, 0.1f );
-
-	}
-
-	void playLandAnimation()
-	{
-		AchievementDisplay.activateDisplayDarkQueen( "You should never keep your Queen waiting.", 0.35f, 3.6f );
-		audio.PlayOneShot( dqks.VO_DQ_not_keep_waiting );
-		animation.CrossFade("DarkQueen_Land", 0.1f);
-		Invoke("playIdleAnimation", animation["DarkQueen_Land"].length);
-	}
-
-	void playIdleAnimation()
-	{
-		floatDownFx.Stop ();
-		animation.Play("DarkQueen_Idle");
-		Invoke("castKrakenSpell", animation["DarkQueen_Idle"].length);
-	}
-
-	public void castKrakenSpell()
-	{
-		AchievementDisplay.activateDisplayDarkQueen( "Rise Sister, rise from the deep...", 0.35f, 3.8f );
-		audio.PlayOneShot( dqks.VO_DQ_rise_from_the_deep );
-		animation.Play("DarkQueen_SpellCast");
-		Invoke("playKrakenSpellFX", 0.3f);
-		Invoke("leave", animation["DarkQueen_SpellCast"].length );
-	}
-
-	void playKrakenSpellFX()
-	{
-		audio.PlayOneShot( spellSound );
-		spellFx.Play();
-		dqks.poisonMist.Play();
-	}
-
-	public void leave()
-	{
-		floatDownFx.Play ();
-		animation["DarkQueen_Leave"].speed = 1.2f;
-		animation.Play("DarkQueen_Leave");
-		brightenLights( animation["DarkQueen_Leave"].length/1.2f );
-		Invoke("playerStartsRunningAgain", animation["DarkQueen_Leave"].length/1.2f );
-	}
-
-	public void playerStartsRunningAgain()
-	{
-		dqks.step4();
-	}
-	
 	public void Disappear()
 	{
 		transform.localScale = new Vector3( 0.002f, 0.002f, 0.002f );
 		gameObject.SetActive( false );
 		darkQueenState = DarkQueenState.None;
 	}
-	
+
 }
