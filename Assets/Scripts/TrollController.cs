@@ -123,6 +123,7 @@ public class TrollController : MonoBehaviour {
 	//After the attack, the troll will go into Idle.
 	private void attackPlayer()
 	{
+		print ("ATTACK PLAYER ");
 		Vector3 relativePos = new Vector3(0 , 0 , -STOP_DISTANCE );
 		Vector3 exactPos = player.TransformPoint(relativePos);
 		transform.position = exactPos;
@@ -136,6 +137,7 @@ public class TrollController : MonoBehaviour {
 	//After the attack, the troll will go into Idle.
 	void Attack_completed ()
 	{
+		print ("ATTACK COMPLETED ");
 		//Play a smash sound and particle effect
 		audio.PlayOneShot( smash );
 		smashParticles.Play();
@@ -198,6 +200,7 @@ public class TrollController : MonoBehaviour {
 		case TrollState.Attack:
 			animation.CrossFade("Attack", 0.1f);
 			Invoke("Attack_completed", 0.52f);
+			print ("INVOKE ATTACK COMPLETED CALLED");
 			break;
 
 		case TrollState.FarBehind:
