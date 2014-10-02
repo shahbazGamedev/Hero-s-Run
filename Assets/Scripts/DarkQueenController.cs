@@ -28,8 +28,8 @@ public class DarkQueenController : BaseClass {
 
 	DarkQueenState darkQueenState = DarkQueenState.None;
 
-	public ParticleSystem krakenSpellFx;
-	public AudioClip krakenSpellSound;
+	public ParticleSystem spellFx;
+	public AudioClip spellSound;
 
 	bool followsPlayer = false;
 	public Vector3 forward;
@@ -220,8 +220,8 @@ public class DarkQueenController : BaseClass {
 
 	void playKrakenSpellFX()
 	{
-		audio.PlayOneShot( krakenSpellSound );
-		krakenSpellFx.Play();
+		audio.PlayOneShot( spellSound );
+		spellFx.Play();
 		poisonMist.Play();
 	}
 
