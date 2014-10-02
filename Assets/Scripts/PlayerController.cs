@@ -1403,7 +1403,7 @@ public class PlayerController : BaseClass {
 			this.isGoingRight = isGoingRight;
 
 			//Make sure the lane data is correct in case a collision forced us out of our lane
-			recalculateCurrentLane();
+			//recalculateCurrentLane();
 
 			float currentSideMoveSpeed;
 			if( Time.timeScale < 1f )

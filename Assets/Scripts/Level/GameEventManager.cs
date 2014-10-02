@@ -94,8 +94,8 @@ public class GameEventManager : MonoBehaviour {
 
 		arriveAndCastSpell();
 		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_OH_NO"), 0.35f, 1.8f );
-		fairy.audio.PlayOneShot( darkQueenKrakenSequence.VO_FA_Oh_no );
-		
+		playVoiceOver( fairy, darkQueenKrakenSequence.VO_FA_Oh_no );
+
 	}
 
 	void arriveAndCastSpell()
@@ -121,7 +121,7 @@ public class GameEventManager : MonoBehaviour {
 	void playLandAnimation()
 	{
 		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_NOT_KEEP_WAITING"), 0.35f, 3.6f );
-		darkQueen.audio.PlayOneShot( darkQueenKrakenSequence.VO_DQ_not_keep_waiting );
+		playVoiceOver( darkQueen, darkQueenKrakenSequence.VO_DQ_not_keep_waiting );
 		darkQueen.animation.CrossFade("DarkQueen_Land", 0.1f);
 		Invoke("playIdleAnimation", darkQueen.animation["DarkQueen_Land"].length);
 	}
@@ -136,7 +136,7 @@ public class GameEventManager : MonoBehaviour {
 	void castKrakenSpell()
 	{
 		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_RISE_FROM_THE_DEEP"), 0.35f, 3.8f );
-		darkQueen.audio.PlayOneShot( darkQueenKrakenSequence.VO_DQ_rise_from_the_deep );
+		playVoiceOver( darkQueen, darkQueenKrakenSequence.VO_DQ_rise_from_the_deep );
 		darkQueen.animation.Play("DarkQueen_SpellCast");
 		Invoke("playKrakenSpellFX", 0.3f);
 		Invoke("leave", darkQueen.animation["DarkQueen_SpellCast"].length );
@@ -818,5 +818,13 @@ public class GameEventManager : MonoBehaviour {
 		}
 	}
 
+	void playVoiceOver( Transform speaker, AudioClip voiceOver )
+	{
+		//Currently, only English VOs are included in the game
+		if( Application.systemLanguage == SystemLanguage.English )
+		{
+			speaker.audio.PlayOneShot( voiceOver );
+		}
+	}
 
 }
