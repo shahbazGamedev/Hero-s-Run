@@ -2859,7 +2859,7 @@ public class DragonRiderController : BaseClass {
 			//Possibly shake the camera
 			//Make enemy appear right behind player
 			//Note that "placeEnemyBehindPlayer" may change the state of the character to Dying
-			if( trollController.isTrollActive() )
+			if( trollController.didPlayerStumblePreviously() )
 			{
 				//The player falls forward and dies (killed by the troll)
 				anim.SetTrigger(FallForwardTrigger);
@@ -2869,7 +2869,7 @@ public class DragonRiderController : BaseClass {
 				//The player stumbles but recovers
 				anim.SetTrigger(StumbleTrigger);
 			}
-			trollController.placeEnemyBehindPlayer();
+			trollController.placeTrollBehindPlayer();
 		}
 	}
 

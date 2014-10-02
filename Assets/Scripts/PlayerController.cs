@@ -2500,12 +2500,12 @@ public class PlayerController : BaseClass {
 
 	public void Footstep_left ( AnimationEvent eve )
 	{
-		audio.PlayOneShot( footstepLeftSound, 0.2f );
+		audio.PlayOneShot( footstepLeftSound, 0.23f );
 	}
 
 	public void Footstep_right ( AnimationEvent eve )
 	{
-		audio.PlayOneShot( footstepRightSound, 0.2f );
+		audio.PlayOneShot( footstepRightSound, 0.23f );
 	}
 
 	public void Land_sound ( AnimationEvent eve )
@@ -2542,7 +2542,7 @@ public class PlayerController : BaseClass {
 			//Possibly shake the camera
 			//Make enemy appear right behind player
 			//Note that "placeEnemyBehindPlayer" may change the state of the character to Dying
-			if( trollController.isTrollActive() )
+			if( trollController.didPlayerStumblePreviously() )
 			{
 				//The player falls forward and dies (killed by the troll)
 				anim.SetTrigger(FallForwardTrigger);
@@ -2552,7 +2552,7 @@ public class PlayerController : BaseClass {
 				//The player stumbles but recovers
 				anim.SetTrigger(StumbleTrigger);
 			}
-			trollController.placeEnemyBehindPlayer();
+			trollController.placeTrollBehindPlayer();
 		}
 	}
 

@@ -49,6 +49,8 @@ public class TrollController : MonoBehaviour {
 
 	bool deactivateTroll = false; //Used for debugging so troll does not pursue player. Normal value is false.
 
+	bool playerStumbledPreviously = false;
+
 	void Awake ()
 	{
 		player = GameObject.FindGameObjectWithTag("Player").transform;
@@ -58,6 +60,8 @@ public class TrollController : MonoBehaviour {
 	public void startPursuing ()
 	{
 		if( deactivateTroll ) return;
+
+		playerStumbledPreviously = false;
 
 		setTrollState(TrollState.StartRunning);
 
@@ -78,6 +82,7 @@ public class TrollController : MonoBehaviour {
 	
 	public void stopPursuing ()
 	{
+		playerStumbledPreviously = false;
 		setTrollState(TrollState.FarBehind);
 		Debug.Log ("TrollController-stopPursuing" );
 	}
@@ -106,14 +111,14 @@ public class TrollController : MonoBehaviour {
 				{
 		            //Player escaped
 					//Hide the enemy
-					gameObject.SetActive(false);
+					stopPursuing ();
 					Debug.Log ("TrollController-Update: disabling enemy because too far." );
 				}
 			}
 		}
 	}
 
-	//The attack occurs when the player stumbles while the troll is active.
+	//The attack occurs when the player stumbles for a second time while the troll is in active pursuit.
 	//The attack will kill the player.
 	//After the attack, the troll will go into Idle.
 	private void attackPlayer()
@@ -126,18 +131,15 @@ public class TrollController : MonoBehaviour {
 		playerController.managePlayerDeath( DeathType.Enemy );
 	}
 
-	//The attack occurs when the player stumbles while the troll is active.
+	//The attack occurs when the player stumbles for a second time while the troll is in active pursuit.
 	//The attack will kill the player.
 	//After the attack, the troll will go into Idle.
 	void Attack_completed ()
 	{
 		//Play a smash sound and particle effect
 		audio.PlayOneShot( smash );
-		Vector3 relativePos = new Vector3(0.01f , 0.02f , 1.69f );
-		Vector3 exactPos = transform.TransformPoint(relativePos);
-		smashParticles.transform.position = new Vector3( exactPos.x, exactPos.y, exactPos.z );
-		smashParticles.loop = false;
 		smashParticles.Play();
+		playerController.shakeCamera();
 
 		//By putting the troll into Idle state, he will stop moving forward
 		trollState = TrollState.Idle;
@@ -153,13 +155,8 @@ public class TrollController : MonoBehaviour {
 	{
 		//Play a smash sound and particle effect
 		audio.PlayOneShot( smash );
-		Vector3 relativePos = new Vector3(0.01f , 0.02f , 1.69f );
-		Vector3 exactPos = transform.TransformPoint(relativePos);
-		smashParticles.transform.position = new Vector3( exactPos.x, exactPos.y, exactPos.z );
-		smashParticles.loop = false;
 		smashParticles.Play();
 		playerController.shakeCamera();
-
 
 		//Once the smash animation completes, the troll will continue to run
 		trollState = TrollState.Running;
@@ -208,6 +205,7 @@ public class TrollController : MonoBehaviour {
 			break;
 
 		case TrollState.Smashing:
+			playerStumbledPreviously = true;
 			animation.CrossFade("Attack",0.2f);
 			Invoke("Smash_completed", 0.52f);
 			break;
@@ -229,26 +227,18 @@ public class TrollController : MonoBehaviour {
 		animation.CrossFade("Idle", 0.92f);
 	}
 
-	//For debugging
-	public bool isTrollActive()
+	public bool didPlayerStumblePreviously()
 	{
-		return gameObject.activeSelf;
+		return playerStumbledPreviously;
 	}
 
-	public void placeEnemyBehindPlayer()
+	public void placeTrollBehindPlayer()
 	{
 		if( deactivateTroll ) return;
 
-		bool wasActive = false;
 		if( !gameObject.activeSelf )
 		{
 			gameObject.SetActive( true );
-			Debug.Log("TrollController-placeEnemyBehindPlayer: Enemy was not active");
-		}
-		else
-		{
-			wasActive = true;
-			Debug.Log("TrollController-placeEnemyBehindPlayer: Enemy was active");
 		}
 
 		//Give the enemy about the same speed as the player. Since the player's
@@ -261,7 +251,7 @@ public class TrollController : MonoBehaviour {
 		transform.position = exactPos;
 		transform.LookAt(player);
 
-		if( wasActive )
+		if( playerStumbledPreviously )
 		{
 			attackPlayer();
 		}
