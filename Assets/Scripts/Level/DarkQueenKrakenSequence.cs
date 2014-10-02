@@ -9,7 +9,10 @@ public class DarkQueenKrakenSequence : MonoBehaviour {
 	Transform fairy;
 	FairyController fairyController;
 	DarkQueenController darkQueenController;
-	public AudioClip fairyVO;
+
+	public AudioClip VO_FA_Oh_no;
+	public AudioClip VO_DQ_not_keep_waiting;
+	public AudioClip VO_DQ_rise_from_the_deep;
 
 	bool hasBeenTriggered = false;
 	GameEventManager gem;
@@ -50,7 +53,7 @@ public class DarkQueenKrakenSequence : MonoBehaviour {
 		StartCoroutine( playerController.slowDownPlayer(19f, afterPlayerSlowdown ) );
 		darkQueenController.arriveAndCastSpell();
 		AchievementDisplay.activateDisplayFairy( "Oh no! It's the dark Queen ...", 0.35f, 1.8f );
-		fairy.audio.PlayOneShot( fairyVO );
+		fairy.audio.PlayOneShot( VO_FA_Oh_no );
 
 	}
 	

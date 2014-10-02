@@ -20,26 +20,24 @@ public class DarkQueenController : BaseClass {
 		isFaded = 3
 	}
 
-
-	public ParticleSystem floatDownFx;
+	public ParticleSystem floatDownFx;		//Bluish lights that play when she floats down from the sky
+	public ParticleSystem spellFx;			//Electric fx that plays when she casts a spell
+	public AudioClip spellSound;			//Sound fx that plays when she casts a spell
 
 	Transform player;
 	PlayerController playerController;
 
 	DarkQueenState darkQueenState = DarkQueenState.None;
 
-	public ParticleSystem spellFx;
-	public AudioClip spellSound;
-
 	bool followsPlayer = false;
 	public Vector3 forward;
-	float flyingSpeed = 6f;
+	float speed = 6f;
 	CharacterController controller;
 
+	//Use to dim and brighten lights surrounding the dark queen
 	List<LightData> listOfLights = new List<LightData>(30);
 	const float MAX_DISTANCE_LIGHT_AFFECTED = 180f;
-	public AudioClip darkQueenVO;
-	public AudioClip darkQueenVO_riseFromTheDeep;
+
 	public DarkQueenKrakenSequence dqks;
 	public ParticleSystem poisonMist;
 
@@ -67,7 +65,7 @@ public class DarkQueenController : BaseClass {
 			//1) Get the direction of the dark queen
 			forward = transform.TransformDirection(Vector3.forward);			
 			//2) Scale vector based on flying speed
-			forward = forward * Time.deltaTime * flyingSpeed;
+			forward = forward * Time.deltaTime * speed;
 			//3) Move the controller
 			controller.Move( forward );
 		}
@@ -197,7 +195,7 @@ public class DarkQueenController : BaseClass {
 	void playLandAnimation()
 	{
 		AchievementDisplay.activateDisplayDarkQueen( "You should never keep your Queen waiting.", 0.35f, 3.6f );
-		audio.PlayOneShot( darkQueenVO );
+		audio.PlayOneShot( dqks.VO_DQ_not_keep_waiting );
 		animation.CrossFade("DarkQueen_Land", 0.1f);
 		Invoke("playIdleAnimation", animation["DarkQueen_Land"].length);
 	}
@@ -212,7 +210,7 @@ public class DarkQueenController : BaseClass {
 	public void castKrakenSpell()
 	{
 		AchievementDisplay.activateDisplayDarkQueen( "Rise Sister, rise from the deep...", 0.35f, 3.8f );
-		audio.PlayOneShot( darkQueenVO_riseFromTheDeep );
+		audio.PlayOneShot( dqks.VO_DQ_rise_from_the_deep );
 		animation.Play("DarkQueen_SpellCast");
 		Invoke("playKrakenSpellFX", 0.3f);
 		Invoke("leave", animation["DarkQueen_SpellCast"].length );
