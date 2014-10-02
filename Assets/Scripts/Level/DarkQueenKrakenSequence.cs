@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class DarkQueenSequence : MonoBehaviour {
+public class DarkQueenKrakenSequence : MonoBehaviour {
 
 	Transform player;
 	PlayerController playerController;
@@ -36,7 +36,6 @@ public class DarkQueenSequence : MonoBehaviour {
 		
 		GameObject gameEventManagerObject = GameObject.FindGameObjectWithTag("GameEventManager");
 		gem = gameEventManagerObject.GetComponent<GameEventManager>();
-		//gem.setOpeningSequence( this );
 	}
 
 	public void startSequence()
@@ -49,58 +48,27 @@ public class DarkQueenSequence : MonoBehaviour {
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
 		StartCoroutine( playerController.slowDownPlayer(19f, afterPlayerSlowdown ) );
-		//darkQueenController.walk( true );
-		//darkQueenController.floatDown( 26.29f, landed );
 		darkQueenController.arriveAndCastSpell();
 		AchievementDisplay.activateDisplayFairy( "Oh no! It's the dark Queen ...", 0.35f, 1.8f );
 		fairy.audio.PlayOneShot( fairyVO );
 
 	}
-
-	public void landed()
-	{
-		print ("THE QUEEN HAS LANDED");
-		//darkQueenController.floatDownFx.Stop ();
-
-	}
-
+	
 	void afterPlayerSlowdown()
 	{
 		playerController.anim.SetTrigger("Idle_Look");
 		//Call fairy
 		fairyController.setYRotationOffset( -10f );
 		fairyController.Appear ( FairyEmotion.Worried );
-		Invoke ("step2", 10f );
 
 	}
-
-	//Fairy tells something to player
-	void step1()
-	{
-		//AchievementDisplay.activateDisplayFairy( "Oh no! It's the dark Queen ...", 0.35f, 3.6f );
-		//fairy.audio.PlayOneShot( fairyVO );
-		//Invoke ("step2", 5f );
-	}
-
-	void step2()
-	{
-			darkQueenController.walk( false );
-		//Invoke ("step3", 4.2f );
-	}
-
-	void step3()
-	{
-		//darkQueenController.CastSpell();
-		//Invoke ("step4", 4.2f );
-	}
-
 
 	//Make the fairy disappear
 	//Player starts running again
 	public void step4()
 	{
 		darkQueenController.Disappear();
-			fairyController.Disappear ();
+		fairyController.Disappear ();
 		playerController.allowRunSpeedToIncrease = true;
 		playerController.startRunning(false);
 		fairyController.resetYRotationOffset();

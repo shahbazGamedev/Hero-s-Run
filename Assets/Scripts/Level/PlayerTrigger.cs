@@ -29,7 +29,8 @@ public enum GameEvent {
 	Start_Zombie_Hands = 24,
 	Stop_Zombie_Hands = 25,
 	Start_Ghost = 26,
-	Stop_Ghost = 27
+	Stop_Ghost = 27,
+	Cast_Raise_Dead = 28
 
 }
 

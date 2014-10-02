@@ -25,10 +25,7 @@ public class DarkQueenController : BaseClass {
 
 	public ParticleSystem appearFx;
 	public AudioClip appearSound;
-
-	public ParticleSystem fairyDustFx;
-	public AudioClip fairyDustSound;
-
+	
 	public ParticleSystem fairySpellFx;
 	public AudioClip fairySpellSound;
 
@@ -76,7 +73,7 @@ public class DarkQueenController : BaseClass {
 	const float MAX_DISTANCE_LIGHT_AFFECTED = 180f;
 	public AudioClip darkQueenVO;
 	public AudioClip darkQueenVO_riseFromTheDeep;
-	public DarkQueenSequence dks;
+	public DarkQueenKrakenSequence dqks;
 	public ParticleSystem poisonMist;
 
 
@@ -87,7 +84,7 @@ public class DarkQueenController : BaseClass {
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
 		controller = GetComponent<CharacterController>();
-		dks = GetComponent<DarkQueenSequence>();
+		dqks = GetComponent<DarkQueenKrakenSequence>();
 	}
 
 	void Start()
@@ -329,7 +326,7 @@ public class DarkQueenController : BaseClass {
 
 	public void playerStartsRunningAgain()
 	{
-		dks.step4();
+		dqks.step4();
 	}
 
 	public void stopFloatDownFx()
@@ -406,45 +403,5 @@ public class DarkQueenController : BaseClass {
 		}
 		darkQueenState = DarkQueenState.Hover;
 	}
-
-	public void revivePlayer ()
-	{
-		transform.localScale = new Vector3( 1f, 1f, 1f );
-		gameObject.SetActive( true );
-
-		//Move Fairy to player body and play a sprinkle animation
-		float fairyRotY = player.eulerAngles.y + 205f;
-		Vector3 relativePos = new Vector3(0.3f , 0.5f , 1f );
-		Vector3 exactPos = player.TransformPoint(relativePos);
-		transform.position = new Vector3( exactPos.x, exactPos.y, exactPos.z );
-		transform.rotation = Quaternion.Euler( 0, fairyRotY, 0 );
-		fairyAnimation.Play("Revive");
-		fairyAnimation.PlayQueued("Hover_Happy", QueueMode.CompleteOthers);
-		Invoke("sprinkleFairyDustStart", 2.05f );
-		Invoke("continueResurection", 5.2f ); //start get up at around frame 285 of the revive animation
-	}	
-
-	void sprinkleFairyDustStart()
-	{
-		audio.PlayOneShot( fairyDustSound );
-		fairyDustFx.Play ();
-		Invoke("sprinkleFairyDustStop", 1.2f );
-	}
-
-	void sprinkleFairyDustStop()
-	{
-		fairyDustFx.Stop ();
-	}
-
-	private void continueResurection()
-	{
-		playerController.resurrectMiddle();
-	}
-
-	private void playAnimation( string animationName, WrapMode mode )
-	{
-		fairyAnimation[ animationName ].wrapMode = mode;
-		fairyAnimation[ animationName ].speed = 1f;
-		fairyAnimation.CrossFade(animationName, 0.1f);
-	}
+	
 }
