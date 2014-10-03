@@ -37,6 +37,7 @@ public class GameEventManager : MonoBehaviour {
 	int tentaclesDustListIndex = 0;
 
 	//Zombie hands sequence including Dark Queen
+	DarkQueenCemeterySequence darkQueenCemeterySequence;
 	ZombieHandsSequence zombieHandsSequence;
 	bool isZombieHandsSequenceActive = false;
 
@@ -399,6 +400,108 @@ public class GameEventManager : MonoBehaviour {
 		bo.triggerBreak( player.collider );
 		Invoke( "sideStartPierceUp", 0.8f + Random.value * 1.5f );
 	}
+
+	//Dark Queen sequence that plays before the zombie hand sequence
+	public void setOpeningSequence( DarkQueenCemeterySequence darkQueenCemeterySequence )
+	{
+		this.darkQueenCemeterySequence = darkQueenCemeterySequence;
+		
+		//Note that the Dark Queen is not in the Level scene. She is only in the tiles that use her.
+		darkQueen = GameObject.FindGameObjectWithTag("DarkQueen").transform;
+		darkQueenController = darkQueen.GetComponent<DarkQueenController>();
+	}
+	
+	void startDarkQueenCemeterySequence()
+	{
+		print ("Start of Dark Queen cemetery sequence");
+		isZombieHandsSequenceActive = true;
+
+		//Slowdown player and remove player control
+		playerController.placePlayerInCenterLane();
+		GameManager.Instance.setGameState(GameState.Checkpoint);
+		StartCoroutine( playerController.slowDownPlayer(19f, cemeteryAfterPlayerSlowdown ) );
+		
+		cemeteryArriveAndCastSpell();
+		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_OH_NO"), 0.35f, 1.8f );
+		playVoiceOver( fairy, darkQueenCemeterySequence.VO_FA_Oh_no );
+		
+	}
+	
+	void cemeteryArriveAndCastSpell()
+	{
+		darkQueen.localScale = new Vector3( 1.2f, 1.2f, 1.2f );
+		darkQueenController.floatDownFx.Play ();
+		float arriveSpeed = 0.3f;
+		darkQueen.animation["DarkQueen_Arrive"].speed = arriveSpeed;
+		darkQueen.animation.Play("DarkQueen_Arrive");
+		Invoke("cemeteryPlayLandAnimation", darkQueen.animation["DarkQueen_Arrive"].length/arriveSpeed );
+		darkQueenController.dimLights( darkQueen.animation["DarkQueen_Arrive"].length/arriveSpeed, 0.1f );
+	}
+	
+	void cemeteryAfterPlayerSlowdown()
+	{
+		playerController.anim.SetTrigger("Idle_Look");
+		//Call fairy
+		fairyController.setYRotationOffset( -10f );
+		fairyController.Appear ( FairyEmotion.Worried );
+		
+	}
+	
+	void cemeteryPlayLandAnimation()
+	{
+		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_NOT_KEEP_WAITING"), 0.35f, 3.6f );
+		playVoiceOver( darkQueen, darkQueenCemeterySequence.VO_DQ_not_keep_waiting );
+		darkQueen.animation.CrossFade("DarkQueen_Land", 0.1f);
+		Invoke("cemeteryPlayIdleAnimation", darkQueen.animation["DarkQueen_Land"].length);
+	}
+	
+	void cemeteryPlayIdleAnimation()
+	{
+		darkQueenController.floatDownFx.Stop ();
+		darkQueen.animation.Play("DarkQueen_Idle");
+		Invoke("cemeteryCastKrakenSpell", darkQueen.animation["DarkQueen_Idle"].length);
+	}
+	
+	void cemeteryCastKrakenSpell()
+	{
+		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_RISE_FROM_THE_DEEP"), 0.35f, 3.8f );
+		playVoiceOver( darkQueen, darkQueenCemeterySequence.VO_DQ_rise_from_the_deep );
+		darkQueen.animation.Play("DarkQueen_SpellCast");
+		Invoke("cemeteryPlayKrakenSpellFX", 0.3f);
+		Invoke("cemeteryLeave", darkQueen.animation["DarkQueen_SpellCast"].length );
+	}
+	
+	void cemeteryPlayKrakenSpellFX()
+	{
+		darkQueen.audio.PlayOneShot( darkQueenController.spellSound );
+		darkQueenController.spellFx.Play();
+		darkQueenCemeterySequence.poisonMist.Play();
+	}
+	
+	void cemeteryLeave()
+	{
+		darkQueenController.floatDownFx.Play ();
+		darkQueen.animation["DarkQueen_Leave"].speed = 1.2f;
+		darkQueen.animation.Play("DarkQueen_Leave");
+		darkQueenController.brightenLights( darkQueen.animation["DarkQueen_Leave"].length/1.2f );
+		Invoke("cemeteryPlayerStartsRunningAgain", darkQueen.animation["DarkQueen_Leave"].length/1.2f );
+	}
+	
+	void cemeteryPlayerStartsRunningAgain()
+	{
+		darkQueenController.Disappear();
+		fairyController.Disappear ();
+		playerController.allowRunSpeedToIncrease = true;
+		playerController.startRunning(false);
+		fairyController.resetYRotationOffset();
+		Invoke ("activateZombieHands", 2f );
+	}
+	
+	void activateZombieHands()
+	{
+		playZombieHandsSequence();
+	}
+	//End - Dark Queen sequence that plays before zombie hands sequence
 
 	//START ZOMBIE HANDS SEQUENCE
 	public void setOpeningSequence( ZombieHandsSequence zombieHandsSequence )
@@ -810,7 +913,7 @@ public class GameEventManager : MonoBehaviour {
 		}
 		else if( eventType == GameEvent.Start_Zombie_Hands && !isZombieHandsSequenceActive )
 		{
-			playZombieHandsSequence();
+			startDarkQueenCemeterySequence();
 		}
 		else if( eventType == GameEvent.Stop_Zombie_Hands && isZombieHandsSequenceActive )
 		{
@@ -821,7 +924,7 @@ public class GameEventManager : MonoBehaviour {
 	void playVoiceOver( Transform speaker, AudioClip voiceOver )
 	{
 		//Currently, only English VOs are included in the game
-		if( Application.systemLanguage == SystemLanguage.English )
+		if( true || Application.systemLanguage == SystemLanguage.English )
 		{
 			speaker.audio.PlayOneShot( voiceOver );
 		}
