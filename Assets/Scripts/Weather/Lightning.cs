@@ -150,12 +150,15 @@ public class Lightning : MonoBehaviour {
 
 	void stopLightning()
 	{
-		print ("Lightning-stopLightning");
-		lightningActive = false;
-		CancelInvoke("FlashRepeat");
-		StopCoroutine("DecayRepeat");
-		StopCoroutine("DecayOnce");
-		resetLight();
+		if( lightningActive )
+		{
+			print ("Lightning-stopLightning");
+			lightningActive = false;
+			CancelInvoke("FlashRepeat");
+			StopCoroutine("DecayRepeat");
+			StopCoroutine("DecayOnce");
+			resetLight();
+		}
 	}
 
 	void GameStateChange( GameState newState )
