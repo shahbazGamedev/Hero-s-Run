@@ -14,6 +14,7 @@ public class GameEventManager : MonoBehaviour {
 	FairyController fairyController;
 	Transform darkQueen;
 	DarkQueenController darkQueenController;
+	ZombieManager zombieManager;
 
 	GameState previousGameState = GameState.Unknown;
 
@@ -409,6 +410,9 @@ public class GameEventManager : MonoBehaviour {
 		//Note that the Dark Queen is not in the Level scene. She is only in the tiles that use her.
 		darkQueen = GameObject.FindGameObjectWithTag("DarkQueen").transform;
 		darkQueenController = darkQueen.GetComponent<DarkQueenController>();
+		
+		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("ZombieManager");
+		zombieManager = zombieManagerObject.GetComponent<ZombieManager>();
 	}
 	
 	void startDarkQueenCemeterySequence()
@@ -476,8 +480,16 @@ public class GameEventManager : MonoBehaviour {
 		darkQueen.audio.PlayOneShot( darkQueenController.spellSound );
 		darkQueenController.spellFx.Play();
 		darkQueenCemeterySequence.poisonMist.Play();
+		startZombieWave();
 	}
 	
+	void startZombieWave()
+	{
+		darkQueenCemeterySequence.zombieWaveObject.SetActive( true );
+		ZombieWave activeZombieWave = darkQueenCemeterySequence.zombieWaveObject.GetComponent<ZombieWave>();
+		zombieManager.triggerZombieWave( activeZombieWave.spawnLocations );
+	}
+
 	void cemeteryLeave()
 	{
 		darkQueenController.floatDownFx.Play ();
@@ -498,7 +510,8 @@ public class GameEventManager : MonoBehaviour {
 		fairyController.resetYRotationOffset();
 		Invoke ("activateZombieHands", 2f );
 	}
-	
+
+
 	void activateZombieHands()
 	{
 		//playZombieHandsSequence();
