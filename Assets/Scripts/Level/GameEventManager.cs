@@ -492,6 +492,8 @@ public class GameEventManager : MonoBehaviour {
 		darkQueenController.Disappear();
 		fairyController.Disappear ();
 		playerController.allowRunSpeedToIncrease = true;
+		//Give player control
+		playerController.allowPlayerMovement(true );
 		playerController.startRunning(false);
 		fairyController.resetYRotationOffset();
 		Invoke ("activateZombieHands", 2f );
@@ -499,7 +501,7 @@ public class GameEventManager : MonoBehaviour {
 	
 	void activateZombieHands()
 	{
-		playZombieHandsSequence();
+		//playZombieHandsSequence();
 	}
 	//End - Dark Queen sequence that plays before zombie hands sequence
 
@@ -896,7 +898,7 @@ public class GameEventManager : MonoBehaviour {
 		}
 		else if( newState == CharacterState.StartRunning && isZombieHandsSequenceActive )
 		{
-			playZombieHandsSequence();
+			//playZombieHandsSequence();
 		}
 	}
 
