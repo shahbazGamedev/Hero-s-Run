@@ -235,14 +235,17 @@ public class ZombieController : BaseClass {
 		}
 	}
  
-	public void burrowUp()
+	public void burrowUp( ParticleSystem debris )
 	{
 		controller.enabled = false;
 		setZombieState( ZombieController.ZombieState.BurrowUp );
 		anim.Play("burrowUp");
 		StartCoroutine("burrowUpCompleted");
-	}
+		debris = (ParticleSystem)Instantiate(debris, transform.position, transform.rotation );
+		debris.Play ();
 
+	}
+	
 	public IEnumerator burrowUpCompleted( )
 	{
 		float duration = anim["burrowUp"].length;

@@ -10,6 +10,7 @@ public class ZombieManager : BaseClass {
 	public ParticleSystem zNukeEffect;
 	public static int numberOfZombieWavesTriggered = 0; //could eventually put that number in the player stats
 	const int NUMBER_STARS_PER_ZOMBIE = 20;
+	public ParticleSystem debris; //Particle fx that plays when a zombie burrows up
 
 	// Use this for initialization
 	void Awake () {
@@ -158,9 +159,13 @@ public class ZombieManager : BaseClass {
 		RaycastHit hit;
 		float zombieHeight = 0;
 		Vector3 rayCastStart = spawnLocation.position;
-		if (Physics.Raycast(rayCastStart, Vector3.down, out hit, 2f ))
+		if (Physics.Raycast(rayCastStart, Vector3.down, out hit, 10f ))
 		{
-			zombieHeight = hit.point.y;
+			zombieHeight = hit.point.y + 0.09f;
+		}
+		else
+		{
+			Debug.LogError("ZombieManager-spawnZombie - solid ground below spawnLocation: " + spawnLocation.localPosition + " was not found. Using a Y value of 0 in tile " + spawnLocation.parent.parent );
 		}
 
 		yield return new WaitForSeconds(zsd.spawnDelay);
@@ -187,7 +192,7 @@ public class ZombieManager : BaseClass {
 			if( zsd.spawnType == ZombieSpawnType.BurrowUp )
 			{
 				//Make the zombie burrow out of the ground
-				zombieController.burrowUp();
+				zombieController.burrowUp( debris );
 			}
 			else if ( zsd.spawnType == ZombieSpawnType.StandUpFromBack )
 			{
@@ -219,7 +224,7 @@ public class ZombieManager : BaseClass {
 		}
 		else
 		{
-			Debug.LogWarning("ZombieManager-spawnZombie with location: no zombies available.");
+			Debug.LogError("ZombieManager-spawnZombie with location: no zombies available.");
 		}
 	}
 

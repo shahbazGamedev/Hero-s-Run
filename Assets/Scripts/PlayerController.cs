@@ -2151,6 +2151,9 @@ public class PlayerController : BaseClass {
 		//Disable run acceleration as well.
 		allowRunSpeedToIncrease = false;
 		enablePlayerControl( false );
+		queueJump = false;
+		queueSlide = false;
+		powerUpManager.deactivatePowerUp(PowerUpType.SlowTime, true );
 		//If he was sliding, making him run again
 		if ( _characterState == CharacterState.Sliding )
 		{
@@ -2162,10 +2165,11 @@ public class PlayerController : BaseClass {
 		}
 
 		//Clear move direction of any values. If we still have an x component for example, we will drift.
-		moveDirection = new Vector3( 0,0,0 );
+		//We do want to keep the Y value so we land on the ground if we were jumping.
+		moveDirection = new Vector3( 0,moveDirection.y,0 );
 		usesAccelerometer = false;
 		accelerometerPreviousFrameX = 0;
-		recalculateCurrentLane();  //make sure our currentLane info is valid
+		//recalculateCurrentLane();  //make sure our currentLane info is valid
 		//Side move speed is divided by 2 because it just looks better.
 		if ( currentLane == Lanes.Left )
 		{
