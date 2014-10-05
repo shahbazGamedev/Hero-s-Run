@@ -57,7 +57,7 @@ public class CoinHandler : MonoBehaviour {
 			case StarPackHeight.High:
 				return 2.25f;
 			case StarPackHeight.Very_High:
-				return 4.5f;
+				return 6f;
 			default:
 				return 0.85f;
 		}

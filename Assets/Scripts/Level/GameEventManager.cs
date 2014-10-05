@@ -424,13 +424,13 @@ public class GameEventManager : MonoBehaviour {
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
 		StartCoroutine( playerController.slowDownPlayer(19f, cemeteryAfterPlayerSlowdown ) );
+		Invoke( "cemeteryArriveAndCastSpell", 0.7f );
+		Invoke( "fairyAppears", 1f );
 	}
 	
 	void cemeteryAfterPlayerSlowdown()
 	{
 		playerController.anim.SetTrigger("Idle_Look");
-		Invoke( "cemeteryArriveAndCastSpell", 1f );
-		Invoke( "fairyAppears", 1.3f );
 	}
 
 	void cemeteryArriveAndCastSpell()
