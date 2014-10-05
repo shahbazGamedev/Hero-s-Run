@@ -41,9 +41,13 @@ FAIRY_DRAGON_BRIDGE,By the White Tree! The dragon burned down the King's bridge.
 FAIRY_TROLL_QUICKLY,Hurry! I can hear the troll.,Dépêche-toi! J'entends le troll.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 FAIRY_WOODEN_ELVES,Wood elves used to live here<comma> but they left after the Great Battle.,Les elfes des bois habitaient cette forêt avant<comma> mais hélas<comma> ils ont quitté après la Grande Bataille.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 FAIRY_GOBLIN_WARNING,Goblins have been spotted looting the place. Be careful!,Des gobelins ont été vu en train de piller l'endroit. Fais attention !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-VO_FA_OH_NO,Oh no! It's the dark Queen ...,Oh non ! C'est la sorcière des Ombres,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+VO_FA_OH_NO,Oh no! It's the dark Queen ...,Oh non ! C'est la sorcière des Ténèbres,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 VO_DQ_NOT_KEEP_WAITING,You should never keep your Queen waiting,Tu ne devrais jamais faire attendre ta Reine,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 VO_DQ_RISE_FROM_THE_DEEP,Rise Sister<comma> rise from the deep ...,Soeur<comma> réveille-toi et sort des profondeurs ...,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+VO_DQ_STARTING_TO_ANNOY,You're starting to annoy me<comma> Hero.,Tu commences à m'irriter<comma> Héros.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+VO_FA_NOBODY_LIKES_YOU,Nobody likes you<comma> you know,Personne ne te trouves sympa<comma> tu sais.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+VO_DQ_BRING_BACK_BOOK,Zombies<comma> get my grimoire back from this thief!,Zombies<comma> ramenez-moi mon grimoire pris par ce voleur !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+VO_FA_NOT_HER_AGAIN,Not her again!,Pas encore toi !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POPUP_TITLE_DEBUG,Debug Menu,Menu Debug,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_SECTION_NAME_DOOM,the Montain of Doom!,la Montagne du Condamné !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_DESCRIPTION_0,Tutorial - Wraithmarsh is a cursed swampland infested with evil creatures.,Tutoriel - Wraithmarsh est un endroit maudit infesté de créatures malicieuses.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED

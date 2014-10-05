@@ -424,13 +424,15 @@ public class GameEventManager : MonoBehaviour {
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
 		StartCoroutine( playerController.slowDownPlayer(19f, cemeteryAfterPlayerSlowdown ) );
-		
-		cemeteryArriveAndCastSpell();
-		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_OH_NO"), 0.35f, 1.8f );
-		playVoiceOver( fairy, darkQueenCemeterySequence.VO_FA_Oh_no );
-		
 	}
 	
+	void cemeteryAfterPlayerSlowdown()
+	{
+		playerController.anim.SetTrigger("Idle_Look");
+		Invoke( "cemeteryArriveAndCastSpell", 1f );
+		Invoke( "fairyAppears", 1.3f );
+	}
+
 	void cemeteryArriveAndCastSpell()
 	{
 		darkQueen.localScale = new Vector3( 1.2f, 1.2f, 1.2f );
@@ -441,20 +443,20 @@ public class GameEventManager : MonoBehaviour {
 		Invoke("cemeteryPlayLandAnimation", darkQueen.animation["DarkQueen_Arrive"].length/arriveSpeed );
 		darkQueenController.dimLights( darkQueen.animation["DarkQueen_Arrive"].length/arriveSpeed, 0.1f );
 	}
-	
-	void cemeteryAfterPlayerSlowdown()
+
+	void fairyAppears()
 	{
-		playerController.anim.SetTrigger("Idle_Look");
 		//Call fairy
 		fairyController.setYRotationOffset( -10f );
 		fairyController.Appear ( FairyEmotion.Worried );
-		
+		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_NOT_HER_AGAIN"), 0.35f, 2.5f );
+		playVoiceOver( fairy, darkQueenCemeterySequence.VO_FA_NOT_HER_AGAIN );
 	}
-	
+
 	void cemeteryPlayLandAnimation()
 	{
-		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_NOT_KEEP_WAITING"), 0.35f, 3.6f );
-		playVoiceOver( darkQueen, darkQueenCemeterySequence.VO_DQ_not_keep_waiting );
+		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_STARTING_TO_ANNOY"), 0.35f, 3.6f );
+		playVoiceOver( darkQueen, darkQueenCemeterySequence.VO_DQ_STARTING_TO_ANNOY );
 		darkQueen.animation.CrossFade("DarkQueen_Land", 0.1f);
 		Invoke("cemeteryPlayIdleAnimation", darkQueen.animation["DarkQueen_Land"].length);
 	}
@@ -468,8 +470,8 @@ public class GameEventManager : MonoBehaviour {
 	
 	void cemeteryCastKrakenSpell()
 	{
-		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_RISE_FROM_THE_DEEP"), 0.35f, 3.8f );
-		playVoiceOver( darkQueen, darkQueenCemeterySequence.VO_DQ_rise_from_the_deep );
+		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_BRING_BACK_BOOK"), 0.35f, 3.8f );
+		playVoiceOver( darkQueen, darkQueenCemeterySequence.VO_DQ_BRING_BACK_BOOK );
 		darkQueen.animation.Play("DarkQueen_SpellCast");
 		Invoke("cemeteryPlayKrakenSpellFX", 0.3f);
 		Invoke("cemeteryLeave", darkQueen.animation["DarkQueen_SpellCast"].length );
@@ -480,7 +482,7 @@ public class GameEventManager : MonoBehaviour {
 		darkQueen.audio.PlayOneShot( darkQueenController.spellSound );
 		darkQueenController.spellFx.Play();
 		darkQueenCemeterySequence.poisonMist.Play();
-		startZombieWave();
+		Invoke( "startZombieWave", 0.75f );
 	}
 	
 	void startZombieWave()

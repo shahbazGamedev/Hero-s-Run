@@ -10,7 +10,7 @@ public class SimpleController : MonoBehaviour {
 	public AnimationClip hitAnim;
 	public float walkSpeed = 1.18f;	//1.18 is a good value for the cow
 	Animation anim;
-	CharacterController controller;
+	CharacterController controller; //The controller is optional. Without a controller, there is no collision handling.
 	public Vector3 forward;
 	public float moveDuration = 12f; //Only move for a short amount of time so the cows don't wander off into the wild ...
 	public bool applyGravity = true;
@@ -37,7 +37,14 @@ public class SimpleController : MonoBehaviour {
 			forward = forward * Time.smoothDeltaTime * walkSpeed;
 			if( applyGravity ) forward.y -= 16f * Time.deltaTime;
 			//3) Move the controller
-			controller.Move( forward );
+			if( controller != null )
+			{
+				controller.Move( forward );
+			}
+			else
+			{
+				transform.position = transform.position + forward;
+			}
 		}
 		
 	}
@@ -98,14 +105,14 @@ public class SimpleController : MonoBehaviour {
 			{
 				anim.enabled = false;
 				allowControllerUpdate = false;
-				controller.enabled = false;
+				if( controller != null ) controller.enabled = false;
 				
 			}
 			else if( newState == GameState.Normal )
 			{
 				anim.enabled = true;
 				allowControllerUpdate = true;
-				controller.enabled = true;
+				if( controller != null ) controller.enabled = true;
 			}
 		}
 	}

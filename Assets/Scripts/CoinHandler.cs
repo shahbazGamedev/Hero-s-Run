@@ -29,11 +29,15 @@ public class CoinHandler : MonoBehaviour {
 				//Important: make sure star game object have the ignoreRaycast layer
 				RaycastHit hit;
 				float groundHeight = 0;
-				if (Physics.Raycast(new Vector3(transform.position.x,transform.parent.position.y + 10f,transform.position.z), Vector3.down, out hit, 12.0F ))
+				if (Physics.Raycast(new Vector3(transform.position.x,transform.parent.position.y + 10f,transform.position.z), Vector3.down, out hit, 20.0F ))
 				{
-					groundHeight = 10f - hit.distance;
+					groundHeight = hit.point.y;
 					groundHeight = groundHeight + getStarPackHeight();
 					transform.position = new Vector3( transform.position.x, groundHeight, transform.position.z);
+				}
+				else
+				{
+					Debug.LogError("CoinHandler: Start - There is no ground under the star named, " + gameObject.name );
 				}
 			}
 		}
@@ -51,9 +55,9 @@ public class CoinHandler : MonoBehaviour {
 			case StarPackHeight.Normal:
 				return 0.85f;
 			case StarPackHeight.High:
-				return 2.85f;
+				return 2.25f;
 			case StarPackHeight.Very_High:
-				return 5f;
+				return 4.5f;
 			default:
 				return 0.85f;
 		}
