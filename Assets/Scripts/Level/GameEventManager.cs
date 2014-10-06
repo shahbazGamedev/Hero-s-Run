@@ -425,7 +425,7 @@ public class GameEventManager : MonoBehaviour {
 		GameManager.Instance.setGameState(GameState.Checkpoint);
 		StartCoroutine( playerController.slowDownPlayer(19f, cemeteryAfterPlayerSlowdown ) );
 		Invoke( "cemeteryArriveAndCastSpell", 0.7f );
-		Invoke( "fairyAppears", 1f );
+		Invoke( "fairyAppears", 1.25f );
 	}
 	
 	void cemeteryAfterPlayerSlowdown()
@@ -449,7 +449,7 @@ public class GameEventManager : MonoBehaviour {
 		//Call fairy
 		fairyController.setYRotationOffset( -10f );
 		fairyController.Appear ( FairyEmotion.Worried );
-		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_NOT_HER_AGAIN"), 0.35f, 2.5f );
+		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_NOT_HER_AGAIN"), 0.35f, 3f );
 		playVoiceOver( fairy, darkQueenCemeterySequence.VO_FA_NOT_HER_AGAIN );
 	}
 
