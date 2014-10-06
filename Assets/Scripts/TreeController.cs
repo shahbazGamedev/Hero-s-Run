@@ -23,6 +23,7 @@ public class TreeController : BaseClass {
 
 	Transform player;
 	bool hasAttackedPlayer = false;
+	public bool appearsOnRandomRoadSide = true;
 
 	//The tree can be on either side of the road (50/50).
 	//If we are on the right side, we also need to move a normal tree to the other side to make room.
@@ -35,22 +36,25 @@ public class TreeController : BaseClass {
 
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 
-		//Decide if we are on the left or the right side.
-		if( Random.value < 0.5f )
+		if( appearsOnRandomRoadSide )
 		{
-			isLeftOfRoad = true;
-			//Trees are already correcly positioned, so do nothing
-		}
-		else
-		{
-			//Evil tree will be on the right side of the road
-			isLeftOfRoad = false;
-			//Move evil tree to the right side of the road and normal tree to the left side of the road
-			transform.localPosition 	= new Vector3( -transform.localPosition.x, transform.localPosition.y, transform.localPosition.z );
-			treeToMove.localPosition = new Vector3( -transform.localPosition.x, transform.localPosition.y, transform.localPosition.z );
-			//We want the leaves particle system to shift to the left side of the tree.
-			fallingLeaves.transform.localPosition = new Vector3( -fallingLeaves.transform.localPosition.x, fallingLeaves.transform.localPosition.y, fallingLeaves.transform.localPosition.z );
+			//Decide if we are on the left or the right side.
+			if( Random.value < 0.5f )
+			{
+				isLeftOfRoad = true;
+				//Trees are already correcly positioned, so do nothing
+			}
+			else
+			{
+				//Evil tree will be on the right side of the road
+				isLeftOfRoad = false;
+				//Move evil tree to the right side of the road and normal tree to the left side of the road
+				transform.localPosition 	= new Vector3( -transform.localPosition.x, transform.localPosition.y, transform.localPosition.z );
+				if( treeToMove != null ) treeToMove.localPosition = new Vector3( -transform.localPosition.x, transform.localPosition.y, transform.localPosition.z );
+				//We want the leaves particle system to shift to the left side of the tree.
+				fallingLeaves.transform.localPosition = new Vector3( -fallingLeaves.transform.localPosition.x, fallingLeaves.transform.localPosition.y, fallingLeaves.transform.localPosition.z );
 
+			}
 		}
 
 	}
