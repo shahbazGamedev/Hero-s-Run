@@ -230,7 +230,7 @@ public class HUDHandler : MonoBehaviour {
 			
 			//GUI.Label ( fpsRect, fps + "-" + LevelManager.Instance.getCurrentLevelIndex() + "-" + PlayerStatsManager.Instance.getPlayerHighScore() + isFirstTimePlaying + "-" + PlayerController.getPlayerSpeed().ToString("N1") + "-" +  PlayerController.getPlayerSpeedBoost().ToString("N1"), fpsStyle );
 			//GUI.Label ( fpsRect, fps + "-" + PlayerController.getPlayerSpeed().ToString("N1") + "-" + playerController.currentLane + "-" + playerController.desiredLane + "-tr-" + playerController.tileRotationY + "-" + playerController.getCharacterState() + "-" + playerController.lastSwipe + "-" + playerController.reasonDiedAtTurn + "-" + playerController.moveDirection.x.ToString("N1"),fpsStyle );
-			GUI.Label ( fpsRect, fps + "-" + LevelManager.Instance.getNextLevelToComplete(),fpsStyle );
+			GUI.Label ( fpsRect, fps + "-" + LevelManager.Instance.getNextLevelToComplete() + "-" + playerController.getCurrentTileName(),fpsStyle );
 
 			if(GUI.Button( pauseRect, pauseButtonContent, pauseStyle ))
 			{

@@ -523,6 +523,12 @@ public class PlayerController : BaseClass {
 		return currentTileType;
 	}
 
+	//Used to display debug information in the HUD.
+	//It is useful to know on which tile the player is on.
+	public string getCurrentTileName()
+	{
+		return currentTile.name;
+	}
 
 	void Update()
 	{
