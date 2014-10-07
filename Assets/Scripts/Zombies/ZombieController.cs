@@ -242,6 +242,7 @@ public class ZombieController : BaseClass {
 		anim.Play("burrowUp");
 		StartCoroutine("burrowUpCompleted");
 		debris = (ParticleSystem)Instantiate(debris, transform.position, transform.rotation );
+		Destroy ( debris, 4f );
 		debris.Play ();
 
 	}
