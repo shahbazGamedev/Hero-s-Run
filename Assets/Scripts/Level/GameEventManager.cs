@@ -197,9 +197,11 @@ public class GameEventManager : MonoBehaviour {
 		for( int i =0; i < TENTACLES_FACTORY_SIZE; i++ )
 		{
 			go = (GameObject)Instantiate(tentaclesSequence.tentaclePrefab, Vector3.zero, Quaternion.identity );
+			go.SetActive( false );
 			tentaclesList.Add( go );
 
 			go = (GameObject)Instantiate(tentaclesSequence.groundDebrisPrefab, Vector3.zero, Quaternion.identity );
+			go.SetActive( false );
 			tentaclesGroundDebrisList.Add( go );
 
 			dust = (ParticleSystem)Instantiate(tentaclesSequence.tentacleAboutToAppearFx, Vector3.zero, Quaternion.identity );
@@ -207,9 +209,22 @@ public class GameEventManager : MonoBehaviour {
 		}
 	}
 
+	void deactivateTentacleObjects()
+	{
+		GameObject go;
+		for( int i =0; i < TENTACLES_FACTORY_SIZE; i++ )
+		{
+			go = tentaclesList[i];
+			go.SetActive( false );
+			go = tentaclesGroundDebrisList[i];
+			go.SetActive( false );
+		}
+	}
+
 	GameObject getFactoryTentacle()
 	{
 		GameObject tentacle = tentaclesList[tentaclesListIndex];
+		tentacle.SetActive( true );
 		tentaclesListIndex++;
 		if( tentaclesListIndex == TENTACLES_FACTORY_SIZE ) tentaclesListIndex = 0;
 		return tentacle;
@@ -218,6 +233,7 @@ public class GameEventManager : MonoBehaviour {
 	GameObject getFactoryGroundDebris()
 	{
 		GameObject groundDebris = tentaclesGroundDebrisList[tentaclesGroundDebrisListIndex];
+		groundDebris.SetActive( true );
 		tentaclesGroundDebrisListIndex++;
 		if( tentaclesGroundDebrisListIndex == TENTACLES_FACTORY_SIZE ) tentaclesGroundDebrisListIndex = 0;
 		return groundDebris;
@@ -247,6 +263,7 @@ public class GameEventManager : MonoBehaviour {
 		StopCoroutine( "pierceUp" );
 		CancelInvoke( "sideStartPierceUp" );
 		StopCoroutine( "sidePierceUp" );
+		deactivateTentacleObjects();
 		isTentacleSequenceActive = false;
 	}
 
