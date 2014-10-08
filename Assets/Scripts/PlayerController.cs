@@ -1408,8 +1408,11 @@ public class PlayerController : BaseClass {
 		{
 			this.isGoingRight = isGoingRight;
 
+			//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
+			moveDirection.x = 0;
+
 			//Make sure the lane data is correct in case a collision forced us out of our lane
-			//recalculateCurrentLane();
+			recalculateCurrentLane();
 
 			float currentSideMoveSpeed;
 			if( Time.timeScale < 1f )
@@ -2176,7 +2179,7 @@ public class PlayerController : BaseClass {
 		moveDirection = new Vector3( 0,moveDirection.y,0 );
 		usesAccelerometer = false;
 		accelerometerPreviousFrameX = 0;
-		//recalculateCurrentLane();  //make sure our currentLane info is valid
+		recalculateCurrentLane();  //make sure our currentLane info is valid
 		//Side move speed is divided by 2 because it just looks better.
 		if ( currentLane == Lanes.Left )
 		{
@@ -2893,8 +2896,8 @@ public class PlayerController : BaseClass {
 	//Called every frame to ensure that the critical current lane value is always accurate
 	private void recalculateCurrentLane()
 	{
-		float min = -laneLimit + controller.radius;
-		float max = laneLimit - controller.radius;
+		float min = -0.65f;
+		float max = 0.65f;
 		float relativePos = 0;
 		Lanes calculatedLane;
 
@@ -2927,7 +2930,7 @@ public class PlayerController : BaseClass {
 		}
 		if( calculatedLane != currentLane )
 		{
-			Debug.LogWarning("recalculateCurrentLane changed current lane from: " + currentLane + " to: " + calculatedLane );
+			Debug.LogWarning("recalculateCurrentLane changed current lane from: " + currentLane + " to: " + calculatedLane + " relative pos " + relativePos );
 			currentLane = calculatedLane;
 			desiredLane = currentLane;
 		}
