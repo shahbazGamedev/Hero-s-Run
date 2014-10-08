@@ -1404,7 +1404,8 @@ public class PlayerController : BaseClass {
 	void changeLane( bool isGoingRight )
 	{
 		//You can only change lanes while running
-		if ( _characterState == CharacterState.Running )
+		//You can also change your mind 
+		if ( _characterState == CharacterState.Running || ( _characterState == CharacterState.SideMove && this.isGoingRight != isGoingRight ) )
 		{
 			this.isGoingRight = isGoingRight;
 
