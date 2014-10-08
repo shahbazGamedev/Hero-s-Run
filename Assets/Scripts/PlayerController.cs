@@ -194,7 +194,7 @@ public class PlayerController : BaseClass {
 	//For accelerometer
 	bool usesAccelerometer = true;
 	float accelerometerPreviousFrameX = 0;
-	float accelerometerStrength = 14f;
+	float accelerometerStrength = 17f; //Used to be 14
 	
 	//To move coins to the Coin icon at the top right of the screen
 	Vector3 coinScreenPos;

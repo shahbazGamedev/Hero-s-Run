@@ -25,11 +25,9 @@ public class GameEventManager : MonoBehaviour {
 	TentaclesSequence tentaclesSequence;
 	DarkQueenKrakenSequence darkQueenKrakenSequence;
 
-	Vector3 lastTentaclePosition;
-	Vector3 lastSideTentaclePosition;
 	public bool isTentacleSequenceActive = false;
 
-	const int TENTACLES_FACTORY_SIZE = 6;
+	const int TENTACLES_FACTORY_SIZE = 10;
 	List<GameObject> tentaclesList = new List<GameObject>( TENTACLES_FACTORY_SIZE );
 	int tentaclesListIndex = 0;
 	List<GameObject> tentaclesGroundDebrisList = new List<GameObject>( TENTACLES_FACTORY_SIZE );
@@ -38,11 +36,13 @@ public class GameEventManager : MonoBehaviour {
 	int tentaclesDustListIndex = 0;
 
 	//Zombie hands sequence including Dark Queen
+	Vector3 lastZombieHandPosition;
+	Vector3 lastSideZombieHandPosition;
 	DarkQueenCemeterySequence darkQueenCemeterySequence;
 	ZombieHandsSequence zombieHandsSequence;
 	bool isZombieHandsSequenceActive = false;
 
-	const int ZOMBIE_HANDS_FACTORY_SIZE = 6;
+	const int ZOMBIE_HANDS_FACTORY_SIZE = 0;
 	List<GameObject> zombieHandsList = new List<GameObject>( ZOMBIE_HANDS_FACTORY_SIZE );
 	int zombieHandsIndex = 0;
 	List<ParticleSystem> zombieHandsBurtsOutFXList = new List<ParticleSystem>( ZOMBIE_HANDS_FACTORY_SIZE );
@@ -237,22 +237,22 @@ public class GameEventManager : MonoBehaviour {
 		print ("Starting tentacles sequence");
 		isTentacleSequenceActive = true;
 		Invoke( "startPierceUp", 1f );
-		Invoke( "sideStartPierceUp", 2f );
+		Invoke( "sideStartPierceUp", 2.3f );
 	}
 
 	public void stopTentaclesSequence()
 	{
 		print ("Stopping tentacles sequence");
 		CancelInvoke( "startPierceUp" );
-		CancelInvoke( "pierceUp" );
+		StopCoroutine( "pierceUp" );
 		CancelInvoke( "sideStartPierceUp" );
-		CancelInvoke( "sidePierceUp" );
+		StopCoroutine( "sidePierceUp" );
 		isTentacleSequenceActive = false;
 	}
 
 	void startPierceUp()
 	{
-		float attackDistance = 1.1f * PlayerController.getPlayerSpeed();
+		float attackDistance = 1.2f * PlayerController.getPlayerSpeed();
 		//Pick random X location
 		float xPos;
 		int laneChoice = Random.Range(0, 3);
@@ -268,18 +268,18 @@ public class GameEventManager : MonoBehaviour {
 		{
 			xPos = PlayerController.laneLimit;
 		}
-		lastTentaclePosition = player.TransformPoint(new Vector3( xPos,0,attackDistance));
+		Vector3 tentaclePosition = player.TransformPoint(new Vector3( 0,0,attackDistance));
+		tentaclePosition = new Vector3( playerController.currentTilePos.x + xPos,tentaclePosition.y,tentaclePosition.z);
 
 		//Calculate the ground height
 		RaycastHit hit;
 		int layermask = ~(1 << 8); //exclude player which is layer is 8
 		float groundHeight = 0;
-		if (Physics.Raycast(new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 10f, lastTentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
+		if (Physics.Raycast(new Vector3( tentaclePosition.x, tentaclePosition.y + 10f, tentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
 		{
-			groundHeight = lastTentaclePosition.y + 10f - hit.distance;
-			//groundHeight = 0;
-			lastTentaclePosition = new Vector3(lastTentaclePosition.x, groundHeight - 2f, lastTentaclePosition.z);
-			Invoke( "pierceUp", 0.33f );
+			groundHeight = hit.point.y;
+			tentaclePosition = new Vector3(tentaclePosition.x, groundHeight - 2f, tentaclePosition.z);
+			StartCoroutine( "pierceUp", tentaclePosition );
 		}
 		else
 		{
@@ -289,15 +289,17 @@ public class GameEventManager : MonoBehaviour {
 
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
 		ParticleSystem dust = getFactoryTentacleDust();
-		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 2.12f, lastTentaclePosition.z );
+		dust.transform.position = new Vector3( tentaclePosition.x, tentaclePosition.y + 2.12f, tentaclePosition.z );
 		dust.Play();
 	}
 
-	void pierceUp()
+	IEnumerator pierceUp( Vector3 tentaclePosition )
 	{
+		yield return new WaitForSeconds(0.33f);
+
 		playerController.shakeCamera();
 		GameObject go = getFactoryTentacle();
-		go.transform.position = lastTentaclePosition;
+		go.transform.position = tentaclePosition;
 		go.transform.rotation = Quaternion.Euler( 0, Random.Range (-180f,180f), Random.Range (-6f,6f) );
 		float randomScale = 1f + 0.3f * Random.value;
 		go.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
@@ -308,61 +310,60 @@ public class GameEventManager : MonoBehaviour {
 
 		//Ground debris
 		GameObject groundDebrisObject = getFactoryGroundDebris();
-		groundDebrisObject.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 2f, lastTentaclePosition.z );
+		groundDebrisObject.transform.position = new Vector3( tentaclePosition.x, tentaclePosition.y + 2f, tentaclePosition.z );
 		groundDebrisObject.transform.rotation = Quaternion.Euler( 0, Random.Range (-180f,180f), 0 );
 		groundDebrisObject.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
 		LeanTween.moveLocalY(groundDebrisObject, groundDebrisObject.transform.position.y + 0.15f, 0.1f ).setEase(LeanTweenType.easeOutExpo);
 
 		go.audio.PlayDelayed(0.1f);
 
-		GameObject flyingDebris = (GameObject)Instantiate(tentaclesSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
-		flyingDebris.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 4f, lastTentaclePosition.z );
+		GameObject flyingDebris = (GameObject)Instantiate(tentaclesSequence.debrisPrefab, new Vector3( tentaclePosition.x, tentaclePosition.y + 4f, tentaclePosition.z ), Quaternion.identity );
 		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
 		bo.triggerBreak( player.collider );
-		Invoke( "startPierceUp", 1.2f + Random.value );
+		Invoke( "startPierceUp", 2.1f );
 	}
 
 	void pierceDown( object go )
 	{
 		GameObject tentacle = go as GameObject;
 		tentacle.animation.CrossFade("attack", 0.4f);
-		LeanTween.moveLocalY( tentacle, tentacle.transform.position.y - 18, 2f ).setEase(LeanTweenType.easeOutExpo);
+		LeanTween.moveLocalY( tentacle, tentacle.transform.position.y - 18, 2f ).setEase(LeanTweenType.easeOutExpo).setDelay(0.5f);
 	}
 
 	void sideStartPierceUp()
 	{
-		float attackDistance = 1.1f * PlayerController.getPlayerSpeed() + Random.Range( -3,1 );
+		float attackDistance = 1.2f * PlayerController.getPlayerSpeed() + Random.Range( -3,1 );
 		//Pick random X location on either side of main path
 		float xPos;
 		int laneChoice = Random.Range(0, 4);
 		if( laneChoice == 0 )
 		{
-			xPos = -2.6f;
+			xPos = -2.8f;
 		}
 		else if( laneChoice == 1 )
 		{
-			xPos = -3.9f;
+			xPos = -4.1f;
 		}
 		else if( laneChoice == 2 )
 		{
-			xPos = 2.6f;
+			xPos = 2.8f;
 		}
 		else
 		{
-			xPos = 3.9f;
+			xPos = 4.1f;
 		}
-		lastSideTentaclePosition = player.TransformPoint(new Vector3( xPos,0,attackDistance));
-		
+		Vector3 sideTentaclePosition = player.TransformPoint(new Vector3( 0,0,attackDistance));
+		sideTentaclePosition = new Vector3( playerController.currentTilePos.x + xPos,sideTentaclePosition.y,sideTentaclePosition.z);
+
 		//Calculate the ground height
 		RaycastHit hit;
 		int layermask = ~(1 << 8); //exclude player which is layer is 8
 		float groundHeight = 0;
-		if (Physics.Raycast(new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 10f, lastSideTentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
+		if (Physics.Raycast(new Vector3( sideTentaclePosition.x, sideTentaclePosition.y + 10f, sideTentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
 		{
-			groundHeight = lastSideTentaclePosition.y + 10f - hit.distance;
-			//groundHeight = 0;
-			lastSideTentaclePosition = new Vector3(lastSideTentaclePosition.x, groundHeight - 2f, lastSideTentaclePosition.z);
-			Invoke( "sidePierceUp", 0.33f );
+			groundHeight = hit.point.y;
+			sideTentaclePosition = new Vector3(sideTentaclePosition.x, groundHeight - 2f, sideTentaclePosition.z);
+			StartCoroutine( "sidePierceUp", sideTentaclePosition );
 		}
 		else
 		{
@@ -372,14 +373,16 @@ public class GameEventManager : MonoBehaviour {
 
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
 		ParticleSystem dust = getFactoryTentacleDust();
-		dust.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 2.12f, lastSideTentaclePosition.z );
+		dust.transform.position = new Vector3( sideTentaclePosition.x, sideTentaclePosition.y + 2.12f, sideTentaclePosition.z );
 		dust.Play();
 	}
 	
-	void sidePierceUp()
+	IEnumerator sidePierceUp( Vector3 sideTentaclePosition )
 	{
+		yield return new WaitForSeconds(0.33f);
+
 		GameObject go = getFactoryTentacle();
-		go.transform.position = lastSideTentaclePosition;
+		go.transform.position = sideTentaclePosition;
 		go.transform.rotation = Quaternion.Euler( 0, Random.Range (-180f,180f), Random.Range (-6f,6f) );
 		float randomScale = 1f + 0.3f * Random.value;
 		go.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
@@ -389,17 +392,16 @@ public class GameEventManager : MonoBehaviour {
 
 		//Ground debris
 		GameObject groundDebrisObject = getFactoryGroundDebris();
-		groundDebrisObject.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 2f, lastSideTentaclePosition.z );
+		groundDebrisObject.transform.position = new Vector3( sideTentaclePosition.x, sideTentaclePosition.y + 2f, sideTentaclePosition.z );
 		groundDebrisObject.transform.rotation = Quaternion.Euler( 0, Random.Range (-180f,180f), 0 );
 		groundDebrisObject.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
 		LeanTween.moveLocalY(groundDebrisObject, groundDebrisObject.transform.position.y + 0.15f, 0.1f ).setEase(LeanTweenType.easeOutExpo);
 
 		go.audio.PlayDelayed(0.1f);
-		GameObject flyingDebris = (GameObject)Instantiate(tentaclesSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
-		flyingDebris.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 4f, lastSideTentaclePosition.z );
+		GameObject flyingDebris = (GameObject)Instantiate(tentaclesSequence.debrisPrefab, new Vector3( sideTentaclePosition.x, sideTentaclePosition.y + 4f, sideTentaclePosition.z ), Quaternion.identity );
 		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
 		bo.triggerBreak( player.collider );
-		Invoke( "sideStartPierceUp", 0.8f + Random.value * 1.5f );
+		Invoke( "sideStartPierceUp", 2.1f );
 	}
 
 	//Dark Queen sequence that plays before the zombie hand sequence
@@ -612,17 +614,17 @@ public class GameEventManager : MonoBehaviour {
 		{
 			xPos = PlayerController.laneLimit;
 		}
-		lastTentaclePosition = player.TransformPoint(new Vector3( xPos,0,attackDistance));
+		lastZombieHandPosition = player.TransformPoint(new Vector3( xPos,0,attackDistance));
 		
 		//Calculate the ground height
 		RaycastHit hit;
 		int layermask = ~(1 << 8); //exclude player which is layer is 8
 		float groundHeight = 0;
-		if (Physics.Raycast(new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 10f, lastTentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
+		if (Physics.Raycast(new Vector3( lastZombieHandPosition.x, lastZombieHandPosition.y + 10f, lastZombieHandPosition.z ), Vector3.down, out hit, 25.0F, layermask ))
 		{
-			groundHeight = lastTentaclePosition.y + 10f - hit.distance;
+			groundHeight = lastZombieHandPosition.y + 10f - hit.distance;
 			//groundHeight = 0;
-			lastTentaclePosition = new Vector3(lastTentaclePosition.x, groundHeight - 1f, lastTentaclePosition.z);
+			lastZombieHandPosition = new Vector3(lastZombieHandPosition.x, groundHeight - 1f, lastZombieHandPosition.z);
 			Invoke( "zombieHandPierceUp", 0.33f );
 		}
 		else
@@ -633,19 +635,19 @@ public class GameEventManager : MonoBehaviour {
 		
 		//Display a sign that a zombie hand is going to shoot up from the ground to warn the player
 		ParticleSystem dust = getFactoryZombieHandDust();
-		dust.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 1.05f, lastTentaclePosition.z );
+		dust.transform.position = new Vector3( lastZombieHandPosition.x, lastZombieHandPosition.y + 1.05f, lastZombieHandPosition.z );
 		dust.Play();
 
 		//Send some debris (particles) flying up in the air as the hand bursts out of the ground
 		ParticleSystem burstOutFx = getFactoryBurtsOutFX();
-		burstOutFx.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 1.1f, lastTentaclePosition.z );
+		burstOutFx.transform.position = new Vector3( lastZombieHandPosition.x, lastZombieHandPosition.y + 1.1f, lastZombieHandPosition.z );
 		burstOutFx.Play();
 	}
 	
 	void zombieHandPierceUp()
 	{
 		GameObject go = getFactoryZombieHand();
-		go.transform.position = lastTentaclePosition;
+		go.transform.position = lastZombieHandPosition;
 		go.transform.rotation = Quaternion.Euler( 0, player.eulerAngles.y + 180f + Random.Range (-6f,7f), Random.Range (-6f,6f) );
 		float randomScale = 1f + 0.5f * Random.value;
 		go.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
@@ -655,7 +657,7 @@ public class GameEventManager : MonoBehaviour {
 		go.audio.PlayDelayed(0.1f);
 
 		//GameObject flyingDebris = (GameObject)Instantiate(zombieHandsSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
-		//flyingDebris.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 1.4f, lastTentaclePosition.z );
+		//flyingDebris.transform.position = new Vector3( lastZombieHandPosition.x, lastZombieHandPosition.y + 1.4f, lastZombieHandPosition.z );
 		//BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
 		//bo.triggerBreak( null );
 
@@ -692,17 +694,17 @@ public class GameEventManager : MonoBehaviour {
 		{
 			xPos = 3.3f;
 		}
-		lastSideTentaclePosition = player.TransformPoint(new Vector3( xPos,0,attackDistance));
+		lastSideZombieHandPosition = player.TransformPoint(new Vector3( xPos,0,attackDistance));
 		
 		//Calculate the ground height
 		RaycastHit hit;
 		int layermask = ~(1 << 8); //exclude player which is layer is 8
 		float groundHeight = 0;
-		if (Physics.Raycast(new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 10f, lastSideTentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
+		if (Physics.Raycast(new Vector3( lastSideZombieHandPosition.x, lastSideZombieHandPosition.y + 10f, lastSideZombieHandPosition.z ), Vector3.down, out hit, 25.0F, layermask ))
 		{
-			groundHeight = lastSideTentaclePosition.y + 10f - hit.distance;
+			groundHeight = lastSideZombieHandPosition.y + 10f - hit.distance;
 			//groundHeight = 0;
-			lastSideTentaclePosition = new Vector3(lastSideTentaclePosition.x, groundHeight - 1f, lastSideTentaclePosition.z);
+			lastSideZombieHandPosition = new Vector3(lastSideZombieHandPosition.x, groundHeight - 1f, lastSideZombieHandPosition.z);
 			Invoke( "zombieHandSidePierceUp", 0.33f );
 		}
 		else
@@ -713,19 +715,19 @@ public class GameEventManager : MonoBehaviour {
 		
 		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
 		ParticleSystem dust = getFactoryZombieHandDust();
-		dust.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 1.05f, lastSideTentaclePosition.z );
+		dust.transform.position = new Vector3( lastSideZombieHandPosition.x, lastSideZombieHandPosition.y + 1.05f, lastSideZombieHandPosition.z );
 		dust.Play();
 
 		//Send some debris (particles) flying up in the air as the hand bursts out of the ground
 		ParticleSystem burstOutFx = getFactoryBurtsOutFX();
-		burstOutFx.transform.position = new Vector3( lastTentaclePosition.x, lastTentaclePosition.y + 1.1f, lastTentaclePosition.z );
+		burstOutFx.transform.position = new Vector3( lastSideZombieHandPosition.x, lastSideZombieHandPosition.y + 1.1f, lastSideZombieHandPosition.z );
 		burstOutFx.Play();
 	}
 	
 	void zombieHandSidePierceUp()
 	{
 		GameObject go = getFactoryZombieHand();
-		go.transform.position = lastSideTentaclePosition;
+		go.transform.position = lastSideZombieHandPosition;
 		go.transform.rotation = Quaternion.Euler( 0, player.eulerAngles.y + 180f + Random.Range (-6f,7f), Random.Range (-6f,6f) );
 		float randomScale = 1f + 0.5f * Random.value;
 		go.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
@@ -734,7 +736,7 @@ public class GameEventManager : MonoBehaviour {
 		go.audio.PlayDelayed(0.1f);
 
 		//GameObject flyingDebris = (GameObject)Instantiate(zombieHandsSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
-		//flyingDebris.transform.position = new Vector3( lastSideTentaclePosition.x, lastSideTentaclePosition.y + 4f, lastSideTentaclePosition.z );
+		//flyingDebris.transform.position = new Vector3( lastSideZombieHandPosition.x, lastSideZombieHandPosition.y + 4f, lastSideZombieHandPosition.z );
 		//BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
 		//bo.triggerBreak( null );
 
@@ -906,6 +908,8 @@ public class GameEventManager : MonoBehaviour {
 		if( newState == CharacterState.Dying )
 		{
 			CancelInvoke();
+			StopCoroutine( "pierceUp" );
+			StopCoroutine( "sidePierceUp" );
 		}
 		else if( newState == CharacterState.StartRunning && isTentacleSequenceActive )
 		{
