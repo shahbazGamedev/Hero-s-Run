@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public class ZombieManager : BaseClass {
 
 	public List<GameObject> zombieFactory = new List<GameObject>();
+	int zombieFactoryIndex = 0;
+
 	Transform player;
 	PlayerController playerController;
 	public ParticleSystem zNukeEffect;
@@ -79,24 +81,16 @@ public class ZombieManager : BaseClass {
 
 	GameObject getAvailableZombie()
 	{
-		GameObject zombie;
-		for( int i=0; i < zombieFactory.Count; i++ )
-		{
-			zombie = zombieFactory[i];
-			ZombieController zombieController = (ZombieController) zombie.GetComponent("ZombieController");
-			if( zombieController.getZombieState() == ZombieController.ZombieState.Available )
-			{
-				//Yes, this zombie is free to eat brain
-				//Reset his values before returning him spic and span.. 
-				zombieController.setZombieState( ZombieController.ZombieState.Reserved );
-				zombie.SetActive( true );
-				CapsuleCollider capsuleCollider = (CapsuleCollider) zombie.GetComponent("CapsuleCollider");
-				capsuleCollider.enabled = true;
-				return zombie;
-			}
-		}
-		return null;
-
+		GameObject zombie = zombieFactory[zombieFactoryIndex];
+		zombieFactoryIndex++;
+		if( zombieFactoryIndex == zombieFactory.Count ) zombieFactoryIndex = 0;
+		ZombieController zombieController = (ZombieController) zombie.GetComponent("ZombieController");
+		//Reset his values before returning him spic and span.. 
+		zombieController.setZombieState( ZombieController.ZombieState.Reserved );
+		zombie.SetActive( true );
+		CapsuleCollider capsuleCollider = (CapsuleCollider) zombie.GetComponent("CapsuleCollider");
+		capsuleCollider.enabled = true;
+		return zombie;
 	}
 
 	//Called by the Succubus controller
@@ -220,7 +214,7 @@ public class ZombieManager : BaseClass {
 			}
 			zombieController.followsPlayer = zsd.followsPlayer;
 
-			zombieController.StartCoroutine( "recycleZombie", zsd.spawnDelay + zsd.recycleDelay );
+			//zombieController.StartCoroutine( "recycleZombie", zsd.spawnDelay + zsd.recycleDelay );
 		}
 		else
 		{
@@ -246,7 +240,7 @@ public class ZombieManager : BaseClass {
 			ZombieController zombieController = (ZombieController) zombie.GetComponent("ZombieController");
 			zombieController.setZombieState( ZombieController.ZombieState.BurrowUp );
 			zombieBoyAnimator.CrossFade("burrowUp", 0.1f, 0 );
-			zombieController.StartCoroutine( "recycleZombie", 10f );
+			//zombieController.StartCoroutine( "recycleZombie", 10f );
 		}
 		else
 		{
