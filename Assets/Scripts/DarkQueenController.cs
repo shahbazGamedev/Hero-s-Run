@@ -135,7 +135,7 @@ public class DarkQueenController : BaseClass {
 		ld.aLight.intensity = endIntensity;
 		ld.lightStatus = LightStatus.isFaded;
 
-		print ("DarkQueenController-Finished fading out light named " + ld.aLight.name + " to intensity: " + endIntensity );
+		//print ("DarkQueenController-Finished fading out light named " + ld.aLight.name + " to intensity: " + endIntensity );
 	}
 
 	public IEnumerator fadeInLight( LightData ld, float duration )
@@ -153,7 +153,7 @@ public class DarkQueenController : BaseClass {
 		} while ( elapsedTime < duration );
 		ld.aLight.intensity = ld.originalIntensity;
 		ld.lightStatus = LightStatus.isFaded;
-		print ("DarkQueenController-Finished fading in light named " + ld.aLight.name + " to intensity: " + ld.originalIntensity );
+		//print ("DarkQueenController-Finished fading in light named " + ld.aLight.name + " to intensity: " + ld.originalIntensity );
 	}
 
 	public void walk( bool enable )
