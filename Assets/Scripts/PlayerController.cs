@@ -573,7 +573,7 @@ public class PlayerController : BaseClass {
 						if ( !Physics.Raycast(exactPos, Vector3.down, MIN_DISTANCE_FOR_FALL ))
 						{
 							//Ground is further than MIN_DISTANCE_FOR_FALL meters.
-							fall ();
+							fall();
 						}
 					}
 				}
@@ -586,6 +586,9 @@ public class PlayerController : BaseClass {
 	void fall()
 	{
 		if( _characterState == CharacterState.Falling || _characterState == CharacterState.Jumping ) return; //ignore, we are already falling or jumping
+
+		//Reset moveDirection.y to 0 so we dont start falling very fast
+		moveDirection.y = 0f;
 
 		//Remember at what height the player started to fall because this will help us calculate the fall distance.
 		fallStartYPos = transform.position.y;
@@ -2859,6 +2862,8 @@ public class PlayerController : BaseClass {
 		
 		//12) Display a Go! message
 		HUDHandler.activateUserMessage( LocalizationManager.Instance.getText("GO"), 0.5f, 0f, 1.25f );
+		Debug.LogError("PlayerController - resurrectEnd : animation state : " + getCurrentStateName() );
+
 
 	}
 	
