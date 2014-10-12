@@ -404,6 +404,10 @@ public class PlayerController : BaseClass {
 		allowDistanceTravelledCalculations = true;
 		usesAccelerometer = true;
 
+		//Mecanim Hack - we call rebind because the animation states are not reset properly when you die in the middle of an animation.
+		//For example, if you die during a double jump, after you get resurrected and start running again, if you do another double jump, only part of the double jump animation will play, never the full animation.
+		anim.Rebind();
+
 		//The player starts off running
 		anim.SetTrigger(RunTrigger);
 		setCharacterState( CharacterState.StartRunning );
@@ -2854,10 +2858,6 @@ public class PlayerController : BaseClass {
 		//8) Deduct appropriate amount of premium currency. The amount doubles each time you resurrect during a given run.
 		
 		//9) Start running or flying
-		//Mecanim Hack - we call rebind because the animation states are not reset properly when you die in the middle of an animation.
-		//For example, if you die during a double jump, after you get resurrected and start running again, if you do another double jump, only part of the double jump animation will play, never the full animation.
-		anim.Rebind();
-
 		startRunning( false );
 
 		//10) Restore player controls
