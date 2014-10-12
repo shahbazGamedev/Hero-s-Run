@@ -291,11 +291,9 @@ public class GameEventManager : MonoBehaviour {
 		//Calculate the ground height
 		RaycastHit hit;
 		int layermask = ~(1 << 8); //exclude player which is layer is 8
-		float groundHeight = 0;
 		if (Physics.Raycast(new Vector3( tentaclePosition.x, tentaclePosition.y + 10f, tentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
 		{
-			groundHeight = hit.point.y;
-			tentaclePosition = new Vector3(tentaclePosition.x, groundHeight - 2f, tentaclePosition.z);
+			tentaclePosition = new Vector3(tentaclePosition.x, hit.point.y - 2f, tentaclePosition.z);
 			StartCoroutine( "pierceUp", tentaclePosition );
 		}
 		else
@@ -375,11 +373,9 @@ public class GameEventManager : MonoBehaviour {
 		//Calculate the ground height
 		RaycastHit hit;
 		int layermask = ~(1 << 8); //exclude player which is layer is 8
-		float groundHeight = 0;
 		if (Physics.Raycast(new Vector3( sideTentaclePosition.x, sideTentaclePosition.y + 10f, sideTentaclePosition.z ), Vector3.down, out hit, 25.0F, layermask ))
 		{
-			groundHeight = hit.point.y;
-			sideTentaclePosition = new Vector3(sideTentaclePosition.x, groundHeight - 2f, sideTentaclePosition.z);
+			sideTentaclePosition = new Vector3(sideTentaclePosition.x, hit.point.y - 2f, sideTentaclePosition.z);
 			StartCoroutine( "sidePierceUp", sideTentaclePosition );
 		}
 		else
@@ -547,14 +543,15 @@ public class GameEventManager : MonoBehaviour {
 		zombieHandsDustIndex = 0;
 		
 		ParticleSystem fx;
+		ParticleSystem burstOutFx;
 		GameObject go;
 		for( int i =0; i < ZOMBIE_HANDS_FACTORY_SIZE; i++ )
 		{
 			go = (GameObject)Instantiate(zombieHandsSequence.zombieHandPrefab, Vector3.zero, Quaternion.identity );
 			zombieHandsList.Add( go );
 			
-			fx = (ParticleSystem)Instantiate(zombieHandsSequence.burstOutFx, Vector3.zero, Quaternion.identity );
-			zombieHandsBurtsOutFXList.Add( fx );
+			burstOutFx = (ParticleSystem)Instantiate(zombieHandsSequence.burstOutFx, Vector3.zero, Quaternion.identity );
+			zombieHandsBurtsOutFXList.Add( burstOutFx );
 
 			fx = (ParticleSystem)Instantiate(zombieHandsSequence.zombieHandAboutToAppearFx, Vector3.zero, Quaternion.identity );
 			zombieHandsDustList.Add( fx );
@@ -627,12 +624,9 @@ public class GameEventManager : MonoBehaviour {
 		//Calculate the ground height
 		RaycastHit hit;
 		int layermask = ~(1 << 8); //exclude player which is layer is 8
-		float groundHeight = 0;
 		if (Physics.Raycast(new Vector3( lastZombieHandPosition.x, lastZombieHandPosition.y + 10f, lastZombieHandPosition.z ), Vector3.down, out hit, 25.0F, layermask ))
 		{
-			groundHeight = lastZombieHandPosition.y + 10f - hit.distance;
-			//groundHeight = 0;
-			lastZombieHandPosition = new Vector3(lastZombieHandPosition.x, groundHeight - 1f, lastZombieHandPosition.z);
+			lastZombieHandPosition = new Vector3(lastZombieHandPosition.x, hit.point.y - 1f, lastZombieHandPosition.z);
 			Invoke( "zombieHandPierceUp", 0.33f );
 		}
 		else
@@ -643,7 +637,7 @@ public class GameEventManager : MonoBehaviour {
 		
 		//Display a sign that a zombie hand is going to shoot up from the ground to warn the player
 		ParticleSystem dust = getFactoryZombieHandDust();
-		dust.transform.position = new Vector3( lastZombieHandPosition.x, lastZombieHandPosition.y + 1.05f, lastZombieHandPosition.z );
+		dust.transform.position = new Vector3( lastZombieHandPosition.x, lastZombieHandPosition.y + 1.23f, lastZombieHandPosition.z );
 		dust.Play();
 
 		//Send some debris (particles) flying up in the air as the hand bursts out of the ground
@@ -707,12 +701,9 @@ public class GameEventManager : MonoBehaviour {
 		//Calculate the ground height
 		RaycastHit hit;
 		int layermask = ~(1 << 8); //exclude player which is layer is 8
-		float groundHeight = 0;
 		if (Physics.Raycast(new Vector3( lastSideZombieHandPosition.x, lastSideZombieHandPosition.y + 10f, lastSideZombieHandPosition.z ), Vector3.down, out hit, 25.0F, layermask ))
 		{
-			groundHeight = lastSideZombieHandPosition.y + 10f - hit.distance;
-			//groundHeight = 0;
-			lastSideZombieHandPosition = new Vector3(lastSideZombieHandPosition.x, groundHeight - 1f, lastSideZombieHandPosition.z);
+			lastSideZombieHandPosition = new Vector3(lastSideZombieHandPosition.x, hit.point.y - 1f, lastSideZombieHandPosition.z);
 			Invoke( "zombieHandSidePierceUp", 0.33f );
 		}
 		else
@@ -721,9 +712,9 @@ public class GameEventManager : MonoBehaviour {
 			return;
 		}
 		
-		//Display a sign that a tentacle is going to shoot up from the ground to warn the player
+		//Display a sign that a zombie hand is going to shoot up from the ground to warn the player
 		ParticleSystem dust = getFactoryZombieHandDust();
-		dust.transform.position = new Vector3( lastSideZombieHandPosition.x, lastSideZombieHandPosition.y + 1.05f, lastSideZombieHandPosition.z );
+		dust.transform.position = new Vector3( lastSideZombieHandPosition.x, lastSideZombieHandPosition.y + 1.23f, lastSideZombieHandPosition.z );
 		dust.Play();
 
 		//Send some debris (particles) flying up in the air as the hand bursts out of the ground
@@ -759,7 +750,7 @@ public class GameEventManager : MonoBehaviour {
 
 		//Display a sign that a zombie hand is going to shoot up from the ground to warn the player
 		ParticleSystem dust = getFactoryZombieHandDust();
-		dust.transform.position = new Vector3( lastZombieHandPosition.x, lastZombieHandPosition.y + 1.05f, lastZombieHandPosition.z );
+		dust.transform.position = new Vector3( lastZombieHandPosition.x, lastZombieHandPosition.y + 1.23f, lastZombieHandPosition.z );
 		dust.Play();
 		
 		//Send some debris (particles) flying up in the air as the hand bursts out of the ground
