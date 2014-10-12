@@ -42,7 +42,7 @@ public class GameEventManager : MonoBehaviour {
 	ZombieHandsSequence zombieHandsSequence;
 	bool isZombieHandsSequenceActive = false;
 
-	const int ZOMBIE_HANDS_FACTORY_SIZE = 0;
+	const int ZOMBIE_HANDS_FACTORY_SIZE = 1;
 	List<GameObject> zombieHandsList = new List<GameObject>( ZOMBIE_HANDS_FACTORY_SIZE );
 	int zombieHandsIndex = 0;
 	List<ParticleSystem> zombieHandsBurtsOutFXList = new List<ParticleSystem>( ZOMBIE_HANDS_FACTORY_SIZE );
@@ -506,6 +506,7 @@ public class GameEventManager : MonoBehaviour {
 	
 	void startZombieWave()
 	{
+		startSingleZombieHandPierceUp();
 		darkQueenCemeterySequence.zombieWaveObject.SetActive( true );
 		ZombieWave activeZombieWave = darkQueenCemeterySequence.zombieWaveObject.GetComponent<ZombieWave>();
 		zombieManager.triggerZombieWave( activeZombieWave.spawnLocations );
@@ -529,7 +530,7 @@ public class GameEventManager : MonoBehaviour {
 		playerController.allowPlayerMovement(true );
 		playerController.startRunning(false);
 		fairyController.resetYRotationOffset();
-		Invoke ("activateZombieHands", 2f );
+		//Invoke ("activateZombieHands", 2f );
 	}
 
 
@@ -758,6 +759,50 @@ public class GameEventManager : MonoBehaviour {
 		//bo.triggerBreak( null );
 
 		Invoke( "sideStartZombieHandPierceUp", 0.8f + Random.value * 1.5f );
+	}
+
+	//Only one positioned hand version. Position is relative to the Dark Queen
+	void startSingleZombieHandPierceUp()
+	{
+		lastZombieHandPosition = darkQueen.TransformPoint(new Vector3(1f,-1f,-0.8f));
+		Invoke( "singleZombieHandPierceUp", 0.33f );
+
+		//Display a sign that a zombie hand is going to shoot up from the ground to warn the player
+		ParticleSystem dust = getFactoryZombieHandDust();
+		dust.transform.position = new Vector3( lastZombieHandPosition.x, lastZombieHandPosition.y + 1.05f, lastZombieHandPosition.z );
+		dust.Play();
+		
+		//Send some debris (particles) flying up in the air as the hand bursts out of the ground
+		ParticleSystem burstOutFx = getFactoryBurtsOutFX();
+		burstOutFx.transform.position = new Vector3( lastZombieHandPosition.x, lastZombieHandPosition.y + 1.1f, lastZombieHandPosition.z );
+		burstOutFx.Play();
+	}
+	
+	void singleZombieHandPierceUp()
+	{
+		GameObject go = getFactoryZombieHand();
+		go.transform.position = lastZombieHandPosition;
+		go.transform.rotation = Quaternion.Euler( 0, player.eulerAngles.y + 180f + Random.Range (-6f,7f), Random.Range (-6f,6f) );
+		float randomScale = 1f + 0.5f * Random.value;
+		go.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
+		go.name = "Stumble";
+		LeanTween.moveLocalY(go, go.transform.position.y + 1, 0.6f ).setEase(LeanTweenType.easeOutExpo).setOnComplete(singleZombieHandPierceDown).setOnCompleteParam( go as Object );
+		
+		go.audio.PlayDelayed(0.1f);
+		
+		GameObject flyingDebris = (GameObject)Instantiate(zombieHandsSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
+		flyingDebris.transform.position = new Vector3( lastZombieHandPosition.x, lastZombieHandPosition.y + 1.4f, lastZombieHandPosition.z );
+		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
+		bo.triggerBreak( null );
+		
+	}
+	
+	void singleZombieHandPierceDown( object go )
+	{
+		GameObject zombieHand = go as GameObject;
+		zombieHand.animation.Play("FistToSearch" );
+		zombieHand.animation.PlayQueued("Search", QueueMode.CompleteOthers );
+		LeanTween.moveLocalY( zombieHand, zombieHand.transform.position.y - 2, 3.25f ).setEase(LeanTweenType.easeOutExpo).setDelay( 4f );
 	}
 
 	//END ZOMBIE HANDS SEQUENCE
