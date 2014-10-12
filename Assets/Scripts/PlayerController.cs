@@ -360,10 +360,11 @@ public class PlayerController : BaseClass {
 
 	string getCurrentStateName()
 	{
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Run") ) return "Run";
+		//Use anim.GetLayerName(0)) to get the layer name. The layer with index 0 is "Base Layer".
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Move") ) return "Move";
 		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Fall") ) return "Fall";
 		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Land") ) return "Land";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Double Jump") ) return "Double Jump";
+		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Jump_double") ) return "Jump_double";
 		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Jump") ) return "Jump";
 		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Slide Down") ) return "Slide Down";
 		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Slide Up") ) return "Slide Up";
@@ -2710,8 +2711,10 @@ public class PlayerController : BaseClass {
 		lastSwipe = "";
 		reasonDiedAtTurn = "";
 
-	}
+		sc.heightDamping = SimpleCamera.DEFAULT_HEIGHT_DAMPING;
 
+	}
+	
 	void resurrectBegin()
 	{
 		//0) Reset data
@@ -2851,6 +2854,9 @@ public class PlayerController : BaseClass {
 		//8) Deduct appropriate amount of premium currency. The amount doubles each time you resurrect during a given run.
 		
 		//9) Start running or flying
+		//Mecanim Hack - we call rebind because the animation states are not reset properly when you die in the middle of an animation.
+		//For example, if you die during a double jump, after you get resurrected and start running again, if you do another double jump, only part of the double jump animation will play, never the full animation.
+		anim.Rebind();
 
 		startRunning( false );
 
