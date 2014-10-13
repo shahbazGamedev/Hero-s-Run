@@ -59,6 +59,8 @@ public class FairyController : BaseClass {
 
 	Vector3 xOffset = new Vector3( 0.6f, 0, 0 );
 
+	const float FAIRY_HEIGHT_ABOVE_GROUND = 1.05f;  //On Level Start
+
 	void Awake()
 	{
 		//Get a copy of the components
@@ -66,6 +68,16 @@ public class FairyController : BaseClass {
 		fairyAnimation["Revive"].speed = 1.2f;
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
+	}
+
+	void Start()
+	{
+		//Adjust the fairy's Y position depending on the height of the ground below her.
+		RaycastHit hit;
+		if (Physics.Raycast(new Vector3(0,10f,0), Vector3.down, out hit, 15.0F ))
+		{
+			transform.position = new Vector3( transform.position.x, hit.point.y + FAIRY_HEIGHT_ABOVE_GROUND, transform.position.z );
+		}
 	}
 
 	// Update is called once per frame
