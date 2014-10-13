@@ -42,7 +42,7 @@ FAIRY_TROLL_QUICKLY,Hurry! I can hear the troll.,Dépêche-toi! J'entends le tro
 FAIRY_WOODEN_ELVES,Wood elves used to live here<comma> but they left after the Great Battle.,Les elfes des bois habitaient cette forêt avant<comma> mais hélas<comma> ils ont quitté après la Grande Bataille.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 FAIRY_GOBLIN_WARNING,Goblins have been spotted looting the place. Be careful!,Des gobelins ont été vu en train de piller l'endroit. Fais attention !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 FAIRY_WOW_SURVIVED,I'm impressed! You manage to survive all those brain-eating zombies!,Wow! Je suis impressionnée. Tu as réussi à survivre à tous ces zombies.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-VO_FA_OH_NO,Oh no! It's the dark Queen ...,Oh non ! C'est la sorcière des Ténèbres,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+VO_FA_OH_NO,Oh no! It's the Dark Queen ...,Oh non ! C'est la Sorcière des Ténèbres,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 VO_DQ_NOT_KEEP_WAITING,You should never keep your Queen waiting,Tu ne devrais jamais faire attendre ta Reine,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 VO_DQ_RISE_FROM_THE_DEEP,Rise Sister<comma> rise from the deep ...,Soeur<comma> réveille-toi et sort des profondeurs ...,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 VO_DQ_STARTING_TO_ANNOY,You're starting to annoy me<comma> Hero.,Tu commences à m'irriter<comma> Héros.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -51,11 +51,10 @@ VO_DQ_BRING_BACK_BOOK,Zombies<comma> get my grimoire back from this thief!,Zombi
 VO_FA_NOT_HER_AGAIN,Not her again!,Pas encore toi !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POPUP_TITLE_DEBUG,Debug Menu,Menu Debug,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_SECTION_NAME_DOOM,the Montain of Doom!,la Montagne du Condamné !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-LEVEL_DESCRIPTION_0,Tutorial - Wraithmarsh is a cursed swampland infested with evil creatures.,Tutoriel - Wraithmarsh est un endroit maudit infesté de créatures malicieuses.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-LEVEL_DESCRIPTION_1,Forest - Bloodstone is a town located on a harbour near the remnants of Oakvale.,Forêt - Bloodstone est une ville située dans un havre prêt des ruines de Oakvale.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-LEVEL_DESCRIPTION_2,Dreadknot is a vast and ancient cemetery that was built after the Great Battle. It has long since been abandoned and now wicked creatures prowl the land in search of easy prey.,Dreadknot est un vaste et ancien cimetière qui a été construit après la Grande Bataille. Il a été abandonné depuis fort longtemps et maintenant des créatures malicieuses le parcours à la recherche de proies faciles.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-LEVEL_DESCRIPTION_3,Hell - Bloodstone is a town located on a harbour near the remnants of Oakvale.,Enfer - Bloodstone est une ville située dans un havre prêt des ruines de Oakvale.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-LEVEL_DESCRIPTION_4,Volcano - Bloodstone is a town located on a harbour near the remnants of Oakvale.,Volcan - Bloodstone est une ville située dans un havre prêt des ruines de Oakvale.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_DESCRIPTION_TOWER,The maleficent Dark Queen lives in the wizard tower. This is where she broods and plots nefarious ways to conquer the Kingdom of Lum.,La maléfique Sorcière des Ténèbres habite dans la tour de sorcellerie. C'est là qu'elle manigance ses plans machiavéliques afin de conquérir le Royaume de Lum.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_DESCRIPTION_TANGLEWOOD,Tanglewood is a peaceful area located near the Oakvale harbor.,Tanglewood est un endroit paisible situé prêt du havre d'Oakvale.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_DESCRIPTION_ELFLAND,The wood elves used to live in Ellenmïrre. They abandoned the city after the Great Battle.,Les elfes des bois habitaient jadis à Ellenmïrre. Ils ont abandonné l'endroit après la Grande Bataille.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_DESCRIPTION_DREADKNOT,Dreadknot is a vast and ancient cemetery that was built after the Great Battle. It has long since been abandoned and now wicked creatures prowl the land in search of easy prey.,Dreadknot est un vaste et ancien cimetière qui a été construit après la Grande Bataille. Il a été abandonné depuis fort longtemps et maintenant des créatures maléfiques le parcours à la recherche de proies faciles.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_GAME_COMPLETED,Congratulations hero! You have saved the World of Lum.,Bravo héros ! Tu as sauvé le monde de Lum.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 TREASURE_CHEST_POWER_UP,Super! You have just received <quantity> <powerup name> power-ups!,Génial ! Tu viens de recevoir <quantity> <powerup name> power-ups!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 TREASURE_CHEST_STARS,You have just received <quantity> stars!,Tu viens de recevoir <quantity> étoiles !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -70,7 +69,7 @@ HELL_BANNER_BILLIONS_SERVED,Over 66 billion souls served,Plus de 66 milliards d'
 HELL_SOUL_LAKE,Lake of Souls,Lac des âmes,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 HELL_NO_SWIMMING,No Swimming,Nage Interdite,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CULLIS_GATE_TOWER,You're heading to Tanglewood forest.,Tu te diriges vers la forêt de Tanglewood.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-CULLIS_GATE_FOREST,You're heading to the tree-city of Greenvale.,Tu te diriges vers la ville dans les arbres de Greenvale.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+CULLIS_GATE_FOREST,You're heading to the tree-city of Ellenmïrre.,Tu te diriges vers la ville dans les arbres de Ellenmïrre.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CULLIS_GATE_ELFLAND,You're heading to the Cemetery of Dreadknot. Foul creatures live there...,Tu te diriges vers le cimetière de Dreadknot. Des créatures sinistres y habitent...,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CULLIS_GATE_CEMETERY,You are almost there! You need to throw the Book of Pure Evil into the Volcano of Doom.,Tu y es presque! Tu dois jeter le Livre Maudit dans le Volcan du Désespoir.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CULLIS_GATE_DEMO_END,Congratulations! You have finished the demo.,Bravo ! Tu as finis la démo.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -117,8 +116,8 @@ MENU_DIFFICULTY_LEVEL_HEROIC,Heroic,Héroïque,NOT TRANSLATED,NOT TRANSLATED,NOT
 MENU_DIFFICULTY_LEVEL_LEGENDARY,Legendary,Légendaire,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_CHANGE,Change,Change,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_SELECT,Select,Choisir,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-MENU_PICK_ME_FEMALE,You're not going to let the world be saved by guy? Come on! Girls are way better at this kind of thing.,Tu ne vas quand même pas laisser un gars sauver le monde? Cela prends un fille pour ce genre de chose.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-MENU_PICK_ME_MALE,You're not going to let the world be saved by girl? Come on! Guys are way better at this kind of thing.,Tu ne vas quand même pas laisser une fille sauver le monde? Cela prends un gars pour ce genre de chose.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_PICK_ME_FEMALE,You're not going to let the world be saved by a guy? Come on! Girls are way better at this kind of thing.,Tu ne vas quand même pas laisser un gars sauver le monde? Cela prends un fille pour ce genre de chose.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_PICK_ME_MALE,You're not going to let the world be saved by a girl? Come on! Guys are way better at this kind of thing.,Tu ne vas quand même pas laisser une fille sauver le monde? Cela prends un gars pour ce genre de chose.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_CHARACTER_SELECTION_TITLE,Choose Your Hero,Choisis ton Héros,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 FB_HAVE_A_LIFE_MESSAGE,Here's a life! Have a great day!,Voici une vie ! Passe une belle journée !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_TITLE_EXTRA_LIFE,Send extra life!,Envoyer une vie !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
