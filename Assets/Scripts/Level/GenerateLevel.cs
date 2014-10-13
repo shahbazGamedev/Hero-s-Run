@@ -201,7 +201,7 @@ public class GenerateLevel  : MonoBehaviour {
 		//Verify if we should include a plane surrounding the tiles (like an ocean)
 		if( levelInfo.includeSurroundingPlane )
 		{
-			GameObject prefab = Resources.Load( "Level/surroundingPlane") as GameObject;
+			GameObject prefab = Resources.Load( "Level/Props/surroundingPlane") as GameObject;
 			GameObject go = (GameObject)Instantiate(prefab, new Vector3( 0, -30f, 0 ), Quaternion.identity );
 			surroundingPlane = go.transform;
 			if( surroundingPlane.renderer.material != null )
