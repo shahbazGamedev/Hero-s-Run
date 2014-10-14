@@ -2006,7 +2006,8 @@ public class PlayerController : BaseClass {
 				if( hit.normal.y < 0.4f )
 				{
 					//Move the player back so he does not get stuck in the cart.
-					controller.Move( hit.normal );
+					//However, do not push him downwards as this may push the player through the floor in some rare cases (with the cart and coach notably).
+					controller.Move( new Vector3( hit.normal.x, 1f, hit.normal.z ) );
 					managePlayerDeath ( DeathType.Obstacle );
 				}
 			}
@@ -2032,8 +2033,9 @@ public class PlayerController : BaseClass {
 			else if (hit.collider.name.StartsWith("Fence") || hit.collider.name.StartsWith("Wall") || hit.collider.name.StartsWith("Portcullis") )
 			{
 				Debug.Log( "Player collided with: " + hit.collider.name + " Normal" + hit.normal );
-				//Move the player back so he does not get stuck in the fence.
-				controller.Move( hit.normal );
+				//Move the player back so he does not get stuck in the obstacle.
+				//However, do not push him downwards as this may push the player through the floor in some rare cases (with the cart and coach notably).
+				controller.Move( new Vector3( hit.normal.x, 1f, hit.normal.z ) );
 				managePlayerDeath ( DeathType.Obstacle );
 			}
 
