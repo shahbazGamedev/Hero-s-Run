@@ -91,13 +91,11 @@ public class AchievementDisplay : MonoBehaviour {
 		achievementBoxRect = new LTRect( -Screen.width, boxHeight * Screen.height, achievementBoxSize.x, achievementBoxSize.y );
 		slideStartDest = new Vector2( 0, achievementBoxRect.rect.y );
 		slideEndDest = new Vector2( Screen.width, achievementBoxRect.rect.y );
-		
+
 		options["onComplete"] = "slideInEnded";
 		
-		if( image != null )
-		{
-			achievementImage = image;
-		}
+		achievementImage = image;
+
 		achievementDescription = description;
 		LeanTween.move( achievementBoxRect, slideStartDest, slideDuration, options );
 		enableShowDisplay( true );

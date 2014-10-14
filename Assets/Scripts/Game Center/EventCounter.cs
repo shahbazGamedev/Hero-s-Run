@@ -107,8 +107,16 @@ public class EventCounter {
 				GameCenterManager.addAchievement( achievementID );
 				//Display a message to the user
 				string achievementDescription = GameCenterManager.getDescription(achievementID);
-				Texture2D achievementImage = GameCenterManager.getImage(achievementID);
-				AchievementDisplay.activateDisplay( achievementDescription, achievementImage, 0.45f );
+				//Only proceed if we have a valid description.
+				if( achievementDescription != "DESCRIPTION NOT FOUND" )
+				{
+					Texture2D achievementImage = GameCenterManager.getImage(achievementID);
+					//Only proceed if we have a valid image.
+					if( achievementImage != null )
+					{
+						AchievementDisplay.activateDisplay( achievementDescription, achievementImage, 0.45f );
+					}
+				}
 			}
 			#endif
 
