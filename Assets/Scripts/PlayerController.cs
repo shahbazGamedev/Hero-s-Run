@@ -194,7 +194,7 @@ public class PlayerController : BaseClass {
 	//For accelerometer
 	bool usesAccelerometer = true;
 	float accelerometerPreviousFrameX = 0;
-	float accelerometerStrength = 16f; //Used to be 14
+	float accelerometerStrength = 22.5f; //Used to be 14
 	
 	//To move coins to the Coin icon at the top right of the screen
 	Vector3 coinScreenPos;
@@ -541,23 +541,6 @@ public class PlayerController : BaseClass {
 		{
 			updateDistanceTravelled();
 
-			if( playerControlsEnabled && usesAccelerometer )
-			{
-				//For accelerometer
-				float accelerometerCurrentFrameX = Input.acceleration.x;
-				if( Time.timeScale < 1f )
-				{
-					//Player is using a slow time power up.
-					accelerometerCurrentFrameX = accelerometerCurrentFrameX * accelerometerStrength * SLOW_DOWN_FACTOR;
-				}
-				else
-				{
-					//Time is normal.
-					accelerometerCurrentFrameX = accelerometerCurrentFrameX * accelerometerStrength;
-				}
-				moveDirection.Set(  moveDirection.x + accelerometerCurrentFrameX - accelerometerPreviousFrameX, moveDirection.y, moveDirection.z );
-				accelerometerPreviousFrameX = accelerometerCurrentFrameX;
-			}
 			if( playerMovementEnabled )
 			{
 				checkBelow();
@@ -987,12 +970,31 @@ public class PlayerController : BaseClass {
 			Vector3 xPos = transform.TransformPoint(relativePos);
 			Vector3 xVector = xPos - transform.position;
 			//5) Scale the X component based on accelerometer and change lane values
-			xVector = xVector * Time.deltaTime * moveDirection.x;
+			float accelerometerAverage = 0;
+			if( playerControlsEnabled && usesAccelerometer )
+			{
+				//For accelerometer
+				float accelerometerCurrentFrameX = Input.acceleration.x;
+				if( Time.timeScale < 1f )
+				{
+					//Player is using a slow time power up.
+					accelerometerCurrentFrameX = accelerometerCurrentFrameX * accelerometerStrength * SLOW_DOWN_FACTOR;
+				}
+				else
+				{
+					//Time is normal.
+					accelerometerCurrentFrameX = accelerometerCurrentFrameX * accelerometerStrength;
+				}
+				accelerometerAverage = (accelerometerCurrentFrameX + accelerometerPreviousFrameX) * 0.5f;
+				accelerometerPreviousFrameX = accelerometerCurrentFrameX;
+			}
+			xVector = xVector * Time.deltaTime * (moveDirection.x + accelerometerAverage);
+
 			//6) If not on a bezier curve, clamp to the max distance we can travel perpendicularly without
 			//exiting the left or right lanes.
 			if( !usesBezierCurve )
 			{
-				xVector =  Vector3.ClampMagnitude(xVector, Mathf.Abs(getMaxDist()));
+				xVector =  Vector3.ClampMagnitude(xVector, Mathf.Abs(getMaxDist(moveDirection.x + accelerometerAverage)));
 			}
 			//7) Add the X component to the forward direction
 			forward = forward + xVector;
@@ -1003,14 +1005,14 @@ public class PlayerController : BaseClass {
 
 	//Returns the maximum distance the player can travel perpendicularly without
 	//exiting the left or right lanes.
-	private float getMaxDist()
+	private float getMaxDist( float totalX )
 	{
 		float maxDist = 0;
 		float playerRotationY = Mathf.Floor ( transform.eulerAngles.y );
 		//Player is facing straight.
 		if( playerRotationY == 0 )
 		{
-			if( moveDirection.x >=0 )
+			if( totalX >=0 )
 			{
 				maxDist = currentTilePos.x + laneLimit - transform.position.x;
 			}
@@ -1023,7 +1025,7 @@ public class PlayerController : BaseClass {
 		//Player is facing right.
 		else if( playerRotationY == 90f || playerRotationY == -270f )
 		{
-			if( moveDirection.x >=0 )
+			if( totalX >=0 )
 			{
 				maxDist = currentTilePos.z - laneLimit - transform.position.z;
 			}
@@ -1035,7 +1037,7 @@ public class PlayerController : BaseClass {
 		//Player is facing left.
 		else if( playerRotationY == -90f || playerRotationY == 270f )
 		{
-			if( moveDirection.x >=0 )
+			if( totalX >=0 )
 			{
 				maxDist = currentTilePos.z + laneLimit - transform.position.z;
 			}
@@ -2345,7 +2347,7 @@ public class PlayerController : BaseClass {
 			//exiting the left or right lanes.
 			if( !usesBezierCurve )
 			{
-				xVector =  Vector3.ClampMagnitude(xVector, Mathf.Abs(getMaxDist()));
+				xVector =  Vector3.ClampMagnitude(xVector, Mathf.Abs(getMaxDist(moveDirection.x)));
 			}
 			//7) Add the X component to the forward direction
 			forward = forward + xVector;

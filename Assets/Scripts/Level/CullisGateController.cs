@@ -113,6 +113,13 @@ public class CullisGateController : MonoBehaviour {
 
 	void fadeOutAllAudio( float duration )
 	{
+		//We might have zombies nearby.
+		//Zombies play a groan sound every few seconds.
+		//We need to cancel the Invoke call in the zombie controller and might as well reset all zombies while we're at it.
+		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("ZombieManager");
+		ZombieManager zombieManager = zombieManagerObject.GetComponent<ZombieManager>();
+		zombieManager.resetAllZombies();
+
 		AudioSource[] allAudioSources = FindObjectsOfType(typeof(AudioSource)) as AudioSource[];
 		foreach(AudioSource audioSource in allAudioSources )
 		{
