@@ -103,9 +103,9 @@ public class TrollController : MonoBehaviour {
 					//Only move the troll forward if the distance between the troll and the player is greater than minimum distance.
 					//We do not want the troll to overrun the player.
 					transform.position += transform.forward * Speed * Time.deltaTime;
+					transform.LookAt(player);
 				}
 
-				transform.LookAt(player);
 
 				if( distance > deactivationDistance )
 				{
