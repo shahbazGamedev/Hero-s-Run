@@ -132,6 +132,12 @@ public class LevelManager {
 		return levelData;
 	}
 
+	//Returns true if locked, false otherwise.
+	public bool isLevelLocked( int levelNumber )
+	{
+		return levelData.getLevelInfo( levelNumber ).isLevelLocked;
+	}
+
 	public string getSectionName( int levelNumber )
 	{
 		return levelData.getLevelInfo( levelNumber ).sectionName;

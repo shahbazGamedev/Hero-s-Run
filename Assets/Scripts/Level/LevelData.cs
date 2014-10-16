@@ -176,6 +176,10 @@ public class LevelData : MonoBehaviour {
 		[Header("Level Parameters")]
 		[Tooltip("Text ID of level name. The name appears on road signs and in the pause menu.")]
 		public string LevelName = "Level Name Text ID";
+
+		[Tooltip("This is ONLY used when creating a demo of the game, not for the final product. If true, the level is locked and cannot be opened from the world map, otherwise the level can be opened normally.")]
+		public bool isLevelLocked = false;
+
 		[Tooltip("Text ID of level description. The description appears in the pause menu.")]
 		public string LevelDescription = "LEVEL_DESCRIPTION_0";
 		[Tooltip("Specifies whether the level should allow Tap To Play right away or wait for a callback. For example, in the opening level, we want to wait a few seconds before the player can start playing.")]

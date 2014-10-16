@@ -21,6 +21,7 @@ public class WorldMapHandler : MonoBehaviour {
 	public GUIStyle lifeStyle;
 	public GUIStyle debugStyle;
 	public GUIStyle settingsStyle;
+	public GUIStyle playButtonStyle;
 
 	//Stars
 	public Texture starTexture;
@@ -302,8 +303,8 @@ public class WorldMapHandler : MonoBehaviour {
 		drawDebugButton();
 		drawSettingsButton();
 		drawPlayButton();
-		drawTreasureIslandButton();
-		drawBoostsButton();
+		//drawTreasureIslandButton();
+		//drawBoostsButton();
 	}
 
 	void drawBoostsButton()
@@ -350,13 +351,15 @@ public class WorldMapHandler : MonoBehaviour {
 	void drawPlayButton()
 	{
 		//Draw button
-		float marginX = Screen.width * 0.025f;
-		float marginY = Screen.height - Screen.width * 0.2f;
-		float buttonSize = Screen.width * 0.075f;
+		Vector2 buttonSize = new Vector2( Screen.width * 0.14f, Screen.width * 0.07f );
+		float marginX = (Screen.width - buttonSize.x ) * 0.5f;
+		float marginY = Screen.height - ( 2 * buttonSize.y );
 		Rect buttonRect = new Rect( marginX, marginY, messageCenterOpenStyle.fixedWidth, messageCenterOpenStyle.fixedHeight );
-		if( GUI.Button( buttonRect, "", messageCenterOpenStyle )) 
+		if( GUI.Button( buttonRect, "Play", playButtonStyle )) 
 		{
 			SoundManager.playButtonClick();
+			//Hack - for demo, always start at the first elfland level which is 5
+			LevelManager.Instance.forceNextLevelToComplete( 5 );
 			initiateLevelLoading();
 		}
 	}
@@ -512,7 +515,8 @@ public class WorldMapHandler : MonoBehaviour {
 		GUI.Label( shieldButtonGlowRect, shieldButtonContent, shieldGlowStyle );
 
 		//Has this level been unlocked yet?
-		if( false && levelNumber > levelForPortrait )
+		//HAck if( levelNumber > levelForPortrait )
+		if( LevelManager.Instance.isLevelLocked( levelNumber ) )
 		{
 			//No, it is locked
 			GUI.backgroundColor = shieldColorLocked;
