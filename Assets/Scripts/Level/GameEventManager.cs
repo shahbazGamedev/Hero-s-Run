@@ -139,7 +139,7 @@ public class GameEventManager : MonoBehaviour {
 	{
 		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_RISE_FROM_THE_DEEP"), 0.35f, 3.8f );
 		playVoiceOver( darkQueen, darkQueenKrakenSequence.VO_DQ_rise_from_the_deep );
-		darkQueen.animation.Play("DarkQueen_SpellCast");
+		darkQueen.animation.CrossFade("DarkQueen_SpellCast");
 		Invoke("playKrakenSpellFX", 0.3f);
 		Invoke("leave", darkQueen.animation["DarkQueen_SpellCast"].length );
 	}
@@ -483,7 +483,7 @@ public class GameEventManager : MonoBehaviour {
 	{
 		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_BRING_BACK_BOOK"), 0.35f, 3.8f );
 		playVoiceOver( darkQueen, darkQueenCemeterySequence.VO_DQ_BRING_BACK_BOOK );
-		darkQueen.animation.Play("DarkQueen_SpellCast");
+		darkQueen.animation.CrossFade("DarkQueen_SpellCast");
 		Invoke("cemeteryPlayKrakenSpellFX", 0.3f);
 		Invoke("cemeteryLeave", darkQueen.animation["DarkQueen_SpellCast"].length );
 	}
