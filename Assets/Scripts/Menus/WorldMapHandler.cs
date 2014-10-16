@@ -302,7 +302,7 @@ public class WorldMapHandler : MonoBehaviour {
 		drawMessageCenterButton();
 		drawDebugButton();
 		drawSettingsButton();
-		drawPlayButton();
+		//drawPlayButton();
 		//drawTreasureIslandButton();
 		//drawBoostsButton();
 	}

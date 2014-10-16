@@ -1913,6 +1913,8 @@ public class PlayerController : BaseClass {
 						}
 						else
 						{
+							//We landed on the zombie's head
+							land ();
 							watch_your_step.incrementCounter();
 						}
 					}

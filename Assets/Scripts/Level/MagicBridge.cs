@@ -24,7 +24,7 @@ public class MagicBridge : MonoBehaviour {
 	float localBridgeHeight = -0.75f;
 	public List<HexagonRowData> hexagonsActivePerRow = new List<HexagonRowData>(NUMBER_OF_ROWS);
 	public float rowCreationDelay = 0; //How much time before the next row is created
-
+	public bool shouldBridgeBeBuiltOnStart = false;
 
 	// Use this for initialization
 	void Awake () {
@@ -34,6 +34,7 @@ public class MagicBridge : MonoBehaviour {
 		lane4StartLocalPos = lane3StartLocalPos; 	
 		lane5StartLocalPos = lane3StartLocalPos + HALF_HEXAGON_SIZE;
 		lane6StartLocalPos = lane3StartLocalPos + HEXAGON_SIZE; 	//Rightmost lane
+		if( shouldBridgeBeBuiltOnStart ) buildMagicBridge();
 
 	}
 
@@ -125,7 +126,7 @@ public class MagicBridge : MonoBehaviour {
 
 	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
 	{
-		if( eventType == GameEvent.Build_Magic_Bridge && !hasBeenTriggered )
+		if( eventType == GameEvent.Build_Magic_Bridge && !hasBeenTriggered && !shouldBridgeBeBuiltOnStart )
 		{
 			hasBeenTriggered = true;
 			print ("Build_Magic_Bridge: it has " + hexagonsActivePerRow.Count + " rows." );

@@ -27,7 +27,7 @@ public class GameEventManager : MonoBehaviour {
 
 	public bool isTentacleSequenceActive = false;
 
-	const int TENTACLES_FACTORY_SIZE = 10;
+	const int TENTACLES_FACTORY_SIZE = 12;
 	List<GameObject> tentaclesList = new List<GameObject>( TENTACLES_FACTORY_SIZE );
 	int tentaclesListIndex = 0;
 	List<GameObject> tentaclesGroundDebrisList = new List<GameObject>( TENTACLES_FACTORY_SIZE );
@@ -253,7 +253,7 @@ public class GameEventManager : MonoBehaviour {
 		print ("Starting tentacles sequence");
 		isTentacleSequenceActive = true;
 		Invoke( "startPierceUp", 1f );
-		Invoke( "sideStartPierceUp", 2.3f );
+		Invoke( "sideStartPierceUp", Random.Range( 1.5f, 2.1f ) );
 	}
 
 	public void stopTentaclesSequence()
@@ -414,7 +414,7 @@ public class GameEventManager : MonoBehaviour {
 		GameObject flyingDebris = (GameObject)Instantiate(tentaclesSequence.debrisPrefab, new Vector3( sideTentaclePosition.x, sideTentaclePosition.y + 4f, sideTentaclePosition.z ), Quaternion.identity );
 		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
 		bo.triggerBreak( player.collider );
-		Invoke( "sideStartPierceUp", 2.1f );
+		Invoke( "sideStartPierceUp", Random.Range( 1.5f, 2.1f ) );
 	}
 
 	//Dark Queen sequence that plays before the zombie hand sequence
