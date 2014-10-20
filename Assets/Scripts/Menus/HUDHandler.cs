@@ -100,6 +100,7 @@ public class HUDHandler : MonoBehaviour {
 	int distanceMarkerInterval = 250; //in meters
 	
 	float timeScaleBeforePause;
+	bool isPlayerControlEnabledBeforePause = true;
 
 	HUDSaveMe hudSaveMe;
 
@@ -230,14 +231,11 @@ public class HUDHandler : MonoBehaviour {
 			
 			//GUI.Label ( fpsRect, fps + "-" + LevelManager.Instance.getCurrentLevelIndex() + "-" + PlayerStatsManager.Instance.getPlayerHighScore() + isFirstTimePlaying + "-" + PlayerController.getPlayerSpeed().ToString("N1") + "-" +  PlayerController.getPlayerSpeedBoost().ToString("N1"), fpsStyle );
 			//GUI.Label ( fpsRect, fps + "-" + PlayerController.getPlayerSpeed().ToString("N1") + "-" + playerController.currentLane + "-" + playerController.desiredLane + "-tr-" + playerController.tileRotationY + "-" + playerController.getCharacterState() + "-" + playerController.lastSwipe + "-" + playerController.reasonDiedAtTurn + "-" + playerController.moveDirection.x.ToString("N1"),fpsStyle );
-			GUI.Label ( fpsRect, fps + "-" + LevelManager.Instance.getNextLevelToComplete() + "-" + playerController.getCurrentTileName() + "-"+playerController.currentLane,fpsStyle );
+			GUI.Label ( fpsRect, fps + "-" + LevelManager.Instance.getNextLevelToComplete() + "-" + playerController.getCurrentTileName() + "-"+playerController.currentLane + "-" + PlayerController.getPlayerSpeed().ToString("N1"),fpsStyle );
 
-			if( playerController.getCharacterState() != CharacterState.Dying )
+			if(GUI.Button( pauseRect, pauseButtonContent, pauseStyle ))
 			{
-				if(GUI.Button( pauseRect, pauseButtonContent, pauseStyle ))
-				{
-					pauseGame();
-				}
+				pauseGame();
 			}
 		}
 		
@@ -355,6 +353,7 @@ public class HUDHandler : MonoBehaviour {
 			PauseMenu pauseMenu = GetComponent<PauseMenu>();
 			popupHandler.setPauseMenu( pauseMenu );
 			pauseMenu.setLevelToLoad( LevelManager.Instance.getNextLevelToComplete() );
+			isPlayerControlEnabledBeforePause = playerController.isPlayerControlEnabled();
 			playerController.enablePlayerControl(false);
 			popupHandler.activatePopup(PopupType.PauseMenu);
 		}
@@ -365,7 +364,18 @@ public class HUDHandler : MonoBehaviour {
 			//We need to set the time scale back to 1 or else our coroutine will not execute.
 			Time.timeScale = timeScaleBeforePause;
 			popupHandler.closePopup();
-			StartCoroutine(StartCountdown( 3 ));
+			if( playerController.getCharacterState() != CharacterState.Dying )
+			{
+				StartCoroutine( StartCountdown( 3 ) );
+			}
+			else
+			{
+				//Resume game but without the countdown
+				AudioListener.pause = false;
+				GameManager.Instance.setGameState( GameState.Normal );
+				SoundManager.playMusic();
+				if( isPlayerControlEnabledBeforePause ) playerController.enablePlayerControl(true);
+			}
 		}
 	}
 
@@ -384,7 +394,7 @@ public class HUDHandler : MonoBehaviour {
 				AudioListener.pause = false;
 				GameManager.Instance.setGameState( GameState.Normal );
 				SoundManager.playMusic();
-				playerController.enablePlayerControl(true);
+				if( isPlayerControlEnabledBeforePause ) playerController.enablePlayerControl(true);
 				//Display a Go! message
 				activateUserMessage( LocalizationManager.Instance.getText("GO"), 0.5f, 0f, 1.25f );
 

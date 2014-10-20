@@ -658,11 +658,6 @@ public class GameEventManager : MonoBehaviour {
 
 		go.audio.PlayDelayed(0.1f);
 
-		//GameObject flyingDebris = (GameObject)Instantiate(zombieHandsSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
-		//flyingDebris.transform.position = new Vector3( lastZombieHandPosition.x, lastZombieHandPosition.y + 1.4f, lastZombieHandPosition.z );
-		//BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
-		//bo.triggerBreak( null );
-
 		Invoke( "startZombieHandPierceUp", 1.2f + Random.value );
 	}
 	
@@ -734,11 +729,6 @@ public class GameEventManager : MonoBehaviour {
 
 		go.audio.PlayDelayed(0.1f);
 
-		//GameObject flyingDebris = (GameObject)Instantiate(zombieHandsSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
-		//flyingDebris.transform.position = new Vector3( lastSideZombieHandPosition.x, lastSideZombieHandPosition.y + 4f, lastSideZombieHandPosition.z );
-		//BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
-		//bo.triggerBreak( null );
-
 		Invoke( "sideStartZombieHandPierceUp", 0.8f + Random.value * 1.5f );
 	}
 
@@ -768,7 +758,6 @@ public class GameEventManager : MonoBehaviour {
 		go.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
 		go.name = "Stumble";
 		LeanTween.moveLocalY(go, go.transform.position.y + 1.1f, 0.6f ).setEase(LeanTweenType.easeOutExpo).setOnComplete(singleZombieHandPierceDown).setOnCompleteParam( go as Object );
-		
 		go.audio.PlayDelayed(0.1f);
 		
 		GameObject flyingDebris = (GameObject)Instantiate(zombieHandsSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
@@ -783,7 +772,7 @@ public class GameEventManager : MonoBehaviour {
 		GameObject zombieHand = go as GameObject;
 		zombieHand.animation.Play("FistToSearch" );
 		zombieHand.animation.PlayQueued("Search", QueueMode.CompleteOthers );
-		LeanTween.moveLocalY( zombieHand, zombieHand.transform.position.y - 2, 3.25f ).setEase(LeanTweenType.easeOutExpo).setDelay( 4f );
+		//LeanTween.moveLocalY( zombieHand, zombieHand.transform.position.y - 2, 3.25f ).setEase(LeanTweenType.easeOutExpo).setDelay( 4f );
 	}
 
 	//END ZOMBIE HANDS SEQUENCE
