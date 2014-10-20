@@ -92,7 +92,7 @@ public class LocalizationManager {
 			else
 			{
 				//failure!
-				Debug.LogError("LocalizationManager-getText: unable to find text for : " + textID );
+				Debug.LogWarning("LocalizationManager-getText: unable to find text for : " + textID );
 				return "NOT FOUND";
 			}
 		}
