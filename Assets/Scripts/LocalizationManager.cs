@@ -11,6 +11,7 @@ public class LocalizationManager {
 	string dictionaryPath = "Localization/GameText";
 	Dictionary<string, string> gameText;
 	int languageIndex;
+	bool initialized = false;
 
 
 	public static LocalizationManager Instance
@@ -66,16 +67,20 @@ public class LocalizationManager {
 
 	public void initialize()
 	{
-		languageIndex = getLanguage();
+		if( !initialized )
+		{
+			languageIndex = getLanguage();
 
-		TextAsset csvFile =  Resources.Load(dictionaryPath) as TextAsset;
-		if( csvFile != null )
-		{
-			gameText = csvLoader.PopulateDictionary( csvFile, languageIndex );
-		}
-		else
-		{
-			Debug.LogError( "LocalizationManager-initializeGameText: Unable to open file : " + dictionaryPath );
+			TextAsset csvFile =  Resources.Load(dictionaryPath) as TextAsset;
+			if( csvFile != null )
+			{
+				gameText = csvLoader.PopulateDictionary( csvFile, languageIndex );
+			}
+			else
+			{
+				Debug.LogError( "LocalizationManager-initializeGameText: Unable to open file : " + dictionaryPath );
+			}
+			initialized = true;
 		}
 	}
 
