@@ -303,7 +303,7 @@ public class WorldMapHandler : MonoBehaviour {
 		drawDebugButton();
 		drawSettingsButton();
 		//drawPlayButton();
-		//drawTreasureIslandButton();
+		drawTreasureIslandButton();
 		//drawBoostsButton();
 	}
 
@@ -332,7 +332,8 @@ public class WorldMapHandler : MonoBehaviour {
 		if( GUI.Button( buttonRect, "", messageCenterOpenStyle )) 
 		{
 			SoundManager.playButtonClick();
-			StartCoroutine( loadTreasureIsland() );
+			//StartCoroutine( loadTreasureIsland() );
+			StartCoroutine( loadCharacterGallery() );
 		}
 	}
 
@@ -348,6 +349,17 @@ public class WorldMapHandler : MonoBehaviour {
 
 	}
 
+	IEnumerator loadCharacterGallery()
+	{
+		if( !levelLoading )
+		{
+			levelLoading = true;
+			Handheld.StartActivityIndicator();
+			yield return new WaitForSeconds(0);
+			Application.LoadLevel( 6 );
+		}
+		
+	}
 	void drawPlayButton()
 	{
 		//Draw button
