@@ -14,11 +14,20 @@ public class GalleryManager : MonoBehaviour {
 
 	void Awake ()
 	{
-		LocalizationManager.Instance.initialize();
+		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
+
 		//The activity indicator may have been started
 		Handheld.StopActivityIndicator();
+
+		//Title
 		menuTitle.text = LocalizationManager.Instance.getText(menuTitleTextId);
+
+		//Character Name
 		characterName.text = LocalizationManager.Instance.getText(characterNameTextId);
-		characterText.text = LocalizationManager.Instance.getText(characterTextTextId);
+
+		//Character Bio
+		string characterTextString = LocalizationManager.Instance.getText(characterTextTextId);
+		characterTextString = characterTextString.Replace("\\n", System.Environment.NewLine );
+		characterText.text = characterTextString;
 	}
 }
