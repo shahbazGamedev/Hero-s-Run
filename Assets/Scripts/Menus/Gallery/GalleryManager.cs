@@ -4,24 +4,28 @@ using UnityEngine.UI;
 
 public class GalleryManager : MonoBehaviour {
 
-	//The UI elements have text and need to be localized
+	[Header("Frame")]
 	public Text menuTitle;
-	public string menuTitleTextId = "GALLERY_TITLE";
+	string menuTitleTextId = "GALLERY_TITLE";
 	//Fairy
+	[Header("Fairy")]
 	public Text fairyCharacterName;
 	public Text fairyCharacterText;
-	public string fairyCharacterNameTextId = "GALLERY_NAME_FAIRY";
-	public string fairyCharacterTextTextId  = "GALLERY_BIO_FAIRY";
+	string fairyCharacterNameTextId = "GALLERY_NAME_FAIRY";
+	string fairyCharacterTextTextId  = "GALLERY_BIO_FAIRY";
 	//Dark Queen
+	[Header("Dark Queen")]
 	public Text darkQueenCharacterName;
 	public Text darkQueenCharacterText;
-	public string darkQueenCharacterNameTextId = "GALLERY_NAME_FAIRY";
-	public string darkQueenCharacterTextTextId  = "GALLERY_BIO_FAIRY";
+	string darkQueenCharacterNameTextId = "GALLERY_NAME_DARK_QUEEN";
+	string darkQueenCharacterTextTextId  = "GALLERY_BIO_DARK_QUEEN";
 	//Troll
+	[Header("Troll")]
 	public Text trollCharacterName;
 	public Text trollCharacterText;
-	public string trollCharacterNameTextId = "GALLERY_NAME_FAIRY";
-	public string trollCharacterTextTextId  = "GALLERY_BIO_FAIRY";
+	string trollCharacterNameTextId = "GALLERY_NAME_TROLL";
+	string trollCharacterTextTextId  = "GALLERY_BIO_TROLL";
+
 	bool levelLoading = false;
 
 	void Awake ()
