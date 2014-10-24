@@ -7,24 +7,26 @@ public class GalleryManager : MonoBehaviour {
 	[Header("Frame")]
 	public Text menuTitle;
 	string menuTitleTextId = "GALLERY_TITLE";
+	public Text characterName;
+	public Text characterBio;
+
 	//Fairy
 	[Header("Fairy")]
-	public Text fairyCharacterName;
-	public Text fairyCharacterText;
-	string fairyCharacterNameTextId = "GALLERY_NAME_FAIRY";
-	string fairyCharacterTextTextId  = "GALLERY_BIO_FAIRY";
+	string fairyNameTextId = "GALLERY_NAME_FAIRY";
+	string fairyBioTextId  = "GALLERY_BIO_FAIRY";
+	public GameObject fairy3DGroup;
+
 	//Dark Queen
 	[Header("Dark Queen")]
-	public Text darkQueenCharacterName;
-	public Text darkQueenCharacterText;
-	string darkQueenCharacterNameTextId = "GALLERY_NAME_DARK_QUEEN";
-	string darkQueenCharacterTextTextId  = "GALLERY_BIO_DARK_QUEEN";
+	string darkQueenNameTextId = "GALLERY_NAME_DARK_QUEEN";
+	string darkQueenBioTextId  = "GALLERY_BIO_DARK_QUEEN";
+	public GameObject darkQueen3DGroup;
+
 	//Troll
 	[Header("Troll")]
-	public Text trollCharacterName;
-	public Text trollCharacterText;
-	string trollCharacterNameTextId = "GALLERY_NAME_TROLL";
-	string trollCharacterTextTextId  = "GALLERY_BIO_TROLL";
+	string trollNameTextId = "GALLERY_NAME_TROLL";
+	string trollBioTextId  = "GALLERY_BIO_TROLL";
+	public GameObject troll3DGroup;
 
 	bool levelLoading = false;
 
@@ -43,31 +45,68 @@ public class GalleryManager : MonoBehaviour {
 
 		//Fairy
 		//Character Name
-		fairyCharacterName.text = LocalizationManager.Instance.getText(fairyCharacterNameTextId);
+		characterName.text = LocalizationManager.Instance.getText(fairyNameTextId);
 
 		//Character Bio
-		string characterTextString = LocalizationManager.Instance.getText(fairyCharacterTextTextId);
+		string characterTextString = LocalizationManager.Instance.getText(fairyBioTextId);
 		characterTextString = characterTextString.Replace("\\n", System.Environment.NewLine );
-		fairyCharacterText.text = characterTextString;
+		characterBio.text = characterTextString + " " + characterTextString;
+	
+	}
 
+	public void OnValueChanged( float scrollBarPosition )
+	{
+		print ("Gallery Manager " + scrollBarPosition );
+
+		//Fairy
+		if( scrollBarPosition == 0 )
+		{
+			//Character Name
+			characterName.text = LocalizationManager.Instance.getText(fairyNameTextId);
+			
+			//Character Bio
+			string characterTextString = LocalizationManager.Instance.getText(fairyBioTextId);
+			characterTextString = characterTextString.Replace("\\n", System.Environment.NewLine );
+			characterBio.text = characterTextString;
+
+			//3D
+			fairy3DGroup.SetActive( true );
+			darkQueen3DGroup.SetActive( false );
+			troll3DGroup.SetActive( false );
+
+		}
 		//Dark Queen
-		//Character Name
-		darkQueenCharacterName.text = LocalizationManager.Instance.getText(darkQueenCharacterNameTextId);
-		
-		//Character Bio
-		characterTextString = LocalizationManager.Instance.getText(darkQueenCharacterTextTextId);
-		characterTextString = characterTextString.Replace("\\n", System.Environment.NewLine );
-		darkQueenCharacterText.text = characterTextString;
-	
+		else if(  scrollBarPosition == 0.5f )
+		{
+			//Character Name
+			characterName.text = LocalizationManager.Instance.getText(darkQueenNameTextId);
+			
+			//Character Bio
+			string characterTextString = LocalizationManager.Instance.getText(darkQueenBioTextId);
+			characterTextString = characterTextString.Replace("\\n", System.Environment.NewLine );
+			characterBio.text = characterTextString;
+			
+			//3D
+			fairy3DGroup.SetActive( false );
+			darkQueen3DGroup.SetActive( true );
+			troll3DGroup.SetActive( false );
+		}
 		//Troll
-		//Character Name
-		trollCharacterName.text = LocalizationManager.Instance.getText(trollCharacterNameTextId);
-		
-		//Character Bio
-		characterTextString = LocalizationManager.Instance.getText(trollCharacterTextTextId);
-		characterTextString = characterTextString.Replace("\\n", System.Environment.NewLine );
-		trollCharacterText.text = characterTextString;
-	
+		else
+		{
+			//Character Name
+			characterName.text = LocalizationManager.Instance.getText(trollNameTextId);
+			
+			//Character Bio
+			string characterTextString = LocalizationManager.Instance.getText(trollBioTextId);
+			characterTextString = characterTextString.Replace("\\n", System.Environment.NewLine );
+			characterBio.text = characterTextString;
+			
+			//3D
+			fairy3DGroup.SetActive( false );
+			darkQueen3DGroup.SetActive( false );
+			troll3DGroup.SetActive( true );
+		}
 	}
 
 	public void closeMenu()
