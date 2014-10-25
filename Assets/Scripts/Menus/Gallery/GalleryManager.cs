@@ -29,6 +29,11 @@ public class GalleryManager : MonoBehaviour {
 	bool levelLoading = false;
 	public ScrollRect characterBioScrollRect;
 	float lastScrollBarPosition = 0f; //Used to filter scroll bar events
+	public Scrollbar scrollbarIndicator;
+
+	//Variables for swipe
+	bool touchStarted = false;
+	Vector2 touchStartPos;
 
 	void Awake ()
 	{
@@ -54,11 +59,131 @@ public class GalleryManager : MonoBehaviour {
 		characterBio.text = characterTextString;
 
 	}
-	
+
+	void Update ()
+	{
+		handleSwipes();
+		#if UNITY_EDITOR
+		handleKeyboard();
+		#endif
+	}
+
+	private void handleKeyboard()
+	{
+		//Also support keys for debugging
+		if ( Input.GetKeyDown (KeyCode.LeftArrow) ) 
+		{
+			sideSwipe( false );
+		}
+		else if ( Input.GetKeyDown (KeyCode.RightArrow) ) 
+		{
+			sideSwipe( true );
+		}
+	}
+
+	void handleSwipes()
+	{
+		//Verify if the player swiped across the screen
+		if (Input.touchCount > 0)
+		{
+			var touch = Input.touches[0];
+
+			switch (touch.phase)
+			{
+			case TouchPhase.Began:
+				touchStarted = true;
+				touchStartPos = touch.position;
+				break;
+				
+			case TouchPhase.Ended:
+				if (touchStarted)
+				{
+					touchStarted = false;
+				}
+				break;
+				
+			case TouchPhase.Canceled:
+				touchStarted = false;
+				break;
+				
+			case TouchPhase.Stationary:
+				break;
+				
+			case TouchPhase.Moved:
+				if (touchStarted)
+				{
+					TestForSwipeGesture(touch);
+				}
+				break;
+			}
+		}	
+		
+	}
+
+	void TestForSwipeGesture(Touch touch)
+	{
+		Vector2 lastPos = touch.position;
+		float distance = Vector2.Distance(lastPos, touchStartPos);
+		
+		if (distance > 10)
+		{
+			touchStarted = false;
+			float dy = lastPos.y - touchStartPos.y;
+			float dx = lastPos.x - touchStartPos.x;
+			
+			float angle = Mathf.Rad2Deg * Mathf.Atan2(dx, dy);
+			
+			angle = (360 + angle - 45) % 360;
+			
+			if (angle < 90)
+			{
+				//player swiped RIGHT
+				sideSwipe( true );
+			}
+			else if (angle < 180)
+			{
+				//player swiped DOWN
+				//Ignore
+			}
+			else if (angle < 270)
+			{
+				//player swiped LEFT
+				sideSwipe( false );
+			}
+			else
+			{
+				//player swiped UP
+				//Ignore
+			}
+		}
+	}
+
+	void sideSwipe( bool isGoingRight )
+	{
+		//We are on the first page, we are only allowed to go right
+		if( lastScrollBarPosition == 0 && !isGoingRight ) return; 
+
+		//We are on the last page, we are only allowed to go left
+		if( lastScrollBarPosition == 1f && isGoingRight ) return; 
+
+
+		if( isGoingRight )
+		{
+			OnValueChanged( lastScrollBarPosition + 0.5f );
+		}
+		else
+		{
+			OnValueChanged( lastScrollBarPosition - 0.5f );
+		}
+	}
+
 	public void OnValueChanged( float scrollBarPosition )
 	{
 		if( scrollBarPosition == lastScrollBarPosition ) return; //Nothing has changed. Ignore.
 		lastScrollBarPosition = scrollBarPosition;
+
+		//Update the scrollbar indicator which is not interactable
+		scrollbarIndicator.value = scrollBarPosition;
 
 		print ("Gallery Manager " + scrollBarPosition );
 
