@@ -10,31 +10,31 @@ public class GalleryManager : MonoBehaviour {
 	public Text characterName;
 	public Text characterBio;
 
-	//Fairy
 	[Header("Fairy")]
 	string fairyNameTextId = "GALLERY_NAME_FAIRY";
 	string fairyBioTextId  = "GALLERY_BIO_FAIRY";
 	public GameObject fairy3DGroup;
 
-	//Dark Queen
 	[Header("Dark Queen")]
 	string darkQueenNameTextId = "GALLERY_NAME_DARK_QUEEN";
 	string darkQueenBioTextId  = "GALLERY_BIO_DARK_QUEEN";
 	public GameObject darkQueen3DGroup;
 
-	//Troll
 	[Header("Troll")]
 	string trollNameTextId = "GALLERY_NAME_TROLL";
 	string trollBioTextId  = "GALLERY_BIO_TROLL";
 	public GameObject troll3DGroup;
 
+	[Header("Misc")]
 	bool levelLoading = false;
 	public ScrollRect characterBioScrollRect;
+	float lastScrollBarPosition = 0f; //Used to filter scroll bar events
 
 	void Awake ()
 	{
 		//Reset
 		levelLoading = false;
+		lastScrollBarPosition = 0;
 
 		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
 
@@ -52,11 +52,14 @@ public class GalleryManager : MonoBehaviour {
 		string characterTextString = LocalizationManager.Instance.getText(fairyBioTextId);
 		characterTextString = characterTextString.Replace("\\n", System.Environment.NewLine );
 		characterBio.text = characterTextString;
-	
-	}
 
+	}
+	
 	public void OnValueChanged( float scrollBarPosition )
 	{
+		if( scrollBarPosition == lastScrollBarPosition ) return; //Nothing has changed. Ignore.
+		lastScrollBarPosition = scrollBarPosition;
+
 		print ("Gallery Manager " + scrollBarPosition );
 
 		//Reset the scroll rectangle with the character bio text to the top
@@ -94,6 +97,7 @@ public class GalleryManager : MonoBehaviour {
 			fairy3DGroup.SetActive( false );
 			darkQueen3DGroup.SetActive( true );
 			troll3DGroup.SetActive( false );
+
 		}
 		//Troll
 		else
@@ -110,6 +114,7 @@ public class GalleryManager : MonoBehaviour {
 			fairy3DGroup.SetActive( false );
 			darkQueen3DGroup.SetActive( false );
 			troll3DGroup.SetActive( true );
+			
 		}
 	}
 
@@ -122,6 +127,7 @@ public class GalleryManager : MonoBehaviour {
 	{
 		if( !levelLoading )
 		{
+			SoundManager.playButtonClick();
 			levelLoading = true;
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);
