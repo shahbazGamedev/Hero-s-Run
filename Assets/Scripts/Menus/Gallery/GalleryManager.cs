@@ -29,6 +29,7 @@ public class GalleryManager : MonoBehaviour {
 	public GameObject troll3DGroup;
 
 	bool levelLoading = false;
+	public ScrollRect characterBioScrollRect;
 
 	void Awake ()
 	{
@@ -50,13 +51,16 @@ public class GalleryManager : MonoBehaviour {
 		//Character Bio
 		string characterTextString = LocalizationManager.Instance.getText(fairyBioTextId);
 		characterTextString = characterTextString.Replace("\\n", System.Environment.NewLine );
-		characterBio.text = characterTextString + " " + characterTextString;
+		characterBio.text = characterTextString;
 	
 	}
 
 	public void OnValueChanged( float scrollBarPosition )
 	{
 		print ("Gallery Manager " + scrollBarPosition );
+
+		//Reset the scroll rectangle with the character bio text to the top
+		characterBioScrollRect.verticalNormalizedPosition = 1f;
 
 		//Fairy
 		if( scrollBarPosition == 0 )
