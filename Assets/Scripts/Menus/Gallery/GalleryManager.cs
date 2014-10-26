@@ -20,6 +20,21 @@ public class GalleryManager : MonoBehaviour {
 	string darkQueenBioTextId  = "GALLERY_BIO_DARK_QUEEN";
 	public GameObject darkQueen3DGroup;
 
+	[Header("Hero")]
+	string heroNameTextId = "GALLERY_NAME_HERO";
+	string heroBioTextId  = "GALLERY_BIO_HERO";
+	public GameObject hero3DGroup;
+
+	[Header("Heroine")]
+	string heroineNameTextId = "GALLERY_NAME_HEROINE";
+	string heroineBioTextId  = "GALLERY_BIO_HEROINE";
+	public GameObject heroine3DGroup;
+
+	[Header("Zombie")]
+	string zombieNameTextId = "GALLERY_NAME_ZOMBIE";
+	string zombieBioTextId  = "GALLERY_BIO_ZOMBIE";
+	public GameObject zombie3DGroup;
+
 	[Header("Troll")]
 	string trollNameTextId = "GALLERY_NAME_TROLL";
 	string trollBioTextId  = "GALLERY_BIO_TROLL";
@@ -169,11 +184,11 @@ public class GalleryManager : MonoBehaviour {
 
 		if( isGoingRight )
 		{
-			OnValueChanged( lastScrollBarPosition + 0.5f );
+			OnValueChanged( lastScrollBarPosition + 0.25f );
 		}
 		else
 		{
-			OnValueChanged( lastScrollBarPosition - 0.5f );
+			OnValueChanged( lastScrollBarPosition - 0.25f );
 		}
 	}
 
@@ -190,6 +205,8 @@ public class GalleryManager : MonoBehaviour {
 		//Reset the scroll rectangle with the character bio text to the top
 		characterBioScrollRect.verticalNormalizedPosition = 1f;
 
+		string characterTextString;
+
 		//Fairy
 		if( scrollBarPosition == 0 )
 		{
@@ -197,31 +214,86 @@ public class GalleryManager : MonoBehaviour {
 			characterName.text = LocalizationManager.Instance.getText(fairyNameTextId);
 			
 			//Character Bio
-			string characterTextString = LocalizationManager.Instance.getText(fairyBioTextId);
-			characterTextString = characterTextString.Replace("\\n", System.Environment.NewLine );
-			characterBio.text = characterTextString;
+			characterTextString = LocalizationManager.Instance.getText(fairyBioTextId);
 
 			//3D
 			fairy3DGroup.SetActive( true );
 			darkQueen3DGroup.SetActive( false );
 			troll3DGroup.SetActive( false );
+			hero3DGroup.SetActive( false );
+			heroine3DGroup.SetActive( false );
+			zombie3DGroup.SetActive( false );
 
 		}
 		//Dark Queen
-		else if(  scrollBarPosition == 0.5f )
+		else if(  scrollBarPosition == 0.25f )
 		{
 			//Character Name
 			characterName.text = LocalizationManager.Instance.getText(darkQueenNameTextId);
 			
 			//Character Bio
-			string characterTextString = LocalizationManager.Instance.getText(darkQueenBioTextId);
-			characterTextString = characterTextString.Replace("\\n", System.Environment.NewLine );
-			characterBio.text = characterTextString;
-			
+			characterTextString = LocalizationManager.Instance.getText(darkQueenBioTextId);
+
 			//3D
 			fairy3DGroup.SetActive( false );
 			darkQueen3DGroup.SetActive( true );
 			troll3DGroup.SetActive( false );
+			hero3DGroup.SetActive( false );
+			heroine3DGroup.SetActive( false );
+			zombie3DGroup.SetActive( false );
+
+		}
+		//Hero or Heroine
+		else if(  scrollBarPosition == 0.5f )
+		{
+
+			if( PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
+			{
+				//Character Name
+				characterName.text = LocalizationManager.Instance.getText(heroNameTextId);
+
+				//Character Bio
+				characterTextString = LocalizationManager.Instance.getText(heroBioTextId);
+
+				//3D
+				hero3DGroup.SetActive( true );
+				heroine3DGroup.SetActive( false );
+			}
+			else
+			{
+				//Character Name
+				characterName.text = LocalizationManager.Instance.getText(heroineNameTextId);
+
+				//Character Bio
+				characterTextString = LocalizationManager.Instance.getText(heroineBioTextId);
+
+				//3D
+				hero3DGroup.SetActive( false );
+				heroine3DGroup.SetActive( true );
+			}
+			//3D
+			fairy3DGroup.SetActive( false );
+			darkQueen3DGroup.SetActive( false );
+			troll3DGroup.SetActive( false );
+			zombie3DGroup.SetActive( false );
+
+		}
+		//Zombie
+		else if(  scrollBarPosition == 0.75f )
+		{
+			//Character Name
+			characterName.text = LocalizationManager.Instance.getText(zombieNameTextId);
+
+			//Character Bio
+			characterTextString = LocalizationManager.Instance.getText(zombieBioTextId);
+
+			//3D
+			fairy3DGroup.SetActive( false );
+			darkQueen3DGroup.SetActive( false );
+			troll3DGroup.SetActive( false );
+			hero3DGroup.SetActive( false );
+			heroine3DGroup.SetActive( false );
+			zombie3DGroup.SetActive( true );
 
 		}
 		//Troll
@@ -231,16 +303,21 @@ public class GalleryManager : MonoBehaviour {
 			characterName.text = LocalizationManager.Instance.getText(trollNameTextId);
 			
 			//Character Bio
-			string characterTextString = LocalizationManager.Instance.getText(trollBioTextId);
-			characterTextString = characterTextString.Replace("\\n", System.Environment.NewLine );
-			characterBio.text = characterTextString;
-			
+			characterTextString = LocalizationManager.Instance.getText(trollBioTextId);
+
 			//3D
 			fairy3DGroup.SetActive( false );
 			darkQueen3DGroup.SetActive( false );
 			troll3DGroup.SetActive( true );
-			
+			hero3DGroup.SetActive( false );
+			heroine3DGroup.SetActive( false );
+			zombie3DGroup.SetActive( false );
+
 		}
+
+		characterTextString = characterTextString.Replace("\\n", System.Environment.NewLine );
+		characterBio.text = characterTextString;
+
 	}
 
 	public void closeMenu()
