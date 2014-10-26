@@ -175,21 +175,18 @@ public class GalleryManager : MonoBehaviour {
 
 	void sideSwipe( bool isGoingRight )
 	{
-		//We are on the first page, we are only allowed to go right
-		if( lastScrollBarPosition == 0 && !isGoingRight ) return; 
-
-		//We are on the last page, we are only allowed to go left
-		if( lastScrollBarPosition == 1f && isGoingRight ) return; 
-
-
+		float newPos;
 		if( isGoingRight )
 		{
-			OnValueChanged( lastScrollBarPosition + 0.25f );
+			newPos = lastScrollBarPosition + 0.25f;
+			if( newPos > 1f ) newPos = 0;
 		}
 		else
 		{
-			OnValueChanged( lastScrollBarPosition - 0.25f );
+			newPos = lastScrollBarPosition - 0.25f;
+			if( newPos < 0 ) newPos = 1f;
 		}
+		OnValueChanged( newPos );
 	}
 
 	public void OnValueChanged( float scrollBarPosition )
