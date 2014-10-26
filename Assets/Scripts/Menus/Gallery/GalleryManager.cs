@@ -49,6 +49,7 @@ public class GalleryManager : MonoBehaviour {
 	//Variables for swipe
 	bool touchStarted = false;
 	Vector2 touchStartPos;
+	float MINIMUM_HORIZONTAL_DISTANCE = 0.09f * Screen.width; //How many pixels you need to swipe horizontally to change page.
 
 	void Awake ()
 	{
@@ -140,7 +141,7 @@ public class GalleryManager : MonoBehaviour {
 		Vector2 lastPos = touch.position;
 		float distance = Vector2.Distance(lastPos, touchStartPos);
 		
-		if (distance > 10)
+		if (distance > MINIMUM_HORIZONTAL_DISTANCE )
 		{
 			touchStarted = false;
 			float dy = lastPos.y - touchStartPos.y;
