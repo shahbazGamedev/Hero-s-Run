@@ -180,7 +180,6 @@ public class FacebookManager
     {
 		try
 		{
-			string[] excludeIdsList = (excludeIds == "") ? null : excludeIds.Split(',');
 			// If there's a Max Recipients specified, include it
 			int? maxRecipients = null;
 			if (friendSelectorMax != "")
@@ -194,11 +193,27 @@ public class FacebookManager
 					Debug.LogWarning("FacebookManager-CallAppRequestAsFriendSelector parse error: " + e.Message);
 				}
 			}
-			//filters = "[\"all\",\"app_users\",\"app_non_users\"]";
+
+			string[] excludeIdsList = (excludeIds == "") ? null : excludeIds.Split(',');
+
+			string FriendSelectorFilters = "[\"app_users\"]"; //options are "[\"all\",\"app_users\",\"app_non_users\"]";
+			List<object> FriendSelectorFiltersArr = null;
+			if (!String.IsNullOrEmpty(FriendSelectorFilters))
+			{
+				try
+				{
+					FriendSelectorFiltersArr = Facebook.MiniJSON.Json.Deserialize(FriendSelectorFilters) as List<object>;
+				}
+				catch
+				{
+					throw new Exception("JSON Parse error");
+				}
+			}
+
 			FB.AppRequest(
 				message,
 				null,
-				"[\"all\"]",
+				FriendSelectorFiltersArr,
 				excludeIdsList,
 				maxRecipients,
 				data,
