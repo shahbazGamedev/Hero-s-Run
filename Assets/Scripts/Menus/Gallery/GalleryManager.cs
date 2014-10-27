@@ -45,6 +45,7 @@ public class GalleryManager : MonoBehaviour {
 	public ScrollRect characterBioScrollRect;
 	float lastScrollBarPosition = 0f; //Used to filter scroll bar events
 	public Scrollbar scrollbarIndicator;
+	public Scrollbar scrollbarBio;
 
 	//Variables for swipe
 	bool touchStarted = false;
@@ -76,6 +77,17 @@ public class GalleryManager : MonoBehaviour {
 
 	}
 
+	//Only show the bio scrollbar when selected
+	public void scrollSelected()
+	{
+		scrollbarBio.gameObject.SetActive( true );
+	}
+
+	public void scrollDeselected()
+	{
+		scrollbarBio.gameObject.SetActive( false );
+	}
+	
 	void Update ()
 	{
 		handleSwipes();
