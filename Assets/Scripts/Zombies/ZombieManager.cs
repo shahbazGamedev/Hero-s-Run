@@ -11,7 +11,7 @@ public class ZombieManager : BaseClass {
 	PlayerController playerController;
 	public ParticleSystem zNukeEffect;
 	public static int numberOfZombieWavesTriggered = 0; //could eventually put that number in the player stats
-	const int NUMBER_STARS_PER_ZOMBIE = 20;
+	public const int NUMBER_STARS_PER_ZOMBIE = 20;
 	public ParticleSystem debris; //Particle fx that plays when a zombie burrows up
 
 	// Use this for initialization

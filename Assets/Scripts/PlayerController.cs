@@ -1866,10 +1866,10 @@ public class PlayerController : BaseClass {
 					if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding ) && zombieController.getZombieState() != ZombieController.ZombieState.Crawling )
 					{
 						//Give stars
-						PlayerStatsManager.Instance.modifyCoinCount( 10 );
+						PlayerStatsManager.Instance.modifyCoinCount( ZombieManager.NUMBER_STARS_PER_ZOMBIE );
 						
 						//Display coin total picked up icon
-						HUDHandler.displayCoinTotal( 10, Color.yellow, false );
+						HUDHandler.displayCoinTotal( ZombieManager.NUMBER_STARS_PER_ZOMBIE, Color.yellow, false );
 
 						zombieController.fallToBack();
 						
