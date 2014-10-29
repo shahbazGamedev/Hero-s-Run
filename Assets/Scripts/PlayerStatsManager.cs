@@ -533,6 +533,14 @@ public class PlayerStatsManager {
 		return 0;
 	}
 
+	public void setPowerUpUpgradeLevel( PowerUpType type, int value )
+	{
+		if( powerUpInventory.ContainsKey(type) )
+		{
+			powerUpInventory[type].upgradeLevel = value;
+		}
+	}
+
 	void savePowerUpInventory()
 	{
 		string result = "";

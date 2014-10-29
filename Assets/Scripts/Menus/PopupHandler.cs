@@ -488,6 +488,7 @@ public class PopupHandler : MonoBehaviour {
 		buttonText = new GUIContent( "Unlock All Levels" );
 		drawButton( buttonText, unlockAllLevels );
 		GUILayout.Label("Total Stars " + PlayerStatsManager.Instance.getLifetimeCoins() );
+		GUILayout.Label("Total Stars " + PlayerStatsManager.Instance.getPlayerCoins() );
 		GUILayout.EndVertical();
 		GUILayout.EndArea();
 	}
