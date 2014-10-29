@@ -485,8 +485,8 @@ public class PopupHandler : MonoBehaviour {
 		drawButton( buttonText, showAchievements );
 		buttonText = new GUIContent( "Reset Achievements" );
 		drawButton( buttonText, resetAchievements );
-		buttonText = new GUIContent( "Unlock All Levels" );
-		drawButton( buttonText, unlockAllLevels );
+		buttonText = new GUIContent( "Give 25K stars" );
+		drawButton( buttonText, giveStars );
 		GUILayout.Label("Total Stars " + PlayerStatsManager.Instance.getLifetimeCoins() );
 		GUILayout.Label("Total Stars " + PlayerStatsManager.Instance.getPlayerCoins() );
 		GUILayout.EndVertical();
@@ -527,9 +527,10 @@ public class PopupHandler : MonoBehaviour {
 	}
 
 	//Step 2 - F
-	void unlockAllLevels()
+	void giveStars()
 	{
-		LevelManager.Instance.unlockAllLevels();
+		PlayerStatsManager.Instance.modifyCoinCount( 25000 );
+		PlayerStatsManager.Instance.savePlayerStats();
 	}
 
 	//-------------------------------------------------------------

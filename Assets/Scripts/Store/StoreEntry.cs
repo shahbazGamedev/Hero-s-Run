@@ -30,12 +30,12 @@ public class StoreEntry : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 	
-		//For debugging, so I can see the text displayed without going through the load menu as well as have valid save data
+		//So I can see the text displayed without going through the load menu as well as have valid save data while in the editor
+		#if UNITY_EDITOR
 		LocalizationManager.Instance.initialize(); 
 		PlayerStatsManager.Instance.loadPlayerStats();
+		#endif
 
-		//We have 4 Boosts
-		//Star Magnet
 		title.text = LocalizationManager.Instance.getText(titleID);
 
 		if( powerUpPurchaseType == PowerUpPurchaseType.Upgrade )
@@ -56,8 +56,13 @@ public class StoreEntry : MonoBehaviour {
 
 	void initializeUpgradeEntry()
 	{
-		description.text = LocalizationManager.Instance.getText(descriptionID);
-		
+		string descriptionString = LocalizationManager.Instance.getText(descriptionID);
+		//Replace the string <time> by the time in seconds gained by the upgrade
+		descriptionString = descriptionString.Replace( "<time>", PowerUpManager.UPGRADE_DURATION_BOOST.ToString("N0") );
+		//Replace the string <range> by the distance in meters gained by the upgrade
+		descriptionString = descriptionString.Replace( "<range>", PowerUpManager.UPGRADE_DIAMETER_BOOST.ToString("N0") );
+		description.text = descriptionString;
+
 		buyButtonLabel.text = ( (PlayerStatsManager.Instance.getPowerUpUpgradeLevel( powerUpType ) + 1 )* 1000).ToString("N0");
 		
 		upgradeLevel.value = PlayerStatsManager.Instance.getPowerUpUpgradeLevel( powerUpType );
@@ -71,9 +76,9 @@ public class StoreEntry : MonoBehaviour {
 		string descriptionString = LocalizationManager.Instance.getText("POWER_UP_YOU_HAVE");
 		//Replace the string <quantity> by the quantity the player owns
 		descriptionString = descriptionString.Replace( "<quantity>", PlayerStatsManager.Instance.getPowerUpQuantity(powerUpType).ToString("N0") );
+		description.text = descriptionString;
 
 		buyButtonLabel.text = COST_FOR_ONE_CONSUMABLE.ToString("N0");
-		description.text = descriptionString;
 	}
 
 	public void buy()
