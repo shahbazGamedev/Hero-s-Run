@@ -304,7 +304,7 @@ public class WorldMapHandler : MonoBehaviour {
 		drawSettingsButton();
 		//drawPlayButton();
 		drawTreasureIslandButton();
-		//drawBoostsButton();
+		drawBoostsButton();
 	}
 
 	void drawBoostsButton()
@@ -316,9 +316,12 @@ public class WorldMapHandler : MonoBehaviour {
 		Rect buttonRect = new Rect( marginX, marginY, messageCenterOpenStyle.fixedWidth, messageCenterOpenStyle.fixedHeight );
 		if( GUI.Button( buttonRect, "", messageCenterOpenStyle )) 
 		{
-			SoundManager.playButtonClick();
-			popupHandler.setBoostsMenu( GetComponent<BoostsMenu>() );
-			popupHandler.activatePopup(PopupType.BoostsMenu);
+			if( !levelLoading )
+			{
+				SoundManager.playButtonClick();
+				levelLoading = true;
+				Application.LoadLevel( 7 );
+			}
 		}
 	}
 

@@ -18,7 +18,7 @@ public class StoreEntry : MonoBehaviour {
 	void Awake () {
 	
 		title.text = "Coin Magnet";
-		description.text = "The Coin Magnet pickup lasts 10 seconds longer";
+		description.text = "The Coin Magnet pickup lasts 10 seconds longer. This is really wonderful news.";
 		buttonLabel.text = "5,000";
 
 	}
