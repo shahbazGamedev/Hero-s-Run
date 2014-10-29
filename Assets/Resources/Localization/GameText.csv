@@ -75,8 +75,14 @@ CULLIS_GATE_CEMETERY,You are almost there! You need to throw the Book of Pure Ev
 CULLIS_GATE_DEMO_END,Congratulations! You have finished the demo.,Bravo ! Tu as finis la démo.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CHECKPOINT_REACHED,Checkpoint reached!,Point de sauvegarde !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POWER_UP_ZNUKE,Z-Nuke,Z-Nuke,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+POWER_UP_ZNUKE_DESCRIPTION,The range of the Z-Nuke is increased by 5 meters.,La portée du Z-Nuke est augmentée de 5 mètres.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POWER_UP_DOUBLE_JUMP,Double Jump,Double Saut,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POWER_UP_SLOW_TIME,Slow Time,Ralentisseur de Temps,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+POWER_UP_SLOW_TIME_DESCRIPTION,The Slow Time pickup lasts <TIME> seconds longer.,Le Ralentisseur de Temps dure <TIME> secondes de plus.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+POWER_UP_MAGNET,Star Magnet,Aimant à Étoiles,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+POWER_UP_MAGNET_DESCRIPTION,The Star Magnet pickup lasts <TIME> seconds longer.,L'Aimant à Étoiles dure <TIME> secondes de plus.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+POWER_UP_SHIELD,Shield,Bouclier,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+POWER_UP_SHIELD_DESCRIPTION,The Shield pickup lasts <TIME> seconds longer.,Le Bouclier dure <TIME> secondes de plus.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POWER_UP_HOW_TO,While running<comma> double-tap to activate selected power-up.,Pendant que tu cours<comma> tape deux fois sur l'écran pour activer le power-up sélectionné.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_CONNECT,Connect!,Connecter !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_LOADING,Loading,Chargement,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -119,8 +125,6 @@ MENU_SELECT,Select,Choisir,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_PICK_ME_FEMALE,You're not going to let the world be saved by a guy? Come on! Girls are way better at this kind of thing.,Tu ne vas quand même pas laisser un gars sauver le monde? Cela prends un fille pour ce genre de chose.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_PICK_ME_MALE,You're not going to let the world be saved by a girl? Come on! Guys are way better at this kind of thing.,Tu ne vas quand même pas laisser une fille sauver le monde? Cela prends un gars pour ce genre de chose.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_CHARACTER_SELECTION_TITLE,Choose Your Hero,Choisis ton Héros,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-UPGRADE_COIN_MAGNET,Star Magnet,Aimant à Étoiles,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-UPGRADE_COIN_MAGNET_DESCRIPTION,The Star Magnet pickup lasts <TIME> seconds longer.,L'Aimant à Étoiles dure <TIME> secondes de plus.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 GALLERY_TITLE,Denizens of Lum,Personages de Lum,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 GALLERY_NAME_FAIRY,Lily,Lily,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 GALLERY_BIO_FAIRY,<color=#ffa500ff>Gender:</color> Female\n<color=#ffa500ff>Race:</color> Fairy\n<color=#ffa500ff>Age:</color> 18\n<color=#ffa500ff>Date of birth:</color> March 19th\n<color=#ffa500ff>Place of Birth:</color> Forest of Elvenhorn\n<color=#ffa500ff>Favorite things:</color> Violet flowers\n<color=#ffa500ff>Fun Fact:</color> Lily might be small<comma> but she can pack a punch with her spells. She also makes the best oatmeal cookies this side of the WillowBrook River.,<color=#ffa500ff>Gender:</color> Female\n<color=#ffa500ff>Race:</color> Fairy\n<color=#ffa500ff>Age:</color> 142\n<color=#ffa500ff>Date of birth:</color> August 1st\n<color=#ffa500ff>Place of Birth:</color> Forest of Elvenhorn\n<color=#ffa500ff>Favorite things:</color> Violet flowers\n<color=#ffa500ff>Fun Fact:</color> Lily almost did not graduate from fairy school because she kept forgetting her spells.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED

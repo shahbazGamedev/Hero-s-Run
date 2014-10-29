@@ -766,7 +766,7 @@ public class PlayerStatsManager {
 	public class PowerUpInventory
 	{
 		public int quantity;
-		//Players can upgrade their powerups from a level of 0 to 5
+		//Players can upgrade their powerups from a level of 0 to 6
 		//For example, the duration of the Shield powerup when upgraded to level 3 is 20 seconds (instead of 10).
 		public int upgradeLevel = 1;
 	}
