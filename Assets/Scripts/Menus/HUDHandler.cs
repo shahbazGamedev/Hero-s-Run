@@ -709,6 +709,8 @@ public class HUDHandler : MonoBehaviour {
 	
 	public static void displayCoinTotal( int accumulatedCoins, Color colorCoin, bool isSequenceComplete )
 	{
+		if( PlayerStatsManager.Instance.getOwnsStarDoubler() ) accumulatedCoins = accumulatedCoins * 2;
+
 		CoinDisplay coinDisplay = new CoinDisplay();
 		coinDisplay.coinAccumulator = accumulatedCoins;
 		coinDisplay.coinAccumulatedStartTime = Time.time;

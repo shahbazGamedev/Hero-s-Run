@@ -70,6 +70,8 @@ public class PlayerStatsManager {
 	//exactly like their enum counterpart.
 	Avatar avatar = Avatar.None;
 
+	bool ownsStarDoubler = false; //True if the player has purchased the Star Doubler in the store.
+
 	public static PlayerStatsManager Instance
 	{
         get
@@ -303,6 +305,9 @@ public class PlayerStatsManager {
 
 	public void modifyCoinCount( int coins )
 	{
+		if( ownsStarDoubler ) coins = coins * 2;
+
+		//Player gets twice the amount of Stars
 		coinTotal = coinTotal + coins;
 		//Also add to lifetime coins.
 		lifetimeCoins = lifetimeCoins + coins;
@@ -373,21 +378,30 @@ public class PlayerStatsManager {
 		hasMetSuccubus = value;
 	}
 
-	public float getSoundVolume()
-	{
-		return soundVolume;
-	}
-
-	public void setSoundVolume( float volume )
-	{
-		soundVolume = volume;
-	}
-	
 	public bool getHasMetSuccubus()
 	{
 		return hasMetSuccubus;
 	}
 
+	public void setOwnsStarDoubler( bool value )
+	{
+		ownsStarDoubler = value;
+	}
+	
+	public bool getOwnsStarDoubler()
+	{
+		return ownsStarDoubler;
+	}
+
+	public float getSoundVolume()
+	{
+		return soundVolume;
+	}
+	
+	public void setSoundVolume( float volume )
+	{
+		soundVolume = volume;
+	}
 	public void setUsesFacebook( bool value )
 	{
 		usesFacebook = value;
@@ -642,6 +656,17 @@ public class PlayerStatsManager {
 			{
 				hasMetSuccubus = false;	
 			}
+
+			string ownsStarDoublerString = PlayerPrefs.GetString("ownsStarDoubler", "false" );
+			if( ownsStarDoublerString == "true" )
+			{
+				ownsStarDoubler = true;
+			}
+			else
+			{
+				ownsStarDoubler = false;	
+			}
+
 			string usesFacebookString = PlayerPrefs.GetString("usesFacebook", "false" );
 			if( usesFacebookString == "true" )
 			{
@@ -673,7 +698,7 @@ public class PlayerStatsManager {
 			difficultyLevel = (DifficultyLevel)PlayerPrefs.GetInt("difficultyLevel", (int)DifficultyLevel.Normal);
 			avatar = (Avatar)PlayerPrefs.GetInt("avatar", (int)Avatar.None);
 			loadPowerUpInventory();
-			Debug.Log ("loadPlayerStats-highScore: " + highScore + " firstTimePlaying: " + firstTimePlaying + " has met succubus: " + hasMetSuccubus + " Next Level To Complete: " + nextLevelToComplete + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureIslandKeys " + treasureIslandKeys );
+			Debug.Log ("loadPlayerStats-highScore: " + highScore + " firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " Next Level To Complete: " + nextLevelToComplete + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureIslandKeys " + treasureIslandKeys );
 		}
 		catch (Exception e)
 		{
@@ -709,6 +734,14 @@ public class PlayerStatsManager {
 		{
 			PlayerPrefs.SetString( "Has Met Succubus", "false" );
 		}
+		if( ownsStarDoubler )
+		{
+			PlayerPrefs.SetString( "ownsStarDoubler", "true" );
+		}
+		else
+		{
+			PlayerPrefs.SetString( "ownsStarDoubler", "false" );
+		}
 		if( usesFacebook )
 		{
 			PlayerPrefs.SetString( "usesFacebook", "true" );
@@ -728,7 +761,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetInt("avatar", (int)avatar );
 		savePowerUpInventory();
 		PlayerPrefs.Save();
-		Debug.Log ("savePlayerStats-highScore: " + highScore + " firstTimePlaying: " + firstTimePlaying + " has met succubus: " + hasMetSuccubus + " usesFacebook: "  + usesFacebook + " unlockFromIDList: " + unlockRequests + " Date Last Played: " + dateLastPlayed );
+		Debug.Log ("savePlayerStats-highScore: " + highScore + " firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " usesFacebook: "  + usesFacebook + " unlockFromIDList: " + unlockRequests + " Date Last Played: " + dateLastPlayed );
 	}
 	
 	//Used for debugging
@@ -746,6 +779,8 @@ public class PlayerStatsManager {
 		firstTimePlaying = true;
 		PlayerPrefs.SetString( "Has Met Succubus", "false" );
 		hasMetSuccubus = false;
+		PlayerPrefs.SetString( "ownsStarDoubler", "false" );
+		ownsStarDoubler = false;
 		PlayerPrefs.SetString( "usesFacebook", "false" );
 		usesFacebook = false;
 		PlayerPrefs.SetInt( "High Score", 0 );

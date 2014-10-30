@@ -6,7 +6,8 @@ public enum PowerUpPurchaseType {
 	
 	None = 0,
 	Upgrade = 1,
-	Consumable = 2
+	Consumable = 2,
+	StarDoubler = 3
 }
 
 public class StoreEntry : MonoBehaviour {
@@ -24,8 +25,9 @@ public class StoreEntry : MonoBehaviour {
 	public string descriptionID = "POWER_UP_MAGNET_DESCRIPTION";
 	//Valid upgrade values are integers between 0 to 6 included
 	const int MAXIMUM_UPGRADE_LEVEL = 6;
-	public Text playerCurrency;
+	public Text totalStarsOwned;
 	const int COST_FOR_ONE_CONSUMABLE = 1000;
+	const string COST_STAR_DOUBLER = "$4.99";
 
 	// Use this for initialization
 	void Awake () {
@@ -45,6 +47,10 @@ public class StoreEntry : MonoBehaviour {
 		else if( powerUpPurchaseType == PowerUpPurchaseType.Consumable )
 		{
 			initializeConsumableEntry();
+		}
+		else if( powerUpPurchaseType == PowerUpPurchaseType.StarDoubler )
+		{
+			initializeStarDoublerEntry();
 		}
 		else
 		{
@@ -81,6 +87,21 @@ public class StoreEntry : MonoBehaviour {
 		buyButtonLabel.text = COST_FOR_ONE_CONSUMABLE.ToString("N0");
 	}
 
+	void initializeStarDoublerEntry()
+	{
+		description.text = LocalizationManager.Instance.getText( "STAR_DOUBLER_DESCRIPTION" );
+		if( PlayerStatsManager.Instance.getOwnsStarDoubler() )
+		{
+			//Player already owns it
+			buyButtonLabel.text = LocalizationManager.Instance.getText("STAR_DOUBLER_OWNED");
+			buyButton.interactable = false;
+		}
+		else
+		{
+			buyButtonLabel.text = COST_STAR_DOUBLER;
+		}
+	}
+
 	public void buy()
 	{
 		if( powerUpPurchaseType == PowerUpPurchaseType.Upgrade )
@@ -90,6 +111,10 @@ public class StoreEntry : MonoBehaviour {
 		else if( powerUpPurchaseType == PowerUpPurchaseType.Consumable )
 		{
 			buyConsumable();
+		}
+		else if( powerUpPurchaseType == PowerUpPurchaseType.StarDoubler )
+		{
+			buyStarDoubler();
 		}
 		else
 		{
@@ -108,7 +133,7 @@ public class StoreEntry : MonoBehaviour {
 			SoundManager.playButtonClick();
 			//Deduct the appropriate number of currency for the purchase
 			PlayerStatsManager.Instance.modifyCoinCount(-currentUpgradeCost);
-			if( playerCurrency != null ) playerCurrency.text = ( PlayerStatsManager.Instance.getLifetimeCoins() ).ToString("N0");;
+			if( totalStarsOwned != null ) totalStarsOwned.text = ( PlayerStatsManager.Instance.getLifetimeCoins() ).ToString("N0");;
 			print ( "buying new value is: " + newUpgradeValue );
 			PlayerStatsManager.Instance.setPowerUpUpgradeLevel( powerUpType, newUpgradeValue  );
 			upgradeLevel.value = newUpgradeValue;
@@ -131,7 +156,7 @@ public class StoreEntry : MonoBehaviour {
 			SoundManager.playButtonClick();
 			//Deduct the appropriate number of currency for the purchase
 			PlayerStatsManager.Instance.modifyCoinCount(-COST_FOR_ONE_CONSUMABLE);
-			if( playerCurrency != null ) playerCurrency.text = ( PlayerStatsManager.Instance.getLifetimeCoins() ).ToString("N0");;
+			if( totalStarsOwned != null ) totalStarsOwned.text = ( PlayerStatsManager.Instance.getLifetimeCoins() ).ToString("N0");;
 			PlayerStatsManager.Instance.incrementPowerUpInventory( powerUpType );
 		
 			string descriptionString = LocalizationManager.Instance.getText("POWER_UP_YOU_HAVE");
@@ -143,6 +168,21 @@ public class StoreEntry : MonoBehaviour {
 			PlayerStatsManager.Instance.savePlayerStats();
 			
 		}
+	}
+
+	//This is a real money purchase
+	void buyStarDoubler()
+	{
+		SoundManager.playButtonClick();
+
+		buyButtonLabel.text = LocalizationManager.Instance.getText("STAR_DOUBLER_OWNED");
+		buyButton.interactable = false;
+
+		//Grant the Star Doubler
+		PlayerStatsManager.Instance.setOwnsStarDoubler( true );
+
+		//Save the data
+		PlayerStatsManager.Instance.savePlayerStats();
 	}
 
 }
