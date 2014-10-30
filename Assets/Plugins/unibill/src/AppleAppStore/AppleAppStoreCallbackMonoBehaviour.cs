@@ -38,6 +38,10 @@ public class AppleAppStoreCallbackMonoBehaviour : MonoBehaviour {
         callback.onPurchaseFailed(productId);
     }
 
+    public void onProductPurchaseDeferred(string productId) {
+        callback.onPurchaseDeferred (productId);
+    }
+
     public void onTransactionsRestoredSuccess(string empty) {
         callback.onTransactionsRestoredSuccess();
     }

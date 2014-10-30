@@ -36,7 +36,7 @@ namespace Unibill.Impl {
             amazon.initiateItemDataRequest(remapper.getAllPlatformSpecificProductIds());
         }
 
-        public void purchase (string item) {
+        public void purchase (string item, string developerPayload) {
             if (unknownAmazonProducts.Contains (item)) {
                 callback.logError(UnibillError.AMAZONAPPSTORE_ATTEMPTING_TO_PURCHASE_PRODUCT_NOT_RETURNED_BY_AMAZON, item);
                 callback.onPurchaseFailedEvent(item);
@@ -62,23 +62,26 @@ namespace Unibill.Impl {
         }
 
         public void onProductListReceived (string productListString) {
+            Dictionary<string, object> responseHash = (Dictionary<string, object>)Unibill.Impl.MiniJSON.jsonDecode(productListString);
+            onUserIdRetrieved (responseHash.getString ("userId"));
 
-            Dictionary<string, object> response = (Dictionary<string, object>)Unibill.Impl.MiniJSON.jsonDecode(productListString);
-
-            if (response.Count == 0) {
+            Dictionary<string, object> products = responseHash.getHash ("products");
+            if (products.Count == 0) {
                 callback.logError (UnibillError.AMAZONAPPSTORE_GETITEMDATAREQUEST_NO_PRODUCTS_RETURNED);
                 callback.onSetupComplete (false);
                 return;
             }
 
             HashSet<PurchasableItem> productsReceived = new HashSet<PurchasableItem>();
-            foreach (var identifier in response.Keys) {
+            foreach (var identifier in products.Keys) {
                 var item = remapper.getPurchasableItemFromPlatformSpecificId(identifier.ToString());
-                Dictionary<string, object> details = (Dictionary<string, object>)response[identifier];
+                Dictionary<string, object> details = (Dictionary<string, object>)products[identifier];
                 
                 PurchasableItem.Writer.setLocalizedPrice(item, details["price"].ToString());
                 PurchasableItem.Writer.setLocalizedTitle(item, (string) details["localizedTitle"]);
                 PurchasableItem.Writer.setLocalizedDescription(item, (string) details["localizedDescription"]);
+                PurchasableItem.Writer.setISOCurrencySymbol(item, details.getString("isoCurrencyCode"));
+                PurchasableItem.Writer.setPriceInLocalCurrency (item, decimal.Parse (details.getString("priceDecimal")));
                 productsReceived.Add(item);
             }
             
@@ -90,11 +93,9 @@ namespace Unibill.Impl {
                     callback.logError(UnibillError.AMAZONAPPSTORE_GETITEMDATAREQUEST_MISSING_PRODUCT, product.Id, remapper.mapItemIdToPlatformSpecificId(product));
                 }
             }
-
-            callback.onSetupComplete(true);
         }
 
-        public void onUserIdRetrieved (string userId) {
+        private void onUserIdRetrieved (string userId) {
             tDb.UserId = userId;
         }
 
@@ -127,29 +128,34 @@ namespace Unibill.Impl {
             logger.LogWarning("AmazonAppStoreBillingService: onPurchaseUpdate() failed.");
         }
 
-        public void onPurchaseUpdateSuccess (string data) {
-            var revoked = new List<string>();
-            var purchased = new List<string>();
-            parsePurchaseUpdates(revoked, purchased, data);
-            onPurchaseUpdateSucceeded(revoked, purchased);
-        }
+        private bool finishedSetup;
+        public void onPurchaseUpdateSuccess (string json) {
+            Dictionary<string, object> response = (Dictionary<string, object>)Unibill.Impl.MiniJSON.jsonDecode(json);
 
-        public void onPurchaseUpdateSucceeded (List<string> revoked, List<string> purchased) {
-            foreach (string r in revoked) {
-                callback.onPurchaseRefundedEvent(r);
+            var restored = response.get<List<object>> ("restored");
+            foreach (Dictionary<string, object> restoredItem in restored) {
+                callback.onPurchaseSucceeded (restoredItem.getString ("sku"), restoredItem.getString ("receipt"));
             }
 
-            foreach (string p in purchased) {
-                callback.onPurchaseSucceeded(p);
+            var revoked = response.get<List<object>> ("revoked");
+            foreach (string revokedItem in revoked) {
+                callback.onPurchaseRefundedEvent (revokedItem);
+            }
+
+            if (!finishedSetup) {
+                finishedSetup = true;
+                callback.onSetupComplete (true);
             }
         }
 
-        public static void parsePurchaseUpdates(List<string> revoked, List<string> purchased, string data) {
-            string[] splits = data.Split('|');
-            revoked.AddRange(splits[0].Split(','));
-            purchased.AddRange(splits[1].Split(','));
-            revoked.RemoveAll(x => x == string.Empty);
-            purchased.RemoveAll(x => x == string.Empty);
+        public bool hasReceipt (string forItem)
+        {
+            return false;
+        }
+
+        public string getReceipt (string forItem)
+        {
+            throw new NotImplementedException ();
         }
     }
 }

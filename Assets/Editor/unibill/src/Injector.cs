@@ -28,17 +28,12 @@ public class UnibillInjector {
 		return new UnityLogger ();
 	}
 
-
-	public static IUtil GetUtil() {
-		return new UnityUtil ();
-	}
-
 	public static IEditorUtil GetEditorUtil() {
 		return new UnityEditorUtil ();
 	}
 
 	public static AmazonJSONGenerator GetAmazonGenerator() {
-		return new AmazonJSONGenerator (GetRemapper ());
+        return new AmazonJSONGenerator (GetConfig());
 	}
 
 	public static GooglePlayCSVGenerator GetGooglePlayCSVGenerator() {

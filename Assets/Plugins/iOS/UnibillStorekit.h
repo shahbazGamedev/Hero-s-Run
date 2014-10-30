@@ -14,5 +14,7 @@
 -(bool) requestProducts:(NSSet*)productId;
 -(bool) purchaseProduct:(NSString*)requestedProduct;
 -(bool) restorePurchase;
+-(NSString*) getAppReceipt;
+-(void) addTransactionObserver;
 
 @end

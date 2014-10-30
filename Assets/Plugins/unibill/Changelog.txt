@@ -1,3 +1,153 @@
+1.7.5
+
+All platforms - runtime product definitions.
+
+If you wish to supply new products for Unibill to purchase, you can now do so.
+Unibiller.initialise() now takes an optional List of ProductDefinitions,
+see http://www.outlinegames.com/documentation.html#toc-runtime-product-definition
+
+iOS - Added onPurchaseDeferred event to handle Apple's Ask to Buy parental control functionality.
+See http://www.outlinegames.com/documentation.html#toc-ask-to-buy
+
+1.7.4
+
+Mac App Store - fixed potential restore of consumable purchases.
+
+1.7.2
+
+Fixed multi purchase of subscriptions.
+
+1.7.1
+
+Removed Unibiller.GetAllPurchaseReceipts, replaced with a new 'receipt' property on PurchasableItem.
+
+1.7.0
+
+Unibill Hosted Content now supports Amazon, letting you sell downloadable content to your amazon users. Sign up at unibiller.com.
+Amazon - upgraded to Amazon's IAP v2 API.
+
+1.6.10
+
+Windows 8.1 - added auto rename of non Metro compatible libraries.
+
+1.6.9
+
+Windows 8.1 - fixed a potential race condition in simulator mode that could cause an exception.
+
+1.6.8
+
+All Platforms - fixed a potential crash that could occur on a scene change during Unibill's initialisation.
+Google Play - use exponential backoff when offline to reduce initialisation polling frequency.
+
+1.6.7
+
+iOS - fixed a potential "already purchased item" error when purchasing consumables.
+
+1.6.6
+
+DLC protocol changes, fixed a potential DLC versioning issue.
+
+1.6.5
+
+iOS - fixed crash affecting iOS 6 and earlier.
+
+1.6.4
+
+WP8 & Metro - Fixed build errors introduced in 1.6.3.
+
+1.6.3
+
+Introducing hosted downloadable content!
+
+Host your content at unibiller.com and Unibill takes care of the rest;
+
+- Verification of the IAP purchase receipt
+- Serving, downloading, verification and unpacking of content
+- Cross platform with full editor support
+- iOS and Google Play supported initially
+- Remaining platforms to follow shortly
+- Supports Unity Basic
+- Built for scalability and reliability, no matter how demanding your requirements!
+
+1.6.2
+
+iOS - Added support for downloadable content hosted at unibiller.com
+Mac App Store - updated to use App receipt, which is provided with all purchases as the receipt parameter.
+
+1.6.1
+
+Fixed download resume on App restart.
+
+1.6.0
+
+Google Play - fixed receipt not provided for purchase of already owned but unrestored item.
+
+1.5.6
+
+Google Play - added support for developer payload; Unibiller.initiatePurchase() now has an optional payload argument.
+
+1.5.5
+
+iOS - fixed a potential crash when products are defined with no localized details in iTunes Connect.
+
+1.5.4
+
+Google Play - fixed a potential problem that could cause the purchase flow to be re-entered without request under low memory conditions.
+
+1.5.3
+
+Amazon - restored purchase events now have receipts.
+Amazon - fixed race condition when restoring products on a first install.
+
+1.5.2
+
+Analytics - avoid creating GameObjects if no analytics key is entered.
+
+1.5.1
+
+Amazon - fixed initialisation crash with more than 100 SKUs.
+
+1.5.0
+
+Introducing Unibill analytics
+
+Free analytics of your App's performance! View daily sales, installs & engagement across all platforms, all from one place!
+
+1. Sign up at http://www.unibiller.com.
+2. Create an App, then enter its App Id and secret key into the Inventory Editor.
+3. View your app's performance at unibiller.com!
+
+Plus:
+
+Windows Phone 8 - purchase receipts are now surfaced.
+Editor - Split Apple Mass import file into two separate files for iOS and Mac App Store.
+All platforms - added isoCurrencySymbol to PurchasableItem.
+All platforms - added priceInLocalCurrency decimal to PurchasableItem.
+
+1.4.8
+
+Samsung Apps - fixed purchase cancelled event not firing.
+
+1.4.7
+
+Remote config fetching - fixed scene changing preventing downloading of remote configs.
+
+1.4.6
+
+Amazon - fixed Purchases with overridden ids when using the SDK tester.
+
+1.4.5
+
+Added new Unibiller.onPurchaseCompleteEvent, with a 'PurchaseEvent' parameter,
+which includes both the PurchasableItem purchased and the purchase receipt.
+
+This saves looking up the purchase receipt following the purchase.
+
+1.4.4
+
+Google Play - fixed various ANRs caused by initialisation work being performed on the main thread.
+Google Play - fixed random IllegalStateException & NullPointerExceptions when Android kills the Google Play billing service under resource pressure.
+
 1.4.3
 
 Google Play - fixed a potential crash on process shutdown.

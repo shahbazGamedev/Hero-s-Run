@@ -7,7 +7,7 @@ using System;
 /// Eg localized price.
 /// </summary>
 partial class PurchasableItem {
-    internal class Writer {
+    public class Writer {
         public static void setLocalizedPrice (PurchasableItem item, decimal price) {
             item.localizedPrice = price;
             item.localizedPriceString = price.ToString ();
@@ -24,5 +24,13 @@ partial class PurchasableItem {
         public static void setLocalizedDescription (PurchasableItem item, string description) {
             item.localizedDescription = description;
         }
+		
+		public static void setPriceInLocalCurrency(PurchasableItem item, decimal amount) {
+			item.priceInLocalCurrency = amount;
+		}
+		
+		public static void setISOCurrencySymbol(PurchasableItem item, string code) {
+			item.isoCurrencySymbol = code;
+		}
     }
 }

@@ -1,0 +1,7 @@
+SKU	Product ID	Reference Name	Type	Cleared For Sale	Wholesale Price Tier	Displayed Name	Description	Screenshot Path
+04	com.outlinegames.100goldcoins.mac	com.outlinegames.100goldcoins.mac	Consumable	yes	33	100 Gold Coins	Standard issue coin, 0% gold by volume	2e74dff784b1b43cbb805cac350857db
+04	com.outlinegames.sword.mac	com.outlinegames.sword.mac	Non-Consumable	yes	1	Magic Sword	Can slice through time	2e74dff784b1b43cbb805cac350857db
+04	com.outlinegames.250goldcoins.mac	com.outlinegames.250goldcoins.mac	Consumable	yes	1	250 Gold coins	250 Gold coins	2e74dff784b1b43cbb805cac350857db
+04	com.outlinegames.unibill.silver.100.mac	com.outlinegames.unibill.silver.100.mac	Consumable	yes	1	100 silver	100 silver	2e74dff784b1b43cbb805cac350857db
+04	com.outlinegames.unibill.silver.500.mac	com.outlinegames.unibill.silver.500.mac	Consumable	yes	1	500 silver	500 silver	2e74dff784b1b43cbb805cac350857db
+04	com.outlinegames.potion.c	com.outlinegames.potion.c	Non-Consumable	yes		Potion	Magic shizzle	

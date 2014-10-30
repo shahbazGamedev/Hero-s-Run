@@ -4,6 +4,32 @@
 
 #define UNITY_GAMEOBJECT_NAME "AppleAppStoreCallbackMonoBehaviour"
 
+-(NSString*) getAppReceipt {
+    
+    NSURL *receiptURL = [[NSBundle mainBundle] appStoreReceiptURL];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[receiptURL path]]) {
+        NSData *receipt = [NSData dataWithContentsOfURL:receiptURL];
+        return [receipt base64EncodedStringWithOptions:0];
+    }
+    
+    NSLog(@"Unibill: No App Receipt found!");
+    return @"";
+}
+
+-(NSString*) selectReceipt:(SKPaymentTransaction*) transaction {
+    
+    float version = [[[UIDevice currentDevice] systemVersion] floatValue];
+    if (version < 7) {
+        if (nil == transaction) {
+            return @"";
+        }
+        NSString* receipt;
+        receipt = [[NSString alloc] initWithData:transaction.transactionReceipt encoding: NSUTF8StringEncoding];
+        return receipt;
+    } else {
+        return [self getAppReceipt];
+    }
+}
 
 -(void) pollRequestProductData {
     
@@ -68,17 +94,7 @@
         NSLog(@"Unibill purchaseProduct: %@", requestedProduct.productIdentifier);
         
         if ([SKPaymentQueue canMakePayments]) {
-            
-            // Yes, In-App Purchase is enabled on this device.
-            // Proceed to purchase In-App Purchase item.
-            
-            // Assign a Product ID to a new payment request.
             SKPayment *paymentRequest = [SKPayment paymentWithProduct:requestedProduct];
-            
-            // Assign an observer to monitor the transaction status.
-            [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-            
-            // Request a purchase of the product.
             [[SKPaymentQueue defaultQueue] addPayment:paymentRequest];
             
             return YES;
@@ -101,12 +117,6 @@
     NSLog(@"Unibill restorePurchase");
     
     if ([SKPaymentQueue canMakePayments]) {
-        // Yes, In-App Purchase is enabled on this device.
-        // Proceed to restore purchases.
-        
-        // Assign an observer to monitor the transaction status.
-        [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-        
         // Request to restore previous purchases.
         [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
         
@@ -116,6 +126,10 @@
         // Notify user that In-App Purchase is Disabled.
         return NO;
     }
+}
+
+-(void) addTransactionObserver {
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
 }
 
 #pragma mark -
@@ -136,6 +150,10 @@
         validProducts = [[NSArray alloc] initWithArray:response.products];
         NSMutableDictionary* dic = [[NSMutableDictionary alloc] init];
         
+        NSMutableDictionary* products = [[NSMutableDictionary alloc] init];
+        [dic setObject:products forKey:@"products"];
+        [dic setObject:[self selectReceipt:nil]  forKey:@"appReceipt"];
+        
         for (SKProduct* product in validProducts) {
             NSMutableDictionary* entry = [[NSMutableDictionary alloc] init];
             
@@ -145,6 +163,15 @@
             [numberFormatter setLocale:product.priceLocale];
             NSString *formattedString = [numberFormatter stringFromNumber:product.price];
             [numberFormatter release];
+            
+            if (NULL != product.price) {
+                [entry setObject:product.price forKey:@"priceDecimal"];
+            }
+            
+            if (NULL != product.priceLocale) {
+                NSString *currencyCode = [product.priceLocale objectForKey:NSLocaleCurrencyCode];
+                [entry setObject:currencyCode forKey:@"isoCurrencyCode"];
+            }
             
             if (NULL == product.productIdentifier) {
                 NSLog(@"Unibill: Product is missing an identifier!");
@@ -166,17 +193,16 @@
             
             if (NULL == product.localizedDescription) {
                 NSLog(@"Unibill: no localized description for: %@. Have your products been disapproved in itunes connect?", product.productIdentifier);
-                [entry setObject:@"" forKey:@"localizedTitle"];
+                [entry setObject:@"" forKey:@"localizedDescription"];
             } else {
                 [entry setObject:product.localizedDescription forKey:@"localizedDescription"];
             }
             
-            [dic setObject:entry forKey:product.productIdentifier];
+            [products setObject:entry forKey:product.productIdentifier];
         }
         
         NSData *data = [NSJSONSerialization dataWithJSONObject:dic options:0 error:nil];
         NSString* result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        
         UnitySendMessage(UNITY_GAMEOBJECT_NAME, "onProductListReceived", [result UTF8String]);
         [result release];
 	} else {
@@ -200,7 +226,7 @@
 #pragma mark SKPaymentTransactionObserver Methods
 
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
-    NSLog(@"Unibill: SKProductRequest::didFailWithError");
+    NSLog(@"Unibill: SKProductRequest::didFailWithError: %i, %@", error.code, error.description);
     [self.requestCondition lock];
     self.retrievedProductData = false;
     
@@ -231,10 +257,7 @@
                 dic = [[NSMutableDictionary alloc] init];
                 [dic setObject:transaction.payment.productIdentifier forKey:@"productId"];
                 
-                NSString* receipt;
-                receipt = [[NSString alloc] initWithData:transaction.transactionReceipt encoding: NSUTF8StringEncoding];
-
-                [dic setObject:receipt forKey:@"receipt"];
+                [dic setObject:[self selectReceipt:transaction]  forKey:@"receipt"];
                 
                 NSData* data;
                 data = [NSJSONSerialization dataWithJSONObject:dic options:0 error:nil];
@@ -243,14 +266,16 @@
                 
                 UnitySendMessage(UNITY_GAMEOBJECT_NAME, "onProductPurchaseSuccess", result.UTF8String);
                 
-                [receipt release];
                 [dic release];
                 
 				// After customer has successfully received purchased content,
 				// remove the finished transaction from the payment queue.
 				[[SKPaymentQueue defaultQueue] finishTransaction: transaction];
                 break;
-                
+            case SKPaymentTransactionStateDeferred:
+                NSLog(@"Unibill: purchaseDeferred");
+                UnitySendMessage(UNITY_GAMEOBJECT_NAME, "onProductPurchaseDeferred", transaction.payment.productIdentifier.UTF8String);
+                break;
 			case SKPaymentTransactionStateFailed:
 				// Purchase was either cancelled by user or an error occurred.
                 
@@ -265,7 +290,7 @@
                 
 				// Finished transactions should be removed from the payment queue.
 				[[SKPaymentQueue defaultQueue] finishTransaction: transaction];
-				break;
+            break;
 		}
 	}
 }
@@ -274,11 +299,6 @@
 - (void)paymentQueue:(SKPaymentQueue *)queue removedTransactions:(NSArray *)transactions
 {
     NSLog(@"Unibill removedTransactions");
-    
-    if (transactions.count == 0) {
-        // Release the transaction observer since transaction is finished/removed.
-        [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
-    }
 }
 
 // Called when SKPaymentQueue has finished sending restored transactions.
@@ -291,10 +311,6 @@
         // or the user's prior purchase is unavailable, so notify app (and user) accordingly.
         
         NSLog(@"Unibill restore queue.transactions count == 0");
-        
-        // Release the transaction observer since no prior transactions were found.
-        [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
-        
     } else {
         // Queue does contain one or more transactions, so return transaction data.
         // App should provide user with purchased product.
@@ -306,9 +322,7 @@
             dic = [[NSMutableDictionary alloc] init];
             [dic setObject:transaction.payment.productIdentifier forKey:@"productId"];
             
-            NSString* receipt;
-            receipt = [[NSString alloc] initWithData:transaction.transactionReceipt encoding: NSUTF8StringEncoding];
-            [dic setObject:receipt forKey:@"receipt"];
+            [dic setObject:[self selectReceipt:transaction]  forKey:@"receipt"];
             
             NSData* data;
             data = [NSJSONSerialization dataWithJSONObject:dic options:0 error:nil];
@@ -317,7 +331,6 @@
             
             UnitySendMessage(UNITY_GAMEOBJECT_NAME, "onProductPurchaseSuccess", result.UTF8String);
             
-            [receipt release];
             [dic release];
         }
     }
@@ -403,5 +416,9 @@ extern "C" {
         NSLog(@"Unibill: Traceout: _storeKitRestoreTransactions");
     }
 	
+    void _storeKitAddTransactionObserver() {
+        NSLog(@"Unibill: _storeKitAddTransactionObserver");
+        [_getInstance() addTransactionObserver];
+    }
 }
 

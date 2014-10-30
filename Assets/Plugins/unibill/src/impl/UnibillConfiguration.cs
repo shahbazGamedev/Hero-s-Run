@@ -38,6 +38,7 @@ namespace Unibill.Impl {
         public BillingPlatform CurrentPlatform { get; set; }
 
         public string iOSSKU { get; set; }
+        public string macAppStoreSKU { get; set; }
 
         public BillingPlatform AndroidBillingPlatform { get; set; }
 
@@ -46,6 +47,8 @@ namespace Unibill.Impl {
         public bool WP8SandboxEnabled { get; set; }
         public bool UseHostedConfig { get; set; }
         public string HostedConfigUrl { get; set; }
+		public string UnibillAnalyticsAppId { get; set; }
+		public string UnibillAnalyticsAppSecret { get; set; }
 
         public bool UseWin8_1Sandbox { get; set; }
 		public SamsungAppsMode SamsungAppsMode { get; set; }
@@ -54,10 +57,11 @@ namespace Unibill.Impl {
         public List<PurchasableItem> inventory = new List<PurchasableItem>();
         public List<VirtualCurrency> currencies = new List<VirtualCurrency>();
 
-        public UnibillConfiguration (string json, RuntimePlatform runtimePlatform, ILogger logger) {
+        public UnibillConfiguration (string json, RuntimePlatform runtimePlatform, ILogger logger, List<ProductDefinition> runtimeProducts = null) {
             this.logger = logger;
             var root = (Dictionary<string, object>)Unibill.Impl.MiniJSON.jsonDecode(json);
             this.iOSSKU = root.getString("iOSSKU");
+            this.macAppStoreSKU = root.getString ("macAppStoreSKU");
             this.AndroidBillingPlatform = root.getEnum<BillingPlatform>("androidBillingPlatform");
             this.GooglePlayPublicKey = root.get<string>("GooglePlayPublicKey");
             this.AmazonSandboxEnabled = root.getBool("useAmazonSandbox");
@@ -67,6 +71,8 @@ namespace Unibill.Impl {
             this.UseWin8_1Sandbox = root.getBool("UseWin8_1Sandbox");
 			this.SamsungAppsMode = root.getEnum<SamsungAppsMode> ("samsungAppsMode");
 			this.SamsungItemGroupId = root.getString ("samsungAppsItemGroupId");
+			this.UnibillAnalyticsAppId = root.getString ("unibillAnalyticsAppId");
+			this.UnibillAnalyticsAppSecret = root.getString ("unibillAnalyticsAppSecret");
 
             switch (runtimePlatform) {
                 case RuntimePlatform.Android:
@@ -104,6 +110,15 @@ namespace Unibill.Impl {
                 inventory.Add(item);
             }
 
+            if (null != runtimeProducts) {
+                foreach (var def in runtimeProducts) {
+                    var hash = new Dictionary<string, object> ();
+                    hash.Add ("@purchaseType", def.Type.ToString());
+                    var item = new PurchasableItem (def.PlatformSpecificId, hash, CurrentPlatform);
+                    inventory.Add (item);
+                }
+            }
+
             loadCurrencies(root);
         }
 
@@ -130,6 +145,7 @@ namespace Unibill.Impl {
         public Dictionary<string, object> Serialize() {
             var result = new Dictionary<string, object>();
             result.Add("iOSSKU", iOSSKU);
+            result.Add ("macAppStoreSKU", macAppStoreSKU);
             result.Add("androidBillingPlatform", AndroidBillingPlatform.ToString());
             result.Add("GooglePlayPublicKey", GooglePlayPublicKey);
             result.Add("useAmazonSandbox", AmazonSandboxEnabled);
@@ -139,6 +155,8 @@ namespace Unibill.Impl {
             result.Add("UseWin8_1Sandbox", UseWin8_1Sandbox);
 			result.Add ("samsungAppsMode", SamsungAppsMode.ToString ());
 			result.Add ("samsungAppsItemGroupId", SamsungItemGroupId);
+			result.Add ("unibillAnalyticsAppId", UnibillAnalyticsAppId);
+			result.Add ("unibillAnalyticsAppSecret", UnibillAnalyticsAppSecret);
 
             {
                 var items = new Dictionary<string, object>();

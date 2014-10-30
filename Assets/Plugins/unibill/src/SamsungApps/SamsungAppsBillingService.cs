@@ -6,7 +6,7 @@ using Uniject;
 
 namespace Unibill.Impl
 {
-	public class SamsungAppsBillingService : IBillingService
+    public class SamsungAppsBillingService : IBillingService
 	{
 		private IBillingServiceCallback callback;
 		private ProductIdRemapper remapper;
@@ -35,7 +35,7 @@ namespace Unibill.Impl
 			rawSamsung.getProductList (encoder.toJson());
 		}
 
-		public void purchase (string item)
+        public void purchase (string item, string developerPayload)
 		{
 			if (unknownSamsungProducts.Contains (item)) {
 				callback.logError(UnibillError.SAMSUNG_APPS_ATTEMPTING_TO_PURCHASE_PRODUCT_NOT_RETURNED_BY_SAMSUNG, item);
@@ -53,7 +53,6 @@ namespace Unibill.Impl
 
 		public void onProductListReceived(string productListString) {
 			Dictionary<string, object> response = (Dictionary<string, object>)Unibill.Impl.MiniJSON.jsonDecode(productListString);
-
 			if (response.Count == 0) {
 				callback.logError (UnibillError.SAMSUNG_APPS_NO_PRODUCTS_RETURNED);
 				callback.onSetupComplete (false);
@@ -69,6 +68,9 @@ namespace Unibill.Impl
 					PurchasableItem.Writer.setLocalizedPrice(item,  details["price"].ToString());
 					PurchasableItem.Writer.setLocalizedTitle(item, (string) details["localizedTitle"]);
 					PurchasableItem.Writer.setLocalizedDescription(item, (string) details["localizedDescription"]);
+
+                    PurchasableItem.Writer.setISOCurrencySymbol (item, details.getString("isoCurrencyCode"));
+                    PurchasableItem.Writer.setPriceInLocalCurrency (item, decimal.Parse (details.getString("priceDecimal", "0")));
 					productsReceived.Add(item);
 				} else {
 					logger.LogError("Warning: Unknown product identifier: {0}", identifier.ToString());
@@ -91,6 +93,10 @@ namespace Unibill.Impl
 			callback.onPurchaseFailedEvent (item);
 		}
 
+        public void onPurchaseCancelled(string item) {
+            callback.onPurchaseCancelledEvent (item);
+        }
+
 		public void onPurchaseSucceeded(string json) {
 			Dictionary<string, object> response = (Dictionary<string, object>)Unibill.Impl.MiniJSON.jsonDecode(json);
 
@@ -108,5 +114,15 @@ namespace Unibill.Impl
 		public void onInitFail() {
 			callback.onSetupComplete (false);
 		}
+
+        public bool hasReceipt (string forItem)
+        {
+            return false;
+        }
+
+        public string getReceipt (string forItem)
+        {
+            throw new NotImplementedException ();
+        }
 	}
 }

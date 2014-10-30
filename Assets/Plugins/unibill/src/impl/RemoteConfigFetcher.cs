@@ -6,6 +6,10 @@ using Unibill.Impl;
 
 public class RemoteConfigFetcher : MonoBehaviour {
 
+    public void Start() {
+        DontDestroyOnLoad (this.gameObject);
+    }
+
 	public void Fetch(IStorage storage, string url, string key) {
 		StartCoroutine (fetch(storage, url, key));
 	}

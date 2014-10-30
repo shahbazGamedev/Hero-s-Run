@@ -51,8 +51,4 @@ public class AmazonAppStoreCallbackMonoBehaviour : MonoBehaviour {
     public void onPurchaseUpdateSuccess(string data) {
         amazon.onPurchaseUpdateSuccess(data);
     }
-
-    public void onUserIdRetrieved(string userId) {
-        amazon.onUserIdRetrieved(userId);
-    }
 }

@@ -22,6 +22,9 @@ namespace Unibill.Impl {
         
         [DllImport("__Internal")]
         private static extern void _storeKitRestoreTransactions();
+
+        [DllImport("__Internal")]
+        private static extern void _storeKitAddTransactionObserver();
 #endif
         public void initialise(AppleAppStoreBillingService svc) {
             GameObject host = new GameObject();
@@ -55,6 +58,12 @@ namespace Unibill.Impl {
 #else
             throw new NotImplementedException();
 #endif
+        }
+
+        public void addTransactionObserver () {
+            #if UNITY_IOS
+            _storeKitAddTransactionObserver();
+            #endif
         }
     }
 }

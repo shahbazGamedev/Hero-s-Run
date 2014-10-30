@@ -4,6 +4,7 @@
 //  www.outlinegames.com
 //-----------------------------------------------------------------
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using Uniject;
@@ -41,6 +42,19 @@ public enum PurchaseType {
 }
 
 /// <summary>
+/// Represents a purchased item along with its associated purchase receipt.
+/// </summary>
+public class PurchaseEvent {
+	public PurchasableItem PurchasedItem { get; private set; }
+	public string Receipt { get; private set; }
+
+	internal PurchaseEvent(PurchasableItem purchasedItem, string receipt) {
+		this.PurchasedItem = purchasedItem;
+		this.Receipt = receipt;
+	}
+}
+
+/// <summary>
 /// Represents an item that may be purchased as an In App Purchase.
 /// </summary>
 public partial class PurchasableItem : IEquatable<PurchasableItem> {
@@ -50,22 +64,22 @@ public partial class PurchasableItem : IEquatable<PurchasableItem> {
     /// Ids should be structured similarly to bundle identifiers,
     /// eg com.companyname.productname.
     /// </summary>
-    public string Id { get; set; }
+    public string Id { get; internal set; }
 
     ///
     /// The type of this PurchasableItem; Consumable, Non-Consumable or Subscription.
     ///
-    public PurchaseType PurchaseType { get; set; }
-    
+    public PurchaseType PurchaseType { get; internal set; }
+
     /// <summary>
     /// Name of the item as displayed to users.
     /// </summary>
-    public string name { get; set; }
+    public string name { get; internal set; }
     
     /// <summary>
     /// Description of the item as displayed to users.
     /// </summary>
-    public string description { get; set; }
+    public string description { get; internal set; }
 
     /// <summary>
     /// !!!!DEPRECATED!!!!
@@ -95,6 +109,30 @@ public partial class PurchasableItem : IEquatable<PurchasableItem> {
     /// Apple, Google etc.
     /// </summary>
     public string localizedDescription { get; private set; }
+	
+	/// <summary>
+	/// The item's currency in ISO 4217 format eg GBP, USD etc.
+	/// </summary>
+	public string isoCurrencySymbol { get; private set; }
+	
+	/// <summary>
+	/// The item's price, denominated in the currency
+	/// indicated by <c>isoCurrencySymbol</c>.
+	/// </summary>
+	public decimal priceInLocalCurrency { get; private set; }
+
+    /// <summary>
+    /// Purchasable has downloadable content hosted at unibiller.com
+    /// Only applicable to Non Consumables.
+    /// </summary>
+    public bool hasDownloadableContent {
+        get { return !string.IsNullOrEmpty (downloadableContentId); }
+    }
+
+    /// <summary>
+    /// The DLC identifier as configured at unibiller.com.
+    /// </summary>
+    public string downloadableContentId { get; internal set; }
 
     /// <summary>
     /// The platform specific identifier of the item, which is either the Id or 
@@ -102,12 +140,21 @@ public partial class PurchasableItem : IEquatable<PurchasableItem> {
     /// </summary>
     public string LocalId {
         get {
-			if (string.IsNullOrEmpty (LocalIds [platform])) {
-				return Id;
-			}
+    		if (string.IsNullOrEmpty (LocalIds [platform])) {
+    			return Id;
+    		}
+
             return LocalIds[platform];
         }
     }
+
+    /// <summary>
+    /// The purchase receipt for this item, if owned.
+    /// For consumable purchases, this will be the most recent purchase receipt.
+    /// Consumable receipts are not saved between app restarts.
+    /// Receipts in in JSON format.
+    /// </summary>
+    public string receipt { get; internal set; }
 
     /// <summary>
     /// The platform specific identifiers per billing platform, where specified.
@@ -141,33 +188,42 @@ public partial class PurchasableItem : IEquatable<PurchasableItem> {
         this.PurchaseType = hash.getEnum<PurchaseType>("@purchaseType");
         this.name = hash.get<string>("name");
         this.description = hash.get<string>("description");
+        this.downloadableContentId = hash.get<string> ("downloadableContentId");
+        // These localized details will be overwritten when loaded from the app store.
+        // They are set here for testing purposes.
         this.localizedTitle = name;
         this.localizedDescription = description;
+        this.priceInLocalCurrency = 1;
+        this.isoCurrencySymbol = "USD";
         LocalIds = new Dictionary<BillingPlatform, string>();
         platformBundles = new Dictionary<BillingPlatform, Dictionary<string, object>>();
-        Dictionary<string, object> platforms = (Dictionary<string, object>)hash["platforms"];
-
+        Dictionary<string, object> platforms;
+        if (hash.ContainsKey ("platforms")) {
+            platforms = (Dictionary<string, object>)hash ["platforms"];
+        } else {
+            platforms = new Dictionary<string, object>();
+        }
+    
         foreach (BillingPlatform billingPlatform in Enum.GetValues(typeof(BillingPlatform))) {
-            if (platforms.ContainsKey(billingPlatform.ToString())) {
-                Dictionary<string, object> platformData = (Dictionary<string, object>)platforms[billingPlatform.ToString()];
-                string key = string.Format("{0}.Id", billingPlatform);
-                if (platformData != null && platformData.ContainsKey(key)) {
-                    LocalIds.Add(billingPlatform, (string)platformData[key]);
+            if (platforms.ContainsKey (billingPlatform.ToString ())) {
+                Dictionary<string, object> platformData = (Dictionary<string, object>)platforms [billingPlatform.ToString ()];
+                string key = string.Format ("{0}.Id", billingPlatform);
+                if (platformData != null && platformData.ContainsKey (key)) {
+                    LocalIds.Add (billingPlatform, (string)platformData [key]);
                 }
 
                 if (platformData != null) {
-                    platformBundles[billingPlatform] = platformData;
+                    platformBundles [billingPlatform] = platformData;
                 }
             }
 
-            if (!LocalIds.ContainsKey(billingPlatform)) {
-                LocalIds[billingPlatform] = Id;
+            if (!LocalIds.ContainsKey (billingPlatform)) {
+                LocalIds [billingPlatform] = Id;
             }
-            if (!platformBundles.ContainsKey(billingPlatform)) {
-                platformBundles[billingPlatform] = new Dictionary<string, object>();
+            if (!platformBundles.ContainsKey (billingPlatform)) {
+                platformBundles [billingPlatform] = new Dictionary<string, object> ();
             }
         }
-
     }
 
     public Dictionary<string, object> Serialize() {
@@ -176,6 +232,7 @@ public partial class PurchasableItem : IEquatable<PurchasableItem> {
         result.Add("@purchaseType", PurchaseType.ToString());
         result.Add("name", name);
         result.Add("description", description);
+        result.Add ("downloadableContentId", downloadableContentId);
         result.Add("platforms", platformBundles);
         return result;
     }
@@ -211,6 +268,11 @@ namespace Unibill.Impl {
             get { return item.name; }
             set { item.name = value; }
         }
+
+        public string downloadableContentId {
+            get { return item.downloadableContentId; }
+            set { item.downloadableContentId = value; }
+        }
     }
 }
 
@@ -236,11 +298,4 @@ public class VirtualCurrency {
         result.Add("mappings", mapList);
         return result;
     }
-}
-
-/// <summary>
-/// Inventory database.
-/// </summary>
-public class InventoryDatabase {
-
 }

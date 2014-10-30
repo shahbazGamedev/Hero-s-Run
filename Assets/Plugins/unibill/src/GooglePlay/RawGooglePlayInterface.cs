@@ -30,9 +30,9 @@ namespace Unibill.Impl {
 #endif
         }
 
-        public void purchase(string id) {
+        public void purchase(string json) {
 #if UNITY_ANDROID
-            plugin.Call("purchaseProduct", id);
+            plugin.Call("purchaseProduct", json);
 #endif
         }
 		

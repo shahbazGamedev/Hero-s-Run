@@ -23,6 +23,10 @@
          "Storekit was unable to retrieve product data. You may not have Internet connectivity."
       ,
       
+      	 "STOREKIT_UNKNOWN_PRODUCT_ID" :
+      	 "Storekit returned an unknown product identifier: {0}. Ensure your identifiers are correctly set up in the inventory editor."
+      ,
+      
          "GOOGLEPLAY_BILLING_UNAVAILABLE" :
          "Google play reported In App purchasing as unavailable."
       ,

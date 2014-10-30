@@ -26,7 +26,7 @@ namespace Unibill {
     /// All billing events are routed through the Biller for recording.
     /// Purchase events are logged in the transaction database.
     /// </summary>
-    public class Biller : IBillingServiceCallback {
+    public class Biller : IBillingServiceCallback, IReceiptStore {
         public UnibillConfiguration InventoryDatabase { get; private set; }
         private TransactionDatabase transactionDatabase;
         private ILogger logger;
@@ -34,14 +34,17 @@ namespace Unibill {
         private ProductIdRemapper remapper;
         private Dictionary<PurchasableItem, List<string>> receiptMap = new Dictionary<PurchasableItem, List<string>>();
 		private CurrencyManager currencyManager;
+        private Dictionary<string, string> fileBundleReceipts = new Dictionary<string, string> ();
         public IBillingService billingSubsystem { get; private set; }
 
         public event Action<bool> onBillerReady;
-        public event Action<PurchasableItem> onPurchaseComplete;
+		public event Action<PurchaseEvent> onPurchaseComplete;
+		public event Action<bool> onTransactionRestoreBegin;
         public event Action<bool> onTransactionsRestored;
         public event Action<PurchasableItem> onPurchaseCancelled;
         public event Action<PurchasableItem> onPurchaseRefunded;
         public event Action<PurchasableItem> onPurchaseFailed;
+        public event Action<PurchasableItem> onPurchaseDeferred;
 
         public BillerState State { get; private set; }
         public List<UnibillError> Errors { get; private set; }
@@ -55,7 +58,7 @@ namespace Unibill {
 			}
 		}
 
-        public Biller (UnibillConfiguration config, TransactionDatabase tDb, IBillingService billingSubsystem, ILogger logger, HelpCentre help, ProductIdRemapper remapper, CurrencyManager currencyManager) {
+		public Biller (UnibillConfiguration config, TransactionDatabase tDb, IBillingService billingSubsystem, ILogger logger, HelpCentre help, ProductIdRemapper remapper, CurrencyManager currencyManager) {
             this.InventoryDatabase = config;
             this.transactionDatabase = tDb;
             this.billingSubsystem = billingSubsystem;
@@ -82,7 +85,12 @@ namespace Unibill {
         }
 
         public int getPurchaseHistory (string purchasableId) {
-            return getPurchaseHistory(InventoryDatabase.getItemById(purchasableId));
+            var item = InventoryDatabase.getItemById (purchasableId);
+            if (null == item) {
+                // A warning will already have been logged.
+                return -1;
+            }
+            return getPurchaseHistory(item);
         }
 
 		public decimal getCurrencyBalance(string identifier) {
@@ -97,15 +105,7 @@ namespace Unibill {
             return currencyManager.DebitBalance(identifier, amount);
 		}
 
-        public string[] getReceiptsForPurchasable (PurchasableItem item) {
-            if (receiptMap.ContainsKey (item)) {
-                return receiptMap[item].ToArray();
-            }
-
-            return new string[0];
-        }
-
-        public void purchase (PurchasableItem item) {
+        public void purchase (PurchasableItem item, string developerPayload = "") {
             if (State == BillerState.INITIALISING) {
                 logError (UnibillError.BILLER_NOT_READY);
                 return;
@@ -124,16 +124,16 @@ namespace Unibill {
                 return;
             }
             
-            billingSubsystem.purchase(remapper.mapItemIdToPlatformSpecificId(item));
+            billingSubsystem.purchase(remapper.mapItemIdToPlatformSpecificId(item), developerPayload);
             logger.Log("purchase({0})", item.Id);
         }
 
-        public void purchase (string purchasableId) {
+        public void purchase (string purchasableId, string developerPayload = "") {
             PurchasableItem item = InventoryDatabase.getItemById (purchasableId);
             if (null == item) {
                 logger.LogWarning("Unable to purchase unknown item with id: {0}", purchasableId);
             }
-            purchase(item);
+            purchase(item, developerPayload);
         }
 
         public void restoreTransactions () {
@@ -142,17 +142,33 @@ namespace Unibill {
                 logError(UnibillError.BILLER_NOT_READY);
                 return;
             }
-
+			if (null != onTransactionRestoreBegin) {
+				onTransactionRestoreBegin (true);
+			}
             billingSubsystem.restoreTransactions ();
         }
 
-        public void onPurchaseSucceeded (string id) {
+		public void onPurchaseSucceeded (string id, string receipt) {
             if (!verifyPlatformId (id)) {
                 return;
             }
+            if (null != receipt) {
+                this.onPurchaseReceiptRetrieved (id, receipt);
+            }
 
-            PurchasableItem item = remapper.getPurchasableItemFromPlatformSpecificId(id);
-			if (item.PurchaseType != PurchaseType.Consumable) {
+			PurchasableItem item = remapper.getPurchasableItemFromPlatformSpecificId (id);
+
+			if (receipt != null && receipt.Length > 0) {
+				// Take a note of the receipt.
+
+				if (!receiptMap.ContainsKey (item)) {
+					receiptMap.Add (item, new List<string> ());
+				}
+
+				receiptMap [item].Add (receipt);
+			}
+				
+			if (item.PurchaseType == PurchaseType.NonConsumable) {
 				if (transactionDatabase.getPurchaseHistory (item) > 0) {
 					logger.Log ("Ignoring multi purchase of non consumable");
 					return;
@@ -163,28 +179,9 @@ namespace Unibill {
             transactionDatabase.onPurchase (item);
 			currencyManager.OnPurchased (item.Id);
             if (null != onPurchaseComplete) {
-                onPurchaseComplete (item);
+				onPurchaseComplete (new PurchaseEvent(item, receipt));
             }
         }
-
-        #region IBillingServiceCallback implementation
-
-        public void onPurchaseSucceeded (string platformSpecificId, string receipt) {
-            if (receipt != null && receipt.Length > 0) {
-                // Take a note of the receipt.
-                PurchasableItem item = remapper.getPurchasableItemFromPlatformSpecificId (platformSpecificId);
-                if (!receiptMap.ContainsKey (item)) {
-                    receiptMap.Add (item, new List<string> ());
-                }
-
-                receiptMap [item].Add (receipt);
-            }
-
-            // Then trigger our normal purchase routine.
-            onPurchaseSucceeded(platformSpecificId);
-        }
-
-        #endregion
         
         public void onSetupComplete (bool available) {
             logger.Log("onSetupComplete({0})", available);
@@ -204,6 +201,20 @@ namespace Unibill {
                 onPurchaseCancelled(item);
             }
         }
+
+        public void onPurchaseDeferredEvent (string id)
+        {
+            if (!verifyPlatformId (id)) {
+                return;
+            }
+
+            PurchasableItem item = remapper.getPurchasableItemFromPlatformSpecificId(id);
+            logger.Log("onPurchaseDeferredEvent({0})", item.Id);
+            if (onPurchaseDeferred != null) {
+                onPurchaseDeferred(item);
+            }
+        }
+
         public void onPurchaseRefundedEvent (string id) {
             if (!verifyPlatformId (id)) {
                 return;
@@ -248,6 +259,14 @@ namespace Unibill {
             return getPurchaseHistory(item) > 0;
         }
 
+        public void setAppReceipt(string receipt) {
+            foreach (var item in InventoryDatabase.AllPurchasableItems) {
+                if (getPurchaseHistory (item) > 0) {
+                    item.receipt = receipt;
+                }
+            }
+        }
+
         public void onActiveSubscriptionsRetrieved(IEnumerable<string> subscriptions) {
             foreach (var sub in InventoryDatabase.AllSubscriptions) {
                 transactionDatabase.clearPurchases(sub);
@@ -269,6 +288,43 @@ namespace Unibill {
         public void logError (UnibillError error, params object[] args) {
             Errors.Add(error);
             logger.LogError(help.getMessage(error), args);
+        }
+
+        public void onPurchaseReceiptRetrieved(string platformSpecificItemId, string receipt) {
+            if (remapper.canMapProductSpecificId (platformSpecificItemId)) {
+                var item = remapper.getPurchasableItemFromPlatformSpecificId (platformSpecificItemId);
+                item.receipt = receipt;
+                if (!string.IsNullOrEmpty (item.downloadableContentId)) {
+                    fileBundleReceipts [item.downloadableContentId] = receipt;
+                }
+            }
+        }
+
+        public bool hasItemReceiptForFilebundle(string bundleId) {
+            return fileBundleReceipts.ContainsKey (bundleId) ||
+                billingSubsystem.hasReceipt (getItemFromFileBundle (bundleId).LocalId);
+        }
+
+        public string getItemReceiptForFilebundle(string bundleId) {
+            if (fileBundleReceipts.ContainsKey (bundleId)) {
+                return fileBundleReceipts [bundleId];
+            }
+            var item = getItemFromFileBundle (bundleId);
+            if (billingSubsystem.hasReceipt (item.LocalId)) {
+                return billingSubsystem.getReceipt (item.LocalId);
+            }
+            return "fake";
+        }
+
+        public PurchasableItem getItemFromFileBundle (string id)
+        {
+            foreach (var v in InventoryDatabase.AllPurchasableItems) {
+                if (v.downloadableContentId == id) {
+                    return v;
+                }
+            }
+
+            throw new ArgumentException (string.Format ("Unable to find item with content id {0}", id));
         }
 
         private bool verifyPlatformId (string platformId) {

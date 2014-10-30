@@ -18,5 +18,6 @@ namespace Unibill.Impl {
         void storeKitRequestProductData (string productIdentifiers, string[] productIds);
         void storeKitPurchaseProduct (string productId);
         void storeKitRestoreTransactions();
+        void addTransactionObserver();
     }
 }

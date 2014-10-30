@@ -61,6 +61,9 @@ namespace Unibill.Impl {
             throw new NotImplementedException();
 #endif
         }
+
+        public void addTransactionObserver() {
+        }
 	
 		// Callbacks from native.
 		public static void UnibillSendMessage(string method, string argument) {
