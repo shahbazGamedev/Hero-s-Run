@@ -24,12 +24,16 @@ public class csvLoader {
 		//Don't import the CSV value header (i.e. row zero)
 		for( int i=1; i < rows.Length; i++ )
 		{
-			rowContent = rows[i].Split(","[0]);
-			string text = rowContent[languageIndex].Trim();
-			//Commas in the text are identified by <comma>
-			text = text.Replace("<comma>", "," );
-			//if( Debug.isDebugBuild ) Debug.Log( "row: " + i + " " + rowContent[0] + ", " + rowContent[languageIndex] );
-			gameText.Add( rowContent[0].Trim (), text );
+			//The # character at the beginning of a row is used to indicate a row header or comment. These are not imported in the game.
+			if( !rows[i].StartsWith("#") )
+			{
+				rowContent = rows[i].Split(","[0]);
+				string text = rowContent[languageIndex].Trim();
+				//Commas in the text are identified by <comma>
+				text = text.Replace("<comma>", "," );
+				//Debug.Log( "row: " + i + " " + rowContent[0] + ", " + rowContent[languageIndex] );
+				gameText.Add( rowContent[0].Trim (), text );
+			}
 		}
 		return gameText;
 	}

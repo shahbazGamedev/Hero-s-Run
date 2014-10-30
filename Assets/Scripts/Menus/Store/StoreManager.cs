@@ -9,6 +9,8 @@ public class StoreManager : MonoBehaviour {
 	public Text upgradeTitle;
 	public Text consumableTitle;
 	bool levelLoading = false;
+	public Canvas powerupCanvas;
+	public Canvas storeCanvas;
 
 	// Use this for initialization
 	void Awake ()
@@ -18,7 +20,19 @@ public class StoreManager : MonoBehaviour {
 		consumableTitle.text = LocalizationManager.Instance.getText("MENU_CONSUMABLE_TITLE");
 
 	}
-	
+
+	public void showStore()
+	{
+		powerupCanvas.gameObject.SetActive( false );
+		storeCanvas.gameObject.SetActive( true );
+	}
+
+	public void closeStore()
+	{
+		powerupCanvas.gameObject.SetActive( true );
+		storeCanvas.gameObject.SetActive( false );
+	}
+
 	public void closeMenu()
 	{
 		StartCoroutine( close() );

@@ -7,7 +7,10 @@ public enum PowerUpPurchaseType {
 	None = 0,
 	Upgrade = 1,
 	Consumable = 2,
-	StarDoubler = 3
+	StarDoubler = 3,
+	Purchase_Stars = 4,
+	Purchase_Lives = 5,
+	Restore_StarDoubler = 6
 }
 
 public class StoreEntry : MonoBehaviour {
@@ -52,9 +55,17 @@ public class StoreEntry : MonoBehaviour {
 		{
 			initializeStarDoublerEntry();
 		}
-		else
+		else if( powerUpPurchaseType == PowerUpPurchaseType.Purchase_Lives )
 		{
-			Debug.LogError("The powerUpPurchaseType parameter has not been set. A value of NONE is not permitted.");
+			initializePurchaseLivesEntry();
+		}
+		else if( powerUpPurchaseType == PowerUpPurchaseType.Purchase_Stars )
+		{
+			initializePurchaseStarsEntry();
+		}
+		else if( powerUpPurchaseType == PowerUpPurchaseType.None )
+		{
+			Debug.LogError( title.text + " The powerUpPurchaseType parameter has not been set. A value of NONE is not permitted.");
 		}
 
 	
@@ -107,6 +118,26 @@ public class StoreEntry : MonoBehaviour {
 		{
 			buyButtonLabel.text = COST_STAR_DOUBLER;
 		}
+	}
+
+	void initializePurchaseLivesEntry()
+	{
+		string descriptionString = LocalizationManager.Instance.getText("STORE_ITEM_LIVES_DESCRIPTION");
+		//Replace the string <quantity> by the quantity the player will receive if he makes the purchase
+		descriptionString = descriptionString.Replace( "<quantity>", "25" );
+		description.text = descriptionString;
+		
+		buyButtonLabel.text = COST_FOR_ONE_CONSUMABLE.ToString("N0");
+	}
+
+	void initializePurchaseStarsEntry()
+	{
+		string descriptionString = LocalizationManager.Instance.getText("STORE_ITEM_STARS_DESCRIPTION");
+		//Replace the string <quantity> by the quantity the player will receive if he makes the purchase
+		descriptionString = descriptionString.Replace( "<quantity>", "50" );
+		description.text = descriptionString;
+		
+		buyButtonLabel.text = COST_FOR_ONE_CONSUMABLE.ToString("N0");
 	}
 
 	public void buy()
