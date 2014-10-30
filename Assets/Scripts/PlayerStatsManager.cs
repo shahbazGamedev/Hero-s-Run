@@ -305,7 +305,7 @@ public class PlayerStatsManager {
 
 	public void modifyCoinCount( int coins )
 	{
-		if( ownsStarDoubler ) coins = coins * 2;
+		if( ownsStarDoubler && coins > 0 ) coins = coins * 2; //only double when getting, not when spending
 
 		//Player gets twice the amount of Stars
 		coinTotal = coinTotal + coins;
