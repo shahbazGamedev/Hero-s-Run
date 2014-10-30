@@ -63,6 +63,10 @@ public class StoreEntry : MonoBehaviour {
 		{
 			initializePurchaseStarsEntry();
 		}
+		else if( powerUpPurchaseType == PowerUpPurchaseType.Restore_StarDoubler )
+		{
+			initializeRestoreStarDoublerEntry();
+		}
 		else if( powerUpPurchaseType == PowerUpPurchaseType.None )
 		{
 			Debug.LogError( title.text + " The powerUpPurchaseType parameter has not been set. A value of NONE is not permitted.");
@@ -127,7 +131,7 @@ public class StoreEntry : MonoBehaviour {
 		descriptionString = descriptionString.Replace( "<quantity>", "25" );
 		description.text = descriptionString;
 		
-		buyButtonLabel.text = COST_FOR_ONE_CONSUMABLE.ToString("N0");
+		buyButtonLabel.text = COST_STAR_DOUBLER;
 	}
 
 	void initializePurchaseStarsEntry()
@@ -137,7 +141,13 @@ public class StoreEntry : MonoBehaviour {
 		descriptionString = descriptionString.Replace( "<quantity>", "50" );
 		description.text = descriptionString;
 		
-		buyButtonLabel.text = COST_FOR_ONE_CONSUMABLE.ToString("N0");
+		buyButtonLabel.text = COST_STAR_DOUBLER;
+	}
+
+	void initializeRestoreStarDoublerEntry()
+	{
+		description.text = LocalizationManager.Instance.getText("RESTORE_PURCHASE_DESCRIPTION");
+		buyButtonLabel.text = LocalizationManager.Instance.getText("RESTORE_PURCHASE_BUTTON_LABEL");
 	}
 
 	public void buy()
