@@ -69,12 +69,19 @@ public class StoreEntry : MonoBehaviour {
 		descriptionString = descriptionString.Replace( "<range>", PowerUpManager.UPGRADE_DIAMETER_BOOST.ToString("N0") );
 		description.text = descriptionString;
 
-		buyButtonLabel.text = ( (PlayerStatsManager.Instance.getPowerUpUpgradeLevel( powerUpType ) + 1 )* 1000).ToString("N0");
-		
 		upgradeLevel.value = PlayerStatsManager.Instance.getPowerUpUpgradeLevel( powerUpType );
 		
-		//Disable the buy button if we are already at the maximum upgrade level
-		if( upgradeLevel.value == MAXIMUM_UPGRADE_LEVEL ) buyButton.interactable = false;
+		//Disable buy button if we have reached the maximum upgrade level
+		if( upgradeLevel.value == MAXIMUM_UPGRADE_LEVEL )
+		{
+			buyButton.gameObject.SetActive(false);
+			description.text = LocalizationManager.Instance.getText("POWER_UP_MAXIMUM_UPGRADE");
+		}
+		else
+		{
+			//Update the cost for the next purchase
+			buyButtonLabel.text = ( (PlayerStatsManager.Instance.getPowerUpUpgradeLevel( powerUpType ) + 1 )* 1000).ToString("N0");
+		}
 	}
 
 	void initializeConsumableEntry()
@@ -138,9 +145,16 @@ public class StoreEntry : MonoBehaviour {
 			PlayerStatsManager.Instance.setPowerUpUpgradeLevel( powerUpType, newUpgradeValue  );
 			upgradeLevel.value = newUpgradeValue;
 			//Disable buy button if we have reached the maximum upgrade level
-			if( upgradeLevel.value == MAXIMUM_UPGRADE_LEVEL ) buyButton.interactable = false;
-			//Update the cost for the next purchase
-			buyButtonLabel.text = ( (PlayerStatsManager.Instance.getPowerUpUpgradeLevel( powerUpType ) + 1 )* 1000).ToString("N0");
+			if( upgradeLevel.value == MAXIMUM_UPGRADE_LEVEL )
+			{
+				buyButton.gameObject.SetActive(false);
+				description.text = LocalizationManager.Instance.getText("POWER_UP_MAXIMUM_UPGRADE");
+			}
+			else
+			{
+				//Update the cost for the next purchase
+				buyButtonLabel.text = ( (PlayerStatsManager.Instance.getPowerUpUpgradeLevel( powerUpType ) + 1 )* 1000).ToString("N0");
+			}
 			
 			//Save the data since we spent some currency as well as upgraded a powerup.
 			PlayerStatsManager.Instance.savePlayerStats();

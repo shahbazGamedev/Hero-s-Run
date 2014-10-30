@@ -85,6 +85,7 @@ POWER_UP_SHIELD,Shield,Bouclier,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POWER_UP_SHIELD_DESCRIPTION,The Shield powerup lasts <time> seconds longer,Le Bouclier dure <time> secondes de plus,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POWER_UP_HOW_TO,While running<comma> double-tap to activate selected power-up.,Pendant que tu cours<comma> tape deux fois sur l'écran pour activer le power-up sélectionné.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POWER_UP_YOU_HAVE,You have: <quantity>,Tu en as: <quantity>,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+POWER_UP_MAXIMUM_UPGRADE,Fully upgraded,Niveau maximum atteint,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 STAR_DOUBLER,Star Doubler,Doubleur d'Étoiles,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 STAR_DOUBLER_DESCRIPTION,Double all star pickups!,Double le nombre d'étoiles ramassées !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 STAR_DOUBLER_OWNED,Owned,Acheté,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
