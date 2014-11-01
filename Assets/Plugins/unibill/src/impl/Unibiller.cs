@@ -4,13 +4,10 @@
 //  www.outlinegames.com
 //-----------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.IO;
 using Unibill;
 using Unibill.Impl;
 using Uniject;
 using Uniject.Impl;
-using UnityEngine;
 
 public enum UnibillState {
     SUCCESS,
@@ -25,9 +22,6 @@ public enum UnibillState {
 /// </summary>
 public class Unibiller {
     private static Biller biller;
-    #if !(UNITY_WP8 || UNITY_METRO || UNITY_WEBPLAYER)
-    private static DownloadManager downloadManager;
-    #endif
 
     /// <summary>
     /// Occurs after a call to Unibiller.Initialise.
@@ -41,14 +35,7 @@ public class Unibiller {
     /// </summary>
     public static event Action<PurchasableItem> onPurchaseCancelled;
 
-	/// <summary>
-	/// Occurs when an item is purchased.
-	/// The PurchaseEvent contains both the item purchased and its purchase receipt.
-	/// </summary>
-	public static event Action<PurchaseEvent> onPurchaseCompleteEvent;
-
     /// <summary>
-	/// DEPRECATED - use onPurchaseCompleteEvent.
     /// Occurs when the specified item was purchases successfully.
     /// </summary>
     public static event Action<PurchasableItem> onPurchaseComplete;
@@ -59,63 +46,17 @@ public class Unibiller {
     public static event Action<PurchasableItem> onPurchaseFailed;
 
     /// <summary>
-    /// iOS Specific.
-    /// Occurs when parental controls are enabled and a request to purchase is sent to a parent for approval.
-    /// If the purchase is approved, the onPurchaseComplete event will fire at some later point.
-    /// Otherwise the onPurchaseFailed event will fire at some later point.
-    /// </summary>
-    public static event Action<PurchasableItem> onPurchaseDeferred;
-
-    /// <summary>
     /// Occurs when the specified purchase was refunded.
     /// Unibill will automatically update the transaction database for the <c>PurchasableItem</c> by
     /// decrementing the purchase count.
     /// </summary>
     public static event Action<PurchasableItem> onPurchaseRefunded;
 
-#pragma warning disable 67
-
-    #if !UNITY_METRO
-    /// <summary>
-    /// Occurs when the specified Downloadable Content finishes downloading.
-    /// The <c>DirectoryInfo</c> may be browsed using standard IO functions.
-    /// </summary>
-    public static event Action<PurchasableItem, DirectoryInfo> onDownloadCompletedEvent;
-    #endif
-
-    /// <summary>
-    /// Occurs when the specified Downloadable Content finishes downloading.
-    /// The path is provided in string form for platforms that do not define DirectoryInfo.
-    /// </summary>
-    public static event Action<PurchasableItem, string> onDownloadCompletedEventString;
-
-    /// <summary>
-    /// Occurs when a Download progresses.
-    /// 
-    /// The int parameter ranges from 0-99%, since
-    /// the <c>onDownloadCompletedEvent</c> fires once the content is verified and unpacked.
-    /// </summary>
-    public static event Action<PurchasableItem, int> onDownloadProgressedEvent;
-
-    /// <summary>
-    /// Occurs when a Download fails permanently.
-    /// 
-    /// This will ONLY occur if the user is not entitled to the content,
-    /// ie. they do not have a valid receipt.
-    /// 
-    /// Network drops, App restarts, etc, do not cancel downloads.
-    /// </summary>
-    public static event Action<PurchasableItem, string> onDownloadFailedEvent;
-
     /// <summary>
     /// Occurs when a call to Unibiller.restoreTransactions completed.
     /// The parameter indicates whether the restoration was successful.
     /// </summary>
     public static event Action<bool> onTransactionsRestored;
-
-    #if !(UNITY_WP8 || UNITY_METRO || UNITY_WEBPLAYER)
-    private static DownloadManager DownloadManager;
-    #endif
 
 	/// <summary>
 	/// Gets the specific billing platform in use; Google Play, Amazon, Storekit etc.
@@ -148,21 +89,12 @@ public class Unibiller {
     /// Before calling this method, ensure you have subscribed to onBillerReady to
     /// ensure you receive Unibill's initialisation response.
     /// This method should be called once as soon as your Application launches.
-    /// 
-    /// runtimeProducts is an optional parameter that allows you to tell Unibill about additional
-    /// products to those defined in your inventory.
-    /// 
-    /// You can opt to use runtimeProducts exclusively if you choose.
     /// </summary>
-    public static void Initialise (List<ProductDefinition> runtimeProducts = null) {
+    public static void Initialise () {
         if (Unibiller.biller == null) {
-            var mgr = new RemoteConfigManager(new UnityResourceLoader(), new UnityPlayerPrefsStorage(), new UnityLogger(), UnityEngine.Application.platform, runtimeProducts);
+            var mgr = new RemoteConfigManager(new UnityResourceLoader(), new UnityPlayerPrefsStorage(), new UnityLogger(), UnityEngine.Application.platform);
             var config = mgr.Config;
-            var o = new GameObject ();
-            var util = o.AddComponent<UnityUtil> ();
-            var factory = new BillerFactory (new UnityResourceLoader (), new UnityLogger (), new UnityPlayerPrefsStorage (), new RawBillingPlatformProvider (config), config, util);
-            Biller b = factory.instantiate ();
-            _internal_doInitialise(b, factory);
+            _internal_doInitialise(new BillerFactory(new UnityResourceLoader(), new UnityLogger(), new UnityPlayerPrefsStorage(), new RawBillingPlatformProvider(config), config).instantiate());
         }
     }
 
@@ -226,33 +158,43 @@ public class Unibiller {
     /// </summary>
     public static PurchasableItem GetPurchasableItemById(string unibillPurchasableId) {
         if (null != biller) {
-            return biller.InventoryDatabase.getItemById (unibillPurchasableId);
+            return biller.InventoryDatabase.getItemById(unibillPurchasableId);
         }
 
         return null;
     }
 
     /// <summary>
+    /// Get all the purchase receipts that Unibill has received for the specified
+    /// <c>PurchasableItem</c>.
+    /// NOTE: Purchase receipts are not saved to persistent storage by Unibill.
+    /// If you want to use receipts for verification purposes, you must save them yourself
+    /// following a purchase.
+    /// If an item has never been purchased, this method will return an empty array.
+    /// </summary>
+    public static string[] GetAllPurchaseReceipts (PurchasableItem forItem) {
+        if (null != biller) {
+            return biller.getReceiptsForPurchasable(forItem);
+        }
+
+        return new string[0];
+    }
+
+    /// <summary>
     /// Initiate purchasing of the specified PurchasableItem.
     /// </summary>
-    /// <param name="developerPayload">
-    /// Optional and relevant only to Google Play.
-    /// </param>
-    public static void initiatePurchase (PurchasableItem purchasable, string developerPayload = "") {
+    public static void initiatePurchase (PurchasableItem purchasable) {
         if (null != biller) {
-            biller.purchase(purchasable, developerPayload);
+            biller.purchase(purchasable);
         }
     }
 
     /// <summary>
     /// Initiate purchasing of the PurchasableItem with specified Id.
     /// </summary>
-    /// <param name="developerPayload">
-    /// Optional and relevant only to Google Play.
-    /// </param>
-    public static void initiatePurchase (string purchasableId, string developerPayload = "") {
+    public static void initiatePurchase (string purchasableId) {
         if (null != biller) {
-            biller.purchase(purchasableId, developerPayload);
+            biller.purchase(purchasableId);
         }
     }
 
@@ -283,19 +225,14 @@ public class Unibiller {
 	/// </summary>
 	/// <returns>The currency balance or 0 if the currency is unknown.</returns>
 	public static decimal GetCurrencyBalance(string currencyIdentifier) {
-        if (null != biller) {
-            return biller.getCurrencyBalance (currencyIdentifier);
-        }
-        return 0;
+		return biller.getCurrencyBalance (currencyIdentifier);
 	}
 
 	/// <summary>
 	/// Credits the specified currency by the specified amount.
 	/// </summary>
 	public static void CreditBalance(string currencyIdentifier, decimal amount) {
-        if (null != biller) {
-            biller.creditCurrencyBalance (currencyIdentifier, amount);
-        }
+		biller.creditCurrencyBalance(currencyIdentifier, amount);
 	}
 
 	/// <summary>
@@ -303,10 +240,7 @@ public class Unibiller {
 	/// </summary>
 	/// <returns><c>true</c>, if balance was debited (sufficient funds were available), <c>false</c> otherwise.</returns>
 	public static bool DebitBalance(string currencyIdentifier, decimal amount) {
-        if (null != biller) {
-            return biller.debitCurrencyBalance (currencyIdentifier, amount);
-        }
-        return false;
+		return biller.debitCurrencyBalance (currencyIdentifier, amount);
 	}
 
     /// <summary>
@@ -339,108 +273,14 @@ public class Unibiller {
     }
 
     /// <summary>
-    /// Downloads the content for the specified <c>PurchasableItem</c>
-    /// if Unibill is not configured to download it automatically.
-    /// </summary>
-    /// <param name="item">Item.</param>
-    public static void DownloadContentFor(PurchasableItem item) {
-        #if !(UNITY_WP8 || UNITY_METRO || UNITY_WEBPLAYER)
-        if (null != downloadManager) {
-            downloadManager.downloadContentFor (item);
-        }
-        #endif
-    }
-
-    #if !(UNITY_WP8 || UNITY_METRO || UNITY_WEBPLAYER)
-    /// <summary>
-    /// Get the downloaded content for a <c>PurchasableItem</c>.
-    /// The content must have downloaded successfully,
-    /// which can be checked with a call to <c>IsContentDownloaded</c>.
-    /// </summary>
-    /// <returns>The Directory containing the content, or NULL.</returns>
-    public static DirectoryInfo GetDownloadableContentFor(PurchasableItem item) {
-        if (null != downloadManager && item.hasDownloadableContent) {
-            return new DirectoryInfo(downloadManager.getContentPath (item.downloadableContentId));
-        }
-
-        return null;
-    }
-    #endif
-
-    /// <summary>
-    /// Get the downloaded content for a <c>PurchasableItem</c>.
-    /// The content must have downloaded successfully,
-    /// which can be checked with a call to <c>IsContentDownloaded</c>.
-    /// </summary>
-    /// <returns>The Directory path containing the content, or NULL.</returns>
-    public static string GetDownloadableContentPathFor(PurchasableItem item) {
-        #if !(UNITY_WP8 || UNITY_METRO || UNITY_WEBPLAYER)
-        if (null != downloadManager && item.hasDownloadableContent) {
-            return downloadManager.getContentPath(item.downloadableContentId);
-        }
-        #endif
-        return null;
-    }
-
-    /// <summary>
-    /// Determine if content is downloaded and available for the specified item.
-    /// </summary>
-    public static bool IsContentDownloaded(PurchasableItem item) {
-        #if !(UNITY_WP8 || UNITY_METRO || UNITY_WEBPLAYER)
-        if (null != downloadManager && item.hasDownloadableContent) {
-            return downloadManager.isDownloaded(item.downloadableContentId);
-        }
-        #endif
-        return false;
-    }
-
-    /// <summary>
-    /// Determine if content is scheduled for download.
-    /// Returns false once content has been successfully downloaded.
-    /// </summary>
-    public static bool IsDownloadScheduled(PurchasableItem item) {
-        #if !(UNITY_WP8 || UNITY_METRO || UNITY_WEBPLAYER)
-        if (null != downloadManager && item.hasDownloadableContent) {
-            return downloadManager.isDownloadScheduled(item.downloadableContentId);
-        }
-        #endif
-        return false;
-    }
-
-    /// <summary>
-    /// Deletes locally downloaded content for the <c>PurchasableItem</c>.
-    /// </summary>
-    public static void DeleteDownloadedContent(PurchasableItem item) {
-        #if !(UNITY_WP8 || UNITY_METRO || UNITY_WEBPLAYER)
-        if (null != downloadManager) {
-            downloadManager.deleteContent (item.downloadableContentId);
-        }
-        #endif
-    }
-
-    /// <summary>
     /// Visible only for unit testing.
     /// Do NOT call this method.
     /// </summary>
-    public static void _internal_doInitialise (Biller biller, BillerFactory factory) {
+    public static void _internal_doInitialise (Biller biller) {
         Unibiller.biller = biller;
         biller.onBillerReady += (success) => {
             if (onBillerReady != null) {
                 if (success) {
-                    #if !(UNITY_WP8 || UNITY_METRO || UNITY_WEBPLAYER)
-                    // Download manager needs Unibill to be initialised to get purchase receipts.
-                    downloadManager = factory.instantiateDownloadManager (biller);
-                    downloadManager.onDownloadCompletedEvent += (item, path) => {
-                        if (null != onDownloadCompletedEvent) {
-                            onDownloadCompletedEvent(item, new DirectoryInfo(path));
-                        }
-                    };
-                    downloadManager.onDownloadCompletedEvent += onDownloadCompletedEventString;
-                    downloadManager.onDownloadFailedEvent += onDownloadFailedEvent;
-                    downloadManager.onDownloadProgressedEvent += onDownloadProgressedEvent;
-                    #else
-                    onDownloadCompletedEventString += (x, y) => { };
-                    #endif
                     onBillerReady(biller.State == Unibill.Impl.BillerState.INITIALISED ? UnibillState.SUCCESS : UnibillState.SUCCESS_WITH_ERRORS);
                 } else {
                     onBillerReady(UnibillState.CRITICAL_ERROR);
@@ -452,7 +292,6 @@ public class Unibiller {
         biller.onPurchaseCancelled += _onPurchaseCancelled;
         biller.onPurchaseComplete += _onPurchaseComplete;
         biller.onPurchaseFailed += _onPurchaseFailed;
-        biller.onPurchaseDeferred += _onPurchaseDeferred;
         biller.onPurchaseRefunded += _onPurchaseRefunded;
         biller.onTransactionsRestored += _onTransactionsRestored;
 
@@ -465,13 +304,9 @@ public class Unibiller {
 		}
 	}
 
-	private static void _onPurchaseComplete(PurchaseEvent e) {
+	private static void _onPurchaseComplete(PurchasableItem item) {
 		if (null != onPurchaseComplete) {
-			onPurchaseComplete (e.PurchasedItem);
-		}
-
-		if (null != onPurchaseCompleteEvent) {
-			onPurchaseCompleteEvent (e);
+			onPurchaseComplete (item);
 		}
 	}
 
@@ -480,12 +315,6 @@ public class Unibiller {
 			onPurchaseFailed (item);
 		}
 	}
-
-    private static void _onPurchaseDeferred(PurchasableItem item) {
-        if (null != onPurchaseDeferred) {
-            onPurchaseDeferred(item);
-        }
-    }
 
 	private static void _onPurchaseRefunded(PurchasableItem item) {
 		if (null != onPurchaseRefunded) {

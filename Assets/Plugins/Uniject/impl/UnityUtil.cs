@@ -4,15 +4,13 @@
 //  www.outlinegames.com
 //-----------------------------------------------------------------
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 using Unibill.Impl;
 
-public class UnityUtil : MonoBehaviour, Uniject.IUtil {
+public class UnityUtil : Uniject.IUtil {
 
     public T[] getAnyComponentsOfType<T>() where T : class {
         GameObject[] objects = (GameObject[]) GameObject.FindObjectsOfType(typeof(GameObject));
@@ -26,10 +24,6 @@ public class UnityUtil : MonoBehaviour, Uniject.IUtil {
         }
 
         return result.ToArray();
-    }
-
-    void Start() {
-		DontDestroyOnLoad(this.gameObject);
     }
 
     public DateTime currentTime { get { return DateTime.Now; } }
@@ -48,26 +42,6 @@ public class UnityUtil : MonoBehaviour, Uniject.IUtil {
 
     public bool IsEditor {
         get { return Application.isEditor; }
-    }
-
-    public string DeviceModel {
-        get { return SystemInfo.deviceModel; }
-    }
-
-    public string DeviceName {
-        get { return SystemInfo.deviceName; }
-    }
-
-    public DeviceType DeviceType {
-        get { return SystemInfo.deviceType; }
-    }
-
-    public string DeviceId {
-        get { return SystemInfo.deviceUniqueIdentifier; }
-    }
-
-    public string OperatingSystem {
-        get { return SystemInfo.operatingSystem; }
     }
 
     private static List<RuntimePlatform> PCControlledPlatforms = new List<RuntimePlatform>() {
@@ -123,47 +97,4 @@ public class UnityUtil : MonoBehaviour, Uniject.IUtil {
 			(-planes[3].normal * planes[3].distance).z,
 		};
 	}
-
-    object Uniject.IUtil.InitiateCoroutine (System.Collections.IEnumerator start)
-    {
-        return StartCoroutine (start);
-    }
-
-    void Uniject.IUtil.InitiateCoroutine(System.Collections.IEnumerator start, int delay) {
-        delayedCoroutine(start, delay);
-    }
-
-    private IEnumerator delayedCoroutine(IEnumerator coroutine, int delay) {
-        yield return new WaitForSeconds(delay);
-        StartCoroutine(coroutine);
-    }
-
-    public void RunOnThreadPool(Action runnable) {
-        #if !(UNITY_WP8 || UNITY_METRO)
-        ThreadPool.QueueUserWorkItem (x => runnable());
-        #endif
-    }
-
-    void Update() {
-        while (mainThreadTasks.Count > 0) {
-            Action toRun;
-            lock (mainThreadTasks) {
-                toRun = mainThreadTasks.Dequeue ();
-            }
-            toRun();
-        }
-    }
-
-    private Queue<Action> mainThreadTasks = new Queue<Action> ();
-
-    public void RunOnMainThread(Action runnable) {
-        lock (mainThreadTasks) {
-            mainThreadTasks.Enqueue (runnable);
-        }
-    }
-
-    public object getWaitForSeconds (int seconds)
-    {
-        return new WaitForSeconds (seconds);
-    }
 }

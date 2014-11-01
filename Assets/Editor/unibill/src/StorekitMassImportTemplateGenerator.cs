@@ -23,17 +23,17 @@ namespace Unibill.Impl {
             this.util = util;
         }
 
-        public void writeFile (BillingPlatform platform) {
+        public void writeFile () {
             string directory = Path.Combine (util.getAssetsDirectoryPath (), "Plugins/unibill/generated/storekit");
             if (!Directory.Exists (directory)) {
                 Directory.CreateDirectory(directory);
             }
-            string path = Path.Combine (directory, string.Format("{0}.MassImportTemplate.txt", platform));
+            string path = Path.Combine (directory, "MassImportTemplate.txt");
             using (StreamWriter writer = new StreamWriter(path, false)) {
                 writer.WriteLine (getHeaderLine ());
                 foreach (PurchasableItem item in config.AllPurchasableItems) {
                     if (PurchaseType.Subscription != item.PurchaseType) {
-                        writer.WriteLine(serialisePurchasable(item, platform));
+                        writer.WriteLine(serialisePurchasable(item));
                     }
                 }
             }
@@ -54,18 +54,19 @@ namespace Unibill.Impl {
             return string.Join("\t", headers);
         }
 
-        public string serialisePurchasable (PurchasableItem item, BillingPlatform platform) {
+        public string serialisePurchasable (PurchasableItem item) {
             string screenshotPath = item.platformBundles[BillingPlatform.AppleAppStore].get<string>("screenshotPath");
-            if (!string.IsNullOrEmpty (screenshotPath)) {
-                string assetPath = util.guidToAssetPath((string)screenshotPath);
-                if (!string.IsNullOrEmpty(assetPath)) {
-                    screenshotPath = new FileInfo(assetPath).FullName;
-                }
+
+            string templatePath = "Assets/Plugins/unibill/generated/storekit/MassImportTemplate";
+            templatePath = new FileInfo (templatePath).FullName;
+            screenshotPath = string.Empty;
+            if (!string.IsNullOrEmpty(screenshotPath)) {
+                screenshotPath = new FileInfo(util.guidToAssetPath((string)screenshotPath)).FullName;
             }
             var records = new string[] {
-                platform == BillingPlatform.AppleAppStore ? config.iOSSKU : config.macAppStoreSKU,
-                item.LocalIds[platform],
-                item.LocalIds[platform], // This is the 'reference' field that is used to refer to the product within iTunes connect.
+                this.config.iOSSKU,
+                item.LocalIds[BillingPlatform.AppleAppStore],
+                item.LocalIds[BillingPlatform.AppleAppStore], // This is the 'reference' field that is used to refer to the product within iTunes connect.
                 item.PurchaseType == PurchaseType.Consumable ? "Consumable" : "Non-Consumable",
                 "yes",
                 item.platformBundles[BillingPlatform.AppleAppStore].getString("appleAppStorePriceTier"),

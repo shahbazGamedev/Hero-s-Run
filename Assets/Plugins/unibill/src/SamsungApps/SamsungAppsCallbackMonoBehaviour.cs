@@ -32,10 +32,6 @@ public class SamsungAppsCallbackMonoBehaviour : MonoBehaviour {
 		samsung.onPurchaseSucceeded(item);
 	}
 
-    public void onPurchaseCancelled(string item) {
-        samsung.onPurchaseCancelled (item);
-    }
-
 	public void onTransactionsRestored (string success) {
 		samsung.onTransactionsRestored(success);
 	}

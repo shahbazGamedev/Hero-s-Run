@@ -750,21 +750,13 @@ namespace Unibill.Impl {
             return default(T);
         }
 
-        public static string getString(this Dictionary<string, object> dic, string key, string defaultValue = "") {
+        public static string getString(this Dictionary<string, object> dic, string key) {
             if (dic.ContainsKey(key)) {
                 return dic[key].ToString();
             }
 
-            return defaultValue;
+            return string.Empty;
         }
-
-		public static long getLong(this Dictionary<string, object> dic, string key) {
-			if (dic.ContainsKey(key)) {
-				return long.Parse (dic [key].ToString ());
-			}
-
-			return 0;
-		}
 
 		public static List<string> getStringList(this Dictionary<string, object> dic, string key) {
 			if (dic.ContainsKey(key)) {

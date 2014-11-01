@@ -29,33 +29,22 @@ namespace Tests {
         }
 
         public bool purchaseCalled;
-        public void purchase (string item, string developerPayload) {
+        public void purchase (string item) {
             purchaseCalled = true;
             // Our billing systems should only keep track of non consumables.
             if (remapper.getPurchasableItemFromPlatformSpecificId (item).PurchaseType == PurchaseType.NonConsumable) {
                 purchasedItems.Add (item);
             }
-            biller.onPurchaseReceiptRetrieved (item, "fake receipt");
-			this.biller.onPurchaseSucceeded(item, "{ \"this\" : \"is a fake receipt\" }");
+            this.biller.onPurchaseSucceeded(item);
         }
 
         public bool restoreCalled;
         public void restoreTransactions () {
             restoreCalled = true;
             foreach (var item in purchasedItems) {
-				biller.onPurchaseSucceeded(item, "{ \"this\" : \"is a fake receipt\" }");
+                biller.onPurchaseSucceeded(item);
             }
             this.biller.onTransactionsRestoredSuccess();
-        }
-
-        public bool hasReceipt (string forItem)
-        {
-            return true;
-        }
-
-        public string getReceipt (string forItem)
-        {
-            return "fake";
         }
     }
 }

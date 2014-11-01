@@ -1,16 +1,12 @@
-
 //-----------------------------------------------------------------
 //  Copyright 2013 Alex McAusland and Ballater Creations
 //  All rights reserved
 //  www.outlinegames.com
 //-----------------------------------------------------------------
 using UnityEngine;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Unibill.Demo;
-using Unibill.Impl;
 
 /// <summary>
 /// An example of basic Unibill functionality.
@@ -26,6 +22,7 @@ public class UnibillDemo : MonoBehaviour {
     public Font font;
 
     void Start () {
+
         if (UnityEngine.Resources.Load ("unibillInventory.json") == null) {
             Debug.LogError("You must define your purchasable inventory within the inventory editor!");
             this.gameObject.SetActive(false);
@@ -36,37 +33,15 @@ public class UnibillDemo : MonoBehaviour {
         Unibiller.onBillerReady += onBillerReady;
         Unibiller.onTransactionsRestored += onTransactionsRestored;
         Unibiller.onPurchaseCancelled += onCancelled;
-	    Unibiller.onPurchaseFailed += onFailed;
-		Unibiller.onPurchaseCompleteEvent += onPurchased;
-        Unibiller.onPurchaseDeferred += onDeferred;
-        Unibiller.onDownloadProgressedEvent += (item, progress) => {
-            Debug.Log(item.name + " " + progress);
-        };
-
-        Unibiller.onDownloadFailedEvent += (arg1, arg2) => {
-            Debug.LogError(arg2);
-        };
-
-        Unibiller.onDownloadCompletedEventString += (obj, dir) => {
-            Debug.Log("Completed download: " + obj.name);
-            #if !(UNITY_WP8 || UNITY_METRO || UNITY_WEBPLAYER)
-            foreach (var f in  new DirectoryInfo(dir).GetFiles()) {
-                Debug.Log(f.Name);
-                if (f.Name.EndsWith("txt") && f.Length < 10000) {
-                #if !(UNITY_WP8 || UNITY_METRO || UNITY_WEBPLAYER)
-					Debug.Log(Unibill.Impl.Util.ReadAllText(f.FullName));
-                    #endif
-                }
-            }
-            #endif
-        };
+    Unibiller.onPurchaseFailed += onFailed;
+        Unibiller.onPurchaseComplete += onPurchased;
 
         // Now we're ready to initialise Unibill.
         Unibiller.Initialise();
 
         initCombobox();
     }
-
+    
     /// <summary>
     /// This will be called when Unibill has finished initialising.
     /// </summary>
@@ -84,12 +59,11 @@ public class UnibillDemo : MonoBehaviour {
     /// <summary>
     /// This will be called when a purchase completes.
     /// </summary>
-	private void onPurchased(PurchaseEvent e) {
-		Debug.Log("Purchase OK: " + e.PurchasedItem.Id);
-        Debug.Log ("Receipt: " + e.Receipt);
+    private void onPurchased(PurchasableItem item) {
+        Debug.Log("Purchase OK: " + item.Id);
         Debug.Log(string.Format ("{0} has now been purchased {1} times.",
-								 e.PurchasedItem.name,
-								 Unibiller.GetPurchaseCount(e.PurchasedItem)));
+                                 item.name,
+                                 Unibiller.GetPurchaseCount(item)));
     }
 
     /// <summary>
@@ -98,20 +72,6 @@ public class UnibillDemo : MonoBehaviour {
     /// </summary>
     private void onCancelled(PurchasableItem item) {
         Debug.Log("Purchase cancelled: " + item.Id);
-    }
-
-    /// <summary>
-    /// iOS Specific.
-    /// This is called as part of Apple's 'Ask to buy' functionality,
-    /// when a purchase is requested by a minor and referred to a parent
-    /// for approval.
-    /// 
-    /// When the purchase is approved or rejected, the normal purchase events
-    /// will fire.
-    /// </summary>
-    /// <param name="item">Item.</param>
-    private void onDeferred(PurchasableItem item) {
-        Debug.Log ("Purchase deferred blud: " + item.Id);
     }
     
     /// <summary>
@@ -156,23 +116,9 @@ public class UnibillDemo : MonoBehaviour {
         if (GUI.Button (new Rect (Screen.width / 2.0f, Screen.height - Screen.width / 6.0f, Screen.width / 2.0f, Screen.width / 6.0f), "Restore transactions")) {
             Unibiller.restoreTransactions();
         }
-     
-        if (Unibiller.GetPurchaseCount(items[selectedItemIndex]) > 0 &&
-                items [selectedItemIndex].hasDownloadableContent &&
-                !Unibiller.IsContentDownloaded (items [selectedItemIndex])) {
-            if (GUI.Button (new Rect (0, Screen.height - 2 * (Screen.width / 6.0f), Screen.width / 2.0f, Screen.width / 6.0f), "Download")) {
-                Unibiller.DownloadContentFor (items [selectedItemIndex]);
-            }
-        }
-
-        if (Unibiller.IsContentDownloaded (items [selectedItemIndex])) {
-            if (GUI.Button (new Rect (Screen.width / 2.0f, Screen.height - 2 * (Screen.width / 6.0f), Screen.width / 2.0f, Screen.width / 6.0f), "Delete")) {
-                Unibiller.DeleteDownloadedContent (items [selectedItemIndex]);
-            }
-        }
 
         // Draw the purchase names for our various purchasables.
-        int start = (int) (Screen.height - 2 * Screen.width / 6.0f) - 50;
+        int start = (int) (Screen.height - Screen.width / 6.0f) - 50;
         foreach (PurchasableItem item in Unibiller.AllNonConsumablePurchasableItems) {
             GUI.Label(new Rect(0, start, 500, 50), item.Id, listStyle);
 			GUI.Label(new Rect(Screen.width - Screen.width * 0.1f, start, 500, 50), Unibiller.GetPurchaseCount(item).ToString(), listStyle);

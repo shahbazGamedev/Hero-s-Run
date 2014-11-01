@@ -18,10 +18,8 @@ namespace Unibill.Impl
         /// </summary>
         void initialise(IBillingServiceCallback biller);
 
-        void purchase(string item, string developerPayload);
+        void purchase(string item);
         void restoreTransactions();
-        bool hasReceipt (string forItem);
-        string getReceipt(string forItem);
     }
 }
 

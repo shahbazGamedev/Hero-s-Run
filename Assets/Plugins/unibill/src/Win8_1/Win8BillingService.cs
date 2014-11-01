@@ -50,7 +50,7 @@ namespace Unibill.Impl {
             #endif
         }
 
-        public void purchase(string item, string developerPayload) {
+        public void purchase(string item) {
             #if UNITY_METRO
             if (unknownProducts.Contains(item)) {
                 callback.logError(UnibillError.WIN_8_1_ATTEMPTING_TO_PURCHASE_PRODUCT_NOT_RETURNED_BY_MICROSOFT, item);
@@ -105,8 +105,6 @@ namespace Unibill.Impl {
                         PurchasableItem.Writer.setLocalizedPrice(item, product.Price);
                         PurchasableItem.Writer.setLocalizedTitle(item, product.Title);
                         PurchasableItem.Writer.setLocalizedDescription(item, product.Description);
-                        PurchasableItem.Writer.setISOCurrencySymbol(item, product.IsoCurrencyCode);
-                        PurchasableItem.Writer.setPriceInLocalCurrency(item, product.PriceDecimal);
                     }
                     else {
                         logger.LogError("Warning: Unknown product identifier: {0}", product.Id);
@@ -199,16 +197,6 @@ namespace Unibill.Impl {
                 }
             }, false);
             #endif
-        }
-
-        public bool hasReceipt (string forItem)
-        {
-            return false;
-        }
-
-        public string getReceipt (string forItem)
-        {
-            throw new NotImplementedException ();
         }
     }
 }

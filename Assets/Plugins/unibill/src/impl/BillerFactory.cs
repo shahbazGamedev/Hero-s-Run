@@ -16,50 +16,33 @@ namespace Unibill.Impl {
         private ILogger logger;
         private IStorage storage;
         private IRawBillingPlatformProvider platformProvider;
-        private IUtil util;
         private UnibillConfiguration config;
 
-        public BillerFactory(IResourceLoader resourceLoader, ILogger logger, IStorage storage, IRawBillingPlatformProvider platformProvider, UnibillConfiguration config, IUtil util) {
+        public BillerFactory(IResourceLoader resourceLoader, ILogger logger, IStorage storage, IRawBillingPlatformProvider platformProvider, UnibillConfiguration config) {
             this.loader = resourceLoader;
             this.logger = logger;
             this.storage = storage;
             this.platformProvider = platformProvider;
             this.config = config;
-            this.util = util;
         }
 
         public Biller instantiate() {
             IBillingService svc = instantiateBillingSubsystem();
 
-			var biller = new Biller(config, getTransactionDatabase(), svc, getLogger(), getHelp(), getMapper(), getCurrencyManager());
-			instantiateAnalytics (biller);
-			return biller;
+            var biller = new Biller(config, getTransactionDatabase(), svc, getLogger(), getHelp(), getMapper(), getCurrencyManager());
+            return biller;
         }
-
-        #if !(UNITY_WP8 || UNITY_METRO || UNITY_WEBPLAYER)
-        public DownloadManager instantiateDownloadManager(Biller biller) {
-            var result = new DownloadManager (biller, util, storage, new UnityURLFetcher (), logger, biller.InventoryDatabase.CurrentPlatform, biller.InventoryDatabase.UnibillAnalyticsAppSecret);
-            util.InitiateCoroutine (result.monitorDownloads ());
-            return result;
-        }
-        #endif
-
-		public void instantiateAnalytics(Biller biller) {
-            if (!string.IsNullOrEmpty (config.UnibillAnalyticsAppId)) {
-                new AnalyticsReporter (biller, config, platformProvider.getHTTPClient (util), getStorage (), util, platformProvider.getLevelLoadListener ());
-            }
-		}
 
         private IBillingService instantiateBillingSubsystem() {
             switch (config.CurrentPlatform) {
                 case BillingPlatform.AppleAppStore:
-                    return new AppleAppStoreBillingService(config, getMapper(), platformProvider.getStorekit(), getLogger());
+                    return new AppleAppStoreBillingService(config, getMapper(), platformProvider.getStorekit());
                 case BillingPlatform.AmazonAppstore:
                     return new AmazonAppStoreBillingService(platformProvider.getAmazon(), getMapper(), config, getTransactionDatabase(), getLogger());
                 case BillingPlatform.GooglePlay:
                     return new GooglePlayBillingService(platformProvider.getGooglePlay(), config, getMapper(), getLogger());
                 case BillingPlatform.MacAppStore:
-                    return new AppleAppStoreBillingService(config, getMapper(), platformProvider.getStorekit(), getLogger());
+                    return new AppleAppStoreBillingService(config, getMapper(), platformProvider.getStorekit());
                 case BillingPlatform.WindowsPhone8:
                     var result = new WP8BillingService(unibill.Dummy.Factory.Create(config.WP8SandboxEnabled, GetDummyProducts()), config, getMapper(), getTransactionDatabase(), getLogger());
                     new GameObject().AddComponent<WP8Eventhook>().callback = result;
@@ -89,7 +72,6 @@ namespace Unibill.Impl {
                     Description = x.description,
                     Id = x.LocalId,
                     Price = "$123.45",
-                    PriceDecimal = 123.45m,
                     Title = x.name
                 };
             });

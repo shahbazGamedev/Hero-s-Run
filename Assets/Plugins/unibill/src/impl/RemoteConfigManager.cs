@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using Uniject;
 using UnityEngine;
@@ -13,11 +12,11 @@ namespace Unibill.Impl
 		public UnibillConfiguration Config { get; private set; }
 		public string XML;
 
-        public RemoteConfigManager (IResourceLoader loader, IStorage storage, ILogger logger, RuntimePlatform platform, List<ProductDefinition> runtimeProducts = null) {
+		public RemoteConfigManager (IResourceLoader loader, IStorage storage, ILogger logger, RuntimePlatform platform) {
 			this.storage = storage;
 			logger.prefix = "Unibill.RemoteConfigManager";
 			this.XML = loader.openTextFile ("unibillInventory.json").ReadToEnd ();
-            Config = new UnibillConfiguration(XML, platform, logger, runtimeProducts);
+			Config = new UnibillConfiguration(XML, platform, logger);
 			if (Config.UseHostedConfig) {
 				string val = storage.GetString (CACHED_CONFIG_PATH, string.Empty);
 				if (string.IsNullOrEmpty (val)) {
@@ -25,23 +24,23 @@ namespace Unibill.Impl
 				} else {
 					logger.Log ("Cached config found, attempting to parse");
 					try {
-                        Config = new UnibillConfiguration(val, platform, logger, runtimeProducts);
+                        Config = new UnibillConfiguration(val, platform, logger);
 						if (Config.inventory.Count == 0) {
 							logger.LogError ("No purchasable items in cached config, ignoring.");
-							Config = new UnibillConfiguration (XML, platform, logger, runtimeProducts);
+							Config = new UnibillConfiguration (XML, platform, logger);
 						} else {
 							logger.Log (string.Format ("Using cached config with {0} purchasable items", Config.inventory.Count));
 							XML = val;
 						}
 					} catch (Exception e) {
 						logger.LogError ("Error parsing inventory: {0}", e.Message);
-                        Config = new UnibillConfiguration(XML, platform, logger, runtimeProducts);
+                        Config = new UnibillConfiguration(XML, platform, logger);
 					}
 				}
 				refreshCachedConfig (Config.HostedConfigUrl, logger);
 			} else {
 				logger.Log ("Not using cached inventory, using bundled.");
-                Config = new UnibillConfiguration(XML, platform, logger, runtimeProducts);
+                Config = new UnibillConfiguration(XML, platform, logger);
 			}
 		}
 		

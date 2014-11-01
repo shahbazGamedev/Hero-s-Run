@@ -19,8 +19,7 @@ public class AndroidManifestMerger : IXmlNamespaceResolver {
 	private const string ELEMENT_GOOGLEPLAY_BILLING_SERVICE =  "manifest/application/service[@android:name='com.outlinegames.unibill.BillingService']";
     private const string ELEMENT_GOOGLEPLAY_BILLING_RECEIVER = "manifest/application/receiver[@android:name='com.outlinegames.unibill.BillingReceiver']";
 	private const string ELEMENT_GOOGLEPLAY_CUSTOM_ACTIVITY =  "manifest/application/activity[@android:name='com.outlinegames.unibill.PurchaseActivity']";
-    private const string ELEMENT_AMAZON_SERVICE =              "//receiver[@android:name='com.amazon.device.iap.ResponseReceiver']";
-	private const string ELEMENT_OLD_AMAZON_SERVICE = 			   "//receiver[@android:name='com.amazon.inapp.purchasing.ResponseReceiver']";
+	private const string ELEMENT_AMAZON_SERVICE = 			   "//receiver[@android:name='com.amazon.inapp.purchasing.ResponseReceiver']";
 	private const string ELEMENT_SAMSUNG_BILLING_PERMISSION =  "manifest/uses-permission[@android:name='com.sec.android.iap.permission.BILLING']";
 	private const string ELEMENT_SAMSUNG_INBOX_ACTIVITY      = "manifest/application/activity[@android:name='com.sec.android.iap.lib.activity.InboxActivity']";
 	private const string ELEMENT_SAMSUNG_PAYMENT_ACTIVITY    = "manifest/application/activity[@android:name='com.sec.android.iap.lib.activity.PaymentActivity']";
@@ -52,14 +51,13 @@ public class AndroidManifestMerger : IXmlNamespaceResolver {
     /// </summary>
     public XDocument merge (XDocument manifest, BillingPlatform platform, bool sandbox) {
 		switch (platform) {
-        case BillingPlatform.GooglePlay:
-            addElements (manifest, GOOGLE_PLAY_ELEMENTS);
-            addElements (manifest, COMMON_ELEMENTS);
+		case BillingPlatform.GooglePlay:
+			addElements (manifest, GOOGLE_PLAY_ELEMENTS);
+			addElements (manifest, COMMON_ELEMENTS);
 			// Old billing service v2 elements.
-            removeElements (manifest, ELEMENT_GOOGLEPLAY_BILLING_RECEIVER);
-            removeElements (manifest, ELEMENT_GOOGLEPLAY_BILLING_SERVICE);
-            removeElements (manifest, AMAZON_ELEMENTS);
-            removeElements (manifest, ELEMENT_OLD_AMAZON_SERVICE);
+			removeElements (manifest, ELEMENT_GOOGLEPLAY_BILLING_RECEIVER);
+			removeElements (manifest, ELEMENT_GOOGLEPLAY_BILLING_SERVICE);
+			removeElements (manifest, AMAZON_ELEMENTS);
 			removeElements (manifest, SAMSUNG_APPS_ELEMENTS);
 			break;
 		case BillingPlatform.AmazonAppstore:
@@ -75,7 +73,6 @@ public class AndroidManifestMerger : IXmlNamespaceResolver {
 			addElements (manifest, SAMSUNG_APPS_ELEMENTS);
 			removeElements (manifest, GOOGLE_PLAY_ELEMENTS);
 			removeElements (manifest, AMAZON_ELEMENTS);
-            removeElements (manifest, ELEMENT_OLD_AMAZON_SERVICE);
 			break;
 		}
         return manifest;
@@ -132,7 +129,7 @@ public class AndroidManifestMerger : IXmlNamespaceResolver {
             return new XElement("service", new XAttribute(xmlns + "name", "com.outlinegames.unibill.BillingService"));
         case ELEMENT_AMAZON_SERVICE: {
             XElement receiver = new XElement("receiver");
-            receiver.Add(new XAttribute(xmlns + "name", "com.amazon.device.iap.ResponseReceiver"));
+            receiver.Add(new XAttribute(xmlns + "name", "com.amazon.inapp.purchasing.ResponseReceiver"));
             
             intentFilter = new XElement("intent-filter");
             XElement action = new XElement("action");

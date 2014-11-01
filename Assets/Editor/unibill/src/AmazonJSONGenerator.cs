@@ -12,16 +12,16 @@ using Unibill.Impl;
 
 public class AmazonJSONGenerator {
 
-    private UnibillConfiguration config;
-    public AmazonJSONGenerator (UnibillConfiguration config) {
-        this.config = config;
+    private ProductIdRemapper remapper;
+    public AmazonJSONGenerator (ProductIdRemapper remapper) {
+        this.remapper = remapper;
+        remapper.initialiseForPlatform(BillingPlatform.AmazonAppstore);
     }
 
     public void encodeAll () {
         var result = new Dictionary<string, object>();
-        foreach (PurchasableItem item in config.AllPurchasableItems) {
-            var localId = item.LocalIds [BillingPlatform.AmazonAppstore];
-            result[localId] = purchasableDetailsToHashtable (item);
+		foreach (PurchasableItem item in remapper.db.AllPurchasableItems) {
+            result[remapper.mapItemIdToPlatformSpecificId (item)] = purchasableDetailsToHashtable (item);
         }
 
         var json = result.nJson();

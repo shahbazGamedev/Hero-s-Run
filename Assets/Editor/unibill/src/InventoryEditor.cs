@@ -112,6 +112,31 @@ public class InventoryEditor : EditorWindow {
         AssetDatabase.ImportAsset(path);
     }
 
+#if UNITY_ANDROID
+    [MenuItem("Window/Unibill/Install Amazon Test client")]   
+    static void root () {
+        Process p = new Process ();
+        
+        string adbLocation = Path.Combine(EditorPrefs.GetString ("AndroidSdkRoot"), "platform-tools/adb");
+        
+        FileInfo adb = new FileInfo (adbLocation);
+        
+        if (!adb.Exists) {
+            adb = new FileInfo(adbLocation + ".exe");
+            if (!adb.Exists) {
+                UnityEngine.Debug.LogError("Unable to find adb. Verify that your Android SDK location is set correctly in Unity.");
+                return;
+            }
+        }
+
+        p.StartInfo.FileName = adb.FullName;
+        string apkPath = new FileInfo(string.Format("Assets{0}Plugins{0}unibill{0}static{0}AmazonSDKTester.apk", Path.DirectorySeparatorChar)).FullName;
+
+        p.StartInfo.Arguments = string.Format("install {0}", apkPath);
+        p.Start();
+    }
+#endif
+
     private Vector2 scrollPosition = new Vector2();
     void OnGUI () {
 
@@ -146,37 +171,8 @@ public class InventoryEditor : EditorWindow {
         
         config.GooglePlayPublicKey = EditorGUILayout.TextField ("Google play public key:", config.GooglePlayPublicKey);
         config.iOSSKU = EditorGUILayout.TextField ("iOS SKU:", config.iOSSKU);
-        config.macAppStoreSKU = EditorGUILayout.TextField ("Mac App Store SKU:", config.macAppStoreSKU);
 
         EditorGUILayout.EndVertical();
-
-        GUIStyle wrap = new GUIStyle ();
-        wrap.wordWrap = true;
-
-        EditorGUILayout.BeginVertical (GUI.skin.box);
-        EditorGUILayout.LabelField ("Downloadable Content");
-        EditorGUILayout.Space();
-        GUILayout.Label ("Serve paid downloadable content to your users using Unicontent, our fully hosted, secure & reliable subscription service that's built into Unibill.", wrap);
-        EditorGUILayout.Space();
-        if (GUILayout.Button ("Find out more", GUILayout.Width(100))) {
-            Application.OpenURL ("http://www.outlinegames.com/unicontent");
-        }
-        EditorGUILayout.EndVertical ();
-
-        EditorGUILayout.BeginVertical (GUI.skin.box);
-        EditorGUILayout.LabelField ("Unibill Analytics");
-        EditorGUILayout.Space();
-
-        GUILayout.Label("Free analytics of your App's performance. View daily sales, installs & engagement across all platforms, all from one place!", wrap);
-        EditorGUILayout.Space ();
-        if (GUILayout.Button ("Sign up for free!", GUILayout.Width(100))) {
-            Application.OpenURL ("http://www.unibiller.com");
-        }
-        EditorGUILayout.Space();
-        config.UnibillAnalyticsAppId =  EditorGUILayout.TextField ("Unibill Analytics App Id:", config.UnibillAnalyticsAppId);
-        config.UnibillAnalyticsAppSecret =  EditorGUILayout.TextField ("Unibill Analytics App Secret:", config.UnibillAnalyticsAppSecret);
-        EditorGUILayout.EndVertical ();
-
         EditorGUILayout.Space();
 
         EditorGUILayout.LabelField ("Purchasable items:");
@@ -213,8 +209,7 @@ public class InventoryEditor : EditorWindow {
 		} catch(Exception) {
 		}
 
-        UnibillInjector.GetStorekitGenerator ().writeFile (BillingPlatform.AppleAppStore);
-        UnibillInjector.GetStorekitGenerator ().writeFile (BillingPlatform.MacAppStore);
+		UnibillInjector.GetStorekitGenerator ().writeFile ();
 		UnibillInjector.GetGooglePlayCSVGenerator ().writeCSV ();
 		UnibillInjector.GetAmazonGenerator ().encodeAll ();
 
@@ -236,10 +231,7 @@ public class InventoryEditor : EditorWindow {
             editors.Add(new GooglePlayEditor(item));
             editors.Add(new DefaultPlatformEditor(item, BillingPlatform.AmazonAppstore));
             editors.Add(new AppleAppStoreEditor(item));
-            var macEditor = new DefaultPlatformEditor (item, BillingPlatform.MacAppStore);
-            // Mac must be different to iOS.
-            macEditor.localId = item.Id + ".mac";
-            editors.Add(macEditor);
+            editors.Add(new DefaultPlatformEditor(item, BillingPlatform.MacAppStore));
             editors.Add(new DefaultPlatformEditor(item, BillingPlatform.WindowsPhone8));
             editors.Add(new DefaultPlatformEditor(item, BillingPlatform.Windows8_1));
 			editors.Add(new DefaultPlatformEditor(item, BillingPlatform.SamsungApps));
@@ -264,13 +256,9 @@ public class InventoryEditor : EditorWindow {
 
             if (visible) {
                 item.PurchaseType = (PurchaseType)EditorGUILayout.EnumPopup ("Purchase type:", item.PurchaseType, new GUILayoutOption[0]);
-                item.Id = EditorGUILayout.TextField ("Unibill Id:", item.Id);
+                item.Id = EditorGUILayout.TextField ("Id:", item.Id);
                 item.name = EditorGUILayout.TextField ("Name:", item.name);
                 item.description = EditorGUILayout.TextField ("Description:", item.description);
-
-                if (item.PurchaseType == PurchaseType.NonConsumable) {
-                    item.downloadableContentId = EditorGUILayout.TextField ("Unibill DLC id", item.downloadableContentId);
-                }
 
                 int t = 0;
                 foreach (var editor in editors) {
@@ -304,7 +292,7 @@ public class InventoryEditor : EditorWindow {
         private bool overridden;
         protected PurchasableItem item;
         private BillingPlatform platform;
-        public string localId;
+        private string localId;
 
         public DefaultPlatformEditor(PurchasableItem item, BillingPlatform platform) {
             this.platform = platform;

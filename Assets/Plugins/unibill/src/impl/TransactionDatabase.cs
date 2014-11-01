@@ -31,6 +31,7 @@ public class TransactionDatabase {
             logger.LogWarning("Apparently multi purchased a non consumable:{0}", item.Id);
             return;
         }
+
         storage.SetInt(getKey(item.Id), previousCount + 1);
     }
 

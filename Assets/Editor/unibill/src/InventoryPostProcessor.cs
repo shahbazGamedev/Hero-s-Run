@@ -18,18 +18,15 @@ public class InventoryPostProcessor : AssetPostprocessor {
 	public const string UNIBILL_XML_INVENTORY_PATH = "Assets/Plugins/unibill/resources/unibillInventory.xml";
     public const string UNIBILL_JSON_INVENTORY_PATH = "Assets/Plugins/unibill/resources/unibillInventory.json.txt";
 	private const string UNIBILL_BACKUP_PATH = "Assets/Plugins/unibill/resources/old_inventory_delete_me.xml";
-    private const string SHARPZIPLIB_PATH = "Assets/Plugins/ICSharpCode.SharpZipLib.dll";
-    private const string SHARPZIPLIB_RENAME_PATH = "Assets/Plugins/ICSharpCode.SharpZipLib.dll.rename";
 	
     static void OnPostprocessAllAssets (string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromPath) {
-        MoveZipLibIfNecessary();
+	
 		CreateInventoryIfNecessary ();
 
         foreach (var s in importedAssets) {
 			try {
 	            if (s.Contains("unibillInventory")) {
-                    UnibillInjector.GetStorekitGenerator ().writeFile (BillingPlatform.AppleAppStore);
-                    UnibillInjector.GetStorekitGenerator ().writeFile (BillingPlatform.MacAppStore);
+					UnibillInjector.GetStorekitGenerator ().writeFile ();
 					UnibillInjector.GetGooglePlayCSVGenerator ().writeCSV ();
 					UnibillInjector.GetAmazonGenerator ().encodeAll ();
 	            }
@@ -45,25 +42,6 @@ public class InventoryPostProcessor : AssetPostprocessor {
 			AssetDatabase.CopyAsset("Assets/Plugins/unibill/static/InventoryTemplate.json", UNIBILL_JSON_INVENTORY_PATH);
 		}
 	}
-
-    private static void MoveZipLibIfNecessary() {
-        if (EditorUserBuildSettings.activeBuildTarget == BuildTarget.WP8Player || EditorUserBuildSettings.activeBuildTarget == BuildTarget.MetroPlayer) {
-            if (File.Exists(SHARPZIPLIB_PATH)) {
-                if (File.Exists (SHARPZIPLIB_RENAME_PATH)) {
-                    File.Delete (SHARPZIPLIB_PATH);
-                } else {
-                    File.Move (SHARPZIPLIB_PATH, SHARPZIPLIB_RENAME_PATH);
-                }
-            }
-        }
-        else {
-            if (File.Exists(SHARPZIPLIB_RENAME_PATH)) {
-                if (!File.Exists (SHARPZIPLIB_PATH)) {
-                    File.Move (SHARPZIPLIB_RENAME_PATH, SHARPZIPLIB_PATH);
-                }
-            }
-        }
-    }
 
     private static void PortXMLInventoryIfNecessary() {
         if (File.Exists(UNIBILL_XML_INVENTORY_PATH) && ! File.Exists(UNIBILL_JSON_INVENTORY_PATH)) {

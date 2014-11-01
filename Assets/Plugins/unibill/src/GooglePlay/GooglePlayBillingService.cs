@@ -65,18 +65,14 @@ namespace Unibill.Impl {
             rawInterface.restoreTransactions();
         }
 
-        public void purchase (string item, string developerPayload) {
+        public void purchase (string item) {
             if (unknownAmazonProducts.Contains (item)) {
                 callback.logError(UnibillError.GOOGLEPLAY_ATTEMPTING_TO_PURCHASE_PRODUCT_NOT_RETURNED_BY_GOOGLEPLAY, item);
                 callback.onPurchaseFailedEvent(item);
                 return;
             }
 
-            var args = new Dictionary<string, object>();
-            args ["productId"] = item;
-            args ["developerPayload"] = developerPayload;
-
-            rawInterface.purchase(MiniJSON.jsonEncode(args));
+            rawInterface.purchase(item);
         }
 
 
@@ -136,11 +132,6 @@ namespace Unibill.Impl {
                     PurchasableItem.Writer.setLocalizedPrice(item,  details["price"].ToString());
                     PurchasableItem.Writer.setLocalizedTitle(item, (string) details["localizedTitle"]);
                     PurchasableItem.Writer.setLocalizedDescription(item, (string) details["localizedDescription"]);
-					PurchasableItem.Writer.setISOCurrencySymbol(item, details.getString("isoCurrencyCode"));
-					long priceInMicros = details.getLong("priceInMicros");
-
-					decimal price = new decimal (priceInMicros) / 1000000m;
-					PurchasableItem.Writer.setPriceInLocalCurrency(item, price);
                     productsReceived.Add(item);
                 } else {
                     logger.LogError("Warning: Unknown product identifier: {0}", identifier.ToString());
@@ -168,26 +159,9 @@ namespace Unibill.Impl {
 				if (null != ownedSubscriptions) {
 					callback.onActiveSubscriptionsRetrieved (ownedSubscriptions);
 				}
-
-                var ownedItems = response.getHash ("ownedItems");
-                if (null != ownedItems) {
-                    foreach (var item in ownedItems) {
-                        callback.onPurchaseReceiptRetrieved (item.Key, item.Value.ToString());
-                    }
-                }
 			}
 	        callback.onSetupComplete(true);
 		}
-
-        public bool hasReceipt (string forItem)
-        {
-            return false;
-        }
-
-        public string getReceipt (string forItem)
-        {
-            throw new NotImplementedException ();
-        }
     }
 }
 	

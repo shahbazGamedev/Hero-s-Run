@@ -40,11 +40,7 @@
         </activity>
 		
 		<!-- ACTIVITIES -->
-	    <receiver android:name="com.amazon.inapp.purchasing.ResponseReceiver">
-	      <intent-filter>
-	        <action android:name="com.amazon.inapp.purchasing.NOTIFY" android:permission="com.amazon.inapp.purchasing.Permission.NOTIFY" />
-	      </intent-filter>
-	    </receiver>
+
 		<!-- META-DATA -->
 
 		
@@ -56,6 +52,5 @@
 	
 	
 	<!-- PERMISSIONS -->
-	<uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	
 </manifest>
