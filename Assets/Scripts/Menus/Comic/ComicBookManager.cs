@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class ComicBookManager : MonoBehaviour {
 
 	public Canvas episodeScreen;
-	public Canvas comicScreen;
+	public Button tapToContinue;
 	Animator anim;
 	int currentComicBookStrip = 0;
 	public int levelToLaunchIndex = 0;
@@ -52,8 +52,12 @@ public class ComicBookManager : MonoBehaviour {
 				}
 			}
 		}
-		else
+		if( currentComicBookStrip == ( stripList.Count - 1 ) )
 		{
+			tapToContinue.gameObject.SetActive( false );
+			//Revert to protrait mode BEFORE loading level
+			Screen.orientation = ScreenOrientation.Portrait;
+
 			//Open level
 			StartCoroutine( loadLevel() );
 		}

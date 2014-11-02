@@ -256,8 +256,6 @@ public class PlayerController : BaseClass {
 
 	void Awake()
 	{
-		Screen.orientation = ScreenOrientation.Portrait;
-
 		//Instantiate the avatar selected by the player and attach it to the Hero game object
 		GameObject avatar = Resources.Load( "Avatar/" + PlayerStatsManager.Instance.getAvatarName() ) as GameObject;
 		GameObject Hero_Prefab = null;
