@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 //The 3D world is displayed behind the HUD.
 public class HUDHandler : MonoBehaviour {
@@ -107,6 +108,9 @@ public class HUDHandler : MonoBehaviour {
 	PopupHandler popupHandler;
 	PlayerController playerController;
 
+	//New UI related
+	public Button tapToPlayButton; 
+
 	void OnDrawGizmos ()
 	{
 		//Display the number of characters in the CharacterCounter field
@@ -184,7 +188,7 @@ public class HUDHandler : MonoBehaviour {
 		GameState gameState = GameManager.Instance.getGameState();
 
 		//For mobile - detect player taps
-		detectTaps();
+		//detectTaps();
 
 		int dist = PlayerStatsManager.Instance.getDistanceTravelled();
 		if( dist != 0 && dist%distanceMarkerInterval == 0 && gameState != GameState.Checkpoint && playerController.getCharacterState() != CharacterState.Dying )
@@ -296,7 +300,7 @@ public class HUDHandler : MonoBehaviour {
 		}
 		if (Input.GetMouseButtonDown(0))
 		{
-			startPlaying();
+			//startPlaying();
 		}
 		#endif
 	}
@@ -498,6 +502,7 @@ public class HUDHandler : MonoBehaviour {
 		
 	}
 
+
 	void detectTaps()
 	{
 		if ( Input.touchCount > 0 )
@@ -510,12 +515,14 @@ public class HUDHandler : MonoBehaviour {
 		}
 	}
 
-	void startPlaying()
+	public void startPlaying()
 	{
+		print ("startPlaying called");
 		//If we are in the Menu state simply start running, but if we are in the OpeningSequence state
 		//initiate the opening sequence instead.
 		if (GameManager.Instance.getGameState() == GameState.Menu  )
 		{
+			tapToPlayButton.gameObject.SetActive( false );
 			if( playerController.getCurrentTileType() == TileType.Opening )
 			{
 				SoundManager.playButtonClick();
