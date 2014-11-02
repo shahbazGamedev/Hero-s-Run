@@ -302,7 +302,7 @@ public class WorldMapHandler : MonoBehaviour {
 		drawMessageCenterButton();
 		drawDebugButton();
 		drawSettingsButton();
-		//drawPlayButton();
+		drawPlayButton();
 		drawTreasureIslandButton();
 		drawBoostsButton();
 	}
@@ -367,15 +367,16 @@ public class WorldMapHandler : MonoBehaviour {
 	{
 		//Draw button
 		Vector2 buttonSize = new Vector2( Screen.width * 0.14f, Screen.width * 0.07f );
-		float marginX = (Screen.width - buttonSize.x ) * 0.5f;
+		float marginX = (Screen.width - buttonSize.x ) * 0.7f;
 		float marginY = Screen.height - ( 2 * buttonSize.y );
 		Rect buttonRect = new Rect( marginX, marginY, messageCenterOpenStyle.fixedWidth, messageCenterOpenStyle.fixedHeight );
 		if( GUI.Button( buttonRect, "Play", playButtonStyle )) 
 		{
 			SoundManager.playButtonClick();
 			//Hack - for demo, always start at the first elfland level which is 5
-			LevelManager.Instance.forceNextLevelToComplete( 5 );
-			initiateLevelLoading();
+			//LevelManager.Instance.forceNextLevelToComplete( 5 );
+			//initiateLevelLoading();
+			Application.LoadLevel( 8 );
 		}
 	}
 
