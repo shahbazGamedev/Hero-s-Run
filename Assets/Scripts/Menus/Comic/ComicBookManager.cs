@@ -26,9 +26,12 @@ public class ComicBookManager : MonoBehaviour {
 		Screen.autorotateToPortrait = false;
 		Screen.autorotateToPortraitUpsideDown = false;
 		Screen.autorotateToLandscapeLeft = true;
-		Screen.autorotateToLandscapeRight = true;
-		
+		Screen.autorotateToLandscapeRight = true;		
 		Screen.orientation = ScreenOrientation.AutoRotation;
+
+		//The initial strip is all black. We are now ready to display the first strip with art.
+		displayNextComicStrip();
+		tapToContinue.gameObject.SetActive( true );
 		//anim.SetTrigger("FadeOut");
 	}
 	

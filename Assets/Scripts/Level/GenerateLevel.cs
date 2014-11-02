@@ -253,12 +253,6 @@ public class GenerateLevel  : MonoBehaviour {
 		//Fade-in the level ambience soundtrack
 		StartCoroutine( SoundManager.fadeInAmbience( levelInfo.AmbienceSound, 10f ) );
 
-		//Should we display the Tap to Play message right away by changing the game state to GameState.Menu or will the game state be set by another script?
-		if( !levelInfo.waitForTapToPlay )
-		{
-			GameManager.Instance.setGameState(GameState.Menu);
-		}
-
 		Debug.Log("GenerateLevel-CreateLevel: Level " + levelInfo.LevelName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.realNumberCoinsSpawned );
 		Debug.Log("GenerateLevel-CreateLevel: The level length in meters is : " + levelInfo.lengthInMeters );

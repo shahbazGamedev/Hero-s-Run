@@ -323,11 +323,7 @@ public class PlayerController : BaseClass {
 		if( currentTileType != TileType.Opening )
 		{
 			//Should we display the Tap to Play message right away by changing the game state to GameState.Menu or will the game state be set by another script?
-			if( LevelManager.Instance.getLevelInfo().waitForTapToPlay )
-			{
-				GameManager.Instance.setGameState(GameState.BeforeTapToPlayAllowed);
-			}
-			else
+			if( !LevelManager.Instance.getLevelInfo().waitForTapToPlay )
 			{
 				GameManager.Instance.setGameState(GameState.Menu);
 			}

@@ -15,7 +15,6 @@ public class OpeningSequence : MonoBehaviour {
 		GameObject gameEventManagerObject = GameObject.FindGameObjectWithTag("GameEventManager");
 		GameEventManager gem = gameEventManagerObject.GetComponent<GameEventManager>();
 		gem.setOpeningSequence( this );
-		//Invoke("displayTapToPlay", 3.25f );		
 	}
 
 	public void playCrowSound()
@@ -27,11 +26,6 @@ public class OpeningSequence : MonoBehaviour {
 	{
 		//Explosion sound
 		audio.Play();
-	}
-
-	void displayTapToPlay()
-	{
-		GameManager.Instance.setGameState( GameState.Menu );
 	}
 }
 

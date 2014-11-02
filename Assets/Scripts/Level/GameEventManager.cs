@@ -791,8 +791,14 @@ public class GameEventManager : MonoBehaviour {
 		simpleCamera.playCutscene( CutsceneType.OpeningSequence );
 		trollController.stopPursuing();
 		op.InvokeRepeating("playCrowSound", 3.5f, 10f );
+		Invoke ( "enableTapToPlay", 1.2f );
 	}
-	
+
+	void enableTapToPlay()
+	{
+		//The state change will cause Tap to play to become active
+		GameManager.Instance.setGameState( GameState.Menu );
+	}
 
 	public void playOpeningSequence()
 	{

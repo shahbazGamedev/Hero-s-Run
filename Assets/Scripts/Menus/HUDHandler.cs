@@ -47,9 +47,6 @@ public class HUDHandler : MonoBehaviour {
 	Rect pauseRect;
 	GUIContent pauseButtonContent;
 	public GUIStyle pauseStyle;
-	
-	//Tap to play label displayed when ready to run
-	GUIContent tapToPlayContent = new GUIContent( LocalizationManager.Instance.getText("MENU_TAP_TO_PLAY") );
 
 	//For the 3,2,1 countdown displayed when resuming game after pausing it
 	//Countdown 3,2,1
@@ -109,7 +106,11 @@ public class HUDHandler : MonoBehaviour {
 	PlayerController playerController;
 
 	//New UI related
+	//Tap to play button (the size of the canvas) with the Tap to play label
+	//This is displayed when you start a level WHEN the game state changes to the MENU state.
+	//Also see the waitForTapToPlay bool in LevelData
 	public Button tapToPlayButton; 
+	public Text tapToPlayText;
 
 	void OnDrawGizmos ()
 	{
@@ -174,6 +175,9 @@ public class HUDHandler : MonoBehaviour {
 		PopupHandler.changeFontSizeBasedOnResolution( runAgainStyle );
 		PopupHandler.changeFontSizeBasedOnResolution( distanceMarkerStyle );
 
+		//New UI related
+		tapToPlayText.text = LocalizationManager.Instance.getText("MENU_TAP_TO_PLAY");
+
 	}
 	
 	void Start()
@@ -186,9 +190,6 @@ public class HUDHandler : MonoBehaviour {
 	void OnGUI ()
 	{
 		GameState gameState = GameManager.Instance.getGameState();
-
-		//For mobile - detect player taps
-		//detectTaps();
 
 		int dist = PlayerStatsManager.Instance.getDistanceTravelled();
 		if( dist != 0 && dist%distanceMarkerInterval == 0 && gameState != GameState.Checkpoint && playerController.getCharacterState() != CharacterState.Dying )
@@ -248,12 +249,6 @@ public class HUDHandler : MonoBehaviour {
 		{
 			GUI.Label ( countdownRect, countdown.ToString(), countdownStyle );
 		}
-		
-		//Tap to play label which is displayed when you are ready to run
-		if( gameState == GameState.Menu )
-		{
-			displayRotatedLabel(tapToPlayContent, -4f, 0.4f );
-		}
 
 		//Save Me options
 		if( gameState == GameState.SaveMe )
@@ -297,10 +292,6 @@ public class HUDHandler : MonoBehaviour {
 		if ( Input.GetKeyDown (KeyCode.W) ) 
 		{
 			pauseGame();
-		}
-		if (Input.GetMouseButtonDown(0))
-		{
-			//startPlaying();
 		}
 		#endif
 	}
@@ -502,26 +493,13 @@ public class HUDHandler : MonoBehaviour {
 		
 	}
 
-
-	void detectTaps()
-	{
-		if ( Input.touchCount > 0 )
-		{
-			Touch touch = Input.GetTouch(0);
-			if( touch.tapCount == 1 )
-			{
-				startPlaying();
-			}
-		}
-	}
-
 	public void startPlaying()
 	{
-		print ("startPlaying called");
 		//If we are in the Menu state simply start running, but if we are in the OpeningSequence state
 		//initiate the opening sequence instead.
 		if (GameManager.Instance.getGameState() == GameState.Menu  )
 		{
+			//Disable the Tap to play button (and the associated Tap to Play label) since we do not need it anymore.
 			tapToPlayButton.gameObject.SetActive( false );
 			if( playerController.getCurrentTileType() == TileType.Opening )
 			{
@@ -605,22 +583,6 @@ public class HUDHandler : MonoBehaviour {
 		Matrix4x4 matrixBackup = GUI.matrix;
 		Vector2 pos = new Vector2( positionRect.x, positionRect.y );
 		GUIUtility.RotateAroundPivot(userAngle, pos);
-		Utilities.drawLabelWithDropShadow( positionRect, textContent, saveMeLevelInfoStyle );
-		GUI.matrix = matrixBackup;
-	}
-	
-	//Displays a horizontally centered label with a drop-shadow that has a rotation.
-	private void displayRotatedLabel(GUIContent textContent, float labelAngle, float percentageHeight )
-	{
-		Rect textRect = GUILayoutUtility.GetRect( textContent, saveMeLevelInfoStyle );
-		float textCenterX = (Screen.width-textRect.width)/2f;
-		
-		Rect positionRect = new Rect( textCenterX, Screen.height * percentageHeight, textRect.width, textRect.height );
-		
-		//Save the GUI.matrix so we can restore it once our rotation is done
-		Matrix4x4 matrixBackup = GUI.matrix;
-		Vector2 pos = new Vector2( positionRect.x, positionRect.y );
-		GUIUtility.RotateAroundPivot(labelAngle, pos);
 		Utilities.drawLabelWithDropShadow( positionRect, textContent, saveMeLevelInfoStyle );
 		GUI.matrix = matrixBackup;
 	}
@@ -763,11 +725,15 @@ public class HUDHandler : MonoBehaviour {
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
+		GameManager.gameStateEvent += GameStateChange;
+
 	}
 	
 	void OnDisable()
 	{
 		PlayerController.playerStateChanged -= PlayerStateChange;
+		GameManager.gameStateEvent -= GameStateChange;
+
 	}
 
 	void PlayerStateChange( CharacterState newState )
@@ -775,6 +741,15 @@ public class HUDHandler : MonoBehaviour {
 		if( newState == CharacterState.Dying )
 		{
 			isShowingDistanceMarker = false;
+		}
+	}
+
+	void GameStateChange( GameState newState )
+	{
+		if( newState == GameState.Menu )
+		{
+			//Display the tap to play button
+			tapToPlayButton.gameObject.SetActive( true );
 		}
 	}
 
