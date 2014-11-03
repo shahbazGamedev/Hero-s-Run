@@ -21,6 +21,7 @@ public class ComicBookManager : MonoBehaviour {
 		Invoke ("enableAutoRotation", 0.5f );
 		anim = episodeScreen.gameObject.GetComponent<Animator>();
 		tapToContinueText.text = LocalizationManager.Instance.getText("TAP_TO_CONTINUE");
+		resetComicStrips();
 	}
 
 	void enableAutoRotation()
@@ -65,6 +66,25 @@ public class ComicBookManager : MonoBehaviour {
 
 			//Open level
 			StartCoroutine( loadLevel() );
+		}
+	}
+
+	public void resetComicStrips()
+	{
+		currentComicBookStrip = 0;
+		tapToContinue.gameObject.SetActive( false );
+		for( int i = 0; i <  stripList.Count; i++ )
+		{
+			if( i == currentComicBookStrip )
+			{
+				//Activate
+				stripList[i].gameObject.SetActive( true );
+			}
+			else
+			{
+				//Deactivate
+				stripList[i].gameObject.SetActive( false );
+			}
 		}
 	}
 

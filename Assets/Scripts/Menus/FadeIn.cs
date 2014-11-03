@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 
-public class FadeIn : BaseClass {
+public class FadeIn : MonoBehaviour {
 
 	public float fadeDuration = 2f;
 	Image imageToFade;
@@ -23,20 +23,17 @@ public class FadeIn : BaseClass {
 	{
 		if( imageToFade != null )
 		{
-			Debug.Log("Fader-fadeIn: fading in image " +  gameObject.name );
+			Debug.Log("Fader-fadeIn: fading in image " +  gameObject.name + " " + fadeDuration );
 			Color startColor = new Color( imageToFade.color.r, imageToFade.color.g, imageToFade.color.b, 0 );
 			Color endColor = new Color( imageToFade.color.r, imageToFade.color.g, imageToFade.color.b, 1f );
 
-			//Time in seconds to fade
-			float time = fadeDuration;
-			float originalTime = time;
+			float time = 0;
 
-			while ( time > 0.0f )
+			while ( time <= fadeDuration )
 			{
-				time -= Time.deltaTime;
-				imageToFade.color = Color.Lerp( endColor, startColor, time / originalTime );
-
-				yield return _sync();
+				time += Time.deltaTime;
+				imageToFade.color = Color.Lerp( startColor, endColor, time / fadeDuration );
+				yield return new WaitForFixedUpdate(); 
 			}
 		}
 	}
