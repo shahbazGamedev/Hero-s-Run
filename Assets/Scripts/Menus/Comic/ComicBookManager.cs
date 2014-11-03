@@ -7,6 +7,7 @@ public class ComicBookManager : MonoBehaviour {
 
 	public Canvas episodeScreen;
 	public Button tapToContinue;
+	public Text tapToContinueText;
 	Animator anim;
 	int currentComicBookStrip = 0;
 	public int levelToLaunchIndex = 0;
@@ -19,6 +20,7 @@ public class ComicBookManager : MonoBehaviour {
 		Screen.orientation = ScreenOrientation.LandscapeLeft;
 		Invoke ("enableAutoRotation", 0.5f );
 		anim = episodeScreen.gameObject.GetComponent<Animator>();
+		tapToContinueText.text = LocalizationManager.Instance.getText("TAP_TO_CONTINUE");
 	}
 
 	void enableAutoRotation()
