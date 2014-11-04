@@ -1,5 +1,6 @@
 #TEXT ID,ENGLISH,FRENCH,ITALIAN,GERMAN,SPANISH
 #Note: The # character at the beginning of a row is used to indicate a row header or comment. These rows will not be imported in the game.
+GAME_TITLE,Hero's Run,Course du Héros,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 PLAY_AGAIN,Play Again,Joue Encore,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 REVIVE_ME,Revive me,Résurrection,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 DISTANCE,Distance,Distance,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
