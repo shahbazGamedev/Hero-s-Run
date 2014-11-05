@@ -19,9 +19,7 @@ public enum PopupType {
 	DebugPopup = 9,
 	OfferLives = 10,
 	SaveMe = 11,
-	Settings = 12,
-	PauseMenu = 13,
-	BoostsMenu = 14
+	Settings = 12
 }
 
 public class PopupHandler : MonoBehaviour {
@@ -95,11 +93,7 @@ public class PopupHandler : MonoBehaviour {
 
 	//Offer Lives
 	OfferLivesHandler offerLivesHandler;
-
-	PauseMenu pauseMenu;
-	BoostsMenu boostsMenu;
-
-
+	
 	//For user message
 	Rect userMessageRect;
 	Vector2 userMessageSize;
@@ -146,16 +140,6 @@ public class PopupHandler : MonoBehaviour {
 		messageCenterHandler = worldMapHandlerGameObject.GetComponent<MessageCenterHandler>();
 		//Offer Lives to friends
 		offerLivesHandler = worldMapHandlerGameObject.GetComponent<OfferLivesHandler>();
-	}
-
-	public void setPauseMenu( PauseMenu pauseMenu )
-	{
-		this.pauseMenu = pauseMenu;
-	}
-
-	public void setBoostsMenu( BoostsMenu boostsMenu )
-	{
-		this.boostsMenu = boostsMenu;
 	}
 
 	void Start()
@@ -287,13 +271,6 @@ public class PopupHandler : MonoBehaviour {
 			renderSettingsMenu();
 			break;
 
-		case PopupType.PauseMenu:
-			pauseMenu.renderPauseMenu();
-			break;
-
-		case PopupType.BoostsMenu:
-			boostsMenu.renderBoostsMenu();
-			break;
 		}
 	}
 
@@ -981,14 +958,6 @@ public class PopupHandler : MonoBehaviour {
 
 		case PopupType.Settings:
 			title = LocalizationManager.Instance.getText("POPUP_TITLE_SETTINGS");
-			break;
-
-		case PopupType.PauseMenu:
-			title = LocalizationManager.Instance.getText("MENU_PAUSE");;
-			break;
-
-		case PopupType.BoostsMenu:
-			title = LocalizationManager.Instance.getText("MENU_BOOSTS");
 			break;
 		}
 		return title;

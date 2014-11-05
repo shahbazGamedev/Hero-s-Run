@@ -47,6 +47,12 @@ public class PowerUpDisplayData : MonoBehaviour {
 		return pud.textureCoordinates;
 	}
 
+	public static Sprite getPowerUpSprite( PowerUpType type )
+	{
+		ConsumablePowerUpData pud = powerUpDictionary[type];
+		return pud.powerupSprite;
+	}
+
 	public static PowerUpType getNextPowerUp()
 	{
 		int selectedPowerUpIndex = (int)PlayerStatsManager.Instance.getPowerUpSelected();
@@ -75,5 +81,6 @@ public class PowerUpDisplayData : MonoBehaviour {
 		public PowerUpType powerUpType = PowerUpType.None;
 		public string textID;
 		public Rect textureCoordinates;
+		public Sprite powerupSprite;
 	}
 }

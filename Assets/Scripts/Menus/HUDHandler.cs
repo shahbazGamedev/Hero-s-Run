@@ -48,14 +48,7 @@ public class HUDHandler : MonoBehaviour {
 	GUIContent pauseButtonContent;
 	public GUIStyle pauseStyle;
 
-	//For the 3,2,1 countdown displayed when resuming game after pausing it
-	//Countdown 3,2,1
-	int countdown = -1;
-	//Sound to play every second during countdown
-	AudioClip beep;
-	Rect countdownRect;
-	public GUIStyle countdownStyle;
-	
+
 	public GUIStyle saveMeLevelInfoStyle;
 
 	
@@ -96,9 +89,6 @@ public class HUDHandler : MonoBehaviour {
 	Texture2D sliderImage;
 	public Texture2D cuteWitch;
 	int distanceMarkerInterval = 250; //in meters
-	
-	float timeScaleBeforePause;
-	bool isPlayerControlEnabledBeforePause = true;
 
 	HUDSaveMe hudSaveMe;
 
@@ -111,6 +101,9 @@ public class HUDHandler : MonoBehaviour {
 	//Also see the waitForTapToPlay bool in LevelData
 	public Button tapToPlayButton; 
 	public Text tapToPlayText;
+
+	//Pause Menu
+	PauseMenu pauseMenu;
 
 	void OnDrawGizmos ()
 	{
@@ -147,10 +140,6 @@ public class HUDHandler : MonoBehaviour {
 		//For the GUIStyle button states to work, GUIContent must either be an empty constructor or have text.
 		//If you create a GUIContent with a texture, the button states will not change.
 		pauseButtonContent = new GUIContent ();
-		beep = Resources.Load("Audio/beep") as AudioClip;
-		
-		//For countdown
-		countdownRect = new Rect ( Screen.width * 0.5f, Screen.height * 0.5f, 24, 24 );
 
 		//For the stats screen/Run Again display
 		runAgainBackground = Resources.Load("GUI/runAgain") as Texture2D;
@@ -168,7 +157,6 @@ public class HUDHandler : MonoBehaviour {
 		//Adjust font sizes based on screen resolution
 		PopupHandler.changeFontSizeBasedOnResolution( statsStyle );
 		PopupHandler.changeFontSizeBasedOnResolution( coinAccumulatorStyle );
-		PopupHandler.changeFontSizeBasedOnResolution( countdownStyle );
 		PopupHandler.changeFontSizeBasedOnResolution( saveMeLevelInfoStyle );
 		PopupHandler.changeFontSizeBasedOnResolution( statsScreenStyleLeft );
 		PopupHandler.changeFontSizeBasedOnResolution( statsScreenStyleRight );
@@ -177,6 +165,8 @@ public class HUDHandler : MonoBehaviour {
 
 		//New UI related
 		tapToPlayText.text = LocalizationManager.Instance.getText("MENU_TAP_TO_PLAY");
+		GameObject pauseMenuManagerObject = GameObject.FindGameObjectWithTag("Pause Menu Manager");
+		pauseMenu = pauseMenuManagerObject.GetComponent<PauseMenu>();
 
 	}
 	
@@ -240,14 +230,8 @@ public class HUDHandler : MonoBehaviour {
 
 			if(GUI.Button( pauseRect, pauseButtonContent, pauseStyle ))
 			{
-				pauseGame();
+				pauseMenu.pauseGame();
 			}
-		}
-		
-		//Countdown related
-		if( gameState == GameState.Countdown )
-		{
-			GUI.Label ( countdownRect, countdown.ToString(), countdownStyle );
 		}
 
 		//Save Me options
@@ -291,7 +275,7 @@ public class HUDHandler : MonoBehaviour {
 		//For debugging
 		if ( Input.GetKeyDown (KeyCode.W) ) 
 		{
-			pauseGame();
+			pauseMenu.pauseGame();
 		}
 		#endif
 	}
@@ -307,94 +291,6 @@ public class HUDHandler : MonoBehaviour {
 			fps = Mathf.Ceil(fpsWaitFrames/fpsAccumulator).ToString();
 			fpsAccumulator = 0;
 		}
-	}
-
-	//Returns the player to the Home menu (i.e. the World Map)
-	public void goToHomeMenu()
-	{
-		Debug.Log("Home button pressed");
-		//Save before going to home menu in particular so player does not lose stars he picked up
-		PlayerStatsManager.Instance.savePlayerStats();
-		playerController.enablePlayerControl(false);
-		//We might have the slow down power-up still active, so just to be sure
-		//we will reset the timescale back to 1.
-		Time.timeScale = 1f;
-		SoundManager.stopMusic();
-		SoundManager.stopAmbience();
-		showUserMessage = false;
-		playerController.resetLevel();
-		//Go back to world map
-		Application.LoadLevel( 3 );
-	}
-
-	//If the device is paused by pressing the Home button, because of a low battery warning or a phone call, the game will automatically display the pause menu.
-	void OnApplicationPause( bool pauseStatus )
-	{
-		if( pauseStatus && GameManager.Instance.getGameState() != GameState.Paused ) pauseGame();
-	}
-
-	public void pauseGame()
-	{
-		GameState gameState = GameManager.Instance.getGameState();
-		
-		if( gameState == GameState.Normal )
-		{
-			//Pause game
-			GameManager.Instance.setGameState( GameState.Paused );
-			SoundManager.pauseMusic();
-			timeScaleBeforePause = Time.timeScale;
-			Time.timeScale = 0;
-			AudioListener.pause = true;
-			PauseMenu pauseMenu = GetComponent<PauseMenu>();
-			popupHandler.setPauseMenu( pauseMenu );
-			pauseMenu.setLevelToLoad( LevelManager.Instance.getNextLevelToComplete() );
-			isPlayerControlEnabledBeforePause = playerController.isPlayerControlEnabled();
-			playerController.enablePlayerControl(false);
-			popupHandler.activatePopup(PopupType.PauseMenu);
-		}
-		else if( gameState == GameState.Paused )
-		{
-			//We were paused. Start the resume game countdown
-			GameManager.Instance.setGameState( GameState.Countdown );
-			//We need to set the time scale back to 1 or else our coroutine will not execute.
-			Time.timeScale = timeScaleBeforePause;
-			popupHandler.closePopup();
-			if( playerController.getCharacterState() != CharacterState.Dying )
-			{
-				StartCoroutine( StartCountdown( 3 ) );
-			}
-			else
-			{
-				//Resume game but without the countdown
-				AudioListener.pause = false;
-				GameManager.Instance.setGameState( GameState.Normal );
-				SoundManager.playMusic();
-				if( isPlayerControlEnabledBeforePause ) playerController.enablePlayerControl(true);
-			}
-		}
-	}
-
-	public IEnumerator StartCountdown( int startValue )
-	{
-		countdown = startValue;
-		while (countdown > 0)
-		{
-			SoundManager.playGUISound( beep );
-			//Slow time may be happening. We still want the countdown to be one second between count
-			yield return new WaitForSeconds(1.0f * Time.timeScale);
-			countdown --;
-			if( countdown == 0 )
-			{
-				//Resume game
-				AudioListener.pause = false;
-				GameManager.Instance.setGameState( GameState.Normal );
-				SoundManager.playMusic();
-				if( isPlayerControlEnabledBeforePause ) playerController.enablePlayerControl(true);
-				//Display a Go! message
-				activateUserMessage( LocalizationManager.Instance.getText("GO"), 0.5f, 0f, 1.25f );
-
-			}
-	    }
 	}
 
 	void displayStatsScreen()
