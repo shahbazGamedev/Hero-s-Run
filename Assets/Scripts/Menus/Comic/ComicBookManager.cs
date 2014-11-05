@@ -17,20 +17,20 @@ public class ComicBookManager : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 	
-		Screen.orientation = ScreenOrientation.LandscapeLeft;
-		Invoke ("enableAutoRotation", 0.5f );
+		Screen.autorotateToPortrait = true;
+		Screen.autorotateToPortraitUpsideDown = false;
+		Screen.autorotateToLandscapeLeft = true;
+		Screen.autorotateToLandscapeRight = true;		
+		Screen.orientation = ScreenOrientation.AutoRotation;
+
+		Invoke ("displayFirstStrip", 0.5f );
 		anim = episodeScreen.gameObject.GetComponent<Animator>();
 		tapToContinueText.text = LocalizationManager.Instance.getText("TAP_TO_CONTINUE");
 		resetComicStrips();
 	}
 
-	void enableAutoRotation()
+	void displayFirstStrip()
 	{
-		Screen.autorotateToPortrait = false;
-		Screen.autorotateToPortraitUpsideDown = false;
-		Screen.autorotateToLandscapeLeft = true;
-		Screen.autorotateToLandscapeRight = true;		
-		Screen.orientation = ScreenOrientation.AutoRotation;
 
 		//The initial strip is all black. We are now ready to display the first strip with art.
 		displayNextComicStrip();
