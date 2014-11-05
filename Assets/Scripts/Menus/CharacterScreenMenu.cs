@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public enum Avatar {
 	None = 0,
@@ -29,6 +30,13 @@ public class CharacterScreenMenu : MonoBehaviour {
 	GUIContent changeButtonContent = new GUIContent(LocalizationManager.Instance.getText("MENU_CHANGE") );
 	GUIContent selectButtonContent = new GUIContent(LocalizationManager.Instance.getText("MENU_SELECT") );
 	Avatar selectedAvatar = Avatar.Hero;
+
+	//New UI
+	//Popup related
+	public Text titleText;
+	public Text contentText;
+
+
 
 	// Use this for initialization
 	void Awake () {
@@ -114,7 +122,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 	{
 		//Go to main menu
 		PlayerStatsManager.Instance.setAvatar(selectedAvatar);
-		Application.LoadLevel( 2 );
+		Application.LoadLevel( (int) GameScenes.ComicBook );
 	}
 
 	void playHerofrontAnims()

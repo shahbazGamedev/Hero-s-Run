@@ -1,284 +1,156 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class MainMenuHandler : MonoBehaviour {
 
-	//Main menu background
-	public Texture2D backgroundTexture;
-	Rect backgroundRect;
+	//New UI
+	[Header("Main Menu")]
+	public Text playButtonText;
+	public Button connectButton;
+	public Text connectButtonText;
 
-	//Styles
-	public GUIStyle buttonStyle;
-	public GUIStyle textStyle;
-	public GUIStyle titleStyle;
-	public GUIStyle closeStyle;
-	public GUIStyle okayStyle;
-	
-	//Content
-	GUIContent playButtonContent;
-	GUIContent fbButtonContent;
-	GUIContent explanationTextContent;
-	GUIContent guestButtonContent;
-	GUIContent popupTitleContent;
-	GUIContent popupTextContent;
-	GUIContent okayButtonContent;
-	GUIContent closeButtonContent;
-	
-	//control
-	bool displayPopup = false;
-	bool displayPopupButtons = false;
-	bool displayLoginSelection = false;
+	//Login popup related
+	[Header("Login popup")]
+	public GameObject loginPopup;
+	public Text loginTitleText;
+	public Text loginContentText;
+	public Text loginConnectButtonText;
+	public Text loginGuestButtonText;
+
+	//Connection Status popup related
+	[Header("Connection status popup")]
+	public GameObject connectionPopup;
+	public Text connectionTitleText;
+	public Text connectionContentText;
+	public Text connectionOkayButtonText;
 
 	void Awake ()
 	{
-	
-		playButtonContent = new GUIContent( LocalizationManager.Instance.getText("MENU_PLAY") );
-		fbButtonContent = new GUIContent( LocalizationManager.Instance.getText("MENU_CONNECT") );
-		explanationTextContent = new GUIContent( LocalizationManager.Instance.getText("MENU_FB_EXPLAIN") );
-		guestButtonContent = new GUIContent( LocalizationManager.Instance.getText("MENU_GUEST") );
-		okayButtonContent = new GUIContent( LocalizationManager.Instance.getText("MENU_OK") );
-		closeButtonContent = new GUIContent( "X" );
-		popupTitleContent = new GUIContent( LocalizationManager.Instance.getText("MENU_CONNECTING_TITLE") );
-		popupTextContent = new GUIContent( LocalizationManager.Instance.getText("MENU_CONNECTING_TEXT") );
+		#if UNITY_EDITOR
+		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
+		#endif
+
+		Handheld.StopActivityIndicator();
+
+		//Get the level data. Level data has the parameters for all the levels of the game.
+		GameObject levelDataObject = GameObject.Find("LevelData");
+		LevelData levelData = (LevelData) levelDataObject.GetComponent("LevelData");
+		//Now set it in the LevelManager
+		LevelManager.Instance.setLevelData( levelData );
+
+		//Display the daily bonus screen
+		MyUpsightManager.requestLocalizedContent( "daily_bonus" );
+		
+		//Main Menu
+		playButtonText.text = LocalizationManager.Instance.getText("MENU_PLAY");
+		connectButtonText.text = LocalizationManager.Instance.getText("MENU_CONNECT");
+
+		//Login popup
+		loginTitleText.text = LocalizationManager.Instance.getText("MENU_FB_TITLE");
+		loginContentText.text = LocalizationManager.Instance.getText("MENU_FB_EXPLAIN");
+		loginConnectButtonText.text = LocalizationManager.Instance.getText("MENU_CONNECT");
+		loginGuestButtonText.text = LocalizationManager.Instance.getText("MENU_GUEST");
+
+		//Connection popup
+		connectionOkayButtonText.text = LocalizationManager.Instance.getText("MENU_OK");
+
+		//If not already connected to Facebook, show the Connect button on the main menu to encourage player to login.
+		connectButton.gameObject.SetActive( !FacebookManager.Instance.isLoggedIn() );
 
 		//If this is a brand new user, show him the login screen where he will choose between Facebook and Guest.
 		//If not, show him the main menu.
-		displayLoginSelection = PlayerStatsManager.Instance.isFirstTimePlaying();
+		if( PlayerStatsManager.Instance.isFirstTimePlaying() )
+		{
+			//Show the login popup
+			loginPopup.gameObject.SetActive( true );
+		}
 
-		//Main menu background
-		backgroundRect = new Rect( 0,0, Screen.width, Screen.height );
-
-		PopupHandler.changeFontSizeBasedOnResolution( buttonStyle );
-		PopupHandler.changeFontSizeBasedOnResolution( textStyle );
-		PopupHandler.changeFontSizeBasedOnResolution( titleStyle );
-		PopupHandler.changeFontSizeBasedOnResolution( closeStyle );
-		PopupHandler.changeFontSizeBasedOnResolution( okayStyle );
 	}
 
-	void Start()
+	public void handlePlayButton()
 	{
-		//Display the daily bonus screen
-		MyUpsightManager.requestLocalizedContent( "daily_bonus" );
+		SoundManager.playButtonClick();
+		StartCoroutine("loadLevel");
+	}
+	
+	public void handleFacebookLoginButton()
+	{
+		SoundManager.playButtonClick();
+		connectionPopup.gameObject.SetActive( true );
+		if( Application.internetReachability != NetworkReachability.NotReachable )
+		{
+			PlayerStatsManager.Instance.setUsesFacebook( true );
+			PlayerStatsManager.Instance.savePlayerStats();
+			connectionTitleText.text = LocalizationManager.Instance.getText("MENU_CONNECTING_TITLE");
+			connectionContentText.text = LocalizationManager.Instance.getText("MENU_CONNECTING_TEXT");
+			FacebookManager.Instance.CallFBInit( updateState );
+		}
+		else
+		{
+			connectionTitleText.text = LocalizationManager.Instance.getText("MENU_CONNECTION_FAILED_TITLE");
+			connectionContentText.text = LocalizationManager.Instance.getText("MENU_CONNECTION_FAILED_TEXT");
+		}
 	}
 
 	public void updateState( FacebookState newState )
 	{
 		if( newState == FacebookState.LoggedIn )
 		{
-			popupTitleContent = new GUIContent( LocalizationManager.Instance.getText("MENU_SUCCESS_TITLE") );
-			popupTextContent = new GUIContent( LocalizationManager.Instance.getText("MENU_SUCCESS_TEXT") );
-
+			connectionTitleText.text = LocalizationManager.Instance.getText("MENU_SUCCESS_TITLE");
+			connectionContentText.text = LocalizationManager.Instance.getText("MENU_SUCCESS_TEXT");
+			//Hide the Connect button since the player successfully connected
+			connectButton.gameObject.SetActive( false );
 		}
 		else if ( newState == FacebookState.Error )
 		{
-			popupTitleContent = new GUIContent( LocalizationManager.Instance.getText("MENU_FB_ERROR_TITLE") );
-			popupTextContent = new GUIContent( LocalizationManager.Instance.getText("MENU_FB_ERROR_TEXT") );
+			connectionTitleText.text = LocalizationManager.Instance.getText("MENU_FB_ERROR_TITLE");
+			connectionContentText.text = LocalizationManager.Instance.getText("MENU_FB_ERROR_TEXT");
 		}
 		else if ( newState == FacebookState.Canceled )
 		{
 			PlayerStatsManager.Instance.setUsesFacebook( false );
 			PlayerStatsManager.Instance.savePlayerStats();
-			popupTitleContent = new GUIContent( LocalizationManager.Instance.getText("MENU_CONNECTION_CANCELED_TITLE") );
-			popupTextContent = new GUIContent( LocalizationManager.Instance.getText("MENU_CONNECTION_CANCELED_TEXT") );
+			connectionTitleText.text = LocalizationManager.Instance.getText("MENU_CONNECTION_CANCELED_TITLE");
+			connectionContentText.text = LocalizationManager.Instance.getText("MENU_CONNECTION_CANCELED_TEXT");
 		}
-		displayPopupButtons = true;
-		displayLoginSelection = false;
 	}
 
-
-	void OnGUI ()
+	public void handleGuestLoginButton()
 	{
-		//Draw background
-		GUI.DrawTexture( backgroundRect, backgroundTexture );
+		SoundManager.playButtonClick();
+		PlayerStatsManager.Instance.setUsesFacebook( false );
+		PlayerStatsManager.Instance.savePlayerStats();
+		loginPopup.gameObject.SetActive( false );
+	}
 
-		if( displayPopup )
+	public void handleLoginCloseButton()
+	{
+		SoundManager.playButtonClick();
+		loginPopup.gameObject.SetActive( false );
+	}
+
+	public void handleConnectionCloseButton()
+	{
+		SoundManager.playButtonClick();
+		loginPopup.gameObject.SetActive( false );
+		connectionPopup.gameObject.SetActive( false );
+	}
+	
+	IEnumerator loadLevel()
+	{
+		//Handheld.StartActivityIndicator();
+		yield return new WaitForSeconds(0);
+		if( PlayerStatsManager.Instance.getAvatar() == Avatar.None )
 		{
-			showPopup();			
+			//Bring the player to the character selection screen
+			Application.LoadLevel( (int)GameScenes.CharacterSelection );
 		}
 		else
 		{
-			if( displayLoginSelection )
-			{
-				drawLoginSelectionScreen();
-			}
-			else
-			{
-				drawMainMenu();
-			}
+			//Player has already selected an avatar, display the world map
+			Application.LoadLevel( (int)GameScenes.WorldMap);
 		}
-	}
-
-	void drawMainMenu ()
-	{
-		//Draw centered Play! button	
-		Rect textRect = GUILayoutUtility.GetRect( playButtonContent, buttonStyle );
-		float textCenterX = (Screen.width-textRect.width)/2f;
-		Rect playButtonRect = new Rect( textCenterX, Screen.height * 0.4f, textRect.width, textRect.height );
-		if( GUI.Button( playButtonRect, playButtonContent, buttonStyle )) 
-		{
-			SoundManager.playButtonClick();
-			StartCoroutine("loadLevel");
-		}
-	
-		//Encourage player to connect to Facebook by leaving Connect button
-		if( !FacebookManager.Instance.isLoggedIn() )
-		{
-			textRect = GUILayoutUtility.GetRect( fbButtonContent, buttonStyle );
-			textCenterX = (Screen.width-textRect.width)/2f;
-			Rect fbButtonRect = new Rect( textCenterX, Screen.height * 0.6f, textRect.width, textRect.height );
-			if( GUI.Button( fbButtonRect, fbButtonContent, buttonStyle )) 
-			{
-				SoundManager.playButtonClick();
-				if( Application.internetReachability != NetworkReachability.NotReachable )
-				{
-					popupTitleContent = new GUIContent( LocalizationManager.Instance.getText("MENU_CONNECTING_TITLE") );
-					popupTextContent = new GUIContent( LocalizationManager.Instance.getText("MENU_CONNECTING_TEXT") );
-					FacebookManager.Instance.CallFBInit( updateState );
-				}
-				else
-				{
-					popupTitleContent = new GUIContent( LocalizationManager.Instance.getText("MENU_CONNECTION_FAILED_TITLE") );
-					popupTextContent = new GUIContent( LocalizationManager.Instance.getText("MENU_CONNECTION_FAILED_TEXT") );
-					displayPopupButtons = true;
-				}
-				displayPopup = true;
-			}
-		}
-
-		//Welcome user by first name (used for debugging Facebook)
-		if( FacebookManager.Instance.isLoggedIn() && FacebookManager.Instance.Username != null )
-		{
-			GUIContent userNameContent = new GUIContent( LocalizationManager.Instance.getText("MENU_WELCOME") + " " + FacebookManager.Instance.Username );
-			textStyle.fixedWidth = Screen.width * 0.5f;
-			textRect = GUILayoutUtility.GetRect( userNameContent, textStyle );
-			textCenterX = (Screen.width-textRect.width)/2f;
-			float textHeight = 0.85f;
-			Rect userNameTextRect = new Rect( textCenterX, Screen.height * textHeight, textRect.width, textRect.height );
-			Rect userNameTextRectDropShadow = new Rect( textCenterX + 1, (Screen.height * textHeight) + 2, textRect.width, textRect.height );
-			textStyle.normal.textColor = Color.black;
-			GUI.Label ( userNameTextRectDropShadow, userNameContent, textStyle );
-			textStyle.normal.textColor = Color.white;
-			GUI.Label ( userNameTextRect, userNameContent, textStyle );
-		}
-	}
-
-	void drawLoginSelectionScreen()
-	{
-
-		//Draw Connect with Facebook button. It needs to be centered.
-		Rect textRect = GUILayoutUtility.GetRect( fbButtonContent, buttonStyle );
-		float textCenterX = (Screen.width-textRect.width)/2f;
-		Rect fbButtonRect = new Rect( textCenterX, Screen.height * 0.35f, textRect.width, textRect.height );
-		if( GUI.Button( fbButtonRect, fbButtonContent, buttonStyle )) 
-		{
-			SoundManager.playButtonClick();
-			if( Application.internetReachability != NetworkReachability.NotReachable )
-			{
-				PlayerStatsManager.Instance.setUsesFacebook( true );
-				PlayerStatsManager.Instance.savePlayerStats();
-				popupTitleContent = new GUIContent( LocalizationManager.Instance.getText("MENU_CONNECTING_TITLE") );
-				popupTextContent = new GUIContent( LocalizationManager.Instance.getText("MENU_CONNECTING_TEXT") );
-				FacebookManager.Instance.CallFBInit( updateState );
-			}
-			else
-			{
-				popupTitleContent = new GUIContent( LocalizationManager.Instance.getText("MENU_CONNECTION_FAILED_TITLE") );
-				popupTextContent = new GUIContent( LocalizationManager.Instance.getText("MENU_CONNECTION_FAILED_TEXT") );
-				displayPopupButtons = true;
-			}
-			displayPopup = true;
-		}
-
-		//Draw box with text explaining advantages of connecting with Facebook
-		textStyle.fixedWidth = Screen.width * 0.7f;
-		textRect = GUILayoutUtility.GetRect( explanationTextContent, textStyle );
-		textCenterX = (Screen.width-textRect.width)/2f;
-		float textHeight = 0.45f;
-		Rect explanationTextRect = new Rect( textCenterX, Screen.height * textHeight, textRect.width, textRect.height );
-		Rect explanationTextRectDropShadow = new Rect( textCenterX + 1, (Screen.height * textHeight) + 2, textRect.width, textRect.height );
-		textStyle.normal.textColor = Color.black;
-		GUI.Label ( explanationTextRectDropShadow, explanationTextContent, textStyle );
-		textStyle.normal.textColor = Color.white;
-		GUI.Label ( explanationTextRect, explanationTextContent, textStyle );
-
-		//Draw Guest connection button
-		textRect = GUILayoutUtility.GetRect( guestButtonContent, buttonStyle );
-		textCenterX = (Screen.width-textRect.width)/2f;
-		Rect guestButtonRect = new Rect( textCenterX, Screen.height * 0.6f, textRect.width, textRect.height );
-		if( GUI.Button( guestButtonRect, guestButtonContent, buttonStyle )) 
-		{
-			SoundManager.playButtonClick();
-			PlayerStatsManager.Instance.setUsesFacebook( false );
-			PlayerStatsManager.Instance.savePlayerStats();
-			displayLoginSelection = false;
-		}
-
-	}
-
-	void showPopup()
-	{
-
-		float popupWidth = 0.8f * Screen.width;
-		float popupHeight = 0.5f * Screen.height;
-		Rect popupRect = new Rect( (Screen.width - popupWidth)/2, (Screen.height - popupHeight)/2 , popupWidth, popupHeight );
-		GUI.BeginGroup( popupRect );
-
-		//Box
-		GUI.Box(new Rect(0, popupHeight * 0.1f, popupWidth, popupHeight * 0.9f), "" );
-
-		//Title
-		Rect textRect = GUILayoutUtility.GetRect( popupTitleContent, titleStyle );
-		float textCenterX = (popupRect.width-textRect.width)/2f;
-		Rect connectingTextRect = new Rect( textCenterX, popupHeight * 0.13f, textRect.width, textRect.height );
-		Rect connectingTextRectDropShadow = new Rect( connectingTextRect.x + 1, connectingTextRect.y + 2, textRect.width, textRect.height );
-		titleStyle.normal.textColor = Color.black;
-		GUI.Label ( connectingTextRectDropShadow, popupTitleContent, titleStyle );
-		titleStyle.normal.textColor = Color.white;
-		GUI.Label ( connectingTextRect, popupTitleContent, titleStyle );
-
-		//Text
-		textStyle.fixedWidth = popupWidth * 0.9f;
-		textRect = GUILayoutUtility.GetRect( popupTextContent, textStyle );
-		textCenterX = (Screen.width-textRect.width)/2f;
-		float textHeight = 0.35f;
-		connectingTextRect = new Rect( (popupWidth - textRect.width)/2, popupHeight * textHeight, textRect.width, textRect.height );
-		connectingTextRectDropShadow = new Rect( connectingTextRect.x + 1, connectingTextRect.y + 2, textRect.width, textRect.height );
-		textStyle.normal.textColor = Color.black;
-		GUI.Label ( connectingTextRectDropShadow, popupTextContent, textStyle );
-		textStyle.normal.textColor = Color.white;
-		GUI.Label ( connectingTextRect, popupTextContent, textStyle );
-
-		if( displayPopupButtons )
-		{
-			//Draw Close button (top right)
-			float buttonWidth = Screen.width * 0.10f;
-			Rect closeButtonRect = new Rect( popupRect.width - (buttonWidth * 1.1f), (buttonWidth * 1.1f), buttonWidth, buttonWidth );
-			if( GUI.Button( closeButtonRect, closeButtonContent, closeStyle )) 
-			{
-				SoundManager.playButtonClick();
-				displayPopup = false;
-			}
-
-			//Draw Okay button (bottom center)
-			buttonWidth = Screen.width * 0.13f;
-			Rect okayButtonRect = new Rect( (popupRect.width - buttonWidth) /2, popupRect.height - (buttonWidth * 1.1f), buttonWidth, buttonWidth );
-			if( GUI.Button( okayButtonRect, okayButtonContent, okayStyle )) 
-			{
-				SoundManager.playButtonClick();
-				displayPopup = false;
-			}
-		}
-
-
-		GUI.EndGroup();
-	}
-
-	IEnumerator loadLevel()
-	{
-		Handheld.StartActivityIndicator();
-		yield return new WaitForSeconds(0);
-		//Load world map
-		Application.LoadLevel( 3 );
 
 	}
 }

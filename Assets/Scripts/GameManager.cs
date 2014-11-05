@@ -16,6 +16,21 @@ public enum GameState {
 	BeforeTapToPlayAllowed = 9
 }
 
+//The GameScenes enum entries must match the scene numbering in Build Settings.
+//Sample usage: Application.LoadLevel( (int)GameScenes.CharacterSelection )
+public enum GameScenes {
+	
+	Loading = 0,
+	CharacterSelection = 1,
+	Main = 2,
+	WorldMap = 3,
+	Level = 4,
+	TreasureIsland = 5,
+	CharacterGallery = 6,
+	Store = 7,
+	ComicBook = 8
+}
+
 public enum DifficultyLevel {
 	
 	Normal = 1,

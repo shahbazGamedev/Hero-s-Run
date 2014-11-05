@@ -76,11 +76,7 @@ public class WorldMapHandler : MonoBehaviour {
 	void Awake ()
 	{
 		//Get the level data. Level data has the parameters for all the levels of the game.
-		GameObject Main = GameObject.Find("LevelData");
-		
-		levelData = (LevelData) Main.GetComponent("LevelData");
-		//Also set it in LevelManager
-		LevelManager.Instance.setLevelData( levelData );
+		levelData = LevelManager.Instance.getLevelData();
 		levelList = levelData.getLevelList();
 		levelButtonList.Capacity = levelList.Count;
 		//The Map texture is 1136x640 (size of iPhone5). This corresponds to a scale of 1. If the screen resolution is different, we need to scale up or down proportionaly.

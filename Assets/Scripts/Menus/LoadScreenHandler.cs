@@ -46,19 +46,7 @@ public class LoadScreenHandler : MonoBehaviour {
 	{	
 		Handheld.StartActivityIndicator();
 		yield return new WaitForSeconds(WAIT_TIME);
-		if( PlayerStatsManager.Instance.getAvatar() == Avatar.None )
-		{
-			//Bring the player to the character selection screen
-			//In build settings, the character selection screen has an index of 1
-			Application.LoadLevel( 1 );
-		}
-		else
-		{
-			//Player has already selected an avatar, go directly to the main menu
-			//In build settings, main menu has an index of 2
-			//for debugging
-			Application.LoadLevel( 2 );
-		}
+		Application.LoadLevel( (int) GameScenes.Main );
 	}
 	
 }

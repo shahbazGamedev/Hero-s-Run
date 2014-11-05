@@ -123,7 +123,7 @@ MENU_RESUME,Resume,Continuer,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_LOG_OUT,Log out!,Déconnexion !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_LOGGED_OUT,Disconnected,Déconnecté,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_SUCCESS_TITLE,Success!,Succès !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-MENU_SUCCESS_TEXT,Successfully connected to Facebook! All progress is now synchronized with your account.,Connexion à Facebook réussie ! Votre progrès est maintenant synchronisé avec votre compte.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_SUCCESS_TEXT,You are now successfully connected to Facebook! All progress is now synchronized with your account.,Votre connexion à Facebook a réussie ! Votre progrès est maintenant synchronisé avec votre compte.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_CONNECTING_TITLE,Connecting,Connexion,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_CONNECTING_TEXT,Connecting to Facebook.,Connexion à Facebook.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_NO_THANK_YOU,No thank you!,Non merci!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -133,6 +133,7 @@ MENU_CONNECTION_CANCELED_TITLE,User Canceled,Action Annullée,NOT TRANSLATED,NOT
 MENU_CONNECTION_CANCELED_TEXT,Facebook access canceled by user.,Connexion à Facebook annulée par l'usager.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATEDMENU_NO_THANK_YOU,No thank you!,Non merci!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_FB_ERROR_TITLE,Facebook error,Erreur Facebook,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_FB_ERROR_TEXT,An error occurred while trying to connect to Facebook. Try again later.,Une erreur est survenue lors de la connexion à Facebook. Veuillez essayer plus tard.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATEDMENU_NO_THANK_YOU,No thank you!,Non merci!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_FB_TITLE,Facebook,Facebook,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_OK,Ok,Ok,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_ON,On,Oui,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_OFF,Off,Non,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
