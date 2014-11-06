@@ -146,7 +146,7 @@ public class HUDHandler : MonoBehaviour {
 		runAgainBackgroundRect = new Rect ( 0, 0, Screen.width, Screen.height );
 		
 		runAgainButtonContent = new GUIContent ( LocalizationManager.Instance.getText("MENU_TRY_AGAIN") );
-		homeButtonContent = new GUIContent ( LocalizationManager.Instance.getText("MENU_HOME") );
+		homeButtonContent = new GUIContent ( LocalizationManager.Instance.getText("MENU_QUIT") );
 
 		//For displaying a message for each 1,000 meters run
 		distanceMarkerHeight = Screen.height * 0.08f;
