@@ -445,7 +445,6 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Straight_River_Crossing:
 			case TileType.Straight_River_Log_Crossing:
 			case TileType.Left:
-			case TileType.Opening5:
 			case TileType.Right:
 			case TileType.Landmark_Windmill:
 			case TileType.Landmark_Defense_Tower:
@@ -462,7 +461,7 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Opening2:
 			case TileType.Opening3:
 			case TileType.Opening4:
-			case TileType.Start:
+				case TileType.Start:
 			case TileType.Landmark_Fairy_Message:
 			case TileType.Landmark_Evil_Tree:
 			case TileType.End:
@@ -497,6 +496,7 @@ public class GenerateLevel  : MonoBehaviour {
 				break;
 
 			case TileType.Landmark_Magic_Bridge:
+			case TileType.Opening5:
 				depth = 4;
 				break;
 
@@ -877,6 +877,10 @@ public class GenerateLevel  : MonoBehaviour {
 			return TileType.None;
 			
 		case TileType.Opening:
+		case TileType.Opening2:
+		case TileType.Opening3:
+		case TileType.Opening4:
+		case TileType.Opening5:
 		case TileType.Landmark_Evil_Tree:
 		case TileType.Start:
 		case TileType.End:
