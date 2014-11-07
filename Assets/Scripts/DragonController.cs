@@ -54,12 +54,13 @@ public class DragonController : BaseClass {
 
 	bool followsPlayer = false;
 	public Vector3 forward;
-	float flyingSpeed = 6f;
+	float flyingSpeed = 6.04f;
 	CharacterController controller;
 	public GameObject dragonFire;
 	public GameObject dragonFireSpotlight;
 
 	bool allowAttack = true;
+	bool allowBreatheFire = false;
 
 	void Awake()
 	{
@@ -73,6 +74,7 @@ public class DragonController : BaseClass {
 
 	void Start()
 	{
+		allowBreatheFire = true;
 		if( playerController.getCurrentTileType() == TileType.Opening ) Invoke ("Arrive", 10f );
 	}
 
@@ -85,7 +87,7 @@ public class DragonController : BaseClass {
 			{
 				float distance = Vector3.Distance(player.position,transform.position);
 				
-				if( distance < 32f)
+				if( distance < 32f && allowBreatheFire )
 				{
 					breatheFire( "Attack_001");
 				}
@@ -120,6 +122,7 @@ public class DragonController : BaseClass {
 
 	public void roar()
 	{
+		audio.loop = false;
 		audio.Play ();
 	}
 
@@ -146,34 +149,47 @@ public class DragonController : BaseClass {
 	public void Arrive( )
 	{
 		print ("*******Dragon arrive");
-		Vector3 arrivalStartPos = new Vector3( -42f, 5f, PlayerController.getPlayerSpeed() * 7f );
+		Vector3 arrivalStartPos = new Vector3( -100f, 8.5f, PlayerController.getPlayerSpeed() * 16.1f );
 		Vector3 exactPos = player.TransformPoint(arrivalStartPos);
 		transform.position = exactPos;
 		transform.rotation = Quaternion.Euler( 0, player.transform.eulerAngles.y + 90f, transform.eulerAngles.z );
 		playAnimation("Run", WrapMode.Loop );
 		dragonState = DragonState.Fly;
-
 		//StartCoroutine("MoveToPosition", timeToArrive );
 	}
 	
 
 	private void breatheFire( string attackAnim )
 	{
+		allowBreatheFire = false;
 		dragonState = DragonState.FireBreathing;
 		dragonAnimation[attackAnim].speed = 0.8f;
 		dragonAnimation[attackAnim].wrapMode = WrapMode.Once;
 		dragonAnimation.CrossFade(attackAnim);				
-		Invoke( "breatheFireNow", dragonAnimation[attackAnim].length * 0.6f);
+		Invoke( "breatheFireNowRoutine", dragonAnimation[attackAnim].length * 0.6f);
 		Invoke( "resumeFlying", dragonAnimation[attackAnim].length);
+		Invoke( "roar", 0.25f );
 
 	}
 	
-	private void breatheFireNow ()
+	void breatheFireNowRoutine ()
+	{
+		StartCoroutine("breatheFireNow");
+	}
+
+	IEnumerator breatheFireNow ()
 	{
 		dragonFireSpotlight.light.enabled = true;
 		dragonFire.particleSystem.Play();
-		audio.loop = false;
-		audio.Play();
+		float time = dragonAnimation["Attack_001"].length;
+		while ( time > 0 )
+		{
+			time -= Time.deltaTime;
+			transform.LookAt( player );
+			transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y -10f, 0 );
+
+			yield return _sync();
+		}
 	}
 
 	private void resumeFlying ()
