@@ -298,7 +298,7 @@ public class WorldMapHandler : MonoBehaviour {
 		drawMessageCenterButton();
 		drawDebugButton();
 		drawSettingsButton();
-		drawPlayButton();
+		//drawPlayButton();
 		drawTreasureIslandButton();
 		drawBoostsButton();
 	}
@@ -372,7 +372,7 @@ public class WorldMapHandler : MonoBehaviour {
 			//Hack - for demo, always start at the first elfland level which is 5
 			//LevelManager.Instance.forceNextLevelToComplete( 5 );
 			//initiateLevelLoading();
-			Application.LoadLevel( 8 );
+			Application.LoadLevel( (int) GameScenes.ComicBook);
 		}
 	}
 

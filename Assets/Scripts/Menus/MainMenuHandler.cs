@@ -25,6 +25,10 @@ public class MainMenuHandler : MonoBehaviour {
 	public Text connectionContentText;
 	public Text connectionOkayButtonText;
 
+	//Progression Slider
+	public Slider progressionSlider;
+	public Text progressionText;
+
 	void Awake ()
 	{
 		#if UNITY_EDITOR
@@ -56,7 +60,7 @@ public class MainMenuHandler : MonoBehaviour {
 		connectionOkayButtonText.text = LocalizationManager.Instance.getText("MENU_OK");
 
 		//If not already connected to Facebook, show the Connect button on the main menu to encourage player to login.
-		connectButton.gameObject.SetActive( !FacebookManager.Instance.isLoggedIn() );
+		//connectButton.gameObject.SetActive( !FacebookManager.Instance.isLoggedIn() );
 
 		//If this is a brand new user, show him the login screen where he will choose between Facebook and Guest.
 		//If not, show him the main menu.
@@ -66,6 +70,12 @@ public class MainMenuHandler : MonoBehaviour {
 			loginPopup.gameObject.SetActive( true );
 		}
 
+		//Update the progression slider
+		float lastLevelCompleted = (float) LevelManager.Instance.getNextLevelToComplete();
+		float numberOfLevels = (float) LevelManager.Instance.getNumberOfLevels();
+		float percentageCompleted = lastLevelCompleted/numberOfLevels;
+		progressionSlider.value = percentageCompleted;
+		progressionText.text = ( (int) (percentageCompleted * 100 ) ).ToString() + "%";
 	}
 
 	public void handlePlayButton()
@@ -149,7 +159,7 @@ public class MainMenuHandler : MonoBehaviour {
 		else
 		{
 			//Player has already selected an avatar, display the world map
-			Application.LoadLevel( (int)GameScenes.WorldMap);
+			Application.LoadLevel( (int)GameScenes.ComicBook);
 		}
 
 	}
