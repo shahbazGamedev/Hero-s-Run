@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public enum Avatar {
 	None = 0,
@@ -24,6 +25,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 	public Text titleText;
 	public Text pickMeContentText;
 	public Text changeButtonText;
+	public Button confirmButton;
 	public Text confirmButtonText;
 
 	// Use this for initialization
@@ -32,6 +34,8 @@ public class CharacterScreenMenu : MonoBehaviour {
 		#if UNITY_EDITOR
 		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
 		#endif
+
+		Handheld.StopActivityIndicator();
 
 		maleAnimation = male.GetComponent<Animation>();
 		femaleAnimation = female.GetComponent<Animation>();
@@ -57,6 +61,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 
 	public void changeSelection()
 	{
+		SoundManager.playButtonClick();
 		if( toggle )
 		{
 			//if toggle is true, the male hero is in the front and the female hero is in the back right
@@ -85,8 +90,29 @@ public class CharacterScreenMenu : MonoBehaviour {
 
 	public void confirmSelection()
 	{
+		SoundManager.playButtonClick();
+		//It looks nicer if we center the text and hide the button to confirm to the player that his action worked
+		pickMeContentText.alignment = TextAnchor.UpperCenter;
+		confirmButton.gameObject.SetActive(false);
+		if( selectedAvatar == Avatar.Hero )
+		{
+			pickMeContentText.text = LocalizationManager.Instance.getText("MENU_THANKS_CHOOSING_ME_MALE");
+		}
+		else
+		{
+			pickMeContentText.text = LocalizationManager.Instance.getText("MENU_THANKS_CHOOSING_ME_FEMALE");
+		}
+
 		PlayerStatsManager.Instance.setAvatar(selectedAvatar);
-		Application.LoadLevel( (int) GameScenes.ComicBook );
+		StartCoroutine( loadWorldMapAfterDelay( 2.25f ) );
+	}
+
+	IEnumerator loadWorldMapAfterDelay( float waitPeriod )
+	{
+		//Give time to the player to understand what is going on before loading the world map
+		Handheld.StartActivityIndicator();
+		yield return new WaitForSeconds( waitPeriod );
+		SceneManager.LoadScene( (int) GameScenes.WorldMap );
 	}
 
 	void playHerofrontAnims()

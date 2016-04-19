@@ -12,7 +12,7 @@ using System.Collections;
 public class DestroyOnFinish : MonoBehaviour {
 
 	private void Update () {
-		if (!animation.isPlaying) {
+		if (!GetComponent<Animation>().isPlaying) {
 			Destroy (gameObject);
 		}
 	}

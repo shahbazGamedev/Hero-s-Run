@@ -28,7 +28,7 @@ function Start(){
    transform.position = (Random.insideUnitSphere *_spawner._spawnSphere) + _spawner.transform.position;
    transform.position.y = Random.Range(-_spawner._spawnSphereHeight, _spawner._spawnSphereHeight*1.0) +_spawner.transform.position.y;
    if(!_model)_model= transform.FindChild("Model").gameObject;
-   for (var state : AnimationState in _model.animation) {
+   for (var state : AnimationState in _model.GetComponent.<Animation>()) {
    	 	state.time = Random.value * state.length;
    }
 }
@@ -79,7 +79,7 @@ function Wander(delay:float){
 }
 
 function Flap(){
-	_model.animation.CrossFade(_spawner._flapAnimation, 1.0);
+	_model.GetComponent.<Animation>().CrossFade(_spawner._flapAnimation, 1.0);
 	_soar=false;
 	animationSpeed();
 	_wayPoint= (Random.insideUnitSphere *_spawner._spawnSphere) + _spawner.transform.position;
@@ -88,7 +88,7 @@ function Flap(){
 }
 
 function Soar(){
-	_model.animation.CrossFade(_spawner._soarAnimation, 1.5);
+	_model.GetComponent.<Animation>().CrossFade(_spawner._soarAnimation, 1.5);
    	_wayPoint= (Random.insideUnitSphere *_spawner._spawnSphere) + _spawner.transform.position;
 	_wayPoint.y = Random.Range(-_spawner._spawnSphereHeight, _spawner._spawnSphereHeight*1.0) +_spawner.transform.position.y;
     _soar = true;
@@ -96,9 +96,9 @@ function Soar(){
 
 function Dive(){
 	if(_spawner._soarAnimation!=null){
-			_model.animation.CrossFade(_spawner._soarAnimation, 1.5);
+			_model.GetComponent.<Animation>().CrossFade(_spawner._soarAnimation, 1.5);
 		}else{
-			for (var state : AnimationState in _model.animation) {
+			for (var state : AnimationState in _model.GetComponent.<Animation>()) {
 	   	 		if(transform.position.y < _wayPoint.y +25){
 	   	 			state.speed = 0.1;
 	   	 		}
@@ -112,7 +112,7 @@ function Dive(){
 }
 
 function animationSpeed(){
-	for (var state : AnimationState in _model.animation) {
+	for (var state : AnimationState in _model.GetComponent.<Animation>()) {
 		if(!_dived && !_flatFlyDown){
 			state.speed = Random.Range(_spawner._minAnimationSpeed, _spawner._maxAnimationSpeed);
 		}else{

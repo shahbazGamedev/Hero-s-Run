@@ -133,7 +133,7 @@ public class GhostController : BaseClass {
 	
 	public void Disappear()
 	{
-		audio.PlayOneShot( appearSound );
+		GetComponent<AudioSource>().PlayOneShot( appearSound );
 		transform.localScale = new Vector3( 0.002f, 0.002f, 0.002f );
 		appearFx.Play();
 		Invoke("Disappear_part2", 2.3f);
@@ -177,9 +177,9 @@ public class GhostController : BaseClass {
 
 	private void playAnimation( string animationName, WrapMode mode )
 	{
-		animation[ animationName ].wrapMode = mode;
-		animation[ animationName ].speed = 1f;
-		animation.CrossFade(animationName, 0.1f);
+		GetComponent<Animation>()[ animationName ].wrapMode = mode;
+		GetComponent<Animation>()[ animationName ].speed = 1f;
+		GetComponent<Animation>().CrossFade(animationName, 0.1f);
 	}
 
 	void OnEnable()
@@ -217,12 +217,12 @@ public class GhostController : BaseClass {
 	{
 		if( newState == GameState.Paused )
 		{
-			animation.enabled = false;
+			GetComponent<Animation>().enabled = false;
 
 		}
 		else if( newState == GameState.Normal )
 		{
-			animation.enabled = true;
+			GetComponent<Animation>().enabled = true;
 		}
 	}
 }

@@ -65,10 +65,10 @@ function Awake() {
 
 }
 function triggerBreak( playerCollider: Collider ) {
-	audio.Play();
+	GetComponent.<AudioSource>().Play();
     transform.Destroy(transform.FindChild("object").gameObject);
-    Destroy(transform.collider);
-    Destroy(transform.rigidbody);
+    Destroy(transform.GetComponent.<Collider>());
+    Destroy(transform.GetComponent.<Rigidbody>());
     breakObject( playerCollider );
 }
 
@@ -89,19 +89,19 @@ function breakObject( playerCollider: Collider ) {// breaks object
         for (var child: Transform in frags) {
         	if( playerCollider != null )
         	{
-	        	Physics.IgnoreCollision(child.collider, playerCollider);
-				child.rigidbody.AddForce(forward.x, Random.Range(-explosiveForce, explosiveForce), forward.z);
+	        	Physics.IgnoreCollision(child.GetComponent.<Collider>(), playerCollider);
+				child.GetComponent.<Rigidbody>().AddForce(forward.x, Random.Range(-explosiveForce, explosiveForce), forward.z);
 				//Debug.Log("breakObject " + forward.x + " " + forward.z );
-	            child.rigidbody.AddTorque(Random.Range(-explosiveForce, explosiveForce), Random.Range(-explosiveForce, explosiveForce), Random.Range(-explosiveForce, explosiveForce));
+	            child.GetComponent.<Rigidbody>().AddTorque(Random.Range(-explosiveForce, explosiveForce), Random.Range(-explosiveForce, explosiveForce), Random.Range(-explosiveForce, explosiveForce));
             }
             else
             {
-				child.rigidbody.AddForce(Random.Range(-explosiveForce, explosiveForce),  Random.Range(-explosiveForce, explosiveForce), Random.Range(-explosiveForce, explosiveForce));
-            	child.rigidbody.AddTorque(Random.Range(-explosiveForce, explosiveForce), Random.Range(-explosiveForce, explosiveForce), Random.Range(-explosiveForce, explosiveForce));
+				child.GetComponent.<Rigidbody>().AddForce(Random.Range(-explosiveForce, explosiveForce),  Random.Range(-explosiveForce, explosiveForce), Random.Range(-explosiveForce, explosiveForce));
+            	child.GetComponent.<Rigidbody>().AddTorque(Random.Range(-explosiveForce, explosiveForce), Random.Range(-explosiveForce, explosiveForce), Random.Range(-explosiveForce, explosiveForce));
             }
         }
 		//transform.position.y -=1000;	// Positions the object out of view to avoid further interaction
-        if (transform.FindChild("particles") != null) transform.FindChild("particles").particleEmitter.emit = false;
+        if (transform.FindChild("particles") != null) transform.FindChild("particles").GetComponent.<ParticleEmitter>().emit = false;
         removeColliders();
         removeRigids();
         if (waitForDestroy > 0) { // destroys fragments after "waitForDestroy" delay

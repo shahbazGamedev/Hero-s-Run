@@ -53,7 +53,7 @@ public class CoachController : MonoBehaviour {
 		anim[hitAnim.name].wrapMode = WrapMode.Once;
 		anim.CrossFade( hitAnim.name, 0.25f );
 		anim.CrossFadeQueued(walkAnim.name, 0.4f );
-		audio.Play();
+		GetComponent<AudioSource>().Play();
 	}
 
 	void playAnim( AnimationClip clip )
@@ -68,7 +68,7 @@ public class CoachController : MonoBehaviour {
 		GameManager.gameStateEvent += GameStateChange;
 		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
 		PlayerController.playerStateChanged += PlayerStateChange;
-		coachDriver.animation.Play("CoachDriverDriving");
+		coachDriver.GetComponent<Animation>().Play("CoachDriverDriving");
 	}
 	
 	void OnDisable()
@@ -83,7 +83,7 @@ public class CoachController : MonoBehaviour {
 		if( eventType == GameEvent.Start_Moving )
 		{
 			anim.CrossFade(walkAnim.name, 0.5f );
-			audio.Play();
+			GetComponent<AudioSource>().Play();
 			allowMove = true;
 			Invoke( "stopMoving", moveDuration );
 		}
@@ -102,8 +102,8 @@ public class CoachController : MonoBehaviour {
 			//Stop the coach
 			//Horses go to idles
 			//Coach driver plays a victory animation
-			coachDriver.animation.Play("CoachDriverRunOverPlayer");
-			coachDriver.animation.PlayQueued("CoachDriverIdle", QueueMode.CompleteOthers);
+			coachDriver.GetComponent<Animation>().Play("CoachDriverRunOverPlayer");
+			coachDriver.GetComponent<Animation>().PlayQueued("CoachDriverIdle", QueueMode.CompleteOthers);
 			stopMoving();
 		}
 	}
@@ -111,10 +111,10 @@ public class CoachController : MonoBehaviour {
 	void stopMoving()
 	{
 		allowMove = false;
-		leftHorse.animation.Stop();
-		rightHorse.animation.CrossFade("idle_01", 0.2f );
+		leftHorse.GetComponent<Animation>().Stop();
+		rightHorse.GetComponent<Animation>().CrossFade("idle_01", 0.2f );
 		anim.CrossFade(idleAnim.name, 0.5f );
-		audio.Stop();
+		GetComponent<AudioSource>().Stop();
 	}
 	
 	void GameStateChange( GameState newState )

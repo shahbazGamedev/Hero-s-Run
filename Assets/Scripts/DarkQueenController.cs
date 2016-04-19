@@ -91,8 +91,8 @@ public class DarkQueenController : BaseClass {
 		//Also get the sunlight object
 		GameObject Sun = GameObject.FindGameObjectWithTag("Sunlight");
 		ld = new LightData();
-		ld.aLight = Sun.light;
-		ld.originalIntensity = Sun.light.intensity;
+		ld.aLight = Sun.GetComponent<Light>();
+		ld.originalIntensity = Sun.GetComponent<Light>().intensity;
 		listOfLights.Add ( ld );
 	}
 

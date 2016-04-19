@@ -63,7 +63,10 @@ public enum TileType {
 	Landmark_Graveyard_4 = 50,
 	Landmark_Graveyard_5 = 51,
 	Landmark_Graveyard_6 = 52,
-	Landmark_Graveyard_7 = 53
+	Landmark_Graveyard_7 = 53,
+	Landmark_Bog_Start = 54, 
+	Landmark_Bog_Valley = 55,
+	Landmark_Test = 56 //Used only for testing - is straight and has a length of 2
 
 }
 
@@ -180,6 +183,8 @@ public class GenerateLevel  : MonoBehaviour {
 		//LevelInfo has the parameters for a single level.
 		//Get the level info for the current level.
 		int levelToLoad = LevelManager.Instance.getNextLevelToComplete();
+		LevelManager.Instance.setLevelNumberOfLastCheckpoint( levelToLoad );
+
 		seamlessLevelIndex = levelToLoad;
 
 		LevelData.LevelInfo levelInfo = levelData.getLevelInfo( levelToLoad );
@@ -205,9 +210,9 @@ public class GenerateLevel  : MonoBehaviour {
 			GameObject prefab = Resources.Load( "Level/Props/surroundingPlane") as GameObject;
 			GameObject go = (GameObject)Instantiate(prefab, new Vector3( 0, -30f, 0 ), Quaternion.identity );
 			surroundingPlane = go.transform;
-			if( surroundingPlane.renderer.material != null )
+			if( surroundingPlane.GetComponent<Renderer>().material != null )
 			{
-				surroundingPlane.renderer.material = levelInfo.surroundingPlaneMaterial;
+				surroundingPlane.GetComponent<Renderer>().material = levelInfo.surroundingPlaneMaterial;
 			}
 			else
 			{
@@ -252,6 +257,9 @@ public class GenerateLevel  : MonoBehaviour {
 
 		//Fade-in the level ambience soundtrack
 		StartCoroutine( SoundManager.fadeInAmbience( levelInfo.AmbienceSound, 10f ) );
+
+		//Set the music track to play if a value is set
+		SoundManager.setMusicTrack( levelInfo.MusicTrack );
 
 		Debug.Log("GenerateLevel-CreateLevel: Level " + levelInfo.LevelName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.realNumberCoinsSpawned );
@@ -486,12 +494,15 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Landmark_Graveyard_7:
 			case TileType.Landmark_Graveyard_Start:
 			case TileType.Landmark_Graveyard_End:
+			case TileType.Landmark_Test:
+			case TileType.Landmark_Bog_Valley:
 				depth = 2;
 				break;
 
 			case TileType.Landmark_Tomb_Start:
 			case TileType.Landmark_Tomb_End:
 			case TileType.Start_Fairyland:
+			case TileType.Landmark_Bog_Start:
 				depth = 3;
 				break;
 
@@ -919,6 +930,10 @@ public class GenerateLevel  : MonoBehaviour {
 		case TileType.Landmark_Graveyard_Start:
 		case TileType.Landmark_Graveyard_End:
 		case TileType.Landmark_Graveyard_Ghost:
+		case TileType.Landmark_Test:
+		case TileType.Landmark_Bog_Valley:
+		case TileType.Landmark_Bog_Start:
+
 			return TileType.Straight;
 
 		case TileType.Left:

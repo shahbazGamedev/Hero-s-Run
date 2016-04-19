@@ -150,7 +150,7 @@ public class SimpleCamera : MonoBehaviour {
 	{
 		cameraXrotation = DEFAULT_CAMERA_X_ROT;
 		//mainCamera.rotation = Quaternion.Euler( cameraXrotation, mainCamera.eulerAngles.y, mainCamera.eulerAngles.z );
-		mainCamera.camera.fieldOfView = DEFAULT_MAIN_CAMERA_FOV;
+		mainCamera.GetComponent<Camera>().fieldOfView = DEFAULT_MAIN_CAMERA_FOV;
 		distance = DEFAULT_DISTANCE;
 		height = DEFAULT_HEIGHT;
 		yRotationOffset = DEFAULT_Y_ROTATION_OFFSET;
@@ -160,7 +160,7 @@ public class SimpleCamera : MonoBehaviour {
 	{
 		cutsceneCamera.localPosition = new Vector3( 0, 3.5f, 6f ); //Remember the cutscene camera is a child of the hero
 		cutsceneCamera.localRotation = Quaternion.Euler( 17f,180f, 0 );
-		cutsceneCamera.camera.fieldOfView = DEFAULT_CUTSCENE_FOV;
+		cutsceneCamera.GetComponent<Camera>().fieldOfView = DEFAULT_CUTSCENE_FOV;
 	}
 
 	public void activateMainCamera()
@@ -289,7 +289,7 @@ public class SimpleCamera : MonoBehaviour {
 		{
 			cutsceneCamera.localPosition = new Vector3( 0, -40.3f, 50f ); //Remember the cutscene camera is a child of the hero
 			cutsceneCamera.rotation = Quaternion.Euler( 330f,180f, 3f );
-			cutsceneCamera.camera.fieldOfView = 54.9f;
+			cutsceneCamera.GetComponent<Camera>().fieldOfView = 54.9f;
 			cutsceneCamera.transform.parent = null;
 		}
 	}
@@ -307,7 +307,7 @@ public class SimpleCamera : MonoBehaviour {
 		float startXrot = cutsceneCamera.eulerAngles.x;
 		
 		//FOV
-		float startFOV = cutsceneCamera.camera.fieldOfView;	
+		float startFOV = cutsceneCamera.GetComponent<Camera>().fieldOfView;	
 		
 		//Steps
 		float step = 0f; //non-smoothed
@@ -330,7 +330,7 @@ public class SimpleCamera : MonoBehaviour {
 			cutsceneCamera.transform.position = new Vector3 ( cutsceneCamera.transform.position.x, yPos, cutsceneCamera.transform.position.z );
 			
 			//FOV
-			cutsceneCamera.camera.fieldOfView = Mathf.Lerp( startFOV, endFOV, fracJourney );
+			cutsceneCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp( startFOV, endFOV, fracJourney );
 			
 			//Order of rotations is ZXY
 			//We are not rotating in Z
@@ -366,7 +366,7 @@ public class SimpleCamera : MonoBehaviour {
 			playerController.enablePlayerControl( true );
 		}
 
-		Debug.Log("SimpleCamera-activateCutscene finished: " + cutsceneCamera.camera.fieldOfView + " " + giveBackControl );
+		Debug.Log("SimpleCamera-activateCutscene finished: " + cutsceneCamera.GetComponent<Camera>().fieldOfView + " " + giveBackControl );
 		
 	}
 

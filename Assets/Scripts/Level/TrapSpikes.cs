@@ -65,7 +65,7 @@ public class TrapSpikes : MonoBehaviour {
 	void triggerTrap()
 	{
 		print ("Player trigger spike trap "  );
-		audio.Play();
+		GetComponent<AudioSource>().Play();
 		playerController.managePlayerDeath(DeathType.Trap);
 		if( animation != null )
 		{
@@ -75,10 +75,6 @@ public class TrapSpikes : MonoBehaviour {
 		{
 			animator.SetTrigger("open");
 		}
-	}
-
-	void killPlayer()
-	{
 	}
 	
 	void GameStateChange( GameState newState )

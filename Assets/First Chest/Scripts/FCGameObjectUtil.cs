@@ -237,13 +237,13 @@ public class FCGameObjectUtil : MonoBehaviour
 	// Fade children GameObjects
 	void recursiveFade(Transform tran, float alpha)
 	{
-	  if (this.gameObject.renderer)
+	  if (this.gameObject.GetComponent<Renderer>())
 	  {
 		// Fade only if there is Material that supports alpha color
-		if (tran.gameObject.renderer.material.HasProperty("_Color"))
+		if (tran.gameObject.GetComponent<Renderer>().material.HasProperty("_Color"))
 		{
-		  Color color = this.gameObject.renderer.material.GetColor("_Color");
-		  tran.gameObject.renderer.material.SetColor("_Color", new Color(color.r,
+		  Color color = this.gameObject.GetComponent<Renderer>().material.GetColor("_Color");
+		  tran.gameObject.GetComponent<Renderer>().material.SetColor("_Color", new Color(color.r,
 																		color.g,
 																		color.b,
 																		alpha));

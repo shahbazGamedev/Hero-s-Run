@@ -29,7 +29,7 @@ public class ScrollingTextures : MonoBehaviour {
 
             float horizontalOffset = Time.time * horizontalScrollSpeed;
 
-            renderer.material.mainTextureOffset = new Vector2(horizontalOffset, verticalOffset);
+            GetComponent<Renderer>().material.mainTextureOffset = new Vector2(horizontalOffset, verticalOffset);
 
         }
 

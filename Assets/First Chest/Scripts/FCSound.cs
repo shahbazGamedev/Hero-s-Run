@@ -183,9 +183,9 @@ public class FCSound : MonoBehaviour
 	{
 	  if (m_EnableSoundProp == true && m_SoundProp != null)
 	  {
-		if (!audio.isPlaying)
+		if (!GetComponent<AudioSource>().isPlaying)
 		{
-		  audio.Stop();
+		  GetComponent<AudioSource>().Stop();
 		}
 	  }
 	}
@@ -201,7 +201,7 @@ public class FCSound : MonoBehaviour
 	  // Play sound immediately
 	  else
 	  {
-		audio.Stop();
+		GetComponent<AudioSource>().Stop();
 	  }
 	}
 
@@ -230,7 +230,7 @@ public class FCSound : MonoBehaviour
 	  // Play sound immediately
 	  else
 	  {
-		audio.PlayOneShot(pAudioClip);
+		GetComponent<AudioSource>().PlayOneShot(pAudioClip);
 	  }
 	}
 
@@ -238,7 +238,7 @@ public class FCSound : MonoBehaviour
 	IEnumerator PlaySoundDelay(AudioClip pAudioClip, float Delay)
 	{
 	  yield return new WaitForSeconds(Delay);
-	  audio.PlayOneShot(pAudioClip);
+	  GetComponent<AudioSource>().PlayOneShot(pAudioClip);
 	  yield break;
 	}
 
@@ -246,7 +246,7 @@ public class FCSound : MonoBehaviour
 	IEnumerator StopSoundDelay(float Delay)
 	{
 	  yield return new WaitForSeconds(Delay);
-	  audio.Stop();
+	  GetComponent<AudioSource>().Stop();
 	  yield break;
 	}
 

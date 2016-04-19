@@ -55,7 +55,7 @@ public class CoinAttractor : BaseClass {
 		while ( time > 0.0f )
 		{
 			time -= Time.deltaTime;
-			Vector3 coinDestination = mainCamera.camera.ScreenToWorldPoint (coinScreenPos);
+			Vector3 coinDestination = mainCamera.GetComponent<Camera>().ScreenToWorldPoint (coinScreenPos);
 
 			if( coin != null )
 			{

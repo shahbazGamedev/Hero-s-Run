@@ -8,18 +8,8 @@ using UnityEngine.SocialPlatforms.GameCenter;
 
 public enum PopupType {
 	None = 0,
-	FriendsOrPay = 1,
-	AskFriendsUnlock = 2,
-	ThreeFriends = 3,
-	PurchaseUnlockNow = 4,
-	MessageCenter = 5,
-	AskLife = 6,
-	AskFriendsLife = 7,
-	UnlockNow = 8,
-	DebugPopup = 9,
-	OfferLives = 10,
-	SaveMe = 11,
-	Settings = 12
+	MessageCenter = 1,
+	OfferLives = 2
 }
 
 public class PopupHandler : MonoBehaviour {
@@ -149,17 +139,6 @@ public class PopupHandler : MonoBehaviour {
 
 	}
 
-	void OnEnable()
-	{
-		// We must first hook up listeners to Unibill's events.
-		Unibiller.onTransactionsRestored += onTransactionsRestored;
-	}
-
-	void OnDisable()
-	{
-		Unibiller.onTransactionsRestored -= onTransactionsRestored;
-	}
-
 	public void activatePopup( PopupType popupType )
 	{
 		popupStack.Push( popupType );
@@ -235,404 +214,16 @@ public class PopupHandler : MonoBehaviour {
 		//Popup specific
 		switch (type)
 		{
-		case PopupType.AskLife:
-			renderAskLife();
-			break;
-
-		case PopupType.AskFriendsLife:
-			renderAskFriendsLife();
-			break;
-
-		case PopupType.FriendsOrPay:
-			renderFriendsOrPay();
-			break;
-
-		case PopupType.ThreeFriends:
-			renderThreeFriends();
-			break;
-
-		case PopupType.PurchaseUnlockNow:
-			renderPurchaseUnlockNow();
-			break;
 
 		case PopupType.MessageCenter:
 			messageCenterHandler.renderMessageCenter();
-			break;
-
-		case PopupType.DebugPopup:
-			renderDebugPopup();
 			break;
 
 		case PopupType.OfferLives:
 			offerLivesHandler.renderOfferLives();
 			break;
 
-		case PopupType.Settings:
-			renderSettingsMenu();
-			break;
-
 		}
-	}
-
-	//Step 1 - asking friends to send you a life
-	//Called when player clicks on the Life button in WorldMapHandler
-	void renderAskLife()
-	{
-		//Navigation button (top-right)
-		drawCloseButton( closePopup );
-		drawIcon( lifeIcon, iconHeight, true );
-		Rect area = new Rect( buttonXOffset, buttonHeight, buttonSize.x, popupRect.height );
-		GUILayout.BeginArea( area );
-		GUILayout.BeginVertical();
-		GUIContent buttonText = new GUIContent( LocalizationManager.Instance.getText("POPUP_ASK_FRIENDS") );
-		drawButtonWithIcon( buttonText, askFriendsLife, facebookIcon );
-		GUILayout.EndVertical();
-		GUILayout.EndArea();
-	}
-
-	//Step 2
-	void askFriendsLife()
-	{
-		popupStack.Push(PopupType.AskFriendsLife);
-	}
-
-	//Step 3
-	void renderAskFriendsLife()
-	{
-		//Navigation button (top-right)
-		drawBackButton();
-		drawIcon( facebookIcon, iconHeight, true );
-		drawMessage( messageHeight, new GUIContent( LocalizationManager.Instance.getText("POPUP_ASK_FRIENDS_LIFE_MESSAGE") ) );
-		Rect area = new Rect( buttonXOffset, buttonHeight, buttonSize.x, popupRect.height );
-		GUILayout.BeginArea( area );
-		GUILayout.BeginVertical();
-		GUIContent buttonText = new GUIContent( LocalizationManager.Instance.getText("POPUP_ASK_FRIENDS") );
-		drawButton( buttonText, askLifeFB );
-		GUILayout.EndVertical();
-		GUILayout.EndArea();
-	}
-
-	//Step 4
-	void askLifeFB()
-	{
-		//We need to close the popup modal window in the Unity Editor before we can open the Facebook window which is also modal.
-		#if UNITY_EDITOR
-		closePopup();
-		#endif
-		string message = LocalizationManager.Instance.getText( "APP_REQUEST_MESSAGE_UNLOCK" );
-		FacebookManager.Instance.CallAppRequestAsFriendSelector( "App Requests", message, "app_users", "Ask_Give_Life,1", "", "" );
-	}
-
-	//-------------------------------------------------------------
-
-	//Step 1 - asking friends to help you unlock a level or pay to unlock it immediately
-	//Called when player clicks on a Section button in WorldMapHandler
-	void renderFriendsOrPay()
-	{
-		drawCloseButton( closePopup );
-		drawIcon( sectionIcon, iconHeight, true );
-		Rect area = new Rect( buttonXOffset, 0.68f * popupRect.height, buttonSize.x, popupRect.height );
-		GUILayout.BeginArea( area );
-		GUILayout.BeginVertical();
-		GUIContent buttonText = new GUIContent( LocalizationManager.Instance.getText("POPUP_ASK_FRIENDS") );
-		drawButtonWithIcon( buttonText, askThreeFriends, facebookIcon );
-		buttonText = new GUIContent( LocalizationManager.Instance.getText("POPUP_TITLE_UNLOCK_NOW") );
-		drawButtonWithIcon( buttonText, purchaseUnlockNow, sectionIcon );
-		GUILayout.EndVertical();
-		GUILayout.EndArea();
-	}
-
-	//Step 2 - A
-	void askThreeFriends()
-	{
-		unlockFromIDList = PlayerStatsManager.Instance.getSaveUnlockRequests();
-		print ("super!! " + unlockFromIDList.Count );
-		popupStack.Push( PopupType.ThreeFriends );
-	}
-
-	//Step 2 - B
-	void purchaseUnlockNow()
-	{
-		popupStack.Push(PopupType.PurchaseUnlockNow);
-	}
-
-	//Step 3 - A
-	void renderThreeFriends()
-	{
-		
-		drawBackButton();
-		drawMessage( messageHeight, new GUIContent( LocalizationManager.Instance.getText("POPUP_ASK_FRIENDS_UNLOCK_MESSAGE") ) );
-		
-		//Verify if one or more friends have accepted our app request. If this is the case,
-		//display the images of those friends.
-		//If no friends have been asked or no friends have responded, show the Facebook icon with a text message instead.
-		if( unlockFromIDList.Count > 0 )
-		{
-			float totalMargin = popupRect.width - ( popupPortraitSize.x * 3 );
-			float margin = totalMargin/4f;
-			float distanceBetweenPortraits = popupPortraitSize.x + margin;
-			Rect friendPictureRect = new Rect( 0, iconHeight, popupPortraitSize.x, popupPortraitSize.y );
-			for( int i =0; i < 3; i++ ) 
-			{
-				Texture picture;
-				friendPictureRect.x = margin + (i * distanceBetweenPortraits);
-				if ( i < unlockFromIDList.Count && FacebookManager.Instance.friendImages.TryGetValue( unlockFromIDList[i], out picture)) 
-				{
-					//We have the friend's picture
-					drawPortrait( friendPictureRect, picture, false );
-				}
-				else if ( i < unlockFromIDList.Count && FacebookManager.Instance.friendImagesRequested.Contains( unlockFromIDList[i] ) )
-				{
-					//Picture has been requested but not received yet. Draw default portrait with a spinner on top.
-					drawPortrait( friendPictureRect, defaultPortrait, true );
-				}
-				else
-				{
-					//Simply draw the default portrait
-					drawPortrait( friendPictureRect, defaultPortrait, false );
-				}
-			}
-		}
-		else
-		{
-			
-			drawIcon( facebookIcon, iconHeight, true );
-		}
-		
-		Rect area = new Rect( buttonXOffset, buttonHeight, buttonSize.x, popupRect.height );
-		GUILayout.BeginArea( area );
-		GUILayout.BeginVertical();
-		GUIContent buttonText = new GUIContent( LocalizationManager.Instance.getText("POPUP_ASK_FRIENDS") );
-		drawButton( buttonText, askUnlockFB );
-		GUILayout.EndVertical();
-		GUILayout.EndArea();
-		
-	}
-
-	//Step 3 - B
-	void renderPurchaseUnlockNow()
-	{
-		
-		drawBackButton();
-		drawIcon( sectionIcon, iconHeight, true, -12 );
-		drawMessage( messageHeight, new GUIContent( LocalizationManager.Instance.getText("POPUP_UNLOCK_NOW_PURCHASE_MESSAGE") ) );
-		Rect area = new Rect( buttonXOffset, buttonHeight, buttonSize.x, popupRect.height );
-		GUILayout.BeginArea( area );
-		GUILayout.BeginVertical();
-		GUIContent buttonText = new GUIContent( "0,99$" );
-		drawButton( buttonText, askUnlockPurchase );
-		GUILayout.EndVertical();
-		GUILayout.EndArea();
-
-	}
-
-	//Step 4 - A
-	void askUnlockFB()
-	{
-		#if UNITY_EDITOR
-		closePopup();
-		#endif
-		string message = LocalizationManager.Instance.getText( "APP_REQUEST_MESSAGE_UNLOCK" );
-		FacebookManager.Instance.CallAppRequestAsFriendSelector( "App Requests", message, "app_users", "Ask_Section_Unlock," + LevelManager.Instance.getNextSectionToUnlock().ToString(), "", "" );
-	}
-
-	//Step 4 - B
-	void askUnlockPurchase()
-	{
-		//To do
-		Debug.Log("PopupHandler-askUnlockPurchase: method not implemented yet.");
-	}
-
-	//-------------------------------------------------------------
-
-	//Step 1
-	void renderDebugPopup()
-	{
-		drawCloseButton( closePopup );
-		Rect area = new Rect( buttonXOffset, 0.15f * popupRect.height, buttonSize.x, popupRect.height );
-		GUILayout.BeginArea( area );
-		GUILayout.BeginVertical();
-		GUIContent buttonText = new GUIContent( "Reset stats" );
-		drawButton( buttonText, resetPlayerStats );
-		buttonText = new GUIContent( "Delete Requests" );
-		drawButton( buttonText, deleteAllAppRequests );
-		buttonText = new GUIContent( "Leaderboard" );
-		drawButton( buttonText, showLeaderboard );
-		buttonText = new GUIContent( "Achievements" );
-		drawButton( buttonText, showAchievements );
-		buttonText = new GUIContent( "Reset Achievements" );
-		drawButton( buttonText, resetAchievements );
-		buttonText = new GUIContent( "Give 25K stars" );
-		drawButton( buttonText, giveStars );
-		GUILayout.Label("Total Stars " + PlayerStatsManager.Instance.getLifetimeCoins() );
-		GUILayout.Label("Total Stars " + PlayerStatsManager.Instance.getPlayerCoins() );
-		GUILayout.EndVertical();
-		GUILayout.EndArea();
-	}
-
-	//Step 2 - A
-	void resetPlayerStats()
-	{
-		PlayerStatsManager.Instance.resetPlayerStats();
-	}
-	
-	//Step 2 - B
-	void deleteAllAppRequests()
-	{
-		StartCoroutine( FacebookManager.Instance.deleteAllAppRequests() );
-	}
-
-	//Step 2 - C
-	void showLeaderboard()
-	{
-		Social.ShowLeaderboardUI();
-	}
-
-	//Step 2 - D
-	void showAchievements()
-	{
-		Social.ShowAchievementsUI();
-	}
-
-	//Step 2 - E
-	void resetAchievements()
-	{
-		GameCenterPlatform.ResetAllAchievements( (resetResult) => {
-			Debug.Log( (resetResult) ? "Achievement Reset succesfull." : "Achievement Reset failed." );
-		});
-		GameCenterManager.resetAchievementsCompleted();
-	}
-
-	//Step 2 - F
-	void giveStars()
-	{
-		PlayerStatsManager.Instance.modifyCoinCount( 25000 );
-		PlayerStatsManager.Instance.savePlayerStats();
-	}
-
-	//-------------------------------------------------------------
-	
-	//Step 1
-	void renderSettingsMenu()
-	{
-		//Navigation button (top-right)
-		drawCloseButton( closeSettingsMenu );
-		Rect area = new Rect( buttonXOffset, 0.25f * popupRect.height, buttonSize.x, popupRect.height );
-		GUILayout.BeginArea( area );
-		GUILayout.BeginVertical();
-		GUIContent buttonText;
-		if( FacebookManager.Instance.isLoggedIn() )
-		{
-			buttonText = new GUIContent( LocalizationManager.Instance.getText("POPUP_BUTTON_FB_DISCONNECT") );
-			drawButtonWithIcon( buttonText, logout, facebookIcon );
-		}
-		else
-		{
-			buttonText = new GUIContent( LocalizationManager.Instance.getText("MENU_LOGGED_OUT") );
-			Color originalColor = buttonStyle.normal.textColor;
-			buttonStyle.normal.textColor = Color.gray;
-			drawButtonWithIcon( buttonText, doNothing, facebookIcon );
-			buttonStyle.normal.textColor = originalColor;
-		}
-		if( PlayerStatsManager.Instance.getSoundVolume() == 0 )
-		{
-			buttonText = new GUIContent( LocalizationManager.Instance.getText("MENU_OFF") );
-			drawButtonWithIcon( buttonText, turnSoundOn, soundIcon );
-		}
-		else
-		{
-			buttonText = new GUIContent( LocalizationManager.Instance.getText("MENU_ON") );
-			drawButtonWithIcon( buttonText, turnSoundOff, soundIcon );
-		}
-		buttonText = new GUIContent( LocalizationManager.Instance.getText("MENU_PRIVACY_POLICY") );
-		drawButtonWithIcon( buttonText, privacyPolicy, informationIcon );
-		buttonText = new GUIContent( LocalizationManager.Instance.getText("MENU_GLOBAL_LEADERBOARD") );
-		drawButtonWithIcon( buttonText, showLeaderboard, gameCenterIcon );
-		buttonText = new GUIContent( LocalizationManager.Instance.getText("MENU_RESTORE_PURCHASES") );
-		drawButtonWithIcon( buttonText, restoreTransactions, restoreIcon );
-		//Only dislay the More Games button if the Upsight Opt-out option is false. 
-		//If Opt-out is true, the button will do nothing so there is no reason to display it.
-		if( !MyUpsightManager.getUpsightOptOutOption() )
-		{
-			buttonText = new GUIContent( LocalizationManager.Instance.getText("MENU_MORE_GAMES") );
-			drawButtonWithIcon( buttonText, moreGames, restoreIcon );
-		}
-		buttonText = new GUIContent( PlayerStatsManager.Instance.getDifficultyLevelName() );
-		drawButtonWithIcon( buttonText, changeDifficultyLevel, gameCenterIcon );
-		GUILayout.EndVertical();
-		GUILayout.EndArea();
-		Rect versionRect = new Rect( buttonSize.x, 0.9f * popupRect.height, buttonSize.x, buttonSize.y );
-		GUI.Label( versionRect, "v" + GameManager.Instance.getVersionNumber() );
-	}
-
-	//Step 2A
-
-	public void closeSettingsMenu()
-	{
-		resetPopupSize();
-		closePopup();
-	}
-
-	void logout()
-	{
-		//Coppa - when we log out of Facebook, we put the Upsight Opt-out option back to true to be safe.
-		MyUpsightManager.setUpsightOptOutOption( true );
-		FacebookManager.Instance.CallFBLogout();
-		PlayerStatsManager.Instance.setUsesFacebook( false );
-		PlayerStatsManager.Instance.savePlayerStats();
-	}
-
-	//Step 2B
-	void doNothing()
-	{
-	}
-	
-	//Step 3A
-	void turnSoundOff()
-	{
-		AudioListener.volume = 0;
-		PlayerStatsManager.Instance.setSoundVolume(0);
-		PlayerStatsManager.Instance.savePlayerStats();
-	}
-
-	//Step 3B
-	void turnSoundOn()
-	{
-		AudioListener.volume = 1f;
-		PlayerStatsManager.Instance.setSoundVolume(1f);
-		PlayerStatsManager.Instance.savePlayerStats();
-	}
-
-	//Step 4
-	void privacyPolicy()
-	{
-		string privacyPolicyURL = "http://www.redlondongames.com/";
-		Application.OpenURL(privacyPolicyURL);
-	}
-
-	//Step 5
-	void restoreTransactions()
-	{
-		Unibiller.restoreTransactions();
-	}
-
-	private void onTransactionsRestored (bool success) {
-		Debug.Log("Transactions restored: success " + success );
-		drawUserMessage();
-
-	}
-
-	void moreGames()
-	{
-		//Make a content request for the Upsight more games list
-		Upsight.sendContentRequest( "more_games", true );
-	}
-
-	void changeDifficultyLevel()
-	{
-		DifficultyLevel newDifficultyLevel = PlayerStatsManager.Instance.getNextDifficultyLevel();
-		//setDifficultyLevel takes care of saving the new value
-		PlayerStatsManager.Instance.setDifficultyLevel(newDifficultyLevel);
 	}
 
 	//-------------------------------------------------------------
@@ -927,38 +518,15 @@ public class PopupHandler : MonoBehaviour {
 		string title = "";
 		switch (popupType)
 		{
-		case PopupType.FriendsOrPay:
-			title = LocalizationManager.Instance.getText("POPUP_TITLE_UNLOCK_LEVELS");
-			break;
-			
-		case PopupType.ThreeFriends:
-		case PopupType.AskFriendsLife:
-			title = LocalizationManager.Instance.getText("POPUP_TITLE_ASK_FRIENDS");
-			break;
 		
-		case PopupType.AskLife:
-			title = LocalizationManager.Instance.getText("POPUP_TITLE_ASK_LIVES");
-			break;
-
-		case PopupType.PurchaseUnlockNow:
-		case PopupType.UnlockNow:
-			title = LocalizationManager.Instance.getText("POPUP_TITLE_UNLOCK_NOW");
-			break;
-
 		case PopupType.MessageCenter:
 			title = LocalizationManager.Instance.getText("POPUP_TITLE_MESSAGE_CENTER");
 			break;
 
-		case PopupType.DebugPopup:
-			title = LocalizationManager.Instance.getText("POPUP_TITLE_DEBUG");
-			break;
 		case PopupType.OfferLives:
 			title = LocalizationManager.Instance.getText("POPUP_TITLE_OFFER_LIVES");
 			break;
 
-		case PopupType.Settings:
-			title = LocalizationManager.Instance.getText("POPUP_TITLE_SETTINGS");
-			break;
 		}
 		return title;
 	}

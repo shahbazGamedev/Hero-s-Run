@@ -105,10 +105,10 @@ public class GameEventManager : MonoBehaviour {
 		darkQueen.localScale = new Vector3( 1.2f, 1.2f, 1.2f );
 		darkQueenController.floatDownFx.Play ();
 		float arriveSpeed = 0.3f;
-		darkQueen.animation["DarkQueen_Arrive"].speed = arriveSpeed;
-		darkQueen.animation.Play("DarkQueen_Arrive");
-		Invoke("playLandAnimation", darkQueen.animation["DarkQueen_Arrive"].length/arriveSpeed );
-		darkQueenController.dimLights( darkQueen.animation["DarkQueen_Arrive"].length/arriveSpeed, 0.1f );
+		darkQueen.GetComponent<Animation>()["DarkQueen_Arrive"].speed = arriveSpeed;
+		darkQueen.GetComponent<Animation>().Play("DarkQueen_Arrive");
+		Invoke("playLandAnimation", darkQueen.GetComponent<Animation>()["DarkQueen_Arrive"].length/arriveSpeed );
+		darkQueenController.dimLights( darkQueen.GetComponent<Animation>()["DarkQueen_Arrive"].length/arriveSpeed, 0.1f );
 	}
 
 	void afterPlayerSlowdown()
@@ -124,29 +124,29 @@ public class GameEventManager : MonoBehaviour {
 	{
 		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_NOT_KEEP_WAITING"), 0.35f, 3.6f );
 		playVoiceOver( darkQueen, darkQueenKrakenSequence.VO_DQ_not_keep_waiting );
-		darkQueen.animation.CrossFade("DarkQueen_Land", 0.1f);
-		Invoke("playIdleAnimation", darkQueen.animation["DarkQueen_Land"].length);
+		darkQueen.GetComponent<Animation>().CrossFade("DarkQueen_Land", 0.1f);
+		Invoke("playIdleAnimation", darkQueen.GetComponent<Animation>()["DarkQueen_Land"].length);
 	}
 	
 	void playIdleAnimation()
 	{
 		darkQueenController.floatDownFx.Stop ();
-		darkQueen.animation.Play("DarkQueen_Idle");
-		Invoke("castKrakenSpell", darkQueen.animation["DarkQueen_Idle"].length);
+		darkQueen.GetComponent<Animation>().Play("DarkQueen_Idle");
+		Invoke("castKrakenSpell", darkQueen.GetComponent<Animation>()["DarkQueen_Idle"].length);
 	}
 	
 	void castKrakenSpell()
 	{
 		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_RISE_FROM_THE_DEEP"), 0.35f, 3.8f );
 		playVoiceOver( darkQueen, darkQueenKrakenSequence.VO_DQ_rise_from_the_deep );
-		darkQueen.animation.CrossFade("DarkQueen_SpellCast");
+		darkQueen.GetComponent<Animation>().CrossFade("DarkQueen_SpellCast");
 		Invoke("playKrakenSpellFX", 0.3f);
-		Invoke("leave", darkQueen.animation["DarkQueen_SpellCast"].length );
+		Invoke("leave", darkQueen.GetComponent<Animation>()["DarkQueen_SpellCast"].length );
 	}
 	
 	void playKrakenSpellFX()
 	{
-		darkQueen.audio.PlayOneShot( darkQueenController.spellSound );
+		darkQueen.GetComponent<AudioSource>().PlayOneShot( darkQueenController.spellSound );
 		darkQueenController.spellFx.Play();
 		darkQueenKrakenSequence.poisonMist.Play();
 	}
@@ -154,10 +154,10 @@ public class GameEventManager : MonoBehaviour {
 	void leave()
 	{
 		darkQueenController.floatDownFx.Play ();
-		darkQueen.animation["DarkQueen_Leave"].speed = 1.2f;
-		darkQueen.animation.Play("DarkQueen_Leave");
-		darkQueenController.brightenLights( darkQueen.animation["DarkQueen_Leave"].length/1.2f );
-		Invoke("playerStartsRunningAgain", darkQueen.animation["DarkQueen_Leave"].length/1.2f );
+		darkQueen.GetComponent<Animation>()["DarkQueen_Leave"].speed = 1.2f;
+		darkQueen.GetComponent<Animation>().Play("DarkQueen_Leave");
+		darkQueenController.brightenLights( darkQueen.GetComponent<Animation>()["DarkQueen_Leave"].length/1.2f );
+		Invoke("playerStartsRunningAgain", darkQueen.GetComponent<Animation>()["DarkQueen_Leave"].length/1.2f );
 	}
 
 	void playerStartsRunningAgain()
@@ -170,7 +170,7 @@ public class GameEventManager : MonoBehaviour {
 		Invoke ("activateTentacles", 2f );
 	}
 
-	void activateTentacles()
+	public void activateTentacles()
 	{
 		playTentaclesSequence();
 	}
@@ -319,8 +319,8 @@ public class GameEventManager : MonoBehaviour {
 		float randomScale = 1f + 0.3f * Random.value;
 		go.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
 		go.name = "Fence";
-		go.animation.Play("attack");
-		go.animation.PlayQueued("wiggle", QueueMode.CompleteOthers);
+		go.GetComponent<Animation>().Play("attack");
+		go.GetComponent<Animation>().PlayQueued("wiggle", QueueMode.CompleteOthers);
 		LeanTween.moveLocalY(go, go.transform.position.y + 2, 1.15f ).setEase(LeanTweenType.easeOutExpo).setOnComplete(pierceDown).setOnCompleteParam( go as Object );
 
 		//Ground debris
@@ -330,18 +330,18 @@ public class GameEventManager : MonoBehaviour {
 		groundDebrisObject.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
 		LeanTween.moveLocalY(groundDebrisObject, groundDebrisObject.transform.position.y + 0.15f, 0.1f ).setEase(LeanTweenType.easeOutExpo);
 
-		go.audio.PlayDelayed(0.1f);
+		go.GetComponent<AudioSource>().PlayDelayed(0.1f);
 
 		GameObject flyingDebris = (GameObject)Instantiate(tentaclesSequence.debrisPrefab, new Vector3( tentaclePosition.x, tentaclePosition.y + 4f, tentaclePosition.z ), Quaternion.identity );
 		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
-		bo.triggerBreak( player.collider );
+		bo.triggerBreak( player.GetComponent<Collider>() );
 		Invoke( "startPierceUp", 2.1f );
 	}
 
 	void pierceDown( object go )
 	{
 		GameObject tentacle = go as GameObject;
-		tentacle.animation.CrossFade("attack", 0.4f);
+		tentacle.GetComponent<Animation>().CrossFade("attack", 0.4f);
 		LeanTween.moveLocalY( tentacle, tentacle.transform.position.y - 18, 2f ).setEase(LeanTweenType.easeOutExpo).setDelay(0.5f);
 	}
 
@@ -399,8 +399,8 @@ public class GameEventManager : MonoBehaviour {
 		go.transform.rotation = Quaternion.Euler( 0, Random.Range (-180f,180f), Random.Range (-6f,6f) );
 		float randomScale = 1f + 0.3f * Random.value;
 		go.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
-		go.animation.Play("attack");
-		go.animation.PlayQueued("wiggle", QueueMode.CompleteOthers);
+		go.GetComponent<Animation>().Play("attack");
+		go.GetComponent<Animation>().PlayQueued("wiggle", QueueMode.CompleteOthers);
 		LeanTween.moveLocalY(go, go.transform.position.y + 2, 1.15f ).setEase(LeanTweenType.easeOutExpo);
 
 		//Ground debris
@@ -410,10 +410,10 @@ public class GameEventManager : MonoBehaviour {
 		groundDebrisObject.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
 		LeanTween.moveLocalY(groundDebrisObject, groundDebrisObject.transform.position.y + 0.15f, 0.1f ).setEase(LeanTweenType.easeOutExpo);
 
-		go.audio.PlayDelayed(0.1f);
+		go.GetComponent<AudioSource>().PlayDelayed(0.1f);
 		GameObject flyingDebris = (GameObject)Instantiate(tentaclesSequence.debrisPrefab, new Vector3( sideTentaclePosition.x, sideTentaclePosition.y + 4f, sideTentaclePosition.z ), Quaternion.identity );
 		BreakableObject bo = flyingDebris.GetComponent<BreakableObject>();
-		bo.triggerBreak( player.collider );
+		bo.triggerBreak( player.GetComponent<Collider>() );
 		Invoke( "sideStartPierceUp", Random.Range( 1.5f, 2.1f ) );
 	}
 
@@ -458,16 +458,16 @@ public class GameEventManager : MonoBehaviour {
 		darkQueen.localScale = new Vector3( 1.2f, 1.2f, 1.2f );
 		darkQueenController.floatDownFx.Play ();
 		float arriveSpeed = 0.3f;
-		darkQueen.animation["DarkQueen_Arrive"].speed = arriveSpeed;
-		darkQueen.animation.Play("DarkQueen_Arrive");
-		Invoke("cemeteryPlayLandAnimation", darkQueen.animation["DarkQueen_Arrive"].length/arriveSpeed );
-		darkQueenController.dimLights( darkQueen.animation["DarkQueen_Arrive"].length/arriveSpeed, 0.1f );
+		darkQueen.GetComponent<Animation>()["DarkQueen_Arrive"].speed = arriveSpeed;
+		darkQueen.GetComponent<Animation>().Play("DarkQueen_Arrive");
+		Invoke("cemeteryPlayLandAnimation", darkQueen.GetComponent<Animation>()["DarkQueen_Arrive"].length/arriveSpeed );
+		darkQueenController.dimLights( darkQueen.GetComponent<Animation>()["DarkQueen_Arrive"].length/arriveSpeed, 0.1f );
 	}
 	
 	void cemeteryPlayLandAnimation()
 	{
-		darkQueen.animation.CrossFade("DarkQueen_Land", 0.1f);
-		Invoke("cemeteryPlayIdleAnimation", darkQueen.animation["DarkQueen_Land"].length);
+		darkQueen.GetComponent<Animation>().CrossFade("DarkQueen_Land", 0.1f);
+		Invoke("cemeteryPlayIdleAnimation", darkQueen.GetComponent<Animation>()["DarkQueen_Land"].length);
 	}
 	
 	void cemeteryPlayIdleAnimation()
@@ -475,22 +475,22 @@ public class GameEventManager : MonoBehaviour {
 		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_STARTING_TO_ANNOY"), 0.35f, 3f );
 		playVoiceOver( darkQueen, darkQueenCemeterySequence.VO_DQ_STARTING_TO_ANNOY );
 		darkQueenController.floatDownFx.Stop ();
-		darkQueen.animation.Play("DarkQueen_Idle");
-		Invoke("cemeteryCastKrakenSpell", darkQueen.animation["DarkQueen_Idle"].length + 2.25f);
+		darkQueen.GetComponent<Animation>().Play("DarkQueen_Idle");
+		Invoke("cemeteryCastKrakenSpell", darkQueen.GetComponent<Animation>()["DarkQueen_Idle"].length + 2.25f);
 	}
 	
 	void cemeteryCastKrakenSpell()
 	{
 		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_BRING_BACK_BOOK"), 0.35f, 3.8f );
 		playVoiceOver( darkQueen, darkQueenCemeterySequence.VO_DQ_BRING_BACK_BOOK );
-		darkQueen.animation.CrossFade("DarkQueen_SpellCast");
+		darkQueen.GetComponent<Animation>().CrossFade("DarkQueen_SpellCast");
 		Invoke("cemeteryPlayKrakenSpellFX", 0.3f);
-		Invoke("cemeteryLeave", darkQueen.animation["DarkQueen_SpellCast"].length );
+		Invoke("cemeteryLeave", darkQueen.GetComponent<Animation>()["DarkQueen_SpellCast"].length );
 	}
 	
 	void cemeteryPlayKrakenSpellFX()
 	{
-		darkQueen.audio.PlayOneShot( darkQueenController.spellSound );
+		darkQueen.GetComponent<AudioSource>().PlayOneShot( darkQueenController.spellSound );
 		darkQueenController.spellFx.Play();
 		darkQueenCemeterySequence.poisonMist.Play();
 		Invoke( "startZombieWave", 0.75f );
@@ -507,10 +507,10 @@ public class GameEventManager : MonoBehaviour {
 	void cemeteryLeave()
 	{
 		darkQueenController.floatDownFx.Play ();
-		darkQueen.animation["DarkQueen_Leave"].speed = 1.2f;
-		darkQueen.animation.Play("DarkQueen_Leave");
-		darkQueenController.brightenLights( darkQueen.animation["DarkQueen_Leave"].length/1.2f );
-		Invoke("cemeteryPlayerStartsRunningAgain", darkQueen.animation["DarkQueen_Leave"].length/1.2f );
+		darkQueen.GetComponent<Animation>()["DarkQueen_Leave"].speed = 1.2f;
+		darkQueen.GetComponent<Animation>().Play("DarkQueen_Leave");
+		darkQueenController.brightenLights( darkQueen.GetComponent<Animation>()["DarkQueen_Leave"].length/1.2f );
+		Invoke("cemeteryPlayerStartsRunningAgain", darkQueen.GetComponent<Animation>()["DarkQueen_Leave"].length/1.2f );
 	}
 	
 	void cemeteryPlayerStartsRunningAgain()
@@ -656,7 +656,7 @@ public class GameEventManager : MonoBehaviour {
 		go.name = "Stumble";
 		LeanTween.moveLocalY(go, go.transform.position.y + 1, 0.6f ).setEase(LeanTweenType.easeOutExpo).setOnComplete(zombieHandPierceDown).setOnCompleteParam( go as Object );
 
-		go.audio.PlayDelayed(0.1f);
+		go.GetComponent<AudioSource>().PlayDelayed(0.1f);
 
 		Invoke( "startZombieHandPierceUp", 1.2f + Random.value );
 	}
@@ -664,8 +664,8 @@ public class GameEventManager : MonoBehaviour {
 	void zombieHandPierceDown( object go )
 	{
 		GameObject zombieHand = go as GameObject;
-		zombieHand.animation.Play("FistToSearch" );
-		zombieHand.animation.PlayQueued("Search", QueueMode.CompleteOthers );
+		zombieHand.GetComponent<Animation>().Play("FistToSearch" );
+		zombieHand.GetComponent<Animation>().PlayQueued("Search", QueueMode.CompleteOthers );
 		LeanTween.moveLocalY( zombieHand, zombieHand.transform.position.y - 2, 2.5f ).setEase(LeanTweenType.easeOutExpo).setDelay( 3f );
 	}
 	
@@ -727,7 +727,7 @@ public class GameEventManager : MonoBehaviour {
 		go.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
 		LeanTween.moveLocalY(go, go.transform.position.y + 1, 0.8f ).setEase(LeanTweenType.easeOutExpo);
 
-		go.audio.PlayDelayed(0.1f);
+		go.GetComponent<AudioSource>().PlayDelayed(0.1f);
 
 		Invoke( "sideStartZombieHandPierceUp", 0.8f + Random.value * 1.5f );
 	}
@@ -758,7 +758,7 @@ public class GameEventManager : MonoBehaviour {
 		go.transform.localScale = new Vector3( randomScale, randomScale, randomScale );
 		go.name = "Stumble";
 		LeanTween.moveLocalY(go, go.transform.position.y + 1.1f, 0.6f ).setEase(LeanTweenType.easeOutExpo).setOnComplete(singleZombieHandPierceDown).setOnCompleteParam( go as Object );
-		go.audio.PlayDelayed(0.1f);
+		go.GetComponent<AudioSource>().PlayDelayed(0.1f);
 		
 		GameObject flyingDebris = (GameObject)Instantiate(zombieHandsSequence.debrisPrefab, Vector3.zero, Quaternion.identity );
 		flyingDebris.transform.position = new Vector3( lastZombieHandPosition.x, lastZombieHandPosition.y + 1.4f, lastZombieHandPosition.z );
@@ -770,8 +770,8 @@ public class GameEventManager : MonoBehaviour {
 	void singleZombieHandPierceDown( object go )
 	{
 		GameObject zombieHand = go as GameObject;
-		zombieHand.animation.Play("FistToSearch" );
-		zombieHand.animation.PlayQueued("Search", QueueMode.CompleteOthers );
+		zombieHand.GetComponent<Animation>().Play("FistToSearch" );
+		zombieHand.GetComponent<Animation>().PlayQueued("Search", QueueMode.CompleteOthers );
 		//LeanTween.moveLocalY( zombieHand, zombieHand.transform.position.y - 2, 3.25f ).setEase(LeanTweenType.easeOutExpo).setDelay( 4f );
 	}
 
@@ -819,7 +819,7 @@ public class GameEventManager : MonoBehaviour {
 		op.door.SetActive(false);
 		//Shatter breakable door
 		BreakableObject bo = op.breakableDoor.GetComponent<BreakableObject>();
-		bo.triggerBreak( player.collider );
+		bo.triggerBreak( player.GetComponent<Collider>() );
 		//Stop crows 
 		op.CancelInvoke("playCrowSound");
 		Invoke ("step2", 0.1f );
@@ -985,7 +985,7 @@ public class GameEventManager : MonoBehaviour {
 		//Currently, only English VOs are included in the game
 		if( true || Application.systemLanguage == SystemLanguage.English )
 		{
-			speaker.audio.PlayOneShot( voiceOver );
+			speaker.GetComponent<AudioSource>().PlayOneShot( voiceOver );
 		}
 	}
 

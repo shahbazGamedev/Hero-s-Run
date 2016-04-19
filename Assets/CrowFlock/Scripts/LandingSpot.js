@@ -82,7 +82,7 @@ function LateUpdate() {
         var distance: float = Vector3.Distance(landingChild.transform.position, transform.position);
 
         if (distance < 15 && distance > 7) {
-            landingChild._model.animation.CrossFade(landingChild._spawner._soarAnimation, .5);
+            landingChild._model.GetComponent.<Animation>().CrossFade(landingChild._spawner._soarAnimation, .5);
             landingChild._targetSpeed = 10; //landingChild._spawner._minSpeed;
             landingChild._damping = 3;
             landingChild._wayPoint = transform.position;
@@ -96,15 +96,15 @@ function LateUpdate() {
             //				}else{
             if (distance < .1) {
                 if (!_ruffling && !_ruffle)
-                    landingChild._model.animation.CrossFade(landingChild._spawner._idleAnimation, .55);
+                    landingChild._model.GetComponent.<Animation>().CrossFade(landingChild._spawner._idleAnimation, .55);
             } else {
-                landingChild._model.animation.CrossFade(landingChild._spawner._flapAnimation, .2);
+                landingChild._model.GetComponent.<Animation>().CrossFade(landingChild._spawner._flapAnimation, .2);
                 //landingChild._wayPoint.y -= .05;
                 landingChild._targetSpeed = -1;
             }
             if (lerpCounter == 0 && !_ruffle) {
                 //	Debug.Log("1");
-                landingChild._model.animation[landingChild._spawner._idleAnimation].time = Random.value * landingChild._model.animation[landingChild._spawner._idleAnimation].length;
+                landingChild._model.GetComponent.<Animation>()[landingChild._spawner._idleAnimation].time = Random.value * landingChild._model.GetComponent.<Animation>()[landingChild._spawner._idleAnimation].length;
                 InvokeRepeating("Ruffle", 1.0, 1.0);
                 ReleaseFlockChild(_controller._autoDismountDelay.x, _controller._autoDismountDelay.y);
             }
@@ -186,7 +186,7 @@ function InstantLand() {
             landingChild._landingSpotted = true;
             landingChild._flatFlyDown = true;
             landingChild.transform.position = transform.position;
-            landingChild._model.animation.Play(landingChild._spawner._idleAnimation);
+            landingChild._model.GetComponent.<Animation>().Play(landingChild._spawner._idleAnimation);
         } else if (_controller._autoCatchDelay.x > 0) {
             GetFlockChild(_controller._autoCatchDelay.x, _controller._autoCatchDelay.y);
         }
@@ -198,10 +198,10 @@ function ReleaseFlockChild(minDelay: float, maxDelay: float) {
     if (landingChild && landingChild._landingSpotted) {
         lerpCounter = 0;
         if (Random.value > .5)
-            _featherPS.transform.particleSystem.Play();
+            _featherPS.transform.GetComponent.<ParticleSystem>().Play();
         landingChild._move = true;
         landing = false;
-        landingChild._model.animation.CrossFade(landingChild._spawner._flapAnimation, .2);
+        landingChild._model.GetComponent.<Animation>().CrossFade(landingChild._spawner._flapAnimation, .2);
         landingChild.animationSpeed();
         speed = Random.Range(1.0, 3.0);
         landingChild._landingSpotted = false;
@@ -210,7 +210,7 @@ function ReleaseFlockChild(minDelay: float, maxDelay: float) {
         if (_controller._autoCatchDelay.x > 0) {
             GetFlockChild(_controller._autoCatchDelay.x, _controller._autoCatchDelay.y);
         }
-        _featherPS.transform.particleSystem.Stop();
+        _featherPS.transform.GetComponent.<ParticleSystem>().Stop();
         landingChild._flatFlyDown = false;
         landingChild = null;
     }

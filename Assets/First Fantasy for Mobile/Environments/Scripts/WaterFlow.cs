@@ -11,9 +11,9 @@ public class WaterFlow : MonoBehaviour {
         float newOffsetU = Time.time * m_SpeedU;
         float newOffsetV = Time.time * m_SpeedV;
 
-        if (this.renderer)
+        if (this.GetComponent<Renderer>())
         {
-            renderer.material.mainTextureOffset = new Vector2(newOffsetU, newOffsetV);
+            GetComponent<Renderer>().material.mainTextureOffset = new Vector2(newOffsetU, newOffsetV);
         }
 	}
 }

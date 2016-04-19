@@ -58,12 +58,13 @@ LEVEL_DESCRIPTION_TANGLEWOOD,Tanglewood is a peaceful area located near the Oakv
 LEVEL_DESCRIPTION_ELFLAND,The wood elves used to live in Ellenmïrre. They abandoned the city after the Great Battle.,Les elfes des bois habitaient jadis à Ellenmïrre. Ils ont abandonné l'endroit après la Grande Bataille.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_DESCRIPTION_DREADKNOT,Dreadknot is a vast and ancient cemetery that was built after the Great Battle. It has long since been abandoned and now wicked creatures prowl the land in search of easy prey.,Dreadknot est un vaste et ancien cimetière qui a été construit après la Grande Bataille. Il a été abandonné depuis fort longtemps et maintenant des créatures maléfiques le parcours à la recherche de proies faciles.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_GAME_COMPLETED,Congratulations hero! You have saved the World of Lum.,Bravo héros ! Tu as sauvé le monde de Lum.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+TREASURE_ISLAND_TITLE,Treasure Island,Île au Trésor,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+TREASURE_ISLAND_LOCATION_1,Pirate's Cove,Crique du Pirate,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 TREASURE_CHEST_POWER_UP,Super! You have just received <quantity> <powerup name> power-ups!,Génial ! Tu viens de recevoir <quantity> <powerup name> power-ups!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 TREASURE_CHEST_STARS,You have just received <quantity> stars!,Tu viens de recevoir <quantity> étoiles !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-TREASURE_CHEST_KEY,Awesome. You received <quantity> mystery chest keys,Super! Tu as reçu <quantity> clés pour les coffres mystères,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 TREASURE_CHEST_LIFE,Cool. You have just received <quantity> lives!,Génial! Tu as reçu <quantity> vies !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 TREASURE_CHEST_CUSTOMIZATION,Cool. You have received a special gift!,Génial! Tu as reçu un cadeau spécial !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-TREASURE_CHEST_NEED_MORE_KEYS,You need a key to open the chest. You can get some in the shop,Tu as besoin d'une clé pour ouvrir le coffre. Tu peux t'en procurer dans le magasin.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+TREASURE_CHEST_NEED_MORE_KEYS,You need a key to open the chest. You can find some by exploring the world of Lum.,Tu as besoin d'une clé pour ouvrir le coffre. Tu peux en trouver en explorant le monde de Lum.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 HELL_BANNER_BINGO,Bingo night is in old torture room!,Soirée Bingo dans l'ancienne salle de torture !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 HELL_BANNER_BRUNCH,Welcome brunch is in room 666,Brunch de bienvenue dans la salle 666,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 HELL_BANNER_ARMS_DEALER,Special welcome to arms dealers,Un bienvenue spécial aux vendeurs d'armes,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -85,6 +86,7 @@ POWER_UP_MAGNET,Star Magnet,Aimant à Étoiles,NOT TRANSLATED,NOT TRANSLATED,NOT
 POWER_UP_MAGNET_DESCRIPTION,The Star Magnet powerup lasts <time> seconds longer,L'Aimant à Étoiles dure <time> secondes de plus,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POWER_UP_SHIELD,Shield,Bouclier,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POWER_UP_SHIELD_DESCRIPTION,The Shield powerup lasts <time> seconds longer,Le Bouclier dure <time> secondes de plus,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+POWER_UP_LIFE,Life,Vie,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POWER_UP_HOW_TO,While running<comma> double-tap to activate selected power-up.,Pendant que tu cours<comma> tape deux fois sur l'écran pour activer le power-up sélectionné.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POWER_UP_YOU_HAVE,You have: <quantity>,Tu en as: <quantity>,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POWER_UP_MAXIMUM_UPGRADE,Fully upgraded,Niveau maximum atteint,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -107,20 +109,25 @@ STAR_DOUBLER_OWNED,Owned,Acheté,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 RESTORE_PURCHASE,Restore purchases,Restore purchases,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 RESTORE_PURCHASE_BUTTON_LABEL,Restore,Rétablir,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 RESTORE_PURCHASE_DESCRIPTION,This will restore your in-app purchases<comma> such as the Star Doubler. Consumable purchases cannot be restored.,Ceci rétablira vos achats intégrés tel que le double-étoiles. Notez que les consommables ne seront pas rétablis.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-TAP_TO_CONTINUE,Tap to continue,Taper pour continuer,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_UPGRADE_TITLE,Upgrade,Améliorer,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_CONSUMABLE_TITLE,Stock up,S'approvisionner,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_STORE_TITLE,Store,Boutique,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-MENU_CONNECT,Connect!,Connecter !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_LOADING,Loading,Chargement,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-MENU_GUEST,No thanks,Non merci,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_PLAY,Play!,Jouer !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_SKIP,Skip,Retour,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_FROM_CHECKPOINT,From Last Checkpoint,Depuis Sauvegarde,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_SAVE_ME_TITLE,Save Me!,Sauve Moi!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_SAVE_ME,Save Me,Sauve Moi,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_LIVES,Lives,Vies,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_COST,Cost:,Coûts:,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_FREE,Free!,Gratuit!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_TAP_TO_PLAY,Tap to play,Touche l'écran pour jouer,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_BOOSTS,Boosts,Boosts,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_PAUSE,Pause,Pause,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_RESUME,Resume,Continuer,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+#Facebook
 MENU_LOG_OUT,Log out!,Déconnexion !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_CONNECT,Connect!,Connecte !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_LOGGED_OUT,Disconnected,Déconnecté,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_SUCCESS_TITLE,Success!,Succès !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_SUCCESS_TEXT,You are now successfully connected to Facebook! All progress is now synchronized with your account.,Votre connexion à Facebook a réussie ! Votre progrès est maintenant synchronisé avec votre compte.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -130,17 +137,19 @@ MENU_NO_THANK_YOU,No thank you!,Non merci!,NOT TRANSLATED,NOT TRANSLATED,NOT TRA
 MENU_CONNECTION_FAILED_TITLE,Connection failed,Connexion échouée,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_CONNECTION_FAILED_TEXT,No Internet connection was found. Please try again later.,Incapable d'établir une connexion Internet. Veuillez essayer plus tard.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATEDMENU_NO_THANK_YOU,No thank you!,Non merci!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_CONNECTION_CANCELED_TITLE,User Canceled,Action Annullée,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-MENU_CONNECTION_CANCELED_TEXT,Facebook access canceled by user.,Connexion à Facebook annulée par l'usager.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATEDMENU_NO_THANK_YOU,No thank you!,Non merci!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_CONNECTION_CANCELED_TEXT,Facebook access canceled by user.,Connexion à Facebook annulée par l'usager.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_FB_ERROR_TITLE,Facebook error,Erreur Facebook,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_FB_ERROR_TEXT,An error occurred while trying to connect to Facebook. Try again later.,Une erreur est survenue lors de la connexion à Facebook. Veuillez essayer plus tard.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATEDMENU_NO_THANK_YOU,No thank you!,Non merci!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_FB_TITLE,Facebook,Facebook,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_OK,Ok,Ok,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_ON,On,Oui,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_OFF,Off,Non,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_SOUND_VOLUME,Sound Volume,Volume Sonore,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_PRIVACY_POLICY,Privacy Policy,Politique de confidentialité,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_GLOBAL_LEADERBOARD,Global Leaderboard,Classement général,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_ACHIEVEMENTS,Achievements,Accomplissements,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_RESTORE_PURCHASES,Restore Purchases,Rétablir les achats,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-MENU_FB_EXPLAIN,Play with your friends and receive free gifts!,Jouez avec vos amis et recevez des cadeaux !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_SHOW_DEBUG,Show Debug Menu,Afficher Menu Debug,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_WELCOME,Welcome,Bienvenue,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_TRY_AGAIN,Try Again,Essaie Encore,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_QUIT,Quit,Quitter,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -153,6 +162,8 @@ MENU_SELECT,Select,Choisir,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_PICK_ME_FEMALE,You're not going to let the world be saved by a guy? Come on! Girls are way better at this kind of thing.,Tu ne vas quand même pas laisser un gars sauver le monde? Cela prends un fille pour ce genre de chose.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_PICK_ME_MALE,You're not going to let the world be saved by a girl? Come on! Guys are way better at this kind of thing.,Tu ne vas quand même pas laisser une fille sauver le monde? Cela prends un gars pour ce genre de chose.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_CHARACTER_SELECTION_TITLE,Choose Your Hero,Choisis ton Héros,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_THANKS_CHOOSING_ME_MALE,Thank you for choosing me. You won't be disappointed!,Merci de m'avoir choisi. Tu ne seras pas déçus !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MENU_THANKS_CHOOSING_ME_FEMALE,Thank you for choosing me. You won't be disappointed!,Merci de m'avoir choisie. Tu ne seras pas déçus !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 GALLERY_TITLE,Denizens of Lum,Personages de Lum,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 GALLERY_NAME_FAIRY,Lily,Lily,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 GALLERY_BIO_FAIRY,<color=#ffa500ff>Gender:</color> Female\n<color=#ffa500ff>Race:</color> Fairy\n<color=#ffa500ff>Age:</color> 18\n<color=#ffa500ff>Date of birth:</color> March 19th\n<color=#ffa500ff>Place of Birth:</color> Forest of Elvenhorn\n<color=#ffa500ff>Favorite things:</color> Violet flowers\n<color=#ffa500ff>Fun Fact:</color> Lily might be small<comma> but she can pack a punch with her spells. She also makes the best oatmeal cookies this side of the WillowBrook River.,<color=#ffa500ff>Gender:</color> Female\n<color=#ffa500ff>Race:</color> Fairy\n<color=#ffa500ff>Age:</color> 142\n<color=#ffa500ff>Date of birth:</color> August 1st\n<color=#ffa500ff>Place of Birth:</color> Forest of Elvenhorn\n<color=#ffa500ff>Favorite things:</color> Violet flowers\n<color=#ffa500ff>Fun Fact:</color> Lily almost did not graduate from fairy school because she kept forgetting her spells.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -161,22 +172,16 @@ GALLERY_BIO_DARK_QUEEN,<color=#ffa500ff>Gender:</color> Female\n<color=#ffa500ff
 GALLERY_NAME_TROLL,Krock,Krock,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 GALLERY_BIO_TROLL,<color=#ffa500ff>Gender:</color> Male\n<color=#ffa500ff>Race:</color> Troll\n<color=#ffa500ff>Age:</color> 29\n<color=#ffa500ff>Date of birth:</color> November 12th\n<color=#ffa500ff>Place of Birth:</color> Western Swamps\n<color=#ffa500ff>Favorite things:</color> Squirrels and books\n<color=#ffa500ff>Fun Fact:</color> Krock was bullied as a little troll because<comma> unlike his companions<comma> he read books in the bog behind his home. He's the only troll in the Kingdom of Lum who knows how to read. Strangely<comma> since he bought his spiked club at the little weapon's shop at Finnegan's market<comma> no one bothers him anymore.,<color=#ffa500ff>Gender:</color> Male\n<color=#ffa500ff>Race:</color> Troll\n<color=#ffa500ff>Age:</color> 29\n<color=#ffa500ff>Date of birth:</color> November 12th\n<color=#ffa500ff>Place of Birth:</color> Western Swamps\n<color=#ffa500ff>Favorite things:</color> Squirrels and books\n<color=#ffa500ff>Fun Fact:</color> Krock was bullied as a little troll because<comma> unlike his companions<comma> he read books in the bog behind his home. He's the only troll in the Kingdom of Lum who knows how to read. Strangely<comma> since he bought his spiked club at the little weapon's shop at Finnegan's market<comma> no one has commented on his book reading.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 GALLERY_NAME_HERO,Hero,Hero,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-GALLERY_BIO_HERO,<color=#ffa500ff>Gender:</color> Male\n<color=#ffa500ff>Race:</color> Human\n<color=#ffa500ff>Age:</color> 19\n<color=#ffa500ff>Date of birth:</color> August 1st\n<color=#ffa500ff>Place of Birth:</color> Gilday\n<color=#ffa500ff>Favorite things:</color> Apple Pie\n<color=#ffa500ff>Fun Fact:</color> He has a twin sister. The rivalry between them is legendary.,<color=#ffa500ff>Gender:</color> Male\n<color=#ffa500ff>Race:</color> Fairy\n<color=#ffa500ff>Age:</color> 142\n<color=#ffa500ff>Date of birth:</color> August 1st\n<color=#ffa500ff>Place of Birth:</color> Forest of Elvenhorn\n<color=#ffa500ff>Favorite things:</color> Violet flowers\n<color=#ffa500ff>Fun Fact:</color> Lily almost did not graduate from fairy school because she kept forgetting her spells.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+GALLERY_BIO_HERO,<color=#ffa500ff>Gender:</color> Male\n<color=#ffa500ff>Race:</color> Human\n<color=#ffa500ff>Age:</color> 19\n<color=#ffa500ff>Date of birth:</color> August 1st\n<color=#ffa500ff>Place of Birth:</color> Gilday\n<color=#ffa500ff>Favorite things:</color> Apple Pie\n<color=#ffa500ff>Fun Fact:</color> He has a twin sister. The rivalry between them is legendary.,<color=#ffa500ff>Gender:</color> Male\n<color=#ffa500ff>Race:</color> Human\n<color=#ffa500ff>Age:</color> 19\n<color=#ffa500ff>Date of birth:</color> August 1st\n<color=#ffa500ff>Place of Birth:</color> Gilday\n<color=#ffa500ff>Favorite things:</color> Apple Pie\n<color=#ffa500ff>Fun Fact:</color> He has a twin sister. The rivalry between them is legendary.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 GALLERY_NAME_HEROINE,Heroine,Heroine,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-GALLERY_BIO_HEROINE,<color=#ffa500ff>Gender:</color> Female\n<color=#ffa500ff>Race:</color> Human\n<color=#ffa500ff>Age:</color> 19\n<color=#ffa500ff>Date of birth:</color> August 1st\n<color=#ffa500ff>Place of Birth:</color> Gilday\n<color=#ffa500ff>Favorite things:</color> Adventuring\n<color=#ffa500ff>Fun Fact:</color> She has a twin brother. The rivalry between them is legendary.,<color=#ffa500ff>Gender:</color> Male\n<color=#ffa500ff>Race:</color> Fairy\n<color=#ffa500ff>Age:</color> 142\n<color=#ffa500ff>Date of birth:</color> August 1st\n<color=#ffa500ff>Place of Birth:</color> Forest of Elvenhorn\n<color=#ffa500ff>Favorite things:</color> Violet flowers\n<color=#ffa500ff>Fun Fact:</color> Lily almost did not graduate from fairy school because she kept forgetting her spells.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+GALLERY_BIO_HEROINE,<color=#ffa500ff>Gender:</color> Female\n<color=#ffa500ff>Race:</color> Human\n<color=#ffa500ff>Age:</color> 19\n<color=#ffa500ff>Date of birth:</color> August 1st\n<color=#ffa500ff>Place of Birth:</color> Gilday\n<color=#ffa500ff>Favorite things:</color> Adventuring\n<color=#ffa500ff>Fun Fact:</color> She has a twin brother. The rivalry between them is legendary.,<color=#ffa500ff>Gender:</color> Female\n<color=#ffa500ff>Race:</color> Human\n<color=#ffa500ff>Age:</color> 19\n<color=#ffa500ff>Date of birth:</color> August 1st\n<color=#ffa500ff>Place of Birth:</color> Gilday\n<color=#ffa500ff>Favorite things:</color> Adventuring\n<color=#ffa500ff>Fun Fact:</color> She has a twin brother. The rivalry between them is legendary.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 GALLERY_NAME_ZOMBIE,Zombie,Zombie,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-GALLERY_BIO_ZOMBIE,<color=#ffa500ff>Favorite hang out:</color> Cemeteries and old battlefields\n<color=#ffa500ff>Tips:</color> You can knock down a standing zombie by sliding into it. You can also use a <color=#19538E>Z-Nuke</color> power-up to knock down a whole bunch at once. You get 20 stars for each zombie toppled. You can't knock down a crawling zombie.\n<color=#ffa500ff>Favorite things:</color> Brains\n<color=#ffa500ff>Fun Fact:</color> Many have speculated on the origin of zombies. Some say<comma> that they are the result of an experiment gone horribly wrong performed by the evil wizard Zotaar. Others suspect that people who eat too much gluten turn into zombies. It's hard to tell who is telling the truth.,<color=#ffa500ff>Gender:</color> Male\n<color=#ffa500ff>Race:</color> Fairy\n<color=#ffa500ff>Age:</color> 142\n<color=#ffa500ff>Date of birth:</color> August 1st\n<color=#ffa500ff>Place of Birth:</color> Forest of Elvenhorn\n<color=#ffa500ff>Favorite things:</color> Violet flowers\n<color=#ffa500ff>Fun Fact:</color> Lily almost did not graduate from fairy school because she kept forgetting her spells.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+GALLERY_BIO_ZOMBIE,<color=#ffa500ff>Favorite hang out:</color> Cemeteries and old battlefields\n<color=#ffa500ff>Tips:</color> You can knock down a standing zombie by sliding into it. You can also use a <color=#19538E>Z-Nuke</color> power-up to knock down a whole bunch at once. You get 20 stars for each zombie toppled. You can't knock down a crawling zombie.\n<color=#ffa500ff>Favorite things:</color> Brains\n<color=#ffa500ff>Fun Fact:</color> Many have speculated on the origin of zombies. Some say<comma> that they are the result of an experiment gone horribly wrong performed by the evil wizard Zotaar. Others suspect that people who eat too much gluten turn into zombies. It's hard to tell who is telling the truth.,<color=#ffa500ff>Favorite hang out:</color> Cemeteries and old battlefields\n<color=#ffa500ff>Tips:</color> You can knock down a standing zombie by sliding into it. You can also use a <color=#19538E>Z-Nuke</color> power-up to knock down a whole bunch at once. You get 20 stars for each zombie toppled. You can't knock down a crawling zombie.\n<color=#ffa500ff>Favorite things:</color> Brains\n<color=#ffa500ff>Fun Fact:</color> Many have speculated on the origin of zombies. Some say<comma> that they are the result of an experiment gone horribly wrong performed by the evil wizard Zotaar. Others suspect that people who eat too much gluten turn into zombies. It's hard to tell who is telling the truth.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 FB_HAVE_A_LIFE_MESSAGE,Here's a life! Have a great day!,Voici une vie ! Passe une belle journée !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_TITLE_EXTRA_LIFE,Send extra life!,Envoyer une vie !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_TEXT_EXTRA_LIFE,Send <first_name> an extra life.,Envoyer une vie à <first_name>.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_TEXT_NEXT_EPISODE, the next episode., le prochain episode.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 FB_HELP_UNLOCK_MESSAGE,I will help you unlock the next episode!,Je vais t'aider à déverrouiller le prochain épisode !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-POPUP_TITLE_ASK_LIVES,Get more lives!,Obtenez des vies !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-POPUP_ASK_FRIENDS,Ask friends,Demander à des amis,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-POPUP_TITLE_ASK_FRIENDS,Ask friends,Demander à des amis,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-POPUP_TITLE_UNLOCK_NOW,Unlock now!,Déverrouillez maintenant !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-POPUP_TITLE_UNLOCK_LEVELS,Unlock more levels!,Déverrouillez plus de niveau !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-POPUP_UNLOCK_NOW_PURCHASE_MESSAGE,Purchase instant access to the next exciting episode.,Achète instantanément l'accès au prochain épisode excitant.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 APP_REQUEST_MESSAGE_UNLOCK,Help me unlock the next episode!,Aide moi à débloquer le prochain épisode !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POPUP_TITLE_MESSAGE_CENTER,Your messages,Vos messages,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POPUP_TITLE_OFFER_LIVES,Help your friends by sending lives!,Aidez vos amis en leur envoyant des vies supplémentaires !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -185,7 +190,6 @@ POPUP_BUTTON_FB_DISCONNECT,Logout,Déconnexion,NOT TRANSLATED,NOT TRANSLATED,NOT
 POPUP_BUTTON_CHECK_ALL,Check all,Tout choisir,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POPUP_BUTTON_ACCEPT,Accept,Acceptez,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POPUP_ASK_FRIENDS_UNLOCK_MESSAGE,Unlock more levels by asking your friends on Facebook for help.,Déverrouiller le prochain épisode en demandant de l'aide à vos amis Facebook.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-POPUP_ASK_FRIENDS_LIFE_MESSAGE,Get more lives by asking your friends on Facebook for help.,Obtenez davantage de vies en demandant de l'aide à vos amis Facebook.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_TITLE_RECEIVED_GIFT,Gift received,Cadeau reçu,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_TEXT_RECEIVED_GIFT,offered you a life!,vous a offert une vie !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_TITLE_RECEIVED_HELP,You got help!,Tu as eu de l'aide !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -194,3 +198,7 @@ MESSAGE_ENTRY_TITLE_HELP_FRIEND,Help your friend!,Aide ton ami !,NOT TRANSLATED,
 MESSAGE_ENTRY_TEXT_ASK_LIFE,asks you to send a life!,vous demande d'envoyer une vie !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_TEXT_ASK_UNLOCK,Help <first_name> to unlock <section_name>,Aide <first_name> à déverrouiller <section_name> !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_ERROR,Unknown app request type,Type de requête inconnu,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+#Ask Friends for lives popup
+POPUP_ASK_LIVES_TITLE,Get more lives!,Obtenez des vies !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+POPUP_ASK_LIVES_CONTENT,Ask your friends for more lives.,Demande à tes amis pour plus de vies.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+POPUP_ASK_LIVES_BUTTON,Ask friends,Aide moi!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED

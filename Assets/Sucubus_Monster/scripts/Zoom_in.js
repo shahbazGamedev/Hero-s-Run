@@ -9,9 +9,9 @@ function Update () {
      }
  
      if(isZoomed == true){
-          camera.fieldOfView = Mathf.Lerp(camera.fieldOfView,zoom,Time.deltaTime*smooth);
+          GetComponent.<Camera>().fieldOfView = Mathf.Lerp(GetComponent.<Camera>().fieldOfView,zoom,Time.deltaTime*smooth);
      }
      else{
-        camera.fieldOfView = Mathf.Lerp(camera.fieldOfView,normal,Time.deltaTime*smooth);
+        GetComponent.<Camera>().fieldOfView = Mathf.Lerp(GetComponent.<Camera>().fieldOfView,normal,Time.deltaTime*smooth);
      }
 }

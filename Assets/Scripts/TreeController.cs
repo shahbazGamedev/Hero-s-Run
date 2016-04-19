@@ -75,8 +75,8 @@ public class TreeController : BaseClass {
 			{
 				soundToPlay = wakeUp2;
 			}
-			audio.clip = soundToPlay;
-			audio.Play();
+			GetComponent<AudioSource>().clip = soundToPlay;
+			GetComponent<AudioSource>().Play();
 
 			if( isLeftOfRoad )
 			{

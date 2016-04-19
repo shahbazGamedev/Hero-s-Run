@@ -42,6 +42,7 @@ public class PowerUpManager : BaseClass {
 	const float BASE_DIAMETER = 18f; 	//in meters
 	//Impact diameter is extended by the upgrade level * UPGRADE_DIAMETER_BOOST
 	public const float UPGRADE_DIAMETER_BOOST = 5f; 	//in meters
+	const float PERCENTAGE_LIFE_SPAWNED = 0.5f;
 
 	void Awake()
 	{
@@ -137,7 +138,7 @@ public class PowerUpManager : BaseClass {
 		PowerUpData pud = powerUpDictionary[powerUpType];
 
 		//Play pick-up sound
-		audio.PlayOneShot( pickUpSound );
+		GetComponent<AudioSource>().PlayOneShot( pickUpSound );
 		//Play a pick-up particle effect if one has been specified
 		if( pud.pickupEffect != null )
 		{
@@ -181,7 +182,7 @@ public class PowerUpManager : BaseClass {
 			{
 			case PowerUpType.Magnet:
 				
-				audio.PlayOneShot( pickUpSound );
+				GetComponent<AudioSource>().PlayOneShot( pickUpSound );
 				StopCoroutine( "startTimerMagnet" );
 				StartCoroutine( "startTimerMagnet", pud );
 				Debug.Log("Magnet - prolonging duration." );
@@ -189,7 +190,7 @@ public class PowerUpManager : BaseClass {
 
 			case PowerUpType.Shield:
 				
-				audio.PlayOneShot( pickUpSound );
+				GetComponent<AudioSource>().PlayOneShot( pickUpSound );
 				StopCoroutine( "startTimerShield" );
 				StartCoroutine( "startTimerShield", pud );
 				Debug.Log("Shield - prolonging duration." );
@@ -202,11 +203,11 @@ public class PowerUpManager : BaseClass {
 			switch( pud.powerUpType )
 			{
 				case PowerUpType.Magnet:
-					audio.PlayOneShot( pickUpSound );
+					GetComponent<AudioSource>().PlayOneShot( pickUpSound );
 					activePowerUps.Add( pud.powerUpType );
 					GameObject magnetSphere = player.transform.Find ("Magnet Sphere").gameObject;
 					CoinAttractor coinAttractor = (CoinAttractor) magnetSphere.GetComponent(typeof(CoinAttractor));
-					float radius =  (magnetSphere.collider as SphereCollider).radius;
+					float radius =  (magnetSphere.GetComponent<Collider>() as SphereCollider).radius;
 					coinAttractor.attractCoinsWithinSphere( magnetSphere.transform.position, radius );
 					StartCoroutine( "startTimerMagnet", pud );
 					powerUpHUD.activateDisplay(pud);
@@ -245,7 +246,7 @@ public class PowerUpManager : BaseClass {
 				break;
 
 				case PowerUpType.Shield:
-					audio.PlayOneShot( pickUpSound );
+					GetComponent<AudioSource>().PlayOneShot( pickUpSound );
 					activePowerUps.Add( pud.powerUpType );
 					turnSomeCollidersIntoTriggers( true );
 					StartCoroutine( "startTimerShield", pud );
@@ -261,7 +262,7 @@ public class PowerUpManager : BaseClass {
 		PowerUpData pud = powerUpDictionary[powerUpType];
 
 		//Play a deactivation sound if one has been set.
-		if ( !instantly && pud.deactivationSound != null ) audio.PlayOneShot( pud.deactivationSound );
+		if ( !instantly && pud.deactivationSound != null ) GetComponent<AudioSource>().PlayOneShot( pud.deactivationSound );
 
 		switch( powerUpType )
 		{
@@ -334,9 +335,9 @@ public class PowerUpManager : BaseClass {
 				collider.isTrigger = isActive;
 				//Since we are turning the collider into a trigger, we need to disable gravity for objects with a rigid body
 				//as well or else the object will fall through the ground.
-				if( collider.rigidbody != null )
+				if( collider.GetComponent<Rigidbody>() != null )
 				{
-					collider.rigidbody.useGravity = !isActive;
+					collider.GetComponent<Rigidbody>().useGravity = !isActive;
 				}
 			}
 		}
@@ -384,7 +385,11 @@ public class PowerUpManager : BaseClass {
 						else if( rdPowerUp == 5 )
 						{
 							//Create a Life power-up
-							addPowerUp( PowerUpType.Life, placeholder, newTile );
+							//Life power-ups should be rare, so don't always spawn one
+							if( Random.value > PERCENTAGE_LIFE_SPAWNED )
+							{
+								addPowerUp( PowerUpType.Life, placeholder, newTile );
+							}
 						}
 						else if( rdPowerUp >= 6 )
 						{

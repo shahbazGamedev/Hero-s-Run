@@ -1,203 +1,143 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class HUDSaveMe : MonoBehaviour {
 
-	//Control
-	Stack<PopupType> popupStack = new Stack<PopupType>();
-	Vector2 iconSize = new Vector2( Screen.width * 0.1f, Screen.width * 0.1f );
-	Vector2 saveMePopupSize = new Vector2( Screen.width * 0.6f, Screen.height * 0.3f );
-	Vector2 saveMeButtonSize;
-	Rect saveMeModalRect;
-	Rect saveMePopupRect;
-	Rect saveMeButtonRect;
-	Rect tryAgainButtonRect;
-	GUIContent saveMeButtonContent = new GUIContent("");
-	GUIContent tryAgainContent;
-	GUIContent tutorialTitleContent;
-	public GUIStyle saveMeStyle;
-	public GUIStyle titleStyle;
-	public GUIStyle helpTextStyle;
-	float margin;
-	Rect skipButtonRect;
-	GUIContent skipButtonContent;
-	GUIContent helpTextContent = new GUIContent( System.String.Empty );
+	[Header("Save Me Menu")]
+	public GameObject saveMeCanvas;
+	PlayerController playerController;
+	[Header("Normal Save Me")]
+	public GameObject normalPanel;
+	public Text titleNormalText;
+	public Text livesText;
+	public Text saveMeText;
+	public Text saveMeCostText;
+	string costString;
+	public Text checkpointText;
+	public Text checkpointCostText;
+	public Text quitNormalText;
+	[Header("Tutorial Save Me")]
+	public GameObject tutorialPanel;
+	public Text titleTutorialText;
+	public Text helpText;
+	public Text tryAgainText;
+	public Text quitTutorialText;
+	 
 
-	void Start()
+	void Awake()
 	{
-		margin = saveMePopupSize.x * 0.1f;
-		saveMeButtonSize = new Vector2( saveMePopupSize.x * 0.75f, saveMePopupSize.y * 0.21f );
-		popupStack.Clear();
-		popupStack.Push( PopupType.None );
-		float posX = (Screen.width - saveMePopupSize.x)/2;
-		float posY = (Screen.height - saveMePopupSize.y)/4;
-		saveMeModalRect = new Rect( posX, posY, saveMePopupSize.x, saveMePopupSize.y );
-		saveMePopupRect = new Rect( 0, 0, saveMePopupSize.x, saveMePopupSize.y );
-		saveMeButtonRect = new Rect( margin, saveMeButtonSize.y + margin, saveMeButtonSize.x, saveMeButtonSize.y );
-		tryAgainButtonRect = new Rect( margin, saveMePopupSize.y - saveMeButtonSize.y - margin, saveMeButtonSize.x, saveMeButtonSize.y );
-		tryAgainContent = new GUIContent ( LocalizationManager.Instance.getText("TUTORIAL_TRY_AGAIN") );
-		tutorialTitleContent = new GUIContent ( LocalizationManager.Instance.getText("TUTORIAL_OOPS") );
-		skipButtonRect = new Rect( margin, saveMeButtonRect.y + saveMeButtonRect.height + 5f, saveMeButtonRect.width, saveMeButtonRect.height );
-		skipButtonContent = new GUIContent ( LocalizationManager.Instance.getText("MENU_SKIP") );
-		helpTextStyle.fixedWidth = saveMePopupRect.width * 0.9f;
+		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+		playerController = playerObject.GetComponent<PlayerController>();
 
-		PopupHandler.changeFontSizeBasedOnResolution( saveMeStyle );
-		PopupHandler.changeFontSizeBasedOnResolution( titleStyle );
-		PopupHandler.changeFontSizeBasedOnResolution( helpTextStyle );
-
+		//Normal Save Me
+		titleNormalText.text = LocalizationManager.Instance.getText("MENU_SAVE_ME_TITLE");
+		livesText.text = LocalizationManager.Instance.getText("MENU_LIVES");
+		saveMeText.text = LocalizationManager.Instance.getText("MENU_SAVE_ME");
+		costString = LocalizationManager.Instance.getText("MENU_COST");
+		checkpointText.text = LocalizationManager.Instance.getText("MENU_FROM_CHECKPOINT");
+		checkpointCostText.text = LocalizationManager.Instance.getText("MENU_FREE");
+		quitNormalText.text = LocalizationManager.Instance.getText("MENU_QUIT");
+		//Tutorial Save Me
+		titleTutorialText.text = LocalizationManager.Instance.getText("TUTORIAL_OOPS");
+		//helpText.text gets set at runtime.
+		tryAgainText.text = LocalizationManager.Instance.getText("MENU_TRY_AGAIN");
+		quitTutorialText.text = LocalizationManager.Instance.getText("MENU_QUIT");
 	}
 	
-	public void activatePopup( PopupType popupType )
+	public void showSaveMeMenu()
 	{
-		popupStack.Push( popupType );
+		SoundManager.playButtonClick();
+		saveMeCanvas.SetActive ( true );
 		if( LevelManager.Instance.isTutorialActive() )
 		{
-			//Set the help text in case the player failed a tutorial.
-			helpTextContent.text = TutorialManager.getFailedTutorialText();
-		}
-	}
-	
-	public bool isPopupDisplayed()
-	{
-		if( popupStack.Peek() != PopupType.None )
-		{
-			return true;
+			activateTutorialSaveMe();
 		}
 		else
 		{
-			return false;
+			activateNormalSaveMe();
 		}
 	}
-	
-	public void closePopup()
+
+	void closeSaveMeMenu()
 	{
 		SoundManager.playButtonClick();
-		popupStack.Clear();
-		popupStack.Push( PopupType.None );
-	}
-	
-	void OnGUI ()
-	{
-		if( popupStack.Peek() != PopupType.None )
-		{
-			GUI.ModalWindow(0, saveMeModalRect, (GUI.WindowFunction) showPopup, "");
-		}
-	}
-	
-	void showPopup( int windowID )
-	{
-		PopupType type = popupStack.Peek();
-
-		//Popup specific
-		switch (type)
-		{
-			case PopupType.SaveMe:
-			if( LevelManager.Instance.isTutorialActive() )
-			{
-				renderTutorialSaveMe();
-			}
-			else
-			{
-				renderNormalSaveMe();
-			}
-			break;			
-		}
-		
+		saveMeCanvas.SetActive ( false );
 	}
 
-	void renderTutorialSaveMe()
+	void activateTutorialSaveMe()
 	{
-		drawTitle();
-		drawHelpText();
-		GUI.BeginGroup(saveMePopupRect);
-		if(GUI.Button( tryAgainButtonRect, tryAgainContent, saveMeStyle ))
-		{
-			Debug.Log("Resurrect button pressed");
-			GameManager.Instance.setGameState( GameState.Resurrect );
-			SendMessage("resurrectBegin" );
-			closePopup();
-		}
-		GUI.EndGroup();
-		
+		//Set the help text in case the player failed a tutorial.
+		helpText.text = TutorialManager.getFailedTutorialText();
+		tutorialPanel.SetActive( true );
+		normalPanel.SetActive( false );
 	}
 
-	//Title (top-center)
-	void drawTitle()
+	void activateNormalSaveMe()
 	{
-		Rect textRect = GUILayoutUtility.GetRect( tutorialTitleContent, titleStyle );
-		float textCenterX = (saveMePopupRect.width-textRect.width)/2f;
-		float titleHeight = 0.05f * saveMePopupRect.height;
-		Rect titleTextRect = new Rect( textCenterX, titleHeight, textRect.width, textRect.height );
-		Utilities.drawLabelWithDropShadow( titleTextRect, tutorialTitleContent, titleStyle );
-	}
-
-	//Title (top-center)
-	void drawHelpText()
-	{
-		Rect textRect = GUILayoutUtility.GetRect( helpTextContent, helpTextStyle );
-		float textCenterX = (saveMePopupRect.width-textRect.width)/2f;
-		float titleHeight = 0.3f * saveMePopupRect.height;
-		Rect titleTextRect = new Rect( textCenterX, titleHeight, textRect.width, textRect.height );
-		Utilities.drawLabelWithDropShadow( titleTextRect, helpTextContent, helpTextStyle );
-	}
-
-	void renderNormalSaveMe()
-	{
-		Rect numberLivesRect = new Rect( margin,saveMePopupSize.x * 0.1f, saveMePopupSize.x * 0.36f, saveMePopupSize.x * 0.1f );
 		int currentNumberOfLives = PlayerStatsManager.Instance.getLives();
 		if( PlayerStatsManager.Instance.getHasInfiniteLives() )
 		{
-			saveMeButtonContent.text = " Lives " + currentNumberOfLives.ToString() + "*";
+			livesText.text = " Lives " + currentNumberOfLives.ToString() + "*";
 		}
 		else
 		{
-			saveMeButtonContent.text = " Lives " + currentNumberOfLives.ToString();
+			livesText.text = " Lives " + currentNumberOfLives.ToString();
 		}
-
-		GUI.BeginGroup(saveMePopupRect);
-
-		TextAnchor currentAnchor = saveMeStyle.alignment;
-		saveMeStyle.alignment = TextAnchor.MiddleLeft;
-		GUI.Label( numberLivesRect, saveMeButtonContent, saveMeStyle );
 
 		//Calculate the energy cost to revive.
-		saveMeStyle.alignment = currentAnchor;
 		float costLives = PlayerStatsManager.Instance.getTimesPlayerRevivedInLevel() + 1;
-		int currentFontSize = saveMeStyle.fontSize;
-		saveMeStyle.fontSize = 	(int)(saveMeStyle.fontSize * 0.8f);
+		saveMeCostText.text = costString + " " + costLives.ToString();
 
-		saveMeButtonContent.text = "Save Me!" + "\n" + "Cost " + costLives.ToString() + "  ";
+		tutorialPanel.SetActive( false );
+		normalPanel.SetActive( true );
 
-		if(GUI.Button( saveMeButtonRect, saveMeButtonContent, saveMeStyle ))
+	}
+
+	public void tutorialTryAgain()
+	{
+		Debug.Log("Try Again button pressed.");
+		GameManager.Instance.setGameState( GameState.Resurrect );
+		playerController.resurrectBegin();
+		closeSaveMeMenu();
+	}
+
+	public void saveMe()
+	{
+		float costLives = PlayerStatsManager.Instance.getTimesPlayerRevivedInLevel() + 1;
+		if( PlayerStatsManager.Instance.getLives() >= costLives || PlayerStatsManager.Instance.getHasInfiniteLives() )
 		{
-			if( PlayerStatsManager.Instance.getLives() >= costLives || PlayerStatsManager.Instance.getHasInfiniteLives() )
-			{
-				Debug.Log("Resurrect button pressed");
-				GameManager.Instance.setGameState( GameState.Resurrect );
-				SendMessage("resurrectBegin" );
-				PlayerStatsManager.Instance.decreaseLives((int)costLives);
-				PlayerStatsManager.Instance.incrementTimesPlayerRevivedInLevel();
-				closePopup();
-			}
-			else
-			{
-				//Show buy popup
-			}
+			Debug.Log("Save Me button pressed.");
+			GameManager.Instance.setGameState( GameState.Resurrect );
+			playerController.resurrectBegin();
+			PlayerStatsManager.Instance.decreaseLives((int)costLives);
+			PlayerStatsManager.Instance.incrementTimesPlayerRevivedInLevel();
+			closeSaveMeMenu();
 		}
-		//Skip button
-		if(GUI.Button( skipButtonRect, skipButtonContent, saveMeStyle ))
+		else
 		{
-			SoundManager.playButtonClick();
-			fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
-			Debug.Log("Skip button pressed");
-			GameManager.Instance.setGameState( GameState.StatsScreen );
-			HUDHandler.showUserMessage = false;
-			closePopup();
+			//Show buy popup
 		}
-		GUI.EndGroup();
-		//Reset
-		saveMeStyle.fontSize = currentFontSize;
+	}
+
+	public void retryFromLastCheckpoint()
+	{
+		Debug.Log("Retry from last checkpoint button pressed");
+		fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
+		HUDHandler.showUserMessage = false;
+		closeSaveMeMenu();
+		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
+		LevelManager.Instance.setNextLevelToComplete( LevelManager.Instance.getLevelNumberOfLastCheckpoint() );
+		SceneManager.LoadScene( (int) GameScenes.Level );
+	}
+
+	public void quit()
+	{
+		Debug.Log("Quit button pressed");
+		fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
+		GameManager.Instance.setGameState( GameState.StatsScreen );
+		HUDHandler.showUserMessage = false;
+		closeSaveMeMenu();
 	}
 
 	void fadeOutAllAudio( float duration )
@@ -215,6 +155,5 @@ public class HUDSaveMe : MonoBehaviour {
 			}
 		}
 	}
-
 
 }

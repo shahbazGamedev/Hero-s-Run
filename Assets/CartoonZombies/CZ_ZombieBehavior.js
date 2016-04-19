@@ -411,7 +411,7 @@ if (state=="BEGINMOVE")  //this is a special state, we do not check for timers
 
 if (state=="DEAD")
 	{
-	collider.enabled = false;
+	GetComponent.<Collider>().enabled = false;
 	transform.Translate(0, -0.1*Time.deltaTime, 0);
 	if (transform.position.y<-0.5) Destroy(gameObject);
 	}
@@ -420,39 +420,39 @@ if (state=="DEAD")
 // PLAY ANIMATIONS ACCORDING TO STATES
 
 
-if ((state=="idle_normal") && !animation.IsPlaying("idle_normal"))
+if ((state=="idle_normal") && !GetComponent.<Animation>().IsPlaying("idle_normal"))
 {
-animation.CrossFade("idle_normal", 0.2);
+GetComponent.<Animation>().CrossFade("idle_normal", 0.2);
 }
 
-if ((state=="idle_lookAround") && !animation.IsPlaying("idle_lookAround"))
+if ((state=="idle_lookAround") && !GetComponent.<Animation>().IsPlaying("idle_lookAround"))
 {
-animation.CrossFade("idle_lookAround", 0.2);
+GetComponent.<Animation>().CrossFade("idle_lookAround", 0.2);
 }
 
-if ((state=="idle_scratchHead") && !animation.IsPlaying("idle_scratchHead"))
+if ((state=="idle_scratchHead") && !GetComponent.<Animation>().IsPlaying("idle_scratchHead"))
 {
-animation.CrossFade("idle_scratchHead", 0.2);
+GetComponent.<Animation>().CrossFade("idle_scratchHead", 0.2);
 }
 
-if ((state=="crouch") && !animation.IsPlaying("crouch"))
+if ((state=="crouch") && !GetComponent.<Animation>().IsPlaying("crouch"))
 {
-animation.CrossFade("crouch", 0.2);
+GetComponent.<Animation>().CrossFade("crouch", 0.2);
 }
 
-if ((state=="crouch_eat2") && !animation.IsPlaying("crouch_eat2"))
+if ((state=="crouch_eat2") && !GetComponent.<Animation>().IsPlaying("crouch_eat2"))
 {
-animation.CrossFade("crouch_eat2", 0.2);
+GetComponent.<Animation>().CrossFade("crouch_eat2", 0.2);
 }
 
-if ((state=="crouch_eat1") && !animation.IsPlaying("crouch_eat1"))
+if ((state=="crouch_eat1") && !GetComponent.<Animation>().IsPlaying("crouch_eat1"))
 {
-animation.CrossFade("crouch_eat1", 0.2);
+GetComponent.<Animation>().CrossFade("crouch_eat1", 0.2);
 }
 
-if ((state=="funnyWalk") && !animation.IsPlaying("funnyWalk"))
+if ((state=="funnyWalk") && !GetComponent.<Animation>().IsPlaying("funnyWalk"))
 {
-animation.CrossFade("funnyWalk", 0.2);
+GetComponent.<Animation>().CrossFade("funnyWalk", 0.2);
 }
 
 if (state=="funnyWalk") 
@@ -492,91 +492,91 @@ transform.Translate(0, 0, 1*Time.deltaTime);
 
 
 
-if ((state=="funnierWalk") && !animation.IsPlaying("funnierWalk"))
+if ((state=="funnierWalk") && !GetComponent.<Animation>().IsPlaying("funnierWalk"))
 {
-animation.CrossFade("funnierWalk", 0.2);
+GetComponent.<Animation>().CrossFade("funnierWalk", 0.2);
 }
 
-if ((state=="shamble") && !animation.IsPlaying("shamble"))
+if ((state=="shamble") && !GetComponent.<Animation>().IsPlaying("shamble"))
 {
-animation.CrossFade("shamble", 0.2);
+GetComponent.<Animation>().CrossFade("shamble", 0.2);
 }
 
-if ((state=="run") && !animation.IsPlaying("run"))
+if ((state=="run") && !GetComponent.<Animation>().IsPlaying("run"))
 {
-animation.CrossFade("run", 0.2);
+GetComponent.<Animation>().CrossFade("run", 0.2);
 }
 
-if ((state=="simpleWalk") && !animation.IsPlaying("simpleWalk"))
+if ((state=="simpleWalk") && !GetComponent.<Animation>().IsPlaying("simpleWalk"))
 {
-animation.CrossFade("simpleWalk", 0.2);
+GetComponent.<Animation>().CrossFade("simpleWalk", 0.2);
 }
 
-if ((state=="crouchMove") && !animation.IsPlaying("crouchMove"))
+if ((state=="crouchMove") && !GetComponent.<Animation>().IsPlaying("crouchMove"))
 {
-animation.CrossFade("crouchMove", 0.2);
+GetComponent.<Animation>().CrossFade("crouchMove", 0.2);
 }
 
-if ((state=="jump") && !animation.IsPlaying("jump"))
+if ((state=="jump") && !GetComponent.<Animation>().IsPlaying("jump"))
 {
-animation.CrossFade("jump", 0.1);
+GetComponent.<Animation>().CrossFade("jump", 0.1);
 }
 
-if ((state=="danceThriller") && !animation.IsPlaying("danceThriller"))
+if ((state=="danceThriller") && !GetComponent.<Animation>().IsPlaying("danceThriller"))
 {
-animation.CrossFade("danceThriller", 0.2);
-animation["danceThriller"].time = Random.Range(0.00, 0.25);  //if they all dance really together, it is very artifical. This way its better.
+GetComponent.<Animation>().CrossFade("danceThriller", 0.2);
+GetComponent.<Animation>()["danceThriller"].time = Random.Range(0.00, 0.25);  //if they all dance really together, it is very artifical. This way its better.
 
-}
-
-
-if ((state=="hit1") && !animation.IsPlaying("hit1"))
-{
-animation.CrossFade("hit1", 0.2);
 }
 
 
-if ((state=="hit2") && !animation.IsPlaying("hit2"))
+if ((state=="hit1") && !GetComponent.<Animation>().IsPlaying("hit1"))
 {
-animation.CrossFade("hit2", 0.2);
-}
-
-if ((state=="burrowUp") && !animation.IsPlaying("burrowUp"))
-{
-animation.CrossFade("burrowUp", 0.2);
+GetComponent.<Animation>().CrossFade("hit1", 0.2);
 }
 
 
-
-if ((state=="fallToFace") && !animation.IsPlaying("fallToFace"))
+if ((state=="hit2") && !GetComponent.<Animation>().IsPlaying("hit2"))
 {
-collider.enabled = false;
-animation.CrossFade("fallToFace", 0.2);
+GetComponent.<Animation>().CrossFade("hit2", 0.2);
+}
+
+if ((state=="burrowUp") && !GetComponent.<Animation>().IsPlaying("burrowUp"))
+{
+GetComponent.<Animation>().CrossFade("burrowUp", 0.2);
 }
 
 
-if ((state=="fallToBack") && !animation.IsPlaying("fallToBack"))
+
+if ((state=="fallToFace") && !GetComponent.<Animation>().IsPlaying("fallToFace"))
 {
-collider.enabled = false;
-animation.CrossFade("fallToBack", 0.2);
+GetComponent.<Collider>().enabled = false;
+GetComponent.<Animation>().CrossFade("fallToFace", 0.2);
 }
 
-if ((state=="standUpFromBack") && !animation.IsPlaying("standUpFromBack"))
+
+if ((state=="fallToBack") && !GetComponent.<Animation>().IsPlaying("fallToBack"))
 {
-collider.enabled = true;
-animation.CrossFade("standUpFromBack", 0.2);
+GetComponent.<Collider>().enabled = false;
+GetComponent.<Animation>().CrossFade("fallToBack", 0.2);
 }
 
-if ((state=="standUpFromFace") && !animation.IsPlaying("standUpFromFace"))
+if ((state=="standUpFromBack") && !GetComponent.<Animation>().IsPlaying("standUpFromBack"))
 {
-collider.enabled = true;
-animation.CrossFade("standUpFromFace", 0.2);
+GetComponent.<Collider>().enabled = true;
+GetComponent.<Animation>().CrossFade("standUpFromBack", 0.2);
 }
 
-if ((state=="crawl") && !animation.IsPlaying("crawl"))
+if ((state=="standUpFromFace") && !GetComponent.<Animation>().IsPlaying("standUpFromFace"))
 {
-collider.enabled = true;
-animation.CrossFade("crawl", 0.2);
+GetComponent.<Collider>().enabled = true;
+GetComponent.<Animation>().CrossFade("standUpFromFace", 0.2);
+}
+
+if ((state=="crawl") && !GetComponent.<Animation>().IsPlaying("crawl"))
+{
+GetComponent.<Collider>().enabled = true;
+GetComponent.<Animation>().CrossFade("crawl", 0.2);
 }
 
 

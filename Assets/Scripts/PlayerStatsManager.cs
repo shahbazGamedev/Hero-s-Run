@@ -8,10 +8,10 @@ public class PlayerStatsManager {
 	private static PlayerStatsManager playerStatsManager = null;
 	
 	//Coin management
-	int coinTotal = 0;
+	int currentCoins = 0;			//The amount of coins (stars) the player currently has. This number always goes up, unless the player purchases something.
 	int coinAccumulator = 0;
 	Transform coinParent = null;
-	int lifetimeCoins = 0;
+	int lifetimeCoins = 0;			//The amount of coins (stars) the player has earned over time. This is a statistic. It is used by the achievement system.
 
 	float distanceTravelled = 0;
 	int highScore = 0;
@@ -49,7 +49,7 @@ public class PlayerStatsManager {
 	//Format is : PowerUpType,quantity,upgrade level
 	const string defaultPowerUpsForNewPlayer = "1,0,0,2,0,0,3,3,0,4,3,0,5,3,0";
 	
-	//Sound volume for both effects and music. Value is between 0 and 1f.
+	//Sound volume between 0 and 1f.
 	float soundVolume = 1f;
 
 	//The number of times the player was revived in the current level using Energy points.
@@ -268,7 +268,7 @@ public class PlayerStatsManager {
 		string numberPortion = coinName.Substring(index);
 		int numberAsInt;
 		int.TryParse(numberPortion, out numberAsInt);
-		modifyCoinCount( numberAsInt );
+		modifyCurrentCoins( numberAsInt, true, false );
 
 		//Accumulator
 		if( coinParent == coin.transform.parent )
@@ -303,28 +303,27 @@ public class PlayerStatsManager {
 		}
 	}
 
-	public void modifyCoinCount( int coins )
+	public void modifyCurrentCoins( int coins, bool incrementLifetimeCoins, bool isPurchase )
 	{
-		if( ownsStarDoubler && coins > 0 ) coins = coins * 2; //only double when getting, not when spending
+		//Player gets twice the amount of Stars if they own the star doubler permanent item and this is not a purchase
+		if( ownsStarDoubler && !isPurchase && coins > 0 ) coins = coins * 2;
 
-		//Player gets twice the amount of Stars
-		coinTotal = coinTotal + coins;
+		currentCoins = currentCoins + coins;
+
 		//Also add to lifetime coins.
-		lifetimeCoins = lifetimeCoins + coins;
-		if( lifetimeCoins >= coin_hoarder.valueNeededToSucceed )
+		if( incrementLifetimeCoins )
 		{
-			coin_hoarder.incrementCounter();
+			lifetimeCoins = lifetimeCoins + coins;
+			if( lifetimeCoins >= coin_hoarder.valueNeededToSucceed )
+			{
+				coin_hoarder.incrementCounter();
+			}
 		}
 	}
 
-	public void resetPlayerCoins()
+	public int getCurrentCoins()
 	{
-		coinTotal = 0;
-	}
-
-	public int getPlayerCoins()
-	{
-		return coinTotal;
+		return currentCoins;
 	}
 	
 	public int getLifetimeCoins()
@@ -334,7 +333,7 @@ public class PlayerStatsManager {
 
 	public int getPlayerScore()
 	{
-		return coinTotal + (int)distanceTravelled;
+		return currentCoins + (int)distanceTravelled;
 	}
 	
 	public int getPlayerHighScore()
@@ -402,6 +401,7 @@ public class PlayerStatsManager {
 	{
 		soundVolume = volume;
 	}
+
 	public void setUsesFacebook( bool value )
 	{
 		usesFacebook = value;
@@ -636,8 +636,6 @@ public class PlayerStatsManager {
 			highScore = PlayerPrefs.GetInt("High Score");
 			lives = PlayerPrefs.GetInt("Lives", 6);
 			treasureIslandKeys = PlayerPrefs.GetInt("TreasureIslandKeys", 0);
-			//for debugging
-			treasureIslandKeys = 5;
 			string firstTimePlayingString = PlayerPrefs.GetString("First Time Playing", "true" );
 			if( firstTimePlayingString == "true" )
 			{
@@ -692,7 +690,10 @@ public class PlayerStatsManager {
 				dateLastPlayed = DateTime.Parse( dateLastPlayedString );
 			}
 			highestLevelUnlocked = PlayerPrefs.GetInt("highestLevelUnlocked",-1);
+
 			soundVolume = PlayerPrefs.GetFloat("soundVolume", 1f );
+
+			currentCoins = PlayerPrefs.GetInt("currentCoins", 0);
 			lifetimeCoins = PlayerPrefs.GetInt("lifetimeCoins", 0);
 			powerUpSelected = (PowerUpType)PlayerPrefs.GetInt("powerUpSelected", (int)PowerUpType.SlowTime);
 			difficultyLevel = (DifficultyLevel)PlayerPrefs.GetInt("difficultyLevel", (int)DifficultyLevel.Normal);
@@ -754,7 +755,10 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetString( "unlockFromIDList", unlockRequests );
 		PlayerPrefs.SetString( "dateLastPlayed", dateLastPlayed.ToString() );
 		PlayerPrefs.SetInt("highestLevelUnlocked", highestLevelUnlocked );
+
 		PlayerPrefs.SetFloat("soundVolume", soundVolume );
+
+		PlayerPrefs.SetInt("currentCoins", currentCoins );
 		PlayerPrefs.SetInt("lifetimeCoins", lifetimeCoins );
 		PlayerPrefs.SetInt("powerUpSelected", (int)powerUpSelected );
 		PlayerPrefs.SetInt("difficultyLevel", (int)difficultyLevel );
@@ -791,8 +795,12 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetString( "dateLastPlayed", dateLastPlayed.ToString() );
 		PlayerPrefs.SetInt("highestLevelUnlocked", -1 );
 		highestLevelUnlocked = -1;
+
 		PlayerPrefs.SetFloat("soundVolume", 1f );
 		soundVolume = 1f;
+
+		PlayerPrefs.SetInt("currentCoins", 0 );
+		currentCoins = 0;
 		PlayerPrefs.SetInt("lifetimeCoins", 0 );
 		lifetimeCoins = 0;
 		PlayerPrefs.SetInt("powerUpSelected", (int)PowerUpType.SlowTime );

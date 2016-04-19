@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Facebook.Unity;
 
 public class OfferLivesHandler : MonoBehaviour {
 
@@ -147,7 +148,7 @@ public class OfferLivesHandler : MonoBehaviour {
 		}
 	}
 
-	public void OLHCallback(FBResult result, string appRequestIDToDelete )
+	public void OLHCallback(IAppRequestResult result, string appRequestIDToDelete )
 	{
 		if (result.Error != null)
 		{
@@ -155,7 +156,7 @@ public class OfferLivesHandler : MonoBehaviour {
 		}
 		else
 		{
-			Debug.Log ("OfferLivesHandler-Callback success:\n" + result.Text );
+			Debug.Log ("OfferLivesHandler-Callback success:\n" + result.RawResult );
 			//OfferLivesHandler-Callback success: {"cancelled":true}
 		}
 	}
@@ -227,11 +228,11 @@ public class OfferLivesHandler : MonoBehaviour {
 		yOffset = (rowSize.y - facebookPortraitSize.y)/2f;
 		Rect friendPictureRect = new Rect( xOffset, yOffset, facebookPortraitSize.x, facebookPortraitSize.y );
 		
-		Texture picture;
+		Sprite picture;
 		if (FacebookManager.Instance.friendImages.TryGetValue( friendID, out picture)) 
 		{
 			//We have the friend's picture
-			popupHandler.drawPortrait( friendPictureRect, picture, false );
+			//popupHandler.drawPortrait( friendPictureRect, picture, false );
 		}
 		else if ( FacebookManager.Instance.friendImagesRequested.Contains( friendID ) )
 		{

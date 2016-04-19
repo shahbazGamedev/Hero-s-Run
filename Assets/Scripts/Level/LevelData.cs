@@ -62,7 +62,7 @@ public class LevelData : MonoBehaviour {
 			{
 			case SunType.Morning:
 				skyBoxName = "CartoonSkybox";
-				lightIntensity = 0.54f;
+				lightIntensity = 0.74f;
 				shadowStrength = 0.3f;
 				sunDirection = Quaternion.Euler( 78f,75f,4f );
 				break;
@@ -76,7 +76,7 @@ public class LevelData : MonoBehaviour {
 				
 			case SunType.Afternoon:
 				skyBoxName = "CartoonSkybox";
-				lightIntensity = 0.54f;
+				lightIntensity = 0.74f;
 				shadowStrength = 0.4f;
 				sunDirection = Quaternion.Euler( 78f,75f,4f );
 				break;
@@ -90,9 +90,9 @@ public class LevelData : MonoBehaviour {
 				
 			case SunType.Night:
 				skyBoxName = "Skybox_Cartoon_Night";
-				lightIntensity = 0.34f;
+				lightIntensity = 0.65f;
 				shadowStrength = 0f;
-				Sun.light.shadows = LightShadows.None;
+				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 32f,13f,-63f );
 				break;
 
@@ -100,25 +100,25 @@ public class LevelData : MonoBehaviour {
 				skyBoxName = "Overcast2 Skybox";
 				lightIntensity = 1.2f;
 				shadowStrength = 0f;
-				Sun.light.shadows = LightShadows.None;
+				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 38.28f,119.5f,87.52f );
-				Sun.light.color = new Color(0.623f,0.729f,0.882f); //bluish
+				Sun.GetComponent<Light>().color = new Color(0.623f,0.729f,0.882f); //bluish
 				break;
 
 			case SunType.Elfland:
 				skyBoxName = "Overcast2 Skybox";
 				lightIntensity = 0.75f;
 				shadowStrength = 0.3f;
-				Sun.light.shadows = LightShadows.None;
+				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 38.28f,119.5f,87.52f );
-				Sun.light.color = new Color(1f,0.788f,0.647f); //orange
+				Sun.GetComponent<Light>().color = new Color(1f,0.788f,0.647f); //orange
 				break;
 
 			case SunType.Hell:
 				skyBoxName = "Skybox Hell";
 				lightIntensity = 0.34f;
 				shadowStrength = 0f;
-				Sun.light.shadows = LightShadows.None;
+				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 32f,13f,-63f );
 				RenderSettings.ambientLight = new Color(0.13f,0.21f,0.3f);
 				break;
@@ -127,9 +127,9 @@ public class LevelData : MonoBehaviour {
 				skyBoxName = "Skybox Cemetery";
 				lightIntensity = 0.28f;
 				shadowStrength = 0f;
-				Sun.light.shadows = LightShadows.None;
+				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 32f,13f,-63f );
-				Sun.light.color = new Color(0.623f,0.729f,0.882f); //bluish
+				Sun.GetComponent<Light>().color = new Color(0.623f,0.729f,0.882f); //bluish
 				RenderSettings.ambientLight = new Color(0.13f,0.21f,0.3f);
 				break;
 
@@ -157,10 +157,10 @@ public class LevelData : MonoBehaviour {
 				Debug.LogError("LevelData-setSunParameters : Unable to find the appropriate skybox: " + skyBoxName + " in the Skybox folder of the Resources folder." );
 			}
 			
-			Sun.light.intensity = lightIntensity;
+			Sun.GetComponent<Light>().intensity = lightIntensity;
 			Sun.transform.rotation = sunDirection;
-			Sun.light.shadowStrength = shadowStrength;
-			Debug.Log("LevelData-setSunParameters : parameters: " + Sun.name + " " + Sun.light.intensity + " " +  Sun.light.shadowStrength );
+			Sun.GetComponent<Light>().shadowStrength = shadowStrength;
+			Debug.Log("LevelData-setSunParameters : parameters: " + Sun.name + " " + Sun.GetComponent<Light>().intensity + " " +  Sun.GetComponent<Light>().shadowStrength );
 
 		}
 		else
@@ -196,6 +196,8 @@ public class LevelData : MonoBehaviour {
 		public string sectionName = "";
 		[Tooltip("The ambience sound for the level. It plays in addition to the music. It is optional.")]
 		public AudioClip AmbienceSound;
+		[Tooltip("The music track for the level. It plays in addition to the ambience. It is optional.")]
+		public AudioClip MusicTrack;
 		[Tooltip("Whether or not to include a surrounding plane. The plane can represent an ocean for example.")]
 		public bool includeSurroundingPlane = true;
 		[Tooltip("Which material to use for the surrounding plane.")]

@@ -5,7 +5,7 @@ var speedz = 0.0;
 private var UseCenter = false;
 
 function Start(){
-if(UseCenter){transform.position = renderer.bounds.center+transform.position;}
+if(UseCenter){transform.position = GetComponent.<Renderer>().bounds.center+transform.position;}
 }
 
 function Update() {

@@ -13,14 +13,14 @@ public class TriggerSound : MonoBehaviour {
 		{
 			if( objectWithAudioSource != null )
 			{
-				Debug.Log ("TriggerSound " + objectWithAudioSource.audio.clip.name );
-				objectWithAudioSource.audio.Play();
+				Debug.Log ("TriggerSound " + objectWithAudioSource.GetComponent<AudioSource>().clip.name );
+				objectWithAudioSource.GetComponent<AudioSource>().Play();
 			}
 			else
 			{
-				Debug.Log ("TriggerSound " + audio.clip.name );
-				audio.loop = loop;
-				audio.Play();
+				Debug.Log ("TriggerSound " + GetComponent<AudioSource>().clip.name );
+				GetComponent<AudioSource>().loop = loop;
+				GetComponent<AudioSource>().Play();
 			}
 		}
 	}

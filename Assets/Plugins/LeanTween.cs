@@ -1492,7 +1492,7 @@ public static void update() {
 								break;	
 							#else
 								SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
-								tween.from.x = (ren!=null) ? ren.color.a : trans.gameObject.renderer.material.color.a;
+								tween.from.x = (ren!=null) ? ren.color.a : trans.gameObject.GetComponent<Renderer>().material.color.a;
 								break;
 							#endif
 						case TweenAction.MOVE_LOCAL:
@@ -1734,7 +1734,7 @@ public static void update() {
 							if(ren!=null){
 								ren.color = new Color( ren.color.r, ren.color.g, ren.color.b, val);
 							}else{
-								foreach(Material mat in trans.gameObject.renderer.materials){
+								foreach(Material mat in trans.gameObject.GetComponent<Renderer>().materials){
 	        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
 	    						}
 							}

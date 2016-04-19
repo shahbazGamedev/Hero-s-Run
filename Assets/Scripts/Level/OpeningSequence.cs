@@ -19,13 +19,13 @@ public class OpeningSequence : MonoBehaviour {
 
 	public void playCrowSound()
 	{
-		audio.PlayOneShot( crow );
+		GetComponent<AudioSource>().PlayOneShot( crow );
 	}
 
 	public void playExplosionSound()
 	{
 		//Explosion sound
-		audio.Play();
+		GetComponent<AudioSource>().Play();
 	}
 }
 

@@ -11,9 +11,9 @@ public class CloudFlow : MonoBehaviour {
         float newOffsetU = Time.time * m_SpeedU;
 
 
-        if (this.renderer)
+        if (this.GetComponent<Renderer>())
         {
-            renderer.material.mainTextureOffset = new Vector2(newOffsetU, 0);
+            GetComponent<Renderer>().material.mainTextureOffset = new Vector2(newOffsetU, 0);
         }
 	}
 }

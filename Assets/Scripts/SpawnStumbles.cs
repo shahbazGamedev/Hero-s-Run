@@ -3,13 +3,16 @@ using System.Collections;
 
 public class SpawnStumbles : MonoBehaviour {
 	
-	static GameObject shortStumble = Resources.Load("Obstacles/Stumble Log") as GameObject; //one lane
-	static GameObject longStumble  = Resources.Load("Obstacles/Stumble Log Long") as GameObject;	//two lane
+	GameObject shortStumble; //one lane
+	GameObject longStumble;	//two lane
 	bool allowStumbles = true; //used for debugging
 	
 	// Use this for initialization
 	void Start ()
 	{
+		shortStumble = Resources.Load("Obstacles/Stumble Log") as GameObject; //one lane
+		longStumble  = Resources.Load("Obstacles/Stumble Log Long") as GameObject;	//two lane
+
 		GameObject prefab;
 
 		//There is a percentage chance that a Stumble will be spawned

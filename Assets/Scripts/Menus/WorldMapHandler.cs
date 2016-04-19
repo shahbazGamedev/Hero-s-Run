@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using UnityEngine.SceneManagement;
 
 public class WorldMapHandler : MonoBehaviour {
 
@@ -73,6 +74,8 @@ public class WorldMapHandler : MonoBehaviour {
 	
 	PopupHandler popupHandler;
 
+	public Canvas settingsMenuCanvas;
+
 	void Awake ()
 	{
 		//Get the level data. Level data has the parameters for all the levels of the game.
@@ -120,7 +123,7 @@ public class WorldMapHandler : MonoBehaviour {
 		levelLoading = false;
 		//For debugging
 		//Display localized test announcement
-		MyUpsightManager.requestLocalizedContent( "announcement_01" );
+		//MyUpsightManager.requestLocalizedContent( "announcement_01" );
 
 		//If we quit from the pause menu, the audio listener was paused.
 		//We could set AudioListener.pause = false in the goToHomeMenu() but
@@ -150,11 +153,11 @@ public class WorldMapHandler : MonoBehaviour {
 		//if we have a Facebook user portrait, use it, or else, use the default one.
 		if( FacebookManager.Instance.UserPortrait == null )
 		{
-			playerPortrait = defaultPortrait;
+			//playerPortrait = defaultPortrait;
 		}
 		else
 		{
-			playerPortrait = FacebookManager.Instance.UserPortrait;
+			//playerPortrait = FacebookManager.Instance.UserPortrait;
 		}
 
 		if( LevelManager.Instance.getLevelChanged() )
@@ -178,9 +181,6 @@ public class WorldMapHandler : MonoBehaviour {
 		worldRect.x = -playerPortraitRect.rect.center.x  + Screen.width/2;
 		worldRect.y = -playerPortraitRect.rect.center.y  + Screen.height/2;
 		enforceMapBoundaries();
-
-		//Reset stats like the coin total
-		PlayerStatsManager.Instance.resetPlayerCoins();
 
 		//For debugging
 		TimeSpan timeSpan = DateTime.Now - PlayerStatsManager.Instance.getDateLastPlayed();
@@ -276,7 +276,6 @@ public class WorldMapHandler : MonoBehaviour {
 			popupHandler.activatePopup( PopupType.MessageCenter );
 		}
 
-
 		#if UNITY_EDITOR
 		handleMouseMovement();
 		#endif
@@ -292,118 +291,9 @@ public class WorldMapHandler : MonoBehaviour {
 
 		GUI.EndGroup();
 
-		//Draw buttons outside of the worldRect GUI group
-		//since we always want them to be in the same location.
-		drawLifeButton();
-		drawMessageCenterButton();
-		drawDebugButton();
-		drawSettingsButton();
-		//drawPlayButton();
-		drawTreasureIslandButton();
-		drawBoostsButton();
 	}
 
-	void drawBoostsButton()
-	{
-		//Draw button
-		float marginX = Screen.width * 0.4f;
-		float marginY = Screen.height - Screen.width * 0.2f;
-		float buttonSize = Screen.width * 0.075f;
-		Rect buttonRect = new Rect( marginX, marginY, messageCenterOpenStyle.fixedWidth, messageCenterOpenStyle.fixedHeight );
-		if( GUI.Button( buttonRect, "", messageCenterOpenStyle )) 
-		{
-			if( !levelLoading )
-			{
-				SoundManager.playButtonClick();
-				levelLoading = true;
-				Application.LoadLevel( 7 );
-			}
-		}
-	}
 
-	void drawTreasureIslandButton()
-	{
-		//Draw button
-		float marginX = Screen.width * 0.2f;
-		float marginY = Screen.height - Screen.width * 0.2f;
-		float buttonSize = Screen.width * 0.075f;
-		Rect buttonRect = new Rect( marginX, marginY, messageCenterOpenStyle.fixedWidth, messageCenterOpenStyle.fixedHeight );
-		if( GUI.Button( buttonRect, "", messageCenterOpenStyle )) 
-		{
-			SoundManager.playButtonClick();
-			//StartCoroutine( loadTreasureIsland() );
-			StartCoroutine( loadCharacterGallery() );
-		}
-	}
-
-	IEnumerator loadTreasureIsland()
-	{
-		if( !levelLoading )
-		{
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			Application.LoadLevel( 5 );
-		}
-
-	}
-
-	IEnumerator loadCharacterGallery()
-	{
-		if( !levelLoading )
-		{
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			Application.LoadLevel( 6 );
-		}
-		
-	}
-	void drawPlayButton()
-	{
-		//Draw button
-		Vector2 buttonSize = new Vector2( Screen.width * 0.14f, Screen.width * 0.07f );
-		float marginX = (Screen.width - buttonSize.x ) * 0.7f;
-		float marginY = Screen.height - ( 2 * buttonSize.y );
-		Rect buttonRect = new Rect( marginX, marginY, messageCenterOpenStyle.fixedWidth, messageCenterOpenStyle.fixedHeight );
-		if( GUI.Button( buttonRect, "Play", playButtonStyle )) 
-		{
-			SoundManager.playButtonClick();
-			//Hack - for demo, always start at the first elfland level which is 5
-			//LevelManager.Instance.forceNextLevelToComplete( 5 );
-			//initiateLevelLoading();
-			Application.LoadLevel( (int) GameScenes.ComicBook);
-		}
-	}
-
-	//Draw Life icon and current number of lives. Only draw it if there are no pop-ups.
-	void drawLifeButton()
-	{
-		if( !popupHandler.isPopupDisplayed() )
-		{
-			int numberLives = PlayerStatsManager.Instance.getLives();
-			//Draw button
-			float marginX = Screen.width * 0.025f;
-			float marginY = Screen.width * 0.025f;
-			float buttonSize = Screen.width * 0.075f;
-			Rect buttonRect = new Rect( marginX, marginY, messageCenterOpenStyle.fixedWidth, messageCenterOpenStyle.fixedHeight );
-			if( GUI.Button( buttonRect, "", lifeStyle )) 
-			{
-				SoundManager.playButtonClick();
-				popupHandler.setPopupSize(new Vector2( Screen.width * 0.8f, Screen.height * 0.8f ));
-				popupHandler.activatePopup( PopupType.AskLife );
-				//For debugging
-				FacebookManager.Instance.publishAction();
-			}
-			
-			//Draw number of lives
-			float yOffset = (buttonRect.height - buttonSize)/2;
-			GUIContent numberLivesContent = new GUIContent( numberLives.ToString() );
-			Rect numberLivesRect = new Rect( buttonRect.x + buttonRect.width , buttonRect.y + yOffset, buttonSize, buttonSize );
-			Utilities.drawLabelWithDropShadow( numberLivesRect, numberLivesContent, titleStyle, Color.red );
-		}
-		
-	}
 
 	//Draw button to open message center
 	void drawMessageCenterButton()
@@ -431,42 +321,6 @@ public class WorldMapHandler : MonoBehaviour {
 				GUIContent numberMessagesContent = new GUIContent( numberMessages.ToString() );
 				Rect numberMessagesRect = new Rect( buttonRect.x + buttonRect.width , buttonRect.y + yOffset, buttonSize, buttonSize );
 				Utilities.drawLabelWithDropShadow( numberMessagesRect, numberMessagesContent, titleStyle, Color.red );
-			}
-		}
-	}
-
-	//Draw debug button.
-	void drawDebugButton()
-	{
-		if( !popupHandler.isPopupDisplayed() )
-		{
-			//Draw button
-			float marginX = Screen.width * 0.025f;
-			float marginY = Screen.width * 0.4f;
-			Rect buttonRect = new Rect( marginX, marginY, messageCenterOpenStyle.fixedWidth, messageCenterOpenStyle.fixedHeight );
-			if( GUI.Button( buttonRect, "", debugStyle )) 
-			{
-				SoundManager.playButtonClick();
-				popupHandler.setPopupSize(new Vector2( Screen.width * 0.8f, Screen.height * 0.8f ));
-				popupHandler.activatePopup( PopupType.DebugPopup );
-			}
-		}
-	}
-
-	//Draw settings button.
-	void drawSettingsButton()
-	{
-		if( !popupHandler.isPopupDisplayed() )
-		{
-			//Draw button
-			float marginX = Screen.width - Screen.width * 0.025f - messageCenterOpenStyle.fixedWidth;
-			float marginY = Screen.width * 0.025f;
-			Rect buttonRect = new Rect( marginX, marginY, messageCenterOpenStyle.fixedWidth, messageCenterOpenStyle.fixedHeight );
-			if( GUI.Button( buttonRect, "", settingsStyle )) 
-			{
-				SoundManager.playButtonClick();
-				popupHandler.setPopupSize(new Vector2( Screen.width * 0.8f, Screen.height * 0.8f ));
-				popupHandler.activatePopup( PopupType.Settings );
 			}
 		}
 	}
@@ -578,7 +432,7 @@ public class WorldMapHandler : MonoBehaviour {
 		Handheld.StartActivityIndicator();
 		yield return new WaitForSeconds(0);
 		//Load level scene
-		Application.LoadLevel( 4 );
+		SceneManager.LoadScene( (int) GameScenes.Level );
 		
 	}
 
@@ -594,11 +448,11 @@ public class WorldMapHandler : MonoBehaviour {
 				friendPortraitRect.x =  coord.x * worldRect.width  + friendPortraitOffset.x;
 				friendPortraitRect.y =  coord.y * worldRect.height + friendPortraitOffset.y;
 				
-				Texture picture;
+				Sprite picture;
 				if (FacebookManager.Instance.friendImages.TryGetValue( userID, out picture)) 
 				{
 					//We have the friend's picture
-					popupHandler.drawPortrait( friendPortraitRect, picture, false );
+					//popupHandler.drawPortrait( friendPortraitRect, picture, false );
 				}
 				else if ( FacebookManager.Instance.friendImagesRequested.Contains( userID ) )
 				{

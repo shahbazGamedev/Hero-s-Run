@@ -139,7 +139,7 @@ public class TrollController : MonoBehaviour {
 	{
 		print ("ATTACK COMPLETED ");
 		//Play a smash sound and particle effect
-		audio.PlayOneShot( smash );
+		GetComponent<AudioSource>().PlayOneShot( smash );
 		smashParticles.Play();
 		playerController.shakeCamera();
 
@@ -147,7 +147,7 @@ public class TrollController : MonoBehaviour {
 		trollState = TrollState.Idle;
 
 		//Once the attack animation completes, go to idle
-		animation.CrossFadeQueued("Idle", 0.87f);
+		GetComponent<Animation>().CrossFadeQueued("Idle", 0.87f);
 	}
 
 	//The smash occurs when the player stumbles while the troll is not active.
@@ -156,13 +156,13 @@ public class TrollController : MonoBehaviour {
 	void Smash_completed ()
 	{
 		//Play a smash sound and particle effect
-		audio.PlayOneShot( smash );
+		GetComponent<AudioSource>().PlayOneShot( smash );
 		smashParticles.Play();
 		playerController.shakeCamera();
 
 		//Once the smash animation completes, the troll will continue to run
 		trollState = TrollState.Running;
-		animation.CrossFadeQueued("Run", 0.87f);
+		GetComponent<Animation>().CrossFadeQueued("Run", 0.87f);
 		Speed = Speed - 0.7f; //Make sure the troll falls back
 
 	}
@@ -174,8 +174,8 @@ public class TrollController : MonoBehaviour {
 	{
 		if( gameObject.activeSelf )
 		{
-			animation.CrossFade("Jump",0.2f);
-			animation.CrossFadeQueued("Run", 0.4f);
+			GetComponent<Animation>().CrossFade("Jump",0.2f);
+			GetComponent<Animation>().CrossFadeQueued("Run", 0.4f);
 		}
 	}
 	
@@ -188,17 +188,17 @@ public class TrollController : MonoBehaviour {
 		{
 		case TrollState.StartRunning:
 			gameObject.SetActive( true );
-			animation.CrossFade("Run_threaten",0.2f);
-			animation.CrossFadeQueued("Run", 0.2f);
+			GetComponent<Animation>().CrossFade("Run_threaten",0.2f);
+			GetComponent<Animation>().CrossFadeQueued("Run", 0.2f);
 			break;
 			
 		case TrollState.Running:
 			gameObject.SetActive( true );
-			animation.CrossFade("Run", 0.2f);
+			GetComponent<Animation>().CrossFade("Run", 0.2f);
 			break;
 
 		case TrollState.Attack:
-			animation.CrossFade("Attack", 0.1f);
+			GetComponent<Animation>().CrossFade("Attack", 0.1f);
 			Invoke("Attack_completed", 0.52f);
 			print ("INVOKE ATTACK COMPLETED CALLED");
 			break;
@@ -209,25 +209,25 @@ public class TrollController : MonoBehaviour {
 
 		case TrollState.Smashing:
 			playerStumbledPreviously = true;
-			animation.CrossFade("Attack",0.2f);
+			GetComponent<Animation>().CrossFade("Attack",0.2f);
 			Invoke("Smash_completed", 0.52f);
 			break;
 
 		case TrollState.Idle:
-			animation.CrossFade("Idle",0.2f);
+			GetComponent<Animation>().CrossFade("Idle",0.2f);
 			break;
 
 		case TrollState.Laughing:
-			animation.CrossFade("Laugh",0.6f);
+			GetComponent<Animation>().CrossFade("Laugh",0.6f);
 			Invoke ("goBackToIdleAfterLaugh", 2.799f );
-			audio.PlayOneShot( laugh );
+			GetComponent<AudioSource>().PlayOneShot( laugh );
 			break;
 		}
 	}
 
 	void goBackToIdleAfterLaugh()
 	{
-		animation.CrossFade("Idle", 0.92f);
+		GetComponent<Animation>().CrossFade("Idle", 0.92f);
 	}
 
 	public bool didPlayerStumblePreviously()
@@ -319,11 +319,11 @@ public class TrollController : MonoBehaviour {
 	{
 		if( newState == GameState.Paused )
 		{
-			animation.enabled = false;
+			GetComponent<Animation>().enabled = false;
 		}
 		else if( newState == GameState.Normal )
 		{
-			animation.enabled = true;
+			GetComponent<Animation>().enabled = true;
 		}
 	}
 

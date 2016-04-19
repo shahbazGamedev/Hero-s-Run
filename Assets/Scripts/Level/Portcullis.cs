@@ -20,7 +20,7 @@ public class Portcullis : MonoBehaviour {
 	{
 		float endPositionY = transform.localPosition.y - yDistance;
 		LeanTween.moveLocalY( gameObject, endPositionY, duration ).setEase(LeanTweenType.easeOutExpo);
-		audio.Play();
+		GetComponent<AudioSource>().Play();
 	}
 	
 	void OnEnable()

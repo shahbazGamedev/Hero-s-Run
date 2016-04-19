@@ -1,52 +1,68 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
+public enum StoreTab {
+	Store = 1,
+	Shop = 2
+}
 
 public class StoreManager : MonoBehaviour {
 
-	[Header("Misc")]
-	public Text playerCurrency;
+	[Header("Powerup Shop")]
 	public Text upgradeTitle;
 	public Text consumableTitle;
-	bool levelLoading = false;
-	public Canvas powerupCanvas;
+	public GameObject storeTab;
+	public GameObject shopTab;
+
+	[Header("Store")]
 	public Canvas storeCanvas;
+
+	bool levelLoading = false;
 
 	// Use this for initialization
 	void Awake ()
 	{
-		if( playerCurrency != null ) playerCurrency.text = ( PlayerStatsManager.Instance.getLifetimeCoins() ).ToString("N0");;
+		#if UNITY_EDITOR
+		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
+		#endif
+
 		upgradeTitle.text = LocalizationManager.Instance.getText("MENU_UPGRADE_TITLE");
 		consumableTitle.text = LocalizationManager.Instance.getText("MENU_CONSUMABLE_TITLE");
 
 	}
 
-	public void showStore()
+	public void showStore(StoreTab selectedTab )
 	{
-		powerupCanvas.gameObject.SetActive( false );
 		storeCanvas.gameObject.SetActive( true );
+		if( selectedTab == StoreTab.Store )
+		{	
+			storeTab.gameObject.SetActive( true );
+			shopTab.gameObject.SetActive( false );
+		}
+		else if( selectedTab == StoreTab.Shop )
+		{	
+			storeTab.gameObject.SetActive( false );
+			shopTab.gameObject.SetActive( true );
+		}
+	}
+
+	public void showStoreTab()
+	{
+		storeTab.gameObject.SetActive( true );
+		shopTab.gameObject.SetActive( false );
+	}
+
+	public void showShopTab()
+	{
+		storeTab.gameObject.SetActive( false );
+		shopTab.gameObject.SetActive( true );
 	}
 
 	public void closeStore()
 	{
-		powerupCanvas.gameObject.SetActive( true );
 		storeCanvas.gameObject.SetActive( false );
 	}
 
-	public void closeMenu()
-	{
-		StartCoroutine( close() );
-	}
-	
-	IEnumerator close()
-	{
-		if( !levelLoading )
-		{
-			SoundManager.playButtonClick();
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			Application.LoadLevel( 3 );
-		}
-	}
 }

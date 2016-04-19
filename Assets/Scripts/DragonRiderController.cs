@@ -419,7 +419,7 @@ public class DragonRiderController : BaseClass {
 		
 		//Player related
 		anim.SetTrigger(Dragon_HappyTrigger);
-		audio.Stop();
+		GetComponent<AudioSource>().Stop();
 		
 		//This time is captured so we can slowly accelerate the run speed
 		timeSessionStarted = Time.time;
@@ -515,9 +515,9 @@ public class DragonRiderController : BaseClass {
 	    {
 			if( dragonAnimation[dragonBreatheFire.name].time > 0.6f && !breathedFire )
 			{
-				dragonFire.particleSystem.Play();
-				Dragon.audio.loop = false;
-				Dragon.audio.Play();
+				dragonFire.GetComponent<ParticleSystem>().Play();
+				Dragon.GetComponent<AudioSource>().loop = false;
+				Dragon.GetComponent<AudioSource>().Play();
 				breathedFire = true;
 			}
 			duration = duration - Time.deltaTime;
@@ -550,8 +550,8 @@ public class DragonRiderController : BaseClass {
 				stopFlying ();
 				jump();
 				Debug.Log ("WaitForEjectPlayer-jump.");
-				Dragon.audio.loop = false;
-				Dragon.audio.Play();
+				Dragon.GetComponent<AudioSource>().loop = false;
+				Dragon.GetComponent<AudioSource>().Play();
 				playerEjected = true;
 			}
 			duration = duration - Time.deltaTime;
@@ -832,7 +832,7 @@ public class DragonRiderController : BaseClass {
 		{
 			anim.SetTrigger(StumbleTrigger);
 			//The Land anim has a callback to play the Land sound, but not the Stumble anim
-			audio.PlayOneShot( landSound, 0.8f );
+			GetComponent<AudioSource>().PlayOneShot( landSound, 0.8f );
 		}
 		moveDirection.y = 0f;
 		print ( "player landed. Fall distance was: " + 	fallDistance );
@@ -994,9 +994,9 @@ public class DragonRiderController : BaseClass {
 	
 	void playSound(AudioClip soundToPlay, bool isLooping )
     {
-		audio.clip = soundToPlay;
-		audio.loop = isLooping;
-		audio.Play();
+		GetComponent<AudioSource>().clip = soundToPlay;
+		GetComponent<AudioSource>().loop = isLooping;
+		GetComponent<AudioSource>().Play();
     }
 	
 	void handleSwipes()
@@ -1708,7 +1708,7 @@ public class DragonRiderController : BaseClass {
 								desiredLane = Lanes.Right;
 								setCharacterState( CharacterState.SideMove );
 								moveDirection.x = currentSideMoveSpeed;
-								audio.PlayOneShot( sideMoveSound );
+								GetComponent<AudioSource>().PlayOneShot( sideMoveSound );
 								Debug.Log ("moveToSide completed " + isGoingRight + " to lane " + desiredLane );
 		
 							}
@@ -1717,7 +1717,7 @@ public class DragonRiderController : BaseClass {
 								desiredLane = Lanes.Left;
 								setCharacterState( CharacterState.SideMove );
 								moveDirection.x = -currentSideMoveSpeed;
-								audio.PlayOneShot( sideMoveSound );
+								GetComponent<AudioSource>().PlayOneShot( sideMoveSound );
 								Debug.Log ("moveToSide completed " + isGoingRight + " to lane " + desiredLane );
 							}
 						}
@@ -1726,7 +1726,7 @@ public class DragonRiderController : BaseClass {
 							desiredLane = Lanes.Center;
 							setCharacterState( CharacterState.SideMove );
 							moveDirection.x = -currentSideMoveSpeed;
-							audio.PlayOneShot( sideMoveSound );
+							GetComponent<AudioSource>().PlayOneShot( sideMoveSound );
 							Debug.Log ("moveToSide completed " + isGoingRight + " to lane " + desiredLane );
 						}
 						else if ( currentLane == Lanes.Left && isGoingRight )
@@ -1734,7 +1734,7 @@ public class DragonRiderController : BaseClass {
 							desiredLane = Lanes.Center;
 							setCharacterState( CharacterState.SideMove );
 							moveDirection.x = currentSideMoveSpeed;
-							audio.PlayOneShot( sideMoveSound );
+							GetComponent<AudioSource>().PlayOneShot( sideMoveSound );
 							Debug.Log ("moveToSide completed " + isGoingRight + " to lane " + desiredLane );
 						}
 					}
@@ -1963,7 +1963,7 @@ public class DragonRiderController : BaseClass {
 					setCharacterState( CharacterState.Running );
 				}
 				anim.SetTrigger(Slide_UpTrigger);
-				audio.Stop();
+				GetComponent<AudioSource>().Stop();
 				deactivateOverheadObstacles( false );
 			}
 		}
@@ -2006,7 +2006,7 @@ public class DragonRiderController : BaseClass {
 		while ( time > 0.0f )
 		{
 			time -= Time.deltaTime;
-			Vector3 coinDestination = mainCamera.camera.ScreenToWorldPoint (coinScreenPos);
+			Vector3 coinDestination = mainCamera.GetComponent<Camera>().ScreenToWorldPoint (coinScreenPos);
 
 			if (coin.gameObject != null )
 			{
@@ -2066,7 +2066,7 @@ public class DragonRiderController : BaseClass {
 						chickenController.timeWasHit = Time.time;
 
 						//Give stars
-						PlayerStatsManager.Instance.modifyCoinCount( 10 );
+						PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
 						
 						//Display coin total picked up icon
 						HUDHandler.displayCoinTotal( 10, Color.yellow, false );
@@ -2121,7 +2121,7 @@ public class DragonRiderController : BaseClass {
 					if( _characterState == CharacterState.Sliding && zombieController.getZombieState() != ZombieController.ZombieState.Crawling )
 					{
 						//Give stars
-						PlayerStatsManager.Instance.modifyCoinCount( 10 );
+						PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
 						
 						//Display coin total picked up icon
 						HUDHandler.displayCoinTotal( 10, Color.yellow, false );
@@ -2214,11 +2214,11 @@ public class DragonRiderController : BaseClass {
 					BreakableObject bo = (BreakableObject) hit.collider.GetComponent("BreakableObject");
 					Debug.Log( "PLayer collided with breakable: " + hit.collider.name );
 					//We pass the player collider to triggerBreak() because we do not want the barrel fragments to collide with the player.
-					bo.triggerBreak( collider );
+					bo.triggerBreak( GetComponent<Collider>() );
 					if( _characterState == CharacterState.Sliding )
 					{
 						//Give stars
-						PlayerStatsManager.Instance.modifyCoinCount( 10 );
+						PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
 
 						//To do
 						//Display coin total picked up icon
@@ -2236,11 +2236,11 @@ public class DragonRiderController : BaseClass {
 				BreakableObject bo = (BreakableObject) hit.collider.GetComponent("BreakableObject");
 				Debug.Log( "PLayer collided with breakable: " + hit.collider.name );
 				//We pass the player collider to triggerBreak() because we do not want the barrel fragments to collide with the player.
-				bo.triggerBreak( collider );
+				bo.triggerBreak( GetComponent<Collider>() );
 				if( _characterState == CharacterState.Sliding )
 				{
 					//Give stars
-					PlayerStatsManager.Instance.modifyCoinCount( 10 );
+					PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
 					
 					//To do
 					//Display coin total picked up icon
@@ -2377,9 +2377,9 @@ public class DragonRiderController : BaseClass {
 			{
 				//Create a water splash
 				Debug.Log ("Player fell into river.");
-				other.particleSystem.transform.position.Set ( transform.position.x, transform.position.y + 0.8f, transform.position.z );
-				other.particleSystem.Play();
-				other.audio.PlayOneShot(other.audio.clip);
+				other.GetComponent<ParticleSystem>().transform.position.Set ( transform.position.x, transform.position.y + 0.8f, transform.position.z );
+				other.GetComponent<ParticleSystem>().Play();
+				other.GetComponent<AudioSource>().PlayOneShot(other.GetComponent<AudioSource>().clip);
 				//Also hide the coin pack since it gets in the way of the camera
 				Transform riverCoinPack = currentTile.transform.FindChild("CoinPack8x1_1x10_river");
 				if( riverCoinPack != null ) riverCoinPack.gameObject.SetActive(false);
@@ -2447,7 +2447,7 @@ public class DragonRiderController : BaseClass {
 				dustPuff.Stop();
 				setCharacterState( CharacterState.Running );
 				anim.SetTrigger(Slide_UpTrigger);
-				audio.Stop();
+				GetComponent<AudioSource>().Stop();
 			}
 			placePlayerInCenterLane();
 		}
@@ -2458,7 +2458,7 @@ public class DragonRiderController : BaseClass {
 			placePlayerInCenterLane();
 			//We do not want the player to collide with the dragon
 			GameObject go = GameObject.Find("Dragon");
-			Physics.IgnoreCollision( transform.collider, go.collider);
+			Physics.IgnoreCollision( transform.GetComponent<Collider>(), go.GetComponent<Collider>());
 		}
 		else if( other.name == "StopFlyingTileEntrance" )
 		{
@@ -2674,7 +2674,7 @@ public class DragonRiderController : BaseClass {
 			gl.playerTurnedAtTJunction( isGoingRight, currentTile );
 		}
 
-		audio.PlayOneShot( sideMoveSound );
+		GetComponent<AudioSource>().PlayOneShot( sideMoveSound );
 		float playerRotY = transform.eulerAngles.y;
 		
 		if ( isGoingRight )
@@ -2765,7 +2765,7 @@ public class DragonRiderController : BaseClass {
 			StartCoroutine( SoundManager.fadeOutMusic(1f, 0.25f) );
 
 			//Stop any currently playing sound
-			audio.Stop();
+			GetComponent<AudioSource>().Stop();
 
 			//Make adjustments depending on death type
 		    switch (deathType)
@@ -2817,17 +2817,17 @@ public class DragonRiderController : BaseClass {
 
 	public void Footstep_left ( AnimationEvent eve )
 	{
-		audio.PlayOneShot( footstepLeftSound, 0.2f );
+		GetComponent<AudioSource>().PlayOneShot( footstepLeftSound, 0.2f );
 	}
 
 	public void Footstep_right ( AnimationEvent eve )
 	{
-		audio.PlayOneShot( footstepRightSound, 0.2f );
+		GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.2f );
 	}
 
 	public void Land_sound ( AnimationEvent eve )
 	{
-		audio.PlayOneShot( landSound, 0.28f );
+		GetComponent<AudioSource>().PlayOneShot( landSound, 0.28f );
 	}
 
 	public IEnumerator waitBeforeDisplayingSaveMeScreen ( float duration )
@@ -3016,7 +3016,7 @@ public class DragonRiderController : BaseClass {
 
 	}
 
-	void resurrectBegin()
+	public void resurrectBegin()
 	{
 		//0) Reset data
 		resetSharedLevelData();
@@ -3115,12 +3115,12 @@ public class DragonRiderController : BaseClass {
 			//If the player died in a dead end trigger, the trigger will be activated when we move the player's body
 			//to the respawn location. This in turn will cause isInDeadEnd to become true and when the player will try to change lanes,
 			//he will turn instead and crash into a fence. To avoid that, disable the collider before moving the player and reenable it after.
-			transform.collider.enabled = false;
+			transform.GetComponent<Collider>().enabled = false;
 			//When he is on the last frame of the dead animation, the player is 0.0328f above the ground
 			transform.position = new Vector3( respawn.position.x, groundHeight + 0.0328f, respawn.position.z );
 			transform.rotation = Quaternion.Euler ( 0, respawn.localEulerAngles.y + tileRotationY, 0 );
 			tileRotationY = Mathf.Floor ( transform.eulerAngles.y );
-			transform.collider.enabled = true;
+			transform.GetComponent<Collider>().enabled = true;
 		}
 		else
 		{
@@ -3150,7 +3150,7 @@ public class DragonRiderController : BaseClass {
 		//4) Play a sparkling particle effect
 		GameObject prefab = Resources.Load( "Particles/Resurrect Lights - Blue") as GameObject;
 		GameObject go = (GameObject)Instantiate(prefab, new Vector3( transform.position.x, transform.position.y, transform.position.z ), Quaternion.identity );
-		go.particleSystem.Play();
+		go.GetComponent<ParticleSystem>().Play();
 
 		//5) Play the revive animation
 		anim.speed = 1.5f;
@@ -3210,9 +3210,9 @@ public class DragonRiderController : BaseClass {
 			{
 				//Since we are disabling the collider, we need to disable gravity for objects with a rigid body
 				//as well or else the object will fall through the ground.
-				if( collider.rigidbody != null )
+				if( collider.GetComponent<Rigidbody>() != null )
 				{
-					collider.rigidbody.useGravity = isActive;
+					collider.GetComponent<Rigidbody>().useGravity = isActive;
 				}
             	collider.enabled = isActive;
 				//Debug.Log (" activateObstacleColliders " + collider.name + " isActive " + isActive );

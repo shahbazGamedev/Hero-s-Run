@@ -385,7 +385,7 @@ public class SuccubusController : BaseClass {
 			hellPit.SetActive( true );
 			hellPit.transform.position = center;
 			hellPit.transform.rotation = Quaternion.Euler( corridorArray[0].transform.eulerAngles.x, corridorArray[0].transform.eulerAngles.y, corridorArray[0].transform.eulerAngles.z );
-			hellPit.audio.Play();
+			hellPit.GetComponent<AudioSource>().Play();
 			return true;
 		}
 		else

@@ -56,6 +56,7 @@ public class PlayerController : BaseClass {
 	public AudioClip 	fallingSound;
 	public AudioClip 	footstepLeftSound;
 	public AudioClip 	footstepRightSound;
+	public AudioClip 	footstepWaterSound; //We do not need one for each foot.
 	public AudioClip 	landSound;
 	public AudioClip 	deathFireSound;
 
@@ -253,6 +254,10 @@ public class PlayerController : BaseClass {
 	//For debugging swipes
 	public string lastSwipe;
 	public string reasonDiedAtTurn;
+
+	public ParticleSystem lavaSpurt; //Plays when player falls into lava
+	public string groundType = "normal"; //Other choice is water
+	public ParticleSystem waterSplash; //Plays when player slides in water
 
 	void Awake()
 	{
@@ -603,7 +608,7 @@ public class PlayerController : BaseClass {
 		{
 			anim.SetTrigger(StumbleTrigger);
 			//The Land anim has a callback to play the Land sound, but not the Stumble anim
-			audio.PlayOneShot( landSound, 0.8f );
+			GetComponent<AudioSource>().PlayOneShot( landSound, 0.8f );
 		}
 		moveDirection.y = 0f;
 		print ( "player landed. Fall distance was: " + 	fallDistance );
@@ -734,7 +739,7 @@ public class PlayerController : BaseClass {
 
 	void handlePowerUp()
 	{
-		if( _characterState != CharacterState.Dying )
+		if( GameManager.Instance.getGameState() == GameState.Normal && _characterState != CharacterState.Dying )
 		{
 			powerUpManager.activatePowerUp( PlayerStatsManager.Instance.getPowerUpSelected() );
 		}
@@ -742,9 +747,9 @@ public class PlayerController : BaseClass {
 	
 	void playSound(AudioClip soundToPlay, bool isLooping )
     {
-		audio.clip = soundToPlay;
-		audio.loop = isLooping;
-		audio.Play();
+		GetComponent<AudioSource>().clip = soundToPlay;
+		GetComponent<AudioSource>().loop = isLooping;
+		GetComponent<AudioSource>().Play();
     }
 	
 	void handleSwipes()
@@ -1156,8 +1161,9 @@ public class PlayerController : BaseClass {
 				recalculateCurrentLane();
 
 				//We are allowed to jump from the slide state.
-				audio.Stop ();							//stop the sliding sound if any
+				GetComponent<AudioSource>().Stop ();							//stop the sliding sound if any
 				dustPuff.Stop();						//stop the dust puff that loops while we are sliding
+				waterSplash.Stop();
 				deactivateOverheadObstacles( false );	//reactivate overhead obstacles since they would have been deactivated if we were sliding
 
 				jumping = true;
@@ -1440,7 +1446,7 @@ public class PlayerController : BaseClass {
 					desiredLane = Lanes.Right;
 					setCharacterState( CharacterState.SideMove );
 					moveDirection.x = currentSideMoveSpeed;
-					audio.PlayOneShot( sideMoveSound );
+					GetComponent<AudioSource>().PlayOneShot( sideMoveSound );
 					//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
 
 				}
@@ -1449,7 +1455,7 @@ public class PlayerController : BaseClass {
 					desiredLane = Lanes.Left;
 					setCharacterState( CharacterState.SideMove );
 					moveDirection.x = -currentSideMoveSpeed;
-					audio.PlayOneShot( sideMoveSound );
+					GetComponent<AudioSource>().PlayOneShot( sideMoveSound );
 					//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
 				}
 			}
@@ -1458,7 +1464,7 @@ public class PlayerController : BaseClass {
 				desiredLane = Lanes.Center;
 				setCharacterState( CharacterState.SideMove );
 				moveDirection.x = -currentSideMoveSpeed;
-				audio.PlayOneShot( sideMoveSound );
+				GetComponent<AudioSource>().PlayOneShot( sideMoveSound );
 				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
 			}
 			else if ( currentLane == Lanes.Left && isGoingRight )
@@ -1466,7 +1472,7 @@ public class PlayerController : BaseClass {
 				desiredLane = Lanes.Center;
 				setCharacterState( CharacterState.SideMove );
 				moveDirection.x = currentSideMoveSpeed;
-				audio.PlayOneShot( sideMoveSound );
+				GetComponent<AudioSource>().PlayOneShot( sideMoveSound );
 				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
 			}
 		}
@@ -1660,6 +1666,7 @@ public class PlayerController : BaseClass {
 						setCharacterState( CharacterState.Sliding );
 						dustPuff.loop = true;
 						dustPuff.Play();
+						if( groundType == "Water" ) waterSplash.Play();
 
 						anim.SetTrigger(Slide_DownTrigger);
 
@@ -1684,6 +1691,8 @@ public class PlayerController : BaseClass {
 			{
 				//We are stopping sliding
 				dustPuff.Stop();
+				waterSplash.Stop();
+
 				if( _characterState == CharacterState.Turning_and_sliding )
 				{
 					setCharacterState( CharacterState.Sliding );
@@ -1693,7 +1702,7 @@ public class PlayerController : BaseClass {
 					setCharacterState( CharacterState.Running );
 				}
 				anim.SetTrigger(Slide_UpTrigger);
-				audio.Stop();
+				GetComponent<AudioSource>().Stop();
 				deactivateOverheadObstacles( false );
 			}
 		}
@@ -1736,7 +1745,7 @@ public class PlayerController : BaseClass {
 		while ( time > 0.0f )
 		{
 			time -= Time.deltaTime;
-			Vector3 coinDestination = mainCamera.camera.ScreenToWorldPoint (coinScreenPos);
+			Vector3 coinDestination = mainCamera.GetComponent<Camera>().ScreenToWorldPoint (coinScreenPos);
 
 			if (coin.gameObject != null )
 			{
@@ -1757,6 +1766,8 @@ public class PlayerController : BaseClass {
 	{
 		if( _characterState != CharacterState.Dying )
 		{
+			groundType = hit.gameObject.tag; 
+
 			//The CharacterController is constantly colliding with the Quads making up the floor. Ignore those events.
 			if (hit.collider.name == "Quad" || hit.collider.name == "Floor" ) return;
 	
@@ -1768,7 +1779,7 @@ public class PlayerController : BaseClass {
 					Debug.Log( "PLayer collided with: " + hit.collider.name + " Normal" + hit.normal );
 					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
 					//Move the player back so he does not float in the air in case he hit the log while landing after a jump.
-					controller.Move( hit.normal );
+					//controller.Move( hit.normal );
 					managePlayerDeath ( DeathType.Obstacle );
 				}
 			}
@@ -1779,7 +1790,7 @@ public class PlayerController : BaseClass {
 					Debug.Log( "PLayer collided with: " + hit.collider.name + " Normal" + hit.normal );
 					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
 					//Move the player back so he does not float in the air in case he hit the log while landing after a jump.
-					controller.Move( hit.normal );
+					//controller.Move( hit.normal );
 					managePlayerDeath ( DeathType.Obstacle );
 				}
 			}
@@ -1807,7 +1818,7 @@ public class PlayerController : BaseClass {
 						chickenController.timeWasHit = Time.time;
 
 						//Give stars
-						PlayerStatsManager.Instance.modifyCoinCount( 10 );
+						PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
 						
 						//Display coin total picked up icon
 						HUDHandler.displayCoinTotal( 10, Color.yellow, false );
@@ -1837,7 +1848,7 @@ public class PlayerController : BaseClass {
 					//Only make the player stumble the first time around
 					if( !chickenController.wasHit )
 					{
-						controller.Move( hit.normal );
+						//controller.Move( hit.normal );
 						Stumble();
 					}
 					else
@@ -1862,7 +1873,7 @@ public class PlayerController : BaseClass {
 					if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding ) && zombieController.getZombieState() != ZombieController.ZombieState.Crawling )
 					{
 						//Give stars
-						PlayerStatsManager.Instance.modifyCoinCount( ZombieManager.NUMBER_STARS_PER_ZOMBIE );
+						PlayerStatsManager.Instance.modifyCurrentCoins( ZombieManager.NUMBER_STARS_PER_ZOMBIE, true, false );
 						
 						//Display coin total picked up icon
 						HUDHandler.displayCoinTotal( ZombieManager.NUMBER_STARS_PER_ZOMBIE, Color.yellow, false );
@@ -1961,11 +1972,11 @@ public class PlayerController : BaseClass {
 					BreakableObject bo = (BreakableObject) hit.collider.GetComponent("BreakableObject");
 					Debug.Log( "PLayer collided with breakable: " + hit.collider.name );
 					//We pass the player collider to triggerBreak() because we do not want the barrel fragments to collide with the player.
-					bo.triggerBreak( collider );
+					bo.triggerBreak( GetComponent<Collider>() );
 					if( _characterState == CharacterState.Sliding )
 					{
 						//Give stars
-						PlayerStatsManager.Instance.modifyCoinCount( 10 );
+						PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
 
 						//To do
 						//Display coin total picked up icon
@@ -1983,11 +1994,11 @@ public class PlayerController : BaseClass {
 				BreakableObject bo = (BreakableObject) hit.collider.GetComponent("BreakableObject");
 				Debug.Log( "PLayer collided with breakable: " + hit.collider.name );
 				//We pass the player collider to triggerBreak() because we do not want the barrel fragments to collide with the player.
-				bo.triggerBreak( collider );
+				bo.triggerBreak( GetComponent<Collider>() );
 				if( _characterState == CharacterState.Sliding )
 				{
 					//Give stars
-					PlayerStatsManager.Instance.modifyCoinCount( 10 );
+					PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
 					
 					//To do
 					//Display coin total picked up icon
@@ -2012,7 +2023,7 @@ public class PlayerController : BaseClass {
 			else if (hit.collider.name == "Pendulum" && !CheatManager.Instance.getIsInvincible() )
 			{
 				//Move the player back so he does not get stuck in the pendulum.
-				controller.Move( hit.normal );
+				//controller.Move( hit.normal ); //disable test - seems to make Unity 5 crash
 				managePlayerDeath ( DeathType.Obstacle );
 			}
 			else if (hit.collider.name.StartsWith( "Cow" ) && !CheatManager.Instance.getIsInvincible() )
@@ -2024,7 +2035,7 @@ public class PlayerController : BaseClass {
 				{
 					//Player collided with cow squarely
 					//Move the player back so he does not get stuck in the cow.
-					controller.Move( hit.normal );
+					//controller.Move( hit.normal );
 					managePlayerDeath ( DeathType.Obstacle );
 				}
 			}
@@ -2084,6 +2095,10 @@ public class PlayerController : BaseClass {
 		else if( other.name == "Lava" )
 		{
 			Debug.Log ("Player fell into lava.");
+			playSound( deathFireSound, false );
+			lavaSpurt.transform.position = new Vector3( transform.position.x, transform.position.y, transform.position.z );
+			lavaSpurt.loop = false;
+			lavaSpurt.Play();
 			trollController.stopPursuing();
 			sc.lockCamera( true );
 			managePlayerDeath( DeathType.Lava );
@@ -2102,9 +2117,9 @@ public class PlayerController : BaseClass {
 			{
 				//Create a water splash
 				Debug.Log ("Player fell into river.");
-				other.particleSystem.transform.position.Set ( transform.position.x, transform.position.y + 0.8f, transform.position.z );
-				other.particleSystem.Play();
-				other.audio.PlayOneShot(other.audio.clip);
+				other.GetComponent<ParticleSystem>().transform.position.Set ( transform.position.x, transform.position.y + 0.8f, transform.position.z );
+				other.GetComponent<ParticleSystem>().Play();
+				other.GetComponent<AudioSource>().PlayOneShot(other.GetComponent<AudioSource>().clip);
 				//Also hide the coin pack since it gets in the way of the camera
 				Transform riverCoinPack = currentTile.transform.FindChild("CoinPack8x1_1x10_river");
 				if( riverCoinPack != null ) riverCoinPack.gameObject.SetActive(false);
@@ -2180,9 +2195,10 @@ public class PlayerController : BaseClass {
 		{
 			//We are stopping sliding
 			dustPuff.Stop();
+			waterSplash.Stop();
 			setCharacterState( CharacterState.Running );
 			anim.SetTrigger(Slide_UpTrigger);
-			audio.Stop();
+			GetComponent<AudioSource>().Stop();
 		}
 
 		//Clear move direction of any values. If we still have an x component for example, we will drift.
@@ -2384,7 +2400,7 @@ public class PlayerController : BaseClass {
 			gl.playerTurnedAtTJunction( isGoingRight, currentTile );
 		}
 
-		audio.PlayOneShot( sideMoveSound );
+		GetComponent<AudioSource>().PlayOneShot( sideMoveSound );
 		float playerRotY = transform.eulerAngles.y;
 		
 		if ( isGoingRight )
@@ -2458,6 +2474,7 @@ public class PlayerController : BaseClass {
 
 			//Stop the dust particle system. It might be playing if we died while sliding.
 			dustPuff.Stop();
+			waterSplash.Stop();
 
 			//Disable player controls when dying
 			enablePlayerControl( false );
@@ -2473,7 +2490,7 @@ public class PlayerController : BaseClass {
 			StartCoroutine( SoundManager.fadeOutMusic(1f, 0.25f) );
 
 			//Stop any currently playing sound
-			audio.Stop();
+			GetComponent<AudioSource>().Stop();
 
 			//Make adjustments depending on death type
 		    switch (deathType)
@@ -2525,17 +2542,27 @@ public class PlayerController : BaseClass {
 
 	public void Footstep_left ( AnimationEvent eve )
 	{
-		audio.PlayOneShot( footstepLeftSound, 0.23f );
+		if( groundType != "Water" )
+		{
+			GetComponent<AudioSource>().PlayOneShot( footstepLeftSound, 0.23f );
+		}
+		else
+		{
+			GetComponent<AudioSource>().PlayOneShot( footstepWaterSound, 0.23f );
+		}
 	}
 
 	public void Footstep_right ( AnimationEvent eve )
 	{
-		audio.PlayOneShot( footstepRightSound, 0.23f );
+		if( groundType != "Water" )
+		{
+			GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.23f );
+		}
 	}
 
 	public void Land_sound ( AnimationEvent eve )
 	{
-		audio.PlayOneShot( landSound, 0.28f );
+		GetComponent<AudioSource>().PlayOneShot( landSound, 0.28f );
 	}
 
 	public IEnumerator waitBeforeDisplayingSaveMeScreen ( float duration )
@@ -2684,7 +2711,8 @@ public class PlayerController : BaseClass {
 		disableLookOverShoulder();
 
 		//Re-enable the player's blob shadow
-		shadowProjector.enabled = true;
+		//Moved to get_up_completed
+		//shadowProjector.enabled = true;
 
 		//Variable for swipe
 		touchStarted = false;
@@ -2721,7 +2749,7 @@ public class PlayerController : BaseClass {
 
 	}
 	
-	void resurrectBegin()
+	public void resurrectBegin()
 	{
 		//0) Reset data
 		resetSharedLevelData();
@@ -2820,12 +2848,12 @@ public class PlayerController : BaseClass {
 			//If the player died in a dead end trigger, the trigger will be activated when we move the player's body
 			//to the respawn location. This in turn will cause isInDeadEnd to become true and when the player will try to change lanes,
 			//he will turn instead and crash into a fence. To avoid that, disable the collider before moving the player and reenable it after.
-			transform.collider.enabled = false;
+			transform.GetComponent<Collider>().enabled = false;
 			//When he is on the last frame of the dead animation, the player is 0.0328f above the ground
 			transform.position = new Vector3( respawn.position.x, groundHeight + 0.0328f, respawn.position.z );
 			transform.rotation = Quaternion.Euler ( 0, respawn.localEulerAngles.y + tileRotationY, 0 );
 			tileRotationY = Mathf.Floor ( transform.eulerAngles.y );
-			transform.collider.enabled = true;
+			transform.GetComponent<Collider>().enabled = true;
 		}
 		else
 		{
@@ -2847,6 +2875,8 @@ public class PlayerController : BaseClass {
 	public void get_up_completed ( AnimationEvent eve )
 	{
 		anim.speed = 1f;
+		//Re-enable the player's blob shadow
+		shadowProjector.enabled = true;
 		resurrectEnd();
 	}
 	
@@ -2892,9 +2922,9 @@ public class PlayerController : BaseClass {
 			{
 				//Since we are disabling the collider, we need to disable gravity for objects with a rigid body
 				//as well or else the object will fall through the ground.
-				if( collider.rigidbody != null )
+				if( collider.GetComponent<Rigidbody>() != null )
 				{
-					collider.rigidbody.useGravity = isActive;
+					collider.GetComponent<Rigidbody>().useGravity = isActive;
 				}
             	collider.enabled = isActive;
 				//Debug.Log (" activateObstacleColliders " + collider.name + " isActive " + isActive );

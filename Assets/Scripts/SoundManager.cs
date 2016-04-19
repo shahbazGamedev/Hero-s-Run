@@ -28,6 +28,7 @@ public class SoundManager : MonoBehaviour {
 		// Used to play GUI sounds for the HUD and all menus
 		guiAudioSource = gameObject.AddComponent<AudioSource>();
 		guiAudioSource.ignoreListenerPause = true;
+		guiAudioSource.bypassReverbZones = true;
 
 		//Play the music track that we load from the Resources folder
 		musicSource = gameObject.AddComponent<AudioSource>();
@@ -43,6 +44,11 @@ public class SoundManager : MonoBehaviour {
 
 	}
 	
+	public static void setSoundVolume(float volume )
+	{
+		AudioListener.volume = volume;
+	}
+
 	public static void playMusic()
 	{
 		musicSource.Play();
@@ -58,6 +64,11 @@ public class SoundManager : MonoBehaviour {
 		musicSource.Pause();
 	}
 		
+	public static void setMusicTrack( AudioClip track )
+	{
+		if( track != null ) musicSource.clip = track;
+	}
+
 	public static IEnumerator fadeOutMusic( float duration, float endVolume )
 	{
 		float elapsedTime = 0;

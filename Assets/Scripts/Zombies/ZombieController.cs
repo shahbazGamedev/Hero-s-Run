@@ -121,7 +121,7 @@ public class ZombieController : BaseClass {
 		CapsuleCollider capsuleCollider = (CapsuleCollider) GetComponent("CapsuleCollider");
 		capsuleCollider.enabled = false;
 		anim.CrossFade("fallToBack", 0.25f);
-		audio.PlayOneShot( fallToGround );
+		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 		Debug.Log("KNOCKBACK " + gameObject.name );
 
 	}
@@ -136,13 +136,13 @@ public class ZombieController : BaseClass {
 		CapsuleCollider capsuleCollider = (CapsuleCollider) GetComponent("CapsuleCollider");
 		capsuleCollider.enabled = false;
 		anim.CrossFade("fallToBack");
-		audio.PlayOneShot( fallToGround );
+		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 	}
 
 	public void victory( bool playWinSound )
 	{
 		CancelInvoke( "groan" );
-		if( playWinSound ) audio.PlayOneShot( win );
+		if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
 		if( zombieState == ZombieState.StandUpFromBack )
 		{
 			StopCoroutine("standUpFromBackCompleted");
@@ -194,7 +194,7 @@ public class ZombieController : BaseClass {
 
 	public void sideCollision()
 	{
-		audio.PlayOneShot( moanLow );
+		GetComponent<AudioSource>().PlayOneShot( moanLow );
 		anim.CrossFade("hit2");
 		anim.CrossFadeQueued(selectRandomWalk( ZombieMoveType.Walking ));
 	}
@@ -226,11 +226,11 @@ public class ZombieController : BaseClass {
 			float rd = Random.Range( 0, 1f );
 			if( rd < 0.5f )
 			{
-				audio.PlayOneShot( moanLow );
+				GetComponent<AudioSource>().PlayOneShot( moanLow );
 			}
 			else
 			{
-				audio.PlayOneShot( moanHigh );
+				GetComponent<AudioSource>().PlayOneShot( moanHigh );
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class CullisGateController : MonoBehaviour {
 
@@ -80,7 +81,7 @@ public class CullisGateController : MonoBehaviour {
 		Handheld.StartActivityIndicator();
 		yield return new WaitForSeconds(0);
 		//Load level scene
-		Application.LoadLevel( 4 );
+		SceneManager.LoadScene( (int)GameScenes.Level );
 		
 	}
 
@@ -89,8 +90,8 @@ public class CullisGateController : MonoBehaviour {
 		if( eventType == GameEvent.Activate_Cullis_Gate )
 		{
 			animation.Play();
-			audio.loop = false;
-			audio.Play();
+			GetComponent<AudioSource>().loop = false;
+			GetComponent<AudioSource>().Play();
 			Invoke("Activation_complete", 1.667f);
 		}
 	}

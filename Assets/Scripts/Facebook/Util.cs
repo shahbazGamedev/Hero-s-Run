@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Facebook.Unity;
 using Facebook.MiniJSON;
 
 public class Util : ScriptableObject
@@ -13,17 +14,6 @@ public class Util : ScriptableObject
         query += type != null ? "&type=" + type : "";
         if (query != "") url += ("?g" + query);
         return url;
-    }
-
-    public static void FriendPictureCallback(FBResult result)
-    {
-        if (result.Error != null)
-        {
-            Debug.LogError(result.Error);
-            return;
-        }
-
-        FacebookManager.Instance.FriendTexture = result.Texture;
     }
 
     public static Dictionary<string, string> RandomFriend(List<object> friends)

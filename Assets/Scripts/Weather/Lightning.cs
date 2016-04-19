@@ -34,15 +34,15 @@ public class Lightning : MonoBehaviour {
 		if( thunderSounds.Count > 0 )
 		{
 			int index = Random.Range( 0, thunderSounds.Count );
-			audio.PlayOneShot( thunderSounds[index] );
+			GetComponent<AudioSource>().PlayOneShot( thunderSounds[index] );
 		}
 	}
 
 	void FlashRepeat()
 	{
-		light.shadowStrength = SHADOW_STRENGTH;
-		light.shadows = LightShadows.Hard;
-		light.intensity = flashIntensity;
+		GetComponent<Light>().shadowStrength = SHADOW_STRENGTH;
+		GetComponent<Light>().shadows = LightShadows.Hard;
+		GetComponent<Light>().intensity = flashIntensity;
 		playThunderSound();
 		StartCoroutine("DecayRepeat");
 	}
@@ -55,7 +55,7 @@ public class Lightning : MonoBehaviour {
 		float t = 0;
 		while (t < decayTime)
 		{
-			light.intensity = Mathf.Lerp(flashIntensity, originalIntensity, t/decayTime);
+			GetComponent<Light>().intensity = Mathf.Lerp(flashIntensity, originalIntensity, t/decayTime);
 			t += Time.deltaTime;
 			yield return null;
 		}
@@ -66,10 +66,10 @@ public class Lightning : MonoBehaviour {
 
 	void FlashOnce()
 	{
-		light.shadowStrength = SHADOW_STRENGTH;
-		light.shadows = LightShadows.Hard;
+		GetComponent<Light>().shadowStrength = SHADOW_STRENGTH;
+		GetComponent<Light>().shadows = LightShadows.Hard;
 
-		light.intensity = flashIntensity;
+		GetComponent<Light>().intensity = flashIntensity;
 		playThunderSound();
 		StartCoroutine("DecayOnce");
 	}
@@ -81,7 +81,7 @@ public class Lightning : MonoBehaviour {
 		float t = 0;
 		while (t < decayTime)
 		{
-			light.intensity = Mathf.Lerp(flashIntensity, originalIntensity, t/decayTime);
+			GetComponent<Light>().intensity = Mathf.Lerp(flashIntensity, originalIntensity, t/decayTime);
 			t += Time.deltaTime;
 			yield return null;
 		}
@@ -134,18 +134,18 @@ public class Lightning : MonoBehaviour {
 	//Remember the current light intensity and light rotation since we will be changing it
 	void rememberOriginalLightSettings()
 	{
-		originalIntensity = light.intensity;
-		originalRotation = light.transform.rotation;
-		originalShadowSetting = light.shadows;
-		originalShadowStrength = light.shadowStrength;
+		originalIntensity = GetComponent<Light>().intensity;
+		originalRotation = GetComponent<Light>().transform.rotation;
+		originalShadowSetting = GetComponent<Light>().shadows;
+		originalShadowStrength = GetComponent<Light>().shadowStrength;
 	}
 
 	void resetLight()
 	{
-		light.intensity = originalIntensity;
-		light.transform.rotation = originalRotation;
-		light.shadows = originalShadowSetting;
-		light.shadowStrength = originalShadowStrength;
+		GetComponent<Light>().intensity = originalIntensity;
+		GetComponent<Light>().transform.rotation = originalRotation;
+		GetComponent<Light>().shadows = originalShadowSetting;
+		GetComponent<Light>().shadowStrength = originalShadowStrength;
 	}
 
 	void stopLightning()

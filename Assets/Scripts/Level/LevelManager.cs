@@ -11,6 +11,7 @@ public class LevelManager {
 	private LevelData.LevelInfo currentLevelInfo = null;
 	private bool levelHasChanged = false;
 	private bool playerFinishedTheGame = false;
+	private int levelNumberOflastCheckpoint = 0; //Either the first level of the current theme OR the level of the last checkpoint
  
 	public static LevelManager Instance
 	{
@@ -34,6 +35,18 @@ public class LevelManager {
 			nextLevelToComplete = levelToComplete;
 			Debug.Log ("LevelManager-setNextLevelToComplete: " + nextLevelToComplete );
 		}
+	}
+
+	public void setLevelNumberOfLastCheckpoint( int previousCheckpoint )
+	{
+		levelNumberOflastCheckpoint = previousCheckpoint;
+		Debug.Log ("LevelManager-setLevelNumberOflastCheckpoint: " + levelNumberOflastCheckpoint );
+	}
+
+	public int getLevelNumberOfLastCheckpoint()
+	{
+		Debug.Log ("LevelManager-getLevelNumberOfLastCheckpoint: " + levelNumberOflastCheckpoint );
+		return levelNumberOflastCheckpoint;
 	}
 
 	//For debugging

@@ -13,12 +13,12 @@ public class Blink : MonoBehaviour {
 		if( Random.value > 0.5f )
 		{
 			eyesAreOpened = true;
-			renderer.material.mainTexture = eyesOpened;
+			GetComponent<Renderer>().material.mainTexture = eyesOpened;
 		}
 		else
 		{
 			eyesAreOpened = false;
-			renderer.material.mainTexture = eyesClosed;
+			GetComponent<Renderer>().material.mainTexture = eyesClosed;
 		}
 		Invoke("blink", 0.2f );
 	}
@@ -32,15 +32,15 @@ public class Blink : MonoBehaviour {
 	{
 		if( eyesAreOpened )
 		{
-			renderer.material.mainTexture = eyesClosed;
+			GetComponent<Renderer>().material.mainTexture = eyesClosed;
 			//Open eyes after...
 			Invoke("blink", Random.Range(0.3f, 0.8f) );
 		}
 		else
 		{
-			renderer.material.mainTexture = eyesOpened;
+			GetComponent<Renderer>().material.mainTexture = eyesOpened;
 			//Close eyes after...
-			Invoke("blink", Random.Range(1f, 2f) );
+			Invoke("blink", Random.Range(1.5f, 2.5f) );
 		}
 		eyesAreOpened = !eyesAreOpened;
 

@@ -2,7 +2,10 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Facebook.Unity;
 using Facebook.MiniJSON;
+using System.Linq;
+using UnityEngine.UI;
 
 
 
@@ -20,14 +23,13 @@ public class FacebookManager
 
 	private FacebookState facebookState = FacebookState.NotInitialised;
 	private Action<FacebookState> myCallback;
-	private Action<FBResult, string > directRequestCallback;
+	private Action<IAppRequestResult, string > directRequestCallback;
 	private string appRequestIDToDelete;
 	private const int NUMBER_OF_FRIENDS = 20;
 	public string  Username = null;
 	//Facebook ID of player
 	string FBUserId = "";
-	public Texture UserPortrait = null;
-	public Texture FriendTexture = null;
+	public Sprite UserPortrait = null;
 	//The following Dictionary has a string ID as the Key and the friend's data as the Value
 	public Dictionary<string, FriendData> friendsList = new Dictionary<string, FriendData>(NUMBER_OF_FRIENDS);
 	private Dictionary<string, string> profile = null;
@@ -35,7 +37,7 @@ public class FacebookManager
 	//The Facebook score is used to track the highest level achieved by that friend.
 	Dictionary<string, int> scores = new Dictionary<string, int>(NUMBER_OF_FRIENDS);
 	//The following Dictionary has a string ID as the Key and the friend's picture as the Value
-	public Dictionary<string, Texture>  friendImages = new Dictionary<string, Texture>(NUMBER_OF_FRIENDS);
+	public Dictionary<string, Sprite>  friendImages = new Dictionary<string, Sprite>(NUMBER_OF_FRIENDS);
 	//The following List holds the IDs for which a picture was requested but not yet received
 	public List<string> friendImagesRequested = new List<string>(NUMBER_OF_FRIENDS);
 
@@ -62,14 +64,7 @@ public class FacebookManager
 		}
 	} 
 
-	//Called by LoadScreenHandler
-	public void CallFBInit()
-	{
-		FB.Init(OnInitComplete, OnHideUnity);
-		myCallback = null;
-	}
-
-	//Called by MainMenuHandler
+	//Called by TitleScreenHandler
 	public void CallFBInit(Action<FacebookState> updateState)
     {
         FB.Init(OnInitComplete, OnHideUnity);
@@ -80,7 +75,7 @@ public class FacebookManager
     {
 		if( facebookState != FacebookState.LoggedIn )
 		{
-			Debug.Log("FacebookManager-OnInitComplete: IsLoggedIn: " + FB.IsLoggedIn + " ID: " + FB.UserId);
+			Debug.Log("FacebookManager-OnInitComplete: IsLoggedIn: " + FB.IsLoggedIn + " IsInitialized: " + FB.IsInitialized );
 	 		facebookState = FacebookState.Initialised;
 			if( !FB.IsLoggedIn )
 			{
@@ -117,22 +112,15 @@ public class FacebookManager
     {
 		//Note: In order to publish a photo to a user’s album, you must have the publish_stream permission. To do - remove this permission.
 		//In order to publish an Open Graph story to Facebook on the user's behalf using API calls, you will need the user to grant the publish_actions permission to your app. 
-		FB.Login("email,publish_actions", LoginCallback);
+		FB.LogInWithReadPermissions(new List<string>() { "public_profile", "email", "user_friends" }, LoginCallback);
 	}
 
-    void LoginCallback(FBResult result)
+    void LoginCallback(ILoginResult result)
     {
 		if (FB.IsLoggedIn)
 		{
 			Debug.Log ("FacebookManager-LoginCallback: user is successfully logged in.");
 			facebookState = FacebookState.LoggedIn;
-			//Very important - COPPA related
-			//By default, we will use the safer, opt-out option in order to be COPPA compliant.
-			//If the user successfully connects to Facebook, we will assume the player is 13 years old or older
-			//and set the opt-out to false.
-			MyUpsightManager.setUpsightOptOutOption( false );
-			Debug.Log ( "FacebookManager: COPPA opt-out status is set to false since player successfully logged into Facebook." );
-
 			OnLoggedIn();
 		}
 
@@ -140,20 +128,28 @@ public class FacebookManager
 		{
 			Debug.LogWarning("FacebookManager-LoginCallback: Facebook error: " + result.Error );
  			facebookState = FacebookState.Error;
-			MyUpsightManager.setUpsightOptOutOption( true );
 		}
         else if (!FB.IsLoggedIn)
 		{
             //Login canceled by Player
 			facebookState = FacebookState.Canceled;
-			MyUpsightManager.setUpsightOptOutOption( true );
 		}
 		myCallback( facebookState );
 	}
 
+	private void CallFBLoginForPublish()
+	{
+		FB.LogInWithPublishPermissions(new List<string>() { "publish_actions" }, LoginForPublishCallback);
+	}
+
+	void LoginForPublishCallback(ILoginResult result)
+    {
+		Debug.Log ("FacebookManager-LoginForPublishCallback: " + result.RawResult);
+	}
+
     public void CallFBLogout()
     {
-        FB.Logout();
+		FB.LogOut();
 		facebookState = FacebookState.Initialised;
 	}
 
@@ -164,12 +160,12 @@ public class FacebookManager
 	
     private void CallFBPublishInstall()
     {
-        FB.PublishInstall(PublishComplete);
+       // FB.PublishInstall(PublishComplete);
     }
 
-    private void PublishComplete(FBResult result)
+    private void PublishComplete(IGraphResult result)
     {
-        Debug.Log("publish response: " + result.Text);
+        //Debug.Log("publish response: " + result.RawResult);
     }
 
 	//Title: 	The title for the Dialog. Maximum length is 50 characters. For example, "App Requests". Currently this parameter does not change anything. It appears to be a Facebook bug.
@@ -228,7 +224,7 @@ public class FacebookManager
 		}
 	}
 	
-	void appRequestCallback(FBResult result)
+	void appRequestCallback(IAppRequestResult result)
 	{
 		if (result.Error != null)
 		{
@@ -237,7 +233,7 @@ public class FacebookManager
 		else
 		{
 			//Message when user cancels: {"error_code":"4201","error_message":"User+canceled+the+Dialog+flow"}
-			Dictionary<string, object> appRequestResult = Json.Deserialize(result.Text) as Dictionary<string, object>;
+			Dictionary<string, object> appRequestResult = Json.Deserialize(result.RawResult) as Dictionary<string, object>;
 
 			object obj = 0;
 			if (appRequestResult.TryGetValue ("error_code", out obj))
@@ -269,11 +265,11 @@ public class FacebookManager
 	{
 		if( FB.IsLoggedIn )
 		{
-			FB.API("/me/apprequests", Facebook.HttpMethod.GET, allAppRequestsDataCallback );
+			FB.API("/me/apprequests", HttpMethod.GET, allAppRequestsDataCallback );
 		}
 	}
 
-	void allAppRequestsDataCallback( FBResult result )
+	void allAppRequestsDataCallback( IGraphResult result )
 	{
 		if (result.Error != null)
 		{
@@ -281,12 +277,12 @@ public class FacebookManager
 		}
 		else
 		{
-			//Debug.Log("FacebookManager-allAppRequestsDataCallback: success: " + result.Text + "\n" );
+			//Debug.Log("FacebookManager-allAppRequestsDataCallback: success: " + result.RawResult + "\n" );
 
 			//We are refreshing the list, so remove whatever is there
 			AppRequestDataList.Clear();
 
-			Dictionary<string, object> appRequestsData = Json.Deserialize(result.Text) as Dictionary<string, object>;
+			Dictionary<string, object> appRequestsData = Json.Deserialize(result.RawResult) as Dictionary<string, object>;
 			object appRequests;
 			List<object> appRequestsList = new List<object>();
 			if (appRequestsData.TryGetValue ("data", out appRequests)) 
@@ -411,29 +407,22 @@ public class FacebookManager
 		
 	}
 
-	void Callback(FBResult result)
+	void FeedCallback(IShareResult result)
 	{
-
-		Texture lastResponseTexture = null;
 		string lastResponse;
 		
 		if (result.Error != null)
 		{
 			lastResponse = "Error Response:\n" + result.Error;
 		}
-		else if (!ApiQuery.Contains("/picture"))
-		{
-			lastResponse = "Success Response:\n" + result.Text;
-		}
 		else
 		{
-			lastResponseTexture = result.Texture;
-			lastResponse = "Success Response:\n";
+			lastResponse = "Success Response:\n" + result.RawResult;
 		}
-		Debug.Log("FacebookManager-Callback: response " + lastResponse );
+		Debug.Log("FacebookManager-FeedCallback: response " + lastResponse );
 	}
 
-	void DirectAppRequestCallback(FBResult result)
+	void DirectAppRequestCallback(IAppRequestResult result)
 	{
 		//Inform the MessageCenterHandler
 		if( directRequestCallback != null )
@@ -446,7 +435,7 @@ public class FacebookManager
 	{
 		if (FB.IsLoggedIn)
 		{
-			FB.API("/app/scores", Facebook.HttpMethod.DELETE, delegate(FBResult r) { FbDebug.Log("DeleteAllScoresResult: " + r.Text); });
+			FB.API("/app/scores", HttpMethod.DELETE, delegate(IGraphResult r) { Debug.Log("DeleteAllScoresResult: " + r.RawResult); });
 		}
 	}
 
@@ -454,13 +443,13 @@ public class FacebookManager
 	{
 		if (FB.IsLoggedIn)
 		{
-			FB.API("/me/scores",  Facebook.HttpMethod.DELETE, delegate(FBResult r) { FbDebug.Log("DeleteMyScoresResult: " + r.Text); });
+			FB.API("/me/scores",  HttpMethod.DELETE, delegate(IGraphResult r) { Debug.Log("DeleteMyScoresResult: " + r.RawResult); });
 		}
 	}
 
 	private void QueryScores()
 	{
-		FB.API("/app/scores", Facebook.HttpMethod.GET, ScoresCallback);
+		FB.API("/app/scores", HttpMethod.GET, ScoresCallback);
 	}
 
 	private int getScoreFromEntry(object obj)
@@ -469,40 +458,48 @@ public class FacebookManager
 		return Convert.ToInt32(entry["score"]);
 	}
 	
-	private void ScoresCallback(FBResult result) 
+	private void ScoresCallback(IGraphResult result) 
 	{
 		if (result.Error != null)
 		{
-			FbDebug.Error(result.Error);
-			return;
+			Debug.LogError(result.Error);
 		}
-		
-		List<object> scoresList = Util.DeserializeScores(result.Text);
-		
-		foreach(object score in scoresList) 
+		else
 		{
-			var entry = (Dictionary<string,object>) score;
-			var user = (Dictionary<string,object>) entry["user"];
+			Debug.Log("ScoresCallback: " + result.RawResult);
+	
+			List<object> scoresList = Util.DeserializeScores(result.RawResult);
 			
-			string userId = (string)user["id"];
-			if ( userId == FBUserId )
+			foreach(object score in scoresList) 
 			{
-				// This entry is the current player
-				int playerHighScore = getScoreFromEntry(entry);
-				Debug.Log("Local players score on server is " + playerHighScore);
-				int nextLevelToComplete = LevelManager.Instance.getNextLevelToComplete();
-				if( nextLevelToComplete > playerHighScore )
+				var entry = (Dictionary<string,object>) score;
+				var user = (Dictionary<string,object>) entry["user"];
+				
+				string userId = (string)user["id"];
+				if ( userId == FBUserId )
 				{
-					//Update our Facebook score. We were probably not online when we finished the last level.
-					postHighScore( LevelManager.Instance.getNextLevelToComplete() );
+					// This entry is the current player
+					int playerHighScore = getScoreFromEntry(entry);
+					Debug.Log("Local player's score on server is " + playerHighScore);
+					int nextLevelToComplete = LevelManager.Instance.getNextLevelToComplete();
+					if( nextLevelToComplete > playerHighScore )
+					{
+						//Update our Facebook score. We were probably not online when we finished the last level.
+						postHighScore( LevelManager.Instance.getNextLevelToComplete() );
+					}
 				}
-			}
-			else
-			{
-				//Do not add the player to the scores list. Only friends.
-				scores.Add(userId, getScoreFromEntry( score ));
-				getFriendPicture( userId );
-				Debug.Log("Received friend score for " + userId + " score " + getScoreFromEntry( score ));
+				else
+				{
+					//Do not add the player to the scores list. Only friends.
+					scores.Add(userId, getScoreFromEntry( score ));
+					getFriendPicture( userId );
+					Debug.Log("Received friend score for " + userId + " score " + getScoreFromEntry( score ));
+				}
+				//Hack for testing - add at least on friend with a score/level of 7
+				string fakeUserId = "1378641987";
+				scores.Add(fakeUserId, 7 );
+				getFriendPicture( fakeUserId );
+
 			}
 		}
 		
@@ -524,15 +521,20 @@ public class FacebookManager
 
 	public void postHighScore( int highScore )
 	{
-		if (FB.IsLoggedIn)
+		if (FB.IsLoggedIn && AccessToken.CurrentAccessToken != null )
 		{
+			//posting a score requires the publish_actions permission
+			if( !AccessToken.CurrentAccessToken.Permissions.Contains("publish_actions") )
+			{
+				CallFBLoginForPublish();
+			}
 			Dictionary<string, string> query = new Dictionary<string, string>();
 			query["score"] = highScore.ToString();
-			FB.API("/me/scores", Facebook.HttpMethod.POST, delegate(FBResult r) { FbDebug.Log("postHighScore Result: " + r.Text); }, query);
+			FB.API("/me/scores", HttpMethod.POST, delegate(IGraphResult r) { Debug.Log("postHighScore Result: " + r.RawResult); }, query);
 		}
 	}
 
-	public void CallAppRequestAsDirectRequest( string DirectRequestTitle, string DirectRequestMessage, string DirectRequestTo, string data, Action<FBResult, string> mchCallback, string mchAppRequestIDToDelete )
+	public void CallAppRequestAsDirectRequest( string DirectRequestTitle, string DirectRequestMessage, string DirectRequestTo, string data, Action<IAppRequestResult, string> mchCallback, string mchAppRequestIDToDelete )
     {
         if (DirectRequestTo == "")
         {
@@ -572,19 +574,15 @@ public class FacebookManager
         {
             feedProperties = FeedProperties;
         }
-        FB.Feed(
-            toId: FeedToId,
-            link: FeedLink,
-            linkName: FeedLinkName,
-            linkCaption: FeedLinkCaption,
-            linkDescription: FeedLinkDescription,
-            picture: FeedPicture,
-            mediaSource: FeedMediaSource,
-            actionName: FeedActionName,
-            actionLink: FeedActionLink,
-            reference: FeedReference,
-            properties: feedProperties,
-            callback: Callback
+        FB.FeedShare(
+			string.Empty,
+			new Uri("https://developers.facebook.com/"),
+			"Test Title",
+			"Test caption",
+			"Test Description",
+			new Uri("http://i.imgur.com/zkYlB.jpg"),
+			string.Empty,
+            callback: FeedCallback
         );
     }
 	
@@ -595,64 +593,59 @@ public class FacebookManager
         FB.Canvas.Pay(PayProduct);
     }
 	
-    public string ApiQuery = "";
-
-    private void CallFBAPI()
-    {
-        FB.API(ApiQuery, Facebook.HttpMethod.GET, Callback);
-    }
-
 	//Tells you the URI at which the app was accessed. On Web Player, it's the URL of the page that contains the Web Player;
 	//on Android or iOS, it's the URL with which the app was invoked, using the schema that the app is registered to handle.
     private void CallFBGetDeepLink()
     {
-        FB.GetDeepLink(DeepLinkCallback);
+        FB.GetAppLink(DeepLinkCallback);
     }
 
-	void DeepLinkCallback(FBResult result)
+	void DeepLinkCallback(IAppLinkResult result)
 	{
 		if (result.Error != null)
 		{
 			Debug.Log("FacebookManager-DeepLinkCallback: error " + result.Error );
 		}
-		else if(result.Text != null)
+		else if(result.RawResult != null)
 		{
 			// ...have the user interact with the friend who sent the request,
 			// perhaps by showing them the gift they were given, taking them
 			// to their turn in the game with that friend, etc.
 			//Debug.Log("FacebookManager-DeepLinkCallback: response " + query["id"] );
-			Debug.Log("FacebookManager-DeepLinkCallback: response " + result.Text );
+			Debug.Log("FacebookManager-DeepLinkCallback: response " + result.RawResult );
 		}
 	}
 	
-    public float PlayerLevel = 1.0f;
-
     public void CallAppEventLogEvent()
     {
-        var parameters = new Dictionary<string, object>();
-        parameters[Facebook.FBAppEventParameterName.Level] = "Player Level";
-        FB.AppEvents.LogEvent(Facebook.FBAppEventName.AchievedLevel, PlayerLevel, parameters);
-        PlayerLevel++;
+        FB.LogAppEvent(
+                    AppEventName.UnlockedAchievement,
+                    null,
+                    new Dictionary<string, object>()
+                    {
+                        { AppEventParameterName.Description, "Clicked 'Log AppEvent' button" }
+                    });
+       //"You may see results showing up at https://www.facebook.com/analytics/" + FB.AppId
     }
 	
 	//fullRequestID needs to be the full individual request id, <REQUEST_OBJECT_ID>_<USER_ID>.
 	//For example: 563117760441295_100001079952187
 	public void deleteAppRequest( string fullRequestID )
 	{
-		FB.API( fullRequestID, Facebook.HttpMethod.DELETE, DeleteAppRequestCallback);
+		FB.API( fullRequestID, HttpMethod.DELETE, DeleteAppRequestCallback);
 	}
 
-	void DeleteAppRequestCallback(FBResult result)
+	void DeleteAppRequestCallback(IGraphResult result)
 	{
 		if (result.Error != null)
 		{
 			//result.Error if the request is not found is: "error 404 not found"
 			Debug.Log("FacebookManager-DeleteAppRequestCallback: error: " + result.Error );
 		}
-		else if(result.Text != null)
+		else if(result.RawResult != null)
 		{
-			//result.Text if the request has been deleted correctly is: "true"
-			Debug.Log("FacebookManager-DeleteAppRequestCallback: response: " + result.Text );
+			//result.RawResult if the request has been deleted correctly is: "true"
+			Debug.Log("FacebookManager-DeleteAppRequestCallback: response: " + result.RawResult );
 		}
 	}
 
@@ -678,13 +671,13 @@ public class FacebookManager
 	
 	void OnLoggedIn()
 	{
-		FbDebug.Log("Logged in. ID: " + FB.UserId);
-		FBUserId = FB.UserId;
+		FBUserId = AccessToken.CurrentAccessToken.UserId;
+		Debug.Log("Logged in. ID: " + FBUserId);
 		// Request player info and profile picture
-		FB.API("/me?fields=id,first_name", Facebook.HttpMethod.GET, MyProfileCallback);
-		FB.API(Util.GetPictureURL("me", 128, 128), Facebook.HttpMethod.GET, MyPictureCallback);
+		FB.API("/me?fields=id,first_name", HttpMethod.GET, MyProfileCallback);
+		FB.API(Util.GetPictureURL("me", 128, 128), HttpMethod.GET, MyPictureCallback);
 		CallFBGetDeepLink();
-		getNRandomFriends( 7 );
+		getListOfFriendsWhoPlayTheApp();
 		//For debugging
 		//publishAction();
 		//Get your friends score.
@@ -692,51 +685,44 @@ public class FacebookManager
 		QueryScores();
 	}
 
-	void getNRandomFriends( int numberOfFriends )
+	void getListOfFriendsWhoPlayTheApp()
 	{
-		string fqlQuery = "/fql?q=" + WWW.EscapeURL("SELECT uid, first_name FROM user WHERE uid IN ( SELECT uid2 FROM friend WHERE uid1 = me() ) ORDER BY rand() limit " + numberOfFriends.ToString() );
-		FB.API(fqlQuery, Facebook.HttpMethod.GET, getNRandomFriendsCallback);
+		FB.API("/me?fields=id,first_name,friends.limit(100).fields(first_name,id)", HttpMethod.GET, listOfFriendsCallback);
+
 	}
 
-	void getNRandomFriendsCallback(FBResult result)
+	void listOfFriendsCallback(IGraphResult result)
 	{
 		if (result.Error != null)
 		{
-			Debug.Log ("getNRandomFriendsCallback-Callback error:\n" + result.Error );
+			Debug.Log ("listOfFriendsCallback-error:\n" + result.Error );
 		}
 		else
 		{
-			//{"data":[{"uid":127428615,"first_name":"Herv\u00e9"},{"uid":125864534,"first_name":"Pierre-Alexandre"},{"uid":129893765,"first_name":"Marie-claude"}]}
-			Debug.Log ("getNRandomFriendsCallback-Callback success:\n" + result.Text );
+			Debug.Log( "listOfFriendsCallback-success:\n" + result.RawResult );
+	
+			//data":[{"first_name":"Raphael","id":"2378641987"}]
 			friendsList.Clear();
 			
-			Dictionary<string, object> friendsData = Json.Deserialize(result.Text) as Dictionary<string, object>;
-			object friends;
-			List<object> tempList = new List<object>();
-			if (friendsData.TryGetValue ("data", out friends)) 
+			var dict = Json.Deserialize(result.RawResult) as Dictionary<string,object>;
+		
+			object friendsH;
+			var friends = new List<object>();
+			string friendName;
+			if(dict.TryGetValue ("friends", out friendsH))
 			{
-				tempList = (List<object>)friends;
-				
-				foreach(object friend in tempList) 
+		  		friends = (List<object>)(((Dictionary<string, object>)friendsH) ["data"]);
+				foreach(object fb_friend in friends) 
 				{
 					FriendData friendData = new FriendData();
-					string uid = "";
-					Dictionary<string, object> friendDictionary = (Dictionary<string, object>)friend;
-					
-					object friendID;
-					if (friendDictionary.TryGetValue ("uid", out friendID)) 
-					{
-						uid = friendID.ToString();
-						getFriendPicture( uid );
-					}
-					object first_name;
-					if (friendDictionary.TryGetValue ("first_name", out first_name)) 
-					{
-						string firstName = first_name.ToString();
-						friendData.first_name = firstName;
-					}
+	    			var friendDict = ((Dictionary<string,object>)(fb_friend));
+	    			var friend = new Dictionary<string, string>();
+	    			friend["id"] = (string)friendDict["id"];
+	    			friend["first_name"] = (string)friendDict["first_name"];
+					getFriendPicture( friend["id"] );
+					friendData.first_name = friend["first_name"];
 					//Add to dictionary
-					friendsList.Add( uid, friendData );
+					friendsList.Add( friend["id"], friendData );
 					friendData.printFriendData();
 				}
 			}
@@ -744,37 +730,37 @@ public class FacebookManager
 		}
 	}
 
-	void MyProfileCallback(FBResult result)
+	void MyProfileCallback(IGraphResult result)
 	{
 		if (result.Error != null)
 		{
 			// Let's just try again if we are not in the Unity Editor
 			#if !UNITY_EDITOR
-			FbDebug.Error("FacebookManager: MyProfileCallback error: " + result.Error + ". trying again.");
-			FB.API("/me?fields=id,first_name", Facebook.HttpMethod.GET, MyProfileCallback);
+			Debug.LogError("FacebookManager: MyProfileCallback error: " + result.Error + ". trying again.");
+			FB.API("/me?fields=id,first_name", HttpMethod.GET, MyProfileCallback);
 			#endif
 		}
 		else
 		{
-			Debug.Log( "MyProfileCallback " + result.Text );
-			profile = Util.DeserializeJSONProfile(result.Text);
+			Debug.Log( "MyProfileCallback " + result.RawResult );
+			profile = Util.DeserializeJSONProfile(result.RawResult);
 			Username = profile["first_name"];
 		}
 	}
 
-	void MyPictureCallback(FBResult result)
+	void MyPictureCallback(IGraphResult result)
 	{
 		if (result.Error != null)
 		{
 			// Let's just try again if we are not in the Unity Editor
 			#if !UNITY_EDITOR
-			FbDebug.Error("FacebookManager: MyPictureCallback error: " + result.Error + ". trying again.");
-			FB.API(Util.GetPictureURL("me", 128, 128), Facebook.HttpMethod.GET, MyPictureCallback);
+			Debug.LogError("FacebookManager: MyPictureCallback error: " + result.Error + ". trying again.");
+			FB.API(Util.GetPictureURL("me", 128, 128), HttpMethod.GET, MyPictureCallback);
 			#endif
 		}
 		else
 		{
-			UserPortrait = result.Texture;
+			UserPortrait = Sprite.Create( result.Texture, new Rect(0, 0, result.Texture.width, result.Texture.height ), new Vector2( 0.5f, 0.5f ) );
 		}
 	}
 	
@@ -795,10 +781,10 @@ public class FacebookManager
         wwwForm.AddBinaryData("image", screenshot, "Me, riding a dragon!");
         wwwForm.AddField("message", "Fly with me in Dragon Run Saga.");
 
-		FB.API("me/photos", Facebook.HttpMethod.POST, TakeScreenshotCallback, wwwForm);
+		FB.API("me/photos", HttpMethod.POST, TakeScreenshotCallback, wwwForm);
     }
 
-	void TakeScreenshotCallback(FBResult result)
+	void TakeScreenshotCallback(IGraphResult result)
 	{
 		if (result.Error != null)
 		{
@@ -806,7 +792,7 @@ public class FacebookManager
 		}
 		else
 		{
-			Debug.Log("FacebookManager-TakeScreenshotCallback: success: " + result.Text );
+			Debug.Log("FacebookManager-TakeScreenshotCallback: success: " + result.RawResult );
 		}
 	}
 
@@ -815,20 +801,24 @@ public class FacebookManager
 	{
 		if (!friendImages.ContainsKey(userId) && !friendImagesRequested.Contains( userId ))
 		{
-			//Debug.Log("FacebookManager-getFriendPicture: Getting missing picture for: " + userId );
+			Debug.Log("FacebookManager-getFriendPicture: Getting missing picture for: " + userId );
 			friendImagesRequested.Add( userId );
 			
 			// We don't have this friends's image yet, request it now
-			FB.API(Util.GetPictureURL(userId, 128, 128), Facebook.HttpMethod.GET, pictureResult =>
+			FB.API(Util.GetPictureURL(userId, 128, 128), HttpMethod.GET, pictureResult =>
 			       {
 				if (pictureResult.Error != null)
 				{
-					FbDebug.Error(pictureResult.Error);
+					Debug.LogError(pictureResult.Error);
 				}
 				else
 				{
+					Debug.Log("FacebookManager-getFriendPicture: success: image received for: " + userId );
+
 					//Add image to picture dictionary
-					friendImages.Add(userId, pictureResult.Texture);
+					Sprite friendPortrait = Sprite.Create( pictureResult.Texture, new Rect(0, 0, pictureResult.Texture.width, pictureResult.Texture.height ), new Vector2( 0.5f, 0.5f ) );
+
+					friendImages.Add(userId, friendPortrait);
 					if( friendImagesRequested.Contains( userId ) )
 					{
 						//We have received the image, so remove the entry in the friendImagesRequested list.
@@ -847,11 +837,11 @@ public class FacebookManager
 			Dictionary<string, string> querySmash = new Dictionary<string, string>();
 			string testUserID = "1378641987";
 			querySmash["profile"] = testUserID;
-			FB.API ("/me/" + FACEBOOK_NAMESPACE + ":smash", Facebook.HttpMethod.POST, publishActionCallback, querySmash);
+			FB.API ("/me/" + FACEBOOK_NAMESPACE + ":smash", HttpMethod.POST, publishActionCallback, querySmash);
 		}
 	}
 
-	void publishActionCallback(FBResult result)
+	void publishActionCallback(IGraphResult result)
 	{
 		if (result.Error != null)
 		{
@@ -859,8 +849,37 @@ public class FacebookManager
 		}
 		else
 		{
-			Debug.Log("FacebookManager-publishActionCallback: success: " + result.Text );
+			Debug.Log("FacebookManager-publishActionCallback: success: " + result.RawResult );
 		}
 	}
+
+	//customImageUri format is: http://i.imgur.com/zkYlB.jpg
+	public void inviteFriends( string customImageUri )
+	{
+		string fbUri = "https://fb.me/" + FB.AppId;
+		if( customImageUri != null )
+		{
+			Debug.Log ("inviteFriends action: "  + FB.AppId + " with a custom image specified." );
+            FB.Mobile.AppInvite(new Uri(fbUri), new Uri(customImageUri), inviteFriendsCallback);
+		}
+		else
+		{
+			Debug.Log ("inviteFriends action: "  + FB.AppId + " with no custom image specified." );
+		    FB.Mobile.AppInvite(new Uri(fbUri), null, inviteFriendsCallback);
+		}
+	}
+
+	void inviteFriendsCallback( IAppInviteResult result )
+	{
+		if( result.Error != null )
+		{
+			Debug.LogError("inviteFriendsCallback-Error: " + result.Error );
+		}
+		else
+		{
+			Debug.Log ("inviteFriendsCallback-Success: " +  result.RawResult );
+		}			
+ 	}
+
 
  }

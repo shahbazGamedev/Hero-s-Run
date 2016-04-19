@@ -176,12 +176,12 @@ public class StoreEntry : MonoBehaviour {
 		int newUpgradeValue = PlayerStatsManager.Instance.getPowerUpUpgradeLevel( powerUpType ) + 1;
 		int currentUpgradeCost = newUpgradeValue * 1000;
 		//Make sure we have enough currency
-		if( currentUpgradeCost <= PlayerStatsManager.Instance.getLifetimeCoins() )
+		if( currentUpgradeCost <= PlayerStatsManager.Instance.getCurrentCoins() )
 		{
 			SoundManager.playButtonClick();
 			//Deduct the appropriate number of currency for the purchase
-			PlayerStatsManager.Instance.modifyCoinCount(-currentUpgradeCost);
-			if( totalStarsOwned != null ) totalStarsOwned.text = ( PlayerStatsManager.Instance.getLifetimeCoins() ).ToString("N0");;
+			PlayerStatsManager.Instance.modifyCurrentCoins(-currentUpgradeCost, false, true );
+			if( totalStarsOwned != null ) totalStarsOwned.text = ( PlayerStatsManager.Instance.getCurrentCoins() ).ToString("N0");;
 			print ( "buying new value is: " + newUpgradeValue );
 			PlayerStatsManager.Instance.setPowerUpUpgradeLevel( powerUpType, newUpgradeValue  );
 			upgradeLevel.value = newUpgradeValue;
@@ -206,12 +206,12 @@ public class StoreEntry : MonoBehaviour {
 	void buyConsumable()
 	{
 		//Make sure we have enough currency
-		if( PlayerStatsManager.Instance.getLifetimeCoins() >= COST_FOR_ONE_CONSUMABLE )
+		if( PlayerStatsManager.Instance.getCurrentCoins() >= COST_FOR_ONE_CONSUMABLE )
 		{
 			SoundManager.playButtonClick();
 			//Deduct the appropriate number of currency for the purchase
-			PlayerStatsManager.Instance.modifyCoinCount(-COST_FOR_ONE_CONSUMABLE);
-			if( totalStarsOwned != null ) totalStarsOwned.text = ( PlayerStatsManager.Instance.getLifetimeCoins() ).ToString("N0");;
+			PlayerStatsManager.Instance.modifyCurrentCoins(-COST_FOR_ONE_CONSUMABLE, false, true );
+			if( totalStarsOwned != null ) totalStarsOwned.text = ( PlayerStatsManager.Instance.getCurrentCoins() ).ToString("N0");;
 			PlayerStatsManager.Instance.incrementPowerUpInventory( powerUpType );
 		
 			string descriptionString = LocalizationManager.Instance.getText("POWER_UP_YOU_HAVE");
@@ -228,6 +228,7 @@ public class StoreEntry : MonoBehaviour {
 	//This is a real money purchase
 	void buyStarDoubler()
 	{
+		Debug.Log("buyStarDoubler");
 		SoundManager.playButtonClick();
 
 		buyButtonLabel.text = LocalizationManager.Instance.getText("STAR_DOUBLER_OWNED");

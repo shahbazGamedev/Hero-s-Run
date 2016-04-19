@@ -37,7 +37,7 @@ public class CoinHandler : MonoBehaviour {
 				}
 				else
 				{
-					Debug.LogError("CoinHandler: Start - There is no ground under the star named, " + gameObject.name );
+					Debug.LogWarning("CoinHandler: There is no ground under the star named, " + gameObject.name );
 				}
 			}
 		}

@@ -46,7 +46,7 @@ public class DoorController : MonoBehaviour {
 		print ("Player trigger event received " + eventType );
 		if( eventType == GameEvent.Open_Door )
 		{
-			audio.Play();
+			GetComponent<AudioSource>().Play();
 			if( animation != null )
 			{
 				playAnim(doorOpen);

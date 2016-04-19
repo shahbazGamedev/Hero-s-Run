@@ -59,11 +59,11 @@ distortUV.y = Time.time * distortSpeed.y;
 
 
 // For each property copy this line and chage texture names and UV properties
-renderer.material.SetTextureOffset("_Texture1", texture1UV);
-renderer.material.SetTextureOffset("_Texture2", texture2UV);
-renderer.material.SetTextureOffset("_BumpMap1", bumpMap1UV);
-renderer.material.SetTextureOffset("_BumpMap2", bumpMap2UV);
-renderer.material.SetTextureOffset("_DistortionMap", distortUV);
+GetComponent.<Renderer>().material.SetTextureOffset("_Texture1", texture1UV);
+GetComponent.<Renderer>().material.SetTextureOffset("_Texture2", texture2UV);
+GetComponent.<Renderer>().material.SetTextureOffset("_BumpMap1", bumpMap1UV);
+GetComponent.<Renderer>().material.SetTextureOffset("_BumpMap2", bumpMap2UV);
+GetComponent.<Renderer>().material.SetTextureOffset("_DistortionMap", distortUV);
 
 
 }

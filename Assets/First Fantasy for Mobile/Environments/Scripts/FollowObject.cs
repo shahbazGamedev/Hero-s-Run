@@ -18,13 +18,13 @@ public class FollowObject : MonoBehaviour {
 		if(m_Target!=null)
 		{
 			// Target object has renderer mesh
-			if(m_Target.renderer!=null)
+			if(m_Target.GetComponent<Renderer>()!=null)
 			{
 				// Find a center of bounds
-				m_Bounds = m_Target.renderer.bounds;
+				m_Bounds = m_Target.GetComponent<Renderer>().bounds;
 				foreach (Transform child in m_Target)
 				{
-				    m_Bounds.Encapsulate(child.gameObject.renderer.bounds);
+				    m_Bounds.Encapsulate(child.gameObject.GetComponent<Renderer>().bounds);
 				}
 			}
 			// No renderer mesh in target object
@@ -34,7 +34,7 @@ public class FollowObject : MonoBehaviour {
 				Vector3 center = Vector3.zero;				
 				foreach (Transform child in m_Target)
 				{
-				    center += child.gameObject.renderer.bounds.center;
+				    center += child.gameObject.GetComponent<Renderer>().bounds.center;
 				}
 				
 				// Center is average center of children
@@ -44,7 +44,7 @@ public class FollowObject : MonoBehaviour {
 				m_Bounds = new Bounds(center,Vector3.zero); 				
 				foreach (Transform child in m_Target)
 				{
-				    m_Bounds.Encapsulate(child.gameObject.renderer.bounds);   
+				    m_Bounds.Encapsulate(child.gameObject.GetComponent<Renderer>().bounds);   
 				}
 			}
 			

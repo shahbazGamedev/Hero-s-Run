@@ -161,13 +161,13 @@ public class FairyController : BaseClass {
 			fairyAnimation.Play("Hover_Worried");
 		}
 		appearFx.Play();
-		audio.PlayOneShot( appearSound );
+		GetComponent<AudioSource>().PlayOneShot( appearSound );
 		fairyState = FairyState.Hover;
 	}
 
 	public void Disappear()
 	{
-		audio.PlayOneShot( appearSound );
+		GetComponent<AudioSource>().PlayOneShot( appearSound );
 		transform.localScale = new Vector3( 0.002f, 0.002f, 0.002f );
 		appearFx.Play();
 		Invoke("Disappear_part2", 2.3f);
@@ -188,7 +188,7 @@ public class FairyController : BaseClass {
 	void playCastSpellFx()
 	{
 		fairySpellFx.Play();
-		audio.PlayOneShot( fairySpellSound );
+		GetComponent<AudioSource>().PlayOneShot( fairySpellSound );
 	}
 
 	private IEnumerator MoveToPosition( float timeToArrive )
@@ -240,7 +240,7 @@ public class FairyController : BaseClass {
 
 	void sprinkleFairyDustStart()
 	{
-		audio.PlayOneShot( fairyDustSound );
+		GetComponent<AudioSource>().PlayOneShot( fairyDustSound );
 		fairyDustFx.Play ();
 		Invoke("sprinkleFairyDustStop", 0.96f );
 	}

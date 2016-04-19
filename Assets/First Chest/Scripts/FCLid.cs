@@ -253,12 +253,12 @@ public class FCLid : MonoBehaviour
 			  // Play Close sound
 			  if (m_Main.getSound().m_SoundClose != null && EditorPlayCloseSound == true && m_LidStatusOld == m_LidStatus)
 			  {
-				audio.PlayOneShot(m_Main.getSound().m_SoundClose);
+				GetComponent<AudioSource>().PlayOneShot(m_Main.getSound().m_SoundClose);
 			  }
 			  // Play Open sound
 			  if (m_Main.getSound().m_SoundOpen != null && EditorPlayOpenSound == true && m_LidStatusOld == m_LidStatus)
 			  {
-				audio.PlayOneShot(m_Main.getSound().m_SoundOpen);
+				GetComponent<AudioSource>().PlayOneShot(m_Main.getSound().m_SoundOpen);
 			  }
 			}
 		  }

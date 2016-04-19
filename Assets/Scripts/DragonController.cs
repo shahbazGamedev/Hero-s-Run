@@ -122,8 +122,8 @@ public class DragonController : BaseClass {
 
 	public void roar()
 	{
-		audio.loop = false;
-		audio.Play ();
+		GetComponent<AudioSource>().loop = false;
+		GetComponent<AudioSource>().Play ();
 	}
 
 	void moveDragon()
@@ -179,8 +179,8 @@ public class DragonController : BaseClass {
 
 	IEnumerator breatheFireNow ()
 	{
-		dragonFireSpotlight.light.enabled = true;
-		dragonFire.particleSystem.Play();
+		dragonFireSpotlight.GetComponent<Light>().enabled = true;
+		dragonFire.GetComponent<ParticleSystem>().Play();
 		float time = dragonAnimation["Attack_001"].length;
 		while ( time > 0 )
 		{
@@ -194,7 +194,7 @@ public class DragonController : BaseClass {
 
 	private void resumeFlying ()
 	{
-		dragonFireSpotlight.light.enabled = false;
+		dragonFireSpotlight.GetComponent<Light>().enabled = false;
 		dragonAnimation.CrossFade("Run");				
 		dragonState = DragonState.Fly;
 	}

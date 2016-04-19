@@ -23,7 +23,7 @@ public class TrapPendulum : MonoBehaviour {
 	{
 		angle = angle * -1f;
 		LeanTween.rotateZ( gameObject, angle, duration ).setEase(LeanTweenType.easeInOutQuad).setOnComplete(rotationEnded).setOnCompleteParam(gameObject);
-		if( soundSource != null ) soundSource.audio.Play();
+		if( soundSource != null ) soundSource.GetComponent<AudioSource>().Play();
 	}
 
 	void OnEnable()

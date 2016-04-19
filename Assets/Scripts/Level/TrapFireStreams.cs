@@ -15,12 +15,14 @@ public class TrapFireStreams : MonoBehaviour {
 	public GameObject centerCollider;
 	public GameObject rightCollider;
 
+	ParticleSystem.EmissionModule em;
+
 	enum Location {
 		Left = 0,
 		Center = 1,
 		Right = 2
 	}
-	
+
 	//We want 2 out 3 firestreams active at all times
 	void activateFireStreams()
 	{
@@ -29,25 +31,29 @@ public class TrapFireStreams : MonoBehaviour {
 		//Left fire
 		if( inactiveLocation == Location.Left )
 		{
-			leftFire.enableEmission = false;
+			em = leftFire.GetComponent <ParticleSystem> ().emission;
+			em.enabled = false;
+
 			leftCollider.SetActive(false);
 			leftCollider.transform.localPosition = new Vector3(leftCollider.transform.localPosition.x, hiddenPosition, leftCollider.transform.localPosition.z ); 
 
 			if( !centerCollider.activeSelf )
 			{
-				centerFire.enableEmission = true;
+				em = centerFire.GetComponent <ParticleSystem> ().emission;
+				em.enabled = true;
 				centerCollider.SetActive(true);
 				LeanTween.moveLocalY(centerCollider, endPosition, colliderMoveDuration);
-				centerFire.audio.Play();
+				centerFire.GetComponent<AudioSource>().Play();
 
 			}
 
 			if( !rightCollider.activeSelf )
 			{
-				rightFire.enableEmission = true;
+				em = rightFire.GetComponent <ParticleSystem> ().emission;
+				em.enabled = true;
 				rightCollider.SetActive(true);
 				LeanTween.moveLocalY(rightCollider, endPosition, colliderMoveDuration);
-				rightFire.audio.Play();
+				rightFire.GetComponent<AudioSource>().Play();
 			}
 		}
 		//Center fire
@@ -55,22 +61,25 @@ public class TrapFireStreams : MonoBehaviour {
 		{
 			if( !leftCollider.activeSelf )
 			{
-				leftFire.enableEmission = true;
+				em = leftFire.GetComponent <ParticleSystem> ().emission;
+				em.enabled = true;
 				leftCollider.SetActive(true);
 				LeanTween.moveLocalY(leftCollider, endPosition, colliderMoveDuration);
-				leftFire.audio.Play();
+				leftFire.GetComponent<AudioSource>().Play();
 			}
 			
-			centerFire.enableEmission = false;
+			em = centerFire.GetComponent <ParticleSystem> ().emission;
+			em.enabled = false;
 			centerCollider.SetActive(false);
 			centerCollider.transform.localPosition = new Vector3(centerCollider.transform.localPosition.x, hiddenPosition, centerCollider.transform.localPosition.z ); 
 
 			if( !rightCollider.activeSelf )
 			{
-				rightFire.enableEmission = true;
+				em = rightFire.GetComponent <ParticleSystem> ().emission;
+				em.enabled = true;
 				rightCollider.SetActive(true);
 				LeanTween.moveLocalY(rightCollider, endPosition, colliderMoveDuration);
-				rightFire.audio.Play();
+				rightFire.GetComponent<AudioSource>().Play();
 			}
 		}
 		//Right fire
@@ -78,26 +87,29 @@ public class TrapFireStreams : MonoBehaviour {
 		{
 			if( !leftCollider.activeSelf )
 			{
-				leftFire.enableEmission = true;
+				em = leftFire.GetComponent <ParticleSystem> ().emission;
+				em.enabled = true;
 				leftCollider.SetActive(true);
 				LeanTween.moveLocalY(leftCollider, endPosition, colliderMoveDuration);
-				leftFire.audio.Play();
+				leftFire.GetComponent<AudioSource>().Play();
 			}
 			
 			if( !centerCollider.activeSelf )
 			{
-				centerFire.enableEmission = true;
+				em = centerFire.GetComponent <ParticleSystem> ().emission;
+				em.enabled = true;
 				centerCollider.SetActive(true);
 				LeanTween.moveLocalY(centerCollider, endPosition, colliderMoveDuration);
-				centerFire.audio.Play();
+				centerFire.GetComponent<AudioSource>().Play();
 			}
 			
 			rightCollider.transform.localPosition = new Vector3(rightCollider.transform.localPosition.x, hiddenPosition, rightCollider.transform.localPosition.z ); 
-			rightFire.enableEmission = false;
+			em = rightFire.GetComponent <ParticleSystem> ().emission;
+			em.enabled = false;
 			rightCollider.SetActive(false);
 		}
 	}
-
+	
 	void OnEnable()
 	{
 		InvokeRepeating( "activateFireStreams", 0, duration );

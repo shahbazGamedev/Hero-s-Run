@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Facebook.Unity;
 
 public class MessageCenterHandler : MonoBehaviour {
 
@@ -248,7 +249,7 @@ public class MessageCenterHandler : MonoBehaviour {
 		}
 	}
 
-	public void MCHCallback(FBResult result, string appRequestIDToDelete )
+	public void MCHCallback(IAppRequestResult result, string appRequestIDToDelete )
 	{
 		if (result.Error != null)
 		{
@@ -256,8 +257,8 @@ public class MessageCenterHandler : MonoBehaviour {
 		}
 		else
 		{
-			Debug.Log ("MessageCenterHandler-MCHCallback success:\n" + result.Text );
-			if( !result.Text.Contains("cancelled") )
+			Debug.Log ("MessageCenterHandler-MCHCallback success:\n" + result.RawResult );
+			if( !result.RawResult.Contains("cancelled") )
 			{
 				//Now that it is successfully processed, delete the app request on Facebook
 				FacebookManager.Instance.deleteAppRequest( appRequestIDToDelete );
@@ -398,11 +399,11 @@ public class MessageCenterHandler : MonoBehaviour {
 		yOffset = (rowSize.y - facebookPortraitSize.y)/2f;
 		Rect friendPictureRect = new Rect( xOffset, yOffset, facebookPortraitSize.x, facebookPortraitSize.y );
 		
-		Texture picture;
+		Sprite picture;
 		if ( FacebookManager.Instance.friendImages.TryGetValue( userID, out picture)) 
 		{
 			//We have the friend's picture
-			popupHandler.drawPortrait( friendPictureRect, picture, false );
+		//popupHandler.drawPortrait( friendPictureRect, picture, false );
 		}
 		else if ( FacebookManager.Instance.friendImagesRequested.Contains( userID ) )
 		{

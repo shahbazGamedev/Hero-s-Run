@@ -54,7 +54,7 @@ public class SimpleController : MonoBehaviour {
 		anim[hitAnim.name].wrapMode = WrapMode.Once;
 		anim.CrossFade( hitAnim.name, 0.25f );
 		anim.CrossFadeQueued(walkAnim.name, 0.4f );
-		audio.Play();
+		GetComponent<AudioSource>().Play();
 	}
 
 	void playAnim( AnimationClip clip )
@@ -81,7 +81,7 @@ public class SimpleController : MonoBehaviour {
 		if( eventType == GameEvent.Start_Moving )
 		{
 			anim.CrossFade(walkAnim.name, 0.5f );
-			audio.Play();
+			GetComponent<AudioSource>().Play();
 			allowMove = true;
 			Invoke( "stopMoving", moveDuration );
 		}

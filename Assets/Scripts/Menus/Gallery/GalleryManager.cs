@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class GalleryManager : MonoBehaviour {
 
@@ -14,31 +16,37 @@ public class GalleryManager : MonoBehaviour {
 	string fairyNameTextId = "GALLERY_NAME_FAIRY";
 	string fairyBioTextId  = "GALLERY_BIO_FAIRY";
 	public GameObject fairy3DGroup;
+	public AudioClip fairyAmbience;
 
 	[Header("Dark Queen")]
 	string darkQueenNameTextId = "GALLERY_NAME_DARK_QUEEN";
 	string darkQueenBioTextId  = "GALLERY_BIO_DARK_QUEEN";
 	public GameObject darkQueen3DGroup;
+	public AudioClip darkQueenAmbience;
 
 	[Header("Hero")]
 	string heroNameTextId = "GALLERY_NAME_HERO";
 	string heroBioTextId  = "GALLERY_BIO_HERO";
 	public GameObject hero3DGroup;
+	public AudioClip heroAmbience;
 
 	[Header("Heroine")]
 	string heroineNameTextId = "GALLERY_NAME_HEROINE";
 	string heroineBioTextId  = "GALLERY_BIO_HEROINE";
 	public GameObject heroine3DGroup;
+	//Heroine uses the same ambience as Hero
 
 	[Header("Zombie")]
 	string zombieNameTextId = "GALLERY_NAME_ZOMBIE";
 	string zombieBioTextId  = "GALLERY_BIO_ZOMBIE";
 	public GameObject zombie3DGroup;
+	public AudioClip zombieAmbience;
 
 	[Header("Troll")]
 	string trollNameTextId = "GALLERY_NAME_TROLL";
 	string trollBioTextId  = "GALLERY_BIO_TROLL";
 	public GameObject troll3DGroup;
+	public AudioClip trollAmbience;
 
 	[Header("Misc")]
 	bool levelLoading = false;
@@ -51,6 +59,14 @@ public class GalleryManager : MonoBehaviour {
 	bool touchStarted = false;
 	Vector2 touchStartPos;
 	float MINIMUM_HORIZONTAL_DISTANCE = 0.09f * Screen.width; //How many pixels you need to swipe horizontally to change page.
+	
+	//Audio
+	public AudioMixerSnapshot oneHighTwoLow;
+	public AudioMixerSnapshot oneLowTwoHigh;
+	public AudioSource trackOne;
+	public AudioSource trackTwo;
+	bool isTrackOneMain = true;
+	const float FADE_DURATION = 3f; //in seconds
 
 	void Awake ()
 	{
@@ -58,7 +74,9 @@ public class GalleryManager : MonoBehaviour {
 		levelLoading = false;
 		lastScrollBarPosition = 0;
 
+		#if UNITY_EDITOR
 		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
+		#endif
 
 		//The activity indicator may have been started
 		Handheld.StopActivityIndicator();
@@ -66,7 +84,7 @@ public class GalleryManager : MonoBehaviour {
 		//Title
 		menuTitle.text = LocalizationManager.Instance.getText(menuTitleTextId);
 
-		//Fairy
+		//Fairy - she is the first character in the gallery
 		//Character Name
 		characterName.text = LocalizationManager.Instance.getText(fairyNameTextId);
 
@@ -74,8 +92,34 @@ public class GalleryManager : MonoBehaviour {
 		string characterTextString = LocalizationManager.Instance.getText(fairyBioTextId);
 		characterTextString = characterTextString.Replace("\\n", System.Environment.NewLine );
 		characterBio.text = characterTextString;
+	
+		//Audio
+		trackOne.clip = fairyAmbience;
+		trackTwo.clip = darkQueenAmbience;
+		trackOne.Play();
+		trackTwo.Play();
+		oneHighTwoLow.TransitionTo(0.1f);
 
 	}
+
+	void fadeAmbience( AudioClip clipToPlay )
+	{
+		isTrackOneMain = !isTrackOneMain;
+		if( isTrackOneMain )
+		{
+			trackOne.clip = clipToPlay;
+			trackOne.Play();
+			oneHighTwoLow.TransitionTo(FADE_DURATION);
+
+		}
+		else
+		{
+			trackTwo.clip = clipToPlay;
+			trackTwo.Play();
+			oneLowTwoHigh.TransitionTo(FADE_DURATION);
+		}
+	}
+
 
 	//Only show the bio scrollbar when selected
 	public void scrollSelected()
@@ -183,6 +227,7 @@ public class GalleryManager : MonoBehaviour {
 				//player swiped UP
 				//Ignore
 			}
+
 		}
 	}
 
@@ -200,6 +245,7 @@ public class GalleryManager : MonoBehaviour {
 			if( newPos < 0 ) newPos = 1f;
 		}
 		OnValueChanged( newPos );
+
 	}
 
 	public void OnValueChanged( float scrollBarPosition )
@@ -233,6 +279,7 @@ public class GalleryManager : MonoBehaviour {
 			hero3DGroup.SetActive( false );
 			heroine3DGroup.SetActive( false );
 			zombie3DGroup.SetActive( false );
+			fadeAmbience( fairyAmbience );
 
 		}
 		//Dark Queen
@@ -251,6 +298,7 @@ public class GalleryManager : MonoBehaviour {
 			hero3DGroup.SetActive( false );
 			heroine3DGroup.SetActive( false );
 			zombie3DGroup.SetActive( false );
+			fadeAmbience( darkQueenAmbience );
 
 		}
 		//Hero or Heroine
@@ -286,6 +334,7 @@ public class GalleryManager : MonoBehaviour {
 			darkQueen3DGroup.SetActive( false );
 			troll3DGroup.SetActive( false );
 			zombie3DGroup.SetActive( false );
+			fadeAmbience( heroAmbience );
 
 		}
 		//Zombie
@@ -304,6 +353,7 @@ public class GalleryManager : MonoBehaviour {
 			hero3DGroup.SetActive( false );
 			heroine3DGroup.SetActive( false );
 			zombie3DGroup.SetActive( true );
+			fadeAmbience( zombieAmbience );
 
 		}
 		//Troll
@@ -322,6 +372,7 @@ public class GalleryManager : MonoBehaviour {
 			hero3DGroup.SetActive( false );
 			heroine3DGroup.SetActive( false );
 			zombie3DGroup.SetActive( false );
+			fadeAmbience( trollAmbience );
 
 		}
 
@@ -343,7 +394,7 @@ public class GalleryManager : MonoBehaviour {
 			levelLoading = true;
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);
-			Application.LoadLevel( 3 );
+			SceneManager.LoadScene( (int)GameScenes.WorldMap );
 		}
 	}
 }

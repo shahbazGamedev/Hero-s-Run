@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour {
 
@@ -101,7 +102,7 @@ public class PauseMenu : MonoBehaviour {
 		SoundManager.stopAmbience();
 		playerController.resetLevel();
 		//Go back to world map
-		Application.LoadLevel( (int) GameScenes.WorldMap );
+		SceneManager.LoadScene( (int) GameScenes.WorldMap );
 	}
 
 	//If the device is paused by pressing the Home button, because of a low battery warning or a phone call, the game will automatically display the pause menu.

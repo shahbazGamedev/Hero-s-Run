@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 //The 3D world is displayed behind the HUD.
 public class HUDHandler : MonoBehaviour {
@@ -90,6 +91,7 @@ public class HUDHandler : MonoBehaviour {
 	public Texture2D cuteWitch;
 	int distanceMarkerInterval = 250; //in meters
 
+	public GameObject saveMeCanvas;
 	HUDSaveMe hudSaveMe;
 
 	PopupHandler popupHandler;
@@ -152,7 +154,7 @@ public class HUDHandler : MonoBehaviour {
 		distanceMarkerHeight = Screen.height * 0.08f;
 		distanceMarker = new LTRect( 0f, -distanceMarkerHeight, Screen.width, distanceMarkerHeight );
 
-		hudSaveMe = GetComponent<HUDSaveMe>();
+		hudSaveMe = saveMeCanvas.GetComponent<HUDSaveMe>();
 
 		//Adjust font sizes based on screen resolution
 		PopupHandler.changeFontSizeBasedOnResolution( statsStyle );
@@ -212,7 +214,7 @@ public class HUDHandler : MonoBehaviour {
 				GUI.DrawTexture( coinIconRect, coinIconTexture,ScaleMode.ScaleToFit );
 				GUI.color = Color.white;
 				//Draw the coin total
-				int coinTotal = PlayerStatsManager.Instance.getPlayerCoins();
+				int coinTotal = PlayerStatsManager.Instance.getCurrentCoins();
 				GUI.Label ( coinRect, coinTotal.ToString("N0"), statsStyle );
 			}
 		}
@@ -232,12 +234,6 @@ public class HUDHandler : MonoBehaviour {
 			{
 				pauseMenu.pauseGame();
 			}
-		}
-
-		//Save Me options
-		if( gameState == GameState.SaveMe )
-		{
-			hudSaveMe.activatePopup(PopupType.SaveMe);
 		}
 		
 		//Stats screen
@@ -358,7 +354,8 @@ public class HUDHandler : MonoBehaviour {
 			wasHighScoreMessageDisplayedThisRun = false;
 			showUserMessage = false;
 			playerController.resetLevel();
-			//Simply restart same level
+			//Simply restart from the last checkpoint
+			LevelManager.Instance.setNextLevelToComplete( LevelManager.Instance.getLevelNumberOfLastCheckpoint() );
 			StartCoroutine(loadLevel());
 		}
 
@@ -375,7 +372,7 @@ public class HUDHandler : MonoBehaviour {
 			showUserMessage = false;
 			playerController.resetLevel();
 			//Go back to world map
-			Application.LoadLevel( 3 );
+			SceneManager.LoadScene( (int)GameScenes.WorldMap );
 		}
 	
 	}
@@ -385,7 +382,7 @@ public class HUDHandler : MonoBehaviour {
 		Handheld.StartActivityIndicator();
 		yield return new WaitForSeconds(0);
 		//Load level scene
-		Application.LoadLevel( 4 );
+		SceneManager.LoadScene( (int)GameScenes.Level );
 		
 	}
 
@@ -427,7 +424,7 @@ public class HUDHandler : MonoBehaviour {
 			distance =  (int) Mathf.Lerp( startValue, endValue, elapsedTime/duration );
 			yield return new WaitForFixedUpdate();  
 	    }
-		StartCoroutine( spinCoinNumber( PlayerStatsManager.Instance.getPlayerCoins() ) );
+		StartCoroutine( spinCoinNumber( PlayerStatsManager.Instance.getCurrentCoins() ) );
 		
 	}
 	
@@ -647,6 +644,11 @@ public class HUDHandler : MonoBehaviour {
 			//Display the tap to play button
 			tapToPlayButton.gameObject.SetActive( true );
 		}
+		else if( newState == GameState.SaveMe )
+		{
+			hudSaveMe.showSaveMeMenu();
+		}
+
 	}
 
 	public class CoinDisplay

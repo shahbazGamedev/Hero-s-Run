@@ -8,7 +8,7 @@ function Start () {
 
 rndInt=Random.Range(0, texture.length);
 
-renderer.material.mainTexture=texture[rndInt];
+GetComponent.<Renderer>().material.mainTexture=texture[rndInt];
 
 }
 

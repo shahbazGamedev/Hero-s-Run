@@ -11,7 +11,7 @@ public class DrawBridge : MonoBehaviour {
 	void raiseDrawBridge()
 	{
 		LeanTween.rotateX( gameObject, bridgeRaisedAngle, duration ).setEase(LeanTweenType.easeInOutQuad);
-		audio.Play();
+		GetComponent<AudioSource>().Play();
 	}
 	
 	void OnEnable()

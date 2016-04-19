@@ -1,9 +1,9 @@
 function FixedUpdate () {
 if (Input.GetKey ("up")||Input.GetKey ("w")) {
-rigidbody.AddForce (Camera.main.transform.forward * 450);
+GetComponent.<Rigidbody>().AddForce (Camera.main.transform.forward * 450);
 }
 if (Input.GetKey ("down")||Input.GetKey ("s")) {
-rigidbody.AddForce (Camera.main.transform.forward * -250);
+GetComponent.<Rigidbody>().AddForce (Camera.main.transform.forward * -250);
 }
 if (Input.GetKey ("right")||Input.GetKey ("d")) {
 transform.Rotate(Camera.main.transform.up,Space.World);

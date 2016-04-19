@@ -17,18 +17,16 @@ public enum GameState {
 }
 
 //The GameScenes enum entries must match the scene numbering in Build Settings.
-//Sample usage: Application.LoadLevel( (int)GameScenes.CharacterSelection )
-public enum GameScenes {
+//Sample usage: SceneManager.LoadScene( (int)GameScenes.CharacterSelection )
+public enum GameScenes {	
 	
-	Loading = 0,
+	TitleScreen = 0,
 	CharacterSelection = 1,
-	Main = 2,
-	WorldMap = 3,
-	Level = 4,
-	TreasureIsland = 5,
-	CharacterGallery = 6,
-	Store = 7,
-	ComicBook = 8
+	WorldMap = 2,
+	Level = 3,
+	TreasureIsland = 4,
+	CharacterGallery = 5,
+	Store = 6
 }
 
 public enum DifficultyLevel {
@@ -58,6 +56,7 @@ public class GameManager {
 	public static event GameStateEvent gameStateEvent;
 
 	private GameMode gameMode = GameMode.Story;
+	private int gameClock = 465; //In elapsed minutes. This is related to episode.
 
 	public static GameManager Instance
 	{
@@ -138,5 +137,14 @@ public class GameManager {
 		return 1f;
 	}
 
+	public int getGameClock()
+	{
+		return gameClock;
+	}
+
+	public void setGameClock( int value )
+	{
+		gameClock = value;
+	}
 
 }

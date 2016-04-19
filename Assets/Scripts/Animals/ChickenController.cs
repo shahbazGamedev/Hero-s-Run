@@ -13,7 +13,7 @@ public class ChickenController : MonoBehaviour {
 		{
 			Animation anim = transform.parent.GetComponent<Animation>();
 			anim.CrossFade("A_Chicken_Panic");
-			transform.parent.audio.Play();
+			transform.parent.GetComponent<AudioSource>().Play();
 			wasTriggered = true;
 		}
 	}
@@ -33,7 +33,7 @@ public class ChickenController : MonoBehaviour {
 		if( newState == CharacterState.Dying && wasTriggered )
 		{
 			//Only destroy the chicken that was involved
-			StartCoroutine( SoundManager.fadeOutClip( transform.parent.audio, transform.parent.audio.clip, SoundManager.STANDARD_FADE_TIME ) );
+			StartCoroutine( SoundManager.fadeOutClip( transform.parent.GetComponent<AudioSource>(), transform.parent.GetComponent<AudioSource>().clip, SoundManager.STANDARD_FADE_TIME ) );
 			DestroyObject(transform.parent.gameObject );
 		}
 	}

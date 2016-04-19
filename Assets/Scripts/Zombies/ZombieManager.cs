@@ -50,7 +50,7 @@ public class ZombieManager : BaseClass {
 		Vector3 exactPos = player.TransformPoint(relativePos);
 
 		zNukeEffect.transform.position = exactPos;
-		zNukeEffect.audio.Play ();
+		zNukeEffect.GetComponent<AudioSource>().Play ();
 		zNukeEffect.Play();
 
 		//Count the number of zombies that are knocked back so we can give the player stars.
@@ -71,7 +71,7 @@ public class ZombieManager : BaseClass {
 		{
 			int totalStars = numberOfZombies * NUMBER_STARS_PER_ZOMBIE;
 			//Give stars
-			PlayerStatsManager.Instance.modifyCoinCount( totalStars );
+			PlayerStatsManager.Instance.modifyCurrentCoins( totalStars, true, false );
 			
 			//Display star total picked up icon
 			HUDHandler.displayCoinTotal( totalStars, Color.magenta, false );

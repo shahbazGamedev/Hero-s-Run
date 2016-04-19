@@ -11,7 +11,7 @@ public class CemeteryGateController : MonoBehaviour {
 	void openCemeteryGate()
 	{
 		Animation animation = GetComponent<Animation>();
-		audio.Play ();
+		GetComponent<AudioSource>().Play ();
 		animation.Play("open slowly");
 		animation.PlayQueued("sway in wind");
 		float delay = animation["open slowly"].length;

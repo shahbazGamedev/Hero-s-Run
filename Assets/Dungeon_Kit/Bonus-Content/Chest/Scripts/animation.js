@@ -1,7 +1,7 @@
 
 
 function OnMouseEnter () {
-    animation.Play("open");
+    GetComponent.<Animation>().Play("open");
     yield WaitForSeconds (1.75);
-    animation.Play("close");
+    GetComponent.<Animation>().Play("close");
 }

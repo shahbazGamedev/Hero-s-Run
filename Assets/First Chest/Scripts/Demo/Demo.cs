@@ -206,8 +206,8 @@ public class Demo : MonoBehaviour
 	FCMain GetHitChest()
 	{
 	  Camera CurrentCamera = null;
-	  if (camera)
-		CurrentCamera = camera;
+	  if (GetComponent<Camera>())
+		CurrentCamera = GetComponent<Camera>();
 	  else
 		CurrentCamera = this.GetComponent<Camera>();
 
