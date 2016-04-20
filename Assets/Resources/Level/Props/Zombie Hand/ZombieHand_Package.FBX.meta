@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: f9566976ee76e4dbaadf631a945cbed8
 ModelImporter:
-  serializedVersion: 16
+  serializedVersion: 19
   fileIDToRecycleName:
     100000: Bone_Finger0A
     100002: Bone_Finger0B
@@ -41,6 +41,7 @@ ModelImporter:
     7400000: Fist
     7400002: Search
     7400004: FistToSearch
+    7400006: Grab
     9500000: //RootNode
     11100000: //RootNode
     13700000: ZombieArm
@@ -51,12 +52,17 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    resampleRotations: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
     clipAnimations:
@@ -70,6 +76,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 1
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -120,6 +127,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: Search
       takeName: Take 001
@@ -130,6 +138,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 1
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -180,6 +189,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: FistToSearch
       takeName: Take 001
@@ -190,6 +200,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
@@ -240,10 +251,73 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Grab
+      takeName: Take 001
+      firstFrame: 32
+      lastFrame: 40
+      wrapMode: 8
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bone_UpperArm
+        weight: 1
+      - path: Bone_UpperArm/Bone_Forearm
+        weight: 1
+      - path: Bone_UpperArm/Bone_Forearm/Bone_Hand
+        weight: 1
+      - path: Bone_UpperArm/Bone_Forearm/Bone_Hand/Bone_Finger0A
+        weight: 1
+      - path: Bone_UpperArm/Bone_Forearm/Bone_Hand/Bone_Finger0A/Bone_Finger0B
+        weight: 1
+      - path: Bone_UpperArm/Bone_Forearm/Bone_Hand/Bone_Finger0A/Bone_Finger0B/Bone_Finger0C
+        weight: 1
+      - path: Bone_UpperArm/Bone_Forearm/Bone_Hand/Bone_Finger1A
+        weight: 1
+      - path: Bone_UpperArm/Bone_Forearm/Bone_Hand/Bone_Finger1A/Bone_Finger1B
+        weight: 1
+      - path: Bone_UpperArm/Bone_Forearm/Bone_Hand/Bone_Finger1A/Bone_Finger1B/Bone_Finger1C
+        weight: 1
+      - path: Bone_UpperArm/Bone_Forearm/Bone_Hand/Bone_Finger2A
+        weight: 1
+      - path: Bone_UpperArm/Bone_Forearm/Bone_Hand/Bone_Finger2A/Bone_Finger2B
+        weight: 1
+      - path: Bone_UpperArm/Bone_Forearm/Bone_Hand/Bone_Finger2A/Bone_Finger2B/Bone_Finger2C
+        weight: 1
+      - path: Bone_UpperArm/Bone_Forearm/Bone_Hand/Bone_Finger3A
+        weight: 1
+      - path: Bone_UpperArm/Bone_Forearm/Bone_Hand/Bone_Finger3A/Bone_Finger3B
+        weight: 1
+      - path: Bone_UpperArm/Bone_Forearm/Bone_Hand/Bone_Finger3A/Bone_Finger3B/Bone_Finger3C
+        weight: 1
+      - path: ZombieArm
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: .00999999978
+    globalScale: 0.01
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -251,30 +325,35 @@ ModelImporter:
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
+    keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 4
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
     human: []
     skeleton: []
-    armTwist: .5
-    foreArmTwist: .5
-    upperLegTwist: .5
-    legTwist: .5
-    armStretch: .0500000007
-    legStretch: .0500000007
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 1
+  humanoidOversampling: 1
   additionalBone: 0
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 
