@@ -14,7 +14,8 @@ public enum DeathType {
 		Lava = 8,
 		Fireball = 9,
 		Zombie = 10,
-		Hellpit = 11
+		Hellpit = 11,
+		VortexTrap = 12
 }
 
 public enum CharacterState {
@@ -2526,6 +2527,14 @@ public class PlayerController : BaseClass {
 					anim.speed = 2.8f;
 					anim.SetTrigger(DeathRiverTrigger);
 					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2.5f) );
+					break;
+
+		        case DeathType.VortexTrap:
+					sc.lockCamera ( true );
+					anim.speed = 2.8f;
+					anim.SetTrigger(FallTrigger);
+					LeanTween.moveLocalY( gameObject, transform.position.y - 3f, 4f ).setEase(LeanTweenType.easeOutExpo).setDelay(0.75f);
+					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2.75f) );
 					break;
 
 				default:
