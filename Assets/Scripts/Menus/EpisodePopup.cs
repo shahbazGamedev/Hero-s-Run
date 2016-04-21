@@ -1,38 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using UnityEngine.SocialPlatforms.GameCenter;
-using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class EpisodePopup : MonoBehaviour {
 
 
 	[Header("Episode Popup")]
-	public Canvas settingsMenuCanvas;
+	public Text episodeNumberText;
+	public Text episodeNameText;
+	public Text episodeDescriptionText;
+	public Text episodeKeysText; //format found/total e.g. 1/3
+	public Text playButtonText;
+
 	Animator anim;
 	bool levelLoading = false;
 	int levelNumber;
-	public Text titleText;
-	[Header("Sound")]
-	public Text soundVolumeText;
-	public Slider soundVolumeSlider;
-	[Header("Facebook")]
-	public Text facebookText;
-	[Header("Difficulty")]
-	public Text difficultyText;
-	[Header("Achievements")] //Game Center
-	public Text achievementsText;
-	[Header("Privacy Policy")]
-	public Text privacyPolicyText;
-	public string privacyPolicyURL = "http://www.google.com/";
-	[Header("Restore Purchases")]
-	public Text restorePurchasesText;
-	[Header("Debug Menu")]
-	public Text debugMenuText;
-	public Canvas debugMenuCanvas;
-	[Header("Version Number")]
-	public Text versionNumberText;
+	private LevelData levelData;
+
 
 	// Use this for initialization
 	void Awake () {
@@ -41,37 +27,37 @@ public class EpisodePopup : MonoBehaviour {
 		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
 		#endif
 
-		//disable it on start to stop it from playing the default animation
-		anim = GetComponent<Animator>();
-/*
-		//Text Inititialization
-		titleText.text = LocalizationManager.Instance.getText("POPUP_TITLE_SETTINGS");
+		playButtonText.text = LocalizationManager.Instance.getText("MENU_PLAY");
 
-		soundVolumeText.text = LocalizationManager.Instance.getText("MENU_SOUND_VOLUME");
-		if( FacebookManager.Instance.isLoggedIn() )
-		{
-			facebookText.text = LocalizationManager.Instance.getText("POPUP_BUTTON_FB_DISCONNECT");
-		}
-		else
-		{
-			facebookText.text = LocalizationManager.Instance.getText("MENU_LOGGED_OUT");
-		}
-		difficultyText.text = PlayerStatsManager.Instance.getDifficultyLevelName();
-		achievementsText.text = LocalizationManager.Instance.getText("MENU_ACHIEVEMENTS");
-		privacyPolicyText.text = LocalizationManager.Instance.getText("MENU_PRIVACY_POLICY");
-		restorePurchasesText.text = LocalizationManager.Instance.getText("MENU_RESTORE_PURCHASES");
-		debugMenuText.text = LocalizationManager.Instance.getText("MENU_SHOW_DEBUG");
-		versionNumberText.text = "v" + GameManager.Instance.getVersionNumber();
+		anim = GetComponent<Animator>(); //Used to play the slide-in/out animation
 
-		soundVolumeSlider.value = PlayerStatsManager.Instance.getSoundVolume();
-*/
+		//Get the episode data. Level data has the parameters for all the episodes and levels of the game.
+		levelData = LevelManager.Instance.getLevelData();
+
 	}
 
 	public void showEpisodePopup( int levelNumber )
 	{
 		SoundManager.playButtonClick();
 		this.levelNumber = levelNumber;
+		loadEpisodeData();
 		anim.Play("Panel Slide In");
+	}
+
+	private void loadEpisodeData()
+	{
+		LevelData.EpisodeInfo selectedEpisode = levelData.getEpisodeInfo( levelNumber );
+		string levelNumberString = levelNumber.ToString();
+
+		string episodeNumberString = LocalizationManager.Instance.getText("EPISODE_NUMBER");
+
+		//Replace the string <number> by the number of the episode
+		episodeNumberString = episodeNumberString.Replace( "<number>", levelNumberString );
+
+		episodeNumberText.text = episodeNumberString;
+		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
+		episodeDescriptionText.text = LocalizationManager.Instance.getText("EPISODE_DESCRIPTION_" + levelNumberString);
+		episodeKeysText.text = "0/3";
 	}
 
 	public void closeEpisodeMenu()
@@ -97,75 +83,6 @@ public class EpisodePopup : MonoBehaviour {
 			yield return new WaitForSeconds(0);
 			SceneManager.LoadScene( (int) GameScenes.Level );
 		}
-	}
-
-	public void setSoundVolume( Slider volume )
-	{
-		Debug.Log("setSoundVolume " + volume.value );
-		SoundManager.setSoundVolume( volume.value );
-		PlayerStatsManager.Instance.setSoundVolume(volume.value);
-	}
-
-	public void handleFacebookConnect()
-	{
-		Debug.Log("handleFacebookConnect");
-		SoundManager.playButtonClick();
-		if( FacebookManager.Instance.isLoggedIn() )
-		{
-			//Logout
-			FacebookManager.Instance.CallFBLogout();
-			PlayerStatsManager.Instance.setUsesFacebook( false );
-		}
-		else
-		{
-			//Login
-		}
-	}
-
-	public void changeDifficultyLevel()
-	{
-		Debug.Log("changeDifficultyLevel");
-		SoundManager.playButtonClick();
-		DifficultyLevel newDifficultyLevel = PlayerStatsManager.Instance.getNextDifficultyLevel();
-		//setDifficultyLevel takes care of saving the new value
-		PlayerStatsManager.Instance.setDifficultyLevel(newDifficultyLevel);
-		difficultyText.text = PlayerStatsManager.Instance.getDifficultyLevelName();
-	}
-
-	public void showAchievements()
-	{
-		Debug.Log("showAchievements");
-		SoundManager.playButtonClick();
-		Social.ShowAchievementsUI();
-	}
-
-	public void showPrivacyPolicy()
-	{
-		Debug.Log("showPrivacyPolicy");
-		SoundManager.playButtonClick();
-		Application.OpenURL(privacyPolicyURL);
-	}
-
-	public void restorePurchases()
-	{
-		Debug.LogWarning("restorePurchases - Not implemented.");
-		SoundManager.playButtonClick();
-	}
-
-	public void showDebugMenu()
-	{
-		Debug.Log("showDebugMenu");
-		SoundManager.playButtonClick();
-		settingsMenuCanvas.gameObject.SetActive( false );
-		debugMenuCanvas.gameObject.SetActive( true );
-	}
-
-	public void closeDebugMenu()
-	{
-		Debug.Log("closeDebugMenu");
-		SoundManager.playButtonClick();
-		settingsMenuCanvas.gameObject.SetActive( true );
-		debugMenuCanvas.gameObject.SetActive( false );
 	}
 	
 }

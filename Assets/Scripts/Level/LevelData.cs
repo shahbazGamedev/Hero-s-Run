@@ -40,6 +40,19 @@ public class LevelData : MonoBehaviour {
 		}
 	}
 	
+	public EpisodeInfo getEpisodeInfo( int episodeNumber )
+	{
+		if( episodeNumber < 0 || episodeNumber >= episodeList.Count )
+		{
+			Debug.LogError("LevelData-getEpisodeInfo: episode number specified, " + episodeNumber + ", is out of range." );
+			return null;
+		}
+		else
+		{		
+			return episodeList[episodeNumber];
+		}
+	}
+
 	public int getNumberOfLevels()
 	{
 		return levelList.Count;
