@@ -18,6 +18,8 @@ public enum SunType
 public class LevelData : MonoBehaviour {
 	
 	public string FinalDestinationName = "KING_CASTLE";
+	public List<EpisodeInfo> episodeList = new List<EpisodeInfo>();
+
 	public List<LevelInfo> levelList = new List<LevelInfo>();
 
 	public List<LevelInfo> getLevelList()
@@ -167,6 +169,19 @@ public class LevelData : MonoBehaviour {
 		{
 			Debug.LogError("LevelData-setSunParameters : The level scene must contain a directional light called 'Sunlight'." );
 		}
+
+	}
+
+	[System.Serializable]
+	public class EpisodeInfo
+	{
+		[Header("Episode Parameters")]
+		[Tooltip("bla bla")]
+		public string EpisodeName = "Episode Name Text ID";
+
+		[Tooltip("Bla bla.")]
+		public int episodeNumber;
+		public List<LevelInfo> levelList = new List<LevelInfo>();
 
 	}
 
