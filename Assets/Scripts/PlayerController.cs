@@ -2531,10 +2531,10 @@ public class PlayerController : BaseClass {
 
 		        case DeathType.VortexTrap:
 					sc.lockCamera ( true );
-					anim.speed = 2.8f;
+					anim.speed = 3.8f;
 					anim.SetTrigger(FallTrigger);
-					LeanTween.moveLocalY( gameObject, transform.position.y - 3f, 4f ).setEase(LeanTweenType.easeOutExpo).setDelay(0.75f);
-					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2.75f) );
+					LeanTween.moveLocalY( gameObject, transform.position.y - TrapVortex.distanceTravelledDown, TrapVortex.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutExpo).setDelay(TrapVortex.delayBeforeBeingPulledDown);
+					StartCoroutine( waitBeforeDisplayingSaveMeScreen(5f) );
 					break;
 
 				default:

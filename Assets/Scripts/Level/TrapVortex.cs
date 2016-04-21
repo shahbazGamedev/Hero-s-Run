@@ -5,8 +5,10 @@ public class TrapVortex : MonoBehaviour {
 
 	PlayerController playerController;
 	PowerUpManager powerUpManager;
-	public ParticleSystem playerDeathSpurt;
-	public GameObject zombieHand;
+	public ParticleSystem waterSplash;
+	public static float delayBeforeBeingPulledDown = 0.5f;
+	public static float timeRequiredToGoDown = 3f;
+	public static float distanceTravelledDown = 3.3f;
 
 	// Use this for initialization
 	void Start ()
@@ -17,8 +19,6 @@ public class TrapVortex : MonoBehaviour {
 		powerUpManager = powerUpManagerObject.GetComponent<PowerUpManager>();
 
 	}
-	
-	
 	
 	void OnEnable()
 	{
@@ -50,22 +50,14 @@ public class TrapVortex : MonoBehaviour {
 	void triggerTrap()
 	{
 		print ("Player trigger vortex trap "  );
-		Invoke("playDeathSpurt", 1.25f); 
-		Invoke("attachZombieHand", 0.15f); 
+		Invoke("playDeathSpurt", 0.4f); 
 		playerController.managePlayerDeath(DeathType.VortexTrap);
-	}
-
-	void attachZombieHand()
-	{
-		zombieHand.SetActive(true);
-		zombieHand.transform.parent = playerController.transform;
-		zombieHand.transform.localPosition = new Vector3( 0f, 0.384f, -0.445f);
 	}
 
 	void playDeathSpurt()
 	{
 		GetComponent<AudioSource>().Play();
-		playerDeathSpurt.Play();
+		waterSplash.Play();
 	}
 
 	void GameStateChange( GameState newState )
