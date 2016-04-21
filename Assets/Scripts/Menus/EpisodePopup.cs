@@ -3,12 +3,16 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SocialPlatforms.GameCenter;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class EpisodePopup : MonoBehaviour {
 
 
 	[Header("Episode Popup")]
 	public Canvas settingsMenuCanvas;
+	Animator anim;
+	bool levelLoading = false;
+	int levelNumber;
 	public Text titleText;
 	[Header("Sound")]
 	public Text soundVolumeText;
@@ -31,12 +35,15 @@ public class EpisodePopup : MonoBehaviour {
 	public Text versionNumberText;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 	
 		#if UNITY_EDITOR
 		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
 		#endif
 
+		//disable it on start to stop it from playing the default animation
+		anim = GetComponent<Animator>();
+/*
 		//Text Inititialization
 		titleText.text = LocalizationManager.Instance.getText("POPUP_TITLE_SETTINGS");
 
@@ -57,19 +64,39 @@ public class EpisodePopup : MonoBehaviour {
 		versionNumberText.text = "v" + GameManager.Instance.getVersionNumber();
 
 		soundVolumeSlider.value = PlayerStatsManager.Instance.getSoundVolume();
+*/
 	}
 
-	public void showSettingsMenu()
+	public void showEpisodePopup( int levelNumber )
 	{
 		SoundManager.playButtonClick();
-		settingsMenuCanvas.gameObject.SetActive( true );
+		this.levelNumber = levelNumber;
+		anim.Play("Panel Slide In");
 	}
 
-	public void closeSettingsMenu()
+	public void closeEpisodeMenu()
 	{
 		SoundManager.playButtonClick();
-		PlayerStatsManager.Instance.savePlayerStats();
-		settingsMenuCanvas.gameObject.SetActive( false );
+		anim.Play("Panel Slide Out");
+	}
+
+	public void play()
+	{
+		Debug.Log("Play button pressed: " + levelNumber );
+		SoundManager.playButtonClick();
+		LevelManager.Instance.forceNextLevelToComplete( levelNumber );
+		StartCoroutine( loadLevel() );
+	}
+
+	IEnumerator loadLevel()
+	{
+		if( !levelLoading )
+		{
+			levelLoading = true;
+			Handheld.StartActivityIndicator();
+			yield return new WaitForSeconds(0);
+			SceneManager.LoadScene( (int) GameScenes.Level );
+		}
 	}
 
 	public void setSoundVolume( Slider volume )

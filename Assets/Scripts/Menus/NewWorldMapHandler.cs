@@ -28,6 +28,9 @@ public class NewWorldMapHandler : MonoBehaviour {
 	StoreManager storeManager;
 	[Header("Facebook Ask Lives")]
 	public Canvas facebookAskLivesCanvas;
+	[Header("Episode Popup")]
+	public GameObject episodePopupPanel;
+	EpisodePopup episodePopup;
 
 
 	void Awake ()
@@ -37,6 +40,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		Transform CoreManagers = GameObject.FindGameObjectWithTag("CoreManagers").transform;
 		popupHandler = CoreManagers.GetComponent<PopupHandler>();
 
+		episodePopup = episodePopupPanel.GetComponent<EpisodePopup>();
 
 		//Get the level data. Level data has the parameters for all the levels of the game.
 		levelData = LevelManager.Instance.getLevelData();
@@ -108,19 +112,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 	{
 		Debug.Log("Level Station click: " + levelNumber );
 		SoundManager.playButtonClick();
-		LevelManager.Instance.forceNextLevelToComplete( levelNumber );
-		StartCoroutine( loadLevel() );
-	}
-
-	IEnumerator loadLevel()
-	{
-		if( !levelLoading )
-		{
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int) GameScenes.Level );
-		}
+		episodePopup.showEpisodePopup( levelNumber );
 	}
 
 	void OnGUI()
