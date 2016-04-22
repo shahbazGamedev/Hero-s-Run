@@ -4,51 +4,37 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
-public class EpisodePopup : MonoBehaviour {
+public class PostLevelPopup : MonoBehaviour {
 
 
-	[Header("Episode Popup")]
+	[Header("Post Level Popup")]
 	public Text episodeNumberText;
 	public Text episodeNameText;
 	public Image episodeImage;
-	public Text episodeDescriptionText;
+	public Text postLevelDescriptionText;
 	public Text episodeKeysText; //format found/total e.g. 1/3
-	public Text playButtonText;
+	public Text retryButtonText;
 	[Tooltip("If a sprite for the selected episode is not specified in LevelData, this sprite will be used instead.")]
 	public Sprite defaultEpisodeSprite;
 
-	Animator anim;
 	bool levelLoading = false;
-	int levelNumber;
-	private LevelData levelData;
-
 
 	// Use this for initialization
 	void Awake () {
-	
-		#if UNITY_EDITOR
-		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
-		#endif
 
-		playButtonText.text = LocalizationManager.Instance.getText("MENU_PLAY");
-
-		anim = GetComponent<Animator>(); //Used to play the slide-in/out animation
-
-		//Get the episode data. Level data has the parameters for all the episodes and levels of the game.
-		levelData = LevelManager.Instance.getLevelData();
-
+		retryButtonText.text = LocalizationManager.Instance.getText("MENU_RETRY");
 	}
 
-	public void showEpisodePopup( int levelNumber )
-	{
-		SoundManager.playButtonClick();
-		this.levelNumber = levelNumber;
-		loadEpisodeData();
-		anim.Play("Panel Slide In");
+	public void showPostLevelPopup(LevelData levelData)
+	{	
+		loadEpisodeData(levelData);
+		gameObject.SetActive(true);	
 	}
 
-	private void loadEpisodeData()
+	private void loadEpisodeData(LevelData levelData)
 	{
+		int levelNumber = LevelManager.Instance.getNextLevelToComplete();
+
 		LevelData.EpisodeInfo selectedEpisode = levelData.getEpisodeInfo( levelNumber );
 		string levelNumberString = (levelNumber + 1).ToString();
 
@@ -67,21 +53,21 @@ public class EpisodePopup : MonoBehaviour {
 		{
 			episodeImage.sprite = selectedEpisode.preLevelSprite;
 		}
-		episodeDescriptionText.text = LocalizationManager.Instance.getText("EPISODE_DESCRIPTION_" + levelNumberString);
+		postLevelDescriptionText.text = LocalizationManager.Instance.getText("MENU_BETTER_LUCK_NEXT_TIME");
 		episodeKeysText.text = "0" + "/" + selectedEpisode.numberOfChestKeys;
 	}
 
-	public void closeEpisodeMenu()
+	public void closePostLevelPopup()
 	{
 		SoundManager.playButtonClick();
-		anim.Play("Panel Slide Out");
+		GameManager.Instance.setGameState(GameState.Menu);
+		gameObject.SetActive(false);	
 	}
 
-	public void play()
+	public void retry()
 	{
-		Debug.Log("Play button pressed: " + levelNumber );
+		Debug.Log("Retry button pressed: ");
 		SoundManager.playButtonClick();
-		LevelManager.Instance.forceNextLevelToComplete( levelNumber );
 		StartCoroutine( loadLevel() );
 	}
 

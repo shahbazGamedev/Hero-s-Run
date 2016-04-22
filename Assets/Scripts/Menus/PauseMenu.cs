@@ -89,10 +89,10 @@ public class PauseMenu : MonoBehaviour {
 	}
 	
 	//Returns the player to the World Map
-	public void goToHomeMenu()
+	public void quit()
 	{
-		Debug.Log("Home button pressed");
-		//Save before going to home menu in particular so player does not lose stars he picked up
+		Debug.Log("Quit button pressed");
+		//Save before going to the world map in particular so player does not lose stars he picked up
 		PlayerStatsManager.Instance.savePlayerStats();
 		playerController.enablePlayerControl(false);
 		//We might have the slow down power-up still active, so just to be sure
@@ -101,6 +101,7 @@ public class PauseMenu : MonoBehaviour {
 		SoundManager.stopMusic();
 		SoundManager.stopAmbience();
 		playerController.resetLevel();
+		GameManager.Instance.setGameState(GameState.PostLevelPopup);
 		//Go back to world map
 		SceneManager.LoadScene( (int) GameScenes.WorldMap );
 	}

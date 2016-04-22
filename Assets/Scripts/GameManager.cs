@@ -13,7 +13,8 @@ public enum GameState {
 	StatsScreen = 6,
 	Menu = 7,
 	Checkpoint = 8,
-	BeforeTapToPlayAllowed = 9
+	BeforeTapToPlayAllowed = 9,
+	PostLevelPopup = 10
 }
 
 //The GameScenes enum entries must match the scene numbering in Build Settings.

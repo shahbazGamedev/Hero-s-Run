@@ -27,11 +27,12 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public Text numberOfMessages;
 	StoreManager storeManager;
 	[Header("Facebook Ask Lives")]
-	public Canvas facebookAskLivesCanvas;
+	public GameObject  facebookAskLivesPanel;
 	[Header("Episode Popup")]
 	public GameObject episodePopupPanel;
 	EpisodePopup episodePopup;
-
+	[Header("Post-Level Popup")]
+	public GameObject postLevelPopupPanel;
 
 	void Awake ()
 	{
@@ -79,6 +80,11 @@ public class NewWorldMapHandler : MonoBehaviour {
 		}
 
 		drawLevelMarkers();
+
+		if( GameManager.Instance.getGameState() == GameState.PostLevelPopup )
+		{
+			postLevelPopupPanel.GetComponent<PostLevelPopup>().showPostLevelPopup(levelData);
+		}
 	}
 
 	void drawLevelMarkers()
@@ -99,13 +105,13 @@ public class NewWorldMapHandler : MonoBehaviour {
 	{
 		GameObject go = (GameObject)Instantiate(levelStationPrefab);
 		go.transform.SetParent(map.transform,false);
-		go.name = "Level Station " + levelNumber.ToString();
+		go.name = "Level Station " + (levelNumber + 1).ToString();
 		Button levelStationButton = go.GetComponent<Button>();
 		RectTransform levelStationButtonRectTransform = levelStationButton.GetComponent<RectTransform>();
 		levelStationButtonRectTransform.anchoredPosition = new Vector2( wc.rect.width * coord.x, mapHeight * (1f - coord.y) );
 		levelStationButton.onClick.AddListener(() => levelButtonClick(levelNumber));
 		Text levelStationText = levelStationButton.GetComponentInChildren<Text>();
-		levelStationText.text = levelNumber.ToString();
+		levelStationText.text = (levelNumber + 1).ToString();
 	}
 
 	void levelButtonClick( int levelNumber )
@@ -196,13 +202,13 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public void showAskLivesPopup()
 	{
 		SoundManager.playButtonClick();
-		facebookAskLivesCanvas.gameObject.SetActive( true );
+		facebookAskLivesPanel.GetComponent<Animator>().Play("Panel Slide In");
 	}
 
 	public void hideAskLivesPopup()
 	{
 		SoundManager.playButtonClick();
-		facebookAskLivesCanvas.gameObject.SetActive( false );
+		facebookAskLivesPanel.GetComponent<Animator>().Play("Panel Slide Out");
 	}
 
 	public void showSettingsMenu()
@@ -239,5 +245,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 			Debug.Log("Mouse coordinates-Percentage Width: " + ((coordW/wc.rect.width)/wc.localScale.x).ToString("N3") +  " Percentage Height: " + ( 1f - coordH/(mapHeight * wc.localScale.y) ).ToString("N3") );
 		}
 	}
+
 
 }
