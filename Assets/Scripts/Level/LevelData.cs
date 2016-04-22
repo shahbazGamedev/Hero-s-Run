@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public enum SunType 
 {
@@ -189,11 +190,13 @@ public class LevelData : MonoBehaviour {
 	public class EpisodeInfo
 	{
 		[Header("Episode Parameters")]
-		[Tooltip("bla bla")]
-		public string EpisodeName = "Episode Name Text ID";
+		[Tooltip("Episode name is not used at runtime. It is only used to make the data easier to read in the editor.")]
+		public string EpisodeName = "Episode Name";
+		[Tooltip("Image used at the top of the pre-level popup.")]
+		public Sprite preLevelSprite;
+		[Tooltip("Total number of chest keys for episode.")]
+		public int numberOfChestKeys = 0;
 
-		[Tooltip("Bla bla.")]
-		public int episodeNumber;
 		public List<LevelInfo> levelList = new List<LevelInfo>();
 
 	}

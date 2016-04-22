@@ -10,9 +10,12 @@ public class EpisodePopup : MonoBehaviour {
 	[Header("Episode Popup")]
 	public Text episodeNumberText;
 	public Text episodeNameText;
+	public Image episodeImage;
 	public Text episodeDescriptionText;
 	public Text episodeKeysText; //format found/total e.g. 1/3
 	public Text playButtonText;
+	[Tooltip("If a sprite for the selected episode is not specified in LevelData, this sprite will be used instead.")]
+	public Sprite defaultEpisodeSprite;
 
 	Animator anim;
 	bool levelLoading = false;
@@ -56,8 +59,16 @@ public class EpisodePopup : MonoBehaviour {
 
 		episodeNumberText.text = episodeNumberString;
 		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
+		if( selectedEpisode.preLevelSprite == null )
+		{
+			episodeImage.sprite = defaultEpisodeSprite;
+		}
+		else
+		{
+			episodeImage.sprite = selectedEpisode.preLevelSprite;
+		}
 		episodeDescriptionText.text = LocalizationManager.Instance.getText("EPISODE_DESCRIPTION_" + levelNumberString);
-		episodeKeysText.text = "0/3";
+		episodeKeysText.text = "0" + "/" + selectedEpisode.numberOfChestKeys;
 	}
 
 	public void closeEpisodeMenu()
