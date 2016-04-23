@@ -10,12 +10,11 @@ public class PostLevelPopup : MonoBehaviour {
 	[Header("Post Level Popup")]
 	public Text episodeNumberText;
 	public Text episodeNameText;
-	public Image episodeImage;
 	public Text postLevelDescriptionText;
 	public Text episodeKeysText; //format found/total e.g. 1/3
 	public Text retryButtonText;
-	[Tooltip("If a sprite for the selected episode is not specified in LevelData, this sprite will be used instead.")]
-	public Sprite defaultEpisodeSprite;
+	[Header("Star Meter")]
+	public GameObject starMeter;
 
 	bool levelLoading = false;
 
@@ -27,8 +26,8 @@ public class PostLevelPopup : MonoBehaviour {
 
 	public void showPostLevelPopup(LevelData levelData)
 	{	
-		loadEpisodeData(levelData);
 		gameObject.SetActive(true);	
+		loadEpisodeData(levelData);
 	}
 
 	private void loadEpisodeData(LevelData levelData)
@@ -45,16 +44,11 @@ public class PostLevelPopup : MonoBehaviour {
 
 		episodeNumberText.text = episodeNumberString;
 		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
-		if( selectedEpisode.preLevelSprite == null )
-		{
-			episodeImage.sprite = defaultEpisodeSprite;
-		}
-		else
-		{
-			episodeImage.sprite = selectedEpisode.preLevelSprite;
-		}
 		postLevelDescriptionText.text = LocalizationManager.Instance.getText("MENU_BETTER_LUCK_NEXT_TIME");
 		episodeKeysText.text = "0" + "/" + selectedEpisode.numberOfChestKeys;
+
+		starMeter.GetComponent<StarMeterHandler>().updateValues( selectedEpisode );
+		
 	}
 
 	public void closePostLevelPopup()

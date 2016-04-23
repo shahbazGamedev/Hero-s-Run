@@ -38,7 +38,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 	{
 		SceneManager.LoadScene( (int)GameScenes.Store, LoadSceneMode.Additive );
 
-		Transform CoreManagers = GameObject.FindGameObjectWithTag("CoreManagers").transform;
+		GameObject CoreManagers = GameObject.FindGameObjectWithTag("CoreManagers");
 		popupHandler = CoreManagers.GetComponent<PopupHandler>();
 
 		episodePopup = episodePopupPanel.GetComponent<EpisodePopup>();

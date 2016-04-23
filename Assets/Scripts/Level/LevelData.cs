@@ -196,6 +196,8 @@ public class LevelData : MonoBehaviour {
 		public Sprite preLevelSprite;
 		[Tooltip("Total number of chest keys for episode.")]
 		public int numberOfChestKeys = 0;
+		[Tooltip("Stars required to reach one, two and three stars.")]
+		public Vector3 starsRequired = new Vector3( 100f, 300f, 1000f );
 
 		public List<LevelInfo> levelList = new List<LevelInfo>();
 
