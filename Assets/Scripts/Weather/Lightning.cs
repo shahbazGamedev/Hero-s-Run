@@ -163,10 +163,6 @@ public class Lightning : MonoBehaviour {
 
 	void GameStateChange( GameState newState )
 	{
-		if( newState == GameState.StatsScreen )
-		{
-			stopLightning();
-		}
 	}
 
 }

@@ -45,7 +45,8 @@ public class CullisGateController : MonoBehaviour {
 		{
 			//AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("LEVEL_GAME_COMPLETED"), 0.3f, 5.5f );
 			AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("CULLIS_GATE_DEMO_END"), 0.3f, 5.5f );
-			Invoke("displayStatsScreen", WAIT_DURATION );
+			fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
+			Invoke("gameIsFinished", WAIT_DURATION );
 		}
 		else
 		{
@@ -61,9 +62,13 @@ public class CullisGateController : MonoBehaviour {
 		}
 	}
 
-	void displayStatsScreen()
+	void gameIsFinished()
 	{
-		GameManager.Instance.setGameState( GameState.StatsScreen );
+		Debug.Log("Cullis Gate-Game is finished. Returning to world map.");
+		SoundManager.stopMusic();
+		SoundManager.stopAmbience();
+		GameManager.Instance.setGameState(GameState.PostLevelPopup);
+		SceneManager.LoadScene( (int) GameScenes.WorldMap );
 	}
 
 	void playCutscene()
@@ -105,10 +110,6 @@ public class CullisGateController : MonoBehaviour {
 		else if( newState == GameState.Normal )
 		{
 			animation.enabled = true;
-		}
-		else if( newState == GameState.StatsScreen )
-		{
-			fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
 		}
 	}
 

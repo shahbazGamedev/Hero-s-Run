@@ -476,11 +476,6 @@ public class PowerUpManager : BaseClass {
 			powerUpHUD.slideDisplayOut(PlayerStatsManager.Instance.getPowerUpSelected());
 			resetAllPowerUps();
 		}
-		else if( newState == GameState.StatsScreen )
-		{
-			powerUpHUD.hideImmediately();
-			resetAllPowerUps();
-		}
 	}
 
 	float getDuration( PowerUpData pud )

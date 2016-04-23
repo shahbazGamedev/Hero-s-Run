@@ -49,21 +49,13 @@ public class HUDHandler : MonoBehaviour {
 	GUIContent pauseButtonContent;
 	public GUIStyle pauseStyle;
 
-
 	public GUIStyle saveMeLevelInfoStyle;
 
-	
 	//For the stats screen/Run Again display
 	//For the  background
-	Texture runAgainBackground;
-	Rect runAgainBackgroundRect;
 	//For the various stats that have both left and right-aligned text
 	public GUIStyle statsScreenStyleLeft;
 	public GUIStyle statsScreenStyleRight;
-	//For the Run Again button
-	GUIContent runAgainButtonContent;
-	public GUIStyle runAgainStyle;
-	GUIContent homeButtonContent;
 
 	//High score message
 	bool wasHighScoreMessageDisplayedThisRun = false;
@@ -79,7 +71,6 @@ public class HUDHandler : MonoBehaviour {
 	//For spinning distance and coin total in the stats screen
 	int distance = 0;
 	int coins= 0;
-	bool isDistanceNumberSpinning = false;
 	
 	//For displaying a message for each 1,000 meters run
 	float distanceMarkerHeight = 0;
@@ -143,13 +134,6 @@ public class HUDHandler : MonoBehaviour {
 		//If you create a GUIContent with a texture, the button states will not change.
 		pauseButtonContent = new GUIContent ();
 
-		//For the stats screen/Run Again display
-		runAgainBackground = Resources.Load("GUI/runAgain") as Texture2D;
-		runAgainBackgroundRect = new Rect ( 0, 0, Screen.width, Screen.height );
-		
-		runAgainButtonContent = new GUIContent ( LocalizationManager.Instance.getText("MENU_TRY_AGAIN") );
-		homeButtonContent = new GUIContent ( LocalizationManager.Instance.getText("MENU_QUIT") );
-
 		//For displaying a message for each 1,000 meters run
 		distanceMarkerHeight = Screen.height * 0.08f;
 		distanceMarker = new LTRect( 0f, -distanceMarkerHeight, Screen.width, distanceMarkerHeight );
@@ -162,7 +146,6 @@ public class HUDHandler : MonoBehaviour {
 		PopupHandler.changeFontSizeBasedOnResolution( saveMeLevelInfoStyle );
 		PopupHandler.changeFontSizeBasedOnResolution( statsScreenStyleLeft );
 		PopupHandler.changeFontSizeBasedOnResolution( statsScreenStyleRight );
-		PopupHandler.changeFontSizeBasedOnResolution( runAgainStyle );
 		PopupHandler.changeFontSizeBasedOnResolution( distanceMarkerStyle );
 
 		//New UI related
@@ -235,13 +218,7 @@ public class HUDHandler : MonoBehaviour {
 				pauseMenu.pauseGame();
 			}
 		}
-		
-		//Stats screen
-		if( gameState == GameState.StatsScreen )
-		{
-			displayStatsScreen();
-		}
-		
+				
 		showCoinTotal();
 		
 		//User message if any
@@ -289,103 +266,6 @@ public class HUDHandler : MonoBehaviour {
 		}
 	}
 
-	void displayStatsScreen()
-	{		
-		
-		if( !isDistanceNumberSpinning )
-		{
-			//Spin the distance total, then the coins total
-			StartCoroutine( spinDistanceNumber( PlayerStatsManager.Instance.getDistanceTravelled() ) );
-			isDistanceNumberSpinning = true;
-		}
-
-		//Draw background
-		GUI.DrawTexture( runAgainBackgroundRect, runAgainBackground, ScaleMode.StretchToFill );
-		
-		//Draw distance - label plus number
-		//Label
-		Rect statsScreenRectLabels = new Rect ( Screen.width * 0.05f, Screen.height * 0.2f, 50, 24 );
-		GUI.Label ( statsScreenRectLabels, LocalizationManager.Instance.getText("DISTANCE"), statsScreenStyleLeft );
-		//Number
-		Rect statsScreenRectNumbers = new Rect ( Screen.width * 0.75f, Screen.height * 0.2f, 50, 24 );
-		GUI.Label ( statsScreenRectNumbers, distance.ToString("N0"), statsScreenStyleRight );
-		
-		//Draw coins - label plus number plus icon
-		//Label
-		statsScreenRectLabels.y = Screen.height * 0.3f;
-		GUI.Label ( statsScreenRectLabels, LocalizationManager.Instance.getText("STARS"), statsScreenStyleLeft );
-		//Number
-		statsScreenRectNumbers.y = Screen.height * 0.3f;
-		GUI.Label ( statsScreenRectNumbers, coins.ToString("N0"), statsScreenStyleRight );
-		//Icon
-		Rect statsScreenRectIcons = new Rect ( statsScreenRectNumbers.xMax + 8, statsScreenRectNumbers.yMax - 14, 36, 36 );
-		GUI.color = Color.yellow;
-		GUI.DrawTexture( statsScreenRectIcons, coinIconTexture,ScaleMode.ScaleToFit );
-		GUI.color = Color.white;
-
-		//Draw a semi-transparent separator line
-		//Save the current color so we can restore it after
-		Color originalColorValue = GUI.color;
-		Color separatorColor = originalColorValue;
-		separatorColor.a = 0.4f;
-		GUI.color = separatorColor;
-		Rect separatorRect = new Rect ( Screen.width * 0.05f, Screen.height * 0.38f, Screen.width * 0.86f, 12 );
-		GUI.DrawTexture( separatorRect, runAgainBackground, ScaleMode.StretchToFill );
-		GUI.color = originalColorValue;
-		
-		//Draw score (sum of distance plus coins)
-		//Label
-		statsScreenRectLabels.y = Screen.height * 0.4f;
-		GUI.Label ( statsScreenRectLabels, LocalizationManager.Instance.getText("SCORE"), statsScreenStyleLeft );
-		//Number
-		statsScreenRectNumbers.y = Screen.height * 0.4f;
-		int score = distance + coins;
-		GUI.Label ( statsScreenRectNumbers, score.ToString("N0"), statsScreenStyleRight );
-		
-		//Draw Try again button
-		Rect runAgainRect = GUILayoutUtility.GetRect( runAgainButtonContent, runAgainStyle );
-		runAgainRect.x = (Screen.width-runAgainRect.width)/2f;
-		runAgainRect.y = Screen.height * 0.71f;
-		if( GUI.Button( runAgainRect, runAgainButtonContent, runAgainStyle ) )
-		{
-			SoundManager.playButtonClick();
-			Debug.Log("Try Again button pressed");
-			isDistanceNumberSpinning = false;
-			wasHighScoreMessageDisplayedThisRun = false;
-			showUserMessage = false;
-			playerController.resetLevel();
-			//Simply restart from the last checkpoint
-			LevelManager.Instance.setNextLevelToComplete( LevelManager.Instance.getLevelNumberOfLastCheckpoint() );
-			StartCoroutine(loadLevel());
-		}
-
-		//Draw Home (World Map) button
-		runAgainRect = GUILayoutUtility.GetRect( homeButtonContent, runAgainStyle );
-		runAgainRect.x = (Screen.width-runAgainRect.width)/2f;
-		runAgainRect.y = Screen.height * 0.78f;
-		if( GUI.Button( runAgainRect, homeButtonContent, runAgainStyle ) )
-		{
-			SoundManager.playButtonClick();
-			Debug.Log("Home button pressed");
-			isDistanceNumberSpinning = false;
-			wasHighScoreMessageDisplayedThisRun = false;
-			showUserMessage = false;
-			playerController.resetLevel();
-			//Go back to world map
-			SceneManager.LoadScene( (int)GameScenes.WorldMap );
-		}
-	
-	}
-
-	IEnumerator loadLevel()
-	{
-		Handheld.StartActivityIndicator();
-		yield return new WaitForSeconds(0);
-		//Load level scene
-		SceneManager.LoadScene( (int)GameScenes.Level );
-		
-	}
-
 	public void startPlaying()
 	{
 		//If we are in the Menu state simply start running, but if we are in the OpeningSequence state
@@ -407,42 +287,6 @@ public class HUDHandler : MonoBehaviour {
 				playerController.startRunning();
 			}
 		}
-	}
-	
-	IEnumerator spinDistanceNumber( int maxDistanceValue )
-	{
-		float duration = 2.2f;
-		float startTime = Time.time;
-		float elapsedTime = 0;
-
-		int startValue = 0;
-		int endValue = maxDistanceValue;
-
-		while ( elapsedTime <= duration )
-		{
-			elapsedTime = Time.time - startTime;
-			distance =  (int) Mathf.Lerp( startValue, endValue, elapsedTime/duration );
-			yield return new WaitForFixedUpdate();  
-	    }
-		StartCoroutine( spinCoinNumber( PlayerStatsManager.Instance.getCurrentCoins() ) );
-		
-	}
-	
-	IEnumerator spinCoinNumber( int maxCoinValue )
-	{
-		float duration = 2.2f;
-		float startTime = Time.time;
-		float elapsedTime = 0;
-
-		int startValue = 0;
-		int endValue = maxCoinValue;
-
-		while ( elapsedTime <= duration )
-		{
-			elapsedTime = Time.time - startTime;
-			coins =  (int) Mathf.Lerp( startValue, endValue, elapsedTime/duration );
-			yield return new WaitForFixedUpdate();  
-	    }		
 	}
 
 	private void showHighScoreMessage()

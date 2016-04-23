@@ -227,10 +227,5 @@ public class WeatherManager : BaseClass {
 		else if( newState == GameState.Normal )
 		{
 		}
-		else if( newState == GameState.StatsScreen )
-		{
-			if( activeParticleSystem != null ) activeParticleSystem.Stop();
-			isParticleSystemActive = false;
-		}
 	}
 }
