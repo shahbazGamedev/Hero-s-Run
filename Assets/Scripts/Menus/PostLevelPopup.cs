@@ -26,7 +26,7 @@ public class PostLevelPopup : MonoBehaviour {
 
 	public void showPostLevelPopup(LevelData levelData)
 	{	
-		gameObject.SetActive(true);	
+		GetComponent<Animator>().Play("Panel Slide In");	
 		loadEpisodeData(levelData);
 	}
 
@@ -55,7 +55,7 @@ public class PostLevelPopup : MonoBehaviour {
 	{
 		SoundManager.playButtonClick();
 		GameManager.Instance.setGameState(GameState.Menu);
-		gameObject.SetActive(false);	
+		GetComponent<Animator>().Play("Panel Slide Out");	
 	}
 
 	public void retry()

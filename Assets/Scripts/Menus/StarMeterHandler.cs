@@ -10,13 +10,25 @@ public class StarMeterHandler : MonoBehaviour {
 	public Slider starMeterSlider;
 	public Text starMeterScore;
 	public float maxNumberStart = 75000; //for testing
+	string scoreString; //format is Score: <0>
 
+	void Awake()
+	{
+		scoreString = LocalizationManager.Instance.getText("MENU_SCORE");
+
+	}
 	public void updateValues(LevelData.EpisodeInfo selectedEpisode )
 	{
 		Debug.Log("Updating Star Meter.");
-		StartCoroutine( spinScoreNumber( 50000 ) );
+		//Wait for the panel to have finished sliding in before spinning values
+		Invoke("startUpdateSequence", 0.9f );
 	}
 	
+	void startUpdateSequence()
+	{
+		StartCoroutine( spinScoreNumber( 50000 ) );
+	}
+
 	IEnumerator spinScoreNumber( int playerScore )
 	{
 		float duration = 2.2f;
@@ -32,7 +44,8 @@ public class StarMeterHandler : MonoBehaviour {
 
 			currentNumber =  Mathf.Lerp( startValue, playerScore, elapsedTime/duration );
 			starMeterSlider.value = currentNumber/maxNumberStart;
-			starMeterScore.text = currentNumber.ToString("N0");
+			//Replace the string <0> by the score value
+			starMeterScore.text = scoreString.Replace( "<0>", currentNumber.ToString("N0") );
 			yield return new WaitForFixedUpdate();  
 	    }		
 	}
