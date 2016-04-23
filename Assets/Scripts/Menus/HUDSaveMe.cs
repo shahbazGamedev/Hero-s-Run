@@ -47,7 +47,6 @@ public class HUDSaveMe : MonoBehaviour {
 	
 	public void showSaveMeMenu()
 	{
-		SoundManager.playButtonClick();
 		saveMeCanvas.SetActive ( true );
 		if( LevelManager.Instance.isTutorialActive() )
 		{
@@ -134,10 +133,17 @@ public class HUDSaveMe : MonoBehaviour {
 	public void quit()
 	{
 		Debug.Log("Quit button pressed");
-		fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
-		GameManager.Instance.setGameState( GameState.StatsScreen );
+		//Save before going to the world map in particular so player does not lose stars he picked up
+		PlayerStatsManager.Instance.savePlayerStats();
+		//We might have the slow down power-up still active, so just to be sure
+		//we will reset the timescale back to 1.
+		Time.timeScale = 1f;
+		SoundManager.stopMusic();
+		SoundManager.stopAmbience();
+		GameManager.Instance.setGameState(GameState.PostLevelPopup);
 		HUDHandler.showUserMessage = false;
 		closeSaveMeMenu();
+		SceneManager.LoadScene( (int) GameScenes.WorldMap );
 	}
 
 	void fadeOutAllAudio( float duration )

@@ -246,5 +246,10 @@ public class NewWorldMapHandler : MonoBehaviour {
 		}
 	}
 
+	public void cheatShowPostLevelPopup()
+	{
+		postLevelPopupPanel.GetComponent<PostLevelPopup>().showPostLevelPopup(levelData);
+	}
+
 
 }
