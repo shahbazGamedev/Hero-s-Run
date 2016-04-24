@@ -58,7 +58,8 @@ public class PlayerController : BaseClass {
 	public AudioClip 	footstepLeftSound;
 	public AudioClip 	footstepRightSound;
 	public AudioClip 	footstepWaterSound; //We do not need one for each foot.
-	public AudioClip 	landSound;
+	public AudioClip 	landGroundSound;
+	public AudioClip 	landWaterSound;
 	public AudioClip 	deathFireSound;
 
 	//Particles
@@ -258,7 +259,7 @@ public class PlayerController : BaseClass {
 
 	public ParticleSystem lavaSpurt; //Plays when player falls into lava
 	public string groundType = "normal"; //Other choice is water
-	public ParticleSystem waterSplash; //Plays when player slides in water
+	public ParticleSystem slideWaterSplash; //Plays when player slides in water.It loops.
 
 	void Awake()
 	{
@@ -609,7 +610,7 @@ public class PlayerController : BaseClass {
 		{
 			anim.SetTrigger(StumbleTrigger);
 			//The Land anim has a callback to play the Land sound, but not the Stumble anim
-			GetComponent<AudioSource>().PlayOneShot( landSound, 0.8f );
+			GetComponent<AudioSource>().PlayOneShot( landGroundSound, 0.8f );
 		}
 		moveDirection.y = 0f;
 		print ( "player landed. Fall distance was: " + 	fallDistance );
@@ -860,8 +861,11 @@ public class PlayerController : BaseClass {
 			//if we were jumping and just landed, reset values and go back to the running state
 			if (jumping) 
 			{
-				dustPuff.loop = false;
-				dustPuff.Play();
+				if( groundType != "Water" )
+				{
+					dustPuff.loop = false;
+					dustPuff.Play();
+				}
 				anim.SetTrigger(LandTrigger);
 				moveDirection.y = 0f;
 				jumping = false;
@@ -1164,7 +1168,7 @@ public class PlayerController : BaseClass {
 				//We are allowed to jump from the slide state.
 				GetComponent<AudioSource>().Stop ();							//stop the sliding sound if any
 				dustPuff.Stop();						//stop the dust puff that loops while we are sliding
-				waterSplash.Stop();
+				slideWaterSplash.Stop();
 				deactivateOverheadObstacles( false );	//reactivate overhead obstacles since they would have been deactivated if we were sliding
 
 				jumping = true;
@@ -1665,9 +1669,15 @@ public class PlayerController : BaseClass {
 
 						deactivateOverheadObstacles( true );
 						setCharacterState( CharacterState.Sliding );
-						dustPuff.loop = true;
-						dustPuff.Play();
-						if( groundType == "Water" ) waterSplash.Play();
+						if( groundType == "Water" )
+						{
+							slideWaterSplash.Play();
+						}
+						else
+						{
+							dustPuff.loop = true;
+							dustPuff.Play();
+						}
 
 						anim.SetTrigger(Slide_DownTrigger);
 
@@ -1692,7 +1702,7 @@ public class PlayerController : BaseClass {
 			{
 				//We are stopping sliding
 				dustPuff.Stop();
-				waterSplash.Stop();
+				slideWaterSplash.Stop();
 
 				if( _characterState == CharacterState.Turning_and_sliding )
 				{
@@ -2196,7 +2206,7 @@ public class PlayerController : BaseClass {
 		{
 			//We are stopping sliding
 			dustPuff.Stop();
-			waterSplash.Stop();
+			slideWaterSplash.Stop();
 			setCharacterState( CharacterState.Running );
 			anim.SetTrigger(Slide_UpTrigger);
 			GetComponent<AudioSource>().Stop();
@@ -2475,7 +2485,7 @@ public class PlayerController : BaseClass {
 
 			//Stop the dust particle system. It might be playing if we died while sliding.
 			dustPuff.Stop();
-			waterSplash.Stop();
+			slideWaterSplash.Stop();
 
 			//Disable player controls when dying
 			enablePlayerControl( false );
@@ -2557,7 +2567,7 @@ public class PlayerController : BaseClass {
 		}
 		else
 		{
-			GetComponent<AudioSource>().PlayOneShot( footstepWaterSound, 0.23f );
+			//GetComponent<AudioSource>().PlayOneShot( footstepWaterSound, 0.23f );
 		}
 	}
 
@@ -2571,7 +2581,14 @@ public class PlayerController : BaseClass {
 
 	public void Land_sound ( AnimationEvent eve )
 	{
-		GetComponent<AudioSource>().PlayOneShot( landSound, 0.28f );
+		if( groundType != "Water" )
+		{
+			GetComponent<AudioSource>().PlayOneShot( landGroundSound, 0.28f );
+		}
+		else
+		{
+			GetComponent<AudioSource>().PlayOneShot( landWaterSound );
+		}
 	}
 
 	public IEnumerator waitBeforeDisplayingSaveMeScreen ( float duration )

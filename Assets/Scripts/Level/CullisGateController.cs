@@ -46,7 +46,7 @@ public class CullisGateController : MonoBehaviour {
 			//AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("LEVEL_GAME_COMPLETED"), 0.3f, 5.5f );
 			AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("CULLIS_GATE_DEMO_END"), 0.3f, 5.5f );
 			fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
-			Invoke("gameIsFinished", WAIT_DURATION );
+			Invoke("quit", WAIT_DURATION );
 		}
 		else
 		{
@@ -62,7 +62,7 @@ public class CullisGateController : MonoBehaviour {
 		}
 	}
 
-	void gameIsFinished()
+	void quit()
 	{
 		Debug.Log("Cullis Gate-Game is finished. Returning to world map.");
 		SoundManager.stopMusic();

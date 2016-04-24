@@ -7,6 +7,7 @@ public class WeatherManager : BaseClass {
 	public ParticleSystem snow;
 	ParticleSystem activeParticleSystem; //either rain or snow
 	Transform player;
+	SimpleCamera simpleCamera;
 	bool isParticleSystemActive = false;
 	public GameObject fog; //Needs to use a cloud from cloud system
 	public AudioClip rainSound;
@@ -21,13 +22,15 @@ public class WeatherManager : BaseClass {
 	// Use this for initialization
 	void Awake () {
 		player = GameObject.FindGameObjectWithTag("Player").transform;
+		simpleCamera = player.GetComponent<SimpleCamera>();
 		fogTarget = player;
 		weatherTarget = player;
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		if( PlayerController.deathType != DeathType.Water )
+	void Update ()
+	{
+		if( !simpleCamera.isCameraLocked )
 		{
 			if( isParticleSystemActive )
 			{

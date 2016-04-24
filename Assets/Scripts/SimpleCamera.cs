@@ -57,7 +57,7 @@ public class SimpleCamera : MonoBehaviour {
 	private Quaternion originRotation;
 	private float shake_decay = 0;
 	private float shake_intensity = 0;
-	private bool isCameraLocked = false;
+	public bool isCameraLocked = false;
 	
 	private CameraState cameraState = CameraState.Cutscene;
 

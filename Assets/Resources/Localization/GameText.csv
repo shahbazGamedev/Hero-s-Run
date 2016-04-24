@@ -205,9 +205,9 @@ POPUP_ASK_LIVES_BUTTON,Ask friends,Aide moi!,NOT TRANSLATED,NOT TRANSLATED,NOT T
 #Episodes
 EPISODE_NUMBER,Episode <number>,Épisode <number>,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_NAME_1,The Dark Tower,La Tour Noire,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-EPISODE_DESCRIPTION_1,The Dark Queen has cast an evil spell that will open the gates of Hell and unleash the infernal legions upon the unsuspecting Kingdom of Lum. You have just stolen her spell book from her tower and you must cast it in the Volcano of Doom before midnight. Only a hero like you can stop her!,The Dark Queen has cast an evil spell that will open the gates of Hell and unleash the infernal legions upon the unsuspecting Kingdom of Lum. You have just stolen her spell book from her tower and you must cast it in the Volcano of Doom before midnight. Only a hero like you can stop her!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_DESCRIPTION_1,<color=#D22626FF><size=9>T</size></color>he Dark Queen has cast an evil spell that will open the gates of Hell and unleash the infernal legions upon the unsuspecting Kingdom of Lum. You have just stolen her spell book from her tower and you must cast it in the Volcano of Doom before midnight. Only a hero like you can stop her!,<color=#D22626FF><size=9>T</size></color>he Dark Queen has cast an evil spell that will open the gates of Hell and unleash the infernal legions upon the unsuspecting Kingdom of Lum. You have just stolen her spell book from her tower and you must cast it in the Volcano of Doom before midnight. Only a hero like you can stop her!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_NAME_2,Episode two name,Episode two name,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-EPISODE_DESCRIPTION_2,Episode two description,Episode two description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_DESCRIPTION_2,<color=#D22626FF><size=9>E</size></color>pisode two description,<color=#D22626FF><size=9>E</size></color>pisode two description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Post-level popup
 MENU_RETRY,Retry!,Essaie Encore !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_BETTER_LUCK_NEXT_TIME,You'll get it next time!,Tu réussiras la prochaine fois !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED

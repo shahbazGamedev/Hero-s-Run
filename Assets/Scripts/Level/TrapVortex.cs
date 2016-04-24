@@ -7,8 +7,8 @@ public class TrapVortex : MonoBehaviour {
 	PowerUpManager powerUpManager;
 	public ParticleSystem waterSplash;
 	public static float delayBeforeBeingPulledDown = 0.5f;
-	public static float timeRequiredToGoDown = 3f;
-	public static float distanceTravelledDown = 3.3f;
+	public static float timeRequiredToGoDown = 3.5f;
+	public static float distanceTravelledDown = 3.5f;
 
 	// Use this for initialization
 	void Start ()
