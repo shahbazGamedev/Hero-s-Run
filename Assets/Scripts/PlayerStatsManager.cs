@@ -455,6 +455,12 @@ public class PlayerStatsManager {
 		return keysFoundInEpisodeArray[episodeNumber];
 	}
 
+	public void incrementNumberKeysFoundInEpisode()
+	{
+		int episodeNumber = LevelManager.Instance.getNextLevelToComplete();
+		keysFoundInEpisodeArray[episodeNumber]++;
+	}
+
 	public int getPlayerHighScore()
 	{
 		return highScore;
