@@ -33,6 +33,9 @@ public class NewWorldMapHandler : MonoBehaviour {
 	EpisodePopup episodePopup;
 	[Header("Post-Level Popup")]
 	public GameObject postLevelPopupPanel;
+	[Header("Star Meter")]
+	public Color32 starReceivedColor;
+
 
 	void Awake ()
 	{
@@ -90,6 +93,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 	void drawLevelMarkers()
 	{
 		GameObject levelStationPrefab = Resources.Load( "Menu/Level Button") as GameObject;
+		GameObject starDisplayPrefab = Resources.Load( "Menu/Star Display") as GameObject;
 
 		LevelData.LevelInfo levelInfo;
 		for( int i=0; i < levelList.Count; i++ )
@@ -97,7 +101,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 			levelInfo = levelList[i];
 			//the map coordinates correspond to the exact center of the shield
 			drawLevelMarker( levelStationPrefab, levelInfo.MapCoordinates, i );
-
+			drawDisplayStars( starDisplayPrefab, levelInfo.MapCoordinates, i );
 		}
 	}
 
@@ -120,6 +124,37 @@ public class NewWorldMapHandler : MonoBehaviour {
 		SoundManager.playButtonClick();
 		episodePopup.showEpisodePopup( levelNumber );
 	}
+
+	void drawDisplayStars(GameObject starDisplayPrefab, Vector2 coord, int episodeNumber)
+	{
+		GameObject go = (GameObject)Instantiate(starDisplayPrefab);
+		go.transform.SetParent(map.transform,false);
+		go.name = "Star Meter " + (episodeNumber + 1).ToString();
+		RectTransform goRectTransform = go.GetComponent<RectTransform>();
+		goRectTransform.anchoredPosition = new Vector2( wc.rect.width * coord.x, mapHeight * (1f - coord.y) + 50f);
+		Image[] stars = go.GetComponentsInChildren<Image>();
+		//numberOfStars is between 0 and 3
+		int numberOfStars = PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( episodeNumber );
+ 		
+		switch (numberOfStars)
+		{
+			case 0:
+			    //Do nothing
+				break;
+			case 1:
+				stars[0].color = starReceivedColor;
+				break;
+			case 2:
+				stars[0].color = starReceivedColor;
+				stars[1].color = starReceivedColor;
+				break;
+			case 3:
+				stars[0].color = starReceivedColor;
+				stars[1].color = starReceivedColor;
+				stars[2].color = starReceivedColor;
+				break;	
+		}
+ 	}
 
 	void OnGUI()
 	{

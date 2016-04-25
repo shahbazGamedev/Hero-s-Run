@@ -12,6 +12,9 @@ public class PlayerStatsManager {
 	int coinAccumulator = 0;
 	Transform coinParent = null;
 	int lifetimeCoins = 0;			//The amount of coins (stars) the player has earned over time. This is a statistic. It is used by the achievement system.
+	//Assume there are 15 episodes for now. For each episode, the player has received between 0 and 3 stars. The number of stars is displayed on the world map.
+	//The index is the episode number. The value is the number of stars between 0 and 3. The initial values are 0.
+	int[] displayStarsArray = new int[15];
 
 	float distanceTravelled = 0;
 	int highScore = 0;
@@ -336,6 +339,62 @@ public class PlayerStatsManager {
 		return currentCoins + (int)distanceTravelled;
 	}
 	
+	void loadDisplayStars()
+	{
+		string displayStarsString = PlayerPrefs.GetString("displayStars", "" );
+		if( displayStarsString == "" )
+		{
+			//displayStarsArray just stays with initial values of 0 because this is a new player
+		}
+		else
+		{
+			try
+			{
+				string[] displayStarsStringArray = displayStarsString.Split(',');
+				Debug.Log ("loadDisplayStars " + displayStarsString + " length " + displayStarsStringArray.Length );
+				for( int i = 0; i < displayStarsStringArray.Length; i++ )
+				{
+					int numberOfStarsAsInt;
+					int.TryParse(displayStarsStringArray[i], out numberOfStarsAsInt);
+					displayStarsArray[i] = numberOfStarsAsInt;
+					//Next line for debugging
+					//displayStarsArray[i] = (int) UnityEngine.Random.Range(0,4);
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.LogWarning("PlayerStatsManager-exception occured in loadDisplayStars: " + e.Message + " Resetting stats to default values.");
+				PlayerPrefs.DeleteAll();
+			}
+		}
+	}
+
+	void saveDisplayStars()
+	{
+		string result = "";
+		for( int i = 0; i < displayStarsArray.Length; i++ )
+		{
+			result = result + displayStarsArray[i].ToString() + ",";
+		}
+		result = result.TrimEnd(',');
+		Debug.Log("saveDisplayStars " + result );
+		PlayerPrefs.SetString("displayStars", result );
+	}
+
+	void resetDisplayStars()
+	{
+		for( int i = 0; i < displayStarsArray.Length; i++ )
+		{
+			displayStarsArray[i] = 0;
+		}
+		saveDisplayStars();
+	}
+
+	public int getNumberDisplayStarsForEpisode( int episodeNumber )
+	{
+		return displayStarsArray[episodeNumber];
+	}
+
 	public int getPlayerHighScore()
 	{
 		return highScore;
@@ -695,6 +754,7 @@ public class PlayerStatsManager {
 
 			currentCoins = PlayerPrefs.GetInt("currentCoins", 0);
 			lifetimeCoins = PlayerPrefs.GetInt("lifetimeCoins", 0);
+			loadDisplayStars();
 			powerUpSelected = (PowerUpType)PlayerPrefs.GetInt("powerUpSelected", (int)PowerUpType.SlowTime);
 			difficultyLevel = (DifficultyLevel)PlayerPrefs.GetInt("difficultyLevel", (int)DifficultyLevel.Normal);
 			avatar = (Avatar)PlayerPrefs.GetInt("avatar", (int)Avatar.None);
@@ -760,6 +820,7 @@ public class PlayerStatsManager {
 
 		PlayerPrefs.SetInt("currentCoins", currentCoins );
 		PlayerPrefs.SetInt("lifetimeCoins", lifetimeCoins );
+		saveDisplayStars();
 		PlayerPrefs.SetInt("powerUpSelected", (int)powerUpSelected );
 		PlayerPrefs.SetInt("difficultyLevel", (int)difficultyLevel );
 		PlayerPrefs.SetInt("avatar", (int)avatar );
@@ -803,6 +864,7 @@ public class PlayerStatsManager {
 		currentCoins = 0;
 		PlayerPrefs.SetInt("lifetimeCoins", 0 );
 		lifetimeCoins = 0;
+		resetDisplayStars();
 		PlayerPrefs.SetInt("powerUpSelected", (int)PowerUpType.SlowTime );
 		powerUpSelected = PowerUpType.SlowTime;
 		PlayerPrefs.SetInt("difficultyLevel", (int)DifficultyLevel.Normal );
