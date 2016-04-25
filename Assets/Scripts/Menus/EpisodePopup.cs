@@ -68,7 +68,7 @@ public class EpisodePopup : MonoBehaviour {
 			episodeImage.sprite = selectedEpisode.preLevelSprite;
 		}
 		episodeDescriptionText.text = LocalizationManager.Instance.getText("EPISODE_DESCRIPTION_" + levelNumberString);
-		episodeKeysText.text = "0" + "/" + selectedEpisode.numberOfChestKeys;
+		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( levelNumber ) + "/" + selectedEpisode.numberOfChestKeys;
 	}
 
 	public void closeEpisodeMenu()

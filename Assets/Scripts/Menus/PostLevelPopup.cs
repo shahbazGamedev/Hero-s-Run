@@ -45,7 +45,7 @@ public class PostLevelPopup : MonoBehaviour {
 		episodeNumberText.text = episodeNumberString;
 		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
 		postLevelDescriptionText.text = LocalizationManager.Instance.getText("MENU_BETTER_LUCK_NEXT_TIME");
-		episodeKeysText.text = "0" + "/" + selectedEpisode.numberOfChestKeys;
+		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( levelNumber ) + "/" + selectedEpisode.numberOfChestKeys;
 
 		starMeter.GetComponent<StarMeterHandler>().updateValues( selectedEpisode );
 		

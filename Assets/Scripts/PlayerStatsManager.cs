@@ -16,6 +16,10 @@ public class PlayerStatsManager {
 	//The index is the episode number. The value is the number of stars between 0 and 3. The initial values are 0.
 	int[] displayStarsArray = new int[15];
 
+	//Assume there are 15 episodes for now. In each episode, a limited number of treasure chest keys have been hidden.
+	//The index is the episode number. The value is the number of keys found by the player. The initial values are 0.
+	int[] keysFoundInEpisodeArray = new int[15];
+
 	float distanceTravelled = 0;
 	int highScore = 0;
 	bool firstTimePlaying;
@@ -395,6 +399,62 @@ public class PlayerStatsManager {
 		return displayStarsArray[episodeNumber];
 	}
 
+	void loadKeysFoundInEpisode()
+	{
+		string keysFoundInEpisodeString = PlayerPrefs.GetString("keysFoundInEpisode", "" );
+		if( keysFoundInEpisodeString == "" )
+		{
+			//keysFoundInEpisodeArray just stays with initial values of 0 because this is a new player
+		}
+		else
+		{
+			try
+			{
+				string[] keysFoundInEpisodeStringArray = keysFoundInEpisodeString.Split(',');
+				Debug.Log ("loadKeysFoundInEpisode " + keysFoundInEpisodeString + " length " + keysFoundInEpisodeStringArray.Length );
+				for( int i = 0; i < keysFoundInEpisodeStringArray.Length; i++ )
+				{
+					int numberOfKeysAsInt;
+					int.TryParse(keysFoundInEpisodeStringArray[i], out numberOfKeysAsInt);
+					keysFoundInEpisodeArray[i] = numberOfKeysAsInt;
+					//Next line for debugging
+					//keysFoundInEpisodeArray[i] = (int) UnityEngine.Random.Range(0,7);
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.LogWarning("PlayerStatsManager-exception occured in loadKeysFoundInEpisode: " + e.Message + " Resetting stats to default values.");
+				PlayerPrefs.DeleteAll();
+			}
+		}
+	}
+
+	void saveKeysFoundInEpisode()
+	{
+		string result = "";
+		for( int i = 0; i < keysFoundInEpisodeArray.Length; i++ )
+		{
+			result = result + keysFoundInEpisodeArray[i].ToString() + ",";
+		}
+		result = result.TrimEnd(',');
+		Debug.Log("saveKeysFoundInEpisode " + result );
+		PlayerPrefs.SetString("keysFoundInEpisode", result );
+	}
+
+	void resetKeysFoundInEpisode()
+	{
+		for( int i = 0; i < keysFoundInEpisodeArray.Length; i++ )
+		{
+			keysFoundInEpisodeArray[i] = 0;
+		}
+		saveKeysFoundInEpisode();
+	}
+
+	public int getNumberKeysFoundInEpisode( int episodeNumber )
+	{
+		return keysFoundInEpisodeArray[episodeNumber];
+	}
+
 	public int getPlayerHighScore()
 	{
 		return highScore;
@@ -755,6 +815,7 @@ public class PlayerStatsManager {
 			currentCoins = PlayerPrefs.GetInt("currentCoins", 0);
 			lifetimeCoins = PlayerPrefs.GetInt("lifetimeCoins", 0);
 			loadDisplayStars();
+			loadKeysFoundInEpisode();
 			powerUpSelected = (PowerUpType)PlayerPrefs.GetInt("powerUpSelected", (int)PowerUpType.SlowTime);
 			difficultyLevel = (DifficultyLevel)PlayerPrefs.GetInt("difficultyLevel", (int)DifficultyLevel.Normal);
 			avatar = (Avatar)PlayerPrefs.GetInt("avatar", (int)Avatar.None);
@@ -821,6 +882,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetInt("currentCoins", currentCoins );
 		PlayerPrefs.SetInt("lifetimeCoins", lifetimeCoins );
 		saveDisplayStars();
+		saveKeysFoundInEpisode();
 		PlayerPrefs.SetInt("powerUpSelected", (int)powerUpSelected );
 		PlayerPrefs.SetInt("difficultyLevel", (int)difficultyLevel );
 		PlayerPrefs.SetInt("avatar", (int)avatar );
@@ -865,6 +927,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetInt("lifetimeCoins", 0 );
 		lifetimeCoins = 0;
 		resetDisplayStars();
+		resetKeysFoundInEpisode();
 		PlayerPrefs.SetInt("powerUpSelected", (int)PowerUpType.SlowTime );
 		powerUpSelected = PowerUpType.SlowTime;
 		PlayerPrefs.SetInt("difficultyLevel", (int)DifficultyLevel.Normal );
