@@ -213,3 +213,5 @@ MENU_RETRY,Retry!,Essaie Encore !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_BETTER_LUCK_NEXT_TIME,You'll get it next time!,Tu réussiras la prochaine fois !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Star Meter
 MENU_SCORE,Score: <0>,Score: <0>,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+#Treasure Keys
+TUTORIAL_TREASURE_KEY_FAIRY,So cool! You found a key for Treasure Island!,Trop cool! Tu as trouvé une clé pour l'Île au Trésor !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
