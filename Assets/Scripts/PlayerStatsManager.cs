@@ -19,6 +19,8 @@ public class PlayerStatsManager {
 	//Assume there are 15 episodes for now. In each episode, a limited number of treasure chest keys have been hidden.
 	//The index is the episode number. The value is the number of keys found by the player. The initial values are 0.
 	int[] keysFoundInEpisodeArray = new int[15];
+	//Number of treasure keys owned by the player
+	int treasureKeysOwned = 0;
 
 	float distanceTravelled = 0;
 	int highScore = 0;
@@ -26,7 +28,6 @@ public class PlayerStatsManager {
 
 	bool hasMetSuccubus = false;
 	int lives = 0;
-	int treasureIslandKeys = 0;
 
 	//If the user has logged in with Facebook this value is true, if he is logged in as guest, this value is false.
 	bool usesFacebook = false;
@@ -459,6 +460,7 @@ public class PlayerStatsManager {
 	{
 		int episodeNumber = LevelManager.Instance.getNextLevelToComplete();
 		keysFoundInEpisodeArray[episodeNumber]++;
+		increaseTreasureKeysOwned( 1);
 	}
 
 	public int getPlayerHighScore()
@@ -558,25 +560,25 @@ public class PlayerStatsManager {
 		if( lives < 0 ) lives = 0;
 	}
 
-	public void setTreasureIslandKeys( int value )
+	public void setTreasureKeysOwned( int value )
 	{
-		treasureIslandKeys = value;
+		treasureKeysOwned = value;
 	}
 	
-	public int getTreasureIslandKeys()
+	public int getTreasureKeysOwned()
 	{
-		return treasureIslandKeys;
+		return treasureKeysOwned;
 	}
 	
-	public void increaseTreasureIslandKeys(int value)
+	public void increaseTreasureKeysOwned(int value)
 	{
-		treasureIslandKeys = treasureIslandKeys + value;
+		treasureKeysOwned = treasureKeysOwned + value;
 	}
 	
-	public void decreaseTreasureIslandKeys(int value)
+	public void decreaseTreasureKeysOwned(int value)
 	{
-		treasureIslandKeys = treasureIslandKeys - value;
-		if( treasureIslandKeys < 0 ) treasureIslandKeys = 0;
+		treasureKeysOwned = treasureKeysOwned - value;
+		if( treasureKeysOwned < 0 ) treasureKeysOwned = 0;
 	}
 
 	//Store the fromID of a friend who has accepted to unlock the next section of the map if it does not already exist.
@@ -760,7 +762,7 @@ public class PlayerStatsManager {
 
 			highScore = PlayerPrefs.GetInt("High Score");
 			lives = PlayerPrefs.GetInt("Lives", 6);
-			treasureIslandKeys = PlayerPrefs.GetInt("TreasureIslandKeys", 0);
+			treasureKeysOwned = PlayerPrefs.GetInt("treasureKeysOwned", 0);
 			string firstTimePlayingString = PlayerPrefs.GetString("First Time Playing", "true" );
 			if( firstTimePlayingString == "true" )
 			{
@@ -826,7 +828,7 @@ public class PlayerStatsManager {
 			difficultyLevel = (DifficultyLevel)PlayerPrefs.GetInt("difficultyLevel", (int)DifficultyLevel.Normal);
 			avatar = (Avatar)PlayerPrefs.GetInt("avatar", (int)Avatar.None);
 			loadPowerUpInventory();
-			Debug.Log ("loadPlayerStats-highScore: " + highScore + " firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " Next Level To Complete: " + nextLevelToComplete + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureIslandKeys " + treasureIslandKeys );
+			Debug.Log ("loadPlayerStats-highScore: " + highScore + " firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " Next Level To Complete: " + nextLevelToComplete + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
 		{
@@ -839,7 +841,7 @@ public class PlayerStatsManager {
 	{
 		PlayerPrefs.SetInt("Next Level To Complete", LevelManager.Instance.getNextLevelToComplete() );
 		PlayerPrefs.SetInt("Lives", lives );
-		PlayerPrefs.SetInt("TreasureIslandKeys", treasureIslandKeys );
+		PlayerPrefs.SetInt("treasureKeysOwned", treasureKeysOwned );
 		if( LevelManager.Instance.getPlayerFinishedTheGame() )
 		{
 			PlayerPrefs.SetString( "Finished Game", "true" );
@@ -904,8 +906,8 @@ public class PlayerStatsManager {
 		LevelManager.Instance.setNextLevelToComplete( 0 );
 		PlayerPrefs.SetInt("Lives", 6 );
 		lives = 6;
-		PlayerPrefs.SetInt("TreasureIslandKeys", 0 );
-		treasureIslandKeys = 0;
+		PlayerPrefs.SetInt("treasureKeysOwned", 0 );
+		treasureKeysOwned = 0;
 		PlayerPrefs.SetString( "Finished Game", "false" );
 		LevelManager.Instance.setPlayerFinishedTheGame( false );
 		PlayerPrefs.SetString( "First Time Playing", "true" );

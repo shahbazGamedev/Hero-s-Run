@@ -403,6 +403,8 @@ public class PlayerController : BaseClass {
 
 	public void startRunning( bool playCutscene )
 	{	
+		moveDirection = new Vector3(0,0,0); //Needed?
+
 		previousPlayerPosition = transform.position;
 		allowDistanceTravelledCalculations = true;
 		usesAccelerometer = true;

@@ -167,7 +167,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	void updateTopPanelValues()
 	{
-		numberOfKeysText.text = PlayerStatsManager.Instance.getTreasureIslandKeys().ToString();
+		numberOfKeysText.text = PlayerStatsManager.Instance.getTreasureKeysOwned().ToString();
 		numberOfLivesText.text = PlayerStatsManager.Instance.getLives().ToString();
 		numberOfStarsText.text = PlayerStatsManager.Instance.getCurrentCoins().ToString("N0");
 

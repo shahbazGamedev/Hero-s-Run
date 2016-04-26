@@ -72,7 +72,7 @@ public class TreasureIslandManager : MonoBehaviour {
 		fadeCanvas.transform.position = new Vector3(fadeCanvas.transform.position.x,fadeCanvas.transform.position.y,-1);
 		titleText.text = LocalizationManager.Instance.getText( "TREASURE_ISLAND_TITLE");
 		locationText.text = LocalizationManager.Instance.getText( "TREASURE_ISLAND_LOCATION_1");
-		numberOfKeysText.text = PlayerStatsManager.Instance.getTreasureIslandKeys().ToString();
+		numberOfKeysText.text = PlayerStatsManager.Instance.getTreasureKeysOwned().ToString();
 		chestContentPanel.SetActive( false );
 
 		fillDictionary();
@@ -184,7 +184,7 @@ public class TreasureIslandManager : MonoBehaviour {
 		}
 
 		//Only continue if the player has a key or else, display a message on how he can get a key
-		if( PlayerStatsManager.Instance.getTreasureIslandKeys() > 0 || PlayerStatsManager.Instance.getHasInfiniteTreasureIslandKeys() )
+		if( PlayerStatsManager.Instance.getTreasureKeysOwned() > 0 || PlayerStatsManager.Instance.getHasInfiniteTreasureIslandKeys() )
 		{
 			//If a chest was previously opened, close it and lock it before opening the new one
 			if( lastOpenChest != null )
@@ -216,8 +216,8 @@ public class TreasureIslandManager : MonoBehaviour {
 				addPropToChest( fcProp, MagicalChestData.chestGiftType );
 			}
 			//This consumes one key
-			PlayerStatsManager.Instance.decreaseTreasureIslandKeys(1);
-			numberOfKeysText.text = PlayerStatsManager.Instance.getTreasureIslandKeys().ToString();
+			PlayerStatsManager.Instance.decreaseTreasureKeysOwned(1);
+			numberOfKeysText.text = PlayerStatsManager.Instance.getTreasureKeysOwned().ToString();
 
 			chest.ToggleOpen();
 			lastOpenChest = chest;

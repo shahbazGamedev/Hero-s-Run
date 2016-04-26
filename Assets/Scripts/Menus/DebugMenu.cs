@@ -71,7 +71,7 @@ public class DebugMenu : MonoBehaviour {
 	{
 		Debug.Log("Give 25 Treasure Chest Keys");
 		SoundManager.playButtonClick();
-		PlayerStatsManager.Instance.increaseTreasureIslandKeys( 25 );
+		PlayerStatsManager.Instance.increaseTreasureKeysOwned( 25 );
 		PlayerStatsManager.Instance.savePlayerStats();
 	}
 
