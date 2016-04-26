@@ -85,6 +85,16 @@ public class TreasureIslandManager : MonoBehaviour {
 		loadHero();
 		spawnRandomChest();
 		StartCoroutine( SoundManager.fadeInAmbience( ambientSound, 3f ) );
+
+		if( PlayerStatsManager.Instance.getTreasureKeysOwned() > 0 )
+		{
+			InvokeRepeating("showTapToOpenChestMessage", 5f, 15f );
+		}
+		else
+		{
+			Invoke("showYouNeedKeysMessage", 3.5f );
+		}
+
 	}
 
 	void Enable ()
@@ -143,12 +153,22 @@ public class TreasureIslandManager : MonoBehaviour {
 		//Cancel an invoke that may have been called by opening another chest just before (like hideMessage)
 		CancelInvoke();
 		chestContentPanel.SetActive( true );
-		Invoke ("hideMessage", 5f);
+		Invoke ("hideMessage", 4f);
 	}
 	
 	void hideMessage()
 	{
 		chestContentPanel.SetActive( false );
+	}
+
+	void showTapToOpenChestMessage()
+	{
+		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("TRESURE_CHEST_TAP_TO_OPEN"), 0.35f, 3f );
+	}
+
+	void showYouNeedKeysMessage()
+	{
+		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("TREASURE_CHEST_NEED_MORE_KEYS"), 0.35f, 4f );
 	}
 
 	public void closeMenu()
@@ -172,6 +192,8 @@ public class TreasureIslandManager : MonoBehaviour {
 
 	public void openChest( FCMain chest )
 	{
+		CancelInvoke();
+		AchievementDisplay.enableShowDisplay( false );
 		//Ignore if chest is already open
 		if( chest.IsOpened()  ) return;
 

@@ -53,7 +53,7 @@ public class AchievementDisplay : MonoBehaviour {
 
 	}
 
-	static void enableShowDisplay(  bool enable )
+	public static void enableShowDisplay(  bool enable )
 	{
 		print("enableShowDisplay " + enable );
 		showDisplay = enable;
