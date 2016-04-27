@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public enum PowerUpType {
 	//Note: Don't change these values without updating PlayerStatsManager
@@ -15,6 +16,9 @@ public enum PowerUpType {
 
 public class PowerUpManager : BaseClass {
 
+	public GameObject powerUpHUDTimer;
+	public RectTransform powerUpHUDTimerHand;
+	CanvasGroup powerUpHUDTimerCanvasGroup;
 
 	//The player can have multiple powerups active at the same time.
 	//I.e. Magnet and Shield can be active at the same time, but not two magnets.
@@ -51,6 +55,7 @@ public class PowerUpManager : BaseClass {
 		playerController = (PlayerController) player.GetComponent("PlayerController");
 		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
 		powerUpHUD = powerUpManagerObject.GetComponent<PowerUpHUD>();
+		powerUpHUDTimerCanvasGroup = powerUpHUDTimer.GetComponent<CanvasGroup>();
 	}
 	
 	public void changeSelectedPowerUp(PowerUpType newPowerUpType )
@@ -94,40 +99,82 @@ public class PowerUpManager : BaseClass {
 	
 	IEnumerator startTimerMagnet( PowerUpData pud )
 	{
+		StartCoroutine( fadePowerUpHUDTimer() );
 		float duration = getDuration(pud);
+		float angle = 0;
+		Vector3 angleVector = Vector3.zero;
+		float elapsed = 0;
+		
 		do
 		{
-			duration = duration - Time.deltaTime;
+			elapsed = elapsed + Time.deltaTime;
+			angle = elapsed/duration * 315f;
+			angleVector.Set(0,0, angle );
+			powerUpHUDTimerHand.localEulerAngles = angleVector;
 			yield return _sync();
-		} while ( duration > 0 );
+		} while ( elapsed < duration );
 		//Duration has expired. Deactivate power up.
 		deactivatePowerUp( pud.powerUpType, false );
+		powerUpHUDTimer.SetActive( false );
 	}
 
 	IEnumerator startTimerShield( PowerUpData pud )
 	{
+		StartCoroutine( fadePowerUpHUDTimer() );
 		float duration = getDuration(pud);
+		float angle = 0;
+		Vector3 angleVector = Vector3.zero;
+		float elapsed = 0;
+		
 		do
 		{
-			duration = duration - Time.deltaTime;
+			elapsed = elapsed + Time.deltaTime;
+			angle = elapsed/duration * 315f;
+			angleVector.Set(0,0, angle );
+			powerUpHUDTimerHand.localEulerAngles = angleVector;
 			yield return _sync();
-		} while ( duration > 0 );
+		} while ( elapsed < duration );
 		//Duration has expired. Deactivate power up.
 		deactivatePowerUp( pud.powerUpType, false );
+		powerUpHUDTimer.SetActive( false );
 	}
 	
 	IEnumerator startTimerSlowTime( PowerUpData pud )
 	{
+		StartCoroutine( fadePowerUpHUDTimer() );
 		float duration = getDuration(pud);
+		float angle = 0;
+		Vector3 angleVector = Vector3.zero;
+		float elapsed = 0;
+		
 		do
 		{
-			duration = duration - Time.deltaTime;
+			elapsed = elapsed + Time.deltaTime;
+			angle = elapsed/duration * 315f;
+			angleVector.Set(0,0, angle );
+			powerUpHUDTimerHand.localEulerAngles = angleVector;
 			yield return _sync();
-		} while ( duration > 0 );
+		} while ( elapsed < duration );
 		//Duration has expired. Deactivate power up.
 		deactivatePowerUp( pud.powerUpType, false );
+		powerUpHUDTimer.SetActive( false );
 	}
 	
+	IEnumerator fadePowerUpHUDTimer()
+	{
+		powerUpHUDTimerCanvasGroup.alpha = 0f;
+		powerUpHUDTimer.SetActive( true );
+		float duration = 0.5f;
+		float elapsed = 0;	
+		do
+		{
+			elapsed = elapsed + Time.deltaTime;
+			powerUpHUDTimerCanvasGroup.alpha = elapsed/duration;
+			yield return _sync();
+		} while ( elapsed < duration );
+		powerUpHUDTimerCanvasGroup.alpha = 1f;
+	}
+
 	public static bool isThisPowerUpActive( PowerUpType powerUpType )
 	{
 		return activePowerUps.Contains( powerUpType );
