@@ -88,11 +88,11 @@ public class TreasureIslandManager : MonoBehaviour {
 
 		if( PlayerStatsManager.Instance.getTreasureKeysOwned() > 0 )
 		{
-			InvokeRepeating("showTapToOpenChestMessage", 5f, 15f );
+			InvokeRepeating("showTapToOpenChestMessage", 5.5f, 15f );
 		}
 		else
 		{
-			Invoke("showYouNeedKeysMessage", 3.5f );
+			Invoke("showYouNeedKeysMessage", 5.5f );
 		}
 
 	}
