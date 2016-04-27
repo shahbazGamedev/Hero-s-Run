@@ -12,4 +12,28 @@ public class HUDTopPanelManager : MonoBehaviour {
 	void Start () {
 	
 	}	
+
+	void OnEnable()
+	{
+		PlayerStatsManager.playerInventoryChanged += PlayerInventoryChanged;
+	}
+	
+	void OnDisable()
+	{
+		PlayerStatsManager.playerInventoryChanged -= PlayerInventoryChanged;
+	}
+
+	void PlayerInventoryChanged( PlayerInventoryEvent eventType, int newValue )
+	{
+		Debug.Log("HUDTopPanelManager-PlayerInventoryChanged: " + eventType + " " + newValue );
+		if( eventType == PlayerInventoryEvent.Key_Changed )
+		{
+			numberOfKeysText.text = newValue.ToString();
+		}
+		else if( eventType == PlayerInventoryEvent.Star_Changed )
+		{
+			numberOfStarsText.text = newValue.ToString("N0");
+		}
+	}
+
 }

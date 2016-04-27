@@ -3,6 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
+public enum PlayerInventoryEvent {
+	Key_Changed = 0,
+	Life_Changed = 1,
+	Star_Changed = 2
+
+}
+
 public class PlayerStatsManager {
 	
 	private static PlayerStatsManager playerStatsManager = null;
@@ -21,6 +28,9 @@ public class PlayerStatsManager {
 	int[] keysFoundInEpisodeArray = new int[15];
 	//Number of treasure keys owned by the player
 	int treasureKeysOwned = 0;
+
+	public delegate void PlayerInventoryChanged( PlayerInventoryEvent eventType, int newValue );
+	public static event PlayerInventoryChanged playerInventoryChanged;
 
 	float distanceTravelled = 0;
 	int highScore = 0;
@@ -317,6 +327,9 @@ public class PlayerStatsManager {
 		if( ownsStarDoubler && !isPurchase && coins > 0 ) coins = coins * 2;
 
 		currentCoins = currentCoins + coins;
+
+		//Send an event to interested classes
+		if(playerInventoryChanged != null) playerInventoryChanged(PlayerInventoryEvent.Star_Changed, currentCoins );
 
 		//Also add to lifetime coins.
 		if( incrementLifetimeCoins )
