@@ -8,7 +8,8 @@ using UnityEngine.SceneManagement;
 //The 3D world is displayed behind the HUD.
 public class HUDHandler : MonoBehaviour {
 
-	public Text hudDebugInfo;
+	public Text hudDebugInfo;	//Used to display FPS, player speed, etc.
+	public Button pauseButton;
 
 	//Not used in game. Only used to count number of characters
 	public string CharacterCounter = "";
@@ -42,14 +43,7 @@ public class HUDHandler : MonoBehaviour {
 	//we do not want to update the fps value every frame
 	int fpsFrameCounter = 0;
 	int fpsWaitFrames = 30;
-	Rect fpsRect;
-	public GUIStyle fpsStyle;
 	
-	//Pause button
-	Rect pauseRect;
-	GUIContent pauseButtonContent;
-	public GUIStyle pauseStyle;
-
 	public GUIStyle saveMeLevelInfoStyle;
 
 	//For the stats screen/Run Again display
@@ -92,9 +86,6 @@ public class HUDHandler : MonoBehaviour {
 	public Button tapToPlayButton; 
 	public Text tapToPlayText;
 
-	//Pause Menu
-	PauseMenu pauseMenu;
-
 	void OnDrawGizmos ()
 	{
 		//Display the number of characters in the CharacterCounter field
@@ -120,17 +111,6 @@ public class HUDHandler : MonoBehaviour {
 		coinIconRect = new Rect ( Screen.width * 0.6f, yPos, Screen.width * 0.09f, Screen.width * 0.09f );
 		coinRect = new Rect ( coinIconRect.xMax + 6  , yPos, 100, 40 );
 
-		//Initialize for the fps counter
-		fpsRect = new Rect ( Screen.width * 0.1f, Screen.height * 0.085f, 100, 24 );
-		
-		//Initilaize for pause
-		float buttonSize = Screen.width * 0.11f;
-		float buttonMargin = Screen.width * 0.03f;
-		pauseRect = new Rect ( Screen.width  - buttonSize - buttonMargin, Screen.height - buttonSize - buttonMargin, buttonSize, buttonSize );
-		//For the GUIStyle button states to work, GUIContent must either be an empty constructor or have text.
-		//If you create a GUIContent with a texture, the button states will not change.
-		pauseButtonContent = new GUIContent ();
-
 		//For displaying a message for each 1,000 meters run
 		distanceMarkerHeight = Screen.height * 0.08f;
 		distanceMarker = new LTRect( 0f, -distanceMarkerHeight, Screen.width, distanceMarkerHeight );
@@ -146,9 +126,6 @@ public class HUDHandler : MonoBehaviour {
 
 		//New UI related
 		tapToPlayText.text = LocalizationManager.Instance.getText("MENU_TAP_TO_PLAY");
-		GameObject pauseMenuManagerObject = GameObject.FindGameObjectWithTag("Pause Menu Manager");
-		pauseMenu = pauseMenuManagerObject.GetComponent<PauseMenu>();
-
 	}
 	
 	void Start()
@@ -173,15 +150,6 @@ public class HUDHandler : MonoBehaviour {
 		{
 			showDistanceMarker();
 		}
-
-		//Pause button related and debugging
-		if( gameState == GameState.Normal )
-		{
-			if(GUI.Button( pauseRect, pauseButtonContent, pauseStyle ))
-			{
-				pauseMenu.pauseGame();
-			}
-		}
 				
 		showCoinTotal();
 		
@@ -200,7 +168,7 @@ public class HUDHandler : MonoBehaviour {
 		}
 	}
 	
-	// Update is called once per frame even when paused
+	// Update is called once per frame
 	void Update ()
 	{
 		updateFPS();
@@ -210,13 +178,6 @@ public class HUDHandler : MonoBehaviour {
 		{
 			showHighScoreMessage();
 		}
-		#if UNITY_EDITOR
-		//For debugging
-		if ( Input.GetKeyDown (KeyCode.W) ) 
-		{
-			pauseMenu.pauseGame();
-		}
-		#endif
 	}
 	
 	void updateFPS()
@@ -462,10 +423,12 @@ public class HUDHandler : MonoBehaviour {
 		if( newState == GameState.Normal )
 		{
 			hudDebugInfo.gameObject.SetActive( true );
+			pauseButton.gameObject.SetActive( true );
 		}
 		else
 		{
 			hudDebugInfo.gameObject.SetActive( false );
+			pauseButton.gameObject.SetActive( false );
 		}
 	}
 
