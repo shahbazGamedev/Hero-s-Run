@@ -5,20 +5,14 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-//The 3D world is displayed behind the HUD.
 public class HUDHandler : MonoBehaviour {
 
 	public Text hudDebugInfo;	//Used to display FPS, player speed, etc.
 	public Button pauseButton;
 
-	//Not used in game. Only used to count number of characters
-	public string CharacterCounter = "";
-	public int CharacterCount = 0;
-
 	//Define each HUD elements in terms of content, layout and style
 	
 	//Distance and coins box
-	Texture2D statsBoxTexture;
 	Rect statsBoxRect;
 	
 	//Distance travelled in meters
@@ -86,12 +80,6 @@ public class HUDHandler : MonoBehaviour {
 	public Button tapToPlayButton; 
 	public Text tapToPlayText;
 
-	void OnDrawGizmos ()
-	{
-		//Display the number of characters in the CharacterCounter field
-		CharacterCount = CharacterCounter.Length; 
-	}
-
 	// Use this for initialization
 	void Awake ()
 	{
@@ -100,7 +88,6 @@ public class HUDHandler : MonoBehaviour {
 		playerController = GetComponent<PlayerController>();
 
 		//initialize the stats box at the top
-		statsBoxTexture = Resources.Load("GUI/emerland") as Texture2D;
 		statsBoxRect = new Rect( 0, 0, Screen.width, 0.08f * Screen.height);
 		float yPos = statsBoxRect.y + 10f;
 		
