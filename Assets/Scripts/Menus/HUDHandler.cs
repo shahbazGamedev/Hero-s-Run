@@ -19,7 +19,6 @@ public class HUDHandler : MonoBehaviour {
 	//Distance and coins box
 	Texture2D statsBoxTexture;
 	Rect statsBoxRect;
-	public GUIStyle statsStyle;
 	
 	//Distance travelled in meters
 	Rect distanceRect;
@@ -70,10 +69,6 @@ public class HUDHandler : MonoBehaviour {
 	static float userAngle = 0;
 	static float userMessageDuration = 0;
 	
-	//For spinning distance and coin total in the stats screen
-	int distance = 0;
-	int coins= 0;
-	
 	//For displaying a message for each 1,000 meters run
 	float distanceMarkerHeight = 0;
 	LTRect distanceMarker;
@@ -87,8 +82,8 @@ public class HUDHandler : MonoBehaviour {
 	public GameObject saveMeCanvas;
 	HUDSaveMe hudSaveMe;
 
-	PopupHandler popupHandler;
 	PlayerController playerController;
+	PopupHandler popupHandler;
 
 	//New UI related
 	//Tap to play button (the size of the canvas) with the Tap to play label
@@ -143,7 +138,6 @@ public class HUDHandler : MonoBehaviour {
 		hudSaveMe = saveMeCanvas.GetComponent<HUDSaveMe>();
 
 		//Adjust font sizes based on screen resolution
-		PopupHandler.changeFontSizeBasedOnResolution( statsStyle );
 		PopupHandler.changeFontSizeBasedOnResolution( coinAccumulatorStyle );
 		PopupHandler.changeFontSizeBasedOnResolution( saveMeLevelInfoStyle );
 		PopupHandler.changeFontSizeBasedOnResolution( statsScreenStyleLeft );
@@ -178,30 +172,6 @@ public class HUDHandler : MonoBehaviour {
 		if( isShowingDistanceMarker )
 		{
 			showDistanceMarker();
-		}
-		else
-		{
-			//draw a semi-transparent stats box
-			if( false && gameState == GameState.Normal || gameState == GameState.Checkpoint )
-			{
-				Color colPreviousGUIColor = GUI.color;
-				GUI.color = new Color(colPreviousGUIColor.r, colPreviousGUIColor.g, colPreviousGUIColor.b, 0.3f);
-				GUI.DrawTexture( statsBoxRect, statsBoxTexture );
-				GUI.color = colPreviousGUIColor;
-				
-				//distance related
-				int distance = PlayerStatsManager.Instance.getDistanceTravelled();
-				GUI.Label ( distanceRect, distance.ToString("N0") + "M", statsStyle );
-				
-				//coin related
-				//First, draw a coin icon
-				GUI.color = Color.yellow;
-				GUI.DrawTexture( coinIconRect, coinIconTexture,ScaleMode.ScaleToFit );
-				GUI.color = Color.white;
-				//Draw the coin total
-				int coinTotal = PlayerStatsManager.Instance.getCurrentCoins();
-				GUI.Label ( coinRect, coinTotal.ToString("N0"), statsStyle );
-			}
 		}
 
 		//Pause button related and debugging
