@@ -69,8 +69,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 		mapHeight = map.rect.height;
 		levelLoading = false;
 
-		updateTopPanelValues();
-
 		numberOfMessages.text = (FacebookManager.Instance.AppRequestDataList.Count).ToString();
 		//if we have a Facebook user portrait, use it, or else, use the default one.
 		if( FacebookManager.Instance.UserPortrait == null )
@@ -155,23 +153,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 				break;	
 		}
  	}
-
-	void OnGUI()
-	{
-		#if UNITY_EDITOR
-		handleMouseMovement();
-		#endif
-	}
-
-	//Top panel
-
-	void updateTopPanelValues()
-	{
-		numberOfKeysText.text = PlayerStatsManager.Instance.getTreasureKeysOwned().ToString();
-		numberOfLivesText.text = PlayerStatsManager.Instance.getLives().ToString();
-		numberOfStarsText.text = PlayerStatsManager.Instance.getCurrentCoins().ToString("N0");
-
-	}
 
 	public void showTitleScreen()
 	{
@@ -268,17 +249,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 			yield return new WaitForSeconds(0);
 			SceneManager.LoadScene( (int)GameScenes.TreasureIsland );
 		}	
-	}
-
-	void handleMouseMovement()
-	{
-		if(Event.current.type == EventType.MouseUp)
-		{
-			Debug.Log("Mouse Pos " +Event.current.mousePosition.x + " " +  Event.current.mousePosition.y + " " + wc.localScale.x + " " + wc.localScale.y );
-			float coordW = Event.current.mousePosition.x;
-			float coordH = Event.current.mousePosition.y;
-			Debug.Log("Mouse coordinates-Percentage Width: " + ((coordW/wc.rect.width)/wc.localScale.x).ToString("N3") +  " Percentage Height: " + ( 1f - coordH/(mapHeight * wc.localScale.y) ).ToString("N3") );
-		}
 	}
 
 	public void cheatShowPostLevelPopup()

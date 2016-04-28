@@ -180,7 +180,7 @@ public class HUDHandler : MonoBehaviour {
 		else
 		{
 			//draw a semi-transparent stats box
-			if( gameState == GameState.Normal || gameState == GameState.Checkpoint )
+			if( false && gameState == GameState.Normal || gameState == GameState.Checkpoint )
 			{
 				Color colPreviousGUIColor = GUI.color;
 				GUI.color = new Color(colPreviousGUIColor.r, colPreviousGUIColor.g, colPreviousGUIColor.b, 0.3f);

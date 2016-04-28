@@ -6,7 +6,8 @@ using System;
 public enum PlayerInventoryEvent {
 	Key_Changed = 0,
 	Life_Changed = 1,
-	Star_Changed = 2
+	Star_Changed = 2,
+	Star_Doubler_Changed = 3
 
 }
 
@@ -29,6 +30,7 @@ public class PlayerStatsManager {
 	//Number of treasure keys owned by the player
 	int treasureKeysOwned = 0;
 
+	//Delegate used to communicate to other classes when the number of keys, lives, stars or star doubler changes
 	public delegate void PlayerInventoryChanged( PlayerInventoryEvent eventType, int newValue );
 	public static event PlayerInventoryChanged playerInventoryChanged;
 
@@ -38,6 +40,7 @@ public class PlayerStatsManager {
 
 	bool hasMetSuccubus = false;
 	int lives = 0;
+	const int INITIAL_NUMBER_LIVES = 6;
 
 	//If the user has logged in with Facebook this value is true, if he is logged in as guest, this value is false.
 	bool usesFacebook = false;
@@ -525,6 +528,7 @@ public class PlayerStatsManager {
 	public void setOwnsStarDoubler( bool value )
 	{
 		ownsStarDoubler = value;
+		if(playerInventoryChanged != null) playerInventoryChanged(PlayerInventoryEvent.Star_Doubler_Changed, 0 );
 	}
 	
 	public bool getOwnsStarDoubler()
@@ -552,9 +556,11 @@ public class PlayerStatsManager {
 		return usesFacebook;
 	}
 
-	public void setLives( int value )
+	void setLives( int value )
 	{
 		lives = value;
+		//Send an event to interested classes
+		if(playerInventoryChanged != null) playerInventoryChanged(PlayerInventoryEvent.Life_Changed, lives );
 	}
 	
 	public int getLives()
@@ -564,18 +570,21 @@ public class PlayerStatsManager {
 
 	public void increaseLives(int value)
 	{
-		lives = lives + value;
+		setLives( lives + value );
 	}
 
 	public void decreaseLives(int value)
 	{
-		lives = lives - value;
-		if( lives < 0 ) lives = 0;
+		int newValue = lives - value;
+		if( newValue < 0 ) newValue = 0;
+		setLives( newValue );
 	}
 
-	public void setTreasureKeysOwned( int value )
+	void setTreasureKeysOwned( int value )
 	{
 		treasureKeysOwned = value;
+		//Send an event to interested classes
+		if(playerInventoryChanged != null) playerInventoryChanged(PlayerInventoryEvent.Key_Changed, treasureKeysOwned );
 	}
 	
 	public int getTreasureKeysOwned()
@@ -585,13 +594,15 @@ public class PlayerStatsManager {
 	
 	public void increaseTreasureKeysOwned(int value)
 	{
-		treasureKeysOwned = treasureKeysOwned + value;
+		setTreasureKeysOwned( treasureKeysOwned + value );
 	}
 	
 	public void decreaseTreasureKeysOwned(int value)
 	{
-		treasureKeysOwned = treasureKeysOwned - value;
-		if( treasureKeysOwned < 0 ) treasureKeysOwned = 0;
+		int newValue = treasureKeysOwned - value;
+		if( newValue < 0 ) newValue = 0;
+		setTreasureKeysOwned( newValue );
+
 	}
 
 	//Store the fromID of a friend who has accepted to unlock the next section of the map if it does not already exist.
@@ -774,8 +785,8 @@ public class PlayerStatsManager {
 			}
 
 			highScore = PlayerPrefs.GetInt("High Score");
-			lives = PlayerPrefs.GetInt("Lives", 6);
-			treasureKeysOwned = PlayerPrefs.GetInt("treasureKeysOwned", 0);
+			setLives( PlayerPrefs.GetInt("Lives", INITIAL_NUMBER_LIVES) );
+			setTreasureKeysOwned( PlayerPrefs.GetInt("treasureKeysOwned", 0) );
 			string firstTimePlayingString = PlayerPrefs.GetString("First Time Playing", "true" );
 			if( firstTimePlayingString == "true" )
 			{
@@ -798,11 +809,11 @@ public class PlayerStatsManager {
 			string ownsStarDoublerString = PlayerPrefs.GetString("ownsStarDoubler", "false" );
 			if( ownsStarDoublerString == "true" )
 			{
-				ownsStarDoubler = true;
+				setOwnsStarDoubler( true );
 			}
 			else
 			{
-				ownsStarDoubler = false;	
+				setOwnsStarDoubler( false );
 			}
 
 			string usesFacebookString = PlayerPrefs.GetString("usesFacebook", "false" );
@@ -917,10 +928,10 @@ public class PlayerStatsManager {
 	{
 		PlayerPrefs.SetInt("Next Level To Complete", 0 );
 		LevelManager.Instance.setNextLevelToComplete( 0 );
-		PlayerPrefs.SetInt("Lives", 6 );
-		lives = 6;
+		PlayerPrefs.SetInt("Lives", INITIAL_NUMBER_LIVES );
+		setLives( INITIAL_NUMBER_LIVES );
 		PlayerPrefs.SetInt("treasureKeysOwned", 0 );
-		treasureKeysOwned = 0;
+		setTreasureKeysOwned( 0 );
 		PlayerPrefs.SetString( "Finished Game", "false" );
 		LevelManager.Instance.setPlayerFinishedTheGame( false );
 		PlayerPrefs.SetString( "First Time Playing", "true" );
@@ -928,7 +939,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetString( "Has Met Succubus", "false" );
 		hasMetSuccubus = false;
 		PlayerPrefs.SetString( "ownsStarDoubler", "false" );
-		ownsStarDoubler = false;
+		setOwnsStarDoubler( false );
 		PlayerPrefs.SetString( "usesFacebook", "false" );
 		usesFacebook = false;
 		PlayerPrefs.SetInt( "High Score", 0 );
@@ -953,8 +964,8 @@ public class PlayerStatsManager {
 		powerUpSelected = PowerUpType.SlowTime;
 		PlayerPrefs.SetInt("difficultyLevel", (int)DifficultyLevel.Normal );
 		difficultyLevel = DifficultyLevel.Normal;
-		PlayerPrefs.SetInt("avatar", (int)Avatar.None );
-		avatar = Avatar.None;
+		PlayerPrefs.SetInt("avatar", (int)Avatar.Hero );
+		avatar = Avatar.Hero;
 		ClearPowerUpInventory();
 		PlayerPrefs.Save();
 		Debug.Log ("PlayerStatsManager-resetPlayerStats: called.");
