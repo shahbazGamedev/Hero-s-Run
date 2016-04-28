@@ -38,7 +38,7 @@ public class PlayerStatsManager {
 	int highScore = 0;
 	bool firstTimePlaying;
 
-	bool hasMetSuccubus = false;
+	bool showDebugInfoOnHUD = false; //Should we show the FPS, player speed, etc. on the HUD or not.
 	int lives = 0;
 	const int INITIAL_NUMBER_LIVES = 6;
 
@@ -515,14 +515,14 @@ public class PlayerStatsManager {
 		return firstTimePlaying;
 	}
 
-	public void setHasMetSuccubus( bool value )
+	public void setShowDebugInfoOnHUD( bool value )
 	{
-		hasMetSuccubus = value;
+		showDebugInfoOnHUD = value;
 	}
 
-	public bool getHasMetSuccubus()
+	public bool getShowDebugInfoOnHUD()
 	{
-		return hasMetSuccubus;
+		return showDebugInfoOnHUD;
 	}
 
 	public void setOwnsStarDoubler( bool value )
@@ -796,14 +796,14 @@ public class PlayerStatsManager {
 			{
 				firstTimePlaying = false;	
 			}
-			string hasMetSuccubusString = PlayerPrefs.GetString("Has Met Succubus", "false" );
-			if( hasMetSuccubusString == "true" )
+			string showDebugInfoOnHUDString = PlayerPrefs.GetString("showDebugInfoOnHUD", "false" );
+			if( showDebugInfoOnHUDString == "true" )
 			{
-				hasMetSuccubus = true;
+				showDebugInfoOnHUD = true;
 			}
 			else
 			{
-				hasMetSuccubus = false;	
+				showDebugInfoOnHUD = false;	
 			}
 
 			string ownsStarDoublerString = PlayerPrefs.GetString("ownsStarDoubler", "false" );
@@ -880,13 +880,13 @@ public class PlayerStatsManager {
 			highScore = getPlayerScore();
 			PlayerPrefs.SetInt( "High Score", highScore );
 		}
-		if( hasMetSuccubus )
+		if( showDebugInfoOnHUD )
 		{
-			PlayerPrefs.SetString( "Has Met Succubus", "true" );
+			PlayerPrefs.SetString( "showDebugInfoOnHUD", "true" );
 		}
 		else
 		{
-			PlayerPrefs.SetString( "Has Met Succubus", "false" );
+			PlayerPrefs.SetString( "showDebugInfoOnHUD", "false" );
 		}
 		if( ownsStarDoubler )
 		{
@@ -936,8 +936,8 @@ public class PlayerStatsManager {
 		LevelManager.Instance.setPlayerFinishedTheGame( false );
 		PlayerPrefs.SetString( "First Time Playing", "true" );
 		firstTimePlaying = true;
-		PlayerPrefs.SetString( "Has Met Succubus", "false" );
-		hasMetSuccubus = false;
+		PlayerPrefs.SetString( "showDebugInfoOnHUD", "false" );
+		setShowDebugInfoOnHUD( false );
 		PlayerPrefs.SetString( "ownsStarDoubler", "false" );
 		setOwnsStarDoubler( false );
 		PlayerPrefs.SetString( "usesFacebook", "false" );

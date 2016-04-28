@@ -12,6 +12,7 @@ public class DebugMenu : MonoBehaviour {
 	public Text currentStars;
 	public Text lifetimeStars;
 	public Text ownsStarDoubler;
+	public Text toggleShowDebugInfoText;
 
 	// Use this for initialization
 	void Start () {
@@ -72,6 +73,22 @@ public class DebugMenu : MonoBehaviour {
 		Debug.Log("Give 25 Treasure Chest Keys");
 		SoundManager.playButtonClick();
 		PlayerStatsManager.Instance.increaseTreasureKeysOwned( 25 );
+		PlayerStatsManager.Instance.savePlayerStats();
+	}
+
+	public void toggleShowDebugInfo()
+	{
+		Debug.Log("toggleShowDebugInfo");
+		SoundManager.playButtonClick();
+		PlayerStatsManager.Instance.setShowDebugInfoOnHUD( !PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
+		if( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() )
+		{
+			toggleShowDebugInfoText.text = "Show Debug Info: On";
+		}
+		else
+		{
+			toggleShowDebugInfoText.text = "Show Debug Info: Off";
+		}
 		PlayerStatsManager.Instance.savePlayerStats();
 	}
 

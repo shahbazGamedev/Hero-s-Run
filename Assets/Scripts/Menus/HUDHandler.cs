@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 //The 3D world is displayed behind the HUD.
 public class HUDHandler : MonoBehaviour {
 
+	public Text hudDebugInfo;
+
 	//Not used in game. Only used to count number of characters
 	public string CharacterCounter = "";
 	public int CharacterCount = 0;
@@ -205,14 +207,6 @@ public class HUDHandler : MonoBehaviour {
 		//Pause button related and debugging
 		if( gameState == GameState.Normal )
 		{
-			//fps related
-			string isFirstTimePlaying = "-f";
-			if( PlayerStatsManager.Instance.isFirstTimePlaying() ) isFirstTimePlaying = "-t";
-			
-			//GUI.Label ( fpsRect, fps + "-" + LevelManager.Instance.getCurrentLevelIndex() + "-" + PlayerStatsManager.Instance.getPlayerHighScore() + isFirstTimePlaying + "-" + PlayerController.getPlayerSpeed().ToString("N1") + "-" +  PlayerController.getPlayerSpeedBoost().ToString("N1"), fpsStyle );
-			//GUI.Label ( fpsRect, fps + "-" + PlayerController.getPlayerSpeed().ToString("N1") + "-" + playerController.currentLane + "-" + playerController.desiredLane + "-tr-" + playerController.tileRotationY + "-" + playerController.getCharacterState() + "-" + playerController.lastSwipe + "-" + playerController.reasonDiedAtTurn + "-" + playerController.moveDirection.x.ToString("N1"),fpsStyle );
-			GUI.Label ( fpsRect, fps + "-" + LevelManager.Instance.getNextLevelToComplete() + "-" + playerController.getCurrentTileName() + "-"+playerController.currentLane + "-" + PlayerController.getPlayerSpeed().ToString("N1"),fpsStyle );
-
 			if(GUI.Button( pauseRect, pauseButtonContent, pauseStyle ))
 			{
 				pauseMenu.pauseGame();
@@ -240,6 +234,8 @@ public class HUDHandler : MonoBehaviour {
 	void Update ()
 	{
 		updateFPS();
+		if( hudDebugInfo.gameObject.activeSelf && PlayerStatsManager.Instance.getShowDebugInfoOnHUD() ) hudDebugInfo.text = "FPS: " + fps + "-" + LevelManager.Instance.getNextLevelToComplete() + "-" + playerController.getCurrentTileName() + "-" + playerController.currentLane + "-" + PlayerController.getPlayerSpeed().ToString("N1");
+
 		if( !wasHighScoreMessageDisplayedThisRun && PlayerStatsManager.Instance.isNewHighScore() )
 		{
 			showHighScoreMessage();
@@ -493,6 +489,14 @@ public class HUDHandler : MonoBehaviour {
 			hudSaveMe.showSaveMeMenu();
 		}
 
+		if( newState == GameState.Normal )
+		{
+			hudDebugInfo.gameObject.SetActive( true );
+		}
+		else
+		{
+			hudDebugInfo.gameObject.SetActive( false );
+		}
 	}
 
 	public class CoinDisplay

@@ -171,9 +171,6 @@ public class SuccubusController : BaseClass {
 		succubusState = SuccubusState.CastSpells;
 		InvokeRepeating( "castSpell", DELAY_BEFORE_FIRST_SPELL, DELAY_BETWEEN_SPELLS );
 
-		//Step 4 - save the fact that the player has encountered the succubus for the first time as it will change the funny text displayed
-		PlayerStatsManager.Instance.setHasMetSuccubus( true );
-
 	}
 
 	SpellType selectSpell()
@@ -407,17 +404,10 @@ public class SuccubusController : BaseClass {
 	string getFunnyText()
 	{
 		string text;
-		if( PlayerStatsManager.Instance.getHasMetSuccubus() )
-		{
-			//Randomize the text
-			int selectedTextIndex = Random.Range( 0, returnText.Count );
-			string selectedText = returnText[selectedTextIndex];
-			text = LocalizationManager.Instance.getText(selectedText);
-		}
-		else
-		{
-			text = LocalizationManager.Instance.getText("SUCCUBUS_FIRST_DATE");
-		}
+		//Randomize the text
+		int selectedTextIndex = Random.Range( 0, returnText.Count );
+		string selectedText = returnText[selectedTextIndex];
+		text = LocalizationManager.Instance.getText(selectedText);
 
 		//First appearance of succubus
 
