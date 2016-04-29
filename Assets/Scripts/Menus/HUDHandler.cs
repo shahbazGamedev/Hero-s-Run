@@ -14,13 +14,9 @@ public class HUDHandler : MonoBehaviour {
 	
 	//Distance and coins box
 	Rect statsBoxRect;
-	
-	//Distance travelled in meters
-	Rect distanceRect;
 
 	//Number of coins collected
 	static Rect coinIconRect;
-	Rect coinRect;
 	
 	//Number of coins accumulated in coin series
 	//There can be multiple displays at the same time.
@@ -71,7 +67,6 @@ public class HUDHandler : MonoBehaviour {
 	HUDSaveMe hudSaveMe;
 
 	PlayerController playerController;
-	PopupHandler popupHandler;
 
 	//New UI related
 	//Tap to play button (the size of the canvas) with the Tap to play label
@@ -84,19 +79,14 @@ public class HUDHandler : MonoBehaviour {
 	void Awake ()
 	{
 		Transform CoreManagers = GameObject.FindGameObjectWithTag("CoreManagers").transform;
-		popupHandler = CoreManagers.GetComponent<PopupHandler>();
 		playerController = GetComponent<PlayerController>();
 
 		//initialize the stats box at the top
 		statsBoxRect = new Rect( 0, 0, Screen.width, 0.08f * Screen.height);
 		float yPos = statsBoxRect.y + 10f;
-		
-		//initialize for distance
-		distanceRect = new Rect ( Screen.width * 0.1f, yPos, 100, 40 );
 
 		//initialize for coin total
 		coinIconRect = new Rect ( Screen.width * 0.6f, yPos, Screen.width * 0.09f, Screen.width * 0.09f );
-		coinRect = new Rect ( coinIconRect.xMax + 6  , yPos, 100, 40 );
 
 		//For displaying a message for each 1,000 meters run
 		distanceMarkerHeight = Screen.height * 0.08f;
