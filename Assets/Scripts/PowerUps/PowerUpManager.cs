@@ -132,7 +132,7 @@ public class PowerUpManager : BaseClass {
 	IEnumerator startTimerSlowTime( PowerUpData pud )
 	{
 		float duration = getDuration(pud);
-		pud.startTimer( duration );
+				pud.startTimer( duration * Time.timeScale );
 		float elapsed = 0;
 		
 		do
@@ -228,7 +228,7 @@ public class PowerUpManager : BaseClass {
 					coinAttractor.attractCoinsWithinSphere( magnetSphere.transform.position, radius );
 					StartCoroutine( "startTimerMagnet", pud );
 					slideInPowerUp(magnetPowerUp);
-					Debug.Log("Magnet - activatePowerUp with duration time of " + pud.duration );
+					Debug.Log("Magnet - activatePowerUp with duration time of " + getDuration( pud ) );
 				break;
 
 				case PowerUpType.ZNuke:
@@ -255,7 +255,7 @@ public class PowerUpManager : BaseClass {
 				{
 					StopCoroutine( "startTimerSlowTime" );
 					StartCoroutine( "startTimerSlowTime", pud );
-					Debug.Log("SlowTime - activatePowerUp with duration time of " + pud.duration );
+					Debug.Log("SlowTime - activatePowerUp with duration time of " + getDuration( pud ) );
 					//Slow down time
 					Time.timeScale = 0.5f;
 					PlayerStatsManager.Instance.decrementPowerUpInventory(pud.powerUpType);
@@ -268,7 +268,7 @@ public class PowerUpManager : BaseClass {
 					turnSomeCollidersIntoTriggers( true );
 					StartCoroutine( "startTimerShield", pud );
 					slideInPowerUp(shieldPowerUp);
-					Debug.Log("Shield - activatePowerUp with duration time of " + pud.duration );
+					Debug.Log("Shield - activatePowerUp with duration time of " + getDuration( pud ) );
 				break;
 			}
 		}
@@ -590,15 +590,15 @@ public class PowerUpManager : BaseClass {
 		public ParticleSystem activationEffect;
 		public GameObject powerUpToSpawn;
 		public AudioClip deactivationSound;
-		public GameObject powerUpTimer;
+		public PowerUpTimer powerUpTimer;
 
 		public void startTimer(float timerDuration )
 		{
-			powerUpTimer.GetComponent<PowerUpTimer>().startTimer(timerDuration);
+			powerUpTimer.startTimer(timerDuration);
 		}
 		public void stopTimer()
 		{
-			powerUpTimer.GetComponent<PowerUpTimer>().stopTimer();
+			powerUpTimer.stopTimer();
 		}
 	}
 }
