@@ -113,6 +113,8 @@ public class HUDHandler : MonoBehaviour {
 
 		//New UI related
 		tapToPlayText.text = LocalizationManager.Instance.getText("MENU_TAP_TO_PLAY");
+		hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
+
 	}
 	
 	void Start()
@@ -159,7 +161,7 @@ public class HUDHandler : MonoBehaviour {
 	void Update ()
 	{
 		updateFPS();
-		if( hudDebugInfo.gameObject.activeSelf && PlayerStatsManager.Instance.getShowDebugInfoOnHUD() ) hudDebugInfo.text = "FPS: " + fps + "-" + LevelManager.Instance.getNextLevelToComplete() + "-" + playerController.getCurrentTileName() + "-" + playerController.currentLane + "-" + PlayerController.getPlayerSpeed().ToString("N1");
+		if( hudDebugInfo.gameObject.activeSelf ) hudDebugInfo.text = "FPS: " + fps + "-" + LevelManager.Instance.getNextLevelToComplete() + "-" + playerController.getCurrentTileName() + "-" + playerController.currentLane + "-" + PlayerController.getPlayerSpeed().ToString("N1");
 
 		if( !wasHighScoreMessageDisplayedThisRun && PlayerStatsManager.Instance.isNewHighScore() )
 		{
@@ -409,7 +411,7 @@ public class HUDHandler : MonoBehaviour {
 
 		if( newState == GameState.Normal )
 		{
-			hudDebugInfo.gameObject.SetActive( true );
+			hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
 			pauseButton.gameObject.SetActive( true );
 		}
 		else

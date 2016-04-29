@@ -23,6 +23,14 @@ public class DebugMenu : MonoBehaviour {
 
 		//Text Inititialization
 		titleText.text = LocalizationManager.Instance.getText("POPUP_TITLE_DEBUG");
+		if( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() )
+		{
+			toggleShowDebugInfoText.text = "Show Debug Info: On";
+		}
+		else
+		{
+			toggleShowDebugInfoText.text = "Show Debug Info: Off";
+		}
 
 		updatePlayerStats();
 	}

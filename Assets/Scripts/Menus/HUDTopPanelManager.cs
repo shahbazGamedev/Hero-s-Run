@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class HUDTopPanelManager : MonoBehaviour {
 
 	[Header("HUD Top Panel")]
+	public GameObject contentPanel;
 	public Text numberOfKeysText;
 	public Text numberOfLivesText;
 	public Text numberOfStarsText;
@@ -17,16 +18,19 @@ public class HUDTopPanelManager : MonoBehaviour {
 		if( numberOfLivesText != null ) numberOfLivesText.text = PlayerStatsManager.Instance.getLives().ToString();
 		numberOfStarsText.text = PlayerStatsManager.Instance.getCurrentCoins().ToString("N0");
 		starDoublerIcon.gameObject.SetActive( PlayerStatsManager.Instance.getOwnsStarDoubler() );
+		if( contentPanel != null ) contentPanel.SetActive( false );
 	}	
 
 	void OnEnable()
 	{
 		PlayerStatsManager.playerInventoryChanged += PlayerInventoryChanged;
+		GameManager.gameStateEvent += GameStateChange;
 	}
 	
 	void OnDisable()
 	{
 		PlayerStatsManager.playerInventoryChanged -= PlayerInventoryChanged;
+		GameManager.gameStateEvent -= GameStateChange;
 	}
 
 	void PlayerInventoryChanged( PlayerInventoryEvent eventType, int newValue )
@@ -49,6 +53,18 @@ public class HUDTopPanelManager : MonoBehaviour {
 			case PlayerInventoryEvent.Life_Changed:
 				if( numberOfLivesText != null ) numberOfLivesText.text = newValue.ToString();	
 			break;
+		}
+	}
+
+	void GameStateChange( GameState newState )
+	{
+		if( newState == GameState.Normal )
+		{
+			if( contentPanel != null ) contentPanel.SetActive( true );
+		}
+		else
+		{
+			if( contentPanel != null ) contentPanel.SetActive( false );
 		}
 	}
 
