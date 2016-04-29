@@ -105,6 +105,19 @@ public class Utilities : MonoBehaviour {
 		drawLabelWithDropShadow( location, text, textStyle, Color.black );
 	}
 
+	public static IEnumerator fadeCanvasGroup( CanvasGroup canvasGroup, float duration )
+	{
+		canvasGroup.alpha = 0f;
+		float elapsed = 0;	
+		do
+		{
+			elapsed = elapsed + Time.deltaTime;
+			canvasGroup.alpha = elapsed/duration;
+			yield return null;
+		} while ( elapsed < duration );
+		canvasGroup.alpha = 1f;
+	}
+
 	public static T GetRandomEnum<T>()
 	{
 		System.Array A = System.Enum.GetValues(typeof(T));
