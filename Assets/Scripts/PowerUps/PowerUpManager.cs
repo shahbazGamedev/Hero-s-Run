@@ -16,9 +16,14 @@ public enum PowerUpType {
 
 public class PowerUpManager : BaseClass {
 
-	public GameObject powerUpHUDTimer;
-	public RectTransform powerUpHUDTimerHand;
-	CanvasGroup powerUpHUDTimerCanvasGroup;
+	const float SLIDE_DURATION = 0.3f;
+	const float START_X_POSITION = -160f;
+	const float FINAL_X_POSITION = 55f;
+
+	public RectTransform equippedPowerUp;
+	public Text equippedPowerUpQuantity;
+	public RectTransform magnetPowerUp;
+	public RectTransform shieldPowerUp;
 
 	//The player can have multiple powerups active at the same time.
 	//I.e. Magnet and Shield can be active at the same time, but not two magnets.
@@ -27,7 +32,6 @@ public class PowerUpManager : BaseClass {
 	GameObject player;
 	PlayerController playerController;
 	public ZombieManager zombieManager;
-	PowerUpHUD powerUpHUD;
 
 	//Power Up audio. They use 2D sound.
 	public AudioClip pickUpSound;
@@ -54,15 +58,13 @@ public class PowerUpManager : BaseClass {
 		player = GameObject.FindGameObjectWithTag("Player");	
 		playerController = (PlayerController) player.GetComponent("PlayerController");
 		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
-		powerUpHUD = powerUpManagerObject.GetComponent<PowerUpHUD>();
-		powerUpHUDTimerCanvasGroup = powerUpHUDTimer.GetComponent<CanvasGroup>();
 	}
 	
 	public void changeSelectedPowerUp(PowerUpType newPowerUpType )
 	{
 		PlayerStatsManager.Instance.setPowerUpSelected( newPowerUpType );
 		PowerUpData pud = powerUpDictionary[newPowerUpType];
-		powerUpHUD.activateDisplay(pud);
+		slideEquippedPowerUp(pud);
 	}
 	
 	void fillDictionary()
@@ -99,81 +101,49 @@ public class PowerUpManager : BaseClass {
 	
 	IEnumerator startTimerMagnet( PowerUpData pud )
 	{
-		StartCoroutine( fadePowerUpHUDTimer() );
 		float duration = getDuration(pud);
-		float angle = 0;
-		Vector3 angleVector = Vector3.zero;
+		pud.startTimer( duration );
 		float elapsed = 0;
 		
 		do
 		{
 			elapsed = elapsed + Time.deltaTime;
-			angle = elapsed/duration * 315f;
-			angleVector.Set(0,0, angle );
-			powerUpHUDTimerHand.localEulerAngles = angleVector;
 			yield return _sync();
 		} while ( elapsed < duration );
 		//Duration has expired. Deactivate power up.
 		deactivatePowerUp( pud.powerUpType, false );
-		powerUpHUDTimer.SetActive( false );
 	}
 
 	IEnumerator startTimerShield( PowerUpData pud )
 	{
-		StartCoroutine( fadePowerUpHUDTimer() );
 		float duration = getDuration(pud);
-		float angle = 0;
-		Vector3 angleVector = Vector3.zero;
+		pud.startTimer( duration );
 		float elapsed = 0;
 		
 		do
 		{
 			elapsed = elapsed + Time.deltaTime;
-			angle = elapsed/duration * 315f;
-			angleVector.Set(0,0, angle );
-			powerUpHUDTimerHand.localEulerAngles = angleVector;
 			yield return _sync();
 		} while ( elapsed < duration );
 		//Duration has expired. Deactivate power up.
 		deactivatePowerUp( pud.powerUpType, false );
-		powerUpHUDTimer.SetActive( false );
 	}
 	
 	IEnumerator startTimerSlowTime( PowerUpData pud )
 	{
-		StartCoroutine( fadePowerUpHUDTimer() );
 		float duration = getDuration(pud);
-		float angle = 0;
-		Vector3 angleVector = Vector3.zero;
+		pud.startTimer( duration );
 		float elapsed = 0;
 		
 		do
 		{
 			elapsed = elapsed + Time.deltaTime;
-			angle = elapsed/duration * 315f;
-			angleVector.Set(0,0, angle );
-			powerUpHUDTimerHand.localEulerAngles = angleVector;
 			yield return _sync();
 		} while ( elapsed < duration );
 		//Duration has expired. Deactivate power up.
 		deactivatePowerUp( pud.powerUpType, false );
-		powerUpHUDTimer.SetActive( false );
 	}
 	
-	IEnumerator fadePowerUpHUDTimer()
-	{
-		powerUpHUDTimerCanvasGroup.alpha = 0f;
-		powerUpHUDTimer.SetActive( true );
-		float duration = 0.5f;
-		float elapsed = 0;	
-		do
-		{
-			elapsed = elapsed + Time.deltaTime;
-			powerUpHUDTimerCanvasGroup.alpha = elapsed/duration;
-			yield return _sync();
-		} while ( elapsed < duration );
-		powerUpHUDTimerCanvasGroup.alpha = 1f;
-	}
 
 	public static bool isThisPowerUpActive( PowerUpType powerUpType )
 	{
@@ -257,7 +227,7 @@ public class PowerUpManager : BaseClass {
 					float radius =  (magnetSphere.GetComponent<Collider>() as SphereCollider).radius;
 					coinAttractor.attractCoinsWithinSphere( magnetSphere.transform.position, radius );
 					StartCoroutine( "startTimerMagnet", pud );
-					powerUpHUD.activateDisplay(pud);
+					slideInPowerUp(magnetPowerUp);
 					Debug.Log("Magnet - activatePowerUp with duration time of " + pud.duration );
 				break;
 
@@ -297,7 +267,7 @@ public class PowerUpManager : BaseClass {
 					activePowerUps.Add( pud.powerUpType );
 					turnSomeCollidersIntoTriggers( true );
 					StartCoroutine( "startTimerShield", pud );
-					powerUpHUD.activateDisplay(pud);
+					slideInPowerUp(shieldPowerUp);
 					Debug.Log("Shield - activatePowerUp with duration time of " + pud.duration );
 				break;
 			}
@@ -314,16 +284,24 @@ public class PowerUpManager : BaseClass {
 		switch( powerUpType )
 		{
 		case PowerUpType.Magnet:
+			if( activePowerUps.Contains( powerUpType ) )
+			{
+				slideOutPowerUp(magnetPowerUp);
+			}
 			removeFromActiveList( PowerUpType.Magnet );
 			StopCoroutine( "startTimerMagnet" );
-			powerUpHUD.slideDisplayOut( powerUpType );
+			pud.stopTimer();
 			break;
 
 		case PowerUpType.Shield:
+			if( activePowerUps.Contains( powerUpType ) )
+			{
+				slideOutPowerUp(shieldPowerUp);
+			}
 			removeFromActiveList( PowerUpType.Shield );
 			StopCoroutine( "startTimerShield" );
+			pud.stopTimer();
 			turnSomeCollidersIntoTriggers( false );
-			powerUpHUD.slideDisplayOut( powerUpType );
 			break;
 
 		case PowerUpType.SlowTime:
@@ -332,12 +310,14 @@ public class PowerUpManager : BaseClass {
 			{
 				//Restore normal time immediately
 				StopCoroutine( "accelerateAfterSlowTime" );
+				pud.stopTimer();
 				Time.timeScale = 1f;
 			}
 			else
 			{
 				//If the slow-time power-up expires normally, restore the time scale gradually back to 1.
 				StartCoroutine( "accelerateAfterSlowTime" );
+				pud.stopTimer();
 			}
 			break;
 		}
@@ -474,6 +454,13 @@ public class PowerUpManager : BaseClass {
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 
+	void Update()
+	{
+		//Hack
+		//Quantity updating should be driven by an event
+		equippedPowerUpQuantity.text = PlayerStatsManager.Instance.getPowerUpQuantity(PlayerStatsManager.Instance.getPowerUpSelected()).ToString();
+	}
+
 	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
 	{
 		if( eventType == GameEvent.Give_Powerup )
@@ -508,19 +495,21 @@ public class PowerUpManager : BaseClass {
 
 	public void hideImmediatelyPowerUp()
 	{
-		powerUpHUD.hideImmediately(PlayerStatsManager.Instance.getPowerUpSelected());
+		equippedPowerUp.anchoredPosition = new Vector2( START_X_POSITION, equippedPowerUp.anchoredPosition.y );
+		magnetPowerUp.anchoredPosition = new Vector2( START_X_POSITION, magnetPowerUp.anchoredPosition.y );
+		shieldPowerUp.anchoredPosition = new Vector2( START_X_POSITION, shieldPowerUp.anchoredPosition.y );
 	}
 
 	public void slideDisplayOutPowerUp()
 	{
-		powerUpHUD.slideDisplayOut(PlayerStatsManager.Instance.getPowerUpSelected());
+		slideOutPowerUp( equippedPowerUp );
 	}
 
-		void GameStateChange( GameState newState )
+	void GameStateChange( GameState newState )
 	{
 		if( newState == GameState.Checkpoint )
 		{
-			powerUpHUD.slideDisplayOut(PlayerStatsManager.Instance.getPowerUpSelected());
+			//slideDisplayOut(PlayerStatsManager.Instance.getPowerUpSelected());
 			resetAllPowerUps();
 		}
 	}
@@ -536,7 +525,62 @@ public class PowerUpManager : BaseClass {
 		//For example: 14 + 2 * 6 = 26 meters
 		return BASE_DIAMETER + PlayerStatsManager.Instance.getPowerUpUpgradeLevel(pud.powerUpType) * UPGRADE_DIAMETER_BOOST;
 	}
+
+	public void slideEquippedPowerUp( PowerUpManager.PowerUpData pud )
+	{
+		Debug.Log("slideEquippedPowerUp " + pud.powerUpType.ToString() );
+		Image[] images = equippedPowerUp.GetComponentsInChildren<Image>();
+		images[0].sprite = PowerUpDisplayData.getPowerUpSprite( pud.powerUpType );
+		equippedPowerUpQuantity.text = PlayerStatsManager.Instance.getPowerUpQuantity(pud.powerUpType).ToString();
+		slideInPowerUp(equippedPowerUp);
+
+	}
+
+	public void slideInPowerUp( RectTransform uiElement )
+	{
+		StartCoroutine( slideInPowerUpThread (uiElement ) );
+	}
+
+	IEnumerator slideInPowerUpThread (RectTransform uiElement )
+	{
+		float elapsed = 0;
+		float initialPosX = uiElement.anchoredPosition.x;
+		float distance = FINAL_X_POSITION - initialPosX;
+		float posX;
+		
+		do
+		{
+			elapsed = elapsed + Time.deltaTime;
+			posX = initialPosX + elapsed/SLIDE_DURATION * distance;
+			uiElement.anchoredPosition = new Vector2( posX, uiElement.anchoredPosition.y );
+			yield return _sync();
+		} while ( elapsed < SLIDE_DURATION );
+		uiElement.anchoredPosition = new Vector2( FINAL_X_POSITION, uiElement.anchoredPosition.y );
+		
+	}
 	
+	public void slideOutPowerUp( RectTransform uiElement )
+	{
+		StartCoroutine( slideOutPowerUpThread (uiElement ) );
+	}
+
+	IEnumerator slideOutPowerUpThread (RectTransform uiElement )
+	{
+		float elapsed = 0;
+		float initialPosX = uiElement.anchoredPosition.x;
+		float distance = initialPosX - START_X_POSITION;
+		float posX;
+		
+		do
+		{
+			elapsed = elapsed + Time.deltaTime;
+			posX = initialPosX - elapsed/SLIDE_DURATION * distance;
+			uiElement.anchoredPosition = new Vector2( posX, uiElement.anchoredPosition.y );
+			yield return _sync();
+		} while ( elapsed < SLIDE_DURATION );
+		uiElement.anchoredPosition = new Vector2( START_X_POSITION, uiElement.anchoredPosition.y );
+	}
+
 	[System.Serializable]
 	public class PowerUpData
 	{
@@ -546,5 +590,15 @@ public class PowerUpManager : BaseClass {
 		public ParticleSystem activationEffect;
 		public GameObject powerUpToSpawn;
 		public AudioClip deactivationSound;
+		public GameObject powerUpTimer;
+
+		public void startTimer(float timerDuration )
+		{
+			powerUpTimer.GetComponent<PowerUpTimer>().startTimer(timerDuration);
+		}
+		public void stopTimer()
+		{
+			powerUpTimer.GetComponent<PowerUpTimer>().stopTimer();
+		}
 	}
 }

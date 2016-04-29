@@ -8,13 +8,11 @@ public class PowerUpDisplayData : MonoBehaviour {
 	//List of each consumable powerup available.
 	public List<ConsumablePowerUpData> powerUpList = new List<ConsumablePowerUpData>(4);
 	static Dictionary<PowerUpType,ConsumablePowerUpData> powerUpDictionary = new Dictionary<PowerUpType,ConsumablePowerUpData>(4);
-	static Texture2D powerUpAtlas;
 	
 	void Awake()
 	{
 		DontDestroyOnLoad( gameObject );
 		fillDictionary();
-		powerUpAtlas = Resources.Load("PowerUps/3D/Power_Ups") as Texture2D;
 	}
 
 	void fillDictionary()
@@ -34,17 +32,6 @@ public class PowerUpDisplayData : MonoBehaviour {
 	{
 		ConsumablePowerUpData pud = powerUpDictionary[type];
 		return LocalizationManager.Instance.getText( pud.textID );
-	}
-	
-	public static Texture2D getPowerUpImage()
-	{
-		return powerUpAtlas;
-	}
-
-	public static Rect getPowerUpTexCoord( PowerUpType type )
-	{
-		ConsumablePowerUpData pud = powerUpDictionary[type];
-		return pud.textureCoordinates;
 	}
 
 	public static Sprite getPowerUpSprite( PowerUpType type )
@@ -80,7 +67,6 @@ public class PowerUpDisplayData : MonoBehaviour {
 	{
 		public PowerUpType powerUpType = PowerUpType.None;
 		public string textID;
-		public Rect textureCoordinates;
 		public Sprite powerupSprite;
 	}
 }
