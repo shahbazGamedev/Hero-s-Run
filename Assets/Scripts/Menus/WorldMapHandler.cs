@@ -176,8 +176,8 @@ public class WorldMapHandler : MonoBehaviour {
 
 		//Center map around shield indicating next level to complete
 		LevelData.LevelInfo levelInfo = levelList[levelForPortrait];
-		playerPortraitRect._rect.x = levelInfo.MapCoordinates.x * worldRect.width  +  playerPortraitOffset.x;
-		playerPortraitRect._rect.y = levelInfo.MapCoordinates.y * worldRect.height +  playerPortraitOffset.y;
+		playerPortraitRect._rect.x = 0;
+		playerPortraitRect._rect.y = 0;
 		worldRect.x = -playerPortraitRect.rect.center.x  + Screen.width/2;
 		worldRect.y = -playerPortraitRect.rect.center.y  + Screen.height/2;
 		enforceMapBoundaries();
@@ -220,18 +220,18 @@ public class WorldMapHandler : MonoBehaviour {
 		yield return new WaitForSeconds( waitPeriod );
 
 		LevelData.LevelInfo levelInfo = levelList[ LevelManager.Instance.getNextLevelToComplete() - 1 ];
-		if( levelInfo.isSectionEnd )
+		if( false )
 		{
 			//Move the user portrait to the junction marker associated to the level just completed.
-			Vector2 dest = new Vector2( levelInfo.sectionIconMapCoordinates.x * worldRect.width + playerPortraitOffset.x, levelInfo.sectionIconMapCoordinates.y * worldRect.height + playerPortraitOffset.y );
-			LeanTween.move( playerPortraitRect, dest, 3.8f, options2 );
+			//Vector2 dest = new Vector2( levelInfo.sectionIconMapCoordinates.x * worldRect.width + playerPortraitOffset.x, levelInfo.sectionIconMapCoordinates.y * worldRect.height + playerPortraitOffset.y );
+						LeanTween.move( playerPortraitRect, Vector2.zero, 3.8f, options2 );
 		}
 		else
 		{
 			//Move the user portrait to the next level shield.
 			levelInfo = levelList[ LevelManager.Instance.getNextLevelToComplete() ];
-			Vector2 dest = new Vector2( levelInfo.MapCoordinates.x * worldRect.width + playerPortraitOffset.x, levelInfo.MapCoordinates.y * worldRect.height + playerPortraitOffset.y );
-			LeanTween.move( playerPortraitRect, dest, 3.8f, options1 );
+			//Vector2 dest = new Vector2( levelInfo.MapCoordinates.x * worldRect.width + playerPortraitOffset.x, levelInfo.MapCoordinates.y * worldRect.height + playerPortraitOffset.y );
+			LeanTween.move( playerPortraitRect,  Vector2.zero, 3.8f, options1 );
 		}
 
 	}
@@ -243,8 +243,8 @@ public class WorldMapHandler : MonoBehaviour {
 		
 		//Move the user portrait to the next level shield.
 		LevelData.LevelInfo levelInfo = levelList[ LevelManager.Instance.getNextLevelToComplete() ];
-		Vector2 dest = new Vector2( levelInfo.MapCoordinates.x * worldRect.width + playerPortraitOffset.x, levelInfo.MapCoordinates.y * worldRect.height + playerPortraitOffset.y );
-		LeanTween.move( playerPortraitRect, dest, 3.8f, options1 );
+		//Vector2 dest = new Vector2( levelInfo.MapCoordinates.x * worldRect.width + playerPortraitOffset.x, levelInfo.MapCoordinates.y * worldRect.height + playerPortraitOffset.y );
+		LeanTween.move( playerPortraitRect,  Vector2.zero, 3.8f, options1 );
 	}
 
 	void displayOfferLivesPopup()
@@ -333,15 +333,15 @@ public class WorldMapHandler : MonoBehaviour {
 		{
 			levelInfo = levelList[i];
 			//the map coordinates correspond to the exact center of the shield
-			drawLevelMarker( levelInfo.MapCoordinates, i );
+			drawLevelMarker(  Vector2.zero, i );
 
 			//A section is composed of many levels, typically around 10.
 			//To unlock the next section you must either ask 3 friends or pay in the App store.
 			//Is this the end of a section?
-			if( levelInfo.isSectionEnd )
+			if( false )
 			{
 				//Yes it is.
-				drawSectionMarker( levelInfo.sectionIconMapCoordinates, i );
+				drawSectionMarker(  Vector2.zero, i );
 			}
 		}
 		//Draw the user picture to the left of the shield after everything else.
@@ -476,7 +476,7 @@ public class WorldMapHandler : MonoBehaviour {
 		GUIContent shieldButtonContent = new GUIContent( "" );
 
 		//Verify in which state we are
-		int nextSectionToUnlock = LevelManager.Instance.getNextSectionToUnlock();
+		int nextSectionToUnlock = 0;
 
 		if( levelNumber == LevelManager.Instance.getNextLevelToComplete() - 1 && levelNumber == nextSectionToUnlock )
 		{
@@ -487,7 +487,6 @@ public class WorldMapHandler : MonoBehaviour {
 				print ( "level " + levelNumber + " next lvl " + LevelManager.Instance.getNextLevelToComplete() + " nextSectionToUnlock " + nextSectionToUnlock  );
 				//for debugging
 				//popupHandler.activatePopup( PopupType.FriendsOrPay );
-				NextSectionNowUnlocked();
 			}
 		}
 		else
@@ -623,26 +622,6 @@ public class WorldMapHandler : MonoBehaviour {
 		{
 			worldRect.y = 0;
 		}
-	}
-
-	void OnEnable()
-	{
-		FacebookManager.nextSectionNowUnlocked += NextSectionNowUnlocked;
-	}
-
-	void OnDisable()
-	{
-		FacebookManager.nextSectionNowUnlocked -= NextSectionNowUnlocked;
-	}
-	
-	void NextSectionNowUnlocked()
-	{
-		//Levels are now unlocked up to highestLevelUnlocked
-		int highestLevelUnlocked = LevelManager.Instance.getNextSectionToUnlock();
-		PlayerStatsManager.Instance.setHighestLevelUnlocked(highestLevelUnlocked);
-		PlayerStatsManager.Instance.savePlayerStats();
-		print ("*******Super! WorldMapHandler-NextSectionNowUnlocked new: " + highestLevelUnlocked);
-		StartCoroutine( moveUserPortrait2(0.5f) );
 	}
 
 }

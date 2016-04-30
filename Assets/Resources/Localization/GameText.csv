@@ -52,7 +52,6 @@ VO_FA_NOBODY_LIKES_YOU,Nobody likes you<comma> you know,Personne ne te trouves s
 VO_DQ_BRING_BACK_BOOK,Zombies<comma> get my grimoire back from this thief!,Zombies<comma> ramenez-moi mon grimoire pris par ce voleur !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 VO_FA_NOT_HER_AGAIN,Not her again!,Pas encore toi !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POPUP_TITLE_DEBUG,Debug Menu,Menu Debug,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-LEVEL_SECTION_NAME_DOOM,the Montain of Doom!,la Montagne du Condamné !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_DESCRIPTION_TOWER,The maleficent Dark Queen lives in the wizard tower. This is where she broods and plots nefarious ways to conquer the Kingdom of Lum.,La maléfique Sorcière des Ténèbres habite dans la tour de sorcellerie. C'est là qu'elle manigance ses plans machiavéliques afin de conquérir le Royaume de Lum.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_DESCRIPTION_TANGLEWOOD,Tanglewood is a peaceful area located near the Oakvale harbor.,Tanglewood est un endroit paisible situé prêt du havre d'Oakvale.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_DESCRIPTION_ELFLAND,The wood elves used to live in Ellenmïrre. They abandoned the city after the Great Battle.,Les elfes des bois habitaient jadis à Ellenmïrre. Ils ont abandonné l'endroit après la Grande Bataille.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -182,22 +181,17 @@ FB_HAVE_A_LIFE_MESSAGE,Here's a life! Have a great day!,Voici une vie ! Passe un
 MESSAGE_ENTRY_TITLE_EXTRA_LIFE,Send extra life!,Envoyer une vie !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_TEXT_EXTRA_LIFE,Send <first_name> an extra life.,Envoyer une vie à <first_name>.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_TEXT_NEXT_EPISODE, the next episode., le prochain episode.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-FB_HELP_UNLOCK_MESSAGE,I will help you unlock the next episode!,Je vais t'aider à déverrouiller le prochain épisode !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-APP_REQUEST_MESSAGE_UNLOCK,Help me unlock the next episode!,Aide moi à débloquer le prochain épisode !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POPUP_TITLE_MESSAGE_CENTER,Your messages,Vos messages,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POPUP_TITLE_OFFER_LIVES,Help your friends by sending lives!,Aidez vos amis en leur envoyant des vies supplémentaires !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POPUP_TITLE_SETTINGS,Settings,Paramètres,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POPUP_BUTTON_FB_DISCONNECT,Logout,Déconnexion,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POPUP_BUTTON_CHECK_ALL,Check all,Tout choisir,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POPUP_BUTTON_ACCEPT,Accept,Acceptez,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-POPUP_ASK_FRIENDS_UNLOCK_MESSAGE,Unlock more levels by asking your friends on Facebook for help.,Déverrouiller le prochain épisode en demandant de l'aide à vos amis Facebook.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_TITLE_RECEIVED_GIFT,Gift received,Cadeau reçu,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_TEXT_RECEIVED_GIFT,offered you a life!,vous a offert une vie !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_TITLE_RECEIVED_HELP,You got help!,Tu as eu de l'aide !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-MESSAGE_ENTRY_TEXT_RECEIVED_HELP,helped you unlock the next episode!,vous a aidé à déverrouiller le prochain épisode !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_TITLE_HELP_FRIEND,Help your friend!,Aide ton ami !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_TEXT_ASK_LIFE,asks you to send a life!,vous demande d'envoyer une vie !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-MESSAGE_ENTRY_TEXT_ASK_UNLOCK,Help <first_name> to unlock <section_name>,Aide <first_name> à déverrouiller <section_name> !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MESSAGE_ENTRY_ERROR,Unknown app request type,Type de requête inconnu,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Ask Friends for lives popup
 POPUP_ASK_LIVES_TITLE,Get more lives!,Obtenez des vies !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED

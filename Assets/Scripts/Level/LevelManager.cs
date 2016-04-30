@@ -62,20 +62,6 @@ public class LevelManager {
 		return nextLevelToComplete;
 	}
 
-	public int getNextSectionToUnlock()
-	{
-		int startSection = PlayerStatsManager.Instance.getHighestLevelUnlocked() + 1; //Exclude the current section, hence the plus one.
-		for( int i=startSection; i < levelData.levelList.Count; i++ )
-		{
-			if( levelData.levelList[i].isSectionEnd )
-			{
-				return i;
-			}
-		}
-		//No section end was found. In that case, return the last level.
-		return levelData.levelList.Count-1;
-	}
-
 	public bool isTutorialActive()
 	{
 		if( currentLevelInfo != null )
@@ -162,11 +148,6 @@ public class LevelManager {
 	public bool isLevelLocked( int levelNumber )
 	{
 		return levelData.getLevelInfo( levelNumber ).isLevelLocked;
-	}
-
-	public string getSectionName( int levelNumber )
-	{
-		return levelData.getLevelInfo( levelNumber ).sectionName;
 	}
 
 	public string getLevelDescription( int levelNumber )

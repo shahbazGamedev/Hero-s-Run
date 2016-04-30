@@ -48,12 +48,6 @@ public class PlayerStatsManager {
 	//DateTime when player last started WorldMapHandler
 	DateTime dateLastPlayed;
 
-	List <string> unlockFromIDList = new List<string>();
-	//This indicates the highest level unlocked (which is not the same as the highest level completed).
-	//So if the world has 30 levels and there is a junction at level 10 and another one at level 20 and 3 friends helped you
-	//unlock the first junction, the highest level unlocked is 20.
-	int highestLevelUnlocked = -1;
-
 	//For stats and achievements
 	static EventCounter novice_runner = new EventCounter( GameCenterManager.NoviceRunner, 1, CounterType.Total_any_level, 1000 );
 	static EventCounter coin_hoarder = new EventCounter( GameCenterManager.CoinHoarder, 1, CounterType.Total_any_level, 50000 );
@@ -604,46 +598,6 @@ public class PlayerStatsManager {
 		setTreasureKeysOwned( newValue );
 
 	}
-
-	//Store the fromID of a friend who has accepted to unlock the next section of the map if it does not already exist.
-	//There is a maximum of 3 fromID in this list since we only need 3 friends to unlock the next section.
-	public void addUnlockRequest( string fromID )
-	{
-		//for debugging
-		if( unlockFromIDList.Count <= 3 )
-		//if( unlockFromIDList.Count <= 3 && !unlockFromIDList.Contains(fromID ))
-		{
-			unlockFromIDList.Add(fromID );
-		}
-	}
-
-	public void ClearSaveUnlockRequests()
-	{
-		unlockFromIDList.Clear();
-	}
-
-	public List<string> getSaveUnlockRequests()
-	{
-		//for debugging
-		//unlockFromIDList.Clear();
-		//unlockFromIDList.Add("1378641987");	//Raphael
-		//unlockFromIDList.Add("593102300");	//Veronique
-		//unlockFromIDList.Add("48302002");		//Gaetano
-
-		return unlockFromIDList;
-	}
-
-	string concatenateSaveUnlockRequests()
-	{
-		string result = "";
-		for( int i =0; i < unlockFromIDList.Count; i++ )
-		{
-			result = result + unlockFromIDList[i] + ",";
-		}
-		result = result.TrimEnd(',');
-		Debug.Log("concatenateSaveUnlock " + result );
-		return result;
-	}
 	
 	public void addToPowerUpInventory( PowerUpType type, int quantity )
 	{
@@ -754,18 +708,6 @@ public class PlayerStatsManager {
 			PlayerPrefs.DeleteAll();
 		}
 	}
-	
-	public void setHighestLevelUnlocked( int value )
-	{
-		highestLevelUnlocked = value;
-		Debug.Log("setHighestLevelUnlocked " + highestLevelUnlocked );
-	}
-
-	//Reminder levels start at 0 even though 1 is displayed on the map.
-	public int getHighestLevelUnlocked()
-	{
-		return highestLevelUnlocked;
-	}
 
 	public void loadPlayerStats()
 	{
@@ -825,12 +767,6 @@ public class PlayerStatsManager {
 			{
 				usesFacebook = false;	
 			}
-			string list = PlayerPrefs.GetString("unlockFromIDList", "" );
-			string[] listArray = list.Split(',');
-			for( int i = 0; i < listArray.Length; i++ )
-			{
-				unlockFromIDList.Add( listArray[i] );
-			}
 			string dateLastPlayedString = PlayerPrefs.GetString( "dateLastPlayed", "" );
 			if( dateLastPlayedString == "" )
 			{
@@ -840,7 +776,6 @@ public class PlayerStatsManager {
 			{
 				dateLastPlayed = DateTime.Parse( dateLastPlayedString );
 			}
-			highestLevelUnlocked = PlayerPrefs.GetInt("highestLevelUnlocked",-1);
 
 			soundVolume = PlayerPrefs.GetFloat("soundVolume", 1f );
 
@@ -904,10 +839,7 @@ public class PlayerStatsManager {
 		{
 			PlayerPrefs.SetString( "usesFacebook", "false" );
 		}
-		string unlockRequests = concatenateSaveUnlockRequests();
-		PlayerPrefs.SetString( "unlockFromIDList", unlockRequests );
 		PlayerPrefs.SetString( "dateLastPlayed", dateLastPlayed.ToString() );
-		PlayerPrefs.SetInt("highestLevelUnlocked", highestLevelUnlocked );
 
 		PlayerPrefs.SetFloat("soundVolume", soundVolume );
 
@@ -920,7 +852,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetInt("avatar", (int)avatar );
 		savePowerUpInventory();
 		PlayerPrefs.Save();
-		Debug.Log ("savePlayerStats-highScore: " + highScore + " firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " usesFacebook: "  + usesFacebook + " unlockFromIDList: " + unlockRequests + " Date Last Played: " + dateLastPlayed );
+		Debug.Log ("savePlayerStats-highScore: " + highScore + " firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
 	}
 	
 	//Used for debugging
@@ -944,13 +876,8 @@ public class PlayerStatsManager {
 		usesFacebook = false;
 		PlayerPrefs.SetInt( "High Score", 0 );
 		highScore = 0;
-		PlayerPrefs.SetString( "unlockFromIDList", "" );
-		ClearSaveUnlockRequests();
 		dateLastPlayed = DateTime.Now;
 		PlayerPrefs.SetString( "dateLastPlayed", dateLastPlayed.ToString() );
-		PlayerPrefs.SetInt("highestLevelUnlocked", -1 );
-		highestLevelUnlocked = -1;
-
 		PlayerPrefs.SetFloat("soundVolume", 1f );
 		soundVolume = 1f;
 

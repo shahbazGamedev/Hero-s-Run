@@ -44,10 +44,6 @@ public class FacebookManager
 	//List of AppRequestData objects
 	public List<AppRequestData> AppRequestDataList = new List<AppRequestData>();
 
-	//Event management used to notify other classes when a map section is unlocked
-	public delegate void NextSectionNowUnlocked();
-	public static event NextSectionNowUnlocked nextSectionNowUnlocked;
-
 	private static FacebookManager facebookManager = null;
 
 	public static FacebookManager Instance
@@ -169,7 +165,7 @@ public class FacebookManager
     }
 
 	//Title: 	The title for the Dialog. Maximum length is 50 characters. For example, "App Requests". Currently this parameter does not change anything. It appears to be a Facebook bug.
-	//Message:	For example: "Help me unlock the next episode!"
+	//Message:	For example: "Send me lives!"
 	//Data:		Custom data identifying what type of app requests this is. The format is <type,number>. The maximum length is 255 characters.
 	//Note: 	The excludeIds, maxRecipients and filters AppRequest parameters are currently not supported for mobile devices by Facebook.
 	public void CallAppRequestAsFriendSelector( string title, string message, string filters, string data, string excludeIds, string friendSelectorMax )
@@ -364,8 +360,6 @@ public class FacebookManager
 			Debug.Log("FacebookManager-allAppRequestsDataCallback: Added " + AppRequestDataList.Count + " app requests to list.");
 			//Get any missing player pictures
 			fetchAppRequestPictures();
-			//See if any friends helped us unlock the next section.
-			verifyWhichFriendsAccepted();
 		}
 	}
 	
@@ -377,34 +371,6 @@ public class FacebookManager
 			//Note that getFriendPicture verifies that we do not already have the picture and that it has not been requested yet.
 			getFriendPicture( appRequestData.fromID );
 		}
-	}
-
-	//Verifies which friends have accepted to unlock the next section of the map then saves the information.
-	//If 3 friends have accepted, the next section is unlocked and an event is sent.
-	void verifyWhichFriendsAccepted()
-	{
-		foreach( AppRequestData appRequestData in FacebookManager.Instance.AppRequestDataList ) 
-		{
-			if( appRequestData.dataType == RequestDataType.Accept_Section_Unlock && appRequestData.dataNumber == LevelManager.Instance.getNextSectionToUnlock() )
-			{
-				//Yes, we have a valid app request corresponding to the section to unlock.
-				//We need to display the pictures of each friend who has accepted to unlock the next section
-				//so store his FB id.
-				PlayerStatsManager.Instance.addUnlockRequest(appRequestData.fromID);
-				//Note that getFriendPicture verifies that we do not already have the picture and that it has not been requested yet.
-				getFriendPicture( appRequestData.fromID );
-			}
-		}
-		if( PlayerStatsManager.Instance.getSaveUnlockRequests().Count == 3 )
-		{
-			//Yes! The next section is unlocked.
-			//Send an event to interested classes.
-			if(nextSectionNowUnlocked != null) nextSectionNowUnlocked();
-			//Empty the current list since no longer needed
-			PlayerStatsManager.Instance.ClearSaveUnlockRequests();
-		}
-		PlayerStatsManager.Instance.savePlayerStats();
-		
 	}
 
 	void FeedCallback(IShareResult result)

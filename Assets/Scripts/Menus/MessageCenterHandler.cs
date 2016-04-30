@@ -440,20 +440,6 @@ public class MessageCenterHandler : MonoBehaviour {
 		{
 			entryText = appRequestData.fromFirstName + " " + med.entryText;
 		}
-		if( med.entryText.Contains("<section_name>") )
-		{
-			//Yes, insert the section name (defined in level data) into the text
-			string sectionName = LevelManager.Instance.getSectionName( appRequestData.dataNumber );
-			if( sectionName == "" )
-			{
-				sectionName = LocalizationManager.Instance.getText("MESSAGE_ENTRY_TEXT_NEXT_EPISODE");
-			}
-			else
-			{
-				sectionName = LocalizationManager.Instance.getText(sectionName);
-			}
-			entryText = entryText.Replace("<section_name>", sectionName );
-		}
 
 		GUI.Label(entryTextRect, entryText, "Entry Message");
 		

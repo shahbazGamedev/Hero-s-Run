@@ -8,11 +8,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	[Header("World Map Handler")]
 	PopupHandler popupHandler;
-	public Canvas worldCanvas;
-	public RectTransform wc;
 	public RectTransform map;
-	public float mapWidth;
-	public float mapHeight;
 	bool levelLoading = false;
 	private LevelData levelData;
 	List<LevelData.LevelInfo> levelList;
@@ -35,6 +31,8 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public GameObject postLevelPopupPanel;
 	[Header("Star Meter")]
 	public Color32 starReceivedColor;
+	[Header("Level Station Locations")]
+	public RectTransform[] levelStationLocations = new RectTransform[15];
 
 
 
@@ -66,8 +64,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 		//This is why we do it here instead.
 		AudioListener.pause = false;
 
-		mapWidth = map.rect.width;
-		mapHeight = map.rect.height;
 		levelLoading = false;
 
 		numberOfMessages.text = (FacebookManager.Instance.AppRequestDataList.Count).ToString();
@@ -102,13 +98,13 @@ public class NewWorldMapHandler : MonoBehaviour {
 			levelInfo = levelList[i];
 			if( levelInfo.levelType == LevelType.Episode )
 			{
-				drawEpisodeLevelMarker( episodeStationPrefab, levelInfo.MapCoordinates, i, episodeCounter );
-				drawDisplayStars( starDisplayPrefab, levelInfo.MapCoordinates, episodeCounter );
+								drawEpisodeLevelMarker( episodeStationPrefab, Vector2.zero, i, episodeCounter );
+				drawDisplayStars( starDisplayPrefab, Vector2.zero, i, episodeCounter );
 				episodeCounter++;
 			}
 			else if( levelInfo.levelType == LevelType.Normal )
 			{
-				drawNormalLevelMarker( levelStationPrefab, levelInfo.MapCoordinates, i, episodeCounter );
+				drawNormalLevelMarker( levelStationPrefab, Vector2.zero, i, episodeCounter );
 			}
 		}
 	}
@@ -120,10 +116,11 @@ public class NewWorldMapHandler : MonoBehaviour {
 		go.name = "Level Station " + (levelNumber + 1).ToString();
 		Button levelStationButton = go.GetComponent<Button>();
 		RectTransform levelStationButtonRectTransform = levelStationButton.GetComponent<RectTransform>();
-		levelStationButtonRectTransform.anchoredPosition = new Vector2( wc.rect.width * coord.x, mapHeight * (1f - coord.y) );
+		levelStationButtonRectTransform.parent = levelStationLocations[levelNumber];
+		levelStationButtonRectTransform.anchoredPosition = new Vector2( 0, 0 );
 		levelStationButton.onClick.AddListener(() => levelButtonClick(episodeCounter-1, levelNumber));
 		Text levelStationText = levelStationButton.GetComponentInChildren<Text>();
-		levelStationText.text = episodeCounter.ToString() + "/" + (levelNumber + 1).ToString();
+		levelStationText.text = (levelNumber + 1).ToString();
 	}
 
 	void levelButtonClick( int episodeNumber, int levelNumber )
@@ -142,20 +139,22 @@ public class NewWorldMapHandler : MonoBehaviour {
 		go.name = "Episode Station " + (episodeCounter + 1).ToString();
 		Button levelStationButton = go.GetComponent<Button>();
 		RectTransform levelStationButtonRectTransform = levelStationButton.GetComponent<RectTransform>();
-		levelStationButtonRectTransform.anchoredPosition = new Vector2( wc.rect.width * coord.x, mapHeight * (1f - coord.y) );
+		levelStationButtonRectTransform.parent = levelStationLocations[levelNumber];
+		levelStationButtonRectTransform.anchoredPosition = new Vector2( 0, 0 );
 		levelStationButton.onClick.AddListener(() => levelButtonClick(episodeCounter, levelNumber));
 		Text[] episodeStationTexts = levelStationButton.GetComponentsInChildren<Text>();
-		episodeStationTexts[0].text = (episodeCounter + 1).ToString() + "/" + (levelNumber + 1).ToString();
+		episodeStationTexts[0].text = (levelNumber + 1).ToString();
 		episodeStationTexts[1].text = getEpisodeDifficultyText(  episodeInfo.episodeDifficulty );
 	}
 
-	void drawDisplayStars(GameObject starDisplayPrefab, Vector2 coord, int episodeCounter )
+	void drawDisplayStars(GameObject starDisplayPrefab, Vector2 coord, int levelNumber, int episodeCounter )
 	{
 		GameObject go = (GameObject)Instantiate(starDisplayPrefab);
 		go.transform.SetParent(map.transform,false);
 		go.name = "Star Meter " + (episodeCounter + 1).ToString();
 		RectTransform goRectTransform = go.GetComponent<RectTransform>();
-		goRectTransform.anchoredPosition = new Vector2( wc.rect.width * coord.x, mapHeight * (1f - coord.y) + 55f);
+		goRectTransform.parent = levelStationLocations[levelNumber];
+		goRectTransform.anchoredPosition = new Vector2( 0, 55f );
 		Image[] stars = go.GetComponentsInChildren<Image>();
 		//numberOfStars is between 0 and 3
 		int numberOfStars = PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( episodeCounter );
