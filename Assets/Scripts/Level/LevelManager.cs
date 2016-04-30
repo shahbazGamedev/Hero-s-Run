@@ -118,6 +118,19 @@ public class LevelManager {
 		}
 	}
 
+	int episodeCurrentlyBeingPlayed = 0;
+	public int EpisodeCurrentlyBeingPlayed
+    {
+		get
+		{
+		    return this.episodeCurrentlyBeingPlayed;
+		}
+		set
+		{
+		    this.episodeCurrentlyBeingPlayed = value;
+		}
+    }
+
 	public bool getPlayerFinishedTheGame()
 	{
 		return playerFinishedTheGame;

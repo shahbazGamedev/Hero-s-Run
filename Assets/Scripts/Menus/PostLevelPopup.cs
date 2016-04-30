@@ -32,10 +32,10 @@ public class PostLevelPopup : MonoBehaviour {
 
 	private void loadEpisodeData(LevelData levelData)
 	{
-		int levelNumber = LevelManager.Instance.getNextLevelToComplete();
+		int episodeNumber = LevelManager.Instance.EpisodeCurrentlyBeingPlayed;
 
-		LevelData.EpisodeInfo selectedEpisode = levelData.getEpisodeInfo( levelNumber );
-		string levelNumberString = (levelNumber + 1).ToString();
+		LevelData.EpisodeInfo selectedEpisode = levelData.getEpisodeInfo( episodeNumber );
+		string levelNumberString = (episodeNumber + 1).ToString();
 
 		string episodeNumberString = LocalizationManager.Instance.getText("EPISODE_NUMBER");
 
@@ -45,7 +45,7 @@ public class PostLevelPopup : MonoBehaviour {
 		episodeNumberText.text = episodeNumberString;
 		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
 		postLevelDescriptionText.text = LocalizationManager.Instance.getText("MENU_BETTER_LUCK_NEXT_TIME");
-		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( levelNumber ) + "/" + selectedEpisode.numberOfChestKeys;
+		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( episodeNumber ) + "/" + selectedEpisode.numberOfChestKeys;
 
 		starMeter.GetComponent<StarMeterHandler>().updateValues( selectedEpisode );
 		

@@ -16,7 +16,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 	bool levelLoading = false;
 	private LevelData levelData;
 	List<LevelData.LevelInfo> levelList;
-	int currentEpisodePlayerIsPlaying = 0;
 	public Canvas settingsMenuCanvas;
 	public Text numberOfKeysText;
 	public Text numberOfLivesText;
@@ -130,7 +129,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 	void levelButtonClick( int episodeNumber, int levelNumber )
 	{
 		Debug.Log("Level Station click-Episode: " + episodeNumber + " Level: " + levelNumber );
-		currentEpisodePlayerIsPlaying = episodeNumber;
+		LevelManager.Instance.EpisodeCurrentlyBeingPlayed = episodeNumber;
 		SoundManager.playButtonClick();
 		episodePopup.showEpisodePopup( episodeNumber, levelNumber );
 	}
