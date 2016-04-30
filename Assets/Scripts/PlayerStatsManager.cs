@@ -20,13 +20,13 @@ public class PlayerStatsManager {
 	int coinAccumulator = 0;
 	Transform coinParent = null;
 	int lifetimeCoins = 0;			//The amount of coins (stars) the player has earned over time. This is a statistic. It is used by the achievement system.
-	//Assume there are 15 episodes for now. For each episode, the player has received between 0 and 3 stars. The number of stars is displayed on the world map.
+	//Assume there are 6 episodes for now. For each episode, the player has received between 0 and 3 stars. The number of stars is displayed on the world map.
 	//The index is the episode number. The value is the number of stars between 0 and 3. The initial values are 0.
-	int[] displayStarsArray = new int[15];
+	int[] displayStarsArray = new int[6];
 
-	//Assume there are 15 episodes for now. In each episode, a limited number of treasure chest keys have been hidden.
+	//Assume there are 6 episodes for now. In each episode, a limited number of treasure chest keys have been hidden.
 	//The index is the episode number. The value is the number of keys found by the player. The initial values are 0.
-	int[] keysFoundInEpisodeArray = new int[15];
+	int[] keysFoundInEpisodeArray = new int[6];
 	//Number of treasure keys owned by the player
 	int treasureKeysOwned = 0;
 
@@ -410,6 +410,11 @@ public class PlayerStatsManager {
 		return displayStarsArray[episodeNumber];
 	}
 
+	public void setNumberDisplayStarsForEpisode( int numberOfStars )
+	{
+		displayStarsArray[LevelManager.Instance.EpisodeCurrentlyBeingPlayed] = numberOfStars;
+	}
+
 	void loadKeysFoundInEpisode()
 	{
 		string keysFoundInEpisodeString = PlayerPrefs.GetString("keysFoundInEpisode", "" );
@@ -468,9 +473,9 @@ public class PlayerStatsManager {
 
 	public void incrementNumberKeysFoundInEpisode()
 	{
-		int episodeNumber = LevelManager.Instance.getNextLevelToComplete();
+		int episodeNumber = LevelManager.Instance.EpisodeCurrentlyBeingPlayed;
 		keysFoundInEpisodeArray[episodeNumber]++;
-		increaseTreasureKeysOwned( 1);
+		increaseTreasureKeysOwned(1);
 	}
 
 	public int getPlayerHighScore()
