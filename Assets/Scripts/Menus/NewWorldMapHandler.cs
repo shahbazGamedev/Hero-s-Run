@@ -34,6 +34,8 @@ public class NewWorldMapHandler : MonoBehaviour {
 	[Header("Level Station Locations")]
 	public RectTransform[] levelStationLocations = new RectTransform[15];
 
+	private Outline nextLevelToPlayGlowingOutline;
+	private const float OUTLINE_FLASH_SPEED = 2.25f;
 
 
 	void Awake ()
@@ -85,6 +87,13 @@ public class NewWorldMapHandler : MonoBehaviour {
 		}
 	}
 
+	void Update()
+	{
+		//Outline color is white.
+		if( nextLevelToPlayGlowingOutline != null ) nextLevelToPlayGlowingOutline.effectColor = new Color(1f,1f,1f,(Mathf.Sin(Time.time * OUTLINE_FLASH_SPEED ) + 1f)/ 2f);
+
+	}
+
 	void drawLevelMarkers()
 	{
 		GameObject levelStationPrefab = Resources.Load( "Menu/Level Button") as GameObject;
@@ -127,6 +136,12 @@ public class NewWorldMapHandler : MonoBehaviour {
 			levelStationButton.interactable = false;
 			levelStationText.color = Color.gray;
 		}
+		else if ( levelNumber == LevelManager.Instance.getNextLevelToComplete() )
+		{
+			//This is current level. Enable outline.
+			levelStationButton.GetComponent<Outline>().enabled = true;
+			nextLevelToPlayGlowingOutline = levelStationButton.GetComponent<Outline>();
+		}
 	}
 
 	void levelButtonClick( int episodeNumber, int levelNumber )
@@ -157,6 +172,12 @@ public class NewWorldMapHandler : MonoBehaviour {
 			levelStationButton.interactable = false;
 			episodeStationTexts[0].color = Color.gray;
 			episodeStationTexts[1].color = Color.gray;
+		}
+		else if ( levelNumber == LevelManager.Instance.getNextLevelToComplete() )
+		{
+			//This is current level. Enable outline.
+			levelStationButton.GetComponent<Outline>().enabled = true;
+			nextLevelToPlayGlowingOutline = levelStationButton.GetComponent<Outline>();
 		}
 	}
 
