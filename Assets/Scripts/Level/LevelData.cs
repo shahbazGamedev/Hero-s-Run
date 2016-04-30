@@ -22,6 +22,15 @@ public enum LevelType
 	Normal = 1
 }
 
+public enum EpisodeDifficulty 
+{
+	Easy = 0,
+	Normal = 1,
+	Hard = 2,
+	VeryHard = 3
+}
+
+
 public class LevelData : MonoBehaviour {
 	
 	public string FinalDestinationName = "KING_CASTLE";
@@ -204,7 +213,7 @@ public class LevelData : MonoBehaviour {
 		public int numberOfChestKeys = 0;
 		[Tooltip("Stars required to reach one, two, three stars as well as the maximum number of stars for the episode.")]
 		public Vector4 starsRequired = new Vector4( 10000f, 33000f, 50000f, 100000f );
-
+		public EpisodeDifficulty episodeDifficulty = EpisodeDifficulty.Normal;
 	}
 
 	[System.Serializable]

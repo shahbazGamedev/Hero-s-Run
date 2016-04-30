@@ -16,6 +16,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 	bool levelLoading = false;
 	private LevelData levelData;
 	List<LevelData.LevelInfo> levelList;
+	int currentEpisodePlayerIsPlaying = 0;
 	public Canvas settingsMenuCanvas;
 	public Text numberOfKeysText;
 	public Text numberOfLivesText;
@@ -35,6 +36,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public GameObject postLevelPopupPanel;
 	[Header("Star Meter")]
 	public Color32 starReceivedColor;
+
 
 
 	void Awake ()
@@ -91,26 +93,28 @@ public class NewWorldMapHandler : MonoBehaviour {
 	void drawLevelMarkers()
 	{
 		GameObject levelStationPrefab = Resources.Load( "Menu/Level Button") as GameObject;
+		GameObject episodeStationPrefab = Resources.Load( "Menu/Episode Button") as GameObject;
 		GameObject starDisplayPrefab = Resources.Load( "Menu/Star Display") as GameObject;
-
+		int episodeCounter = 0;
 		LevelData.LevelInfo levelInfo;
+
 		for( int i=0; i < levelList.Count; i++ )
 		{
 			levelInfo = levelList[i];
-			//the map coordinates correspond to the exact center of the shield
 			if( levelInfo.levelType == LevelType.Episode )
 			{
-				drawEpisodeLevelMarker( levelStationPrefab, levelInfo.MapCoordinates, i );
-				drawDisplayStars( starDisplayPrefab, levelInfo.MapCoordinates, i );
+				drawEpisodeLevelMarker( episodeStationPrefab, levelInfo.MapCoordinates, i, episodeCounter );
+				drawDisplayStars( starDisplayPrefab, levelInfo.MapCoordinates, episodeCounter );
+				episodeCounter++;
 			}
 			else if( levelInfo.levelType == LevelType.Normal )
 			{
-				drawNormalLevelMarker( levelStationPrefab, levelInfo.MapCoordinates, i );
+				drawNormalLevelMarker( levelStationPrefab, levelInfo.MapCoordinates, i, episodeCounter );
 			}
 		}
 	}
 
-	void drawNormalLevelMarker( GameObject levelStationPrefab, Vector2 coord, int levelNumber )
+	void drawNormalLevelMarker( GameObject levelStationPrefab, Vector2 coord, int levelNumber, int episodeCounter )
 	{
 		GameObject go = (GameObject)Instantiate(levelStationPrefab);
 		go.transform.SetParent(map.transform,false);
@@ -118,41 +122,44 @@ public class NewWorldMapHandler : MonoBehaviour {
 		Button levelStationButton = go.GetComponent<Button>();
 		RectTransform levelStationButtonRectTransform = levelStationButton.GetComponent<RectTransform>();
 		levelStationButtonRectTransform.anchoredPosition = new Vector2( wc.rect.width * coord.x, mapHeight * (1f - coord.y) );
-		levelStationButton.onClick.AddListener(() => levelButtonClick(levelNumber));
+		levelStationButton.onClick.AddListener(() => levelButtonClick(episodeCounter-1, levelNumber));
 		Text levelStationText = levelStationButton.GetComponentInChildren<Text>();
-		levelStationText.text = (levelNumber + 1).ToString();
+		levelStationText.text = episodeCounter.ToString() + "/" + (levelNumber + 1).ToString();
 	}
 
-	void levelButtonClick( int levelNumber )
+	void levelButtonClick( int episodeNumber, int levelNumber )
 	{
-		Debug.Log("Level Station click: " + levelNumber );
+		Debug.Log("Level Station click-Episode: " + episodeNumber + " Level: " + levelNumber );
+		currentEpisodePlayerIsPlaying = episodeNumber;
 		SoundManager.playButtonClick();
-		episodePopup.showEpisodePopup( levelNumber );
+		episodePopup.showEpisodePopup( episodeNumber, levelNumber );
 	}
 
-	void drawEpisodeLevelMarker( GameObject levelStationPrefab, Vector2 coord, int levelNumber )
+	void drawEpisodeLevelMarker( GameObject episodeStationPrefab, Vector2 coord, int levelNumber, int episodeCounter )
 	{
-		GameObject go = (GameObject)Instantiate(levelStationPrefab);
+		LevelData.EpisodeInfo episodeInfo = levelData.getEpisodeInfo( episodeCounter );
+		GameObject go = (GameObject)Instantiate(episodeStationPrefab);
 		go.transform.SetParent(map.transform,false);
-		go.name = "Level Station " + (levelNumber + 1).ToString();
+		go.name = "Episode Station " + (episodeCounter + 1).ToString();
 		Button levelStationButton = go.GetComponent<Button>();
 		RectTransform levelStationButtonRectTransform = levelStationButton.GetComponent<RectTransform>();
 		levelStationButtonRectTransform.anchoredPosition = new Vector2( wc.rect.width * coord.x, mapHeight * (1f - coord.y) );
-		levelStationButton.onClick.AddListener(() => levelButtonClick(levelNumber));
-		Text levelStationText = levelStationButton.GetComponentInChildren<Text>();
-		levelStationText.text = (levelNumber + 1).ToString();
+		levelStationButton.onClick.AddListener(() => levelButtonClick(episodeCounter, levelNumber));
+		Text[] episodeStationTexts = levelStationButton.GetComponentsInChildren<Text>();
+		episodeStationTexts[0].text = (episodeCounter + 1).ToString() + "/" + (levelNumber + 1).ToString();
+		episodeStationTexts[1].text = getEpisodeDifficultyText(  episodeInfo.episodeDifficulty );
 	}
 
-	void drawDisplayStars(GameObject starDisplayPrefab, Vector2 coord, int episodeNumber)
+	void drawDisplayStars(GameObject starDisplayPrefab, Vector2 coord, int episodeCounter )
 	{
 		GameObject go = (GameObject)Instantiate(starDisplayPrefab);
 		go.transform.SetParent(map.transform,false);
-		go.name = "Star Meter " + (episodeNumber + 1).ToString();
+		go.name = "Star Meter " + (episodeCounter + 1).ToString();
 		RectTransform goRectTransform = go.GetComponent<RectTransform>();
 		goRectTransform.anchoredPosition = new Vector2( wc.rect.width * coord.x, mapHeight * (1f - coord.y) + 55f);
 		Image[] stars = go.GetComponentsInChildren<Image>();
 		//numberOfStars is between 0 and 3
-		int numberOfStars = PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( episodeNumber );
+		int numberOfStars = PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( episodeCounter );
  		
 		switch (numberOfStars)
 		{
@@ -170,9 +177,14 @@ public class NewWorldMapHandler : MonoBehaviour {
 				stars[0].color = starReceivedColor;
 				stars[1].color = starReceivedColor;
 				stars[2].color = starReceivedColor;
-				break;	
+				break;
 		}
  	}
+
+	public string getEpisodeDifficultyText( EpisodeDifficulty episodeDifficulty )
+	{
+		return LocalizationManager.Instance.getText( "EPISODE_DIFFICULTY_" + episodeDifficulty.ToString().ToUpper() );
+	}
 
 	public void showTitleScreen()
 	{

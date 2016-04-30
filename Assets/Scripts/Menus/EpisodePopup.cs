@@ -19,6 +19,7 @@ public class EpisodePopup : MonoBehaviour {
 
 	Animator anim;
 	bool levelLoading = false;
+	int episodeNumber;
 	int levelNumber;
 	private LevelData levelData;
 
@@ -39,9 +40,10 @@ public class EpisodePopup : MonoBehaviour {
 
 	}
 
-	public void showEpisodePopup( int levelNumber )
+	public void showEpisodePopup( int episodeNumber, int levelNumber )
 	{
 		SoundManager.playButtonClick();
+		this.episodeNumber = episodeNumber;
 		this.levelNumber = levelNumber;
 		loadEpisodeData();
 		anim.Play("Panel Slide In");
@@ -49,8 +51,8 @@ public class EpisodePopup : MonoBehaviour {
 
 	private void loadEpisodeData()
 	{
-		LevelData.EpisodeInfo selectedEpisode = levelData.getEpisodeInfo( levelNumber );
-		string levelNumberString = (levelNumber + 1).ToString();
+		LevelData.EpisodeInfo selectedEpisode = levelData.getEpisodeInfo( episodeNumber );
+		string levelNumberString = (episodeNumber + 1).ToString();
 
 		string episodeNumberString = LocalizationManager.Instance.getText("EPISODE_NUMBER");
 
@@ -68,7 +70,7 @@ public class EpisodePopup : MonoBehaviour {
 			episodeImage.sprite = selectedEpisode.preLevelSprite;
 		}
 		episodeDescriptionText.text = LocalizationManager.Instance.getText("EPISODE_DESCRIPTION_" + levelNumberString);
-		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( levelNumber ) + "/" + selectedEpisode.numberOfChestKeys;
+		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( episodeNumber ) + "/" + selectedEpisode.numberOfChestKeys;
 	}
 
 	public void closeEpisodeMenu()
@@ -79,7 +81,7 @@ public class EpisodePopup : MonoBehaviour {
 
 	public void play()
 	{
-		Debug.Log("Play button pressed: " + levelNumber );
+		Debug.Log("Play button pressed: Episode: " + episodeNumber + " Level: " + levelNumber );
 		SoundManager.playButtonClick();
 		LevelManager.Instance.forceNextLevelToComplete( levelNumber );
 		StartCoroutine( loadLevel() );
