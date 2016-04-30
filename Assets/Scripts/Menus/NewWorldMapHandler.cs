@@ -98,12 +98,19 @@ public class NewWorldMapHandler : MonoBehaviour {
 		{
 			levelInfo = levelList[i];
 			//the map coordinates correspond to the exact center of the shield
-			drawLevelMarker( levelStationPrefab, levelInfo.MapCoordinates, i );
-			drawDisplayStars( starDisplayPrefab, levelInfo.MapCoordinates, i );
+			if( levelInfo.levelType == LevelType.Episode )
+			{
+				drawEpisodeLevelMarker( levelStationPrefab, levelInfo.MapCoordinates, i );
+				drawDisplayStars( starDisplayPrefab, levelInfo.MapCoordinates, i );
+			}
+			else if( levelInfo.levelType == LevelType.Normal )
+			{
+				drawNormalLevelMarker( levelStationPrefab, levelInfo.MapCoordinates, i );
+			}
 		}
 	}
 
-	void drawLevelMarker( GameObject levelStationPrefab, Vector2 coord, int levelNumber )
+	void drawNormalLevelMarker( GameObject levelStationPrefab, Vector2 coord, int levelNumber )
 	{
 		GameObject go = (GameObject)Instantiate(levelStationPrefab);
 		go.transform.SetParent(map.transform,false);
@@ -123,13 +130,26 @@ public class NewWorldMapHandler : MonoBehaviour {
 		episodePopup.showEpisodePopup( levelNumber );
 	}
 
+	void drawEpisodeLevelMarker( GameObject levelStationPrefab, Vector2 coord, int levelNumber )
+	{
+		GameObject go = (GameObject)Instantiate(levelStationPrefab);
+		go.transform.SetParent(map.transform,false);
+		go.name = "Level Station " + (levelNumber + 1).ToString();
+		Button levelStationButton = go.GetComponent<Button>();
+		RectTransform levelStationButtonRectTransform = levelStationButton.GetComponent<RectTransform>();
+		levelStationButtonRectTransform.anchoredPosition = new Vector2( wc.rect.width * coord.x, mapHeight * (1f - coord.y) );
+		levelStationButton.onClick.AddListener(() => levelButtonClick(levelNumber));
+		Text levelStationText = levelStationButton.GetComponentInChildren<Text>();
+		levelStationText.text = (levelNumber + 1).ToString();
+	}
+
 	void drawDisplayStars(GameObject starDisplayPrefab, Vector2 coord, int episodeNumber)
 	{
 		GameObject go = (GameObject)Instantiate(starDisplayPrefab);
 		go.transform.SetParent(map.transform,false);
 		go.name = "Star Meter " + (episodeNumber + 1).ToString();
 		RectTransform goRectTransform = go.GetComponent<RectTransform>();
-		goRectTransform.anchoredPosition = new Vector2( wc.rect.width * coord.x, mapHeight * (1f - coord.y) + 50f);
+		goRectTransform.anchoredPosition = new Vector2( wc.rect.width * coord.x, mapHeight * (1f - coord.y) + 55f);
 		Image[] stars = go.GetComponentsInChildren<Image>();
 		//numberOfStars is between 0 and 3
 		int numberOfStars = PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( episodeNumber );
