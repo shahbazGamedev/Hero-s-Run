@@ -141,6 +141,10 @@ public class NewWorldMapHandler : MonoBehaviour {
 			//This is current level. Enable outline.
 			levelStationButton.GetComponent<Outline>().enabled = true;
 			nextLevelToPlayGlowingOutline = levelStationButton.GetComponent<Outline>();
+
+			//Position the player portrait on the right-hand side of the level station
+			playerPortrait.rectTransform.SetParent( levelStationButtonRectTransform );
+			playerPortrait.rectTransform.anchoredPosition = new Vector2( levelStationButtonRectTransform.anchoredPosition.x + 60f, levelStationButtonRectTransform.anchoredPosition.y -8.3f );
 		}
 	}
 
@@ -178,6 +182,10 @@ public class NewWorldMapHandler : MonoBehaviour {
 			//This is current level. Enable outline.
 			levelStationButton.GetComponent<Outline>().enabled = true;
 			nextLevelToPlayGlowingOutline = levelStationButton.GetComponent<Outline>();
+
+			//Position the player portrait on the right-hand side of the level station
+			playerPortrait.rectTransform.SetParent( levelStationButtonRectTransform );
+			playerPortrait.rectTransform.anchoredPosition = new Vector2( levelStationButtonRectTransform.anchoredPosition.x + 60f, levelStationButtonRectTransform.anchoredPosition.y -8.3f );
 		}
 	}
 
