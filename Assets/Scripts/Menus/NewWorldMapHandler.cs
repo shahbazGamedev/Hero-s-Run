@@ -134,7 +134,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		{
 			//Level is not unlocked yet. Make button non-interactable and dim the level number text
 			levelStationButton.interactable = false;
-			levelStationText.color = Color.gray;
+			levelStationText.enabled = false;
 		}
 		else if ( levelNumber == LevelManager.Instance.getNextLevelToComplete() )
 		{
@@ -170,8 +170,8 @@ public class NewWorldMapHandler : MonoBehaviour {
 		{
 			//Level is not unlocked yet. Make button non-interactable and dim the level number text
 			levelStationButton.interactable = false;
-			episodeStationTexts[0].color = Color.gray;
-			episodeStationTexts[1].color = Color.gray;
+			episodeStationTexts[0].enabled = false;
+			episodeStationTexts[1].enabled = false;
 		}
 		else if ( levelNumber == LevelManager.Instance.getNextLevelToComplete() )
 		{
