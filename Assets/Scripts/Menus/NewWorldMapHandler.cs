@@ -121,6 +121,12 @@ public class NewWorldMapHandler : MonoBehaviour {
 		levelStationButton.onClick.AddListener(() => levelButtonClick(episodeCounter-1, levelNumber));
 		Text levelStationText = levelStationButton.GetComponentInChildren<Text>();
 		levelStationText.text = (levelNumber + 1).ToString();
+		if( levelNumber > LevelManager.Instance.getNextLevelToComplete() )
+		{
+			//Level is not unlocked yet. Make button non-interactable and dim the level number text
+			levelStationButton.interactable = false;
+			levelStationText.color = Color.gray;
+		}
 	}
 
 	void levelButtonClick( int episodeNumber, int levelNumber )
@@ -145,6 +151,13 @@ public class NewWorldMapHandler : MonoBehaviour {
 		Text[] episodeStationTexts = levelStationButton.GetComponentsInChildren<Text>();
 		episodeStationTexts[0].text = (levelNumber + 1).ToString();
 		episodeStationTexts[1].text = getEpisodeDifficultyText(  episodeInfo.episodeDifficulty );
+		if( levelNumber > LevelManager.Instance.getNextLevelToComplete() )
+		{
+			//Level is not unlocked yet. Make button non-interactable and dim the level number text
+			levelStationButton.interactable = false;
+			episodeStationTexts[0].color = Color.gray;
+			episodeStationTexts[1].color = Color.gray;
+		}
 	}
 
 	void drawDisplayStars(GameObject starDisplayPrefab, Vector2 coord, int levelNumber, int episodeCounter )

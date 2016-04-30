@@ -718,7 +718,7 @@ public class PlayerStatsManager {
 	{
 		try
 		{
-			int nextLevelToComplete = PlayerPrefs.GetInt("Next Level To Complete");
+			int nextLevelToComplete = PlayerPrefs.GetInt("Next Level To Complete", 0 );
 			LevelManager.Instance.setNextLevelToComplete( nextLevelToComplete );
 
 			string playerFinishedTheGameString = PlayerPrefs.GetString("Finished Game", "false" );

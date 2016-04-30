@@ -100,6 +100,14 @@ public class DebugMenu : MonoBehaviour {
 		PlayerStatsManager.Instance.savePlayerStats();
 	}
 
+	public void unlockAllLevels()
+	{
+		Debug.Log("unlockAllLevels");
+		SoundManager.playButtonClick();
+		LevelManager.Instance.unlockAllLevels();
+		PlayerStatsManager.Instance.savePlayerStats();
+	}
+
 	void updatePlayerStats()
 	{
 		currentStars.text = "Current Stars: " + PlayerStatsManager.Instance.getCurrentCoins();
