@@ -10,7 +10,8 @@ public enum SegmentTheme {
 		Hell = 3,
 		Tutorial = 4,
 		Volcano = 5,
-		Island = 6
+		Island = 6,
+		Battlefield = 7
 }
 
 public enum TileType {

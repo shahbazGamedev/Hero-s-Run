@@ -44,15 +44,24 @@ public class PostLevelPopup : MonoBehaviour {
 
 		episodeNumberText.text = episodeNumberString;
 		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
-		if( LevelManager.Instance.getLevelChanged() )
+		bool isGameFinished = LevelManager.Instance.incrementNextLevelToComplete();
+		if( isGameFinished )
 		{
 			//The player has passed at least one checkpoint. Congratulate him.
-			postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_MADE_PROGRESS");
+			postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_COMPLETED_STORY");
 		}
 		else
 		{
-			//The player did not finish the current level. Encourage him.
-			postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_LUCK_NEXT_TIME");
+			if( LevelManager.Instance.getLevelChanged() )
+			{
+				//The player has passed at least one checkpoint. Congratulate him.
+				postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_MADE_PROGRESS");
+			}
+			else
+			{
+				//The player did not finish the current level. Encourage him.
+				postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_LUCK_NEXT_TIME");
+			}
 		}
 		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( episodeNumber ) + "/" + selectedEpisode.numberOfChestKeys;
 

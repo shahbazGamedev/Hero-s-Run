@@ -71,8 +71,8 @@ HELL_NO_SWIMMING,No Swimming,Nage Interdite,NOT TRANSLATED,NOT TRANSLATED,NOT TR
 CULLIS_GATE_TO_TANGLEWOOD,You're heading to Tanglewood forest.,Tu te diriges vers la forêt de Tanglewood.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CULLIS_GATE_TO_ELFLAND,You're heading to the tree-city of Ellenmïrre.,Tu te diriges vers la ville dans les arbres de Ellenmïrre.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CULLIS_GATE_TO_DREADKNOT_CEMETERY,You're heading to the Cemetery of Dreadknot. Foul creatures live there...,Tu te diriges vers le cimetière de Dreadknot. Des créatures sinistres y habitent...,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-CULLIS_GATE_TO_HELL,You are almost there! You need to throw the Book of Pure Evil into the Volcano of Doom.,Tu y es presque! Tu dois jeter le Livre Maudit dans le Volcan du Désespoir.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-CULLIS_GATE_TO_FLOODED_BATTLEFIELD,You are almost there! You need to throw the Book of Pure Evil into the Volcano of Doom.,Tu y es presque! Tu dois jeter le Livre Maudit dans le Volcan du Désespoir.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+CULLIS_GATE_TO_HELL,You're heading to Hell.,Tu te diriges vers l'Enfer.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+CULLIS_GATE_TO_FLOODED_BATTLEFIELD,You're heading to the flooded battlefield.,Tu te diriges vers le champ de bataille englouti.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CULLIS_GATE_TO_GAME_END,Congratulations! You have finished the game.,Bravo ! Tu as finis le jeu.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CHECKPOINT_REACHED,Checkpoint reached!,Point de sauvegarde !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POWER_UP_ZNUKE,Z-Nuke,Z-Nuke,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -199,20 +199,21 @@ POPUP_ASK_LIVES_BUTTON,Ask friends,Aide moi!,NOT TRANSLATED,NOT TRANSLATED,NOT T
 EPISODE_NUMBER,Episode <number>,Épisode <number>,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_NAME_1,The Dark Tower,La Tour Noire,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DESCRIPTION_1,<color=#D22626FF><size=9>T</size></color>he Dark Queen has cast an evil spell that will open the gates of Hell and unleash the infernal legions upon the unsuspecting Kingdom of Lum. You have just stolen her spell book from her tower and you must cast it in the Volcano of Doom before midnight!,<color=#D22626FF><size=9>T</size></color>he Dark Queen has cast an evil spell that will open the gates of Hell and unleash the infernal legions upon the unsuspecting Kingdom of Lum. You have just stolen her spell book from her tower and you must cast it in the Volcano of Doom before midnight!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-EPISODE_NAME_2,Episode two name,Episode two name,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_NAME_2,,Tanglewood,Tanglewood,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DESCRIPTION_2,<color=#D22626FF><size=9>E</size></color>pisode two description,<color=#D22626FF><size=9>E</size></color>pisode two description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-EPISODE_NAME_3,Episode three name,Episode three name,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_NAME_3,Elfland,Pays des Elfes,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DESCRIPTION_3,<color=#D22626FF><size=9>E</size></color>pisode three description,<color=#D22626FF><size=9>E</size></color>pisode three description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-EPISODE_NAME_4,Episode four name,Episode four name,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_NAME_4,Dreadknot Cemetery,Cimetière Dreadknot,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DESCRIPTION_4,<color=#D22626FF><size=9>E</size></color>pisode four description,<color=#D22626FF><size=9>E</size></color>pisode four description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-EPISODE_NAME_5,Episode five name,Episode five name,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_NAME_5,Hell,L'Enfer,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DESCRIPTION_5,<color=#D22626FF><size=9>E</size></color>pisode five description,<color=#D22626FF><size=9>E</size></color>pisode five description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-EPISODE_NAME_6,Episode six name,Episode six name,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_NAME_6,Flooded Battlefield,Champs de bataille englouti,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DESCRIPTION_6,<color=#D22626FF><size=9>E</size></color>pisode six description,<color=#D22626FF><size=9>E</size></color>pisode six description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Post-level popup
 POST_LEVEL_RETRY,Retry!,Essaie Encore !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POST_LEVEL_LUCK_NEXT_TIME,You'll get it next time!,Tu réussiras la prochaine fois !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POST_LEVEL_MADE_PROGRESS,Wow! You've made good progress!, Bravo ! Tu as bien progressé.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+POST_LEVEL_COMPLETED_STORY,Congratulations! Stay tuned for more episodes!,Bravo encore! Reste à l'écoute pour de nouveaux épisodes!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Star Meter
 MENU_SCORE,Score: <0>,Score: <0>,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Treasure Keys
