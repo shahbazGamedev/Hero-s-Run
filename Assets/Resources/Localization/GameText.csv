@@ -67,6 +67,7 @@ HELL_BANNER_ARMS_DEALER,Special welcome to arms dealers,Un bienvenue spécial au
 HELL_BANNER_BILLIONS_SERVED,Over 66 billion souls served,Plus de 66 milliards d'âmes servis,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 HELL_SOUL_LAKE,Lake of Souls,Lac des âmes,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 HELL_NO_SWIMMING,No Swimming,Nage Interdite,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+#Cullis Gate
 CULLIS_GATE_TOWER,You're heading to Tanglewood forest.,Tu te diriges vers la forêt de Tanglewood.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CULLIS_GATE_FOREST,You're heading to the tree-city of Ellenmïrre.,Tu te diriges vers la ville dans les arbres de Ellenmïrre.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CULLIS_GATE_ELFLAND,You're heading to the Cemetery of Dreadknot. Foul creatures live there...,Tu te diriges vers le cimetière de Dreadknot. Des créatures sinistres y habitent...,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -215,13 +216,22 @@ POST_LEVEL_MADE_PROGRESS,Wow! You've made good progress!, Bravo ! Tu as bien pro
 MENU_SCORE,Score: <0>,Score: <0>,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Treasure Keys
 TUTORIAL_TREASURE_KEY_FAIRY,So cool! You found a key for Treasure Island!,Trop cool! Tu as trouvé une clé pour l'Île au Trésor !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-#Episode Difficulty
+#Episode Difficulty (shown on World Map)
 EPISODE_DIFFICULTY_EASY,Easy Peasy,Fastoche,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DIFFICULTY_NORMAL,Normal,Normale,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DIFFICULTY_HARD,Freakin' tough,Difficile,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DIFFICULTY_VERYHARD,You're going to cry,Tu vas pleurer,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+#Level Name (Shown in the HUD slide-in when player starts running)
+LEVEL_LOCATION_DARK_TOWER,The Dark Tower,La Tour Noire,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_LOCATION_TANGLEWOOD,Tanglewood,Tanglewood,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_LOCATION_ELFLAND,Elfland,Pays des Elfes,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_LOCATION_DREADKNOT_CEMETERY,Dreadknot Cemetery,Cimetière Dreadknot,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_LOCATION_HELL,Hell,L'Enfer,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_LOCATION_FLOODED_BATTLEFIELD,Flooded Battlefield,Champs de bataille englouti,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Level Description (shown in Pause Menu)
-LEVEL_DESCRIPTION_TOWER,The maleficent Dark Queen lives in the wizard tower. This is where she broods and plots nefarious ways to conquer the Kingdom of Lum.,La maléfique Sorcière des Ténèbres habite dans la tour de sorcellerie. C'est là qu'elle manigance ses plans machiavéliques afin de conquérir le Royaume de Lum.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_DESCRIPTION_DARK_TOWER,The maleficent Dark Queen lives in the wizard tower. This is where she broods and plots nefarious ways to conquer the Kingdom of Lum.,La maléfique Sorcière des Ténèbres habite dans la tour de sorcellerie. C'est là qu'elle manigance ses plans machiavéliques afin de conquérir le Royaume de Lum.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_DESCRIPTION_TANGLEWOOD,Tanglewood is a peaceful area located near the Oakvale harbor.,Tanglewood est un endroit paisible situé prêt du havre d'Oakvale.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_DESCRIPTION_ELFLAND,The wood elves used to live in Ellenmïrre. They abandoned the city after the Great Battle.,Les elfes des bois habitaient jadis à Ellenmïrre. Ils ont abandonné l'endroit après la Grande Bataille.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-LEVEL_DESCRIPTION_DREADKNOT,Dreadknot is a vast and ancient cemetery that was built after the Great Battle. It has long since been abandoned and now wicked creatures prowl the land in search of easy prey.,Dreadknot est un vaste et ancien cimetière qui a été construit après la Grande Bataille. Il a été abandonné depuis fort longtemps et maintenant des créatures maléfiques le parcours à la recherche de proies faciles.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_DESCRIPTION_DREADKNOT_CEMETERY,Dreadknot is a vast and ancient cemetery that was built after the Great Battle. It has long since been abandoned and now wicked creatures prowl the land in search of easy prey.,Dreadknot est un vaste et ancien cimetière qui a été construit après la Grande Bataille. Il a été abandonné depuis fort longtemps et maintenant des créatures maléfiques le parcours à la recherche de proies faciles.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_DESCRIPTION_HELL,Hell,L'Enfer,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_DESCRIPTION_FLOODED_BATTLEFIELD,Flooded Battlefield,Champs de bataille englouti,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
