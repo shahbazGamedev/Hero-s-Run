@@ -94,7 +94,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	}
 
-	void drawLevelMarkers()
+	public void drawLevelMarkers()
 	{
 		GameObject levelStationPrefab = Resources.Load( "Menu/Level Button") as GameObject;
 		GameObject episodeStationPrefab = Resources.Load( "Menu/Episode Button") as GameObject;

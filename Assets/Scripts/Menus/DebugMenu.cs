@@ -7,6 +7,7 @@ public class DebugMenu : MonoBehaviour {
 
 
 	[Header("Debug Menu")]
+	public NewWorldMapHandler newWorldMapHandler;
 	public Text titleText;
 	[Header("Player Stats")]
 	public Text currentStars;
@@ -105,6 +106,7 @@ public class DebugMenu : MonoBehaviour {
 		Debug.Log("unlockAllLevels");
 		SoundManager.playButtonClick();
 		LevelManager.Instance.unlockAllLevels();
+		newWorldMapHandler.drawLevelMarkers();
 		PlayerStatsManager.Instance.savePlayerStats();
 	}
 

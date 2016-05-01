@@ -146,8 +146,8 @@ public class WorldMapHandler : MonoBehaviour {
 		options2.Add("onComplete", "arrivedAtJunctionMarker");
 		options2.Add("onCompleteTarget", gameObject );
 
-		//Get all of the user's outstanding app requests right away and then poll Facebook every 30 seconds
-		InvokeRepeating("getAllAppRequests", 0.25f, 30 );
+//Get all of the user's outstanding app requests right away and then poll Facebook every 30 seconds
+InvokeRepeating("getAllAppRequests", 0.25f, 30 );
 
 
 		//if we have a Facebook user portrait, use it, or else, use the default one.
@@ -160,21 +160,21 @@ public class WorldMapHandler : MonoBehaviour {
 			//playerPortrait = FacebookManager.Instance.UserPortrait;
 		}
 
-		if( LevelManager.Instance.getLevelChanged() )
-		{
-			//The user has completed a new level.
-			//Move his portrait from the current level he has just finished to the new one.
-			LevelManager.Instance.setLevelChanged( false );
-			//Because the nextLevelToComplete value was immediately updated when the player reached the checkpoint, substract one since we want the previous value.
-			levelForPortrait = LevelManager.Instance.getNextLevelToComplete() - 1;
-			StartCoroutine( moveUserPortrait(1.8f) );
-		}
-		else
-		{
-			levelForPortrait = LevelManager.Instance.getNextLevelToComplete();
-		}
+if( LevelManager.Instance.getLevelChanged() )
+{
+	//The user has completed a new level.
+	//Move his portrait from the current level he has just finished to the new one.
+	LevelManager.Instance.setLevelChanged( false );
+	//Because the nextLevelToComplete value was immediately updated when the player reached the checkpoint, substract one since we want the previous value.
+	levelForPortrait = LevelManager.Instance.getNextLevelToComplete() - 1;
+	StartCoroutine( moveUserPortrait(1.8f) );
+}
+else
+{
+	levelForPortrait = LevelManager.Instance.getNextLevelToComplete();
+}
 
-		//Center map around shield indicating next level to complete
+//Center map around shield indicating next level to complete
 		LevelData.LevelInfo levelInfo = levelList[levelForPortrait];
 		playerPortraitRect._rect.x = 0;
 		playerPortraitRect._rect.y = 0;
@@ -188,20 +188,20 @@ public class WorldMapHandler : MonoBehaviour {
 
 	}
 
-	void getAllAppRequests()
-	{
-		FacebookManager.Instance.getAllAppRequests();
-	}
+void getAllAppRequests()
+{
+	FacebookManager.Instance.getAllAppRequests();
+}
 	
-	void moveMapWithPortrait()
-	{
-		//Center map around moving user portrait
-		worldRect.x = -playerPortraitRect.rect.center.x  + Screen.width/2;
-		worldRect.y = -playerPortraitRect.rect.center.y  + Screen.height/2;
-		enforceMapBoundaries();
+void moveMapWithPortrait()
+{
+	//Center map around moving user portrait
+	worldRect.x = -playerPortraitRect.rect.center.x  + Screen.width/2;
+	worldRect.y = -playerPortraitRect.rect.center.y  + Screen.height/2;
+	enforceMapBoundaries();
 
 
-	}
+}
 	void arrivedAtLevelMarker()
 	{
 		levelForPortrait = LevelManager.Instance.getNextLevelToComplete();
@@ -247,34 +247,34 @@ public class WorldMapHandler : MonoBehaviour {
 		LeanTween.move( playerPortraitRect,  Vector2.zero, 3.8f, options1 );
 	}
 
-	void displayOfferLivesPopup()
+void displayOfferLivesPopup()
+{
+	//Once a day, display the Offer Lives to friends popup if the player is logged in to Facebook and if there are no other popup displayed
+	if( !popupHandler.isPopupDisplayed() && FacebookManager.Instance.isLoggedIn() )
 	{
-		//Once a day, display the Offer Lives to friends popup if the player is logged in to Facebook and if there are no other popup displayed
-		if( !popupHandler.isPopupDisplayed() && FacebookManager.Instance.isLoggedIn() )
+		TimeSpan timeSpan = DateTime.Now - PlayerStatsManager.Instance.getDateLastPlayed();
+		if( timeSpan.Minutes > 1440 )
 		{
-			TimeSpan timeSpan = DateTime.Now - PlayerStatsManager.Instance.getDateLastPlayed();
-			if( timeSpan.Minutes > 1440 )
-			{
-				//Yes, the required elapsed time has gone by.
-				//Reset saved date to Now
-				PlayerStatsManager.Instance.setDateLastPlayed();
-				MessageCenterHandler.allowAutomaticOpening = false;
-				popupHandler.activatePopup(PopupType.OfferLives );
-			}
+			//Yes, the required elapsed time has gone by.
+			//Reset saved date to Now
+			PlayerStatsManager.Instance.setDateLastPlayed();
+			MessageCenterHandler.allowAutomaticOpening = false;
+			popupHandler.activatePopup(PopupType.OfferLives );
 		}
-
 	}
+
+}
 	void OnGUI ()
 	{
-		//Once a day, display the Offer Lives to friends popup if the player is logged in to Facebook and if there are no other popup displayed.
-		displayOfferLivesPopup();
+	//Once a day, display the Offer Lives to friends popup if the player is logged in to Facebook and if there are no other popup displayed.
+	displayOfferLivesPopup();
 
-		//If there is no popup currently displayed and the player has messages and the message center allows automatic opening, automatically
-		//open the Message Center.
-		if( MessageCenterHandler.allowAutomaticOpening && !popupHandler.isPopupDisplayed() && FacebookManager.Instance.AppRequestDataList.Count > 0 )
-		{
-			popupHandler.activatePopup( PopupType.MessageCenter );
-		}
+	//If there is no popup currently displayed and the player has messages and the message center allows automatic opening, automatically
+	//open the Message Center.
+	if( MessageCenterHandler.allowAutomaticOpening && !popupHandler.isPopupDisplayed() && FacebookManager.Instance.AppRequestDataList.Count > 0 )
+	{
+		popupHandler.activatePopup( PopupType.MessageCenter );
+	}
 
 		#if UNITY_EDITOR
 		handleMouseMovement();
@@ -436,32 +436,32 @@ public class WorldMapHandler : MonoBehaviour {
 		
 	}
 
-	//Draw friend picture to the right of the shield but only if we are logged in to Facebook
-	void drawFriendPicture( Vector2 coord,int levelNumber )
+//Draw friend picture to the right of the shield but only if we are logged in to Facebook
+void drawFriendPicture( Vector2 coord,int levelNumber )
+{
+	if( FacebookManager.Instance.isLoggedIn() )
 	{
-		if( FacebookManager.Instance.isLoggedIn() )
+		string userID = FacebookManager.Instance.getFriendPictureForLevel( levelNumber );
+		if( userID != null )
 		{
-			string userID = FacebookManager.Instance.getFriendPictureForLevel( levelNumber );
-			if( userID != null )
+			//Yes, a friend has reached that level
+			friendPortraitRect.x =  coord.x * worldRect.width  + friendPortraitOffset.x;
+			friendPortraitRect.y =  coord.y * worldRect.height + friendPortraitOffset.y;
+			
+			Sprite picture;
+			if (FacebookManager.Instance.friendImages.TryGetValue( userID, out picture)) 
 			{
-				//Yes, a friend has reached that level
-				friendPortraitRect.x =  coord.x * worldRect.width  + friendPortraitOffset.x;
-				friendPortraitRect.y =  coord.y * worldRect.height + friendPortraitOffset.y;
-				
-				Sprite picture;
-				if (FacebookManager.Instance.friendImages.TryGetValue( userID, out picture)) 
-				{
-					//We have the friend's picture
-					//popupHandler.drawPortrait( friendPortraitRect, picture, false );
-				}
-				else if ( FacebookManager.Instance.friendImagesRequested.Contains( userID ) )
-				{
-					//Picture has been requested but not received yet. Draw default portrait with a spinner on top.
-					popupHandler.drawDefaultPortrait( friendPortraitRect, true );
-				}
+				//We have the friend's picture
+				//popupHandler.drawPortrait( friendPortraitRect, picture, false );
+			}
+			else if ( FacebookManager.Instance.friendImagesRequested.Contains( userID ) )
+			{
+				//Picture has been requested but not received yet. Draw default portrait with a spinner on top.
+				popupHandler.drawDefaultPortrait( friendPortraitRect, true );
 			}
 		}
 	}
+}
 	
 	//A junction marker has 3 states:
 	//a) Locked (not clickable and darkened)

@@ -52,10 +52,6 @@ VO_FA_NOBODY_LIKES_YOU,Nobody likes you<comma> you know,Personne ne te trouves s
 VO_DQ_BRING_BACK_BOOK,Zombies<comma> get my grimoire back from this thief!,Zombies<comma> ramenez-moi mon grimoire pris par ce voleur !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 VO_FA_NOT_HER_AGAIN,Not her again!,Pas encore toi !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POPUP_TITLE_DEBUG,Debug Menu,Menu Debug,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-LEVEL_DESCRIPTION_TOWER,The maleficent Dark Queen lives in the wizard tower. This is where she broods and plots nefarious ways to conquer the Kingdom of Lum.,La maléfique Sorcière des Ténèbres habite dans la tour de sorcellerie. C'est là qu'elle manigance ses plans machiavéliques afin de conquérir le Royaume de Lum.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-LEVEL_DESCRIPTION_TANGLEWOOD,Tanglewood is a peaceful area located near the Oakvale harbor.,Tanglewood est un endroit paisible situé prêt du havre d'Oakvale.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-LEVEL_DESCRIPTION_ELFLAND,The wood elves used to live in Ellenmïrre. They abandoned the city after the Great Battle.,Les elfes des bois habitaient jadis à Ellenmïrre. Ils ont abandonné l'endroit après la Grande Bataille.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-LEVEL_DESCRIPTION_DREADKNOT,Dreadknot is a vast and ancient cemetery that was built after the Great Battle. It has long since been abandoned and now wicked creatures prowl the land in search of easy prey.,Dreadknot est un vaste et ancien cimetière qui a été construit après la Grande Bataille. Il a été abandonné depuis fort longtemps et maintenant des créatures maléfiques le parcours à la recherche de proies faciles.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_GAME_COMPLETED,Congratulations hero! You have saved the World of Lum.,Bravo héros ! Tu as sauvé le monde de Lum.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 TREASURE_ISLAND_TITLE,Treasure Island,Île au Trésor,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 TREASURE_ISLAND_LOCATION_1,Pirate's Cove,Crique du Pirate,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -200,9 +196,17 @@ POPUP_ASK_LIVES_BUTTON,Ask friends,Aide moi!,NOT TRANSLATED,NOT TRANSLATED,NOT T
 #Episodes
 EPISODE_NUMBER,Episode <number>,Épisode <number>,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_NAME_1,The Dark Tower,La Tour Noire,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-EPISODE_DESCRIPTION_1,<color=#D22626FF><size=9>T</size></color>he Dark Queen has cast an evil spell that will open the gates of Hell and unleash the infernal legions upon the unsuspecting Kingdom of Lum. You have just stolen her spell book from her tower and you must cast it in the Volcano of Doom before midnight. Only a hero like you can stop her!,<color=#D22626FF><size=9>T</size></color>he Dark Queen has cast an evil spell that will open the gates of Hell and unleash the infernal legions upon the unsuspecting Kingdom of Lum. You have just stolen her spell book from her tower and you must cast it in the Volcano of Doom before midnight. Only a hero like you can stop her!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_DESCRIPTION_1,<color=#D22626FF><size=9>T</size></color>he Dark Queen has cast an evil spell that will open the gates of Hell and unleash the infernal legions upon the unsuspecting Kingdom of Lum. You have just stolen her spell book from her tower and you must cast it in the Volcano of Doom before midnight!,<color=#D22626FF><size=9>T</size></color>he Dark Queen has cast an evil spell that will open the gates of Hell and unleash the infernal legions upon the unsuspecting Kingdom of Lum. You have just stolen her spell book from her tower and you must cast it in the Volcano of Doom before midnight!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_NAME_2,Episode two name,Episode two name,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DESCRIPTION_2,<color=#D22626FF><size=9>E</size></color>pisode two description,<color=#D22626FF><size=9>E</size></color>pisode two description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_NAME_3,Episode three name,Episode three name,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_DESCRIPTION_3,<color=#D22626FF><size=9>E</size></color>pisode three description,<color=#D22626FF><size=9>E</size></color>pisode three description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_NAME_4,Episode four name,Episode four name,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_DESCRIPTION_4,<color=#D22626FF><size=9>E</size></color>pisode four description,<color=#D22626FF><size=9>E</size></color>pisode four description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_NAME_5,Episode five name,Episode five name,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_DESCRIPTION_5,<color=#D22626FF><size=9>E</size></color>pisode five description,<color=#D22626FF><size=9>E</size></color>pisode five description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_NAME_6,Episode six name,Episode six name,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_DESCRIPTION_6,<color=#D22626FF><size=9>E</size></color>pisode six description,<color=#D22626FF><size=9>E</size></color>pisode six description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Post-level popup
 MENU_RETRY,Retry!,Essaie Encore !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 MENU_BETTER_LUCK_NEXT_TIME,You'll get it next time!,Tu réussiras la prochaine fois !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -215,3 +219,8 @@ EPISODE_DIFFICULTY_EASY,Easy Peasy,Fastoche,NOT TRANSLATED,NOT TRANSLATED,NOT TR
 EPISODE_DIFFICULTY_NORMAL,Normal,Normale,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DIFFICULTY_HARD,Freakin' tough,Difficile,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DIFFICULTY_VERYHARD,You're going to cry,Tu vas pleurer,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+#Level Description (shown in Pause Menu)
+LEVEL_DESCRIPTION_TOWER,The maleficent Dark Queen lives in the wizard tower. This is where she broods and plots nefarious ways to conquer the Kingdom of Lum.,La maléfique Sorcière des Ténèbres habite dans la tour de sorcellerie. C'est là qu'elle manigance ses plans machiavéliques afin de conquérir le Royaume de Lum.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_DESCRIPTION_TANGLEWOOD,Tanglewood is a peaceful area located near the Oakvale harbor.,Tanglewood est un endroit paisible situé prêt du havre d'Oakvale.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_DESCRIPTION_ELFLAND,The wood elves used to live in Ellenmïrre. They abandoned the city after the Great Battle.,Les elfes des bois habitaient jadis à Ellenmïrre. Ils ont abandonné l'endroit après la Grande Bataille.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_DESCRIPTION_DREADKNOT,Dreadknot is a vast and ancient cemetery that was built after the Great Battle. It has long since been abandoned and now wicked creatures prowl the land in search of easy prey.,Dreadknot est un vaste et ancien cimetière qui a été construit après la Grande Bataille. Il a été abandonné depuis fort longtemps et maintenant des créatures maléfiques le parcours à la recherche de proies faciles.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
