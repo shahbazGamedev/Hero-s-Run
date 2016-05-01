@@ -88,7 +88,7 @@ public class LevelManager {
 		if( newLevel < levelData.levelList.Count )
 		{
 			nextLevelToComplete = newLevel;
-			levelHasChanged = true;
+			setLevelChanged( true );
 			//Update our Facebook score
 			//The Facebook score is simply the highest level reached so far in the game.
 			FacebookManager.Instance.postHighScore( newLevel );
@@ -99,7 +99,7 @@ public class LevelManager {
 		else
 		{
 			Debug.Log("LevelManager-incrementNextLevelToComplete : you have finished the game. Congratulations." );
-			playerFinishedTheGame = true;
+			setPlayerFinishedTheGame( true );
 			return true;
 		}
 	}
@@ -125,6 +125,7 @@ public class LevelManager {
 	public void setPlayerFinishedTheGame( bool didCompleteGame )
 	{
 		playerFinishedTheGame = didCompleteGame;
+		Debug.Log ("LevelManager-setPlayerFinishedTheGame: " + playerFinishedTheGame );
 	}
 
 	public int getNumberOfLevels()
@@ -159,6 +160,7 @@ public class LevelManager {
 	public void setLevelChanged( bool hasChanged )
 	{
 		levelHasChanged = hasChanged;
+		Debug.Log("LevelManager-setLevelChanged: " + levelHasChanged );
 	}
 
 	public bool getLevelChanged()

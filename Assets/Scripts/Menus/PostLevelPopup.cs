@@ -44,8 +44,7 @@ public class PostLevelPopup : MonoBehaviour {
 
 		episodeNumberText.text = episodeNumberString;
 		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
-		bool isGameFinished = LevelManager.Instance.incrementNextLevelToComplete();
-		if( isGameFinished )
+		if( LevelManager.Instance.getPlayerFinishedTheGame() )
 		{
 			//The player has passed at least one checkpoint. Congratulate him.
 			postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_COMPLETED_STORY");
@@ -72,6 +71,8 @@ public class PostLevelPopup : MonoBehaviour {
 	public void closePostLevelPopup()
 	{
 		SoundManager.playButtonClick();
+		//Reset the level changed value
+		LevelManager.Instance.setLevelChanged( false );
 		GameManager.Instance.setGameState(GameState.Menu);
 		GetComponent<Animator>().Play("Panel Slide Out");	
 	}
@@ -79,6 +80,8 @@ public class PostLevelPopup : MonoBehaviour {
 	public void retry()
 	{
 		Debug.Log("Retry button pressed: ");
+		//Reset the level changed value
+		LevelManager.Instance.setLevelChanged( false );
 		SoundManager.playButtonClick();
 		StartCoroutine( loadLevel() );
 	}

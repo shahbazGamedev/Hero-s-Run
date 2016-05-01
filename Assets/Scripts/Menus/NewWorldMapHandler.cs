@@ -125,7 +125,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		go.name = "Level Station " + (levelNumber + 1).ToString();
 		Button levelStationButton = go.GetComponent<Button>();
 		RectTransform levelStationButtonRectTransform = levelStationButton.GetComponent<RectTransform>();
-		levelStationButtonRectTransform.parent = levelStationLocations[levelNumber];
+		levelStationButtonRectTransform.SetParent( levelStationLocations[levelNumber], false );
 		levelStationButtonRectTransform.anchoredPosition = new Vector2( 0, 0 );
 		levelStationButton.onClick.AddListener(() => levelButtonClick(episodeCounter-1, levelNumber));
 		Text levelStationText = levelStationButton.GetComponentInChildren<Text>();
@@ -164,7 +164,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		go.name = "Episode Station " + (episodeCounter + 1).ToString();
 		Button levelStationButton = go.GetComponent<Button>();
 		RectTransform levelStationButtonRectTransform = levelStationButton.GetComponent<RectTransform>();
-		levelStationButtonRectTransform.parent = levelStationLocations[levelNumber];
+		levelStationButtonRectTransform.SetParent( levelStationLocations[levelNumber], false );
 		levelStationButtonRectTransform.anchoredPosition = new Vector2( 0, 0 );
 		levelStationButton.onClick.AddListener(() => levelButtonClick(episodeCounter, levelNumber));
 		Text[] episodeStationTexts = levelStationButton.GetComponentsInChildren<Text>();
@@ -195,7 +195,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		go.transform.SetParent(map.transform,false);
 		go.name = "Star Meter " + (episodeCounter + 1).ToString();
 		RectTransform goRectTransform = go.GetComponent<RectTransform>();
-		goRectTransform.parent = levelStationLocations[levelNumber];
+		goRectTransform.SetParent( levelStationLocations[levelNumber], false );
 		goRectTransform.anchoredPosition = new Vector2( 0, 55f );
 		Image[] stars = go.GetComponentsInChildren<Image>();
 		//numberOfStars is between 0 and 3
