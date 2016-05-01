@@ -208,8 +208,9 @@ EPISODE_DESCRIPTION_5,<color=#D22626FF><size=9>E</size></color>pisode five descr
 EPISODE_NAME_6,Episode six name,Episode six name,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DESCRIPTION_6,<color=#D22626FF><size=9>E</size></color>pisode six description,<color=#D22626FF><size=9>E</size></color>pisode six description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Post-level popup
-MENU_RETRY,Retry!,Essaie Encore !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-MENU_BETTER_LUCK_NEXT_TIME,You'll get it next time!,Tu réussiras la prochaine fois !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+POST_LEVEL_RETRY,Retry!,Essaie Encore !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+POST_LEVEL_LUCK_NEXT_TIME,You'll get it next time!,Tu réussiras la prochaine fois !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+POST_LEVEL_MADE_PROGRESS,Wow! You've made good progress!, Bravo ! Tu as bien progressé.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Star Meter
 MENU_SCORE,Score: <0>,Score: <0>,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Treasure Keys

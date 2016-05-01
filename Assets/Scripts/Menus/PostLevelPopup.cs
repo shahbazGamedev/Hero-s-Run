@@ -21,7 +21,7 @@ public class PostLevelPopup : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 
-		retryButtonText.text = LocalizationManager.Instance.getText("MENU_RETRY");
+		retryButtonText.text = LocalizationManager.Instance.getText("POST_LEVEL_RETRY");
 	}
 
 	public void showPostLevelPopup(LevelData levelData)
@@ -44,7 +44,16 @@ public class PostLevelPopup : MonoBehaviour {
 
 		episodeNumberText.text = episodeNumberString;
 		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
-		postLevelDescriptionText.text = LocalizationManager.Instance.getText("MENU_BETTER_LUCK_NEXT_TIME");
+		if( LevelManager.Instance.getLevelChanged() )
+		{
+			//The player has passed at least one checkpoint. Congratulate him.
+			postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_MADE_PROGRESS");
+		}
+		else
+		{
+			//The player did not finish the current level. Encourage him.
+			postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_LUCK_NEXT_TIME");
+		}
 		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( episodeNumber ) + "/" + selectedEpisode.numberOfChestKeys;
 
 		starMeter.GetComponent<StarMeterHandler>().updateValues( selectedEpisode );
