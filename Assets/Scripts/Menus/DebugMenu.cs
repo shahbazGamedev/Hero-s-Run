@@ -106,7 +106,6 @@ public class DebugMenu : MonoBehaviour {
 		Debug.Log("unlockAllLevels");
 		SoundManager.playButtonClick();
 		LevelManager.Instance.unlockAllLevels();
-		newWorldMapHandler.drawLevelMarkers();
 		PlayerStatsManager.Instance.savePlayerStats();
 	}
 

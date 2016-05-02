@@ -94,7 +94,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	}
 
-	public void drawLevelMarkers()
+	void drawLevelMarkers()
 	{
 		GameObject levelStationPrefab = Resources.Load( "Menu/Level Button") as GameObject;
 		GameObject episodeStationPrefab = Resources.Load( "Menu/Episode Button") as GameObject;
@@ -107,18 +107,18 @@ public class NewWorldMapHandler : MonoBehaviour {
 			levelInfo = levelList[i];
 			if( levelInfo.levelType == LevelType.Episode )
 			{
-								drawEpisodeLevelMarker( episodeStationPrefab, Vector2.zero, i, episodeCounter );
-				drawDisplayStars( starDisplayPrefab, Vector2.zero, i, episodeCounter );
+				drawEpisodeLevelMarker( episodeStationPrefab, i, episodeCounter );
+				drawDisplayStars( starDisplayPrefab, i, episodeCounter );
 				episodeCounter++;
 			}
 			else if( levelInfo.levelType == LevelType.Normal )
 			{
-				drawNormalLevelMarker( levelStationPrefab, Vector2.zero, i, episodeCounter );
+				drawNormalLevelMarker( levelStationPrefab, i, episodeCounter );
 			}
 		}
 	}
 
-	void drawNormalLevelMarker( GameObject levelStationPrefab, Vector2 coord, int levelNumber, int episodeCounter )
+	void drawNormalLevelMarker( GameObject levelStationPrefab, int levelNumber, int episodeCounter )
 	{
 		GameObject go = (GameObject)Instantiate(levelStationPrefab);
 		go.transform.SetParent(map.transform,false);
@@ -130,6 +130,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		levelStationButton.onClick.AddListener(() => levelButtonClick(episodeCounter-1, levelNumber));
 		Text levelStationText = levelStationButton.GetComponentInChildren<Text>();
 		levelStationText.text = (levelNumber + 1).ToString();
+
 		if( levelNumber > LevelManager.Instance.getNextLevelToComplete() )
 		{
 			//Level is not unlocked yet. Make button non-interactable and dim the level number text
@@ -156,7 +157,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		episodePopup.showEpisodePopup( episodeNumber, levelNumber );
 	}
 
-	void drawEpisodeLevelMarker( GameObject episodeStationPrefab, Vector2 coord, int levelNumber, int episodeCounter )
+	void drawEpisodeLevelMarker( GameObject episodeStationPrefab, int levelNumber, int episodeCounter )
 	{
 		LevelData.EpisodeInfo episodeInfo = levelData.getEpisodeInfo( episodeCounter );
 		GameObject go = (GameObject)Instantiate(episodeStationPrefab);
@@ -189,7 +190,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		}
 	}
 
-	void drawDisplayStars(GameObject starDisplayPrefab, Vector2 coord, int levelNumber, int episodeCounter )
+	void drawDisplayStars(GameObject starDisplayPrefab, int levelNumber, int episodeCounter )
 	{
 		GameObject go = (GameObject)Instantiate(starDisplayPrefab);
 		go.transform.SetParent(map.transform,false);
