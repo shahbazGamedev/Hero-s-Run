@@ -13,6 +13,7 @@ public class PostLevelPopup : MonoBehaviour {
 	public Text postLevelDescriptionText;
 	public Text episodeKeysText; //format found/total e.g. 1/3
 	public Text retryButtonText;
+	public NewWorldMapHandler newWorldMapHandler;
 	[Header("Star Meter")]
 	public GameObject starMeter;
 
@@ -25,14 +26,36 @@ public class PostLevelPopup : MonoBehaviour {
 	}
 
 	public void showPostLevelPopup(LevelData levelData)
-	{	
+	{
+		int starsEarned = calculateStarsEarned();
+		Debug.Log( "showPostLevelPopup-score: " + LevelManager.Instance.getScore() + " stars previous " + PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( LevelManager.Instance.getCurrentEpisodeNumber() ) + " new stars earned " + starsEarned );
+		if( starsEarned > PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( LevelManager.Instance.getCurrentEpisodeNumber() ) )
+		{
+			//For this episode, we have more stars than we had before
+			//Save the value
+			PlayerStatsManager.Instance.setNumberDisplayStarsForEpisode( starsEarned );
+			PlayerStatsManager.Instance.savePlayerStats();
+			newWorldMapHandler.updateDisplayStars( LevelManager.Instance.getCurrentEpisodeNumber(), starsEarned );
+			
+		}
+
 		GetComponent<Animator>().Play("Panel Slide In");	
 		loadEpisodeData(levelData);
 	}
 
+	int calculateStarsEarned()
+	{
+		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
+		int score = LevelManager.Instance.getScore();
+		if ( score >= currentEpisode.starsRequired[2] ) return 3;
+		if ( score >= currentEpisode.starsRequired[1] ) return 2;
+		if ( score >= currentEpisode.starsRequired[0] ) return 1;
+		return 0;
+	}
+
 	private void loadEpisodeData(LevelData levelData)
 	{
-		int episodeNumber = LevelManager.Instance.EpisodeCurrentlyBeingPlayed;
+		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
 
 		LevelData.EpisodeInfo selectedEpisode = levelData.getEpisodeInfo( episodeNumber );
 		string levelNumberString = (episodeNumber + 1).ToString();
@@ -63,8 +86,8 @@ public class PostLevelPopup : MonoBehaviour {
 			}
 		}
 		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( episodeNumber ) + "/" + selectedEpisode.numberOfChestKeys;
-
-		starMeter.GetComponent<StarMeterHandler>().updateValues( selectedEpisode );
+		starMeter.GetComponent<StarMeterHandler>().updatePositionOfStarMarkers( selectedEpisode );
+		StartCoroutine( starMeter.GetComponent<StarMeterHandler>().startUpdateSequence( selectedEpisode ) );
 		
 	}
 
@@ -82,6 +105,8 @@ public class PostLevelPopup : MonoBehaviour {
 		Debug.Log("Retry button pressed: ");
 		//Reset the level changed value
 		LevelManager.Instance.setLevelChanged( false );
+		//We are starting a new run, reset the episode stars
+		LevelManager.Instance.setScore( 0 );
 		SoundManager.playButtonClick();
 		StartCoroutine( loadLevel() );
 	}

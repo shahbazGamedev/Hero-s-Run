@@ -14,25 +14,18 @@ public class StarMeterHandler : MonoBehaviour {
 	public RectTransform thirdStar;
 	public float scoreSpinDuration = 2f;
 	string scoreString; //format is Score: <0>
+	const float UPDATE_SEQUENCE_DELAY = 0.9f;
 
 	void Awake()
 	{
 		scoreString = LocalizationManager.Instance.getText("MENU_SCORE");
-
 	}
-	public void updateValues(LevelData.EpisodeInfo selectedEpisode )
-	{
-		updatePositionOfStars( selectedEpisode );
-		//Wait for the panel to have finished sliding in before spinning values
-		Invoke("startUpdateSequence", 0.9f );
-	}
-	
-	void updatePositionOfStars(LevelData.EpisodeInfo selectedEpisode )
+		
+	public void updatePositionOfStarMarkers(LevelData.EpisodeInfo selectedEpisode )
 	{
 		Vector4 starsRequired = selectedEpisode.starsRequired;
 		float sliderWidth = starMeterSlider.GetComponent<RectTransform>().rect.width;
-
-		Debug.Log("updatePositionOfStars " + starsRequired );
+		Debug.Log("updatePositionOfStarMarkers " + starsRequired );
 
 		float xPosition = (starsRequired.x/starsRequired.w ) * sliderWidth;
 		firstStar.anchoredPosition = new Vector2( xPosition,firstStar.anchoredPosition.y);
@@ -44,13 +37,17 @@ public class StarMeterHandler : MonoBehaviour {
 		thirdStar.anchoredPosition = new Vector2( xPosition,thirdStar.anchoredPosition.y);
 
 	}
-	void startUpdateSequence()
+
+	public IEnumerator startUpdateSequence( LevelData.EpisodeInfo selectedEpisode )
 	{
-		StartCoroutine( spinScoreNumber( 50000 ) );
+		//Wait for the post-level popup to have finished sliding in before spinning values
+		yield return new WaitForSeconds(UPDATE_SEQUENCE_DELAY);
+		StartCoroutine( spinScoreNumber( LevelManager.Instance.getScore(), selectedEpisode.starsRequired.w ) );
 	}
 
-	IEnumerator spinScoreNumber( int playerScore )
+	IEnumerator spinScoreNumber( int playerScore, float maxScore )
 	{
+		Debug.Log("spinScoreNumber " + playerScore );
 		float startTime = Time.time;
 		float elapsedTime = 0;
 		float currentNumber = 0;
@@ -62,11 +59,36 @@ public class StarMeterHandler : MonoBehaviour {
 			elapsedTime = Time.time - startTime;
 
 			currentNumber =  Mathf.Lerp( startValue, playerScore, elapsedTime/scoreSpinDuration );
-			starMeterSlider.value = currentNumber/100000f;
+			starMeterSlider.value = currentNumber/maxScore;
 			//Replace the string <0> by the score value
 			starMeterScore.text = scoreString.Replace( "<0>", currentNumber.ToString("N0") );
 			yield return new WaitForFixedUpdate();  
 	    }		
+	}
+
+	void OnEnable()
+	{
+		PlayerStatsManager.playerInventoryChanged += PlayerInventoryChanged;
+	}
+	
+	void OnDisable()
+	{
+		PlayerStatsManager.playerInventoryChanged -= PlayerInventoryChanged;
+	}
+
+	void PlayerInventoryChanged( PlayerInventoryEvent eventType, int newScore )
+	{
+		switch (eventType)
+		{
+			case PlayerInventoryEvent.Score_Changed:
+				LevelData.EpisodeInfo selectedEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
+				Debug.Log("StarMeterHandler - PlayerInventoryChanged: Episode number is: " + LevelManager.Instance.getCurrentEpisodeNumber() );
+				//Replace the string <0> by the score value
+				starMeterScore.text = scoreString.Replace( "<0>", newScore.ToString("N0") );
+				starMeterSlider.value = newScore/selectedEpisode.starsRequired.w;
+
+			break;	        
+		}
 	}
 
 }

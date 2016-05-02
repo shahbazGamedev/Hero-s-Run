@@ -7,7 +7,8 @@ public enum PlayerInventoryEvent {
 	Key_Changed = 0,
 	Life_Changed = 1,
 	Star_Changed = 2,
-	Star_Doubler_Changed = 3
+	Star_Doubler_Changed = 3,
+	Score_Changed = 4
 
 }
 
@@ -22,11 +23,11 @@ public class PlayerStatsManager {
 	int lifetimeCoins = 0;			//The amount of coins (stars) the player has earned over time. This is a statistic. It is used by the achievement system.
 	//Assume there are 6 episodes for now. For each episode, the player has received between 0 and 3 stars. The number of stars is displayed on the world map.
 	//The index is the episode number. The value is the number of stars between 0 and 3. The initial values are 0.
-	int[] displayStarsArray = new int[6];
+	int[] displayStarsArray = new int[LevelData.NUMBER_OF_EPISODES];
 
 	//Assume there are 6 episodes for now. In each episode, a limited number of treasure chest keys have been hidden.
 	//The index is the episode number. The value is the number of keys found by the player. The initial values are 0.
-	int[] keysFoundInEpisodeArray = new int[6];
+	int[] keysFoundInEpisodeArray = new int[LevelData.NUMBER_OF_EPISODES];
 	//Number of treasure keys owned by the player
 	int treasureKeysOwned = 0;
 
@@ -35,7 +36,6 @@ public class PlayerStatsManager {
 	public static event PlayerInventoryChanged playerInventoryChanged;
 
 	float distanceTravelled = 0;
-	int highScore = 0;
 	bool firstTimePlaying;
 
 	bool showDebugInfoOnHUD = false; //Should we show the FPS, player speed, etc. on the HUD or not.
@@ -284,7 +284,6 @@ public class PlayerStatsManager {
 		int numberAsInt;
 		int.TryParse(numberPortion, out numberAsInt);
 		modifyCurrentCoins( numberAsInt, true, false );
-
 		//Accumulator
 		if( coinParent == coin.transform.parent )
 		{
@@ -325,7 +324,10 @@ public class PlayerStatsManager {
 
 		currentCoins = currentCoins + coins;
 
+		LevelManager.Instance.incrementScore( coins );
+
 		//Send an event to interested classes
+		if(playerInventoryChanged != null) playerInventoryChanged(PlayerInventoryEvent.Score_Changed, LevelManager.Instance.getScore() );
 		if(playerInventoryChanged != null) playerInventoryChanged(PlayerInventoryEvent.Star_Changed, currentCoins );
 
 		//Also add to lifetime coins.
@@ -347,11 +349,6 @@ public class PlayerStatsManager {
 	public int getLifetimeCoins()
 	{
 		return lifetimeCoins;
-	}
-
-	public int getPlayerScore()
-	{
-		return currentCoins + (int)distanceTravelled;
 	}
 	
 	void loadDisplayStars()
@@ -412,7 +409,7 @@ public class PlayerStatsManager {
 
 	public void setNumberDisplayStarsForEpisode( int numberOfStars )
 	{
-		displayStarsArray[LevelManager.Instance.EpisodeCurrentlyBeingPlayed] = numberOfStars;
+		displayStarsArray[LevelManager.Instance.getCurrentEpisodeNumber()] = numberOfStars;
 	}
 
 	void loadKeysFoundInEpisode()
@@ -473,39 +470,8 @@ public class PlayerStatsManager {
 
 	public void incrementNumberKeysFoundInEpisode()
 	{
-		int episodeNumber = LevelManager.Instance.EpisodeCurrentlyBeingPlayed;
-		keysFoundInEpisodeArray[episodeNumber]++;
+		keysFoundInEpisodeArray[LevelManager.Instance.getCurrentEpisodeNumber()]++;
 		increaseTreasureKeysOwned(1);
-	}
-
-	public int getPlayerHighScore()
-	{
-		return highScore;
-	}
-
-	//Note that a high score message will only be displayed to the player in the Endless game mode, not in the Story game mode. 
-	public bool isNewHighScore()
-	{
-		if( GameManager.Instance.getGameMode() != GameMode.Endless ) return false;
-
-		//Dont highlight a new high score if there was none to begin with
-		if( highScore == 0 )
-		{
-			return false;
-		}
-		else
-		{
-			if( getPlayerScore() > highScore &&  getPlayerScore() > 250 )
-			{
-				highScore = getPlayerScore();
-				Debug.Log ("isNewHighScore--we have a new high score: " + highScore );
-				return true;
-			}
-			else
-			{
-				return false;
-			}	
-		}
 	}
 
 	//Used to identify if the player is a new user and it is his first time launching the game
@@ -731,7 +697,6 @@ public class PlayerStatsManager {
 				LevelManager.Instance.setPlayerFinishedTheGame( false );
 			}
 
-			highScore = PlayerPrefs.GetInt("High Score");
 			setLives( PlayerPrefs.GetInt("Lives", INITIAL_NUMBER_LIVES) );
 			setTreasureKeysOwned( PlayerPrefs.GetInt("treasureKeysOwned", 0) );
 			string firstTimePlayingString = PlayerPrefs.GetString("First Time Playing", "true" );
@@ -792,7 +757,7 @@ public class PlayerStatsManager {
 			difficultyLevel = (DifficultyLevel)PlayerPrefs.GetInt("difficultyLevel", (int)DifficultyLevel.Normal);
 			avatar = (Avatar)PlayerPrefs.GetInt("avatar", (int)Avatar.None);
 			loadPowerUpInventory();
-			Debug.Log ("loadPlayerStats-highScore: " + highScore + " firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " Next Level To Complete: " + nextLevelToComplete + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
+			Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " Next Level To Complete: " + nextLevelToComplete + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
 		{
@@ -815,11 +780,6 @@ public class PlayerStatsManager {
 			PlayerPrefs.SetString( "Finished Game", "false" );
 		}
 		PlayerPrefs.SetString( "First Time Playing", "false" );
-		if ( getPlayerScore() > highScore )
-		{
-			highScore = getPlayerScore();
-			PlayerPrefs.SetInt( "High Score", highScore );
-		}
 		if( showDebugInfoOnHUD )
 		{
 			PlayerPrefs.SetString( "showDebugInfoOnHUD", "true" );
@@ -857,7 +817,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetInt("avatar", (int)avatar );
 		savePowerUpInventory();
 		PlayerPrefs.Save();
-		Debug.Log ("savePlayerStats-highScore: " + highScore + " firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
+		Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
 	}
 	
 	//Used for debugging
@@ -879,8 +839,6 @@ public class PlayerStatsManager {
 		setOwnsStarDoubler( false );
 		PlayerPrefs.SetString( "usesFacebook", "false" );
 		usesFacebook = false;
-		PlayerPrefs.SetInt( "High Score", 0 );
-		highScore = 0;
 		dateLastPlayed = DateTime.Now;
 		PlayerPrefs.SetString( "dateLastPlayed", dateLastPlayed.ToString() );
 		PlayerPrefs.SetFloat("soundVolume", 1f );

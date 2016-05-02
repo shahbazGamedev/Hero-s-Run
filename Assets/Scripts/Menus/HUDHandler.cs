@@ -42,9 +42,6 @@ public class HUDHandler : MonoBehaviour {
 	public GUIStyle statsScreenStyleLeft;
 	public GUIStyle statsScreenStyleRight;
 
-	//High score message
-	bool wasHighScoreMessageDisplayedThisRun = false;
-
 	//Generic user message
 	static float userMessageStartTime = 0;
 	public static bool showUserMessage = false;
@@ -153,10 +150,6 @@ public class HUDHandler : MonoBehaviour {
 		updateFPS();
 		if( hudDebugInfo.gameObject.activeSelf ) hudDebugInfo.text = "FPS: " + fps + "-" + LevelManager.Instance.getNextLevelToComplete() + "-" + playerController.getCurrentTileName() + "-" + playerController.currentLane + "-" + PlayerController.getPlayerSpeed().ToString("N1");
 
-		if( !wasHighScoreMessageDisplayedThisRun && PlayerStatsManager.Instance.isNewHighScore() )
-		{
-			showHighScoreMessage();
-		}
 	}
 	
 	void updateFPS()
@@ -193,12 +186,6 @@ public class HUDHandler : MonoBehaviour {
 				playerController.startRunning();
 			}
 		}
-	}
-
-	private void showHighScoreMessage()
-	{		
-		wasHighScoreMessageDisplayedThisRun = true;
-		activateUserMessage( LocalizationManager.Instance.getText("NEW_HIGH_SCORE"), 0.26f, 0, 3.5f );
 	}
 	
 	//Activates a horizontally centered text with a drop-shadow.

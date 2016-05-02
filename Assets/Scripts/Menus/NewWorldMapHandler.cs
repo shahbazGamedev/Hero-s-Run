@@ -32,11 +32,13 @@ public class NewWorldMapHandler : MonoBehaviour {
 	[Header("Star Meter")]
 	public Color32 starReceivedColor;
 	[Header("Level Station Locations")]
-	public RectTransform[] levelStationLocations = new RectTransform[15];
+	public RectTransform[] levelStationLocations = new RectTransform[LevelData.NUMBER_OF_LEVELS];
 
 	private Outline nextLevelToPlayGlowingOutline;
 	private const float OUTLINE_FLASH_SPEED = 2.25f;
 
+	//Array of the RectTransforms holding the three stars. Index is the episode number
+	public RectTransform[] starLocations = new RectTransform[LevelData.NUMBER_OF_EPISODES];
 
 	void Awake ()
 	{
@@ -152,7 +154,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 	void levelButtonClick( int episodeNumber, int levelNumber )
 	{
 		Debug.Log("Level Station click-Episode: " + episodeNumber + " Level: " + levelNumber );
-		LevelManager.Instance.EpisodeCurrentlyBeingPlayed = episodeNumber;
+		LevelManager.Instance.setCurrentEpisodeNumber( episodeNumber );
 		SoundManager.playButtonClick();
 		episodePopup.showEpisodePopup( episodeNumber, levelNumber );
 	}
@@ -198,10 +200,18 @@ public class NewWorldMapHandler : MonoBehaviour {
 		RectTransform goRectTransform = go.GetComponent<RectTransform>();
 		goRectTransform.SetParent( levelStationLocations[levelNumber], false );
 		goRectTransform.anchoredPosition = new Vector2( 0, 55f );
-		Image[] stars = go.GetComponentsInChildren<Image>();
+		//Store it so we can easily update the stars later
+		starLocations[episodeCounter] = goRectTransform;
 		//numberOfStars is between 0 and 3
 		int numberOfStars = PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( episodeCounter );
+		updateDisplayStars( episodeCounter, numberOfStars );
  		
+	}
+
+	public void updateDisplayStars( int episodeNumber, int numberOfStars )
+	{
+		Image[] stars = starLocations[episodeNumber].GetComponentsInChildren<Image>();
+	
 		switch (numberOfStars)
 		{
 			case 0:
@@ -220,7 +230,8 @@ public class NewWorldMapHandler : MonoBehaviour {
 				stars[2].color = starReceivedColor;
 				break;
 		}
- 	}
+ 	
+	}
 
 	public string getEpisodeDifficultyText( EpisodeDifficulty episodeDifficulty )
 	{

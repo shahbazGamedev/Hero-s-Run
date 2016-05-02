@@ -44,8 +44,6 @@ public class CullisGateController : MonoBehaviour {
 		if( isGameFinished )
 		{
 			AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText(messageTextId), 0.3f, 5.5f );
-			fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
-			Invoke("quit", WAIT_DURATION );
 		}
 		else
 		{
@@ -57,8 +55,9 @@ public class CullisGateController : MonoBehaviour {
 			{
 				AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText(messageTextId), 0.3f, 5.5f );
 			}
-			Invoke("loadLevelNow", WAIT_DURATION );
 		}
+		fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
+		Invoke("quit", WAIT_DURATION );
 	}
 
 	void quit()
@@ -73,20 +72,6 @@ public class CullisGateController : MonoBehaviour {
 	void playCutscene()
 	{
 		simpleCamera.playCutscene( CutsceneType.CullisGate );
-	}
-
-	void loadLevelNow()
-	{
-		StartCoroutine( loadLevel () );
-	}
-
-	IEnumerator loadLevel()
-	{
-		Handheld.StartActivityIndicator();
-		yield return new WaitForSeconds(0);
-		//Load level scene
-		SceneManager.LoadScene( (int)GameScenes.Level );
-		
 	}
 
 	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )

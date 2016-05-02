@@ -83,6 +83,8 @@ public class EpisodePopup : MonoBehaviour {
 	{
 		Debug.Log("Play button pressed: Episode: " + episodeNumber + " Level: " + levelNumber );
 		SoundManager.playButtonClick();
+		//We are starting a new run, reset the score
+		LevelManager.Instance.setScore( 0 );
 		LevelManager.Instance.forceNextLevelToComplete( levelNumber );
 		StartCoroutine( loadLevel() );
 	}

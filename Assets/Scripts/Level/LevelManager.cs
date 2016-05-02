@@ -12,7 +12,9 @@ public class LevelManager {
 	private bool levelHasChanged = false;
 	private bool playerFinishedTheGame = false;
 	private int levelNumberOflastCheckpoint = 0; //Either the first level of the current theme OR the level of the last checkpoint
- 
+ 	private int score = 0; //currently is equal to the number of stars you picked up while running for a single episode
+	private int currentEpisode = 0;
+
 	public static LevelManager Instance
 	{
         get
@@ -104,17 +106,29 @@ public class LevelManager {
 		}
 	}
 
-	int episodeCurrentlyBeingPlayed = 0;
-	public int EpisodeCurrentlyBeingPlayed
+	public int getCurrentEpisodeNumber()
+	{
+		return currentEpisode;
+    }
+
+	public void setCurrentEpisodeNumber( int currentEpisode )
+	{
+		this.currentEpisode = currentEpisode;
+    }
+
+	public int getScore()
     {
-		get
-		{
-		    return this.episodeCurrentlyBeingPlayed;
-		}
-		set
-		{
-		    this.episodeCurrentlyBeingPlayed = value;
-		}
+		return score;
+	}
+	
+	public void setScore( int value )
+	{
+		score = value;
+    }
+
+	public void incrementScore( int scoreToAdd )
+	{
+		score = score + scoreToAdd;
     }
 
 	public bool getPlayerFinishedTheGame()
@@ -180,6 +194,11 @@ public class LevelManager {
 		return currentLevelInfo;
 	}
 	
+	public LevelData.EpisodeInfo getCurrentEpisodeInfo()
+	{
+		return levelData.episodeList[currentEpisode];
+	}
+
 	public string getCurrentLevelName()
 	{
 		string levelName = LocalizationManager.Instance.getText( currentLevelInfo.LevelName );

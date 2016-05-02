@@ -38,6 +38,9 @@ public class LevelData : MonoBehaviour {
 
 	public List<LevelInfo> levelList = new List<LevelInfo>();
 
+	public const int NUMBER_OF_EPISODES = 6;
+	public const int NUMBER_OF_LEVELS = 15;
+
 	public List<LevelInfo> getLevelList()
 	{
 		return levelList;
