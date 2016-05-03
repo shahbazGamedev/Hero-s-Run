@@ -194,15 +194,15 @@ EPISODE_NUMBER,Episode <number>,Épisode <number>,NOT TRANSLATED,NOT TRANSLATED,
 EPISODE_NAME_1,The Dark Tower,La Tour Noire,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DESCRIPTION_1,<color=#D22626FF><size=9>T</size></color>he Dark Queen has cast an evil spell that will open the gates of Hell and unleash the infernal legions upon the unsuspecting Kingdom of Lum. You have just stolen her spell book from her tower and you must cast it in the Volcano of Doom before midnight!,<color=#D22626FF><size=9>T</size></color>he Dark Queen has cast an evil spell that will open the gates of Hell and unleash the infernal legions upon the unsuspecting Kingdom of Lum. You have just stolen her spell book from her tower and you must cast it in the Volcano of Doom before midnight!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_NAME_2,,Tanglewood,Tanglewood,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-EPISODE_DESCRIPTION_2,<color=#D22626FF><size=9>E</size></color>pisode two description,<color=#D22626FF><size=9>E</size></color>pisode two description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_DESCRIPTION_2,<color=#D22626FF><size=9>T</size></color>anglewood is a peaceful area located near the Oakvale harbor.,<color=#D22626FF><size=9>T</size></color>anglewood est un endroit paisible situé prêt du havre d'Oakvale.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_NAME_3,Elfland,Pays des Elfes,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-EPISODE_DESCRIPTION_3,<color=#D22626FF><size=9>E</size></color>pisode three description,<color=#D22626FF><size=9>E</size></color>pisode three description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_DESCRIPTION_3,<color=#D22626FF><size=9>T</size></color>he wood elves used to live in Ellenmïrre. They abandoned the city after the Great Battle.,<color=#D22626FF><size=9>L</size></color>es elfes des bois habitaient jadis à Ellenmïrre. Ils ont abandonné l'endroit après la Grande Bataille.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_NAME_4,Dreadknot Cemetery,Cimetière Dreadknot,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-EPISODE_DESCRIPTION_4,<color=#D22626FF><size=9>E</size></color>pisode four description,<color=#D22626FF><size=9>E</size></color>pisode four description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_DESCRIPTION_4,<color=#D22626FF><size=9>D</size></color>readknot is a vast and ancient cemetery that was built after the Great Battle. It has long since been abandoned and now wicked creatures prowl the land in search of easy prey.,<color=#D22626FF><size=9>D</size></color>readknot est un vaste et ancien cimetière qui a été construit après la Grande Bataille. Il a été abandonné depuis fort longtemps et maintenant des créatures maléfiques le parcours à la recherche de proies faciles.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_NAME_5,Hell,L'Enfer,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-EPISODE_DESCRIPTION_5,<color=#D22626FF><size=9>E</size></color>pisode five description,<color=#D22626FF><size=9>E</size></color>pisode five description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_DESCRIPTION_5,<color=#D22626FF><size=9>H</size></color>ell is not for the faint of heart,<color=#D22626FF><size=9>L</size></color>'enfer n'est pas pour les faibles.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_NAME_6,Flooded Battlefield,Champs de bataille englouti,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-EPISODE_DESCRIPTION_6,<color=#D22626FF><size=9>E</size></color>pisode six description,<color=#D22626FF><size=9>E</size></color>pisode six description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_DESCRIPTION_6,<color=#D22626FF><size=9>T</size></color>he souls of the warriors that died in battle roam the Flooded Battlefield.,<color=#D22626FF><size=9>L</size></color>'âme des guerriers morts au combat erre dans le Champ de Bataille Englouti.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Post-level popup
 POST_LEVEL_RETRY,Retry!,Essaie Encore !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POST_LEVEL_CONTINUE,Continue!,Continue !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -230,5 +230,5 @@ LEVEL_DESCRIPTION_DARK_TOWER,The maleficent Dark Queen lives in the wizard tower
 LEVEL_DESCRIPTION_TANGLEWOOD,Tanglewood is a peaceful area located near the Oakvale harbor.,Tanglewood est un endroit paisible situé prêt du havre d'Oakvale.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_DESCRIPTION_ELFLAND,The wood elves used to live in Ellenmïrre. They abandoned the city after the Great Battle.,Les elfes des bois habitaient jadis à Ellenmïrre. Ils ont abandonné l'endroit après la Grande Bataille.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_DESCRIPTION_DREADKNOT_CEMETERY,Dreadknot is a vast and ancient cemetery that was built after the Great Battle. It has long since been abandoned and now wicked creatures prowl the land in search of easy prey.,Dreadknot est un vaste et ancien cimetière qui a été construit après la Grande Bataille. Il a été abandonné depuis fort longtemps et maintenant des créatures maléfiques le parcours à la recherche de proies faciles.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-LEVEL_DESCRIPTION_HELL,Hell,L'Enfer,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-LEVEL_DESCRIPTION_FLOODED_BATTLEFIELD,Flooded Battlefield,Champs de bataille englouti,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_DESCRIPTION_HELL,Hell is not for the faint of heart,L'enfer n'est pas pour les faibles.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_DESCRIPTION_FLOODED_BATTLEFIELD,The souls of the warriors that died in battle roam the Flooded Battlefield.,L'âme des guerriers morts au combat erre dans le Champ de Bataille Englouti.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
