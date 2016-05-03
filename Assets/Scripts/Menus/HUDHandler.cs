@@ -58,7 +58,6 @@ public class HUDHandler : MonoBehaviour {
 	GUIContent witchTextContent = new GUIContent(System.String.Empty);
 	Texture2D sliderImage;
 	public Texture2D cuteWitch;
-	int distanceMarkerInterval = 250; //in meters
 
 	public GameObject saveMeCanvas;
 	HUDSaveMe hudSaveMe;
@@ -114,13 +113,6 @@ public class HUDHandler : MonoBehaviour {
 	void OnGUI ()
 	{
 		GameState gameState = GameManager.Instance.getGameState();
-
-		int dist = PlayerStatsManager.Instance.getDistanceTravelled();
-		if( dist != 0 && dist%distanceMarkerInterval == 0 && gameState != GameState.Checkpoint && playerController.getCharacterState() != CharacterState.Dying )
-		{
-			string complement = getTextComplement( dist );
-			slideDistanceMarkerDown( complement, cuteWitch );
-		}
 		
 		if( isShowingDistanceMarker )
 		{
@@ -270,29 +262,6 @@ public class HUDHandler : MonoBehaviour {
 
 			distanceMarkerStyle.fontSize = originalFontSize;
 		GUI.EndGroup();
-	}
-
-	string getTextComplement( int dist )
-	{
-		string firstPart = dist.ToString("N0") + "M ";
-		
-		if( dist == distanceMarkerInterval )
-		{
-			return firstPart + LocalizationManager.Instance.getText("GOOD");
-		}
-		else if( dist == ( 2 * distanceMarkerInterval) )
-		{
-			return firstPart + LocalizationManager.Instance.getText("EXCELLENT");		
-		}
-		else if( dist == ( 3 * distanceMarkerInterval) )
-		{
-			return firstPart + LocalizationManager.Instance.getText("AWESOME");		
-		}
-		else
-		{
-			return firstPart + LocalizationManager.Instance.getText("STUPENDOUS");		
-		}
-
 	}
 	
 	void slideDistanceMarkerUp()
