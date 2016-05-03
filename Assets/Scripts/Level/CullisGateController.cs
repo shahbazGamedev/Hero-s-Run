@@ -47,14 +47,8 @@ public class CullisGateController : MonoBehaviour {
 		}
 		else
 		{
-			if( LevelManager.Instance.isTutorialActive() )
-			{
-				AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("CULLIS_GATE_TUTORIAL"), 0.3f, 5.5f );
-			}
-			else
-			{
-				AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText(messageTextId), 0.3f, 5.5f );
-			}
+			AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText(messageTextId), 0.3f, 5.5f );
+			LevelManager.Instance.setEpisodeCompleted( true );
 		}
 		fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
 		Invoke("quit", WAIT_DURATION );

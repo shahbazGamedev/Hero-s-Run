@@ -205,6 +205,7 @@ EPISODE_NAME_6,Flooded Battlefield,Champs de bataille englouti,NOT TRANSLATED,NO
 EPISODE_DESCRIPTION_6,<color=#D22626FF><size=9>E</size></color>pisode six description,<color=#D22626FF><size=9>E</size></color>pisode six description,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Post-level popup
 POST_LEVEL_RETRY,Retry!,Essaie Encore !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+POST_LEVEL_CONTINUE,Continue!,Continue !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POST_LEVEL_LUCK_NEXT_TIME,You'll get it next time!,Tu réussiras la prochaine fois !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POST_LEVEL_MADE_PROGRESS,Wow! You've made good progress!, Bravo ! Tu as bien progressé.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 POST_LEVEL_COMPLETED_STORY,Congratulations! Stay tuned for more episodes!,Bravo encore! Reste à l'écoute pour de nouveaux épisodes!,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED

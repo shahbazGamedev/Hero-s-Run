@@ -14,6 +14,7 @@ public class LevelManager {
 	private int levelNumberOflastCheckpoint = 0; //Either the first level of the current theme OR the level of the last checkpoint
  	private int score = 0; //currently is equal to the number of stars you picked up while running for a single episode
 	private int currentEpisode = 0;
+	private bool episodeCompleted = false;
 
 	public static LevelManager Instance
 	{
@@ -114,6 +115,28 @@ public class LevelManager {
 	public void setCurrentEpisodeNumber( int currentEpisode )
 	{
 		this.currentEpisode = currentEpisode;
+		Debug.LogWarning( "setCurrentEpisodeNumber " + currentEpisode );
+    }
+
+	public void incrementCurrentEpisodeNumber()
+	{
+		if( currentEpisode < ( LevelData.NUMBER_OF_EPISODES - 1 ) )
+		{
+			currentEpisode++;
+			Debug.LogWarning( "incrementCurrentEpisodeNumber " + currentEpisode );
+		}		
+    }
+
+	//Used by Post-level popup
+	public bool wasEpisodeCompleted()
+	{
+		return episodeCompleted;
+    }
+
+	//Set by CullisGateController
+	public void setEpisodeCompleted( bool episodeCompleted )
+	{
+		this.episodeCompleted = episodeCompleted;
     }
 
 	public int getScore()

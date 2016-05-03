@@ -12,8 +12,10 @@ public class PostLevelPopup : MonoBehaviour {
 	public Text episodeNameText;
 	public Text postLevelDescriptionText;
 	public Text episodeKeysText; //format found/total e.g. 1/3
-	public Text retryButtonText;
+	public Button postLevelButton;
+	public Text postLevelButtonText;
 	public NewWorldMapHandler newWorldMapHandler;
+	public EpisodePopup episodePopup;
 	[Header("Score Meter")]
 	public GameObject scoreMeter;
 
@@ -22,7 +24,7 @@ public class PostLevelPopup : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 
-		retryButtonText.text = LocalizationManager.Instance.getText("POST_LEVEL_RETRY");
+		postLevelButtonText.text = LocalizationManager.Instance.getText("POST_LEVEL_RETRY");
 	}
 
 	public void showPostLevelPopup(LevelData levelData)
@@ -38,7 +40,9 @@ public class PostLevelPopup : MonoBehaviour {
 			newWorldMapHandler.updateDisplayStars( LevelManager.Instance.getCurrentEpisodeNumber(), starsEarned );
 			
 		}
-
+		//Remove the existing events
+    	postLevelButton.onClick.RemoveAllListeners();
+		postLevelButton.onClick.AddListener( retry );
 		GetComponent<Animator>().Play("Panel Slide In");	
 		loadEpisodeData(levelData);
 	}
@@ -69,7 +73,6 @@ public class PostLevelPopup : MonoBehaviour {
 		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
 		if( LevelManager.Instance.getPlayerFinishedTheGame() )
 		{
-			//The player has passed at least one checkpoint. Congratulate him.
 			postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_COMPLETED_STORY");
 		}
 		else
@@ -78,6 +81,13 @@ public class PostLevelPopup : MonoBehaviour {
 			{
 				//The player has passed at least one checkpoint. Congratulate him.
 				postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_MADE_PROGRESS");
+				if( LevelManager.Instance.wasEpisodeCompleted() )
+				{
+					postLevelButtonText.text = LocalizationManager.Instance.getText("POST_LEVEL_CONTINUE");
+					//Remove the existing events
+    				postLevelButton.onClick.RemoveAllListeners();
+					postLevelButton.onClick.AddListener( showNextEpisodePopup );
+				}
 			}
 			else
 			{
@@ -97,6 +107,23 @@ public class PostLevelPopup : MonoBehaviour {
 		LevelManager.Instance.setLevelChanged( false );
 		GameManager.Instance.setGameState(GameState.Menu);
 		GetComponent<Animator>().Play("Panel Slide Out");	
+	}
+
+	public void showNextEpisodePopup()
+	{
+		StartCoroutine( showNextEpisodePopupThread() );
+	}
+
+	IEnumerator showNextEpisodePopupThread()
+	{
+		Debug.Log("Continue button pressed: ");
+		//Reset the level changed value
+		LevelManager.Instance.setLevelChanged( false );
+		LevelManager.Instance.incrementCurrentEpisodeNumber();
+		GameManager.Instance.setGameState(GameState.Menu);
+		GetComponent<Animator>().Play("Panel Slide Out");
+		yield return new WaitForSeconds(2f);
+		episodePopup.showEpisodePopup( LevelManager.Instance.getCurrentEpisodeNumber(), LevelManager.Instance.getNextLevelToComplete() );	
 	}
 
 	public void retry()
