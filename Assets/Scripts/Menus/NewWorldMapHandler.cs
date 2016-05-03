@@ -149,7 +149,41 @@ public class NewWorldMapHandler : MonoBehaviour {
 			playerPortrait.rectTransform.SetParent( levelStationButtonRectTransform );
 			playerPortrait.rectTransform.anchoredPosition = new Vector2( levelStationButtonRectTransform.anchoredPosition.x + 60f, levelStationButtonRectTransform.anchoredPosition.y -8.3f );
 		}
+		drawFriendPicture( levelStationButtonRectTransform, levelNumber );
 	}
+
+	//Draw friend picture to the right of the shield but only if we are logged in to Facebook
+	void drawFriendPicture( RectTransform levelStationButtonRectTransform, int levelNumber )
+	{
+		if( FacebookManager.Instance.isLoggedIn() )
+		{
+
+			string userID = FacebookManager.Instance.getFriendPictureForLevel( levelNumber );
+			if( userID != null )
+			{
+				//Yes, a friend has reached that level
+				GameObject friendPortraitPrefab = Resources.Load( "Menu/Friend Portrait") as GameObject;
+				GameObject go = (GameObject)Instantiate(friendPortraitPrefab);
+				go.name = "Friend Portrait " + (levelNumber + 1).ToString();
+				//Position the friend portrait on the right-hand side of the level station
+				go.GetComponent<Image>().rectTransform.SetParent( levelStationButtonRectTransform, false );
+				go.GetComponent<Image>().rectTransform.anchoredPosition = new Vector2( levelStationButtonRectTransform.anchoredPosition.x + 60f, levelStationButtonRectTransform.anchoredPosition.y -8.3f );
+				
+				Sprite picture;
+				if (FacebookManager.Instance.friendImages.TryGetValue( userID, out picture)) 
+				{
+					//We have the friend's picture
+					go.GetComponent<Image>().sprite = picture;
+				}
+				else if ( FacebookManager.Instance.friendImagesRequested.Contains( userID ) )
+				{
+					//Picture has been requested but not received yet. Draw default portrait with a spinner on top.
+					Debug.Log("We have a friend, but his picture is not arrived yet!");
+				}
+			}
+		}
+	}
+
 
 	void levelButtonClick( int episodeNumber, int levelNumber )
 	{
@@ -190,6 +224,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 			playerPortrait.rectTransform.SetParent( levelStationButtonRectTransform );
 			playerPortrait.rectTransform.anchoredPosition = new Vector2( levelStationButtonRectTransform.anchoredPosition.x + 60f, levelStationButtonRectTransform.anchoredPosition.y -8.3f );
 		}
+		drawFriendPicture( levelStationButtonRectTransform, levelNumber );
 	}
 
 	void drawDisplayStars(GameObject starDisplayPrefab, int levelNumber, int episodeCounter )
