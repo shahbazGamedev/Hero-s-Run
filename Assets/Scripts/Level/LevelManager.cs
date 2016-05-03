@@ -224,15 +224,7 @@ public class LevelManager {
 
 	public string getCurrentLevelName()
 	{
-		string levelName = LocalizationManager.Instance.getText( currentLevelInfo.LevelName );
-		if( levelName == "NOT FOUND" ) 
-		{
-			return currentLevelInfo.LevelName;
-		}
-		else
-		{
-			return levelName;
-		}
+		return LocalizationManager.Instance.getText( currentLevelInfo.LevelName );
 	}
 
 	public string getNextLevelName()
