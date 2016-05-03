@@ -21,8 +21,14 @@ public class StarMeterHandler : MonoBehaviour {
 		scoreString = LocalizationManager.Instance.getText("MENU_SCORE");
 	}
 		
-	public void updatePositionOfStarMarkers(LevelData.EpisodeInfo selectedEpisode )
+	void Start()
 	{
+		updatePositionOfStarMarkers();
+	}
+
+	public void updatePositionOfStarMarkers()
+	{
+		LevelData.EpisodeInfo selectedEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
 		Vector4 starsRequired = selectedEpisode.starsRequired;
 		float sliderWidth = starMeterSlider.GetComponent<RectTransform>().rect.width;
 		Debug.Log("updatePositionOfStarMarkers " + starsRequired );

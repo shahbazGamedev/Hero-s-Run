@@ -14,8 +14,8 @@ public class PostLevelPopup : MonoBehaviour {
 	public Text episodeKeysText; //format found/total e.g. 1/3
 	public Text retryButtonText;
 	public NewWorldMapHandler newWorldMapHandler;
-	[Header("Star Meter")]
-	public GameObject starMeter;
+	[Header("Score Meter")]
+	public GameObject scoreMeter;
 
 	bool levelLoading = false;
 
@@ -86,8 +86,7 @@ public class PostLevelPopup : MonoBehaviour {
 			}
 		}
 		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( episodeNumber ) + "/" + selectedEpisode.numberOfChestKeys;
-		starMeter.GetComponent<StarMeterHandler>().updatePositionOfStarMarkers( selectedEpisode );
-		StartCoroutine( starMeter.GetComponent<StarMeterHandler>().startUpdateSequence( selectedEpisode ) );
+		StartCoroutine( scoreMeter.GetComponent<ScoreMeterHandler>().startUpdateSequence( selectedEpisode ) );
 		
 	}
 

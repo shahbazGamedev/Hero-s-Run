@@ -8,7 +8,8 @@ public enum PlayerInventoryEvent {
 	Life_Changed = 1,
 	Star_Changed = 2,
 	Star_Doubler_Changed = 3,
-	Score_Changed = 4
+	Score_Changed = 4,
+	Key_Found_In_Episode_Changed = 5
 
 }
 
@@ -471,6 +472,7 @@ public class PlayerStatsManager {
 	public void incrementNumberKeysFoundInEpisode()
 	{
 		keysFoundInEpisodeArray[LevelManager.Instance.getCurrentEpisodeNumber()]++;
+		if(playerInventoryChanged != null) playerInventoryChanged(PlayerInventoryEvent.Key_Found_In_Episode_Changed, keysFoundInEpisodeArray[LevelManager.Instance.getCurrentEpisodeNumber()] );
 		increaseTreasureKeysOwned(1);
 	}
 

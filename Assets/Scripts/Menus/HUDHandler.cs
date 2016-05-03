@@ -221,7 +221,7 @@ public class HUDHandler : MonoBehaviour {
 	{
 		//Note: on the Mac, the perfect Y pos is: Screen.height - coinIconRect.yMax.
 		//On the iPhone 5, however, the coins overshoot the icon slightly, hence the additional -coinIconRect.height/2f.
-		Vector2 iconPos = new Vector2( coinIconRect.center.x, Screen.height - coinIconRect.yMax - coinIconRect.height/2f );
+		Vector2 iconPos = new Vector2( Screen.width * 0.28f, Screen.height - coinIconRect.yMax - coinIconRect.height/2f );
 		return iconPos;
 	}
 	
