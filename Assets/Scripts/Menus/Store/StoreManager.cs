@@ -11,6 +11,7 @@ public enum StoreTab {
 public class StoreManager : MonoBehaviour {
 
 	[Header("Powerup Shop")]
+	public Text storeTitle;
 	public Text upgradeTitle;
 	public Text consumableTitle;
 	public GameObject storeTab;
@@ -28,8 +29,9 @@ public class StoreManager : MonoBehaviour {
 		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
 		#endif
 
-		upgradeTitle.text = LocalizationManager.Instance.getText("MENU_UPGRADE_TITLE");
-		consumableTitle.text = LocalizationManager.Instance.getText("MENU_CONSUMABLE_TITLE");
+		storeTitle.text = LocalizationManager.Instance.getText("STORE_TITLE");
+		upgradeTitle.text = LocalizationManager.Instance.getText("STORE_UPGRADE_TITLE");
+		consumableTitle.text = LocalizationManager.Instance.getText("STORE_CONSUMABLE_TITLE");
 
 	}
 

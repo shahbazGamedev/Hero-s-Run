@@ -9,7 +9,7 @@ public class SoundManager : MonoBehaviour {
 
 	// Audio - Music
 	static AudioSource musicSource;
-	const float MUSIC_VOLUME = 0.38f;
+	const float MUSIC_VOLUME = 0.3f;
 
 	//Audio - Level ambience
 	static AudioSource levelAmbienceSource;
@@ -131,7 +131,7 @@ public class SoundManager : MonoBehaviour {
 	{
 		if( guiAudioSource != null )
 		{
-			guiAudioSource.PlayOneShot( buttonClick );
+			//guiAudioSource.PlayOneShot( buttonClick );
 		}
 	}
 

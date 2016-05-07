@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public enum PowerUpPurchaseType {
+public enum PurchaseType {
 	
 	None = 0,
 	Upgrade = 1,
@@ -17,10 +17,12 @@ public class StoreEntry : MonoBehaviour {
 
 	[Header("Store Entry")]
 	public PowerUpType powerUpType = PowerUpType.None;
-	public PowerUpPurchaseType powerUpPurchaseType = PowerUpPurchaseType.None;
+	public PurchaseType purchaseType = PurchaseType.None;
 
 	public Text title;
 	public Text description;
+	public int quantity; 	//For example number of stars you get with you purchase or number of lives
+	public float price; 	//For testing. real prices will come from app store
 	public Button buyButton;
 	public Text buyButtonLabel;
 	public Slider upgradeLevel;
@@ -28,9 +30,8 @@ public class StoreEntry : MonoBehaviour {
 	public string descriptionID = "POWER_UP_MAGNET_DESCRIPTION";
 	//Valid upgrade values are integers between 0 to 6 included
 	const int MAXIMUM_UPGRADE_LEVEL = 6;
-	public Text totalStarsOwned;
 	const int COST_FOR_ONE_CONSUMABLE = 1000;
-	const string COST_STAR_DOUBLER = "$4.99";
+	string currencySymbol = "$";
 
 	// Use this for initialization
 	void Awake () {
@@ -43,35 +44,36 @@ public class StoreEntry : MonoBehaviour {
 
 		title.text = LocalizationManager.Instance.getText(titleID);
 
-		if( powerUpPurchaseType == PowerUpPurchaseType.Upgrade )
+		switch (purchaseType)
 		{
-			initializeUpgradeEntry();
-		}
-		else if( powerUpPurchaseType == PowerUpPurchaseType.Consumable )
-		{
-			initializeConsumableEntry();
-		}
-		else if( powerUpPurchaseType == PowerUpPurchaseType.StarDoubler )
-		{
-			initializeStarDoublerEntry();
-		}
-		else if( powerUpPurchaseType == PowerUpPurchaseType.Purchase_Lives )
-		{
-			initializePurchaseLivesEntry();
-		}
-		else if( powerUpPurchaseType == PowerUpPurchaseType.Purchase_Stars )
-		{
-			initializePurchaseStarsEntry();
-		}
-		else if( powerUpPurchaseType == PowerUpPurchaseType.Restore_StarDoubler )
-		{
-			initializeRestoreStarDoublerEntry();
-		}
-		else if( powerUpPurchaseType == PowerUpPurchaseType.None )
-		{
-			Debug.LogError( title.text + " The powerUpPurchaseType parameter has not been set. A value of NONE is not permitted.");
-		}
+	        case PurchaseType.Upgrade:
+				initializeUpgradeEntry();
+                break;
+	                
+	        case PurchaseType.Consumable:
+				initializeConsumableEntry();
+                break;
+	                
+	        case PurchaseType.StarDoubler:
+				initializeStarDoublerEntry();
+                break;
+	                
+	        case PurchaseType.Purchase_Lives:
+				initializePurchaseLivesEntry();
+                break;
+	
+	        case PurchaseType.Purchase_Stars:
+				initializePurchaseStarsEntry();
+                break;
 
+			 case PurchaseType.Restore_StarDoubler:
+				initializeRestoreStarDoublerEntry();
+                break;
+
+			 case PurchaseType.None:
+				Debug.LogError( title.text + " The PurchaseType parameter has not been set. A value of NONE is not permitted.");
+                break;
+		}
 	
 	}
 
@@ -120,7 +122,7 @@ public class StoreEntry : MonoBehaviour {
 		}
 		else
 		{
-			buyButtonLabel.text = COST_STAR_DOUBLER;
+			buyButtonLabel.text = currencySymbol + price.ToString();
 		}
 	}
 
@@ -128,20 +130,20 @@ public class StoreEntry : MonoBehaviour {
 	{
 		string descriptionString = LocalizationManager.Instance.getText("STORE_ITEM_LIVES_DESCRIPTION");
 		//Replace the string <quantity> by the quantity the player will receive if he makes the purchase
-		descriptionString = descriptionString.Replace( "<quantity>", "25" );
+		descriptionString = descriptionString.Replace( "<quantity>", quantity.ToString("N0") );
 		description.text = descriptionString;
 		
-		buyButtonLabel.text = COST_STAR_DOUBLER;
+		buyButtonLabel.text = currencySymbol + price.ToString();
 	}
 
 	void initializePurchaseStarsEntry()
 	{
 		string descriptionString = LocalizationManager.Instance.getText("STORE_ITEM_STARS_DESCRIPTION");
 		//Replace the string <quantity> by the quantity the player will receive if he makes the purchase
-		descriptionString = descriptionString.Replace( "<quantity>", "50" );
+				descriptionString = descriptionString.Replace( "<quantity>", quantity.ToString("N0") );
 		description.text = descriptionString;
 		
-		buyButtonLabel.text = COST_STAR_DOUBLER;
+		buyButtonLabel.text = currencySymbol + price.ToString();
 	}
 
 	void initializeRestoreStarDoublerEntry()
@@ -152,22 +154,32 @@ public class StoreEntry : MonoBehaviour {
 
 	public void buy()
 	{
-		if( powerUpPurchaseType == PowerUpPurchaseType.Upgrade )
+		switch (purchaseType)
 		{
-			buyUpgrade();
-		}
-		else if( powerUpPurchaseType == PowerUpPurchaseType.Consumable )
-		{
-			buyConsumable();
-		}
-		else if( powerUpPurchaseType == PowerUpPurchaseType.StarDoubler )
-		{
-			buyStarDoubler();
-		}
-		else
-		{
-			Debug.LogError("The powerUpPurchaseType parameter has not been set. A value of NONE is not permitted.");
-			return;
+	        case PurchaseType.Upgrade:
+				buyUpgrade();
+                break;
+	                
+	        case PurchaseType.Consumable:
+				buyConsumable();
+                break;
+	                
+	        case PurchaseType.StarDoubler:
+				buyStarDoubler();
+                break;
+	                
+	        case PurchaseType.Purchase_Lives:
+                break;
+	
+	        case PurchaseType.Purchase_Stars:
+                break;
+
+			 case PurchaseType.Restore_StarDoubler:
+                break;
+
+			 case PurchaseType.None:
+				Debug.LogError( title.text + " The PurchaseType parameter has not been set. A value of NONE is not permitted.");
+                break;
 		}
 	}
 
@@ -181,7 +193,6 @@ public class StoreEntry : MonoBehaviour {
 			SoundManager.playButtonClick();
 			//Deduct the appropriate number of currency for the purchase
 			PlayerStatsManager.Instance.modifyCurrentCoins(-currentUpgradeCost, false, true );
-			if( totalStarsOwned != null ) totalStarsOwned.text = ( PlayerStatsManager.Instance.getCurrentCoins() ).ToString("N0");;
 			print ( "buying new value is: " + newUpgradeValue );
 			PlayerStatsManager.Instance.setPowerUpUpgradeLevel( powerUpType, newUpgradeValue  );
 			upgradeLevel.value = newUpgradeValue;
@@ -211,7 +222,6 @@ public class StoreEntry : MonoBehaviour {
 			SoundManager.playButtonClick();
 			//Deduct the appropriate number of currency for the purchase
 			PlayerStatsManager.Instance.modifyCurrentCoins(-COST_FOR_ONE_CONSUMABLE, false, true );
-			if( totalStarsOwned != null ) totalStarsOwned.text = ( PlayerStatsManager.Instance.getCurrentCoins() ).ToString("N0");;
 			PlayerStatsManager.Instance.incrementPowerUpInventory( powerUpType );
 		
 			string descriptionString = LocalizationManager.Instance.getText("POWER_UP_YOU_HAVE");
