@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public enum StoreTab {
 	Store = 1,
@@ -28,7 +27,6 @@ public class StoreManager : MonoBehaviour {
 		#if UNITY_EDITOR
 		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
 		#endif
-
 		storeTitle.text = LocalizationManager.Instance.getText("STORE_TITLE");
 		upgradeTitle.text = LocalizationManager.Instance.getText("STORE_UPGRADE_TITLE");
 		consumableTitle.text = LocalizationManager.Instance.getText("STORE_CONSUMABLE_TITLE");

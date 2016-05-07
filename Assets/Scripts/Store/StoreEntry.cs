@@ -7,10 +7,10 @@ public enum PurchaseType {
 	None = 0,
 	Upgrade = 1,
 	Consumable = 2,
-	StarDoubler = 3,
+	Purchase_Star_Doubler = 3,
 	Purchase_Stars = 4,
 	Purchase_Lives = 5,
-	Restore_StarDoubler = 6
+	Restore_Star_Doubler = 6
 }
 
 public class StoreEntry : MonoBehaviour {
@@ -30,7 +30,6 @@ public class StoreEntry : MonoBehaviour {
 	public string descriptionID = "POWER_UP_MAGNET_DESCRIPTION";
 	//Valid upgrade values are integers between 0 to 6 included
 	const int MAXIMUM_UPGRADE_LEVEL = 6;
-	const int COST_FOR_ONE_CONSUMABLE = 1000;
 	string currencySymbol = "$";
 
 	// Use this for initialization
@@ -54,7 +53,7 @@ public class StoreEntry : MonoBehaviour {
 				initializeConsumableEntry();
                 break;
 	                
-	        case PurchaseType.StarDoubler:
+	        case PurchaseType.Purchase_Star_Doubler:
 				initializeStarDoublerEntry();
                 break;
 	                
@@ -66,7 +65,7 @@ public class StoreEntry : MonoBehaviour {
 				initializePurchaseStarsEntry();
                 break;
 
-			 case PurchaseType.Restore_StarDoubler:
+			 case PurchaseType.Restore_Star_Doubler:
 				initializeRestoreStarDoublerEntry();
                 break;
 
@@ -97,7 +96,7 @@ public class StoreEntry : MonoBehaviour {
 		else
 		{
 			//Update the cost for the next purchase
-			buyButtonLabel.text = ( (PlayerStatsManager.Instance.getPowerUpUpgradeLevel( powerUpType ) + 1 )* 1000).ToString("N0");
+			buyButtonLabel.text = ( (PlayerStatsManager.Instance.getPowerUpUpgradeLevel( powerUpType ) + 1 )* price).ToString("N0");
 		}
 	}
 
@@ -108,7 +107,7 @@ public class StoreEntry : MonoBehaviour {
 		descriptionString = descriptionString.Replace( "<quantity>", PlayerStatsManager.Instance.getPowerUpQuantity(powerUpType).ToString("N0") );
 		description.text = descriptionString;
 
-		buyButtonLabel.text = COST_FOR_ONE_CONSUMABLE.ToString("N0");
+		buyButtonLabel.text = price.ToString("N0");
 	}
 
 	void initializeStarDoublerEntry()
@@ -117,6 +116,7 @@ public class StoreEntry : MonoBehaviour {
 		if( PlayerStatsManager.Instance.getOwnsStarDoubler() )
 		{
 			//Player already owns it
+			buyButtonLabel.alignment = TextAnchor.MiddleCenter;
 			buyButtonLabel.text = LocalizationManager.Instance.getText("STAR_DOUBLER_OWNED");
 			buyButton.interactable = false;
 		}
@@ -164,17 +164,20 @@ public class StoreEntry : MonoBehaviour {
 				buyConsumable();
                 break;
 	                
-	        case PurchaseType.StarDoubler:
+	        case PurchaseType.Purchase_Star_Doubler:
 				buyStarDoubler();
                 break;
 	                
 	        case PurchaseType.Purchase_Lives:
+				buyLives();
                 break;
 	
 	        case PurchaseType.Purchase_Stars:
+				buyStars();
                 break;
 
-			 case PurchaseType.Restore_StarDoubler:
+			 case PurchaseType.Restore_Star_Doubler:
+				restorePurchases();
                 break;
 
 			 case PurchaseType.None:
@@ -186,7 +189,7 @@ public class StoreEntry : MonoBehaviour {
 	void buyUpgrade()
 	{
 		int newUpgradeValue = PlayerStatsManager.Instance.getPowerUpUpgradeLevel( powerUpType ) + 1;
-		int currentUpgradeCost = newUpgradeValue * 1000;
+		int currentUpgradeCost = newUpgradeValue * (int) price;
 		//Make sure we have enough currency
 		if( currentUpgradeCost <= PlayerStatsManager.Instance.getCurrentCoins() )
 		{
@@ -205,7 +208,7 @@ public class StoreEntry : MonoBehaviour {
 			else
 			{
 				//Update the cost for the next purchase
-				buyButtonLabel.text = ( (PlayerStatsManager.Instance.getPowerUpUpgradeLevel( powerUpType ) + 1 )* 1000).ToString("N0");
+				buyButtonLabel.text = ( (PlayerStatsManager.Instance.getPowerUpUpgradeLevel( powerUpType ) + 1 )* price).ToString("N0");
 			}
 			
 			//Save the data since we spent some currency as well as upgraded a powerup.
@@ -217,11 +220,11 @@ public class StoreEntry : MonoBehaviour {
 	void buyConsumable()
 	{
 		//Make sure we have enough currency
-		if( PlayerStatsManager.Instance.getCurrentCoins() >= COST_FOR_ONE_CONSUMABLE )
+		if( PlayerStatsManager.Instance.getCurrentCoins() >= price )
 		{
 			SoundManager.playButtonClick();
 			//Deduct the appropriate number of currency for the purchase
-			PlayerStatsManager.Instance.modifyCurrentCoins(-COST_FOR_ONE_CONSUMABLE, false, true );
+			PlayerStatsManager.Instance.modifyCurrentCoins((int)(-price), false, true );
 			PlayerStatsManager.Instance.incrementPowerUpInventory( powerUpType );
 		
 			string descriptionString = LocalizationManager.Instance.getText("POWER_UP_YOU_HAVE");
@@ -240,7 +243,7 @@ public class StoreEntry : MonoBehaviour {
 	{
 		Debug.Log("buyStarDoubler");
 		SoundManager.playButtonClick();
-
+		buyButtonLabel.alignment = TextAnchor.MiddleCenter;
 		buyButtonLabel.text = LocalizationManager.Instance.getText("STAR_DOUBLER_OWNED");
 		buyButton.interactable = false;
 
@@ -250,5 +253,35 @@ public class StoreEntry : MonoBehaviour {
 		//Save the data
 		PlayerStatsManager.Instance.savePlayerStats();
 	}
+
+	void buyLives()
+	{
+		Debug.Log("buyLives");
+		SoundManager.playButtonClick();
+
+		//Grant the purchased lives
+		PlayerStatsManager.Instance.increaseLives( quantity );
+
+		//Save the data
+		PlayerStatsManager.Instance.savePlayerStats();
+	}
+
+	void buyStars()
+	{
+		Debug.Log("buyStars");
+		SoundManager.playButtonClick();
+
+		//Grant the purchased lives
+		PlayerStatsManager.Instance.modifyCurrentCoins( quantity, false, true );
+
+		//Save the data
+		PlayerStatsManager.Instance.savePlayerStats();
+	}
+
+	void restorePurchases()
+	{
+		Debug.LogWarning("restorePurchases-Not implemented");
+	}
+
 
 }
