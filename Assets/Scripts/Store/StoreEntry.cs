@@ -90,7 +90,11 @@ public class StoreEntry : MonoBehaviour {
 		//Disable buy button if we have reached the maximum upgrade level
 		if( upgradeLevel.value == MAXIMUM_UPGRADE_LEVEL )
 		{
-			buyButton.gameObject.SetActive(false);
+			buyButton.interactable = false;
+			buyButtonLabel.alignment = TextAnchor.MiddleCenter;
+			Image[] images = buyButton.GetComponentsInChildren<Image>();
+			images[1].gameObject.SetActive( false );
+			buyButtonLabel.text = LocalizationManager.Instance.getText("POWER_UP_BUTTON_MAXED_OUT");
 			description.text = LocalizationManager.Instance.getText("POWER_UP_MAXIMUM_UPGRADE");
 		}
 		else
@@ -202,7 +206,11 @@ public class StoreEntry : MonoBehaviour {
 			//Disable buy button if we have reached the maximum upgrade level
 			if( upgradeLevel.value == MAXIMUM_UPGRADE_LEVEL )
 			{
-				buyButton.gameObject.SetActive(false);
+				buyButton.interactable = false;
+				Image[] images = buyButton.GetComponentsInChildren<Image>();
+				images[1].gameObject.SetActive( false );
+				buyButtonLabel.alignment = TextAnchor.MiddleCenter;
+				buyButtonLabel.text = LocalizationManager.Instance.getText("POWER_UP_BUTTON_MAXED_OUT");
 				description.text = LocalizationManager.Instance.getText("POWER_UP_MAXIMUM_UPGRADE");
 			}
 			else
