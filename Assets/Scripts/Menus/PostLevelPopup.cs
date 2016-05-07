@@ -51,10 +51,22 @@ public class PostLevelPopup : MonoBehaviour {
 	{
 		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
 		int score = LevelManager.Instance.getScore();
-		if ( score >= currentEpisode.starsRequired[2] ) return 3;
-		if ( score >= currentEpisode.starsRequired[1] ) return 2;
-		if ( score >= currentEpisode.starsRequired[0] ) return 1;
-		return 0;
+
+		int numberOfStars = 0;
+
+		if ( score >= currentEpisode.starsRequired.x && score < currentEpisode.starsRequired.y )
+		{
+			numberOfStars = 1;
+		}
+		else if ( score >= currentEpisode.starsRequired.y && score < currentEpisode.starsRequired.z )
+		{
+			numberOfStars = 2;
+		}
+		else if ( score >= currentEpisode.starsRequired.z )
+		{
+			numberOfStars = 3;
+		}
+		return numberOfStars;
 	}
 
 	private void loadEpisodeData(LevelData levelData)

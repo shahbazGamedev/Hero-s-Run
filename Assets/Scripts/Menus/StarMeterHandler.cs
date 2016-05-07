@@ -9,9 +9,13 @@ public class StarMeterHandler : MonoBehaviour {
 	[Header("Star Meter")]
 	public Slider starMeterSlider;
 	public Text starMeterScore;
-	public RectTransform firstStar;
-	public RectTransform secondStar;
-	public RectTransform thirdStar;
+	public RectTransform leftStarMarker;
+	public RectTransform middleStarMarker;
+	public RectTransform rightStarMarker;
+	public Image leftStar;
+	public Image middleStar;
+	public Image rightStar;
+	public Color32 starReceivedColor;
 	public float scoreSpinDuration = 2f;
 	string scoreString; //format is Score: <0>
 	const float UPDATE_SEQUENCE_DELAY = 0.9f;
@@ -26,7 +30,7 @@ public class StarMeterHandler : MonoBehaviour {
 		updatePositionOfStarMarkers();
 	}
 
-	public void updatePositionOfStarMarkers()
+	void updatePositionOfStarMarkers()
 	{
 		LevelData.EpisodeInfo selectedEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
 		Vector4 starsRequired = selectedEpisode.starsRequired;
@@ -34,13 +38,13 @@ public class StarMeterHandler : MonoBehaviour {
 		Debug.Log("updatePositionOfStarMarkers " + starsRequired );
 
 		float xPosition = (starsRequired.x/starsRequired.w ) * sliderWidth;
-		firstStar.anchoredPosition = new Vector2( xPosition,firstStar.anchoredPosition.y);
+		leftStarMarker.anchoredPosition = new Vector2( xPosition,leftStarMarker.anchoredPosition.y);
 
 		xPosition = (starsRequired.y/starsRequired.w ) * sliderWidth;
-		secondStar.anchoredPosition = new Vector2( xPosition,secondStar.anchoredPosition.y);
+		middleStarMarker.anchoredPosition = new Vector2( xPosition,middleStarMarker.anchoredPosition.y);
 
 		xPosition = (starsRequired.z/starsRequired.w ) * sliderWidth;
-		thirdStar.anchoredPosition = new Vector2( xPosition,thirdStar.anchoredPosition.y);
+		rightStarMarker.anchoredPosition = new Vector2( xPosition,rightStarMarker.anchoredPosition.y);
 
 	}
 
@@ -88,13 +92,52 @@ public class StarMeterHandler : MonoBehaviour {
 		{
 			case PlayerInventoryEvent.Score_Changed:
 				LevelData.EpisodeInfo selectedEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
-				Debug.Log("StarMeterHandler - PlayerInventoryChanged: Episode number is: " + LevelManager.Instance.getCurrentEpisodeNumber() );
 				//Replace the string <0> by the score value
 				starMeterScore.text = scoreString.Replace( "<0>", newScore.ToString("N0") );
 				starMeterSlider.value = newScore/selectedEpisode.starsRequired.w;
-
+				updateDisplayStars( newScore, selectedEpisode );
 			break;	        
 		}
+	}
+
+	void updateDisplayStars( int newScore, LevelData.EpisodeInfo selectedEpisode )
+	{
+		int numberOfStars = 0;
+
+		if ( newScore >= selectedEpisode.starsRequired.x && newScore < selectedEpisode.starsRequired.y )
+		{
+			numberOfStars = 1;
+		}
+		else if ( newScore >= selectedEpisode.starsRequired.y && newScore < selectedEpisode.starsRequired.z )
+		{
+			numberOfStars = 2;
+		}
+		else if ( newScore >= selectedEpisode.starsRequired.z )
+		{
+			numberOfStars = 3;
+		}
+
+		Debug.Log( "updateDisplayStars " + newScore + " " + selectedEpisode.starsRequired + "numberOfStars " + numberOfStars );
+
+		switch (numberOfStars)
+		{
+			case 0:
+			    //Do nothing
+				break;
+			case 1:
+				leftStar.color = starReceivedColor;
+				break;
+			case 2:
+				leftStar.color = starReceivedColor;
+				middleStar.color = starReceivedColor;
+				break;
+			case 3:
+				leftStar.color = starReceivedColor;
+				middleStar.color = starReceivedColor;
+				rightStar.color = starReceivedColor;
+				break;
+		}
+ 	
 	}
 
 }
