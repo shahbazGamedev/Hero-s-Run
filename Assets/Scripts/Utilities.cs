@@ -105,7 +105,7 @@ public class Utilities : MonoBehaviour {
 		drawLabelWithDropShadow( location, text, textStyle, Color.black );
 	}
 
-	public static IEnumerator fadeCanvasGroup( CanvasGroup canvasGroup, float duration )
+	public static IEnumerator fadeInCanvasGroup( CanvasGroup canvasGroup, float duration )
 	{
 		canvasGroup.alpha = 0f;
 		float elapsed = 0;	
