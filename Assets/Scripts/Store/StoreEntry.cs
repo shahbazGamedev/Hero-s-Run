@@ -16,6 +16,7 @@ public enum PurchaseType {
 public class StoreEntry : MonoBehaviour {
 
 	[Header("Store Entry")]
+	StoreManager storeManager;
 	public PowerUpType powerUpType = PowerUpType.None;
 	public PurchaseType purchaseType = PurchaseType.None;
 
@@ -34,6 +35,10 @@ public class StoreEntry : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
+
+		GameObject storeManagerObject = GameObject.FindGameObjectWithTag("Store");
+		storeManager = storeManagerObject.GetComponent<StoreManager>();
+
 	
 		//So I can see the text displayed without going through the load menu as well as have valid save data while in the editor
 		#if UNITY_EDITOR
@@ -144,7 +149,7 @@ public class StoreEntry : MonoBehaviour {
 	{
 		string descriptionString = LocalizationManager.Instance.getText("STORE_ITEM_STARS_DESCRIPTION");
 		//Replace the string <quantity> by the quantity the player will receive if he makes the purchase
-				descriptionString = descriptionString.Replace( "<quantity>", quantity.ToString("N0") );
+		descriptionString = descriptionString.Replace( "<quantity>", quantity.ToString("N0") );
 		description.text = descriptionString;
 		
 		buyButtonLabel.text = currencySymbol + price.ToString();
@@ -223,6 +228,11 @@ public class StoreEntry : MonoBehaviour {
 			PlayerStatsManager.Instance.savePlayerStats();
 			
 		}
+		else
+		{
+			//Player does not have enough stars. Bring him to store.
+			storeManager.showStore(StoreTab.Store, StoreReason.Need_Stars);
+		}
 	}
 
 	void buyConsumable()
@@ -243,6 +253,11 @@ public class StoreEntry : MonoBehaviour {
 			//Save the data since we spent some currency as well as upgraded a powerup.
 			PlayerStatsManager.Instance.savePlayerStats();
 			
+		}
+		else
+		{
+			//Player does not have enough stars. Bring him to store.
+			storeManager.showStore(StoreTab.Store, StoreReason.Need_Stars);
 		}
 	}
 

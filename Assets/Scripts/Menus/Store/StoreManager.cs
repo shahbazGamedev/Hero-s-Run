@@ -7,17 +7,28 @@ public enum StoreTab {
 	Shop = 2
 }
 
+public enum StoreReason {
+	None = 0,
+	Need_Stars = 1,
+	Need_Lives = 2
+}
+
+
 public class StoreManager : MonoBehaviour {
 
-	[Header("Powerup Shop")]
-	public Text storeTitle;
-	public Text upgradeTitle;
-	public Text consumableTitle;
+	[Header("General")]
+	public Canvas storeCanvas;
 	public GameObject storeTab;
 	public GameObject shopTab;
-
 	[Header("Store")]
-	public Canvas storeCanvas;
+	public Text starsTitle;
+	public Text starsReason;
+	public Text livesTitle;
+	public Text livesReason;
+	public Scrollbar storeVerticalScrollbar;
+	[Header("Shop")]
+	public Text upgradeTitle;
+	public Text consumableTitle;
 
 	bool levelLoading = false;
 
@@ -27,24 +38,44 @@ public class StoreManager : MonoBehaviour {
 		#if UNITY_EDITOR
 		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
 		#endif
-		storeTitle.text = LocalizationManager.Instance.getText("STORE_TITLE");
+		starsTitle.text = LocalizationManager.Instance.getText("STORE_STARS_TITLE");
+		starsReason.text = LocalizationManager.Instance.getText("STORE_STARS_REASON");
+		livesTitle.text = LocalizationManager.Instance.getText("STORE_LIVES_TITLE");
+		livesReason.text = LocalizationManager.Instance.getText("STORE_LIVES_REASON");
+
 		upgradeTitle.text = LocalizationManager.Instance.getText("STORE_UPGRADE_TITLE");
 		consumableTitle.text = LocalizationManager.Instance.getText("STORE_CONSUMABLE_TITLE");
 
 	}
 
-	public void showStore(StoreTab selectedTab )
+	public void showStore(StoreTab selectedTab, StoreReason reason )
 	{
 		storeCanvas.gameObject.SetActive( true );
 		if( selectedTab == StoreTab.Store )
 		{	
-			storeTab.gameObject.SetActive( true );
-			shopTab.gameObject.SetActive( false );
+			showStoreTab();
 		}
 		else if( selectedTab == StoreTab.Shop )
 		{	
-			storeTab.gameObject.SetActive( false );
-			shopTab.gameObject.SetActive( true );
+			showShopTab();
+		}
+		if( reason == StoreReason.Need_Lives )
+		{
+			starsReason.gameObject.SetActive( false );
+			livesReason.gameObject.SetActive( true );
+			//Lives are at the middle of the display
+			storeVerticalScrollbar.value = 0.2096281f;
+		}
+		else if ( reason == StoreReason.Need_Stars )
+		{
+			starsReason.gameObject.SetActive( true );
+			livesReason.gameObject.SetActive( false );
+			//Stars are at the top of the display
+		}
+		else if ( reason == StoreReason.None )
+		{
+			starsReason.gameObject.SetActive( false );
+			livesReason.gameObject.SetActive( false );
 		}
 	}
 

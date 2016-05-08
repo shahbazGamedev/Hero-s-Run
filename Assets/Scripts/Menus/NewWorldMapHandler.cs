@@ -293,13 +293,13 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public void showStoreScreen()
 	{
 		SoundManager.playButtonClick();
-		storeManager.showStore( StoreTab.Store );
+		storeManager.showStore( StoreTab.Store, StoreReason.None );
 	}
 
 	public void showShopScreen()
 	{
 		SoundManager.playButtonClick();
-		storeManager.showStore( StoreTab.Shop );
+		storeManager.showStore( StoreTab.Shop, StoreReason.None );
 	}
 
 	//Middle Panel
