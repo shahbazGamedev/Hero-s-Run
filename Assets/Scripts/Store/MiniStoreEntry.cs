@@ -29,7 +29,7 @@ public class MiniStoreEntry : MonoBehaviour {
 		buyButtonLabel.text = currencySymbol + price.ToString();
 	}
 	
-	void buyLives()
+	public void buyLives()
 	{
 		Debug.Log("buyLives");
 		SoundManager.playButtonClick();

@@ -33,7 +33,6 @@ public class HUDSaveMe : MonoBehaviour {
 
 		//Normal Save Me
 		titleNormalText.text = LocalizationManager.Instance.getText("MENU_SAVE_ME_TITLE");
-		livesText.text = LocalizationManager.Instance.getText("MENU_LIVES");
 		saveMeText.text = LocalizationManager.Instance.getText("MENU_SAVE_ME");
 		costString = LocalizationManager.Instance.getText("MENU_COST");
 		checkpointText.text = LocalizationManager.Instance.getText("MENU_FROM_CHECKPOINT");
@@ -44,6 +43,18 @@ public class HUDSaveMe : MonoBehaviour {
 		//helpText.text gets set at runtime.
 		tryAgainText.text = LocalizationManager.Instance.getText("MENU_TRY_AGAIN");
 		quitTutorialText.text = LocalizationManager.Instance.getText("MENU_QUIT");
+	}
+
+	void OnEnable()
+	{
+		if( PlayerStatsManager.Instance.getHasInfiniteLives() )
+		{
+			livesText.text = LocalizationManager.Instance.getText("MENU_LIVES") + " " + PlayerStatsManager.Instance.getLives().ToString("N0") + "*";
+		}
+		else
+		{
+			livesText.text = LocalizationManager.Instance.getText("MENU_LIVES") + " " + PlayerStatsManager.Instance.getLives().ToString("N0");
+		}
 	}
 	
 	public void showSaveMeMenu()
@@ -75,14 +86,13 @@ public class HUDSaveMe : MonoBehaviour {
 
 	void activateNormalSaveMe()
 	{
-		int currentNumberOfLives = PlayerStatsManager.Instance.getLives();
 		if( PlayerStatsManager.Instance.getHasInfiniteLives() )
 		{
-			livesText.text = " Lives " + currentNumberOfLives.ToString() + "*";
+			livesText.text = LocalizationManager.Instance.getText("MENU_LIVES") + " " + PlayerStatsManager.Instance.getLives().ToString("N0") + "*";
 		}
 		else
 		{
-			livesText.text = " Lives " + currentNumberOfLives.ToString();
+			livesText.text = LocalizationManager.Instance.getText("MENU_LIVES") + " " + PlayerStatsManager.Instance.getLives().ToString("N0");
 		}
 
 		//Calculate the energy cost to revive.
