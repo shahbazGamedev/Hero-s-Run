@@ -37,7 +37,7 @@ public class StoreEntry : MonoBehaviour {
 	void Awake () {
 
 		GameObject storeManagerObject = GameObject.FindGameObjectWithTag("Store");
-		storeManager = storeManagerObject.GetComponent<StoreManager>();
+		if( storeManagerObject != null ) storeManager = storeManagerObject.GetComponent<StoreManager>();
 
 	
 		//So I can see the text displayed without going through the load menu as well as have valid save data while in the editor
@@ -46,7 +46,7 @@ public class StoreEntry : MonoBehaviour {
 		PlayerStatsManager.Instance.loadPlayerStats();
 		#endif
 
-		title.text = LocalizationManager.Instance.getText(titleID);
+		if( title != null )title.text = LocalizationManager.Instance.getText(titleID);
 
 		switch (purchaseType)
 		{
@@ -231,7 +231,7 @@ public class StoreEntry : MonoBehaviour {
 		else
 		{
 			//Player does not have enough stars. Bring him to store.
-			storeManager.showStore(StoreTab.Store, StoreReason.Need_Stars);
+			if( storeManager != null ) storeManager.showStore(StoreTab.Store, StoreReason.Need_Stars);
 		}
 	}
 
@@ -257,7 +257,7 @@ public class StoreEntry : MonoBehaviour {
 		else
 		{
 			//Player does not have enough stars. Bring him to store.
-			storeManager.showStore(StoreTab.Store, StoreReason.Need_Stars);
+			if( storeManager != null ) storeManager.showStore(StoreTab.Store, StoreReason.Need_Stars);
 		}
 	}
 

@@ -7,6 +7,7 @@ public class HUDSaveMe : MonoBehaviour {
 	[Header("Save Me Menu")]
 	public GameObject saveMeCanvas;
 	PlayerController playerController;
+	public MiniStoreHandler miniStoreHandler;
 	[Header("Normal Save Me")]
 	public GameObject normalPanel;
 	public Text titleNormalText;
@@ -116,6 +117,7 @@ public class HUDSaveMe : MonoBehaviour {
 		else
 		{
 			//Show buy popup
+			miniStoreHandler.showMiniStore();
 		}
 	}
 

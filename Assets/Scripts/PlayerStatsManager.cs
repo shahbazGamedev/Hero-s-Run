@@ -76,7 +76,7 @@ public class PlayerStatsManager {
 
 	//For debugging
 	//Cheat
-	bool hasInfiniteLives = true;
+	bool hasInfiniteLives = false;
 	bool hasInfiniteTreasureIslandKeys = false;
 
 	PowerUpType powerUpSelected = PowerUpType.MagicBoots;
