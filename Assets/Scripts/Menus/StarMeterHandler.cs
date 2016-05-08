@@ -118,8 +118,6 @@ public class StarMeterHandler : MonoBehaviour {
 			numberOfStars = 3;
 		}
 
-		Debug.Log( "updateDisplayStars " + newScore + " " + selectedEpisode.starsRequired + "numberOfStars " + numberOfStars );
-
 		switch (numberOfStars)
 		{
 			case 0:
