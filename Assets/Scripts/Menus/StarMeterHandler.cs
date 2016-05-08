@@ -9,6 +9,7 @@ public class StarMeterHandler : MonoBehaviour {
 	[Header("Star Meter")]
 	public Slider starMeterSlider;
 	public Text starMeterScore;
+	public RectTransform StarMarkersPanel;
 	public RectTransform leftStarMarker;
 	public RectTransform middleStarMarker;
 	public RectTransform rightStarMarker;
@@ -34,7 +35,7 @@ public class StarMeterHandler : MonoBehaviour {
 	{
 		LevelData.EpisodeInfo selectedEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
 		Vector4 starsRequired = selectedEpisode.starsRequired;
-		float sliderWidth = starMeterSlider.GetComponent<RectTransform>().rect.width;
+		float sliderWidth = StarMarkersPanel.rect.width;
 		Debug.Log("updatePositionOfStarMarkers " + starsRequired );
 
 		float xPosition = (starsRequired.x/starsRequired.w ) * sliderWidth;
