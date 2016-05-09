@@ -71,7 +71,7 @@ CULLIS_GATE_TO_GAME_END,Congratulations! You have finished the game.,Bravo ! Tu 
 CHECKPOINT_REACHED,Checkpoint reached!,Point de sauvegarde !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Mini Store
 MINISTORE_TITLE,No more Lives!,Plus de vies !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-MINISTORE_SUGGESTION,Ask your friends for extra lives or buy packs of lives now!,Demande à tes amis pour des vies ou achète des paquets de vies maintenant !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MINISTORE_SUGGESTION,Ask your friends for extra lives in the map menu or buy packs of lives now!,Demande à tes amis pour des vies dans le menu avec la carte ou achète des paquets de vies maintenant !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Mini Store Purchase Status Popup
 PURCHASE_STATUS_TITLE_SUCCESS,Purchase Successful,Achat Réussi,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 PURCHASE_STATUS_TITLE_CANCELLED,Purchase Cancelled,Achat Annulé,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED

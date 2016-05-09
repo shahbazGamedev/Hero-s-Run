@@ -11,7 +11,6 @@ public class MiniStoreHandler : MonoBehaviour {
 	public Sprite heroine;
 	public Text titleText;
 	public Text suggestionText;
-	public Text askFriendsButtonText;
 	[Header("Purchase Status Popup")]
 	public GameObject purchaseStatusPopup;
 	public Text purchaseStatusTitleText;
@@ -23,7 +22,6 @@ public class MiniStoreHandler : MonoBehaviour {
 	{
 		titleText.text = LocalizationManager.Instance.getText("MINISTORE_TITLE");
 		suggestionText.text = LocalizationManager.Instance.getText("MINISTORE_SUGGESTION");
-		askFriendsButtonText.text = LocalizationManager.Instance.getText("POPUP_ASK_LIVES_BUTTON");
 
 		if( PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
 		{
