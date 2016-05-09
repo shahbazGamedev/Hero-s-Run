@@ -74,8 +74,6 @@ public class MessageCenterHandler : MonoBehaviour {
 		iconSize 				= new Vector2( Screen.width * 0.07f, Screen.width * 0.07f );
 		
 		//Message entry data
-		AskSectionUnlock = new MessageEntryData( RequestDataType.Ask_Section_Unlock );
-		AcceptSectionUnlock = new MessageEntryData( RequestDataType.Accept_Section_Unlock );
 		AskGiveLife = new MessageEntryData( RequestDataType.Ask_Give_Life );
 		AcceptGiveLife = new MessageEntryData( RequestDataType.Accept_Give_Life );
 		UnknownRequestDataType = new MessageEntryData( RequestDataType.Unknown );
@@ -215,17 +213,6 @@ public class MessageCenterHandler : MonoBehaviour {
 
 			switch (appRequestData.dataType)
 			{
-			case RequestDataType.Ask_Section_Unlock:
-				FacebookManager.Instance.CallAppRequestAsDirectRequest("App Requests", LocalizationManager.Instance.getText("FB_HELP_UNLOCK_MESSAGE"), appRequestData.fromID, "Accept_Section_Unlock," + appRequestData.dataNumber.ToString(), MCHCallback, appRequestData.appRequestID );
-				break;
-			case RequestDataType.Accept_Section_Unlock:
-				//Note that accept unlock request get automatically processed elsewhere.
-				//The player does not need to accept the message for the unlock to occur.
-				appRequestsToProcessList.Pop();
-				//Now that it is successfully processed, delete the app request on Facebook
-				FacebookManager.Instance.deleteAppRequest( appRequestData.appRequestID );
-				processNextAppRequest();
-				break;
 			case RequestDataType.Ask_Give_Life:
 				FacebookManager.Instance.CallAppRequestAsDirectRequest("App Requests", LocalizationManager.Instance.getText("FB_HAVE_A_LIFE_MESSAGE"), appRequestData.fromID, "Accept_Give_Life," + appRequestData.dataNumber.ToString(), MCHCallback, appRequestData.appRequestID );
 				break;
@@ -315,7 +302,7 @@ public class MessageCenterHandler : MonoBehaviour {
 	
 	void drawMessageScrollWindowDebug() 
 	{
-		int numRows = 5;
+		int numRows = 3;
 		scrollComplete.height = numRows * rowSize.y;
 		
 		scrollPosition = GUI.BeginScrollView (scrollView, scrollPosition, scrollComplete, false, false);
@@ -336,24 +323,11 @@ public class MessageCenterHandler : MonoBehaviour {
 				}
 				else if( iRow == 1 )
 				{
-					appRequestData1.dataType = RequestDataType.Accept_Section_Unlock;
-					appRequestData1.fromFirstName = "Claire";
-					drawMessageEntry( iRow, rBtn.y, appRequestData1 );
-				}
-				else if( iRow == 2 )
-				{
 					appRequestData2.dataType = RequestDataType.Ask_Give_Life;
 					appRequestData2.fromFirstName = "Régis";
 					drawMessageEntry( iRow, rBtn.y, appRequestData2 );
 				}
-				else if( iRow == 3 )
-				{
-					appRequestData3.dataType = RequestDataType.Ask_Section_Unlock;
-					appRequestData3.fromFirstName = "Robert";
-					appRequestData3.dataNumber = 2;
-					drawMessageEntry( iRow, rBtn.y, appRequestData3 );
-				}
-				else if( iRow == 4 )
+				else if( iRow == 2 )
 				{
 					appRequestData4.dataType = RequestDataType.Unknown;
 					appRequestData4.fromFirstName = "";
@@ -458,10 +432,6 @@ public class MessageCenterHandler : MonoBehaviour {
 	{
 		switch (requestDataType)
 		{
-		case RequestDataType.Ask_Section_Unlock:
-			return AskSectionUnlock;
-		case RequestDataType.Accept_Section_Unlock:
-			return AcceptSectionUnlock;
 		case RequestDataType.Ask_Give_Life:
 			return AskGiveLife;
 		case RequestDataType.Accept_Give_Life:

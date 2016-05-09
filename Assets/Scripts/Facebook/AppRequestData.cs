@@ -4,10 +4,8 @@ using System;
 
 public enum RequestDataType {
 	Unknown = 0,
-	Ask_Section_Unlock = 1,
-	Accept_Section_Unlock = 2,
-	Ask_Give_Life = 3,
-	Accept_Give_Life = 4
+	Ask_Give_Life = 1,
+	Accept_Give_Life = 2
 }
 public class AppRequestData {
 
@@ -41,12 +39,6 @@ public class AppRequestData {
 	{
 		switch (dataTypeStr)
 		{
-		case "Ask_Section_Unlock":
-			dataType = RequestDataType.Ask_Section_Unlock;
-			break;
-		case "Accept_Section_Unlock":
-			dataType = RequestDataType.Accept_Section_Unlock;
-			break;
 		case "Ask_Give_Life":
 			dataType = RequestDataType.Ask_Give_Life;
 			break;
