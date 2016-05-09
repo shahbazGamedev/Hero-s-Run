@@ -2690,13 +2690,6 @@ public class PlayerController : BaseClass {
 	{
 		sc.Shake();
 	}
-
-	public void resetLevel()
-	{
-		Debug.Log ("PlayerController-resetLevel");
-		resetSharedLevelData();
-		PlayerStatsManager.Instance.resetLevelStats();
-	}
 	
 	void checkBelow()
 	{

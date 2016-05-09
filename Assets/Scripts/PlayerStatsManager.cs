@@ -253,12 +253,6 @@ public class PlayerStatsManager {
 		return (int) distanceTravelled;
 	}
 
-	public void resetLevelStats()
-	{
-		resetDistanceTravelled();
-		resetTimesPlayerRevivedInLevel();
-	}
-
 	public void resetDistanceTravelled()
 	{
 		distanceTravelled = 0;

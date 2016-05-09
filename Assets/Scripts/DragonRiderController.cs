@@ -2930,13 +2930,6 @@ public class DragonRiderController : BaseClass {
 	{
 		sc.Shake();
 	}
-
-	public void resetLevel()
-	{
-		Debug.Log ("PlayerController-resetLevel");
-		resetSharedLevelData();
-		PlayerStatsManager.Instance.resetLevelStats();
-	}
 	
 	void checkBelow()
 	{
