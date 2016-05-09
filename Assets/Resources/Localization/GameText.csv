@@ -69,6 +69,17 @@ CULLIS_GATE_TO_HELL,You're heading to Hell.,Tu te diriges vers l'Enfer.,NOT TRAN
 CULLIS_GATE_TO_FLOODED_BATTLEFIELD,You're heading to the flooded battlefield.,Tu te diriges vers le champ de bataille englouti.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CULLIS_GATE_TO_GAME_END,Congratulations! You have finished the game.,Bravo ! Tu as finis le jeu.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CHECKPOINT_REACHED,Checkpoint reached!,Point de sauvegarde !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+#Mini Store
+MINISTORE_TITLE,No more Lives!,Plus de vies !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+MINISTORE_SUGGESTION,Ask your friends for extra lives or buy packs of lives now!,Demande à tes amis pour des vies ou achète des paquets de vies maintenant !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+#Mini Store Purchase Status Popup
+PURCHASE_STATUS_TITLE_SUCCESS,Purchase Successful,Achat Réussi,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+PURCHASE_STATUS_TITLE_CANCELLED,Purchase Cancelled,Achat Annulé,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+PURCHASE_STATUS_TITLE_ERROR,Purchase Error,Erreur lors de l'Achat,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+PURCHASE_STATUS_CONTENT_SUCCESS,Purchase completed successfully,Achat complété avec succès,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+PURCHASE_STATUS_CONTENT_CANCELLED,No money was taken from your account,Aucun argent n'a été retiré de ton compte,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+PURCHASE_STATUS_CONTENT_ERROR,An error occured. Transaction not completed,Une erreur est survenue. Transaction non completée,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+PURCHASE_STATUS_BUTTON_CONTINUE,Continue,Continue,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Store
 #Store titles
 STORE_STARS_TITLE,Stars,Étoiles,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED

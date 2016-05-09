@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class MiniStoreEntry : MonoBehaviour {
 
 	[Header("Mini Store Entry")]
+	public MiniStoreHandler miniStoreHandler;
 	public Text description;
 	public int quantity; 	//For example number of lives you are buying
 	public float price; 	//For testing. real prices will come from app store
@@ -31,14 +32,7 @@ public class MiniStoreEntry : MonoBehaviour {
 	
 	public void buyLives()
 	{
-		Debug.Log("buyLives");
-		SoundManager.playButtonClick();
-
-		//Grant the purchased lives
-		PlayerStatsManager.Instance.increaseLives( quantity );
-
-		//Save the data
-		PlayerStatsManager.Instance.savePlayerStats();
+		miniStoreHandler.buyLives(quantity);
 	}
 
 }

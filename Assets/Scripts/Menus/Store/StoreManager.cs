@@ -13,6 +13,11 @@ public enum StoreReason {
 	Need_Lives = 2
 }
 
+public enum PurchaseStatus {
+	Success = 0,
+	Cancelled = 1,
+	Error = 2
+}
 
 public class StoreManager : MonoBehaviour {
 
