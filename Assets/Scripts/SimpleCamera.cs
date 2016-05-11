@@ -291,6 +291,7 @@ public class SimpleCamera : MonoBehaviour {
 			cutsceneCamera.localPosition = new Vector3( 0, -40.3f, 50f );
 			cutsceneCamera.rotation = Quaternion.Euler( 330f,180f, 3f );
 			cutsceneCamera.GetComponent<Camera>().fieldOfView = 54.9f;
+			cutsceneCamera.transform.parent = null;
 		}
 		else if( type == CutsceneType.MagicGate )
 		{
