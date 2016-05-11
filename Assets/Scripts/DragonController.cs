@@ -75,7 +75,7 @@ public class DragonController : BaseClass {
 	void Start()
 	{
 		allowBreatheFire = true;
-		if( playerController.getCurrentTileType() == TileType.Opening ) Invoke ("Arrive", 10f );
+		//if( playerController.getCurrentTileType() == TileType.Opening ) Invoke ("Arrive", 10f );
 	}
 
 	// Update is called once per frame

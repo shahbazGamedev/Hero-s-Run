@@ -193,6 +193,7 @@ public class GenerateLevel  : MonoBehaviour {
 		LevelManager.Instance.setLevelInfo( levelInfo );
 
 		//Sets the skybox, the directional light intensity and direction for the current level
+		levelData.initialise();
 		levelData.setSunParameters(levelInfo.sunType);
 
 		//Enable the fog and change the fog tint if enabled

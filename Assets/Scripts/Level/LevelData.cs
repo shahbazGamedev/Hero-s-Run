@@ -40,10 +40,19 @@ public class LevelData : MonoBehaviour {
 
 	public const int NUMBER_OF_EPISODES = 6;
 	public const int NUMBER_OF_LEVELS = 15;
+	GameObject cutSceneCamera;
+	//This should be the directional light in the scene
+	GameObject Sun;
 
 	public List<LevelInfo> getLevelList()
 	{
 		return levelList;
+	}
+
+	public void initialise()
+	{
+		cutSceneCamera = GameObject.Find("CutsceneCamera");
+		Sun = GameObject.FindGameObjectWithTag("Sunlight");
 	}
 
 	public LevelInfo getLevelInfo( int levelNumber )
@@ -81,8 +90,6 @@ public class LevelData : MonoBehaviour {
 	//for the current level. The skybox materials should be located under the Skybox directory under Resources.
 	public void setSunParameters( SunType sunType )
 	{
-		//This should be the directional light in the scene
-		GameObject Sun = GameObject.FindGameObjectWithTag("Sunlight");
 		if( Sun != null )
 		{
 			Material skyBoxMaterial;
@@ -178,7 +185,7 @@ public class LevelData : MonoBehaviour {
 			if( skyBoxMaterial != null )
 			{
 				RenderSettings.skybox = skyBoxMaterial;
-				GameObject cutSceneCamera = GameObject.Find("CutsceneCamera");
+				
 				Skybox skyBox = (Skybox) cutSceneCamera.GetComponent("Skybox");
 				skyBox.material = skyBoxMaterial;
 				//A value of 1f means sky is almost completely white, a value of 0 means the sky is darker.
