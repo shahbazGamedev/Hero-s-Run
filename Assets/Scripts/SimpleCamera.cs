@@ -9,7 +9,8 @@ public enum CutsceneType
 	CullisGate = 1,
 	Checkpoint = 2,
 	Troll = 3,
-	OpeningSequence = 4
+	OpeningSequence = 4,
+	MagicGate = 5
 }
 
 public enum CameraState 
@@ -287,10 +288,15 @@ public class SimpleCamera : MonoBehaviour {
 		}
 		else if( type == CutsceneType.OpeningSequence )
 		{
-			cutsceneCamera.localPosition = new Vector3( 0, -40.3f, 50f ); //Remember the cutscene camera is a child of the hero
+			cutsceneCamera.localPosition = new Vector3( 0, -40.3f, 50f );
 			cutsceneCamera.rotation = Quaternion.Euler( 330f,180f, 3f );
 			cutsceneCamera.GetComponent<Camera>().fieldOfView = 54.9f;
-			cutsceneCamera.transform.parent = null;
+		}
+		else if( type == CutsceneType.MagicGate )
+		{
+			cutsceneCamera.localPosition = new Vector3( 0, 2.6f, 147f );
+			cutsceneCamera.rotation = Quaternion.Euler( 352.6f,-180f, 1.5f );
+			cutsceneCamera.GetComponent<Camera>().fieldOfView = 54.9f;
 		}
 	}
 	

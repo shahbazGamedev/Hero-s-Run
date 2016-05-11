@@ -2552,10 +2552,11 @@ public class PlayerController : BaseClass {
 
 		        case DeathType.MagicGate:
 					sc.lockCamera ( true );
+					sc.playCutscene( CutsceneType.MagicGate );
 					anim.speed = 3.8f;
 					anim.SetTrigger(FallTrigger);
-					LeanTween.moveLocalY( gameObject, transform.position.y - TrapMagicGate.distanceTravelledDown, TrapMagicGate.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutExpo).setDelay(TrapMagicGate.delayBeforeBeingPulledDown);
-					StartCoroutine( waitBeforeResurrecting(2.5f) );
+					LeanTween.moveLocalY( gameObject, transform.position.y - TrapMagicGate.distanceTravelledDown, TrapMagicGate.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutQuad).setDelay(TrapMagicGate.delayBeforeBeingPulledDown);
+					StartCoroutine( waitBeforeResurrecting(3.2f) );
 					break;
 
 				default:
@@ -2617,6 +2618,10 @@ public class PlayerController : BaseClass {
 		GameManager.Instance.setGameState( GameState.Resurrect );
 		anim.speed = 1f;
 		yield return new WaitForSeconds(duration);
+		sc.setCameraParameters( 18f, SimpleCamera.DEFAULT_DISTANCE, SimpleCamera.DEFAULT_HEIGHT, SimpleCamera.DEFAULT_Y_ROTATION_OFFSET );
+		sc.activateMainCamera();
+		sc.positionCameraNow();
+		sc.resetCameraParameters();
 		resurrectBegin(true);
 	}
 
