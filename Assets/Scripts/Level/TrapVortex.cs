@@ -20,16 +20,6 @@ public class TrapVortex : MonoBehaviour {
 
 	}
 	
-	void OnEnable()
-	{
-		GameManager.gameStateEvent += GameStateChange;
-	}
-	
-	void OnDisable()
-	{
-		GameManager.gameStateEvent -= GameStateChange;
-	}
-	
 	void OnTriggerEnter(Collider other)
 	{
 		if( other.name == "Hero" && !CheatManager.Instance.getIsInvincible() )
@@ -60,13 +50,4 @@ public class TrapVortex : MonoBehaviour {
 		waterSplash.Play();
 	}
 
-	void GameStateChange( GameState newState )
-	{
-		if( newState == GameState.Paused )
-		{
-		}
-		else if( newState == GameState.Normal )
-		{
-		}
-	}
 }

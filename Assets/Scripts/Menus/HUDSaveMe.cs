@@ -108,7 +108,7 @@ public class HUDSaveMe : MonoBehaviour {
 	{
 		Debug.Log("Try Again button pressed.");
 		GameManager.Instance.setGameState( GameState.Resurrect );
-		playerController.resurrectBegin();
+		playerController.resurrectBegin(false);
 		closeSaveMeMenu();
 	}
 
@@ -119,7 +119,7 @@ public class HUDSaveMe : MonoBehaviour {
 		{
 			Debug.Log("Save Me button pressed.");
 			GameManager.Instance.setGameState( GameState.Resurrect );
-			playerController.resurrectBegin();
+			playerController.resurrectBegin(false);
 			PlayerStatsManager.Instance.decreaseLives((int)costLives);
 			PlayerStatsManager.Instance.incrementTimesPlayerRevivedInLevel();
 			closeSaveMeMenu();

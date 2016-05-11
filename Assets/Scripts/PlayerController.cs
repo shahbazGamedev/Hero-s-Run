@@ -15,7 +15,8 @@ public enum DeathType {
 		Fireball = 9,
 		Zombie = 10,
 		Hellpit = 11,
-		VortexTrap = 12
+		VortexTrap = 12,
+		MagicGate = 13
 }
 
 public enum CharacterState {
@@ -2549,6 +2550,14 @@ public class PlayerController : BaseClass {
 					StartCoroutine( waitBeforeDisplayingSaveMeScreen(5f) );
 					break;
 
+		        case DeathType.MagicGate:
+					sc.lockCamera ( true );
+					anim.speed = 3.8f;
+					anim.SetTrigger(FallTrigger);
+					LeanTween.moveLocalY( gameObject, transform.position.y - TrapMagicGate.distanceTravelledDown, TrapMagicGate.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutExpo).setDelay(TrapMagicGate.delayBeforeBeingPulledDown);
+					StartCoroutine( waitBeforeResurrecting(2.5f) );
+					break;
+
 				default:
 					anim.SetTrigger(DeathWallTrigger);
 					break;
@@ -2600,6 +2609,15 @@ public class PlayerController : BaseClass {
 		//Save the player stats before continuing
 		PlayerStatsManager.Instance.savePlayerStats();
 		GameManager.Instance.setGameState( GameState.SaveMe );
+	}
+
+	public IEnumerator waitBeforeResurrecting ( float duration )
+	{
+		//In this case, we have NO save screen. It is used by TrapMagicGate
+		GameManager.Instance.setGameState( GameState.Resurrect );
+		anim.speed = 1f;
+		yield return new WaitForSeconds(duration);
+		resurrectBegin(true);
 	}
 
 	public void stumble_completed ( AnimationEvent eve )
@@ -2770,7 +2788,7 @@ public class PlayerController : BaseClass {
 
 	}
 	
-	public void resurrectBegin()
+	public void resurrectBegin( bool calledByMagicGate )
 	{
 		//0) Reset data
 		resetSharedLevelData();
@@ -2881,8 +2899,16 @@ public class PlayerController : BaseClass {
 			Debug.LogError("PlayerController-ResurrectBegin: Unable to find respawnLocation game object in tile : " + currentTile.name );
 		}
 
-		//4) Fly Fairy to body and have play a sprinkle animation
-		fairyController.revivePlayer( );
+		if( calledByMagicGate )
+		{
+			//4a) Fly Fairy to body, have her speak to the player and then have her play a sprinkle animation
+			fairyController.speakToPlayerPart1( );
+		}
+		else
+		{
+			//4b) Fly Fairy to body and have play a sprinkle animation
+			fairyController.revivePlayer( );
+		}
 	
 	}
 

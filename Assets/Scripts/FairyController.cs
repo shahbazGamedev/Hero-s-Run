@@ -221,6 +221,43 @@ public class FairyController : BaseClass {
 		fairyState = FairyState.Hover;
 	}
 
+	//The Speak to Player sequence is activated at the begining of the game when the player falls from the sky.
+	//It is triggered by TrapMagicGate
+	public void speakToPlayerPart1()
+	{
+		Debug.Log("FairyController-speakToPlayer");
+		transform.localScale = new Vector3( 1f, 1f, 1f );
+
+		//Move Fairy to player body and play a sprinkle animation
+		float fairyRotY = player.eulerAngles.y + 205f;
+		Vector3 relativePos = new Vector3(0.3f , 0.5f , 1f );
+		Vector3 exactPos = player.TransformPoint(relativePos);
+		transform.position = new Vector3( exactPos.x, exactPos.y, exactPos.z );
+		transform.rotation = Quaternion.Euler( 0, fairyRotY, 0 );
+		fairyAnimation.Play("Hover_Worried");
+		Invoke("speakToPlayerPart2", 2.5f );
+	}	
+
+	void speakToPlayerPart2()
+	{
+		AchievementDisplay.activateDisplayFairy("That was quite a big fall, but at least you recovered the Dark Queen's spell book. Good job!", 0.35f, 5.5f );
+		Invoke("speakToPlayerPart3", 7f );
+	}	
+
+	void speakToPlayerPart3()
+	{
+		AchievementDisplay.activateDisplayFairy("You need to run to the very far North and cast it in the Volcano of Doom to destroy it.", 0.35f, 5.25f );
+		Invoke("speakToPlayerPart4", 5.85f );
+	}	
+
+	void speakToPlayerPart4()
+	{
+		fairyAnimation.Play("Revive");
+		fairyAnimation.PlayQueued("Hover_Happy", QueueMode.CompleteOthers);
+		Invoke("sprinkleFairyDustStart", 1.64f );
+		Invoke("continueResurection", 4.16f ); //start get up at around frame 285 of the revive animation
+	}	
+
 	public void revivePlayer ()
 	{
 		//Note: the revive animation plays at 1.2 the speed
