@@ -188,7 +188,8 @@ public class FacebookManager
 
 			string[] excludeIdsList = (excludeIds == "") ? null : excludeIds.Split(',');
 
-			string FriendSelectorFilters = "[\"app_users\"]"; //options are "[\"all\",\"app_users\",\"app_non_users\"]";
+			//string FriendSelectorFilters = "[\"app_users\"]"; //options are "[\"all\",\"app_users\",\"app_non_users\"]";
+			string FriendSelectorFilters = "[\"all\"]"; //options are "[\"all\",\"app_users\",\"app_non_users\"]";
 			List<object> FriendSelectorFiltersArr = null;
 			if (!String.IsNullOrEmpty(FriendSelectorFilters))
 			{

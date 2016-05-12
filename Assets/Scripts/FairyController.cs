@@ -240,14 +240,14 @@ public class FairyController : BaseClass {
 
 	void speakToPlayerPart2()
 	{
-		AchievementDisplay.activateDisplayFairy("That was quite a big fall, but at least you recovered the Dark Queen's spell book. Good job!", 0.35f, 5.5f );
+		AchievementDisplay.activateDisplayFairy(LocalizationManager.Instance.getText("FAIRY_BIG_FALL"), 0.35f, 5.5f );
 		Invoke("speakToPlayerPart3", 7f );
 	}	
 
 	void speakToPlayerPart3()
 	{
-		AchievementDisplay.activateDisplayFairy("You need to run to the very far North and cast it in the Volcano of Doom to destroy it.", 0.35f, 5.25f );
-		Invoke("speakToPlayerPart4", 5.85f );
+		AchievementDisplay.activateDisplayFairy(LocalizationManager.Instance.getText("FAIRY_VOLCANO_DOOM"), 0.35f, 5.25f );
+		Invoke("speakToPlayerPart4", 5.75f );
 	}	
 
 	void speakToPlayerPart4()
