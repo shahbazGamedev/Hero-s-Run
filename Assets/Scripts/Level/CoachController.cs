@@ -17,7 +17,6 @@ public class CoachController : MonoBehaviour {
 	public GameObject leftHorse;
 	public GameObject rightHorse;
 	public GameObject coachDriver;
-	PlayerController playerController;
 
 	// Use this for initialization
 	void Start () {
@@ -25,7 +24,6 @@ public class CoachController : MonoBehaviour {
 		controller = (CharacterController) GetComponent("CharacterController");
 		playAnim( idleAnim );
 		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		playerController = playerObject.GetComponent<PlayerController>();
 	}
 	
 	// Update is called once per frame

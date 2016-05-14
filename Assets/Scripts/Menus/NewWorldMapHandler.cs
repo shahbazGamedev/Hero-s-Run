@@ -370,10 +370,12 @@ public class NewWorldMapHandler : MonoBehaviour {
 		}	
 	}
 
-	public void cheatShowPostLevelPopup()
+	public void cheatButton()
 	{
-		postLevelPopupPanel.GetComponent<PostLevelPopup>().showPostLevelPopup(levelData);
+		Debug.Log("cheatButton called.");
+		//postLevelPopupPanel.GetComponent<PostLevelPopup>().showPostLevelPopup(levelData);
+		GameObject CoreManagers = GameObject.FindGameObjectWithTag("CoreManagers");
+		CoreManagers.GetComponent<NotificationServicesHandler>().sendTestLocalNotification();
 	}
-
 
 }

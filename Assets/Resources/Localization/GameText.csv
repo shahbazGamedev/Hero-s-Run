@@ -251,3 +251,6 @@ LEVEL_DESCRIPTION_ELFLAND,The wood elves used to live in Ellenmïrre. They aband
 LEVEL_DESCRIPTION_DREADKNOT_CEMETERY,Dreadknot is a vast and ancient cemetery that was built after the Great Battle. It has long since been abandoned and now wicked creatures prowl the land in search of easy prey.,Dreadknot est un vaste et ancien cimetière qui a été construit après la Grande Bataille. Il a été abandonné depuis fort longtemps et maintenant des créatures maléfiques le parcours à la recherche de proies faciles.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_DESCRIPTION_HELL,Hell is not for the faint of heart,L'enfer n'est pas pour les faibles.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_DESCRIPTION_FLOODED_BATTLEFIELD,The souls of the warriors that died in battle roam the Flooded Battlefield.,L'âme des guerriers morts au combat erre dans le Champ de Bataille Englouti.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+#Local Notification
+LOCAL_NOTIFICATION_SHORT_TERM_ALERT_ACTION,View,Voir,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LOCAL_NOTIFICATION_SHORT_TERM_ALERT_BODY,<hero name><comma> I've been looking for you. I desperately need your help to save the Kingdom of Lum!,<hero name><comma> je te cherchais. J'ai désespérement besoin de toi pour sauver le Royaume de Lum.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
