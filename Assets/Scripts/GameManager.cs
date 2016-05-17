@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 
 public enum GameState {
@@ -56,7 +57,10 @@ public class GameManager {
 	public static event GameStateEvent gameStateEvent;
 
 	private GameMode gameMode = GameMode.Story;
-	private int gameClock = 465; //In elapsed minutes. This is related to episode.
+	//The game starts at dawn, specifically at 6:30AM
+	private TimeSpan timeOfDay = new TimeSpan( 6, 30, 0 );
+	public delegate void TimeOfDayEvent( TimeSpan value );
+	public static event TimeOfDayEvent timeOfDayEvent;
 
 	public static GameManager Instance
 	{
@@ -82,7 +86,6 @@ public class GameManager {
 		Debug.Log("setGameState: new state is " + state );
 		//Send an event to interested classes
 		if(gameStateEvent != null) gameStateEvent( gameState );
-
 	}
 
 	public GameState getGameState()
@@ -137,14 +140,17 @@ public class GameManager {
 		return 1f;
 	}
 
-	public int getGameClock()
+	public TimeSpan getTimeOfDay()
 	{
-		return gameClock;
+		return timeOfDay;
 	}
 
-	public void setGameClock( int value )
+	public void setTimeOfDay( int additionalMinutes )
 	{
-		gameClock = value;
+		TimeSpan span = TimeSpan.FromMinutes(additionalMinutes);
+		timeOfDay = timeOfDay.Add(span);
+		//Send an event to interested classes
+		if(timeOfDayEvent != null) timeOfDayEvent( timeOfDay );
 	}
 
 }
