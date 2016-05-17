@@ -139,6 +139,7 @@ public class HUDSaveMe : MonoBehaviour {
 		closeSaveMeMenu();
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		LevelManager.Instance.setNextLevelToComplete( LevelManager.Instance.getLevelNumberOfLastCheckpoint() );
+		playerController.resetSharedLevelData(false);
 		SceneManager.LoadScene( (int) GameScenes.Level );
 	}
 

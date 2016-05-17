@@ -2746,7 +2746,7 @@ public class PlayerController : BaseClass {
         
 	}
 	
-	private void resetSharedLevelData()
+	public void resetSharedLevelData( bool unlockCamera )
 	{
 		//Reset values
 		//teleportLeaveComplete changes the scale value so we need to reset it
@@ -2779,7 +2779,7 @@ public class PlayerController : BaseClass {
 		deadEndTrigger = null;
 		wantToTurn = false;
 		deadEndTurnDone = false;
-		sc.lockCamera ( false );
+		if( unlockCamera ) sc.lockCamera ( false );
 		gravity = DEFAULT_GRAVITY;
 		moveDirection = new Vector3(0,0,0);
 		accelerometerPreviousFrameX = 0;
@@ -2796,7 +2796,7 @@ public class PlayerController : BaseClass {
 	public void resurrectBegin( bool calledByMagicGate )
 	{
 		//0) Reset data
-		resetSharedLevelData();
+		resetSharedLevelData(true);
 		
 		//1) Stop pursuit
 		trollController.stopPursuing ();
