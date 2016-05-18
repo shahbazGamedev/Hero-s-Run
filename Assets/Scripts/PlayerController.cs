@@ -2448,6 +2448,7 @@ public class PlayerController : BaseClass {
 		{
 			//Remember how we died
 			deathType = deathTypeValue;
+			PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 
 			Debug.Log("managePlayerDeath : " + deathType );
 

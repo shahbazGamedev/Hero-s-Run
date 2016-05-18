@@ -62,6 +62,8 @@ public class GameManager {
 	public delegate void TimeOfDayEvent( TimeSpan value );
 	public static event TimeOfDayEvent timeOfDayEvent;
 
+	public const int TIME_PENALTY_IN_MINUTES = 5;
+
 	public static GameManager Instance
 	{
         get
@@ -138,6 +140,21 @@ public class GameManager {
 	public float getGlobalStumbleMultiplier()
 	{
 		return 1f;
+	}
+
+	public TimeSpan calculateTimeOfDay()
+	{
+		//Get time of day for current level
+		Vector2 levelTimeOfDay = LevelManager.Instance.getLevelInfo(LevelManager.Instance.getNextLevelToComplete()).timeOfDay;
+		//Calculate time penalty
+		int penaltyInMinutes = PlayerStatsManager.Instance.getNumberDeathLeadingToEpisode( LevelManager.Instance.getCurrentEpisodeNumber() ) * TIME_PENALTY_IN_MINUTES;
+		timeOfDay = new TimeSpan((int)levelTimeOfDay.x, (int)levelTimeOfDay.y, 0 );
+		TimeSpan span = TimeSpan.FromMinutes(penaltyInMinutes);
+		timeOfDay = timeOfDay.Add(span);
+		//Send an event to interested classes
+		if(timeOfDayEvent != null) timeOfDayEvent( timeOfDay );
+		Debug.Log( "calculateTimeOfDay " + penaltyInMinutes + " " + PlayerStatsManager.Instance.getNumberDeathLeadingToEpisode( LevelManager.Instance.getCurrentEpisodeNumber() ) + " H: " + timeOfDay.Hours + " M: " + + timeOfDay.Minutes + " Episode: " + LevelManager.Instance.getCurrentEpisodeNumber() );
+		return timeOfDay;
 	}
 
 	public TimeSpan getTimeOfDay()

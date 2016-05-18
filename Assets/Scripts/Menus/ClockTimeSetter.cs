@@ -13,7 +13,7 @@ public class ClockTimeSetter : MonoBehaviour {
 
 	void Start()
 	{
-		TimeSpan timeOfDay = GameManager.Instance.getTimeOfDay();
+		TimeSpan timeOfDay = GameManager.Instance.calculateTimeOfDay();
 		setClockTime( timeOfDay.Hours, timeOfDay.Minutes );
 	}
 

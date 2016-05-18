@@ -87,6 +87,13 @@ public class EpisodePopup : MonoBehaviour {
 		LevelManager.Instance.setScore( 0 );
 		LevelManager.Instance.setEpisodeCompleted( false );
 		LevelManager.Instance.forceNextLevelToComplete( levelNumber );
+
+		LevelData.LevelInfo level = LevelManager.Instance.getLevelInfo( levelNumber );
+		//When you restart an episode, the number of deaths for that episode is reset
+		if( level.levelType == LevelType.Episode )
+		{
+			PlayerStatsManager.Instance.resetNumberDeathForEpisode( episodeNumber );
+		}
 		StartCoroutine( loadLevel() );
 	}
 

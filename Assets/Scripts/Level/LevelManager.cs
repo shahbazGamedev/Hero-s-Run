@@ -36,7 +36,8 @@ public class LevelManager {
 		if( levelToComplete > nextLevelToComplete )
 		{
 			nextLevelToComplete = levelToComplete;
-			Debug.Log ("LevelManager-setNextLevelToComplete: " + nextLevelToComplete );
+			Debug.Log ("LevelManager-setNextLevelToComplete: nextLevelToComplete " + nextLevelToComplete );
+			
 		}
 	}
 
@@ -52,12 +53,11 @@ public class LevelManager {
 		return levelNumberOflastCheckpoint;
 	}
 
-	//For debugging
-	//Called by WorldMapHandler to access any level directly
+	//Called by EpisodePopup to access any level directly
 	public void forceNextLevelToComplete( int levelToComplete )
 	{
 		nextLevelToComplete = levelToComplete;
-		Debug.Log ("LevelManager-setNextLevelToComplete: " + nextLevelToComplete );
+		Debug.Log ("LevelManager-forceNextLevelToComplete: " + nextLevelToComplete );
 	}
 
 	public int getNextLevelToComplete()
@@ -170,11 +170,24 @@ public class LevelManager {
 		return levelData.levelList.Count;
 	}
 	
-	//Called by GenerateLevel on Awake()
-	//Sets the level data for the entire level.
+	//Called by TitleScreenHandler on Awake()
 	public void setLevelData( LevelData levelData )
 	{
 		this.levelData = levelData;
+
+		//Figure out which episode this corresponds to
+		int episodeCounter = -1;
+		int levelCounter = 0;
+		List<LevelData.LevelInfo> levelList = levelData.getLevelList();		
+		foreach( LevelData.LevelInfo aLevel in levelList )
+		{
+			if( aLevel.levelType == LevelType.Episode ) episodeCounter++;
+			levelCounter++;
+			if( levelCounter >= nextLevelToComplete ) break;
+		}
+		currentEpisode = episodeCounter;
+		Debug.Log ("LevelManager-current episode is : " + currentEpisode );
+
 	}
 
 	public LevelData getLevelData()
@@ -217,6 +230,11 @@ public class LevelManager {
 		return currentLevelInfo;
 	}
 	
+	public LevelData.LevelInfo getLevelInfo( int levelNumber )
+	{
+		return levelData.levelList[levelNumber];
+	}
+
 	public LevelData.EpisodeInfo getCurrentEpisodeInfo()
 	{
 		return levelData.episodeList[currentEpisode];

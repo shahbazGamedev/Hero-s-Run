@@ -26,7 +26,7 @@ public class PlayerStatsManager {
 	//The index is the episode number. The value is the number of stars between 0 and 3. The initial values are 0.
 	int[] displayStarsArray = new int[LevelData.NUMBER_OF_EPISODES];
 
-	//Assume there are 6 episodes for now. In each episode, a limited number of treasure chest keys have been hidden.
+	//In each episode, a limited number of treasure chest keys have been hidden.
 	//The index is the episode number. The value is the number of keys found by the player. The initial values are 0.
 	int[] keysFoundInEpisodeArray = new int[LevelData.NUMBER_OF_EPISODES];
 	//Number of treasure keys owned by the player
@@ -68,11 +68,19 @@ public class PlayerStatsManager {
 	//Sound volume between 0 and 1f.
 	float soundVolume = 1f;
 
-	//The number of times the player was revived in the current level using Energy points.
-	//This is used to calculate the Energy cost to revive since the amount of energy required doubles each time the player is revived.
+	//The number of times the player was revived for the current run.
+	//This is used to calculate the cost to revive since the cost increases by one each time the player is revived.
 	//This value is not saved.
-	//This value is reset each time the player restarts the level.
+	//This value is reset each time the player:
+	//1) restarts the level from the last checkpoint
+	//2) passes a Checkpoint
+	//3) uses a cullis gate
 	int timesPlayerRevivedInLevel = 0;
+
+	//This value is saved.
+	//The index is the episode number. The value is the number of times the player died for that specific episode. The initial values are 0.
+	//The value for a specific episode is reset when the player restarts that episode.
+	int[] deathInEpisodesArray = new int[LevelData.NUMBER_OF_EPISODES];
 
 	//For debugging
 	//Cheat
@@ -407,6 +415,86 @@ public class PlayerStatsManager {
 		displayStarsArray[LevelManager.Instance.getCurrentEpisodeNumber()] = numberOfStars;
 	}
 
+	void loadDeathInEpisodes()
+	{
+		string deathInEpisodesString = PlayerPrefs.GetString("deathInEpisodes", "" );
+		if( deathInEpisodesString == "" )
+		{
+			//deathInEpisodesArray just stays with initial values of 0 because this is a new player
+		}
+		else
+		{
+			try
+			{
+				string[] deathInEpisodesStringArray = deathInEpisodesString.Split(',');
+				Debug.Log ("loadDeathInEpisodesArray " + deathInEpisodesString + " length " + deathInEpisodesStringArray.Length );
+				for( int i = 0; i < deathInEpisodesStringArray.Length; i++ )
+				{
+					int numberOfDeathsAsInt;
+					int.TryParse(deathInEpisodesStringArray[i], out numberOfDeathsAsInt);
+					deathInEpisodesArray[i] = numberOfDeathsAsInt;
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.LogWarning("PlayerStatsManager-exception occured in loadDeathInEpisodes: " + e.Message + " Resetting stats to default values.");
+				PlayerPrefs.DeleteAll();
+			}
+		}
+	}
+
+	void saveDeathInEpisodes()
+	{
+		string result = "";
+		for( int i = 0; i < deathInEpisodesArray.Length; i++ )
+		{
+			result = result + deathInEpisodesArray[i].ToString() + ",";
+		}
+		result = result.TrimEnd(',');
+		Debug.Log("saveDeathInEpisodes " + result );
+		PlayerPrefs.SetString("deathInEpisodes", result );
+	}
+
+	void resetDeathInEpisodes()
+	{
+		for( int i = 0; i < deathInEpisodesArray.Length; i++ )
+		{
+			deathInEpisodesArray[i] = 0;
+		}
+		saveDeathInEpisodes();
+	}
+
+	public int getNumberDeathForEpisode( int episodeNumber )
+	{
+		return deathInEpisodesArray[episodeNumber];
+	}
+
+	public void setNumberDeathForEpisode( int numberOfDeath )
+	{
+		deathInEpisodesArray[LevelManager.Instance.getCurrentEpisodeNumber()] = numberOfDeath;
+	}
+
+	public void incrementNumberDeathForEpisode()
+	{
+		deathInEpisodesArray[LevelManager.Instance.getCurrentEpisodeNumber()] = deathInEpisodesArray[LevelManager.Instance.getCurrentEpisodeNumber()] + 1;
+	}
+
+	public void resetNumberDeathForEpisode( int episodeNumber )
+	{
+		deathInEpisodesArray[episodeNumber] = 0;
+		Debug.Log("PlayerStatsManager-resetNumberDeathForEpisode: resetting number of deaths for episode, " + episodeNumber + ", to zero.");
+	}
+
+	public int getNumberDeathLeadingToEpisode( int episodeNumber )
+	{
+		int total = 0;
+		for( int i = 0; i < episodeNumber; i++ )
+		{
+			total = total + deathInEpisodesArray[i];
+		}
+		return total;
+	}
+
 	void loadKeysFoundInEpisode()
 	{
 		string keysFoundInEpisodeString = PlayerPrefs.GetString("keysFoundInEpisode", "" );
@@ -682,7 +770,6 @@ public class PlayerStatsManager {
 		{
 			int nextLevelToComplete = PlayerPrefs.GetInt("Next Level To Complete", 0 );
 			LevelManager.Instance.setNextLevelToComplete( nextLevelToComplete );
-
 			string playerFinishedTheGameString = PlayerPrefs.GetString("Finished Game", "false" );
 			if( playerFinishedTheGameString == "true" )
 			{
@@ -692,7 +779,6 @@ public class PlayerStatsManager {
 			{
 				LevelManager.Instance.setPlayerFinishedTheGame( false );
 			}
-
 			setLives( PlayerPrefs.GetInt("Lives", INITIAL_NUMBER_LIVES) );
 			setTreasureKeysOwned( PlayerPrefs.GetInt("treasureKeysOwned", 0) );
 			string firstTimePlayingString = PlayerPrefs.GetString("First Time Playing", "true" );
@@ -713,7 +799,6 @@ public class PlayerStatsManager {
 			{
 				showDebugInfoOnHUD = false;	
 			}
-
 			string ownsStarDoublerString = PlayerPrefs.GetString("ownsStarDoubler", "false" );
 			if( ownsStarDoublerString == "true" )
 			{
@@ -744,10 +829,10 @@ public class PlayerStatsManager {
 			}
 
 			soundVolume = PlayerPrefs.GetFloat("soundVolume", 1f );
-
 			currentCoins = PlayerPrefs.GetInt("currentCoins", 0);
 			lifetimeCoins = PlayerPrefs.GetInt("lifetimeCoins", 0);
 			loadDisplayStars();
+			loadDeathInEpisodes();
 			loadKeysFoundInEpisode();
 			powerUpSelected = (PowerUpType)PlayerPrefs.GetInt("powerUpSelected", (int)PowerUpType.SlowTime);
 			difficultyLevel = (DifficultyLevel)PlayerPrefs.GetInt("difficultyLevel", (int)DifficultyLevel.Normal);
@@ -807,6 +892,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetInt("currentCoins", currentCoins );
 		PlayerPrefs.SetInt("lifetimeCoins", lifetimeCoins );
 		saveDisplayStars();
+		saveDeathInEpisodes();
 		saveKeysFoundInEpisode();
 		PlayerPrefs.SetInt("powerUpSelected", (int)powerUpSelected );
 		PlayerPrefs.SetInt("difficultyLevel", (int)difficultyLevel );
@@ -845,6 +931,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetInt("lifetimeCoins", 0 );
 		lifetimeCoins = 0;
 		resetDisplayStars();
+		resetDeathInEpisodes();
 		resetKeysFoundInEpisode();
 		PlayerPrefs.SetInt("powerUpSelected", (int)PowerUpType.SlowTime );
 		powerUpSelected = PowerUpType.SlowTime;

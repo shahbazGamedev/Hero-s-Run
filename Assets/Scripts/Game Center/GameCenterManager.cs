@@ -81,7 +81,6 @@ public class GameCenterManager : MonoBehaviour {
 						achievementDescriptions += "\t" + ad.id + " " + ad.title + " " + ad.unachievedDescription + "\n";
 						achievementsDescriptionDict.Add(ad.id, ad );
 					}
-					Debug.Log (achievementDescriptions);
 				}
 				else
 					Debug.Log ("Failed to load achievement descriptions");

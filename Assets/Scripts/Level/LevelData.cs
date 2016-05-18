@@ -237,6 +237,8 @@ public class LevelData : MonoBehaviour {
 		public string LevelName = "LEVEL_NAME_";
 		[Tooltip("Text ID of the level description. The description appears in the pause menu.")]
 		public string LevelDescription = "LEVEL_DESCRIPTION_";
+		[Tooltip("The time of day in hours and minutes, using a 24h-clock, when this level starts.")]
+		public Vector2 timeOfDay;
 
 		[Tooltip("This is ONLY used when creating a demo of the game, not for the final product. If true, the level is locked and cannot be opened from the world map, otherwise the level can be opened normally.")]
 		public bool isLevelLocked = false;
