@@ -65,7 +65,7 @@ public class NotificationServicesHandler : MonoBehaviour {
 		if (UnityEngine.iOS.NotificationServices.localNotificationCount > 0)
 		{
 			//Reset the badge number first
-			NotificationServices.GetLocalNotification( 0 ).applicationIconBadgeNumber = 0;
+			NotificationServices.GetLocalNotification( 0 ).applicationIconBadgeNumber = -1;
 			NotificationServices.ClearLocalNotifications();
 		}
 	}
