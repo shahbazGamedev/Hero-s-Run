@@ -22,9 +22,6 @@ public class SoundManager : MonoBehaviour {
 	{
 		DontDestroyOnLoad( gameObject );
 
-		//Set the global audio volume based on the player's saved preference.
-		AudioListener.volume = PlayerStatsManager.Instance.getSoundVolume();
-
 		// Used to play GUI sounds for the HUD and all menus
 		guiAudioSource = gameObject.AddComponent<AudioSource>();
 		guiAudioSource.ignoreListenerPause = true;
@@ -42,11 +39,6 @@ public class SoundManager : MonoBehaviour {
 		levelAmbienceSource = gameObject.AddComponent<AudioSource>();
 		levelAmbienceSource.loop = true;
 
-	}
-	
-	public static void setSoundVolume(float volume )
-	{
-		AudioListener.volume = volume;
 	}
 
 	public static void playMusic()

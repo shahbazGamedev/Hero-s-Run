@@ -2,6 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 
+public enum Level_Progress {
+	
+	LEVEL_START = 0,
+	LEVEL_END_WITH_NO_PROGRESS = 1,
+	LEVEL_END_WITH_PROGRESS = 2,
+	LEVEL_END_WITH_GAME_COMPLETED = 3
+}
+
 //This class is a Singleton
 public class LevelManager {
 

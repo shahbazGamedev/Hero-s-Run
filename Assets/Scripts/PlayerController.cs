@@ -2448,7 +2448,6 @@ public class PlayerController : BaseClass {
 		{
 			//Remember how we died
 			deathType = deathTypeValue;
-			PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 
 			Debug.Log("managePlayerDeath : " + deathType );
 
@@ -2511,25 +2510,30 @@ public class PlayerController : BaseClass {
 		    switch (deathType)
 			{
 		        case DeathType.Cliff:
+					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2f) );	
 					break;
 		                
 		        case DeathType.Enemy:
-						StartCoroutine( waitBeforeDisplayingSaveMeScreen(2f) );	
+					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
+					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2f) );	
 					break;
 		                
 				case DeathType.Zombie:
 					//Play collision sound
+					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 					playSound( dyingSound, false );
 					anim.SetTrigger(DeathWallTrigger);
 					break;
 			
 				case DeathType.Flame:
+					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 					playSound( deathFireSound, false );
 					anim.SetTrigger(DeathWallTrigger);
 					break;
 		                
 		        case DeathType.Obstacle:
+					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 					//Play collision sound
 					playSound( dyingSound, false );
 					sc.Shake();
@@ -2537,6 +2541,7 @@ public class PlayerController : BaseClass {
 					break;
 
 		        case DeathType.Water:
+					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 					sc.lockCamera ( true );
 					anim.speed = 2.8f;
 					anim.SetTrigger(DeathRiverTrigger);
@@ -2544,6 +2549,7 @@ public class PlayerController : BaseClass {
 					break;
 
 		        case DeathType.VortexTrap:
+					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 					sc.lockCamera ( true );
 					anim.speed = 3.8f;
 					anim.SetTrigger(FallTrigger);
@@ -2552,6 +2558,7 @@ public class PlayerController : BaseClass {
 					break;
 
 		        case DeathType.MagicGate:
+					//For the magic gate (where the player falls from the sky), do not incrementNumberDeathForEpisode because the "death" was out of the player's control.
 					sc.lockCamera ( true );
 					sc.playCutscene( CutsceneType.MagicGate );
 					anim.speed = 3.8f;
@@ -2561,6 +2568,7 @@ public class PlayerController : BaseClass {
 					break;
 
 				default:
+					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 					anim.SetTrigger(DeathWallTrigger);
 					break;
 			}

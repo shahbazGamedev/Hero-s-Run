@@ -306,8 +306,9 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public void showMessageCenter()
 	{
 		SoundManager.playButtonClick();
-		popupHandler.setPopupSize(new Vector2( Screen.width * 0.8f, Screen.height * 0.55f ));
-		popupHandler.activatePopup( PopupType.MessageCenter );
+		Debug.LogWarning("NewWorldMapHandler: showMessageCenter is not implemented."); 
+		//popupHandler.setPopupSize(new Vector2( Screen.width * 0.8f, Screen.height * 0.55f ));
+		//popupHandler.activatePopup( PopupType.MessageCenter );
 	}
 
 	//Bottom panel
@@ -376,6 +377,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		//postLevelPopupPanel.GetComponent<PostLevelPopup>().showPostLevelPopup(levelData);
 		GameObject CoreManagers = GameObject.FindGameObjectWithTag("CoreManagers");
 		CoreManagers.GetComponent<NotificationServicesHandler>().sendTestLocalNotification();
+		PlayerStatsManager.Instance.resetDeathInEpisodes();
 	}
 
 }

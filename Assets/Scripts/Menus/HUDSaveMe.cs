@@ -24,6 +24,8 @@ public class HUDSaveMe : MonoBehaviour {
 	public Text helpText;
 	public Text tryAgainText;
 	public Text quitTutorialText;
+	[Header("Not Enough Time Popup")]
+	public GameObject ranOutofTimePopup;
 	 
 
 	void Awake()
@@ -66,7 +68,15 @@ public class HUDSaveMe : MonoBehaviour {
 		}
 		else
 		{
-			activateNormalSaveMe();
+			if( (PlayerStatsManager.Instance.getTimesPlayerRevivedInLevel() + 1) > GameManager.MAX_NUMBER_OF_ATTEMPTS )
+			{
+				ranOutofTimePopup.SetActive( true );
+			}
+			else
+			{
+
+				activateNormalSaveMe();
+			}
 		}
 	}
 

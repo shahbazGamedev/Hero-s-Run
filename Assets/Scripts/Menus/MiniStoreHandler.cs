@@ -80,6 +80,7 @@ public class MiniStoreHandler : MonoBehaviour {
 	public void hidePurchaseStatusPopup()
 	{
 		purchaseStatusPopup.SetActive( false );
+		hideMiniStore();
 	}
 
 	public void buyLives( int quantity )

@@ -33,7 +33,7 @@ public class GameCenterManager : MonoBehaviour {
 	{
 		// Authenticate and register a ProcessAuthentication callback
 		// This call needs to be made before we can proceed to other calls in the Social API
-		Social.localUser.Authenticate (ProcessAuthentication);
+		if( !isAuthenticated) Social.localUser.Authenticate (ProcessAuthentication);
 	}
 	
 	// This function gets called when Authenticate completes

@@ -455,7 +455,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetString("deathInEpisodes", result );
 	}
 
-	void resetDeathInEpisodes()
+	public void resetDeathInEpisodes()
 	{
 		for( int i = 0; i < deathInEpisodesArray.Length; i++ )
 		{
@@ -488,7 +488,7 @@ public class PlayerStatsManager {
 	public int getNumberDeathLeadingToEpisode( int episodeNumber )
 	{
 		int total = 0;
-		for( int i = 0; i < episodeNumber; i++ )
+		for( int i = 0; i <= episodeNumber; i++ )
 		{
 			total = total + deathInEpisodesArray[i];
 		}
@@ -593,6 +593,7 @@ public class PlayerStatsManager {
 	public void setSoundVolume( float volume )
 	{
 		soundVolume = volume;
+		AudioListener.volume = soundVolume;
 	}
 
 	public void setUsesFacebook( bool value )
@@ -828,7 +829,7 @@ public class PlayerStatsManager {
 				dateLastPlayed = DateTime.Parse( dateLastPlayedString );
 			}
 
-			soundVolume = PlayerPrefs.GetFloat("soundVolume", 1f );
+			setSoundVolume( PlayerPrefs.GetFloat("soundVolume", 1f ) );
 			currentCoins = PlayerPrefs.GetInt("currentCoins", 0);
 			lifetimeCoins = PlayerPrefs.GetInt("lifetimeCoins", 0);
 			loadDisplayStars();
