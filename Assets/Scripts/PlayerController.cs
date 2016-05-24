@@ -189,6 +189,7 @@ public class PlayerController : BaseClass {
 	TrollController trollController;
 	FairyController fairyController;
 	PowerUpManager powerUpManager;
+	public TakeScreenshot takeScreenshot;
 
 	SimpleCamera sc;
 	GenerateLevel gl;
@@ -737,6 +738,13 @@ public class PlayerController : BaseClass {
 				if( touch.phase == TouchPhase.Ended  )
 				{
 					handlePowerUp();
+				}
+			}
+			else if( touch.tapCount == 3 )
+			{
+				if( touch.phase == TouchPhase.Ended  )
+				{
+					takeScreenshot.takeHiResShotNow();
 				}
 			}
 		}
