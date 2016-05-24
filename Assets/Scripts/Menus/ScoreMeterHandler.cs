@@ -8,7 +8,7 @@ public class ScoreMeterHandler : MonoBehaviour {
 
 	[Header("Score Meter")]
 	public Text scoreText;
-	public float scoreSpinDuration = 2f;
+	public const float SCORE_SPIN_DURATION = 2f;
 	string scoreString; //format is Score: <0>
 	const float UPDATE_SEQUENCE_DELAY = 0.9f;
 
@@ -33,11 +33,11 @@ public class ScoreMeterHandler : MonoBehaviour {
 
 		int startValue = 0;
 
-		while ( elapsedTime <= scoreSpinDuration )
+		while ( elapsedTime <= SCORE_SPIN_DURATION )
 		{
 			elapsedTime = Time.time - startTime;
 
-			currentNumber =  Mathf.Lerp( startValue, playerScore, elapsedTime/scoreSpinDuration );
+			currentNumber =  Mathf.Lerp( startValue, playerScore, elapsedTime/SCORE_SPIN_DURATION );
 			//Replace the string <0> by the score value
 			scoreText.text = scoreString.Replace( "<0>", currentNumber.ToString("N0") );
 			yield return new WaitForFixedUpdate();  

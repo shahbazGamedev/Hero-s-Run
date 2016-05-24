@@ -83,7 +83,7 @@ public class ClockTimeSetter : MonoBehaviour {
 
 		Debug.Log("ClockTimeSetter-updateTime2 timeOfDayAtStart: " + timeOfDayAtStart + " timeOfDayAtEnd: " + timeOfDayAtEnd + " elapsed in min. " + elapsedTime.TotalMinutes );
 		
-		StartCoroutine( spinLevelTime( 1f, 3f, timeOfDayAtStart, (int) elapsedTime.TotalMinutes ) );
+		StartCoroutine( spinLevelTime( ScoreMeterHandler.SCORE_SPIN_DURATION, 3f, timeOfDayAtStart, (int) elapsedTime.TotalMinutes ) );
 
     }
 
