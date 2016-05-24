@@ -95,10 +95,10 @@ public class EpisodePopup : MonoBehaviour {
 		LevelManager.Instance.forceNextLevelToComplete( levelNumber );
 
 		LevelData.LevelInfo level = LevelManager.Instance.getLevelInfo( levelNumber );
-		//When you restart an episode, the number of deaths for that episode is reset
+		//When you restart an episode, the number of deaths for that episode and all subsequent episodes are reset
 		if( level.levelType == LevelType.Episode )
 		{
-			PlayerStatsManager.Instance.resetNumberDeathForEpisode( episodeNumber );
+			PlayerStatsManager.Instance.resetNumberDeathsStartingAtEpisode( episodeNumber );
 		}
 		StartCoroutine( loadLevel() );
 	}

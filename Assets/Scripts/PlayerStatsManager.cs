@@ -479,10 +479,13 @@ public class PlayerStatsManager {
 		deathInEpisodesArray[LevelManager.Instance.getCurrentEpisodeNumber()] = deathInEpisodesArray[LevelManager.Instance.getCurrentEpisodeNumber()] + 1;
 	}
 
-	public void resetNumberDeathForEpisode( int episodeNumber )
+	public void resetNumberDeathsStartingAtEpisode( int episodeNumber )
 	{
-		deathInEpisodesArray[episodeNumber] = 0;
-		Debug.Log("PlayerStatsManager-resetNumberDeathForEpisode: resetting number of deaths for episode, " + episodeNumber + ", to zero.");
+		for( int i = episodeNumber; i < deathInEpisodesArray.Length; i++ )
+		{
+			deathInEpisodesArray[i] = 0;
+		}
+		Debug.Log("PlayerStatsManager-resetNumberDeathsStartingAtEpisode: " + episodeNumber );
 	}
 
 	public int getNumberDeathLeadingToEpisode( int episodeNumber )
