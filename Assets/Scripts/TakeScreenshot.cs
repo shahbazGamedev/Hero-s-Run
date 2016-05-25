@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Facebook.Unity;
+using UnityEngine.UI;
 
 public class TakeScreenshot : MonoBehaviour {
 
@@ -10,7 +11,8 @@ public class TakeScreenshot : MonoBehaviour {
 	Camera screenShotCamera;
 	public Light pointLight;
 	Texture2D screenShot;
-                    
+	public Image picturePreview;
+
 	void Awake()
 	{
 		screenShotCamera = GetComponent<Camera>();
@@ -43,6 +45,7 @@ public class TakeScreenshot : MonoBehaviour {
 	IEnumerator takeSelfie()
 	{
         yield return new WaitForEndOfFrame();
+		GetComponent<AudioSource>().Play();
 		Debug.Log("TakeScreenshot-selfie." );
 		screenShotCamera.enabled = true;
 		pointLight.gameObject.SetActive( true );
@@ -53,10 +56,16 @@ public class TakeScreenshot : MonoBehaviour {
 		screenShotCamera.Render();
 		RenderTexture.active = rt;
 		screenShot.ReadPixels(new Rect(0, 0, pictureWidth, pictureHeight), borderWidth, borderWidth);
+		screenShot.Apply();
+		picturePreview.sprite = Sprite.Create( screenShot, new Rect(0, 0, screenShot.width, screenShot.height ), new Vector2( 0.5f, 0.5f ) );
 		screenShotCamera.targetTexture = null;
 		RenderTexture.active = null; 
 		Destroy(rt);
-		byte[] bytes = screenShot.EncodeToPNG();
+		screenShotCamera.enabled = false;
+		pointLight.gameObject.SetActive( false );
+		Invoke( "showPicturePreview", 1f );
+
+		/*byte[] bytes = screenShot.EncodeToPNG();
 
 		#if !UNITY_EDITOR
         WWWForm wwwForm = new WWWForm();
@@ -70,12 +79,20 @@ public class TakeScreenshot : MonoBehaviour {
 		System.IO.File.WriteAllBytes(filename, bytes);
 		Debug.Log(string.Format("Saved selfie to: {0}", filename));
 		Application.OpenURL(filename);
-		screenShotCamera.enabled = false;
-		pointLight.gameObject.SetActive( false );
-		GetComponent<AudioSource>().Play();
 		#endif
+		*/
 	}
 	
+	void showPicturePreview()
+	{
+		picturePreview.gameObject.SetActive( true );
+		Invoke( "hidePicturePreview", 5f );
+	}
+
+	void hidePicturePreview()
+	{
+		picturePreview.gameObject.SetActive( false );
+	}
 
 	void TakeScreenshotCallback(IGraphResult result)
 	{

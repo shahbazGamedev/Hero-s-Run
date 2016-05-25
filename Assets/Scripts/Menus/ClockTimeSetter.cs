@@ -23,6 +23,10 @@ public class ClockTimeSetter : MonoBehaviour {
 	public void updateTime (  int episodeNumber, int levelNumber, Level_Progress levelProgress  )
  	{
 		Debug.Log("ClockTimeSetter-updateTime: levelProgress " + levelProgress );
+		//Clear these fields as they may be a few seconds delay before they get updated. We don't want to see the old values.
+		timeLeft.text = "";
+		timePenalty.text = "";
+
         switch (levelProgress)
 		{
 	        case Level_Progress.LEVEL_START:

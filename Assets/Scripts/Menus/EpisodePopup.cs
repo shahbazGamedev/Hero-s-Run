@@ -74,6 +74,12 @@ public class EpisodePopup : MonoBehaviour {
 		}
 		episodeDescriptionText.text = LocalizationManager.Instance.getText("EPISODE_DESCRIPTION_" + levelNumberString);
 		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( episodeNumber ) + "/" + selectedEpisode.numberOfChestKeys;
+		//When you restart an episode, the number of deaths for that episode and all subsequent episodes are reset
+		LevelData.LevelInfo level = LevelManager.Instance.getLevelInfo( levelNumber );
+		if( level.levelType == LevelType.Episode )
+		{
+			PlayerStatsManager.Instance.resetNumberDeathsStartingAtEpisode( episodeNumber );
+		}
 
 		//Update pocket watch and Time Left
 		clockTimeSetter.updateTime( episodeNumber, levelNumber, Level_Progress.LEVEL_START );
@@ -94,12 +100,6 @@ public class EpisodePopup : MonoBehaviour {
 		LevelManager.Instance.setEpisodeCompleted( false );
 		LevelManager.Instance.forceNextLevelToComplete( levelNumber );
 
-		LevelData.LevelInfo level = LevelManager.Instance.getLevelInfo( levelNumber );
-		//When you restart an episode, the number of deaths for that episode and all subsequent episodes are reset
-		if( level.levelType == LevelType.Episode )
-		{
-			PlayerStatsManager.Instance.resetNumberDeathsStartingAtEpisode( episodeNumber );
-		}
 		StartCoroutine( loadLevel() );
 	}
 

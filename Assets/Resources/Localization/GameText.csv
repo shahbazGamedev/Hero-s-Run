@@ -254,6 +254,10 @@ LEVEL_DESCRIPTION_FLOODED_BATTLEFIELD,The souls of the warriors that died in bat
 #Clock (displayed in pre and post level popups)
 CLOCK_TIME_LEFT,Time Left:,Temps restant:,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CLOCK_TIME_PENALTY,Penalty:,Pénalité:,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+#Not enough time popup
+NOT_ENOUGH_TIME_TITLE,Ran Out of Time!,Manque de temps !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+NOT_ENOUGH_TIME_CONTENT,Haha! You will never reach the Volcano of Doom before midnight. You can reduce your time penalty by replaying preceding episodes.,Haha! Tu n'atteindras jamais le Volcan du Désespoir avant minuit. Tu peux réduire ta pénalité de temps en rejouant des épisodes précedents.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+NOT_ENOUGH_TIME_BUTTON,Start Over,Recommence,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Local Notification
 LOCAL_NOTIFICATION_SHORT_TERM_ALERT_ACTION,View,Voir,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LOCAL_NOTIFICATION_SHORT_TERM_ALERT_BODY,<hero name><comma> I've been looking for you. I desperately need your help to save the Kingdom of Lum!,<hero name><comma> je te cherchais. J'ai désespérement besoin de toi pour sauver le Royaume de Lum.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED

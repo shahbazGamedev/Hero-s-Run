@@ -26,6 +26,9 @@ public class HUDSaveMe : MonoBehaviour {
 	public Text quitTutorialText;
 	[Header("Not Enough Time Popup")]
 	public GameObject ranOutofTimePopup;
+	public Text ranOutofTimeTitleText;
+	public Text ranOutofTimeContentText;
+	public Text ranOutofTimeButtonText;
 	 
 
 	void Awake()
@@ -45,6 +48,11 @@ public class HUDSaveMe : MonoBehaviour {
 		//helpText.text gets set at runtime.
 		tryAgainText.text = LocalizationManager.Instance.getText("MENU_TRY_AGAIN");
 		quitTutorialText.text = LocalizationManager.Instance.getText("MENU_QUIT");
+		//Not enough time
+		ranOutofTimeTitleText.text = LocalizationManager.Instance.getText("NOT_ENOUGH_TIME_TITLE");
+		ranOutofTimeContentText.text = LocalizationManager.Instance.getText("NOT_ENOUGH_TIME_CONTENT");
+		ranOutofTimeButtonText.text = LocalizationManager.Instance.getText("NOT_ENOUGH_TIME_BUTTON");
+
 	}
 
 	void OnEnable()
