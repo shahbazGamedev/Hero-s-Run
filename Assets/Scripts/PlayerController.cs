@@ -740,13 +740,6 @@ public class PlayerController : BaseClass {
 					handlePowerUp();
 				}
 			}
-			else if( touch.tapCount == 3 )
-			{
-				if( touch.phase == TouchPhase.Ended  )
-				{
-					takeScreenshot.takeHiResShotNow();
-				}
-			}
 		}
 	}
 

@@ -1,25 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Facebook.Unity;
 
 public class TakeScreenshot : MonoBehaviour {
 
-	int resWidth; 
-	int resHeight;
+	int pictureWidth; 
+	int pictureHeight;
 	int borderWidth;
 	Camera screenShotCamera;
 	public Light pointLight;
 	Texture2D screenShot;
-                
-	bool takeHiResShot = false;
-    
+                    
 	void Awake()
 	{
 		screenShotCamera = GetComponent<Camera>();
 		screenShotCamera.enabled = false;
-		resWidth = Screen.width * 2;
-		resHeight = (int) ( resWidth * 9f/16f );
-		borderWidth = (int) (resHeight * 0.06f);
-		screenShot = new Texture2D(resWidth + 2 * borderWidth, resHeight + 2 * borderWidth, TextureFormat.RGB24, false);
+		pictureWidth = Screen.width * 2;
+		pictureHeight = (int) ( pictureWidth * 9f/16f );
+		borderWidth = (int) (pictureHeight * 0.06f);
+		screenShot = new Texture2D(pictureWidth + 2 * borderWidth, pictureHeight + 2 * borderWidth, TextureFormat.RGB24, false);
 		for( int i = 0; i < screenShot.width; i++ )
 		{
 			for( int j = 0; j < screenShot.height; j++ )
@@ -31,43 +30,62 @@ public class TakeScreenshot : MonoBehaviour {
 		pointLight.gameObject.SetActive( false );
 	}
            
-	public static string ScreenShotName(int width, int height)
+	string ScreenShotName(int width, int height)
 	{
        return string.Format("{0}/screen_{1}x{2}_{3}.png", Application.dataPath, width, height, System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
 	}
     
-	public void takeHiResShotNow()
+	public void takeSelfieNow()
 	{
-		takeHiResShot = true;
+		StartCoroutine( takeSelfie() );
 	}
     
-	void LateUpdate()
+	IEnumerator takeSelfie()
 	{
-		takeHiResShot |= Input.GetKeyDown("l");
-		if (takeHiResShot) 
+        yield return new WaitForEndOfFrame();
+		Debug.Log("TakeScreenshot-selfie." );
+		screenShotCamera.enabled = true;
+		pointLight.gameObject.SetActive( true );
+		RenderTexture rt = new RenderTexture(pictureWidth, pictureHeight, 24);
+		rt.antiAliasing = 4;
+		rt.format = RenderTextureFormat.Default;
+		screenShotCamera.targetTexture = rt;
+		screenShotCamera.Render();
+		RenderTexture.active = rt;
+		screenShot.ReadPixels(new Rect(0, 0, pictureWidth, pictureHeight), borderWidth, borderWidth);
+		screenShotCamera.targetTexture = null;
+		RenderTexture.active = null; 
+		Destroy(rt);
+		byte[] bytes = screenShot.EncodeToPNG();
+
+		#if !UNITY_EDITOR
+        WWWForm wwwForm = new WWWForm();
+        wwwForm.AddBinaryData("image", bytes, "Hello!");
+        wwwForm.AddField("message", "This is awesome.");
+		FB.API("me/photos", HttpMethod.POST, TakeScreenshotCallback, wwwForm);
+		#endif
+
+		#if UNITY_EDITOR
+		string filename = ScreenShotName(pictureWidth, pictureHeight);	
+		System.IO.File.WriteAllBytes(filename, bytes);
+		Debug.Log(string.Format("Saved selfie to: {0}", filename));
+		Application.OpenURL(filename);
+		screenShotCamera.enabled = false;
+		pointLight.gameObject.SetActive( false );
+		GetComponent<AudioSource>().Play();
+		#endif
+	}
+	
+
+	void TakeScreenshotCallback(IGraphResult result)
+	{
+		if (result.Error != null)
 		{
-			screenShotCamera.enabled = true;
-			pointLight.gameObject.SetActive( true );
-			RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
-			rt.antiAliasing = 4;
-			rt.format = RenderTextureFormat.Default;
-			screenShotCamera.targetTexture = rt;
-			screenShotCamera.Render();
-			RenderTexture.active = rt;
-			screenShot.ReadPixels(new Rect(0, 0, resWidth, resHeight), borderWidth, borderWidth);
-			screenShotCamera.targetTexture = null;
-			RenderTexture.active = null; 
-			Destroy(rt);
-			byte[] bytes = screenShot.EncodeToPNG();
-			string filename = ScreenShotName(resWidth, resHeight);
-			
-			System.IO.File.WriteAllBytes(filename, bytes);
-			Debug.Log(string.Format("Took screenshot to: {0}", filename));
-			Application.OpenURL(filename);
-			takeHiResShot = false;
-			screenShotCamera.enabled = false;
-			pointLight.gameObject.SetActive( false );
-			GetComponent<AudioSource>().Play();
+			Debug.LogWarning("TakeScreenshot-TakeScreenshotCallback: error: " + result.Error );
+		}
+		else
+		{
+			Debug.Log("TakeScreenshot-TakeScreenshotCallback: success: " + result.RawResult );
 		}
 	}
 
