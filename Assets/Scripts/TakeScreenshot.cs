@@ -17,9 +17,23 @@ public class TakeScreenshot : MonoBehaviour {
 	public static bool selfieTaken = false;
 	bool saveToFile = false; //for testing in Editor
 
+	bool isFacingPlayer = true;
+	Vector3 frontLocation = new Vector3( 0, 2f, 4.5f ); 	//Facing player
+	Quaternion frontRotation = Quaternion.Euler( 9.36f, 180f, 0 );
+
+	Vector3 backLocation = new Vector3( 0, 2f, -4.5f );	//Facing player's back
+	Quaternion backRotation = Quaternion.Euler( 9.36f, 0, 0 );
+
+
 	void Awake()
 	{
 		screenShotCamera = GetComponent<Camera>();
+
+		//Default value is facing player
+		isFacingPlayer = true;
+		screenShotCamera.transform.position = frontLocation;
+		screenShotCamera.transform.rotation = frontRotation;
+
 		screenShotCamera.enabled = false;
 		pictureWidth = Screen.width * 2;
 		pictureWidth = Mathf.Min( pictureWidth, MAX_PICTURE_WIDTH );
@@ -46,7 +60,25 @@ public class TakeScreenshot : MonoBehaviour {
 	{
 		StartCoroutine( takeSelfie() );
 	}
-    
+
+	public void flipCamera()
+	{
+		SoundManager.playButtonClick();
+		isFacingPlayer = !isFacingPlayer;
+		if( isFacingPlayer )
+		{
+			screenShotCamera.transform.localPosition = frontLocation;
+			screenShotCamera.transform.localRotation = frontRotation;
+			Debug.Log("Flip Camera - Front");
+		}
+		else
+		{
+			screenShotCamera.transform.localPosition = backLocation;
+			screenShotCamera.transform.localRotation = backRotation;
+			Debug.Log("Flip Camera - Back");
+		}
+	}
+	
 	IEnumerator takeSelfie()
 	{
         yield return new WaitForEndOfFrame();
