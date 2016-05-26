@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Facebook.Unity;
+
 using UnityEngine.UI;
 
 public class TakeScreenshot : MonoBehaviour {
@@ -14,6 +14,8 @@ public class TakeScreenshot : MonoBehaviour {
 	Texture2D screenShot;
 	public Button cameraButton;
 	public Image picturePreview;
+	public static bool selfieTaken = false;
+	bool saveToFile = false; //for testing in Editor
 
 	void Awake()
 	{
@@ -61,29 +63,29 @@ public class TakeScreenshot : MonoBehaviour {
 		screenShot.ReadPixels(new Rect(0, 0, pictureWidth, pictureHeight), borderWidth, borderWidth);
 		screenShot.Apply();
 		picturePreview.sprite = Sprite.Create( screenShot, new Rect(0, 0, screenShot.width, screenShot.height ), new Vector2( 0.5f, 0.5f ) );
+		byte[] selfieBytes = screenShot.EncodeToPNG();
+
+		//Because we will show the selfie in the social media popup which is in a different scene, we need to save the sprite in a location accessible to both.
+		GameManager.Instance.selfie = picturePreview.sprite;
+		GameManager.Instance.selfieBytes = selfieBytes;
+
 		screenShotCamera.targetTexture = null;
 		RenderTexture.active = null; 
 		Destroy(rt);
 		screenShotCamera.enabled = false;
 		pointLight.gameObject.SetActive( false );
+		selfieTaken = true;
 		Invoke( "showPicturePreview", 1f );
-
-		/*byte[] bytes = screenShot.EncodeToPNG();
-
-		#if !UNITY_EDITOR
-        WWWForm wwwForm = new WWWForm();
-        wwwForm.AddBinaryData("image", bytes, "Hello!");
-        wwwForm.AddField("message", "This is awesome.");
-		FB.API("me/photos", HttpMethod.POST, TakeScreenshotCallback, wwwForm);
-		#endif
-
-		#if UNITY_EDITOR
-		string filename = ScreenShotName(pictureWidth, pictureHeight);	
-		System.IO.File.WriteAllBytes(filename, bytes);
-		Debug.Log(string.Format("Saved selfie to: {0}", filename));
-		Application.OpenURL(filename);
-		#endif
-		*/
+		
+		if( saveToFile )
+		{
+			#if UNITY_EDITOR
+			string filename = ScreenShotName(pictureWidth, pictureHeight);	
+			System.IO.File.WriteAllBytes(filename, selfieBytes);
+			Debug.Log(string.Format("Saved selfie to: {0}", filename));
+			Application.OpenURL(filename);
+			#endif
+		}
 	}
 	
 	void showPicturePreview()
@@ -95,18 +97,6 @@ public class TakeScreenshot : MonoBehaviour {
 	void hidePicturePreview()
 	{
 		picturePreview.gameObject.SetActive( false );
-	}
-
-	void TakeScreenshotCallback(IGraphResult result)
-	{
-		if (result.Error != null)
-		{
-			Debug.LogWarning("TakeScreenshot-TakeScreenshotCallback: error: " + result.Error );
-		}
-		else
-		{
-			Debug.Log("TakeScreenshot-TakeScreenshotCallback: success: " + result.RawResult );
-		}
 	}
 
 	void OnEnable()
@@ -129,6 +119,7 @@ public class TakeScreenshot : MonoBehaviour {
 		}
 		else
 		{
+			CancelInvoke();
 			cameraButton.gameObject.SetActive( false );
 			picturePreview.gameObject.SetActive( false );
 		}

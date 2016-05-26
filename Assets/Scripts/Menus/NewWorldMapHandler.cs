@@ -29,6 +29,8 @@ public class NewWorldMapHandler : MonoBehaviour {
 	EpisodePopup episodePopup;
 	[Header("Post-Level Popup")]
 	public GameObject postLevelPopupPanel;
+	[Header("Social Media Popup")]
+	public GameObject socialMediaPopupPanel;
 	[Header("Star Meter")]
 	public Color32 starReceivedColor;
 	[Header("Level Station Locations")]
@@ -83,9 +85,16 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 		drawLevelMarkers();
 
-		if( GameManager.Instance.getGameState() == GameState.PostLevelPopup )
+		if( TakeScreenshot.selfieTaken )
 		{
-			postLevelPopupPanel.GetComponent<PostLevelPopup>().showPostLevelPopup(levelData);
+			socialMediaPopupPanel.GetComponent<SocialMediaPopup>().showSocialMediaPopup();
+		}
+		else
+		{
+			if( GameManager.Instance.getGameState() == GameState.PostLevelPopup )
+			{
+				postLevelPopupPanel.GetComponent<PostLevelPopup>().showPostLevelPopup(levelData);
+			}
 		}
 	}
 

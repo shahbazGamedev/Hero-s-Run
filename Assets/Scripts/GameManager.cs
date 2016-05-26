@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 
 
@@ -63,6 +64,9 @@ public class GameManager {
 	this gives him a 1 hour buffer. The TIME_PENALTY_IN_MINUTES is 5 minutes.
 	This gives the player 60 minutes/5 = 12 attempts.*/
 	public const int MAX_NUMBER_OF_ATTEMPTS = 6;
+
+	public Sprite selfie;
+	public byte[] selfieBytes;
 
 	public static GameManager Instance
 	{
