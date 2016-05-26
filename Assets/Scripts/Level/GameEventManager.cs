@@ -435,6 +435,8 @@ public class GameEventManager : MonoBehaviour {
 		print ("Start of Dark Queen cemetery sequence");
 		isZombieHandsSequenceActive = true;
 
+		trollController.stopPursuing();
+
 		//Slowdown player and remove player control
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);

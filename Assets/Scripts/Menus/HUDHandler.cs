@@ -74,7 +74,6 @@ public class HUDHandler : MonoBehaviour {
 	// Use this for initialization
 	void Awake ()
 	{
-		Transform CoreManagers = GameObject.FindGameObjectWithTag("CoreManagers").transform;
 		playerController = GetComponent<PlayerController>();
 
 		//initialize the stats box at the top

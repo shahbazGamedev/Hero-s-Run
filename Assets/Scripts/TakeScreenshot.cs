@@ -5,12 +5,14 @@ using UnityEngine.UI;
 
 public class TakeScreenshot : MonoBehaviour {
 
-	int pictureWidth; 
+	int pictureWidth;
+	const int MAX_PICTURE_WIDTH = 1024;
 	int pictureHeight;
 	int borderWidth;
 	Camera screenShotCamera;
 	public Light pointLight;
 	Texture2D screenShot;
+	public Button cameraButton;
 	public Image picturePreview;
 
 	void Awake()
@@ -18,6 +20,7 @@ public class TakeScreenshot : MonoBehaviour {
 		screenShotCamera = GetComponent<Camera>();
 		screenShotCamera.enabled = false;
 		pictureWidth = Screen.width * 2;
+		pictureWidth = Mathf.Min( pictureWidth, MAX_PICTURE_WIDTH );
 		pictureHeight = (int) ( pictureWidth * 9f/16f );
 		borderWidth = (int) (pictureHeight * 0.06f);
 		screenShot = new Texture2D(pictureWidth + 2 * borderWidth, pictureHeight + 2 * borderWidth, TextureFormat.RGB24, false);
@@ -103,6 +106,31 @@ public class TakeScreenshot : MonoBehaviour {
 		else
 		{
 			Debug.Log("TakeScreenshot-TakeScreenshotCallback: success: " + result.RawResult );
+		}
+	}
+
+	void OnEnable()
+	{
+		GameManager.gameStateEvent += GameStateChange;
+	}
+	
+	void OnDisable()
+	{
+		GameManager.gameStateEvent -= GameStateChange;
+	}
+
+
+	void GameStateChange( GameState newState )
+	{
+	
+		if( newState == GameState.Normal )
+		{
+			cameraButton.gameObject.SetActive( true );
+		}
+		else
+		{
+			cameraButton.gameObject.SetActive( false );
+			picturePreview.gameObject.SetActive( false );
 		}
 	}
 

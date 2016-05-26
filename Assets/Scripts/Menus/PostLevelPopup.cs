@@ -150,6 +150,7 @@ public class PostLevelPopup : MonoBehaviour {
 		LevelManager.Instance.setLevelChanged( false );
 		//We are starting a new run, reset the episode stars
 		LevelManager.Instance.setScore( 0 );
+		PlayerStatsManager.Instance.resetNumberDeathsStartingAtEpisode( LevelManager.Instance.getCurrentEpisodeNumber() );
 		SoundManager.playButtonClick();
 		StartCoroutine( loadLevel() );
 	}
