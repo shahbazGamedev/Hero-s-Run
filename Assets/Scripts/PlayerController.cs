@@ -345,7 +345,7 @@ public class PlayerController : BaseClass {
 				transform.position = new Vector3( 0, hit.point.y, 0);
 			}
 			//Also adjust the camera height
-			Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y + groundHeight, Camera.main.transform.position.z); 
+			Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y + hit.point.y, Camera.main.transform.position.z); 
 			sc.positionCameraNow();
 
 			//The character is in idle while waiting for the player to press the Run! button. 
