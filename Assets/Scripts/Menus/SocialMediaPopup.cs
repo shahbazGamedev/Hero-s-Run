@@ -7,10 +7,20 @@ public class SocialMediaPopup : MonoBehaviour {
 
 	public GameObject postLevelPopupPanel;
 	public Image picturePreview;
+	public Text episodeNameText;
+	public Text messageText;
+	public Text shareButtonText;
+	string facebookMessage;
 
 	// Use this for initialization
-	void Start () {
-	
+	void Start ()
+ 	{
+		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
+		string levelNumberString = (episodeNumber + 1).ToString();
+		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
+		messageText.text = LocalizationManager.Instance.getText("SOCIAL_MEDIA_MESSAGE");
+		shareButtonText.text = LocalizationManager.Instance.getText("SOCIAL_MEDIA_SHARE_BUTTON");
+		facebookMessage = LocalizationManager.Instance.getText("SOCIAL_MEDIA_FACEBOOK_MESSAGE");
 	}
 	
 	public void showSocialMediaPopup()
@@ -31,6 +41,7 @@ public class SocialMediaPopup : MonoBehaviour {
 	{
 		Debug.Log("closeSocialMediaPopup");
 		SoundManager.playButtonClick();
+		freeUpPictureMemory();
 		GetComponent<Animator>().Play("Panel Slide Out");
 		Invoke("showPostLevelPopup", 1f );
 	}
@@ -41,12 +52,20 @@ public class SocialMediaPopup : MonoBehaviour {
 
 	}
 
+	void freeUpPictureMemory()
+	{
+		GameManager.Instance.selfie = null;
+		GameManager.Instance.selfieBytes = null;
+	}
+
 	public void shareOnFacebook()
 	{
+		SoundManager.playButtonClick();
 		WWWForm wwwForm = new WWWForm();
         wwwForm.AddBinaryData("image", GameManager.Instance.selfieBytes, "Hello!");
-        wwwForm.AddField("message", "This is awesome.");
+        wwwForm.AddField("message", facebookMessage );
 		FB.API("me/photos", HttpMethod.POST, TakeScreenshotCallback, wwwForm);
+		freeUpPictureMemory();
 	}
 
 	void TakeScreenshotCallback(IGraphResult result)

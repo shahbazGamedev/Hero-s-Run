@@ -258,6 +258,10 @@ CLOCK_TIME_PENALTY,Penalty:,Pénalité:,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSL
 NOT_ENOUGH_TIME_TITLE,Ran Out of Time!,Manque de temps !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 NOT_ENOUGH_TIME_CONTENT,Haha! You will never reach the Volcano of Doom before midnight. You can reduce your time penalty by replaying preceding episodes.,Haha! Tu n'atteindras jamais le Volcan du Désespoir avant minuit. Tu peux réduire ta pénalité de temps en rejouant des épisodes précedents.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 NOT_ENOUGH_TIME_BUTTON,Start Over,Recommence,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+#Social Media popup
+SOCIAL_MEDIA_MESSAGE,Share your adventures on Facebook.,Partage tes aventures sur Facebook,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+SOCIAL_MEDIA_SHARE_BUTTON,Share,Partage,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+SOCIAL_MEDIA_FACEBOOK_MESSAGE,Join me in my adventure's in Hero's Run.,Joins toi à moi dans mes aventures dans la Course du Héros,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Local Notification
 LOCAL_NOTIFICATION_SHORT_TERM_ALERT_ACTION,View,Voir,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LOCAL_NOTIFICATION_SHORT_TERM_ALERT_BODY,<hero name><comma> I've been looking for you. I desperately need your help to save the Kingdom of Lum!,<hero name><comma> je te cherchais. J'ai désespérement besoin de toi pour sauver le Royaume de Lum.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED

@@ -340,11 +340,9 @@ public class PlayerController : BaseClass {
 			//Place the character at the start position which is always 0,ground height,0
 			//Calculate the ground height
 			RaycastHit hit;
-			float groundHeight = 0;
 			if (Physics.Raycast(new Vector3(0,10f,0), Vector3.down, out hit, 12.0F ))
 			{
-				groundHeight = hit.point.y;
-				transform.position = new Vector3( 0, groundHeight, 0);
+				transform.position = new Vector3( 0, hit.point.y, 0);
 			}
 			//Also adjust the camera height
 			Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y + groundHeight, Camera.main.transform.position.z); 

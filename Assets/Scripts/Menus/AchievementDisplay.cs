@@ -151,4 +151,22 @@ public class AchievementDisplay : MonoBehaviour {
 		enableShowDisplay( false );
 	}
 
+	void OnEnable()
+	{
+		GameManager.gameStateEvent += GameStateChange;
+	}
+	
+	void OnDisable()
+	{
+		GameManager.gameStateEvent -= GameStateChange;
+	}
+	
+	void GameStateChange( GameState newState )
+	{
+		if( newState != GameState.Normal )
+		{
+			enableShowDisplay( false );
+		}
+	}
+
 }
