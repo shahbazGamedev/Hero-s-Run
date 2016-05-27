@@ -54,6 +54,9 @@ public class EpisodePopup : MonoBehaviour {
 
 	private void loadEpisodeData()
 	{
+		//Reset value in case a player who did previously finish the game, replays earlier levels
+		LevelManager.Instance.setPlayerFinishedTheGame( false );
+
 		LevelData.EpisodeInfo selectedEpisode = levelData.getEpisodeInfo( episodeNumber );
 		string levelNumberString = (episodeNumber + 1).ToString();
 

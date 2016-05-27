@@ -3,16 +3,24 @@ using System.Collections;
 
 using UnityEngine.UI;
 
+public enum PictureRatio {
+	
+	POLAROID_4_5 = 0,
+	WIDE_SCREEN_16_9 = 1
+}
+
 public class TakeScreenshot : MonoBehaviour {
 
 	int pictureWidth;
 	const int MAX_PICTURE_WIDTH = 1024;
+	const int MAX_PICTURE_HEIGHT = 1024;
 	int pictureHeight;
 	int borderWidth;
 	Camera screenShotCamera;
 	public Light pointLight;
 	Texture2D screenShot;
 	public Button cameraButton;
+	public Button flipCameraButton;
 	public Image picturePreview;
 	public static bool selfieTaken = false;
 	bool saveToFile = false; //for testing in Editor
@@ -23,7 +31,7 @@ public class TakeScreenshot : MonoBehaviour {
 
 	Vector3 backLocation = new Vector3( 0, 2f, -4.5f );	//Facing player's back
 	Quaternion backRotation = Quaternion.Euler( 9.36f, 0, 0 );
-
+	public PictureRatio pictureRatio = PictureRatio.POLAROID_4_5;
 
 	void Awake()
 	{
@@ -35,11 +43,10 @@ public class TakeScreenshot : MonoBehaviour {
 		screenShotCamera.transform.rotation = frontRotation;
 
 		screenShotCamera.enabled = false;
-		pictureWidth = Screen.width * 2;
-		pictureWidth = Mathf.Min( pictureWidth, MAX_PICTURE_WIDTH );
-		pictureHeight = (int) ( pictureWidth * 9f/16f );
-		borderWidth = (int) (pictureHeight * 0.06f);
-		screenShot = new Texture2D(pictureWidth + 2 * borderWidth, pictureHeight + 2 * borderWidth, TextureFormat.RGB24, false);
+		pointLight.gameObject.SetActive( false );
+
+		calculatePictureSize();
+
 		for( int i = 0; i < screenShot.width; i++ )
 		{
 			for( int j = 0; j < screenShot.height; j++ )
@@ -48,9 +55,28 @@ public class TakeScreenshot : MonoBehaviour {
 			}
 		}
         screenShot.Apply(); //Applies all the changes made
-		pointLight.gameObject.SetActive( false );
 	}
-           
+
+	void calculatePictureSize()
+	{
+		if( pictureRatio == PictureRatio.POLAROID_4_5 )
+		{
+			pictureHeight = Screen.height;
+			pictureHeight = Mathf.Min( pictureHeight, MAX_PICTURE_HEIGHT);
+			pictureWidth = (int) ( pictureHeight * 4f/5f );
+			borderWidth = (int) (pictureWidth * 0.05f);
+		}
+		else if ( pictureRatio == PictureRatio.WIDE_SCREEN_16_9 )
+		{
+			pictureWidth = Screen.width * 2;
+			pictureWidth = Mathf.Min( pictureWidth, MAX_PICTURE_WIDTH );
+			pictureHeight = (int) ( pictureWidth * 9f/16f );
+			borderWidth = (int) (pictureHeight * 0.05f);
+		}
+		screenShot = new Texture2D(pictureWidth + 2 * borderWidth, pictureHeight + 2 * borderWidth, TextureFormat.RGB24, false);
+
+	}
+
 	string ScreenShotName(int width, int height)
 	{
        return string.Format("{0}/screen_{1}x{2}_{3}.png", Application.dataPath, width, height, System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
@@ -148,11 +174,13 @@ public class TakeScreenshot : MonoBehaviour {
 		if( newState == GameState.Normal )
 		{
 			cameraButton.gameObject.SetActive( true );
+			flipCameraButton.gameObject.SetActive( true );
 		}
 		else
 		{
 			CancelInvoke();
 			cameraButton.gameObject.SetActive( false );
+			flipCameraButton.gameObject.SetActive( false );
 			picturePreview.gameObject.SetActive( false );
 		}
 	}

@@ -41,7 +41,7 @@ public class SocialMediaPopup : MonoBehaviour {
 
 	}
 
-	void shareOnFacebook()
+	public void shareOnFacebook()
 	{
 		WWWForm wwwForm = new WWWForm();
         wwwForm.AddBinaryData("image", GameManager.Instance.selfieBytes, "Hello!");
