@@ -404,6 +404,8 @@ public class PlayerController : BaseClass {
 	public void startRunning( bool playCutscene )
 	{	
 		moveDirection = new Vector3(0,0,0); //Needed?
+		Debug.Log("PlayerController - startRunning: deathType: " + deathType );
+
 
 		previousPlayerPosition = transform.position;
 		allowDistanceTravelledCalculations = true;
@@ -1944,6 +1946,10 @@ public class PlayerController : BaseClass {
 					Debug.LogError("Zombie already dead");
 				}
 			}
+			else if (hit.collider.name.StartsWith( "Goblin" ) && !CheatManager.Instance.getIsInvincible() )
+			{
+				handleGoblinCollision(hit);
+			}
 			else if (hit.collider.name.StartsWith( "Firepit" ) && !CheatManager.Instance.getIsInvincible() )
 			{
 				Debug.Log( "Player collided with firepit: " + hit.collider.name + " Normal" + hit.normal.y );
@@ -2072,6 +2078,73 @@ public class PlayerController : BaseClass {
 				//finalizeSideMove();
 			//}
 			
+		}
+	}
+
+	void handleGoblinCollision( ControllerColliderHit hit )
+	{
+		GoblinController goblinController = (GoblinController) hit.gameObject.GetComponent("GoblinController");
+		//Ignore collision event if Goblin already dead.
+		if( goblinController.getGoblinState() != GoblinController.GoblinState.Dying )
+		{
+			if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding ) )
+			{
+				//Give stars
+				PlayerStatsManager.Instance.modifyCurrentCoins( GoblinController.NUMBER_STARS_PER_GOBLIN, true, false );
+				
+				//Display coin total picked up icon
+				HUDHandler.displayCoinTotal( ZombieManager.NUMBER_STARS_PER_ZOMBIE, Color.yellow, false );
+
+				goblinController.fallToBack();
+				
+			}
+			else
+			{
+				Debug.Log( "Player collided with goblin: " + hit.collider.name + " Normal" + hit.normal.y + " but CANT TOPPLE HIM " + _characterState + "  STATE Z "+ goblinController.getGoblinState());
+				if( hit.normal.y < 0.4f )
+				{
+					//Player is running up Z axis
+					if( Mathf.Floor( transform.eulerAngles.y ) == 0 )
+					{
+						if( Mathf.Abs( hit.normal.x ) > Mathf.Abs( hit.normal.z ) )
+						{
+							//Player collided with goblin on the side, just play an animation on the goblin
+							goblinController.sideCollision();
+						}
+						else
+						{
+							//Player collided squarely with goblin. Kill the player.
+							managePlayerDeath ( DeathType.Zombie );
+							goblinController.victory( true );
+						}
+					}
+					//Player is running along X axis
+					else 
+					{
+						if( Mathf.Abs( hit.normal.z ) > Mathf.Abs( hit.normal.x ) )
+						{
+							//Player collided with zombie on the side, just play an animation on the zombie
+							goblinController.sideCollision();
+						}
+						else
+						{
+							//Player collided squarely with zombie. Kill the player.
+							managePlayerDeath ( DeathType.Zombie );
+							goblinController.victory( true );
+						}
+					}
+					Debug.Log( "PLayer collided with: " + hit.collider.name + " Normal" + hit.normal );
+				}
+				else
+				{
+					//We landed on the goblin's head
+					land ();
+				}
+			}
+		}
+		else
+		{
+			Debug.LogError("Goblin already dead");
 		}
 	}
 	
@@ -2756,6 +2829,7 @@ public class PlayerController : BaseClass {
 	
 	public void resetSharedLevelData( bool unlockCamera )
 	{
+		Debug.Log("PlayerController - resetSharedLevelData: unlockCamera: " + unlockCamera );
 		//Reset values
 		//teleportLeaveComplete changes the scale value so we need to reset it
 		transform.localScale = new Vector3( 1f, 1f, 1f );
