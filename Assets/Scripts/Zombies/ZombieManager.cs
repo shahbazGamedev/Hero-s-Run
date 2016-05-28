@@ -40,7 +40,7 @@ public class ZombieManager : BaseClass {
 		}
 	}
 
-	public void knockbackZombies( float impactDiameter )
+	void knockbackZombies( float impactDiameter )
 	{
 
 		int ZombieLayer = 9;
@@ -287,6 +287,22 @@ public class ZombieManager : BaseClass {
 		
 		return zombiePosition;
 		
+	}
+
+	void OnEnable()
+	{
+		PowerUpManager.zNukeExploded += ZNukeExploded;
+	}
+	
+	void OnDisable()
+	{
+		PowerUpManager.zNukeExploded -= ZNukeExploded;
+	}
+
+	void ZNukeExploded( float impactDiameter )
+	{
+		Debug.LogWarning("ZNukeExploded: impactDiameter: " + impactDiameter );
+		knockbackZombies( impactDiameter );
 	}
 
 }

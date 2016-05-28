@@ -2090,7 +2090,7 @@ public class PlayerController : BaseClass {
 			if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding ) )
 			{
 				//Give stars
-				PlayerStatsManager.Instance.modifyCurrentCoins( GoblinController.NUMBER_STARS_PER_GOBLIN, true, false );
+				PlayerStatsManager.Instance.modifyCurrentCoins( GoblinManager.NUMBER_STARS_PER_GOBLIN, true, false );
 				
 				//Display coin total picked up icon
 				HUDHandler.displayCoinTotal( ZombieManager.NUMBER_STARS_PER_ZOMBIE, Color.yellow, false );

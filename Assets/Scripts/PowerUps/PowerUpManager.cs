@@ -31,7 +31,6 @@ public class PowerUpManager : BaseClass {
 
 	GameObject player;
 	PlayerController playerController;
-	public ZombieManager zombieManager;
 
 	//Power Up audio. They use 2D sound.
 	public AudioClip pickUpSound;
@@ -51,6 +50,10 @@ public class PowerUpManager : BaseClass {
 	//Impact diameter is extended by the upgrade level * UPGRADE_DIAMETER_BOOST
 	public const float UPGRADE_DIAMETER_BOOST = 5f; 	//in meters
 	const float PERCENTAGE_LIFE_SPAWNED = 0.5f;
+
+	//Delegate used to communicate to other classes when the number of keys, lives, stars or star doubler changes
+	public delegate void ZNukeExploded( float impactDiameter );
+	public static event ZNukeExploded zNukeExploded;
 
 	void Awake()
 	{
@@ -234,9 +237,10 @@ public class PowerUpManager : BaseClass {
 				case PowerUpType.ZNuke:
 				if( PlayerStatsManager.Instance.getPowerUpQuantity(PowerUpType.ZNuke) > 0 || CheatManager.Instance.hasInfinitePowerUps() )
 				{
-					zombieManager.knockbackZombies( getImpactDiameter( pud ) );
 					Debug.Log("PowerUpZNuke - activatePowerUp");
 					PlayerStatsManager.Instance.decrementPowerUpInventory(pud.powerUpType);
+					//Send an event to interested classes
+					if(zNukeExploded != null) zNukeExploded( getImpactDiameter( pud ) );
 				}
 				break;
 

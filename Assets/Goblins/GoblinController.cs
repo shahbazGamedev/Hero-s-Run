@@ -22,8 +22,6 @@ public class GoblinController : BaseClass {
 		Any = 3, //Either walk or crawl
 	}
 
-	public static int NUMBER_STARS_PER_GOBLIN = 20;
-
 	static Transform player;
 	PlayerController playerController;
 	public CharacterController controller;
@@ -116,7 +114,6 @@ public class GoblinController : BaseClass {
 	public void fallToBack()
 	{
 		goblin_bowling.incrementCounter();
-		//CancelInvoke( "groan" );
 		setGoblinState( GoblinState.Dying );
 		controller.enabled = false;
 		CapsuleCollider capsuleCollider = (CapsuleCollider) GetComponent("CapsuleCollider");
@@ -138,10 +135,8 @@ public class GoblinController : BaseClass {
 		GetComponent<Animator>().Play("fun2");
 	}
 
-	public void knockbackZombie()
+	public void knockbackGoblin()
 	{
-		//zombie_bowling.incrementCounter();
-		CancelInvoke( "groan" );
 		setGoblinState( GoblinState.Dying );
 		controller.enabled = false;
 		CapsuleCollider capsuleCollider = (CapsuleCollider) GetComponent("CapsuleCollider");
@@ -153,15 +148,6 @@ public class GoblinController : BaseClass {
 	}
 
 /*
-	public void resetZombie()
-	{
-		StopCoroutine("recycleZombie");
-		CancelInvoke( "groan" );
-		setZombieState( ZombieController.ZombieState.Available );
-		gameObject.SetActive( false );
-		followsPlayer = false;
-		controller.enabled = true;
-	}
 
 	void moveZombie()
 	{
@@ -192,122 +178,15 @@ public class GoblinController : BaseClass {
 		else if( rd == 2 ) return "idle_scratchHead";
 		else return "idle_normal";
 	}
-
-
-	string selectRandomWalk( ZombieMoveType zmt )
-	{
-		//In the array, index 0 to 3 are walk types and 4, 5 are crawl types
-		int rd;
-		if( zmt == ZombieMoveType.Walking )
-		{
-			rd = Random.Range( 0, 4 );
-		}
-		else if( zmt == ZombieMoveType.Crawling )
-		{
-			rd = Random.Range( 4, 6 );
-		}
-		else
-		{
-			rd = Random.Range( 0, 6 );
-		}
-
-		return walkTypes[rd];
-	}
-	
-	void groan()
-	{
-		if( gameObject.activeSelf )
-		{
-			float rd = Random.Range( 0, 1f );
-			if( rd < 0.5f )
-			{
-				GetComponent<AudioSource>().PlayOneShot( moanLow );
-			}
-			else
-			{
-				GetComponent<AudioSource>().PlayOneShot( moanHigh );
-			}
-		}
-	}
  
-	public void burrowUp( ParticleSystem debris )
-	{
-		controller.enabled = false;
-		setZombieState( ZombieController.ZombieState.BurrowUp );
-		anim.Play("burrowUp");
-		StartCoroutine("burrowUpCompleted");
-		debris = (ParticleSystem)Instantiate(debris, transform.position, transform.rotation );
-		Destroy ( debris, 4f );
-		debris.Play ();
-
-	}
-	
-	public IEnumerator burrowUpCompleted( )
-	{
-		float duration = anim["burrowUp"].length;
-		do
-		{
-			duration = duration - Time.deltaTime;
-			yield return _sync();
-		} while ( duration > 0 );
-
-		controller.enabled = true;
-		string walkType = selectRandomWalk( ZombieMoveType.Walking );
-		anim.CrossFade(walkType);
-		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
-		if( walkType == "crouchMove" || walkType == "crawl" )
-		{
-			setZombieState( ZombieState.Crawling );
-		}
-		else
-		{
-			setZombieState( ZombieState.Walking );
-		}
-	}
-
-	public void standUpFromBack()
-	{
-		groan ();
-		controller.enabled = false;
-		setZombieState( ZombieController.ZombieState.StandUpFromBack );
-		anim.Play("standUpFromBack");
-		StartCoroutine("standUpFromBackCompleted");
-	}
-
-	public IEnumerator standUpFromBackCompleted()
-	{
-		float duration = anim["standUpFromBack"].length;
-		do
-		{
-			duration = duration - Time.deltaTime;
-			yield return _sync();
-		} while ( duration > 0 );
-
-		string walkType = selectRandomWalk( ZombieMoveType.Walking );
-		anim.CrossFade(walkType);
-		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
-		controller.enabled = true;
-		setZombieState( ZombieState.Walking );
-	}
-
 	public void walk()
 	{
 		controller.enabled = true;
 		string walkType = selectRandomWalk( ZombieMoveType.Walking );
 		anim.Play(walkType);
-		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
 		setZombieState( ZombieController.ZombieState.Walking );
 	}
 
-	public void crawl()
-	{
-		controller.enabled = true;
-		string walkType = selectRandomWalk( ZombieMoveType.Crawling );
-		anim.Play(walkType);
-		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
-		setZombieState( ZombieController.ZombieState.Crawling );
-
-	}
 
 	void OnEnable()
 	{
@@ -325,7 +204,6 @@ public class GoblinController : BaseClass {
 	{
 		if( newState == CharacterState.Dying )
 		{
-			CancelInvoke( "groan" );
 		}
 	}
 	
@@ -358,23 +236,5 @@ public class GoblinController : BaseClass {
 		}
 	}
 
-	//Recycle zombie after a few seconds
-	public IEnumerator recycleZombie( float recycleDelay )
-	{
-		float elapsedTime = 0;
-		
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			yield return _sync();
-		} while ( elapsedTime < recycleDelay );
-		
-		if( playerController.getCharacterState() != CharacterState.Dying )
-		{
-			//Only deactivate the zombie if the player is not dead as we dont want the zombie to pop out of view.
-			setZombieState( ZombieController.ZombieState.Available );
-			gameObject.SetActive( false );
-		}
-	}
 */
 }
