@@ -12,14 +12,25 @@ public class GoblinController : BaseClass {
 		Victory = 5
 	}
 
+	public enum AttackType {
+		short_range_Spear_1 = 1,
+		short_range_Spear_2 = 2,
+		long_range_Spear = 3,
+		Crossbow = 4,
+	}
+
 	Transform player;
 	PlayerController playerController;
 	CharacterController controller;
 	Vector3 forward;
-	float walkSpeed = 1.65f; //good value so feet don't slide
+	float runSpeed = 4.5f; //good value so feet don't slide
 	GoblinState goblinState = GoblinState.Idle;
+	public AttackType attackType = AttackType.short_range_Spear_1;
 	bool hasAttackedPlayer = false;
 	public bool applyGravity = true;
+
+	public AudioClip footstepLeftSound;
+	public AudioClip footstepRightSound;
 
 	public AudioClip ouch;
 	public AudioClip fallToGround;
@@ -32,10 +43,10 @@ public class GoblinController : BaseClass {
 	static EventCounter goblin_bowling = new EventCounter( GameCenterManager.ZombieBowling, 3, 3000 );
 
 	//If true, the goblin heads for the player (as opposed to staying in its lane).
-	public bool followsPlayer = false;
+	bool followsPlayer = false;
 
 	//True if the CharacterController is allowed to move and false otherwise (because the game is paused for example).
-	public bool allowMove = true;
+	bool allowMove = false;
 
 	// Use this for initialization
 	void Awake () {
@@ -59,18 +70,53 @@ public class GoblinController : BaseClass {
 		if( !hasAttackedPlayer )
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
+			handleAttackType( distance );
+		}
+	}
 
-			float attackDistance = 0.64f * PlayerController.getPlayerSpeed();
-			if( distance < attackDistance )
-			{
-				triggerShortRangeAttack();
-			}
+	void handleAttackType( float distance )
+	{
+		float attackDistance;
+	    switch (attackType)
+		{
+	        case AttackType.short_range_Spear_1:
+				attackDistance = 0.64f * PlayerController.getPlayerSpeed();
+				if( distance < attackDistance )
+				{
+					hasAttackedPlayer  = true;
+					GetComponent<Animator>().Play("attack1");
+				}
+				break;
+	                
+	        case AttackType.short_range_Spear_2:
+				attackDistance = 0.64f * PlayerController.getPlayerSpeed();
+				if( distance < attackDistance )
+				{
+					hasAttackedPlayer  = true;
+					GetComponent<Animator>().Play("attack2");
+				}
+				break;
+	                
+			case AttackType.long_range_Spear:
+				attackDistance = 3f * PlayerController.getPlayerSpeed();
+				if( distance < attackDistance )
+				{
+					hasAttackedPlayer  = true;
+					allowMove = true;
+					followsPlayer = true;
+					setGoblinState( GoblinState.Running );
+					GetComponent<Animator>().Play("run");
+				}
+				break;
+		
+			case AttackType.Crossbow:
+				break;
 		}
 	}
 
 	void moveGoblin()
 	{
-		if( allowMove && goblinState == GoblinState.Running )
+		if( allowMove && goblinState == GoblinState.Running && PlayerController._characterState != CharacterState.Dying )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -81,7 +127,7 @@ public class GoblinController : BaseClass {
 			//1) Get the direction of the goblin
 			forward = transform.TransformDirection(Vector3.forward);			
 			//2) Scale vector based on run speed
-			forward = forward * Time.deltaTime * walkSpeed;
+			forward = forward * Time.deltaTime * runSpeed;
 			if( applyGravity ) forward.y -= 16f * Time.deltaTime;
 			//3) Move the controller
 			controller.Move( forward );
@@ -147,17 +193,14 @@ public class GoblinController : BaseClass {
 		}
 	}
 
-	void triggerShortRangeAttack()
+	public void Footstep_left ( AnimationEvent eve )
 	{
-		hasAttackedPlayer = true;
-		if( Random.value < 0.5f )
-		{
-			GetComponent<Animator>().Play("attack1");
-		}
-		else
-		{
-			GetComponent<Animator>().Play("attack2");
-		}
+		GetComponent<AudioSource>().PlayOneShot( footstepLeftSound, 0.23f );
+	}
+
+	public void Footstep_right ( AnimationEvent eve )
+	{
+		GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.23f );
 	}
 
 }
