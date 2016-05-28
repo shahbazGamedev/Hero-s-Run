@@ -67,7 +67,7 @@ public class GoblinController : BaseClass {
 	void Update ()
 	{
 		moveGoblin();
-		if( !hasAttackedPlayer )
+		if( !hasAttackedPlayer && goblinState != GoblinState.Dying && PlayerController._characterState != CharacterState.Dying )
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 			handleAttackType( distance );
@@ -98,7 +98,7 @@ public class GoblinController : BaseClass {
 				break;
 	                
 			case AttackType.long_range_Spear:
-				attackDistance = 3f * PlayerController.getPlayerSpeed();
+				attackDistance = 2.5f * PlayerController.getPlayerSpeed();
 				if( distance < attackDistance )
 				{
 					hasAttackedPlayer  = true;
@@ -110,8 +110,22 @@ public class GoblinController : BaseClass {
 				break;
 		
 			case AttackType.Crossbow:
+				attackDistance = 2.5f * PlayerController.getPlayerSpeed();
+				if( distance < attackDistance )
+				{
+					hasAttackedPlayer = true;
+					setGoblinState( GoblinState.Attacking );
+					InvokeRepeating("fireCrossbow", 0.1f, 2.5f );
+				}
 				break;
 		}
+	}
+
+	void fireCrossbow()
+	{
+		transform.LookAt( player );
+		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
+		GetComponent<Animator>().Play("attack");
 	}
 
 	void moveGoblin()
