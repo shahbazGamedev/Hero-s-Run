@@ -9,6 +9,7 @@ public class SocialMediaPopup : MonoBehaviour {
 	public Image picturePreview;
 	public Text episodeNameText;
 	public Text messageText;
+	public Button shareButton;
 	public Text shareButtonText;
 	string facebookMessage;
 
@@ -18,7 +19,6 @@ public class SocialMediaPopup : MonoBehaviour {
 		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
 		string levelNumberString = (episodeNumber + 1).ToString();
 		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
-		messageText.text = LocalizationManager.Instance.getText("SOCIAL_MEDIA_MESSAGE");
 		shareButtonText.text = LocalizationManager.Instance.getText("SOCIAL_MEDIA_SHARE_BUTTON");
 		facebookMessage = LocalizationManager.Instance.getText("SOCIAL_MEDIA_FACEBOOK_MESSAGE");
 	}
@@ -34,6 +34,8 @@ public class SocialMediaPopup : MonoBehaviour {
 	private void loadSocialMediaData()
 	{
 		Debug.Log("loadSocialMediaData " );
+		shareButton.interactable = true;
+		messageText.text = LocalizationManager.Instance.getText("SOCIAL_MEDIA_MESSAGE");
 		if( GameManager.Instance.selfie != null ) picturePreview.sprite = GameManager.Instance.selfie;
 	}
 
@@ -60,11 +62,12 @@ public class SocialMediaPopup : MonoBehaviour {
 
 	public void shareOnFacebook()
 	{
+		shareButton.interactable = false;
 		SoundManager.playButtonClick();
 		WWWForm wwwForm = new WWWForm();
         wwwForm.AddBinaryData("image", GameManager.Instance.selfieBytes, "Hello!");
         wwwForm.AddField("message", facebookMessage );
-		FB.API("me/photos", HttpMethod.POST, TakeScreenshotCallback, wwwForm);
+		//FB.API("me/photos", HttpMethod.POST, TakeScreenshotCallback, wwwForm);
 		freeUpPictureMemory();
 	}
 
@@ -73,10 +76,12 @@ public class SocialMediaPopup : MonoBehaviour {
 		if (result.Error != null)
 		{
 			Debug.LogWarning("TakeScreenshot-TakeScreenshotCallback: error: " + result.Error );
+			messageText.text = LocalizationManager.Instance.getText("SOCIAL_MEDIA_ERROR_OCCURRED");
 		}
 		else
 		{
 			Debug.Log("TakeScreenshot-TakeScreenshotCallback: success: " + result.RawResult );
+			messageText.text = LocalizationManager.Instance.getText("SOCIAL_MEDIA_POSTED_SUCCESSFULLY");
 		}
 	}
 
