@@ -38,6 +38,7 @@ public class GoblinController : BaseClass {
 
 	//Only use for the scout goblin with the crossbow
 	GameObject boltPrefab;
+	Vector3 initialBoltPositionOffset = new Vector3( 0f, 0.47f, 0.46f );
 
 	PlayerController playerController;
 	Transform player;
@@ -164,8 +165,9 @@ public class GoblinController : BaseClass {
 		GameObject bolt = (GameObject)Instantiate(boltPrefab);
 		transform.LookAt( player );
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
-		bolt.transform.position = new Vector3( transform.position.x, transform.position.y + 1.2f, transform.position.z );
 		bolt.transform.rotation = transform.rotation;
+		Vector3 initialBoltPosition = transform.TransformPoint( initialBoltPositionOffset );
+		bolt.transform.position = initialBoltPosition;
 		GetComponent<Animator>().Play("attack");
 		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CharacterController>());

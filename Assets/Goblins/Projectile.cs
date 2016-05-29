@@ -25,7 +25,7 @@ public class Projectile : MonoBehaviour {
 		if( fireParticleSystem != null ) fireParticleSystem.gameObject.SetActive(false);
 		if( collision.gameObject.name == "Hero" )
 		{
-			playerController.managePlayerDeath(DeathType.Flame);
+			playerController.managePlayerDeath(DeathType.Obstacle);
 		}
   	}
 }
