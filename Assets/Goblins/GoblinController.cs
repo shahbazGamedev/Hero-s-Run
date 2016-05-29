@@ -34,7 +34,7 @@ public class GoblinController : BaseClass {
 		Crossbow = 4,
 	}
 	
-	const float BOLT_FORCE = 300f;
+	const float BOLT_FORCE = 400f;
 
 	//Only use for the scout goblin with the crossbow
 	GameObject boltPrefab;
@@ -122,7 +122,7 @@ public class GoblinController : BaseClass {
 			{
 		        case AttackType.short_range_Spear_1:
 					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance )
+					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setGoblinState( GoblinState.Attacking );
 						GetComponent<Animator>().Play("attack1");
@@ -131,7 +131,7 @@ public class GoblinController : BaseClass {
 		                
 		        case AttackType.short_range_Spear_2:
 					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance )
+					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setGoblinState( GoblinState.Attacking );
 						GetComponent<Animator>().Play("attack2");
@@ -158,6 +158,19 @@ public class GoblinController : BaseClass {
 					break;
 			}
 		}
+	}
+
+	/*
+		returns:
+		-1 if goblin is behind player
+		+1 if goblin is in front
+		0 if goblin is on the side
+		0.5 if goblin is facing player and within 30 degrees
+	*/
+	float getDotProduct()
+	{
+		Vector3 heading = player.position - transform.position;
+		return Vector3.Dot( heading.normalized, transform.forward );
 	}
 
 	void fireCrossbow()
@@ -187,6 +200,10 @@ public class GoblinController : BaseClass {
 			//In case we are shooting bolts, stop
 			CancelInvoke();
 		}
+		else if( goblinState == GoblinState.Victory )
+		{
+			StartCoroutine( playVictoryAnimation() );
+		}
 	}
 
 	public void sideCollision()
@@ -199,6 +216,11 @@ public class GoblinController : BaseClass {
 	{
 		if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
 		setGoblinState( GoblinState.Victory );
+	}
+
+	IEnumerator playVictoryAnimation()
+	{
+		yield return new WaitForSeconds( Random.value * 2.2f );
 		if( Random.value < 0.5f )
 		{
 			GetComponent<Animator>().Play("fun1");
