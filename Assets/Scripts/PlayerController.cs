@@ -40,8 +40,6 @@ public class PlayerController : BaseClass {
 	
 	private Transform mainCamera;
 
-	public ZombieManager zombieManager;
-	
 	//Variables for swipe
     float minSwipeDistancePixels;
     bool touchStarted = false;
@@ -233,6 +231,10 @@ public class PlayerController : BaseClass {
 	public delegate void PlayerState( CharacterState value );
 	public static event PlayerState playerStateChanged;
 	
+	//Event management used to notify other classes when the resurrection begins (for example to hide zombies)
+	public delegate void ResurrectionBegin();
+	public static event ResurrectionBegin resurrectionBegin;
+
 	//For stats and achievements
 	static EventCounter boots_of_jumping 	= new EventCounter( GameCenterManager.BootsOfJumping, 1, CounterType.Total_any_level );
 	static EventCounter watch_your_step 	= new EventCounter( GameCenterManager.WatchYourStep, 1, CounterType.Total_any_level );
@@ -2883,8 +2885,8 @@ public class PlayerController : BaseClass {
 		//1) Stop pursuit
 		trollController.stopPursuing ();
 
-		//2) Hide and reset all zombies
-		zombieManager.resetAllZombies();
+		//2) Hide and reset all zombies and goblins etc. by sending an event
+		if(resurrectionBegin != null) resurrectionBegin();
 
 		//2a) Reset the camera. If a cut-scene played when the player died, the camera parameters such as the FOV may have changed.
 		sc.resetCameraParameters();

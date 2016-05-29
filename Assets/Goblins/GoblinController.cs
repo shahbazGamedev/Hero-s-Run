@@ -243,7 +243,7 @@ public class GoblinController : BaseClass {
 
 	IEnumerator playVictoryAnimation()
 	{
-		yield return new WaitForSeconds( Random.value * 2.2f );
+		yield return new WaitForSeconds( Random.value * 0.3f );
 		if( Random.value < 0.5f )
 		{
 			GetComponent<Animator>().Play("fun1");
@@ -268,9 +268,9 @@ public class GoblinController : BaseClass {
 	{
 		if( PlayerController._characterState == CharacterState.Dying )
 		{
-			if( hit.collider.name.StartsWith("Goblin") )
+			if( hit.collider.name.StartsWith("Goblin") || hit.collider.name.StartsWith("Hero"))
 			{
-				//If a goblin collides with another goblin while the player is dead, have him stop moving and play the victory sequence.
+				//If a goblin collides with another goblin or the Hero while the player is dead, have him stop moving and play the victory sequence.
 				victory( false );
 			}
 		}
@@ -293,8 +293,18 @@ public class GoblinController : BaseClass {
 			Debug.Log("Goblin PlayerStateChange - player is dead");
 			//In case we are shooting bolts, stop
 			CancelInvoke();
-			setGoblinState( GoblinState.Victory );
 		}
+	}
+
+	public void resetGoblin()
+	{
+		setGoblinState( GoblinState.Idle );
+		GetComponent<Animator>().Play("idle");
+		gameObject.SetActive( false );
+		followsPlayer = false;
+		controller.enabled = true;
+		GetComponent<CapsuleCollider>().enabled = true;
+
 	}
 
 	public void Footstep_left ( AnimationEvent eve )

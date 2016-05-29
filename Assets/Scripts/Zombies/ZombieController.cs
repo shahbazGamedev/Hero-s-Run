@@ -84,7 +84,7 @@ public class ZombieController : BaseClass {
 	public void resetZombie()
 	{
 		StopCoroutine("recycleZombie");
-		CancelInvoke( "groan" );
+		CancelInvoke();
 		setZombieState( ZombieController.ZombieState.Available );
 		gameObject.SetActive( false );
 		followsPlayer = false;

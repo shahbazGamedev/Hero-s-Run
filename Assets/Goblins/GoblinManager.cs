@@ -36,7 +36,7 @@ public class GoblinManager : BaseClass {
 		Collider[] hitColliders = Physics.OverlapSphere(exactPos, impactDiameter, GoblinMask );
 		for( int i =0; i < hitColliders.Length; i++ )
 		{
-			GoblinController goblinController = (GoblinController) hitColliders[i].gameObject.GetComponent("GoblinController");
+			GoblinController goblinController = hitColliders[i].GetComponent<GoblinController>();
 			if( goblinController.getGoblinState() != GoblinController.GoblinState.Dying )
 			{
 				goblinController.knockbackGoblin();
@@ -58,17 +58,28 @@ public class GoblinManager : BaseClass {
 	void OnEnable()
 	{
 		PowerUpManager.zNukeExploded += ZNukeExploded;
+		PlayerController.resurrectionBegin += ResurrectionBegin;
 	}
 	
 	void OnDisable()
 	{
 		PowerUpManager.zNukeExploded -= ZNukeExploded;
+		PlayerController.resurrectionBegin -= ResurrectionBegin;
 	}
 
 	void ZNukeExploded( float impactDiameter )
 	{
 		Debug.LogWarning("ZNukeExploded: impactDiameter: " + impactDiameter );
 		knockbackGoblins( impactDiameter );
+	}
+
+	void ResurrectionBegin()
+	{
+		GoblinController[] allGoblinControllers = playerController.currentTile.GetComponentsInChildren<GoblinController>();
+		for( int i = 0; i < allGoblinControllers.Length; i++ )
+		{
+			allGoblinControllers[i].resetGoblin();
+		}
 	}
 
 }

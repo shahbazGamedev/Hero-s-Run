@@ -292,17 +292,24 @@ public class ZombieManager : BaseClass {
 	void OnEnable()
 	{
 		PowerUpManager.zNukeExploded += ZNukeExploded;
+		PlayerController.resurrectionBegin += ResurrectionBegin;
 	}
 	
 	void OnDisable()
 	{
 		PowerUpManager.zNukeExploded -= ZNukeExploded;
+		PlayerController.resurrectionBegin -= ResurrectionBegin;
 	}
 
 	void ZNukeExploded( float impactDiameter )
 	{
 		Debug.LogWarning("ZNukeExploded: impactDiameter: " + impactDiameter );
 		knockbackZombies( impactDiameter );
+	}
+
+	void ResurrectionBegin()
+	{
+		resetAllZombies();
 	}
 
 }
