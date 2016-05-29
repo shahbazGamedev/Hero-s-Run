@@ -184,7 +184,30 @@ public class GoblinController : BaseClass {
 		GetComponent<Animator>().Play("attack");
 		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
-		bolt.GetComponent<Rigidbody>().AddForce(bolt.transform.forward * BOLT_FORCE );
+		bolt.GetComponent<Rigidbody>().AddForce(bolt.transform.forward * getAdjustedBoltForce() );
+		//destroy the bolt after 10 seconds
+		GameObject.Destroy( bolt, 10f );
+	}
+
+	public float getAdjustedBoltForce()
+	{
+		float adjustedBoltForce = BOLT_FORCE;
+		switch (PlayerStatsManager.Instance.getDifficultyLevel())
+		{
+			case DifficultyLevel.Normal:
+			adjustedBoltForce = BOLT_FORCE; //Base value is Normal, so no multiplier
+			break;
+				
+			case DifficultyLevel.Heroic:
+			adjustedBoltForce = BOLT_FORCE * 1.3f;
+			break;
+				
+			case DifficultyLevel.Legendary:
+			adjustedBoltForce = BOLT_FORCE * 1.6f;
+			break;
+			
+		}
+		return adjustedBoltForce;
 	}
 
 	public GoblinState getGoblinState()
