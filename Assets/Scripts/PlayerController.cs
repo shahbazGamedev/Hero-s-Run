@@ -2095,7 +2095,7 @@ public class PlayerController : BaseClass {
 				//Display coin total picked up icon
 				HUDHandler.displayCoinTotal( ZombieManager.NUMBER_STARS_PER_ZOMBIE, Color.yellow, false );
 
-				goblinController.fallToBack();
+				goblinController.knockbackGoblin();
 				
 			}
 			else

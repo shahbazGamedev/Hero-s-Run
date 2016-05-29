@@ -4,6 +4,21 @@ using System.Collections.Generic;
 
 public class GoblinController : BaseClass {
 
+	[Header("Goblin Controller")]
+	[Header("General")]
+	public AttackType attackType = AttackType.short_range_Spear_1;
+	public bool applyGravity = true;
+	[Header("Audio")]
+	public AudioClip footstepLeftSound;
+	public AudioClip footstepRightSound;
+	public AudioClip ouch;
+	public AudioClip fallToGround;
+	public AudioClip win;
+	[Header("Clothing")]
+	[Tooltip("There is 30% chance that each of the following cloth item will be hidden. This is so not all goblins look alike.")]
+	public GameObject clothItem1;
+	public GameObject clothItem2;
+
 	public enum GoblinState {
 		Idle = 1,
 		Running = 2,
@@ -18,119 +33,67 @@ public class GoblinController : BaseClass {
 		long_range_Spear = 3,
 		Crossbow = 4,
 	}
+	
+	const float BOLT_FORCE = 300f;
 
-	Transform player;
+	//Only use for the scout goblin with the crossbow
+	GameObject boltPrefab;
+
 	PlayerController playerController;
+	Transform player;
+
+	//Movement related
+	GoblinState goblinState = GoblinState.Idle;
 	CharacterController controller;
 	Vector3 forward;
 	float runSpeed = 4.5f; //good value so feet don't slide
-	GoblinState goblinState = GoblinState.Idle;
-	public AttackType attackType = AttackType.short_range_Spear_1;
-	bool hasAttackedPlayer = false;
-	public bool applyGravity = true;
-
-	public AudioClip footstepLeftSound;
-	public AudioClip footstepRightSound;
-
-	public AudioClip ouch;
-	public AudioClip fallToGround;
-	public AudioClip win;
-
-	public GameObject clothItem1;
-	public GameObject clothItem2;
-
-	//For stats and achievements
-	static EventCounter goblin_bowling = new EventCounter( GameCenterManager.ZombieBowling, 3, 3000 );
-
-	//If true, the goblin heads for the player (as opposed to staying in its lane).
+	//If true, the goblin heads for the player as opposed to staying in his lane
 	bool followsPlayer = false;
 
-	//True if the CharacterController is allowed to move and false otherwise (because the game is paused for example).
-	bool allowMove = false;
-
-	// Use this for initialization
-	void Awake () {
-
-		controller = (CharacterController) GetComponent("CharacterController");
+	void Awake ()
+	{
+		controller = GetComponent<CharacterController>();
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
+		playerController = player.gameObject.GetComponent<PlayerController>();
+
 		randomizeLook ();
+
+		if( attackType == AttackType.Crossbow )
+		{
+			boltPrefab = Resources.Load( "Level/Props/Magic Bolt") as GameObject;
+		}
 	}
 
 	//We don't want all goblins to look the same
 	void randomizeLook ()
 	{
-		if( Random.value < 0.3f ) clothItem1.SetActive( false );
-		if( Random.value < 0.3f ) clothItem2.SetActive( false );
+		if( Random.value < 0.3f )
+		{
+			if( clothItem1 != null ) clothItem1.SetActive( false );
+		}
+		if( Random.value < 0.3f )
+		{
+			if( clothItem2 != null ) clothItem2.SetActive( false );
+		}
 	}
 
 	void Update ()
 	{
 		moveGoblin();
-		if( !hasAttackedPlayer && goblinState != GoblinState.Dying && PlayerController._characterState != CharacterState.Dying )
+		handleAttackType();
+		if ( Input.GetKeyDown (KeyCode.A) ) 
 		{
-			float distance = Vector3.Distance(player.position,transform.position);
-			handleAttackType( distance );
+			if( attackType == AttackType.Crossbow )
+			{
+				Debug.Log("KeyInput - Fire bolt");
+				fireCrossbow();
+			}
 		}
-	}
-
-	void handleAttackType( float distance )
-	{
-		float attackDistance;
-	    switch (attackType)
-		{
-	        case AttackType.short_range_Spear_1:
-				attackDistance = 0.64f * PlayerController.getPlayerSpeed();
-				if( distance < attackDistance )
-				{
-					hasAttackedPlayer  = true;
-					GetComponent<Animator>().Play("attack1");
-				}
-				break;
-	                
-	        case AttackType.short_range_Spear_2:
-				attackDistance = 0.64f * PlayerController.getPlayerSpeed();
-				if( distance < attackDistance )
-				{
-					hasAttackedPlayer  = true;
-					GetComponent<Animator>().Play("attack2");
-				}
-				break;
-	                
-			case AttackType.long_range_Spear:
-				attackDistance = 2.5f * PlayerController.getPlayerSpeed();
-				if( distance < attackDistance )
-				{
-					hasAttackedPlayer  = true;
-					allowMove = true;
-					followsPlayer = true;
-					setGoblinState( GoblinState.Running );
-					GetComponent<Animator>().Play("run");
-				}
-				break;
-		
-			case AttackType.Crossbow:
-				attackDistance = 2.5f * PlayerController.getPlayerSpeed();
-				if( distance < attackDistance )
-				{
-					hasAttackedPlayer = true;
-					setGoblinState( GoblinState.Attacking );
-					InvokeRepeating("fireCrossbow", 0.1f, 2.5f );
-				}
-				break;
-		}
-	}
-
-	void fireCrossbow()
-	{
-		transform.LookAt( player );
-		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
-		GetComponent<Animator>().Play("attack");
 	}
 
 	void moveGoblin()
 	{
-		if( allowMove && goblinState == GoblinState.Running && PlayerController._characterState != CharacterState.Dying )
+		if( goblinState == GoblinState.Running )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -148,6 +111,67 @@ public class GoblinController : BaseClass {
 		}
 	}
 
+	void handleAttackType()
+	{
+		if( goblinState != GoblinState.Attacking && goblinState != GoblinState.Dying && goblinState != GoblinState.Victory )
+		{
+			float distance = Vector3.Distance(player.position,transform.position);
+			float attackDistance;
+		    switch (attackType)
+			{
+		        case AttackType.short_range_Spear_1:
+					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
+					if( distance < attackDistance )
+					{
+						setGoblinState( GoblinState.Attacking );
+						GetComponent<Animator>().Play("attack1");
+					}
+					break;
+		                
+		        case AttackType.short_range_Spear_2:
+					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
+					if( distance < attackDistance )
+					{
+						setGoblinState( GoblinState.Attacking );
+						GetComponent<Animator>().Play("attack2");
+					}
+					break;
+		                
+				case AttackType.long_range_Spear:
+					attackDistance = 2.5f * PlayerController.getPlayerSpeed();
+					if( distance < attackDistance )
+					{
+						followsPlayer = true;
+						setGoblinState( GoblinState.Running );
+						GetComponent<Animator>().Play("run");
+					}
+					break;
+			
+				case AttackType.Crossbow:
+					attackDistance = 2.5f * PlayerController.getPlayerSpeed();
+					if( distance < attackDistance )
+					{
+						setGoblinState( GoblinState.Attacking );
+						InvokeRepeating("fireCrossbow", 0.1f, 2.5f );
+					}
+					break;
+			}
+		}
+	}
+
+	void fireCrossbow()
+	{
+		GameObject bolt = (GameObject)Instantiate(boltPrefab);
+		transform.LookAt( player );
+		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
+		bolt.transform.position = new Vector3( transform.position.x, transform.position.y + 1.2f, transform.position.z );
+		bolt.transform.rotation = transform.rotation;
+		GetComponent<Animator>().Play("attack");
+		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
+		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
+		bolt.GetComponent<Rigidbody>().AddForce(bolt.transform.forward * BOLT_FORCE );
+	}
+
 	public GoblinState getGoblinState()
 	{
 		return goblinState;
@@ -156,18 +180,11 @@ public class GoblinController : BaseClass {
 	public void setGoblinState( GoblinState state )
 	{
 		goblinState = state;
-	}
-
-	//The goblin falls over backwards, typically because the player slid into him.
-	public void fallToBack()
-	{
-		goblin_bowling.incrementCounter();
-		setGoblinState( GoblinState.Dying );
-		controller.enabled = false;
-		CapsuleCollider capsuleCollider = (CapsuleCollider) GetComponent("CapsuleCollider");
-		capsuleCollider.enabled = false;
-		GetComponent<Animator>().Play("death");
-		GetComponent<AudioSource>().PlayOneShot( fallToGround );
+		if( goblinState == GoblinState.Dying )
+		{
+			//In case we are shooting bolts, stop
+			CancelInvoke();
+		}
 	}
 
 	public void sideCollision()
@@ -180,19 +197,24 @@ public class GoblinController : BaseClass {
 	{
 		if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
 		setGoblinState( GoblinState.Victory );
-		GetComponent<Animator>().Play("fun2");
+		if( Random.value < 0.5f )
+		{
+			GetComponent<Animator>().Play("fun1");
+		}
+		else
+		{
+			GetComponent<Animator>().Play("fun2");
+		}
 	}
 
+	//The goblin falls over backwards, typically because the player slid into him or because of a ZNuke
 	public void knockbackGoblin()
 	{
 		setGoblinState( GoblinState.Dying );
 		controller.enabled = false;
-		CapsuleCollider capsuleCollider = (CapsuleCollider) GetComponent("CapsuleCollider");
-		capsuleCollider.enabled = false;
+		GetComponent<CapsuleCollider>().enabled = false;
 		GetComponent<Animator>().Play("death");
 		GetComponent<AudioSource>().PlayOneShot( fallToGround );
-		Debug.Log("KNOCKBACK " + gameObject.name );
-
 	}
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)
@@ -204,6 +226,27 @@ public class GoblinController : BaseClass {
 				//If a goblin collides with another goblin while the player is dead, have him stop moving and play the victory sequence.
 				victory( false );
 			}
+		}
+	}
+
+	void OnEnable()
+	{
+		PlayerController.playerStateChanged += PlayerStateChange;
+	}
+	
+	void OnDisable()
+	{
+		PlayerController.playerStateChanged -= PlayerStateChange;
+	}
+
+	void PlayerStateChange( CharacterState newState )
+	{
+		if( newState == CharacterState.Dying )
+		{
+			Debug.Log("Goblin PlayerStateChange - player is dead");
+			//In case we are shooting bolts, stop
+			CancelInvoke();
+			setGoblinState( GoblinState.Victory );
 		}
 	}
 
