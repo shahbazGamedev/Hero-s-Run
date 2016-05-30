@@ -62,11 +62,21 @@ public class PowerUpDisplayData : MonoBehaviour {
 		
 	}
 
+	public static float getUpgradeBoostValue( PowerUpType type )
+	{
+		ConsumablePowerUpData pud = powerUpDictionary[type];
+		return pud.upgradeBoost;		
+	}
+
 	[System.Serializable]
 	public class ConsumablePowerUpData
 	{
 		public PowerUpType powerUpType = PowerUpType.None;
 		public string textID;
 		public Sprite powerupSprite;
+		[Tooltip("How much time in seconds or meters (in the case of the ZNuke) is added for each upgrade level.")]
+		//Duration is extended by the upgrade level * upgradeBoost or
+		//Impact diameter is extended by the upgrade level * upgradeBoost
+		public float upgradeBoost;
 	}
 }

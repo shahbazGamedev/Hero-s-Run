@@ -85,9 +85,9 @@ public class StoreEntry : MonoBehaviour {
 	{
 		string descriptionString = LocalizationManager.Instance.getText(descriptionID);
 		//Replace the string <time> by the time in seconds gained by the upgrade
-		descriptionString = descriptionString.Replace( "<time>", PowerUpManager.UPGRADE_DURATION_BOOST.ToString("N0") );
+		descriptionString = descriptionString.Replace( "<time>", PowerUpDisplayData.getUpgradeBoostValue(powerUpType).ToString("N0") );
 		//Replace the string <range> by the distance in meters gained by the upgrade
-		descriptionString = descriptionString.Replace( "<range>", PowerUpManager.UPGRADE_DIAMETER_BOOST.ToString("N0") );
+		descriptionString = descriptionString.Replace( "<range>", PowerUpDisplayData.getUpgradeBoostValue(powerUpType).ToString("N0") );
 		description.text = descriptionString;
 
 		upgradeLevel.value = PlayerStatsManager.Instance.getPowerUpUpgradeLevel( powerUpType );

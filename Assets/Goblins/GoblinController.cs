@@ -175,6 +175,12 @@ public class GoblinController : BaseClass {
 
 	void fireCrossbow()
 	{
+		StartCoroutine( fireCrossbowNow() );
+	}
+
+	IEnumerator fireCrossbowNow()
+	{
+		yield return new WaitForSeconds( Random.value * 0.5f );
 		GameObject bolt = (GameObject)Instantiate(boltPrefab);
 		transform.LookAt( player );
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );

@@ -43,12 +43,8 @@ public class PowerUpManager : BaseClass {
 	public List<PowerUpData> powerUpList = new List<PowerUpData>(6);
 	static Dictionary<PowerUpType,PowerUpData> powerUpDictionary = new Dictionary<PowerUpType,PowerUpData>(6);
 
-	//Duration is extended by the upgrade level * UPGRADE_DURATION_BOOST
-	public const float UPGRADE_DURATION_BOOST = 5; 	//in seconds
 	//Base diameter is the value if upgrade level is 0. It is used by zNuke.
 	const float BASE_DIAMETER = 18f; 	//in meters
-	//Impact diameter is extended by the upgrade level * UPGRADE_DIAMETER_BOOST
-	public const float UPGRADE_DIAMETER_BOOST = 5f; 	//in meters
 	const float PERCENTAGE_LIFE_SPAWNED = 0.5f;
 
 	//Delegate used to communicate to other classes when the number of keys, lives, stars or star doubler changes
@@ -521,13 +517,13 @@ public class PowerUpManager : BaseClass {
 	float getDuration( PowerUpData pud )
 	{
 		//For example: 10 + 3 * 5 = 25 seconds
-		return pud.duration + PlayerStatsManager.Instance.getPowerUpUpgradeLevel(pud.powerUpType) * UPGRADE_DURATION_BOOST;
+		return pud.duration + PlayerStatsManager.Instance.getPowerUpUpgradeLevel(pud.powerUpType) * PowerUpDisplayData.getUpgradeBoostValue(pud.powerUpType);
 	}
 
 	float getImpactDiameter( PowerUpData pud )
 	{
 		//For example: 14 + 2 * 6 = 26 meters
-		return BASE_DIAMETER + PlayerStatsManager.Instance.getPowerUpUpgradeLevel(pud.powerUpType) * UPGRADE_DIAMETER_BOOST;
+		return BASE_DIAMETER + PlayerStatsManager.Instance.getPowerUpUpgradeLevel(pud.powerUpType) * PowerUpDisplayData.getUpgradeBoostValue(pud.powerUpType);
 	}
 
 	public void slideEquippedPowerUp( PowerUpManager.PowerUpData pud )
