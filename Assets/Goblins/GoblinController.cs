@@ -175,7 +175,7 @@ public class GoblinController : BaseClass {
 
 	void fireCrossbow()
 	{
-		StartCoroutine( fireCrossbowNow() );
+		if( gameObject.activeSelf ) StartCoroutine( fireCrossbowNow() );
 	}
 
 	IEnumerator fireCrossbowNow()
@@ -183,8 +183,8 @@ public class GoblinController : BaseClass {
 		yield return new WaitForSeconds( Random.value * 0.5f );
 		GameObject bolt = (GameObject)Instantiate(boltPrefab);
 		transform.LookAt( player );
+		bolt.transform.rotation = Quaternion.Euler( transform.eulerAngles.x, transform.eulerAngles.y, 0 );
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
-		bolt.transform.rotation = transform.rotation;
 		Vector3 initialBoltPosition = transform.TransformPoint( initialBoltPositionOffset );
 		bolt.transform.position = initialBoltPosition;
 		GetComponent<Animator>().Play("attack");

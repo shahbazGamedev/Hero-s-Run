@@ -131,7 +131,7 @@ public class PowerUpManager : BaseClass {
 	IEnumerator startTimerSlowTime( PowerUpData pud )
 	{
 		float duration = getDuration(pud);
-				pud.startTimer( duration * Time.timeScale );
+		pud.startTimer( duration * Time.timeScale );
 		float elapsed = 0;
 		
 		do
