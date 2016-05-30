@@ -18,6 +18,11 @@ public class GoblinController : BaseClass {
 	[Tooltip("There is 30% chance that each of the following cloth item will be hidden. This is so not all goblins look alike.")]
 	public GameObject clothItem1;
 	public GameObject clothItem2;
+	[Header("Barrel")]
+	[Tooltip("The breakable barrel that the goblin will push on top of the player.")]
+	public Rigidbody barrel;
+	[Tooltip("Whether or not the goblin should play a diabolical laughter before pushing the barrel.")]
+	public bool playGoblinTaunt = false;
 
 	public enum GoblinState {
 		Idle = 1,
@@ -32,6 +37,7 @@ public class GoblinController : BaseClass {
 		short_range_Spear_2 = 2,
 		long_range_Spear = 3,
 		Crossbow = 4,
+		Throw_Barrel = 5
 	}
 	
 	const float BOLT_FORCE = 400f;
@@ -153,7 +159,15 @@ public class GoblinController : BaseClass {
 					if( distance < attackDistance )
 					{
 						setGoblinState( GoblinState.Attacking );
-						InvokeRepeating("fireCrossbow", 0.1f, 2.5f );
+						fireCrossbow();
+					}
+					break;
+				case AttackType.Throw_Barrel:
+					attackDistance = 1.5f * PlayerController.getPlayerSpeed();
+					if( distance < attackDistance )
+					{
+						setGoblinState( GoblinState.Attacking );
+						throwBarrel();
 					}
 					break;
 			}
@@ -180,7 +194,7 @@ public class GoblinController : BaseClass {
 
 	IEnumerator fireCrossbowNow()
 	{
-		yield return new WaitForSeconds( Random.value * 0.5f );
+		yield return new WaitForSeconds( Random.value * 1f );
 		GameObject bolt = (GameObject)Instantiate(boltPrefab);
 		transform.LookAt( player );
 		bolt.transform.rotation = Quaternion.Euler( transform.eulerAngles.x, transform.eulerAngles.y, 0 );
@@ -216,6 +230,16 @@ public class GoblinController : BaseClass {
 		return adjustedBoltForce;
 	}
 
+	void throwBarrel()
+	{
+		Debug.Log("throwBarrel");
+		if( playGoblinTaunt ) GetComponent<AudioSource>().PlayOneShot( win );
+		barrel.AddForce( new Vector3( 1300f, 400f, 0 )  );
+		barrel.AddTorque( new Vector3( 0, 300f, 0 ) );
+		GetComponent<Animator>().Play("attack2");
+	}
+
+
 	public GoblinState getGoblinState()
 	{
 		return goblinState;
@@ -224,12 +248,7 @@ public class GoblinController : BaseClass {
 	public void setGoblinState( GoblinState state )
 	{
 		goblinState = state;
-		if( goblinState == GoblinState.Dying )
-		{
-			//In case we are shooting bolts, stop
-			CancelInvoke();
-		}
-		else if( goblinState == GoblinState.Victory )
+		if( goblinState == GoblinState.Victory )
 		{
 			StartCoroutine( playVictoryAnimation() );
 		}
@@ -297,8 +316,6 @@ public class GoblinController : BaseClass {
 		if( newState == CharacterState.Dying )
 		{
 			Debug.Log("Goblin PlayerStateChange - player is dead");
-			//In case we are shooting bolts, stop
-			CancelInvoke();
 		}
 	}
 

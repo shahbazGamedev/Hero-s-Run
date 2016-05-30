@@ -2010,6 +2010,19 @@ public class PlayerController : BaseClass {
 					}
 				}
 			}
+			else if (hit.collider.name.StartsWith( "Thrown Barrel" ) )
+			{
+				//Is the player protected by a Shield Power Up?
+				if( PowerUpManager.isThisPowerUpActive( PowerUpType.Shield ) )
+				{
+					//This Power Up only works one time, so deactivate it
+					powerUpManager.deactivatePowerUp( PowerUpType.Shield, false );
+				}
+				else
+				{
+					managePlayerDeath ( DeathType.Obstacle );
+				}
+			}
 			else if (hit.collider.name.StartsWith( "Breakable Pumpkin" ) )
 			{
 				BreakableObject bo = (BreakableObject) hit.collider.GetComponent("BreakableObject");
