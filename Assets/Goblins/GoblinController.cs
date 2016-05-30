@@ -232,9 +232,10 @@ public class GoblinController : BaseClass {
 
 	void throwBarrel()
 	{
-		Debug.Log("throwBarrel");
 		if( playGoblinTaunt ) GetComponent<AudioSource>().PlayOneShot( win );
-		barrel.AddForce( new Vector3( 1300f, 400f, 0 )  );
+		//Push barrels in the direction of the goblin and add a small upward force
+		Vector3 forces = transform.forward * 1300f + new Vector3( 0, 400f, 0 );
+		barrel.AddForce( forces );
 		barrel.AddTorque( new Vector3( 0, 300f, 0 ) );
 		GetComponent<Animator>().Play("attack2");
 	}
