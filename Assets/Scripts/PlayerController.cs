@@ -15,7 +15,8 @@ public enum DeathType {
 		Fireball = 9,
 		Zombie = 10,
 		VortexTrap = 11,
-		MagicGate = 12
+		MagicGate = 12,
+		SpecialFall = 13
 }
 
 public enum CharacterState {
@@ -2632,6 +2633,15 @@ public class PlayerController : BaseClass {
 					anim.SetTrigger(FallTrigger);
 					LeanTween.moveLocalY( gameObject, transform.position.y - TrapVortex.distanceTravelledDown, TrapVortex.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutExpo).setDelay(TrapVortex.delayBeforeBeingPulledDown);
 					StartCoroutine( waitBeforeDisplayingSaveMeScreen(5f) );
+					break;
+
+		        case DeathType.SpecialFall:
+					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
+					sc.lockCamera ( true );
+					anim.speed = 3.8f;
+					anim.SetTrigger(FallTrigger);
+					LeanTween.moveLocalY( gameObject, transform.position.y - TrapVortex.distanceTravelledDown, TrapVortex.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutExpo).setDelay(0);
+					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2.5f) );
 					break;
 
 		        case DeathType.MagicGate:
