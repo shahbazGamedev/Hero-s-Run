@@ -40,7 +40,7 @@ public class GoblinController : BaseClass {
 		Throw_Barrel = 5
 	}
 	
-	const float BOLT_FORCE = 400f;
+	const float BOLT_FORCE = 600f;
 
 	//Only use for the scout goblin with the crossbow
 	GameObject boltPrefab;
@@ -163,7 +163,7 @@ public class GoblinController : BaseClass {
 					}
 					break;
 				case AttackType.Throw_Barrel:
-					attackDistance = 1.5f * PlayerController.getPlayerSpeed();
+					attackDistance = 1.45f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance )
 					{
 						setGoblinState( GoblinState.Attacking );
@@ -205,8 +205,8 @@ public class GoblinController : BaseClass {
 		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
 		bolt.GetComponent<Rigidbody>().AddForce(bolt.transform.forward * getAdjustedBoltForce() );
-		//destroy the bolt after 10 seconds
-		GameObject.Destroy( bolt, 10f );
+		//destroy the bolt after 8 seconds
+		GameObject.Destroy( bolt, 8f );
 	}
 
 	public float getAdjustedBoltForce()
