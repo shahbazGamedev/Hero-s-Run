@@ -14,9 +14,8 @@ public enum DeathType {
 		Lava = 8,
 		Fireball = 9,
 		Zombie = 10,
-		Hellpit = 11,
-		VortexTrap = 12,
-		MagicGate = 13
+		VortexTrap = 11,
+		MagicGate = 12
 }
 
 public enum CharacterState {
@@ -224,8 +223,6 @@ public class PlayerController : BaseClass {
 	public GameObject sphere2;
 	//The current curve the player is on
 	Bezier currentBezierCurve;
-
-	GameObject hellPitRespawnLocation;
 
 	//Event management used to notify other classes when the character state has changed
 	public delegate void PlayerState( CharacterState value );
@@ -2186,13 +2183,6 @@ public class PlayerController : BaseClass {
 			Destroy ( other.GetComponent ( "Rotator" ) );
 			StartCoroutine( moveCoin( other.transform ) );
 		}
-		else if( other.name == "Hellpit" )
-		{
-			Debug.Log ("Player fell into hellpit.");
-			sc.lockCamera( true );
-			hellPitRespawnLocation = other.transform.parent.Find("respawnLocation").gameObject;
-			managePlayerDeath( DeathType.Hellpit );
-		}
 		else if( other.name == "Lava" )
 		{
 			Debug.Log ("Player fell into lava.");
@@ -2937,41 +2927,33 @@ public class PlayerController : BaseClass {
 		}
 		else
 		{
-			if( deathType != DeathType.Hellpit )
+			if( getCurrentTileType() == TileType.T_Junction || getCurrentTileType() == TileType.T_Junction_Landmark_Cemetery )
 			{
-				if( getCurrentTileType() == TileType.T_Junction || getCurrentTileType() == TileType.T_Junction_Landmark_Cemetery )
+				//If the player's rotation is zero, this means he has not turned yet.
+				//If this is the case, we will assume he turned right.
+				float playerRotationY = Mathf.Floor ( transform.eulerAngles.y );
+				if( playerRotationY == 0 )
 				{
-					//If the player's rotation is zero, this means he has not turned yet.
-					//If this is the case, we will assume he turned right.
-					float playerRotationY = Mathf.Floor ( transform.eulerAngles.y );
-					if( playerRotationY == 0 )
-					{
-						respawnLocationObject = currentTile.transform.Find("respawnLocationRight").gameObject;
-						gl.playerTurnedAtTJunction( true, currentTile );
-						
-					}
-					else
-					{
-						//Player has already turned at the T-Junction
-						if( isGoingRight )
-						{
-							respawnLocationObject = currentTile.transform.Find("respawnLocationRight").gameObject;
-						}
-						else
-						{
-							respawnLocationObject = currentTile.transform.Find("respawnLocationLeft").gameObject;
-						}
-					}
+					respawnLocationObject = currentTile.transform.Find("respawnLocationRight").gameObject;
+					gl.playerTurnedAtTJunction( true, currentTile );
+					
 				}
 				else
 				{
-					respawnLocationObject = currentTile.transform.Find("respawnLocation").gameObject;
+					//Player has already turned at the T-Junction
+					if( isGoingRight )
+					{
+						respawnLocationObject = currentTile.transform.Find("respawnLocationRight").gameObject;
+					}
+					else
+					{
+						respawnLocationObject = currentTile.transform.Find("respawnLocationLeft").gameObject;
+					}
 				}
-				
 			}
 			else
 			{
-				respawnLocationObject = hellPitRespawnLocation;
+				respawnLocationObject = currentTile.transform.Find("respawnLocation").gameObject;
 			}
 		}
 

@@ -316,7 +316,13 @@ public class GoblinController : BaseClass {
 	{
 		if( newState == CharacterState.Dying )
 		{
-			Debug.Log("Goblin PlayerStateChange - player is dead");
+			float distance = Vector3.Distance(player.position,transform.position);
+			float nearby = 4f;
+			if( distance < nearby )
+			{
+				setGoblinState( GoblinState.Victory );
+				Debug.Log("Goblin PlayerStateChange - player is dead and nearby");
+			}
 		}
 	}
 
