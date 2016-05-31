@@ -80,6 +80,28 @@ public class GoblinManager : BaseClass {
 		{
 			allGoblinControllers[i].resetGoblin();
 		}
+		//And for good measure, any other that are too close but maybe not on the current tile
+		resetGoblins( 54f );
+
+	}
+
+	void resetGoblins( float resetDiameter )
+	{
+		int GoblinLayer = 11;
+		int GoblinMask = 1 << GoblinLayer;
+		//Use a sphere that starts resetDiameter/2 meters in front of the player
+		Vector3 relativePos = new Vector3(0f , 0f , resetDiameter/2f );
+		Vector3 exactPos = player.TransformPoint(relativePos);
+
+		Collider[] hitColliders = Physics.OverlapSphere(exactPos, resetDiameter, GoblinMask );
+		for( int i =0; i < hitColliders.Length; i++ )
+		{
+			GoblinController goblinController = hitColliders[i].GetComponent<GoblinController>();
+			if( goblinController.getGoblinState() != GoblinController.GoblinState.Dying )
+			{
+				goblinController.resetGoblin();
+			}
+		}
 	}
 
 }
