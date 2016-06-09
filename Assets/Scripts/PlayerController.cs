@@ -1134,11 +1134,15 @@ public class PlayerController : BaseClass {
 		}
 		else if ( Input.GetKeyDown (KeyCode.R ) )
 		{
-			Debug.LogWarning("Resetting tile with keyboard " + currentTile.name );
+			Debug.Log("Resetting tile with keyboard " + currentTile.name );
 			TileReset tr = currentTile.GetComponent<TileReset>();
 			tr.resetTile();
 		}
-
+		else if ( Input.GetKeyDown (KeyCode.Q ) )
+		{
+			Debug.Log("Activating shield powerup " );
+			powerUpManager.activatePowerUp(PowerUpType.Shield);
+		}
 	}
 
 	private void createBezier()
@@ -2078,19 +2082,7 @@ public class PlayerController : BaseClass {
 				//However, do not push him downwards as this may push the player through the floor in some rare cases (with the cart and coach notably).
 				controller.Move( new Vector3( hit.normal.x, 1f, hit.normal.z ) );
 				managePlayerDeath ( DeathType.Obstacle );
-			}
-
-			//If the player collided with an object (like a zombie) while doing a side move, the character controller
-			//may have shifted. Because of that, maybe the conditions to finalize the side move will never occur and we will be stuck 
-			//with a non-zero moveDirection.x component which will cause the player to always drift in one direction on mobile.
-			//So force reset in this case.
-			//if( _characterState == CharacterState.SideMove )
-			//{
-				//Debug.LogError ("Resetting lane info because of collision with " + hit.collider.name ); 
-				//resetLaneInfo();
-				//finalizeSideMove();
-			//}
-			
+			}			
 		}
 	}
 
@@ -2106,7 +2098,7 @@ public class PlayerController : BaseClass {
 				PlayerStatsManager.Instance.modifyCurrentCoins( GoblinManager.NUMBER_STARS_PER_GOBLIN, true, false );
 				
 				//Display coin total picked up icon
-				HUDHandler.displayCoinTotal( ZombieManager.NUMBER_STARS_PER_ZOMBIE, Color.yellow, false );
+				HUDHandler.displayCoinTotal( GoblinManager.NUMBER_STARS_PER_GOBLIN, Color.yellow, false );
 
 				goblinController.knockbackGoblin();
 				

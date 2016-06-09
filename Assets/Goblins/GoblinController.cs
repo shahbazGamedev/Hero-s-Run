@@ -56,6 +56,8 @@ public class GoblinController : BaseClass {
 	float runSpeed = 4.5f; //good value so feet don't slide
 	//If true, the goblin heads for the player as opposed to staying in his lane
 	bool followsPlayer = false;
+	bool allowMove = false;
+
 
 	void Awake ()
 	{
@@ -100,7 +102,7 @@ public class GoblinController : BaseClass {
 
 	void moveGoblin()
 	{
-		if( goblinState == GoblinState.Running )
+		if( goblinState == GoblinState.Running && allowMove )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -150,13 +152,15 @@ public class GoblinController : BaseClass {
 					{
 						followsPlayer = true;
 						setGoblinState( GoblinState.Running );
+						allowMove = true;
 						GetComponent<Animator>().Play("run");
 					}
 					break;
 			
 				case AttackType.Crossbow:
 					attackDistance = 2.5f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance )
+					//Only attack if the player is inside a 30 degree arc in front of goblin
+					if( distance < attackDistance && getDotProduct() > 0.85f )
 					{
 						setGoblinState( GoblinState.Attacking );
 						fireCrossbow();
@@ -179,7 +183,7 @@ public class GoblinController : BaseClass {
 		-1 if goblin is behind player
 		+1 if goblin is in front
 		0 if goblin is on the side
-		0.5 if goblin is facing player and within 30 degrees
+		0.5 if goblin is facing player and within 60 degrees (i.e. between 30 degrees to the left and 30 degrees to the right)
 	*/
 	float getDotProduct()
 	{
@@ -249,10 +253,6 @@ public class GoblinController : BaseClass {
 	public void setGoblinState( GoblinState state )
 	{
 		goblinState = state;
-		if( goblinState == GoblinState.Victory )
-		{
-			StartCoroutine( playVictoryAnimation() );
-		}
 	}
 
 	public void sideCollision()
@@ -263,13 +263,18 @@ public class GoblinController : BaseClass {
 
 	public void victory( bool playWinSound )
 	{
-		if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
-		setGoblinState( GoblinState.Victory );
+		if( goblinState != GoblinState.Dying )
+		{
+			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
+			setGoblinState( GoblinState.Victory );
+			StartCoroutine( playVictoryAnimation() );
+		}
 	}
 
 	IEnumerator playVictoryAnimation()
 	{
-		yield return new WaitForSeconds( Random.value * 0.3f );
+		GetComponent<Animator>().Play("idle");
+		yield return new WaitForSeconds( Random.value * 2f );
 		if( Random.value < 0.5f )
 		{
 			GetComponent<Animator>().Play("fun1");
@@ -285,7 +290,12 @@ public class GoblinController : BaseClass {
 	{
 		setGoblinState( GoblinState.Dying );
 		controller.enabled = false;
-		GetComponent<CapsuleCollider>().enabled = false;
+		//The piker has two capsule colliders. The scout, only one.
+		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
+		for( int i = 0; i < capsuleColliders.Length; i++ )
+		{
+			capsuleColliders[i].enabled = false;
+		}
 		GetComponent<Animator>().Play("death");
 		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 	}
@@ -294,9 +304,10 @@ public class GoblinController : BaseClass {
 	{
 		if( PlayerController._characterState == CharacterState.Dying )
 		{
-			if( hit.collider.name.StartsWith("Goblin") || hit.collider.name.StartsWith("Hero"))
+			//The Pendulum (bad name, yes I know) is the spike road block
+			if( hit.collider.name.StartsWith("Goblin") || hit.collider.name.StartsWith("Hero") || hit.collider.name.StartsWith("Pendulum") )
 			{
-				//If a goblin collides with another goblin or the Hero while the player is dead, have him stop moving and play the victory sequence.
+				//If a goblin collides with another goblin, the road block or the Hero while the player is dead, have him stop moving and play the victory sequence.
 				victory( false );
 			}
 		}
@@ -305,11 +316,13 @@ public class GoblinController : BaseClass {
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
+		GameManager.gameStateEvent += GameStateChange;
 	}
 	
 	void OnDisable()
 	{
 		PlayerController.playerStateChanged -= PlayerStateChange;
+		GameManager.gameStateEvent -= GameStateChange;
 	}
 
 	void PlayerStateChange( CharacterState newState )
@@ -320,11 +333,27 @@ public class GoblinController : BaseClass {
 			float nearby = 4f;
 			if( distance < nearby )
 			{
-				setGoblinState( GoblinState.Victory );
+				victory( false );
 				Debug.Log("Goblin PlayerStateChange - player is dead and nearby");
 			}
 		}
 	}
+
+	void GameStateChange( GameState newState )
+	{
+		if( newState == GameState.Paused )
+		{
+			allowMove = false;
+			controller.enabled = false;
+			
+		}
+		else if( newState == GameState.Normal )
+		{
+			allowMove = true;
+			controller.enabled = true;
+		}
+	}
+
 
 	public void resetGoblin()
 	{
@@ -333,8 +362,12 @@ public class GoblinController : BaseClass {
 		gameObject.SetActive( false );
 		followsPlayer = false;
 		controller.enabled = true;
-		GetComponent<CapsuleCollider>().enabled = true;
-
+		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
+		for( int i = 0; i < capsuleColliders.Length; i++ )
+		{
+			capsuleColliders[i].enabled = true;
+		}
+		allowMove = false;
 	}
 
 	public void Footstep_left ( AnimationEvent eve )

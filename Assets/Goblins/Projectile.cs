@@ -6,11 +6,14 @@ public class Projectile : MonoBehaviour {
 	public Light fireLight;
 	public ParticleSystem fireParticleSystem;
 	PlayerController playerController;
+	PowerUpManager powerUpManager;
 
 	void Start()
 	{
 		GameObject player = GameObject.FindGameObjectWithTag("Player");
 		playerController = player.GetComponent<PlayerController>();
+		//For power ups
+		powerUpManager = GameObject.FindGameObjectWithTag("PowerUpManager").GetComponent<PowerUpManager>();
 	}
 
 	public void OnCollisionEnter(Collision collision)
@@ -25,7 +28,16 @@ public class Projectile : MonoBehaviour {
 		if( fireParticleSystem != null ) fireParticleSystem.gameObject.SetActive(false);
 		if( collision.gameObject.name == "Hero" )
 		{
-			playerController.managePlayerDeath(DeathType.Obstacle);
+			//Is the player protected by a Shield Power Up?
+			if( PowerUpManager.isThisPowerUpActive( PowerUpType.Shield ) )
+			{
+				//This Power Up only works one time, so deactivate it
+				powerUpManager.deactivatePowerUp( PowerUpType.Shield, false );
+			}
+			else
+			{
+				playerController.managePlayerDeath ( DeathType.Obstacle );
+			}
 		}
   	}
 }
