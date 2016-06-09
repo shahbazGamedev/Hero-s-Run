@@ -42,6 +42,18 @@ public class GalleryManager : MonoBehaviour {
 	public GameObject zombie3DGroup;
 	public AudioClip zombieAmbience;
 
+	[Header("Goblin Piker")]
+	string goblinPikerNameTextId = "GALLERY_NAME_GOBLIN_PIKER";
+	string goblinPikerBioTextId  = "GALLERY_BIO_GOBLIN_PIKER";
+	public GameObject goblinPiker3DGroup;
+	public AudioClip goblinPikerAmbience;
+
+	[Header("Goblin Scout")]
+	string goblinScoutNameTextId = "GALLERY_NAME_GOBLIN_SCOUT";
+	string goblinScoutBioTextId  = "GALLERY_BIO_GOBLIN_SCOUT";
+	public GameObject goblinScout3DGroup;
+	public AudioClip goblinScoutAmbience;
+
 	[Header("Troll")]
 	string trollNameTextId = "GALLERY_NAME_TROLL";
 	string trollBioTextId  = "GALLERY_BIO_TROLL";
@@ -54,6 +66,9 @@ public class GalleryManager : MonoBehaviour {
 	float lastScrollBarPosition = 0f; //Used to filter scroll bar events
 	public Scrollbar scrollbarIndicator;
 	public Scrollbar scrollbarBio;
+	const int INDEX_OF_LAST_CHARACTER = 6;
+	int indexOfDisplayedCharacter = 0; //0 is the fairy
+	int previousIndexOfDisplayedCharacter = 0; //0 is the fairy
 
 	//Variables for swipe
 	bool touchStarted = false;
@@ -67,6 +82,16 @@ public class GalleryManager : MonoBehaviour {
 	public AudioSource trackTwo;
 	bool isTrackOneMain = true;
 	const float FADE_DURATION = 3f; //in seconds
+
+	enum Characters {
+			Fairy = 0,
+			Dark_Queen = 1,
+			Hero = 2,
+			Zombie = 3,
+			Goblin_Piker = 4,
+			Goblin_Scout = 5,
+			Troll = 6
+	}
 
 	void Awake ()
 	{
@@ -233,147 +258,166 @@ public class GalleryManager : MonoBehaviour {
 
 	void sideSwipe( bool isGoingRight )
 	{
-		float newPos;
 		if( isGoingRight )
 		{
-			newPos = lastScrollBarPosition + 0.25f;
-			if( newPos > 1f ) newPos = 0;
+			indexOfDisplayedCharacter++;
+			if( indexOfDisplayedCharacter > INDEX_OF_LAST_CHARACTER ) indexOfDisplayedCharacter = 0;
 		}
 		else
 		{
-			newPos = lastScrollBarPosition - 0.25f;
-			if( newPos < 0 ) newPos = 1f;
+			indexOfDisplayedCharacter--;
+			if( indexOfDisplayedCharacter < 0 ) indexOfDisplayedCharacter = INDEX_OF_LAST_CHARACTER;
 		}
-		OnValueChanged( newPos );
+		OnValueChanged( indexOfDisplayedCharacter );
 
 	}
 
-	public void OnValueChanged( float scrollBarPosition )
+	public void OnValueChanged( int newIndex )
 	{
-		if( scrollBarPosition == lastScrollBarPosition ) return; //Nothing has changed. Ignore.
-		lastScrollBarPosition = scrollBarPosition;
+		if( newIndex == previousIndexOfDisplayedCharacter ) return; //Nothing has changed. Ignore.
+		previousIndexOfDisplayedCharacter = newIndex;
 
 		//Update the scrollbar indicator which is not interactable
-		scrollbarIndicator.value = scrollBarPosition;
-
-		print ("Gallery Manager " + scrollBarPosition );
+		scrollbarIndicator.value = (float)newIndex/INDEX_OF_LAST_CHARACTER;
 
 		//Reset the scroll rectangle with the character bio text to the top
 		characterBioScrollRect.verticalNormalizedPosition = 1f;
 
-		string characterTextString;
+		string characterTextString = "";
 
-		//Fairy
-		if( scrollBarPosition == 0 )
+		switch (newIndex)
 		{
-			//Character Name
-			characterName.text = LocalizationManager.Instance.getText(fairyNameTextId);
-			
-			//Character Bio
-			characterTextString = LocalizationManager.Instance.getText(fairyBioTextId);
-
-			//3D
-			fairy3DGroup.SetActive( true );
-			darkQueen3DGroup.SetActive( false );
-			troll3DGroup.SetActive( false );
-			hero3DGroup.SetActive( false );
-			heroine3DGroup.SetActive( false );
-			zombie3DGroup.SetActive( false );
-			fadeAmbience( fairyAmbience );
-
-		}
-		//Dark Queen
-		else if(  scrollBarPosition == 0.25f )
-		{
-			//Character Name
-			characterName.text = LocalizationManager.Instance.getText(darkQueenNameTextId);
-			
-			//Character Bio
-			characterTextString = LocalizationManager.Instance.getText(darkQueenBioTextId);
-
-			//3D
-			fairy3DGroup.SetActive( false );
-			darkQueen3DGroup.SetActive( true );
-			troll3DGroup.SetActive( false );
-			hero3DGroup.SetActive( false );
-			heroine3DGroup.SetActive( false );
-			zombie3DGroup.SetActive( false );
-			fadeAmbience( darkQueenAmbience );
-
-		}
-		//Hero or Heroine
-		else if(  scrollBarPosition == 0.5f )
-		{
-
-			if( PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
-			{
+			case (int)Characters.Fairy:
 				//Character Name
-				characterName.text = LocalizationManager.Instance.getText(heroNameTextId);
-
+				characterName.text = LocalizationManager.Instance.getText(fairyNameTextId);
 				//Character Bio
-				characterTextString = LocalizationManager.Instance.getText(heroBioTextId);
-
+				characterTextString = LocalizationManager.Instance.getText(fairyBioTextId);
 				//3D
-				hero3DGroup.SetActive( true );
-				heroine3DGroup.SetActive( false );
-			}
-			else
-			{
-				//Character Name
-				characterName.text = LocalizationManager.Instance.getText(heroineNameTextId);
-
-				//Character Bio
-				characterTextString = LocalizationManager.Instance.getText(heroineBioTextId);
-
-				//3D
+				fairy3DGroup.SetActive( true );
+				darkQueen3DGroup.SetActive( false );
+				troll3DGroup.SetActive( false );
 				hero3DGroup.SetActive( false );
-				heroine3DGroup.SetActive( true );
-			}
-			//3D
-			fairy3DGroup.SetActive( false );
-			darkQueen3DGroup.SetActive( false );
-			troll3DGroup.SetActive( false );
-			zombie3DGroup.SetActive( false );
-			fadeAmbience( heroAmbience );
+				heroine3DGroup.SetActive( false );
+				zombie3DGroup.SetActive( false );
+				goblinPiker3DGroup.SetActive( false );
+				goblinScout3DGroup.SetActive( false );
+				fadeAmbience( fairyAmbience );
+			break;
 
-		}
-		//Zombie
-		else if(  scrollBarPosition == 0.75f )
-		{
-			//Character Name
-			characterName.text = LocalizationManager.Instance.getText(zombieNameTextId);
-
-			//Character Bio
-			characterTextString = LocalizationManager.Instance.getText(zombieBioTextId);
-
-			//3D
-			fairy3DGroup.SetActive( false );
-			darkQueen3DGroup.SetActive( false );
-			troll3DGroup.SetActive( false );
-			hero3DGroup.SetActive( false );
-			heroine3DGroup.SetActive( false );
-			zombie3DGroup.SetActive( true );
-			fadeAmbience( zombieAmbience );
-
-		}
-		//Troll
-		else
-		{
-			//Character Name
-			characterName.text = LocalizationManager.Instance.getText(trollNameTextId);
-			
-			//Character Bio
-			characterTextString = LocalizationManager.Instance.getText(trollBioTextId);
-
-			//3D
-			fairy3DGroup.SetActive( false );
-			darkQueen3DGroup.SetActive( false );
-			troll3DGroup.SetActive( true );
-			hero3DGroup.SetActive( false );
-			heroine3DGroup.SetActive( false );
-			zombie3DGroup.SetActive( false );
-			fadeAmbience( trollAmbience );
-
+			case (int)Characters.Dark_Queen:
+				//Character Name
+				characterName.text = LocalizationManager.Instance.getText(darkQueenNameTextId);
+				//Character Bio
+				characterTextString = LocalizationManager.Instance.getText(darkQueenBioTextId);
+				//3D
+				fairy3DGroup.SetActive( false );
+				darkQueen3DGroup.SetActive( true );
+				troll3DGroup.SetActive( false );
+				hero3DGroup.SetActive( false );
+				heroine3DGroup.SetActive( false );
+				zombie3DGroup.SetActive( false );
+				goblinPiker3DGroup.SetActive( false );
+				goblinScout3DGroup.SetActive( false );
+				fadeAmbience( darkQueenAmbience );
+			break;
+			case (int)Characters.Hero:
+				if( PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
+				{
+					//Character Name
+					characterName.text = LocalizationManager.Instance.getText(heroNameTextId);
+	
+					//Character Bio
+					characterTextString = LocalizationManager.Instance.getText(heroBioTextId);
+	
+					//3D
+					hero3DGroup.SetActive( true );
+					heroine3DGroup.SetActive( false );
+				}
+				else
+				{
+					//Character Name
+					characterName.text = LocalizationManager.Instance.getText(heroineNameTextId);
+	
+					//Character Bio
+					characterTextString = LocalizationManager.Instance.getText(heroineBioTextId);
+	
+					//3D
+					hero3DGroup.SetActive( false );
+					heroine3DGroup.SetActive( true );
+				}
+				//3D
+				fairy3DGroup.SetActive( false );
+				darkQueen3DGroup.SetActive( false );
+				troll3DGroup.SetActive( false );
+				zombie3DGroup.SetActive( false );
+				goblinPiker3DGroup.SetActive( false );
+				goblinScout3DGroup.SetActive( false );
+				fadeAmbience( heroAmbience );
+			break;
+			case (int)Characters.Zombie:
+				//Character Name
+				characterName.text = LocalizationManager.Instance.getText(zombieNameTextId);
+				//Character Bio
+				characterTextString = LocalizationManager.Instance.getText(zombieBioTextId);
+				//3D
+				fairy3DGroup.SetActive( false );
+				darkQueen3DGroup.SetActive( false );
+				troll3DGroup.SetActive( false );
+				hero3DGroup.SetActive( false );
+				heroine3DGroup.SetActive( false );
+				zombie3DGroup.SetActive( true );
+				goblinPiker3DGroup.SetActive( false );
+				goblinScout3DGroup.SetActive( false );
+				fadeAmbience( zombieAmbience );
+			break;
+			case (int)Characters.Goblin_Piker:
+				//Character Name
+				characterName.text = LocalizationManager.Instance.getText(goblinPikerNameTextId);
+				//Character Bio
+				characterTextString = LocalizationManager.Instance.getText(goblinPikerBioTextId);
+				//3D
+				fairy3DGroup.SetActive( false );
+				darkQueen3DGroup.SetActive( false );
+				troll3DGroup.SetActive( false );
+				hero3DGroup.SetActive( false );
+				heroine3DGroup.SetActive( false );
+				zombie3DGroup.SetActive( false );
+				goblinPiker3DGroup.SetActive( true );
+				goblinScout3DGroup.SetActive( false );
+				fadeAmbience( goblinPikerAmbience );
+			break;
+			case (int)Characters.Goblin_Scout:
+				//Character Name
+				characterName.text = LocalizationManager.Instance.getText(goblinScoutNameTextId);
+				//Character Bio
+				characterTextString = LocalizationManager.Instance.getText(goblinScoutBioTextId);
+				//3D
+				fairy3DGroup.SetActive( false );
+				darkQueen3DGroup.SetActive( false );
+				troll3DGroup.SetActive( false );
+				hero3DGroup.SetActive( false );
+				heroine3DGroup.SetActive( false );
+				zombie3DGroup.SetActive( false );
+				goblinPiker3DGroup.SetActive( false );
+				goblinScout3DGroup.SetActive( true );
+				fadeAmbience( goblinScoutAmbience );
+			break;
+			case (int)Characters.Troll:
+				//Character Name
+				characterName.text = LocalizationManager.Instance.getText(trollNameTextId);
+				//Character Bio
+				characterTextString = LocalizationManager.Instance.getText(trollBioTextId);
+				//3D
+				fairy3DGroup.SetActive( false );
+				darkQueen3DGroup.SetActive( false );
+				troll3DGroup.SetActive( true );
+				hero3DGroup.SetActive( false );
+				heroine3DGroup.SetActive( false );
+				zombie3DGroup.SetActive( false );
+				goblinPiker3DGroup.SetActive( false );
+				goblinScout3DGroup.SetActive( false );
+				fadeAmbience( trollAmbience );
+			break;
 		}
 
 		characterTextString = characterTextString.Replace("\\n", System.Environment.NewLine );
