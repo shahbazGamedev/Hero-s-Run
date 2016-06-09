@@ -67,7 +67,8 @@ public enum TileType {
 	Landmark_Graveyard_7 = 53,
 	Landmark_Bog_Start = 54, 
 	Landmark_Bog_Valley = 55,
-	Landmark_Test = 56 //Used only for testing - is straight and has a length of 2
+	Landmark_Test = 56, //Used only for testing - is straight and has a length of 2
+	Landmark_Treasure_Key = 57
 
 }
 
@@ -505,6 +506,7 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Landmark_Tomb_End:
 			case TileType.Start_Fairyland:
 			case TileType.Landmark_Bog_Start:
+			case TileType.Landmark_Treasure_Key:
 				depth = 3;
 				break;
 
@@ -935,6 +937,7 @@ public class GenerateLevel  : MonoBehaviour {
 		case TileType.Landmark_Test:
 		case TileType.Landmark_Bog_Valley:
 		case TileType.Landmark_Bog_Start:
+		case TileType.Landmark_Treasure_Key:
 
 			return TileType.Straight;
 
