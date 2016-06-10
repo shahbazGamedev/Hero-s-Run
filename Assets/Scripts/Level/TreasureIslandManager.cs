@@ -159,6 +159,11 @@ public class TreasureIslandManager : MonoBehaviour {
 	void hideMessage()
 	{
 		chestContentPanel.SetActive( false );
+		if( lastOpenChest != null )
+		{
+			lastOpenChest.Close();
+			lastOpenChest.Lock();
+		}
 	}
 
 	void showTapToOpenChestMessage()
@@ -192,29 +197,19 @@ public class TreasureIslandManager : MonoBehaviour {
 
 	public void openChest( FCMain chest )
 	{
+		//If we are currently displaying a message, ignore
+		if( chestContentPanel.activeSelf ) return;
+
+		chest.Lock();
 		CancelInvoke();
 		AchievementDisplay.enableShowDisplay( false );
 		//Ignore if chest is already open
 		if( chest.IsOpened()  ) return;
 
-		//If the chest is locked (which means it was previously opened),
-		//call open, but because it is locked, it will play the locked sound and a small animation without opening
-		if( chest.IsLocked() )
-		{
-			chest.Open();
-			return;
-		}
-
 		//Only continue if the player has a key or else, display a message on how he can get a key
 		if( PlayerStatsManager.Instance.getTreasureKeysOwned() > 0 || PlayerStatsManager.Instance.getHasInfiniteTreasureIslandKeys() )
 		{
-			//If a chest was previously opened, close it and lock it before opening the new one
-			if( lastOpenChest != null )
-			{
-				lastOpenChest.Close();
-				lastOpenChest.Lock();
-			}
-
+			chest.Unlock();
 			if( forceChestGiftType ==ChestGiftType.None )
 			{
 				int rdChest = Random.Range( 1,chestDictionary.Count );
@@ -247,6 +242,8 @@ public class TreasureIslandManager : MonoBehaviour {
 		}
 		else
 		{
+			//If the chest is locked, call open, but because it is locked, it will play the locked sound and a small animation without opening
+			chest.Open();
 			chestContentText.text = LocalizationManager.Instance.getText("TREASURE_CHEST_NEED_MORE_KEYS");
 			showMessage();
 		}
@@ -263,7 +260,7 @@ public class TreasureIslandManager : MonoBehaviour {
 			fcProp.m_Prefab = propStar;
 			//Position
 			fcProp.m_PosBegin = new Vector3( 0, 0.4f, 0 );
-			fcProp.m_PosEnd = new Vector3( 0, 0, 0 );
+			fcProp.m_PosEnd = new Vector3( 0, 0.6f, 0 );
 			fcProp.m_PosDelay = 0.25f;
 			fcProp.m_PosDuration = 1f;
 			//Rotation
@@ -426,7 +423,7 @@ public class TreasureIslandManager : MonoBehaviour {
 
 	void giftPlayerWithTreasure()
 	{
-		int quantityToGive = Random.Range( MagicalChestData.giftMinimum, MagicalChestData.giftMaximum + 1 );
+		int quantityToGive = Random.Range( MagicalChestData.giftMinimum, MagicalChestData.giftMaximum + 1 ) * MagicalChestData.quantityMultiplier;
 		string entryText = "NOT SET";
 		switch( MagicalChestData.chestGiftType )
 		{
@@ -530,6 +527,7 @@ public class TreasureIslandManager : MonoBehaviour {
 		public ChestGiftType chestGiftType = ChestGiftType.None;
 		public int giftMinimum = 1;
 		public int giftMaximum = 1;
+		public int quantityMultiplier = 1;
 		
 	}
 
