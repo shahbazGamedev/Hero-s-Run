@@ -23,7 +23,7 @@ public class FairylandBrokenBridgeSequence : MonoBehaviour {
 	float lane6StartLocalPos; 		//Rightmost lane
 
 	int rowIndex = 0;
-	const int NUMBER_OF_ROWS = 130; //134 is full length. We make the bridge shorter to force the player to jump.
+	const int NUMBER_OF_ROWS = 134; //134 is full length. We can make the bridge shorter to force the player to jump.
 	float localBridgeHeight = -0.75f;
 	public List<HexagonRowData> hexagonsActivePerRow = new List<HexagonRowData>(NUMBER_OF_ROWS);
 
@@ -81,7 +81,7 @@ public class FairylandBrokenBridgeSequence : MonoBehaviour {
 	{
 		//Rebuild bridge magically row by row
 		rebuildBridge();
-		Invoke ("step4", 4.5f );
+		Invoke ("step4", 4.6f );
 	}
 	
 	//Make the fairy disappear
@@ -157,22 +157,12 @@ public class FairylandBrokenBridgeSequence : MonoBehaviour {
 	
 	void OnEnable()
 	{
-		PlayerController.playerStateChanged += PlayerStateChange;
 		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
 	}
 	
 	void OnDisable()
 	{
-		PlayerController.playerStateChanged -= PlayerStateChange;
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
-	}
-	
-	void PlayerStateChange( CharacterState newState )
-	{
-		if( newState == CharacterState.Dying )
-		{
-			CancelInvoke();
-		}
 	}
 
 	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )

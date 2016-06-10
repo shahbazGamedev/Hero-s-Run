@@ -147,7 +147,7 @@ public class GoblinController : BaseClass {
 					break;
 		                
 				case AttackType.long_range_Spear:
-					attackDistance = 2.5f * PlayerController.getPlayerSpeed();
+					attackDistance = 2f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance )
 					{
 						followsPlayer = true;
@@ -346,6 +346,11 @@ public class GoblinController : BaseClass {
 			allowMove = false;
 			controller.enabled = false;
 			
+		}
+		else if( newState == GameState.Checkpoint )
+		{
+			allowMove = false;
+			controller.enabled = false;
 		}
 		else if( newState == GameState.Normal )
 		{
