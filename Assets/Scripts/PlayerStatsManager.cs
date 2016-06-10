@@ -38,6 +38,7 @@ public class PlayerStatsManager {
 
 	float distanceTravelled = 0;
 	bool firstTimePlaying;
+	bool sharedOnFacebook = false;	//Has the player shared an image on Facebook?
 
 	bool showDebugInfoOnHUD = false; //Should we show the FPS, player speed, etc. on the HUD or not.
 	int lives = 0;
@@ -567,6 +568,16 @@ public class PlayerStatsManager {
 		return firstTimePlaying;
 	}
 
+	public void setSharedOnFacebook( bool value )
+	{
+		sharedOnFacebook = value;
+	}
+
+	public bool getSharedOnFacebook()
+	{
+		return sharedOnFacebook;
+	}
+
 	public void setShowDebugInfoOnHUD( bool value )
 	{
 		showDebugInfoOnHUD = value;
@@ -803,6 +814,15 @@ public class PlayerStatsManager {
 			{
 				showDebugInfoOnHUD = false;	
 			}
+			string sharedOnFacebookString = PlayerPrefs.GetString("sharedOnFacebook", "false" );
+			if( sharedOnFacebookString == "true" )
+			{
+				sharedOnFacebook = true;
+			}
+			else
+			{
+				sharedOnFacebook = false;	
+			}
 			string ownsStarDoublerString = PlayerPrefs.GetString("ownsStarDoubler", "false" );
 			if( ownsStarDoublerString == "true" )
 			{
@@ -873,6 +893,14 @@ public class PlayerStatsManager {
 		{
 			PlayerPrefs.SetString( "showDebugInfoOnHUD", "false" );
 		}
+		if( sharedOnFacebook )
+		{
+			PlayerPrefs.SetString( "sharedOnFacebook", "true" );
+		}
+		else
+		{
+			PlayerPrefs.SetString( "sharedOnFacebook", "false" );
+		}
 		if( ownsStarDoubler )
 		{
 			PlayerPrefs.SetString( "ownsStarDoubler", "true" );
@@ -921,6 +949,8 @@ public class PlayerStatsManager {
 		firstTimePlaying = true;
 		PlayerPrefs.SetString( "showDebugInfoOnHUD", "false" );
 		setShowDebugInfoOnHUD( false );
+		PlayerPrefs.SetString( "sharedOnFacebook", "false" );
+		setSharedOnFacebook( false );
 		PlayerPrefs.SetString( "ownsStarDoubler", "false" );
 		setOwnsStarDoubler( false );
 		PlayerPrefs.SetString( "usesFacebook", "false" );

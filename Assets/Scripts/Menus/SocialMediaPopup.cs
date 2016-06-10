@@ -11,6 +11,7 @@ public class SocialMediaPopup : MonoBehaviour {
 	public Text messageText;
 	public Button shareButton;
 	public Text shareButtonText;
+	public int numberOfLivesAsReward = 3;
 	string facebookMessage;
 
 	// Use this for initialization
@@ -35,8 +36,16 @@ public class SocialMediaPopup : MonoBehaviour {
 	{
 		Debug.Log("loadSocialMediaData " );
 		shareButton.interactable = true;
-		messageText.text = LocalizationManager.Instance.getText("SOCIAL_MEDIA_MESSAGE");
 		if( GameManager.Instance.selfie != null ) picturePreview.sprite = GameManager.Instance.selfie;
+		if( PlayerStatsManager.Instance.getSharedOnFacebook() )
+		{
+			messageText.text = LocalizationManager.Instance.getText("SOCIAL_MEDIA_MESSAGE");
+		}
+		else
+		{
+			messageText.text = LocalizationManager.Instance.getText("SOCIAL_MEDIA_MESSAGE_NOT_POSTED_YET");
+			messageText.text = messageText.text.Replace("<quantity>", numberOfLivesAsReward.ToString() );
+		}
 	}
 
 	public void closeSocialMediaPopup()
@@ -67,7 +76,7 @@ public class SocialMediaPopup : MonoBehaviour {
 		WWWForm wwwForm = new WWWForm();
         wwwForm.AddBinaryData("image", GameManager.Instance.selfieBytes, "Hello!");
         wwwForm.AddField("message", facebookMessage );
-		//FB.API("me/photos", HttpMethod.POST, TakeScreenshotCallback, wwwForm);
+		FB.API("me/photos", HttpMethod.POST, TakeScreenshotCallback, wwwForm);
 		freeUpPictureMemory();
 	}
 
@@ -81,7 +90,19 @@ public class SocialMediaPopup : MonoBehaviour {
 		else
 		{
 			Debug.Log("TakeScreenshot-TakeScreenshotCallback: success: " + result.RawResult );
-			messageText.text = LocalizationManager.Instance.getText("SOCIAL_MEDIA_POSTED_SUCCESSFULLY");
+			//Give a reward to the player the first time he posts an image on Facebook
+			if( PlayerStatsManager.Instance.getSharedOnFacebook() )
+			{
+				messageText.text = LocalizationManager.Instance.getText("SOCIAL_MEDIA_POSTED_SUCCESSFULLY");
+			}
+			else
+			{
+				PlayerStatsManager.Instance.setSharedOnFacebook( true );
+				PlayerStatsManager.Instance.increaseLives( numberOfLivesAsReward );
+				PlayerStatsManager.Instance.savePlayerStats();
+				messageText.text = LocalizationManager.Instance.getText("SOCIAL_MEDIA_POSTED_FIRST_TIME");
+				messageText.text = messageText.text.Replace("<quantity>", numberOfLivesAsReward.ToString() );
+			}
 		}
 	}
 
