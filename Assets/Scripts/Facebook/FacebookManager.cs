@@ -143,6 +143,7 @@ public class FacebookManager
 		Debug.Log ("FacebookManager-LoginForPublishCallback: " + result.RawResult);
 	}
 
+	//You ALSO need to logout from Facebook on the browser on your mobile if you want someone else to sign in.
     public void CallFBLogout()
     {
 		FB.LogOut();
