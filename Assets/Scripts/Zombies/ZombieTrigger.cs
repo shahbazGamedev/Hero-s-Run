@@ -10,7 +10,7 @@ public class ZombieTrigger : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 	
-		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("ZombieManager");
+		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("CreatureManager");
 		zombieManager = zombieManagerObject.GetComponent<ZombieManager>();
 	}
 	

@@ -29,11 +29,13 @@ public class PowerUpManager : BaseClass {
 	//I.e. Magnet and Shield can be active at the same time, but not two magnets.
 	static List<PowerUpType> activePowerUps = new List<PowerUpType>();
 
-	GameObject player;
+	Transform player;
 	PlayerController playerController;
 
 	//Power Up audio. They use 2D sound.
 	public AudioClip pickUpSound;
+
+	public ParticleSystem zNukeEffect;
 
 	//For debugging
 	//When forcePowerUpType is not set to NONE, only the power up type specified will be added to the level.
@@ -54,8 +56,8 @@ public class PowerUpManager : BaseClass {
 	void Awake()
 	{
 		fillDictionary();
-		player = GameObject.FindGameObjectWithTag("Player");	
-		playerController = (PlayerController) player.GetComponent("PlayerController");
+		player = GameObject.FindGameObjectWithTag("Player").transform;	
+		playerController = player.GetComponent<PlayerController>();
 		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
 	}
 	
@@ -159,7 +161,7 @@ public class PowerUpManager : BaseClass {
 		if( pud.pickupEffect != null )
 		{
 			//Make the player the parent of this particle system
-			pud.pickupEffect.transform.parent = player.transform;
+			pud.pickupEffect.transform.parent = player;
 			pud.pickupEffect.transform.localPosition = new Vector3( 0, 1f, 0 );
 			pud.pickupEffect.Play();
 		}
@@ -185,7 +187,7 @@ public class PowerUpManager : BaseClass {
 		if( pud.activationEffect != null )
 		{
 			//Make the player the parent of this particle system
-			pud.activationEffect.transform.parent = player.transform;
+			pud.activationEffect.transform.parent = player;
 			pud.activationEffect.transform.localPosition = new Vector3( 0, 1f, 0 );
 			pud.activationEffect.Play();
 		}
@@ -221,7 +223,7 @@ public class PowerUpManager : BaseClass {
 				case PowerUpType.Magnet:
 					GetComponent<AudioSource>().PlayOneShot( pickUpSound );
 					activePowerUps.Add( pud.powerUpType );
-					GameObject magnetSphere = player.transform.Find ("Magnet Sphere").gameObject;
+					GameObject magnetSphere = player.Find ("Magnet Sphere").gameObject;
 					CoinAttractor coinAttractor = (CoinAttractor) magnetSphere.GetComponent(typeof(CoinAttractor));
 					float radius =  (magnetSphere.GetComponent<Collider>() as SphereCollider).radius;
 					coinAttractor.attractCoinsWithinSphere( magnetSphere.transform.position, radius );
@@ -235,6 +237,15 @@ public class PowerUpManager : BaseClass {
 				{
 					Debug.Log("PowerUpZNuke - activatePowerUp");
 					PlayerStatsManager.Instance.decrementPowerUpInventory(pud.powerUpType);
+					//Play a particle effect and a sound
+					//Use a sphere that starts impactDiameter/2 meters in front of the player
+					Vector3 relativePos = new Vector3(0f , 0f , getImpactDiameter( pud )/2f );
+					Vector3 exactPos = player.TransformPoint(relativePos);
+			
+					zNukeEffect.transform.position = exactPos;
+					zNukeEffect.GetComponent<AudioSource>().Play ();
+					zNukeEffect.Play();
+
 					//Send an event to interested classes
 					if(zNukeExploded != null) zNukeExploded( getImpactDiameter( pud ) );
 				}

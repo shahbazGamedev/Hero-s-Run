@@ -2083,6 +2083,14 @@ public class PlayerController : BaseClass {
 				controller.Move( new Vector3( hit.normal.x, 1f, hit.normal.z ) );
 				managePlayerDeath ( DeathType.Obstacle );
 			}			
+			else if (hit.collider.name.StartsWith("Bip001 Prop1") )
+			{
+				Debug.Log( "Player collided with: " + hit.collider.name + " Normal" + hit.normal );
+				//Move the player back so he does not get stuck in the obstacle.
+				//However, do not push him downwards as this may push the player through the floor in some rare cases (with the cart and coach notably).
+				controller.Move( new Vector3( hit.normal.x, 1f, hit.normal.z ) );
+				managePlayerDeath ( DeathType.Obstacle );
+			}			
 		}
 	}
 

@@ -7,7 +7,6 @@ public class GoblinManager : BaseClass {
 
 	Transform player;
 	PlayerController playerController;
-	public ParticleSystem zNukeEffect;
 	public const int NUMBER_STARS_PER_GOBLIN = 20;
 
 	// Use this for initialization
@@ -24,10 +23,6 @@ public class GoblinManager : BaseClass {
 		//Use a sphere that starts impactDiameter/2 meters in front of the player
 		Vector3 relativePos = new Vector3(0f , 0f , impactDiameter/2f );
 		Vector3 exactPos = player.TransformPoint(relativePos);
-
-		zNukeEffect.transform.position = exactPos;
-		zNukeEffect.GetComponent<AudioSource>().Play ();
-		zNukeEffect.Play();
 
 		//Count the number of goblins that are knocked back so we can give the player stars.
 		//The more goblins he topples, the more stars he gets.

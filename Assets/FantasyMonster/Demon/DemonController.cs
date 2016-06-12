@@ -6,7 +6,7 @@ public class DemonController : BaseClass {
 
 	[Header("Demon Controller")]
 	[Header("General")]
-	public AttackType attackType = AttackType.short_range_Spear_1;
+	public AttackType attackType = AttackType.stand_and_normal_attack;
 	public bool applyGravity = true;
 	[Header("Audio")]
 	public AudioClip footstepLeftSound;
@@ -27,9 +27,9 @@ public class DemonController : BaseClass {
 	}
 
 	public enum AttackType {
-		short_range_Spear_1 = 1,
-		short_range_Spear_2 = 2,
-		long_range_Spear = 3,
+		stand_and_normal_attack = 1,
+		stand_and_big_attack = 2,
+		charge_and_attack = 3,
 	}
 	
 	PlayerController playerController;
@@ -39,7 +39,7 @@ public class DemonController : BaseClass {
 	DemonState demonState = DemonState.Idle;
 	CharacterController controller;
 	Vector3 forward;
-	float runSpeed = 4.5f; //good value so feet don't slide
+	float runSpeed = 4.6f; //good value so feet don't slide
 	//If true, the demon heads for the player as opposed to staying in his lane
 	bool followsPlayer = false;
 	bool allowMove = false;
@@ -86,8 +86,8 @@ public class DemonController : BaseClass {
 			float attackDistance;
 		    switch (attackType)
 			{
-		        case AttackType.short_range_Spear_1:
-					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
+		        case AttackType.stand_and_normal_attack:
+					attackDistance = 0.76f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setDemonState( DemonState.Attacking );
@@ -95,8 +95,8 @@ public class DemonController : BaseClass {
 					}
 					break;
 		                
-		        case AttackType.short_range_Spear_2:
-					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
+		        case AttackType.stand_and_big_attack:
+					attackDistance = 0.95f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setDemonState( DemonState.Attacking );
@@ -104,14 +104,25 @@ public class DemonController : BaseClass {
 					}
 					break;
 		                
-				case AttackType.long_range_Spear:
-					attackDistance = 2f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance )
+				case AttackType.charge_and_attack:
+					float chargeDistance = 2f * PlayerController.getPlayerSpeed();
+					float instantAttackDistance = 0.97f * PlayerController.getPlayerSpeed();
+					if( distance < chargeDistance )
 					{
-						followsPlayer = true;
-						setDemonState( DemonState.Running );
-						allowMove = true;
-						GetComponent<Animator>().Play("Run");
+						if( distance >= instantAttackDistance )
+						{
+							//Charge
+							followsPlayer = true;
+							setDemonState( DemonState.Running );
+							allowMove = true;
+							GetComponent<Animator>().Play("Run");
+						}
+						else
+						{
+							//Attack now
+							setDemonState( DemonState.Attacking );
+							GetComponent<Animator>().Play("Skill");
+						}
 					}
 					break;
 			}
@@ -153,7 +164,7 @@ public class DemonController : BaseClass {
 		{
 			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
 			setDemonState( DemonState.Victory );
-			GetComponent<Animator>().Play("idle");
+			GetComponent<Animator>().Play("Idle");
 		}
 	}
 
@@ -167,7 +178,7 @@ public class DemonController : BaseClass {
 		{
 			capsuleColliders[i].enabled = false;
 		}
-		GetComponent<Animator>().Play("Death");
+		GetComponent<Animator>().Play("Knockback");
 		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 	}
 	

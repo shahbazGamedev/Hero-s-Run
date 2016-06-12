@@ -426,7 +426,7 @@ public class GameEventManager : MonoBehaviour {
 		darkQueen = GameObject.FindGameObjectWithTag("DarkQueen").transform;
 		darkQueenController = darkQueen.GetComponent<DarkQueenController>();
 		
-		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("ZombieManager");
+		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("CreatureManager");
 		zombieManager = zombieManagerObject.GetComponent<ZombieManager>();
 	}
 	

@@ -9,7 +9,6 @@ public class ZombieManager : BaseClass {
 
 	Transform player;
 	PlayerController playerController;
-	public ParticleSystem zNukeEffect;
 	public static int numberOfZombieWavesTriggered = 0; //could eventually put that number in the player stats
 	public const int NUMBER_STARS_PER_ZOMBIE = 20;
 	public ParticleSystem debris; //Particle fx that plays when a zombie burrows up
@@ -48,10 +47,6 @@ public class ZombieManager : BaseClass {
 		//Use a sphere that starts impactDiameter/2 meters in front of the player
 		Vector3 relativePos = new Vector3(0f , 0f , impactDiameter/2f );
 		Vector3 exactPos = player.TransformPoint(relativePos);
-
-		zNukeEffect.transform.position = exactPos;
-		zNukeEffect.GetComponent<AudioSource>().Play ();
-		zNukeEffect.Play();
 
 		//Count the number of zombies that are knocked back so we can give the player stars.
 		//The more zombies he topples, the more stars he gets.
