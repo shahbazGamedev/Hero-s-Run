@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 3eb3ac9273c392248957a68045a97a81
 ModelImporter:
-  serializedVersion: 18
+  serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
     100002: CERBERUS_
@@ -101,7 +101,7 @@ ModelImporter:
     400092: CERBERUS_R_JAW
     400094: CERBERUS_R_NECK_1
     400096: CERBERUS_R_NECK_2
-    7400000: Take 001
+    7400000: idleAggresive
     9500000: //RootNode
     11100000: //RootNode
   materials:
@@ -111,23 +111,206 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    resampleRotations: 1
     optimizeGameObjects: 0
     motionNodeName: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    animationCompression: 0
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 2
     extraExposedTransformPaths: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: idleAggresive
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 60
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: CERBERUS_
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ L Thigh
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ L Thigh/CERBERUS_
+          L Calf
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ L Thigh/CERBERUS_
+          L Calf/CERBERUS_ L HorseLink
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ L Thigh/CERBERUS_
+          L Calf/CERBERUS_ L HorseLink/CERBERUS_ L Foot
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ L Thigh/CERBERUS_
+          L Calf/CERBERUS_ L HorseLink/CERBERUS_ L Foot/CERBERUS_ L Toe0
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ R Thigh
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ R Thigh/CERBERUS_
+          R Calf
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ R Thigh/CERBERUS_
+          R Calf/CERBERUS_ R HorseLink
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ R Thigh/CERBERUS_
+          R Calf/CERBERUS_ R HorseLink/CERBERUS_ R Foot
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ R Thigh/CERBERUS_
+          R Calf/CERBERUS_ R HorseLink/CERBERUS_ R Foot/CERBERUS_ R Toe0
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_ Neck
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_ Neck/CERBERUS_ L Clavicle
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_ Neck/CERBERUS_ L Clavicle/CERBERUS_ L
+          UpperArm
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_ Neck/CERBERUS_ L Clavicle/CERBERUS_ L
+          UpperArm/CERBERUS_ L Forearm
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_ Neck/CERBERUS_ L Clavicle/CERBERUS_ L
+          UpperArm/CERBERUS_ L Forearm/CERBERUS_ L Hand
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_ Neck/CERBERUS_ L Clavicle/CERBERUS_ L
+          UpperArm/CERBERUS_ L Forearm/CERBERUS_ L Hand/CERBERUS_ L Finger0
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_ Neck/CERBERUS_ L Clavicle/CERBERUS_ L
+          UpperArm/CERBERUS_ L Forearm/CERBERUS_ L Hand/CERBERUS_ L Finger0/CERBERUS_
+          L Finger01
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_ Neck/CERBERUS_ Neck1
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_ Neck/CERBERUS_ Neck1/CERBERUS_ Head
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_ Neck/CERBERUS_ Neck1/CERBERUS_ Head/CERBERUS_
+          Queue de cheval 1
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_ Neck/CERBERUS_ R Clavicle
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_ Neck/CERBERUS_ R Clavicle/CERBERUS_ R
+          UpperArm
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_ Neck/CERBERUS_ R Clavicle/CERBERUS_ R
+          UpperArm/CERBERUS_ R Forearm
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_ Neck/CERBERUS_ R Clavicle/CERBERUS_ R
+          UpperArm/CERBERUS_ R Forearm/CERBERUS_ R Hand
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_ Neck/CERBERUS_ R Clavicle/CERBERUS_ R
+          UpperArm/CERBERUS_ R Forearm/CERBERUS_ R Hand/CERBERUS_ R Finger0
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_ Neck/CERBERUS_ R Clavicle/CERBERUS_ R
+          UpperArm/CERBERUS_ R Forearm/CERBERUS_ R Hand/CERBERUS_ R Finger0/CERBERUS_
+          R Finger01
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_L_NECK_1
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_L_NECK_1/CERBERUS_L_NECK_2
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_L_NECK_1/CERBERUS_L_NECK_2/CERBERUS_L_HEAD
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_L_NECK_1/CERBERUS_L_NECK_2/CERBERUS_L_HEAD/CERBERUS_L_JAW
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_R_NECK_1
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_R_NECK_1/CERBERUS_R_NECK_2
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_R_NECK_1/CERBERUS_R_NECK_2/CERBERUS_R_HEAD
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Spine1/CERBERUS_
+          Spine2/CERBERUS_ Spine3/CERBERUS_R_NECK_1/CERBERUS_R_NECK_2/CERBERUS_R_HEAD/CERBERUS_R_JAW
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Tail
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Tail/CERBERUS_
+          Tail1
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Tail/CERBERUS_
+          Tail1/CERBERUS_ Tail2
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Tail/CERBERUS_
+          Tail1/CERBERUS_ Tail2/CERBERUS_ Tail3
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Tail/CERBERUS_
+          Tail1/CERBERUS_ Tail2/CERBERUS_ Tail3/CERBERUS_ Tail4
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Tail/CERBERUS_
+          Tail1/CERBERUS_ Tail2/CERBERUS_ Tail3/CERBERUS_ Tail4/CERBERUS_ Tail5
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Tail/CERBERUS_
+          Tail1/CERBERUS_ Tail2/CERBERUS_ Tail3/CERBERUS_ Tail4/CERBERUS_ Tail5/CERBERUS_
+          Tail6
+        weight: 1
+      - path: CERBERUS_/CERBERUS_ Pelvis/CERBERUS_ Spine/CERBERUS_ Tail/CERBERUS_
+          Tail1/CERBERUS_ Tail2/CERBERUS_ Tail3/CERBERUS_ Tail4/CERBERUS_ Tail5/CERBERUS_
+          Tail6/CERBERUS_ Tail7
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: .00999999978
+    globalScale: 0.01
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -144,24 +327,25 @@ ModelImporter:
     useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 4
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
     human: []
     skeleton: []
-    armTwist: .5
-    foreArmTwist: .5
-    upperLegTwist: .5
-    legTwist: .5
-    armStretch: .0500000007
-    legStretch: .0500000007
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 1
+  animationType: 2
+  humanoidOversampling: 1
   additionalBone: 1
   userData: 
   assetBundleName: 
