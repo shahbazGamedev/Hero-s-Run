@@ -6,7 +6,7 @@ public class CerberusController : BaseClass {
 
 	[Header("Cerberus Controller")]
 	[Header("General")]
-	public AttackType attackType = AttackType.fire_attack;
+	public AttackType attackType = AttackType.stand_and_breathe_fire;
 	public bool applyGravity = true;
 	[Header("Audio")]
 	public AudioClip footstepLeftSound;
@@ -14,16 +14,8 @@ public class CerberusController : BaseClass {
 	public AudioClip ouch;
 	public AudioClip fallToGround;
 	public AudioClip win;
-	[Header("Clothing")]
-	[Tooltip("There is 30% chance that each of the following cloth item will be hidden. This is so not all cerberuss look alike.")]
-	public GameObject clothItem1;
-	public GameObject clothItem2;
-	[Header("Barrel")]
-	[Tooltip("The breakable barrel that the cerberus will push on top of the player.")]
-	public Rigidbody barrel;
-	[Tooltip("Whether or not the cerberus should play a diabolical laughter before pushing the barrel.")]
-	public bool playCerberusTaunt = false;
 
+	[Header("Fire Breathing Attack")]
 	public GameObject leftHeadFireObject;
 	public GameObject centerHeadFireObject;
 	public GameObject rightHeadFireObject;
@@ -41,18 +33,10 @@ public class CerberusController : BaseClass {
 	}
 
 	public enum AttackType {
-		fire_attack = 1,
-		short_range_Spear_2 = 2,
-		long_range_Spear = 3,
-		Crossbow = 4,
-		Throw_Barrel = 5
+		stand_and_breathe_fire = 1,
+		jump_and_attack  = 2,
+		run_and_attack = 3
 	}
-	
-	const float BOLT_FORCE = 600f;
-
-	//Only use for the scout cerberus with the crossbow
-	GameObject boltPrefab;
-	Vector3 initialBoltPositionOffset = new Vector3( 0f, 0.47f, 0.46f );
 
 	PlayerController playerController;
 	Transform player;
@@ -71,27 +55,7 @@ public class CerberusController : BaseClass {
 	{
 		controller = GetComponent<CharacterController>();
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = player.gameObject.GetComponent<PlayerController>();
-
-		randomizeLook ();
-
-		if( attackType == AttackType.Crossbow )
-		{
-			boltPrefab = Resources.Load( "Level/Props/Magic Bolt") as GameObject;
-		}
-	}
-
-	//We don't want all cerberuss to look the same
-	void randomizeLook ()
-	{
-		if( Random.value < 0.3f )
-		{
-			if( clothItem1 != null ) clothItem1.SetActive( false );
-		}
-		if( Random.value < 0.3f )
-		{
-			if( clothItem2 != null ) clothItem2.SetActive( false );
-		}
+		playerController = player.GetComponent<PlayerController>();
 	}
 
 	void Update ()
@@ -100,10 +64,10 @@ public class CerberusController : BaseClass {
 		handleAttackType();
 		if ( Input.GetKeyDown (KeyCode.A) ) 
 		{
-			if( attackType == AttackType.Crossbow )
+			if( attackType == AttackType.stand_and_breathe_fire )
 			{
-				Debug.Log("KeyInput - Fire bolt");
-				fireCrossbow();
+				Debug.Log("Breathe fire");
+				breatheFire();
 			}
 		}
 	}
@@ -136,25 +100,15 @@ public class CerberusController : BaseClass {
 			float attackDistance;
 		    switch (attackType)
 			{
-		        case AttackType.fire_attack:
+		        case AttackType.stand_and_breathe_fire:
 					attackDistance = 0.95f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
-						setCerberusState( CerberusState.Attacking );
-						GetComponent<Animator>().Play("blowFireAggressive");
-						centerHeadFireObject.SetActive( true );
-						centerHeadFire.Play();
-						leftHeadFireObject.SetActive( true );
-						leftHeadFire.Play();
-						rightHeadFireObject.SetActive( true );
-						rightHeadFire.Play();
-						GetComponent<AudioSource>().clip = fireBreath;
-						GetComponent<AudioSource>().Play();
-						Invoke( "stopBreathingFire", 2.8f );
+						breatheFire();
 					}
 					break;
 		                
-		        case AttackType.short_range_Spear_2:
+		        case AttackType.jump_and_attack:
 					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
@@ -163,7 +117,7 @@ public class CerberusController : BaseClass {
 					}
 					break;
 		                
-				case AttackType.long_range_Spear:
+				case AttackType.run_and_attack:
 					attackDistance = 2f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance )
 					{
@@ -174,23 +128,6 @@ public class CerberusController : BaseClass {
 					}
 					break;
 			
-				case AttackType.Crossbow:
-					attackDistance = 2.5f * PlayerController.getPlayerSpeed();
-					//Only attack if the player is inside a 30 degree arc in front of cerberus
-					if( distance < attackDistance && getDotProduct() > 0.85f )
-					{
-						setCerberusState( CerberusState.Attacking );
-						fireCrossbow();
-					}
-					break;
-				case AttackType.Throw_Barrel:
-					attackDistance = 1.45f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance )
-					{
-						setCerberusState( CerberusState.Attacking );
-						throwBarrel();
-					}
-					break;
 			}
 		}
 	}
@@ -208,66 +145,27 @@ public class CerberusController : BaseClass {
 		return Vector3.Dot( heading.normalized, transform.forward );
 	}
 
+	void breatheFire()
+	{
+		setCerberusState( CerberusState.Attacking );
+		GetComponent<Animator>().Play("blowFireAggressive");
+		centerHeadFireObject.SetActive( true );
+		centerHeadFire.Play();
+		leftHeadFireObject.SetActive( true );
+		leftHeadFire.Play();
+		rightHeadFireObject.SetActive( true );
+		rightHeadFire.Play();
+		GetComponent<AudioSource>().clip = fireBreath;
+		GetComponent<AudioSource>().Play();
+		Invoke( "stopBreathingFire", 2.8f );
+	}
+
 	void stopBreathingFire()
 	{
 		centerHeadFireObject.SetActive( false );
 		leftHeadFireObject.SetActive( false );
 		rightHeadFireObject.SetActive( false );
 	}
-
-	void fireCrossbow()
-	{
-		if( gameObject.activeSelf ) StartCoroutine( fireCrossbowNow() );
-	}
-
-	IEnumerator fireCrossbowNow()
-	{
-		yield return new WaitForSeconds( Random.value * 1f );
-		GameObject bolt = (GameObject)Instantiate(boltPrefab);
-		transform.LookAt( player );
-		bolt.transform.rotation = Quaternion.Euler( transform.eulerAngles.x, transform.eulerAngles.y, 0 );
-		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
-		Vector3 initialBoltPosition = transform.TransformPoint( initialBoltPositionOffset );
-		bolt.transform.position = initialBoltPosition;
-		GetComponent<Animator>().Play("attack");
-		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
-		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
-		bolt.GetComponent<Rigidbody>().AddForce(bolt.transform.forward * getAdjustedBoltForce() );
-		//destroy the bolt after 8 seconds
-		GameObject.Destroy( bolt, 8f );
-	}
-
-	public float getAdjustedBoltForce()
-	{
-		float adjustedBoltForce = BOLT_FORCE;
-		switch (PlayerStatsManager.Instance.getDifficultyLevel())
-		{
-			case DifficultyLevel.Normal:
-			adjustedBoltForce = BOLT_FORCE; //Base value is Normal, so no multiplier
-			break;
-				
-			case DifficultyLevel.Heroic:
-			adjustedBoltForce = BOLT_FORCE * 1.3f;
-			break;
-				
-			case DifficultyLevel.Legendary:
-			adjustedBoltForce = BOLT_FORCE * 1.6f;
-			break;
-			
-		}
-		return adjustedBoltForce;
-	}
-
-	void throwBarrel()
-	{
-		if( playCerberusTaunt ) GetComponent<AudioSource>().PlayOneShot( win );
-		//Push barrels in the direction of the cerberus and add a small upward force
-		Vector3 forces = transform.forward * 1300f + new Vector3( 0, 400f, 0 );
-		barrel.AddForce( forces );
-		barrel.AddTorque( new Vector3( 0, 300f, 0 ) );
-		GetComponent<Animator>().Play("attack2");
-	}
-
 
 	public CerberusState getCerberusState()
 	{
@@ -282,7 +180,7 @@ public class CerberusController : BaseClass {
 	public void sideCollision()
 	{
 		GetComponent<AudioSource>().PlayOneShot( ouch );
-		GetComponent<Animator>().Play("damage");
+		GetComponent<Animator>().Play("getHitAggressive");
 	}
 
 	public void victory( bool playWinSound )
@@ -291,21 +189,7 @@ public class CerberusController : BaseClass {
 		{
 			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
 			setCerberusState( CerberusState.Victory );
-			StartCoroutine( playVictoryAnimation() );
-		}
-	}
-
-	IEnumerator playVictoryAnimation()
-	{
-		GetComponent<Animator>().Play("idle");
-		yield return new WaitForSeconds( Random.value * 2f );
-		if( Random.value < 0.5f )
-		{
-			GetComponent<Animator>().Play("fun1");
-		}
-		else
-		{
-			GetComponent<Animator>().Play("fun2");
+			GetComponent<Animator>().Play("idleLookAround");
 		}
 	}
 
@@ -320,7 +204,7 @@ public class CerberusController : BaseClass {
 		{
 			capsuleColliders[i].enabled = false;
 		}
-		GetComponent<Animator>().Play("death");
+		GetComponent<Animator>().Play("deathAggressive");
 		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 	}
 	
@@ -387,7 +271,7 @@ public class CerberusController : BaseClass {
 	public void resetCerberus()
 	{
 		setCerberusState( CerberusState.Idle );
-		GetComponent<Animator>().Play("idle");
+		GetComponent<Animator>().Play("idleLookAround");
 		gameObject.SetActive( false );
 		followsPlayer = false;
 		controller.enabled = true;
