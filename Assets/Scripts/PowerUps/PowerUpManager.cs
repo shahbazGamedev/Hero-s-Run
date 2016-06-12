@@ -494,7 +494,6 @@ public class PowerUpManager : BaseClass {
 			deactivatePowerUp(pair.Key, true);
 		}
 		activePowerUps.Clear();
-		Debug.LogError("resetAllPowerUps");
 	}
 
 	void PlayerStateChange( CharacterState newState )
