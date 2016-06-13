@@ -291,11 +291,11 @@ public class LevelData : MonoBehaviour {
 				break;
 					
 				case DifficultyLevel.Heroic:
-				adjustedRunStartSpeed = RunStartSpeed * 1.2f;
+				adjustedRunStartSpeed = RunStartSpeed * 1.15f;
 				break;
 					
 				case DifficultyLevel.Legendary:
-				adjustedRunStartSpeed = RunStartSpeed * 1.4f;
+				adjustedRunStartSpeed = RunStartSpeed * 1.3f;
 				break;
 				
 			}
@@ -315,11 +315,11 @@ public class LevelData : MonoBehaviour {
 				break;
 				
 			case DifficultyLevel.Heroic:
-				adjustedRunAcceleration = RunAcceleration * 1.2f;
+				adjustedRunAcceleration = RunAcceleration * 1.15f;
 				break;
 				
 			case DifficultyLevel.Legendary:
-				adjustedRunAcceleration = RunAcceleration * 1.4f;
+				adjustedRunAcceleration = RunAcceleration * 1.3f;
 				break;
 				
 			}

@@ -5,6 +5,8 @@ public class Projectile : MonoBehaviour {
 
 	public Light fireLight;
 	public ParticleSystem fireParticleSystem;
+	public AudioClip inFlightSound;
+	public AudioClip collisionSound;
 	PlayerController playerController;
 	PowerUpManager powerUpManager;
 
@@ -16,6 +18,12 @@ public class Projectile : MonoBehaviour {
 		powerUpManager = GameObject.FindGameObjectWithTag("PowerUpManager").GetComponent<PowerUpManager>();
 	}
 
+	public void startInFlightSound()
+	{
+		GetComponent<AudioSource>().clip = inFlightSound;
+		GetComponent<AudioSource>().Play();
+	}
+
 	public void OnCollisionEnter(Collision collision)
 	{
 	    Debug.Log("Projectile-OnCollisionEnter with " + collision.gameObject.name);
@@ -23,6 +31,7 @@ public class Projectile : MonoBehaviour {
 	    GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
 	    GetComponent<Rigidbody>().Sleep();
 		//Play collision sound
+		GetComponent<AudioSource>().clip = collisionSound;
 		GetComponent<AudioSource>().Play();
 		if( fireLight != null ) fireLight.enabled = false;
 		if( fireParticleSystem != null ) fireParticleSystem.gameObject.SetActive(false);

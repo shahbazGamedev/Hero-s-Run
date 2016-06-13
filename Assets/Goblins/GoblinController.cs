@@ -73,6 +73,18 @@ public class GoblinController : BaseClass {
 		}
 	}
 
+	void Start ()
+	{
+		StartCoroutine( playIdleAnimation() );
+	}
+
+	//We don't want all the goblins to have synced animations
+	IEnumerator playIdleAnimation()
+	{
+		yield return new WaitForSeconds( Random.value * 3f );
+		GetComponent<Animator>().Play("fun1");
+	}
+
 	//We don't want all goblins to look the same
 	void randomizeLook ()
 	{
@@ -209,6 +221,7 @@ public class GoblinController : BaseClass {
 		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
 		bolt.GetComponent<Rigidbody>().AddForce(bolt.transform.forward * getAdjustedBoltForce() );
+		bolt.GetComponent<Projectile>().startInFlightSound();
 		//destroy the bolt after 8 seconds
 		GameObject.Destroy( bolt, 8f );
 	}

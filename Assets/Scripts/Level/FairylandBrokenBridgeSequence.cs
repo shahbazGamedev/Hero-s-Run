@@ -46,9 +46,7 @@ public class FairylandBrokenBridgeSequence : MonoBehaviour {
 	
 	public void startSequence()
 	{
-		//Slowdown player and remove player control
-		print ("Start of broken bridge sequence");
-		playerController.placePlayerInCenterLane();
+		//Slowdown player and remove player control (this is done via a trigger)
 		GameManager.Instance.setGameState(GameState.Checkpoint);
 		StartCoroutine( playerController.slowDownPlayer(18.1f, afterPlayerSlowdown ) );
 	}
