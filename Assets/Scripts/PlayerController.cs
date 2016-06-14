@@ -2085,7 +2085,10 @@ public class PlayerController : BaseClass {
 			}			
 			else if (hit.collider.name.StartsWith("Bip001 Prop1") )
 			{
+				//Demon
 				Debug.Log( "Player collided with: " + hit.collider.name + " Normal" + hit.normal );
+				DemonController demonController = hit.transform.parent.parent.GetComponent<DemonController>();
+				demonController.Stop_Weapon_Trail( null );
 				//Move the player back so he does not get stuck in the obstacle.
 				//However, do not push him downwards as this may push the player through the floor in some rare cases (with the cart and coach notably).
 				controller.Move( new Vector3( hit.normal.x, 1f, hit.normal.z ) );
@@ -2096,7 +2099,7 @@ public class PlayerController : BaseClass {
 
 	void handleGoblinCollision( ControllerColliderHit hit )
 	{
-		GoblinController goblinController = (GoblinController) hit.gameObject.GetComponent("GoblinController");
+		GoblinController goblinController = hit.gameObject.GetComponent<GoblinController>();
 		//Ignore collision event if Goblin already dead.
 		if( goblinController.getGoblinState() != GoblinController.GoblinState.Dying )
 		{

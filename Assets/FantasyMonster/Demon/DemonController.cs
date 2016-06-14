@@ -17,6 +17,7 @@ public class DemonController : BaseClass {
 	[Header("Particle Systems")]
 	public ParticleSystem sparksLeftHoof;
 	public ParticleSystem sparksRightHoof;
+	public GameObject weaponTrail;
 
 	public enum DemonState {
 		Idle = 1,
@@ -266,5 +267,16 @@ public class DemonController : BaseClass {
 		GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.23f );
 		sparksRightHoof.Play();
 	}
+
+	public void Start_Weapon_Trail ( AnimationEvent eve )
+	{
+		weaponTrail.SetActive( true );
+	}
+
+	public void Stop_Weapon_Trail ( AnimationEvent eve )
+	{
+		weaponTrail.SetActive( false );
+	}
+
 
 }
