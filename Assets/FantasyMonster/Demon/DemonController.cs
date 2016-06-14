@@ -179,7 +179,7 @@ public class DemonController : BaseClass {
 		{
 			capsuleColliders[i].enabled = false;
 		}
-		GetComponent<Animator>().Play("Knockback");
+		GetComponent<Animator>().SetTrigger("Knockback");
 		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 	}
 	

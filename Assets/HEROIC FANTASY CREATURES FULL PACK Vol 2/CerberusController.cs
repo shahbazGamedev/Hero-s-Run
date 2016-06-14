@@ -148,7 +148,7 @@ public class CerberusController : BaseClass {
 	void breatheFire()
 	{
 		setCerberusState( CerberusState.Attacking );
-		GetComponent<Animator>().Play("blowFireAggressive");
+		GetComponent<Animator>().SetTrigger("blowFireAggressive");
 		centerHeadFireObject.SetActive( true );
 		centerHeadFire.Play();
 		leftHeadFireObject.SetActive( true );
