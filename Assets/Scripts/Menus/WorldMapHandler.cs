@@ -224,14 +224,14 @@ void moveMapWithPortrait()
 		{
 			//Move the user portrait to the junction marker associated to the level just completed.
 			//Vector2 dest = new Vector2( levelInfo.sectionIconMapCoordinates.x * worldRect.width + playerPortraitOffset.x, levelInfo.sectionIconMapCoordinates.y * worldRect.height + playerPortraitOffset.y );
-						LeanTween.move( playerPortraitRect, Vector2.zero, 3.8f, options2 );
+						//LeanTween.move( playerPortraitRect, Vector2.zero, 3.8f, options2 );
 		}
 		else
 		{
 			//Move the user portrait to the next level shield.
 			levelInfo = levelList[ LevelManager.Instance.getNextLevelToComplete() ];
 			//Vector2 dest = new Vector2( levelInfo.MapCoordinates.x * worldRect.width + playerPortraitOffset.x, levelInfo.MapCoordinates.y * worldRect.height + playerPortraitOffset.y );
-			LeanTween.move( playerPortraitRect,  Vector2.zero, 3.8f, options1 );
+			//LeanTween.move( playerPortraitRect,  Vector2.zero, 3.8f, options1 );
 		}
 
 	}
@@ -244,7 +244,7 @@ void moveMapWithPortrait()
 		//Move the user portrait to the next level shield.
 		LevelData.LevelInfo levelInfo = levelList[ LevelManager.Instance.getNextLevelToComplete() ];
 		//Vector2 dest = new Vector2( levelInfo.MapCoordinates.x * worldRect.width + playerPortraitOffset.x, levelInfo.MapCoordinates.y * worldRect.height + playerPortraitOffset.y );
-		LeanTween.move( playerPortraitRect,  Vector2.zero, 3.8f, options1 );
+		//LeanTween.move( playerPortraitRect,  Vector2.zero, 3.8f, options1 );
 	}
 
 void displayOfferLivesPopup()

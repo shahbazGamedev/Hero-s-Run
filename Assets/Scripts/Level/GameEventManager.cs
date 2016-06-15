@@ -95,7 +95,7 @@ public class GameEventManager : MonoBehaviour {
 		StartCoroutine( playerController.slowDownPlayer(19f, afterPlayerSlowdown ) );
 
 		arriveAndCastSpell();
-		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_OH_NO"), 0.35f, 1.8f );
+		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_OH_NO"), 0.35f, 1.8f );
 		playVoiceOver( fairy, darkQueenKrakenSequence.VO_FA_Oh_no );
 
 	}
@@ -122,7 +122,7 @@ public class GameEventManager : MonoBehaviour {
 
 	void playLandAnimation()
 	{
-		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_NOT_KEEP_WAITING"), 0.35f, 3.6f );
+		AchievementDisplay.achievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_NOT_KEEP_WAITING"), 0.35f, 3.6f );
 		playVoiceOver( darkQueen, darkQueenKrakenSequence.VO_DQ_not_keep_waiting );
 		darkQueen.GetComponent<Animation>().CrossFade("DarkQueen_Land", 0.1f);
 		Invoke("playIdleAnimation", darkQueen.GetComponent<Animation>()["DarkQueen_Land"].length);
@@ -137,7 +137,7 @@ public class GameEventManager : MonoBehaviour {
 	
 	void castKrakenSpell()
 	{
-		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_RISE_FROM_THE_DEEP"), 0.35f, 3.8f );
+		AchievementDisplay.achievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_RISE_FROM_THE_DEEP"), 0.35f, 3.8f );
 		playVoiceOver( darkQueen, darkQueenKrakenSequence.VO_DQ_rise_from_the_deep );
 		darkQueen.GetComponent<Animation>().CrossFade("DarkQueen_SpellCast");
 		Invoke("playKrakenSpellFX", 0.3f);
@@ -451,7 +451,7 @@ public class GameEventManager : MonoBehaviour {
 		//Call fairy
 		fairyController.setYRotationOffset( -10f );
 		fairyController.Appear ( FairyEmotion.Worried );
-		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_NOT_HER_AGAIN"), 0.35f, 2f );
+		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_NOT_HER_AGAIN"), 0.35f, 2f );
 		playVoiceOver( fairy, darkQueenCemeterySequence.VO_FA_NOT_HER_AGAIN );
 	}
 
@@ -474,7 +474,7 @@ public class GameEventManager : MonoBehaviour {
 	
 	void cemeteryPlayIdleAnimation()
 	{
-		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_STARTING_TO_ANNOY"), 0.35f, 3f );
+		AchievementDisplay.achievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_STARTING_TO_ANNOY"), 0.35f, 3f );
 		playVoiceOver( darkQueen, darkQueenCemeterySequence.VO_DQ_STARTING_TO_ANNOY );
 		darkQueenController.floatDownFx.Stop ();
 		darkQueen.GetComponent<Animation>().Play("DarkQueen_Idle");
@@ -483,7 +483,7 @@ public class GameEventManager : MonoBehaviour {
 	
 	void cemeteryCastKrakenSpell()
 	{
-		AchievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_BRING_BACK_BOOK"), 0.35f, 3.8f );
+		AchievementDisplay.achievementDisplay.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_BRING_BACK_BOOK"), 0.35f, 3.8f );
 		playVoiceOver( darkQueen, darkQueenCemeterySequence.VO_DQ_BRING_BACK_BOOK );
 		darkQueen.GetComponent<Animation>().CrossFade("DarkQueen_SpellCast");
 		Invoke("cemeteryPlayKrakenSpellFX", 0.3f);
@@ -874,7 +874,7 @@ public class GameEventManager : MonoBehaviour {
 	//Fairy warns player of troll
 	void step7()
 	{
-		AchievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_TROLL_WARNING"), 0.35f, 2.25f );
+		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_TROLL_WARNING"), 0.35f, 2.25f );
 		Invoke ("step8", 1.5f );
 	}
 

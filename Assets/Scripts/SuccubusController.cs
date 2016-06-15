@@ -559,10 +559,8 @@ public class SuccubusController : BaseClass {
 			yield return _sync();
 		}
 		playAnimation( animationFly.name, WrapMode.Loop );
-		Hashtable disappearanceOptions = new Hashtable();
-		disappearanceOptions.Add("ease", LeanTweenType.easeOutQuad);
 		Vector3 small = new Vector3( 0.3f, 0.3f, 0.3f );
-		LeanTween.scale( gameObject, small, 4f, disappearanceOptions );
+		LeanTween.scale( gameObject, small, 4f ).setEase(LeanTweenType.easeOutQuad );
 		LeanTween.moveY( gameObject, transform.position.y + 20f, 5f);
 		LeanTween.rotateY( gameObject, transform.eulerAngles.y + 180f, 2.5f);
 		succubusState = SuccubusState.Leave;
@@ -579,10 +577,8 @@ public class SuccubusController : BaseClass {
 			yield return _sync();
 		}
 		playAnimation( animationFly.name, WrapMode.Loop );
-		Hashtable disappearanceOptions = new Hashtable();
-		disappearanceOptions.Add("ease", LeanTweenType.easeOutQuad);
 		Vector3 small = new Vector3( 0.3f, 0.3f, 0.3f );
-		LeanTween.scale( gameObject, small, 4f, disappearanceOptions );
+		LeanTween.scale( gameObject, small, 4f ).setEase(LeanTweenType.easeOutQuad);
 		Vector3 exactPos = transform.TransformPoint(new Vector3( 2f, 20f, -20f ) );
 		LeanTween.move( gameObject, exactPos, 5f);
 		LeanTween.rotateY( gameObject, transform.eulerAngles.y + 180f, 2.5f);
