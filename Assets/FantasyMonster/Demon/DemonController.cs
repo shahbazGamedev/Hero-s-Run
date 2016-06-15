@@ -22,15 +22,17 @@ public class DemonController : BaseClass {
 	public enum DemonState {
 		Idle = 1,
 		Running = 2,
-		Attacking = 3,
-		Dying = 4,
-		Victory = 5
+		Walking = 3,
+		Attacking = 4,
+		Dying = 5,
+		Victory = 6
 	}
 
 	public enum AttackType {
 		stand_and_normal_attack = 1,
 		stand_and_big_attack = 2,
 		charge_and_attack = 3,
+		walk_and_attack = 4
 	}
 	
 	PlayerController playerController;
@@ -40,7 +42,9 @@ public class DemonController : BaseClass {
 	DemonState demonState = DemonState.Idle;
 	CharacterController controller;
 	Vector3 forward;
-	float runSpeed = 4.6f; //good value so feet don't slide
+	const float RUN_SPEED = 4.6f; //good value so feet don't slide
+	float WALK_SPEED = 2.1f; //good value so feet don't slide
+	float moveSpeed = 0;
 	//If true, the demon heads for the player as opposed to staying in his lane
 	bool followsPlayer = false;
 	bool allowMove = false;
@@ -61,8 +65,9 @@ public class DemonController : BaseClass {
 
 	void moveDemon()
 	{
-		if( demonState == DemonState.Running && allowMove )
+		if( demonState == DemonState.Running || demonState == DemonState.Walking && allowMove )
 		{
+
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
 			{
@@ -72,7 +77,7 @@ public class DemonController : BaseClass {
 			//1) Get the direction of the demon
 			forward = transform.TransformDirection(Vector3.forward);			
 			//2) Scale vector based on run speed
-			forward = forward * Time.deltaTime * runSpeed;
+			forward = forward * Time.deltaTime * moveSpeed;
 			if( applyGravity ) forward.y -= 16f * Time.deltaTime;
 			//3) Move the controller
 			controller.Move( forward );
@@ -106,17 +111,41 @@ public class DemonController : BaseClass {
 					break;
 		                
 				case AttackType.charge_and_attack:
-					float chargeDistance = 2f * PlayerController.getPlayerSpeed();
-					float instantAttackDistance = 0.97f * PlayerController.getPlayerSpeed();
+					float chargeDistance = 2.3f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.97f * PlayerController.getPlayerSpeed();
 					if( distance < chargeDistance )
 					{
-						if( distance >= instantAttackDistance )
+						if( distance >= attackDistance )
 						{
 							//Charge
 							followsPlayer = true;
+							moveSpeed = RUN_SPEED;
 							setDemonState( DemonState.Running );
 							allowMove = true;
 							GetComponent<Animator>().Play("Run");
+						}
+						else
+						{
+							//Attack now
+							setDemonState( DemonState.Attacking );
+							GetComponent<Animator>().Play("Skill");
+						}
+					}
+					break;
+				
+				case AttackType.walk_and_attack:
+					float walkDistance = 2.5f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.97f * PlayerController.getPlayerSpeed();
+					if( distance < walkDistance )
+					{
+						if( distance >= attackDistance )
+						{
+							//Walk
+							followsPlayer = true;
+							moveSpeed = WALK_SPEED;
+							setDemonState( DemonState.Walking );
+							allowMove = true;
+							GetComponent<Animator>().Play("Walk");
 						}
 						else
 						{

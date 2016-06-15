@@ -9,7 +9,7 @@ public class RandomGroupSelector : MonoBehaviour {
 
 	void OnEnable ()
 	{
-		if( Random.value < probabilityGroup1 )
+		if( Random.value <= probabilityGroup1 )
 		{
 			group1.SetActive( true );
 			group2.SetActive( false );

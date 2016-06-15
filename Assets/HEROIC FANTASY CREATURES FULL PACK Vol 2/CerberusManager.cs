@@ -18,7 +18,7 @@ public class CerberusManager : BaseClass {
 
 	public void knockbackCerberuss( float impactDiameter )
 	{
-		int CerberusLayer = 12;
+		int CerberusLayer = 13;
 		int CerberusMask = 1 << CerberusLayer;
 		//Use a sphere that starts impactDiameter/2 meters in front of the player
 		Vector3 relativePos = new Vector3(0f , 0f , impactDiameter/2f );
@@ -64,7 +64,7 @@ public class CerberusManager : BaseClass {
 
 	void ZNukeExploded( float impactDiameter )
 	{
-		Debug.LogWarning("ZNukeExploded: impactDiameter: " + impactDiameter );
+		Debug.LogWarning("CerberusManager-ZNukeExploded: impactDiameter: " + impactDiameter );
 		knockbackCerberuss( impactDiameter );
 	}
 

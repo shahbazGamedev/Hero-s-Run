@@ -193,12 +193,12 @@ public class CerberusController : BaseClass {
 		}
 	}
 
-	//The cerberus falls over backwards, typically because the player slid into him or because of a ZNuke
+	//The cerberus falls over backwards, typically because of a ZNuke
 	public void knockbackCerberus()
 	{
 		setCerberusState( CerberusState.Dying );
+		stopBreathingFire();
 		controller.enabled = false;
-		//The piker has two capsule colliders. The scout, only one.
 		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
 		for( int i = 0; i < capsuleColliders.Length; i++ )
 		{
