@@ -23,6 +23,7 @@ public class CerberusController : BaseClass {
 	public ParticleSystem centerHeadFire;
 	public ParticleSystem rightHeadFire;
 	public AudioClip fireBreath;
+	public Light fireBreathingLight;
 
 	public enum CerberusState {
 		Idle = 1,
@@ -157,6 +158,7 @@ public class CerberusController : BaseClass {
 		rightHeadFire.Play();
 		GetComponent<AudioSource>().clip = fireBreath;
 		GetComponent<AudioSource>().Play();
+		StartCoroutine( fadeInLight( fireBreathingLight, 0.6f, 3f ) );
 		Invoke( "stopBreathingFire", 2.8f );
 	}
 
@@ -165,6 +167,38 @@ public class CerberusController : BaseClass {
 		centerHeadFireObject.SetActive( false );
 		leftHeadFireObject.SetActive( false );
 		rightHeadFireObject.SetActive( false );
+		StartCoroutine( fadeOutLight( fireBreathingLight, 0.2f ) );
+	}
+
+	public IEnumerator fadeOutLight( Light light, float duration )
+	{
+		float elapsedTime = 0;
+		
+		float startIntensity = light.intensity;
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			light.intensity =  Mathf.Lerp( startIntensity, 0, elapsedTime/duration );
+			yield return new WaitForFixedUpdate();  
+			
+		} while ( elapsedTime < duration );
+		
+		light.intensity = 0;
+	}
+
+	public IEnumerator fadeInLight( Light light, float duration, float endIntensity )
+	{
+		float elapsedTime = 0;
+		
+		float startIntensity = 0;
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			light.intensity =  Mathf.Lerp( startIntensity, endIntensity, elapsedTime/duration );
+			yield return new WaitForFixedUpdate();  
+			
+		} while ( elapsedTime < duration );
+		light.intensity = endIntensity;
 	}
 
 	public CerberusState getCerberusState()
