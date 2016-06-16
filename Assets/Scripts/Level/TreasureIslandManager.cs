@@ -168,12 +168,12 @@ public class TreasureIslandManager : MonoBehaviour {
 
 	void showTapToOpenChestMessage()
 	{
-		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("TRESURE_CHEST_TAP_TO_OPEN"), 0.35f, 3f );
+		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("TRESURE_CHEST_TAP_TO_OPEN"), 3f );
 	}
 
 	void showYouNeedKeysMessage()
 	{
-		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("TREASURE_CHEST_NEED_MORE_KEYS"), 0.35f, 4f );
+		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("TREASURE_CHEST_NEED_MORE_KEYS"), 4f );
 	}
 
 	public void closeMenu()
@@ -202,7 +202,7 @@ public class TreasureIslandManager : MonoBehaviour {
 
 		chest.Lock();
 		CancelInvoke();
-		AchievementDisplay.achievementDisplay.enableShowDisplay( false );
+		AchievementDisplay.achievementDisplay.hideMessage();
 		//Ignore if chest is already open
 		if( chest.IsOpened()  ) return;
 

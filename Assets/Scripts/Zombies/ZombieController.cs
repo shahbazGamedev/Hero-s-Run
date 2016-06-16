@@ -322,6 +322,7 @@ public class ZombieController : BaseClass {
 
 	void OnDisable()
 	{
+		CancelInvoke( "groan" );
 		PlayerController.playerStateChanged -= PlayerStateChange;
 		GameManager.gameStateEvent -= GameStateChange;
 	}
