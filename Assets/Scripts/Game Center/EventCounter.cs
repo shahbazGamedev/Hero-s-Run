@@ -114,7 +114,7 @@ public class EventCounter {
 					//Only proceed if we have a valid image.
 					if( achievementImage != null )
 					{
-						AchievementDisplay.achievementDisplay.activateDisplay( achievementDescription, achievementImage, 0.45f );
+						AchievementDisplay.achievementDisplay.activateDisplay( achievementDescription, achievementImage );
 					}
 				}
 			}
