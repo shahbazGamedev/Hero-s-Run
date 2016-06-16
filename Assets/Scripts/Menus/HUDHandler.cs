@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class HUDHandler : MonoBehaviour {
 
+	public static HUDHandler hudHandler = null;
 	[Header("HUD Handler")]
  	public GameObject saveMeCanvas;
 	public Text hudDebugInfo;	//Used to display FPS, player speed, etc.
@@ -21,6 +22,10 @@ public class HUDHandler : MonoBehaviour {
 	//Also see the waitForTapToPlay bool in LevelData
 	public Button tapToPlayButton; 
 	public Text tapToPlayText;
+	//User Message is used to display the Go! message after resurrection and for some tutorial messages.
+	//It appears in the center of the screen.
+	[Header("User Message")]
+	public Text userMessageText;
 
 	//Number of coins collected
 	static Rect coinIconRect;
@@ -42,14 +47,6 @@ public class HUDHandler : MonoBehaviour {
 	int fpsWaitFrames = 30;
 	
 	public GUIStyle saveMeLevelInfoStyle;
-
-	//Generic user message
-	static float userMessageStartTime = 0;
-	public static bool showUserMessage = false;
-	static string userText = "";
-	static float userScreenHeightPercentage = 0;
-	static float userAngle = 0;
-	static float userMessageDuration = 0;
 	
 	HUDSaveMe hudSaveMe;
 
@@ -59,6 +56,7 @@ public class HUDHandler : MonoBehaviour {
 	// Use this for initialization
 	void Awake ()
 	{
+		hudHandler = this;
 		playerController = GetComponent<PlayerController>();
 
 		//initialize for coin total
@@ -85,20 +83,6 @@ public class HUDHandler : MonoBehaviour {
 	void OnGUI ()
 	{
 		showCoinTotal();
-		
-		//User message if any
-		if( showUserMessage && GameManager.Instance.getGameState() == GameState.Normal )
-		{
-			//Display user message
-			if( (Time.time - userMessageStartTime) < userMessageDuration )
-			{	
-				displayUserMessage();
-			}
-			else
-			{
-				showUserMessage = false;
-			}
-		}
 	}
 	
 	// Update is called once per frame
@@ -147,32 +131,18 @@ public class HUDHandler : MonoBehaviour {
 	}
 	
 	//Activates a horizontally centered text with a drop-shadow.
-	//User texts are only displayed in the Normal game state.
-	public static void activateUserMessage( string text, float heightPercentage, float angle, float duration )
+	//User Message is only displayed in the Normal game state.
+	public void activateUserMessage( string text, float angle, float duration )
 	{
-		userText = text;
-		userScreenHeightPercentage = heightPercentage;
-		userAngle = angle;
-		userMessageDuration = duration;
-		userMessageStartTime = Time.time;
-		showUserMessage = true;
+		userMessageText.text = text;
+		userMessageText.rectTransform.localRotation = Quaternion.Euler( 0, 0, angle );
+		Invoke( "hideUserMessage", duration );
+		userMessageText.gameObject.SetActive( true );
 	}
 		
-	//Displays a horizontally centered user text with a drop-shadow that was activated with the method: activateUserMessage.
-	void displayUserMessage()
+	void hideUserMessage()
 	{
-		GUIContent textContent = new GUIContent( userText );
-		Rect textRect = GUILayoutUtility.GetRect( textContent, saveMeLevelInfoStyle );
-		float textCenterX = (Screen.width-textRect.width)/2f;
-		
-		Rect positionRect = new Rect( textCenterX, Screen.height * userScreenHeightPercentage, textRect.width, textRect.height );
-
-		//Save the GUI.matrix so we can restore it once our rotation is done
-		Matrix4x4 matrixBackup = GUI.matrix;
-		Vector2 pos = new Vector2( positionRect.x, positionRect.y );
-		GUIUtility.RotateAroundPivot(userAngle, pos);
-		Utilities.drawLabelWithDropShadow( positionRect, textContent, saveMeLevelInfoStyle );
-		GUI.matrix = matrixBackup;
+		userMessageText.gameObject.SetActive( false );
 	}
 
 	void slideInLevelName()
@@ -278,6 +248,7 @@ public class HUDHandler : MonoBehaviour {
 		{
 			hudDebugInfo.gameObject.SetActive( false );
 			pauseButton.gameObject.SetActive( false );
+			userMessageText.gameObject.SetActive( false );
 		}
 	}
 

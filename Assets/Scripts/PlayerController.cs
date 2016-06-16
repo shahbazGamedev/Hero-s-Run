@@ -3043,7 +3043,7 @@ public class PlayerController : BaseClass {
 		StartCoroutine( waitForGracePeriod( 2 ) );
 		
 		//12) Display a Go! message
-		HUDHandler.activateUserMessage( LocalizationManager.Instance.getText("GO"), 0.5f, 0f, 1.25f );
+		HUDHandler.hudHandler.activateUserMessage( LocalizationManager.Instance.getText("GO"), 0f, 1.25f );
 
 
 	}

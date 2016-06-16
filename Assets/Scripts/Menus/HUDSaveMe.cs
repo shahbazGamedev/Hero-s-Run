@@ -153,7 +153,6 @@ public class HUDSaveMe : MonoBehaviour {
 	{
 		Debug.Log("Retry from last checkpoint button pressed");
 		fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
-		HUDHandler.showUserMessage = false;
 		closeSaveMeMenu();
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		LevelManager.Instance.setNextLevelToComplete( LevelManager.Instance.getLevelNumberOfLastCheckpoint() );
@@ -172,7 +171,6 @@ public class HUDSaveMe : MonoBehaviour {
 		SoundManager.stopMusic();
 		SoundManager.stopAmbience();
 		GameManager.Instance.setGameState(GameState.PostLevelPopup);
-		HUDHandler.showUserMessage = false;
 		closeSaveMeMenu();
 		SceneManager.LoadScene( (int) GameScenes.WorldMap );
 	}

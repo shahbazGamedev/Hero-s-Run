@@ -63,7 +63,7 @@ public class TutorialManager : MonoBehaviour {
 		if( tutorialHelpArrow == TutorialHelpArrow.DOUBLE_TAP )
 		{
 			//Simply display text
-			HUDHandler.activateUserMessage( LocalizationManager.Instance.getText("TUTORIAL_DOUBLE_TAP_NOW"), 0.4f, -7f, 1.5f );
+			HUDHandler.hudHandler.activateUserMessage( LocalizationManager.Instance.getText("TUTORIAL_DOUBLE_TAP_NOW"), -7f, 1.5f );
 		}
 		else
 		{
@@ -85,12 +85,12 @@ public class TutorialManager : MonoBehaviour {
 
 	void displayGoodMessage()
 	{
-		HUDHandler.activateUserMessage( LocalizationManager.Instance.getText("TUTORIAL_GOOD"), 0.42f, -7f, 1.5f );
+		HUDHandler.hudHandler.activateUserMessage( LocalizationManager.Instance.getText("TUTORIAL_GOOD"), -7f, 1.5f );
 	}
 
 	void displayExcellentMessage()
 	{
-		HUDHandler.activateUserMessage( LocalizationManager.Instance.getText("TUTORIAL_EXCELLENT"), 0.42f, -7f, 1.5f );
+		HUDHandler.hudHandler.activateUserMessage( LocalizationManager.Instance.getText("TUTORIAL_EXCELLENT"), -7f, 1.5f );
 	}
 	
 }
