@@ -84,12 +84,10 @@ public class HUDHandler : MonoBehaviour {
 	// Update is called once per frame
 	void OnGUI ()
 	{
-		GameState gameState = GameManager.Instance.getGameState();
-						
 		showCoinTotal();
 		
 		//User message if any
-		if( showUserMessage && gameState == GameState.Normal )
+		if( showUserMessage && GameManager.Instance.getGameState() == GameState.Normal )
 		{
 			//Display user message
 			if( (Time.time - userMessageStartTime) < userMessageDuration )
@@ -123,7 +121,7 @@ public class HUDHandler : MonoBehaviour {
 		}
 	}
 
-	public void startPlaying()
+	void startPlaying()
 	{
 		//If we are in the Menu state simply start running, but if we are in the OpeningSequence state
 		//initiate the opening sequence instead.
@@ -161,7 +159,7 @@ public class HUDHandler : MonoBehaviour {
 	}
 		
 	//Displays a horizontally centered user text with a drop-shadow that was activated with the method: activateUserMessage.
-	private void displayUserMessage()
+	void displayUserMessage()
 	{
 		GUIContent textContent = new GUIContent( userText );
 		Rect textRect = GUILayoutUtility.GetRect( textContent, saveMeLevelInfoStyle );
@@ -177,7 +175,7 @@ public class HUDHandler : MonoBehaviour {
 		GUI.matrix = matrixBackup;
 	}
 
-	public void slideInLevelName()
+	void slideInLevelName()
 	{
 		levelNameText.text = LevelManager.Instance.getCurrentLevelName(); 
 		LeanTween.move( levelNamePanel, new Vector2(0, -levelNamePanel.rect.height/2f), 0.5f ).setEase(LeanTweenType.easeOutQuad).setOnComplete(slideOutLevelName).setOnCompleteParam(gameObject);
@@ -216,7 +214,7 @@ public class HUDHandler : MonoBehaviour {
 		coinDisplayList.Add(coinDisplay);
 	}
 	
-	private void showCoinTotal()
+	void showCoinTotal()
 	{
 		if( GameManager.Instance.getGameState() == GameState.Normal && coinDisplayList.Count > 0 )
 		{
