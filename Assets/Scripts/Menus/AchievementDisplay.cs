@@ -18,7 +18,7 @@ public class AchievementDisplay : MonoBehaviour {
 
 	Vector2 slideStartDest;
 	Vector2 slideEndDest;
-	const float SLIDE_DURATION = 0.5f;
+	const float SLIDE_DURATION = 0.6f;
 	float waitDuration = 2.5f;
 	
 	// Use this for initialization
@@ -26,8 +26,8 @@ public class AchievementDisplay : MonoBehaviour {
 	
 		achievementDisplay = this;
 		messagePanelDefaultPosition = messagePanel.anchoredPosition;
-		slideStartDest = new Vector2( 0, 0 );
-		slideEndDest = new Vector2( messagePanel.rect.width, 0 );
+		slideStartDest = new Vector2( 0, messagePanel.anchoredPosition.y );
+		slideEndDest = new Vector2( messagePanel.rect.width, messagePanel.anchoredPosition.y );
 	}
 
 	//Used by the Game Center achievement system.
@@ -42,18 +42,18 @@ public class AchievementDisplay : MonoBehaviour {
 		else
 		{
 			//Use default Hero portrait since we have no achievement image
-			activateDisplay( message, heroPortrait, 2.5f );
+			activateDisplay( message, heroPortrait.sprite, 2.5f );
 		}	
 	}
 
 	public void activateDisplayFairy( string message, float waitDuration )
 	{
-		activateDisplay( message, fairyPortrait, waitDuration );
+		activateDisplay( message, fairyPortrait.sprite, waitDuration );
 	}
 
 	public void activateDisplayDarkQueen( string message, float waitDuration )
 	{
-		activateDisplay( message, darkQueenPortrait, waitDuration );
+		activateDisplay( message, darkQueenPortrait.sprite, waitDuration );
 	}
 
 	void activateDisplay( string message, Sprite icon, float waitDuration )
@@ -61,14 +61,6 @@ public class AchievementDisplay : MonoBehaviour {
 		this.waitDuration = waitDuration;
 		messageText.text = message;
 		messageIcon.sprite = icon;
-		slideInMessage();
-	}
-
-	void activateDisplay( string message, Image icon, float waitDuration )
-	{
-		this.waitDuration = waitDuration;
-		messageText.text = message;
-		messageIcon = icon;
 		slideInMessage();
 	}
 

@@ -37,7 +37,7 @@ public class HUDHandler : MonoBehaviour {
 	private float coinAccumulatedDisplayDuration = 4f;
 	GUIContent coinAccumulatorContent = new GUIContent( "" );
 	static List<CoinDisplay> coinDisplayList = new List<CoinDisplay>();
-	static float coinDisplayStartHeight = Screen.height * 0.4f;
+	static float coinDisplayStartHeight = Screen.height * 0.42f;
 
 	//FPS related
 	string fps = "0";
