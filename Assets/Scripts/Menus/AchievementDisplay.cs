@@ -6,10 +6,24 @@ using UnityEngine.UI;
 public class AchievementDisplay : MonoBehaviour {
 
 	public static AchievementDisplay achievementDisplay = null;
-	public GUIStyle textStyle;
-	public Image testImage;
+	[Header("Achievement Display")]
+	[Header("Message Panel")]
+	public RectTransform messagePanel;
+	Vector2 messagePanelDefaultPosition;
+	public Image messageIcon;
+	public Text messageText;
+	public Image fairyPortrait;
+	public Image darkQueenPortrait;
+	public Image heroPortrait;
 
+	Vector2 slideStartDest;
+	Vector2 slideEndDest;
 	bool showDisplay = false;
+	float slideDuration = 0.6f;
+	float waitDuration = 2.5f;
+
+	public GUIStyle textStyle;
+
 
 	Texture2D achievementBoxTextureT;
 	Texture2D achievementBoxTextureB;
@@ -19,24 +33,21 @@ public class AchievementDisplay : MonoBehaviour {
 	Vector2 achievementBoxSize = new Vector2( Screen.width, 0.1f * Screen.height);
 	float margin = Screen.width * 0.05f;
 	LTRect achievementBoxRect;
-	Vector2 slideStartDest;
-	Vector2 slideEndDest;
 	float delimiterHeight;
 	Rect topRect;
 	Rect bottomRect;
 	Vector2 iconSize;
 	Rect iconRect;
 	string achievementDescription;
-	float slideDuration = 0.6f;
-	float waitDuration = 2.5f;
 	
 	// Use this for initialization
 	void Awake () {
 	
 		achievementDisplay = this;
+		messagePanelDefaultPosition = messagePanel.anchoredPosition;
 		achievementBoxRect = new LTRect( -Screen.width, 0.78f * Screen.height, achievementBoxSize.x, achievementBoxSize.y );
-		slideStartDest = new Vector2( 0, achievementBoxRect.rect.y );
-		slideEndDest = new Vector2( Screen.width, achievementBoxRect.rect.y );
+		slideStartDest = new Vector2( 0, 0 );
+		slideEndDest = new Vector2( messagePanel.rect.width, 0 );
 		delimiterHeight = 0.02f * Screen.height;
 		topRect 	= new Rect( 0, 0, Screen.width, delimiterHeight);
 		bottomRect 	= new Rect( 0, achievementBoxSize.y - delimiterHeight, Screen.width, delimiterHeight);
@@ -77,7 +88,10 @@ public class AchievementDisplay : MonoBehaviour {
 
 	public void activateDisplayFairy( string description, float boxHeight, float waitTime )
 	{
-		activateDisplay( description, fairyImage, boxHeight, waitTime );
+		messageText.text = description;
+		messageIcon = fairyPortrait;
+		slideInMessage();
+		//activateDisplay( description, fairyImage, boxHeight, waitTime );
 	}
 
 	public void activateDisplayDarkQueen( string description, float boxHeight, float waitTime )
@@ -103,6 +117,24 @@ public class AchievementDisplay : MonoBehaviour {
 		achievementDescription = description;
 		LeanTween.move( achievementBoxRect, slideStartDest, slideDuration).setEase(LeanTweenType.easeOutQuad).setOnComplete( slideInEnded ).setOnCompleteParam(gameObject);
 		enableShowDisplay( true );
+	}
+
+	void slideInMessage()
+	{
+		messagePanel.anchoredPosition = messagePanelDefaultPosition;
+		LeanTween.move( messagePanel, slideStartDest, slideDuration ).setEase(LeanTweenType.easeOutQuad).setOnComplete(slideOutMessage).setOnCompleteParam(gameObject);
+	}
+		
+	void slideOutMessage()
+	{
+		//Wait a little before continuing to slide
+		LeanTween.move( messagePanel, slideEndDest, 0.5f ).setEase(LeanTweenType.easeOutQuad).setDelay(waitDuration);
+	}
+	
+	void hideMessage()
+	{
+		LeanTween.cancelAll();
+		messagePanel.anchoredPosition = messagePanelDefaultPosition;
 	}
 
 	void OnGUI ()
