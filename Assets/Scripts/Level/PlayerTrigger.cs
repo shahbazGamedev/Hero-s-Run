@@ -25,11 +25,10 @@ public enum GameEvent {
 	Kill_Fairy = 20,
 	Start_Kraken = 21,
 	Stop_Kraken = 22,
-	Start_Zombie_Hands = 23,
-	Stop_Zombie_Hands = 24,
+	Start_Cemetery_Sequence = 23,
+	Stop_Cemetery_Sequence = 24,
 	Start_Ghost = 25,
-	Stop_Ghost = 26,
-	Cast_Raise_Dead = 27
+	Stop_Ghost = 26
 
 }
 

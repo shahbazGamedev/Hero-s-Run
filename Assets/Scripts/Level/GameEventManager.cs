@@ -972,11 +972,11 @@ public class GameEventManager : MonoBehaviour {
 		{
 			stopTentaclesSequence();
 		}
-		else if( eventType == GameEvent.Start_Zombie_Hands && !isZombieHandsSequenceActive )
+		else if( eventType == GameEvent.Start_Cemetery_Sequence && !isZombieHandsSequenceActive )
 		{
 			startDarkQueenCemeterySequence();
 		}
-		else if( eventType == GameEvent.Stop_Zombie_Hands && isZombieHandsSequenceActive )
+		else if( eventType == GameEvent.Stop_Cemetery_Sequence && isZombieHandsSequenceActive )
 		{
 			stopZombieHandsSequence();
 		}
