@@ -54,7 +54,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 		dragonController.enableAttack( false );
 	}
 
-	public void startSequence()
+	void startSequence()
 	{
 		//Slowdown player and remove player control
 		print ("Start of broken bridge sequence");
