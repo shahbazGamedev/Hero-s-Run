@@ -1747,6 +1747,10 @@ public class PlayerController : BaseClass {
 			{
 				collider.GetComponent<TrapFlame>().isActive = !deactivate;
 			}
+			else if ( collider.name == "Cerberus" )
+			{
+				collider.isTrigger = deactivate;
+			}
 		}
 	}
 	

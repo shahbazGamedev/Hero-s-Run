@@ -28,7 +28,7 @@ public class CerberusSequence : MonoBehaviour {
 		print ("Start of Cerberus sequence");
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(5f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(3f, afterPlayerSlowdown ) );
 		cerberusController.walk();
 		Invoke ("stopWalking", 2.5f );
 	}
@@ -52,7 +52,7 @@ public class CerberusSequence : MonoBehaviour {
 	{
 		AchievementDisplay.achievementDisplay.activateDisplayFairy( "Uh-oh!", 1.4f );
 		Invoke ("step2", 3f );
-		Invoke ("step3", 4.2f );
+		Invoke ("step3", 7f );
 	}
 
 	void step2()
