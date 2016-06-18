@@ -7,7 +7,7 @@ public class CerberusSequence : MonoBehaviour {
 	FairyController fairyController;
 	CerberusController cerberusController;
 
-	public bool hasBeenTriggered = false;
+	bool hasBeenTriggered = false;
 
 	// Use this for initialization
 	void Awake () {
@@ -50,14 +50,14 @@ public class CerberusSequence : MonoBehaviour {
 	//Fairy tells something to player
 	void step1()
 	{
-		AchievementDisplay.achievementDisplay.activateDisplayFairy( "Uh-oh!", 1.4f );
+		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_CERBERUS_UH_OH"), 1.4f );
 		Invoke ("step2", 3f );
 		Invoke ("step3", 7f );
 	}
 
 	void step2()
 	{
-		AchievementDisplay.achievementDisplay.activateDisplayFairy( "Who's a good boy? Who's a good boy?", 3f );
+		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_CERBERUS_GOOD_BOY"), 3f );
 	}
 
 	//Make the fairy disappear
@@ -69,7 +69,6 @@ public class CerberusSequence : MonoBehaviour {
 		playerController.startRunning(false);
 		fairyController.resetYRotationOffset();
 	}
-
 
 	void OnEnable()
 	{
