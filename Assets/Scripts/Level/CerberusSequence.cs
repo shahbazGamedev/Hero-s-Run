@@ -28,7 +28,9 @@ public class CerberusSequence : MonoBehaviour {
 		print ("Start of Cerberus sequence");
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(18.1f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(5f, afterPlayerSlowdown ) );
+		cerberusController.walk();
+		Invoke ("stopWalking", 2.5f );
 	}
 
 	void afterPlayerSlowdown()
@@ -40,12 +42,34 @@ public class CerberusSequence : MonoBehaviour {
 		Invoke ("step1", 1f );
 	}
 
+	void stopWalking()
+	{
+		cerberusController.idle();
+	}
+
 	//Fairy tells something to player
 	void step1()
 	{
-		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_DRAGON_BRIDGE"), 3.6f );
-		Invoke ("step2", 3.75f );
+		AchievementDisplay.achievementDisplay.activateDisplayFairy( "Uh-oh!", 1.4f );
+		Invoke ("step2", 3f );
+		Invoke ("step3", 4.2f );
 	}
+
+	void step2()
+	{
+		AchievementDisplay.achievementDisplay.activateDisplayFairy( "Who's a good boy? Who's a good boy?", 3f );
+	}
+
+	//Make the fairy disappear
+	//Player starts running again
+	void step3()
+	{
+		fairyController.Disappear ();
+		playerController.allowRunSpeedToIncrease = true;
+		playerController.startRunning(false);
+		fairyController.resetYRotationOffset();
+	}
+
 
 	void OnEnable()
 	{

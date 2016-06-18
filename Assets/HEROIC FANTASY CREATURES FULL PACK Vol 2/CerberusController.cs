@@ -6,7 +6,7 @@ public class CerberusController : BaseClass {
 
 	[Header("Cerberus Controller")]
 	[Header("General")]
-	public AttackType attackType = AttackType.stand_and_breathe_fire;
+	public AttackType attackType = AttackType.controlled_by_script;
 	public bool applyGravity = true;
 	[Header("Audio")]
 	public AudioClip footstepLeftSound;
@@ -28,15 +28,15 @@ public class CerberusController : BaseClass {
 	public enum CerberusState {
 		Idle = 1,
 		Running = 2,
-		Attacking = 3,
-		Dying = 4,
-		Victory = 5
+		Walking = 3,
+		Attacking = 4,
+		Dying = 5,
+		Victory = 6
 	}
 
 	public enum AttackType {
 		stand_and_breathe_fire = 1,
-		jump_and_attack  = 2,
-		run_and_attack = 3
+		controlled_by_script  = 2
 	}
 
 	PlayerController playerController;
@@ -46,11 +46,12 @@ public class CerberusController : BaseClass {
 	CerberusState cerberusState = CerberusState.Idle;
 	CharacterController controller;
 	Vector3 forward;
-	float runSpeed = 4.5f; //good value so feet don't slide
+	const float RUN_SPEED = 6f; //good value so feet don't slide
+	float WALK_SPEED = 2.1f; //good value so feet don't slide
+	float moveSpeed = 0;
 	//If true, the cerberus heads for the player as opposed to staying in his lane
 	bool followsPlayer = false;
 	bool allowMove = false;
-
 
 	void Awake ()
 	{
@@ -63,6 +64,7 @@ public class CerberusController : BaseClass {
 	{
 		moveCerberus();
 		handleAttackType();
+		#if UNITY_EDITOR
 		if ( Input.GetKeyDown (KeyCode.A) ) 
 		{
 			if( attackType == AttackType.stand_and_breathe_fire )
@@ -71,11 +73,12 @@ public class CerberusController : BaseClass {
 				breatheFire();
 			}
 		}
+		#endif
 	}
 
 	void moveCerberus()
 	{
-		if( cerberusState == CerberusState.Running && allowMove )
+		if( ( cerberusState == CerberusState.Running || cerberusState == CerberusState.Walking ) && allowMove )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -86,7 +89,7 @@ public class CerberusController : BaseClass {
 			//1) Get the direction of the cerberus
 			forward = transform.TransformDirection(Vector3.forward);			
 			//2) Scale vector based on run speed
-			forward = forward * Time.deltaTime * runSpeed;
+			forward = forward * Time.deltaTime * moveSpeed;
 			if( applyGravity ) forward.y -= 16f * Time.deltaTime;
 			//3) Move the controller
 			controller.Move( forward );
@@ -102,33 +105,12 @@ public class CerberusController : BaseClass {
 		    switch (attackType)
 			{
 		        case AttackType.stand_and_breathe_fire:
-					attackDistance = 0.95f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance && getDotProduct() > 0.98f )
+					attackDistance = 10f;
+					if( distance < attackDistance  )
 					{
 						breatheFire();
 					}
 					break;
-		                
-		        case AttackType.jump_and_attack:
-					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance && getDotProduct() > 0.98f )
-					{
-						setCerberusState( CerberusState.Attacking );
-						GetComponent<Animator>().Play("attack2");
-					}
-					break;
-		                
-				case AttackType.run_and_attack:
-					attackDistance = 2f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance )
-					{
-						followsPlayer = true;
-						setCerberusState( CerberusState.Running );
-						allowMove = true;
-						GetComponent<Animator>().Play("run");
-					}
-					break;
-			
 			}
 		}
 	}
@@ -146,10 +128,28 @@ public class CerberusController : BaseClass {
 		return Vector3.Dot( heading.normalized, transform.forward );
 	}
 
+	public void walk()
+	{
+		Debug.LogWarning("Cerberus walk");
+		followsPlayer = true;
+		moveSpeed = WALK_SPEED;
+		setCerberusState( CerberusState.Walking );
+		allowMove = true;
+		GetComponent<Animator>().CrossFadeInFixedTime("walk", 0.7f);
+	}
+
+	public void idle()
+	{
+		Debug.LogWarning("Cerberus idle");
+		setCerberusState( CerberusState.Idle );
+		allowMove = false;
+		GetComponent<Animator>().CrossFadeInFixedTime("idleBreathe", 0.5f);
+	}
+
 	void breatheFire()
 	{
 		setCerberusState( CerberusState.Attacking );
-		GetComponent<Animator>().SetTrigger("blowFireAggressive");
+		GetComponent<Animator>().CrossFadeInFixedTime("blowFireAggressive", 0.5f);
 		centerHeadFireObject.SetActive( true );
 		centerHeadFire.Play();
 		leftHeadFireObject.SetActive( true );
@@ -285,19 +285,11 @@ public class CerberusController : BaseClass {
 	{
 		if( newState == GameState.Paused )
 		{
-			allowMove = false;
-			controller.enabled = false;
-			
-		}
-		else if( newState == GameState.Checkpoint )
-		{
-			allowMove = false;
-			controller.enabled = false;
+			allowMove = false;			
 		}
 		else if( newState == GameState.Normal )
 		{
 			allowMove = true;
-			controller.enabled = true;
 		}
 	}
 
@@ -326,5 +318,14 @@ public class CerberusController : BaseClass {
 	{
 		GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.23f );
 	}
+
+	public void Start_running ( AnimationEvent eve )
+	{
+		allowMove = true;
+		setCerberusState( CerberusState.Running );
+		moveSpeed = RUN_SPEED;
+		attackType = AttackType.stand_and_breathe_fire;
+	}
+
 
 }
