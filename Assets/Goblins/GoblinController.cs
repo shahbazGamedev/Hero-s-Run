@@ -40,7 +40,8 @@ public class GoblinController : BaseClass {
 		Throw_Barrel = 5
 	}
 	
-	const float BOLT_FORCE = 600f;
+	const float BOLT_FORCE = 630f;
+	const float CROSS_FADE_DURATION = 0.5f;
 
 	//Only use for the scout goblin with the crossbow
 	GameObject boltPrefab;
@@ -82,7 +83,7 @@ public class GoblinController : BaseClass {
 	IEnumerator playIdleAnimation()
 	{
 		yield return new WaitForSeconds( Random.value * 3f );
-		GetComponent<Animator>().Play("fun1");
+		GetComponent<Animator>().CrossFadeInFixedTime( "fun1", CROSS_FADE_DURATION );
 	}
 
 	//We don't want all goblins to look the same
@@ -145,7 +146,7 @@ public class GoblinController : BaseClass {
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setGoblinState( GoblinState.Attacking );
-						GetComponent<Animator>().Play("attack1");
+						GetComponent<Animator>().CrossFadeInFixedTime( "attack1", CROSS_FADE_DURATION );
 					}
 					break;
 		                
@@ -154,7 +155,7 @@ public class GoblinController : BaseClass {
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setGoblinState( GoblinState.Attacking );
-						GetComponent<Animator>().Play("attack2");
+						GetComponent<Animator>().CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
 					}
 					break;
 		                
@@ -165,7 +166,7 @@ public class GoblinController : BaseClass {
 						followsPlayer = true;
 						setGoblinState( GoblinState.Running );
 						allowMove = true;
-						GetComponent<Animator>().Play("run");
+						GetComponent<Animator>().CrossFadeInFixedTime( "run", CROSS_FADE_DURATION );
 					}
 					break;
 			
@@ -217,7 +218,7 @@ public class GoblinController : BaseClass {
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 		Vector3 initialBoltPosition = transform.TransformPoint( initialBoltPositionOffset );
 		bolt.transform.position = initialBoltPosition;
-		GetComponent<Animator>().Play("attack");
+		GetComponent<Animator>().CrossFadeInFixedTime( "attack", CROSS_FADE_DURATION );
 		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
 		bolt.GetComponent<Rigidbody>().AddForce(bolt.transform.forward * getAdjustedBoltForce() );
@@ -254,7 +255,7 @@ public class GoblinController : BaseClass {
 		Vector3 forces = transform.forward * 1300f + new Vector3( 0, 400f, 0 );
 		barrel.AddForce( forces );
 		barrel.AddTorque( new Vector3( 0, 300f, 0 ) );
-		GetComponent<Animator>().Play("attack2");
+		GetComponent<Animator>().CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
 	}
 
 
@@ -271,7 +272,7 @@ public class GoblinController : BaseClass {
 	public void sideCollision()
 	{
 		GetComponent<AudioSource>().PlayOneShot( ouch );
-		GetComponent<Animator>().Play("damage");
+		GetComponent<Animator>().CrossFadeInFixedTime( "damage", CROSS_FADE_DURATION );
 	}
 
 	public void victory( bool playWinSound )
@@ -286,15 +287,15 @@ public class GoblinController : BaseClass {
 
 	IEnumerator playVictoryAnimation()
 	{
-		GetComponent<Animator>().Play("idle");
+		GetComponent<Animator>().CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
 		yield return new WaitForSeconds( Random.value * 2f );
 		if( Random.value < 0.5f )
 		{
-			GetComponent<Animator>().Play("fun1");
+			GetComponent<Animator>().CrossFadeInFixedTime( "fun1", CROSS_FADE_DURATION );
 		}
 		else
 		{
-			GetComponent<Animator>().Play("fun2");
+			GetComponent<Animator>().CrossFadeInFixedTime( "fun2", CROSS_FADE_DURATION );
 		}
 	}
 
@@ -309,7 +310,7 @@ public class GoblinController : BaseClass {
 		{
 			capsuleColliders[i].enabled = false;
 		}
-		GetComponent<Animator>().Play("death");
+		GetComponent<Animator>().CrossFadeInFixedTime( "death", CROSS_FADE_DURATION );
 		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 	}
 	
@@ -376,7 +377,7 @@ public class GoblinController : BaseClass {
 	public void resetGoblin()
 	{
 		setGoblinState( GoblinState.Idle );
-		GetComponent<Animator>().Play("idle");
+		GetComponent<Animator>().CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
 		gameObject.SetActive( false );
 		followsPlayer = false;
 		controller.enabled = true;
