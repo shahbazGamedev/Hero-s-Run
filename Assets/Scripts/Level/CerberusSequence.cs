@@ -28,9 +28,9 @@ public class CerberusSequence : MonoBehaviour {
 		print ("Start of Cerberus sequence");
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(3f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(4f, afterPlayerSlowdown ) );
 		cerberusController.walk();
-		Invoke ("stopWalking", 2.5f );
+		Invoke ("stopWalking", 3.5f );
 	}
 
 	void afterPlayerSlowdown()

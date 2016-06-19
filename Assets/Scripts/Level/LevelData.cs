@@ -157,7 +157,7 @@ public class LevelData : MonoBehaviour {
 
 			case SunType.Hell:
 				skyBoxName = "Skybox Hell";
-				lightIntensity = 0.34f;
+				lightIntensity = 0.3f;
 				shadowStrength = 0f;
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 32f,13f,-63f );
