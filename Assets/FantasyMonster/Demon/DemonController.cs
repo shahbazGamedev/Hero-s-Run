@@ -37,6 +37,7 @@ public class DemonController : BaseClass {
 	
 	PlayerController playerController;
 	Transform player;
+	const float CROSS_FADE_DURATION = 0.5f;
 
 	//Movement related
 	DemonState demonState = DemonState.Idle;
@@ -97,7 +98,7 @@ public class DemonController : BaseClass {
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setDemonState( DemonState.Attacking );
-						GetComponent<Animator>().Play("Attack");
+						GetComponent<Animator>().CrossFadeInFixedTime( "Attack" , CROSS_FADE_DURATION );
 					}
 					break;
 		                
@@ -106,7 +107,7 @@ public class DemonController : BaseClass {
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setDemonState( DemonState.Attacking );
-						GetComponent<Animator>().Play("Skill");
+						GetComponent<Animator>().CrossFadeInFixedTime( "Skill" , CROSS_FADE_DURATION );
 					}
 					break;
 		                
@@ -122,13 +123,13 @@ public class DemonController : BaseClass {
 							moveSpeed = RUN_SPEED;
 							setDemonState( DemonState.Running );
 							allowMove = true;
-							GetComponent<Animator>().Play("Run");
+							GetComponent<Animator>().CrossFadeInFixedTime( "Run" , CROSS_FADE_DURATION );
 						}
 						else
 						{
 							//Attack now
 							setDemonState( DemonState.Attacking );
-							GetComponent<Animator>().Play("Skill");
+							GetComponent<Animator>().CrossFadeInFixedTime( "Skill" , CROSS_FADE_DURATION );
 						}
 					}
 					break;
@@ -145,13 +146,13 @@ public class DemonController : BaseClass {
 							moveSpeed = WALK_SPEED;
 							setDemonState( DemonState.Walking );
 							allowMove = true;
-							GetComponent<Animator>().Play("Walk");
+							GetComponent<Animator>().CrossFadeInFixedTime( "Walk" , CROSS_FADE_DURATION );
 						}
 						else
 						{
 							//Attack now
 							setDemonState( DemonState.Attacking );
-							GetComponent<Animator>().Play("Skill");
+							GetComponent<Animator>().CrossFadeInFixedTime( "Skill" , CROSS_FADE_DURATION );
 						}
 					}
 					break;
@@ -185,7 +186,7 @@ public class DemonController : BaseClass {
 	public void sideCollision()
 	{
 		GetComponent<AudioSource>().PlayOneShot( ouch );
-		GetComponent<Animator>().Play("Damage");
+		GetComponent<Animator>().CrossFadeInFixedTime( "Damage" , CROSS_FADE_DURATION );
 	}
 
 	public void victory( bool playWinSound )
@@ -194,7 +195,7 @@ public class DemonController : BaseClass {
 		{
 			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
 			setDemonState( DemonState.Victory );
-			GetComponent<Animator>().Play("Idle");
+			GetComponent<Animator>().CrossFadeInFixedTime( "Idle" , CROSS_FADE_DURATION );
 		}
 	}
 
@@ -273,7 +274,7 @@ public class DemonController : BaseClass {
 	public void resetDemon()
 	{
 		setDemonState( DemonState.Idle );
-		GetComponent<Animator>().Play("Idle");
+		GetComponent<Animator>().CrossFadeInFixedTime( "Idle" , CROSS_FADE_DURATION );
 		gameObject.SetActive( false );
 		followsPlayer = false;
 		controller.enabled = true;
@@ -287,13 +288,13 @@ public class DemonController : BaseClass {
 
 	public void Footstep_left ( AnimationEvent eve )
 	{
-		GetComponent<AudioSource>().PlayOneShot( footstepLeftSound, 0.23f );
+		GetComponent<AudioSource>().PlayOneShot( footstepLeftSound, 0.4f );
 		sparksLeftHoof.Play();
 	}
 
 	public void Footstep_right ( AnimationEvent eve )
 	{
-		GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.23f );
+		GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.4f );
 		sparksRightHoof.Play();
 	}
 

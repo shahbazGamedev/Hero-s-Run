@@ -248,13 +248,13 @@ public class CerberusController : BaseClass {
 	//walk
 	public void Footstep_left ( AnimationEvent eve )
 	{
-		GetComponent<AudioSource>().PlayOneShot( footstepLeftSound );
+		GetComponent<AudioSource>().PlayOneShot( footstepLeftSound, 0.5f );
 	}
 
 	//walk
 	public void Footstep_right ( AnimationEvent eve )
 	{
-		GetComponent<AudioSource>().PlayOneShot( footstepRightSound );
+		GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.5f );
 	}
 
 	//biteNormal
