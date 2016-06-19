@@ -387,6 +387,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		GameObject CoreManagers = GameObject.FindGameObjectWithTag("CoreManagers");
 		CoreManagers.GetComponent<NotificationServicesHandler>().sendTestLocalNotification();
 		PlayerStatsManager.Instance.resetDeathInEpisodes();
+		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 	}
 
 }

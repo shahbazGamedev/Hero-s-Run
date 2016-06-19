@@ -2991,7 +2991,11 @@ public class PlayerController : BaseClass {
 			transform.GetComponent<Collider>().enabled = false;
 			//When he is on the last frame of the dead animation, the player is 0.0328f above the ground
 			transform.position = new Vector3( respawn.position.x, groundHeight + 0.0328f, respawn.position.z );
-			transform.rotation = Quaternion.Euler ( 0, respawn.localEulerAngles.y + tileRotationY, 0 );
+			//The respawnLocationObject is always point in the correct direction for the resurrected hero
+			//temporarily set the tile has the parent of the hero and simply use the local rotation of the respawn location object
+			transform.SetParent( currentTile.transform );
+			transform.localRotation = Quaternion.Euler ( 0, respawn.localEulerAngles.y, 0 );
+			transform.SetParent( null );
 			tileRotationY = Mathf.Floor ( transform.eulerAngles.y );
 			transform.GetComponent<Collider>().enabled = true;
 		}
