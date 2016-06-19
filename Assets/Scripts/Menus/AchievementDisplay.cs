@@ -78,7 +78,7 @@ public class AchievementDisplay : MonoBehaviour {
 	
 	public void hideMessage()
 	{
-		LeanTween.cancelAll();
+		LeanTween.cancel(gameObject);
 		messagePanel.anchoredPosition = messagePanelDefaultPosition;
 	}
 

@@ -159,7 +159,7 @@ public class HUDHandler : MonoBehaviour {
 	
 	void hideLevelName()
 	{
-		LeanTween.cancelAll();
+		LeanTween.cancel(gameObject);
 		levelNamePanel.anchoredPosition = new Vector2( 0, levelNamePanel.rect.height/2f );
 	}
 	
