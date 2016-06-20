@@ -14,6 +14,7 @@ public class DemonController : BaseClass {
 	public AudioClip ouch;
 	public AudioClip fallToGround;
 	public AudioClip win;
+	public AudioClip swordSwoosh;
 	[Header("Particle Systems")]
 	public ParticleSystem sparksLeftHoof;
 	public ParticleSystem sparksRightHoof;
@@ -301,6 +302,7 @@ public class DemonController : BaseClass {
 	public void Start_Weapon_Trail ( AnimationEvent eve )
 	{
 		weaponTrail.SetActive( true );
+		GetComponent<AudioSource>().PlayOneShot( swordSwoosh );
 	}
 
 	public void Stop_Weapon_Trail ( AnimationEvent eve )
