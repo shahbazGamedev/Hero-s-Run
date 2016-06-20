@@ -8,6 +8,8 @@ public class DemonController : BaseClass {
 	[Header("General")]
 	public AttackType attackType = AttackType.stand_and_normal_attack;
 	public bool applyGravity = true;
+	[Tooltip("Speed at which to lock on player.")]
+	public float enemyAimSpeed = 7f;
 	[Header("Audio")]
 	public AudioClip footstepLeftSound;
 	public AudioClip footstepRightSound;
@@ -73,8 +75,7 @@ public class DemonController : BaseClass {
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
 			{
-				transform.LookAt( player );
-				transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
+				targetPlayer();
 			}
 			//1) Get the direction of the demon
 			forward = transform.TransformDirection(Vector3.forward);			
@@ -84,6 +85,16 @@ public class DemonController : BaseClass {
 			//3) Move the controller
 			controller.Move( forward );
 		}
+	}
+
+	void targetPlayer()
+	{
+		Vector3 relativePos = player.position - transform.position;
+		Quaternion desiredRotation = Quaternion.LookRotation( relativePos ); 
+		desiredRotation.x = 0f;
+		desiredRotation.z = 0f;
+		transform.rotation = Quaternion.Lerp( transform.rotation, desiredRotation, Time.deltaTime * enemyAimSpeed );
+
 	}
 
 	void handleAttackType()
