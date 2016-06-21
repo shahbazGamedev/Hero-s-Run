@@ -131,8 +131,6 @@ public class PauseMenu : MonoBehaviour {
 		{
 			//We were paused. Start the resume game countdown
 			GameManager.Instance.setGameState( GameState.Countdown );
-			//We need to set the time scale back to 1 or else our coroutine will not execute.
-			Time.timeScale = timeScaleBeforePause;
 			pauseMenuPopup.gameObject.SetActive( false );
 			if( playerController.getCharacterState() != CharacterState.Dying )
 			{
@@ -162,12 +160,12 @@ public class PauseMenu : MonoBehaviour {
 		{
 			goText.text = countdown.ToString();
 			SoundManager.playGUISound( beep );
-			//Slow time may be happening. We still want the countdown to be one second between count
-			yield return new WaitForSeconds(1.0f * Time.timeScale);
+			yield return new WaitForSecondsRealtime( 1.0f );
 			countdown --;
 			if( countdown == 0 )
 			{
 				//Resume game
+				Time.timeScale = timeScaleBeforePause;
 				AudioListener.pause = false;
 				GameManager.Instance.setGameState( GameState.Normal );
 				SoundManager.playMusic();

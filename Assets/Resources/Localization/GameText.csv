@@ -73,7 +73,7 @@ HELL_BEWARE_OF_DOG_BOTTOM,Cat is dodgy too,Chien Méchant,NOT TRANSLATED,NOT TRA
 CULLIS_GATE_TO_TANGLEWOOD,You're heading to Tanglewood forest.,Tu te diriges vers la forêt de Tanglewood.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CULLIS_GATE_TO_ELFLAND,You're heading to the tree-city of Ellenmïrre.,Tu te diriges vers la ville dans les arbres de Ellenmïrre.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CULLIS_GATE_TO_DREADKNOT_CEMETERY,You're heading to the Cemetery of Dreadknot. Foul creatures live there...,Tu te diriges vers le cimetière de Dreadknot. Des créatures sinistres y habitent...,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-CULLIS_GATE_TO_HELL,You're heading to Hell.,Tu te diriges vers l'Enfer.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+CULLIS_GATE_TO_HELL,You're heading to Hell.,Tu te diriges vers l'enfer.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CULLIS_GATE_TO_FLOODED_BATTLEFIELD,You're heading to the flooded battlefield.,Tu te diriges vers le champ de bataille englouti.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CULLIS_GATE_TO_GAME_END,Congratulations! You have finished the game.,Bravo ! Tu as finis le jeu.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 CHECKPOINT_REACHED,Checkpoint reached!,Point de sauvegarde !,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -221,14 +221,14 @@ POPUP_ASK_LIVES_BUTTON,Ask friends,Aide moi!,NOT TRANSLATED,NOT TRANSLATED,NOT T
 #Episodes
 EPISODE_NUMBER,Episode <number>,Épisode <number>,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_NAME_1,The Dark Tower,La Tour Noire,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-EPISODE_DESCRIPTION_1,<color=#D22626FF><size=9>T</size></color>he Dark Queen has cast an evil spell that will open the gates of Hell and unleash the infernal legions upon the unsuspecting Kingdom of Lum. You have just stolen her spell book from her tower and you must cast it in the Volcano of Doom before <color=#D22626FF>midnight!</color>,<color=#D22626FF><size=9>L</size></color>a Sorcière des Ténèbres a jeté un sortilège qui va ouvrir les portes de l’Enfer et permettre aux légions infernales d’envahir le Royaume de Lum. Tu viens tout juste de voler son grimoire magique et tu dois le jeter dans le Volcan du Désespoir avant <color=#D22626FF>minuit !</color>,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_DESCRIPTION_1,<color=#D22626FF><size=9>T</size></color>he Dark Queen has cast an evil spell that will open the gates of Hell and unleash the infernal legions upon the unsuspecting Kingdom of Lum. You have just stolen her spell book from her tower and you must cast it in the Volcano of Doom before <color=#D22626FF>midnight!</color>,<color=#D22626FF><size=9>L</size></color>a Sorcière des Ténèbres a jeté un sortilège qui va ouvrir les portes de l’enfer et permettre aux légions infernales d’envahir le Royaume de Lum. Tu viens tout juste de voler son grimoire magique et tu dois le jeter dans le Volcan du Désespoir avant <color=#D22626FF>minuit !</color>,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_NAME_2,,Tanglewood,Tanglewood,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DESCRIPTION_2,<color=#D22626FF><size=9>T</size></color>anglewood is a peaceful area located near the Oakvale harbor.,<color=#D22626FF><size=9>T</size></color>anglewood est un endroit paisible situé prêt du havre d'Oakvale.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_NAME_3,Elfland,Pays des Elfes,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DESCRIPTION_3,<color=#D22626FF><size=9>T</size></color>he wood elves used to live in Ellenmïrre. They abandoned the city after the Great Battle.,<color=#D22626FF><size=9>L</size></color>es elfes des bois habitaient jadis à Ellenmïrre. Ils ont abandonné l'endroit après la Grande Bataille.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_NAME_4,Dreadknot Cemetery,Cimetière Dreadknot,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DESCRIPTION_4,<color=#D22626FF><size=9>D</size></color>readknot is a vast and ancient cemetery that was built after the Great Battle. It has long since been abandoned and now wicked creatures prowl the land in search of easy prey.,<color=#D22626FF><size=9>D</size></color>readknot est un vaste et ancien cimetière qui a été construit après la Grande Bataille. Il a été abandonné depuis fort longtemps et maintenant des créatures maléfiques le parcours à la recherche de proies faciles.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-EPISODE_NAME_5,Hell,L'Enfer,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+EPISODE_NAME_5,Hell,L'enfer,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DESCRIPTION_5,<color=#D22626FF><size=9>H</size></color>ell is not for the faint of heart,<color=#D22626FF><size=9>L</size></color>'enfer n'est pas pour les faibles.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_NAME_6,Flooded Battlefield,Champ de bataille englouti,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 EPISODE_DESCRIPTION_6,<color=#D22626FF><size=9>T</size></color>he souls of the warriors that died in battle roam the Flooded Battlefield.,<color=#D22626FF><size=9>L</size></color>'âme des guerriers morts au combat erre dans le Champ de Bataille Englouti.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
@@ -252,7 +252,7 @@ LEVEL_LOCATION_DARK_TOWER,The Dark Tower,La Tour Noire,NOT TRANSLATED,NOT TRANSL
 LEVEL_LOCATION_TANGLEWOOD,Tanglewood,Tanglewood,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_LOCATION_ELFLAND,Elfland,Pays des Elfes,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_LOCATION_DREADKNOT_CEMETERY,Dreadknot Cemetery,Cimetière Dreadknot,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
-LEVEL_LOCATION_HELL,Hell,L'Enfer,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
+LEVEL_LOCATION_HELL,Hell,L'enfer,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 LEVEL_LOCATION_FLOODED_BATTLEFIELD,Flooded Battlefield,Champ de bataille englouti,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
 #Level Description (shown in Pause Menu)
 LEVEL_DESCRIPTION_DARK_TOWER,The maleficent Dark Queen lives in the wizard tower. This is where she broods and plots nefarious ways to conquer the Kingdom of Lum.,La maléfique Sorcière des Ténèbres habite dans la tour de sorcellerie. C'est là qu'elle manigance ses plans machiavéliques afin de conquérir le Royaume de Lum.,NOT TRANSLATED,NOT TRANSLATED,NOT TRANSLATED
