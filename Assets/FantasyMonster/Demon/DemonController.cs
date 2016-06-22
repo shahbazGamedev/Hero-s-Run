@@ -51,8 +51,6 @@ public class DemonController : BaseClass {
 	float moveSpeed = 0;
 	//If true, the demon heads for the player as opposed to staying in his lane
 	bool followsPlayer = false;
-	bool allowMove = false;
-
 
 	void Awake ()
 	{
@@ -69,7 +67,7 @@ public class DemonController : BaseClass {
 
 	void moveDemon()
 	{
-		if( demonState == DemonState.Running || demonState == DemonState.Walking && allowMove )
+		if( demonState == DemonState.Running || demonState == DemonState.Walking )
 		{
 
 			//0) Target the player but we only want the Y rotation
@@ -134,7 +132,6 @@ public class DemonController : BaseClass {
 							followsPlayer = true;
 							moveSpeed = RUN_SPEED;
 							setDemonState( DemonState.Running );
-							allowMove = true;
 							GetComponent<Animator>().CrossFadeInFixedTime( "Run" , CROSS_FADE_DURATION );
 						}
 						else
@@ -157,7 +154,6 @@ public class DemonController : BaseClass {
 							followsPlayer = true;
 							moveSpeed = WALK_SPEED;
 							setDemonState( DemonState.Walking );
-							allowMove = true;
 							GetComponent<Animator>().CrossFadeInFixedTime( "Walk" , CROSS_FADE_DURATION );
 						}
 						else
@@ -241,13 +237,11 @@ public class DemonController : BaseClass {
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
-		GameManager.gameStateEvent += GameStateChange;
 	}
 	
 	void OnDisable()
 	{
 		PlayerController.playerStateChanged -= PlayerStateChange;
-		GameManager.gameStateEvent -= GameStateChange;
 	}
 
 	void PlayerStateChange( CharacterState newState )
@@ -264,25 +258,6 @@ public class DemonController : BaseClass {
 		}
 	}
 
-	void GameStateChange( GameState newState )
-	{
-		if( newState == GameState.Paused )
-		{
-			allowMove = false;
-			controller.enabled = false;			
-		}
-		else if( newState == GameState.Checkpoint )
-		{
-			allowMove = false;
-			controller.enabled = false;
-		}
-		else if( newState == GameState.Normal )
-		{
-			allowMove = true;
-			controller.enabled = true;
-		}
-	}
-
 	public void resetDemon()
 	{
 		setDemonState( DemonState.Idle );
@@ -295,7 +270,6 @@ public class DemonController : BaseClass {
 		{
 			capsuleColliders[i].enabled = true;
 		}
-		allowMove = false;
 	}
 
 	public void Footstep_left ( AnimationEvent eve )

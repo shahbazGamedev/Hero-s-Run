@@ -39,7 +39,6 @@ public class CullisGateController : MonoBehaviour {
 		lightEffect.Play();
 		if( playCameraCutscene ) Invoke("playCutscene", 2.2f);
 		bool isGameFinished = LevelManager.Instance.incrementNextLevelToComplete();
-		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		//Save the player stats before continuing
 		PlayerStatsManager.Instance.savePlayerStats();
 		if( isGameFinished )

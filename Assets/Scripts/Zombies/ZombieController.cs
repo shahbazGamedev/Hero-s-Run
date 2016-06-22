@@ -43,9 +43,6 @@ public class ZombieController : BaseClass {
 	//If true, the zombie heads for the player (as opposed to staying in its lane).
 	public bool followsPlayer = false;
 
-	//True if the CharacterController is allowed to move and false otherwise (because the game is paused for example).
-	public bool allowMove = true;
-
 	// Use this for initialization
 	void Awake () {
 
@@ -93,7 +90,7 @@ public class ZombieController : BaseClass {
 
 	void moveZombie()
 	{
-		if( allowMove && zombieState == ZombieState.Walking || zombieState == ZombieState.Crawling )
+		if( zombieState == ZombieState.Walking || zombieState == ZombieState.Crawling )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -317,14 +314,12 @@ public class ZombieController : BaseClass {
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
-		GameManager.gameStateEvent += GameStateChange;
 	}
 
 	void OnDisable()
 	{
 		CancelInvoke( "groan" );
 		PlayerController.playerStateChanged -= PlayerStateChange;
-		GameManager.gameStateEvent -= GameStateChange;
 	}
 
 	void PlayerStateChange( CharacterState newState )
@@ -334,24 +329,7 @@ public class ZombieController : BaseClass {
 			CancelInvoke( "groan" );
 		}
 	}
-	
-	void GameStateChange( GameState newState )
-	{
-		if( newState == GameState.Paused )
-		{
-			anim.enabled = false;
-			allowMove = false;
-			controller.enabled = false;
-			
-		}
-		else if( newState == GameState.Normal )
-		{
-			anim.enabled = true;
-			allowMove = true;
-			controller.enabled = true;
-		}
-	}
-	
+		
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
 		if( PlayerController._characterState == CharacterState.Dying )

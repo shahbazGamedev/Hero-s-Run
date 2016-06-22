@@ -4,7 +4,6 @@ using System.Collections;
 public class SimpleController : MonoBehaviour {
 	
 	bool allowMove = false;  //The NPC will not start moving until the PlayerTrigger event has been received
-	bool allowControllerUpdate = true;
 	public AnimationClip walkAnim;
 	public AnimationClip idleAnim;
 	public AnimationClip hitAnim;
@@ -29,7 +28,7 @@ public class SimpleController : MonoBehaviour {
 
 	void move()
 	{
-		if( allowMove && allowControllerUpdate )
+		if( allowMove )
 		{
 			//1) Get the direction
 			forward = transform.TransformDirection(Vector3.forward);			
@@ -66,13 +65,11 @@ public class SimpleController : MonoBehaviour {
 
 	void OnEnable()
 	{
-		GameManager.gameStateEvent += GameStateChange;
 		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
 	}
 	
 	void OnDisable()
 	{
-		GameManager.gameStateEvent -= GameStateChange;
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 
@@ -97,23 +94,4 @@ public class SimpleController : MonoBehaviour {
 		anim.CrossFade(idleAnim.name, 0.7f );
 	}
 
-	void GameStateChange( GameState newState )
-	{
-		if( anim != null )
-		{
-			if( newState == GameState.Paused )
-			{
-				anim.enabled = false;
-				allowControllerUpdate = false;
-				if( controller != null ) controller.enabled = false;
-				
-			}
-			else if( newState == GameState.Normal )
-			{
-				anim.enabled = true;
-				allowControllerUpdate = true;
-				if( controller != null ) controller.enabled = true;
-			}
-		}
-	}
 }

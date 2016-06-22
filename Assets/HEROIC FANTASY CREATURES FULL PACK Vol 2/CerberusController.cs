@@ -49,7 +49,6 @@ public class CerberusController : BaseClass {
 	float moveSpeed = 0;
 	//If true, the cerberus heads for the player as opposed to staying in his lane
 	bool followsPlayer = false;
-	bool allowMove = false;
 
 	void Awake ()
 	{
@@ -75,7 +74,7 @@ public class CerberusController : BaseClass {
 
 	void moveCerberus()
 	{
-		if( ( cerberusState == CerberusState.Walking ) && allowMove )
+		if( ( cerberusState == CerberusState.Walking ) )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -117,14 +116,12 @@ public class CerberusController : BaseClass {
 		followsPlayer = true;
 		moveSpeed = WALK_SPEED;
 		setCerberusState( CerberusState.Walking );
-		allowMove = true;
 		GetComponent<Animator>().CrossFadeInFixedTime("walk", 0.7f);
 	}
 
 	public void idle()
 	{
 		setCerberusState( CerberusState.Idle );
-		allowMove = false;
 		GetComponent<Animator>().CrossFadeInFixedTime("idleBreathe", 0.5f);
 	}
 
@@ -208,28 +205,6 @@ public class CerberusController : BaseClass {
 		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 	}
 
-	void OnEnable()
-	{
-		GameManager.gameStateEvent += GameStateChange;
-	}
-	
-	void OnDisable()
-	{
-		GameManager.gameStateEvent -= GameStateChange;
-	}
-
-	void GameStateChange( GameState newState )
-	{
-		if( newState == GameState.Paused )
-		{
-			allowMove = false;			
-		}
-		else if( newState == GameState.Normal )
-		{
-			allowMove = true;
-		}
-	}
-
 	public void resetCerberus()
 	{
 		setCerberusState( CerberusState.Idle );
@@ -242,7 +217,6 @@ public class CerberusController : BaseClass {
 		{
 			capsuleColliders[i].enabled = true;
 		}
-		allowMove = false;
 	}
 
 	//walk

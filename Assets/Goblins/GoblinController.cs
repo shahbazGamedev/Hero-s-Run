@@ -59,7 +59,6 @@ public class GoblinController : BaseClass {
 	float runSpeed = 4.5f; //good value so feet don't slide
 	//If true, the goblin heads for the player as opposed to staying in his lane
 	bool followsPlayer = false;
-	bool allowMove = false;
 
 
 	void Awake ()
@@ -117,7 +116,7 @@ public class GoblinController : BaseClass {
 
 	void moveGoblin()
 	{
-		if( goblinState == GoblinState.Running && allowMove )
+		if( goblinState == GoblinState.Running )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -176,7 +175,6 @@ public class GoblinController : BaseClass {
 					{
 						followsPlayer = true;
 						setGoblinState( GoblinState.Running );
-						allowMove = true;
 						GetComponent<Animator>().Play( "run" );
 					}
 					break;
@@ -341,13 +339,11 @@ public class GoblinController : BaseClass {
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
-		GameManager.gameStateEvent += GameStateChange;
 	}
 	
 	void OnDisable()
 	{
 		PlayerController.playerStateChanged -= PlayerStateChange;
-		GameManager.gameStateEvent -= GameStateChange;
 	}
 
 	void PlayerStateChange( CharacterState newState )
@@ -364,27 +360,6 @@ public class GoblinController : BaseClass {
 		}
 	}
 
-	void GameStateChange( GameState newState )
-	{
-		if( newState == GameState.Paused )
-		{
-			allowMove = false;
-			controller.enabled = false;
-			
-		}
-		else if( newState == GameState.Checkpoint )
-		{
-			allowMove = false;
-			controller.enabled = false;
-		}
-		else if( newState == GameState.Normal )
-		{
-			allowMove = true;
-			controller.enabled = true;
-		}
-	}
-
-
 	public void resetGoblin()
 	{
 		setGoblinState( GoblinState.Idle );
@@ -397,7 +372,6 @@ public class GoblinController : BaseClass {
 		{
 			capsuleColliders[i].enabled = true;
 		}
-		allowMove = false;
 	}
 
 	public void Footstep_left ( AnimationEvent eve )

@@ -102,6 +102,7 @@ public class EpisodePopup : MonoBehaviour {
 		LevelManager.Instance.setScore( 0 );
 		LevelManager.Instance.setEpisodeCompleted( false );
 		LevelManager.Instance.forceNextLevelToComplete( levelNumber );
+		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 
 		StartCoroutine( loadLevel() );
 	}
