@@ -107,6 +107,7 @@ public class TakeScreenshot : MonoBehaviour {
 	
 	IEnumerator takeSelfie()
 	{
+		LeanTween.cancel( gameObject );
         yield return new WaitForEndOfFrame();
 		GetComponent<AudioSource>().Play();
 		Debug.Log("TakeScreenshot-selfie." );
@@ -133,7 +134,7 @@ public class TakeScreenshot : MonoBehaviour {
 		screenShotCamera.enabled = false;
 		pointLight.gameObject.SetActive( false );
 		selfieTaken = true;
-		Invoke( "showPicturePreview", 1f );
+		fadeInPicturePreview();
 		
 		if( saveToFile )
 		{
@@ -146,10 +147,19 @@ public class TakeScreenshot : MonoBehaviour {
 		}
 	}
 	
-	void showPicturePreview()
+	void fadeInPicturePreview()
 	{
+		picturePreview.color = new Color( picturePreview.color.r, picturePreview.color.g, picturePreview.color.b, 0f );
+		picturePreview.rectTransform.localScale = Vector3.zero;
 		picturePreview.gameObject.SetActive( true );
-		Invoke( "hidePicturePreview", 5f );
+		LeanTween.color( picturePreview.rectTransform, new Color( picturePreview.color.r, picturePreview.color.g, picturePreview.color.b, 1f ), 0.6f ).setOnComplete(fadeOutPicturePreview).setOnCompleteParam(gameObject);
+		LeanTween.scale ( picturePreview.rectTransform, Vector3.one, 0.6f ).setEase(LeanTweenType.easeOutQuad);
+	}
+
+	void fadeOutPicturePreview()
+	{
+		LeanTween.color( picturePreview.rectTransform, new Color( picturePreview.color.r, picturePreview.color.g, picturePreview.color.b, 0 ), 0.6f ).setOnComplete(hidePicturePreview).setOnCompleteParam(gameObject).setDelay(3.5f);
+		LeanTween.scale ( picturePreview.rectTransform, Vector3.zero, 0.6f ).setEase(LeanTweenType.easeOutQuad).setDelay(3.5f);
 	}
 
 	void hidePicturePreview()
@@ -178,10 +188,10 @@ public class TakeScreenshot : MonoBehaviour {
 		}
 		else
 		{
-			CancelInvoke();
+			LeanTween.cancel( gameObject );
 			cameraButton.gameObject.SetActive( false );
 			flipCameraButton.gameObject.SetActive( false );
-			picturePreview.gameObject.SetActive( false );
+			hidePicturePreview();
 		}
 	}
 
