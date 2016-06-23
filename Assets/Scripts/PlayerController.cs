@@ -2678,7 +2678,7 @@ public class PlayerController : BaseClass {
 	{
 		if( groundType != "Water" )
 		{
-			GetComponent<AudioSource>().PlayOneShot( footstepLeftSound, 0.2f );
+			GetComponent<AudioSource>().PlayOneShot( footstepLeftSound, 0.18f );
 		}
 		else
 		{
@@ -2690,7 +2690,7 @@ public class PlayerController : BaseClass {
 	{
 		if( groundType != "Water" )
 		{
-			GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.2f );
+			GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.18f );
 		}
 	}
 

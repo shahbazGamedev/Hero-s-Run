@@ -31,7 +31,7 @@ public class HellCaveSequence : MonoBehaviour {
 		print ("Start of Hell Cave sequence");
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(5.8f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(5.9f, afterPlayerSlowdown ) );
 	}
 
 	void afterPlayerSlowdown()
