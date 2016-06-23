@@ -29,7 +29,10 @@ public enum GameEvent {
 	Stop_Cemetery_Sequence = 24,
 	Start_Ghost = 25,
 	Stop_Ghost = 26,
-	Start_Cerberus_encounter = 27
+	Start_Cerberus_encounter = 27,
+	Dim_light = 28,
+	Brighten_light = 29,
+	Hell_Cave_Sequence = 30
 
 }
 
