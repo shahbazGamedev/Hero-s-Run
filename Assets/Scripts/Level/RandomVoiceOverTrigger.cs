@@ -18,4 +18,18 @@ public class RandomVoiceOverTrigger : MonoBehaviour {
 		}
 	}
 
+	void Update ()
+	{
+		#if UNITY_EDITOR
+		if ( Input.GetKeyDown (KeyCode.B) ) 
+		{
+			int selectedVOIndex = Random.Range(0, possibleVoiceOvers.Count);
+			AudioClip selectedVO = possibleVoiceOvers[selectedVOIndex];
+			if( selectedVO != null ) objectWhichWillPlayVO.GetComponent<AudioSource>().PlayOneShot( selectedVO );
+		
+		}
+		#endif
+	}
+
+
 }
