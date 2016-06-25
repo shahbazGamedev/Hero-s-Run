@@ -8,6 +8,7 @@ public class MagicalMirror : MonoBehaviour {
 	public float remainFadedDuration = 5f;
 	public ParticleSystem sparkle;
 	public Animator steel_broken_door;
+	public bool hasTriggered = false;
 
 	Material magicalMirrorMaterial;
 
@@ -18,17 +19,9 @@ public class MagicalMirror : MonoBehaviour {
 		magicalMirrorMaterial.color = new Color( magicalMirrorMaterial.color.r, magicalMirrorMaterial.color.g, magicalMirrorMaterial.color.b, 0f );
 	}
 	
-	void Update ()
-	{
-		if ( Input.GetKeyDown (KeyCode.F) ) 
-		{
-			print("fading");
-			fadeInFarScene();
-		}
-	}
-
 	void fadeInFarScene()
 	{
+		hasTriggered = true;
 		if( sparkle != null ) sparkle.Play();
 		if( steel_broken_door != null ) InvokeRepeating( "makeDoorShudder", 0.3f, 1.7f );
 		LeanTween.color( gameObject, new Color( magicalMirrorMaterial.color.r, magicalMirrorMaterial.color.g, magicalMirrorMaterial.color.b, 1f ), fadeInDuration ).setOnComplete(fadeOutFarScene).setOnCompleteParam(gameObject);
@@ -45,4 +38,54 @@ public class MagicalMirror : MonoBehaviour {
 		steel_broken_door.Play("Shudder");
 	}
 
+	// Update is called once per frame
+	void Update ()
+	{
+		if( !hasTriggered )
+		{
+	
+			#if UNITY_EDITOR
+			// User pressed the left mouse up
+			if (Input.GetMouseButtonUp(0))
+			{
+				MouseButtonUp(0);
+			}
+			#else
+			detectTaps();
+			#endif
+		}
+	}
+
+	void MouseButtonUp(int Button)
+	{
+		GetHit(Input.mousePosition);
+	}
+
+	void detectTaps()
+	{
+		if ( Input.touchCount > 0 )
+		{
+			Touch touch = Input.GetTouch(0);
+			if( touch.tapCount == 1 )
+			{
+				if( touch.phase == TouchPhase.Ended  )
+				{
+					GetHit(Input.mousePosition);
+				}
+			}
+		}
+	}
+
+	void GetHit( Vector2 touchPosition )
+	{
+		// We need to actually hit an object
+		RaycastHit hit;
+		if (Physics.Raycast(Camera.main.ScreenPointToRay(touchPosition), out hit, 1000))
+		{
+			if (hit.collider.name == "Mirror Far Scene" )
+			{
+				fadeInFarScene();
+			}
+		}
+	}
 }
