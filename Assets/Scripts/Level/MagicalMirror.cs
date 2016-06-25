@@ -6,6 +6,7 @@ public class MagicalMirror : MonoBehaviour {
 	public float fadeInDuration = 5f;
 	public float fadeOutDuration = 5f;
 	public float remainFadedDuration = 5f;
+	public ParticleSystem sparkle;
 
 	Material magicalMirrorMaterial;
 
@@ -27,6 +28,7 @@ public class MagicalMirror : MonoBehaviour {
 
 	void fadeInFarScene()
 	{
+		if( sparkle != null ) sparkle.Play();
 		LeanTween.color( gameObject, new Color( magicalMirrorMaterial.color.r, magicalMirrorMaterial.color.g, magicalMirrorMaterial.color.b, 1f ), fadeInDuration ).setOnComplete(fadeOutFarScene).setOnCompleteParam(gameObject);
 	}
 
