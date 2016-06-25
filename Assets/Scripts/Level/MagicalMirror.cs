@@ -7,6 +7,7 @@ public class MagicalMirror : MonoBehaviour {
 	public float fadeOutDuration = 5f;
 	public float remainFadedDuration = 5f;
 	public ParticleSystem sparkle;
+	public Animator steel_broken_door;
 
 	Material magicalMirrorMaterial;
 
@@ -29,12 +30,19 @@ public class MagicalMirror : MonoBehaviour {
 	void fadeInFarScene()
 	{
 		if( sparkle != null ) sparkle.Play();
+		if( steel_broken_door != null ) InvokeRepeating( "makeDoorShudder", 0.3f, 1.7f );
 		LeanTween.color( gameObject, new Color( magicalMirrorMaterial.color.r, magicalMirrorMaterial.color.g, magicalMirrorMaterial.color.b, 1f ), fadeInDuration ).setOnComplete(fadeOutFarScene).setOnCompleteParam(gameObject);
 	}
 
 	void fadeOutFarScene()
 	{
+		CancelInvoke();
 		LeanTween.color( gameObject, new Color( magicalMirrorMaterial.color.r, magicalMirrorMaterial.color.g, magicalMirrorMaterial.color.b, 0f ), fadeOutDuration ).setDelay(remainFadedDuration);
+	}
+
+	void makeDoorShudder()
+	{
+		steel_broken_door.Play("Shudder");
 	}
 
 }
