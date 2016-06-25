@@ -32,7 +32,8 @@ public enum GameEvent {
 	Start_Cerberus_encounter = 27,
 	Dim_light = 28,
 	Brighten_light = 29,
-	Hell_Cave_Sequence = 30
+	Hell_Cave_Sequence = 30,
+	Taste_Hell_Sequence = 31
 
 }
 

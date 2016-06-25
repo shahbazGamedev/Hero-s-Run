@@ -23,6 +23,7 @@ public class MagicalMirror : MonoBehaviour {
 	{
 		hasTriggered = true;
 		if( sparkle != null ) sparkle.Play();
+		GetComponent<AudioSource>().Play();
 		if( steel_broken_door != null ) InvokeRepeating( "makeDoorShudder", 0.3f, 1.7f );
 		LeanTween.color( gameObject, new Color( magicalMirrorMaterial.color.r, magicalMirrorMaterial.color.g, magicalMirrorMaterial.color.b, 1f ), fadeInDuration ).setOnComplete(fadeOutFarScene).setOnCompleteParam(gameObject);
 	}
@@ -30,7 +31,12 @@ public class MagicalMirror : MonoBehaviour {
 	void fadeOutFarScene()
 	{
 		CancelInvoke();
-		LeanTween.color( gameObject, new Color( magicalMirrorMaterial.color.r, magicalMirrorMaterial.color.g, magicalMirrorMaterial.color.b, 0f ), fadeOutDuration ).setDelay(remainFadedDuration);
+		LeanTween.color( gameObject, new Color( magicalMirrorMaterial.color.r, magicalMirrorMaterial.color.g, magicalMirrorMaterial.color.b, 0f ), fadeOutDuration ).setDelay(remainFadedDuration).setOnComplete(fadeOutFinished).setOnCompleteParam(gameObject);
+	}
+
+	void fadeOutFinished()
+	{
+		GetComponent<AudioSource>().Stop();
 	}
 
 	void makeDoorShudder()
@@ -82,6 +88,7 @@ public class MagicalMirror : MonoBehaviour {
 		RaycastHit hit;
 		if (Physics.Raycast(Camera.main.ScreenPointToRay(touchPosition), out hit, 1000))
 		{
+			print("hit " + hit.collider.name );
 			if (hit.collider.name == "Mirror Far Scene" )
 			{
 				fadeInFarScene();
