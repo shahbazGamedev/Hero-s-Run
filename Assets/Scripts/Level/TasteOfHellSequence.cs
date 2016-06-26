@@ -5,10 +5,12 @@ public class TasteOfHellSequence : MonoBehaviour {
 
 	PlayerController playerController;
 	FairyController fairyController;
-	[Tooltip("Voice over played by fairy upon entering cave. Echo ...")]
-	public AudioClip VO_FA_ECHO;
-	[Tooltip("Not implemented: Voice over played by fairy a few seconds later. Anyone here?")]
-	public AudioClip VO_FA_ANYONE_HERE;
+	[Tooltip("Voice over played by fairy upon seeing the mirror with the player. This is an ancient elvish mirror.")]
+	public AudioClip VO_FA_ELVISH_MIRROR;
+	[Tooltip("Voice over played by fairy a few seconds later. Touch the magical mirror to activate it.")]
+	public AudioClip VO_FA_TOUCH_MIRROR;
+	[Tooltip("Voice over played by fairy a few seconds later. By the White Tree! This is horrible ...")]
+	public AudioClip VO_FA_AFTER_MIRROR;
 
 	bool hasBeenTriggered = false;
 
@@ -29,7 +31,7 @@ public class TasteOfHellSequence : MonoBehaviour {
 		print ("Start of Hell Cave sequence");
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(4.6f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(4f, afterPlayerSlowdown ) );
 	}
 
 	void afterPlayerSlowdown()
@@ -44,21 +46,27 @@ public class TasteOfHellSequence : MonoBehaviour {
 	//Fairy tells something to player
 	void step1()
 	{
-		AchievementDisplay.achievementDisplay.activateDisplayFairy( "This is an old magical elvish mirror. It can give us visions of thinks to come.", 2f );
-		GetComponent<AudioSource>().PlayOneShot( VO_FA_ECHO );
-		Invoke ("step2", 4f );
-		//Invoke ("step3", 9f );
+		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_ELVISH_MIRROR"), 4.5f );
+		GetComponent<AudioSource>().PlayOneShot( VO_FA_ELVISH_MIRROR );
+		Invoke ("step2", 6.5f );
 	}
 
 	void step2()
 	{
-		AchievementDisplay.achievementDisplay.activateDisplayFairy( "Touch the magical mirror to activate it.", 3f );
-		GetComponent<AudioSource>().PlayOneShot( VO_FA_ANYONE_HERE );
+		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_TOUCH_MIRROR"), 4.5f );
+		GetComponent<AudioSource>().PlayOneShot( VO_FA_TOUCH_MIRROR );
+	}
+
+	//Called by MagicalMirror when the vision has been viewed
+	public void visionEnded()
+	{
+		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_AFTER_MIRROR"), 4.5f );
+		GetComponent<AudioSource>().PlayOneShot( VO_FA_AFTER_MIRROR );
 	}
 
 	//Make the fairy disappear
 	//Player starts running again
-	void step3()
+	void step4()
 	{
 		fairyController.Disappear ();
 		playerController.allowRunSpeedToIncrease = true;

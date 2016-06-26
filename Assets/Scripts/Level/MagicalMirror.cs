@@ -9,6 +9,7 @@ public class MagicalMirror : MonoBehaviour {
 	public ParticleSystem sparkle;
 	public Animator steel_broken_door;
 	public bool hasTriggered = false;
+	public TasteOfHellSequence tasteOfHellSequence;
 
 	Material magicalMirrorMaterial;
 
@@ -37,6 +38,7 @@ public class MagicalMirror : MonoBehaviour {
 	void fadeOutFinished()
 	{
 		GetComponent<AudioSource>().Stop();
+		tasteOfHellSequence.visionEnded();
 	}
 
 	void makeDoorShudder()
@@ -88,7 +90,6 @@ public class MagicalMirror : MonoBehaviour {
 		RaycastHit hit;
 		if (Physics.Raycast(Camera.main.ScreenPointToRay(touchPosition), out hit, 1000))
 		{
-			print("hit " + hit.collider.name );
 			if (hit.collider.name == "Mirror Far Scene" )
 			{
 				fadeInFarScene();
