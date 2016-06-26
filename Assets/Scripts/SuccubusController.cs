@@ -165,7 +165,7 @@ public class SuccubusController : BaseClass {
 
 		}
 		//Step 2 - Say something funny
-		AchievementDisplay.achievementDisplay.activateDisplay( getFunnyText(), succubusPortrait );
+		DialogManager.dialogManager.activateDisplay( getFunnyText(), succubusPortrait );
 
 		//Step 3 - Cast spell 3 spells and then leave
 		succubusState = SuccubusState.CastSpells;

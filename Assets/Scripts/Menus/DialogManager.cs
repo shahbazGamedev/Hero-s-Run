@@ -2,9 +2,9 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class AchievementDisplay : MonoBehaviour {
+public class DialogManager : MonoBehaviour {
 
-	public static AchievementDisplay achievementDisplay = null;
+	public static DialogManager dialogManager = null;
 	[Header("Achievement Display")]
 	[Header("Message Panel")]
 	public RectTransform messagePanel;
@@ -24,7 +24,7 @@ public class AchievementDisplay : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 	
-		achievementDisplay = this;
+		dialogManager = this;
 		messagePanelDefaultPosition = messagePanel.anchoredPosition;
 		slideStartDest = new Vector2( 0, messagePanel.anchoredPosition.y );
 		slideEndDest = new Vector2( messagePanel.rect.width, messagePanel.anchoredPosition.y );

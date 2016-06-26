@@ -75,7 +75,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	//Fairy tells something to player
 	void step1()
 	{
-		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_DRAGON_BRIDGE"), 3.6f );
+		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_DRAGON_BRIDGE"), 3.6f );
 		Invoke ("step2", 3.75f );
 	}
 

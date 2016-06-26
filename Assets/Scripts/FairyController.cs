@@ -240,13 +240,13 @@ public class FairyController : BaseClass {
 
 	void speakToPlayerPart2()
 	{
-		AchievementDisplay.achievementDisplay.activateDisplayFairy(LocalizationManager.Instance.getText("FAIRY_BIG_FALL"), 5.5f );
+		DialogManager.dialogManager.activateDisplayFairy(LocalizationManager.Instance.getText("FAIRY_BIG_FALL"), 5.5f );
 		Invoke("speakToPlayerPart3", 7f );
 	}	
 
 	void speakToPlayerPart3()
 	{
-		AchievementDisplay.achievementDisplay.activateDisplayFairy(LocalizationManager.Instance.getText("FAIRY_VOLCANO_DOOM"), 5.25f );
+		DialogManager.dialogManager.activateDisplayFairy(LocalizationManager.Instance.getText("FAIRY_VOLCANO_DOOM"), 5.25f );
 		Invoke("speakToPlayerPart4", 5.75f );
 	}	
 

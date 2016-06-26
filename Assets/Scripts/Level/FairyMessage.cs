@@ -34,7 +34,7 @@ public class FairyMessage : MonoBehaviour {
 	//Fairy tells something to player
 	void step1()
 	{
-		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText(fairyMessageTextId), 3f );
+		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText(fairyMessageTextId), 3f );
 		//Player looks at fairy
 		playerController.lookOverShoulder( 0.4f, 2.75f );
 		Invoke ("step2", 3.5f );

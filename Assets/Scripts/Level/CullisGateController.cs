@@ -43,11 +43,11 @@ public class CullisGateController : MonoBehaviour {
 		PlayerStatsManager.Instance.savePlayerStats();
 		if( isGameFinished )
 		{
-			AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText(messageTextId), 5.5f );
+			DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText(messageTextId), 5.5f );
 		}
 		else
 		{
-			AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText(messageTextId), 5.5f );
+			DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText(messageTextId), 5.5f );
 			LevelManager.Instance.setEpisodeCompleted( true );
 		}
 		fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );

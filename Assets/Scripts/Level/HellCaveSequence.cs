@@ -46,7 +46,7 @@ public class HellCaveSequence : MonoBehaviour {
 	//Fairy tells something to player
 	void step1()
 	{
-		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_ECHO"), 2f );
+		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_ECHO"), 2f );
 		fairy_vo_with_echo.GetComponent<AudioSource>().PlayOneShot( VO_FA_ECHO );
 		Invoke ("step2", 4f );
 		Invoke ("step3", 9f );
@@ -54,7 +54,7 @@ public class HellCaveSequence : MonoBehaviour {
 
 	void step2()
 	{
-		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_ANYONE_HERE"), 3f );
+		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_ANYONE_HERE"), 3f );
 		fairy_vo_with_echo.GetComponent<AudioSource>().PlayOneShot( VO_FA_ANYONE_HERE );
 	}
 

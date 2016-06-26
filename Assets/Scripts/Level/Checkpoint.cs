@@ -28,6 +28,6 @@ public class Checkpoint : MonoBehaviour {
 		//Save the player stats before continuing
 		PlayerStatsManager.Instance.savePlayerStats();
 		Debug.LogWarning("Checkpoint activated " + gameObject.transform.parent.name );
-		AchievementDisplay.achievementDisplay.activateDisplayFairy( LevelManager.Instance.getCurrentLevelName() + ": " + LocalizationManager.Instance.getText("CHECKPOINT_REACHED"), 5.5f );
+		DialogManager.dialogManager.activateDisplayFairy( LevelManager.Instance.getCurrentLevelName() + ": " + LocalizationManager.Instance.getText("CHECKPOINT_REACHED"), 5.5f );
 	}
 }

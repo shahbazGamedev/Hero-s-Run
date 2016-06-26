@@ -50,14 +50,14 @@ public class CerberusSequence : MonoBehaviour {
 	//Fairy tells something to player
 	void step1()
 	{
-		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_CERBERUS_UH_OH"), 1.4f );
+		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_CERBERUS_UH_OH"), 1.4f );
 		Invoke ("step2", 3f );
 		Invoke ("step3", 7f );
 	}
 
 	void step2()
 	{
-		AchievementDisplay.achievementDisplay.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_CERBERUS_GOOD_BOY"), 3f );
+		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_CERBERUS_GOOD_BOY"), 3f );
 	}
 
 	//Make the fairy disappear
