@@ -11,6 +11,9 @@ public class TasteOfHellSequence : MonoBehaviour {
 	public AudioClip VO_FA_TOUCH_MIRROR;
 	[Tooltip("Voice over played by fairy a few seconds later. By the White Tree! This is horrible ...")]
 	public AudioClip VO_FA_AFTER_MIRROR;
+	public MagicalMirror magicalMirror;
+	[Tooltip("The game object holding the remote scene that is seen in the mirror. We hold a reference so we can destroy it once the sequence has finished.")]
+	public GameObject remoteScene;
 
 	bool hasBeenTriggered = false;
 
@@ -53,12 +56,14 @@ public class TasteOfHellSequence : MonoBehaviour {
 	void step2()
 	{
 		fairyController.speak("VO_FA_TOUCH_MIRROR", 4.5f, VO_FA_TOUCH_MIRROR );
+		magicalMirror.allowActivation();
 	}
 
 	//Called by MagicalMirror when the vision has been viewed
 	public void visionEnded()
 	{
 		fairyController.speak("VO_FA_AFTER_MIRROR", 4.5f, VO_FA_AFTER_MIRROR );
+		Destroy( remoteScene );
 	}
 
 	//Make the fairy disappear
