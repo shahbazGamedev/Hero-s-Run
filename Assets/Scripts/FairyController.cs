@@ -240,13 +240,13 @@ public class FairyController : BaseClass {
 
 	void speakToPlayerPart2()
 	{
-		DialogManager.dialogManager.activateDisplayFairy(LocalizationManager.Instance.getText("FAIRY_BIG_FALL"), 5.5f );
+		speak("FAIRY_BIG_FALL", 5.5f );
 		Invoke("speakToPlayerPart3", 7f );
 	}	
 
 	void speakToPlayerPart3()
 	{
-		DialogManager.dialogManager.activateDisplayFairy(LocalizationManager.Instance.getText("FAIRY_VOLCANO_DOOM"), 5.25f );
+		speak("FAIRY_VOLCANO_DOOM", 5.25f );
 		Invoke("speakToPlayerPart4", 5.75f );
 	}	
 
@@ -297,5 +297,11 @@ public class FairyController : BaseClass {
 		fairyAnimation[ animationName ].wrapMode = mode;
 		fairyAnimation[ animationName ].speed = 1f;
 		fairyAnimation.CrossFade(animationName, 0.1f);
+	}
+
+	public void speak( string textID, float textDisplayDuration, AudioClip voiceOver = null )
+	{
+		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText( textID ), textDisplayDuration );
+		if( voiceOver != null ) GetComponent<AudioSource>().PlayOneShot( voiceOver );
 	}
 }

@@ -175,4 +175,10 @@ public class DarkQueenController : BaseClass {
 		darkQueenState = DarkQueenState.None;
 	}
 
+	public void speak( string textID, float textDisplayDuration, AudioClip voiceOver = null )
+	{
+		DialogManager.dialogManager.activateDisplayDarkQueen( LocalizationManager.Instance.getText( textID ), textDisplayDuration );
+		if( voiceOver != null ) GetComponent<AudioSource>().PlayOneShot( voiceOver );
+	}
+
 }

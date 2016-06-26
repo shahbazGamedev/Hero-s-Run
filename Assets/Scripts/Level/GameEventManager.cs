@@ -95,8 +95,7 @@ public class GameEventManager : MonoBehaviour {
 		StartCoroutine( playerController.slowDownPlayer(19f, afterPlayerSlowdown ) );
 
 		arriveAndCastSpell();
-		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_OH_NO"), 1.8f );
-		playVoiceOver( fairy, darkQueenKrakenSequence.VO_FA_Oh_no );
+		fairyController.speak("VO_FA_OH_NO", 1.8f, darkQueenKrakenSequence.VO_FA_Oh_no );
 
 	}
 
@@ -122,8 +121,7 @@ public class GameEventManager : MonoBehaviour {
 
 	void playLandAnimation()
 	{
-		DialogManager.dialogManager.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_NOT_KEEP_WAITING"), 3.6f );
-		playVoiceOver( darkQueen, darkQueenKrakenSequence.VO_DQ_not_keep_waiting );
+		darkQueenController.speak("VO_DQ_NOT_KEEP_WAITING", 3.6f, darkQueenKrakenSequence.VO_DQ_not_keep_waiting );
 		darkQueen.GetComponent<Animation>().CrossFade("DarkQueen_Land", 0.1f);
 		Invoke("playIdleAnimation", darkQueen.GetComponent<Animation>()["DarkQueen_Land"].length);
 	}
@@ -137,8 +135,7 @@ public class GameEventManager : MonoBehaviour {
 	
 	void castKrakenSpell()
 	{
-		DialogManager.dialogManager.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_RISE_FROM_THE_DEEP"), 3.8f );
-		playVoiceOver( darkQueen, darkQueenKrakenSequence.VO_DQ_rise_from_the_deep );
+		darkQueenController.speak("VO_DQ_RISE_FROM_THE_DEEP", 3.8f, darkQueenKrakenSequence.VO_DQ_rise_from_the_deep );
 		darkQueen.GetComponent<Animation>().CrossFade("DarkQueen_SpellCast");
 		Invoke("playKrakenSpellFX", 0.3f);
 		Invoke("leave", darkQueen.GetComponent<Animation>()["DarkQueen_SpellCast"].length );
@@ -451,8 +448,7 @@ public class GameEventManager : MonoBehaviour {
 		//Call fairy
 		fairyController.setYRotationOffset( -10f );
 		fairyController.Appear ( FairyEmotion.Worried );
-		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_NOT_HER_AGAIN"), 2f );
-		playVoiceOver( fairy, darkQueenCemeterySequence.VO_FA_NOT_HER_AGAIN );
+		fairyController.speak("VO_FA_NOT_HER_AGAIN", 2f, darkQueenCemeterySequence.VO_FA_NOT_HER_AGAIN );
 	}
 
 	void cemeteryArriveAndCastSpell()
@@ -474,8 +470,7 @@ public class GameEventManager : MonoBehaviour {
 	
 	void cemeteryPlayIdleAnimation()
 	{
-		DialogManager.dialogManager.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_STARTING_TO_ANNOY"), 3f );
-		playVoiceOver( darkQueen, darkQueenCemeterySequence.VO_DQ_STARTING_TO_ANNOY );
+		darkQueenController.speak("VO_DQ_STARTING_TO_ANNOY", 3f, darkQueenCemeterySequence.VO_DQ_STARTING_TO_ANNOY );
 		darkQueenController.floatDownFx.Stop ();
 		darkQueen.GetComponent<Animation>().Play("DarkQueen_Idle");
 		Invoke("cemeteryCastKrakenSpell", darkQueen.GetComponent<Animation>()["DarkQueen_Idle"].length + 2.25f);
@@ -483,8 +478,7 @@ public class GameEventManager : MonoBehaviour {
 	
 	void cemeteryCastKrakenSpell()
 	{
-		DialogManager.dialogManager.activateDisplayDarkQueen( LocalizationManager.Instance.getText("VO_DQ_BRING_BACK_BOOK"), 3.8f );
-		playVoiceOver( darkQueen, darkQueenCemeterySequence.VO_DQ_BRING_BACK_BOOK );
+		darkQueenController.speak("VO_DQ_BRING_BACK_BOOK", 3.8f, darkQueenCemeterySequence.VO_DQ_BRING_BACK_BOOK );
 		darkQueen.GetComponent<Animation>().CrossFade("DarkQueen_SpellCast");
 		Invoke("cemeteryPlayKrakenSpellFX", 0.3f);
 		Invoke("cemeteryLeave", darkQueen.GetComponent<Animation>()["DarkQueen_SpellCast"].length );
@@ -874,7 +868,7 @@ public class GameEventManager : MonoBehaviour {
 	//Fairy warns player of troll
 	void step7()
 	{
-		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("FAIRY_TROLL_WARNING"), 2.25f );
+		fairyController.speak("FAIRY_TROLL_WARNING", 2.25f );
 		Invoke ("step8", 1.5f );
 	}
 
@@ -961,7 +955,6 @@ public class GameEventManager : MonoBehaviour {
 		}
 	}
 
-
 	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
 	{
 		if( eventType == GameEvent.Start_Kraken && !isTentacleSequenceActive )
@@ -979,15 +972,6 @@ public class GameEventManager : MonoBehaviour {
 		else if( eventType == GameEvent.Stop_Cemetery_Sequence && isZombieHandsSequenceActive )
 		{
 			stopZombieHandsSequence();
-		}
-	}
-
-	void playVoiceOver( Transform speaker, AudioClip voiceOver )
-	{
-		//Currently, only English VOs are included in the game
-		if( true || Application.systemLanguage == SystemLanguage.English )
-		{
-			speaker.GetComponent<AudioSource>().PlayOneShot( voiceOver );
 		}
 	}
 

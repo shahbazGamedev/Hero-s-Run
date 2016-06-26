@@ -46,22 +46,19 @@ public class TasteOfHellSequence : MonoBehaviour {
 	//Fairy tells something to player
 	void step1()
 	{
-		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_ELVISH_MIRROR"), 4.5f );
-		GetComponent<AudioSource>().PlayOneShot( VO_FA_ELVISH_MIRROR );
+		fairyController.speak("VO_FA_ELVISH_MIRROR", 4.5f, VO_FA_ELVISH_MIRROR );
 		Invoke ("step2", 6.5f );
 	}
 
 	void step2()
 	{
-		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_TOUCH_MIRROR"), 4.5f );
-		GetComponent<AudioSource>().PlayOneShot( VO_FA_TOUCH_MIRROR );
+		fairyController.speak("VO_FA_TOUCH_MIRROR", 4.5f, VO_FA_TOUCH_MIRROR );
 	}
 
 	//Called by MagicalMirror when the vision has been viewed
 	public void visionEnded()
 	{
-		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_AFTER_MIRROR"), 4.5f );
-		GetComponent<AudioSource>().PlayOneShot( VO_FA_AFTER_MIRROR );
+		fairyController.speak("VO_FA_AFTER_MIRROR", 4.5f, VO_FA_AFTER_MIRROR );
 	}
 
 	//Make the fairy disappear
