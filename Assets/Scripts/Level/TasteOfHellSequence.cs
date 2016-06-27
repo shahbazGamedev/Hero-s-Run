@@ -5,12 +5,6 @@ public class TasteOfHellSequence : MonoBehaviour {
 
 	PlayerController playerController;
 	FairyController fairyController;
-	[Tooltip("Voice over played by fairy upon seeing the mirror with the player. This is an ancient elvish mirror.")]
-	public AudioClip VO_FA_ELVISH_MIRROR;
-	[Tooltip("Voice over played by fairy a few seconds later. Touch the magical mirror to activate it.")]
-	public AudioClip VO_FA_TOUCH_MIRROR;
-	[Tooltip("Voice over played by fairy a few seconds later. By the White Tree! This is horrible ...")]
-	public AudioClip VO_FA_AFTER_MIRROR;
 	public MagicalMirror magicalMirror;
 	[Tooltip("The game object holding the remote scene that is seen in the mirror. We hold a reference so we can destroy it once the sequence has finished.")]
 	public GameObject remoteScene;
@@ -49,20 +43,20 @@ public class TasteOfHellSequence : MonoBehaviour {
 	//Fairy tells something to player
 	void step1()
 	{
-		fairyController.speak("VO_FA_ELVISH_MIRROR", 4.5f, VO_FA_ELVISH_MIRROR );
+		fairyController.speak("VO_FA_ELVISH_MIRROR", 4.5f, false );
 		Invoke ("step2", 6.5f );
 	}
 
 	void step2()
 	{
-		fairyController.speak("VO_FA_TOUCH_MIRROR", 4.5f, VO_FA_TOUCH_MIRROR );
+		fairyController.speak("VO_FA_TOUCH_MIRROR", 4.5f, false );
 		magicalMirror.allowActivation();
 	}
 
 	//Called by MagicalMirror when the vision has been viewed
 	public void visionEnded()
 	{
-		fairyController.speak("VO_FA_AFTER_MIRROR", 4.5f, VO_FA_AFTER_MIRROR );
+		fairyController.speak("VO_FA_AFTER_MIRROR", 4.5f, false );
 		Destroy( remoteScene );
 	}
 

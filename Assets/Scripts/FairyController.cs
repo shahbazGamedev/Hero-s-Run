@@ -240,13 +240,13 @@ public class FairyController : BaseClass {
 
 	void speakToPlayerPart2()
 	{
-		speak("FAIRY_BIG_FALL", 5.5f );
+		speak("FAIRY_BIG_FALL", 5.5f, false );
 		Invoke("speakToPlayerPart3", 7f );
 	}	
 
 	void speakToPlayerPart3()
 	{
-		speak("FAIRY_VOLCANO_DOOM", 5.25f );
+		speak("FAIRY_VOLCANO_DOOM", 5.25f, false );
 		Invoke("speakToPlayerPart4", 5.75f );
 	}	
 
@@ -299,9 +299,10 @@ public class FairyController : BaseClass {
 		fairyAnimation.CrossFade(animationName, 0.1f);
 	}
 
-	public void speak( string textID, float textDisplayDuration, AudioClip voiceOver = null )
+	//the voiceOverID is used both as text ID and as the name of the audio clip. They need to be identical.
+	public void speak( string voiceOverID, float textDisplayDuration, bool hasVoiceOver )
 	{
-		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText( textID ), textDisplayDuration );
-		if( voiceOver != null ) GetComponent<AudioSource>().PlayOneShot( voiceOver );
+		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText( voiceOverID ), textDisplayDuration );
+		if( hasVoiceOver ) GetComponent<AudioSource>().PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
 	}
 }

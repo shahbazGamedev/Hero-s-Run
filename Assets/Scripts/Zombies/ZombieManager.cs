@@ -131,7 +131,7 @@ public class ZombieManager : BaseClass {
 				zsd = (ZombieSpawnData) locationObject.GetComponent("ZombieSpawnData");
 				if( zsd != null )
 				{
-					Debug.LogWarning(  " triggerZombieWave " + i + " delay " + zsd.spawnDelay + " pos " + locationObject.transform.position );
+					//Debug.Log(  " triggerZombieWave " + i + " delay " + zsd.spawnDelay + " pos " + locationObject.transform.position );
 					StartCoroutine( spawnZombie( locationObject.transform, zsd ) );
 				}
 			}

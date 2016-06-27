@@ -1,0 +1,16 @@
+ManifestFileVersion: 0
+CRC: 4092495386
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: f3ae09c1a2f7b4519bd8a740b541d970
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 6759894fca659e2049f05064db45ce61
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+Assets:
+- Assets/AssetBundleSample/SampleAssets/Tanks/Variants/Skins/Desert-SD/TankAlbedo.png
+Dependencies: []

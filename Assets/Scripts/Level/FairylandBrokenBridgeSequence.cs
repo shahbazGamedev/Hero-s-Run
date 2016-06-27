@@ -63,7 +63,7 @@ public class FairylandBrokenBridgeSequence : MonoBehaviour {
 	//Fairy tells something to player
 	void step1()
 	{
-		fairyController.speak("FAIRY_FAIRYLAND_BRIDGE", 3.6f );
+		fairyController.speak("FAIRY_FAIRYLAND_BRIDGE", 3.6f, false );
 		Invoke ("step2", 3.75f );
 	}
 

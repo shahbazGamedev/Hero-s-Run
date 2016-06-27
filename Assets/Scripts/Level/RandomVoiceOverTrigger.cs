@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class RandomVoiceOverTrigger : MonoBehaviour {
 
 	public GameObject objectWhichWillPlayVO;
-	public List<AudioClip> possibleVoiceOvers = new List<AudioClip>(1);
+	public List<string> possibleVoiceOvers = new List<string>();
 	public float percentageChanceEventTriggered = 1f;
 
 	void OnTriggerEnter(Collider other)
@@ -13,23 +13,9 @@ public class RandomVoiceOverTrigger : MonoBehaviour {
 		if( other.name == "Hero" && Random.value <= percentageChanceEventTriggered )
 		{
 			int selectedVOIndex = Random.Range(0, possibleVoiceOvers.Count);
-			AudioClip selectedVO = possibleVoiceOvers[selectedVOIndex];
+			AudioClip selectedVO = DialogManager.dialogManager.getVoiceOver( possibleVoiceOvers[selectedVOIndex] );
 			if( selectedVO != null ) objectWhichWillPlayVO.GetComponent<AudioSource>().PlayOneShot( selectedVO );
 		}
 	}
-
-	void Update ()
-	{
-		#if UNITY_EDITOR
-		if ( Input.GetKeyDown (KeyCode.B) ) 
-		{
-			int selectedVOIndex = Random.Range(0, possibleVoiceOvers.Count);
-			AudioClip selectedVO = possibleVoiceOvers[selectedVOIndex];
-			if( selectedVO != null ) objectWhichWillPlayVO.GetComponent<AudioSource>().PlayOneShot( selectedVO );
-		
-		}
-		#endif
-	}
-
 
 }

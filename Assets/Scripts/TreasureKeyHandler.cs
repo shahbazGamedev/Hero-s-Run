@@ -53,7 +53,7 @@ public class TreasureKeyHandler : MonoBehaviour {
 	//Fairy tells something to player
 	void step1()
 	{
-		fairyController.speak("TUTORIAL_TREASURE_KEY_FAIRY", 3f );
+		fairyController.speak("TUTORIAL_TREASURE_KEY_FAIRY", 3f, false );
 		//Player looks at fairy
 		playerController.lookOverShoulder( 0.4f, 2.75f );
 		Invoke ("step2", 3.5f );

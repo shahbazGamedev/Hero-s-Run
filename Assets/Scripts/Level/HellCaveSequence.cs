@@ -5,10 +5,6 @@ public class HellCaveSequence : MonoBehaviour {
 
 	PlayerController playerController;
 	FairyController fairyController;
-	[Tooltip("Voice over played by fairy upon entering cave. Echo ...")]
-	public AudioClip VO_FA_ECHO;
-	[Tooltip("Not implemented: Voice over played by fairy a few seconds later. Anyone here?")]
-	public AudioClip VO_FA_ANYONE_HERE;
 	[Tooltip("In order to add echo to the voices, instead of getting the fairy to play them, we use a game object with an audio source and an echo filter to play them instead.")]
 	public GameObject fairy_vo_with_echo;
 
@@ -47,7 +43,7 @@ public class HellCaveSequence : MonoBehaviour {
 	void step1()
 	{
 		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_ECHO"), 2f );
-		fairy_vo_with_echo.GetComponent<AudioSource>().PlayOneShot( VO_FA_ECHO );
+		fairy_vo_with_echo.GetComponent<AudioSource>().PlayOneShot( DialogManager.dialogManager.getVoiceOver("VO_FA_OH_NO") );
 		Invoke ("step2", 4f );
 		Invoke ("step3", 9f );
 	}
@@ -55,7 +51,7 @@ public class HellCaveSequence : MonoBehaviour {
 	void step2()
 	{
 		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_ANYONE_HERE"), 3f );
-		fairy_vo_with_echo.GetComponent<AudioSource>().PlayOneShot( VO_FA_ANYONE_HERE );
+		fairy_vo_with_echo.GetComponent<AudioSource>().PlayOneShot( DialogManager.dialogManager.getVoiceOver("VO_FA_NOBODY_LIKES_YOU") );
 	}
 
 	//Make the fairy disappear

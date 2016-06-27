@@ -1,0 +1,23 @@
+ManifestFileVersion: 0
+CRC: 1680352014
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: d2e05de39f9dece3db3fa32dcce72653
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: c516f2a3b2b6b67ef759f6410a790acd
+HashAppended: 0
+ClassTypes:
+- Class: 83
+  Script: {instanceID: 0}
+Assets:
+- Assets/Audio/Voice Overs/English/VO_DQ_NOT_KEEP_WAITING.wav
+- Assets/Audio/Voice Overs/English/VO_DQ_RISE_FROM_THE_DEEP.wav
+- Assets/Audio/Voice Overs/English/VO_FA_OH_NO.wav
+- Assets/Audio/Voice Overs/English/VO_DQ_BRING_BACK_BOOK.wav
+- Assets/Audio/Voice Overs/English/VO_FA_NOT_HER_AGAIN.wav
+- Assets/Audio/Voice Overs/English/VO_DQ_STARTING_TO_ANNOY.wav
+- Assets/Audio/Voice Overs/English/VO_FA_NOBODY_LIKES_YOU.wav
+- Assets/Audio/Voice Overs/English/VO_SOUL_MALE_NOSE_ITCHING.wav
+Dependencies: []

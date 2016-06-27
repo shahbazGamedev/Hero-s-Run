@@ -175,10 +175,11 @@ public class DarkQueenController : BaseClass {
 		darkQueenState = DarkQueenState.None;
 	}
 
-	public void speak( string textID, float textDisplayDuration, AudioClip voiceOver = null )
+	//the voiceOverID is used both as text ID and as the name of the audio clip. They need to be identical.
+	public void speak( string voiceOverID, float textDisplayDuration, bool hasVoiceOver )
 	{
-		DialogManager.dialogManager.activateDisplayDarkQueen( LocalizationManager.Instance.getText( textID ), textDisplayDuration );
-		if( voiceOver != null ) GetComponent<AudioSource>().PlayOneShot( voiceOver );
+		DialogManager.dialogManager.activateDisplayDarkQueen( LocalizationManager.Instance.getText( voiceOverID ), textDisplayDuration );
+		if( hasVoiceOver ) GetComponent<AudioSource>().PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
 	}
 
 }
