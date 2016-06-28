@@ -39,7 +39,8 @@ public class GoblinController : BaseClass {
 		short_range_Spear_2 = 2,
 		long_range_Spear = 3,
 		Crossbow = 4,
-		Throw_Barrel = 5
+		Throw_Barrel = 5,
+		jump_and_attack = 6
 	}
 	
 	const float BOLT_FORCE = 630f;
@@ -59,7 +60,7 @@ public class GoblinController : BaseClass {
 	float runSpeed = 4.5f; //good value so feet don't slide
 	//If true, the goblin heads for the player as opposed to staying in his lane
 	bool followsPlayer = false;
-
+	bool previouslyGrounded = true;
 
 	void Awake ()
 	{
@@ -130,7 +131,16 @@ public class GoblinController : BaseClass {
 			if( applyGravity ) forward.y -= 16f * Time.deltaTime;
 			//3) Move the controller
 			controller.Move( forward );
+
+			if (controller.isGrounded && !previouslyGrounded )
+			{
+				GetComponent<AudioSource>().PlayOneShot( fallToGround );
+				GetComponent<Animator>().CrossFadeInFixedTime( "run", CROSS_FADE_DURATION );
+			}
+			previouslyGrounded = controller.isGrounded;
 		}
+
+
 	}
 
 	void targetPlayer()
@@ -194,6 +204,29 @@ public class GoblinController : BaseClass {
 					{
 						setGoblinState( GoblinState.Attacking );
 						throwBarrel();
+					}
+					break;
+				case AttackType.jump_and_attack:
+					float jumpDistance = 3.4f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
+					if( distance < jumpDistance )
+					{
+						if( distance >= attackDistance )
+						{
+							if( goblinState != GoblinState.Running )
+							{
+								//Jump and run
+								followsPlayer = true;
+								setGoblinState( GoblinState.Running );
+								GetComponent<Animator>().Play( "jump" );
+							}
+						}
+						else
+						{
+							//Attack now
+							setGoblinState( GoblinState.Attacking );
+							GetComponent<Animator>().CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
+						}
 					}
 					break;
 			}
