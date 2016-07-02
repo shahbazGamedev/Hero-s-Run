@@ -16,7 +16,8 @@ public enum DeathType {
 		Zombie = 10,
 		VortexTrap = 11,
 		MagicGate = 12,
-		SpecialFall = 13
+		SpecialFall = 13,
+		GreatFall = 14
 }
 
 public enum CharacterState {
@@ -561,13 +562,29 @@ public class PlayerController : BaseClass {
 					//Verify how far is the ground
 					if( distanceToGround > MIN_DISTANCE_FOR_FALL )
 					{
-						//There might be a small crack between the tiles. We dont want the player to fall if this is the case.
-						//So also check 15cm in front of the player to see how far the ground is before deciding to fall.
-						Vector3 exactPos = transform.TransformPoint(new Vector3( 0,0,0.15f));
+						bool isLeftFootOnGround = true;
+						Vector3 leftFootPosition = transform.TransformPoint(new Vector3( -0.12f ,0 ,0.1f ));
+						bool isRightFootOnGround = true;
+						Vector3 rightFootPosition = transform.TransformPoint(new Vector3( 0.12f ,0 ,-0.1f ));
 
-						if ( !Physics.Raycast(exactPos, Vector3.down, MIN_DISTANCE_FOR_FALL ))
+						//Test left foot
+						//There might be a small crack between the tiles. We dont want the player to fall if this is the case.
+						//So also check 10cm in front of the player (with left foot test) and 10cm in back of the player (with right foot test) before deciding to fall.	
+						if ( !Physics.Raycast(leftFootPosition, Vector3.down, MIN_DISTANCE_FOR_FALL ))
 						{
 							//Ground is further than MIN_DISTANCE_FOR_FALL meters.
+							//Left foot is not on the ground
+							isLeftFootOnGround = false;
+						}
+						//Test right foot
+						if ( !Physics.Raycast(rightFootPosition, Vector3.down, MIN_DISTANCE_FOR_FALL ))
+						{
+							//Ground is further than MIN_DISTANCE_FOR_FALL meters.
+							//Right foot is not on the ground
+							isRightFootOnGround = false;
+						}
+						if( !isLeftFootOnGround && !isRightFootOnGround )
+						{
 							fall();
 						}
 					}
@@ -584,10 +601,11 @@ public class PlayerController : BaseClass {
 
 		//Reset moveDirection.y to 0 so we dont start falling very fast
 		moveDirection.y = 0f;
-
+		allowRunSpeedToIncrease = false;
+		runSpeed = runSpeed * 0.6f;
 		//Remember at what height the player started to fall because this will help us calculate the fall distance.
 		fallStartYPos = transform.position.y;
-		gravity = DEFAULT_GRAVITY * 1.5f;
+		gravity = DEFAULT_GRAVITY * 2f;
 		sc.heightDamping = SimpleCamera.DEFAULT_HEIGHT_DAMPING * 9f;
 		allowRunSpeedToIncrease = false;
 		allowDistanceTravelledCalculations = false;
@@ -851,13 +869,12 @@ public class PlayerController : BaseClass {
 			//print(" Apex: animation state is " + getCurrentStateName() );
 		}
 
-		// Apply gravity
-		moveDirection.y -= gravity * Time.deltaTime;
 
 		if (controller.isGrounded)
 		{
-			//If we we were falling and just landed,reset values and go back to running state
-			if( _characterState == CharacterState.Falling )
+			//If we we were falling and just landed,reset values and go back to running state.
+			//However, before deciding to land, also check that the distance to the ground is less than 10 cm to avoid false positives (controller.isGrounded is not perfect).
+			if( _characterState == CharacterState.Falling && distanceToGround < 0.1f )
 			{
 				land();
 			}
@@ -904,6 +921,12 @@ public class PlayerController : BaseClass {
 				}
 			}
 		}
+		else
+		{
+			//We are not on the ground, apply gravity
+			moveDirection.y -= gravity * Time.deltaTime;
+		}
+
 		#if UNITY_EDITOR
 		handleKeyboard();
 		#endif
@@ -2202,6 +2225,19 @@ public class PlayerController : BaseClass {
 			sc.lockCamera( true );
 			managePlayerDeath( DeathType.Lava );
 		}
+		//For the Great Fall trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
+		else if( other.name == "Great Fall" )
+		{
+			Debug.Log ("Player is having a great fall.");
+			trollController.stopPursuing();
+			managePlayerDeath( DeathType.GreatFall );
+		}
+		//For the Lock Camera trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
+		else if( other.name == "Lock Camera" )
+		{
+			Debug.Log ("Locking camera.");
+			sc.lockCamera( true );
+		}
 		else if( other.name .StartsWith("BallOfFire") )
 		{
 			if( _characterState != CharacterState.Sliding )
@@ -2595,30 +2631,25 @@ public class PlayerController : BaseClass {
 		    switch (deathType)
 			{
 		        case DeathType.Cliff:
-					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2f) );	
 					break;
 		                
 		        case DeathType.Enemy:
-					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2f) );	
 					break;
 		                
 				case DeathType.Zombie:
 					//Play collision sound
-					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 					playSound( dyingSound, false );
 					anim.SetTrigger(DeathWallTrigger);
 					break;
 			
 				case DeathType.Flame:
-					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 					playSound( deathFireSound, false );
 					anim.SetTrigger(DeathWallTrigger);
 					break;
 		                
 		        case DeathType.Obstacle:
-					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 					//Play collision sound
 					playSound( dyingSound, false );
 					sc.Shake();
@@ -2626,7 +2657,6 @@ public class PlayerController : BaseClass {
 					break;
 
 		        case DeathType.Water:
-					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 					sc.lockCamera ( true );
 					anim.speed = 2.8f;
 					anim.SetTrigger(DeathRiverTrigger);
@@ -2634,7 +2664,6 @@ public class PlayerController : BaseClass {
 					break;
 
 		        case DeathType.VortexTrap:
-					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 					sc.lockCamera ( true );
 					anim.speed = 3.8f;
 					anim.SetTrigger(FallTrigger);
@@ -2642,8 +2671,11 @@ public class PlayerController : BaseClass {
 					StartCoroutine( waitBeforeDisplayingSaveMeScreen(5f) );
 					break;
 
+		        case DeathType.GreatFall:
+					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2.5f) );
+					break;
+
 		        case DeathType.SpecialFall:
-					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 					sc.lockCamera ( true );
 					anim.speed = 3.8f;
 					anim.SetTrigger(FallTrigger);
@@ -2652,7 +2684,6 @@ public class PlayerController : BaseClass {
 					break;
 
 		        case DeathType.MagicGate:
-					//For the magic gate (where the player falls from the sky), do not incrementNumberDeathForEpisode because the "death" was out of the player's control.
 					sc.lockCamera ( true );
 					sc.playCutscene( CutsceneType.MagicGate );
 					anim.speed = 3.8f;
@@ -2662,10 +2693,12 @@ public class PlayerController : BaseClass {
 					break;
 
 				default:
-					PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 					anim.SetTrigger(DeathWallTrigger);
 					break;
 			}
+				//For the magic gate (where the player falls from the sky), do not incrementNumberDeathForEpisode because the "death" was out of the player's control.
+			if( deathType != DeathType.MagicGate ) PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
+
 		}
 	}
 

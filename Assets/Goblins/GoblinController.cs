@@ -24,7 +24,7 @@ public class GoblinController : BaseClass {
 	[Tooltip("Whether or not the goblin should play a diabolical laughter before pushing the barrel.")]
 	public bool playGoblinTaunt = false;
 	[Tooltip("Speed at which to lock on player.")]
-	public float enemyAimSpeed = 7f;
+	public float enemyAimSpeed = 7.5f;
 
 	public enum GoblinState {
 		Idle = 1,
