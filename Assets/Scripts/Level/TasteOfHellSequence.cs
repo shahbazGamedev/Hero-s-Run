@@ -29,6 +29,7 @@ public class TasteOfHellSequence : MonoBehaviour {
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
 		StartCoroutine( playerController.slowDownPlayer(4f, afterPlayerSlowdown ) );
+		StartCoroutine( SoundManager.fadeOutMusic(1f, 0f ) );
 	}
 
 	void afterPlayerSlowdown()

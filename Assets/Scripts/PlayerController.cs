@@ -602,7 +602,7 @@ public class PlayerController : BaseClass {
 		//Reset moveDirection.y to 0 so we dont start falling very fast
 		moveDirection.y = 0f;
 		allowRunSpeedToIncrease = false;
-		runSpeed = runSpeed * 0.6f;
+		runSpeed = runSpeed * 0.65f;
 		//Remember at what height the player started to fall because this will help us calculate the fall distance.
 		fallStartYPos = transform.position.y;
 		gravity = DEFAULT_GRAVITY * 2f;
