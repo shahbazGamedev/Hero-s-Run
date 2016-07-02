@@ -178,7 +178,7 @@ public class FCLid : MonoBehaviour
 		}
 
 		// Create Particle for Chest
-		if (IsClosed() == true)
+		if (IsClosed() == true && m_Main != null )
 		{
 		  if (m_Main.getChestParticle()!=null)
 		  {

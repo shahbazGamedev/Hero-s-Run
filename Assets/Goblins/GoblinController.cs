@@ -24,7 +24,7 @@ public class GoblinController : BaseClass {
 	[Tooltip("Whether or not the goblin should play a diabolical laughter before pushing the barrel.")]
 	public bool playGoblinTaunt = false;
 	[Tooltip("Speed at which to lock on player.")]
-	public float enemyAimSpeed = 7.5f;
+	float enemyAimSpeed = 7.6f;
 
 	public enum GoblinState {
 		Idle = 1,
@@ -44,7 +44,7 @@ public class GoblinController : BaseClass {
 		jump_and_attack = 6
 	}
 	
-	const float BOLT_FORCE = 630f;
+	const float BOLT_FORCE = 700f;
 	const float CROSS_FADE_DURATION = 0.5f;
 
 	//Only use for the scout goblin with the crossbow
@@ -184,7 +184,7 @@ public class GoblinController : BaseClass {
 					break;
 			
 				case AttackType.Crossbow:
-					attackDistance = 2.5f * PlayerController.getPlayerSpeed();
+					attackDistance = 2.2f * PlayerController.getPlayerSpeed();
 					//Only attack if the player is inside a 30 degree arc in front of goblin
 					if( distance < attackDistance && getDotProduct() > 0.85f )
 					{
