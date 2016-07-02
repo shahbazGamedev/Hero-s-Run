@@ -38,6 +38,8 @@ public class CollapsingBridge : MonoBehaviour {
 				print("Collapse");
 				middleFarTile.GetComponent<Rigidbody>().AddForce( new Vector3( 0, 70f, 0 ) );
 				middleFarTile.GetComponent<Rigidbody>().AddTorque( new Vector3( 100f, 20f, -200f ) );
+				//The collapsing tag will allow you to jump even if the distance to the ground is bigger than 0.5f
+				middleFarTile.tag = "Collapsing";
 				Invoke( "nextTime", 0.1f);
 			}
 		}
@@ -47,5 +49,7 @@ public class CollapsingBridge : MonoBehaviour {
 			rightFarTile.GetComponent<Rigidbody>().isKinematic = false;
 			rightFarTile.GetComponent<Rigidbody>().AddForce( new Vector3( 0, 70f, 0 ) );
 			rightFarTile.GetComponent<Rigidbody>().AddTorque( new Vector3( -100f, -20f, 200f ) );
+			//The collapsing tag will allow you to jump even if the distance to the ground is bigger than 0.5f
+			rightFarTile.tag = "Collapsing";
 	}
 }

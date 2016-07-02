@@ -1187,8 +1187,10 @@ public class PlayerController : BaseClass {
 				queueSlide = false;
 			}
 	
-			//Only allow a jump if we are not already jumping and if we are on the ground
-			if (_characterState != CharacterState.Jumping && distanceToGround < 0.5f )
+			//Only allow a jump if we are not already jumping and if we are on the ground.
+			//However, if the ground type below the player is of type Collapsing, still allow him to jump.
+			//The Collapsing tag is used in the CollapsingBridge code.
+			if (_characterState != CharacterState.Jumping && ( distanceToGround < 0.5f || groundType == "Collapsing" ) )
 			{
 				//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
 				moveDirection.x = 0;
