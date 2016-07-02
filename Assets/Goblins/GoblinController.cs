@@ -31,7 +31,8 @@ public class GoblinController : BaseClass {
 		Running = 2,
 		Attacking = 3,
 		Dying = 4,
-		Victory = 5
+		Victory = 5,
+		Jumping = 6
 	}
 
 	public enum AttackType {
@@ -105,19 +106,11 @@ public class GoblinController : BaseClass {
 	{
 		moveGoblin();
 		handleAttackType();
-		if ( Input.GetKeyDown (KeyCode.A) ) 
-		{
-			if( attackType == AttackType.Crossbow )
-			{
-				Debug.Log("KeyInput - Fire bolt");
-				fireCrossbow();
-			}
-		}
 	}
 
 	void moveGoblin()
 	{
-		if( goblinState == GoblinState.Running )
+		if( goblinState == GoblinState.Running || goblinState == GoblinState.Jumping )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -136,6 +129,7 @@ public class GoblinController : BaseClass {
 			{
 				GetComponent<AudioSource>().PlayOneShot( fallToGround );
 				GetComponent<Animator>().CrossFadeInFixedTime( "run", CROSS_FADE_DURATION );
+				setGoblinState( GoblinState.Running );
 			}
 			previouslyGrounded = controller.isGrounded;
 		}
@@ -207,18 +201,18 @@ public class GoblinController : BaseClass {
 					}
 					break;
 				case AttackType.jump_and_attack:
-					float jumpDistance = 3.4f * PlayerController.getPlayerSpeed();
+					float jumpDistance = 3.3f * PlayerController.getPlayerSpeed();
 					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
 					if( distance < jumpDistance )
 					{
 						if( distance >= attackDistance )
 						{
-							if( goblinState != GoblinState.Running )
+							if( goblinState != GoblinState.Running && goblinState != GoblinState.Jumping )
 							{
-								//Jump and run
+								//Jump and run once you land
 								followsPlayer = true;
-								setGoblinState( GoblinState.Running );
-								GetComponent<Animator>().Play( "jump" );
+								setGoblinState( GoblinState.Jumping );
+								GetComponent<Animator>().CrossFadeInFixedTime( "jump", CROSS_FADE_DURATION );
 							}
 						}
 						else

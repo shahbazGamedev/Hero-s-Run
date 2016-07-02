@@ -143,7 +143,6 @@ public class PlayerController : BaseClass {
 	// Are we jumping? (Initiated with jump button and not grounded yet)
 	public bool jumping = false;
 	public bool doingDoubleJump = false;
-	bool jumpingReachedApex = false;
 	
 	//Time slide started
 	float slideStartTime;
@@ -861,14 +860,6 @@ public class PlayerController : BaseClass {
 	{
 		
 		verifySlide();
-			
-		// When we reach the apex of the jump
-		if (jumping && !jumpingReachedApex && moveDirection.y <= 0.0)
-		{
-			jumpingReachedApex = true;
-			//print(" Apex: animation state is " + getCurrentStateName() );
-		}
-
 
 		if (controller.isGrounded)
 		{
@@ -898,7 +889,6 @@ public class PlayerController : BaseClass {
 					//the player to continue to move forward even if he is dead because runSpeed won't stay at 0.
 					allowRunSpeedToIncrease = true;
 				}
-				jumpingReachedApex = false;
 				if ( queueSlide )
 				{
 					queueSlide = false;
@@ -2713,11 +2703,11 @@ public class PlayerController : BaseClass {
 	{
 		if( groundType != "Water" )
 		{
-			GetComponent<AudioSource>().PlayOneShot( footstepLeftSound, 0.18f );
+			GetComponent<AudioSource>().PlayOneShot( footstepLeftSound, 0.1f );
 		}
 		else
 		{
-			//GetComponent<AudioSource>().PlayOneShot( footstepWaterSound, 0.2f );
+			//GetComponent<AudioSource>().PlayOneShot( footstepWaterSound, 0.1f );
 		}
 	}
 
@@ -2725,7 +2715,7 @@ public class PlayerController : BaseClass {
 	{
 		if( groundType != "Water" )
 		{
-			GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.18f );
+			GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.1f );
 		}
 	}
 
@@ -2911,7 +2901,6 @@ public class PlayerController : BaseClass {
 
 		deactivateOverheadObstacles( false );
 		jumping = false;
-		jumpingReachedApex = false;
 		queueSlide = false;
 		queueJump = false;
 		isInDeadEnd = false;
