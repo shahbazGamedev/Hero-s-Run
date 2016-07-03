@@ -7,7 +7,6 @@ public class CullisGateController : MonoBehaviour {
 	public ParticleSystem lightEffect;
 	SimpleCamera simpleCamera;
 	public bool playCameraCutscene = false;
-	public GameObject cullisGate;
 	public string messageTextId = "CULLIS_GATE_TUTORIAL";
 	//How long to wait before displaying either the stats screen or loading the net level
 	const float WAIT_DURATION = 8f;
@@ -21,17 +20,15 @@ public class CullisGateController : MonoBehaviour {
 
 	void OnEnable()
 	{
-		GameManager.gameStateEvent += GameStateChange;
 		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
 	}
 	
 	void OnDisable()
 	{
-		GameManager.gameStateEvent -= GameStateChange;
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 
-	public void Activation_complete()
+	public void Activation_complete( AnimationEvent eve )
 	{
 		print ("Cullis gate activation complete" );
 		lightEffect.Play();
@@ -54,7 +51,7 @@ public class CullisGateController : MonoBehaviour {
 
 	void quit()
 	{
-		Debug.Log("Cullis Gate-Game is finished. Returning to world map.");
+		Debug.Log("Cullis Gate-Returning to world map.");
 		SoundManager.soundManager.stopMusic();
 		SoundManager.soundManager.stopAmbience();
 		GameManager.Instance.setGameState(GameState.PostLevelPopup);
@@ -70,22 +67,9 @@ public class CullisGateController : MonoBehaviour {
 	{
 		if( eventType == GameEvent.Activate_Cullis_Gate )
 		{
-			GetComponent<Animation>().Play();
+			GetComponent<Animator>().Play("Activate");
 			GetComponent<AudioSource>().loop = false;
 			GetComponent<AudioSource>().Play();
-			Invoke("Activation_complete", 1.667f);
-		}
-	}
-
-	void GameStateChange( GameState newState )
-	{
-		if( newState == GameState.Paused )
-		{
-			GetComponent<Animation>().enabled = false;
-		}
-		else if( newState == GameState.Normal )
-		{
-			GetComponent<Animation>().enabled = true;
 		}
 	}
 
