@@ -36,10 +36,6 @@ public class SuccubusController : BaseClass {
 	GameObject fireBallPrefab;
 	//GameObject fireBall;
 
-	//Zombies
-	public GameObject zombieManagerObject;
-	public ZombieManager zombieManager;
-
 	const float CORRIDOR_WIDTH = 5.2f;
 	Vector3 corridorRelativePos = new Vector3( 0, 0, CORRIDOR_WIDTH );
 	int numberSuccessiveSpellCast = 0;
@@ -83,9 +79,6 @@ public class SuccubusController : BaseClass {
 
 		//Fireball
 		fireBallPrefab = Resources.Load( "Level/BallOfFire") as GameObject;
-
-		//Zombies
-		zombieManager = (ZombieManager) zombieManagerObject.GetComponent(typeof(ZombieManager));
 
 		//Prepare texts
 		assembleTexts();
@@ -253,10 +246,6 @@ public class SuccubusController : BaseClass {
 	{
 		Vector3 exactPos = player.TransformPoint( new Vector3( 0, 0, 36f ) );
 		exactPos.Set ( exactPos.x, 0, exactPos.z );
-		//zombieBoy.transform.position = exactPos;
-		Debug.Log( "spawning zombie " + exactPos );
-		//zombieBoy.transform.eulerAngles = new Vector3 ( 0, transform.eulerAngles.y, 0 );
-		//zombieBoyAnimator.SetTrigger("burrowUp");
 		return true;
 
 	}

@@ -123,7 +123,7 @@ public class LevelManager {
 	public void setCurrentEpisodeNumber( int currentEpisode )
 	{
 		this.currentEpisode = currentEpisode;
-		Debug.LogWarning( "setCurrentEpisodeNumber " + currentEpisode );
+		Debug.Log( "setCurrentEpisodeNumber " + currentEpisode );
     }
 
 	public void incrementCurrentEpisodeNumber()
@@ -131,7 +131,7 @@ public class LevelManager {
 		if( currentEpisode < ( LevelData.NUMBER_OF_EPISODES - 1 ) )
 		{
 			currentEpisode++;
-			Debug.LogWarning( "incrementCurrentEpisodeNumber " + currentEpisode );
+			Debug.Log( "incrementCurrentEpisodeNumber " + currentEpisode );
 		}		
     }
 

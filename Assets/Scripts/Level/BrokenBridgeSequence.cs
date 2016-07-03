@@ -6,7 +6,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 
 	PlayerController playerController;
 	FairyController fairyController;
-	DragonController dragonController;
+	public DragonController dragonController;
 
 	bool hasBeenTriggered = false;
 	
@@ -37,9 +37,6 @@ public class BrokenBridgeSequence : MonoBehaviour {
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
 
-		GameObject dragonObject = GameObject.FindGameObjectWithTag("Dragon");
-		dragonController = dragonObject.GetComponent<DragonController>();
-
 		lane1StartLocalPos = lane3StartLocalPos + HEXAGON_SIZE; 	//Leftmost lane
 		lane2StartLocalPos = lane3StartLocalPos + HALF_HEXAGON_SIZE; 	
 		lane4StartLocalPos = lane3StartLocalPos; 	
@@ -50,7 +47,7 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	
 	void Start()
 	{
-		dragonController.placeDragon( transform.parent, new Vector3( 34.5f, 35.2f, 79.93f), new Vector3( 23, 210, 0), "G_Idle", 12f );
+		dragonController.placeDragon( transform, new Vector3( 34.5f, 35.2f, 79.93f), new Vector3( 23, 210, 0), "G_Idle", 12f );
 		dragonController.enableAttack( false );
 	}
 

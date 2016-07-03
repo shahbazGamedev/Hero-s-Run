@@ -220,8 +220,6 @@ public class PlayerController : BaseClass {
 	//Two point along the bezier curve
 	Vector3 point1;
 	Vector3 point2;
-	public GameObject sphere1;
-	public GameObject sphere2;
 	//The current curve the player is on
 	Bezier currentBezierCurve;
 
@@ -313,10 +311,6 @@ public class PlayerController : BaseClass {
 		GameObject dummyObject = new GameObject();
 		dummyObject.name = "Dummy";
 		dummyTransform = dummyObject.transform;
-
-		//for debugging bezier
-		sphere1.SetActive( false );
-		sphere2.SetActive( false );
 
 		//For power ups
 		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
@@ -954,10 +948,6 @@ public class PlayerController : BaseClass {
 			//1) Get two points along the curve
 			point1 = currentBezierCurve.PointOnBezier( bezierTime );
 			point2 = currentBezierCurve.PointOnBezier( bezierTime + 0.017f );
-			
-			//For debugging
-			//sphere1.transform.position = point1;
-			//sphere2.transform.position = point2;
 			
 			//2) Set the rotation of the player to be tangentiel to the curve
 			//Place our dummy object on the curve
