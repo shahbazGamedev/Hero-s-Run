@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GoblinController : BaseClass {
+public class GoblinController : BaseClass, ICreature {
 
 	[Header("Goblin Controller")]
 	[Header("General")]
@@ -26,15 +26,6 @@ public class GoblinController : BaseClass {
 	[Tooltip("Speed at which to lock on player.")]
 	float enemyAimSpeed = 7.6f;
 
-	public enum GoblinState {
-		Idle = 1,
-		Running = 2,
-		Attacking = 3,
-		Dying = 4,
-		Victory = 5,
-		Jumping = 6
-	}
-
 	public enum AttackType {
 		short_range_Spear_1 = 1,
 		short_range_Spear_2 = 2,
@@ -55,7 +46,7 @@ public class GoblinController : BaseClass {
 	Transform player;
 
 	//Movement related
-	GoblinState goblinState = GoblinState.Idle;
+	CreatureState goblinState = CreatureState.Idle;
 	CharacterController controller;
 	Vector3 forward;
 	float runSpeed = 4.5f; //good value so feet don't slide
@@ -110,7 +101,7 @@ public class GoblinController : BaseClass {
 
 	void moveGoblin()
 	{
-		if( goblinState == GoblinState.Running || goblinState == GoblinState.Jumping )
+		if( goblinState == CreatureState.Running || goblinState == CreatureState.Jumping )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -129,7 +120,7 @@ public class GoblinController : BaseClass {
 			{
 				GetComponent<AudioSource>().PlayOneShot( fallToGround );
 				GetComponent<Animator>().CrossFadeInFixedTime( "run", CROSS_FADE_DURATION );
-				setGoblinState( GoblinState.Running );
+				setCreatureState( CreatureState.Running );
 			}
 			previouslyGrounded = controller.isGrounded;
 		}
@@ -149,7 +140,7 @@ public class GoblinController : BaseClass {
 
 	void handleAttackType()
 	{
-		if( goblinState != GoblinState.Attacking && goblinState != GoblinState.Dying && goblinState != GoblinState.Victory )
+		if( goblinState != CreatureState.Attacking && goblinState != CreatureState.Dying && goblinState != CreatureState.Victory )
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 			float attackDistance;
@@ -159,7 +150,7 @@ public class GoblinController : BaseClass {
 					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
-						setGoblinState( GoblinState.Attacking );
+						setCreatureState( CreatureState.Attacking );
 						GetComponent<Animator>().CrossFadeInFixedTime( "attack1", CROSS_FADE_DURATION );
 					}
 					break;
@@ -168,7 +159,7 @@ public class GoblinController : BaseClass {
 					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
-						setGoblinState( GoblinState.Attacking );
+						setCreatureState( CreatureState.Attacking );
 						GetComponent<Animator>().CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
 					}
 					break;
@@ -178,7 +169,7 @@ public class GoblinController : BaseClass {
 					if( distance < attackDistance )
 					{
 						followsPlayer = true;
-						setGoblinState( GoblinState.Running );
+						setCreatureState( CreatureState.Running );
 						GetComponent<Animator>().Play( "run" );
 					}
 					break;
@@ -188,7 +179,7 @@ public class GoblinController : BaseClass {
 					//Only attack if the player is inside a 30 degree arc in front of goblin
 					if( distance < attackDistance && getDotProduct() > 0.85f )
 					{
-						setGoblinState( GoblinState.Attacking );
+						setCreatureState( CreatureState.Attacking );
 						fireCrossbow();
 					}
 					break;
@@ -196,7 +187,7 @@ public class GoblinController : BaseClass {
 					attackDistance = 1.45f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance )
 					{
-						setGoblinState( GoblinState.Attacking );
+						setCreatureState( CreatureState.Attacking );
 						throwBarrel();
 					}
 					break;
@@ -207,18 +198,18 @@ public class GoblinController : BaseClass {
 					{
 						if( distance >= attackDistance )
 						{
-							if( goblinState != GoblinState.Running && goblinState != GoblinState.Jumping )
+							if( goblinState != CreatureState.Running && goblinState != CreatureState.Jumping )
 							{
 								//Jump and run once you land
 								followsPlayer = true;
-								setGoblinState( GoblinState.Jumping );
+								setCreatureState( CreatureState.Jumping );
 								GetComponent<Animator>().CrossFadeInFixedTime( "jump", CROSS_FADE_DURATION );
 							}
 						}
 						else
 						{
 							//Attack now
-							setGoblinState( GoblinState.Attacking );
+							setCreatureState( CreatureState.Attacking );
 							GetComponent<Animator>().CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
 						}
 					}
@@ -239,7 +230,7 @@ public class GoblinController : BaseClass {
 		Vector3 heading = player.position - transform.position;
 		return Vector3.Dot( heading.normalized, transform.forward );
 	}
-
+	
 	void fireCrossbow()
 	{
 		if( gameObject.activeSelf ) StartCoroutine( fireCrossbowNow() );
@@ -295,12 +286,12 @@ public class GoblinController : BaseClass {
 	}
 
 
-	public GoblinState getGoblinState()
+	public CreatureState getCreatureState()
 	{
 		return goblinState;
 	}
 
-	public void setGoblinState( GoblinState state )
+	public void setCreatureState( CreatureState state )
 	{
 		goblinState = state;
 	}
@@ -313,10 +304,10 @@ public class GoblinController : BaseClass {
 
 	public void victory( bool playWinSound )
 	{
-		if( goblinState != GoblinState.Dying )
+		if( goblinState != CreatureState.Dying )
 		{
 			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
-			setGoblinState( GoblinState.Victory );
+			setCreatureState( CreatureState.Victory );
 			StartCoroutine( playVictoryAnimation() );
 		}
 	}
@@ -336,9 +327,9 @@ public class GoblinController : BaseClass {
 	}
 
 	//The goblin falls over backwards, typically because the player slid into him or because of a ZNuke
-	public void knockbackGoblin()
+	public void knockback()
 	{
-		setGoblinState( GoblinState.Dying );
+		setCreatureState( CreatureState.Dying );
 		controller.enabled = false;
 		//The piker has two capsule colliders. The scout, only one.
 		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
@@ -387,9 +378,9 @@ public class GoblinController : BaseClass {
 		}
 	}
 
-	public void resetGoblin()
+	public void resetCreature()
 	{
-		setGoblinState( GoblinState.Idle );
+		setCreatureState( CreatureState.Idle );
 		GetComponent<Animator>().CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
 		gameObject.SetActive( false );
 		followsPlayer = false;

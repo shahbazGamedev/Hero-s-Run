@@ -2120,22 +2120,22 @@ public class PlayerController : BaseClass {
 	{
 		GoblinController goblinController = hit.gameObject.GetComponent<GoblinController>();
 		//Ignore collision event if Goblin already dead.
-		if( goblinController.getGoblinState() != GoblinController.GoblinState.Dying )
+		if( goblinController.getCreatureState() != CreatureState.Dying )
 		{
 			if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding ) )
 			{
 				//Give stars
-				PlayerStatsManager.Instance.modifyCurrentCoins( GoblinManager.NUMBER_STARS_PER_GOBLIN, true, false );
+				PlayerStatsManager.Instance.modifyCurrentCoins( CreatureManager.NUMBER_STARS_PER_CREATURE, true, false );
 				
 				//Display coin total picked up icon
-				HUDHandler.displayCoinTotal( GoblinManager.NUMBER_STARS_PER_GOBLIN, Color.yellow, false );
+				HUDHandler.displayCoinTotal( CreatureManager.NUMBER_STARS_PER_CREATURE, Color.yellow, false );
 
-				goblinController.knockbackGoblin();
+				goblinController.knockback();
 				
 			}
 			else
 			{
-				Debug.Log( "Player collided with goblin: " + hit.collider.name + " Normal" + hit.normal.y + " but CANT TOPPLE HIM " + _characterState + "  STATE Z "+ goblinController.getGoblinState());
+				Debug.Log( "Player collided with goblin: " + hit.collider.name + " Normal" + hit.normal.y + " but CANT TOPPLE HIM " + _characterState + "  STATE Z "+ goblinController.getCreatureState());
 				if( hit.normal.y < 0.4f )
 				{
 					//Player is running up Z axis

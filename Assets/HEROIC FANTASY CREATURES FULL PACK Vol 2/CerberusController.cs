@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class CerberusController : BaseClass {
+public class CerberusController : BaseClass, ICreature {
 
 	[Header("Cerberus Controller")]
 	[Header("General")]
@@ -25,14 +25,6 @@ public class CerberusController : BaseClass {
 	public AudioClip fireBreath;
 	public Light fireBreathingLight;
 
-	public enum CerberusState {
-		Idle = 1,
-		Walking = 2,
-		Attacking = 3,
-		Dying = 4,
-		Victory = 5
-	}
-
 	public enum AttackType {
 		stand_and_breathe_fire = 1,
 		controlled_by_script  = 2
@@ -42,7 +34,7 @@ public class CerberusController : BaseClass {
 	Transform player;
 
 	//Movement related
-	CerberusState cerberusState = CerberusState.Idle;
+	CreatureState cerberusState = CreatureState.Idle;
 	CharacterController controller;
 	Vector3 forward;
 	float WALK_SPEED = 2.1f; //good value so feet don't slide
@@ -74,7 +66,7 @@ public class CerberusController : BaseClass {
 
 	void moveCerberus()
 	{
-		if( ( cerberusState == CerberusState.Walking ) )
+		if( ( cerberusState == CreatureState.Walking ) )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -94,7 +86,7 @@ public class CerberusController : BaseClass {
 
 	void handleAttackType()
 	{
-		if( cerberusState != CerberusState.Attacking && cerberusState != CerberusState.Dying && cerberusState != CerberusState.Victory )
+		if( cerberusState != CreatureState.Attacking && cerberusState != CreatureState.Dying && cerberusState != CreatureState.Victory )
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 			float attackDistance;
@@ -115,19 +107,19 @@ public class CerberusController : BaseClass {
 	{
 		followsPlayer = true;
 		moveSpeed = WALK_SPEED;
-		setCerberusState( CerberusState.Walking );
+		setCreatureState( CreatureState.Walking );
 		GetComponent<Animator>().CrossFadeInFixedTime("walk", 0.7f);
 	}
 
 	public void idle()
 	{
-		setCerberusState( CerberusState.Idle );
+		setCreatureState( CreatureState.Idle );
 		GetComponent<Animator>().CrossFadeInFixedTime("idleBreathe", 0.5f);
 	}
 
 	void breatheFire()
 	{
-		setCerberusState( CerberusState.Attacking );
+		setCreatureState( CreatureState.Attacking );
 		GetComponent<Animator>().CrossFadeInFixedTime("blowFireAggressive", 0.5f);
 		centerHeadFireObject.SetActive( true );
 		centerHeadFire.Play();
@@ -180,20 +172,20 @@ public class CerberusController : BaseClass {
 		light.intensity = endIntensity;
 	}
 
-	public CerberusState getCerberusState()
+	public CreatureState getCreatureState()
 	{
 		return cerberusState;
 	}
 
-	void setCerberusState( CerberusState state )
+	void setCreatureState( CreatureState state )
 	{
 		cerberusState = state;
 	}
 
 	//The cerberus falls over backwards, typically because of a ZNuke
-	public void knockbackCerberus()
+	public void knockback()
 	{
-		setCerberusState( CerberusState.Dying );
+		setCreatureState( CreatureState.Dying );
 		stopBreathingFire();
 		controller.enabled = false;
 		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
@@ -205,9 +197,9 @@ public class CerberusController : BaseClass {
 		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 	}
 
-	public void resetCerberus()
+	public void resetCreature()
 	{
-		setCerberusState( CerberusState.Idle );
+		setCreatureState( CreatureState.Idle );
 		GetComponent<Animator>().Play("idleLookAround");
 		gameObject.SetActive( false );
 		followsPlayer = false;

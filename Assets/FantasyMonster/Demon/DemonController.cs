@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class DemonController : BaseClass {
+public class DemonController : BaseClass, ICreature {
 
 	[Header("Demon Controller")]
 	[Header("General")]
@@ -22,15 +22,6 @@ public class DemonController : BaseClass {
 	public ParticleSystem sparksRightHoof;
 	public GameObject weaponTrail;
 
-	public enum DemonState {
-		Idle = 1,
-		Running = 2,
-		Walking = 3,
-		Attacking = 4,
-		Dying = 5,
-		Victory = 6
-	}
-
 	public enum AttackType {
 		stand_and_normal_attack = 1,
 		stand_and_big_attack = 2,
@@ -43,7 +34,7 @@ public class DemonController : BaseClass {
 	const float CROSS_FADE_DURATION = 0.5f;
 
 	//Movement related
-	DemonState demonState = DemonState.Idle;
+	CreatureState demonState = CreatureState.Idle;
 	CharacterController controller;
 	Vector3 forward;
 	const float RUN_SPEED = 4.6f; //good value so feet don't slide
@@ -67,7 +58,7 @@ public class DemonController : BaseClass {
 
 	void moveDemon()
 	{
-		if( demonState == DemonState.Running || demonState == DemonState.Walking )
+		if( demonState == CreatureState.Running || demonState == CreatureState.Walking )
 		{
 
 			//0) Target the player but we only want the Y rotation
@@ -97,7 +88,7 @@ public class DemonController : BaseClass {
 
 	void handleAttackType()
 	{
-		if( demonState != DemonState.Attacking && demonState != DemonState.Dying && demonState != DemonState.Victory )
+		if( demonState != CreatureState.Attacking && demonState != CreatureState.Dying && demonState != CreatureState.Victory )
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 			float attackDistance;
@@ -107,7 +98,7 @@ public class DemonController : BaseClass {
 					attackDistance = 0.76f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
-						setDemonState( DemonState.Attacking );
+						setCreatureState( CreatureState.Attacking );
 						GetComponent<Animator>().CrossFadeInFixedTime( "Attack" , CROSS_FADE_DURATION );
 					}
 					break;
@@ -116,7 +107,7 @@ public class DemonController : BaseClass {
 					attackDistance = 0.95f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
-						setDemonState( DemonState.Attacking );
+						setCreatureState( CreatureState.Attacking );
 						GetComponent<Animator>().CrossFadeInFixedTime( "Skill" , CROSS_FADE_DURATION );
 					}
 					break;
@@ -131,13 +122,13 @@ public class DemonController : BaseClass {
 							//Charge
 							followsPlayer = true;
 							moveSpeed = RUN_SPEED;
-							setDemonState( DemonState.Running );
+							setCreatureState( CreatureState.Running );
 							GetComponent<Animator>().CrossFadeInFixedTime( "Run" , CROSS_FADE_DURATION );
 						}
 						else
 						{
 							//Attack now
-							setDemonState( DemonState.Attacking );
+							setCreatureState( CreatureState.Attacking );
 							GetComponent<Animator>().CrossFadeInFixedTime( "Skill" , CROSS_FADE_DURATION );
 						}
 					}
@@ -153,13 +144,13 @@ public class DemonController : BaseClass {
 							//Walk
 							followsPlayer = true;
 							moveSpeed = WALK_SPEED;
-							setDemonState( DemonState.Walking );
+							setCreatureState( CreatureState.Walking );
 							GetComponent<Animator>().CrossFadeInFixedTime( "Walk" , CROSS_FADE_DURATION );
 						}
 						else
 						{
 							//Attack now
-							setDemonState( DemonState.Attacking );
+							setCreatureState( CreatureState.Attacking );
 							GetComponent<Animator>().CrossFadeInFixedTime( "Skill" , CROSS_FADE_DURATION );
 						}
 					}
@@ -181,12 +172,12 @@ public class DemonController : BaseClass {
 		return Vector3.Dot( heading.normalized, transform.forward );
 	}
 
-	public DemonState getDemonState()
+	public CreatureState getCreatureState()
 	{
 		return demonState;
 	}
 
-	public void setDemonState( DemonState state )
+	public void setCreatureState( CreatureState state )
 	{
 		demonState = state;
 	}
@@ -199,18 +190,18 @@ public class DemonController : BaseClass {
 
 	public void victory( bool playWinSound )
 	{
-		if( demonState != DemonState.Dying )
+		if( demonState != CreatureState.Dying )
 		{
 			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
-			setDemonState( DemonState.Victory );
+			setCreatureState( CreatureState.Victory );
 			GetComponent<Animator>().CrossFadeInFixedTime( "Idle" , CROSS_FADE_DURATION );
 		}
 	}
 
 	//The demon falls over backwards, typically because the player slid into him or because of a ZNuke
-	public void knockbackDemon()
+	public void knockback()
 	{
-		setDemonState( DemonState.Dying );
+		setCreatureState( CreatureState.Dying );
 		controller.enabled = false;
 		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
 		for( int i = 0; i < capsuleColliders.Length; i++ )
@@ -258,9 +249,9 @@ public class DemonController : BaseClass {
 		}
 	}
 
-	public void resetDemon()
+	public void resetCreature()
 	{
-		setDemonState( DemonState.Idle );
+		setCreatureState( CreatureState.Idle );
 		GetComponent<Animator>().CrossFadeInFixedTime( "Idle" , CROSS_FADE_DURATION );
 		gameObject.SetActive( false );
 		followsPlayer = false;
