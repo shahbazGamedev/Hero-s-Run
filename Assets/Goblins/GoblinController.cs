@@ -25,6 +25,8 @@ public class GoblinController : BaseClass, ICreature {
 	public bool playGoblinTaunt = false;
 	[Tooltip("Speed at which to lock on player.")]
 	float enemyAimSpeed = 7.6f;
+	[Tooltip("The bolt fired by the crossbow.")]
+	public GameObject boltPrefab;
 
 	public enum AttackType {
 		short_range_Spear_1 = 1,
@@ -39,7 +41,6 @@ public class GoblinController : BaseClass, ICreature {
 	const float CROSS_FADE_DURATION = 0.5f;
 
 	//Only use for the scout goblin with the crossbow
-	GameObject boltPrefab;
 	Vector3 initialBoltPositionOffset = new Vector3( 0f, 0.47f, 0.46f );
 
 	PlayerController playerController;
@@ -61,11 +62,6 @@ public class GoblinController : BaseClass, ICreature {
 		playerController = player.gameObject.GetComponent<PlayerController>();
 
 		randomizeLook ();
-
-		if( attackType == AttackType.Crossbow )
-		{
-			boltPrefab = Resources.Load( "Level/Props/Magic Bolt") as GameObject;
-		}
 	}
 
 	void Start ()

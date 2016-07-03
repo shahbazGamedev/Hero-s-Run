@@ -30,7 +30,6 @@ public class SuccubusController : BaseClass {
 
 	Transform player;
 	PlayerController playerController;
-	HUDHandler hudHandler;
 
 	GameObject hellPit;
 	GameObject fireBallPrefab;
@@ -67,7 +66,6 @@ public class SuccubusController : BaseClass {
 	{
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
-		hudHandler = (HUDHandler) player.GetComponent(typeof(HUDHandler));
 
 		//Get a copy of the components
 		succubusAnimation = (Animation) GetComponent("Animation");
