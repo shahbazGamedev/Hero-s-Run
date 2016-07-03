@@ -113,7 +113,7 @@ public class GenerateLevel  : MonoBehaviour {
 	SegmentTheme currentTheme;
 	
 	//The surrounding plane (like an ocean) is always centered with the current tile
-	static Transform surroundingPlane;
+	public Transform surroundingPlane;
 	
 	const int NUMBER_OF_TUTORIALS = 6; //Change Lane, Jump, Slide, etc.
 	Dictionary<TutorialEvent,int> tutorialStartTileIndex = new Dictionary<TutorialEvent, int>(NUMBER_OF_TUTORIALS);
@@ -212,17 +212,21 @@ public class GenerateLevel  : MonoBehaviour {
 		//Verify if we should include a plane surrounding the tiles (like an ocean)
 		if( levelInfo.includeSurroundingPlane )
 		{
-			GameObject prefab = Resources.Load( "Level/Props/surroundingPlane") as GameObject;
-			GameObject go = (GameObject)Instantiate(prefab, new Vector3( 0, -30f, 0 ), Quaternion.identity );
+			GameObject go = (GameObject)Instantiate(surroundingPlane.gameObject, new Vector3( 0, -30f, 0 ), Quaternion.identity );
 			surroundingPlane = go.transform;
 			if( surroundingPlane.GetComponent<Renderer>().material != null )
 			{
 				surroundingPlane.GetComponent<Renderer>().material = levelInfo.surroundingPlaneMaterial;
+				surroundingPlane.gameObject.SetActive( true );
 			}
 			else
 			{
 				Debug.LogWarning("GenerateLevel-CreateLevel: includeSurroundingPlane is set to true but no surroundingPlaneMaterial has been specified.");
 			}
+		}
+		else
+		{
+			surroundingPlane.gameObject.SetActive( false );
 		}
 		
 		if( levelInfo.isTutorial )
@@ -1484,7 +1488,7 @@ public class GenerateLevel  : MonoBehaviour {
 
 	}
 
-	public static void enableSurroundingPlane( bool enable )
+	public void enableSurroundingPlane( bool enable )
 	{
 		if( surroundingPlane != null ) surroundingPlane.gameObject.SetActive( enable );
 	}

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class GameEventManager : MonoBehaviour {
 
+	public GenerateLevel generateLevel;
 	WeatherManager weatherManager;
 	Lightning lightning;
 	SimpleCamera simpleCamera;
@@ -87,7 +88,7 @@ public class GameEventManager : MonoBehaviour {
 	{
 		print ("Start of dark queen Kraken sequence");
 		isTentacleSequenceActive = true;
-		GenerateLevel.enableSurroundingPlane( false ); //remove because it crosses the tomb ceiling and it does not look nice
+		generateLevel.enableSurroundingPlane( false ); //remove because it crosses the tomb ceiling and it does not look nice
 
 		//Slowdown player and remove player control
 		playerController.placePlayerInCenterLane();

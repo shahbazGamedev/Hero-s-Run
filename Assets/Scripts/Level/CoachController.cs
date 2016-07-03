@@ -19,10 +19,9 @@ public class CoachController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		anim = (Animation) GetComponent("Animation");
-		controller = (CharacterController) GetComponent("CharacterController");
+		anim = GetComponent<Animation>();
+		controller = GetComponent<CharacterController>();
 		playAnim( idleAnim );
-		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
 	}
 	
 	// Update is called once per frame
