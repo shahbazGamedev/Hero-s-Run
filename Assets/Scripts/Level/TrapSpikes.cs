@@ -3,8 +3,6 @@ using System.Collections;
 
 public class TrapSpikes : MonoBehaviour {
 
-	Animation animation;
-	Animator animator;
 	public AnimationClip open;
 	PlayerController playerController;
 	PowerUpManager powerUpManager;
@@ -16,22 +14,16 @@ public class TrapSpikes : MonoBehaviour {
 		playerController = player.gameObject.GetComponent<PlayerController>();
 		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
 		powerUpManager = powerUpManagerObject.GetComponent<PowerUpManager>();
-
-		animation = GetComponent<Animation>();
-		if( animation == null )
-		{
-			animator = GetComponent<Animator>();
-		}
 	}
 	
 	
 	void playAnim( AnimationClip clip )
 	{
-		if( animation != null )
+		if( GetComponent<Animation>() != null )
 		{
-			animation[clip.name].wrapMode = WrapMode.Once;
-			animation[clip.name].speed = 1.4f;
-			animation.Play(clip.name);
+			GetComponent<Animation>()[clip.name].wrapMode = WrapMode.Once;
+			GetComponent<Animation>()[clip.name].speed = 1.4f;
+			GetComponent<Animation>().Play(clip.name);
 		}
 	}
 	
@@ -67,13 +59,13 @@ public class TrapSpikes : MonoBehaviour {
 		print ("Player trigger spike trap "  );
 		GetComponent<AudioSource>().Play();
 		playerController.managePlayerDeath(DeathType.Trap);
-		if( animation != null )
+		if( GetComponent<Animation>() != null )
 		{
 			playAnim(open);
 		}
 		else
 		{
-			animator.SetTrigger("open");
+			GetComponent<Animator>().SetTrigger("open");
 		}
 	}
 	
@@ -81,25 +73,25 @@ public class TrapSpikes : MonoBehaviour {
 	{
 		if( newState == GameState.Paused )
 		{
-			if( animation != null )
+			if( GetComponent<Animation>() != null )
 			{
-				animation.enabled = false;
+				GetComponent<Animation>().enabled = false;
 			}
 			else
 			{
-				animator.enabled = false;
+				GetComponent<Animator>().enabled = false;
 			}
 			
 		}
 		else if( newState == GameState.Normal )
 		{
-			if( animation != null )
+			if( GetComponent<Animation>() != null )
 			{
-				animation.enabled = true;
+				GetComponent<Animation>().enabled = true;
 			}
 			else
 			{
-				animator.enabled = true;
+				GetComponent<Animator>().enabled = true;
 			}
 		}
 	}

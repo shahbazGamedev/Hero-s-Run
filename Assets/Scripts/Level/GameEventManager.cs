@@ -418,7 +418,6 @@ public class GameEventManager : MonoBehaviour {
 		GameManager.Instance.setGameState(GameState.Checkpoint);
 		StartCoroutine( playerController.slowDownPlayer(19f, cemeteryAfterPlayerSlowdown ) );
 		cemeteryArriveAndCastSpell();
-
 	}
 	
 	void cemeteryAfterPlayerSlowdown()

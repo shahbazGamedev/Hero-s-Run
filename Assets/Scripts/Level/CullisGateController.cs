@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 
 public class CullisGateController : MonoBehaviour {
 
-	Animation animation;
 	public ParticleSystem lightEffect;
 	SimpleCamera simpleCamera;
 	public bool playCameraCutscene = false;
@@ -16,7 +15,6 @@ public class CullisGateController : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		animation = cullisGate.GetComponent<Animation>();
 		GameObject player = GameObject.FindGameObjectWithTag("Player");
 		simpleCamera = player.GetComponent<SimpleCamera>();
 	}
@@ -72,7 +70,7 @@ public class CullisGateController : MonoBehaviour {
 	{
 		if( eventType == GameEvent.Activate_Cullis_Gate )
 		{
-			animation.Play();
+			GetComponent<Animation>().Play();
 			GetComponent<AudioSource>().loop = false;
 			GetComponent<AudioSource>().Play();
 			Invoke("Activation_complete", 1.667f);
@@ -83,11 +81,11 @@ public class CullisGateController : MonoBehaviour {
 	{
 		if( newState == GameState.Paused )
 		{
-			animation.enabled = false;
+			GetComponent<Animation>().enabled = false;
 		}
 		else if( newState == GameState.Normal )
 		{
-			animation.enabled = true;
+			GetComponent<Animation>().enabled = true;
 		}
 	}
 

@@ -3,28 +3,15 @@ using System.Collections;
 
 public class DoorController : MonoBehaviour {
 
-	Animation animation;
-	Animator animator;
-	public AnimationClip doorOpen;
-
-	// Use this for initialization
-	void Start ()
-	{
-		animation = GetComponent<Animation>();
-		if( animation == null )
-		{
-			animator = GetComponent<Animator>();
-		}
-	}
-	
+	public AnimationClip doorOpen;	
 
 	void playAnim( AnimationClip clip )
 	{
-		if( animation != null )
+		if( GetComponent<Animation>() != null )
 		{
-			animation[clip.name].wrapMode = WrapMode.Once;
-			animation[clip.name].speed = 1f;
-			animation.Play(clip.name);
+			GetComponent<Animation>()[clip.name].wrapMode = WrapMode.Once;
+			GetComponent<Animation>()[clip.name].speed = 1f;
+			GetComponent<Animation>().Play(clip.name);
 		}
 	}
 
@@ -47,13 +34,13 @@ public class DoorController : MonoBehaviour {
 		if( eventType == GameEvent.Open_Door )
 		{
 			GetComponent<AudioSource>().Play();
-			if( animation != null )
+			if( GetComponent<Animation>() != null )
 			{
 				playAnim(doorOpen);
 			}
 			else
 			{
-				animator.SetTrigger("open");
+				GetComponent<Animator>().SetTrigger("open");
 			}
 		}
 	}
@@ -62,25 +49,25 @@ public class DoorController : MonoBehaviour {
 	{
 		if( newState == GameState.Paused )
 		{
-			if( animation != null )
+			if( GetComponent<Animation>() != null )
 			{
-				animation.enabled = false;
+				GetComponent<Animation>().enabled = false;
 			}
 			else
 			{
-				animator.enabled = false;
+				GetComponent<Animator>().enabled = false;
 			}
 
 		}
 		else if( newState == GameState.Normal )
 		{
-			if( animation != null )
+			if( GetComponent<Animation>() != null )
 			{
-				animation.enabled = true;
+				GetComponent<Animation>().enabled = true;
 			}
 			else
 			{
-				animator.enabled = true;
+				GetComponent<Animator>().enabled = true;
 			}
 		}
 	}
