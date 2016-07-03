@@ -119,44 +119,47 @@ public class ZombieController : BaseClass, ICreature {
 
 	public void victory( bool playWinSound )
 	{
-		CancelInvoke( "groan" );
-		if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
-		if( creatureState == CreatureState.StandUpFromBack )
+		if( creatureState != CreatureState.Dying )
 		{
-			StopCoroutine("standUpFromBackCompleted");
-			anim.CrossFadeQueued("happy");
-			anim.CrossFadeQueued("happy");
-			anim.CrossFadeQueued(selectRandomIdle());
-		}
-		else if( creatureState == CreatureState.BurrowUp )
-		{
-			StopCoroutine("burrowUpCompleted");
-			anim.CrossFadeQueued("danceThriller");
-			anim.CrossFadeQueued("danceThriller");
-			anim.CrossFadeQueued(selectRandomIdle());
-		}
-		else if( creatureState == CreatureState.Crawling )
-		{
-			setCreatureState( CreatureState.Victory );
-			//Zombie was crawling
-			anim.CrossFade("crouch_eat1");
-			anim.CrossFadeQueued("crouch");
-		}
-		else
-		{
-			//Zombie was standing up
-			setCreatureState( CreatureState.Victory );
-			if( Random.value < 0.5f )
+			CancelInvoke( "groan" );
+			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
+			if( creatureState == CreatureState.StandUpFromBack )
 			{
-				anim.CrossFade("happy");
+				StopCoroutine("standUpFromBackCompleted");
+				anim.CrossFadeQueued("happy");
 				anim.CrossFadeQueued("happy");
 				anim.CrossFadeQueued(selectRandomIdle());
 			}
-			else
+			else if( creatureState == CreatureState.BurrowUp )
 			{
-				anim.CrossFade("danceThriller");
+				StopCoroutine("burrowUpCompleted");
+				anim.CrossFadeQueued("danceThriller");
 				anim.CrossFadeQueued("danceThriller");
 				anim.CrossFadeQueued(selectRandomIdle());
+			}
+			else if( creatureState == CreatureState.Crawling )
+			{
+				setCreatureState( CreatureState.Victory );
+				//Zombie was crawling
+				anim.CrossFade("crouch_eat1");
+				anim.CrossFadeQueued("crouch");
+			}
+			else
+			{
+				//Zombie was standing up
+				setCreatureState( CreatureState.Victory );
+				if( Random.value < 0.5f )
+				{
+					anim.CrossFade("happy");
+					anim.CrossFadeQueued("happy");
+					anim.CrossFadeQueued(selectRandomIdle());
+				}
+				else
+				{
+					anim.CrossFade("danceThriller");
+					anim.CrossFadeQueued("danceThriller");
+					anim.CrossFadeQueued(selectRandomIdle());
+				}
 			}
 		}
 	}
