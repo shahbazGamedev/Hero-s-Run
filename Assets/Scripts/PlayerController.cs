@@ -1905,10 +1905,10 @@ public class PlayerController : BaseClass {
 			{
 				ZombieController zombieController = (ZombieController) hit.gameObject.GetComponent("ZombieController");
 				//Ignore collision event if Zombie already dead.
-				if( zombieController.getZombieState() != ZombieController.ZombieState.Dying )
+				if( zombieController.getCreatureState() != CreatureState.Dying )
 				{
 					//You can't make a crawling zombie fall backwards
-					if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding ) && zombieController.getZombieState() != ZombieController.ZombieState.Crawling )
+					if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding ) && zombieController.getCreatureState() != CreatureState.Crawling )
 					{
 						//Give stars
 						PlayerStatsManager.Instance.modifyCurrentCoins( ZombieManager.NUMBER_STARS_PER_ZOMBIE, true, false );
@@ -1921,7 +1921,7 @@ public class PlayerController : BaseClass {
 					}
 					else
 					{
-						Debug.Log( "Player collided with zombie: " + hit.collider.name + " Normal" + hit.normal.y + " but CANT TOPPLE HIM " + _characterState + "  STATE Z "+ zombieController.getZombieState());
+						Debug.Log( "Player collided with zombie: " + hit.collider.name + " Normal" + hit.normal.y + " but CANT TOPPLE HIM " + _characterState + "  STATE Z "+ zombieController.getCreatureState());
 						if( hit.normal.y < 0.4f )
 						{
 							//Player is running up Z axis

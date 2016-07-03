@@ -16,7 +16,7 @@ public class ZombieManager : BaseClass {
 	// Use this for initialization
 	void Awake () {
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
+		playerController = player.gameObject.GetComponent<PlayerController>();
 
 	}
 
@@ -34,43 +34,8 @@ public class ZombieManager : BaseClass {
 		//Reset our zombies
 		for( int i=0; i < zombieFactory.Count; i++ )
 		{
-			ZombieController zombieController = (ZombieController) zombieFactory[i].GetComponent("ZombieController");
-			zombieController.resetZombie();
-		}
-	}
-
-	void knockbackZombies( float impactDiameter )
-	{
-
-		int ZombieLayer = 9;
-		int ZombieMask = 1 << ZombieLayer;
-		//Use a sphere that starts impactDiameter/2 meters in front of the player
-		Vector3 relativePos = new Vector3(0f , 0f , impactDiameter/2f );
-		Vector3 exactPos = player.TransformPoint(relativePos);
-
-		//Count the number of zombies that are knocked back so we can give the player stars.
-		//The more zombies he topples, the more stars he gets.
-		int numberOfZombies = 0;
-
-		Collider[] hitColliders = Physics.OverlapSphere(exactPos, impactDiameter, ZombieMask );
-		for( int i =0; i < hitColliders.Length; i++ )
-		{
-			ZombieController zombieController = (ZombieController) hitColliders[i].gameObject.GetComponent("ZombieController");
-			if( zombieController.getZombieState() != ZombieController.ZombieState.Dying )
-			{
-				zombieController.knockbackZombie();
-				numberOfZombies++;
-			}
-		}
-		if( numberOfZombies != 0 )
-		{
-			int totalStars = numberOfZombies * NUMBER_STARS_PER_ZOMBIE;
-			//Give stars
-			PlayerStatsManager.Instance.modifyCurrentCoins( totalStars, true, false );
-			
-			//Display star total picked up icon
-			HUDHandler.displayCoinTotal( totalStars, Color.magenta, false );
-
+			ZombieController zombieController = zombieFactory[i].GetComponent<ZombieController>();
+			zombieController.resetCreature();
 		}
 	}
 
@@ -79,43 +44,13 @@ public class ZombieManager : BaseClass {
 		GameObject zombie = zombieFactory[zombieFactoryIndex];
 		zombieFactoryIndex++;
 		if( zombieFactoryIndex == zombieFactory.Count ) zombieFactoryIndex = 0;
-		ZombieController zombieController = (ZombieController) zombie.GetComponent("ZombieController");
-		//Reset his values before returning him spic and span.. 
-		zombieController.setZombieState( ZombieController.ZombieState.Reserved );
+		ZombieController zombieController = zombie.GetComponent<ZombieController>();
+		//Reset his values before returning him spic and span. 
+		zombieController.setCreatureState( CreatureState.Reserved );
 		zombie.SetActive( true );
-		CapsuleCollider capsuleCollider = (CapsuleCollider) zombie.GetComponent("CapsuleCollider");
+		CapsuleCollider capsuleCollider = zombie.GetComponent<CapsuleCollider>();
 		capsuleCollider.enabled = true;
 		return zombie;
-	}
-
-	//Called by the Succubus controller
-	public bool spawnZombieWave()
-	{
-		StartCoroutine( spawnZombies() );
-		return true;
-	}
-
-	IEnumerator spawnZombies()
-	{
-		float minDuration = 0.1f;
-		float maxDuration = 0.4f;
-
-		spawnZombie();
-		float duration = Random.Range( minDuration,maxDuration);
-		yield return new WaitForSeconds(duration);
-		spawnZombie();
-		duration = Random.Range( minDuration,maxDuration);
-		yield return new WaitForSeconds(duration);
-		spawnZombie();
-		duration = Random.Range( minDuration,maxDuration);
-		yield return new WaitForSeconds(duration);
-		spawnZombie();
-		duration = Random.Range( minDuration,maxDuration);
-		yield return new WaitForSeconds(duration);
-		spawnZombie();
-		duration = Random.Range( minDuration,maxDuration);
-		yield return new WaitForSeconds(duration);
-		spawnZombie();
 	}
 
 	//Called by a zombie trigger
@@ -128,7 +63,7 @@ public class ZombieManager : BaseClass {
 			locationObject = spawnLocations[i];
 			if( locationObject != null )
 			{
-				zsd = (ZombieSpawnData) locationObject.GetComponent("ZombieSpawnData");
+				zsd = locationObject.GetComponent<ZombieSpawnData>();
 				if( zsd != null )
 				{
 					//Debug.Log(  " triggerZombieWave " + i + " delay " + zsd.spawnDelay + " pos " + locationObject.transform.position );
@@ -209,7 +144,6 @@ public class ZombieManager : BaseClass {
 			}
 			zombieController.followsPlayer = zsd.followsPlayer;
 
-			//zombieController.StartCoroutine( "recycleZombie", zsd.spawnDelay + zsd.recycleDelay );
 		}
 		else
 		{
@@ -233,9 +167,8 @@ public class ZombieManager : BaseClass {
 			//Make the zombie burrow out of the ground
 			Animation zombieBoyAnimator = (Animation) zombie.GetComponent("Animation");
 			ZombieController zombieController = (ZombieController) zombie.GetComponent("ZombieController");
-			zombieController.setZombieState( ZombieController.ZombieState.BurrowUp );
+			zombieController.setCreatureState( CreatureState.BurrowUp );
 			zombieBoyAnimator.CrossFade("burrowUp", 0.1f, 0 );
-			//zombieController.StartCoroutine( "recycleZombie", 10f );
 		}
 		else
 		{
@@ -286,20 +219,12 @@ public class ZombieManager : BaseClass {
 
 	void OnEnable()
 	{
-		PowerUpManager.zNukeExploded += ZNukeExploded;
 		PlayerController.resurrectionBegin += ResurrectionBegin;
 	}
 	
 	void OnDisable()
 	{
-		PowerUpManager.zNukeExploded -= ZNukeExploded;
 		PlayerController.resurrectionBegin -= ResurrectionBegin;
-	}
-
-	void ZNukeExploded( float impactDiameter )
-	{
-		Debug.LogWarning("ZNukeExploded: impactDiameter: " + impactDiameter );
-		knockbackZombies( impactDiameter );
 	}
 
 	void ResurrectionBegin()

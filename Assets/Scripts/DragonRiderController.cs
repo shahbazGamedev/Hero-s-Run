@@ -2113,10 +2113,10 @@ public class DragonRiderController : BaseClass {
 			{
 				ZombieController zombieController = (ZombieController) hit.gameObject.GetComponent("ZombieController");
 				//Ignore collision event if Zombie already dead.
-				if( zombieController.getZombieState() != ZombieController.ZombieState.Dying )
+				if( zombieController.getCreatureState() != CreatureState.Dying )
 				{
 					//You can't make a crawling zombie fall backwards
-					if( _characterState == CharacterState.Sliding && zombieController.getZombieState() != ZombieController.ZombieState.Crawling )
+					if( _characterState == CharacterState.Sliding && zombieController.getCreatureState() != CreatureState.Crawling )
 					{
 						//Give stars
 						PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );

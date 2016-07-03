@@ -66,7 +66,7 @@ public class TileReset : MonoBehaviour {
 			else if( child.CompareTag("Zombie") )
 			{
 				ZombieController zombieController = child.GetComponent<ZombieController>();
-				zombieController.resetZombie();
+				zombieController.resetCreature();
 			}
 			else if( child.name == "ZombieTrigger" )
 			{

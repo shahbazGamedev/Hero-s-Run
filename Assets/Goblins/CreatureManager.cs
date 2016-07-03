@@ -3,13 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 
 public enum CreatureState {
+	Reserved = -1,
+	Available = 0,
 	Idle = 1,
 	Walking = 2,
 	Running = 3,
-	Attacking = 4,
-	Dying = 5,
-	Victory = 6,
-	Jumping = 7
+	Crawling = 4,
+	BurrowUp = 5,
+	StandUpFromBack = 6,
+	Attacking = 7,
+	Dying = 8,
+	Victory = 9,
+	Jumping = 10
 }
 
 public class CreatureManager : BaseClass {
@@ -17,6 +22,10 @@ public class CreatureManager : BaseClass {
 	Transform player;
 	PlayerController playerController;
 	public const int NUMBER_STARS_PER_CREATURE = 20;
+	int zombieLayer = 9;
+	int goblinLayer = 11;
+	int demonLayer = 12;
+	int cerberusLayer = 13;
 
 	// Use this for initialization
 	void Awake ()
@@ -25,18 +34,13 @@ public class CreatureManager : BaseClass {
 		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
 	}
 
-	int getCreatureMask()
+	int getKnockbackCreatureMask()
 	{
-		int zombieLayer = 9;
-		int goblinLayer = 11;
-		int demonLayer = 12;
-		int cerberusLayer = 13;
 		int mask = 1 << zombieLayer;
 		mask |= 1 << goblinLayer;
  		mask |= 1 << demonLayer;
 		mask |= 1 << cerberusLayer;
 		return mask;
-
 	}
 
 	public void knockbackCreatures( float impactDiameter )
@@ -48,7 +52,7 @@ public class CreatureManager : BaseClass {
 		//Count the number of creatures that are knocked back so we can give the player stars.
 		//The more creatures he topples, the more stars he gets.
 		int numberOfCreatures = 0;
-		Collider[] hitColliders = Physics.OverlapSphere(exactPos, impactDiameter, getCreatureMask() );
+		Collider[] hitColliders = Physics.OverlapSphere(exactPos, impactDiameter, getKnockbackCreatureMask() );
 		for( int i =0; i < hitColliders.Length; i++ )
 		{
 			ICreature creatureController = hitColliders[i].GetComponent<ICreature>();
@@ -84,7 +88,6 @@ public class CreatureManager : BaseClass {
 
 	void ZNukeExploded( float impactDiameter )
 	{
-		Debug.LogWarning("ZNukeExploded: impactDiameter: " + impactDiameter );
 		knockbackCreatures( impactDiameter );
 	}
 
@@ -100,13 +103,22 @@ public class CreatureManager : BaseClass {
 
 	}
 
+	//Note that the ZombieManager class, handles reseting zombies.
+	int getResetCreatureMask()
+	{
+		int mask = 1 << goblinLayer;
+ 		mask |= 1 << demonLayer;
+		mask |= 1 << cerberusLayer;
+		return mask;
+	}
+
 	void resetCreatures( float resetDiameter )
 	{
 		//Use a sphere that starts resetDiameter/2 meters in front of the player
 		Vector3 relativePos = new Vector3(0f , 0f , resetDiameter/2f );
 		Vector3 exactPos = player.TransformPoint(relativePos);
 
-		Collider[] hitColliders = Physics.OverlapSphere(exactPos, resetDiameter, getCreatureMask() );
+		Collider[] hitColliders = Physics.OverlapSphere(exactPos, resetDiameter, getResetCreatureMask() );
 		for( int i =0; i < hitColliders.Length; i++ )
 		{
 			ICreature creatureController = hitColliders[i].GetComponent<ICreature>();

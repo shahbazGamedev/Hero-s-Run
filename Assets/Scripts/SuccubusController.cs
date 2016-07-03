@@ -63,8 +63,7 @@ public class SuccubusController : BaseClass {
 	private enum SpellType {
 		Hellpit = 0,
 		Fireball = 1,
-		Chickens = 2,
-		SummonZombies = 3
+		Chickens = 2
 	}
 
 
@@ -186,17 +185,11 @@ public class SuccubusController : BaseClass {
 			selectedSpellAnimation = animationCastNormalSpell;
 			return SpellType.Fireball;
 		}
-		else if ( rd < 0.003f )
+		else
 		{
 			selectedSpellAnimation = animationCastNormalSpell;
 			return SpellType.Chickens;
 		}
-		else
-		{
-			selectedSpellAnimation = animationCastNormalSpell;
-			return SpellType.SummonZombies;
-		}
-
 	}
 
 	void castSpell()
@@ -250,10 +243,6 @@ public class SuccubusController : BaseClass {
 			else if ( selectedSpell == SpellType.Chickens )
 			{
 				if( spawnChicken() ) numberSuccessiveSpellCast++;
-			}
-			else if ( selectedSpell == SpellType.SummonZombies)
-			{
-				if( zombieManager.spawnZombieWave() ) numberSuccessiveSpellCast++;
 			}
 			succubusAnimation.CrossFadeQueued(animationFly.name, 0.3F, QueueMode.CompleteOthers);
 

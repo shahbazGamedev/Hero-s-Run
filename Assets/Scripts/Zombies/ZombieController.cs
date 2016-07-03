@@ -2,19 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class ZombieController : BaseClass {
+public class ZombieController : BaseClass, ICreature {
 
-	public enum ZombieState {
-		Reserved = -1,
-		Available = 0,
-		Idle = 1,
-		Walking = 2,
-		Crawling = 3,
-		Dying = 4,
-		BurrowUp = 5,
-		StandUpFromBack = 6,
-		Victory = 7
-	}
 
 	public enum ZombieMoveType {
 		Walking = 1,
@@ -28,7 +17,7 @@ public class ZombieController : BaseClass {
 	Animation anim;
 	public Vector3 forward;
 	float walkSpeed = 1.65f; //good value so feet don't slide
-	public ZombieState zombieState = ZombieState.Available;
+	public CreatureState creatureState = CreatureState.Available;
 	public bool applyGravity = true;
 
 	public List<string> walkTypes = new List<string>();
@@ -46,7 +35,7 @@ public class ZombieController : BaseClass {
 	// Use this for initialization
 	void Awake () {
 
-		controller = (CharacterController) GetComponent("CharacterController");
+		controller = GetComponent<CharacterController>();
 		controller.enabled = false;
 		Transform zombiePrefab;
 		if( gameObject.name == "Zombie Boy" )
@@ -57,9 +46,9 @@ public class ZombieController : BaseClass {
 		{
 			zombiePrefab = transform.FindChild("zombieGirl");
 		}
-		anim = (Animation) zombiePrefab.GetComponent("Animation");
+		anim = zombiePrefab.GetComponent<Animation>();
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
+		playerController = player.gameObject.GetComponent<PlayerController>();
 
 	}
 
@@ -68,21 +57,21 @@ public class ZombieController : BaseClass {
 		moveZombie();
 	}
 
-	public ZombieState getZombieState()
+	public CreatureState getCreatureState()
 	{
-		return zombieState;
+		return creatureState;
 	}
 
-	public void setZombieState( ZombieState state )
+	public void setCreatureState( CreatureState state )
 	{
-		zombieState = state;
+		creatureState = state;
 	}
 
-	public void resetZombie()
+	public void resetCreature()
 	{
 		StopCoroutine("recycleZombie");
 		CancelInvoke();
-		setZombieState( ZombieController.ZombieState.Available );
+		setCreatureState( CreatureState.Available );
 		gameObject.SetActive( false );
 		followsPlayer = false;
 		controller.enabled = true;
@@ -90,7 +79,7 @@ public class ZombieController : BaseClass {
 
 	void moveZombie()
 	{
-		if( zombieState == ZombieState.Walking || zombieState == ZombieState.Crawling )
+		if( creatureState == CreatureState.Walking || creatureState == CreatureState.Crawling )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -109,17 +98,15 @@ public class ZombieController : BaseClass {
 
 	}
 
-	public void knockbackZombie()
+	public void knockback()
 	{
-		//zombie_bowling.incrementCounter();
 		CancelInvoke( "groan" );
-		setZombieState( ZombieController.ZombieState.Dying );
+		setCreatureState( CreatureState.Dying );
 		controller.enabled = false;
-		CapsuleCollider capsuleCollider = (CapsuleCollider) GetComponent("CapsuleCollider");
+		CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
 		capsuleCollider.enabled = false;
 		anim.CrossFade("fallToBack", 0.25f);
 		GetComponent<AudioSource>().PlayOneShot( fallToGround );
-		Debug.Log("KNOCKBACK " + gameObject.name );
 
 	}
 
@@ -127,36 +114,30 @@ public class ZombieController : BaseClass {
 	public void fallToBack()
 	{
 		zombie_bowling.incrementCounter();
-		CancelInvoke( "groan" );
-		setZombieState( ZombieController.ZombieState.Dying );
-		controller.enabled = false;
-		CapsuleCollider capsuleCollider = (CapsuleCollider) GetComponent("CapsuleCollider");
-		capsuleCollider.enabled = false;
-		anim.CrossFade("fallToBack");
-		GetComponent<AudioSource>().PlayOneShot( fallToGround );
+		knockback();
 	}
 
 	public void victory( bool playWinSound )
 	{
 		CancelInvoke( "groan" );
 		if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
-		if( zombieState == ZombieState.StandUpFromBack )
+		if( creatureState == CreatureState.StandUpFromBack )
 		{
 			StopCoroutine("standUpFromBackCompleted");
 			anim.CrossFadeQueued("happy");
 			anim.CrossFadeQueued("happy");
 			anim.CrossFadeQueued(selectRandomIdle());
 		}
-		else if( zombieState == ZombieState.BurrowUp )
+		else if( creatureState == CreatureState.BurrowUp )
 		{
 			StopCoroutine("burrowUpCompleted");
 			anim.CrossFadeQueued("danceThriller");
 			anim.CrossFadeQueued("danceThriller");
 			anim.CrossFadeQueued(selectRandomIdle());
 		}
-		else if( zombieState == ZombieController.ZombieState.Crawling )
+		else if( creatureState == CreatureState.Crawling )
 		{
-			setZombieState( ZombieController.ZombieState.Victory );
+			setCreatureState( CreatureState.Victory );
 			//Zombie was crawling
 			anim.CrossFade("crouch_eat1");
 			anim.CrossFadeQueued("crouch");
@@ -164,7 +145,7 @@ public class ZombieController : BaseClass {
 		else
 		{
 			//Zombie was standing up
-			setZombieState( ZombieController.ZombieState.Victory );
+			setCreatureState( CreatureState.Victory );
 			if( Random.value < 0.5f )
 			{
 				anim.CrossFade("happy");
@@ -235,7 +216,7 @@ public class ZombieController : BaseClass {
 	public void burrowUp( ParticleSystem debris )
 	{
 		controller.enabled = false;
-		setZombieState( ZombieController.ZombieState.BurrowUp );
+		setCreatureState( CreatureState.BurrowUp );
 		anim.Play("burrowUp");
 		StartCoroutine("burrowUpCompleted");
 		debris = (ParticleSystem)Instantiate(debris, transform.position, transform.rotation );
@@ -259,11 +240,11 @@ public class ZombieController : BaseClass {
 		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
 		if( walkType == "crouchMove" || walkType == "crawl" )
 		{
-			setZombieState( ZombieState.Crawling );
+			setCreatureState( CreatureState.Crawling );
 		}
 		else
 		{
-			setZombieState( ZombieState.Walking );
+			setCreatureState( CreatureState.Walking );
 		}
 	}
 
@@ -271,7 +252,7 @@ public class ZombieController : BaseClass {
 	{
 		groan ();
 		controller.enabled = false;
-		setZombieState( ZombieController.ZombieState.StandUpFromBack );
+		setCreatureState( CreatureState.StandUpFromBack );
 		anim.Play("standUpFromBack");
 		StartCoroutine("standUpFromBackCompleted");
 	}
@@ -289,7 +270,7 @@ public class ZombieController : BaseClass {
 		anim.CrossFade(walkType);
 		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
 		controller.enabled = true;
-		setZombieState( ZombieState.Walking );
+		setCreatureState( CreatureState.Walking );
 	}
 
 	public void walk()
@@ -298,7 +279,7 @@ public class ZombieController : BaseClass {
 		string walkType = selectRandomWalk( ZombieMoveType.Walking );
 		anim.Play(walkType);
 		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
-		setZombieState( ZombieController.ZombieState.Walking );
+		setCreatureState( CreatureState.Walking );
 	}
 
 	public void crawl()
@@ -307,7 +288,7 @@ public class ZombieController : BaseClass {
 		string walkType = selectRandomWalk( ZombieMoveType.Crawling );
 		anim.Play(walkType);
 		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
-		setZombieState( ZombieController.ZombieState.Crawling );
+		setCreatureState( CreatureState.Crawling );
 
 	}
 
@@ -356,7 +337,7 @@ public class ZombieController : BaseClass {
 		if( playerController.getCharacterState() != CharacterState.Dying )
 		{
 			//Only deactivate the zombie if the player is not dead as we dont want the zombie to pop out of view.
-			setZombieState( ZombieController.ZombieState.Available );
+			setCreatureState( CreatureState.Available );
 			gameObject.SetActive( false );
 		}
 	}
