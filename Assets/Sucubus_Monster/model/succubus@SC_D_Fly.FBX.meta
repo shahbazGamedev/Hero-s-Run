@@ -1,0 +1,931 @@
+fileFormatVersion: 2
+guid: f8677b56aba1d8d4a9ecf82e374d67f8
+ModelImporter:
+  serializedVersion: 15
+  fileIDToRecycleName:
+    100000: foot
+    100002: hair01_01
+    100004: hair01_02
+    100006: hair01_03
+    100008: hair01_end
+    100010: hair02_01
+    100012: hair02_02
+    100014: hair02_03
+    100016: hair02_04
+    100018: hair02_end
+    100020: hair03_01
+    100022: hair03_02
+    100024: hair03_03
+    100026: hair03_04
+    100028: hair03_end
+    100030: hair04_01
+    100032: hair04_02
+    100034: hair04_03
+    100036: hair04_04
+    100038: hair04_05
+    100040: hair04_end
+    100042: headusOBJexport004
+    100044: L_pelvisarm01_B01
+    100046: L_pelvisarm01_B02
+    100048: L_pelvisarm01_B_end
+    100050: L_pelvisarm01_C
+    100052: L_pelvisarm01_C01
+    100054: L_pelvisarm01_C_end
+    100056: L_pelvisarm01_F01
+    100058: L_pelvisarm01_F02
+    100060: L_pelvisarm01_F_end
+    100062: L_pelvisarm01_main
+    100064: L_wing_01
+    100066: L_wing_02
+    100068: L_wing_03
+    100070: L_wing_03_ind01
+    100072: L_wing_03_ind02
+    100074: L_wing_03_ind03
+    100076: L_wing_03_ind04
+    100078: L_wing_03_ind_end
+    100080: L_wing_03_little01
+    100082: L_wing_03_little02
+    100084: L_wing_03_little03(mirrored)
+    100086: L_wing_03_little_end
+    100088: L_wing_03_mid01
+    100090: L_wing_03_mid02
+    100092: L_wing_03_mid03
+    100094: L_wing_03_mid04
+    100096: L_wing_03_mid_end
+    100098: L_wing_03_ring01
+    100100: L_wing_03_ring02
+    100102: L_wing_03_ring03
+    100104: L_wing_03_ring4
+    100106: L_wing_03_ring_end
+    100108: L_wing_03_thumb01
+    100110: L_wing_03_thumb02
+    100112: L_wing_03_thumb03
+    100114: L_wing_03_thumb_End
+    100116: L_wing_03_thumb_End(mirrored)
+    100118: neckring01
+    100120: neckring02
+    100122: neckring_end
+    100124: Object019
+    100126: Object032
+    100128: Object044
+    100130: Object048
+    100132: Object079
+    100134: Object107
+    100136: Object109
+    100138: Object110
+    100140: Object111
+    100142: Pivot
+    100144: r014
+    100146: R_pelvisarm01_B01(mirrored)
+    100148: R_pelvisarm01_B02(mirrored)
+    100150: R_pelvisarm01_B_end(mirrored)
+    100152: R_pelvisarm01_C(mirrored)
+    100154: R_pelvisarm01_C01(mirrored)
+    100156: R_pelvisarm01_C_end(mirrored)
+    100158: R_pelvisarm01_F01(mirrored)
+    100160: R_pelvisarm01_F02(mirrored)
+    100162: R_pelvisarm01_F_end(mirrored)
+    100164: R_pelvisarm01_main(mirrored)
+    100166: R_wing_01(mirrored)
+    100168: R_wing_02(mirrored)
+    100170: R_wing_03(mirrored)
+    100172: R_wing_03_ind01(mirrored)
+    100174: R_wing_03_ind02(mirrored)
+    100176: R_wing_03_ind03(mirrored)
+    100178: R_wing_03_ind_04(mirrored)
+    100180: R_wing_03_ind_end(mirrored)
+    100182: R_wing_03_little01(mirrored)
+    100184: R_wing_03_little02(mirrored)
+    100186: R_wing_03_mid01(mirrored)
+    100188: R_wing_03_mid02(mirrored)
+    100190: R_wing_03_mid03(mirrored)
+    100192: R_wing_03_mid04(mirrored)
+    100194: R_wing_03_mid_end(mirrored)
+    100196: R_wing_03_ring01(mirrored)
+    100198: R_wing_03_ring02(mirrored)
+    100200: R_wing_03_ring03(mirrored)
+    100202: R_wing_03_ring04(mirrored)
+    100204: R_wing_03_ring_end(mirrored)
+    100206: R_wing_03_thumb01(mirrored)
+    100208: R_wing_03_thumb02(mirrored)
+    100210: R_wing_03_thumb03(mirrored)
+    100212: //RootNode
+    100214: Succubus_Weapon
+    100216: Succubus_Weapon_end
+    100218: sucubus
+    100220: sucubus Footsteps
+    100222: sucubus Head
+    100224: sucubus HeadNub
+    100226: sucubus L Calf
+    100228: sucubus L Clavicle
+    100230: sucubus L Finger0
+    100232: sucubus L Finger01
+    100234: sucubus L Finger02
+    100236: sucubus L Finger0Nub
+    100238: sucubus L Finger1
+    100240: sucubus L Finger11
+    100242: sucubus L Finger12
+    100244: sucubus L Finger1Nub
+    100246: sucubus L Finger2
+    100248: sucubus L Finger21
+    100250: sucubus L Finger22
+    100252: sucubus L Finger2Nub
+    100254: sucubus L Finger3
+    100256: sucubus L Finger31
+    100258: sucubus L Finger32
+    100260: sucubus L Finger3Nub
+    100262: sucubus L Finger4
+    100264: sucubus L Finger41
+    100266: sucubus L Finger42
+    100268: sucubus L Finger4Nub
+    100270: sucubus L Foot
+    100272: sucubus L Forearm
+    100274: sucubus L Hand
+    100276: sucubus L Thigh
+    100278: sucubus L Toe0
+    100280: sucubus L Toe0Nub
+    100282: sucubus L UpperArm
+    100284: sucubus Neck
+    100286: sucubus Pelvis
+    100288: sucubus R Calf
+    100290: sucubus R Clavicle
+    100292: sucubus R Finger0
+    100294: sucubus R Finger01
+    100296: sucubus R Finger02
+    100298: sucubus R Finger0Nub
+    100300: sucubus R Finger1
+    100302: sucubus R Finger11
+    100304: sucubus R Finger12
+    100306: sucubus R Finger1Nub
+    100308: sucubus R Finger2
+    100310: sucubus R Finger21
+    100312: sucubus R Finger22
+    100314: sucubus R Finger2Nub
+    100316: sucubus R Finger3
+    100318: sucubus R Finger31
+    100320: sucubus R Finger32
+    100322: sucubus R Finger3Nub
+    100324: sucubus R Finger4
+    100326: sucubus R Finger41
+    100328: sucubus R Finger42
+    100330: sucubus R Finger4Nub
+    100332: sucubus R Foot
+    100334: sucubus R Forearm
+    100336: sucubus R Hand
+    100338: sucubus R Thigh
+    100340: sucubus R Toe0
+    100342: sucubus R Toe0Nub
+    100344: sucubus R UpperArm
+    100346: sucubus Spine
+    100348: sucubus Spine1
+    100350: sucubus Spine2
+    400000: foot
+    400002: hair01_01
+    400004: hair01_02
+    400006: hair01_03
+    400008: hair01_end
+    400010: hair02_01
+    400012: hair02_02
+    400014: hair02_03
+    400016: hair02_04
+    400018: hair02_end
+    400020: hair03_01
+    400022: hair03_02
+    400024: hair03_03
+    400026: hair03_04
+    400028: hair03_end
+    400030: hair04_01
+    400032: hair04_02
+    400034: hair04_03
+    400036: hair04_04
+    400038: hair04_05
+    400040: hair04_end
+    400042: headusOBJexport004
+    400044: L_pelvisarm01_B01
+    400046: L_pelvisarm01_B02
+    400048: L_pelvisarm01_B_end
+    400050: L_pelvisarm01_C
+    400052: L_pelvisarm01_C01
+    400054: L_pelvisarm01_C_end
+    400056: L_pelvisarm01_F01
+    400058: L_pelvisarm01_F02
+    400060: L_pelvisarm01_F_end
+    400062: L_pelvisarm01_main
+    400064: L_wing_01
+    400066: L_wing_02
+    400068: L_wing_03
+    400070: L_wing_03_ind01
+    400072: L_wing_03_ind02
+    400074: L_wing_03_ind03
+    400076: L_wing_03_ind04
+    400078: L_wing_03_ind_end
+    400080: L_wing_03_little01
+    400082: L_wing_03_little02
+    400084: L_wing_03_little03(mirrored)
+    400086: L_wing_03_little_end
+    400088: L_wing_03_mid01
+    400090: L_wing_03_mid02
+    400092: L_wing_03_mid03
+    400094: L_wing_03_mid04
+    400096: L_wing_03_mid_end
+    400098: L_wing_03_ring01
+    400100: L_wing_03_ring02
+    400102: L_wing_03_ring03
+    400104: L_wing_03_ring4
+    400106: L_wing_03_ring_end
+    400108: L_wing_03_thumb01
+    400110: L_wing_03_thumb02
+    400112: L_wing_03_thumb03
+    400114: L_wing_03_thumb_End
+    400116: L_wing_03_thumb_End(mirrored)
+    400118: neckring01
+    400120: neckring02
+    400122: neckring_end
+    400124: Object019
+    400126: Object032
+    400128: Object044
+    400130: Object048
+    400132: Object079
+    400134: Object107
+    400136: Object109
+    400138: Object110
+    400140: Object111
+    400142: Pivot
+    400144: r014
+    400146: R_pelvisarm01_B01(mirrored)
+    400148: R_pelvisarm01_B02(mirrored)
+    400150: R_pelvisarm01_B_end(mirrored)
+    400152: R_pelvisarm01_C(mirrored)
+    400154: R_pelvisarm01_C01(mirrored)
+    400156: R_pelvisarm01_C_end(mirrored)
+    400158: R_pelvisarm01_F01(mirrored)
+    400160: R_pelvisarm01_F02(mirrored)
+    400162: R_pelvisarm01_F_end(mirrored)
+    400164: R_pelvisarm01_main(mirrored)
+    400166: R_wing_01(mirrored)
+    400168: R_wing_02(mirrored)
+    400170: R_wing_03(mirrored)
+    400172: R_wing_03_ind01(mirrored)
+    400174: R_wing_03_ind02(mirrored)
+    400176: R_wing_03_ind03(mirrored)
+    400178: R_wing_03_ind_04(mirrored)
+    400180: R_wing_03_ind_end(mirrored)
+    400182: R_wing_03_little01(mirrored)
+    400184: R_wing_03_little02(mirrored)
+    400186: R_wing_03_mid01(mirrored)
+    400188: R_wing_03_mid02(mirrored)
+    400190: R_wing_03_mid03(mirrored)
+    400192: R_wing_03_mid04(mirrored)
+    400194: R_wing_03_mid_end(mirrored)
+    400196: R_wing_03_ring01(mirrored)
+    400198: R_wing_03_ring02(mirrored)
+    400200: R_wing_03_ring03(mirrored)
+    400202: R_wing_03_ring04(mirrored)
+    400204: R_wing_03_ring_end(mirrored)
+    400206: R_wing_03_thumb01(mirrored)
+    400208: R_wing_03_thumb02(mirrored)
+    400210: R_wing_03_thumb03(mirrored)
+    400212: //RootNode
+    400214: Succubus_Weapon
+    400216: Succubus_Weapon_end
+    400218: sucubus
+    400220: sucubus Footsteps
+    400222: sucubus Head
+    400224: sucubus HeadNub
+    400226: sucubus L Calf
+    400228: sucubus L Clavicle
+    400230: sucubus L Finger0
+    400232: sucubus L Finger01
+    400234: sucubus L Finger02
+    400236: sucubus L Finger0Nub
+    400238: sucubus L Finger1
+    400240: sucubus L Finger11
+    400242: sucubus L Finger12
+    400244: sucubus L Finger1Nub
+    400246: sucubus L Finger2
+    400248: sucubus L Finger21
+    400250: sucubus L Finger22
+    400252: sucubus L Finger2Nub
+    400254: sucubus L Finger3
+    400256: sucubus L Finger31
+    400258: sucubus L Finger32
+    400260: sucubus L Finger3Nub
+    400262: sucubus L Finger4
+    400264: sucubus L Finger41
+    400266: sucubus L Finger42
+    400268: sucubus L Finger4Nub
+    400270: sucubus L Foot
+    400272: sucubus L Forearm
+    400274: sucubus L Hand
+    400276: sucubus L Thigh
+    400278: sucubus L Toe0
+    400280: sucubus L Toe0Nub
+    400282: sucubus L UpperArm
+    400284: sucubus Neck
+    400286: sucubus Pelvis
+    400288: sucubus R Calf
+    400290: sucubus R Clavicle
+    400292: sucubus R Finger0
+    400294: sucubus R Finger01
+    400296: sucubus R Finger02
+    400298: sucubus R Finger0Nub
+    400300: sucubus R Finger1
+    400302: sucubus R Finger11
+    400304: sucubus R Finger12
+    400306: sucubus R Finger1Nub
+    400308: sucubus R Finger2
+    400310: sucubus R Finger21
+    400312: sucubus R Finger22
+    400314: sucubus R Finger2Nub
+    400316: sucubus R Finger3
+    400318: sucubus R Finger31
+    400320: sucubus R Finger32
+    400322: sucubus R Finger3Nub
+    400324: sucubus R Finger4
+    400326: sucubus R Finger41
+    400328: sucubus R Finger42
+    400330: sucubus R Finger4Nub
+    400332: sucubus R Foot
+    400334: sucubus R Forearm
+    400336: sucubus R Hand
+    400338: sucubus R Thigh
+    400340: sucubus R Toe0
+    400342: sucubus R Toe0Nub
+    400344: sucubus R UpperArm
+    400346: sucubus Spine
+    400348: sucubus Spine1
+    400350: sucubus Spine2
+    4300000: Object019
+    4300002: Object044
+    4300004: Object048
+    4300006: r014
+    4300008: Object079
+    4300010: Object032
+    4300012: Object107
+    4300014: Object109
+    4300016: Object110
+    4300018: Object111
+    4300020: headusOBJexport004
+    7400000: SC_D_Fly
+    11100000: //RootNode
+    13700000: headusOBJexport004
+    13700002: Object019
+    13700004: Object032
+    13700006: Object044
+    13700008: Object048
+    13700010: Object079
+    13700012: Object107
+    13700014: Object109
+    13700016: Object110
+    13700018: Object111
+    13700020: r014
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: SC_D_Fly
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 50
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: foot
+        weight: 1
+      - path: headusOBJexport004
+        weight: 1
+      - path: Object019
+        weight: 1
+      - path: Object032
+        weight: 1
+      - path: Object044
+        weight: 1
+      - path: Object048
+        weight: 1
+      - path: Object079
+        weight: 1
+      - path: Object107
+        weight: 1
+      - path: Object109
+        weight: 1
+      - path: Object110
+        weight: 1
+      - path: Object111
+        weight: 1
+      - path: Pivot
+        weight: 1
+      - path: r014
+        weight: 1
+      - path: Succubus_Weapon
+        weight: 1
+      - path: Succubus_Weapon/Succubus_Weapon_end
+        weight: 1
+      - path: sucubus
+        weight: 1
+      - path: sucubus/sucubus Footsteps
+        weight: 1
+      - path: sucubus/sucubus Pelvis
+        weight: 1
+      - path: sucubus/sucubus Pelvis/L_pelvisarm01_main
+        weight: 1
+      - path: sucubus/sucubus Pelvis/L_pelvisarm01_main/L_pelvisarm01_B01
+        weight: 1
+      - path: sucubus/sucubus Pelvis/L_pelvisarm01_main/L_pelvisarm01_B01/L_pelvisarm01_B02
+        weight: 1
+      - path: sucubus/sucubus Pelvis/L_pelvisarm01_main/L_pelvisarm01_B01/L_pelvisarm01_B02/L_pelvisarm01_B_end
+        weight: 1
+      - path: sucubus/sucubus Pelvis/L_pelvisarm01_main/L_pelvisarm01_C
+        weight: 1
+      - path: sucubus/sucubus Pelvis/L_pelvisarm01_main/L_pelvisarm01_C/L_pelvisarm01_C01
+        weight: 1
+      - path: sucubus/sucubus Pelvis/L_pelvisarm01_main/L_pelvisarm01_C/L_pelvisarm01_C01/L_pelvisarm01_C_end
+        weight: 1
+      - path: sucubus/sucubus Pelvis/L_pelvisarm01_main/L_pelvisarm01_F01
+        weight: 1
+      - path: sucubus/sucubus Pelvis/L_pelvisarm01_main/L_pelvisarm01_F01/L_pelvisarm01_F02
+        weight: 1
+      - path: sucubus/sucubus Pelvis/L_pelvisarm01_main/L_pelvisarm01_F01/L_pelvisarm01_F02/L_pelvisarm01_F_end
+        weight: 1
+      - path: sucubus/sucubus Pelvis/R_pelvisarm01_main(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/R_pelvisarm01_main(mirrored)/R_pelvisarm01_B01(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/R_pelvisarm01_main(mirrored)/R_pelvisarm01_B01(mirrored)/R_pelvisarm01_B02(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/R_pelvisarm01_main(mirrored)/R_pelvisarm01_B01(mirrored)/R_pelvisarm01_B02(mirrored)/R_pelvisarm01_B_end(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/R_pelvisarm01_main(mirrored)/R_pelvisarm01_C(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/R_pelvisarm01_main(mirrored)/R_pelvisarm01_C(mirrored)/R_pelvisarm01_C01(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/R_pelvisarm01_main(mirrored)/R_pelvisarm01_C(mirrored)/R_pelvisarm01_C01(mirrored)/R_pelvisarm01_C_end(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/R_pelvisarm01_main(mirrored)/R_pelvisarm01_F01(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/R_pelvisarm01_main(mirrored)/R_pelvisarm01_F01(mirrored)/R_pelvisarm01_F02(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/R_pelvisarm01_main(mirrored)/R_pelvisarm01_F01(mirrored)/R_pelvisarm01_F02(mirrored)/R_pelvisarm01_F_end(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus L Thigh
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus L Thigh/sucubus L Calf
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus L Thigh/sucubus L Calf/sucubus
+          L Foot
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus L Thigh/sucubus L Calf/sucubus
+          L Foot/sucubus L Toe0
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus L Thigh/sucubus L Calf/sucubus
+          L Foot/sucubus L Toe0/sucubus L Toe0Nub
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus R Thigh
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus R Thigh/sucubus R Calf
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus R Thigh/sucubus R Calf/sucubus
+          R Foot
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus R Thigh/sucubus R Calf/sucubus
+          R Foot/sucubus R Toe0
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus R Thigh/sucubus R Calf/sucubus
+          R Foot/sucubus R Toe0/sucubus R Toe0Nub
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_ind01
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_ind01/L_wing_03_ind02
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_ind01/L_wing_03_ind02/L_wing_03_ind03
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_ind01/L_wing_03_ind02/L_wing_03_ind03/L_wing_03_ind04
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_ind01/L_wing_03_ind02/L_wing_03_ind03/L_wing_03_ind04/L_wing_03_ind_end
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_mid01
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_mid01/L_wing_03_mid02
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_mid01/L_wing_03_mid02/L_wing_03_mid03
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_mid01/L_wing_03_mid02/L_wing_03_mid03/L_wing_03_mid04
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_mid01/L_wing_03_mid02/L_wing_03_mid03/L_wing_03_mid04/L_wing_03_mid_end
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_ring01
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_ring01/L_wing_03_ring02
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_ring01/L_wing_03_ring02/L_wing_03_ring03
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_ring01/L_wing_03_ring02/L_wing_03_ring03/L_wing_03_ring4
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_ring01/L_wing_03_ring02/L_wing_03_ring03/L_wing_03_ring4/L_wing_03_ring_end
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_thumb01
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_thumb01/L_wing_03_thumb02
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_thumb01/L_wing_03_thumb02/L_wing_03_thumb03
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_02/L_wing_03/L_wing_03_thumb01/L_wing_03_thumb02/L_wing_03_thumb03/L_wing_03_thumb_End
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_03_little01
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_03_little01/L_wing_03_little02
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/L_wing_01/L_wing_03_little01/L_wing_03_little02/L_wing_03_little_end
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_ind01(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_ind01(mirrored)/R_wing_03_ind02(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_ind01(mirrored)/R_wing_03_ind02(mirrored)/R_wing_03_ind03(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_ind01(mirrored)/R_wing_03_ind02(mirrored)/R_wing_03_ind03(mirrored)/R_wing_03_ind_04(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_ind01(mirrored)/R_wing_03_ind02(mirrored)/R_wing_03_ind03(mirrored)/R_wing_03_ind_04(mirrored)/R_wing_03_ind_end(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_mid01(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_mid01(mirrored)/R_wing_03_mid02(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_mid01(mirrored)/R_wing_03_mid02(mirrored)/R_wing_03_mid03(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_mid01(mirrored)/R_wing_03_mid02(mirrored)/R_wing_03_mid03(mirrored)/R_wing_03_mid04(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_mid01(mirrored)/R_wing_03_mid02(mirrored)/R_wing_03_mid03(mirrored)/R_wing_03_mid04(mirrored)/R_wing_03_mid_end(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_ring01(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_ring01(mirrored)/R_wing_03_ring02(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_ring01(mirrored)/R_wing_03_ring02(mirrored)/R_wing_03_ring03(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_ring01(mirrored)/R_wing_03_ring02(mirrored)/R_wing_03_ring03(mirrored)/R_wing_03_ring04(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_ring01(mirrored)/R_wing_03_ring02(mirrored)/R_wing_03_ring03(mirrored)/R_wing_03_ring04(mirrored)/R_wing_03_ring_end(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_thumb01(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_thumb01(mirrored)/R_wing_03_thumb02(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_thumb01(mirrored)/R_wing_03_thumb02(mirrored)/R_wing_03_thumb03(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_02(mirrored)/R_wing_03(mirrored)/R_wing_03_thumb01(mirrored)/R_wing_03_thumb02(mirrored)/R_wing_03_thumb03(mirrored)/L_wing_03_thumb_End(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_03_little01(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_03_little01(mirrored)/R_wing_03_little02(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/R_wing_01(mirrored)/R_wing_03_little01(mirrored)/R_wing_03_little02(mirrored)/L_wing_03_little03(mirrored)
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/neckring01
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/neckring01/neckring02
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/neckring01/neckring02/neckring_end
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair01_01
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair01_01/hair01_02
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair01_01/hair01_02/hair01_03
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair01_01/hair01_02/hair01_03/hair01_end
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair02_01
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair02_01/hair02_02
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair02_01/hair02_02/hair02_03
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair02_01/hair02_02/hair02_03/hair02_04
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair02_01/hair02_02/hair02_03/hair02_04/hair02_end
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair03_01
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair03_01/hair03_02
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair03_01/hair03_02/hair03_03
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair03_01/hair03_02/hair03_03/hair03_04
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair03_01/hair03_02/hair03_03/hair03_04/hair03_end
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair04_01
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair04_01/hair04_02
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair04_01/hair04_02/hair04_03
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair04_01/hair04_02/hair04_03/hair04_04
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair04_01/hair04_02/hair04_03/hair04_04/hair04_05
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/hair04_01/hair04_02/hair04_03/hair04_04/hair04_05/hair04_end
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus Head/sucubus HeadNub
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger0
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger0/sucubus L Finger01
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger0/sucubus L Finger01/sucubus L Finger02
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger0/sucubus L Finger01/sucubus L Finger02/sucubus L Finger0Nub
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger1
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger1/sucubus L Finger11
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger1/sucubus L Finger11/sucubus L Finger12
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger1/sucubus L Finger11/sucubus L Finger12/sucubus L Finger1Nub
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger2
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger2/sucubus L Finger21
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger2/sucubus L Finger21/sucubus L Finger22
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger2/sucubus L Finger21/sucubus L Finger22/sucubus L Finger2Nub
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger3
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger3/sucubus L Finger31
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger3/sucubus L Finger31/sucubus L Finger32
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger3/sucubus L Finger31/sucubus L Finger32/sucubus L Finger3Nub
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger4
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger4/sucubus L Finger41
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger4/sucubus L Finger41/sucubus L Finger42
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus L Clavicle/sucubus L UpperArm/sucubus L Forearm/sucubus L Hand/sucubus
+          L Finger4/sucubus L Finger41/sucubus L Finger42/sucubus L Finger4Nub
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger0
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger0/sucubus R Finger01
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger0/sucubus R Finger01/sucubus R Finger02
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger0/sucubus R Finger01/sucubus R Finger02/sucubus R Finger0Nub
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger1
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger1/sucubus R Finger11
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger1/sucubus R Finger11/sucubus R Finger12
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger1/sucubus R Finger11/sucubus R Finger12/sucubus R Finger1Nub
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger2
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger2/sucubus R Finger21
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger2/sucubus R Finger21/sucubus R Finger22
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger2/sucubus R Finger21/sucubus R Finger22/sucubus R Finger2Nub
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger3
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger3/sucubus R Finger31
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger3/sucubus R Finger31/sucubus R Finger32
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger3/sucubus R Finger31/sucubus R Finger32/sucubus R Finger3Nub
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger4
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger4/sucubus R Finger41
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger4/sucubus R Finger41/sucubus R Finger42
+        weight: 1
+      - path: sucubus/sucubus Pelvis/sucubus Spine/sucubus Spine1/sucubus Spine2/sucubus
+          Neck/sucubus R Clavicle/sucubus R UpperArm/sucubus R Forearm/sucubus R Hand/sucubus
+          R Finger4/sucubus R Finger41/sucubus R Finger42/sucubus R Finger4Nub
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  userData: 
