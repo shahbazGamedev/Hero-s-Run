@@ -35,12 +35,18 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public Color32 starReceivedColor;
 	[Header("Level Station Locations")]
 	public RectTransform[] levelStationLocations = new RectTransform[LevelData.NUMBER_OF_LEVELS];
+	[Header("Star Locations")]
+	//Array of the RectTransforms holding the three stars. Index is the episode number
+	public RectTransform[] starLocations = new RectTransform[LevelData.NUMBER_OF_EPISODES];
+	[Header("Menu Prefabs")]
+	public GameObject episodeStationPrefab;
+	public GameObject levelStationPrefab;
+	public GameObject starDisplayPrefab;
+	public GameObject friendPortraitPrefab;
 
 	private Outline nextLevelToPlayGlowingOutline;
 	private const float OUTLINE_FLASH_SPEED = 2.25f;
 
-	//Array of the RectTransforms holding the three stars. Index is the episode number
-	public RectTransform[] starLocations = new RectTransform[LevelData.NUMBER_OF_EPISODES];
 
 	void Awake ()
 	{
@@ -107,9 +113,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	void drawLevelMarkers()
 	{
-		GameObject levelStationPrefab = Resources.Load( "Menu/Level Button") as GameObject;
-		GameObject episodeStationPrefab = Resources.Load( "Menu/Episode Button") as GameObject;
-		GameObject starDisplayPrefab = Resources.Load( "Menu/Star Display") as GameObject;
 		int episodeCounter = 0;
 		LevelData.LevelInfo levelInfo;
 
@@ -118,18 +121,18 @@ public class NewWorldMapHandler : MonoBehaviour {
 			levelInfo = levelList[i];
 			if( levelInfo.levelType == LevelType.Episode )
 			{
-				drawEpisodeLevelMarker( episodeStationPrefab, i, episodeCounter );
-				drawDisplayStars( starDisplayPrefab, i, episodeCounter );
+				drawEpisodeLevelMarker( i, episodeCounter );
+				drawDisplayStars( i, episodeCounter );
 				episodeCounter++;
 			}
 			else if( levelInfo.levelType == LevelType.Normal )
 			{
-				drawNormalLevelMarker( levelStationPrefab, i, episodeCounter );
+				drawNormalLevelMarker( i, episodeCounter );
 			}
 		}
 	}
 
-	void drawNormalLevelMarker( GameObject levelStationPrefab, int levelNumber, int episodeCounter )
+	void drawNormalLevelMarker( int levelNumber, int episodeCounter )
 	{
 		GameObject go = (GameObject)Instantiate(levelStationPrefab);
 		go.transform.SetParent(map.transform,false);
@@ -171,7 +174,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 			if( userID != null )
 			{
 				//Yes, a friend has reached that level
-				GameObject friendPortraitPrefab = Resources.Load( "Menu/Friend Portrait") as GameObject;
 				GameObject go = (GameObject)Instantiate(friendPortraitPrefab);
 				go.name = "Friend Portrait " + (levelNumber + 1).ToString();
 				//Position the friend portrait on the right-hand side of the level station
@@ -202,7 +204,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		episodePopup.showEpisodePopup( episodeNumber, levelNumber );
 	}
 
-	void drawEpisodeLevelMarker( GameObject episodeStationPrefab, int levelNumber, int episodeCounter )
+	void drawEpisodeLevelMarker( int levelNumber, int episodeCounter )
 	{
 		LevelData.EpisodeInfo episodeInfo = levelData.getEpisodeInfo( episodeCounter );
 		GameObject go = (GameObject)Instantiate(episodeStationPrefab);
@@ -236,20 +238,23 @@ public class NewWorldMapHandler : MonoBehaviour {
 		drawFriendPicture( levelStationButtonRectTransform, levelNumber );
 	}
 
-	void drawDisplayStars(GameObject starDisplayPrefab, int levelNumber, int episodeCounter )
+	void drawDisplayStars( int levelNumber, int episodeCounter )
 	{
-		GameObject go = (GameObject)Instantiate(starDisplayPrefab);
-		go.transform.SetParent(map.transform,false);
-		go.name = "Star Meter " + (episodeCounter + 1).ToString();
-		RectTransform goRectTransform = go.GetComponent<RectTransform>();
-		goRectTransform.SetParent( levelStationLocations[levelNumber], false );
-		goRectTransform.anchoredPosition = new Vector2( 0, 55f );
-		//Store it so we can easily update the stars later
-		starLocations[episodeCounter] = goRectTransform;
-		//numberOfStars is between 0 and 3
-		int numberOfStars = PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( episodeCounter );
-		updateDisplayStars( episodeCounter, numberOfStars );
- 		
+		if( levelNumber <= LevelManager.Instance.getNextLevelToComplete() )
+		{
+			//Level is unlocked so show the stars.
+			GameObject go = (GameObject)Instantiate(starDisplayPrefab);
+			go.transform.SetParent(map.transform,false);
+			go.name = "Star Meter " + (episodeCounter + 1).ToString();
+			RectTransform goRectTransform = go.GetComponent<RectTransform>();
+			goRectTransform.SetParent( levelStationLocations[levelNumber], false );
+			goRectTransform.anchoredPosition = new Vector2( 0, 55f );
+			//Store it so we can easily update the stars later
+			starLocations[episodeCounter] = goRectTransform;
+			//numberOfStars is between 0 and 3
+			int numberOfStars = PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( episodeCounter );
+			updateDisplayStars( episodeCounter, numberOfStars );
+		}
 	}
 
 	public void updateDisplayStars( int episodeNumber, int numberOfStars )
