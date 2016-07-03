@@ -5,14 +5,15 @@ using System.Collections.Generic;
 public class GameEventManager : MonoBehaviour {
 
 	public GenerateLevel generateLevel;
-	WeatherManager weatherManager;
-	Lightning lightning;
-	SimpleCamera simpleCamera;
-	Transform player;
-	PlayerController playerController;
-	TrollController trollController;
-	Transform fairy;
-	FairyController fairyController;
+	public WeatherManager weatherManager;
+	public SimpleCamera simpleCamera;
+	public Lightning lightning;
+	public TrollController trollController;
+	public Transform player;
+	public PlayerController playerController;
+	public Transform fairy;
+	public FairyController fairyController;
+
 	Transform darkQueen;
 	DarkQueenController darkQueenController;
 	ZombieManager zombieManager;
@@ -26,7 +27,7 @@ public class GameEventManager : MonoBehaviour {
 	TentaclesSequence tentaclesSequence;
 	DarkQueenKrakenSequence darkQueenKrakenSequence;
 
-	public bool isTentacleSequenceActive = false;
+	bool isTentacleSequenceActive = false;
 
 	const int TENTACLES_FACTORY_SIZE = 12;
 	List<GameObject> tentaclesList = new List<GameObject>( TENTACLES_FACTORY_SIZE );
@@ -50,29 +51,6 @@ public class GameEventManager : MonoBehaviour {
 	int zombieHandsBurtsOutFXIndex = 0;
 	List<ParticleSystem> zombieHandsDustList = new List<ParticleSystem>( ZOMBIE_HANDS_FACTORY_SIZE );
 	int zombieHandsDustIndex = 0;
-
-
-	// Use this for initialization
-	void Awake () {
-
-		GameObject weatherManagerObject = GameObject.FindGameObjectWithTag("WeatherManager");
-		weatherManager = weatherManagerObject.GetComponent<WeatherManager>();
-
-		GameObject sunlightObject = GameObject.FindGameObjectWithTag("Sunlight");
-		lightning = sunlightObject.GetComponent<Lightning>();
-
-		GameObject trollObject = GameObject.FindGameObjectWithTag("Troll");
-		trollController = trollObject.GetComponent<TrollController>();
-
-		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		player = playerObject.transform;
-		playerController = playerObject.GetComponent<PlayerController>();
-		simpleCamera = player.GetComponent<SimpleCamera>();
-
-		fairy = GameObject.FindGameObjectWithTag("Fairy").transform;
-		fairyController = fairy.GetComponent<FairyController>();
-
-	}
 
 	//Dark Queen sequence that plays before the Kraken tentacles sequence
 	public void setOpeningSequence( DarkQueenKrakenSequence darkQueenKrakenSequence )
