@@ -90,7 +90,7 @@ public class HUDSaveMe : MonoBehaviour {
 
 	void closeSaveMeMenu()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		saveMeCanvas.SetActive ( false );
 	}
 
@@ -168,8 +168,8 @@ public class HUDSaveMe : MonoBehaviour {
 		//We might have the slow down power-up still active, so just to be sure
 		//we will reset the timescale back to 1.
 		Time.timeScale = 1f;
-		SoundManager.stopMusic();
-		SoundManager.stopAmbience();
+		SoundManager.soundManager.stopMusic();
+		SoundManager.soundManager.stopAmbience();
 		GameManager.Instance.setGameState(GameState.PostLevelPopup);
 		closeSaveMeMenu();
 		SceneManager.LoadScene( (int) GameScenes.WorldMap );
@@ -185,7 +185,7 @@ public class HUDSaveMe : MonoBehaviour {
 			{
 				if( audioSource.clip != null && audioSource.isPlaying )
 				{
-					StartCoroutine( SoundManager.fadeOutClip( audioSource, audioSource.clip, duration ) );
+					StartCoroutine( SoundManager.soundManager.fadeOutClip( audioSource, audioSource.clip, duration ) );
 				}
 			}
 		}

@@ -417,7 +417,7 @@ public class PlayerController : BaseClass {
 		//This time is captured so we can slowly accelerate the run speed
 		timeSessionStarted = Time.time;
 
-		StartCoroutine( SoundManager.fadeInMusic(2f) );
+		StartCoroutine( SoundManager.soundManager.fadeInMusic(2f) );
 		GameManager.Instance.setGameState( GameState.Normal );
 
 		if( playCutscene )
@@ -2253,8 +2253,8 @@ public class PlayerController : BaseClass {
 			GameCenterManager.reportLeaderboard( GameCenterManager.DistanceRunAllLevels, PlayerStatsManager.Instance.getDistanceTravelled() );
 			#endif
 			trollController.stopPursuing ();
-			StartCoroutine( SoundManager.fadeOutMusic( 6.3f ) );
-			StartCoroutine( SoundManager.fadeOutAmbience( 6.3f ) );
+			StartCoroutine( SoundManager.soundManager.fadeOutMusic( 6.3f ) );
+			StartCoroutine( SoundManager.soundManager.fadeOutAmbience( 6.3f ) );
 			GameManager.Instance.setGameState(GameState.Checkpoint);
 			StartCoroutine( slowDownPlayer( 16f, afterPlayerSlowdown ) );
 		}
@@ -2604,7 +2604,7 @@ public class PlayerController : BaseClass {
 			moveDirection = new Vector3( 0,moveDirection.y,0 );
 
 			//Fade out the music
-			StartCoroutine( SoundManager.fadeOutMusic(1f, 0.25f) );
+			StartCoroutine( SoundManager.soundManager.fadeOutMusic(1f, 0.25f) );
 
 			//Stop any currently playing sound
 			GetComponent<AudioSource>().Stop();

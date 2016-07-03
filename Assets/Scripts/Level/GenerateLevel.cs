@@ -261,10 +261,10 @@ public class GenerateLevel  : MonoBehaviour {
 		activateInitialTiles(0);
 
 		//Fade-in the level ambience soundtrack
-		StartCoroutine( SoundManager.fadeInAmbience( levelInfo.AmbienceSound, 10f ) );
+		StartCoroutine( SoundManager.soundManager.fadeInAmbience( levelInfo.AmbienceSound, 10f ) );
 
 		//Set the music track to play if a value is set
-		SoundManager.setMusicTrack( levelInfo.MusicTrack );
+		SoundManager.soundManager.setMusicTrack( levelInfo.MusicTrack );
 
 		Debug.Log("GenerateLevel-CreateLevel: Level " + levelInfo.LevelName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.realNumberCoinsSpawned );

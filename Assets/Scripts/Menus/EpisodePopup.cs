@@ -45,7 +45,7 @@ public class EpisodePopup : MonoBehaviour {
 
 	public void showEpisodePopup( int episodeNumber, int levelNumber )
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		this.episodeNumber = episodeNumber;
 		this.levelNumber = levelNumber;
 		loadEpisodeData();
@@ -90,14 +90,14 @@ public class EpisodePopup : MonoBehaviour {
 
 	public void closeEpisodeMenu()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		anim.Play("Panel Slide Out");
 	}
 
 	public void play()
 	{
 		Debug.Log("Play button pressed: Episode: " + episodeNumber + " Level: " + levelNumber );
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		//We are starting a new run, reset some values
 		LevelManager.Instance.setScore( 0 );
 		LevelManager.Instance.setEpisodeCompleted( false );

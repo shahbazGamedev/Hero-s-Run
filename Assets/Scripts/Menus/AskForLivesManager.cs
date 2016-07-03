@@ -22,7 +22,7 @@ public class AskForLivesManager : MonoBehaviour {
 	
 	public void showFacebookAskLives()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		string message = LocalizationManager.Instance.getText( "MESSAGE_ENTRY_TITLE_EXTRA_LIFE" );
 		FacebookManager.Instance.CallAppRequestAsFriendSelector( "App Requests", message, "app_users", "Ask_Give_Life,1", "", "" );
 	}

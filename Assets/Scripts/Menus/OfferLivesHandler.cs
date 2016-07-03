@@ -138,7 +138,7 @@ public class OfferLivesHandler : MonoBehaviour {
 		//Did the value change?
 		if( isCheckAllSelected != newValue )
 		{
-			SoundManager.playButtonClick();
+			SoundManager.soundManager.playButtonClick();
 			isCheckAllSelected = newValue;
 			//Select all the entries
 			foreach(KeyValuePair<string, FriendData> pair in FacebookManager.Instance.friendsList) 

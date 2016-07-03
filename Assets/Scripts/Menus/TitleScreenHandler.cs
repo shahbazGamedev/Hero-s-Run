@@ -76,7 +76,7 @@ public class TitleScreenHandler : MonoBehaviour {
 
 	public void play()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		StartCoroutine("loadWorldMap");
 	}
 	
@@ -98,7 +98,7 @@ public class TitleScreenHandler : MonoBehaviour {
 
 	public void loginWithFacebook()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		//Hide Play and Connect buttons while showing the popup
 		playButton.gameObject.SetActive( false );
 		connectButton.gameObject.SetActive( false );
@@ -121,7 +121,7 @@ public class TitleScreenHandler : MonoBehaviour {
 
 	public void closeConnectionPopup()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		connectionPopup.gameObject.SetActive( false );
 		//Show Play and Connect buttons since we are dismissing the popup
 		playButton.gameObject.SetActive( true );

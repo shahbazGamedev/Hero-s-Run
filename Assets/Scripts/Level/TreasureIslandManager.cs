@@ -84,7 +84,7 @@ public class TreasureIslandManager : MonoBehaviour {
 		Handheld.StopActivityIndicator();
 		loadHero();
 		spawnRandomChest();
-		StartCoroutine( SoundManager.fadeInAmbience( ambientSound, 3f ) );
+		StartCoroutine( SoundManager.soundManager.fadeInAmbience( ambientSound, 3f ) );
 
 		if( PlayerStatsManager.Instance.getTreasureKeysOwned() > 0 )
 		{
@@ -186,9 +186,9 @@ public class TreasureIslandManager : MonoBehaviour {
 		Debug.Log("Close Treasure island " + levelLoading );
 		if( !levelLoading )
 		{
-			SoundManager.playButtonClick();
+			SoundManager.soundManager.playButtonClick();
 			levelLoading = true;
-			SoundManager.stopAmbience();
+			SoundManager.soundManager.stopAmbience();
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);
 			SceneManager.LoadScene( (int)GameScenes.WorldMap );

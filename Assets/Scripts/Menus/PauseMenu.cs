@@ -97,8 +97,8 @@ public class PauseMenu : MonoBehaviour {
 		//We might have the slow down power-up still active, so just to be sure
 		//we will reset the timescale back to 1.
 		Time.timeScale = 1f;
-		SoundManager.stopMusic();
-		SoundManager.stopAmbience();
+		SoundManager.soundManager.stopMusic();
+		SoundManager.soundManager.stopAmbience();
 		GameManager.Instance.setGameState(GameState.PostLevelPopup);
 		SceneManager.LoadScene( (int) GameScenes.WorldMap );
 	}
@@ -117,7 +117,7 @@ public class PauseMenu : MonoBehaviour {
 		{
 			//Pause game
 			GameManager.Instance.setGameState( GameState.Paused );
-			SoundManager.pauseMusic();
+			SoundManager.soundManager.pauseMusic();
 			timeScaleBeforePause = Time.timeScale;
 			Time.timeScale = 0;
 			AudioListener.pause = true;
@@ -144,7 +144,7 @@ public class PauseMenu : MonoBehaviour {
 				//Resume game but without the countdown
 				AudioListener.pause = false;
 				GameManager.Instance.setGameState( GameState.Normal );
-				SoundManager.playMusic();
+				SoundManager.soundManager.playMusic();
 				if( isPlayerControlEnabledBeforePause ) playerController.enablePlayerControl(true);
 			}
 		}
@@ -159,7 +159,7 @@ public class PauseMenu : MonoBehaviour {
 		while (countdown > 0)
 		{
 			goText.text = countdown.ToString();
-			SoundManager.playGUISound( beep );
+			SoundManager.soundManager.playGUISound( beep );
 			yield return new WaitForSecondsRealtime( 1.0f );
 			countdown --;
 			if( countdown == 0 )
@@ -168,7 +168,7 @@ public class PauseMenu : MonoBehaviour {
 				Time.timeScale = timeScaleBeforePause;
 				AudioListener.pause = false;
 				GameManager.Instance.setGameState( GameState.Normal );
-				SoundManager.playMusic();
+				SoundManager.soundManager.playMusic();
 				if( isPlayerControlEnabledBeforePause ) playerController.enablePlayerControl(true);
 				//Display a Go! message and hide after a few seconds
 				goText.rectTransform.eulerAngles = new Vector3( 0,0,4 );

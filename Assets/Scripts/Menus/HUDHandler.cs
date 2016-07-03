@@ -117,14 +117,14 @@ public class HUDHandler : MonoBehaviour {
 			hideLevelName();
 			if( playerController.getCurrentTileType() == TileType.Opening )
 			{
-				SoundManager.playButtonClick();
+				SoundManager.soundManager.playButtonClick();
 				GameObject gameEventManagerObject = GameObject.FindGameObjectWithTag("GameEventManager");
 				GameEventManager gem = gameEventManagerObject.GetComponent<GameEventManager>();
 				gem.playOpeningSequence();
 			}
 			else
 			{
-				SoundManager.playButtonClick();
+				SoundManager.soundManager.playButtonClick();
 				playerController.startRunning();
 			}
 		}

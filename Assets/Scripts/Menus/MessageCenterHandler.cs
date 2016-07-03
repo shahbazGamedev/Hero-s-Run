@@ -155,7 +155,7 @@ public class MessageCenterHandler : MonoBehaviour {
 
 		if( isCheckAllSelected != newValue )
 		{
-			SoundManager.playButtonClick();
+			SoundManager.soundManager.playButtonClick();
 			isCheckAllSelected = newValue;
 			//Select all the entries
 			foreach(AppRequestData appRequestData in FacebookManager.Instance.AppRequestDataList) 

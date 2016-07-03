@@ -119,7 +119,7 @@ public class PostLevelPopup : MonoBehaviour {
 
 	public void closePostLevelPopup()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		//Reset the level changed value
 		LevelManager.Instance.setLevelChanged( false );
 		GameManager.Instance.setGameState(GameState.Menu);
@@ -151,7 +151,7 @@ public class PostLevelPopup : MonoBehaviour {
 		//We are starting a new run, reset the episode stars
 		LevelManager.Instance.setScore( 0 );
 		PlayerStatsManager.Instance.resetNumberDeathsStartingAtEpisode( LevelManager.Instance.getCurrentEpisodeNumber() );
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		StartCoroutine( loadLevel() );
 	}
 

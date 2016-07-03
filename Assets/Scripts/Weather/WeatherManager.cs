@@ -107,7 +107,7 @@ public class WeatherManager : BaseClass {
 		else if( eventType == GameEvent.Start_Snowing )
 		{
 			print ("WeatherManager-player entered trigger GameEvent.Start_Snowing");
-			StartCoroutine( SoundManager.fadeInClip( GetComponent<AudioSource>(), snowSound, 4f ) );
+			StartCoroutine( SoundManager.soundManager.fadeInClip( GetComponent<AudioSource>(), snowSound, 4f ) );
 			activeParticleSystem = snow;
 			activeParticleSystem.Play();
 			isParticleSystemActive = true;
@@ -115,7 +115,7 @@ public class WeatherManager : BaseClass {
 		else if( eventType == GameEvent.Stop_Snowing )
 		{
 			print ("WeatherManager-player entered trigger GameEvent.Stop_Snowing");
-			StartCoroutine( SoundManager.fadeOutClip( GetComponent<AudioSource>(), snowSound, 2f ) );
+			StartCoroutine( SoundManager.soundManager.fadeOutClip( GetComponent<AudioSource>(), snowSound, 2f ) );
 			activeParticleSystem.Stop();
 			isParticleSystemActive = false;
 		}
@@ -134,7 +134,7 @@ public class WeatherManager : BaseClass {
 		if( enable )
 		{
 			print ("WeatherManager-activateRain GameEvent.Start_Raining");
-			StartCoroutine( SoundManager.fadeInClip( GetComponent<AudioSource>(), rainSound, 4f ) );
+			StartCoroutine( SoundManager.soundManager.fadeInClip( GetComponent<AudioSource>(), rainSound, 4f ) );
 			activeParticleSystem = rain;
 			activeParticleSystem.Play();
 			isParticleSystemActive = true;
@@ -142,7 +142,7 @@ public class WeatherManager : BaseClass {
 		else
 		{
 			print ("WeatherManager-activateRain GameEvent.Stop_Raining");
-			StartCoroutine( SoundManager.fadeOutClip( GetComponent<AudioSource>(), rainSound, 2f ) );
+			StartCoroutine( SoundManager.soundManager.fadeOutClip( GetComponent<AudioSource>(), rainSound, 2f ) );
 			if( activeParticleSystem !=null ) activeParticleSystem.Stop();
 			isParticleSystemActive = false;
 		}

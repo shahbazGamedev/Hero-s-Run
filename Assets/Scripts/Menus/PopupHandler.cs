@@ -184,7 +184,7 @@ public class PopupHandler : MonoBehaviour {
 
 	public void closePopup()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		popupStack.Clear();
 		popupStack.Push( PopupType.None );
 	}
@@ -264,7 +264,7 @@ public class PopupHandler : MonoBehaviour {
 		Rect closeButtonRect = new Rect( popupRect.width - closeButtonSize.x, 0, closeButtonSize.x, closeButtonSize.y );
 		if( GUI.Button( closeButtonRect, "<", closeButtonStyle )) 
 		{
-			SoundManager.playButtonClick();
+			SoundManager.soundManager.playButtonClick();
 			//Display the previous pop-up
 			popupStack.Pop();
 		}
@@ -296,7 +296,7 @@ public class PopupHandler : MonoBehaviour {
 		buttonStyle.contentOffset = Vector2.zero;
 		if( GUILayout.Button( buttonText, buttonStyle )) 
 		{
-			SoundManager.playButtonClick();
+			SoundManager.soundManager.playButtonClick();
 			onClick.Invoke ();
 		}
 	}
@@ -311,7 +311,7 @@ public class PopupHandler : MonoBehaviour {
 		if(selected) buttonStyle.normal.textColor = Color.yellow;
 		if( GUILayout.Button( buttonText, buttonStyle )) 
 		{
-			SoundManager.playButtonClick();
+			SoundManager.soundManager.playButtonClick();
 			onClick.Invoke ();
 		}
 		buttonStyle.normal.textColor = originalFontColor;
@@ -345,7 +345,7 @@ public class PopupHandler : MonoBehaviour {
 
 		if( GUI.Button( buttonRect, buttonText, buttonStyle )) 
 		{
-			SoundManager.playButtonClick();
+			SoundManager.soundManager.playButtonClick();
 			onClick.Invoke ();
 		}
 		buttonStyle.fontSize = originalFontSize;
@@ -448,7 +448,7 @@ public class PopupHandler : MonoBehaviour {
 			Rect closeButtonRect = new Rect( userMessageRect.width - (buttonWidth * 1.1f), (buttonWidth * 1.1f), buttonWidth, buttonWidth );
 			if( GUI.Button( closeButtonRect, "X", textStyle )) 
 			{
-				SoundManager.playButtonClick();
+				SoundManager.soundManager.playButtonClick();
 				displayPopup = false;
 			}
 			
@@ -457,7 +457,7 @@ public class PopupHandler : MonoBehaviour {
 			Rect okayButtonRect = new Rect( (userMessageRect.width - buttonWidth) /2, userMessageRect.height - (buttonWidth * 1.1f), buttonWidth, buttonWidth );
 			if( GUI.Button( okayButtonRect, "Okay", textStyle )) 
 			{
-				SoundManager.playButtonClick();
+				SoundManager.soundManager.playButtonClick();
 				displayPopup = false;
 			}
 		}

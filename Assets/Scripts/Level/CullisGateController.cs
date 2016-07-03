@@ -57,8 +57,8 @@ public class CullisGateController : MonoBehaviour {
 	void quit()
 	{
 		Debug.Log("Cullis Gate-Game is finished. Returning to world map.");
-		SoundManager.stopMusic();
-		SoundManager.stopAmbience();
+		SoundManager.soundManager.stopMusic();
+		SoundManager.soundManager.stopAmbience();
 		GameManager.Instance.setGameState(GameState.PostLevelPopup);
 		SceneManager.LoadScene( (int) GameScenes.WorldMap );
 	}
@@ -108,7 +108,7 @@ public class CullisGateController : MonoBehaviour {
 			{
 				if( audioSource.clip != null && audioSource.isPlaying )
 				{
-					StartCoroutine( SoundManager.fadeOutClip( audioSource, audioSource.clip, duration ) );
+					StartCoroutine( SoundManager.soundManager.fadeOutClip( audioSource, audioSource.clip, duration ) );
 				}
 			}
 		}

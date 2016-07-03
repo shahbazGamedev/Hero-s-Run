@@ -72,14 +72,6 @@ public class SuccubusController : BaseClass {
 		//Get a copy of the components
 		succubusAnimation = (Animation) GetComponent("Animation");
 
-		//Hell pit - we only create one and we move it
-		GameObject hellPitPrefab = Resources.Load( "Level/Hell Pit Double") as GameObject;
-		hellPit = (GameObject)Instantiate(hellPitPrefab, Vector3.zero, Quaternion.identity ) ;
-		hellPit.SetActive( false );
-
-		//Fireball
-		fireBallPrefab = Resources.Load( "Level/BallOfFire") as GameObject;
-
 		//Prepare texts
 		assembleTexts();
 

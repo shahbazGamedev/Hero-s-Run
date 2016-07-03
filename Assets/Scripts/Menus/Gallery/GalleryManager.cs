@@ -434,7 +434,7 @@ public class GalleryManager : MonoBehaviour {
 	{
 		if( !levelLoading )
 		{
-			SoundManager.playButtonClick();
+			SoundManager.soundManager.playButtonClick();
 			levelLoading = true;
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);

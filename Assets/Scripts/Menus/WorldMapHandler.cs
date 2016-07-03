@@ -311,7 +311,7 @@ void displayOfferLivesPopup()
 				Rect buttonRect = new Rect( marginX, marginY, messageCenterOpenStyle.fixedWidth, messageCenterOpenStyle.fixedHeight );
 				if( GUI.Button( buttonRect, "", messageCenterOpenStyle )) 
 				{
-					SoundManager.playButtonClick();
+					SoundManager.soundManager.playButtonClick();
 					popupHandler.setPopupSize(new Vector2( Screen.width * 0.8f, Screen.height * 0.55f ));
 					popupHandler.activatePopup( PopupType.MessageCenter );
 				}
@@ -396,7 +396,7 @@ void displayOfferLivesPopup()
 			if( GUI.Button( shieldButtonRect, shieldButtonContent, shieldStyle ) ) 
 			{
 				//For debugging only
-				SoundManager.playButtonClick();
+				SoundManager.soundManager.playButtonClick();
 				int levelToLoad = levelButtonList.IndexOf(shieldButtonRect);
 				LevelManager.Instance.forceNextLevelToComplete( levelToLoad );
 				initiateLevelLoading();
@@ -483,7 +483,7 @@ void drawFriendPicture( Vector2 coord,int levelNumber )
 			//ACTIVE state
 			if( GUI.Button( sectionEndButtonRect, shieldButtonContent, sectionEndStyle ) ) 
 			{
-				SoundManager.playButtonClick();
+				SoundManager.soundManager.playButtonClick();
 				print ( "level " + levelNumber + " next lvl " + LevelManager.Instance.getNextLevelToComplete() + " nextSectionToUnlock " + nextSectionToUnlock  );
 				//for debugging
 				//popupHandler.activatePopup( PopupType.FriendsOrPay );

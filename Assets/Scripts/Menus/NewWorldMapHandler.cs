@@ -200,7 +200,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 	{
 		Debug.Log("Level Station click-Episode: " + episodeNumber + " Level: " + levelNumber );
 		LevelManager.Instance.setCurrentEpisodeNumber( episodeNumber );
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		episodePopup.showEpisodePopup( episodeNumber, levelNumber );
 	}
 
@@ -289,7 +289,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	public void showTitleScreen()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		StartCoroutine( loadTitleScreen() );
 	}
 
@@ -306,20 +306,20 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	public void showStoreScreen()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		storeManager.showStore( StoreTab.Store, StoreReason.None );
 	}
 
 	public void showShopScreen()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		storeManager.showStore( StoreTab.Shop, StoreReason.None );
 	}
 
 	//Middle Panel
 	public void showMessageCenter()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		Debug.LogWarning("NewWorldMapHandler: showMessageCenter is not implemented."); 
 		//popupHandler.setPopupSize(new Vector2( Screen.width * 0.8f, Screen.height * 0.55f ));
 		//popupHandler.activatePopup( PopupType.MessageCenter );
@@ -328,13 +328,13 @@ public class NewWorldMapHandler : MonoBehaviour {
 	//Bottom panel
 	public void showInviteFriends()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		FacebookManager.Instance.inviteFriends( inviteFriendsCustomImageUri );
 	}
 
 	public void showCharacterGallery()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		StartCoroutine( loadCharacterGallery() );
 	}
 
@@ -351,26 +351,26 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	public void showAskLivesPopup()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		facebookAskLivesPanel.GetComponent<Animator>().Play("Panel Slide In");
 	}
 
 	public void hideAskLivesPopup()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		facebookAskLivesPanel.GetComponent<Animator>().Play("Panel Slide Out");
 	}
 
 	public void showSettingsMenu()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		settingsMenuCanvas.GetComponent<SettingsMenu>().showSettingsMenu();
 	}
 
 	//Treasure island
 	public void showTreasureIsland()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		StartCoroutine( loadTreasureIsland() );
 	}
 

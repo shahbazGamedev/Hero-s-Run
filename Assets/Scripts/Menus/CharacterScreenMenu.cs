@@ -61,7 +61,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 
 	public void changeSelection()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		if( toggle )
 		{
 			//if toggle is true, the male hero is in the front and the female hero is in the back right
@@ -90,7 +90,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 
 	public void confirmSelection()
 	{
-		SoundManager.playButtonClick();
+		SoundManager.soundManager.playButtonClick();
 		//It looks nicer if we center the text and hide the button to confirm to the player that his action worked
 		pickMeContentText.alignment = TextAnchor.UpperCenter;
 		confirmButton.gameObject.SetActive(false);

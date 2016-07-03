@@ -3,16 +3,18 @@ using System.Collections;
 
 public class SoundManager : MonoBehaviour {
 
+	public static SoundManager soundManager = null;
+
 	// Audio - GUI
-	static AudioSource guiAudioSource;
-	static AudioClip buttonClick;
+	AudioSource guiAudioSource;
+	public AudioClip buttonClick;
 
 	// Audio - Music
-	static AudioSource musicSource;
+	AudioSource musicSource;
 	const float MUSIC_VOLUME = 0.3f;
 
 	//Audio - Level ambience
-	static AudioSource levelAmbienceSource;
+	AudioSource levelAmbienceSource;
 
 	const float MAX_VOLUME = 0.3f;
 
@@ -20,6 +22,7 @@ public class SoundManager : MonoBehaviour {
 
 	void Awake ()
 	{
+		soundManager = this;
 		DontDestroyOnLoad( gameObject );
 
 		// Used to play GUI sounds for the HUD and all menus
@@ -29,11 +32,8 @@ public class SoundManager : MonoBehaviour {
 
 		//Play the music track that we load from the Resources folder
 		musicSource = gameObject.AddComponent<AudioSource>();
-		musicSource.clip = Resources.Load("Audio/Music/Cemetery Theme") as AudioClip;
 		musicSource.loop = true;
 		musicSource.volume = MUSIC_VOLUME;
-
-		buttonClick = Resources.Load("Audio/menu_open") as AudioClip;
 
 		//For level ambience sound track
 		levelAmbienceSource = gameObject.AddComponent<AudioSource>();
@@ -41,27 +41,27 @@ public class SoundManager : MonoBehaviour {
 
 	}
 
-	public static void playMusic()
+	public void playMusic()
 	{
 		musicSource.Play();
 	}
 
-	public static void stopMusic()
+	public void stopMusic()
 	{
 		musicSource.Stop();
 	}
 
-	public static void pauseMusic()
+	public void pauseMusic()
 	{
 		musicSource.Pause();
 	}
 		
-	public static void setMusicTrack( AudioClip track )
+	public void setMusicTrack( AudioClip track )
 	{
 		if( track != null ) musicSource.clip = track;
 	}
 
-	public static IEnumerator fadeOutMusic( float duration, float endVolume )
+	public IEnumerator fadeOutMusic( float duration, float endVolume )
 	{
 		float elapsedTime = 0;
 		
@@ -82,7 +82,7 @@ public class SoundManager : MonoBehaviour {
 		print ("SoundManager-Finished fading out music to volume: " + endVolume );
 	}
 
-	public static IEnumerator fadeOutMusic( float duration )
+	public IEnumerator fadeOutMusic( float duration )
 	{
 		float elapsedTime = 0;
 
@@ -101,7 +101,7 @@ public class SoundManager : MonoBehaviour {
 		print ("SoundManager-Finished fading out music completely" );
 	}
 
-	public static IEnumerator fadeInMusic( float duration )
+	public IEnumerator fadeInMusic( float duration )
 	{
 		if( !musicSource.isPlaying ) playMusic();
 		float elapsedTime = 0;
@@ -119,7 +119,7 @@ public class SoundManager : MonoBehaviour {
 		print ("SoundManager-Finished fading in music completely" );
 	}
 
-	public static void playButtonClick()
+	public void playButtonClick()
 	{
 		if( guiAudioSource != null )
 		{
@@ -127,12 +127,12 @@ public class SoundManager : MonoBehaviour {
 		}
 	}
 
-	public static void playGUISound( AudioClip clip )
+	public void playGUISound( AudioClip clip )
 	{
 		guiAudioSource.PlayOneShot( clip );
 	}
 
-	public static void playAmbienceClip( AudioClip ambienceClip )
+	public void playAmbienceClip( AudioClip ambienceClip )
 	{
 		if( ambienceClip != null )
 		{
@@ -144,7 +144,7 @@ public class SoundManager : MonoBehaviour {
 		}
 	}
 	
-	public static IEnumerator fadeInAmbience( AudioClip audioClip, float duration )
+	public IEnumerator fadeInAmbience( AudioClip audioClip, float duration )
 	{
 		if( audioClip != null )
 		{
@@ -163,7 +163,7 @@ public class SoundManager : MonoBehaviour {
 		}
 	}
 	
-	public static IEnumerator fadeOutAmbience( float duration )
+	public IEnumerator fadeOutAmbience( float duration )
 	{
 		if( levelAmbienceSource.clip != null )
 		{
@@ -185,7 +185,7 @@ public class SoundManager : MonoBehaviour {
 		}
 	}
 
-	public static void stopAmbience()
+	public void stopAmbience()
 	{
 		if( levelAmbienceSource.clip != null )
 		{
@@ -194,7 +194,7 @@ public class SoundManager : MonoBehaviour {
 		}
 	}
 
-	public static IEnumerator fadeInClip( AudioSource audioSource, AudioClip audioClip, float duration )
+	public IEnumerator fadeInClip( AudioSource audioSource, AudioClip audioClip, float duration )
 	{
 		if( audioSource != null && audioClip != null )
 		{
@@ -217,7 +217,7 @@ public class SoundManager : MonoBehaviour {
 		}
 	}
 	
-	public static IEnumerator fadeOutClip( AudioSource audioSource, AudioClip audioClip, float duration )
+	public IEnumerator fadeOutClip( AudioSource audioSource, AudioClip audioClip, float duration )
 	{
 		if( audioSource != null && audioClip != null )
 		{
