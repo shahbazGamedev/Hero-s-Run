@@ -74,7 +74,6 @@ public class SettingsMenu : MonoBehaviour {
 
 	public void setSoundVolume( Slider volume )
 	{
-		Debug.Log("setSoundVolume " + volume.value );
 		PlayerStatsManager.Instance.setSoundVolume(volume.value);
 	}
 

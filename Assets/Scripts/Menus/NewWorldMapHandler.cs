@@ -51,8 +51,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 	{
 		SceneManager.LoadScene( (int)GameScenes.Store, LoadSceneMode.Additive );
 
-		GameObject CoreManagers = GameObject.FindGameObjectWithTag("CoreManagers");
-
 		episodePopup = episodePopupPanel.GetComponent<EpisodePopup>();
 
 		//Get the level data. Level data has the parameters for all the levels of the game.
@@ -238,7 +236,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	void drawDisplayStars( int levelNumber, int episodeCounter )
 	{
-		if( levelNumber <= LevelManager.Instance.getNextLevelToComplete() )
+		if( levelNumber <= LevelManager.Instance.getHighestLevelCompleted() )
 		{
 			//Level is unlocked so show the stars.
 			GameObject go = (GameObject)Instantiate(starDisplayPrefab);
@@ -391,4 +389,37 @@ public class NewWorldMapHandler : MonoBehaviour {
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 	}
 
+	public void play( int episodeNumber, int levelNumber )
+	{
+		//Reset the level changed value
+		LevelManager.Instance.setLevelChanged( false );
+
+		//Reset value in case a player who did previously finish the game, replays earlier levels
+		LevelManager.Instance.setPlayerFinishedTheGame( false );
+
+		//When you restart an episode, the number of deaths for that episode and all subsequent episodes are reset
+		LevelData.LevelInfo level = LevelManager.Instance.getLevelInfo( levelNumber );
+		if( level.levelType == LevelType.Episode )
+		{
+			PlayerStatsManager.Instance.resetNumberDeathsStartingAtEpisode( episodeNumber );
+		}
+		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
+		//We are starting a new run, reset some values
+		LevelManager.Instance.setScore( 0 );
+		LevelManager.Instance.setEpisodeCompleted( false );
+		LevelManager.Instance.forceNextLevelToComplete( levelNumber );
+
+		StartCoroutine( loadLevel() );
+	}
+
+	IEnumerator loadLevel()
+	{
+		if( !levelLoading )
+		{
+			levelLoading = true;
+			Handheld.StartActivityIndicator();
+			yield return new WaitForSeconds(0);
+			SceneManager.LoadScene( (int) GameScenes.Level );
+		}
+	}
 }

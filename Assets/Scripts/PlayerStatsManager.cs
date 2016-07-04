@@ -477,7 +477,7 @@ public class PlayerStatsManager {
 
 	public void incrementNumberDeathForEpisode()
 	{
-		deathInEpisodesArray[LevelManager.Instance.getCurrentEpisodeNumber()] = deathInEpisodesArray[LevelManager.Instance.getCurrentEpisodeNumber()] + 1;
+		deathInEpisodesArray[LevelManager.Instance.getCurrentEpisodeNumber()]++;
 	}
 
 	public void resetNumberDeathsStartingAtEpisode( int episodeNumber )

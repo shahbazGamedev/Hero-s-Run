@@ -145,25 +145,9 @@ public class PostLevelPopup : MonoBehaviour {
 
 	public void retry()
 	{
-		Debug.Log("Retry button pressed: ");
-		//Reset the level changed value
-		LevelManager.Instance.setLevelChanged( false );
-		//We are starting a new run, reset the episode stars
-		LevelManager.Instance.setScore( 0 );
-		PlayerStatsManager.Instance.resetNumberDeathsStartingAtEpisode( LevelManager.Instance.getCurrentEpisodeNumber() );
+		Debug.Log("PostLevelPopup-Retry button pressed.");
 		SoundManager.soundManager.playButtonClick();
-		StartCoroutine( loadLevel() );
+		newWorldMapHandler.play( LevelManager.Instance.getCurrentEpisodeNumber(), LevelManager.Instance.getNextLevelToComplete() );
 	}
 
-	IEnumerator loadLevel()
-	{
-		if( !levelLoading )
-		{
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int) GameScenes.Level );
-		}
-	}
-	
 }

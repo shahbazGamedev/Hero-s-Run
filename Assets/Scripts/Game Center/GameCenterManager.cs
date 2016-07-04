@@ -44,8 +44,6 @@ public class GameCenterManager : MonoBehaviour {
 
 		if (success)
 		{
-			Debug.Log ("Authenticated, checking achievements");
-
 			// Request loaded achievements, and register a callback for processing them
 			Social.LoadAchievements (achievements => {
 				achievementsCompleted.Clear();
@@ -74,7 +72,6 @@ public class GameCenterManager : MonoBehaviour {
 			Social.LoadAchievementDescriptions (descriptions => {
 				achievementsDescriptionDict.Clear();
 				if (descriptions.Length > 0) {
-					Debug.Log ("Got " + descriptions.Length + " achievement descriptions");
 					string achievementDescriptions = "Achievement Descriptions:\n";
 					foreach (IAchievementDescription ad in descriptions)
 					{

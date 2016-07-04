@@ -16,6 +16,7 @@ public class EpisodePopup : MonoBehaviour {
 	public Text playButtonText;
 	[Tooltip("If a sprite for the selected episode is not specified in LevelData, this sprite will be used instead.")]
 	public Sprite defaultEpisodeSprite;
+	public NewWorldMapHandler newWorldMapHandler;
 
 	Animator anim;
 	bool levelLoading = false;
@@ -54,18 +55,14 @@ public class EpisodePopup : MonoBehaviour {
 
 	private void loadEpisodeData()
 	{
-		//Reset value in case a player who did previously finish the game, replays earlier levels
-		LevelManager.Instance.setPlayerFinishedTheGame( false );
-
 		LevelData.EpisodeInfo selectedEpisode = levelData.getEpisodeInfo( episodeNumber );
+
 		string levelNumberString = (episodeNumber + 1).ToString();
-
 		string episodeNumberString = LocalizationManager.Instance.getText("EPISODE_NUMBER");
-
 		//Replace the string <number> by the number of the episode
 		episodeNumberString = episodeNumberString.Replace( "<number>", levelNumberString );
-
 		episodeNumberText.text = episodeNumberString;
+
 		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
 		if( selectedEpisode.preLevelSprite == null )
 		{
@@ -77,12 +74,6 @@ public class EpisodePopup : MonoBehaviour {
 		}
 		episodeDescriptionText.text = LocalizationManager.Instance.getText("EPISODE_DESCRIPTION_" + levelNumberString);
 		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( episodeNumber ) + "/" + selectedEpisode.numberOfChestKeys;
-		//When you restart an episode, the number of deaths for that episode and all subsequent episodes are reset
-		LevelData.LevelInfo level = LevelManager.Instance.getLevelInfo( levelNumber );
-		if( level.levelType == LevelType.Episode )
-		{
-			PlayerStatsManager.Instance.resetNumberDeathsStartingAtEpisode( episodeNumber );
-		}
 
 		//Update pocket watch and Time Left
 		clockTimeSetter.updateTime( episodeNumber, levelNumber, Level_Progress.LEVEL_START );
@@ -96,26 +87,9 @@ public class EpisodePopup : MonoBehaviour {
 
 	public void play()
 	{
-		Debug.Log("Play button pressed: Episode: " + episodeNumber + " Level: " + levelNumber );
+		Debug.Log("EpisodePopup-Play button pressed: Episode: " + episodeNumber + " Level: " + levelNumber );
 		SoundManager.soundManager.playButtonClick();
-		//We are starting a new run, reset some values
-		LevelManager.Instance.setScore( 0 );
-		LevelManager.Instance.setEpisodeCompleted( false );
-		LevelManager.Instance.forceNextLevelToComplete( levelNumber );
-		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
-
-		StartCoroutine( loadLevel() );
-	}
-
-	IEnumerator loadLevel()
-	{
-		if( !levelLoading )
-		{
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int) GameScenes.Level );
-		}
+		newWorldMapHandler.play( episodeNumber, levelNumber );
 	}
 	
 }
