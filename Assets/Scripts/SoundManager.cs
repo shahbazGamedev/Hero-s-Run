@@ -237,6 +237,10 @@ public class SoundManager : MonoBehaviour {
 			audioSource.volume = 0;
 			audioSource.Stop ();
 		}
+		else
+		{
+			Debug.LogError("SoundManager-fadeOutClip error: either the audio source or the audio clip supplied is null.");
+		}
 	}
 
 	public void fadeOutAllAudio( float duration )
