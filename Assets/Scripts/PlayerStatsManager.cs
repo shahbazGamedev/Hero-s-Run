@@ -785,6 +785,8 @@ public class PlayerStatsManager {
 		{
 			int nextLevelToComplete = PlayerPrefs.GetInt("Next Level To Complete", 0 );
 			LevelManager.Instance.setNextLevelToComplete( nextLevelToComplete );
+			int highestLevelCompleted = PlayerPrefs.GetInt("Highest Level Completed", 0 );
+			LevelManager.Instance.setHighestLevelCompleted( highestLevelCompleted );
 			string playerFinishedTheGameString = PlayerPrefs.GetString("Finished Game", "false" );
 			if( playerFinishedTheGameString == "true" )
 			{
@@ -862,7 +864,7 @@ public class PlayerStatsManager {
 			difficultyLevel = (DifficultyLevel)PlayerPrefs.GetInt("difficultyLevel", (int)DifficultyLevel.Normal);
 			avatar = (Avatar)PlayerPrefs.GetInt("avatar", (int)Avatar.None);
 			loadPowerUpInventory();
-			Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " Next Level To Complete: " + nextLevelToComplete + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
+			Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " Next Level To Complete: " + nextLevelToComplete + " Highest Level Completed: " + highestLevelCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
 		{
@@ -874,6 +876,7 @@ public class PlayerStatsManager {
 	public void savePlayerStats()
 	{
 		PlayerPrefs.SetInt("Next Level To Complete", LevelManager.Instance.getNextLevelToComplete() );
+		PlayerPrefs.SetInt("Highest Level Completed", LevelManager.Instance.getHighestLevelCompleted() );
 		PlayerPrefs.SetInt("Lives", lives );
 		PlayerPrefs.SetInt("treasureKeysOwned", treasureKeysOwned );
 		if( LevelManager.Instance.getPlayerFinishedTheGame() )
@@ -939,6 +942,8 @@ public class PlayerStatsManager {
 	{
 		PlayerPrefs.SetInt("Next Level To Complete", 0 );
 		LevelManager.Instance.setNextLevelToComplete( 0 );
+		PlayerPrefs.SetInt("Highest Level Completed", 0 );
+		LevelManager.Instance.setHighestLevelCompleted( 0 );
 		PlayerPrefs.SetInt("Lives", INITIAL_NUMBER_LIVES );
 		setLives( INITIAL_NUMBER_LIVES );
 		PlayerPrefs.SetInt("treasureKeysOwned", 0 );

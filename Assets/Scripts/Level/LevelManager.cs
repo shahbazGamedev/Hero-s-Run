@@ -16,6 +16,7 @@ public class LevelManager {
 	private static LevelManager levelManager = null;
 	private LevelData levelData = null;
 	private int nextLevelToComplete = 0;
+	private int highestLevelCompleted = 0;
 	private LevelData.LevelInfo currentLevelInfo = null;
 	private bool levelHasChanged = false;
 	private bool playerFinishedTheGame = false;
@@ -49,6 +50,11 @@ public class LevelManager {
 		}
 	}
 
+	public int getNextLevelToComplete()
+	{
+		return nextLevelToComplete;
+	}
+
 	public void setLevelNumberOfLastCheckpoint( int previousCheckpoint )
 	{
 		levelNumberOflastCheckpoint = previousCheckpoint;
@@ -67,10 +73,20 @@ public class LevelManager {
 		nextLevelToComplete = levelToComplete;
 		Debug.Log ("LevelManager-forceNextLevelToComplete: " + nextLevelToComplete );
 	}
-
-	public int getNextLevelToComplete()
+	
+	public void setHighestLevelCompleted( int levelCompleted )
 	{
-		return nextLevelToComplete;
+		if( levelCompleted > highestLevelCompleted )
+		{
+			highestLevelCompleted = levelCompleted;
+			Debug.Log ("LevelManager-setHighestLevelCompleted: highestLevelCompleted " + highestLevelCompleted );
+			
+		}
+	}
+
+	public int getHighestLevelCompleted()
+	{
+		return highestLevelCompleted;
 	}
 
 	public bool isTutorialActive()
