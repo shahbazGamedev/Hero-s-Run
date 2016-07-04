@@ -21,7 +21,6 @@ public class DragonController : BaseClass {
 	public AudioClip fairyDustSound;
 
 	Transform player;
-	PlayerController playerController;
 
 	DragonState dragonState = DragonState.None;
 
@@ -68,14 +67,12 @@ public class DragonController : BaseClass {
 		dragonAnimation = GetComponent<Animation>();
 		controller = GetComponent<CharacterController>();
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
 
 	}
 
 	void Start()
 	{
 		allowBreatheFire = true;
-		//if( playerController.getCurrentTileType() == TileType.Opening ) Invoke ("Arrive", 10f );
 	}
 
 	// Update is called once per frame

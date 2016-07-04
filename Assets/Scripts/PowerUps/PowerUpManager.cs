@@ -58,7 +58,6 @@ public class PowerUpManager : BaseClass {
 		fillDictionary();
 		player = GameObject.FindGameObjectWithTag("Player").transform;	
 		playerController = player.GetComponent<PlayerController>();
-		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
 	}
 	
 	public void changeSelectedPowerUp(PowerUpType newPowerUpType )

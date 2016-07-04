@@ -7,14 +7,12 @@ public class CollapsingBridge : MonoBehaviour {
 	public GameObject middleFarTile;
 	public GameObject rightFarTile;
 
-	PlayerController playerController;
 	Transform player;
 	bool hasCollapsed = false;
 
 	void Awake ()
 	{
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = player.gameObject.GetComponent<PlayerController>();
 
 	}
 	

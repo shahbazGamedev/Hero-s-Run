@@ -36,12 +36,9 @@ public class PopupHandler : MonoBehaviour {
 	public Texture gameCenterIcon;
 	public Texture restoreIcon;
 	Vector2 iconSize = new Vector2( Screen.width * 0.15f, Screen.width * 0.15f );
-	//Standard icon height accross all popups. This is also use for Facebook portraits.
-	float iconHeight;
 
 	//Message
 	public GUIStyle messageStyle;
-	float messageHeight;
 
 	//Popup display
 	Rect popupRect;
@@ -60,8 +57,6 @@ public class PopupHandler : MonoBehaviour {
 
 	//Button
 	Vector2 buttonSize;
-	float buttonXOffset;
-	float buttonHeight;
 
 	//Spinner
 	public Texture spinner;
@@ -99,15 +94,11 @@ public class PopupHandler : MonoBehaviour {
 		popupRect = new Rect( originalPopupRect.x, originalPopupRect.y , originalPopupRect.width, originalPopupRect.height );
 
 		buttonSize = new Vector2( popupSize.x * 0.8f, popupSize.y * 0.1f );
-		buttonXOffset = (popupRect.width - buttonSize.x)/2f;
 		
 		popupPortraitSize 	 = new Vector2( Screen.width * 0.15f, Screen.width * 0.15f );
 
 		//Standard heights
 		titleHeight = 0.05f * popupRect.height;
-		iconHeight = 0.2f * popupRect.height;
-		messageHeight = 0.15f * popupRect.height;
-		buttonHeight = 0.85f * popupRect.height;
 
 		//Font size - default size is 26
 		//Adjust font sizes based on screen resolution
@@ -159,7 +150,6 @@ public class PopupHandler : MonoBehaviour {
 		popupSize = new Vector2( newSize.x, newSize.y);
 		popupRect = new Rect( (Screen.width - popupSize.x)/2, (Screen.height - popupSize.y)/2 , popupSize.x, popupSize.y );
 		buttonSize = new Vector2( popupSize.x * 0.8f, popupSize.y * 0.1f );
-		buttonXOffset = (popupRect.width - buttonSize.x)/2f;
 	}
 	
 	public void resetPopupSize()
@@ -167,7 +157,6 @@ public class PopupHandler : MonoBehaviour {
 		popupSize = new Vector2( originalPopupSize.x, originalPopupSize.y);
 		popupRect = originalPopupRect;
 		buttonSize = new Vector2( popupSize.x * 0.8f, popupSize.y * 0.1f );
-		buttonXOffset = (popupRect.width - buttonSize.x)/2f;
 	}
 
 	public bool isPopupDisplayed()

@@ -63,7 +63,6 @@ public class GalleryManager : MonoBehaviour {
 	[Header("Misc")]
 	bool levelLoading = false;
 	public ScrollRect characterBioScrollRect;
-	float lastScrollBarPosition = 0f; //Used to filter scroll bar events
 	public Scrollbar scrollbarIndicator;
 	public Scrollbar scrollbarBio;
 	const int INDEX_OF_LAST_CHARACTER = 6;
@@ -97,7 +96,6 @@ public class GalleryManager : MonoBehaviour {
 	{
 		//Reset
 		levelLoading = false;
-		lastScrollBarPosition = 0;
 
 		#if UNITY_EDITOR
 		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu

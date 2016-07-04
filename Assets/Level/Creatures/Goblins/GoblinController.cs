@@ -43,7 +43,6 @@ public class GoblinController : BaseClass, ICreature {
 	//Only use for the scout goblin with the crossbow
 	Vector3 initialBoltPositionOffset = new Vector3( 0f, 0.47f, 0.46f );
 
-	PlayerController playerController;
 	Transform player;
 
 	//Movement related
@@ -59,7 +58,6 @@ public class GoblinController : BaseClass, ICreature {
 	{
 		controller = GetComponent<CharacterController>();
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = player.gameObject.GetComponent<PlayerController>();
 
 		randomizeLook ();
 	}

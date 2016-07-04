@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 public class NewWorldMapHandler : MonoBehaviour {
 
 	[Header("World Map Handler")]
-	PopupHandler popupHandler;
 	public RectTransform map;
 	bool levelLoading = false;
 	private LevelData levelData;
@@ -53,7 +52,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 		SceneManager.LoadScene( (int)GameScenes.Store, LoadSceneMode.Additive );
 
 		GameObject CoreManagers = GameObject.FindGameObjectWithTag("CoreManagers");
-		popupHandler = CoreManagers.GetComponent<PopupHandler>();
 
 		episodePopup = episodePopupPanel.GetComponent<EpisodePopup>();
 
@@ -321,8 +319,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 	{
 		SoundManager.soundManager.playButtonClick();
 		Debug.LogWarning("NewWorldMapHandler: showMessageCenter is not implemented."); 
-		//popupHandler.setPopupSize(new Vector2( Screen.width * 0.8f, Screen.height * 0.55f ));
-		//popupHandler.activatePopup( PopupType.MessageCenter );
 	}
 
 	//Bottom panel

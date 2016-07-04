@@ -30,7 +30,6 @@ public class CerberusController : BaseClass, ICreature {
 		controlled_by_script  = 2
 	}
 
-	PlayerController playerController;
 	Transform player;
 
 	//Movement related
@@ -46,7 +45,6 @@ public class CerberusController : BaseClass, ICreature {
 	{
 		controller = GetComponent<CharacterController>();
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = player.GetComponent<PlayerController>();
 	}
 
 	void Update ()

@@ -29,7 +29,6 @@ public class DemonController : BaseClass, ICreature {
 		walk_and_attack = 4
 	}
 	
-	PlayerController playerController;
 	Transform player;
 	const float CROSS_FADE_DURATION = 0.5f;
 
@@ -47,7 +46,6 @@ public class DemonController : BaseClass, ICreature {
 	{
 		controller = GetComponent<CharacterController>();
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = player.gameObject.GetComponent<PlayerController>();
 	}
 
 	void Update ()
