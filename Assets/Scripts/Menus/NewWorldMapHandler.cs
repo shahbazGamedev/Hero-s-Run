@@ -145,7 +145,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		Text levelStationText = levelStationButton.GetComponentInChildren<Text>();
 		levelStationText.text = (levelNumber + 1).ToString();
 
-		if( levelNumber > LevelManager.Instance.getNextLevelToComplete() )
+		if( levelNumber > LevelManager.Instance.getHighestLevelCompleted() )
 		{
 			//Level is not unlocked yet. Make button non-interactable and dim the level number text
 			levelStationButton.interactable = false;
@@ -218,7 +218,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		Text[] episodeStationTexts = levelStationButton.GetComponentsInChildren<Text>();
 		episodeStationTexts[0].text = (levelNumber + 1).ToString();
 		episodeStationTexts[1].text = getEpisodeDifficultyText(  episodeInfo.episodeDifficulty );
-		if( levelNumber > LevelManager.Instance.getNextLevelToComplete() )
+		if( levelNumber > LevelManager.Instance.getHighestLevelCompleted() )
 		{
 			//Level is not unlocked yet. Make button non-interactable and dim the level number text
 			levelStationButton.interactable = false;

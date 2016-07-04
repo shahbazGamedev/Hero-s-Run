@@ -103,7 +103,7 @@ public class LevelManager {
 
 	public void unlockAllLevels()
 	{
-		nextLevelToComplete = levelData.levelList.Count -1;
+		highestLevelCompleted = levelData.levelList.Count -1;
 	}
 
 	//Called when the cullis gate activation is complete or 
@@ -119,6 +119,7 @@ public class LevelManager {
 			//Update our Facebook score
 			//The Facebook score is simply the highest level reached so far in the game.
 			FacebookManager.Instance.postHighScore( newLevel );
+			setHighestLevelCompleted( newLevel );
 			Debug.Log("LevelManager-incrementNextLevelToComplete : nextLevelToComplete: " + nextLevelToComplete + " " + levelHasChanged );
 			return false;
 
@@ -126,6 +127,7 @@ public class LevelManager {
 		else
 		{
 			Debug.Log("LevelManager-incrementNextLevelToComplete : you have finished the game. Congratulations." );
+			setHighestLevelCompleted( levelData.levelList.Count - 1 );
 			setPlayerFinishedTheGame( true );
 			return true;
 		}
