@@ -238,4 +238,21 @@ public class SoundManager : MonoBehaviour {
 			audioSource.Stop ();
 		}
 	}
+
+	public void fadeOutAllAudio( float duration )
+	{
+		AudioSource[] allAudioSources = FindObjectsOfType(typeof(AudioSource)) as AudioSource[];
+		foreach(AudioSource audioSource in allAudioSources )
+		{
+			//Don't fade out GUI sounds
+			if( !audioSource.ignoreListenerPause )
+			{
+				if( audioSource.clip != null && audioSource.isPlaying )
+				{
+					StartCoroutine( fadeOutClip( audioSource, audioSource.clip, duration ) );
+				}
+			}
+		}
+	}
+
 }

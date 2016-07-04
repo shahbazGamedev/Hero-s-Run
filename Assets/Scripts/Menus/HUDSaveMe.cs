@@ -152,7 +152,7 @@ public class HUDSaveMe : MonoBehaviour {
 	public void retryFromLastCheckpoint()
 	{
 		Debug.Log("Retry from last checkpoint button pressed");
-		fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
+		SoundManager.soundManager.fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
 		closeSaveMeMenu();
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		LevelManager.Instance.setNextLevelToComplete( LevelManager.Instance.getLevelNumberOfLastCheckpoint() );
@@ -173,22 +173,6 @@ public class HUDSaveMe : MonoBehaviour {
 		GameManager.Instance.setGameState(GameState.PostLevelPopup);
 		closeSaveMeMenu();
 		SceneManager.LoadScene( (int) GameScenes.WorldMap );
-	}
-
-	void fadeOutAllAudio( float duration )
-	{
-		AudioSource[] allAudioSources = FindObjectsOfType(typeof(AudioSource)) as AudioSource[];
-		foreach(AudioSource audioSource in allAudioSources )
-		{
-			//Don't fade out GUI sounds
-			if( !audioSource.ignoreListenerPause )
-			{
-				if( audioSource.clip != null && audioSource.isPlaying )
-				{
-					StartCoroutine( SoundManager.soundManager.fadeOutClip( audioSource, audioSource.clip, duration ) );
-				}
-			}
-		}
 	}
 
 }

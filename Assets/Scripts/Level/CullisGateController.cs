@@ -45,7 +45,8 @@ public class CullisGateController : MonoBehaviour {
 			DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText(messageTextId), 5.5f );
 			LevelManager.Instance.setEpisodeCompleted( true );
 		}
-		fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
+		resetAllZombies();
+		SoundManager.soundManager.fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
 		Invoke("quit", WAIT_DURATION );
 	}
 
@@ -73,7 +74,7 @@ public class CullisGateController : MonoBehaviour {
 		}
 	}
 
-	void fadeOutAllAudio( float duration )
+	void resetAllZombies()
 	{
 		//We might have zombies nearby.
 		//Zombies play a groan sound every few seconds.
@@ -81,18 +82,6 @@ public class CullisGateController : MonoBehaviour {
 		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("CreatureManager");
 		ZombieManager zombieManager = zombieManagerObject.GetComponent<ZombieManager>();
 		zombieManager.resetAllZombies();
-
-		AudioSource[] allAudioSources = FindObjectsOfType(typeof(AudioSource)) as AudioSource[];
-		foreach(AudioSource audioSource in allAudioSources )
-		{
-			//Don't fade out GUI sounds
-			if( !audioSource.ignoreListenerPause )
-			{
-				if( audioSource.clip != null && audioSource.isPlaying )
-				{
-					StartCoroutine( SoundManager.soundManager.fadeOutClip( audioSource, audioSource.clip, duration ) );
-				}
-			}
-		}
 	}
+
 }
