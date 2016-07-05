@@ -69,7 +69,7 @@ public class CreatureManager : BaseClass {
 			PlayerStatsManager.Instance.modifyCurrentCoins( totalStars, true, false );
 			
 			//Display star total picked up icon
-			HUDHandler.displayCoinTotal( totalStars, Color.magenta, false );
+			HUDHandler.hudHandler.displayStarPickup( totalStars, Color.magenta );
 
 		}
 	}

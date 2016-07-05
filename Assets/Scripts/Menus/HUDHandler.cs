@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class HUDHandler : MonoBehaviour {
 
@@ -26,18 +24,14 @@ public class HUDHandler : MonoBehaviour {
 	//It appears in the center of the screen.
 	[Header("User Message")]
 	public Text userMessageText;
-
-	//Number of coins collected
-	static Rect coinIconRect;
+	[Header("Star and Treasure Key Display")]
+	public RectTransform hudCanvas;
+	public GameObject starPrefab;
+	public GameObject treasurePrefab;
 	
-	//Number of coins accumulated in coin series
-	//There can be multiple displays at the same time.
-	public Texture2D coinIconTexture;
-	public GUIStyle coinAccumulatorStyle;
-	private float coinAccumulatedDisplayDuration = 4f;
-	GUIContent coinAccumulatorContent = new GUIContent( "" );
-	static List<CoinDisplay> coinDisplayList = new List<CoinDisplay>();
-	static float coinDisplayStartHeight = Screen.height * 0.42f;
+	//Used to track the items picked up by the player such as Stars and Treasure Keys. Multiple icons can be displayed at the same time with an offset.
+	List<PickupDisplay> pickupDisplayList = new List<PickupDisplay>();
+	const float PICKUP_DISPLAY_DURATION = 4f;
 
 	//FPS related
 	string fps = "0";
@@ -46,31 +40,19 @@ public class HUDHandler : MonoBehaviour {
 	int fpsFrameCounter = 0;
 	int fpsWaitFrames = 30;
 	
-	public GUIStyle saveMeLevelInfoStyle;
-	
 	HUDSaveMe hudSaveMe;
-
 	PlayerController playerController;
-
+	Rect coinIconRect; //Used to position the stars collected at the top of the HUD
 
 	// Use this for initialization
 	void Awake ()
 	{
 		hudHandler = this;
 		playerController = GetComponent<PlayerController>();
-
-		//initialize for coin total
-		coinIconRect = new Rect ( Screen.width * 0.6f, 10f, Screen.width * 0.09f, Screen.width * 0.09f );
-
 		hudSaveMe = saveMeCanvas.GetComponent<HUDSaveMe>();
-
-		//Adjust font sizes based on screen resolution
-		PopupHandler.changeFontSizeBasedOnResolution( coinAccumulatorStyle );
-		PopupHandler.changeFontSizeBasedOnResolution( saveMeLevelInfoStyle );
-
 		tapToPlayText.text = LocalizationManager.Instance.getText("MENU_TAP_TO_PLAY");
 		hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
-
+		coinIconRect = new Rect ( Screen.width * 0.6f, 10f, Screen.width * 0.09f, Screen.width * 0.09f );
 	}
 	
 	void Start()
@@ -80,16 +62,11 @@ public class HUDHandler : MonoBehaviour {
 	}
 		
 	// Update is called once per frame
-	void OnGUI ()
-	{
-		showCoinTotal();
-	}
-	
-	// Update is called once per frame
 	void Update ()
 	{
 		updateFPS();
 		if( hudDebugInfo.gameObject.activeSelf ) hudDebugInfo.text = "FPS: " + fps + "-" + LevelManager.Instance.getNextLevelToComplete() + "-" + playerController.getCurrentTileName() + "-" + PlayerStatsManager.Instance.getTimesPlayerRevivedInLevel() + "-" + PlayerController.getPlayerSpeed().ToString("N1");
+		managePickUps();
 	}
 	
 	void updateFPS()
@@ -162,8 +139,8 @@ public class HUDHandler : MonoBehaviour {
 		LeanTween.cancel(gameObject);
 		levelNamePanel.anchoredPosition = new Vector2( 0, levelNamePanel.rect.height/2f );
 	}
-	
-	public static Vector2 getCoinIconPos()
+
+	public Vector2 getCoinIconPos()
 	{
 		//Note: on the Mac, the perfect Y pos is: Screen.height - coinIconRect.yMax.
 		//On the iPhone 5, however, the coins overshoot the icon slightly, hence the additional -coinIconRect.height/2f.
@@ -171,60 +148,72 @@ public class HUDHandler : MonoBehaviour {
 		return iconPos;
 	}
 	
-	public static void displayCoinTotal( int accumulatedCoins, Color colorCoin, bool isSequenceComplete )
+	public void displayStarPickup( int quantity, Color starColor )
 	{
-		if( PlayerStatsManager.Instance.getOwnsStarDoubler() ) accumulatedCoins = accumulatedCoins * 2;
+		if( PlayerStatsManager.Instance.getOwnsStarDoubler() ) quantity = quantity * 2;
 
-		CoinDisplay coinDisplay = new CoinDisplay();
-		coinDisplay.coinAccumulator = accumulatedCoins;
-		coinDisplay.coinAccumulatedStartTime = Time.time;
-		coinDisplay.isCoinSequenceComplete = isSequenceComplete;
-		coinDisplay.coinColor = colorCoin;
-		coinDisplay.coinAccumulatedIconRect = new Rect ( Screen.width * 0.7f, coinDisplayStartHeight - coinDisplayList.Count * 20, Screen.width * 0.17f, Screen.width * 0.17f );
-		coinDisplayList.Add(coinDisplay);
+		GameObject go = (GameObject)Instantiate(starPrefab);
+		go.transform.SetParent( hudCanvas.transform, false );
+		go.GetComponent<Image>().color = starColor;
+		Text quantityText = go.GetComponentInChildren<Text>();
+		quantityText.text = "+" + quantity.ToString();
+		RectTransform rt = go.GetComponent<RectTransform>();
+		rt.anchoredPosition = new Vector2( rt.anchoredPosition.x, rt.anchoredPosition.y - ( pickupDisplayList.Count * rt.rect.height * 0.4f ) );
+		go.SetActive( true );
+		PickupDisplay pickupDisplay = new PickupDisplay();
+		pickupDisplay.startTime = Time.time;
+		pickupDisplay.objectPickedUp = go;
+		pickupDisplayList.Add(pickupDisplay);
 	}
 	
-	void showCoinTotal()
+	public void displayTreasureKeyPickup()
 	{
-		if( GameManager.Instance.getGameState() == GameState.Normal && coinDisplayList.Count > 0 )
+		GameObject go = (GameObject)Instantiate(treasurePrefab);
+		go.transform.SetParent( hudCanvas.transform, false );
+		RectTransform rt = go.GetComponent<RectTransform>();
+		rt.anchoredPosition = new Vector2( rt.anchoredPosition.x, rt.anchoredPosition.y - ( pickupDisplayList.Count * rt.rect.height * 0.4f ) );
+		go.SetActive( true );
+		PickupDisplay pickupDisplay = new PickupDisplay();
+		pickupDisplay.startTime = Time.time;
+		pickupDisplay.objectPickedUp = go;
+		pickupDisplayList.Add(pickupDisplay);
+	}
+
+	void managePickUps()
+	{
+		if( GameManager.Instance.getGameState() == GameState.Normal && pickupDisplayList.Count > 0 )
 		{
-			for( int i=0; i < coinDisplayList.Count; i++ )
+			for( int i=0; i < pickupDisplayList.Count; i++ )
 			{
-				CoinDisplay cd = coinDisplayList[i];
-				if( (Time.time - cd.coinAccumulatedStartTime) < coinAccumulatedDisplayDuration )
-				{
-
-					GUI.color = cd.coinColor;
-					GUI.DrawTexture( cd.coinAccumulatedIconRect, coinIconTexture, ScaleMode.ScaleToFit, true );
-					GUI.color = Color.white;
-					
-					//Draw the total number of accumulated coins in the center of the star
-					coinAccumulatorContent.text = "+" + cd.coinAccumulator.ToString();
-					Utilities.drawLabelWithDropShadow( cd.coinAccumulatedIconRect, coinAccumulatorContent, coinAccumulatorStyle );
-					
-					if( cd.isCoinSequenceComplete )
-					{
-						//Currently not used, but could be useful later
-					}
-
-				}
-				else
+				PickupDisplay pd = pickupDisplayList[i];
+				if( (Time.time - pd.startTime) > PICKUP_DISPLAY_DURATION )
 				{
 					//The time for this Display has expired. Remove this entry from the list.
-					coinDisplayList.RemoveAt(i);
+					pickupDisplayList.RemoveAt(i);
+					GameObject.Destroy( pd.objectPickedUp );
 				}
 			}
 		}
-
 	}
+
 	void OnEnable()
 	{
 		GameManager.gameStateEvent += GameStateChange;
+		PlayerController.playerStateChanged += PlayerStateChange;
 	}
 	
 	void OnDisable()
 	{
 		GameManager.gameStateEvent -= GameStateChange;
+		PlayerController.playerStateChanged -= PlayerStateChange;
+	}
+
+	void PlayerStateChange( CharacterState newState )
+	{
+		if( newState == CharacterState.Dying )
+		{
+			pauseButton.gameObject.SetActive( false );
+		}
 	}
 
 	void GameStateChange( GameState newState )
@@ -249,18 +238,25 @@ public class HUDHandler : MonoBehaviour {
 			hudDebugInfo.gameObject.SetActive( false );
 			pauseButton.gameObject.SetActive( false );
 			userMessageText.gameObject.SetActive( false );
+			destroyAllPickupsDisplayed();
 		}
 	}
 
-	public class CoinDisplay
+	void destroyAllPickupsDisplayed()
 	{
-		public Rect coinAccumulatedIconRect;
-		public int coinAccumulator = 0;
-		public Color coinColor;
-		public float coinAccumulatedStartTime = 0;
-		public bool isCoinSequenceComplete = false;
+		for( int i=0; i < pickupDisplayList.Count; i++ )
+		{
+			PickupDisplay pd = pickupDisplayList[i];
+			GameObject.Destroy( pd.objectPickedUp );
+		}
+		pickupDisplayList.Clear();
 	}
 
+	public class PickupDisplay
+	{
+		public GameObject objectPickedUp;
+		public float startTime = 0;
+	}
 
 }
 

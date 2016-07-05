@@ -18,7 +18,7 @@ public class CoinAttractor : BaseClass {
 	void Start ()
 	{
 		//For coins
-		Vector2 coinIconPos = HUDHandler.getCoinIconPos();
+		Vector2 coinIconPos = HUDHandler.hudHandler.getCoinIconPos();
 		coinScreenPos = new Vector3( coinIconPos.x, coinIconPos.y, 3f );
 	}
 		

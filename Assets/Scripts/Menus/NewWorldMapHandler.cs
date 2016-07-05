@@ -213,7 +213,9 @@ public class NewWorldMapHandler : MonoBehaviour {
 		levelStationButton.onClick.AddListener(() => levelButtonClick(episodeCounter, levelNumber));
 		Text[] episodeStationTexts = levelStationButton.GetComponentsInChildren<Text>();
 		episodeStationTexts[0].text = (levelNumber + 1).ToString();
-		episodeStationTexts[1].text = getEpisodeDifficultyText(  episodeInfo.episodeDifficulty );
+		string levelNumberString = (episodeCounter + 1).ToString();
+		episodeStationTexts[1].text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
+
 		if( levelNumber > LevelManager.Instance.getHighestLevelCompleted() )
 		{
 			//Level is not unlocked yet. Make button non-interactable and dim the level number text

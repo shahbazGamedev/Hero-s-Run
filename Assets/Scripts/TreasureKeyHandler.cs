@@ -39,6 +39,7 @@ public class TreasureKeyHandler : MonoBehaviour {
 		{
 			GetComponent<AudioSource>().Play(); //Only play pickup sound when no fairy, because fairy has an "appear" sound
 		}
+		HUDHandler.hudHandler.displayTreasureKeyPickup();
 	}
 
 	void displayFairyMessage()

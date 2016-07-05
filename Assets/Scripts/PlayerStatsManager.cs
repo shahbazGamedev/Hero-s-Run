@@ -304,19 +304,7 @@ public class PlayerStatsManager {
 		{
 			if( coinSeriesInfo.isLastCoinOfSeries )
 			{
-				//Is the series complete?
-				if( coinAccumulator == coinSeriesInfo.coinSeriesTotal )
-				{
-					//Yes it is!
-					//Tell page hud to display the total number of coins accumulated
-					HUDHandler.displayCoinTotal( coinAccumulator, coinSeriesInfo.coinColor, true );
-				}
-				else
-				{
-					//No, it isn't
-					//Tell page hud to display the total number of coins accumulated
-					HUDHandler.displayCoinTotal( coinAccumulator, coinSeriesInfo.coinColor, false );
-				}
+				HUDHandler.hudHandler.displayStarPickup( coinAccumulator, coinSeriesInfo.coinColor );
 			}
 		}
 	}

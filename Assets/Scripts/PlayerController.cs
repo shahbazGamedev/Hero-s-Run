@@ -304,7 +304,7 @@ public class PlayerController : BaseClass {
 		fairyController = fairyObject.GetComponent<FairyController>();
 
 		//For coins
-		Vector2 coinIconPos = HUDHandler.getCoinIconPos();
+		Vector2 coinIconPos = HUDHandler.hudHandler.getCoinIconPos();
 		coinScreenPos = new Vector3( coinIconPos.x, coinIconPos.y, 3f );
 		mainCamera = Camera.main.transform;
 		
@@ -1849,7 +1849,7 @@ public class PlayerController : BaseClass {
 						PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
 						
 						//Display coin total picked up icon
-						HUDHandler.displayCoinTotal( 10, Color.yellow, false );
+						HUDHandler.hudHandler.displayStarPickup( 10, Color.yellow );
 
 						//Give the Chicken Chaser achievement
 						chicken_chaser.incrementCounter();
@@ -1904,7 +1904,7 @@ public class PlayerController : BaseClass {
 						PlayerStatsManager.Instance.modifyCurrentCoins( ZombieManager.NUMBER_STARS_PER_ZOMBIE, true, false );
 						
 						//Display coin total picked up icon
-						HUDHandler.displayCoinTotal( ZombieManager.NUMBER_STARS_PER_ZOMBIE, Color.yellow, false );
+						HUDHandler.hudHandler.displayStarPickup( ZombieManager.NUMBER_STARS_PER_ZOMBIE, Color.yellow );
 
 						zombieController.fallToBack();
 						
@@ -2012,7 +2012,7 @@ public class PlayerController : BaseClass {
 
 						//To do
 						//Display coin total picked up icon
-						HUDHandler.displayCoinTotal( 10, Color.yellow, false );
+						HUDHandler.hudHandler.displayStarPickup( 10, Color.yellow );
 
 					}	
 					else
@@ -2047,7 +2047,7 @@ public class PlayerController : BaseClass {
 					
 					//To do
 					//Display coin total picked up icon
-					HUDHandler.displayCoinTotal( 10, Color.yellow, false );
+					HUDHandler.hudHandler.displayStarPickup( 10, Color.yellow );
 					
 				}	
 				else
@@ -2118,7 +2118,7 @@ public class PlayerController : BaseClass {
 				PlayerStatsManager.Instance.modifyCurrentCoins( CreatureManager.NUMBER_STARS_PER_CREATURE, true, false );
 				
 				//Display coin total picked up icon
-				HUDHandler.displayCoinTotal( CreatureManager.NUMBER_STARS_PER_CREATURE, Color.yellow, false );
+				HUDHandler.hudHandler.displayStarPickup( CreatureManager.NUMBER_STARS_PER_CREATURE, Color.yellow );
 
 				goblinController.knockback();
 				
