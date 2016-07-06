@@ -41,6 +41,7 @@ public class PlayerStatsManager {
 	bool sharedOnFacebook = false;	//Has the player shared an image on Facebook?
 
 	bool showDebugInfoOnHUD = false; //Should we show the FPS, player speed, etc. on the HUD or not.
+	bool allowAccessToNormalLevels = false; //Should we allow loading of checkpoint levels on the world map. Normally, only episodes can be launched, however, this is useful for debuging.
 	int lives = 0;
 	const int INITIAL_NUMBER_LIVES = 6;
 
@@ -444,6 +445,17 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetString("deathInEpisodes", result );
 	}
 
+	public string getDeathInEpisodesAsString()
+	{
+		string result = "";
+		for( int i = 0; i < deathInEpisodesArray.Length; i++ )
+		{
+			result = result + deathInEpisodesArray[i].ToString() + ",";
+		}
+		result = result.TrimEnd(',');
+		return result;
+	}
+
 	public void resetDeathInEpisodes()
 	{
 		for( int i = 0; i < deathInEpisodesArray.Length; i++ )
@@ -456,6 +468,11 @@ public class PlayerStatsManager {
 	public int getNumberDeathForEpisode( int episodeNumber )
 	{
 		return deathInEpisodesArray[episodeNumber];
+	}
+
+	public int getNumberDeathForCurrentEpisode()
+	{
+		return deathInEpisodesArray[LevelManager.Instance.getCurrentEpisodeNumber()];
 	}
 
 	public void setNumberDeathForEpisode( int numberOfDeath )
@@ -574,6 +591,16 @@ public class PlayerStatsManager {
 	public bool getShowDebugInfoOnHUD()
 	{
 		return showDebugInfoOnHUD;
+	}
+
+	public void setAllowAccessToNormalLevels( bool value )
+	{
+		allowAccessToNormalLevels = value;
+	}
+
+	public bool getAllowAccessToNormalLevels()
+	{
+		return allowAccessToNormalLevels;
 	}
 
 	public void setOwnsStarDoubler( bool value )
@@ -804,6 +831,15 @@ public class PlayerStatsManager {
 			{
 				showDebugInfoOnHUD = false;	
 			}
+			string allowAccessToNormalLevelsString = PlayerPrefs.GetString("allowAccessToNormalLevels", "false" );
+			if( allowAccessToNormalLevelsString == "true" )
+			{
+				allowAccessToNormalLevels = true;
+			}
+			else
+			{
+				allowAccessToNormalLevels = false;	
+			}
 			string sharedOnFacebookString = PlayerPrefs.GetString("sharedOnFacebook", "false" );
 			if( sharedOnFacebookString == "true" )
 			{
@@ -884,6 +920,14 @@ public class PlayerStatsManager {
 		{
 			PlayerPrefs.SetString( "showDebugInfoOnHUD", "false" );
 		}
+		if( allowAccessToNormalLevels )
+		{
+			PlayerPrefs.SetString( "allowAccessToNormalLevels", "true" );
+		}
+		else
+		{
+			PlayerPrefs.SetString( "allowAccessToNormalLevels", "false" );
+		}
 		if( sharedOnFacebook )
 		{
 			PlayerPrefs.SetString( "sharedOnFacebook", "true" );
@@ -942,6 +986,8 @@ public class PlayerStatsManager {
 		firstTimePlaying = true;
 		PlayerPrefs.SetString( "showDebugInfoOnHUD", "false" );
 		setShowDebugInfoOnHUD( false );
+		PlayerPrefs.SetString( "allowAccessToNormalLevels", "false" );
+		setAllowAccessToNormalLevels( false );
 		PlayerPrefs.SetString( "sharedOnFacebook", "false" );
 		setSharedOnFacebook( false );
 		PlayerPrefs.SetString( "ownsStarDoubler", "false" );

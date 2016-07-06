@@ -102,8 +102,8 @@ public class PostLevelPopup : MonoBehaviour {
 					//Remove the existing events
     				postLevelButton.onClick.RemoveAllListeners();
 					postLevelButton.onClick.AddListener( showNextEpisodePopup );
-					clockTimeSetter.updateTime( episodeNumber, LevelManager.Instance.getNextLevelToComplete(), Level_Progress.LEVEL_END_WITH_PROGRESS );
 				}
+				clockTimeSetter.updateTime( episodeNumber, LevelManager.Instance.getNextLevelToComplete(), Level_Progress.LEVEL_END_WITH_PROGRESS );
 			}
 			else
 			{

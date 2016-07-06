@@ -134,6 +134,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		go.transform.SetParent(map.transform,false);
 		go.name = "Level Station " + (levelNumber + 1).ToString();
 		Button levelStationButton = go.GetComponent<Button>();
+		levelStationButton.interactable = PlayerStatsManager.Instance.getAllowAccessToNormalLevels();
 		RectTransform levelStationButtonRectTransform = levelStationButton.GetComponent<RectTransform>();
 		levelStationButtonRectTransform.SetParent( levelStationLocations[levelNumber], false );
 		levelStationButtonRectTransform.anchoredPosition = new Vector2( 0, 0 );
@@ -221,7 +222,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 			//Level is not unlocked yet. Make button non-interactable and dim the level number text
 			levelStationButton.interactable = false;
 			episodeStationTexts[0].enabled = false;
-			episodeStationTexts[1].enabled = false;
+			episodeStationTexts[1].enabled = true;
 		}
 		else if ( levelNumber == LevelManager.Instance.getNextLevelToComplete() )
 		{

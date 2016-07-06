@@ -14,6 +14,8 @@ public class DebugMenu : MonoBehaviour {
 	public Text lifetimeStars;
 	public Text ownsStarDoubler;
 	public Text toggleShowDebugInfoText;
+	public Text toggleAccessToNormalLevelsText;
+	public Text deathPerEpisodeText;
 
 	// Use this for initialization
 	void Start () {
@@ -31,6 +33,14 @@ public class DebugMenu : MonoBehaviour {
 		else
 		{
 			toggleShowDebugInfoText.text = "Show Debug Info: Off";
+		}
+		if( PlayerStatsManager.Instance.getAllowAccessToNormalLevels() )
+		{
+			toggleAccessToNormalLevelsText.text = "Access to normal levels: On";
+		}
+		else
+		{
+			toggleAccessToNormalLevelsText.text = "Access to normal levels: Off";
 		}
 
 		updatePlayerStats();
@@ -109,6 +119,22 @@ public class DebugMenu : MonoBehaviour {
 		PlayerStatsManager.Instance.savePlayerStats();
 	}
 
+	public void toggleAllowAccessToNormalLevels()
+	{
+		Debug.Log("toggleAllowAccessToNormalLevels");
+		SoundManager.soundManager.playButtonClick();
+		PlayerStatsManager.Instance.setAllowAccessToNormalLevels( !PlayerStatsManager.Instance.getAllowAccessToNormalLevels() );
+		if( PlayerStatsManager.Instance.getAllowAccessToNormalLevels() )
+		{
+			toggleAccessToNormalLevelsText.text = "Access to normal levels: On";
+		}
+		else
+		{
+			toggleAccessToNormalLevelsText.text = "Access to normal levels: Off";
+		}
+		PlayerStatsManager.Instance.savePlayerStats();
+	}
+
 	void updatePlayerStats()
 	{
 		currentStars.text = "Current Stars: " + PlayerStatsManager.Instance.getCurrentCoins();
@@ -121,6 +147,7 @@ public class DebugMenu : MonoBehaviour {
 		{
 			ownsStarDoubler.text = "Owns Star Doubler: false";
 		}
+		deathPerEpisodeText.text = "Death Per Episode: " + PlayerStatsManager.Instance.getDeathInEpisodesAsString();
 	}
 
 }
