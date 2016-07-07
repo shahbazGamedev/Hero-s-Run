@@ -82,9 +82,9 @@ public class TakeScreenshot : MonoBehaviour {
        return string.Format("{0}/screen_{1}x{2}_{3}.png", Application.dataPath, width, height, System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
 	}
     
-	public void takeSelfieNow()
+	public void takeSelfieNow( )
 	{
-		StartCoroutine( takeSelfie() );
+		StartCoroutine( takeSelfie( screenShotCamera ) );
 	}
 
 	public void flipCamera()
@@ -105,19 +105,19 @@ public class TakeScreenshot : MonoBehaviour {
 		}
 	}
 	
-	IEnumerator takeSelfie()
+	IEnumerator takeSelfie( Camera pictureCamera )
 	{
 		LeanTween.cancel( gameObject );
         yield return new WaitForEndOfFrame();
 		GetComponent<AudioSource>().Play();
 		Debug.Log("TakeScreenshot-selfie." );
-		screenShotCamera.enabled = true;
+		pictureCamera.enabled = true;
 		pointLight.gameObject.SetActive( true );
 		RenderTexture rt = new RenderTexture(pictureWidth, pictureHeight, 24);
 		rt.antiAliasing = 4;
 		rt.format = RenderTextureFormat.Default;
-		screenShotCamera.targetTexture = rt;
-		screenShotCamera.Render();
+		pictureCamera.targetTexture = rt;
+		pictureCamera.Render();
 		RenderTexture.active = rt;
 		screenShot.ReadPixels(new Rect(0, 0, pictureWidth, pictureHeight), borderWidth, borderWidth);
 		screenShot.Apply();
@@ -128,10 +128,10 @@ public class TakeScreenshot : MonoBehaviour {
 		GameManager.Instance.selfie = picturePreview.sprite;
 		GameManager.Instance.selfieBytes = selfieBytes;
 
-		screenShotCamera.targetTexture = null;
+		pictureCamera.targetTexture = null;
 		RenderTexture.active = null; 
 		Destroy(rt);
-		screenShotCamera.enabled = false;
+		pictureCamera.enabled = false;
 		pointLight.gameObject.SetActive( false );
 		selfieTaken = true;
 		fadeInPicturePreview();
@@ -170,11 +170,13 @@ public class TakeScreenshot : MonoBehaviour {
 	void OnEnable()
 	{
 		GameManager.gameStateEvent += GameStateChange;
+		TakePictureTrigger.takePictureNowTrigger += TakePictureNowTrigger;
 	}
 	
 	void OnDisable()
 	{
 		GameManager.gameStateEvent -= GameStateChange;
+		TakePictureTrigger.takePictureNowTrigger -= TakePictureNowTrigger;
 	}
 
 
@@ -192,6 +194,15 @@ public class TakeScreenshot : MonoBehaviour {
 			cameraButton.gameObject.SetActive( false );
 			flipCameraButton.gameObject.SetActive( false );
 			hidePicturePreview();
+		}
+	}
+
+	void TakePictureNowTrigger( Camera pictureCamera )
+	{
+		//We test against selfieTaken because we do not want to overide a picture taken by the player.
+		if( !selfieTaken )
+		{
+			StartCoroutine( takeSelfie( pictureCamera ) );
 		}
 	}
 
