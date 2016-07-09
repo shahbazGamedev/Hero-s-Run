@@ -98,6 +98,16 @@ public class NewWorldMapHandler : MonoBehaviour {
 				postLevelPopupPanel.GetComponent<PostLevelPopup>().showPostLevelPopup(levelData);
 			}
 		}
+
+		//Get all of the user's outstanding app requests right away and then poll Facebook every 60 seconds
+		//CancelInvoke("getAllAppRequests");
+		//InvokeRepeating("getAllAppRequests", 0.25f, 60 );
+
+	}
+
+	void getAllAppRequests()
+	{
+		FacebookManager.Instance.getAllAppRequests();
 	}
 
 	void Update()
