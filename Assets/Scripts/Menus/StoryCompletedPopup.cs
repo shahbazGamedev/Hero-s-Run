@@ -7,6 +7,7 @@ public class StoryCompletedPopup : MonoBehaviour {
 	[Header("Story Completed Popup")]
 	public Text storyCompletedTitleText;
 	public Text messageText;
+	public Text difficultyLevelLabel;
 	public Text changeDifficultyButtonText;
 	public Text startOverButtonText;
 	public NewWorldMapHandler newWorldMapHandler;
@@ -23,6 +24,9 @@ public class StoryCompletedPopup : MonoBehaviour {
 		{
 			messageText.text = LocalizationManager.Instance.getText("STORY_COMPLETED_MESSAGE_NOT_LEGENDARY");
 		}
+		messageText.text = messageText.text.Replace("\\n", System.Environment.NewLine );
+
+		difficultyLevelLabel.text = LocalizationManager.Instance.getText("STORY_COMPLETED_DIFFICULTY_LEVEL_LABEL");
 		changeDifficultyButtonText.text = PlayerStatsManager.Instance.getDifficultyLevelName();
 		startOverButtonText.text = LocalizationManager.Instance.getText("STORY_COMPLETED_START_OVER");
 	}
