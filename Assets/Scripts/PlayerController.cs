@@ -45,7 +45,7 @@ public class PlayerController : BaseClass {
     float minSwipeDistancePixels;
     bool touchStarted = false;
     Vector2 touchStartPos;
-	float minSwipeDistance = 0.025f; //About 30 pixels on an iPhone 5
+	float minSwipeDistance = 0.022f; //About 17 pixels if width is 768 pixels
 
 	//Audio
 	public AudioClip 	slidingSound;
