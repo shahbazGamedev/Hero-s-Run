@@ -16,6 +16,7 @@ public class PostLevelPopup : MonoBehaviour {
 	public Text postLevelButtonText;
 	public NewWorldMapHandler newWorldMapHandler;
 	public EpisodePopup episodePopup;
+	public StoryCompletedPopup storyCompletedPopup;
 	[Header("Score Meter")]
 	public GameObject scoreMeter;
 
@@ -122,8 +123,12 @@ public class PostLevelPopup : MonoBehaviour {
 		SoundManager.soundManager.playButtonClick();
 		//Reset the level changed value
 		LevelManager.Instance.setLevelChanged( false );
+		GetComponent<Animator>().Play("Panel Slide Out");
 		GameManager.Instance.setGameState(GameState.Menu);
-		GetComponent<Animator>().Play("Panel Slide Out");	
+		if( LevelManager.Instance.getPlayerFinishedTheGame() )
+		{
+			StartCoroutine( showStoryCompletedPopupThread() );
+		}
 	}
 
 	public void showNextEpisodePopup()
@@ -148,6 +153,13 @@ public class PostLevelPopup : MonoBehaviour {
 		Debug.Log("PostLevelPopup-Retry button pressed.");
 		SoundManager.soundManager.playButtonClick();
 		newWorldMapHandler.play( LevelManager.Instance.getCurrentEpisodeNumber(), LevelManager.Instance.getNextLevelToComplete() );
+	}
+
+	IEnumerator showStoryCompletedPopupThread()
+	{
+		GetComponent<Animator>().Play("Panel Slide Out");
+		yield return new WaitForSeconds(2f);
+		storyCompletedPopup.showStoryCompletedPopup();	
 	}
 
 }

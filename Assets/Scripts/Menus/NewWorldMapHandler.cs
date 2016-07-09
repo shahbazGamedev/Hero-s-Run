@@ -107,7 +107,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	}
 
-	void drawLevelMarkers()
+	public void drawLevelMarkers()
 	{
 		int episodeCounter = 0;
 		LevelData.LevelInfo levelInfo;

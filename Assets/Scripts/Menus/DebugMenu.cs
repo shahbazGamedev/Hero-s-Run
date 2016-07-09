@@ -117,6 +117,8 @@ public class DebugMenu : MonoBehaviour {
 		SoundManager.soundManager.playButtonClick();
 		LevelManager.Instance.unlockAllLevels();
 		PlayerStatsManager.Instance.savePlayerStats();
+		newWorldMapHandler.drawLevelMarkers();
+
 	}
 
 	public void toggleAllowAccessToNormalLevels()
@@ -133,6 +135,7 @@ public class DebugMenu : MonoBehaviour {
 			toggleAccessToNormalLevelsText.text = "Access to normal levels: Off";
 		}
 		PlayerStatsManager.Instance.savePlayerStats();
+		newWorldMapHandler.drawLevelMarkers();
 	}
 
 	void updatePlayerStats()

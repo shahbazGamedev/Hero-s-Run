@@ -84,6 +84,12 @@ public class LevelManager {
 		}
 	}
 
+	public void forceHighestLevelCompleted( int levelCompleted )
+	{
+		highestLevelCompleted = levelCompleted;
+		Debug.Log ("LevelManager-forceHighestLevelCompleted: highestLevelCompleted " + highestLevelCompleted );
+	}
+
 	public int getHighestLevelCompleted()
 	{
 		return highestLevelCompleted;
