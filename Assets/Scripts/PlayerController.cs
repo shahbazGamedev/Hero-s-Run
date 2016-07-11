@@ -2216,6 +2216,7 @@ public class PlayerController : BaseClass {
 		{
 			Debug.Log ("Player is having a great fall.");
 			trollController.stopPursuing();
+			dropTorch();
 			managePlayerDeath( DeathType.GreatFall );
 		}
 		//For the Lock Camera trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
@@ -3149,7 +3150,7 @@ public class PlayerController : BaseClass {
 		}
 	}
 	
-		public void enableTorch( bool enable )
+	public void enableTorch( bool enable )
 	{
 		if( torch != null )
 		{
@@ -3172,6 +3173,18 @@ public class PlayerController : BaseClass {
 			{
 				torchLight.SetActive( false );
 			}
+		}
+	}
+
+	public void dropTorch()
+	{
+		if( torch != null )
+		{
+			torch.transform.SetParent( null );
+			Rigidbody rb = torch.GetComponent<Rigidbody>();
+			rb.isKinematic = false;
+			rb.AddForce( 0, 30f, 15f );
+			rb.AddTorque( 23f,15f,20f );
 		}
 	}
 
