@@ -52,6 +52,7 @@ public class HellCaveSequence : MonoBehaviour {
 	{
 		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_ANYONE_HERE"), 3f );
 		fairy_vo_with_echo.GetComponent<AudioSource>().PlayOneShot( DialogManager.dialogManager.getVoiceOver("VO_FA_NOBODY_LIKES_YOU") );
+		playerController.enableTorch( true );
 	}
 
 	//Make the fairy disappear

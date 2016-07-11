@@ -125,4 +125,19 @@ public class Utilities : MonoBehaviour {
 		return V;
 	}
 
+	public static IEnumerator fadeInLight( Light light, float duration, float endIntensity )
+	{
+		float elapsedTime = 0;
+		
+		float startIntensity = 0;
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			light.intensity =  Mathf.Lerp( startIntensity, endIntensity, elapsedTime/duration );
+			yield return new WaitForFixedUpdate();  
+			
+		} while ( elapsedTime < duration );
+		light.intensity = endIntensity;
+	}
+
 }

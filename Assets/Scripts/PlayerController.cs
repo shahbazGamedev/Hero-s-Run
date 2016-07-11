@@ -261,34 +261,38 @@ public class PlayerController : BaseClass {
 	public string groundType = "normal"; //Other choice is water
 	public ParticleSystem slideWaterSplash; //Plays when player slides in water.It loops.
 
+	public GameObject Hero_Prefab;
+	public GameObject Heroine_Prefab;
+	GameObject torch; //Carried by the player. Used in some levels to light up the scene.
+
 	void Awake()
 	{
-		//Instantiate the avatar selected by the player and attach it to the Hero game object
-		GameObject avatar = Resources.Load( "Avatar/" + PlayerStatsManager.Instance.getAvatarName() ) as GameObject;
-		GameObject Hero_Prefab = null;
-		if( avatar != null )
+		GameObject hero;
+		if(PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
 		{
-			Hero_Prefab = (GameObject)Instantiate(avatar, Vector3.zero, Quaternion.identity ) ;
-			Transform blobShadowProjectorObject = Hero_Prefab.transform.FindChild("Blob Shadow Projector");
-			if( blobShadowProjectorObject == null )
-			{
-				Debug.LogError("PlayerController-error: Unable to find, Blob Shadow Projector, in the " + Hero_Prefab.name + " prefab." );
-			}
-			shadowProjector = blobShadowProjectorObject.GetComponent<Projector>();
-
-			Hero_Prefab.transform.parent = transform;
+			hero = (GameObject)Instantiate(Hero_Prefab, Vector3.zero, Quaternion.identity ) ;
 		}
 		else
 		{
-			Debug.LogError("PlayerController-error: Unable to find avatar " + PlayerStatsManager.Instance.getAvatarName() + " in Resources/Avatar folder." );
+			hero = (GameObject)Instantiate(Heroine_Prefab, Vector3.zero, Quaternion.identity ) ;
 		}
+		Transform blobShadowProjectorObject = hero.transform.FindChild("Blob Shadow Projector");
+		if( blobShadowProjectorObject == null )
+		{
+			Debug.LogError("PlayerController-error: Unable to find, Blob Shadow Projector, in the " + hero.name + " prefab." );
+		}
+		shadowProjector = blobShadowProjectorObject.GetComponent<Projector>();
+
+		hero.transform.parent = transform;
+		hero.SetActive( true );
+		torch = hero.transform.Find("BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand/Torch").gameObject;
 
 		//Calculate the minimum swipe distance in pixels
         float screenDiagonalSize = Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height);
         minSwipeDistancePixels = minSwipeDistance * screenDiagonalSize; 
 
 		//Get a copy of the components
-		anim = Hero_Prefab.GetComponent<Animator>();
+		anim = hero.GetComponent<Animator>();
 
 		controller = GetComponent<CharacterController>();
 		controllerOriginalCenter = controller.center;
@@ -3145,38 +3149,30 @@ public class PlayerController : BaseClass {
 		}
 	}
 	
-	void OnEnable()
+		public void enableTorch( bool enable )
 	{
-		GameManager.gameStateEvent += GameStateChange;
-	}
-	
-	
-	void OnDisable()
-	{
-		GameManager.gameStateEvent -= GameStateChange;
-	}
-
-	void GameStateChange( GameState newState )
-	{
-		//Debug.LogWarning("PlayerController: GameStateChange: " + newState );
-		if( newState == GameState.Paused )
+		if( torch != null )
 		{
-			anim.enabled = false;	
-		}
-		else if( newState == GameState.Countdown )
-		{
-			
-		}
-		else if( newState == GameState.Normal )
-		{
-			anim.enabled = true;	
+			//Show the torch in the hero's hand.
+			torch.SetActive( enable );
+			//Enable or disable to torch fire particle system
+			torch.transform.FindChild("Torch fire").gameObject.SetActive( enable );
+			//Get a refence to the light attached to the torch
+			GameObject torchLight = torch.transform.FindChild("Torch light").gameObject;
+			if( enable )
+			{
+				//Play a short lighting torch sound
+				torch.GetComponent<AudioSource>().Play();
+				//Fade in light after activating it
+				torchLight.SetActive( true );
+				Light light = torchLight.GetComponent<Light>();
+				StartCoroutine( Utilities.fadeInLight( light, 0.8f, light.intensity ) );
+			}
+			else
+			{
+				torchLight.SetActive( false );
+			}
 		}
 	}
-
-	void OnApplicationPause( bool pauseStatus )
-	{
-		Debug.Log( "PlayerController-OnApplicationPause: pauseStatus is: " + pauseStatus );
-	}
-
 
 } 
