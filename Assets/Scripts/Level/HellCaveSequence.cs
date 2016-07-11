@@ -45,19 +45,37 @@ public class HellCaveSequence : MonoBehaviour {
 		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_ECHO"), 2f );
 		fairy_vo_with_echo.GetComponent<AudioSource>().PlayOneShot( DialogManager.dialogManager.getVoiceOver("VO_FA_OH_NO") );
 		Invoke ("step2", 4f );
-		Invoke ("step3", 9f );
 	}
 
 	void step2()
 	{
 		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_ANYONE_HERE"), 3f );
 		fairy_vo_with_echo.GetComponent<AudioSource>().PlayOneShot( DialogManager.dialogManager.getVoiceOver("VO_FA_NOBODY_LIKES_YOU") );
+		Invoke ("step3", 4.4f );
+	}
+
+	void step3()
+	{
+		DialogManager.dialogManager.activateDisplayFairy( "It's dark in here. Let me fix that.", 2.8f );
+		//fairy_vo_with_echo.GetComponent<AudioSource>().PlayOneShot( DialogManager.dialogManager.getVoiceOver("VO_FA_NOBODY_LIKES_YOU") );
+		Invoke ("step4", 1.8f );
+	}
+
+	void step4()
+	{
+		fairyController.setYRotationOffset( -50f );
+		fairyController.CastSpell( materializeTorch );
+	}
+
+	void materializeTorch()
+	{
 		playerController.enableTorch( true );
+		Invoke ("step5", 2.2f );
 	}
 
 	//Make the fairy disappear
 	//Player starts running again
-	void step3()
+	void step5()
 	{
 		fairyController.Disappear ();
 		playerController.allowRunSpeedToIncrease = true;

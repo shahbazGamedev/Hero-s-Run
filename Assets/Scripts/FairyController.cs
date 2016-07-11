@@ -178,17 +178,19 @@ public class FairyController : BaseClass {
 		fairyState = FairyState.None;
 	}
 
-	public void CastSpell()
+	public void CastSpell( System.Action onFinish = null )
 	{
 		fairyAnimation.CrossFade("CastSpell", 0.2f);
 		fairyAnimation.PlayQueued("Hover_Happy");
-		Invoke ("playCastSpellFx", 4f );
+		StartCoroutine( playCastSpellFx( onFinish ) );
 	}
 
-	void playCastSpellFx()
+	IEnumerator playCastSpellFx( System.Action onFinish = null )
 	{
+		yield return new WaitForSeconds(4f);
 		fairySpellFx.Play();
 		GetComponent<AudioSource>().PlayOneShot( fairySpellSound );
+		if( onFinish != null ) onFinish.Invoke();
 	}
 
 	private IEnumerator MoveToPosition( float timeToArrive )

@@ -12,8 +12,8 @@ public enum PictureRatio {
 public class TakeScreenshot : MonoBehaviour {
 
 	int pictureWidth;
-	const int MAX_PICTURE_WIDTH = 1024;
-	const int MAX_PICTURE_HEIGHT = 1024;
+	const int MAX_PICTURE_WIDTH = 1536;
+	const int MAX_PICTURE_HEIGHT = 1536;
 	int pictureHeight;
 	int borderWidth;
 	Camera screenShotCamera;
