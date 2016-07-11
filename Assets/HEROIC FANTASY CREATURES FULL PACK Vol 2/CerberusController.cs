@@ -197,15 +197,19 @@ public class CerberusController : BaseClass, ICreature {
 
 	public void resetCreature()
 	{
-		setCreatureState( CreatureState.Idle );
-		GetComponent<Animator>().Play("idleLookAround");
-		gameObject.SetActive( false );
-		followsPlayer = false;
-		controller.enabled = true;
-		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
-		for( int i = 0; i < capsuleColliders.Length; i++ )
+		//Only reset Cerebus if the player died on the same tile as Cerebus.
+		if( transform.parent.name == player.GetComponent<PlayerController>().getCurrentTileName() )
 		{
-			capsuleColliders[i].enabled = true;
+			setCreatureState( CreatureState.Idle );
+			GetComponent<Animator>().Play("idleLookAround");
+			gameObject.SetActive( false );
+			followsPlayer = false;
+			controller.enabled = true;
+			CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
+			for( int i = 0; i < capsuleColliders.Length; i++ )
+			{
+				capsuleColliders[i].enabled = true;
+			}
 		}
 	}
 
