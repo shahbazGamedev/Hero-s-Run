@@ -171,7 +171,14 @@ public class DemonController : BaseClass, ICreature {
 							moveSpeed = WALK_SPEED;
 							setCreatureState( CreatureState.Walking );
 							GetComponent<Animator>().Play( "Walk" );
-							speak( "VO_DE_ANOTHER_MEETING", 3.5f, false );
+							if( Random.value > 0.5f )
+							{
+								speak( "VO_DE_ANOTHER_MEETING", 3.9f, false );
+							}
+							else
+							{
+								speak( "VO_DE_BAD_SONG", 3.9f, false );
+							}
 							Invoke("stopWalking", 6.8f );
 						}
 					}
