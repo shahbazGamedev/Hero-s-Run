@@ -127,7 +127,7 @@ public class CerberusController : BaseClass, ICreature {
 		rightHeadFire.Play();
 		GetComponent<AudioSource>().clip = fireBreath;
 		GetComponent<AudioSource>().Play();
-		StartCoroutine( fadeInLight( fireBreathingLight, 0.6f, 6f ) );
+		StartCoroutine( Utilities.fadeInLight( fireBreathingLight, 0.6f, 6f ) );
 		Invoke( "stopBreathingFire", 2.8f );
 	}
 
@@ -136,38 +136,7 @@ public class CerberusController : BaseClass, ICreature {
 		centerHeadFireObject.SetActive( false );
 		leftHeadFireObject.SetActive( false );
 		rightHeadFireObject.SetActive( false );
-		StartCoroutine( fadeOutLight( fireBreathingLight, 0.2f ) );
-	}
-
-	IEnumerator fadeOutLight( Light light, float duration )
-	{
-		float elapsedTime = 0;
-		
-		float startIntensity = light.intensity;
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			light.intensity =  Mathf.Lerp( startIntensity, 0, elapsedTime/duration );
-			yield return new WaitForFixedUpdate();  
-			
-		} while ( elapsedTime < duration );
-		
-		light.intensity = 0;
-	}
-
-	IEnumerator fadeInLight( Light light, float duration, float endIntensity )
-	{
-		float elapsedTime = 0;
-		
-		float startIntensity = 0;
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			light.intensity =  Mathf.Lerp( startIntensity, endIntensity, elapsedTime/duration );
-			yield return new WaitForFixedUpdate();  
-			
-		} while ( elapsedTime < duration );
-		light.intensity = endIntensity;
+		StartCoroutine( Utilities.fadeOutLight( fireBreathingLight, 0.2f ) );
 	}
 
 	public CreatureState getCreatureState()

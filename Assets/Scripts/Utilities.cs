@@ -3,30 +3,6 @@ using System.Collections;
 
 public class Utilities : MonoBehaviour {
 
-    // Makes the gameobject and all of it's children visible or not. It also handles the Halo if any.
-	// Can optionally disable colliders as well.
-	public static void makeVisible ( GameObject go, bool enable, bool includeColliders )
-	{
-   		Renderer[] renderers;
-		renderers = go.GetComponentsInChildren<Renderer>();
-		foreach (Renderer renderer in renderers)
-		{
-            renderer.enabled = enable;
-        }
-		
-		Behaviour halo = (Behaviour)go.GetComponent("Halo");
-		if( halo != null ) halo.enabled = enable;
-		
-		if( includeColliders )
-		{
-			Collider[] colliders;
-			colliders = go.GetComponentsInChildren<Collider>();
-			foreach (Collider collider in colliders)
-			{
-	            collider.enabled = enable;
-	        }
-		}
-	}
 
 	//This method will return the angle clamped between plus or minus delta.
 	//So if you pass a delta of 10, the value will be clamped between 0 to 10 and 350 to 360 depending on the angle passed.
@@ -138,6 +114,22 @@ public class Utilities : MonoBehaviour {
 			
 		} while ( elapsedTime < duration );
 		light.intensity = endIntensity;
+	}
+
+	public static IEnumerator fadeOutLight( Light light, float duration )
+	{
+		float elapsedTime = 0;
+		
+		float startIntensity = light.intensity;
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			light.intensity =  Mathf.Lerp( startIntensity, 0, elapsedTime/duration );
+			yield return new WaitForFixedUpdate();  
+			
+		} while ( elapsedTime < duration );
+		
+		light.intensity = 0;
 	}
 
 }
