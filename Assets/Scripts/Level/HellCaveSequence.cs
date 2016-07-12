@@ -56,8 +56,8 @@ public class HellCaveSequence : MonoBehaviour {
 
 	void step3()
 	{
-		DialogManager.dialogManager.activateDisplayFairy( "It's dark in here. Let me fix that.", 2.8f );
-		//fairy_vo_with_echo.GetComponent<AudioSource>().PlayOneShot( DialogManager.dialogManager.getVoiceOver("VO_FA_NOBODY_LIKES_YOU") );
+		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText("VO_FA_IT_IS_DARK"), 2.9f );
+		//fairy_vo_with_echo.GetComponent<AudioSource>().PlayOneShot( DialogManager.dialogManager.getVoiceOver("VO_FA_IT_IS_DARK") );
 		Invoke ("step4", 1.8f );
 	}
 
