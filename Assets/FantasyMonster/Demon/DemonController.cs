@@ -21,12 +21,15 @@ public class DemonController : BaseClass, ICreature {
 	public ParticleSystem sparksLeftHoof;
 	public ParticleSystem sparksRightHoof;
 	public GameObject weaponTrail;
+	public Sprite demonPortrait;
 
 	public enum AttackType {
 		stand_and_normal_attack = 1,
 		stand_and_big_attack = 2,
 		charge_and_attack = 3,
-		walk_and_attack = 4
+		walk_and_attack = 4,
+		walk_and_talk = 5,
+		do_nothing = 6
 	}
 	
 	Transform player;
@@ -37,7 +40,7 @@ public class DemonController : BaseClass, ICreature {
 	CharacterController controller;
 	Vector3 forward;
 	const float RUN_SPEED = 4.6f; //good value so feet don't slide
-	float WALK_SPEED = 2.1f; //good value so feet don't slide
+	float WALK_SPEED = 3.2f; //good value so feet don't slide
 	float moveSpeed = 0;
 	//If true, the demon heads for the player as opposed to staying in his lane
 	bool followsPlayer = false;
@@ -46,6 +49,10 @@ public class DemonController : BaseClass, ICreature {
 	{
 		controller = GetComponent<CharacterController>();
 		player = GameObject.FindGameObjectWithTag("Player").transform;
+		if( attackType == AttackType.walk_and_talk )
+		{
+			transform.Find("demon_weapon").gameObject.SetActive( false );
+		}
 	}
 
 	void Update ()
@@ -58,7 +65,6 @@ public class DemonController : BaseClass, ICreature {
 	{
 		if( demonState == CreatureState.Running || demonState == CreatureState.Walking )
 		{
-
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
 			{
@@ -153,6 +159,23 @@ public class DemonController : BaseClass, ICreature {
 						}
 					}
 					break;
+
+				case AttackType.walk_and_talk:
+					float startWalkingDistance = 3.3f * PlayerController.getPlayerSpeed();
+					if( distance < startWalkingDistance )
+					{
+						if( getCreatureState() != CreatureState.Walking )
+						{
+							//Walk
+							followsPlayer = false;
+							moveSpeed = WALK_SPEED;
+							setCreatureState( CreatureState.Walking );
+							GetComponent<Animator>().Play( "Walk" );
+							speak( "VO_DE_ANOTHER_MEETING", 3.5f, false );
+							Invoke("stopWalking", 6.8f );
+						}
+					}
+					break;
 			}
 		}
 	}
@@ -168,6 +191,13 @@ public class DemonController : BaseClass, ICreature {
 	{
 		Vector3 heading = player.position - transform.position;
 		return Vector3.Dot( heading.normalized, transform.forward );
+	}
+
+	void stopWalking()
+	{
+		attackType = AttackType.do_nothing;
+		setCreatureState( CreatureState.Idle );
+		GetComponent<Animator>().CrossFadeInFixedTime( "Stand" , CROSS_FADE_DURATION );
 	}
 
 	public CreatureState getCreatureState()
@@ -285,4 +315,10 @@ public class DemonController : BaseClass, ICreature {
 	}
 
 
+	//the voiceOverID is used both as text ID and as the name of the audio clip. They need to be identical.
+	public void speak( string voiceOverID, float textDisplayDuration, bool hasVoiceOver )
+	{
+		DialogManager.dialogManager.activateDisplayGeneric( LocalizationManager.Instance.getText( voiceOverID ), demonPortrait, textDisplayDuration );
+		if( hasVoiceOver ) GetComponent<AudioSource>().PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
+	}
 }

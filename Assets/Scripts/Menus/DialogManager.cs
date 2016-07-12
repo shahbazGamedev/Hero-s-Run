@@ -51,6 +51,11 @@ public class DialogManager : MonoBehaviour {
 		}	
 	}
 
+	public void activateDisplayGeneric( string message, Sprite portrait, float waitDuration )
+	{
+		activateDisplay( message, portrait, waitDuration );
+	}
+
 	public void activateDisplayFairy( string message, float waitDuration )
 	{
 		activateDisplay( message, fairyPortrait.sprite, waitDuration );
