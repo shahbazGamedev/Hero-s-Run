@@ -263,7 +263,6 @@ public class PlayerController : BaseClass {
 
 	public GameObject Hero_Prefab;
 	public GameObject Heroine_Prefab;
-	GameObject torch; //Carried by the player. Used in some levels to light up the scene.
 
 	void Awake()
 	{
@@ -284,8 +283,8 @@ public class PlayerController : BaseClass {
 		shadowProjector = blobShadowProjectorObject.GetComponent<Projector>();
 
 		hero.transform.parent = transform;
+		hero.name = "Hero";
 		hero.SetActive( true );
-		torch = hero.transform.Find("BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand/Torch").gameObject;
 
 		//Calculate the minimum swipe distance in pixels
         float screenDiagonalSize = Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height);
@@ -2216,7 +2215,6 @@ public class PlayerController : BaseClass {
 		{
 			Debug.Log ("Player is having a great fall.");
 			trollController.stopPursuing();
-			dropTorch();
 			managePlayerDeath( DeathType.GreatFall );
 		}
 		//For the Lock Camera trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
@@ -3147,44 +3145,6 @@ public class PlayerController : BaseClass {
 			Debug.LogWarning("recalculateCurrentLane changed current lane from: " + currentLane + " to: " + calculatedLane + " relative pos " + relativePos );
 			currentLane = calculatedLane;
 			desiredLane = currentLane;
-		}
-	}
-	
-	public void enableTorch( bool enable )
-	{
-		if( torch != null )
-		{
-			//Show the torch in the hero's hand.
-			torch.SetActive( enable );
-			//Enable or disable to torch fire particle system
-			torch.transform.FindChild("Torch fire").gameObject.SetActive( enable );
-			//Get a refence to the light attached to the torch
-			GameObject torchLight = torch.transform.FindChild("Torch light").gameObject;
-			if( enable )
-			{
-				//Play a short lighting torch sound
-				torch.GetComponent<AudioSource>().Play();
-				//Fade in light after activating it
-				torchLight.SetActive( true );
-				Light light = torchLight.GetComponent<Light>();
-				StartCoroutine( Utilities.fadeInLight( light, 0.8f, light.intensity ) );
-			}
-			else
-			{
-				torchLight.SetActive( false );
-			}
-		}
-	}
-
-	public void dropTorch()
-	{
-		if( torch != null )
-		{
-			torch.transform.SetParent( null );
-			Rigidbody rb = torch.GetComponent<Rigidbody>();
-			rb.isKinematic = false;
-			rb.AddForce( 0, 30f, 15f );
-			rb.AddTorque( 23f,15f,20f );
 		}
 	}
 

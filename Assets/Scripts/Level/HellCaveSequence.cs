@@ -69,7 +69,7 @@ public class HellCaveSequence : MonoBehaviour {
 
 	void materializeTorch()
 	{
-		playerController.enableTorch( true );
+		playerController.GetComponent<Torch>().enableTorch( true );
 		Invoke ("step5", 2.2f );
 	}
 
