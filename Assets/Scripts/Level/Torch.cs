@@ -8,27 +8,25 @@ public class Torch : MonoBehaviour {
 
 	public GameObject Torch_Prefab; //Carried by the player. Used in some levels to light up the scene.
 	GameObject torch; //Carried by the player. Used in some levels to light up the scene.
-	Transform torchHolder;
-
-	// Use this for initialization
-	void Start () {
-
-		createTorch();
-	}
 	
-	public void createTorch()
+	void createTorch()
 	{
-		torchHolder = transform.Find("Hero/BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand");
+		Transform torchHolder = transform.Find("Hero/BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand");
 		torch = (GameObject)Instantiate(Torch_Prefab, Vector3.zero, Quaternion.identity );
 		torch.name = "Torch";
 		torch.transform.SetParent( torchHolder, false );
 		torch.transform.localPosition = new Vector3( 0.08f,0.051f,0.161f );
 		torch.transform.localRotation = Quaternion.Euler( -84.7f, 177f, -540f );
-		torch.SetActive( true );
 
 	}
+
 	public void enableTorch( bool enable )
 	{
+		if( enable && torch == null )
+		{
+			createTorch();
+		}
+
 		if( torch != null )
 		{
 			//Show the torch in the hero's hand.
