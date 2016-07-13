@@ -8,7 +8,8 @@ public class Torch : MonoBehaviour {
 
 	public GameObject Torch_Prefab; //Carried by the player. Used in some levels to light up the scene.
 	GameObject torch; //Carried by the player. Used in some levels to light up the scene.
-	
+	bool isUsingTorch = false;
+
 	void createTorch()
 	{
 		Transform torchHolder = transform.Find("Hero/BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand");
@@ -37,6 +38,7 @@ public class Torch : MonoBehaviour {
 			GameObject torchLight = torch.transform.FindChild("Torch light").gameObject;
 			if( enable )
 			{
+				isUsingTorch = true;
 				//Play a short lighting torch sound
 				torch.GetComponent<AudioSource>().Play();
 				//Fade in light after activating it
@@ -47,19 +49,53 @@ public class Torch : MonoBehaviour {
 			else
 			{
 				torchLight.SetActive( false );
+				isUsingTorch = false;
 			}
 		}
 	}
 
-	public void dropTorch()
+	void dropTorch()
 	{
 		if( torch != null )
 		{
 			torch.transform.SetParent( null );
 			Rigidbody rb = torch.GetComponent<Rigidbody>();
 			rb.isKinematic = false;
-			rb.AddForce( 0, 30f, 15f );
+			rb.AddForce( 0, 30f, 150f );
 			rb.AddTorque( 23f,15f,20f );
+			GameObject.Destroy( torch, 1.9f );
 		}
 	}
+
+	void OnEnable()
+	{
+		GameManager.gameStateEvent += GameStateChange;
+		PlayerController.playerStateChanged += PlayerStateChange;
+	}
+	
+	void OnDisable()
+	{
+		GameManager.gameStateEvent -= GameStateChange;
+		PlayerController.playerStateChanged -= PlayerStateChange;
+	}
+
+	void PlayerStateChange( CharacterState newState )
+	{
+		if( newState == CharacterState.Dying )
+		{
+			dropTorch();
+		}
+	}
+
+	void GameStateChange( GameState newState )
+	{
+		if( newState == GameState.Resurrect )
+		{
+			if( isUsingTorch )
+			{
+				enableTorch( true );
+			}
+		}
+	}
+
 }
