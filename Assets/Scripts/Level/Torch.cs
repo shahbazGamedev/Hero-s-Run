@@ -61,7 +61,7 @@ public class Torch : MonoBehaviour {
 			torch.transform.SetParent( null );
 			Rigidbody rb = torch.GetComponent<Rigidbody>();
 			rb.isKinematic = false;
-			rb.AddForce( 0, 30f, 150f );
+			rb.AddForce( 10f, 30f, 150f );
 			rb.AddTorque( 23f,15f,20f );
 			GameObject.Destroy( torch, 1.9f );
 		}
@@ -71,12 +71,14 @@ public class Torch : MonoBehaviour {
 	{
 		GameManager.gameStateEvent += GameStateChange;
 		PlayerController.playerStateChanged += PlayerStateChange;
+		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
 	}
 	
 	void OnDisable()
 	{
 		GameManager.gameStateEvent -= GameStateChange;
 		PlayerController.playerStateChanged -= PlayerStateChange;
+		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 
 	void PlayerStateChange( CharacterState newState )
@@ -95,6 +97,14 @@ public class Torch : MonoBehaviour {
 			{
 				enableTorch( true );
 			}
+		}
+	}
+
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	{
+		if( eventType == GameEvent.Activate_Cullis_Gate )
+		{
+			dropTorch();
 		}
 	}
 
