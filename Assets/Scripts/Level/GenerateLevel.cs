@@ -7,11 +7,14 @@ public enum SegmentTheme {
 		Forest = 0,
 		Fairyland = 1,
 		Cemetery = 2,
-		Hell = 3,
+		Hell_Arrival = 3,
 		Tutorial = 4,
 		Volcano = 5,
 		Island = 6,
-		Battlefield = 7
+		Battlefield = 7,
+		Hell_Caverns = 8,
+		Hell_Fortress = 9,
+
 }
 
 public enum TileType {
@@ -794,20 +797,6 @@ public class GenerateLevel  : MonoBehaviour {
 				randomLandmark = TileType.Landmark_Clocktower;
 				}
 				break;
-			case SegmentTheme.Hell:
-				if( rd < 0.33f)
-				{
-					randomLandmark = TileType.Landmark_Banquet_Hall;
-				}
-				else if( rd < 0.67f)
-				{
-					randomLandmark = TileType.Landmark_Clocktower;
-				}
-				else
-				{
-					randomLandmark = TileType.Landmark_Drawbridge;
-				}
-				break;
 			default:
 				return;
 		}
@@ -1310,7 +1299,7 @@ public class GenerateLevel  : MonoBehaviour {
 					}
 					else
 					{
-						if( tileCreationTheme == SegmentTheme.Forest || tileCreationTheme == SegmentTheme.Hell || currentThemePath == "Level/Tiles/Fairyland/")
+						if( tileCreationTheme == SegmentTheme.Forest || currentThemePath == "Level/Tiles/Fairyland/")
 						{
 							if( Random.value <= 0.2f )
 							{
