@@ -1,0 +1,2142 @@
+fileFormatVersion: 2
+guid: 8b0a41861fc2cc74791c5c7ea32830f9
+timeCreated: 1464103606
+licenseType: Store
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: wraith_body
+    100004: wraith_cloth
+    100006: wraith_eyes
+    100008: wraith_scarf
+    100010: wraith_body_LOD0
+    100012: wraith_cloth_LOD0
+    100014: wraith_dress_LOD0
+    100016: wraith_eyes_LOD0
+    100018: wraith_hood_LOD0
+    100020: wraith_scarf_LOD0
+    100022: wraith_sleeve_LOD0
+    100024: WraithAxe
+    100026: necklace_LOD0
+    100028: shoulderpad_L_LOD0
+    100030: Wraith_Axe_LOD0
+    100032: wraith_necklace_LOD0
+    100034: wraith_shoulderpad_LOD0
+    100036: wraith_wristband_LOD0
+    100038: Wraith_Axe_LOD1
+    100040: Wraith_Axe_LOD2
+    100042: wraith_body_LOD1
+    100044: wraith_body_LOD2
+    100046: wraith_cloth_LOD1
+    100048: wraith_cloth_LOD2
+    100050: wraith_dress_LOD1
+    100052: wraith_dress_LOD2
+    100054: wraith_eyes_LOD02
+    100056: wraith_eyes_LOD1
+    100058: wraith_hood_LOD1
+    100060: wraith_hood_LOD2
+    100062: wraith_necklace_LOD1
+    100064: wraith_necklace_LOD2
+    100066: wraith_scarf_LOD1
+    100068: wraith_scarf_LOD2
+    100070: wraith_shoulderpad_LOD1
+    100072: wraith_shoulderpad_LOD2
+    100074: wraith_sleeve_LOD1
+    100076: wraith_sleeve_LOD2
+    100078: wraith_wristband_LOD1
+    100080: wraith_wristband_LOD2
+    100082: wraith_hair_LOD0
+    100084: hair_A_
+    100086: hair_B_
+    100088: hair_C_
+    100090: hair_D_
+    100092: hair_E_
+    100094: hair_F_
+    100096: wraith_hair_LOD001
+    100098: goblin_scythe_LOD0
+    100100: goblin_scythe_LOD1
+    100102: goblin_scythe_LOD2
+    100104: Base HumanClothL1
+    100106: Base HumanClothL2
+    100108: Base HumanClothL3
+    100110: Base HumanClothR1
+    100112: Base HumanClothR2
+    100114: Base HumanClothR3
+    100116: Base HumanDress_Back1
+    100118: Base HumanDress_Back2
+    100120: Base HumanDress_Back3
+    100122: Base HumanDress_Front1
+    100124: Base HumanDress_Front1 1
+    100126: Base HumanDress_Front2
+    100128: Base HumanDress_L1
+    100130: Base HumanDress_L2
+    100132: Base HumanDress_L3
+    100134: Base HumanDress_R1
+    100136: Base HumanDress_R2
+    100138: Base HumanDress_R3
+    100140: Base HumanEye_L
+    100142: Base HumanEye_R
+    100144: Base HumanHair_1_L1
+    100146: Base HumanHair_1_R1
+    100148: Base HumanHair_2_L1
+    100150: Base HumanHair_2_R1
+    100152: Base HumanHair_3_L1
+    100154: Base HumanHair_3_R1
+    100156: Base HumanHead
+    100158: Base HumanJaw
+    100160: Base HumanLCollarbone
+    100162: Base HumanLDigit11
+    100164: Base HumanLDigit12
+    100166: Base HumanLDigit13
+    100168: Base HumanLDigit21
+    100170: Base HumanLDigit22
+    100172: Base HumanLDigit23
+    100174: Base HumanLDigit31
+    100176: Base HumanLDigit32
+    100178: Base HumanLDigit33
+    100180: Base HumanLDigit41
+    100182: Base HumanLDigit42
+    100184: Base HumanLDigit43
+    100186: Base HumanLDigit51
+    100188: Base HumanLDigit52
+    100190: Base HumanLDigit53
+    100192: Base HumanLForearm
+    100194: Base HumanLPalm
+    100196: Base HumanLUpperarm
+    100198: Base HumanNeck1
+    100200: Base HumanNeck2
+    100202: Base Humannecklace
+    100204: Base HumanPelvis
+    100206: Base HumanRCollarbone
+    100208: Base HumanRDigit11
+    100210: Base HumanRDigit12
+    100212: Base HumanRDigit13
+    100214: Base HumanRDigit21
+    100216: Base HumanRDigit22
+    100218: Base HumanRDigit23
+    100220: Base HumanRDigit31
+    100222: Base HumanRDigit32
+    100224: Base HumanRDigit33
+    100226: Base HumanRDigit41
+    100228: Base HumanRDigit42
+    100230: Base HumanRDigit43
+    100232: Base HumanRDigit51
+    100234: Base HumanRDigit52
+    100236: Base HumanRDigit53
+    100238: Base HumanRForearm
+    100240: Base HumanRibcage
+    100242: Base HumanRPalm
+    100244: Base HumanRUpperarm
+    100246: Base HumanSpine1
+    100248: Base HumanSpine2
+    100250: Base HumanSpine3
+    100252: Base HumanSpine4
+    100254: wraith_Axe_LOD0
+    100256: wraith_scythe_LOD0
+    100258: Base HumanCape1
+    100260: Base HumanCape2
+    100262: Base HumanDress_Front3
+    100264: Base HumanLIKTarget
+    100266: Base HumanRIKTarget
+    100268: wraith_Axe_LOD1
+    100270: wraith_Axe_LOD2
+    100272: wraith_hair_LOD1
+    100274: wraith_hair_LOD2
+    100276: wraith_scythe_LOD1
+    100278: wraith_scythe_LOD2
+    100280: wraith_eyes_LOD01
+    100282: WraithCape1
+    100284: WraithCape2
+    100286: WraithClothL1
+    100288: WraithClothL2
+    100290: WraithClothL3
+    100292: WraithClothR1
+    100294: WraithClothR2
+    100296: WraithClothR3
+    100298: WraithDress_Back1
+    100300: WraithDress_Back2
+    100302: WraithDress_Back3
+    100304: WraithDress_Front1
+    100306: WraithDress_Front2
+    100308: WraithDress_Front3
+    100310: WraithDress_L1
+    100312: WraithDress_L2
+    100314: WraithDress_L3
+    100316: WraithDress_R1
+    100318: WraithDress_R2
+    100320: WraithDress_R3
+    100322: WraithEye_L
+    100324: WraithEye_R
+    100326: WraithHair_1_L1
+    100328: WraithHair_1_R1
+    100330: WraithHair_2_L1
+    100332: WraithHair_2_R1
+    100334: WraithHair_3_L1
+    100336: WraithHair_3_R1
+    100338: WraithHead
+    100340: WraithJaw
+    100342: WraithLCollarbone
+    100344: WraithLDigit11
+    100346: WraithLDigit12
+    100348: WraithLDigit13
+    100350: WraithLDigit21
+    100352: WraithLDigit22
+    100354: WraithLDigit23
+    100356: WraithLDigit31
+    100358: WraithLDigit32
+    100360: WraithLDigit33
+    100362: WraithLDigit41
+    100364: WraithLDigit42
+    100366: WraithLDigit43
+    100368: WraithLDigit51
+    100370: WraithLDigit52
+    100372: WraithLDigit53
+    100374: WraithLForearm
+    100376: WraithLPalm
+    100378: WraithLUpperarm
+    100380: WraithNeck1
+    100382: WraithNeck2
+    100384: Wraithnecklace
+    100386: WraithPelvis
+    100388: WraithRCollarbone
+    100390: WraithRDigit11
+    100392: WraithRDigit12
+    100394: WraithRDigit13
+    100396: WraithRDigit21
+    100398: WraithRDigit22
+    100400: WraithRDigit23
+    100402: WraithRDigit31
+    100404: WraithRDigit32
+    100406: WraithRDigit33
+    100408: WraithRDigit41
+    100410: WraithRDigit42
+    100412: WraithRDigit43
+    100414: WraithRDigit51
+    100416: WraithRDigit52
+    100418: WraithRDigit53
+    100420: WraithRForearm
+    100422: WraithRibcage
+    100424: WraithRPalm
+    100426: WraithRUpperarm
+    100428: WraithSpine1
+    100430: WraithSpine2
+    100432: WraithSpine3
+    100434: WraithSpine4
+    400000: //RootNode
+    400002: wraith_body
+    400004: wraith_cloth
+    400006: wraith_eyes
+    400008: wraith_scarf
+    400010: wraith_body_LOD0
+    400012: wraith_cloth_LOD0
+    400014: wraith_dress_LOD0
+    400016: wraith_eyes_LOD0
+    400018: wraith_hood_LOD0
+    400020: wraith_scarf_LOD0
+    400022: wraith_sleeve_LOD0
+    400024: WraithAxe
+    400026: necklace_LOD0
+    400028: shoulderpad_L_LOD0
+    400030: Wraith_Axe_LOD0
+    400032: wraith_necklace_LOD0
+    400034: wraith_shoulderpad_LOD0
+    400036: wraith_wristband_LOD0
+    400038: Wraith_Axe_LOD1
+    400040: Wraith_Axe_LOD2
+    400042: wraith_body_LOD1
+    400044: wraith_body_LOD2
+    400046: wraith_cloth_LOD1
+    400048: wraith_cloth_LOD2
+    400050: wraith_dress_LOD1
+    400052: wraith_dress_LOD2
+    400054: wraith_eyes_LOD02
+    400056: wraith_eyes_LOD1
+    400058: wraith_hood_LOD1
+    400060: wraith_hood_LOD2
+    400062: wraith_necklace_LOD1
+    400064: wraith_necklace_LOD2
+    400066: wraith_scarf_LOD1
+    400068: wraith_scarf_LOD2
+    400070: wraith_shoulderpad_LOD1
+    400072: wraith_shoulderpad_LOD2
+    400074: wraith_sleeve_LOD1
+    400076: wraith_sleeve_LOD2
+    400078: wraith_wristband_LOD1
+    400080: wraith_wristband_LOD2
+    400082: wraith_hair_LOD0
+    400084: hair_A_
+    400086: hair_B_
+    400088: hair_C_
+    400090: hair_D_
+    400092: hair_E_
+    400094: hair_F_
+    400096: wraith_hair_LOD001
+    400098: goblin_scythe_LOD0
+    400100: goblin_scythe_LOD1
+    400102: goblin_scythe_LOD2
+    400104: Base HumanClothL1
+    400106: Base HumanClothL2
+    400108: Base HumanClothL3
+    400110: Base HumanClothR1
+    400112: Base HumanClothR2
+    400114: Base HumanClothR3
+    400116: Base HumanDress_Back1
+    400118: Base HumanDress_Back2
+    400120: Base HumanDress_Back3
+    400122: Base HumanDress_Front1
+    400124: Base HumanDress_Front1 1
+    400126: Base HumanDress_Front2
+    400128: Base HumanDress_L1
+    400130: Base HumanDress_L2
+    400132: Base HumanDress_L3
+    400134: Base HumanDress_R1
+    400136: Base HumanDress_R2
+    400138: Base HumanDress_R3
+    400140: Base HumanEye_L
+    400142: Base HumanEye_R
+    400144: Base HumanHair_1_L1
+    400146: Base HumanHair_1_R1
+    400148: Base HumanHair_2_L1
+    400150: Base HumanHair_2_R1
+    400152: Base HumanHair_3_L1
+    400154: Base HumanHair_3_R1
+    400156: Base HumanHead
+    400158: Base HumanJaw
+    400160: Base HumanLCollarbone
+    400162: Base HumanLDigit11
+    400164: Base HumanLDigit12
+    400166: Base HumanLDigit13
+    400168: Base HumanLDigit21
+    400170: Base HumanLDigit22
+    400172: Base HumanLDigit23
+    400174: Base HumanLDigit31
+    400176: Base HumanLDigit32
+    400178: Base HumanLDigit33
+    400180: Base HumanLDigit41
+    400182: Base HumanLDigit42
+    400184: Base HumanLDigit43
+    400186: Base HumanLDigit51
+    400188: Base HumanLDigit52
+    400190: Base HumanLDigit53
+    400192: Base HumanLForearm
+    400194: Base HumanLPalm
+    400196: Base HumanLUpperarm
+    400198: Base HumanNeck1
+    400200: Base HumanNeck2
+    400202: Base Humannecklace
+    400204: Base HumanPelvis
+    400206: Base HumanRCollarbone
+    400208: Base HumanRDigit11
+    400210: Base HumanRDigit12
+    400212: Base HumanRDigit13
+    400214: Base HumanRDigit21
+    400216: Base HumanRDigit22
+    400218: Base HumanRDigit23
+    400220: Base HumanRDigit31
+    400222: Base HumanRDigit32
+    400224: Base HumanRDigit33
+    400226: Base HumanRDigit41
+    400228: Base HumanRDigit42
+    400230: Base HumanRDigit43
+    400232: Base HumanRDigit51
+    400234: Base HumanRDigit52
+    400236: Base HumanRDigit53
+    400238: Base HumanRForearm
+    400240: Base HumanRibcage
+    400242: Base HumanRPalm
+    400244: Base HumanRUpperarm
+    400246: Base HumanSpine1
+    400248: Base HumanSpine2
+    400250: Base HumanSpine3
+    400252: Base HumanSpine4
+    400254: wraith_Axe_LOD0
+    400256: wraith_scythe_LOD0
+    400258: Base HumanCape1
+    400260: Base HumanCape2
+    400262: Base HumanDress_Front3
+    400264: Base HumanLIKTarget
+    400266: Base HumanRIKTarget
+    400268: wraith_Axe_LOD1
+    400270: wraith_Axe_LOD2
+    400272: wraith_hair_LOD1
+    400274: wraith_hair_LOD2
+    400276: wraith_scythe_LOD1
+    400278: wraith_scythe_LOD2
+    400280: wraith_eyes_LOD01
+    400282: WraithCape1
+    400284: WraithCape2
+    400286: WraithClothL1
+    400288: WraithClothL2
+    400290: WraithClothL3
+    400292: WraithClothR1
+    400294: WraithClothR2
+    400296: WraithClothR3
+    400298: WraithDress_Back1
+    400300: WraithDress_Back2
+    400302: WraithDress_Back3
+    400304: WraithDress_Front1
+    400306: WraithDress_Front2
+    400308: WraithDress_Front3
+    400310: WraithDress_L1
+    400312: WraithDress_L2
+    400314: WraithDress_L3
+    400316: WraithDress_R1
+    400318: WraithDress_R2
+    400320: WraithDress_R3
+    400322: WraithEye_L
+    400324: WraithEye_R
+    400326: WraithHair_1_L1
+    400328: WraithHair_1_R1
+    400330: WraithHair_2_L1
+    400332: WraithHair_2_R1
+    400334: WraithHair_3_L1
+    400336: WraithHair_3_R1
+    400338: WraithHead
+    400340: WraithJaw
+    400342: WraithLCollarbone
+    400344: WraithLDigit11
+    400346: WraithLDigit12
+    400348: WraithLDigit13
+    400350: WraithLDigit21
+    400352: WraithLDigit22
+    400354: WraithLDigit23
+    400356: WraithLDigit31
+    400358: WraithLDigit32
+    400360: WraithLDigit33
+    400362: WraithLDigit41
+    400364: WraithLDigit42
+    400366: WraithLDigit43
+    400368: WraithLDigit51
+    400370: WraithLDigit52
+    400372: WraithLDigit53
+    400374: WraithLForearm
+    400376: WraithLPalm
+    400378: WraithLUpperarm
+    400380: WraithNeck1
+    400382: WraithNeck2
+    400384: Wraithnecklace
+    400386: WraithPelvis
+    400388: WraithRCollarbone
+    400390: WraithRDigit11
+    400392: WraithRDigit12
+    400394: WraithRDigit13
+    400396: WraithRDigit21
+    400398: WraithRDigit22
+    400400: WraithRDigit23
+    400402: WraithRDigit31
+    400404: WraithRDigit32
+    400406: WraithRDigit33
+    400408: WraithRDigit41
+    400410: WraithRDigit42
+    400412: WraithRDigit43
+    400414: WraithRDigit51
+    400416: WraithRDigit52
+    400418: WraithRDigit53
+    400420: WraithRForearm
+    400422: WraithRibcage
+    400424: WraithRPalm
+    400426: WraithRUpperarm
+    400428: WraithSpine1
+    400430: WraithSpine2
+    400432: WraithSpine3
+    400434: WraithSpine4
+    2300000: wraith_body
+    2300002: wraith_cloth
+    2300004: wraith_eyes
+    2300006: wraith_scarf
+    2300008: wraith_body_LOD0
+    2300010: wraith_cloth_LOD0
+    2300012: wraith_dress_LOD0
+    2300014: wraith_eyes_LOD0
+    2300016: wraith_hood_LOD0
+    2300018: wraith_scarf_LOD0
+    2300020: wraith_sleeve_LOD0
+    2300022: WraithAxe
+    2300024: necklace_LOD0
+    2300026: shoulderpad_L_LOD0
+    2300028: Wraith_Axe_LOD0
+    2300030: wraith_necklace_LOD0
+    2300032: wraith_shoulderpad_LOD0
+    2300034: wraith_wristband_LOD0
+    2300036: Wraith_Axe_LOD1
+    2300038: Wraith_Axe_LOD2
+    2300040: wraith_body_LOD1
+    2300042: wraith_body_LOD2
+    2300044: wraith_cloth_LOD1
+    2300046: wraith_cloth_LOD2
+    2300048: wraith_dress_LOD1
+    2300050: wraith_dress_LOD2
+    2300052: wraith_eyes_LOD02
+    2300054: wraith_eyes_LOD1
+    2300056: wraith_hood_LOD1
+    2300058: wraith_hood_LOD2
+    2300060: wraith_necklace_LOD1
+    2300062: wraith_necklace_LOD2
+    2300064: wraith_scarf_LOD1
+    2300066: wraith_scarf_LOD2
+    2300068: wraith_shoulderpad_LOD1
+    2300070: wraith_shoulderpad_LOD2
+    2300072: wraith_sleeve_LOD1
+    2300074: wraith_sleeve_LOD2
+    2300076: wraith_wristband_LOD1
+    2300078: wraith_wristband_LOD2
+    2300080: wraith_hair_LOD0
+    2300082: hair_A_
+    2300084: hair_B_
+    2300086: hair_C_
+    2300088: hair_D_
+    2300090: hair_E_
+    2300092: hair_F_
+    2300094: wraith_hair_LOD001
+    2300096: goblin_scythe_LOD0
+    2300098: goblin_scythe_LOD1
+    2300100: goblin_scythe_LOD2
+    2300102: wraith_Axe_LOD0
+    2300104: wraith_scythe_LOD0
+    2300106: wraith_Axe_LOD1
+    2300108: wraith_Axe_LOD2
+    2300110: wraith_scythe_LOD1
+    2300112: wraith_scythe_LOD2
+    3300000: wraith_body
+    3300002: wraith_cloth
+    3300004: wraith_eyes
+    3300006: wraith_scarf
+    3300008: wraith_body_LOD0
+    3300010: wraith_cloth_LOD0
+    3300012: wraith_dress_LOD0
+    3300014: wraith_eyes_LOD0
+    3300016: wraith_hood_LOD0
+    3300018: wraith_scarf_LOD0
+    3300020: wraith_sleeve_LOD0
+    3300022: WraithAxe
+    3300024: necklace_LOD0
+    3300026: shoulderpad_L_LOD0
+    3300028: Wraith_Axe_LOD0
+    3300030: wraith_necklace_LOD0
+    3300032: wraith_shoulderpad_LOD0
+    3300034: wraith_wristband_LOD0
+    3300036: Wraith_Axe_LOD1
+    3300038: Wraith_Axe_LOD2
+    3300040: wraith_body_LOD1
+    3300042: wraith_body_LOD2
+    3300044: wraith_cloth_LOD1
+    3300046: wraith_cloth_LOD2
+    3300048: wraith_dress_LOD1
+    3300050: wraith_dress_LOD2
+    3300052: wraith_eyes_LOD02
+    3300054: wraith_eyes_LOD1
+    3300056: wraith_hood_LOD1
+    3300058: wraith_hood_LOD2
+    3300060: wraith_necklace_LOD1
+    3300062: wraith_necklace_LOD2
+    3300064: wraith_scarf_LOD1
+    3300066: wraith_scarf_LOD2
+    3300068: wraith_shoulderpad_LOD1
+    3300070: wraith_shoulderpad_LOD2
+    3300072: wraith_sleeve_LOD1
+    3300074: wraith_sleeve_LOD2
+    3300076: wraith_wristband_LOD1
+    3300078: wraith_wristband_LOD2
+    3300080: wraith_hair_LOD0
+    3300082: hair_A_
+    3300084: hair_B_
+    3300086: hair_C_
+    3300088: hair_D_
+    3300090: hair_E_
+    3300092: hair_F_
+    3300094: wraith_hair_LOD001
+    3300096: goblin_scythe_LOD0
+    3300098: goblin_scythe_LOD1
+    3300100: goblin_scythe_LOD2
+    3300102: wraith_Axe_LOD0
+    3300104: wraith_scythe_LOD0
+    3300106: wraith_Axe_LOD1
+    3300108: wraith_Axe_LOD2
+    3300110: wraith_scythe_LOD1
+    3300112: wraith_scythe_LOD2
+    4300000: wraith_body
+    4300002: wraith_scarf
+    4300004: wraith_cloth
+    4300006: wraith_eyes
+    4300008: wraith_body_LOD0
+    4300010: wraith_scarf_LOD0
+    4300012: wraith_eyes_LOD0
+    4300014: wraith_sleeve_LOD0
+    4300016: wraith_cloth_LOD0
+    4300018: WraithAxe
+    4300020: wraith_dress_LOD0
+    4300022: wraith_hood_LOD0
+    4300024: shoulderpad_L_LOD0
+    4300026: necklace_LOD0
+    4300028: wraith_wristband_LOD0
+    4300030: wraith_necklace_LOD0
+    4300032: Wraith_Axe_LOD0
+    4300034: wraith_shoulderpad_LOD0
+    4300036: wraith_body_LOD1
+    4300038: wraith_cloth_LOD1
+    4300040: wraith_eyes_LOD1
+    4300042: wraith_scarf_LOD1
+    4300044: wraith_scarf_LOD2
+    4300046: wraith_eyes_LOD02
+    4300048: wraith_sleeve_LOD1
+    4300050: wraith_sleeve_LOD2
+    4300052: wraith_cloth_LOD2
+    4300054: wraith_body_LOD2
+    4300056: Wraith_Axe_LOD1
+    4300058: Wraith_Axe_LOD2
+    4300060: wraith_wristband_LOD1
+    4300062: wraith_wristband_LOD2
+    4300064: wraith_necklace_LOD1
+    4300066: wraith_necklace_LOD2
+    4300068: wraith_shoulderpad_LOD1
+    4300070: wraith_shoulderpad_LOD2
+    4300072: wraith_dress_LOD1
+    4300074: wraith_dress_LOD2
+    4300076: wraith_hood_LOD1
+    4300078: wraith_hood_LOD2
+    4300080: wraith_hair_LOD0
+    4300082: hair_F_
+    4300084: hair_A_
+    4300086: hair_B_
+    4300088: hair_C_
+    4300090: hair_D_
+    4300092: hair_E_
+    4300094: wraith_hair_LOD001
+    4300096: goblin_scythe_LOD0
+    4300098: goblin_scythe_LOD1
+    4300100: goblin_scythe_LOD2
+    4300102: wraith_scythe_LOD0
+    4300104: wraith_Axe_LOD0
+    4300106: wraith_hair_LOD1
+    4300108: wraith_Axe_LOD1
+    4300110: wraith_Axe_LOD2
+    4300112: wraith_scythe_LOD2
+    4300114: wraith_scythe_LOD1
+    4300116: wraith_hair_LOD2
+    4300118: wraith_eyes_LOD01
+    7400000: idle
+    7400002: attack1
+    7400004: attack2
+    7400006: hit
+    7400008: death
+    7400010: move
+    7400012: Take 0015
+    9500000: //RootNode
+    13700000: wraith_body_LOD0
+    13700002: wraith_cloth_LOD0
+    13700004: wraith_dress_LOD0
+    13700006: wraith_eyes_LOD0
+    13700008: wraith_hair_LOD0
+    13700010: wraith_hood_LOD0
+    13700012: wraith_necklace_LOD0
+    13700014: wraith_scarf_LOD0
+    13700016: wraith_shoulderpad_LOD0
+    13700018: wraith_sleeve_LOD0
+    13700020: wraith_wristband_LOD0
+    13700022: wraith_body_LOD1
+    13700024: wraith_body_LOD2
+    13700026: wraith_cloth_LOD1
+    13700028: wraith_cloth_LOD2
+    13700030: wraith_dress_LOD1
+    13700032: wraith_dress_LOD2
+    13700034: wraith_eyes_LOD02
+    13700036: wraith_eyes_LOD1
+    13700038: wraith_hair_LOD1
+    13700040: wraith_hair_LOD2
+    13700042: wraith_hood_LOD1
+    13700044: wraith_hood_LOD2
+    13700046: wraith_necklace_LOD1
+    13700048: wraith_necklace_LOD2
+    13700050: wraith_scarf_LOD1
+    13700052: wraith_scarf_LOD2
+    13700054: wraith_shoulderpad_LOD1
+    13700056: wraith_shoulderpad_LOD2
+    13700058: wraith_sleeve_LOD1
+    13700060: wraith_sleeve_LOD2
+    13700062: wraith_wristband_LOD1
+    13700064: wraith_wristband_LOD2
+    13700066: wraith_eyes_LOD01
+    20500000: //RootNode
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: idle
+      takeName: Take 001
+      firstFrame: 10
+      lastFrame: 110
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: wraith_body_LOD0
+        weight: 1
+      - path: wraith_body_LOD1
+        weight: 1
+      - path: wraith_cloth_LOD0
+        weight: 1
+      - path: wraith_cloth_LOD1
+        weight: 1
+      - path: wraith_dress_LOD0
+        weight: 1
+      - path: wraith_dress_LOD1
+        weight: 1
+      - path: wraith_eyes_LOD0
+        weight: 1
+      - path: wraith_eyes_LOD01
+        weight: 1
+      - path: wraith_hair_LOD0
+        weight: 1
+      - path: wraith_hair_LOD1
+        weight: 1
+      - path: wraith_hood_LOD0
+        weight: 1
+      - path: wraith_hood_LOD1
+        weight: 1
+      - path: wraith_necklace_LOD0
+        weight: 1
+      - path: wraith_necklace_LOD1
+        weight: 1
+      - path: wraith_scarf_LOD0
+        weight: 1
+      - path: wraith_scarf_LOD1
+        weight: 1
+      - path: wraith_shoulderpad_LOD0
+        weight: 1
+      - path: wraith_shoulderpad_LOD1
+        weight: 1
+      - path: wraith_sleeve_LOD0
+        weight: 1
+      - path: wraith_sleeve_LOD1
+        weight: 1
+      - path: wraith_wristband_LOD0
+        weight: 1
+      - path: wraith_wristband_LOD1
+        weight: 1
+      - path: WraithPelvis
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1/WraithDress_Back2
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1/WraithDress_Back2/WraithDress_Back3
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1/WraithDress_Front2
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1/WraithDress_Front2/WraithDress_Front3
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1/WraithDress_L2
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1/WraithDress_L2/WraithDress_L3
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1/WraithDress_R2
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1/WraithDress_R2/WraithDress_R3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithCape1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithCape1/WraithCape2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1/WraithClothL2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1/WraithClothL2/WraithClothL3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1/WraithClothR2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1/WraithClothR2/WraithClothR3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11/WraithLDigit12
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11/WraithLDigit12/WraithLDigit13
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21/WraithLDigit22
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21/WraithLDigit22/WraithLDigit23
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31/WraithLDigit32
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31/WraithLDigit32/WraithLDigit33
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41/WraithLDigit42
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41/WraithLDigit42/WraithLDigit43
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51/WraithLDigit52
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51/WraithLDigit52/WraithLDigit53
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithEye_L
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithEye_R
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_1_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_1_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_2_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_2_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_3_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_3_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithJaw
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/Wraithnecklace
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_Axe_LOD0
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_Axe_LOD1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_scythe_LOD0
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_scythe_LOD1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11/WraithRDigit12
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11/WraithRDigit12/WraithRDigit13
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21/WraithRDigit22
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21/WraithRDigit22/WraithRDigit23
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31/WraithRDigit32
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31/WraithRDigit32/WraithRDigit33
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41/WraithRDigit42
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41/WraithRDigit42/WraithRDigit43
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51/WraithRDigit52
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51/WraithRDigit52/WraithRDigit53
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: attack1
+      takeName: Take 001
+      firstFrame: 120
+      lastFrame: 150
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: wraith_body_LOD0
+        weight: 1
+      - path: wraith_body_LOD1
+        weight: 1
+      - path: wraith_cloth_LOD0
+        weight: 1
+      - path: wraith_cloth_LOD1
+        weight: 1
+      - path: wraith_dress_LOD0
+        weight: 1
+      - path: wraith_dress_LOD1
+        weight: 1
+      - path: wraith_eyes_LOD0
+        weight: 1
+      - path: wraith_eyes_LOD01
+        weight: 1
+      - path: wraith_hair_LOD0
+        weight: 1
+      - path: wraith_hair_LOD1
+        weight: 1
+      - path: wraith_hood_LOD0
+        weight: 1
+      - path: wraith_hood_LOD1
+        weight: 1
+      - path: wraith_necklace_LOD0
+        weight: 1
+      - path: wraith_necklace_LOD1
+        weight: 1
+      - path: wraith_scarf_LOD0
+        weight: 1
+      - path: wraith_scarf_LOD1
+        weight: 1
+      - path: wraith_shoulderpad_LOD0
+        weight: 1
+      - path: wraith_shoulderpad_LOD1
+        weight: 1
+      - path: wraith_sleeve_LOD0
+        weight: 1
+      - path: wraith_sleeve_LOD1
+        weight: 1
+      - path: wraith_wristband_LOD0
+        weight: 1
+      - path: wraith_wristband_LOD1
+        weight: 1
+      - path: WraithPelvis
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1/WraithDress_Back2
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1/WraithDress_Back2/WraithDress_Back3
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1/WraithDress_Front2
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1/WraithDress_Front2/WraithDress_Front3
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1/WraithDress_L2
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1/WraithDress_L2/WraithDress_L3
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1/WraithDress_R2
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1/WraithDress_R2/WraithDress_R3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithCape1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithCape1/WraithCape2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1/WraithClothL2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1/WraithClothL2/WraithClothL3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1/WraithClothR2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1/WraithClothR2/WraithClothR3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11/WraithLDigit12
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11/WraithLDigit12/WraithLDigit13
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21/WraithLDigit22
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21/WraithLDigit22/WraithLDigit23
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31/WraithLDigit32
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31/WraithLDigit32/WraithLDigit33
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41/WraithLDigit42
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41/WraithLDigit42/WraithLDigit43
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51/WraithLDigit52
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51/WraithLDigit52/WraithLDigit53
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithEye_L
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithEye_R
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_1_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_1_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_2_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_2_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_3_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_3_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithJaw
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/Wraithnecklace
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_Axe_LOD0
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_Axe_LOD1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_scythe_LOD0
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_scythe_LOD1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11/WraithRDigit12
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11/WraithRDigit12/WraithRDigit13
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21/WraithRDigit22
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21/WraithRDigit22/WraithRDigit23
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31/WraithRDigit32
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31/WraithRDigit32/WraithRDigit33
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41/WraithRDigit42
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41/WraithRDigit42/WraithRDigit43
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51/WraithRDigit52
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51/WraithRDigit52/WraithRDigit53
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: attack2
+      takeName: Take 001
+      firstFrame: 150
+      lastFrame: 180
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: wraith_body_LOD0
+        weight: 1
+      - path: wraith_body_LOD1
+        weight: 1
+      - path: wraith_cloth_LOD0
+        weight: 1
+      - path: wraith_cloth_LOD1
+        weight: 1
+      - path: wraith_dress_LOD0
+        weight: 1
+      - path: wraith_dress_LOD1
+        weight: 1
+      - path: wraith_eyes_LOD0
+        weight: 1
+      - path: wraith_eyes_LOD01
+        weight: 1
+      - path: wraith_hair_LOD0
+        weight: 1
+      - path: wraith_hair_LOD1
+        weight: 1
+      - path: wraith_hood_LOD0
+        weight: 1
+      - path: wraith_hood_LOD1
+        weight: 1
+      - path: wraith_necklace_LOD0
+        weight: 1
+      - path: wraith_necklace_LOD1
+        weight: 1
+      - path: wraith_scarf_LOD0
+        weight: 1
+      - path: wraith_scarf_LOD1
+        weight: 1
+      - path: wraith_shoulderpad_LOD0
+        weight: 1
+      - path: wraith_shoulderpad_LOD1
+        weight: 1
+      - path: wraith_sleeve_LOD0
+        weight: 1
+      - path: wraith_sleeve_LOD1
+        weight: 1
+      - path: wraith_wristband_LOD0
+        weight: 1
+      - path: wraith_wristband_LOD1
+        weight: 1
+      - path: WraithPelvis
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1/WraithDress_Back2
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1/WraithDress_Back2/WraithDress_Back3
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1/WraithDress_Front2
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1/WraithDress_Front2/WraithDress_Front3
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1/WraithDress_L2
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1/WraithDress_L2/WraithDress_L3
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1/WraithDress_R2
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1/WraithDress_R2/WraithDress_R3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithCape1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithCape1/WraithCape2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1/WraithClothL2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1/WraithClothL2/WraithClothL3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1/WraithClothR2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1/WraithClothR2/WraithClothR3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11/WraithLDigit12
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11/WraithLDigit12/WraithLDigit13
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21/WraithLDigit22
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21/WraithLDigit22/WraithLDigit23
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31/WraithLDigit32
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31/WraithLDigit32/WraithLDigit33
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41/WraithLDigit42
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41/WraithLDigit42/WraithLDigit43
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51/WraithLDigit52
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51/WraithLDigit52/WraithLDigit53
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithEye_L
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithEye_R
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_1_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_1_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_2_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_2_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_3_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_3_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithJaw
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/Wraithnecklace
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_Axe_LOD0
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_Axe_LOD1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_scythe_LOD0
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_scythe_LOD1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11/WraithRDigit12
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11/WraithRDigit12/WraithRDigit13
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21/WraithRDigit22
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21/WraithRDigit22/WraithRDigit23
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31/WraithRDigit32
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31/WraithRDigit32/WraithRDigit33
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41/WraithRDigit42
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41/WraithRDigit42/WraithRDigit43
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51/WraithRDigit52
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51/WraithRDigit52/WraithRDigit53
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: hit
+      takeName: Take 001
+      firstFrame: 250
+      lastFrame: 275
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: wraith_body_LOD0
+        weight: 1
+      - path: wraith_body_LOD1
+        weight: 1
+      - path: wraith_cloth_LOD0
+        weight: 1
+      - path: wraith_cloth_LOD1
+        weight: 1
+      - path: wraith_dress_LOD0
+        weight: 1
+      - path: wraith_dress_LOD1
+        weight: 1
+      - path: wraith_eyes_LOD0
+        weight: 1
+      - path: wraith_eyes_LOD01
+        weight: 1
+      - path: wraith_hair_LOD0
+        weight: 1
+      - path: wraith_hair_LOD1
+        weight: 1
+      - path: wraith_hood_LOD0
+        weight: 1
+      - path: wraith_hood_LOD1
+        weight: 1
+      - path: wraith_necklace_LOD0
+        weight: 1
+      - path: wraith_necklace_LOD1
+        weight: 1
+      - path: wraith_scarf_LOD0
+        weight: 1
+      - path: wraith_scarf_LOD1
+        weight: 1
+      - path: wraith_shoulderpad_LOD0
+        weight: 1
+      - path: wraith_shoulderpad_LOD1
+        weight: 1
+      - path: wraith_sleeve_LOD0
+        weight: 1
+      - path: wraith_sleeve_LOD1
+        weight: 1
+      - path: wraith_wristband_LOD0
+        weight: 1
+      - path: wraith_wristband_LOD1
+        weight: 1
+      - path: WraithPelvis
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1/WraithDress_Back2
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1/WraithDress_Back2/WraithDress_Back3
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1/WraithDress_Front2
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1/WraithDress_Front2/WraithDress_Front3
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1/WraithDress_L2
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1/WraithDress_L2/WraithDress_L3
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1/WraithDress_R2
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1/WraithDress_R2/WraithDress_R3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithCape1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithCape1/WraithCape2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1/WraithClothL2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1/WraithClothL2/WraithClothL3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1/WraithClothR2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1/WraithClothR2/WraithClothR3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11/WraithLDigit12
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11/WraithLDigit12/WraithLDigit13
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21/WraithLDigit22
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21/WraithLDigit22/WraithLDigit23
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31/WraithLDigit32
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31/WraithLDigit32/WraithLDigit33
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41/WraithLDigit42
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41/WraithLDigit42/WraithLDigit43
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51/WraithLDigit52
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51/WraithLDigit52/WraithLDigit53
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithEye_L
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithEye_R
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_1_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_1_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_2_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_2_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_3_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_3_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithJaw
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/Wraithnecklace
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_Axe_LOD0
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_Axe_LOD1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_scythe_LOD0
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_scythe_LOD1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11/WraithRDigit12
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11/WraithRDigit12/WraithRDigit13
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21/WraithRDigit22
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21/WraithRDigit22/WraithRDigit23
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31/WraithRDigit32
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31/WraithRDigit32/WraithRDigit33
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41/WraithRDigit42
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41/WraithRDigit42/WraithRDigit43
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51/WraithRDigit52
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51/WraithRDigit52/WraithRDigit53
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: death
+      takeName: Take 001
+      firstFrame: 300
+      lastFrame: 350
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: wraith_body_LOD0
+        weight: 1
+      - path: wraith_body_LOD1
+        weight: 1
+      - path: wraith_cloth_LOD0
+        weight: 1
+      - path: wraith_cloth_LOD1
+        weight: 1
+      - path: wraith_dress_LOD0
+        weight: 1
+      - path: wraith_dress_LOD1
+        weight: 1
+      - path: wraith_eyes_LOD0
+        weight: 1
+      - path: wraith_eyes_LOD01
+        weight: 1
+      - path: wraith_hair_LOD0
+        weight: 1
+      - path: wraith_hair_LOD1
+        weight: 1
+      - path: wraith_hood_LOD0
+        weight: 1
+      - path: wraith_hood_LOD1
+        weight: 1
+      - path: wraith_necklace_LOD0
+        weight: 1
+      - path: wraith_necklace_LOD1
+        weight: 1
+      - path: wraith_scarf_LOD0
+        weight: 1
+      - path: wraith_scarf_LOD1
+        weight: 1
+      - path: wraith_shoulderpad_LOD0
+        weight: 1
+      - path: wraith_shoulderpad_LOD1
+        weight: 1
+      - path: wraith_sleeve_LOD0
+        weight: 1
+      - path: wraith_sleeve_LOD1
+        weight: 1
+      - path: wraith_wristband_LOD0
+        weight: 1
+      - path: wraith_wristband_LOD1
+        weight: 1
+      - path: WraithPelvis
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1/WraithDress_Back2
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1/WraithDress_Back2/WraithDress_Back3
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1/WraithDress_Front2
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1/WraithDress_Front2/WraithDress_Front3
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1/WraithDress_L2
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1/WraithDress_L2/WraithDress_L3
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1/WraithDress_R2
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1/WraithDress_R2/WraithDress_R3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithCape1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithCape1/WraithCape2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1/WraithClothL2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1/WraithClothL2/WraithClothL3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1/WraithClothR2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1/WraithClothR2/WraithClothR3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11/WraithLDigit12
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11/WraithLDigit12/WraithLDigit13
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21/WraithLDigit22
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21/WraithLDigit22/WraithLDigit23
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31/WraithLDigit32
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31/WraithLDigit32/WraithLDigit33
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41/WraithLDigit42
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41/WraithLDigit42/WraithLDigit43
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51/WraithLDigit52
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51/WraithLDigit52/WraithLDigit53
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithEye_L
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithEye_R
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_1_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_1_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_2_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_2_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_3_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_3_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithJaw
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/Wraithnecklace
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_Axe_LOD0
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_Axe_LOD1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_scythe_LOD0
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_scythe_LOD1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11/WraithRDigit12
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11/WraithRDigit12/WraithRDigit13
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21/WraithRDigit22
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21/WraithRDigit22/WraithRDigit23
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31/WraithRDigit32
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31/WraithRDigit32/WraithRDigit33
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41/WraithRDigit42
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41/WraithRDigit42/WraithRDigit43
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51/WraithRDigit52
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51/WraithRDigit52/WraithRDigit53
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: move
+      takeName: Take 001
+      firstFrame: 400
+      lastFrame: 480
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: wraith_body_LOD0
+        weight: 1
+      - path: wraith_body_LOD1
+        weight: 1
+      - path: wraith_cloth_LOD0
+        weight: 1
+      - path: wraith_cloth_LOD1
+        weight: 1
+      - path: wraith_dress_LOD0
+        weight: 1
+      - path: wraith_dress_LOD1
+        weight: 1
+      - path: wraith_eyes_LOD0
+        weight: 1
+      - path: wraith_eyes_LOD01
+        weight: 1
+      - path: wraith_hair_LOD0
+        weight: 1
+      - path: wraith_hair_LOD1
+        weight: 1
+      - path: wraith_hood_LOD0
+        weight: 1
+      - path: wraith_hood_LOD1
+        weight: 1
+      - path: wraith_necklace_LOD0
+        weight: 1
+      - path: wraith_necklace_LOD1
+        weight: 1
+      - path: wraith_scarf_LOD0
+        weight: 1
+      - path: wraith_scarf_LOD1
+        weight: 1
+      - path: wraith_shoulderpad_LOD0
+        weight: 1
+      - path: wraith_shoulderpad_LOD1
+        weight: 1
+      - path: wraith_sleeve_LOD0
+        weight: 1
+      - path: wraith_sleeve_LOD1
+        weight: 1
+      - path: wraith_wristband_LOD0
+        weight: 1
+      - path: wraith_wristband_LOD1
+        weight: 1
+      - path: WraithPelvis
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1/WraithDress_Back2
+        weight: 1
+      - path: WraithPelvis/WraithDress_Back1/WraithDress_Back2/WraithDress_Back3
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1/WraithDress_Front2
+        weight: 1
+      - path: WraithPelvis/WraithDress_Front1/WraithDress_Front2/WraithDress_Front3
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1/WraithDress_L2
+        weight: 1
+      - path: WraithPelvis/WraithDress_L1/WraithDress_L2/WraithDress_L3
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1/WraithDress_R2
+        weight: 1
+      - path: WraithPelvis/WraithDress_R1/WraithDress_R2/WraithDress_R3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithCape1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithCape1/WraithCape2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1/WraithClothL2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothL1/WraithClothL2/WraithClothL3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1/WraithClothR2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithClothR1/WraithClothR2/WraithClothR3
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11/WraithLDigit12
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit11/WraithLDigit12/WraithLDigit13
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21/WraithLDigit22
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit21/WraithLDigit22/WraithLDigit23
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31/WraithLDigit32
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit31/WraithLDigit32/WraithLDigit33
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41/WraithLDigit42
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit41/WraithLDigit42/WraithLDigit43
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51/WraithLDigit52
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithLCollarbone/WraithLUpperarm/WraithLForearm/WraithLPalm/WraithLDigit51/WraithLDigit52/WraithLDigit53
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithEye_L
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithEye_R
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_1_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_1_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_2_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_2_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_3_L1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithHair_3_R1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithNeck1/WraithNeck2/WraithHead/WraithJaw
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/Wraithnecklace
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_Axe_LOD0
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_Axe_LOD1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_scythe_LOD0
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/wraith_scythe_LOD1
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11/WraithRDigit12
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit11/WraithRDigit12/WraithRDigit13
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21/WraithRDigit22
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit21/WraithRDigit22/WraithRDigit23
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31/WraithRDigit32
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit31/WraithRDigit32/WraithRDigit33
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41/WraithRDigit42
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit41/WraithRDigit42/WraithRDigit43
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51/WraithRDigit52
+        weight: 1
+      - path: WraithPelvis/WraithSpine1/WraithSpine2/WraithSpine3/WraithSpine4/WraithRibcage/WraithRCollarbone/WraithRUpperarm/WraithRForearm/WraithRPalm/WraithRDigit51/WraithRDigit52/WraithRDigit53
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages:
+    - 0.25
+    - 0.01
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
