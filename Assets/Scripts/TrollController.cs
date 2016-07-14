@@ -62,7 +62,7 @@ public class TrollController : MonoBehaviour {
 		//Place the troll on the ground which might not be at y=0
 		//Calculate the ground height
 		RaycastHit hit;
-		if (Physics.Raycast(new Vector3(0,10f,0), Vector3.down, out hit, 12.0F ))
+		if (Physics.Raycast(new Vector3(transform.position.x,transform.position.y + 10f,transform.position.z), Vector3.down, out hit, 20.0F ))
 		{
 			transform.position = new Vector3( transform.position.x, hit.point.y, transform.position.z);
 		}

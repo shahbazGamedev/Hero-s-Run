@@ -4,6 +4,7 @@ using System.Collections;
 public class TriggerSound : MonoBehaviour {
 
 	public bool loop = true;
+	[Tooltip("objectWithAudioSource is optional. If not specified, the audio source attached to the trigger will play its clip. If specified, the audio source of the object specified will play.")]
 	public GameObject objectWithAudioSource;
 	public float percentageChanceEventTriggered = 1f;
 
