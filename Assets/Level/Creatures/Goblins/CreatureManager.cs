@@ -26,6 +26,7 @@ public class CreatureManager : BaseClass {
 	int goblinLayer = 11;
 	int demonLayer = 12;
 	int cerberusLayer = 13;
+	int wraithLayer = 14;
 
 	// Use this for initialization
 	void Awake ()
@@ -40,6 +41,7 @@ public class CreatureManager : BaseClass {
 		mask |= 1 << goblinLayer;
  		mask |= 1 << demonLayer;
 		mask |= 1 << cerberusLayer;
+		mask |= 1 << wraithLayer;
 		return mask;
 	}
 
@@ -109,6 +111,7 @@ public class CreatureManager : BaseClass {
 		int mask = 1 << goblinLayer;
  		mask |= 1 << demonLayer;
 		mask |= 1 << cerberusLayer;
+		mask |= 1 << wraithLayer;
 		return mask;
 	}
 
