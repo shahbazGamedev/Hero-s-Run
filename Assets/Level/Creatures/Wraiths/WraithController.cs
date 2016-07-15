@@ -14,7 +14,7 @@ public class WraithController : BaseClass, ICreature {
 	public AudioClip fallToGround;
 	public AudioClip win;
 	public AudioClip weaponSwoosh;
-	[Header("Particle Systems")]
+	[Header("Other")]
 	public Sprite wraithPortrait;
 	[Header("Weapons")]
 	[Tooltip("The mesh includes both an axe and a scythe. Both have two LOD levels. We need references in order to disable the unused ones.")]
@@ -31,7 +31,6 @@ public class WraithController : BaseClass, ICreature {
 		stand_and_normal_attack = 1,
 		stand_and_big_attack = 2,
 		charge_and_attack = 3,
-		walk_and_attack = 4,
 		walk_and_talk = 5,
 		do_nothing = 6
 	}
@@ -48,8 +47,8 @@ public class WraithController : BaseClass, ICreature {
 	CreatureState wraithState = CreatureState.Idle;
 	CharacterController controller;
 	Vector3 forward;
-	const float RUN_SPEED = 4.6f; //good value so feet don't slide
-	float WALK_SPEED = 3.2f; //good value so feet don't slide
+	const float RUN_SPEED = 10f;
+	float WALK_SPEED = 3.2f;
 	float moveSpeed = 0;
 	//If true, the wraith heads for the player as opposed to staying in his lane
 	bool followsPlayer = false;
@@ -145,16 +144,19 @@ public class WraithController : BaseClass, ICreature {
 		                
 				case AttackType.charge_and_attack:
 					float chargeDistance = 2.3f * PlayerController.getPlayerSpeed();
-					attackDistance = 0.97f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.52f * PlayerController.getPlayerSpeed();
 					if( distance < chargeDistance )
 					{
 						if( distance >= attackDistance )
 						{
-							//Charge
-							followsPlayer = true;
-							moveSpeed = RUN_SPEED;
-							setCreatureState( CreatureState.Running );
-							GetComponent<Animator>().CrossFadeInFixedTime( "move" , CROSS_FADE_DURATION );
+							if( wraithState != CreatureState.Running )
+							{
+								//Charge
+								followsPlayer = true;
+								moveSpeed = RUN_SPEED;
+								setCreatureState( CreatureState.Running );
+								GetComponent<Animator>().CrossFadeInFixedTime( "move" , CROSS_FADE_DURATION );
+							}
 						}
 						else
 						{
@@ -165,28 +167,6 @@ public class WraithController : BaseClass, ICreature {
 					}
 					break;
 				
-				case AttackType.walk_and_attack:
-					float walkDistance = 2.5f * PlayerController.getPlayerSpeed();
-					attackDistance = 0.97f * PlayerController.getPlayerSpeed();
-					if( distance < walkDistance )
-					{
-						if( distance >= attackDistance )
-						{
-							//Walk
-							followsPlayer = true;
-							moveSpeed = WALK_SPEED;
-							setCreatureState( CreatureState.Walking );
-							GetComponent<Animator>().CrossFadeInFixedTime( "move" , CROSS_FADE_DURATION );
-						}
-						else
-						{
-							//Attack now
-							setCreatureState( CreatureState.Attacking );
-							GetComponent<Animator>().CrossFadeInFixedTime( "attack1", CROSS_FADE_DURATION );
-						}
-					}
-					break;
-
 				case AttackType.walk_and_talk:
 					float startWalkingDistance = 3.3f * PlayerController.getPlayerSpeed();
 					if( distance < startWalkingDistance )
