@@ -15,8 +15,17 @@ public class WraithController : BaseClass, ICreature {
 	public AudioClip win;
 	public AudioClip weaponSwoosh;
 	[Header("Particle Systems")]
-	public GameObject weaponTrail;
 	public Sprite wraithPortrait;
+	[Header("Weapons")]
+	[Tooltip("The mesh includes both an axe and a scythe. Both have two LOD levels. We need references in order to disable the unused ones.")]
+	public WeaponType weaponType = WeaponType.Axe;
+	public GameObject weaponAxeLOD0;
+	public GameObject weaponAxeLOD1;
+	public GameObject weaponTrailAxe;
+	public GameObject weaponScytheLOD0;
+	public GameObject weaponScytheLOD1;
+	public GameObject weaponTrailScythe;
+
 
 	public enum AttackType {
 		stand_and_normal_attack = 1,
@@ -25,6 +34,11 @@ public class WraithController : BaseClass, ICreature {
 		walk_and_attack = 4,
 		walk_and_talk = 5,
 		do_nothing = 6
+	}
+
+	public enum WeaponType {
+		Axe = 1,
+		Scythe = 2
 	}
 	
 	Transform player;
@@ -47,6 +61,29 @@ public class WraithController : BaseClass, ICreature {
 		if( attackType == AttackType.walk_and_talk )
 		{
 			//transform.Find("wraith_weapon").gameObject.SetActive( false );
+		}
+		configureSelectedWeapon();
+	}
+
+	void configureSelectedWeapon()
+	{
+		if( weaponType == WeaponType.Scythe )
+		{
+			weaponAxeLOD0.SetActive( false );
+			weaponAxeLOD1.SetActive( false );
+			weaponTrailAxe.SetActive( false );
+			weaponScytheLOD0.SetActive( true );
+			weaponScytheLOD1.SetActive( true );
+			weaponTrailScythe.SetActive( true );
+		}
+		else
+		{
+			weaponAxeLOD0.SetActive( true );
+			weaponAxeLOD1.SetActive( true );
+			weaponTrailAxe.SetActive( true );
+			weaponScytheLOD0.SetActive( false );
+			weaponScytheLOD1.SetActive( false );
+			weaponTrailScythe.SetActive( false );
 		}
 	}
 
@@ -93,7 +130,7 @@ public class WraithController : BaseClass, ICreature {
 		    switch (attackType)
 			{
 		        case AttackType.stand_and_normal_attack:
-					attackDistance = 0.76f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.52f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -102,7 +139,7 @@ public class WraithController : BaseClass, ICreature {
 					break;
 		                
 		        case AttackType.stand_and_big_attack:
-					attackDistance = 0.95f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.52f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -294,13 +331,15 @@ public class WraithController : BaseClass, ICreature {
 
 	public void Start_Weapon_Trail ( AnimationEvent eve )
 	{
-		weaponTrail.SetActive( true );
+		if( weaponType == WeaponType.Scythe ) weaponTrailScythe.SetActive( true );
+		if( weaponType == WeaponType.Axe ) weaponTrailAxe.SetActive( true );
 		GetComponent<AudioSource>().PlayOneShot( weaponSwoosh );
 	}
 
 	public void Stop_Weapon_Trail ( AnimationEvent eve )
 	{
-		weaponTrail.SetActive( false );
+		if( weaponType == WeaponType.Scythe ) weaponTrailScythe.SetActive( false );
+		if( weaponType == WeaponType.Axe ) weaponTrailAxe.SetActive( false );
 	}
 
 	//the voiceOverID is used both as text ID and as the name of the audio clip. They need to be identical.
