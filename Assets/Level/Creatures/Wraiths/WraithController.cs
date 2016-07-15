@@ -71,19 +71,15 @@ public class WraithController : BaseClass, ICreature {
 		{
 			weaponAxeLOD0.SetActive( false );
 			weaponAxeLOD1.SetActive( false );
-			weaponTrailAxe.SetActive( false );
 			weaponScytheLOD0.SetActive( true );
 			weaponScytheLOD1.SetActive( true );
-			weaponTrailScythe.SetActive( true );
 		}
 		else
 		{
 			weaponAxeLOD0.SetActive( true );
 			weaponAxeLOD1.SetActive( true );
-			weaponTrailAxe.SetActive( true );
 			weaponScytheLOD0.SetActive( false );
 			weaponScytheLOD1.SetActive( false );
-			weaponTrailScythe.SetActive( false );
 		}
 	}
 
