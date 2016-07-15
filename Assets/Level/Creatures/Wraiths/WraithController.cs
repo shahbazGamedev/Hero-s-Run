@@ -237,7 +237,7 @@ public class WraithController : BaseClass, ICreature {
 		{
 			capsuleColliders[i].enabled = false;
 		}
-		GetComponent<Animator>().SetTrigger("death");
+		GetComponent<Animator>().SetTrigger("Knockback");
 		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 	}
 	
