@@ -8,7 +8,7 @@ public class FairyMessage : MonoBehaviour {
 
 	public string fairyMessageTextId;
 	
-	public FairyEmotion fairyEmotion;
+	public FairyEmotion fairyEmotion = FairyEmotion.Happy;
 
 	// Use this for initialization
 	void Awake () {
