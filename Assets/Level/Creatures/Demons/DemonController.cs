@@ -123,11 +123,14 @@ public class DemonController : BaseClass, ICreature {
 					{
 						if( distance >= attackDistance )
 						{
-							//Charge
-							followsPlayer = true;
-							moveSpeed = RUN_SPEED;
-							setCreatureState( CreatureState.Running );
-							GetComponent<Animator>().CrossFadeInFixedTime( "Run" , CROSS_FADE_DURATION );
+							if( demonState != CreatureState.Running )
+							{
+								//Charge
+								followsPlayer = true;
+								moveSpeed = RUN_SPEED;
+								setCreatureState( CreatureState.Running );
+								GetComponent<Animator>().CrossFadeInFixedTime( "Run" , CROSS_FADE_DURATION );
+							}
 						}
 						else
 						{
