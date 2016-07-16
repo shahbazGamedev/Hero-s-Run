@@ -134,7 +134,7 @@ public class WraithController : BaseClass, ICreature {
 		    switch (attackType)
 			{
 		        case AttackType.stand_and_normal_attack:
-					attackDistance = 0.52f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.65f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -143,7 +143,7 @@ public class WraithController : BaseClass, ICreature {
 					break;
 		                
 		        case AttackType.stand_and_big_attack:
-					attackDistance = 0.52f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.65f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -153,7 +153,7 @@ public class WraithController : BaseClass, ICreature {
 		                
 				case AttackType.charge_and_attack:
 					float chargeDistance = 2.3f * PlayerController.getPlayerSpeed();
-					attackDistance = 0.52f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.65f * PlayerController.getPlayerSpeed();
 					if( distance < chargeDistance )
 					{
 						if( distance >= attackDistance )
