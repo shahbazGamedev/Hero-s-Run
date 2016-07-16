@@ -135,7 +135,7 @@ public class WraithController : BaseClass, ICreature {
 			{
 		        case AttackType.stand_and_normal_attack:
 					attackDistance = 0.65f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance && getDotProduct() > 0.98f )
+					if( distance < attackDistance )
 					{
 						setCreatureState( CreatureState.Attacking );
 						GetComponent<Animator>().CrossFadeInFixedTime( "attack2" , CROSS_FADE_DURATION );
@@ -144,7 +144,7 @@ public class WraithController : BaseClass, ICreature {
 		                
 		        case AttackType.stand_and_big_attack:
 					attackDistance = 0.65f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance && getDotProduct() > 0.98f )
+					if( distance < attackDistance )
 					{
 						setCreatureState( CreatureState.Attacking );
 						GetComponent<Animator>().CrossFadeInFixedTime( "attack1" , CROSS_FADE_DURATION );
@@ -198,19 +198,6 @@ public class WraithController : BaseClass, ICreature {
 		}
 	}
 
-	/*
-		returns:
-		-1 if wraith is behind player
-		+1 if wraith is in front
-		0 if wraith is on the side
-		0.5 if wraith is facing player and within 60 degrees (i.e. between 30 degrees to the left and 30 degrees to the right)
-	*/
-	float getDotProduct()
-	{
-		Vector3 heading = player.position - transform.position;
-		return Vector3.Dot( heading.normalized, transform.forward );
-	}
-
 	void stopWalking()
 	{
 		attackType = AttackType.do_nothing;
@@ -249,16 +236,11 @@ public class WraithController : BaseClass, ICreature {
 		return adjustedChargeSpeed;
 	}
 
-	public void sideCollision()
-	{
-		GetComponent<AudioSource>().PlayOneShot( screech );
-		GetComponent<Animator>().CrossFadeInFixedTime( "hit" , CROSS_FADE_DURATION );
-	}
-
 	public void victory( bool playWinSound )
 	{
 		if( wraithState != CreatureState.Dying )
 		{
+			mainCamera.GetComponent<MotionBlur>().enabled = false;			
 			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
 			setCreatureState( CreatureState.Victory );
 			GetComponent<Animator>().CrossFadeInFixedTime( "idle" , CROSS_FADE_DURATION );
@@ -284,10 +266,9 @@ public class WraithController : BaseClass, ICreature {
 	{
 		if( PlayerController._characterState == CharacterState.Dying )
 		{
-			//The Pendulum (bad name, yes I know) is the spike road block
-			if( hit.collider.name.StartsWith("Wraith") || hit.collider.name.StartsWith("Hero") || hit.collider.name.StartsWith("Pendulum") )
+			if( hit.collider.name.StartsWith("Wraith") || hit.collider.name.StartsWith("Hero") )
 			{
-				//If a wraith collides with another wraith, the road block or the Hero while the player is dead, have him stop moving and play the victory sequence.
+				//If a wraith collides with another wraith or the Hero while the player is dead, have him stop moving and play the victory sequence.
 				victory( false );
 			}
 		}
