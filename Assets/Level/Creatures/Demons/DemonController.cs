@@ -20,8 +20,12 @@ public class DemonController : BaseClass, ICreature {
 	[Header("Particle Systems")]
 	public ParticleSystem sparksLeftHoof;
 	public ParticleSystem sparksRightHoof;
+	[Header("Other")]
 	public GameObject weaponTrail;
 	public Sprite demonPortrait;
+	[Tooltip("List of text IDs that the demon will say when the attack type is walk_and_talk.")]
+	public List<string> demonText = new List<string>(3);
+	static int demonTextPointer = 0;
 
 	public enum AttackType {
 		stand_and_normal_attack = 1,
@@ -174,20 +178,21 @@ public class DemonController : BaseClass, ICreature {
 							moveSpeed = WALK_SPEED;
 							setCreatureState( CreatureState.Walking );
 							GetComponent<Animator>().Play( "Walk" );
-							if( Random.value > 0.5f )
-							{
-								speak( "VO_DE_ANOTHER_MEETING", 3.9f, false );
-							}
-							else
-							{
-								speak( "VO_DE_BAD_SONG", 3.9f, false );
-							}
+							speak( getNextText(), 3.9f, false );
 							Invoke("stopWalking", 6.8f );
 						}
 					}
 					break;
 			}
 		}
+	}
+
+	string getNextText()
+	{
+		string nextText = demonText[demonTextPointer];
+		demonTextPointer++;
+		if( demonTextPointer == demonText.Count ) demonTextPointer = 0;
+		return nextText;
 	}
 
 	/*
