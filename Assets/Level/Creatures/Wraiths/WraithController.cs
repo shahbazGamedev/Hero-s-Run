@@ -11,12 +11,10 @@ public class WraithController : BaseClass, ICreature {
 	[Tooltip("Speed at which to lock on player.")]
 	public float enemyAimSpeed = 7f;
 	[Header("Audio")]
-	public AudioClip chargeYell;
-	public AudioClip fallToGround;
+	public AudioClip charge;
+	public AudioClip screech;
 	public AudioClip win;
 	public AudioClip weaponSwoosh;
-	[Header("Other")]
-	public Sprite wraithPortrait;
 	[Header("Weapons")]
 	[Tooltip("The mesh includes both an axe and a scythe. Both have two LOD levels. We need references in order to disable the unused ones. Note that if the attack type is walk_and_talk, no weapon is displayed.")]
 	public WeaponType weaponType = WeaponType.Axe;
@@ -48,9 +46,10 @@ public class WraithController : BaseClass, ICreature {
 	CreatureState wraithState = CreatureState.Idle;
 	CharacterController controller;
 	Vector3 forward;
-	const float RUN_SPEED = 35f;
-	float WALK_SPEED = 3.2f;
 	float moveSpeed = 0;
+	const float WALK_SPEED = 3.2f;
+	const float NORMAL_CHARGE_SPEED = 35f;
+
 	//If true, the wraith heads for the player as opposed to staying in his lane
 	bool followsPlayer = false;
 	//We add a motion blur to the camera when the wraith is charging
@@ -164,10 +163,10 @@ public class WraithController : BaseClass, ICreature {
 								//Charge
 								mainCamera.GetComponent<MotionBlur>().enabled = true;			
 								followsPlayer = true;
-								moveSpeed = RUN_SPEED;
+								moveSpeed = getAdjustedChargeSpeed();
 								setCreatureState( CreatureState.Running );
 								GetComponent<Animator>().CrossFadeInFixedTime( "move" , CROSS_FADE_DURATION );
-								GetComponent<AudioSource>().PlayOneShot( chargeYell );
+								GetComponent<AudioSource>().PlayOneShot( charge );
 							}
 						}
 						else
@@ -191,14 +190,6 @@ public class WraithController : BaseClass, ICreature {
 							moveSpeed = WALK_SPEED;
 							setCreatureState( CreatureState.Walking );
 							GetComponent<Animator>().Play( "move" );
-							if( Random.value > 0.5f )
-							{
-								speak( "VO_DE_ANOTHER_MEETING", 3.9f, false );
-							}
-							else
-							{
-								speak( "VO_DE_BAD_SONG", 3.9f, false );
-							}
 							Invoke("stopWalking", 6.8f );
 						}
 					}
@@ -237,9 +228,30 @@ public class WraithController : BaseClass, ICreature {
 		wraithState = state;
 	}
 
+	public float getAdjustedChargeSpeed()
+	{
+		float adjustedChargeSpeed = NORMAL_CHARGE_SPEED;
+		switch (PlayerStatsManager.Instance.getDifficultyLevel())
+		{
+			case DifficultyLevel.Normal:
+			adjustedChargeSpeed = NORMAL_CHARGE_SPEED; //Base value is Normal, so no multiplier
+			break;
+				
+			case DifficultyLevel.Heroic:
+			adjustedChargeSpeed = NORMAL_CHARGE_SPEED * 1.1f;
+			break;
+				
+			case DifficultyLevel.Legendary:
+			adjustedChargeSpeed = NORMAL_CHARGE_SPEED * 1.3f;
+			break;
+			
+		}
+		return adjustedChargeSpeed;
+	}
+
 	public void sideCollision()
 	{
-		GetComponent<AudioSource>().PlayOneShot( chargeYell );
+		GetComponent<AudioSource>().PlayOneShot( screech );
 		GetComponent<Animator>().CrossFadeInFixedTime( "hit" , CROSS_FADE_DURATION );
 	}
 
@@ -265,7 +277,7 @@ public class WraithController : BaseClass, ICreature {
 			capsuleColliders[i].enabled = false;
 		}
 		GetComponent<Animator>().SetTrigger("Knockback");
-		GetComponent<AudioSource>().PlayOneShot( fallToGround );
+		GetComponent<AudioSource>().PlayOneShot( screech );
 	}
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)
@@ -330,12 +342,5 @@ public class WraithController : BaseClass, ICreature {
 	{
 		if( weaponType == WeaponType.Scythe ) weaponTrailScythe.SetActive( false );
 		if( weaponType == WeaponType.Axe ) weaponTrailAxe.SetActive( false );
-	}
-
-	//the voiceOverID is used both as text ID and as the name of the audio clip. They need to be identical.
-	public void speak( string voiceOverID, float textDisplayDuration, bool hasVoiceOver )
-	{
-		//DialogManager.dialogManager.activateDisplayGeneric( LocalizationManager.Instance.getText( voiceOverID ), wraithPortrait, textDisplayDuration );
-		//if( hasVoiceOver ) GetComponent<AudioSource>().PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
 	}
 }
