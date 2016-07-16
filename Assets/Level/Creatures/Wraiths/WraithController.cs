@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityStandardAssets.ImageEffects;
 
 public class WraithController : BaseClass, ICreature {
 
@@ -10,14 +11,14 @@ public class WraithController : BaseClass, ICreature {
 	[Tooltip("Speed at which to lock on player.")]
 	public float enemyAimSpeed = 7f;
 	[Header("Audio")]
-	public AudioClip ouch;
+	public AudioClip chargeYell;
 	public AudioClip fallToGround;
 	public AudioClip win;
 	public AudioClip weaponSwoosh;
 	[Header("Other")]
 	public Sprite wraithPortrait;
 	[Header("Weapons")]
-	[Tooltip("The mesh includes both an axe and a scythe. Both have two LOD levels. We need references in order to disable the unused ones.")]
+	[Tooltip("The mesh includes both an axe and a scythe. Both have two LOD levels. We need references in order to disable the unused ones. Note that if the attack type is walk_and_talk, no weapon is displayed.")]
 	public WeaponType weaponType = WeaponType.Axe;
 	public GameObject weaponAxeLOD0;
 	public GameObject weaponAxeLOD1;
@@ -47,36 +48,45 @@ public class WraithController : BaseClass, ICreature {
 	CreatureState wraithState = CreatureState.Idle;
 	CharacterController controller;
 	Vector3 forward;
-	const float RUN_SPEED = 10f;
+	const float RUN_SPEED = 35f;
 	float WALK_SPEED = 3.2f;
 	float moveSpeed = 0;
 	//If true, the wraith heads for the player as opposed to staying in his lane
 	bool followsPlayer = false;
+	//We add a motion blur to the camera when the wraith is charging
+	Camera mainCamera;
 
 	void Awake ()
 	{
 		controller = GetComponent<CharacterController>();
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		if( attackType == AttackType.walk_and_talk )
-		{
-			//transform.Find("wraith_weapon").gameObject.SetActive( false );
-		}
 		configureSelectedWeapon();
+		mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
 	}
 
 	void configureSelectedWeapon()
 	{
-		if( weaponType == WeaponType.Scythe )
+		if( attackType != AttackType.walk_and_talk )
 		{
-			weaponAxeLOD0.SetActive( false );
-			weaponAxeLOD1.SetActive( false );
-			weaponScytheLOD0.SetActive( true );
-			weaponScytheLOD1.SetActive( true );
+			if( weaponType == WeaponType.Scythe )
+			{
+				weaponAxeLOD0.SetActive( false );
+				weaponAxeLOD1.SetActive( false );
+				weaponScytheLOD0.SetActive( true );
+				weaponScytheLOD1.SetActive( true );
+			}
+			else
+			{
+				weaponAxeLOD0.SetActive( true );
+				weaponAxeLOD1.SetActive( true );
+				weaponScytheLOD0.SetActive( false );
+				weaponScytheLOD1.SetActive( false );
+			}
 		}
 		else
 		{
-			weaponAxeLOD0.SetActive( true );
-			weaponAxeLOD1.SetActive( true );
+			weaponAxeLOD0.SetActive( false );
+			weaponAxeLOD1.SetActive( false );
 			weaponScytheLOD0.SetActive( false );
 			weaponScytheLOD1.SetActive( false );
 		}
@@ -152,15 +162,18 @@ public class WraithController : BaseClass, ICreature {
 							if( wraithState != CreatureState.Running )
 							{
 								//Charge
+								mainCamera.GetComponent<MotionBlur>().enabled = true;			
 								followsPlayer = true;
 								moveSpeed = RUN_SPEED;
 								setCreatureState( CreatureState.Running );
 								GetComponent<Animator>().CrossFadeInFixedTime( "move" , CROSS_FADE_DURATION );
+								GetComponent<AudioSource>().PlayOneShot( chargeYell );
 							}
 						}
 						else
 						{
 							//Attack now
+							mainCamera.GetComponent<MotionBlur>().enabled = false;			
 							setCreatureState( CreatureState.Attacking );
 							GetComponent<Animator>().CrossFadeInFixedTime( "attack1" , CROSS_FADE_DURATION );
 						}
@@ -226,7 +239,7 @@ public class WraithController : BaseClass, ICreature {
 
 	public void sideCollision()
 	{
-		GetComponent<AudioSource>().PlayOneShot( ouch );
+		GetComponent<AudioSource>().PlayOneShot( chargeYell );
 		GetComponent<Animator>().CrossFadeInFixedTime( "hit" , CROSS_FADE_DURATION );
 	}
 
@@ -244,6 +257,7 @@ public class WraithController : BaseClass, ICreature {
 	public void knockback()
 	{
 		setCreatureState( CreatureState.Dying );
+		mainCamera.GetComponent<MotionBlur>().enabled = false;			
 		controller.enabled = false;
 		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
 		for( int i = 0; i < capsuleColliders.Length; i++ )
