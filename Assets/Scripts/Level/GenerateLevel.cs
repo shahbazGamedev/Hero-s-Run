@@ -448,6 +448,7 @@ public class GenerateLevel  : MonoBehaviour {
 		go.SetActive( false );
 		worldRoadSegments.Add( go );
 		if( recycledTile == null ) go.name = go.name + "-" + tileCreationIndex.ToString();
+		si.tileIndex = tileCreationIndex;
 		tileCreationIndex++;
 
 		return go;
@@ -554,6 +555,7 @@ public class GenerateLevel  : MonoBehaviour {
 		go.SetActive( false );
 		worldRoadSegments.Add( go );
 		go.name = go.name + tileCreationIndex.ToString();
+		si.tileIndex = tileCreationIndex;
 		tileCreationIndex++;
 		
 		return go;
