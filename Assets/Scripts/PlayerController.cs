@@ -1149,6 +1149,11 @@ public class PlayerController : BaseClass {
 			Debug.Log("Activating shield powerup " );
 			powerUpManager.activatePowerUp(PowerUpType.Shield);
 		}
+		else if ( Input.GetKeyDown (KeyCode.T ) )
+		{
+			Debug.Log("Listing all textures: " );
+			Utilities.printAllTexturesInScene();
+		}
 	}
 
 	private void createBezier()

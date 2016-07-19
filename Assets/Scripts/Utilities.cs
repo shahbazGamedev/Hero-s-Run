@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Utilities : MonoBehaviour {
 
@@ -132,4 +133,12 @@ public class Utilities : MonoBehaviour {
 		light.intensity = 0;
 	}
 
+	// This script finds all the textures in scene:
+    public static void printAllTexturesInScene()
+    {
+ 		foreach (Texture go in Resources.FindObjectsOfTypeAll(typeof(Texture)) as Texture[])
+        {
+			print("Texture: " + go.name  );
+        }
+    }
 }
