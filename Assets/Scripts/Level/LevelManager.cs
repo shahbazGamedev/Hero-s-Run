@@ -86,6 +86,7 @@ public class LevelManager {
 
 	public void forceHighestLevelCompleted( int levelCompleted )
 	{
+		if( levelCompleted < 0 ) levelCompleted = 0;
 		highestLevelCompleted = levelCompleted;
 		Debug.Log ("LevelManager-forceHighestLevelCompleted: highestLevelCompleted " + highestLevelCompleted );
 	}

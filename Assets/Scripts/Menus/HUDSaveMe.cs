@@ -140,6 +140,7 @@ public class HUDSaveMe : MonoBehaviour {
 			playerController.resurrectBegin(false);
 			PlayerStatsManager.Instance.decreaseLives((int)costLives);
 			PlayerStatsManager.Instance.incrementTimesPlayerRevivedInLevel();
+			PlayerStatsManager.Instance.incrementNumberDeathForLevel();
 			closeSaveMeMenu();
 		}
 		else

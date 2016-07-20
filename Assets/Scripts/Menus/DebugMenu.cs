@@ -150,7 +150,7 @@ public class DebugMenu : MonoBehaviour {
 		{
 			ownsStarDoubler.text = "Owns Star Doubler: false";
 		}
-		deathPerEpisodeText.text = "Death Per Episode: " + PlayerStatsManager.Instance.getDeathInEpisodesAsString();
+		deathPerEpisodeText.text = "Death Per Levels: " + PlayerStatsManager.Instance.getDeathInLevelsAsString();
 	}
 
 }

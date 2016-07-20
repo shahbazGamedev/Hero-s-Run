@@ -82,7 +82,7 @@ public class PlayerStatsManager {
 	//This value is saved.
 	//The index is the episode number. The value is the number of times the player died for that specific episode. The initial values are 0.
 	//The value for a specific episode is reset when the player restarts that episode.
-	int[] deathInEpisodesArray = new int[LevelData.NUMBER_OF_EPISODES];
+	int[] deathInLevelsArray = new int[LevelData.NUMBER_OF_LEVELS];
 
 	//For debugging
 	//Cheat
@@ -405,101 +405,86 @@ public class PlayerStatsManager {
 		displayStarsArray[LevelManager.Instance.getCurrentEpisodeNumber()] = numberOfStars;
 	}
 
-	void loadDeathInEpisodes()
+	void loadDeathInLevels()
 	{
-		string deathInEpisodesString = PlayerPrefs.GetString("deathInEpisodes", "" );
-		if( deathInEpisodesString == "" )
+		string deathInLevelsString = PlayerPrefs.GetString("deathInLevels", "" );
+		if( deathInLevelsString == "" )
 		{
-			//deathInEpisodesArray just stays with initial values of 0 because this is a new player
+			//deathInLevelsArray just stays with initial values of 0 because this is a new player
 		}
 		else
 		{
 			try
 			{
-				string[] deathInEpisodesStringArray = deathInEpisodesString.Split(',');
-				Debug.Log ("loadDeathInEpisodesArray " + deathInEpisodesString + " length " + deathInEpisodesStringArray.Length );
-				for( int i = 0; i < deathInEpisodesStringArray.Length; i++ )
+				string[] deathInLevelsStringArray = deathInLevelsString.Split(',');
+				Debug.Log ("deathInLevelsStringArray " + deathInLevelsString + " length " + deathInLevelsStringArray.Length );
+				for( int i = 0; i < deathInLevelsStringArray.Length; i++ )
 				{
 					int numberOfDeathsAsInt;
-					int.TryParse(deathInEpisodesStringArray[i], out numberOfDeathsAsInt);
-					deathInEpisodesArray[i] = numberOfDeathsAsInt;
+					int.TryParse(deathInLevelsStringArray[i], out numberOfDeathsAsInt);
+					deathInLevelsArray[i] = numberOfDeathsAsInt;
 				}
 			}
 			catch (Exception e)
 			{
-				Debug.LogWarning("PlayerStatsManager-exception occured in loadDeathInEpisodes: " + e.Message + " Resetting stats to default values.");
+				Debug.LogWarning("PlayerStatsManager-exception occured in loadDeathInLevels: " + e.Message + " Resetting stats to default values.");
 				PlayerPrefs.DeleteAll();
 			}
 		}
 	}
 
-	void saveDeathInEpisodes()
+	void saveDeathInLevels()
 	{
 		string result = "";
-		for( int i = 0; i < deathInEpisodesArray.Length; i++ )
+		for( int i = 0; i < deathInLevelsArray.Length; i++ )
 		{
-			result = result + deathInEpisodesArray[i].ToString() + ",";
+			result = result + deathInLevelsArray[i].ToString() + ",";
 		}
 		result = result.TrimEnd(',');
-		Debug.Log("saveDeathInEpisodes " + result );
-		PlayerPrefs.SetString("deathInEpisodes", result );
+		Debug.Log("saveDeathInLevels " + result );
+		PlayerPrefs.SetString("deathInLevels", result );
 	}
 
-	public string getDeathInEpisodesAsString()
+	public string getDeathInLevelsAsString()
 	{
 		string result = "";
-		for( int i = 0; i < deathInEpisodesArray.Length; i++ )
+		for( int i = 0; i < deathInLevelsArray.Length; i++ )
 		{
-			result = result + deathInEpisodesArray[i].ToString() + ",";
+			result = result + deathInLevelsArray[i].ToString() + ",";
 		}
 		result = result.TrimEnd(',');
 		return result;
 	}
 
-	public void resetDeathInEpisodes()
+	public void resetDeathInLevels()
 	{
-		for( int i = 0; i < deathInEpisodesArray.Length; i++ )
+		for( int i = 0; i < deathInLevelsArray.Length; i++ )
 		{
-			deathInEpisodesArray[i] = 0;
+			deathInLevelsArray[i] = 0;
 		}
-		saveDeathInEpisodes();
+		saveDeathInLevels();
 	}
 
-	public int getNumberDeathForEpisode( int episodeNumber )
+	public void incrementNumberDeathForLevel()
 	{
-		return deathInEpisodesArray[episodeNumber];
+		deathInLevelsArray[LevelManager.Instance.getNextLevelToComplete()]++;
 	}
 
-	public int getNumberDeathForCurrentEpisode()
+	public void resetNumberDeathsStartingAtLevel( int levelNumber )
 	{
-		return deathInEpisodesArray[LevelManager.Instance.getCurrentEpisodeNumber()];
-	}
-
-	public void setNumberDeathForEpisode( int numberOfDeath )
-	{
-		deathInEpisodesArray[LevelManager.Instance.getCurrentEpisodeNumber()] = numberOfDeath;
-	}
-
-	public void incrementNumberDeathForEpisode()
-	{
-		deathInEpisodesArray[LevelManager.Instance.getCurrentEpisodeNumber()]++;
-	}
-
-	public void resetNumberDeathsStartingAtEpisode( int episodeNumber )
-	{
-		for( int i = episodeNumber; i < deathInEpisodesArray.Length; i++ )
+		for( int i = levelNumber; i < deathInLevelsArray.Length; i++ )
 		{
-			deathInEpisodesArray[i] = 0;
+			deathInLevelsArray[i] = 0;
 		}
-		Debug.Log("PlayerStatsManager-resetNumberDeathsStartingAtEpisode: " + episodeNumber );
+		Debug.Log("PlayerStatsManager-resetNumberDeathsStartingAtLevel: " + levelNumber );
 	}
 
-	public int getNumberDeathLeadingToEpisode( int episodeNumber )
+	public int getNumberDeathLeadingToLevel( int levelNumber )
 	{
 		int total = 0;
-		for( int i = 0; i <= episodeNumber; i++ )
+		for( int i = 0; i <= levelNumber; i++ )
 		{
-			total = total + deathInEpisodesArray[i];
+			total = total + deathInLevelsArray[i];
 		}
 		return total;
 	}
@@ -882,7 +867,7 @@ public class PlayerStatsManager {
 			currentCoins = PlayerPrefs.GetInt("currentCoins", 0);
 			lifetimeCoins = PlayerPrefs.GetInt("lifetimeCoins", 0);
 			loadDisplayStars();
-			loadDeathInEpisodes();
+			loadDeathInLevels();
 			loadKeysFoundInEpisode();
 			powerUpSelected = (PowerUpType)PlayerPrefs.GetInt("powerUpSelected", (int)PowerUpType.SlowTime);
 			difficultyLevel = (DifficultyLevel)PlayerPrefs.GetInt("difficultyLevel", (int)DifficultyLevel.Normal);
@@ -959,7 +944,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetInt("currentCoins", currentCoins );
 		PlayerPrefs.SetInt("lifetimeCoins", lifetimeCoins );
 		saveDisplayStars();
-		saveDeathInEpisodes();
+		saveDeathInLevels();
 		saveKeysFoundInEpisode();
 		PlayerPrefs.SetInt("powerUpSelected", (int)powerUpSelected );
 		PlayerPrefs.SetInt("difficultyLevel", (int)difficultyLevel );
@@ -1004,7 +989,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetInt("lifetimeCoins", 0 );
 		lifetimeCoins = 0;
 		resetDisplayStars();
-		resetDeathInEpisodes();
+		resetDeathInLevels();
 		resetKeysFoundInEpisode();
 		PlayerPrefs.SetInt("powerUpSelected", (int)PowerUpType.SlowTime );
 		powerUpSelected = PowerUpType.SlowTime;

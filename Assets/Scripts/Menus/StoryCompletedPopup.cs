@@ -68,7 +68,7 @@ public class StoryCompletedPopup : MonoBehaviour {
 		LevelManager.Instance.setHighestLevelCompleted( 0 );
 		LevelManager.Instance.forceHighestLevelCompleted( 0 );
 
-		PlayerStatsManager.Instance.resetDeathInEpisodes();
+		PlayerStatsManager.Instance.resetDeathInLevels();
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		PlayerStatsManager.Instance.savePlayerStats();
 

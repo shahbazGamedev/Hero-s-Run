@@ -184,7 +184,7 @@ public class PlayerController : BaseClass {
 	//If the fall distance is less than DISTANCE_FOR_LAND_ANIMATION meters, the hero plays the Land animation; above, he plays the Stumble animation.
 	const float DISTANCE_FOR_LAND_ANIMATION = 34f;
 
-	TrollController trollController;
+	public TrollController trollController;
 	FairyController fairyController;
 	PowerUpManager powerUpManager;
 	public TakeScreenshot takeScreenshot;
@@ -2689,9 +2689,6 @@ public class PlayerController : BaseClass {
 					anim.SetTrigger(DeathWallTrigger);
 					break;
 			}
-				//For the magic gate (where the player falls from the sky), do not incrementNumberDeathForEpisode because the "death" was out of the player's control.
-			if( deathType != DeathType.MagicGate ) PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
-
 		}
 	}
 

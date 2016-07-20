@@ -49,7 +49,7 @@ public class TrollController : MonoBehaviour {
 
 	bool deactivateTroll = false; //Used for debugging so troll does not pursue player. Normal value is false.
 
-	bool playerStumbledPreviously = false;
+	public bool playerStumbledPreviously = false;
 
 	void Awake ()
 	{

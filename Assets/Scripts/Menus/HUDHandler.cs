@@ -65,7 +65,7 @@ public class HUDHandler : MonoBehaviour {
 	void Update ()
 	{
 		updateFPS();
-		if( hudDebugInfo.gameObject.activeSelf ) hudDebugInfo.text = "FPS: " + fps + "-" + LevelManager.Instance.getNextLevelToComplete() + "-" + playerController.getCurrentTileName() + "-" + PlayerStatsManager.Instance.getTimesPlayerRevivedInLevel() + "-" + PlayerController.getPlayerSpeed().ToString("N1");
+		if( hudDebugInfo.gameObject.activeSelf ) hudDebugInfo.text = "Troll: " + playerController.trollController.didPlayerStumblePreviously() + " FPS: " + fps + "-" + LevelManager.Instance.getNextLevelToComplete() + "-" + playerController.getCurrentTileName() + "-" + PlayerStatsManager.Instance.getTimesPlayerRevivedInLevel() + "-" + PlayerController.getPlayerSpeed().ToString("N1");
 		managePickUps();
 	}
 	

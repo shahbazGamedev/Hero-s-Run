@@ -57,7 +57,7 @@ public class ClockTimeSetter : MonoBehaviour {
 		Vector2 levelTimeOfDay = LevelManager.Instance.getLevelInfo(levelNumber).timeOfDay;
 
 		//Calculate time penalty
-		int penaltyInMinutes = PlayerStatsManager.Instance.getNumberDeathLeadingToEpisode( episodeNumber ) * GameManager.TIME_PENALTY_IN_MINUTES;
+		int penaltyInMinutes = PlayerStatsManager.Instance.getNumberDeathLeadingToLevel( levelNumber ) * GameManager.TIME_PENALTY_IN_MINUTES;
 		timePenalty.text = penaltyInMinutes.ToString();
 
 		Debug.Log("ClockTimeSetter-penalty: " + penaltyInMinutes );
@@ -82,7 +82,7 @@ public class ClockTimeSetter : MonoBehaviour {
 		TimeSpan elapsedTime =  timeOfDayAtEnd.Subtract( timeOfDayAtStart );
 
 		//Calculate time penalty
-		int penaltyInMinutes = PlayerStatsManager.Instance.getNumberDeathLeadingToEpisode( episodeNumber ) * GameManager.TIME_PENALTY_IN_MINUTES;
+		int penaltyInMinutes = PlayerStatsManager.Instance.getNumberDeathLeadingToLevel( LevelManager.Instance.getNextLevelToComplete() ) * GameManager.TIME_PENALTY_IN_MINUTES;
 		timePenalty.text = penaltyInMinutes.ToString();
 
 		Debug.Log("ClockTimeSetter-updateTime2 timeOfDayAtStart: " + timeOfDayAtStart + " timeOfDayAtEnd: " + timeOfDayAtEnd + " elapsed in min. " + elapsedTime.TotalMinutes );
@@ -137,8 +137,8 @@ public class ClockTimeSetter : MonoBehaviour {
 			yield return new WaitForFixedUpdate();  
 	    }
 		//Calculate time penalty
-		int penaltyInMinutes = PlayerStatsManager.Instance.getNumberDeathLeadingToEpisode( LevelManager.Instance.getCurrentEpisodeNumber() ) * GameManager.TIME_PENALTY_IN_MINUTES;
-		Debug.Log("spinLevelTime LevelManager.Instance.getCurrentEpisodeNumber: " + LevelManager.Instance.getCurrentEpisodeNumber() + " penalty " + penaltyInMinutes );
+		int penaltyInMinutes = PlayerStatsManager.Instance.getNumberDeathLeadingToLevel( LevelManager.Instance.getNextLevelToComplete() ) * GameManager.TIME_PENALTY_IN_MINUTES;
+		Debug.Log("spinLevelTime getNextLevelToComplete: " + LevelManager.Instance.getNextLevelToComplete() + " penalty " + penaltyInMinutes );
 		StartCoroutine( spinPenaltyTime( 1f, 2f, newTime, penaltyInMinutes ) );	
 	}
 

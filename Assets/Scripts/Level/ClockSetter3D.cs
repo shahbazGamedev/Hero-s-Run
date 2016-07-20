@@ -26,7 +26,7 @@ public class ClockSetter3D : MonoBehaviour {
 		Vector2 levelTimeOfDay = LevelManager.Instance.getLevelInfo(levelNumber).timeOfDay;
 
 		//Calculate time penalty
-		int penaltyInMinutes = PlayerStatsManager.Instance.getNumberDeathLeadingToEpisode( episodeNumber ) * GameManager.TIME_PENALTY_IN_MINUTES;
+		int penaltyInMinutes = PlayerStatsManager.Instance.getNumberDeathLeadingToLevel( levelNumber ) * GameManager.TIME_PENALTY_IN_MINUTES;
 
 		//Add a small random number of minutes to make it feel real (and not always 6PM sharp for example)
 		int additionalMinutes = UnityEngine.Random.Range( (int)additionalMinutesRange.x, (int)additionalMinutesRange.y );
