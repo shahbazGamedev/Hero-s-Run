@@ -2136,7 +2136,6 @@ public class PlayerController : BaseClass {
 			}
 			else
 			{
-				Debug.Log( "Player collided with goblin: " + hit.collider.name + " Normal" + hit.normal.y + " but CANT TOPPLE HIM " + _characterState + "  STATE Z "+ goblinController.getCreatureState());
 				if( hit.normal.y < 0.4f )
 				{
 					//Player is running up Z axis
@@ -2169,7 +2168,6 @@ public class PlayerController : BaseClass {
 							goblinController.victory( true );
 						}
 					}
-					Debug.Log( "PLayer collided with: " + hit.collider.name + " Normal" + hit.normal );
 				}
 				else
 				{
