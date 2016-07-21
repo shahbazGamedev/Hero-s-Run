@@ -134,13 +134,20 @@ public class TrollController : MonoBehaviour {
 	//After the attack, the troll will go into Idle.
 	private void attackPlayer()
 	{
-		print ("ATTACK PLAYER ");
-		Vector3 relativePos = new Vector3(0 , 0 , -STOP_DISTANCE );
-		Vector3 exactPos = player.TransformPoint(relativePos);
-		transform.position = exactPos;
-		transform.LookAt(player);
-		setTrollState(TrollState.Attack);
-		playerController.managePlayerDeath( DeathType.Enemy );
+		if( trollState != TrollState.Attack )
+		{
+			print ("ATTACK PLAYER ");
+			Vector3 relativePos = new Vector3(0 , 0 , -STOP_DISTANCE );
+			Vector3 exactPos = player.TransformPoint(relativePos);
+			transform.position = exactPos;
+			transform.LookAt(player);
+			setTrollState(TrollState.Attack);
+			playerController.managePlayerDeath( DeathType.Enemy );
+		}
+		else
+		{
+			Debug.LogError("TrollController - ignoring call to attack player because troll state is already Attack.");
+		}
 	}
 
 	//The attack occurs when the player stumbles for a second time while the troll is in active pursuit.

@@ -1884,7 +1884,6 @@ public class PlayerController : BaseClass {
 					//Only make the player stumble the first time around
 					if( !chickenController.wasHit )
 					{
-						//controller.Move( hit.normal );
 						Stumble();
 					}
 					else
@@ -2754,21 +2753,18 @@ public class PlayerController : BaseClass {
 		setCharacterState( CharacterState.Running );
 	}
 	
-	public void Stumble()
+	void Stumble()
 	{
 		//The OnControllerColliderHit function can send multiple collision events during a single
 		//stumble, so ignore any new events while in the stumbling state.
 		if ( _characterState != CharacterState.Stumbling && _characterState != CharacterState.Dying )
 		{	
 			Debug.Log ("Player stumbled");
-			//sc.Shake();
 			//Play player stumble animation by setting the state
 			setCharacterState( CharacterState.Stumbling );
 			//audio.PlayOneShot( stumblingSound );
-			//Possibly vibrate device
-			//Possibly shake the camera
 			//Make enemy appear right behind player
-			//Note that "placeEnemyBehindPlayer" may change the state of the character to Dying
+			//Note that "placeTrollBehindPlayer" may change the state of the character to Dying
 			if( trollController.didPlayerStumblePreviously() )
 			{
 				//The player falls forward and dies (killed by the troll)
