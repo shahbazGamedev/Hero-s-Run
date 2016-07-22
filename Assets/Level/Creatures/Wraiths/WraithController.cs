@@ -24,6 +24,7 @@ public class WraithController : BaseClass, ICreature {
 	public GameObject weaponScytheLOD0;
 	public GameObject weaponScytheLOD1;
 	public GameObject weaponTrailScythe;
+	float lookAtWeight = 0.8f;
 
 
 	public enum AttackType {
@@ -289,11 +290,11 @@ public class WraithController : BaseClass, ICreature {
 		if( newState == CharacterState.Dying )
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
-			float nearby = 4f;
+			float nearby = 5f;
 			if( distance < nearby )
 			{
 				victory( false );
-				Debug.Log("Wraith PlayerStateChange - player is dead and nearby");
+				StartCoroutine( fadeLookAtPosition( 0.2f, 2.5f, 0.9f ) );
 			}
 		}
 	}
@@ -324,4 +325,58 @@ public class WraithController : BaseClass, ICreature {
 		if( weaponType == WeaponType.Scythe ) weaponTrailScythe.SetActive( false );
 		if( weaponType == WeaponType.Axe ) weaponTrailAxe.SetActive( false );
 	}
+
+	//For SetLookAtPosition to work, there are 2 conditions:
+	//The rig must be Humanoid
+	//In the Animator windows, under Layers, under Settings, you must have the IK Pass toggled on.
+	void OnAnimatorIK()
+	{
+		if( getDotProduct() > 0.55f )
+		{
+			float distance = Vector3.Distance(player.position,transform.position);
+			if( distance < 24f )			
+			{
+				GetComponent<Animator>().SetLookAtPosition( player.position );
+				GetComponent<Animator>().SetLookAtWeight( lookAtWeight );
+			}
+		}
+	}
+
+	/*
+		returns:
+		-1 if creature is behind player
+		+1 if creature is in front
+		0 if creature is on the side
+		0.5 if creature is facing player and within 60 degrees (i.e. between 30 degrees to the left and 30 degrees to the right)
+	*/
+	float getDotProduct()
+	{
+		Vector3 heading = player.position - transform.position;
+		return Vector3.Dot( heading.normalized, transform.forward );
+	}
+
+	public IEnumerator fadeLookAtPosition( float finalWeight, float stayDuration, float fadeDuration )
+	{
+		float elapsedTime = 0;
+		
+		//Stay
+		yield return new WaitForSeconds(stayDuration);
+		
+		//Fade out
+		elapsedTime = 0;
+		
+		float initialWeight = lookAtWeight;
+		
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			lookAtWeight = Mathf.Lerp( initialWeight, finalWeight, elapsedTime/fadeDuration );
+			yield return new WaitForFixedUpdate();  
+			
+		} while ( elapsedTime < fadeDuration );
+		
+		lookAtWeight = finalWeight;
+	
+	}
+
 }
