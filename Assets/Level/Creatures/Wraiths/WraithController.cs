@@ -24,7 +24,14 @@ public class WraithController : BaseClass, ICreature {
 	public GameObject weaponScytheLOD0;
 	public GameObject weaponScytheLOD1;
 	public GameObject weaponTrailScythe;
-	float lookAtWeight = 0.8f;
+	[Header("Look At IK")]
+	public float lookAtWeight = 0.8f;
+	public float bodyWeight = 0.7f;
+	public float headWeight = 1f;
+	public float eyesWeight = 1f;
+	public float clampWeight = 1f;
+
+	Animator anim;
 
 
 	public enum AttackType {
@@ -59,6 +66,7 @@ public class WraithController : BaseClass, ICreature {
 	void Awake ()
 	{
 		controller = GetComponent<CharacterController>();
+		anim = GetComponent<Animator>();
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		configureSelectedWeapon();
 		mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
@@ -139,7 +147,7 @@ public class WraithController : BaseClass, ICreature {
 					if( distance < attackDistance )
 					{
 						setCreatureState( CreatureState.Attacking );
-						GetComponent<Animator>().CrossFadeInFixedTime( "attack2" , CROSS_FADE_DURATION );
+						anim.CrossFadeInFixedTime( "attack2" , CROSS_FADE_DURATION );
 					}
 					break;
 		                
@@ -148,7 +156,7 @@ public class WraithController : BaseClass, ICreature {
 					if( distance < attackDistance )
 					{
 						setCreatureState( CreatureState.Attacking );
-						GetComponent<Animator>().CrossFadeInFixedTime( "attack1" , CROSS_FADE_DURATION );
+						anim.CrossFadeInFixedTime( "attack1" , CROSS_FADE_DURATION );
 					}
 					break;
 		                
@@ -166,7 +174,7 @@ public class WraithController : BaseClass, ICreature {
 								followsPlayer = true;
 								moveSpeed = getAdjustedChargeSpeed();
 								setCreatureState( CreatureState.Running );
-								GetComponent<Animator>().CrossFadeInFixedTime( "move" , CROSS_FADE_DURATION );
+								anim.CrossFadeInFixedTime( "move" , CROSS_FADE_DURATION );
 								GetComponent<AudioSource>().PlayOneShot( charge );
 							}
 						}
@@ -175,7 +183,7 @@ public class WraithController : BaseClass, ICreature {
 							//Attack now
 							mainCamera.GetComponent<MotionBlur>().enabled = false;			
 							setCreatureState( CreatureState.Attacking );
-							GetComponent<Animator>().CrossFadeInFixedTime( "attack1" , CROSS_FADE_DURATION );
+							anim.CrossFadeInFixedTime( "attack1" , CROSS_FADE_DURATION );
 						}
 					}
 					break;
@@ -190,7 +198,7 @@ public class WraithController : BaseClass, ICreature {
 							followsPlayer = false;
 							moveSpeed = WALK_SPEED;
 							setCreatureState( CreatureState.Walking );
-							GetComponent<Animator>().Play( "move" );
+							anim.Play( "move" );
 							Invoke("stopWalking", 6.8f );
 						}
 					}
@@ -203,7 +211,7 @@ public class WraithController : BaseClass, ICreature {
 	{
 		attackType = AttackType.do_nothing;
 		setCreatureState( CreatureState.Idle );
-		GetComponent<Animator>().CrossFadeInFixedTime( "idle" , CROSS_FADE_DURATION );
+		anim.CrossFadeInFixedTime( "idle" , CROSS_FADE_DURATION );
 	}
 
 	public CreatureState getCreatureState()
@@ -244,7 +252,7 @@ public class WraithController : BaseClass, ICreature {
 			mainCamera.GetComponent<MotionBlur>().enabled = false;			
 			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
 			setCreatureState( CreatureState.Victory );
-			GetComponent<Animator>().CrossFadeInFixedTime( "idle" , CROSS_FADE_DURATION );
+			anim.CrossFadeInFixedTime( "idle" , CROSS_FADE_DURATION );
 		}
 	}
 
@@ -259,7 +267,7 @@ public class WraithController : BaseClass, ICreature {
 		{
 			capsuleColliders[i].enabled = false;
 		}
-		GetComponent<Animator>().SetTrigger("Knockback");
+		anim.SetTrigger("Knockback");
 		GetComponent<AudioSource>().PlayOneShot( screech );
 	}
 	
@@ -302,7 +310,7 @@ public class WraithController : BaseClass, ICreature {
 	public void resetCreature()
 	{
 		setCreatureState( CreatureState.Idle );
-		GetComponent<Animator>().CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
+		anim.CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
 		gameObject.SetActive( false );
 		followsPlayer = false;
 		controller.enabled = true;
@@ -336,8 +344,8 @@ public class WraithController : BaseClass, ICreature {
 			float distance = Vector3.Distance(player.position,transform.position);
 			if( distance < 24f )			
 			{
-				GetComponent<Animator>().SetLookAtPosition( player.position );
-				GetComponent<Animator>().SetLookAtWeight( lookAtWeight );
+				anim.SetLookAtPosition( player.position );
+				anim.SetLookAtWeight( lookAtWeight, bodyWeight, headWeight, eyesWeight, clampWeight );
 			}
 		}
 	}
