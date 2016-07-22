@@ -30,7 +30,7 @@ public class ClockTimeSetter : MonoBehaviour {
         switch (levelProgress)
 		{
 	        case Level_Progress.LEVEL_START:
-				updateTime( episodeNumber, levelNumber );
+				updateTimeForEpisodePopup( episodeNumber, levelNumber );
                 break;
 	                
 	        case Level_Progress.LEVEL_END_WITH_NO_PROGRESS:
@@ -45,6 +45,36 @@ public class ClockTimeSetter : MonoBehaviour {
 				updateTime2( episodeNumber );
                 break;
 		}
+    }
+
+	//Pocket watch shows current time
+	//But the text shows the time left before midnight
+	//In this version, the time penalty exlcudes the level we are about to play (which might have some penalties if we've played it before).
+	void updateTimeForEpisodePopup ( int episodeNumber, int levelNumber )
+ 	{
+		Debug.Log("ClockTimeSetter-updateTimeForEpisodePopup episode: " + episodeNumber + " level: " + levelNumber );
+
+		//Get time of day for current level
+		Vector2 levelTimeOfDay = LevelManager.Instance.getLevelInfo(levelNumber).timeOfDay;
+
+		int levelNumberExcludingCurrent = levelNumber - 1;
+		int penaltyInMinutes;
+		if( levelNumberExcludingCurrent < 0 )
+		{
+			penaltyInMinutes = 0;
+		}
+		else
+		{
+			penaltyInMinutes = PlayerStatsManager.Instance.getNumberDeathLeadingToLevel( levelNumberExcludingCurrent ) * GameManager.TIME_PENALTY_IN_MINUTES;
+		}
+
+		timePenalty.text = penaltyInMinutes.ToString();
+		Debug.Log("ClockTimeSetter-penalty: " + penaltyInMinutes );
+
+		TimeSpan timeOfDay = new TimeSpan((int)levelTimeOfDay.x, (int)levelTimeOfDay.y, 0 );
+		TimeSpan span = TimeSpan.FromMinutes(penaltyInMinutes);
+		timeOfDay = timeOfDay.Add(span);
+		setTime( timeOfDay );
     }
 
 	//Pocket watch shows current time

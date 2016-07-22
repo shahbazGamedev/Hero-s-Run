@@ -21,6 +21,7 @@ public class TrapMagicGate : MonoBehaviour {
 		{
 			Debug.Log ("Player triggered magic gate trap "  );
 			playerController.managePlayerDeath(DeathType.MagicGate);
+			LevelManager.Instance.getLevelData().setSunParameters(SunType.Afternoon);
 		}
 	}
 

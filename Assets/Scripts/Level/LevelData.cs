@@ -104,22 +104,28 @@ public class LevelData : MonoBehaviour {
 			case SunType.Morning:
 				skyBoxName = "CartoonSkybox";
 				lightIntensity = 0.74f;
+				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				shadowStrength = 0.3f;
 				sunDirection = Quaternion.Euler( 78f,75f,4f );
+				Sun.GetComponent<Light>().color = Color.white;
 				break;
 				
 			case SunType.Noon:
 				skyBoxName = "CartoonSkybox";
 				lightIntensity = 0.58f;
+				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				shadowStrength = 0.5f;
 				sunDirection = Quaternion.Euler( 78f,75f,4f );
+				Sun.GetComponent<Light>().color = Color.white;
 				break;
 				
 			case SunType.Afternoon:
 				skyBoxName = "CartoonSkybox";
 				lightIntensity = 0.74f;
+				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				shadowStrength = 0.4f;
 				sunDirection = Quaternion.Euler( 78f,75f,4f );
+				Sun.GetComponent<Light>().color = Color.white;
 				break;
 								
 			case SunType.Night:
@@ -128,6 +134,7 @@ public class LevelData : MonoBehaviour {
 				shadowStrength = 0f;
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 32f,13f,-63f );
+				Sun.GetComponent<Light>().color = Color.white;
 				break;
 
 			case SunType.Overcast:
@@ -155,6 +162,7 @@ public class LevelData : MonoBehaviour {
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 32f,13f,-63f );
 				RenderSettings.ambientLight = new Color(0.13f,0.21f,0.3f);
+				Sun.GetComponent<Light>().color = Color.white;
 				break;
 
 			case SunType.Cemetery:
@@ -165,13 +173,16 @@ public class LevelData : MonoBehaviour {
 				sunDirection = Quaternion.Euler( 32f,13f,-63f );
 				Sun.GetComponent<Light>().color = new Color(0.623f,0.729f,0.882f); //bluish
 				RenderSettings.ambientLight = new Color(0.13f,0.21f,0.3f);
+				Sun.GetComponent<Light>().color = Color.white;
 				break;
 
 			default:
 				skyBoxName = "CartoonSkybox";
 				lightIntensity = 0.54f;
+				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				shadowStrength = 0.62f;
 				sunDirection = Quaternion.Euler( 78f,75f,4f );
+				Sun.GetComponent<Light>().color = Color.white;
 				break;
 			}
 			skyBoxMaterial = Resources.Load( "Skybox/" + skyBoxName ) as Material;
