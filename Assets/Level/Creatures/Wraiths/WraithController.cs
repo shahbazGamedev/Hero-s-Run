@@ -30,7 +30,7 @@ public class WraithController : BaseClass, ICreature {
 	public float headWeight = 1f;
 	public float eyesWeight = 1f;
 	public float clampWeight = 1f;
-
+	bool lookAtActive = false;
 	Animator anim;
 
 
@@ -269,6 +269,7 @@ public class WraithController : BaseClass, ICreature {
 		}
 		anim.SetTrigger("Knockback");
 		GetComponent<AudioSource>().PlayOneShot( screech );
+		GetComponent<Rigidbody>().isKinematic = false;
 	}
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)
@@ -302,7 +303,7 @@ public class WraithController : BaseClass, ICreature {
 			if( distance < nearby )
 			{
 				victory( false );
-				StartCoroutine( fadeLookAtPosition( 0.2f, 2.5f, 0.9f ) );
+				StartCoroutine( fadeOutLookAtPosition( 0.2f, 2f + Random.value * 2f, 0.9f ) );
 			}
 		}
 	}
@@ -319,6 +320,7 @@ public class WraithController : BaseClass, ICreature {
 		{
 			capsuleColliders[i].enabled = true;
 		}
+		GetComponent<Rigidbody>().isKinematic = true;
 	}
 
 	public void Start_Weapon_Trail ( AnimationEvent eve )
@@ -344,6 +346,10 @@ public class WraithController : BaseClass, ICreature {
 			float distance = Vector3.Distance(player.position,transform.position);
 			if( distance < 24f )			
 			{
+				if( !lookAtActive )
+				{
+ 					StartCoroutine( fadeInLookAtPosition( 0.8f, 0.7f ) );
+				} 
 				anim.SetLookAtPosition( player.position );
 				anim.SetLookAtWeight( lookAtWeight, bodyWeight, headWeight, eyesWeight, clampWeight );
 			}
@@ -363,7 +369,7 @@ public class WraithController : BaseClass, ICreature {
 		return Vector3.Dot( heading.normalized, transform.forward );
 	}
 
-	public IEnumerator fadeLookAtPosition( float finalWeight, float stayDuration, float fadeDuration )
+	IEnumerator fadeOutLookAtPosition( float finalWeight, float stayDuration, float fadeDuration )
 	{
 		float elapsedTime = 0;
 		
@@ -374,6 +380,28 @@ public class WraithController : BaseClass, ICreature {
 		elapsedTime = 0;
 		
 		float initialWeight = lookAtWeight;
+		
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			lookAtWeight = Mathf.Lerp( initialWeight, finalWeight, elapsedTime/fadeDuration );
+			yield return new WaitForFixedUpdate();  
+			
+		} while ( elapsedTime < fadeDuration );
+		
+		lookAtWeight = finalWeight;
+	
+	}
+
+	IEnumerator fadeInLookAtPosition( float finalWeight, float fadeDuration )
+	{
+		lookAtActive = true;
+		float elapsedTime = 0;
+
+		//Fade in
+		elapsedTime = 0;
+		
+		float initialWeight = 0;
 		
 		do
 		{
