@@ -99,6 +99,7 @@ public class LevelData : MonoBehaviour {
 			Quaternion sunDirection;
 			string skyBoxName;
 			RenderSettings.ambientLight = new Color(0,0,0);
+			RenderSettings.fog = false;
 
 			switch (sunType)
 			{
@@ -136,6 +137,14 @@ public class LevelData : MonoBehaviour {
 				shadowStrength = 0.8f;
 				sunDirection = Quaternion.Euler( 80f,119f,42f );
 				Sun.GetComponent<Light>().color = new Color(0.796f,0.796f,0.796f); //greyish
+				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
+				RenderSettings.ambientIntensity = 1.1f;
+				RenderSettings.fog = true;
+				RenderSettings.fogMode = FogMode.Linear;
+				RenderSettings.fogColor = new Color(0.447f,0.698f,0.917f); //blueish
+				RenderSettings.fogStartDistance = 20f;
+				RenderSettings.fogEndDistance = 80f;
+
 				break;
 
 			case SunType.Night:
