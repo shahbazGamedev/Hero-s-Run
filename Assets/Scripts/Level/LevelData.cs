@@ -13,7 +13,8 @@ public enum SunType
 	Hell = 5,
 	Overcast = 6,
 	Cemetery = 7,
-	Elfland = 8
+	Elfland = 8,
+	Blizzard = 9
 }
 
 public enum LevelType 
@@ -38,8 +39,8 @@ public class LevelData : MonoBehaviour {
 
 	public List<LevelInfo> levelList = new List<LevelInfo>();
 
-	public const int NUMBER_OF_EPISODES = 6;
-	public const int NUMBER_OF_LEVELS = 15;
+	public const int NUMBER_OF_EPISODES = 7;
+	public const int NUMBER_OF_LEVELS = 16;
 	GameObject cutSceneCamera;
 	//This should be the directional light in the scene
 	GameObject Sun;
@@ -128,6 +129,15 @@ public class LevelData : MonoBehaviour {
 				Sun.GetComponent<Light>().color = Color.white;
 				break;
 								
+			case SunType.Blizzard:
+				skyBoxName = "Blizzard";
+				lightIntensity = 0.5f;
+				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
+				shadowStrength = 0.8f;
+				sunDirection = Quaternion.Euler( 80f,119f,42f );
+				Sun.GetComponent<Light>().color = new Color(0.796f,0.796f,0.796f); //greyish
+				break;
+
 			case SunType.Night:
 				skyBoxName = "Skybox_Cartoon_Night";
 				lightIntensity = 0.65f;

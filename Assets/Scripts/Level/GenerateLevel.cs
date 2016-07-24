@@ -14,6 +14,7 @@ public enum SegmentTheme {
 		Battlefield = 7,
 		Hell_Caverns = 8,
 		Hell_Fortress = 9,
+		Blizzard = 10
 
 }
 
@@ -122,7 +123,7 @@ public class GenerateLevel  : MonoBehaviour {
 	Dictionary<TutorialEvent,int> tutorialStartTileIndex = new Dictionary<TutorialEvent, int>(NUMBER_OF_TUTORIALS);
 
 	//To improve performance by preloading prefabs and avoiding reloading tile prefabs that have previously been loaded.
-	const int NUMBER_OF_THEMES = 6; //Island, Forest, Fairyland, Cemetery, Hell and Volcano. TUTORIAL does not use tilePrefabsPerTheme.
+	const int NUMBER_OF_THEMES = 7; //Island, Forest, Fairyland, Cemetery, Hell and Volcano. TUTORIAL does not use tilePrefabsPerTheme.
 	Dictionary<SegmentTheme,Dictionary<TileType,GameObject>> tilePrefabsPerTheme  = new Dictionary<SegmentTheme,Dictionary<TileType,GameObject>>(NUMBER_OF_THEMES);
 
 	//For the endless running game mode
