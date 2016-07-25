@@ -105,9 +105,8 @@ public class GenerateLevel  : MonoBehaviour {
 	//This number is used to make sure that the subsequent tiles are at the proper height.
 	float  tileEndHeight = 0;
 
-	//The number of visible tiles at any given time (all other tiles are deactivated)
-	const int DEFAULT_NBR_VISIBLE_TILES = 3; 
-	int nbrVisibleTiles = DEFAULT_NBR_VISIBLE_TILES;
+	//The number of visible tiles at any given time (all other tiles are deactivated). This value is obtained from levelInfo.
+	int nbrVisibleTiles = 0;
 	
 	//For randomizing power ups
 	PowerUpManager powerUpManager;
@@ -232,7 +231,9 @@ public class GenerateLevel  : MonoBehaviour {
 		{
 			surroundingPlane.gameObject.SetActive( false );
 		}
-		
+
+		nbrVisibleTiles = levelInfo.nbrVisibleTiles;
+
 		if( levelInfo.isTutorial )
 		{
 			//The tutorial uses addCustomTile and not the regular system.
@@ -1878,16 +1879,6 @@ public class GenerateLevel  : MonoBehaviour {
 	TileType getTileType( GameObject tile )
 	{
 		return getSegmentInfo(tile).tileType;
-	}
-
-	public void setNumberVisibleTiles ( int nbrTiles )
-	{
-		nbrVisibleTiles = nbrTiles;
-	}
-	
-	public void resetNumberVisibleTiles ()
-	{
-		nbrVisibleTiles = DEFAULT_NBR_VISIBLE_TILES;
 	}
 
 }

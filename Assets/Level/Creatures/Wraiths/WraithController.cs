@@ -74,7 +74,7 @@ public class WraithController : BaseClass, ICreature {
 
 	void configureSelectedWeapon()
 	{
-		if( attackType != AttackType.walk_and_talk )
+		if( attackType == AttackType.charge_and_attack || attackType == AttackType.stand_and_big_attack || attackType == AttackType.stand_and_normal_attack )
 		{
 			if( weaponType == WeaponType.Scythe )
 			{

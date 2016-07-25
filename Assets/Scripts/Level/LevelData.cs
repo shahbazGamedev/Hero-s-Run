@@ -132,9 +132,9 @@ public class LevelData : MonoBehaviour {
 								
 			case SunType.Blizzard:
 				skyBoxName = "Blizzard";
-				lightIntensity = 0.5f;
+				lightIntensity = 0.4f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
-				shadowStrength = 0.8f;
+				shadowStrength = 0.7f;
 				sunDirection = Quaternion.Euler( 80f,119f,42f );
 				Sun.GetComponent<Light>().color = new Color(0.796f,0.796f,0.796f); //greyish
 				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
@@ -297,6 +297,9 @@ public class LevelData : MonoBehaviour {
 		public int powerUpDensity = 4;
 		[Tooltip("The type of tile that the player will start on.")]
 		public TileType startTile = TileType.Start;
+		[Tooltip("The number of visible tiles active. The higher the number, the worth the performance.")]
+		[Range(1,6)]
+		public int nbrVisibleTiles = 3;
 		[Tooltip("The length in meters of the level. This value is calculated when the level is created.")]
 		public float lengthInMeters = 0;
 		[Header("Road Segments")]
