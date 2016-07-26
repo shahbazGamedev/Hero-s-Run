@@ -61,6 +61,10 @@ public class PlayerController : BaseClass {
 	public AudioClip 	landGroundSound;
 	public AudioClip 	landWaterSound;
 	public AudioClip 	deathFireSound;
+	public AudioClip 	snowFootstepLeftSound;
+	public AudioClip 	snowFootstepRightSound;
+	AudioClip leftFootstep;	//Footsteps sounds to use for current ground type
+	AudioClip rightFootstep;
 
 	//Particles
 	public ParticleSystem dustPuff;
@@ -112,6 +116,9 @@ public class PlayerController : BaseClass {
 	float runStartSpeed = 0;
 	//The running speed will increase with time to make it harder for the player,
 	public static float runSpeed = 0;
+	public float scrambleBoost = 0;
+	public float scrambleDecay = 0.008f;
+	public float runSpeedAtTimeStartedSlipping = 0;
 	//The run speed at time of death is needed because we want to start running again (in case of revive) at a 
 	//percentage of this value.
 	float runSpeedAtTimeOfDeath = 0;
@@ -258,7 +265,8 @@ public class PlayerController : BaseClass {
 	public string reasonDiedAtTurn;
 
 	public ParticleSystem lavaSpurt; //Plays when player falls into lava
-	public string groundType = "normal"; //Other choice is water
+	public string groundType = "normal"; //Other choices are water, collapsing and slippery
+	public string previousGroundType = "normal"; //Other choices are water, collapsing and slippery
 	public ParticleSystem slideWaterSplash; //Plays when player slides in water.It loops.
 
 	public GameObject Hero_Prefab;
@@ -318,6 +326,10 @@ public class PlayerController : BaseClass {
 		//For power ups
 		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
 		powerUpManager = (PowerUpManager) powerUpManagerObject.GetComponent("PowerUpManager");
+
+		//Default footsteps
+		leftFootstep = footstepLeftSound;
+		rightFootstep = footstepRightSound;
 
 	}
 
@@ -978,6 +990,13 @@ public class PlayerController : BaseClass {
 			//1) Get the direction of the player
 			forward = transform.TransformDirection(Vector3.forward);			
 			//2) Scale vector based on run speed
+			if( groundType == "Slippery")
+			{
+				runSpeed = -3f + scrambleBoost;
+				scrambleBoost = scrambleBoost - scrambleDecay;
+				if( scrambleBoost < 0 ) scrambleBoost = 0;
+				if( runSpeed < -3f ) runSpeed = -3f;
+			}
 			forward = forward * Time.deltaTime * runSpeed;
 			//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
 			forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
@@ -1167,57 +1186,68 @@ public class PlayerController : BaseClass {
 	{
 		if( playerControlsEnabled )
 		{
-			if( jumping )
+			if( groundType.Equals("Slippery") )
 			{
-				//Delay the second jump request until we are on the ground
-				//Cancel any slide queue since we can only queue one movement at a time
-				queueJump = true;
+				queueJump = false;
 				queueSlide = false;
+				scrambleBoost = scrambleBoost + 1f;
+				if( scrambleBoost > 5f ) scrambleBoost = 5f;
+
 			}
-	
-			//Only allow a jump if we are not already jumping and if we are on the ground.
-			//However, if the ground type below the player is of type Collapsing, still allow him to jump.
-			//The Collapsing tag is used in the CollapsingBridge code.
-			if (_characterState != CharacterState.Jumping && ( distanceToGround < 0.5f || groundType == "Collapsing" ) )
+			else
 			{
-				//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
-				moveDirection.x = 0;
-				
-				//Make sure the lane data is correct in case a collision forced us out of our lane
-				recalculateCurrentLane();
-
-				//We are allowed to jump from the slide state.
-				GetComponent<AudioSource>().Stop ();							//stop the sliding sound if any
-				dustPuff.Stop();						//stop the dust puff that loops while we are sliding
-				slideWaterSplash.Stop();
-				deactivateOverheadObstacles( false );	//reactivate overhead obstacles since they would have been deactivated if we were sliding
-
-				jumping = true;
-				trollController.jump();
-
-				//Memorize the run speed
-				runSpeedBeforeJump = runSpeed;
-				//Lower the run speed during a jump
-				runSpeed = runSpeed * JUMP_RUN_SPEED_MODIFIER;
-				//Don't go lower then levelRunStartSpeed
-				if( runSpeed < levelRunStartSpeed ) runSpeed = levelRunStartSpeed;
-				//Don't accelerate during a jump (also it would reset the runSpeed variable).
-				allowRunSpeedToIncrease = false;
-				setCharacterState( CharacterState.Jumping );
-				if( doingDoubleJump )
+				if( jumping )
 				{
-					moveDirection.y = doubleJumpSpeed;
-					anim.SetTrigger(Double_JumpTrigger);
-					boots_of_jumping.incrementCounter();
+					//Delay the second jump request until we are on the ground
+					//Cancel any slide queue since we can only queue one movement at a time
+					queueJump = true;
+					queueSlide = false;
 				}
-				else
+		
+				//Only allow a jump if we are not already jumping and if we are on the ground.
+				//However, if the ground type below the player is of type Collapsing, still allow him to jump.
+				//The Collapsing tag is used in the CollapsingBridge code.
+				if (_characterState != CharacterState.Jumping && ( distanceToGround < 0.5f || groundType == "Collapsing" ) )
 				{
-					moveDirection.y = jumpSpeed;
-					anim.SetTrigger(JumpTrigger);
+					//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
+					moveDirection.x = 0;
+					
+					//Make sure the lane data is correct in case a collision forced us out of our lane
+					recalculateCurrentLane();
+	
+					//We are allowed to jump from the slide state.
+					GetComponent<AudioSource>().Stop ();							//stop the sliding sound if any
+					dustPuff.Stop();						//stop the dust puff that loops while we are sliding
+					slideWaterSplash.Stop();
+					deactivateOverheadObstacles( false );	//reactivate overhead obstacles since they would have been deactivated if we were sliding
+	
+					jumping = true;
+					trollController.jump();
+	
+					//Memorize the run speed
+					runSpeedBeforeJump = runSpeed;
+					//Lower the run speed during a jump
+					runSpeed = runSpeed * JUMP_RUN_SPEED_MODIFIER;
+					//Don't go lower then levelRunStartSpeed
+					if( runSpeed < levelRunStartSpeed ) runSpeed = levelRunStartSpeed;
+					//Don't accelerate during a jump (also it would reset the runSpeed variable).
+					allowRunSpeedToIncrease = false;
+					setCharacterState( CharacterState.Jumping );
+					if( doingDoubleJump )
+					{
+						moveDirection.y = doubleJumpSpeed;
+						anim.SetTrigger(Double_JumpTrigger);
+						boots_of_jumping.incrementCounter();
+					}
+					else
+					{
+						moveDirection.y = jumpSpeed;
+						anim.SetTrigger(JumpTrigger);
+					}
+					//for debugging
+					//remove jump sound for now because it is annoying
+					//playSound( jumpingSound, false );
 				}
-				//for debugging
-				//remove jump sound for now because it is annoying
-				//playSound( jumpingSound, false );
 			}
 		}
 	}
@@ -1661,6 +1691,8 @@ public class PlayerController : BaseClass {
 	{
 		if( playerControlsEnabled )
 		{
+			if( groundType.Equals("Slippery") ) return;
+
 			if( _characterState != CharacterState.SideMove )
 			{
 				if( jumping )
@@ -1797,12 +1829,71 @@ public class PlayerController : BaseClass {
 		}
 
 	}
+
+	void groundTypeChanged()
+	{
+		print("PlayerController-groundTypeChanged from " + previousGroundType + " to " + groundType );
+		if( groundType == "Slippery" )
+		{
+			StopCoroutine( "accelerateAfterSlipping" );
+			trollController.stopPursuing();
+			allowRunSpeedToIncrease = false;
+			runSpeedAtTimeStartedSlipping = runSpeed;
+			print("PlayerController-start slipping " + runSpeedAtTimeStartedSlipping );
+		}
+		else if( groundType != "Slippery" && previousGroundType == "Slippery" )
+		{
+			print("PlayerController-stop slipping" );
+			StartCoroutine( "accelerateAfterSlipping" );
+		}
+		//Setup proper footsteps
+		if( groundType == "Water" )
+		{
+			leftFootstep = footstepWaterSound;
+			rightFootstep = footstepWaterSound;
+		}
+		else if( groundType == "Snow"  )
+		{
+			leftFootstep = snowFootstepLeftSound;
+			rightFootstep = snowFootstepRightSound;
+		}
+		else
+		{
+			leftFootstep = footstepLeftSound;
+			rightFootstep = footstepRightSound;
+		}
+
+	}
+
+	IEnumerator accelerateAfterSlipping()
+	{
+		float duration = 3.5f;
+		float elapsedTime = 0;
+		float currentRunSpeed = runSpeed;
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			runSpeed = Mathf.Lerp( currentRunSpeed, runSpeedAtTimeStartedSlipping, elapsedTime/duration );
+			yield return _sync();
+		} while ( elapsedTime < duration );
+
+		//Fix any left-overs
+		runSpeed = runSpeedAtTimeStartedSlipping;
+		timeSessionStarted = Time.time;
+		allowRunSpeedToIncrease = true;
+	}
+
 	
 	void OnControllerColliderHit (ControllerColliderHit hit )
 	{
 		if( _characterState != CharacterState.Dying )
 		{
-			groundType = hit.gameObject.tag; 
+			groundType = hit.gameObject.tag;
+			if( groundType != previousGroundType )
+			{
+				groundTypeChanged();
+			}
+			previousGroundType = groundType;
 
 			//The CharacterController is constantly colliding with the Quads making up the floor. Ignore those events.
 			if (hit.collider.name == "Quad" || hit.collider.name == "Floor" ) return;
@@ -2696,22 +2787,12 @@ public class PlayerController : BaseClass {
 
 	public void Footstep_left ( AnimationEvent eve )
 	{
-		if( groundType != "Water" )
-		{
-			GetComponent<AudioSource>().PlayOneShot( footstepLeftSound, 0.1f );
-		}
-		else
-		{
-			//GetComponent<AudioSource>().PlayOneShot( footstepWaterSound, 0.1f );
-		}
+		GetComponent<AudioSource>().PlayOneShot( leftFootstep, 0.1f );
 	}
 
 	public void Footstep_right ( AnimationEvent eve )
 	{
-		if( groundType != "Water" )
-		{
-			GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.1f );
-		}
+		GetComponent<AudioSource>().PlayOneShot( rightFootstep, 0.1f );
 	}
 
 	public void Land_sound ( AnimationEvent eve )
@@ -2997,7 +3078,7 @@ public class PlayerController : BaseClass {
 			Transform respawn = respawnLocationObject.transform;
 			RaycastHit hit;
 			float groundHeight = 0f;
-	        if (Physics.Raycast(respawn.position, Vector3.down, out hit, 2.0F ))
+	        if (Physics.Raycast(respawn.position, Vector3.down, out hit, 4.0F ))
 			{
 				groundHeight = hit.point.y;
 			}
