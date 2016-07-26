@@ -116,8 +116,8 @@ public class PlayerController : BaseClass {
 	float runStartSpeed = 0;
 	//The running speed will increase with time to make it harder for the player,
 	public static float runSpeed = 0;
-	public float scrambleBoost = 0;
-	public float scrambleDecay = 0.008f;
+	float scrambleBoost = 0;
+	float scrambleDecay = 100f;
 	public float runSpeedAtTimeStartedSlipping = 0;
 	//The run speed at time of death is needed because we want to start running again (in case of revive) at a 
 	//percentage of this value.
@@ -992,10 +992,10 @@ public class PlayerController : BaseClass {
 			//2) Scale vector based on run speed
 			if( groundType == "Slippery")
 			{
-				runSpeed = -3f + scrambleBoost;
-				scrambleBoost = scrambleBoost - scrambleDecay;
+				runSpeed = -4f + ( scrambleBoost * Time.deltaTime );
+				scrambleBoost = scrambleBoost - ( scrambleDecay * Time.deltaTime );
 				if( scrambleBoost < 0 ) scrambleBoost = 0;
-				if( runSpeed < -3f ) runSpeed = -3f;
+				if( runSpeed < -4f ) runSpeed = -4f;
 			}
 			forward = forward * Time.deltaTime * runSpeed;
 			//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
@@ -1190,8 +1190,8 @@ public class PlayerController : BaseClass {
 			{
 				queueJump = false;
 				queueSlide = false;
-				scrambleBoost = scrambleBoost + 1f;
-				if( scrambleBoost > 5f ) scrambleBoost = 5f;
+				scrambleBoost = scrambleBoost + 90f;
+				if( scrambleBoost > 500f ) scrambleBoost = 500f;
 
 			}
 			else
@@ -1837,6 +1837,7 @@ public class PlayerController : BaseClass {
 		{
 			StopCoroutine( "accelerateAfterSlipping" );
 			trollController.stopPursuing();
+			scrambleBoost = 0;
 			allowRunSpeedToIncrease = false;
 			runSpeedAtTimeStartedSlipping = runSpeed;
 			print("PlayerController-start slipping " + runSpeedAtTimeStartedSlipping );
