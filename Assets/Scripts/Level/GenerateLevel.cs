@@ -1788,9 +1788,10 @@ public class GenerateLevel  : MonoBehaviour {
 
 
 			//Activate nbrVisiblesTiles to the right
-			if( playerTileIndex + 5 < worldRoadSegments.Count ) worldRoadSegments[playerTileIndex + 5].SetActive(true);
-			if( playerTileIndex + 6 < worldRoadSegments.Count ) worldRoadSegments[playerTileIndex + 6].SetActive(true);
-			if( playerTileIndex + 7 < worldRoadSegments.Count ) worldRoadSegments[playerTileIndex + 7].SetActive(true);
+			for( int i = ( playerTileIndex + 5 ); i < ( playerTileIndex + 5 + nbrVisibleTiles ); i++ )
+			{
+				if( i < worldRoadSegments.Count ) worldRoadSegments[i].SetActive(true);
+			}
 
 			//Adjust player tile index
 			playerTileIndex = playerTileIndex + 4;
