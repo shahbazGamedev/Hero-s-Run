@@ -3096,6 +3096,7 @@ public class PlayerController : BaseClass {
 			transform.SetParent( null );
 			tileRotationY = Mathf.Floor ( transform.eulerAngles.y );
 			transform.GetComponent<Collider>().enabled = true;
+			sc.positionCameraNow();
 		}
 		else
 		{
