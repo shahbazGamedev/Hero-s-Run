@@ -117,7 +117,7 @@ public class PlayerController : BaseClass {
 	//The running speed will increase with time to make it harder for the player,
 	public static float runSpeed = 0;
 	float scrambleBoost = 0;
-	float scrambleDecay = 100f;
+	float scrambleDecay = 140f;
 	public float runSpeedAtTimeStartedSlipping = 0;
 	//The run speed at time of death is needed because we want to start running again (in case of revive) at a 
 	//percentage of this value.
@@ -992,10 +992,10 @@ public class PlayerController : BaseClass {
 			//2) Scale vector based on run speed
 			if( groundType == "Slippery")
 			{
-				runSpeed = -4f + ( scrambleBoost * Time.deltaTime );
+				runSpeed = -5f + ( scrambleBoost * Time.deltaTime );
 				scrambleBoost = scrambleBoost - ( scrambleDecay * Time.deltaTime );
 				if( scrambleBoost < 0 ) scrambleBoost = 0;
-				if( runSpeed < -4f ) runSpeed = -4f;
+				if( runSpeed < -5f ) runSpeed = -5f;
 			}
 			forward = forward * Time.deltaTime * runSpeed;
 			//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.

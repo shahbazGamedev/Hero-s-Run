@@ -132,9 +132,9 @@ public class LevelData : MonoBehaviour {
 								
 			case SunType.Blizzard:
 				skyBoxName = "Blizzard";
-				lightIntensity = 0.4f;
+				lightIntensity = 0.3f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
-				shadowStrength = 0.7f;
+				shadowStrength = 0.6f;
 				sunDirection = Quaternion.Euler( 80f,119f,42f );
 				Sun.GetComponent<Light>().color = new Color(0.796f,0.796f,0.796f); //greyish
 				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
