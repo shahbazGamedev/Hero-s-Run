@@ -59,6 +59,7 @@ public class PushRigidBodies : MonoBehaviour {
 		Rigidbody[] rigidBodies = GetComponentsInChildren<Rigidbody>();
 		for( int i = 0; i < rigidBodies.Length; i++ )
 		{
+			rigidBodies[i].isKinematic = false;
 			rigidBodies[i].AddForce( forceToApply );
 			rigidBodies[i].AddTorque( torqueToApply );
 			Destroy( rigidBodies[i].gameObject, 10f );
