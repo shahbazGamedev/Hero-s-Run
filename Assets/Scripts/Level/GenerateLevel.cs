@@ -1276,7 +1276,7 @@ public class GenerateLevel  : MonoBehaviour {
 		//Debug.Log("GenerateLevel-getSegmentTile: previous angle: " + previousRotY );
 
 		//Straight section
-		if( Random.value < 0.6f )
+		if( Random.value < 0.7f )
 		{
 			float rdLog = Random.value;
 			if( rdLog < 0.1f )

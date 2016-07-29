@@ -238,7 +238,7 @@ public class TrollController : MonoBehaviour {
 		case TrollState.Laughing:
 			GetComponent<Animation>().CrossFade("Laugh",0.6f);
 			Invoke ("goBackToIdleAfterLaugh", 2.799f );
-			GetComponent<AudioSource>().PlayOneShot( laugh );
+			GetComponent<AudioSource>().PlayOneShot( laugh, 0.7f );
 			break;
 		}
 	}
