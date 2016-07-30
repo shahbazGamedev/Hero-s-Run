@@ -2291,7 +2291,6 @@ public class PlayerController : BaseClass {
 			//Disable the collider
 			other.enabled = false;
 			PlayerStatsManager.Instance.modifyCoinCount( other.gameObject );
-			CoinManager.playCoinPickupSound();
 			//We don't want it to turn while flying up
 			Destroy ( other.GetComponent ( "Rotator" ) );
 			StartCoroutine( moveCoin( other.transform ) );

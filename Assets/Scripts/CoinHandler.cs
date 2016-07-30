@@ -22,7 +22,7 @@ public class CoinHandler : MonoBehaviour {
 		if( Random.value <= chanceAvailable )
 		{
 			gameObject.SetActive( true );
-			CoinManager.realNumberCoinsSpawned = CoinManager.realNumberCoinsSpawned + totalValueOfCoins;
+			CoinManager.coinManager.realNumberCoinsSpawned = CoinManager.coinManager.realNumberCoinsSpawned + totalValueOfCoins;
 			if( starPackHeight != StarPackHeight.Keep_Current_Value )
 			{
 				//Place the star pack at the right height

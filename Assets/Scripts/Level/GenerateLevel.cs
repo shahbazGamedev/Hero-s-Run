@@ -276,7 +276,7 @@ public class GenerateLevel  : MonoBehaviour {
 		SoundManager.soundManager.setMusicTrack( levelInfo.MusicTrack );
 
 		Debug.Log("GenerateLevel-CreateLevel: Level " + levelInfo.LevelName + " has been created." );
-		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.realNumberCoinsSpawned );
+		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
 		Debug.Log("GenerateLevel-CreateLevel: The level length in meters is : " + levelInfo.lengthInMeters );
 
 	}

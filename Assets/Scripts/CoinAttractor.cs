@@ -79,7 +79,6 @@ public class CoinAttractor : BaseClass {
 			//Disable the collider
 			other.enabled = false;
 			PlayerStatsManager.Instance.modifyCoinCount( other.gameObject );
-			CoinManager.playCoinPickupSound();
 			StartCoroutine( attractCoin( other.transform ) );
 		}
 	}
@@ -94,7 +93,6 @@ public class CoinAttractor : BaseClass {
 			if( hitColliders[i].name.StartsWith( "Coin" ) )
 			{
 				PlayerStatsManager.Instance.modifyCoinCount( hitColliders[i].gameObject );
-				CoinManager.playCoinPickupSound();
 				StartCoroutine( attractCoin( hitColliders[i].transform ) );
 			}
             i++;
