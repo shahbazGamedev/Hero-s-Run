@@ -14,7 +14,7 @@ public class SegmentInfo : MonoBehaviour {
 	public const int CURVE_DISTANCE_STEPS = 200;
 	//This flag is used to avoid tileEntranceCrossed being called multiple time which can happen with onTriggerEnter
 	public bool entranceCrossed = false;
-
+	public bool addJumpBoost = false; //If true, give an extra boost when jumping
 	public bool isCheckpoint = false;
 	public bool isFirstTileOfLevel = false;
 	public float tileEndHeight = 0; //if not zero, the height of the NEXT tile will be adjusted
