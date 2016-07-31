@@ -21,6 +21,10 @@ public class GoblinController : BaseClass, ICreature {
 	[Header("Barrel")]
 	[Tooltip("The breakable barrel that the goblin will push on top of the player.")]
 	public Rigidbody barrel;
+	[Tooltip("The forward (based on the goblin's transform) force to apply on the barrel.")]
+	public float barrelForwardForce = 1300f; //Based on 10 kilograms
+	[Tooltip("Player distance multiplier used to decide to throw barrel.")]
+	public float barrelPlayerDistanceMultiplier = 1.45f;
 	[Tooltip("Whether or not the goblin should play a diabolical laughter before pushing the barrel.")]
 	public bool playGoblinTaunt = false;
 	[Tooltip("Speed at which to lock on player.")]
@@ -178,7 +182,7 @@ public class GoblinController : BaseClass, ICreature {
 					}
 					break;
 				case AttackType.Throw_Barrel:
-					attackDistance = 1.45f * PlayerController.getPlayerSpeed();
+					attackDistance = barrelPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -271,9 +275,10 @@ public class GoblinController : BaseClass, ICreature {
 
 	void throwBarrel()
 	{
-		if( playGoblinTaunt ) GetComponent<AudioSource>().PlayOneShot( win );
+		if( playGoblinTaunt ) GetComponent<AudioSource>().PlayOneShot( win, 0.7f );
 		//Push barrels in the direction of the goblin and add a small upward force
-		Vector3 forces = transform.forward * 1300f + new Vector3( 0, 400f, 0 );
+		Vector3 forces = transform.forward * barrelForwardForce + new Vector3( 0, 400f, 0 );
+		barrel.isKinematic = false;
 		barrel.AddForce( forces );
 		barrel.AddTorque( new Vector3( 0, 300f, 0 ) );
 		GetComponent<Animator>().CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );

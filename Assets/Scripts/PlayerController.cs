@@ -110,6 +110,7 @@ public class PlayerController : BaseClass {
 	bool playerMovementEnabled = true;
 	public float jumpSpeed = 8.8f;
 	public float doubleJumpSpeed = 12.4f;
+	public float slopeJumpSpeed = 15f;
 	public float sideMoveSpeed = 6f; 
 	//when a new level starts or if the player dies and he is revived, he will
 	//start running at runStartSpeed.
@@ -1233,7 +1234,14 @@ public class PlayerController : BaseClass {
 					//Don't accelerate during a jump (also it would reset the runSpeed variable).
 					allowRunSpeedToIncrease = false;
 					setCharacterState( CharacterState.Jumping );
-					if( doingDoubleJump )
+					if( currentTileType == TileType.Straight_Slope )
+					{
+						//if you are on a steep slope, the normal jump speed is insufficient to make you feel you are jumping high.
+						//So use a higher value instead.
+						moveDirection.y = slopeJumpSpeed;
+						anim.SetTrigger(JumpTrigger);
+					}
+					else if( doingDoubleJump )
 					{
 						moveDirection.y = doubleJumpSpeed;
 						anim.SetTrigger(Double_JumpTrigger);
