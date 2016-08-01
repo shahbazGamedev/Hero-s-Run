@@ -84,6 +84,8 @@ public class PlayerStatsManager {
 	//The value for a specific episode is reset when the player restarts that episode.
 	int[] deathInLevelsArray = new int[LevelData.NUMBER_OF_LEVELS];
 
+	List<string> treasureKeysFound = new List<string>();
+
 	//For debugging
 	//Cheat
 	bool hasInfiniteLives = false;
@@ -555,6 +557,71 @@ public class PlayerStatsManager {
 		increaseTreasureKeysOwned(1);
 	}
 
+	void loadTreasureKeysFound()
+	{
+		string treasureKeysFoundString = PlayerPrefs.GetString("treasureKeysFound", "" );
+		treasureKeysFound.Clear();
+		if( treasureKeysFoundString == "" )
+		{
+			//treasureKeysFound just stays empty because this is a new player
+		}
+		else
+		{
+			try
+			{
+				string[] TreasureKeysFoundStringArray = treasureKeysFoundString.Split(',');
+				Debug.Log ("loadTreasureKeysFound " + treasureKeysFoundString + " length " + TreasureKeysFoundStringArray.Length );
+				for( int i = 0; i < TreasureKeysFoundStringArray.Length; i++ )
+				{
+					treasureKeysFound.Add( TreasureKeysFoundStringArray[i] );
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.LogWarning("PlayerStatsManager-exception occured in loadTreasureKeysFound: " + e.Message + " Resetting stats to default values.");
+				PlayerPrefs.DeleteAll();
+			}
+		}
+	}
+
+	void saveTreasureKeysFound()
+	{
+		string result = "";
+		for( int i = 0; i < treasureKeysFound.Count; i++ )
+		{
+			result = result + treasureKeysFound[i].ToString() + ",";
+		}
+		result = result.TrimEnd(',');
+		Debug.Log("saveTreasureKeysFound " + result );
+		PlayerPrefs.SetString("treasureKeysFound", result );
+	}
+
+	public void resetTreasureKeysFound()
+	{
+		treasureKeysFound.Clear();
+		PlayerPrefs.SetString("treasureKeysFound", "" );
+	}
+
+	public void foundTreasureKey( string treasureKeyID )
+	{
+		if( treasureKeysFound.Contains( treasureKeyID ) )
+		{
+			//Ignore. We already have found that key.
+			Debug.LogWarning( "PlayerStatsManager-foundTreasureKey: ignoring because we already have key: " + treasureKeyID );
+		}
+		else
+		{
+			treasureKeysFound.Add( treasureKeyID );
+			saveTreasureKeysFound();
+			PlayerStatsManager.Instance.savePlayerStats();
+		}
+	}
+
+	public bool hasThisTreasureKeyBeenFound( string treasureKeyID )
+	{
+		return treasureKeysFound.Contains( treasureKeyID );
+	}
+
 	//Used to identify if the player is a new user and it is his first time launching the game
 	public bool isFirstTimePlaying()
 	{
@@ -872,6 +939,7 @@ public class PlayerStatsManager {
 			loadDisplayStars();
 			loadDeathInLevels();
 			loadKeysFoundInEpisode();
+			loadTreasureKeysFound();
 			powerUpSelected = (PowerUpType)PlayerPrefs.GetInt("powerUpSelected", (int)PowerUpType.SlowTime);
 			difficultyLevel = (DifficultyLevel)PlayerPrefs.GetInt("difficultyLevel", (int)DifficultyLevel.Normal);
 			avatar = (Avatar)PlayerPrefs.GetInt("avatar", (int)Avatar.None);
@@ -949,6 +1017,7 @@ public class PlayerStatsManager {
 		saveDisplayStars();
 		saveDeathInLevels();
 		saveKeysFoundInEpisode();
+		saveTreasureKeysFound();
 		PlayerPrefs.SetInt("powerUpSelected", (int)powerUpSelected );
 		PlayerPrefs.SetInt("difficultyLevel", (int)difficultyLevel );
 		PlayerPrefs.SetInt("avatar", (int)avatar );
@@ -994,6 +1063,7 @@ public class PlayerStatsManager {
 		resetDisplayStars();
 		resetDeathInLevels();
 		resetKeysFoundInEpisode();
+		resetTreasureKeysFound();
 		PlayerPrefs.SetInt("powerUpSelected", (int)PowerUpType.SlowTime );
 		powerUpSelected = PowerUpType.SlowTime;
 		PlayerPrefs.SetInt("difficultyLevel", (int)DifficultyLevel.Normal );

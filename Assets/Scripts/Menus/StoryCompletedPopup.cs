@@ -70,6 +70,7 @@ public class StoryCompletedPopup : MonoBehaviour {
 
 		PlayerStatsManager.Instance.resetDeathInLevels();
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
+		PlayerStatsManager.Instance.resetTreasureKeysFound();
 		PlayerStatsManager.Instance.savePlayerStats();
 
 		newWorldMapHandler.drawLevelMarkers();

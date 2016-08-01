@@ -4,6 +4,8 @@ using System.Collections;
 public class TreasureKeyHandler : MonoBehaviour {
 
 	public bool playKeyTutorial = false;
+	[Tooltip("You can only get a key once even if you replay an episode. Keys found only get reset if you complete the game and start over. Eack key has a unique id. The id format is THEME_TILE_NAME_X, where X is a number.")]
+	public string treasureKeyID = "THEME_TILE_NAME_X";
 
 	PlayerController playerController;
 	FairyController fairyController;
@@ -11,14 +13,24 @@ public class TreasureKeyHandler : MonoBehaviour {
 	
 	void Start ()
 	{
-		considerActivatingTreasureKey ();
+		if( treasureKeyID != "THEME_TILE_NAME_X" )
+		{
+			considerActivatingTreasureKey();
+		}
+		else
+		{
+						Debug.LogError("TreasureKeyHandler-treasureKeyID error. The treasureKeyID is using the default value and has not been set in tile: " + transform.parent.name );
+		}
 	}
 
 	private void considerActivatingTreasureKey ()
 	{
-		GameObject treasureKeyPrefab = Resources.Load( "Level/Props/Treasure Key/Treasure Key") as GameObject;
-		GameObject go = (GameObject)Instantiate(treasureKeyPrefab, gameObject.transform.position, gameObject.transform.rotation );
-		go.gameObject.transform.parent = gameObject.transform;
+		if( !PlayerStatsManager.Instance.hasThisTreasureKeyBeenFound( treasureKeyID ) )
+		{
+			GameObject treasureKeyPrefab = Resources.Load( "Level/Props/Treasure Key/Treasure Key") as GameObject;
+			GameObject go = (GameObject)Instantiate(treasureKeyPrefab, gameObject.transform.position, gameObject.transform.rotation );
+			go.gameObject.transform.parent = gameObject.transform;
+		}
 	}
 	
 	public void keyPickedUp()
@@ -40,6 +52,7 @@ public class TreasureKeyHandler : MonoBehaviour {
 			GetComponent<AudioSource>().Play(); //Only play pickup sound when no fairy, because fairy has an "appear" sound
 		}
 		HUDHandler.hudHandler.displayTreasureKeyPickup();
+		PlayerStatsManager.Instance.foundTreasureKey( treasureKeyID );
 	}
 
 	void displayFairyMessage()
