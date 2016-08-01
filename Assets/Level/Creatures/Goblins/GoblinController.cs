@@ -28,7 +28,7 @@ public class GoblinController : BaseClass, ICreature {
 	[Tooltip("Whether or not the goblin should play a diabolical laughter before pushing the barrel.")]
 	public bool playGoblinTaunt = false;
 	[Tooltip("Speed at which to lock on player.")]
-	float enemyAimSpeed = 7.6f;
+	public float enemyAimSpeed = 7.6f;
 	[Tooltip("The bolt fired by the crossbow.")]
 	public GameObject boltPrefab;
 
