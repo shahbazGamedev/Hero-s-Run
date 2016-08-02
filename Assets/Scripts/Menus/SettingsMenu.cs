@@ -25,6 +25,7 @@ public class SettingsMenu : MonoBehaviour {
 	[Header("Restore Purchases")]
 	public Text restorePurchasesText;
 	[Header("Debug Menu")]
+	public Button debugMenuButton;
 	public Text debugMenuText;
 	public Canvas debugMenuCanvas;
 	[Header("Version Number")]
@@ -54,6 +55,14 @@ public class SettingsMenu : MonoBehaviour {
 		privacyPolicyText.text = LocalizationManager.Instance.getText("MENU_PRIVACY_POLICY");
 		restorePurchasesText.text = LocalizationManager.Instance.getText("MENU_RESTORE_PURCHASES");
 		debugMenuText.text = LocalizationManager.Instance.getText("MENU_SHOW_DEBUG");
+		if( Debug.isDebugBuild )
+		{
+			debugMenuButton.gameObject.SetActive( true );
+		}
+		else
+		{
+			debugMenuButton.gameObject.SetActive( false );
+		}
 		versionNumberText.text = "v" + GameManager.Instance.getVersionNumber();
 
 		soundVolumeSlider.value = PlayerStatsManager.Instance.getSoundVolume();
