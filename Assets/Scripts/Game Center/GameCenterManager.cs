@@ -8,7 +8,6 @@ public class GameCenterManager : MonoBehaviour {
 	//Valid achievements
 	//Update achievementsDescriptionDict capacity if you add any.
 	public static string NoviceRunner 	= "novice_runner";		//Ran 1000 meters
-	public static string DragonRider 	= "dragon_rider";		//First flight on a dragon
 	public static string ZombieBowling 	= "zombie_bowling";		//Made 3 zombies fall in a row
 	public static string BarrelCrusher 	= "barrel_crusher";		//Crushed X number of barrels
 	public static string BootsOfJumping = "boots_of_jumping";	//First time used boots of jumping
