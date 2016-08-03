@@ -25,6 +25,8 @@ public class PowerUpManager : BaseClass {
 	public RectTransform magnetPowerUp;
 	public RectTransform shieldPowerUp;
 
+	public Image mapIconPrefab;
+
 	//The player can have multiple powerups active at the same time.
 	//I.e. Magnet and Shield can be active at the same time, but not two magnets.
 	static List<PowerUpType> activePowerUps = new List<PowerUpType>();
@@ -448,6 +450,7 @@ public class PowerUpManager : BaseClass {
 		GameObject powerUpPrefab = powerUpDictionary[type].powerUpToSpawn;
 		GameObject go = (GameObject)Instantiate(powerUpPrefab, powerUpPlaceholder.position, Quaternion.Euler( powerUpPrefab.transform.eulerAngles.x, powerUpPlaceholder.eulerAngles.y, powerUpPrefab.transform.eulerAngles.z ) );
 		go.transform.parent = newTile.transform;
+		MiniMap.miniMap.registerRadarObject( go, mapIconPrefab ); 
 	}
 
 	void OnEnable()

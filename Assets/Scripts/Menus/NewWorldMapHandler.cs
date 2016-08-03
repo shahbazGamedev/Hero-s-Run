@@ -400,6 +400,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		CoreManagers.GetComponent<NotificationServicesHandler>().sendTestLocalNotification();
 		PlayerStatsManager.Instance.resetDeathInLevels();
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
+		PlayerStatsManager.Instance.resetTreasureKeysFound();
 	}
 
 	public void play( int episodeNumber, int levelNumber )

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -328,6 +329,7 @@ public class GoblinController : BaseClass, ICreature {
 	//The goblin falls over backwards, typically because the player slid into him or because of a ZNuke
 	public void knockback()
 	{
+		MiniMap.miniMap.removeRadarObject( this.gameObject ); 
 		setCreatureState( CreatureState.Dying );
 		controller.enabled = false;
 		//The piker has two capsule colliders. The scout, only one.
@@ -356,11 +358,15 @@ public class GoblinController : BaseClass, ICreature {
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
+		GameObject mapIconPrefab = Resources.Load( "MiniMap/Enemy map icon") as GameObject;
+		MiniMap.miniMap.registerRadarObject( this.gameObject, mapIconPrefab.GetComponent<Image>() ); 
+
 	}
 	
 	void OnDisable()
 	{
 		PlayerController.playerStateChanged -= PlayerStateChange;
+		MiniMap.miniMap.removeRadarObject( this.gameObject ); 
 	}
 
 	void PlayerStateChange( CharacterState newState )

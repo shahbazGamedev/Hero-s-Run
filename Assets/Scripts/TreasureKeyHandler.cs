@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class TreasureKeyHandler : MonoBehaviour {
@@ -19,7 +20,7 @@ public class TreasureKeyHandler : MonoBehaviour {
 		}
 		else
 		{
-						Debug.LogError("TreasureKeyHandler-treasureKeyID error. The treasureKeyID is using the default value and has not been set in tile: " + transform.parent.name );
+			Debug.LogError("TreasureKeyHandler-treasureKeyID error. The treasureKeyID is using the default value and has not been set in tile: " + transform.parent.name );
 		}
 	}
 
@@ -53,6 +54,21 @@ public class TreasureKeyHandler : MonoBehaviour {
 		}
 		HUDHandler.hudHandler.displayTreasureKeyPickup();
 		PlayerStatsManager.Instance.foundTreasureKey( treasureKeyID );
+		MiniMap.miniMap.removeRadarObject( this.gameObject ); 
+	}
+
+	void OnEnable()
+	{
+		if( !PlayerStatsManager.Instance.hasThisTreasureKeyBeenFound( treasureKeyID ) )
+		{
+			GameObject mapIconPrefab = Resources.Load( "MiniMap/Enemy map icon") as GameObject;
+			MiniMap.miniMap.registerRadarObject( this.gameObject, mapIconPrefab.GetComponent<Image>() );
+		}
+	}
+	
+	void OnDisable()
+	{
+		MiniMap.miniMap.removeRadarObject( this.gameObject ); 
 	}
 
 	void displayFairyMessage()

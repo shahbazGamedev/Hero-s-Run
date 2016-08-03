@@ -36,6 +36,7 @@ public class PowerUp : MonoBehaviour {
 				//Activate it right away
 				powerUpManager.activatePowerUp( powerUpType );
 			}
+			MiniMap.miniMap.removeRadarObject( this.gameObject ); 
 			Destroy( gameObject );
 		}
     }
