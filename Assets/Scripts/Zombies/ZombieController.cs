@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class ZombieController : BaseClass, ICreature {
+public sealed class ZombieController : Creature, ICreature {
 
 
 	public enum ZombieMoveType {
@@ -100,6 +100,7 @@ public class ZombieController : BaseClass, ICreature {
 
 	public void knockback()
 	{
+		MiniMap.miniMap.removeRadarObject( this.gameObject ); 
 		CancelInvoke( "groan" );
 		setCreatureState( CreatureState.Dying );
 		controller.enabled = false;
@@ -298,12 +299,14 @@ public class ZombieController : BaseClass, ICreature {
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
+		MiniMap.miniMap.registerRadarObject( this.gameObject, mapIconPrefab ); 
 	}
 
 	void OnDisable()
 	{
 		CancelInvoke( "groan" );
 		PlayerController.playerStateChanged -= PlayerStateChange;
+		MiniMap.miniMap.removeRadarObject( this.gameObject ); 
 	}
 
 	void PlayerStateChange( CharacterState newState )

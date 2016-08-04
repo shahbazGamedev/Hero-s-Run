@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class CerberusController : BaseClass, ICreature {
+public sealed class CerberusController : Creature, ICreature {
 
 	[Header("Cerberus Controller")]
 	[Header("General")]

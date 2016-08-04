@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class DemonController : BaseClass, ICreature {
+public sealed class DemonController : Creature, ICreature {
 
 	[Header("Demon Controller")]
 	[Header("General")]

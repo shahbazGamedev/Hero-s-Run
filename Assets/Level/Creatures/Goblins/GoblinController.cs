@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GoblinController : BaseClass, ICreature {
+public sealed class GoblinController : Creature, ICreature {
 
 	[Header("Goblin Controller")]
 	[Header("General")]

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityStandardAssets.ImageEffects;
 
-public class WraithController : BaseClass, ICreature {
+public sealed class WraithController : Creature, ICreature {
 
 	[Header("Wraith Controller")]
 	[Header("General")]
