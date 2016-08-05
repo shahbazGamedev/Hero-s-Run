@@ -7,6 +7,7 @@ public class TreasureKeyHandler : MonoBehaviour {
 	public bool playKeyTutorial = false;
 	[Tooltip("You can only get a key once even if you replay an episode. Keys found only get reset if you complete the game and start over. Eack key has a unique id. The id format is THEME_TILE_NAME_X, where X is a number.")]
 	public string treasureKeyID = "THEME_TILE_NAME_X";
+	public Image mapIconPrefab;
 
 	PlayerController playerController;
 	FairyController fairyController;
@@ -61,8 +62,14 @@ public class TreasureKeyHandler : MonoBehaviour {
 	{
 		if( !PlayerStatsManager.Instance.hasThisTreasureKeyBeenFound( treasureKeyID ) )
 		{
-			GameObject mapIconPrefab = Resources.Load( "MiniMap/Enemy map icon") as GameObject;
-			MiniMap.miniMap.registerRadarObject( this.gameObject, mapIconPrefab.GetComponent<Image>() );
+			if( mapIconPrefab != null )
+			{
+				MiniMap.miniMap.registerRadarObject( this.gameObject, mapIconPrefab );
+			}	
+			else
+			{
+				Debug.LogWarning("TreasureKeyHandler: the map icon prefab parameter for the treasure key located in tile, " + transform.parent.name + ", has not been set." );
+			}
 		}
 	}
 	
