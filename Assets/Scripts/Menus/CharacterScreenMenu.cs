@@ -17,7 +17,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 	Vector3 frontLocation = new Vector3( 0,0,0);			//Selected
 	Vector3 backLeftLocation = new Vector3(-1.6f,0,5.5f); 	//Male
 	Vector3 backRightLocation = new Vector3(1.6f,0,5.5f);	//Female
-	Vector3 nextToPopupLocation = new Vector3(-1f,0.25f,1f);
+	Vector3 nextToPopupLocation = new Vector3(-1f,0f,1f);
 	Animation maleAnimation;
 	Animation femaleAnimation;
 
