@@ -360,8 +360,7 @@ public sealed class GoblinController : Creature, ICreature {
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
-		GameObject mapIconPrefab = Resources.Load( "MiniMap/Enemy map icon") as GameObject;
-		MiniMap.miniMap.registerRadarObject( this.gameObject, mapIconPrefab.GetComponent<Image>() ); 
+		MiniMap.miniMap.registerRadarObject( this.gameObject, mapIconPrefab ); 
 
 	}
 	
