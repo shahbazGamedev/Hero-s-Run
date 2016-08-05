@@ -26,6 +26,8 @@ public sealed class GoblinController : Creature, ICreature {
 	public float barrelForwardForce = 1300f; //Based on 10 kilograms
 	[Tooltip("Player distance multiplier used to decide to throw barrel.")]
 	public float barrelPlayerDistanceMultiplier = 1.45f;
+	[Tooltip("Player distance multiplier used to decide when to jump.")]
+	public float jumpPlayerDistanceMultiplier = 3.3f;
 	[Tooltip("Whether or not the goblin should play a diabolical laughter before pushing the barrel.")]
 	public bool playGoblinTaunt = false;
 	[Tooltip("Speed at which to lock on player.")]
@@ -191,7 +193,7 @@ public sealed class GoblinController : Creature, ICreature {
 					}
 					break;
 				case AttackType.jump_and_attack:
-					float jumpDistance = 3.3f * PlayerController.getPlayerSpeed();
+					float jumpDistance = jumpPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
 					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
 					if( distance < jumpDistance )
 					{
