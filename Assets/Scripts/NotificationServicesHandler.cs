@@ -34,14 +34,6 @@ public class NotificationServicesHandler : MonoBehaviour {
 		localNotificationShortTerm = new UnityEngine.iOS.LocalNotification();
 		localNotificationShortTerm.alertAction = LocalizationManager.Instance.getText("LOCAL_NOTIFICATION_SHORT_TERM_ALERT_ACTION");
 		string alertBody = LocalizationManager.Instance.getText("LOCAL_NOTIFICATION_SHORT_TERM_ALERT_BODY");
-		if( PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
-		{
-			alertBody = alertBody.Replace("<hero name>", LocalizationManager.Instance.getText("GALLERY_NAME_HERO") );
-		}
-		else
-		{
-			alertBody = alertBody.Replace("<hero name>", LocalizationManager.Instance.getText("GALLERY_NAME_HEROINE") );
-		}
 		localNotificationShortTerm.alertBody = alertBody;
 		localNotificationShortTerm.applicationIconBadgeNumber = 1;
 		localNotificationShortTerm.hasAction = true;

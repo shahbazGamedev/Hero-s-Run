@@ -98,6 +98,8 @@ public class PlayerStatsManager {
 	//exactly like their enum counterpart.
 	Avatar avatar = Avatar.None;
 
+	string userName;
+
 	bool ownsStarDoubler = false; //True if the player has purchased the Star Doubler in the store.
 
 	public static PlayerStatsManager Instance
@@ -228,6 +230,17 @@ public class PlayerStatsManager {
 		//Make sure we stay within the range of the available avatars: None = 0, Male_Hero = 1, Female_Hero =2
 		if( index < 1 ) index = 2;
 		return (Avatar)index;
+	}
+
+	public string getUserName()
+	{
+		return userName;
+	}
+	
+	public void saveUserName( string value )
+	{
+		userName = value;
+		savePlayerStats();
 	}
 
 	public void setPowerUpSelected( PowerUpType value )
@@ -943,6 +956,7 @@ public class PlayerStatsManager {
 			powerUpSelected = (PowerUpType)PlayerPrefs.GetInt("powerUpSelected", (int)PowerUpType.SlowTime);
 			difficultyLevel = (DifficultyLevel)PlayerPrefs.GetInt("difficultyLevel", (int)DifficultyLevel.Normal);
 			avatar = (Avatar)PlayerPrefs.GetInt("avatar", (int)Avatar.None);
+			userName = PlayerPrefs.GetString("userName", "" );
 			loadPowerUpInventory();
 			Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " Next Level To Complete: " + nextLevelToComplete + " Highest Level Completed: " + highestLevelCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
@@ -1021,6 +1035,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetInt("powerUpSelected", (int)powerUpSelected );
 		PlayerPrefs.SetInt("difficultyLevel", (int)difficultyLevel );
 		PlayerPrefs.SetInt("avatar", (int)avatar );
+		PlayerPrefs.SetString( "userName", userName );
 		savePowerUpInventory();
 		PlayerPrefs.Save();
 		Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
@@ -1070,6 +1085,7 @@ public class PlayerStatsManager {
 		difficultyLevel = DifficultyLevel.Normal;
 		PlayerPrefs.SetInt("avatar", (int)Avatar.Hero );
 		avatar = Avatar.Hero;
+		PlayerPrefs.SetString( "userName", "" );
 		ClearPowerUpInventory();
 		PlayerPrefs.Save();
 		Debug.Log ("PlayerStatsManager-resetPlayerStats: called.");

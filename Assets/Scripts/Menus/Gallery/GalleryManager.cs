@@ -25,13 +25,11 @@ public class GalleryManager : MonoBehaviour {
 	public AudioClip darkQueenAmbience;
 
 	[Header("Hero")]
-	string heroNameTextId = "GALLERY_NAME_HERO";
 	string heroBioTextId  = "GALLERY_BIO_HERO";
 	public GameObject hero3DGroup;
 	public AudioClip heroAmbience;
 
 	[Header("Heroine")]
-	string heroineNameTextId = "GALLERY_NAME_HEROINE";
 	string heroineBioTextId  = "GALLERY_BIO_HEROINE";
 	public GameObject heroine3DGroup;
 	//Heroine uses the same ambience as Hero
@@ -319,11 +317,10 @@ public class GalleryManager : MonoBehaviour {
 				fadeAmbience( darkQueenAmbience );
 			break;
 			case (int)Characters.Hero:
+				//Character Name
+				characterName.text = PlayerStatsManager.Instance.getUserName();
 				if( PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
 				{
-					//Character Name
-					characterName.text = LocalizationManager.Instance.getText(heroNameTextId);
-	
 					//Character Bio
 					characterTextString = LocalizationManager.Instance.getText(heroBioTextId);
 	
@@ -333,9 +330,6 @@ public class GalleryManager : MonoBehaviour {
 				}
 				else
 				{
-					//Character Name
-					characterName.text = LocalizationManager.Instance.getText(heroineNameTextId);
-	
 					//Character Bio
 					characterTextString = LocalizationManager.Instance.getText(heroineBioTextId);
 	

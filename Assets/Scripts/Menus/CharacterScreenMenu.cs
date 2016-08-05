@@ -17,6 +17,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 	Vector3 frontLocation = new Vector3( 0,0,0);			//Selected
 	Vector3 backLeftLocation = new Vector3(-1.6f,0,5.5f); 	//Male
 	Vector3 backRightLocation = new Vector3(1.6f,0,5.5f);	//Female
+	Vector3 nextToPopupLocation = new Vector3(-1f,0.25f,1f);
 	Animation maleAnimation;
 	Animation femaleAnimation;
 
@@ -24,9 +25,18 @@ public class CharacterScreenMenu : MonoBehaviour {
 
 	public Text titleText;
 	public Text pickMeContentText;
+	public Button changeButton;
 	public Text changeButtonText;
 	public Button confirmButton;
 	public Text confirmButtonText;
+
+	[Header("User Name Popup")]
+	public GameObject userNamePopup;
+	public InputField userNameText;
+	public Text userNameTitleText;
+	public Text userNamePlaceholderText;
+	public Text okayButtonText;
+	public Text skipButtonText;
 
 	// Use this for initialization
 	void Awake () {
@@ -47,6 +57,13 @@ public class CharacterScreenMenu : MonoBehaviour {
 		changeButtonText.text = LocalizationManager.Instance.getText("MENU_CHANGE");
 		confirmButtonText.text = LocalizationManager.Instance.getText("MENU_SELECT");
 
+		//User Name Popup
+		userNameTitleText.text = LocalizationManager.Instance.getText("USER_NAME_POPUP_TITLE");
+		okayButtonText.text = LocalizationManager.Instance.getText("MENU_OK");
+		skipButtonText.text = LocalizationManager.Instance.getText("MENU_SKIP");
+
+		//If the player connected to Facebook in the Title Screen, display the player's first name in the User Name input field.
+		if( FacebookManager.Instance.Username != null ) userNameText.text = FacebookManager.Instance.Username;
 	}
 
 	void Start()
@@ -88,23 +105,70 @@ public class CharacterScreenMenu : MonoBehaviour {
 		}
 	}
 
-	public void confirmSelection()
+
+	public void moveNextToPopup()
 	{
 		SoundManager.soundManager.playButtonClick();
-		//It looks nicer if we center the text and hide the button to confirm to the player that his action worked
-		pickMeContentText.alignment = TextAnchor.UpperCenter;
-		confirmButton.gameObject.SetActive(false);
-		if( selectedAvatar == Avatar.Hero )
+		if( toggle )
 		{
-			pickMeContentText.text = LocalizationManager.Instance.getText("MENU_THANKS_CHOOSING_ME_MALE");
+			//if toggle is true, the male hero is in the front
+			maleAnimation.Play( "Hero_Idle" );
+			maleAnimation.CrossFadeQueued( "Waiting_in_the_back", 1.3f );
+			LeanTween.move( male, nextToPopupLocation, 1f ).setEase(LeanTweenType.easeOutQuad);
 		}
 		else
 		{
-			pickMeContentText.text = LocalizationManager.Instance.getText("MENU_THANKS_CHOOSING_ME_FEMALE");
+			//if toggle is false, the female hero is in the front
+			femaleAnimation.Play( "Heroine_Idle" );
+			femaleAnimation.CrossFadeQueued( "Waiting_in_the_back", 1.3f );
+			LeanTween.move( female, nextToPopupLocation, 1f ).setEase(LeanTweenType.easeOutQuad);
 		}
+	}
+	public void showUserNamePopup()
+	{
+		SoundManager.soundManager.playButtonClick();
 
+		//hide content below popup
+		titleText.gameObject.SetActive( false );
+		pickMeContentText.gameObject.SetActive( false );
+		changeButton.gameObject.SetActive(false);
+		confirmButton.gameObject.SetActive(false);
+
+		if( selectedAvatar == Avatar.Hero )
+		{
+			userNamePlaceholderText.text = LocalizationManager.Instance.getText("MALE_USER_NAME_PLACEHOLDER");
+			female.SetActive( false );
+		}
+		else
+		{
+			userNamePlaceholderText.text = LocalizationManager.Instance.getText("FEMALE_USER_NAME_PLACEHOLDER");
+			male.SetActive( false );
+		}
+		moveNextToPopup();
+		userNamePopup.SetActive( true );
+	}
+
+	public void confirmSelection()
+	{
+		SoundManager.soundManager.playButtonClick();
+		
+		//Save a default user name if the user has not entered anything
+		if( userNameText.text == "")
+		{
+			if( selectedAvatar == Avatar.Hero )
+			{
+				userNameText.text = LocalizationManager.Instance.getText("DEFAULT_MALE_USER_NAME");
+			}
+			else
+			{
+				userNameText.text = LocalizationManager.Instance.getText("DEFAULT_FEMALE_USER_NAME");
+			}
+		}
+		Debug.Log("User Name is : " + userNameText.text );
+		PlayerStatsManager.Instance.saveUserName( userNameText.text );
+		LocalizationManager.Instance.replaceUserName( userNameText.text );
 		PlayerStatsManager.Instance.setAvatar(selectedAvatar);
-		StartCoroutine( loadWorldMapAfterDelay( 2.25f ) );
+		StartCoroutine( loadWorldMapAfterDelay( 0.9f ) );
 	}
 
 	IEnumerator loadWorldMapAfterDelay( float waitPeriod )

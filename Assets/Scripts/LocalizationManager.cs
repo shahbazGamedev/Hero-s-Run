@@ -84,6 +84,15 @@ public class LocalizationManager {
 		}
 	}
 
+	public void replaceUserName( string userName )
+	{
+		List<string> keys = new List<string> (gameText.Keys);
+		foreach( string key in keys ) 
+		{
+			gameText[key] = gameText[key].Replace( "<User name>", userName ); 
+		}
+	}
+
 	public string getText( string textID )
 	{
 		if( gameText != null )
