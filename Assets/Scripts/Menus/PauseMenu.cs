@@ -106,7 +106,7 @@ public class PauseMenu : MonoBehaviour {
 	//If the device is paused by pressing the Home button, because of a low battery warning or a phone call, the game will automatically display the pause menu.
 	void OnApplicationPause( bool pauseStatus )
 	{
-		if( pauseStatus && GameManager.Instance.getGameState() != GameState.Paused ) pauseGame();
+		if( pauseStatus && GameManager.Instance.getGameState() != GameState.Paused && playerController.getCharacterState() != CharacterState.Dying ) pauseGame();
 	}
 	
 	public void pauseGame()
