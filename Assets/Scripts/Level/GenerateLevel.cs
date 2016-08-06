@@ -1147,7 +1147,7 @@ public class GenerateLevel  : MonoBehaviour {
 					}
 					else
 					{
-						if( currentThemePath == "Level/Tiles/Forest/" || currentThemePath == "Level/Tiles/Hell/" || currentThemePath == "Level/Tiles/Fairyland/" )
+						if( currentThemePath == "Level/Tiles/Forest/" || currentThemePath == "Level/Tiles/Hell/" || currentThemePath == "Level/Tiles/Fairyland/" || currentThemePath == "Level/Tiles/Blizzard/")
 						{
 							if( Random.value <= 0.4f )
 							{
