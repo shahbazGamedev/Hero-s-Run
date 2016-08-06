@@ -53,7 +53,6 @@ public sealed class GoblinController : Creature, ICreature {
 	Transform player;
 
 	//Movement related
-	CreatureState goblinState = CreatureState.Idle;
 	CharacterController controller;
 	Vector3 forward;
 	float runSpeed = 4.5f; //good value so feet don't slide
@@ -102,7 +101,7 @@ public sealed class GoblinController : Creature, ICreature {
 
 	void moveGoblin()
 	{
-		if( goblinState == CreatureState.Running || goblinState == CreatureState.Jumping )
+		if( creatureState == CreatureState.Running || creatureState == CreatureState.Jumping )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -141,7 +140,7 @@ public sealed class GoblinController : Creature, ICreature {
 
 	void handleAttackType()
 	{
-		if( goblinState != CreatureState.Attacking && goblinState != CreatureState.Dying && goblinState != CreatureState.Victory )
+		if( creatureState != CreatureState.Attacking && creatureState != CreatureState.Dying && creatureState != CreatureState.Victory )
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 			float attackDistance;
@@ -199,7 +198,7 @@ public sealed class GoblinController : Creature, ICreature {
 					{
 						if( distance >= attackDistance )
 						{
-							if( goblinState != CreatureState.Running && goblinState != CreatureState.Jumping )
+							if( creatureState != CreatureState.Running && creatureState != CreatureState.Jumping )
 							{
 								//Jump and run once you land
 								followsPlayer = true;
@@ -288,15 +287,6 @@ public sealed class GoblinController : Creature, ICreature {
 	}
 
 
-	public CreatureState getCreatureState()
-	{
-		return goblinState;
-	}
-
-	public void setCreatureState( CreatureState state )
-	{
-		goblinState = state;
-	}
 
 	public void sideCollision()
 	{
@@ -306,7 +296,7 @@ public sealed class GoblinController : Creature, ICreature {
 
 	public void victory( bool playWinSound )
 	{
-		if( goblinState != CreatureState.Dying )
+		if( creatureState != CreatureState.Dying )
 		{
 			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
 			setCreatureState( CreatureState.Victory );

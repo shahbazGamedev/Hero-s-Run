@@ -51,7 +51,6 @@ public sealed class WraithController : Creature, ICreature {
 	const float CROSS_FADE_DURATION = 0.5f;
 
 	//Movement related
-	CreatureState wraithState = CreatureState.Idle;
 	CharacterController controller;
 	Vector3 forward;
 	float moveSpeed = 0;
@@ -108,7 +107,7 @@ public sealed class WraithController : Creature, ICreature {
 
 	void moveWraith()
 	{
-		if( wraithState == CreatureState.Running || wraithState == CreatureState.Walking )
+		if( creatureState == CreatureState.Running || creatureState == CreatureState.Walking )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -136,7 +135,7 @@ public sealed class WraithController : Creature, ICreature {
 
 	void handleAttackType()
 	{
-		if( wraithState != CreatureState.Attacking && wraithState != CreatureState.Dying && wraithState != CreatureState.Victory )
+		if( creatureState != CreatureState.Attacking && creatureState != CreatureState.Dying && creatureState != CreatureState.Victory )
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 			float attackDistance;
@@ -167,7 +166,7 @@ public sealed class WraithController : Creature, ICreature {
 					{
 						if( distance >= attackDistance )
 						{
-							if( wraithState != CreatureState.Running )
+							if( creatureState != CreatureState.Running )
 							{
 								//Charge
 								mainCamera.GetComponent<MotionBlur>().enabled = true;			
@@ -214,16 +213,6 @@ public sealed class WraithController : Creature, ICreature {
 		anim.CrossFadeInFixedTime( "idle" , CROSS_FADE_DURATION );
 	}
 
-	public CreatureState getCreatureState()
-	{
-		return wraithState;
-	}
-
-	public void setCreatureState( CreatureState state )
-	{
-		wraithState = state;
-	}
-
 	public float getAdjustedChargeSpeed()
 	{
 		float adjustedChargeSpeed = NORMAL_CHARGE_SPEED;
@@ -247,7 +236,7 @@ public sealed class WraithController : Creature, ICreature {
 
 	public void victory( bool playWinSound )
 	{
-		if( wraithState != CreatureState.Dying )
+		if( creatureState != CreatureState.Dying )
 		{
 			mainCamera.GetComponent<MotionBlur>().enabled = false;			
 			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );

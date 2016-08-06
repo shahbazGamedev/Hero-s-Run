@@ -40,7 +40,6 @@ public sealed class DemonController : Creature, ICreature {
 	const float CROSS_FADE_DURATION = 0.5f;
 
 	//Movement related
-	CreatureState demonState = CreatureState.Idle;
 	CharacterController controller;
 	Vector3 forward;
 	const float RUN_SPEED = 4.6f; //good value so feet don't slide
@@ -67,7 +66,7 @@ public sealed class DemonController : Creature, ICreature {
 
 	void moveDemon()
 	{
-		if( demonState == CreatureState.Running || demonState == CreatureState.Walking )
+		if( creatureState == CreatureState.Running || creatureState == CreatureState.Walking )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -96,7 +95,7 @@ public sealed class DemonController : Creature, ICreature {
 
 	void handleAttackType()
 	{
-		if( demonState != CreatureState.Attacking && demonState != CreatureState.Dying && demonState != CreatureState.Victory )
+		if( creatureState != CreatureState.Attacking && creatureState != CreatureState.Dying && creatureState != CreatureState.Victory )
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 			float attackDistance;
@@ -127,7 +126,7 @@ public sealed class DemonController : Creature, ICreature {
 					{
 						if( distance >= attackDistance )
 						{
-							if( demonState != CreatureState.Running )
+							if( creatureState != CreatureState.Running )
 							{
 								//Charge
 								followsPlayer = true;
@@ -215,16 +214,6 @@ public sealed class DemonController : Creature, ICreature {
 		GetComponent<Animator>().CrossFadeInFixedTime( "Stand" , CROSS_FADE_DURATION );
 	}
 
-	public CreatureState getCreatureState()
-	{
-		return demonState;
-	}
-
-	public void setCreatureState( CreatureState state )
-	{
-		demonState = state;
-	}
-
 	public void sideCollision()
 	{
 		GetComponent<AudioSource>().PlayOneShot( ouch );
@@ -233,7 +222,7 @@ public sealed class DemonController : Creature, ICreature {
 
 	public void victory( bool playWinSound )
 	{
-		if( demonState != CreatureState.Dying )
+		if( creatureState != CreatureState.Dying )
 		{
 			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
 			setCreatureState( CreatureState.Victory );

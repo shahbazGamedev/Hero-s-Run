@@ -33,7 +33,6 @@ public sealed class CerberusController : Creature, ICreature {
 	Transform player;
 
 	//Movement related
-	CreatureState cerberusState = CreatureState.Idle;
 	CharacterController controller;
 	Vector3 forward;
 	float WALK_SPEED = 2.1f; //good value so feet don't slide
@@ -64,7 +63,7 @@ public sealed class CerberusController : Creature, ICreature {
 
 	void moveCerberus()
 	{
-		if( ( cerberusState == CreatureState.Walking ) )
+		if( ( creatureState == CreatureState.Walking ) )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -84,7 +83,7 @@ public sealed class CerberusController : Creature, ICreature {
 
 	void handleAttackType()
 	{
-		if( cerberusState != CreatureState.Attacking && cerberusState != CreatureState.Dying && cerberusState != CreatureState.Victory )
+		if( creatureState != CreatureState.Attacking && creatureState != CreatureState.Dying && creatureState != CreatureState.Victory )
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 			float attackDistance;
@@ -137,16 +136,6 @@ public sealed class CerberusController : Creature, ICreature {
 		leftHeadFireObject.SetActive( false );
 		rightHeadFireObject.SetActive( false );
 		StartCoroutine( Utilities.fadeOutLight( fireBreathingLight, 0.2f ) );
-	}
-
-	public CreatureState getCreatureState()
-	{
-		return cerberusState;
-	}
-
-	void setCreatureState( CreatureState state )
-	{
-		cerberusState = state;
 	}
 
 	//The cerberus falls over backwards, typically because of a ZNuke

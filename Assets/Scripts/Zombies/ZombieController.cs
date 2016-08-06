@@ -17,7 +17,6 @@ public sealed class ZombieController : Creature, ICreature {
 	Animation anim;
 	public Vector3 forward;
 	float walkSpeed = 1.65f; //good value so feet don't slide
-	public CreatureState creatureState = CreatureState.Available;
 	public bool applyGravity = true;
 
 	public List<string> walkTypes = new List<string>();
@@ -34,7 +33,7 @@ public sealed class ZombieController : Creature, ICreature {
 
 	// Use this for initialization
 	void Awake () {
-
+		creatureState = CreatureState.Available;
 		controller = GetComponent<CharacterController>();
 		controller.enabled = false;
 		Transform zombiePrefab;
@@ -55,16 +54,6 @@ public sealed class ZombieController : Creature, ICreature {
 	// Update is called once per frame
 	void Update () {
 		moveZombie();
-	}
-
-	public CreatureState getCreatureState()
-	{
-		return creatureState;
-	}
-
-	public void setCreatureState( CreatureState state )
-	{
-		creatureState = state;
 	}
 
 	public void resetCreature()
