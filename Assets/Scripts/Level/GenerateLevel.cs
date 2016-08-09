@@ -1631,7 +1631,7 @@ public class GenerateLevel  : MonoBehaviour {
 			//Center the surrounding plane around the current tile
 			if( surroundingPlane != null )
 			{
-				surroundingPlane.position = new Vector3( tutorialTile.transform.position.x, surroundingPlane.position.y, tutorialTile.transform.position.z );
+								surroundingPlane.position = new Vector3( tutorialTile.transform.position.x, tutorialTile.transform.position.y - 4f, tutorialTile.transform.position.z );
 			}
 			//Make sure the playerTileIndex points to this tile
 			playerTileIndex = tutorialTileIndex;
