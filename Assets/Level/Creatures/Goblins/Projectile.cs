@@ -8,7 +8,6 @@ public class Projectile : MonoBehaviour {
 	public ParticleSystem fireParticleSystem;
 	public AudioClip inFlightSound;
 	public AudioClip collisionSound;
-	public Image mapIconPrefab;
 	PlayerController playerController;
 	PowerUpManager powerUpManager;
 
@@ -24,12 +23,10 @@ public class Projectile : MonoBehaviour {
 	{
 		GetComponent<AudioSource>().clip = inFlightSound;
 		GetComponent<AudioSource>().Play();
-		if( mapIconPrefab != null ) MiniMap.miniMap.registerRadarObject( this.gameObject, mapIconPrefab );
 	}
 
 	public void OnCollisionEnter(Collision collision)
 	{
-		if( mapIconPrefab != null ) MiniMap.miniMap.removeRadarObject( this.gameObject );
 	    GetComponent<Rigidbody>().velocity = Vector3.zero;
 	    GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
 	    GetComponent<Rigidbody>().Sleep();
@@ -53,8 +50,4 @@ public class Projectile : MonoBehaviour {
 		}
   	}
 
-	void OnDestroy()
-	{
-		if( mapIconPrefab != null ) MiniMap.miniMap.removeRadarObject( this.gameObject );
-	}
 }

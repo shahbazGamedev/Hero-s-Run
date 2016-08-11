@@ -321,7 +321,6 @@ public sealed class GoblinController : Creature, ICreature {
 	//The goblin falls over backwards, typically because the player slid into him or because of a ZNuke
 	public void knockback()
 	{
-		MiniMap.miniMap.removeRadarObject( this.gameObject ); 
 		setCreatureState( CreatureState.Dying );
 		controller.enabled = false;
 		//The piker has two capsule colliders. The scout, only one.
@@ -350,14 +349,11 @@ public sealed class GoblinController : Creature, ICreature {
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
-		MiniMap.miniMap.registerRadarObject( this.gameObject, mapIconPrefab ); 
-
 	}
 	
 	void OnDisable()
 	{
 		PlayerController.playerStateChanged -= PlayerStateChange;
-		MiniMap.miniMap.removeRadarObject( this.gameObject ); 
 	}
 
 	void PlayerStateChange( CharacterState newState )

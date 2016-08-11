@@ -89,7 +89,6 @@ public sealed class ZombieController : Creature, ICreature {
 
 	public void knockback()
 	{
-		MiniMap.miniMap.removeRadarObject( this.gameObject ); 
 		CancelInvoke( "groan" );
 		setCreatureState( CreatureState.Dying );
 		controller.enabled = false;
@@ -288,14 +287,12 @@ public sealed class ZombieController : Creature, ICreature {
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
-		MiniMap.miniMap.registerRadarObject( this.gameObject, mapIconPrefab ); 
 	}
 
 	void OnDisable()
 	{
 		CancelInvoke( "groan" );
 		PlayerController.playerStateChanged -= PlayerStateChange;
-		MiniMap.miniMap.removeRadarObject( this.gameObject ); 
 	}
 
 	void PlayerStateChange( CharacterState newState )

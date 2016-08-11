@@ -450,7 +450,6 @@ public class PowerUpManager : BaseClass {
 		GameObject powerUpPrefab = powerUpDictionary[type].powerUpToSpawn;
 		GameObject go = (GameObject)Instantiate(powerUpPrefab, powerUpPlaceholder.position, Quaternion.Euler( powerUpPrefab.transform.eulerAngles.x, powerUpPlaceholder.eulerAngles.y, powerUpPrefab.transform.eulerAngles.z ) );
 		go.transform.parent = newTile.transform;
-		MiniMap.miniMap.registerRadarObject( go, mapIconPrefab ); 
 	}
 
 	void OnEnable()

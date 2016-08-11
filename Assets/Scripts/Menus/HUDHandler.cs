@@ -28,8 +28,6 @@ public class HUDHandler : MonoBehaviour {
 	public RectTransform hudCanvas;
 	public GameObject starPrefab;
 	public GameObject treasurePrefab;
-	[Header("Mini Map")]
-	public GameObject miniMap;
 	
 	//Used to track the items picked up by the player such as Stars and Treasure Keys. Multiple icons can be displayed at the same time with an offset.
 	List<PickupDisplay> pickupDisplayList = new List<PickupDisplay>();
@@ -234,14 +232,12 @@ public class HUDHandler : MonoBehaviour {
 		{
 			hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
 			pauseButton.gameObject.SetActive( true );
-			miniMap.SetActive( true );
 		}
 		else
 		{
 			hudDebugInfo.gameObject.SetActive( false );
 			pauseButton.gameObject.SetActive( false );
 			userMessageText.gameObject.SetActive( false );
-			miniMap.SetActive( false );
 			destroyAllPickupsDisplayed();
 		}
 	}
