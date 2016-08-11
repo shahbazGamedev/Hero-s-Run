@@ -117,9 +117,6 @@ public class PlayerController : BaseClass {
 	float runStartSpeed = 0;
 	//The running speed will increase with time to make it harder for the player,
 	public static float runSpeed = 0;
-	float scrambleBoost = 0;
-	float scrambleDecay = 140f;
-	public float runSpeedAtTimeStartedSlipping = 0;
 	//The run speed at time of death is needed because we want to start running again (in case of revive) at a 
 	//percentage of this value.
 	float runSpeedAtTimeOfDeath = 0;
@@ -993,13 +990,6 @@ public class PlayerController : BaseClass {
 			//1) Get the direction of the player
 			forward = transform.TransformDirection(Vector3.forward);			
 			//2) Scale vector based on run speed
-			if( groundType == "Slippery")
-			{
-				runSpeed = -5f + ( scrambleBoost * Time.deltaTime );
-				scrambleBoost = scrambleBoost - ( scrambleDecay * Time.deltaTime );
-				if( scrambleBoost < 0 ) scrambleBoost = 0;
-				if( runSpeed < -5f ) runSpeed = -5f;
-			}
 			forward = forward * Time.deltaTime * runSpeed;
 			//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
 			forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
@@ -1189,75 +1179,64 @@ public class PlayerController : BaseClass {
 	{
 		if( playerControlsEnabled )
 		{
-			if( groundType.Equals("Slippery") )
+			if( jumping )
 			{
-				queueJump = false;
+				//Delay the second jump request until we are on the ground
+				//Cancel any slide queue since we can only queue one movement at a time
+				queueJump = true;
 				queueSlide = false;
-				scrambleBoost = scrambleBoost + 90f;
-				if( scrambleBoost > 500f ) scrambleBoost = 500f;
-
 			}
-			else
+	
+			//Only allow a jump if we are not already jumping and if we are on the ground.
+			//However, if the ground type below the player is of type Collapsing, still allow him to jump.
+			//The Collapsing tag is used in the CollapsingBridge code.
+			if (_characterState != CharacterState.Jumping && ( distanceToGround < 0.5f || groundType == "Collapsing" ) )
 			{
-				if( jumping )
+				//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
+				moveDirection.x = 0;
+				
+				//Make sure the lane data is correct in case a collision forced us out of our lane
+				recalculateCurrentLane();
+
+				//We are allowed to jump from the slide state.
+				GetComponent<AudioSource>().Stop ();							//stop the sliding sound if any
+				dustPuff.Stop();						//stop the dust puff that loops while we are sliding
+				slideWaterSplash.Stop();
+				deactivateOverheadObstacles( false );	//reactivate overhead obstacles since they would have been deactivated if we were sliding
+
+				jumping = true;
+				trollController.jump();
+
+				//Memorize the run speed
+				runSpeedBeforeJump = runSpeed;
+				//Lower the run speed during a jump
+				runSpeed = runSpeed * JUMP_RUN_SPEED_MODIFIER;
+				//Don't go lower then levelRunStartSpeed
+				if( runSpeed < levelRunStartSpeed ) runSpeed = levelRunStartSpeed;
+				//Don't accelerate during a jump (also it would reset the runSpeed variable).
+				allowRunSpeedToIncrease = false;
+				setCharacterState( CharacterState.Jumping );
+				if( currentTileType == TileType.Straight_Slope && currentTile.GetComponent<SegmentInfo>().addJumpBoost )
 				{
-					//Delay the second jump request until we are on the ground
-					//Cancel any slide queue since we can only queue one movement at a time
-					queueJump = true;
-					queueSlide = false;
+					//if you are on a steep slope, the normal jump speed is insufficient to make you feel you are jumping high.
+					//So use a higher value instead.
+					moveDirection.y = slopeJumpSpeed;
+					anim.SetTrigger(JumpTrigger);
 				}
-		
-				//Only allow a jump if we are not already jumping and if we are on the ground.
-				//However, if the ground type below the player is of type Collapsing, still allow him to jump.
-				//The Collapsing tag is used in the CollapsingBridge code.
-				if (_characterState != CharacterState.Jumping && ( distanceToGround < 0.5f || groundType == "Collapsing" ) )
+				else if( doingDoubleJump )
 				{
-					//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
-					moveDirection.x = 0;
-					
-					//Make sure the lane data is correct in case a collision forced us out of our lane
-					recalculateCurrentLane();
-	
-					//We are allowed to jump from the slide state.
-					GetComponent<AudioSource>().Stop ();							//stop the sliding sound if any
-					dustPuff.Stop();						//stop the dust puff that loops while we are sliding
-					slideWaterSplash.Stop();
-					deactivateOverheadObstacles( false );	//reactivate overhead obstacles since they would have been deactivated if we were sliding
-	
-					jumping = true;
-					trollController.jump();
-	
-					//Memorize the run speed
-					runSpeedBeforeJump = runSpeed;
-					//Lower the run speed during a jump
-					runSpeed = runSpeed * JUMP_RUN_SPEED_MODIFIER;
-					//Don't go lower then levelRunStartSpeed
-					if( runSpeed < levelRunStartSpeed ) runSpeed = levelRunStartSpeed;
-					//Don't accelerate during a jump (also it would reset the runSpeed variable).
-					allowRunSpeedToIncrease = false;
-					setCharacterState( CharacterState.Jumping );
-					if( currentTileType == TileType.Straight_Slope && currentTile.GetComponent<SegmentInfo>().addJumpBoost )
-					{
-						//if you are on a steep slope, the normal jump speed is insufficient to make you feel you are jumping high.
-						//So use a higher value instead.
-						moveDirection.y = slopeJumpSpeed;
-						anim.SetTrigger(JumpTrigger);
-					}
-					else if( doingDoubleJump )
-					{
-						moveDirection.y = doubleJumpSpeed;
-						anim.SetTrigger(Double_JumpTrigger);
-						boots_of_jumping.incrementCounter();
-					}
-					else
-					{
-						moveDirection.y = jumpSpeed;
-						anim.SetTrigger(JumpTrigger);
-					}
-					//for debugging
-					//remove jump sound for now because it is annoying
-					//playSound( jumpingSound, false );
+					moveDirection.y = doubleJumpSpeed;
+					anim.SetTrigger(Double_JumpTrigger);
+					boots_of_jumping.incrementCounter();
 				}
+				else
+				{
+					moveDirection.y = jumpSpeed;
+					anim.SetTrigger(JumpTrigger);
+				}
+				//for debugging
+				//remove jump sound for now because it is annoying
+				//playSound( jumpingSound, false );
 			}
 		}
 	}
@@ -1842,21 +1821,7 @@ public class PlayerController : BaseClass {
 
 	void groundTypeChanged()
 	{
-		print("PlayerController-groundTypeChanged from " + previousGroundType + " to " + groundType );
-		if( groundType == "Slippery" )
-		{
-			StopCoroutine( "accelerateAfterSlipping" );
-			trollController.stopPursuing();
-			scrambleBoost = 0;
-			allowRunSpeedToIncrease = false;
-			runSpeedAtTimeStartedSlipping = runSpeed;
-			print("PlayerController-start slipping " + runSpeedAtTimeStartedSlipping );
-		}
-		else if( groundType != "Slippery" && previousGroundType == "Slippery" )
-		{
-			print("PlayerController-stop slipping" );
-			StartCoroutine( "accelerateAfterSlipping" );
-		}
+		//print("PlayerController-groundTypeChanged from " + previousGroundType + " to " + groundType );
 		//Setup proper footsteps
 		if( groundType == "Water" )
 		{
@@ -1873,27 +1838,7 @@ public class PlayerController : BaseClass {
 			leftFootstep = footstepLeftSound;
 			rightFootstep = footstepRightSound;
 		}
-
 	}
-
-	IEnumerator accelerateAfterSlipping()
-	{
-		float duration = 3.5f;
-		float elapsedTime = 0;
-		float currentRunSpeed = runSpeed;
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			runSpeed = Mathf.Lerp( currentRunSpeed, runSpeedAtTimeStartedSlipping, elapsedTime/duration );
-			yield return _sync();
-		} while ( elapsedTime < duration );
-
-		//Fix any left-overs
-		runSpeed = runSpeedAtTimeStartedSlipping;
-		timeSessionStarted = Time.time;
-		allowRunSpeedToIncrease = true;
-	}
-
 	
 	void OnControllerColliderHit (ControllerColliderHit hit )
 	{
