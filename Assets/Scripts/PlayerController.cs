@@ -263,8 +263,8 @@ public class PlayerController : BaseClass {
 	public string reasonDiedAtTurn;
 
 	public ParticleSystem lavaSpurt; //Plays when player falls into lava
-	public string groundType = "normal"; //Other choices are water, collapsing and slippery
-	public string previousGroundType = "normal"; //Other choices are water, collapsing and slippery
+	public string groundType = "normal"; //Other choices are water and collapsing
+	public string previousGroundType = "normal"; //Other choices are water and collapsing
 	public ParticleSystem slideWaterSplash; //Plays when player slides in water.It loops.
 
 	public GameObject Hero_Prefab;
@@ -1680,8 +1680,6 @@ public class PlayerController : BaseClass {
 	{
 		if( playerControlsEnabled )
 		{
-			if( groundType.Equals("Slippery") ) return;
-
 			if( _characterState != CharacterState.SideMove )
 			{
 				if( jumping )
