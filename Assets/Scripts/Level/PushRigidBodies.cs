@@ -57,10 +57,12 @@ public class PushRigidBodies : MonoBehaviour {
 	void startAvalanche()
 	{
 		Rigidbody[] rigidBodies = GetComponentsInChildren<Rigidbody>();
+		Vector3 forces = forceToApply.z * transform.forward;
+		forces.y = forceToApply.y;	
 		for( int i = 0; i < rigidBodies.Length; i++ )
 		{
 			rigidBodies[i].isKinematic = false;
-			rigidBodies[i].AddForce( forceToApply );
+			rigidBodies[i].AddForce( forces );
 			rigidBodies[i].AddTorque( torqueToApply );
 			Destroy( rigidBodies[i].gameObject, 10f );
 		}
