@@ -35,7 +35,7 @@ public class SimpleCamera : MonoBehaviour {
 
 	private Transform mainCamera;
 	public Transform cutsceneCamera;
-	const float DEFAULT_CAMERA_X_ROT = -8f;
+	const float DEFAULT_CAMERA_X_ROT = -7f;
 	public float cameraXrotation = DEFAULT_CAMERA_X_ROT;
 	public const float DEFAULT_MAIN_CAMERA_FOV = 78f;
 	public const float DEFAULT_CUTSCENE_FOV = 37f;

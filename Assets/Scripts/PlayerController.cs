@@ -1202,7 +1202,7 @@ public class PlayerController : BaseClass {
 				GetComponent<AudioSource>().Stop ();							//stop the sliding sound if any
 				dustPuff.Stop();						//stop the dust puff that loops while we are sliding
 				slideWaterSplash.Stop();
-				deactivateOverheadObstacles( false );	//reactivate overhead obstacles since they would have been deactivated if we were sliding
+				deactivateOverheadObstacles( true );	//reactivate overhead obstacles since they would have been deactivated if we were sliding
 
 				jumping = true;
 				trollController.jump();
@@ -1707,7 +1707,7 @@ public class PlayerController : BaseClass {
 						  under the player and he would fall. So instead, I disable and re-enable
 						  overhead obstacles.*/
 
-						deactivateOverheadObstacles( true );
+						deactivateOverheadObstacles( false );
 						setCharacterState( CharacterState.Sliding );
 						if( groundType == "Water" )
 						{
@@ -1754,7 +1754,7 @@ public class PlayerController : BaseClass {
 				}
 				anim.SetTrigger(Slide_UpTrigger);
 				GetComponent<AudioSource>().Stop();
-				deactivateOverheadObstacles( false );
+				deactivateOverheadObstacles( true );
 			}
 		}
 	}	
@@ -1767,21 +1767,19 @@ public class PlayerController : BaseClass {
 		{
 			if ( collider.name == "DeadTree" )
 			{
-				//If a collider is a trigger, it no longer behaves like a solid object
-            	collider.isTrigger = deactivate;
+            	collider.enabled = deactivate;
 			}
 			else if ( collider.name == "Portcullis" )
 			{
-				//If a collider is a trigger, it no longer behaves like a solid object
-				collider.isTrigger = deactivate;
+				collider.enabled = deactivate;
 			}
 			else if ( collider.name == "Flame" )
 			{
-				collider.GetComponent<TrapFlame>().isActive = !deactivate;
+				collider.GetComponent<TrapFlame>().isActive = deactivate;
 			}
 			else if ( collider.name == "Cerberus" )
 			{
-				collider.isTrigger = deactivate;
+				collider.enabled = deactivate;
 			}
 		}
 	}
@@ -2925,7 +2923,7 @@ public class PlayerController : BaseClass {
 		desiredLane = Lanes.Center;
 		myLane = 0;
 
-		deactivateOverheadObstacles( false );
+		deactivateOverheadObstacles( true );
 		jumping = false;
 		queueSlide = false;
 		queueJump = false;

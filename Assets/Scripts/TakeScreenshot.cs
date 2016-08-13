@@ -31,6 +31,7 @@ public class TakeScreenshot : MonoBehaviour {
 
 	Vector3 backLocation = new Vector3( 0, 2f, -4.5f );	//Facing player's back
 	Quaternion backRotation = Quaternion.Euler( 9.36f, 0, 0 );
+	RenderTexture renderTexture;
 	public PictureRatio pictureRatio = PictureRatio.POLAROID_4_5;
 
 	void Awake()
@@ -55,6 +56,9 @@ public class TakeScreenshot : MonoBehaviour {
 			}
 		}
         screenShot.Apply(); //Applies all the changes made
+		renderTexture = new RenderTexture(pictureWidth, pictureHeight, 24);
+		renderTexture.antiAliasing = 4;
+		renderTexture.format = RenderTextureFormat.Default;
 	}
 
 	void calculatePictureSize()
@@ -113,12 +117,9 @@ public class TakeScreenshot : MonoBehaviour {
 		Debug.Log("TakeScreenshot-selfie." );
 		pictureCamera.enabled = true;
 		pointLight.gameObject.SetActive( true );
-		RenderTexture rt = new RenderTexture(pictureWidth, pictureHeight, 24);
-		rt.antiAliasing = 4;
-		rt.format = RenderTextureFormat.Default;
-		pictureCamera.targetTexture = rt;
+		pictureCamera.targetTexture = renderTexture;
 		pictureCamera.Render();
-		RenderTexture.active = rt;
+		RenderTexture.active = renderTexture;
 		screenShot.ReadPixels(new Rect(0, 0, pictureWidth, pictureHeight), borderWidth, borderWidth);
 		screenShot.Apply();
 		picturePreview.sprite = Sprite.Create( screenShot, new Rect(0, 0, screenShot.width, screenShot.height ), new Vector2( 0.5f, 0.5f ) );
@@ -130,7 +131,6 @@ public class TakeScreenshot : MonoBehaviour {
 
 		pictureCamera.targetTexture = null;
 		RenderTexture.active = null; 
-		Destroy(rt);
 		pictureCamera.enabled = false;
 		pointLight.gameObject.SetActive( false );
 		selfieTaken = true;
