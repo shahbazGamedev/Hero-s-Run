@@ -41,7 +41,8 @@ public sealed class GoblinController : Creature, ICreature {
 		long_range_Spear = 3,
 		Crossbow = 4,
 		Throw_Barrel = 5,
-		jump_and_attack = 6
+		jump_and_attack = 6,
+		jump_and_long_range_attack = 7
 	}
 	
 	const float BOLT_FORCE = 700f;
@@ -55,7 +56,7 @@ public sealed class GoblinController : Creature, ICreature {
 	//Movement related
 	CharacterController controller;
 	Vector3 forward;
-	float runSpeed = 4.5f; //good value so feet don't slide
+	float runSpeed = 4.6f; //good value so feet don't slide
 	//If true, the goblin heads for the player as opposed to staying in his lane
 	bool followsPlayer = false;
 	bool previouslyGrounded = true;
@@ -211,6 +212,20 @@ public sealed class GoblinController : Creature, ICreature {
 							//Attack now
 							setCreatureState( CreatureState.Attacking );
 							GetComponent<Animator>().CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
+						}
+					}
+					break;
+				case AttackType.jump_and_long_range_attack:
+					float jumpLongDistance = jumpPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					if( distance < jumpLongDistance )
+					{
+						if( creatureState != CreatureState.Running && creatureState != CreatureState.Jumping )
+						{
+							//Jump and run once you land
+							followsPlayer = true;
+							setCreatureState( CreatureState.Jumping );
+							GetComponent<Animator>().CrossFadeInFixedTime( "jump", CROSS_FADE_DURATION );
+							attackType = AttackType.long_range_Spear;
 						}
 					}
 					break;
