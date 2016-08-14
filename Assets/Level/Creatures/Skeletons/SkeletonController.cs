@@ -49,7 +49,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		jump_and_long_range_attack = 7
 	}
 	
-	const float BOLT_FORCE = 700f;
+	const float BOLT_FORCE = 900f;
 	const float CROSS_FADE_DURATION = 0.5f;
 
 	//Only use for the scout skeleton with the crossbow
@@ -289,7 +289,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		Physics.IgnoreCollision(arrow.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(arrow.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
 		arrow.GetComponent<Rigidbody>().isKinematic = false;
-		arrow.GetComponent<Rigidbody>().AddForce( transform.forward * getAdjustedBoltForce() );
+		arrow.GetComponent<Rigidbody>().AddForce( (player.position - arrow.transform.position).normalized * getAdjustedBoltForce() );
 		arrow.GetComponent<Projectile>().launchProjectile();
 		GameObject.Destroy( arrow, 10f );
 	}

@@ -36,6 +36,7 @@ public class Projectile : MonoBehaviour {
 		GetComponent<AudioSource>().Play();
 		if( fireLight != null ) fireLight.enabled = false;
 		if( fireParticleSystem != null ) fireParticleSystem.gameObject.SetActive(false);
+		gameObject.SetActive( false );
 		if( collision.gameObject.name == "Hero" )
 		{
 			//Is the player protected by a Shield Power Up?
