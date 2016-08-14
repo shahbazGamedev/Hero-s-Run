@@ -28,6 +28,8 @@ public sealed class SkeletonController : Creature, ICreature {
 	public float barrelPlayerDistanceMultiplier = 1.45f;
 	[Tooltip("Player distance multiplier used to decide when to jump.")]
 	public float jumpPlayerDistanceMultiplier = 3.3f;
+	[Tooltip("Player distance multiplier used to decide when to fire missile.")]
+	public float missilePlayerDistanceMultiplier = 3f;
 	[Tooltip("Whether or not the skeleton should play a diabolical laughter before pushing the barrel.")]
 	public bool playSkeletonTaunt = false;
 	[Tooltip("Speed at which to lock on player.")]
@@ -191,9 +193,9 @@ public sealed class SkeletonController : Creature, ICreature {
 					break;
 			
 				case AttackType.Crossbow:
-					attackDistance = 2.2f * PlayerController.getPlayerSpeed();
+					attackDistance = missilePlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
 					//Only attack if the player is inside a 30 degree arc in front of skeleton
-					if( distance < attackDistance && getDotProduct() > 0.85f )
+					if( distance < attackDistance && getDotProduct() > 0.8f )
 					{
 						setCreatureState( CreatureState.Attacking );
 						fireCrossbow();
@@ -263,12 +265,6 @@ public sealed class SkeletonController : Creature, ICreature {
 	
 	void fireCrossbow()
 	{
-		if( gameObject.activeSelf ) StartCoroutine( fireCrossbowNow() );
-	}
-
-	IEnumerator fireCrossbowNow()
-	{
-		yield return new WaitForSeconds( Random.value * 1f );
 		transform.LookAt( player );
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 		arrow = createArrow();
