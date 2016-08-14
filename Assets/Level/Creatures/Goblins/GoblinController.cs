@@ -264,7 +264,7 @@ public sealed class GoblinController : Creature, ICreature {
 		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
 		bolt.GetComponent<Rigidbody>().AddForce(bolt.transform.forward * getAdjustedBoltForce() );
-		bolt.GetComponent<Projectile>().startInFlightSound();
+		bolt.GetComponent<Projectile>().launchProjectile();
 		//destroy the bolt after 8 seconds
 		GameObject.Destroy( bolt, 8f );
 	}

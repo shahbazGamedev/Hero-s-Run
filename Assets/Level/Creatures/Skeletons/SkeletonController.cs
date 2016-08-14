@@ -34,6 +34,8 @@ public sealed class SkeletonController : Creature, ICreature {
 	public float enemyAimSpeed = 7.6f;
 	[Tooltip("The bolt fired by the crossbow.")]
 	public GameObject boltPrefab;
+	GameObject arrow;
+	public GameObject arrow_06;
 
 	public enum AttackType {
 		short_range_Spear_1 = 1,
@@ -71,7 +73,7 @@ public sealed class SkeletonController : Creature, ICreature {
 
 	void Start ()
 	{
-		StartCoroutine( playIdleAnimation() );
+		//StartCoroutine( playIdleAnimation() );
 	}
 
 	//We don't want all the skeletons to have synced animations
@@ -98,6 +100,19 @@ public sealed class SkeletonController : Creature, ICreature {
 	{
 		moveSkeleton();
 		handleAttackType();
+		#if UNITY_EDITOR
+		handleKeyboard();
+		#endif
+
+	}
+
+	private void handleKeyboard()
+	{
+		//Also support keys for debugging
+		if ( Input.GetKeyDown (KeyCode.RightArrow) ) 
+		{
+			fireCrossbow();
+		}
 	}
 
 	void moveSkeleton()
@@ -254,19 +269,33 @@ public sealed class SkeletonController : Creature, ICreature {
 	IEnumerator fireCrossbowNow()
 	{
 		yield return new WaitForSeconds( Random.value * 1f );
-		GameObject bolt = (GameObject)Instantiate(boltPrefab);
 		transform.LookAt( player );
-		bolt.transform.rotation = Quaternion.Euler( transform.eulerAngles.x, transform.eulerAngles.y, 0 );
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
-		Vector3 initialBoltPosition = transform.TransformPoint( initialBoltPositionOffset );
-		bolt.transform.position = initialBoltPosition;
-		GetComponent<Animator>().CrossFadeInFixedTime( "attack", CROSS_FADE_DURATION );
-		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
-		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
-		bolt.GetComponent<Rigidbody>().AddForce(bolt.transform.forward * getAdjustedBoltForce() );
-		bolt.GetComponent<Projectile>().startInFlightSound();
-		//destroy the bolt after 8 seconds
-		GameObject.Destroy( bolt, 8f );
+		arrow = createArrow();
+		GetComponent<Animator>().SetTrigger("Fire");
+	}
+
+	GameObject createArrow()
+	{
+		Transform arrowHolder = transform.Find("Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Spine2/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand");
+		arrow_06.SetActive( false );
+		GameObject nextArrow = (GameObject)Instantiate( boltPrefab );
+		nextArrow.name = "Skeleton arrow";
+		nextArrow.transform.SetParent( arrowHolder, false );
+		nextArrow.transform.localPosition = new Vector3( -0.03378291f,0.02765007f,-0.004029159f );
+		nextArrow.transform.localRotation = Quaternion.Euler( -28f, 0, 0 );
+		return nextArrow;
+	}
+
+	public void Arrow_launched ( AnimationEvent eve )
+	{
+		arrow.transform.SetParent( null );
+		Physics.IgnoreCollision(arrow.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
+		Physics.IgnoreCollision(arrow.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
+		arrow.GetComponent<Rigidbody>().isKinematic = false;
+		arrow.GetComponent<Rigidbody>().AddForce( transform.forward * getAdjustedBoltForce() );
+		arrow.GetComponent<Projectile>().launchProjectile();
+		GameObject.Destroy( arrow, 10f );
 	}
 
 	public float getAdjustedBoltForce()

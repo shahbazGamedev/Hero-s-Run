@@ -15,14 +15,15 @@ public class Projectile : MonoBehaviour {
 	{
 		GameObject player = GameObject.FindGameObjectWithTag("Player");
 		playerController = player.GetComponent<PlayerController>();
-		//For power ups
 		powerUpManager = GameObject.FindGameObjectWithTag("PowerUpManager").GetComponent<PowerUpManager>();
 	}
 
-	public void startInFlightSound()
+	public void launchProjectile()
 	{
 		GetComponent<AudioSource>().clip = inFlightSound;
 		GetComponent<AudioSource>().Play();
+		if( fireLight != null ) fireLight.enabled = true;
+		if( fireParticleSystem != null ) fireParticleSystem.gameObject.SetActive(true);
 	}
 
 	public void OnCollisionEnter(Collision collision)
