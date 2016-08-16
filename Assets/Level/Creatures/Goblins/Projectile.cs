@@ -6,6 +6,7 @@ public class Projectile : MonoBehaviour {
 
 	public Light fireLight;
 	public ParticleSystem fireParticleSystem;
+	public ParticleSystem impactParticleSystem;
 	public AudioClip inFlightSound;
 	public AudioClip collisionSound;
 	PlayerController playerController;
@@ -36,6 +37,11 @@ public class Projectile : MonoBehaviour {
 		GetComponent<AudioSource>().Play();
 		if( fireLight != null ) fireLight.enabled = false;
 		if( fireParticleSystem != null ) fireParticleSystem.gameObject.SetActive(false);
+		if( impactParticleSystem != null )
+		{
+			impactParticleSystem.transform.SetParent( null );
+			impactParticleSystem.gameObject.SetActive(true);
+		}
 		gameObject.SetActive( false );
 		if( collision.gameObject.name == "Hero" )
 		{

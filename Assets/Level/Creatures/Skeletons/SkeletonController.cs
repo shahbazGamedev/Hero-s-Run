@@ -35,9 +35,10 @@ public sealed class SkeletonController : Creature, ICreature {
 	[Tooltip("Speed at which to lock on player.")]
 	public float enemyAimSpeed = 7.6f;
 	[Tooltip("The bolt fired by the crossbow.")]
-	public GameObject boltPrefab;
+	public GameObject missilePrefab;
 	GameObject arrow;
 	public GameObject arrow_06;
+	GameObject fireball;
 
 	public enum AttackType {
 		short_range_Spear_1 = 1,
@@ -46,7 +47,9 @@ public sealed class SkeletonController : Creature, ICreature {
 		Crossbow = 4,
 		Throw_Barrel = 5,
 		jump_and_attack = 6,
-		jump_and_long_range_attack = 7
+		jump_and_long_range_attack = 7,
+		cast_spell_1 = 8,
+		cast_spell_2 = 9
 	}
 	
 	const float BOLT_FORCE = 900f;
@@ -201,6 +204,24 @@ public sealed class SkeletonController : Creature, ICreature {
 						fireCrossbow();
 					}
 					break;
+				case AttackType.cast_spell_1:
+					attackDistance = missilePlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					//Only attack if the player is inside a 30 degree arc in front of skeleton
+					if( distance < attackDistance && getDotProduct() > 0.8f )
+					{
+						setCreatureState( CreatureState.Attacking );
+						castFireballSpell();
+					}
+					break;
+				case AttackType.cast_spell_2:
+					attackDistance = missilePlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					//Only attack if the player is inside a 30 degree arc in front of skeleton
+					if( distance < attackDistance && getDotProduct() > 0.8f )
+					{
+						setCreatureState( CreatureState.Attacking );
+						castFireballSpell();
+					}
+					break;
 				case AttackType.Throw_Barrel:
 					attackDistance = barrelPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance )
@@ -263,6 +284,37 @@ public sealed class SkeletonController : Creature, ICreature {
 		return Vector3.Dot( heading.normalized, transform.forward );
 	}
 	
+	void castFireballSpell()
+	{
+		transform.LookAt( player );
+		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
+		fireball = createFireball();
+		GetComponent<Animator>().CrossFadeInFixedTime("Fire Magic Missile", CROSS_FADE_DURATION );
+		//Debug.LogWarning("Skeleton castFireballSpell" );
+	}
+
+	GameObject createFireball()
+	{
+		Transform staff = transform.Find("Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Spine2/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 Rhand_Weapon/stuff02");
+		GameObject nextFireball = (GameObject)Instantiate( missilePrefab );
+		nextFireball.name = "Skeleton fireball";
+		nextFireball.transform.SetParent( staff, false );
+		nextFireball.transform.localPosition = new Vector3( -0.8f,0,0 );
+		//Debug.LogWarning("Skeleton createFireball" );
+		return nextFireball;
+	}
+
+	public void Fireball_launched ( AnimationEvent eve )
+	{
+		fireball.transform.SetParent( null );
+		Physics.IgnoreCollision(fireball.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
+		Physics.IgnoreCollision(fireball.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
+		fireball.GetComponent<Rigidbody>().isKinematic = false;
+		fireball.GetComponent<Rigidbody>().AddForce( ( new Vector3( player.position.x, player.position.y + 0.35f, player.position.z ) - fireball.transform.position).normalized * getAdjustedBoltForce() );
+		fireball.GetComponent<Projectile>().launchProjectile();
+		GameObject.Destroy( fireball, 10f );
+	}
+
 	void fireCrossbow()
 	{
 		transform.LookAt( player );
@@ -275,7 +327,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	{
 		Transform arrowHolder = transform.Find("Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Spine2/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand");
 		arrow_06.SetActive( false );
-		GameObject nextArrow = (GameObject)Instantiate( boltPrefab );
+		GameObject nextArrow = (GameObject)Instantiate( missilePrefab );
 		nextArrow.name = "Skeleton arrow";
 		nextArrow.transform.SetParent( arrowHolder, false );
 		nextArrow.transform.localPosition = new Vector3( -0.03378291f,0.02765007f,-0.004029159f );
@@ -346,15 +398,15 @@ public sealed class SkeletonController : Creature, ICreature {
 
 	IEnumerator playVictoryAnimation()
 	{
-		GetComponent<Animator>().CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
+		//GetComponent<Animator>().CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
 		yield return new WaitForSeconds( Random.value * 2f );
 		if( Random.value < 0.5f )
 		{
-			GetComponent<Animator>().CrossFadeInFixedTime( "fun1", CROSS_FADE_DURATION );
+			//GetComponent<Animator>().CrossFadeInFixedTime( "fun1", CROSS_FADE_DURATION );
 		}
 		else
 		{
-			GetComponent<Animator>().CrossFadeInFixedTime( "fun2", CROSS_FADE_DURATION );
+			//GetComponent<Animator>().CrossFadeInFixedTime( "fun2", CROSS_FADE_DURATION );
 		}
 	}
 
