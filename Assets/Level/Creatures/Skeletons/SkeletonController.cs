@@ -114,7 +114,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	private void handleKeyboard()
 	{
 		//Also support keys for debugging
-		if ( Input.GetKeyDown (KeyCode.RightArrow) ) 
+		if ( Input.GetKeyDown (KeyCode.M) ) 
 		{
 			fireCrossbow();
 		}

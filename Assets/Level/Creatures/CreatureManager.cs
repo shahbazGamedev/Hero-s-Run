@@ -27,12 +27,13 @@ public class CreatureManager : BaseClass {
 	int demonLayer = 12;
 	int cerberusLayer = 13;
 	int wraithLayer = 14;
+	int skeletonLayer = 15;
 
 	// Use this for initialization
 	void Awake ()
 	{
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
+		playerController = player.gameObject.GetComponent<PlayerController>();
 	}
 
 	int getKnockbackCreatureMask()
@@ -42,6 +43,7 @@ public class CreatureManager : BaseClass {
  		mask |= 1 << demonLayer;
 		mask |= 1 << cerberusLayer;
 		mask |= 1 << wraithLayer;
+		mask |= 1 << skeletonLayer;
 		return mask;
 	}
 
@@ -112,6 +114,7 @@ public class CreatureManager : BaseClass {
  		mask |= 1 << demonLayer;
 		mask |= 1 << cerberusLayer;
 		mask |= 1 << wraithLayer;
+		mask |= 1 << skeletonLayer;
 		return mask;
 	}
 
