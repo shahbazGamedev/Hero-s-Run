@@ -71,6 +71,10 @@ public sealed class WraithController : Creature, ICreature {
 		mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
 	}
 
+	public void sideCollision ()
+	{
+	}
+
 	void configureSelectedWeapon()
 	{
 		if( attackType == AttackType.charge_and_attack || attackType == AttackType.stand_and_big_attack || attackType == AttackType.stand_and_normal_attack )

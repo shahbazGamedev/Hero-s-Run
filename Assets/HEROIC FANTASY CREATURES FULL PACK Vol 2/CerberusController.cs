@@ -61,6 +61,14 @@ public sealed class CerberusController : Creature, ICreature {
 		#endif
 	}
 
+	public void sideCollision ()
+	{
+	}
+
+	public void victory ( bool playWinSound )
+	{
+	}
+
 	void moveCerberus()
 	{
 		if( ( creatureState == CreatureState.Walking ) )

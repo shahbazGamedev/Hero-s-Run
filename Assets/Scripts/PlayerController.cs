@@ -2011,7 +2011,11 @@ public class PlayerController : BaseClass {
 			}
 			else if (hit.collider.name.StartsWith( "Goblin" ) && !CheatManager.Instance.getIsInvincible() )
 			{
-				handleGoblinCollision(hit);
+				handleCreatureCollision( hit, hit.gameObject.GetComponent<ICreature>() );
+			}
+			else if (hit.collider.name.StartsWith( "Skeleton" ) && !CheatManager.Instance.getIsInvincible() )
+			{
+				handleCreatureCollision( hit, hit.gameObject.GetComponent<ICreature>() );
 			}
 			else if (hit.collider.name.StartsWith( "Firepit" ) && !CheatManager.Instance.getIsInvincible() )
 			{
@@ -2158,12 +2162,11 @@ public class PlayerController : BaseClass {
 			}			
 		}
 	}
-
-	void handleGoblinCollision( ControllerColliderHit hit )
+	
+	void handleCreatureCollision( ControllerColliderHit hit, ICreature creature )
 	{
-		GoblinController goblinController = hit.gameObject.GetComponent<GoblinController>();
-		//Ignore collision event if Goblin already dead.
-		if( goblinController.getCreatureState() != CreatureState.Dying )
+		//Ignore collision event if the creature is already dead.
+		if( creature.getCreatureState() != CreatureState.Dying )
 		{
 			if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding ) )
 			{
@@ -2173,7 +2176,7 @@ public class PlayerController : BaseClass {
 				//Display coin total picked up icon
 				HUDHandler.hudHandler.displayStarPickup( CreatureManager.NUMBER_STARS_PER_CREATURE, Color.yellow );
 
-				goblinController.knockback();
+				creature.knockback();
 				
 			}
 			else
@@ -2186,13 +2189,13 @@ public class PlayerController : BaseClass {
 						if( Mathf.Abs( hit.normal.x ) > Mathf.Abs( hit.normal.z ) )
 						{
 							//Player collided with goblin on the side, just play an animation on the goblin
-							goblinController.sideCollision();
+							creature.sideCollision();
 						}
 						else
 						{
 							//Player collided squarely with goblin. Kill the player.
 							managePlayerDeath ( DeathType.Zombie );
-							goblinController.victory( true );
+							creature.victory( true );
 						}
 					}
 					//Player is running along X axis
@@ -2201,13 +2204,13 @@ public class PlayerController : BaseClass {
 						if( Mathf.Abs( hit.normal.z ) > Mathf.Abs( hit.normal.x ) )
 						{
 							//Player collided with zombie on the side, just play an animation on the zombie
-							goblinController.sideCollision();
+							creature.sideCollision();
 						}
 						else
 						{
 							//Player collided squarely with zombie. Kill the player.
 							managePlayerDeath ( DeathType.Zombie );
-							goblinController.victory( true );
+							creature.victory( true );
 						}
 					}
 				}
@@ -2220,10 +2223,10 @@ public class PlayerController : BaseClass {
 		}
 		else
 		{
-			Debug.LogError("Goblin already dead");
+			Debug.LogError("Creature already dead");
 		}
 	}
-	
+
 	void OnTriggerEnter(Collider other)
 	{
 		//Carefull, if you turn right inside a deadEnd OnTriggerEnter will be called a second time (but not if your turn left).
