@@ -2160,6 +2160,13 @@ public class PlayerController : BaseClass {
 				wraithController.Stop_Weapon_Trail( null );
 				managePlayerDeath ( DeathType.Obstacle );
 			}			
+			else if (hit.collider.name.Equals("Weapon") )
+			{
+				//Skeleton footman
+				SkeletonController skeletonController = hit.transform.parent.parent.parent.parent.parent.parent.parent.parent.parent.parent.parent.GetComponent<SkeletonController>();
+				skeletonController.Stop_Weapon_Trail( null );
+				managePlayerDeath ( DeathType.Obstacle );
+			}			
 		}
 	}
 	

@@ -15,6 +15,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	public AudioClip ouch;
 	public AudioClip fallToGround;
 	public AudioClip win;
+	public AudioClip swordSwoosh;
 	[Header("Clothing")]
 	[Tooltip("There is 30% chance that each of the following cloth item will be hidden. This is so not all skeletons look alike.")]
 	public GameObject clothItem1;
@@ -39,6 +40,8 @@ public sealed class SkeletonController : Creature, ICreature {
 	GameObject arrow;
 	public GameObject arrow_06;
 	GameObject fireball;
+	[Header("Other")]
+	public GameObject weaponTrail;
 
 	public enum AttackType {
 		short_range_Spear_1 = 1,
@@ -168,7 +171,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		    switch (attackType)
 			{
 		        case AttackType.short_range_Spear_1:
-					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.7f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -177,7 +180,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					break;
 		                
 		        case AttackType.short_range_Spear_2:
-					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.7f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -484,6 +487,17 @@ public sealed class SkeletonController : Creature, ICreature {
 	public void Footstep_right ( AnimationEvent eve )
 	{
 		GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.23f );
+	}
+
+	public void Start_Weapon_Trail ( AnimationEvent eve )
+	{
+		weaponTrail.SetActive( true );
+		GetComponent<AudioSource>().PlayOneShot( swordSwoosh );
+	}
+
+	public void Stop_Weapon_Trail ( AnimationEvent eve )
+	{
+		weaponTrail.SetActive( false );
 	}
 
 }
