@@ -27,6 +27,12 @@ public sealed class SkeletonController : Creature, ICreature {
 	public float jumpPlayerDistanceMultiplier = 3.3f;
 	[Tooltip("Player distance multiplier used to decide when to fire missile.")]
 	public float missilePlayerDistanceMultiplier = 3f;
+	[Tooltip("Player distance multiplier used to decide when to fire missile.")]
+	public float spell1PlayerDistanceMultiplier = 3f;
+	[Tooltip("Player distance multiplier used to decide when to fire missile.")]
+	public float spell2PlayerDistanceMultiplier = 2.4f;
+	[Tooltip("Player distance multiplier used to decide when to fire missile.")]
+	public float spell3PlayerDistanceMultiplier = 2.4f;
 	[Tooltip("Whether or not the skeleton should play a diabolical laughter before pushing the barrel.")]
 	public bool playSkeletonTaunt = false;
 	[Tooltip("Speed at which to lock on player.")]
@@ -38,6 +44,8 @@ public sealed class SkeletonController : Creature, ICreature {
 	GameObject fireball;
 	[Header("Other")]
 	public GameObject weaponTrail;
+	public ParticleSystem lightningStrike;
+	public ParticleSystem earthquakeFX;
 
 	public enum AttackType {
 		short_range_Spear_1 = 1,
@@ -48,7 +56,8 @@ public sealed class SkeletonController : Creature, ICreature {
 		jump_and_attack = 6,
 		jump_and_long_range_attack = 7,
 		cast_spell_1 = 8,
-		cast_spell_2 = 9
+		cast_spell_2 = 9,
+		cast_spell_3 = 10
 	}
 	
 	const float BOLT_FORCE = 900f;
@@ -190,7 +199,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					}
 					break;
 				case AttackType.cast_spell_1:
-					attackDistance = missilePlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					attackDistance = spell1PlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
 					//Only attack if the player is inside a 30 degree arc in front of skeleton
 					if( distance < attackDistance && getDotProduct() > 0.8f )
 					{
@@ -199,12 +208,21 @@ public sealed class SkeletonController : Creature, ICreature {
 					}
 					break;
 				case AttackType.cast_spell_2:
-					attackDistance = missilePlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					attackDistance = spell2PlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
 					//Only attack if the player is inside a 30 degree arc in front of skeleton
 					if( distance < attackDistance && getDotProduct() > 0.8f )
 					{
 						setCreatureState( CreatureState.Attacking );
-						castFireballSpell();
+						castLightningSpell();
+					}
+					break;
+				case AttackType.cast_spell_3:
+					attackDistance = spell3PlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					//Only attack if the player is inside a 30 degree arc in front of skeleton
+					if( distance < attackDistance && getDotProduct() > 0.8f )
+					{
+						setCreatureState( CreatureState.Attacking );
+						castEarthquakeSpell();
 					}
 					break;
 				case AttackType.Throw_Barrel:
@@ -269,6 +287,18 @@ public sealed class SkeletonController : Creature, ICreature {
 		return Vector3.Dot( heading.normalized, transform.forward );
 	}
 	
+	void castLightningSpell()
+	{
+		GetComponent<Animator>().CrossFadeInFixedTime("Call Lightning", CROSS_FADE_DURATION );
+		Debug.LogWarning("SkeletonController - castLightningSpell" );
+	}
+
+	void castEarthquakeSpell()
+	{
+		GetComponent<Animator>().CrossFadeInFixedTime("Earthquake Spell", CROSS_FADE_DURATION );
+		Debug.LogWarning("SkeletonController - castEarthquakeSpell" );
+	}
+
 	void castFireballSpell()
 	{
 		transform.LookAt( player );
@@ -468,4 +498,34 @@ public sealed class SkeletonController : Creature, ICreature {
 		weaponTrail.SetActive( false );
 	}
 
+	//Called by M_skeleton_buff_spell_A
+	public void Call_lightning ( AnimationEvent eve )
+	{
+		if( lightningStrike != null )
+		{
+			lightningStrike.Play();
+			lightningStrike.GetComponent<AudioSource>().Play();
+			lightningStrike.GetComponent<Light>().enabled = true;
+			Invoke("closeLight", 1f);
+		}
+		Debug.LogError("SkeletonController - Call_lightning");
+	}
+
+	//Called by M_skeleton_buff_spell_A
+	public void Call_Earthquake ( AnimationEvent eve )
+	{
+		if( earthquakeFX != null )
+		{
+			earthquakeFX.Play();
+			earthquakeFX.GetComponent<AudioSource>().Play();
+			//earthquakeFx.GetComponent<Light>().enabled = true;
+			//Invoke("closeLight", 1f);
+		}
+		Debug.LogError("SkeletonController - Call_lightning");
+	}
+
+	void closeLight()
+	{
+		lightningStrike.GetComponent<Light>().enabled = false;
+	}
 }
