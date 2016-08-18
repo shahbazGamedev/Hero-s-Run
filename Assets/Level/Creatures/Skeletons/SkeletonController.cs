@@ -16,10 +16,6 @@ public sealed class SkeletonController : Creature, ICreature {
 	public AudioClip fallToGround;
 	public AudioClip win;
 	public AudioClip swordSwoosh;
-	[Header("Clothing")]
-	[Tooltip("There is 30% chance that each of the following cloth item will be hidden. This is so not all skeletons look alike.")]
-	public GameObject clothItem1;
-	public GameObject clothItem2;
 	[Header("Barrel")]
 	[Tooltip("The breakable barrel that the skeleton will push on top of the player.")]
 	public Rigidbody barrel;
@@ -76,32 +72,18 @@ public sealed class SkeletonController : Creature, ICreature {
 		controller = GetComponent<CharacterController>();
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 
-		randomizeLook ();
 	}
 
 	void Start ()
 	{
-		//StartCoroutine( playIdleAnimation() );
+		StartCoroutine( playIdleAnimation() );
 	}
 
 	//We don't want all the skeletons to have synced animations
 	IEnumerator playIdleAnimation()
 	{
 		yield return new WaitForSeconds( Random.value * 3f );
-		GetComponent<Animator>().CrossFadeInFixedTime( "fun1", CROSS_FADE_DURATION );
-	}
-
-	//We don't want all skeletons to look the same
-	void randomizeLook ()
-	{
-		if( Random.value < 0.3f )
-		{
-			if( clothItem1 != null ) clothItem1.SetActive( false );
-		}
-		if( Random.value < 0.3f )
-		{
-			if( clothItem2 != null ) clothItem2.SetActive( false );
-		}
+		GetComponent<Animator>().CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
 	}
 
 	void Update ()
@@ -395,21 +377,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		{
 			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
 			setCreatureState( CreatureState.Victory );
-			StartCoroutine( playVictoryAnimation() );
-		}
-	}
-
-	IEnumerator playVictoryAnimation()
-	{
-		//GetComponent<Animator>().CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
-		yield return new WaitForSeconds( Random.value * 2f );
-		if( Random.value < 0.5f )
-		{
-			//GetComponent<Animator>().CrossFadeInFixedTime( "fun1", CROSS_FADE_DURATION );
-		}
-		else
-		{
-			//GetComponent<Animator>().CrossFadeInFixedTime( "fun2", CROSS_FADE_DURATION );
+			GetComponent<Animator>().CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
 		}
 	}
 
