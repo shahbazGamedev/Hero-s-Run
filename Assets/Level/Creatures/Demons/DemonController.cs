@@ -271,6 +271,7 @@ public sealed class DemonController : Creature, ICreature {
 	{
 		if( newState == CharacterState.Dying )
 		{
+			Stop_Weapon_Trail ( null );
 			float distance = Vector3.Distance(player.position,transform.position);
 			float nearby = 4f;
 			if( distance < nearby )
@@ -315,7 +316,7 @@ public sealed class DemonController : Creature, ICreature {
 
 	public void Stop_Weapon_Trail ( AnimationEvent eve )
 	{
-		weaponTrail.SetActive( false );
+		if( weaponTrail != null ) weaponTrail.SetActive( false );
 	}
 
 

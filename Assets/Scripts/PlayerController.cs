@@ -2149,22 +2149,16 @@ public class PlayerController : BaseClass {
 			else if (hit.collider.name.StartsWith("Bip001 Prop1") )
 			{
 				//Demon
-				DemonController demonController = hit.transform.parent.parent.GetComponent<DemonController>();
-				demonController.Stop_Weapon_Trail( null );
 				managePlayerDeath ( DeathType.Obstacle );
 			}			
 			else if (hit.collider.name.Equals("wraith_Axe_LOD0") || hit.collider.name.Equals("wraith_scythe_LOD0") )
 			{
 				//Wraith
-				WraithController wraithController = hit.transform.parent.parent.parent.parent.parent.parent.parent.parent.parent.parent.parent.GetComponent<WraithController>();
-				wraithController.Stop_Weapon_Trail( null );
 				managePlayerDeath ( DeathType.Obstacle );
 			}			
 			else if (hit.collider.name.Equals("Weapon") )
 			{
-				//Skeleton footman
-				SkeletonController skeletonController = hit.transform.parent.parent.parent.parent.parent.parent.parent.parent.parent.parent.parent.GetComponent<SkeletonController>();
-				skeletonController.Stop_Weapon_Trail( null );
+				//Skeleton footman or warlord
 				managePlayerDeath ( DeathType.Obstacle );
 			}			
 		}

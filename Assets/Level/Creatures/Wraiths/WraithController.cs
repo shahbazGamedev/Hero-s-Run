@@ -291,6 +291,7 @@ public sealed class WraithController : Creature, ICreature {
 	{
 		if( newState == CharacterState.Dying )
 		{
+			Stop_Weapon_Trail ( null );
 			float distance = Vector3.Distance(player.position,transform.position);
 			float nearby = 5f;
 			if( distance < nearby )
@@ -325,8 +326,8 @@ public sealed class WraithController : Creature, ICreature {
 
 	public void Stop_Weapon_Trail ( AnimationEvent eve )
 	{
-		if( weaponType == WeaponType.Scythe ) weaponTrailScythe.SetActive( false );
-		if( weaponType == WeaponType.Axe ) weaponTrailAxe.SetActive( false );
+		if( weaponTrailScythe != null && weaponType == WeaponType.Scythe ) weaponTrailScythe.SetActive( false );
+		if(weaponTrailAxe != null && weaponType == WeaponType.Axe ) weaponTrailAxe.SetActive( false );
 	}
 
 	//For SetLookAtPosition to work, there are 2 conditions:

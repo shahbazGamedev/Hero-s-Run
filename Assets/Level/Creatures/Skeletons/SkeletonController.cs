@@ -292,13 +292,13 @@ public sealed class SkeletonController : Creature, ICreature {
 	void castLightningSpell()
 	{
 		GetComponent<Animator>().CrossFadeInFixedTime("Call Lightning", CROSS_FADE_DURATION );
-		Debug.LogWarning("SkeletonController - castLightningSpell" );
+		Debug.Log("SkeletonController - castLightningSpell" );
 	}
 
 	void castEarthquakeSpell()
 	{
 		GetComponent<Animator>().CrossFadeInFixedTime("Earthquake Spell", CROSS_FADE_DURATION );
-		Debug.LogWarning("SkeletonController - castEarthquakeSpell" );
+		Debug.Log("SkeletonController - castEarthquakeSpell" );
 	}
 
 	void castFireballSpell()
@@ -307,7 +307,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 		fireball = createFireball();
 		GetComponent<Animator>().CrossFadeInFixedTime("Fire Magic Missile", CROSS_FADE_DURATION );
-		//Debug.LogWarning("Skeleton castFireballSpell" );
+		Debug.Log("Skeleton castFireballSpell" );
 	}
 
 	GameObject createFireball()
@@ -345,7 +345,6 @@ public sealed class SkeletonController : Creature, ICreature {
 		Transform arrowHolder = transform.Find("Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Spine2/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand");
 		arrow_06.SetActive( false );
 		GameObject nextArrow = (GameObject)Instantiate( missilePrefab );
-		nextArrow.name = "Skeleton arrow";
 		nextArrow.transform.SetParent( arrowHolder, false );
 		nextArrow.transform.localPosition = new Vector3( -0.03378291f,0.02765007f,-0.004029159f );
 		nextArrow.transform.localRotation = Quaternion.Euler( -28f, 0, 0 );
@@ -455,7 +454,8 @@ public sealed class SkeletonController : Creature, ICreature {
 	{
 		if( newState == CharacterState.Dying )
 		{
-			earthquakeCollisionCylinder.SetActive( false );
+			Stop_Weapon_Trail ( null );
+			if( earthquakeCollisionCylinder != null ) earthquakeCollisionCylinder.SetActive( false );
 			float distance = Vector3.Distance(player.position,transform.position);
 			float nearby = 4f;
 			if( distance < nearby )
@@ -498,7 +498,7 @@ public sealed class SkeletonController : Creature, ICreature {
 
 	public void Stop_Weapon_Trail ( AnimationEvent eve )
 	{
-		weaponTrail.SetActive( false );
+		if( weaponTrail != null ) weaponTrail.SetActive( false );
 	}
 
 	//Called by M_skeleton_buff_spell_A
@@ -511,7 +511,7 @@ public sealed class SkeletonController : Creature, ICreature {
 			lightningStrike.GetComponent<Light>().enabled = true;
 			Invoke("closeLight", 1f);
 		}
-		Debug.LogError("SkeletonController - Call_lightning");
+		Debug.Log("SkeletonController - Call_lightning");
 	}
 
 	//Called by M_skeleton_buff_spell_A
@@ -527,7 +527,7 @@ public sealed class SkeletonController : Creature, ICreature {
 			//earthquakeFx.GetComponent<Light>().enabled = true;
 			//Invoke("closeLight", 1f);
 		}
-		Debug.LogError("SkeletonController - Call_Earthquake");
+		Debug.Log("SkeletonController - Call_Earthquake");
 	}
 
 	void closeLight()
