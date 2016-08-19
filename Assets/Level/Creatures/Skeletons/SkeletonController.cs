@@ -46,6 +46,8 @@ public sealed class SkeletonController : Creature, ICreature {
 	public GameObject weaponTrail;
 	public ParticleSystem lightningStrike;
 	public ParticleSystem earthquakeFX;
+	public GameObject earthquakeCollisionCylinder;
+	public float earthquakeCollisionCylinderIncreaseSpeed = 1.5f;
 
 	public enum AttackType {
 		short_range_Spear_1 = 1,
@@ -453,6 +455,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	{
 		if( newState == CharacterState.Dying )
 		{
+			earthquakeCollisionCylinder.SetActive( false );
 			float distance = Vector3.Distance(player.position,transform.position);
 			float nearby = 4f;
 			if( distance < nearby )
@@ -518,10 +521,13 @@ public sealed class SkeletonController : Creature, ICreature {
 		{
 			earthquakeFX.Play();
 			earthquakeFX.GetComponent<AudioSource>().Play();
+			LeanTween.scaleX( earthquakeCollisionCylinder, 10f, earthquakeCollisionCylinderIncreaseSpeed );
+			LeanTween.scaleZ( earthquakeCollisionCylinder, 10f, earthquakeCollisionCylinderIncreaseSpeed );
+			
 			//earthquakeFx.GetComponent<Light>().enabled = true;
 			//Invoke("closeLight", 1f);
 		}
-		Debug.LogError("SkeletonController - Call_lightning");
+		Debug.LogError("SkeletonController - Call_Earthquake");
 	}
 
 	void closeLight()
