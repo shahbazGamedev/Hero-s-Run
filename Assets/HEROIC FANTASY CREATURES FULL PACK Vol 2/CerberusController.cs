@@ -30,21 +30,13 @@ public sealed class CerberusController : Creature, ICreature {
 		controlled_by_script  = 2
 	}
 
-	Transform player;
 
 	//Movement related
-	CharacterController controller;
 	Vector3 forward;
 	float WALK_SPEED = 2.1f; //good value so feet don't slide
 	float moveSpeed = 0;
 	//If true, the cerberus heads for the player as opposed to staying in his lane
 	bool followsPlayer = false;
-
-	void Awake ()
-	{
-		controller = GetComponent<CharacterController>();
-		player = GameObject.FindGameObjectWithTag("Player").transform;
-	}
 
 	void Update ()
 	{
@@ -113,19 +105,19 @@ public sealed class CerberusController : Creature, ICreature {
 		followsPlayer = true;
 		moveSpeed = WALK_SPEED;
 		setCreatureState( CreatureState.Walking );
-		GetComponent<Animator>().CrossFadeInFixedTime("walk", 0.7f);
+		anim.CrossFadeInFixedTime("walk", 0.7f);
 	}
 
 	public void idle()
 	{
 		setCreatureState( CreatureState.Idle );
-		GetComponent<Animator>().CrossFadeInFixedTime("idleBreathe", 0.5f);
+		anim.CrossFadeInFixedTime("idleBreathe", 0.5f);
 	}
 
 	void breatheFire()
 	{
 		setCreatureState( CreatureState.Attacking );
-		GetComponent<Animator>().CrossFadeInFixedTime("blowFireAggressive", 0.5f);
+		anim.CrossFadeInFixedTime("blowFireAggressive", 0.5f);
 		centerHeadFireObject.SetActive( true );
 		centerHeadFire.Play();
 		leftHeadFireObject.SetActive( true );
@@ -157,7 +149,7 @@ public sealed class CerberusController : Creature, ICreature {
 		{
 			capsuleColliders[i].enabled = false;
 		}
-		GetComponent<Animator>().Play("deathAggressive");
+		anim.Play("deathAggressive");
 		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 	}
 
@@ -167,7 +159,7 @@ public sealed class CerberusController : Creature, ICreature {
 		if( transform.parent.name == player.GetComponent<PlayerController>().getCurrentTileName() )
 		{
 			setCreatureState( CreatureState.Idle );
-			GetComponent<Animator>().Play("idleLookAround");
+			anim.Play("idleLookAround");
 			gameObject.SetActive( false );
 			followsPlayer = false;
 			controller.enabled = true;

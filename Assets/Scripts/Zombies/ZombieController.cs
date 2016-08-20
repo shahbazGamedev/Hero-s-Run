@@ -11,10 +11,8 @@ public sealed class ZombieController : Creature, ICreature {
 		Any = 3, //Either walk or crawl
 	}
 
-	static Transform player;
 	PlayerController playerController;
-	public CharacterController controller;
-	Animation anim;
+	Animation legacyAnim;
 	public Vector3 forward;
 	float walkSpeed = 1.65f; //good value so feet don't slide
 	public bool applyGravity = true;
@@ -33,8 +31,8 @@ public sealed class ZombieController : Creature, ICreature {
 
 	// Use this for initialization
 	void Awake () {
+		base.Awake();
 		creatureState = CreatureState.Available;
-		controller = GetComponent<CharacterController>();
 		controller.enabled = false;
 		Transform zombiePrefab;
 		if( gameObject.name == "Zombie Boy" )
@@ -45,8 +43,7 @@ public sealed class ZombieController : Creature, ICreature {
 		{
 			zombiePrefab = transform.FindChild("zombieGirl");
 		}
-		anim = zombiePrefab.GetComponent<Animation>();
-		player = GameObject.FindGameObjectWithTag("Player").transform;
+		legacyAnim = zombiePrefab.GetComponent<Animation>();
 		playerController = player.gameObject.GetComponent<PlayerController>();
 
 	}
@@ -63,7 +60,7 @@ public sealed class ZombieController : Creature, ICreature {
 		setCreatureState( CreatureState.Available );
 		gameObject.SetActive( false );
 		followsPlayer = false;
-		controller.enabled = true;
+		if( controller != null )controller.enabled = true;
 	}
 
 	void moveZombie()
@@ -94,7 +91,7 @@ public sealed class ZombieController : Creature, ICreature {
 		controller.enabled = false;
 		CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
 		capsuleCollider.enabled = false;
-		anim.CrossFade("fallToBack", 0.25f);
+		legacyAnim.CrossFade("fallToBack", 0.25f);
 		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 
 	}
@@ -115,23 +112,23 @@ public sealed class ZombieController : Creature, ICreature {
 			if( creatureState == CreatureState.StandUpFromBack )
 			{
 				StopCoroutine("standUpFromBackCompleted");
-				anim.CrossFadeQueued("happy");
-				anim.CrossFadeQueued("happy");
-				anim.CrossFadeQueued(selectRandomIdle());
+				legacyAnim.CrossFadeQueued("happy");
+				legacyAnim.CrossFadeQueued("happy");
+				legacyAnim.CrossFadeQueued(selectRandomIdle());
 			}
 			else if( creatureState == CreatureState.BurrowUp )
 			{
 				StopCoroutine("burrowUpCompleted");
-				anim.CrossFadeQueued("danceThriller");
-				anim.CrossFadeQueued("danceThriller");
-				anim.CrossFadeQueued(selectRandomIdle());
+				legacyAnim.CrossFadeQueued("danceThriller");
+				legacyAnim.CrossFadeQueued("danceThriller");
+				legacyAnim.CrossFadeQueued(selectRandomIdle());
 			}
 			else if( creatureState == CreatureState.Crawling )
 			{
 				setCreatureState( CreatureState.Victory );
 				//Zombie was crawling
-				anim.CrossFade("crouch_eat1");
-				anim.CrossFadeQueued("crouch");
+				legacyAnim.CrossFade("crouch_eat1");
+				legacyAnim.CrossFadeQueued("crouch");
 			}
 			else
 			{
@@ -139,15 +136,15 @@ public sealed class ZombieController : Creature, ICreature {
 				setCreatureState( CreatureState.Victory );
 				if( Random.value < 0.5f )
 				{
-					anim.CrossFade("happy");
-					anim.CrossFadeQueued("happy");
-					anim.CrossFadeQueued(selectRandomIdle());
+					legacyAnim.CrossFade("happy");
+					legacyAnim.CrossFadeQueued("happy");
+					legacyAnim.CrossFadeQueued(selectRandomIdle());
 				}
 				else
 				{
-					anim.CrossFade("danceThriller");
-					anim.CrossFadeQueued("danceThriller");
-					anim.CrossFadeQueued(selectRandomIdle());
+					legacyAnim.CrossFade("danceThriller");
+					legacyAnim.CrossFadeQueued("danceThriller");
+					legacyAnim.CrossFadeQueued(selectRandomIdle());
 				}
 			}
 		}
@@ -165,8 +162,8 @@ public sealed class ZombieController : Creature, ICreature {
 	public void sideCollision()
 	{
 		GetComponent<AudioSource>().PlayOneShot( moanLow );
-		anim.CrossFade("hit2");
-		anim.CrossFadeQueued(selectRandomWalk( ZombieMoveType.Walking ));
+		legacyAnim.CrossFade("hit2");
+		legacyAnim.CrossFadeQueued(selectRandomWalk( ZombieMoveType.Walking ));
 	}
 
 	string selectRandomWalk( ZombieMoveType zmt )
@@ -209,7 +206,7 @@ public sealed class ZombieController : Creature, ICreature {
 	{
 		controller.enabled = false;
 		setCreatureState( CreatureState.BurrowUp );
-		anim.Play("burrowUp");
+		legacyAnim.Play("burrowUp");
 		StartCoroutine("burrowUpCompleted");
 		debris = (ParticleSystem)Instantiate(debris, transform.position, transform.rotation );
 		Destroy ( debris, 4f );
@@ -219,7 +216,7 @@ public sealed class ZombieController : Creature, ICreature {
 	
 	public IEnumerator burrowUpCompleted( )
 	{
-		float duration = anim["burrowUp"].length;
+		float duration = legacyAnim["burrowUp"].length;
 		do
 		{
 			duration = duration - Time.deltaTime;
@@ -228,7 +225,7 @@ public sealed class ZombieController : Creature, ICreature {
 
 		controller.enabled = true;
 		string walkType = selectRandomWalk( ZombieMoveType.Walking );
-		anim.CrossFade(walkType);
+		legacyAnim.CrossFade(walkType);
 		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
 		if( walkType == "crouchMove" || walkType == "crawl" )
 		{
@@ -245,13 +242,13 @@ public sealed class ZombieController : Creature, ICreature {
 		groan ();
 		controller.enabled = false;
 		setCreatureState( CreatureState.StandUpFromBack );
-		anim.Play("standUpFromBack");
+		legacyAnim.Play("standUpFromBack");
 		StartCoroutine("standUpFromBackCompleted");
 	}
 
 	public IEnumerator standUpFromBackCompleted()
 	{
-		float duration = anim["standUpFromBack"].length;
+		float duration = legacyAnim["standUpFromBack"].length;
 		do
 		{
 			duration = duration - Time.deltaTime;
@@ -259,7 +256,7 @@ public sealed class ZombieController : Creature, ICreature {
 		} while ( duration > 0 );
 
 		string walkType = selectRandomWalk( ZombieMoveType.Walking );
-		anim.CrossFade(walkType);
+		legacyAnim.CrossFade(walkType);
 		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
 		controller.enabled = true;
 		setCreatureState( CreatureState.Walking );
@@ -269,7 +266,7 @@ public sealed class ZombieController : Creature, ICreature {
 	{
 		controller.enabled = true;
 		string walkType = selectRandomWalk( ZombieMoveType.Walking );
-		anim.Play(walkType);
+		legacyAnim.Play(walkType);
 		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
 		setCreatureState( CreatureState.Walking );
 	}
@@ -278,7 +275,7 @@ public sealed class ZombieController : Creature, ICreature {
 	{
 		controller.enabled = true;
 		string walkType = selectRandomWalk( ZombieMoveType.Crawling );
-		anim.Play(walkType);
+		legacyAnim.Play(walkType);
 		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
 		setCreatureState( CreatureState.Crawling );
 

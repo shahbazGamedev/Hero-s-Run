@@ -31,7 +31,6 @@ public sealed class WraithController : Creature, ICreature {
 	public float eyesWeight = 1f;
 	public float clampWeight = 1f;
 	bool lookAtActive = false;
-	Animator anim;
 
 
 	public enum AttackType {
@@ -47,11 +46,9 @@ public sealed class WraithController : Creature, ICreature {
 		Scythe = 2
 	}
 	
-	Transform player;
 	const float CROSS_FADE_DURATION = 0.5f;
 
 	//Movement related
-	CharacterController controller;
 	Vector3 forward;
 	float moveSpeed = 0;
 	const float WALK_SPEED = 3.2f;
@@ -64,9 +61,7 @@ public sealed class WraithController : Creature, ICreature {
 
 	void Awake ()
 	{
-		controller = GetComponent<CharacterController>();
-		anim = GetComponent<Animator>();
-		player = GameObject.FindGameObjectWithTag("Player").transform;
+		base.Awake();
 		configureSelectedWeapon();
 		mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
 	}

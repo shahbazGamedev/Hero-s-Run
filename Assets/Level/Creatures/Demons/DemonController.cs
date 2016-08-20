@@ -36,11 +36,9 @@ public sealed class DemonController : Creature, ICreature {
 		do_nothing = 6
 	}
 	
-	Transform player;
 	const float CROSS_FADE_DURATION = 0.5f;
 
 	//Movement related
-	CharacterController controller;
 	Vector3 forward;
 	const float RUN_SPEED = 4.6f; //good value so feet don't slide
 	float WALK_SPEED = 3.2f; //good value so feet don't slide
@@ -50,8 +48,7 @@ public sealed class DemonController : Creature, ICreature {
 
 	void Awake ()
 	{
-		controller = GetComponent<CharacterController>();
-		player = GameObject.FindGameObjectWithTag("Player").transform;
+		base.Awake();
 		if( attackType == AttackType.walk_and_talk )
 		{
 			transform.Find("demon_weapon").gameObject.SetActive( false );
@@ -106,7 +103,7 @@ public sealed class DemonController : Creature, ICreature {
 					if( distance < attackDistance )
 					{
 						setCreatureState( CreatureState.Attacking );
-						GetComponent<Animator>().CrossFadeInFixedTime( "Attack" , CROSS_FADE_DURATION );
+						anim.CrossFadeInFixedTime( "Attack" , CROSS_FADE_DURATION );
 					}
 					break;
 		                
@@ -115,7 +112,7 @@ public sealed class DemonController : Creature, ICreature {
 					if( distance < attackDistance )
 					{
 						setCreatureState( CreatureState.Attacking );
-						GetComponent<Animator>().CrossFadeInFixedTime( "Skill" , CROSS_FADE_DURATION );
+						anim.CrossFadeInFixedTime( "Skill" , CROSS_FADE_DURATION );
 					}
 					break;
 		                
@@ -132,14 +129,14 @@ public sealed class DemonController : Creature, ICreature {
 								followsPlayer = true;
 								moveSpeed = RUN_SPEED;
 								setCreatureState( CreatureState.Running );
-								GetComponent<Animator>().CrossFadeInFixedTime( "Run" , CROSS_FADE_DURATION );
+								anim.CrossFadeInFixedTime( "Run" , CROSS_FADE_DURATION );
 							}
 						}
 						else
 						{
 							//Attack now
 							setCreatureState( CreatureState.Attacking );
-							GetComponent<Animator>().CrossFadeInFixedTime( "Skill" , CROSS_FADE_DURATION );
+							anim.CrossFadeInFixedTime( "Skill" , CROSS_FADE_DURATION );
 						}
 					}
 					break;
@@ -155,13 +152,13 @@ public sealed class DemonController : Creature, ICreature {
 							followsPlayer = true;
 							moveSpeed = WALK_SPEED;
 							setCreatureState( CreatureState.Walking );
-							GetComponent<Animator>().CrossFadeInFixedTime( "Walk" , CROSS_FADE_DURATION );
+							anim.CrossFadeInFixedTime( "Walk" , CROSS_FADE_DURATION );
 						}
 						else
 						{
 							//Attack now
 							setCreatureState( CreatureState.Attacking );
-							GetComponent<Animator>().CrossFadeInFixedTime( "Skill" , CROSS_FADE_DURATION );
+							anim.CrossFadeInFixedTime( "Skill" , CROSS_FADE_DURATION );
 						}
 					}
 					break;
@@ -176,7 +173,7 @@ public sealed class DemonController : Creature, ICreature {
 							followsPlayer = false;
 							moveSpeed = WALK_SPEED;
 							setCreatureState( CreatureState.Walking );
-							GetComponent<Animator>().Play( "Walk" );
+							anim.Play( "Walk" );
 							speak( getNextText(), 3.9f, false );
 							Invoke("stopWalking", 6.8f );
 						}
@@ -211,13 +208,13 @@ public sealed class DemonController : Creature, ICreature {
 	{
 		attackType = AttackType.do_nothing;
 		setCreatureState( CreatureState.Idle );
-		GetComponent<Animator>().CrossFadeInFixedTime( "Stand" , CROSS_FADE_DURATION );
+		anim.CrossFadeInFixedTime( "Stand" , CROSS_FADE_DURATION );
 	}
 
 	public void sideCollision()
 	{
 		GetComponent<AudioSource>().PlayOneShot( ouch );
-		GetComponent<Animator>().CrossFadeInFixedTime( "Damage" , CROSS_FADE_DURATION );
+		anim.CrossFadeInFixedTime( "Damage" , CROSS_FADE_DURATION );
 	}
 
 	public void victory( bool playWinSound )
@@ -226,7 +223,7 @@ public sealed class DemonController : Creature, ICreature {
 		{
 			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
 			setCreatureState( CreatureState.Victory );
-			GetComponent<Animator>().CrossFadeInFixedTime( "Idle" , CROSS_FADE_DURATION );
+			anim.CrossFadeInFixedTime( "Idle" , CROSS_FADE_DURATION );
 		}
 	}
 
@@ -240,7 +237,7 @@ public sealed class DemonController : Creature, ICreature {
 		{
 			capsuleColliders[i].enabled = false;
 		}
-		GetComponent<Animator>().SetTrigger("Knockback");
+		anim.SetTrigger("Knockback");
 		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 	}
 	
@@ -285,7 +282,7 @@ public sealed class DemonController : Creature, ICreature {
 	public void resetCreature()
 	{
 		setCreatureState( CreatureState.Idle );
-		GetComponent<Animator>().CrossFadeInFixedTime( "Idle" , CROSS_FADE_DURATION );
+		anim.CrossFadeInFixedTime( "Idle" , CROSS_FADE_DURATION );
 		gameObject.SetActive( false );
 		followsPlayer = false;
 		controller.enabled = true;

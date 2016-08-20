@@ -68,22 +68,12 @@ public sealed class SkeletonController : Creature, ICreature {
 	//Only use for the scout skeleton with the crossbow
 	Vector3 initialBoltPositionOffset = new Vector3( 0f, 0.47f, 0.46f );
 
-	Transform player;
-
 	//Movement related
-	CharacterController controller;
 	Vector3 forward;
 	float runSpeed = 4.6f; //good value so feet don't slide
 	//If true, the skeleton heads for the player as opposed to staying in his lane
 	bool followsPlayer = false;
 	bool previouslyGrounded = true;
-
-	void Awake ()
-	{
-		controller = GetComponent<CharacterController>();
-		player = GameObject.FindGameObjectWithTag("Player").transform;
-
-	}
 
 	void Start ()
 	{
@@ -94,7 +84,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	IEnumerator playIdleAnimation()
 	{
 		yield return new WaitForSeconds( Random.value * 3f );
-		GetComponent<Animator>().CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
+		anim.CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
 	}
 
 	void Update ()
@@ -136,13 +126,11 @@ public sealed class SkeletonController : Creature, ICreature {
 			if (controller.isGrounded && !previouslyGrounded )
 			{
 				GetComponent<AudioSource>().PlayOneShot( fallToGround );
-				GetComponent<Animator>().CrossFadeInFixedTime( "run", CROSS_FADE_DURATION );
+				anim.CrossFadeInFixedTime( "run", CROSS_FADE_DURATION );
 				setCreatureState( CreatureState.Running );
 			}
 			previouslyGrounded = controller.isGrounded;
 		}
-
-
 	}
 
 	void targetPlayer()
@@ -168,7 +156,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setCreatureState( CreatureState.Attacking );
-						GetComponent<Animator>().CrossFadeInFixedTime( "attack1", CROSS_FADE_DURATION );
+						anim.CrossFadeInFixedTime( "attack1", CROSS_FADE_DURATION );
 					}
 					break;
 		                
@@ -177,7 +165,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setCreatureState( CreatureState.Attacking );
-						GetComponent<Animator>().CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
+						anim.CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
 					}
 					break;
 		                
@@ -187,7 +175,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					{
 						followsPlayer = true;
 						setCreatureState( CreatureState.Running );
-						GetComponent<Animator>().Play( "run" );
+						anim.Play( "run" );
 					}
 					break;
 			
@@ -247,14 +235,14 @@ public sealed class SkeletonController : Creature, ICreature {
 								//Jump and run once you land
 								followsPlayer = true;
 								setCreatureState( CreatureState.Jumping );
-								GetComponent<Animator>().CrossFadeInFixedTime( "jump", CROSS_FADE_DURATION );
+								anim.CrossFadeInFixedTime( "jump", CROSS_FADE_DURATION );
 							}
 						}
 						else
 						{
 							//Attack now
 							setCreatureState( CreatureState.Attacking );
-							GetComponent<Animator>().CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
+							anim.CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
 						}
 					}
 					break;
@@ -267,7 +255,7 @@ public sealed class SkeletonController : Creature, ICreature {
 							//Jump and run once you land
 							followsPlayer = true;
 							setCreatureState( CreatureState.Jumping );
-							GetComponent<Animator>().CrossFadeInFixedTime( "jump", CROSS_FADE_DURATION );
+							anim.CrossFadeInFixedTime( "jump", CROSS_FADE_DURATION );
 							attackType = AttackType.long_range_Spear;
 						}
 					}
@@ -291,13 +279,13 @@ public sealed class SkeletonController : Creature, ICreature {
 	
 	void castLightningSpell()
 	{
-		GetComponent<Animator>().CrossFadeInFixedTime("Call Lightning", CROSS_FADE_DURATION );
+		anim.CrossFadeInFixedTime("Call Lightning", CROSS_FADE_DURATION );
 		Debug.Log("SkeletonController - castLightningSpell" );
 	}
 
 	void castEarthquakeSpell()
 	{
-		GetComponent<Animator>().CrossFadeInFixedTime("Earthquake Spell", CROSS_FADE_DURATION );
+		anim.CrossFadeInFixedTime("Earthquake Spell", CROSS_FADE_DURATION );
 		Debug.Log("SkeletonController - castEarthquakeSpell" );
 	}
 
@@ -306,7 +294,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		transform.LookAt( player );
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 		fireball = createFireball();
-		GetComponent<Animator>().CrossFadeInFixedTime("Fire Magic Missile", CROSS_FADE_DURATION );
+		anim.CrossFadeInFixedTime("Fire Magic Missile", CROSS_FADE_DURATION );
 		Debug.Log("Skeleton castFireballSpell" );
 	}
 
@@ -337,7 +325,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		transform.LookAt( player );
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 		arrow = createArrow();
-		GetComponent<Animator>().SetTrigger("Fire");
+		anim.SetTrigger("Fire");
 	}
 
 	GameObject createArrow()
@@ -391,7 +379,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		barrel.isKinematic = false;
 		barrel.AddForce( forces );
 		barrel.AddTorque( new Vector3( 0, 300f, 0 ) );
-		GetComponent<Animator>().CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
+		anim.CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
 	}
 
 
@@ -399,7 +387,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	public void sideCollision()
 	{
 		GetComponent<AudioSource>().PlayOneShot( ouch );
-		GetComponent<Animator>().CrossFadeInFixedTime( "damage", CROSS_FADE_DURATION );
+		anim.CrossFadeInFixedTime( "damage", CROSS_FADE_DURATION );
 	}
 
 	public void victory( bool playWinSound )
@@ -408,7 +396,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		{
 			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
 			setCreatureState( CreatureState.Victory );
-			GetComponent<Animator>().CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
+			anim.CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
 		}
 	}
 
@@ -423,7 +411,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		{
 			capsuleColliders[i].enabled = false;
 		}
-		GetComponent<Animator>().CrossFadeInFixedTime( "death", CROSS_FADE_DURATION );
+		anim.CrossFadeInFixedTime( "death", CROSS_FADE_DURATION );
 		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 	}
 	
@@ -469,7 +457,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	public void resetCreature()
 	{
 		setCreatureState( CreatureState.Idle );
-		GetComponent<Animator>().CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
+		anim.CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
 		gameObject.SetActive( false );
 		followsPlayer = false;
 		controller.enabled = true;
