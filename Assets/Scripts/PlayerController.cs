@@ -506,7 +506,6 @@ public class PlayerController : BaseClass {
 	public void enablePlayerControl( bool enabled )
 	{
 		playerControlsEnabled = enabled;
-		print ("PlayerController-enablePlayerControl: " + enabled );
 		if( enabled )
 		{
 			powerUpManager.changeSelectedPowerUp( PlayerStatsManager.Instance.getPowerUpSelected() );

@@ -540,7 +540,6 @@ public class PowerUpManager : BaseClass {
 
 	public void slideEquippedPowerUp( PowerUpManager.PowerUpData pud )
 	{
-		Debug.Log("slideEquippedPowerUp " + pud.powerUpType.ToString() );
 		Image[] images = equippedPowerUp.GetComponentsInChildren<Image>();
 		images[0].sprite = PowerUpDisplayData.getPowerUpSprite( pud.powerUpType );
 		equippedPowerUpQuantity.text = PlayerStatsManager.Instance.getPowerUpQuantity(pud.powerUpType).ToString();

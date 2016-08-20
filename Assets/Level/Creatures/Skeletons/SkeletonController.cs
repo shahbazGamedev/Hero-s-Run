@@ -1,13 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
 
 public sealed class SkeletonController : Creature, ICreature {
 
 	[Header("Skeleton Controller")]
 	[Header("General")]
-	public AttackType attackType = AttackType.short_range_Spear_1;
+	public AttackType attackType = AttackType.Short_range_sword_1;
 	public bool applyGravity = true;
 	[Header("Audio")]
 	public AudioClip footstepLeftSound;
@@ -15,48 +14,41 @@ public sealed class SkeletonController : Creature, ICreature {
 	public AudioClip ouch;
 	public AudioClip win;
 	public AudioClip swordSwoosh;
-	[Header("Barrel")]
-	[Tooltip("The breakable barrel that the skeleton will push on top of the player.")]
-	public Rigidbody barrel;
-	[Tooltip("The forward (based on the skeleton's transform) force to apply on the barrel.")]
-	public float barrelForwardForce = 1300f; //Based on 10 kilograms
-	[Tooltip("Player distance multiplier used to decide to throw barrel.")]
-	public float barrelPlayerDistanceMultiplier = 1.45f;
 	[Tooltip("Player distance multiplier used to decide when to jump.")]
 	public float jumpPlayerDistanceMultiplier = 3.3f;
-	[Tooltip("Player distance multiplier used to decide when to fire missile.")]
+	[Tooltip("Player distance multiplier used to decide when to fire a missile.")]
 	public float missilePlayerDistanceMultiplier = 3f;
-	[Tooltip("Player distance multiplier used to decide when to fire missile.")]
-	public float spell1PlayerDistanceMultiplier = 3f;
-	[Tooltip("Player distance multiplier used to decide when to fire missile.")]
-	public float spell2PlayerDistanceMultiplier = 2.4f;
-	[Tooltip("Player distance multiplier used to decide when to fire missile.")]
-	public float spell3PlayerDistanceMultiplier = 2.4f;
-	[Tooltip("Whether or not the skeleton should play a diabolical laughter before pushing the barrel.")]
-	public bool playSkeletonTaunt = false;
-	[Tooltip("The bolt fired by the crossbow.")]
+	[Tooltip("Player distance multiplier used to decide when to summon skeletons.")]
+	public float summonSkeletonsPlayerDistanceMultiplier = 3f;
+	[Tooltip("Player distance multiplier used to decide when to fire a magic missile.")]
+	public float magicMissilePlayerDistanceMultiplier = 2.4f;
+	[Tooltip("Player distance multiplier used to decide when to cause minor earthquake.")]
+	public float castEarthquakePlayerDistanceMultiplier = 2.4f;
+	[Header("Archer and Sorcerer")]
+	[Tooltip("The arrow fired by the archer or the magic missile fired by the sorcerer.")]
 	public GameObject missilePrefab;
-	GameObject arrow;
+	[Tooltip("Archer only. A reference to the animated arrow so we can hide it once the prefab arrow is launched.")]
 	public GameObject arrow_06;
-	GameObject fireball;
-	[Header("Other")]
+	GameObject arrow;
+	[Header("Footman and warlord")]
 	public GameObject weaponTrail;
+	[Header("Sorcerer")]
 	public ParticleSystem lightningStrike;
 	public ParticleSystem earthquakeFX;
 	public GameObject earthquakeCollisionCylinder;
 	public float earthquakeCollisionCylinderIncreaseSpeed = 1.5f;
+	GameObject magicMissile;
 
 	public enum AttackType {
-		short_range_Spear_1 = 1,
-		short_range_Spear_2 = 2,
-		long_range_Spear = 3,
-		Crossbow = 4,
-		Throw_Barrel = 5,
-		jump_and_attack = 6,
-		jump_and_long_range_attack = 7,
-		cast_spell_1 = 8,
-		cast_spell_2 = 9,
-		cast_spell_3 = 10
+		Short_range_sword_1 = 1,		//Footman and warlord
+		Short_range_sword_2 = 2,		//Footman and warlord	
+		Long_range_sword = 3,			//Footman and warlord
+		Bow = 4,						//Archer only
+		Jump_and_attack = 6,			//Footman and warlord		
+		Jump_and_long_range_attack = 7,	//Footman and warlord
+		Summon_skeletons = 8,			//Sorcerer only			
+		Fire_magic_missile = 9,			//Sorcerer only
+		Cast_earthquake = 10			//Sorcerer only
 	}
 	
 	const float BOLT_FORCE = 900f;
@@ -80,24 +72,11 @@ public sealed class SkeletonController : Creature, ICreature {
 
 	void Update ()
 	{
-		moveSkeleton();
+		move();
 		handleAttackType();
-		#if UNITY_EDITOR
-		handleKeyboard();
-		#endif
-
 	}
 
-	private void handleKeyboard()
-	{
-		//Also support keys for debugging
-		if ( Input.GetKeyDown (KeyCode.M) ) 
-		{
-			fireCrossbow();
-		}
-	}
-
-	void moveSkeleton()
+	void move()
 	{
 		if( creatureState == CreatureState.Running || creatureState == CreatureState.Jumping )
 		{
@@ -116,6 +95,7 @@ public sealed class SkeletonController : Creature, ICreature {
 
 			if (controller.isGrounded && !previouslyGrounded )
 			{
+				//Creature just landed after a jump. Have it start running.
 				GetComponent<AudioSource>().PlayOneShot( knockbackSound );
 				anim.CrossFadeInFixedTime( "run", CROSS_FADE_DURATION );
 				setCreatureState( CreatureState.Running );
@@ -123,7 +103,6 @@ public sealed class SkeletonController : Creature, ICreature {
 			previouslyGrounded = controller.isGrounded;
 		}
 	}
-
 
 	void handleAttackType()
 	{
@@ -133,25 +112,27 @@ public sealed class SkeletonController : Creature, ICreature {
 			float attackDistance;
 		    switch (attackType)
 			{
-		        case AttackType.short_range_Spear_1:
+		        case AttackType.Short_range_sword_1:
 					attackDistance = 0.7f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance && getDotProduct() > 0.98f )
+					if( distance < attackDistance && getDotProduct() > 0.9f )
 					{
+						followsPlayer = true;
 						setCreatureState( CreatureState.Attacking );
 						anim.CrossFadeInFixedTime( "attack1", CROSS_FADE_DURATION );
 					}
 					break;
 		                
-		        case AttackType.short_range_Spear_2:
+		        case AttackType.Short_range_sword_2:
 					attackDistance = 0.7f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance && getDotProduct() > 0.98f )
+					if( distance < attackDistance && getDotProduct() > 0.9f )
 					{
+						followsPlayer = true;
 						setCreatureState( CreatureState.Attacking );
 						anim.CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
 					}
 					break;
 		                
-				case AttackType.long_range_Spear:
+				case AttackType.Long_range_sword:
 					attackDistance = 2f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance )
 					{
@@ -161,7 +142,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					}
 					break;
 			
-				case AttackType.Crossbow:
+				case AttackType.Bow:
 					attackDistance = missilePlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
 					//Only attack if the player is inside a 30 degree arc in front of skeleton
 					if( distance < attackDistance && getDotProduct() > 0.8f )
@@ -170,42 +151,34 @@ public sealed class SkeletonController : Creature, ICreature {
 						fireCrossbow();
 					}
 					break;
-				case AttackType.cast_spell_1:
-					attackDistance = spell1PlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+				case AttackType.Fire_magic_missile:
+					attackDistance = magicMissilePlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
 					//Only attack if the player is inside a 30 degree arc in front of skeleton
 					if( distance < attackDistance && getDotProduct() > 0.8f )
 					{
 						setCreatureState( CreatureState.Attacking );
-						castFireballSpell();
+						fireMagicMissile();
 					}
 					break;
-				case AttackType.cast_spell_2:
-					attackDistance = spell2PlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+				case AttackType.Summon_skeletons:
+					attackDistance = summonSkeletonsPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
 					//Only attack if the player is inside a 30 degree arc in front of skeleton
 					if( distance < attackDistance && getDotProduct() > 0.8f )
 					{
 						setCreatureState( CreatureState.Attacking );
-						castLightningSpell();
+						summonSkeletons();
 					}
 					break;
-				case AttackType.cast_spell_3:
-					attackDistance = spell3PlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+				case AttackType.Cast_earthquake:
+					attackDistance = castEarthquakePlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
 					//Only attack if the player is inside a 30 degree arc in front of skeleton
 					if( distance < attackDistance && getDotProduct() > 0.8f )
 					{
 						setCreatureState( CreatureState.Attacking );
-						castEarthquakeSpell();
+						castEarthquake();
 					}
 					break;
-				case AttackType.Throw_Barrel:
-					attackDistance = barrelPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance )
-					{
-						setCreatureState( CreatureState.Attacking );
-						throwBarrel();
-					}
-					break;
-				case AttackType.jump_and_attack:
+				case AttackType.Jump_and_attack:
 					float jumpDistance = jumpPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
 					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
 					if( distance < jumpDistance )
@@ -228,7 +201,7 @@ public sealed class SkeletonController : Creature, ICreature {
 						}
 					}
 					break;
-				case AttackType.jump_and_long_range_attack:
+				case AttackType.Jump_and_long_range_attack:
 					float jumpLongDistance = jumpPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
 					if( distance < jumpLongDistance )
 					{
@@ -238,37 +211,24 @@ public sealed class SkeletonController : Creature, ICreature {
 							followsPlayer = true;
 							setCreatureState( CreatureState.Jumping );
 							anim.CrossFadeInFixedTime( "jump", CROSS_FADE_DURATION );
-							attackType = AttackType.long_range_Spear;
+							attackType = AttackType.Long_range_sword;
 						}
 					}
 					break;
 			}
 		}
 	}
-
 	
-	void castLightningSpell()
+	void fireMagicMissile()
 	{
-		anim.CrossFadeInFixedTime("Call Lightning", CROSS_FADE_DURATION );
-		Debug.Log("SkeletonController - castLightningSpell" );
-	}
-
-	void castEarthquakeSpell()
-	{
-		anim.CrossFadeInFixedTime("Earthquake Spell", CROSS_FADE_DURATION );
-		Debug.Log("SkeletonController - castEarthquakeSpell" );
-	}
-
-	void castFireballSpell()
-	{
+		Debug.Log("SkeletonController - fireMagicMissile" );
 		transform.LookAt( player );
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
-		fireball = createFireball();
+		magicMissile = createMagicMissile();
 		anim.CrossFadeInFixedTime("Fire Magic Missile", CROSS_FADE_DURATION );
-		Debug.Log("Skeleton castFireballSpell" );
 	}
 
-	GameObject createFireball()
+	GameObject createMagicMissile()
 	{
 		Transform staff = transform.Find("Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Spine2/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 Rhand_Weapon/stuff02");
 		GameObject nextFireball = (GameObject)Instantiate( missilePrefab );
@@ -281,13 +241,56 @@ public sealed class SkeletonController : Creature, ICreature {
 
 	public void Fireball_launched ( AnimationEvent eve )
 	{
-		fireball.transform.SetParent( null );
-		Physics.IgnoreCollision(fireball.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
-		Physics.IgnoreCollision(fireball.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
-		fireball.GetComponent<Rigidbody>().isKinematic = false;
-		fireball.GetComponent<Rigidbody>().AddForce( ( new Vector3( player.position.x, player.position.y + 0.35f, player.position.z ) - fireball.transform.position).normalized * getAdjustedBoltForce() );
-		fireball.GetComponent<Projectile>().launchProjectile();
-		GameObject.Destroy( fireball, 10f );
+		magicMissile.transform.SetParent( null );
+		Physics.IgnoreCollision(magicMissile.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
+		Physics.IgnoreCollision(magicMissile.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
+		magicMissile.GetComponent<Rigidbody>().isKinematic = false;
+		magicMissile.GetComponent<Rigidbody>().AddForce( ( new Vector3( player.position.x, player.position.y + 0.35f, player.position.z ) - magicMissile.transform.position).normalized * getAdjustedBoltForce() );
+		magicMissile.GetComponent<Projectile>().launchProjectile();
+		GameObject.Destroy( magicMissile, 10f );
+	}
+
+	void summonSkeletons()
+	{
+		Debug.Log("SkeletonController - summonSkeletons" );
+		anim.CrossFadeInFixedTime("Call Lightning", CROSS_FADE_DURATION );
+	}
+
+	//Called by M_skeleton_buff_spell_A
+	public void Call_lightning ( AnimationEvent eve )
+	{
+		Debug.Log("SkeletonController - Call_lightning");
+		if( lightningStrike != null )
+		{
+			lightningStrike.Play();
+			lightningStrike.GetComponent<AudioSource>().Play();
+			lightningStrike.GetComponent<Light>().enabled = true;
+			Invoke("closeLight", 1f);
+		}
+	}
+
+	void closeLight()
+	{
+		lightningStrike.GetComponent<Light>().enabled = false;
+	}
+
+	void castEarthquake()
+	{
+		Debug.Log("SkeletonController - castEarthquake" );
+		anim.CrossFadeInFixedTime("Earthquake Spell", CROSS_FADE_DURATION );
+	}
+
+	//Called by M_skeleton_staff_earthquake_spell
+	public void Call_Earthquake ( AnimationEvent eve )
+	{
+		Debug.Log("SkeletonController - Call_Earthquake");
+		if( earthquakeFX != null )
+		{
+			earthquakeFX.Play();
+			earthquakeFX.GetComponent<AudioSource>().Play();
+			LeanTween.scaleX( earthquakeCollisionCylinder, 10f, earthquakeCollisionCylinderIncreaseSpeed );
+			LeanTween.scaleZ( earthquakeCollisionCylinder, 10f, earthquakeCollisionCylinderIncreaseSpeed );
+		}
 	}
 
 	void fireCrossbow()
@@ -340,19 +343,6 @@ public sealed class SkeletonController : Creature, ICreature {
 		}
 		return adjustedBoltForce;
 	}
-
-	void throwBarrel()
-	{
-		if( playSkeletonTaunt ) GetComponent<AudioSource>().PlayOneShot( win, 0.7f );
-		//Push barrels in the direction of the skeleton and add a small upward force
-		Vector3 forces = transform.forward * barrelForwardForce + new Vector3( 0, 400f, 0 );
-		barrel.isKinematic = false;
-		barrel.AddForce( forces );
-		barrel.AddTorque( new Vector3( 0, 300f, 0 ) );
-		anim.CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
-	}
-
-
 
 	public void sideCollision()
 	{
@@ -437,37 +427,4 @@ public sealed class SkeletonController : Creature, ICreature {
 		if( weaponTrail != null ) weaponTrail.SetActive( false );
 	}
 
-	//Called by M_skeleton_buff_spell_A
-	public void Call_lightning ( AnimationEvent eve )
-	{
-		if( lightningStrike != null )
-		{
-			lightningStrike.Play();
-			lightningStrike.GetComponent<AudioSource>().Play();
-			lightningStrike.GetComponent<Light>().enabled = true;
-			Invoke("closeLight", 1f);
-		}
-		Debug.Log("SkeletonController - Call_lightning");
-	}
-
-	//Called by M_skeleton_buff_spell_A
-	public void Call_Earthquake ( AnimationEvent eve )
-	{
-		if( earthquakeFX != null )
-		{
-			earthquakeFX.Play();
-			earthquakeFX.GetComponent<AudioSource>().Play();
-			LeanTween.scaleX( earthquakeCollisionCylinder, 10f, earthquakeCollisionCylinderIncreaseSpeed );
-			LeanTween.scaleZ( earthquakeCollisionCylinder, 10f, earthquakeCollisionCylinderIncreaseSpeed );
-			
-			//earthquakeFx.GetComponent<Light>().enabled = true;
-			//Invoke("closeLight", 1f);
-		}
-		Debug.Log("SkeletonController - Call_Earthquake");
-	}
-
-	void closeLight()
-	{
-		lightningStrike.GetComponent<Light>().enabled = false;
-	}
 }
