@@ -14,6 +14,8 @@ public class Creature : BaseClass {
 	public bool followsPlayer = false;
 	[Tooltip("Speed at which to lock on player.")]
 	public float enemyAimSpeed = 7.6f;
+	[Header("Audio")]
+	public AudioClip knockbackSound;
 
 	protected void Awake ()
 	{
@@ -69,5 +71,18 @@ public class Creature : BaseClass {
 		if( GetComponent<Rigidbody>() != null ) GetComponent<Rigidbody>().isKinematic = true;
 	}
 
+	//The creature falls over backwards, typically because the player slid into him or because of a ZNuke
+	public void knockback()
+	{
+		setCreatureState( CreatureState.Dying );
+		controller.enabled = false;
+		//Some creatures (usually the ones carrying a weapon) have more than one capsule colliders.
+		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
+		for( int i = 0; i < capsuleColliders.Length; i++ )
+		{
+			capsuleColliders[i].enabled = false;
+		}
+		GetComponent<AudioSource>().PlayOneShot( knockbackSound );
+	}
 
 }

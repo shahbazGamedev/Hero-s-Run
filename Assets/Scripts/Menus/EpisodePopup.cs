@@ -19,7 +19,6 @@ public class EpisodePopup : MonoBehaviour {
 	public NewWorldMapHandler newWorldMapHandler;
 
 	Animator anim;
-	bool levelLoading = false;
 	int episodeNumber;
 	int levelNumber;
 	LevelData levelData;

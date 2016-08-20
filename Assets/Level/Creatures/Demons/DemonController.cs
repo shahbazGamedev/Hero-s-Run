@@ -12,7 +12,6 @@ public sealed class DemonController : Creature, ICreature {
 	public AudioClip footstepLeftSound;
 	public AudioClip footstepRightSound;
 	public AudioClip ouch;
-	public AudioClip fallToGround;
 	public AudioClip win;
 	public AudioClip swordSwoosh;
 	[Header("Particle Systems")]
@@ -40,7 +39,7 @@ public sealed class DemonController : Creature, ICreature {
 	float WALK_SPEED = 3.2f; //good value so feet don't slide
 	float moveSpeed = 0;
 
-	void Awake ()
+	new void Awake ()
 	{
 		base.Awake();
 		if( attackType == AttackType.walk_and_talk )
@@ -199,17 +198,10 @@ public sealed class DemonController : Creature, ICreature {
 	}
 
 	//The demon falls over backwards, typically because the player slid into him or because of a ZNuke
-	public void knockback()
+	public new void knockback()
 	{
-		setCreatureState( CreatureState.Dying );
-		controller.enabled = false;
-		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
-		for( int i = 0; i < capsuleColliders.Length; i++ )
-		{
-			capsuleColliders[i].enabled = false;
-		}
+		base.knockback();
 		anim.SetTrigger("Knockback");
-		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 	}
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)

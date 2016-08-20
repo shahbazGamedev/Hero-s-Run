@@ -13,7 +13,6 @@ public sealed class GoblinController : Creature, ICreature {
 	public AudioClip footstepLeftSound;
 	public AudioClip footstepRightSound;
 	public AudioClip ouch;
-	public AudioClip fallToGround;
 	public AudioClip win;
 	[Header("Clothing")]
 	[Tooltip("There is 30% chance that each of the following cloth item will be hidden. This is so not all goblins look alike.")]
@@ -54,7 +53,7 @@ public sealed class GoblinController : Creature, ICreature {
 	float runSpeed = 4.6f; //good value so feet don't slide
 	bool previouslyGrounded = true;
 
-	void Awake ()
+	new void Awake ()
 	{
 		base.Awake();
 		randomizeLook();
@@ -110,7 +109,7 @@ public sealed class GoblinController : Creature, ICreature {
 
 			if (controller.isGrounded && !previouslyGrounded )
 			{
-				GetComponent<AudioSource>().PlayOneShot( fallToGround );
+				GetComponent<AudioSource>().PlayOneShot( knockbackSound );
 				anim.CrossFadeInFixedTime( "run", CROSS_FADE_DURATION );
 				setCreatureState( CreatureState.Running );
 			}
@@ -302,18 +301,10 @@ public sealed class GoblinController : Creature, ICreature {
 	}
 
 	//The goblin falls over backwards, typically because the player slid into him or because of a ZNuke
-	public void knockback()
+	public new void knockback()
 	{
-		setCreatureState( CreatureState.Dying );
-		controller.enabled = false;
-		//The piker has two capsule colliders. The scout, only one.
-		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
-		for( int i = 0; i < capsuleColliders.Length; i++ )
-		{
-			capsuleColliders[i].enabled = false;
-		}
+		base.knockback();
 		anim.CrossFadeInFixedTime( "death", CROSS_FADE_DURATION );
-		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 	}
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)

@@ -20,7 +20,6 @@ public class PostLevelPopup : MonoBehaviour {
 	[Header("Score Meter")]
 	public GameObject scoreMeter;
 
-	bool levelLoading = false;
 	ClockTimeSetter clockTimeSetter;
 
 	// Use this for initialization

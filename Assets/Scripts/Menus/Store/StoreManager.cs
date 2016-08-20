@@ -35,8 +35,6 @@ public class StoreManager : MonoBehaviour {
 	public Text upgradeTitle;
 	public Text consumableTitle;
 
-	bool levelLoading = false;
-
 	// Use this for initialization
 	void Awake ()
 	{

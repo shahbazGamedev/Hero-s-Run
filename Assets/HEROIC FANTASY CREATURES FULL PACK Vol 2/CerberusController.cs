@@ -11,7 +11,6 @@ public sealed class CerberusController : Creature, ICreature {
 	[Header("Audio")]
 	public AudioClip footstepLeftSound;
 	public AudioClip footstepRightSound;
-	public AudioClip fallToGround;
 	public AudioClip angrySnarl;
 	public AudioClip angryBark;
 
@@ -137,21 +136,14 @@ public sealed class CerberusController : Creature, ICreature {
 	}
 
 	//The cerberus falls over backwards, typically because of a ZNuke
-	public void knockback()
+	public new void knockback()
 	{
-		setCreatureState( CreatureState.Dying );
+		base.knockback();
 		stopBreathingFire();
-		controller.enabled = false;
-		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
-		for( int i = 0; i < capsuleColliders.Length; i++ )
-		{
-			capsuleColliders[i].enabled = false;
-		}
 		anim.Play("deathAggressive");
-		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 	}
 
-	public void resetCreature()
+	public new void resetCreature()
 	{
 		//Only reset Cerebus if the player died on the same tile as Cerebus.
 		if( transform.parent.name == player.GetComponent<PlayerController>().getCurrentTileName() )

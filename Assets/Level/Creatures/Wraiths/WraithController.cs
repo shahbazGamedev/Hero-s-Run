@@ -10,7 +10,6 @@ public sealed class WraithController : Creature, ICreature {
 	public AttackType attackType = AttackType.stand_and_normal_attack;
 	[Header("Audio")]
 	public AudioClip charge;
-	public AudioClip screech;
 	public AudioClip win;
 	public AudioClip weaponSwoosh;
 	[Header("Weapons")]
@@ -53,7 +52,7 @@ public sealed class WraithController : Creature, ICreature {
 	//We add a motion blur to the camera when the wraith is charging
 	Camera mainCamera;
 
-	void Awake ()
+	new void Awake ()
 	{
 		base.Awake();
 		configureSelectedWeapon();
@@ -229,19 +228,12 @@ public sealed class WraithController : Creature, ICreature {
 	}
 
 	//The wraith falls over backwards, typically because the player slid into him or because of a ZNuke
-	public void knockback()
+	public new void knockback()
 	{
-		setCreatureState( CreatureState.Dying );
-		mainCamera.GetComponent<MotionBlur>().enabled = false;			
-		controller.enabled = false;
-		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
-		for( int i = 0; i < capsuleColliders.Length; i++ )
-		{
-			capsuleColliders[i].enabled = false;
-		}
+		base.knockback();
 		anim.SetTrigger("Knockback");
-		GetComponent<AudioSource>().PlayOneShot( screech );
 		GetComponent<Rigidbody>().isKinematic = false;
+		mainCamera.GetComponent<MotionBlur>().enabled = false;			
 	}
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)

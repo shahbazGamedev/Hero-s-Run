@@ -20,14 +20,13 @@ public sealed class ZombieController : Creature, ICreature {
 	public List<string> walkTypes = new List<string>();
 	public AudioClip moanLow;
 	public AudioClip moanHigh;
-	public AudioClip fallToGround;
 	public AudioClip win;
 
 	//For stats and achievements
 	static EventCounter zombie_bowling = new EventCounter( GameCenterManager.ZombieBowling, 3, 3000 );
 
 	// Use this for initialization
-	void Awake () {
+	new void Awake () {
 		base.Awake();
 		creatureState = CreatureState.Available;
 		controller.enabled = false;
@@ -50,7 +49,7 @@ public sealed class ZombieController : Creature, ICreature {
 		moveZombie();
 	}
 
-	public void resetCreature()
+	public new void resetCreature()
 	{
 		StopCoroutine("recycleZombie");
 		CancelInvoke();
@@ -81,16 +80,11 @@ public sealed class ZombieController : Creature, ICreature {
 
 	}
 
-	public void knockback()
+	public new void knockback()
 	{
+		base.knockback();
 		CancelInvoke( "groan" );
-		setCreatureState( CreatureState.Dying );
-		controller.enabled = false;
-		CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
-		capsuleCollider.enabled = false;
 		legacyAnim.CrossFade("fallToBack", 0.25f);
-		GetComponent<AudioSource>().PlayOneShot( fallToGround );
-
 	}
 
 	//The zombie falls over backwards, typically because the player slid into him.

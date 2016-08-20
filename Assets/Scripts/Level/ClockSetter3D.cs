@@ -19,7 +19,6 @@ public class ClockSetter3D : MonoBehaviour {
 
 	void updateTime ()
  	{
- 		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
 		int levelNumber = LevelManager.Instance.getNextLevelToComplete();
 
 		//Get time of day for current level

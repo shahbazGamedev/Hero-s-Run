@@ -256,7 +256,6 @@ public class PlayerController : BaseClass {
 	int FallForwardTrigger = Animator.StringToHash("Fall_Forward");
 	int speedBlendFactor = Animator.StringToHash("Speed");
 	int lookbackBlendFactor = Animator.StringToHash("Look_Back");
-	int idle_LookTrigger = Animator.StringToHash("Idle_Look");
 
 	//For debugging swipes
 	public string lastSwipe;

@@ -13,7 +13,6 @@ public sealed class SkeletonController : Creature, ICreature {
 	public AudioClip footstepLeftSound;
 	public AudioClip footstepRightSound;
 	public AudioClip ouch;
-	public AudioClip fallToGround;
 	public AudioClip win;
 	public AudioClip swordSwoosh;
 	[Header("Barrel")]
@@ -61,9 +60,6 @@ public sealed class SkeletonController : Creature, ICreature {
 	}
 	
 	const float BOLT_FORCE = 900f;
-
-	//Only use for the scout skeleton with the crossbow
-	Vector3 initialBoltPositionOffset = new Vector3( 0f, 0.47f, 0.46f );
 
 	//Movement related
 	Vector3 forward;
@@ -120,7 +116,7 @@ public sealed class SkeletonController : Creature, ICreature {
 
 			if (controller.isGrounded && !previouslyGrounded )
 			{
-				GetComponent<AudioSource>().PlayOneShot( fallToGround );
+				GetComponent<AudioSource>().PlayOneShot( knockbackSound );
 				anim.CrossFadeInFixedTime( "run", CROSS_FADE_DURATION );
 				setCreatureState( CreatureState.Running );
 			}
@@ -375,18 +371,10 @@ public sealed class SkeletonController : Creature, ICreature {
 	}
 
 	//The skeleton falls over backwards, typically because the player slid into him or because of a ZNuke
-	public void knockback()
+	public new void knockback()
 	{
-		setCreatureState( CreatureState.Dying );
-		controller.enabled = false;
-		//The piker has two capsule colliders. The scout, only one.
-		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
-		for( int i = 0; i < capsuleColliders.Length; i++ )
-		{
-			capsuleColliders[i].enabled = false;
-		}
+		base.knockback();
 		anim.CrossFadeInFixedTime( "death", CROSS_FADE_DURATION );
-		GetComponent<AudioSource>().PlayOneShot( fallToGround );
 	}
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)

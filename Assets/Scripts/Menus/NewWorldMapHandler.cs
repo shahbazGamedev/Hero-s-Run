@@ -213,7 +213,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	void drawEpisodeLevelMarker( int levelNumber, int episodeCounter )
 	{
-		LevelData.EpisodeInfo episodeInfo = levelData.getEpisodeInfo( episodeCounter );
 		GameObject go = (GameObject)Instantiate(episodeStationPrefab);
 		go.transform.SetParent(map.transform,false);
 		go.name = "Episode Station " + (episodeCounter + 1).ToString();

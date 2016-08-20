@@ -55,9 +55,6 @@ public class PopupHandler : MonoBehaviour {
 
 	float titleHeight;
 
-	//Button
-	Vector2 buttonSize;
-
 	//Spinner
 	public Texture spinner;
 	float spinSpeed = 240f;
@@ -65,13 +62,9 @@ public class PopupHandler : MonoBehaviour {
 	//Font size (includes all buttons, message and title)
 	int fontSize;
 
-	//Three friends
-	List<string> unlockFromIDList = new List<string>();
-
 	//Facebook portraits
 	public Texture defaultPortrait;
 	public Texture portraitFrame;
-	Vector2 popupPortraitSize;
 
 	//messageCenterHandler
 	MessageCenterHandler messageCenterHandler;
@@ -86,17 +79,12 @@ public class PopupHandler : MonoBehaviour {
 	GUIContent textContent = new GUIContent("This is some text.");
 	public GUIStyle textStyle;
 	bool displayPopupButtons = true;
-	bool displayPopup;
 	
 	void Awake()
 	{
 		originalPopupRect = new Rect( (Screen.width - popupSize.x)/2, (Screen.height - popupSize.y)/2 , popupSize.x, popupSize.y );
 		popupRect = new Rect( originalPopupRect.x, originalPopupRect.y , originalPopupRect.width, originalPopupRect.height );
-
-		buttonSize = new Vector2( popupSize.x * 0.8f, popupSize.y * 0.1f );
 		
-		popupPortraitSize 	 = new Vector2( Screen.width * 0.15f, Screen.width * 0.15f );
-
 		//Standard heights
 		titleHeight = 0.05f * popupRect.height;
 
@@ -149,14 +137,12 @@ public class PopupHandler : MonoBehaviour {
 	{
 		popupSize = new Vector2( newSize.x, newSize.y);
 		popupRect = new Rect( (Screen.width - popupSize.x)/2, (Screen.height - popupSize.y)/2 , popupSize.x, popupSize.y );
-		buttonSize = new Vector2( popupSize.x * 0.8f, popupSize.y * 0.1f );
 	}
 	
 	public void resetPopupSize()
 	{
 		popupSize = new Vector2( originalPopupSize.x, originalPopupSize.y);
 		popupRect = originalPopupRect;
-		buttonSize = new Vector2( popupSize.x * 0.8f, popupSize.y * 0.1f );
 	}
 
 	public bool isPopupDisplayed()
@@ -438,7 +424,6 @@ public class PopupHandler : MonoBehaviour {
 			if( GUI.Button( closeButtonRect, "X", textStyle )) 
 			{
 				SoundManager.soundManager.playButtonClick();
-				displayPopup = false;
 			}
 			
 			//Draw Okay button (bottom center)
@@ -447,7 +432,6 @@ public class PopupHandler : MonoBehaviour {
 			if( GUI.Button( okayButtonRect, "Okay", textStyle )) 
 			{
 				SoundManager.soundManager.playButtonClick();
-				displayPopup = false;
 			}
 		}
 		
