@@ -43,8 +43,6 @@ public sealed class WraithController : Creature, ICreature {
 		Axe = 1,
 		Scythe = 2
 	}
-	
-	const float CROSS_FADE_DURATION = 0.5f;
 
 	//Movement related
 	Vector3 forward;
@@ -52,8 +50,6 @@ public sealed class WraithController : Creature, ICreature {
 	const float WALK_SPEED = 3.2f;
 	const float NORMAL_CHARGE_SPEED = 35f;
 
-	//If true, the wraith heads for the player as opposed to staying in his lane
-	bool followsPlayer = false;
 	//We add a motion blur to the camera when the wraith is charging
 	Camera mainCamera;
 
@@ -283,21 +279,6 @@ public sealed class WraithController : Creature, ICreature {
 				StartCoroutine( fadeOutLookAtPosition( 0.2f, 2f + Random.value * 2f, 0.9f ) );
 			}
 		}
-	}
-
-	public void resetCreature()
-	{
-		setCreatureState( CreatureState.Idle );
-		anim.CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
-		gameObject.SetActive( false );
-		followsPlayer = false;
-		controller.enabled = true;
-		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
-		for( int i = 0; i < capsuleColliders.Length; i++ )
-		{
-			capsuleColliders[i].enabled = true;
-		}
-		GetComponent<Rigidbody>().isKinematic = true;
 	}
 
 	public void Start_Weapon_Trail ( AnimationEvent eve )

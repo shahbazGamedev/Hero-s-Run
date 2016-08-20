@@ -34,15 +34,11 @@ public sealed class DemonController : Creature, ICreature {
 		do_nothing = 6
 	}
 	
-	const float CROSS_FADE_DURATION = 0.5f;
-
 	//Movement related
 	Vector3 forward;
 	const float RUN_SPEED = 4.6f; //good value so feet don't slide
 	float WALK_SPEED = 3.2f; //good value so feet don't slide
 	float moveSpeed = 0;
-	//If true, the demon heads for the player as opposed to staying in his lane
-	bool followsPlayer = false;
 
 	void Awake ()
 	{
@@ -198,7 +194,7 @@ public sealed class DemonController : Creature, ICreature {
 		{
 			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
 			setCreatureState( CreatureState.Victory );
-			anim.CrossFadeInFixedTime( "Idle" , CROSS_FADE_DURATION );
+			anim.CrossFadeInFixedTime( "idle" , CROSS_FADE_DURATION );
 		}
 	}
 
@@ -254,19 +250,6 @@ public sealed class DemonController : Creature, ICreature {
 		}
 	}
 
-	public void resetCreature()
-	{
-		setCreatureState( CreatureState.Idle );
-		anim.CrossFadeInFixedTime( "Idle" , CROSS_FADE_DURATION );
-		gameObject.SetActive( false );
-		followsPlayer = false;
-		controller.enabled = true;
-		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
-		for( int i = 0; i < capsuleColliders.Length; i++ )
-		{
-			capsuleColliders[i].enabled = true;
-		}
-	}
 
 	public void Footstep_left ( AnimationEvent eve )
 	{

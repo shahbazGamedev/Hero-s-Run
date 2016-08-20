@@ -35,8 +35,6 @@ public sealed class CerberusController : Creature, ICreature {
 	Vector3 forward;
 	float WALK_SPEED = 2.1f; //good value so feet don't slide
 	float moveSpeed = 0;
-	//If true, the cerberus heads for the player as opposed to staying in his lane
-	bool followsPlayer = false;
 
 	void Update ()
 	{

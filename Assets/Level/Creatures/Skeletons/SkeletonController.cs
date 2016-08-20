@@ -61,7 +61,6 @@ public sealed class SkeletonController : Creature, ICreature {
 	}
 	
 	const float BOLT_FORCE = 900f;
-	const float CROSS_FADE_DURATION = 0.5f;
 
 	//Only use for the scout skeleton with the crossbow
 	Vector3 initialBoltPositionOffset = new Vector3( 0f, 0.47f, 0.46f );
@@ -69,8 +68,6 @@ public sealed class SkeletonController : Creature, ICreature {
 	//Movement related
 	Vector3 forward;
 	float runSpeed = 4.6f; //good value so feet don't slide
-	//If true, the skeleton heads for the player as opposed to staying in his lane
-	bool followsPlayer = false;
 	bool previouslyGrounded = true;
 
 	void Start ()
@@ -428,20 +425,6 @@ public sealed class SkeletonController : Creature, ICreature {
 				victory( false );
 				Debug.Log("Skeleton PlayerStateChange - player is dead and nearby");
 			}
-		}
-	}
-
-	public void resetCreature()
-	{
-		setCreatureState( CreatureState.Idle );
-		anim.CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
-		gameObject.SetActive( false );
-		followsPlayer = false;
-		controller.enabled = true;
-		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
-		for( int i = 0; i < capsuleColliders.Length; i++ )
-		{
-			capsuleColliders[i].enabled = true;
 		}
 	}
 

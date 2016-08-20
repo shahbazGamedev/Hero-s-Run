@@ -26,9 +26,6 @@ public sealed class ZombieController : Creature, ICreature {
 	//For stats and achievements
 	static EventCounter zombie_bowling = new EventCounter( GameCenterManager.ZombieBowling, 3, 3000 );
 
-	//If true, the zombie heads for the player (as opposed to staying in its lane).
-	public bool followsPlayer = false;
-
 	// Use this for initialization
 	void Awake () {
 		base.Awake();
