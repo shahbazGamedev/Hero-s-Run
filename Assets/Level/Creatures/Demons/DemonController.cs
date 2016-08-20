@@ -191,19 +191,6 @@ public sealed class DemonController : Creature, ICreature {
 		return nextText;
 	}
 
-	/*
-		returns:
-		-1 if demon is behind player
-		+1 if demon is in front
-		0 if demon is on the side
-		0.5 if demon is facing player and within 60 degrees (i.e. between 30 degrees to the left and 30 degrees to the right)
-	*/
-	float getDotProduct()
-	{
-		Vector3 heading = player.position - transform.position;
-		return Vector3.Dot( heading.normalized, transform.forward );
-	}
-
 	void stopWalking()
 	{
 		attackType = AttackType.do_nothing;

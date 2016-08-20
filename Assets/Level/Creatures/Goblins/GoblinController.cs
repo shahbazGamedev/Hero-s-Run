@@ -228,19 +228,6 @@ public sealed class GoblinController : Creature, ICreature {
 			}
 		}
 	}
-
-	/*
-		returns:
-		-1 if goblin is behind player
-		+1 if goblin is in front
-		0 if goblin is on the side
-		0.5 if goblin is facing player and within 60 degrees (i.e. between 30 degrees to the left and 30 degrees to the right)
-	*/
-	float getDotProduct()
-	{
-		Vector3 heading = player.position - transform.position;
-		return Vector3.Dot( heading.normalized, transform.forward );
-	}
 	
 	void fireCrossbow()
 	{
