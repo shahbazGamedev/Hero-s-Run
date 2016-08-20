@@ -446,6 +446,7 @@ public sealed class SkeletonController : Creature, ICreature {
 			if( distance < nearby )
 			{
 				victory( false );
+				StartCoroutine( base.fadeOutLookAtPosition( 0.2f, 2f + Random.value * 2f, 0.9f ) );
 				Debug.Log("Skeleton PlayerStateChange - player is dead and nearby");
 			}
 		}

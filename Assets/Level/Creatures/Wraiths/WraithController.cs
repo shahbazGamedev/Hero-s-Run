@@ -21,13 +21,6 @@ public sealed class WraithController : Creature, ICreature {
 	public GameObject weaponScytheLOD0;
 	public GameObject weaponScytheLOD1;
 	public GameObject weaponTrailScythe;
-	[Header("Look At IK")]
-	public float lookAtWeight = 0.8f;
-	public float bodyWeight = 0.7f;
-	public float headWeight = 1f;
-	public float eyesWeight = 1f;
-	public float clampWeight = 1f;
-	bool lookAtActive = false;
 
 
 	public enum AttackType {
@@ -268,7 +261,7 @@ public sealed class WraithController : Creature, ICreature {
 			if( distance < nearby )
 			{
 				victory( false );
-				StartCoroutine( fadeOutLookAtPosition( 0.2f, 2f + Random.value * 2f, 0.9f ) );
+				StartCoroutine( base.fadeOutLookAtPosition( 0.2f, 2f + Random.value * 2f, 0.9f ) );
 			}
 		}
 	}
@@ -286,70 +279,5 @@ public sealed class WraithController : Creature, ICreature {
 		if(weaponTrailAxe != null && weaponType == WeaponType.Axe ) weaponTrailAxe.SetActive( false );
 	}
 
-	//For SetLookAtPosition to work, there are 2 conditions:
-	//The rig must be Humanoid
-	//In the Animator windows, under Layers, under Settings, you must have the IK Pass toggled on.
-	void OnAnimatorIK()
-	{
-		if( getDotProduct() > 0.55f )
-		{
-			float distance = Vector3.Distance(player.position,transform.position);
-			if( distance < 24f )			
-			{
-				if( !lookAtActive )
-				{
- 					StartCoroutine( fadeInLookAtPosition( 0.8f, 0.7f ) );
-				} 
-				anim.SetLookAtPosition( player.position );
-				anim.SetLookAtWeight( lookAtWeight, bodyWeight, headWeight, eyesWeight, clampWeight );
-			}
-		}
-	}
-
-	IEnumerator fadeOutLookAtPosition( float finalWeight, float stayDuration, float fadeDuration )
-	{
-		float elapsedTime = 0;
-		
-		//Stay
-		yield return new WaitForSeconds(stayDuration);
-		
-		//Fade out
-		elapsedTime = 0;
-		
-		float initialWeight = lookAtWeight;
-		
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			lookAtWeight = Mathf.Lerp( initialWeight, finalWeight, elapsedTime/fadeDuration );
-			yield return new WaitForFixedUpdate();  
-			
-		} while ( elapsedTime < fadeDuration );
-		
-		lookAtWeight = finalWeight;
-	
-	}
-
-	IEnumerator fadeInLookAtPosition( float finalWeight, float fadeDuration )
-	{
-		lookAtActive = true;
-		float elapsedTime = 0;
-
-		//Fade in
-		elapsedTime = 0;
-		
-		float initialWeight = 0;
-		
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			lookAtWeight = Mathf.Lerp( initialWeight, finalWeight, elapsedTime/fadeDuration );
-			yield return new WaitForFixedUpdate();  
-			
-		} while ( elapsedTime < fadeDuration );
-		
-		lookAtWeight = finalWeight;
-	
-	}
 
 }
