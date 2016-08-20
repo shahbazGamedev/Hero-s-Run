@@ -35,8 +35,6 @@ public sealed class SkeletonController : Creature, ICreature {
 	public float spell3PlayerDistanceMultiplier = 2.4f;
 	[Tooltip("Whether or not the skeleton should play a diabolical laughter before pushing the barrel.")]
 	public bool playSkeletonTaunt = false;
-	[Tooltip("Speed at which to lock on player.")]
-	public float enemyAimSpeed = 7.6f;
 	[Tooltip("The bolt fired by the crossbow.")]
 	public GameObject missilePrefab;
 	GameObject arrow;
@@ -133,15 +131,6 @@ public sealed class SkeletonController : Creature, ICreature {
 		}
 	}
 
-	void targetPlayer()
-	{
-		Vector3 relativePos = player.position - transform.position;
-		Quaternion desiredRotation = Quaternion.LookRotation( relativePos ); 
-		desiredRotation.x = 0f;
-		desiredRotation.z = 0f;
-		transform.rotation = Quaternion.Lerp( transform.rotation, desiredRotation, Time.deltaTime * enemyAimSpeed );
-
-	}
 
 	void handleAttackType()
 	{

@@ -9,6 +9,8 @@ public class Creature : BaseClass {
 	protected Transform player;
 	protected CharacterController controller;
 	protected Animator anim;
+	[Tooltip("Speed at which to lock on player.")]
+	public float enemyAimSpeed = 7.6f;
 
 	protected void Awake ()
 	{
@@ -38,6 +40,15 @@ public class Creature : BaseClass {
 	{
 		Vector3 heading = player.position - transform.position;
 		return Vector3.Dot( heading.normalized, transform.forward );
+	}
+
+	protected void targetPlayer()
+	{
+		Vector3 relativePos = player.position - transform.position;
+		Quaternion desiredRotation = Quaternion.LookRotation( relativePos ); 
+		desiredRotation.x = 0f;
+		desiredRotation.z = 0f;
+		transform.rotation = Quaternion.Lerp( transform.rotation, desiredRotation, Time.deltaTime * enemyAimSpeed );
 	}
 
 }

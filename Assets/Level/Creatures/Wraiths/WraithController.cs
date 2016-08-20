@@ -8,8 +8,6 @@ public sealed class WraithController : Creature, ICreature {
 	[Header("Wraith Controller")]
 	[Header("General")]
 	public AttackType attackType = AttackType.stand_and_normal_attack;
-	[Tooltip("Speed at which to lock on player.")]
-	public float enemyAimSpeed = 7f;
 	[Header("Audio")]
 	public AudioClip charge;
 	public AudioClip screech;
@@ -120,16 +118,6 @@ public sealed class WraithController : Creature, ICreature {
 			//3) Move the controller
 			controller.Move( forward );
 		}
-	}
-
-	void targetPlayer()
-	{
-		Vector3 relativePos = player.position - transform.position;
-		Quaternion desiredRotation = Quaternion.LookRotation( relativePos ); 
-		desiredRotation.x = 0f;
-		desiredRotation.z = 0f;
-		transform.rotation = Quaternion.Lerp( transform.rotation, desiredRotation, Time.deltaTime * enemyAimSpeed );
-
 	}
 
 	void handleAttackType()
