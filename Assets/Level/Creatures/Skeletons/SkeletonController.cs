@@ -36,7 +36,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	[Header("Sorcerer")]
 	public ParticleSystem lightningStrike;
 	public List<SkeletonController> summonedSkeletons = new List<SkeletonController>();
-	public ParticleSystem waterSplash; //Plays when skeletons comes out of the water.
+	public ParticleSystem summonFXPrefab;
 	public ParticleSystem earthquakeFX;
 	public GameObject earthquakeCollisionCylinder;
 	public float earthquakeCollisionCylinderIncreaseSpeed = 1.5f;
@@ -292,6 +292,11 @@ public sealed class SkeletonController : Creature, ICreature {
 	{
 		yield return new WaitForSeconds( Random.value * 3f );
 		anim.Play( "wake" );
+		ParticleSystem summonFX = (ParticleSystem)Instantiate( summonFXPrefab );
+		summonFX.transform.position = new Vector3( transform.position.x, transform.position.y + 0.25f, transform.position.z );
+		summonFX.Play();
+		summonFX.GetComponent<AudioSource>().Play();
+		GameObject.Destroy( summonFX, 10f );
 	}
 
 	void closeLight()
