@@ -50,11 +50,11 @@ public sealed class DemonController : Creature, ICreature {
 
 	void Update ()
 	{
-		moveDemon();
+		move();
 		handleAttackType();
 	}
 
-	void moveDemon()
+	void move()
 	{
 		if( creatureState == CreatureState.Running || creatureState == CreatureState.Walking )
 		{

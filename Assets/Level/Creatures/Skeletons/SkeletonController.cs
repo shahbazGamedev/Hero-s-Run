@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public sealed class SkeletonController : Creature, ICreature {
 
@@ -34,6 +35,8 @@ public sealed class SkeletonController : Creature, ICreature {
 	public GameObject weaponTrail;
 	[Header("Sorcerer")]
 	public ParticleSystem lightningStrike;
+	public List<SkeletonController> summonedSkeletons = new List<SkeletonController>();
+	public ParticleSystem waterSplash; //Plays when skeletons comes out of the water.
 	public ParticleSystem earthquakeFX;
 	public GameObject earthquakeCollisionCylinder;
 	public float earthquakeCollisionCylinderIncreaseSpeed = 1.5f;
@@ -48,19 +51,29 @@ public sealed class SkeletonController : Creature, ICreature {
 		Jump_and_long_range_attack = 7,	//Footman and warlord
 		Summon_skeletons = 8,			//Sorcerer only			
 		Fire_magic_missile = 9,			//Sorcerer only
-		Cast_earthquake = 10			//Sorcerer only
+		Cast_earthquake = 10,			//Sorcerer only
+		Wake_walk_attack_with_sword = 11	//Footman only
 	}
 	
 	const float BOLT_FORCE = 900f;
 
 	//Movement related
 	Vector3 forward;
-	float runSpeed = 4.6f; //good value so feet don't slide
+	const float RUN_SPEED = 4.6f; //good value so feet don't slide
+	float WALK_SPEED = 3.2f; //good value so feet don't slide
+	float moveSpeed = 0;
 	bool previouslyGrounded = true;
 
 	void Start ()
 	{
-		StartCoroutine( playIdleAnimation() );
+		if( attackType != AttackType.Wake_walk_attack_with_sword )
+		{
+			StartCoroutine( playIdleAnimation() );
+		}
+		else
+		{
+			anim.Play( "sleeping" );
+		}
 	}
 
 	//We don't want all the skeletons to have synced animations
@@ -78,7 +91,7 @@ public sealed class SkeletonController : Creature, ICreature {
 
 	void move()
 	{
-		if( creatureState == CreatureState.Running || creatureState == CreatureState.Jumping )
+		if( creatureState == CreatureState.Running || creatureState == CreatureState.Jumping || creatureState == CreatureState.Walking )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -88,7 +101,7 @@ public sealed class SkeletonController : Creature, ICreature {
 			//1) Get the direction of the skeleton
 			forward = transform.TransformDirection(Vector3.forward);			
 			//2) Scale vector based on run speed
-			forward = forward * Time.deltaTime * runSpeed;
+			forward = forward * Time.deltaTime * moveSpeed;
 			if( applyGravity ) forward.y -= 16f * Time.deltaTime;
 			//3) Move the controller
 			controller.Move( forward );
@@ -98,6 +111,7 @@ public sealed class SkeletonController : Creature, ICreature {
 				//Creature just landed after a jump. Have it start running.
 				GetComponent<AudioSource>().PlayOneShot( knockbackSound );
 				anim.CrossFadeInFixedTime( "run", CROSS_FADE_DURATION );
+				moveSpeed = RUN_SPEED;
 				setCreatureState( CreatureState.Running );
 			}
 			previouslyGrounded = controller.isGrounded;
@@ -137,6 +151,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					if( distance < attackDistance )
 					{
 						followsPlayer = true;
+						moveSpeed = RUN_SPEED;
 						setCreatureState( CreatureState.Running );
 						anim.Play( "run" );
 					}
@@ -259,19 +274,45 @@ public sealed class SkeletonController : Creature, ICreature {
 	//Called by M_skeleton_buff_spell_A
 	public void Call_lightning ( AnimationEvent eve )
 	{
-		Debug.Log("SkeletonController - Call_lightning");
 		if( lightningStrike != null )
 		{
 			lightningStrike.Play();
 			lightningStrike.GetComponent<AudioSource>().Play();
 			lightningStrike.GetComponent<Light>().enabled = true;
 			Invoke("closeLight", 1f);
+			for( int i = 0; i < summonedSkeletons.Count; i++ )
+			{
+				StartCoroutine( summonedSkeletons[i].wakeUp() );
+			}
 		}
+	}
+
+	//We don't want all the skeletons to have synced animations
+	IEnumerator wakeUp()
+	{
+		yield return new WaitForSeconds( Random.value * 3f );
+		anim.Play( "wake" );
 	}
 
 	void closeLight()
 	{
 		lightningStrike.GetComponent<Light>().enabled = false;
+	}
+	
+	public void Wake_up_completed ( AnimationEvent eve )
+	{
+		//Walk
+		followsPlayer = true;
+		moveSpeed = WALK_SPEED;
+		setCreatureState( CreatureState.Walking );
+		if( Random.value >= 0.5f )
+		{
+			attackType = AttackType.Short_range_sword_1;
+		}
+		else
+		{
+			attackType = AttackType.Short_range_sword_2;
+		}
 	}
 
 	void castEarthquake()
@@ -283,7 +324,6 @@ public sealed class SkeletonController : Creature, ICreature {
 	//Called by M_skeleton_staff_earthquake_spell
 	public void Call_Earthquake ( AnimationEvent eve )
 	{
-		Debug.Log("SkeletonController - Call_Earthquake");
 		if( earthquakeFX != null )
 		{
 			earthquakeFX.Play();
