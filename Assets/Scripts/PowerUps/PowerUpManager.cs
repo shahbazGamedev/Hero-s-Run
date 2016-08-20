@@ -42,6 +42,7 @@ public class PowerUpManager : BaseClass {
 	//For debugging
 	//When forcePowerUpType is not set to NONE, only the power up type specified will be added to the level.
 	PowerUpType forcePowerUpType = PowerUpType.None;
+	const float DISTANCE_TO_GROUND = 2.4f;
 
 	//List of each powerup available.
 	public List<PowerUpData> powerUpList = new List<PowerUpData>(6);
@@ -448,8 +449,17 @@ public class PowerUpManager : BaseClass {
 	private void addPowerUp ( PowerUpType type, Transform powerUpPlaceholder, GameObject newTile )
 	{
 		GameObject powerUpPrefab = powerUpDictionary[type].powerUpToSpawn;
-		GameObject go = (GameObject)Instantiate(powerUpPrefab, powerUpPlaceholder.position, Quaternion.Euler( powerUpPrefab.transform.eulerAngles.x, powerUpPlaceholder.eulerAngles.y, powerUpPrefab.transform.eulerAngles.z ) );
-		go.transform.parent = newTile.transform;
+		//Always place the power-up at the same height
+		RaycastHit hit;
+		if (Physics.Raycast(new Vector3(powerUpPlaceholder.position.x, powerUpPlaceholder.position.y + 3f, powerUpPlaceholder.position.z), Vector3.down, out hit, 10f ))
+		{
+			GameObject go = (GameObject)Instantiate(powerUpPrefab, new Vector3( powerUpPlaceholder.position.x, hit.point.y + DISTANCE_TO_GROUND, powerUpPlaceholder.position.z ), Quaternion.Euler( powerUpPrefab.transform.eulerAngles.x, powerUpPlaceholder.eulerAngles.y, powerUpPrefab.transform.eulerAngles.z ) );
+			go.transform.parent = newTile.transform;
+		}
+		else
+		{
+			Debug.LogWarning("PowerupManager - there is no ground below the powerup of type, " + type.ToString() + ", in tile " + newTile.name );
+		}
 	}
 
 	void OnEnable()
