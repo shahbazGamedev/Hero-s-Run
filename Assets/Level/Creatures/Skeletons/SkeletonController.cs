@@ -45,7 +45,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	public enum AttackType {
 		Short_range_sword_1 = 1,		//Footman and warlord
 		Short_range_sword_2 = 2,		//Footman and warlord	
-		Long_range_sword = 3,			//Footman and warlord
+		Charge_and_attack = 3,			//Footman and warlord
 		Bow = 4,						//Archer only
 		Jump_and_attack = 6,			//Footman and warlord		
 		Jump_and_long_range_attack = 7,	//Footman and warlord
@@ -146,14 +146,28 @@ public sealed class SkeletonController : Creature, ICreature {
 					}
 					break;
 		                
-				case AttackType.Long_range_sword:
-					attackDistance = 2f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance )
+				case AttackType.Charge_and_attack:
+					float chargeDistance = 2.3f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.97f * PlayerController.getPlayerSpeed();
+					if( distance < chargeDistance )
 					{
-						followsPlayer = true;
-						moveSpeed = RUN_SPEED;
-						setCreatureState( CreatureState.Running );
-						anim.Play( "run" );
+						if( distance >= attackDistance )
+						{
+							if( creatureState != CreatureState.Running )
+							{
+								//Charge
+								followsPlayer = true;
+								moveSpeed = RUN_SPEED;
+								setCreatureState( CreatureState.Running );
+								anim.CrossFadeInFixedTime( "run" , CROSS_FADE_DURATION );
+							}
+						}
+						else
+						{
+							//Attack now
+							setCreatureState( CreatureState.Attacking );
+							anim.CrossFadeInFixedTime( "attack1" , CROSS_FADE_DURATION );
+						}
 					}
 					break;
 			
@@ -226,7 +240,7 @@ public sealed class SkeletonController : Creature, ICreature {
 							followsPlayer = true;
 							setCreatureState( CreatureState.Jumping );
 							anim.CrossFadeInFixedTime( "jump", CROSS_FADE_DURATION );
-							attackType = AttackType.Long_range_sword;
+							attackType = AttackType.Charge_and_attack;
 						}
 					}
 					break;
