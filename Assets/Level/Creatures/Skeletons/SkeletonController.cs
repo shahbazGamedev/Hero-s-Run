@@ -72,6 +72,13 @@ public sealed class SkeletonController : Creature, ICreature {
 		}
 		else
 		{
+			//We do not want the player to collide with a dormant skeleton
+			controller.enabled = false;
+			CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
+			for( int i = 0; i < capsuleColliders.Length; i++ )
+			{
+				capsuleColliders[i].enabled = false;
+			}
 			anim.Play( "sleeping" );
 		}
 	}
@@ -305,6 +312,12 @@ public sealed class SkeletonController : Creature, ICreature {
 	IEnumerator wakeUp()
 	{
 		yield return new WaitForSeconds( Random.value * 3f );
+		controller.enabled = true;
+		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
+		for( int i = 0; i < capsuleColliders.Length; i++ )
+		{
+			capsuleColliders[i].enabled = true;
+		}
 		anim.Play( "wake" );
 		ParticleSystem summonFX = (ParticleSystem)Instantiate( summonFXPrefab );
 		summonFX.transform.position = new Vector3( transform.position.x, transform.position.y + 0.25f, transform.position.z );
@@ -413,6 +426,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	{
 		if( creatureState != CreatureState.Dying )
 		{
+			Debug.Log("Skeleton PlayerStateChange - victory " + gameObject.name + " " + creatureState );
 			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
 			setCreatureState( CreatureState.Victory );
 			anim.CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
@@ -422,8 +436,11 @@ public sealed class SkeletonController : Creature, ICreature {
 	//The skeleton falls over backwards, typically because the player slid into him or because of a ZNuke
 	public new void knockback()
 	{
+		StopCoroutine( wakeUp() );
+		if( earthquakeCollisionCylinder != null ) earthquakeCollisionCylinder.SetActive( false );
 		base.knockback();
 		anim.CrossFadeInFixedTime( "death", CROSS_FADE_DURATION );
+		Debug.Log("Skeleton PlayerStateChange - knockback " + gameObject.name + " " + creatureState );
 	}
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)
