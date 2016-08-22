@@ -281,7 +281,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		Physics.IgnoreCollision(magicMissile.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(magicMissile.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
 		magicMissile.GetComponent<Rigidbody>().isKinematic = false;
-		magicMissile.GetComponent<Rigidbody>().AddForce( ( new Vector3( player.position.x, player.position.y + 0.35f, player.position.z ) - magicMissile.transform.position).normalized * getAdjustedBoltForce() );
+		magicMissile.GetComponent<Rigidbody>().AddForce( ( new Vector3( player.position.x, player.position.y + 0.4f, player.position.z ) - magicMissile.transform.position).normalized * getAdjustedBoltForce() );
 		magicMissile.GetComponent<Projectile>().launchProjectile();
 		GameObject.Destroy( magicMissile, 10f );
 	}
@@ -390,7 +390,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		Physics.IgnoreCollision(arrow.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(arrow.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
 		arrow.GetComponent<Rigidbody>().isKinematic = false;
-		arrow.GetComponent<Rigidbody>().AddForce( (player.position - arrow.transform.position).normalized * getAdjustedBoltForce() );
+		arrow.GetComponent<Rigidbody>().AddForce( (new Vector3( player.position.x, player.position.y + 0.4f, player.position.z ) - arrow.transform.position).normalized * getAdjustedBoltForce() );
 		arrow.GetComponent<Projectile>().launchProjectile();
 		GameObject.Destroy( arrow, 10f );
 	}

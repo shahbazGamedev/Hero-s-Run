@@ -33,7 +33,8 @@ public enum GameEvent {
 	Dim_light = 28,
 	Brighten_light = 29,
 	Hell_Cave_Sequence = 30,
-	Taste_Hell_Sequence = 31
+	Taste_Hell_Sequence = 31,
+	Summon_Skeletons_Sequence = 32
 
 }
 
