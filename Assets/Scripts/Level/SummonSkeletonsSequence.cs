@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SummonSkeletonsSequence : MonoBehaviour {
 
@@ -9,6 +10,8 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	FairyController fairyController;
 	Transform darkQueen;
 	DarkQueenController darkQueenController;
+	public ParticleSystem lightningStrike;
+	public List<SkeletonController> summonedSkeletons = new List<SkeletonController>();
 
 	bool hasBeenTriggered = false;
 
@@ -116,11 +119,27 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 		darkQueen.GetComponent<AudioSource>().PlayOneShot( darkQueenController.spellSound );
 		darkQueenController.spellFx.Play();
 		poisonMist.Play();
-		Invoke( "summonSkeletons", 0.75f );
+		Invoke( "summonSkeletons", 1f );
 	}
 	
 	void summonSkeletons()
 	{
+		if( lightningStrike != null )
+		{
+			lightningStrike.Play();
+			lightningStrike.GetComponent<AudioSource>().Play();
+			lightningStrike.GetComponent<Light>().enabled = true;
+			Invoke("closeLight", 1f);
+			for( int i = 0; i < summonedSkeletons.Count; i++ )
+			{
+				StartCoroutine( summonedSkeletons[i].wakeUp() );
+			}
+		}
+	}
+
+	void closeLight()
+	{
+		lightningStrike.GetComponent<Light>().enabled = false;
 	}
 
 	void darkQueenLeaves()

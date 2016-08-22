@@ -309,7 +309,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	}
 
 	//We don't want all the skeletons to have synced animations
-	IEnumerator wakeUp()
+	public IEnumerator wakeUp()
 	{
 		yield return new WaitForSeconds( Random.value * 3f );
 		controller.enabled = true;
