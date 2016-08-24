@@ -14,7 +14,8 @@ public enum SunType
 	Overcast = 6,
 	Cemetery = 7,
 	Elfland = 8,
-	Blizzard = 9
+	Blizzard = 9,
+	Jungle = 10
 }
 
 public enum LevelType 
@@ -144,6 +145,24 @@ public class LevelData : MonoBehaviour {
 				RenderSettings.fogColor = new Color(0.447f,0.698f,0.917f); //blueish
 				RenderSettings.fogStartDistance = 20f;
 				RenderSettings.fogEndDistance = 80f;
+
+				break;
+
+			case SunType.Jungle:
+				skyBoxName = "Jungle";
+				lightIntensity = 1.25f;
+				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
+				shadowStrength = 0.6f;
+				sunDirection = Quaternion.Euler( 80f,119f,42f );
+				//Sun.GetComponent<Light>().color = new Color(0.764f, 0.764f, 0.764f ); //greyish
+				RenderSettings.ambientSkyColor = new Color(0.764f, 0.764f, 0.764f ); //greyish
+				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
+				RenderSettings.ambientIntensity = 1f;
+				RenderSettings.fog = true;
+				RenderSettings.fogMode = FogMode.Linear;
+				RenderSettings.fogColor = new Color(0.172f, 0.654f, 0.654f ); //greenish
+				RenderSettings.fogStartDistance = 35f;
+				RenderSettings.fogEndDistance = 120f;
 
 				break;
 
