@@ -11,9 +11,11 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	Transform darkQueen;
 	DarkQueenController darkQueenController;
 	public ParticleSystem lightningStrike;
-	public List<SkeletonController> summonedSkeletons = new List<SkeletonController>();
 
 	bool hasBeenTriggered = false;
+	//Event management used to notify SkeletonControllers when skeletons have been summoned.
+	public delegate void SkeletonsSummoned( Transform summoner );
+	public static event SkeletonsSummoned skeletonsSummoned;
 
 	// Use this for initialization
 	void Awake () {
@@ -130,10 +132,8 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 			lightningStrike.GetComponent<AudioSource>().Play();
 			lightningStrike.GetComponent<Light>().enabled = true;
 			Invoke("closeLight", 1f);
-			for( int i = 0; i < summonedSkeletons.Count; i++ )
-			{
-				StartCoroutine( summonedSkeletons[i].wakeUp() );
-			}
+			//Send an event to interested classes
+			if(skeletonsSummoned != null) skeletonsSummoned( darkQueen );
 		}
 	}
 

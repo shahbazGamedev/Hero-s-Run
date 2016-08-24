@@ -303,15 +303,14 @@ public sealed class SkeletonController : Creature, ICreature {
 			Invoke("closeLight", 1f);
 			for( int i = 0; i < summonedSkeletons.Count; i++ )
 			{
-				StartCoroutine( summonedSkeletons[i].wakeUp() );
+				StartCoroutine( summonedSkeletons[i].wakeUp( Random.value * 3f ) );
 			}
 		}
 	}
 
-	//We don't want all the skeletons to have synced animations
-	public IEnumerator wakeUp()
+	public IEnumerator wakeUp( float delay )
 	{
-		yield return new WaitForSeconds( Random.value * 3f );
+		yield return new WaitForSeconds( delay );
 		controller.enabled = true;
 		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
 		for( int i = 0; i < capsuleColliders.Length; i++ )
@@ -436,7 +435,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	//The skeleton falls over backwards, typically because the player slid into him or because of a ZNuke
 	public new void knockback()
 	{
-		StopCoroutine( wakeUp() );
+		StopCoroutine( wakeUp(0) );
 		if( earthquakeCollisionCylinder != null ) earthquakeCollisionCylinder.SetActive( false );
 		base.knockback();
 		anim.CrossFadeInFixedTime( "death", CROSS_FADE_DURATION );
@@ -459,11 +458,13 @@ public sealed class SkeletonController : Creature, ICreature {
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
+		SummonSkeletonsSequence.skeletonsSummoned += SkeletonsSummoned;
 	}
 	
 	void OnDisable()
 	{
 		PlayerController.playerStateChanged -= PlayerStateChange;
+		SummonSkeletonsSequence.skeletonsSummoned -= SkeletonsSummoned;
 	}
 
 	void PlayerStateChange( CharacterState newState )
@@ -481,6 +482,14 @@ public sealed class SkeletonController : Creature, ICreature {
 				Debug.Log("Skeleton PlayerStateChange - player is dead and nearby");
 			}
 		}
+	}
+
+	void SkeletonsSummoned( Transform summoner )
+	{
+		//The further the skeleton from the summoner, the longer it will take for him to wake up.
+		float distance = Vector3.Distance( summoner.position, transform.position );
+		float distanceDelay = 8f;
+		StartCoroutine( wakeUp( distance/distanceDelay ) );
 	}
 
 	public void Footstep_left ( AnimationEvent eve )
