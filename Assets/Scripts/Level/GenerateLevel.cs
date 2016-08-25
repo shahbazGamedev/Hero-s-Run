@@ -11,7 +11,7 @@ public enum SegmentTheme {
 		Tutorial = 4,
 		Volcano = 5,
 		Island = 6,
-		Battlefield = 7,
+		Jungle = 7,
 		Hell_Caverns = 8,
 		Hell_Fortress = 9,
 		Blizzard = 10
