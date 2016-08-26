@@ -6,7 +6,9 @@ public enum FairyEmotion {
 	Worried = 2
 }
 
-public class FairyController : BaseClass {
+//Note that the fairy uses Root Motion.
+//Also, the IK Pass is currently disabled in the base layer.
+public class FairyController : Creature {
 	
 	enum FairyState {
 		None = 0,
@@ -14,9 +16,6 @@ public class FairyController : BaseClass {
 		Leave = 2,
 		Hover = 3
 	}
-
-	//Components
-	Animation fairyAnimation;
 
 	public ParticleSystem appearFx;
 	public AudioClip appearSound;
@@ -27,7 +26,6 @@ public class FairyController : BaseClass {
 	public ParticleSystem fairySpellFx;
 	public AudioClip fairySpellSound;
 
-	Transform player;
 	PlayerController playerController;
 
 	FairyState fairyState = FairyState.None;
@@ -64,10 +62,8 @@ public class FairyController : BaseClass {
 	void Awake()
 	{
 		//Get a copy of the components
-		fairyAnimation = (Animation) GetComponent("Animation");
-		fairyAnimation["Revive"].speed = 1.2f;
-		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
+		base.Awake();
+		playerController = player.gameObject.GetComponent<PlayerController>();
 	}
 
 	void Start()
@@ -154,11 +150,11 @@ public class FairyController : BaseClass {
 		positionFairy ();
 		if( fairyEmotion == FairyEmotion.Happy )
 		{
-			fairyAnimation.Play("Hover_Happy");
+			anim.Play("Hover_Happy");
 		}
 		else
 		{
-			fairyAnimation.Play("Hover_Worried");
+			anim.Play("Hover_Worried");
 		}
 		appearFx.Play();
 		GetComponent<AudioSource>().PlayOneShot( appearSound );
@@ -180,8 +176,7 @@ public class FairyController : BaseClass {
 
 	public void CastSpell( System.Action onFinish = null )
 	{
-		fairyAnimation.CrossFade("CastSpell", 0.2f);
-		fairyAnimation.PlayQueued("Hover_Happy");
+		anim.CrossFade("CastSpell", CROSS_FADE_DURATION );
 		StartCoroutine( playCastSpellFx( onFinish ) );
 	}
 
@@ -236,7 +231,7 @@ public class FairyController : BaseClass {
 		Vector3 exactPos = player.TransformPoint(relativePos);
 		transform.position = new Vector3( exactPos.x, exactPos.y, exactPos.z );
 		transform.rotation = Quaternion.Euler( 0, fairyRotY, 0 );
-		fairyAnimation.Play("Hover_Worried");
+		anim.Play("Hover_Worried");
 		Invoke("speakToPlayerPart2", 2.5f );
 	}	
 
@@ -254,8 +249,7 @@ public class FairyController : BaseClass {
 
 	void speakToPlayerPart4()
 	{
-		fairyAnimation.Play("Revive");
-		fairyAnimation.PlayQueued("Hover_Happy", QueueMode.CompleteOthers);
+		anim.Play("Revive");
 		Invoke("sprinkleFairyDustStart", 1.64f );
 		Invoke("continueResurection", 4.16f ); //start get up at around frame 285 of the revive animation
 	}	
@@ -271,8 +265,7 @@ public class FairyController : BaseClass {
 		Vector3 exactPos = player.TransformPoint(relativePos);
 		transform.position = new Vector3( exactPos.x, exactPos.y, exactPos.z );
 		transform.rotation = Quaternion.Euler( 0, fairyRotY, 0 );
-		fairyAnimation.Play("Revive");
-		fairyAnimation.PlayQueued("Hover_Happy", QueueMode.CompleteOthers);
+		anim.Play("Revive");
 		Invoke("sprinkleFairyDustStart", 1.64f );
 		Invoke("continueResurection", 4.16f ); //start get up at around frame 285 of the revive animation
 	}	
@@ -292,13 +285,6 @@ public class FairyController : BaseClass {
 	private void continueResurection()
 	{
 		playerController.resurrectMiddle();
-	}
-
-	private void playAnimation( string animationName, WrapMode mode )
-	{
-		fairyAnimation[ animationName ].wrapMode = mode;
-		fairyAnimation[ animationName ].speed = 1f;
-		fairyAnimation.CrossFade(animationName, 0.1f);
 	}
 
 	//the voiceOverID is used both as text ID and as the name of the audio clip. They need to be identical.
