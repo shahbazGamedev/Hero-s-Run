@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 public class SummonSkeletonsSequence : MonoBehaviour {
 
-	public ParticleSystem  poisonMist;
-
 	PlayerController playerController;
 	FairyController fairyController;
 	Transform darkQueen;
@@ -120,7 +118,6 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	{
 		darkQueen.GetComponent<AudioSource>().PlayOneShot( darkQueenController.spellSound );
 		darkQueenController.spellFx.Play();
-		poisonMist.Play();
 		Invoke( "summonSkeletons", 1f );
 	}
 	
