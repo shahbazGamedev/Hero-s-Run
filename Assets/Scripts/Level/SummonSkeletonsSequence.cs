@@ -129,8 +129,7 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 			lightningStrike.GetComponent<AudioSource>().Play();
 			lightningStrike.GetComponent<Light>().enabled = true;
 			Invoke("closeLight", 1f);
-			//Send an event to interested classes
-			if(skeletonsSummoned != null) skeletonsSummoned( darkQueen );
+			Invoke("summonSkeletonsNow", 11f);
 		}
 	}
 
@@ -139,24 +138,56 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 		lightningStrike.GetComponent<Light>().enabled = false;
 	}
 
+	void summonSkeletonsNow()
+	{
+		if(skeletonsSummoned != null) skeletonsSummoned( darkQueen );
+	}
+
 	void darkQueenLeaves()
 	{
 		darkQueenController.floatDownFx.Play ();
 		darkQueen.GetComponent<Animation>()["DarkQueen_Leave"].speed = 1.2f;
 		darkQueen.GetComponent<Animation>().Play("DarkQueen_Leave");
 		darkQueenController.brightenLights( darkQueen.GetComponent<Animation>()["DarkQueen_Leave"].length/1.2f );
-		Invoke("playerStartsRunningAgain", darkQueen.GetComponent<Animation>()["DarkQueen_Leave"].length/1.2f );
+		Invoke("lookOverEdge", darkQueen.GetComponent<Animation>()["DarkQueen_Leave"].length/1.2f );
 	}
 	
+	void lookOverEdge()
+	{
+		StartCoroutine( playerController.walkForDistance( 11.6f, 3.5f, edgeReached ) );
+	}
+
+	void edgeReached()
+	{
+		playerController.sc.playCutscene(CutsceneType.SummonSkeletons );
+		//Call fairy
+		fairyController.setYRotationOffset( -10f );
+		fairyController.Appear ( FairyEmotion.Worried );
+		fairyController.setYRotationOffset( 0f );
+		Invoke("moveFairyBehindPlayer", 4f );
+	}
+
+	void moveFairyBehindPlayer()
+	{
+		StartCoroutine( fairyController.goHere( 2f, new Vector3( 0, 1f, -0.3f ), pushPlayer ) );
+	}
+
+	void pushPlayer()
+	{
+		fairyController.CastSpell( playerStartsRunningAgain );
+	}
+
 	void playerStartsRunningAgain()
 	{
 		darkQueenController.Disappear();
 		fairyController.Disappear ();
-		playerController.allowRunSpeedToIncrease = true;
 		//Give player control
+		playerController.sc.reactivateMaincamera();
 		playerController.allowPlayerMovement(true );
 		playerController.startRunning(false);
 		fairyController.resetYRotationOffset();
+		playerController.allowRunSpeedToIncrease = true;
+		playerController.enablePlayerControl( true );
 	}
 
 }

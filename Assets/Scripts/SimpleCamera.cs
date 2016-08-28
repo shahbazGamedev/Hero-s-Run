@@ -10,7 +10,8 @@ public enum CutsceneType
 	Checkpoint = 2,
 	Troll = 3,
 	OpeningSequence = 4,
-	MagicGate = 5
+	MagicGate = 5,
+	SummonSkeletons = 6
 }
 
 public enum CameraState 
@@ -286,6 +287,10 @@ public class SimpleCamera : MonoBehaviour {
 			cameraXrotation = DEFAULT_CAMERA_X_ROT;
 			cutsceneCamera.gameObject.SetActive( false );
 		}
+		else if( type == CutsceneType.SummonSkeletons )
+		{
+			StartCoroutine( activateCutscene2( 2f, transform.position.z - 1.74f, 12f, DEFAULT_MAIN_CAMERA_FOV ) );
+		}
 		else if( type == CutsceneType.OpeningSequence )
 		{
 			cutsceneCamera.localPosition = new Vector3( 0, -40.3f, 50f );
@@ -375,6 +380,68 @@ public class SimpleCamera : MonoBehaviour {
 
 		Debug.Log("SimpleCamera-activateCutscene finished: " + cutsceneCamera.GetComponent<Camera>().fieldOfView + " " + giveBackControl );
 		
+	}
+
+	IEnumerator activateCutscene2( float duration, float endZpos, float endXrot, float endFOV )
+	{
+
+		//Position cut-scene camera exactly where main camera is for a seamless transition
+		cutsceneCamera.transform.parent = null;
+		cutsceneCamera.position = new Vector3( mainCamera.position.x, mainCamera.transform.position.y, mainCamera.position.z );
+		cutsceneCamera.rotation = Quaternion.Euler( mainCamera.eulerAngles.x, mainCamera.eulerAngles.y, mainCamera.eulerAngles.z );
+		cutsceneCamera.GetComponent<Camera>().fieldOfView = mainCamera.GetComponent<Camera>().fieldOfView;
+
+		//Time
+		float startTime = Time.time;
+		float elapsedTime = 0;
+		
+		//Z position
+		float startZpos = cutsceneCamera.position.z;
+		
+		//X rotation
+		float startXrot = cutsceneCamera.eulerAngles.x;
+		
+		//FOV
+		float startFOV = cutsceneCamera.GetComponent<Camera>().fieldOfView;	
+		
+		//Steps
+		float step = 0f; //non-smoothed
+		float rate = 1f/duration; //amount to increase non-smooth step by
+		float smoothStep = 0f; //smooth step this time
+		float lastStep = 0f; //smooth step last time
+
+		
+		while ( elapsedTime <= duration )
+		{
+			elapsedTime = Time.time - startTime;
+			
+			//Percentage of time completed 
+			float fracJourney = elapsedTime / duration;
+			if( fracJourney > 1f) fracJourney = 1f;
+		
+			//Position
+			float zPos = Mathf.Lerp( startZpos, endZpos, fracJourney );
+			cutsceneCamera.transform.position = new Vector3 ( cutsceneCamera.transform.position.x, cutsceneCamera.transform.position.y, zPos );
+			
+			//FOV
+			cutsceneCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp( startFOV, endFOV, fracJourney );
+			
+			//X rotation
+			float xRot = Mathf.LerpAngle( startXrot, endXrot, fracJourney );
+			cutsceneCamera.transform.eulerAngles = new Vector3 ( xRot, cutsceneCamera.eulerAngles.y, cutsceneCamera.eulerAngles.z );
+
+			yield return new WaitForFixedUpdate();
+		}
+	}
+
+	public void	reactivateMaincamera()
+	{
+		//Give back control to the main camera
+		resetCameraParameters();
+		mainCamera.transform.position = new Vector3( cutsceneCamera.position.x, cutsceneCamera.transform.position.y, cutsceneCamera.position.z );
+		mainCamera.transform.rotation = Quaternion.Euler( cutsceneCamera.eulerAngles.x, cutsceneCamera.eulerAngles.y, cutsceneCamera.eulerAngles.z );
+		cameraState = CameraState.Normal;
+		cutsceneCamera.gameObject.SetActive( false );
 	}
 
 }

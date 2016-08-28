@@ -188,6 +188,18 @@ public class FairyController : Creature {
 		if( onFinish != null ) onFinish.Invoke();
 	}
 
+	public void pushPlayer( System.Action onFinish = null )
+	{
+		anim.CrossFade("CastSpell", CROSS_FADE_DURATION );
+		StartCoroutine( pushPlayerComplete( onFinish ) );
+	}
+
+	IEnumerator pushPlayerComplete( System.Action onFinish = null )
+	{
+		yield return new WaitForSeconds(4f);
+		if( onFinish != null ) onFinish.Invoke();
+	}
+
 	private IEnumerator MoveToPosition( float timeToArrive )
 	{
 		//Step 1 - Take position in front of player
@@ -216,6 +228,36 @@ public class FairyController : Creature {
 			
 		}
 		fairyState = FairyState.Hover;
+	}
+
+	public IEnumerator goHere( float timeToArrive, Vector3 desiredPosition, System.Action onFinish = null )
+	{
+		fairyState = FairyState.Arrive;
+		float startTime = Time.time;
+		float elapsedTime = 0;
+		float startYrot = transform.eulerAngles.y;
+		Vector3 startPosition = transform.position;
+		
+		while ( elapsedTime <= timeToArrive )
+		{
+			elapsedTime = Time.time - startTime;
+			
+			//Percentage of time completed 
+			float fracJourney = elapsedTime / timeToArrive;
+			
+			float yRot = Mathf.LerpAngle( startYrot, player.eulerAngles.y , fracJourney );
+			transform.eulerAngles = new Vector3 ( transform.eulerAngles.x, yRot, transform.eulerAngles.z );
+			
+			Vector3 exactPos = player.TransformPoint(desiredPosition);
+			transform.position = Vector3.Lerp( startPosition, exactPos, fracJourney );
+
+			//Tilt the fairy down
+			transform.rotation = Quaternion.Euler( -8f, transform.eulerAngles.y, transform.eulerAngles.z );
+			
+			yield return _sync();  
+			
+		}
+		if( onFinish != null ) onFinish.Invoke();
 	}
 
 	//The Speak to Player sequence is activated at the begining of the game when the player falls from the sky.

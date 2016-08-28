@@ -194,7 +194,7 @@ public class PlayerController : BaseClass {
 	PowerUpManager powerUpManager;
 	public TakeScreenshot takeScreenshot;
 
-	SimpleCamera sc;
+	public SimpleCamera sc;
 	GenerateLevel gl;
 	
 	public static DeathType deathType = DeathType.Alive;
@@ -2552,6 +2552,38 @@ public class PlayerController : BaseClass {
 		setCharacterState( CharacterState.Winning );
 		anim.SetTrigger(VictoryTrigger);
 		//See Cullis Gate for next steps.
+	}
+
+	public IEnumerator walkForDistance( float distance, float walkSpeed, System.Action onFinish )
+	{
+		float percentageComplete = 0;
+		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, transform.position.z );
+		float distanceTravelled = 0;
+		anim.SetFloat(speedBlendFactor, 0 );
+		anim.SetTrigger( RunTrigger );
+		anim.speed = 1f;
+
+		do
+		{
+			distanceTravelled = Vector3.Distance( transform.position, initialPlayerPosition );
+			percentageComplete = distanceTravelled/distance;
+
+			//move player forward
+			//1) Get the direction of the player
+			forward = transform.TransformDirection(Vector3.forward);
+			//2) Scale vector based on walk speed
+			forward = forward * Time.deltaTime * walkSpeed;
+			//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
+			forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
+			//8) Move the controller
+			controller.Move( forward );
+			yield return new WaitForFixedUpdate(); 
+		}
+		while ( distanceTravelled <= distance );
+		anim.SetTrigger("Idle_Look");
+
+		onFinish.Invoke();
+		
 	}
 
 	void turnNow()
