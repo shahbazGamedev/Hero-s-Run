@@ -175,6 +175,12 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	void pushPlayer()
 	{
 		fairyController.CastSpell( playerStartsRunningAgain );
+		Invoke("fairyTalks", 1.2f );
+	}
+
+	void fairyTalks()
+	{
+		fairyController.speak("VO_FA_OFF_YOU_GO", 2.1f, false );
 	}
 
 	void playerStartsRunningAgain()
