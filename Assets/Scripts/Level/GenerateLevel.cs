@@ -1864,14 +1864,24 @@ public class GenerateLevel  : MonoBehaviour {
 		{
 			if( si.isCheckpoint )
 			{
-				seamlessLevelIndex++;
-				if( seamlessLevelIndex < LevelManager.Instance.getNumberOfLevels() )
+				//If the next level is an episode, we do not need to prepare tiles for it.
+				//Preparing new level tiles will cause a brief performance hit.
+				//If the next level is an episode, this means the player will return to the map before accessing it anyway.
+				if( LevelManager.Instance.getLevelInfo( seamlessLevelIndex + 1 ).levelType != LevelType.Episode )
 				{
-					prepareTileList( seamlessLevelIndex );
+					seamlessLevelIndex++;
+					if( seamlessLevelIndex < LevelManager.Instance.getNumberOfLevels() )
+					{
+						prepareTileList( seamlessLevelIndex );
+					}
+					else
+					{
+						Debug.LogWarning("Player is reaching end of the game.");
+					}
 				}
 				else
 				{
-					Debug.LogWarning("Player is reaching end of the game.");
+					Debug.LogWarning("GenerateLevel - onTileActivation: not preparing tile list for level," + (seamlessLevelIndex + 1) + ", because it is an episode level." );
 				}
 			}
 		}
