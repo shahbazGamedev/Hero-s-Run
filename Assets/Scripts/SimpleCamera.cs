@@ -289,7 +289,8 @@ public class SimpleCamera : MonoBehaviour {
 		}
 		else if( type == CutsceneType.SummonSkeletons )
 		{
-			StartCoroutine( activateCutscene2( 2f, transform.position.z - 1.74f, 12f, DEFAULT_MAIN_CAMERA_FOV ) );
+			Vector3 aBitCloserPosition = transform.TransformPoint(new Vector3( 0 ,0 , -1.74f ));
+			StartCoroutine( activateCutscene2( 2f, aBitCloserPosition, 12f, DEFAULT_MAIN_CAMERA_FOV ) );
 		}
 		else if( type == CutsceneType.OpeningSequence )
 		{
@@ -382,7 +383,7 @@ public class SimpleCamera : MonoBehaviour {
 		
 	}
 
-	IEnumerator activateCutscene2( float duration, float endZpos, float endXrot, float endFOV )
+	IEnumerator activateCutscene2( float duration, Vector3 endPos, float endXrot, float endFOV )
 	{
 
 		//Position cut-scene camera exactly where main camera is for a seamless transition
@@ -395,8 +396,9 @@ public class SimpleCamera : MonoBehaviour {
 		float startTime = Time.time;
 		float elapsedTime = 0;
 		
-		//Z position
-		float startZpos = cutsceneCamera.position.z;
+		//Position
+		Vector3 startPos = cutsceneCamera.position;
+		Vector3 currentPos;
 		
 		//X rotation
 		float startXrot = cutsceneCamera.eulerAngles.x;
@@ -420,8 +422,8 @@ public class SimpleCamera : MonoBehaviour {
 			if( fracJourney > 1f) fracJourney = 1f;
 		
 			//Position
-			float zPos = Mathf.Lerp( startZpos, endZpos, fracJourney );
-			cutsceneCamera.transform.position = new Vector3 ( cutsceneCamera.transform.position.x, cutsceneCamera.transform.position.y, zPos );
+			currentPos = Vector3.Lerp( startPos, endPos, fracJourney );
+			cutsceneCamera.transform.position = new Vector3( currentPos.x, cutsceneCamera.transform.position.y, currentPos.z );
 			
 			//FOV
 			cutsceneCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp( startFOV, endFOV, fracJourney );
