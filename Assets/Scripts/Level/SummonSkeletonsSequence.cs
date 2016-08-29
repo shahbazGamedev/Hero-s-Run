@@ -78,7 +78,7 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 		//Call fairy
 		fairyController.setYRotationOffset( -10f );
 		fairyController.Appear ( FairyEmotion.Worried );
-		fairyController.speak("VO_FA_NOT_HER_AGAIN", 2f, true );
+		fairyController.speak("VO_FA_CANT_BE_GOOD", 2f, false );
 	}
 
 	void arriveAndCastSpell()
@@ -100,7 +100,7 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	
 	void playIdleAnimation()
 	{
-		darkQueenController.speak("VO_DQ_STARTING_TO_ANNOY", 3f, true );
+		darkQueenController.speak("VO_DQ_WONT_ESCAPE_ME", 3f, false );
 		darkQueenController.floatDownFx.Stop ();
 		darkQueen.GetComponent<Animation>().Play("DarkQueen_Idle");
 		Invoke("castSpell", darkQueen.GetComponent<Animation>()["DarkQueen_Idle"].length + 2.25f);
@@ -108,7 +108,7 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	
 	void castSpell()
 	{
-		darkQueenController.speak("VO_DQ_BRING_BACK_BOOK", 3.8f, true );
+		darkQueenController.speak("VO_DQ_JUNGLE_DOOM", 3f, false );
 		darkQueen.GetComponent<Animation>().CrossFade("DarkQueen_SpellCast");
 		Invoke("playSpellFX", 0.3f);
 		Invoke("darkQueenLeaves", darkQueen.GetComponent<Animation>()["DarkQueen_SpellCast"].length );

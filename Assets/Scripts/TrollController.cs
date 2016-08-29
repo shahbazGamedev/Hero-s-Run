@@ -65,12 +65,14 @@ public class TrollController : MonoBehaviour {
 		if (Physics.Raycast(new Vector3(transform.position.x,transform.position.y + 10f,transform.position.z), Vector3.down, out hit, 20.0F ))
 		{
 			transform.position = new Vector3( transform.position.x, hit.point.y, transform.position.z);
+			gameObject.SetActive( false );
 		}
 	}
 
 	public void startPursuing ()
 	{
 		if( deactivateTroll ) return;
+		gameObject.SetActive( true );
 
 		playerStumbledPreviously = false;
 
@@ -256,6 +258,7 @@ public class TrollController : MonoBehaviour {
 	public void placeTrollBehindPlayer()
 	{
 		if( deactivateTroll ) return;
+		gameObject.SetActive( true );
 
 		if( !gameObject.activeSelf )
 		{
