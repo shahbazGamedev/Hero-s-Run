@@ -486,10 +486,13 @@ public sealed class SkeletonController : Creature, ICreature {
 
 	void SkeletonsSummoned( Transform summoner )
 	{
-		//The further the skeleton from the summoner, the longer it will take for him to wake up.
-		float distance = Vector3.Distance( summoner.position, transform.position );
-		float distanceDelay = 8f;
-		StartCoroutine( wakeUp( distance/distanceDelay ) );
+		if( attackType == AttackType.Wake_walk_attack_with_sword )
+		{
+			//The further the skeleton from the summoner, the longer it will take for him to wake up.
+			float distance = Vector3.Distance( summoner.position, transform.position );
+			float distanceDelay = 8f;
+			StartCoroutine( wakeUp( distance/distanceDelay ) );
+		}
 	}
 
 	public void Footstep_left ( AnimationEvent eve )
