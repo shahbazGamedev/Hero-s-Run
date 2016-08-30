@@ -74,7 +74,8 @@ public enum TileType {
 	Landmark_Test = 56, //Used only for testing - is straight and has a length of 2
 	Landmark_Treasure_Key = 57,
 	Landmark_Collapsing_Bridge = 58,
-	Landmark_Goblin_Loot = 59
+	Landmark_Goblin_Loot = 59,
+	Jungle_Start = 60
 
 }
 
@@ -529,6 +530,10 @@ public class GenerateLevel  : MonoBehaviour {
 				depth = 4;
 				break;
 
+			case TileType.Jungle_Start:
+				depth = 5;
+				break;
+
 			default:
 				Debug.LogError("GenerateLevel-getTileDepth: unknown tile type specified: " + type );
 				break;
@@ -941,7 +946,7 @@ public class GenerateLevel  : MonoBehaviour {
 		case TileType.Landmark_Treasure_Key:
 		case TileType.Landmark_Collapsing_Bridge:
 		case TileType.Landmark_Goblin_Loot:
-
+		case TileType.Jungle_Start:
 			return TileType.Straight;
 
 		case TileType.Left:
