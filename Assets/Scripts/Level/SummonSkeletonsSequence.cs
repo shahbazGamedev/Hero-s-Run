@@ -186,14 +186,19 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	void playerStartsRunningAgain()
 	{
 		darkQueenController.Disappear();
-		fairyController.Disappear ();
 		//Give player control
 		playerController.sc.reactivateMaincamera();
 		playerController.allowPlayerMovement(true );
 		playerController.startRunning(false);
-		fairyController.resetYRotationOffset();
 		playerController.allowRunSpeedToIncrease = true;
 		playerController.enablePlayerControl( true );
+		Invoke("fairyDisappears", 1.2f );
+	}
+
+	void fairyDisappears()
+	{
+		fairyController.Disappear ();
+		fairyController.resetYRotationOffset();
 	}
 
 }
