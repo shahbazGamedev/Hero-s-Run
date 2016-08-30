@@ -9,6 +9,7 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	Transform darkQueen;
 	DarkQueenController darkQueenController;
 	public ParticleSystem lightningStrike;
+	public float walkDistance = 10.7f;
 
 	bool hasBeenTriggered = false;
 	//Event management used to notify SkeletonControllers when skeletons have been summoned.
@@ -127,15 +128,8 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 		{
 			lightningStrike.Play();
 			lightningStrike.GetComponent<AudioSource>().Play();
-			lightningStrike.GetComponent<Light>().enabled = true;
-			Invoke("closeLight", 1f);
 			Invoke("summonSkeletonsNow", 11f);
 		}
-	}
-
-	void closeLight()
-	{
-		lightningStrike.GetComponent<Light>().enabled = false;
 	}
 
 	void summonSkeletonsNow()
@@ -154,7 +148,7 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	
 	void lookOverEdge()
 	{
-		StartCoroutine( playerController.walkForDistance( 11.6f, 3.5f, edgeReached ) );
+		StartCoroutine( playerController.walkForDistance( walkDistance, 3.5f, edgeReached ) );
 	}
 
 	void edgeReached()
