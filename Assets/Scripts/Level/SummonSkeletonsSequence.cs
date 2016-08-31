@@ -10,6 +10,7 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	DarkQueenController darkQueenController;
 	public ParticleSystem lightningStrike;
 	public float walkDistance = 10.7f;
+	public Vector3 fairyPositionBehindPlayer = new Vector3( 0, 1f, -0.3f );
 
 	bool hasBeenTriggered = false;
 	//Event management used to notify SkeletonControllers when skeletons have been summoned.
@@ -128,7 +129,7 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 		{
 			lightningStrike.Play();
 			lightningStrike.GetComponent<AudioSource>().Play();
-			Invoke("summonSkeletonsNow", 11f);
+			Invoke("summonSkeletonsNow", 12.5f);
 		}
 	}
 
@@ -158,23 +159,23 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 		fairyController.setYRotationOffset( -10f );
 		fairyController.Appear ( FairyEmotion.Worried );
 		fairyController.setYRotationOffset( 0f );
-		Invoke("moveFairyBehindPlayer", 4f );
+		Invoke("moveFairyBehindPlayer", 0.5f );
 	}
 
 	void moveFairyBehindPlayer()
 	{
-		StartCoroutine( fairyController.goHere( 2f, new Vector3( 0, 1f, -0.3f ), pushPlayer ) );
+		StartCoroutine( fairyController.goHere( 1.8f, fairyPositionBehindPlayer, pushPlayer ) );
 	}
 
 	void pushPlayer()
 	{
-		fairyController.pushPlayer( playerStartsRunningAgain );
+		Invoke("playerStartsRunningAgain", 4f );
 		Invoke("fairyTalks", 1.2f );
 	}
 
 	void fairyTalks()
 	{
-		fairyController.speak("VO_FA_OFF_YOU_GO", 2.1f, false );
+		fairyController.speak("VO_FA_PORTAL", 2.5f, false );
 	}
 
 	void playerStartsRunningAgain()

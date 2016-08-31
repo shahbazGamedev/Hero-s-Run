@@ -73,13 +73,15 @@ public sealed class SkeletonController : Creature, ICreature {
 		else
 		{
 			//We do not want the player to collide with a dormant skeleton
-			controller.enabled = false;
+			//controller.enabled = false;
 			CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
 			for( int i = 0; i < capsuleColliders.Length; i++ )
 			{
 				capsuleColliders[i].enabled = false;
 			}
 			anim.Play( "sleeping" );
+			transform.localScale = new Vector3( 0.002f, 0.002f, 0.002f );
+
 		}
 	}
 
@@ -311,7 +313,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	public IEnumerator wakeUp( float delay )
 	{
 		yield return new WaitForSeconds( delay );
-		controller.enabled = true;
+		//controller.enabled = true;
 		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
 		for( int i = 0; i < capsuleColliders.Length; i++ )
 		{
@@ -333,6 +335,8 @@ public sealed class SkeletonController : Creature, ICreature {
 	public void Wake_up_completed ( AnimationEvent eve )
 	{
 		//Walk
+		transform.localScale = new Vector3( 3f, 3f, 3f );
+
 		followsPlayer = true;
 		moveSpeed = WALK_SPEED;
 		setCreatureState( CreatureState.Walking );
@@ -490,8 +494,8 @@ public sealed class SkeletonController : Creature, ICreature {
 		{
 			//The further the skeleton from the summoner, the longer it will take for him to wake up.
 			float distance = Vector3.Distance( summoner.position, transform.position );
-			float distanceDelay = 8f;
-			StartCoroutine( wakeUp( distance/distanceDelay ) );
+			float distanceDelay = 12f;
+			StartCoroutine( wakeUp( Random.value * 3f ) );
 		}
 	}
 
