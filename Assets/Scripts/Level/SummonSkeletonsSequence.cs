@@ -155,10 +155,6 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	void edgeReached()
 	{
 		playerController.sc.playCutscene(CutsceneType.SummonSkeletons );
-		//Call fairy
-		fairyController.setYRotationOffset( -10f );
-		fairyController.Appear ( FairyEmotion.Worried );
-		fairyController.setYRotationOffset( 0f );
 		Invoke("moveFairyBehindPlayer", 0.5f );
 	}
 
@@ -169,7 +165,7 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 
 	void pushPlayer()
 	{
-		Invoke("playerStartsRunningAgain", 4f );
+		Invoke("playerStartsRunningAgain", 7f );
 		Invoke("fairyTalks", 1.2f );
 	}
 

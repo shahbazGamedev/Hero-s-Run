@@ -33,6 +33,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	GameObject arrow;
 	[Header("Footman and warlord")]
 	public GameObject weaponTrail;
+	public float wakeUpDelay = 0;
 	[Header("Sorcerer")]
 	public ParticleSystem lightningStrike;
 	public List<SkeletonController> summonedSkeletons = new List<SkeletonController>();
@@ -301,11 +302,9 @@ public sealed class SkeletonController : Creature, ICreature {
 		{
 			lightningStrike.Play();
 			lightningStrike.GetComponent<AudioSource>().Play();
-			lightningStrike.GetComponent<Light>().enabled = true;
-			Invoke("closeLight", 1f);
 			for( int i = 0; i < summonedSkeletons.Count; i++ )
 			{
-				StartCoroutine( summonedSkeletons[i].wakeUp( Random.value * 3f ) );
+				StartCoroutine( summonedSkeletons[i].wakeUp( wakeUpDelay ) );
 			}
 		}
 	}
@@ -325,11 +324,6 @@ public sealed class SkeletonController : Creature, ICreature {
 		summonFX.Play();
 		summonFX.GetComponent<AudioSource>().Play();
 		GameObject.Destroy( summonFX, 10f );
-	}
-
-	void closeLight()
-	{
-		lightningStrike.GetComponent<Light>().enabled = false;
 	}
 	
 	public void Wake_up_completed ( AnimationEvent eve )
@@ -492,10 +486,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	{
 		if( attackType == AttackType.Wake_walk_attack_with_sword )
 		{
-			//The further the skeleton from the summoner, the longer it will take for him to wake up.
-			float distance = Vector3.Distance( summoner.position, transform.position );
-			float distanceDelay = 12f;
-			StartCoroutine( wakeUp( Random.value * 3f ) );
+			StartCoroutine( wakeUp( wakeUpDelay ) );
 		}
 	}
 
