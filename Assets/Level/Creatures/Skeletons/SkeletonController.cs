@@ -56,7 +56,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		Wake_walk_attack_with_sword = 11	//Footman only
 	}
 	
-	const float BOLT_FORCE = 900f;
+	public float bolt_force = 900f;
 
 	//Movement related
 	Vector3 forward;
@@ -387,26 +387,26 @@ public sealed class SkeletonController : Creature, ICreature {
 		Physics.IgnoreCollision(arrow.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(arrow.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
 		arrow.GetComponent<Rigidbody>().isKinematic = false;
-		arrow.GetComponent<Rigidbody>().AddForce( (new Vector3( player.position.x, player.position.y + 0.4f, player.position.z ) - arrow.transform.position).normalized * getAdjustedBoltForce() );
+		arrow.GetComponent<Rigidbody>().AddForce( (new Vector3( player.position.x, player.position.y + 0.2f, player.position.z ) - arrow.transform.position).normalized * getAdjustedBoltForce() );
 		arrow.GetComponent<Projectile>().launchProjectile();
 		GameObject.Destroy( arrow, 10f );
 	}
 
 	public float getAdjustedBoltForce()
 	{
-		float adjustedBoltForce = BOLT_FORCE;
+		float adjustedBoltForce = bolt_force;
 		switch (PlayerStatsManager.Instance.getDifficultyLevel())
 		{
 			case DifficultyLevel.Normal:
-			adjustedBoltForce = BOLT_FORCE; //Base value is Normal, so no multiplier
+			adjustedBoltForce = bolt_force; //Base value is Normal, so no multiplier
 			break;
 				
 			case DifficultyLevel.Heroic:
-			adjustedBoltForce = BOLT_FORCE * 1.3f;
+			adjustedBoltForce = bolt_force * 1.3f;
 			break;
 				
 			case DifficultyLevel.Legendary:
-			adjustedBoltForce = BOLT_FORCE * 1.6f;
+			adjustedBoltForce = bolt_force * 1.6f;
 			break;
 			
 		}
