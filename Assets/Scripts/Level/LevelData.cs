@@ -154,10 +154,9 @@ public class LevelData : MonoBehaviour {
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				shadowStrength = 0.6f;
 				sunDirection = Quaternion.Euler( 80f,119f,42f );
-				//Sun.GetComponent<Light>().color = new Color(0.764f, 0.764f, 0.764f ); //greyish
 				RenderSettings.ambientSkyColor = new Color(0.764f, 0.764f, 0.764f ); //greyish
-				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
-				RenderSettings.ambientIntensity = 1f;
+				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+				RenderSettings.ambientIntensity = 0.6f;
 				RenderSettings.fog = false;
 				RenderSettings.fogMode = FogMode.Linear;
 				RenderSettings.fogColor = new Color(0.172f, 0.654f, 0.654f ); //greenish
