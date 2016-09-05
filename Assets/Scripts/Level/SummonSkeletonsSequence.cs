@@ -160,7 +160,7 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 
 	void moveFairyBehindPlayer()
 	{
-		StartCoroutine( fairyController.goHere( 1.8f, fairyPositionBehindPlayer, pushPlayer ) );
+		StartCoroutine( fairyController.goHere( 1.6f, fairyPositionBehindPlayer, pushPlayer ) );
 	}
 
 	void pushPlayer()
