@@ -165,7 +165,7 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 
 	void pushPlayer()
 	{
-		Invoke("playerStartsRunningAgain", 7f );
+		Invoke("playerStartsRunningAgain", 8f );
 		Invoke("fairyTalks", 1.2f );
 	}
 

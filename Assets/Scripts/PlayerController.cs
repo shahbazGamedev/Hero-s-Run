@@ -2500,7 +2500,7 @@ public class PlayerController : BaseClass {
 		float startAnimationSpeed = anim.speed;
 		float endAnimationSpeed = 1f;
 
-		do
+		while ( distanceTravelled <= distance )
 		{
 			distanceTravelled = Vector3.Distance( transform.position, initialPlayerPosition );
 			percentageComplete = distanceTravelled/distance;
@@ -2541,10 +2541,7 @@ public class PlayerController : BaseClass {
 			verifyIfDesiredLaneReached();
 			yield return new WaitForFixedUpdate(); 
 		}
-		while ( distanceTravelled <= distance );
-
 		onFinish.Invoke();
-		
 	}
 
 	void afterPlayerSlowdown()
@@ -2563,7 +2560,7 @@ public class PlayerController : BaseClass {
 		anim.SetTrigger( RunTrigger );
 		anim.speed = 1f;
 
-		do
+		while ( distanceTravelled <= distance )
 		{
 			distanceTravelled = Vector3.Distance( transform.position, initialPlayerPosition );
 			percentageComplete = distanceTravelled/distance;
@@ -2579,11 +2576,8 @@ public class PlayerController : BaseClass {
 			controller.Move( forward );
 			yield return new WaitForFixedUpdate(); 
 		}
-		while ( distanceTravelled <= distance );
 		anim.SetTrigger("Idle_Look");
-
-		onFinish.Invoke();
-		
+		onFinish.Invoke();	
 	}
 
 	void turnNow()
