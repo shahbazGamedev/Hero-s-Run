@@ -23,6 +23,7 @@ public class Creature : BaseClass {
 	public float eyesWeight = 1f;
 	public float clampWeight = 1f;
 	bool lookAtActive = false;
+	bool enableIK = true;
 
 	protected void Awake ()
 	{
@@ -39,6 +40,7 @@ public class Creature : BaseClass {
 	public void setCreatureState( CreatureState state )
 	{
 		creatureState = state;
+		if( creatureState == CreatureState.Dying ) enableIK = false;
 	}
 
 	/*
@@ -76,6 +78,7 @@ public class Creature : BaseClass {
 			capsuleColliders[i].enabled = true;
 		}
 		if( GetComponent<Rigidbody>() != null ) GetComponent<Rigidbody>().isKinematic = true;
+		enableIK = true;
 	}
 
 	//The creature falls over backwards, typically because the player slid into him or because of a ZNuke
@@ -97,7 +100,7 @@ public class Creature : BaseClass {
 	//In the Animator windows, under Layers, under Settings, you must have the IK Pass toggled on.
 	void OnAnimatorIK()
 	{
-		if( getDotProduct() > 0.55f )
+		if( enableIK && getDotProduct() > 0.55f )
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 			if( distance < 24f )			
