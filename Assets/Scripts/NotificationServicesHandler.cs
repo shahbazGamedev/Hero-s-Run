@@ -69,7 +69,7 @@ public class NotificationServicesHandler : MonoBehaviour {
 		if( pauseStatus )
 		{
 			//App is suspended. Schedule a local notification, but only if the player has not finished the game
-			if( !LevelManager.Instance.getPlayerFinishedTheGame() )
+			if( !LevelManager.Instance.getPlayerFinishedTheGame() && localNotificationShortTerm != null )
 			{
 				localNotificationShortTerm.fireDate = DateTime.Now.AddMinutes(minutesBeforeShortTermNotification);
 				NotificationServices.ScheduleLocalNotification(localNotificationShortTerm);
