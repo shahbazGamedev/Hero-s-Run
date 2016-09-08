@@ -23,8 +23,6 @@ public sealed class SkeletonController : Creature, ICreature {
 	public float summonSkeletonsPlayerDistanceMultiplier = 3f;
 	[Tooltip("Player distance multiplier used to decide when to fire a magic missile.")]
 	public float magicMissilePlayerDistanceMultiplier = 2.4f;
-	[Tooltip("Player distance multiplier used to decide when to cause minor earthquake.")]
-	public float castEarthquakePlayerDistanceMultiplier = 2.4f;
 	[Header("Archer and Sorcerer")]
 	[Tooltip("The arrow fired by the archer or the magic missile fired by the sorcerer.")]
 	public GameObject missilePrefab;
@@ -38,9 +36,6 @@ public sealed class SkeletonController : Creature, ICreature {
 	public ParticleSystem lightningStrike;
 	public List<SkeletonController> summonedSkeletons = new List<SkeletonController>();
 	public ParticleSystem summonFXPrefab;
-	public ParticleSystem earthquakeFX;
-	public GameObject earthquakeCollisionCylinder;
-	public float earthquakeCollisionCylinderIncreaseSpeed = 1.5f;
 	GameObject magicMissile;
 
 	public enum AttackType {
@@ -52,7 +47,6 @@ public sealed class SkeletonController : Creature, ICreature {
 		Jump_and_long_range_attack = 7,	//Footman and warlord
 		Summon_skeletons = 8,			//Sorcerer only			
 		Fire_magic_missile = 9,			//Sorcerer only
-		Cast_earthquake = 10,			//Sorcerer only
 		Wake_walk_attack_with_sword = 11	//Footman only
 	}
 	
@@ -119,7 +113,7 @@ public sealed class SkeletonController : Creature, ICreature {
 			if (controller.isGrounded && !previouslyGrounded )
 			{
 				//Creature just landed after a jump. Have it start running.
-				GetComponent<AudioSource>().PlayOneShot( knockbackSound );
+				audioSource.PlayOneShot( knockbackSound );
 				anim.CrossFadeInFixedTime( "run", CROSS_FADE_DURATION );
 				moveSpeed = RUN_SPEED;
 				setCreatureState( CreatureState.Running );
@@ -158,7 +152,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		                
 				case AttackType.Charge_and_attack:
 					float chargeDistance = 2.3f * PlayerController.getPlayerSpeed();
-					attackDistance = 0.97f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.75f * PlayerController.getPlayerSpeed();
 					if( distance < chargeDistance )
 					{
 						if( distance >= attackDistance )
@@ -208,15 +202,6 @@ public sealed class SkeletonController : Creature, ICreature {
 						summonSkeletons();
 					}
 					break;
-				case AttackType.Cast_earthquake:
-					attackDistance = castEarthquakePlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
-					//Only attack if the player is inside a 30 degree arc in front of skeleton
-					if( distance < attackDistance && getDotProduct() > 0.8f )
-					{
-						setCreatureState( CreatureState.Attacking );
-						castEarthquake();
-					}
-					break;
 				case AttackType.Jump_and_attack:
 					float jumpDistance = jumpPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
 					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
@@ -260,7 +245,6 @@ public sealed class SkeletonController : Creature, ICreature {
 	
 	void fireMagicMissile()
 	{
-		Debug.Log("SkeletonController - fireMagicMissile" );
 		transform.LookAt( player );
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 		magicMissile = createMagicMissile();
@@ -274,7 +258,6 @@ public sealed class SkeletonController : Creature, ICreature {
 		nextFireball.name = "Skeleton fireball";
 		nextFireball.transform.SetParent( staff, false );
 		nextFireball.transform.localPosition = new Vector3( -0.8f,0,0 );
-		//Debug.LogWarning("Skeleton createFireball" );
 		return nextFireball;
 	}
 
@@ -291,7 +274,6 @@ public sealed class SkeletonController : Creature, ICreature {
 
 	void summonSkeletons()
 	{
-		Debug.Log("SkeletonController - summonSkeletons" );
 		anim.CrossFadeInFixedTime("Call Lightning", CROSS_FADE_DURATION );
 	}
 
@@ -341,24 +323,6 @@ public sealed class SkeletonController : Creature, ICreature {
 		else
 		{
 			attackType = AttackType.Short_range_sword_2;
-		}
-	}
-
-	void castEarthquake()
-	{
-		Debug.Log("SkeletonController - castEarthquake" );
-		anim.CrossFadeInFixedTime("Earthquake Spell", CROSS_FADE_DURATION );
-	}
-
-	//Called by M_skeleton_staff_earthquake_spell
-	public void Call_Earthquake ( AnimationEvent eve )
-	{
-		if( earthquakeFX != null )
-		{
-			earthquakeFX.Play();
-			earthquakeFX.GetComponent<AudioSource>().Play();
-			LeanTween.scaleX( earthquakeCollisionCylinder, 10f, earthquakeCollisionCylinderIncreaseSpeed );
-			LeanTween.scaleZ( earthquakeCollisionCylinder, 10f, earthquakeCollisionCylinderIncreaseSpeed );
 		}
 	}
 
@@ -415,7 +379,7 @@ public sealed class SkeletonController : Creature, ICreature {
 
 	public void sideCollision()
 	{
-		GetComponent<AudioSource>().PlayOneShot( ouch );
+		audioSource.PlayOneShot( ouch );
 		anim.CrossFadeInFixedTime( "damage", CROSS_FADE_DURATION );
 	}
 
@@ -424,7 +388,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		if( creatureState != CreatureState.Dying )
 		{
 			Debug.Log("Skeleton PlayerStateChange - victory " + gameObject.name + " " + creatureState );
-			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
+			if( playWinSound ) audioSource.PlayOneShot( win );
 			setCreatureState( CreatureState.Victory );
 			anim.CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
 		}
@@ -434,7 +398,6 @@ public sealed class SkeletonController : Creature, ICreature {
 	public new void knockback()
 	{
 		StopCoroutine( wakeUp(0) );
-		if( earthquakeCollisionCylinder != null ) earthquakeCollisionCylinder.SetActive( false );
 		base.knockback();
 		anim.CrossFadeInFixedTime( "death", CROSS_FADE_DURATION );
 		Debug.Log("Skeleton PlayerStateChange - knockback " + gameObject.name + " " + creatureState );
@@ -470,14 +433,12 @@ public sealed class SkeletonController : Creature, ICreature {
 		if( newState == CharacterState.Dying )
 		{
 			Stop_Weapon_Trail ( null );
-			if( earthquakeCollisionCylinder != null ) earthquakeCollisionCylinder.SetActive( false );
 			float distance = Vector3.Distance(player.position,transform.position);
 			float nearby = 4f;
 			if( distance < nearby )
 			{
 				victory( false );
 				StartCoroutine( base.fadeOutLookAtPosition( 0.2f, 2f + Random.value * 2f, 0.9f ) );
-				Debug.Log("Skeleton PlayerStateChange - player is dead and nearby");
 			}
 		}
 	}
@@ -492,18 +453,18 @@ public sealed class SkeletonController : Creature, ICreature {
 
 	public void Footstep_left ( AnimationEvent eve )
 	{
-		GetComponent<AudioSource>().PlayOneShot( footstepLeftSound, 0.23f );
+		audioSource.PlayOneShot( footstepLeftSound, 0.23f );
 	}
 
 	public void Footstep_right ( AnimationEvent eve )
 	{
-		GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.23f );
+		audioSource.PlayOneShot( footstepRightSound, 0.23f );
 	}
 
 	public void Start_Weapon_Trail ( AnimationEvent eve )
 	{
 		weaponTrail.SetActive( true );
-		GetComponent<AudioSource>().PlayOneShot( swordSwoosh );
+		audioSource.PlayOneShot( swordSwoosh );
 	}
 
 	public void Stop_Weapon_Trail ( AnimationEvent eve )

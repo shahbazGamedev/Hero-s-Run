@@ -149,7 +149,7 @@ public sealed class WraithController : Creature, ICreature {
 								moveSpeed = getAdjustedChargeSpeed();
 								setCreatureState( CreatureState.Running );
 								anim.CrossFadeInFixedTime( "move" , CROSS_FADE_DURATION );
-								GetComponent<AudioSource>().PlayOneShot( charge );
+								audioSource.PlayOneShot( charge );
 							}
 						}
 						else
@@ -214,7 +214,7 @@ public sealed class WraithController : Creature, ICreature {
 		if( creatureState != CreatureState.Dying )
 		{
 			mainCamera.GetComponent<MotionBlur>().enabled = false;			
-			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
+			if( playWinSound ) audioSource.PlayOneShot( win );
 			setCreatureState( CreatureState.Victory );
 			anim.CrossFadeInFixedTime( "idle" , CROSS_FADE_DURATION );
 		}
@@ -270,7 +270,7 @@ public sealed class WraithController : Creature, ICreature {
 	{
 		if( weaponType == WeaponType.Scythe ) weaponTrailScythe.SetActive( true );
 		if( weaponType == WeaponType.Axe ) weaponTrailAxe.SetActive( true );
-		GetComponent<AudioSource>().PlayOneShot( weaponSwoosh );
+		audioSource.PlayOneShot( weaponSwoosh );
 	}
 
 	public void Stop_Weapon_Trail ( AnimationEvent eve )

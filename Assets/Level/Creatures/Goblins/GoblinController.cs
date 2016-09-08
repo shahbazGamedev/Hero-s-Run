@@ -109,7 +109,7 @@ public sealed class GoblinController : Creature, ICreature {
 
 			if (controller.isGrounded && !previouslyGrounded )
 			{
-				GetComponent<AudioSource>().PlayOneShot( knockbackSound );
+				audioSource.PlayOneShot( knockbackSound );
 				anim.CrossFadeInFixedTime( "run", CROSS_FADE_DURATION );
 				setCreatureState( CreatureState.Running );
 			}
@@ -259,7 +259,7 @@ public sealed class GoblinController : Creature, ICreature {
 
 	void throwBarrel()
 	{
-		if( playGoblinTaunt ) GetComponent<AudioSource>().PlayOneShot( win, 0.7f );
+		if( playGoblinTaunt ) audioSource.PlayOneShot( win, 0.7f );
 		//Push barrels in the direction of the goblin and add a small upward force
 		Vector3 forces = transform.forward * barrelForwardForce + new Vector3( 0, 400f, 0 );
 		barrel.isKinematic = false;
@@ -272,7 +272,7 @@ public sealed class GoblinController : Creature, ICreature {
 
 	public void sideCollision()
 	{
-		GetComponent<AudioSource>().PlayOneShot( ouch );
+		audioSource.PlayOneShot( ouch );
 		anim.CrossFadeInFixedTime( "damage", CROSS_FADE_DURATION );
 	}
 
@@ -280,7 +280,7 @@ public sealed class GoblinController : Creature, ICreature {
 	{
 		if( creatureState != CreatureState.Dying )
 		{
-			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
+			if( playWinSound ) audioSource.PlayOneShot( win );
 			setCreatureState( CreatureState.Victory );
 			StartCoroutine( playVictoryAnimation() );
 		}
@@ -346,12 +346,12 @@ public sealed class GoblinController : Creature, ICreature {
 
 	public void Footstep_left ( AnimationEvent eve )
 	{
-		GetComponent<AudioSource>().PlayOneShot( footstepLeftSound, 0.23f );
+		audioSource.PlayOneShot( footstepLeftSound, 0.23f );
 	}
 
 	public void Footstep_right ( AnimationEvent eve )
 	{
-		GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.23f );
+		audioSource.PlayOneShot( footstepRightSound, 0.23f );
 	}
 
 }

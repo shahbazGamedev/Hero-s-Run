@@ -59,7 +59,7 @@ public class FairyController : Creature {
 
 	const float FAIRY_HEIGHT_ABOVE_GROUND = 1.05f;  //On Level Start
 
-	void Awake()
+	new void Awake()
 	{
 		//Get a copy of the components
 		base.Awake();

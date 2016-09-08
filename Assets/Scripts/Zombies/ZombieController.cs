@@ -99,7 +99,7 @@ public sealed class ZombieController : Creature, ICreature {
 		if( creatureState != CreatureState.Dying )
 		{
 			CancelInvoke( "groan" );
-			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
+			if( playWinSound ) audioSource.PlayOneShot( win );
 			if( creatureState == CreatureState.StandUpFromBack )
 			{
 				StopCoroutine("standUpFromBackCompleted");
@@ -152,7 +152,7 @@ public sealed class ZombieController : Creature, ICreature {
 
 	public void sideCollision()
 	{
-		GetComponent<AudioSource>().PlayOneShot( moanLow );
+		audioSource.PlayOneShot( moanLow );
 		legacyAnim.CrossFade("hit2");
 		legacyAnim.CrossFadeQueued(selectRandomWalk( ZombieMoveType.Walking ));
 	}
@@ -184,11 +184,11 @@ public sealed class ZombieController : Creature, ICreature {
 			float rd = Random.Range( 0, 1f );
 			if( rd < 0.5f )
 			{
-				GetComponent<AudioSource>().PlayOneShot( moanLow );
+				audioSource.PlayOneShot( moanLow );
 			}
 			else
 			{
-				GetComponent<AudioSource>().PlayOneShot( moanHigh );
+				audioSource.PlayOneShot( moanHigh );
 			}
 		}
 	}

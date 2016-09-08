@@ -9,6 +9,7 @@ public class Creature : BaseClass {
 	protected Transform player;
 	protected CharacterController controller;
 	protected Animator anim;
+	protected AudioSource audioSource;
 	protected const float CROSS_FADE_DURATION = 0.5f;
 	//If true, the creature heads for the player as opposed to staying in his lane
 	public bool followsPlayer = false;
@@ -30,6 +31,7 @@ public class Creature : BaseClass {
 		controller = GetComponent<CharacterController>();
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		anim = GetComponent<Animator>();
+		audioSource = GetComponent<AudioSource>();
 	}
 
 	public CreatureState getCreatureState()
@@ -92,7 +94,7 @@ public class Creature : BaseClass {
 		{
 			capsuleColliders[i].enabled = false;
 		}
-		GetComponent<AudioSource>().PlayOneShot( knockbackSound );
+		audioSource.PlayOneShot( knockbackSound );
 	}
 
 	//For SetLookAtPosition to work, there are 2 conditions:

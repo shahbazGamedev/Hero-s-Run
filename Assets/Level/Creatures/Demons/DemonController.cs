@@ -183,7 +183,7 @@ public sealed class DemonController : Creature, ICreature {
 
 	public void sideCollision()
 	{
-		GetComponent<AudioSource>().PlayOneShot( ouch );
+		audioSource.PlayOneShot( ouch );
 		anim.CrossFadeInFixedTime( "Damage" , CROSS_FADE_DURATION );
 	}
 
@@ -191,7 +191,7 @@ public sealed class DemonController : Creature, ICreature {
 	{
 		if( creatureState != CreatureState.Dying )
 		{
-			if( playWinSound ) GetComponent<AudioSource>().PlayOneShot( win );
+			if( playWinSound ) audioSource.PlayOneShot( win );
 			setCreatureState( CreatureState.Victory );
 			anim.CrossFadeInFixedTime( "idle" , CROSS_FADE_DURATION );
 		}
@@ -245,20 +245,20 @@ public sealed class DemonController : Creature, ICreature {
 
 	public void Footstep_left ( AnimationEvent eve )
 	{
-		GetComponent<AudioSource>().PlayOneShot( footstepLeftSound, 0.4f );
+		audioSource.PlayOneShot( footstepLeftSound, 0.4f );
 		sparksLeftHoof.Play();
 	}
 
 	public void Footstep_right ( AnimationEvent eve )
 	{
-		GetComponent<AudioSource>().PlayOneShot( footstepRightSound, 0.4f );
+		audioSource.PlayOneShot( footstepRightSound, 0.4f );
 		sparksRightHoof.Play();
 	}
 
 	public void Start_Weapon_Trail ( AnimationEvent eve )
 	{
 		weaponTrail.SetActive( true );
-		GetComponent<AudioSource>().PlayOneShot( swordSwoosh );
+		audioSource.PlayOneShot( swordSwoosh );
 	}
 
 	public void Stop_Weapon_Trail ( AnimationEvent eve )
@@ -271,6 +271,6 @@ public sealed class DemonController : Creature, ICreature {
 	public void speak( string voiceOverID, float textDisplayDuration, bool hasVoiceOver )
 	{
 		DialogManager.dialogManager.activateDisplayGeneric( LocalizationManager.Instance.getText( voiceOverID ), demonPortrait, textDisplayDuration );
-		if( hasVoiceOver ) GetComponent<AudioSource>().PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
+		if( hasVoiceOver ) audioSource.PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
 	}
 }
