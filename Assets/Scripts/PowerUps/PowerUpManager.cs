@@ -372,13 +372,13 @@ public class PowerUpManager : BaseClass {
 		{
 			if ( collider.name == "DeadTree" || collider.name.StartsWith("Stumble") || collider.name.StartsWith("Breakable")  || collider.name == "cart" || collider.name == "Chicken" || collider.name == "Pendulum" )
 			{
-				collider.isTrigger = isActive;
 				//Since we are turning the collider into a trigger, we need to disable gravity for objects with a rigid body
 				//as well or else the object will fall through the ground.
 				if( collider.GetComponent<Rigidbody>() != null )
 				{
 					collider.GetComponent<Rigidbody>().useGravity = !isActive;
 				}
+				collider.enabled = !isActive;
 			}
 		}
 	}
