@@ -32,6 +32,7 @@ public class PowerUpManager : BaseClass {
 
 	Transform player;
 	PlayerController playerController;
+	AudioSource audioSource;
 
 	//Power Up audio. They use 2D sound.
 	public AudioClip pickUpSound;
@@ -62,6 +63,7 @@ public class PowerUpManager : BaseClass {
 		fillDictionary();
 		player = GameObject.FindGameObjectWithTag("Player").transform;	
 		playerController = player.GetComponent<PlayerController>();
+		audioSource = GetComponent<AudioSource>();
 	}
 	
 	public void changeSelectedPowerUp(PowerUpType newPowerUpType )
@@ -176,7 +178,7 @@ public class PowerUpManager : BaseClass {
 		PowerUpData pud = powerUpDictionary[powerUpType];
 
 		//Play pick-up sound
-		GetComponent<AudioSource>().PlayOneShot( pickUpSound );
+		audioSource.PlayOneShot( pickUpSound );
 		//Play a pick-up particle effect if one has been specified
 		if( pud.pickupEffect != null )
 		{
@@ -220,7 +222,7 @@ public class PowerUpManager : BaseClass {
 			{
 			case PowerUpType.Magnet:
 				
-				GetComponent<AudioSource>().PlayOneShot( pickUpSound );
+				audioSource.PlayOneShot( pickUpSound );
 				StopCoroutine( "startTimerMagnet" );
 				StartCoroutine( "startTimerMagnet", pud );
 				Debug.Log("Magnet - prolonging duration." );
@@ -228,7 +230,7 @@ public class PowerUpManager : BaseClass {
 
 			case PowerUpType.Shield:
 				
-				GetComponent<AudioSource>().PlayOneShot( pickUpSound );
+				audioSource.PlayOneShot( pickUpSound );
 				StopCoroutine( "startTimerShield" );
 				StartCoroutine( "startTimerShield", pud );
 				Debug.Log("Shield - prolonging duration." );
@@ -238,10 +240,11 @@ public class PowerUpManager : BaseClass {
 		else
 		{
 			//No, this is a new power up
+			audioSource.PlayOneShot( pud.activationSound );
 			switch( pud.powerUpType )
 			{
 				case PowerUpType.Magnet:
-					GetComponent<AudioSource>().PlayOneShot( pickUpSound );
+					audioSource.PlayOneShot( pickUpSound );
 					activePowerUps.Add( pud.powerUpType );
 					GameObject magnetSphere = player.Find ("Magnet Sphere").gameObject;
 					CoinAttractor coinAttractor = (CoinAttractor) magnetSphere.GetComponent(typeof(CoinAttractor));
@@ -294,7 +297,7 @@ public class PowerUpManager : BaseClass {
 				break;
 
 				case PowerUpType.Shield:
-					GetComponent<AudioSource>().PlayOneShot( pickUpSound );
+					audioSource.PlayOneShot( pickUpSound );
 					activePowerUps.Add( pud.powerUpType );
 					turnSomeCollidersIntoTriggers( true );
 					StartCoroutine( "startTimerShield", pud );
@@ -319,7 +322,7 @@ public class PowerUpManager : BaseClass {
 		PowerUpData pud = powerUpDictionary[powerUpType];
 
 		//Play a deactivation sound if one has been set.
-		if ( !instantly && pud.deactivationSound != null ) GetComponent<AudioSource>().PlayOneShot( pud.deactivationSound );
+		if ( !instantly && pud.deactivationSound != null ) audioSource.PlayOneShot( pud.deactivationSound );
 
 		switch( powerUpType )
 		{
@@ -362,6 +365,7 @@ public class PowerUpManager : BaseClass {
 			break;
 
 		case PowerUpType.SpeedBoost:
+			removeFromActiveList( PowerUpType.SpeedBoost );
 			StopCoroutine( "startTimerSpeedBoost" );
 			playerController.activateSpeedBoost( false );
 			pud.stopTimer();
@@ -642,6 +646,7 @@ public class PowerUpManager : BaseClass {
 		public ParticleSystem pickupEffect;
 		public ParticleSystem activationEffect;
 		public GameObject powerUpToSpawn;
+		public AudioClip activationSound;
 		public AudioClip deactivationSound;
 		public PowerUpTimer powerUpTimer;
 
