@@ -1177,7 +1177,7 @@ public class PlayerController : BaseClass {
 		else
 		{
 			mainCamera.GetComponent<MotionBlur>().enabled = false;			
-			allowRunSpeedToIncrease = true;
+			if( _characterState != CharacterState.Dying ) allowRunSpeedToIncrease = true;
 		}
 	}
 
@@ -1961,7 +1961,7 @@ public class PlayerController : BaseClass {
 				if( zombieController.getCreatureState() != CreatureState.Dying )
 				{
 					//You can't make a crawling zombie fall backwards
-					if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding ) && zombieController.getCreatureState() != CreatureState.Crawling )
+					if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding || PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) ) && zombieController.getCreatureState() != CreatureState.Crawling )
 					{
 						//Give stars
 						PlayerStatsManager.Instance.modifyCurrentCoins( ZombieManager.NUMBER_STARS_PER_ZOMBIE, true, false );
@@ -2250,6 +2250,11 @@ public class PlayerController : BaseClass {
 		//This is probably a Unity bug.
 		if( other.name == "deadEnd" )
 		{
+			//Deactivate the speedboost if active because it is really hard to turn when you are going super fast
+			if( PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
+			{
+				powerUpManager.deactivatePowerUp(PowerUpType.SpeedBoost, true );
+			}
 			isInDeadEnd = true;
 			wantToTurn = false;
 
@@ -2377,6 +2382,7 @@ public class PlayerController : BaseClass {
 		queueJump = false;
 		queueSlide = false;
 		powerUpManager.deactivatePowerUp(PowerUpType.SlowTime, true );
+		powerUpManager.deactivatePowerUp(PowerUpType.SpeedBoost, true );
 		//If he was sliding, making him run again
 		if ( _characterState == CharacterState.Sliding )
 		{
