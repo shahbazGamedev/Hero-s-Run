@@ -36,6 +36,10 @@ public class PlayerStatsManager {
 	public delegate void PlayerInventoryChanged( PlayerInventoryEvent eventType, int newValue );
 	public static event PlayerInventoryChanged playerInventoryChanged;
 
+	//Delegate used to communicate to other classes when the power-up quantity changes
+	public delegate void PowerUpInventoryChanged();
+	public static event PowerUpInventoryChanged powerUpInventoryChanged;
+
 	float distanceTravelled = 0;
 	bool firstTimePlaying;
 	bool sharedOnFacebook = false;	//Has the player shared an image on Facebook?
@@ -757,6 +761,7 @@ public class PlayerStatsManager {
 		if( powerUpInventory.ContainsKey(type) )
 		{
 			powerUpInventory[type].quantity = powerUpInventory[type].quantity + quantity;
+			if( powerUpInventoryChanged != null ) powerUpInventoryChanged();
 			savePlayerStats();
 		}
 	}
@@ -766,7 +771,7 @@ public class PlayerStatsManager {
 		if( powerUpInventory.ContainsKey(type) )
 		{
 			powerUpInventory[type].quantity++;
-			Debug.Log("incrementPowerUpInventory new total " + powerUpInventory[type].quantity + " for type " + type );
+			if( powerUpInventoryChanged != null ) powerUpInventoryChanged();
 			savePlayerStats();
 		}
 	}
@@ -777,6 +782,7 @@ public class PlayerStatsManager {
 		{
 			powerUpInventory[type].quantity--;
 			if( powerUpInventory[type].quantity < 0 ) powerUpInventory[type].quantity = 0;
+			if( powerUpInventoryChanged != null ) powerUpInventoryChanged();
 			savePlayerStats();
 		}
 	}

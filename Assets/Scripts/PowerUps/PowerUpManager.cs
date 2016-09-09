@@ -34,7 +34,7 @@ public class PowerUpManager : BaseClass {
 	PlayerController playerController;
 	AudioSource audioSource;
 
-	//Power Up audio. They use 2D sound.
+	[Tooltip("The sound to play when a power-up is picked up in the level. The same sound plays regardless of which power-up is picked up. Note that the AudioSource of the PowerUpManager is 2D, not 3D.")]
 	public AudioClip pickUpSound;
 
 	public ParticleSystem zNukeEffect;
@@ -45,8 +45,8 @@ public class PowerUpManager : BaseClass {
 	const float DISTANCE_TO_GROUND = 2.4f;
 
 	//List of each powerup available.
-	public List<PowerUpData> powerUpList = new List<PowerUpData>(6);
-	static Dictionary<PowerUpType,PowerUpData> powerUpDictionary = new Dictionary<PowerUpType,PowerUpData>(6);
+	public List<PowerUpData> powerUpList = new List<PowerUpData>(7);
+	static Dictionary<PowerUpType,PowerUpData> powerUpDictionary = new Dictionary<PowerUpType,PowerUpData>(7);
 
 	//Base diameter is the value if upgrade level is 0. It is used by zNuke.
 	const float BASE_DIAMETER = 18f; 	//in meters
@@ -77,9 +77,9 @@ public class PowerUpManager : BaseClass {
 	{
 		//Copy all of the power up data into a dictionary for convenient access
 		powerUpDictionary.Clear();
-		foreach(PowerUpData powerUpData in powerUpList) 
+		for( int i = 0; i < powerUpList.Count; i++ )
 		{
-			powerUpDictionary.Add(powerUpData.powerUpType, powerUpData );
+			powerUpDictionary.Add(powerUpList[i].powerUpType, powerUpList[i] );
 		}
 		//We no longer need powerUpList
 		powerUpList.Clear();
@@ -214,6 +214,9 @@ public class PowerUpManager : BaseClass {
 			pud.activationEffect.Play();
 		}
 
+		//Play an activation sound if one has been specified
+		if( pud.activationSound != null ) audioSource.PlayOneShot( pud.activationSound );
+
 		//Verify if this type of power up is already active.
 		if( activePowerUps.Contains( powerUpType ) )
 		{
@@ -222,7 +225,6 @@ public class PowerUpManager : BaseClass {
 			{
 			case PowerUpType.Magnet:
 				
-				audioSource.PlayOneShot( pickUpSound );
 				StopCoroutine( "startTimerMagnet" );
 				StartCoroutine( "startTimerMagnet", pud );
 				Debug.Log("Magnet - prolonging duration." );
@@ -230,7 +232,6 @@ public class PowerUpManager : BaseClass {
 
 			case PowerUpType.Shield:
 				
-				audioSource.PlayOneShot( pickUpSound );
 				StopCoroutine( "startTimerShield" );
 				StartCoroutine( "startTimerShield", pud );
 				Debug.Log("Shield - prolonging duration." );
@@ -240,11 +241,9 @@ public class PowerUpManager : BaseClass {
 		else
 		{
 			//No, this is a new power up
-			audioSource.PlayOneShot( pud.activationSound );
 			switch( pud.powerUpType )
 			{
 				case PowerUpType.Magnet:
-					audioSource.PlayOneShot( pickUpSound );
 					activePowerUps.Add( pud.powerUpType );
 					GameObject magnetSphere = player.Find ("Magnet Sphere").gameObject;
 					CoinAttractor coinAttractor = (CoinAttractor) magnetSphere.GetComponent(typeof(CoinAttractor));
@@ -297,7 +296,6 @@ public class PowerUpManager : BaseClass {
 				break;
 
 				case PowerUpType.Shield:
-					audioSource.PlayOneShot( pickUpSound );
 					activePowerUps.Add( pud.powerUpType );
 					turnSomeCollidersIntoTriggers( true );
 					StartCoroutine( "startTimerShield", pud );
@@ -503,6 +501,7 @@ public class PowerUpManager : BaseClass {
 		PlayerController.playerStateChanged += PlayerStateChange;
 		GameManager.gameStateEvent += GameStateChange;
 		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
+		PlayerStatsManager.powerUpInventoryChanged += PowerUpInventoryChanged;
 	}
 
 	void OnDisable()
@@ -510,13 +509,7 @@ public class PowerUpManager : BaseClass {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 		GameManager.gameStateEvent -= GameStateChange;
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
-	}
-
-	void Update()
-	{
-		//Hack
-		//Quantity updating should be driven by an event
-		equippedPowerUpQuantity.text = PlayerStatsManager.Instance.getPowerUpQuantity(PlayerStatsManager.Instance.getPowerUpSelected()).ToString();
+		PlayerStatsManager.powerUpInventoryChanged -= PowerUpInventoryChanged;
 	}
 
 	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
@@ -549,6 +542,11 @@ public class PowerUpManager : BaseClass {
 		{
 			resetAllPowerUps();
 		}
+	}
+
+	void PowerUpInventoryChanged()
+	{
+		equippedPowerUpQuantity.text = PlayerStatsManager.Instance.getPowerUpQuantity(PlayerStatsManager.Instance.getPowerUpSelected()).ToString();
 	}
 
 	public void hideImmediatelyPowerUp()
