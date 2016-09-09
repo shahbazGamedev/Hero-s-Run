@@ -58,14 +58,14 @@ public class PlayerStatsManager {
 	//Dictionary where the key is the PowerUpType and the value represents the amount of power-ups the player has either purchased or found in the levels.
 	//This inventory is only relevant for consumable power-ups.
 	//This is saved as concatenated string. See defaultPowerUpsForNewPlayer as a format example.
-	Dictionary<PowerUpType, PowerUpInventory> powerUpInventory = new Dictionary<PowerUpType, PowerUpInventory>(5);
-	//Shield is 1, Magnet is 2, ZNuke is 3, MagicBoots is 4, SlowTime is 5
+	Dictionary<PowerUpType, PowerUpInventory> powerUpInventory = new Dictionary<PowerUpType, PowerUpInventory>(6);
+	//Shield is 1, Magnet is 2, ZNuke is 3, MagicBoots is 4, SlowTime is 5, Speed Boost is 6
 	//By default, players have three consumable power ups of each
-	//Players can upgrade their power ups from a level of 0 to 5
+	//Players can upgrade their power ups from a level of 0 to 6
 	//For example, the duration of the Shield power up when upgraded to level 3 is 20 seconds (instead of 10).
 	//By default, the upgrade level for each is 0.
 	//Format is : PowerUpType,quantity,upgrade level
-	const string defaultPowerUpsForNewPlayer = "1,0,0,2,0,0,3,3,0,4,3,0,5,3,0";
+	const string defaultPowerUpsForNewPlayer = "1,0,0,2,0,0,3,3,0,4,3,0,5,3,0,6,3,0";
 	
 	//Sound volume between 0 and 1f.
 	float soundVolume = 1f;

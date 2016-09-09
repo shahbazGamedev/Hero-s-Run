@@ -11,6 +11,7 @@ public enum PowerUpType {
 	ZNuke = 3,
 	MagicBoots = 4,
 	SlowTime = 5,
+	SpeedBoost = 6,
 	Life = 7
 }
 
@@ -24,8 +25,6 @@ public class PowerUpManager : BaseClass {
 	public Text equippedPowerUpQuantity;
 	public RectTransform magnetPowerUp;
 	public RectTransform shieldPowerUp;
-
-	public Image mapIconPrefab;
 
 	//The player can have multiple powerups active at the same time.
 	//I.e. Magnet and Shield can be active at the same time, but not two magnets.
@@ -56,6 +55,8 @@ public class PowerUpManager : BaseClass {
 	public delegate void ZNukeExploded( float impactDiameter );
 	public static event ZNukeExploded zNukeExploded;
 
+	public const float SPEED_BOOST_MULTIPLIER = 1.5f;
+
 	void Awake()
 	{
 		fillDictionary();
@@ -85,7 +86,7 @@ public class PowerUpManager : BaseClass {
 
 	public static PowerUpType getRandomConsumablePowerUp()
 	{
-		int rd = Random.Range(0,3);
+		int rd = Random.Range(0,4);
 		PowerUpType randomConsumablePowerUp = PowerUpType.None;
 		switch( rd )
 		{
@@ -97,6 +98,9 @@ public class PowerUpManager : BaseClass {
 			break;
 		case 2:
 			randomConsumablePowerUp = PowerUpType.SlowTime;
+			break;
+		case 3:
+			randomConsumablePowerUp = PowerUpType.SpeedBoost;
 			break;
 		}
 		return randomConsumablePowerUp;
@@ -147,6 +151,20 @@ public class PowerUpManager : BaseClass {
 		deactivatePowerUp( pud.powerUpType, false );
 	}
 	
+	IEnumerator startTimerSpeedBoost( PowerUpData pud )
+	{
+		float duration = getDuration(pud);
+		pud.startTimer( duration );
+		float elapsed = 0;
+		
+		do
+		{
+			elapsed = elapsed + Time.deltaTime;
+			yield return _sync();
+		} while ( elapsed < duration );
+		//Duration has expired. Deactivate power up.
+		deactivatePowerUp( pud.powerUpType, false );
+	}
 
 	public static bool isThisPowerUpActive( PowerUpType powerUpType )
 	{
@@ -283,6 +301,15 @@ public class PowerUpManager : BaseClass {
 					slideInPowerUp(shieldPowerUp);
 					Debug.Log("Shield - activatePowerUp with duration time of " + getDuration( pud ) );
 				break;
+
+				case PowerUpType.SpeedBoost:
+					activePowerUps.Add( pud.powerUpType );
+					playerController.activateSpeedBoost( true );
+					StopCoroutine( "startTimerSpeedBoost" );
+					StartCoroutine( "startTimerSpeedBoost", pud );
+					PlayerStatsManager.Instance.decrementPowerUpInventory(pud.powerUpType);
+					Debug.Log("SpeedBoost - activatePowerUp with duration time of " + getDuration( pud ) );
+				break;
 			}
 		}
 	}
@@ -332,6 +359,12 @@ public class PowerUpManager : BaseClass {
 				StartCoroutine( "accelerateAfterSlowTime" );
 				pud.stopTimer();
 			}
+			break;
+
+		case PowerUpType.SpeedBoost:
+			StopCoroutine( "startTimerSpeedBoost" );
+			playerController.activateSpeedBoost( false );
+			pud.stopTimer();
 			break;
 		}
 	}
@@ -401,28 +434,32 @@ public class PowerUpManager : BaseClass {
 				{
 					if( forcePowerUpType == PowerUpType.None )
 					{
-						int rdPowerUp = Random.Range( 1,7 );
-						if( rdPowerUp == 1 )
+						int rdPowerUp = Random.Range( 1,8 );
+						if( rdPowerUp == (int)PowerUpType.Shield )
 						{
-							//Create a Magnet power-up
-							addPowerUp( PowerUpType.Magnet, placeholder, newTile );
-						}
-						else if( rdPowerUp == 2 )
-						{
-							//Create a Shield power-up
 							addPowerUp( PowerUpType.Shield, placeholder, newTile );
 						}
-						else if( rdPowerUp == 3 )
+						else if( rdPowerUp == (int)PowerUpType.Magnet )
 						{
-							//Create a Magic Boots power-up
+							addPowerUp( PowerUpType.Magnet, placeholder, newTile );
+						}
+						else if( rdPowerUp == (int)PowerUpType.ZNuke )
+						{
+							addPowerUp( PowerUpType.ZNuke, placeholder, newTile );
+						}
+						else if( rdPowerUp == (int)PowerUpType.MagicBoots )
+						{
 							addPowerUp( PowerUpType.MagicBoots, placeholder, newTile );
 						}
-						else if( rdPowerUp == 4 )
+						else if( rdPowerUp == (int)PowerUpType.SlowTime )
 						{
-							//Create a Slow Time power-up
 							addPowerUp( PowerUpType.SlowTime, placeholder, newTile );
 						}
-						else if( rdPowerUp == 5 )
+						else if( rdPowerUp == (int)PowerUpType.SpeedBoost )
+						{
+							addPowerUp( PowerUpType.SpeedBoost, placeholder, newTile );
+						}
+						else if( rdPowerUp == (int)PowerUpType.Life )
 						{
 							//Create a Life power-up
 							//Life power-ups should be rare, so don't always spawn one
@@ -430,11 +467,6 @@ public class PowerUpManager : BaseClass {
 							{
 								addPowerUp( PowerUpType.Life, placeholder, newTile );
 							}
-						}
-						else if( rdPowerUp >= 6 )
-						{
-							//Create a ZNuke power-up
-							addPowerUp( PowerUpType.ZNuke, placeholder, newTile );
 						}
 					}
 					else

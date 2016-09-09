@@ -46,7 +46,7 @@ public class PowerUpDisplayData : MonoBehaviour {
 		//we want the next one
 		selectedPowerUpIndex++;
 		//Make sure we stay within the range of the consumable power-ups: ZNuke = 3, MagicBoots = 4, SlowTime = 5
-		if( selectedPowerUpIndex > 5 ) selectedPowerUpIndex = 3;
+		if( selectedPowerUpIndex > 6 ) selectedPowerUpIndex = 3;
 		return (PowerUpType)selectedPowerUpIndex;
 
 	}
@@ -56,8 +56,8 @@ public class PowerUpDisplayData : MonoBehaviour {
 		int selectedPowerUpIndex = (int)PlayerStatsManager.Instance.getPowerUpSelected();
 		//we want the previous one
 		selectedPowerUpIndex--;
-		//Make sure we stay within the range of the consumable power-ups: ZNuke = 3, MagicBoots = 4, SlowTime = 5
-		if( selectedPowerUpIndex < 3 ) selectedPowerUpIndex = 5;
+		//Make sure we stay within the range of the consumable power-ups: ZNuke = 3, MagicBoots = 4, SlowTime = 5, SpeedBoost = 6
+		if( selectedPowerUpIndex < 3 ) selectedPowerUpIndex = 6;
 		return (PowerUpType)selectedPowerUpIndex;
 		
 	}

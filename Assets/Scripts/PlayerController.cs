@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityStandardAssets.ImageEffects;
 
 public enum DeathType {
 		Alive = 0,
@@ -613,7 +614,6 @@ public class PlayerController : BaseClass {
 		fallStartYPos = transform.position.y;
 		gravity = DEFAULT_GRAVITY * 2f;
 		sc.heightDamping = SimpleCamera.DEFAULT_HEIGHT_DAMPING * 9f;
-		allowRunSpeedToIncrease = false;
 		allowDistanceTravelledCalculations = false;
 		setCharacterState(CharacterState.Falling);
 		anim.SetTrigger(FallTrigger);
@@ -1163,6 +1163,21 @@ public class PlayerController : BaseClass {
 		{
 			Debug.Log("Listing all textures: " );
 			Utilities.printAllTexturesInScene();
+		}
+	}
+
+	public void activateSpeedBoost( bool activate )
+	{
+		if( activate )
+		{
+			mainCamera.GetComponent<MotionBlur>().enabled = true;			
+			allowRunSpeedToIncrease = false;
+			runSpeed = runSpeed * PowerUpManager.SPEED_BOOST_MULTIPLIER;
+		}
+		else
+		{
+			mainCamera.GetComponent<MotionBlur>().enabled = false;			
+			allowRunSpeedToIncrease = true;
 		}
 	}
 
@@ -2157,7 +2172,10 @@ public class PlayerController : BaseClass {
 			else if (hit.collider.name.Equals("Weapon") )
 			{
 				//Skeleton footman or warlord
-				managePlayerDeath ( DeathType.Obstacle );
+				if( !PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
+				{
+					managePlayerDeath ( DeathType.Obstacle );
+				}
 			}			
 		}
 	}
@@ -2167,7 +2185,7 @@ public class PlayerController : BaseClass {
 		//Ignore collision event if the creature is already dead.
 		if( creature.getCreatureState() != CreatureState.Dying )
 		{
-			if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding ) )
+			if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding ) || PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
 			{
 				//Give stars
 				PlayerStatsManager.Instance.modifyCurrentCoins( CreatureManager.NUMBER_STARS_PER_CREATURE, true, false );

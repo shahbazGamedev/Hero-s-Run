@@ -53,7 +53,10 @@ public class Projectile : MonoBehaviour {
 			}
 			else
 			{
-				playerController.managePlayerDeath ( DeathType.Obstacle );
+				if( !PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
+				{
+					playerController.managePlayerDeath ( DeathType.Obstacle );
+				}
 			}
 		}
   	}
