@@ -38,7 +38,7 @@ public enum CharacterState {
 	Turning_and_sliding = 12
 }
 
-public class PlayerController : BaseClass {
+public sealed class PlayerController : BaseClass {
 	
 	private Transform mainCamera;
 
@@ -74,6 +74,8 @@ public class PlayerController : BaseClass {
 	//Components
 	public Animator anim;
 	CharacterController controller;
+	AudioSource audioSource;
+
 	//When the player dies, we change the center and radius.
 	//We need to be able to reset these values when the player is revived.
 	Vector3 controllerOriginalCenter;
@@ -298,6 +300,7 @@ public class PlayerController : BaseClass {
 
 		//Get a copy of the components
 		anim = hero.GetComponent<Animator>();
+		audioSource = GetComponent<AudioSource>();
 
 		controller = GetComponent<CharacterController>();
 		controllerOriginalCenter = controller.center;
@@ -638,7 +641,7 @@ public class PlayerController : BaseClass {
 		{
 			anim.SetTrigger(StumbleTrigger);
 			//The Land anim has a callback to play the Land sound, but not the Stumble anim
-			GetComponent<AudioSource>().PlayOneShot( landGroundSound, 0.8f );
+			audioSource.PlayOneShot( landGroundSound, 0.8f );
 		}
 		moveDirection.y = 0f;
 		print ( "player landed. Fall distance was: " + 	fallDistance );
@@ -777,9 +780,9 @@ public class PlayerController : BaseClass {
 	
 	void playSound(AudioClip soundToPlay, bool isLooping )
     {
-		GetComponent<AudioSource>().clip = soundToPlay;
-		GetComponent<AudioSource>().loop = isLooping;
-		GetComponent<AudioSource>().Play();
+		audioSource.clip = soundToPlay;
+		audioSource.loop = isLooping;
+		audioSource.Play();
     }
 	
 	void handleSwipes()
@@ -1213,7 +1216,7 @@ public class PlayerController : BaseClass {
 				recalculateCurrentLane();
 
 				//We are allowed to jump from the slide state.
-				GetComponent<AudioSource>().Stop ();							//stop the sliding sound if any
+				audioSource.Stop ();							//stop the sliding sound if any
 				dustPuff.Stop();						//stop the dust puff that loops while we are sliding
 				slideWaterSplash.Stop();
 				deactivateOverheadObstacles( true );	//reactivate overhead obstacles since they would have been deactivated if we were sliding
@@ -1505,7 +1508,7 @@ public class PlayerController : BaseClass {
 					desiredLane = Lanes.Right;
 					setCharacterState( CharacterState.SideMove );
 					moveDirection.x = currentSideMoveSpeed;
-					GetComponent<AudioSource>().PlayOneShot( sideMoveSound );
+					audioSource.PlayOneShot( sideMoveSound );
 					//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
 
 				}
@@ -1514,7 +1517,7 @@ public class PlayerController : BaseClass {
 					desiredLane = Lanes.Left;
 					setCharacterState( CharacterState.SideMove );
 					moveDirection.x = -currentSideMoveSpeed;
-					GetComponent<AudioSource>().PlayOneShot( sideMoveSound );
+					audioSource.PlayOneShot( sideMoveSound );
 					//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
 				}
 			}
@@ -1523,7 +1526,7 @@ public class PlayerController : BaseClass {
 				desiredLane = Lanes.Center;
 				setCharacterState( CharacterState.SideMove );
 				moveDirection.x = -currentSideMoveSpeed;
-				GetComponent<AudioSource>().PlayOneShot( sideMoveSound );
+				audioSource.PlayOneShot( sideMoveSound );
 				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
 			}
 			else if ( currentLane == Lanes.Left && isGoingRight )
@@ -1531,7 +1534,7 @@ public class PlayerController : BaseClass {
 				desiredLane = Lanes.Center;
 				setCharacterState( CharacterState.SideMove );
 				moveDirection.x = currentSideMoveSpeed;
-				GetComponent<AudioSource>().PlayOneShot( sideMoveSound );
+				audioSource.PlayOneShot( sideMoveSound );
 				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
 			}
 		}
@@ -1767,7 +1770,7 @@ public class PlayerController : BaseClass {
 					setCharacterState( CharacterState.Running );
 				}
 				anim.SetTrigger(Slide_UpTrigger);
-				GetComponent<AudioSource>().Stop();
+				audioSource.Stop();
 				deactivateOverheadObstacles( true );
 			}
 		}
@@ -2388,7 +2391,7 @@ public class PlayerController : BaseClass {
 			slideWaterSplash.Stop();
 			setCharacterState( CharacterState.Running );
 			anim.SetTrigger(Slide_UpTrigger);
-			GetComponent<AudioSource>().Stop();
+			audioSource.Stop();
 		}
 
 		//Clear move direction of any values. If we still have an x component for example, we will drift.
@@ -2616,7 +2619,7 @@ public class PlayerController : BaseClass {
 			gl.playerTurnedAtTJunction( isGoingRight, currentTile );
 		}
 
-		GetComponent<AudioSource>().PlayOneShot( sideMoveSound );
+		audioSource.PlayOneShot( sideMoveSound );
 		float playerRotY = transform.eulerAngles.y;
 		
 		if ( isGoingRight )
@@ -2706,7 +2709,7 @@ public class PlayerController : BaseClass {
 			StartCoroutine( SoundManager.soundManager.fadeOutMusic(1f, 0.25f) );
 
 			//Stop any currently playing sound
-			GetComponent<AudioSource>().Stop();
+			audioSource.Stop();
 
 			//Make adjustments depending on death type
 		    switch (deathType)
@@ -2787,23 +2790,23 @@ public class PlayerController : BaseClass {
 
 	public void Footstep_left ( AnimationEvent eve )
 	{
-		GetComponent<AudioSource>().PlayOneShot( leftFootstep, 0.1f );
+		audioSource.PlayOneShot( leftFootstep, 0.1f );
 	}
 
 	public void Footstep_right ( AnimationEvent eve )
 	{
-		GetComponent<AudioSource>().PlayOneShot( rightFootstep, 0.1f );
+		audioSource.PlayOneShot( rightFootstep, 0.1f );
 	}
 
 	public void Land_sound ( AnimationEvent eve )
 	{
 		if( groundType != "Water" )
 		{
-			GetComponent<AudioSource>().PlayOneShot( landGroundSound, 0.28f );
+			audioSource.PlayOneShot( landGroundSound, 0.28f );
 		}
 		else
 		{
-			GetComponent<AudioSource>().PlayOneShot( landWaterSound );
+			audioSource.PlayOneShot( landWaterSound );
 		}
 	}
 

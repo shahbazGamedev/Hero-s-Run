@@ -82,15 +82,11 @@ public class WeatherManager : BaseClass {
 
 	void OnEnable()
 	{
-		PlayerController.playerStateChanged += PlayerStateChange;
-		GameManager.gameStateEvent += GameStateChange;
 		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
 	}
 	
 	void OnDisable()
 	{
-		PlayerController.playerStateChanged -= PlayerStateChange;
-		GameManager.gameStateEvent -= GameStateChange;
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 
@@ -212,23 +208,5 @@ public class WeatherManager : BaseClass {
 			yield return _sync();
 		}
 		fog.SetActive( false );
-	}
-
-	void PlayerStateChange( CharacterState newState )
-	{
-		if( newState == CharacterState.Dying )
-		{
-		}
-	}
-
-	void GameStateChange( GameState newState )
-	{
-		if( newState == GameState.Paused )
-		{
-
-		}
-		else if( newState == GameState.Normal )
-		{
-		}
 	}
 }
