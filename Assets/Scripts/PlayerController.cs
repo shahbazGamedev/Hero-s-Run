@@ -1170,6 +1170,7 @@ public class PlayerController : BaseClass {
 	{
 		if( activate )
 		{
+			trollController.stopPursuing();
 			mainCamera.GetComponent<MotionBlur>().enabled = true;			
 			allowRunSpeedToIncrease = false;
 			runSpeed = runSpeed * PowerUpManager.SPEED_BOOST_MULTIPLIER;
@@ -2171,7 +2172,7 @@ public class PlayerController : BaseClass {
 			}			
 			else if (hit.collider.name.Equals("Weapon") )
 			{
-				//Skeleton footman or warlord
+				//Skeleton footman or warlord or goblin piker
 				if( !PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
 				{
 					managePlayerDeath ( DeathType.Obstacle );
@@ -2237,10 +2238,6 @@ public class PlayerController : BaseClass {
 					land ();
 				}
 			}
-		}
-		else
-		{
-			Debug.LogError("Creature already dead");
 		}
 	}
 
