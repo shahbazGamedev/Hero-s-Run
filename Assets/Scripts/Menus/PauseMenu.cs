@@ -19,7 +19,7 @@ public class PauseMenu : MonoBehaviour {
 	public GameObject pauseMenuPopup;
 
 	public Text titleText;
-	public Text levelDescriptionText;
+	public Text explanationText;
 	public Image powerupImage;
 	public Text powerupQuantity;
 	public Text powerupName;
@@ -53,18 +53,13 @@ public class PauseMenu : MonoBehaviour {
 		goText.text = LocalizationManager.Instance.getText("GO"); //Used to display 3,2,1 Go!
 	}
 	
-	private void setLevelToLoad( int levelToLoad )
-	{
-		//Now that we know what level to load, we can retrieve the level description text.
-		levelDescriptionText.text = LevelManager.Instance.getLevelDescription(levelToLoad);
-
-	}
-
 	private void updatePowerupData( PowerUpType powerUpSelected )
 	{
 		powerupQuantity.text = PlayerStatsManager.Instance.getPowerUpQuantity( powerUpSelected ).ToString();
 		powerupImage.sprite = PowerUpDisplayData.getPowerUpSprite( powerUpSelected );
 		powerupName.text = PowerUpDisplayData.getPowerUpName( powerUpSelected );
+		explanationText.text = LocalizationManager.Instance.getText("POWER_UP_" + powerUpSelected.ToString().ToUpper() + "_EXPLANATION" );
+
 	}
 
 	//Right arrow
@@ -122,7 +117,6 @@ public class PauseMenu : MonoBehaviour {
 			Time.timeScale = 0;
 			AudioListener.pause = true;
 			updatePowerupData( PlayerStatsManager.Instance.getPowerUpSelected() );
-			setLevelToLoad( LevelManager.Instance.getNextLevelToComplete() );
 			pauseMenuPopup.gameObject.SetActive( true );
 			isPlayerControlEnabledBeforePause = playerController.isPlayerControlEnabled();
 			playerController.enablePlayerControl(false);

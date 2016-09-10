@@ -276,8 +276,6 @@ public class LevelData : MonoBehaviour {
 
 		[Tooltip("Text ID of the level name. The name appears on road signs and in the pause menu. e.g. Tanglewood, Dreadknot Cemetery, etc.")]
 		public string LevelName = "LEVEL_NAME_";
-		[Tooltip("Text ID of the level description. The description appears in the pause menu.")]
-		public string LevelDescription = "LEVEL_DESCRIPTION_";
 		[Tooltip("The time of day in hours and minutes, using a 24h-clock, when this level starts.")]
 		public Vector2 timeOfDay;
 

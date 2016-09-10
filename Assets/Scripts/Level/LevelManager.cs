@@ -234,12 +234,6 @@ public class LevelManager {
 		return levelData.getLevelInfo( levelNumber ).isLevelLocked;
 	}
 
-	public string getLevelDescription( int levelNumber )
-	{
-		string levelDescriptionTextID = levelData.getLevelInfo( levelNumber ).LevelDescription;
-		return LocalizationManager.Instance.getText( levelDescriptionTextID );
-	}
-
 	public void setLevelChanged( bool hasChanged )
 	{
 		levelHasChanged = hasChanged;
