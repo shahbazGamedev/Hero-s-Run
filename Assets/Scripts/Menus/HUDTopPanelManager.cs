@@ -6,7 +6,6 @@ public class HUDTopPanelManager : MonoBehaviour {
 
 	[Header("Top Panel")]
 	public GameObject contentPanel;
-	public Text episodeNumberText;
 	string numberOfChestKeysInEpisode;
 	public Text numberOfKeysText;
 	public Text numberOfLivesText;
@@ -16,7 +15,6 @@ public class HUDTopPanelManager : MonoBehaviour {
 	void Start ()
 	{
 		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
-		episodeNumberText.text = "~ " + (episodeNumber + 1 ).ToString() + " ~";
 		numberOfChestKeysInEpisode = "/" + LevelManager.Instance.getCurrentEpisodeInfo().numberOfChestKeys;
 		numberOfKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode(episodeNumber).ToString() + numberOfChestKeysInEpisode;
 		numberOfLivesText.text = PlayerStatsManager.Instance.getLives().ToString();
