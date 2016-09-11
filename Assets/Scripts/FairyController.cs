@@ -63,7 +63,7 @@ public class FairyController : Creature {
 	{
 		//Get a copy of the components
 		base.Awake();
-		playerController = player.gameObject.GetComponent<PlayerController>();
+		if( player != null ) playerController = player.GetComponent<PlayerController>();
 	}
 
 	void Start()
@@ -172,6 +172,29 @@ public class FairyController : Creature {
 	public void Disappear_part2()
 	{
 		fairyState = FairyState.None;
+	}
+
+	public void cutsceneAppear( FairyEmotion fairyEmotion )
+	{
+		transform.localScale = new Vector3( 1f, 1f, 1f );
+		if( fairyEmotion == FairyEmotion.Happy )
+		{
+			anim.Play("Hover_Happy");
+		}
+		else
+		{
+			anim.Play("Hover_Worried");
+		}
+		appearFx.Play();
+		GetComponent<AudioSource>().PlayOneShot( appearSound );
+		fairyState = FairyState.Hover;
+	}
+
+	public void cutsceneDisappear()
+	{
+		GetComponent<AudioSource>().PlayOneShot( appearSound );
+		transform.localScale = new Vector3( 0.002f, 0.002f, 0.002f );
+		appearFx.Play();
 	}
 
 	public void CastSpell( System.Action onFinish = null )

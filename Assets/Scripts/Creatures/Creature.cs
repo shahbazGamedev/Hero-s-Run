@@ -29,7 +29,8 @@ public class Creature : BaseClass {
 	protected void Awake ()
 	{
 		controller = GetComponent<CharacterController>();
-		player = GameObject.FindGameObjectWithTag("Player").transform;
+		GameObject playerGameObject = GameObject.FindGameObjectWithTag("Player");
+		if( playerGameObject != null ) player = playerGameObject.transform;
 		anim = GetComponent<Animator>();
 		audioSource = GetComponent<AudioSource>();
 	}
