@@ -41,7 +41,7 @@ public class Lightning : MonoBehaviour {
 	void FlashRepeat()
 	{
 		GetComponent<Light>().shadowStrength = SHADOW_STRENGTH;
-		GetComponent<Light>().shadows = LightShadows.Hard;
+		GetComponent<Light>().shadows = LightShadows.Soft;
 		GetComponent<Light>().intensity = flashIntensity;
 		playThunderSound();
 		StartCoroutine("DecayRepeat");
@@ -67,7 +67,7 @@ public class Lightning : MonoBehaviour {
 	void FlashOnce()
 	{
 		GetComponent<Light>().shadowStrength = SHADOW_STRENGTH;
-		GetComponent<Light>().shadows = LightShadows.Hard;
+		GetComponent<Light>().shadows = LightShadows.Soft;
 
 		GetComponent<Light>().intensity = flashIntensity;
 		playThunderSound();
