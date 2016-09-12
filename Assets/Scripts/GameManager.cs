@@ -129,6 +129,7 @@ public class GameManager {
 	public void setGameMode( GameMode value )
 	{
 		gameMode = value;
+		Debug.Log("Game Mode set to " + value.ToString() );
 	}
 
 	//The global coin multiplier is used to increase (value bigger than 1) or decrease (value smaller than 1) the

@@ -762,7 +762,14 @@ public class GenerateLevel  : MonoBehaviour {
 			break;
 
 		default:
-			addTile( roadSegment.endTile );
+			if( GameManager.Instance.getGameMode() == GameMode.Story )
+			{
+				addTile( roadSegment.endTile );
+			}
+			else
+			{
+				addTile( TileType.Straight );
+			}
 			break;
 		}
 	}

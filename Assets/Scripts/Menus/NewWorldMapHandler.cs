@@ -400,6 +400,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		PlayerStatsManager.Instance.resetDeathInLevels();
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		PlayerStatsManager.Instance.resetTreasureKeysFound();
+		GameManager.Instance.setGameMode(GameMode.Endless);
 	}
 
 	public void play( int episodeNumber, int levelNumber )
