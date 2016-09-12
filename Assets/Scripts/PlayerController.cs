@@ -659,8 +659,8 @@ public sealed class PlayerController : BaseClass {
 			}
 		}
 
-		//Update distance travelled
-		if( allowDistanceTravelledCalculations )
+		//Update distance travelled if in Endless mode
+		if( GameManager.Instance.getGameMode() == GameMode.Endless && allowDistanceTravelledCalculations )
 		{
 			//Do not take height into consideration for distance travelled
 			Vector3 current = new Vector3(transform.position.x, 0, transform.position.z);

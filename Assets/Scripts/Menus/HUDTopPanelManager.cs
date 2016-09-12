@@ -4,23 +4,50 @@ using UnityEngine.UI;
 
 public class HUDTopPanelManager : MonoBehaviour {
 
-	[Header("Top Panel")]
+	[Header("Top Panel Shared")]
 	public GameObject contentPanel;
+	public Image starDoublerIcon;
+	public Text numberOfLivesText;
+	[Header("Top Panel - Story Mode")]
+	public Image keysIcon;
 	string numberOfChestKeysInEpisode;
 	public Text numberOfKeysText;
-	public Text numberOfLivesText;
-	public Image starDoublerIcon;
+	[Header("Top Panel - Endless Mode")]
+	public Text distanceText;
 
 	// Use this for initialization
 	void Start ()
 	{
 		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
-		numberOfChestKeysInEpisode = "/" + LevelManager.Instance.getCurrentEpisodeInfo().numberOfChestKeys;
-		numberOfKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode(episodeNumber).ToString() + numberOfChestKeysInEpisode;
 		numberOfLivesText.text = PlayerStatsManager.Instance.getLives().ToString();
 		starDoublerIcon.gameObject.SetActive( PlayerStatsManager.Instance.getOwnsStarDoubler() );
+		if( GameManager.Instance.getGameMode() == GameMode.Story )
+		{
+			//Story mode					
+			//Display the treasure key info but not the distance
+			numberOfKeysText.gameObject.SetActive( true );
+			keysIcon.gameObject.SetActive( true );
+			distanceText.gameObject.SetActive( false );
+
+			numberOfChestKeysInEpisode = "/" + LevelManager.Instance.getCurrentEpisodeInfo().numberOfChestKeys;
+			numberOfKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode(episodeNumber).ToString() + numberOfChestKeysInEpisode;
+			distanceText.gameObject.SetActive( false );
+		}
+		else
+		{
+ 			//Endless mode					
+			//Display the distance but not the treasure key info
+			numberOfKeysText.gameObject.SetActive( false );
+			keysIcon.gameObject.SetActive( false );
+			distanceText.gameObject.SetActive( true );
+		}
 		contentPanel.SetActive( false );
 	}	
+
+	void Update()
+	{
+		if( GameManager.Instance.getGameMode() == GameMode.Endless) distanceText.text = PlayerStatsManager.Instance.getDistanceTravelled().ToString() + " m";
+	}
 
 	void OnEnable()
 	{

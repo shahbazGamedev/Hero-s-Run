@@ -12,15 +12,18 @@ public class TowerTitleScreen : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		fairyController = fairy.GetComponent<FairyController>();
 		lightning.controlLightning(GameEvent.Start_Lightning);
 		Invoke("Step1", 3f );
 	}
 
 	void Step1 ()
 	{
-		fairyController.cutsceneAppear(FairyEmotion.Happy);
-		Invoke("Step2", 1f );
+		if(PlayerStatsManager.Instance.isFirstTimePlaying() )
+		{
+			fairyController = fairy.GetComponent<FairyController>();
+			fairyController.cutsceneAppear(FairyEmotion.Happy);
+			Invoke("Step2", 1f );
+		}
 	}
 
 	void Step2 ()
@@ -31,8 +34,15 @@ public class TowerTitleScreen : MonoBehaviour {
 
 	public void playButtonPressed ()
 	{
-		fairyController.cutsceneDisappear();
-		Invoke("Step3", 1.2f );
+		if(PlayerStatsManager.Instance.isFirstTimePlaying() )
+		{
+			fairyController.cutsceneDisappear();
+			Invoke("Step3", 1.2f );
+		}
+		else
+		{
+			titleScreenHandler.play();
+		}
 	}
 
 	void Step3 ()
