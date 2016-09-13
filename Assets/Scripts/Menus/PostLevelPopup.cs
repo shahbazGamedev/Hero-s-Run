@@ -21,6 +21,7 @@ public class PostLevelPopup : MonoBehaviour {
 	public GameObject scoreMeter;
 
 	ClockTimeSetter clockTimeSetter;
+	const float UPDATE_SEQUENCE_DELAY = 0.9f;
 
 	// Use this for initialization
 	void Awake () {
@@ -113,8 +114,15 @@ public class PostLevelPopup : MonoBehaviour {
 			}
 		}
 		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( episodeNumber ) + "/" + selectedEpisode.numberOfChestKeys;
-		StartCoroutine( scoreMeter.GetComponent<ScoreMeterHandler>().startUpdateSequence( selectedEpisode ) );
+		StartCoroutine( startUpdateSequence( selectedEpisode ) );
 		
+	}
+
+	IEnumerator startUpdateSequence( LevelData.EpisodeInfo selectedEpisode )
+	{
+		//Wait for the post-level popup to have finished sliding in before spinning values
+		yield return new WaitForSeconds(UPDATE_SEQUENCE_DELAY);
+		StartCoroutine( scoreMeter.GetComponent<ScoreMeterHandler>().spinScoreNumber( "MENU_SCORE", LevelManager.Instance.getScore() ) );
 	}
 
 	public void closePostLevelPopup()

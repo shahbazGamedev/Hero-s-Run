@@ -5,7 +5,7 @@ using System.Collections;
 public class TreasureKeyHandler : MonoBehaviour {
 
 	public bool playKeyTutorial = false;
-	[Tooltip("You can only get a key once even if you replay an episode. Keys found only get reset if you complete the game and start over. Eack key has a unique id. The id format is THEME_TILE_NAME_X, where X is a number.")]
+	[Tooltip("You can only get a key once even if you replay an episode. Keys found only get reset if you complete the game and start over. Eack key has a unique id. The id format is THEME_TILE_NAME_X, where X is a number. You cannot find treasure keys in the endless mode, only in the story mode.")]
 	public string treasureKeyID = "THEME_TILE_NAME_X";
 
 	PlayerController playerController;
@@ -26,11 +26,15 @@ public class TreasureKeyHandler : MonoBehaviour {
 
 	private void considerActivatingTreasureKey ()
 	{
-		if( !PlayerStatsManager.Instance.hasThisTreasureKeyBeenFound( treasureKeyID ) )
+		//You cannot find treasure keys in the endless mode, only in the story mode.
+		if( GameManager.Instance.getGameMode() == GameMode.Story )
 		{
-			GameObject treasureKeyPrefab = Resources.Load( "Level/Props/Treasure Key/Treasure Key") as GameObject;
-			GameObject go = (GameObject)Instantiate(treasureKeyPrefab, gameObject.transform.position, gameObject.transform.rotation );
-			go.gameObject.transform.parent = gameObject.transform;
+			if( !PlayerStatsManager.Instance.hasThisTreasureKeyBeenFound( treasureKeyID ) )
+			{
+				GameObject treasureKeyPrefab = Resources.Load( "Level/Props/Treasure Key/Treasure Key") as GameObject;
+				GameObject go = (GameObject)Instantiate(treasureKeyPrefab, gameObject.transform.position, gameObject.transform.rotation );
+				go.gameObject.transform.parent = gameObject.transform;
+			}
 		}
 	}
 	

@@ -28,6 +28,8 @@ public class NewWorldMapHandler : MonoBehaviour {
 	EpisodePopup episodePopup;
 	[Header("Post-Level Popup")]
 	public GameObject postLevelPopupPanel;
+	[Header("Endless Mode - Post-Level Popup")]
+	public GameObject endlessPostLevelPopupPanel;
 	[Header("Social Media Popup")]
 	public GameObject socialMediaPopupPanel;
 	[Header("Star Meter")]
@@ -95,7 +97,14 @@ public class NewWorldMapHandler : MonoBehaviour {
 		{
 			if( GameManager.Instance.getGameState() == GameState.PostLevelPopup )
 			{
-				postLevelPopupPanel.GetComponent<PostLevelPopup>().showPostLevelPopup(levelData);
+				if( GameManager.Instance.getGameMode() == GameMode.Story )
+				{
+					postLevelPopupPanel.GetComponent<PostLevelPopup>().showPostLevelPopup(levelData);
+				}
+				else
+				{
+					endlessPostLevelPopupPanel.GetComponent<EndlessPostLevelPopup>().showEndlessPostLevelPopup(levelData);
+				}
 			}
 		}
 

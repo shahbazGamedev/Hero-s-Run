@@ -8,25 +8,12 @@ public class ScoreMeterHandler : MonoBehaviour {
 
 	[Header("Score Meter")]
 	public Text scoreText;
-	public const float SCORE_SPIN_DURATION = 2f;
-	string scoreString; //format is Score: <0>
-	const float UPDATE_SEQUENCE_DELAY = 0.9f;
+	public const float SCORE_SPIN_DURATION = 1.8f;
 
-	void Awake()
+	public IEnumerator spinScoreNumber( string labelTextID, int number, System.Action onFinish = null  )
 	{
-		scoreString = LocalizationManager.Instance.getText("MENU_SCORE");
-	}
-		
-	public IEnumerator startUpdateSequence( LevelData.EpisodeInfo selectedEpisode )
-	{
-		//Wait for the post-level popup to have finished sliding in before spinning values
-		yield return new WaitForSeconds(UPDATE_SEQUENCE_DELAY);
-		StartCoroutine( spinScoreNumber( LevelManager.Instance.getScore() ) );
-	}
-
-	IEnumerator spinScoreNumber( int playerScore )
-	{
-		Debug.Log("spinScoreNumber " + playerScore );
+		Debug.Log("spinScoreNumber " + number );
+		string labelString = LocalizationManager.Instance.getText(labelTextID);
 		float startTime = Time.time;
 		float elapsedTime = 0;
 		float currentNumber = 0;
@@ -37,10 +24,12 @@ public class ScoreMeterHandler : MonoBehaviour {
 		{
 			elapsedTime = Time.time - startTime;
 
-			currentNumber =  Mathf.Lerp( startValue, playerScore, elapsedTime/SCORE_SPIN_DURATION );
-			//Replace the string <0> by the score value
-			scoreText.text = scoreString.Replace( "<0>", currentNumber.ToString("N0") );
+			currentNumber =  Mathf.Lerp( startValue, number, elapsedTime/SCORE_SPIN_DURATION );
+			//Replace the string <0> by the number
+			scoreText.text = labelString.Replace( "<0>", currentNumber.ToString("N0") );
 			yield return new WaitForFixedUpdate();  
 	    }
+		if( onFinish != null ) onFinish.Invoke();
 	}
+
 }
