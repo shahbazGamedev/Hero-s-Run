@@ -113,6 +113,7 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 	{
 		Debug.Log("showEndlessPostLevelPopup-Retry button pressed.");
 		SoundManager.soundManager.playButtonClick();
+		PlayerStatsManager.Instance.resetDistanceTravelled();
 		newWorldMapHandler.play( LevelManager.Instance.getCurrentEpisodeNumber(), LevelManager.Instance.getNextLevelToComplete() );
 	}
 
