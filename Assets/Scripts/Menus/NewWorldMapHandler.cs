@@ -32,6 +32,8 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public GameObject endlessPostLevelPopupPanel;
 	[Header("Social Media Popup")]
 	public GameObject socialMediaPopupPanel;
+	[Header("Game Mode Button")]
+	public Text gameModeButtonText;
 	[Header("Star Meter")]
 	public Color32 starReceivedColor;
 	[Header("Level Station Locations")]
@@ -75,6 +77,15 @@ public class NewWorldMapHandler : MonoBehaviour {
 		AudioListener.pause = false;
 
 		levelLoading = false;
+
+		if( GameManager.Instance.getGameMode() == GameMode.Story )
+		{
+			gameModeButtonText.text = LocalizationManager.Instance.getText("MENU_GAME_MODE_STORY");
+		}
+		else
+		{
+			gameModeButtonText.text = LocalizationManager.Instance.getText("MENU_GAME_MODE_ENDLESS");
+		}
 
 		numberOfMessages.text = (FacebookManager.Instance.AppRequestDataList.Count).ToString();
 		//if we have a Facebook user portrait, use it, or else, use the default one.
@@ -217,7 +228,14 @@ public class NewWorldMapHandler : MonoBehaviour {
 		Debug.Log("Level Station click-Episode: " + episodeNumber + " Level: " + levelNumber );
 		LevelManager.Instance.setCurrentEpisodeNumber( episodeNumber );
 		SoundManager.soundManager.playButtonClick();
-		episodePopup.showEpisodePopup( episodeNumber, levelNumber );
+		if( GameManager.Instance.getGameMode() == GameMode.Story )
+		{
+			episodePopup.showEpisodePopup( episodeNumber, levelNumber );
+		}
+		else
+		{
+			play( episodeNumber, levelNumber );
+		}
 	}
 
 	void drawEpisodeLevelMarker( int levelNumber, int episodeCounter )
@@ -409,7 +427,22 @@ public class NewWorldMapHandler : MonoBehaviour {
 		PlayerStatsManager.Instance.resetDeathInLevels();
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		PlayerStatsManager.Instance.resetTreasureKeysFound();
-		GameManager.Instance.setGameMode(GameMode.Endless);
+	}
+
+	public void toggleGameMode()
+	{
+		SoundManager.soundManager.playButtonClick();
+		if( GameManager.Instance.getGameMode() == GameMode.Story )
+		{
+			gameModeButtonText.text = LocalizationManager.Instance.getText("MENU_GAME_MODE_ENDLESS");
+			GameManager.Instance.setGameMode(GameMode.Endless);
+		}
+		else
+		{
+			gameModeButtonText.text = LocalizationManager.Instance.getText("MENU_GAME_MODE_STORY");
+			GameManager.Instance.setGameMode(GameMode.Story);
+		}
+		PlayerStatsManager.Instance.savePlayerStats();
 	}
 
 	public void play( int episodeNumber, int levelNumber )

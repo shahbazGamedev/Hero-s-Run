@@ -945,6 +945,8 @@ public class PlayerStatsManager {
 		{
 			int nextLevelToComplete = PlayerPrefs.GetInt("Next Level To Complete", 0 );
 			LevelManager.Instance.setNextLevelToComplete( nextLevelToComplete );
+			GameMode savedGameMode = (GameMode)PlayerPrefs.GetInt("Game Mode", (int)GameMode.Story);
+			GameManager.Instance.setGameMode( savedGameMode );
 			int highestLevelCompleted = PlayerPrefs.GetInt("Highest Level Completed", 0 );
 			LevelManager.Instance.setHighestLevelCompleted( highestLevelCompleted );
 			string playerFinishedTheGameString = PlayerPrefs.GetString("Finished Game", "false" );
@@ -1048,6 +1050,7 @@ public class PlayerStatsManager {
 	public void savePlayerStats()
 	{
 		PlayerPrefs.SetInt("Next Level To Complete", LevelManager.Instance.getNextLevelToComplete() );
+		PlayerPrefs.SetInt("Game Mode", (int) GameManager.Instance.getGameMode() );
 		PlayerPrefs.SetInt("Highest Level Completed", LevelManager.Instance.getHighestLevelCompleted() );
 		PlayerPrefs.SetInt("Lives", lives );
 		PlayerPrefs.SetInt("treasureKeysOwned", treasureKeysOwned );
@@ -1125,6 +1128,8 @@ public class PlayerStatsManager {
 	{
 		PlayerPrefs.SetInt("Next Level To Complete", 0 );
 		LevelManager.Instance.setNextLevelToComplete( 0 );
+		PlayerPrefs.SetInt("Game Mode", (int) GameMode.Story );
+		GameManager.Instance.setGameMode( GameMode.Story );
 		PlayerPrefs.SetInt("Highest Level Completed", 0 );
 		LevelManager.Instance.setHighestLevelCompleted( 0 );
 		PlayerPrefs.SetInt("Lives", INITIAL_NUMBER_LIVES );

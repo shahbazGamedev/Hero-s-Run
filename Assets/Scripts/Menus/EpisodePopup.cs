@@ -45,7 +45,6 @@ public class EpisodePopup : MonoBehaviour {
 
 	public void showEpisodePopup( int episodeNumber, int levelNumber )
 	{
-		SoundManager.soundManager.playButtonClick();
 		this.episodeNumber = episodeNumber;
 		this.levelNumber = levelNumber;
 		loadEpisodeData();
