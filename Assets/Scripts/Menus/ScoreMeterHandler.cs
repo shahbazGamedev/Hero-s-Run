@@ -9,10 +9,17 @@ public class ScoreMeterHandler : MonoBehaviour {
 	[Header("Score Meter")]
 	public Text scoreText;
 	public const float SCORE_SPIN_DURATION = 1.8f;
+	public string labelTextID;
 
-	public IEnumerator spinScoreNumber( string labelTextID, int number, System.Action onFinish = null  )
+	public void resetScore()
 	{
-		Debug.Log("spinScoreNumber " + number );
+		string labelString = LocalizationManager.Instance.getText(labelTextID);
+		//Replace the string <0> by 0
+		scoreText.text = labelString.Replace( "<0>", "0" );
+	}
+
+	public IEnumerator spinScoreNumber( int number, System.Action onFinish = null  )
+	{
 		string labelString = LocalizationManager.Instance.getText(labelTextID);
 		float startTime = Time.time;
 		float elapsedTime = 0;

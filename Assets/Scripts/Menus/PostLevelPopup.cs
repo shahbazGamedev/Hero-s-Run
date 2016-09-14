@@ -122,7 +122,7 @@ public class PostLevelPopup : MonoBehaviour {
 	{
 		//Wait for the post-level popup to have finished sliding in before spinning values
 		yield return new WaitForSeconds(UPDATE_SEQUENCE_DELAY);
-		StartCoroutine( scoreMeter.GetComponent<ScoreMeterHandler>().spinScoreNumber( "MENU_SCORE", LevelManager.Instance.getScore() ) );
+		StartCoroutine( scoreMeter.GetComponent<ScoreMeterHandler>().spinScoreNumber( LevelManager.Instance.getScore() ) );
 	}
 
 	public void closePostLevelPopup()

@@ -40,6 +40,10 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 			newWorldMapHandler.updateDisplayStars( LevelManager.Instance.getCurrentEpisodeNumber(), starsEarned );
 			
 		}
+		//Reset values before sliding out
+		starMeter.GetComponent<ScoreMeterHandler>().resetScore();
+		distanceMeter.GetComponent<ScoreMeterHandler>().resetScore();
+		scoreMeter.GetComponent<ScoreMeterHandler>().resetScore();
 		GetComponent<Animator>().Play("Panel Slide In");	
 		loadEpisodeData(levelData);
 	}
@@ -89,17 +93,17 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 		//Wait for the endless post-level popup to have finished sliding in before spinning values
 		yield return new WaitForSeconds(UPDATE_SEQUENCE_DELAY);
 		//Spin star counter first
-		StartCoroutine( starMeter.GetComponent<ScoreMeterHandler>().spinScoreNumber( "MENU_STARS", LevelManager.Instance.getScore(), spinDistance ) );
+		StartCoroutine( starMeter.GetComponent<ScoreMeterHandler>().spinScoreNumber( LevelManager.Instance.getScore(), spinDistance ) );
 	}
 
 	void spinDistance()
 	{
-		StartCoroutine( distanceMeter.GetComponent<ScoreMeterHandler>().spinScoreNumber( "MENU_DISTANCE", PlayerStatsManager.Instance.getDistanceTravelled(), spinScore ) );
+		StartCoroutine( distanceMeter.GetComponent<ScoreMeterHandler>().spinScoreNumber( PlayerStatsManager.Instance.getDistanceTravelled(), spinScore ) );
 	}
 	
 	void spinScore()
 	{
-		StartCoroutine( scoreMeter.GetComponent<ScoreMeterHandler>().spinScoreNumber( "MENU_SCORE", LevelManager.Instance.getScore() +  PlayerStatsManager.Instance.getDistanceTravelled() ) );
+		StartCoroutine( scoreMeter.GetComponent<ScoreMeterHandler>().spinScoreNumber( LevelManager.Instance.getScore() +  PlayerStatsManager.Instance.getDistanceTravelled() ) );
 	}
 
 	public void closePostLevelPopup()
