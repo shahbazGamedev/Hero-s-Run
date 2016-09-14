@@ -18,6 +18,7 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 	public GameObject starMeter;
 	public GameObject distanceMeter;
 	public GameObject scoreMeter;
+	public Text personalBestText;
 
 	const float UPDATE_SEQUENCE_DELAY = 0.9f;
 
@@ -25,6 +26,7 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 	void Awake () {
 
 		postLevelButtonText.text = LocalizationManager.Instance.getText("POST_LEVEL_RETRY");
+		personalBestText.text = LocalizationManager.Instance.getText("MENU_PERSONAL_BEST");
 	}
 
 	public void showEndlessPostLevelPopup(LevelData levelData)
@@ -44,6 +46,7 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 		starMeter.GetComponent<ScoreMeterHandler>().resetScore();
 		distanceMeter.GetComponent<ScoreMeterHandler>().resetScore();
 		scoreMeter.GetComponent<ScoreMeterHandler>().resetScore();
+		personalBestText.gameObject.SetActive ( false );
 		GetComponent<Animator>().Play("Panel Slide In");	
 		loadEpisodeData(levelData);
 	}
@@ -84,6 +87,7 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 
 		episodeNumberText.text = episodeNumberString;
 		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
+
 		StartCoroutine( startUpdateSequence( selectedEpisode ) );
 		
 	}
@@ -103,12 +107,23 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 	
 	void spinScore()
 	{
-		StartCoroutine( scoreMeter.GetComponent<ScoreMeterHandler>().spinScoreNumber( LevelManager.Instance.getScore() +  PlayerStatsManager.Instance.getDistanceTravelled() ) );
+		StartCoroutine( scoreMeter.GetComponent<ScoreMeterHandler>().spinScoreNumber( LevelManager.Instance.getScore() +  PlayerStatsManager.Instance.getDistanceTravelled(), updateHighScore ) );
+	}
+
+	void updateHighScore()
+	{
+		if( PlayerStatsManager.Instance.setHighScoreForEpisode( PlayerStatsManager.Instance.getDistanceTravelled() + LevelManager.Instance.getScore() ) )
+		{
+			//New high score - add a tag
+			personalBestText.gameObject.SetActive ( true );
+		}
 	}
 
 	public void closePostLevelPopup()
 	{
 		SoundManager.soundManager.playButtonClick();
+		PlayerStatsManager.Instance.resetDistanceTravelled();
+		PlayerStatsManager.Instance.savePlayerStats();
 		GetComponent<Animator>().Play("Panel Slide Out");
 		GameManager.Instance.setGameState(GameState.Menu);
 	}
@@ -118,6 +133,7 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 		Debug.Log("showEndlessPostLevelPopup-Retry button pressed.");
 		SoundManager.soundManager.playButtonClick();
 		PlayerStatsManager.Instance.resetDistanceTravelled();
+		PlayerStatsManager.Instance.savePlayerStats();
 		newWorldMapHandler.play( LevelManager.Instance.getCurrentEpisodeNumber(), LevelManager.Instance.getNextLevelToComplete() );
 	}
 

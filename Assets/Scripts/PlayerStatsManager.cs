@@ -40,6 +40,9 @@ public class PlayerStatsManager {
 	public delegate void PowerUpInventoryChanged();
 	public static event PowerUpInventoryChanged powerUpInventoryChanged;
 
+	//High-score per episode.
+	//The index is the episode number. The value is the score for that episode (sum of stars collected and distance run). The initial values are 0.
+	int[] highScoreArray = new int[LevelData.NUMBER_OF_EPISODES];
 	float distanceTravelled = 0;
 	bool firstTimePlaying;
 	bool sharedOnFacebook = false;	//Has the player shared an image on Facebook?
@@ -425,6 +428,74 @@ public class PlayerStatsManager {
 	public void setNumberDisplayStarsForEpisode( int numberOfStars )
 	{
 		displayStarsArray[LevelManager.Instance.getCurrentEpisodeNumber()] = numberOfStars;
+	}
+
+	void loadHighScores()
+	{
+		string highScoresString = PlayerPrefs.GetString("highScores", "" );
+		if( highScoresString == "" )
+		{
+			//highScoreArray just stays with initial values of 0 because this is a new player
+		}
+		else
+		{
+			try
+			{
+				string[] highScoresStringArray = highScoresString.Split(',');
+				Debug.Log ("loadHighScores " + highScoresString + " length " + highScoresStringArray.Length );
+				for( int i = 0; i < highScoresStringArray.Length; i++ )
+				{
+					int highScoreAsInt;
+					int.TryParse(highScoresStringArray[i], out highScoreAsInt);
+					highScoreArray[i] = highScoreAsInt;
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.LogWarning("PlayerStatsManager-exception occured in loadHighScores: " + e.Message + " Resetting stats to default values.");
+				PlayerPrefs.DeleteAll();
+			}
+		}
+	}
+
+	void saveHighScores()
+	{
+		string result = "";
+		for( int i = 0; i < highScoreArray.Length; i++ )
+		{
+			result = result + highScoreArray[i].ToString() + ",";
+		}
+		result = result.TrimEnd(',');
+		Debug.Log("saveHighScores " + result );
+		PlayerPrefs.SetString("highScores", result );
+	}
+
+	void resetHighScores()
+	{
+		for( int i = 0; i < highScoreArray.Length; i++ )
+		{
+			highScoreArray[i] = 0;
+		}
+		saveHighScores();
+	}
+
+	public int getHighScoreForEpisode( int episodeNumber )
+	{
+		return highScoreArray[episodeNumber];
+	}
+
+	public bool setHighScoreForEpisode( int highScore )
+	{
+		if( highScore > highScoreArray[LevelManager.Instance.getCurrentEpisodeNumber()] )
+		{
+			highScoreArray[LevelManager.Instance.getCurrentEpisodeNumber()] = highScore;
+			saveHighScores();
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	void loadDeathInLevels()
@@ -956,6 +1027,7 @@ public class PlayerStatsManager {
 			currentCoins = PlayerPrefs.GetInt("currentCoins", 0);
 			lifetimeCoins = PlayerPrefs.GetInt("lifetimeCoins", 0);
 			loadDisplayStars();
+			loadHighScores();
 			loadDeathInLevels();
 			loadKeysFoundInEpisode();
 			loadTreasureKeysFound();
@@ -1035,6 +1107,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetInt("currentCoins", currentCoins );
 		PlayerPrefs.SetInt("lifetimeCoins", lifetimeCoins );
 		saveDisplayStars();
+		saveHighScores();
 		saveDeathInLevels();
 		saveKeysFoundInEpisode();
 		saveTreasureKeysFound();
@@ -1082,6 +1155,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetInt("lifetimeCoins", 0 );
 		lifetimeCoins = 0;
 		resetDisplayStars();
+		resetHighScores();
 		resetDeathInLevels();
 		resetKeysFoundInEpisode();
 		resetTreasureKeysFound();
