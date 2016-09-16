@@ -35,7 +35,8 @@ public enum CharacterState {
 	StartRunning = 9,
 	Falling = 10,
 	Turning = 11,
-	Turning_and_sliding = 12
+	Turning_and_sliding = 12,
+	Ziplining = 13
 }
 
 public sealed class PlayerController : BaseClass {
@@ -259,6 +260,7 @@ public sealed class PlayerController : BaseClass {
 	int FallForwardTrigger = Animator.StringToHash("Fall_Forward");
 	int speedBlendFactor = Animator.StringToHash("Speed");
 	int lookbackBlendFactor = Animator.StringToHash("Look_Back");
+	int Idle_LookTrigger = Animator.StringToHash("Idle_Look");
 
 	//For debugging swipes
 	public string lastSwipe;
@@ -271,6 +273,9 @@ public sealed class PlayerController : BaseClass {
 
 	public GameObject Hero_Prefab;
 	public GameObject Heroine_Prefab;
+
+	bool inZiplineTrigger;
+	Transform ziplineAttachPoint;
 
 	void Awake()
 	{
@@ -565,7 +570,7 @@ public sealed class PlayerController : BaseClass {
 
 				//Verify if the player is falling.
 				//Also ignore if we are already falling or dying.
-				if( _characterState != CharacterState.Falling && _characterState != CharacterState.Dying )
+				if( _characterState != CharacterState.Falling && _characterState != CharacterState.Dying && _characterState != CharacterState.Ziplining )
 				{
 					//Verify how far is the ground
 					if( distanceToGround > MIN_DISTANCE_FOR_FALL )
@@ -988,47 +993,54 @@ public sealed class PlayerController : BaseClass {
 		}
 		else
 		{
-			//1) Get the direction of the player
-			forward = transform.TransformDirection(Vector3.forward);			
-			//2) Scale vector based on run speed
-			forward = forward * Time.deltaTime * runSpeed;
-			//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
-			forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
-			//4) Get a unit vector that is orthogonal to the direction of the player
-			Vector3 relativePos = new Vector3(1 , 0 , 0 );
-			Vector3 xPos = transform.TransformPoint(relativePos);
-			Vector3 xVector = xPos - transform.position;
-			//5) Scale the X component based on accelerometer and change lane values
-			float accelerometerAverage = 0;
-			if( playerControlsEnabled && usesAccelerometer )
+			if( _characterState != CharacterState.Ziplining )
 			{
-				//For accelerometer
-				float accelerometerCurrentFrameX = Input.acceleration.x;
-				if( Time.timeScale < 1f )
+				//1) Get the direction of the player
+				forward = transform.TransformDirection(Vector3.forward);			
+				//2) Scale vector based on run speed
+				forward = forward * Time.deltaTime * runSpeed;
+				//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
+				forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
+				//4) Get a unit vector that is orthogonal to the direction of the player
+				Vector3 relativePos = new Vector3(1 , 0 , 0 );
+				Vector3 xPos = transform.TransformPoint(relativePos);
+				Vector3 xVector = xPos - transform.position;
+				//5) Scale the X component based on accelerometer and change lane values
+				float accelerometerAverage = 0;
+				if( playerControlsEnabled && usesAccelerometer )
 				{
-					//Player is using a slow time power up.
-					accelerometerCurrentFrameX = accelerometerCurrentFrameX * accelerometerStrength * SLOW_DOWN_FACTOR;
+					//For accelerometer
+					float accelerometerCurrentFrameX = Input.acceleration.x;
+					if( Time.timeScale < 1f )
+					{
+						//Player is using a slow time power up.
+						accelerometerCurrentFrameX = accelerometerCurrentFrameX * accelerometerStrength * SLOW_DOWN_FACTOR;
+					}
+					else
+					{
+						//Time is normal.
+						accelerometerCurrentFrameX = accelerometerCurrentFrameX * accelerometerStrength;
+					}
+					accelerometerAverage = (accelerometerCurrentFrameX + accelerometerPreviousFrameX) * 0.5f;
+					accelerometerPreviousFrameX = accelerometerCurrentFrameX;
 				}
-				else
+				xVector = xVector * Time.deltaTime * (moveDirection.x + accelerometerAverage);
+	
+				//6) If not on a bezier curve, clamp to the max distance we can travel perpendicularly without
+				//exiting the left or right lanes.
+				if( !usesBezierCurve )
 				{
-					//Time is normal.
-					accelerometerCurrentFrameX = accelerometerCurrentFrameX * accelerometerStrength;
+					xVector =  Vector3.ClampMagnitude(xVector, Mathf.Abs(getMaxDist(moveDirection.x + accelerometerAverage)));
 				}
-				accelerometerAverage = (accelerometerCurrentFrameX + accelerometerPreviousFrameX) * 0.5f;
-				accelerometerPreviousFrameX = accelerometerCurrentFrameX;
+				//7) Add the X component to the forward direction
+				forward = forward + xVector;
+				//8) Move the controller
+				controller.Move( forward );
 			}
-			xVector = xVector * Time.deltaTime * (moveDirection.x + accelerometerAverage);
-
-			//6) If not on a bezier curve, clamp to the max distance we can travel perpendicularly without
-			//exiting the left or right lanes.
-			if( !usesBezierCurve )
+			else
 			{
-				xVector =  Vector3.ClampMagnitude(xVector, Mathf.Abs(getMaxDist(moveDirection.x + accelerometerAverage)));
+				//Player is ziplining. He is moved by a LeanTween function
 			}
-			//7) Add the X component to the forward direction
-			forward = forward + xVector;
-			//8) Move the controller
-			controller.Move( forward );
 		}
 	}
 
@@ -1124,7 +1136,14 @@ public sealed class PlayerController : BaseClass {
 		}
 		else if ( Input.GetKeyDown (KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.Space)  ) 
 		{
-			jump();
+			if( inZiplineTrigger )
+			{
+				attachToZipline();
+			}
+			else
+			{
+				jump();
+			}
 			lastSwipe = "UP";
 		}
 		else if ( Input.GetKeyDown (KeyCode.P ) )
@@ -1258,6 +1277,38 @@ public sealed class PlayerController : BaseClass {
 		}
 	}
 	
+	void attachToZipline()
+	{
+		SegmentInfo si = currentTile.GetComponent<SegmentInfo>();
+		if( si != null )
+		{
+			curveList = si.curveList;
+			SegmentInfo.BezierData bezierData = curveList[0];
+			setCharacterState( CharacterState.Ziplining );
+			enablePlayerControl( false );
+			anim.SetTrigger(Idle_LookTrigger);
+			ziplineAttachPoint = transform.FindChild("Zipline Attach Point");
+			ziplineAttachPoint.GetComponent<AudioSource>().Play();
+			ziplineAttachPoint.SetParent(null);
+			transform.SetParent( ziplineAttachPoint );
+			//A set of points that define one or many bezier paths (the paths should be passed in multiples of 4, which correspond to each individual bezier curve)
+			//It goes in the order: startPoint,endControl,startControl,endPoint
+			LTBezierPath ltBezier = new LTBezierPath( new Vector3[] { bezierData.bezierStart.position, bezierData.bezierControl2.position, bezierData.bezierControl1.position, bezierData.bezierEnd.position } );
+			LeanTween.move(ziplineAttachPoint.gameObject, ltBezier.pts, 3f).setOrientToPath(false).setEase(LeanTweenType.easeOutQuad);
+		}
+	}
+
+	void detachFromZipline()
+	{
+		inZiplineTrigger = false;
+		LeanTween.cancel( gameObject );
+		transform.SetParent( null );
+		ziplineAttachPoint.SetParent( transform );
+		ziplineAttachPoint.GetComponent<AudioSource>().Stop();
+		enablePlayerControl( true );
+		fall();
+	}
+
 	void setDesiredLane( float sideMoveInitiatedZ )
 	{
 		if( _characterState == CharacterState.Sliding )
@@ -2368,7 +2419,15 @@ public sealed class PlayerController : BaseClass {
 		{
 			placePlayerInCenterLane();
 		}
-   	}
+		else if( other.name == "ZiplineTrigger" )
+		{
+			inZiplineTrigger = true;
+		}
+ 		else if( other.name == "DetachZiplineTrigger" )
+		{
+			detachFromZipline();
+		}
+  	}
 	
 	//Make sure the player arrives in the center lane without sliding
 	public void placePlayerInCenterLane()
