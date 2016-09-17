@@ -640,11 +640,11 @@ public sealed class PlayerController : BaseClass {
 		float fallDistance = fallStartYPos - transform.position.y;
 		if( fallDistance < DISTANCE_FOR_LAND_ANIMATION )
 		{
-			anim.SetTrigger(LandTrigger);
+			anim.CrossFadeInFixedTime( "Land", 0.25f );
 		}
 		else
 		{
-			anim.SetTrigger(StumbleTrigger);
+			anim.CrossFadeInFixedTime( "Stumble", 0.25f );
 			//The Land anim has a callback to play the Land sound, but not the Stumble anim
 			audioSource.PlayOneShot( landGroundSound, 0.8f );
 		}
@@ -2425,6 +2425,11 @@ public sealed class PlayerController : BaseClass {
 		}
 		else if( other.name == "ZiplineTrigger" )
 		{
+			//Deactivate the speedboost if active before ziplining
+			if( PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
+			{
+				powerUpManager.deactivatePowerUp(PowerUpType.SpeedBoost, true );
+			}
 			inZiplineTrigger = true;
 		}
  		else if( other.name == "DetachZiplineTrigger" )
