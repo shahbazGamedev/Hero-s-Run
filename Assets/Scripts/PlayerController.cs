@@ -1295,6 +1295,7 @@ public sealed class PlayerController : BaseClass {
 			//It goes in the order: startPoint,endControl,startControl,endPoint
 			LTBezierPath ltBezier = new LTBezierPath( new Vector3[] { bezierData.bezierStart.position, bezierData.bezierControl2.position, bezierData.bezierControl1.position, bezierData.bezierEnd.position } );
 			LeanTween.move(ziplineAttachPoint.gameObject, ltBezier.pts, 3f).setOrientToPath(false).setEase(LeanTweenType.easeOutQuad);
+			sc.playCutscene(CutsceneType.Ziplining);
 		}
 	}
 
@@ -1306,6 +1307,7 @@ public sealed class PlayerController : BaseClass {
 		ziplineAttachPoint.SetParent( transform );
 		ziplineAttachPoint.GetComponent<AudioSource>().Stop();
 		enablePlayerControl( true );
+		sc.reactivateMaincamera();
 		fall();
 	}
 

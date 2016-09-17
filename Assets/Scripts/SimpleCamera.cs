@@ -11,7 +11,8 @@ public enum CutsceneType
 	Troll = 3,
 	OpeningSequence = 4,
 	MagicGate = 5,
-	SummonSkeletons = 6
+	SummonSkeletons = 6,
+	Ziplining = 7
 }
 
 public enum CameraState 
@@ -305,6 +306,11 @@ public class SimpleCamera : MonoBehaviour {
 			cutsceneCamera.localPosition = new Vector3( 0, 2.6f, 147f );
 			cutsceneCamera.rotation = Quaternion.Euler( 352.6f,-180f, 1.5f );
 			cutsceneCamera.GetComponent<Camera>().fieldOfView = 54.9f;
+		}
+		else if( type == CutsceneType.Ziplining )
+		{
+			cutsceneCamera.localPosition = new Vector3( 0.3f, 2.9f, -10f );
+			cutsceneCamera.rotation = Quaternion.Euler( 17f,2.8f, 0f );
 		}
 	}
 	
