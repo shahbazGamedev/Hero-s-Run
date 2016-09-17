@@ -56,8 +56,6 @@ public class SimpleCamera : MonoBehaviour {
 	//Used for camera shake
 	//For now, the code assumes the player is not
 	//moving (because he is dead for example), when the shake occurs.
-	private Vector3 originPosition;
-	private Quaternion originRotation;
 	private float shake_decay = 0;
 	private float shake_intensity = 0;
 	public bool isCameraLocked = false;
@@ -258,8 +256,6 @@ public class SimpleCamera : MonoBehaviour {
 	
 	public void Shake()
 	{
-		originPosition = mainCamera.position;
-		originRotation = mainCamera.rotation;
 		shake_intensity = 0.12f;
 		shake_decay = 0.006f;
 	}
@@ -411,12 +407,6 @@ public class SimpleCamera : MonoBehaviour {
 		
 		//FOV
 		float startFOV = cutsceneCamera.GetComponent<Camera>().fieldOfView;	
-		
-		//Steps
-		float step = 0f; //non-smoothed
-		float rate = 1f/duration; //amount to increase non-smooth step by
-		float smoothStep = 0f; //smooth step this time
-		float lastStep = 0f; //smooth step last time
 
 		
 		while ( elapsedTime <= duration )

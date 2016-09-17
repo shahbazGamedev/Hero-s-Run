@@ -263,7 +263,6 @@ public sealed class PlayerController : BaseClass {
 	int Idle_LookTrigger = Animator.StringToHash("Idle_Look");
 
 	//For debugging swipes
-	public string lastSwipe;
 	public string reasonDiedAtTurn;
 
 	public ParticleSystem lavaSpurt; //Plays when player falls into lava
@@ -848,25 +847,28 @@ public sealed class PlayerController : BaseClass {
 			{
 				//player swiped RIGHT
 				sideSwipe( true );
-				lastSwipe = "RIGHT";
 	        }
 			else if (angle < 180)
 			{
 				//player swiped DOWN
 				startSlide ();
-				lastSwipe = "DOWN";
 	        }
 			else if (angle < 270)
 			{
 				//player swiped LEFT
 				sideSwipe( false );
-				lastSwipe = "LEFT";
 			}
 			else
 			{
 				//player swiped UP
-				jump();
-				lastSwipe = "UP";
+				if( inZiplineTrigger )
+				{
+					attachToZipline();
+				}
+				else
+				{
+					jump();
+				}
 	        }
 		}
 	}
@@ -1122,17 +1124,14 @@ public sealed class PlayerController : BaseClass {
 		if ( Input.GetKeyDown (KeyCode.LeftArrow) ) 
 		{
 			sideSwipe( false );
-			lastSwipe = "LEFT";
 		}
 		else if ( Input.GetKeyDown (KeyCode.RightArrow) ) 
 		{
 			sideSwipe( true );
-			lastSwipe = "RIGHT";
 		}
 		else if ( Input.GetKeyDown (KeyCode.DownArrow) ) 
 		{
 			startSlide();
-			lastSwipe = "DOWN";
 		}
 		else if ( Input.GetKeyDown (KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.Space)  ) 
 		{
@@ -1144,7 +1143,6 @@ public sealed class PlayerController : BaseClass {
 			{
 				jump();
 			}
-			lastSwipe = "UP";
 		}
 		else if ( Input.GetKeyDown (KeyCode.P ) )
 		{
@@ -2645,7 +2643,6 @@ public sealed class PlayerController : BaseClass {
 
 	public IEnumerator walkForDistance( float distance, float walkSpeed, System.Action onFinish )
 	{
-		float percentageComplete = 0;
 		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, transform.position.z );
 		float distanceTravelled = 0;
 		anim.SetFloat(speedBlendFactor, 0 );
@@ -2655,7 +2652,6 @@ public sealed class PlayerController : BaseClass {
 		while ( distanceTravelled <= distance )
 		{
 			distanceTravelled = Vector3.Distance( transform.position, initialPlayerPosition );
-			percentageComplete = distanceTravelled/distance;
 
 			//move player forward
 			//1) Get the direction of the player
@@ -3058,7 +3054,6 @@ public sealed class PlayerController : BaseClass {
 		allowRunSpeedToIncrease = true;
 		deathType = DeathType.Alive;
 
-		lastSwipe = "";
 		reasonDiedAtTurn = "";
 
 		sc.heightDamping = SimpleCamera.DEFAULT_HEIGHT_DAMPING;

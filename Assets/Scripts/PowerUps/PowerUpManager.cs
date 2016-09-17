@@ -413,7 +413,7 @@ public class PowerUpManager : BaseClass {
 				{
 					collider.GetComponent<Rigidbody>().useGravity = !isActive;
 				}
-				collider.enabled = !isActive;
+				collider.isTrigger = isActive;
 			}
 		}
 	}
