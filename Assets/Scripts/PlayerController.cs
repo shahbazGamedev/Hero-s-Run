@@ -681,8 +681,8 @@ public sealed class PlayerController : BaseClass {
 	{
 		if (Time.deltaTime == 0) return;
 
-		//Make sure the character stays within the limits of the lanes (unless he is dying or falling)
-		if ( _characterState != CharacterState.Dying && _characterState != CharacterState.Falling )
+		//Make sure the character stays within the limits of the lanes (unless he is dying or falling or ziplining )
+		if ( _characterState != CharacterState.Dying && _characterState != CharacterState.Falling && _characterState != CharacterState.Ziplining )
 		{
 			if( usesBezierCurve )
 			{
@@ -1291,10 +1291,11 @@ public sealed class PlayerController : BaseClass {
 			ziplineAttachPoint.GetComponent<AudioSource>().Play();
 			ziplineAttachPoint.SetParent(null);
 			transform.SetParent( ziplineAttachPoint );
+			transform.eulerAngles =  new Vector3(transform.eulerAngles.x,transform.eulerAngles.y,6f);
 			//A set of points that define one or many bezier paths (the paths should be passed in multiples of 4, which correspond to each individual bezier curve)
 			//It goes in the order: startPoint,endControl,startControl,endPoint
 			LTBezierPath ltBezier = new LTBezierPath( new Vector3[] { bezierData.bezierStart.position, bezierData.bezierControl2.position, bezierData.bezierControl1.position, bezierData.bezierEnd.position } );
-			LeanTween.move(ziplineAttachPoint.gameObject, ltBezier.pts, 3f).setOrientToPath(false).setEase(LeanTweenType.easeOutQuad);
+			LeanTween.move(ziplineAttachPoint.gameObject, ltBezier.pts, 4f).setOrientToPath(true).setEase(LeanTweenType.easeOutQuad);
 			sc.playCutscene(CutsceneType.Ziplining);
 		}
 	}
@@ -1308,6 +1309,7 @@ public sealed class PlayerController : BaseClass {
 		ziplineAttachPoint.GetComponent<AudioSource>().Stop();
 		enablePlayerControl( true );
 		sc.reactivateMaincamera();
+		transform.eulerAngles = new Vector3(0,270f,0);
 		fall();
 	}
 
