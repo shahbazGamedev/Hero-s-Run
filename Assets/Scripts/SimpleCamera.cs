@@ -449,6 +449,7 @@ public class SimpleCamera : MonoBehaviour {
 		mainCamera.transform.rotation = Quaternion.Euler( cutsceneCamera.eulerAngles.x, cutsceneCamera.eulerAngles.y, cutsceneCamera.eulerAngles.z );
 		cameraState = CameraState.Normal;
 		cutsceneCamera.gameObject.SetActive( false );
+		cutsceneCamera.transform.parent = transform;
 	}
 
 }

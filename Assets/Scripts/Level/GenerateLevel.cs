@@ -75,7 +75,8 @@ public enum TileType {
 	Landmark_Treasure_Key = 57,
 	Landmark_Collapsing_Bridge = 58,
 	Landmark_Goblin_Loot = 59,
-	Jungle_Start = 60
+	Jungle_Start = 60,
+	Landmark_Zipline = 61
 
 }
 
@@ -513,6 +514,7 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Landmark_Test:
 			case TileType.Landmark_Collapsing_Bridge:
 			case TileType.Landmark_Goblin_Loot:
+			case TileType.Landmark_Zipline:
 				depth = 2;
 				break;
 
@@ -755,6 +757,13 @@ public class GenerateLevel  : MonoBehaviour {
 			addTile( TileType.Landmark_Tomb_Start );
 			break;
 
+		case TileType.Landmark_Zipline:
+			//We want the Landmark tile to have a 0 degree rotation.
+			ensureTileHasZeroRotation();
+			addTile( TileType.Landmark_Zipline );
+			addTile( TileType.Left );		
+			break;
+
 		case TileType.Landmark_Cemetery_Coach:
 			//We want the Landmark tile to have a 0 degree rotation.
 			ensureTileHasZeroRotation();
@@ -840,6 +849,13 @@ public class GenerateLevel  : MonoBehaviour {
 				addTile( TileType.Straight );		
 				break;
 				
+			case TileType.Landmark_Zipline:
+				//We want the Landmark tile to have a 0 degree rotation.
+				ensureTileHasZeroRotation();
+				addTile( TileType.Landmark_Zipline );
+				addTile( TileType.Left );		
+				break;
+
 			default:
 				addTile( randomLandmark );
 				break;
@@ -954,6 +970,7 @@ public class GenerateLevel  : MonoBehaviour {
 		case TileType.Landmark_Collapsing_Bridge:
 		case TileType.Landmark_Goblin_Loot:
 		case TileType.Jungle_Start:
+		case TileType.Landmark_Zipline:
 			return TileType.Straight;
 
 		case TileType.Left:
@@ -1013,6 +1030,13 @@ public class GenerateLevel  : MonoBehaviour {
 			//We want the Landmark tile to have a 0 degree rotation.
 			ensureTileHasZeroRotation2(theme);
 			addTileData(TileType.Landmark_Tomb_Start, theme );
+			break;
+
+		case TileType.Landmark_Zipline:
+			//We want the Landmark tile to have a 0 degree rotation.
+			ensureTileHasZeroRotation2(theme);
+			addTileData(TileType.Landmark_Zipline, theme );
+			addTileData(TileType.Left, theme);
 			break;
 
 		case TileType.Landmark_Cemetery_Coach:
