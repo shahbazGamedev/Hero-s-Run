@@ -17,10 +17,17 @@ public class TileIndexGroupActivator : MonoBehaviour {
 	public int tileIndex = 0;
 	[Tooltip("The comparaison type. If EQUAL for example, the group will only be activated if the tileIndex specified is the same as the tile index found in the tile's segment info. This allows you to create behaviors where you have no goblins before tile 10 for example.")]
 	public TileActivatorType tileActivatorType = TileActivatorType.Inactive;
+	[Tooltip("Even if the conditions are met, specify the chance of the group being displayed.")]
+	[Range(0, 1f)]
+	public float chanceDisplayed = 1f;
 
 	// Use this for initialization
 	void Start ()
 	{
+		//Assume it will not be activated
+		groupToActivate.SetActive( false );
+	
+		//Or we in the right tile?
 		int currentTileIndex = GetComponent<SegmentInfo>().tileIndex;
 
 		switch (tileActivatorType)
@@ -31,24 +38,35 @@ public class TileIndexGroupActivator : MonoBehaviour {
 			case TileActivatorType.Equal:
 				if( currentTileIndex == tileIndex )
 				{
-					groupToActivate.SetActive( true );
+					activateGroup();
 				}
 				break;
 			case TileActivatorType.Less_Than:
 				if( currentTileIndex < tileIndex )
 				{
-					groupToActivate.SetActive( true );
+					activateGroup();
 				}
 				break;
 			case TileActivatorType.Bigger_Than:
 				if( currentTileIndex > tileIndex )
 				{
-					groupToActivate.SetActive( true );
+					activateGroup();
 				}
 				break;
 		}
 		
 	}
 	
-	
+	//
+	void activateGroup()
+	{
+		if( Random.value <= chanceDisplayed )
+		{
+			groupToActivate.SetActive( true );
+		}
+		else
+		{
+			groupToActivate.SetActive( false );
+		}
+	}
 }
