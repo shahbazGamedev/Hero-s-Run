@@ -14,7 +14,8 @@ public enum SegmentTheme {
 		Jungle = 7,
 		Hell_Caverns = 8,
 		Hell_Fortress = 9,
-		Blizzard = 10
+		Blizzard = 10,
+		Caves = 11
 
 }
 

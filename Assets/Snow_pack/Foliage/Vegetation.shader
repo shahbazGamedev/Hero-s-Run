@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 // Shader created with Shader Forge v1.26 
 // Shader Forge (c) Neat Corporation / Joachim Holmer - http://www.acegikmo.com/shaderforge/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
@@ -96,13 +98,13 @@ Shader "Shader Forge/Animated foliage" {
                     o.ambientOrLightmapUV.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
                 #endif
                 o.normalDir = UnityObjectToWorldNormal(v.normal);
-                o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
+                o.tangentDir = normalize( mul( unity_ObjectToWorld, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 float4 node_7734 = _Time + _TimeEditor;
-                float2 node_4736 = (mul(_Object2World, v.vertex).rgb.rgb+(_Windspeed*node_7734.g)*float2(1,1));
+                float2 node_4736 = (mul(unity_ObjectToWorld, v.vertex).rgb.rgb+(_Windspeed*node_7734.g)*float2(1,1));
                 float4 __var = tex2Dlod(_,float4(TRANSFORM_TEX(node_4736, _),0.0,0));
                 v.vertex.xyz += (__var.rgb*(_Amplitude*o.vertexColor.rgb));
-                o.posWorld = mul(_Object2World, v.vertex);
+                o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 float3 lightColor = _LightColor0.rgb;
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
                 UNITY_TRANSFER_FOG(o,o.pos);
@@ -231,13 +233,13 @@ Shader "Shader Forge/Animated foliage" {
                 o.uv2 = v.texcoord2;
                 o.vertexColor = v.vertexColor;
                 o.normalDir = UnityObjectToWorldNormal(v.normal);
-                o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
+                o.tangentDir = normalize( mul( unity_ObjectToWorld, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 float4 node_7734 = _Time + _TimeEditor;
-                float2 node_4736 = (mul(_Object2World, v.vertex).rgb.rgb+(_Windspeed*node_7734.g)*float2(1,1));
+                float2 node_4736 = (mul(unity_ObjectToWorld, v.vertex).rgb.rgb+(_Windspeed*node_7734.g)*float2(1,1));
                 float4 __var = tex2Dlod(_,float4(TRANSFORM_TEX(node_4736, _),0.0,0));
                 v.vertex.xyz += (__var.rgb*(_Amplitude*o.vertexColor.rgb));
-                o.posWorld = mul(_Object2World, v.vertex);
+                o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 float3 lightColor = _LightColor0.rgb;
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
                 UNITY_TRANSFER_FOG(o,o.pos);
@@ -322,10 +324,10 @@ Shader "Shader Forge/Animated foliage" {
                 o.uv2 = v.texcoord2;
                 o.vertexColor = v.vertexColor;
                 float4 node_7734 = _Time + _TimeEditor;
-                float2 node_4736 = (mul(_Object2World, v.vertex).rgb.rgb+(_Windspeed*node_7734.g)*float2(1,1));
+                float2 node_4736 = (mul(unity_ObjectToWorld, v.vertex).rgb.rgb+(_Windspeed*node_7734.g)*float2(1,1));
                 float4 __var = tex2Dlod(_,float4(TRANSFORM_TEX(node_4736, _),0.0,0));
                 v.vertex.xyz += (__var.rgb*(_Amplitude*o.vertexColor.rgb));
-                o.posWorld = mul(_Object2World, v.vertex);
+                o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
                 TRANSFER_SHADOW_CASTER(o)
                 return o;
@@ -396,10 +398,10 @@ Shader "Shader Forge/Animated foliage" {
                 o.vertexColor = v.vertexColor;
                 o.normalDir = UnityObjectToWorldNormal(v.normal);
                 float4 node_7734 = _Time + _TimeEditor;
-                float2 node_4736 = (mul(_Object2World, v.vertex).rgb.rgb+(_Windspeed*node_7734.g)*float2(1,1));
+                float2 node_4736 = (mul(unity_ObjectToWorld, v.vertex).rgb.rgb+(_Windspeed*node_7734.g)*float2(1,1));
                 float4 __var = tex2Dlod(_,float4(TRANSFORM_TEX(node_4736, _),0.0,0));
                 v.vertex.xyz += (__var.rgb*(_Amplitude*o.vertexColor.rgb));
-                o.posWorld = mul(_Object2World, v.vertex);
+                o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 o.pos = UnityMetaVertexPosition(v.vertex, v.texcoord1.xy, v.texcoord2.xy, unity_LightmapST, unity_DynamicLightmapST );
                 return o;
             }

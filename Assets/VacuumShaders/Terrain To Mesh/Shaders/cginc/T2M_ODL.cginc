@@ -1,4 +1,6 @@
-﻿#ifndef VACUUM_SHADERS_T2M_ODL_CGINC
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+#ifndef VACUUM_SHADERS_T2M_ODL_CGINC
 #define VACUUM_SHADERS_T2M_ODL_CGINC
 
 #include "../cginc/T2M_Variables.cginc"
@@ -88,7 +90,7 @@ vOutput vert(vInput v)
 			o.vlight = shlight;
 
 			#ifdef VERTEXLIGHT_ON
-				float3 worldPos = mul(_Object2World, v.vertex).xyz;
+				float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
 		
 				o.vlight += Shade4PointLights (unity_4LightPosX0, unity_4LightPosY0, unity_4LightPosZ0,
 											   unity_LightColor[0].rgb, unity_LightColor[1].rgb, unity_LightColor[2].rgb, unity_LightColor[3].rgb,

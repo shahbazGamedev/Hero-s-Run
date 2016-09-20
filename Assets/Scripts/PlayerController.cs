@@ -3177,8 +3177,7 @@ public sealed class PlayerController : BaseClass {
 		{
 			//4b) Fly Fairy to body and have play a sprinkle animation
 			fairyController.revivePlayer( );
-		}
-	
+		}	
 	}
 
 	public void resurrectMiddle()
@@ -3216,8 +3215,6 @@ public sealed class PlayerController : BaseClass {
 		
 		//12) Display a Go! message
 		HUDHandler.hudHandler.activateUserMessage( LocalizationManager.Instance.getText("GO"), 0f, 1.25f );
-
-
 	}
 	
 	IEnumerator waitForGracePeriod( float duration )

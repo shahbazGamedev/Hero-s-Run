@@ -11,7 +11,7 @@ public class TileIndexGroupActivator : MonoBehaviour {
 		Bigger_Than = 3,
 	}
 
-	[Tooltip("The game object to make active if the conditions are met.")]
+	[Tooltip("The TileIndexGroupActivator component should be attached to the tile, not the groupToActivate. The groupToActivate is the game object to make active if the conditions are met.")]
 	public GameObject groupToActivate;
 	[Tooltip("The tile index used in the condition.")]
 	public int tileIndex = 0;
@@ -22,7 +22,7 @@ public class TileIndexGroupActivator : MonoBehaviour {
 	public float chanceDisplayed = 1f;
 
 	// Use this for initialization
-	void Start ()
+	void OnEnable ()
 	{
 		//Assume it will not be activated
 		groupToActivate.SetActive( false );

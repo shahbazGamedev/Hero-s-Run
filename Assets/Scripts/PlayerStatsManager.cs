@@ -22,7 +22,7 @@ public class PlayerStatsManager {
 	int coinAccumulator = 0;
 	Transform coinParent = null;
 	int lifetimeCoins = 0;			//The amount of coins (stars) the player has earned over time. This is a statistic. It is used by the achievement system.
-	//Assume there are 6 episodes for now. For each episode, the player has received between 0 and 3 stars. The number of stars is displayed on the world map.
+	//Assume there are 9 episodes for now. For each episode, the player has received between 0 and 3 stars. The number of stars is displayed on the world map.
 	//The index is the episode number. The value is the number of stars between 0 and 3. The initial values are 0.
 	int[] displayStarsArray = new int[LevelData.NUMBER_OF_EPISODES];
 

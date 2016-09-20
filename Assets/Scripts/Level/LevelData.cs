@@ -15,7 +15,8 @@ public enum SunType
 	Cemetery = 7,
 	Elfland = 8,
 	Blizzard = 9,
-	Jungle = 10
+	Jungle = 10,
+	Caves = 11
 }
 
 public enum LevelType 
@@ -40,8 +41,8 @@ public class LevelData : MonoBehaviour {
 
 	public List<LevelInfo> levelList = new List<LevelInfo>();
 
-	public const int NUMBER_OF_EPISODES = 7;
-	public const int NUMBER_OF_LEVELS = 16;
+	public const int NUMBER_OF_EPISODES = 9;
+	public const int NUMBER_OF_LEVELS = 28;
 	GameObject cutSceneCamera;
 	//This should be the directional light in the scene
 	GameObject Sun;
@@ -94,9 +95,9 @@ public class LevelData : MonoBehaviour {
 	{
 		if( Sun != null )
 		{
-			Material skyBoxMaterial;
+			Material skyBoxMaterial = null;
 			float lightIntensity;
-			float shadowStrength;
+			float shadowStrength = 0f;
 			Quaternion sunDirection;
 			string skyBoxName;
 			RenderSettings.ambientLight = new Color(0,0,0);
@@ -165,10 +166,28 @@ public class LevelData : MonoBehaviour {
 
 				break;
 
+			case SunType.Caves:
+				skyBoxName = "None";
+				lightIntensity = 0.4f;
+				Sun.GetComponent<Light>().color = new Color(0.855f,0.855f,0.855f); //light grey
+				Sun.GetComponent<Light>().shadows = LightShadows.None;
+				sunDirection = Quaternion.Euler( 69f,83f,68f );
+				RenderSettings.skybox = null;	
+				Skybox skyBox = (Skybox) cutSceneCamera.GetComponent("Skybox");
+				skyBox.material = null;
+				RenderSettings.ambientSkyColor = new Color(0.317f, 0.286f, 0.211f ); //brownish
+				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+				RenderSettings.ambientIntensity = 1f;
+				RenderSettings.fog = false;
+				RenderSettings.fogMode = FogMode.Linear;
+				RenderSettings.fogColor = new Color(0, 0.466f, 0.56f ); //greenish
+				RenderSettings.fogStartDistance = 30f;
+				RenderSettings.fogEndDistance = 90f;
+				break;
+
 			case SunType.Night:
 				skyBoxName = "Skybox_Cartoon_Night";
 				lightIntensity = 0.65f;
-				shadowStrength = 0f;
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 32f,13f,-63f );
 				Sun.GetComponent<Light>().color = Color.white;
@@ -177,7 +196,6 @@ public class LevelData : MonoBehaviour {
 			case SunType.Overcast:
 				skyBoxName = "Overcast2 Skybox";
 				lightIntensity = 1.2f;
-				shadowStrength = 0f;
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 38.28f,119.5f,87.52f );
 				Sun.GetComponent<Light>().color = new Color(0.623f,0.729f,0.882f); //bluish
@@ -195,7 +213,6 @@ public class LevelData : MonoBehaviour {
 			case SunType.Hell:
 				skyBoxName = "Skybox Hell";
 				lightIntensity = 0.3f;
-				shadowStrength = 0f;
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 32f,13f,-63f );
 				RenderSettings.ambientLight = new Color(0.13f,0.21f,0.3f);
@@ -205,7 +222,6 @@ public class LevelData : MonoBehaviour {
 			case SunType.Cemetery:
 				skyBoxName = "Skybox Cemetery";
 				lightIntensity = 0.28f;
-				shadowStrength = 0f;
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 32f,13f,-63f );
 				Sun.GetComponent<Light>().color = new Color(0.623f,0.729f,0.882f); //bluish
@@ -222,7 +238,7 @@ public class LevelData : MonoBehaviour {
 				Sun.GetComponent<Light>().color = Color.white;
 				break;
 			}
-			skyBoxMaterial = Resources.Load( "Skybox/" + skyBoxName ) as Material;
+			if( skyBoxName != "None" ) skyBoxMaterial = Resources.Load( "Skybox/" + skyBoxName ) as Material;
 			if( skyBoxMaterial != null )
 			{
 				RenderSettings.skybox = skyBoxMaterial;
@@ -234,16 +250,10 @@ public class LevelData : MonoBehaviour {
 				//skyBoxMaterial.SetColor( "_Tint", new Color( 118f/255f, 118f/255f, 118f/255f, 1f ) );
 
 			}
-			else
-			{
-				Debug.LogError("LevelData-setSunParameters : Unable to find the appropriate skybox: " + skyBoxName + " in the Skybox folder of the Resources folder." );
-			}
 			
 			Sun.GetComponent<Light>().intensity = lightIntensity;
 			Sun.transform.rotation = sunDirection;
 			Sun.GetComponent<Light>().shadowStrength = shadowStrength;
-			Debug.Log("LevelData-setSunParameters : parameters: " + Sun.name + " " + Sun.GetComponent<Light>().intensity + " " +  Sun.GetComponent<Light>().shadowStrength );
-
 		}
 		else
 		{
