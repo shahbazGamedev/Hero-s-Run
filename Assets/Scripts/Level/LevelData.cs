@@ -168,14 +168,14 @@ public class LevelData : MonoBehaviour {
 
 			case SunType.Caves:
 				skyBoxName = "None";
-				lightIntensity = 0.4f;
+				lightIntensity = 0.35f;
 				Sun.GetComponent<Light>().color = new Color(0.855f,0.855f,0.855f); //light grey
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 69f,83f,68f );
 				RenderSettings.skybox = null;	
 				Skybox skyBox = (Skybox) cutSceneCamera.GetComponent("Skybox");
 				skyBox.material = null;
-				RenderSettings.ambientSkyColor = new Color(0.317f, 0.286f, 0.211f ); //brownish
+				RenderSettings.ambientSkyColor = new Color(0.43f, 0.27f, 0.063f ); //brownish
 				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
 				RenderSettings.ambientIntensity = 1f;
 				RenderSettings.fog = false;
