@@ -151,10 +151,10 @@ public class NewWorldMapHandler : MonoBehaviour {
 				drawDisplayStars( i, episodeCounter );
 				episodeCounter++;
 			}
-			else if( levelInfo.levelType == LevelType.Normal )
+			/*else if( levelInfo.levelType == LevelType.Normal )
 			{
-				drawNormalLevelMarker( i, episodeCounter );
-			}
+				//drawNormalLevelMarker( i, episodeCounter );
+			}*/
 		}
 	}
 
@@ -249,7 +249,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		levelStationButtonRectTransform.anchoredPosition = new Vector2( 0, 0 );
 		levelStationButton.onClick.AddListener(() => levelButtonClick(episodeCounter, levelNumber));
 		Text[] episodeStationTexts = levelStationButton.GetComponentsInChildren<Text>();
-		episodeStationTexts[0].text = (levelNumber + 1).ToString();
+		episodeStationTexts[0].text = (episodeCounter + 1).ToString();
 		string levelNumberString = (episodeCounter + 1).ToString();
 		episodeStationTexts[1].text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
 
