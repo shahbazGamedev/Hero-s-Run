@@ -178,7 +178,7 @@ public class LevelData : MonoBehaviour {
 				RenderSettings.ambientSkyColor = new Color(0.43f, 0.27f, 0.063f ); //brownish
 				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
 				RenderSettings.ambientIntensity = 1f;
-				RenderSettings.fog = false;
+				RenderSettings.fog = true;
 				RenderSettings.fogMode = FogMode.Linear;
 				RenderSettings.fogColor = new Color(0, 0.466f, 0.56f ); //greenish
 				RenderSettings.fogStartDistance = 30f;
