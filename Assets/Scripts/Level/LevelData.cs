@@ -175,7 +175,7 @@ public class LevelData : MonoBehaviour {
 				RenderSettings.skybox = null;	
 				Skybox skyBox = (Skybox) cutSceneCamera.GetComponent("Skybox");
 				skyBox.material = null;
-				RenderSettings.ambientSkyColor = new Color(0.43f, 0.27f, 0.063f ); //brownish
+				RenderSettings.ambientSkyColor = new Color(0.353f, 0.222f, 0.052f ); //brownish
 				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
 				RenderSettings.ambientIntensity = 1f;
 				RenderSettings.fog = true;
