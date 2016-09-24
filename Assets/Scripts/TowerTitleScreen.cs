@@ -15,7 +15,7 @@ public class TowerTitleScreen : MonoBehaviour {
 		{
 			fairyController = fairy.GetComponent<FairyController>();
 			fairyController.cutsceneAppear(FairyEmotion.Happy);
-			Invoke("Step2", 3f );
+			Invoke("Step2", 2f );
 		}
 	}
 
@@ -58,6 +58,6 @@ public class TowerTitleScreen : MonoBehaviour {
      void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
      {
 		lightning.controlLightning(GameEvent.Start_Lightning);
-		Invoke("Step1", 1.5f );
+		Invoke("Step1", 3f );
      }
 }
