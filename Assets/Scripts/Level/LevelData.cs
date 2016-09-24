@@ -168,7 +168,7 @@ public class LevelData : MonoBehaviour {
 
 			case SunType.Caves:
 				skyBoxName = "None";
-				lightIntensity = 0.35f;
+				lightIntensity = 0.27f;
 				Sun.GetComponent<Light>().color = new Color(0.855f,0.855f,0.855f); //light grey
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 69f,83f,68f );
