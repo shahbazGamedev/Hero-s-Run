@@ -15,7 +15,7 @@ public class TowerTitleScreen : MonoBehaviour {
 		{
 			fairyController = fairy.GetComponent<FairyController>();
 			fairyController.cutsceneAppear(FairyEmotion.Happy);
-			Invoke("Step2", 1f );
+			Invoke("Step2", 3f );
 		}
 	}
 
