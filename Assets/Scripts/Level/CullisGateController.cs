@@ -4,18 +4,30 @@ using UnityEngine.SceneManagement;
 
 public class CullisGateController : MonoBehaviour {
 
+	[Header("General")]
 	public ParticleSystem lightEffect;
 	SimpleCamera simpleCamera;
 	public bool playCameraCutscene = false;
 	public string messageTextId = "CULLIS_GATE_TUTORIAL";
 	//How long to wait before displaying either the stats screen or loading the net level
 	const float WAIT_DURATION = 8f;
+	[Header("Light Dimming")]
+	[Tooltip("If true, the sun light will dim to the intensity specified by the sunlightIntensityAfterDim parameter in the time specified by the sunlightDimDuration parameter. In addition, the ambient source color will gradually become black.")]
+	public bool dimSunlightOnActivation = false;
+	public float sunlightDimDuration = 2f;
+	public float sunlightIntensityAfterDim = 0.2f;
+	SunlightHandler sunlightHandler;
 
 	// Use this for initialization
 	void Start ()
 	{
 		GameObject player = GameObject.FindGameObjectWithTag("Player");
 		simpleCamera = player.GetComponent<SimpleCamera>();
+		if( dimSunlightOnActivation )
+		{
+			GameObject sunlight = GameObject.FindGameObjectWithTag("Sunlight");
+			sunlightHandler = sunlight.GetComponent<SunlightHandler>();
+		}
 	}
 
 	void OnEnable()
@@ -69,6 +81,7 @@ public class CullisGateController : MonoBehaviour {
 		if( eventType == GameEvent.Activate_Cullis_Gate )
 		{
 			GetComponent<Animator>().Play("Activate");
+			if( dimSunlightOnActivation ) StartCoroutine( sunlightHandler.fadeOutLight( sunlightDimDuration, sunlightIntensityAfterDim, true ) );
 			GetComponent<AudioSource>().loop = false;
 			GetComponent<AudioSource>().Play();
 		}
