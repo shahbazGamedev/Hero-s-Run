@@ -7,11 +7,7 @@ public class TrapCullisGateController : MonoBehaviour {
 	[Header("General")]
 	public ParticleSystem lightEffect;
 	public ParticleSystem vortex;
-	SimpleCamera simpleCamera;
-	public bool playCameraCutscene = false;
 	public string messageTextId = "CULLIS_GATE_TUTORIAL";
-	//How long to wait before displaying either the stats screen or loading the net level
-	const float WAIT_DURATION = 12f;
 	GameObject player;
 	[Header("Light Dimming")]
 	[Tooltip("If true, the sun light will dim to the intensity specified by the sunlightIntensityAfterDim parameter in the time specified by the sunlightDimDuration parameter. In addition, the ambient source color will gradually become black.")]
@@ -25,7 +21,6 @@ public class TrapCullisGateController : MonoBehaviour {
 	void Start ()
 	{
 		player = GameObject.FindGameObjectWithTag("Player");
-		simpleCamera = player.GetComponent<SimpleCamera>();
 		if( dimSunlightOnActivation )
 		{
 			GameObject sunlight = GameObject.FindGameObjectWithTag("Sunlight");
@@ -33,6 +28,7 @@ public class TrapCullisGateController : MonoBehaviour {
 		}
 	}
 
+	//Step 0 - player arrives in the middle of the cullis gate and activates the trigger
 	void OnTriggerEnter(Collider other)
 	{
 		if( other.name == "Hero" && !isActive )
@@ -42,52 +38,50 @@ public class TrapCullisGateController : MonoBehaviour {
 		}
 	}
 
-	//Step 1 - player enters cullis gate. This is called by the player controller
+	//Step 1 - player is wondering what is going on
 	public void playerEnteredCullisGate()
 	{
-		Debug.Log("Cullis Gate-playerEnteredCullisGate.");
-		player.GetComponent<PlayerController>().anim.CrossFadeInFixedTime("VictoryLoop", 0.2f);
+		player.GetComponent<PlayerController>().anim.CrossFadeInFixedTime("VictoryLoop", 0.25f);
 		Invoke("startLookingAround", 2f );
 	}
 
-	//Step 2 - start looking around
+	//Step 2 - player starts looking around
 	void startLookingAround()
 	{
-		player.GetComponent<PlayerController>().anim.CrossFadeInFixedTime("Idle_Look", 0.2f);
+		player.GetComponent<PlayerController>().anim.CrossFadeInFixedTime("Idle_Look", 0.25f);
 		Invoke("dimLights", 2f );
 	}	
 
-	//Step 3 - dim lights and start creepy music
+	//Step 3 - both the sunlight and the ambient source dim and an audio effect plays
 	void dimLights()
 	{
 		StartCoroutine( sunlightHandler.fadeOutLight( sunlightDimDuration, sunlightIntensityAfterDim, true ) );
-		GetComponent<AudioSource>().loop = false;
 		GetComponent<AudioSource>().Play();
 		Invoke("playFX", 1.8f );
 	}
 
-	//Step 4 - green effects
+	//Step 4 - a green smog surrounds the player
 	void playFX()
 	{
 		lightEffect.Play();
 		Invoke("fairySpeaks", 2.75f );
 	}
 
-	//Step 5 - fairy speaks
+	//Step 5 - the fairy speaks and says, something is going terribly wrong!
 	void fairySpeaks()
 	{
 		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText(messageTextId), 5f );
 		Invoke("startVortex", 1.5f );
 	}
 
-	//Step 6 - hero anim becomes teleport leave
+	//Step 6 - a vortex starts spinning underneath the player
 	void startVortex()
 	{
 		vortex.Play();
 		Invoke("pullHeroUnderground", 1.5f );
 	}
 
-	//Step 7 - pull hero underground
+	//Step 7 - the player is pulled underground
 	void pullHeroUnderground()
 	{
 		//Center player in the exact center of the cullis gate
@@ -97,7 +91,6 @@ public class TrapCullisGateController : MonoBehaviour {
 		player.GetComponent<PlayerController>().anim.speed = 3.8f;
 		player.GetComponent<PlayerController>().anim.CrossFadeInFixedTime("Fall", 0.25f);
 		LeanTween.moveLocalY( player, transform.position.y - 4f, 5f ).setEase(LeanTweenType.easeOutExpo);
-
 		Invoke("quit", 5.5f );
 	}
 
@@ -106,10 +99,15 @@ public class TrapCullisGateController : MonoBehaviour {
 	{
 		player.transform.SetParent( null );
 		//Save the player stats before continuing
-		LevelManager.Instance.setEpisodeCompleted( true );
-		bool isGameFinished = LevelManager.Instance.incrementNextLevelToComplete();
 		PlayerStatsManager.Instance.savePlayerStats();
-		Debug.Log("Cullis Gate-Returning to world map.");
+		bool isGameFinished = LevelManager.Instance.incrementNextLevelToComplete();
+		if( isGameFinished )
+		{
+		}
+		else
+		{
+			LevelManager.Instance.setEpisodeCompleted( true );
+		}
 		SoundManager.soundManager.stopMusic();
 		SoundManager.soundManager.stopAmbience();
 		GameManager.Instance.setGameState(GameState.PostLevelPopup);

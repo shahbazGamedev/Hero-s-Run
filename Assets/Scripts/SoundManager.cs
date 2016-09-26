@@ -221,7 +221,7 @@ public class SoundManager : MonoBehaviour {
 	{
 		if( audioSource != null && audioClip != null )
 		{
-			Debug.Log("SoundManager-fadeOutClip: fading out audio clip titled " +  audioClip.name );
+			//Debug.Log("SoundManager-fadeOutClip: fading out audio clip titled " +  audioClip.name );
 			
 			audioSource.clip = audioClip;
 			float startVolume = audioSource.volume;
