@@ -24,6 +24,7 @@ public class LevelManager {
  	private int score = 0; //currently is equal to the number of stars you picked up while running for a single episode
 	private int currentEpisode = 0;
 	private bool episodeCompleted = false;
+	private bool enableTorches = true;
 
 	public static LevelManager Instance
 	{
@@ -299,6 +300,17 @@ public class LevelManager {
 				return levelName;
 			}
 		}
+	}
+
+	//See also TorchHandler.
+	public void setEnableTorches( bool value )
+	{
+		enableTorches = value;
+	}
+
+	public bool getEnableTorches()
+	{
+		return enableTorches;
 	}
 
 }

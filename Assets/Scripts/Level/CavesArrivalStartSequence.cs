@@ -28,7 +28,7 @@ public class CavesArrivalStartSequence : MonoBehaviour {
 	{
 		skull.isKinematic = false;
 		skull.AddForce( 0,10f,5f);
-		Invoke("showTapToPlay", 5f );
+		Invoke("showTapToPlay", 3.5f );
 	}
 
 	void showTapToPlay()

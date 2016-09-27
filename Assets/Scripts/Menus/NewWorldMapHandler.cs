@@ -461,6 +461,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		}
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		//We are starting a new run, reset some values
+		LevelManager.Instance.setEnableTorches( true );
 		LevelManager.Instance.setScore( 0 );
 		LevelManager.Instance.setEpisodeCompleted( false );
 		LevelManager.Instance.forceHighestLevelCompleted( levelNumber );
