@@ -156,6 +156,7 @@ public class HUDSaveMe : MonoBehaviour {
 		SoundManager.soundManager.fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
 		closeSaveMeMenu();
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
+		LevelManager.Instance.setEnableTorches( true );
 		LevelManager.Instance.setNextLevelToComplete( LevelManager.Instance.getLevelNumberOfLastCheckpoint() );
 		playerController.resetSharedLevelData(false);
 		SceneManager.LoadScene( (int) GameScenes.Level );
