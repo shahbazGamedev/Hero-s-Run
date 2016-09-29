@@ -26,7 +26,7 @@ public class TrapFlame : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero" && isActive && !CheatManager.Instance.getIsInvincible() )
+		if( other.name == "Hero" && isActive )
 		{
 			//Is the player protected by a Shield Power Up?
 			if( PowerUpManager.isThisPowerUpActive( PowerUpType.Shield ) )

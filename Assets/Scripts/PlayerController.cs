@@ -1943,7 +1943,7 @@ public sealed class PlayerController : BaseClass {
 					managePlayerDeath ( DeathType.Obstacle );
 				}
 			}
-			else if( hit.collider.name.StartsWith("Chicken") && !CheatManager.Instance.getIsInvincible() )
+			else if( hit.collider.name.StartsWith("Chicken") )
 			{
 				Transform chickenTransform = hit.transform.FindChild("Chicken Trigger");
 				if( chickenTransform == null )
@@ -2007,11 +2007,11 @@ public sealed class PlayerController : BaseClass {
 					}
 				}
 			}
-			else if (hit.collider.name.StartsWith( "Stumble" ) && !CheatManager.Instance.getIsInvincible() )
+			else if (hit.collider.name.StartsWith( "Stumble" ) )
 			{
 				Stumble();
 			}
-			else if (hit.collider.name.StartsWith( "Zombie" ) && !CheatManager.Instance.getIsInvincible() )
+			else if (hit.collider.name.StartsWith( "Zombie" ) )
 			{
 				ZombieController zombieController = (ZombieController) hit.gameObject.GetComponent("ZombieController");
 				//Ignore collision event if Zombie already dead.
@@ -2079,15 +2079,15 @@ public sealed class PlayerController : BaseClass {
 					Debug.LogError("Zombie already dead");
 				}
 			}
-			else if (hit.collider.name.StartsWith( "Goblin" ) && !CheatManager.Instance.getIsInvincible() )
+			else if (hit.collider.name.StartsWith( "Goblin" ) )
 			{
 				handleCreatureCollision( hit, hit.gameObject.GetComponent<ICreature>() );
 			}
-			else if (hit.collider.name.StartsWith( "Skeleton" ) && !CheatManager.Instance.getIsInvincible() )
+			else if (hit.collider.name.StartsWith( "Skeleton" ) )
 			{
 				handleCreatureCollision( hit, hit.gameObject.GetComponent<ICreature>() );
 			}
-			else if (hit.collider.name.StartsWith( "Firepit" ) && !CheatManager.Instance.getIsInvincible() )
+			else if (hit.collider.name.StartsWith( "Firepit" ) )
 			{
 				Debug.Log( "Player collided with firepit: " + hit.collider.name + " Normal" + hit.normal.y );
 				if( hit.normal.y < 0.4f )
@@ -2189,13 +2189,13 @@ public sealed class PlayerController : BaseClass {
 					managePlayerDeath ( DeathType.Obstacle );
 				}
 			}
-			else if (hit.collider.name == "Pendulum" && !CheatManager.Instance.getIsInvincible() )
+			else if (hit.collider.name == "Pendulum" )
 			{
 				//Move the player back so he does not get stuck in the pendulum.
 				//controller.Move( hit.normal ); //disable test - seems to make Unity 5 crash
 				managePlayerDeath ( DeathType.Obstacle );
 			}
-			else if (hit.collider.name.StartsWith( "Cow" ) && !CheatManager.Instance.getIsInvincible() )
+			else if (hit.collider.name.StartsWith( "Cow" ) )
 			{
 				Debug.Log( "Player collided with: " + hit.collider.name + " Normal" + hit.normal );
 				SimpleController simpleController = (SimpleController) hit.collider.GetComponent("SimpleController");

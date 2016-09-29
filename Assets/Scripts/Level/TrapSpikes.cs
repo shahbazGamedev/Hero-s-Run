@@ -39,7 +39,7 @@ public class TrapSpikes : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero" && !CheatManager.Instance.getIsInvincible() )
+		if( other.name == "Hero" )
 		{
 			//Is the player protected by a Shield Power Up?
 			if( PowerUpManager.isThisPowerUpActive( PowerUpType.Shield ) )

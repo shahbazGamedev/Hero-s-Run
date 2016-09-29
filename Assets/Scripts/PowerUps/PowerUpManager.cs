@@ -255,7 +255,7 @@ public class PowerUpManager : BaseClass {
 				break;
 
 				case PowerUpType.ZNuke:
-				if( PlayerStatsManager.Instance.getPowerUpQuantity(PowerUpType.ZNuke) > 0 || CheatManager.Instance.hasInfinitePowerUps() )
+				if( PlayerStatsManager.Instance.getPowerUpQuantity(PowerUpType.ZNuke) > 0 || Application.isEditor )
 				{
 					Debug.Log("PowerUpZNuke - activatePowerUp");
 					PlayerStatsManager.Instance.decrementPowerUpInventory(pud.powerUpType);
@@ -274,7 +274,7 @@ public class PowerUpManager : BaseClass {
 				break;
 
 				case PowerUpType.MagicBoots:
-				if( PlayerStatsManager.Instance.getPowerUpQuantity(PowerUpType.MagicBoots) > 0 || CheatManager.Instance.hasInfinitePowerUps() )
+				if( PlayerStatsManager.Instance.getPowerUpQuantity(PowerUpType.MagicBoots) > 0 || Application.isEditor )
 				{
 					playerController.doingDoubleJump = true;
 					playerController.jump();
@@ -284,7 +284,7 @@ public class PowerUpManager : BaseClass {
 				break;
 			
 				case PowerUpType.SlowTime:
-				if( PlayerStatsManager.Instance.getPowerUpQuantity(PowerUpType.SlowTime) > 0 || CheatManager.Instance.hasInfinitePowerUps() )
+				if( PlayerStatsManager.Instance.getPowerUpQuantity(PowerUpType.SlowTime) > 0 || Application.isEditor )
 				{
 					StopCoroutine( "startTimerSlowTime" );
 					StartCoroutine( "startTimerSlowTime", pud );
@@ -304,12 +304,15 @@ public class PowerUpManager : BaseClass {
 				break;
 
 				case PowerUpType.SpeedBoost:
+				if( PlayerStatsManager.Instance.getPowerUpQuantity(PowerUpType.SpeedBoost) > 0 || Application.isEditor )
+				{
 					activePowerUps.Add( pud.powerUpType );
 					playerController.activateSpeedBoost( true );
 					StopCoroutine( "startTimerSpeedBoost" );
 					StartCoroutine( "startTimerSpeedBoost", pud );
 					PlayerStatsManager.Instance.decrementPowerUpInventory(pud.powerUpType);
 					Debug.Log("SpeedBoost - activatePowerUp with duration time of " + getDuration( pud ) );
+				}
 				break;
 			}
 		}

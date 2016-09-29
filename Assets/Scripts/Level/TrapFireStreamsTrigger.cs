@@ -19,7 +19,7 @@ public class TrapFireStreamsTrigger : MonoBehaviour {
 	void OnTriggerEnter(Collider other)
 	{
 		Debug.Log( "OnTriggerEnter TrapFireStreamsTrigger " );
-		if( other.name == "Hero" && !CheatManager.Instance.getIsInvincible() )
+		if( other.name == "Hero" )
 		{
 			//Is the player protected by a Shield Power Up?
 			if( PowerUpManager.isThisPowerUpActive( PowerUpType.Shield ) )
