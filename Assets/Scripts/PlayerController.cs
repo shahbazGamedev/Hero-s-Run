@@ -2216,19 +2216,9 @@ public sealed class PlayerController : BaseClass {
 				controller.Move( new Vector3( hit.normal.x, 1f, hit.normal.z ) );
 				managePlayerDeath ( DeathType.Obstacle );
 			}			
-			else if (hit.collider.name.StartsWith("Bip001 Prop1") )
-			{
-				//Demon
-				managePlayerDeath ( DeathType.Obstacle );
-			}			
-			else if (hit.collider.name.Equals("wraith_Axe_LOD0") || hit.collider.name.Equals("wraith_scythe_LOD0") )
-			{
-				//Wraith
-				managePlayerDeath ( DeathType.Obstacle );
-			}			
 			else if (hit.collider.name.Equals("Weapon") )
 			{
-				//Skeleton footman or warlord or goblin piker
+				//Skeleton footman or warlord, or goblin piker or wraith or demon
 				if( !PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
 				{
 					managePlayerDeath ( DeathType.Obstacle );
