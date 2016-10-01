@@ -322,23 +322,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 		return LocalizationManager.Instance.getText( "EPISODE_DIFFICULTY_" + episodeDifficulty.ToString().ToUpper() );
 	}
 
-	public void showTitleScreen()
-	{
-		SoundManager.soundManager.playButtonClick();
-		StartCoroutine( loadTitleScreen() );
-	}
-
-	IEnumerator loadTitleScreen()
-	{
-		if( !levelLoading )
-		{
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)GameScenes.TitleScreen );
-		}	
-	}
-
 	public void showStoreScreen()
 	{
 		SoundManager.soundManager.playButtonClick();
