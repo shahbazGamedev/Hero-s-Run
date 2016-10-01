@@ -9,12 +9,23 @@ public class MessageEntry : MonoBehaviour {
 	public Image icon;
 	public Text message;
 	AppRequestData requestData;
+	public Text buttonText;
 
 	public void initializeMessage( AppRequestData requestData )
 	{
 		this.requestData = requestData;
 		message.text = requestData.dataType.ToString() + " " + requestData.fromFirstName;
 		icon.GetComponent<FacebookPortraitHandler>().setPortrait( requestData.fromID );
+
+		switch (requestData.dataType)
+		{
+			case RequestDataType.Ask_Give_Life:
+				buttonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_ACCEPT"); 
+				break;
+			case RequestDataType.Accept_Give_Life:
+				buttonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_SEND"); 
+				break;
+		}
 	}
 
 	public void buttonPressed()
