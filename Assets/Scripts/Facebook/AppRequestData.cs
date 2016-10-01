@@ -25,8 +25,6 @@ public class AppRequestData {
 	public int dataNumber = 0; 	//e.g. number of lives, level number of section (this is the shield number which is indexed starting a 1, not the level number which is indexed starting at 0)
 	//date field are returned as ISO-8601 formatted strings from the App Request and are stored as DateTime objects.
 	public DateTime created_time;
-	//isSelected is true if the entry corresponding to this app request has been selected (i.e. the toggle button is checked) in the message center.
-	public bool isSelected = false; 
 	public bool hasBeenProcessed = false; 
 
 	public void printAppRequestData()

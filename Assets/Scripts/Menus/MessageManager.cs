@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class MessageManager : MonoBehaviour {
@@ -31,13 +32,10 @@ public class MessageManager : MonoBehaviour {
 				mailInformationPanel.SetActive( false );
 				for( int i = 0; i < FacebookManager.Instance.AppRequestDataList.Count; i++ )
 				{
-					if( !FacebookManager.Instance.AppRequestDataList[i].hasBeenProcessed )
-					{
-						GameObject go = (GameObject)Instantiate(messageEntryPrefab);
-						go.transform.SetParent(content.transform,false);
-						go.name = "Message number " + i.ToString();
-						go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
-					}
+					GameObject go = (GameObject)Instantiate(messageEntryPrefab);
+					go.transform.SetParent(content.transform,false);
+					go.name = "Message number " + i.ToString();
+					go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
 				}
 			}
 			else
@@ -66,13 +64,23 @@ public class MessageManager : MonoBehaviour {
 	public void hideMessageCenter()
 	{
 		SoundManager.soundManager.playButtonClick();
-		int counter = 0;
-		foreach(AppRequestData appRequestData in FacebookManager.Instance.AppRequestDataList) 
-		{
-			if( !appRequestData.hasBeenProcessed ) counter++;
-		}
-		numberOfMessages.text = counter.ToString();
+		deleteProcessedEntries();
+		numberOfMessages.text = FacebookManager.Instance.AppRequestDataList.Count.ToString();
 		GetComponent<Animator>().Play("Panel Slide Out");
 	}
 
+
+	void deleteProcessedEntries()
+	{
+		AppRequestData appRequestData;
+		for ( int i = FacebookManager.Instance.AppRequestDataList.Count-1; i >=0; i--)
+		{
+			appRequestData = (AppRequestData) FacebookManager.Instance.AppRequestDataList[i];
+			if( appRequestData.hasBeenProcessed )
+			{
+				//Delete from main Facebook list
+				FacebookManager.Instance.AppRequestDataList.RemoveAt(i);
+			}
+		}
+	}
 }

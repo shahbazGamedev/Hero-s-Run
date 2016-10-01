@@ -8,7 +8,6 @@ using UnityEngine.SocialPlatforms.GameCenter;
 
 public enum PopupType {
 	None = 0,
-	MessageCenter = 1,
 	OfferLives = 2
 }
 
@@ -66,9 +65,6 @@ public class PopupHandler : MonoBehaviour {
 	public Texture defaultPortrait;
 	public Texture portraitFrame;
 
-	//messageCenterHandler
-	MessageCenterHandler messageCenterHandler;
-
 	//Offer Lives
 	OfferLivesHandler offerLivesHandler;
 	
@@ -105,8 +101,6 @@ public class PopupHandler : MonoBehaviour {
 
 	public void setWorldMapHandler( GameObject worldMapHandlerGameObject )
 	{
-		//Message Center
-		messageCenterHandler = worldMapHandlerGameObject.GetComponent<MessageCenterHandler>();
 		//Offer Lives to friends
 		offerLivesHandler = worldMapHandlerGameObject.GetComponent<OfferLivesHandler>();
 	}
@@ -189,10 +183,6 @@ public class PopupHandler : MonoBehaviour {
 		//Popup specific
 		switch (type)
 		{
-
-		case PopupType.MessageCenter:
-			messageCenterHandler.renderMessageCenter();
-			break;
 
 		case PopupType.OfferLives:
 			offerLivesHandler.renderOfferLives();
@@ -492,10 +482,6 @@ public class PopupHandler : MonoBehaviour {
 		switch (popupType)
 		{
 		
-		case PopupType.MessageCenter:
-			title = LocalizationManager.Instance.getText("POPUP_TITLE_MESSAGE_CENTER");
-			break;
-
 		case PopupType.OfferLives:
 			title = LocalizationManager.Instance.getText("POPUP_TITLE_OFFER_LIVES");
 			break;
