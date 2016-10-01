@@ -19,10 +19,11 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public Image playerPortrait;
 	public Sprite defaultPortrait;
 	[Header("Message Center")]
+	public GameObject messageCenterPanel;
 	public Text numberOfMessages;
 	StoreManager storeManager;
 	[Header("Facebook Ask Lives")]
-	public GameObject  facebookAskLivesPanel;
+	public GameObject facebookAskLivesPanel;
 	[Header("Episode Popup")]
 	public GameObject episodePopupPanel;
 	EpisodePopup episodePopup;
@@ -87,7 +88,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 			gameModeButtonText.text = LocalizationManager.Instance.getText("MENU_GAME_MODE_ENDLESS");
 		}
 
-		numberOfMessages.text = (FacebookManager.Instance.AppRequestDataList.Count).ToString();
 		//if we have a Facebook user portrait, use it, or else, use the default one.
 		if( FacebookManager.Instance.UserPortrait == null )
 		{
@@ -120,8 +120,8 @@ public class NewWorldMapHandler : MonoBehaviour {
 		}
 
 		//Get all of the user's outstanding app requests right away and then poll Facebook every 60 seconds
-		//CancelInvoke("getAllAppRequests");
-		//InvokeRepeating("getAllAppRequests", 0.25f, 60 );
+		CancelInvoke("getAllAppRequests");
+		InvokeRepeating("getAllAppRequests", 0.25f, 60 );
 
 	}
 
@@ -355,7 +355,14 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public void showMessageCenter()
 	{
 		SoundManager.soundManager.playButtonClick();
-		Debug.LogWarning("NewWorldMapHandler: showMessageCenter is not implemented."); 
+		messageCenterPanel.GetComponent<MessageManager>().refreshMessages();
+		messageCenterPanel.GetComponent<Animator>().Play("Panel Slide In");
+	}
+
+	public void hideMessageCenter()
+	{
+		SoundManager.soundManager.playButtonClick();
+		messageCenterPanel.GetComponent<Animator>().Play("Panel Slide Out");
 	}
 
 	//Bottom panel
@@ -417,6 +424,23 @@ public class NewWorldMapHandler : MonoBehaviour {
 			SceneManager.LoadScene( (int)GameScenes.TreasureIsland );
 		}	
 	}
+
+	void OnEnable()
+	{
+		FacebookManager.appRequestsReceived += AppRequestsReceived;
+	}
+
+	void OnDisable()
+	{
+		FacebookManager.appRequestsReceived -= AppRequestsReceived;
+	}
+
+	void AppRequestsReceived( int appRequestsCount )
+	{
+		Debug.Log("NewWorldMapHandler - AppRequestsReceived count " + appRequestsCount );
+		numberOfMessages.text = appRequestsCount.ToString();
+	}
+
 
 	public void cheatButton()
 	{

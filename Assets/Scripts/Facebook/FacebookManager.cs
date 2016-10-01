@@ -40,9 +40,15 @@ public class FacebookManager
 	public Dictionary<string, Sprite>  friendImages = new Dictionary<string, Sprite>(NUMBER_OF_FRIENDS);
 	//The following List holds the IDs for which a picture was requested but not yet received
 	public List<string> friendImagesRequested = new List<string>(NUMBER_OF_FRIENDS);
+	//Delegate used to communicate to other classes when a Facebook portrait was received
+	public delegate void FacebookPortraitReceived( string facebookID );
+	public static event FacebookPortraitReceived facebookPortraitReceived;
 
 	//List of AppRequestData objects
 	public List<AppRequestData> AppRequestDataList = new List<AppRequestData>();
+	//Delegate used to communicate to other classes when we have received App Requests
+	public delegate void AppRequestsReceived( int appRequestsCount );
+	public static event AppRequestsReceived appRequestsReceived;
 
 	private static FacebookManager facebookManager = null;
 
@@ -169,7 +175,7 @@ public class FacebookManager
 	//Message:	For example: "Send me lives!"
 	//Data:		Custom data identifying what type of app requests this is. The format is <type,number>. The maximum length is 255 characters.
 	//Note: 	The excludeIds, maxRecipients and filters AppRequest parameters are currently not supported for mobile devices by Facebook.
-	public void CallAppRequestAsFriendSelector( string title, string message, string filters, string data, string excludeIds, string friendSelectorMax )
+	public void CallAppRequestAsFriendSelector( string title, string message, string data, string excludeIds, string friendSelectorMax )
     {
 		try
 		{
@@ -189,25 +195,10 @@ public class FacebookManager
 
 			string[] excludeIdsList = (excludeIds == "") ? null : excludeIds.Split(',');
 
-			//string FriendSelectorFilters = "[\"app_users\"]"; //options are "[\"all\",\"app_users\",\"app_non_users\"]";
-			string FriendSelectorFilters = "[\"all\"]"; //options are "[\"all\",\"app_users\",\"app_non_users\"]";
-			List<object> FriendSelectorFiltersArr = null;
-			if (!String.IsNullOrEmpty(FriendSelectorFilters))
-			{
-				try
-				{
-					FriendSelectorFiltersArr = Facebook.MiniJSON.Json.Deserialize(FriendSelectorFilters) as List<object>;
-				}
-				catch
-				{
-					throw new Exception("JSON Parse error");
-				}
-			}
-
 			FB.AppRequest(
 				message,
 				null,
-				FriendSelectorFiltersArr,
+				new List<object>(){ "app_users" }, //options are: all, app_users, and app_non_users
 				excludeIdsList,
 				maxRecipients,
 				data,
@@ -360,6 +351,8 @@ public class FacebookManager
 				}
 			}
 			Debug.Log("FacebookManager-allAppRequestsDataCallback: Added " + AppRequestDataList.Count + " app requests to list.");
+			if( appRequestsReceived != null ) appRequestsReceived(  AppRequestDataList.Count );
+
 			//Get any missing player pictures
 			fetchAppRequestPictures();
 		}
@@ -464,9 +457,9 @@ public class FacebookManager
 					Debug.Log("Received friend score for " + userId + " score " + getScoreFromEntry( score ));
 				}
 				//Hack for testing - add at least on friend with a score/level of 7
-				string fakeUserId = "1378641987";
-				scores.Add(fakeUserId, 7 );
-				getFriendPicture( fakeUserId );
+				//string fakeUserId = "1378641987";
+				//scores.Add(fakeUserId, 7 );
+				//getFriendPicture( fakeUserId );
 
 			}
 		}
@@ -791,6 +784,7 @@ public class FacebookManager
 					{
 						//We have received the image, so remove the entry in the friendImagesRequested list.
 						friendImagesRequested.Remove( userId );
+						if( facebookPortraitReceived != null ) facebookPortraitReceived( userId );
 					}
 				}
 			});

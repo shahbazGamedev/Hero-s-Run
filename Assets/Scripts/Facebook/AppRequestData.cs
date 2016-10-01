@@ -32,6 +32,8 @@ public class AppRequestData {
 	{
 		string printStr = appRequestID + " " + fromFirstName  + " " + fromLastName + " " + fromID + " " + dataType + " " + dataNumber + " " + created_time;
 		Debug.Log( "AppRequestData: " + printStr );
+		//Example:
+		//AppRequestData: 634435613405942_120734471723307 Commander Sheppard 130364490758658 Ask_Give_Life 1 09/30/2016 22:09:42
 	}
 
 	//Stores the dataType as an enum
