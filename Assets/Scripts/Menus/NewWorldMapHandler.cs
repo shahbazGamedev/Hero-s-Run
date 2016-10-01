@@ -359,12 +359,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 		messageCenterPanel.GetComponent<Animator>().Play("Panel Slide In");
 	}
 
-	public void hideMessageCenter()
-	{
-		SoundManager.soundManager.playButtonClick();
-		messageCenterPanel.GetComponent<Animator>().Play("Panel Slide Out");
-	}
-
 	//Bottom panel
 	public void showInviteFriends()
 	{

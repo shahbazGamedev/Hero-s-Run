@@ -39,6 +39,7 @@ public class MessageEntry : MonoBehaviour {
 		{
 			case RequestDataType.Ask_Give_Life:
 				FacebookManager.Instance.CallAppRequestAsDirectRequest("App Requests", LocalizationManager.Instance.getText("FB_HAVE_A_LIFE_MESSAGE"), requestData.fromID, "Accept_Give_Life," + requestData.dataNumber.ToString(), MCHCallback, requestData.appRequestID );
+				requestData.hasBeenProcessed = true;
 				GameObject.Destroy( gameObject );
 				break;
 			case RequestDataType.Accept_Give_Life:
@@ -47,6 +48,7 @@ public class MessageEntry : MonoBehaviour {
 				PlayerStatsManager.Instance.savePlayerStats();
 				//Now that it is successfully processed, delete the app request on Facebook
 				FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
+				requestData.hasBeenProcessed = true;
 				GameObject.Destroy( gameObject );
 				break;
 			case RequestDataType.Unknown:

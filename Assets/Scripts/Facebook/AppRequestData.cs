@@ -27,6 +27,7 @@ public class AppRequestData {
 	public DateTime created_time;
 	//isSelected is true if the entry corresponding to this app request has been selected (i.e. the toggle button is checked) in the message center.
 	public bool isSelected = false; 
+	public bool hasBeenProcessed = false; 
 
 	public void printAppRequestData()
 	{

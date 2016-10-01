@@ -10,6 +10,7 @@ public class MessageManager : MonoBehaviour {
 	public GameObject messageEntryPrefab;
 	public GameObject mailInformationPanel;
 	public Text mailInformationText;
+	public Text numberOfMessages; //See also NewWorldMapHandler
 
 	void Start()
 	{
@@ -30,10 +31,13 @@ public class MessageManager : MonoBehaviour {
 				mailInformationPanel.SetActive( false );
 				for( int i = 0; i < FacebookManager.Instance.AppRequestDataList.Count; i++ )
 				{
-					GameObject go = (GameObject)Instantiate(messageEntryPrefab);
-					go.transform.SetParent(content.transform,false);
-					go.name = "Message number " + i.ToString();
-					go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
+					if( !FacebookManager.Instance.AppRequestDataList[i].hasBeenProcessed )
+					{
+						GameObject go = (GameObject)Instantiate(messageEntryPrefab);
+						go.transform.SetParent(content.transform,false);
+						go.name = "Message number " + i.ToString();
+						go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
+					}
 				}
 			}
 			else
@@ -58,4 +62,17 @@ public class MessageManager : MonoBehaviour {
 			GameObject.Destroy(child.gameObject);
 		}	
 	}
+
+	public void hideMessageCenter()
+	{
+		SoundManager.soundManager.playButtonClick();
+		int counter = 0;
+		foreach(AppRequestData appRequestData in FacebookManager.Instance.AppRequestDataList) 
+		{
+			if( !appRequestData.hasBeenProcessed ) counter++;
+		}
+		numberOfMessages.text = counter.ToString();
+		GetComponent<Animator>().Play("Panel Slide Out");
+	}
+
 }
