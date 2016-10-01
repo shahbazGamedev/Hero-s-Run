@@ -63,7 +63,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 		skipButtonText.text = LocalizationManager.Instance.getText("MENU_SKIP");
 
 		//If the player connected to Facebook in the Title Screen, display the player's first name in the User Name input field.
-		if( FacebookManager.Instance.Username != null ) userNameText.text = FacebookManager.Instance.Username;
+		if( FacebookManager.Instance.firstName != null ) userNameText.text = FacebookManager.Instance.firstName;
 	}
 
 	void Start()

@@ -20,10 +20,14 @@ public class MessageEntry : MonoBehaviour {
 		switch (requestData.dataType)
 		{
 			case RequestDataType.Ask_Give_Life:
-				buttonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_ACCEPT"); 
+				buttonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_SEND"); 
+				message.text = LocalizationManager.Instance.getText( "MESSAGE_ENTRY_TEXT_ASK_LIFE" );		//Mary asks you to send a life!
+				message.text = message.text.Replace("<first name>", requestData.fromFirstName );
 				break;
 			case RequestDataType.Accept_Give_Life:
-				buttonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_SEND"); 
+				buttonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_ACCEPT"); 
+				message.text = LocalizationManager.Instance.getText( "MESSAGE_ENTRY_TEXT_RECEIVED_GIFT" );	//Bob offered you a life!
+				message.text = message.text.Replace("<first name>", requestData.fromFirstName );
 				break;
 		}
 	}
@@ -35,14 +39,14 @@ public class MessageEntry : MonoBehaviour {
 		{
 			case RequestDataType.Ask_Give_Life:
 				FacebookManager.Instance.CallAppRequestAsDirectRequest("App Requests", LocalizationManager.Instance.getText("FB_HAVE_A_LIFE_MESSAGE"), requestData.fromID, "Accept_Give_Life," + requestData.dataNumber.ToString(), MCHCallback, requestData.appRequestID );
+				GameObject.Destroy( gameObject );
 				break;
 			case RequestDataType.Accept_Give_Life:
 				Debug.Log("MessageEntry-buttonPressed: Accept_Give_Life" );
 				PlayerStatsManager.Instance.increaseLives(1);
 				PlayerStatsManager.Instance.savePlayerStats();
 				//Now that it is successfully processed, delete the app request on Facebook
-				//FacebookManager.Instance.deleteAppRequest( appRequestData.appRequestID );
-				//Slide out the message entry and then remove it from the Content RectTransform
+				FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
 				GameObject.Destroy( gameObject );
 				break;
 			case RequestDataType.Unknown:
@@ -64,7 +68,7 @@ public class MessageEntry : MonoBehaviour {
 			if( !result.RawResult.Contains("cancelled") )
 			{
 				//Now that it is successfully processed, delete the app request on Facebook
-				//FacebookManager.Instance.deleteAppRequest( appRequestIDToDelete );
+				FacebookManager.Instance.deleteAppRequest( appRequestIDToDelete );
 			}
 			else
 			{

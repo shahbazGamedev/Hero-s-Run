@@ -16,6 +16,7 @@ public class DebugMenu : MonoBehaviour {
 	public Text toggleShowDebugInfoText;
 	public Text toggleAccessToNormalLevelsText;
 	public Text deathPerEpisodeText;
+	public Text facebookName;
 
 	// Use this for initialization
 	void Start () {
@@ -140,6 +141,14 @@ public class DebugMenu : MonoBehaviour {
 
 	void updatePlayerStats()
 	{
+		if( FacebookManager.Instance.firstName == null )
+		{
+			facebookName.text = "Not logged in to Facebook";
+		}
+		else
+		{
+			facebookName.text = "First Name: " + FacebookManager.Instance.firstName;
+		}
 		currentStars.text = "Current Stars: " + PlayerStatsManager.Instance.getCurrentCoins();
 		lifetimeStars.text = "Lifetime Stars: " + PlayerStatsManager.Instance.getLifetimeCoins();
 		if( PlayerStatsManager.Instance.getOwnsStarDoubler() )

@@ -4,28 +4,23 @@ using UnityEngine.UI;
 
 public class MessageManager : MonoBehaviour {
 
-	/*[Header("General")]
-	public Canvas storeCanvas;
-	public GameObject storeTab;
-	public GameObject shopTab;
-	[Header("Store")]
-	public Text starsTitle;
-	public Text starsReason;
-	public Text livesTitle;
-	public Text livesReason;
-	public Scrollbar storeVerticalScrollbar;
-	[Header("Shop")]
-	public Text upgradeTitle;
-	public Text consumableTitle;*/
-
 	[Header("Menu Prefabs")]
+	public Text titleText;
 	public RectTransform content;
 	public GameObject messageEntryPrefab;
 	public GameObject mailInformationPanel;
 	public Text mailInformationText;
 
+	void Start()
+	{
+		titleText.text = LocalizationManager.Instance.getText("POPUP_TITLE_MESSAGE_CENTER");
+	}
+
 	public void refreshMessages ()
 	{
+		//Remove any previous entries
+		clearAllEntries();
+
 		//Player is connected to the Internet
 		if( Application.internetReachability != NetworkReachability.NotReachable )
 		{
@@ -56,4 +51,11 @@ public class MessageManager : MonoBehaviour {
 		}
 	}
 	
+	void clearAllEntries()
+	{
+		foreach (Transform child in content.transform)
+		{
+			GameObject.Destroy(child.gameObject);
+		}	
+	}
 }

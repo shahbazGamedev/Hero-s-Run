@@ -26,7 +26,7 @@ public class FacebookManager
 	private Action<IAppRequestResult, string > directRequestCallback;
 	private string appRequestIDToDelete;
 	private const int NUMBER_OF_FRIENDS = 20;
-	public string  Username = null;
+	public string  firstName = null;
 	//Facebook ID of player
 	string FBUserId = "";
 	public Sprite UserPortrait = null;
@@ -705,7 +705,7 @@ public class FacebookManager
 		{
 			Debug.Log( "MyProfileCallback " + result.RawResult );
 			profile = Util.DeserializeJSONProfile(result.RawResult);
-			Username = profile["first_name"];
+			firstName = profile["first_name"];
 		}
 	}
 
