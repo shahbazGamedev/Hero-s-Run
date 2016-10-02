@@ -206,18 +206,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 				//Position the friend portrait on the right-hand side of the level station
 				go.GetComponent<Image>().rectTransform.SetParent( levelStationButtonRectTransform, false );
 				go.GetComponent<Image>().rectTransform.anchoredPosition = new Vector2( levelStationButtonRectTransform.anchoredPosition.x + 60f, levelStationButtonRectTransform.anchoredPosition.y -8.3f );
-				
-				Sprite picture;
-				if (FacebookManager.Instance.friendImages.TryGetValue( userID, out picture)) 
-				{
-					//We have the friend's picture
-					go.GetComponent<Image>().sprite = picture;
-				}
-				else if ( FacebookManager.Instance.friendImagesRequested.Contains( userID ) )
-				{
-					//Picture has been requested but not received yet. Draw default portrait with a spinner on top.
-					Debug.Log("We have a friend, but his picture is not arrived yet!");
-				}
+				go.GetComponent<FacebookPortraitHandler>().setPortrait( userID );
 			}
 		}
 	}
