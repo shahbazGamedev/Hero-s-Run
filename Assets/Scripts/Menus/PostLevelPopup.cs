@@ -17,6 +17,7 @@ public class PostLevelPopup : MonoBehaviour {
 	public NewWorldMapHandler newWorldMapHandler;
 	public EpisodePopup episodePopup;
 	public StoryCompletedPopup storyCompletedPopup;
+	public ConnectToFacebookPopup connectToFacebookPopup;
 	[Header("Score Meter")]
 	public GameObject scoreMeter;
 
@@ -152,7 +153,19 @@ public class PostLevelPopup : MonoBehaviour {
 		GameManager.Instance.setGameState(GameState.Menu);
 		GetComponent<Animator>().Play("Panel Slide Out");
 		yield return new WaitForSeconds(2f);
-		episodePopup.showEpisodePopup( LevelManager.Instance.getCurrentEpisodeNumber(), LevelManager.Instance.getNextLevelToComplete() );	
+
+		//So if we are here, it means that the player successfully completed the episode.
+		//Before we allow him to continue to the next one, if the user does not use Facebook currently and we have network connectivity,
+		//then encourage the player to connect to Facebook.
+		//We will encourage him to connect to Facebook after completing episode 2, 4, 6, and 8.
+		if ( LevelManager.Instance.getCurrentEpisodeNumber()%2 == 0 && !PlayerStatsManager.Instance.getUsesFacebook() && Application.internetReachability != NetworkReachability.NotReachable )
+		{
+			connectToFacebookPopup.showConnectToFacebookPopup();
+		}
+		else
+		{
+			episodePopup.showEpisodePopup( LevelManager.Instance.getCurrentEpisodeNumber(), LevelManager.Instance.getNextLevelToComplete() );
+		}
 	}
 
 	public void retry()

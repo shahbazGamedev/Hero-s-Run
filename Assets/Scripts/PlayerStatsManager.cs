@@ -1168,8 +1168,8 @@ public class PlayerStatsManager {
 		powerUpSelected = PowerUpType.SlowTime;
 		PlayerPrefs.SetInt("difficultyLevel", (int)DifficultyLevel.Normal );
 		difficultyLevel = DifficultyLevel.Normal;
-		PlayerPrefs.SetInt("avatar", (int)Avatar.Hero );
-		avatar = Avatar.Hero;
+		PlayerPrefs.SetInt("avatar", (int)Avatar.None);
+		avatar = Avatar.None;
 		PlayerPrefs.SetString( "userName", "" );
 		ClearPowerUpInventory();
 		PlayerPrefs.Save();
