@@ -18,12 +18,14 @@ public class StarMeterHandler : MonoBehaviour {
 	public Image rightStar;
 	public Color32 starReceivedColor;
 	public float scoreSpinDuration = 2f;
-	string scoreString; //format is Score: <0>
+	string scoreString; //format is Stars: <0>
 	const float UPDATE_SEQUENCE_DELAY = 0.9f;
 
 	void Awake()
 	{
-		scoreString = LocalizationManager.Instance.getText("MENU_SCORE");
+		scoreString = LocalizationManager.Instance.getText("MENU_STARS");
+		//Replace the string <0> by 0 initially
+		starMeterScore.text = scoreString.Replace( "<0>", "0" );
 	}
 		
 	void Start()
