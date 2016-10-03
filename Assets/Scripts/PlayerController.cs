@@ -2366,10 +2366,6 @@ public sealed class PlayerController : BaseClass {
 		{
 			//Player has successfully completed the current level.
 			Debug.Log ("Checkpoint triggered ");
-			//Report score to Game Center if not in the Unity Editor
-			#if !UNITY_EDITOR
-			GameCenterManager.reportLeaderboard( GameCenterManager.DistanceRunAllLevels, PlayerStatsManager.Instance.getDistanceTravelled() );
-			#endif
 			trollController.stopPursuing ();
 			StartCoroutine( SoundManager.soundManager.fadeOutMusic( 6.3f ) );
 			StartCoroutine( SoundManager.soundManager.fadeOutAmbience( 6.3f ) );

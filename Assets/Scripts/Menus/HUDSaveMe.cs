@@ -173,6 +173,8 @@ public class HUDSaveMe : MonoBehaviour {
 		SoundManager.soundManager.stopMusic();
 		SoundManager.soundManager.stopAmbience();
 		GameManager.Instance.setGameState(GameState.PostLevelPopup);
+		//Report score to Game Center
+		GameCenterManager.updateLeaderboard();
 		closeSaveMeMenu();
 		SceneManager.LoadScene( (int) GameScenes.WorldMap );
 	}

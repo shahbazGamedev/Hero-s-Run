@@ -94,6 +94,8 @@ public class PauseMenu : MonoBehaviour {
 		Time.timeScale = 1f;
 		SoundManager.soundManager.stopMusic();
 		SoundManager.soundManager.stopAmbience();
+		//Report score to Game Center
+		GameCenterManager.updateLeaderboard();
 		GameManager.Instance.setGameState(GameState.PostLevelPopup);
 		SceneManager.LoadScene( (int) GameScenes.WorldMap );
 	}

@@ -158,12 +158,27 @@ public class GameCenterManager : MonoBehaviour {
 		});
 	}
 
+	public static void updateLeaderboard()
+	{
+		//We only update the leaderboard if we are not in the editor.
+		//We only update the leaderboard if we are in endless mode
+ 		#if !UNITY_EDITOR
+		if( GameManager.Instance.getGameMode() == GameMode.Endless )
+		{
+			//The score is the sum of the Stars collected and the Distance run.
+			int playerScore = LevelManager.Instance.getScore() + PlayerStatsManager.Instance.getDistanceTravelled();
+			//For now, we only have a global leaderboard, which is used regardless of which episode you play
+			GameCenterManager.reportLeaderboard( GameCenterManager.DistanceRunAllLevels, playerScore );
+		}
+		#endif
+	}
+
 	//Report leaderboard info (like the distance run) to Game Center
 	public static void reportLeaderboard( string leaderboardID, int score )
 	{
 		Social.ReportScore( (long)score, leaderboardID,  result => {
 		if (result)
-				Debug.Log ("Successfully reported score to " + leaderboardID );
+				Debug.Log ("Successfully reported score to " + leaderboardID + " with a score of " + score);
 		else
 				Debug.Log ("Failed to report score to " + leaderboardID );
 		});

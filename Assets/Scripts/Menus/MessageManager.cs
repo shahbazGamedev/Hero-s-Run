@@ -29,13 +29,17 @@ public class MessageManager : MonoBehaviour {
 			if( FacebookManager.Instance.AppRequestDataList.Count > 0 )
 			{
 				//Player has mail and is connected to the Internet.
+				//Do not add the entry if the RequestDataType is Unknown
 				mailInformationPanel.SetActive( false );
 				for( int i = 0; i < FacebookManager.Instance.AppRequestDataList.Count; i++ )
 				{
-					GameObject go = (GameObject)Instantiate(messageEntryPrefab);
-					go.transform.SetParent(content.transform,false);
-					go.name = "Message number " + i.ToString();
-					go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
+					if( FacebookManager.Instance.AppRequestDataList[i].dataType != RequestDataType.Unknown )
+					{
+						GameObject go = (GameObject)Instantiate(messageEntryPrefab);
+						go.transform.SetParent(content.transform,false);
+						go.name = "Message number " + i.ToString();
+						go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
+					}
 				}
 			}
 			else

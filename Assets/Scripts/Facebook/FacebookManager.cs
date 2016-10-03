@@ -315,12 +315,13 @@ public class FacebookManager
 					object data;
 					if (appRequestDictionary.TryGetValue ("data", out data )) 
 					{
-						//Format is <type,number> so we need to parse it
+						//Format is <type,number1,number2> so we need to parse it
 						if( data.ToString().Contains(",") )
 						{
 							string[] dataDetails = data.ToString().Split(',');
 							appRequestData.setRequestDataType( dataDetails[0] );
-							int.TryParse(dataDetails[1], out appRequestData.dataNumber);
+							int.TryParse(dataDetails[1], out appRequestData.dataNumber1);
+							int.TryParse(dataDetails[2], out appRequestData.dataNumber2);
 						}
 					}
 					object created_time;

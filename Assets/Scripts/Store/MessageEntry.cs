@@ -29,6 +29,13 @@ public class MessageEntry : MonoBehaviour {
 				message.text = LocalizationManager.Instance.getText( "MESSAGE_ENTRY_TEXT_RECEIVED_GIFT" );	//Bob offered you a life!
 				message.text = message.text.Replace("<first name>", requestData.fromFirstName );
 				break;
+			case RequestDataType.Challenge:
+				buttonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_ACCEPT"); 
+				message.text = LocalizationManager.Instance.getText( "MESSAGE_ENTRY_TEXT_IS_CHALLENGING" );	//Bob is challenging you to beat his score in the Jungle episode!
+				message.text = message.text.Replace("<first name>", requestData.fromFirstName );
+				message.text = message.text.Replace("<score>", requestData.dataNumber1.ToString() );
+				message.text = message.text.Replace("<episode name>", requestData.dataNumber2.ToString() );
+				break;
 		}
 	}
 
@@ -38,7 +45,7 @@ public class MessageEntry : MonoBehaviour {
 		switch (requestData.dataType)
 		{
 			case RequestDataType.Ask_Give_Life:
-				FacebookManager.Instance.CallAppRequestAsDirectRequest("App Requests", LocalizationManager.Instance.getText("FB_HAVE_A_LIFE_MESSAGE"), requestData.fromID, "Accept_Give_Life," + requestData.dataNumber.ToString(), MCHCallback, requestData.appRequestID );
+				FacebookManager.Instance.CallAppRequestAsDirectRequest("App Requests", LocalizationManager.Instance.getText("FB_HAVE_A_LIFE_MESSAGE"), requestData.fromID, "Accept_Give_Life," + requestData.dataNumber1.ToString() + ",-1", MCHCallback, requestData.appRequestID );
 				requestData.hasBeenProcessed = true;
 				GameObject.Destroy( gameObject );
 				break;

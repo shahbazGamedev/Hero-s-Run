@@ -19,6 +19,9 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 	public GameObject distanceMeter;
 	public GameObject scoreMeter;
 	public Text personalBestText;
+	[Header("Challenge Friends")]
+	public Text challengeDescriptionText;
+	public Text challengeButtonText;
 
 	const float UPDATE_SEQUENCE_DELAY = 0.9f;
 
@@ -27,6 +30,9 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 
 		postLevelButtonText.text = LocalizationManager.Instance.getText("POST_LEVEL_RETRY");
 		personalBestText.text = LocalizationManager.Instance.getText("MENU_PERSONAL_BEST");
+
+		challengeDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_CHALLENGE_DESCRIPTION");
+		challengeButtonText.text = LocalizationManager.Instance.getText("POST_LEVEL_CHALLENGE");
 	}
 
 	public void showEndlessPostLevelPopup(LevelData levelData)
@@ -135,6 +141,18 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 		PlayerStatsManager.Instance.resetDistanceTravelled();
 		PlayerStatsManager.Instance.savePlayerStats();
 		newWorldMapHandler.play( LevelManager.Instance.getCurrentEpisodeNumber(), LevelManager.Instance.getNextLevelToComplete() );
+	}
+
+	public void challengeFriends()
+	{
+		SoundManager.soundManager.playButtonClick();
+		GetComponent<Animator>().Play("Panel Slide Out");
+		string message = LocalizationManager.Instance.getText( "POST_LEVEL_CHALLENGE_FB_MESSAGE" );
+		int playerScore = LevelManager.Instance.getScore() + PlayerStatsManager.Instance.getDistanceTravelled();
+		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
+		string passedData = "Challenge," + playerScore.ToString() + "," + episodeNumber.ToString();
+		//To recap, format of passed data is Challenge,88888,4
+		FacebookManager.Instance.CallAppRequestAsFriendSelector( "App Requests", message, passedData, "", "" );
 	}
 
 
