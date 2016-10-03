@@ -8,7 +8,8 @@ public class MessageManager : MonoBehaviour {
 	[Header("Menu Prefabs")]
 	public Text titleText;
 	public RectTransform content;
-	public GameObject messageEntryPrefab;
+	public GameObject lifeMessageEntryPrefab;
+	public GameObject challengeMessageEntryPrefab;
 	public GameObject mailInformationPanel;
 	public Text mailInformationText;
 	public Text numberOfMessages; //See also NewWorldMapHandler
@@ -28,17 +29,30 @@ public class MessageManager : MonoBehaviour {
 		{
 			if( FacebookManager.Instance.AppRequestDataList.Count > 0 )
 			{
+				GameObject go;
 				//Player has mail and is connected to the Internet.
 				//Do not add the entry if the RequestDataType is Unknown
 				mailInformationPanel.SetActive( false );
 				for( int i = 0; i < FacebookManager.Instance.AppRequestDataList.Count; i++ )
 				{
-					if( FacebookManager.Instance.AppRequestDataList[i].dataType != RequestDataType.Unknown )
+					switch (FacebookManager.Instance.AppRequestDataList[i].dataType)
 					{
-						GameObject go = (GameObject)Instantiate(messageEntryPrefab);
-						go.transform.SetParent(content.transform,false);
-						go.name = "Message number " + i.ToString();
-						go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
+						case RequestDataType.Ask_Give_Life:
+						case RequestDataType.Accept_Give_Life:
+							go = (GameObject)Instantiate(lifeMessageEntryPrefab);
+							go.transform.SetParent(content.transform,false);
+							go.name = "Message number " + i.ToString();
+							go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
+							break;
+						case RequestDataType.Challenge:
+							go = (GameObject)Instantiate(challengeMessageEntryPrefab);
+							go.transform.SetParent(content.transform,false);
+							go.name = "Message number " + i.ToString();
+							go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
+							break;
+						default:
+							Debug.LogWarning("MessageManager-refreshMessages: unknown data type specified: " + FacebookManager.Instance.AppRequestDataList[i].dataType );
+							break;
 					}
 				}
 			}
@@ -68,8 +82,10 @@ public class MessageManager : MonoBehaviour {
 	public void hideMessageCenter()
 	{
 		SoundManager.soundManager.playButtonClick();
-		deleteProcessedEntries();
-		numberOfMessages.text = FacebookManager.Instance.AppRequestDataList.Count.ToString();
+		//deleteProcessedEntries();
+		//Force a refresh of the App Requests
+		FacebookManager.Instance.getAllAppRequests();
+		//numberOfMessages.text = FacebookManager.Instance.AppRequestDataList.Count.ToString();
 		GetComponent<Animator>().Play("Panel Slide Out");
 	}
 

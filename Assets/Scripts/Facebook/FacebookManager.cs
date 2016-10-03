@@ -321,7 +321,8 @@ public class FacebookManager
 							string[] dataDetails = data.ToString().Split(',');
 							appRequestData.setRequestDataType( dataDetails[0] );
 							int.TryParse(dataDetails[1], out appRequestData.dataNumber1);
-							int.TryParse(dataDetails[2], out appRequestData.dataNumber2);
+							//For backward compatibility when there was only one dataNumber, verify array length first
+							if( dataDetails.Length == 3 ) int.TryParse(dataDetails[2], out appRequestData.dataNumber2);
 						}
 					}
 					object created_time;

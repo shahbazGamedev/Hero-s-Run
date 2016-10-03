@@ -5,36 +5,48 @@ using Facebook.Unity;
 
 public class MessageEntry : MonoBehaviour {
 
-	[Header("Message Entry")]
-	public Image icon;
+	[Header("Shared")]
+	public NewWorldMapHandler newWorldMapHandler;
+	public Image portrait; //requires a FacebookPortraitHandler component
 	public Text message;
+	[Header("Life Message Entry Only")]
+	public Text actionButtonText; //either Send or Accept
+	[Header("Challenge Message Entry Only")]
+	public Image challengeImage;
+	public Text acceptButtonText;
+	public Text dismissButtonText;
+
 	AppRequestData requestData;
-	public Text buttonText;
 
 	public void initializeMessage( AppRequestData requestData )
 	{
 		this.requestData = requestData;
-		message.text = requestData.dataType.ToString() + " " + requestData.fromFirstName;
-		icon.GetComponent<FacebookPortraitHandler>().setPortrait( requestData.fromID );
+		portrait.GetComponent<FacebookPortraitHandler>().setPortrait( requestData.fromID );
 
 		switch (requestData.dataType)
 		{
 			case RequestDataType.Ask_Give_Life:
-				buttonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_SEND"); 
+				actionButtonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_SEND"); 
 				message.text = LocalizationManager.Instance.getText( "MESSAGE_ENTRY_TEXT_ASK_LIFE" );		//Mary asks you to send a life!
 				message.text = message.text.Replace("<first name>", requestData.fromFirstName );
 				break;
 			case RequestDataType.Accept_Give_Life:
-				buttonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_ACCEPT"); 
+				actionButtonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_ACCEPT"); 
 				message.text = LocalizationManager.Instance.getText( "MESSAGE_ENTRY_TEXT_RECEIVED_GIFT" );	//Bob offered you a life!
 				message.text = message.text.Replace("<first name>", requestData.fromFirstName );
 				break;
 			case RequestDataType.Challenge:
-				buttonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_ACCEPT"); 
-				message.text = LocalizationManager.Instance.getText( "MESSAGE_ENTRY_TEXT_IS_CHALLENGING" );	//Bob is challenging you to beat his score in the Jungle episode!
+				acceptButtonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_ACCEPT"); 
+				dismissButtonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_DISMISS"); 
+				message.text = LocalizationManager.Instance.getText( "MESSAGE_ENTRY_TEXT_IS_CHALLENGING" );	//Bob is challenging you to beat his score of <score> in the <episode name> level.
 				message.text = message.text.Replace("<first name>", requestData.fromFirstName );
 				message.text = message.text.Replace("<score>", requestData.dataNumber1.ToString() );
-				message.text = message.text.Replace("<episode name>", requestData.dataNumber2.ToString() );
+				//dataNumber2 contains the episode number
+				string levelNumberString = (requestData.dataNumber2 + 1).ToString();
+				string episodeName = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
+				//Use rich text
+				episodeName = "<color=#D22626FF>" + episodeName + "</color>"; //Red color
+				message.text = message.text.Replace("<episode name>", episodeName );
 				break;
 		}
 	}
@@ -58,11 +70,22 @@ public class MessageEntry : MonoBehaviour {
 				requestData.hasBeenProcessed = true;
 				GameObject.Destroy( gameObject );
 				break;
+			case RequestDataType.Challenge:
+				Debug.Log("MessageEntry-buttonPressed: Challenge" );
+				newWorldMapHandler.play( requestData.dataNumber2, LevelManager.Instance.getLevelNumberFromEpisodeNumber( requestData.dataNumber2 ) );
+				break;
 			case RequestDataType.Unknown:
-				Debug.LogWarning("MessageEntry-processNextAppRequest: unknown data type specified." );
+				Debug.LogWarning("MessageEntry-buttonPressed: unknown data type specified." );
 				break;
 		}
 
+	}
+
+	public void dismiss()
+	{
+		FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
+		requestData.hasBeenProcessed = true;
+		GameObject.Destroy( gameObject );
 	}
 
 	public void MCHCallback(IAppRequestResult result, string appRequestIDToDelete )

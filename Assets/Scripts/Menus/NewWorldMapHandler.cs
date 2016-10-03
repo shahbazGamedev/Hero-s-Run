@@ -121,7 +121,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 		//Get all of the user's outstanding app requests right away and then poll Facebook every 60 seconds
 		CancelInvoke("getAllAppRequests");
-		InvokeRepeating("getAllAppRequests", 0.25f, 60 );
+		InvokeRepeating("getAllAppRequests", 0.25f, 30 );
 
 	}
 
