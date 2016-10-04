@@ -109,6 +109,8 @@ public class PlayerStatsManager {
 
 	bool ownsStarDoubler = false; //True if the player has purchased the Star Doubler in the store.
 
+	string challenges = String.Empty; //List of Challenge in JSON format. See ChallengeBoard.
+
 	public static PlayerStatsManager Instance
 	{
         get
@@ -939,6 +941,16 @@ public class PlayerStatsManager {
 		}
 	}
 
+	public void setChallenges( string challenges )
+	{
+		this.challenges = challenges;
+	}
+
+	public string getChallenges()
+	{
+		return challenges;
+	}
+
 	public void loadPlayerStats()
 	{
 		try
@@ -1038,6 +1050,7 @@ public class PlayerStatsManager {
 			avatar = (Avatar)PlayerPrefs.GetInt("avatar", (int)Avatar.None);
 			userName = PlayerPrefs.GetString("userName", "" );
 			loadPowerUpInventory();
+			challenges = PlayerPrefs.GetString("challenges", "" );
 			Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " Next Level To Complete: " + nextLevelToComplete + " Highest Level Completed: " + highestLevelCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
@@ -1119,6 +1132,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetInt("avatar", (int)avatar );
 		PlayerPrefs.SetString( "userName", userName );
 		savePowerUpInventory();
+		PlayerPrefs.SetString( "challenges", challenges );
 		PlayerPrefs.Save();
 		Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
 	}
@@ -1172,6 +1186,8 @@ public class PlayerStatsManager {
 		avatar = Avatar.None;
 		PlayerPrefs.SetString( "userName", "" );
 		ClearPowerUpInventory();
+		challenges = string.Empty;
+		PlayerPrefs.SetString( "challenges", "" );
 		PlayerPrefs.Save();
 		Debug.Log ("PlayerStatsManager-resetPlayerStats: called.");
 	}

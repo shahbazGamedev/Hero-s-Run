@@ -7,6 +7,7 @@ public class MessageEntry : MonoBehaviour {
 
 	[Header("Shared")]
 	public NewWorldMapHandler newWorldMapHandler;
+	public MessageManager messageManager;
 	public Image portrait; //requires a FacebookPortraitHandler component
 	public Text message;
 	[Header("Life Message Entry Only")]
@@ -72,6 +73,13 @@ public class MessageEntry : MonoBehaviour {
 				break;
 			case RequestDataType.Challenge:
 				Debug.Log("MessageEntry-buttonPressed: Challenge" );
+				FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
+				requestData.hasBeenProcessed = true;
+				//Save challenge
+				messageManager.challengeBoard.addChallenge( requestData.fromFirstName, requestData.fromID, requestData.dataNumber1, requestData.dataNumber2, requestData.created_time );
+				GameObject.Destroy( gameObject );
+				//We don't have time to slide it out, so simply hide it
+				messageManager.gameObject.SetActive( false );
 				newWorldMapHandler.play( requestData.dataNumber2, LevelManager.Instance.getLevelNumberFromEpisodeNumber( requestData.dataNumber2 ) );
 				break;
 			case RequestDataType.Unknown:

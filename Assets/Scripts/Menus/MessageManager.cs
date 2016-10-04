@@ -13,10 +13,12 @@ public class MessageManager : MonoBehaviour {
 	public GameObject mailInformationPanel;
 	public Text mailInformationText;
 	public Text numberOfMessages; //See also NewWorldMapHandler
+	public ChallengeBoard challengeBoard;
 
 	void Start()
 	{
 		titleText.text = LocalizationManager.Instance.getText("POPUP_TITLE_MESSAGE_CENTER");
+		challengeBoard = JsonUtility.FromJson<ChallengeBoard>(PlayerStatsManager.Instance.getChallenges());
 	}
 
 	public void refreshMessages ()
