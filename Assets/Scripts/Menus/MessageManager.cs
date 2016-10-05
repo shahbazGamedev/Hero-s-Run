@@ -14,14 +14,25 @@ public class MessageManager : MonoBehaviour {
 	public Text mailInformationText;
 	public Text numberOfMessages; //See also NewWorldMapHandler
 	public ChallengeBoard challengeBoard;
+	public NewWorldMapHandler newWorldMapHandler;
 
 	void Start()
 	{
 		titleText.text = LocalizationManager.Instance.getText("POPUP_TITLE_MESSAGE_CENTER");
-		challengeBoard = JsonUtility.FromJson<ChallengeBoard>(PlayerStatsManager.Instance.getChallenges());
+		if( PlayerStatsManager.Instance.getChallenges() != string.Empty )
+		{
+			 challengeBoard = JsonUtility.FromJson<ChallengeBoard>(PlayerStatsManager.Instance.getChallenges());
+		}
+		else
+		{
+			challengeBoard = new ChallengeBoard();
+		}
+		//For testing
+		challengeBoard.addChallenge( "Suzie", "90", 2000, 1, System.DateTime.Now );
+		challengeBoard.addChallenge( "Bob", "90", 1000, 1, System.DateTime.Now );
+
 		//Make sure the GameManager has a reference since we need access while running in a level
 		GameManager.Instance.challengeBoard = challengeBoard;
-		
 	}
 
 	public void refreshMessages ()

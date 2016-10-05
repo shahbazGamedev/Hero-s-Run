@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 [System.Serializable]
 public class ChallengeBoard {
@@ -41,6 +42,18 @@ public class ChallengeBoard {
 		Challenge challenge = new Challenge( challengerFirstName, challengerID, score, episodeNumber, created_time );
 		challengeList.Add( challenge );
 		serializeChallenges();
+	}
+
+	public List<Challenge> getChallenges( int episodeNumber )
+	{
+		List<Challenge> episodeChallengeList = new List<Challenge>();
+		for( int i = 0; i < challengeList.Count; i++ )
+		{
+			if( challengeList[i].episodeNumber == episodeNumber ) episodeChallengeList.Add(challengeList[i]);
+		}
+		//Sorted with lowest score first
+		List<Challenge> sortedChallengeListByScore = episodeChallengeList.OrderBy(challenge=>challenge.score).ToList();
+		return sortedChallengeListByScore;
 	}
 
 	public void serializeChallenges()

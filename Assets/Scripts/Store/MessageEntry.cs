@@ -6,7 +6,6 @@ using Facebook.Unity;
 public class MessageEntry : MonoBehaviour {
 
 	[Header("Shared")]
-	public NewWorldMapHandler newWorldMapHandler;
 	public MessageManager messageManager;
 	public Image portrait; //requires a FacebookPortraitHandler component
 	public Text message;
@@ -79,7 +78,7 @@ public class MessageEntry : MonoBehaviour {
 				messageManager.challengeBoard.addChallenge( requestData.fromFirstName, requestData.fromID, requestData.dataNumber1, requestData.dataNumber2, requestData.created_time );
 				//We don't have time to slide it out, so simply hide it
 				messageManager.gameObject.SetActive( false );
-				newWorldMapHandler.play( requestData.dataNumber2, LevelManager.Instance.getLevelNumberFromEpisodeNumber( requestData.dataNumber2 ) );
+				messageManager.newWorldMapHandler.play( requestData.dataNumber2, LevelManager.Instance.getLevelNumberFromEpisodeNumber( requestData.dataNumber2 ) );
 				break;
 			case RequestDataType.Unknown:
 				Debug.LogWarning("MessageEntry-buttonPressed: unknown data type specified." );

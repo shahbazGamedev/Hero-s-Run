@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class ChallengeHUD : MonoBehaviour {
@@ -14,6 +15,8 @@ public class ChallengeHUD : MonoBehaviour {
 	public Text score;
 	public Text label;
 	int originalScore; //we decrement this value to 0 as the player is running
+	List<ChallengeBoard.Challenge> sortedChallengeListByScore;
+	int challengeIndex = 0;
 
 	// Use this for initialization
 	void Start ()
@@ -26,14 +29,31 @@ public class ChallengeHUD : MonoBehaviour {
 	{
 		if( GameManager.Instance.getGameMode() == GameMode.Endless )
 		{
-			if( cb.challengeList.Count > 0 )
+			sortedChallengeListByScore = GameManager.Instance.challengeBoard.getChallenges( LevelManager.Instance.getCurrentEpisodeNumber() );
+
+			if( sortedChallengeListByScore.Count > 0 )
 			{
-				//Make sure we have a challengers for this episode
-				portrait.GetComponent<FacebookPortraitHandler>().setPortrait( cb.challengeList[0].challengerID );
-				originalScore = cb.challengeList[0].score;
-				score.text = cb.challengeList[0].score.ToString("N0");
-				hasChallenger = true;
+				Debug.Log("ChallengeHUD-initializeChallenger: we have " + sortedChallengeListByScore.Count + " challengers." );
+				configureChallengerPanel();
 			}
+		}
+	}
+
+	void configureChallengerPanel()
+	{
+		if( challengeIndex < sortedChallengeListByScore.Count )
+		{
+			ChallengeBoard.Challenge challenge = sortedChallengeListByScore[challengeIndex];
+			portrait.GetComponent<FacebookPortraitHandler>().setPortrait( challenge.challengerID );
+			originalScore = challenge.score;
+			score.text = challenge.score.ToString("N0");
+			label.text = challenge.challengerFirstName;
+			hasChallenger = true;
+			challengeIndex++;
+		}
+		else
+		{
+			hasChallenger = false;
 		}
 	}
 
@@ -42,8 +62,15 @@ public class ChallengeHUD : MonoBehaviour {
 		if( hasChallenger )
 		{
 			int currentScore = originalScore - PlayerStatsManager.Instance.getDistanceTravelled();
-			if( currentScore < 0 ) currentScore = 0 ;
-		 	score.text = currentScore.ToString("N0");
+			if( currentScore < 0 )
+			{
+				 //Player has beaten this high score. Configure HUD for next opponent if any
+				configureChallengerPanel();
+			}
+			else
+			{
+		 		score.text = currentScore.ToString("N0");
+			}
 		}
 	}
 
