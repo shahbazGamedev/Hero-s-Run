@@ -585,7 +585,7 @@ public class PowerUpManager : BaseClass {
 		return BASE_DIAMETER + PlayerStatsManager.Instance.getPowerUpUpgradeLevel(pud.powerUpType) * PowerUpDisplayData.getUpgradeBoostValue(pud.powerUpType);
 	}
 
-	public void slideEquippedPowerUp( PowerUpManager.PowerUpData pud )
+	void slideEquippedPowerUp( PowerUpManager.PowerUpData pud )
 	{
 		Image[] images = equippedPowerUp.GetComponentsInChildren<Image>();
 		images[0].sprite = PowerUpDisplayData.getPowerUpSprite( pud.powerUpType );
@@ -594,7 +594,7 @@ public class PowerUpManager : BaseClass {
 
 	}
 
-	public void slideInPowerUp( RectTransform uiElement )
+	void slideInPowerUp( RectTransform uiElement )
 	{
 		StartCoroutine( slideInPowerUpThread (uiElement ) );
 	}

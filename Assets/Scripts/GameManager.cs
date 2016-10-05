@@ -68,6 +68,9 @@ public class GameManager {
 	public Sprite selfie;
 	public byte[] selfieBytes;
 
+	//We keep a reference to the ChallengeBoard here because we need to access it from the level scene
+	public ChallengeBoard challengeBoard;
+
 	public static GameManager Instance
 	{
         get

@@ -77,7 +77,6 @@ public class MessageEntry : MonoBehaviour {
 				requestData.hasBeenProcessed = true;
 				//Save challenge
 				messageManager.challengeBoard.addChallenge( requestData.fromFirstName, requestData.fromID, requestData.dataNumber1, requestData.dataNumber2, requestData.created_time );
-				GameObject.Destroy( gameObject );
 				//We don't have time to slide it out, so simply hide it
 				messageManager.gameObject.SetActive( false );
 				newWorldMapHandler.play( requestData.dataNumber2, LevelManager.Instance.getLevelNumberFromEpisodeNumber( requestData.dataNumber2 ) );

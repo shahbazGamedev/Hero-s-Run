@@ -19,6 +19,9 @@ public class MessageManager : MonoBehaviour {
 	{
 		titleText.text = LocalizationManager.Instance.getText("POPUP_TITLE_MESSAGE_CENTER");
 		challengeBoard = JsonUtility.FromJson<ChallengeBoard>(PlayerStatsManager.Instance.getChallenges());
+		//Make sure the GameManager has a reference since we need access while running in a level
+		GameManager.Instance.challengeBoard = challengeBoard;
+		
 	}
 
 	public void refreshMessages ()

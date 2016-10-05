@@ -20,7 +20,6 @@
 
 namespace Facebook.Unity.Example
 {
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using UnityEngine;
@@ -100,7 +99,7 @@ namespace Facebook.Unity.Example
                         this.requestMessage,
                         action.Value,
                         this.requestObjectID,
-                        this.requestTo != null ? this.requestTo.Split(',') : null,
+                        string.IsNullOrEmpty(this.requestTo) ? null : this.requestTo.Split(','),
                         this.requestData,
                         this.requestTitle,
                         this.HandleResult);
