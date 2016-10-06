@@ -20,15 +20,7 @@ public class TileReset : MonoBehaviour {
 			child = transform.FindChild(objectName);
 			if( child != null )
 			{
-				if( child.name.StartsWith("Cow") )
-				{
-					//Note: for some reason, Destroy( gameObject) does not destroy the Cow but DestroyImmediate does.
-					DestroyImmediate( child.gameObject );
-				}
-				else
-				{
-					Destroy( child.gameObject );
-				}
+				Destroy( child.gameObject );
 			}
 		}
 	}

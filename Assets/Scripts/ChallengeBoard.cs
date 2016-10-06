@@ -39,6 +39,25 @@ public class ChallengeBoard {
 	
 	public void addChallenge( string challengerFirstName, string challengerID, int score, int episodeNumber, DateTime created_time )
 	{
+		//If the same person has previously sent you a challenge for the same episode and you have accepted it, then only keep the challenge with the highest score.
+		for( int i = 0; i < challengeList.Count; i++ )
+		{
+			if( challengeList[i].episodeNumber == episodeNumber && challengeList[i].challengerID == challengerID  )
+			{
+				if( score > challengeList[i].score )
+				{
+					challengeList[i].score = score; //update the score because it is higher
+					serializeChallenges();
+					return;
+				}
+				else
+				{
+					return; //we already have the entry with the highest score
+				}
+			}
+		}
+
+		//if we are here, it means it's a brand new entry :)
 		Challenge challenge = new Challenge( challengerFirstName, challengerID, score, episodeNumber, created_time );
 		challengeList.Add( challenge );
 		serializeChallenges();
