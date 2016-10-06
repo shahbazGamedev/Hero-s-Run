@@ -28,10 +28,10 @@ public class MessageManager : MonoBehaviour {
 			challengeBoard = new ChallengeBoard();
 		}
 		//For testing
-		challengeBoard.addChallenge( "Suzie", "90", 2000, 1, System.DateTime.Now );
+		/*challengeBoard.addChallenge( "Suzie", "90", 2000, 1, System.DateTime.Now );
 		challengeBoard.addChallenge( "Bob", "50", 1000, 1, System.DateTime.Now );
 		challengeBoard.addChallenge( "Suzie", "90", 3000, 1, System.DateTime.Now );
-		challengeBoard.addChallenge( "Bob", "50", 99900, 1, System.DateTime.Now );
+		challengeBoard.addChallenge( "Bob", "50", 99900, 1, System.DateTime.Now );*/
 
 		//Make sure the GameManager has a reference since we need access while running in a level
 		GameManager.Instance.challengeBoard = challengeBoard;
@@ -53,24 +53,28 @@ public class MessageManager : MonoBehaviour {
 				mailInformationPanel.SetActive( false );
 				for( int i = 0; i < FacebookManager.Instance.AppRequestDataList.Count; i++ )
 				{
-					switch (FacebookManager.Instance.AppRequestDataList[i].dataType)
+					//Only add entries which have not been processed
+					if( !FacebookManager.Instance.AppRequestDataList[i].hasBeenProcessed )
 					{
-						case RequestDataType.Ask_Give_Life:
-						case RequestDataType.Accept_Give_Life:
-							go = (GameObject)Instantiate(lifeMessageEntryPrefab);
-							go.transform.SetParent(content.transform,false);
-							go.name = "Message number " + i.ToString();
-							go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
-							break;
-						case RequestDataType.Challenge:
-							go = (GameObject)Instantiate(challengeMessageEntryPrefab);
-							go.transform.SetParent(content.transform,false);
-							go.name = "Message number " + i.ToString();
-							go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
-							break;
-						default:
-							Debug.LogWarning("MessageManager-refreshMessages: unknown data type specified: " + FacebookManager.Instance.AppRequestDataList[i].dataType );
-							break;
+						switch (FacebookManager.Instance.AppRequestDataList[i].dataType)
+						{
+							case RequestDataType.Ask_Give_Life:
+							case RequestDataType.Accept_Give_Life:
+								go = (GameObject)Instantiate(lifeMessageEntryPrefab);
+								go.transform.SetParent(content.transform,false);
+								go.name = "Message number " + i.ToString();
+								go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
+								break;
+							case RequestDataType.Challenge:
+								go = (GameObject)Instantiate(challengeMessageEntryPrefab);
+								go.transform.SetParent(content.transform,false);
+								go.name = "Message number " + i.ToString();
+								go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
+								break;
+							default:
+								Debug.LogWarning("MessageManager-refreshMessages: unknown data type specified: " + FacebookManager.Instance.AppRequestDataList[i].dataType );
+								break;
+						}
 					}
 				}
 			}
