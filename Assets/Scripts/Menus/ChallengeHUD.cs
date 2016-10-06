@@ -53,6 +53,7 @@ public class ChallengeHUD : MonoBehaviour {
 		}
 		else
 		{
+			slideOutChallenger();
 			hasChallenger = false;
 		}
 	}
@@ -79,6 +80,14 @@ public class ChallengeHUD : MonoBehaviour {
 		if( hasChallenger )
 		{
 			LeanTween.moveX( GetComponent<RectTransform>(), FINAL_POSITION, SLIDE_DURATION ).setEase(LeanTweenType.easeOutQuad);
+		}
+	}
+
+	void slideOutChallenger()
+	{
+		if( hasChallenger )
+		{
+			LeanTween.moveX( GetComponent<RectTransform>(), START_X_POSITION, SLIDE_DURATION ).setEase(LeanTweenType.easeOutQuad);
 		}
 	}
 
