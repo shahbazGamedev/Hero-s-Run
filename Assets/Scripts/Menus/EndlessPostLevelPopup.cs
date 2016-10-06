@@ -128,7 +128,6 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 	public void closePostLevelPopup()
 	{
 		SoundManager.soundManager.playButtonClick();
-		PlayerStatsManager.Instance.resetDistanceTravelled();
 		PlayerStatsManager.Instance.savePlayerStats();
 		GetComponent<Animator>().Play("Panel Slide Out");
 		GameManager.Instance.setGameState(GameState.Menu);
@@ -138,7 +137,6 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 	{
 		Debug.Log("showEndlessPostLevelPopup-Retry button pressed.");
 		SoundManager.soundManager.playButtonClick();
-		PlayerStatsManager.Instance.resetDistanceTravelled();
 		PlayerStatsManager.Instance.savePlayerStats();
 		newWorldMapHandler.play( LevelManager.Instance.getCurrentEpisodeNumber(), LevelManager.Instance.getNextLevelToComplete() );
 	}
@@ -146,7 +144,6 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 	public void challengeFriends()
 	{
 		SoundManager.soundManager.playButtonClick();
-		GetComponent<Animator>().Play("Panel Slide Out");
 		string message = LocalizationManager.Instance.getText( "POST_LEVEL_CHALLENGE_FB_MESSAGE" );
 		int playerScore = LevelManager.Instance.getScore() + PlayerStatsManager.Instance.getDistanceTravelled();
 		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();

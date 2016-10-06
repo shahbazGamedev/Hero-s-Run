@@ -215,10 +215,10 @@ public class NewWorldMapHandler : MonoBehaviour {
 	void levelButtonClick( int episodeNumber, int levelNumber )
 	{
 		Debug.Log("Level Station click-Episode: " + episodeNumber + " Level: " + levelNumber );
-		LevelManager.Instance.setCurrentEpisodeNumber( episodeNumber );
 		SoundManager.soundManager.playButtonClick();
 		if( GameManager.Instance.getGameMode() == GameMode.Story )
 		{
+			LevelManager.Instance.setCurrentEpisodeNumber( episodeNumber );
 			episodePopup.showEpisodePopup( episodeNumber, levelNumber );
 		}
 		else
@@ -455,6 +455,8 @@ public class NewWorldMapHandler : MonoBehaviour {
 		//We are starting a new run, reset some values
 		LevelManager.Instance.setEnableTorches( true );
 		LevelManager.Instance.setScore( 0 );
+		PlayerStatsManager.Instance.resetDistanceTravelled();
+		LevelManager.Instance.setCurrentEpisodeNumber( episodeNumber );
 		LevelManager.Instance.setEpisodeCompleted( false );
 		LevelManager.Instance.forceHighestLevelCompleted( levelNumber );
 		LevelManager.Instance.forceNextLevelToComplete( levelNumber );
