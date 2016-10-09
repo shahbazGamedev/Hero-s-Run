@@ -52,7 +52,7 @@ public class MessageEntry : MonoBehaviour {
 			case RequestDataType.ChallengeBeaten:
 				acceptButtonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_REVENGE"); 
 				dismissButtonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_DISMISS"); 
-				message.text = LocalizationManager.Instance.getText( "MESSAGE_ENTRY_TEXT_CHALLENGE_BEATEN" );	//Bob beat your challenge of <score> in the <episode name> level. Defend your honor!
+				message.text = LocalizationManager.Instance.getText( "MESSAGE_ENTRY_TEXT_CHALLENGE_BEATEN" );	//<first name> beat your challenge with a score of <score> in <episode name>. Defend your honor!
 				message.text = message.text.Replace("<first name>", requestData.fromFirstName );
 				message.text = message.text.Replace("<score>", requestData.dataNumber1.ToString() );
 				//dataNumber2 contains the episode number
@@ -86,6 +86,18 @@ public class MessageEntry : MonoBehaviour {
 				break;
 			case RequestDataType.Challenge:
 				Debug.Log("MessageEntry-buttonPressed: Challenge" );
+				FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
+				requestData.hasBeenProcessed = true;
+				//Save challenge
+				messageManager.challengeBoard.addChallenge( requestData.fromFirstName, requestData.fromID, requestData.dataNumber1, requestData.dataNumber2, requestData.created_time );
+				//We don't have time to slide it out, so simply hide it
+				messageManager.gameObject.SetActive( false );
+				//Make sure we are in the endless running mode
+				if( GameManager.Instance.getGameMode() != GameMode.Endless ) messageManager.newWorldMapHandler.toggleGameMode();
+				messageManager.newWorldMapHandler.play( requestData.dataNumber2, LevelManager.Instance.getLevelNumberFromEpisodeNumber( requestData.dataNumber2 ) );
+				break;
+			case RequestDataType.ChallengeBeaten:
+				Debug.Log("MessageEntry-buttonPressed: ChallengeBeaten" );
 				FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
 				requestData.hasBeenProcessed = true;
 				//Save challenge
