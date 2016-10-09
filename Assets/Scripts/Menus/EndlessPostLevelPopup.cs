@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using Facebook.Unity;
 
 public class EndlessPostLevelPopup : MonoBehaviour {
 
@@ -21,9 +22,11 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 	public Text personalBestText;
 	[Header("Challenge Friends")]
 	public Text challengeDescriptionText;
+	public Button challengeButton;
 	public Text challengeButtonText;
 
 	const float UPDATE_SEQUENCE_DELAY = 0.9f;
+	string directRequestTo = string.Empty;
 
 	// Use this for initialization
 	void Awake () {
@@ -96,7 +99,13 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 
 		StartCoroutine( startUpdateSequence( selectedEpisode ) );
 		string challengeResults = getNamesOfBeatenChallenger();
-		if( challengeResults != string.Empty ) challengeDescriptionText.text = challengeResults;
+		if( challengeResults != string.Empty )
+		{
+			challengeDescriptionText.text = challengeResults;
+			challengeButton.onClick.RemoveAllListeners();
+			challengeButton.onClick.AddListener(() => bragFriends() );
+			challengeButtonText.text = "Brag";
+		}
 	}
 
 	public string getNamesOfBeatenChallenger()
@@ -106,8 +115,13 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 		for( int i = 0; i < completedChallengesList.Count; i++ )
 		{
 			arrayOfBeatenChallengers[i] = completedChallengesList[i].challengerFirstName;
-			GameManager.Instance.challengeBoard.removeChallenge( completedChallengesList[i] );
+			//Create a comma separated list of IDs when want to sent the brag to
+			directRequestTo = completedChallengesList[i].challengerID + "," + directRequestTo;
+			//GameManager.Instance.challengeBoard.removeChallenge( completedChallengesList[i] );
 		}
+		//Delete trailing comma
+		directRequestTo = directRequestTo.TrimEnd(',');
+
 		GameManager.Instance.challengeBoard.serializeChallenges();
 		string textToDisplay = string.Empty;
 		if( GameManager.Instance.challengeBoard.getNumberOfActiveChallenges( LevelManager.Instance.getCurrentEpisodeNumber() ) > 0 )
@@ -187,13 +201,39 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 	public void challengeFriends()
 	{
 		SoundManager.soundManager.playButtonClick();
+		string title = LocalizationManager.Instance.getText( "POST_LEVEL_CHALLENGE_FB_TITLE" );
 		string message = LocalizationManager.Instance.getText( "POST_LEVEL_CHALLENGE_FB_MESSAGE" );
 		int playerScore = LevelManager.Instance.getScore() + PlayerStatsManager.Instance.getDistanceTravelled();
 		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
 		string passedData = "Challenge," + playerScore.ToString() + "," + episodeNumber.ToString();
 		//To recap, format of passed data is Challenge,88888,4
-		FacebookManager.Instance.CallAppRequestAsFriendSelector( "App Requests", message, passedData, "", "" );
+		FacebookManager.Instance.CallAppRequestAsFriendSelector( title, message, passedData, "", "" );
 	}
 
+	public void bragFriends()
+	{
+		SoundManager.soundManager.playButtonClick();
+		string title = LocalizationManager.Instance.getText( "POST_LEVEL_CHALLENGE_BEATEN_FB_TITLE" );
+		string message = LocalizationManager.Instance.getText( "POST_LEVEL_CHALLENGE_BEATEN_FB_MESSAGE" );
+		int playerScore = LevelManager.Instance.getScore() + PlayerStatsManager.Instance.getDistanceTravelled();
+		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
+		string passedData = "ChallengeBeaten," + playerScore.ToString() + "," + episodeNumber.ToString();
+		//To recap, format of passed data is Challenge,88888,4
+		Debug.LogWarning("bragFriends pressed directRequestTo " + directRequestTo + " " + passedData );
 
+		FacebookManager.Instance.CallAppRequestAsDirectRequest( title, message, directRequestTo, passedData, bragFriendsCallback, null );
+	}
+
+	public void bragFriendsCallback(IAppRequestResult result, string appRequestIDToDelete )
+	{
+		if (result.Error != null)
+		{
+			Debug.Log ("bragFriendsCallback-Callback error:\n" + result.Error );
+		}
+		else
+		{
+			Debug.Log ("bragFriendsCallback-Callback success:\n" + result.RawResult );
+			//bragFriendsCallback-Callback success: {"cancelled":true}
+		}
+	}
 }

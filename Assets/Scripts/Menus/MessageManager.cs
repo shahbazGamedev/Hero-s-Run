@@ -73,6 +73,12 @@ public class MessageManager : MonoBehaviour {
 								go.name = "Message number " + i.ToString();
 								go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
 								break;
+							case RequestDataType.ChallengeBeaten:
+								go = (GameObject)Instantiate(challengeMessageEntryPrefab);
+								go.transform.SetParent(content.transform,false);
+								go.name = "Message number " + i.ToString();
+								go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
+								break;
 							default:
 								Debug.LogWarning("MessageManager-refreshMessages: unknown data type specified: " + FacebookManager.Instance.AppRequestDataList[i].dataType );
 								break;

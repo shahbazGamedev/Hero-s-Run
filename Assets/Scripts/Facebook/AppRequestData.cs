@@ -6,7 +6,8 @@ public enum RequestDataType {
 	Unknown = 0,
 	Ask_Give_Life = 1,
 	Accept_Give_Life = 2,
-	Challenge = 3
+	Challenge = 3,
+	ChallengeBeaten = 4
 }
 public class AppRequestData {
 
@@ -50,6 +51,9 @@ public class AppRequestData {
 			break;
 		case "Challenge":
 			dataType = RequestDataType.Challenge;
+			break;
+		case "ChallengeBeaten":
+			dataType = RequestDataType.ChallengeBeaten;
 			break;
 		default:
 			Debug.LogWarning("AppRequestData-getRequestDataType: unknown data type specified: " + dataType );

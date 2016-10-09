@@ -63,7 +63,7 @@ public class ChallengeHUD : MonoBehaviour {
 	{
 		if( hasChallenger )
 		{
-			int currentScore = originalScore - PlayerStatsManager.Instance.getDistanceTravelled();
+			int currentScore = originalScore - ( LevelManager.Instance.getScore() + PlayerStatsManager.Instance.getDistanceTravelled() );
 			if( currentScore < 0 )
 			{
 				activeChallenge.status = ChallengeStatus.Completed;

@@ -22,7 +22,8 @@ public class MessageEntry : MonoBehaviour {
 	{
 		this.requestData = requestData;
 		portrait.GetComponent<FacebookPortraitHandler>().setPortrait( requestData.fromID );
-
+		string levelNumberString = string.Empty;
+		string episodeName = string.Empty;
 		switch (requestData.dataType)
 		{
 			case RequestDataType.Ask_Give_Life:
@@ -42,8 +43,21 @@ public class MessageEntry : MonoBehaviour {
 				message.text = message.text.Replace("<first name>", requestData.fromFirstName );
 				message.text = message.text.Replace("<score>", requestData.dataNumber1.ToString() );
 				//dataNumber2 contains the episode number
-				string levelNumberString = (requestData.dataNumber2 + 1).ToString();
-				string episodeName = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
+				levelNumberString = (requestData.dataNumber2 + 1).ToString();
+				episodeName = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
+				//Use rich text
+				episodeName = "<color=#D22626FF>" + episodeName + "</color>"; //Red color
+				message.text = message.text.Replace("<episode name>", episodeName );
+				break;
+			case RequestDataType.ChallengeBeaten:
+				acceptButtonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_REVENGE"); 
+				dismissButtonText.text =  LocalizationManager.Instance.getText("POPUP_BUTTON_DISMISS"); 
+				message.text = LocalizationManager.Instance.getText( "MESSAGE_ENTRY_TEXT_CHALLENGE_BEATEN" );	//Bob beat your challenge of <score> in the <episode name> level. Defend your honor!
+				message.text = message.text.Replace("<first name>", requestData.fromFirstName );
+				message.text = message.text.Replace("<score>", requestData.dataNumber1.ToString() );
+				//dataNumber2 contains the episode number
+				levelNumberString = (requestData.dataNumber2 + 1).ToString();
+				episodeName = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
 				//Use rich text
 				episodeName = "<color=#D22626FF>" + episodeName + "</color>"; //Red color
 				message.text = message.text.Replace("<episode name>", episodeName );
