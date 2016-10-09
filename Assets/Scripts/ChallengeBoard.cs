@@ -4,8 +4,14 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 
+public enum ChallengeStatus {
+	Not_started = 0,
+	Completed = 2
+}
+
 [System.Serializable]
 public class ChallengeBoard {
+
 
 	public List<Challenge> challengeList = new List<Challenge>();
 
@@ -19,6 +25,7 @@ public class ChallengeBoard {
 		public int episodeNumber = -1; 				//Episode number
 		public int levelNumber = -1; 				//Level number
 		public string created_time;					//date field are returned as ISO-8601 formatted strings from the App Request and are stored as a string since DateTime is not Serializable.
+		public ChallengeStatus status = ChallengeStatus.Not_started;
 
 		public Challenge( string challengerFirstName, string challengerID, int score, int episodeNumber, DateTime created_time )
 		{
@@ -32,7 +39,7 @@ public class ChallengeBoard {
 
 		public void printChallenge()
 		{
-			string printStr = challengerFirstName + " " + challengerID  + " " + score + " " + episodeNumber + " " + levelNumber + " " + created_time;
+						string printStr = challengerFirstName + " " + challengerID  + " " + score + " " + episodeNumber + " " + levelNumber + " " + created_time + " " + status;
 			Debug.Log( "Challenge: " + printStr );
 		}
 	}
@@ -73,6 +80,31 @@ public class ChallengeBoard {
 		//Sorted with lowest score first
 		List<Challenge> sortedChallengeListByScore = episodeChallengeList.OrderBy(challenge=>challenge.score).ToList();
 		return sortedChallengeListByScore;
+	}
+
+	public int getNumberOfActiveChallenges( int episodeNumber )
+	{
+		int numberOfActiveChallenges = 0;
+		for( int i = 0; i < challengeList.Count; i++ )
+		{
+			if( challengeList[i].episodeNumber == episodeNumber ) numberOfActiveChallenges++;
+		}
+		return numberOfActiveChallenges;
+	}
+
+	public void removeChallenge( Challenge challenge )
+	{
+		challengeList.Remove( challenge );
+	}
+
+	public List<Challenge> getCompletedChallenges( int episodeNumber )
+	{
+		List<Challenge> completedChallengesList = new List<Challenge>();
+		for( int i = 0; i < challengeList.Count; i++ )
+		{
+			if( challengeList[i].episodeNumber == episodeNumber && challengeList[i].status == ChallengeStatus.Completed ) completedChallengesList.Add(challengeList[i]);
+		}
+		return completedChallengesList;
 	}
 
 	public void serializeChallenges()

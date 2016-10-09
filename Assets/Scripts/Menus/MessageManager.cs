@@ -28,10 +28,12 @@ public class MessageManager : MonoBehaviour {
 			challengeBoard = new ChallengeBoard();
 		}
 		//For testing
-		/*challengeBoard.addChallenge( "Suzie", "90", 2000, 1, System.DateTime.Now );
-		challengeBoard.addChallenge( "Bob", "50", 1000, 1, System.DateTime.Now );
-		challengeBoard.addChallenge( "Suzie", "90", 3000, 1, System.DateTime.Now );
-		challengeBoard.addChallenge( "Bob", "50", 99900, 1, System.DateTime.Now );*/
+		/*challengeBoard.addChallenge( "Suzie", "90", 200, 4, System.DateTime.Now );
+		challengeBoard.addChallenge( "Bob", "50", 100, 4, System.DateTime.Now );
+		challengeBoard.addChallenge( "Suzie", "90", 400, 4, System.DateTime.Now );
+		challengeBoard.addChallenge( "Bob", "50", 800, 4, System.DateTime.Now );
+		challengeBoard.addChallenge( "Martha", "60", 300, 4, System.DateTime.Now );
+		challengeBoard.addChallenge( "John", "70", 500, 4, System.DateTime.Now );*/
 
 		//Make sure the GameManager has a reference since we need access while running in a level
 		GameManager.Instance.challengeBoard = challengeBoard;

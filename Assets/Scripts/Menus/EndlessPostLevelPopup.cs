@@ -95,7 +95,50 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
 
 		StartCoroutine( startUpdateSequence( selectedEpisode ) );
+		string challengeResults = getNamesOfBeatenChallenger();
+		if( challengeResults != string.Empty ) challengeDescriptionText.text = challengeResults;
+	}
+
+	public string getNamesOfBeatenChallenger()
+	{
+		List<ChallengeBoard.Challenge> completedChallengesList = GameManager.Instance.challengeBoard.getCompletedChallenges( LevelManager.Instance.getCurrentEpisodeNumber() );
+		string[] arrayOfBeatenChallengers = new string[completedChallengesList.Count];
+		for( int i = 0; i < completedChallengesList.Count; i++ )
+		{
+			arrayOfBeatenChallengers[i] = completedChallengesList[i].challengerFirstName;
+			GameManager.Instance.challengeBoard.removeChallenge( completedChallengesList[i] );
+		}
+		GameManager.Instance.challengeBoard.serializeChallenges();
+		string textToDisplay = string.Empty;
+		if( GameManager.Instance.challengeBoard.getNumberOfActiveChallenges( LevelManager.Instance.getCurrentEpisodeNumber() ) > 0 )
+		{
+			switch (completedChallengesList.Count)
+			{
+				case 0:
+					//difficultyLevelName = LocalizationManager.Instance.getText("MENU_DIFFICULTY_LEVEL_NORMAL");
+					textToDisplay = "You suck. You were not able to beat anyone's high score.";
+					break;
+					
+				case 1:
+					textToDisplay = "Awesome. You just beat " + arrayOfBeatenChallengers[0] +"'s high score!";
+					break;
+					
+				case 2:
+					textToDisplay = "Awesome. You just beat " + arrayOfBeatenChallengers[0] + " and " + arrayOfBeatenChallengers[1] +"'s high score!";
+					break;
 		
+				case 3:
+					textToDisplay = "Awesome. You just beat " + arrayOfBeatenChallengers[0] + ", " + arrayOfBeatenChallengers[1] + " and " + arrayOfBeatenChallengers[2] + "'s high score!";
+					break;
+
+				default:
+					textToDisplay = "Awesome. You just beat " + arrayOfBeatenChallengers[0] + ", " + arrayOfBeatenChallengers[1] + " and " + (arrayOfBeatenChallengers.Length - 2).ToString() + " other friends's high score!";
+					break;
+				
+			}
+		}
+		
+		return textToDisplay;
 	}
 
 	IEnumerator startUpdateSequence( LevelData.EpisodeInfo selectedEpisode )

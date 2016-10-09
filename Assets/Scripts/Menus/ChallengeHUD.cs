@@ -17,6 +17,7 @@ public class ChallengeHUD : MonoBehaviour {
 	int originalScore; //we decrement this value to 0 as the player is running
 	List<ChallengeBoard.Challenge> sortedChallengeListByScore;
 	int challengeIndex = 0;
+	ChallengeBoard.Challenge activeChallenge;
 
 	// Use this for initialization
 	void Start ()
@@ -43,11 +44,11 @@ public class ChallengeHUD : MonoBehaviour {
 	{
 		if( challengeIndex < sortedChallengeListByScore.Count )
 		{
-			ChallengeBoard.Challenge challenge = sortedChallengeListByScore[challengeIndex];
-			portrait.GetComponent<FacebookPortraitHandler>().setPortrait( challenge.challengerID );
-			originalScore = challenge.score;
-			score.text = challenge.score.ToString("N0");
-			label.text = challenge.challengerFirstName;
+			activeChallenge = sortedChallengeListByScore[challengeIndex];
+			portrait.GetComponent<FacebookPortraitHandler>().setPortrait( activeChallenge.challengerID );
+			originalScore = activeChallenge.score;
+			score.text = activeChallenge.score.ToString("N0");
+			label.text = activeChallenge.challengerFirstName;
 			hasChallenger = true;
 			challengeIndex++;
 		}
@@ -65,7 +66,9 @@ public class ChallengeHUD : MonoBehaviour {
 			int currentScore = originalScore - PlayerStatsManager.Instance.getDistanceTravelled();
 			if( currentScore < 0 )
 			{
-				 //Player has beaten this high score. Configure HUD for next opponent if any
+				activeChallenge.status = ChallengeStatus.Completed;
+				GameManager.Instance.challengeBoard.serializeChallenges();
+				//Player has beaten this high score. Configure HUD for next opponent if any
 				configureChallengerPanel();
 			}
 			else
