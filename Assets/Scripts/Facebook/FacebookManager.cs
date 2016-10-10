@@ -820,16 +820,23 @@ public class FacebookManager
 	//customImageUri format is: http://i.imgur.com/zkYlB.jpg
 	public void inviteFriends( string customImageUri )
 	{
-		string fbUri = "https://fb.me/" + FB.AppId;
+		string appLinkUrl = string.Empty;
+		#if UNITY_IPHONE
+		appLinkUrl = "https://itunes.apple.com/app/apple-store/id797936081";
+		#elif UNITY_ANDROID
+		//appLinkUrl = "https://fb.me/" + FB.AppId;
+		Debug.LogWarning("FacebookManager - inviteFriends - appLinkUrl has not been set for Android.");
+		#endif
+
 		if( customImageUri != null )
 		{
 			Debug.Log ("inviteFriends action: "  + FB.AppId + " with a custom image specified." );
-            FB.Mobile.AppInvite(new Uri(fbUri), new Uri(customImageUri), inviteFriendsCallback);
+            FB.Mobile.AppInvite(new Uri(appLinkUrl), new Uri(customImageUri), inviteFriendsCallback);
 		}
 		else
 		{
 			Debug.Log ("inviteFriends action: "  + FB.AppId + " with no custom image specified." );
-		    FB.Mobile.AppInvite(new Uri(fbUri), null, inviteFriendsCallback);
+		    FB.Mobile.AppInvite(new Uri(appLinkUrl), null, inviteFriendsCallback);
 		}
 	}
 

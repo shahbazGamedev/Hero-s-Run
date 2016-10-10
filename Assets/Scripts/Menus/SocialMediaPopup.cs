@@ -6,6 +6,7 @@ using Facebook.Unity;
 public class SocialMediaPopup : MonoBehaviour {
 
 	public GameObject postLevelPopupPanel;
+	public GameObject endlessPostLevelPopupPanel;
 	public Image picturePreview;
 	public Text episodeNameText;
 	public Text messageText;
@@ -59,8 +60,14 @@ public class SocialMediaPopup : MonoBehaviour {
 
 	void showPostLevelPopup()
 	{
-		postLevelPopupPanel.GetComponent<PostLevelPopup>().showPostLevelPopup(LevelManager.Instance.getLevelData());
-
+		if( GameManager.Instance.getGameMode() == GameMode.Story )
+		{
+			postLevelPopupPanel.GetComponent<PostLevelPopup>().showPostLevelPopup(LevelManager.Instance.getLevelData());
+		}
+		else
+		{
+			endlessPostLevelPopupPanel.GetComponent<EndlessPostLevelPopup>().showEndlessPostLevelPopup(LevelManager.Instance.getLevelData());
+		}
 	}
 
 	void freeUpPictureMemory()
