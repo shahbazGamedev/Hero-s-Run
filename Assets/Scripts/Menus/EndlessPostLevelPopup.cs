@@ -117,7 +117,7 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 			arrayOfBeatenChallengers[i] = completedChallengesList[i].challengerFirstName;
 			//Create a comma separated list of IDs when want to sent the brag to
 			directRequestTo = completedChallengesList[i].challengerID + "," + directRequestTo;
-			//GameManager.Instance.challengeBoard.removeChallenge( completedChallengesList[i] );
+			GameManager.Instance.challengeBoard.removeChallenge( completedChallengesList[i] );
 		}
 		//Delete trailing comma
 		directRequestTo = directRequestTo.TrimEnd(',');
