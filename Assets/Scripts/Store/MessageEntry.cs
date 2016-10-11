@@ -71,21 +71,19 @@ public class MessageEntry : MonoBehaviour {
 		switch (requestData.dataType)
 		{
 			case RequestDataType.Ask_Give_Life:
+				FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
 				FacebookManager.Instance.CallAppRequestAsDirectRequest("App Requests", LocalizationManager.Instance.getText("FB_HAVE_A_LIFE_MESSAGE"), requestData.fromID, "Accept_Give_Life," + requestData.dataNumber1.ToString() + ",-1", MCHCallback, requestData.appRequestID );
 				requestData.hasBeenProcessed = true;
 				GameObject.Destroy( gameObject );
 				break;
 			case RequestDataType.Accept_Give_Life:
-				Debug.Log("MessageEntry-buttonPressed: Accept_Give_Life" );
+				FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
 				PlayerStatsManager.Instance.increaseLives(1);
 				PlayerStatsManager.Instance.savePlayerStats();
-				//Now that it is successfully processed, delete the app request on Facebook
-				FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
 				requestData.hasBeenProcessed = true;
 				GameObject.Destroy( gameObject );
 				break;
 			case RequestDataType.Challenge:
-				Debug.Log("MessageEntry-buttonPressed: Challenge" );
 				FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
 				requestData.hasBeenProcessed = true;
 				//Save challenge
@@ -97,7 +95,6 @@ public class MessageEntry : MonoBehaviour {
 				messageManager.newWorldMapHandler.play( requestData.dataNumber2, LevelManager.Instance.getLevelNumberFromEpisodeNumber( requestData.dataNumber2 ) );
 				break;
 			case RequestDataType.ChallengeBeaten:
-				Debug.Log("MessageEntry-buttonPressed: ChallengeBeaten" );
 				FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
 				requestData.hasBeenProcessed = true;
 				//Save challenge
