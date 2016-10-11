@@ -15,6 +15,8 @@ public class SocialMediaPopup : MonoBehaviour {
 	public int numberOfLivesAsReward = 3;
 	string facebookMessage;
 
+	int ellipisCounter = 0;
+
 	// Use this for initialization
 	void Start ()
  	{
@@ -56,6 +58,7 @@ public class SocialMediaPopup : MonoBehaviour {
 		freeUpPictureMemory();
 		GetComponent<Animator>().Play("Panel Slide Out");
 		Invoke("showPostLevelPopup", 1f );
+		CancelInvoke("animateEllipsis");
 	}
 
 	void showPostLevelPopup()
@@ -85,10 +88,38 @@ public class SocialMediaPopup : MonoBehaviour {
         wwwForm.AddField("message", facebookMessage );
 		FB.API("me/photos", HttpMethod.POST, TakeScreenshotCallback, wwwForm);
 		freeUpPictureMemory();
+		InvokeRepeating("animateEllipsis", 0, 0.6f );
+
+	}
+
+	void animateEllipsis()
+	{
+		string ellipis;
+		if( ellipisCounter == 0 )
+		{
+			ellipis = string.Empty;
+		}
+		else if( ellipisCounter == 1 )
+		{
+			ellipis = " .";
+		}
+		else if( ellipisCounter == 2 )
+		{
+			ellipis = " ..";
+		}
+		else
+		{
+			ellipis = " ...";
+		}
+		messageText.text = LocalizationManager.Instance.getText("SOCIAL_MEDIA_SENDING_MESSAGE") + ellipis;
+		
+		ellipisCounter++;
+		if( ellipisCounter == 4 ) ellipisCounter = 0;
 	}
 
 	void TakeScreenshotCallback(IGraphResult result)
 	{
+		CancelInvoke("animateEllipsis");
 		if (result.Error != null)
 		{
 			Debug.LogWarning("TakeScreenshot-TakeScreenshotCallback: error: " + result.Error );
