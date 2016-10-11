@@ -24,7 +24,8 @@ public class AskForLivesManager : MonoBehaviour {
 	{
 		SoundManager.soundManager.playButtonClick();
 		string message = LocalizationManager.Instance.getText( "MESSAGE_ENTRY_TITLE_EXTRA_LIFE" );
-		FacebookManager.Instance.CallAppRequestAsFriendSelector( "App Requests", message, "Ask_Give_Life,1,-1", "", "" );
+		string title = LocalizationManager.Instance.getText( "FB_ASK_LIVES_TITLE" );
+		FacebookManager.Instance.CallAppRequestAsFriendSelector( title, message, "Ask_Give_Life,1,-1", "", "" );
 	}
 
 }

@@ -45,8 +45,6 @@ public class MessageEntry : MonoBehaviour {
 				//dataNumber2 contains the episode number
 				levelNumberString = (requestData.dataNumber2 + 1).ToString();
 				episodeName = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
-				//Use rich text
-				episodeName = "<color=#D22626FF>" + episodeName + "</color>"; //Red color
 				message.text = message.text.Replace("<episode name>", episodeName );
 				break;
 			case RequestDataType.ChallengeBeaten:
@@ -58,8 +56,6 @@ public class MessageEntry : MonoBehaviour {
 				//dataNumber2 contains the episode number
 				levelNumberString = (requestData.dataNumber2 + 1).ToString();
 				episodeName = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
-				//Use rich text
-				episodeName = "<color=#D22626FF>" + episodeName + "</color>"; //Red color
 				message.text = message.text.Replace("<episode name>", episodeName );
 				break;
 		}

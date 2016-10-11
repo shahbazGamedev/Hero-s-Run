@@ -114,22 +114,21 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 		string[] arrayOfBeatenChallengers = new string[completedChallengesList.Count];
 		for( int i = 0; i < completedChallengesList.Count; i++ )
 		{
+			//Populate an array with the names of the beaten challengers
 			arrayOfBeatenChallengers[i] = completedChallengesList[i].challengerFirstName;
-			//Create a comma separated list of IDs when want to sent the brag to
+			//Create a comma separated list of IDs, which we will use if the player presses the Brag button
 			directRequestTo = completedChallengesList[i].challengerID + "," + directRequestTo;
-			GameManager.Instance.challengeBoard.removeChallenge( completedChallengesList[i] );
 		}
 		//Delete trailing comma
 		directRequestTo = directRequestTo.TrimEnd(',');
 
-		GameManager.Instance.challengeBoard.serializeChallenges();
+		//Update the message text in the popup based on the number of challengers beaten, but only if we ran with at least one challenge active
 		string textToDisplay = string.Empty;
 		if( GameManager.Instance.challengeBoard.getNumberOfActiveChallenges( LevelManager.Instance.getCurrentEpisodeNumber() ) > 0 )
 		{
 			switch (completedChallengesList.Count)
 			{
 				case 0:
-					//difficultyLevelName = LocalizationManager.Instance.getText("MENU_DIFFICULTY_LEVEL_NORMAL");
 					textToDisplay = "You suck. You were not able to beat anyone's high score.";
 					break;
 					
@@ -151,7 +150,15 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 				
 			}
 		}
-		
+
+		//Delete completed challenges
+		for( int i = 0; i < completedChallengesList.Count; i++ )
+		{
+			GameManager.Instance.challengeBoard.removeChallenge( completedChallengesList[i] );
+		}
+		//Save the updated challenge list
+		GameManager.Instance.challengeBoard.serializeChallenges();
+	
 		return textToDisplay;
 	}
 

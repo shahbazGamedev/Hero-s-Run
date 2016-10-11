@@ -171,7 +171,7 @@ public class FacebookManager
         //Debug.Log("publish response: " + result.RawResult);
     }
 
-	//Title: 	The title for the Dialog. Maximum length is 50 characters. For example, "App Requests". Currently this parameter does not change anything. It appears to be a Facebook bug.
+	//Title: 	The title for the Dialog. Maximum length is 50 characters. For example, "App Requests".
 	//Message:	For example: "Send me lives!"
 	//Data:		Custom data identifying what type of app requests this is. The format is <type,number>. The maximum length is 255 characters.
 	//Note: 	The excludeIds, maxRecipients and filters AppRequest parameters are currently not supported for mobile devices by Facebook.
