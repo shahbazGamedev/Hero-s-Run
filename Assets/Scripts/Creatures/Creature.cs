@@ -23,6 +23,8 @@ public class Creature : BaseClass {
 	public float headWeight = 1f;
 	public float eyesWeight = 1f;
 	public float clampWeight = 1f;
+	public float activeDistanceIK = 24f;
+	public float dotProductIK = 0.55f;
 	bool lookAtActive = false;
 	bool enableIK = true;
 
@@ -103,10 +105,10 @@ public class Creature : BaseClass {
 	//In the Animator windows, under Layers, under Settings, you must have the IK Pass toggled on.
 	void OnAnimatorIK()
 	{
-		if( enableIK && getDotProduct() > 0.55f )
+		if( enableIK && getDotProduct() > dotProductIK )
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
-			if( distance < 24f )			
+			if( distance < activeDistanceIK )			
 			{
 				if( !lookAtActive )
 				{

@@ -30,7 +30,7 @@ public sealed class WraithController : Creature, ICreature {
 		walk_and_talk = 5,
 		do_nothing = 6
 	}
-
+	public float floatDuration = 5f;
 	public enum WeaponType {
 		Axe = 1,
 		Scythe = 2
@@ -58,7 +58,7 @@ public sealed class WraithController : Creature, ICreature {
 
 	void configureSelectedWeapon()
 	{
-		if( attackType == AttackType.charge_and_attack || attackType == AttackType.stand_and_big_attack || attackType == AttackType.stand_and_normal_attack )
+		if( attackType == AttackType.charge_and_attack || attackType == AttackType.stand_and_big_attack || attackType == AttackType.stand_and_normal_attack || attackType == AttackType.walk_and_talk )
 		{
 			if( weaponType == WeaponType.Scythe )
 			{
@@ -117,7 +117,7 @@ public sealed class WraithController : Creature, ICreature {
 		    switch (attackType)
 			{
 		        case AttackType.stand_and_normal_attack:
-					attackDistance = 0.65f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.64f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -126,7 +126,7 @@ public sealed class WraithController : Creature, ICreature {
 					break;
 		                
 		        case AttackType.stand_and_big_attack:
-					attackDistance = 0.65f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.64f * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -163,22 +163,46 @@ public sealed class WraithController : Creature, ICreature {
 					break;
 				
 				case AttackType.walk_and_talk:
-					float startWalkingDistance = 3.3f * PlayerController.getPlayerSpeed();
+					float startWalkingDistance = 3.4f * PlayerController.getPlayerSpeed();
 					if( distance < startWalkingDistance )
 					{
-						if( getCreatureState() != CreatureState.Walking )
+						if( getCreatureState() != CreatureState.BurrowUp )
 						{
-							//Walk
 							followsPlayer = false;
-							moveSpeed = WALK_SPEED;
-							setCreatureState( CreatureState.Walking );
+							setCreatureState( CreatureState.BurrowUp );
+							controller.enabled = false;
 							anim.Play( "move" );
-							Invoke("stopWalking", 6.8f );
+							//50% of the time turn to face player and attack, the other 50%, just continue straight
+							if( Random.value <= 0.5f )
+							{
+								Invoke("removeDotProduct", floatDuration * 0.65f );
+								LeanTween.moveLocal( gameObject, new Vector3( transform.localPosition.x - 12f, transform.localPosition.y, transform.localPosition.z ), floatDuration ).setOnComplete(turnToFacePlayer).setOnCompleteParam(gameObject).setEase(LeanTweenType.easeInOutQuad);
+							}
+							else
+							{
+								LeanTween.moveLocal( gameObject, new Vector3( transform.localPosition.x - 24f, transform.localPosition.y + 0.3f, transform.localPosition.z ), floatDuration * 2.5f );
+							}
 						}
 					}
 					break;
 			}
 		}
+	}
+
+	void removeDotProduct()
+	{
+		dotProductIK = 0;
+	}
+
+	void turnToFacePlayer()
+	{
+		LeanTween.rotateLocal( gameObject, new Vector3( 0, 160f, 0 ), 0.3f ).setDelay( 0.1f ).setOnComplete(nowFacingPlayer).setOnCompleteParam(gameObject).setEase(LeanTweenType.easeOutQuad);
+	}
+
+	void nowFacingPlayer()
+	{
+		dotProductIK = 0.6f;
+		attackType = AttackType.stand_and_big_attack;
 	}
 
 	void stopWalking()
