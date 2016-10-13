@@ -15,7 +15,14 @@ public class CavesArrivalStartSequence : MonoBehaviour {
 
 	void Start ()
 	{
-		Invoke("step1", 1.5f );
+		if( GameManager.Instance.getGameMode() == GameMode.Story )
+		{
+			Invoke("step1", 1.5f );
+		}
+		else
+		{
+			showTapToPlay();
+		}
 	}
 	
 	void step1()

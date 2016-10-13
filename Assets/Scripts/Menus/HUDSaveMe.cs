@@ -18,6 +18,8 @@ public class HUDSaveMe : MonoBehaviour {
 	public Text checkpointText;
 	public Text checkpointCostText;
 	public Text quitNormalText;
+	public RectTransform buttonPanel;
+	public RectTransform checkpointButton;
 	[Header("Tutorial Save Me")]
 	public GameObject tutorialPanel;
 	public Text titleTutorialText;
@@ -52,7 +54,12 @@ public class HUDSaveMe : MonoBehaviour {
 		ranOutofTimeTitleText.text = LocalizationManager.Instance.getText("NOT_ENOUGH_TIME_TITLE");
 		ranOutofTimeContentText.text = LocalizationManager.Instance.getText("NOT_ENOUGH_TIME_CONTENT");
 		ranOutofTimeButtonText.text = LocalizationManager.Instance.getText("NOT_ENOUGH_TIME_BUTTON");
-
+		//Do not show the retry from last checkpoint button when in endless mode
+		if( GameManager.Instance.getGameMode() == GameMode.Endless )
+		{
+			buttonPanel.sizeDelta = new Vector2(buttonPanel.rect.width, buttonPanel.rect.height - checkpointButton.rect.height);
+			checkpointButton.gameObject.SetActive( false );
+		}
 	}
 
 	void OnEnable()
