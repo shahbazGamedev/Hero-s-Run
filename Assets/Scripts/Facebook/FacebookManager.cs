@@ -28,7 +28,7 @@ public class FacebookManager
 	private const int NUMBER_OF_FRIENDS = 20;
 	public string  firstName = null;
 	//Facebook ID of player
-	string FBUserId = "";
+	string FBUserId = string.Empty;
 	public Sprite UserPortrait = null;
 	//The following Dictionary has a string ID as the Key and the friend's data as the Value
 	public Dictionary<string, FriendData> friendsList = new Dictionary<string, FriendData>(NUMBER_OF_FRIENDS);
@@ -49,6 +49,9 @@ public class FacebookManager
 	//Delegate used to communicate to other classes when we have received App Requests
 	public delegate void AppRequestsReceived( int appRequestsCount );
 	public static event AppRequestsReceived appRequestsReceived;
+	//Delegate used to communicate to other classes when the player logouts of Facebook
+	public delegate void FacebookLogout();
+	public static event FacebookLogout facebookLogout;
 
 	private static FacebookManager facebookManager = null;
 
@@ -154,6 +157,13 @@ public class FacebookManager
     {
 		FB.LogOut();
 		facebookState = FacebookState.Initialised;
+		firstName = null;
+		FBUserId = string.Empty;
+		UserPortrait = null;
+		PlayerStatsManager.Instance.setUsesFacebook( false );
+		PlayerStatsManager.Instance.savePlayerStats();
+		//Inform interested classes
+		if( facebookLogout != null ) facebookLogout();
 	}
 
 	public bool isLoggedIn()

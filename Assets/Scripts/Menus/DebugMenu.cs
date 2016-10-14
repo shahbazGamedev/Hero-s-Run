@@ -162,4 +162,19 @@ public class DebugMenu : MonoBehaviour {
 		deathPerEpisodeText.text = "Death Per Levels: " + PlayerStatsManager.Instance.getDeathInLevelsAsString();
 	}
 
+	void OnEnable()
+	{
+		FacebookManager.facebookLogout += FacebookLogout;
+	}
+
+	void OnDisable()
+	{
+		FacebookManager.facebookLogout -= FacebookLogout;
+	}
+
+	void FacebookLogout()
+	{
+		updatePlayerStats();
+	}
+	
 }

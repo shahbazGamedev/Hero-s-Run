@@ -17,7 +17,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public Text numberOfStarsText;
 	public string inviteFriendsCustomImageUri = "http://i.imgur.com/zkYlB.jpg";
 	public Image playerPortrait;
-	public Sprite defaultPortrait;
 	[Header("Message Center")]
 	public GameObject messageCenterPanel;
 	public Text numberOfMessages;
@@ -88,15 +87,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 			gameModeButtonText.text = LocalizationManager.Instance.getText("MENU_GAME_MODE_ENDLESS");
 		}
 
-		//if we have a Facebook user portrait, use it, or else, use the default one.
-		if( FacebookManager.Instance.UserPortrait == null )
-		{
-			playerPortrait.sprite = defaultPortrait;
-		}
-		else
-		{
-			playerPortrait.sprite = FacebookManager.Instance.UserPortrait;
-		}
+		playerPortrait.GetComponent<FacebookPortraitHandler>().setPlayerPortrait();
 
 		drawLevelMarkers();
 
