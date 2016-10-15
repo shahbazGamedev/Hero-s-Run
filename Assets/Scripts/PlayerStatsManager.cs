@@ -179,7 +179,6 @@ public class PlayerStatsManager {
 	{
 		difficultyLevel = difficulty;
 		savePlayerStats();
-		Debug.Log("PlayerStatsManager: Difficulty level is " + difficultyLevel );
 	}
 	
 	public DifficultyLevel getNextDifficultyLevel()
@@ -383,7 +382,7 @@ public class PlayerStatsManager {
 			try
 			{
 				string[] displayStarsStringArray = displayStarsString.Split(',');
-				Debug.Log ("loadDisplayStars " + displayStarsString + " length " + displayStarsStringArray.Length );
+				//Debug.Log ("loadDisplayStars " + displayStarsString + " length " + displayStarsStringArray.Length );
 				for( int i = 0; i < displayStarsStringArray.Length; i++ )
 				{
 					int numberOfStarsAsInt;
@@ -409,7 +408,7 @@ public class PlayerStatsManager {
 			result = result + displayStarsArray[i].ToString() + ",";
 		}
 		result = result.TrimEnd(',');
-		Debug.Log("saveDisplayStars " + result );
+		//Debug.Log("saveDisplayStars " + result );
 		PlayerPrefs.SetString("displayStars", result );
 	}
 
@@ -444,7 +443,7 @@ public class PlayerStatsManager {
 			try
 			{
 				string[] highScoresStringArray = highScoresString.Split(',');
-				Debug.Log ("loadHighScores " + highScoresString + " length " + highScoresStringArray.Length );
+				//Debug.Log ("loadHighScores " + highScoresString + " length " + highScoresStringArray.Length );
 				for( int i = 0; i < highScoresStringArray.Length; i++ )
 				{
 					int highScoreAsInt;
@@ -468,7 +467,7 @@ public class PlayerStatsManager {
 			result = result + highScoreArray[i].ToString() + ",";
 		}
 		result = result.TrimEnd(',');
-		Debug.Log("saveHighScores " + result );
+		//Debug.Log("saveHighScores " + result );
 		PlayerPrefs.SetString("highScores", result );
 	}
 
@@ -512,7 +511,7 @@ public class PlayerStatsManager {
 			try
 			{
 				string[] deathInLevelsStringArray = deathInLevelsString.Split(',');
-				Debug.Log ("deathInLevelsStringArray " + deathInLevelsString + " length " + deathInLevelsStringArray.Length );
+				//Debug.Log ("deathInLevelsStringArray " + deathInLevelsString + " length " + deathInLevelsStringArray.Length );
 				for( int i = 0; i < deathInLevelsStringArray.Length; i++ )
 				{
 					int numberOfDeathsAsInt;
@@ -536,7 +535,7 @@ public class PlayerStatsManager {
 			result = result + deathInLevelsArray[i].ToString() + ",";
 		}
 		result = result.TrimEnd(',');
-		Debug.Log("saveDeathInLevels " + result );
+		//Debug.Log("saveDeathInLevels " + result );
 		PlayerPrefs.SetString("deathInLevels", result );
 	}
 
@@ -571,7 +570,7 @@ public class PlayerStatsManager {
 		{
 			deathInLevelsArray[i] = 0;
 		}
-		Debug.Log("PlayerStatsManager-resetNumberDeathsStartingAtLevel: " + levelNumber );
+		//Debug.Log("PlayerStatsManager-resetNumberDeathsStartingAtLevel: " + levelNumber );
 	}
 
 	public int getNumberDeathLeadingToLevel( int levelNumber )
@@ -596,7 +595,7 @@ public class PlayerStatsManager {
 			try
 			{
 				string[] keysFoundInEpisodeStringArray = keysFoundInEpisodeString.Split(',');
-				Debug.Log ("loadKeysFoundInEpisode " + keysFoundInEpisodeString + " length " + keysFoundInEpisodeStringArray.Length );
+				//Debug.Log ("loadKeysFoundInEpisode " + keysFoundInEpisodeString + " length " + keysFoundInEpisodeStringArray.Length );
 				for( int i = 0; i < keysFoundInEpisodeStringArray.Length; i++ )
 				{
 					int numberOfKeysAsInt;
@@ -622,7 +621,7 @@ public class PlayerStatsManager {
 			result = result + keysFoundInEpisodeArray[i].ToString() + ",";
 		}
 		result = result.TrimEnd(',');
-		Debug.Log("saveKeysFoundInEpisode " + result );
+		//Debug.Log("saveKeysFoundInEpisode " + result );
 		PlayerPrefs.SetString("keysFoundInEpisode", result );
 	}
 
@@ -660,7 +659,7 @@ public class PlayerStatsManager {
 			try
 			{
 				string[] TreasureKeysFoundStringArray = treasureKeysFoundString.Split(',');
-				Debug.Log ("loadTreasureKeysFound " + treasureKeysFoundString + " length " + TreasureKeysFoundStringArray.Length );
+				//Debug.Log ("loadTreasureKeysFound " + treasureKeysFoundString + " length " + TreasureKeysFoundStringArray.Length );
 				for( int i = 0; i < TreasureKeysFoundStringArray.Length; i++ )
 				{
 					treasureKeysFound.Add( TreasureKeysFoundStringArray[i] );
@@ -682,7 +681,7 @@ public class PlayerStatsManager {
 			result = result + treasureKeysFound[i].ToString() + ",";
 		}
 		result = result.TrimEnd(',');
-		Debug.Log("saveTreasureKeysFound " + result );
+		//Debug.Log("saveTreasureKeysFound " + result );
 		PlayerPrefs.SetString("treasureKeysFound", result );
 	}
 
@@ -901,7 +900,7 @@ public class PlayerStatsManager {
 			result = result + powerUpTypeAsInt.ToString() + "," + pair.Value.quantity.ToString() + "," + pair.Value.upgradeLevel.ToString() + ",";
 		}
 		result = result.TrimEnd(',');
-		Debug.Log("savePowerUpInventory " + result );
+		//Debug.Log("savePowerUpInventory " + result );
 		PlayerPrefs.SetString("powerUpInventory", result );
 	}
 
@@ -911,7 +910,7 @@ public class PlayerStatsManager {
 		{
 			string powerUpInventoryString = PlayerPrefs.GetString("powerUpInventory", defaultPowerUpsForNewPlayer );
 			string[] powerUpInventoryArray = powerUpInventoryString.Split(',');
-			Debug.Log ("loadPowerUpInventory " + powerUpInventoryString + " length " + powerUpInventoryArray.Length );
+			//Debug.Log ("loadPowerUpInventory " + powerUpInventoryString + " length " + powerUpInventoryArray.Length );
 			for( int i = 0; i < powerUpInventoryArray.Length; i = i+3 )
 			{
 				int powerUpTypeAsInt;
@@ -1051,7 +1050,7 @@ public class PlayerStatsManager {
 			userName = PlayerPrefs.GetString("userName", "" );
 			loadPowerUpInventory();
 			challenges = PlayerPrefs.GetString("challenges", "" );
-			Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " Next Level To Complete: " + nextLevelToComplete + " Highest Level Completed: " + highestLevelCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
+			//Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " Next Level To Complete: " + nextLevelToComplete + " Highest Level Completed: " + highestLevelCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
 		{
@@ -1134,7 +1133,7 @@ public class PlayerStatsManager {
 		savePowerUpInventory();
 		PlayerPrefs.SetString( "challenges", challenges );
 		PlayerPrefs.Save();
-		Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
+		//Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
 	}
 	
 	//Used for debugging

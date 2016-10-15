@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using Facebook.Unity;
 
 public class MessageManager : MonoBehaviour {
 
@@ -47,49 +48,58 @@ public class MessageManager : MonoBehaviour {
 		//Player is connected to the Internet
 		if( Application.internetReachability != NetworkReachability.NotReachable )
 		{
-			if( FacebookManager.Instance.AppRequestDataList.Count > 0 )
+			if( FB.IsLoggedIn )
 			{
-				GameObject go;
-				//Player has mail and is connected to the Internet.
-				//Do not add the entry if the RequestDataType is Unknown
-				mailInformationPanel.SetActive( false );
-				for( int i = 0; i < FacebookManager.Instance.AppRequestDataList.Count; i++ )
+				if( FacebookManager.Instance.AppRequestDataList.Count > 0 )
 				{
-					//Only add entries which have not been processed
-					if( !FacebookManager.Instance.AppRequestDataList[i].hasBeenProcessed )
+					GameObject go;
+					//Player has mail and is connected to the Internet.
+					//Do not add the entry if the RequestDataType is Unknown
+					mailInformationPanel.SetActive( false );
+					for( int i = 0; i < FacebookManager.Instance.AppRequestDataList.Count; i++ )
 					{
-						switch (FacebookManager.Instance.AppRequestDataList[i].dataType)
+						//Only add entries which have not been processed
+						if( !FacebookManager.Instance.AppRequestDataList[i].hasBeenProcessed )
 						{
-							case RequestDataType.Ask_Give_Life:
-							case RequestDataType.Accept_Give_Life:
-								go = (GameObject)Instantiate(lifeMessageEntryPrefab);
-								go.transform.SetParent(content.transform,false);
-								go.name = "Message number " + i.ToString();
-								go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
-								break;
-							case RequestDataType.Challenge:
-								go = (GameObject)Instantiate(challengeMessageEntryPrefab);
-								go.transform.SetParent(content.transform,false);
-								go.name = "Message number " + i.ToString();
-								go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
-								break;
-							case RequestDataType.ChallengeBeaten:
-								go = (GameObject)Instantiate(challengeMessageEntryPrefab);
-								go.transform.SetParent(content.transform,false);
-								go.name = "Message number " + i.ToString();
-								go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
-								break;
-							default:
-								Debug.LogWarning("MessageManager-refreshMessages: unknown data type specified: " + FacebookManager.Instance.AppRequestDataList[i].dataType );
-								break;
+							switch (FacebookManager.Instance.AppRequestDataList[i].dataType)
+							{
+								case RequestDataType.Ask_Give_Life:
+								case RequestDataType.Accept_Give_Life:
+									go = (GameObject)Instantiate(lifeMessageEntryPrefab);
+									go.transform.SetParent(content.transform,false);
+									go.name = "Message number " + i.ToString();
+									go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
+									break;
+								case RequestDataType.Challenge:
+									go = (GameObject)Instantiate(challengeMessageEntryPrefab);
+									go.transform.SetParent(content.transform,false);
+									go.name = "Message number " + i.ToString();
+									go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
+									break;
+								case RequestDataType.ChallengeBeaten:
+									go = (GameObject)Instantiate(challengeMessageEntryPrefab);
+									go.transform.SetParent(content.transform,false);
+									go.name = "Message number " + i.ToString();
+									go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
+									break;
+								default:
+									Debug.LogWarning("MessageManager-refreshMessages: unknown data type specified: " + FacebookManager.Instance.AppRequestDataList[i].dataType );
+									break;
+							}
 						}
 					}
+				}
+				else
+				{
+					//Player has no mail but is connected to the Internet and his connected to Facebook.
+					mailInformationText.text = LocalizationManager.Instance.getText("MESSAGE_CENTER_NO_MAIL");
+					mailInformationPanel.SetActive( true );
 				}
 			}
 			else
 			{
-				//Player has no mail but is connected to the Internet.
-				mailInformationText.text = LocalizationManager.Instance.getText("POPUP_MESSAGE_CENTER_NO_MAIL");
+				//Player is not connected to Facebook.
+				mailInformationText.text = LocalizationManager.Instance.getText("MESSAGE_CENTER_NOT_LOGGED_IN_TO_FACEBOOK");
 				mailInformationPanel.SetActive( true );
 			}
 		}

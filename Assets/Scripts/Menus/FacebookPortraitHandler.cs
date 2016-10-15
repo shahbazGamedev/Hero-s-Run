@@ -5,46 +5,83 @@ using Facebook.Unity;
 
 public class FacebookPortraitHandler : MonoBehaviour {
 
+	public int episodeNumber;
 	public Sprite defaultPortrait;
 	public Image spinner;
 	
-	public void setPortrait ( string facebookID )
+	//Used in the world map
+	public void setPortrait ()
 	{
-		spinner.gameObject.SetActive( false );
-		if( FB.IsLoggedIn )
+		if( GameManager.Instance.getGameMode() == GameMode.Story )
 		{
+			if( FB.IsLoggedIn )
+			{
+				string userID = FacebookManager.Instance.getFriendPictureForEpisode( episodeNumber );
+				if( userID != null )
+				{
+					//Yes, a friend has reached that episode
+					GetComponent<Image>().gameObject.SetActive( true );
 
+					Sprite picture;
+					if ( FacebookManager.Instance.friendImages.TryGetValue( userID, out picture)) 
+					{
+						//We have the friend's picture
+						spinner.gameObject.SetActive( false );
+						GetComponent<Image>().sprite = picture;
+					}
+					else if ( FacebookManager.Instance.friendImagesRequested.Contains( userID ) )
+					{
+						//Picture has been requested but not received yet. Draw default portrait with a spinner on top.
+						GetComponent<Image>().sprite = defaultPortrait;
+						spinner.gameObject.SetActive( true );
+					}
+				}
+				else
+				{
+					//We do not have friends that have reached that episode. Hide the portrait.
+					GetComponent<Image>().gameObject.SetActive( false );
+				}
+			}
+			else
+			{
+				//We are not logged in to Facebook. Hide the portrait.
+				GetComponent<Image>().gameObject.SetActive( false );
+			}
+		}
+		else
+		{
+			//We are in Endless mode. Hide the portrait.
+			GetComponent<Image>().gameObject.SetActive( false );
+		}
+	}
+
+	//Used by the messenge center
+	public void setPortrait ( string userID )
+	{
+		if( userID != string.Empty )
+		{
 			Sprite picture;
-			if ( FacebookManager.Instance.friendImages.TryGetValue( facebookID, out picture)) 
+			if ( FacebookManager.Instance.friendImages.TryGetValue( userID, out picture)) 
 			{
 				//We have the friend's picture
+				spinner.gameObject.SetActive( false );
 				GetComponent<Image>().sprite = picture;
 			}
-			else if ( FacebookManager.Instance.friendImagesRequested.Contains( facebookID ) )
+			else if ( FacebookManager.Instance.friendImagesRequested.Contains( userID ) )
 			{
 				//Picture has been requested but not received yet. Draw default portrait with a spinner on top.
 				GetComponent<Image>().sprite = defaultPortrait;
 				spinner.gameObject.SetActive( true );
 			}
-			else
-			{
-				//Simply draw the default portrait
-				GetComponent<Image>().sprite = defaultPortrait;
-			}
-		}
-		else
-		{
-			//Simply draw the default portrait
-			GetComponent<Image>().sprite = defaultPortrait;
 		}
 	}
 
 	public void setPlayerPortrait()
 	{
-		if ( FacebookManager.Instance.UserPortrait != null ) 
+		if ( FacebookManager.Instance.playerPortrait != null ) 
 		{
 			//We have the player's picture
-			GetComponent<Image>().sprite = FacebookManager.Instance.UserPortrait;
+			GetComponent<Image>().sprite = FacebookManager.Instance.playerPortrait;
 		}
 		else
 		{
@@ -55,25 +92,31 @@ public class FacebookPortraitHandler : MonoBehaviour {
 
 	void OnEnable()
 	{
-		FacebookManager.facebookPortraitReceived += FacebookPortraitReceived;
+		FacebookManager.facebookFriendPortraitReceived += FacebookFriendPortraitReceived;
+		FacebookManager.facebookPlayerPortraitReceived += FacebookPlayerPortraitReceived;
 		FacebookManager.facebookLogout += FacebookLogout;
 	}
 
 	void OnDisable()
 	{
-		FacebookManager.facebookPortraitReceived -= FacebookPortraitReceived;
+		FacebookManager.facebookFriendPortraitReceived -= FacebookFriendPortraitReceived;
+		FacebookManager.facebookPlayerPortraitReceived -= FacebookPlayerPortraitReceived;
 		FacebookManager.facebookLogout -= FacebookLogout;
 	}
 
-	void FacebookPortraitReceived( string facebookID )
+	void FacebookFriendPortraitReceived( string facebookID )
 	{
-		setPortrait ( facebookID );
+		setPortrait ();
+	}
+
+	void FacebookPlayerPortraitReceived()
+	{
+		setPlayerPortrait ();
 	}
 
 	void FacebookLogout()
 	{
-		//Player logged out of Facebook, so replace the portrait by the default one
-		GetComponent<Image>().sprite = defaultPortrait;
+		//Player logged out of Facebook, so hide the portrait
+		setPortrait();
 	}
-
 }

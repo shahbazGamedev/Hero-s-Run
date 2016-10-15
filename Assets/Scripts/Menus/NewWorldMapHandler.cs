@@ -16,7 +16,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public Text numberOfLivesText;
 	public Text numberOfStarsText;
 	public string inviteFriendsCustomImageUri = "http://i.imgur.com/zkYlB.jpg";
-	public Image playerPortrait;
 	[Header("Message Center")]
 	public GameObject messageCenterPanel;
 	public Text numberOfMessages;
@@ -36,17 +35,16 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public Text gameModeButtonText;
 	[Header("Star Meter")]
 	public Color32 starReceivedColor;
-	[Header("Level Station Locations")]
-	public RectTransform[] levelStationLocations = new RectTransform[LevelData.NUMBER_OF_LEVELS];
+	[Header("Episode Station Locations")]
+	public RectTransform[] episodeStationLocations = new RectTransform[LevelData.NUMBER_OF_EPISODES];
 	[Header("Star Locations")]
 	//Array of the RectTransforms holding the three stars. Index is the episode number
 	public RectTransform[] starLocations = new RectTransform[LevelData.NUMBER_OF_EPISODES];
 	[Header("Menu Prefabs")]
 	public GameObject episodeStationPrefab;
-	public GameObject levelStationPrefab;
 	public GameObject starDisplayPrefab;
-	public GameObject friendPortraitPrefab;
 
+	public List<FacebookPortraitHandler> facebookPortraitList = new List<FacebookPortraitHandler>( LevelData.NUMBER_OF_EPISODES );
 	private Outline nextLevelToPlayGlowingOutline;
 	private const float OUTLINE_FLASH_SPEED = 2.25f;
 
@@ -87,9 +85,9 @@ public class NewWorldMapHandler : MonoBehaviour {
 			gameModeButtonText.text = LocalizationManager.Instance.getText("MENU_GAME_MODE_ENDLESS");
 		}
 
-		playerPortrait.GetComponent<FacebookPortraitHandler>().setPlayerPortrait();
-
 		drawLevelMarkers();
+
+		updateFriendPortraits();
 
 		if( TakeScreenshot.selfieTaken )
 		{
@@ -110,15 +108,23 @@ public class NewWorldMapHandler : MonoBehaviour {
 			}
 		}
 
-		//Get all of the user's outstanding app requests right away and then poll Facebook every 60 seconds
+		//Get all of the user's outstanding app requests right away and then poll Facebook regularly
 		CancelInvoke("getAllAppRequests");
 		InvokeRepeating("getAllAppRequests", 0, 30 );
+		//Get the score of the player's friends on a regular basis
+		CancelInvoke("getUpdatedScores");
+		InvokeRepeating("getUpdatedScores", 5, 20 );
 
 	}
 
 	void getAllAppRequests()
 	{
 		FacebookManager.Instance.getAllAppRequests();
+	}
+
+	void getUpdatedScores()
+	{
+		FacebookManager.Instance.QueryScores();
 	}
 
 	void Update()
@@ -142,66 +148,16 @@ public class NewWorldMapHandler : MonoBehaviour {
 				drawDisplayStars( i, episodeCounter );
 				episodeCounter++;
 			}
-			/*else if( levelInfo.levelType == LevelType.Normal )
-			{
-				//drawNormalLevelMarker( i, episodeCounter );
-			}*/
 		}
 	}
 
-	void drawNormalLevelMarker( int levelNumber, int episodeCounter )
+	public void updateFriendPortraits()
 	{
-		GameObject go = (GameObject)Instantiate(levelStationPrefab);
-		go.transform.SetParent(map.transform,false);
-		go.name = "Level Station " + (levelNumber + 1).ToString();
-		Button levelStationButton = go.GetComponent<Button>();
-		levelStationButton.interactable = PlayerStatsManager.Instance.getAllowAccessToNormalLevels();
-		RectTransform levelStationButtonRectTransform = levelStationButton.GetComponent<RectTransform>();
-		levelStationButtonRectTransform.SetParent( levelStationLocations[levelNumber], false );
-		levelStationButtonRectTransform.anchoredPosition = new Vector2( 0, 0 );
-		levelStationButton.onClick.AddListener(() => levelButtonClick(episodeCounter-1, levelNumber));
-		Text levelStationText = levelStationButton.GetComponentInChildren<Text>();
-		levelStationText.text = (levelNumber + 1).ToString();
-
-		if( levelNumber > LevelManager.Instance.getHighestLevelCompleted() )
+		for( int i=0; i < facebookPortraitList.Count; i++ )
 		{
-			//Level is not unlocked yet. Make button non-interactable and dim the level number text
-			levelStationButton.interactable = false;
-			levelStationText.enabled = false;
-		}
-		else if ( levelNumber == LevelManager.Instance.getNextLevelToComplete() )
-		{
-			//This is current level. Enable outline.
-			levelStationButton.GetComponent<Outline>().enabled = true;
-			nextLevelToPlayGlowingOutline = levelStationButton.GetComponent<Outline>();
-
-			//Position the player portrait on the right-hand side of the level station
-			playerPortrait.rectTransform.SetParent( levelStationButtonRectTransform );
-			playerPortrait.rectTransform.anchoredPosition = new Vector2( levelStationButtonRectTransform.anchoredPosition.x + 60f, levelStationButtonRectTransform.anchoredPosition.y -8.3f );
-		}
-		drawFriendPicture( levelStationButtonRectTransform, levelNumber );
-	}
-
-	//Draw friend picture to the right of the shield but only if we are logged in to Facebook
-	void drawFriendPicture( RectTransform levelStationButtonRectTransform, int levelNumber )
-	{
-		if( FacebookManager.Instance.isLoggedIn() )
-		{
-
-			string userID = FacebookManager.Instance.getFriendPictureForLevel( levelNumber );
-			if( userID != null )
-			{
-				//Yes, a friend has reached that level
-				GameObject go = (GameObject)Instantiate(friendPortraitPrefab);
-				go.name = "Friend Portrait " + (levelNumber + 1).ToString();
-				//Position the friend portrait on the right-hand side of the level station
-				go.GetComponent<Image>().rectTransform.SetParent( levelStationButtonRectTransform, false );
-				go.GetComponent<Image>().rectTransform.anchoredPosition = new Vector2( levelStationButtonRectTransform.anchoredPosition.x + 60f, levelStationButtonRectTransform.anchoredPosition.y -8.3f );
-				go.GetComponent<FacebookPortraitHandler>().setPortrait( userID );
-			}
+			facebookPortraitList[i].setPortrait();
 		}
 	}
-
 
 	void levelButtonClick( int episodeNumber, int levelNumber )
 	{
@@ -225,7 +181,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		go.name = "Episode Station " + (episodeCounter + 1).ToString();
 		Button levelStationButton = go.GetComponent<Button>();
 		RectTransform levelStationButtonRectTransform = levelStationButton.GetComponent<RectTransform>();
-		levelStationButtonRectTransform.SetParent( levelStationLocations[levelNumber], false );
+		levelStationButtonRectTransform.SetParent( episodeStationLocations[episodeCounter], false );
 		levelStationButtonRectTransform.anchoredPosition = new Vector2( 0, 0 );
 		levelStationButton.onClick.AddListener(() => levelButtonClick(episodeCounter, levelNumber));
 		Text[] episodeStationTexts = levelStationButton.GetComponentsInChildren<Text>();
@@ -233,6 +189,11 @@ public class NewWorldMapHandler : MonoBehaviour {
 		string levelNumberString = (episodeCounter + 1).ToString();
 		episodeStationTexts[1].text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
 
+		//Get a reference to the object holding the player portrait.
+		//Remember that each episode station has a player portrait component.
+		Transform playerPortrait = levelStationButtonRectTransform.FindChild("Player Portrait");
+		//Let's hide it in case this is not the episode the player is currently playing.
+		playerPortrait.gameObject.SetActive( false );
 		if( levelNumber > LevelManager.Instance.getHighestLevelCompleted() )
 		{
 			//Level is not unlocked yet. Make button non-interactable and dim the level number text
@@ -240,17 +201,26 @@ public class NewWorldMapHandler : MonoBehaviour {
 			episodeStationTexts[0].enabled = false;
 			episodeStationTexts[1].enabled = true;
 		}
-		else if ( levelNumber == LevelManager.Instance.getNextLevelToComplete() )
+		if ( episodeCounter == LevelManager.Instance.getCurrentEpisodeNumber() )
 		{
-			//This is current level. Enable outline.
+			//This is the current episode. Enable outline.
 			levelStationButton.GetComponent<Outline>().enabled = true;
 			nextLevelToPlayGlowingOutline = levelStationButton.GetComponent<Outline>();
 
-			//Position the player portrait on the right-hand side of the level station
-			playerPortrait.rectTransform.SetParent( levelStationButtonRectTransform );
-			playerPortrait.rectTransform.anchoredPosition = new Vector2( levelStationButtonRectTransform.anchoredPosition.x + 60f, levelStationButtonRectTransform.anchoredPosition.y -8.3f );
+			//Display the player portrait on the right-hand side of the episode station
+			playerPortrait.gameObject.SetActive( true );
+			FacebookPortraitHandler fph = playerPortrait.GetComponent<FacebookPortraitHandler>();
+			fph.setPlayerPortrait();
 		}
-		drawFriendPicture( levelStationButtonRectTransform, levelNumber );
+		prepareFriendPicture( levelStationButtonRectTransform, levelNumber );
+	}
+
+	//Set up data for friend picture, which sits to the right of the shield
+	void prepareFriendPicture( RectTransform levelStationButtonRectTransform, int episodeCounter )
+	{
+		FacebookPortraitHandler fph = levelStationButtonRectTransform.FindChild("Friend Portrait").GetComponent<FacebookPortraitHandler>();
+		fph.episodeNumber = episodeCounter;
+		facebookPortraitList.Add( fph );
 	}
 
 	void drawDisplayStars( int levelNumber, int episodeCounter )
@@ -262,7 +232,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 			go.transform.SetParent(map.transform,false);
 			go.name = "Star Meter " + (episodeCounter + 1).ToString();
 			RectTransform goRectTransform = go.GetComponent<RectTransform>();
-			goRectTransform.SetParent( levelStationLocations[levelNumber], false );
+			goRectTransform.SetParent( episodeStationLocations[episodeCounter], false );
 			goRectTransform.anchoredPosition = new Vector2( 0, 55f );
 			//Store it so we can easily update the stars later
 			starLocations[episodeCounter] = goRectTransform;
@@ -385,19 +355,24 @@ public class NewWorldMapHandler : MonoBehaviour {
 	void OnEnable()
 	{
 		FacebookManager.appRequestsReceived += AppRequestsReceived;
+		FacebookManager.facebookScoresReceived += FacebookScoresReceived;
 	}
 
 	void OnDisable()
 	{
 		FacebookManager.appRequestsReceived -= AppRequestsReceived;
+		FacebookManager.facebookScoresReceived -= FacebookScoresReceived;
 	}
 
 	void AppRequestsReceived( int appRequestsCount )
 	{
-		Debug.Log("NewWorldMapHandler - AppRequestsReceived count " + appRequestsCount );
 		numberOfMessages.text = appRequestsCount.ToString();
 	}
 
+	void FacebookScoresReceived()
+	{
+		updateFriendPortraits();
+	}
 
 	public void cheatButton()
 	{

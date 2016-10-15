@@ -29,20 +29,27 @@ public class FacebookManager
 	public string  firstName = null;
 	//Facebook ID of player
 	string FBUserId = string.Empty;
-	public Sprite UserPortrait = null;
+	public Sprite playerPortrait = null;
+	//Delegate used to communicate to other classes when a Facebook portrait was received
+	public delegate void FacebookPlayerPortraitReceived();
+	public static event FacebookPlayerPortraitReceived facebookPlayerPortraitReceived;
 	//The following Dictionary has a string ID as the Key and the friend's data as the Value
 	public Dictionary<string, FriendData> friendsList = new Dictionary<string, FriendData>(NUMBER_OF_FRIENDS);
 	private Dictionary<string, string> profile = null;
 	//The following Dictionary has a string ID as the Key and the friend's score as the Value
-	//The Facebook score is used to track the highest level achieved by that friend.
+	//The Facebook score is used to track the highest episode achieved by that friend.
 	Dictionary<string, int> scores = new Dictionary<string, int>(NUMBER_OF_FRIENDS);
+	//Delegate used to communicate to other classes when a friends's scores have arrived
+	public delegate void FacebookScoresReceived();
+	public static event FacebookScoresReceived facebookScoresReceived;
+
 	//The following Dictionary has a string ID as the Key and the friend's picture as the Value
 	public Dictionary<string, Sprite>  friendImages = new Dictionary<string, Sprite>(NUMBER_OF_FRIENDS);
 	//The following List holds the IDs for which a picture was requested but not yet received
 	public List<string> friendImagesRequested = new List<string>(NUMBER_OF_FRIENDS);
-	//Delegate used to communicate to other classes when a Facebook portrait was received
-	public delegate void FacebookPortraitReceived( string facebookID );
-	public static event FacebookPortraitReceived facebookPortraitReceived;
+	//Delegate used to communicate to other classes when the portrait of a friend was received
+	public delegate void FacebookFriendPortraitReceived( string facebookID );
+	public static event FacebookFriendPortraitReceived facebookFriendPortraitReceived;
 
 	//List of AppRequestData objects
 	public List<AppRequestData> AppRequestDataList = new List<AppRequestData>();
@@ -159,7 +166,7 @@ public class FacebookManager
 		facebookState = FacebookState.Initialised;
 		firstName = null;
 		FBUserId = string.Empty;
-		UserPortrait = null;
+		playerPortrait = null;
 		PlayerStatsManager.Instance.setUsesFacebook( false );
 		PlayerStatsManager.Instance.savePlayerStats();
 		//Inform interested classes
@@ -420,9 +427,12 @@ public class FacebookManager
 		}
 	}
 
-	private void QueryScores()
+	public void QueryScores()
 	{
-		FB.API("/app/scores", HttpMethod.GET, ScoresCallback);
+		if (FB.IsLoggedIn && AccessToken.CurrentAccessToken != null )
+		{
+			FB.API("/app/scores", HttpMethod.GET, ScoresCallback);
+		}
 	}
 
 	private int getScoreFromEntry(object obj)
@@ -433,6 +443,8 @@ public class FacebookManager
 	
 	private void ScoresCallback(IGraphResult result) 
 	{
+		//We are refreshing the list, so remove whatever is there
+		scores.Clear();
 		if (result.Error != null)
 		{
 			Debug.LogError(result.Error);
@@ -440,7 +452,7 @@ public class FacebookManager
 		else
 		{
 			Debug.Log("ScoresCallback: " + result.RawResult);
-	
+
 			List<object> scoresList = Util.DeserializeScores(result.RawResult);
 			
 			foreach(object score in scoresList) 
@@ -454,35 +466,32 @@ public class FacebookManager
 					// This entry is the current player
 					int playerHighScore = getScoreFromEntry(entry);
 					Debug.Log("Local player's score on server is " + playerHighScore);
-					int nextLevelToComplete = LevelManager.Instance.getNextLevelToComplete();
-					if( nextLevelToComplete > playerHighScore )
+					int currentEpisode = LevelManager.Instance.getCurrentEpisodeNumber();
+					if( currentEpisode != playerHighScore )
 					{
-						//Update our Facebook score. We were probably not online when we finished the last level.
-						postHighScore( LevelManager.Instance.getNextLevelToComplete() );
+						//Update our Facebook score. We were probably not online when we finished the last episode.
+						postHighScore( currentEpisode );
 					}
 				}
 				else
 				{
 					//Do not add the player to the scores list. Only friends.
-					scores.Add(userId, getScoreFromEntry( score ));
+					scores.Add( userId, getScoreFromEntry(score) );
 					getFriendPicture( userId );
 					Debug.Log("Received friend score for " + userId + " score " + getScoreFromEntry( score ));
 				}
-				//Hack for testing - add at least on friend with a score/level of 7
-				//string fakeUserId = "1378641987";
-				//scores.Add(fakeUserId, 7 );
-				//getFriendPicture( fakeUserId );
-
 			}
+			//Communicate to other classes that scores have arrived so that we can, for example, update the friend portraits location on the map
+			if( facebookScoresReceived != null ) facebookScoresReceived();
+
 		}
-		
 	}
 
-	public string getFriendPictureForLevel( int level )
+	public string getFriendPictureForEpisode( int episode )
 	{
 		foreach(KeyValuePair<string, int> pair in scores ) 
 		{
-			if( pair.Value == level )
+			if( pair.Value == episode )
 			{
 				//Yes, we have a friend who has reached the specified level
 				//return his userID.
@@ -492,6 +501,9 @@ public class FacebookManager
 		return null;
 	}
 
+	//The Facebook score is simply the highest episode reached so far in the game.
+	//Because we are posting the high score only when the player reaches a cullis gate,
+	//the score is only used in story mode. 
 	public void postHighScore( int highScore )
 	{
 		if (FB.IsLoggedIn && AccessToken.CurrentAccessToken != null )
@@ -651,10 +663,8 @@ public class FacebookManager
 		FB.API(Util.GetPictureURL("me", 128, 128), HttpMethod.GET, MyPictureCallback);
 		CallFBGetDeepLink();
 		getListOfFriendsWhoPlayTheApp();
-		//For debugging
-		//publishAction();
-		//Get your friends score.
-		//The score is the highest level achieved in the game.
+		//Get your friends's score.
+		//The score is the highest episode achieved in the game.
 		QueryScores();
 	}
 
@@ -733,7 +743,8 @@ public class FacebookManager
 		}
 		else
 		{
-			UserPortrait = Sprite.Create( result.Texture, new Rect(0, 0, result.Texture.width, result.Texture.height ), new Vector2( 0.5f, 0.5f ) );
+			playerPortrait = Sprite.Create( result.Texture, new Rect(0, 0, result.Texture.width, result.Texture.height ), new Vector2( 0.5f, 0.5f ) );
+			if( facebookPlayerPortraitReceived != null ) facebookPlayerPortraitReceived();
 		}
 	}
 	
@@ -796,7 +807,7 @@ public class FacebookManager
 					{
 						//We have received the image, so remove the entry in the friendImagesRequested list.
 						friendImagesRequested.Remove( userId );
-						if( facebookPortraitReceived != null ) facebookPortraitReceived( userId );
+						if( facebookFriendPortraitReceived != null ) facebookFriendPortraitReceived( userId );
 					}
 				}
 			});

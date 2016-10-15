@@ -124,9 +124,6 @@ public class LevelManager {
 		{
 			nextLevelToComplete = newLevel;
 			setLevelChanged( true );
-			//Update our Facebook score
-			//The Facebook score is simply the highest level reached so far in the game.
-			FacebookManager.Instance.postHighScore( newLevel );
 			setHighestLevelCompleted( newLevel );
 			Debug.Log("LevelManager-incrementNextLevelToComplete : nextLevelToComplete: " + nextLevelToComplete + " " + levelHasChanged );
 			return false;
@@ -171,7 +168,12 @@ public class LevelManager {
 	public void setEpisodeCompleted( bool episodeCompleted )
 	{
 		this.episodeCompleted = episodeCompleted;
-    }
+		//Update our Facebook score
+		//The Facebook score is simply the highest episode reached so far in the game.
+		//Because we are posting the high score only when the player reaches a cullis gate,
+		//the score is only used in story mode. 
+		FacebookManager.Instance.postHighScore( currentEpisode );
+   }
 
 	public int getScore()
     {

@@ -164,16 +164,6 @@ public class DebugMenu : MonoBehaviour {
 
 	void OnEnable()
 	{
-		FacebookManager.facebookLogout += FacebookLogout;
-	}
-
-	void OnDisable()
-	{
-		FacebookManager.facebookLogout -= FacebookLogout;
-	}
-
-	void FacebookLogout()
-	{
 		updatePlayerStats();
 	}
 	
