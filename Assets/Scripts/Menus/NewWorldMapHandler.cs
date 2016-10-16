@@ -232,7 +232,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 			playerPortrait.rectTransform.SetParent( levelStationButtonRectTransform );
 			playerPortrait.rectTransform.anchoredPosition = new Vector2( levelStationButtonRectTransform.anchoredPosition.x - 57.2f, levelStationButtonRectTransform.anchoredPosition.y -14f );
 		}
-		prepareFriendPicture( levelStationButtonRectTransform, levelNumber );
+		prepareFriendPicture( levelStationButtonRectTransform, episodeCounter );
 	}
 
 	//Set up data for friend picture, which sits to the right of the shield

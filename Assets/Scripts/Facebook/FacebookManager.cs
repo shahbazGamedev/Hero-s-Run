@@ -467,7 +467,6 @@ public class FacebookManager
 					// This entry is for the current player
 					int playerScore = getScoreFromEntry(entry);
 					Debug.Log("Local player's score on server is " + playerScore);
-					scores.Add( FBUserId, playerScore );
 				}
 				else
 				{
