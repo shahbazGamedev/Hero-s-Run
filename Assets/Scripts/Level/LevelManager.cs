@@ -214,19 +214,22 @@ public class LevelManager {
 	public void setLevelData( LevelData levelData )
 	{
 		this.levelData = levelData;
+		currentEpisode = getEpisodeNumberFromLevelNumber( nextLevelToComplete );
+		Debug.Log ("LevelManager-setLevelData: currentEpisode " + currentEpisode );
+	}
 
-		//Figure out which episode this corresponds to
+	public int getEpisodeNumberFromLevelNumber( int levelNumber )
+	{
+		//Figure out which episode this level corresponds to
 		int episodeCounter = -1;
-		int levelCounter = 0;
 		List<LevelData.LevelInfo> levelList = levelData.getLevelList();		
-		foreach( LevelData.LevelInfo aLevel in levelList )
+		for( int i = 0; i < levelList.Count; i++ )
 		{
-			if( aLevel.levelType == LevelType.Episode ) episodeCounter++;
-			levelCounter++;
-			if( levelCounter >= nextLevelToComplete ) break;
+			if(levelList[i].levelType == LevelType.Episode ) episodeCounter++;
+			if( i == levelNumber ) break;
 		}
-		currentEpisode = episodeCounter;
-		Debug.Log ("LevelManager-current episode is : " + currentEpisode );
+		//Debug.Log ("LevelManager-getEpisodeNumberFromLevelNumber: levelNumber " + levelNumber + " " + episodeCounter );
+		return episodeCounter;
 	}
 
 	public int getLevelNumberFromEpisodeNumber( int episodeNumber )

@@ -8,7 +8,7 @@ public class FacebookPortraitHandler : MonoBehaviour {
 	public int episodeNumber;
 	public Sprite defaultPortrait;
 	public Image spinner;
-	bool isPlayerPortrait = false; //True if this the player's portrait, false if it is a friend's portrait.
+	public bool isPlayerPortrait = false; //True if this the player's portrait, false if it is a friend's portrait.
 	
 	//Used in the world map
 	public void setFriendPortrait ()
@@ -83,7 +83,6 @@ public class FacebookPortraitHandler : MonoBehaviour {
 
 	public void setPlayerPortrait()
 	{
-		isPlayerPortrait = true;
 		if ( FacebookManager.Instance.playerPortrait != null ) 
 		{
 			//We have the player's picture

@@ -16,6 +16,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public Text numberOfLivesText;
 	public Text numberOfStarsText;
 	public string inviteFriendsCustomImageUri = "http://i.imgur.com/zkYlB.jpg";
+	public Image playerPortrait;
 	[Header("Message Center")]
 	public GameObject messageCenterPanel;
 	public Text numberOfMessages;
@@ -84,6 +85,8 @@ public class NewWorldMapHandler : MonoBehaviour {
 		{
 			gameModeButtonText.text = LocalizationManager.Instance.getText("MENU_GAME_MODE_ENDLESS");
 		}
+
+		playerPortrait.GetComponent<FacebookPortraitHandler>().setPlayerPortrait();
 
 		drawLevelMarkers();
 
@@ -159,6 +162,30 @@ public class NewWorldMapHandler : MonoBehaviour {
 		}
 	}
 
+	public void updatePlayerPortrait()
+	{
+		for( int i=0; i < episodeStationLocations.Length; i++ )
+		{
+			RectTransform episodeStationLocationRect = episodeStationLocations[i];
+			Button episodeStationButton = episodeStationLocationRect.FindChild("Episode Station(Clone)").GetComponent<Button>();
+			if ( i == LevelManager.Instance.getCurrentEpisodeNumber() )
+			{
+				//This is the current episode. Enable outline.
+				episodeStationButton.GetComponent<Outline>().enabled = true;
+				nextLevelToPlayGlowingOutline = episodeStationButton.GetComponent<Outline>();
+	
+				//Position the player portrait on the right-hand side of the level station
+				RectTransform buttonRectTransform = episodeStationButton.GetComponent<RectTransform>();
+				playerPortrait.rectTransform.SetParent( buttonRectTransform );
+				playerPortrait.rectTransform.anchoredPosition = new Vector2( buttonRectTransform.anchoredPosition.x - 57.2f, buttonRectTransform.anchoredPosition.y -14f );
+			}
+			else
+			{
+				episodeStationButton.GetComponent<Outline>().enabled = false;
+			}
+		}
+	}
+
 	void levelButtonClick( int episodeNumber, int levelNumber )
 	{
 		Debug.Log("Level Station click-Episode: " + episodeNumber + " Level: " + levelNumber );
@@ -178,7 +205,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 	{
 		GameObject go = (GameObject)Instantiate(episodeStationPrefab);
 		go.transform.SetParent(map.transform,false);
-		go.name = "Episode Station " + (episodeCounter + 1).ToString();
 		Button levelStationButton = go.GetComponent<Button>();
 		RectTransform levelStationButtonRectTransform = levelStationButton.GetComponent<RectTransform>();
 		levelStationButtonRectTransform.SetParent( episodeStationLocations[episodeCounter], false );
@@ -189,11 +215,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 		string levelNumberString = (episodeCounter + 1).ToString();
 		episodeStationTexts[1].text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
 
-		//Get a reference to the object holding the player portrait.
-		//Remember that each episode station has a player portrait component.
-		Transform playerPortrait = levelStationButtonRectTransform.FindChild("Player Portrait");
-		//Let's hide it in case this is not the episode the player is currently playing.
-		playerPortrait.gameObject.SetActive( false );
 		if( levelNumber > LevelManager.Instance.getHighestLevelCompleted() )
 		{
 			//Level is not unlocked yet. Make button non-interactable and dim the level number text
@@ -207,10 +228,9 @@ public class NewWorldMapHandler : MonoBehaviour {
 			levelStationButton.GetComponent<Outline>().enabled = true;
 			nextLevelToPlayGlowingOutline = levelStationButton.GetComponent<Outline>();
 
-			//Display the player portrait on the right-hand side of the episode station
-			playerPortrait.gameObject.SetActive( true );
-			FacebookPortraitHandler fph = playerPortrait.GetComponent<FacebookPortraitHandler>();
-			fph.setPlayerPortrait();
+			//Position the player portrait on the right-hand side of the level station
+			playerPortrait.rectTransform.SetParent( levelStationButtonRectTransform );
+			playerPortrait.rectTransform.anchoredPosition = new Vector2( levelStationButtonRectTransform.anchoredPosition.x - 57.2f, levelStationButtonRectTransform.anchoredPosition.y -14f );
 		}
 		prepareFriendPicture( levelStationButtonRectTransform, levelNumber );
 	}

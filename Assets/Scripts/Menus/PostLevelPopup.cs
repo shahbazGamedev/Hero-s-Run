@@ -129,6 +129,13 @@ public class PostLevelPopup : MonoBehaviour {
 	public void closePostLevelPopup()
 	{
 		SoundManager.soundManager.playButtonClick();
+		if( LevelManager.Instance.wasEpisodeCompleted() )
+		{
+			LevelManager.Instance.incrementCurrentEpisodeNumber();
+			//Update the position of the player's portrait
+			newWorldMapHandler.updatePlayerPortrait();
+			PlayerStatsManager.Instance.savePlayerStats();
+		}
 		//Reset the level changed value
 		LevelManager.Instance.setLevelChanged( false );
 		GetComponent<Animator>().Play("Panel Slide Out");
