@@ -172,7 +172,11 @@ public class LevelManager {
 		//The Facebook score is simply the highest episode reached so far in the game.
 		//Because we are posting the high score only when the player reaches a cullis gate,
 		//the score is only used in story mode. 
-		FacebookManager.Instance.postHighScore( currentEpisode );
+		//The value of currentEpisode is for the episode the player just completed.
+		//On the map, we want to display the friend's portrait next to the episode that the friend is about to start, hence the +1.
+		//If the friend completes the last episode (and therefore finishes the game), we will signify it
+		//with a gold frame around the portrait next to the last episode station. That means that the score will be equal to LevelData.NUMBER_OF_EPISODES.
+		FacebookManager.Instance.postHighScore( currentEpisode + 1 );
    }
 
 	public int getScore()

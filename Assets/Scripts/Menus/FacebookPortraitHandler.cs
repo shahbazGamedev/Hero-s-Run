@@ -8,50 +8,55 @@ public class FacebookPortraitHandler : MonoBehaviour {
 	public int episodeNumber;
 	public Sprite defaultPortrait;
 	public Image spinner;
+	bool isPlayerPortrait = false; //True if this the player's portrait, false if it is a friend's portrait.
 	
 	//Used in the world map
-	public void setPortrait ()
+	public void setFriendPortrait ()
 	{
-		if( GameManager.Instance.getGameMode() == GameMode.Story )
+		//Ignore if this is the player's portrait
+		if( !isPlayerPortrait )
 		{
-			if( FB.IsLoggedIn )
+			if( GameManager.Instance.getGameMode() == GameMode.Story )
 			{
-				string userID = FacebookManager.Instance.getFriendPictureForEpisode( episodeNumber );
-				if( userID != null )
+				if( FB.IsLoggedIn )
 				{
-					//Yes, a friend has reached that episode
-					GetComponent<Image>().gameObject.SetActive( true );
-
-					Sprite picture;
-					if ( FacebookManager.Instance.friendImages.TryGetValue( userID, out picture)) 
+					string userID = FacebookManager.Instance.getFriendPictureForEpisode( episodeNumber );
+					if( userID != null )
 					{
-						//We have the friend's picture
-						spinner.gameObject.SetActive( false );
-						GetComponent<Image>().sprite = picture;
+						//Yes, a friend has reached that episode
+						GetComponent<Image>().gameObject.SetActive( true );
+	
+						Sprite picture;
+						if ( FacebookManager.Instance.friendImages.TryGetValue( userID, out picture)) 
+						{
+							//We have the friend's picture
+							spinner.gameObject.SetActive( false );
+							GetComponent<Image>().sprite = picture;
+						}
+						else if ( FacebookManager.Instance.friendImagesRequested.Contains( userID ) )
+						{
+							//Picture has been requested but not received yet. Draw default portrait with a spinner on top.
+							GetComponent<Image>().sprite = defaultPortrait;
+							spinner.gameObject.SetActive( true );
+						}
 					}
-					else if ( FacebookManager.Instance.friendImagesRequested.Contains( userID ) )
+					else
 					{
-						//Picture has been requested but not received yet. Draw default portrait with a spinner on top.
-						GetComponent<Image>().sprite = defaultPortrait;
-						spinner.gameObject.SetActive( true );
+						//We do not have friends that have reached that episode. Hide the portrait.
+						GetComponent<Image>().gameObject.SetActive( false );
 					}
 				}
 				else
 				{
-					//We do not have friends that have reached that episode. Hide the portrait.
+					//We are not logged in to Facebook. Hide the portrait.
 					GetComponent<Image>().gameObject.SetActive( false );
 				}
 			}
 			else
 			{
-				//We are not logged in to Facebook. Hide the portrait.
+				//We are in Endless mode. Hide the portrait.
 				GetComponent<Image>().gameObject.SetActive( false );
 			}
-		}
-		else
-		{
-			//We are in Endless mode. Hide the portrait.
-			GetComponent<Image>().gameObject.SetActive( false );
 		}
 	}
 
@@ -78,6 +83,7 @@ public class FacebookPortraitHandler : MonoBehaviour {
 
 	public void setPlayerPortrait()
 	{
+		isPlayerPortrait = true;
 		if ( FacebookManager.Instance.playerPortrait != null ) 
 		{
 			//We have the player's picture
@@ -106,7 +112,7 @@ public class FacebookPortraitHandler : MonoBehaviour {
 
 	void FacebookFriendPortraitReceived( string facebookID )
 	{
-		setPortrait ();
+		setFriendPortrait ();
 	}
 
 	void FacebookPlayerPortraitReceived()
@@ -116,7 +122,14 @@ public class FacebookPortraitHandler : MonoBehaviour {
 
 	void FacebookLogout()
 	{
-		//Player logged out of Facebook, so hide the portrait
-		setPortrait();
+		if( isPlayerPortrait )
+		{
+			//Simply draw the default portrait
+			GetComponent<Image>().sprite = defaultPortrait;
+		}
+		else
+		{
+			setFriendPortrait();
+		}
 	}
 }

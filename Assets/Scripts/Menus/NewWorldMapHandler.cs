@@ -155,7 +155,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 	{
 		for( int i=0; i < facebookPortraitList.Count; i++ )
 		{
-			facebookPortraitList[i].setPortrait();
+			facebookPortraitList[i].setFriendPortrait();
 		}
 	}
 
@@ -401,6 +401,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 			GameManager.Instance.setGameMode(GameMode.Story);
 		}
 		PlayerStatsManager.Instance.savePlayerStats();
+		updateFriendPortraits();
 	}
 
 	public void play( int episodeNumber, int levelNumber )

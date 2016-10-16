@@ -37,7 +37,8 @@ public class FacebookManager
 	public Dictionary<string, FriendData> friendsList = new Dictionary<string, FriendData>(NUMBER_OF_FRIENDS);
 	private Dictionary<string, string> profile = null;
 	//The following Dictionary has a string ID as the Key and the friend's score as the Value
-	//The Facebook score is used to track the highest episode achieved by that friend.
+	//The Facebook score is used to track the episode about to be started by that friend.
+	//If the score is equal to LevelData.NUMBER_OF_EPISODES, that means that your friend completed the game.
 	Dictionary<string, int> scores = new Dictionary<string, int>(NUMBER_OF_FRIENDS);
 	//Delegate used to communicate to other classes when a friends's scores have arrived
 	public delegate void FacebookScoresReceived();
@@ -463,22 +464,17 @@ public class FacebookManager
 				string userId = (string)user["id"];
 				if ( userId == FBUserId )
 				{
-					// This entry is the current player
-					int playerHighScore = getScoreFromEntry(entry);
-					Debug.Log("Local player's score on server is " + playerHighScore);
-					int currentEpisode = LevelManager.Instance.getCurrentEpisodeNumber();
-					if( currentEpisode != playerHighScore )
-					{
-						//Update our Facebook score. We were probably not online when we finished the last episode.
-						postHighScore( currentEpisode );
-					}
+					// This entry is for the current player
+					int playerScore = getScoreFromEntry(entry);
+					Debug.Log("Local player's score on server is " + playerScore);
+					scores.Add( FBUserId, playerScore );
 				}
 				else
 				{
-					//Do not add the player to the scores list. Only friends.
-					scores.Add( userId, getScoreFromEntry(score) );
+					int friendScore = getScoreFromEntry(score);
+					scores.Add( userId, friendScore );
 					getFriendPicture( userId );
-					Debug.Log("Received friend score for " + userId + " score " + getScoreFromEntry( score ));
+					Debug.Log("Received friend score for " + userId + " score " + friendScore);
 				}
 			}
 			//Communicate to other classes that scores have arrived so that we can, for example, update the friend portraits location on the map
@@ -493,7 +489,7 @@ public class FacebookManager
 		{
 			if( pair.Value == episode )
 			{
-				//Yes, we have a friend who has reached the specified level
+				//Yes, we have a friend who has reached the specified episode
 				//return his userID.
 				return pair.Key;
 			}
@@ -501,7 +497,6 @@ public class FacebookManager
 		return null;
 	}
 
-	//The Facebook score is simply the highest episode reached so far in the game.
 	//Because we are posting the high score only when the player reaches a cullis gate,
 	//the score is only used in story mode. 
 	public void postHighScore( int highScore )
@@ -664,7 +659,6 @@ public class FacebookManager
 		CallFBGetDeepLink();
 		getListOfFriendsWhoPlayTheApp();
 		//Get your friends's score.
-		//The score is the highest episode achieved in the game.
 		QueryScores();
 	}
 
