@@ -175,6 +175,7 @@ public sealed class WraithController : Creature, ICreature {
 							//50% of the time turn to face player and attack, the other 50%, just continue straight
 							if( Random.value <= 0.5f )
 							{
+								controller.enabled = true; //Needed for znuke to work
 								Invoke("removeDotProduct", floatDuration * 0.65f );
 								LeanTween.moveLocal( gameObject, new Vector3( transform.localPosition.x - 12f, transform.localPosition.y, transform.localPosition.z ), floatDuration ).setOnComplete(turnToFacePlayer).setOnCompleteParam(gameObject).setEase(LeanTweenType.easeInOutQuad);
 							}
