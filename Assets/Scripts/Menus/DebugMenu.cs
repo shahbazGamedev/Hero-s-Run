@@ -119,6 +119,7 @@ public class DebugMenu : MonoBehaviour {
 		LevelManager.Instance.unlockAllLevels();
 		PlayerStatsManager.Instance.savePlayerStats();
 		newWorldMapHandler.drawLevelMarkers();
+		newWorldMapHandler.updateFriendPortraits();
 
 	}
 
