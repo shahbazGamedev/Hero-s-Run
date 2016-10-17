@@ -46,6 +46,7 @@ public class CullisGateController : MonoBehaviour {
 			DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText(messageTextId), 5.5f );
 			LevelManager.Instance.setEpisodeCompleted( true );
 		}
+		FacebookManager.Instance.postHighScore( LevelManager.Instance.getCurrentEpisodeNumber() + 1 );
 		resetAllZombies();
 		SoundManager.soundManager.fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
 		Invoke("quit", WAIT_DURATION );
