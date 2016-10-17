@@ -111,13 +111,11 @@ public class NewWorldMapHandler : MonoBehaviour {
 			}
 		}
 
-		//Get all of the user's outstanding app requests right away and then poll Facebook regularly
+		//Get all of the user's outstanding app requests right away and then poll Facebook regularly. AppRequests also get refreshed after an app resume.
 		CancelInvoke("getAllAppRequests");
-		InvokeRepeating("getAllAppRequests", 0, 30 );
-		//Get the score of the player's friends on a regular basis
-		CancelInvoke("getUpdatedScores");
-		InvokeRepeating("getUpdatedScores", 5, 20 );
-
+		InvokeRepeating("getAllAppRequests", 0, 60 );
+		//The score of the player's friends gets refreshed when loading the scene and if the app resume after being paused.
+		getUpdatedScores();
 	}
 
 	void getAllAppRequests()
@@ -461,4 +459,17 @@ public class NewWorldMapHandler : MonoBehaviour {
 			SceneManager.LoadScene( (int) GameScenes.Level );
 		}
 	}
+
+	//When the application resumes, the game will refresh both the friend portraits and the message center.
+	void OnApplicationPause( bool pauseStatus )
+	{
+		if( !pauseStatus  )
+		{
+			//Get all of the user's outstanding app requests right away
+			getAllAppRequests();
+			//Get the score of the player's friends right away
+			getUpdatedScores();
+		}
+	}
+
 }
