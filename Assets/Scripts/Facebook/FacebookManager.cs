@@ -52,11 +52,13 @@ public class FacebookManager
 	public delegate void FacebookFriendPortraitReceived( string facebookID );
 	public static event FacebookFriendPortraitReceived facebookFriendPortraitReceived;
 
-	//List of AppRequestData objects
-	public List<AppRequestData> AppRequestDataList = new List<AppRequestData>();
+	//The following Dictionary has the AppRequest ID as the Key and the AppRequestData as the Value
+	public Dictionary<string, AppRequestData> AppRequestDataList = new Dictionary<string, AppRequestData>();
 	//Delegate used to communicate to other classes when we have received App Requests
 	public delegate void AppRequestsReceived( int appRequestsCount );
 	public static event AppRequestsReceived appRequestsReceived;
+	TimeSpan allowedAppRequestLifetime = new TimeSpan(0, 0, 5, 0, 0); //Fives minute. How long do we keep a processed AppRequest before deleting it.
+
 	//Delegate used to communicate to other classes when the player logouts of Facebook
 	public delegate void FacebookLogout();
 	public static event FacebookLogout facebookLogout;
@@ -286,9 +288,6 @@ public class FacebookManager
 		{
 			//Debug.Log("FacebookManager-allAppRequestsDataCallback: success: " + result.RawResult + "\n" );
 
-			//We are refreshing the list, so remove whatever is there
-			AppRequestDataList.Clear();
-
 			Dictionary<string, object> appRequestsData = Json.Deserialize(result.RawResult) as Dictionary<string, object>;
 			object appRequests;
 			List<object> appRequestsList = new List<object>();
@@ -298,93 +297,133 @@ public class FacebookManager
 				
 				foreach(object appRequest in appRequestsList) 
 				{
-					//Create a AppRequestData object to store the info
-					AppRequestData appRequestData = new AppRequestData();
-
 					Dictionary<string, object> appRequestDictionary = (Dictionary<string, object>)appRequest;
 					
 					object appRequestID;
 					if (appRequestDictionary.TryGetValue ("id", out appRequestID)) 
 					{
-						appRequestData.appRequestID = appRequestID.ToString();
-					}
-					object fromData;
-					if (appRequestDictionary.TryGetValue ("from", out fromData )) 
-					{
-						Dictionary<string, object> appRequestFromData = (Dictionary<string, object>)fromData;
-						
-						object nameData;
-						if (appRequestFromData.TryGetValue ("name", out nameData )) 
-						{
-							string[] nameDetails = nameData.ToString().Split(' ');
-							if( nameDetails != null && nameDetails.Length > 1 )
-							{
-								appRequestData.fromFirstName = nameDetails[0];
-								appRequestData.fromLastName  = nameDetails[1];
-							}
-
-						}
-						object idData;
-						if (appRequestFromData.TryGetValue ("id", out idData )) 
-						{
-							appRequestData.fromID = idData.ToString();
-						}
-					}
-					object data;
-					if (appRequestDictionary.TryGetValue ("data", out data )) 
-					{
-						//Format is <type,number1,number2> so we need to parse it
-						if( data.ToString().Contains(",") )
-						{
-							string[] dataDetails = data.ToString().Split(',');
-							appRequestData.setRequestDataType( dataDetails[0] );
-							int.TryParse(dataDetails[1], out appRequestData.dataNumber1);
-							//For backward compatibility when there was only one dataNumber, verify array length first
-							if( dataDetails.Length == 3 ) int.TryParse(dataDetails[2], out appRequestData.dataNumber2);
-						}
-					}
-					object created_time;
-					if (appRequestDictionary.TryGetValue ("created_time", out created_time )) 
-					{
-						try
-						{
-							appRequestData.created_time = DateTime.Parse( created_time.ToString() );
-						}
-						catch( Exception e )
-						{
-							Debug.LogWarning("FacebookManager-allAppRequestsDataCallback: unable to parse date : " + created_time.ToString() + ". Error is: " + e.Message );
-						}
-					}
-					appRequestData.printAppRequestData();
-					if( appRequestData.dataType != RequestDataType.Unknown )
-					{
-						//We have a valid data type, add it
-						AppRequestDataList.Add( appRequestData );
 					}
 					else
 					{
-						//The request data type is unknown. Ask Facebook to delete the app request as it is unusable.
-						Debug.Log("FacebookManager-allAppRequestsDataCallback: deleting unknown request: " + appRequestData.appRequestID );
-						deleteAppRequest( appRequestData.appRequestID );
+						//Invalid data - skip
+						Debug.LogWarning("FacebookManager-allAppRequestsDataCallback: unable to parse AppRequest ID." );
+						continue;
 					}
 
+					//Make sure we don't already have this AppRequest before continuing
+					if( !AppRequestDataList.ContainsKey( appRequestID.ToString() ) )
+					{
+						//No, we do not have it
+						//Create a AppRequestData object to store the info
+						AppRequestData appRequestData = new AppRequestData();
+
+						//Store the AppRequestID which we obtained earlier
+						appRequestData.appRequestID = appRequestID.ToString();
+
+						//Continue processing
+						object fromData;
+						if (appRequestDictionary.TryGetValue ("from", out fromData )) 
+						{
+							Dictionary<string, object> appRequestFromData = (Dictionary<string, object>)fromData;
+							
+							object nameData;
+							if (appRequestFromData.TryGetValue ("name", out nameData )) 
+							{
+								string[] nameDetails = nameData.ToString().Split(' ');
+								if( nameDetails != null && nameDetails.Length > 1 )
+								{
+									appRequestData.fromFirstName = nameDetails[0];
+									appRequestData.fromLastName  = nameDetails[1];
+								}
+	
+							}
+							object idData;
+							if (appRequestFromData.TryGetValue ("id", out idData )) 
+							{
+								appRequestData.fromID = idData.ToString();
+							}
+						}
+						object data;
+						if (appRequestDictionary.TryGetValue ("data", out data )) 
+						{
+							//Format is <type,number1,number2> so we need to parse it
+							if( data.ToString().Contains(",") )
+							{
+								string[] dataDetails = data.ToString().Split(',');
+								appRequestData.setRequestDataType( dataDetails[0] );
+								int.TryParse(dataDetails[1], out appRequestData.dataNumber1);
+								//For backward compatibility when there was only one dataNumber, verify array length first
+								if( dataDetails.Length == 3 ) int.TryParse(dataDetails[2], out appRequestData.dataNumber2);
+							}
+						}
+						object created_time;
+						if (appRequestDictionary.TryGetValue ("created_time", out created_time )) 
+						{
+							try
+							{
+								appRequestData.created_time = DateTime.Parse( created_time.ToString() );
+							}
+							catch( Exception e )
+							{
+								Debug.LogWarning("FacebookManager-allAppRequestsDataCallback: unable to parse date : " + created_time.ToString() + ". Error is: " + e.Message );
+							}
+						}
+						appRequestData.printAppRequestData();
+						if( appRequestData.dataType != RequestDataType.Unknown )
+						{
+							//We have a valid data type, add it
+							AppRequestDataList.Add( appRequestData.appRequestID, appRequestData );
+						}
+						else
+						{
+							//The request data type is unknown. Ask Facebook to delete the app request as it is unusable.
+							Debug.LogWarning("FacebookManager-allAppRequestsDataCallback: deleting unknown request: " + appRequestData.appRequestID );
+							deleteAppRequest( appRequestData.appRequestID );
+						}
+					}
 				}
 			}
-			Debug.Log("FacebookManager-allAppRequestsDataCallback: Added " + AppRequestDataList.Count + " app requests to list.");
-			if( appRequestsReceived != null ) appRequestsReceived(  AppRequestDataList.Count );
+			//Count the number of AppRequests that we have that have not been processed.
+			int activeAppRequestCounter = 0;
+			foreach(KeyValuePair<string, AppRequestData> pair in AppRequestDataList) 
+			{
+				if( !pair.Value.hasBeenProcessed ) activeAppRequestCounter++;
+			}
+			Debug.Log("FacebookManager-allAppRequestsDataCallback: non-processed: " + activeAppRequestCounter );
+			
+			if( appRequestsReceived != null ) appRequestsReceived(  activeAppRequestCounter );
 
 			//Get any missing player pictures
 			fetchAppRequestPictures();
+
+			deleteExpiredAppRequests();
 		}
 	}
 	
+	void deleteExpiredAppRequests()
+	{
+		foreach(KeyValuePair<string, AppRequestData> pair in AppRequestDataList.ToList()) 
+		{
+			//Verify if it has already been processed and that it is expired
+			if( pair.Value.hasBeenProcessed )
+			{
+				TimeSpan elapsedTime = DateTime.Now.Subtract(pair.Value.processed_time);
+				if( elapsedTime.CompareTo(allowedAppRequestLifetime) >= 0  )
+				{
+					//It is expired
+					AppRequestDataList.Remove(pair.Value.appRequestID);
+				}
+			}
+		}
+	}
+
 	//Get any missing pictures related to app requests.
 	void fetchAppRequestPictures()
 	{
-		foreach( AppRequestData appRequestData in AppRequestDataList) 
+		foreach(KeyValuePair<string, AppRequestData> pair in AppRequestDataList) 
 		{
 			//Note that getFriendPicture verifies that we do not already have the picture and that it has not been requested yet.
-			getFriendPicture( appRequestData.fromID );
+			getFriendPicture( pair.Value.fromID );
 		}
 	}
 
@@ -630,12 +669,12 @@ public class FacebookManager
 
 	public IEnumerator deleteAllAppRequests()
 	{
-		foreach(AppRequestData appRequestData in AppRequestDataList ) 
+		foreach(KeyValuePair<string, AppRequestData> pair in AppRequestDataList) 
 		{
-			deleteAppRequest( appRequestData.appRequestID );
-			Debug.Log("FacebookManager-deleteAllAppRequests: deleting: " + appRequestData.appRequestID );
-
+			deleteAppRequest( pair.Value.appRequestID );
+			Debug.Log("FacebookManager-deleteAllAppRequests: deleting: " + pair.Value.appRequestID );
 		}
+
 		yield return new WaitForSeconds(4);
 		//Refresh our list
 		getAllAppRequests();

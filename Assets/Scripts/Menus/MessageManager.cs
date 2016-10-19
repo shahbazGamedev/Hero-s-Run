@@ -13,7 +13,7 @@ public class MessageManager : MonoBehaviour {
 	public GameObject challengeMessageEntryPrefab;
 	public GameObject mailInformationPanel;
 	public Text mailInformationText;
-	public Text numberOfMessages; //See also NewWorldMapHandler
+	public int numberOfMessage = 0;
 	public ChallengeBoard challengeBoard;
 	public NewWorldMapHandler newWorldMapHandler;
 
@@ -50,42 +50,30 @@ public class MessageManager : MonoBehaviour {
 		{
 			if( FB.IsLoggedIn )
 			{
-				if( FacebookManager.Instance.AppRequestDataList.Count > 0 )
+				if( numberOfMessage > 0 )
 				{
-					GameObject go;
+					GameObject go = null;
 					//Player has mail and is connected to the Internet.
 					//Do not add the entry if the RequestDataType is Unknown
 					mailInformationPanel.SetActive( false );
-					for( int i = 0; i < FacebookManager.Instance.AppRequestDataList.Count; i++ )
+					foreach(KeyValuePair<string, AppRequestData> pair in FacebookManager.Instance.AppRequestDataList) 
 					{
 						//Only add entries which have not been processed
-						if( !FacebookManager.Instance.AppRequestDataList[i].hasBeenProcessed )
+						if( !pair.Value.hasBeenProcessed )
 						{
-							switch (FacebookManager.Instance.AppRequestDataList[i].dataType)
+							switch (pair.Value.dataType)
 							{
 								case RequestDataType.Ask_Give_Life:
 								case RequestDataType.Accept_Give_Life:
 									go = (GameObject)Instantiate(lifeMessageEntryPrefab);
-									go.transform.SetParent(content.transform,false);
-									go.name = "Message number " + i.ToString();
-									go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
 									break;
 								case RequestDataType.Challenge:
-									go = (GameObject)Instantiate(challengeMessageEntryPrefab);
-									go.transform.SetParent(content.transform,false);
-									go.name = "Message number " + i.ToString();
-									go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
-									break;
 								case RequestDataType.ChallengeBeaten:
 									go = (GameObject)Instantiate(challengeMessageEntryPrefab);
-									go.transform.SetParent(content.transform,false);
-									go.name = "Message number " + i.ToString();
-									go.GetComponent<MessageEntry>().initializeMessage( FacebookManager.Instance.AppRequestDataList[i] );
-									break;
-								default:
-									Debug.LogWarning("MessageManager-refreshMessages: unknown data type specified: " + FacebookManager.Instance.AppRequestDataList[i].dataType );
 									break;
 							}
+							go.transform.SetParent(content.transform,false);
+							go.GetComponent<MessageEntry>().initializeMessage( pair.Value );
 						}
 					}
 				}
@@ -119,28 +107,36 @@ public class MessageManager : MonoBehaviour {
 		}	
 	}
 
+	void OnEnable()
+	{
+		FacebookManager.appRequestsReceived += AppRequestsReceived;
+	}
+
+	void OnDisable()
+	{
+		FacebookManager.appRequestsReceived -= AppRequestsReceived;
+	}
+
+	public void decrementNumberOfMessages()
+	{
+		numberOfMessage--;
+		newWorldMapHandler.numberOfMessages.text = numberOfMessage.ToString();
+		if( numberOfMessage == 0 ) 
+		{
+			mailInformationText.text = LocalizationManager.Instance.getText("MESSAGE_CENTER_NO_MAIL");
+			mailInformationPanel.SetActive( true );
+		}
+	}
+
+	void AppRequestsReceived( int numberOfActiveAppRequests )
+	{
+		numberOfMessage = numberOfActiveAppRequests;
+		newWorldMapHandler.numberOfMessages.text = numberOfMessage.ToString();
+	}
+
 	public void hideMessageCenter()
 	{
 		SoundManager.soundManager.playButtonClick();
-		//deleteProcessedEntries();
-		//Force a refresh of the App Requests
-		FacebookManager.Instance.getAllAppRequests();
-		//numberOfMessages.text = FacebookManager.Instance.AppRequestDataList.Count.ToString();
 		GetComponent<Animator>().Play("Panel Slide Out");
-	}
-
-
-	void deleteProcessedEntries()
-	{
-		AppRequestData appRequestData;
-		for ( int i = FacebookManager.Instance.AppRequestDataList.Count-1; i >=0; i--)
-		{
-			appRequestData = (AppRequestData) FacebookManager.Instance.AppRequestDataList[i];
-			if( appRequestData.hasBeenProcessed )
-			{
-				//Delete from main Facebook list
-				FacebookManager.Instance.AppRequestDataList.RemoveAt(i);
-			}
-		}
 	}
 }

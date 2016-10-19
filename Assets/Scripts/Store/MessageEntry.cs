@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using Facebook.Unity;
+using System;
 
 public class MessageEntry : MonoBehaviour {
 
@@ -63,25 +64,24 @@ public class MessageEntry : MonoBehaviour {
 
 	public void buttonPressed()
 	{
-		Debug.Log("MessageEntry-buttonPressed: " + requestData.dataType );
+		//In all cases, do the following:
+		FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
+		requestData.hasBeenProcessed = true;
+		requestData.processed_time = DateTime.Now;
+		messageManager.decrementNumberOfMessages();
+		
 		switch (requestData.dataType)
 		{
 			case RequestDataType.Ask_Give_Life:
-				FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
 				FacebookManager.Instance.CallAppRequestAsDirectRequest("App Requests", LocalizationManager.Instance.getText("FB_HAVE_A_LIFE_MESSAGE"), requestData.fromID, "Accept_Give_Life," + requestData.dataNumber1.ToString() + ",-1", MCHCallback, requestData.appRequestID );
-				requestData.hasBeenProcessed = true;
 				GameObject.Destroy( gameObject );
 				break;
 			case RequestDataType.Accept_Give_Life:
-				FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
 				PlayerStatsManager.Instance.increaseLives(1);
 				PlayerStatsManager.Instance.savePlayerStats();
-				requestData.hasBeenProcessed = true;
 				GameObject.Destroy( gameObject );
 				break;
 			case RequestDataType.Challenge:
-				FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
-				requestData.hasBeenProcessed = true;
 				//Save challenge
 				messageManager.challengeBoard.addChallenge( requestData.fromFirstName, requestData.fromID, requestData.dataNumber1, requestData.dataNumber2, requestData.created_time );
 				//We don't have time to slide it out, so simply hide it
@@ -91,8 +91,6 @@ public class MessageEntry : MonoBehaviour {
 				messageManager.newWorldMapHandler.play( requestData.dataNumber2, LevelManager.Instance.getLevelNumberFromEpisodeNumber( requestData.dataNumber2 ) );
 				break;
 			case RequestDataType.ChallengeBeaten:
-				FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
-				requestData.hasBeenProcessed = true;
 				//Save challenge
 				messageManager.challengeBoard.addChallenge( requestData.fromFirstName, requestData.fromID, requestData.dataNumber1, requestData.dataNumber2, requestData.created_time );
 				//We don't have time to slide it out, so simply hide it
@@ -101,17 +99,14 @@ public class MessageEntry : MonoBehaviour {
 				if( GameManager.Instance.getGameMode() != GameMode.Endless ) messageManager.newWorldMapHandler.toggleGameMode();
 				messageManager.newWorldMapHandler.play( requestData.dataNumber2, LevelManager.Instance.getLevelNumberFromEpisodeNumber( requestData.dataNumber2 ) );
 				break;
-			case RequestDataType.Unknown:
-				Debug.LogWarning("MessageEntry-buttonPressed: unknown data type specified." );
-				break;
 		}
-
 	}
 
 	public void dismiss()
 	{
 		FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );
 		requestData.hasBeenProcessed = true;
+		messageManager.decrementNumberOfMessages();
 		GameObject.Destroy( gameObject );
 	}
 

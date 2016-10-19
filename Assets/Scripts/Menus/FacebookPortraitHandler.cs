@@ -65,6 +65,8 @@ public class FacebookPortraitHandler : MonoBehaviour {
 	{
 		if( userID != string.Empty )
 		{
+			GetComponent<Image>().gameObject.SetActive( true );
+
 			Sprite picture;
 			if ( FacebookManager.Instance.friendImages.TryGetValue( userID, out picture)) 
 			{
@@ -78,6 +80,10 @@ public class FacebookPortraitHandler : MonoBehaviour {
 				GetComponent<Image>().sprite = defaultPortrait;
 				spinner.gameObject.SetActive( true );
 			}
+		}
+		else
+		{
+			Debug.LogError("FacebookPortraitHandler-setPortrait called with an empty user ID.");
 		}
 	}
 
