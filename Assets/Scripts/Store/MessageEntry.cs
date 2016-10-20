@@ -73,7 +73,7 @@ public class MessageEntry : MonoBehaviour {
 		switch (requestData.dataType)
 		{
 			case RequestDataType.Ask_Give_Life:
-				FacebookManager.Instance.CallAppRequestAsDirectRequest("App Requests", LocalizationManager.Instance.getText("FB_HAVE_A_LIFE_MESSAGE"), requestData.fromID, "Accept_Give_Life," + requestData.dataNumber1.ToString() + ",-1", MCHCallback, requestData.appRequestID );
+				FacebookManager.Instance.CallAppRequestAsDirectRequest(LocalizationManager.Instance.getText("MESSAGE_ENTRY_TITLE_EXTRA_LIFE"), LocalizationManager.Instance.getText("FB_HAVE_A_LIFE_MESSAGE"), requestData.fromID, "Accept_Give_Life," + requestData.dataNumber1.ToString() + ",-1", MCHCallback, requestData.appRequestID );
 				GameObject.Destroy( gameObject );
 				break;
 			case RequestDataType.Accept_Give_Life:

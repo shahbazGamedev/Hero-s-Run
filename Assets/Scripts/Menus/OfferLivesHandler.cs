@@ -98,7 +98,7 @@ public class OfferLivesHandler : MonoBehaviour {
 			}
 			//Delete trailing comma
 			DirectRequestTo = DirectRequestTo.TrimEnd(',');
-			FacebookManager.Instance.CallAppRequestAsDirectRequest( "App Requests", haveLifeMessage, DirectRequestTo, "Accept_Give_Life,1", OLHCallback, null );
+			FacebookManager.Instance.CallAppRequestAsDirectRequest( LocalizationManager.Instance.getText("MESSAGE_ENTRY_TITLE_EXTRA_LIFE"), haveLifeMessage, DirectRequestTo, "Accept_Give_Life,1", OLHCallback, null );
 			resetEntries();
 		}
 
