@@ -23,6 +23,8 @@ public class NewWorldMapHandler : MonoBehaviour {
 	StoreManager storeManager;
 	[Header("Facebook Ask Lives")]
 	public GameObject facebookAskLivesPanel;
+	[Header("Facebook Offer Lives")]
+	public GameObject facebookOfferLivesPanel;
 	[Header("Episode Popup")]
 	public GameObject episodePopupPanel;
 	EpisodePopup episodePopup;
@@ -346,6 +348,18 @@ public class NewWorldMapHandler : MonoBehaviour {
 		facebookAskLivesPanel.GetComponent<Animator>().Play("Panel Slide Out");
 	}
 
+	public void showOfferLivesPopup()
+	{
+		SoundManager.soundManager.playButtonClick();
+		facebookOfferLivesPanel.GetComponent<Animator>().Play("Panel Slide In");
+	}
+
+	public void hideOfferLivesPopup()
+	{
+		SoundManager.soundManager.playButtonClick();
+		facebookOfferLivesPanel.GetComponent<Animator>().Play("Panel Slide Out");
+	}
+
 	public void showSettingsMenu()
 	{
 		SoundManager.soundManager.playButtonClick();
@@ -403,6 +417,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		PlayerStatsManager.Instance.resetTreasureKeysFound();
 		PlayerStatsManager.Instance.setChallenges(string.Empty);
 		PlayerStatsManager.Instance.savePlayerStats();
+		showOfferLivesPopup();
 	}
 
 	public void toggleGameMode()

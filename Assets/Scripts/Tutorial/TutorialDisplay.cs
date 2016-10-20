@@ -190,7 +190,7 @@ public class TutorialDisplay : BaseClass {
 		Matrix4x4 matrixBackup = GUI.matrix;
 		Vector2 pos = new Vector2( positionRect.x, positionRect.y );
 		GUIUtility.RotateAroundPivot(userAngle, pos);
-		Utilities.drawLabelWithDropShadow( positionRect, textContent, textStyle );
+		//Utilities.drawLabelWithDropShadow( positionRect, textContent, textStyle );
 		GUI.matrix = matrixBackup;
 
 		drawInstructionArrows();

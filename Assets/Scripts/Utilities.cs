@@ -66,22 +66,6 @@ public class Utilities : MonoBehaviour {
 		}
 	}
 
-	public static void drawLabelWithDropShadow( Rect location, GUIContent text, GUIStyle textStyle, Color dropShadowColor )
-	{
-		Color colorBeforeChange = textStyle.normal.textColor;
-		Rect dropShadowRect = new Rect( location.x + 1, location.y + 2, location.width, location.height );
-		textStyle.normal.textColor = dropShadowColor;
-		GUI.Label ( dropShadowRect, text, textStyle );
-		//Reset color
-		textStyle.normal.textColor = colorBeforeChange;
-		GUI.Label ( location, text, textStyle );
-	}	
-
-	public static void drawLabelWithDropShadow( Rect location, GUIContent text, GUIStyle textStyle )
-	{
-		drawLabelWithDropShadow( location, text, textStyle, Color.black );
-	}
-
 	public static IEnumerator fadeInCanvasGroup( CanvasGroup canvasGroup, float duration )
 	{
 		canvasGroup.alpha = 0f;
