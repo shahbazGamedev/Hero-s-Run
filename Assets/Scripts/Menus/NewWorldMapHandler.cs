@@ -443,7 +443,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 		PlayerStatsManager.Instance.resetDistanceTravelled();
 		LevelManager.Instance.setCurrentEpisodeNumber( episodeNumber );
 		LevelManager.Instance.setEpisodeCompleted( false );
-		LevelManager.Instance.forceHighestLevelCompleted( levelNumber );
 		LevelManager.Instance.forceNextLevelToComplete( levelNumber );
 
 		StartCoroutine( loadLevel() );

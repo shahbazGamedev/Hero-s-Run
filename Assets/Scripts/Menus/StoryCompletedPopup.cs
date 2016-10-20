@@ -66,7 +66,6 @@ public class StoryCompletedPopup : MonoBehaviour {
 		LevelManager.Instance.setScore( 0 );
 		LevelManager.Instance.setEpisodeCompleted( false );
 		LevelManager.Instance.setHighestLevelCompleted( 0 );
-		LevelManager.Instance.forceHighestLevelCompleted( 0 );
 		FacebookManager.Instance.postHighScore( 0 );
 
 		PlayerStatsManager.Instance.resetDeathInLevels();
