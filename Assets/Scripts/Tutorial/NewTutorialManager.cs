@@ -14,9 +14,12 @@ public class NewTutorialManager : MonoBehaviour {
 	NewTutorialEvent activeTutorial;
 	PowerUpType powerUpUsedInTutorial = PowerUpType.SpeedBoost;
 	const float SLIDE_DURATION = 0.9f;
-	const float END_OF_SLIDE_PAUSE = 0.3f;
-	Vector2 slideStartDest;
-	Vector2 slideEndDest;
+	Vector2 leftArrow;
+	Vector2 rightArrow;
+	Vector2 middleText;
+	Vector2 highText;
+	Vector2 lowArrow;
+	Vector2 highArrow;
 	int loopCounter = 0;
 
 	void Awake ()
@@ -41,8 +44,14 @@ public class NewTutorialManager : MonoBehaviour {
 		tutorialTextsIfFailed.Add(NewTutorialEvent.Slide, LocalizationManager.Instance.getText("TUTORIAL_SLIDE_FAIL"));
 		tutorialTextsIfFailed.Add(NewTutorialEvent.Slide_Breakable, LocalizationManager.Instance.getText("TUTORIAL_SLIDE_BREAKABLE_FAIL"));
 
-		slideStartDest = new Vector2( 50f, pointingFinger.GetComponent<RectTransform>().anchoredPosition.y );
-		slideEndDest = new Vector2( pointingFinger.GetComponent<RectTransform>().anchoredPosition.x + 500f, pointingFinger.GetComponent<RectTransform>().anchoredPosition.y );
+		leftArrow = new Vector2( 50f, -73f );
+		rightArrow = new Vector2( 550f, -73f );
+
+		lowArrow = new Vector2( 300f, -250 );
+		highArrow = new Vector2( 300f, 10f );
+
+		middleText = new Vector2( 300f, -173f );
+		highText = new Vector2( 300f, 105f );
 
 	}
 
@@ -66,21 +75,35 @@ public class NewTutorialManager : MonoBehaviour {
 			break;
 			
 		case NewTutorialEvent.Change_Lane_Left:
-			//LeanTween.move( movingArrowRect, slideEndDest, slideDuration ).setEase(LeanTweenType.easeOutQuad).setOnComplete(slideInEnded).setOnCompleteParam(gameObject);
+			instructionText.GetComponent<RectTransform>().anchoredPosition = middleText;
+			instructionText.text = tutorialTexts[NewTutorialEvent.Change_Lane_Left];
+			instructionText.gameObject.SetActive( true );
+			instructionText.color = new Color(1f,1f,1f, 0 );
+			LeanTween.colorText(instructionText.GetComponent<RectTransform>(), new Color(1f,1f,1f, 1f ), 0.35f ).setOnComplete(startLeftSlide).setOnCompleteParam(gameObject);
 			break;
 			
 		case NewTutorialEvent.Change_Lane_Right:
-			pointingFinger.gameObject.SetActive( true );
-			pointingFinger.GetComponent<RectTransform>().anchoredPosition = slideStartDest;
-			LeanTween.moveX( pointingFinger.GetComponent<RectTransform>(),pointingFinger.GetComponent<RectTransform>().anchoredPosition.x + 500f, SLIDE_DURATION ).setOnComplete(slideEnded).setOnCompleteParam(gameObject).setLoopType(LeanTweenType.easeInOutQuad).setLoopCount(3);
+			instructionText.GetComponent<RectTransform>().anchoredPosition = middleText;
+			instructionText.text = tutorialTexts[NewTutorialEvent.Change_Lane_Right];
+			instructionText.gameObject.SetActive( true );
+			instructionText.color = new Color(1f,1f,1f, 0 );
+			LeanTween.colorText(instructionText.GetComponent<RectTransform>(), new Color(1f,1f,1f, 1f ), 0.35f ).setOnComplete(startRightSlide).setOnCompleteParam(gameObject);
 			break;
 			
 		case NewTutorialEvent.Jump:
-			//LeanTween.move( movingArrowRect, slideEndDest, slideDuration ).setEase(LeanTweenType.easeOutQuad).setOnComplete(slideInEnded).setOnCompleteParam(gameObject);
+			instructionText.GetComponent<RectTransform>().anchoredPosition = highText;
+			instructionText.text = tutorialTexts[NewTutorialEvent.Jump];
+			instructionText.gameObject.SetActive( true );
+			instructionText.color = new Color(1f,1f,1f, 0 );
+			LeanTween.colorText(instructionText.GetComponent<RectTransform>(), new Color(1f,1f,1f, 1f ), 0.35f ).setOnComplete(startUpSlide).setOnCompleteParam(gameObject);
 			break;
 			
 		case NewTutorialEvent.Slide:
-			//LeanTween.move( movingArrowRect, slideEndDest, slideDuration ).setEase(LeanTweenType.easeOutQuad).setOnComplete(slideInEnded).setOnCompleteParam(gameObject);
+			instructionText.GetComponent<RectTransform>().anchoredPosition = highText;
+			instructionText.text = tutorialTexts[NewTutorialEvent.Slide];
+			instructionText.gameObject.SetActive( true );
+			instructionText.color = new Color(1f,1f,1f, 0 );
+			LeanTween.colorText(instructionText.GetComponent<RectTransform>(), new Color(1f,1f,1f, 1f ), 0.35f ).setOnComplete(startDownSlide).setOnCompleteParam(gameObject);
 			break;
 
 		case NewTutorialEvent.Tilt_Left:
@@ -94,6 +117,38 @@ public class NewTutorialManager : MonoBehaviour {
 			break;
 
 		}
+	}
+
+	void startLeftSlide()
+	{
+		pointingFinger.GetComponent<RectTransform>().localEulerAngles = Vector3.zero;
+		pointingFinger.gameObject.SetActive( true );
+		pointingFinger.GetComponent<RectTransform>().anchoredPosition = leftArrow;
+		LeanTween.moveX( pointingFinger.GetComponent<RectTransform>(),rightArrow.x, SLIDE_DURATION ).setOnComplete(slideEnded).setOnCompleteParam(gameObject).setLoopType(LeanTweenType.easeOutQuad).setLoopCount(3);
+	}
+
+	void startRightSlide()
+	{
+		pointingFinger.GetComponent<RectTransform>().localEulerAngles = Vector3.zero;
+		pointingFinger.gameObject.SetActive( true );
+		pointingFinger.GetComponent<RectTransform>().anchoredPosition = rightArrow;
+		LeanTween.moveX( pointingFinger.GetComponent<RectTransform>(),leftArrow.x, SLIDE_DURATION ).setOnComplete(slideEnded).setOnCompleteParam(gameObject).setLoopType(LeanTweenType.easeOutQuad).setLoopCount(3);
+	}
+
+	void startUpSlide()
+	{
+		pointingFinger.GetComponent<RectTransform>().localEulerAngles = new Vector3( 0,0,90f);
+		pointingFinger.gameObject.SetActive( true );
+		pointingFinger.GetComponent<RectTransform>().anchoredPosition = lowArrow;
+		LeanTween.moveY( pointingFinger.GetComponent<RectTransform>(),highArrow.y, SLIDE_DURATION ).setOnComplete(slideEnded).setOnCompleteParam(gameObject).setLoopType(LeanTweenType.easeOutQuad).setLoopCount(3);
+	}
+
+	void startDownSlide()
+	{
+		pointingFinger.GetComponent<RectTransform>().localEulerAngles = new Vector3( 0,0,90f);
+		pointingFinger.gameObject.SetActive( true );
+		pointingFinger.GetComponent<RectTransform>().anchoredPosition = highArrow;
+		LeanTween.moveY( pointingFinger.GetComponent<RectTransform>(),lowArrow.y, SLIDE_DURATION ).setOnComplete(slideEnded).setOnCompleteParam(gameObject).setLoopType(LeanTweenType.easeOutQuad).setLoopCount(3);
 	}
 
 	void slideEnded()

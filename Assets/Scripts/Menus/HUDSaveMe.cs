@@ -133,9 +133,10 @@ public class HUDSaveMe : MonoBehaviour {
 	public void tutorialTryAgain()
 	{
 		Debug.Log("Try Again button pressed.");
-		GameManager.Instance.setGameState( GameState.Resurrect );
-		playerController.resurrectBegin(false);
+		//GameManager.Instance.setGameState( GameState.Resurrect );
+		//playerController.resurrectBegin(false);
 		closeSaveMeMenu();
+		SceneManager.LoadScene( (int) GameScenes.Level );
 	}
 
 	public void saveMe()
