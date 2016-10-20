@@ -21,6 +21,7 @@ public class HUDSaveMe : MonoBehaviour {
 	public RectTransform buttonPanel;
 	public RectTransform checkpointButton;
 	[Header("Tutorial Save Me")]
+	public NewTutorialManager newTutorialManager;
 	public GameObject tutorialPanel;
 	public Text titleTutorialText;
 	public Text helpText;
@@ -77,7 +78,7 @@ public class HUDSaveMe : MonoBehaviour {
 	public void showSaveMeMenu()
 	{
 		saveMeCanvas.SetActive ( true );
-		if( LevelManager.Instance.isTutorialActive() )
+		if( newTutorialManager.isTutorialActive )
 		{
 			activateTutorialSaveMe();
 		}
@@ -104,7 +105,7 @@ public class HUDSaveMe : MonoBehaviour {
 	void activateTutorialSaveMe()
 	{
 		//Set the help text in case the player failed a tutorial.
-		helpText.text = TutorialManager.getFailedTutorialText();
+		helpText.text = newTutorialManager.getFailedTutorialText();
 		tutorialPanel.SetActive( true );
 		normalPanel.SetActive( false );
 	}
