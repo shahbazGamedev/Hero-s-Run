@@ -121,11 +121,8 @@ public class GenerateLevel  : MonoBehaviour {
 	//The surrounding plane (like an ocean) is always centered with the current tile
 	public Transform surroundingPlane;
 	
-	const int NUMBER_OF_TUTORIALS = 6; //Change Lane, Jump, Slide, etc.
-	Dictionary<TutorialEvent,int> tutorialStartTileIndex = new Dictionary<TutorialEvent, int>(NUMBER_OF_TUTORIALS);
-
 	//To improve performance by preloading prefabs and avoiding reloading tile prefabs that have previously been loaded.
-	const int NUMBER_OF_THEMES = 7; //Island, Forest, Fairyland, Cemetery, Hell and Volcano. TUTORIAL does not use tilePrefabsPerTheme.
+	const int NUMBER_OF_THEMES = 12; //Dark Tower, Forest, Fairyland, Cemetery, etc.
 	Dictionary<SegmentTheme,Dictionary<TileType,GameObject>> tilePrefabsPerTheme  = new Dictionary<SegmentTheme,Dictionary<TileType,GameObject>>(NUMBER_OF_THEMES);
 
 	//For the endless running game mode
@@ -186,7 +183,6 @@ public class GenerateLevel  : MonoBehaviour {
 		recycledTiles.Clear();
 		levelTileList.Clear();
 		tileCreationIndex = 0;
-		tutorialStartTileIndex.Clear();
 		playerTileIndex = 0;
 		seamlessLevelIndex = 0;
 						
@@ -237,31 +233,21 @@ public class GenerateLevel  : MonoBehaviour {
 
 		nbrVisibleTiles = levelInfo.nbrVisibleTiles;
 
-		if( levelInfo.isTutorial )
+		//Create all the road segments that compose the road
+		List<LevelData.RoadSegment> roadSegmentList = levelInfo.roadSegmentList;
+
+		if( levelInfo.startTile != TileType.None )
 		{
-			//The tutorial uses addCustomTile and not the regular system.
-			createTutorialLevel();
-			//The only allowed power-up in the tutorial is Magic Boots
-			PlayerStatsManager.Instance.setPowerUpSelected(PowerUpType.MagicBoots);
+			//Instantiate Start tile. There is only one Start tile per level.
+			//The Start tile has the same theme as the first road segment.
+			setCurrentTheme( roadSegmentList[0].theme );
+			addTile( levelInfo.startTile );
 		}
-		else
+
+
+		for( int i=0; i < roadSegmentList.Count; i++ )
 		{
-			//Create all the road segments that compose the road
-			List<LevelData.RoadSegment> roadSegmentList = levelInfo.roadSegmentList;
-
-			if( levelInfo.startTile != TileType.None )
-			{
-				//Instantiate Start tile. There is only one Start tile per level.
-				//The Start tile has the same theme as the first road segment.
-				setCurrentTheme( roadSegmentList[0].theme );
-				addTile( levelInfo.startTile );
-			}
-
-
-			for( int i=0; i < roadSegmentList.Count; i++ )
-			{
-				addRoadSegment( roadSegmentList[i] );
-			}
+			addRoadSegment( roadSegmentList[i] );
 		}
 
 		levelInfo.lengthInMeters = calculateLevelLength();
@@ -1521,181 +1507,6 @@ public class GenerateLevel  : MonoBehaviour {
 	public void enableSurroundingPlane( bool enable )
 	{
 		if( surroundingPlane != null ) surroundingPlane.gameObject.SetActive( enable );
-	}
-
-	void createTutorialLevel()
-	{
-		setCurrentTheme( SegmentTheme.Island );
-		
-		//Step 0 - Instantiate START tile
-		addCustomTile( "Opening",2,TileType.Straight );
-		
-		//Step 1 - change lane by swiping tutorial
-		tutorialStartTileIndex.Add (TutorialEvent.CHANGE_LANES, tileCreationIndex);
-		addCustomTile( "Opening2",2,TileType.Straight );
-		addCustomTile( "Opening3",2,TileType.Straight );
-		addCustomTile( "Opening3",2,TileType.Straight );
-		addCustomTile( "Opening4",2,TileType.Straight );
-		addCustomTile( "Opening5",1,TileType.Right );
-		//previousTilePos = new Vector3( 0, 32.3f, 473.2f );
-		//addCustomTile( "Straight",1,TileType.Straight );
-		/*
-		//Step 2 - turn corners tutorial
-		tutorialStartTileIndex.Add (TutorialEvent.TURN_CORNERS, tileCreationIndex);
-		addCustomTile( "Turn corners Announce",1,TileType.Straight );
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Turn corners right Windmill",1,TileType.Right );
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Turn corners left",1,TileType.Left );
-		
-		//Step 3 - jump tutorial
-		tutorialStartTileIndex.Add (TutorialEvent.JUMP, tileCreationIndex);
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Jump Announce",1,TileType.Straight );
-		addCustomTile( "Jump over cows",2,TileType.Straight );
-		addCustomTile( "Jump over river",1,TileType.Straight );
-		
-		//Step 4 - slide tutorial
-		tutorialStartTileIndex.Add (TutorialEvent.SLIDE, tileCreationIndex);
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Slide Announce",1,TileType.Straight );
-		addCustomTile( "Slide under clocktower gate",2,TileType.Straight );
-		
-		//Step 5 - slide breakable tutorial
-		tutorialStartTileIndex.Add (TutorialEvent.SLIDE_BREAKABLE, tileCreationIndex);
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Breakable Announce",1,TileType.Straight );
-		addCustomTile( "Breakable break a barrel",1,TileType.Straight );
-		
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Right",1,TileType.Right );
-		
-		//Step 6 - activate powerup with double tap
-		//Note that you cannot die while trying to activate a power-up, hence it is not added to the list
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Powerup Announce",1,TileType.Straight );
-		addCustomTile( "Powerup capture first star",1,TileType.Straight );
-		addCustomTile( "Powerup capture second star",1,TileType.Straight );
-		
-		//Step 7 - tilt to change lanes and pick-up coins
-		tutorialStartTileIndex.Add (TutorialEvent.TILT_CHANGE_LANES, tileCreationIndex);
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Tilt Announce",1,TileType.Straight );
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Tilt left",1,TileType.Straight );
-		addCustomTile( "Tilt right",1,TileType.Straight );
-		
-		//Last step - arrive at castle
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "End",2,TileType.Right ); */
-	}
-
-
-	void createTutorialLevelOld()
-	{
-		setCurrentTheme( SegmentTheme.Tutorial );
-
-		//Step 0 - Instantiate START tile
-		addCustomTile( "Start",2,TileType.Straight );
-
-		//Step 1 - change lane by swiping tutorial
-		tutorialStartTileIndex.Add (TutorialEvent.CHANGE_LANES, tileCreationIndex);
-		addCustomTile( "Change lane Announce",1,TileType.Straight );
-		addCustomTile( "Change lane Go left",2,TileType.Straight );
-		addCustomTile( "Change lane Go right",2,TileType.Straight );
-
-		//Step 2 - turn corners tutorial
-		tutorialStartTileIndex.Add (TutorialEvent.TURN_CORNERS, tileCreationIndex);
-		addCustomTile( "Turn corners Announce",1,TileType.Straight );
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Turn corners right Windmill",1,TileType.Right );
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Turn corners left",1,TileType.Left );
-
-		//Step 3 - jump tutorial
-		tutorialStartTileIndex.Add (TutorialEvent.JUMP, tileCreationIndex);
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Jump Announce",1,TileType.Straight );
-		addCustomTile( "Jump over cows",2,TileType.Straight );
-		addCustomTile( "Jump over river",1,TileType.Straight );
-	
-		//Step 4 - slide tutorial
-		tutorialStartTileIndex.Add (TutorialEvent.SLIDE, tileCreationIndex);
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Slide Announce",1,TileType.Straight );
-		addCustomTile( "Slide under clocktower gate",2,TileType.Straight );
-
-		//Step 5 - slide breakable tutorial
-		tutorialStartTileIndex.Add (TutorialEvent.SLIDE_BREAKABLE, tileCreationIndex);
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Breakable Announce",1,TileType.Straight );
-		addCustomTile( "Breakable break a barrel",1,TileType.Straight );
-
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Right",1,TileType.Right );
-
-		//Step 6 - activate powerup with double tap
-		//Note that you cannot die while trying to activate a power-up, hence it is not added to the list
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Powerup Announce",1,TileType.Straight );
-		addCustomTile( "Powerup capture first star",1,TileType.Straight );
-		addCustomTile( "Powerup capture second star",1,TileType.Straight );
-
-		//Step 7 - tilt to change lanes and pick-up coins
-		tutorialStartTileIndex.Add (TutorialEvent.TILT_CHANGE_LANES, tileCreationIndex);
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Tilt Announce",1,TileType.Straight );
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "Tilt left",1,TileType.Straight );
-		addCustomTile( "Tilt right",1,TileType.Straight );
-
-		//Last step - arrive at castle
-		addCustomTile( "Straight",1,TileType.Straight );
-		addCustomTile( "End",2,TileType.Right );
-	}
-
-	public GameObject getFirstTileOfActiveTutorial()
-	{
-		//Get tile index
-		int tutorialTileIndex;
-		if( tutorialStartTileIndex.ContainsKey(TutorialManager.activeTutorial) )
-		{
-			tutorialTileIndex = tutorialStartTileIndex[TutorialManager.activeTutorial];
-			print ("getFirstTileOfActiveTutorial " + tutorialTileIndex );
-			GameObject tutorialTile = worldRoadSegments[tutorialTileIndex];
-			print ("getFirstTileOfActiveTutorial " + tutorialTile.name );
-
-			//Center the surrounding plane around the current tile
-			if( surroundingPlane != null )
-			{
-								surroundingPlane.position = new Vector3( tutorialTile.transform.position.x, tutorialTile.transform.position.y - 4f, tutorialTile.transform.position.z );
-			}
-			//Make sure the playerTileIndex points to this tile
-			playerTileIndex = tutorialTileIndex;
-			//Make sure the next tiles are active
-			activateInitialTiles(playerTileIndex);
-
-			//Reset all the tiles starting from that point so that if a barrel was broken for example, it would be replaced
-			for( int i = tutorialTileIndex; i < worldRoadSegments.Count; i++ )
-			{
-				TileReset tr = worldRoadSegments[i].GetComponent<TileReset>();
-				if( tr != null ) tr.resetTile();				
-			}
-
-			//Deactivate all the tile after the new current tile + nbrVisibleTiles
-			for( int i = tutorialTileIndex + nbrVisibleTiles + 1; i < worldRoadSegments.Count; i++ )
-			{
-				worldRoadSegments[i].SetActive(false);
-				getSegmentInfo(worldRoadSegments[i]).entranceCrossed = false;
-
-			}
-			return tutorialTile;
-		}
-		else
-		{
-			Debug.LogError("GenerateLevel: getFirstTileOfActiveTutorial error: could not find entry for " + TutorialManager.activeTutorial );
-			return null;
-		}
 	}
 	
 	private SegmentInfo getSegmentInfo( GameObject tile )

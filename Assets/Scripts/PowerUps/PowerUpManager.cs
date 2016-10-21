@@ -503,7 +503,6 @@ public class PowerUpManager : BaseClass {
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
 		GameManager.gameStateEvent += GameStateChange;
-		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
 		PlayerStatsManager.powerUpInventoryChanged += PowerUpInventoryChanged;
 	}
 
@@ -511,23 +510,7 @@ public class PowerUpManager : BaseClass {
 	{
 		PlayerController.playerStateChanged -= PlayerStateChange;
 		GameManager.gameStateEvent -= GameStateChange;
-		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 		PlayerStatsManager.powerUpInventoryChanged -= PowerUpInventoryChanged;
-	}
-
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
-	{
-		if( eventType == GameEvent.Give_Powerup )
-		{
-			//Player needs two power-ups for tutorial
-			int currentNumberPowerUp =  PlayerStatsManager.Instance.getPowerUpQuantity( PowerUpType.MagicBoots );
-			int delta = 2 - currentNumberPowerUp;
-			if( delta > 0 )
-			{
-				//Player does not have enough power-ups. Add the missing delta.
-				PlayerStatsManager.Instance.addToPowerUpInventory( PowerUpType.MagicBoots, delta );
-			}
-		}
 	}
 
 	void resetAllPowerUps()

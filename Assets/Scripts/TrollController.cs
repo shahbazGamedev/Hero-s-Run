@@ -80,16 +80,7 @@ public class TrollController : MonoBehaviour {
 
 		//Give the enemy the same speed as the player. Since the player's
 		//speed increases gradually, unless he stumbles, the enemy should not catch him.
-		//If in the tutorial, make the troll move slower
-		if( LevelManager.Instance.isTutorialActive() )
-		{
-			Speed = PlayerController.getPlayerSpeed();
-		}
-		else
-		{
-			Speed = PlayerController.getPlayerSpeed() + SPEED_BOOST;
-
-		}
+		Speed = PlayerController.getPlayerSpeed() + SPEED_BOOST;
 		Debug.Log ("TrollController-startPursuing: start position : " + transform.position + " Troll speed " + Speed);
 	}
 	

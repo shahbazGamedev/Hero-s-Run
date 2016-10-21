@@ -364,14 +364,6 @@ public sealed class PlayerController : BaseClass {
 
 			//The character is in idle while waiting for the player to press the Run! button. 
 			setCharacterState( CharacterState.Idle );		
-
-			if( currentTileType != TileType.Start || LevelManager.Instance.isTutorialActive() )
-			{
-				//The troll is only visible when the player starts off on a Start tile.
-				//The troll is not visible during the tutorial.
-				//For all other tiles, the troll is inactive at first and will only become visible if the player stumbles.
-				trollController.stopPursuing();
-			}
 		}
 	}
 
@@ -445,10 +437,7 @@ public sealed class PlayerController : BaseClass {
 			sc.playCutscene( CutsceneType.Start );
 			runStartSpeed = levelRunStartSpeed;
 			runSpeed = runStartSpeed;
-			if( !LevelManager.Instance.isTutorialActive() )
-			{
-				trollController.startPursuing();
-			}
+			trollController.startPursuing();
 		}
 		else
 		{
@@ -685,35 +674,31 @@ public sealed class PlayerController : BaseClass {
 		{
 			if( usesBezierCurve )
 			{
-				if( !LevelManager.Instance.isTutorialActive() )
+				//Player is following a bezier curve
+				Vector3 closest = currentBezierCurve.ClosestPointOnBezier( transform.position );
+				closest = new Vector3( closest.x, transform.position.y, closest.z );
+				float dist =  Vector3.Distance( closest, transform.position );
+				
+				bool playerIsToTheRightOfTheCurve = Utilities.onWhichSide( point1, point2, transform.position );
+	
+				Vector3 relPos;
+				if( dist > 1.3f )
 				{
-					//Player is following a bezier curve
-					Vector3 closest = currentBezierCurve.ClosestPointOnBezier( transform.position );
-					closest = new Vector3( closest.x, transform.position.y, closest.z );
-					float dist =  Vector3.Distance( closest, transform.position );
-					
-					bool playerIsToTheRightOfTheCurve = Utilities.onWhichSide( point1, point2, transform.position );
-		
-					Vector3 relPos;
-					if( dist > 1.3f )
+					if( playerIsToTheRightOfTheCurve )
 					{
-						if( playerIsToTheRightOfTheCurve )
-						{
-							relPos = new Vector3( laneLimit , 0 , 0 );
-						}
-						else
-						{
-							relPos = new Vector3( -laneLimit , 0 , 0 );
-							
-						}
-						dummyTransform.position = new Vector3( closest.x, transform.position.y, closest.z );
-						dummyTransform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
-						Vector3 exactPos = dummyTransform.TransformPoint(relPos);
-						transform.position = exactPos;
-						Debug.Log( "+STAY ON PATH BEZIER: p pos " + transform.position + " p rot " + transform.eulerAngles + " dist " + dist  );
+						relPos = new Vector3( laneLimit , 0 , 0 );
 					}
+					else
+					{
+						relPos = new Vector3( -laneLimit , 0 , 0 );
+						
+					}
+					dummyTransform.position = new Vector3( closest.x, transform.position.y, closest.z );
+					dummyTransform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
+					Vector3 exactPos = dummyTransform.TransformPoint(relPos);
+					transform.position = exactPos;
+					Debug.Log( "+STAY ON PATH BEZIER: p pos " + transform.position + " p rot " + transform.eulerAngles + " dist " + dist  );
 				}
-
 			}
 			else
 			{
@@ -3065,62 +3050,33 @@ public sealed class PlayerController : BaseClass {
 		anim.Play("DeathWall_Loop");
 		GameObject respawnLocationObject;
 
-		if( LevelManager.Instance.isTutorialActive() )
+		if( getCurrentTileType() == TileType.T_Junction || getCurrentTileType() == TileType.T_Junction_Landmark_Cemetery )
 		{
-			GameObject firstTileOfActiveTutorial = gl.getFirstTileOfActiveTutorial();
-			respawnLocationObject = firstTileOfActiveTutorial.transform.Find("respawnLocation").gameObject;
-			SegmentInfo si = firstTileOfActiveTutorial.GetComponent<SegmentInfo>();
-			if( si != null )
+			//If the player's rotation is zero, this means he has not turned yet.
+			//If this is the case, we will assume he turned right.
+			float playerRotationY = Mathf.Floor ( transform.eulerAngles.y );
+			if( playerRotationY == 0 )
 			{
-				currentTilePos = si.tile.transform.position;
-				currentTile = si.tile;
-				tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
-				currentTileType = si.tileType;
-				usesBezierCurve = si.usesBezierCurve;
-				if( usesBezierCurve )
-				{
-					//reset
-					curveListIndex = 0;
-					curveList = si.curveList;
-					createBezier();
-					finalizeSideMove();
-				}
+				respawnLocationObject = currentTile.transform.Find("respawnLocationRight").gameObject;
+				gl.playerTurnedAtTJunction( true, currentTile );
+				
 			}
 			else
 			{
-				Debug.LogError("PlayerController-resurrectBegin: firstTileOfActiveTutorial game object " + firstTileOfActiveTutorial.name +  " does not have a SegmentInfo component attached to it.");
+				//Player has already turned at the T-Junction
+				if( isGoingRight )
+				{
+					respawnLocationObject = currentTile.transform.Find("respawnLocationRight").gameObject;
+				}
+				else
+				{
+					respawnLocationObject = currentTile.transform.Find("respawnLocationLeft").gameObject;
+				}
 			}
 		}
 		else
 		{
-			if( getCurrentTileType() == TileType.T_Junction || getCurrentTileType() == TileType.T_Junction_Landmark_Cemetery )
-			{
-				//If the player's rotation is zero, this means he has not turned yet.
-				//If this is the case, we will assume he turned right.
-				float playerRotationY = Mathf.Floor ( transform.eulerAngles.y );
-				if( playerRotationY == 0 )
-				{
-					respawnLocationObject = currentTile.transform.Find("respawnLocationRight").gameObject;
-					gl.playerTurnedAtTJunction( true, currentTile );
-					
-				}
-				else
-				{
-					//Player has already turned at the T-Junction
-					if( isGoingRight )
-					{
-						respawnLocationObject = currentTile.transform.Find("respawnLocationRight").gameObject;
-					}
-					else
-					{
-						respawnLocationObject = currentTile.transform.Find("respawnLocationLeft").gameObject;
-					}
-				}
-			}
-			else
-			{
-				respawnLocationObject = currentTile.transform.Find("respawnLocation").gameObject;
-			}
+			respawnLocationObject = currentTile.transform.Find("respawnLocation").gameObject;
 		}
 
 		deathType = DeathType.Alive;

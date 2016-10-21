@@ -69,8 +69,8 @@ public class EventCounter {
 
 	public void incrementCounter()
 	{
-		//Don't bother if the event was previously completed succesfully or if we are in a tutorial
-		if( !eventCompleted && !GameCenterManager.isAchievementCompleted( achievementID ) && !LevelManager.Instance.isTutorialActive() ) 
+		//Don't bother if the event was previously completed succesfully
+		if( !eventCompleted && !GameCenterManager.isAchievementCompleted( achievementID ) ) 
 		{
 			currentNbrEvents++;
 			Debug.LogWarning ("EventCounter-incrementCounter: " + currentNbrEvents + "/" + nbrEventsRequired );

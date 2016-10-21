@@ -8,7 +8,7 @@ public class CullisGateController : MonoBehaviour {
 	public ParticleSystem lightEffect;
 	SimpleCamera simpleCamera;
 	public bool playCameraCutscene = false;
-	public string messageTextId = "CULLIS_GATE_TUTORIAL";
+	public string messageTextId = "CULLIS_GATE_XXX";
 	//How long to wait before displaying either the stats screen or loading the net level
 	const float WAIT_DURATION = 8f;
 

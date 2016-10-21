@@ -90,18 +90,6 @@ public class LevelManager {
 		return highestLevelCompleted;
 	}
 
-	public bool isTutorialActive()
-	{
-		if( currentLevelInfo != null )
-		{
-			return currentLevelInfo.isTutorial;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
 	public void unlockAllLevels()
 	{
 		highestLevelCompleted = levelData.levelList.Count -1;

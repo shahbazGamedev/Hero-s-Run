@@ -20,7 +20,7 @@ public class HUDHandler : MonoBehaviour {
 	//Also see the waitForTapToPlay bool in LevelData
 	public Button tapToPlayButton; 
 	public Text tapToPlayText;
-	//User Message is used to display the Go! message after resurrection and for some tutorial messages.
+	//User Message is used to display the Go! message after resurrection.
 	//It appears in the center of the screen.
 	[Header("User Message")]
 	public Text userMessageText;

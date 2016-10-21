@@ -7,7 +7,7 @@ public class TrapCullisGateController : MonoBehaviour {
 	[Header("General")]
 	public ParticleSystem lightEffect;
 	public ParticleSystem vortex;
-	public string messageTextId = "CULLIS_GATE_TUTORIAL";
+	public string messageTextId = "CULLIS_GATE_XXX";
 	GameObject player;
 	[Header("Light Dimming")]
 	[Tooltip("If true, the sun light will dim to the intensity specified by the sunlightIntensityAfterDim parameter in the time specified by the sunlightDimDuration parameter. In addition, the ambient source color will gradually become black.")]
