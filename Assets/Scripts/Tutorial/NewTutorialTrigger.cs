@@ -7,12 +7,12 @@ public enum NewTutorialEvent {
 	Tutorial_End = 2,
 	Change_Lane_Left = 3,
 	Change_Lane_Right = 4,
-	Turn_Corner = 5,
-	Jump = 6,
-	Slide = 7,
-	Slide_Breakable = 8,
-	Tilt_Left = 9,
-	Tilt_Right = 10,
+	Turn_Corner_Left = 5,
+	Turn_Corner_Right = 6,
+	Jump = 7,
+	Slide = 8,
+	Slide_Breakable = 9,
+	Tilt = 10,
 	Activate_Power_Up = 11
 }
 
