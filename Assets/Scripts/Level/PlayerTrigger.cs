@@ -35,7 +35,8 @@ public enum GameEvent {
 	Taste_Hell_Sequence = 31,
 	Summon_Skeletons_Sequence = 32,
 	Dark_Mines_Sequence = 33,
-	ExtinguishTorch = 34
+	ExtinguishTorch = 34,
+	Giant_Crystal_Sequence = 35
 
 }
 
