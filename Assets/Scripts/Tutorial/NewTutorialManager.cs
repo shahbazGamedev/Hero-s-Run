@@ -7,15 +7,17 @@ public class NewTutorialManager : MonoBehaviour {
 
 	[Header("Tutorial Manager")]
 	public bool isTutorialActive = false;
+	public GameObject panel;
 	public Text instructionText;
 	public Image pointingFinger;
 	public Image tiltDevice;
+	public Image tapDevice;
 	Dictionary<NewTutorialEvent,string> tutorialTexts = new Dictionary<NewTutorialEvent, string>(9);
 	Dictionary<NewTutorialEvent,string> tutorialTextsIfFailed = new Dictionary<NewTutorialEvent, string>(9);
 	NewTutorialEvent activeTutorial;
 	PowerUpType powerUpUsedInTutorial = PowerUpType.SpeedBoost;
 	const float HORIZONTAL_DURATION = 0.9f;
-	const float VERTICAL_DURATION = 1.1f;
+	const float VERTICAL_DURATION = 0.9f;
 	const float TILT_DURATION = 0.9f;
 	const float FADE_IN_DURATION = 0.35f;
 	const float PAUSE_DELAY = 0.5f;
@@ -55,14 +57,14 @@ public class NewTutorialManager : MonoBehaviour {
 		tutorialTextsIfFailed.Add(NewTutorialEvent.Tilt, LocalizationManager.Instance.getText("TUTORIAL_TRY_AGAIN"));
 		tutorialTextsIfFailed.Add(NewTutorialEvent.Activate_Power_Up, LocalizationManager.Instance.getText("TUTORIAL_TRY_AGAIN"));
 
-		leftArrow = new Vector2( 50f, -73f );
-		rightArrow = new Vector2( 550f, -73f );
+		leftArrow = new Vector2( -100f, -130f );
+		rightArrow = new Vector2( 400f, -130f );
 
-		lowArrow = new Vector2( 300f, -300 );
-		highArrow = new Vector2( 300f, -10f );
+		lowArrow = new Vector2( 150f, -357 );
+		highArrow = new Vector2( 150f, -67f );
 
-		middleText = new Vector2( 300f, -173f );
-		highText = new Vector2( 300f, 85f );
+		middleText = new Vector2( 150f, -230f );
+		highText = new Vector2( 150f, 28f );
 
 	}
 
@@ -166,6 +168,10 @@ public class NewTutorialManager : MonoBehaviour {
 			instructionText.gameObject.SetActive( true );
 			instructionText.color = new Color(1f,1f,1f, 0 );
 			LeanTween.colorText(instructionText.GetComponent<RectTransform>(), new Color(1f,1f,1f, 1f ), FADE_IN_DURATION ).setOnComplete(startActivatePowerUp).setOnCompleteParam(gameObject);
+
+			tapDevice.gameObject.SetActive( true );
+			tapDevice.color = new Color(1f,1f,1f, 0 );
+			LeanTween.color(tapDevice.GetComponent<RectTransform>(), new Color(1f,1f,1f, 1f ), FADE_IN_DURATION );
 			break;
 
 		}
@@ -248,12 +254,13 @@ public class NewTutorialManager : MonoBehaviour {
 
 	void startActivatePowerUp()
 	{
-		Invoke("endActivatePowerUp", 3f );
+		Invoke("endActivatePowerUp", 5f );
 	}
 
 	void endActivatePowerUp()
 	{
 		instructionText.gameObject.SetActive( false );
+		tapDevice.gameObject.SetActive( false );
 	}
 
 	public string getFailedTutorialText()
@@ -270,16 +277,47 @@ public class NewTutorialManager : MonoBehaviour {
 
 	void OnEnable()
 	{
+		GameManager.gameStateEvent += GameStateChange;
 		NewTutorialTrigger.tutorialEventTriggered += TutorialEventTriggered;
+		PlayerController.playerStateChanged += PlayerStateChange;
 	}
 
 	void OnDisable()
 	{
+		GameManager.gameStateEvent -= GameStateChange;
 		NewTutorialTrigger.tutorialEventTriggered -= TutorialEventTriggered;
+		PlayerController.playerStateChanged -= PlayerStateChange;
 	}
 
 	void TutorialEventTriggered( NewTutorialEvent tutorialEvent )
 	{
 		handleTutorialEvent( tutorialEvent );
 	}
+
+	void GameStateChange( GameState newState )
+	{
+		if( newState == GameState.Normal )
+		{
+			panel.SetActive( true );
+		}
+		else
+		{
+			//Hide any active tutorial
+			panel.SetActive( false );
+		}
+	}
+
+	void PlayerStateChange( CharacterState newState )
+	{
+		if( newState == CharacterState.Dying )
+		{
+			//Hide any active tutorial
+			panel.SetActive( false );
+		}
+		else
+		{
+			panel.SetActive( true );
+		}
+	}
+
 }
