@@ -63,7 +63,7 @@ public class GiantCrystalSequence : MonoBehaviour {
 		//Slowdown player and remove player control
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(16f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(18f, afterPlayerSlowdown ) );
 	}
 	
 	void afterPlayerSlowdown()
@@ -73,7 +73,7 @@ public class GiantCrystalSequence : MonoBehaviour {
 		fairyController.setYRotationOffset( -10f );
 		fairyController.Appear ( FairyEmotion.Worried );
 		fairyController.speak("VO_FA_CANT_BE_GOOD", 2f, false );
-		Invoke("lookOverEdge", 4f );
+		//Invoke("lookOverEdge", 4f );
 	}
 
 	void lookOverEdge()
