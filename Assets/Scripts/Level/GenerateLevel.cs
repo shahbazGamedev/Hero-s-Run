@@ -270,7 +270,6 @@ public class GenerateLevel  : MonoBehaviour {
 
 		Debug.Log("GenerateLevel-CreateLevel: Level " + levelInfo.LevelName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
-		Debug.Log("GenerateLevel-CreateLevel: The level length in meters is : " + levelInfo.lengthInMeters );
 
 	}*/
 
@@ -359,8 +358,6 @@ public class GenerateLevel  : MonoBehaviour {
 			generateEndlessLevel( tileGroupList );
 		}
 
-		levelInfo.lengthInMeters = calculateLevelLength();
-
 		//The player controller needs info about the tile the player is on.
 		setFirstTileInfoInPlayer();
 
@@ -375,7 +372,6 @@ public class GenerateLevel  : MonoBehaviour {
 
 		Debug.Log("GenerateLevel-CreateLevel: Level " + levelInfo.LevelName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
-		Debug.Log("GenerateLevel-CreateLevel: The level length in meters is : " + levelInfo.lengthInMeters );
 
 	}
 
@@ -429,48 +425,6 @@ public class GenerateLevel  : MonoBehaviour {
 		}
 
 
-	}
-
-	float calculateLevelLength()
-	{
-		float levelLength = 0;
-		GameObject tile;
-		int numberOfTJunctions = 0;
-
-		for(int i = 0; i < worldRoadSegments.Count; i++ )
-		{
-			tile = worldRoadSegments[i];
-			SegmentInfo si = tile.GetComponent<SegmentInfo>();
-			if( si.tileType == TileType.End )
-			{
-				//The cullis gate is 34.6 meters from the start of the tile.
-				//But the checkpoint trigger (which changes the game state) is at 18.2 meters. The trigger depth is 1 meters. So we have, 18.2m - 0.5m - 17.7m.
-				//When the game state is not Normal, the run distance stops being calculated.
-				levelLength = levelLength + 17.7f;
-			}
-			else if( si.tileType == TileType.Checkpoint )
-			{
-				//The checkpoint trigger is 18.2 meters from the start of the tile. The trigger depth is 1 meters. So we have, 18.2m - 0.5m - 17.7m.
-				levelLength = levelLength + 17.7f;
-			}
-			else if( si.tileType == TileType.Start )
-			{
-				//The distance between the player's start position (0,ground height,0) and the end of the tile, is 54.4 meters.
-				levelLength = levelLength + 54.4f;
-			}
-			else
-			{
-				levelLength = levelLength + getTileDepth(si.tileType) * TILE_SIZE;
-			}
-			if( si.tileType == TileType.T_Junction || si.tileType == TileType.T_Junction_Landmark_Cemetery ) numberOfTJunctions++;
-
-		}
-		//T-Junctions create 4 tiles on the left path and 2 tiles on the right path. All the tiles have a depthTileMult of 1.
-		//For the time being, we are calculating the length of the right path only.
-		//So we need to substract the length added by the left path tiles.
-		levelLength = levelLength - (numberOfTJunctions * 4 * TILE_SIZE );
-
-		return levelLength;
 	}
 
 	//The player controller needs info about the tile the player is on.

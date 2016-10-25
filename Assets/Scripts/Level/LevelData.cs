@@ -291,9 +291,6 @@ public class LevelData : MonoBehaviour {
 		[Tooltip("The time of day in hours and minutes, using a 24h-clock, when this level starts.")]
 		public Vector2 timeOfDay;
 
-		[Tooltip("This is ONLY used when creating a demo of the game, not for the final product. If true, the level is locked and cannot be opened from the world map, otherwise the level can be opened normally.")]
-		public bool isLevelLocked = false;
-
 		[Tooltip("Specifies whether the level should allow Tap To Play right away or wait for a callback. For example, in the opening level, we want to wait a few seconds before the player can start playing.")]
 		public bool waitForTapToPlay = false;
 		[Tooltip("The ambience sound for the level. It plays in addition to the music. It is optional.")]
@@ -323,11 +320,9 @@ public class LevelData : MonoBehaviour {
 		public int powerUpDensity = 4;
 		[Tooltip("The type of tile that the player will start on.")]
 		public TileType startTile = TileType.Start;
-		[Tooltip("The number of visible tiles active. The higher the number, the worth the performance.")]
+		[Tooltip("The number of visible tiles active. The higher the number, the worse the performance.")]
 		[Range(1,6)]
 		public int nbrVisibleTiles = 3;
-		[Tooltip("The length in meters of the level. This value is calculated when the level is created.")]
-		public float lengthInMeters = 0;
 		[Header("Road Segments")]
 		public List<RoadSegment> roadSegmentList = new List<RoadSegment>();
 
