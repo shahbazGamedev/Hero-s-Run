@@ -275,6 +275,8 @@ public class LevelData : MonoBehaviour {
 		[Tooltip("Stars required to reach one, two, three stars as well as the maximum number of stars for the episode.")]
 		public Vector4 starsRequired = new Vector4( 10000f, 33000f, 50000f, 100000f );
 		public EpisodeDifficulty episodeDifficulty = EpisodeDifficulty.Normal;
+		public List<TileGroupType> tileGroupList = new List<TileGroupType>();
+		
 	}
 
 	[System.Serializable]

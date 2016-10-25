@@ -132,6 +132,10 @@ public class GenerateLevel  : MonoBehaviour {
 	Queue<TileData> levelTileList = new Queue<TileData>();
 	int seamlessLevelIndex = 0;
 
+	//NEW FOR TILE GROUP
+	public TileGroupManager tileGroupManager;
+	Queue<TileType> endlessTileList = new Queue<TileType>();
+
 	void Awake ()
 	{
 		Debug.Log ("Initializing generate Level.");
@@ -173,10 +177,10 @@ public class GenerateLevel  : MonoBehaviour {
 
 	void Start ()
 	{
-		CreateLevel ();
+		NewCreateLevel ();
 	}
 	
-	void CreateLevel ()
+	/*void CreateLevel ()
 	{
 		//Reset values
 		worldRoadSegments.Clear();
@@ -267,6 +271,163 @@ public class GenerateLevel  : MonoBehaviour {
 		Debug.Log("GenerateLevel-CreateLevel: Level " + levelInfo.LevelName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
 		Debug.Log("GenerateLevel-CreateLevel: The level length in meters is : " + levelInfo.lengthInMeters );
+
+	}*/
+
+	void NewCreateLevel ()
+	{
+		//Reset values
+		worldRoadSegments.Clear();
+		recycledTiles.Clear();
+		levelTileList.Clear();
+		tileCreationIndex = 0;
+		playerTileIndex = 0;
+		seamlessLevelIndex = 0;
+						
+		//LevelInfo has the parameters for a single level.
+		//Get the level info for the current level.
+		int levelToLoad = LevelManager.Instance.getNextLevelToComplete();
+		LevelManager.Instance.setLevelNumberOfLastCheckpoint( levelToLoad );
+
+		seamlessLevelIndex = levelToLoad;
+
+		LevelData.LevelInfo levelInfo = levelData.getLevelInfo( levelToLoad );
+		//Also set it in the LevelManager
+		LevelManager.Instance.setLevelInfo( levelInfo );
+		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
+
+		//Sets the skybox, the directional light intensity and direction for the current level
+		levelData.initialise();
+		levelData.setSunParameters(levelInfo.sunType);
+
+		//Enable the fog and change the fog tint if enabled
+		//The fog surrounds and follows the player at all time for the entire level.
+		if( levelInfo.hasFog )
+		{
+			GameObject weatherManagerObject = GameObject.FindGameObjectWithTag("WeatherManager");
+			WeatherManager weatherManager = weatherManagerObject.GetComponent<WeatherManager>();
+			weatherManager.setFogTint(levelInfo.fogTint, levelInfo.fogFade );
+			weatherManager.setFogHeightDelta(levelInfo.fogHeightDelta );
+		}
+
+		//Verify if we should include a plane surrounding the tiles (like an ocean)
+		if( levelInfo.includeSurroundingPlane )
+		{
+			GameObject go = (GameObject)Instantiate(surroundingPlane.gameObject, new Vector3( 0, -30f, 0 ), Quaternion.identity );
+			surroundingPlane = go.transform;
+			if( surroundingPlane.GetComponent<Renderer>().material != null )
+			{
+				surroundingPlane.GetComponent<Renderer>().material = levelInfo.surroundingPlaneMaterial;
+				surroundingPlane.gameObject.SetActive( true );
+			}
+			else
+			{
+				Debug.LogWarning("GenerateLevel-CreateLevel: includeSurroundingPlane is set to true but no surroundingPlaneMaterial has been specified.");
+			}
+		}
+		else
+		{
+			surroundingPlane.gameObject.SetActive( false );
+		}
+
+		nbrVisibleTiles = levelInfo.nbrVisibleTiles;
+
+		//Create all the road segments that compose the road
+		List<LevelData.RoadSegment> roadSegmentList = levelInfo.roadSegmentList;
+		List<TileGroupType> tileGroupList = currentEpisode.tileGroupList;
+
+		if( levelInfo.startTile != TileType.None )
+		{
+			//Instantiate Start tile. There is only one Start tile per level.
+			//The Start tile has the same theme as the first road segment.
+			//setCurrentTheme( roadSegmentList[0].theme );
+			//addTile( levelInfo.startTile );
+		}
+
+
+		for( int i=0; i < roadSegmentList.Count; i++ )
+		{
+			//addRoadSegment( roadSegmentList[i] );
+		}
+
+		if( GameManager.Instance.getGameMode() == GameMode.Story )
+		{
+			generateStoryLevel( tileGroupList );
+		}
+		else
+		{
+			generateEndlessLevel( tileGroupList );
+		}
+
+		levelInfo.lengthInMeters = calculateLevelLength();
+
+		//The player controller needs info about the tile the player is on.
+		setFirstTileInfoInPlayer();
+
+		//Make the first few tiles active
+		activateInitialTiles(0);
+
+		//Fade-in the level ambience soundtrack
+		StartCoroutine( SoundManager.soundManager.fadeInAmbience( levelInfo.AmbienceSound, 10f ) );
+
+		//Set the music track to play if a value is set
+		SoundManager.soundManager.setMusicTrack( levelInfo.MusicTrack );
+
+		Debug.Log("GenerateLevel-CreateLevel: Level " + levelInfo.LevelName + " has been created." );
+		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
+		Debug.Log("GenerateLevel-CreateLevel: The level length in meters is : " + levelInfo.lengthInMeters );
+
+	}
+
+	void generateStoryLevel( List<TileGroupType> tileGroupList )
+	{
+		for( int i=0; i < tileGroupList.Count; i++ )
+		{
+			TileGroup tg = tileGroupManager.getTileGroup(tileGroupList[i]);
+			if( tg.validGameMode == ValidGameMode.Any || tg.validGameMode == ValidGameMode.Story )
+			{
+				setCurrentTheme(tg.theme );
+	
+				Debug.LogWarning("TILE GROUP " +  tg.tileGroupType.ToString() );
+				List<TileType> individualTiles = tg.tileList;
+				for( int j=0; j < individualTiles.Count; j++ )
+				{
+					Debug.Log("TILE  " + individualTiles[j].ToString() );
+					addTileNew( individualTiles[j] );
+				}
+			}
+		}
+
+	}
+
+	void generateEndlessLevel( List<TileGroupType> tileGroupList )
+	{
+		for( int i=0; i < 1; i++ )
+		{
+			TileGroup tg = tileGroupManager.getTileGroup(tileGroupList[i]);
+			if( tg.validGameMode == ValidGameMode.Any || tg.validGameMode == ValidGameMode.Story )
+			{
+				setCurrentTheme(tg.theme );
+	
+				Debug.LogWarning("TILE GROUP " +  tg.tileGroupType.ToString() );
+				List<TileType> individualTiles = tg.tileList;
+				for( int j=0; j < individualTiles.Count; j++ )
+				{
+					Debug.Log("TILE  " + individualTiles[j].ToString() );
+					addTileNew( individualTiles[j] );
+				}
+			}
+		}
+
+		//Now add a first random tile group to the endless tiles Queue
+		TileGroup rtg = tileGroupManager.getRandomTileGroup( currentTheme );
+		List <TileType> tiles = rtg.tileList;
+		for( int j=0; j < tiles.Count; j++ )
+		{
+			Debug.Log("RANDOM TILE  " + tiles[j].ToString() );
+			endlessTileList.Enqueue(tiles[j]);
+		}
+
 
 	}
 
@@ -688,6 +849,68 @@ public class GenerateLevel  : MonoBehaviour {
 		}
 	}
 	
+	private  void addTileNew ( TileType tileType )
+	{
+        switch (tileType)
+		{
+		
+		case TileType.Landmark_Windmill:
+			//We want the Landmark tile to have a 0 degree rotation.
+			ensureTileHasZeroRotation();
+			addTile( TileType.Landmark_Windmill );
+			addTile( TileType.Left );		
+			addTile( TileType.Straight );		
+            break;
+
+		case TileType.Landmark_Dragon_Lair:
+			//We want the Dragon Lair tile to have a 0 degree rotation.
+			ensureTileHasZeroRotation();
+			addTile( TileType.Landmark_Dragon_Lair );
+			break;
+
+		case TileType.T_Junction_Landmark_Cemetery:
+			addRandomTJunction( TileType.T_Junction_Landmark_Cemetery );
+			break;
+
+		case TileType.Landmark_Defense_Tower:
+			//We want the Landmark tile to have a 0 degree rotation.
+			ensureTileHasZeroRotation();
+			addTile( TileType.Landmark_Defense_Tower );
+			addTile( TileType.Left );		
+			addTile( TileType.Straight );		
+			break;
+
+		case TileType.Landmark_Broken_Bridge:
+			//We want the Landmark tile to have a 0 degree rotation.
+			ensureTileHasZeroRotation();
+			addTile( TileType.Landmark_Broken_Bridge );
+			break;
+
+		case TileType.Landmark_Tomb_Start:
+			//We want the Landmark tile to have a 0 degree rotation.
+			ensureTileHasZeroRotation();
+			addTile( TileType.Landmark_Tomb_Start );
+			break;
+
+		case TileType.Landmark_Zipline:
+			//We want the Landmark tile to have a 0 degree rotation.
+			ensureTileHasZeroRotation();
+			addTile( TileType.Landmark_Zipline );
+			addTile( TileType.Left );		
+			break;
+
+		case TileType.Landmark_Cemetery_Coach:
+			//We want the Landmark tile to have a 0 degree rotation.
+			ensureTileHasZeroRotation();
+			addTile( TileType.Landmark_Cemetery_Coach );
+			break;
+
+		default:
+			addTile( tileType );
+			break;
+		}
+	}
+
 	//nbrTilesInSegment includes the road segment end tile
 	private  void addRoadSegment ( LevelData.RoadSegment roadSegment )
 	{
@@ -1538,6 +1761,30 @@ public class GenerateLevel  : MonoBehaviour {
 		return null;
 	}
 	
+
+	void newtileEntranceCrossedEndless()
+	{
+		if( endlessTileList.Count > 0 )
+		{
+			//Yes, we still have tiles in the queue
+			addTile( endlessTileList.Dequeue() );
+		}
+		else
+		{
+			//We have run out of tiles
+			TileGroup rtg = tileGroupManager.getRandomTileGroup( currentTheme );
+			List <TileType> tiles = rtg.tileList;
+			for( int j=0; j < tiles.Count; j++ )
+			{
+				Debug.Log("ENTRANCE RANDOM TILE  " + tiles[j].ToString() );
+				endlessTileList.Enqueue(tiles[j]);
+			}
+			//Now that we have added additional tile, we can get a tile
+			addTile( endlessTileList.Dequeue() );
+		}
+	}
+
+
 	public void tileEntranceCrossed( Transform currentTile )
 	{
 		playerTileIndex++;
@@ -1568,7 +1815,8 @@ public class GenerateLevel  : MonoBehaviour {
 					recycledTiles.Add( tileToRecycle );
 				}
 				//Add a tile at the end
-				addTileInEndlessMode();
+		//addTileInEndlessMode();
+				newtileEntranceCrossedEndless();
 			}
 		}
 		else

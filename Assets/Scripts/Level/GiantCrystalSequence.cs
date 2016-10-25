@@ -73,7 +73,7 @@ public class GiantCrystalSequence : MonoBehaviour {
 		fairyController.setYRotationOffset( -10f );
 		fairyController.Appear ( FairyEmotion.Worried );
 		fairyController.speak("VO_FA_CANT_BE_GOOD", 2f, false );
-		//Invoke("lookOverEdge", 4f );
+		Invoke("playerStartsRunningAgain", 3f );
 	}
 
 	void lookOverEdge()
@@ -106,7 +106,7 @@ public class GiantCrystalSequence : MonoBehaviour {
 	void playerStartsRunningAgain()
 	{
 		//Give player control
-		playerController.sc.reactivateMaincamera();
+		//playerController.sc.reactivateMaincamera();
 		playerController.allowPlayerMovement(true );
 		playerController.startRunning(false);
 		playerController.allowRunSpeedToIncrease = true;
