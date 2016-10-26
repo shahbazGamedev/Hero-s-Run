@@ -57,9 +57,9 @@ public class TileGroupManager : MonoBehaviour {
 		foreach(KeyValuePair<TileGroupType, TileGroup> pair in tileGroupDictionary) 
 		{
 			tg = pair.Value;
-			if( tg.theme == theme && tg.frequency != 0 && ( tg.validGameMode == ValidGameMode.Endless || tg.validGameMode == ValidGameMode.Any ) )
+			if( tg.theme == theme && tg.frequency != TileGroup.FrequencyType.Never && ( tg.validGameMode == ValidGameMode.Endless || tg.validGameMode == ValidGameMode.Any ) )
 			{
-				totalFrequencyPoints = totalFrequencyPoints + tg.frequency;
+				totalFrequencyPoints = totalFrequencyPoints + (int)tg.frequency;
 				tileGroupListForTheme.Add( tg );
 			}
 		}
@@ -70,7 +70,7 @@ public class TileGroupManager : MonoBehaviour {
 		for( int i=0; i < tileGroupListForTheme.Count; i++ )
 		{
 			tg = tileGroupListForTheme[i];
-			totalFrequencyPoints = totalFrequencyPoints + tg.frequency;
+			totalFrequencyPoints = totalFrequencyPoints + (int)tg.frequency;
 			if( rand < totalFrequencyPoints )
 			{
 				return tg;

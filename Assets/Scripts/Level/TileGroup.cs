@@ -20,6 +20,14 @@ public enum TileGroupType {
 [System.Serializable]
 public class TileGroup{
 
+	public enum FrequencyType {
+		Never = 0,
+		Very_Rare = 1,
+		Rare = 2,
+		Common = 4,
+		Very_Common = 8,
+	}
+
 	[Header("Tile Group Parameters")]
 	//Other potential parameters: validDifficultyLevel, allowEnemies, requiresZeroRotation, hasZeroRotation, accentCombatMusic
 	public SegmentTheme theme = SegmentTheme.Forest;
@@ -27,6 +35,5 @@ public class TileGroup{
 	public string description;
 	public ValidGameMode validGameMode = ValidGameMode.Any;
 	public List<TileType> tileList = new List<TileType>();
-	[Range(0,100)]
-	public int frequency = 0;
+	public FrequencyType frequency = FrequencyType.Common;
 }
