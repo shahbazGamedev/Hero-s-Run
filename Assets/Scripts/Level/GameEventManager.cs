@@ -756,7 +756,6 @@ public class GameEventManager : MonoBehaviour {
 	{
 		op = openingSequence;
 
-		weatherManager.setFogTarget( simpleCamera.cutsceneCamera, 30f );
 		weatherManager.setWeatherTarget( op.rainLocation, 0 );
 		weatherManager.activateRain( true );
 		lightning.controlLightning(GameEvent.Start_Lightning);
@@ -821,7 +820,6 @@ public class GameEventManager : MonoBehaviour {
 		simpleCamera.activateMainCamera();
 		simpleCamera.positionCameraNow();
 		weatherManager.setWeatherTarget( player, 8f );
-		weatherManager.setFogTarget( player, 30f );
 		Invoke ("step5", 2.1f );
 	}
 

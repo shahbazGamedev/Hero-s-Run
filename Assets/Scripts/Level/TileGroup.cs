@@ -13,7 +13,8 @@ public enum TileGroupType {
 	Mines_End = 2,
 	Mines_Obstacles = 3,
 	Mines_Giant_Crystal = 4,
-	Mines_Combat_1 = 5
+	Mines_Combat_1 = 5,
+	Jungle_Obstacles_1 = 100
 }
 
 [System.Serializable]

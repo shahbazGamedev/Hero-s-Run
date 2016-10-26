@@ -11,8 +11,6 @@ public enum GameEvent {
 	Start_Lightning = 6,
 	Stop_Lightning = 7,
 	Lightning_Flash = 8,
-	Start_Fog = 9,
-	Stop_Fog = 10,
 	Lower_Gate = 12,
 	Open_Door = 13,
 	Raise_Draw_Bridge = 14,

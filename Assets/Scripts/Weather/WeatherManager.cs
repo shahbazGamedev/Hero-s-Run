@@ -9,12 +9,8 @@ public class WeatherManager : BaseClass {
 	Transform player;
 	SimpleCamera simpleCamera;
 	bool isParticleSystemActive = false;
-	public GameObject fog; //Needs to use a cloud from cloud system
 	public AudioClip rainSound;
 	public AudioClip snowSound;
-
-	Transform fogTarget;
-	float fogHeight = 30f;
 
 	Transform weatherTarget; //snow or rain
 	float weatherHeight = 8f;
@@ -23,7 +19,6 @@ public class WeatherManager : BaseClass {
 	void Awake () {
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		simpleCamera = player.GetComponent<SimpleCamera>();
-		fogTarget = player;
 		weatherTarget = player;
 	}
 	
@@ -36,28 +31,8 @@ public class WeatherManager : BaseClass {
 			{
 				activeParticleSystem.transform.position = new Vector3( weatherTarget.position.x, weatherTarget.position.y + weatherHeight, weatherTarget.position.z );
 			}
-			if( fog.activeSelf )
-			{
-				fog.transform.position = new Vector3( fogTarget.position.x, fogTarget.position.y + fogHeight, fogTarget.position.z );
-			}
 		}
 	}
-
-	//The fog follows the target's position. By default, the target is the player, but you can change it
-	//with this function. You could set the target to the cutscene camera for example.
-	public void setFogTarget( Transform target, float height )
-	{
-		fogTarget = target;
-		fogHeight = height;
-		print ("setFogTarget: target is now: " + fogTarget.name );
-	}
-
-	public void setFogHeightDelta( float fogHeightDelta )
-	{
-		fogHeight = fogHeightDelta;
-		print ("setFogHeightDelta: height is now: " + fogHeight );
-	}
-
 
 	//The weather effect (rain or snow) follows the target's position. By default, the target is the player, but you can change it
 	//with this function. You could set the target to the cutscene camera for example.
@@ -66,12 +41,6 @@ public class WeatherManager : BaseClass {
 		weatherTarget = target;
 		weatherHeight = height;
 		print ("setWeatherTarget: target is now: " + weatherTarget.name );
-	}
-
-	public void setFogTargetToPlayer()
-	{
-		fogTarget = player;
-		fogHeight = 30f;
 	}
 
 	public void setWeatherTargetToPlayer()
@@ -115,14 +84,6 @@ public class WeatherManager : BaseClass {
 			activeParticleSystem.Stop();
 			isParticleSystemActive = false;
 		}
-		else if( eventType == GameEvent.Start_Fog )
-		{
-			activateFog( true );
-		}
-		else if( eventType == GameEvent.Stop_Fog )
-		{
-			activateFog( false );
-		}
 	}
 
 	public void activateRain( bool enable )
@@ -142,71 +103,5 @@ public class WeatherManager : BaseClass {
 			if( activeParticleSystem !=null ) activeParticleSystem.Stop();
 			isParticleSystemActive = false;
 		}
-	}
-	
-	public void activateFog( bool enable )
-	{
-		if( fog != null )
-		{
-			if( enable )
-			{
-				print ("WeatherManager-activateFog GameEvent.Start_Fog");
-				//Make the fog active
-				fog.SetActive( true );
-				//Change the tint of the cloud to the value specified in the level data
-				CS_Cloud cs = fog.GetComponent<CS_Cloud>();
-				if( cs != null )
-				{
-					StartCoroutine( fadeInFog(cs,0.5f,2f));
-				}
-			}
-			else
-			{
-				print ("WeatherManager-activateFog GameEvent.Stop_Fog");
-				CS_Cloud cs = fog.GetComponent<CS_Cloud>();
-				if( cs != null )
-				{
-					StartCoroutine( fadeOutFog(cs,0, 4f));
-				}
-			}
-		}
-	}
-
-
-	public void setFogTint( Color tint, float fade )
-	{
-		if( fog != null )
-		{
-			//Make the fog active
-			fog.SetActive( true );
-			//Change the tint of the cloud to the value specified in the level data
-			CS_Cloud cs = fog.GetComponent<CS_Cloud>();
-			if( cs != null )
-			{
-				cs.Tint = tint;
-				cs.Fading = fade;
-			}
-		}
-	}
-
-	IEnumerator fadeInFog( CS_Cloud cs, float fadeTo, float duration )
-	{
-		Debug.LogWarning ("fadeInFog is not implemented yet.");
-		yield return _sync();
-	}
-
-	IEnumerator fadeOutFog( CS_Cloud cs, float fadeTo, float duration )
-	{
-		float startTime = Time.time;
-		float elapsedTime = 0;
-		float originalFade = cs.Fading;
-
-		while ( elapsedTime <= duration )
-		{
-			elapsedTime = Time.time - startTime;
-			cs.Fading = Mathf.Lerp( originalFade, 0, elapsedTime/duration);
-			yield return _sync();
-		}
-		fog.SetActive( false );
 	}
 }

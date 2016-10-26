@@ -135,6 +135,7 @@ public class GenerateLevel  : MonoBehaviour {
 	//NEW FOR TILE GROUP
 	public TileGroupManager tileGroupManager;
 	Queue<TileType> endlessTileList = new Queue<TileType>();
+	public bool useOldSystem = true;
 
 	void Awake ()
 	{
@@ -177,10 +178,17 @@ public class GenerateLevel  : MonoBehaviour {
 
 	void Start ()
 	{
-		NewCreateLevel ();
+		if( useOldSystem ) 
+		{
+			CreateLevel ();
+		}
+		else
+		{
+			NewCreateLevel ();
+		}
 	}
 	
-	/*void CreateLevel ()
+	void CreateLevel ()
 	{
 		//Reset values
 		worldRoadSegments.Clear();
@@ -204,16 +212,6 @@ public class GenerateLevel  : MonoBehaviour {
 		//Sets the skybox, the directional light intensity and direction for the current level
 		levelData.initialise();
 		levelData.setSunParameters(levelInfo.sunType);
-
-		//Enable the fog and change the fog tint if enabled
-		//The fog surrounds and follows the player at all time for the entire level.
-		if( levelInfo.hasFog )
-		{
-			GameObject weatherManagerObject = GameObject.FindGameObjectWithTag("WeatherManager");
-			WeatherManager weatherManager = weatherManagerObject.GetComponent<WeatherManager>();
-			weatherManager.setFogTint(levelInfo.fogTint, levelInfo.fogFade );
-			weatherManager.setFogHeightDelta(levelInfo.fogHeightDelta );
-		}
 
 		//Verify if we should include a plane surrounding the tiles (like an ocean)
 		if( levelInfo.includeSurroundingPlane )
@@ -254,8 +252,6 @@ public class GenerateLevel  : MonoBehaviour {
 			addRoadSegment( roadSegmentList[i] );
 		}
 
-		levelInfo.lengthInMeters = calculateLevelLength();
-
 		//The player controller needs info about the tile the player is on.
 		setFirstTileInfoInPlayer();
 
@@ -271,7 +267,7 @@ public class GenerateLevel  : MonoBehaviour {
 		Debug.Log("GenerateLevel-CreateLevel: Level " + levelInfo.LevelName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
 
-	}*/
+	}
 
 	void NewCreateLevel ()
 	{
@@ -298,16 +294,6 @@ public class GenerateLevel  : MonoBehaviour {
 		//Sets the skybox, the directional light intensity and direction for the current level
 		levelData.initialise();
 		levelData.setSunParameters(levelInfo.sunType);
-
-		//Enable the fog and change the fog tint if enabled
-		//The fog surrounds and follows the player at all time for the entire level.
-		if( levelInfo.hasFog )
-		{
-			GameObject weatherManagerObject = GameObject.FindGameObjectWithTag("WeatherManager");
-			WeatherManager weatherManager = weatherManagerObject.GetComponent<WeatherManager>();
-			weatherManager.setFogTint(levelInfo.fogTint, levelInfo.fogFade );
-			weatherManager.setFogHeightDelta(levelInfo.fogHeightDelta );
-		}
 
 		//Verify if we should include a plane surrounding the tiles (like an ocean)
 		if( levelInfo.includeSurroundingPlane )

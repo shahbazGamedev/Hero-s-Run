@@ -303,15 +303,6 @@ public class LevelData : MonoBehaviour {
 		public Material surroundingPlaneMaterial;
 		[Tooltip("The type of sun for the level. The sun type will not change until the player starts a new section. The sun type determines characteristics such ambient light, directional light rotation, color, intensity and shadows and skybox material.")]
 		public SunType sunType = SunType.Afternoon;
-		[Tooltip("Whether or not the level has fog.")]
-		public bool hasFog = false;
-		[Tooltip("The fog tint.")]
-		public Color fogTint = new Color( 96,91,91, 255 );
-		[Tooltip("The fog opacity.")]
-		[Range(0, 1f)]
-		public float fogFade = 0.128f;
-		[Tooltip("The fog follows the player. The fogHeightDelta value allows you to adjust the fog height versus the player's height. if the delta is set to 30, the fog center will be 30 meters above the player.")]
-		public float fogHeightDelta = 30f;
 		[Tooltip("The player's initial run speed in m/sec.")]
 		public float RunStartSpeed = 10f;
 		[Tooltip("How fast will the player accelerate.")]
