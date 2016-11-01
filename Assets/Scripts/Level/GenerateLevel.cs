@@ -10,7 +10,7 @@ public enum SegmentTheme {
 		Hell_Arrival = 3,
 		Tutorial = 4,
 		Volcano = 5,
-		Island = 6,
+		Dark_Tower = 6,
 		Jungle = 7,
 		Hell_Caverns = 8,
 		Hell_Fortress = 9,

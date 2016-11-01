@@ -9,14 +9,44 @@ public enum ValidGameMode {
 }
 
 public enum TileGroupType {
-	Mines_Start = 1,
-	Mines_End = 2,
-	Mines_Obstacles = 3,
-	Mines_Giant_Crystal = 4,
-	Mines_Combat_1 = 5,
-	Mines_T_Junction = 6,
-	Mines_Start_Endless = 7,
-	Jungle_Obstacles_1 = 100
+
+	Dark_Tower_Start = 100,
+	Dark_Tower_End = 101,
+	Dark_Tower_Obstacle_1 = 102,
+
+	Forest_Start = 200,
+	Forest_End = 201,
+	Forest_Obstacles_1 = 202,
+
+	Fairyland_Start = 300,
+	Fairyland_End = 301,
+	Fairyland_Obstacles_1 = 302,
+
+	Cemetery_Start = 400,
+	Cemetery_End = 401,
+	Cemetery_Obstacles_1 = 402,
+
+	Jungle_Start = 500,
+	Jungle_End = 501,
+	Jungle_Obstacles_1 = 502,
+
+	Mines_Start = 600,
+	Mines_End = 601,
+	Mines_Obstacles_1 = 602,
+	Mines_Giant_Crystal = 603,
+	Mines_Combat_1 = 604,
+	Mines_T_Junction = 605,
+	Mines_Treasure_Key = 607,
+	Mines_Turns = 608,
+
+	Hell_Start = 700,
+	Hell_End = 701,
+	Hell_Obstacle_1 = 702,
+
+	Blizzard_Start = 800,
+	Blizzard_End = 801,
+	Blizzard_Obstacles_1 = 802
+
 }
 
 [System.Serializable]
