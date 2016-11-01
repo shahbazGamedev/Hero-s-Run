@@ -53,18 +53,16 @@ public enum TileGroupType {
 public class TileGroup{
 
 	public enum FrequencyType {
-		Never = 0,
+		Never = -1,
+		Unique = 0,
 		Very_Rare = 1,
 		Rare = 2,
 		Common = 4,
 		Very_Common = 8,
 	}
 
-	[Header("Tile Group Parameters")]
-	//Other potential parameters: validDifficultyLevel, allowEnemies, requiresZeroRotation, hasZeroRotation, accentCombatMusic
 	public SegmentTheme theme = SegmentTheme.Forest;
 	public TileGroupType tileGroupType;
-	public string description;
 	public ValidGameMode validGameMode = ValidGameMode.Any;
 	public FrequencyType frequency = FrequencyType.Common;
 	public List<TileType> tileList = new List<TileType>();
