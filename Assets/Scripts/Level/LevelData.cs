@@ -41,7 +41,6 @@ public class LevelData : MonoBehaviour {
 	public List<LevelInfo> levelList = new List<LevelInfo>();
 
 	public const int NUMBER_OF_EPISODES = 9;
-	public const int NUMBER_OF_LEVELS = 28;
 	GameObject cutSceneCamera;
 	//This should be the directional light in the scene
 	GameObject Sun;

@@ -84,7 +84,7 @@ public class HUDSaveMe : MonoBehaviour {
 		}
 		else
 		{
-			if( ( GameManager.Instance.getGameMode() == GameMode.Story ) && PlayerStatsManager.Instance.getNumberDeathLeadingToLevel( LevelManager.Instance.getNextEpisodeToComplete() + 1 ) > GameManager.MAX_NUMBER_OF_ATTEMPTS )
+			if( ( GameManager.Instance.getGameMode() == GameMode.Story ) && PlayerStatsManager.Instance.getNumberDeathLeadingToEpisode( LevelManager.Instance.getNextEpisodeToComplete() + 1 ) > GameManager.MAX_NUMBER_OF_ATTEMPTS )
 			{
 				ranOutofTimePopup.SetActive( true );
 			}
@@ -149,7 +149,7 @@ public class HUDSaveMe : MonoBehaviour {
 			playerController.resurrectBegin(false);
 			PlayerStatsManager.Instance.decreaseLives((int)costLives);
 			PlayerStatsManager.Instance.incrementTimesPlayerRevivedInLevel();
-			PlayerStatsManager.Instance.incrementNumberDeathForLevel();
+			PlayerStatsManager.Instance.incrementNumberDeathForEpisode();
 			closeSaveMeMenu();
 		}
 		else

@@ -35,14 +35,6 @@ public class DebugMenu : MonoBehaviour {
 		{
 			toggleShowDebugInfoText.text = "Show Debug Info: Off";
 		}
-		if( PlayerStatsManager.Instance.getAllowAccessToNormalLevels() )
-		{
-			toggleAccessToNormalLevelsText.text = "Access to normal levels: On";
-		}
-		else
-		{
-			toggleAccessToNormalLevelsText.text = "Access to normal levels: Off";
-		}
 
 		updatePlayerStats();
 	}
@@ -123,23 +115,6 @@ public class DebugMenu : MonoBehaviour {
 
 	}
 
-	public void toggleAllowAccessToNormalLevels()
-	{
-		Debug.Log("toggleAllowAccessToNormalLevels");
-		SoundManager.soundManager.playButtonClick();
-		PlayerStatsManager.Instance.setAllowAccessToNormalLevels( !PlayerStatsManager.Instance.getAllowAccessToNormalLevels() );
-		if( PlayerStatsManager.Instance.getAllowAccessToNormalLevels() )
-		{
-			toggleAccessToNormalLevelsText.text = "Access to normal levels: On";
-		}
-		else
-		{
-			toggleAccessToNormalLevelsText.text = "Access to normal levels: Off";
-		}
-		PlayerStatsManager.Instance.savePlayerStats();
-		newWorldMapHandler.drawLevelMarkers();
-	}
-
 	void updatePlayerStats()
 	{
 		if( FacebookManager.Instance.firstName == null )
@@ -160,7 +135,7 @@ public class DebugMenu : MonoBehaviour {
 		{
 			ownsStarDoubler.text = "Owns Star Doubler: false";
 		}
-		deathPerEpisodeText.text = "Death Per Levels: " + PlayerStatsManager.Instance.getDeathInLevelsAsString();
+		deathPerEpisodeText.text = "Death Per Episode: " + PlayerStatsManager.Instance.getDeathInEpisodesAsString();
 	}
 
 	void OnEnable()

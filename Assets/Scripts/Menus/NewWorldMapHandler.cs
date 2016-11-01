@@ -404,7 +404,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		//postLevelPopupPanel.GetComponent<PostLevelPopup>().showPostLevelPopup(levelData);
 		GameObject CoreManagers = GameObject.FindGameObjectWithTag("CoreManagers");
 		CoreManagers.GetComponent<NotificationServicesHandler>().sendTestLocalNotification();
-		PlayerStatsManager.Instance.resetDeathInLevels();
+		PlayerStatsManager.Instance.resetDeathInEpisodes();
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		PlayerStatsManager.Instance.resetTreasureKeysFound();
 		PlayerStatsManager.Instance.setChallenges(string.Empty);
@@ -438,11 +438,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		LevelManager.Instance.setPlayerFinishedTheGame( false );
 
 		//When you restart an episode, the number of deaths for that episode and all subsequent episodes are reset
-		//LevelData.LevelInfo level = LevelManager.Instance.getLevelInfo( levelNumber );
-		//if( level.levelType == LevelType.Episode )
-		//{
-			//PlayerStatsManager.Instance.resetNumberDeathsStartingAtLevel( levelNumber );
-		//}
+		PlayerStatsManager.Instance.resetNumberDeathsStartingAtEpisode( episodeNumber );
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		//We are starting a new run, reset some values
 		LevelManager.Instance.setEnableTorches( true );

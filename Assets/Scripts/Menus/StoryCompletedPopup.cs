@@ -68,7 +68,7 @@ public class StoryCompletedPopup : MonoBehaviour {
 		LevelManager.Instance.setHighestEpisodeCompleted( 0 );
 		FacebookManager.Instance.postHighScore( 0 );
 
-		PlayerStatsManager.Instance.resetDeathInLevels();
+		PlayerStatsManager.Instance.resetDeathInEpisodes();
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		PlayerStatsManager.Instance.resetTreasureKeysFound();
 		PlayerStatsManager.Instance.savePlayerStats();

@@ -136,7 +136,7 @@ public class PostLevelPopup : MonoBehaviour {
 			newWorldMapHandler.updatePlayerPortrait();
 			PlayerStatsManager.Instance.savePlayerStats();
 		}
-		//Reset the level changed value
+		//Reset the episode changed value
 		LevelManager.Instance.setEpisodeChanged( false );
 		GetComponent<Animator>().Play("Panel Slide Out");
 		GameManager.Instance.setGameState(GameState.Menu);

@@ -48,7 +48,6 @@ public class PlayerStatsManager {
 	bool sharedOnFacebook = false;	//Has the player shared an image on Facebook?
 
 	bool showDebugInfoOnHUD = false; //Should we show the FPS, player speed, etc. on the HUD or not.
-	bool allowAccessToNormalLevels = false; //Should we allow loading of checkpoint levels on the world map. Normally, only episodes can be launched, however, this is useful for debuging.
 	int lives = 0;
 	const int INITIAL_NUMBER_LIVES = 6;
 
@@ -62,7 +61,7 @@ public class PlayerStatsManager {
 	static EventCounter novice_runner = new EventCounter( GameCenterManager.NoviceRunner, 1, CounterType.Total_any_level, 1000 );
 	static EventCounter coin_hoarder = new EventCounter( GameCenterManager.CoinHoarder, 1, CounterType.Total_any_level, 50000 );
 	
-	//Dictionary where the key is the PowerUpType and the value represents the amount of power-ups the player has either purchased or found in the levels.
+	//Dictionary where the key is the PowerUpType and the value represents the amount of power-ups the player has either purchased or found in the episodes.
 	//This inventory is only relevant for consumable power-ups.
 	//This is saved as concatenated string. See defaultPowerUpsForNewPlayer as a format example.
 	Dictionary<PowerUpType, PowerUpInventory> powerUpInventory = new Dictionary<PowerUpType, PowerUpInventory>(6);
@@ -89,7 +88,7 @@ public class PlayerStatsManager {
 	//This value is saved.
 	//The index is the episode number. The value is the number of times the player died for that specific episode. The initial values are 0.
 	//The value for a specific episode is reset when the player restarts that episode.
-	int[] deathInLevelsArray = new int[LevelData.NUMBER_OF_LEVELS];
+	int[] deathInEpisodesArray = new int[LevelData.NUMBER_OF_EPISODES];
 
 	List<string> treasureKeysFound = new List<string>();
 
@@ -499,86 +498,86 @@ public class PlayerStatsManager {
 		}
 	}
 
-	void loadDeathInLevels()
+	void loadDeathInEpisodes()
 	{
-		string deathInLevelsString = PlayerPrefs.GetString("deathInLevels", "" );
-		if( deathInLevelsString == "" )
+		string deathInEpisodesString = PlayerPrefs.GetString("deathInEpisodes", "" );
+		if( deathInEpisodesString == "" )
 		{
-			//deathInLevelsArray just stays with initial values of 0 because this is a new player
+			//deathInEpisodesArray just stays with initial values of 0 because this is a new player
 		}
 		else
 		{
 			try
 			{
-				string[] deathInLevelsStringArray = deathInLevelsString.Split(',');
-				//Debug.Log ("deathInLevelsStringArray " + deathInLevelsString + " length " + deathInLevelsStringArray.Length );
-				for( int i = 0; i < deathInLevelsStringArray.Length; i++ )
+				string[] deathInEpisodesStringArray = deathInEpisodesString.Split(',');
+				//Debug.Log ("deathInEpisodesStringArray " + deathInEpisodesString + " length " + deathInEpisodesStringArray.Length );
+				for( int i = 0; i < deathInEpisodesStringArray.Length; i++ )
 				{
 					int numberOfDeathsAsInt;
-					int.TryParse(deathInLevelsStringArray[i], out numberOfDeathsAsInt);
-					deathInLevelsArray[i] = numberOfDeathsAsInt;
+					int.TryParse(deathInEpisodesStringArray[i], out numberOfDeathsAsInt);
+					deathInEpisodesArray[i] = numberOfDeathsAsInt;
 				}
 			}
 			catch (Exception e)
 			{
-				Debug.LogWarning("PlayerStatsManager-exception occured in loadDeathInLevels: " + e.Message + " Resetting stats to default values.");
+				Debug.LogWarning("PlayerStatsManager-exception occured in loadDeathInEpisodes: " + e.Message + " Resetting stats to default values.");
 				PlayerPrefs.DeleteAll();
 			}
 		}
 	}
 
-	void saveDeathInLevels()
+	void saveDeathInEpisodes()
 	{
 		string result = "";
-		for( int i = 0; i < deathInLevelsArray.Length; i++ )
+		for( int i = 0; i < deathInEpisodesArray.Length; i++ )
 		{
-			result = result + deathInLevelsArray[i].ToString() + ",";
+			result = result + deathInEpisodesArray[i].ToString() + ",";
 		}
 		result = result.TrimEnd(',');
-		//Debug.Log("saveDeathInLevels " + result );
-		PlayerPrefs.SetString("deathInLevels", result );
+		//Debug.Log("saveDeathInEpisodes " + result );
+		PlayerPrefs.SetString("deathInEpisodes", result );
 	}
 
-	public string getDeathInLevelsAsString()
+	public string getDeathInEpisodesAsString()
 	{
 		string result = "";
-		for( int i = 0; i < deathInLevelsArray.Length; i++ )
+		for( int i = 0; i < deathInEpisodesArray.Length; i++ )
 		{
-			result = result + deathInLevelsArray[i].ToString() + ",";
+			result = result + deathInEpisodesArray[i].ToString() + ",";
 		}
 		result = result.TrimEnd(',');
 		return result;
 	}
 
-	public void resetDeathInLevels()
+	public void resetDeathInEpisodes()
 	{
-		for( int i = 0; i < deathInLevelsArray.Length; i++ )
+		for( int i = 0; i < deathInEpisodesArray.Length; i++ )
 		{
-			deathInLevelsArray[i] = 0;
+			deathInEpisodesArray[i] = 0;
 		}
-		saveDeathInLevels();
+		saveDeathInEpisodes();
 	}
 
-	public void incrementNumberDeathForLevel()
+	public void incrementNumberDeathForEpisode()
 	{
-		deathInLevelsArray[LevelManager.Instance.getNextEpisodeToComplete()]++;
+		deathInEpisodesArray[LevelManager.Instance.getNextEpisodeToComplete()]++;
 	}
 
-	public void resetNumberDeathsStartingAtLevel( int levelNumber )
+	public void resetNumberDeathsStartingAtEpisode( int episodeNumber )
 	{
-		for( int i = levelNumber; i < deathInLevelsArray.Length; i++ )
+		for( int i = episodeNumber; i < deathInEpisodesArray.Length; i++ )
 		{
-			deathInLevelsArray[i] = 0;
+			deathInEpisodesArray[i] = 0;
 		}
-		//Debug.Log("PlayerStatsManager-resetNumberDeathsStartingAtLevel: " + levelNumber );
+		//Debug.Log("PlayerStatsManager-resetNumberDeathsStartingAtEpisode: " + episodeNumber );
 	}
 
-	public int getNumberDeathLeadingToLevel( int levelNumber )
+	public int getNumberDeathLeadingToEpisode( int episodeNumber )
 	{
 		int total = 0;
-		for( int i = 0; i <= levelNumber; i++ )
+		for( int i = 0; i <= episodeNumber; i++ )
 		{
-			total = total + deathInLevelsArray[i];
+			total = total + deathInEpisodesArray[i];
 		}
 		return total;
 	}
@@ -735,16 +734,6 @@ public class PlayerStatsManager {
 	public bool getShowDebugInfoOnHUD()
 	{
 		return showDebugInfoOnHUD;
-	}
-
-	public void setAllowAccessToNormalLevels( bool value )
-	{
-		allowAccessToNormalLevels = value;
-	}
-
-	public bool getAllowAccessToNormalLevels()
-	{
-		return allowAccessToNormalLevels;
 	}
 
 	public void setOwnsStarDoubler( bool value )
@@ -954,8 +943,8 @@ public class PlayerStatsManager {
 	{
 		try
 		{
-			int nextLevelToComplete = PlayerPrefs.GetInt("Next Episode To Complete", 0 );
-			LevelManager.Instance.setNextEpisodeToComplete( nextLevelToComplete );
+			int nextEpisodeToComplete = PlayerPrefs.GetInt("Next Episode To Complete", 0 );
+			LevelManager.Instance.setNextEpisodeToComplete( nextEpisodeToComplete );
 			GameMode savedGameMode = (GameMode)PlayerPrefs.GetInt("Game Mode", (int)GameMode.Story);
 			GameManager.Instance.setGameMode( savedGameMode );
 			int highestEpisodeCompleted = PlayerPrefs.GetInt("Highest Episode Completed", 0 );
@@ -988,15 +977,6 @@ public class PlayerStatsManager {
 			else
 			{
 				showDebugInfoOnHUD = false;	
-			}
-			string allowAccessToNormalLevelsString = PlayerPrefs.GetString("allowAccessToNormalLevels", "false" );
-			if( allowAccessToNormalLevelsString == "true" )
-			{
-				allowAccessToNormalLevels = true;
-			}
-			else
-			{
-				allowAccessToNormalLevels = false;	
 			}
 			string sharedOnFacebookString = PlayerPrefs.GetString("sharedOnFacebook", "false" );
 			if( sharedOnFacebookString == "true" )
@@ -1041,7 +1021,7 @@ public class PlayerStatsManager {
 			lifetimeCoins = PlayerPrefs.GetInt("lifetimeCoins", 0);
 			loadDisplayStars();
 			loadHighScores();
-			loadDeathInLevels();
+			loadDeathInEpisodes();
 			loadKeysFoundInEpisode();
 			loadTreasureKeysFound();
 			powerUpSelected = (PowerUpType)PlayerPrefs.GetInt("powerUpSelected", (int)PowerUpType.SlowTime);
@@ -1050,7 +1030,7 @@ public class PlayerStatsManager {
 			userName = PlayerPrefs.GetString("userName", "" );
 			loadPowerUpInventory();
 			challenges = PlayerPrefs.GetString("challenges", "" );
-			//Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " Next Level To Complete: " + nextLevelToComplete + " Highest Level Completed: " + highestLevelCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
+			//Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " Next Episode To Complete: " + nextEpisodeToComplete + " Highest Episode Completed: " + highestEpisodeCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
 		{
@@ -1082,14 +1062,6 @@ public class PlayerStatsManager {
 		else
 		{
 			PlayerPrefs.SetString( "showDebugInfoOnHUD", "false" );
-		}
-		if( allowAccessToNormalLevels )
-		{
-			PlayerPrefs.SetString( "allowAccessToNormalLevels", "true" );
-		}
-		else
-		{
-			PlayerPrefs.SetString( "allowAccessToNormalLevels", "false" );
 		}
 		if( sharedOnFacebook )
 		{
@@ -1123,7 +1095,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetInt("lifetimeCoins", lifetimeCoins );
 		saveDisplayStars();
 		saveHighScores();
-		saveDeathInLevels();
+		saveDeathInEpisodes();
 		saveKeysFoundInEpisode();
 		saveTreasureKeysFound();
 		PlayerPrefs.SetInt("powerUpSelected", (int)powerUpSelected );
@@ -1155,8 +1127,6 @@ public class PlayerStatsManager {
 		firstTimePlaying = true;
 		PlayerPrefs.SetString( "showDebugInfoOnHUD", "false" );
 		setShowDebugInfoOnHUD( false );
-		PlayerPrefs.SetString( "allowAccessToNormalLevels", "false" );
-		setAllowAccessToNormalLevels( false );
 		PlayerPrefs.SetString( "sharedOnFacebook", "false" );
 		setSharedOnFacebook( false );
 		PlayerPrefs.SetString( "ownsStarDoubler", "false" );
@@ -1174,7 +1144,7 @@ public class PlayerStatsManager {
 		lifetimeCoins = 0;
 		resetDisplayStars();
 		resetHighScores();
-		resetDeathInLevels();
+		resetDeathInEpisodes();
 		resetKeysFoundInEpisode();
 		resetTreasureKeysFound();
 		PlayerPrefs.SetInt("powerUpSelected", (int)PowerUpType.SlowTime );
