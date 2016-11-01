@@ -20,7 +20,6 @@ public class EpisodePopup : MonoBehaviour {
 
 	Animator anim;
 	int episodeNumber;
-	int levelNumber;
 	LevelData levelData;
 	ClockTimeSetter clockTimeSetter;
 
@@ -43,10 +42,9 @@ public class EpisodePopup : MonoBehaviour {
 
 	}
 
-	public void showEpisodePopup( int episodeNumber, int levelNumber )
+	public void showEpisodePopup( int episodeNumber )
 	{
 		this.episodeNumber = episodeNumber;
-		this.levelNumber = levelNumber;
 		loadEpisodeData();
 		anim.Play("Panel Slide In");
 	}
@@ -74,7 +72,7 @@ public class EpisodePopup : MonoBehaviour {
 		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( episodeNumber ) + "/" + selectedEpisode.numberOfChestKeys;
 
 		//Update pocket watch and Time Left
-		clockTimeSetter.updateTime( episodeNumber, levelNumber, Level_Progress.LEVEL_START );
+		clockTimeSetter.updateTime( episodeNumber, Level_Progress.EPISODE_START );
 	}
 
 	public void closeEpisodeMenu()
@@ -85,9 +83,9 @@ public class EpisodePopup : MonoBehaviour {
 
 	public void play()
 	{
-		Debug.Log("EpisodePopup-Play button pressed: Episode: " + episodeNumber + " Level: " + levelNumber );
+		Debug.Log("EpisodePopup-Play button pressed: Episode: " + episodeNumber );
 		SoundManager.soundManager.playButtonClick();
-		newWorldMapHandler.play( episodeNumber, levelNumber );
+		newWorldMapHandler.play( episodeNumber );
 	}
 	
 }

@@ -10,7 +10,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public RectTransform map;
 	bool levelLoading = false;
 	private LevelData levelData;
-	List<LevelData.LevelInfo> levelList;
 	public Canvas settingsMenuCanvas;
 	public Text numberOfKeysText;
 	public Text numberOfLivesText;
@@ -60,7 +59,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 		//Get the level data. Level data has the parameters for all the levels of the game.
 		levelData = LevelManager.Instance.getLevelData();
-		levelList = levelData.getLevelList();
 	}
 
 	// Use this for initialization
@@ -139,18 +137,12 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	public void drawLevelMarkers()
 	{
-		int episodeCounter = 0;
-		LevelData.LevelInfo levelInfo;
+		List<LevelData.EpisodeInfo> episodeList = levelData.episodeList;
 
-		for( int i=0; i < levelList.Count; i++ )
+		for( int i=0; i < episodeList.Count; i++ )
 		{
-			levelInfo = levelList[i];
-			if( levelInfo.levelType == LevelType.Episode )
-			{
-				drawEpisodeLevelMarker( i, episodeCounter );
-				drawDisplayStars( i, episodeCounter );
-				episodeCounter++;
-			}
+			drawEpisodeLevelMarker( i );
+			drawDisplayStars( i );
 		}
 	}
 
@@ -186,43 +178,43 @@ public class NewWorldMapHandler : MonoBehaviour {
 		}
 	}
 
-	void levelButtonClick( int episodeNumber, int levelNumber )
+	void episodeButtonClick( int episodeNumber )
 	{
-		Debug.Log("Level Station click-Episode: " + episodeNumber + " Level: " + levelNumber );
+		Debug.Log("Episode Station click-Episode: " + episodeNumber );
 		SoundManager.soundManager.playButtonClick();
 		if( GameManager.Instance.getGameMode() == GameMode.Story )
 		{
 			LevelManager.Instance.setCurrentEpisodeNumber( episodeNumber );
-			episodePopup.showEpisodePopup( episodeNumber, levelNumber );
+			episodePopup.showEpisodePopup( episodeNumber );
 		}
 		else
 		{
-			play( episodeNumber, levelNumber );
+			play( episodeNumber );
 		}
 	}
 
-	void drawEpisodeLevelMarker( int levelNumber, int episodeCounter )
+	void drawEpisodeLevelMarker( int episodeNumber )
 	{
 		GameObject go = (GameObject)Instantiate(episodeStationPrefab);
 		go.transform.SetParent(map.transform,false);
 		Button levelStationButton = go.GetComponent<Button>();
 		RectTransform levelStationButtonRectTransform = levelStationButton.GetComponent<RectTransform>();
-		levelStationButtonRectTransform.SetParent( episodeStationLocations[episodeCounter], false );
+		levelStationButtonRectTransform.SetParent( episodeStationLocations[episodeNumber], false );
 		levelStationButtonRectTransform.anchoredPosition = new Vector2( 0, 0 );
-		levelStationButton.onClick.AddListener(() => levelButtonClick(episodeCounter, levelNumber));
+		levelStationButton.onClick.AddListener(() => episodeButtonClick(episodeNumber));
 		Text[] episodeStationTexts = levelStationButton.GetComponentsInChildren<Text>();
-		episodeStationTexts[0].text = (episodeCounter + 1).ToString();
-		string levelNumberString = (episodeCounter + 1).ToString();
+		episodeStationTexts[0].text = (episodeNumber + 1).ToString();
+		string levelNumberString = (episodeNumber + 1).ToString();
 		episodeStationTexts[1].text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
 
-		if( levelNumber > LevelManager.Instance.getHighestLevelCompleted() )
+		if( episodeNumber > LevelManager.Instance.getHighestEpisodeCompleted() )
 		{
 			//Level is not unlocked yet. Make button non-interactable and dim the level number text
 			levelStationButton.interactable = false;
 			episodeStationTexts[0].enabled = false;
 			episodeStationTexts[1].enabled = true;
 		}
-		if ( episodeCounter == LevelManager.Instance.getCurrentEpisodeNumber() )
+		if ( episodeNumber == LevelManager.Instance.getCurrentEpisodeNumber() )
 		{
 			//This is the current episode. Enable outline.
 			levelStationButton.GetComponent<Outline>().enabled = true;
@@ -232,7 +224,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 			playerPortrait.rectTransform.SetParent( levelStationButtonRectTransform );
 			playerPortrait.rectTransform.anchoredPosition = new Vector2( levelStationButtonRectTransform.anchoredPosition.x - 57.2f, levelStationButtonRectTransform.anchoredPosition.y -14f );
 		}
-		prepareFriendPicture( levelStationButtonRectTransform, episodeCounter );
+		prepareFriendPicture( levelStationButtonRectTransform, episodeNumber );
 	}
 
 	//Set up data for friend picture, which sits to the right of the shield
@@ -243,22 +235,22 @@ public class NewWorldMapHandler : MonoBehaviour {
 		facebookPortraitList.Add( fph );
 	}
 
-	void drawDisplayStars( int levelNumber, int episodeCounter )
+	void drawDisplayStars( int episodeNumber )
 	{
-		if( levelNumber <= LevelManager.Instance.getHighestLevelCompleted() )
+		if( episodeNumber <= LevelManager.Instance.getHighestEpisodeCompleted() )
 		{
 			//Level is unlocked so show the stars.
 			GameObject go = (GameObject)Instantiate(starDisplayPrefab);
 			go.transform.SetParent(map.transform,false);
-			go.name = "Star Meter " + (episodeCounter + 1).ToString();
+			go.name = "Star Meter " + (episodeNumber + 1).ToString();
 			RectTransform goRectTransform = go.GetComponent<RectTransform>();
-			goRectTransform.SetParent( episodeStationLocations[episodeCounter], false );
+			goRectTransform.SetParent( episodeStationLocations[episodeNumber], false );
 			goRectTransform.anchoredPosition = new Vector2( 0, 55f );
 			//Store it so we can easily update the stars later
-			starLocations[episodeCounter] = goRectTransform;
+			starLocations[episodeNumber] = goRectTransform;
 			//numberOfStars is between 0 and 3
-			int numberOfStars = PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( episodeCounter );
-			updateDisplayStars( episodeCounter, numberOfStars );
+			int numberOfStars = PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( episodeNumber );
+			updateDisplayStars( episodeNumber, numberOfStars );
 		}
 	}
 
@@ -437,20 +429,20 @@ public class NewWorldMapHandler : MonoBehaviour {
 		updateFriendPortraits();
 	}
 
-	public void play( int episodeNumber, int levelNumber )
+	public void play( int episodeNumber )
 	{
 		//Reset the level changed value
-		LevelManager.Instance.setLevelChanged( false );
+		LevelManager.Instance.setEpisodeChanged( false );
 
 		//Reset value in case a player who did previously finish the game, replays earlier levels
 		LevelManager.Instance.setPlayerFinishedTheGame( false );
 
 		//When you restart an episode, the number of deaths for that episode and all subsequent episodes are reset
-		LevelData.LevelInfo level = LevelManager.Instance.getLevelInfo( levelNumber );
-		if( level.levelType == LevelType.Episode )
-		{
-			PlayerStatsManager.Instance.resetNumberDeathsStartingAtLevel( levelNumber );
-		}
+		//LevelData.LevelInfo level = LevelManager.Instance.getLevelInfo( levelNumber );
+		//if( level.levelType == LevelType.Episode )
+		//{
+			//PlayerStatsManager.Instance.resetNumberDeathsStartingAtLevel( levelNumber );
+		//}
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		//We are starting a new run, reset some values
 		LevelManager.Instance.setEnableTorches( true );
@@ -458,7 +450,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		PlayerStatsManager.Instance.resetDistanceTravelled();
 		LevelManager.Instance.setCurrentEpisodeNumber( episodeNumber );
 		LevelManager.Instance.setEpisodeCompleted( false );
-		LevelManager.Instance.forceNextLevelToComplete( levelNumber );
+		LevelManager.Instance.forceNextEpisodeToComplete( episodeNumber );
 
 		StartCoroutine( loadLevel() );
 	}

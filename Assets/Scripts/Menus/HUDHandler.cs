@@ -11,9 +11,8 @@ public class HUDHandler : MonoBehaviour {
 	public Text hudDebugInfo;	//Used to display FPS, player speed, etc.
 	public Button pauseButton;
 	[Header("Level Name Panel")]
-	public RectTransform levelNamePanel;
-	public Text levelNameText;	//Used to display FPS, player speed, etc.
-	public Image levelIcon;
+	public RectTransform episodeNamePanel;
+	public Text episodeNameText;	//Used to display FPS, player speed, etc.
 	[Header("Tap To Play")]
 	//Tap to play button (the size of the canvas) with the Tap to play label
 	//This is displayed when you start a level WHEN the game state changes to the MENU state.
@@ -58,14 +57,14 @@ public class HUDHandler : MonoBehaviour {
 	void Start()
 	{
 		//Display the name of the current level
-		slideInLevelName();
+		slideInEpisodeName();
 	}
 		
 	// Update is called once per frame
 	void Update ()
 	{
 		updateFPS();
-		if( hudDebugInfo.gameObject.activeSelf ) hudDebugInfo.text = "Troll: " + playerController.trollController.didPlayerStumblePreviously() + " FPS: " + fps + "-" + LevelManager.Instance.getNextLevelToComplete() + "-" + playerController.getCurrentTileName() + "-" + PlayerStatsManager.Instance.getTimesPlayerRevivedInLevel() + "-" + PlayerController.getPlayerSpeed().ToString("N1");
+		if( hudDebugInfo.gameObject.activeSelf ) hudDebugInfo.text = "Troll: " + playerController.trollController.didPlayerStumblePreviously() + " FPS: " + fps + "-" + LevelManager.Instance.getNextEpisodeToComplete() + "-" + playerController.getCurrentTileName() + "-" + PlayerStatsManager.Instance.getTimesPlayerRevivedInLevel() + "-" + PlayerController.getPlayerSpeed().ToString("N1");
 		managePickUps();
 	}
 	
@@ -122,22 +121,25 @@ public class HUDHandler : MonoBehaviour {
 		userMessageText.gameObject.SetActive( false );
 	}
 
-	void slideInLevelName()
+	void slideInEpisodeName()
 	{
-		levelNameText.text = LevelManager.Instance.getCurrentLevelName(); 
-		LeanTween.move( levelNamePanel, new Vector2(0, -levelNamePanel.rect.height/2f), 0.5f ).setEase(LeanTweenType.easeOutQuad).setOnComplete(slideOutLevelName).setOnCompleteParam(gameObject);
+		//EPISODE_NAME_X is the text ID to use to get the localised episode name where X is the episode name indexed starting at 1.
+		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
+		string episodeNumberString = (episodeNumber + 1).ToString();
+		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + episodeNumberString );
+		LeanTween.move( episodeNamePanel, new Vector2(0, -episodeNamePanel.rect.height/2f), 0.5f ).setEase(LeanTweenType.easeOutQuad).setOnComplete(slideOutEpisodeName).setOnCompleteParam(gameObject);
 	}
 		
-	void slideOutLevelName()
+	void slideOutEpisodeName()
 	{
 		//Wait a little before sliding back up
-		LeanTween.move( levelNamePanel, new Vector2(0, levelNamePanel.rect.height/2f ), 0.5f ).setEase(LeanTweenType.easeOutQuad).setDelay(2.4f);
+		LeanTween.move( episodeNamePanel, new Vector2(0, episodeNamePanel.rect.height/2f ), 0.5f ).setEase(LeanTweenType.easeOutQuad).setDelay(2.4f);
 	}
 	
 	void hideLevelName()
 	{
 		LeanTween.cancel(gameObject);
-		levelNamePanel.anchoredPosition = new Vector2( 0, levelNamePanel.rect.height/2f );
+		episodeNamePanel.anchoredPosition = new Vector2( 0, episodeNamePanel.rect.height/2f );
 	}
 
 	public Vector2 getCoinIconPos()

@@ -20,7 +20,7 @@ public class ClockTimeSetter : MonoBehaviour {
 		timePenaltyTitle.text = LocalizationManager.Instance.getText("CLOCK_TIME_PENALTY");
 	}
 
-	public void updateTime (  int episodeNumber, int levelNumber, Level_Progress levelProgress  )
+	public void updateTime (  int episodeNumber, Level_Progress levelProgress  )
  	{
 		Debug.Log("ClockTimeSetter-updateTime: levelProgress " + levelProgress );
 		//Clear these fields as they may be a few seconds delay before they get updated. We don't want to see the old values.
@@ -29,19 +29,19 @@ public class ClockTimeSetter : MonoBehaviour {
 
         switch (levelProgress)
 		{
-	        case Level_Progress.LEVEL_START:
-				updateTimeForEpisodePopup( episodeNumber, levelNumber );
+	        case Level_Progress.EPISODE_START:
+				updateTimeForEpisodePopup( episodeNumber );
                 break;
 	                
-	        case Level_Progress.LEVEL_END_WITH_NO_PROGRESS:
-				updateTime( episodeNumber, levelNumber );
+	        case Level_Progress.EPISODE_END_WITH_NO_PROGRESS:
+				updateTime( episodeNumber );
                 break;
 	                
-	        case Level_Progress.LEVEL_END_WITH_PROGRESS:
+	        case Level_Progress.EPISODE_END_WITH_PROGRESS:
 				updateTime2( episodeNumber );
                 break;
 	                
-	        case Level_Progress.LEVEL_END_WITH_GAME_COMPLETED:
+	        case Level_Progress.EPISODE_END_WITH_GAME_COMPLETED:
 				updateTime2( episodeNumber );
                 break;
 		}
@@ -50,14 +50,15 @@ public class ClockTimeSetter : MonoBehaviour {
 	//Pocket watch shows current time
 	//But the text shows the time left before midnight
 	//In this version, the time penalty exlcudes the level we are about to play (which might have some penalties if we've played it before).
-	void updateTimeForEpisodePopup ( int episodeNumber, int levelNumber )
+	void updateTimeForEpisodePopup ( int episodeNumber )
  	{
-		Debug.Log("ClockTimeSetter-updateTimeForEpisodePopup episode: " + episodeNumber + " level: " + levelNumber );
+		Debug.Log("ClockTimeSetter-updateTimeForEpisodePopup episode: " + episodeNumber );
 
 		//Get time of day for current level
-		Vector2 levelTimeOfDay = LevelManager.Instance.getLevelInfo(levelNumber).timeOfDay;
+		Vector2 levelTimeOfDay = LevelManager.Instance.getCurrentEpisodeInfo().timeOfDay;
 
-		int levelNumberExcludingCurrent = levelNumber - 1;
+//int levelNumberExcludingCurrent = levelNumber - 1;
+		int levelNumberExcludingCurrent = 0;
 		int penaltyInMinutes;
 		if( levelNumberExcludingCurrent < 0 )
 		{
@@ -79,15 +80,15 @@ public class ClockTimeSetter : MonoBehaviour {
 
 	//Pocket watch shows current time
 	//But the text shows the time left before midnight
-	void updateTime ( int episodeNumber, int levelNumber )
+	void updateTime ( int episodeNumber )
  	{
-		Debug.Log("ClockTimeSetter-updateTime episode: " + episodeNumber + " level: " + levelNumber );
+		Debug.Log("ClockTimeSetter-updateTime episode: " + episodeNumber  );
 
 		//Get time of day for current level
-		Vector2 levelTimeOfDay = LevelManager.Instance.getLevelInfo(levelNumber).timeOfDay;
+		Vector2 levelTimeOfDay = LevelManager.Instance.getCurrentEpisodeInfo().timeOfDay;
 
 		//Calculate time penalty
-		int penaltyInMinutes = PlayerStatsManager.Instance.getNumberDeathLeadingToLevel( levelNumber ) * GameManager.TIME_PENALTY_IN_MINUTES;
+		int penaltyInMinutes = PlayerStatsManager.Instance.getNumberDeathLeadingToLevel( episodeNumber ) * GameManager.TIME_PENALTY_IN_MINUTES;
 		timePenalty.text = penaltyInMinutes.ToString();
 
 		Debug.Log("ClockTimeSetter-penalty: " + penaltyInMinutes );
@@ -101,18 +102,19 @@ public class ClockTimeSetter : MonoBehaviour {
 	void updateTime2 ( int episodeNumber )
  	{
 		//Get time of day of last checkpoint
-		Vector2 levelTimeOfDayAtStart = LevelManager.Instance.getLevelInfo(LevelManager.Instance.getLevelNumberOfLastCheckpoint()).timeOfDay;
+		//Vector2 levelTimeOfDayAtStart = LevelManager.Instance.getLevelInfo(LevelManager.Instance.getLevelNumberOfLastCheckpoint()).timeOfDay;
+		Vector2 levelTimeOfDayAtStart = LevelManager.Instance.getCurrentEpisodeInfo().timeOfDay;
 		TimeSpan timeOfDayAtStart = new TimeSpan((int)levelTimeOfDayAtStart.x, (int)levelTimeOfDayAtStart.y, 0 );
 
 		//Get time of day for the next level to complete
-		Vector2 levelTimeOfDayAtEnd = LevelManager.Instance.getLevelInfo(LevelManager.Instance.getNextLevelToComplete() ).timeOfDay;
+		Vector2 levelTimeOfDayAtEnd = LevelManager.Instance.getCurrentEpisodeInfo().timeOfDay;
 		TimeSpan timeOfDayAtEnd = new TimeSpan((int)levelTimeOfDayAtEnd.x, (int)levelTimeOfDayAtEnd.y, 0 );
 
 		//Calculate the elapsed time in minutes
 		TimeSpan elapsedTime =  timeOfDayAtEnd.Subtract( timeOfDayAtStart );
 
 		//Calculate time penalty
-		int penaltyInMinutes = PlayerStatsManager.Instance.getNumberDeathLeadingToLevel( LevelManager.Instance.getNextLevelToComplete() ) * GameManager.TIME_PENALTY_IN_MINUTES;
+		int penaltyInMinutes = PlayerStatsManager.Instance.getNumberDeathLeadingToLevel( LevelManager.Instance.getNextEpisodeToComplete() ) * GameManager.TIME_PENALTY_IN_MINUTES;
 		timePenalty.text = penaltyInMinutes.ToString();
 
 		Debug.Log("ClockTimeSetter-updateTime2 timeOfDayAtStart: " + timeOfDayAtStart + " timeOfDayAtEnd: " + timeOfDayAtEnd + " elapsed in min. " + elapsedTime.TotalMinutes );
@@ -167,8 +169,8 @@ public class ClockTimeSetter : MonoBehaviour {
 			yield return new WaitForFixedUpdate();  
 	    }
 		//Calculate time penalty
-		int penaltyInMinutes = PlayerStatsManager.Instance.getNumberDeathLeadingToLevel( LevelManager.Instance.getNextLevelToComplete() ) * GameManager.TIME_PENALTY_IN_MINUTES;
-		Debug.Log("spinLevelTime getNextLevelToComplete: " + LevelManager.Instance.getNextLevelToComplete() + " penalty " + penaltyInMinutes );
+		int penaltyInMinutes = PlayerStatsManager.Instance.getNumberDeathLeadingToLevel( LevelManager.Instance.getNextEpisodeToComplete() ) * GameManager.TIME_PENALTY_IN_MINUTES;
+		Debug.Log("spinLevelTime getNextLevelToComplete: " + LevelManager.Instance.getNextEpisodeToComplete() + " penalty " + penaltyInMinutes );
 		StartCoroutine( spinPenaltyTime( 1f, 2f, newTime, penaltyInMinutes ) );	
 	}
 

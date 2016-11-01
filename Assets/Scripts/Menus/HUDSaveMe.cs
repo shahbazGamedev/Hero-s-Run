@@ -84,7 +84,7 @@ public class HUDSaveMe : MonoBehaviour {
 		}
 		else
 		{
-			if( ( GameManager.Instance.getGameMode() == GameMode.Story ) && PlayerStatsManager.Instance.getNumberDeathLeadingToLevel( LevelManager.Instance.getNextLevelToComplete() + 1 ) > GameManager.MAX_NUMBER_OF_ATTEMPTS )
+			if( ( GameManager.Instance.getGameMode() == GameMode.Story ) && PlayerStatsManager.Instance.getNumberDeathLeadingToLevel( LevelManager.Instance.getNextEpisodeToComplete() + 1 ) > GameManager.MAX_NUMBER_OF_ATTEMPTS )
 			{
 				ranOutofTimePopup.SetActive( true );
 			}
@@ -166,7 +166,7 @@ public class HUDSaveMe : MonoBehaviour {
 		closeSaveMeMenu();
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		LevelManager.Instance.setEnableTorches( true );
-		LevelManager.Instance.setNextLevelToComplete( LevelManager.Instance.getLevelNumberOfLastCheckpoint() );
+		LevelManager.Instance.setNextEpisodeToComplete( LevelManager.Instance.getCurrentEpisodeNumber() );
 		playerController.resetSharedLevelData(false);
 		SceneManager.LoadScene( (int) GameScenes.Level );
 	}

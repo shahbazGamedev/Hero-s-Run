@@ -33,7 +33,6 @@ public class ChallengeBoard {
 			this.challengerID = challengerID;
 			this.score = score;
 			this.episodeNumber = episodeNumber;
-			this.levelNumber = LevelManager.Instance.getLevelNumberFromEpisodeNumber( episodeNumber );
 			this.created_time = created_time.ToString();
 		}		
 

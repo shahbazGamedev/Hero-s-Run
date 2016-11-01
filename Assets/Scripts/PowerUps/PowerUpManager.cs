@@ -423,8 +423,8 @@ public class PowerUpManager : BaseClass {
 
 	public void considerAddingPowerUp( GameObject newTile, int tileIndex )
 	{
-		LevelData.LevelInfo levelInfo = LevelManager.Instance.getLevelInfo();
-		int powerUpDensity = levelInfo.powerUpDensity;
+		LevelData.EpisodeInfo episodeInfo = LevelManager.Instance.getCurrentEpisodeInfo();
+		int powerUpDensity = episodeInfo.powerUpDensity;
 		
 		//Should we add a Power-up?
 		if( powerUpDensity != 0 )

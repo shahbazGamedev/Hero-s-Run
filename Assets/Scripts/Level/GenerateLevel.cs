@@ -30,7 +30,6 @@ public enum TileType {
 	Straight_River = 7,
 	Landmark_Windmill = 8,
 	Landmark_Defense_Tower = 9,
-	T_Junction_Landmark_Cemetery = 10,
 	Landmark_Dragon_Lair = 11,
 	Landmark_Dragon_Landing = 12,
 	Landmark_Clocktower = 13,
@@ -70,9 +69,7 @@ public enum TileType {
 	Landmark_Graveyard_5 = 51,
 	Landmark_Graveyard_6 = 52,
 	Landmark_Graveyard_7 = 53,
-	Landmark_Bog_Start = 54, 
 	Landmark_Bog_Valley = 55,
-	Landmark_Test = 56, //Used only for testing - is straight and has a length of 2
 	Landmark_Treasure_Key = 57,
 	Landmark_Collapsing_Bridge = 58,
 	Landmark_Goblin_Loot = 59,
@@ -80,6 +77,15 @@ public enum TileType {
 	Landmark_Zipline = 61
 
 }
+
+public enum TileSubType {
+	None = -1,
+	Straight = 3,
+	Left = 4,
+	Right = 5,
+	T_Junction = 15,
+}
+
 
 public class GenerateLevel  : MonoBehaviour {
 	
@@ -99,7 +105,7 @@ public class GenerateLevel  : MonoBehaviour {
 
 	Vector3 previousTilePos = new Vector3( 0,0,0 );
 	Quaternion previousTileRot = Quaternion.identity;
-	TileType previousTileType = TileType.None;
+	TileSubType previousTileType = TileSubType.None;
 
 	//Generate level supports tiles that have slopes.
 	//For a slope tile to work, the slope must use the X axis, not Z.
@@ -108,8 +114,8 @@ public class GenerateLevel  : MonoBehaviour {
 	//This number is used to make sure that the subsequent tiles are at the proper height.
 	float  tileEndHeight = 0;
 
-	//The number of visible tiles at any given time (all other tiles are deactivated). This value is obtained from levelInfo.
-	int nbrVisibleTiles = 0;
+	//The number of visible tiles at any given time (all other tiles are deactivated).
+	int nbrVisibleTiles = 3;
 	
 	//For randomizing power ups
 	PowerUpManager powerUpManager;
@@ -129,7 +135,7 @@ public class GenerateLevel  : MonoBehaviour {
 	List<GameObject> recycledTiles = new List<GameObject>(50);
 
 	//For seamless progression
-	Queue<TileData> levelTileList = new Queue<TileData>();
+	//Queue<TileData> levelTileList = new Queue<TileData>();
 	int seamlessLevelIndex = 0;
 
 	//NEW FOR TILE GROUP
@@ -180,7 +186,7 @@ public class GenerateLevel  : MonoBehaviour {
 	{
 		if( useOldSystem ) 
 		{
-			CreateLevel ();
+			//CreateLevel ();
 		}
 		else
 		{
@@ -188,12 +194,12 @@ public class GenerateLevel  : MonoBehaviour {
 		}
 	}
 	
-	void CreateLevel ()
+	/*void CreateLevel ()
 	{
 		//Reset values
 		worldRoadSegments.Clear();
 		recycledTiles.Clear();
-		levelTileList.Clear();
+		//levelTileList.Clear();
 		tileCreationIndex = 0;
 		playerTileIndex = 0;
 		seamlessLevelIndex = 0;
@@ -249,7 +255,7 @@ public class GenerateLevel  : MonoBehaviour {
 
 		for( int i=0; i < roadSegmentList.Count; i++ )
 		{
-			addRoadSegment( roadSegmentList[i] );
+			//addRoadSegment( roadSegmentList[i] );
 		}
 
 		//The player controller needs info about the tile the player is on.
@@ -267,42 +273,42 @@ public class GenerateLevel  : MonoBehaviour {
 		Debug.Log("GenerateLevel-CreateLevel: Level " + levelInfo.LevelName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
 
-	}
+	}*/
 
 	void NewCreateLevel ()
 	{
 		//Reset values
 		worldRoadSegments.Clear();
 		recycledTiles.Clear();
-		levelTileList.Clear();
+		//levelTileList.Clear();
 		tileCreationIndex = 0;
 		playerTileIndex = 0;
 		seamlessLevelIndex = 0;
 						
 		//LevelInfo has the parameters for a single level.
 		//Get the level info for the current level.
-		int levelToLoad = LevelManager.Instance.getNextLevelToComplete();
-		LevelManager.Instance.setLevelNumberOfLastCheckpoint( levelToLoad );
+		//int levelToLoad = LevelManager.Instance.getNextLevelToComplete();
+		//LevelManager.Instance.setLevelNumberOfLastCheckpoint( levelToLoad );
 
-		seamlessLevelIndex = levelToLoad;
+		//seamlessLevelIndex = levelToLoad;
 
-		LevelData.LevelInfo levelInfo = levelData.getLevelInfo( levelToLoad );
+		//LevelData.LevelInfo levelInfo = levelData.getLevelInfo( levelToLoad );
 		//Also set it in the LevelManager
-		LevelManager.Instance.setLevelInfo( levelInfo );
+		//LevelManager.Instance.setLevelInfo( levelInfo );
 		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
 
 		//Sets the skybox, the directional light intensity and direction for the current level
 		levelData.initialise();
-		levelData.setSunParameters(levelInfo.sunType);
+		levelData.setSunParameters(currentEpisode.sunType);
 
 		//Verify if we should include a plane surrounding the tiles (like an ocean)
-		if( levelInfo.includeSurroundingPlane )
+		if( currentEpisode.includeSurroundingPlane )
 		{
 			GameObject go = (GameObject)Instantiate(surroundingPlane.gameObject, new Vector3( 0, -30f, 0 ), Quaternion.identity );
 			surroundingPlane = go.transform;
 			if( surroundingPlane.GetComponent<Renderer>().material != null )
 			{
-				surroundingPlane.GetComponent<Renderer>().material = levelInfo.surroundingPlaneMaterial;
+				surroundingPlane.GetComponent<Renderer>().material = currentEpisode.surroundingPlaneMaterial;
 				surroundingPlane.gameObject.SetActive( true );
 			}
 			else
@@ -315,25 +321,23 @@ public class GenerateLevel  : MonoBehaviour {
 			surroundingPlane.gameObject.SetActive( false );
 		}
 
-		nbrVisibleTiles = levelInfo.nbrVisibleTiles;
-
 		//Create all the road segments that compose the road
-		List<LevelData.RoadSegment> roadSegmentList = levelInfo.roadSegmentList;
+		//List<LevelData.RoadSegment> roadSegmentList = levelInfo.roadSegmentList;
 		List<TileGroupType> tileGroupList = currentEpisode.tileGroupList;
 
-		if( levelInfo.startTile != TileType.None )
-		{
+		//if( levelInfo.startTile != TileType.None )
+		//{
 			//Instantiate Start tile. There is only one Start tile per level.
 			//The Start tile has the same theme as the first road segment.
 			//setCurrentTheme( roadSegmentList[0].theme );
 			//addTile( levelInfo.startTile );
-		}
+		//}
 
 
-		for( int i=0; i < roadSegmentList.Count; i++ )
-		{
+		//for( int i=0; i < roadSegmentList.Count; i++ )
+		//{
 			//addRoadSegment( roadSegmentList[i] );
-		}
+		//}
 
 		if( GameManager.Instance.getGameMode() == GameMode.Story )
 		{
@@ -351,12 +355,12 @@ public class GenerateLevel  : MonoBehaviour {
 		activateInitialTiles(0);
 
 		//Fade-in the level ambience soundtrack
-		StartCoroutine( SoundManager.soundManager.fadeInAmbience( levelInfo.AmbienceSound, 10f ) );
+		StartCoroutine( SoundManager.soundManager.fadeInAmbience( currentEpisode.AmbienceSound, 10f ) );
 
 		//Set the music track to play if a value is set
-		SoundManager.soundManager.setMusicTrack( levelInfo.MusicTrack );
+		SoundManager.soundManager.setMusicTrack( currentEpisode.MusicTrack );
 
-		Debug.Log("GenerateLevel-CreateLevel: Level " + levelInfo.LevelName + " has been created." );
+		Debug.Log("GenerateLevel-CreateLevel: Level " + currentEpisode.episodeName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
 
 	}
@@ -387,7 +391,7 @@ public class GenerateLevel  : MonoBehaviour {
 		for( int i=0; i < 1; i++ )
 		{
 			TileGroup tg = tileGroupManager.getTileGroup(tileGroupList[i]);
-			if( tg.validGameMode == ValidGameMode.Any || tg.validGameMode == ValidGameMode.Story )
+			if( tg.validGameMode == ValidGameMode.Any || tg.validGameMode == ValidGameMode.Endless )
 			{
 				setCurrentTheme(tg.theme );
 	
@@ -518,11 +522,10 @@ public class GenerateLevel  : MonoBehaviour {
 			go.transform.rotation = tileRot;
 			go.transform.position = tilePos;
 		} 
-		
-		tileDepthMult= getTileDepth( type );
 
-		previousTileType = getTileSubType(type); //for constructing the level, we use the simpler types like straight, left and right
 		SegmentInfo si = getSegmentInfo( go );
+		tileDepthMult= si.tileDepth;
+		previousTileType = si.tileSubType; //for constructing the level, we use the simpler types like straight, left and right
 		if( si.tileEndHeight != 0 )
 		{
 			tileEndHeight = si.tileEndHeight;
@@ -545,7 +548,7 @@ public class GenerateLevel  : MonoBehaviour {
 		return go;
 	}
 
-	int getTileDepth( TileType type )
+	/*int getTileDepth( TileType type )
 	{
 		int depth = 0;
 
@@ -563,7 +566,6 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Landmark_Dragon_Landing:
 			case TileType.Straight_Slope:
 			case TileType.T_Junction:
-			case TileType.T_Junction_Landmark_Cemetery:
 			case TileType.Landmark_Cemetery_Queen:
 			case TileType.Landmark_Graveyard_Ghost:
 				depth = 1;
@@ -598,7 +600,6 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Landmark_Graveyard_7:
 			case TileType.Landmark_Graveyard_Start:
 			case TileType.Landmark_Graveyard_End:
-			case TileType.Landmark_Test:
 			case TileType.Landmark_Collapsing_Bridge:
 			case TileType.Landmark_Goblin_Loot:
 			case TileType.Landmark_Zipline:
@@ -608,8 +609,7 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Landmark_Tomb_Start:
 			case TileType.Landmark_Tomb_End:
 			case TileType.Start_Fairyland:
-			case TileType.Landmark_Bog_Start:
-			case TileType.Landmark_Treasure_Key:
+				case TileType.Landmark_Treasure_Key:
 				depth = 3;
 				break;
 
@@ -628,34 +628,7 @@ public class GenerateLevel  : MonoBehaviour {
 				break;
 		}
 		return depth;
-	}
-
-
-	//Important: as previousTileType value, use one of the three basic tile types (Straight, Left or Right). Do
-	//not use the precise tile type (such as Straight_double) or else the method ensureTileHasZeroRotation won't work as intended.
-	private GameObject addCustomTile ( string tileName, int tileDepthMult, TileType type )
-	{
-		GameObject prefab = getTilePrefab(tileName);
-		float tileHeight = calculateTileHeight( prefab.transform.eulerAngles.x,tileDepthMult );
-		Quaternion tileRot = getTileRotation(prefab.transform.eulerAngles.x);
-		Vector3 tilePos = getTilePosition(tileHeight);
-		GameObject go = (GameObject)Instantiate(prefab, tilePos, tileRot );
-		previousTileType = type;
-		this.tileDepthMult = tileDepthMult;
-		tileEndHeight = tileHeight;
-		SegmentInfo si = getSegmentInfo( go );
-		si.entranceCrossed = false;
-		si.tile = go;
-		previousTilePos = tilePos;
-		previousTileRot = tileRot;
-		go.SetActive( false );
-		worldRoadSegments.Add( go );
-		go.name = go.name + tileCreationIndex.ToString();
-		si.tileIndex = tileCreationIndex;
-		tileCreationIndex++;
-		
-		return go;
-	}
+	}*/
 
 	//Look for the prefab in the theme folder. If it is not found, look in the shared folder.
 	private GameObject getTilePrefab( string tileName )
@@ -680,7 +653,7 @@ public class GenerateLevel  : MonoBehaviour {
 		float tileHeight = height + tileEndHeight + previousTilePos.y;
 		switch (previousTileType)
 		{
-			case TileType.Straight:
+			case TileSubType.Straight:
 			if( previousTileRotY == 0 )
 			{
 				tilePos.Set ( previousTilePos.x, tileHeight, previousTilePos.z + tileDepth );
@@ -695,7 +668,7 @@ public class GenerateLevel  : MonoBehaviour {
 			}
 			return tilePos;
 	
-	        case TileType.Left:
+	        case TileSubType.Left:
 			if( previousTileRotY == 0 )
 			{
 				tilePos.Set ( previousTilePos.x - tileDepth, tileHeight, previousTilePos.z );
@@ -710,12 +683,11 @@ public class GenerateLevel  : MonoBehaviour {
 			}
 			return tilePos;
 		
-	        case TileType.T_Junction:
-			case TileType.T_Junction_Landmark_Cemetery:
+	        case TileSubType.T_Junction:
 			tilePos.Set ( previousTilePos.x + tileDepth, tileHeight, previousTilePos.z );
 			return tilePos;
 
-			case TileType.Right:
+			case TileSubType.Right:
 			if( previousTileRotY == 0 )
 			{
 				tilePos.Set ( previousTilePos.x + tileDepth, tileHeight, previousTilePos.z );
@@ -741,17 +713,16 @@ public class GenerateLevel  : MonoBehaviour {
 	{
 		float previousTileRotY = Mathf.Floor( previousTileRot.eulerAngles.y );
 		Quaternion tileRot = Quaternion.identity;
-		TileType subType = getTileSubType( previousTileType );
-		switch (subType)
+		switch (previousTileType)
 		{
-			case TileType.None:
+			case TileSubType.None:
 			return Quaternion.identity;
 		
-			case TileType.Straight:
+			case TileSubType.Straight:
 			tileRot =  Quaternion.Euler( slope, previousTileRot.eulerAngles.y, 0 );
 			return tileRot;
 
-			case TileType.Left:
+			case TileSubType.Left:
 			if( previousTileRotY == 0 )
 			{
 				tileRot =  Quaternion.Euler(slope, -90f, 0);
@@ -766,7 +737,7 @@ public class GenerateLevel  : MonoBehaviour {
 			}
 			return tileRot;
 		
-			case TileType.Right:
+			case TileSubType.Right:
 			if( previousTileRotY == 0 )
 			{
 				tileRot =  Quaternion.Euler( slope, 90f, 0 );
@@ -782,7 +753,7 @@ public class GenerateLevel  : MonoBehaviour {
 			return tileRot;
 			
 	        default:
-			Debug.LogError ("getTileRotation : unhandled tile type: " + subType );
+			Debug.LogError ("getTileRotation : unhandled tile type: " + previousTileType );
 			tileRot.eulerAngles = Vector3.zero;
 			return tileRot;
 		}
@@ -805,10 +776,6 @@ public class GenerateLevel  : MonoBehaviour {
 			//We want the Dragon Lair tile to have a 0 degree rotation.
 			ensureTileHasZeroRotation();
 			addTile( TileType.Landmark_Dragon_Lair );
-			break;
-
-		case TileType.T_Junction_Landmark_Cemetery:
-			addRandomTJunction( TileType.T_Junction_Landmark_Cemetery );
 			break;
 
 		case TileType.Landmark_Defense_Tower:
@@ -844,6 +811,10 @@ public class GenerateLevel  : MonoBehaviour {
 			addTile( TileType.Landmark_Cemetery_Coach );
 			break;
 
+		case TileType.T_Junction:
+			addRandomTJunction(tileType);
+			break;
+
 		default:
 			addTile( tileType );
 			break;
@@ -851,7 +822,7 @@ public class GenerateLevel  : MonoBehaviour {
 	}
 
 	//nbrTilesInSegment includes the road segment end tile
-	private  void addRoadSegment ( LevelData.RoadSegment roadSegment )
+	/*private  void addRoadSegment ( LevelData.RoadSegment roadSegment )
 	{
 		int localTileIndex = 0;
 		setCurrentTheme( roadSegment.theme );
@@ -860,7 +831,7 @@ public class GenerateLevel  : MonoBehaviour {
 		
 		while ( localTileIndex < maxIndex )
 		{
-			addSegmentTile();
+//addSegmentTile();
 			localTileIndex++;
 		}
 
@@ -880,10 +851,6 @@ public class GenerateLevel  : MonoBehaviour {
 			//We want the Dragon Lair tile to have a 0 degree rotation.
 			ensureTileHasZeroRotation();
 			addTile( TileType.Landmark_Dragon_Lair );
-			break;
-
-		case TileType.T_Junction_Landmark_Cemetery:
-			addRandomTJunction( TileType.T_Junction_Landmark_Cemetery );
 			break;
 
 		case TileType.Landmark_Defense_Tower:
@@ -930,9 +897,9 @@ public class GenerateLevel  : MonoBehaviour {
 			}
 			break;
 		}
-	}
+	}*/
 
-	private void addRandomLandmark()
+	/*private void addRandomLandmark()
 	{
 		TileType randomLandmark = TileType.None;
 		//Step 1 select a random landmark appropriate for the theme
@@ -943,10 +910,6 @@ public class GenerateLevel  : MonoBehaviour {
 				if( rd < 0.33f)
 				{
 					randomLandmark = TileType.Landmark_Clocktower;
-				}
-				else if( rd < 0.66f)
-				{
-					randomLandmark = TileType.T_Junction_Landmark_Cemetery;
 				}
 				else
 				{
@@ -985,10 +948,6 @@ public class GenerateLevel  : MonoBehaviour {
 				addTile( TileType.Left );		
 				addTile( TileType.Straight );		
 				break;
-
-			case TileType.T_Junction_Landmark_Cemetery:
-				addRandomTJunction( TileType.T_Junction_Landmark_Cemetery );
-				break;
 				
 			case TileType.Landmark_Defense_Tower:
 				//We want the Landmark tile to have a 0 degree rotation.
@@ -1009,13 +968,13 @@ public class GenerateLevel  : MonoBehaviour {
 				addTile( randomLandmark );
 				break;
 		}
-	}
+	}*/
 
 
-	private void prepareTileList ( int levelToPrepare )
+	/*private void prepareTileList ( int levelToPrepare )
 	{
 
-		TileType beforePrepareListTileType = previousTileType;
+		TileSubType beforePrepareListTileType = previousTileType;
 		Quaternion beforePrepareListRotation = Quaternion.Euler( previousTileRot.eulerAngles.x, previousTileRot.eulerAngles.y, previousTileRot.eulerAngles.z );
 		Vector3 beforePrepareListPosition = new Vector3( previousTilePos.x, previousTilePos.y, previousTilePos.z );
 
@@ -1049,20 +1008,21 @@ public class GenerateLevel  : MonoBehaviour {
 		previousTileRot  = Quaternion.Euler( beforePrepareListRotation.eulerAngles.x, beforePrepareListRotation.eulerAngles.y, beforePrepareListRotation.eulerAngles.z );
 		previousTilePos  = new Vector3( beforePrepareListPosition.x, beforePrepareListPosition.y, beforePrepareListPosition.z );
 
-	}
+	}*/
 
-	private void addTileData( TileType type, SegmentTheme theme )
+	/*private void addTileData( TileType type, SegmentTheme theme )
 	{
 		TileData tileData = new TileData();
 		tileData.tileTheme = theme;
 		tileData.tileType = type;
 		levelTileList.Enqueue (tileData);
 		previousTileRot = getTileRotation(0);
-		previousTileType = type;
+//PROBLEM
+//previousTileType = type;
 		//print ("addTileData: adding tile type " + tileData.tileType + " with theme " + tileData.tileTheme + " prev rot " + previousTileRot.eulerAngles );
-	}
+	}*/
 
-	private TileType getTileSubType( TileType type )
+	/*private TileType getTileSubType( TileType type )
 	{
 		switch (type)
 		{
@@ -1126,7 +1086,6 @@ public class GenerateLevel  : MonoBehaviour {
 			return TileType.Left;
 			
 		case TileType.T_Junction:
-		case TileType.T_Junction_Landmark_Cemetery:
 		case TileType.Landmark_Defense_Tower:
 		case TileType.Landmark_Windmill:
 		case TileType.Right:
@@ -1136,9 +1095,9 @@ public class GenerateLevel  : MonoBehaviour {
 			Debug.LogWarning ("getTileSubType : unhandled tile type: " + type );
 			return TileType.None;
 		}
-	}
+	}*/
 
-	private void addRoadSegmentEndTile( TileType endTileType, SegmentTheme theme )
+	/*private void addRoadSegmentEndTile( TileType endTileType, SegmentTheme theme )
 	{
 		switch (endTileType)
 		{
@@ -1155,10 +1114,6 @@ public class GenerateLevel  : MonoBehaviour {
 			//We want the Dragon Lair tile to have a 0 degree rotation.
 			ensureTileHasZeroRotation2(theme);
 			addTileData(TileType.Landmark_Dragon_Lair, theme);
-			break;
-			
-		case TileType.T_Junction_Landmark_Cemetery:
-			addRandomTJunction2( TileType.T_Junction_Landmark_Cemetery, theme );
 			break;
 			
 		case TileType.Landmark_Defense_Tower:
@@ -1198,30 +1153,30 @@ public class GenerateLevel  : MonoBehaviour {
 			addTileData(endTileType, theme);
 			break;
 		}
-	}
+	}*/
 
+	/*
 	//Add tiles such as to garanty that the tile added after these will have a zero Y rotation.
 	private void ensureTileHasZeroRotation2( SegmentTheme theme)
 	{
 		float yRot = Mathf.Floor( previousTileRot.eulerAngles.y );
-		TileType subType = getTileSubType( previousTileType );
-		switch (subType)
+		switch (previousTileType)
 		{
-		case TileType.Left:
+		case TileSubType.Left:
 			if( yRot == 0 )
 			{
 				addTileData(TileType.Right, theme);
 			}
 			return;
 			
-		case TileType.Right:
+		case TileSubType.Right:
 			if( yRot == 0 )
 			{
 				addTileData(TileType.Left, theme);
 			}
 			return;
 			
-		case TileType.Straight:
+		case TileSubType.Straight:
 			if( yRot == 270f || yRot == -90f )
 			{
 				addTileData(TileType.Right, theme);
@@ -1232,9 +1187,9 @@ public class GenerateLevel  : MonoBehaviour {
 			}
 			return;
 		}
-	}
+	}*/
 
-	private void addRandomTJunction2( TileType tJunctionTileType, SegmentTheme theme )
+	/*private void addRandomTJunction2( TileType tJunctionTileType, SegmentTheme theme )
 	{
 		//We want the T-Junction tile to have a 0 degree rotation.
 		ensureTileHasZeroRotation2( theme );
@@ -1242,37 +1197,36 @@ public class GenerateLevel  : MonoBehaviour {
 		//The additional left and right tiles that are associated with a T-Junction
 		//will be added at runtime.
 		addTileData(tJunctionTileType, theme);
-	}
+	}*/
 
-	public class TileData
+	/*public class TileData
 	{
 		public TileType tileType = TileType.None;
 		public SegmentTheme tileTheme;
-	}
+	}*/
 
 	//Add tiles such as to garanty that the tile added after these will have a zero Y rotation.
 	private void ensureTileHasZeroRotation()
 	{
 		float yRot = Mathf.Floor( previousTileRot.eulerAngles.y );
-		TileType subType = getTileSubType( previousTileType );
 
-		switch (subType)
+		switch (previousTileType)
 		{
-			case TileType.Left:
+			case TileSubType.Left:
 			if( yRot == 0 )
 			{
 				addTile ( TileType.Right );
 			}
 			return;
 
-			case TileType.Right:
+			case TileSubType.Right:
 			if( yRot == 0 )
 			{
 				addTile ( TileType.Left );
 			}
 			return;
 
-			case TileType.Straight:
+			case TileSubType.Straight:
 			if( yRot == 270f || yRot == -90f )
 			{
 				addTile ( TileType.Right );
@@ -1285,22 +1239,7 @@ public class GenerateLevel  : MonoBehaviour {
 		}
 	}
 
-	private void addTileInEndlessMode()
-	{
-		if( Random.value < 0.05f )
-		{
-			//Add a random landmark tile
-			addRandomLandmark();
-		}
-		else
-		{
-			//Add a random normal tile
-			addSegmentTile();
-		}
-	}
-
-
-	private void addSegmentTile()
+	/*private void addSegmentTile()
 	{
 		float previousRotY = Mathf.Floor( previousTileRot.eulerAngles.y );
 
@@ -1453,9 +1392,9 @@ public class GenerateLevel  : MonoBehaviour {
 				}
 			}
 		}
-	}
+	}*/
 
-	private TileType getSegmentTile( SegmentTheme tileCreationTheme )
+	/*private TileType getSegmentTile( SegmentTheme tileCreationTheme )
 	{
 		float previousRotY = Mathf.Floor( previousTileRot.eulerAngles.y );
 		//Debug.Log("GenerateLevel-getSegmentTile: previous angle: " + previousRotY );
@@ -1633,7 +1572,7 @@ public class GenerateLevel  : MonoBehaviour {
 		}
 
 		return TileType.Straight;					
-	}
+	}*/
 
 	private void addRandomTJunction( TileType tileType )
 	{
@@ -1648,7 +1587,7 @@ public class GenerateLevel  : MonoBehaviour {
 		//Adding 4 tiles to the left of the T-Junction
 		//If the player chooses to go Left, we will put all of the tiles that belong to the Right path in an empty game object called T-Junction
 		//and move that group so it aligns with the last left tile we added.
-		previousTileType = TileType.Left;
+		previousTileType = TileSubType.Left;
 		addTile ( TileType.Straight );
 		addTile ( TileType.Right );
 		addTile ( TileType.Straight );
@@ -1658,7 +1597,7 @@ public class GenerateLevel  : MonoBehaviour {
 		float tJunctionTileEndHeight = si.tileEndHeight; //For some T-Junction (notably the one in Fairyland), the end of the tile is lower than the begining of the tile
 		previousTilePos = new Vector3( tJunction.transform.position.x, tJunction.transform.position.y + tJunctionTileEndHeight, tJunction.transform.position.z );
 		previousTileRot = tJunction.transform.rotation;
-		previousTileType = TileType.Right;
+		previousTileType = TileSubType.Right;
 		//Also, add two tiles to the right to avoid the possibility
 		//of a second random next T-Junction overlaping this one.
 		addTile ( TileType.Left );
@@ -1706,7 +1645,7 @@ public class GenerateLevel  : MonoBehaviour {
 		if( endlessTileList.Count > 0 )
 		{
 			//Yes, we still have tiles in the queue
-			addTile( endlessTileList.Dequeue() );
+			addTileNew( endlessTileList.Dequeue() );
 		}
 		else
 		{
@@ -1719,7 +1658,7 @@ public class GenerateLevel  : MonoBehaviour {
 				endlessTileList.Enqueue(tiles[j]);
 			}
 			//Now that we have added additional tile, we can get a tile
-			addTile( endlessTileList.Dequeue() );
+			addTileNew( endlessTileList.Dequeue() );
 		}
 	}
 
@@ -1760,6 +1699,7 @@ public class GenerateLevel  : MonoBehaviour {
 		}
 		else
 		{
+/*
 			//We are not in endless mode.
 			//Add a tile from the next level if any
 			if( levelTileList.Count > 0 )
@@ -1767,7 +1707,7 @@ public class GenerateLevel  : MonoBehaviour {
 				TileData td = levelTileList.Dequeue();
 				setCurrentTheme( td.tileTheme );
 				//Debug.LogWarning("tileEntranceCrossed: Adding next level tile of type: " + td.tileType + " theme: " + td.tileTheme );
-				if( td.tileType == TileType.T_Junction || td.tileType == TileType.T_Junction_Landmark_Cemetery )
+				if( td.tileType == TileType.T_Junction )
 				{
 					//Because T-Junction construction changes the previous position and rotation values, we cannot do it during the prepareTileList phase.
 					addRandomTJunction( td.tileType );
@@ -1777,6 +1717,7 @@ public class GenerateLevel  : MonoBehaviour {
 					addTile( td.tileType );
 				}
 			}
+	*/
 		}
 
 		//Center the surrounding plane around the current tile
@@ -1890,14 +1831,14 @@ public class GenerateLevel  : MonoBehaviour {
 		//If the tile we just activated has a T-Junction or Landmark_Cemetery type
 		//also enable the first tile on it's right side which has an index of + 5 compared to the T-Junction tile itself.
 		SegmentInfo si = getSegmentInfo(worldRoadSegments[index]);
-		if( si.tileType == TileType.T_Junction || si.tileType == TileType.T_Junction_Landmark_Cemetery )
+		if( si.tileType == TileType.T_Junction )
 		{
 			int firstTileToTheRight = index + 5;
 			if( firstTileToTheRight < worldRoadSegments.Count ) worldRoadSegments[firstTileToTheRight].SetActive(true);
 		}
 		if( GameManager.Instance.getGameMode() == GameMode.Story )
 		{
-			if( si.isCheckpoint )
+			/*if( si.isCheckpoint )
 			{
 				//If the next level is an episode, we do not need to prepare tiles for it.
 				//Preparing new level tiles will cause a brief performance hit.
@@ -1909,7 +1850,7 @@ public class GenerateLevel  : MonoBehaviour {
 						seamlessLevelIndex++;
 						if( seamlessLevelIndex < LevelManager.Instance.getNumberOfLevels() )
 						{
-							prepareTileList( seamlessLevelIndex );
+							//prepareTileList( seamlessLevelIndex );
 						}
 						else
 						{
@@ -1921,7 +1862,7 @@ public class GenerateLevel  : MonoBehaviour {
 						Debug.LogWarning("GenerateLevel - onTileActivation: not preparing tile list for level," + (seamlessLevelIndex + 1) + ", because it is an episode level." );
 					}
 				}
-			}
+			}*/
 		}
 	}
 

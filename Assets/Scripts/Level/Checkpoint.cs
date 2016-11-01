@@ -23,11 +23,15 @@ public class Checkpoint : MonoBehaviour {
 		//Reset the number of times the player died in the level
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		GetComponent<AudioSource>().Play();
-		LevelManager.Instance.incrementNextLevelToComplete();
-		LevelManager.Instance.setLevelNumberOfLastCheckpoint (LevelManager.Instance.getNextLevelToComplete() );
+		LevelManager.Instance.incrementNextEpisodeToComplete();
+		//LevelManager.Instance.setLevelNumberOfLastCheckpoint (LevelManager.Instance.getNextLevelToComplete() );
 		//Save the player stats before continuing
 		PlayerStatsManager.Instance.savePlayerStats();
 		Debug.LogWarning("Checkpoint activated " + gameObject.transform.parent.name );
-		DialogManager.dialogManager.activateDisplayFairy( LevelManager.Instance.getCurrentLevelName() + ": " + LocalizationManager.Instance.getText("CHECKPOINT_REACHED"), 5.5f );
+		//EPISODE_NAME_X is the text ID to use to get the localised episode name where X is the episode name indexed starting at 1.
+		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
+		string episodeNumberString = (episodeNumber + 1).ToString();
+		string episodeName = LocalizationManager.Instance.getText("EPISODE_NAME_" + episodeNumberString );
+		DialogManager.dialogManager.activateDisplayFairy( episodeName + ": " + LocalizationManager.Instance.getText("CHECKPOINT_REACHED"), 5.5f );
 	}
 }

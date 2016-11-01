@@ -89,7 +89,7 @@ public class ConnectToFacebookPopup : MonoBehaviour {
 	{
 		GetComponent<Animator>().Play("Panel Slide Out");
 		yield return new WaitForSeconds(2f);
-		episodePopup.showEpisodePopup( LevelManager.Instance.getCurrentEpisodeNumber(), LevelManager.Instance.getNextLevelToComplete() );
+		episodePopup.showEpisodePopup( LevelManager.Instance.getCurrentEpisodeNumber() );
 	}
 
 

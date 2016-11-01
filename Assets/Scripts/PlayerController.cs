@@ -346,7 +346,7 @@ public sealed class PlayerController : BaseClass {
 		if( currentTileType != TileType.Opening )
 		{
 			//Should we display the Tap to Play message right away by changing the game state to GameState.Menu or will the game state be set by another script?
-			if( !LevelManager.Instance.getLevelInfo().waitForTapToPlay )
+			if( !LevelManager.Instance.getCurrentEpisodeInfo().waitForTapToPlay )
 			{
 				GameManager.Instance.setGameState(GameState.Menu);
 			}
@@ -392,12 +392,12 @@ public sealed class PlayerController : BaseClass {
 	void determineRunSpeed()
 	{
 		//Use the level data to determine what the start run speed and run acceleration should be since they can vary
-		//from level to level. Final levels are more difficult than earlier levels.
-		LevelData.LevelInfo levelInfo = LevelManager.Instance.getLevelInfo();
+		//from eoisode to episode. Final episodes are more difficult than earlier levels.
+		LevelData.EpisodeInfo episodeInfo = LevelManager.Instance.getCurrentEpisodeInfo();
 		//Note: getRunStartSpeed & getRunAcceleration return the values adjusted according to the difficulty level of the game.
 		//The RunStartSpeed is higher in Heroic mode than in normal mode for example.
-		levelRunStartSpeed = levelInfo.getRunStartSpeed();
-		runAcceleration = levelInfo.getRunAcceleration();
+		levelRunStartSpeed = episodeInfo.getRunStartSpeed();
+		runAcceleration = episodeInfo.getRunAcceleration();
 		//We need to set this here so that the troll can get the player's speed.
 		runSpeed = levelRunStartSpeed;
 	}
@@ -3050,7 +3050,7 @@ public sealed class PlayerController : BaseClass {
 		anim.Play("DeathWall_Loop");
 		GameObject respawnLocationObject;
 
-		if( getCurrentTileType() == TileType.T_Junction || getCurrentTileType() == TileType.T_Junction_Landmark_Cemetery )
+		if( getCurrentTileType() == TileType.T_Junction )
 		{
 			//If the player's rotation is zero, this means he has not turned yet.
 			//If this is the case, we will assume he turned right.

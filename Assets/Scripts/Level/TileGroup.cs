@@ -14,6 +14,8 @@ public enum TileGroupType {
 	Mines_Obstacles = 3,
 	Mines_Giant_Crystal = 4,
 	Mines_Combat_1 = 5,
+	Mines_T_Junction = 6,
+	Mines_Start_Endless = 7,
 	Jungle_Obstacles_1 = 100
 }
 
@@ -34,6 +36,6 @@ public class TileGroup{
 	public TileGroupType tileGroupType;
 	public string description;
 	public ValidGameMode validGameMode = ValidGameMode.Any;
-	public List<TileType> tileList = new List<TileType>();
 	public FrequencyType frequency = FrequencyType.Common;
+	public List<TileType> tileList = new List<TileType>();
 }

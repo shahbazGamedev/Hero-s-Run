@@ -88,7 +88,7 @@ public class MessageEntry : MonoBehaviour {
 				messageManager.gameObject.SetActive( false );
 				//Make sure we are in the endless running mode
 				if( GameManager.Instance.getGameMode() != GameMode.Endless ) messageManager.newWorldMapHandler.toggleGameMode();
-				messageManager.newWorldMapHandler.play( requestData.dataNumber2, LevelManager.Instance.getLevelNumberFromEpisodeNumber( requestData.dataNumber2 ) );
+				messageManager.newWorldMapHandler.play( requestData.dataNumber2 );
 				break;
 			case RequestDataType.ChallengeBeaten:
 				//Save challenge
@@ -97,7 +97,7 @@ public class MessageEntry : MonoBehaviour {
 				messageManager.gameObject.SetActive( false );
 				//Make sure we are in the endless running mode
 				if( GameManager.Instance.getGameMode() != GameMode.Endless ) messageManager.newWorldMapHandler.toggleGameMode();
-				messageManager.newWorldMapHandler.play( requestData.dataNumber2, LevelManager.Instance.getLevelNumberFromEpisodeNumber( requestData.dataNumber2 ) );
+				messageManager.newWorldMapHandler.play( requestData.dataNumber2 );
 				break;
 		}
 	}

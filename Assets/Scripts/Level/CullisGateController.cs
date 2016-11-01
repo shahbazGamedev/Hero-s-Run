@@ -36,7 +36,7 @@ public class CullisGateController : MonoBehaviour {
 		if( playCameraCutscene ) Invoke("playCutscene", 2.2f);
 		//Save the player stats before continuing
 		PlayerStatsManager.Instance.savePlayerStats();
-		bool isGameFinished = LevelManager.Instance.incrementNextLevelToComplete();
+		bool isGameFinished = LevelManager.Instance.incrementNextEpisodeToComplete();
 		if( isGameFinished )
 		{
 			DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText(messageTextId), 5.5f );

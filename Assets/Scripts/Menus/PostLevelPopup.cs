@@ -90,11 +90,11 @@ public class PostLevelPopup : MonoBehaviour {
 		if( LevelManager.Instance.getPlayerFinishedTheGame() )
 		{
 			postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_COMPLETED_STORY");
-			clockTimeSetter.updateTime( episodeNumber, LevelManager.Instance.getNextLevelToComplete(), Level_Progress.LEVEL_END_WITH_GAME_COMPLETED );
+			clockTimeSetter.updateTime( episodeNumber, Level_Progress.EPISODE_END_WITH_GAME_COMPLETED );
 		}
 		else
 		{
-			if( LevelManager.Instance.getLevelChanged() )
+			if( LevelManager.Instance.getEpisodeChanged() )
 			{
 				//The player has passed at least one checkpoint. Congratulate him.
 				postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_MADE_PROGRESS");
@@ -105,13 +105,13 @@ public class PostLevelPopup : MonoBehaviour {
     				postLevelButton.onClick.RemoveAllListeners();
 					postLevelButton.onClick.AddListener( showNextEpisodePopup );
 				}
-				clockTimeSetter.updateTime( episodeNumber, LevelManager.Instance.getNextLevelToComplete(), Level_Progress.LEVEL_END_WITH_PROGRESS );
+				clockTimeSetter.updateTime( episodeNumber, Level_Progress.EPISODE_END_WITH_PROGRESS );
 			}
 			else
 			{
 				//The player did not finish the current level. Encourage him.
 				postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_LUCK_NEXT_TIME");
-				clockTimeSetter.updateTime( episodeNumber, LevelManager.Instance.getNextLevelToComplete(), Level_Progress.LEVEL_END_WITH_NO_PROGRESS );
+				clockTimeSetter.updateTime( episodeNumber, Level_Progress.EPISODE_END_WITH_NO_PROGRESS );
 			}
 		}
 		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( episodeNumber ) + "/" + selectedEpisode.numberOfChestKeys;
@@ -137,7 +137,7 @@ public class PostLevelPopup : MonoBehaviour {
 			PlayerStatsManager.Instance.savePlayerStats();
 		}
 		//Reset the level changed value
-		LevelManager.Instance.setLevelChanged( false );
+		LevelManager.Instance.setEpisodeChanged( false );
 		GetComponent<Animator>().Play("Panel Slide Out");
 		GameManager.Instance.setGameState(GameState.Menu);
 		if( LevelManager.Instance.getPlayerFinishedTheGame() )
@@ -155,7 +155,7 @@ public class PostLevelPopup : MonoBehaviour {
 	{
 		Debug.Log("Continue button pressed: ");
 		//Reset the level changed value
-		LevelManager.Instance.setLevelChanged( false );
+		LevelManager.Instance.setEpisodeChanged( false );
 		LevelManager.Instance.incrementCurrentEpisodeNumber();
 		GameManager.Instance.setGameState(GameState.Menu);
 		GetComponent<Animator>().Play("Panel Slide Out");
@@ -171,7 +171,7 @@ public class PostLevelPopup : MonoBehaviour {
 		}
 		else
 		{
-			episodePopup.showEpisodePopup( LevelManager.Instance.getCurrentEpisodeNumber(), LevelManager.Instance.getNextLevelToComplete() );
+			episodePopup.showEpisodePopup( LevelManager.Instance.getCurrentEpisodeNumber() );
 		}
 	}
 
@@ -179,7 +179,7 @@ public class PostLevelPopup : MonoBehaviour {
 	{
 		Debug.Log("PostLevelPopup-Retry button pressed.");
 		SoundManager.soundManager.playButtonClick();
-		newWorldMapHandler.play( LevelManager.Instance.getCurrentEpisodeNumber(), LevelManager.Instance.getNextLevelToComplete() );
+		newWorldMapHandler.play( LevelManager.Instance.getCurrentEpisodeNumber() );
 	}
 
 	IEnumerator showStoryCompletedPopupThread()

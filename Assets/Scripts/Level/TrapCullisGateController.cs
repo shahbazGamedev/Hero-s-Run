@@ -100,7 +100,7 @@ public class TrapCullisGateController : MonoBehaviour {
 		player.transform.SetParent( null );
 		//Save the player stats before continuing
 		PlayerStatsManager.Instance.savePlayerStats();
-		bool isGameFinished = LevelManager.Instance.incrementNextLevelToComplete();
+		bool isGameFinished = LevelManager.Instance.incrementNextEpisodeToComplete();
 		if( isGameFinished )
 		{
 		}

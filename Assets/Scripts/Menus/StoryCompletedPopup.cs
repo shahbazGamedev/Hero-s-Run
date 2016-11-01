@@ -61,11 +61,11 @@ public class StoryCompletedPopup : MonoBehaviour {
 		Debug.Log("startOver");
 		SoundManager.soundManager.playButtonClick();
 
-		LevelManager.Instance.setLevelChanged( false );
+		LevelManager.Instance.setEpisodeChanged( false );
 		LevelManager.Instance.setPlayerFinishedTheGame( false );
 		LevelManager.Instance.setScore( 0 );
 		LevelManager.Instance.setEpisodeCompleted( false );
-		LevelManager.Instance.setHighestLevelCompleted( 0 );
+		LevelManager.Instance.setHighestEpisodeCompleted( 0 );
 		FacebookManager.Instance.postHighScore( 0 );
 
 		PlayerStatsManager.Instance.resetDeathInLevels();

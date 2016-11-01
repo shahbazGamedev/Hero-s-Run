@@ -202,7 +202,7 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 		Debug.Log("showEndlessPostLevelPopup-Retry button pressed.");
 		SoundManager.soundManager.playButtonClick();
 		PlayerStatsManager.Instance.savePlayerStats();
-		newWorldMapHandler.play( LevelManager.Instance.getCurrentEpisodeNumber(), LevelManager.Instance.getNextLevelToComplete() );
+		newWorldMapHandler.play( LevelManager.Instance.getCurrentEpisodeNumber() );
 	}
 
 	public void challengeFriends()

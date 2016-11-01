@@ -36,7 +36,6 @@ public enum EpisodeDifficulty
 
 public class LevelData : MonoBehaviour {
 	
-	public string FinalDestinationName = "KING_CASTLE";
 	public List<EpisodeInfo> episodeList = new List<EpisodeInfo>();
 
 	public List<LevelInfo> levelList = new List<LevelInfo>();
@@ -46,11 +45,6 @@ public class LevelData : MonoBehaviour {
 	GameObject cutSceneCamera;
 	//This should be the directional light in the scene
 	GameObject Sun;
-
-	public List<LevelInfo> getLevelList()
-	{
-		return levelList;
-	}
 
 	public void initialise()
 	{
@@ -267,7 +261,7 @@ public class LevelData : MonoBehaviour {
 	{
 		[Header("Episode Parameters")]
 		[Tooltip("Episode name is not used at runtime. It is only used to make the data easier to read in the editor.")]
-		public string EpisodeName = "Episode Name";
+		public string episodeName = "Episode Name";
 		[Tooltip("Image used at the top of the pre-level popup.")]
 		public Sprite preLevelSprite;
 		[Tooltip("Total number of chest keys for episode.")]
@@ -275,48 +269,29 @@ public class LevelData : MonoBehaviour {
 		[Tooltip("Stars required to reach one, two, three stars as well as the maximum number of stars for the episode.")]
 		public Vector4 starsRequired = new Vector4( 10000f, 33000f, 50000f, 100000f );
 		public EpisodeDifficulty episodeDifficulty = EpisodeDifficulty.Normal;
-		public List<TileGroupType> tileGroupList = new List<TileGroupType>();
-		
-	}
-
-	[System.Serializable]
-	public class LevelInfo
-	{
-		[Header("Level Parameters")]
-		[Tooltip("The level type such as Episode or Normal.")]
-		public LevelType levelType = LevelType.Normal;
-
-		[Tooltip("Text ID of the level name. The name appears on road signs and in the pause menu. e.g. Tanglewood, Dreadknot Cemetery, etc.")]
-		public string LevelName = "LEVEL_NAME_";
-		[Tooltip("The time of day in hours and minutes, using a 24h-clock, when this level starts.")]
-		public Vector2 timeOfDay;
-
-		[Tooltip("Specifies whether the level should allow Tap To Play right away or wait for a callback. For example, in the opening level, we want to wait a few seconds before the player can start playing.")]
-		public bool waitForTapToPlay = false;
-		[Tooltip("The ambience sound for the level. It plays in addition to the music. It is optional.")]
-		public AudioClip AmbienceSound;
-		[Tooltip("The music track for the level. It plays in addition to the ambience. It is optional.")]
-		public AudioClip MusicTrack;
-		[Tooltip("Whether or not to include a surrounding plane. The plane can represent an ocean for example.")]
-		public bool includeSurroundingPlane = true;
-		[Tooltip("Which material to use for the surrounding plane.")]
-		public Material surroundingPlaneMaterial;
 		[Tooltip("The type of sun for the level. The sun type will not change until the player starts a new section. The sun type determines characteristics such ambient light, directional light rotation, color, intensity and shadows and skybox material.")]
 		public SunType sunType = SunType.Afternoon;
+		[Tooltip("Specifies whether the level should allow Tap To Play right away or wait for a callback. For example, in the opening level, we want to wait a few seconds before the player can start playing.")]
+		public bool waitForTapToPlay = false;
 		[Tooltip("The player's initial run speed in m/sec.")]
 		public float RunStartSpeed = 10f;
 		[Tooltip("How fast will the player accelerate.")]
 		public float RunAcceleration = 0.09f;
 		[Tooltip("The number of tiles between power ups. Zero means there is no power up in that level.")]
 		public int powerUpDensity = 4;
-		[Tooltip("The type of tile that the player will start on.")]
-		public TileType startTile = TileType.Start;
-		[Tooltip("The number of visible tiles active. The higher the number, the worse the performance.")]
-		[Range(1,6)]
-		public int nbrVisibleTiles = 3;
-		[Header("Road Segments")]
-		public List<RoadSegment> roadSegmentList = new List<RoadSegment>();
-
+		[Tooltip("The ambience sound for the level. It plays in addition to the music. It is optional.")]
+		public AudioClip AmbienceSound;
+		[Tooltip("The music track for the level. It plays in addition to the ambience. It is optional.")]
+		public AudioClip MusicTrack;
+		[Tooltip("Whether or not to include a surrounding plane. The plane can represent an ocean for example.")]
+		public bool includeSurroundingPlane = false;
+		[Tooltip("Which material to use for the surrounding plane.")]
+		public Material surroundingPlaneMaterial;
+		[Tooltip("The time of day in hours and minutes, using a 24h-clock, when this episode starts.")]
+		public Vector2 timeOfDay;
+		[Header("Tile Groups")]
+		public List<TileGroupType> tileGroupList = new List<TileGroupType>();
+		
 		//Returns the level run start speed adjusted according to the difficulty level of the game.
 		//The RunStartSpeed is higher in Heroic mode than in Normal mode for example.
 		public float getRunStartSpeed()
@@ -363,6 +338,21 @@ public class LevelData : MonoBehaviour {
 			}
 			return adjustedRunAcceleration;
 		}
+	}
+
+	[System.Serializable]
+	public class LevelInfo
+	{
+		[Header("Level Parameters")]
+		[Tooltip("The level type such as Episode or Normal.")]
+		public LevelType levelType = LevelType.Normal;
+
+
+		[Tooltip("The type of tile that the player will start on.")]
+		public TileType startTile = TileType.Start;
+		[Header("Road Segments")]
+		public List<RoadSegment> roadSegmentList = new List<RoadSegment>();
+
 
 	}
 	
