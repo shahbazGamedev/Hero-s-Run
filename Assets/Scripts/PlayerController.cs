@@ -199,7 +199,7 @@ public sealed class PlayerController : BaseClass {
 	public TakeScreenshot takeScreenshot;
 
 	public SimpleCamera sc;
-	GenerateLevel gl;
+	public GenerateLevel generateLevel;
 	
 	public static DeathType deathType = DeathType.Alive;
 
@@ -314,7 +314,6 @@ public sealed class PlayerController : BaseClass {
 		GameObject Troll = GameObject.FindGameObjectWithTag("Troll");
 		trollController = Troll.GetComponent<TrollController>();
 		sc = GetComponent<SimpleCamera>();
-		gl = GetComponent<GenerateLevel>();
 
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
@@ -2365,7 +2364,7 @@ public sealed class PlayerController : BaseClass {
 				if( !si.entranceCrossed )
 				{
 					//We might recycle currentTile (the one prior to the one we just entered), this is why we are passing it as a parameter.
-					gl.tileEntranceCrossed( other.transform.parent );
+					generateLevel.tileEntranceCrossed( other.transform.parent );
 					//This flag is set to avoid tileEntranceCrossed being called multiple time which can happen with onTriggerEnter.
 					//This flag is set to false when a tile is added.
 					si.entranceCrossed = true;
@@ -2651,7 +2650,7 @@ public sealed class PlayerController : BaseClass {
 			//so he can activate the proper tiles and, if needed, move the tiles on the Right of the T-Junction to 
 			//the Left assuming the player decided to turn that way.
 			//We want to do this early to avoid the tiles popping into view.
-			gl.playerTurnedAtTJunction( isGoingRight, currentTile );
+			generateLevel.playerTurnedAtTJunction( isGoingRight, currentTile );
 		}
 
 		audioSource.PlayOneShot( sideMoveSound );
@@ -3058,7 +3057,7 @@ public sealed class PlayerController : BaseClass {
 			if( playerRotationY == 0 )
 			{
 				respawnLocationObject = currentTile.transform.Find("respawnLocationRight").gameObject;
-				gl.playerTurnedAtTJunction( true, currentTile );
+				generateLevel.playerTurnedAtTJunction( true, currentTile );
 				
 			}
 			else

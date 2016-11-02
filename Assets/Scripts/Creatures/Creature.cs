@@ -72,6 +72,7 @@ public class Creature : BaseClass {
 
 	public void resetCreature()
 	{
+		Debug.Log("Creature - resetCreature called for : " + gameObject.name );
 		setCreatureState( CreatureState.Idle );
 		anim.CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
 		gameObject.SetActive( false );

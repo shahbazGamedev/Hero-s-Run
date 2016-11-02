@@ -54,11 +54,24 @@ public class TileReset : MonoBehaviour {
 				//Debug.Log("resetTile destroying power-up named " + " i " + i + " " + child.name ) ;
 				Destroy( child.gameObject );
 			}
-			//Reset zombies if any
-			else if( child.CompareTag("Zombie") )
+			//Reset creatures if any
+			else if( child.GetComponent<Creature>() != null )
 			{
-				ZombieController zombieController = child.GetComponent<ZombieController>();
-				zombieController.resetCreature();
+				Creature creature = child.GetComponent<Creature>();
+				creature.resetCreature();
+			}
+			//Reset creatures inside groups as well
+			else if( child.name.StartsWith("Group") && child.childCount > 0 )
+			{
+				for( int j = 0; j < child.childCount; j++ )
+				{
+					Transform grandchild = child.GetChild(j);
+					if( grandchild.GetComponent<Creature>() != null )
+					{
+						Creature creature = grandchild.GetComponent<Creature>();
+						creature.resetCreature();
+					}
+				}
 			}
 			else if( child.name == "ZombieTrigger" )
 			{

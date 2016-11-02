@@ -8,8 +8,6 @@ public enum SegmentTheme {
 		Fairyland = 1,
 		Cemetery = 2,
 		Hell_Arrival = 3,
-		Tutorial = 4,
-		Volcano = 5,
 		Dark_Tower = 6,
 		Jungle = 7,
 		Hell_Caverns = 8,
@@ -30,8 +28,6 @@ public enum TileType {
 	Straight_River = 7,
 	Landmark_Windmill = 8,
 	Landmark_Defense_Tower = 9,
-	Landmark_Dragon_Lair = 11,
-	Landmark_Dragon_Landing = 12,
 	Landmark_Clocktower = 13,
 	T_Junction = 15,
 	Straight_River_Crossing = 16,
@@ -117,8 +113,9 @@ public class GenerateLevel  : MonoBehaviour {
 	//The number of visible tiles at any given time (all other tiles are deactivated).
 	int nbrVisibleTiles = 3;
 	
-	//For randomizing power ups
-	PowerUpManager powerUpManager;
+	//For adding power-ups in tiles
+	public PowerUpManager powerUpManager;
+	public PlayerController playerController;
 	
 	//Path to Resources folder containing the tiles for the theme
 	string currentThemePath = "";
@@ -141,19 +138,13 @@ public class GenerateLevel  : MonoBehaviour {
 	//NEW FOR TILE GROUP
 	public TileGroupManager tileGroupManager;
 	Queue<TileType> endlessTileList = new Queue<TileType>();
-	public bool useOldSystem = true;
 
 	void Awake ()
 	{
-		Debug.Log ("Initializing generate Level.");
-		//The activity indicator may have been started in MainMenuHandler
+		//The activity indicator may have been started
 		Handheld.StopActivityIndicator();
 
 		levelData = LevelManager.Instance.getLevelData();
-							
-		//For power ups
-		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
-		powerUpManager = powerUpManagerObject.GetComponent<PowerUpManager>();
 	}
 
 	void loadTilePrefabs( SegmentTheme theme )
@@ -184,120 +175,21 @@ public class GenerateLevel  : MonoBehaviour {
 
 	void Start ()
 	{
-		if( useOldSystem ) 
-		{
-			//CreateLevel ();
-		}
-		else
-		{
-			NewCreateLevel ();
-		}
+		createLevel ();
 	}
 	
-	/*void CreateLevel ()
+	void createLevel ()
 	{
 		//Reset values
 		worldRoadSegments.Clear();
 		recycledTiles.Clear();
-		//levelTileList.Clear();
 		tileCreationIndex = 0;
 		playerTileIndex = 0;
 		seamlessLevelIndex = 0;
 						
-		//LevelInfo has the parameters for a single level.
-		//Get the level info for the current level.
-		int levelToLoad = LevelManager.Instance.getNextLevelToComplete();
-		LevelManager.Instance.setLevelNumberOfLastCheckpoint( levelToLoad );
-
-		seamlessLevelIndex = levelToLoad;
-
-		LevelData.LevelInfo levelInfo = levelData.getLevelInfo( levelToLoad );
-		//Also set it in the LevelManager
-		LevelManager.Instance.setLevelInfo( levelInfo );
-
-		//Sets the skybox, the directional light intensity and direction for the current level
-		levelData.initialise();
-		levelData.setSunParameters(levelInfo.sunType);
-
-		//Verify if we should include a plane surrounding the tiles (like an ocean)
-		if( levelInfo.includeSurroundingPlane )
-		{
-			GameObject go = (GameObject)Instantiate(surroundingPlane.gameObject, new Vector3( 0, -30f, 0 ), Quaternion.identity );
-			surroundingPlane = go.transform;
-			if( surroundingPlane.GetComponent<Renderer>().material != null )
-			{
-				surroundingPlane.GetComponent<Renderer>().material = levelInfo.surroundingPlaneMaterial;
-				surroundingPlane.gameObject.SetActive( true );
-			}
-			else
-			{
-				Debug.LogWarning("GenerateLevel-CreateLevel: includeSurroundingPlane is set to true but no surroundingPlaneMaterial has been specified.");
-			}
-		}
-		else
-		{
-			surroundingPlane.gameObject.SetActive( false );
-		}
-
-		nbrVisibleTiles = levelInfo.nbrVisibleTiles;
-
-		//Create all the road segments that compose the road
-		List<LevelData.RoadSegment> roadSegmentList = levelInfo.roadSegmentList;
-
-		if( levelInfo.startTile != TileType.None )
-		{
-			//Instantiate Start tile. There is only one Start tile per level.
-			//The Start tile has the same theme as the first road segment.
-			setCurrentTheme( roadSegmentList[0].theme );
-			addTile( levelInfo.startTile );
-		}
-
-
-		for( int i=0; i < roadSegmentList.Count; i++ )
-		{
-			//addRoadSegment( roadSegmentList[i] );
-		}
-
-		//The player controller needs info about the tile the player is on.
-		setFirstTileInfoInPlayer();
-
-		//Make the first few tiles active
-		activateInitialTiles(0);
-
-		//Fade-in the level ambience soundtrack
-		StartCoroutine( SoundManager.soundManager.fadeInAmbience( levelInfo.AmbienceSound, 10f ) );
-
-		//Set the music track to play if a value is set
-		SoundManager.soundManager.setMusicTrack( levelInfo.MusicTrack );
-
-		Debug.Log("GenerateLevel-CreateLevel: Level " + levelInfo.LevelName + " has been created." );
-		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
-
-	}*/
-
-	void NewCreateLevel ()
-	{
-		//Reset values
-		worldRoadSegments.Clear();
-		recycledTiles.Clear();
-		//levelTileList.Clear();
-		tileCreationIndex = 0;
-		playerTileIndex = 0;
-		seamlessLevelIndex = 0;
-						
-		//LevelInfo has the parameters for a single level.
-		//Get the level info for the current level.
-		//int levelToLoad = LevelManager.Instance.getNextLevelToComplete();
-		//LevelManager.Instance.setLevelNumberOfLastCheckpoint( levelToLoad );
-
-		//seamlessLevelIndex = levelToLoad;
-
-		//LevelData.LevelInfo levelInfo = levelData.getLevelInfo( levelToLoad );
-		//Also set it in the LevelManager
-		//LevelManager.Instance.setLevelInfo( levelInfo );
 		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
 
-		//Sets the skybox, the directional light intensity and direction for the current level
+		//Sets the skybox, the directional light intensity and direction for the current episode
 		levelData.initialise();
 		levelData.setSunParameters(currentEpisode.sunType);
 
@@ -321,23 +213,7 @@ public class GenerateLevel  : MonoBehaviour {
 			surroundingPlane.gameObject.SetActive( false );
 		}
 
-		//Create all the road segments that compose the road
-		//List<LevelData.RoadSegment> roadSegmentList = levelInfo.roadSegmentList;
 		List<TileGroupType> tileGroupList = currentEpisode.tileGroupList;
-
-		//if( levelInfo.startTile != TileType.None )
-		//{
-			//Instantiate Start tile. There is only one Start tile per level.
-			//The Start tile has the same theme as the first road segment.
-			//setCurrentTheme( roadSegmentList[0].theme );
-			//addTile( levelInfo.startTile );
-		//}
-
-
-		//for( int i=0; i < roadSegmentList.Count; i++ )
-		//{
-			//addRoadSegment( roadSegmentList[i] );
-		//}
 
 		if( GameManager.Instance.getGameMode() == GameMode.Story )
 		{
@@ -355,7 +231,7 @@ public class GenerateLevel  : MonoBehaviour {
 		activateInitialTiles(0);
 
 		//Fade-in the level ambience soundtrack
-		StartCoroutine( SoundManager.soundManager.fadeInAmbience( currentEpisode.AmbienceSound, 10f ) );
+		StartCoroutine( SoundManager.soundManager.fadeInAmbience( currentEpisode.AmbienceSound, 6f ) );
 
 		//Set the music track to play if a value is set
 		SoundManager.soundManager.setMusicTrack( currentEpisode.MusicTrack );
@@ -370,20 +246,18 @@ public class GenerateLevel  : MonoBehaviour {
 		for( int i=0; i < tileGroupList.Count; i++ )
 		{
 			TileGroup tg = tileGroupManager.getTileGroup(tileGroupList[i]);
-			if( tg.validGameMode == ValidGameMode.Any || tg.validGameMode == ValidGameMode.Story )
+			if( tg.frequency != TileGroup.FrequencyType.Never && (tg.validGameMode == ValidGameMode.Any || tg.validGameMode == ValidGameMode.Story) )
 			{
 				setCurrentTheme(tg.theme );
-	
 				Debug.LogWarning("TILE GROUP " +  tg.tileGroupType.ToString() );
 				List<TileType> individualTiles = tg.tileList;
 				for( int j=0; j < individualTiles.Count; j++ )
 				{
-					Debug.Log("TILE  " + individualTiles[j].ToString() );
+					Debug.Log("STORY TILE  " + individualTiles[j].ToString() );
 					addTileNew( individualTiles[j] );
 				}
 			}
 		}
-
 	}
 
 	void generateEndlessLevel( List<TileGroupType> tileGroupList )
@@ -413,8 +287,6 @@ public class GenerateLevel  : MonoBehaviour {
 			Debug.Log("RANDOM TILE  " + tiles[j].ToString() );
 			endlessTileList.Enqueue(tiles[j]);
 		}
-
-
 	}
 
 	//The player controller needs info about the tile the player is on.
@@ -425,8 +297,6 @@ public class GenerateLevel  : MonoBehaviour {
 	//Because of that, we simply use the info from the first tile (the one with index 0) in worldRoadSegments.
 	private void setFirstTileInfoInPlayer()
 	{
-		GameObject player = GameObject.FindGameObjectWithTag("Player");
-		PlayerController playerController = player.GetComponent<PlayerController>();
 		GameObject firstTile = worldRoadSegments[0];
 		playerController.currentTile = firstTile;
 		playerController.tileRotationY = firstTile.transform.eulerAngles.y;
@@ -439,7 +309,7 @@ public class GenerateLevel  : MonoBehaviour {
 		//if( si.tileType != TileType.Start )
 		if( true )
 		{
-			SimpleCamera sc = player.GetComponent<SimpleCamera>();
+			SimpleCamera sc = playerController.gameObject.GetComponent<SimpleCamera>();
 			sc.playCutscene(CutsceneType.Checkpoint);
 		}
 	}
@@ -563,7 +433,6 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Right:
 			case TileType.Landmark_Windmill:
 			case TileType.Landmark_Defense_Tower:
-			case TileType.Landmark_Dragon_Landing:
 			case TileType.Straight_Slope:
 			case TileType.T_Junction:
 			case TileType.Landmark_Cemetery_Queen:
@@ -582,7 +451,6 @@ public class GenerateLevel  : MonoBehaviour {
 			case TileType.Checkpoint:
 			case TileType.Straight_Double:
 			case TileType.Straight_Bezier:
-			case TileType.Landmark_Dragon_Lair:
 			case TileType.Landmark_Clocktower:
 			case TileType.Landmark_Drawbridge:
 			case TileType.Landmark_Banquet_Hall:
@@ -772,12 +640,6 @@ public class GenerateLevel  : MonoBehaviour {
 			addTile( TileType.Straight );		
             break;
 
-		case TileType.Landmark_Dragon_Lair:
-			//We want the Dragon Lair tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation();
-			addTile( TileType.Landmark_Dragon_Lair );
-			break;
-
 		case TileType.Landmark_Defense_Tower:
 			//We want the Landmark tile to have a 0 degree rotation.
 			ensureTileHasZeroRotation();
@@ -846,12 +708,6 @@ public class GenerateLevel  : MonoBehaviour {
 			addTile( TileType.Left );		
 			addTile( TileType.Straight );		
             break;
-
-		case TileType.Landmark_Dragon_Lair:
-			//We want the Dragon Lair tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation();
-			addTile( TileType.Landmark_Dragon_Lair );
-			break;
 
 		case TileType.Landmark_Defense_Tower:
 			//We want the Landmark tile to have a 0 degree rotation.
@@ -1039,8 +895,6 @@ public class GenerateLevel  : MonoBehaviour {
 		case TileType.End:
 		case TileType.Landmark_Banquet_Hall:
 		case TileType.Landmark_Clocktower:
-		case TileType.Landmark_Dragon_Lair:
-		case TileType.Landmark_Dragon_Landing:
 		case TileType.Landmark_Drawbridge:
 		case TileType.Straight_Bezier:
 		case TileType.Straight_Double:
@@ -1108,12 +962,6 @@ public class GenerateLevel  : MonoBehaviour {
 			addTileData(TileType.Landmark_Windmill, theme);
 			addTileData(TileType.Left, theme);
 			addTileData(TileType.Straight, theme);
-			break;
-			
-		case TileType.Landmark_Dragon_Lair:
-			//We want the Dragon Lair tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation2(theme);
-			addTileData(TileType.Landmark_Dragon_Lair, theme);
 			break;
 			
 		case TileType.Landmark_Defense_Tower:
