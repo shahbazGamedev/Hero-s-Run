@@ -51,19 +51,6 @@ public class LevelData : MonoBehaviour {
 		Sun = GameObject.FindGameObjectWithTag("Sunlight");
 	}
 
-	public LevelInfo getLevelInfo( int levelNumber )
-	{
-		if( levelNumber < 0 || levelNumber >= levelList.Count )
-		{
-			Debug.LogError("LevelData-getLeveInfo: level number specified, " + levelNumber + ", is out of range." );
-			return null;
-		}
-		else
-		{		
-			return levelList[levelNumber];
-		}
-	}
-	
 	public EpisodeInfo getEpisodeInfo( int episodeNumber )
 	{
 		if( episodeNumber < 0 || episodeNumber >= episodeList.Count )
@@ -75,11 +62,6 @@ public class LevelData : MonoBehaviour {
 		{		
 			return episodeList[episodeNumber];
 		}
-	}
-
-	public int getNumberOfLevels()
-	{
-		return levelList.Count;
 	}
 	
 	//This method sets the skybox material as well as the light intensity and direction 
@@ -134,7 +116,7 @@ public class LevelData : MonoBehaviour {
 				Sun.GetComponent<Light>().color = new Color(0.796f,0.796f,0.796f); //greyish
 				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
 				RenderSettings.ambientIntensity = 1.1f;
-				RenderSettings.fog = true;
+				RenderSettings.fog = false;
 				RenderSettings.fogMode = FogMode.Linear;
 				RenderSettings.fogColor = new Color(0.447f,0.698f,0.917f); //blueish
 				RenderSettings.fogStartDistance = 20f;
@@ -171,7 +153,7 @@ public class LevelData : MonoBehaviour {
 				RenderSettings.ambientSkyColor = new Color(0.353f, 0.222f, 0.052f ); //brownish
 				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
 				RenderSettings.ambientIntensity = 1f;
-				RenderSettings.fog = true;
+				RenderSettings.fog = false;
 				RenderSettings.fogMode = FogMode.Linear;
 				RenderSettings.fogColor = new Color(0, 0.466f, 0.56f ); //greenish
 				RenderSettings.fogStartDistance = 30f;

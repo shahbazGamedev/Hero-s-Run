@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-
 public enum SegmentTheme {
 		Forest = 0,
 		Fairyland = 1,
@@ -14,7 +13,6 @@ public enum SegmentTheme {
 		Hell_Fortress = 9,
 		Blizzard = 10,
 		Caves = 11
-
 }
 
 public enum TileType {
@@ -83,7 +81,7 @@ public enum TileSubType {
 }
 
 
-public class GenerateLevel  : MonoBehaviour {
+public sealed class GenerateLevel  : MonoBehaviour {
 	
 	private LevelData levelData;
 	
@@ -103,10 +101,6 @@ public class GenerateLevel  : MonoBehaviour {
 	Quaternion previousTileRot = Quaternion.identity;
 	TileSubType previousTileType = TileSubType.None;
 
-	//Generate level supports tiles that have slopes.
-	//For a slope tile to work, the slope must use the X axis, not Z.
-	//tileEndHeight is the delta between the height at the end of the tile and the height at the center of the tile.
-	//So if a tile has a slope of 10%, the center height is 3.209 meters and the tileEndHeight is also 3.209 meters for a total elevation of 6.418 meters.
 	//This number is used to make sure that the subsequent tiles are at the proper height.
 	float  tileEndHeight = 0;
 
@@ -116,6 +110,7 @@ public class GenerateLevel  : MonoBehaviour {
 	//For adding power-ups in tiles
 	public PowerUpManager powerUpManager;
 	public PlayerController playerController;
+	public TileGroupManager tileGroupManager;
 	
 	//Path to Resources folder containing the tiles for the theme
 	string currentThemePath = "";
@@ -125,18 +120,11 @@ public class GenerateLevel  : MonoBehaviour {
 	public Transform surroundingPlane;
 	
 	//To improve performance by preloading prefabs and avoiding reloading tile prefabs that have previously been loaded.
-	const int NUMBER_OF_THEMES = 12; //Dark Tower, Forest, Fairyland, Cemetery, etc.
+	const int NUMBER_OF_THEMES = 10; //Dark Tower, Forest, Fairyland, Cemetery, etc.
 	Dictionary<SegmentTheme,Dictionary<TileType,GameObject>> tilePrefabsPerTheme  = new Dictionary<SegmentTheme,Dictionary<TileType,GameObject>>(NUMBER_OF_THEMES);
 
 	//For the endless running game mode
 	List<GameObject> recycledTiles = new List<GameObject>(50);
-
-	//For seamless progression
-	//Queue<TileData> levelTileList = new Queue<TileData>();
-	int seamlessLevelIndex = 0;
-
-	//NEW FOR TILE GROUP
-	public TileGroupManager tileGroupManager;
 	Queue<TileType> endlessTileList = new Queue<TileType>();
 
 	void Awake ()
@@ -147,7 +135,7 @@ public class GenerateLevel  : MonoBehaviour {
 		levelData = LevelManager.Instance.getLevelData();
 	}
 
-	void loadTilePrefabs( SegmentTheme theme )
+	private void loadTilePrefabs( SegmentTheme theme )
 	{
 		//Don't bother reloading the prefabs if they have already been loaded
 		if( tilePrefabsPerTheme.ContainsKey(theme) ) return;
@@ -162,7 +150,7 @@ public class GenerateLevel  : MonoBehaviour {
 		for(int i = 0; i < themePrefabs.Length; i++ )
 		{
 			go = (GameObject)themePrefabs[i];
-			SegmentInfo si = go.GetComponent<SegmentInfo>();
+			SegmentInfo si = getSegmentInfo( go );
 			if( si.tileType != TileType.None )
 			{
 				//Debug.Log ("loadTilePrefabs-adding tile type: " + si.tileType );
@@ -178,14 +166,13 @@ public class GenerateLevel  : MonoBehaviour {
 		createLevel ();
 	}
 	
-	void createLevel ()
+	private void createLevel ()
 	{
 		//Reset values
 		worldRoadSegments.Clear();
 		recycledTiles.Clear();
 		tileCreationIndex = 0;
 		playerTileIndex = 0;
-		seamlessLevelIndex = 0;
 						
 		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
 
@@ -241,7 +228,7 @@ public class GenerateLevel  : MonoBehaviour {
 
 	}
 
-	void generateStoryLevel( List<TileGroupType> tileGroupList )
+	private void generateStoryLevel( List<TileGroupType> tileGroupList )
 	{
 		for( int i=0; i < tileGroupList.Count; i++ )
 		{
@@ -260,22 +247,20 @@ public class GenerateLevel  : MonoBehaviour {
 		}
 	}
 
-	void generateEndlessLevel( List<TileGroupType> tileGroupList )
+	private void generateEndlessLevel( List<TileGroupType> tileGroupList )
 	{
-		for( int i=0; i < 1; i++ )
+		//the first tile group needs to have the Start tile and 3 others
+		TileGroup tg = tileGroupManager.getTileGroup(tileGroupList[0]);
+		if( tg.validGameMode == ValidGameMode.Any || tg.validGameMode == ValidGameMode.Endless )
 		{
-			TileGroup tg = tileGroupManager.getTileGroup(tileGroupList[i]);
-			if( tg.validGameMode == ValidGameMode.Any || tg.validGameMode == ValidGameMode.Endless )
+			setCurrentTheme(tg.theme );
+
+			Debug.LogWarning("TILE GROUP " +  tg.tileGroupType.ToString() );
+			List<TileType> individualTiles = tg.tileList;
+			for( int j=0; j < individualTiles.Count; j++ )
 			{
-				setCurrentTheme(tg.theme );
-	
-				Debug.LogWarning("TILE GROUP " +  tg.tileGroupType.ToString() );
-				List<TileType> individualTiles = tg.tileList;
-				for( int j=0; j < individualTiles.Count; j++ )
-				{
-					Debug.Log("TILE  " + individualTiles[j].ToString() );
-					addTileNew( individualTiles[j] );
-				}
+				Debug.Log("TILE  " + individualTiles[j].ToString() );
+				addTileNew( individualTiles[j] );
 			}
 		}
 
@@ -301,7 +286,7 @@ public class GenerateLevel  : MonoBehaviour {
 		playerController.currentTile = firstTile;
 		playerController.tileRotationY = firstTile.transform.eulerAngles.y;
 		playerController.currentTilePos = firstTile.transform.position;
-		SegmentInfo si = firstTile.GetComponent<SegmentInfo>();
+		SegmentInfo si = getSegmentInfo( firstTile );
 		playerController.currentTileType = si.tileType;
 
 		//If the player starts off on a Start tile, the camera will be looking at the front of player and do a rotation when the player starts running.
@@ -320,35 +305,12 @@ public class GenerateLevel  : MonoBehaviour {
 		currentTheme = newTheme;
 	}
 
-	float calculateTileHeight( float xTileAngle, float tileDepthM )
-	{
-		if( xTileAngle == 0 )
-		{
-			return 0;
-		}
-		else
-		{
-			return -TILE_SIZE/2f * tileDepthM * Mathf.Tan(xTileAngle * Mathf.Deg2Rad);
-		}
-	}
-
-	//Important: as previousTileType value, use one of the three basic tile types (Straight, Left or Right). Do
-	//not use the precise tile type (such as Straight_double) or else the method ensureTileHasZeroRotation won't work as intended.
+	//Returns either a recycled tile if one was found or null. In all cases, it will add the specified tile.
 	private GameObject addTile ( TileType type )
 	{
 		GameObject tile = getRecycledTile(type);
-		if( tile != null )
-		{
-			//Debug.LogWarning("RECYCLING " + tile.name + " tile creation index " + tileCreationIndex );
-		}
-		else
-		{
-			//Debug.LogWarning("INSTANTIATING " + type + " tile creation index " + tileCreationIndex + " current theme is " + currentTheme );
-		}
-
 		return addTile( type, tile );
 	}
-
 
 	//Important: as previousTileType value, use one of the three basic tile types (Straight, Left or Right). Do
 	//not use the precise tile type (such as Straight_double) or else the method ensureTileHasZeroRotation won't work as intended.
@@ -358,8 +320,6 @@ public class GenerateLevel  : MonoBehaviour {
 		GameObject prefab = null;
 		Quaternion tileRot = Quaternion.identity;
 		Vector3 tilePos = Vector3.zero;
-
-		float tileHeight = 0;
 
 		if( recycledTile == null )
 		{
@@ -377,18 +337,16 @@ public class GenerateLevel  : MonoBehaviour {
 				Debug.LogError("addTile: could not find prefab for the tile type: " + type + " in the current theme " + currentTheme + " folder." );
 			}
 
-			tileHeight = calculateTileHeight( prefab.transform.eulerAngles.x,1 ); //From a slope perspective, the slope length is one, even though the tile is longer
-			tileRot = getTileRotation(prefab.transform.eulerAngles.x);
-			tilePos = getTilePosition(tileHeight);
+			tileRot = getTileRotation();
+			tilePos = getTilePosition();
 			go = (GameObject)Instantiate(prefab, tilePos, tileRot );
 		}
 		else
 		{
 			//Use the tile given to us
 			go = recycledTile;
-			tileHeight = calculateTileHeight( go.transform.eulerAngles.x,1 ); //From a slope perspective, the slope length is one, even though the tile is longer
-			tileRot = getTileRotation(go.transform.eulerAngles.x);
-			tilePos = getTilePosition(tileHeight);
+			tileRot = getTileRotation();
+			tilePos = getTilePosition();
 			go.transform.rotation = tileRot;
 			go.transform.position = tilePos;
 		} 
@@ -396,14 +354,7 @@ public class GenerateLevel  : MonoBehaviour {
 		SegmentInfo si = getSegmentInfo( go );
 		tileDepthMult= si.tileDepth;
 		previousTileType = si.tileSubType; //for constructing the level, we use the simpler types like straight, left and right
-		if( si.tileEndHeight != 0 )
-		{
-			tileEndHeight = si.tileEndHeight;
-		}
-		else
-		{
-			tileEndHeight = tileHeight;
-		}
+		tileEndHeight = si.tileEndHeight;
 		si.entranceCrossed = false;
 		si.tile = go;
 		previousTilePos = tilePos;
@@ -418,107 +369,13 @@ public class GenerateLevel  : MonoBehaviour {
 		return go;
 	}
 
-	/*int getTileDepth( TileType type )
-	{
-		int depth = 0;
-
-		switch (type)
-		{
-			case TileType.Straight:
-			case TileType.Straight_Log:
-			case TileType.Straight_River:
-			case TileType.Straight_River_Crossing:
-			case TileType.Straight_River_Log_Crossing:
-			case TileType.Left:
-			case TileType.Right:
-			case TileType.Landmark_Windmill:
-			case TileType.Landmark_Defense_Tower:
-			case TileType.Straight_Slope:
-			case TileType.T_Junction:
-			case TileType.Landmark_Cemetery_Queen:
-			case TileType.Landmark_Graveyard_Ghost:
-				depth = 1;
-				break;
-			
-			case TileType.Opening:
-			case TileType.Opening2:
-			case TileType.Opening3:
-			case TileType.Opening4:
-				case TileType.Start:
-			case TileType.Landmark_Fairy_Message:
-			case TileType.Landmark_Evil_Tree:
-			case TileType.End:
-			case TileType.Checkpoint:
-			case TileType.Straight_Double:
-			case TileType.Straight_Bezier:
-			case TileType.Landmark_Clocktower:
-			case TileType.Landmark_Drawbridge:
-			case TileType.Landmark_Banquet_Hall:
-			case TileType.Landmark_Tomb_Double:
-			case TileType.Landmark_Tomb_Start_2:
-			case TileType.Landmark_Broken_Bridge:
-			case TileType.Landmark_Cemetery_Coach:
-			case TileType.Landmark_Graveyard:
-			case TileType.Landmark_Graveyard_1:
-			case TileType.Landmark_Graveyard_2:
-			case TileType.Landmark_Graveyard_3:
-			case TileType.Landmark_Graveyard_4:
-			case TileType.Landmark_Graveyard_5:
-			case TileType.Landmark_Graveyard_6:
-			case TileType.Landmark_Graveyard_7:
-			case TileType.Landmark_Graveyard_Start:
-			case TileType.Landmark_Graveyard_End:
-			case TileType.Landmark_Collapsing_Bridge:
-			case TileType.Landmark_Goblin_Loot:
-			case TileType.Landmark_Zipline:
-				depth = 2;
-				break;
-
-			case TileType.Landmark_Tomb_Start:
-			case TileType.Landmark_Tomb_End:
-			case TileType.Start_Fairyland:
-				case TileType.Landmark_Treasure_Key:
-				depth = 3;
-				break;
-
-			case TileType.Landmark_Magic_Bridge:
-			case TileType.Landmark_Bog_Valley:
-			case TileType.Opening5:
-				depth = 4;
-				break;
-
-			case TileType.Jungle_Start:
-				depth = 5;
-				break;
-
-			default:
-				Debug.LogError("GenerateLevel-getTileDepth: unknown tile type specified: " + type );
-				break;
-		}
-		return depth;
-	}*/
-
-	//Look for the prefab in the theme folder. If it is not found, look in the shared folder.
-	private GameObject getTilePrefab( string tileName )
-	{
-		//Step 1 - try to get the tile prefab in the current theme folder
-		GameObject prefab = Resources.Load(currentThemePath + tileName) as GameObject;
-		//Step 2 - if it is not found, give an error message
-		if( prefab == null )
-		{
-			Debug.LogError("GenerateLevel-getTilePrefab: Unable to locate the tile named " + tileName + " in the theme, " + currentThemePath + ", folder.");
-		}
-		return prefab;
-	}
-
-	//Height is the Y component of the tile prefab.
-	private Vector3 getTilePosition( float height )
+	private Vector3 getTilePosition()
 	{
 		Vector3 tilePos = Vector3.zero;
 		float previousTileRotY = Mathf.Floor( previousTileRot.eulerAngles.y );
 		float tileDepth =  tileDepthMult * TILE_SIZE;
 		//Determine the tile's height.
-		float tileHeight = height + tileEndHeight + previousTilePos.y;
+		float tileHeight = tileEndHeight + previousTilePos.y;
 		switch (previousTileType)
 		{
 			case TileSubType.Straight:
@@ -576,8 +433,7 @@ public class GenerateLevel  : MonoBehaviour {
 		}
 	}
 
-	//Slope is the X rotation of the tile prefab.
-	private Quaternion getTileRotation( float slope )
+	private Quaternion getTileRotation()
 	{
 		float previousTileRotY = Mathf.Floor( previousTileRot.eulerAngles.y );
 		Quaternion tileRot = Quaternion.identity;
@@ -587,36 +443,36 @@ public class GenerateLevel  : MonoBehaviour {
 			return Quaternion.identity;
 		
 			case TileSubType.Straight:
-			tileRot =  Quaternion.Euler( slope, previousTileRot.eulerAngles.y, 0 );
+			tileRot =  Quaternion.Euler( 0, previousTileRot.eulerAngles.y, 0 );
 			return tileRot;
 
 			case TileSubType.Left:
 			if( previousTileRotY == 0 )
 			{
-				tileRot =  Quaternion.Euler(slope, -90f, 0);
+				tileRot =  Quaternion.Euler(0, -90f, 0);
 			}
 			else if( previousTileRotY == 270f || previousTileRotY == -90f )
 			{
-				tileRot =  Quaternion.Euler( slope, 0, 0 );
+				tileRot =  Quaternion.Euler( 0, 0, 0 );
 			}
 			else
 			{
-				tileRot =  Quaternion.Euler( slope, 0, 0 );
+				tileRot =  Quaternion.Euler( 0, 0, 0 );
 			}
 			return tileRot;
 		
 			case TileSubType.Right:
 			if( previousTileRotY == 0 )
 			{
-				tileRot =  Quaternion.Euler( slope, 90f, 0 );
+				tileRot =  Quaternion.Euler( 0, 90f, 0 );
 			}
 			else if( previousTileRotY == 270f || previousTileRotY == -90f )
 			{
-				tileRot =  Quaternion.Euler( slope, 0, 0 );
+				tileRot =  Quaternion.Euler( 0, 0, 0 );
 			}
 			else
 			{
-				tileRot =  Quaternion.Euler( slope, 0, 0 );
+				tileRot =  Quaternion.Euler( 0, 0, 0 );
 			}
 			return tileRot;
 			
@@ -683,376 +539,6 @@ public class GenerateLevel  : MonoBehaviour {
 		}
 	}
 
-	//nbrTilesInSegment includes the road segment end tile
-	/*private  void addRoadSegment ( LevelData.RoadSegment roadSegment )
-	{
-		int localTileIndex = 0;
-		setCurrentTheme( roadSegment.theme );
-
-		int maxIndex = roadSegment.NumberOfTiles - 1;
-		
-		while ( localTileIndex < maxIndex )
-		{
-//addSegmentTile();
-			localTileIndex++;
-		}
-
-		//Add end tile
-        switch (roadSegment.endTile)
-		{
-		
-		case TileType.Landmark_Windmill:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation();
-			addTile( TileType.Landmark_Windmill );
-			addTile( TileType.Left );		
-			addTile( TileType.Straight );		
-            break;
-
-		case TileType.Landmark_Defense_Tower:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation();
-			addTile( TileType.Landmark_Defense_Tower );
-			addTile( TileType.Left );		
-			addTile( TileType.Straight );		
-			break;
-
-		case TileType.Landmark_Broken_Bridge:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation();
-			addTile( TileType.Landmark_Broken_Bridge );
-			break;
-
-		case TileType.Landmark_Tomb_Start:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation();
-			addTile( TileType.Landmark_Tomb_Start );
-			break;
-
-		case TileType.Landmark_Zipline:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation();
-			addTile( TileType.Landmark_Zipline );
-			addTile( TileType.Left );		
-			break;
-
-		case TileType.Landmark_Cemetery_Coach:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation();
-			addTile( TileType.Landmark_Cemetery_Coach );
-			break;
-
-		default:
-			if( GameManager.Instance.getGameMode() == GameMode.Story )
-			{
-				addTile( roadSegment.endTile );
-			}
-			else
-			{
-				addTile( TileType.Straight );
-			}
-			break;
-		}
-	}*/
-
-	/*private void addRandomLandmark()
-	{
-		TileType randomLandmark = TileType.None;
-		//Step 1 select a random landmark appropriate for the theme
-		float rd = Random.value;
-		switch (currentTheme)
-		{
-			case SegmentTheme.Cemetery:
-				if( rd < 0.33f)
-				{
-					randomLandmark = TileType.Landmark_Clocktower;
-				}
-				else
-				{
-					randomLandmark = TileType.Landmark_Evil_Tree;
-				}
-				break;
-			case SegmentTheme.Forest:
-				if( rd < 0.3f)
-				{
-					randomLandmark = TileType.Landmark_Clocktower;
-				}
-				else if( rd < 0.6f)
-				{
-				randomLandmark = TileType.Landmark_Clocktower;
-				}
-				else if( rd < 0.9f)
-				{
-				randomLandmark = TileType.Landmark_Clocktower;
-				}
-				else
-				{
-				randomLandmark = TileType.Landmark_Clocktower;
-				}
-				break;
-			default:
-				return;
-		}
-		//Step 2 add the landmark
-		switch (randomLandmark)
-		{
-			
-			case TileType.Landmark_Windmill:
-				//We want the Landmark tile to have a 0 degree rotation.
-				ensureTileHasZeroRotation();
-				addTile( TileType.Landmark_Windmill );
-				addTile( TileType.Left );		
-				addTile( TileType.Straight );		
-				break;
-				
-			case TileType.Landmark_Defense_Tower:
-				//We want the Landmark tile to have a 0 degree rotation.
-				ensureTileHasZeroRotation();
-				addTile( TileType.Landmark_Defense_Tower );
-				addTile( TileType.Left );		
-				addTile( TileType.Straight );		
-				break;
-				
-			case TileType.Landmark_Zipline:
-				//We want the Landmark tile to have a 0 degree rotation.
-				ensureTileHasZeroRotation();
-				addTile( TileType.Landmark_Zipline );
-				addTile( TileType.Left );		
-				break;
-
-			default:
-				addTile( randomLandmark );
-				break;
-		}
-	}*/
-
-
-	/*private void prepareTileList ( int levelToPrepare )
-	{
-
-		TileSubType beforePrepareListTileType = previousTileType;
-		Quaternion beforePrepareListRotation = Quaternion.Euler( previousTileRot.eulerAngles.x, previousTileRot.eulerAngles.y, previousTileRot.eulerAngles.z );
-		Vector3 beforePrepareListPosition = new Vector3( previousTilePos.x, previousTilePos.y, previousTilePos.z );
-
-		LevelData.LevelInfo levelInfo = levelData.getLevelInfo( levelToPrepare );
-
-		//Also set it in the LevelManager
-		LevelManager.Instance.setLevelInfo( levelInfo );
-
-		//Create all the road segments that compose the road
-		List<LevelData.RoadSegment> roadSegmentList = levelInfo.roadSegmentList;
-
-		Debug.LogWarning ("prepareTileList: level name: " + levelInfo.LevelName + ". It has " + roadSegmentList.Count + " road segments." );
-
-		int maxIndex = 0;
-
-		for( int i=0; i < roadSegmentList.Count; i++ )
-		{
-			maxIndex = roadSegmentList[i].NumberOfTiles - 1; //maxIndex does not include the end tile
-			for( int j=0; j < maxIndex; j++ )
-			{
-				TileType tileCreationType = getSegmentTile (roadSegmentList[i].theme);
-				if( tileCreationType != TileType.None )
-				{
-					addTileData( tileCreationType, roadSegmentList[i].theme );
-				}
-			}
-			addRoadSegmentEndTile( roadSegmentList[i].endTile, roadSegmentList[i].theme );
-		}
-
-		previousTileType = beforePrepareListTileType;
-		previousTileRot  = Quaternion.Euler( beforePrepareListRotation.eulerAngles.x, beforePrepareListRotation.eulerAngles.y, beforePrepareListRotation.eulerAngles.z );
-		previousTilePos  = new Vector3( beforePrepareListPosition.x, beforePrepareListPosition.y, beforePrepareListPosition.z );
-
-	}*/
-
-	/*private void addTileData( TileType type, SegmentTheme theme )
-	{
-		TileData tileData = new TileData();
-		tileData.tileTheme = theme;
-		tileData.tileType = type;
-		levelTileList.Enqueue (tileData);
-		previousTileRot = getTileRotation(0);
-//PROBLEM
-//previousTileType = type;
-		//print ("addTileData: adding tile type " + tileData.tileType + " with theme " + tileData.tileTheme + " prev rot " + previousTileRot.eulerAngles );
-	}*/
-
-	/*private TileType getTileSubType( TileType type )
-	{
-		switch (type)
-		{
-		case TileType.None:
-			return TileType.None;
-			
-		case TileType.Opening:
-		case TileType.Opening2:
-		case TileType.Opening3:
-		case TileType.Opening4:
-		case TileType.Opening5:
-		case TileType.Landmark_Evil_Tree:
-		case TileType.Start:
-		case TileType.End:
-		case TileType.Landmark_Banquet_Hall:
-		case TileType.Landmark_Clocktower:
-		case TileType.Landmark_Drawbridge:
-		case TileType.Straight_Bezier:
-		case TileType.Straight_Double:
-		case TileType.Landmark_Fairy_Message:
-		case TileType.Landmark_Broken_Bridge:
-		case TileType.Straight_Log:
-		case TileType.Straight_River:
-		case TileType.Straight_River_Crossing:
-		case TileType.Straight_River_Log_Crossing:
-		case TileType.Straight_Slope:
-		case TileType.Checkpoint:
-		case TileType.Straight:
-		case TileType.Landmark_Cemetery_Queen:
-		case TileType.Landmark_Magic_Bridge:
-		case TileType.Landmark_Tomb_Start:
-		case TileType.Landmark_Tomb_Start_2:
-		case TileType.Landmark_Tomb_End:
-		case TileType.Landmark_Tomb_Double:
-		case TileType.Start_Fairyland:
-		case TileType.Landmark_Cemetery_Coach:
-		case TileType.Landmark_Graveyard:
-		case TileType.Landmark_Graveyard_1:
-		case TileType.Landmark_Graveyard_2:
-		case TileType.Landmark_Graveyard_3:
-		case TileType.Landmark_Graveyard_4:
-		case TileType.Landmark_Graveyard_5:
-		case TileType.Landmark_Graveyard_6:
-		case TileType.Landmark_Graveyard_7:
-		case TileType.Landmark_Graveyard_Start:
-		case TileType.Landmark_Graveyard_End:
-		case TileType.Landmark_Graveyard_Ghost:
-		case TileType.Landmark_Test:
-		case TileType.Landmark_Bog_Valley:
-		case TileType.Landmark_Bog_Start:
-		case TileType.Landmark_Treasure_Key:
-		case TileType.Landmark_Collapsing_Bridge:
-		case TileType.Landmark_Goblin_Loot:
-		case TileType.Jungle_Start:
-		case TileType.Landmark_Zipline:
-			return TileType.Straight;
-
-		case TileType.Left:
-			return TileType.Left;
-			
-		case TileType.T_Junction:
-		case TileType.Landmark_Defense_Tower:
-		case TileType.Landmark_Windmill:
-		case TileType.Right:
-			return TileType.Right;
-			
-		default:
-			Debug.LogWarning ("getTileSubType : unhandled tile type: " + type );
-			return TileType.None;
-		}
-	}*/
-
-	/*private void addRoadSegmentEndTile( TileType endTileType, SegmentTheme theme )
-	{
-		switch (endTileType)
-		{
-			
-		case TileType.Landmark_Windmill:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation2(theme);
-			addTileData(TileType.Landmark_Windmill, theme);
-			addTileData(TileType.Left, theme);
-			addTileData(TileType.Straight, theme);
-			break;
-			
-		case TileType.Landmark_Defense_Tower:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation2(theme);
-			addTileData(TileType.Landmark_Defense_Tower, theme );
-			addTileData(TileType.Left, theme);
-			addTileData(TileType.Straight, theme);
-			break;
-			
-		case TileType.Landmark_Broken_Bridge:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation2(theme);
-			addTileData(TileType.Landmark_Broken_Bridge, theme );
-			break;
-
-		case TileType.Landmark_Tomb_Start:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation2(theme);
-			addTileData(TileType.Landmark_Tomb_Start, theme );
-			break;
-
-		case TileType.Landmark_Zipline:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation2(theme);
-			addTileData(TileType.Landmark_Zipline, theme );
-			addTileData(TileType.Left, theme);
-			break;
-
-		case TileType.Landmark_Cemetery_Coach:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation2(theme);
-			addTileData( TileType.Landmark_Cemetery_Coach, theme );
-			break;
-			
-		default:
-			addTileData(endTileType, theme);
-			break;
-		}
-	}*/
-
-	/*
-	//Add tiles such as to garanty that the tile added after these will have a zero Y rotation.
-	private void ensureTileHasZeroRotation2( SegmentTheme theme)
-	{
-		float yRot = Mathf.Floor( previousTileRot.eulerAngles.y );
-		switch (previousTileType)
-		{
-		case TileSubType.Left:
-			if( yRot == 0 )
-			{
-				addTileData(TileType.Right, theme);
-			}
-			return;
-			
-		case TileSubType.Right:
-			if( yRot == 0 )
-			{
-				addTileData(TileType.Left, theme);
-			}
-			return;
-			
-		case TileSubType.Straight:
-			if( yRot == 270f || yRot == -90f )
-			{
-				addTileData(TileType.Right, theme);
-			}
-			else if( yRot == -270f || yRot == 90f )
-			{
-				addTileData(TileType.Left, theme);
-			}
-			return;
-		}
-	}*/
-
-	/*private void addRandomTJunction2( TileType tJunctionTileType, SegmentTheme theme )
-	{
-		//We want the T-Junction tile to have a 0 degree rotation.
-		ensureTileHasZeroRotation2( theme );
-		//Adding T-Junction
-		//The additional left and right tiles that are associated with a T-Junction
-		//will be added at runtime.
-		addTileData(tJunctionTileType, theme);
-	}*/
-
-	/*public class TileData
-	{
-		public TileType tileType = TileType.None;
-		public SegmentTheme tileTheme;
-	}*/
-
 	//Add tiles such as to garanty that the tile added after these will have a zero Y rotation.
 	private void ensureTileHasZeroRotation()
 	{
@@ -1086,341 +572,6 @@ public class GenerateLevel  : MonoBehaviour {
 			return;
 		}
 	}
-
-	/*private void addSegmentTile()
-	{
-		float previousRotY = Mathf.Floor( previousTileRot.eulerAngles.y );
-
-		//Straight section
-		if( Random.value < 0.55f )
-		{
-			float rdLog = Random.value;
-			if( rdLog < 0.1f )
-			{
-				//Add a straight slope
-				addTile ( TileType.Straight_Slope );
-			}
-			else if( rdLog < 0.25f )
-			{
-				//Add a straight tile with a log obstacle in the middle
-				addTile ( TileType.Straight_Log );
-			}
-			else if( rdLog  < 0.45f )
-			{
-				//Add a river straight tile, but only if the preceding was a straight tile
-				//or else you can see half of the waterfall rock through the trees and it does not look nice.
-				//Also, we do not want two back-to-back rivers.
-				if ( previousTileType == TileType.Straight || previousTileType == TileType.Straight_Log )
-				{
-					//We have two types of rivers: stone crossing and broken bridge.
-					if( Random.value <= 0.5f )
-					{
-						addTile ( TileType.Straight_River );
-					}
-					else
-					{
-						if( currentThemePath == "Level/Tiles/Forest/" || currentThemePath == "Level/Tiles/Hell/" || currentThemePath == "Level/Tiles/Fairyland/" || currentThemePath == "Level/Tiles/Blizzard/")
-						{
-							if( Random.value <= 0.4f )
-							{
-								addTile ( TileType.Straight_River_Crossing );
-							}
-							else
-							{
-								addTile ( TileType.Straight_River_Log_Crossing );
-							}
-						}
-						else
-						{
-							addTile ( TileType.Straight_River_Crossing );
-						}
-					}
-				}
-				else
-				{
-					//Add a normal straight tile
-					addTile ( TileType.Straight );
-				}
-			}
-			else if( rdLog < 0.7f )
-			{
-				//Add a normal straight tile
-				addTile ( TileType.Straight );
-			}
-			else if( rdLog < 0.9f ) //normal value is 0.9f
-			{
-				//Add a double length straight tile
-				if ( previousTileType == TileType.Straight_Double )
-				{
-					//Add a normal straight tile. We don't want two of them back to back
-					addTile ( TileType.Straight );
-				}
-				else
-				{
-					//Add a double length straight tile
-					addTile ( TileType.Straight_Double );
-				}
-			}
-			else
-			{
-				//Add a T-junction
-				addRandomTJunction( TileType.T_Junction );
-			}
-		}
-		else
-		{
-			//Turn section
-			if( previousTileType == TileType.Straight )
-			{
-				if( previousRotY == 0 )
-				{
-					if( Random.value <= 0.5f )
-					{
-						addTile ( TileType.Left );
-					}
-					else
-					{
-						addTile ( TileType.Right );					
-					}
-				}
-				else if( previousRotY == 270f || previousRotY == -90f )
-				{
-					addTile ( TileType.Right );
-				}
-				else
-				{
-					addTile ( TileType.Left );
-				}
-
-			}
-			else if( previousTileType == TileType.Left )
-			{
-				if( previousRotY == 0 )
-				{
-					addTile ( TileType.Right );					
-				}
-				else if( previousRotY == 270f || previousRotY == -90f )
-				{
-					Debug.LogWarning("GenerateLevel-addSegmentTile: invalid angle.");
-				}
-				else
-				{
-					if(  Random.value <= 0.5f )
-					{
-						addTile ( TileType.Left );
-					}
-					else
-					{
-						addTile ( TileType.Right );					
-					}
-
-				}
-			}
-			else if( previousTileType == TileType.Right )
-			{
-				if( previousRotY == 0 )
-				{
-					addTile ( TileType.Left );					
-				}
-				else if( previousRotY == 270f || previousRotY == -90f )
-				{
-					if( Random.value <= 0.5f )
-					{
-						addTile ( TileType.Left );
-					}
-					else
-					{
-						addTile ( TileType.Right );					
-					}
-				}
-				else
-				{
-					Debug.LogWarning("GenerateLevel-addSegmentTile: invalid angle.");
-
-				}
-			}
-		}
-	}*/
-
-	/*private TileType getSegmentTile( SegmentTheme tileCreationTheme )
-	{
-		float previousRotY = Mathf.Floor( previousTileRot.eulerAngles.y );
-		//Debug.Log("GenerateLevel-getSegmentTile: previous angle: " + previousRotY );
-
-		//Straight section
-		if( Random.value < 0.7f )
-		{
-			float rdLog = Random.value;
-			if( rdLog < 0.1f )
-			{
-				//Add a straight slope
-				return TileType.Straight_Slope;
-			}
-			else if( rdLog < 0.25f )
-			{
-				//Add a straight tile with a log obstacle in the middle
-				return TileType.Straight_Log;
-			}
-			else if( rdLog  < 0.45f )
-			{
-				//Add a river straight tile, but only if the preceding was a straight tile
-				//or else you can see half of the waterfall rock through the trees and it does not look nice.
-				//Also, we do not want two back-to-back rivers.
-				if ( previousTileType == TileType.Straight || previousTileType == TileType.Straight_Log )
-				{
-					//We have two types of rivers: stone crossing and broken bridge.
-					if( Random.value <= 0.5f )
-					{
-						return TileType.Straight_River;
-					}
-					else
-					{
-						if( tileCreationTheme == SegmentTheme.Forest || currentThemePath == "Level/Tiles/Fairyland/")
-						{
-							if( Random.value <= 0.2f )
-							{
-								return TileType.Straight_River_Crossing;
-							}
-							else
-							{
-								return TileType.Straight_River_Log_Crossing;
-							}
-						}
-						else
-						{
-							return TileType.Straight_River_Crossing;
-						}
-					}
-				}
-				else
-				{
-					//Add a normal straight tile
-					return TileType.Straight;
-				}
-			}
-			else if( rdLog < 0.7f )
-			{
-				//Add a normal straight tile
-				return TileType.Straight;
-			}
-			else if( rdLog < 2 ) //normal value is 0.9f
-			{
-				//Add a double length straight
-				if ( previousTileType == TileType.Straight_Double )
-				{
-					//Add a normal straight tile. We don't want two of them back to back
-					return TileType.Straight;
-				}
-				else
-				{
-					if( tileCreationTheme == SegmentTheme.Forest )
-					{
-						//Add a double length straight tile
-						return TileType.Straight_Double;
-					}
-					else if( tileCreationTheme == SegmentTheme.Cemetery )
-					{
-						if( Random.value < 0.5f )
-						{
-							//Add a double length straight tile
-							return TileType.Straight_Double;
-						}
-						else
-						{
-							//Add a double length evil tree tile
-							return TileType.Landmark_Evil_Tree;
-						}
-					}
-					else
-					{
-						//Add a double length straight tile
-						return TileType.Straight_Double;
-					}
-				}
-			}
-			else
-			{
-				//Add a T-junction
-				addRandomTJunction2(TileType.T_Junction, tileCreationTheme);
-				return TileType.None;
-			}
-		}
-		else
-		{
-			//Turn section
-			if( previousTileType == TileType.Straight )
-			{
-				if( previousRotY == 0 )
-				{
-					if( Random.value <= 0.5f )
-					{
-						return TileType.Left;
-					}
-					else
-					{
-						return TileType.Right;					
-					}
-				}
-				else if( previousRotY == 270f || previousRotY == -90f )
-				{
-					return TileType.Right;
-				}
-				else
-				{
-					return TileType.Left;
-				}
-				
-			}
-			else if( previousTileType == TileType.Left )
-			{
-				if( previousRotY == 0 )
-				{
-					return TileType.Right;					
-				}
-				else if( previousRotY == 270f || previousRotY == -90f )
-				{
-					//Debug.LogWarning("GenerateLevel-getSegmentTile: invalid angle: " + previousRotY + " previous tile was " + previousTileType );
-				}
-				else
-				{
-					if(  Random.value <= 0.5f )
-					{
-						return TileType.Left;
-					}
-					else
-					{
-						return TileType.Right;					
-					}
-					
-				}
-			}
-			else if( previousTileType == TileType.Right )
-			{
-				if( previousRotY == 0 )
-				{
-					return TileType.Left;					
-				}
-				else if( previousRotY == 270f || previousRotY == -90f )
-				{
-					if( Random.value <= 0.5f )
-					{
-						return TileType.Left;
-					}
-					else
-					{
-						return TileType.Right;					
-					}
-				}
-				else
-				{
-					//Debug.LogWarning("GenerateLevel-getSegmentTile: invalid angle: " + previousRotY + " previous tile was " + previousTileType );
-					
-				}
-			}
-		}
-
-		return TileType.Straight;					
-	}*/
 
 	private void addRandomTJunction( TileType tileType )
 	{
@@ -1486,9 +637,8 @@ public class GenerateLevel  : MonoBehaviour {
 		}
 		return null;
 	}
-	
 
-	void newtileEntranceCrossedEndless()
+	void addTileInEndlessMode()
 	{
 		if( endlessTileList.Count > 0 )
 		{
@@ -1509,7 +659,6 @@ public class GenerateLevel  : MonoBehaviour {
 			addTileNew( endlessTileList.Dequeue() );
 		}
 	}
-
 
 	public void tileEntranceCrossed( Transform currentTile )
 	{
@@ -1541,31 +690,8 @@ public class GenerateLevel  : MonoBehaviour {
 					recycledTiles.Add( tileToRecycle );
 				}
 				//Add a tile at the end
-		//addTileInEndlessMode();
-				newtileEntranceCrossedEndless();
+				addTileInEndlessMode();
 			}
-		}
-		else
-		{
-/*
-			//We are not in endless mode.
-			//Add a tile from the next level if any
-			if( levelTileList.Count > 0 )
-			{
-				TileData td = levelTileList.Dequeue();
-				setCurrentTheme( td.tileTheme );
-				//Debug.LogWarning("tileEntranceCrossed: Adding next level tile of type: " + td.tileType + " theme: " + td.tileTheme );
-				if( td.tileType == TileType.T_Junction )
-				{
-					//Because T-Junction construction changes the previous position and rotation values, we cannot do it during the prepareTileList phase.
-					addRandomTJunction( td.tileType );
-				}
-				else
-				{
-					addTile( td.tileType );
-				}
-			}
-	*/
 		}
 
 		//Center the surrounding plane around the current tile
@@ -1676,41 +802,13 @@ public class GenerateLevel  : MonoBehaviour {
 
 	private void onTileActivation( int index )
 	{
-		//If the tile we just activated has a T-Junction or Landmark_Cemetery type
+		//If the tile we just activated is a T-Junction
 		//also enable the first tile on it's right side which has an index of + 5 compared to the T-Junction tile itself.
 		SegmentInfo si = getSegmentInfo(worldRoadSegments[index]);
 		if( si.tileType == TileType.T_Junction )
 		{
 			int firstTileToTheRight = index + 5;
 			if( firstTileToTheRight < worldRoadSegments.Count ) worldRoadSegments[firstTileToTheRight].SetActive(true);
-		}
-		if( GameManager.Instance.getGameMode() == GameMode.Story )
-		{
-			/*if( si.isCheckpoint )
-			{
-				//If the next level is an episode, we do not need to prepare tiles for it.
-				//Preparing new level tiles will cause a brief performance hit.
-				//If the next level is an episode, this means the player will return to the map before accessing it anyway.
-				if( ( seamlessLevelIndex + 1 ) < LevelManager.Instance.getNumberOfLevels() )
-				{
-					if( LevelManager.Instance.getLevelInfo( seamlessLevelIndex + 1 ).levelType != LevelType.Episode )
-					{
-						seamlessLevelIndex++;
-						if( seamlessLevelIndex < LevelManager.Instance.getNumberOfLevels() )
-						{
-							//prepareTileList( seamlessLevelIndex );
-						}
-						else
-						{
-							Debug.LogWarning("Player is reaching end of the game.");
-						}
-					}
-					else
-					{
-						Debug.LogWarning("GenerateLevel - onTileActivation: not preparing tile list for level," + (seamlessLevelIndex + 1) + ", because it is an episode level." );
-					}
-				}
-			}*/
 		}
 	}
 
