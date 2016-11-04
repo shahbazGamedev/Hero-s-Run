@@ -32,7 +32,22 @@ public enum TileGroupType {
 
 	Fairyland_Start = 300,
 	Fairyland_End = 301,
-	Fairyland_Obstacles_1 = 302,
+	Fairyland_Obstacles_1 = 302, 		//straight_log, straight_river, straight, straight_river_crossing
+	Fairyland_Obstacles_2 = 303,		//straight_river_crossing, straight_slope, straight, Fairyland_Mushroom_Jump, straight_log
+	Fairyland_Checkpoint = 304,
+	Fairyland_Fairy_Message = 305,
+	Fairyland_T_Junction = 306,
+	Fairyland_Turns = 307,
+	Fairyland_Nice_And_Easy = 308,		//straight, left, straight, right
+	Fairyland_Roasting_Pig = 312,
+	Fairyland_T_Junction_2 = 315,		//T_Junction with stained glass floor
+	Fairyland_Pushed_Barrels = 316,
+	Fairyland_Goblin_Loot = 317,		//contains a treasure key
+	Fairyland_Magic_Bridge = 318,
+	Fairyland_Treasure_Key = 319,
+	Fairyland_Enemies_1 = 320,			//Fairyland_Goblin_Jump, straight_double
+	Fairyland_Enemies_2 = 321,			//straight_double, left, right
+	Fairyland_Tomb_Sequence = 322,		//Landmark_Tomb_Start, Landmark_Tomb_Start_2, 7x Tomb_Double, Tomb_End
 
 	Cemetery_Start = 400,
 	Cemetery_End = 401,

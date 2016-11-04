@@ -27,6 +27,7 @@ public enum TileType {
 	Landmark_Windmill = 8,
 	Landmark_Defense_Tower = 9,
 	Landmark_Clocktower = 13,
+	T_Junction_2 = 14,
 	T_Junction = 15,
 	Straight_River_Crossing = 16,
 	Straight_Slope = 17,
@@ -48,7 +49,6 @@ public enum TileType {
 	Landmark_Magic_Bridge = 36,
 	Landmark_Tomb_Start = 37,
 	Landmark_Tomb_Double = 38,
-	Start_Fairyland = 39,
 	Landmark_Tomb_Start_2 = 40,
 	Landmark_Tomb_End = 41,
 	Landmark_Cemetery_Coach = 42,
@@ -68,7 +68,11 @@ public enum TileType {
 	Landmark_Collapsing_Bridge = 58,
 	Landmark_Goblin_Loot = 59,
 	Jungle_Start = 60,
-	Landmark_Zipline = 61
+	Landmark_Zipline = 61,
+	Fairyland_Mushroom_Jump = 62,
+	Fairyland_Goblin_Jump = 63,
+	Fairyland_Pushed_Barrels = 64,
+	Fairyland_Roasting_Pig = 65
 
 }
 
@@ -510,6 +514,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			break;
 
 		case TileType.T_Junction:
+		case TileType.T_Junction_2:
 			addRandomTJunction(tileType);
 			break;
 
@@ -785,7 +790,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		//If the tile we just activated is a T-Junction
 		//also enable the first tile on it's right side which has an index of + 5 compared to the T-Junction tile itself.
 		SegmentInfo si = getSegmentInfo(worldRoadSegments[index]);
-		if( si.tileType == TileType.T_Junction )
+		if( si.tileSubType == TileSubType.T_Junction )
 		{
 			int firstTileToTheRight = index + 5;
 			if( firstTileToTheRight < worldRoadSegments.Count ) worldRoadSegments[firstTileToTheRight].SetActive(true);
