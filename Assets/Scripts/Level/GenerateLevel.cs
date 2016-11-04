@@ -133,6 +133,8 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		Handheld.StopActivityIndicator();
 
 		levelData = LevelManager.Instance.getLevelData();
+
+		createLevel ();
 	}
 
 	private void loadTilePrefabs( SegmentTheme theme )
@@ -161,11 +163,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 	}
 
-	void Start ()
-	{
-		createLevel ();
-	}
-	
 	private void createLevel ()
 	{
 		//Reset values
@@ -487,23 +484,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	{
         switch (tileType)
 		{
-		
-		case TileType.Landmark_Windmill:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation();
-			addTile( TileType.Landmark_Windmill );
-			addTile( TileType.Left );		
-			addTile( TileType.Straight );		
-            break;
-
-		case TileType.Landmark_Defense_Tower:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation();
-			addTile( TileType.Landmark_Defense_Tower );
-			addTile( TileType.Left );		
-			addTile( TileType.Straight );		
-			break;
-
 		case TileType.Landmark_Broken_Bridge:
 			//We want the Landmark tile to have a 0 degree rotation.
 			ensureTileHasZeroRotation();
