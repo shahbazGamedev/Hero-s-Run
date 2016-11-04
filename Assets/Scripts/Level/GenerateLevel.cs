@@ -237,11 +237,9 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			if( tg.frequency != TileGroup.FrequencyType.Never && (tg.validGameMode == ValidGameMode.Any || tg.validGameMode == ValidGameMode.Story) )
 			{
 				setCurrentTheme(tg.theme );
-				Debug.LogWarning("TILE GROUP " +  tg.tileGroupType.ToString() );
 				List<TileType> individualTiles = tg.tileList;
 				for( int j=0; j < individualTiles.Count; j++ )
 				{
-					Debug.Log("STORY TILE  " + individualTiles[j].ToString() );
 					addTileNew( individualTiles[j] );
 				}
 			}
@@ -256,11 +254,9 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		{
 			setCurrentTheme(tg.theme );
 
-			Debug.LogWarning("TILE GROUP " +  tg.tileGroupType.ToString() );
 			List<TileType> individualTiles = tg.tileList;
 			for( int j=0; j < individualTiles.Count; j++ )
 			{
-				Debug.Log("TILE  " + individualTiles[j].ToString() );
 				addTileNew( individualTiles[j] );
 			}
 		}
