@@ -78,8 +78,9 @@ public enum TileType {
 	Jungle_Valley_2 = 69,
 	Jungle_Valley_End = 72,
 	Jungle_Vortex = 73,
-	Jungle_Enemy = 74
-
+	Jungle_Enemy = 74,
+	Mines_Torch = 75,
+	Mines_Giant_Crystal = 76
 }
 
 public enum TileSubType {
