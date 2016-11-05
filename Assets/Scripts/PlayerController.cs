@@ -2214,7 +2214,7 @@ public sealed class PlayerController : BaseClass {
 	void handleCreatureCollision( ControllerColliderHit hit, ICreature creature )
 	{
 		//Ignore collision event if the creature is already dead.
-		if( creature.getCreatureState() != CreatureState.Dying )
+		if( creature != null && creature.getCreatureState() != CreatureState.Dying )
 		{
 			if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding ) || PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
 			{

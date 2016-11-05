@@ -67,12 +67,18 @@ public enum TileType {
 	Landmark_Treasure_Key = 57,
 	Landmark_Collapsing_Bridge = 58,
 	Landmark_Goblin_Loot = 59,
-	Jungle_Start = 60,
 	Landmark_Zipline = 61,
 	Fairyland_Mushroom_Jump = 62,
 	Fairyland_Goblin_Jump = 63,
 	Fairyland_Pushed_Barrels = 64,
-	Fairyland_Roasting_Pig = 65
+	Fairyland_Roasting_Pig = 65,
+	Jungle_Pyramid = 66,
+	Jungle_Valley_Start = 67,
+	Jungle_Valley_1 = 68,
+	Jungle_Valley_2 = 69,
+	Jungle_Valley_End = 72,
+	Jungle_Vortex = 73,
+	Jungle_Enemy = 74
 
 }
 

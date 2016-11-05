@@ -72,7 +72,22 @@ public enum TileGroupType {
 
 	Jungle_Start = 500,
 	Jungle_End = 501,
-	Jungle_Obstacles_1 = 502,
+	Jungle_Obstacles_1 = 502,				//straight_log, straight_river
+	Jungle_Obstacles_2 = 503,				//straight_slope, left, right, straight_river_crossing
+	Jungle_Obstacles_3 = 504,				//straight_slope
+	Jungle_Obstacles_4 = 505,				//straight_river
+	Jungle_Checkpoint = 506,
+	Jungle_Fairy_Message = 507,
+	Jungle_T_Junction = 508,
+	Jungle_Turns_1 = 509,
+	Jungle_Turns_2 = 510,
+	Jungle_Nice_And_Easy = 511,
+	Jungle_Zipline = 512,					//zipline, left, straight_slope, right
+	Jungle_Treasure_Key = 513,
+	Jungle_Enemies_1 = 514,					//Jungle_Enemy, straight_double
+	Jungle_Enemies_2 = 515,					//Jungle_Enemy	
+	Jungle_Pyramid_Sequence = 516,			//Jungle_Pyramid, straight, Jungle_Vortex, Jungle_Enemy
+	Jungle_Valley = 517,					//Jungle_Valley_Start, Jungle_Valley_1, Jungle_Valley_2, Jungle_Valley_End
 
 	Mines_Start = 600,
 	Mines_End = 601,
