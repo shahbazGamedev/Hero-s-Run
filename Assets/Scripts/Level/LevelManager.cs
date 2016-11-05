@@ -24,6 +24,9 @@ public class LevelManager {
 	private int currentEpisode = 0;
 	private bool episodeCompleted = false;
 	private bool enableTorches = true;
+	//onlyUseUniqueTiles is only used for testing. This value is not saved. When enabled, only tile groups with a Frequency of Unique will appear
+	//in the level while in Story mode. This allows you to have shorter episodes with only the essential tile groups, typically, Start, any scripted sequence, and End.
+	bool onlyUseUniqueTiles = false;
 
 	public static LevelManager Instance
 	{
@@ -217,6 +220,16 @@ public class LevelManager {
 	public bool getEnableTorches()
 	{
 		return enableTorches;
+	}
+
+	public void setOnlyUseUniqueTiles( bool value )
+	{
+		onlyUseUniqueTiles = value;
+	}
+
+	public bool getOnlyUseUniqueTiles()
+	{
+		return onlyUseUniqueTiles;
 	}
 
 }

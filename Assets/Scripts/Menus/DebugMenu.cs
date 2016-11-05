@@ -14,9 +14,9 @@ public class DebugMenu : MonoBehaviour {
 	public Text lifetimeStars;
 	public Text ownsStarDoubler;
 	public Text toggleShowDebugInfoText;
-	public Text toggleAccessToNormalLevelsText;
 	public Text deathPerEpisodeText;
 	public Text facebookName;
+	public Text toggleOnlyUseUniqueTilesText;
 
 	// Use this for initialization
 	void Start () {
@@ -34,6 +34,14 @@ public class DebugMenu : MonoBehaviour {
 		else
 		{
 			toggleShowDebugInfoText.text = "Show Debug Info: Off";
+		}
+		if( LevelManager.Instance.getOnlyUseUniqueTiles() )
+		{
+			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: On";
+		}
+		else
+		{
+			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: Off";
 		}
 
 		updatePlayerStats();
@@ -102,6 +110,21 @@ public class DebugMenu : MonoBehaviour {
 			toggleShowDebugInfoText.text = "Show Debug Info: Off";
 		}
 		PlayerStatsManager.Instance.savePlayerStats();
+	}
+
+	public void toggleOnlyUseUniqueTiles()
+	{
+		Debug.Log("toggleOnlyUseUniqueTiles");
+		SoundManager.soundManager.playButtonClick();
+		LevelManager.Instance.setOnlyUseUniqueTiles( !LevelManager.Instance.getOnlyUseUniqueTiles() );
+		if( LevelManager.Instance.getOnlyUseUniqueTiles() )
+		{
+			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: On";
+		}
+		else
+		{
+			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: Off";
+		}
 	}
 
 	public void unlockAllLevels()
