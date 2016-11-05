@@ -51,7 +51,24 @@ public enum TileGroupType {
 
 	Cemetery_Start = 400,
 	Cemetery_End = 401,
-	Cemetery_Obstacles_1 = 402,
+	Cemetery_Checkpoint = 404,
+	Cemetery_Fairy_Message = 405,
+	Cemetery_T_Junction = 406,
+	Cemetery_Turns_1 = 407,
+	Cemetery_Turns_2 = 408,
+	Cemetery_Small_Stairs = 409,
+	Cemetery_River = 410,
+	Cemetery_River_Crossing = 411,
+	Cemetery_Zombie_Next_To_Coach = 412,
+	Cemetery_Zombie_Driving_Coach = 413,
+	Cemetery_Clocktower = 414,
+	Cemetery_Evil_Tree = 415,
+	Cemetery_Gargoyle_Shooting_Flames = 416,	//straight_log
+	Cemetery_Ghost = 418,
+	Cemetery_Thorns = 419,						//Landmark_Graveyard_7
+	Cemetery_Enemies_1 = 420,					//straight_double
+	Cemetery_Nice_And_Easy = 421,				
+	Cemetery_Graveyard_Sequence = 422,
 
 	Jungle_Start = 500,
 	Jungle_End = 501,

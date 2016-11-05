@@ -484,39 +484,13 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	{
         switch (tileType)
 		{
-		case TileType.Landmark_Broken_Bridge:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation();
-			addTile( TileType.Landmark_Broken_Bridge );
-			break;
-
-		case TileType.Landmark_Tomb_Start:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation();
-			addTile( TileType.Landmark_Tomb_Start );
-			break;
-
-		case TileType.Landmark_Zipline:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation();
-			addTile( TileType.Landmark_Zipline );
-			addTile( TileType.Left );		
-			break;
-
-		case TileType.Landmark_Cemetery_Coach:
-			//We want the Landmark tile to have a 0 degree rotation.
-			ensureTileHasZeroRotation();
-			addTile( TileType.Landmark_Cemetery_Coach );
-			break;
-
-		case TileType.T_Junction:
-		case TileType.T_Junction_2:
-			addRandomTJunction(tileType);
-			break;
-
-		default:
-			addTile( tileType );
-			break;
+			case TileType.T_Junction:
+			case TileType.T_Junction_2:
+				addRandomTJunction(tileType);
+				break;
+			default:
+				addTile( tileType );
+				break;
 		}
 	}
 
