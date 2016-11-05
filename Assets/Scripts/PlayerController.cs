@@ -273,7 +273,7 @@ public sealed class PlayerController : BaseClass {
 	public GameObject Hero_Prefab;
 	public GameObject Heroine_Prefab;
 
-	bool inZiplineTrigger;
+	bool isInZiplineTrigger;
 	Transform ziplineAttachPoint;
 
 	void Awake()
@@ -845,7 +845,7 @@ public sealed class PlayerController : BaseClass {
 			else
 			{
 				//player swiped UP
-				if( inZiplineTrigger )
+				if( isInZiplineTrigger && _characterState != CharacterState.Ziplining )
 				{
 					attachToZipline();
 				}
@@ -1119,7 +1119,7 @@ public sealed class PlayerController : BaseClass {
 		}
 		else if ( Input.GetKeyDown (KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.Space)  ) 
 		{
-			if( inZiplineTrigger )
+			if( isInZiplineTrigger && _characterState != CharacterState.Ziplining )
 			{
 				attachToZipline();
 			}
@@ -1270,6 +1270,8 @@ public sealed class PlayerController : BaseClass {
 			enablePlayerControl( false );
 			anim.SetTrigger(Idle_LookTrigger);
 			ziplineAttachPoint = transform.FindChild("Zipline Attach Point");
+			ziplineAttachPoint.localPosition = new Vector3( 0, 2.15f, 0 );
+			ziplineAttachPoint.localEulerAngles = new Vector3( 0, 0, 0 );
 			ziplineAttachPoint.GetComponent<AudioSource>().Play();
 			ziplineAttachPoint.SetParent(null);
 			transform.SetParent( ziplineAttachPoint );
@@ -1284,14 +1286,14 @@ public sealed class PlayerController : BaseClass {
 
 	void detachFromZipline()
 	{
-		inZiplineTrigger = false;
 		LeanTween.cancel( gameObject );
 		transform.SetParent( null );
-		ziplineAttachPoint.SetParent( transform );
+		ziplineAttachPoint.SetParent( transform, false );
+		ziplineAttachPoint.localScale = new Vector3( 1f, 1f, 1f ); 	//Just because of rounding when changing parent
 		ziplineAttachPoint.GetComponent<AudioSource>().Stop();
 		enablePlayerControl( true );
 		sc.reactivateMaincamera();
-		transform.eulerAngles = new Vector3(0,270f,0);
+		transform.eulerAngles = new Vector3(0,270f,0); //we turned left while ziplining
 		fall();
 	}
 
@@ -2398,7 +2400,7 @@ public sealed class PlayerController : BaseClass {
 			{
 				powerUpManager.deactivatePowerUp(PowerUpType.SpeedBoost, true );
 			}
-			inZiplineTrigger = true;
+			isInZiplineTrigger = true;
 		}
  		else if( other.name == "DetachZiplineTrigger" )
 		{
@@ -2531,8 +2533,11 @@ public sealed class PlayerController : BaseClass {
 					powerUpManager.deactivatePowerUp( PowerUpType.Shield, false );
 				}
 			}
-			
-			//Debug.Log ("OnTriggerExit " + other.name);
+			else if( other.name == "ZiplineTrigger" )
+			{
+				//Player is no longer in the zipline trigger
+				isInZiplineTrigger = false;
+			}
 		}
 	}
 
