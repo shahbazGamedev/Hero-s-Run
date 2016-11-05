@@ -90,7 +90,7 @@ public class TrapCullisGateController : MonoBehaviour {
 		player.GetComponent<SimpleCamera>().lockCamera( true );
 		player.GetComponent<PlayerController>().anim.speed = 3.8f;
 		player.GetComponent<PlayerController>().anim.CrossFadeInFixedTime("Fall", 0.25f);
-		LeanTween.moveLocalY( player, transform.position.y - 4f, 5f ).setEase(LeanTweenType.easeOutExpo);
+		LeanTween.moveY( player, transform.position.y - 4f, 5f ).setEase(LeanTweenType.easeOutExpo);
 		Invoke("quit", 5.5f );
 	}
 

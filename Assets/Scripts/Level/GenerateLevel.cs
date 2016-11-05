@@ -137,6 +137,10 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	List<GameObject> recycledTiles = new List<GameObject>(50);
 	Queue<TileType> endlessTileList = new Queue<TileType>();
 
+	//Cheat for testing - the level will only contain Story tiles that have the Unique frequency like Start, Sequences and End.
+	//This allows you to test the game flow a lot faster.
+	public bool onlyUniqueTiles = true;
+
 	void Awake ()
 	{
 		//The activity indicator may have been started
@@ -240,6 +244,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		for( int i=0; i < tileGroupList.Count; i++ )
 		{
 			TileGroup tg = tileGroupManager.getTileGroup(tileGroupList[i]);
+			if( onlyUniqueTiles && tg.frequency != TileGroup.FrequencyType.Unique ) continue;
 			if( tg.frequency != TileGroup.FrequencyType.Never && (tg.validGameMode == ValidGameMode.Any || tg.validGameMode == ValidGameMode.Story) )
 			{
 				setCurrentTheme(tg.theme );
