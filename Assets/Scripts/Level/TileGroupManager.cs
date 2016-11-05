@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class TileGroupManager : MonoBehaviour {
 
@@ -14,6 +15,12 @@ public class TileGroupManager : MonoBehaviour {
 	void Awake ()
 	{
 		fillDictionary();
+	}
+
+	public void sortTileGroups()
+	{
+		Debug.Log("sortTileGroups");
+		tileGroupList.Sort((x, y) => x.tileGroupType.CompareTo(y.tileGroupType));
 	}
 
 	void fillDictionary()
