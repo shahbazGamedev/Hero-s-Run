@@ -19,7 +19,7 @@ public class LevelManager {
 	private int highestEpisodeCompleted = 0;
 	private bool episodeHasChanged = false;
 	private bool playerFinishedTheGame = false;
-	//private int levelNumberOflastCheckpoint = 0; //Either the first level of the current theme OR the level of the last checkpoint
+	private int numberOfCheckpointsPassed = 0; //Number of checkpoints passed for the current episode
  	private int score = 0; //currently is equal to the number of stars you picked up while running for a single episode
 	private int currentEpisode = 0;
 	private bool episodeCompleted = false;
@@ -58,17 +58,23 @@ public class LevelManager {
 		return nextEpisodeToComplete;
 	}
 
-	/*public void setLevelNumberOfLastCheckpoint( int previousCheckpoint )
+	public void incrementNumberOfCheckpointsPassed()
 	{
-		levelNumberOflastCheckpoint = previousCheckpoint;
-		Debug.Log ("LevelManager-setLevelNumberOflastCheckpoint: " + levelNumberOflastCheckpoint );
+		numberOfCheckpointsPassed++;
+		Debug.Log ("LevelManager-incrementNumberOfCheckpointsPassed: " + numberOfCheckpointsPassed );
 	}
 
-	public int getLevelNumberOfLastCheckpoint()
+	public int getNumberOfCheckpointsPassed()
 	{
-		Debug.Log ("LevelManager-getLevelNumberOfLastCheckpoint: " + levelNumberOflastCheckpoint );
-		return levelNumberOflastCheckpoint;
-	}*/
+		Debug.Log ("LevelManager-getNumberOfCheckpointsPassed: " + numberOfCheckpointsPassed );
+		return numberOfCheckpointsPassed;
+	}
+
+	public void resetNumberOfCheckpointsPassed()
+	{
+		Debug.Log ("LevelManager-resetNumberOfCheckpointsPassed " );
+		numberOfCheckpointsPassed = 0;
+	}
 
 	//Called by EpisodePopup to access any episode directly
 	public void forceNextEpisodeToComplete( int episodeToComplete )
@@ -97,8 +103,7 @@ public class LevelManager {
 		highestEpisodeCompleted = levelData.episodeList.Count -1;
 	}
 
-	//Called when the cullis gate activation is complete or 
-	//when a level checkpoint is triggered.
+	//Called when the cullis gate activation is complete.
 	//Returns true if the final level has been completed (and therefore the game is finished) and false otherwise.
 	public bool incrementNextEpisodeToComplete()
 	{

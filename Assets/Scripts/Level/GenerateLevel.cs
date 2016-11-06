@@ -243,9 +243,13 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 	private void generateStoryLevel( List<TileGroupType> tileGroupList )
 	{
+		int numbersOfCheckpointsPassed = LevelManager.Instance.getNumberOfCheckpointsPassed();
+		int episodeCheckpointIndex = 0;
 		for( int i=0; i < tileGroupList.Count; i++ )
 		{
 			TileGroup tg = tileGroupManager.getTileGroup(tileGroupList[i]);
+			if( isTileGroupACheckpoint( tg ) ) episodeCheckpointIndex++;
+			if( numbersOfCheckpointsPassed > episodeCheckpointIndex ) continue; //we want to restart at the last passed checkpoint, not from the Start tile
 			if( LevelManager.Instance.getOnlyUseUniqueTiles() && tg.frequency != TileGroup.FrequencyType.Unique ) continue;
 			if( tg.frequency != TileGroup.FrequencyType.Never && (tg.validGameMode == ValidGameMode.Any || tg.validGameMode == ValidGameMode.Story) )
 			{
@@ -256,6 +260,19 @@ public sealed class GenerateLevel  : MonoBehaviour {
 					addTileNew( individualTiles[j] );
 				}
 			}
+		}
+	}
+
+	private bool isTileGroupACheckpoint( TileGroup tg )
+	{
+		if( tg.tileGroupType == TileGroupType.Blizzard_Checkpoint || tg.tileGroupType == TileGroupType.Cemetery_Checkpoint
+			|| tg.tileGroupType == TileGroupType.Fairyland_Checkpoint || tg.tileGroupType == TileGroupType.Jungle_Checkpoint
+			|| tg.tileGroupType == TileGroupType.Mines_Checkpoint || tg.tileGroupType == TileGroupType.Tanglewood_Checkpoint )
+		{
+			return true;
+		}
+		{
+			return false;
 		}
 	}
 

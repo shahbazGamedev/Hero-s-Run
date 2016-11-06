@@ -114,7 +114,7 @@ public sealed class PlayerController : BaseClass {
 	bool playerMovementEnabled = true;
 	public float jumpSpeed = 8.8f;
 	public float doubleJumpSpeed = 12.4f;
-	public float slopeJumpSpeed = 15f;
+	public float slopeJumpSpeed = 14f;
 	public float sideMoveSpeed = 6f; 
 	//when a new level starts or if the player dies and he is revived, he will
 	//start running at runStartSpeed.
