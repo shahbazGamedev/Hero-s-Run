@@ -84,7 +84,7 @@ public class HUDSaveMe : MonoBehaviour {
 		}
 		else
 		{
-			if( ( GameManager.Instance.getGameMode() == GameMode.Story ) && PlayerStatsManager.Instance.getNumberDeathLeadingToEpisode( LevelManager.Instance.getNextEpisodeToComplete() + 1 ) > GameManager.MAX_NUMBER_OF_ATTEMPTS )
+			if( ( GameManager.Instance.getGameMode() == GameMode.Story ) && PlayerStatsManager.Instance.getNumberDeathLeadingToEpisode( LevelManager.Instance.getNextEpisodeToComplete() ) > GameManager.MAX_NUMBER_OF_ATTEMPTS )
 			{
 				ranOutofTimePopup.SetActive( true );
 			}

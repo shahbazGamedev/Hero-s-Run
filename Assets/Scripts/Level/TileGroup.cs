@@ -110,9 +110,24 @@ public enum TileGroupType {
 	Hell_End = 701,
 	Hell_Obstacle_1 = 702,
 
-	Blizzard_Start = 800,
-	Blizzard_End = 801,
-	Blizzard_Obstacles_1 = 802
+	Blizzard_Start = 800,			//Start, Blizzard_Goblin_Jump, Straight_River_Log_Crossing, Left, Right
+	Blizzard_End = 801,				//End
+	Blizzard_Obstacles_1 = 802,		//straight_slope, straight_log, Left, straight_River_Crossing, Right
+	Blizzard_Broken_Bridge = 803,	//Landmark_Broken_Bridge
+	Blizzard_Enemies_1 = 804,		//Left, Blizzard_Goblin_Jump, Right, Straight, Straight_River
+	Blizzard_Enemies_2 = 805,		//Blizzard_Goblin_Jump, Straight_River_Log_Crossing
+	Blizzard_Enemies_3 = 806,		//Straight_double, right, straight, left
+	Blizzard_Enemies_4 = 807,		//Blizzard_Goblins_Valley, Straight_River_Crossing
+	Blizzard_Nice_And_Easy = 808,	//Left, Blizzard_Goblin_Jump, Right
+	Blizzard_T_Junction = 809,		//T_Junction
+	Blizzard_Treasure_Key = 810,	//Landmark_Treasure_Key
+	Blizzard_Turns_1 = 811,			//Left, straight, Right, straight_slope
+	Blizzard_Turns_2 = 812,			//Right, Left
+	Blizzard_Checkpoint = 813,		//Checkpoint
+	Blizzard_Fairy_Message = 814,	//Fairy_Message
+	Blizzard_Avalanche = 815,		//Blizzard_Avalanche, straight_double
+	Blizzard_Snow_Balls = 816		//Blizzard_Snow_balls
+
 
 }
 

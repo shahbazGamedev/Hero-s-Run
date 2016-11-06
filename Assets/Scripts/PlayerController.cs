@@ -1232,7 +1232,7 @@ public sealed class PlayerController : BaseClass {
 				//Don't accelerate during a jump (also it would reset the runSpeed variable).
 				allowRunSpeedToIncrease = false;
 				setCharacterState( CharacterState.Jumping );
-				if( currentTileType == TileType.Straight_Slope && currentTile.GetComponent<SegmentInfo>().addJumpBoost )
+				if( currentTile.GetComponent<SegmentInfo>().addJumpBoost )
 				{
 					//if you are on a steep slope, the normal jump speed is insufficient to make you feel you are jumping high.
 					//So use a higher value instead.

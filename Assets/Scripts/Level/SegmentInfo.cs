@@ -15,7 +15,6 @@ public class SegmentInfo : MonoBehaviour {
 	//This flag is used to avoid tileEntranceCrossed being called multiple time which can happen with onTriggerEnter
 	public bool entranceCrossed = false;
 	public bool addJumpBoost = false; //If true, give an extra boost when jumping
-	public bool isCheckpoint = false;
 	public float tileEndHeight = 0; //if not zero, the height of the NEXT tile will be adjusted
 	//tileIndex is populated at runtime. The Start tile has an index of 0, the second tile in the level has an index of 1, etc.
 	public int tileIndex = -1;
