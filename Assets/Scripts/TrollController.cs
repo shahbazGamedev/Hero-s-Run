@@ -357,6 +357,11 @@ public class TrollController : MonoBehaviour {
 				setTrollState(TrollState.Laughing);
 			}
 		}
+		else if( newState == CharacterState.Falling )
+		{
+			//We don't want the creature to follow the player down a ravine ...
+			stopPursuing();
+		}
 	}
 
 }

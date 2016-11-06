@@ -585,8 +585,6 @@ public sealed class PlayerController : BaseClass {
 						}
 						if( !isLeftFootOnGround && !isRightFootOnGround )
 						{
-							//you don't want the troll to follow the player falling down a ravine
-							trollController.stopPursuing();
 							fall();
 						}
 					}

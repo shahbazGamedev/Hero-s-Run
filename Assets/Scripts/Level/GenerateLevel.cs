@@ -135,6 +135,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	Dictionary<SegmentTheme,Dictionary<TileType,GameObject>> tilePrefabsPerTheme  = new Dictionary<SegmentTheme,Dictionary<TileType,GameObject>>(NUMBER_OF_THEMES);
 
 	//For the endless running game mode
+	//IMPORTANT: The tile game object (and children) cannot be set as Static as we need to move the tile when it gets recycled.
 	List<GameObject> recycledTiles = new List<GameObject>(50);
 	Queue<TileType> endlessTileList = new Queue<TileType>();
 
@@ -615,7 +616,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			List <TileType> tiles = rtg.tileList;
 			for( int j=0; j < tiles.Count; j++ )
 			{
-				Debug.Log("ENTRANCE RANDOM TILE  " + tiles[j].ToString() );
 				endlessTileList.Enqueue(tiles[j]);
 			}
 			//Now that we have added additional tile, we can get a tile
@@ -637,9 +637,9 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			if( indexOfTileToRecycle >= 0 )
 			{
 				GameObject tileToRecycle = worldRoadSegments[indexOfTileToRecycle];
-				//Do not recycle Start or End tiles
+				//Do not recycle the Start tile
 				TileType tileType = getSegmentInfo( tileToRecycle ).tileType;
-				if( tileType != TileType.Start && tileType != TileType.End )
+				if( tileType != TileType.Start )
 				{
 					TileReset tr = tileToRecycle.GetComponent<TileReset>();
 					if( tr != null )
@@ -652,9 +652,9 @@ public sealed class GenerateLevel  : MonoBehaviour {
 					}
 					recycledTiles.Add( tileToRecycle );
 				}
-				//Add a tile at the end
-				addTileInEndlessMode();
 			}
+			//Add a tile at the end
+			addTileInEndlessMode();
 		}
 
 		//Center the surrounding plane around the current tile

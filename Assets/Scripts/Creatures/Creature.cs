@@ -74,10 +74,10 @@ public class Creature : BaseClass {
 	{
 		Debug.Log("Creature - resetCreature called for : " + gameObject.name );
 		setCreatureState( CreatureState.Idle );
-		anim.CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
+		//anim.CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
 		gameObject.SetActive( false );
 		followsPlayer = false;
-		controller.enabled = true;
+		if( controller != null ) controller.enabled = true;
 		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
 		for( int i = 0; i < capsuleColliders.Length; i++ )
 		{
