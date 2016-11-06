@@ -27,6 +27,8 @@ public class HUDHandler : MonoBehaviour {
 	public RectTransform hudCanvas;
 	public GameObject starPrefab;
 	public GameObject treasurePrefab;
+	public GameObject restartFromCheckpointPanel; //Used to inform the player that he is restarting from a checkpoint and not from the begining
+	public Text restartFromCheckpointText; 
 	
 	//Used to track the items picked up by the player such as Stars and Treasure Keys. Multiple icons can be displayed at the same time with an offset.
 	List<PickupDisplay> pickupDisplayList = new List<PickupDisplay>();
@@ -50,6 +52,7 @@ public class HUDHandler : MonoBehaviour {
 		playerController = GetComponent<PlayerController>();
 		hudSaveMe = saveMeCanvas.GetComponent<HUDSaveMe>();
 		tapToPlayText.text = LocalizationManager.Instance.getText("MENU_TAP_TO_PLAY");
+		restartFromCheckpointText.text = LocalizationManager.Instance.getText("MENU_RESTART_FROM_CHECKPOINT");
 		hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
 		coinIconRect = new Rect ( Screen.width * 0.6f, 10f, Screen.width * 0.09f, Screen.width * 0.09f );
 	}
@@ -89,6 +92,9 @@ public class HUDHandler : MonoBehaviour {
 		{
 			//Disable the Tap to play button (and the associated Tap to Play label) since we do not need it anymore.
 			tapToPlayButton.gameObject.SetActive( false );
+			//Hide the text that might be showing telling the player he is restarting from a checkpoint
+			restartFromCheckpointPanel.SetActive( false );
+
 			//Hide the level name panel in case it is showing
 			hideLevelName();
 			if( playerController.getCurrentTileType() == TileType.Opening )
@@ -224,6 +230,11 @@ public class HUDHandler : MonoBehaviour {
 		{
 			//Display the tap to play button
 			tapToPlayButton.gameObject.SetActive( true );
+			//If the player is restarting from a checkpoint, tell him
+			if( LevelManager.Instance.getNumberOfCheckpointsPassed() > 0 )
+			{
+				restartFromCheckpointPanel.SetActive( true );
+			}
 		}
 		else if( newState == GameState.SaveMe )
 		{
