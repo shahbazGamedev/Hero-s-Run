@@ -80,7 +80,11 @@ public enum TileType {
 	Jungle_Vortex = 73,
 	Jungle_Enemy = 74,
 	Mines_Torch = 75,
-	Mines_Giant_Crystal = 76
+	Mines_Giant_Crystal = 76,
+	Blizzard_Snow_Balls = 77,
+	Blizzard_Avalanche = 78,
+	Blizzard_Goblin_Jump = 79,
+	Blizzard_Goblins_Valley = 80
 }
 
 public enum TileSubType {
