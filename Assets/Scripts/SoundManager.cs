@@ -58,7 +58,7 @@ public class SoundManager : MonoBehaviour {
 		
 	public void setMusicTrack( AudioClip track )
 	{
-		if( track != null ) musicSource.clip = track;
+		musicSource.clip = track;
 	}
 
 	public IEnumerator fadeOutMusic( float duration, float endVolume )
@@ -131,35 +131,26 @@ public class SoundManager : MonoBehaviour {
 	{
 		guiAudioSource.PlayOneShot( clip );
 	}
-
-	public void playAmbienceClip( AudioClip ambienceClip )
-	{
-		if( ambienceClip != null )
-		{
-			levelAmbienceSource.clip = ambienceClip;
-			levelAmbienceSource.volume = MAX_VOLUME;
-			levelAmbienceSource.Play();
-			Debug.Log("SoundManager-playAmbienceClip: playing ambience track titled " +  ambienceClip.name );
-			
-		}
-	}
 	
 	public IEnumerator fadeInAmbience( AudioClip audioClip, float duration )
 	{
 		if( audioClip != null )
 		{
 			Debug.Log("SoundManager-fadeIn: fading in audio clip titled " +  audioClip.name );
-			
 			levelAmbienceSource.clip = audioClip;
 			levelAmbienceSource.volume = 0;
-			levelAmbienceSource.Play ();
-			float startTime = Time.time;
-			float endTime = startTime + duration;
-			while (Time.time < endTime)
+			if( !levelAmbienceSource.isPlaying ) levelAmbienceSource.Play ();
+
+			float elapsedTime = 0;
+
+			do
 			{
-				levelAmbienceSource.volume = ( (Time.time - startTime) / duration ) * MAX_VOLUME;
+				elapsedTime = elapsedTime + Time.deltaTime;
+				levelAmbienceSource.volume =  Mathf.Lerp( 0, MAX_VOLUME, elapsedTime/duration );
 				yield return new WaitForFixedUpdate();  
-			}
+				
+			} while ( elapsedTime < duration );
+			levelAmbienceSource.volume = MAX_VOLUME;
 		}
 	}
 	

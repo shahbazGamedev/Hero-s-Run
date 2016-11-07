@@ -162,12 +162,13 @@ public class HUDSaveMe : MonoBehaviour {
 	public void retryFromLastCheckpoint()
 	{
 		Debug.Log("Retry from last checkpoint button pressed");
-		SoundManager.soundManager.fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
 		closeSaveMeMenu();
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		LevelManager.Instance.setEnableTorches( true );
 		LevelManager.Instance.setNextEpisodeToComplete( LevelManager.Instance.getCurrentEpisodeNumber() );
 		playerController.resetSharedLevelData(false);
+		SoundManager.soundManager.stopMusic();
+		SoundManager.soundManager.stopAmbience();
 		SceneManager.LoadScene( (int) GameScenes.Level );
 	}
 

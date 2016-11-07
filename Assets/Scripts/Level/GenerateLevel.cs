@@ -153,6 +153,18 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		createLevel ();
 	}
 
+	void Start()
+	{
+		//If the number of checkpoints passed is greater than 0, it means the player will restart at the center of a Checkpoint tile and not on the Start tile.
+		//If the episode requires a tapToPlay event (usually coming from a script attached to the Start tile), it will never come.
+		//Therefore, we need to send the event instead.
+		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
+		if( currentEpisode.waitForTapToPlay && LevelManager.Instance.getNumberOfCheckpointsPassed() > 0 )
+		{
+			GameManager.Instance.setGameState( GameState.Menu );
+		}
+	}
+
 	private void loadTilePrefabs( SegmentTheme theme )
 	{
 		//Don't bother reloading the prefabs if they have already been loaded
