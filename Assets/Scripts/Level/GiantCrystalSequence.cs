@@ -10,9 +10,6 @@ public class GiantCrystalSequence : MonoBehaviour {
 	public Vector3 fairyPositionBehindPlayer = new Vector3( 0, 1f, -0.3f );
 
 	bool hasBeenTriggered = false;
-	//Event management used to notify SkeletonControllers when skeletons have been summoned.
-	public delegate void SkeletonsSummoned( Transform summoner );
-	public static event SkeletonsSummoned skeletonsSummoned;
 
 	// Use this for initialization
 	void Awake () {

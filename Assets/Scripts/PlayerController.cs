@@ -2607,7 +2607,7 @@ public sealed class PlayerController : BaseClass {
 		onFinish.Invoke();
 	}
 
-	void afterPlayerSlowdown()
+	public void afterPlayerSlowdown()
 	{
 		setCharacterState( CharacterState.Winning );
 		anim.SetTrigger(VictoryTrigger);

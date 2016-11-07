@@ -1,0 +1,89 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class BlizzardEndSequence : MonoBehaviour {
+
+	PlayerController playerController;
+	FairyController fairyController;
+	public float walkToLedgeDistance = 12f;
+	public float walkToCullisGateDistance = 12f;
+	public Vector3 fairyPositionBehindPlayer = new Vector3( 0.5f, 1.1f, -0.12f );
+
+	bool hasBeenTriggered = false;
+
+	// Use this for initialization
+	void Awake () {
+
+		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+		playerController = playerObject.GetComponent<PlayerController>();
+
+		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
+		fairyController = fairyObject.GetComponent<FairyController>();
+	
+	}
+
+	void OnEnable()
+	{
+		PlayerController.playerStateChanged += PlayerStateChange;
+		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
+	}
+	
+	void OnDisable()
+	{
+		PlayerController.playerStateChanged -= PlayerStateChange;
+		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
+	}
+	
+	void PlayerStateChange( CharacterState newState )
+	{
+		if( newState == CharacterState.Dying )
+		{
+			CancelInvoke();
+		}
+	}
+
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	{
+		if( eventType == GameEvent.Blizzard_End_Sequence && !hasBeenTriggered )
+		{
+			hasBeenTriggered = true;
+
+			startSequence();
+		}
+	}
+
+	void startSequence()
+	{
+		//Slowdown player and remove player control
+		playerController.placePlayerInCenterLane();
+		GameManager.Instance.setGameState(GameState.Checkpoint);
+		StartCoroutine( playerController.slowDownPlayer(walkToLedgeDistance, afterPlayerSlowdown ) );
+	}
+	
+	void afterPlayerSlowdown()
+	{
+		playerController.anim.SetTrigger("Idle_Look");
+		//Call fairy
+		fairyController.setYRotationOffset( -6f );
+		fairyController.Appear ( FairyEmotion.Worried );
+		moveFairyBehindPlayer();
+	}
+
+	void moveFairyBehindPlayer()
+	{
+		StartCoroutine( fairyController.goHere( 1.6f, fairyPositionBehindPlayer, fairyTalks ) );
+	}
+
+	void fairyTalks()
+	{
+		fairyController.speak("VO_FA_CANT_BE_GOOD", 2f, false );
+		Invoke("walkToCullisGate", 4f );
+	}
+
+	void walkToCullisGate()
+	{
+		StartCoroutine( playerController.walkForDistance( walkToCullisGateDistance, 3.5f, playerController.afterPlayerSlowdown ) );
+	}
+
+}
