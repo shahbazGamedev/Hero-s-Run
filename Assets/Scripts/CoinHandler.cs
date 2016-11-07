@@ -32,6 +32,7 @@ public class CoinHandler : MonoBehaviour {
 				if (Physics.Raycast(new Vector3(transform.position.x,transform.parent.position.y + 10f,transform.position.z), Vector3.down, out hit, 20.0F ))
 				{
 					groundHeight = hit.point.y;
+					//Debug.Log("CoinHandler: collider underneath: " + hit.collider.name );
 					groundHeight = groundHeight + getStarPackHeight();
 					transform.position = new Vector3( transform.position.x, groundHeight, transform.position.z);
 				}
