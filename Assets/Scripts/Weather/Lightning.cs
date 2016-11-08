@@ -90,13 +90,11 @@ public class Lightning : MonoBehaviour {
 
 	void OnEnable()
 	{
-		GameManager.gameStateEvent += GameStateChange;
 		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
 	}
 	
 	void OnDisable()
 	{
-		GameManager.gameStateEvent -= GameStateChange;
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 	
@@ -159,10 +157,6 @@ public class Lightning : MonoBehaviour {
 			StopCoroutine("DecayOnce");
 			resetLight();
 		}
-	}
-
-	void GameStateChange( GameState newState )
-	{
 	}
 
 }

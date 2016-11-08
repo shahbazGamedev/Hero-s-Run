@@ -106,9 +106,23 @@ public enum TileGroupType {
 	Mines_River = 615,
 	Mines_River_Crossing = 616,
 
-	Hell_Start = 700,
-	Hell_End = 701,
-	Hell_Obstacle_1 = 702,
+	Hell_Start = 700,				//Start, Hell_Cerberus, Hell_Cavern_Gibbets, Landmark_Collapsing_Bridge, Hell_Drawbridge
+	Hell_End = 701,					//End
+	Hell_Banquet_Hall = 702,		//Left, Hell_Banquet_Hall, Right, Straight_Double
+	Hell_Fairy_Message = 703,		//Landmark_Fairy_Message
+	Hell_Turns_1 = 704,				//Right, straight, Left
+	Hell_Turns_2 = 705,				//Left, Right
+	Hell_Pendulums_Series = 706,	//Hell_Pendulums, Hell_Pendulums, Hell_Pendulums
+	Hell_Flame_Columns_Series = 707,//Hell_Flame_Columns, Hell_Flame_Columns, Hell_Flame_Columns
+	Hell_Enemies_1 = 708,			//Hell_Demons
+	Hell_Enemies_2 = 709,			//Left, Straight_Double, Right, Straight
+	Hell_Obstacles_1 = 710,			//Hell_Floor_Traps, straight, Hell_Pendulums
+	Hell_Obstacles_2 = 711,			//Hell_Flame_Columns, Hell_Floor_Traps, Hell_Pendulums, Straight
+	Hell_Obstacles_3 = 712,			//Hell_Floor_Traps, Hell_Floor_Traps, left, Hell_Flame_Columns, Hell_Flame_Columns, Hell_Flame_Columns, right, Hell_pendulums, Hell_pendulums, Hell_pendulums
+	Hell_Nice_And_Easy = 713,		//Left, Straight, Right, Straight_River, Hell_Bridge
+	Hell_Treasure_Key = 714,		//Landmark_Treasure_Key
+	Hell_Checkpoint = 715,			//Checkpoint
+	Hell_T_Junction = 716,			//T_Junction
 
 	Blizzard_Start = 800,			//Start, Blizzard_Goblin_Jump, Straight_River_Log_Crossing, Left, Right
 	Blizzard_End = 801,				//End

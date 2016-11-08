@@ -184,11 +184,6 @@ public class LevelManager {
 		Debug.Log ("LevelManager-setPlayerFinishedTheGame: " + playerFinishedTheGame );
 	}
 
-	public int getNumberOfLevels()
-	{
-		return levelData.levelList.Count;
-	}
-	
 	//Called by TitleScreenHandler on Awake()
 	public void setLevelData( LevelData levelData )
 	{

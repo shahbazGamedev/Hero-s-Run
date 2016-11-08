@@ -9,6 +9,10 @@ public class BlizzardEndSequence : MonoBehaviour {
 	public float walkToLedgeDistance = 12f;
 	public float walkToCullisGateDistance = 12f;
 	public Vector3 fairyPositionBehindPlayer = new Vector3( 0.5f, 1.1f, -0.12f );
+	public List<AudioClip> thunderSounds = new List<AudioClip>();
+	public float maxThunderInterval = 20.0f;
+	public float minThunderInterval = 7f;
+	public AudioSource thunderAudioSource;
 
 	bool hasBeenTriggered = false;
 
@@ -27,6 +31,7 @@ public class BlizzardEndSequence : MonoBehaviour {
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
 		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
+		playThunderSound();
 	}
 	
 	void OnDisable()
@@ -77,13 +82,23 @@ public class BlizzardEndSequence : MonoBehaviour {
 
 	void fairyTalks()
 	{
-		fairyController.speak("VO_FA_CANT_BE_GOOD", 2f, false );
-		Invoke("walkToCullisGate", 4f );
+		fairyController.speak("VO_FA_BLIZZARD_END", 3.5f, false );
+		Invoke("walkToCullisGate", 6f );
 	}
 
 	void walkToCullisGate()
 	{
-		StartCoroutine( playerController.walkForDistance( walkToCullisGateDistance, 3.5f, playerController.afterPlayerSlowdown ) );
+		StartCoroutine( playerController.walkForDistance( walkToCullisGateDistance, 3.5f, playerController.afterPlayerSlowdown, false ) );
+	}
+
+	void playThunderSound()
+	{
+		if( thunderSounds.Count > 0 )
+		{
+			int index = Random.Range( 0, thunderSounds.Count );
+			thunderAudioSource.PlayOneShot( thunderSounds[index] );
+		}
+		Invoke ("playThunderSound", Random.Range(minThunderInterval, maxThunderInterval));
 	}
 
 }

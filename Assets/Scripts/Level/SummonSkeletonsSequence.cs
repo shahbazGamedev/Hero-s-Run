@@ -149,7 +149,7 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	
 	void lookOverEdge()
 	{
-		StartCoroutine( playerController.walkForDistance( walkDistance, 3.5f, edgeReached ) );
+		StartCoroutine( playerController.walkForDistance( walkDistance, 3.5f, edgeReached, true ) );
 	}
 
 	void edgeReached()

@@ -38,8 +38,6 @@ public class LevelData : MonoBehaviour {
 	
 	public List<EpisodeInfo> episodeList = new List<EpisodeInfo>();
 
-	public List<LevelInfo> levelList = new List<LevelInfo>();
-
 	public const int NUMBER_OF_EPISODES = 9;
 	GameObject cutSceneCamera;
 	//This should be the directional light in the scene
@@ -248,16 +246,16 @@ public class LevelData : MonoBehaviour {
 		[Tooltip("Total number of chest keys for episode.")]
 		public int numberOfChestKeys = 0;
 		[Tooltip("Stars required to reach one, two, three stars as well as the maximum number of stars for the episode.")]
-		public Vector4 starsRequired = new Vector4( 10000f, 33000f, 50000f, 100000f );
+		public Vector3 starsRequired = new Vector3( 10000f, 33000f, 50000f );
 		public EpisodeDifficulty episodeDifficulty = EpisodeDifficulty.Normal;
 		[Tooltip("The type of sun for the level. The sun type will not change until the player starts a new section. The sun type determines characteristics such ambient light, directional light rotation, color, intensity and shadows and skybox material.")]
 		public SunType sunType = SunType.Afternoon;
 		[Tooltip("Specifies whether the level should allow Tap To Play right away or wait for a callback. For example, in the opening level, we want to wait a few seconds before the player can start playing.")]
 		public bool waitForTapToPlay = false;
 		[Tooltip("The player's initial run speed in m/sec.")]
-		public float RunStartSpeed = 10f;
+		public float RunStartSpeed = 18f;
 		[Tooltip("How fast will the player accelerate.")]
-		public float RunAcceleration = 0.09f;
+		public float RunAcceleration = 0.13f;
 		[Tooltip("The number of tiles between power ups. Zero means there is no power up in that level.")]
 		public int powerUpDensity = 4;
 		[Tooltip("The ambience sound for the level. It plays in addition to the music. It is optional.")]
@@ -319,30 +317,6 @@ public class LevelData : MonoBehaviour {
 			}
 			return adjustedRunAcceleration;
 		}
-	}
-
-	[System.Serializable]
-	public class LevelInfo
-	{
-		[Header("Level Parameters")]
-		[Tooltip("The level type such as Episode or Normal.")]
-		public LevelType levelType = LevelType.Normal;
-
-
-		[Tooltip("The type of tile that the player will start on.")]
-		public TileType startTile = TileType.Start;
-		[Header("Road Segments")]
-		public List<RoadSegment> roadSegmentList = new List<RoadSegment>();
-
-
-	}
-	
-	[System.Serializable]
-	public class RoadSegment
-	{
-		public SegmentTheme theme;
-		public int NumberOfTiles;
-		public TileType endTile = TileType.End;
 	}
 
 }

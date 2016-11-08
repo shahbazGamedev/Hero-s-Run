@@ -46,7 +46,6 @@ public class CoinHandler : MonoBehaviour {
 		{
 			gameObject.SetActive( false );
 		}
-
 	}
 
 	float getStarPackHeight()

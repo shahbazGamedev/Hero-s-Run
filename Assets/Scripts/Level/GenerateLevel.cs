@@ -6,13 +6,11 @@ public enum SegmentTheme {
 		Forest = 0,
 		Fairyland = 1,
 		Cemetery = 2,
-		Hell_Arrival = 3,
 		Dark_Tower = 6,
 		Jungle = 7,
-		Hell_Caverns = 8,
-		Hell_Fortress = 9,
 		Blizzard = 10,
-		Caves = 11
+		Caves = 11,
+		Hell = 12
 }
 
 public enum TileType {
@@ -34,8 +32,6 @@ public enum TileType {
 	Straight_Double = 18,
 	Straight_Bezier = 19,
 	Straight_River_Log_Crossing = 20,
-	Landmark_Banquet_Hall = 22,
-	Landmark_Drawbridge = 24,
 	Checkpoint = 25,
 	Opening = 26,
 	Landmark_Evil_Tree = 27,
@@ -84,7 +80,16 @@ public enum TileType {
 	Blizzard_Snow_Balls = 77,
 	Blizzard_Avalanche = 78,
 	Blizzard_Goblin_Jump = 79,
-	Blizzard_Goblins_Valley = 80
+	Blizzard_Goblins_Valley = 80,
+	Hell_Cerberus = 81,
+	Hell_Cavern_Gibbets = 82,
+	Hell_Bridge = 83,
+	Hell_Banquet_Hall = 84,
+	Hell_Drawbridge = 85,
+	Hell_Pendulums = 86,
+	Hell_Flame_Columns = 87,
+	Hell_Demons = 88,
+	Hell_Floor_Traps = 89
 }
 
 public enum TileSubType {
@@ -127,8 +132,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	public PlayerController playerController;
 	public TileGroupManager tileGroupManager;
 	
-	//Path to Resources folder containing the tiles for the theme
-	string currentThemePath = "";
 	SegmentTheme currentTheme;
 	
 	//The surrounding plane (like an ocean) is always centered with the current tile
@@ -279,7 +282,8 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	{
 		if( tg.tileGroupType == TileGroupType.Blizzard_Checkpoint || tg.tileGroupType == TileGroupType.Cemetery_Checkpoint
 			|| tg.tileGroupType == TileGroupType.Fairyland_Checkpoint || tg.tileGroupType == TileGroupType.Jungle_Checkpoint
-			|| tg.tileGroupType == TileGroupType.Mines_Checkpoint || tg.tileGroupType == TileGroupType.Tanglewood_Checkpoint )
+			|| tg.tileGroupType == TileGroupType.Mines_Checkpoint || tg.tileGroupType == TileGroupType.Tanglewood_Checkpoint
+			|| tg.tileGroupType == TileGroupType.Hell_Checkpoint )
 		{
 			return true;
 		}
@@ -340,7 +344,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 	private void setCurrentTheme( SegmentTheme newTheme )
 	{
-		currentThemePath = "Level/Tiles/" + newTheme.ToString() + "/";
 		currentTheme = newTheme;
 	}
 

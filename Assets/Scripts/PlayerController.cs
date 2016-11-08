@@ -2614,7 +2614,7 @@ public sealed class PlayerController : BaseClass {
 		//See Cullis Gate for next steps.
 	}
 
-	public IEnumerator walkForDistance( float distance, float walkSpeed, System.Action onFinish )
+		public IEnumerator walkForDistance( float distance, float walkSpeed, System.Action onFinish, bool playIdleLookAfterWalkCompleted )
 	{
 		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, transform.position.z );
 		float distanceTravelled = 0;
@@ -2637,7 +2637,7 @@ public sealed class PlayerController : BaseClass {
 			controller.Move( forward );
 			yield return new WaitForFixedUpdate(); 
 		}
-		anim.SetTrigger("Idle_Look");
+		if( playIdleLookAfterWalkCompleted ) anim.SetTrigger("Idle_Look");
 		onFinish.Invoke();	
 	}
 

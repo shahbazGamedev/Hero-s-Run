@@ -20,6 +20,8 @@ public class StarMeterHandler : MonoBehaviour {
 	public float scoreSpinDuration = 2f;
 	string scoreString; //format is Stars: <0>
 	const float UPDATE_SEQUENCE_DELAY = 0.9f;
+	//The end of the star slider is 10% longer than the highest number of stars for that episode (the z value).
+	float maxNumberOfStars = 0;
 
 	void Awake()
 	{
@@ -36,17 +38,18 @@ public class StarMeterHandler : MonoBehaviour {
 	void updatePositionOfStarMarkers()
 	{
 		LevelData.EpisodeInfo selectedEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
-		Vector4 starsRequired = selectedEpisode.starsRequired;
+		Vector3 starsRequired = selectedEpisode.starsRequired;
+		maxNumberOfStars = 1.1f * starsRequired.z;
 		float sliderWidth = StarMarkersPanel.rect.width;
 		Debug.Log("updatePositionOfStarMarkers " + starsRequired );
 
-		float xPosition = (starsRequired.x/starsRequired.w ) * sliderWidth;
+		float xPosition = (starsRequired.x/maxNumberOfStars ) * sliderWidth;
 		leftStarMarker.anchoredPosition = new Vector2( xPosition,leftStarMarker.anchoredPosition.y);
 
-		xPosition = (starsRequired.y/starsRequired.w ) * sliderWidth;
+		xPosition = (starsRequired.y/maxNumberOfStars ) * sliderWidth;
 		middleStarMarker.anchoredPosition = new Vector2( xPosition,middleStarMarker.anchoredPosition.y);
 
-		xPosition = (starsRequired.z/starsRequired.w ) * sliderWidth;
+		xPosition = (starsRequired.z/maxNumberOfStars ) * sliderWidth;
 		rightStarMarker.anchoredPosition = new Vector2( xPosition,rightStarMarker.anchoredPosition.y);
 
 	}
@@ -55,7 +58,7 @@ public class StarMeterHandler : MonoBehaviour {
 	{
 		//Wait for the post-level popup to have finished sliding in before spinning values
 		yield return new WaitForSeconds(UPDATE_SEQUENCE_DELAY);
-		StartCoroutine( spinScoreNumber( LevelManager.Instance.getScore(), selectedEpisode.starsRequired.w ) );
+		StartCoroutine( spinScoreNumber( LevelManager.Instance.getScore(), maxNumberOfStars ) );
 	}
 
 	IEnumerator spinScoreNumber( int playerScore, float maxScore )
@@ -97,7 +100,7 @@ public class StarMeterHandler : MonoBehaviour {
 				LevelData.EpisodeInfo selectedEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
 				//Replace the string <0> by the score value
 				starMeterScore.text = scoreString.Replace( "<0>", newScore.ToString("N0") );
-				starMeterSlider.value = newScore/selectedEpisode.starsRequired.w;
+				starMeterSlider.value = newScore/maxNumberOfStars;
 				updateDisplayStars( newScore, selectedEpisode );
 			break;	        
 		}
