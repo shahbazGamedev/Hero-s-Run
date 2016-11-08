@@ -448,6 +448,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		LevelManager.Instance.setEpisodeCompleted( false );
 		LevelManager.Instance.forceNextEpisodeToComplete( episodeNumber );
 		LevelManager.Instance.resetNumberOfCheckpointsPassed();
+		LevelManager.Instance.resetStarsAtLastCheckpoint();
 
 		StartCoroutine( loadLevel() );
 	}

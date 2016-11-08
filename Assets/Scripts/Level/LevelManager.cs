@@ -20,6 +20,9 @@ public class LevelManager {
 	private bool episodeHasChanged = false;
 	private bool playerFinishedTheGame = false;
 	private int numberOfCheckpointsPassed = 0; //Number of checkpoints passed for the current episode
+	//Number of stars the player had when he passed the last checkpoint.
+	//If the player dies and restarts at a checkpoint, this will be the number of stars he will have.
+	private int numberOfStarsAtLastCheckpoint = 0;
  	private int score = 0; //currently is equal to the number of stars you picked up while running for a single episode
 	private int currentEpisode = 0;
 	private bool episodeCompleted = false;
@@ -72,8 +75,26 @@ public class LevelManager {
 
 	public void resetNumberOfCheckpointsPassed()
 	{
-		Debug.Log ("LevelManager-resetNumberOfCheckpointsPassed " );
+		Debug.Log ("LevelManager-resetNumberOfCheckpointsPassed" );
 		numberOfCheckpointsPassed = 0;
+	}
+
+	public void setStarsAtLastCheckpoint( int value )
+	{
+		numberOfStarsAtLastCheckpoint = value;
+		Debug.Log ("LevelManager-setStarsAtLastCheckpoint: " + numberOfStarsAtLastCheckpoint );
+	}
+
+	public int getStarsAtLastCheckpoint()
+	{
+		Debug.Log ("LevelManager-getStarsAtLastCheckpoint: " + numberOfStarsAtLastCheckpoint );
+		return numberOfStarsAtLastCheckpoint;
+	}
+
+	public void resetStarsAtLastCheckpoint()
+	{
+		Debug.Log ("LevelManager-resetStarsAtLastCheckpoint" );
+		numberOfStarsAtLastCheckpoint = 0;
 	}
 
 	//Called by EpisodePopup to access any episode directly

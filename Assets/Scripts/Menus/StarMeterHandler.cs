@@ -27,7 +27,7 @@ public class StarMeterHandler : MonoBehaviour {
 	{
 		scoreString = LocalizationManager.Instance.getText("MENU_STARS");
 		//Replace the string <0> by 0 initially
-		starMeterScore.text = scoreString.Replace( "<0>", "0" );
+		starMeterScore.text = scoreString.Replace( "<0>", LevelManager.Instance.getStarsAtLastCheckpoint().ToString() );
 	}
 		
 	void Start()
