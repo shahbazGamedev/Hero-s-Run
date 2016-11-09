@@ -13,6 +13,7 @@ public class BlizzardEndSequence : MonoBehaviour {
 	public float maxThunderInterval = 20.0f;
 	public float minThunderInterval = 7f;
 	public AudioSource thunderAudioSource;
+	public ParticleSystem thunderStrike;
 
 	bool hasBeenTriggered = false;
 
@@ -31,7 +32,7 @@ public class BlizzardEndSequence : MonoBehaviour {
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
 		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
-		playThunderSound();
+		thunder();
 	}
 	
 	void OnDisable()
@@ -91,14 +92,20 @@ public class BlizzardEndSequence : MonoBehaviour {
 		StartCoroutine( playerController.walkForDistance( walkToCullisGateDistance, 3.5f, playerController.afterPlayerSlowdown, false ) );
 	}
 
-	void playThunderSound()
+	void thunder()
+	{
+		thunderStrike.Play();
+		Invoke ("thunderSound", 0.15f);
+		Invoke ("thunder", Random.Range(minThunderInterval, maxThunderInterval));
+	}
+
+	void thunderSound()
 	{
 		if( thunderSounds.Count > 0 )
 		{
 			int index = Random.Range( 0, thunderSounds.Count );
 			thunderAudioSource.PlayOneShot( thunderSounds[index] );
 		}
-		Invoke ("playThunderSound", Random.Range(minThunderInterval, maxThunderInterval));
 	}
 
 }
