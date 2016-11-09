@@ -100,10 +100,10 @@ public class CreatureManager : BaseClass {
 		ICreature[] allCreatureControllers = playerController.currentTile.GetComponentsInChildren<ICreature>();
 		for( int i = 0; i < allCreatureControllers.Length; i++ )
 		{
-			allCreatureControllers[i].resetCreature();
+			allCreatureControllers[i].deactivate();
 		}
 		//And for good measure, any other that are too close but maybe not on the current tile
-		resetCreatures( 54f );
+		deactivateCreatures( 54f );
 
 	}
 
@@ -118,7 +118,7 @@ public class CreatureManager : BaseClass {
 		return mask;
 	}
 
-	void resetCreatures( float resetDiameter )
+	void deactivateCreatures( float resetDiameter )
 	{
 		//Use a sphere that starts resetDiameter/2 meters in front of the player
 		Vector3 relativePos = new Vector3(0f , 0f , resetDiameter/2f );
@@ -130,7 +130,7 @@ public class CreatureManager : BaseClass {
 			ICreature creatureController = hitColliders[i].GetComponent<ICreature>();
 			if( creatureController.getCreatureState() != CreatureState.Dying )
 			{
-				creatureController.resetCreature();
+				creatureController.deactivate();
 			}
 		}
 	}

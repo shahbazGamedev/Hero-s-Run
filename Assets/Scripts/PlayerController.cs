@@ -1019,7 +1019,12 @@ public sealed class PlayerController : BaseClass {
 				//7) Add the X component to the forward direction
 				forward = forward + xVector;
 				//8) Move the controller
+				#if UNITY_EDITOR
+				if( controller.enabled ) controller.Move( forward );
+				#else
 				controller.Move( forward );
+				#endif
+
 			}
 			else
 			{

@@ -36,6 +36,9 @@ public sealed class WraithController : Creature, ICreature {
 		Scythe = 2
 	}
 
+	//Original setup used when reseting the Creature
+	AttackType originalAttackType;
+
 	//Movement related
 	Vector3 forward;
 	float moveSpeed = 0;
@@ -50,6 +53,19 @@ public sealed class WraithController : Creature, ICreature {
 		base.Awake();
 		configureSelectedWeapon();
 		mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+		saveOriginalSetup();
+	}
+
+	new void saveOriginalSetup()
+	{
+		base.saveOriginalSetup();
+		originalAttackType = attackType;
+	}
+
+	new public void resetCreature()
+	{
+		base.resetCreature();
+		attackType = originalAttackType;
 	}
 
 	public void sideCollision ()

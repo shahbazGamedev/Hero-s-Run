@@ -52,12 +52,33 @@ public sealed class SkeletonController : Creature, ICreature {
 	
 	public float bolt_force = 900f;
 
+	//Original setup used when reseting the Creature
+	AttackType originalAttackType;
+
 	//Movement related
 	Vector3 forward;
 	const float RUN_SPEED = 4.6f; //good value so feet don't slide
 	float WALK_SPEED = 3.2f; //good value so feet don't slide
 	float moveSpeed = 0;
 	bool previouslyGrounded = true;
+
+	new void Awake ()
+	{
+		base.Awake();
+		saveOriginalSetup();
+	}
+
+	new void saveOriginalSetup()
+	{
+		base.saveOriginalSetup();
+		originalAttackType = attackType;
+	}
+
+	new public void resetCreature()
+	{
+		base.resetCreature();
+		attackType = originalAttackType;
+	}
 
 	void Start ()
 	{

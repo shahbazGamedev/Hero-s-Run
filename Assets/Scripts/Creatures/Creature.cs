@@ -28,6 +28,13 @@ public class Creature : BaseClass {
 	bool lookAtActive = false;
 	bool enableIK = true;
 
+	//Original setup used when reseting the Creature
+	protected Vector3 originalLocalPosition;
+	protected Vector3 originalLocalRotation;
+	protected CreatureState originalCreatureState;
+	protected string originalAnimation;
+	protected bool originalFollowsPlayer;
+
 	protected void Awake ()
 	{
 		controller = GetComponent<CharacterController>();
@@ -35,6 +42,16 @@ public class Creature : BaseClass {
 		if( playerGameObject != null ) player = playerGameObject.transform;
 		anim = GetComponent<Animator>();
 		audioSource = GetComponent<AudioSource>();
+	}
+
+	protected void saveOriginalSetup()
+	{
+		originalLocalPosition = transform.localPosition;
+		originalLocalRotation = transform.localEulerAngles;
+		originalCreatureState = creatureState;
+		originalFollowsPlayer = followsPlayer;
+		AnimatorClipInfo[] clips = anim.GetCurrentAnimatorClipInfo( 0 );
+		originalAnimation = clips[0].clip.name;
 	}
 
 	public CreatureState getCreatureState()
@@ -70,13 +87,14 @@ public class Creature : BaseClass {
 		transform.rotation = Quaternion.Lerp( transform.rotation, desiredRotation, Time.deltaTime * enemyAimSpeed );
 	}
 
-	public void resetCreature()
+	protected void resetCreature()
 	{
-		Debug.Log("Creature - resetCreature called for : " + gameObject.name );
-		setCreatureState( CreatureState.Idle );
-		//anim.CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
-		gameObject.SetActive( false );
-		followsPlayer = false;
+		creatureState = originalCreatureState;
+		transform.localPosition = originalLocalPosition;
+		transform.localEulerAngles = originalLocalRotation;
+		followsPlayer = originalFollowsPlayer;
+		Debug.LogWarning("Creature - resetCreature called for: " + gameObject.name );
+
 		if( controller != null ) controller.enabled = true;
 		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
 		for( int i = 0; i < capsuleColliders.Length; i++ )
@@ -85,6 +103,13 @@ public class Creature : BaseClass {
 		}
 		if( GetComponent<Rigidbody>() != null ) GetComponent<Rigidbody>().isKinematic = true;
 		enableIK = true;
+		anim.Play( originalAnimation );
+		gameObject.SetActive( true );
+	}
+
+	public void deactivate()
+	{
+		gameObject.SetActive( false );
 	}
 
 	//The creature falls over backwards, typically because the player slid into him or because of a ZNuke

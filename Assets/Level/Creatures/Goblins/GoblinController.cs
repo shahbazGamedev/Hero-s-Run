@@ -47,6 +47,8 @@ public sealed class GoblinController : Creature, ICreature {
 	//Only use for the scout goblin with the crossbow
 	Vector3 initialBoltPositionOffset = new Vector3( 0f, 0.47f, 0.46f );
 
+	//Original setup used when reseting the Creature
+	AttackType originalAttackType;
 
 	//Movement related
 	Vector3 forward;
@@ -57,6 +59,19 @@ public sealed class GoblinController : Creature, ICreature {
 	{
 		base.Awake();
 		randomizeLook();
+		saveOriginalSetup();
+	}
+
+	new void saveOriginalSetup()
+	{
+		base.saveOriginalSetup();
+		originalAttackType = attackType;
+	}
+
+	new public void resetCreature()
+	{
+		base.resetCreature();
+		attackType = originalAttackType;
 	}
 
 	void Start ()

@@ -33,6 +33,9 @@ public sealed class DemonController : Creature, ICreature {
 		do_nothing = 6
 	}
 	
+	//Original setup used when reseting the Creature
+	AttackType originalAttackType;
+
 	//Movement related
 	Vector3 forward;
 	const float RUN_SPEED = 4.6f; //good value so feet don't slide
@@ -46,6 +49,19 @@ public sealed class DemonController : Creature, ICreature {
 		{
 			transform.Find("demon_weapon").gameObject.SetActive( false );
 		}
+		saveOriginalSetup();
+	}
+
+	new void saveOriginalSetup()
+	{
+		base.saveOriginalSetup();
+		originalAttackType = attackType;
+	}
+
+	new public void resetCreature()
+	{
+		base.resetCreature();
+		attackType = originalAttackType;
 	}
 
 	void Update ()

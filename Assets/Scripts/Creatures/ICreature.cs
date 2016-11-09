@@ -8,5 +8,6 @@ interface ICreature
 	CreatureState getCreatureState();
 	void sideCollision();
 	void victory( bool playWinSound );
+	void deactivate();
 
 }
