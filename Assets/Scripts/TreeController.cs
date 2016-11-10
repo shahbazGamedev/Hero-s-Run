@@ -128,6 +128,10 @@ public class TreeController : BaseClass {
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
+		//Reset values
+		treeState = TreeState.Sleeping;
+		hasAttackedPlayer = false;
+		treeAnimation.Stop();
 	}
 	
 	void OnDisable()
