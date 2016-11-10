@@ -9,12 +9,14 @@ public class Zipline : MonoBehaviour {
 	const int LINE_VERTEX_COUNT = 200;
     LineRenderer lineRenderer;
 	float step;
+	List<GameObject> starsList = new List<GameObject>();
 	public bool addStars = true;
 	public GameObject starPrefab;
 	public int distanceBetweenStars = 12;
 	public float distanceBelowLine = 1f;
+
 	// Use this for initialization
-    void Start()
+    void Awake()
 	{
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.SetVertexCount(LINE_VERTEX_COUNT);
@@ -22,11 +24,11 @@ public class Zipline : MonoBehaviour {
 		curveList = GetComponent<SegmentInfo>().curveList;
  		bezierData = curveList[0];
  		step = 1f/LINE_VERTEX_COUNT;
-		addStarsBelowZipline();
 	}
 
     void addStarsBelowZipline()
 	{
+		starsList.Clear();
 		if( addStars )
 		{
 			GameObject go;
@@ -38,6 +40,7 @@ public class Zipline : MonoBehaviour {
 				Vector3 toPosition = Utilities.Bezier3( bezierData.bezierStart.position, bezierData.bezierControl1.position, bezierData.bezierControl2.position, bezierData.bezierEnd.position, t ) - starToLineOffset;
 				go = (GameObject)Instantiate(starPrefab, toPosition, Quaternion.identity );
 				go.transform.parent = transform;
+				starsList.Add( go );
 			}
 		}
     }
@@ -54,4 +57,21 @@ public class Zipline : MonoBehaviour {
 
 		}
     }
+
+	void OnEnable()
+	{
+		addStarsBelowZipline();
+	}
+
+	void OnDisable()
+	{
+		for( int i =0; i < starsList.Count; i++ )
+		{
+			GameObject.Destroy( starsList[i] );
+			starsList[i] = null;
+		}
+		starsList.Clear();
+	}
+
+
 }

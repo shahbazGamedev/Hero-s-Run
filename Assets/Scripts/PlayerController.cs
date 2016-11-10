@@ -1859,7 +1859,7 @@ public sealed class PlayerController : BaseClass {
 			time -= Time.deltaTime;
 			Vector3 coinDestination = mainCamera.GetComponent<Camera>().ScreenToWorldPoint (coinScreenPos);
 
-			if (coin.gameObject != null )
+			if (coin != null )
 			{
 				coin.position = Vector3.Lerp( coinDestination, originalPos, time / originalTime );
 				coin.rotation = mainCamera.rotation;
@@ -1867,7 +1867,7 @@ public sealed class PlayerController : BaseClass {
 			
 			yield return _sync();
 		}
-		if (coin.gameObject != null )
+		if (coin != null )
 		{
 			Destroy ( coin.gameObject );
 		}

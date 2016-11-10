@@ -18,9 +18,11 @@ public sealed class GoblinController : Creature, ICreature {
 	[Tooltip("There is 30% chance that each of the following cloth item will be hidden. This is so not all goblins look alike.")]
 	public GameObject clothItem1;
 	public GameObject clothItem2;
-	[Header("Barrel")]
-	[Tooltip("The breakable barrel that the goblin will push on top of the player.")]
-	public Rigidbody barrel;
+	[Header("Pushed/thrown object like a barrel or a big snow ball")]
+	[Tooltip("The rigid body of the object that the goblin will push on top of the player.")]
+	Rigidbody pushedObject;
+	public Transform locationOfPushedObject;
+	public GameObject pushedObjectPrefab;
 	[Tooltip("The forward (based on the goblin's transform) force to apply on the barrel.")]
 	public float barrelForwardForce = 1300f; //Based on 10 kilograms
 	[Tooltip("Player distance multiplier used to decide to throw barrel.")]
@@ -37,7 +39,7 @@ public sealed class GoblinController : Creature, ICreature {
 		short_range_Spear_2 = 2,
 		long_range_Spear = 3,
 		Crossbow = 4,
-		Throw_Barrel = 5,
+		Push_Object = 5,
 		jump_and_attack = 6,
 		jump_and_long_range_attack = 7
 	}
@@ -179,12 +181,12 @@ public sealed class GoblinController : Creature, ICreature {
 						fireCrossbow();
 					}
 					break;
-				case AttackType.Throw_Barrel:
+				case AttackType.Push_Object:
 					attackDistance = barrelPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
 					if( distance < attackDistance )
 					{
 						setCreatureState( CreatureState.Attacking );
-						throwBarrel();
+						pushObject();
 					}
 					break;
 				case AttackType.jump_and_attack:
@@ -272,14 +274,14 @@ public sealed class GoblinController : Creature, ICreature {
 		return adjustedBoltForce;
 	}
 
-	void throwBarrel()
+	void pushObject()
 	{
 		if( playGoblinTaunt ) audioSource.PlayOneShot( win, 0.7f );
 		//Push barrels in the direction of the goblin and add a small upward force
 		Vector3 forces = transform.forward * barrelForwardForce + new Vector3( 0, 400f, 0 );
-		barrel.isKinematic = false;
-		barrel.AddForce( forces );
-		barrel.AddTorque( new Vector3( 0, 300f, 0 ) );
+		pushedObject.isKinematic = false;
+		pushedObject.AddForce( forces );
+		pushedObject.AddTorque( new Vector3( 0, 300f, 0 ) );
 		anim.CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
 	}
 
@@ -338,11 +340,35 @@ public sealed class GoblinController : Creature, ICreature {
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
+		createPushedObject();
 	}
 	
 	void OnDisable()
 	{
 		PlayerController.playerStateChanged -= PlayerStateChange;
+		destroyPushedObject();
+	}
+
+	void createPushedObject()
+	{
+		if( locationOfPushedObject != null && pushedObjectPrefab != null )
+		{
+			GameObject go = (GameObject)Instantiate(pushedObjectPrefab);
+			go.transform.SetParent( transform.parent );
+			go.name = "Fence";
+			go.transform.localPosition = locationOfPushedObject.localPosition;
+			go.transform.localRotation = locationOfPushedObject.localRotation;
+			pushedObject = go.GetComponent<Rigidbody>();
+		}
+	}
+
+	void destroyPushedObject()
+	{
+		if( locationOfPushedObject != null && pushedObjectPrefab != null )
+		{
+			GameObject.Destroy( pushedObject.gameObject );
+			pushedObject = null;
+		}
 	}
 
 	void PlayerStateChange( CharacterState newState )
