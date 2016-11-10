@@ -106,6 +106,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	private LevelData levelData;
 	
 	const float TILE_SIZE = 36.4f;
+	const float UNDERNEATH_TILE_BY = 30f;
 	int tileDepthMult = 1; //A value of one means the tile depth is 1 x TILE_SIZE, a value of two means 2 x TILE_SIZE, etc.
 	
 	//worldRoadSegments is a List of game object tiles
@@ -211,7 +212,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		//Verify if we should include a plane surrounding the tiles (like an ocean)
 		if( currentEpisode.includeSurroundingPlane )
 		{
-			GameObject go = (GameObject)Instantiate(surroundingPlane.gameObject, new Vector3( 0, -30f, 0 ), Quaternion.identity );
+			GameObject go = (GameObject)Instantiate(surroundingPlane.gameObject, new Vector3( 0, -UNDERNEATH_TILE_BY, 0 ), Quaternion.identity );
 			surroundingPlane = go.transform;
 			if( surroundingPlane.GetComponent<Renderer>().material != null )
 			{
@@ -697,7 +698,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		//Center the surrounding plane around the current tile
 		if( surroundingPlane != null )
 		{
-			surroundingPlane.position = new Vector3( currentTile.position.x, surroundingPlane.position.y, currentTile.position.z );
+			surroundingPlane.position = new Vector3( currentTile.position.x, currentTile.position.y -UNDERNEATH_TILE_BY, currentTile.position.z );
 		}
 
 		updateActiveTiles();
