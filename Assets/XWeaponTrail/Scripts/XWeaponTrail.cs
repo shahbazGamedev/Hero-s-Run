@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Xft {
+namespace XftWeapon {
     public class XWeaponTrail : MonoBehaviour {
         public class Element {
             public Vector3 PointStart;
@@ -140,6 +140,7 @@ namespace Xft {
             Init();
 
             gameObject.SetActive(true);
+            mVertexPool.SetMeshObjectActive(true);
 
             mFadeT = 1f;
             mIsFading = false;
@@ -163,6 +164,7 @@ namespace Xft {
 
         public void Deactivate() {
             gameObject.SetActive(false);
+            mVertexPool.SetMeshObjectActive(false);
         }
 
         public void StopSmoothly(float fadeTime) {
@@ -207,10 +209,6 @@ namespace Xft {
 
 
             mVertexPool.LateUpdate();
-        }
-
-        void OnLevelWasLoaded(int level) {
-            mInited = false;
         }
 
         void OnDestroy() {

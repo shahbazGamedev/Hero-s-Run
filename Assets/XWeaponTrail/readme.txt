@@ -14,6 +14,12 @@ Version Changes:
 1.1.2
 -Fixed a null reference error in OnDestroy() function.
 
+1.1.3
+-Fixed UseWith2D trail can not stop correctly.
+
+1.1.4
+-Fixed the OnLevelWasLoaded warnings in unity 5.3
+
 How to use:
 1, Find the weapon socket in your animated model.
 2, Drag the "X-WeaponTrail.prefab" into its hierarchy.
