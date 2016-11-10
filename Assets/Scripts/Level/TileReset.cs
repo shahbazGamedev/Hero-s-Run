@@ -54,13 +54,13 @@ public class TileReset : MonoBehaviour {
 				//Debug.Log("resetTile destroying power-up named " + " i " + i + " " + child.name ) ;
 				Destroy( child.gameObject );
 			}
-			//Reset creatures if any if they are active
-			else if( child.gameObject.activeSelf && child.GetComponent<ICreature>() != null )
+			//Reset creatures
+			else if( child.GetComponent<ICreature>() != null )
 			{
 				child.GetComponent<ICreature>().resetCreature();
 			}
-			//Reset creatures inside active groups as well
-			else if( child.childCount > 0 && child.name.StartsWith("Group") && child.gameObject.activeSelf )
+			//Reset creatures inside groups as well
+			else if( child.childCount > 0 && child.name.StartsWith("Group") )
 			{
 				for( int j = 0; j < child.childCount; j++ )
 				{

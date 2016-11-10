@@ -32,7 +32,8 @@ public class Creature : BaseClass {
 	protected Vector3 originalLocalPosition;
 	protected Vector3 originalLocalRotation;
 	protected CreatureState originalCreatureState;
-	protected string originalAnimation;
+	[Tooltip("originalAnimation should match the default animation in the animator controller.")]
+	public string originalAnimation = "idle";
 	protected bool originalFollowsPlayer;
 
 	protected void Awake ()
@@ -50,8 +51,6 @@ public class Creature : BaseClass {
 		originalLocalRotation = transform.localEulerAngles;
 		originalCreatureState = creatureState;
 		originalFollowsPlayer = followsPlayer;
-		AnimatorClipInfo[] clips = anim.GetCurrentAnimatorClipInfo( 0 );
-		originalAnimation = clips[0].clip.name;
 	}
 
 	public CreatureState getCreatureState()
@@ -89,11 +88,12 @@ public class Creature : BaseClass {
 
 	protected void resetCreature()
 	{
+		anim = GetComponent<Animator>(); //For some reason, Unity seems to lose the reference and anim becomes null, so fetch it again.
 		creatureState = originalCreatureState;
 		transform.localPosition = originalLocalPosition;
 		transform.localEulerAngles = originalLocalRotation;
 		followsPlayer = originalFollowsPlayer;
-		Debug.LogWarning("Creature - resetCreature called for: " + gameObject.name );
+		Debug.LogWarning("Creature - resetCreature called for: " + gameObject.name + " " + originalAnimation );
 
 		if( controller != null ) controller.enabled = true;
 		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();

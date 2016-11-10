@@ -3235,7 +3235,7 @@ public sealed class PlayerController : BaseClass {
 		}
 		if( calculatedLane != currentLane )
 		{
-			Debug.LogWarning("recalculateCurrentLane changed current lane from: " + currentLane + " to: " + calculatedLane + " relative pos " + relativePos );
+			//Debug.LogWarning("recalculateCurrentLane changed current lane from: " + currentLane + " to: " + calculatedLane + " relative pos " + relativePos );
 			currentLane = calculatedLane;
 			desiredLane = currentLane;
 		}
