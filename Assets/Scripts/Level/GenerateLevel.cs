@@ -382,6 +382,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			tileRot = getTileRotation();
 			tilePos = getTilePosition();
 			go = (GameObject)Instantiate(prefab, tilePos, tileRot );
+			go.name = type.ToString() + " " + tileCreationIndex.ToString();
 		}
 		else
 		{
@@ -391,6 +392,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			tilePos = getTilePosition();
 			go.transform.rotation = tileRot;
 			go.transform.position = tilePos;
+			go.name = type.ToString() + " " + tileCreationIndex.ToString() + " RECYCLED";
 		} 
 
 		SegmentInfo si = getSegmentInfo( go );
@@ -404,7 +406,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		powerUpManager.considerAddingPowerUp( go, tileCreationIndex );
 		go.SetActive( false );
 		worldRoadSegments.Add( go );
-		if( recycledTile == null ) go.name = go.name + "-" + tileCreationIndex.ToString();
 		si.tileIndex = tileCreationIndex;
 		tileCreationIndex++;
 

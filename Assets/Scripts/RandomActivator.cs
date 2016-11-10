@@ -11,7 +11,7 @@ public class RandomActivator : MonoBehaviour {
 	
 	public float chanceDisplayed = 0.3f;
 	
-	void Start ()
+	void OnEnable ()
 	{
 		if( Random.value <= chanceDisplayed )
 		{
