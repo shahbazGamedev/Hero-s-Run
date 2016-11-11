@@ -10,6 +10,7 @@ public enum ValidGameMode {
 
 public enum TileGroupType {
 
+	None = 0,
 	Dark_Tower_Start = 100,
 	Dark_Tower_End = 101,
 	Dark_Tower_Obstacle_1 = 102,

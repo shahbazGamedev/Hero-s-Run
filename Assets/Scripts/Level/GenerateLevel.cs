@@ -146,6 +146,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	//IMPORTANT: The tile game object (and children) cannot be set as Static as we need to move the tile when it gets recycled.
 	List<GameObject> recycledTiles = new List<GameObject>(50);
 	Queue<TileType> endlessTileList = new Queue<TileType>();
+	TileGroupType previousRandomTileGroupType = TileGroupType.None;
 
 	void Awake ()
 	{
@@ -307,13 +308,20 @@ public sealed class GenerateLevel  : MonoBehaviour {
 				addTileNew( individualTiles[j] );
 			}
 		}
-
 		//Now add a first random tile group to the endless tiles Queue
+		addRandomTileGroupToEndlessTilesQueue();
+	}
+
+	private void addRandomTileGroupToEndlessTilesQueue()
+	{
 		TileGroup rtg = tileGroupManager.getRandomTileGroup( currentTheme );
+		//Try to avoid having two identical tile groups back to back if possible.
+		//We will make one attempt to change it if it is identical.
+		if( rtg.tileGroupType == previousRandomTileGroupType ) rtg = tileGroupManager.getRandomTileGroup( currentTheme );
+		previousRandomTileGroupType = rtg.tileGroupType;
 		List <TileType> tiles = rtg.tileList;
 		for( int j=0; j < tiles.Count; j++ )
 		{
-			Debug.Log("RANDOM TILE  " + tiles[j].ToString() );
 			endlessTileList.Enqueue(tiles[j]);
 		}
 	}
@@ -649,14 +657,9 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		}
 		else
 		{
-			//We have run out of tiles
-			TileGroup rtg = tileGroupManager.getRandomTileGroup( currentTheme );
-			List <TileType> tiles = rtg.tileList;
-			for( int j=0; j < tiles.Count; j++ )
-			{
-				endlessTileList.Enqueue(tiles[j]);
-			}
-			//Now that we have added additional tile, we can get a tile
+			//We have run out of tiles. Add a random tile group.
+			addRandomTileGroupToEndlessTilesQueue();
+			//Now that we have added additional tiles, we can get one
 			addTileNew( endlessTileList.Dequeue() );
 		}
 	}
