@@ -30,7 +30,7 @@ public class Creature : BaseClass {
 
 	//Original setup used when reseting the Creature
 	protected Vector3 originalLocalPosition;
-	protected Vector3 originalLocalRotation;
+	protected Quaternion originalLocalRotation;
 	protected CreatureState originalCreatureState;
 	[Tooltip("originalAnimation should match the default animation in the animator controller.")]
 	public string originalAnimation = "idle";
@@ -48,7 +48,7 @@ public class Creature : BaseClass {
 	protected void saveOriginalSetup()
 	{
 		originalLocalPosition = transform.localPosition;
-		originalLocalRotation = transform.localEulerAngles;
+		originalLocalRotation = transform.localRotation;
 		originalCreatureState = creatureState;
 		originalFollowsPlayer = followsPlayer;
 	}
@@ -91,7 +91,7 @@ public class Creature : BaseClass {
 		anim = GetComponent<Animator>(); //For some reason, Unity seems to lose the reference and anim becomes null, so fetch it again.
 		creatureState = originalCreatureState;
 		transform.localPosition = originalLocalPosition;
-		transform.localEulerAngles = originalLocalRotation;
+		transform.localRotation = originalLocalRotation;
 		followsPlayer = originalFollowsPlayer;
 		Debug.LogWarning("Creature - resetCreature called for: " + gameObject.name + " " + originalAnimation );
 
