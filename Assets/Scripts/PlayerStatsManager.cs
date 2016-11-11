@@ -560,7 +560,10 @@ public class PlayerStatsManager {
 
 	public void incrementNumberDeathForEpisode()
 	{
-		deathInEpisodesArray[LevelManager.Instance.getNextEpisodeToComplete()]++;
+		if( GameManager.Instance.getGameMode() == GameMode.Story )
+		{
+			deathInEpisodesArray[LevelManager.Instance.getNextEpisodeToComplete()]++;
+		}
 	}
 
 	public void resetNumberDeathsStartingAtEpisode( int episodeNumber )
