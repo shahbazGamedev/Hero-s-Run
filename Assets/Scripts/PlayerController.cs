@@ -1155,12 +1155,6 @@ public sealed class PlayerController : BaseClass {
 		{
 			handlePowerUp();
 		}
-		else if ( Input.GetKeyDown (KeyCode.R ) )
-		{
-			Debug.Log("Resetting tile with keyboard " + currentTile.name );
-			TileReset tr = currentTile.GetComponent<TileReset>();
-			tr.resetTile();
-		}
 		else if ( Input.GetKeyDown (KeyCode.Q ) )
 		{
 			Debug.Log("Activating shield powerup " );

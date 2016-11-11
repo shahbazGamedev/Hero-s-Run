@@ -139,12 +139,10 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	public Transform surroundingPlane;
 	
 	//To improve performance by preloading prefabs and avoiding reloading tile prefabs that have previously been loaded.
-	const int NUMBER_OF_THEMES = 10; //Dark Tower, Forest, Fairyland, Cemetery, etc.
+	const int NUMBER_OF_THEMES = 8; //Dark Tower, Forest, Fairyland, Cemetery, etc.
 	Dictionary<SegmentTheme,Dictionary<TileType,GameObject>> tilePrefabsPerTheme  = new Dictionary<SegmentTheme,Dictionary<TileType,GameObject>>(NUMBER_OF_THEMES);
 
 	//For the endless running game mode
-	//IMPORTANT: The tile game object (and children) cannot be set as Static as we need to move the tile when it gets recycled.
-	List<GameObject> recycledTiles = new List<GameObject>(50);
 	Queue<TileType> endlessTileList = new Queue<TileType>();
 	TileGroupType previousRandomTileGroupType = TileGroupType.None;
 
@@ -200,7 +198,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	{
 		//Reset values
 		worldRoadSegments.Clear();
-		recycledTiles.Clear();
 		tileCreationIndex = 0;
 		playerTileIndex = 0;
 						
@@ -278,6 +275,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 				}
 			}
 		}
+		worldRoadSegments.TrimExcess();
 	}
 
 	private bool isTileGroupACheckpoint( TileGroup tg )
@@ -356,53 +354,33 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		currentTheme = newTheme;
 	}
 
-	//Returns either a recycled tile if one was found or null. In all cases, it will add the specified tile.
-	private GameObject addTile ( TileType type )
-	{
-		GameObject tile = getRecycledTile(type);
-		return addTile( type, tile );
-	}
-
 	//Important: as previousTileType value, use one of the three basic tile types (Straight, Left or Right). Do
 	//not use the precise tile type (such as Straight_double) or else the method ensureTileHasZeroRotation won't work as intended.
-	private GameObject addTile ( TileType type, GameObject recycledTile )
+	private GameObject addTile ( TileType type )
 	{
 		GameObject go = null;
 		GameObject prefab = null;
 		Quaternion tileRot = Quaternion.identity;
 		Vector3 tilePos = Vector3.zero;
 
-		if( recycledTile == null )
+		//Instantiate the prefab
+		if( !tilePrefabsPerTheme.ContainsKey(currentTheme) ) loadTilePrefabs( currentTheme );
+
+		Dictionary<TileType,GameObject> tilePrefabs = tilePrefabsPerTheme[currentTheme];
+		if( tilePrefabs == null ) Debug.LogError("addTile: tilePrefabsPerTheme does not contain entries for theme " + currentTheme );
+		if( tilePrefabs.ContainsKey(type) )
 		{
-			//Instantiate the prefab
-			if( !tilePrefabsPerTheme.ContainsKey(currentTheme) ) loadTilePrefabs( currentTheme );
-
-			Dictionary<TileType,GameObject> tilePrefabs = tilePrefabsPerTheme[currentTheme];
-			if( tilePrefabs == null ) Debug.LogError("addTile: tilePrefabsPerTheme does not contain entries for theme " + currentTheme );
-			if( tilePrefabs.ContainsKey(type) )
-			{
-				prefab = tilePrefabs[type];
-			}
-			else
-			{
-				Debug.LogError("addTile: could not find prefab for the tile type: " + type + " in the current theme " + currentTheme + " folder." );
-			}
-
-			tileRot = getTileRotation();
-			tilePos = getTilePosition();
-			go = (GameObject)Instantiate(prefab, tilePos, tileRot );
-			go.name = type.ToString() + " " + tileCreationIndex.ToString();
+			prefab = tilePrefabs[type];
 		}
 		else
 		{
-			//Use the tile given to us
-			go = recycledTile;
-			tileRot = getTileRotation();
-			tilePos = getTilePosition();
-			go.transform.rotation = tileRot;
-			go.transform.position = tilePos;
-			go.name = type.ToString() + " " + tileCreationIndex.ToString() + " RECYCLED";
-		} 
+			Debug.LogError("addTile: could not find prefab for the tile type: " + type + " in the current theme " + currentTheme + " folder." );
+		}
+
+		tileRot = getTileRotation();
+		tilePos = getTilePosition();
+		go = (GameObject)Instantiate(prefab, tilePos, tileRot );
+		go.name = type.ToString() + " " + tileCreationIndex.ToString();
 
 		SegmentInfo si = getSegmentInfo( go );
 		tileDepthMult= si.tileDepth;
@@ -535,7 +513,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		}
 	}
 	
-	private  void addTileNew ( TileType tileType )
+	private void addTileNew ( TileType tileType )
 	{
         switch (tileType)
 		{
@@ -633,21 +611,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		}
 	}
 
-	GameObject getRecycledTile( TileType type )
-	{
-		if (recycledTiles.Count == 0 ) return null;
-
-		foreach( GameObject tile in recycledTiles )
-		{
-			if( getTileType( tile ) == type )
-			{
-				recycledTiles.Remove(tile);
-				return tile;
-			}
-		}
-		return null;
-	}
-
 	void addTileInEndlessMode()
 	{
 		if( endlessTileList.Count > 0 )
@@ -670,30 +633,9 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 		//print ("tileEntranceCrossed: player entered " + currentTile.name + " and the player tile index is: " + playerTileIndex );
 
-		//If in endless runner mode, each time we enter a new tile, add a recycled tile at the end
+		//If in endless runner mode, each time we enter a new tile, add a new tile at the end
 		if( GameManager.Instance.getGameMode() == GameMode.Endless  )
 		{
-			//Recycle the tile two behind the player if there is one
-			int indexOfTileToRecycle = playerTileIndex - 2;
-			if( indexOfTileToRecycle >= 0 )
-			{
-				GameObject tileToRecycle = worldRoadSegments[indexOfTileToRecycle];
-				//Do not recycle the Start tile
-				TileType tileType = getSegmentInfo( tileToRecycle ).tileType;
-				if( tileType != TileType.Start )
-				{
-					TileReset tr = tileToRecycle.GetComponent<TileReset>();
-					if( tr != null )
-					{
-						tr.resetTile();
-					}
-					else
-					{
-						Debug.LogWarning("tileEntranceCrossed: Tile named " + tileToRecycle.name + " does not have a Reset Tile component.");
-					}
-					recycledTiles.Add( tileToRecycle );
-				}
-			}
 			//Add a tile at the end
 			addTileInEndlessMode();
 		}
@@ -723,7 +665,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 				//Move the tiles on the right path to the left path. 
 				worldRoadSegments[j].transform.position = new Vector3( worldRoadSegments[j].transform.position.x - (2 * TILE_SIZE), worldRoadSegments[j].transform.position.y, worldRoadSegments[j].transform.position.z + (2 * TILE_SIZE) );
 			}
-			//Also change the previousTilePos so that recycled tiles get added at the right place
+			//Also change the previousTilePos so that new tiles get added at the right place
 			previousTilePos = new Vector3( previousTilePos.x - (2 * TILE_SIZE), previousTilePos.y, previousTilePos.z + (2 * TILE_SIZE) );
 
 		}
