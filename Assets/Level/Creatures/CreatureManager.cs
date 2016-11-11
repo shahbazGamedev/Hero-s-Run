@@ -17,11 +17,12 @@ public enum CreatureState {
 	Jumping = 10
 }
 
-public class CreatureManager : BaseClass {
+public sealed class CreatureManager : BaseClass {
 
 	Transform player;
 	PlayerController playerController;
 	public const int NUMBER_STARS_PER_CREATURE = 20;
+	const float DEACTIVATE_DIAMETER = 60f;
 	int zombieLayer = 9;
 	int goblinLayer = 11;
 	int demonLayer = 12;
@@ -103,7 +104,7 @@ public class CreatureManager : BaseClass {
 			allCreatureControllers[i].deactivate();
 		}
 		//And for good measure, any other that are too close but maybe not on the current tile
-		deactivateCreatures( 54f );
+		deactivateCreatures( DEACTIVATE_DIAMETER );
 
 	}
 
