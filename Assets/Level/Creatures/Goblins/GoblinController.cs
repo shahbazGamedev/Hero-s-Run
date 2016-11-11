@@ -383,6 +383,10 @@ public sealed class GoblinController : Creature, ICreature {
 				Debug.Log("Goblin PlayerStateChange - player is dead and nearby");
 			}
 		}
+		else if( newState == CharacterState.Falling )
+		{
+			halt();
+		}
 	}
 
 	public void Footstep_left ( AnimationEvent eve )

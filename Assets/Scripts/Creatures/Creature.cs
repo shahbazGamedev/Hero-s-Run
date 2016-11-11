@@ -192,4 +192,10 @@ public class Creature : BaseClass {
 	
 	}
 
+	//Called when the player starts falling (like down a ravine). We don't want the creature to follow.
+	protected void halt()
+	{
+		setCreatureState(CreatureState.Idle);
+		anim.CrossFadeInFixedTime( originalAnimation, CROSS_FADE_DURATION );
+	}
 }
