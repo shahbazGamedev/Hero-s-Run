@@ -90,7 +90,8 @@ public enum TileType {
 	Hell_Flame_Columns = 87,
 	Hell_Demons = 88,
 	Hell_Floor_Traps = 89,
-	Blizzard_Before_End = 90
+	Blizzard_Before_End = 90,
+	Countryside_Start = 91
 
 }
 
