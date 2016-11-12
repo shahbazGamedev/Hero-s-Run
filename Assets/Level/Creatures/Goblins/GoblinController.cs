@@ -282,7 +282,7 @@ public sealed class GoblinController : Creature, ICreature {
 		pushedObject.isKinematic = false;
 		pushedObject.AddForce( forces );
 		pushedObject.AddTorque( new Vector3( 0, 300f, 0 ) );
-		anim.CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
+		anim.CrossFadeInFixedTime( "push", CROSS_FADE_DURATION );
 	}
 
 
