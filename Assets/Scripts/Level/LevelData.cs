@@ -213,7 +213,7 @@ public class LevelData : MonoBehaviour {
 				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
 				RenderSettings.ambientGroundColor = new Color(0.71f,0.794f,0.642f);
 				RenderSettings.ambientEquatorColor = new Color(0.794f,0.742f,0.455f);
-				RenderSettings.ambientSkyColor = new Color(0.627f,0.823f,1.094f);
+				RenderSettings.ambientSkyColor = new Color(0.506f,0.633f,0.748f);
 				RenderSettings.ambientIntensity = 1f;
 				RenderSettings.fog = true;
 				RenderSettings.fogMode = FogMode.ExponentialSquared;

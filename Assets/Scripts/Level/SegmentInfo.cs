@@ -32,10 +32,11 @@ public class SegmentInfo : MonoBehaviour {
 	public int distanceBetweenStars = 12;
 	const int LINE_VERTEX_COUNT = 200;
 	float step = 1f/LINE_VERTEX_COUNT;
+	public bool drawBezierGizmo = true;
 
 	public void addCoins()
 	{
-		usesBezierCurve = false;
+		drawBezierGizmo = false;
 		//Create the bezier control points if they do not exist
 		createBezierData();
 
@@ -76,7 +77,7 @@ public class SegmentInfo : MonoBehaviour {
 			go = (GameObject)Instantiate(coinPrefab, toPosition, Quaternion.identity );
 			go.transform.parent = coins;
 		}
-		usesBezierCurve = true;
+		drawBezierGizmo = true;
 
    }
 
@@ -211,7 +212,7 @@ public class SegmentInfo : MonoBehaviour {
 	//Display the bezier curve(s) if any.
 	void OnDrawGizmos ()
 	{
-		if( curveList.Count > 0 && usesBezierCurve )
+		if( curveList.Count > 0 && drawBezierGizmo )
 		{
 			Gizmos.color = Color.red;
 			SegmentInfo.BezierData bezierData;
