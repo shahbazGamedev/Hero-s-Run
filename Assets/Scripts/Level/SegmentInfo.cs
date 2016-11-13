@@ -111,8 +111,21 @@ public class SegmentInfo : MonoBehaviour {
 				//Make the tile the parent of the point
 				bezierEnd.parent = transform;
 				bezierData.bezierEnd = bezierEnd;
-				//Position it at the end of the tile
-				bezierEnd.localPosition = new Vector3( 0, distanceToGround, -GenerateLevel.TILE_SIZE/2f + tileLength );
+		        switch (tileSubType)
+				{
+			        case TileSubType.Straight:
+						bezierEnd.localPosition = new Vector3( 0, distanceToGround, -GenerateLevel.TILE_SIZE/2f + tileLength );
+		                break;
+			                
+			        case TileSubType.Right:
+			        case TileSubType.T_Junction:
+						bezierEnd.localPosition = new Vector3( GenerateLevel.TILE_SIZE/2f, distanceToGround, 0 );
+		                break;
+			                
+			        case TileSubType.Left:
+						bezierEnd.localPosition = new Vector3( -GenerateLevel.TILE_SIZE/2f, distanceToGround, 0 );
+		                break;
+				}
 			}
 			//Create Control point 1, but only if one doesn't already exist
 			Transform bezierControl1 = transform.FindChild("bezierControl1");
@@ -124,8 +137,21 @@ public class SegmentInfo : MonoBehaviour {
 				//Make the tile the parent of the point
 				bezierControl1.parent = transform;
 				bezierData.bezierControl1 = bezierControl1;
-				//Position it at the middle of the tile
-				bezierControl1.localPosition = new Vector3( 0, distanceToGround, 0 );
+		        switch (tileSubType)
+				{
+			        case TileSubType.Straight:
+						bezierControl1.localPosition = new Vector3( 0, distanceToGround, 0 );
+		                break;
+			                
+			        case TileSubType.Right:
+			        case TileSubType.T_Junction:
+						bezierControl1.localPosition = new Vector3( -1f, distanceToGround, 0 );
+		                break;
+			                
+			        case TileSubType.Left:
+						bezierControl1.localPosition = new Vector3( 1f, distanceToGround, 0 );
+		                break;
+				}
 			}
 			//Create Control point 2, but only if one doesn't already exist
 			Transform bezierControl2 = transform.FindChild("bezierControl2");
@@ -137,8 +163,21 @@ public class SegmentInfo : MonoBehaviour {
 				//Make the tile the parent of the point
 				bezierControl2.parent = transform;
 				bezierData.bezierControl2 = bezierControl2;
-				//Position it at the middle of the tile
-				bezierControl2.localPosition = new Vector3( 0, distanceToGround, 0 );
+		        switch (tileSubType)
+				{
+			        case TileSubType.Straight:
+						bezierControl2.localPosition = new Vector3( 0, distanceToGround, 0 );
+		                break;
+			                
+			        case TileSubType.Right:
+			        case TileSubType.T_Junction:
+						bezierControl2.localPosition = new Vector3( -2f, distanceToGround, 1f );
+		                break;
+			                
+			        case TileSubType.Left:
+						bezierControl2.localPosition = new Vector3( 2f, distanceToGround, 1f );
+		                break;
+				}
 			}
 		}
 	}
@@ -159,6 +198,7 @@ public class SegmentInfo : MonoBehaviour {
 		RaycastHit hit;
 		if (Physics.Raycast(new Vector3(toPosition.x, toPosition.y + 10f, toPosition.z), Vector3.down, out hit, 50f ))
 		{
+			Debug.Log("SegmentInfo: calculateYPosition - object below is " + hit.collider.name );
 			return hit.point.y + distanceToGround;
 		}
 		else
