@@ -21,10 +21,157 @@ public class SegmentInfo : MonoBehaviour {
 	public int tileDepth = 1;
 	public TileSubType tileSubType = TileSubType.Straight;
 
+	[Header("Coin Generator")]
+	[Tooltip("The name of the coin prefab to use. It should be located in the Resources/Level/Props/ folder.")]
+	public string coin_prefab_name = "Coin_1";
+	[Tooltip("Before generating new coins, should the previous ones be destroyed.")]
+	public bool destroyExistingCoinsFirst = true;
+	[Tooltip("Should you use a raycast to calculate the distance to ground. If true, coins will be placed at the height specified by distanceToGround.")]
+	public bool useRaycast = true;
+	public float distanceToGround = 0.8f;
+	public int distanceBetweenStars = 12;
+	const int LINE_VERTEX_COUNT = 200;
+	float step = 1f/LINE_VERTEX_COUNT;
+
+	public void addCoins()
+	{
+		usesBezierCurve = false;
+		//Create the bezier control points if they do not exist
+		createBezierData();
+
+		//Consider destroying existing coins before adding new ones
+		if( destroyExistingCoinsFirst )
+		{
+			destroyExistingCoins();
+		}
+
+		//Create a container to store the coins, but only if one doesn't already exist
+		Transform coins = transform.FindChild("Coins");
+		if( coins == null)
+		{
+			//Nope, it doesn't exist. We need to create it
+			GameObject coinsGameObject = new GameObject("Coins");
+			coins = coinsGameObject.transform;
+			//Make the tile the parent of the Coins object
+			coins.parent = transform;
+			coins.localPosition = Vector3.zero;
+		}
+
+		//Load the coin prefab from the resources folder
+		GameObject coinPrefab = (GameObject) Resources.Load("Level/Props/" + coin_prefab_name, typeof(GameObject));
+		
+		//Add the coins
+		SegmentInfo.BezierData bezierData = curveList[0];
+		GameObject go;
+		//Start at 1 to avoid having stars immediately next to the start
+		for(int i=1; i < LINE_VERTEX_COUNT; i = i + distanceBetweenStars )
+		{
+			float t = i * step;
+			Vector3 toPosition = Utilities.Bezier3( bezierData.bezierStart.position, bezierData.bezierControl1.position, bezierData.bezierControl2.position, bezierData.bezierEnd.position, t );
+			if( useRaycast )
+			{
+				//Place the coin constant distance to ground by using a raycast
+				toPosition.y = calculateYPosition( toPosition );
+			}
+			go = (GameObject)Instantiate(coinPrefab, toPosition, Quaternion.identity );
+			go.transform.parent = coins;
+		}
+		usesBezierCurve = true;
+
+   }
+
+	void createBezierData()
+	{
+		if( curveList.Count == 0 )
+		{
+			SegmentInfo.BezierData bezierData = new BezierData();
+			curveList.Add( bezierData );
+			float tileLength = GenerateLevel.TILE_SIZE * tileDepth;
+
+			//Create Start point, but only if one doesn't already exist
+			Transform bezierStart = transform.FindChild("bezierStart");
+			if( bezierStart == null)
+			{
+				//Nope, it doesn't exist. We need to create it
+				GameObject bezierStartObject = new GameObject("bezierStart");
+				bezierStart = bezierStartObject.transform;
+				//Make the tile the parent of the point
+				bezierStart.parent = transform;
+				bezierData.bezierStart = bezierStart;
+				//Position it at the beginning of the tile
+				bezierStart.localPosition = new Vector3( 0, distanceToGround, -GenerateLevel.TILE_SIZE/2f );
+			}
+			//Create End point, but only if one doesn't already exist
+			Transform bezierEnd = transform.FindChild("bezierEnd");
+			if( bezierEnd == null)
+			{
+				//Nope, it doesn't exist. We need to create it
+				GameObject bezierEndObject = new GameObject("bezierEnd");
+				bezierEnd = bezierEndObject.transform;
+				//Make the tile the parent of the point
+				bezierEnd.parent = transform;
+				bezierData.bezierEnd = bezierEnd;
+				//Position it at the end of the tile
+				bezierEnd.localPosition = new Vector3( 0, distanceToGround, -GenerateLevel.TILE_SIZE/2f + tileLength );
+			}
+			//Create Control point 1, but only if one doesn't already exist
+			Transform bezierControl1 = transform.FindChild("bezierControl1");
+			if( bezierControl1 == null)
+			{
+				//Nope, it doesn't exist. We need to create it
+				GameObject bezierControl1Object = new GameObject("bezierControl1");
+				bezierControl1 = bezierControl1Object.transform;
+				//Make the tile the parent of the point
+				bezierControl1.parent = transform;
+				bezierData.bezierControl1 = bezierControl1;
+				//Position it at the middle of the tile
+				bezierControl1.localPosition = new Vector3( 0, distanceToGround, 0 );
+			}
+			//Create Control point 2, but only if one doesn't already exist
+			Transform bezierControl2 = transform.FindChild("bezierControl2");
+			if( bezierControl2 == null)
+			{
+				//Nope, it doesn't exist. We need to create it
+				GameObject bezierControl2Object = new GameObject("bezierControl2");
+				bezierControl2 = bezierControl2Object.transform;
+				//Make the tile the parent of the point
+				bezierControl2.parent = transform;
+				bezierData.bezierControl2 = bezierControl2;
+				//Position it at the middle of the tile
+				bezierControl2.localPosition = new Vector3( 0, distanceToGround, 0 );
+			}
+		}
+	}
+
+	void destroyExistingCoins()
+	{
+		//Find the Coins container
+		Transform coins = transform.FindChild("Coins");
+		if( coins != null)
+		{
+			GameObject.DestroyImmediate( coins.gameObject );
+		}
+	}
+
+
+	float calculateYPosition( Vector3 toPosition )
+	{
+		RaycastHit hit;
+		if (Physics.Raycast(new Vector3(toPosition.x, toPosition.y + 10f, toPosition.z), Vector3.down, out hit, 50f ))
+		{
+			return hit.point.y + distanceToGround;
+		}
+		else
+		{
+			Debug.LogWarning("SegmentInfo: calculateYPosition - there is no ground below position " + toPosition );
+			return 0;
+		}
+	}
+
 	//Display the bezier curve(s) if any.
 	void OnDrawGizmos ()
 	{
-		if( usesBezierCurve )
+		if( curveList.Count > 0 && usesBezierCurve )
 		{
 			Gizmos.color = Color.red;
 			SegmentInfo.BezierData bezierData;
@@ -44,6 +191,7 @@ public class SegmentInfo : MonoBehaviour {
 			}
 		}
 	}
+
 	[System.Serializable]
 	public class BezierData
 	{

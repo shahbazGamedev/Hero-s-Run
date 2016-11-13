@@ -108,7 +108,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	
 	private LevelData levelData;
 	
-	const float TILE_SIZE = 36.4f;
+	public const float TILE_SIZE = 36.4f;
 	const float UNDERNEATH_TILE_BY = 30f;
 	int tileDepthMult = 1; //A value of one means the tile depth is 1 x TILE_SIZE, a value of two means 2 x TILE_SIZE, etc.
 	
