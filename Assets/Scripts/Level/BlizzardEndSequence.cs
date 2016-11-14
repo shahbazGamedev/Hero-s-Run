@@ -32,7 +32,6 @@ public class BlizzardEndSequence : MonoBehaviour {
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
 		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
-		thunder();
 	}
 	
 	void OnDisable()
@@ -65,6 +64,7 @@ public class BlizzardEndSequence : MonoBehaviour {
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
 		StartCoroutine( playerController.slowDownPlayer(walkToLedgeDistance, afterPlayerSlowdown ) );
+		thunder();
 	}
 	
 	void afterPlayerSlowdown()

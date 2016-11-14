@@ -149,6 +149,9 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	Queue<TileType> endlessTileList = new Queue<TileType>();
 	TileGroupType previousRandomTileGroupType = TileGroupType.None;
 
+	//For the Episode Progress Indicator - to know where to display the checkpoint indicators
+	List<int> indexOfCheckpointTiles = new List<int>();
+	
 	void Awake ()
 	{
 		//The activity indicator may have been started
@@ -265,7 +268,10 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		for( int i=0; i < tileGroupList.Count; i++ )
 		{
 			TileGroup tg = tileGroupManager.getTileGroup(tileGroupList[i]);
-			if( isTileGroupACheckpoint( tg ) ) episodeCheckpointIndex++;
+			if( isTileGroupACheckpoint( tg ) )
+			{
+				episodeCheckpointIndex++;
+			}
 			if( numbersOfCheckpointsPassed > episodeCheckpointIndex ) continue; //we want to restart at the last passed checkpoint, not from the Start tile
 			if( LevelManager.Instance.getOnlyUseUniqueTiles() && tg.frequency != TileGroup.FrequencyType.Unique ) continue;
 			if( tg.frequency != TileGroup.FrequencyType.Never && (tg.validGameMode == ValidGameMode.Any || tg.validGameMode == ValidGameMode.Story) )
@@ -274,11 +280,15 @@ public sealed class GenerateLevel  : MonoBehaviour {
 				List<TileType> individualTiles = tg.tileList;
 				for( int j=0; j < individualTiles.Count; j++ )
 				{
+					if( individualTiles[j] == TileType.Checkpoint )
+					{
+						indexOfCheckpointTiles.Add( tileCreationIndex );
+					}
 					addTileNew( individualTiles[j] );
 				}
 			}
 		}
-		worldRoadSegments.TrimExcess();
+		worldRoadSegments.TrimExcess();		
 	}
 
 	private bool isTileGroupACheckpoint( TileGroup tg )
@@ -764,6 +774,21 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	TileType getTileType( GameObject tile )
 	{
 		return getSegmentInfo(tile).tileType;
+	}
+
+	public float getEpisodeProgress()
+	{
+		return (float)playerTileIndex/worldRoadSegments.Count;
+	}
+
+	public List<int> getIndexOfCheckpointTiles()
+	{
+		return indexOfCheckpointTiles;
+	}
+
+	public int getNumberOfTiles()
+	{
+		return tileCreationIndex;
 	}
 
 }
