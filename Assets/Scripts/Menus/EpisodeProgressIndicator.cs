@@ -6,12 +6,15 @@ using System.Collections.Generic;
 public class EpisodeProgressIndicator : MonoBehaviour {
 
 	public GenerateLevel generateLevel;
-	public Slider progressBar;
 	public GameObject checkpointPrefab;
-	public RectTransform handleSlideArea;
+	public RectTransform playerIcon;
+	private RectTransform progressBarPanel;
+	private float progressBarLength;
 
 	void Start ()
 	{
+		progressBarPanel = GetComponent<RectTransform>();
+		progressBarLength = progressBarPanel.rect.width;
 		createCheckpoints();
 	}
 	
@@ -20,23 +23,23 @@ public class EpisodeProgressIndicator : MonoBehaviour {
 		GameObject go;
 		RectTransform rt;
 		List<int> indexOfCheckpointTiles = generateLevel.getIndexOfCheckpointTiles();
-		float sliderWidth = handleSlideArea.GetComponent<RectTransform>().rect.width;
 		float numberOfTiles = (float) generateLevel.getNumberOfTiles();
 		for( int i = 0; i < indexOfCheckpointTiles.Count; i++ )
 		{
 			go = (GameObject)Instantiate(checkpointPrefab);
 			rt = go.GetComponent<RectTransform>();
-			go.transform.SetParent( progressBar.transform, false );
-			float xPosition = indexOfCheckpointTiles[i]/numberOfTiles * sliderWidth + 10f;
+			go.transform.SetParent( progressBarPanel, false );
+			float xPosition = indexOfCheckpointTiles[i]/numberOfTiles * progressBarLength;
 			rt.anchoredPosition = new Vector2( xPosition, rt.anchoredPosition.y);
 			go.SetActive( true );
-			Debug.Log("createCheckpoints index " + i + " xPosition " + xPosition + " % " + indexOfCheckpointTiles[i] + " sliderWidth " +  sliderWidth + " nbr tiles " + generateLevel.getNumberOfTiles() );
+			Debug.Log("createCheckpoints index " + i + " xPosition " + xPosition + " checkpoint index " + indexOfCheckpointTiles[i] + " progressBarLength " +  progressBarLength + " nbr tiles " + generateLevel.getNumberOfTiles() );
 		}
 	}
 
 	// Update is called once per frame
 	void Update ()
 	{
-		progressBar.value = generateLevel.getEpisodeProgress();
+		float xPosition = generateLevel.getEpisodeProgress() * progressBarLength;
+		playerIcon.anchoredPosition = new Vector2( xPosition, playerIcon.anchoredPosition.y);
 	}
 }

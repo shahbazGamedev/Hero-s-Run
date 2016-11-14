@@ -778,7 +778,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 	public float getEpisodeProgress()
 	{
-		return (float)playerTileIndex/worldRoadSegments.Count;
+		return (float)playerTileIndex/(tileCreationIndex - 1);
 	}
 
 	public List<int> getIndexOfCheckpointTiles()
@@ -788,7 +788,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 	public int getNumberOfTiles()
 	{
-		return tileCreationIndex;
+		return tileCreationIndex - 1;
 	}
 
 }
