@@ -7,7 +7,8 @@ public class EpisodeProgressIndicator : MonoBehaviour {
 
 	public GenerateLevel generateLevel;
 	public GameObject checkpointPrefab;
-	public RectTransform playerIcon;
+	public GameObject playerIconPrefab;
+	private RectTransform playerIcon;
 	private RectTransform progressBarPanel;
 	private float progressBarLength;
 
@@ -16,6 +17,7 @@ public class EpisodeProgressIndicator : MonoBehaviour {
 		progressBarPanel = GetComponent<RectTransform>();
 		progressBarLength = progressBarPanel.rect.width;
 		createCheckpoints();
+		createPlayerIcon(); //do this after because of the sort order
 	}
 	
 	void createCheckpoints()
@@ -35,6 +37,17 @@ public class EpisodeProgressIndicator : MonoBehaviour {
 			Debug.Log("createCheckpoints index " + i + " xPosition " + xPosition + " checkpoint index " + indexOfCheckpointTiles[i] + " progressBarLength " +  progressBarLength + " nbr tiles " + generateLevel.getNumberOfTiles() );
 		}
 	}
+
+	void createPlayerIcon()
+	{
+		GameObject go;
+		go = (GameObject)Instantiate(playerIconPrefab);
+		playerIcon = go.GetComponent<RectTransform>();
+		go.transform.SetParent( progressBarPanel, false );
+		playerIcon.anchoredPosition = new Vector2( 0, playerIcon.anchoredPosition.y);
+		go.SetActive( true );
+	}
+
 
 	// Update is called once per frame
 	void Update ()
