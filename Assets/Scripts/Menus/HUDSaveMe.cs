@@ -32,6 +32,8 @@ public class HUDSaveMe : MonoBehaviour {
 	public Text ranOutofTimeTitleText;
 	public Text ranOutofTimeContentText;
 	public Text ranOutofTimeButtonText;
+	[Header("Episode Progress Indicator")]
+	public GameObject progressBarPanel;
 	 
 
 	void Awake()
@@ -46,6 +48,7 @@ public class HUDSaveMe : MonoBehaviour {
 		checkpointText.text = LocalizationManager.Instance.getText("MENU_FROM_CHECKPOINT");
 		checkpointCostText.text = LocalizationManager.Instance.getText("MENU_FREE");
 		quitNormalText.text = LocalizationManager.Instance.getText("MENU_QUIT");
+		progressBarPanel.SetActive( false );
 		//Tutorial Save Me
 		titleTutorialText.text = LocalizationManager.Instance.getText("TUTORIAL_OOPS");
 		//helpText.text gets set at runtime.
@@ -127,6 +130,11 @@ public class HUDSaveMe : MonoBehaviour {
 
 		tutorialPanel.SetActive( false );
 		normalPanel.SetActive( true );
+		if( GameManager.Instance.getGameMode() == GameMode.Story )
+		{
+			progressBarPanel.SetActive( true );
+			progressBarPanel.GetComponent<EpisodeProgressIndicator>().updatePlayerIconPosition();
+		}
 
 	}
 

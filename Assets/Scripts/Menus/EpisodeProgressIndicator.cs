@@ -8,11 +8,11 @@ public class EpisodeProgressIndicator : MonoBehaviour {
 	public GenerateLevel generateLevel;
 	public GameObject checkpointPrefab;
 	public GameObject playerIconPrefab;
-	private RectTransform playerIcon;
+	RectTransform playerIcon;
 	private RectTransform progressBarPanel;
 	private float progressBarLength;
 
-	void Start ()
+	void Awake ()
 	{
 		progressBarPanel = GetComponent<RectTransform>();
 		progressBarLength = progressBarPanel.rect.width;
@@ -34,7 +34,6 @@ public class EpisodeProgressIndicator : MonoBehaviour {
 			float xPosition = indexOfCheckpointTiles[i]/numberOfTiles * progressBarLength;
 			rt.anchoredPosition = new Vector2( xPosition, rt.anchoredPosition.y);
 			go.SetActive( true );
-			Debug.Log("createCheckpoints index " + i + " xPosition " + xPosition + " checkpoint index " + indexOfCheckpointTiles[i] + " progressBarLength " +  progressBarLength + " nbr tiles " + generateLevel.getNumberOfTiles() );
 		}
 	}
 
@@ -42,15 +41,13 @@ public class EpisodeProgressIndicator : MonoBehaviour {
 	{
 		GameObject go;
 		go = (GameObject)Instantiate(playerIconPrefab);
+		go.SetActive( true );
 		playerIcon = go.GetComponent<RectTransform>();
 		go.transform.SetParent( progressBarPanel, false );
 		playerIcon.anchoredPosition = new Vector2( 0, playerIcon.anchoredPosition.y);
-		go.SetActive( true );
 	}
 
-
-	// Update is called once per frame
-	void Update ()
+	public void updatePlayerIconPosition ()
 	{
 		float xPosition = generateLevel.getEpisodeProgress() * progressBarLength;
 		playerIcon.anchoredPosition = new Vector2( xPosition, playerIcon.anchoredPosition.y);
