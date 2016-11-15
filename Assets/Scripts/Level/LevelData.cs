@@ -215,7 +215,7 @@ public class LevelData : MonoBehaviour {
 				RenderSettings.ambientEquatorColor = new Color(0.794f,0.742f,0.455f);
 				RenderSettings.ambientSkyColor = new Color(0.506f,0.633f,0.748f);
 				RenderSettings.ambientIntensity = 1f;
-				RenderSettings.fog = true;
+				RenderSettings.fog = false;
 				RenderSettings.fogMode = FogMode.ExponentialSquared;
 				RenderSettings.fogColor = new Color(0.792f,0.823f,0.764f); //greenish
 				break;
