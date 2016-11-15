@@ -136,6 +136,9 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	public PlayerController playerController;
 	public TileGroupManager tileGroupManager;
 	
+	//For configuring the dynamic fog using the level data
+	public Camera mainCamera;
+
 	SegmentTheme currentTheme;
 	
 	//The surrounding plane (like an ocean) is always centered with the current tile
@@ -249,6 +252,9 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 		//Make the first few tiles active
 		activateInitialTiles(0);
+
+		//Configure fog, if any
+		mainCamera.GetComponent<DynamicFogAndMist.DynamicFog>().enabled = currentEpisode.isFogEnabled;
 
 		//Fade-in the level ambience soundtrack
 		StartCoroutine( SoundManager.soundManager.fadeInAmbience( currentEpisode.AmbienceSound, 6f ) );

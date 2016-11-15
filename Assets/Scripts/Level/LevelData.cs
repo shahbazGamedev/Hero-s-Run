@@ -286,6 +286,8 @@ public class LevelData : MonoBehaviour {
 		public Material surroundingPlaneMaterial;
 		[Tooltip("The time of day in hours and minutes, using a 24h-clock, when this episode starts.")]
 		public Vector2 timeOfDay;
+		[Header("Dynamic Fog")]
+		public bool isFogEnabled = false;
 		[Header("Tile Groups")]
 		public List<TileGroupType> tileGroupList = new List<TileGroupType>();
 		
