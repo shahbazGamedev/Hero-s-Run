@@ -901,8 +901,9 @@ public class PlayerStatsManager {
 		try
 		{
 			string powerUpInventoryString = PlayerPrefs.GetString("powerUpInventory", defaultPowerUpsForNewPlayer );
+			if( string.IsNullOrEmpty(powerUpInventoryString) ) powerUpInventoryString = defaultPowerUpsForNewPlayer;
 			string[] powerUpInventoryArray = powerUpInventoryString.Split(',');
-			//Debug.Log ("loadPowerUpInventory " + powerUpInventoryString + " length " + powerUpInventoryArray.Length );
+			//Debug.Log ("loadPowerUpInventory " + powerUpInventoryString + " length " + powerUpInventoryArray.Length + " default " + defaultPowerUpsForNewPlayer + " powerUpInventoryString " + powerUpInventoryString);
 			for( int i = 0; i < powerUpInventoryArray.Length; i = i+3 )
 			{
 				int powerUpTypeAsInt;
