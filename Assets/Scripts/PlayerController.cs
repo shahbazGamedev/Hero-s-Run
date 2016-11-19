@@ -428,7 +428,6 @@ public sealed class PlayerController : BaseClass {
 		//This time is captured so we can slowly accelerate the run speed
 		timeSessionStarted = Time.time;
 
-		StartCoroutine( SoundManager.soundManager.fadeInMusic(2f) );
 		GameManager.Instance.setGameState( GameState.Normal );
 
 		if( playCutscene )
@@ -2350,7 +2349,6 @@ public sealed class PlayerController : BaseClass {
 			//Player has successfully completed the current level.
 			Debug.Log ("Checkpoint triggered ");
 			trollController.stopPursuing ();
-			StartCoroutine( SoundManager.soundManager.fadeOutMusic( 6.3f ) );
 			StartCoroutine( SoundManager.soundManager.fadeOutAmbience( 6.3f ) );
 			GameManager.Instance.setGameState(GameState.Checkpoint);
 			StartCoroutine( slowDownPlayer( 16f, afterPlayerSlowdown ) );
@@ -2740,9 +2738,6 @@ public sealed class PlayerController : BaseClass {
 
 			//Reset move direction and forward
 			moveDirection = new Vector3( 0,moveDirection.y,0 );
-
-			//Fade out the music
-			StartCoroutine( SoundManager.soundManager.fadeOutMusic(1f, 0.25f) );
 
 			//Stop any currently playing sound
 			audioSource.Stop();

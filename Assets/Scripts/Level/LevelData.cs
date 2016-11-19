@@ -278,8 +278,10 @@ public class LevelData : MonoBehaviour {
 		public int powerUpDensity = 4;
 		[Tooltip("The ambience sound for the level. It plays in addition to the music. It is optional.")]
 		public AudioClip AmbienceSound;
-		[Tooltip("The music track for the level. It plays in addition to the ambience. It is optional.")]
-		public AudioClip MusicTrack;
+		[Tooltip("The quiet music track for the level. It plays in addition to the ambience. It is optional.")]
+		public AudioClip quietMusicTrack;
+		[Tooltip("The action music track for the level. It plays on top of the quiet music when triggered, usually during a combat sequence. It is optional.")]
+		public AudioClip actionMusicTrack;
 		[Tooltip("Whether or not to include a surrounding plane. The plane can represent an ocean for example.")]
 		public bool includeSurroundingPlane = false;
 		[Tooltip("Which material to use for the surrounding plane.")]

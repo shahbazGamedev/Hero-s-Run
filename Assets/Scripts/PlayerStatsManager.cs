@@ -73,8 +73,10 @@ public class PlayerStatsManager {
 	//Format is : PowerUpType,quantity,upgrade level
 	const string defaultPowerUpsForNewPlayer = "1,0,0,2,0,0,3,3,0,4,3,0,5,3,0,6,3,0";
 	
-	//Sound volume between 0 and 1f.
-	float soundVolume = 1f;
+	//Sound effects volume between -80db and 0f.
+	float soundFxVolume = 0f;
+	//Music volume between -80db and 0f.
+	float musicVolume = 0f;
 
 	//The number of times the player was revived for the current run.
 	//This is used to calculate the cost to revive since the cost increases by one each time the player is revived.
@@ -750,15 +752,24 @@ public class PlayerStatsManager {
 		return ownsStarDoubler;
 	}
 
-	public float getSoundVolume()
+	public float getMusicVolume()
 	{
-		return soundVolume;
+		return musicVolume;
 	}
 	
-	public void setSoundVolume( float volume )
+	public void setMusicVolume( float volume )
 	{
-		soundVolume = volume;
-		AudioListener.volume = soundVolume;
+		musicVolume = volume;
+	}
+
+	public float getSoundFxVolume()
+	{
+		return soundFxVolume;
+	}
+	
+	public void setSoundFxVolume( float volume )
+	{
+		soundFxVolume = volume;
 	}
 
 	public void setUsesFacebook( bool value )
@@ -1020,7 +1031,8 @@ public class PlayerStatsManager {
 				dateLastPlayed = DateTime.Parse( dateLastPlayedString );
 			}
 
-			setSoundVolume( PlayerPrefs.GetFloat("soundVolume", 1f ) );
+			setSoundFxVolume( PlayerPrefs.GetFloat("soundFxVolume", 0f ) );
+			setMusicVolume( PlayerPrefs.GetFloat("musicVolume", 0f ) );
 			currentCoins = PlayerPrefs.GetInt("currentCoins", 0);
 			lifetimeCoins = PlayerPrefs.GetInt("lifetimeCoins", 0);
 			loadDisplayStars();
@@ -1093,7 +1105,8 @@ public class PlayerStatsManager {
 		}
 		PlayerPrefs.SetString( "dateLastPlayed", dateLastPlayed.ToString() );
 
-		PlayerPrefs.SetFloat("soundVolume", soundVolume );
+		PlayerPrefs.SetFloat("soundFxVolume", soundFxVolume );
+		PlayerPrefs.SetFloat("musicVolume", musicVolume );
 
 		PlayerPrefs.SetInt("currentCoins", currentCoins );
 		PlayerPrefs.SetInt("lifetimeCoins", lifetimeCoins );
@@ -1139,8 +1152,10 @@ public class PlayerStatsManager {
 		usesFacebook = false;
 		dateLastPlayed = DateTime.Now;
 		PlayerPrefs.SetString( "dateLastPlayed", dateLastPlayed.ToString() );
-		PlayerPrefs.SetFloat("soundVolume", 1f );
-		soundVolume = 1f;
+		PlayerPrefs.SetFloat("soundFxVolume", 0f );
+		setSoundFxVolume( 0 );
+		PlayerPrefs.SetFloat("musicVolume", 0f );
+		setMusicVolume( 0 );
 
 		PlayerPrefs.SetInt("currentCoins", 0 );
 		currentCoins = 0;

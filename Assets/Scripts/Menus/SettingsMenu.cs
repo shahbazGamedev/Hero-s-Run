@@ -11,8 +11,11 @@ public class SettingsMenu : MonoBehaviour {
 	public Canvas settingsMenuCanvas;
 	public Text titleText;
 	[Header("Sound")]
-	public Text soundVolumeText;
-	public Slider soundVolumeSlider;
+	public AudioMixer mainMixer;
+	public Text soundFxVolumeText;
+	public Slider soundFxVolumeSlider;
+	public Text musicVolumeText;
+	public Slider musicVolumeSlider;
 	[Header("Facebook")]
 	public Text facebookText;
 	[Header("Difficulty")]
@@ -41,7 +44,8 @@ public class SettingsMenu : MonoBehaviour {
 		//Text Inititialization
 		titleText.text = LocalizationManager.Instance.getText("POPUP_TITLE_SETTINGS");
 
-		soundVolumeText.text = LocalizationManager.Instance.getText("MENU_SOUND_VOLUME");
+		soundFxVolumeText.text = LocalizationManager.Instance.getText("MENU_SOUND_FX_VOLUME");
+		musicVolumeText.text = LocalizationManager.Instance.getText("MENU_MUSIC_VOLUME");
 		if( FacebookManager.Instance.isLoggedIn() )
 		{
 			facebookText.text = LocalizationManager.Instance.getText("POPUP_BUTTON_FB_DISCONNECT");
@@ -66,7 +70,8 @@ public class SettingsMenu : MonoBehaviour {
 		}
 		versionNumberText.text = "v" + GameManager.Instance.getVersionNumber();
 
-		soundVolumeSlider.value = PlayerStatsManager.Instance.getSoundVolume();
+		soundFxVolumeSlider.value = PlayerStatsManager.Instance.getSoundFxVolume();
+		musicVolumeSlider.value = PlayerStatsManager.Instance.getMusicVolume();
 	}
 
 	public void showSettingsMenu()
@@ -82,9 +87,16 @@ public class SettingsMenu : MonoBehaviour {
 		settingsMenuCanvas.gameObject.SetActive( false );
 	}
 
-	public void setSoundVolume( Slider volume )
+	public void setSoundFxVolume( Slider volume )
 	{
-		PlayerStatsManager.Instance.setSoundVolume(volume.value);
+		PlayerStatsManager.Instance.setSoundFxVolume(volume.value);
+		mainMixer.SetFloat( "SoundEffectsVolume", volume.value );
+	}
+
+	public void setMusicVolume( Slider volume )
+	{
+		PlayerStatsManager.Instance.setMusicVolume(volume.value);
+		mainMixer.SetFloat( "MusicVolume", volume.value );
 	}
 
 	public void handleFacebookConnect()

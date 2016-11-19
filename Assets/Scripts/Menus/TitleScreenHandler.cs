@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 
 public class TitleScreenHandler : MonoBehaviour {
 
@@ -18,6 +19,8 @@ public class TitleScreenHandler : MonoBehaviour {
 	public Text connectionContentText;
 	public Text connectionOkayButtonText;
 
+	[Header("Sound")]
+	public AudioMixer mainMixer;
 
 	void Awake ()
 	{
@@ -72,6 +75,12 @@ public class TitleScreenHandler : MonoBehaviour {
 		{
 			FacebookManager.Instance.CallFBInit( updateState );
 		}
+	}
+
+	void Start()
+	{
+		mainMixer.SetFloat( "SoundEffectsVolume", PlayerStatsManager.Instance.getSoundFxVolume() );
+		mainMixer.SetFloat( "MusicVolume", PlayerStatsManager.Instance.getMusicVolume() );
 	}
 
 	public void play()

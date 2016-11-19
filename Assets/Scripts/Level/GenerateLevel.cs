@@ -258,9 +258,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		//Fade-in the level ambience soundtrack
 		StartCoroutine( SoundManager.soundManager.fadeInAmbience( currentEpisode.AmbienceSound, 6f ) );
 
-		//Set the music track to play if a value is set
-		SoundManager.soundManager.setMusicTrack( currentEpisode.MusicTrack );
-
 		Debug.Log("GenerateLevel-CreateLevel: Level " + currentEpisode.episodeName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
 
