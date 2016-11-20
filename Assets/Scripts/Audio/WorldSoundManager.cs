@@ -29,7 +29,6 @@ public class WorldSoundManager : MonoBehaviour {
 		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
 		quietMusicAudioSource.clip = currentEpisode.quietMusicTrack;
 		actionMusicAudioSource.clip = currentEpisode.actionMusicTrack;
-		quietMusicAudioSource.ignoreListenerPause = true;
 		ambienceAudioSource.clip = currentEpisode.AmbienceSound;
 		//Reset values
         ambienceQuietLevel.TransitionTo(0f);
@@ -103,13 +102,9 @@ public class WorldSoundManager : MonoBehaviour {
 
 	void GameStateChange( GameState newState )
 	{
-		if( newState == GameState.Checkpoint || newState == GameState.Paused )
+		if( newState == GameState.Checkpoint )
 		{
          	lowMusic.TransitionTo(1f);
-		}
-		else if( newState == GameState.Countdown )
-		{
-         	startMusic();
 		}
 	}
 
