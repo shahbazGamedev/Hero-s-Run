@@ -29,6 +29,7 @@ public class WorldSoundManager : MonoBehaviour {
 		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
 		quietMusicAudioSource.clip = currentEpisode.quietMusicTrack;
 		actionMusicAudioSource.clip = currentEpisode.actionMusicTrack;
+		quietMusicAudioSource.ignoreListenerPause = true;
 		ambienceAudioSource.clip = currentEpisode.AmbienceSound;
 		//Reset values
         ambienceQuietLevel.TransitionTo(0f);
@@ -92,18 +93,7 @@ public class WorldSoundManager : MonoBehaviour {
 	{
 		if( newState == CharacterState.StartRunning )
 		{
-			if( isActionMusicPlaying )
-			{
-				withActionMusic.TransitionTo(m_TransitionOut);
-			}
-			else
-			{
-				if( quietMusicAudioSource.clip != null )
-				{
-					if( !quietMusicAudioSource.isPlaying ) quietMusicAudioSource.Play();
-					onlyQuietMusic.TransitionTo(2f);
-				}
-			}
+			startMusic();
 		}
 		else if( newState == CharacterState.Dying )
 		{
@@ -113,9 +103,13 @@ public class WorldSoundManager : MonoBehaviour {
 
 	void GameStateChange( GameState newState )
 	{
-		if( newState == GameState.Checkpoint )
+		if( newState == GameState.Checkpoint || newState == GameState.Paused )
 		{
          	lowMusic.TransitionTo(1f);
+		}
+		else if( newState == GameState.Countdown )
+		{
+         	startMusic();
 		}
 	}
 
@@ -136,4 +130,19 @@ public class WorldSoundManager : MonoBehaviour {
 		}
 	}
 
+	void startMusic()
+	{
+		if( isActionMusicPlaying )
+		{
+			withActionMusic.TransitionTo(m_TransitionOut);
+		}
+		else
+		{
+			if( quietMusicAudioSource.clip != null )
+			{
+				if( !quietMusicAudioSource.isPlaying ) quietMusicAudioSource.Play();
+				onlyQuietMusic.TransitionTo(2f);
+			}
+		}
+	}
 }

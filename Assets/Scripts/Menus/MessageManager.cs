@@ -136,7 +136,7 @@ public class MessageManager : MonoBehaviour {
 
 	public void hideMessageCenter()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		GetComponent<Animator>().Play("Panel Slide Out");
 	}
 }

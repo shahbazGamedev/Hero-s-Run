@@ -76,13 +76,13 @@ public class SettingsMenu : MonoBehaviour {
 
 	public void showSettingsMenu()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		settingsMenuCanvas.gameObject.SetActive( true );
 	}
 
 	public void closeSettingsMenu()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.savePlayerStats();
 		settingsMenuCanvas.gameObject.SetActive( false );
 	}
@@ -102,7 +102,7 @@ public class SettingsMenu : MonoBehaviour {
 	public void handleFacebookConnect()
 	{
 		Debug.Log("handleFacebookConnect");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		if( FacebookManager.Instance.isLoggedIn() )
 		{
 			//Logout
@@ -118,7 +118,7 @@ public class SettingsMenu : MonoBehaviour {
 	public void changeDifficultyLevel()
 	{
 		Debug.Log("changeDifficultyLevel");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		DifficultyLevel newDifficultyLevel = PlayerStatsManager.Instance.getNextDifficultyLevel();
 		//setDifficultyLevel takes care of saving the new value
 		PlayerStatsManager.Instance.setDifficultyLevel(newDifficultyLevel);
@@ -129,27 +129,27 @@ public class SettingsMenu : MonoBehaviour {
 	public void showAchievements()
 	{
 		Debug.Log("showAchievements");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		Social.ShowAchievementsUI();
 	}
 
 	public void showPrivacyPolicy()
 	{
 		Debug.Log("showPrivacyPolicy");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		Application.OpenURL(privacyPolicyURL);
 	}
 
 	public void restorePurchases()
 	{
 		Debug.LogWarning("restorePurchases - Not implemented.");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 	}
 
 	public void showDebugMenu()
 	{
 		Debug.Log("showDebugMenu");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		settingsMenuCanvas.gameObject.SetActive( false );
 		debugMenuCanvas.gameObject.SetActive( true );
 	}
@@ -157,7 +157,7 @@ public class SettingsMenu : MonoBehaviour {
 	public void closeDebugMenu()
 	{
 		Debug.Log("closeDebugMenu");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		settingsMenuCanvas.gameObject.SetActive( true );
 		debugMenuCanvas.gameObject.SetActive( false );
 	}

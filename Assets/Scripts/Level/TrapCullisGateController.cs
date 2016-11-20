@@ -109,8 +109,6 @@ public class TrapCullisGateController : MonoBehaviour {
 			LevelManager.Instance.setEpisodeCompleted( true );
 		}
 		FacebookManager.Instance.postHighScore( LevelManager.Instance.getCurrentEpisodeNumber() + 1 );
-		SoundManager.soundManager.stopMusic();
-		SoundManager.soundManager.stopAmbience();
 		GameManager.Instance.setGameState(GameState.PostLevelPopup);
 		SceneManager.LoadScene( (int) GameScenes.WorldMap );
 	}

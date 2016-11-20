@@ -86,7 +86,7 @@ public class MiniStoreHandler : MonoBehaviour {
 	public void buyLives( int quantity )
 	{
 		Debug.Log("buyLives");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 
 		//Grant the purchased lives
 		PlayerStatsManager.Instance.increaseLives( quantity );

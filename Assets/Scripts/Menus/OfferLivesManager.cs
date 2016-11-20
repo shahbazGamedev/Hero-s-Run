@@ -22,7 +22,7 @@ public class OfferLivesManager : MonoBehaviour {
 	
 	public void showFacebookOfferLives()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		string message = LocalizationManager.Instance.getText("FB_HAVE_A_LIFE_MESSAGE");
 		string title = LocalizationManager.Instance.getText( "POPUP_TITLE_OFFER_LIVES" );
 		FacebookManager.Instance.CallAppRequestAsFriendSelector( title, message, "Accept_Give_Life,1,-1", "", "" );

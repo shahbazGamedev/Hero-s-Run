@@ -50,21 +50,21 @@ public class DebugMenu : MonoBehaviour {
 	public void resetSavedData()
 	{
 		Debug.Log("resetSavedData");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.resetPlayerStats();
 	}
 
 	public void deleteRequests()
 	{
 		Debug.Log("deleteRequests");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		StartCoroutine( FacebookManager.Instance.deleteAllAppRequests() );
 	}
 
 	public void resetAchievements()
 	{
 		Debug.Log("resetAchievements");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		GameCenterPlatform.ResetAllAchievements( (resetResult) => {
 			Debug.Log( (resetResult) ? "Achievement Reset succesfull." : "Achievement Reset failed." );
 		});
@@ -74,7 +74,7 @@ public class DebugMenu : MonoBehaviour {
 	public void giveStars()
 	{
 		Debug.Log("Give 25000 Stars");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.modifyCurrentCoins( 25000, false, false );
 		PlayerStatsManager.Instance.savePlayerStats();
 		updatePlayerStats();
@@ -83,7 +83,7 @@ public class DebugMenu : MonoBehaviour {
 	public void giveLives()
 	{
 		Debug.Log("Give 20 Lives");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.increaseLives( 20 );
 		PlayerStatsManager.Instance.savePlayerStats();
 	}
@@ -91,7 +91,7 @@ public class DebugMenu : MonoBehaviour {
 	public void giveTreasureChestKeys()
 	{
 		Debug.Log("Give 25 Treasure Chest Keys");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.increaseTreasureKeysOwned( 25 );
 		PlayerStatsManager.Instance.savePlayerStats();
 	}
@@ -99,7 +99,7 @@ public class DebugMenu : MonoBehaviour {
 	public void toggleShowDebugInfo()
 	{
 		Debug.Log("toggleShowDebugInfo");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.setShowDebugInfoOnHUD( !PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
 		if( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() )
 		{
@@ -115,7 +115,7 @@ public class DebugMenu : MonoBehaviour {
 	public void toggleOnlyUseUniqueTiles()
 	{
 		Debug.Log("toggleOnlyUseUniqueTiles");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		LevelManager.Instance.setOnlyUseUniqueTiles( !LevelManager.Instance.getOnlyUseUniqueTiles() );
 		if( LevelManager.Instance.getOnlyUseUniqueTiles() )
 		{
@@ -130,7 +130,7 @@ public class DebugMenu : MonoBehaviour {
 	public void unlockAllLevels()
 	{
 		Debug.Log("unlockAllLevels");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		LevelManager.Instance.unlockAllEpisodes();
 		PlayerStatsManager.Instance.savePlayerStats();
 		newWorldMapHandler.drawLevelMarkers();

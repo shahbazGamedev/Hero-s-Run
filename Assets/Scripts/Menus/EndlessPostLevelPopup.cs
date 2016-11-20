@@ -191,7 +191,7 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 
 	public void closePostLevelPopup()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.savePlayerStats();
 		GetComponent<Animator>().Play("Panel Slide Out");
 		GameManager.Instance.setGameState(GameState.Menu);
@@ -200,14 +200,14 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 	public void retry()
 	{
 		Debug.Log("showEndlessPostLevelPopup-Retry button pressed.");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.savePlayerStats();
 		newWorldMapHandler.play( LevelManager.Instance.getCurrentEpisodeNumber() );
 	}
 
 	public void challengeFriends()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		string title = LocalizationManager.Instance.getText( "POST_LEVEL_CHALLENGE_FB_TITLE" );
 		string message = LocalizationManager.Instance.getText( "POST_LEVEL_CHALLENGE_FB_MESSAGE" );
 		int playerScore = LevelManager.Instance.getScore() + PlayerStatsManager.Instance.getDistanceTravelled();
@@ -219,7 +219,7 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 
 	public void bragFriends()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		string title = LocalizationManager.Instance.getText( "POST_LEVEL_CHALLENGE_BEATEN_FB_TITLE" );
 		string message = LocalizationManager.Instance.getText( "POST_LEVEL_CHALLENGE_BEATEN_FB_MESSAGE" );
 		int playerScore = LevelManager.Instance.getScore() + PlayerStatsManager.Instance.getDistanceTravelled();

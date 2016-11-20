@@ -78,7 +78,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 
 	public void changeSelection()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		if( toggle )
 		{
 			//if toggle is true, the male hero is in the front and the female hero is in the back right
@@ -108,7 +108,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 
 	public void moveNextToPopup()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		if( toggle )
 		{
 			//if toggle is true, the male hero is in the front
@@ -126,7 +126,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 	}
 	public void showUserNamePopup()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 
 		//hide content below popup
 		titleText.gameObject.SetActive( false );
@@ -150,7 +150,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 
 	public void confirmSelection()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		
 		//Save a default user name if the user has not entered anything
 		if( userNameText.text == "")

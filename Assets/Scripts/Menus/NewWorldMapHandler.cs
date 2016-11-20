@@ -181,7 +181,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 	void episodeButtonClick( int episodeNumber )
 	{
 		Debug.Log("Episode Station click-Episode: " + episodeNumber );
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		if( GameManager.Instance.getGameMode() == GameMode.Story )
 		{
 			LevelManager.Instance.setCurrentEpisodeNumber( episodeNumber );
@@ -286,20 +286,20 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	public void showStoreScreen()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		storeManager.showStore( StoreTab.Store, StoreReason.None );
 	}
 
 	public void showShopScreen()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		storeManager.showStore( StoreTab.Shop, StoreReason.None );
 	}
 
 	//Middle Panel
 	public void showMessageCenter()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		messageCenterPanel.GetComponent<MessageManager>().refreshMessages();
 		messageCenterPanel.GetComponent<Animator>().Play("Panel Slide In");
 	}
@@ -307,13 +307,13 @@ public class NewWorldMapHandler : MonoBehaviour {
 	//Bottom panel
 	public void showInviteFriends()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		FacebookManager.Instance.inviteFriends( inviteFriendsCustomImageUri );
 	}
 
 	public void showCharacterGallery()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		StartCoroutine( loadCharacterGallery() );
 	}
 
@@ -330,38 +330,38 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	public void showAskLivesPopup()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		facebookAskLivesPanel.GetComponent<Animator>().Play("Panel Slide In");
 	}
 
 	public void hideAskLivesPopup()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		facebookAskLivesPanel.GetComponent<Animator>().Play("Panel Slide Out");
 	}
 
 	public void showOfferLivesPopup()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		facebookOfferLivesPanel.GetComponent<Animator>().Play("Panel Slide In");
 	}
 
 	public void hideOfferLivesPopup()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		facebookOfferLivesPanel.GetComponent<Animator>().Play("Panel Slide Out");
 	}
 
 	public void showSettingsMenu()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		settingsMenuCanvas.GetComponent<SettingsMenu>().showSettingsMenu();
 	}
 
 	//Treasure island
 	public void showTreasureIsland()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		StartCoroutine( loadTreasureIsland() );
 	}
 
@@ -401,6 +401,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public void cheatButton()
 	{
 		Debug.Log("cheatButton called.");
+		UISoundManager.uiSoundManager.playButtonClick();
 		//postLevelPopupPanel.GetComponent<PostLevelPopup>().showPostLevelPopup(levelData);
 		GameObject CoreManagers = GameObject.FindGameObjectWithTag("CoreManagers");
 		CoreManagers.GetComponent<NotificationServicesHandler>().sendTestLocalNotification();
@@ -414,7 +415,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	public void toggleGameMode()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		if( GameManager.Instance.getGameMode() == GameMode.Story )
 		{
 			gameModeButtonText.text = LocalizationManager.Instance.getText("MENU_GAME_MODE_ENDLESS");

@@ -93,7 +93,7 @@ public class TakeScreenshot : MonoBehaviour {
 
 	public void flipCamera()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		isFacingPlayer = !isFacingPlayer;
 		if( isFacingPlayer )
 		{

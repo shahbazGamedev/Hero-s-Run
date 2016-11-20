@@ -36,13 +36,13 @@ public class ConnectToFacebookPopup : MonoBehaviour {
 	//Player pressed the X button
 	public void close()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		StartCoroutine( showEpisodedPopupThread() );
 	}
 
 	public void connectToFacebook()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		connectionPopup.gameObject.SetActive( true );
 		if( Application.internetReachability != NetworkReachability.NotReachable )
 		{
@@ -61,7 +61,7 @@ public class ConnectToFacebookPopup : MonoBehaviour {
 
 	public void closeConnectionPopup()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		connectionPopup.gameObject.SetActive( false );
 		StartCoroutine( showEpisodedPopupThread() );
 	}

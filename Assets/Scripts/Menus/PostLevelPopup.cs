@@ -128,7 +128,7 @@ public class PostLevelPopup : MonoBehaviour {
 
 	public void closePostLevelPopup()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		if( LevelManager.Instance.wasEpisodeCompleted() )
 		{
 			LevelManager.Instance.incrementCurrentEpisodeNumber();
@@ -178,7 +178,7 @@ public class PostLevelPopup : MonoBehaviour {
 	public void retry()
 	{
 		Debug.Log("PostLevelPopup-Retry button pressed.");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		newWorldMapHandler.play( LevelManager.Instance.getCurrentEpisodeNumber() );
 	}
 

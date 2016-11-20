@@ -101,7 +101,7 @@ public class HUDSaveMe : MonoBehaviour {
 
 	void closeSaveMeMenu()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		saveMeCanvas.SetActive ( false );
 	}
 
@@ -175,8 +175,6 @@ public class HUDSaveMe : MonoBehaviour {
 		LevelManager.Instance.setEnableTorches( true );
 		LevelManager.Instance.setNextEpisodeToComplete( LevelManager.Instance.getCurrentEpisodeNumber() );
 		playerController.resetSharedLevelData(false);
-		SoundManager.soundManager.stopMusic();
-		SoundManager.soundManager.stopAmbience();
 		SceneManager.LoadScene( (int) GameScenes.Level );
 	}
 
@@ -188,8 +186,6 @@ public class HUDSaveMe : MonoBehaviour {
 		//We might have the slow down power-up still active, so just to be sure
 		//we will reset the timescale back to 1.
 		Time.timeScale = 1f;
-		SoundManager.soundManager.stopMusic();
-		SoundManager.soundManager.stopAmbience();
 		GameManager.Instance.setGameState(GameState.PostLevelPopup);
 		//Report score to Game Center
 		GameCenterManager.updateLeaderboard();

@@ -2349,7 +2349,6 @@ public sealed class PlayerController : BaseClass {
 			//Player has successfully completed the current level.
 			Debug.Log ("Checkpoint triggered ");
 			trollController.stopPursuing ();
-			StartCoroutine( SoundManager.soundManager.fadeOutAmbience( 6.3f ) );
 			GameManager.Instance.setGameState(GameState.Checkpoint);
 			StartCoroutine( slowDownPlayer( 16f, afterPlayerSlowdown ) );
 		}

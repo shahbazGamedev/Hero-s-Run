@@ -77,14 +77,14 @@ public class EpisodePopup : MonoBehaviour {
 
 	public void closeEpisodeMenu()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		anim.Play("Panel Slide Out");
 	}
 
 	public void play()
 	{
 		Debug.Log("EpisodePopup-Play button pressed: Episode: " + episodeNumber );
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		newWorldMapHandler.play( episodeNumber );
 	}
 	

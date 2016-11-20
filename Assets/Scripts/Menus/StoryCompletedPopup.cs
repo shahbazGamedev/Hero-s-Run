@@ -39,7 +39,7 @@ public class StoryCompletedPopup : MonoBehaviour {
 	//Player pressed the X button
 	public void close()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		GetComponent<Animator>().Play("Panel Slide Out");
 	}
 
@@ -47,7 +47,7 @@ public class StoryCompletedPopup : MonoBehaviour {
 	public void changeDifficultyLevel()
 	{
 		Debug.Log("changeDifficultyLevel");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		DifficultyLevel newDifficultyLevel = PlayerStatsManager.Instance.getNextDifficultyLevel();
 		//setDifficultyLevel takes care of saving the new value
 		PlayerStatsManager.Instance.setDifficultyLevel(newDifficultyLevel);
@@ -59,7 +59,7 @@ public class StoryCompletedPopup : MonoBehaviour {
 	public void startOver()
 	{
 		Debug.Log("startOver");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 
 		LevelManager.Instance.setEpisodeChanged( false );
 		LevelManager.Instance.setPlayerFinishedTheGame( false );

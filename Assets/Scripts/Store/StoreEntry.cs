@@ -202,7 +202,7 @@ public class StoreEntry : MonoBehaviour {
 		//Make sure we have enough currency
 		if( currentUpgradeCost <= PlayerStatsManager.Instance.getCurrentCoins() )
 		{
-			SoundManager.soundManager.playButtonClick();
+			UISoundManager.uiSoundManager.playButtonClick();
 			//Deduct the appropriate number of currency for the purchase
 			PlayerStatsManager.Instance.modifyCurrentCoins(-currentUpgradeCost, false, true );
 			print ( "buying new value is: " + newUpgradeValue );
@@ -240,7 +240,7 @@ public class StoreEntry : MonoBehaviour {
 		//Make sure we have enough currency
 		if( PlayerStatsManager.Instance.getCurrentCoins() >= price )
 		{
-			SoundManager.soundManager.playButtonClick();
+			UISoundManager.uiSoundManager.playButtonClick();
 			//Deduct the appropriate number of currency for the purchase
 			PlayerStatsManager.Instance.modifyCurrentCoins((int)(-price), false, true );
 			PlayerStatsManager.Instance.incrementPowerUpInventory( powerUpType );
@@ -265,7 +265,7 @@ public class StoreEntry : MonoBehaviour {
 	void buyStarDoubler()
 	{
 		Debug.Log("buyStarDoubler");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		buyButtonLabel.alignment = TextAnchor.MiddleCenter;
 		buyButtonLabel.text = LocalizationManager.Instance.getText("STAR_DOUBLER_OWNED");
 		buyButton.interactable = false;
@@ -280,7 +280,7 @@ public class StoreEntry : MonoBehaviour {
 	void buyLives()
 	{
 		Debug.Log("buyLives");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 
 		//Grant the purchased lives
 		PlayerStatsManager.Instance.increaseLives( quantity );
@@ -292,7 +292,7 @@ public class StoreEntry : MonoBehaviour {
 	void buyStars()
 	{
 		Debug.Log("buyStars");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 
 		//Grant the purchased lives
 		PlayerStatsManager.Instance.modifyCurrentCoins( quantity, false, true );

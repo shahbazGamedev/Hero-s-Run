@@ -33,7 +33,6 @@ public class ChickenController : MonoBehaviour {
 		if( newState == CharacterState.Dying && wasTriggered )
 		{
 			//Only destroy the chicken that was involved
-			StartCoroutine( SoundManager.soundManager.fadeOutClip( transform.parent.GetComponent<AudioSource>(), transform.parent.GetComponent<AudioSource>().clip, SoundManager.STANDARD_FADE_TIME ) );
 			DestroyObject(transform.parent.gameObject );
 		}
 	}

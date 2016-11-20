@@ -48,15 +48,12 @@ public class CullisGateController : MonoBehaviour {
 		}
 		FacebookManager.Instance.postHighScore( LevelManager.Instance.getCurrentEpisodeNumber() + 1 );
 		resetAllZombies();
-		SoundManager.soundManager.fadeOutAllAudio( SoundManager.STANDARD_FADE_TIME );
 		Invoke("quit", WAIT_DURATION );
 	}
 
 	void quit()
 	{
 		Debug.Log("Cullis Gate-Returning to world map.");
-		SoundManager.soundManager.stopMusic();
-		SoundManager.soundManager.stopAmbience();
 		GameManager.Instance.setGameState(GameState.PostLevelPopup);
 		SceneManager.LoadScene( (int) GameScenes.WorldMap );
 	}
