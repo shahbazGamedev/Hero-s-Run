@@ -16,6 +16,7 @@ public class Creature : BaseClass {
 	[Tooltip("Speed at which to lock on player.")]
 	public float enemyAimSpeed = 7.6f;
 	[Header("Audio")]
+	public AudioSource voiceOverAudioSource;
 	public AudioClip knockbackSound;
 	[Header("Look At IK")]
 	public float lookAtWeight = 0.8f;

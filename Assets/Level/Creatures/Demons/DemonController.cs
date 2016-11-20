@@ -287,6 +287,6 @@ public sealed class DemonController : Creature, ICreature {
 	public void speak( string voiceOverID, float textDisplayDuration, bool hasVoiceOver )
 	{
 		DialogManager.dialogManager.activateDisplayGeneric( LocalizationManager.Instance.getText( voiceOverID ), demonPortrait, textDisplayDuration );
-		if( hasVoiceOver ) audioSource.PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
+		if( hasVoiceOver ) voiceOverAudioSource.PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
 	}
 }

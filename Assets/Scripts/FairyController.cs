@@ -356,6 +356,6 @@ public class FairyController : Creature {
 	public void speak( string voiceOverID, float textDisplayDuration, bool hasVoiceOver )
 	{
 		DialogManager.dialogManager.activateDisplayFairy( LocalizationManager.Instance.getText( voiceOverID ), textDisplayDuration );
-		if( hasVoiceOver ) GetComponent<AudioSource>().PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
+		if( hasVoiceOver ) voiceOverAudioSource.PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
 	}
 }

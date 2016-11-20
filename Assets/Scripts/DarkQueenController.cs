@@ -22,6 +22,8 @@ public class DarkQueenController : BaseClass {
 
 	public ParticleSystem floatDownFx;		//Bluish lights that play when she floats down from the sky
 	public ParticleSystem spellFx;			//Electric fx that plays when she casts a spell
+	[Header("Audio")]
+	public AudioSource voiceOverAudioSource;
 	public AudioClip spellSound;			//Sound fx that plays when she casts a spell
 
 	PlayerController playerController;
@@ -179,7 +181,7 @@ public class DarkQueenController : BaseClass {
 	public void speak( string voiceOverID, float textDisplayDuration, bool hasVoiceOver )
 	{
 		DialogManager.dialogManager.activateDisplayDarkQueen( LocalizationManager.Instance.getText( voiceOverID ), textDisplayDuration );
-		if( hasVoiceOver ) GetComponent<AudioSource>().PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
+		if( hasVoiceOver ) voiceOverAudioSource.PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
 	}
 
 }
