@@ -255,9 +255,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		//Configure fog, if any
 		mainCamera.GetComponent<DynamicFogAndMist.DynamicFog>().enabled = currentEpisode.isFogEnabled;
 
-		//Fade-in the level ambience soundtrack
-		StartCoroutine( SoundManager.soundManager.fadeInAmbience( currentEpisode.AmbienceSound, 6f ) );
-
 		Debug.Log("GenerateLevel-CreateLevel: Level " + currentEpisode.episodeName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
 

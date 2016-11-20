@@ -77,7 +77,7 @@ public class SimpleController : MonoBehaviour {
 	{
 		if( eventType == GameEvent.Start_Moving )
 		{
-			anim.CrossFade(walkAnim.name, 0.5f );
+			anim.CrossFade(walkAnim.name, 0.3f );
 			GetComponent<AudioSource>().Play();
 			allowMove = true;
 			Invoke( "stopMoving", moveDuration );

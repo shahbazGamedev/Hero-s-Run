@@ -8,10 +8,14 @@ public class WorldSoundManager : MonoBehaviour {
    	public AudioSource quietMusicAudioSource;
    	public AudioSource actionMusicAudioSource;
     public AudioSource stingAudioSource;
+    public AudioSource ambienceAudioSource;
 	[Header("Snapshots")]
     public AudioMixerSnapshot onlyQuietMusic;
     public AudioMixerSnapshot withActionMusic;
     public AudioMixerSnapshot lowMusic;
+    public AudioMixerSnapshot ambienceNormalLevel;
+	public AudioMixerSnapshot ambienceQuietLevel;
+	
 	[Header("Stings")]
     public AudioClip[] stings;
 
@@ -24,7 +28,14 @@ public class WorldSoundManager : MonoBehaviour {
 		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
 		quietMusicAudioSource.clip = currentEpisode.quietMusicTrack;
 		actionMusicAudioSource.clip = currentEpisode.actionMusicTrack;
+		ambienceAudioSource.clip = currentEpisode.AmbienceSound;
     }
+
+	void Start()
+	{
+		if( !ambienceAudioSource.isPlaying ) ambienceAudioSource.Play();
+		ambienceNormalLevel.TransitionTo( 4f );
+	}
 
     void PlaySting()
     {
@@ -93,6 +104,10 @@ public class WorldSoundManager : MonoBehaviour {
 		if( newState == GameState.Checkpoint )
 		{
          	lowMusic.TransitionTo(1f);
+		}
+		else if( newState == GameState.PostLevelPopup )
+		{
+         	ambienceQuietLevel.TransitionTo(0f);
 		}
 	}
 
