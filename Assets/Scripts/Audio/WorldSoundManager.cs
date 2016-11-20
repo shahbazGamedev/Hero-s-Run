@@ -15,7 +15,8 @@ public class WorldSoundManager : MonoBehaviour {
     public AudioMixerSnapshot lowMusic;
     public AudioMixerSnapshot ambienceNormalLevel;
 	public AudioMixerSnapshot ambienceQuietLevel;
-	
+	[Header("Audio Mixers")]
+	public AudioMixer worldEffectsMixer;
 	[Header("Stings")]
     public AudioClip[] stings;
 
@@ -29,6 +30,9 @@ public class WorldSoundManager : MonoBehaviour {
 		quietMusicAudioSource.clip = currentEpisode.quietMusicTrack;
 		actionMusicAudioSource.clip = currentEpisode.actionMusicTrack;
 		ambienceAudioSource.clip = currentEpisode.AmbienceSound;
+		//Reset values
+        ambienceQuietLevel.TransitionTo(0f);
+		worldEffectsMixer.SetFloat("Reverb Intensity", -80f );
     }
 
 	void Start()
@@ -46,21 +50,21 @@ public class WorldSoundManager : MonoBehaviour {
 
 	void OnEnable()
 	{
-		MusicTrigger.triggerMusic += TriggerMusic;
+		TriggerSoundEvent.sendSoundEvent += SendSoundEvent;
 		PlayerController.playerStateChanged += PlayerStateChange;
 		GameManager.gameStateEvent += GameStateChange;
 	}
 	
 	void OnDisable()
 	{
-		MusicTrigger.triggerMusic -= TriggerMusic;
+		TriggerSoundEvent.sendSoundEvent -= SendSoundEvent;
 		PlayerController.playerStateChanged -= PlayerStateChange;
 		GameManager.gameStateEvent -= GameStateChange;
 	}
 
-	void TriggerMusic( MusicEvent eventType )
+	void SendSoundEvent( SoundEvent eventType, float reverbIntensity )
 	{
-		if( eventType == MusicEvent.To_Combat_Music )
+		if( eventType == SoundEvent.To_Combat_Music )
 		{
 			//Player entered combat, play more action-oriented music
 			isActionMusicPlaying = true;
@@ -68,11 +72,19 @@ public class WorldSoundManager : MonoBehaviour {
             withActionMusic.TransitionTo(m_TransitionIn);
             PlaySting();
 		}
-		else if( eventType == MusicEvent.To_Quiet_Music )
+		else if( eventType == SoundEvent.To_Quiet_Music )
 		{
 			//Player left combat zone, resume to quieter music
 			isActionMusicPlaying = false;
 			onlyQuietMusic.TransitionTo(m_TransitionOut);
+		} 
+		else if( eventType == SoundEvent.Start_Reverb )
+		{
+			worldEffectsMixer.SetFloat("Reverb Intensity", reverbIntensity );
+		} 
+		else if( eventType == SoundEvent.Stop_Reverb )
+		{
+			worldEffectsMixer.SetFloat("Reverb Intensity", -80f );
 		} 
 	}
 
@@ -104,10 +116,6 @@ public class WorldSoundManager : MonoBehaviour {
 		if( newState == GameState.Checkpoint )
 		{
          	lowMusic.TransitionTo(1f);
-		}
-		else if( newState == GameState.PostLevelPopup )
-		{
-         	ambienceQuietLevel.TransitionTo(0f);
 		}
 	}
 
