@@ -17,13 +17,14 @@ public class WorldSoundManager : MonoBehaviour {
 	public AudioMixerSnapshot ambienceQuietLevel;
 	[Header("Audio Mixers")]
 	public AudioMixer worldEffectsMixer;
+	public AudioMixer worldDialogMixer;
 	[Header("Stings")]
     public AudioClip[] stings;
 
 	private bool isActionMusicPlaying = false;
     private float m_TransitionIn = 1.5f;
     private float m_TransitionOut = 3f;
- 
+
     void Awake () 
     {
 		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
@@ -33,6 +34,7 @@ public class WorldSoundManager : MonoBehaviour {
 		//Reset values
         ambienceQuietLevel.TransitionTo(0f);
 		worldEffectsMixer.SetFloat("Reverb Intensity", -80f );
+		worldDialogMixer.SetFloat("Echo Intensity", -80f );
     }
 
 	void Start()
@@ -62,7 +64,7 @@ public class WorldSoundManager : MonoBehaviour {
 		GameManager.gameStateEvent -= GameStateChange;
 	}
 
-	void SendSoundEvent( SoundEvent eventType, float reverbIntensity )
+	void SendSoundEvent( SoundEvent eventType, float intensity )
 	{
 		if( eventType == SoundEvent.To_Combat_Music )
 		{
@@ -80,11 +82,19 @@ public class WorldSoundManager : MonoBehaviour {
 		} 
 		else if( eventType == SoundEvent.Start_Reverb )
 		{
-			worldEffectsMixer.SetFloat("Reverb Intensity", reverbIntensity );
+			worldEffectsMixer.SetFloat("Reverb Intensity", intensity );
 		} 
 		else if( eventType == SoundEvent.Stop_Reverb )
 		{
 			worldEffectsMixer.SetFloat("Reverb Intensity", -80f );
+		} 
+		else if( eventType == SoundEvent.Start_Echo )
+		{
+			worldEffectsMixer.SetFloat("Echo Intensity", intensity );
+		} 
+		else if( eventType == SoundEvent.Stop_Echo )
+		{
+			worldEffectsMixer.SetFloat("Echo Intensity", -80f );
 		} 
 	}
 
