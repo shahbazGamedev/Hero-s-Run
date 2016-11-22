@@ -15,8 +15,6 @@ public enum GameEvent {
 	Open_Door = 13,
 	Raise_Draw_Bridge = 14,
 	Activate_Cullis_Gate = 15,
-	Start_Snowing = 16,
-	Stop_Snowing = 17,
 	Fairy_Message = 18,
 	Broken_Bridge = 19,
 	Kill_Fairy = 20,

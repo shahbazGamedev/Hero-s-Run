@@ -4,7 +4,6 @@ using System.Collections;
 public class WeatherManager : BaseClass {
 
 	public ParticleSystem rain;
-	public ParticleSystem snow;
 	ParticleSystem activeParticleSystem; //either rain or snow
 	Transform player;
 	SimpleCamera simpleCamera;
@@ -66,19 +65,6 @@ public class WeatherManager : BaseClass {
 		else if( eventType == GameEvent.Stop_Raining )
 		{
 			activateRain( false );
-		}
-		else if( eventType == GameEvent.Start_Snowing )
-		{
-			print ("WeatherManager-player entered trigger GameEvent.Start_Snowing");
-			activeParticleSystem = snow;
-			activeParticleSystem.Play();
-			isParticleSystemActive = true;
-		}
-		else if( eventType == GameEvent.Stop_Snowing )
-		{
-			print ("WeatherManager-player entered trigger GameEvent.Stop_Snowing");
-			activeParticleSystem.Stop();
-			isParticleSystemActive = false;
 		}
 	}
 
