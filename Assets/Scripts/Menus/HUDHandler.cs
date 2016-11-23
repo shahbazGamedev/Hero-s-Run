@@ -29,7 +29,10 @@ public class HUDHandler : MonoBehaviour {
 	public GameObject treasurePrefab;
 	public GameObject restartFromCheckpointPanel; //Used to inform the player that he is restarting from a checkpoint and not from the begining
 	public Text restartFromCheckpointText; 
-	
+	[Header("Used for fading effects")]
+	public Image fadeImage;
+	public CanvasGroup canvasGroup;
+
 	//Used to track the items picked up by the player such as Stars and Treasure Keys. Multiple icons can be displayed at the same time with an offset.
 	List<PickupDisplay> pickupDisplayList = new List<PickupDisplay>();
 	const float PICKUP_DISPLAY_DURATION = 4f;
@@ -69,8 +72,18 @@ public class HUDHandler : MonoBehaviour {
 		updateFPS();
 		if( hudDebugInfo.gameObject.activeSelf ) hudDebugInfo.text = " FPS: " + fps + "-" + LevelManager.Instance.getNextEpisodeToComplete() + "-" + playerController.getCurrentTileName() + "-" + PlayerStatsManager.Instance.getTimesPlayerRevivedInLevel() + "-" + PlayerController.getPlayerSpeed().ToString("N1");
 		managePickUps();
+		//Also support keys for debugging
+		if ( Input.GetKeyDown (KeyCode.U) ) 
+		{
+			fadeEffect( true );
+		}
+		else if ( Input.GetKeyDown (KeyCode.I) ) 
+		{
+			fadeEffect( false );
+		}
 	}
 	
+
 	void updateFPS()
 	{
 		//average out the fps over a number of frames
@@ -271,5 +284,22 @@ public class HUDHandler : MonoBehaviour {
 		public float startTime = 0;
 	}
 
+	public void fadeEffect( bool fadeInEffect )
+	{
+		if( fadeInEffect )
+		{
+			//Fade-out UI elements like the pause button
+			LeanTween.alphaCanvas( canvasGroup, 0, 2f );
+			//Fade-in the white overlay
+			LeanTween.color( fadeImage.GetComponent<RectTransform>(), new Color( 1f, 1f, 1f, 1f ), 5f );
+		}
+		else
+		{
+			//Fade-in UI elements like the pause button
+			LeanTween.alphaCanvas( canvasGroup, 1f, 2f );
+			//Fade-out the white overlay
+			LeanTween.color( fadeImage.GetComponent<RectTransform>(), new Color( 1f, 1f, 1f, 0f ), 5f );
+		}
+	}
 }
 

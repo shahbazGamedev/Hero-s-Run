@@ -277,7 +277,9 @@ public class LevelData : MonoBehaviour {
 		[Tooltip("The number of tiles between power ups. Zero means there is no power up in that level.")]
 		public int powerUpDensity = 4;
 		[Tooltip("The ambience sound for the level. It plays in addition to the music. It is optional.")]
-		public AudioClip AmbienceSound;
+		public AudioClip mainAmbienceTrack;
+		[Tooltip("A secondary ambience sound for the level. It plays in addition to the music. It is optional.")]
+		public AudioClip secondaryAmbienceTrack;
 		[Tooltip("The quiet music track for the level. It plays in addition to the ambience. It is optional.")]
 		public AudioClip quietMusicTrack;
 		[Tooltip("The action music track for the level. It plays on top of the quiet music when triggered, usually during a combat sequence. It is optional.")]

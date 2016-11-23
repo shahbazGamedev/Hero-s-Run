@@ -8,13 +8,17 @@ public class WorldSoundManager : MonoBehaviour {
    	public AudioSource quietMusicAudioSource;
    	public AudioSource actionMusicAudioSource;
     public AudioSource stingAudioSource;
-    public AudioSource ambienceAudioSource;
+    public AudioSource mainAmbienceAudioSource;
+    public AudioSource secondaryAmbienceAudioSource;
+
 	[Header("Snapshots")]
     public AudioMixerSnapshot onlyQuietMusic;
     public AudioMixerSnapshot withActionMusic;
     public AudioMixerSnapshot lowMusic;
-    public AudioMixerSnapshot ambienceNormalLevel;
-	public AudioMixerSnapshot ambienceQuietLevel;
+	public AudioMixerSnapshot ambienceNoneActive;
+    public AudioMixerSnapshot ambienceMainActive;
+	public AudioMixerSnapshot ambienceSecondaryActive;
+
 	[Header("Audio Mixers")]
 	public AudioMixer worldEffectsMixer;
 	public AudioMixer worldDialogMixer;
@@ -30,17 +34,18 @@ public class WorldSoundManager : MonoBehaviour {
 		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
 		quietMusicAudioSource.clip = currentEpisode.quietMusicTrack;
 		actionMusicAudioSource.clip = currentEpisode.actionMusicTrack;
-		ambienceAudioSource.clip = currentEpisode.AmbienceSound;
+		mainAmbienceAudioSource.clip = currentEpisode.mainAmbienceTrack;
+		secondaryAmbienceAudioSource.clip = currentEpisode.secondaryAmbienceTrack;
 		//Reset values
-        ambienceQuietLevel.TransitionTo(0f);
+        ambienceNoneActive.TransitionTo(0f);
 		worldEffectsMixer.SetFloat("Reverb Intensity", -80f );
 		worldDialogMixer.SetFloat("Echo Intensity", -80f );
     }
 
 	void Start()
 	{
-		if( !ambienceAudioSource.isPlaying ) ambienceAudioSource.Play();
-		ambienceNormalLevel.TransitionTo( 4f );
+		if( !mainAmbienceAudioSource.isPlaying ) mainAmbienceAudioSource.Play();
+		ambienceMainActive.TransitionTo( 4f );
 	}
 
     void PlaySting()
@@ -49,6 +54,12 @@ public class WorldSoundManager : MonoBehaviour {
         stingAudioSource.clip = stings[randClip];
         stingAudioSource.Play();
     }
+
+	public void crossFadeToSecondaryAmbience( float timeToReach )
+	{
+		if( !secondaryAmbienceAudioSource.isPlaying ) secondaryAmbienceAudioSource.Play();
+		ambienceSecondaryActive.TransitionTo( timeToReach );
+	}
 
 	void OnEnable()
 	{
