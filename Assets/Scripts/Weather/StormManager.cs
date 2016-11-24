@@ -8,6 +8,8 @@ public class StormManager : MonoBehaviour {
 	[Header("StormManager")]
 	public DynamicFog dynamicFog;
 	public WorldSoundManager worldSoundManager;
+	public Light sun;
+	float originalShadowStrength = 0;
 	[Tooltip("The material used to animate the foliage to simulate wind blowing in the leaves. This material needs to have _Amplitude and _Windspeed parameters.")]
 	public Material foliage;
 
@@ -23,6 +25,7 @@ public class StormManager : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
+		originalShadowStrength = sun.shadowStrength;
 		StartCoroutine( activateFogAndHaze( 3f, startStorm ) );
 	}
 
@@ -51,6 +54,8 @@ public class StormManager : MonoBehaviour {
 		} while ( elapsedTime < duration );
 		
 		setFogAndHazeIntensity( 1f );
+		//Since the sky is hazy now, we can remove the shadow casting
+		sun.shadows = LightShadows.None;
 		if( onFinish != null ) onFinish.Invoke();
 	}
 
@@ -64,6 +69,9 @@ public class StormManager : MonoBehaviour {
 
 		//Force the materials to update
 		dynamicFog.UpdateMaterialProperties();
+
+		//As the sky is getting hazier, reduce the shadow strength
+		setShadowIntensity( intensity );
 	}
 
 	//Activating the storm does a few things:
@@ -122,12 +130,20 @@ public class StormManager : MonoBehaviour {
 		foliage.SetFloat( "_Windspeed", Mathf.Lerp( 0.2f, 0.5f, intensity ) );
 	}
 	
+	void setShadowIntensity( float intensity )
+	{
+		sun.shadowStrength = Mathf.Lerp( originalShadowStrength, 0, intensity );
+	}
+
 	public void deactivateStorm()
 	{
 		dynamicFog.preset = FOG_PRESET.Mist;
 		//Force the materials to update
 		dynamicFog.UpdateMaterialProperties();
 		setFoliageMovementIntensity( 0 );
+		//Since the sky is clear now, we can add back the shadow casting
+		sun.shadowStrength = originalShadowStrength;
+		sun.shadows = LightShadows.Soft;
 	}
 
 }
