@@ -166,7 +166,6 @@ public class CharacterScreenMenu : MonoBehaviour {
 		}
 		Debug.Log("User Name is : " + userNameText.text );
 		PlayerStatsManager.Instance.saveUserName( userNameText.text );
-		LocalizationManager.Instance.replaceUserName( userNameText.text );
 		PlayerStatsManager.Instance.setAvatar(selectedAvatar);
 		StartCoroutine( loadWorldMapAfterDelay( 0.9f ) );
 	}

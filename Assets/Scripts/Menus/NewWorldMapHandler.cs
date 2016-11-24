@@ -55,6 +55,9 @@ public class NewWorldMapHandler : MonoBehaviour {
 	{
 		SceneManager.LoadScene( (int)GameScenes.Store, LoadSceneMode.Additive );
 
+		//We need to update <User name> in the text dictionary after character selection has happened. This is why we do it here.
+		LocalizationManager.Instance.replaceUserName( PlayerStatsManager.Instance.getUserName() );
+
 		episodePopup = episodePopupPanel.GetComponent<EpisodePopup>();
 
 		//Get the level data. Level data has the parameters for all the levels of the game.
