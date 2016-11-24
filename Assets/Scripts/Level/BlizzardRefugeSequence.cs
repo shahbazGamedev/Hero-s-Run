@@ -4,15 +4,19 @@ using System.Collections.Generic;
 
 public class BlizzardRefugeSequence : MonoBehaviour {
 
-	PlayerController playerController;
-	FairyController fairyController;
-	WorldSoundManager worldSoundManager;
 	public float walkDistance = 12f;
 	public Vector3 fairyPositionBehindPlayer = new Vector3( 0.5f, 1.1f, -0.12f );
 	public Camera cutsceneCamera;
 	public GameObject fakeFloor;
 	public GameObject snowStorm;
+	public GameObject deadTreeOnThePath;
+	public GameObject flyingDebris;
+	public float flyingDebrisForce = 2600f;
+	public float flyingDebrisTorque = 400f;
 
+	PlayerController playerController;
+	FairyController fairyController;
+	WorldSoundManager worldSoundManager;
 	bool hasBeenTriggered = false;
 
 	// Use this for initialization
@@ -62,7 +66,15 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 		//Call fairy
 		fairyController.setYRotationOffset( -6f );
 		fairyController.Appear ( FairyEmotion.Worried );
+		throwDebris();
 		moveFairyBehindPlayer();
+	}
+
+	void throwDebris()
+	{
+		flyingDebris.transform.LookAt( playerController.transform );
+		flyingDebris.GetComponent<Rigidbody>().AddForce( flyingDebris.transform.forward * flyingDebrisForce + new Vector3( 0, 200f, 0 ) );
+		flyingDebris.GetComponent<Rigidbody>().AddTorque( 0, flyingDebrisTorque,0 );
 	}
 
 	void moveFairyBehindPlayer()
@@ -73,7 +85,7 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 	void fairyTalks()
 	{
 		fairyController.speak("VO_FA_BLIZZARD_REFUGE", 3.5f, false );
-		Invoke("startFadeIn", 3f);
+		Invoke("startFadeIn", 5f);
 	}
 
 	void startFadeIn()
@@ -83,43 +95,106 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 
 	void afterFadeIn()
 	{
-		//Use cut-scene camera
 		//A fake hero and fairy are in the tower
-		Invoke("insideTower", 4f);
+		Invoke("insideTower", 3f);
 	}
 
 	void insideTower()
 	{
+		//Play the inside tower animation where the hero is trying to keep the fairy warm
 		cutsceneCamera.gameObject.SetActive( true );
 		fakeFloor.SetActive( false );
-		playerController.GetComponent<HUDHandler>().fadeEffect( false, insideTowerFairySpeaks );
+		playerController.GetComponent<HUDHandler>().fadeEffect( false, insideTowerFairySpeaks1 );
 	}
 
-	void insideTowerFairySpeaks()
+	void insideTowerFairySpeaks1()
 	{
-		//Play sweet animation - NEEDED
 		fairyController.speak("VO_FA_BLIZZARD_SO_COLD", 3.5f, false );
-		Invoke("insideTowerWindQuietsDown", 12f);
-		worldSoundManager.crossFadeToMainAmbienceQuiet( 10f );
+		Invoke("insideTowerFairySpeaks2", 5f);
 	}
 
-	void insideTowerWindQuietsDown()
+	void insideTowerFairySpeaks2()
+	{
+		fairyController.speak("VO_FA_BLIZZARD_FAIL", 6f, false );
+		Invoke("insideTowerFairySpeaks3", 9f);
+	}
+
+	void insideTowerFairySpeaks3()
+	{
+		if( PlayerStatsManager.Instance.isAvatarMale() )
+		{
+			fairyController.speak("VO_FA_BLIZZARD_MALE_FRIEND", 4f, false );
+		}
+		else
+		{
+			fairyController.speak("VO_FA_BLIZZARD_FEMALE_FRIEND", 4f, false );
+		}
+		Invoke("fadeToWhite", 5f);
+	}
+
+	void fadeToWhite()
+	{
+		playerController.GetComponent<HUDHandler>().fadeEffect( true, waitBeforLoweringWindVolume );
+	}
+
+	void waitBeforLoweringWindVolume()
+	{
+		Invoke("lowerWindVolume", 4f);
+	}
+
+	void lowerWindVolume()
+	{
+		worldSoundManager.crossFadeToMainAmbienceQuiet( 9f );
+		Invoke("insideTowerWindQuietsFadeOut", 10f);
+	}
+
+	void insideTowerWindQuietsFadeOut()
+	{
+		playerController.GetComponent<HUDHandler>().fadeEffect( false, insideTowerWindHasDiedDown );
+	}
+
+	void insideTowerWindHasDiedDown()
 	{
 		fairyController.speak("VO_FA_BLIZZARD_WIND_QUIET", 3.5f, false );
-		playerController.GetComponent<HUDHandler>().fadeEffect( true, fadeOutOutside );
+		Invoke("fadeOut", 4f );
 	}
 	
-	void fadeOutOutside()
+	void fadeOut()
 	{
+		playerController.GetComponent<HUDHandler>().fadeEffect( true, goBackOutside );
+	}
+
+	void goBackOutside()
+	{
+		fakeFloor.SetActive( true );
 		cutsceneCamera.gameObject.SetActive( false );
 		Camera.main.GetComponent<StormManager>().deactivateStorm();
 		snowStorm.SetActive( false );
-		playerController.GetComponent<HUDHandler>().fadeEffect( false, preparePlayerForRunning );
+		playerController.GetComponent<HUDHandler>().fadeEffect( false, mentionTree );
 
+	}
+
+	//Fairy tells something to player
+	void mentionTree()
+	{
+		fairyController.speak("VO_FA_BLIZZARD_VAPORISE", 3.6f, false );
+		Invoke ("castSpell", 3.75f );
+	}
+
+	//Fairy cast spell
+	void castSpell()
+	{
+		fairyController.CastSpell( vaporiseTree );
+	}
+
+	void vaporiseTree()
+	{
+		LeanTween.moveLocalY( deadTreeOnThePath, deadTreeOnThePath.transform.localPosition.y + 0.5f, 2f).setEasePunch().setOnComplete(preparePlayerForRunning).setOnCompleteParam(gameObject);
 	}
 
 	void preparePlayerForRunning()
 	{
+		deadTreeOnThePath.SetActive( false );
 		//Give player a few seconds to adjust before starting running again
 		Invoke("playerStartsRunningAgain", 3f );
 	}

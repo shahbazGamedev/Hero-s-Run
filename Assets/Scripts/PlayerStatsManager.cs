@@ -241,6 +241,18 @@ public class PlayerStatsManager {
 		return (Avatar)index;
 	}
 
+	public bool isAvatarMale()
+	{
+		if( avatar == Avatar.Hero )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	public string getUserName()
 	{
 		return userName;

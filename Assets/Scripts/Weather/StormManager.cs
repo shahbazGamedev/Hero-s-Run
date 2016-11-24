@@ -23,12 +23,12 @@ public class StormManager : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		StartCoroutine( activateFogAndHaze( 40f, startStorm ) );
+		StartCoroutine( activateFogAndHaze( 3f, startStorm ) );
 	}
 
 	void startStorm ()
 	{
-		StartCoroutine( activateStorm( 40f ) );
+		StartCoroutine( activateStorm( 3f ) );
 	}
 	
 	// The update code is for testing
