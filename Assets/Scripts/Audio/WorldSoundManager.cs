@@ -17,6 +17,7 @@ public class WorldSoundManager : MonoBehaviour {
     public AudioMixerSnapshot lowMusic;
 	public AudioMixerSnapshot ambienceNoneActive;
     public AudioMixerSnapshot ambienceMainActive;
+	public AudioMixerSnapshot ambienceMainActiveQuiet;
 	public AudioMixerSnapshot ambienceSecondaryActive;
 
 	[Header("Audio Mixers")]
@@ -59,6 +60,18 @@ public class WorldSoundManager : MonoBehaviour {
 	{
 		if( !secondaryAmbienceAudioSource.isPlaying ) secondaryAmbienceAudioSource.Play();
 		ambienceSecondaryActive.TransitionTo( timeToReach );
+	}
+
+	public void crossFadeToMainAmbience( float timeToReach )
+	{
+		if( !mainAmbienceAudioSource.isPlaying ) mainAmbienceAudioSource.Play();
+		ambienceMainActive.TransitionTo( timeToReach );
+	}
+
+	public void crossFadeToMainAmbienceQuiet( float timeToReach )
+	{
+		if( !mainAmbienceAudioSource.isPlaying ) mainAmbienceAudioSource.Play();
+		ambienceMainActiveQuiet.TransitionTo( timeToReach );
 	}
 
 	void OnEnable()

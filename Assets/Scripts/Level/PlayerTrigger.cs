@@ -33,7 +33,8 @@ public enum GameEvent {
 	Dark_Mines_Sequence = 33,
 	ExtinguishTorch = 34,
 	Giant_Crystal_Sequence = 35,
-	Blizzard_End_Sequence = 36
+	Blizzard_End_Sequence = 36,
+	Blizzard_Take_Refuge = 37
 
 }
 

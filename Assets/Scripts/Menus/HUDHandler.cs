@@ -32,6 +32,7 @@ public class HUDHandler : MonoBehaviour {
 	[Header("Used for fading effects")]
 	public Image fadeImage;
 	public CanvasGroup canvasGroup;
+	System.Action onFinish;
 
 	//Used to track the items picked up by the player such as Stars and Treasure Keys. Multiple icons can be displayed at the same time with an offset.
 	List<PickupDisplay> pickupDisplayList = new List<PickupDisplay>();
@@ -284,22 +285,28 @@ public class HUDHandler : MonoBehaviour {
 		public float startTime = 0;
 	}
 
-	public void fadeEffect( bool fadeInEffect )
+	public void fadeEffect( bool fadeInEffect, System.Action onFinish = null )
 	{
+		this.onFinish = onFinish;
 		if( fadeInEffect )
 		{
 			//Fade-out UI elements like the pause button
 			LeanTween.alphaCanvas( canvasGroup, 0, 2f );
 			//Fade-in the white overlay
-			LeanTween.color( fadeImage.GetComponent<RectTransform>(), new Color( 1f, 1f, 1f, 1f ), 5f );
+			LeanTween.color( fadeImage.GetComponent<RectTransform>(), new Color( 1f, 1f, 1f, 1f ), 5f ).setOnComplete(fadeCompleted).setOnCompleteParam(gameObject);;
 		}
 		else
 		{
 			//Fade-in UI elements like the pause button
 			LeanTween.alphaCanvas( canvasGroup, 1f, 2f );
 			//Fade-out the white overlay
-			LeanTween.color( fadeImage.GetComponent<RectTransform>(), new Color( 1f, 1f, 1f, 0f ), 5f );
+			LeanTween.color( fadeImage.GetComponent<RectTransform>(), new Color( 1f, 1f, 1f, 0f ), 5f ).setOnComplete(fadeCompleted).setOnCompleteParam(gameObject);;
 		}
+	}
+
+	void fadeCompleted()
+	{
+		if( onFinish != null ) onFinish.Invoke();
 	}
 }
 

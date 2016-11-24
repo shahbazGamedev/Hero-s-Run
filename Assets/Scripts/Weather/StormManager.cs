@@ -118,8 +118,16 @@ public class StormManager : MonoBehaviour {
 	void setFoliageMovementIntensity( float intensity )
 	{
 		//Fog Properties
-		foliage.SetFloat( "_Amplitude", Mathf.Lerp( 0.3f, 0.5f, intensity ) );
-		foliage.SetFloat( "_Windspeed", Mathf.Lerp( 0.3f, 0.5f, intensity ) );
+		foliage.SetFloat( "_Amplitude", Mathf.Lerp( 0.2f, 0.5f, intensity ) );
+		foliage.SetFloat( "_Windspeed", Mathf.Lerp( 0.2f, 0.5f, intensity ) );
 	}
 	
+	public void deactivateStorm()
+	{
+		dynamicFog.preset = FOG_PRESET.Mist;
+		//Force the materials to update
+		dynamicFog.UpdateMaterialProperties();
+		setFoliageMovementIntensity( 0 );
+	}
+
 }

@@ -141,7 +141,8 @@ public enum TileGroupType {
 	Blizzard_Checkpoint = 813,		//Checkpoint
 	Blizzard_Fairy_Message = 814,	//Fairy_Message
 	Blizzard_Avalanche = 815,		//Blizzard_Avalanche, straight_double
-	Blizzard_Snow_Balls = 816		//Blizzard_Snow_balls
+	Blizzard_Snow_Balls = 816,		//Blizzard_Snow_balls
+	Blizzard_Refuge = 817			//Straight_Slope, Blizzard_Refuge
 
 
 }
