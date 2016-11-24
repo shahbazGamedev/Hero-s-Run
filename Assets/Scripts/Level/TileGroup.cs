@@ -142,8 +142,8 @@ public enum TileGroupType {
 	Blizzard_Fairy_Message = 814,	//Fairy_Message
 	Blizzard_Avalanche = 815,		//Blizzard_Avalanche, straight_double
 	Blizzard_Snow_Balls = 816,		//Blizzard_Snow_balls
-	Blizzard_Refuge = 817			//Straight_Slope, Blizzard_Refuge
-
+	Blizzard_Refuge = 817,			//Straight_Slope, Blizzard_Refuge
+	Blizzard_Dark_Queen_Calls_Storm = 818	//Blizzard_Dark_Queen_Calls_Storm
 
 }
 

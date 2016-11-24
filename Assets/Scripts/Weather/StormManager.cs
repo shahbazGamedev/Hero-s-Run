@@ -12,6 +12,7 @@ public class StormManager : MonoBehaviour {
 	float originalShadowStrength = 0;
 	[Tooltip("The material used to animate the foliage to simulate wind blowing in the leaves. This material needs to have _Amplitude and _Windspeed parameters.")]
 	public Material foliage;
+	float originalFoliageMovement = 0.2f;
 
 	[Header("Parameters used for testing")]
 	[Range(0f, 1f)]
@@ -26,12 +27,17 @@ public class StormManager : MonoBehaviour {
 	void Start ()
 	{
 		originalShadowStrength = sun.shadowStrength;
-		StartCoroutine( activateFogAndHaze( 3f, startStorm ) );
+		setFoliageMovementIntensity( 0 );
+	}
+
+	public void initiateStorm ()
+	{
+		StartCoroutine( activateFogAndHaze( 8f, startStorm ) );
 	}
 
 	void startStorm ()
 	{
-		StartCoroutine( activateStorm( 3f ) );
+		StartCoroutine( activateStorm( 25f ) );
 	}
 	
 	// The update code is for testing
@@ -41,7 +47,7 @@ public class StormManager : MonoBehaviour {
 		if( isStormActive) setStormIntensity( stormIntensity );
 	}
 
-	public IEnumerator activateFogAndHaze( float duration, System.Action onFinish = null )
+	IEnumerator activateFogAndHaze( float duration, System.Action onFinish = null )
 	{
 		float elapsedTime = 0;
 		
@@ -78,7 +84,7 @@ public class StormManager : MonoBehaviour {
 	//1) It adds a second ambience track with louder winds
 	//2) It increases the amplitude and speed of the foliage movement
 	//3) It increases the fog and and sky haze further
-	public IEnumerator activateStorm( float duration, System.Action onFinish = null )
+	IEnumerator activateStorm( float duration, System.Action onFinish = null )
 	{
 		worldSoundManager.crossFadeToSecondaryAmbience( duration );
 		float elapsedTime = 0;
@@ -126,8 +132,8 @@ public class StormManager : MonoBehaviour {
 	void setFoliageMovementIntensity( float intensity )
 	{
 		//Fog Properties
-		foliage.SetFloat( "_Amplitude", Mathf.Lerp( 0.2f, 0.5f, intensity ) );
-		foliage.SetFloat( "_Windspeed", Mathf.Lerp( 0.2f, 0.5f, intensity ) );
+		foliage.SetFloat( "_Amplitude", Mathf.Lerp( originalFoliageMovement, 0.5f, intensity ) );
+		foliage.SetFloat( "_Windspeed", Mathf.Lerp( originalFoliageMovement, 0.5f, intensity ) );
 	}
 	
 	void setShadowIntensity( float intensity )

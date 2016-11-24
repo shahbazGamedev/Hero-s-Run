@@ -91,7 +91,8 @@ public enum TileType {
 	Hell_Demons = 88,
 	Hell_Floor_Traps = 89,
 	Blizzard_Before_End = 90,
-	Blizzard_Refuge = 91
+	Blizzard_Refuge = 91,
+	Blizzard_Dark_Queen_Calls_Storm = 92
 
 }
 
