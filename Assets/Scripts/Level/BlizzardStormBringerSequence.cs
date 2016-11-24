@@ -70,7 +70,7 @@ public class BlizzardStormBringerSequence : MonoBehaviour {
 		//Call fairy
 		fairyController.setYRotationOffset( -10f );
 		fairyController.Appear ( FairyEmotion.Worried );
-		fairyController.speak("VO_FA_CANT_BE_GOOD", 2f, false );
+		fairyController.speak("VO_FA_BLIZZARD_WHAT_DOING_HERE", 2.5f, false );
 	}
 
 	void arriveAndCastSpell()
@@ -92,15 +92,15 @@ public class BlizzardStormBringerSequence : MonoBehaviour {
 	
 	void playIdleAnimation()
 	{
-		darkQueenController.speak("VO_DQ_WONT_ESCAPE_ME", 3f, false );
+		darkQueenController.speak("VO_DQ_BLIZZARD_LUCKY", 5.5f, false );
 		darkQueenController.floatDownFx.Stop ();
 		darkQueen.GetComponent<Animation>().Play("DarkQueen_Idle");
-		Invoke("castSpell", darkQueen.GetComponent<Animation>()["DarkQueen_Idle"].length + 2.25f);
+		Invoke("castSpell", darkQueen.GetComponent<Animation>()["DarkQueen_Idle"].length + 6f);
 	}
 	
 	void castSpell()
 	{
-		darkQueenController.speak("VO_DQ_JUNGLE_DOOM", 3f, false );
+		darkQueenController.speak("VO_DQ_BLIZZARD_STORM", 4.5f, false );
 		darkQueen.GetComponent<Animation>().CrossFade("DarkQueen_SpellCast");
 		Invoke("playSpellFX", 0.3f);
 		Invoke("darkQueenLeaves", darkQueen.GetComponent<Animation>()["DarkQueen_SpellCast"].length );
