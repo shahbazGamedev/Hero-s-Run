@@ -10,6 +10,7 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 	public GameObject fakeFloor;
 	public GameObject snowStorm;
 	public GameObject deadTreeOnThePath;
+	public ParticleSystem holyBlast;
 	public GameObject flyingDebris;
 	public float flyingDebrisForce = 2600f;
 	public float flyingDebrisTorque = 400f;
@@ -165,8 +166,9 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 
 	void insideTowerWindHasDiedDown()
 	{
+		LeanTween.rotate( fairyInsideTower.gameObject, new Vector3( 18f, 52f, 0 ), 1.7f ).setEase(LeanTweenType.easeOutQuad);
 		fairyController.speak("VO_FA_BLIZZARD_WIND_QUIET", 3.5f, false );
-		Invoke("fadeOut", 4f );
+		Invoke("fadeOut", 3.75f );
 	}
 	
 	void fadeOut()
@@ -194,12 +196,18 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 	//Fairy cast spell
 	void castSpell()
 	{
-		fairyController.CastSpell( vaporiseTree );
+		fairyController.CastSpell( liftTree );
+	}
+
+	void liftTree()
+	{
+		LeanTween.moveLocalY( deadTreeOnThePath, deadTreeOnThePath.transform.localPosition.y + 0.5f, 1.8f).setEasePunch().setOnComplete(vaporiseTree).setOnCompleteParam(gameObject);
 	}
 
 	void vaporiseTree()
 	{
-		LeanTween.moveLocalY( deadTreeOnThePath, deadTreeOnThePath.transform.localPosition.y + 0.5f, 2f).setEasePunch().setOnComplete(preparePlayerForRunning).setOnCompleteParam(gameObject);
+		holyBlast.Play();
+		Invoke("preparePlayerForRunning", 0.3f );
 	}
 
 	void preparePlayerForRunning()
