@@ -30,6 +30,8 @@ public sealed class WraithController : Creature, ICreature {
 		walk_and_talk = 5,
 		do_nothing = 6
 	}
+	[Range(0,1f)]
+	public float percentageWillAttack = 0.5f;
 	public float floatDuration = 5f;
 	public enum WeaponType {
 		Axe = 1,
@@ -189,7 +191,7 @@ public sealed class WraithController : Creature, ICreature {
 							controller.enabled = false;
 							anim.Play( "move" );
 							//50% of the time turn to face player and attack, the other 50%, just continue straight
-							if( Random.value <= 0.5f )
+							if( Random.value < percentageWillAttack )
 							{
 								controller.enabled = true; //Needed for znuke to work
 								Invoke("removeDotProduct", floatDuration * 0.65f );
@@ -197,7 +199,7 @@ public sealed class WraithController : Creature, ICreature {
 							}
 							else
 							{
-								LeanTween.moveLocal( gameObject, new Vector3( transform.localPosition.x - 24f, transform.localPosition.y + 0.3f, transform.localPosition.z ), floatDuration * 2.5f );
+								LeanTween.moveLocal( gameObject, new Vector3( transform.localPosition.x - 24f, transform.localPosition.y + 0.3f, transform.localPosition.z ), floatDuration * 2f );
 							}
 						}
 					}
