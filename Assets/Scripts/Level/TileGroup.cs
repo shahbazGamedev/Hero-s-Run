@@ -106,6 +106,7 @@ public enum TileGroupType {
 	Mines_Slope = 614,
 	Mines_River = 615,
 	Mines_River_Crossing = 616,
+	Mines_Giant_Cave = 617,			//Mines_Giant_Cave
 
 	Hell_Start = 700,				//Start, Hell_Cerberus, Hell_Cavern_Gibbets, Landmark_Collapsing_Bridge, Hell_Drawbridge
 	Hell_End = 701,					//End
