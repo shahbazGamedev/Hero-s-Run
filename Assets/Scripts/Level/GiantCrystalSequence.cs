@@ -55,8 +55,6 @@ public class GiantCrystalSequence : MonoBehaviour {
 	//Dark Queen sequence that summon skeletons in the battlefield
 	void startSequence()
 	{
-		print ("Start of Dark Queen summon skeletons sequence.");
-
 		//Slowdown player and remove player control
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
@@ -69,35 +67,8 @@ public class GiantCrystalSequence : MonoBehaviour {
 		//Call fairy
 		fairyController.setYRotationOffset( -10f );
 		fairyController.Appear ( FairyEmotion.Worried );
-		fairyController.speak("VO_FA_CANT_BE_GOOD", 2f, false );
+		fairyController.speak("VO_FA_MINES_BIG_CRYSTAL", 2f, false );
 		Invoke("playerStartsRunningAgain", 3f );
-	}
-
-	void lookOverEdge()
-	{
-		StartCoroutine( playerController.walkForDistance( walkDistance, 3.5f, edgeReached, true ) );
-	}
-
-	void edgeReached()
-	{
-		playerController.sc.playCutscene(CutsceneType.SummonSkeletons );
-		Invoke("moveFairyBehindPlayer", 0.5f );
-	}
-
-	void moveFairyBehindPlayer()
-	{
-		StartCoroutine( fairyController.goHere( 1.6f, fairyPositionBehindPlayer, pushPlayer ) );
-	}
-
-	void pushPlayer()
-	{
-		Invoke("playerStartsRunningAgain", 8f );
-		Invoke("fairyTalks", 1.2f );
-	}
-
-	void fairyTalks()
-	{
-		fairyController.speak("VO_FA_PORTAL", 2.5f, false );
 	}
 
 	void playerStartsRunningAgain()
