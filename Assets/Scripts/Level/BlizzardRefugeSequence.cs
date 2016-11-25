@@ -13,6 +13,9 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 	public GameObject flyingDebris;
 	public float flyingDebrisForce = 2600f;
 	public float flyingDebrisTorque = 400f;
+	public Transform fairyInsideTower;
+	public Transform fairyLocationByWindow;
+	public ParticleSystem fogByWindow;
 
 	PlayerController playerController;
 	FairyController fairyController;
@@ -104,6 +107,8 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 		//Play the inside tower animation where the hero is trying to keep the fairy warm
 		cutsceneCamera.gameObject.SetActive( true );
 		fakeFloor.SetActive( false );
+		//Add fog by the window
+		fogByWindow.Play();
 		playerController.GetComponent<HUDHandler>().fadeEffect( false, insideTowerFairySpeaks1 );
 	}
 
@@ -139,13 +144,18 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 
 	void waitBeforLoweringWindVolume()
 	{
+		//Move fairy by the window
+		fairyInsideTower.localPosition = fairyLocationByWindow.localPosition;
+		fairyInsideTower.localRotation = fairyLocationByWindow.localRotation;
+		//Remove fog by the window
+		fogByWindow.Stop();
 		Invoke("lowerWindVolume", 4f);
 	}
 
 	void lowerWindVolume()
 	{
-		worldSoundManager.crossFadeToMainAmbienceQuiet( 9f );
-		Invoke("insideTowerWindQuietsFadeOut", 10f);
+		worldSoundManager.crossFadeToMainAmbienceQuiet( 8f );
+		Invoke("insideTowerWindQuietsFadeOut", 9f);
 	}
 
 	void insideTowerWindQuietsFadeOut()
