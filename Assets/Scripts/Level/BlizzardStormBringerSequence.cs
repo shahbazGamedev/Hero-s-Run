@@ -6,6 +6,8 @@ public class BlizzardStormBringerSequence : MonoBehaviour {
 
 	public float walkDistance = 12f;
 	public Vector3 fairyPositionBehindPlayer = new Vector3( 0.5f, 1.1f, -0.12f );
+	public TakePictureTrigger takePictureTrigger;
+
 	Transform darkQueen;
 	DarkQueenController darkQueenController;
 	public ParticleSystem lightningStrike;
@@ -120,7 +122,13 @@ public class BlizzardStormBringerSequence : MonoBehaviour {
 			lightningStrike.Play();
 			lightningStrike.GetComponent<AudioSource>().Play();
 			Invoke("summonStormNow", 12.5f);
+			Invoke("takePicture", 1f);
 		}
+	}
+
+	void takePicture()
+	{
+		takePictureTrigger.takePicture();
 	}
 
 	void summonStormNow()

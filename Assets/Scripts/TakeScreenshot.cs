@@ -86,9 +86,10 @@ public class TakeScreenshot : MonoBehaviour {
        return string.Format("{0}/screen_{1}x{2}_{3}.png", Application.dataPath, width, height, System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
 	}
     
+	//Used when the player taps the camera button on the HUD
 	public void takeSelfieNow( )
 	{
-		StartCoroutine( takeSelfie( screenShotCamera ) );
+		StartCoroutine( takeSelfie( screenShotCamera, 1.2f ) );
 	}
 
 	public void flipCamera()
@@ -109,13 +110,14 @@ public class TakeScreenshot : MonoBehaviour {
 		}
 	}
 	
-	IEnumerator takeSelfie( Camera pictureCamera )
+	IEnumerator takeSelfie( Camera pictureCamera, float flashLightIntensity )
 	{
 		LeanTween.cancel( gameObject );
         yield return new WaitForEndOfFrame();
 		GetComponent<AudioSource>().Play();
 		Debug.Log("TakeScreenshot-selfie." );
 		pictureCamera.enabled = true;
+		pointLight.intensity = flashLightIntensity;
 		pointLight.gameObject.SetActive( true );
 		pictureCamera.targetTexture = renderTexture;
 		pictureCamera.Render();
@@ -197,12 +199,12 @@ public class TakeScreenshot : MonoBehaviour {
 		}
 	}
 
-	void TakePictureNowTrigger( Camera pictureCamera )
+		void TakePictureNowTrigger( Camera pictureCamera, float flashLightIntensity )
 	{
 		//We test against selfieTaken because we do not want to overide a picture taken by the player.
 		if( !selfieTaken )
 		{
-			StartCoroutine( takeSelfie( pictureCamera ) );
+			StartCoroutine( takeSelfie( pictureCamera, flashLightIntensity ) );
 		}
 	}
 
