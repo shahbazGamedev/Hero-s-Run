@@ -47,6 +47,8 @@ public class PlayerTrigger : MonoBehaviour {
 	public static event PlayerEnteredTrigger playerEnteredTrigger;
 	public GameEvent eventType;
 	//The optional uniqueGameObjectIdentifier is sent along with the event. The receiver can use it to verify that the event is really destined for him.
+	//However, if you are using a player trigger to start a sequence, you should pass itself as the GameObject. The slow down method in PlayerController needs a
+	//reference to the trigger to calculate the distance properly.
 	public GameObject uniqueGameObjectIdentifier;
 
 	public float percentageChanceEventTriggered = 1f;

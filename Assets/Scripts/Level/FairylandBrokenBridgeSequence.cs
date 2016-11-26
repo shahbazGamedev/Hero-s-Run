@@ -44,11 +44,11 @@ public class FairylandBrokenBridgeSequence : MonoBehaviour {
 
 	}
 	
-	public void startSequence()
+	public void startSequence( Transform trigger )
 	{
 		//Slowdown player and remove player control (this is done via a trigger)
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(18.1f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(18.1f, afterPlayerSlowdown, trigger ) );
 	}
 
 	void afterPlayerSlowdown()
@@ -163,13 +163,12 @@ public class FairylandBrokenBridgeSequence : MonoBehaviour {
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Broken_Bridge && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
-
-			startSequence();
+			startSequence( trigger.transform );
 		}
 	}
 

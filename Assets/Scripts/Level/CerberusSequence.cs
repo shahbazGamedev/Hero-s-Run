@@ -22,13 +22,13 @@ public class CerberusSequence : MonoBehaviour {
 		cerberusController = cerberusObject.GetComponent<CerberusController>();
 	}
 	
-	void startSequence()
+		void startSequence( Transform trigger )
 	{
 		//Slowdown player and remove player control
 		print ("Start of Cerberus sequence");
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(4f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(4f, afterPlayerSlowdown, trigger ) );
 		cerberusController.walk();
 		Invoke ("stopWalking", 3.5f );
 	}
@@ -90,13 +90,12 @@ public class CerberusSequence : MonoBehaviour {
 		}
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Start_Cerberus_encounter && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
-
-			startSequence();
+			startSequence( trigger.transform );
 		}
 	}
 }

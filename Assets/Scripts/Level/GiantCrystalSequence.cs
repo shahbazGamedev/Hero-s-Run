@@ -42,23 +42,21 @@ public class GiantCrystalSequence : MonoBehaviour {
 		}
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Giant_Crystal_Sequence && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
-
-			startSequence();
+			startSequence( trigger.transform );
 		}
 	}
 
-	//Dark Queen sequence that summon skeletons in the battlefield
-	void startSequence()
+	void startSequence( Transform trigger )
 	{
 		//Slowdown player and remove player control
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(18f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(18f, afterPlayerSlowdown, trigger ) );
 	}
 	
 	void afterPlayerSlowdown()

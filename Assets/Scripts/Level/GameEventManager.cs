@@ -62,7 +62,7 @@ public class GameEventManager : MonoBehaviour {
 		darkQueenController = darkQueen.GetComponent<DarkQueenController>();
 	}
 
-	void startDarkQueenKrakenSequence()
+	void startDarkQueenKrakenSequence( Transform trigger )
 	{
 		print ("Start of dark queen Kraken sequence");
 		isTentacleSequenceActive = true;
@@ -71,7 +71,7 @@ public class GameEventManager : MonoBehaviour {
 		//Slowdown player and remove player control
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(19f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(19f, afterPlayerSlowdown, trigger ) );
 
 		arriveAndCastSpell();
 
@@ -406,7 +406,7 @@ public class GameEventManager : MonoBehaviour {
 		zombieManager = zombieManagerObject.GetComponent<ZombieManager>();
 	}
 	
-	void startDarkQueenCemeterySequence()
+	void startDarkQueenCemeterySequence( Transform trigger )
 	{
 		print ("Start of Dark Queen cemetery sequence");
 		isZombieHandsSequenceActive = true;
@@ -416,7 +416,7 @@ public class GameEventManager : MonoBehaviour {
 		//Slowdown player and remove player control
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(19f, cemeteryAfterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(19f, cemeteryAfterPlayerSlowdown, trigger ) );
 		cemeteryArriveAndCastSpell();
 	}
 	
@@ -931,11 +931,11 @@ public class GameEventManager : MonoBehaviour {
 		}
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Start_Kraken && !isTentacleSequenceActive )
 		{
-			startDarkQueenKrakenSequence();
+			startDarkQueenKrakenSequence( trigger.transform );
 		}
 		else if( eventType == GameEvent.Stop_Kraken && isTentacleSequenceActive )
 		{
@@ -943,7 +943,7 @@ public class GameEventManager : MonoBehaviour {
 		}
 		else if( eventType == GameEvent.Start_Cemetery_Sequence && !isZombieHandsSequenceActive )
 		{
-			startDarkQueenCemeterySequence();
+			startDarkQueenCemeterySequence( trigger.transform );
 		}
 		else if( eventType == GameEvent.Stop_Cemetery_Sequence && isZombieHandsSequenceActive )
 		{

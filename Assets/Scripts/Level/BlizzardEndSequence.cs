@@ -48,22 +48,21 @@ public class BlizzardEndSequence : MonoBehaviour {
 		}
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Blizzard_End_Sequence && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
-
-			startSequence();
+			startSequence( trigger.transform );
 		}
 	}
 
-	void startSequence()
+	void startSequence( Transform trigger )
 	{
 		//Slowdown player and remove player control
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(walkToLedgeDistance, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(walkToLedgeDistance, afterPlayerSlowdown, trigger ) );
 		thunder();
 	}
 	

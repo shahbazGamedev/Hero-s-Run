@@ -25,14 +25,14 @@ public class DarkMinesSequence : MonoBehaviour {
 	
 	}
 	
-	void startSequence()
+	void startSequence( Transform trigger )
 	{
 		//Slowdown player and remove player control
 		print ("Start of Hell Cave sequence");
 		LevelManager.Instance.setEnableTorches( false );
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(12f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(12f, afterPlayerSlowdown, trigger ) );
 		StartCoroutine( sunlightHandler.fadeOutLight( 3.2f, 0, true ) );
 
 	}
@@ -110,13 +110,12 @@ public class DarkMinesSequence : MonoBehaviour {
 		}
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Dark_Mines_Sequence && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
-
-			startSequence();
+			startSequence( trigger.transform );
 		}
 	}
 }

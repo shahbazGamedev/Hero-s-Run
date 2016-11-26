@@ -51,13 +51,13 @@ public class BrokenBridgeSequence : MonoBehaviour {
 		dragonController.enableAttack( false );
 	}
 
-	void startSequence()
+	void startSequence( Transform trigger )
 	{
 		//Slowdown player and remove player control
 		print ("Start of broken bridge sequence");
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(18.1f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(18.1f, afterPlayerSlowdown, trigger ) );
 	}
 
 	void afterPlayerSlowdown()
@@ -183,13 +183,12 @@ public class BrokenBridgeSequence : MonoBehaviour {
 		}
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Broken_Bridge && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
-
-			startSequence();
+			startSequence( trigger.transform );
 		}
 	}
 

@@ -46,22 +46,21 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Blizzard_Take_Refuge && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
-
-			startSequence();
+			startSequence( trigger.transform );
 		}
 	}
 
-	void startSequence()
+	void startSequence( Transform trigger )
 	{
 		//Slowdown player and remove player control
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(walkDistance, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(walkDistance, afterPlayerSlowdown, trigger ) );
 	}
 	
 	void afterPlayerSlowdown()

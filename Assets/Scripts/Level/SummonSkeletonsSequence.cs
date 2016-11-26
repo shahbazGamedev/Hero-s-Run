@@ -9,7 +9,7 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	Transform darkQueen;
 	DarkQueenController darkQueenController;
 	public ParticleSystem lightningStrike;
-	public float walkDistance = 10.7f;
+	public float walkDistance = 7.55f;
 	public Vector3 fairyPositionBehindPlayer = new Vector3( 0, 1f, -0.3f );
 
 	bool hasBeenTriggered = false;
@@ -52,25 +52,24 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 		}
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Summon_Skeletons_Sequence && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
-
-			startSequence();
+			startSequence(trigger.transform);
 		}
 	}
 
-	//Dark Queen sequence that summon skeletons in the battlefield
-	void startSequence()
+	//Dark Queen sequence that summon skeletons
+	void startSequence( Transform trigger )
 	{
 		print ("Start of Dark Queen summon skeletons sequence.");
 
 		//Slowdown player and remove player control
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(19f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(18.6f, afterPlayerSlowdown, trigger ) );
 		arriveAndCastSpell();
 	}
 	

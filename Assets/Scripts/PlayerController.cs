@@ -2350,7 +2350,7 @@ public sealed class PlayerController : BaseClass {
 			Debug.Log ("Checkpoint triggered ");
 			trollController.stopPursuing ();
 			GameManager.Instance.setGameState(GameState.Checkpoint);
-			StartCoroutine( slowDownPlayer( 16f, afterPlayerSlowdown ) );
+			StartCoroutine( slowDownPlayer( 16f, afterPlayerSlowdown, other.transform ) );
 		}
 		else if( other.name == "Entrance" )
 		{
@@ -2432,18 +2432,18 @@ public sealed class PlayerController : BaseClass {
 		usesAccelerometer = false;
 		accelerometerPreviousFrameX = 0;
 		recalculateCurrentLane();  //make sure our currentLane info is valid
-		//Side move speed is divided by 2 because it just looks better.
+		//Side move speed is divided by 1.6 because it just looks better.
 		if ( currentLane == Lanes.Left )
 		{
 			desiredLane = Lanes.Center;
 			setCharacterState( CharacterState.SideMove );
-			moveDirection.x = sideMoveSpeed/2f;
+			moveDirection.x = sideMoveSpeed/1.6f;
 		}
 		else if ( currentLane == Lanes.Right )
 		{
 			desiredLane = Lanes.Center;
 			setCharacterState( CharacterState.SideMove );
-			moveDirection.x = -sideMoveSpeed/2f;
+			moveDirection.x = -sideMoveSpeed/1.6f;
 		}
 	}
 
@@ -2543,12 +2543,20 @@ public sealed class PlayerController : BaseClass {
 
 	}
 	
-	public IEnumerator slowDownPlayer( float distance, System.Action onFinish )
+	//We pass the trigger value because we need its position. We cannot rely on the position of the player at the moment of trigger because it can fluctuate based on frame rate and such.
+	//Therefore the final destination is based on the trigger's Z position plus the desired distance (and not the player's z position plus the desired distance, which is slightly inaccurate).
+	public IEnumerator slowDownPlayer( float distance, System.Action onFinish, Transform trigger )
 	{
-
+		if( currentTile.transform.rotation.y != 0 ) Debug.LogError("PlayerController-slowDownPlayer error: slow down only works with tiles with a zero rotation for now.");
 		float percentageComplete = 0;
 
-		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, transform.position.z );
+		//Center player perfectly in the middle of the tile
+		transform.SetParent( currentTile.transform );
+		transform.localPosition = new Vector3( 0, transform.localPosition.y, transform.localPosition.z );
+		transform.SetParent( null );
+
+		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, trigger.position.z );
+		Vector3 finalPlayerPosition = initialPlayerPosition + (transform.TransformDirection(Vector3.forward) * distance);
 		float distanceTravelled = 0;
 		float brakeFactor = 0.7f; //brake the player before slowing him down
 		float startSpeed = getPlayerSpeed() * brakeFactor;
@@ -2595,11 +2603,15 @@ public sealed class PlayerController : BaseClass {
 			}
 			//7) Add the X component to the forward direction
 			forward = forward + xVector;
+			forward =  Vector3.ClampMagnitude(forward, Vector3.Distance( transform.position, finalPlayerPosition ) );
+
 			//8) Move the controller
 			controller.Move( forward );
 			verifyIfDesiredLaneReached();
 			yield return new WaitForFixedUpdate(); 
 		}
+		//Position the player exactly where he should be as we might have overshot the distance in the while loop
+		transform.position = new Vector3( finalPlayerPosition.x, transform.position.y, finalPlayerPosition.z );
 		onFinish.Invoke();
 	}
 
@@ -2610,9 +2622,10 @@ public sealed class PlayerController : BaseClass {
 		//See Cullis Gate for next steps.
 	}
 
-		public IEnumerator walkForDistance( float distance, float walkSpeed, System.Action onFinish, bool playIdleLookAfterWalkCompleted )
+	public IEnumerator walkForDistance( float distance, float walkSpeed, System.Action onFinish, bool playIdleLookAfterWalkCompleted )
 	{
 		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, transform.position.z );
+		Vector3 finalPlayerPosition = initialPlayerPosition + (transform.TransformDirection(Vector3.forward) * distance);
 		float distanceTravelled = 0;
 		anim.SetFloat(speedBlendFactor, 0 );
 		anim.SetTrigger( RunTrigger );
@@ -2633,6 +2646,8 @@ public sealed class PlayerController : BaseClass {
 			controller.Move( forward );
 			yield return new WaitForFixedUpdate(); 
 		}
+		//Position the player exactly where he should be as we might have overshot the distance in the while loop
+		transform.position = new Vector3( finalPlayerPosition.x, transform.position.y, finalPlayerPosition.z );
 		if( playIdleLookAfterWalkCompleted ) anim.SetTrigger("Idle_Look");
 		onFinish.Invoke();	
 	}

@@ -22,13 +22,13 @@ public class TasteOfHellSequence : MonoBehaviour {
 	
 	}
 	
-	void startSequence()
+	void startSequence( Transform trigger )
 	{
 		//Slowdown player and remove player control
 		print ("Start of Hell Cave sequence");
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(4f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(4f, afterPlayerSlowdown, trigger ) );
 	}
 
 	void afterPlayerSlowdown()
@@ -90,13 +90,12 @@ public class TasteOfHellSequence : MonoBehaviour {
 		}
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Taste_Hell_Sequence && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
-
-			startSequence();
+			startSequence( trigger.transform );
 		}
 	}
 }

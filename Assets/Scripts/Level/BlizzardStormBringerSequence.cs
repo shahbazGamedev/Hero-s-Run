@@ -44,25 +44,24 @@ public class BlizzardStormBringerSequence : MonoBehaviour {
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Blizzard_Dark_Queen_Calls_Storm && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
-
-			startSequence();
+			startSequence( trigger.transform );
 		}
 	}
 
-	//Dark Queen sequence that summon skeletons in the battlefield
-	void startSequence()
+	//Dark Queen sequence that summons storm
+	void startSequence( Transform trigger )
 	{
 		print ("Start of Dark Queen storm bringer sequence.");
 
 		//Slowdown player and remove player control
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(19f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(19f, afterPlayerSlowdown, trigger ) );
 		arriveAndCastSpell();
 	}
 	
