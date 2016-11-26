@@ -1732,7 +1732,7 @@ public sealed class PlayerController : BaseClass {
 	{
 		if( playerControlsEnabled )
 		{
-			if( _characterState != CharacterState.SideMove )
+			if( _characterState != CharacterState.SideMove && _characterState != CharacterState.Falling )
 			{
 				if( jumping )
 				{
