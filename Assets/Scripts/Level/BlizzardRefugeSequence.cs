@@ -166,8 +166,8 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 	void insideTowerWindHasDiedDown()
 	{
 		LeanTween.rotate( fairyInsideTower.gameObject, new Vector3( 18f, 52f, 0 ), 1.7f ).setEase(LeanTweenType.easeOutQuad);
-		fairyController.speak("VO_FA_BLIZZARD_WIND_QUIET", 3.5f, false );
-		Invoke("fadeOut", 3.75f );
+		fairyController.speak("VO_FA_BLIZZARD_WIND_QUIET", 4f, false );
+		Invoke("fadeOut", 4.25f );
 	}
 	
 	void fadeOut()
