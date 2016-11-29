@@ -30,6 +30,7 @@ public enum TileGroupType {
 	Tanglewood_Windmill = 212,
 	Tanglewood_Defense_Tower = 213,
 	Tanglewood_Burning_Bridge = 214,
+	Tanglewood_Magic_Mirror = 215,
 
 	Fairyland_Start = 300,
 	Fairyland_End = 301,
