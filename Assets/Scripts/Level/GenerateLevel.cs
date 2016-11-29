@@ -23,7 +23,7 @@ public enum TileType {
 	Straight_Log = 6,
 	Straight_River = 7,
 	Landmark_Windmill = 8,
-	Landmark_Defense_Tower = 9,
+	Forest_Statue = 9,
 	Landmark_Clocktower = 13,
 	T_Junction_2 = 14,
 	T_Junction = 15,
