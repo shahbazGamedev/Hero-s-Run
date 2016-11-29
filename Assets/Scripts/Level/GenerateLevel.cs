@@ -93,7 +93,9 @@ public enum TileType {
 	Blizzard_Before_End = 90,
 	Blizzard_Refuge = 91,
 	Blizzard_Dark_Queen_Calls_Storm = 92,
-	Mines_Giant_Cave = 93
+	Mines_Giant_Cave = 93,
+	Forest_Burning_Bridge = 94,
+	Forest_Magic_Mirror = 95
 
 }
 
