@@ -341,6 +341,31 @@ public class LevelData : MonoBehaviour {
 			}
 			return adjustedRunAcceleration;
 		}
+
+		//Returns the turn speed multiplier. To make turning easier, we slow down the player.
+		//In Normal mode, the player is slowed a lot, in Heroic mode, a bit less, and not at all in Legendary mode.
+		public float getRunSpeedTurnMultiplier()
+		{
+			switch (PlayerStatsManager.Instance.getDifficultyLevel())
+			{
+				case DifficultyLevel.Normal:
+				return 0.88f;
+				break;
+					
+				case DifficultyLevel.Heroic:
+				return 0.95f;
+				break;
+					
+				case DifficultyLevel.Legendary:
+				return 1f;
+				break;
+				
+				default:
+				return 0.88f;
+				break;
+			}
+		}
+
 	}
 
 }

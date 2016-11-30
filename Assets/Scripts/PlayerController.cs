@@ -124,6 +124,9 @@ public sealed class PlayerController : BaseClass {
 	//The run speed at time of death is needed because we want to start running again (in case of revive) at a 
 	//percentage of this value.
 	float runSpeedAtTimeOfDeath = 0;
+	public float runSpeedAtTimeOfTurn;
+	public float runSpeedTurnMultiplier;
+
 	const float MAX_RUN_SPEED = 42f;
 	const float SLOW_DOWN_END_SPEED = 5f;
 	//Used to modify the blend amount between Run and Sprint animations based on the current run speed. Also used by the troll.
@@ -399,6 +402,7 @@ public sealed class PlayerController : BaseClass {
 		runAcceleration = episodeInfo.getRunAcceleration();
 		//We need to set this here so that the troll can get the player's speed.
 		runSpeed = levelRunStartSpeed;
+		runSpeedTurnMultiplier = episodeInfo.getRunSpeedTurnMultiplier();
 	}
 	
 	public void startRunning()
@@ -2283,9 +2287,12 @@ public sealed class PlayerController : BaseClass {
 			isInDeadEnd = true;
 			wantToTurn = false;
 
-			deadEnd deadEndComponent = (deadEnd) other.GetComponent(typeof(deadEnd));
-			currentDeadEndType = deadEndComponent.deadEndType;
+			currentDeadEndType = other.GetComponent<deadEnd>().deadEndType;
 			deadEndTrigger = other;
+			//Slow dow the player to make it easier to turn
+			allowRunSpeedToIncrease = false;
+			runSpeedAtTimeOfTurn = runSpeed;
+			runSpeed = runSpeed * runSpeedTurnMultiplier;
 		}
 		else if ( other.name.StartsWith( "Coin" ) && !PowerUpManager.isThisPowerUpActive( PowerUpType.Magnet ) )
 		{
@@ -2689,6 +2696,9 @@ public sealed class PlayerController : BaseClass {
 		{
 			setCharacterState( CharacterState.Running );
 		}
+		//Reset the run speed to what it was at the beginning of the turn.
+		allowRunSpeedToIncrease = true;
+		runSpeed = runSpeedAtTimeOfTurn;
 
 		//Debug.Log ("turnNow completed " + isGoingRight + " " + transform.eulerAngles.y + " " + _characterState );
 
