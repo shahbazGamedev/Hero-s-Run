@@ -65,8 +65,8 @@ public class GiantCrystalSequence : MonoBehaviour {
 		//Call fairy
 		fairyController.setYRotationOffset( -10f );
 		fairyController.Appear ( FairyEmotion.Worried );
-		fairyController.speak("VO_FA_MINES_BIG_CRYSTAL", 2f, false );
-		Invoke("playerStartsRunningAgain", 3f );
+		fairyController.speak("VO_FA_MINES_BIG_CRYSTAL", 3.25f, false );
+		Invoke("playerStartsRunningAgain", 4.5f );
 	}
 
 	void playerStartsRunningAgain()
