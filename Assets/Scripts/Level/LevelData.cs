@@ -349,7 +349,7 @@ public class LevelData : MonoBehaviour {
 			switch (PlayerStatsManager.Instance.getDifficultyLevel())
 			{
 				case DifficultyLevel.Normal:
-				return 0.88f;
+				return 0.9f;
 				break;
 					
 				case DifficultyLevel.Heroic:
@@ -361,7 +361,7 @@ public class LevelData : MonoBehaviour {
 				break;
 				
 				default:
-				return 0.88f;
+				return 0.9f;
 				break;
 			}
 		}
