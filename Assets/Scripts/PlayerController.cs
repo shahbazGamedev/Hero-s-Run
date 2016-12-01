@@ -1105,6 +1105,7 @@ public sealed class PlayerController : BaseClass {
 			moveDirection = new Vector3( -forwardCurrentStrength, moveDirection.y, sideCurrentStrength );
 		}
 		forward = moveDirection * Time.deltaTime;
+				print("playerSweptAwayByRiver " + moveDirection + " tile Y " + currentTile.transform.eulerAngles.y);
 		controller.Move( forward );
 	}
 

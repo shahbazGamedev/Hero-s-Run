@@ -95,7 +95,8 @@ public enum TileType {
 	Blizzard_Dark_Queen_Calls_Storm = 92,
 	Mines_Giant_Cave = 93,
 	Forest_Burning_Bridge = 94,
-	Forest_Magic_Mirror = 95
+	Forest_Magic_Mirror = 95,
+	Cemetery_Endless_Graveyard_Start = 96
 
 }
 

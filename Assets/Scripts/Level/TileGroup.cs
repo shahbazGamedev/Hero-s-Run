@@ -71,6 +71,7 @@ public enum TileGroupType {
 	Cemetery_Enemies_1 = 420,					//straight_double
 	Cemetery_Nice_And_Easy = 421,				
 	Cemetery_Graveyard_Sequence = 422,
+	Cemetery_Endless_Graveyard_Sequence = 423,
 
 	Jungle_Start = 500,
 	Jungle_End = 501,
