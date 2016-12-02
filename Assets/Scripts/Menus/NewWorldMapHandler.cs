@@ -209,13 +209,15 @@ public class NewWorldMapHandler : MonoBehaviour {
 		episodeStationTexts[0].text = (episodeNumber + 1).ToString();
 		string levelNumberString = (episodeNumber + 1).ToString();
 		episodeStationTexts[1].text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
+		episodeStationTexts[2].text = getEpisodeDifficultyText( levelData.episodeList[ episodeNumber ].episodeDifficulty );
 
 		if( episodeNumber > LevelManager.Instance.getHighestEpisodeCompleted() )
 		{
-			//Level is not unlocked yet. Make button non-interactable and dim the level number text
+			//Level is not unlocked yet.
 			levelStationButton.interactable = false;
-			episodeStationTexts[0].enabled = false;
-			episodeStationTexts[1].enabled = true;
+			episodeStationTexts[0].enabled = false;	//episode number
+			episodeStationTexts[1].enabled = true;	//episode name
+			episodeStationTexts[2].enabled = false;	//episode difficulty level
 		}
 		if ( episodeNumber == LevelManager.Instance.getCurrentEpisodeNumber() )
 		{
