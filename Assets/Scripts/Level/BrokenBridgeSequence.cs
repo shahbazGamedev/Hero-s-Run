@@ -72,8 +72,8 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	//Fairy tells something to player
 	void step1()
 	{
-		fairyController.speak("FAIRY_DRAGON_BRIDGE", 3.6f, false );
-		Invoke ("step2", 3.75f );
+		fairyController.speak("FAIRY_DRAGON_BRIDGE", 4.6f, false );
+		Invoke ("step2", 4.75f );
 	}
 
 	//Fairy cast spell;

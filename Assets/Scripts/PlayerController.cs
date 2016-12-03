@@ -1963,7 +1963,7 @@ public sealed class PlayerController : BaseClass {
 						chicken_chaser.incrementCounter();
 
 						//The faster the player runs, the further the chicken will fly
-						float pushPower = runSpeed * 4f;
+						float pushPower = runSpeed * 2.5f;
 
 						//Make the chicken go flying
 						Rigidbody body = hit.collider.attachedRigidbody;
