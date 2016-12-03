@@ -50,6 +50,7 @@ public class TrollController : MonoBehaviour {
 	bool deactivateTroll = false; //Used for debugging so troll does not pursue player. Normal value is false.
 
 	public bool playerStumbledPreviously = false;
+	private Vector3 forward;
 
 	void Awake ()
 	{
@@ -99,17 +100,17 @@ public class TrollController : MonoBehaviour {
 		{
 			if( trollState == TrollState.StartRunning || trollState == TrollState.Running || trollState == TrollState.Smashing )
 			{
-
 		 		float distance = Vector3.Distance(player.position,transform.position);
 
 				if( distance > MINIMUM_DISTANCE )
 				{
 					//Only move the troll forward if the distance between the troll and the player is greater than minimum distance.
 					//We do not want the troll to overrun the player.
-					transform.position += transform.forward * Speed * Time.deltaTime;
+					forward = transform.forward * Speed * Time.deltaTime;
+					forward =  Vector3.ClampMagnitude(forward, distance );
+					transform.position += forward;
 					transform.LookAt(player);
 				}
-
 
 				if( distance > deactivationDistance )
 				{
