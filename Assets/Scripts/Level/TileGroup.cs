@@ -73,6 +73,7 @@ public enum TileGroupType {
 	Cemetery_Nice_And_Easy = 421,				
 	Cemetery_Graveyard_Sequence = 422,
 	Cemetery_Endless_Graveyard_Sequence = 423,
+	Cemetery_Treasure_Key = 424,
 
 	Jungle_Start = 500,
 	Jungle_End = 501,
