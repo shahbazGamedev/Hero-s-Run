@@ -204,7 +204,7 @@ public class LevelData : MonoBehaviour {
 				break;
 
 			case SunType.Countryside:
-				skyBoxName = "CartoonSkybox";
+				skyBoxName = "Countryside";
 				lightIntensity = 0.8f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				shadowStrength = 0.75f;
