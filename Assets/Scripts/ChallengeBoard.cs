@@ -23,7 +23,6 @@ public class ChallengeBoard {
 		public string challengerID = "";			//Format example: ":"1378641986" i.e. Bob's Facebook ID
 		public int score = 0; 						//Bob's score to beat
 		public int episodeNumber = -1; 				//Episode number
-		public int levelNumber = -1; 				//Level number
 		public string created_time;					//date field are returned as ISO-8601 formatted strings from the App Request and are stored as a string since DateTime is not Serializable.
 		public ChallengeStatus status = ChallengeStatus.Not_started;
 
@@ -38,7 +37,7 @@ public class ChallengeBoard {
 
 		public void printChallenge()
 		{
-						string printStr = challengerFirstName + " " + challengerID  + " " + score + " " + episodeNumber + " " + levelNumber + " " + created_time + " " + status;
+			string printStr = challengerFirstName + " " + challengerID  + " " + score + " " + episodeNumber + " " + created_time + " " + status;
 			Debug.Log( "Challenge: " + printStr );
 		}
 	}
