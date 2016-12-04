@@ -768,12 +768,14 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	private void onTileActivation( int index )
 	{
 		//If the tile we just activated is a T-Junction
-		//also enable the first tile on it's right side which has an index of + 5 compared to the T-Junction tile itself.
+		//also enable the first two tiles on its right side which have an index of + 5 and +6 respectively compared to the T-Junction tile itself.
 		SegmentInfo si = getSegmentInfo(worldRoadSegments[index]);
 		if( si.tileSubType == TileSubType.T_Junction )
 		{
 			int firstTileToTheRight = index + 5;
+			int secondTileToTheRight = index + 6;
 			if( firstTileToTheRight < worldRoadSegments.Count ) worldRoadSegments[firstTileToTheRight].SetActive(true);
+			if( secondTileToTheRight < worldRoadSegments.Count ) worldRoadSegments[secondTileToTheRight].SetActive(true);
 		}
 	}
 
