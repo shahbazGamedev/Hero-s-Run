@@ -13,7 +13,8 @@ public enum NewTutorialEvent {
 	Slide = 8,
 	Slide_Breakable = 9,
 	Tilt = 10,
-	Activate_Power_Up = 11
+	Activate_Power_Up = 11,
+	Attach_to_Zipline = 12
 }
 
 public class NewTutorialTrigger : MonoBehaviour {
