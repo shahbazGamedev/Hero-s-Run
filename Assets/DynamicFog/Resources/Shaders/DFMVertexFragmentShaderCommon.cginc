@@ -11,25 +11,25 @@
 
 		void fogColor(v2f IN, inout fixed4 c) {
 			float3 worldPos = IN.worldPos;
-			_WorldSpaceCameraPos.y -= _FogData.y + 0.0001;
-  			if (_WorldSpaceCameraPos.y<=_FogData.x || worldPos.y<=_FogData.x) {
+			float3 wsCameraPos = float3(_WorldSpaceCameraPos.x, _WorldSpaceCameraPos.y - (_FogData.y + 0.0001), _WorldSpaceCameraPos.z);
+  			if (wsCameraPos.y<=_FogData.x || worldPos.y<=_FogData.x) {
 
 				// Determine "fog length" and initial ray position between object and camera, cutting by fog distance params
-				float3 adir = worldPos - _WorldSpaceCameraPos;
+				float3 adir = worldPos - wsCameraPos;
 		
 				// ceiling cut
 				float delta = length(adir.xz);
 				float2 ndirxz = adir.xz / delta;
 				delta /= adir.y;
 		
-				float h = min(_WorldSpaceCameraPos.y, _FogData.x);
-				float xh = delta * (_WorldSpaceCameraPos.y - h);
-				float2 xz = _WorldSpaceCameraPos.xz - ndirxz * xh;
+				float h = min(wsCameraPos.y, _FogData.x);
+				float xh = delta * (wsCameraPos.y - h);
+				float2 xz = wsCameraPos.xz - ndirxz * xh;
 				float3 fogCeilingCut = float3(xz.x, h, xz.y);
 				
 				// does fog stars after pixel? If it does, exit now
 				float dist = length(adir);
-				float distanceToFog = distance(fogCeilingCut, _WorldSpaceCameraPos);
+				float distanceToFog = distance(fogCeilingCut, wsCameraPos);
 				if (distanceToFog<dist) {
 					// floor cut
 					float hf = 0;
@@ -39,8 +39,8 @@
 					} else if (delta<0 && worldPos.y < 0.5) {
 						hf = worldPos.y;
 					}
-					float xf = delta * ( hf - _WorldSpaceCameraPos.y ); 
-					float2 xzb = _WorldSpaceCameraPos.xz - ndirxz * xf;
+					float xf = delta * ( hf - wsCameraPos.y ); 
+					float2 xzb = wsCameraPos.xz - ndirxz * xf;
 					float3 fogFloorCut = float3(xzb.x, hf, xzb.y);
 
 					// fog length is...

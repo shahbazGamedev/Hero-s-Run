@@ -31,6 +31,7 @@ Shader "DynamicFog/Image Effect/Fog And Sky" {
 	sampler2D _NoiseTex;
 	sampler2D_float _CameraDepthTexture;
 	float4 _MainTex_TexelSize;
+	float4 _MainTex_ST;
 	float _FogAlpha;
 	float4 _FogDistance; // x = min distance, y = min distance falloff, x = max distance, y = max distance fall off
 	float4 _FogHeightData;

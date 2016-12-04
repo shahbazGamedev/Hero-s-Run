@@ -52,7 +52,8 @@ Shader "DynamicFog/Image Effect/Desktop Plus" {
     #endif
 
     float4x4 _ClipToWorld;
-    
+    float3 wsCameraPos;
+
     struct appdata {
     	float4 vertex : POSITION;
 		half2 texcoord : TEXCOORD0;
@@ -119,8 +120,8 @@ Shader "DynamicFog/Image Effect/Desktop Plus" {
 		
 	float3 getWorldPos(v2f i, float depth01) {
     	// Reconstruct the world position of the pixel
-     	_WorldSpaceCameraPos.y -= _FogHeightData.y;
-    	float3 worldPos = (i.cameraToFarPlane * depth01) + _WorldSpaceCameraPos;
+     	wsCameraPos = float3(_WorldSpaceCameraPos.x, _WorldSpaceCameraPos.y - _FogHeightData.y, _WorldSpaceCameraPos.z);
+    	float3 worldPos = (i.cameraToFarPlane * depth01) + wsCameraPos;
     	worldPos.y += 0.00001; // fixes artifacts when worldPos.y = _WorldSpaceCameraPos.y which is really rare but occurs at y = 0
     	return worldPos;
     }
@@ -129,29 +130,29 @@ Shader "DynamicFog/Image Effect/Desktop Plus" {
 	half4 getFogColor(float2 uv, float3 worldPos, float depth, fixed4 color) {
 		
 		// early exit if fog is not crossed
-		if (_WorldSpaceCameraPos.y>_FogHeightData.x && worldPos.y>_FogHeightData.x) {
+		if (wsCameraPos.y>_FogHeightData.x && worldPos.y>_FogHeightData.x) {
 			return color;		
 		}
 
 		half voidAlpha = 1.0;
 
 		// Determine "fog length" and initial ray position between object and camera, cutting by fog distance params
-		float3 adir = worldPos - _WorldSpaceCameraPos;
+		float3 adir = worldPos - wsCameraPos;
 		
 		// ceiling cut
 		float delta = length(adir.xz);
 		float2 ndirxz = adir.xz / delta;
 		delta /= adir.y;
 		
-		float h = min(_WorldSpaceCameraPos.y, _FogHeightData.x);
-		float xh = delta * (_WorldSpaceCameraPos.y - h);
-		float2 xz = _WorldSpaceCameraPos.xz - ndirxz * xh;
+		float h = min(wsCameraPos.y, _FogHeightData.x);
+		float xh = delta * (wsCameraPos.y - h);
+		float2 xz = wsCameraPos.xz - ndirxz * xh;
 		float3 fogCeilingCut = float3(xz.x, h, xz.y);
 		
 		// does fog stars after pixel? If it does, exit now
 		float adirLength = length(adir);
 		float dist  = min(adirLength, _FogDistance.z);
-		float distanceToFog = distance(fogCeilingCut, _WorldSpaceCameraPos);
+		float distanceToFog = distance(fogCeilingCut, wsCameraPos);
 		if (distanceToFog>=dist) return color;
 
 		// floor cut
@@ -162,8 +163,8 @@ Shader "DynamicFog/Image Effect/Desktop Plus" {
 		} else if (delta<0 && worldPos.y < 0.5) {
 			hf = worldPos.y;
 		}
-		float xf = delta * ( hf - _WorldSpaceCameraPos.y ); 
-		float2 xzb = _WorldSpaceCameraPos.xz - ndirxz * xf;
+		float xf = delta * ( hf - wsCameraPos.y ); 
+		float2 xzb = wsCameraPos.xz - ndirxz * xf;
 		float3 fogFloorCut = float3(xzb.x, hf, xzb.y);
 
 		// fog length is...

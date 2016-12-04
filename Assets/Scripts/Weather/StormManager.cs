@@ -10,16 +10,16 @@ public class StormManager : MonoBehaviour {
 	public WorldSoundManager worldSoundManager;
 	public Light sun;
 	float originalShadowStrength = 0;
-	[Tooltip("The material used to animate the foliage to simulate wind blowing in the leaves. This material needs to have _Amplitude and _Windspeed parameters.")]
+	[Tooltip("Currently NOT working. If I use the original foliage snow shader (with rim level), it does not work on lower end devices and looks black. If I use the country foliage shader, it also makes the foliage black. I am currently using a Standard shader but it does not support the required Windspeed or Amplitude options. The material used to animate the foliage to simulate wind blowing in the leaves. This material needs to have _Amplitude and _Windspeed parameters.")]
 	public Material foliage;
 	float originalFoliageMovement = 0.2f;
 
 	[Header("Parameters used for testing")]
-	[Range(0f, 1f)]
 	public bool isFogAndHazeActive = false;
-	public float fogAndHazeIntensity = 0;
 	[Range(0f, 1f)]
+	public float fogAndHazeIntensity = 0;
 	public bool isStormActive = false;
+	[Range(0f, 1f)]
 	public float stormIntensity = 0;
 
 
@@ -27,7 +27,7 @@ public class StormManager : MonoBehaviour {
 	void Start ()
 	{
 		originalShadowStrength = sun.shadowStrength;
-		setFoliageMovementIntensity( 0 );
+		//setFoliageMovementIntensity( 0 ); //currently not working
 	}
 
 	public void initiateStorm ()
@@ -93,13 +93,13 @@ public class StormManager : MonoBehaviour {
 		{
 			elapsedTime = elapsedTime + Time.deltaTime;
 			setStormIntensity( elapsedTime/duration );
-			setFoliageMovementIntensity( elapsedTime/duration );
+			//setFoliageMovementIntensity( elapsedTime/duration ); //currently not working
 			yield return new WaitForFixedUpdate();  
 			
 		} while ( elapsedTime < duration );
 		
 		setStormIntensity( 1f );
-		setFoliageMovementIntensity( 1f );
+		//setFoliageMovementIntensity( 1f ); 
 		if( onFinish != null ) onFinish.Invoke();		
 	}
 
@@ -141,7 +141,7 @@ public class StormManager : MonoBehaviour {
 		dynamicFog.preset = FOG_PRESET.Mist;
 		//Force the materials to update
 		dynamicFog.UpdateMaterialProperties();
-		setFoliageMovementIntensity( 0 );
+		//setFoliageMovementIntensity( 0 );
 		//Since the sky is clear now, we can add back the shadow casting
 		sun.shadowStrength = originalShadowStrength;
 		sun.shadows = LightShadows.Soft;
