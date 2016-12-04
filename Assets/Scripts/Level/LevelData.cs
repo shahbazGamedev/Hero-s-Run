@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using DynamicFogAndMist;
 
 public enum SunType 
 {
@@ -251,6 +252,39 @@ public class LevelData : MonoBehaviour {
 			Debug.LogError("LevelData-setSunParameters : The level scene must contain a directional light called 'Sunlight'." );
 		}
 
+	}
+
+	public void setFogParameters( SunType sunType )
+	{
+		DynamicFog dynamicFog = Camera.main.GetComponent<DynamicFog>();
+		switch (sunType)
+		{
+			case SunType.Blizzard:
+				//Fog Properties
+				dynamicFog.alpha = 0.6f;
+				dynamicFog.noiseStrength = 0.4f;
+				dynamicFog.distance = 0.01f;
+				dynamicFog.distanceFallOff = 0.04f;
+				dynamicFog.maxDistance = 1f;
+				dynamicFog.maxDistanceFallOff = 0f;
+				dynamicFog.height = 20f;
+				dynamicFog.heightFallOff = 1f;
+
+				dynamicFog.turbulence = 0.4f;
+				dynamicFog.speed = 0.005f;
+				dynamicFog.color = new Color( 0.89f, 0.89f, 0.89f );
+				dynamicFog.color2 = new Color( 0.89f, 0.89f, 0.89f );
+		
+				//Sky Properties
+				dynamicFog.skyHaze = 350f;
+				dynamicFog.skySpeed = 0.3f;
+				dynamicFog.skyNoiseStrength = 0.6f;
+				dynamicFog.skyAlpha = 0;
+				break;
+
+		}
+		//Force the materials to update
+		dynamicFog.UpdateMaterialProperties();
 	}
 
 	[System.Serializable]

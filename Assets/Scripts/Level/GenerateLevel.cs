@@ -260,7 +260,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 		//Configure fog, if any
 		mainCamera.GetComponent<DynamicFogAndMist.DynamicFog>().enabled = currentEpisode.isFogEnabled;
-		mainCamera.GetComponent<DynamicFogAndMist.DynamicFog>().UpdateMaterialProperties();
+		if( currentEpisode.isFogEnabled ) levelData.setFogParameters(currentEpisode.sunType);
 
 		Debug.Log("GenerateLevel-CreateLevel: Level " + currentEpisode.episodeName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
