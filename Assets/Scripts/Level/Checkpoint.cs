@@ -28,7 +28,7 @@ public class Checkpoint : MonoBehaviour {
 		LevelManager.Instance.setStarsAtLastCheckpoint( numberOfStarsAtCheckpoint );
 		//Save the player stats before continuing
 		PlayerStatsManager.Instance.savePlayerStats();
-		Debug.LogWarning("Checkpoint activated " + gameObject.transform.parent.name );
+		Debug.Log("Checkpoint activated " + gameObject.transform.parent.name );
 		//EPISODE_NAME_X is the text ID to use to get the localised episode name where X is the episode name indexed starting at 1.
 		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
 		string episodeNumberString = (episodeNumber + 1).ToString();

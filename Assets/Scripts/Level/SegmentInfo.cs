@@ -31,7 +31,6 @@ public class SegmentInfo : MonoBehaviour {
 	public float distanceToGround = 0.8f;
 	float distanceBetweenCoins = 2f;
 	const int LINE_VERTEX_COUNT = 200;
-	float step = 1f/LINE_VERTEX_COUNT;
 	public bool drawBezierGizmo = true;
 
 	public void addCoins()

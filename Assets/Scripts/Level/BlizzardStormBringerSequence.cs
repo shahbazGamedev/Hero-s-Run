@@ -13,7 +13,6 @@ public class BlizzardStormBringerSequence : MonoBehaviour {
 	public ParticleSystem lightningStrike;
 	PlayerController playerController;
 	FairyController fairyController;
-	WorldSoundManager worldSoundManager;
 	bool hasBeenTriggered = false;
 
 	// Use this for initialization
@@ -25,9 +24,6 @@ public class BlizzardStormBringerSequence : MonoBehaviour {
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
 	
-		GameObject worldSoundManagerObject = GameObject.FindGameObjectWithTag("World Sound Manager");
-		worldSoundManager = worldSoundManagerObject.GetComponent<WorldSoundManager>();
-
 		//Note that the Dark Queen is not in the Level scene. She is only in the tiles that use her.
 		darkQueen = GameObject.FindGameObjectWithTag("DarkQueen").transform;
 		darkQueenController = darkQueen.GetComponent<DarkQueenController>();

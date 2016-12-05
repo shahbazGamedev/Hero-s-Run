@@ -284,6 +284,7 @@ public class TreasureIslandManager : MonoBehaviour {
 			GameObject powerUpProp = null;
 			switch (giftPowerUp)
 			{
+				case PowerUpType.SpeedBoost:
 				case PowerUpType.MagicBoots:
 					powerUpProp = propMagicBoots;
 					fcProp.m_Prefab = powerUpProp;

@@ -407,7 +407,7 @@ public sealed class PlayerController : BaseClass {
 	
 	public void startRunning()
 	{
-		startRunning( false && currentTileType == TileType.Start );
+		startRunning( false );
 	}
 
 	public void startRunning( bool playCutscene )
