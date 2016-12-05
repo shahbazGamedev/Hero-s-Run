@@ -384,22 +384,17 @@ public class LevelData : MonoBehaviour {
 			{
 				case DifficultyLevel.Normal:
 				return 0.9f;
-				break;
 					
 				case DifficultyLevel.Heroic:
 				return 0.95f;
-				break;
 					
 				case DifficultyLevel.Legendary:
 				return 1f;
-				break;
 				
 				default:
 				return 0.9f;
-				break;
 			}
 		}
-
 	}
 
 }

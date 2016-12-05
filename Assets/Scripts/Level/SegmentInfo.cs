@@ -29,7 +29,7 @@ public class SegmentInfo : MonoBehaviour {
 	[Tooltip("Should you use a raycast to calculate the distance to ground. If true, coins will be placed at the height specified by distanceToGround.")]
 	public bool useRaycast = true;
 	public float distanceToGround = 0.8f;
-	public int distanceBetweenStars = 12;
+	float distanceBetweenCoins = 2f;
 	const int LINE_VERTEX_COUNT = 200;
 	float step = 1f/LINE_VERTEX_COUNT;
 	public bool drawBezierGizmo = true;
@@ -64,11 +64,9 @@ public class SegmentInfo : MonoBehaviour {
 		//Add the coins
 		SegmentInfo.BezierData bezierData = curveList[0];
 		GameObject go;
-		//Start at 1 to avoid having stars immediately next to the start
-		for(int i=1; i < LINE_VERTEX_COUNT; i = i + distanceBetweenStars )
+		for(float i=bezierData.bezierStart.position.z; i < bezierData.bezierEnd.position.z - distanceBetweenCoins; i = i + distanceBetweenCoins )
 		{
-			float t = i * step;
-			Vector3 toPosition = Utilities.Bezier3( bezierData.bezierStart.position, bezierData.bezierControl1.position, bezierData.bezierControl2.position, bezierData.bezierEnd.position, t );
+			Vector3 toPosition = new Vector3( 0, 0, i );
 			if( useRaycast )
 			{
 				//Place the coin constant distance to ground by using a raycast
