@@ -90,6 +90,16 @@ public class ChallengeBoard {
 		return numberOfActiveChallenges;
 	}
 
+	public int getNumberOfUnstartedChallenges( int episodeNumber )
+	{
+		int numberOfUnstartedChallenges = 0;
+		for( int i = 0; i < challengeList.Count; i++ )
+		{
+			if( challengeList[i].episodeNumber == episodeNumber && challengeList[i].status == ChallengeStatus.Not_started ) numberOfUnstartedChallenges++;
+		}
+		return numberOfUnstartedChallenges;
+	}
+
 	public void removeChallenge( Challenge challenge )
 	{
 		challengeList.Remove( challenge );
@@ -103,6 +113,14 @@ public class ChallengeBoard {
 			if( challengeList[i].episodeNumber == episodeNumber && challengeList[i].status == ChallengeStatus.Completed ) completedChallengesList.Add(challengeList[i]);
 		}
 		return completedChallengesList;
+	}
+
+	public void printAllChallenges()
+	{
+		for( int i = 0; i < challengeList.Count; i++ )
+		{
+			challengeList[i].printChallenge();
+		}
 	}
 
 	public void serializeChallenges()

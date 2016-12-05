@@ -84,24 +84,21 @@ public class MessageEntry : MonoBehaviour {
 			case RequestDataType.Challenge:
 				//Save challenge
 				messageManager.challengeBoard.addChallenge( requestData.fromFirstName, requestData.fromID, requestData.dataNumber1, requestData.dataNumber2, requestData.created_time );
-				//We don't have time to slide it out, so simply hide it
-				messageManager.gameObject.SetActive( false );
-				//Make sure we are in the endless running mode
-				if( GameManager.Instance.getGameMode() != GameMode.Endless ) messageManager.newWorldMapHandler.toggleGameMode();
-				messageManager.newWorldMapHandler.play( requestData.dataNumber2 );
+				//Update the challenge details below the episode station
+				messageManager.newWorldMapHandler.updateChallengeDetails();
+				GameObject.Destroy( gameObject );
 				break;
 			case RequestDataType.ChallengeBeaten:
 				//Save challenge
 				messageManager.challengeBoard.addChallenge( requestData.fromFirstName, requestData.fromID, requestData.dataNumber1, requestData.dataNumber2, requestData.created_time );
-				//We don't have time to slide it out, so simply hide it
-				messageManager.gameObject.SetActive( false );
-				//Make sure we are in the endless running mode
-				if( GameManager.Instance.getGameMode() != GameMode.Endless ) messageManager.newWorldMapHandler.toggleGameMode();
-				messageManager.newWorldMapHandler.play( requestData.dataNumber2 );
+				//Update the challenge details below the episode station
+				messageManager.newWorldMapHandler.updateChallengeDetails();
+				GameObject.Destroy( gameObject );
 				break;
 		}
 	}
 
+	//Called by the dismiss button on a message entry
 	public void dismiss()
 	{
 		FacebookManager.Instance.deleteAppRequest( requestData.appRequestID );

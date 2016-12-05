@@ -46,9 +46,10 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public GameObject episodeStationPrefab;
 	public GameObject starDisplayPrefab;
 
-	public List<FacebookPortraitHandler> facebookPortraitList = new List<FacebookPortraitHandler>( LevelData.NUMBER_OF_EPISODES );
+	private List<FacebookPortraitHandler> facebookPortraitList = new List<FacebookPortraitHandler>( LevelData.NUMBER_OF_EPISODES );
 	private Outline nextLevelToPlayGlowingOutline;
 	private const float OUTLINE_FLASH_SPEED = 2.25f;
+	private List<ChallengeDetails> challengeDetailsList = new List<ChallengeDetails>( LevelData.NUMBER_OF_EPISODES );
 
 
 	void Awake ()
@@ -140,6 +141,8 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	public void drawLevelMarkers()
 	{
+		GameManager.Instance.challengeBoard.printAllChallenges(); //for debugging
+
 		List<LevelData.EpisodeInfo> episodeList = levelData.episodeList;
 
 		for( int i=0; i < episodeList.Count; i++ )
@@ -178,6 +181,14 @@ public class NewWorldMapHandler : MonoBehaviour {
 			{
 				episodeStationButton.GetComponent<Outline>().enabled = false;
 			}
+		}
+	}
+
+	public void updateChallengeDetails()
+	{
+		for( int i=0; i < challengeDetailsList.Count; i++ )
+		{
+			challengeDetailsList[i].configure( i );
 		}
 	}
 
@@ -230,6 +241,11 @@ public class NewWorldMapHandler : MonoBehaviour {
 			playerPortrait.rectTransform.anchoredPosition = new Vector2( levelStationButtonRectTransform.anchoredPosition.x - 57.2f, levelStationButtonRectTransform.anchoredPosition.y -14f );
 		}
 		prepareFriendPicture( levelStationButtonRectTransform, episodeNumber );
+	
+		//Display the gauntlet and the number of challengers (if more than 0)
+		ChallengeDetails challengeDetails = go.transform.FindChild("Challenge Details").GetComponent<ChallengeDetails>();
+		challengeDetailsList.Add( challengeDetails );
+		challengeDetails.configure( episodeNumber );
 	}
 
 	//Set up data for friend picture, which sits to the right of the shield
