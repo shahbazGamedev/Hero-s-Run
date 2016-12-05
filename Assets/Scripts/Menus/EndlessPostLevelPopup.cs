@@ -104,7 +104,7 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 			challengeDescriptionText.text = challengeResults;
 			challengeButton.onClick.RemoveAllListeners();
 			challengeButton.onClick.AddListener(() => bragFriends() );
-			challengeButtonText.text = "Brag";
+			challengeButtonText.text = LocalizationManager.Instance.getText("POST_LEVEL_CHALLENGE_BRAG");
 		}
 	}
 
@@ -126,28 +126,47 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 		string textToDisplay = string.Empty;
 		if( GameManager.Instance.challengeBoard.getNumberOfActiveChallenges( LevelManager.Instance.getCurrentEpisodeNumber() ) > 0 )
 		{
+
+			//POST_LEVEL_BEAT_ONE_PERSON,Awesome. You just beat <player1>'s score!
+			//POST_LEVEL_BEAT_TWO_PERSONS,Awesome. You just beat <player1>'s and <player2>'s score!
+			//POST_LEVEL_BEAT_THREE_PERSONS,Awesome. You just beat <player1>'s<comma> <player2>'s<comma> and <player3>'s score!
+			//POST_LEVEL_BEAT_MORE_THAN_THREE,Awesome. You just beat the score of <player1><comma> <player2><comma> and <number additional players> other friends!
+
 			switch (completedChallengesList.Count)
 			{
 				case 0:
-					textToDisplay = "You suck. You were not able to beat anyone's high score.";
+					//The player did not beat any of the challengers. Simply keep the normal challenge button and text.
 					break;
 					
 				case 1:
-					textToDisplay = "Awesome. You just beat " + arrayOfBeatenChallengers[0] +"'s high score!";
+					textToDisplay = LocalizationManager.Instance.getText("POST_LEVEL_BEAT_ONE_PERSON");
+					//Replace name of challengers
+					textToDisplay = textToDisplay.Replace("<player1>", arrayOfBeatenChallengers[0] ); 
 					break;
 					
 				case 2:
-					textToDisplay = "Awesome. You just beat " + arrayOfBeatenChallengers[0] + " and " + arrayOfBeatenChallengers[1] +"'s high score!";
+					textToDisplay = LocalizationManager.Instance.getText("POST_LEVEL_BEAT_TWO_PERSONS");
+					//Replace name of challengers
+					textToDisplay = textToDisplay.Replace("<player1>", arrayOfBeatenChallengers[0] ); 
+					textToDisplay = textToDisplay.Replace("<player2>", arrayOfBeatenChallengers[1] ); 
 					break;
 		
 				case 3:
-					textToDisplay = "Awesome. You just beat " + arrayOfBeatenChallengers[0] + ", " + arrayOfBeatenChallengers[1] + " and " + arrayOfBeatenChallengers[2] + "'s high score!";
+					textToDisplay = LocalizationManager.Instance.getText("POST_LEVEL_BEAT_THREE_PERSONS");
+					//Replace name of challengers
+					textToDisplay = textToDisplay.Replace("<player1>", arrayOfBeatenChallengers[0] ); 
+					textToDisplay = textToDisplay.Replace("<player2>", arrayOfBeatenChallengers[1] ); 
+					textToDisplay = textToDisplay.Replace("<player3>", arrayOfBeatenChallengers[2] ); 
 					break;
 
 				default:
-					textToDisplay = "Awesome. You just beat " + arrayOfBeatenChallengers[0] + ", " + arrayOfBeatenChallengers[1] + " and " + (arrayOfBeatenChallengers.Length - 2).ToString() + " other friends's high score!";
+					textToDisplay = LocalizationManager.Instance.getText("POST_LEVEL_BEAT_MORE_THAN_THREE");
+					//Replace name of challengers
+					textToDisplay = textToDisplay.Replace("<player1>", arrayOfBeatenChallengers[0] ); 
+					textToDisplay = textToDisplay.Replace("<player2>", arrayOfBeatenChallengers[1] );
+					//More than 3 challengers were beaten. Just state the number of additional challengers beaten.
+					textToDisplay = textToDisplay.Replace("<number additional players>", (arrayOfBeatenChallengers.Length - 2).ToString() ); 
 					break;
-				
 			}
 		}
 
@@ -226,7 +245,7 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
 		string passedData = "ChallengeBeaten," + playerScore.ToString() + "," + episodeNumber.ToString();
 		//To recap, format of passed data is Challenge,88888,4
-		Debug.LogWarning("bragFriends pressed directRequestTo " + directRequestTo + " " + passedData );
+		Debug.Log("bragFriends pressed directRequestTo " + directRequestTo + " " + passedData );
 
 		FacebookManager.Instance.CallAppRequestAsDirectRequest( title, message, directRequestTo, passedData, bragFriendsCallback, null );
 	}
