@@ -73,7 +73,7 @@ public class MessageEntry : MonoBehaviour {
 		switch (requestData.dataType)
 		{
 			case RequestDataType.Ask_Give_Life:
-				FacebookManager.Instance.CallAppRequestAsDirectRequest(LocalizationManager.Instance.getText("MESSAGE_ENTRY_TITLE_EXTRA_LIFE"), LocalizationManager.Instance.getText("FB_HAVE_A_LIFE_MESSAGE"), requestData.fromID, "Accept_Give_Life," + requestData.dataNumber1.ToString() + ",-1", MCHCallback, requestData.appRequestID );
+				FacebookManager.Instance.CallAppRequestAsDirectRequest(LocalizationManager.Instance.getText("MESSAGE_ENTRY_TITLE_EXTRA_LIFE"), LocalizationManager.Instance.getText("FB_HAVE_A_LIFE_MESSAGE"), requestData.fromID, "Accept_Give_Life," + requestData.dataNumber1.ToString() + ",-1" + ",N/A", MCHCallback, requestData.appRequestID );
 				GameObject.Destroy( gameObject );
 				break;
 			case RequestDataType.Accept_Give_Life:
@@ -83,14 +83,14 @@ public class MessageEntry : MonoBehaviour {
 				break;
 			case RequestDataType.Challenge:
 				//Save challenge
-				messageManager.challengeBoard.addChallenge( requestData.fromFirstName, requestData.fromID, requestData.dataNumber1, requestData.dataNumber2, requestData.created_time );
+				messageManager.challengeBoard.addChallenge( requestData.fromFirstName, requestData.fromID, requestData.dataString1, requestData.dataNumber1, requestData.dataNumber2, requestData.created_time );
 				//Update the challenge details below the episode station
 				messageManager.newWorldMapHandler.updateChallengeDetails();
 				GameObject.Destroy( gameObject );
 				break;
 			case RequestDataType.ChallengeBeaten:
 				//Save challenge
-				messageManager.challengeBoard.addChallenge( requestData.fromFirstName, requestData.fromID, requestData.dataNumber1, requestData.dataNumber2, requestData.created_time );
+				messageManager.challengeBoard.addChallenge( requestData.fromFirstName, requestData.fromID, requestData.dataString1, requestData.dataNumber1, requestData.dataNumber2, requestData.created_time );
 				//Update the challenge details below the episode station
 				messageManager.newWorldMapHandler.updateChallengeDetails();
 				GameObject.Destroy( gameObject );

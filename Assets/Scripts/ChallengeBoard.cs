@@ -21,15 +21,17 @@ public class ChallengeBoard {
 	{
 		public string challengerFirstName = ""; 	//First name of challenger i.e. Bob
 		public string challengerID = "";			//Format example: ":"1378641986" i.e. Bob's Facebook ID
+		public string challengerRank = string.Empty;	//For future use
 		public int score = 0; 						//Bob's score to beat
 		public int episodeNumber = -1; 				//Episode number
 		public string created_time;					//date field are returned as ISO-8601 formatted strings from the App Request and are stored as a string since DateTime is not Serializable.
 		public ChallengeStatus status = ChallengeStatus.Not_started;
 
-		public Challenge( string challengerFirstName, string challengerID, int score, int episodeNumber, DateTime created_time )
+		public Challenge( string challengerFirstName, string challengerID, string challengerRank, int score, int episodeNumber, DateTime created_time )
 		{
 			this.challengerFirstName = challengerFirstName;
 			this.challengerID = challengerID;
+			this.challengerRank = challengerRank;
 			this.score = score;
 			this.episodeNumber = episodeNumber;
 			this.created_time = created_time.ToString();
@@ -37,12 +39,12 @@ public class ChallengeBoard {
 
 		public void printChallenge()
 		{
-			string printStr = challengerFirstName + " " + challengerID  + " " + score + " " + episodeNumber + " " + created_time + " " + status;
+			string printStr = challengerFirstName + " " + challengerID  + " " + challengerRank + " " + score + " " + episodeNumber + " " + created_time + " " + status;
 			Debug.Log( "Challenge: " + printStr );
 		}
 	}
 	
-	public void addChallenge( string challengerFirstName, string challengerID, int score, int episodeNumber, DateTime created_time )
+	public void addChallenge( string challengerFirstName, string challengerID, string challengerRank, int score, int episodeNumber, DateTime created_time )
 	{
 		//If the same person has previously sent you a challenge for the same episode and you have accepted it, then only keep the challenge with the highest score.
 		for( int i = 0; i < challengeList.Count; i++ )
@@ -63,7 +65,7 @@ public class ChallengeBoard {
 		}
 
 		//if we are here, it means it's a brand new entry :)
-		Challenge challenge = new Challenge( challengerFirstName, challengerID, score, episodeNumber, created_time );
+		Challenge challenge = new Challenge( challengerFirstName, challengerID, challengerRank, score, episodeNumber, created_time );
 		challengeList.Add( challenge );
 		serializeChallenges();
 	}

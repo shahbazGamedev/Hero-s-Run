@@ -353,7 +353,9 @@ public class FacebookManager
 								appRequestData.setRequestDataType( dataDetails[0] );
 								int.TryParse(dataDetails[1], out appRequestData.dataNumber1);
 								//For backward compatibility when there was only one dataNumber, verify array length first
-								if( dataDetails.Length == 3 ) int.TryParse(dataDetails[2], out appRequestData.dataNumber2);
+								if( dataDetails.Length >= 3 ) int.TryParse(dataDetails[2], out appRequestData.dataNumber2);
+								//For backward compatibility when there was no dataString1, verify array length first
+								if( dataDetails.Length >= 4 ) appRequestData.dataString1 = dataDetails[3];
 							}
 						}
 						object created_time;

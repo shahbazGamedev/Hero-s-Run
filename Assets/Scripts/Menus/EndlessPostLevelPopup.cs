@@ -231,8 +231,8 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 		string message = LocalizationManager.Instance.getText( "POST_LEVEL_CHALLENGE_FB_MESSAGE" );
 		int playerScore = LevelManager.Instance.getScore() + PlayerStatsManager.Instance.getDistanceTravelled();
 		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
-		string passedData = "Challenge," + playerScore.ToString() + "," + episodeNumber.ToString();
-		//To recap, format of passed data is Challenge,88888,4
+		string passedData = "Challenge," + playerScore.ToString() + "," + episodeNumber.ToString() + ",Rank X";
+		//To recap, format of passed data is Challenge,88888,4,Future Use (might be used for the challenger's rank)
 		FacebookManager.Instance.CallAppRequestAsFriendSelector( title, message, passedData, "", "" );
 	}
 
@@ -243,8 +243,8 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 		string message = LocalizationManager.Instance.getText( "POST_LEVEL_CHALLENGE_BEATEN_FB_MESSAGE" );
 		int playerScore = LevelManager.Instance.getScore() + PlayerStatsManager.Instance.getDistanceTravelled();
 		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
-		string passedData = "ChallengeBeaten," + playerScore.ToString() + "," + episodeNumber.ToString();
-		//To recap, format of passed data is Challenge,88888,4
+		string passedData = "ChallengeBeaten," + playerScore.ToString() + "," + episodeNumber.ToString() + ",Rank X";
+		//To recap, format of passed data is Challenge,88888,4,Future Use (might be used for the challenger's rank)
 		Debug.Log("bragFriends pressed directRequestTo " + directRequestTo + " " + passedData );
 
 		FacebookManager.Instance.CallAppRequestAsDirectRequest( title, message, directRequestTo, passedData, bragFriendsCallback, null );
