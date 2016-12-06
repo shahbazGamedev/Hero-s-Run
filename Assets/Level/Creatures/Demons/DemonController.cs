@@ -99,7 +99,7 @@ public sealed class DemonController : Creature, ICreature {
 			{
 		        case AttackType.stand_and_normal_attack:
 					attackDistance = 0.76f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance )
+					if( distance < attackDistance && getDotProduct() > 0.95f )
 					{
 						setCreatureState( CreatureState.Attacking );
 						anim.CrossFadeInFixedTime( "Attack" , CROSS_FADE_DURATION );
@@ -108,7 +108,7 @@ public sealed class DemonController : Creature, ICreature {
 		                
 		        case AttackType.stand_and_big_attack:
 					attackDistance = 0.95f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance )
+					if( distance < attackDistance && getDotProduct() > 0.95f )
 					{
 						setCreatureState( CreatureState.Attacking );
 						anim.CrossFadeInFixedTime( "Skill" , CROSS_FADE_DURATION );
@@ -118,7 +118,7 @@ public sealed class DemonController : Creature, ICreature {
 				case AttackType.charge_and_attack:
 					float chargeDistance = 2.3f * PlayerController.getPlayerSpeed();
 					attackDistance = 0.97f * PlayerController.getPlayerSpeed();
-					if( distance < chargeDistance )
+					if( distance < chargeDistance && getDotProduct() > 0.9f )
 					{
 						if( distance >= attackDistance )
 						{
@@ -143,7 +143,7 @@ public sealed class DemonController : Creature, ICreature {
 				case AttackType.walk_and_attack:
 					float walkDistance = 2.5f * PlayerController.getPlayerSpeed();
 					attackDistance = 0.97f * PlayerController.getPlayerSpeed();
-					if( distance < walkDistance )
+					if( distance < walkDistance && getDotProduct() > 0.9f )
 					{
 						if( distance >= attackDistance )
 						{
