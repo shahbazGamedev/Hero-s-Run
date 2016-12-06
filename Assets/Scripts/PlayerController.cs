@@ -3071,7 +3071,7 @@ public sealed class PlayerController : BaseClass {
 		anim.Play("DeathWall_Loop");
 		GameObject respawnLocationObject;
 
-		if( getCurrentTileType() == TileType.T_Junction )
+		if( getCurrentTileType() == TileType.T_Junction || getCurrentTileType() == TileType.T_Junction_2 )
 		{
 			//If the player's rotation is zero, this means he has not turned yet.
 			//If this is the case, we will assume he turned right.
