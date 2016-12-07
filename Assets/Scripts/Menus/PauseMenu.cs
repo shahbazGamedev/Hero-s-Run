@@ -115,6 +115,8 @@ public class PauseMenu : MonoBehaviour {
 			timeScaleBeforePause = Time.timeScale;
 			Time.timeScale = 0;
 			AudioListener.pause = true;
+			//Take this opportunity to do a garbage collection
+			System.GC.Collect();
 			updatePowerupData( PlayerStatsManager.Instance.getPowerUpSelected() );
 			pauseMenuPopup.gameObject.SetActive( true );
 			isPlayerControlEnabledBeforePause = playerController.isPlayerControlEnabled();
