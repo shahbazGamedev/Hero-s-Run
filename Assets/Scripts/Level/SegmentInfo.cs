@@ -29,7 +29,7 @@ public class SegmentInfo : MonoBehaviour {
 	[Tooltip("Should you use a raycast to calculate the distance to ground. If true, coins will be placed at the height specified by distanceToGround.")]
 	public bool useRaycast = true;
 	public float distanceToGround = 0.8f;
-	float distanceBetweenCoins = 2f;
+	public float distanceBetweenCoins = 2.2f;
 	const int LINE_VERTEX_COUNT = 200;
 	public bool drawBezierGizmo = true;
 
@@ -63,6 +63,7 @@ public class SegmentInfo : MonoBehaviour {
 		//Add the coins
 		SegmentInfo.BezierData bezierData = curveList[0];
 		GameObject go;
+		int counter = 0;
 		for(float i=bezierData.bezierStart.position.z; i < bezierData.bezierEnd.position.z - distanceBetweenCoins; i = i + distanceBetweenCoins )
 		{
 			Vector3 toPosition = new Vector3( 0, 0, i );
@@ -73,6 +74,8 @@ public class SegmentInfo : MonoBehaviour {
 			}
 			go = (GameObject)Instantiate(coinPrefab, toPosition, Quaternion.identity );
 			go.transform.parent = coins;
+			counter++;
+			go.name = "Coin " + counter.ToString();
 		}
 		drawBezierGizmo = true;
 
