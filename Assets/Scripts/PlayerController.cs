@@ -1930,7 +1930,7 @@ public sealed class PlayerController : BaseClass {
 					managePlayerDeath ( DeathType.Obstacle );
 				}
 			}
-			else if( hit.collider.name.StartsWith("Chicken") )
+			else if( hit.gameObject.CompareTag("Chicken") )
 			{
 				Transform chickenTransform = hit.transform.FindChild("Chicken Trigger");
 				if( chickenTransform == null )
@@ -1998,7 +1998,7 @@ public sealed class PlayerController : BaseClass {
 			{
 				Stumble();
 			}
-			else if (hit.collider.name.StartsWith( "Zombie" ) )
+			else if (hit.gameObject.CompareTag( "Zombie" ) )
 			{
 				ZombieController zombieController = (ZombieController) hit.gameObject.GetComponent("ZombieController");
 				//Ignore collision event if Zombie already dead.

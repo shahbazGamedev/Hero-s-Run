@@ -295,7 +295,7 @@ public sealed class ZombieController : Creature, ICreature {
 	{
 		if( PlayerController._characterState == CharacterState.Dying )
 		{
-			if( hit.collider.name.StartsWith("Zombie") )
+			if( hit.gameObject.CompareTag("Zombie") )
 			{
 				//If a zombie collides with another zombie while the player is dead, have him stop moving and play the victory sequence.
 				victory( false );
