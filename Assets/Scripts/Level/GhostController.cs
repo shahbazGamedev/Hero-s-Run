@@ -207,7 +207,7 @@ public class GhostController : BaseClass {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero" )
+		if( other.gameObject.CompareTag("Player") )
 		{
 			print ("Player is touching ghost");
 		}

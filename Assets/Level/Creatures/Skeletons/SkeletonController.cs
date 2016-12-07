@@ -429,7 +429,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		if( PlayerController._characterState == CharacterState.Dying )
 		{
 			//The Pendulum (bad name, yes I know) is the spike road block
-			if( hit.collider.name.StartsWith("Skeleton") || hit.collider.name.StartsWith("Hero") || hit.collider.name.StartsWith("Pendulum") )
+			if( hit.collider.name.StartsWith("Skeleton") || hit.gameObject.CompareTag("Player") || hit.collider.name.StartsWith("Pendulum") )
 			{
 				//If a Skeleton collides with another Skeleton, the road block or the Hero while the player is dead, have him stop moving and play the victory sequence.
 				victory( false );

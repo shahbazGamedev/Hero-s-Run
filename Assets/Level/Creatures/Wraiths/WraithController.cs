@@ -277,7 +277,7 @@ public sealed class WraithController : Creature, ICreature {
 	{
 		if( PlayerController._characterState == CharacterState.Dying )
 		{
-			if( hit.collider.name.StartsWith("Wraith") || hit.collider.name.StartsWith("Hero") )
+			if( hit.collider.name.StartsWith("Wraith") || hit.gameObject.CompareTag("Player") )
 			{
 				//If a wraith collides with another wraith or the Hero while the player is dead, have him stop moving and play the victory sequence.
 				victory( false );

@@ -6,7 +6,7 @@ public class TriggerMagicGate : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero"  )
+		if( other.gameObject.CompareTag("Player") )
 		{
 			GetComponent<AudioSource>().Play();
 			LevelData levelData = LevelManager.Instance.getLevelData();

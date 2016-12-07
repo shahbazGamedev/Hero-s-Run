@@ -17,7 +17,7 @@ public class TrapMagicGate : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero" )
+		if( other.gameObject.CompareTag("Player") )
 		{
 			Debug.Log ("Player triggered magic gate trap "  );
 			playerController.managePlayerDeath(DeathType.MagicGate);

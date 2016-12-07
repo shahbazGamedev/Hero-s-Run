@@ -779,7 +779,7 @@ public sealed class PlayerController : BaseClass {
 		//Verify if the player swiped across the screen
 		if (Input.touchCount > 0)
 		{
-            var touch = Input.touches[0];
+            Touch touch = Input.GetTouch( 0 );
             
             switch (touch.phase)
 			{

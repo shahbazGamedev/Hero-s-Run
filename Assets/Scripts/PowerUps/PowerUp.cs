@@ -24,7 +24,7 @@ public class PowerUp : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero" )
+		if( other.gameObject.CompareTag("Player") )
 		{
 			if( activationType == ActivationType.Consumable )
 			{

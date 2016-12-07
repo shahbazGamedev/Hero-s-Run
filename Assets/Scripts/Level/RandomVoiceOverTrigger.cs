@@ -10,7 +10,7 @@ public class RandomVoiceOverTrigger : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero" && Random.value <= percentageChanceEventTriggered )
+		if( gameObject.CompareTag("Player") && Random.value <= percentageChanceEventTriggered )
 		{
 			int selectedVOIndex = Random.Range(0, possibleVoiceOvers.Count);
 			AudioClip selectedVO = DialogManager.dialogManager.getVoiceOver( possibleVoiceOvers[selectedVOIndex] );

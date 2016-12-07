@@ -43,7 +43,7 @@ public class Projectile : MonoBehaviour {
 			impactParticleSystem.gameObject.SetActive(true);
 		}
 		if( GetComponent<MeshRenderer>() != null ) GetComponent<MeshRenderer>().enabled = false;
-		if( collision.gameObject.name == "Hero" )
+		if( collision.gameObject.CompareTag("Player") )
 		{
 			//Is the player protected by a Shield Power Up?
 			if( PowerUpManager.isThisPowerUpActive( PowerUpType.Shield ) )

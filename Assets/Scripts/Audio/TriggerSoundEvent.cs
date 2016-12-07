@@ -28,7 +28,7 @@ public class TriggerSoundEvent : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero" )
+		if( other.gameObject.CompareTag("Player") )
 		{
 			//Send an event to interested classes
 			if(sendSoundEvent != null) sendSoundEvent( eventType, intensity );

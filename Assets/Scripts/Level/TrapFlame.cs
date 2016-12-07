@@ -26,7 +26,7 @@ public class TrapFlame : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero" && isActive )
+		if( other.gameObject.CompareTag("Player") && isActive )
 		{
 			//Is the player protected by a Shield Power Up?
 			if( PowerUpManager.isThisPowerUpActive( PowerUpType.Shield ) )

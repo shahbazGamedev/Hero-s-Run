@@ -29,7 +29,7 @@ public class PushRigidBodies : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero")
+		if( other.gameObject.CompareTag("Player") )
 		{
 			startAvalanche();
 		}
