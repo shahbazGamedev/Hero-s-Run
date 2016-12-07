@@ -93,6 +93,7 @@ public enum TileGroupType {
 	Jungle_Enemies_2 = 515,					//Jungle_Enemy	
 	Jungle_Pyramid_Sequence = 516,			//Jungle_Pyramid, straight, Jungle_Vortex, Jungle_Enemy
 	Jungle_Valley = 517,					//Jungle_Valley_Start, Jungle_Valley_1, Jungle_Valley_2, Jungle_Valley_End
+	Jungle_Waterfall = 518,					//Jungle_Waterfall
 
 	Mines_Start = 600,
 	Mines_End = 601,
