@@ -8,6 +8,8 @@ public class GiantCrystalSequence : MonoBehaviour {
 	FairyController fairyController;
 	public float walkDistance = 3f;
 	public Vector3 fairyPositionBehindPlayer = new Vector3( 0, 1f, -0.3f );
+	public Transform sneakyWraith;
+	public Vector3 wraithPositionBehindPlayer = new Vector3( 0, 1f, -0.3f );
 
 	bool hasBeenTriggered = false;
 
@@ -66,7 +68,39 @@ public class GiantCrystalSequence : MonoBehaviour {
 		fairyController.setYRotationOffset( -10f );
 		fairyController.Appear ( FairyEmotion.Worried );
 		fairyController.speak("VO_FA_MINES_BIG_CRYSTAL", 3.25f, false );
-		Invoke("playerStartsRunningAgain", 4.5f );
+		Invoke("moveWraithBehindPlayer", 4.5f );
+	}
+
+	void moveWraithBehindPlayer()
+	{
+		sneakyWraith.gameObject.SetActive( true );
+		LeanTween.moveLocal( sneakyWraith.gameObject, wraithPositionBehindPlayer, 3f ).setOnComplete(wraithLookAtPlayer).setOnCompleteParam(gameObject);
+	}
+
+	void wraithLookAtPlayer()
+	{
+		fairyController.speak("VO_FA_MINES_BIG_CRYSTAL_COLD", 3.25f, false );
+		LeanTween.rotateLocal( sneakyWraith.gameObject, new Vector3( sneakyWraith.localEulerAngles.x, -49f, sneakyWraith.localEulerAngles.z ) , 3f );
+		Invoke( "wraithStartsAttackingPlayer", 5f );
+	}
+
+	void wraithStartsAttackingPlayer()
+	{
+		sneakyWraith.GetComponent<Animator>().speed = 0.21f;
+		sneakyWraith.GetComponent<Animator>().CrossFadeInFixedTime( "Sneak Attack", 0.2f );
+		Invoke( "fairySpinsAroundAndSeesWraith", 0.5f );
+	}
+
+	void fairySpinsAroundAndSeesWraith()
+	{
+		fairyController.setFairyState( FairyController.FairyState.None );
+		LeanTween.rotateLocal( fairyController.gameObject, new Vector3( fairyController.transform.localEulerAngles.x, 188.2f, fairyController.transform.localEulerAngles.z ) , 0.6f ).setEase(LeanTweenType.easeOutQuint).setOnComplete(fairyYellsRun).setOnCompleteParam(gameObject);
+	}
+
+	void fairyYellsRun()
+	{
+		fairyController.speak("VO_FA_MINES_BIG_CRYSTAL_RUN", 1.8f, false );
+		Invoke( "playerStartsRunningAgain", 0.9f );
 	}
 
 	void playerStartsRunningAgain()

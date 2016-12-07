@@ -10,7 +10,7 @@ public enum FairyEmotion {
 //Also, the IK Pass is currently disabled in the base layer.
 public class FairyController : Creature {
 	
-	enum FairyState {
+	public enum FairyState {
 		None = 0,
 		Arrive = 1,
 		Leave = 2,
@@ -29,7 +29,6 @@ public class FairyController : Creature {
 	PlayerController playerController;
 
 	FairyState fairyState = FairyState.None;
-
 
 	// The distance in the x-z plane to the target
 	const float DEFAULT_DISTANCE = 0.7f;
@@ -93,6 +92,11 @@ public class FairyController : Creature {
 	public void resetYRotationOffset()
 	{
 		yRotationOffset = DEFAULT_Y_ROTATION_OFFSET;
+	}
+
+	public void setFairyState( FairyState state )
+	{
+		fairyState = state;
 	}
 
 	private void positionFairy ()

@@ -28,7 +28,8 @@ public sealed class WraithController : Creature, ICreature {
 		stand_and_big_attack = 2,
 		charge_and_attack = 3,
 		walk_and_talk = 5,
-		do_nothing = 6
+		do_nothing = 6,
+		sneak_up_to_player = 7
 	}
 	[Range(0,1f)]
 	public float percentageWillAttack = 0.5f;
@@ -76,7 +77,7 @@ public sealed class WraithController : Creature, ICreature {
 
 	void configureSelectedWeapon()
 	{
-		if( attackType == AttackType.charge_and_attack || attackType == AttackType.stand_and_big_attack || attackType == AttackType.stand_and_normal_attack || attackType == AttackType.walk_and_talk )
+		if( attackType != AttackType.do_nothing )
 		{
 			if( weaponType == WeaponType.Scythe )
 			{
