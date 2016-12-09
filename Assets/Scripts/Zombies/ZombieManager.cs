@@ -16,7 +16,7 @@ public class ZombieManager : BaseClass {
 	// Use this for initialization
 	void Awake () {
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = player.gameObject.GetComponent<PlayerController>();
+		playerController = player.GetComponent<PlayerController>();
 
 	}
 

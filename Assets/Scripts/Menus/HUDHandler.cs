@@ -53,7 +53,8 @@ public class HUDHandler : MonoBehaviour {
 	void Awake ()
 	{
 		hudHandler = this;
-		playerController = GetComponent<PlayerController>();
+		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+		playerController = playerObject.GetComponent<PlayerController>();
 		hudSaveMe = saveMeCanvas.GetComponent<HUDSaveMe>();
 		tapToPlayText.text = LocalizationManager.Instance.getText("MENU_TAP_TO_PLAY");
 		restartFromCheckpointText.text = LocalizationManager.Instance.getText("MENU_RESTART_FROM_CHECKPOINT");
@@ -98,7 +99,7 @@ public class HUDHandler : MonoBehaviour {
 		}
 	}
 
-	void startPlaying()
+	public void startPlaying()
 	{
 		//If we are in the Menu state simply start running, but if we are in the OpeningSequence state
 		//initiate the opening sequence instead.
