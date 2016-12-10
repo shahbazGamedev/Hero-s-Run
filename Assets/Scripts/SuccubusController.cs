@@ -81,16 +81,16 @@ public class SuccubusController : BaseClass {
 
 	}
 	
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.StartRunning )
+		if( newState == PlayerCharacterState.StartRunning )
 		{
 			//Player started running
 			//Tell the succubus to arrive in front of the player after a number of seconds
 			//Invoke( "Arrive", TIME_TO_ARRIVE );
 			
 		}
-		else if( newState == CharacterState.Dying )
+		else if( newState == PlayerCharacterState.Dying )
 		{
 			//Player died
 			CancelInvoke( "Arrive" );
@@ -177,7 +177,7 @@ public class SuccubusController : BaseClass {
 
 	void castSpell()
 	{
-		if( spellCastingEnabled && playerController.getCharacterState() == CharacterState.Flying && GameManager.Instance.getGameState() == GameState.Normal && playerController.getCharacterState() != CharacterState.Dying && !playerController.isPlayerOnBezierCurve() && playerController.getCurrentTileType() != TileType.Left && playerController.getCurrentTileType() != TileType.Right )
+		if( spellCastingEnabled && playerController.getCharacterState() == PlayerCharacterState.Flying && GameManager.Instance.getGameState() == GameState.Normal && playerController.getCharacterState() != PlayerCharacterState.Dying && !playerController.isPlayerOnBezierCurve() && playerController.getCurrentTileType() != TileType.Left && playerController.getCurrentTileType() != TileType.Right )
 		{
 			if( numberSuccessiveSpellCast < 3 )
 			{
@@ -209,7 +209,7 @@ public class SuccubusController : BaseClass {
 
 	void castSpellNow( SpellType selectedSpell )
 	{
-		if( GameManager.Instance.getGameState() == GameState.Normal && playerController.getCharacterState() != CharacterState.Dying && !playerController.isPlayerOnBezierCurve()  )
+		if( GameManager.Instance.getGameState() == GameState.Normal && playerController.getCharacterState() != PlayerCharacterState.Dying && !playerController.isPlayerOnBezierCurve()  )
 		{
 			if( selectedSpell == SpellType.Hellpit )
 			{
@@ -299,7 +299,7 @@ public class SuccubusController : BaseClass {
 	bool createHellPit( int nbrOfCorridors )
 	{
 		//Don't create hell pits when the character is flying
-		if( playerController.getCharacterState() == CharacterState.Flying )
+		if( playerController.getCharacterState() == PlayerCharacterState.Flying )
 		{
 			return false;
 		}
@@ -451,7 +451,7 @@ public class SuccubusController : BaseClass {
 	void Update ()
 	{
 		
-		if( GameManager.Instance.getGameState() == GameState.Normal && succubusState == SuccubusState.CastSpells && playerController.getCharacterState() != CharacterState.Dying )
+		if( GameManager.Instance.getGameState() == GameState.Normal && succubusState == SuccubusState.CastSpells && playerController.getCharacterState() != PlayerCharacterState.Dying )
 		{
 			Vector3 exactPos = player.TransformPoint(succubusRelativePos);
 			transform.position = exactPos;

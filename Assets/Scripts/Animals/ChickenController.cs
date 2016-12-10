@@ -28,9 +28,9 @@ public class ChickenController : MonoBehaviour {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying && wasTriggered )
+		if( newState == PlayerCharacterState.Dying && wasTriggered )
 		{
 			//Only destroy the chicken that was involved
 			DestroyObject(transform.parent.gameObject );

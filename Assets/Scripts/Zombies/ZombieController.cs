@@ -11,7 +11,6 @@ public sealed class ZombieController : Creature, ICreature {
 		Any = 3, //Either walk or crawl
 	}
 
-	PlayerController playerController;
 	Animation legacyAnim;
 	public Vector3 forward;
 	float walkSpeed = 1.65f; //good value so feet don't slide
@@ -40,7 +39,6 @@ public sealed class ZombieController : Creature, ICreature {
 			zombiePrefab = transform.FindChild("zombieGirl");
 		}
 		legacyAnim = zombiePrefab.GetComponent<Animation>();
-		playerController = player.gameObject.GetComponent<PlayerController>();
 
 	}
 
@@ -283,9 +281,9 @@ public sealed class ZombieController : Creature, ICreature {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			CancelInvoke( "groan" );
 		}
@@ -293,7 +291,7 @@ public sealed class ZombieController : Creature, ICreature {
 		
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if( PlayerController._characterState == CharacterState.Dying )
+		if( playerController.getCharacterState() == PlayerCharacterState.Dying )
 		{
 			if( hit.gameObject.CompareTag("Zombie") )
 			{
@@ -314,7 +312,7 @@ public sealed class ZombieController : Creature, ICreature {
 			yield return _sync();
 		} while ( elapsedTime < recycleDelay );
 		
-		if( playerController.getCharacterState() != CharacterState.Dying )
+		if( playerController.getCharacterState() != PlayerCharacterState.Dying )
 		{
 			//Only deactivate the zombie if the player is not dead as we dont want the zombie to pop out of view.
 			setCreatureState( CreatureState.Available );

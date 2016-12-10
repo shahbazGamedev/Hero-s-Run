@@ -19,7 +19,7 @@ public class Zipline : MonoBehaviour {
     void Awake()
 	{
         lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.SetVertexCount(LINE_VERTEX_COUNT);
+        lineRenderer.numPositions = LINE_VERTEX_COUNT;
 		List<SegmentInfo.BezierData> curveList = new List<SegmentInfo.BezierData>();
 		curveList = GetComponent<SegmentInfo>().curveList;
  		bezierData = curveList[0];

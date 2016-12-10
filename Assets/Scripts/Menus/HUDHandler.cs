@@ -231,9 +231,9 @@ public class HUDHandler : MonoBehaviour {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			pauseButton.gameObject.SetActive( false );
 		}

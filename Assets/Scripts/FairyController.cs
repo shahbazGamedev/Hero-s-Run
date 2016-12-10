@@ -26,8 +26,6 @@ public class FairyController : Creature {
 	public ParticleSystem fairySpellFx;
 	public AudioClip fairySpellSound;
 
-	PlayerController playerController;
-
 	FairyState fairyState = FairyState.None;
 
 	// The distance in the x-z plane to the target
@@ -62,7 +60,6 @@ public class FairyController : Creature {
 	{
 		//Get a copy of the components
 		base.Awake();
-		if( player != null ) playerController = player.GetComponent<PlayerController>();
 	}
 
 	void Start()
@@ -78,7 +75,7 @@ public class FairyController : Creature {
 	// Update is called once per frame
 	void LateUpdate ()
 	{
-		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && fairyState == FairyState.Hover && playerController.getCharacterState() != CharacterState.Dying )
+		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && fairyState == FairyState.Hover && playerController.getCharacterState() != PlayerCharacterState.Dying )
 		{
 			positionFairy ();
 		}

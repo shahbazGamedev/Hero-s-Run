@@ -340,9 +340,9 @@ public class TrollController : MonoBehaviour {
 		}
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			if( trollState == TrollState.Running || trollState == TrollState.StartRunning || trollState == TrollState.Smashing )
 			{
@@ -358,7 +358,7 @@ public class TrollController : MonoBehaviour {
 				setTrollState(TrollState.Laughing);
 			}
 		}
-		else if( newState == CharacterState.Falling )
+		else if( newState == PlayerCharacterState.Falling )
 		{
 			//We don't want the creature to follow the player down a ravine ...
 			stopPursuing();

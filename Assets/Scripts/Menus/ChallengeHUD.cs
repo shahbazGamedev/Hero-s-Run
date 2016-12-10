@@ -112,9 +112,9 @@ public class ChallengeHUD : MonoBehaviour {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			hideImmediately();
 		}

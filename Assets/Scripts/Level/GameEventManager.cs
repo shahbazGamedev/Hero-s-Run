@@ -913,19 +913,19 @@ public class GameEventManager : MonoBehaviour {
 		previousGameState = newState;
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			CancelInvoke();
 			StopCoroutine( "pierceUp" );
 			StopCoroutine( "sidePierceUp" );
 		}
-		else if( newState == CharacterState.StartRunning && isTentacleSequenceActive )
+		else if( newState == PlayerCharacterState.StartRunning && isTentacleSequenceActive )
 		{
 			playTentaclesSequence();
 		}
-		else if( newState == CharacterState.StartRunning && isZombieHandsSequenceActive )
+		else if( newState == PlayerCharacterState.StartRunning && isZombieHandsSequenceActive )
 		{
 			//playZombieHandsSequence();
 		}

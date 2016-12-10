@@ -317,9 +317,9 @@ public class NewTutorialManager : MonoBehaviour {
 		}
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			//Hide any active tutorial
 			panel.SetActive( false );

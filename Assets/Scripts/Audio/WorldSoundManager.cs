@@ -122,13 +122,13 @@ public class WorldSoundManager : MonoBehaviour {
 		} 
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.StartRunning )
+		if( newState == PlayerCharacterState.StartRunning )
 		{
 			startMusic();
 		}
-		else if( newState == CharacterState.Dying )
+		else if( newState == PlayerCharacterState.Dying )
 		{
          	lowMusic.TransitionTo(1f);
 		}

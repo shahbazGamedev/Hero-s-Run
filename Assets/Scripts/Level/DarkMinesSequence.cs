@@ -102,9 +102,9 @@ public class DarkMinesSequence : MonoBehaviour {
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 	
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			CancelInvoke();
 		}

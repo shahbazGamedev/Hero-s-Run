@@ -139,9 +139,9 @@ public class TreeController : BaseClass {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 	}
 	
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			if( treeState == TreeState.Sleeping )
 			{

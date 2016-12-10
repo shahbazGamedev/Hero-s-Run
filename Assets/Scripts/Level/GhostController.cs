@@ -56,7 +56,7 @@ public class GhostController : BaseClass {
 	// Update is called once per frame
 	void LateUpdate ()
 	{
-		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && ghostState == GhostState.Hover && playerController.getCharacterState() != CharacterState.Dying )
+		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && ghostState == GhostState.Hover && playerController.getCharacterState() != PlayerCharacterState.Dying )
 		{
 			positionGhost ();
 		}

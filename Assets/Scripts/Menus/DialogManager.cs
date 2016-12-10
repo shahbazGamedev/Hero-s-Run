@@ -112,9 +112,9 @@ public class DialogManager : MonoBehaviour {
 		}
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			hideMessage();
 		}

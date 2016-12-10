@@ -522,9 +522,9 @@ public class PowerUpManager : BaseClass {
 		activePowerUps.Clear();
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			resetAllPowerUps();
 		}

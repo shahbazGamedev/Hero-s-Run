@@ -275,7 +275,7 @@ public sealed class WraithController : Creature, ICreature {
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if( PlayerController._characterState == CharacterState.Dying )
+		if( playerController.getCharacterState() == PlayerCharacterState.Dying )
 		{
 			if( hit.collider.name.StartsWith("Wraith") || hit.gameObject.CompareTag("Player") )
 			{
@@ -295,9 +295,9 @@ public sealed class WraithController : Creature, ICreature {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			Stop_Weapon_Trail ( null );
 			float distance = Vector3.Distance(player.position,transform.position);

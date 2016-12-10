@@ -326,7 +326,7 @@ public sealed class GoblinController : Creature, ICreature {
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if( PlayerController._characterState == CharacterState.Dying )
+		if( playerController.getCharacterState() == PlayerCharacterState.Dying )
 		{
 			//The Pendulum (bad name, yes I know) is the spike road block
 			if( hit.collider.name.StartsWith("Goblin") || hit.gameObject.CompareTag("Player") || hit.collider.name.StartsWith("Pendulum") )
@@ -371,9 +371,9 @@ public sealed class GoblinController : Creature, ICreature {
 		}
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 			float nearby = 4f;
@@ -383,7 +383,7 @@ public sealed class GoblinController : Creature, ICreature {
 				Debug.Log("Goblin PlayerStateChange - player is dead and nearby");
 			}
 		}
-		else if( newState == CharacterState.Falling )
+		else if( newState == PlayerCharacterState.Falling )
 		{
 			halt();
 		}

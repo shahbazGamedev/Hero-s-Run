@@ -7,6 +7,7 @@ public class Creature : BaseClass {
 	protected CreatureState creatureState = CreatureState.Idle;
 	[Header("Other")]
 	protected Transform player;
+	protected PlayerController playerController;
 	protected CharacterController controller;
 	protected Animator anim;
 	protected AudioSource audioSource;
@@ -41,7 +42,11 @@ public class Creature : BaseClass {
 	{
 		controller = GetComponent<CharacterController>();
 		GameObject playerGameObject = GameObject.FindGameObjectWithTag("Player");
-		if( playerGameObject != null ) player = playerGameObject.transform;
+		if( playerGameObject != null )
+		{
+			player = playerGameObject.transform;
+			playerController = player.GetComponent<PlayerController>();
+		}
 		anim = GetComponent<Animator>();
 		audioSource = GetComponent<AudioSource>();
 	}

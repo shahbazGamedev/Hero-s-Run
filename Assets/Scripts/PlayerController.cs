@@ -21,7 +21,7 @@ public enum DeathType {
 		GreatFall = 14
 }
 
-public enum CharacterState {
+public enum PlayerCharacterState {
 	None = -1,
 	Idle = 0,
 	SideMove = 1,
@@ -150,7 +150,7 @@ public sealed class PlayerController : BaseClass {
 	//Casts a circular shadow at the feet of the player
 	Projector shadowProjector;
 
-	public static CharacterState _characterState;
+	PlayerCharacterState playerCharacterState;
 	
 	// Are we jumping? (Initiated with jump button and not grounded yet)
 	public bool jumping = false;
@@ -236,7 +236,7 @@ public sealed class PlayerController : BaseClass {
 	Bezier currentBezierCurve;
 
 	//Event management used to notify other classes when the character state has changed
-	public delegate void PlayerState( CharacterState value );
+	public delegate void PlayerState( PlayerCharacterState value );
 	public static event PlayerState playerStateChanged;
 	
 	//Event management used to notify other classes when the resurrection begins (for example to hide zombies)
@@ -365,7 +365,7 @@ public sealed class PlayerController : BaseClass {
 			sc.positionCameraNow();
 
 			//The character is in idle while waiting for the player to press the Run! button. 
-			setCharacterState( CharacterState.Idle );		
+			setCharacterState( PlayerCharacterState.Idle );		
 		}
 	}
 
@@ -426,8 +426,8 @@ public sealed class PlayerController : BaseClass {
 
 		//The player starts off running
 		anim.SetTrigger(RunTrigger);
-		setCharacterState( CharacterState.StartRunning );
-		setCharacterState( CharacterState.Running );
+		setCharacterState( PlayerCharacterState.StartRunning );
+		setCharacterState( PlayerCharacterState.Running );
 
 		//This time is captured so we can slowly accelerate the run speed
 		timeSessionStarted = Time.time;
@@ -480,17 +480,17 @@ public sealed class PlayerController : BaseClass {
 		return runSpeed;
 	}
 
-	public CharacterState getCharacterState()
+	public PlayerCharacterState getCharacterState()
 	{
-		return _characterState;
+		return playerCharacterState;
 	}
 
-	private void setCharacterState( CharacterState newState )
+	private void setCharacterState( PlayerCharacterState newState )
 	{
-		//print ("***setCharacterState from " + _characterState + " to new " + newState );
-		_characterState = newState;
+		//print ("***setCharacterState from " + playerCharacterState + " to new " + newState );
+		playerCharacterState = newState;
 		//Send an event to interested classes
-		if(playerStateChanged != null) playerStateChanged( _characterState );
+		if(playerStateChanged != null) playerStateChanged( playerCharacterState );
 
 	}
 
@@ -560,7 +560,7 @@ public sealed class PlayerController : BaseClass {
 
 				//Verify if the player is falling.
 				//Also ignore if we are already falling or dying.
-				if( _characterState != CharacterState.Falling && _characterState != CharacterState.Dying && _characterState != CharacterState.Ziplining )
+				if( playerCharacterState != PlayerCharacterState.Falling && playerCharacterState != PlayerCharacterState.Dying && playerCharacterState != PlayerCharacterState.Ziplining )
 				{
 					//Verify how far is the ground
 					if( distanceToGround > MIN_DISTANCE_FOR_FALL )
@@ -600,7 +600,7 @@ public sealed class PlayerController : BaseClass {
 
 	void fall()
 	{
-		if( _characterState == CharacterState.Falling || _characterState == CharacterState.Jumping ) return; //ignore, we are already falling or jumping
+		if( playerCharacterState == PlayerCharacterState.Falling || playerCharacterState == PlayerCharacterState.Jumping ) return; //ignore, we are already falling or jumping
 
 		//Reset moveDirection.y to 0 so we dont start falling very fast
 		moveDirection.y = 0f;
@@ -611,10 +611,10 @@ public sealed class PlayerController : BaseClass {
 		gravity = DEFAULT_GRAVITY * 2f;
 		sc.heightDamping = SimpleCamera.DEFAULT_HEIGHT_DAMPING * 9f;
 		allowDistanceTravelledCalculations = false;
-		setCharacterState(CharacterState.Falling);
+		setCharacterState(PlayerCharacterState.Falling);
 		anim.SetTrigger(FallTrigger);
 		//playSound( fallingSound, false );
-		print ( "fall started " + distanceToGround + " " + MIN_DISTANCE_FOR_FALL + " " + _characterState );
+		print ( "fall started " + distanceToGround + " " + MIN_DISTANCE_FOR_FALL + " " + playerCharacterState );
 	}
 
 	void land()
@@ -624,7 +624,7 @@ public sealed class PlayerController : BaseClass {
 		sc.heightDamping = SimpleCamera.DEFAULT_HEIGHT_DAMPING;
 		allowRunSpeedToIncrease = true;
 		allowDistanceTravelledCalculations = true;
-		setCharacterState( CharacterState.Running );
+		setCharacterState( PlayerCharacterState.Running );
 		float fallDistance = fallStartYPos - transform.position.y;
 		if( fallDistance < DISTANCE_FOR_LAND_ANIMATION )
 		{
@@ -642,7 +642,7 @@ public sealed class PlayerController : BaseClass {
 
 	void updateDistanceTravelled()
 	{
-		if( _characterState == CharacterState.Falling )
+		if( playerCharacterState == PlayerCharacterState.Falling )
 		{
 			//Calculate the fall distance
 			float fallDistance = fallStartYPos - transform.position.y;
@@ -670,7 +670,7 @@ public sealed class PlayerController : BaseClass {
 		if (Time.deltaTime == 0) return;
 
 		//Make sure the character stays within the limits of the lanes (unless he is dying or falling or ziplining )
-		if ( _characterState != CharacterState.Dying && _characterState != CharacterState.Falling && _characterState != CharacterState.Ziplining )
+		if ( playerCharacterState != PlayerCharacterState.Dying && playerCharacterState != PlayerCharacterState.Falling && playerCharacterState != PlayerCharacterState.Ziplining )
 		{
 			if( usesBezierCurve )
 			{
@@ -761,7 +761,7 @@ public sealed class PlayerController : BaseClass {
 
 	void handlePowerUp()
 	{
-		if( GameManager.Instance.getGameState() == GameState.Normal && _characterState != CharacterState.Dying )
+		if( GameManager.Instance.getGameState() == GameState.Normal && playerCharacterState != PlayerCharacterState.Dying )
 		{
 			powerUpManager.activatePowerUp( PlayerStatsManager.Instance.getPowerUpSelected() );
 		}
@@ -846,7 +846,7 @@ public sealed class PlayerController : BaseClass {
 			else
 			{
 				//player swiped UP
-				if( isInZiplineTrigger && _characterState != CharacterState.Ziplining )
+				if( isInZiplineTrigger && playerCharacterState != PlayerCharacterState.Ziplining )
 				{
 					attachToZipline();
 				}
@@ -867,7 +867,7 @@ public sealed class PlayerController : BaseClass {
 		{
 			//If we we were falling and just landed,reset values and go back to running state.
 			//However, before deciding to land, also check that the distance to the ground is less than 10 cm to avoid false positives (controller.isGrounded is not perfect).
-			if( _characterState == CharacterState.Falling && distanceToGround < 0.1f )
+			if( playerCharacterState == PlayerCharacterState.Falling && distanceToGround < 0.1f )
 			{
 				land();
 			}
@@ -885,7 +885,7 @@ public sealed class PlayerController : BaseClass {
 				jumping = false;
 				doingDoubleJump = false;
 				runSpeed = runSpeedBeforeJump;
-				if( _characterState != CharacterState.Dying )
+				if( playerCharacterState != PlayerCharacterState.Dying )
 				{
 					//Don't allow the run speed to increase if the player is dead because this will cause
 					//the player to continue to move forward even if he is dead because runSpeed won't stay at 0.
@@ -899,16 +899,16 @@ public sealed class PlayerController : BaseClass {
 				}
 				else if ( queueJump )
 				{
-					setCharacterState( CharacterState.Running );
+					setCharacterState( PlayerCharacterState.Running );
 					queueJump = false;
 					jump();
 				}
 				else
 				{
 					//Resume running, but only if we are not dying
-					if( _characterState != CharacterState.Dying )
+					if( playerCharacterState != PlayerCharacterState.Dying )
 					{
-						setCharacterState( CharacterState.Running );
+						setCharacterState( PlayerCharacterState.Running );
 					}
 				}
 			}
@@ -980,7 +980,7 @@ public sealed class PlayerController : BaseClass {
 		}
 		else
 		{
-			if( _characterState != CharacterState.Ziplining )
+			if( playerCharacterState != PlayerCharacterState.Ziplining )
 			{
 				//1) Get the direction of the player
 				forward = transform.TransformDirection(Vector3.forward);			
@@ -1126,7 +1126,7 @@ public sealed class PlayerController : BaseClass {
 		}
 		else if ( Input.GetKeyDown (KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.Space)  ) 
 		{
-			if( isInZiplineTrigger && _characterState != CharacterState.Ziplining )
+			if( isInZiplineTrigger && playerCharacterState != PlayerCharacterState.Ziplining )
 			{
 				attachToZipline();
 			}
@@ -1183,7 +1183,7 @@ public sealed class PlayerController : BaseClass {
 		else
 		{
 			mainCamera.GetComponent<MotionBlur>().enabled = false;			
-			if( _characterState != CharacterState.Dying ) allowRunSpeedToIncrease = true;
+			if( playerCharacterState != PlayerCharacterState.Dying ) allowRunSpeedToIncrease = true;
 		}
 	}
 
@@ -1209,7 +1209,7 @@ public sealed class PlayerController : BaseClass {
 			//Only allow a jump if we are not already jumping and if we are on the ground.
 			//However, if the ground type below the player is of type Collapsing, still allow him to jump.
 			//The Collapsing tag is used in the CollapsingBridge code.
-			if (_characterState != CharacterState.Jumping && ( distanceToGround < 0.5f || groundType == "Collapsing" ) )
+			if (playerCharacterState != PlayerCharacterState.Jumping && ( distanceToGround < 0.5f || groundType == "Collapsing" ) )
 			{
 				//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
 				moveDirection.x = 0;
@@ -1234,7 +1234,7 @@ public sealed class PlayerController : BaseClass {
 				if( runSpeed < levelRunStartSpeed ) runSpeed = levelRunStartSpeed;
 				//Don't accelerate during a jump (also it would reset the runSpeed variable).
 				allowRunSpeedToIncrease = false;
-				setCharacterState( CharacterState.Jumping );
+				setCharacterState( PlayerCharacterState.Jumping );
 				if( currentTile.GetComponent<SegmentInfo>().addJumpBoost )
 				{
 					//if you are on a steep slope, the normal jump speed is insufficient to make you feel you are jumping high.
@@ -1267,7 +1267,7 @@ public sealed class PlayerController : BaseClass {
 		{
 			curveList = si.curveList;
 			SegmentInfo.BezierData bezierData = curveList[0];
-			setCharacterState( CharacterState.Ziplining );
+			setCharacterState( PlayerCharacterState.Ziplining );
 			enablePlayerControl( false );
 			anim.SetTrigger(Idle_LookTrigger);
 			ziplineAttachPoint = transform.FindChild("Zipline Attach Point");
@@ -1300,13 +1300,13 @@ public sealed class PlayerController : BaseClass {
 
 	void setDesiredLane( float sideMoveInitiatedZ )
 	{
-		if( _characterState == CharacterState.Sliding )
+		if( playerCharacterState == PlayerCharacterState.Sliding )
 		{
-			setCharacterState( CharacterState.Turning_and_sliding );
+			setCharacterState( PlayerCharacterState.Turning_and_sliding );
 		}
 		else
 		{
-			setCharacterState( CharacterState.Turning );
+			setCharacterState( PlayerCharacterState.Turning );
 		}
 
 		if (sideMoveInitiatedZ < -laneLimit )
@@ -1391,7 +1391,7 @@ public sealed class PlayerController : BaseClass {
 
 	void turnCorner( bool isGoingRight )
 	{
-		if ( _characterState == CharacterState.Running || _characterState == CharacterState.Jumping || _characterState == CharacterState.Sliding || _characterState == CharacterState.SideMove || _characterState == CharacterState.Stumbling )
+		if ( playerCharacterState == PlayerCharacterState.Running || playerCharacterState == PlayerCharacterState.Jumping || playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.SideMove || playerCharacterState == PlayerCharacterState.Stumbling )
 		{
 			this.isGoingRight = isGoingRight;
 
@@ -1519,7 +1519,7 @@ public sealed class PlayerController : BaseClass {
 	{
 		//You can only change lanes while running
 		//You can also change your mind 
-		if ( _characterState == CharacterState.Running || ( _characterState == CharacterState.SideMove && this.isGoingRight != isGoingRight ) )
+		if ( playerCharacterState == PlayerCharacterState.Running || ( playerCharacterState == PlayerCharacterState.SideMove && this.isGoingRight != isGoingRight ) )
 		{
 			this.isGoingRight = isGoingRight;
 
@@ -1546,7 +1546,7 @@ public sealed class PlayerController : BaseClass {
 				if ( isGoingRight )
 				{
 					desiredLane = Lanes.Right;
-					setCharacterState( CharacterState.SideMove );
+					setCharacterState( PlayerCharacterState.SideMove );
 					moveDirection.x = currentSideMoveSpeed;
 					audioSource.PlayOneShot( sideMoveSound );
 					//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
@@ -1555,7 +1555,7 @@ public sealed class PlayerController : BaseClass {
 				else
 				{
 					desiredLane = Lanes.Left;
-					setCharacterState( CharacterState.SideMove );
+					setCharacterState( PlayerCharacterState.SideMove );
 					moveDirection.x = -currentSideMoveSpeed;
 					audioSource.PlayOneShot( sideMoveSound );
 					//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
@@ -1564,7 +1564,7 @@ public sealed class PlayerController : BaseClass {
 			else if ( currentLane == Lanes.Right && !isGoingRight )
 			{
 				desiredLane = Lanes.Center;
-				setCharacterState( CharacterState.SideMove );
+				setCharacterState( PlayerCharacterState.SideMove );
 				moveDirection.x = -currentSideMoveSpeed;
 				audioSource.PlayOneShot( sideMoveSound );
 				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
@@ -1572,7 +1572,7 @@ public sealed class PlayerController : BaseClass {
 			else if ( currentLane == Lanes.Left && isGoingRight )
 			{
 				desiredLane = Lanes.Center;
-				setCharacterState( CharacterState.SideMove );
+				setCharacterState( PlayerCharacterState.SideMove );
 				moveDirection.x = currentSideMoveSpeed;
 				audioSource.PlayOneShot( sideMoveSound );
 				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
@@ -1584,11 +1584,11 @@ public sealed class PlayerController : BaseClass {
 	{
 		if (jumping)
 		{
-			setCharacterState( CharacterState.Jumping );
+			setCharacterState( PlayerCharacterState.Jumping );
 		}
 		else
 		{
-			setCharacterState( CharacterState.Running );					
+			setCharacterState( PlayerCharacterState.Running );					
 		}
 		moveDirection.x = 0;
 		currentLane = desiredLane;
@@ -1596,7 +1596,7 @@ public sealed class PlayerController : BaseClass {
 
 	void verifyIfDesiredLaneReached()
 	{
-		if ( _characterState == CharacterState.SideMove || _characterState == CharacterState.Stumbling )
+		if ( playerCharacterState == PlayerCharacterState.SideMove || playerCharacterState == PlayerCharacterState.Stumbling )
 		{
 			float playerRotationY = Mathf.Floor( transform.eulerAngles.y );
 			if ( currentLane == Lanes.Center )
@@ -1737,7 +1737,7 @@ public sealed class PlayerController : BaseClass {
 	{
 		if( playerControlsEnabled )
 		{
-			if( _characterState != CharacterState.SideMove && _characterState != CharacterState.Falling )
+			if( playerCharacterState != PlayerCharacterState.SideMove && playerCharacterState != PlayerCharacterState.Falling )
 			{
 				if( jumping )
 				{
@@ -1755,7 +1755,7 @@ public sealed class PlayerController : BaseClass {
 					//Slides cant be prolonged indefinitely. This is why you can reset the start time.
 					slideStartTime = Time.time;
 					//Don't reset values for nothing if we are extending the slide
-					if( _characterState != CharacterState.Sliding )
+					if( playerCharacterState != PlayerCharacterState.Sliding )
 					{
 						/*I used to change the controller capsule height,radius and position.
 						  However, when sliding across the Entrance trigger, it would cause multiple
@@ -1765,7 +1765,7 @@ public sealed class PlayerController : BaseClass {
 						  overhead obstacles.*/
 
 						deactivateOverheadObstacles( false );
-						setCharacterState( CharacterState.Sliding );
+						setCharacterState( PlayerCharacterState.Sliding );
 						if( groundType == "Water" )
 						{
 							slideWaterSplash.Play();
@@ -1787,7 +1787,7 @@ public sealed class PlayerController : BaseClass {
 
 	void verifySlide()
 	{
-		if ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding )
+		if ( playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.Turning_and_sliding )
 		{
 			//For as long as we have a collider above the character's head, prolong the slide duration
 			if ( checkAbove() )
@@ -1801,13 +1801,13 @@ public sealed class PlayerController : BaseClass {
 				dustPuff.Stop();
 				slideWaterSplash.Stop();
 
-				if( _characterState == CharacterState.Turning_and_sliding )
+				if( playerCharacterState == PlayerCharacterState.Turning_and_sliding )
 				{
-					setCharacterState( CharacterState.Sliding );
+					setCharacterState( PlayerCharacterState.Sliding );
 				}
 				else
 				{
-					setCharacterState( CharacterState.Running );
+					setCharacterState( PlayerCharacterState.Running );
 				}
 				anim.SetTrigger(Slide_UpTrigger);
 				audioSource.Stop();
@@ -1895,7 +1895,7 @@ public sealed class PlayerController : BaseClass {
 	
 	void OnControllerColliderHit (ControllerColliderHit hit )
 	{
-		if( _characterState != CharacterState.Dying )
+		if( playerCharacterState != PlayerCharacterState.Dying )
 		{
 			groundType = hit.gameObject.tag;
 			if( groundType != previousGroundType )
@@ -1941,7 +1941,7 @@ public sealed class PlayerController : BaseClass {
 
 				ChickenController chickenController = chickenTransform.gameObject.GetComponent<ChickenController>();
 
-				if( _characterState == CharacterState.Sliding )
+				if( playerCharacterState == PlayerCharacterState.Sliding )
 				{
 					//We can have multiple collisions. Only give stars on the first collision.
 					//However, if the chicken falls on the road, we want the player to be able to collide with it a second time.
@@ -2005,7 +2005,7 @@ public sealed class PlayerController : BaseClass {
 				if( zombieController.getCreatureState() != CreatureState.Dying )
 				{
 					//You can't make a crawling zombie fall backwards
-					if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding || PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) ) && zombieController.getCreatureState() != CreatureState.Crawling )
+					if( ( playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.Turning_and_sliding || PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) ) && zombieController.getCreatureState() != CreatureState.Crawling )
 					{
 						//Give stars
 						PlayerStatsManager.Instance.modifyCurrentCoins( ZombieManager.NUMBER_STARS_PER_ZOMBIE, true, false );
@@ -2018,7 +2018,7 @@ public sealed class PlayerController : BaseClass {
 					}
 					else
 					{
-						Debug.Log( "Player collided with zombie: " + hit.collider.name + " Normal" + hit.normal.y + " but CANT TOPPLE HIM " + _characterState + "  STATE Z "+ zombieController.getCreatureState());
+						Debug.Log( "Player collided with zombie: " + hit.collider.name + " Normal" + hit.normal.y + " but CANT TOPPLE HIM " + playerCharacterState + "  STATE Z "+ zombieController.getCreatureState());
 						if( hit.normal.y < 0.4f )
 						{
 							//Player is running up Z axis
@@ -2116,7 +2116,7 @@ public sealed class PlayerController : BaseClass {
 					Debug.Log( "PLayer collided with breakable: " + hit.collider.name );
 					//We pass the player collider to triggerBreak() because we do not want the barrel fragments to collide with the player.
 					bo.triggerBreak( GetComponent<Collider>() );
-					if( _characterState == CharacterState.Sliding )
+					if( playerCharacterState == PlayerCharacterState.Sliding )
 					{
 						//Give stars
 						PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
@@ -2151,7 +2151,7 @@ public sealed class PlayerController : BaseClass {
 				Debug.Log( "PLayer collided with breakable: " + hit.collider.name );
 				//We pass the player collider to triggerBreak() because we do not want the barrel fragments to collide with the player.
 				bo.triggerBreak( GetComponent<Collider>() );
-				if( _characterState == CharacterState.Sliding )
+				if( playerCharacterState == PlayerCharacterState.Sliding )
 				{
 					//Give stars
 					PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
@@ -2219,7 +2219,7 @@ public sealed class PlayerController : BaseClass {
 		//Ignore collision event if the creature is already dead.
 		if( creature != null && creature.getCreatureState() != CreatureState.Dying )
 		{
-			if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding ) || PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
+			if( ( playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.Turning_and_sliding ) || PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
 			{
 				//Give stars
 				PlayerStatsManager.Instance.modifyCurrentCoins( CreatureManager.NUMBER_STARS_PER_CREATURE, true, false );
@@ -2330,7 +2330,7 @@ public sealed class PlayerController : BaseClass {
 		}
 		else if( other.name .StartsWith("BallOfFire") )
 		{
-			if( _characterState != CharacterState.Sliding )
+			if( playerCharacterState != PlayerCharacterState.Sliding )
 			{
 				Debug.Log ("Player was hit by fireball.");
 				managePlayerDeath ( DeathType.Fireball);
@@ -2338,7 +2338,7 @@ public sealed class PlayerController : BaseClass {
 		}
  		else if( other.name == "RiverCollider" )
 		{
-			if( _characterState != CharacterState.Dying )
+			if( playerCharacterState != PlayerCharacterState.Dying )
 			{
 				//Create a water splash
 				Debug.Log ("Player fell into river.");
@@ -2424,12 +2424,12 @@ public sealed class PlayerController : BaseClass {
 		powerUpManager.deactivatePowerUp(PowerUpType.SlowTime, true );
 		powerUpManager.deactivatePowerUp(PowerUpType.SpeedBoost, true );
 		//If he was sliding, making him run again
-		if ( _characterState == CharacterState.Sliding )
+		if ( playerCharacterState == PlayerCharacterState.Sliding )
 		{
 			//We are stopping sliding
 			dustPuff.Stop();
 			slideWaterSplash.Stop();
-			setCharacterState( CharacterState.Running );
+			setCharacterState( PlayerCharacterState.Running );
 			anim.SetTrigger(Slide_UpTrigger);
 			audioSource.Stop();
 		}
@@ -2444,13 +2444,13 @@ public sealed class PlayerController : BaseClass {
 		if ( currentLane == Lanes.Left )
 		{
 			desiredLane = Lanes.Center;
-			setCharacterState( CharacterState.SideMove );
+			setCharacterState( PlayerCharacterState.SideMove );
 			moveDirection.x = sideMoveSpeed/1.6f;
 		}
 		else if ( currentLane == Lanes.Right )
 		{
 			desiredLane = Lanes.Center;
-			setCharacterState( CharacterState.SideMove );
+			setCharacterState( PlayerCharacterState.SideMove );
 			moveDirection.x = -sideMoveSpeed/1.6f;
 		}
 	}
@@ -2625,7 +2625,7 @@ public sealed class PlayerController : BaseClass {
 
 	public void afterPlayerSlowdown()
 	{
-		setCharacterState( CharacterState.Winning );
+		setCharacterState( PlayerCharacterState.Winning );
 		anim.SetTrigger(VictoryTrigger);
 		//See Cullis Gate for next steps.
 	}
@@ -2689,26 +2689,26 @@ public sealed class PlayerController : BaseClass {
 			tileRotationY = tileRotationY - 90f;
 		}
 
-		if( _characterState == CharacterState.Turning_and_sliding )
+		if( playerCharacterState == PlayerCharacterState.Turning_and_sliding )
 		{
-			setCharacterState( CharacterState.Sliding );
+			setCharacterState( PlayerCharacterState.Sliding );
 		}
 		else
 		{
-			setCharacterState( CharacterState.Running );
+			setCharacterState( PlayerCharacterState.Running );
 		}
 		//Reset the run speed to what it was at the beginning of the turn.
 		allowRunSpeedToIncrease = true;
 		runSpeed = runSpeedAtTimeOfTurn;
 
-		//Debug.Log ("turnNow completed " + isGoingRight + " " + transform.eulerAngles.y + " " + _characterState );
+		//Debug.Log ("turnNow completed " + isGoingRight + " " + transform.eulerAngles.y + " " + playerCharacterState );
 
 	}
 
 	public void managePlayerDeath( DeathType deathTypeValue )
 	{
 		//Only proceed if the player is not dying already
-		if ( _characterState != CharacterState.Dying )
+		if ( playerCharacterState != PlayerCharacterState.Dying )
 		{
 			//Remember how we died
 			deathType = deathTypeValue;
@@ -2734,7 +2734,7 @@ public sealed class PlayerController : BaseClass {
 			//percentage of this value.
 			//When we jump, the run speed is reduced.
 			//If we died while jumping, we want to use runSpeedBeforeJump and not runSpeed.
-			if( _characterState == CharacterState.Jumping )
+			if( playerCharacterState == PlayerCharacterState.Jumping )
 			{
 				runSpeedAtTimeOfDeath = runSpeedBeforeJump;
 			}
@@ -2748,7 +2748,7 @@ public sealed class PlayerController : BaseClass {
 			allowRunSpeedToIncrease = false;
 
 			//Change character state
-			setCharacterState( CharacterState.Dying );
+			setCharacterState( PlayerCharacterState.Dying );
 
 			//Stop the dust particle system. It might be playing if we died while sliding.
 			dustPuff.Stop();
@@ -2890,18 +2890,18 @@ public sealed class PlayerController : BaseClass {
 
 	public void stumble_completed ( AnimationEvent eve )
 	{
-		setCharacterState( CharacterState.Running );
+		setCharacterState( PlayerCharacterState.Running );
 	}
 	
 	void Stumble()
 	{
 		//The OnControllerColliderHit function can send multiple collision events during a single
 		//stumble, so ignore any new events while in the stumbling state.
-		if ( _characterState != CharacterState.Stumbling && _characterState != CharacterState.Dying )
+		if ( playerCharacterState != PlayerCharacterState.Stumbling && playerCharacterState != PlayerCharacterState.Dying )
 		{	
 			Debug.Log ("Player stumbled");
 			//Play player stumble animation by setting the state
-			setCharacterState( CharacterState.Stumbling );
+			setCharacterState( PlayerCharacterState.Stumbling );
 			//audio.PlayOneShot( stumblingSound );
 			//Make enemy appear right behind player
 			//Note that "placeTrollBehindPlayer" may change the state of the character to Dying
