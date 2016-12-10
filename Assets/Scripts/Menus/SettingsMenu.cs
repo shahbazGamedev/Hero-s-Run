@@ -3,6 +3,10 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SocialPlatforms.GameCenter;
 using UnityEngine.Audio;
+#if UNITY_IOS
+using UnityEngine.iOS;
+using UnityEngine.Apple.ReplayKit;
+#endif
 
 public class SettingsMenu : MonoBehaviour {
 
@@ -22,6 +26,9 @@ public class SettingsMenu : MonoBehaviour {
 	public Text difficultyText;
 	[Header("Achievements")] //Game Center
 	public Text achievementsText;
+	[Header("Recording Button")]
+	public GameObject showRecordButtonPanel;
+	public Text showRecordButtonText;
 	[Header("Privacy Policy")]
 	public Text privacyPolicyText;
 	public string privacyPolicyURL = "http://www.google.com/";
@@ -57,6 +64,21 @@ public class SettingsMenu : MonoBehaviour {
 		string difficultyLevel = LocalizationManager.Instance.getText("MENU_DIFFICULTY_LEVEL"); 
 		difficultyText.text = difficultyLevel + "\n" + PlayerStatsManager.Instance.getDifficultyLevelName();
 		achievementsText.text = LocalizationManager.Instance.getText("MENU_ACHIEVEMENTS");
+		showRecordButtonPanel.gameObject.SetActive( false );
+		#if UNITY_IOS
+		if( ReplayKit.APIAvailable )
+		{
+			showRecordButtonPanel.SetActive( true );
+			if( PlayerStatsManager.Instance.getShowRecordButton() )
+			{
+				showRecordButtonText.text = LocalizationManager.Instance.getText("MENU_SHOW_RECORD_BUTTON");
+			}
+			else
+			{
+				showRecordButtonText.text = LocalizationManager.Instance.getText("MENU_HIDE_RECORD_BUTTON");
+			}
+		}
+		#endif
 		privacyPolicyText.text = LocalizationManager.Instance.getText("MENU_PRIVACY_POLICY");
 		restorePurchasesText.text = LocalizationManager.Instance.getText("MENU_RESTORE_PURCHASES");
 		debugMenuText.text = LocalizationManager.Instance.getText("MENU_SHOW_DEBUG");
@@ -131,6 +153,21 @@ public class SettingsMenu : MonoBehaviour {
 		Debug.Log("showAchievements");
 		UISoundManager.uiSoundManager.playButtonClick();
 		Social.ShowAchievementsUI();
+	}
+
+	public void toggleShowRecordButton()
+	{
+		Debug.Log("toggleShowRecordButton");
+		UISoundManager.uiSoundManager.playButtonClick();
+		PlayerStatsManager.Instance.setShowRecordButton( !PlayerStatsManager.Instance.getShowRecordButton() );
+		if( PlayerStatsManager.Instance.getShowRecordButton() )
+		{
+			showRecordButtonText.text = LocalizationManager.Instance.getText("MENU_SHOW_RECORD_BUTTON");
+		}
+		else
+		{
+			showRecordButtonText.text = LocalizationManager.Instance.getText("MENU_HIDE_RECORD_BUTTON");
+		}
 	}
 
 	public void showPrivacyPolicy()

@@ -47,7 +47,8 @@ public class PlayerStatsManager {
 	bool firstTimePlaying;
 	bool sharedOnFacebook = false;	//Has the player shared an image on Facebook?
 
-	bool showDebugInfoOnHUD = false; //Should we show the FPS, player speed, etc. on the HUD or not.
+	bool showDebugInfoOnHUD = false; 	//Should we show the FPS, player speed, etc. on the HUD or not.
+	bool showRecordButton = false;		//Should we show the record button in the HUD that triggers replay kit recording
 	int lives = 0;
 	const int INITIAL_NUMBER_LIVES = 6;
 
@@ -753,6 +754,16 @@ public class PlayerStatsManager {
 		return showDebugInfoOnHUD;
 	}
 
+	public void setShowRecordButton( bool value )
+	{
+		showRecordButton = value;
+	}
+
+	public bool getShowRecordButton()
+	{
+		return showRecordButton;
+	}
+
 	public void setOwnsStarDoubler( bool value )
 	{
 		ownsStarDoubler = value;
@@ -1005,6 +1016,15 @@ public class PlayerStatsManager {
 			{
 				showDebugInfoOnHUD = false;	
 			}
+			string showRecordButtonString = PlayerPrefs.GetString("showRecordButton", "false" );
+			if( showRecordButtonString == "true" )
+			{
+				showRecordButton = true;
+			}
+			else
+			{
+				showRecordButton = false;	
+			}
 			string sharedOnFacebookString = PlayerPrefs.GetString("sharedOnFacebook", "false" );
 			if( sharedOnFacebookString == "true" )
 			{
@@ -1091,6 +1111,14 @@ public class PlayerStatsManager {
 		{
 			PlayerPrefs.SetString( "showDebugInfoOnHUD", "false" );
 		}
+		if( showRecordButton )
+		{
+			PlayerPrefs.SetString( "showRecordButton", "true" );
+		}
+		else
+		{
+			PlayerPrefs.SetString( "showRecordButton", "false" );
+		}
 		if( sharedOnFacebook )
 		{
 			PlayerPrefs.SetString( "sharedOnFacebook", "true" );
@@ -1158,6 +1186,8 @@ public class PlayerStatsManager {
 			firstTimePlaying = true;
 			PlayerPrefs.SetString( "showDebugInfoOnHUD", "false" );
 			setShowDebugInfoOnHUD( false );
+			PlayerPrefs.SetString( "showRecordButton", "false" );
+			setShowRecordButton( false );
 			PlayerPrefs.SetString( "sharedOnFacebook", "false" );
 			setSharedOnFacebook( false );
 			PlayerPrefs.SetString( "ownsStarDoubler", "false" );
