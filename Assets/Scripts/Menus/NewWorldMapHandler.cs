@@ -397,6 +397,24 @@ public class NewWorldMapHandler : MonoBehaviour {
 		}	
 	}
 
+	//Journal
+	public void openJournal()
+	{
+		UISoundManager.uiSoundManager.playButtonClick();
+		StartCoroutine( loadJournal() );
+	}
+
+	IEnumerator loadJournal()
+	{
+		if( !levelLoading )
+		{
+			levelLoading = true;
+			Handheld.StartActivityIndicator();
+			yield return new WaitForSeconds(0);
+			SceneManager.LoadScene( (int)GameScenes.Journal );
+		}	
+	}
+
 	void OnEnable()
 	{
 		FacebookManager.appRequestsReceived += AppRequestsReceived;

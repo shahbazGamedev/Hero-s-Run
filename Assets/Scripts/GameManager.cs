@@ -28,7 +28,8 @@ public enum GameScenes {
 	Level = 3,
 	TreasureIsland = 4,
 	CharacterGallery = 5,
-	Store = 6
+	Store = 6,
+	Journal = 7
 }
 
 public enum DifficultyLevel {
