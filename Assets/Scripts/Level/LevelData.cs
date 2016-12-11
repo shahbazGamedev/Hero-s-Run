@@ -126,7 +126,7 @@ public class LevelData : MonoBehaviour {
 
 			case SunType.Jungle:
 				skyBoxName = "Jungle";
-				lightIntensity = 1.25f;
+				lightIntensity = 1.15f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				shadowStrength = 0.6f;
 				sunDirection = Quaternion.Euler( 80f,119f,42f );

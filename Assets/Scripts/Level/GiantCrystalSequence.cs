@@ -88,7 +88,7 @@ public class GiantCrystalSequence : MonoBehaviour {
 	{
 		sneakyWraith.GetComponent<Animator>().speed = 0.21f;
 		sneakyWraith.GetComponent<Animator>().CrossFadeInFixedTime( "Sneak Attack", 0.2f );
-		Invoke( "fairySpinsAroundAndSeesWraith", 0.5f );
+		Invoke( "fairySpinsAroundAndSeesWraith", 0.3f );
 	}
 
 	void fairySpinsAroundAndSeesWraith()
@@ -100,7 +100,7 @@ public class GiantCrystalSequence : MonoBehaviour {
 	void fairyYellsRun()
 	{
 		fairyController.speak("VO_FA_MINES_BIG_CRYSTAL_RUN", 1.8f, false );
-		Invoke( "playerStartsRunningAgain", 0.9f );
+		Invoke( "playerStartsRunningAgain", 0.8f );
 	}
 
 	void playerStartsRunningAgain()
