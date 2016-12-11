@@ -21,6 +21,7 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 	PlayerController playerController;
 	FairyController fairyController;
 	WorldSoundManager worldSoundManager;
+	HUDHandler hudHandler;
 	bool hasBeenTriggered = false;
 
 	// Use this for initialization
@@ -34,6 +35,9 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 	
 		GameObject worldSoundManagerObject = GameObject.FindGameObjectWithTag("World Sound Manager");
 		worldSoundManager = worldSoundManagerObject.GetComponent<WorldSoundManager>();
+
+		GameObject hudHandlerObject = GameObject.FindGameObjectWithTag("HUD Canvas");
+		hudHandler = hudHandlerObject.GetComponent<HUDHandler>();
 	}
 
 	void OnEnable()
@@ -93,7 +97,7 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 
 	void startFadeIn()
 	{
-		playerController.GetComponent<HUDHandler>().fadeEffect( true, afterFadeIn );
+		hudHandler.fadeEffect( true, afterFadeIn );
 	}
 
 	void afterFadeIn()
@@ -109,7 +113,7 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 		fakeFloor.SetActive( false );
 		//Add fog by the window
 		fogByWindow.Play();
-		playerController.GetComponent<HUDHandler>().fadeEffect( false, insideTowerFairySpeaks1 );
+		hudHandler.fadeEffect( false, insideTowerFairySpeaks1 );
 	}
 
 	void insideTowerFairySpeaks1()
@@ -139,7 +143,7 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 
 	void fadeToWhite()
 	{
-		playerController.GetComponent<HUDHandler>().fadeEffect( true, waitBeforLoweringWindVolume );
+		hudHandler.fadeEffect( true, waitBeforLoweringWindVolume );
 	}
 
 	void waitBeforLoweringWindVolume()
@@ -160,7 +164,7 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 
 	void insideTowerWindQuietsFadeOut()
 	{
-		playerController.GetComponent<HUDHandler>().fadeEffect( false, insideTowerWindHasDiedDown );
+		hudHandler.fadeEffect( false, insideTowerWindHasDiedDown );
 	}
 
 	void insideTowerWindHasDiedDown()
@@ -172,7 +176,7 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 	
 	void fadeOut()
 	{
-		playerController.GetComponent<HUDHandler>().fadeEffect( true, goBackOutside );
+		hudHandler.fadeEffect( true, goBackOutside );
 	}
 
 	void goBackOutside()
@@ -181,7 +185,7 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 		cutsceneCamera.gameObject.SetActive( false );
 		Camera.main.GetComponent<StormManager>().deactivateStorm();
 		snowStorm.SetActive( false );
-		playerController.GetComponent<HUDHandler>().fadeEffect( false, mentionTree );
+		hudHandler.fadeEffect( false, mentionTree );
 
 	}
 
