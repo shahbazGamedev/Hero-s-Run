@@ -146,7 +146,7 @@ public class DragonController : BaseClass {
 	public void Arrive( )
 	{
 		print ("*******Dragon arrive");
-		Vector3 arrivalStartPos = new Vector3( -100f, 8.5f, PlayerController.getPlayerSpeed() * 16.1f );
+		Vector3 arrivalStartPos = new Vector3( -100f, 8.5f, player.GetComponent<PlayerController>().getSpeed() * 16.1f );
 		Vector3 exactPos = player.TransformPoint(arrivalStartPos);
 		transform.position = exactPos;
 		transform.rotation = Quaternion.Euler( 0, player.transform.eulerAngles.y + 90f, transform.eulerAngles.z );

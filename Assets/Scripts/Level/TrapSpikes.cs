@@ -11,7 +11,7 @@ public class TrapSpikes : MonoBehaviour {
 	void Start ()
 	{
 		GameObject player = GameObject.FindGameObjectWithTag("Player");
-		playerController = player.gameObject.GetComponent<PlayerController>();
+		playerController = player.GetComponent<PlayerController>();
 		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
 		powerUpManager = powerUpManagerObject.GetComponent<PowerUpManager>();
 	}

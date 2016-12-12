@@ -120,7 +120,8 @@ public sealed class PlayerController : BaseClass {
 	//start running at runStartSpeed.
 	float runStartSpeed = 0;
 	//The running speed will increase with time to make it harder for the player,
-	public static float runSpeed = 0;
+	public static float runSpeed = 0; //NOT USED
+	private float newRunSpeed = 0;
 	//The run speed at time of death is needed because we want to start running again (in case of revive) at a 
 	//percentage of this value.
 	float runSpeedAtTimeOfDeath = 0;
@@ -401,7 +402,7 @@ public sealed class PlayerController : BaseClass {
 		levelRunStartSpeed = episodeInfo.getRunStartSpeed();
 		runAcceleration = episodeInfo.getRunAcceleration();
 		//We need to set this here so that the troll can get the player's speed.
-		runSpeed = levelRunStartSpeed;
+		newRunSpeed = levelRunStartSpeed;
 		runSpeedTurnMultiplier = episodeInfo.getRunSpeedTurnMultiplier();
 	}
 	
@@ -438,7 +439,7 @@ public sealed class PlayerController : BaseClass {
 		{
 			sc.playCutscene( CutsceneType.Start );
 			runStartSpeed = levelRunStartSpeed;
-			runSpeed = runStartSpeed;
+			newRunSpeed = runStartSpeed;
 			trollController.startPursuing();
 		}
 		else
@@ -449,7 +450,7 @@ public sealed class PlayerController : BaseClass {
 			//The minimum speed is levelRunStartSpeed
 			if( newRunStartSpeed < levelRunStartSpeed ) newRunStartSpeed = levelRunStartSpeed;
 			runStartSpeed = newRunStartSpeed;
-			runSpeed = runStartSpeed;
+			newRunSpeed = runStartSpeed;
 			//If we are in the opening cutscene, the OpeningSequence class will take care of enabling player controls at the right time.
 			if( currentTileType != TileType.Opening )
 			{
@@ -461,11 +462,11 @@ public sealed class PlayerController : BaseClass {
 
 	void updateRunSpeed()
 	{
-		if( allowRunSpeedToIncrease && runSpeed <= MAX_RUN_SPEED )
+		if( allowRunSpeedToIncrease && newRunSpeed <= MAX_RUN_SPEED )
 		{
-			runSpeed = (Time.time - timeSessionStarted) * runAcceleration + runStartSpeed; //in seconds
+			newRunSpeed = (Time.time - timeSessionStarted) * runAcceleration + runStartSpeed; //in seconds
 			//Update the blend amount between Run and Sprint animations based on the current run speed
-			blendFactor = (runSpeed - runStartSpeed)/(MAX_RUN_SPEED-runStartSpeed);
+			blendFactor = (newRunSpeed - runStartSpeed)/(MAX_RUN_SPEED-runStartSpeed);
 			//If the blendFactor is set to one we will only play the Sprint animation
 			//and the Run animation will stop playing. Because of that, we will no longer hear any footsteps.
 			//For this reason, cap the blend factor to 0.98f so that we always blend in a little of the run animation and therefore
@@ -477,7 +478,12 @@ public sealed class PlayerController : BaseClass {
 	
 	public static float getPlayerSpeed()
 	{
-		return runSpeed;
+		return runSpeed; //DON'T USE
+	}
+
+	public float getSpeed()
+	{
+		return newRunSpeed;
 	}
 
 	public PlayerCharacterState getCharacterState()
@@ -605,7 +611,7 @@ public sealed class PlayerController : BaseClass {
 		//Reset moveDirection.y to 0 so we dont start falling very fast
 		moveDirection.y = 0f;
 		allowRunSpeedToIncrease = false;
-		runSpeed = runSpeed * 0.65f;
+		newRunSpeed = newRunSpeed * 0.65f;
 		//Remember at what height the player started to fall because this will help us calculate the fall distance.
 		fallStartYPos = transform.position.y;
 		gravity = DEFAULT_GRAVITY * 2f;
@@ -884,11 +890,11 @@ public sealed class PlayerController : BaseClass {
 				moveDirection.y = 0f;
 				jumping = false;
 				doingDoubleJump = false;
-				runSpeed = runSpeedBeforeJump;
+				newRunSpeed = runSpeedBeforeJump;
 				if( playerCharacterState != PlayerCharacterState.Dying )
 				{
 					//Don't allow the run speed to increase if the player is dead because this will cause
-					//the player to continue to move forward even if he is dead because runSpeed won't stay at 0.
+					//the player to continue to move forward even if he is dead because newRunSpeed won't stay at 0.
 					allowRunSpeedToIncrease = true;
 				}
 				if ( queueSlide )
@@ -985,7 +991,7 @@ public sealed class PlayerController : BaseClass {
 				//1) Get the direction of the player
 				forward = transform.TransformDirection(Vector3.forward);			
 				//2) Scale vector based on run speed
-				forward = forward * Time.deltaTime * runSpeed;
+				forward = forward * Time.deltaTime * newRunSpeed;
 				//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
 				forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
 				//4) Get a unit vector that is orthogonal to the direction of the player
@@ -1178,7 +1184,7 @@ public sealed class PlayerController : BaseClass {
 			trollController.stopPursuing();
 			mainCamera.GetComponent<MotionBlur>().enabled = true;			
 			allowRunSpeedToIncrease = false;
-			runSpeed = runSpeed * PowerUpManager.SPEED_BOOST_MULTIPLIER;
+			newRunSpeed = newRunSpeed * PowerUpManager.SPEED_BOOST_MULTIPLIER;
 		}
 		else
 		{
@@ -1227,12 +1233,12 @@ public sealed class PlayerController : BaseClass {
 				trollController.jump();
 
 				//Memorize the run speed
-				runSpeedBeforeJump = runSpeed;
+				runSpeedBeforeJump = newRunSpeed;
 				//Lower the run speed during a jump
-				runSpeed = runSpeed * JUMP_RUN_SPEED_MODIFIER;
+				newRunSpeed = newRunSpeed * JUMP_RUN_SPEED_MODIFIER;
 				//Don't go lower then levelRunStartSpeed
-				if( runSpeed < levelRunStartSpeed ) runSpeed = levelRunStartSpeed;
-				//Don't accelerate during a jump (also it would reset the runSpeed variable).
+				if( newRunSpeed < levelRunStartSpeed ) newRunSpeed = levelRunStartSpeed;
+				//Don't accelerate during a jump (also it would reset the newRunSpeed variable).
 				allowRunSpeedToIncrease = false;
 				setCharacterState( PlayerCharacterState.Jumping );
 				if( currentTile.GetComponent<SegmentInfo>().addJumpBoost )
@@ -1963,7 +1969,7 @@ public sealed class PlayerController : BaseClass {
 						chicken_chaser.incrementCounter();
 
 						//The faster the player runs, the further the chicken will fly
-						float pushPower = runSpeed * 2.5f;
+						float pushPower = newRunSpeed * 2.5f;
 
 						//Make the chicken go flying
 						Rigidbody body = hit.collider.attachedRigidbody;
@@ -2292,8 +2298,8 @@ public sealed class PlayerController : BaseClass {
 			deadEndTrigger = other;
 			//Slow dow the player to make it easier to turn
 			allowRunSpeedToIncrease = false;
-			runSpeedAtTimeOfTurn = runSpeed;
-			runSpeed = runSpeed * runSpeedTurnMultiplier;
+			runSpeedAtTimeOfTurn = newRunSpeed;
+			newRunSpeed = newRunSpeed * runSpeedTurnMultiplier;
 		}
 		else if ( other.name.StartsWith( "Coin" ) && !PowerUpManager.isThisPowerUpActive( PowerUpType.Magnet ) )
 		{
@@ -2567,7 +2573,7 @@ public sealed class PlayerController : BaseClass {
 		Vector3 finalPlayerPosition = initialPlayerPosition + (transform.TransformDirection(Vector3.forward) * distance);
 		float distanceTravelled = 0;
 		float brakeFactor = 0.7f; //brake the player before slowing him down
-		float startSpeed = getPlayerSpeed() * brakeFactor;
+		float startSpeed = newRunSpeed * brakeFactor;
 		float endSpeed = SLOW_DOWN_END_SPEED;
 
 		float startBlendFactor = blendFactor;
@@ -2581,7 +2587,7 @@ public sealed class PlayerController : BaseClass {
 			percentageComplete = distanceTravelled/distance;
 
 			//Update run speed
-			runSpeed =  Mathf.Lerp( startSpeed, endSpeed, percentageComplete );
+			newRunSpeed =  Mathf.Lerp( startSpeed, endSpeed, percentageComplete );
 
 			//Update the blend amount between Run and Sprint animations based on the current run speed
 			blendFactor =  Mathf.Lerp( startBlendFactor, 0, percentageComplete );
@@ -2594,7 +2600,7 @@ public sealed class PlayerController : BaseClass {
 			//1) Get the direction of the player
 			forward = transform.TransformDirection(Vector3.forward);
 			//2) Scale vector based on run speed
-			forward = forward * Time.deltaTime * runSpeed;
+			forward = forward * Time.deltaTime * newRunSpeed;
 			//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
 			forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
 			//4) Get a unit vector that is orthogonal to the direction of the player
@@ -2699,7 +2705,7 @@ public sealed class PlayerController : BaseClass {
 		}
 		//Reset the run speed to what it was at the beginning of the turn.
 		allowRunSpeedToIncrease = true;
-		runSpeed = runSpeedAtTimeOfTurn;
+		newRunSpeed = runSpeedAtTimeOfTurn;
 
 		//Debug.Log ("turnNow completed " + isGoingRight + " " + transform.eulerAngles.y + " " + playerCharacterState );
 
@@ -2733,17 +2739,17 @@ public sealed class PlayerController : BaseClass {
 			//Remember the run speed at time of death because we want to start running again (in case of revive) at a 
 			//percentage of this value.
 			//When we jump, the run speed is reduced.
-			//If we died while jumping, we want to use runSpeedBeforeJump and not runSpeed.
+			//If we died while jumping, we want to use runSpeedBeforeJump and not newRunSpeed.
 			if( playerCharacterState == PlayerCharacterState.Jumping )
 			{
 				runSpeedAtTimeOfDeath = runSpeedBeforeJump;
 			}
 			else
 			{
-				runSpeedAtTimeOfDeath = runSpeed;
+				runSpeedAtTimeOfDeath = newRunSpeed;
 			}
 
-			runSpeed = 0;
+			newRunSpeed = 0;
 			runSpeedBeforeJump = 0;
 			allowRunSpeedToIncrease = false;
 

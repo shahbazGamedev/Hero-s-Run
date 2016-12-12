@@ -95,10 +95,11 @@ public sealed class DemonController : Creature, ICreature {
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 			float attackDistance;
+			float playerSpeed = playerController.getSpeed();
 		    switch (attackType)
 			{
 		        case AttackType.stand_and_normal_attack:
-					attackDistance = 0.76f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.76f * playerSpeed;
 					if( distance < attackDistance && getDotProduct() > 0.95f )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -107,7 +108,7 @@ public sealed class DemonController : Creature, ICreature {
 					break;
 		                
 		        case AttackType.stand_and_big_attack:
-					attackDistance = 0.95f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.95f * playerSpeed;
 					if( distance < attackDistance && getDotProduct() > 0.95f )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -116,8 +117,8 @@ public sealed class DemonController : Creature, ICreature {
 					break;
 		                
 				case AttackType.charge_and_attack:
-					float chargeDistance = 2.3f * PlayerController.getPlayerSpeed();
-					attackDistance = 0.97f * PlayerController.getPlayerSpeed();
+					float chargeDistance = 2.3f * playerSpeed;
+					attackDistance = 0.97f * playerSpeed;
 					if( distance < chargeDistance && getDotProduct() > 0.9f )
 					{
 						if( distance >= attackDistance )
@@ -141,8 +142,8 @@ public sealed class DemonController : Creature, ICreature {
 					break;
 				
 				case AttackType.walk_and_attack:
-					float walkDistance = 2.5f * PlayerController.getPlayerSpeed();
-					attackDistance = 0.97f * PlayerController.getPlayerSpeed();
+					float walkDistance = 2.5f * playerSpeed;
+					attackDistance = 0.97f * playerSpeed;
 					if( distance < walkDistance && getDotProduct() > 0.9f )
 					{
 						if( distance >= attackDistance )
@@ -163,7 +164,7 @@ public sealed class DemonController : Creature, ICreature {
 					break;
 
 				case AttackType.walk_and_talk:
-					float startWalkingDistance = 3.3f * PlayerController.getPlayerSpeed();
+					float startWalkingDistance = 3.3f * playerSpeed;
 					if( distance < startWalkingDistance )
 					{
 						if( getCreatureState() != CreatureState.Walking )

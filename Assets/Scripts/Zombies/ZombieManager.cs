@@ -181,7 +181,7 @@ public class ZombieManager : BaseClass {
 		//-1 left, 0 center, 1 right lane
 		int selectedLane = Random.Range(-1,2);
 		//The faster the player, the further away we need to place the zombies to give enough time to the player to avoid them.
-		float distanceToPlayer = PlayerController.getPlayerSpeed() * 5f;
+		float distanceToPlayer = player.GetComponent<PlayerController>().getSpeed() * 5f;
 		
 		Transform tile = playerController.currentTile.transform;
 		

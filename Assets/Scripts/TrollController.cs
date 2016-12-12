@@ -81,7 +81,7 @@ public class TrollController : MonoBehaviour {
 
 		//Give the enemy the same speed as the player. Since the player's
 		//speed increases gradually, unless he stumbles, the enemy should not catch him.
-		Speed = PlayerController.getPlayerSpeed() + SPEED_BOOST;
+		Speed = playerController.getSpeed() + SPEED_BOOST;
 		Debug.Log ("TrollController-startPursuing: start position : " + transform.position + " Troll speed " + Speed);
 	}
 	
@@ -259,7 +259,7 @@ public class TrollController : MonoBehaviour {
 
 		//Give the enemy about the same speed as the player. Since the player's
 		//speed increases gradually, unless he stumbles, the enemy should not catch him.
-		Speed = PlayerController.getPlayerSpeed() - 0.2f;
+		Speed = playerController.getSpeed() - 0.2f;
 
 		//Place enemy 3 meters behind player
 		Vector3 relativePos = new Vector3(0 , 0 , -3f );
@@ -285,7 +285,7 @@ public class TrollController : MonoBehaviour {
 
 		//Give the enemy about the same speed as the player. Since the player's
 		//speed increases gradually, unless he stumbles, the enemy should not catch him.
-		Speed = PlayerController.getPlayerSpeed() + 0.2f;
+		Speed = playerController.getSpeed() + 0.2f;
 		
 		//Place troll a few meters behind player
 		Vector3 relativePos = new Vector3(0 , 0 , -STOP_DISTANCE );

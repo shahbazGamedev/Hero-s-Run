@@ -34,7 +34,7 @@ public sealed class CreatureManager : BaseClass {
 	void Awake ()
 	{
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = player.gameObject.GetComponent<PlayerController>();
+		playerController = player.GetComponent<PlayerController>();
 	}
 
 	int getKnockbackCreatureMask()

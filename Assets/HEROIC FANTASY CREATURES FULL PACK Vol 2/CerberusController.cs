@@ -87,7 +87,7 @@ public sealed class CerberusController : Creature, ICreature {
 		    switch (attackType)
 			{
 		        case AttackType.stand_and_breathe_fire:
-					attackDistance = 0.95f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.95f * playerController.getSpeed();
 					if( distance < attackDistance  )
 					{
 						breatheFire();

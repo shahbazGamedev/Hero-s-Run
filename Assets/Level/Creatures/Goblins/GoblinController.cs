@@ -142,10 +142,11 @@ public sealed class GoblinController : Creature, ICreature {
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 			float attackDistance;
+			float playerSpeed = playerController.getSpeed();
 		    switch (attackType)
 			{
 		        case AttackType.short_range_Spear_1:
-					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.85f * playerSpeed;
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -154,7 +155,7 @@ public sealed class GoblinController : Creature, ICreature {
 					break;
 		                
 		        case AttackType.short_range_Spear_2:
-					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.85f * playerSpeed;
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -163,7 +164,7 @@ public sealed class GoblinController : Creature, ICreature {
 					break;
 		                
 				case AttackType.long_range_Spear:
-					attackDistance = 2f * PlayerController.getPlayerSpeed();
+					attackDistance = 2f * playerSpeed;
 					if( distance < attackDistance )
 					{
 						followsPlayer = true;
@@ -173,7 +174,7 @@ public sealed class GoblinController : Creature, ICreature {
 					break;
 			
 				case AttackType.Crossbow:
-					attackDistance = 2.2f * PlayerController.getPlayerSpeed();
+					attackDistance = 2.2f * playerSpeed;
 					//Only attack if the player is inside a 30 degree arc in front of goblin
 					if( distance < attackDistance && getDotProduct() > 0.85f )
 					{
@@ -182,7 +183,7 @@ public sealed class GoblinController : Creature, ICreature {
 					}
 					break;
 				case AttackType.Push_Object:
-					attackDistance = barrelPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					attackDistance = barrelPlayerDistanceMultiplier * playerSpeed;
 					if( distance < attackDistance )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -190,8 +191,8 @@ public sealed class GoblinController : Creature, ICreature {
 					}
 					break;
 				case AttackType.jump_and_attack:
-					float jumpDistance = jumpPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
-					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
+					float jumpDistance = jumpPlayerDistanceMultiplier * playerSpeed;
+					attackDistance = 0.85f * playerSpeed;
 					if( distance < jumpDistance )
 					{
 						if( distance >= attackDistance )
@@ -213,7 +214,7 @@ public sealed class GoblinController : Creature, ICreature {
 					}
 					break;
 				case AttackType.jump_and_long_range_attack:
-					float jumpLongDistance = jumpPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					float jumpLongDistance = jumpPlayerDistanceMultiplier * playerSpeed;
 					if( distance < jumpLongDistance )
 					{
 						if( creatureState != CreatureState.Running && creatureState != CreatureState.Jumping )

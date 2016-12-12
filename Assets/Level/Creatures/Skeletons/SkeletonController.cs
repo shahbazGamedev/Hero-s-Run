@@ -149,10 +149,11 @@ public sealed class SkeletonController : Creature, ICreature {
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 			float attackDistance;
+			float playerSpeed = playerController.getSpeed();
 		    switch (attackType)
 			{
 		        case AttackType.Short_range_sword_1:
-					attackDistance = 0.7f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.7f * playerSpeed;
 					if( distance < attackDistance && getDotProduct() > 0.9f )
 					{
 						followsPlayer = true;
@@ -162,7 +163,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					break;
 		                
 		        case AttackType.Short_range_sword_2:
-					attackDistance = 0.7f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.7f * playerSpeed;
 					if( distance < attackDistance && getDotProduct() > 0.9f )
 					{
 						followsPlayer = true;
@@ -172,8 +173,8 @@ public sealed class SkeletonController : Creature, ICreature {
 					break;
 		                
 				case AttackType.Charge_and_attack:
-					float chargeDistance = 2.3f * PlayerController.getPlayerSpeed();
-					attackDistance = 0.75f * PlayerController.getPlayerSpeed();
+					float chargeDistance = 2.3f * playerSpeed;
+					attackDistance = 0.75f * playerSpeed;
 					if( distance < chargeDistance )
 					{
 						if( distance >= attackDistance )
@@ -197,7 +198,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					break;
 			
 				case AttackType.Bow:
-					attackDistance = missilePlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					attackDistance = missilePlayerDistanceMultiplier * playerSpeed;
 					//Only attack if the player is inside a 30 degree arc in front of skeleton
 					if( distance < attackDistance && getDotProduct() > 0.8f )
 					{
@@ -206,7 +207,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					}
 					break;
 				case AttackType.Fire_magic_missile:
-					attackDistance = magicMissilePlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					attackDistance = magicMissilePlayerDistanceMultiplier * playerSpeed;
 					//Only attack if the player is inside a 30 degree arc in front of skeleton
 					if( distance < attackDistance && getDotProduct() > 0.8f )
 					{
@@ -215,7 +216,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					}
 					break;
 				case AttackType.Summon_skeletons:
-					attackDistance = summonSkeletonsPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					attackDistance = summonSkeletonsPlayerDistanceMultiplier * playerSpeed;
 					//Only attack if the player is inside a 30 degree arc in front of skeleton
 					if( distance < attackDistance && getDotProduct() > 0.8f )
 					{
@@ -224,8 +225,8 @@ public sealed class SkeletonController : Creature, ICreature {
 					}
 					break;
 				case AttackType.Jump_and_attack:
-					float jumpDistance = jumpPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
-					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
+					float jumpDistance = jumpPlayerDistanceMultiplier * playerSpeed;
+					attackDistance = 0.85f * playerSpeed;
 					if( distance < jumpDistance )
 					{
 						if( distance >= attackDistance )
@@ -247,7 +248,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					}
 					break;
 				case AttackType.Jump_and_long_range_attack:
-					float jumpLongDistance = jumpPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					float jumpLongDistance = jumpPlayerDistanceMultiplier * playerSpeed;
 					if( distance < jumpLongDistance )
 					{
 						if( creatureState != CreatureState.Running && creatureState != CreatureState.Jumping )

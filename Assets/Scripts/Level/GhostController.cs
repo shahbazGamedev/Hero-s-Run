@@ -114,7 +114,7 @@ public class GhostController : BaseClass {
 	public void Arrive( float timeToArrive )
 	{
 		ghostState = GhostState.Arrive;
-		Vector3 arrivalStartPos = new Vector3( 0, 12f, PlayerController.getPlayerSpeed() * 2f );
+		Vector3 arrivalStartPos = new Vector3( 0, 12f, player.GetComponent<PlayerController>().getSpeed() * 2f );
 		Vector3 exactPos = player.TransformPoint(arrivalStartPos);
 		transform.position = exactPos;
 		float wantedRotationAngle = player.eulerAngles.y + 180f;

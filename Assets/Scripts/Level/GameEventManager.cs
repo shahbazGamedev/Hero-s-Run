@@ -245,7 +245,7 @@ public class GameEventManager : MonoBehaviour {
 
 	void startPierceUp()
 	{
-		float attackDistance = 1.2f * PlayerController.getPlayerSpeed();
+		float attackDistance = 1.2f * player.GetComponent<PlayerController>().getSpeed();
 		//Pick random X location
 		float xPos;
 		int laneChoice = Random.Range(0, 3);
@@ -323,7 +323,7 @@ public class GameEventManager : MonoBehaviour {
 
 	void sideStartPierceUp()
 	{
-		float attackDistance = 1.2f * PlayerController.getPlayerSpeed() + Random.Range( -3,1 );
+		float attackDistance = 1.2f * player.GetComponent<PlayerController>().getSpeed() + Random.Range( -3,1 );
 		//Pick random X location on either side of main path
 		float xPos;
 		int laneChoice = Random.Range(0, 4);
@@ -577,7 +577,7 @@ public class GameEventManager : MonoBehaviour {
 	
 	void startZombieHandPierceUp()
 	{
-		float attackDistance = 1.1f * PlayerController.getPlayerSpeed();
+		float attackDistance = 1.1f * player.GetComponent<PlayerController>().getSpeed();
 		//Pick random X location
 		float xPos;
 		int laneChoice = Random.Range(0, 3);
@@ -645,7 +645,7 @@ public class GameEventManager : MonoBehaviour {
 	
 	void sideStartZombieHandPierceUp()
 	{
-		float attackDistance = 1.1f * PlayerController.getPlayerSpeed() + Random.Range( -3,1 );
+		float attackDistance = 1.1f * player.GetComponent<PlayerController>().getSpeed() + Random.Range( -3,1 );
 		//Pick random X location on either side of main path
 		float xPos;
 		int laneChoice = Random.Range(0, 4);

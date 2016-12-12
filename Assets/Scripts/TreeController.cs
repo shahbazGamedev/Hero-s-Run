@@ -22,6 +22,7 @@ public class TreeController : BaseClass {
 	public AudioClip wakeUp2;
 
 	Transform player;
+	PlayerController playerController;
 	bool hasAttackedPlayer = false;
 	public bool appearsOnRandomRoadSide = true;
 
@@ -35,6 +36,7 @@ public class TreeController : BaseClass {
 		treeAnimation = GetComponent<Animation>();
 
 		player = GameObject.FindGameObjectWithTag("Player").transform;
+		playerController = player.GetComponent<PlayerController>();
 
 		if( appearsOnRandomRoadSide )
 		{
@@ -117,7 +119,7 @@ public class TreeController : BaseClass {
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 
-			float attackDistance = 0.81f * PlayerController.getPlayerSpeed();
+			float attackDistance = 0.81f * playerController.getSpeed();
 			if( distance < attackDistance )
 			{
 				attackPlayer();

@@ -133,10 +133,11 @@ public sealed class WraithController : Creature, ICreature {
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 			float attackDistance;
+			float playerSpeed = playerController.getSpeed();
 		    switch (attackType)
 			{
 		        case AttackType.stand_and_normal_attack:
-					attackDistance = 0.64f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.64f * playerSpeed;
 					if( distance < attackDistance )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -145,7 +146,7 @@ public sealed class WraithController : Creature, ICreature {
 					break;
 		                
 		        case AttackType.stand_and_big_attack:
-					attackDistance = 0.64f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.64f * playerSpeed;
 					if( distance < attackDistance )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -154,8 +155,8 @@ public sealed class WraithController : Creature, ICreature {
 					break;
 		                
 				case AttackType.charge_and_attack:
-					float chargeDistance = 2.3f * PlayerController.getPlayerSpeed();
-					attackDistance = 0.65f * PlayerController.getPlayerSpeed();
+					float chargeDistance = 2.3f * playerSpeed;
+					attackDistance = 0.65f * playerSpeed;
 					if( distance < chargeDistance )
 					{
 						if( distance >= attackDistance )
@@ -182,7 +183,7 @@ public sealed class WraithController : Creature, ICreature {
 					break;
 				
 				case AttackType.walk_and_talk:
-					float startWalkingDistance = 3.4f * PlayerController.getPlayerSpeed();
+					float startWalkingDistance = 3.4f * playerSpeed;
 					if( distance < startWalkingDistance )
 					{
 						if( getCreatureState() != CreatureState.BurrowUp )

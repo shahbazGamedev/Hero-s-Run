@@ -65,7 +65,7 @@ public class SuccubusController : BaseClass {
 	void Awake()
 	{
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = (PlayerController) player.gameObject.GetComponent(typeof(PlayerController));
+		playerController = player.GetComponent<PlayerController>();
 
 		//Get a copy of the components
 		succubusAnimation = (Animation) GetComponent("Animation");
@@ -112,7 +112,7 @@ public class SuccubusController : BaseClass {
 		//Reset size to the normal size (succubus shrinks when she leaves)
 		transform.localScale = new Vector3( 2.2f,2.2f,2.2f );
 		//Place succubus to the left of the player
-		Vector3 arrivalStartPos = new Vector3( -15f, 12f, PlayerController.getPlayerSpeed() * 2f );
+		Vector3 arrivalStartPos = new Vector3( -15f, 12f, playerController.getSpeed() * 2f );
 		Vector3 exactPos = player.TransformPoint(arrivalStartPos);
 		transform.position = exactPos;
 		transform.rotation = Quaternion.Euler( 0, player.transform.eulerAngles.y + 90f, transform.eulerAngles.z );

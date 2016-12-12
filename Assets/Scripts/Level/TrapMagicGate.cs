@@ -12,7 +12,7 @@ public class TrapMagicGate : MonoBehaviour {
 	void Start ()
 	{
 		GameObject player = GameObject.FindGameObjectWithTag("Player");
-		playerController = player.gameObject.GetComponent<PlayerController>();
+		playerController = player.GetComponent<PlayerController>();
 	}
 	
 	void OnTriggerEnter(Collider other)

@@ -138,7 +138,7 @@ public class FairyController : Creature {
 	public void Arrive( float timeToArrive )
 	{
 		fairyState = FairyState.Arrive;
-		Vector3 arrivalStartPos = new Vector3( -18f, 12f, PlayerController.getPlayerSpeed() * 2f );
+		Vector3 arrivalStartPos = new Vector3( -18f, 12f, player.GetComponent<PlayerController>().getSpeed() * 2f );
 		Vector3 exactPos = player.TransformPoint(arrivalStartPos);
 		transform.position = exactPos;
 		transform.rotation = Quaternion.Euler( 0, player.transform.eulerAngles.y + 90f, transform.eulerAngles.z );
