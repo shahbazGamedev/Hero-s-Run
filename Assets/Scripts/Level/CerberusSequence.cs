@@ -6,6 +6,8 @@ public class CerberusSequence : MonoBehaviour {
 	PlayerController playerController;
 	FairyController fairyController;
 	CerberusController cerberusController;
+	public float delayBeforeTakingPicture = 6.66f;
+	public TakePictureTrigger takePictureTrigger;
 
 	bool hasBeenTriggered = false;
 
@@ -51,18 +53,24 @@ public class CerberusSequence : MonoBehaviour {
 	void step1()
 	{
 		fairyController.speak("FAIRY_CERBERUS_UH_OH", 1.4f, false );
-		Invoke ("step2", 3f );
-		Invoke ("step3", 7f );
+		Invoke ("fairyTalks", 3f );
+		Invoke ("takePicture", delayBeforeTakingPicture );
+		Invoke ("playerStartsRunningAgain", 7f );
 	}
 
-	void step2()
+	void fairyTalks()
 	{
 		fairyController.speak("FAIRY_CERBERUS_GOOD_BOY", 3f, false );
 	}
 
+	void takePicture()
+	{
+		takePictureTrigger.takePicture();
+	}
+
 	//Make the fairy disappear
 	//Player starts running again
-	void step3()
+	void playerStartsRunningAgain()
 	{
 		fairyController.Disappear ();
 		playerController.allowRunSpeedToIncrease = true;
