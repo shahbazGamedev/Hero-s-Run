@@ -27,11 +27,6 @@ public class HUDSaveMe : MonoBehaviour {
 	public Text helpText;
 	public Text tryAgainText;
 	public Text quitTutorialText;
-	[Header("Not Enough Time Popup")]
-	public GameObject ranOutofTimePopup;
-	public Text ranOutofTimeTitleText;
-	public Text ranOutofTimeContentText;
-	public Text ranOutofTimeButtonText;
 	[Header("Episode Progress Indicator")]
 	public GameObject progressBarPanel;
 	 
@@ -54,10 +49,6 @@ public class HUDSaveMe : MonoBehaviour {
 		//helpText.text gets set at runtime.
 		tryAgainText.text = LocalizationManager.Instance.getText("MENU_TRY_AGAIN");
 		quitTutorialText.text = LocalizationManager.Instance.getText("MENU_QUIT");
-		//Not enough time
-		ranOutofTimeTitleText.text = LocalizationManager.Instance.getText("NOT_ENOUGH_TIME_TITLE");
-		ranOutofTimeContentText.text = LocalizationManager.Instance.getText("NOT_ENOUGH_TIME_CONTENT");
-		ranOutofTimeButtonText.text = LocalizationManager.Instance.getText("NOT_ENOUGH_TIME_BUTTON");
 		//Do not show the retry from last checkpoint button when in endless mode
 		if( GameManager.Instance.getGameMode() == GameMode.Endless )
 		{
@@ -87,15 +78,7 @@ public class HUDSaveMe : MonoBehaviour {
 		}
 		else
 		{
-			if( ( GameManager.Instance.getGameMode() == GameMode.Story ) && PlayerStatsManager.Instance.getNumberDeathLeadingToEpisode( LevelManager.Instance.getNextEpisodeToComplete() ) > GameManager.MAX_NUMBER_OF_ATTEMPTS )
-			{
-				ranOutofTimePopup.SetActive( true );
-			}
-			else
-			{
-
-				activateNormalSaveMe();
-			}
+			activateNormalSaveMe();
 		}
 	}
 

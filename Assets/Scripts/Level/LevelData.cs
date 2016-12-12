@@ -27,15 +27,6 @@ public enum LevelType
 	Normal = 1
 }
 
-public enum EpisodeDifficulty 
-{
-	Easy = 0,
-	Normal = 1,
-	Hard = 2,
-	VeryHard = 3
-}
-
-
 public class LevelData : MonoBehaviour {
 	
 	public List<EpisodeInfo> episodeList = new List<EpisodeInfo>();
@@ -299,7 +290,6 @@ public class LevelData : MonoBehaviour {
 		public int numberOfChestKeys = 0;
 		[Tooltip("Stars required to reach one, two, three stars as well as the maximum number of stars for the episode.")]
 		public Vector3 starsRequired = new Vector3( 10000f, 33000f, 50000f );
-		public EpisodeDifficulty episodeDifficulty = EpisodeDifficulty.Normal;
 		[Tooltip("The type of sun for the level. The sun type will not change until the player starts a new section. The sun type determines characteristics such ambient light, directional light rotation, color, intensity and shadows and skybox material.")]
 		public SunType sunType = SunType.Afternoon;
 		[Tooltip("Specifies whether the level should allow Tap To Play right away or wait for a callback. For example, in the opening level, we want to wait a few seconds before the player can start playing.")]
@@ -322,8 +312,6 @@ public class LevelData : MonoBehaviour {
 		public bool includeSurroundingPlane = false;
 		[Tooltip("Which material to use for the surrounding plane.")]
 		public Material surroundingPlaneMaterial;
-		[Tooltip("The time of day in hours and minutes, using a 24h-clock, when this episode starts.")]
-		public Vector2 timeOfDay;
 		[Header("Dynamic Fog")]
 		public bool isFogEnabled = false;
 		[Header("Tile Groups")]

@@ -21,8 +21,6 @@ public class EpisodePopup : MonoBehaviour {
 	Animator anim;
 	int episodeNumber;
 	LevelData levelData;
-	ClockTimeSetter clockTimeSetter;
-
 
 	// Use this for initialization
 	void Awake () {
@@ -37,8 +35,6 @@ public class EpisodePopup : MonoBehaviour {
 
 		//Get the episode data. Level data has the parameters for all the episodes and levels of the game.
 		levelData = LevelManager.Instance.getLevelData();
-
-		clockTimeSetter = GetComponentInChildren<ClockTimeSetter>();
 
 	}
 
@@ -71,8 +67,6 @@ public class EpisodePopup : MonoBehaviour {
 		episodeDescriptionText.text = LocalizationManager.Instance.getText("EPISODE_DESCRIPTION_" + levelNumberString);
 		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( episodeNumber ) + "/" + selectedEpisode.numberOfChestKeys;
 
-		//Update pocket watch and Time Left
-		clockTimeSetter.updateTime( episodeNumber, Level_Progress.EPISODE_START );
 	}
 
 	public void closeEpisodeMenu()

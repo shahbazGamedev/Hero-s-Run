@@ -21,14 +21,12 @@ public class PostLevelPopup : MonoBehaviour {
 	[Header("Score Meter")]
 	public GameObject scoreMeter;
 
-	ClockTimeSetter clockTimeSetter;
 	const float UPDATE_SEQUENCE_DELAY = 0.9f;
 
 	// Use this for initialization
-	void Awake () {
-
+	void Awake ()
+	{
 		postLevelButtonText.text = LocalizationManager.Instance.getText("POST_LEVEL_RETRY");
-		clockTimeSetter = GetComponentInChildren<ClockTimeSetter>();
 	}
 
 	public void showPostLevelPopup(LevelData levelData)
@@ -90,7 +88,6 @@ public class PostLevelPopup : MonoBehaviour {
 		if( LevelManager.Instance.getPlayerFinishedTheGame() )
 		{
 			postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_COMPLETED_STORY");
-			clockTimeSetter.updateTime( episodeNumber, Level_Progress.EPISODE_END_WITH_GAME_COMPLETED );
 		}
 		else
 		{
@@ -105,13 +102,11 @@ public class PostLevelPopup : MonoBehaviour {
     				postLevelButton.onClick.RemoveAllListeners();
 					postLevelButton.onClick.AddListener( showNextEpisodePopup );
 				}
-				clockTimeSetter.updateTime( episodeNumber, Level_Progress.EPISODE_END_WITH_PROGRESS );
 			}
 			else
 			{
 				//The player did not finish the current level. Encourage him.
 				postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_LUCK_NEXT_TIME");
-				clockTimeSetter.updateTime( episodeNumber, Level_Progress.EPISODE_END_WITH_NO_PROGRESS );
 			}
 		}
 		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( episodeNumber ) + "/" + selectedEpisode.numberOfChestKeys;

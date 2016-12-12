@@ -60,12 +60,6 @@ public class GameManager {
 
 	private GameMode gameMode = GameMode.Story;
 
-	public const int TIME_PENALTY_IN_MINUTES = 5;
-	/*The last level starts at 11PM. The player must have finished by midnight.
-	this gives him a 1 hour buffer. The TIME_PENALTY_IN_MINUTES is 5 minutes.
-	This gives the player 60 minutes/5 = 12 attempts.*/
-	public const int MAX_NUMBER_OF_ATTEMPTS = 18;
-
 	public Sprite selfie;
 	public byte[] selfieBytes;
 

@@ -581,25 +581,6 @@ public class PlayerStatsManager {
 		}
 	}
 
-	public void resetNumberDeathsStartingAtEpisode( int episodeNumber )
-	{
-		for( int i = episodeNumber; i < deathInEpisodesArray.Length; i++ )
-		{
-			deathInEpisodesArray[i] = 0;
-		}
-		//Debug.Log("PlayerStatsManager-resetNumberDeathsStartingAtEpisode: " + episodeNumber );
-	}
-
-	public int getNumberDeathLeadingToEpisode( int episodeNumber )
-	{
-		int total = 0;
-		for( int i = 0; i <= episodeNumber; i++ )
-		{
-			total = total + deathInEpisodesArray[i];
-		}
-		return total;
-	}
-
 	void loadKeysFoundInEpisode()
 	{
 		string keysFoundInEpisodeString = PlayerPrefs.GetString("keysFoundInEpisode", "" );

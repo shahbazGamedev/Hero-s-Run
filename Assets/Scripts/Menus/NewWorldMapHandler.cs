@@ -220,7 +220,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 		episodeStationTexts[0].text = (episodeNumber + 1).ToString();
 		string levelNumberString = (episodeNumber + 1).ToString();
 		episodeStationTexts[1].text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
-		episodeStationTexts[2].text = getEpisodeDifficultyText( levelData.episodeList[ episodeNumber ].episodeDifficulty );
 
 		if( episodeNumber > LevelManager.Instance.getHighestEpisodeCompleted() )
 		{
@@ -298,11 +297,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 				break;
 		}
  	
-	}
-
-	public string getEpisodeDifficultyText( EpisodeDifficulty episodeDifficulty )
-	{
-		return LocalizationManager.Instance.getText( "EPISODE_DIFFICULTY_" + episodeDifficulty.ToString().ToUpper() );
 	}
 
 	public void showStoreScreen()
@@ -477,8 +471,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 		//Reset value in case a player who did previously finish the game, replays earlier levels
 		LevelManager.Instance.setPlayerFinishedTheGame( false );
 
-		//When you restart an episode, the number of deaths for that episode and all subsequent episodes are reset
-		PlayerStatsManager.Instance.resetNumberDeathsStartingAtEpisode( episodeNumber );
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		//We are starting a new run, reset some values
 		LevelManager.Instance.setEnableTorches( true );
