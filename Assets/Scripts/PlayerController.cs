@@ -3261,4 +3261,21 @@ public sealed class PlayerController : BaseClass {
 		}
 	}
 
+	void OnEnable()
+	{
+		HUDMultiplayer.startRunningEvent += StartRunningEvent;
+	}
+
+	void OnDisable()
+	{
+		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
+	}
+
+	void StartRunningEvent()
+	{
+		Debug.Log("Multiplayer - PlayerController: received StartRunningEvent");
+		startRunning( false );
+	}
+
+
 } 

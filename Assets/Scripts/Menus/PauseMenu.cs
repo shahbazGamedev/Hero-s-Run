@@ -10,9 +10,6 @@ public class PauseMenu : MonoBehaviour {
 	bool isPlayerControlEnabledBeforePause = true;
 	PlayerController playerController;
 
-	//For the 3,2,1 countdown displayed when resuming game after pausing it
-	//Countdown 3,2,1
-	int countdown = -1;
 	//Sound to play every second during countdown
 	public AudioClip beep;
 
@@ -146,10 +143,10 @@ public class PauseMenu : MonoBehaviour {
 	
 	IEnumerator StartCountdown()
 	{
-		int startValue = 3;
+		//For the 3,2,1 countdown displayed when resuming game after pausing it
 		goText.rectTransform.eulerAngles = new Vector3( 0,0,0 );
 		goText.gameObject.SetActive( true );
-		countdown = startValue;
+		int countdown = 3;
 		while (countdown > 0)
 		{
 			goText.text = countdown.ToString();

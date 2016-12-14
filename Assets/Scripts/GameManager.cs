@@ -29,7 +29,8 @@ public enum GameScenes {
 	TreasureIsland = 4,
 	CharacterGallery = 5,
 	Store = 6,
-	Journal = 7
+	Journal = 7,
+	MultiplayerMatchmaking = 8
 }
 
 public enum DifficultyLevel {
@@ -59,7 +60,7 @@ public class GameManager {
 	public static event GameStateEvent gameStateEvent;
 
 	private GameMode gameMode = GameMode.Story;
-
+	private bool multiplayerMode = false;
 	public Sprite selfie;
 	public byte[] selfieBytes;
 
@@ -128,6 +129,16 @@ public class GameManager {
 	{
 		gameMode = value;
 		Debug.Log("Game Mode set to " + value.ToString() );
+	}
+
+	public void setMultiplayerMode( bool value )
+	{
+		multiplayerMode = value;
+	}
+
+	public bool getMultiplayerMode()
+	{
+		return multiplayerMode;
 	}
 
 	//The global coin multiplier is used to increase (value bigger than 1) or decrease (value smaller than 1) the

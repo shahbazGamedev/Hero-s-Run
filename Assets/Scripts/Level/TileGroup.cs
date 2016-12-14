@@ -5,7 +5,8 @@ using System.Collections.Generic;
 public enum ValidGameMode {
 	Story = 1,
 	Endless = 2,
-	Any = 3
+	Any = 3,
+	Multiplayer = 4
 }
 
 public enum TileGroupType {
@@ -149,7 +150,11 @@ public enum TileGroupType {
 	Blizzard_Avalanche = 815,		//Blizzard_Avalanche, straight_double
 	Blizzard_Snow_Balls = 816,		//Blizzard_Snow_balls
 	Blizzard_Refuge = 817,			//Straight_Slope, Blizzard_Refuge
-	Blizzard_Dark_Queen_Calls_Storm = 818	//Blizzard_Dark_Queen_Calls_Storm
+	Blizzard_Dark_Queen_Calls_Storm = 818,	//Blizzard_Dark_Queen_Calls_Storm
+
+	Jousting_Start = 10000,
+	Jousting_End = 10001,
+	Jousting_Straight = 10002
 
 }
 

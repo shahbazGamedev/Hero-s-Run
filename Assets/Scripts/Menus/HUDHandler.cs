@@ -64,8 +64,17 @@ public class HUDHandler : MonoBehaviour {
 	
 	void Start()
 	{
-		//Display the name of the current level
-		slideInEpisodeName();
+		if( !GameManager.Instance.getMultiplayerMode() )
+		{
+			tapToPlayButton.gameObject.SetActive( true );
+			//Display the name of the current level
+			slideInEpisodeName();
+		}
+		else
+		{
+			tapToPlayButton.gameObject.SetActive( false );
+		}
+
 	}
 		
 	// Update is called once per frame
@@ -99,6 +108,7 @@ public class HUDHandler : MonoBehaviour {
 		}
 	}
 
+	//Start playing is called when the tapToPlayButton is pressed
 	public void startPlaying()
 	{
 		//If we are in the Menu state simply start running, but if we are in the OpeningSequence state

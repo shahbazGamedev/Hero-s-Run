@@ -30,6 +30,7 @@ public enum LevelType
 public class LevelData : MonoBehaviour {
 	
 	public List<EpisodeInfo> episodeList = new List<EpisodeInfo>();
+	public List<MultiplayerInfo> multiplayerList = new List<MultiplayerInfo>();
 
 	public const int NUMBER_OF_EPISODES = 9;
 	GameObject cutSceneCamera;
@@ -383,6 +384,47 @@ public class LevelData : MonoBehaviour {
 				return 0.9f;
 			}
 		}
+	}
+
+	[System.Serializable]
+	public class MultiplayerInfo
+	{
+		[Header("Multiplayer Parameters")]
+		[Tooltip("Episode name is not used at runtime. It is only used to make the data easier to read in the editor.")]
+		public string episodeName = "Episode Name";
+		[Tooltip("Image used at the top of the pre-level popup.")]
+		public Sprite preLevelSprite;
+		[Tooltip("Total number of chest keys for episode.")]
+		public int numberOfChestKeys = 0;
+		[Tooltip("Stars required to reach one, two, three stars as well as the maximum number of stars for the episode.")]
+		public Vector3 starsRequired = new Vector3( 10000f, 33000f, 50000f );
+		[Tooltip("The type of sun for the level. The sun type will not change until the player starts a new section. The sun type determines characteristics such ambient light, directional light rotation, color, intensity and shadows and skybox material.")]
+		public SunType sunType = SunType.Afternoon;
+		[Tooltip("Specifies whether the level should allow Tap To Play right away or wait for a callback. For example, in the opening level, we want to wait a few seconds before the player can start playing.")]
+		public bool waitForTapToPlay = false;
+		[Tooltip("The player's initial run speed in m/sec.")]
+		public float RunStartSpeed = 18f;
+		[Tooltip("How fast will the player accelerate.")]
+		public float RunAcceleration = 0.13f;
+		[Tooltip("The number of tiles between power ups. Zero means there is no power up in that level.")]
+		public int powerUpDensity = 4;
+		[Tooltip("The ambience sound for the level. It plays in addition to the music. It is optional.")]
+		public AudioClip mainAmbienceTrack;
+		[Tooltip("A secondary ambience sound for the level. It plays in addition to the music. It is optional.")]
+		public AudioClip secondaryAmbienceTrack;
+		[Tooltip("The quiet music track for the level. It plays in addition to the ambience. It is optional.")]
+		public AudioClip quietMusicTrack;
+		[Tooltip("The action music track for the level. It plays on top of the quiet music when triggered, usually during a combat sequence. It is optional.")]
+		public AudioClip actionMusicTrack;
+		[Tooltip("Whether or not to include a surrounding plane. The plane can represent an ocean for example.")]
+		public bool includeSurroundingPlane = false;
+		[Tooltip("Which material to use for the surrounding plane.")]
+		public Material surroundingPlaneMaterial;
+		[Header("Dynamic Fog")]
+		public bool isFogEnabled = false;
+		[Header("Tile Groups")]
+		public List<TileGroupType> tileGroupList = new List<TileGroupType>();
+		
 	}
 
 }

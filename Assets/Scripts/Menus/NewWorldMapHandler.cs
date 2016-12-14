@@ -409,6 +409,25 @@ public class NewWorldMapHandler : MonoBehaviour {
 		}	
 	}
 
+	//Multiplayer
+	public void openMatchmakingScene()
+	{
+		UISoundManager.uiSoundManager.playButtonClick();
+		GameManager.Instance.setMultiplayerMode( true );
+		StartCoroutine( loadMatchmakingScene() );
+	}
+
+	IEnumerator loadMatchmakingScene()
+	{
+		if( !levelLoading )
+		{
+			levelLoading = true;
+			Handheld.StartActivityIndicator();
+			yield return new WaitForSeconds(0);
+			SceneManager.LoadScene( (int)GameScenes.MultiplayerMatchmaking );
+		}	
+	}
+
 	void OnEnable()
 	{
 		FacebookManager.appRequestsReceived += AppRequestsReceived;

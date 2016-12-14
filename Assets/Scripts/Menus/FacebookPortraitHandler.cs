@@ -9,7 +9,8 @@ public class FacebookPortraitHandler : MonoBehaviour {
 	public Sprite defaultPortrait;
 	public Image spinner;
 	public bool isPlayerPortrait = false; //True if this the player's portrait, false if it is a friend's portrait.
-	
+	private string requestedPortraitID;
+
 	//Used in the world map
 	public void setFriendPortrait ()
 	{
@@ -79,6 +80,15 @@ public class FacebookPortraitHandler : MonoBehaviour {
 				//Picture has been requested but not received yet. Draw default portrait with a spinner on top.
 				GetComponent<Image>().sprite = defaultPortrait;
 				spinner.gameObject.SetActive( true );
+				requestedPortraitID = userID;
+			}
+			else
+			{
+				//Picture will be requested. Draw default portrait with a spinner on top.
+				GetComponent<Image>().sprite = defaultPortrait;
+				spinner.gameObject.SetActive( true );
+				FacebookManager.Instance.getFriendPicture( userID );
+				requestedPortraitID = userID;
 			}
 		}
 		else
@@ -117,7 +127,9 @@ public class FacebookPortraitHandler : MonoBehaviour {
 
 	void FacebookFriendPortraitReceived( string facebookID )
 	{
-		setFriendPortrait ();
+		//Make sure it is for us
+		if( facebookID.Equals( requestedPortraitID ) ) setPortrait (facebookID);
+		requestedPortraitID = string.Empty;
 	}
 
 	void FacebookPlayerPortraitReceived()

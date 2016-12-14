@@ -10,7 +10,9 @@ public enum SegmentTheme {
 		Jungle = 7,
 		Blizzard = 10,
 		Caves = 11,
-		Hell = 12
+		Hell = 12,
+		Dragon_Lair = 13,
+		Jousting = 14
 }
 
 public enum TileType {
@@ -168,18 +170,28 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 		levelData = LevelManager.Instance.getLevelData();
 
-		createLevel ();
+		if( GameManager.Instance.getMultiplayerMode() )
+		{
+			createMultiplayerLevel ();
+		}
+		else
+		{
+			createSinglePlayerLevel ();
+		}
 	}
 
 	void Start()
 	{
-		//If the number of checkpoints passed is greater than 0, it means the player will restart at the center of a Checkpoint tile and not on the Start tile.
-		//If the episode requires a tapToPlay event (usually coming from a script attached to the Start tile), it will never come.
-		//Therefore, we need to send the event instead.
-		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
-		if( currentEpisode.waitForTapToPlay && LevelManager.Instance.getNumberOfCheckpointsPassed() > 0 )
+		if( GameManager.Instance.getMultiplayerMode() )
 		{
-			GameManager.Instance.setGameState( GameState.Menu );
+			//If the number of checkpoints passed is greater than 0, it means the player will restart at the center of a Checkpoint tile and not on the Start tile.
+			//If the episode requires a tapToPlay event (usually coming from a script attached to the Start tile), it will never come.
+			//Therefore, we need to send the event instead.
+			LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
+			if( currentEpisode.waitForTapToPlay && LevelManager.Instance.getNumberOfCheckpointsPassed() > 0 )
+			{
+				GameManager.Instance.setGameState( GameState.Menu );
+			}
 		}
 	}
 
@@ -209,7 +221,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 	}
 
-	private void createLevel ()
+	private void createSinglePlayerLevel ()
 	{
 		//Reset values
 		worldRoadSegments.Clear();
@@ -328,6 +340,80 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		}
 		//Now add a first random tile group to the endless tiles Queue
 		addRandomTileGroupToEndlessTilesQueue();
+	}
+
+	private void createMultiplayerLevel ()
+	{
+		//Reset values
+		worldRoadSegments.Clear();
+		tileCreationIndex = 0;
+		playerTileIndex = 0;
+						
+		LevelData.MultiplayerInfo currentMultiplayer = levelData.multiplayerList[0]; //HACKED FOR INDEX 0
+
+		//Sets the skybox, the directional light intensity and direction for the current episode
+		levelData.initialise();
+		levelData.setSunParameters(currentMultiplayer.sunType);
+
+		//Verify if we should include a plane surrounding the tiles (like an ocean)
+		if( currentMultiplayer.includeSurroundingPlane )
+		{
+			GameObject go = (GameObject)Instantiate(surroundingPlane.gameObject, new Vector3( 0, -UNDERNEATH_TILE_BY, 0 ), Quaternion.identity );
+			surroundingPlane = go.transform;
+			if( surroundingPlane.GetComponent<Renderer>().material != null )
+			{
+				surroundingPlane.GetComponent<Renderer>().material = currentMultiplayer.surroundingPlaneMaterial;
+				surroundingPlane.gameObject.SetActive( true );
+			}
+			else
+			{
+				Debug.LogWarning("GenerateLevel-CreateLevel: includeSurroundingPlane is set to true but no surroundingPlaneMaterial has been specified.");
+			}
+		}
+		else
+		{
+			surroundingPlane.gameObject.SetActive( false );
+		}
+
+		List<TileGroupType> tileGroupList = currentMultiplayer.tileGroupList;
+
+		generateMultiplayerLevel( tileGroupList );
+
+		//The player controller needs info about the tile the player is on.
+		setFirstTileInfoInPlayer();
+
+		//Make the first few tiles active
+		activateInitialTiles(0);
+
+		//Configure fog, if any
+		mainCamera.GetComponent<DynamicFogAndMist.DynamicFog>().enabled = currentMultiplayer.isFogEnabled;
+		if( currentMultiplayer.isFogEnabled ) levelData.setFogParameters(currentMultiplayer.sunType);
+
+		Debug.Log("GenerateLevel-CreateLevel: Level " + currentMultiplayer.episodeName + " has been created." );
+		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
+
+	}
+
+	private void generateMultiplayerLevel( List<TileGroupType> tileGroupList )
+	{
+		for( int i=0; i < tileGroupList.Count; i++ )
+		{
+			TileGroup tg = tileGroupManager.getTileGroup(tileGroupList[i]);
+			if( tg.frequency != TileGroup.FrequencyType.Never && (tg.validGameMode == ValidGameMode.Any || tg.validGameMode == ValidGameMode.Multiplayer) )
+			{
+				setCurrentTheme(tg.theme );
+				List<TileType> individualTiles = tg.tileList;
+				for( int j=0; j < individualTiles.Count; j++ )
+				{
+					if( individualTiles[j] == TileType.Checkpoint )
+					{
+						indexOfCheckpointTiles.Add( tileCreationIndex );
+					}
+					addTileNew( individualTiles[j] );
+				}
+			}
+		}
+		worldRoadSegments.TrimExcess();		
 	}
 
 	private void addRandomTileGroupToEndlessTilesQueue()
