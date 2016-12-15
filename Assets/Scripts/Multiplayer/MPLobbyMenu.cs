@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class MPLobbyMenu : MonoBehaviour {
 
+	public MultiPurposePopup multiPurposePopup;
 	public Text playerName1;
 	public Text playerName2;
 	public FacebookPortraitHandler portrait1;
@@ -15,7 +16,7 @@ public class MPLobbyMenu : MonoBehaviour {
 	// Use this for initialization
 	void Awake ()
 	{
-		Handheld.StopActivityIndicator();	
+		Handheld.StopActivityIndicator();
 	}
 
 	public void setPlayerName( int playerIndex, string name )
@@ -35,6 +36,18 @@ public class MPLobbyMenu : MonoBehaviour {
 	{
 		portrait2.setPortrait( facebookID );
 	}
+
+	public void showNoInternetPopup()
+	{
+		multiPurposePopup.configurePopup( "MENU_CONNECTION_FAILED_TITLE", "MENU_CONNECTION_FAILED_TEXT", "MENU_OK" );
+		multiPurposePopup.display();
+	}
+
+	public void play()
+	{
+		MPNetworkLobbyManager.mpNetworkLobbyManager.startMatch();
+	}
+
 	public void closeMenu()
 	{
 		StartCoroutine( close() );

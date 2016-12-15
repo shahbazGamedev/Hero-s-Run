@@ -10,6 +10,7 @@ using System.Collections.Generic;
 public class MPNetworkLobbyManager : NetworkLobbyManager 
 {
 	public static MPNetworkLobbyManager mpNetworkLobbyManager;
+	public MPLobbyMenu mpLobbyMenu;
 	public bool disconnectServer = false;
 	public ulong currentMatchID;
 	public int lobbyPlayerCount = 0;
@@ -17,22 +18,26 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 	[Tooltip("Time in second between all players ready & match start")]
 	public float prematchCountdown = 5.0f;
 
-	void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
-	{
-		if (scene.buildIndex == (int) GameScenes.MultiplayerMatchmaking )
-		{
-			Debug.Log("MPNetworkLobbyManager-OnLevelFinishedLoading" );
-			StartMatchMaker();
-		}
-	}
-
 	void Start()
 	{
-		Debug.Log("MPNetworkLobbyManager-Start");
+		Debug.Log("\nENTERING MULTIPLAYER");
 	    mpNetworkLobbyManager = this;
 	    DontDestroyOnLoad(gameObject);
-		//Ask for a list of matches. This will determine if we need to create a match or not.
-		matchMaker.ListMatches( 0, 20, "", false, 0, 0, OnMatchList );
+	}
+
+	public void startMatch()
+	{
+		//Player is connected to the Internet
+		if( Application.internetReachability != NetworkReachability.NotReachable )
+		{
+			StartMatchMaker();
+			//Ask for a list of matches. This will determine if we need to create a match or not.
+			matchMaker.ListMatches( 0, 20, "", false, 0, 0, OnMatchList );
+		}
+		else
+		{
+			mpLobbyMenu.showNoInternetPopup();
+		}
 	}
 
 	void OnMatchList(bool success, string extendedInfo, List<MatchInfoSnapshot> matchInfoSnapshotList )
@@ -136,15 +141,4 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 		}
 	}
 
-	void OnEnable()
-	{
-		//Tell our 'OnLevelFinishedLoading' function to start listening for a scene change as soon as this script is enabled.
-         SceneManager.sceneLoaded += OnLevelFinishedLoading;
-     }
- 
-     void OnDisable()
-     {
-		//Tell our 'OnLevelFinishedLoading' function to stop listening for a scene change as soon as this script is disabled. Remember to always have an unsubscription for every delegate you subscribe to!
-         SceneManager.sceneLoaded -= OnLevelFinishedLoading;
-     }
 }
