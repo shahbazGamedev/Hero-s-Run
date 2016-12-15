@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class MPLobbyMenu : MonoBehaviour {
 
 	public MultiPurposePopup multiPurposePopup;
+	public Button playButton;
 	public Text playerName;
 	public Text remotePlayerName;
 	public FacebookPortraitHandler playerPortrait;
@@ -42,17 +43,34 @@ public class MPLobbyMenu : MonoBehaviour {
 	{
 		multiPurposePopup.configurePopup( "MENU_CONNECTION_FAILED_TITLE", "MENU_CONNECTION_FAILED_TEXT", "MENU_OK" );
 		multiPurposePopup.display();
+		playButton.interactable = true;
 	}
 
 	public void showConnectionTimedOut()
 	{
 		multiPurposePopup.configurePopup( "MENU_CONNECTION_FAILED_TITLE", "MENU_MP_TIMED_OUT", "MENU_OK" );
 		multiPurposePopup.display();
+		playButton.interactable = true;
+	}
+
+	public void showUnableToCreateMatch()
+	{
+		multiPurposePopup.configurePopup( "MENU_CONNECTION_FAILED_TITLE", "MENU_MP_UNABLE_CREATE_MATCH", "MENU_OK" );
+		multiPurposePopup.display();
+		playButton.interactable = true;
+	}
+
+	public void showUnableToJoinMatch()
+	{
+		multiPurposePopup.configurePopup( "MENU_CONNECTION_FAILED_TITLE", "MENU_MP_UNABLE_JOIN_MATCH", "MENU_OK" );
+		multiPurposePopup.display();
+		playButton.interactable = true;
 	}
 
 	public void play()
 	{
 		MPNetworkLobbyManager.mpNetworkLobbyManager.startMatch();
+		playButton.interactable = false;
 	}
 
 	public void closeMenu()
@@ -68,8 +86,7 @@ public class MPLobbyMenu : MonoBehaviour {
 			UISoundManager.uiSoundManager.playButtonClick();
 			levelLoading = true;
 			GameManager.Instance.setMultiplayerMode( false );
-			MPNetworkLobbyManager.mpNetworkLobbyManager.StopHost();
-			MPNetworkLobbyManager.mpNetworkLobbyManager.StopMatchMaker();
+			MPNetworkLobbyManager.mpNetworkLobbyManager.cleanUpOnExit();
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);
 			SceneManager.LoadScene( (int)GameScenes.WorldMap );

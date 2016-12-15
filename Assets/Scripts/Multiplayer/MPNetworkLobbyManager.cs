@@ -11,12 +11,10 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 {
 	public static MPNetworkLobbyManager mpNetworkLobbyManager;
 	public MPLobbyMenu mpLobbyMenu;
-	public bool disconnectServer = false;
-	public ulong currentMatchID;
+	public MatchInfo hostedMatchInfo = null;
+	public MatchInfo joinedMatchInfo = null;
 	public int lobbyPlayerCount = 0;
 	public int minimumPlayersToStartMatch = 2;
-	[Tooltip("Time in second between all players ready & match start")]
-	public float prematchCountdown = 5.0f;
 
 	void Start()
 	{
@@ -77,16 +75,24 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 		}
 		else
 		{
-			Debug.LogError("MPNetworkLobbyManager-OnMatchList: Error: " + extendedInfo );
+			Debug.LogWarning("MPNetworkLobbyManager-OnMatchList: Error: " + extendedInfo );
 			if( extendedInfo.Contains("Connection time-out") ) mpLobbyMenu.showConnectionTimedOut();
 		}
 	}
 	
 	public override void OnMatchCreate(bool success, string extendedInfo, MatchInfo matchInfo)
 	{
-		Debug.Log("MPNetworkLobbyManager-OnMatchCreate: Success: " + success );
 		base.OnMatchCreate(success, extendedInfo, matchInfo);
-		currentMatchID = (System.UInt64)matchInfo.networkId;
+		if( success )
+		{
+			Debug.Log("MPNetworkLobbyManager-OnMatchCreate: Success" );
+			hostedMatchInfo = matchInfo;
+		}
+		else
+		{
+			Debug.LogWarning("MPNetworkLobbyManager-OnMatchCreate: Error: " + extendedInfo );
+			mpLobbyMenu.showUnableToCreateMatch();
+		}
 	}
 
 	public override void OnLobbyClientEnter()
@@ -129,17 +135,47 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 	public override void OnMatchJoined(bool success, string extendedInfo, MatchInfo matchInfo)
 	{
 		base.OnMatchJoined(success, extendedInfo, matchInfo);
-		Debug.Log("MPNetworkLobbyManager-OnMatchJoined: Success: " + success);
+		if( success )
+		{
+			Debug.Log("MPNetworkLobbyManager-OnMatchJoined: Success" );
+			joinedMatchInfo = matchInfo;
+		}
+		else
+		{
+			Debug.LogWarning("MPNetworkLobbyManager-OnMatchJoined: Error: " + extendedInfo );
+			mpLobbyMenu.showUnableToJoinMatch();
+		}
+	}
+
+	public void cleanUpOnExit()
+	{
+		if( hostedMatchInfo != null )
+		{
+			matchMaker.DestroyMatch( hostedMatchInfo.networkId, 0, OnDestroyMatch );
+			StopHost();
+			hostedMatchInfo = null;
+			lobbyPlayerCount = 0;
+		}
+		else if( joinedMatchInfo != null )
+		{
+			matchMaker.DropConnection(joinedMatchInfo.networkId, joinedMatchInfo.nodeId, 0, OnDropConnection );
+			joinedMatchInfo = null;
+			if( lobbyPlayerCount > 0 )lobbyPlayerCount--;
+		}
 	}
 
 	public override void OnDestroyMatch(bool success, string extendedInfo)
 	{
 		Debug.Log("MPNetworkLobbyManager-OnDestroyMatch: Success: " + success);
 		base.OnDestroyMatch(success, extendedInfo);
-		if (disconnectServer)
-		{
-			StopMatchMaker();
-		}
+		StopMatchMaker();
+	}
+
+	public override void OnDropConnection(bool success, string extendedInfo)
+	{
+		Debug.Log("MPNetworkLobbyManager-OnDropConnection: Success: " + success);
+		base.OnDropConnection(success, extendedInfo);
+		StopMatchMaker();
 	}
 
 }
