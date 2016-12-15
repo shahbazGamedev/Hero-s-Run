@@ -63,15 +63,10 @@ public class MPLobbyPlayer : NetworkLobbyPlayer {
 	{
 		playerName = newName;
 		gameObject.name = "Lobby " + playerName;
-		if ( isLocalPlayer )
-		{
-			Debug.Log("MPLobbyPlayer-OnMyName: Local " + newName );
-			mpLobbyMenu.setPlayerName( 1, playerName );
-		}
-		else
+		if ( !isLocalPlayer )
 		{
 			Debug.Log("MPLobbyPlayer-OnMyName: Not Local " + newName );
-			mpLobbyMenu.setPlayerName( 2, playerName );
+			mpLobbyMenu.setRemotePlayerName( playerName );
 		}
 	}
 
@@ -79,15 +74,10 @@ public class MPLobbyPlayer : NetworkLobbyPlayer {
 	public void OnMyFacebookID(string newFacebooID )
 	{
 		facebookID = newFacebooID;
-		if ( isLocalPlayer )
-		{
-			Debug.Log("MPLobbyPlayer-OnMyFacebookID: Local " + newFacebooID );
-			mpLobbyMenu.setPlayerPortrait( newFacebooID );
-		}
-		else
+		if ( !isLocalPlayer )
 		{
 			Debug.Log("MPLobbyPlayer-OnMyFacebookID: Not Local " + newFacebooID );
-			mpLobbyMenu.setOtherPortrait( newFacebooID );
+			mpLobbyMenu.setRemotePlayerPortrait( newFacebooID );
 		}
 	}
 

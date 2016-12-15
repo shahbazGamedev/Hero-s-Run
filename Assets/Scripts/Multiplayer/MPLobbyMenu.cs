@@ -7,34 +7,35 @@ using UnityEngine.SceneManagement;
 public class MPLobbyMenu : MonoBehaviour {
 
 	public MultiPurposePopup multiPurposePopup;
-	public Text playerName1;
-	public Text playerName2;
-	public FacebookPortraitHandler portrait1;
-	public FacebookPortraitHandler portrait2;
+	public Text playerName;
+	public Text remotePlayerName;
+	public FacebookPortraitHandler playerPortrait;
+	public FacebookPortraitHandler remotePlayerPortrait;
 	bool levelLoading = false;
 
-	// Use this for initialization
 	void Awake ()
 	{
 		Handheld.StopActivityIndicator();
 	}
 
-	public void setPlayerName( int playerIndex, string name )
+	void Start ()
 	{
-		if( playerIndex == 1 ) playerName1.text = name;
-		if( playerIndex == 2 ) playerName2.text = name;
+		//The left portrait is always the local player.
+		//Populate his name and player portrait
+		playerName.text = PlayerStatsManager.Instance.getUserName();
+		playerPortrait.setPlayerPortrait();
 	}
 
-	//The local player is always on the left, so portrait1.
-	public void setPlayerPortrait( string facebookID )
+	//The other player is on the right, so remotePlayerName.
+	public void setRemotePlayerName( string name )
 	{
-		portrait1.setPortrait( facebookID );
+		remotePlayerName.text = name;
 	}
 
-	//The other player is on the right, so portrait2.
-	public void setOtherPortrait( string facebookID )
+	//The other player is on the right, so remotePlayerPortrait.
+	public void setRemotePlayerPortrait( string facebookID )
 	{
-		portrait2.setPortrait( facebookID );
+		remotePlayerPortrait.setPortrait( facebookID );
 	}
 
 	public void showNoInternetPopup()
