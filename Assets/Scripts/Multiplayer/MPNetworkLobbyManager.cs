@@ -78,6 +78,7 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 		else
 		{
 			Debug.LogError("MPNetworkLobbyManager-OnMatchList: Error: " + extendedInfo );
+			if( extendedInfo.Contains("Connection time-out") ) mpLobbyMenu.showConnectionTimedOut();
 		}
 	}
 	
@@ -107,7 +108,7 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 			}	
 			if(allready)
 			{
-				Debug.Log("MPNetworkLobbyManager-OnLobbyServerPlayersReady: Loading Play Scene");
+				Debug.Log("MPNetworkLobbyManager-OnLobbyServerPlayersReady: Loading Play Scene\n");
 				ServerChangeScene(playScene);
 			}
 		}

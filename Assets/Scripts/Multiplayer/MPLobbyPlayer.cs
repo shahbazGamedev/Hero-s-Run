@@ -37,14 +37,14 @@ public class MPLobbyPlayer : NetworkLobbyPlayer {
 	{
 		base.OnStartClient();
 		MPNetworkLobbyManager.mpNetworkLobbyManager.lobbyPlayerCount++;
-		Debug.Log("MPLobbyPlayer-OnStartClient lobbyPlayerCount: " + MPNetworkLobbyManager.mpNetworkLobbyManager.lobbyPlayerCount);
+		Debug.Log("MPLobbyPlayer-OnStartClient: lobbyPlayerCount: " + MPNetworkLobbyManager.mpNetworkLobbyManager.lobbyPlayerCount + "\n" );
 	}
 
 	//In this method, isLocalPlayer is reliable. This method is called after OnStartClient.
 	public override void  OnStartLocalPlayer()
 	{
 		base.OnStartLocalPlayer();
-		Debug.Log("MPLobbyPlayer-OnStartLocalPlayer " + isLocalPlayer );
+		Debug.Log("MPLobbyPlayer-OnStartLocalPlayer" );
 		CmdNameChanged( PlayerStatsManager.Instance.getUserName() );
 		if (FB.IsLoggedIn && AccessToken.CurrentAccessToken != null )
 		{

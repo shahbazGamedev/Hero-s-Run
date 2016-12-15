@@ -44,6 +44,12 @@ public class MPLobbyMenu : MonoBehaviour {
 		multiPurposePopup.display();
 	}
 
+	public void showConnectionTimedOut()
+	{
+		multiPurposePopup.configurePopup( "MENU_CONNECTION_FAILED_TITLE", "MENU_MP_TIMED_OUT", "MENU_OK" );
+		multiPurposePopup.display();
+	}
+
 	public void play()
 	{
 		MPNetworkLobbyManager.mpNetworkLobbyManager.startMatch();
