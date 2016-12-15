@@ -69,8 +69,8 @@ public class MPLobbyMenu : MonoBehaviour {
 
 	public void play()
 	{
-		MPNetworkLobbyManager.mpNetworkLobbyManager.startMatch();
 		playButton.interactable = false;
+		MPNetworkLobbyManager.mpNetworkLobbyManager.startMatch();
 	}
 
 	public void closeMenu()
