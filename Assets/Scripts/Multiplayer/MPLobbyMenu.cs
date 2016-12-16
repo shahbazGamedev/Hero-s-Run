@@ -86,6 +86,7 @@ public class MPLobbyMenu : MonoBehaviour {
 			UISoundManager.uiSoundManager.playButtonClick();
 			levelLoading = true;
 			GameManager.Instance.setMultiplayerMode( false );
+			GameManager.Instance.setGameState(GameState.WorldMapNoPopup);
 			MPNetworkLobbyManager.mpNetworkLobbyManager.cleanUpOnExit();
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);

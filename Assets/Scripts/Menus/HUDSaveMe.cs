@@ -49,8 +49,8 @@ public class HUDSaveMe : MonoBehaviour {
 		//helpText.text gets set at runtime.
 		tryAgainText.text = LocalizationManager.Instance.getText("MENU_TRY_AGAIN");
 		quitTutorialText.text = LocalizationManager.Instance.getText("MENU_QUIT");
-		//Do not show the retry from last checkpoint button when in endless mode
-		if( GameManager.Instance.getGameMode() == GameMode.Endless )
+		//Do not show the retry from last checkpoint button when in endless mode or in multiplayer
+		if( GameManager.Instance.getGameMode() == GameMode.Endless || GameManager.Instance.isMultiplayer() )
 		{
 			buttonPanel.sizeDelta = new Vector2(buttonPanel.rect.width, buttonPanel.rect.height - checkpointButton.rect.height);
 			checkpointButton.gameObject.SetActive( false );
@@ -113,7 +113,7 @@ public class HUDSaveMe : MonoBehaviour {
 
 		tutorialPanel.SetActive( false );
 		normalPanel.SetActive( true );
-		if( GameManager.Instance.getGameMode() == GameMode.Story )
+		if( GameManager.Instance.getGameMode() == GameMode.Story && !GameManager.Instance.isMultiplayer() )
 		{
 			progressBarPanel.SetActive( true );
 			progressBarPanel.GetComponent<EpisodeProgressIndicator>().updatePlayerIconPosition();
@@ -169,11 +169,20 @@ public class HUDSaveMe : MonoBehaviour {
 		//We might have the slow down power-up still active, so just to be sure
 		//we will reset the timescale back to 1.
 		Time.timeScale = 1f;
-		GameManager.Instance.setGameState(GameState.PostLevelPopup);
 		//Report score to Game Center
 		GameCenterManager.updateLeaderboard();
 		closeSaveMeMenu();
-		SceneManager.LoadScene( (int) GameScenes.WorldMap );
+		if( GameManager.Instance.isMultiplayer() )
+		{
+			//Clean-up matches and connections on exit
+			if( MPNetworkLobbyManager.mpNetworkLobbyManager != null ) MPNetworkLobbyManager.mpNetworkLobbyManager.cleanUpOnExit();
+			SceneManager.LoadScene( (int) GameScenes.MultiplayerMatchmaking );
+		}
+		else
+		{
+			GameManager.Instance.setGameState(GameState.PostLevelPopup);
+			SceneManager.LoadScene( (int) GameScenes.WorldMap );
+		}
 	}
 
 }

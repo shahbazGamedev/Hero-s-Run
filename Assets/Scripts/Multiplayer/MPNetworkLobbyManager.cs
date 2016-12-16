@@ -15,6 +15,8 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 	public MatchInfo joinedMatchInfo = null;
 	public int lobbyPlayerCount = 0;
 	public int minimumPlayersToStartMatch = 2;
+	bool levelLoading = false;
+	HUDMultiplayer hudMultiplayer;
 
 	void Start()
 	{
@@ -129,7 +131,20 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 		Debug.Log("MPNetworkLobbyManager-OnLobbyServerSceneLoadedForPlayer" );
 		//This hook allows you to apply state data from the lobby-player to the game-player.
 		GetComponent<MPLobbyHook>().OnLobbyServerSceneLoadedForPlayer(this, lobbyPlayer, gamePlayer);
+		//Do we have enough players to start the match?
+		if( lobbyPlayerCount >=  minimumPlayersToStartMatch )
+		{
+			Debug.Log("MPNetworkLobbyManager-We have everyone: Start countdown after a few seconds" );
+			Invoke("startCountdown", 3f );
+		}
 		return true;
+	}
+
+	void startCountdown()
+	{
+		GameObject go = GameObject.FindGameObjectWithTag("HUD Multiplayer");
+		hudMultiplayer = go.GetComponent<HUDMultiplayer>();
+		hudMultiplayer.startCountdown();
 	}
 
 	public override void OnMatchJoined(bool success, string extendedInfo, MatchInfo matchInfo)
@@ -176,6 +191,57 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 		Debug.Log("MPNetworkLobbyManager-OnDropConnection: Success: " + success);
 		base.OnDropConnection(success, extendedInfo);
 		StopMatchMaker();
+	}
+
+	//Error management
+	public override void OnServerDisconnect(NetworkConnection conn)
+	{
+		base.OnServerDisconnect(conn);
+		Debug.LogWarning("MPNetworkLobbyManager-OnServerDisconnect");
+		cleanUpOnExit();
+	}
+
+	public override void OnClientDisconnect(NetworkConnection conn)
+	{
+		base.OnClientDisconnect(conn);
+		Debug.LogWarning("MPNetworkLobbyManager-OnClientDisconnect");
+	}
+	
+	public override void OnClientError(NetworkConnection conn, int errorCode)
+	{
+		base.OnClientError( conn, errorCode );
+		Debug.LogWarning("MPNetworkLobbyManager-OnClientError: Error Code: " + errorCode);
+	}
+
+	//This is called after StopHost() is called
+	public override void ServerChangeScene (string sceneName)
+	{
+		if( sceneName == "Level" )
+		{
+			base.ServerChangeScene( sceneName );
+		}
+		else if( sceneName == "MP Lobby" )
+		{
+			StartCoroutine( returnToLobby() );
+		}
+		else if( sceneName == null )
+		{
+			Debug.Log("MPNetworkLobbyManager-ServerChangeScene: sceneName is null" );
+			StartCoroutine( returnToLobby() );
+		}
+	}
+
+	IEnumerator returnToLobby()
+	{
+		if( !levelLoading )
+		{
+			Debug.Log("MPNetworkLobbyManager-returnToLobby");
+			levelLoading = true;
+			GameManager.Instance.setMultiplayerMode( false );
+			Handheld.StartActivityIndicator();
+			yield return new WaitForSeconds(0);
+			SceneManager.LoadScene( (int)GameScenes.MultiplayerMatchmaking );
+		}
 	}
 
 }

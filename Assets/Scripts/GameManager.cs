@@ -15,7 +15,8 @@ public enum GameState {
 	Menu = 6,
 	Checkpoint = 7,
 	BeforeTapToPlayAllowed = 8,
-	PostLevelPopup = 9
+	PostLevelPopup = 9,
+	WorldMapNoPopup = 10
 }
 
 //The GameScenes enum entries must match the scene numbering in Build Settings.
@@ -136,7 +137,7 @@ public class GameManager {
 		multiplayerMode = value;
 	}
 
-	public bool getMultiplayerMode()
+	public bool isMultiplayer()
 	{
 		return multiplayerMode;
 	}

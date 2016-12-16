@@ -170,7 +170,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 		levelData = LevelManager.Instance.getLevelData();
 
-		if( GameManager.Instance.getMultiplayerMode() )
+		if( GameManager.Instance.isMultiplayer() )
 		{
 			createMultiplayerLevel ();
 		}
@@ -182,7 +182,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 	void Start()
 	{
-		if( GameManager.Instance.getMultiplayerMode() )
+		if( GameManager.Instance.isMultiplayer() )
 		{
 			//If the number of checkpoints passed is greater than 0, it means the player will restart at the center of a Checkpoint tile and not on the Start tile.
 			//If the episode requires a tapToPlay event (usually coming from a script attached to the Start tile), it will never come.
@@ -740,7 +740,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		//print ("tileEntranceCrossed: player entered " + currentTile.name + " and the player tile index is: " + playerTileIndex );
 
 		//If in endless runner mode, each time we enter a new tile, add a new tile at the end
-		if( GameManager.Instance.getGameMode() == GameMode.Endless  )
+		if( GameManager.Instance.getGameMode() == GameMode.Endless &&  !GameManager.Instance.isMultiplayer() )
 		{
 			//Add a tile at the end
 			addTileInEndlessMode();

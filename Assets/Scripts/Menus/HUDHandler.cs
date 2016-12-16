@@ -64,7 +64,7 @@ public class HUDHandler : MonoBehaviour {
 	
 	void Start()
 	{
-		if( !GameManager.Instance.getMultiplayerMode() )
+		if( !GameManager.Instance.isMultiplayer() )
 		{
 			tapToPlayButton.gameObject.SetActive( true );
 			//Display the name of the current level

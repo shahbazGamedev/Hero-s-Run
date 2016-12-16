@@ -91,8 +91,17 @@ public class PauseMenu : MonoBehaviour {
 		Time.timeScale = 1f;
 		//Report score to Game Center
 		GameCenterManager.updateLeaderboard();
-		GameManager.Instance.setGameState(GameState.PostLevelPopup);
-		SceneManager.LoadScene( (int) GameScenes.WorldMap );
+		if( GameManager.Instance.isMultiplayer() )
+		{
+			//Clean-up matches and connections on exit
+			if( MPNetworkLobbyManager.mpNetworkLobbyManager != null ) MPNetworkLobbyManager.mpNetworkLobbyManager.cleanUpOnExit();
+			SceneManager.LoadScene( (int) GameScenes.MultiplayerMatchmaking );
+		}
+		else
+		{
+			GameManager.Instance.setGameState(GameState.PostLevelPopup);
+			SceneManager.LoadScene( (int) GameScenes.WorldMap );
+		}
 	}
 
 	//If the device is paused by pressing the Home button, because of a low battery warning or a phone call, the game will automatically display the pause menu.

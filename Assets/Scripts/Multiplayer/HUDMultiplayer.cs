@@ -14,13 +14,13 @@ public class HUDMultiplayer : MonoBehaviour {
 	public static event StartRunningEvent startRunningEvent;
 
 	//Called by the server to initiate a 3-2-1 Go! countdown and begin the race
-	public void startRunning ()
+	public void startCountdown ()
  	{
-		StartCoroutine( StartCountdown() );
+		StartCoroutine( countdown() );
 	}
 	
 	//Valid only in multiplayer
-	IEnumerator StartCountdown()
+	IEnumerator countdown()
 	{
 		//For the 3,2,1 countdown
 		goText.rectTransform.eulerAngles = new Vector3( 0,0,0 );
