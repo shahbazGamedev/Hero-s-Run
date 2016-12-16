@@ -99,7 +99,7 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 
 	public override void OnLobbyClientEnter()
 	{
-		Debug.Log("MPNetworkLobbyManager-OnLobbyClientEnter" );
+		Debug.Log("MPNetworkLobbyManager-OnLobbyClientEnter");
 		base.OnLobbyClientEnter();
 	}
 
@@ -142,9 +142,25 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 
 	void startCountdown()
 	{
-		GameObject go = GameObject.FindGameObjectWithTag("HUD Multiplayer");
-		hudMultiplayer = go.GetComponent<HUDMultiplayer>();
-		hudMultiplayer.startCountdown();
+		StartCoroutine( ServerCountdownCoroutine() );
+	}
+
+	IEnumerator ServerCountdownCoroutine()
+	{
+		//For the 3,2,1 countdown
+		int countdown = 3;
+		while (countdown >= 0)
+		{
+			for (int i = 0; i < lobbySlots.Length; ++i)
+			{
+				if (lobbySlots[i] != null)
+				{
+					(lobbySlots[i] as MPLobbyPlayer).RpcUpdateCountdown(countdown);
+				}
+			}
+			yield return new WaitForSecondsRealtime( 1.0f );
+			countdown --;
+		}
 	}
 
 	public override void OnMatchJoined(bool success, string extendedInfo, MatchInfo matchInfo)

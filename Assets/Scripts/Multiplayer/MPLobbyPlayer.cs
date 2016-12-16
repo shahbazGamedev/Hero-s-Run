@@ -14,6 +14,7 @@ public class MPLobbyPlayer : NetworkLobbyPlayer {
 	//OnMyFacebookID function will be invoked on clients when server change the value of facebookID
 	[SyncVar(hook = "OnMyFacebookID")]
 	public string facebookID = "";
+	HUDMultiplayer hudMultiplayer;
 
 	//This method is called before OnStartClient. isLocalPlayer is NOT reliable at this point.
 	public override void  OnStartServer()
@@ -79,6 +80,20 @@ public class MPLobbyPlayer : NetworkLobbyPlayer {
 			Debug.Log("MPLobbyPlayer-OnMyFacebookID: Not Local " + newFacebooID );
 			mpLobbyMenu.setRemotePlayerPortrait( newFacebooID );
 		}
+	}
+
+	[ClientRpc]
+	public void RpcUpdateCountdown(int countdown)
+	{
+		Debug.Log( "MPLobbyPlayer-RpcUpdateCountdown: Match Starting in: " + countdown + " id: " + playerControllerId );
+		if( hudMultiplayer == null )
+		{
+			GameObject go = GameObject.FindGameObjectWithTag("HUD Multiplayer");
+			hudMultiplayer = go.GetComponent<HUDMultiplayer>();
+			hudMultiplayer.initialiseCountdown();
+		}
+		hudMultiplayer.updateCountdown( countdown );
+		if( countdown == 0 ) hudMultiplayer = null;
 	}
 
 	[Command]
