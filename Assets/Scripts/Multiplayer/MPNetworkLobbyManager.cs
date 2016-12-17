@@ -14,9 +14,11 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 	public MatchInfo hostedMatchInfo = null;
 	public MatchInfo joinedMatchInfo = null;
 	public int lobbyPlayerCount = 0;
+	public int levelPlayerCount = 0;
 	public int minimumPlayersToStartMatch = 2;
 	bool levelLoading = false;
 	HUDMultiplayer hudMultiplayer;
+	static short MsgLevelSceneLoaded = MsgType.Highest + 1;
 
 	void Start()
 	{
@@ -101,6 +103,7 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 	{
 		Debug.Log("MPNetworkLobbyManager-OnLobbyClientEnter");
 		base.OnLobbyClientEnter();
+		client.RegisterHandler(MsgLevelSceneLoaded, LevelSceneLoadedMessageHandler);
 	}
 
 	public override void OnLobbyServerPlayersReady()
@@ -138,6 +141,13 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 			Invoke("startCountdown", 3f );
 		}
 		return true;
+	}
+
+	public override void OnClientSceneChanged( NetworkConnection conn )
+	{
+		base.OnClientSceneChanged( conn );
+		Debug.Log("MPNetworkLobbyManager-OnClientSceneChanged " + SceneManager.GetActiveScene().name + " levelPlayerCount " + levelPlayerCount );
+		informLevelSceneLoaded( lobbySlots[0].connectionToClient);
 	}
 
 	void startCountdown()
@@ -193,6 +203,7 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 			joinedMatchInfo = null;
 			if( lobbyPlayerCount > 0 )lobbyPlayerCount--;
 		}
+		levelPlayerCount = 0;
 	}
 
 	public override void OnDestroyMatch(bool success, string extendedInfo)
@@ -258,6 +269,18 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 			yield return new WaitForSeconds(0);
 			SceneManager.LoadScene( (int)GameScenes.MultiplayerMatchmaking );
 		}
+	}	
+
+	class LevelSceneLoadedMsg : MessageBase { }
+	public void informLevelSceneLoaded(NetworkConnection conn)
+	{
+		conn.Send(MsgLevelSceneLoaded, new LevelSceneLoadedMsg());
+	}
+
+	public void LevelSceneLoadedMessageHandler(NetworkMessage netMsg)
+	{
+		levelPlayerCount++;
+		Debug.Log("MPNetworkLobbyManager-levelPlayerCount " + levelPlayerCount);
 	}
 
 }
