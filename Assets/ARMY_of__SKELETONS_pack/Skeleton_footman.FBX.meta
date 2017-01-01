@@ -179,17 +179,16 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
-    optimizeGameObjects: 0
+    resampleCurves: 1
+    optimizeGameObjects: 1
     motionNodeName: 
     animationImportErrors: 
-    animationImportWarnings: "\nDefault bone length found in this file is different
-      form the one found in the source avatar:\n\t'Bip01 L Thigh' : position error
-      = 105.168358 mm\n\t'Bip01 R Thigh' : position error = 105.168991 mm\n\nClip
-      'Take 001' has import animation warnings that might lower retargeting quality:\nNote:
-      Activate translation DOF on avatar to improve retargeting quality.\n\t'Bip01
-      Spine' has translation animation that will be discarded.\n\t'Bip01 Spine' is
-      inbetween humanoid transforms and has rotation animation that will be discarded.\n\t'Bip01
+    animationImportWarnings: "Avatar Rig Configuration mis-match. Bone length in configuration
+      does not match position in animation file\nSkeleton_footman\nClip 'Take 001'
+      has import animation warnings that might lower retargeting quality:\nNote: Activate
+      translation DOF on avatar to improve retargeting quality.\n\t'Bip01 Spine' has
+      translation animation that will be discarded.\n\t'Bip01 Spine' is inbetween
+      humanoid transforms and has rotation animation that will be discarded.\n\t'Bip01
       Neck' is inbetween humanoid transforms and has rotation animation that will
       be discarded.\n"
     animationRetargetingWarnings: 
@@ -2769,6 +2768,7 @@ ModelImporter:
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
+    serializedVersion: 2
     human:
     - boneName: Bip01 Pelvis
       humanName: Hips
@@ -3036,233 +3036,233 @@ ModelImporter:
         modified: 0
     skeleton:
     - name: Skeleton_footman(Clone)
+      parentName: 
       position: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0, w: 1}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Bip01
+      parentName: 
       position: {x: 0, y: 0.99633616, z: 0}
       rotation: {x: -0.4983385, y: 0.50106585, z: 0.49978447, w: 0.50080657}
       scale: {x: 0.99999994, y: 1, z: 0.99999994}
-      transformModified: 1
     - name: Bip01 Pelvis
+      parentName: 
       position: {x: 0.05034443, y: 0.00003531706, z: 0.032276027}
       rotation: {x: -0.5002125, y: 0.5016599, z: 0.49893117, w: 0.4991918}
       scale: {x: 0.9999999, y: 0.99999994, z: 1.0000001}
-      transformModified: 1
     - name: Bip01 Spine
+      parentName: 
       position: {x: -0.11083078, y: 0.016194303, z: -0.00000006245077}
       rotation: {x: 0.0000020861626, y: 0.000000029802239, z: 0.000000029802283, w: -1}
       scale: {x: 0.99999994, y: 0.9999998, z: 0.99999976}
-      transformModified: 1
     - name: Bip01 L Thigh
+      parentName: 
       position: {x: 0.1108309, y: -0.01619464, z: 0.12878789}
       rotation: {x: -0.026443774, y: 0.9996232, z: -0.00013285814, w: 0.0073648263}
       scale: {x: 1, y: 1.0000001, z: 1.0000005}
-      transformModified: 1
     - name: Bip01 L Calf
+      parentName: 
       position: {x: -0.43528113, y: 0.00000007244051, z: -0.000000003743541}
       rotation: {x: -0.00000008537343, y: 0.00000002136946, z: 0.09031471, w: 0.9959133}
       scale: {x: 1.0000001, y: 1, z: 0.9999998}
-      transformModified: 1
     - name: Bip01 L Foot
+      parentName: 
       position: {x: -0.46157044, y: -0.000000022353161, z: 0.0000000023319462}
       rotation: {x: -0.06908153, y: 0.011789498, z: -0.06327671, w: 0.99553245}
       scale: {x: 0.9999999, y: 0.99999976, z: 1}
-      transformModified: 1
     - name: Bip01 L Toe0
+      parentName: 
       position: {x: -0.1322769, y: 0.17023468, z: 0.00000003219923}
       rotation: {x: -0.00000004350562, y: -0.000000004460165, z: -0.7071068, w: 0.7071068}
       scale: {x: 0.99999994, y: 1.0000001, z: 1.0000002}
-      transformModified: 1
     - name: Bip01 R Thigh
+      parentName: 
       position: {x: 0.110831484, y: -0.016193861, z: -0.12878789}
       rotation: {x: -0.026443815, y: 0.9996232, z: 0.00013548264, w: -0.007364912}
       scale: {x: 0.99999976, y: 1.0000001, z: 1.0000001}
-      transformModified: 1
     - name: Bip01 R Calf
+      parentName: 
       position: {x: -0.43528092, y: 0.000000028679727, z: 0.000000082502076}
       rotation: {x: -0.00000006250417, y: -0.00000006192039, z: 0.09031475, w: 0.9959133}
       scale: {x: 1.0000002, y: 1.0000004, z: 0.9999999}
-      transformModified: 1
     - name: Bip01 R Foot
+      parentName: 
       position: {x: -0.46157017, y: -0.000000034973844, z: 0.000000018294374}
       rotation: {x: 0.06908159, y: -0.011789562, z: -0.06327677, w: 0.9955324}
       scale: {x: 0.99999994, y: 1.0000002, z: 1}
-      transformModified: 1
     - name: Bip01 R Toe0
+      parentName: 
       position: {x: -0.13227694, y: 0.17023468, z: 0.000000025414169}
       rotation: {x: 0.0000000043986885, y: -0.000000005332425, z: -0.70710677, w: 0.7071068}
       scale: {x: 1.0000001, y: 1.0000001, z: 1}
-      transformModified: 1
     - name: Bip01 Spine1
+      parentName: 
       position: {x: -0.123340465, y: -0.000013485452, z: 0.000000038008498}
       rotation: {x: -0.000000044703434, y: 0.000000014901175, z: -0.000000014901152,
         w: 1}
       scale: {x: 0.9999998, y: 1, z: 0.99999994}
-      transformModified: 1
     - name: Bip01 Spine2
+      parentName: 
       position: {x: -0.14028418, y: -0.0000725365, z: 0.000000011605097}
       rotation: {x: 0.000000044703516, y: -0.000000014901172, z: 0.000000014901149,
         w: 1}
       scale: {x: 0.99999976, y: 0.9999999, z: 0.9999999}
-      transformModified: 1
     - name: Bip01 back_right_Wmount
+      parentName: 
       position: {x: -0.26069504, y: -0.22222005, z: -0.117168635}
       rotation: {x: 0.13437158, y: 0.6943311, z: -0.694006, w: 0.13492303}
       scale: {x: 1.0000001, y: 1, z: 1}
-      transformModified: 1
     - name: Skeleton_footman_sword
+      parentName: 
       position: {x: -0.00000030517577, y: 0.000000038146972, z: 0}
       rotation: {x: -0.00000010384242, y: -0.000000034458928, z: -3.5782983e-15, w: 1}
       scale: {x: 1.0000002, y: 1.0000005, z: 1.0000006}
-      transformModified: 1
     - name: Bip01 back_shield_mount
+      parentName: 
       position: {x: -0.074980006, y: -0.21096604, z: -0.0000001513958}
       rotation: {x: -5.5303245e-10, y: -0.0000019609217, z: 0.7071068, w: 0.7071068}
       scale: {x: 1.0000001, y: 1.0000001, z: 1.0000001}
-      transformModified: 1
     - name: Skeleton_footman_shield
+      parentName: 
       position: {x: -0, y: -0.00000015258789, z: 2.9802322e-10}
       rotation: {x: -0.00000008346975, y: -0.00000000786529, z: -0.0000002505258,
         w: 1}
       scale: {x: 0.99999994, y: 1.0000005, z: 1.0000004}
-      transformModified: 1
     - name: Bip01 Neck
+      parentName: 
       position: {x: -0.2422243, y: -0.042175174, z: -0.000000027464552}
       rotation: {x: 0.0000001516694, y: -0.0000007515841, z: 0.17404036, w: -0.9847385}
       scale: {x: 1.0000002, y: 0.99999994, z: 0.99999994}
-      transformModified: 1
     - name: Bip01 L Clavicle
+      parentName: 
       position: {x: 0.035019785, y: 0.057868667, z: 0.041074473}
       rotation: {x: 0.69285554, y: 0.14125143, z: -0.69929785, w: 0.10479457}
       scale: {x: 1.0000001, y: 1.0000004, z: 1.0000005}
-      transformModified: 1
     - name: Bip01 L UpperArm
+      parentName: 
       position: {x: -0.17559756, y: 0.000000039507462, z: 0.0000008363287}
       rotation: {x: 0.03333606, y: -0.020993605, z: 0.023226585, w: 0.9989537}
       scale: {x: 0.9999996, y: 0.9999998, z: 1.0000002}
-      transformModified: 1
     - name: Bip01 L Forearm
+      parentName: 
       position: {x: -0.33552456, y: 0.00000010398079, z: -0.00000027068464}
       rotation: {x: -0.0035246033, y: 0.01808107, z: 0.036019962, w: 0.9991813}
       scale: {x: 1.0000001, y: 0.9999998, z: 1.0000001}
-      transformModified: 1
     - name: Bip01 L Hand
+      parentName: 
       position: {x: -0.23164773, y: -0.00000016496165, z: 0.00000014684964}
       rotation: {x: 0.7297428, y: -0.044182632, z: 0.08860976, w: -0.6765143}
       scale: {x: 1.0000001, y: 1.0000002, z: 1.0000005}
-      transformModified: 1
     - name: Bip01 L Finger0
+      parentName: 
       position: {x: -0.04263189, y: 0.017877651, z: -0.029449336}
       rotation: {x: 0.7360874, y: -0.078987606, z: 0.10086568, w: 0.6646521}
       scale: {x: 0.9999998, y: 0.99999964, z: 0.99999994}
-      transformModified: 1
     - name: Bip01 L Finger01
+      parentName: 
       position: {x: -0.04917476, y: 0.00000020957339, z: -0.00000038542106}
       rotation: {x: 0.00000027288843, y: 0.0000015131374, z: 0.037772212, w: -0.9992864}
       scale: {x: 1.0000002, y: 1.0000001, z: 0.99999994}
-      transformModified: 1
     - name: Bip01 L Finger02
+      parentName: 
       position: {x: -0.03266198, y: 0.000000007281328, z: 0.000000029381344}
       rotation: {x: -0.00000006421842, y: 0.000000025992943, z: -0.11640218, w: 0.9932022}
       scale: {x: 1.0000002, y: 0.9999998, z: 0.99999994}
-      transformModified: 1
     - name: Bip01 L Finger1
+      parentName: 
       position: {x: -0.12734666, y: 0.0000002558171, z: 0.00000008188842}
       rotation: {x: -0.00039818775, y: -0.000000026089202, z: 0.000000018268521, w: 1}
       scale: {x: 1.0000004, y: 0.99999964, z: 0.99999964}
-      transformModified: 1
     - name: Bip01 L Finger11
+      parentName: 
       position: {x: -0.046435192, y: 0.00000011339248, z: -0.000000055996072}
       rotation: {x: -0.0000000040094554, y: 0.000000018920396, z: -0.020672075, w: 0.9997864}
       scale: {x: 0.99999964, y: 1.0000001, z: 1.0000001}
-      transformModified: 1
     - name: Bip01 L Finger12
+      parentName: 
       position: {x: -0.034349993, y: -0.00000045194474, z: -0.000000011813025}
       rotation: {x: -0.000000024572827, y: 0.0000000078172775, z: -0.003220266, w: 0.9999948}
       scale: {x: 0.9999999, y: 0.9999996, z: 0.99999976}
-      transformModified: 1
     - name: Bip01 shield_mount
+      parentName: 
       position: {x: -0.17005295, y: 0.0013226699, z: 0.06462227}
       rotation: {x: 0.4701364, y: 0.45916566, z: -0.53160626, w: 0.5343533}
       scale: {x: 0.9999999, y: 1, z: 1.0000001}
-      transformModified: 1
     - name: Bip01 Neck1
+      parentName: 
       position: {x: -0.05786209, y: -0.000064027314, z: 0.0000000013963759}
       rotation: {x: 0.0000000079714795, y: -0.00000014082023, z: 0.026176982, w: 0.99965733}
       scale: {x: 1, y: 1, z: 0.99999994}
-      transformModified: 1
     - name: Bip01 Head
+      parentName: 
       position: {x: -0.0803215, y: 0.0000001046681, z: 0.0000000033666163}
       rotation: {x: 0.00000011301934, y: -0.00000043738584, z: 0.078856744, w: 0.99688596}
       scale: {x: 1.0000002, y: 1.0000001, z: 1.0000001}
-      transformModified: 1
     - name: Bip01 R Clavicle
+      parentName: 
       position: {x: 0.035020493, y: 0.05786917, z: -0.041074228}
       rotation: {x: -0.6928549, y: -0.14124931, z: -0.69929856, w: 0.10479657}
       scale: {x: 1, y: 1.0000001, z: 1}
-      transformModified: 1
     - name: Bip01 R UpperArm
+      parentName: 
       position: {x: -0.17559761, y: 0.00000015448224, z: -0.0000016647273}
       rotation: {x: 0.033335995, y: -0.020993672, z: -0.023226364, w: -0.99895376}
       scale: {x: 1.0000006, y: 1.0000001, z: 1.0000008}
-      transformModified: 1
     - name: Bip01 R Forearm
+      parentName: 
       position: {x: -0.33552444, y: -0.000000045732083, z: 0.00000019835645}
       rotation: {x: -0.0035242348, y: 0.018082999, z: -0.036020715, w: -0.9991812}
       scale: {x: 0.9999994, y: 0.9999995, z: 1}
-      transformModified: 1
     - name: Bip01 R Hand
+      parentName: 
       position: {x: -0.23164831, y: 0.00000003328821, z: 0.0000008796157}
       rotation: {x: 0.7297428, y: -0.04418274, z: -0.08860973, w: 0.6765143}
       scale: {x: 1.0000005, y: 0.99999976, z: 1.0000004}
-      transformModified: 1
     - name: Bip01 R Finger0
+      parentName: 
       position: {x: -0.04263183, y: 0.0178776, z: 0.029449355}
       rotation: {x: -0.7360877, y: 0.07899029, z: 0.100863755, w: 0.66465193}
       scale: {x: 1.0000002, y: 0.99999976, z: 0.9999998}
-      transformModified: 1
     - name: Bip01 R Finger01
+      parentName: 
       position: {x: -0.049174394, y: 0.00000011460385, z: 0.00000006038818}
       rotation: {x: -0.00000016103418, y: 0.0000028983507, z: -0.03777517, w: 0.99928623}
       scale: {x: 0.99999976, y: 0.99999994, z: 0.9999999}
-      transformModified: 1
     - name: Bip01 R Finger02
+      parentName: 
       position: {x: -0.032662183, y: -0.0000002051851, z: -0.00000022562695}
       rotation: {x: 0.000000067147305, y: -0.00000002221191, z: -0.11640218, w: 0.9932022}
       scale: {x: 0.99999994, y: 1.0000001, z: 1.0000001}
-      transformModified: 1
     - name: Bip01 R Finger1
+      parentName: 
       position: {x: -0.12734613, y: -0.00000010450224, z: 0.000000016926194}
       rotation: {x: 0.00039817963, y: -0.000000053172425, z: -0.00000000597588, w: 0.99999994}
       scale: {x: 1.0000001, y: 0.99999994, z: 1}
-      transformModified: 1
     - name: Bip01 R Finger11
+      parentName: 
       position: {x: -0.046435386, y: -0.00000009249853, z: -0.000000049110874}
       rotation: {x: -0.00000007518402, y: 0.000000021181217, z: -0.020671947, w: 0.9997864}
       scale: {x: 0.99999964, y: 0.9999997, z: 0.99999994}
-      transformModified: 1
     - name: Bip01 R Finger12
+      parentName: 
       position: {x: -0.034349762, y: -0.00000023097942, z: 0.000000037095006}
       rotation: {x: 0.000000029666674, y: 0.00000006576758, z: -0.00322045, w: 0.9999949}
       scale: {x: 0.99999994, y: 0.99999994, z: 0.9999999}
-      transformModified: 1
     - name: Bip01 Rhand_Weapon
+      parentName: 
       position: {x: -0.100861005, y: 0.03818237, z: 0.0007074737}
       rotation: {x: -0.5072489, y: 0.48064268, z: 0.5122731, w: 0.49925697}
       scale: {x: 1, y: 1.0000001, z: 1}
-      transformModified: 1
     - name: skeleton_footman
+      parentName: 
       position: {x: 0.00019423007, y: 1.1276343, z: -0.022148931}
       rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     - name: Skeleton_footman_arrmor
+      parentName: 
       position: {x: 0.2220301, y: 1.2391497, z: -0.07228539}
       rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
       scale: {x: 1, y: 1, z: 1}
-      transformModified: 1
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -3271,7 +3271,10 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 3
   humanoidOversampling: 1
