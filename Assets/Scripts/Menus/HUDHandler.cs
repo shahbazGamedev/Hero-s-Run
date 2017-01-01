@@ -66,7 +66,6 @@ public class HUDHandler : MonoBehaviour {
 	{
 		if( !GameManager.Instance.isMultiplayer() )
 		{
-			tapToPlayButton.gameObject.SetActive( true );
 			//Display the name of the current level
 			slideInEpisodeName();
 		}
@@ -256,6 +255,7 @@ public class HUDHandler : MonoBehaviour {
 			//Display the tap to play button
 			tapToPlayButton.gameObject.SetActive( true );
 			//If the player is restarting from a checkpoint, tell him
+			print("HUDHANLDER " + LevelManager.Instance.getNumberOfCheckpointsPassed() + " " + GameManager.Instance.isMultiplayer());
 			if( LevelManager.Instance.getNumberOfCheckpointsPassed() > 0 )
 			{
 				restartFromCheckpointPanel.SetActive( true );

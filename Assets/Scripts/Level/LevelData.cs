@@ -400,8 +400,6 @@ public class LevelData : MonoBehaviour {
 		public Vector3 starsRequired = new Vector3( 10000f, 33000f, 50000f );
 		[Tooltip("The type of sun for the level. The sun type will not change until the player starts a new section. The sun type determines characteristics such ambient light, directional light rotation, color, intensity and shadows and skybox material.")]
 		public SunType sunType = SunType.Afternoon;
-		[Tooltip("Specifies whether the level should allow Tap To Play right away or wait for a callback. For example, in the opening level, we want to wait a few seconds before the player can start playing.")]
-		public bool waitForTapToPlay = false;
 		[Tooltip("The player's initial run speed in m/sec.")]
 		public float RunStartSpeed = 18f;
 		[Tooltip("How fast will the player accelerate.")]
