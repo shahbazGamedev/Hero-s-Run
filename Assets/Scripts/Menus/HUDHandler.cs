@@ -110,29 +110,24 @@ public class HUDHandler : MonoBehaviour {
 	//Start playing is called when the tapToPlayButton is pressed
 	public void startPlaying()
 	{
-		//If we are in the Menu state simply start running, but if we are in the OpeningSequence state
-		//initiate the opening sequence instead.
-		if (GameManager.Instance.getGameState() == GameState.Menu  )
-		{
-			//Disable the Tap to play button (and the associated Tap to Play label) since we do not need it anymore.
-			tapToPlayButton.gameObject.SetActive( false );
-			//Hide the text that might be showing telling the player he is restarting from a checkpoint
-			restartFromCheckpointPanel.SetActive( false );
+		//Disable the Tap to play button (and the associated Tap to Play label) since we do not need it anymore.
+		tapToPlayButton.gameObject.SetActive( false );
+		//Hide the text that might be showing telling the player he is restarting from a checkpoint
+		restartFromCheckpointPanel.SetActive( false );
 
-			//Hide the level name panel in case it is showing
-			hideLevelName();
-			if( playerController.getCurrentTileType() == TileType.Opening )
-			{
-				UISoundManager.uiSoundManager.playButtonClick();
-				GameObject gameEventManagerObject = GameObject.FindGameObjectWithTag("GameEventManager");
-				GameEventManager gem = gameEventManagerObject.GetComponent<GameEventManager>();
-				gem.playOpeningSequence();
-			}
-			else
-			{
-				UISoundManager.uiSoundManager.playButtonClick();
-				playerController.startRunning();
-			}
+		//Hide the level name panel in case it is showing
+		hideLevelName();
+		if( playerController.getCurrentTileType() == TileType.Opening )
+		{
+			UISoundManager.uiSoundManager.playButtonClick();
+			GameObject gameEventManagerObject = GameObject.FindGameObjectWithTag("GameEventManager");
+			GameEventManager gem = gameEventManagerObject.GetComponent<GameEventManager>();
+			gem.playOpeningSequence();
+		}
+		else
+		{
+			UISoundManager.uiSoundManager.playButtonClick();
+			playerController.startRunning();
 		}
 	}
 	
@@ -255,7 +250,6 @@ public class HUDHandler : MonoBehaviour {
 			//Display the tap to play button
 			tapToPlayButton.gameObject.SetActive( true );
 			//If the player is restarting from a checkpoint, tell him
-			print("HUDHANLDER " + LevelManager.Instance.getNumberOfCheckpointsPassed() + " " + GameManager.Instance.isMultiplayer());
 			if( LevelManager.Instance.getNumberOfCheckpointsPassed() > 0 )
 			{
 				restartFromCheckpointPanel.SetActive( true );

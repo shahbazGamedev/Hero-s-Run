@@ -134,7 +134,6 @@ public class PostLevelPopup : MonoBehaviour {
 		//Reset the episode changed value
 		LevelManager.Instance.setEpisodeChanged( false );
 		GetComponent<Animator>().Play("Panel Slide Out");
-		GameManager.Instance.setGameState(GameState.Menu);
 		if( LevelManager.Instance.getPlayerFinishedTheGame() )
 		{
 			StartCoroutine( showStoryCompletedPopupThread() );
@@ -152,7 +151,6 @@ public class PostLevelPopup : MonoBehaviour {
 		//Reset the level changed value
 		LevelManager.Instance.setEpisodeChanged( false );
 		LevelManager.Instance.incrementCurrentEpisodeNumber();
-		GameManager.Instance.setGameState(GameState.Menu);
 		GetComponent<Animator>().Play("Panel Slide Out");
 		yield return new WaitForSeconds(2f);
 

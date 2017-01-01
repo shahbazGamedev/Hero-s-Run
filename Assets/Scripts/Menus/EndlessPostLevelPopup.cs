@@ -213,7 +213,6 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.savePlayerStats();
 		GetComponent<Animator>().Play("Panel Slide Out");
-		GameManager.Instance.setGameState(GameState.Menu);
 	}
 
 	public void retry()

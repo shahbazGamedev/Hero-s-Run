@@ -182,13 +182,13 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 	void Start()
 	{
-		if( GameManager.Instance.isMultiplayer() )
+		//The Tap to Play concept does not exist in multiplayer
+		if( !GameManager.Instance.isMultiplayer() )
 		{
-			//If the number of checkpoints passed is greater than 0, it means the player will restart at the center of a Checkpoint tile and not on the Start tile.
-			//If the episode requires a tapToPlay event (usually coming from a script attached to the Start tile), it will never come.
-			//Therefore, we need to send the event instead.
-			LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
-			if( currentEpisode.waitForTapToPlay && LevelManager.Instance.getNumberOfCheckpointsPassed() > 0 )
+			//If the episode uses waitForTapToPlay, then another script is responsible for changing the game state to menu. If not,
+			//GenerateLevel needs to do it.
+			//Note that the waitForTapToPlay concept does not apply when restarting at a checkpoint.
+			if( !LevelManager.Instance.getCurrentEpisodeInfo().waitForTapToPlay || LevelManager.Instance.getNumberOfCheckpointsPassed() > 0 )
 			{
 				GameManager.Instance.setGameState( GameState.Menu );
 			}

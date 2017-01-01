@@ -346,28 +346,19 @@ public sealed class PlayerController : MonoBehaviour {
 
 		determineRunSpeed();
 
-		if( currentTileType != TileType.Opening )
+		//Place the character at the start position which is always 0,ground height,0
+		//Calculate the ground height
+		RaycastHit hit;
+		if (Physics.Raycast(new Vector3(0,10f,0), Vector3.down, out hit, 12.0F ))
 		{
-			//Should we display the Tap to Play message right away by changing the game state to GameState.Menu or will the game state be set by another script?
-			if( !LevelManager.Instance.getCurrentEpisodeInfo().waitForTapToPlay )
-			{
-				GameManager.Instance.setGameState(GameState.Menu);
-			}
-
-			//Place the character at the start position which is always 0,ground height,0
-			//Calculate the ground height
-			RaycastHit hit;
-			if (Physics.Raycast(new Vector3(0,10f,0), Vector3.down, out hit, 12.0F ))
-			{
-				transform.position = new Vector3( 0, hit.point.y, 0);
-			}
-			//Also adjust the camera height
-			Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y + hit.point.y, Camera.main.transform.position.z); 
-			sc.positionCameraNow();
-
-			//The character is in idle while waiting for the player to press the Run! button. 
-			setCharacterState( PlayerCharacterState.Idle );		
+			transform.position = new Vector3( 0, hit.point.y, 0);
 		}
+		//Also adjust the camera height
+		Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y + hit.point.y, Camera.main.transform.position.z); 
+		sc.positionCameraNow();
+
+		//The character is in idle while waiting for the player to press the Run! button. 
+		setCharacterState( PlayerCharacterState.Idle );		
 	}
 
 	string getCurrentStateName()
