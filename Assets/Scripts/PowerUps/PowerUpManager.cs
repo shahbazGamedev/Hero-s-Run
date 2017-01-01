@@ -15,7 +15,7 @@ public enum PowerUpType {
 	Life = 7
 }
 
-public class PowerUpManager : BaseClass {
+public class PowerUpManager : MonoBehaviour {
 
 	const float SLIDE_DURATION = 0.3f;
 	const float START_X_POSITION = -160f;
@@ -117,7 +117,7 @@ public class PowerUpManager : BaseClass {
 		do
 		{
 			elapsed = elapsed + Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( elapsed < duration );
 		//Duration has expired. Deactivate power up.
 		deactivatePowerUp( pud.powerUpType, false );
@@ -132,7 +132,7 @@ public class PowerUpManager : BaseClass {
 		do
 		{
 			elapsed = elapsed + Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( elapsed < duration );
 		//Duration has expired. Deactivate power up.
 		deactivatePowerUp( pud.powerUpType, false );
@@ -147,7 +147,7 @@ public class PowerUpManager : BaseClass {
 		do
 		{
 			elapsed = elapsed + Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( elapsed < duration );
 		//Duration has expired. Deactivate power up.
 		deactivatePowerUp( pud.powerUpType, false );
@@ -162,7 +162,7 @@ public class PowerUpManager : BaseClass {
 		do
 		{
 			elapsed = elapsed + Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( elapsed < duration );
 		//Duration has expired. Deactivate power up.
 		deactivatePowerUp( pud.powerUpType, false );
@@ -386,7 +386,7 @@ public class PowerUpManager : BaseClass {
 		{
 			elapsedTime = elapsedTime + Time.deltaTime;
 			Time.timeScale = Mathf.Lerp( currentTimeScale, 1f, elapsedTime/duration );
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( elapsedTime < duration );
 
 		//Fix any left-overs
@@ -594,7 +594,7 @@ public class PowerUpManager : BaseClass {
 			elapsed = elapsed + Time.deltaTime;
 			posX = initialPosX + elapsed/SLIDE_DURATION * distance;
 			uiElement.anchoredPosition = new Vector2( posX, uiElement.anchoredPosition.y );
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( elapsed < SLIDE_DURATION );
 		uiElement.anchoredPosition = new Vector2( FINAL_X_POSITION, uiElement.anchoredPosition.y );
 		
@@ -617,7 +617,7 @@ public class PowerUpManager : BaseClass {
 			elapsed = elapsed + Time.deltaTime;
 			posX = initialPosX - elapsed/SLIDE_DURATION * distance;
 			uiElement.anchoredPosition = new Vector2( posX, uiElement.anchoredPosition.y );
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( elapsed < SLIDE_DURATION );
 		uiElement.anchoredPosition = new Vector2( START_X_POSITION, uiElement.anchoredPosition.y );
 	}

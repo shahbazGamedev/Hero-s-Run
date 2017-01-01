@@ -39,7 +39,7 @@ public enum PlayerCharacterState {
 	Ziplining = 13
 }
 
-public sealed class PlayerController : BaseClass {
+public sealed class PlayerController : MonoBehaviour {
 	
 	private Transform mainCamera;
 
@@ -1869,7 +1869,7 @@ public sealed class PlayerController : BaseClass {
 				coin.rotation = mainCamera.rotation;
 			}
 			
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		}
 		if (coin != null )
 		{

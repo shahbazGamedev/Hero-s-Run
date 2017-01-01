@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TreeController : BaseClass {
+public class TreeController : MonoBehaviour {
 	
 
 	enum TreeState {

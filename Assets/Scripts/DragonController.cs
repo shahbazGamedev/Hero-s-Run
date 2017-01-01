@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DragonController : BaseClass {
+public class DragonController : MonoBehaviour {
 	
 	enum DragonState {
 		None = 0,
@@ -185,7 +185,7 @@ public class DragonController : BaseClass {
 			transform.LookAt( player );
 			transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y -10f, 0 );
 
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		}
 	}
 
@@ -258,7 +258,7 @@ public class DragonController : BaseClass {
 			//Tilt the fairy down
 			transform.rotation = Quaternion.Euler( -8f, transform.eulerAngles.y, transform.eulerAngles.z );
 			
-			yield return _sync();  
+			yield return new WaitForFixedUpdate();  
 			
 		}
 		dragonState = DragonState.Fly;

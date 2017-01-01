@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GhostController : BaseClass {
+public class GhostController : MonoBehaviour {
 	
 	public enum GhostState {
 		None = 0,
@@ -168,7 +168,7 @@ public class GhostController : BaseClass {
 			//Tilt the fairy down
 			transform.rotation = Quaternion.Euler( -8f, transform.eulerAngles.y, transform.eulerAngles.z );
 			
-			yield return _sync();  
+			yield return new WaitForFixedUpdate();  
 			
 		}
 		ghostState = GhostState.Hover;

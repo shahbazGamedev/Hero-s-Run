@@ -17,7 +17,7 @@ public enum CreatureState {
 	Jumping = 10
 }
 
-public sealed class CreatureManager : BaseClass {
+public sealed class CreatureManager : MonoBehaviour {
 
 	Transform player;
 	PlayerController playerController;

@@ -248,7 +248,7 @@ public class FairyController : Creature {
 			//Tilt the fairy down
 			transform.rotation = Quaternion.Euler( -8f, transform.eulerAngles.y, transform.eulerAngles.z );
 			
-			yield return _sync();  
+			yield return new WaitForFixedUpdate();  
 			
 		}
 		fairyState = FairyState.Hover;
@@ -278,7 +278,7 @@ public class FairyController : Creature {
 			//Tilt the fairy down
 			transform.rotation = Quaternion.Euler( -8f, transform.eulerAngles.y, transform.eulerAngles.z );
 			
-			yield return _sync();  
+			yield return new WaitForFixedUpdate();  
 			
 		}
 		if( onFinish != null ) onFinish.Invoke();

@@ -209,7 +209,7 @@ public sealed class ZombieController : Creature, ICreature {
 		do
 		{
 			duration = duration - Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( duration > 0 );
 
 		controller.enabled = true;
@@ -241,7 +241,7 @@ public sealed class ZombieController : Creature, ICreature {
 		do
 		{
 			duration = duration - Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( duration > 0 );
 
 		string walkType = selectRandomWalk( ZombieMoveType.Walking );
@@ -309,7 +309,7 @@ public sealed class ZombieController : Creature, ICreature {
 		do
 		{
 			elapsedTime = elapsedTime + Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( elapsedTime < recycleDelay );
 		
 		if( playerController.getCharacterState() != PlayerCharacterState.Dying )

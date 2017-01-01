@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class ZombieManager : BaseClass {
+public class ZombieManager : MonoBehaviour {
 
 	public List<GameObject> zombieFactory = new List<GameObject>();
 	int zombieFactoryIndex = 0;

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WeatherManager : BaseClass {
+public class WeatherManager : MonoBehaviour {
 
 	public ParticleSystem rain;
 	ParticleSystem activeParticleSystem; //either rain or snow

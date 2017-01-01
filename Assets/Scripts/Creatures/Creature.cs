@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class Creature : BaseClass {
+public class Creature : MonoBehaviour {
 
 	protected CreatureState creatureState = CreatureState.Idle;
 	[Header("Other")]

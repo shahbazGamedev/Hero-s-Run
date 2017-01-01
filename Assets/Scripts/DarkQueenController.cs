@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class DarkQueenController : BaseClass {
+public class DarkQueenController : MonoBehaviour {
 	
 	enum  DarkQueenState {
 		None = 0,

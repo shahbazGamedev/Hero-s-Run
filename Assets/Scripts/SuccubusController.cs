@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class SuccubusController : BaseClass {
+public class SuccubusController : MonoBehaviour {
 	
 	//Animation
 	Animation succubusAnimation;
@@ -143,7 +143,7 @@ public class SuccubusController : BaseClass {
 			//Tilt the succubus down
 			transform.rotation = Quaternion.Euler( -8f, transform.eulerAngles.y, transform.eulerAngles.z );
 
-			yield return _sync();  
+			yield return new WaitForFixedUpdate();  
 
 		}
 		//Step 2 - Say something funny
@@ -202,7 +202,7 @@ public class SuccubusController : BaseClass {
 		while (duration > 0 )
 		{
 			duration = duration - Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		}
 		castSpellNow( selectedSpell );
 	}
@@ -290,7 +290,7 @@ public class SuccubusController : BaseClass {
 			
 			fireBall.transform.position = Vector3.Lerp( startPosition, target, fracJourney );
 
-			yield return _sync();  
+			yield return new WaitForFixedUpdate();  
 			
 		}
 
@@ -524,7 +524,7 @@ public class SuccubusController : BaseClass {
 		while (duration > 0 )
 		{
 			duration = duration - Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		}
 		playAnimation( animationFly.name, WrapMode.Loop );
 		Vector3 small = new Vector3( 0.3f, 0.3f, 0.3f );
@@ -542,7 +542,7 @@ public class SuccubusController : BaseClass {
 		while (duration > 0 )
 		{
 			duration = duration - Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		}
 		playAnimation( animationFly.name, WrapMode.Loop );
 		Vector3 small = new Vector3( 0.3f, 0.3f, 0.3f );
