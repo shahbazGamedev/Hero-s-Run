@@ -909,7 +909,6 @@ public class GameEventManager : MonoBehaviour {
 				}
 			}
 		}
-		print ("GEM GameStateChange " +previousGameState + " " +  newState);
 		previousGameState = newState;
 	}
 

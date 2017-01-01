@@ -31,7 +31,7 @@ public class TrapCullisGateController : MonoBehaviour {
 	//Step 0 - player arrives in the middle of the cullis gate and activates the trigger
 	void OnTriggerEnter(Collider other)
 	{
-		if( gameObject.CompareTag("Player") && !isActive )
+		if( other.CompareTag("Player") && !isActive )
 		{
 			isActive = true;
 			playerEnteredCullisGate();
