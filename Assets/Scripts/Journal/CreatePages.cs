@@ -47,7 +47,6 @@ public class CreatePages : MonoBehaviour {
 			Sprite pageSprite = Sprite.Create( page, new Rect(0,0, page.width, page.height), new Vector2(0.5f, 0.5f) );
 			pageSprite.name = "Page " + i.ToString();
 			book.addPageSprite( pageSprite );
-			if( i == 0 ) book.RightNext.sprite = pageSprite;
 		}
 		bookCanvas.gameObject.SetActive( true );
 		pageCamera.enabled = false;
@@ -61,7 +60,7 @@ public class CreatePages : MonoBehaviour {
 		//step 1 - load appropriate story text
 		//string story = "This is a test.<Page Break>I will start jogging next week.<Page Break>I will get married in 2017. My wife and I will have regular, great, mutually satisfying sex including anal in 2017.<Page Break>My book will get published by a great, honest, competent, generous, clever, friendly book publisher and the sales will be phenomenal.<Page Break>Hero's Run is going to launch world wide and be amazingly popular and will monetise amazingly well. The game will be featured multiple times by Apple and Google. I will become even more rich!<Page Break>I will be invited as a speaker to Unite 2018.";
 		string story = jam.stories["Story 1"].text;
-		//step 2 - populate pageTexts by looking for page breaks.
+		//step 2 - populate pageTexts
 		pageTexts.Clear();
 		int pageCounter = 0;
 
@@ -84,7 +83,12 @@ public class CreatePages : MonoBehaviour {
 				break;
 			}
 		}
-		book.setBookSize(pageCounter);
+		book.setBookSize(pageCounter + 1 ); //plus one because of the cover
+
+		//Add book cover
+		book.addPageSprite( jam.covers["Cover 1"] );
+		book.RightNext.sprite = jam.covers["Cover 1"];
+
 		//step 3 - create pages
 		StartCoroutine( createPages() );
 	}
