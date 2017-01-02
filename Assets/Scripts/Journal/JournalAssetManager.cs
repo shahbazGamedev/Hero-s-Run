@@ -16,10 +16,11 @@ public class JournalAssetManager : MonoBehaviour {
 
     void Awake()
 	{
-        StartCoroutine (DownloadAndCache());
+        StartCoroutine (DownloadAndCacheCovers());
+        StartCoroutine (DownloadAndCacheStories());
     }
 
-    IEnumerator DownloadAndCache ()
+    IEnumerator DownloadAndCacheCovers ()
 	{
         // Wait for the Caching system to be ready
         while (!Caching.ready)
@@ -42,20 +43,27 @@ public class JournalAssetManager : MonoBehaviour {
 			yield return assetLoadAllSpriteRequest;
 			UnityEngine.Object[] prefabs = assetLoadAllSpriteRequest.allAssets;
 	
-			print("Number of covers found: " + prefabs.Length);
+			Debug.Log("JournalAssetManager-Number of covers found: " + prefabs.Length);
 			for( int i = 0; i < prefabs.Length; i++ )
 			{
 				covers.Add( prefabs[i].name, Instantiate<Sprite>(prefabs[i] as Sprite ) );
 
 			}
 
-
            // Unload the AssetBundles compressed contents to conserve memory
            bundle.Unload(false);
 
         } // memory is freed from the web stream (www.Dispose() gets called implicitly)
 
-       // Load the AssetBundle file from Cache if it exists with the same version or download and store it in the cache
+    }
+
+    IEnumerator DownloadAndCacheStories ()
+	{
+        // Wait for the Caching system to be ready
+        while (!Caching.ready)
+            yield return null;
+
+		// Load the AssetBundle file from Cache if it exists with the same version or download and store it in the cache
         using(WWW www = WWW.LoadFromCacheOrDownload (storiesBundleURL + "." + getLanguage(), version))
 		{
             yield return www;
@@ -65,13 +73,12 @@ public class JournalAssetManager : MonoBehaviour {
 				yield break;
 			}
             AssetBundle bundle = www.assetBundle;
-	
 			//Load all story texts
 			AssetBundleRequest assetLoadAllTextRequest = bundle.LoadAllAssetsAsync<TextAsset>();
 			yield return assetLoadAllTextRequest;
 			UnityEngine.Object[] prefabs = assetLoadAllTextRequest.allAssets;
 	
-			print("Number of texts found:  " + prefabs.Length);
+			Debug.Log("JournalAssetManager-Number of texts found:  " + prefabs.Length);
 			for( int i = 0; i < prefabs.Length; i++ )
 			{
 				stories.Add( prefabs[i].name, Instantiate<TextAsset>(prefabs[i] as TextAsset ) );

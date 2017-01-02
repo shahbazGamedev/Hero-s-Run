@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
 public class CreatePages : MonoBehaviour {
 
@@ -14,6 +15,7 @@ public class CreatePages : MonoBehaviour {
 	public List<string> pageTexts = new List<string>();
 	RenderTexture renderTexture;
 	bool levelLoading = false;
+	int numberOfCharactersPerPage = 132;
 
 	void Start()
  	{
@@ -62,26 +64,39 @@ public class CreatePages : MonoBehaviour {
 		//step 2 - populate pageTexts by looking for page breaks.
 		pageTexts.Clear();
 		int pageCounter = 0;
-		string pageBreakDelimiter = "<Page Break>";
-		int pageBreakLength = pageBreakDelimiter.Length;
+
 		while ( story.Length > 0 )
 		{
-			int pageBreakIndex = story.IndexOf( pageBreakDelimiter );
-			if( pageBreakIndex >= 0 )
+			if( story.Length > numberOfCharactersPerPage )
 			{
-				pageTexts.Add( story.Substring( 0, pageBreakIndex ) );
-				story = story.Remove( 0, pageBreakIndex + pageBreakLength ) ;
+				//if we are here, it means that what is left of the story does not fit in a single page.
+				int index = findIndex( story.Substring( 0, numberOfCharactersPerPage ) );
+				if( index == -1 ) break;
+				pageTexts.Add( story.Substring( 0, index ).Trim() );
+				story = story.Remove( 0, index ) ;
+				pageCounter++;
 			}
 			else
 			{
-				pageTexts.Add( story.Substring( 0, story.Length ) );
-				story = story.Remove( 0, story.Length ) ;
+				//What is left of the story fits in a single page
+				pageTexts.Add( story.Trim() );
+				pageCounter++;
+				break;
 			}
-			pageCounter++;
 		}
 		book.setBookSize(pageCounter);
 		//step 3 - create pages
 		StartCoroutine( createPages() );
+	}
+
+	public int findIndex( string story )
+	{
+		char[] storyChar = story.ToCharArray();
+		for (int i = storyChar.Length - 1; i >= 0; i--)
+		{
+			if( Char.IsSeparator( storyChar[i] ) || Char.IsPunctuation( storyChar[i] ) ) return i;
+		}
+		return -1;
 	}
 
 	public void closeMenu()
