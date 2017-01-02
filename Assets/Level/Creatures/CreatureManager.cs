@@ -14,7 +14,8 @@ public enum CreatureState {
 	Attacking = 7,
 	Dying = 8,
 	Victory = 9,
-	Jumping = 10
+	Jumping = 10,
+	Glide = 11
 }
 
 public sealed class CreatureManager : MonoBehaviour {

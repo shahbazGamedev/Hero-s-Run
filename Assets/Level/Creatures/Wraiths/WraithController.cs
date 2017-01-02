@@ -28,8 +28,7 @@ public sealed class WraithController : Creature, ICreature {
 		stand_and_big_attack = 2,
 		charge_and_attack = 3,
 		walk_and_talk = 5,
-		do_nothing = 6,
-		sneak_up_to_player = 7
+		do_nothing = 6
 	}
 	[Range(0,1f)]
 	public float percentageWillAttack = 0.5f;
@@ -189,13 +188,11 @@ public sealed class WraithController : Creature, ICreature {
 						if( getCreatureState() != CreatureState.BurrowUp )
 						{
 							followsPlayer = false;
-							setCreatureState( CreatureState.BurrowUp );
-							controller.enabled = false;
+							setCreatureState( CreatureState.Glide );
 							anim.Play( "move" );
-							//50% of the time turn to face player and attack, the other 50%, just continue straight
+							//percentageWillAttack of the time, the wraith will turn to face the player and attack. The rest of the time, the wraith will just continue straight.
 							if( Random.value < percentageWillAttack )
 							{
-								controller.enabled = true; //Needed for znuke to work
 								Invoke("removeDotProduct", floatDuration * 0.65f );
 								LeanTween.moveLocal( gameObject, new Vector3( transform.localPosition.x - 12f, transform.localPosition.y, transform.localPosition.z ), floatDuration ).setOnComplete(turnToFacePlayer).setOnCompleteParam(gameObject).setEase(LeanTweenType.easeInOutQuad);
 							}
