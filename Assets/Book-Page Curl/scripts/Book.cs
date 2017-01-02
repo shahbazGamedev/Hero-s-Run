@@ -2,6 +2,9 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using System.Collections.Generic;
+
+
 public enum FlipMode
 {
     RightToLeft,
@@ -13,14 +16,14 @@ public class Book : MonoBehaviour {
     [SerializeField]
     RectTransform BookPanel;
     public Sprite background;
-    public Sprite[] bookPages;
+	public List<Sprite> bookPages = new List<Sprite>();
     public bool interactable=true;
     public bool enableShadowEffect=true;
     //represent the index of the sprite shown in the right page
     public int currentPage = 0;
     public int TotalPageCount
     {
-        get { return bookPages.Length; }
+        get { return bookPages.Count; }
     }
     public Vector3 EndBottomLeft
     {
@@ -36,6 +39,15 @@ public class Book : MonoBehaviour {
         {
             return BookPanel.rect.height ; 
         }
+    }
+	public void setBookSize( int numberOfpages )
+    {
+		bookPages.Clear();
+        bookPages.Capacity = numberOfpages;
+    }
+	public void addPageSprite( Sprite pageSprite )
+    {
+        bookPages.Add( pageSprite );
     }
     public Image ClippingPlane;
     public Image NextPageClip;
@@ -234,7 +246,7 @@ public class Book : MonoBehaviour {
     }
     public void DragRightPageToPoint(Vector3 point)
     {
-        if (currentPage >= bookPages.Length) return;
+        if (currentPage >= bookPages.Count) return;
         pageDragging = true;
         mode = FlipMode.RightToLeft;
         f = point;
@@ -247,15 +259,15 @@ public class Book : MonoBehaviour {
         Left.rectTransform.pivot = new Vector2(0, 0);
         Left.transform.position = RightNext.transform.position;
         Left.transform.eulerAngles = new Vector3(0, 0, 0);
-        Left.sprite = (currentPage < bookPages.Length) ? bookPages[currentPage] : background;
+        Left.sprite = (currentPage < bookPages.Count) ? bookPages[currentPage] : background;
         Left.transform.SetAsFirstSibling();
         
         Right.gameObject.SetActive(true);
         Right.transform.position = RightNext.transform.position;
         Right.transform.eulerAngles = new Vector3(0, 0, 0);
-        Right.sprite = (currentPage < bookPages.Length - 1) ? bookPages[currentPage + 1] : background;
+        Right.sprite = (currentPage < bookPages.Count - 1) ? bookPages[currentPage + 1] : background;
 
-        RightNext.sprite = (currentPage < bookPages.Length - 2) ? bookPages[currentPage + 2] : background;
+        RightNext.sprite = (currentPage < bookPages.Count - 2) ? bookPages[currentPage + 2] : background;
 
         LeftNext.transform.SetAsFirstSibling();
         if (enableShadowEffect) Shadow.gameObject.SetActive(true);
@@ -324,8 +336,8 @@ public class Book : MonoBehaviour {
     Coroutine currentCoroutine;
     void UpdateSprites()
     {
-        LeftNext.sprite= (currentPage > 0 && currentPage <= bookPages.Length) ? bookPages[currentPage-1] : background;
-        RightNext.sprite=(currentPage>=0 &&currentPage<bookPages.Length) ? bookPages[currentPage] : background;
+        LeftNext.sprite= (currentPage > 0 && currentPage <= bookPages.Count) ? bookPages[currentPage-1] : background;
+        RightNext.sprite=(currentPage>=0 &&currentPage<bookPages.Count) ? bookPages[currentPage] : background;
     }
     public void TweenForward()
     {

@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: e343271dae0d4402594bc1e3e44a5186
+timeCreated: 1483341247
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Rumpelstiltskin
+  fontNames:
+  - Rumpelstiltskin
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
