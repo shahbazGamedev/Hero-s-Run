@@ -488,7 +488,15 @@ public class PowerUpManager : MonoBehaviour {
 						}
 						else if( rdPowerUp == (int)PowerUpType.StoryUnlock )
 						{
-							addPowerUp( PowerUpType.StoryUnlock, placeholder, newTile );
+							//If the player has unlocked all journal entries, spawn a magnet instead. 
+							if( journalData.areAllEntriesUnlocked() )
+							{
+								addPowerUp( PowerUpType.Magnet, placeholder, newTile );
+							}
+							else
+							{
+								addPowerUp( PowerUpType.StoryUnlock, placeholder, newTile );
+							}
 						}
 						else if( rdPowerUp == (int)PowerUpType.Life )
 						{

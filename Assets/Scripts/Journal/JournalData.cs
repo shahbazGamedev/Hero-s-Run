@@ -39,6 +39,15 @@ public class JournalData {
 		journalEntryList.Add(journalEntry);
 	}
 
+	public bool areAllEntriesUnlocked()
+	{
+		for( int i = 0; i < journalEntryList.Count; i++ )
+		{
+			if( journalEntryList[i].status == JournalEntryStatus.Locked ) return false;
+		}
+		return true;
+	}
+
 	public void printAllEntries()
 	{
 		for( int i = 0; i < journalEntryList.Count; i++ )
