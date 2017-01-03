@@ -12,15 +12,13 @@ public class JournalAssetManager : MonoBehaviour {
     public int version;
 	public Dictionary<string, Sprite> covers = new Dictionary<string, Sprite>();
 	public Dictionary<string, TextAsset> stories = new Dictionary<string, TextAsset>();
-	public CreatePages createPages;
 
     void Awake()
 	{
+		GameManager.Instance.journalAssetManager = this;
 		#if UNITY_EDITOR
         StartCoroutine (DownloadAndCacheCovers());
         StartCoroutine (DownloadAndCacheStories());
-		#else
-		createPages.generatePages();
 		#endif
     }
 
@@ -93,7 +91,6 @@ public class JournalAssetManager : MonoBehaviour {
            bundle.Unload(false);
 
         } // memory is freed from the web stream (www.Dispose() gets called implicitly)
-		createPages.generatePages();
     }
 
    	string getLanguage()

@@ -22,6 +22,8 @@ public class CreatePages : MonoBehaviour {
  	{
 		Handheld.StopActivityIndicator();
 		createRenderTexture();
+		jam = GameManager.Instance.journalAssetManager;
+		generatePages();
 	}
 
 	void createRenderTexture()

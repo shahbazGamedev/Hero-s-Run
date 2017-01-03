@@ -24,20 +24,25 @@ public class JournalData {
 	[System.Serializable]
 	public class JournalEntry
 	{
-		public string name = string.Empty;
-		public JournalEntryStatus status = JournalEntryStatus.Locked;
+		public string entryName = string.Empty;
+		public string coverName = string.Empty;
+		public string storyName = string.Empty;
 		public int numberOfPartsNeededToUnlock = 2;
+
+		public JournalEntryStatus status = JournalEntryStatus.Locked;
 		public int numberOfPartsDiscovered = 0;
 
-		public JournalEntry( string name, int numberOfPartsNeededToUnlock )
+		public JournalEntry( string entryName, string coverName, string storyName, int numberOfPartsNeededToUnlock )
 		{
-			this.name = name;
+			this.entryName = entryName;
+			this.coverName = coverName;
+			this.storyName = storyName;
 			this.numberOfPartsNeededToUnlock = numberOfPartsNeededToUnlock;
 		}		
 
 		public void printJournalEntry()
 		{
-			string printStr = name + " " + status + " " + numberOfPartsDiscovered + "/" + numberOfPartsNeededToUnlock;
+			string printStr = entryName + " " + coverName + " " + storyName + " " + status + " " + numberOfPartsDiscovered + "/" + numberOfPartsNeededToUnlock;
 			Debug.Log( "Journal Entry: " + printStr );
 		}
 	}
@@ -78,10 +83,24 @@ public class JournalData {
 			if(journalEntryUpdate != null) journalEntryUpdate( JournalEntryEvent.EntryUnlocked, journalEntryList[ activeUniqueId ] );
 			//Do we have any more journal entries to unlock?
 			if( activeUniqueId < journalEntryList.Count-1 ) activeUniqueId++;
+			//If the player finds the last part of the last entry (and therefore he has unlocked all of the Journal entries),
+			//We need to destroy any remaining story unlock powerups in the level, because they will be useless for the player.
+			if( areAllEntriesUnlocked() )
+			{
+				//Reminder that GameObject.FindGameObjectsWithTag does not find inactive game objects
+				PowerUp[] storyUnlocksArray = Resources.FindObjectsOfTypeAll<PowerUp>();
+				Debug.Log("JournalData-newPartAcquired-everything is now unlocked. Make remaining Story Unlock powerups inactive: " + storyUnlocksArray.Length );
+				for( int i = 0; i < storyUnlocksArray.Length; i++ )
+				{
+					if( storyUnlocksArray[i].powerUpType == PowerUpType.StoryUnlock ) storyUnlocksArray[i].gameObject.SetActive( false );
+					//Important: This will also make the prefab inactive. So, make sure to set the PowerUp active when adding it to the level.
+				}
+			}
+			
 		}
 		else
 		{
-			Debug.Log("JournalData-newPartAcquired for ID: " + activeUniqueId + " " + journalEntryList[ activeUniqueId ].name + " " + journalEntryList[ activeUniqueId ].numberOfPartsDiscovered + "/" + journalEntryList[ activeUniqueId ].numberOfPartsNeededToUnlock  );
+			Debug.Log("JournalData-newPartAcquired for ID: " + activeUniqueId + " " + journalEntryList[ activeUniqueId ].entryName + " " + journalEntryList[ activeUniqueId ].numberOfPartsDiscovered + "/" + journalEntryList[ activeUniqueId ].numberOfPartsNeededToUnlock  );
 			if(journalEntryUpdate != null) journalEntryUpdate( JournalEntryEvent.NewPartFound, journalEntryList[ activeUniqueId ] );
 		}
 		serializeJournalEntries();

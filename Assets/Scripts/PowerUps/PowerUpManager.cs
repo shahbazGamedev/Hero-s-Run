@@ -503,6 +503,7 @@ public class PowerUpManager : MonoBehaviour {
 	private void addPowerUp ( PowerUpType type, Transform powerUpPlaceholder, GameObject newTile )
 	{
 		GameObject powerUpPrefab = powerUpDictionary[type].powerUpToSpawn;
+		powerUpPrefab.SetActive( true );
 		//Always place the power-up at the same height
 		RaycastHit hit;
 		if (Physics.Raycast(new Vector3(powerUpPlaceholder.position.x, powerUpPlaceholder.position.y + 3f, powerUpPlaceholder.position.z), Vector3.down, out hit, 10f ))

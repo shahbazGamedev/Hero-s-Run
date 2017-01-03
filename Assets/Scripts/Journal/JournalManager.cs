@@ -17,9 +17,9 @@ public class JournalManager : MonoBehaviour {
 		{
 			journalData = new JournalData();
 			//Add some entries
-			JournalData.JournalEntry entry = new JournalData.JournalEntry( "The Treasure", 3 );
+			JournalData.JournalEntry entry = new JournalData.JournalEntry( "The Treasure", "Cover 1", "Story 1", 3 );
 			journalData.addJournalEntry( entry );
-			entry = new JournalData.JournalEntry( "The Secret Passage", 4 );
+			entry = new JournalData.JournalEntry( "The Secret Passage", "Cover 2", "Story 2", 4 );
 			journalData.addJournalEntry( entry );
 			journalData.serializeJournalEntries();
 		}
