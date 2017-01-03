@@ -12,7 +12,8 @@ public enum PowerUpType {
 	MagicBoots = 4,
 	SlowTime = 5,
 	SpeedBoost = 6,
-	Life = 7
+	Life = 7,
+	StoryUnlock = 8
 }
 
 public class PowerUpManager : MonoBehaviour {
@@ -41,12 +42,12 @@ public class PowerUpManager : MonoBehaviour {
 
 	//For debugging
 	//When forcePowerUpType is not set to NONE, only the power up type specified will be added to the level.
-	PowerUpType forcePowerUpType = PowerUpType.None;
+	PowerUpType forcePowerUpType = PowerUpType.StoryUnlock;
 	const float DISTANCE_TO_GROUND = 2.4f;
 
 	//List of each powerup available.
 	public List<PowerUpData> powerUpList = new List<PowerUpData>(7);
-	static Dictionary<PowerUpType,PowerUpData> powerUpDictionary = new Dictionary<PowerUpType,PowerUpData>(7);
+	static Dictionary<PowerUpType,PowerUpData> powerUpDictionary = new Dictionary<PowerUpType,PowerUpData>(8);
 
 	//Base diameter is the value if upgrade level is 0. It is used by zNuke.
 	const float BASE_DIAMETER = 18f; 	//in meters
@@ -58,12 +59,29 @@ public class PowerUpManager : MonoBehaviour {
 
 	public const float SPEED_BOOST_MULTIPLIER = 1.5f;
 
+	public JournalData journalData;
+
 	void Awake()
 	{
 		fillDictionary();
 		player = GameObject.FindGameObjectWithTag("Player").transform;	
 		playerController = player.GetComponent<PlayerController>();
 		audioSource = GetComponent<AudioSource>();
+
+		if( PlayerStatsManager.Instance.getJournalEntries() != string.Empty )
+		{
+			 journalData = JsonUtility.FromJson<JournalData>(PlayerStatsManager.Instance.getJournalEntries());
+		}
+		else
+		{
+			journalData = new JournalData();
+			//Add some entries
+			JournalData.JournalEntry entry = new JournalData.JournalEntry( "The Treasure", 3 );
+			journalData.addJournalEntry( entry );
+			entry = new JournalData.JournalEntry( "The Secret Passage", 4 );
+			journalData.addJournalEntry( entry );
+			journalData.serializeJournalEntries();
+		}
 	}
 	
 	public void changeSelectedPowerUp(PowerUpType newPowerUpType )
@@ -176,7 +194,6 @@ public class PowerUpManager : MonoBehaviour {
 	public void pickUpPowerUp( PowerUpType powerUpType )
 	{
 		PowerUpData pud = powerUpDictionary[powerUpType];
-
 		//Play pick-up sound
 		audioSource.PlayOneShot( pickUpSound );
 		//Play a pick-up particle effect if one has been specified
@@ -193,6 +210,11 @@ public class PowerUpManager : MonoBehaviour {
 			PlayerStatsManager.Instance.increaseLives(1);
 			PlayerStatsManager.Instance.savePlayerStats();
 			print("Life - pickUpPowerUp : adding 1 life. New total is " + PlayerStatsManager.Instance.getLives() );
+		}
+		//Story Unlock is a special case. The inventory is maintained separately in JournalData.
+		else if( powerUpType == PowerUpType.StoryUnlock )
+		{
+			journalData.newPartAcquired();
 		}
 		else
 		{
@@ -439,7 +461,7 @@ public class PowerUpManager : MonoBehaviour {
 				{
 					if( forcePowerUpType == PowerUpType.None )
 					{
-						int rdPowerUp = Random.Range( 1,8 );
+						int rdPowerUp = Random.Range( 1,9 );
 						if( rdPowerUp == (int)PowerUpType.Shield )
 						{
 							addPowerUp( PowerUpType.Shield, placeholder, newTile );
@@ -463,6 +485,10 @@ public class PowerUpManager : MonoBehaviour {
 						else if( rdPowerUp == (int)PowerUpType.SpeedBoost )
 						{
 							addPowerUp( PowerUpType.SpeedBoost, placeholder, newTile );
+						}
+						else if( rdPowerUp == (int)PowerUpType.StoryUnlock )
+						{
+							addPowerUp( PowerUpType.StoryUnlock, placeholder, newTile );
 						}
 						else if( rdPowerUp == (int)PowerUpType.Life )
 						{

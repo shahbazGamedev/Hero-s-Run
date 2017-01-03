@@ -112,6 +112,7 @@ public class PlayerStatsManager {
 	bool ownsStarDoubler = false; //True if the player has purchased the Star Doubler in the store.
 
 	string challenges = String.Empty; //List of Challenge in JSON format. See ChallengeBoard.
+	string journalEntries = String.Empty; //List of Journal Entries in JSON format. See JournalData.
 
 	public static PlayerStatsManager Instance
 	{
@@ -958,6 +959,16 @@ public class PlayerStatsManager {
 		return challenges;
 	}
 
+	public void setJournalEntries( string journalEntries )
+	{
+		this.journalEntries = journalEntries;
+	}
+
+	public string getJournalEntries()
+	{
+		return journalEntries;
+	}
+
 	public void loadPlayerStats()
 	{
 		try
@@ -1059,6 +1070,7 @@ public class PlayerStatsManager {
 			userName = PlayerPrefs.GetString("userName", "" );
 			loadPowerUpInventory();
 			challenges = PlayerPrefs.GetString("challenges", "" );
+			journalEntries = PlayerPrefs.GetString("journalEntries", "" );
 			//Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " Next Episode To Complete: " + nextEpisodeToComplete + " Highest Episode Completed: " + highestEpisodeCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
@@ -1142,6 +1154,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetString( "userName", userName );
 		savePowerUpInventory();
 		PlayerPrefs.SetString( "challenges", challenges );
+		PlayerPrefs.SetString( "journalEntries", journalEntries );
 		PlayerPrefs.Save();
 		//Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
 	}
@@ -1201,6 +1214,8 @@ public class PlayerStatsManager {
 			ClearPowerUpInventory();
 			challenges = string.Empty;
 			PlayerPrefs.SetString( "challenges", "" );
+			journalEntries = string.Empty;
+			PlayerPrefs.SetString( "journalEntries", "" );
 			PlayerPrefs.Save();
 			Debug.Log ("PlayerStatsManager-resetPlayerStats: called." );
 		}

@@ -461,6 +461,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		PlayerStatsManager.Instance.resetTreasureKeysFound();
 		PlayerStatsManager.Instance.setChallenges(string.Empty);
+		PlayerStatsManager.Instance.setJournalEntries(string.Empty);
 		PlayerStatsManager.Instance.savePlayerStats();
 		showOfferLivesPopup();
 	}
