@@ -17,6 +17,7 @@ public class DebugMenu : MonoBehaviour {
 	public Text deathPerEpisodeText;
 	public Text facebookName;
 	public Text toggleOnlyUseUniqueTilesText;
+	public Text clearAssetBundleCacheText;
 
 	// Use this for initialization
 	void Start () {
@@ -112,6 +113,32 @@ public class DebugMenu : MonoBehaviour {
 		PlayerStatsManager.Instance.savePlayerStats();
 	}
 
+	public void unlockAllLevels()
+	{
+		Debug.Log("unlockAllLevels");
+		UISoundManager.uiSoundManager.playButtonClick();
+		LevelManager.Instance.unlockAllEpisodes();
+		PlayerStatsManager.Instance.savePlayerStats();
+		newWorldMapHandler.drawLevelMarkers();
+		newWorldMapHandler.updateFriendPortraits();
+
+	}
+
+	public void clearAssetBundleCache()
+	{
+		Debug.Log("clearAssetBundleCache");
+		UISoundManager.uiSoundManager.playButtonClick();
+		bool result = Caching.CleanCache();
+		if( result )
+		{
+			clearAssetBundleCacheText.text = clearAssetBundleCacheText.text + ": Success";
+		}
+		else
+		{
+			clearAssetBundleCacheText.text = clearAssetBundleCacheText.text + ": Failure";
+		}
+	}
+
 	public void toggleOnlyUseUniqueTiles()
 	{
 		Debug.Log("toggleOnlyUseUniqueTiles");
@@ -125,17 +152,6 @@ public class DebugMenu : MonoBehaviour {
 		{
 			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: Off";
 		}
-	}
-
-	public void unlockAllLevels()
-	{
-		Debug.Log("unlockAllLevels");
-		UISoundManager.uiSoundManager.playButtonClick();
-		LevelManager.Instance.unlockAllEpisodes();
-		PlayerStatsManager.Instance.savePlayerStats();
-		newWorldMapHandler.drawLevelMarkers();
-		newWorldMapHandler.updateFriendPortraits();
-
 	}
 
 	void updatePlayerStats()
