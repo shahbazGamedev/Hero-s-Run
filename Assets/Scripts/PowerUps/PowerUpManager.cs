@@ -59,29 +59,12 @@ public class PowerUpManager : MonoBehaviour {
 
 	public const float SPEED_BOOST_MULTIPLIER = 1.5f;
 
-	public JournalData journalData;
-
 	void Awake()
 	{
 		fillDictionary();
 		player = GameObject.FindGameObjectWithTag("Player").transform;	
 		playerController = player.GetComponent<PlayerController>();
 		audioSource = GetComponent<AudioSource>();
-
-		if( PlayerStatsManager.Instance.getJournalEntries() != string.Empty )
-		{
-			 journalData = JsonUtility.FromJson<JournalData>(PlayerStatsManager.Instance.getJournalEntries());
-		}
-		else
-		{
-			journalData = new JournalData();
-			//Add some entries
-			JournalData.JournalEntry entry = new JournalData.JournalEntry( "The Treasure", 3 );
-			journalData.addJournalEntry( entry );
-			entry = new JournalData.JournalEntry( "The Secret Passage", 4 );
-			journalData.addJournalEntry( entry );
-			journalData.serializeJournalEntries();
-		}
 	}
 	
 	public void changeSelectedPowerUp(PowerUpType newPowerUpType )
@@ -214,7 +197,7 @@ public class PowerUpManager : MonoBehaviour {
 		//Story Unlock is a special case. The inventory is maintained separately in JournalData.
 		else if( powerUpType == PowerUpType.StoryUnlock )
 		{
-			journalData.newPartAcquired();
+			GameManager.Instance.journalData.newPartAcquired();
 		}
 		else
 		{
@@ -489,7 +472,7 @@ public class PowerUpManager : MonoBehaviour {
 						else if( rdPowerUp == (int)PowerUpType.StoryUnlock )
 						{
 							//If the player has unlocked all journal entries, spawn a magnet instead. 
-							if( journalData.areAllEntriesUnlocked() )
+							if( GameManager.Instance.journalData.areAllEntriesUnlocked() )
 							{
 								addPowerUp( PowerUpType.Magnet, placeholder, newTile );
 							}
