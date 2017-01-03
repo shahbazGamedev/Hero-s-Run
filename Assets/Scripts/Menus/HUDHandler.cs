@@ -227,12 +227,14 @@ public class HUDHandler : MonoBehaviour {
 	{
 		GameManager.gameStateEvent += GameStateChange;
 		PlayerController.playerStateChanged += PlayerStateChange;
+		JournalData.journalEntryUpdate += JournalEntryUpdate;
 	}
 	
 	void OnDisable()
 	{
 		GameManager.gameStateEvent -= GameStateChange;
 		PlayerController.playerStateChanged -= PlayerStateChange;
+		JournalData.journalEntryUpdate -= JournalEntryUpdate;
 	}
 
 	void PlayerStateChange( PlayerCharacterState newState )
@@ -272,6 +274,11 @@ public class HUDHandler : MonoBehaviour {
 			userMessageText.gameObject.SetActive( false );
 			destroyAllPickupsDisplayed();
 		}
+	}
+
+	void JournalEntryUpdate( JournalEntryEvent journalEntryEvent, JournalData.JournalEntry journalEntry )
+	{
+		Debug.Log("HUDHander-JournalEntryUnlocked " + journalEntryEvent.ToString() + " " + journalEntry.name );
 	}
 
 	void destroyAllPickupsDisplayed()

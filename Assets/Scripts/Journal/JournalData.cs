@@ -7,11 +7,19 @@ public enum JournalEntryStatus {
 	Unlocked = 1
 }
 
+public enum JournalEntryEvent {
+	EntryUnlocked = 0,
+	NewPartFound = 1
+}
+
 [System.Serializable]
 public class JournalData {
 
 	public List<JournalEntry> journalEntryList = new List<JournalEntry>();
 	public int activeUniqueId = 0;
+	//Event management used to notify other classes when the character state has changed
+	public delegate void JournalEntryUpdate( JournalEntryEvent journalEvent, JournalEntry journalEntry );
+	public static event JournalEntryUpdate journalEntryUpdate;
 
 	[System.Serializable]
 	public class JournalEntry
@@ -56,29 +64,27 @@ public class JournalData {
 		}
 	}
 
-	public bool newPartAcquired()
+	public void newPartAcquired()
 	{
 		//Did we already unlock the active journal entry?
-		if( journalEntryList[ activeUniqueId ].status == JournalEntryStatus.Unlocked ) return false;
+		if( journalEntryList[ activeUniqueId ].status == JournalEntryStatus.Unlocked ) return;
 
-		bool wasEntryCompleted;
 		journalEntryList[ activeUniqueId ].numberOfPartsDiscovered++;
 		//Did we complete the set?
 		if( journalEntryList[ activeUniqueId ].numberOfPartsDiscovered == journalEntryList[ activeUniqueId ].numberOfPartsNeededToUnlock )
 		{
 			Debug.Log("JournalData-newPartAcquired-new entry unlocked!");
 			journalEntryList[ activeUniqueId ].status = JournalEntryStatus.Unlocked;
+			if(journalEntryUpdate != null) journalEntryUpdate( JournalEntryEvent.EntryUnlocked, journalEntryList[ activeUniqueId ] );
 			//Do we have any more journal entries to unlock?
 			if( activeUniqueId < journalEntryList.Count-1 ) activeUniqueId++;
-			wasEntryCompleted = true;
 		}
 		else
 		{
-			Debug.Log("JournalData-newPartAcquired for " + activeUniqueId + " " + journalEntryList[ activeUniqueId ].numberOfPartsDiscovered + "/" + journalEntryList[ activeUniqueId ].numberOfPartsNeededToUnlock  );
-			wasEntryCompleted = false;
+			Debug.Log("JournalData-newPartAcquired for ID: " + activeUniqueId + " " + journalEntryList[ activeUniqueId ].name + " " + journalEntryList[ activeUniqueId ].numberOfPartsDiscovered + "/" + journalEntryList[ activeUniqueId ].numberOfPartsNeededToUnlock  );
+			if(journalEntryUpdate != null) journalEntryUpdate( JournalEntryEvent.NewPartFound, journalEntryList[ activeUniqueId ] );
 		}
 		serializeJournalEntries();
-		return wasEntryCompleted;
 	}
 
 	public void serializeJournalEntries()

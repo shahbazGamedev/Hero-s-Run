@@ -22,8 +22,8 @@ public class JournalManager : MonoBehaviour {
 			entry = new JournalData.JournalEntry( "The Secret Passage", 4 );
 			journalData.addJournalEntry( entry );
 			journalData.serializeJournalEntries();
-			GameManager.Instance.journalData = journalData;
 		}
+		GameManager.Instance.journalData = journalData;
 	}
 	
 }
