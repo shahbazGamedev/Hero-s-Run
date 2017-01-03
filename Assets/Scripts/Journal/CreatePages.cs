@@ -15,7 +15,8 @@ public class CreatePages : MonoBehaviour {
 	public List<string> pageTexts = new List<string>();
 	RenderTexture renderTexture;
 	bool levelLoading = false;
-	int numberOfCharactersPerPage = 132;
+	int numberOfCharactersPerPage = 272;
+	public List<Sprite> testCovers = new List<Sprite>();
 
 	void Start()
  	{
@@ -25,7 +26,7 @@ public class CreatePages : MonoBehaviour {
 
 	void createRenderTexture()
 	{
-		renderTexture = new RenderTexture(558, 864, 24);
+		renderTexture = new RenderTexture(553, 916, 24);
 		renderTexture.antiAliasing = 4;
 		renderTexture.format = RenderTextureFormat.Default;
 		pageCamera.targetTexture = renderTexture;
@@ -59,7 +60,14 @@ public class CreatePages : MonoBehaviour {
 	{
 		//step 1 - load appropriate story text
 		//string story = "This is a test.<Page Break>I will start jogging next week.<Page Break>I will get married in 2017. My wife and I will have regular, great, mutually satisfying sex including anal in 2017.<Page Break>My book will get published by a great, honest, competent, generous, clever, friendly book publisher and the sales will be phenomenal.<Page Break>Hero's Run is going to launch world wide and be amazingly popular and will monetise amazingly well. The game will be featured multiple times by Apple and Google. I will become even more rich!<Page Break>I will be invited as a speaker to Unite 2018.";
-		string story = jam.stories["Story 1"].text;
+		string story;
+		#if UNITY_EDITOR
+		//For the time being, the asset bundles that store the covers and the stories are on my Mac and not on the web.
+		story = jam.stories["Story 1"].text;
+		#else
+		story = "The treasure. Wow! The demon materialized out of nowhere. When one of his two hoof touches the ground, a network of spidery cracks appears below, filled with flamelets. One of his black horns is broken, but the other is sharp as a spear. His eyes have a glint of evil. His sinister intent is clear. He is here for our treasure. How did he pass our protection spells, glyphs of protections and sigils? The demon laughed. He had appeared inside the Golden Vault. The treasure was within tantalizing reach. In the chest, a score feet away from him was a chest filled with enough fairy dust to resurrect an entire army. And my liege, King Merrylock, all dressed in purple and yellow, the most powerful mage of the Kingdom of Lum lied on a pile of shiny coins in a drunken stupor. It was up to me, Lily, to save the day. I was small, well tiny really, like all fairies. On a good day, I measured 1 foot. Okay, 11 inches to be precise if your counting. I had graduated from fairy school a full two weeks ago. Now graduating was a big event for me as I had failed my first year. And as all young graduates, I had been assigned to guard duty. Or like Silvestra said, to guard, the most precious treasure of the kingdom. It was boring, boring, boring. Nothing ever happened to it. Our liege, King Merrylock, was the most powerful mage of the Kingdom of Lum. The last person who tried to steal our treasure, one Balthazar More, had been transmogrified into a squiggly piglet.";
+		#endif
+ 
 		//step 2 - populate pageTexts
 		pageTexts.Clear();
 		int pageCounter = 0;
@@ -86,9 +94,17 @@ public class CreatePages : MonoBehaviour {
 		book.setBookSize(pageCounter + 1 ); //plus one because of the cover
 
 		//Add book cover
-		book.addPageSprite( jam.covers["Cover 1"] );
-		book.RightNext.sprite = jam.covers["Cover 1"];
-
+		int randomCover = UnityEngine.Random.Range( 1, 8 );
+		#if UNITY_EDITOR
+		//For the time being, the asset bundles that store the covers and the stories are on my Mac and not on the web.
+		string coverName = "Cover " + randomCover.ToString();
+		book.addPageSprite( jam.covers[coverName] );
+		book.RightNext.sprite = jam.covers[coverName];
+		#else
+		book.addPageSprite( testCovers[randomCover] );
+		book.RightNext.sprite = testCovers[randomCover];
+		#endif
+	
 		//step 3 - create pages
 		StartCoroutine( createPages() );
 	}

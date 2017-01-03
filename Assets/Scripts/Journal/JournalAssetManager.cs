@@ -16,8 +16,12 @@ public class JournalAssetManager : MonoBehaviour {
 
     void Awake()
 	{
+		#if UNITY_EDITOR
         StartCoroutine (DownloadAndCacheCovers());
         StartCoroutine (DownloadAndCacheStories());
+		#else
+		createPages.generatePages();
+		#endif
     }
 
     IEnumerator DownloadAndCacheCovers ()
