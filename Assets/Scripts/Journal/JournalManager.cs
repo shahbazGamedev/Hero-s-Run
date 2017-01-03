@@ -24,6 +24,13 @@ public class JournalManager : MonoBehaviour {
 			journalData.serializeJournalEntries();
 		}
 		GameManager.Instance.journalData = journalData;
+
 	}
+
+	//Called by JournalAssetManager when entries received from cache or server
+	public void updateEntries( string entriesFromServer )
+	{
+		JsonUtility.FromJsonOverwrite( entriesFromServer, journalData );
+	} 
 	
 }

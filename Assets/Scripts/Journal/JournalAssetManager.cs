@@ -7,20 +7,55 @@ using UnityEngine.UI;
 public class JournalAssetManager : MonoBehaviour {
 
 	[Tooltip("The URL format for testing locally on a Mac is: file:///Users/regisgeoffrion/Documents/workspace/AssetBundles/covers. You need the 3 slashes after file:")]
+    public string entriesBundleURL;
     public string coversBundleURL;
     public string storiesBundleURL;
     public int version;
 	public Dictionary<string, Sprite> covers = new Dictionary<string, Sprite>();
 	public Dictionary<string, TextAsset> stories = new Dictionary<string, TextAsset>();
+	public TextAsset entriesJson;
 
     void Awake()
 	{
 		GameManager.Instance.journalAssetManager = this;
 		#if UNITY_EDITOR
+        StartCoroutine (DownloadAndCacheEntries());
         StartCoroutine (DownloadAndCacheCovers());
         StartCoroutine (DownloadAndCacheStories());
 		#endif
     }
+
+   	IEnumerator DownloadAndCacheEntries ()
+	{
+		// Wait for the Caching system to be ready
+		while (!Caching.ready)
+            yield return null;
+
+		// Load the AssetBundle file from Cache if it exists with the same version or download and store it in the cache
+        using(WWW www = WWW.LoadFromCacheOrDownload (entriesBundleURL, version))
+		{
+            yield return www;
+            if (www.error != null)
+			{
+                throw new Exception( "WWW download had an error:" + www.error );
+				yield break;
+			}
+            AssetBundle bundle = www.assetBundle;
+			//Load the journal manifest (entries)
+			AssetBundleRequest assetLoadAllTextRequest = bundle.LoadAllAssetsAsync<TextAsset>();
+			yield return assetLoadAllTextRequest;
+			UnityEngine.Object[] prefabs = assetLoadAllTextRequest.allAssets;
+	
+			entriesJson = Instantiate<TextAsset>(prefabs[0] as TextAsset );
+			Debug.Log("JournalAssetManager-Entries found: " + entriesJson.text );
+
+           // Unload the AssetBundles compressed contents to conserve memory
+           bundle.Unload(false);
+
+			GetComponent<JournalManager>().updateEntries( entriesJson.text );
+
+        } // memory is freed from the web stream (www.Dispose() gets called implicitly)
+	}
 
     IEnumerator DownloadAndCacheCovers ()
 	{
