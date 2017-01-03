@@ -33,6 +33,8 @@ public class HUDHandler : MonoBehaviour {
 	public Image fadeImage;
 	public CanvasGroup canvasGroup;
 	System.Action onFinish;
+	[Header("Journal")]
+	public GameObject journalCanvas;
 
 	//Used to track the items picked up by the player such as Stars and Treasure Keys. Multiple icons can be displayed at the same time with an offset.
 	List<PickupDisplay> pickupDisplayList = new List<PickupDisplay>();
@@ -264,9 +266,11 @@ public class HUDHandler : MonoBehaviour {
 		{
 			hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
 			pauseButton.gameObject.SetActive( true );
+			journalCanvas.gameObject.SetActive( true );
 		}
 		else
 		{
+			journalCanvas.gameObject.SetActive( false );
 			hudDebugInfo.gameObject.SetActive( false );
 			pauseButton.gameObject.SetActive( false );
 			userMessageText.gameObject.SetActive( false );
