@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class JournalManager : MonoBehaviour {
 
 	public JournalData journalData;
+	public Text newEntriesIndicator; 
 
 	// Use this for initialization
 	void Awake ()
@@ -25,6 +27,12 @@ public class JournalManager : MonoBehaviour {
 		}
 		GameManager.Instance.journalData = journalData;
 
+	}
+
+	void Start()
+	{
+		int newEntries = journalData.getNumberOfNewEntries();
+		newEntriesIndicator.text = newEntries.ToString();
 	}
 
 	//Called by JournalAssetManager when entries received from cache or server

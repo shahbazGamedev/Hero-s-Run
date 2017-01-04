@@ -24,13 +24,16 @@ public class JournalData {
 	[System.Serializable]
 	public class JournalEntry
 	{
+		//static
 		public string entryName = string.Empty;
 		public string coverName = string.Empty;
 		public string storyName = string.Empty;
 		public int numberOfPartsNeededToUnlock = 2;
 
+		//Dynamic
 		public JournalEntryStatus status = JournalEntryStatus.Locked;
 		public int numberOfPartsDiscovered = 0;
+		public bool isNew = false; 	//If isNew is true, it means the player has never viewed the story.
 
 		public JournalEntry( string entryName, string coverName, string storyName, int numberOfPartsNeededToUnlock )
 		{
@@ -61,6 +64,16 @@ public class JournalData {
 		return true;
 	}
 
+	public int getNumberOfNewEntries()
+	{
+		int newEntries = 0;
+		for( int i = 0; i < journalEntryList.Count; i++ )
+		{
+			if( journalEntryList[i].status == JournalEntryStatus.Unlocked && journalEntryList[i].isNew ) newEntries++; 
+		}
+		return newEntries;
+	}
+
 	public void printAllEntries()
 	{
 		for( int i = 0; i < journalEntryList.Count; i++ )
@@ -80,6 +93,7 @@ public class JournalData {
 		{
 			Debug.Log("JournalData-newPartAcquired-new entry unlocked!");
 			journalEntryList[ activeUniqueId ].status = JournalEntryStatus.Unlocked;
+			journalEntryList[ activeUniqueId ].isNew = true;
 			if(journalEntryUpdate != null) journalEntryUpdate( JournalEntryEvent.EntryUnlocked, journalEntryList[ activeUniqueId ] );
 			//Do we have any more journal entries to unlock?
 			if( activeUniqueId < journalEntryList.Count-1 ) activeUniqueId++;
