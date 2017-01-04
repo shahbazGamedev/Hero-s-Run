@@ -1,9 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using System;
 
 public class CreatePages : MonoBehaviour {
 
@@ -14,7 +13,6 @@ public class CreatePages : MonoBehaviour {
 	public Text titleText;
 	public List<string> pageTexts = new List<string>();
 	RenderTexture renderTexture;
-	bool levelLoading = false;
 	public EntryMetadata entryMetadata;
 
 	void Start()
@@ -159,23 +157,6 @@ public class CreatePages : MonoBehaviour {
 		text = text.Remove(0,1);
 		text = text.Insert(0, firstLetterWithRichText );
 		return text;
-	}
-
-	public void closeMenu()
-	{
-		StartCoroutine( close() );
-	}
-
-	IEnumerator close()
-	{
-		if( !levelLoading )
-		{
-			UISoundManager.uiSoundManager.playButtonClick();
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)GameScenes.WorldMap );
-		}
 	}
 
 	[System.Serializable]
