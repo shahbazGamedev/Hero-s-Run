@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: e343271dae0d4402594bc1e3e44a5186
-timeCreated: 1483341247
+guid: 7ea4011ce8c59403a9a9007e6abc0cf5
+timeCreated: 1483497229
 licenseType: Free
 TrueTypeFontImporter:
   serializedVersion: 4
@@ -9,9 +9,9 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Rumpelstiltskin
+  fontName: The Huntsman
   fontNames:
-  - Rumpelstiltskin
+  - The Huntsman
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

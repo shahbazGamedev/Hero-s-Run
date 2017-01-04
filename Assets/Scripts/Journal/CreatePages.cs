@@ -17,6 +17,7 @@ public class CreatePages : MonoBehaviour {
 	bool levelLoading = false;
 	int numberOfCharactersPerPage = 272;
 	public List<Sprite> testCovers = new List<Sprite>();
+	string storyForTestPuposes = "Test! The demon materialized out of nowhere. When one of his two hoof touches the ground, a network of spidery cracks appears below, filled with flamelets. One of his black horns is broken, but the other is sharp as a spear. His eyes have a glint of evil. His sinister intent is clear. He is here for our treasure. How did he pass our protection spells, glyphs of protections and sigils? The demon laughed. He had appeared inside the Golden Vault. The treasure was within tantalizing reach. In the chest, a score feet away from him was a chest filled with enough fairy dust to resurrect an entire army. And my liege, King Merrylock, all dressed in purple and yellow, the most powerful mage of the Kingdom of Lum lied on a pile of shiny coins in a drunken stupor. It was up to me, Lily, to save the day. I was small, well tiny really, like all fairies. On a good day, I measured 1 foot. Okay, 11 inches to be precise if your counting. I had graduated from fairy school a full two weeks ago. Now graduating was a big event for me as I had failed my first year. And as all young graduates, I had been assigned to guard duty. Or like Silvestra said, to guard, the most precious treasure of the kingdom. It was boring, boring, boring. Nothing ever happened to it. Our liege, King Merrylock, was the most powerful mage of the Kingdom of Lum. The last person who tried to steal our treasure, one Balthazar More, had been transmogrified into a squiggly piglet.";
 
 	void Start()
  	{
@@ -65,9 +66,17 @@ public class CreatePages : MonoBehaviour {
 		string story;
 		#if UNITY_EDITOR
 		//For the time being, the asset bundles that store the covers and the stories are on my Mac and not on the web.
-		story = jam.stories["Story 1"].text;
+		//We test for jam being null simply to be able to test directly in the journal scene without having to launch the game.
+		if( jam != null )
+		{
+			 story = jam.stories["Story 1"].text;
+		}
+		else
+		{
+			story = storyForTestPuposes;
+		}
 		#else
-		story = "The treasure. Wow! The demon materialized out of nowhere. When one of his two hoof touches the ground, a network of spidery cracks appears below, filled with flamelets. One of his black horns is broken, but the other is sharp as a spear. His eyes have a glint of evil. His sinister intent is clear. He is here for our treasure. How did he pass our protection spells, glyphs of protections and sigils? The demon laughed. He had appeared inside the Golden Vault. The treasure was within tantalizing reach. In the chest, a score feet away from him was a chest filled with enough fairy dust to resurrect an entire army. And my liege, King Merrylock, all dressed in purple and yellow, the most powerful mage of the Kingdom of Lum lied on a pile of shiny coins in a drunken stupor. It was up to me, Lily, to save the day. I was small, well tiny really, like all fairies. On a good day, I measured 1 foot. Okay, 11 inches to be precise if your counting. I had graduated from fairy school a full two weeks ago. Now graduating was a big event for me as I had failed my first year. And as all young graduates, I had been assigned to guard duty. Or like Silvestra said, to guard, the most precious treasure of the kingdom. It was boring, boring, boring. Nothing ever happened to it. Our liege, King Merrylock, was the most powerful mage of the Kingdom of Lum. The last person who tried to steal our treasure, one Balthazar More, had been transmogrified into a squiggly piglet.";
+			story = storyForTestPuposes;
 		#endif
  
 		//step 2 - establish the number of visible characters that can fit in pageText.
@@ -106,11 +115,19 @@ public class CreatePages : MonoBehaviour {
 		#if UNITY_EDITOR
 		//For the time being, the asset bundles that store the covers,stories, and entries are on my Mac and not on the web.
 		string coverName = "Cover " + randomCover.ToString();
-		book.addPageSprite( jam.covers[coverName] );
-		book.RightNext.sprite = jam.covers[coverName];
+		if( jam != null )
+		{
+			book.addPageSprite( jam.covers[coverName] );
+			book.RightNext.sprite = jam.covers[coverName];
+		}
+		else
+		{
+			book.addPageSprite( testCovers[randomCover] );
+			book.RightNext.sprite = testCovers[randomCover];
+		}		
 		#else
-		book.addPageSprite( testCovers[randomCover] );
-		book.RightNext.sprite = testCovers[randomCover];
+			book.addPageSprite( testCovers[randomCover] );
+			book.RightNext.sprite = testCovers[randomCover];
 		#endif
 	
 		//step 4 - create pages
