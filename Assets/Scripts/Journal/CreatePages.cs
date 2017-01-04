@@ -12,18 +12,17 @@ public class CreatePages : MonoBehaviour {
 	public Canvas bookCanvas;
 	public Text pageText;
 	public Text titleText;
-	public JournalAssetManager jam;
 	public List<string> pageTexts = new List<string>();
 	RenderTexture renderTexture;
 	bool levelLoading = false;
 	public List<Sprite> testCovers = new List<Sprite>();
-	string storyForTestPuposes = "A demon materializes out of nowhere. When one of his two hoof touches the ground, a network of spidery cracks appears below, filled with flamelets. One of his black horns is broken, but the other is sharp as a spear. His eyes have a glint of evil. His sinister intent is clear. He is here for our treasure. How did he pass our protection spells, glyphs of protections and sigils? The demon laughed. He had appeared inside the Golden Vault. The treasure was within tantalizing reach. In the chest, a score feet away from him was a chest filled with enough fairy dust to resurrect an entire army. And my liege, King Merrylock, all dressed in purple and yellow, the most powerful mage of the Kingdom of Lum lied on a pile of shiny coins in a drunken stupor. It was up to me, Lily, to save the day. I was small, well tiny really, like all fairies. On a good day, I measured 1 foot. Okay, 11 inches to be precise if your counting. I had graduated from fairy school a full two weeks ago. Now graduating was a big event for me as I had failed my first year. And as all young graduates, I had been assigned to guard duty. Or like Silvestra said, to guard, the most precious treasure of the kingdom. It was boring, boring, boring. Nothing ever happened to it. Our liege, King Merrylock, was the most powerful mage of the Kingdom of Lum. The last person who tried to steal our treasure, one Balthazar More, had been transmogrified into a squiggly piglet.";
+	string storyForTestPuposes = "{\"title\":\"The Fairy King's Treasure\",\"author\":\"Régis Geoffrion\"}Test! A demon materializes out of nowhere. When one of his two hoof touches the ground, a network of spidery cracks appears below, filled with flamelets. One of his black horns is broken, but the other is sharp as a spear. His eyes have a glint of evil. His sinister intent is clear. He is here for our treasure. How did he pass our protection spells, glyphs of protections and sigils? The demon laughed. He had appeared inside the Golden Vault. The treasure was within tantalizing reach. In the chest, a score feet away from him was a chest filled with enough fairy dust to resurrect an entire army. And my liege, King Merrylock, all dressed in purple and yellow, the most powerful mage of the Kingdom of Lum lied on a pile of shiny coins in a drunken stupor. It was up to me, Lily, to save the day. I was small, well tiny really, like all fairies. On a good day, I measured 1 foot. Okay, 11 inches to be precise if your counting. I had graduated from fairy school a full two weeks ago. Now graduating was a big event for me as I had failed my first year. And as all young graduates, I had been assigned to guard duty. Or like Silvestra said, to guard, the most precious treasure of the kingdom. It was boring, boring, boring. Nothing ever happened to it. Our liege, King Merrylock, was the most powerful mage of the Kingdom of Lum. The last person who tried to steal our treasure, one Balthazar More, had been transmogrified into a squiggly piglet.";
+	public EntryMetadata entryMetadata;
 
 	void Start()
  	{
 		Handheld.StopActivityIndicator();
 		createRenderTexture();
-		jam = GameManager.Instance.journalAssetManager;
 		generatePages();
 	}
 
@@ -39,6 +38,7 @@ public class CreatePages : MonoBehaviour {
 	IEnumerator createPages()
  	{
 		Texture2D page;
+		titleText.text = entryMetadata.title;
 		for( int i = 0; i < pageTexts.Count; i++ )
 		{
 	       	yield return new WaitForEndOfFrame();
@@ -74,10 +74,10 @@ public class CreatePages : MonoBehaviour {
 		string story;
 		#if UNITY_EDITOR
 		//For the time being, the asset bundles that store the covers and the stories are on my Mac and not on the web.
-		//We test for jam being null simply to be able to test directly in the journal scene without having to launch the game.
-		if( jam != null )
+		//We test for journalAssetManager being null simply to be able to test directly in the journal scene without having to launch the game.
+		if( GameManager.Instance.journalAssetManager != null )
 		{
-			 story = jam.stories["Story 1"].text;
+			 story = GameManager.Instance.journalAssetManager.stories["Story 1"].text;
 		}
 		else
 		{
@@ -87,7 +87,10 @@ public class CreatePages : MonoBehaviour {
 			story = storyForTestPuposes;
 		#endif
  
-		//step 1b - make the font size of the first letter of the story bigger to give a fairy tale feel.
+		//step 1b - extract the entry metadata such as the title and the author's name.
+		story = extractMetadata( story );
+
+		//step 1c - make the font size of the first letter of the story bigger to give a fairy tale feel.
 		story = makeFirstLetterBigger( story, 36 );
 
 		//step 2 - populate pageTexts
@@ -123,10 +126,10 @@ public class CreatePages : MonoBehaviour {
 		#if UNITY_EDITOR
 		//For the time being, the asset bundles that store the covers,stories, and entries are on my Mac and not on the web.
 		string coverName = "Cover " + randomCover.ToString();
-		if( jam != null )
+		if( GameManager.Instance.journalAssetManager != null )
 		{
-			book.addPageSprite( jam.covers[coverName] );
-			book.RightNext.sprite = jam.covers[coverName];
+			book.addPageSprite( GameManager.Instance.journalAssetManager.covers[coverName] );
+			book.RightNext.sprite = GameManager.Instance.journalAssetManager.covers[coverName];
 		}
 		else
 		{
@@ -141,6 +144,22 @@ public class CreatePages : MonoBehaviour {
 		//step 4 - create pages
 		StartCoroutine( createPages() );
 
+	}
+
+	public string extractMetadata( string text )
+	{
+		int indexOpeningBracket = text.IndexOf("{");
+		int indexClosingBracket = text.LastIndexOf("}");
+		if( indexOpeningBracket == -1 || indexOpeningBracket == -1 )
+		{
+			Debug.LogWarning("Journal-extractMetadata: could not find metadata.");
+			return string.Empty;
+		}
+		string json = text.Substring( indexOpeningBracket, indexClosingBracket + 1 );
+		entryMetadata = JsonUtility.FromJson<EntryMetadata>(json);
+		//Remove the json from the text
+		text = text.Remove( indexOpeningBracket, indexClosingBracket + 1 );
+		return text;
 	}
 
 	public int findIndex( string story )
@@ -189,6 +208,13 @@ public class CreatePages : MonoBehaviour {
 			yield return new WaitForSeconds(0);
 			SceneManager.LoadScene( (int)GameScenes.WorldMap );
 		}
+	}
+
+	[System.Serializable]
+	public class EntryMetadata
+	{
+		public string title = string.Empty;
+		public string author = string.Empty;
 	}
 
 }

@@ -18,6 +18,7 @@ public class JournalAssetManager : MonoBehaviour {
     void Awake()
 	{
 		GameManager.Instance.journalAssetManager = this;
+		DontDestroyOnLoad( this );
 		#if UNITY_EDITOR
         StartCoroutine (DownloadAndCacheEntries());
         StartCoroutine (DownloadAndCacheCovers());
