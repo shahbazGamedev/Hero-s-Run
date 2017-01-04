@@ -56,7 +56,7 @@ public class JournalHUD : MonoBehaviour {
 		Debug.Log("JournalHUD-JournalEntryUnlocked " + journalEntryEvent.ToString() + " " + journalEntry.entryName );
 		if( journalEntryEvent == JournalEntryEvent.EntryUnlocked )
 		{
-			cover.sprite = GameManager.Instance.journalAssetManager.covers[journalEntry.coverName];
+			cover.sprite = GameManager.Instance.journalAssetManager.getCover( journalEntry.coverName );
 			numberOfParts.text = LocalizationManager.Instance.getText("JOURNAL_UNLOCKED");
 			fadeInJournal();
 		}
