@@ -42,7 +42,7 @@ public class PowerUpManager : MonoBehaviour {
 
 	//For debugging
 	//When forcePowerUpType is not set to NONE, only the power up type specified will be added to the level.
-	PowerUpType forcePowerUpType = PowerUpType.StoryUnlock;
+	PowerUpType forcePowerUpType = PowerUpType.None;
 	const float DISTANCE_TO_GROUND = 2.4f;
 
 	//List of each powerup available.
