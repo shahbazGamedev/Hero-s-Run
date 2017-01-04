@@ -20,12 +20,10 @@ public class TakeScreenshot : MonoBehaviour {
 	public Light pointLight;
 	Texture2D screenShot;
 	public Button cameraButton;
-	public Button flipCameraButton;
 	public Image picturePreview;
 	public static bool selfieTaken = false;
 	bool saveToFile = false; //for testing in Editor
 
-	bool isFacingPlayer = true;
 	Vector3 frontLocation = new Vector3( 0, 2f, 4.5f ); 	//Facing player
 	Quaternion frontRotation = Quaternion.Euler( 9.36f, 180f, 0 );
 
@@ -39,9 +37,7 @@ public class TakeScreenshot : MonoBehaviour {
 		screenShotCamera = GetComponent<Camera>();
 
 		//Default value is facing player
-		isFacingPlayer = true;
-		screenShotCamera.transform.position = frontLocation;
-		screenShotCamera.transform.rotation = frontRotation;
+		setCameraDirection();
 
 		screenShotCamera.enabled = false;
 		pointLight.gameObject.SetActive( false );
@@ -92,11 +88,9 @@ public class TakeScreenshot : MonoBehaviour {
 		StartCoroutine( takeSelfie( screenShotCamera, 1.2f ) );
 	}
 
-	public void flipCamera()
+	void setCameraDirection()
 	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		isFacingPlayer = !isFacingPlayer;
-		if( isFacingPlayer )
+		if( PlayerStatsManager.Instance.getCameraFlipped() )
 		{
 			screenShotCamera.transform.localPosition = frontLocation;
 			screenShotCamera.transform.localRotation = frontRotation;
@@ -188,13 +182,11 @@ public class TakeScreenshot : MonoBehaviour {
 		if( newState == GameState.Normal )
 		{
 			cameraButton.gameObject.SetActive( true );
-			flipCameraButton.gameObject.SetActive( true );
 		}
 		else
 		{
 			LeanTween.cancel( gameObject );
 			cameraButton.gameObject.SetActive( false );
-			flipCameraButton.gameObject.SetActive( false );
 			hidePicturePreview();
 		}
 	}

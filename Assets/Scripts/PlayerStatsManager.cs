@@ -55,6 +55,9 @@ public class PlayerStatsManager {
 	//If the user has logged in with Facebook this value is true, if he is logged in as guest, this value is false.
 	bool usesFacebook = false;
 
+	//If false, camera looks at front of player. If true, camera looks at back of player.
+	bool isCameraFlipped = false;
+
 	//DateTime when player last started WorldMapHandler
 	DateTime dateLastPlayed;
 
@@ -787,6 +790,16 @@ public class PlayerStatsManager {
 		return usesFacebook;
 	}
 
+	public void setCameraFlipped( bool value )
+	{
+		isCameraFlipped = value;
+	}
+	
+	public bool getCameraFlipped()
+	{
+		return isCameraFlipped;
+	}
+
 	void setLives( int value )
 	{
 		lives = value;
@@ -1045,6 +1058,15 @@ public class PlayerStatsManager {
 			{
 				usesFacebook = false;	
 			}
+			string isCameraFlippedString = PlayerPrefs.GetString("isCameraFlipped", "false" );
+			if( isCameraFlippedString == "true" )
+			{
+				isCameraFlipped = true;
+			}
+			else
+			{
+				isCameraFlipped = false;	
+			}
 			string dateLastPlayedString = PlayerPrefs.GetString( "dateLastPlayed", "" );
 			if( dateLastPlayedString == "" )
 			{
@@ -1136,6 +1158,14 @@ public class PlayerStatsManager {
 		{
 			PlayerPrefs.SetString( "usesFacebook", "false" );
 		}
+		if( isCameraFlipped )
+		{
+			PlayerPrefs.SetString( "isCameraFlipped", "true" );
+		}
+		else
+		{
+			PlayerPrefs.SetString( "isCameraFlipped", "false" );
+		}
 		PlayerPrefs.SetString( "dateLastPlayed", dateLastPlayed.ToString() );
 
 		PlayerPrefs.SetFloat("soundFxVolume", soundFxVolume );
@@ -1187,7 +1217,9 @@ public class PlayerStatsManager {
 			PlayerPrefs.SetString( "ownsStarDoubler", "false" );
 			setOwnsStarDoubler( false );
 			PlayerPrefs.SetString( "usesFacebook", "false" );
-			usesFacebook = false;
+			setUsesFacebook( false );
+			PlayerPrefs.SetString( "isCameraFlipped", "false" );
+			setCameraFlipped( false );
 			dateLastPlayed = DateTime.Now;
 			PlayerPrefs.SetString( "dateLastPlayed", dateLastPlayed.ToString() );
 			PlayerPrefs.SetFloat("soundFxVolume", 0f );

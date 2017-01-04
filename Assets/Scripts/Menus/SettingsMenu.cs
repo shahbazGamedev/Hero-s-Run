@@ -29,6 +29,8 @@ public class SettingsMenu : MonoBehaviour {
 	[Header("Recording Button")]
 	public GameObject showRecordButtonPanel;
 	public Text showRecordButtonText;
+	[Header("Flip Camera")]
+	public Text flipCameraText;
 	[Header("Privacy Policy")]
 	public Text privacyPolicyText;
 	public string privacyPolicyURL = "http://www.google.com/";
@@ -64,6 +66,14 @@ public class SettingsMenu : MonoBehaviour {
 		string difficultyLevel = LocalizationManager.Instance.getText("MENU_DIFFICULTY_LEVEL"); 
 		difficultyText.text = difficultyLevel + "\n" + PlayerStatsManager.Instance.getDifficultyLevelName();
 		achievementsText.text = LocalizationManager.Instance.getText("MENU_ACHIEVEMENTS");
+		if( PlayerStatsManager.Instance.getCameraFlipped() )
+		{
+			flipCameraText.text = LocalizationManager.Instance.getText("MENU_CAMERA_FACES_FRONT_HERO");
+		}
+		else
+		{
+			flipCameraText.text = LocalizationManager.Instance.getText("MENU_CAMERA_FACES_BACK_HERO");
+		}
 		showRecordButtonPanel.gameObject.SetActive( false );
 		#if UNITY_IOS
 		if( ReplayKit.APIAvailable )
@@ -167,6 +177,21 @@ public class SettingsMenu : MonoBehaviour {
 		else
 		{
 			showRecordButtonText.text = LocalizationManager.Instance.getText("MENU_HIDE_RECORD_BUTTON");
+		}
+	}
+
+	public void flipCamera()
+	{
+		Debug.Log("flipCamera");
+		UISoundManager.uiSoundManager.playButtonClick();
+		PlayerStatsManager.Instance.setCameraFlipped( !PlayerStatsManager.Instance.getCameraFlipped() );
+		if( PlayerStatsManager.Instance.getCameraFlipped() )
+		{
+			flipCameraText.text = LocalizationManager.Instance.getText("MENU_CAMERA_FACES_FRONT_HERO");
+		}
+		else
+		{
+			flipCameraText.text = LocalizationManager.Instance.getText("MENU_CAMERA_FACES_BACK_HERO");
 		}
 	}
 
