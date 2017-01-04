@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class JournalSceneManager : MonoBehaviour {
+public class JournalMenu : MonoBehaviour {
 
 	bool levelLoading = false;
 
