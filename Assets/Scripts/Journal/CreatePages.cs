@@ -11,12 +11,13 @@ public class CreatePages : MonoBehaviour {
 	public Camera pageCamera;
 	public Canvas bookCanvas;
 	public Text pageText;
+	public Text titleText;
 	public JournalAssetManager jam;
 	public List<string> pageTexts = new List<string>();
 	RenderTexture renderTexture;
 	bool levelLoading = false;
 	public List<Sprite> testCovers = new List<Sprite>();
-	string storyForTestPuposes = "Test! The demon materialized out of nowhere. When one of his two hoof touches the ground, a network of spidery cracks appears below, filled with flamelets. One of his black horns is broken, but the other is sharp as a spear. His eyes have a glint of evil. His sinister intent is clear. He is here for our treasure. How did he pass our protection spells, glyphs of protections and sigils? The demon laughed. He had appeared inside the Golden Vault. The treasure was within tantalizing reach. In the chest, a score feet away from him was a chest filled with enough fairy dust to resurrect an entire army. And my liege, King Merrylock, all dressed in purple and yellow, the most powerful mage of the Kingdom of Lum lied on a pile of shiny coins in a drunken stupor. It was up to me, Lily, to save the day. I was small, well tiny really, like all fairies. On a good day, I measured 1 foot. Okay, 11 inches to be precise if your counting. I had graduated from fairy school a full two weeks ago. Now graduating was a big event for me as I had failed my first year. And as all young graduates, I had been assigned to guard duty. Or like Silvestra said, to guard, the most precious treasure of the kingdom. It was boring, boring, boring. Nothing ever happened to it. Our liege, King Merrylock, was the most powerful mage of the Kingdom of Lum. The last person who tried to steal our treasure, one Balthazar More, had been transmogrified into a squiggly piglet.";
+	string storyForTestPuposes = "A demon materializes out of nowhere. When one of his two hoof touches the ground, a network of spidery cracks appears below, filled with flamelets. One of his black horns is broken, but the other is sharp as a spear. His eyes have a glint of evil. His sinister intent is clear. He is here for our treasure. How did he pass our protection spells, glyphs of protections and sigils? The demon laughed. He had appeared inside the Golden Vault. The treasure was within tantalizing reach. In the chest, a score feet away from him was a chest filled with enough fairy dust to resurrect an entire army. And my liege, King Merrylock, all dressed in purple and yellow, the most powerful mage of the Kingdom of Lum lied on a pile of shiny coins in a drunken stupor. It was up to me, Lily, to save the day. I was small, well tiny really, like all fairies. On a good day, I measured 1 foot. Okay, 11 inches to be precise if your counting. I had graduated from fairy school a full two weeks ago. Now graduating was a big event for me as I had failed my first year. And as all young graduates, I had been assigned to guard duty. Or like Silvestra said, to guard, the most precious treasure of the kingdom. It was boring, boring, boring. Nothing ever happened to it. Our liege, King Merrylock, was the most powerful mage of the Kingdom of Lum. The last person who tried to steal our treasure, one Balthazar More, had been transmogrified into a squiggly piglet.";
 
 	void Start()
  	{
@@ -41,6 +42,14 @@ public class CreatePages : MonoBehaviour {
 		for( int i = 0; i < pageTexts.Count; i++ )
 		{
 	       	yield return new WaitForEndOfFrame();
+			if( i == 0 ) 
+			{
+				titleText.gameObject.SetActive( true );
+			}
+			else
+			{
+				titleText.gameObject.SetActive( false );
+			}
 			pageText.text = pageTexts[i];
 			pageCamera.Render();
 			RenderTexture.active = renderTexture;
@@ -79,7 +88,7 @@ public class CreatePages : MonoBehaviour {
 		#endif
  
 		//step 1b - make the font size of the first letter of the story bigger to give a fairy tale feel.
-		story = makeFirstLetterBigger( story, 38 );
+		story = makeFirstLetterBigger( story, 36 );
 
 		//step 2 - populate pageTexts
 		pageTexts.Clear();
