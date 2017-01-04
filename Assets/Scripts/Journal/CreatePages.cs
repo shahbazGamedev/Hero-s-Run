@@ -70,7 +70,13 @@ public class CreatePages : MonoBehaviour {
 		story = "The treasure. Wow! The demon materialized out of nowhere. When one of his two hoof touches the ground, a network of spidery cracks appears below, filled with flamelets. One of his black horns is broken, but the other is sharp as a spear. His eyes have a glint of evil. His sinister intent is clear. He is here for our treasure. How did he pass our protection spells, glyphs of protections and sigils? The demon laughed. He had appeared inside the Golden Vault. The treasure was within tantalizing reach. In the chest, a score feet away from him was a chest filled with enough fairy dust to resurrect an entire army. And my liege, King Merrylock, all dressed in purple and yellow, the most powerful mage of the Kingdom of Lum lied on a pile of shiny coins in a drunken stupor. It was up to me, Lily, to save the day. I was small, well tiny really, like all fairies. On a good day, I measured 1 foot. Okay, 11 inches to be precise if your counting. I had graduated from fairy school a full two weeks ago. Now graduating was a big event for me as I had failed my first year. And as all young graduates, I had been assigned to guard duty. Or like Silvestra said, to guard, the most precious treasure of the kingdom. It was boring, boring, boring. Nothing ever happened to it. Our liege, King Merrylock, was the most powerful mage of the Kingdom of Lum. The last person who tried to steal our treasure, one Balthazar More, had been transmogrified into a squiggly piglet.";
 		#endif
  
-		//step 2 - populate pageTexts
+		//step 2 - establish the number of visible characters that can fit in pageText.
+		pageText.text = story;		
+		Canvas.ForceUpdateCanvases(); 	//This is needed or else the TextGenerator values will not have been updated
+		numberOfCharactersPerPage = pageText.cachedTextGenerator.characterCount;
+		pageText.text = string.Empty;		
+
+		//step 3 - populate pageTexts
 		pageTexts.Clear();
 		int pageCounter = 0;
 
@@ -81,13 +87,13 @@ public class CreatePages : MonoBehaviour {
 				//if we are here, it means that what is left of the story does not fit in a single page.
 				int index = findIndex( story.Substring( 0, numberOfCharactersPerPage ) );
 				if( index == -1 ) break;
-				pageTexts.Add( story.Substring( 0, index ).Trim() );
-				story = story.Remove( 0, index ) ;
+				pageTexts.Add( story.Substring( 0, index + 1 ).Trim() );
+				story = story.Remove( 0, index + 1 ) ;
 				pageCounter++;
 			}
 			else
 			{
-				//What is left of the story fits in a single page
+				//What is left of the story fits neatly in a single page
 				pageTexts.Add( story.Trim() );
 				pageCounter++;
 				break;
@@ -98,7 +104,7 @@ public class CreatePages : MonoBehaviour {
 		//Add book cover
 		int randomCover = UnityEngine.Random.Range( 1, 8 );
 		#if UNITY_EDITOR
-		//For the time being, the asset bundles that store the covers and the stories are on my Mac and not on the web.
+		//For the time being, the asset bundles that store the covers,stories, and entries are on my Mac and not on the web.
 		string coverName = "Cover " + randomCover.ToString();
 		book.addPageSprite( jam.covers[coverName] );
 		book.RightNext.sprite = jam.covers[coverName];
@@ -107,8 +113,9 @@ public class CreatePages : MonoBehaviour {
 		book.RightNext.sprite = testCovers[randomCover];
 		#endif
 	
-		//step 3 - create pages
+		//step 4 - create pages
 		StartCoroutine( createPages() );
+
 	}
 
 	public int findIndex( string story )
