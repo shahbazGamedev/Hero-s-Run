@@ -185,7 +185,7 @@ public sealed class WraithController : Creature, ICreature {
 					float startWalkingDistance = 3.4f * playerSpeed;
 					if( distance < startWalkingDistance )
 					{
-						if( getCreatureState() != CreatureState.BurrowUp )
+						if( getCreatureState() != CreatureState.Glide )
 						{
 							followsPlayer = false;
 							setCreatureState( CreatureState.Glide );
