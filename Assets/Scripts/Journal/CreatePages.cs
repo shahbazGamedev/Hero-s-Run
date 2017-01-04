@@ -153,9 +153,11 @@ public class CreatePages : MonoBehaviour {
 		return pageText.cachedTextGenerator.characterCount;
 	}
 
-	//Makes the font size of the first letter of the text bigger to give a fairy tale feel.
+	//Makes the font size of the first letter of the text bigger to give a fairy tale feel, but only if the first character is not a punctuation or line separator.
 	public string makeFirstLetterBigger( string text, int fontSize )
 	{
+		char[] firstLetterAsChar = text.ToCharArray(0,1);
+		if( Char.IsSeparator( firstLetterAsChar[0] ) || Char.IsPunctuation( firstLetterAsChar[0] ) ) return text;
 		string firstLetter = text.Substring(0,1);
 		string firstLetterWithRichText = "<size=" + fontSize.ToString() + ">" + firstLetter + "</size>";
 		text = text.Remove(0,1);
