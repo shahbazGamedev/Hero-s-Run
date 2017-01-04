@@ -158,8 +158,8 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 
 	void lowerWindVolume()
 	{
-		worldSoundManager.crossFadeToMainAmbienceQuiet( 8f );
-		Invoke("insideTowerWindQuietsFadeOut", 9f);
+		worldSoundManager.crossFadeToMainAmbienceQuiet( 6f );
+		Invoke("insideTowerWindQuietsFadeOut", 7f);
 	}
 
 	void insideTowerWindQuietsFadeOut()
