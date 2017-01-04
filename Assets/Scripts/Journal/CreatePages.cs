@@ -78,6 +78,9 @@ public class CreatePages : MonoBehaviour {
 			story = storyForTestPuposes;
 		#endif
  
+		//step 1b - make the font size of the first letter of the story bigger to give a fairy tale feel.
+		story = makeFirstLetterBigger( story, 38 );
+
 		//step 2 - populate pageTexts
 		pageTexts.Clear();
 		int pageCounter = 0;
@@ -107,7 +110,7 @@ public class CreatePages : MonoBehaviour {
 		book.setBookSize(pageCounter + 1 ); //plus one because of the cover
 
 		//step 3 - add book cover
-		int randomCover = UnityEngine.Random.Range( 1, 8 );
+		int randomCover = UnityEngine.Random.Range( 0, testCovers.Count );
 		#if UNITY_EDITOR
 		//For the time being, the asset bundles that store the covers,stories, and entries are on my Mac and not on the web.
 		string coverName = "Cover " + randomCover.ToString();
@@ -148,6 +151,16 @@ public class CreatePages : MonoBehaviour {
 		pageText.text = text;		
 		Canvas.ForceUpdateCanvases(); 	//This is needed or else the TextGenerator values will not have been updated
 		return pageText.cachedTextGenerator.characterCount;
+	}
+
+	//Makes the font size of the first letter of the text bigger to give a fairy tale feel.
+	public string makeFirstLetterBigger( string text, int fontSize )
+	{
+		string firstLetter = text.Substring(0,1);
+		string firstLetterWithRichText = "<size=" + fontSize.ToString() + ">" + firstLetter + "</size>";
+		text = text.Remove(0,1);
+		text = text.Insert(0, firstLetterWithRichText );
+		return text;
 	}
 
 	public void closeMenu()
