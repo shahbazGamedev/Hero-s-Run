@@ -29,16 +29,13 @@ public class JournalManager : MonoBehaviour {
 
 	}
 
-	void Start()
-	{
-		int newEntries = journalData.getNumberOfNewEntries();
-		newEntriesIndicator.text = newEntries.ToString();
-	}
-
 	//Called by JournalAssetManager when entries received from cache or server
 	public void updateEntries( string entriesFromServer )
 	{
 		JsonUtility.FromJsonOverwrite( entriesFromServer, journalData );
+		journalData.serializeJournalEntries();
+		int newEntries = journalData.getNumberOfNewEntries();
+		newEntriesIndicator.text = newEntries.ToString();
 	} 
 	
 }

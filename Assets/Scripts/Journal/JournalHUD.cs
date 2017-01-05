@@ -54,7 +54,7 @@ public class JournalHUD : MonoBehaviour {
 
 	void JournalEntryUpdate( JournalEntryEvent journalEntryEvent, JournalData.JournalEntry journalEntry )
 	{
-		Debug.Log("JournalHUD-JournalEntryUnlocked " + journalEntryEvent.ToString() + " " + journalEntry.entryName );
+		Debug.Log("JournalHUD-JournalEntryUnlocked " + journalEntryEvent.ToString() + " " + journalEntry.title );
 		if( journalEntryEvent == JournalEntryEvent.EntryUnlocked )
 		{
 			cover.sprite = GameManager.Instance.journalAssetManager.getCover( journalEntry.coverName );

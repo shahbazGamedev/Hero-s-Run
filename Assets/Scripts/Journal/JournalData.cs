@@ -25,7 +25,7 @@ public class JournalData {
 	public class JournalEntry
 	{
 		//static
-		public string entryName = string.Empty;
+		public string title = string.Empty;
 		public string coverName = string.Empty;
 		public string storyName = string.Empty;
 		public int numberOfPartsNeededToUnlock = 2;
@@ -35,9 +35,9 @@ public class JournalData {
 		public int numberOfPartsDiscovered = 0;
 		public bool isNew = false; 	//If isNew is true, it means the player has never viewed the story.
 
-		public JournalEntry( string entryName, string coverName, string storyName, int numberOfPartsNeededToUnlock )
+		public JournalEntry( string title, string coverName, string storyName, int numberOfPartsNeededToUnlock )
 		{
-			this.entryName = entryName;
+			this.title = title;
 			this.coverName = coverName;
 			this.storyName = storyName;
 			this.numberOfPartsNeededToUnlock = numberOfPartsNeededToUnlock;
@@ -45,7 +45,7 @@ public class JournalData {
 
 		public void printJournalEntry()
 		{
-			string printStr = entryName + " " + coverName + " " + storyName + " " + status + " " + numberOfPartsDiscovered + "/" + numberOfPartsNeededToUnlock;
+			string printStr = title + " " + coverName + " " + storyName + " " + status + " " + numberOfPartsDiscovered + "/" + numberOfPartsNeededToUnlock;
 			Debug.Log( "Journal Entry: " + printStr );
 		}
 	}
@@ -114,7 +114,7 @@ public class JournalData {
 		}
 		else
 		{
-			Debug.Log("JournalData-newPartAcquired for ID: " + activeUniqueId + " " + journalEntryList[ activeUniqueId ].entryName + " " + journalEntryList[ activeUniqueId ].numberOfPartsDiscovered + "/" + journalEntryList[ activeUniqueId ].numberOfPartsNeededToUnlock  );
+			Debug.Log("JournalData-newPartAcquired for ID: " + activeUniqueId + " " + journalEntryList[ activeUniqueId ].title + " " + journalEntryList[ activeUniqueId ].numberOfPartsDiscovered + "/" + journalEntryList[ activeUniqueId ].numberOfPartsNeededToUnlock  );
 			if(journalEntryUpdate != null) journalEntryUpdate( JournalEntryEvent.NewPartFound, journalEntryList[ activeUniqueId ] );
 		}
 		serializeJournalEntries();
