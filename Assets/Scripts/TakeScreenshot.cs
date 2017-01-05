@@ -24,11 +24,12 @@ public class TakeScreenshot : MonoBehaviour {
 	public static bool selfieTaken = false;
 	bool saveToFile = false; //for testing in Editor
 
-	Vector3 frontLocation = new Vector3( 0, 2f, 4.5f ); 	//Facing player
-	Quaternion frontRotation = Quaternion.Euler( 9.36f, 180f, 0 );
+	Vector3 frontLocation = new Vector3( 0, 0.8f, 5f ); 				//Looking at player's face
+	Quaternion frontRotation = Quaternion.Euler( -6.86f, 180f, 0 );
 
-	Vector3 backLocation = new Vector3( 0, 2f, -4.5f );	//Facing player's back
+	Vector3 backLocation = new Vector3( 0, 2f, -4.5f );					//Looking at player's back
 	Quaternion backRotation = Quaternion.Euler( 9.36f, 0, 0 );
+
 	RenderTexture renderTexture;
 	public PictureRatio pictureRatio = PictureRatio.POLAROID_4_5;
 
@@ -85,7 +86,7 @@ public class TakeScreenshot : MonoBehaviour {
 	//Used when the player taps the camera button on the HUD
 	public void takeSelfieNow( )
 	{
-		StartCoroutine( takeSelfie( screenShotCamera, 1.2f ) );
+		StartCoroutine( takeSelfie( screenShotCamera, getFlashIntensity() ) );
 	}
 
 	void setCameraDirection()
@@ -111,8 +112,11 @@ public class TakeScreenshot : MonoBehaviour {
 		GetComponent<AudioSource>().Play();
 		Debug.Log("TakeScreenshot-selfie." );
 		pictureCamera.enabled = true;
-		pointLight.intensity = flashLightIntensity;
-		pointLight.gameObject.SetActive( true );
+		if( flashLightIntensity > 0 )
+		{
+			pointLight.intensity = flashLightIntensity;
+			pointLight.gameObject.SetActive( true );
+		}
 		pictureCamera.targetTexture = renderTexture;
 		pictureCamera.Render();
 		RenderTexture.active = renderTexture;
@@ -191,7 +195,7 @@ public class TakeScreenshot : MonoBehaviour {
 		}
 	}
 
-		void TakePictureNowTrigger( Camera pictureCamera, float flashLightIntensity )
+	void TakePictureNowTrigger( Camera pictureCamera, float flashLightIntensity )
 	{
 		//We test against selfieTaken because we do not want to overide a picture taken by the player.
 		if( !selfieTaken )
@@ -200,4 +204,61 @@ public class TakeScreenshot : MonoBehaviour {
 		}
 	}
 
+	//Level brightness varies quite a bit. Cemetery lighting and Jungle lighting are quite different for example.
+	float getFlashIntensity()
+	{
+		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
+		float flashIntensity = 0;
+		switch (currentEpisode.sunType)
+		{
+			case SunType.Morning:
+				flashIntensity = 0;
+				break;
+				
+			case SunType.Noon:
+				flashIntensity = 0;
+				break;
+				
+			case SunType.Afternoon:
+				flashIntensity = 0;
+				break;
+								
+			case SunType.Blizzard:
+				flashIntensity = 0;
+				break;
+
+			case SunType.Jungle:
+				flashIntensity = 0;
+				break;
+
+			case SunType.Caves:
+				flashIntensity = 1.4f;
+				break;
+
+			case SunType.Night:
+				flashIntensity = 1.4f;
+				break;
+
+			case SunType.Overcast:
+				flashIntensity = 1.2f;
+				break;
+
+			case SunType.Elfland:
+				flashIntensity = 1.2f;
+				break;
+
+			case SunType.Hell:
+				flashIntensity = 1f;
+				break;
+
+			case SunType.Cemetery:
+				flashIntensity = 1.4f;
+				break;
+
+			case SunType.Countryside:
+				flashIntensity = 0;
+				break;
+		}
+		return flashIntensity;
+	}
 }
