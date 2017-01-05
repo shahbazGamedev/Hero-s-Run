@@ -119,7 +119,7 @@ public class JournalMenu : MonoBehaviour {
 			{
 				if( journalData.journalEntryList.Contains( journalEntry ) )
 				{
-					journalData.journalEntryList.Find(x => x.title.Equals( journalEntry.title ) ).isNew = false;
+					journalData.journalEntryList.Find(x => x == journalEntry).isNew = false;
 					newIcon.enabled = false;
 					journalData.serializeJournalEntries();
 				}
