@@ -13,12 +13,10 @@ public class CreatePages : MonoBehaviour {
 	public Text titleText;
 	public List<string> pageTexts = new List<string>();
 	RenderTexture renderTexture;
-	public EntryMetadata entryMetadata;
 
 	void Start()
  	{
 		Handheld.StopActivityIndicator();
-		createRenderTexture();
 	}
 
 	void createRenderTexture()
@@ -32,11 +30,12 @@ public class CreatePages : MonoBehaviour {
 	public void generatePages( JournalData.JournalEntry selectedJournalEntry )
 	{
 		if( GameManager.Instance.journalAssetManager == null ) return;
+		createRenderTexture();
 
 		//step 1 - load appropriate story text
 		string story = GameManager.Instance.journalAssetManager.getStory( selectedJournalEntry.storyName );
 		//step 1b - extract the entry metadata such as the title and the author's name.
-		story = extractMetadata( story );
+		story = removeMetadata( story );
 
 		//step 1c - make the font size of the first letter of the story bigger to give a fairy tale feel.
 		story = makeFirstLetterBigger( story, 36 );
@@ -67,6 +66,7 @@ public class CreatePages : MonoBehaviour {
 				break;
 			}
 		}
+		book.currentPage = 0;				//reset current page to 0
 		book.setBookSize(pageCounter + 1 ); //plus one because of the cover
 
 		//step 3 - add book cover
@@ -75,15 +75,15 @@ public class CreatePages : MonoBehaviour {
 		book.RightNext.sprite = cover;
 
 		//step 4 - create pages
-		StartCoroutine( createPages() );
+		StartCoroutine( createPages( selectedJournalEntry ) );
 
 	}
 
 	// Use this for initialization
-	IEnumerator createPages()
+	IEnumerator createPages( JournalData.JournalEntry selectedJournalEntry )
  	{
 		Texture2D page;
-		titleText.text = entryMetadata.title;
+		titleText.text = selectedJournalEntry.title;
 		for( int i = 0; i < pageTexts.Count; i++ )
 		{
 	       	yield return new WaitForEndOfFrame();
@@ -112,7 +112,7 @@ public class CreatePages : MonoBehaviour {
 		renderTexture = null;
 	}
 
-	string extractMetadata( string text )
+	string removeMetadata( string text )
 	{
 		int indexOpeningBracket = text.IndexOf("{");
 		int indexClosingBracket = text.LastIndexOf("}");
@@ -121,8 +121,6 @@ public class CreatePages : MonoBehaviour {
 			Debug.LogWarning("Journal-extractMetadata: could not find metadata.");
 			return string.Empty;
 		}
-		string json = text.Substring( indexOpeningBracket, indexClosingBracket + 1 );
-		entryMetadata = JsonUtility.FromJson<EntryMetadata>(json);
 		//Remove the json from the text
 		text = text.Remove( indexOpeningBracket, indexClosingBracket + 1 );
 		return text;
@@ -157,13 +155,6 @@ public class CreatePages : MonoBehaviour {
 		text = text.Remove(0,1);
 		text = text.Insert(0, firstLetterWithRichText );
 		return text;
-	}
-
-	[System.Serializable]
-	public class EntryMetadata
-	{
-		public string title = string.Empty;
-		public string author = string.Empty;
 	}
 
 }

@@ -50,6 +50,14 @@ public class JournalData {
 		}
 	}
 
+	[System.Serializable]
+	public class EntryMetadata
+	{
+		public string title = string.Empty;
+		public string story_author = string.Empty;
+		public string illustration_author = string.Empty;
+	}
+
 	public void addJournalEntry( JournalEntry journalEntry )
 	{
 		journalEntryList.Add(journalEntry);

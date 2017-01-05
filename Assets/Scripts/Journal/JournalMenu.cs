@@ -59,26 +59,17 @@ public class JournalMenu : MonoBehaviour {
 		print("Adding " + journalEntry.title );
 		GameObject go = (GameObject)Instantiate(entryPrefab);
 		go.transform.SetParent(content);
-		Button[] entryButton = go.GetComponentsInChildren<Button>();
-		Button button = entryButton[0];
-		button.onClick.AddListener(() => entryButtonClick(journalEntry));
+		JournalData.EntryMetadata entryMetadata = extractMetadata( GameManager.Instance.journalAssetManager.getStory( journalEntry.storyName ) );
+		journalEntry.title = entryMetadata.title;
 		Text[] entryTexts = go.GetComponentsInChildren<Text>();
 		//Text 0 is the title
 		entryTexts[0].text = journalEntry.title;
 		//Text 1 is Story by
-		entryTexts[1].text = LocalizationManager.Instance.getText( "JOURNAL_STORY_BY" ) + " ";
+		string story_author = LocalizationManager.Instance.getText( "JOURNAL_STORY_BY" ).Replace( "<story_author>", entryMetadata.story_author );
+		entryTexts[1].text = story_author;
 		//Text 2 is Cover Art by
-		entryTexts[2].text = LocalizationManager.Instance.getText( "JOURNAL_COVER_ART_BY" ) + " ";
-		//Text 3 is the NEW indicator (which means the player has never opened the unlocked story).
-		if( journalEntry.isNew )
-		{
-			entryTexts[3].text = LocalizationManager.Instance.getText( "JOURNAL_NEW" );
-			entryTexts[3].enabled = true;
-		}
-		else
-		{
-			entryTexts[3].enabled = false;
-		}
+		string illustration_author = LocalizationManager.Instance.getText( "JOURNAL_COVER_ART_BY" ).Replace( "<illustration_author>", entryMetadata.illustration_author );
+		entryTexts[2].text = illustration_author;
 		Image[] entryImages = go.GetComponentsInChildren<Image>();
 		//Image 0 is entry background.
 		//Image 1 is the lock icon on the right hand side.
@@ -90,15 +81,50 @@ public class JournalMenu : MonoBehaviour {
 		{
 			entryImages[1].enabled = false;
 		}
-		//Image 2 is the icon on the left hand side. This never changes.
+		//Image 2 is the New icon, which is in the same location as the lock icon. If the entry is New, it implicitly means it is unlocked.
+		if( journalEntry.isNew )
+		{
+			entryImages[2].enabled = true;
+		}
+		else
+		{
+			entryImages[2].enabled = false;
+		}
+		Button[] entryButton = go.GetComponentsInChildren<Button>();
+		Button button = entryButton[0];
+		button.onClick.AddListener(() => entryButtonClick( journalEntry, entryImages[2] ));
 	}
 
-	void entryButtonClick( JournalData.JournalEntry journalEntry )
+	JournalData.EntryMetadata extractMetadata( string text )
 	{
-		Debug.Log("entryButtonClick: " + journalEntry.title );
-		createPages.generatePages( journalEntry );
-		gameObject.SetActive( false );
-		if( UISoundManager.uiSoundManager != null ) UISoundManager.uiSoundManager.playButtonClick();
+		int indexOpeningBracket = text.IndexOf("{");
+		int indexClosingBracket = text.LastIndexOf("}");
+		if( indexOpeningBracket == -1 || indexOpeningBracket == -1 )
+		{
+			Debug.LogWarning("JournalMenu-extractMetadata: could not find metadata.");
+			return null;
+		}
+		string json = text.Substring( indexOpeningBracket, indexClosingBracket + 1 );
+		return JsonUtility.FromJson<JournalData.EntryMetadata>(json);
+	}
+
+	void entryButtonClick( JournalData.JournalEntry journalEntry, Image newIcon )
+	{
+		if( journalEntry.status == JournalEntryStatus.Unlocked )
+		{
+			if( UISoundManager.uiSoundManager != null ) UISoundManager.uiSoundManager.playButtonClick();
+			createPages.generatePages( journalEntry );
+			gameObject.SetActive( false );
+			if( journalEntry.isNew )
+			{
+				if( journalData.journalEntryList.Contains( journalEntry ) )
+				{
+					journalData.journalEntryList.Find(x => x.title.Equals( journalEntry.title ) ).isNew = false;
+					newIcon.enabled = false;
+					journalData.serializeJournalEntries();
+				}
+			}
+		}
 	}
 
 	public void OnClickCloseMenu()
