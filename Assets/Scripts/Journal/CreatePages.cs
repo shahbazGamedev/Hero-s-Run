@@ -65,6 +65,8 @@ public class CreatePages : MonoBehaviour {
 
 	void generatePages()
 	{
+		if( GameManager.Instance.journalAssetManager == null ) return;
+
 		//step 1 - load appropriate story text
 		string story = GameManager.Instance.journalAssetManager.getStory( "Story 1" );
 
