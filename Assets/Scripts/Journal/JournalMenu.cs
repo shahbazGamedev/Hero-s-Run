@@ -10,6 +10,7 @@ public class JournalMenu : MonoBehaviour {
 	JournalData journalData;
 	public RectTransform content;
 	public GameObject entryPrefab;
+	public CreatePages createPages;
 	
 
 	// Use this for initialization
@@ -60,6 +61,8 @@ public class JournalMenu : MonoBehaviour {
 	void entryButtonClick( JournalData.JournalEntry journalEntry )
 	{
 		Debug.Log("entryButtonClick: " + journalEntry.title );
+		createPages.generatePages( journalEntry );
+		gameObject.SetActive( false );
 		if( UISoundManager.uiSoundManager != null ) UISoundManager.uiSoundManager.playButtonClick();
 	}
 

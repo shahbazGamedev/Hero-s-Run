@@ -19,7 +19,6 @@ public class CreatePages : MonoBehaviour {
  	{
 		Handheld.StopActivityIndicator();
 		createRenderTexture();
-		generatePages();
 	}
 
 	void createRenderTexture()
@@ -30,46 +29,12 @@ public class CreatePages : MonoBehaviour {
 		pageCamera.targetTexture = renderTexture;
 	}
 
-	// Use this for initialization
-	IEnumerator createPages()
- 	{
-		Texture2D page;
-		titleText.text = entryMetadata.title;
-		for( int i = 0; i < pageTexts.Count; i++ )
-		{
-	       	yield return new WaitForEndOfFrame();
-			if( i == 0 ) 
-			{
-				titleText.gameObject.SetActive( true );
-			}
-			else
-			{
-				titleText.gameObject.SetActive( false );
-			}
-			pageText.text = pageTexts[i];
-			pageCamera.Render();
-			RenderTexture.active = renderTexture;
-			page = new Texture2D( renderTexture.width, renderTexture.height, TextureFormat.ARGB32, false );
-			page.ReadPixels( new Rect(0,0, page.width, page.height), 0, 0 );
-			page.Apply();
-			Sprite pageSprite = Sprite.Create( page, new Rect(0,0, page.width, page.height), new Vector2(0.5f, 0.5f) );
-			pageSprite.name = "Page " + i.ToString();
-			book.addPageSprite( pageSprite );
-		}
-		bookCanvas.gameObject.SetActive( true );
-		pageCamera.enabled = false;
-		pageCamera.targetTexture = null;
-		RenderTexture.active = null;
-		renderTexture = null;
-	}
-
-	void generatePages()
+	public void generatePages( JournalData.JournalEntry selectedJournalEntry )
 	{
 		if( GameManager.Instance.journalAssetManager == null ) return;
 
 		//step 1 - load appropriate story text
-		string story = GameManager.Instance.journalAssetManager.getStory( "Story 1" );
-
+		string story = GameManager.Instance.journalAssetManager.getStory( selectedJournalEntry.storyName );
 		//step 1b - extract the entry metadata such as the title and the author's name.
 		story = extractMetadata( story );
 
@@ -105,13 +70,46 @@ public class CreatePages : MonoBehaviour {
 		book.setBookSize(pageCounter + 1 ); //plus one because of the cover
 
 		//step 3 - add book cover
-		Sprite cover = GameManager.Instance.journalAssetManager.getCover( "Cover 1" );
+		Sprite cover = GameManager.Instance.journalAssetManager.getCover( selectedJournalEntry.coverName );
 		book.addPageSprite( cover );
 		book.RightNext.sprite = cover;
 
 		//step 4 - create pages
 		StartCoroutine( createPages() );
 
+	}
+
+	// Use this for initialization
+	IEnumerator createPages()
+ 	{
+		Texture2D page;
+		titleText.text = entryMetadata.title;
+		for( int i = 0; i < pageTexts.Count; i++ )
+		{
+	       	yield return new WaitForEndOfFrame();
+			if( i == 0 ) 
+			{
+				titleText.gameObject.SetActive( true );
+			}
+			else
+			{
+				titleText.gameObject.SetActive( false );
+			}
+			pageText.text = pageTexts[i];
+			pageCamera.Render();
+			RenderTexture.active = renderTexture;
+			page = new Texture2D( renderTexture.width, renderTexture.height, TextureFormat.ARGB32, false );
+			page.ReadPixels( new Rect(0,0, page.width, page.height), 0, 0 );
+			page.Apply();
+			Sprite pageSprite = Sprite.Create( page, new Rect(0,0, page.width, page.height), new Vector2(0.5f, 0.5f) );
+			pageSprite.name = "Page " + i.ToString();
+			book.addPageSprite( pageSprite );
+		}
+		bookCanvas.gameObject.SetActive( true );
+		pageCamera.enabled = false;
+		pageCamera.targetTexture = null;
+		RenderTexture.active = null;
+		renderTexture = null;
 	}
 
 	string extractMetadata( string text )

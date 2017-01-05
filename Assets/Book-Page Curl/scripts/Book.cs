@@ -12,6 +12,7 @@ public enum FlipMode
 }
 [ExecuteInEditMode]
 public class Book : MonoBehaviour {
+    public GameObject journalCanvas;
     public Canvas canvas;
     [SerializeField]
     RectTransform BookPanel;
@@ -416,4 +417,10 @@ public class Book : MonoBehaviour {
         if (onFinish != null)
             onFinish();
     }
+
+	public void OnClickOpenEntryList()
+	{
+		journalCanvas.SetActive( true );
+	}
+
 }
