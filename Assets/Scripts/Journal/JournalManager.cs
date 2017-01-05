@@ -1,15 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class JournalManager : MonoBehaviour {
 
+	public static JournalManager Instance;
 	public JournalData journalData;
-	public Text newEntriesIndicator; 
 
 	// Use this for initialization
 	void Awake ()
+	{
+		if(Instance)
+		{
+			DestroyImmediate(gameObject);
+		}
+		else
+		{
+			DontDestroyOnLoad(gameObject);
+			Instance = this;
+			initialise();
+		}
+	}
+
+	void initialise()
 	{
 		if( PlayerStatsManager.Instance.getJournalEntries() != string.Empty )
 		{
@@ -26,7 +39,6 @@ public class JournalManager : MonoBehaviour {
 			journalData.serializeJournalEntries();
 		}
 		GameManager.Instance.journalData = journalData;
-
 	}
 
 	//Called by JournalAssetManager when entries received from cache or server
@@ -34,8 +46,5 @@ public class JournalManager : MonoBehaviour {
 	{
 		JsonUtility.FromJsonOverwrite( entriesFromServer, journalData );
 		journalData.serializeJournalEntries();
-		int newEntries = journalData.getNumberOfNewEntries();
-		newEntriesIndicator.text = newEntries.ToString();
 	} 
-	
 }

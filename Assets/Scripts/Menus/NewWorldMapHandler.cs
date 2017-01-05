@@ -45,6 +45,8 @@ public class NewWorldMapHandler : MonoBehaviour {
 	[Header("Menu Prefabs")]
 	public GameObject episodeStationPrefab;
 	public GameObject starDisplayPrefab;
+	[Header("Journal")]
+	public Text newEntriesIndicator;
 
 	private List<FacebookPortraitHandler> facebookPortraitList = new List<FacebookPortraitHandler>( LevelData.NUMBER_OF_EPISODES );
 	private Outline nextLevelToPlayGlowingOutline;
@@ -120,6 +122,10 @@ public class NewWorldMapHandler : MonoBehaviour {
 		InvokeRepeating("getAllAppRequests", 0, 60 );
 		//The score of the player's friends gets refreshed when loading the scene and if the app resume after being paused.
 		getUpdatedScores();
+
+		//Update the number of new journal entries
+		int newEntries = GameManager.Instance.journalData.getNumberOfNewEntries();
+		newEntriesIndicator.text = newEntries.ToString();
 	}
 
 	void getAllAppRequests()
