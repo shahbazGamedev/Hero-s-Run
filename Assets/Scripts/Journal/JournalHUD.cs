@@ -8,6 +8,7 @@ public class JournalHUD : MonoBehaviour {
 	public Image cover;
 	public Text numberOfParts;
 	public Sprite coverWhenIncomplete;
+	const float TIME_DISPLAYED = 4f;
 
 	// Use this for initialization
 	void Awake ()
@@ -30,9 +31,9 @@ public class JournalHUD : MonoBehaviour {
 
 	void fadeOutJournal()
 	{
-		LeanTween.color( cover.rectTransform, new Color( cover.color.r, cover.color.g, cover.color.b, 0 ), 0.6f ).setOnComplete(hideJournal).setOnCompleteParam(gameObject).setDelay(3.5f);
-		LeanTween.alphaText( numberOfParts.rectTransform, 0, 0.6f ).setDelay(3.4f);
-		LeanTween.scale ( cover.rectTransform, Vector3.zero, 0.6f ).setEase(LeanTweenType.easeOutQuad).setDelay(3.5f);
+		LeanTween.color( cover.rectTransform, new Color( cover.color.r, cover.color.g, cover.color.b, 0 ), 0.6f ).setOnComplete(hideJournal).setOnCompleteParam(gameObject).setDelay(TIME_DISPLAYED);
+		LeanTween.alphaText( numberOfParts.rectTransform, 0, 0.6f ).setDelay(TIME_DISPLAYED);
+		LeanTween.scale ( cover.rectTransform, Vector3.zero, 0.6f ).setEase(LeanTweenType.easeOutQuad).setDelay(TIME_DISPLAYED);
 	}
 
 	void hideJournal()
