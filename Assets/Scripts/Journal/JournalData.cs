@@ -87,6 +87,16 @@ public class JournalData {
 		return newEntries;
 	}
 
+	public int getNumberOfVisibleEntries()
+	{
+		int visibleEntries = 0;
+		for( int i = 0; i < journalEntryList.Count; i++ )
+		{
+			if( !journalEntryList[i].hide ) visibleEntries++; 
+		}
+		return visibleEntries;
+	}
+
 	public void printAllEntries()
 	{
 		for( int i = 0; i < journalEntryList.Count; i++ )

@@ -11,6 +11,7 @@ public class JournalMenu : MonoBehaviour {
 	public RectTransform content;
 	public GameObject entryPrefab;
 	public CreatePages createPages;
+	public Text menuTitle;
 	
 
 	// Use this for initialization
@@ -19,6 +20,7 @@ public class JournalMenu : MonoBehaviour {
 		#if UNITY_EDITOR
 		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
 		#endif
+		menuTitle.text = LocalizationManager.Instance.getText("JOURNAL_CHRONICLES_OF_LUM");
 	}
 
 	// Use this for initialization
@@ -47,12 +49,13 @@ public class JournalMenu : MonoBehaviour {
 			journalData.addJournalEntry( entry );
 		}
 
-		print( "Number of journal entries " +  journalData.journalEntryList.Count );
+		print( "Number of journal entries: " + journalData.getNumberOfVisibleEntries() + "/" + journalData.journalEntryList.Count );
 		for( int i = 0; i < journalData.journalEntryList.Count; i++ )
 		{
 			//The hide bool is used to give more control on the server side on which stories are visible to the players.
 			if( !journalData.journalEntryList[i].hide ) addEntry( journalData.journalEntryList[i] );
 		}
+		content.sizeDelta = new Vector2( content.rect.width, entryPrefab.GetComponent<LayoutElement>().preferredHeight * journalData.getNumberOfVisibleEntries() + 30 ); //Plus 30 is to add a bit of bounce when you scroll to the bottom
 	}
 
 	void addEntry( JournalData.JournalEntry journalEntry )
@@ -60,6 +63,7 @@ public class JournalMenu : MonoBehaviour {
 		print("Adding " + journalEntry.title );
 		GameObject go = (GameObject)Instantiate(entryPrefab);
 		go.transform.SetParent(content);
+		go.GetComponent<RectTransform>().localScale = new Vector3( 1f, 1f, 1f );
 		JournalData.EntryMetadata entryMetadata = extractMetadata( GameManager.Instance.journalAssetManager.getStory( journalEntry.storyName ) );
 		journalEntry.title = entryMetadata.title;
 		Text[] entryTexts = go.GetComponentsInChildren<Text>();
