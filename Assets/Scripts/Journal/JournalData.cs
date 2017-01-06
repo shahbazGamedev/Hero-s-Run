@@ -32,6 +32,7 @@ public class JournalData {
 		public string storyName = string.Empty;
 		public int numberOfPartsNeededToUnlock = 2;
 		public string date_created = string.Empty;		//DateTime is not serializable. This value comes from entries.
+		[NonSerialized]
 		public DateTime dateTimecreated;				//The dateTimecreated value is created at runtime when the data is parsed. It is used for sorting the list.
 
 		//Dynamic
@@ -50,7 +51,7 @@ public class JournalData {
 
 		public void printJournalEntry()
 		{
-			string printStr = title + " " + coverName + " " + storyName + " " + status + " " + numberOfPartsDiscovered + "/" + numberOfPartsNeededToUnlock;
+			string printStr = title + " " + coverName + " " + storyName + " " + status + " " + numberOfPartsDiscovered + "/" + numberOfPartsNeededToUnlock + " isNew: " + isNew + " Hidden: " + hide;
 			Debug.Log( "Journal Entry: " + printStr );
 		}
 	}
@@ -82,7 +83,7 @@ public class JournalData {
 		int newEntries = 0;
 		for( int i = 0; i < journalEntryList.Count; i++ )
 		{
-			if( journalEntryList[i].status == JournalEntryStatus.Unlocked && journalEntryList[i].isNew ) newEntries++; 
+			if( journalEntryList[i].status == JournalEntryStatus.Unlocked && journalEntryList[i].isNew && !journalEntryList[i].hide ) newEntries++; 
 		}
 		return newEntries;
 	}
@@ -95,6 +96,16 @@ public class JournalData {
 			if( !journalEntryList[i].hide ) visibleEntries++; 
 		}
 		return visibleEntries;
+	}
+
+	//Does not unlock hidden entries
+	public void unlockAllEntries()
+	{
+		for( int i = 0; i < journalEntryList.Count; i++ )
+		{
+			if( !journalEntryList[i].hide ) journalEntryList[i].status = JournalEntryStatus.Unlocked; 
+		}
+		serializeJournalEntries();
 	}
 
 	public void printAllEntries()

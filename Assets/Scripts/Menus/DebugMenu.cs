@@ -124,6 +124,13 @@ public class DebugMenu : MonoBehaviour {
 
 	}
 
+	public void unlockAllStories()
+	{
+		Debug.Log("unlockAllStories");
+		UISoundManager.uiSoundManager.playButtonClick();
+		GameManager.Instance.journalData.unlockAllEntries(); //also takes care of saving
+	}
+
 	public void clearAssetBundleCache()
 	{
 		Debug.Log("clearAssetBundleCache");

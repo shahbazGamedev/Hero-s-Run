@@ -123,9 +123,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		//The score of the player's friends gets refreshed when loading the scene and if the app resume after being paused.
 		getUpdatedScores();
 
-		//Update the number of new journal entries
-		int newEntries = GameManager.Instance.journalData.getNumberOfNewEntries();
-		newEntriesIndicator.text = newEntries.ToString();
+		updateNumberOfEntries();
 	}
 
 	void getAllAppRequests()
@@ -136,6 +134,13 @@ public class NewWorldMapHandler : MonoBehaviour {
 	void getUpdatedScores()
 	{
 		FacebookManager.Instance.QueryScores();
+	}
+
+	public void updateNumberOfEntries()
+	{
+		//Update the number of new journal entries
+		int newEntries = GameManager.Instance.journalData.getNumberOfNewEntries();
+		newEntriesIndicator.text = newEntries.ToString();
 	}
 
 	void Update()

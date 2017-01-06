@@ -6,6 +6,7 @@ public class JournalManager : MonoBehaviour {
 
 	public static JournalManager Instance;
 	public JournalData journalData;
+	public NewWorldMapHandler newWorldMapHandler;
 
 	// Use this for initialization
 	void Awake ()
@@ -47,5 +48,6 @@ public class JournalManager : MonoBehaviour {
 		JsonUtility.FromJsonOverwrite( entriesFromServer, journalData );
 		journalData.convertStringDates();
 		journalData.serializeJournalEntries();
+		newWorldMapHandler.updateNumberOfEntries();
 	} 
 }
