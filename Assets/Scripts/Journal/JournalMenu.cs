@@ -50,7 +50,8 @@ public class JournalMenu : MonoBehaviour {
 		print( "Number of journal entries " +  journalData.journalEntryList.Count );
 		for( int i = 0; i < journalData.journalEntryList.Count; i++ )
 		{
-			addEntry( journalData.journalEntryList[i] );
+			//The hide bool is used to give more control on the server side on which stories are visible to the players.
+			if( !journalData.journalEntryList[i].hide ) addEntry( journalData.journalEntryList[i] );
 		}
 	}
 

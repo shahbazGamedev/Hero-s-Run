@@ -34,6 +34,7 @@ public class JournalData {
 		public JournalEntryStatus status = JournalEntryStatus.Locked;
 		public int numberOfPartsDiscovered = 0;
 		public bool isNew = false; 	//If isNew is true, it means the player has never viewed the story.
+		public bool hide = false; 	//If hide is true, it means the entry will not be displayed in the journal list.
 
 		public JournalEntry( string title, string coverName, string storyName, int numberOfPartsNeededToUnlock )
 		{
