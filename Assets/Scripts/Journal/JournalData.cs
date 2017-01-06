@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Linq;
 
 public enum JournalEntryStatus {
 	Locked = 0,
@@ -29,6 +31,8 @@ public class JournalData {
 		public string coverName = string.Empty;
 		public string storyName = string.Empty;
 		public int numberOfPartsNeededToUnlock = 2;
+		public string date_created = string.Empty;		//DateTime is not serializable. This value comes from entries.
+		public DateTime dateTimecreated;				//The dateTimecreated value is created at runtime when the data is parsed. It is used for sorting the list.
 
 		//Dynamic
 		public JournalEntryStatus status = JournalEntryStatus.Locked;
@@ -127,6 +131,23 @@ public class JournalData {
 			if(journalEntryUpdate != null) journalEntryUpdate( JournalEntryEvent.NewPartFound, journalEntryList[ activeUniqueId ] );
 		}
 		serializeJournalEntries();
+	}
+
+	public void convertStringDates()
+	{
+		for( int i = 0; i < journalEntryList.Count; i++ )
+		{
+			try
+			{
+				journalEntryList[i].dateTimecreated = DateTime.Parse( journalEntryList[i].date_created );
+			}
+			catch( Exception e )
+			{
+				Debug.LogWarning("JournalData-convertStringDates: unable to parse date : " + journalEntryList[i].date_created + ". Error is: " + e.Message );
+			}
+		}
+		//Now order the list from most recent entry to oldest
+		journalEntryList.Sort((x, y) => -x.dateTimecreated.CompareTo(y.dateTimecreated));
 	}
 
 	public void serializeJournalEntries()

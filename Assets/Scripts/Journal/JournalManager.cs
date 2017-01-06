@@ -45,6 +45,7 @@ public class JournalManager : MonoBehaviour {
 	public void updateEntries( string entriesFromServer )
 	{
 		JsonUtility.FromJsonOverwrite( entriesFromServer, journalData );
+		journalData.convertStringDates();
 		journalData.serializeJournalEntries();
 	} 
 }
