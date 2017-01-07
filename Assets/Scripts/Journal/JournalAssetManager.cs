@@ -7,8 +7,9 @@ using UnityEngine.UI;
 public class JournalAssetManager : MonoBehaviour {
 
 	public static JournalAssetManager Instance;
-	[Tooltip("The URL format for testing locally on a Mac is: file:///Users/regisgeoffrion/Documents/workspace/AssetBundles/. You need the 3 slashes after file:")]
+	[Tooltip("The URL to access the asset bundle folder. For testing locally on a Mac, use: file:///Users/regisgeoffrion/Documents/workspace/AssetBundles/. You need the 3 slashes after file:")]
     public string assetBundleFolder;
+	[Tooltip("The name of the AssetBundles manifest without the extension. i.e. AssetBundles and not AssetBundles.manifest")]
     public string assetBundleManifest;
 	Dictionary<string, AssetBundle> assetBundleDictionary = new Dictionary<string, AssetBundle>();
 	public Dictionary<string, Sprite> covers = new Dictionary<string, Sprite>();
@@ -30,7 +31,6 @@ public class JournalAssetManager : MonoBehaviour {
 		}
 		else
 		{
-			DontDestroyOnLoad(gameObject);
 			Instance = this;
 			initialise();
 		}
@@ -58,7 +58,7 @@ public class JournalAssetManager : MonoBehaviour {
 		}
 		else
 		{
-			// Load the AssetBundle file from Cache if it exists with the same version or download and store it in the cache
+			// Get a copy of the asset bundle manifest
 			using(WWW wwwManifest = new WWW (assetBundleFolder + assetBundleManifest))
 			{
 	            yield return wwwManifest;
@@ -72,7 +72,6 @@ public class JournalAssetManager : MonoBehaviour {
 				else
 				{
 					//Success-This means we can use the hash values stored in the manifest.
-					//Clear any existing local values since we are going to repopulate the list with the latest values from the manifest.
 					AssetBundle manifestBundle = wwwManifest.assetBundle;
 					loadAssetsFromManifest( manifestBundle );
 				}
@@ -90,6 +89,7 @@ public class JournalAssetManager : MonoBehaviour {
 
 	void loadAssetsFromManifest( AssetBundle manifestBundle )
 	{
+		//Clear any existing local values since we are going to repopulate the list with the latest values from the manifest.
 		GameManager.Instance.journalData.assetBundleHashList.Clear();
 		AssetBundleManifest manifest = manifestBundle.LoadAsset("AssetBundleManifest") as AssetBundleManifest;
 		manifestBundle.Unload( false );
@@ -121,6 +121,7 @@ public class JournalAssetManager : MonoBehaviour {
 			}
 		}
 		//Save all the hashes locally in case the player goes offline
+Debug.Log("JournalAssetManager-Save all the hashes locally" );
 		GameManager.Instance.journalData.serializeJournalEntries();
 	}
 
@@ -140,7 +141,7 @@ public class JournalAssetManager : MonoBehaviour {
 		}
 		else
 		{
-			//Get the local hash from the dictionary. We are probably offline.
+			//Get the local hash from the dictionary. We are either offline or a network error occured.
 			Debug.Log("JournalAssetManager-loadFromCacheOrDownload: using local hash for " + assetBundleName );
 			if( GameManager.Instance.journalData.assetBundleHashDictionary.ContainsKey( assetBundleName ) )
 			{
@@ -148,7 +149,7 @@ public class JournalAssetManager : MonoBehaviour {
 			}
 			else
 			{
-				Debug.LogError("JournalAssetManager-loadFromCacheOrDownload: entry for local hash for, " + assetBundleName + ", does not exist." );
+				Debug.LogError("JournalAssetManager-loadFromCacheOrDownload: entry for local hash for " + assetBundleName + " does not exist." );
 				journalAssetsLoadedSuccessfully = false;
 				yield break;
 			}
@@ -158,7 +159,7 @@ public class JournalAssetManager : MonoBehaviour {
 		yield return www;
 		if (www.error != null)
 		{
-			throw new Exception( "WWW download had an error:" + www.error + " for " +  assetBundlePath );
+			throw new Exception( "JournalAssetManager-loadFromCacheOrDownload: WWW download had an error:" + www.error + " for " +  assetBundlePath );
 			yield break;
 		}
 		assetBundleDictionary.Add( assetBundleName, www.assetBundle );
@@ -206,6 +207,7 @@ public class JournalAssetManager : MonoBehaviour {
 		Debug.Log("JournalAssetManager-Entries found: " + entriesJson.text );
 
 		GameObject.FindObjectOfType<JournalManager>().updateEntries( entriesJson.text );
+
 		assetBundleDictionary[assetBundleName].Unload(false);
 		assetBundleDictionary[assetBundleName] = null;
 	}
