@@ -12,6 +12,8 @@ public class JournalMenu : MonoBehaviour {
 	public GameObject entryPrefab;
 	public CreatePages createPages;
 	public Text menuTitle;
+	public Sprite lockIcon;
+	public int lockIconSize = 110;
 	
 
 	// Use this for initialization
@@ -38,7 +40,6 @@ public class JournalMenu : MonoBehaviour {
 				//The hide bool is used to give more control on the server side on which stories are visible to the players.
 				if( !journalData.journalEntryList[i].hide ) addEntry( journalData.journalEntryList[i] );
 			}
-			content.sizeDelta = new Vector2( content.rect.width, entryPrefab.GetComponent<LayoutElement>().preferredHeight * journalData.getNumberOfVisibleEntries() + 30 ); //Plus 30 is to add a bit of bounce when you scroll to the bottom
 		}
 	}
 
@@ -53,24 +54,29 @@ public class JournalMenu : MonoBehaviour {
 		Text[] entryTexts = go.GetComponentsInChildren<Text>();
 		//Text 0 is the title
 		entryTexts[0].text = journalEntry.title;
-		//Text 1 is Story by
-		string story_author = LocalizationManager.Instance.getText( "JOURNAL_STORY_BY" ).Replace( "<story_author>", entryMetadata.story_author );
-		entryTexts[1].text = story_author;
-		//Text 2 is Cover Art by
-		string illustration_author = LocalizationManager.Instance.getText( "JOURNAL_COVER_ART_BY" ).Replace( "<illustration_author>", entryMetadata.illustration_author );
-		entryTexts[2].text = illustration_author;
 		Image[] entryImages = go.GetComponentsInChildren<Image>();
 		//Image 0 is entry background.
-		//Image 1 is the lock icon on the right hand side.
+		//Image 1 is the cover.
 		if( journalEntry.status == JournalEntryStatus.Locked )
 		{
-			entryImages[1].enabled = true;
+			entryImages[1].sprite = lockIcon;
+			entryImages[1].rectTransform.sizeDelta = new Vector2( lockIconSize, lockIconSize );
+			//Text 1 is Story by
+			entryTexts[1].enabled = false;
+			//Text 2 is Cover Art by
+			entryTexts[2].enabled = false;
 		}
 		else
 		{
-			entryImages[1].enabled = false;
+			entryImages[1].sprite = GameManager.Instance.journalAssetManager.getCover(journalEntry.coverName );
+			//Text 1 is Story by
+			string story_author = LocalizationManager.Instance.getText( "JOURNAL_STORY_BY" ).Replace( "<story_author>", entryMetadata.story_author );
+			entryTexts[1].text = story_author;
+			//Text 2 is Cover Art by
+			string illustration_author = LocalizationManager.Instance.getText( "JOURNAL_COVER_ART_BY" ).Replace( "<illustration_author>", entryMetadata.illustration_author );
+			entryTexts[2].text = illustration_author;
 		}
-		//Image 2 is the New icon, which is in the same location as the lock icon. If the entry is New, it implicitly means it is unlocked.
+		//Image 2 is the New icon. If the entry is New, it implicitly means it is unlocked.
 		if( journalEntry.isNew )
 		{
 			entryImages[2].enabled = true;
@@ -79,8 +85,6 @@ public class JournalMenu : MonoBehaviour {
 		{
 			entryImages[2].enabled = false;
 		}
-		//Image 3 is the cover
-		entryImages[3].sprite = GameManager.Instance.journalAssetManager.getCover(journalEntry.coverName );
 
 		Button[] entryButton = go.GetComponentsInChildren<Button>();
 		Button button = entryButton[0];
