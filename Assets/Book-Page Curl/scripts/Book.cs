@@ -421,6 +421,7 @@ public class Book : MonoBehaviour {
 	public void OnClickOpenEntryList()
 	{
 		journalCanvas.SetActive( true );
+		canvas.gameObject.SetActive( false );
 	}
 
 }

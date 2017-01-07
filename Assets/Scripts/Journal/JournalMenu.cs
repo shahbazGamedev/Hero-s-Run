@@ -14,6 +14,7 @@ public class JournalMenu : MonoBehaviour {
 	public Text menuTitle;
 	public Sprite lockIcon;
 	public int lockIconSize = 110;
+	public GameObject bookCanvas;
 	
 
 	// Use this for initialization
@@ -108,6 +109,7 @@ public class JournalMenu : MonoBehaviour {
 	{
 		if( journalEntry.status == JournalEntryStatus.Unlocked )
 		{
+			bookCanvas.gameObject.SetActive( true );
 			if( UISoundManager.uiSoundManager != null ) UISoundManager.uiSoundManager.playButtonClick();
 			createPages.generatePages( journalEntry );
 			gameObject.SetActive( false );
