@@ -79,6 +79,9 @@ public class JournalMenu : MonoBehaviour {
 		{
 			entryImages[2].enabled = false;
 		}
+		//Image 3 is the cover
+		entryImages[3].sprite = GameManager.Instance.journalAssetManager.getCover(journalEntry.coverName );
+
 		Button[] entryButton = go.GetComponentsInChildren<Button>();
 		Button button = entryButton[0];
 		button.onClick.AddListener(() => entryButtonClick( journalEntry, entryImages[2] ));
