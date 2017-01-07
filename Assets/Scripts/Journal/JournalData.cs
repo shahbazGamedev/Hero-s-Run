@@ -22,6 +22,9 @@ public class JournalData {
 	//Event management used to notify other classes when the character state has changed
 	public delegate void JournalEntryUpdate( JournalEntryEvent journalEvent, JournalEntry journalEntry );
 	public static event JournalEntryUpdate journalEntryUpdate;
+	public List<AssetBundleHash> assetBundleHashList = new List<AssetBundleHash>();
+	[NonSerialized]
+	public Dictionary<string, string> assetBundleHashDictionary = new Dictionary<string, string>();
 
 	[System.Serializable]
 	public class JournalEntry
@@ -169,6 +172,29 @@ public class JournalData {
 		}
 		//Now order the list from most recent entry to oldest
 		journalEntryList.Sort((x, y) => -x.dateTimecreated.CompareTo(y.dateTimecreated));
+	}
+
+	public void copyHashToDictionary()
+	{
+		assetBundleHashDictionary.Clear();
+		for( int i=0; i < assetBundleHashList.Count; i++ )
+		{
+			assetBundleHashDictionary.Add( assetBundleHashList[i].assetBundleName, assetBundleHashList[i].assetBundleHash );
+		}
+	}
+
+	[System.Serializable]
+	public class AssetBundleHash
+	{
+		public string assetBundleName = string.Empty;
+		public string assetBundleHash = string.Empty;
+
+		public AssetBundleHash( string assetBundleName, string assetBundleHash )
+		{
+			this.assetBundleName = assetBundleName;
+			this.assetBundleHash = assetBundleHash;
+		}		
+
 	}
 
 	public void serializeJournalEntries()

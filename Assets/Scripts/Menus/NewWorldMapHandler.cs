@@ -406,7 +406,14 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public void openJournal()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
-		StartCoroutine( loadJournal() );
+		if( GameManager.Instance.journalAssetManager.journalAssetsLoadedSuccessfully )
+		{
+			StartCoroutine( loadJournal() );
+		}
+		else
+		{
+			Debug.LogWarning("NewWorldMapHandler-openJournal-will not open journal because journal assets were not loaded sussefully.");
+		}
 	}
 
 	IEnumerator loadJournal()
