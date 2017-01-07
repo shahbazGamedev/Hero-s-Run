@@ -19,9 +19,10 @@ public class JournalData {
 
 	public List<JournalEntry> journalEntryList = new List<JournalEntry>();
 	public int activeUniqueId = 0;
-	//Event management used to notify other classes when the character state has changed
+	//Used to notify other classes when a journal event occured such as an entry unlocked
 	public delegate void JournalEntryUpdate( JournalEntryEvent journalEvent, JournalEntry journalEntry );
 	public static event JournalEntryUpdate journalEntryUpdate;
+	//Used to store hashes. This is only used when offline.
 	public List<AssetBundleHash> assetBundleHashList = new List<AssetBundleHash>();
 	[NonSerialized]
 	public Dictionary<string, string> assetBundleHashDictionary = new Dictionary<string, string>();
@@ -101,7 +102,7 @@ public class JournalData {
 		return visibleEntries;
 	}
 
-	//Does not unlock hidden entries
+	//Note: Does not unlock hidden entries
 	public void unlockAllEntries()
 	{
 		for( int i = 0; i < journalEntryList.Count; i++ )
