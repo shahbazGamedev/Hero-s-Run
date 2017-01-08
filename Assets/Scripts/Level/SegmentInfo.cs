@@ -75,7 +75,7 @@ public class SegmentInfo : MonoBehaviour {
 			go = (GameObject)Instantiate(coinPrefab, toPosition, Quaternion.identity );
 			go.transform.parent = coins;
 			counter++;
-			go.name = "Coin " + counter.ToString();
+			go.name = "Coin_1"; //Important: the _1 is needed to know the value of a coin. Also, renaming it removes the (Clone).
 		}
 		drawBezierGizmo = true;
 
