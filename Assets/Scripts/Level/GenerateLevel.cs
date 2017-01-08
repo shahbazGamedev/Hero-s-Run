@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 public enum SegmentTheme {
 		Forest = 0,
@@ -158,6 +159,8 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 	//For the Episode Progress Indicator - to know where to display the checkpoint indicators
 	List<int> indexOfCheckpointTiles = new List<int>();
+
+	GameObject hero;
 	
 	void Awake ()
 	{
@@ -188,6 +191,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			{
 				GameManager.Instance.setGameState( GameState.Menu );
 			}
+			hero.SetActive( true );
 		}
 	}
 
@@ -269,8 +273,15 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		if( currentEpisode.isFogEnabled ) levelData.setFogParameters(currentEpisode.sunType);
 
 		//Create the Hero because he does not exist in the level scene
-		GameObject hero = (GameObject)Instantiate(heroPrefab );
-
+		hero = (GameObject)Instantiate(heroPrefab );
+		//Destroy multiplayer components since this is for single player.
+		//Note: Any GameObject with a network identity component that is not spawned by the server will be set inactive.
+		//So, hero has been made inactive by NetworkIdentity.
+		//We will destroy the unneeded components right away and set the hero active in the Start method.
+		Destroy( hero.GetComponent<PlayerHealth>() );
+		Destroy( hero.GetComponent<PlayerShooting>() );
+		Destroy( hero.GetComponent<Player>() );
+		Destroy( hero.GetComponent<NetworkIdentity>() );
 		Debug.Log("GenerateLevel-CreateLevel: Level " + currentEpisode.episodeName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
 
