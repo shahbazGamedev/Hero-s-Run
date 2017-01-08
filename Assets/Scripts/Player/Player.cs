@@ -12,20 +12,13 @@ public class Player : NetworkBehaviour
     [SerializeField] ToggleEvent onToggleRemote;
     [SerializeField] float respawnTime = 5f;
 
-    GameObject mainCamera;
-
     void Start()
     {
-        mainCamera = Camera.main.gameObject;
-
         EnablePlayer ();
     }
 
     void DisablePlayer()
     {
-        if (isLocalPlayer)
-            mainCamera.SetActive (true);
-
         onToggleShared.Invoke (false);
 
         if (isLocalPlayer)
@@ -36,9 +29,6 @@ public class Player : NetworkBehaviour
 
     void EnablePlayer()
     {
-        if (isLocalPlayer)
-            //mainCamera.SetActive (false);
-
         onToggleShared.Invoke (true);
 
         if (isLocalPlayer)

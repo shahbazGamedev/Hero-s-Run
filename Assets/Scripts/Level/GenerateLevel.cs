@@ -123,7 +123,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	
 	//worldRoadSegments is a List of game object tiles
 	List<GameObject> worldRoadSegments = new List<GameObject>(300);
-	public int playerTileIndex = 0;		//Index of the active tile (the one the player is on).
+	int playerTileIndex = 0;		//Index of the active tile (the one the player is on).
 
 	//tileCreationIndex is incremented each time a new tile is added.
 	//It is also used to control the power up density as we add a power up every 'X' tiles.
@@ -281,6 +281,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		Destroy( hero.GetComponent<PlayerHealth>() );
 		Destroy( hero.GetComponent<PlayerShooting>() );
 		Destroy( hero.GetComponent<Player>() );
+		Destroy( hero.GetComponent<NetworkTransform>() );
 		Destroy( hero.GetComponent<NetworkIdentity>() );
 		Debug.Log("GenerateLevel-CreateLevel: Level " + currentEpisode.episodeName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
