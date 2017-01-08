@@ -203,7 +203,7 @@ public sealed class PlayerController : MonoBehaviour {
 	public TakeScreenshot takeScreenshot;
 
 	public SimpleCamera sc;
-	public GenerateLevel generateLevel;
+	GenerateLevel generateLevel;
 	
 	public static DeathType deathType = DeathType.Alive;
 
@@ -283,6 +283,7 @@ public sealed class PlayerController : MonoBehaviour {
 	void Awake()
 	{
 		GameObject hero;
+		print("isMultiplayer: " + GameManager.Instance.isMultiplayer() );
 		if(PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
 		{
 			hero = (GameObject)Instantiate(Hero_Prefab, Vector3.zero, Quaternion.identity ) ;
@@ -299,6 +300,9 @@ public sealed class PlayerController : MonoBehaviour {
 		shadowProjector = blobShadowProjectorObject.GetComponent<Projector>();
 
 		hero.transform.parent = transform;
+	hero.transform.localPosition = Vector3.zero;
+	hero.transform.localRotation = Quaternion.identity;
+
 		hero.name = "Hero";
 		hero.SetActive( true );
 
@@ -339,10 +343,13 @@ public sealed class PlayerController : MonoBehaviour {
 		leftFootstep = footstepLeftSound;
 		rightFootstep = footstepRightSound;
 
+	generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
 	}
 
 	void Start()
 	{
+		//The player controller needs info about the tile the player is on.
+	generateLevel.setFirstTileInfoInPlayer( this );
 
 		determineRunSpeed();
 
@@ -352,13 +359,14 @@ public sealed class PlayerController : MonoBehaviour {
 		if (Physics.Raycast(new Vector3(0,10f,0), Vector3.down, out hit, 12.0F ))
 		{
 			transform.position = new Vector3( 0, hit.point.y, 0);
+			//Also adjust the camera height
+			mainCamera.position = new Vector3(mainCamera.position.x, mainCamera.position.y + hit.point.y, mainCamera.transform.position.z); 
+			sc.positionCameraNow();
 		}
-		//Also adjust the camera height
-		Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y + hit.point.y, Camera.main.transform.position.z); 
-		sc.positionCameraNow();
 
 		//The character is in idle while waiting for the player to press the Run! button. 
 		setCharacterState( PlayerCharacterState.Idle );		
+sc.playCutscene(CutsceneType.Checkpoint);
 	}
 
 	string getCurrentStateName()

@@ -185,13 +185,13 @@ public class TakeScreenshot : MonoBehaviour {
 	
 		if( newState == GameState.Normal )
 		{
-			cameraButton.gameObject.SetActive( true );
+			//cameraButton.gameObject.SetActive( true );
 		}
 		else
 		{
-			LeanTween.cancel( gameObject );
-			cameraButton.gameObject.SetActive( false );
-			hidePicturePreview();
+			//LeanTween.cancel( gameObject );
+			//cameraButton.gameObject.SetActive( false );
+			//hidePicturePreview();
 		}
 	}
 

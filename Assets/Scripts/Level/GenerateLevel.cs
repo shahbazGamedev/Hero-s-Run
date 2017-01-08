@@ -141,7 +141,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	
 	//For adding power-ups in tiles
 	public PowerUpManager powerUpManager;
-	public PlayerController playerController;
 	public TileGroupManager tileGroupManager;
 	
 	//For configuring the dynamic fog using the level data
@@ -265,9 +264,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			generateEndlessLevel( tileGroupList );
 		}
 
-		//The player controller needs info about the tile the player is on.
-		setFirstTileInfoInPlayer();
-
 		//Make the first few tiles active
 		activateInitialTiles(0);
 
@@ -379,9 +375,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 		generateMultiplayerLevel( tileGroupList );
 
-		//The player controller needs info about the tile the player is on.
-		setFirstTileInfoInPlayer();
-
 		//Make the first few tiles active
 		activateInitialTiles(0);
 
@@ -436,23 +429,15 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	//they are no Entrance in a Start tile and
 	//when a player starts the game at a checkpoint, the player will be positioned in the center of the tile and therefore not cross the Entrance trigger for that tile.
 	//Because of that, we simply use the info from the first tile (the one with index 0) in worldRoadSegments.
-	private void setFirstTileInfoInPlayer()
+	public void setFirstTileInfoInPlayer( PlayerController playerController )
 	{
+Debug.LogWarning("setFirstTileInfoInPlayer " + playerController.name );
 		GameObject firstTile = worldRoadSegments[0];
 		playerController.currentTile = firstTile;
 		playerController.tileRotationY = firstTile.transform.eulerAngles.y;
 		playerController.currentTilePos = firstTile.transform.position;
 		SegmentInfo si = getSegmentInfo( firstTile );
 		playerController.currentTileType = si.tileType;
-
-		//If the player starts off on a Start tile, the camera will be looking at the front of player and do a rotation when the player starts running.
-		//However, if the player is not on a Start tile and is starting at a Checkpoint, we want the camera to look at the back of the player (and therefore, there is no need for a rotation when the player starts running).
-		//if( si.tileType != TileType.Start )
-		if( true )
-		{
-			SimpleCamera sc = playerController.gameObject.GetComponent<SimpleCamera>();
-			sc.playCutscene(CutsceneType.Checkpoint);
-		}
 	}
 
 	private void setCurrentTheme( SegmentTheme newTheme )
