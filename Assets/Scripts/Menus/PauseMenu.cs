@@ -34,9 +34,6 @@ public class PauseMenu : MonoBehaviour {
 		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
 		#endif
 
-		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		playerController = playerObject.GetComponent<PlayerController>();
-
 		titleText.text = LocalizationManager.Instance.getText("MENU_PAUSE");
 
 		PowerUpType powerUpSelected = PlayerStatsManager.Instance.getPowerUpSelected();
@@ -181,4 +178,21 @@ public class PauseMenu : MonoBehaviour {
 	{
 		goText.gameObject.SetActive( false );
 	}
+
+	void OnEnable()
+	{
+		PlayerController.localPlayerCreated += LocalPlayerCreated;
+	}
+	
+	void OnDisable()
+	{
+		PlayerController.localPlayerCreated -= LocalPlayerCreated;
+	}
+
+	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
+	{
+		this.playerController = playerController;
+		Debug.LogWarning("PauseMenu-LocalPlayerCreated: " + this.playerController.name );
+	}
+
 }

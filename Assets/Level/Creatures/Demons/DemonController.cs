@@ -93,9 +93,9 @@ public sealed class DemonController : Creature, ICreature {
 	{
 		if( creatureState != CreatureState.Attacking && creatureState != CreatureState.Dying && creatureState != CreatureState.Victory )
 		{
-			float distance = Vector3.Distance(player.position,transform.position);
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float attackDistance;
-			float playerSpeed = playerController.getSpeed();
+			float playerSpeed = getPlayerController().getSpeed();
 		    switch (attackType)
 			{
 		        case AttackType.stand_and_normal_attack:
@@ -223,7 +223,7 @@ public sealed class DemonController : Creature, ICreature {
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if( playerController.getCharacterState() == PlayerCharacterState.Dying )
+		if( getPlayerController().getCharacterState() == PlayerCharacterState.Dying )
 		{
 			//The Pendulum (bad name, yes I know) is the spike road block
 			if( hit.collider.name.StartsWith("Demon") || hit.gameObject.CompareTag("Player") || hit.collider.name.StartsWith("Pendulum") )
@@ -249,7 +249,7 @@ public sealed class DemonController : Creature, ICreature {
 		if( newState == PlayerCharacterState.Dying )
 		{
 			Stop_Weapon_Trail ( null );
-			float distance = Vector3.Distance(player.position,transform.position);
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float nearby = 4f;
 			if( distance < nearby )
 			{

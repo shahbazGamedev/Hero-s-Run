@@ -12,13 +12,6 @@ public class WeatherManager : MonoBehaviour {
 	Transform weatherTarget; //snow or rain
 	float weatherHeight = 8f;
 
-	// Use this for initialization
-	void Awake () {
-		player = GameObject.FindGameObjectWithTag("Player").transform;
-		simpleCamera = player.GetComponent<SimpleCamera>();
-		weatherTarget = player;
-	}
-	
 	// Update is called once per frame
 	void Update ()
 	{
@@ -49,11 +42,13 @@ public class WeatherManager : MonoBehaviour {
 	void OnEnable()
 	{
 		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
+		PlayerController.localPlayerCreated += LocalPlayerCreated;
 	}
 	
 	void OnDisable()
 	{
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
+		PlayerController.localPlayerCreated -= LocalPlayerCreated;
 	}
 
 	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
@@ -66,6 +61,14 @@ public class WeatherManager : MonoBehaviour {
 		{
 			activateRain( false );
 		}
+	}
+
+	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
+	{
+		player = playerTransform;
+		simpleCamera = player.GetComponent<SimpleCamera>();
+		weatherTarget = player;
+		Debug.LogWarning("WeatherManager-LocalPlayerCreated: " + this.player.name );
 	}
 
 	public void activateRain( bool enable )

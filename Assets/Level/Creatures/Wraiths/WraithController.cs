@@ -130,9 +130,9 @@ public sealed class WraithController : Creature, ICreature {
 	{
 		if( creatureState != CreatureState.Attacking && creatureState != CreatureState.Dying && creatureState != CreatureState.Victory )
 		{
-			float distance = Vector3.Distance(player.position,transform.position);
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float attackDistance;
-			float playerSpeed = playerController.getSpeed();
+			float playerSpeed = getPlayerController().getSpeed();
 		    switch (attackType)
 			{
 		        case AttackType.stand_and_normal_attack:
@@ -273,7 +273,7 @@ public sealed class WraithController : Creature, ICreature {
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if( playerController.getCharacterState() == PlayerCharacterState.Dying )
+		if( getPlayerController().getCharacterState() == PlayerCharacterState.Dying )
 		{
 			if( hit.collider.name.StartsWith("Wraith") || hit.gameObject.CompareTag("Player") )
 			{
@@ -298,7 +298,7 @@ public sealed class WraithController : Creature, ICreature {
 		if( newState == PlayerCharacterState.Dying )
 		{
 			Stop_Weapon_Trail ( null );
-			float distance = Vector3.Distance(player.position,transform.position);
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float nearby = 5f;
 			if( distance < nearby )
 			{

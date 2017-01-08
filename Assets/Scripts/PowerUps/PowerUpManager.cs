@@ -62,8 +62,6 @@ public class PowerUpManager : MonoBehaviour {
 	void Awake()
 	{
 		fillDictionary();
-		player = GameObject.FindGameObjectWithTag("Player").transform;	
-		playerController = player.GetComponent<PlayerController>();
 		audioSource = GetComponent<AudioSource>();
 	}
 	
@@ -522,6 +520,7 @@ public class PowerUpManager : MonoBehaviour {
 		PlayerController.playerStateChanged += PlayerStateChange;
 		GameManager.gameStateEvent += GameStateChange;
 		PlayerStatsManager.powerUpInventoryChanged += PowerUpInventoryChanged;
+		PlayerController.localPlayerCreated += LocalPlayerCreated;
 	}
 
 	void OnDisable()
@@ -529,6 +528,7 @@ public class PowerUpManager : MonoBehaviour {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 		GameManager.gameStateEvent -= GameStateChange;
 		PlayerStatsManager.powerUpInventoryChanged -= PowerUpInventoryChanged;
+		PlayerController.localPlayerCreated -= LocalPlayerCreated;
 	}
 
 	void resetAllPowerUps()
@@ -546,6 +546,13 @@ public class PowerUpManager : MonoBehaviour {
 		{
 			resetAllPowerUps();
 		}
+	}
+
+	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
+	{
+		this.playerController = playerController;
+		this.player = playerTransform;
+		Debug.LogWarning("PowerUpManager-LocalPlayerCreated: " + this.playerController.name );
 	}
 
 	void PowerUpInventoryChanged()

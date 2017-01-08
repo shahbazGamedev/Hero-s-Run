@@ -140,9 +140,9 @@ public sealed class GoblinController : Creature, ICreature {
 	{
 		if( creatureState != CreatureState.Attacking && creatureState != CreatureState.Dying && creatureState != CreatureState.Victory )
 		{
-			float distance = Vector3.Distance(player.position,transform.position);
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float attackDistance;
-			float playerSpeed = playerController.getSpeed();
+			float playerSpeed = getPlayerController().getSpeed();
 		    switch (attackType)
 			{
 		        case AttackType.short_range_Spear_1:
@@ -240,7 +240,7 @@ public sealed class GoblinController : Creature, ICreature {
 	{
 		yield return new WaitForSeconds( Random.value * 1f );
 		GameObject bolt = (GameObject)Instantiate(boltPrefab);
-		transform.LookAt( player );
+		transform.LookAt( getPlayer() );
 		bolt.transform.rotation = Quaternion.Euler( transform.eulerAngles.x, transform.eulerAngles.y, 0 );
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 		Vector3 initialBoltPosition = transform.TransformPoint( initialBoltPositionOffset );
@@ -327,7 +327,7 @@ public sealed class GoblinController : Creature, ICreature {
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if( playerController.getCharacterState() == PlayerCharacterState.Dying )
+		if( getPlayerController().getCharacterState() == PlayerCharacterState.Dying )
 		{
 			//The Pendulum (bad name, yes I know) is the spike road block
 			if( hit.collider.name.StartsWith("Goblin") || hit.gameObject.CompareTag("Player") || hit.collider.name.StartsWith("Pendulum") )
@@ -376,7 +376,7 @@ public sealed class GoblinController : Creature, ICreature {
 	{
 		if( newState == PlayerCharacterState.Dying )
 		{
-			float distance = Vector3.Distance(player.position,transform.position);
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float nearby = 4f;
 			if( distance < nearby )
 			{

@@ -40,8 +40,6 @@ public class DarkQueenController : MonoBehaviour {
 
 	void Awake()
 	{
-		Transform player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = player.GetComponent<PlayerController>();
 		controller = GetComponent<CharacterController>();
 	}
 
@@ -53,7 +51,7 @@ public class DarkQueenController : MonoBehaviour {
 	// Update is called once per frame
 	void LateUpdate ()
 	{
-		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && darkQueenState == DarkQueenState.Walk && playerController.getCharacterState() != PlayerCharacterState.Dying )
+		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && darkQueenState == DarkQueenState.Walk && getPlayerController().getCharacterState() != PlayerCharacterState.Dying )
 		{
 			//1) Get the direction of the dark queen
 			forward = transform.TransformDirection(Vector3.forward);			
@@ -182,6 +180,15 @@ public class DarkQueenController : MonoBehaviour {
 	{
 		DialogManager.dialogManager.activateDisplayDarkQueen( LocalizationManager.Instance.getText( voiceOverID ), textDisplayDuration );
 		if( hasVoiceOver ) voiceOverAudioSource.PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
+	}
+
+	PlayerController getPlayerController()
+	{
+		if( playerController == null )
+		{
+			playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+		}
+		return playerController;
 	}
 
 }

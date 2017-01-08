@@ -115,7 +115,7 @@ public enum TileSubType {
 public sealed class GenerateLevel  : MonoBehaviour {
 	
 	private LevelData levelData;
-	
+	public GameObject heroPrefab;
 	public const float TILE_SIZE = 36.4f;
 	const float UNDERNEATH_TILE_BY = 30f;
 	int tileDepthMult = 1; //A value of one means the tile depth is 1 x TILE_SIZE, a value of two means 2 x TILE_SIZE, etc.
@@ -143,9 +143,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	public PowerUpManager powerUpManager;
 	public TileGroupManager tileGroupManager;
 	
-	//For configuring the dynamic fog using the level data
-	public Camera mainCamera;
-
 	SegmentTheme currentTheme;
 	
 	//The surrounding plane (like an ocean) is always centered with the current tile
@@ -268,8 +265,11 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		activateInitialTiles(0);
 
 		//Configure fog, if any
-		mainCamera.GetComponent<DynamicFogAndMist.DynamicFog>().enabled = currentEpisode.isFogEnabled;
+		Camera.main.GetComponent<DynamicFogAndMist.DynamicFog>().enabled = currentEpisode.isFogEnabled;
 		if( currentEpisode.isFogEnabled ) levelData.setFogParameters(currentEpisode.sunType);
+
+		//Create the Hero because he does not exist in the level scene
+		GameObject hero = (GameObject)Instantiate(heroPrefab );
 
 		Debug.Log("GenerateLevel-CreateLevel: Level " + currentEpisode.episodeName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
@@ -379,7 +379,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		activateInitialTiles(0);
 
 		//Configure fog, if any
-		mainCamera.GetComponent<DynamicFogAndMist.DynamicFog>().enabled = currentMultiplayer.isFogEnabled;
+		Camera.main.GetComponent<DynamicFogAndMist.DynamicFog>().enabled = currentMultiplayer.isFogEnabled;
 		if( currentMultiplayer.isFogEnabled ) levelData.setFogParameters(currentMultiplayer.sunType);
 
 		Debug.Log("GenerateLevel-CreateLevel: Level " + currentMultiplayer.episodeName + " has been created." );

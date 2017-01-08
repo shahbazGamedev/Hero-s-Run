@@ -33,9 +33,6 @@ public class HUDSaveMe : MonoBehaviour {
 
 	void Awake()
 	{
-		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		playerController = playerObject.GetComponent<PlayerController>();
-
 		//Normal Save Me
 		titleNormalText.text = LocalizationManager.Instance.getText("MENU_SAVE_ME_TITLE");
 		saveMeText.text = LocalizationManager.Instance.getText("MENU_SAVE_ME");
@@ -59,6 +56,7 @@ public class HUDSaveMe : MonoBehaviour {
 
 	void OnEnable()
 	{
+		PlayerController.localPlayerCreated += LocalPlayerCreated;
 		if( PlayerStatsManager.Instance.getHasInfiniteLives() )
 		{
 			livesText.text = LocalizationManager.Instance.getText("MENU_LIVES") + " " + PlayerStatsManager.Instance.getLives().ToString("N0") + "*";
@@ -69,6 +67,17 @@ public class HUDSaveMe : MonoBehaviour {
 		}
 	}
 	
+	void OnDisable()
+	{
+		PlayerController.localPlayerCreated -= LocalPlayerCreated;
+	}
+
+	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
+	{
+		this.playerController = playerController;
+		Debug.LogWarning("HUDSaveMe-LocalPlayerCreated: " + this.playerController.name );
+	}
+
 	public void showSaveMeMenu()
 	{
 		saveMeCanvas.SetActive ( true );

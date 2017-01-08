@@ -31,13 +31,6 @@ public sealed class CreatureManager : MonoBehaviour {
 	int wraithLayer = 14;
 	int skeletonLayer = 15;
 
-	// Use this for initialization
-	void Awake ()
-	{
-		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = player.GetComponent<PlayerController>();
-	}
-
 	int getKnockbackCreatureMask()
 	{
 		int mask = 1 << zombieLayer;
@@ -84,12 +77,14 @@ public sealed class CreatureManager : MonoBehaviour {
 	{
 		PowerUpManager.zNukeExploded += ZNukeExploded;
 		PlayerController.resurrectionBegin += ResurrectionBegin;
+		PlayerController.localPlayerCreated += LocalPlayerCreated;
 	}
 	
 	void OnDisable()
 	{
 		PowerUpManager.zNukeExploded -= ZNukeExploded;
 		PlayerController.resurrectionBegin -= ResurrectionBegin;
+		PlayerController.localPlayerCreated -= LocalPlayerCreated;
 	}
 
 	void ZNukeExploded( float impactDiameter )
@@ -107,6 +102,13 @@ public sealed class CreatureManager : MonoBehaviour {
 		//And for good measure, any other that are too close but maybe not on the current tile
 		deactivateCreatures( DEACTIVATE_DIAMETER );
 
+	}
+
+	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
+	{
+		this.playerController = playerController;
+		this.player = playerTransform;
+		Debug.LogWarning("CreatureManager-LocalPlayerCreated: " + this.playerController.name );
 	}
 
 	//Note that the ZombieManager class, handles reseting zombies.

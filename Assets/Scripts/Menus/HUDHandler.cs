@@ -55,8 +55,6 @@ public class HUDHandler : MonoBehaviour {
 	void Awake ()
 	{
 		hudHandler = this;
-		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		playerController = playerObject.GetComponent<PlayerController>();
 		hudSaveMe = saveMeCanvas.GetComponent<HUDSaveMe>();
 		tapToPlayText.text = LocalizationManager.Instance.getText("MENU_TAP_TO_PLAY");
 		restartFromCheckpointText.text = LocalizationManager.Instance.getText("MENU_RESTART_FROM_CHECKPOINT");
@@ -229,12 +227,14 @@ public class HUDHandler : MonoBehaviour {
 	{
 		GameManager.gameStateEvent += GameStateChange;
 		PlayerController.playerStateChanged += PlayerStateChange;
+		PlayerController.localPlayerCreated += LocalPlayerCreated;
 	}
 	
 	void OnDisable()
 	{
 		GameManager.gameStateEvent -= GameStateChange;
 		PlayerController.playerStateChanged -= PlayerStateChange;
+		PlayerController.localPlayerCreated -= LocalPlayerCreated;
 	}
 
 	void PlayerStateChange( PlayerCharacterState newState )
@@ -276,6 +276,12 @@ public class HUDHandler : MonoBehaviour {
 			userMessageText.gameObject.SetActive( false );
 			destroyAllPickupsDisplayed();
 		}
+	}
+
+	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
+	{
+		this.playerController = playerController;
+		Debug.LogWarning("HUDHandler-LocalPlayerCreated: " + this.playerController.name );
 	}
 
 	void destroyAllPickupsDisplayed()

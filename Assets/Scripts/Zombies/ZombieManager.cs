@@ -13,13 +13,6 @@ public class ZombieManager : MonoBehaviour {
 	public const int NUMBER_STARS_PER_ZOMBIE = 20;
 	public ParticleSystem debris; //Particle fx that plays when a zombie burrows up
 
-	// Use this for initialization
-	void Awake () {
-		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = player.GetComponent<PlayerController>();
-
-	}
-
 	void Start () {
 		//Hides zombies
 		for( int i=0; i < zombieFactory.Count; i++ )
@@ -220,16 +213,25 @@ public class ZombieManager : MonoBehaviour {
 	void OnEnable()
 	{
 		PlayerController.resurrectionBegin += ResurrectionBegin;
+		PlayerController.localPlayerCreated += LocalPlayerCreated;
 	}
 	
 	void OnDisable()
 	{
 		PlayerController.resurrectionBegin -= ResurrectionBegin;
+		PlayerController.localPlayerCreated -= LocalPlayerCreated;
 	}
 
 	void ResurrectionBegin()
 	{
 		resetAllZombies();
+	}
+
+	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
+	{
+		player = playerTransform;
+		this.playerController = playerController;
+		Debug.LogWarning("ZombieManager-LocalPlayerCreated: " + this.playerController.name );
 	}
 
 }

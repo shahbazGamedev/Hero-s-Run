@@ -52,12 +52,6 @@ public class TrollController : MonoBehaviour {
 	public bool playerStumbledPreviously = false;
 	private Vector3 forward;
 
-	void Awake ()
-	{
-		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = player.GetComponent<PlayerController>();
-	}
-
 	void Start()
 	{
 		//Place the troll on the ground which might not be at y=0
@@ -320,12 +314,14 @@ public class TrollController : MonoBehaviour {
 	{
 		GameManager.gameStateEvent += GameStateChange;
 		PlayerController.playerStateChanged += PlayerStateChange;
+		PlayerController.localPlayerCreated += LocalPlayerCreated;
 	}
 
 	void OnDisable()
 	{
 		GameManager.gameStateEvent -= GameStateChange;
 		PlayerController.playerStateChanged -= PlayerStateChange;
+		PlayerController.localPlayerCreated -= LocalPlayerCreated;
 	}
 	
 	void GameStateChange( GameState newState )
@@ -363,6 +359,13 @@ public class TrollController : MonoBehaviour {
 			//We don't want the creature to follow the player down a ravine ...
 			stopPursuing();
 		}
+	}
+
+	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
+	{
+		this.playerController = playerController;
+		this.player = playerTransform;
+		Debug.LogWarning("TrollController-LocalPlayerCreated: " + this.playerController.name );
 	}
 
 }

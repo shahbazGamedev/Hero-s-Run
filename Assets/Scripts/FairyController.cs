@@ -75,7 +75,7 @@ public class FairyController : Creature {
 	// Update is called once per frame
 	void LateUpdate ()
 	{
-		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && fairyState == FairyState.Hover && playerController.getCharacterState() != PlayerCharacterState.Dying )
+		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && fairyState == FairyState.Hover && getPlayerController().getCharacterState() != PlayerCharacterState.Dying )
 		{
 			positionFairy ();
 		}
@@ -99,8 +99,8 @@ public class FairyController : Creature {
 	private void positionFairy ()
 	{
 		// Calculate the current rotation angles
-		float wantedRotationAngle = player.eulerAngles.y + yRotationOffset;
-		float wantedHeight = player.position.y + height;
+		float wantedRotationAngle = getPlayer().eulerAngles.y + yRotationOffset;
+		float wantedHeight = getPlayer().position.y + height;
 		
 		float currentRotationAngle = transform.eulerAngles.y;
 		float currentHeight = transform.position.y;
@@ -118,14 +118,14 @@ public class FairyController : Creature {
 
 		// Set the position of the fairy on the x-z plane to:
 		// distance meters behind the target
-		transform.position = player.position;
+		transform.position = getPlayer().position;
 		transform.position -= currentRotation * Vector3.forward * distance;
 		
 		// Set the height of the fairy
 		transform.position = new Vector3( transform.position.x, currentHeight, transform.position.z );
 		
 		// Always look at the target
-		transform.LookAt (player);
+		transform.LookAt (getPlayer());
 		
 		//Tilt the camera down
 		transform.rotation = Quaternion.Euler( xRotation, transform.eulerAngles.y, transform.eulerAngles.z );
@@ -138,10 +138,10 @@ public class FairyController : Creature {
 	public void Arrive( float timeToArrive )
 	{
 		fairyState = FairyState.Arrive;
-		Vector3 arrivalStartPos = new Vector3( -18f, 12f, player.GetComponent<PlayerController>().getSpeed() * 2f );
-		Vector3 exactPos = player.TransformPoint(arrivalStartPos);
+		Vector3 arrivalStartPos = new Vector3( -18f, 12f, getPlayerController().getSpeed() * 2f );
+		Vector3 exactPos = getPlayer().TransformPoint(arrivalStartPos);
 		transform.position = exactPos;
-		transform.rotation = Quaternion.Euler( 0, player.transform.eulerAngles.y + 90f, transform.eulerAngles.z );
+		transform.rotation = Quaternion.Euler( 0, getPlayer().transform.eulerAngles.y + 90f, transform.eulerAngles.z );
 		StartCoroutine("MoveToPosition", timeToArrive );
 	}
 
@@ -239,10 +239,10 @@ public class FairyController : Creature {
 			//Percentage of time completed 
 			float fracJourney = elapsedTime / timeToArrive;
 			
-			float yRot = Mathf.LerpAngle( startYrot, player.eulerAngles.y + 180f, fracJourney );
+			float yRot = Mathf.LerpAngle( startYrot, getPlayer().eulerAngles.y + 180f, fracJourney );
 			transform.eulerAngles = new Vector3 ( transform.eulerAngles.x, yRot, transform.eulerAngles.z );
 			
-			Vector3 exactPos = player.TransformPoint(fairyRelativePos);
+			Vector3 exactPos = getPlayer().TransformPoint(fairyRelativePos);
 			transform.position = Vector3.Lerp( startPosition, exactPos, fracJourney );
 			
 			//Tilt the fairy down
@@ -269,10 +269,10 @@ public class FairyController : Creature {
 			//Percentage of time completed 
 			float fracJourney = elapsedTime / timeToArrive;
 			
-			float yRot = Mathf.LerpAngle( startYrot, player.eulerAngles.y , fracJourney );
+			float yRot = Mathf.LerpAngle( startYrot, getPlayer().eulerAngles.y , fracJourney );
 			transform.eulerAngles = new Vector3 ( transform.eulerAngles.x, yRot, transform.eulerAngles.z );
 			
-			Vector3 exactPos = player.TransformPoint(desiredPosition);
+			Vector3 exactPos = getPlayer().TransformPoint(desiredPosition);
 			transform.position = Vector3.Lerp( startPosition, exactPos, fracJourney );
 
 			//Tilt the fairy down
@@ -292,9 +292,9 @@ public class FairyController : Creature {
 		transform.localScale = new Vector3( 1f, 1f, 1f );
 
 		//Move Fairy to player body and play a sprinkle animation
-		float fairyRotY = player.eulerAngles.y + 205f;
+		float fairyRotY = getPlayer().eulerAngles.y + 205f;
 		Vector3 relativePos = new Vector3(0.3f , 0.5f , 1f );
-		Vector3 exactPos = player.TransformPoint(relativePos);
+		Vector3 exactPos = getPlayer().TransformPoint(relativePos);
 		transform.position = new Vector3( exactPos.x, exactPos.y, exactPos.z );
 		transform.rotation = Quaternion.Euler( 0, fairyRotY, 0 );
 		anim.Play("Hover_Worried");
@@ -326,9 +326,9 @@ public class FairyController : Creature {
 		transform.localScale = new Vector3( 1f, 1f, 1f );
 
 		//Move Fairy to player body and play a sprinkle animation
-		float fairyRotY = player.eulerAngles.y + 205f;
+		float fairyRotY = getPlayer().eulerAngles.y + 205f;
 		Vector3 relativePos = new Vector3(0.3f , 0.5f , 1f );
-		Vector3 exactPos = player.TransformPoint(relativePos);
+		Vector3 exactPos = getPlayer().TransformPoint(relativePos);
 		transform.position = new Vector3( exactPos.x, exactPos.y, exactPos.z );
 		transform.rotation = Quaternion.Euler( 0, fairyRotY, 0 );
 		anim.Play("Revive");
@@ -350,7 +350,7 @@ public class FairyController : Creature {
 
 	private void continueResurection()
 	{
-		playerController.resurrectMiddle();
+		getPlayerController().resurrectMiddle();
 	}
 
 	//the voiceOverID is used both as text ID and as the name of the audio clip. They need to be identical.

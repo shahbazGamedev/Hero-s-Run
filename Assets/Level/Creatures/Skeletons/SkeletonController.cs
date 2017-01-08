@@ -147,9 +147,9 @@ public sealed class SkeletonController : Creature, ICreature {
 	{
 		if( creatureState != CreatureState.Attacking && creatureState != CreatureState.Dying && creatureState != CreatureState.Victory )
 		{
-			float distance = Vector3.Distance(player.position,transform.position);
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float attackDistance;
-			float playerSpeed = playerController.getSpeed();
+			float playerSpeed = getPlayerController().getSpeed();
 		    switch (attackType)
 			{
 		        case AttackType.Short_range_sword_1:
@@ -267,7 +267,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	
 	void fireMagicMissile()
 	{
-		transform.LookAt( player );
+		transform.LookAt( getPlayer() );
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 		magicMissile = createMagicMissile();
 		anim.CrossFadeInFixedTime("Fire Magic Missile", CROSS_FADE_DURATION );
@@ -289,7 +289,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		Physics.IgnoreCollision(magicMissile.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(magicMissile.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
 		magicMissile.GetComponent<Rigidbody>().isKinematic = false;
-		magicMissile.GetComponent<Rigidbody>().AddForce( ( new Vector3( player.position.x, player.position.y + 0.4f, player.position.z ) - magicMissile.transform.position).normalized * getAdjustedBoltForce() );
+		magicMissile.GetComponent<Rigidbody>().AddForce( ( new Vector3( getPlayer().position.x, getPlayer().position.y + 0.4f, getPlayer().position.z ) - magicMissile.transform.position).normalized * getAdjustedBoltForce() );
 		magicMissile.GetComponent<Projectile>().launchProjectile();
 		GameObject.Destroy( magicMissile, 10f );
 	}
@@ -350,7 +350,7 @@ public sealed class SkeletonController : Creature, ICreature {
 
 	void fireCrossbow()
 	{
-		transform.LookAt( player );
+		transform.LookAt( getPlayer() );
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 		arrow = createArrow();
 		anim.SetTrigger("Fire");
@@ -373,7 +373,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		Physics.IgnoreCollision(arrow.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(arrow.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
 		arrow.GetComponent<Rigidbody>().isKinematic = false;
-		arrow.GetComponent<Rigidbody>().AddForce( (new Vector3( player.position.x, player.position.y + 0.2f, player.position.z ) - arrow.transform.position).normalized * getAdjustedBoltForce() );
+		arrow.GetComponent<Rigidbody>().AddForce( (new Vector3( getPlayer().position.x, getPlayer().position.y + 0.2f, getPlayer().position.z ) - arrow.transform.position).normalized * getAdjustedBoltForce() );
 		arrow.GetComponent<Projectile>().launchProjectile();
 		GameObject.Destroy( arrow, 10f );
 	}
@@ -427,7 +427,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if( playerController.getCharacterState() == PlayerCharacterState.Dying )
+		if( getPlayerController().getCharacterState() == PlayerCharacterState.Dying )
 		{
 			//The Pendulum (bad name, yes I know) is the spike road block
 			if( hit.collider.name.StartsWith("Skeleton") || hit.gameObject.CompareTag("Player") || hit.collider.name.StartsWith("Pendulum") )
@@ -455,7 +455,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		if( newState == PlayerCharacterState.Dying )
 		{
 			Stop_Weapon_Trail ( null );
-			float distance = Vector3.Distance(player.position,transform.position);
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float nearby = 4f;
 			if( distance < nearby )
 			{

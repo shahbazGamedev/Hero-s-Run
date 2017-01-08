@@ -65,7 +65,7 @@ public sealed class CerberusController : Creature, ICreature {
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
 			{
-				transform.LookAt( player );
+				transform.LookAt( getPlayer() );
 				transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 			}
 			//1) Get the direction of the cerberus
@@ -82,12 +82,12 @@ public sealed class CerberusController : Creature, ICreature {
 	{
 		if( creatureState != CreatureState.Attacking && creatureState != CreatureState.Dying && creatureState != CreatureState.Victory )
 		{
-			float distance = Vector3.Distance(player.position,transform.position);
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float attackDistance;
 		    switch (attackType)
 			{
 		        case AttackType.stand_and_breathe_fire:
-					attackDistance = 0.95f * playerController.getSpeed();
+					attackDistance = 0.95f * getPlayerController().getSpeed();
 					if( distance < attackDistance  )
 					{
 						breatheFire();
@@ -146,7 +146,7 @@ public sealed class CerberusController : Creature, ICreature {
 	public new void resetCreature()
 	{
 		//Only reset Cerebus if the player died on the same tile as Cerebus.
-		if( transform.parent.name == player.GetComponent<PlayerController>().getCurrentTileName() )
+		if( transform.parent.name == getPlayer().GetComponent<PlayerController>().getCurrentTileName() )
 		{
 			setCreatureState( CreatureState.Idle );
 			anim.Play("idleLookAround");

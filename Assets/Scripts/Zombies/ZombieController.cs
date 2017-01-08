@@ -64,7 +64,7 @@ public sealed class ZombieController : Creature, ICreature {
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
 			{
-				transform.LookAt( player );
+				transform.LookAt( getPlayer() );
 				transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 			}
 			//1) Get the direction of the zombie
@@ -291,7 +291,7 @@ public sealed class ZombieController : Creature, ICreature {
 		
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if( playerController.getCharacterState() == PlayerCharacterState.Dying )
+		if( getPlayerController().getCharacterState() == PlayerCharacterState.Dying )
 		{
 			if( hit.gameObject.CompareTag("Zombie") )
 			{
@@ -312,7 +312,7 @@ public sealed class ZombieController : Creature, ICreature {
 			yield return new WaitForFixedUpdate();  
 		} while ( elapsedTime < recycleDelay );
 		
-		if( playerController.getCharacterState() != PlayerCharacterState.Dying )
+		if( getPlayerController().getCharacterState() != PlayerCharacterState.Dying )
 		{
 			//Only deactivate the zombie if the player is not dead as we dont want the zombie to pop out of view.
 			setCreatureState( CreatureState.Available );

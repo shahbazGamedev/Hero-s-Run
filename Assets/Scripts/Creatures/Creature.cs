@@ -6,8 +6,8 @@ public class Creature : MonoBehaviour {
 
 	protected CreatureState creatureState = CreatureState.Idle;
 	[Header("Other")]
-	protected Transform player;
-	protected PlayerController playerController;
+	Transform player;
+	PlayerController playerController;
 	protected CharacterController controller;
 	protected Animator anim;
 	protected AudioSource audioSource;
@@ -204,4 +204,23 @@ public class Creature : MonoBehaviour {
 		setCreatureState(CreatureState.Idle);
 		anim.CrossFadeInFixedTime( originalAnimation, CROSS_FADE_DURATION );
 	}
+
+	protected Transform getPlayer()
+	{
+		if( player == null )
+		{
+			player = GameObject.FindGameObjectWithTag("Player").transform;
+		}
+		return player;
+	}
+
+	protected PlayerController getPlayerController()
+	{
+		if( playerController == null )
+		{
+			playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+		}
+		return playerController;
+	}
+
 }

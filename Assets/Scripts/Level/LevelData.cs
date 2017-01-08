@@ -33,13 +33,12 @@ public class LevelData : MonoBehaviour {
 	public List<MultiplayerInfo> multiplayerList = new List<MultiplayerInfo>();
 
 	public const int NUMBER_OF_EPISODES = 9;
-	GameObject cutSceneCamera;
 	//This should be the directional light in the scene
 	GameObject Sun;
+	public Material skyBoxMaterial; //needed so that the cutscene camera can access it
 
 	public void initialise()
 	{
-		cutSceneCamera = GameObject.Find("CutsceneCamera");
 		Sun = GameObject.FindGameObjectWithTag("Sunlight");
 	}
 
@@ -62,7 +61,7 @@ public class LevelData : MonoBehaviour {
 	{
 		if( Sun != null )
 		{
-			Material skyBoxMaterial = null;
+			skyBoxMaterial = null;
 			float lightIntensity;
 			float shadowStrength = 0f;
 			Quaternion sunDirection;
@@ -140,8 +139,6 @@ public class LevelData : MonoBehaviour {
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 69f,83f,68f );
 				RenderSettings.skybox = null;	
-				Skybox skyBox = (Skybox) cutSceneCamera.GetComponent("Skybox");
-				skyBox.material = null;
 				RenderSettings.ambientSkyColor = new Color(0.353f, 0.222f, 0.052f ); //brownish
 				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
 				RenderSettings.ambientIntensity = 1f;
@@ -226,13 +223,6 @@ public class LevelData : MonoBehaviour {
 			if( skyBoxMaterial != null )
 			{
 				RenderSettings.skybox = skyBoxMaterial;
-				
-				Skybox skyBox = (Skybox) cutSceneCamera.GetComponent("Skybox");
-				skyBox.material = skyBoxMaterial;
-				//A value of 1f means sky is almost completely white, a value of 0 means the sky is darker.
-				//Not used for now.
-				//skyBoxMaterial.SetColor( "_Tint", new Color( 118f/255f, 118f/255f, 118f/255f, 1f ) );
-
 			}
 			
 			Sun.GetComponent<Light>().intensity = lightIntensity;

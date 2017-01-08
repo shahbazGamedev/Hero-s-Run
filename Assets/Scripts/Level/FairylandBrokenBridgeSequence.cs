@@ -30,9 +30,6 @@ public class FairylandBrokenBridgeSequence : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 
-		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		playerController = playerObject.GetComponent<PlayerController>();
-
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
 
@@ -46,6 +43,9 @@ public class FairylandBrokenBridgeSequence : MonoBehaviour {
 	
 	public void startSequence( Transform trigger )
 	{
+		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+		playerController = playerObject.GetComponent<PlayerController>();
+
 		//Slowdown player and remove player control (this is done via a trigger)
 		GameManager.Instance.setGameState(GameState.Checkpoint);
 		StartCoroutine( playerController.slowDownPlayer(18.1f, afterPlayerSlowdown, trigger ) );

@@ -66,8 +66,6 @@ public class DragonController : MonoBehaviour {
 		//Get a copy of the components
 		dragonAnimation = GetComponent<Animation>();
 		controller = GetComponent<CharacterController>();
-		player = GameObject.FindGameObjectWithTag("Player").transform;
-
 	}
 
 	void Start()
@@ -96,6 +94,11 @@ public class DragonController : MonoBehaviour {
 
 	public void placeDragon( Transform tile, Vector3 localPosition, Vector3 localRotation, string initialAnimation, float flyingSpeed )
 	{
+		if( player == null )
+		{
+			GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+			player = playerObject.transform;
+		}
 		this.flyingSpeed = flyingSpeed;
 		transform.parent = tile;
 		transform.localPosition = localPosition;

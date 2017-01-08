@@ -236,6 +236,10 @@ public sealed class PlayerController : MonoBehaviour {
 	//The current curve the player is on
 	Bezier currentBezierCurve;
 
+	//Event management used to notify other classes when the Hero has been created
+	public delegate void LocalPlayerCreated( Transform value, PlayerController playerController );
+	public static event LocalPlayerCreated localPlayerCreated;
+
 	//Event management used to notify other classes when the character state has changed
 	public delegate void PlayerState( PlayerCharacterState value );
 	public static event PlayerState playerStateChanged;
@@ -344,6 +348,10 @@ public sealed class PlayerController : MonoBehaviour {
 		rightFootstep = footstepRightSound;
 
 	generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
+	if( localPlayerCreated != null ) localPlayerCreated( transform, this );
+	Transform cutSceneCamera = transform.FindChild("CutsceneCamera");
+	Skybox skyBox = (Skybox) cutSceneCamera.GetComponent("Skybox");
+	skyBox.material = LevelManager.Instance.getLevelData().skyBoxMaterial;
 	}
 
 	void Start()

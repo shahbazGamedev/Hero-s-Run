@@ -31,9 +31,6 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 
-		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		playerController = playerObject.GetComponent<PlayerController>();
-
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
 
@@ -53,6 +50,9 @@ public class BrokenBridgeSequence : MonoBehaviour {
 
 	void startSequence( Transform trigger )
 	{
+		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+		playerController = playerObject.GetComponent<PlayerController>();
+
 		//Slowdown player and remove player control
 		print ("Start of broken bridge sequence");
 		playerController.placePlayerInCenterLane();

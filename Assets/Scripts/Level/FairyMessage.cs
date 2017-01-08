@@ -13,17 +13,18 @@ public class FairyMessage : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 
-		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		playerController = playerObject.GetComponent<PlayerController>();
-
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
-
 	}
-	
 
 	public void displayFairyMessage()
 	{
+		if( playerController == null )
+		{
+			GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+			playerController = playerObject.GetComponent<PlayerController>();
+		}
+
 		//Call fairy
 		fairyController.Appear ( fairyEmotion );
 
