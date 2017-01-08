@@ -283,6 +283,9 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		Destroy( hero.GetComponent<Player>() );
 		Destroy( hero.GetComponent<NetworkTransform>() );
 		Destroy( hero.GetComponent<NetworkIdentity>() );
+		//These are needed in single player
+		hero.GetComponent<PlayerController>().enabled = true;
+		hero.GetComponent<SimpleCamera>().enabled = true;
 		Debug.Log("GenerateLevel-CreateLevel: Level " + currentEpisode.episodeName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
 
