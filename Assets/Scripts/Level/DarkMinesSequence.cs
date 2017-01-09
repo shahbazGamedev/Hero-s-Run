@@ -14,9 +14,6 @@ public class DarkMinesSequence : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 
-		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		playerController = playerObject.GetComponent<PlayerController>();
-
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
 
@@ -28,7 +25,8 @@ public class DarkMinesSequence : MonoBehaviour {
 	void startSequence( Transform trigger )
 	{
 		//Slowdown player and remove player control
-		print ("Start of Hell Cave sequence");
+		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+		playerController = playerObject.GetComponent<PlayerController>();
 		LevelManager.Instance.setEnableTorches( false );
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);

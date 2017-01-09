@@ -11,7 +11,7 @@ public class CollapsingBridge : MonoBehaviour {
 	PlayerController playerController;
 	bool hasCollapsed = false;
 
-	void Awake ()
+	void Start ()
 	{
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		playerController = player.GetComponent<PlayerController>();

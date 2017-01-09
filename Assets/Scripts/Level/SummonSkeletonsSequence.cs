@@ -61,7 +61,6 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	//Dark Queen sequence that summon skeletons
 	void startSequence( Transform trigger )
 	{
-		print ("Start of Dark Queen summon skeletons sequence.");
 		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
 		playerController = playerObject.GetComponent<PlayerController>();
 
