@@ -44,7 +44,7 @@ public class animationEventDispatcher : MonoBehaviour {
 
 	public void Teleport_leave_complete ( AnimationEvent eve )
 	{
-		playerController.teleportLeaveComplete();
+		playerController.Teleport_leave_complete( eve );
 	}
 
 }

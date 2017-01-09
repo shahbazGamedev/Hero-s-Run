@@ -71,7 +71,7 @@ public sealed class PlayerController : MonoBehaviour {
 
 	//Particles
 	public ParticleSystem dustPuff;
-	public ParticleSystem appearFX; //Called by teleportLeaveComplete
+	public ParticleSystem appearFX; //Called by Teleport_leave_complete
 
 	//Components
 	public Animator anim;
@@ -2540,7 +2540,7 @@ public sealed class PlayerController : MonoBehaviour {
 		}
 	}
 
-	public void teleportLeaveComplete()
+	public void Teleport_leave_complete( AnimationEvent eve )
 	{
 		appearFX.Play ();
 		transform.localScale = new Vector3( 0.002f, 0.002f, 0.002f );
@@ -3007,7 +3007,7 @@ public sealed class PlayerController : MonoBehaviour {
 	{
 		Debug.Log("PlayerController - resetSharedLevelData: unlockCamera: " + unlockCamera );
 		//Reset values
-		//teleportLeaveComplete changes the scale value so we need to reset it
+		//Teleport_leave_complete changes the scale value so we need to reset it
 		transform.localScale = new Vector3( 1f, 1f, 1f );
 
 		disableLookOverShoulder();
