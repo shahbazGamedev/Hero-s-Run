@@ -15,7 +15,7 @@ public class WeatherManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-		if( !simpleCamera.isCameraLocked )
+		if( simpleCamera != null && !simpleCamera.isCameraLocked )
 		{
 			if( isParticleSystemActive )
 			{

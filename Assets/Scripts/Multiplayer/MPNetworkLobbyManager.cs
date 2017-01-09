@@ -274,7 +274,7 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 	class LevelSceneLoadedMsg : MessageBase { }
 	public void informLevelSceneLoaded(NetworkConnection conn)
 	{
-		conn.Send(MsgLevelSceneLoaded, new LevelSceneLoadedMsg());
+		//conn.Send(MsgLevelSceneLoaded, new LevelSceneLoadedMsg());
 	}
 
 	public void LevelSceneLoadedMessageHandler(NetworkMessage netMsg)

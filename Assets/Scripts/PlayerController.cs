@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using UnityStandardAssets.ImageEffects;
@@ -74,6 +75,7 @@ public sealed class PlayerController : MonoBehaviour {
 
 	//Components
 	public Animator anim;
+	public NetworkAnimator networkAnimator;
 	CharacterController controller;
 	AudioSource audioSource;
 
@@ -286,36 +288,37 @@ public sealed class PlayerController : MonoBehaviour {
 
 	void Awake()
 	{
-		GameObject hero;
+		//GameObject hero;
 		print("isMultiplayer: " + GameManager.Instance.isMultiplayer() );
 		if(PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
 		{
-			hero = (GameObject)Instantiate(Hero_Prefab, Vector3.zero, Quaternion.identity ) ;
+			//hero = (GameObject)Instantiate(Hero_Prefab, Vector3.zero, Quaternion.identity ) ;
 		}
 		else
 		{
-			hero = (GameObject)Instantiate(Heroine_Prefab, Vector3.zero, Quaternion.identity ) ;
+			//hero = (GameObject)Instantiate(Heroine_Prefab, Vector3.zero, Quaternion.identity ) ;
 		}
-		Transform blobShadowProjectorObject = hero.transform.FindChild("Blob Shadow Projector");
+		Transform blobShadowProjectorObject = transform.FindChild("Blob Shadow Projector");
 		if( blobShadowProjectorObject == null )
 		{
-			Debug.LogError("PlayerController-error: Unable to find, Blob Shadow Projector, in the " + hero.name + " prefab." );
+			Debug.LogError("PlayerController-error: Unable to find, Blob Shadow Projector." );
 		}
 		shadowProjector = blobShadowProjectorObject.GetComponent<Projector>();
 
-		hero.transform.parent = transform;
-	hero.transform.localPosition = Vector3.zero;
-	hero.transform.localRotation = Quaternion.identity;
+		//hero.transform.parent = transform;
+	//hero.transform.localPosition = Vector3.zero;
+	//hero.transform.localRotation = Quaternion.identity;
 
-		hero.name = "Hero";
-		hero.SetActive( true );
+		//hero.name = "Hero";
+		//hero.SetActive( true );
 
 		//Calculate the minimum swipe distance in pixels
         float screenDiagonalSize = Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height);
         minSwipeDistancePixels = minSwipeDistance * screenDiagonalSize; 
 
 		//Get a copy of the components
-		anim = hero.GetComponent<Animator>();
+		anim = GetComponent<Animator>();
+		networkAnimator = GetComponent<NetworkAnimator>();
 		audioSource = GetComponent<AudioSource>();
 
 		controller = GetComponent<CharacterController>();
@@ -377,28 +380,6 @@ public sealed class PlayerController : MonoBehaviour {
 sc.playCutscene(CutsceneType.Checkpoint);
 	}
 
-	string getCurrentStateName()
-	{
-		//Use anim.GetLayerName(0)) to get the layer name. The layer with index 0 is "Base Layer".
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Move") ) return "Move";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Fall") ) return "Fall";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Land") ) return "Land";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Jump_double") ) return "Jump_double";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Jump") ) return "Jump";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Slide Down") ) return "Slide Down";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Slide Up") ) return "Slide Up";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Victory") ) return "Victory";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("DeathRiver") ) return "DeathRiver";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("DeathWall") ) return "DeathWall";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Stumble") ) return "Stumble";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Fall_Forward") ) return "Fall_Forward";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Speed") ) return "Speed";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Look_Back") ) return "Look_Back";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Idle_Look") ) return "Idle_Look";
-
-		return "Unknown animation state";
-	}
-
 	void determineRunSpeed()
 	{
 		//Use the level data to determine what the start run speed and run acceleration should be since they can vary
@@ -433,7 +414,7 @@ sc.playCutscene(CutsceneType.Checkpoint);
 		anim.Rebind();
 
 		//The player starts off running
-		anim.SetTrigger(RunTrigger);
+		setAnimationTrigger(RunTrigger);
 		setCharacterState( PlayerCharacterState.StartRunning );
 		setCharacterState( PlayerCharacterState.Running );
 
@@ -625,7 +606,7 @@ sc.playCutscene(CutsceneType.Checkpoint);
 		sc.heightDamping = SimpleCamera.DEFAULT_HEIGHT_DAMPING * 9f;
 		allowDistanceTravelledCalculations = false;
 		setCharacterState(PlayerCharacterState.Falling);
-		anim.SetTrigger(FallTrigger);
+		setAnimationTrigger(FallTrigger);
 		//playSound( fallingSound, false );
 		print ( "fall started " + distanceToGround + " " + MIN_DISTANCE_FOR_FALL + " " + playerCharacterState );
 	}
@@ -893,7 +874,7 @@ sc.playCutscene(CutsceneType.Checkpoint);
 					dustPuff.loop = false;
 					dustPuff.Play();
 				}
-				anim.SetTrigger(LandTrigger);
+				setAnimationTrigger(LandTrigger);
 				moveDirection.y = 0f;
 				jumping = false;
 				doingDoubleJump = false;
@@ -1253,18 +1234,18 @@ sc.playCutscene(CutsceneType.Checkpoint);
 					//if you are on a steep slope, the normal jump speed is insufficient to make you feel you are jumping high.
 					//So use a higher value instead.
 					moveDirection.y = slopeJumpSpeed;
-					anim.SetTrigger(JumpTrigger);
+					setAnimationTrigger(JumpTrigger);
 				}
 				else if( doingDoubleJump )
 				{
 					moveDirection.y = doubleJumpSpeed;
-					anim.SetTrigger(Double_JumpTrigger);
+					setAnimationTrigger(Double_JumpTrigger);
 					boots_of_jumping.incrementCounter();
 				}
 				else
 				{
 					moveDirection.y = jumpSpeed;
-					anim.SetTrigger(JumpTrigger);
+					setAnimationTrigger(JumpTrigger);
 				}
 				//for debugging
 				//remove jump sound for now because it is annoying
@@ -1282,7 +1263,7 @@ sc.playCutscene(CutsceneType.Checkpoint);
 			SegmentInfo.BezierData bezierData = curveList[0];
 			setCharacterState( PlayerCharacterState.Ziplining );
 			enablePlayerControl( false );
-			anim.SetTrigger(Idle_LookTrigger);
+			setAnimationTrigger(Idle_LookTrigger);
 			ziplineAttachPoint = transform.FindChild("Zipline Attach Point");
 			ziplineAttachPoint.localPosition = new Vector3( 0, 2.15f, 0 );
 			ziplineAttachPoint.localEulerAngles = new Vector3( 0, 0, 0 );
@@ -1789,7 +1770,7 @@ sc.playCutscene(CutsceneType.Checkpoint);
 							dustPuff.Play();
 						}
 
-						anim.SetTrigger(Slide_DownTrigger);
+						setAnimationTrigger(Slide_DownTrigger);
 
 						playSound( slidingSound, true );
 					}
@@ -1822,7 +1803,7 @@ sc.playCutscene(CutsceneType.Checkpoint);
 				{
 					setCharacterState( PlayerCharacterState.Running );
 				}
-				anim.SetTrigger(Slide_UpTrigger);
+				setAnimationTrigger(Slide_UpTrigger);
 				audioSource.Stop();
 				deactivateOverheadObstacles( true );
 			}
@@ -2443,7 +2424,7 @@ sc.playCutscene(CutsceneType.Checkpoint);
 			dustPuff.Stop();
 			slideWaterSplash.Stop();
 			setCharacterState( PlayerCharacterState.Running );
-			anim.SetTrigger(Slide_UpTrigger);
+			setAnimationTrigger(Slide_UpTrigger);
 			audioSource.Stop();
 		}
 
@@ -2639,7 +2620,7 @@ sc.playCutscene(CutsceneType.Checkpoint);
 	public void afterPlayerSlowdown()
 	{
 		setCharacterState( PlayerCharacterState.Winning );
-		anim.SetTrigger(VictoryTrigger);
+		setAnimationTrigger(VictoryTrigger);
 		//See Cullis Gate for next steps.
 	}
 
@@ -2649,7 +2630,7 @@ sc.playCutscene(CutsceneType.Checkpoint);
 		Vector3 finalPlayerPosition = initialPlayerPosition + (transform.TransformDirection(Vector3.forward) * distance);
 		float distanceTravelled = 0;
 		anim.SetFloat(speedBlendFactor, 0 );
-		anim.SetTrigger( RunTrigger );
+		setAnimationTrigger( RunTrigger );
 		anim.speed = 1f;
 
 		while ( distanceTravelled <= distance )
@@ -2669,7 +2650,7 @@ sc.playCutscene(CutsceneType.Checkpoint);
 		}
 		//Position the player exactly where he should be as we might have overshot the distance in the while loop
 		transform.position = new Vector3( finalPlayerPosition.x, transform.position.y, finalPlayerPosition.z );
-		if( playIdleLookAfterWalkCompleted ) anim.SetTrigger("Idle_Look");
+		if( playIdleLookAfterWalkCompleted ) setAnimationTrigger(Idle_LookTrigger);
 		onFinish.Invoke();	
 	}
 
@@ -2794,32 +2775,32 @@ sc.playCutscene(CutsceneType.Checkpoint);
 				case DeathType.Zombie:
 					//Play collision sound
 					playSound( dyingSound, false );
-					anim.SetTrigger(DeathWallTrigger);
+					setAnimationTrigger(DeathWallTrigger);
 					break;
 			
 				case DeathType.Flame:
 					playSound( deathFireSound, false );
-					anim.SetTrigger(DeathWallTrigger);
+					setAnimationTrigger(DeathWallTrigger);
 					break;
 		                
 		        case DeathType.Obstacle:
 					//Play collision sound
 					playSound( dyingSound, false );
 					sc.Shake();
-					anim.SetTrigger(DeathWallTrigger);
+					setAnimationTrigger(DeathWallTrigger);
 					break;
 
 		        case DeathType.Water:
 					sc.lockCamera ( true );
 					anim.speed = 2.8f;
-					anim.SetTrigger(DeathRiverTrigger);
+					setAnimationTrigger(DeathRiverTrigger);
 					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2.5f) );
 					break;
 
 		        case DeathType.VortexTrap:
 					sc.lockCamera ( true );
 					anim.speed = 3.8f;
-					anim.SetTrigger(FallTrigger);
+					setAnimationTrigger(FallTrigger);
 					LeanTween.moveLocalY( gameObject, transform.position.y - TrapVortex.distanceTravelledDown, TrapVortex.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutExpo).setDelay(TrapVortex.delayBeforeBeingPulledDown);
 					StartCoroutine( waitBeforeDisplayingSaveMeScreen(5f) );
 					break;
@@ -2831,7 +2812,7 @@ sc.playCutscene(CutsceneType.Checkpoint);
 		        case DeathType.SpecialFall:
 					sc.lockCamera ( true );
 					anim.speed = 3.8f;
-					anim.SetTrigger(FallTrigger);
+					setAnimationTrigger(FallTrigger);
 					LeanTween.moveLocalY( gameObject, transform.position.y - TrapVortex.distanceTravelledDown, TrapVortex.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutExpo).setDelay(0);
 					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2.5f) );
 					break;
@@ -2840,13 +2821,13 @@ sc.playCutscene(CutsceneType.Checkpoint);
 					sc.lockCamera ( true );
 					sc.playCutscene( CutsceneType.MagicGate );
 					anim.speed = 3.8f;
-					anim.SetTrigger(FallTrigger);
+					setAnimationTrigger(FallTrigger);
 					LeanTween.moveLocalY( gameObject, transform.position.y - TrapMagicGate.distanceTravelledDown, TrapMagicGate.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutQuad).setDelay(TrapMagicGate.delayBeforeBeingPulledDown);
 					StartCoroutine( waitBeforeResurrecting(3.2f) );
 					break;
 
 				default:
-					anim.SetTrigger(DeathWallTrigger);
+					setAnimationTrigger(DeathWallTrigger);
 					break;
 			}
 		}
@@ -2921,12 +2902,12 @@ sc.playCutscene(CutsceneType.Checkpoint);
 			if( trollController.didPlayerStumblePreviously() )
 			{
 				//The player falls forward and dies (killed by the troll)
-				anim.SetTrigger(FallForwardTrigger);
+				setAnimationTrigger(FallForwardTrigger);
 			}
 			else
 			{
 				//The player stumbles but recovers
-				anim.SetTrigger(StumbleTrigger);
+				setAnimationTrigger(StumbleTrigger);
 			}
 			trollController.placeTrollBehindPlayer();
 		}
@@ -3284,5 +3265,10 @@ sc.playCutscene(CutsceneType.Checkpoint);
 		startRunning( false );
 	}
 
+	void setAnimationTrigger( int trigger )
+	{
+		if( networkAnimator != null ) networkAnimator.SetTrigger( trigger );
+		anim.SetTrigger( trigger );
+	}
 
 } 
