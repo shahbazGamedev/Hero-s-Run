@@ -68,7 +68,6 @@ public class WeatherManager : MonoBehaviour {
 		player = playerTransform;
 		simpleCamera = player.GetComponent<SimpleCamera>();
 		weatherTarget = player;
-		Debug.LogWarning("WeatherManager-LocalPlayerCreated: " + this.player.name );
 	}
 
 	public void activateRain( bool enable )

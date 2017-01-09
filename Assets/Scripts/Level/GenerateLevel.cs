@@ -448,7 +448,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	//Because of that, we simply use the info from the first tile (the one with index 0) in worldRoadSegments.
 	public void setFirstTileInfoInPlayer( PlayerController playerController )
 	{
-Debug.LogWarning("setFirstTileInfoInPlayer " + playerController.name );
 		GameObject firstTile = worldRoadSegments[0];
 		playerController.currentTile = firstTile;
 		playerController.tileRotationY = firstTile.transform.eulerAngles.y;

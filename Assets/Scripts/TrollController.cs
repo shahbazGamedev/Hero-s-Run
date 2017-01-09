@@ -365,7 +365,6 @@ public class TrollController : MonoBehaviour {
 	{
 		this.playerController = playerController;
 		this.player = playerTransform;
-		Debug.LogWarning("TrollController-LocalPlayerCreated: " + this.playerController.name );
 	}
 
 }

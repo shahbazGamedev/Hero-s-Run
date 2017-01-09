@@ -552,7 +552,6 @@ public class PowerUpManager : MonoBehaviour {
 	{
 		this.playerController = playerController;
 		this.player = playerTransform;
-		Debug.LogWarning("PowerUpManager-LocalPlayerCreated: " + this.playerController.name );
 	}
 
 	void PowerUpInventoryChanged()

@@ -108,7 +108,6 @@ public sealed class CreatureManager : MonoBehaviour {
 	{
 		this.playerController = playerController;
 		this.player = playerTransform;
-		Debug.LogWarning("CreatureManager-LocalPlayerCreated: " + this.playerController.name );
 	}
 
 	//Note that the ZombieManager class, handles reseting zombies.

@@ -281,7 +281,6 @@ public class HUDHandler : MonoBehaviour {
 	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
 	{
 		this.playerController = playerController;
-		Debug.LogWarning("HUDHandler-LocalPlayerCreated: " + this.playerController.name );
 	}
 
 	void destroyAllPickupsDisplayed()

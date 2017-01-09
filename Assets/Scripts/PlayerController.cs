@@ -350,17 +350,17 @@ public sealed class PlayerController : MonoBehaviour {
 		leftFootstep = footstepLeftSound;
 		rightFootstep = footstepRightSound;
 
-	generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
-	if( localPlayerCreated != null ) localPlayerCreated( transform, this );
-	Transform cutSceneCamera = transform.FindChild("CutsceneCamera");
-	Skybox skyBox = (Skybox) cutSceneCamera.GetComponent("Skybox");
-	skyBox.material = LevelManager.Instance.getLevelData().skyBoxMaterial;
+		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
+		if( localPlayerCreated != null ) localPlayerCreated( transform, this );
+		Transform cutSceneCamera = transform.FindChild("CutsceneCamera");
+		Skybox skyBox = (Skybox) cutSceneCamera.GetComponent("Skybox");
+		skyBox.material = LevelManager.Instance.getLevelData().skyBoxMaterial;
 	}
 
 	void Start()
 	{
 		//The player controller needs info about the tile the player is on.
-	generateLevel.setFirstTileInfoInPlayer( this );
+		generateLevel.setFirstTileInfoInPlayer( this );
 
 		determineRunSpeed();
 
@@ -376,8 +376,11 @@ public sealed class PlayerController : MonoBehaviour {
 		}
 
 		//The character is in idle while waiting for the player to press the Run! button. 
-		setCharacterState( PlayerCharacterState.Idle );		
-sc.playCutscene(CutsceneType.Checkpoint);
+		setCharacterState( PlayerCharacterState.Idle );
+		if( currentTileType != TileType.Opening )
+		{
+			sc.playCutscene(CutsceneType.Checkpoint);
+		}
 	}
 
 	void determineRunSpeed()

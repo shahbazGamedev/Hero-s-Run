@@ -6,11 +6,11 @@ public class GameEventManager : MonoBehaviour {
 
 	public GenerateLevel generateLevel;
 	public WeatherManager weatherManager;
-	public SimpleCamera simpleCamera;
+	SimpleCamera simpleCamera;
 	public Lightning lightning;
 	public TrollController trollController;
-	public Transform player;
-	public PlayerController playerController;
+	Transform player;
+	PlayerController playerController;
 	public Transform fairy;
 	public FairyController fairyController;
 
@@ -881,6 +881,7 @@ public class GameEventManager : MonoBehaviour {
 		PlayerController.playerStateChanged += PlayerStateChange;
 		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
 		GameManager.gameStateEvent += GameStateChange;
+		PlayerController.localPlayerCreated += LocalPlayerCreated;
 	}
 	
 	void OnDisable()
@@ -888,6 +889,7 @@ public class GameEventManager : MonoBehaviour {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 		GameManager.gameStateEvent -= GameStateChange;
+		PlayerController.localPlayerCreated -= LocalPlayerCreated;
 	}
 
 	void GameStateChange( GameState newState )
@@ -948,6 +950,13 @@ public class GameEventManager : MonoBehaviour {
 		{
 			stopZombieHandsSequence();
 		}
+	}
+
+	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
+	{
+		player = playerTransform;
+		simpleCamera = player.GetComponent<SimpleCamera>();
+		this.playerController = playerController;
 	}
 
 }

@@ -231,7 +231,6 @@ public class ZombieManager : MonoBehaviour {
 	{
 		player = playerTransform;
 		this.playerController = playerController;
-		Debug.LogWarning("ZombieManager-LocalPlayerCreated: " + this.playerController.name );
 	}
 
 }

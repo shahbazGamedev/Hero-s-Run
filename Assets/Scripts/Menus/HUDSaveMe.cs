@@ -75,7 +75,6 @@ public class HUDSaveMe : MonoBehaviour {
 	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
 	{
 		this.playerController = playerController;
-		Debug.LogWarning("HUDSaveMe-LocalPlayerCreated: " + this.playerController.name );
 	}
 
 	public void showSaveMeMenu()

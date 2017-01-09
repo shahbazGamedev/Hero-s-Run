@@ -192,7 +192,6 @@ public class PauseMenu : MonoBehaviour {
 	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
 	{
 		this.playerController = playerController;
-		Debug.LogWarning("PauseMenu-LocalPlayerCreated: " + this.playerController.name );
 	}
 
 }
