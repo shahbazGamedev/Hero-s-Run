@@ -35,9 +35,6 @@ public class TreeController : MonoBehaviour {
 		//Get a copy of the components
 		treeAnimation = GetComponent<Animation>();
 
-		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = player.GetComponent<PlayerController>();
-
 		if( appearsOnRandomRoadSide )
 		{
 			//Decide if we are on the left or the right side.
@@ -55,10 +52,14 @@ public class TreeController : MonoBehaviour {
 				if( treeToMove != null ) treeToMove.localPosition = new Vector3( -transform.localPosition.x, transform.localPosition.y, transform.localPosition.z );
 				//We want the leaves particle system to shift to the left side of the tree.
 				fallingLeaves.transform.localPosition = new Vector3( -fallingLeaves.transform.localPosition.x, fallingLeaves.transform.localPosition.y, fallingLeaves.transform.localPosition.z );
-
 			}
 		}
+	}
 
+	void Start()
+	{
+		player = GameObject.FindGameObjectWithTag("Player").transform;
+		playerController = player.GetComponent<PlayerController>();
 	}
 
 	//Called by the TriggerTree script
