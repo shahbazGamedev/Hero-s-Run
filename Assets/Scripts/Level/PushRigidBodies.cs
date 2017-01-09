@@ -20,7 +20,7 @@ public class PushRigidBodies : MonoBehaviour {
 	PlayerController playerController;
 	bool avalancheOccurred = false;
 
-	void Awake ()
+	void Start ()
 	{
 		if( activationtype == ActivationType.PlayerDistance )
 		{

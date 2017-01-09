@@ -18,9 +18,6 @@ public class BlizzardStormBringerSequence : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 
-		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		playerController = playerObject.GetComponent<PlayerController>();
-
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
 	
@@ -53,6 +50,8 @@ public class BlizzardStormBringerSequence : MonoBehaviour {
 	void startSequence( Transform trigger )
 	{
 		print ("Start of Dark Queen storm bringer sequence.");
+		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+		playerController = playerObject.GetComponent<PlayerController>();
 
 		//Slowdown player and remove player control
 		playerController.placePlayerInCenterLane();

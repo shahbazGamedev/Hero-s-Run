@@ -27,9 +27,6 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 
-		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		playerController = playerObject.GetComponent<PlayerController>();
-
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
 	
@@ -62,6 +59,9 @@ public class BlizzardRefugeSequence : MonoBehaviour {
 	void startSequence( Transform trigger )
 	{
 		//Slowdown player and remove player control
+		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+		playerController = playerObject.GetComponent<PlayerController>();
+
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
 		StartCoroutine( playerController.slowDownPlayer(walkDistance, afterPlayerSlowdown, trigger ) );
