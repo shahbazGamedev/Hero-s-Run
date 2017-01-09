@@ -55,6 +55,19 @@ public class LevelData : MonoBehaviour {
 		}
 	}
 	
+	public MultiplayerInfo getMultiplayerInfo( int multiplayerNumber )
+	{
+		if( multiplayerNumber < 0 || multiplayerNumber >= multiplayerList.Count )
+		{
+			Debug.LogError("LevelData-getMultiplayerInfo: multiplayer number specified, " + multiplayerNumber + ", is out of range." );
+			return null;
+		}
+		else
+		{		
+			return multiplayerList[multiplayerNumber];
+		}
+	}
+
 	//This method sets the skybox material as well as the light intensity and direction 
 	//for the current level. The skybox materials should be located under the Skybox directory under Resources.
 	public void setSunParameters( SunType sunType )
@@ -269,6 +282,89 @@ public class LevelData : MonoBehaviour {
 		dynamicFog.UpdateMaterialProperties();
 	}
 
+	//Returns the level run start speed adjusted according to the difficulty level of the game.
+	//The RunStartSpeed is higher in Heroic mode than in Normal mode for example.
+	public float getRunStartSpeed()
+	{
+		float adjustedRunStartSpeed;
+		if( GameManager.Instance.isMultiplayer() )
+		{
+			adjustedRunStartSpeed = multiplayerList[0].RunStartSpeed; //HACK
+		}
+		else
+		{
+			adjustedRunStartSpeed = LevelManager.Instance.getCurrentEpisodeInfo().RunStartSpeed;
+		}
+		switch (PlayerStatsManager.Instance.getDifficultyLevel())
+		{
+			case DifficultyLevel.Normal:
+			adjustedRunStartSpeed = adjustedRunStartSpeed; //Base value is Normal, so no multiplier
+			break;
+				
+			case DifficultyLevel.Heroic:
+			adjustedRunStartSpeed = adjustedRunStartSpeed * 1.15f;
+			break;
+				
+			case DifficultyLevel.Legendary:
+			adjustedRunStartSpeed = adjustedRunStartSpeed * 1.3f;
+			break;
+			
+		}
+		return adjustedRunStartSpeed;
+	}
+
+	//Returns the level run acceleration adjusted according to the difficulty level of the game.
+	//The RunAcceleration is higher in Heroic mode than in Normal mode for example.
+	public float getRunAcceleration()
+	{
+		float adjustedRunAcceleration;
+		if( GameManager.Instance.isMultiplayer() )
+		{
+			adjustedRunAcceleration = multiplayerList[0].RunAcceleration; //HACK
+		}
+		else
+		{
+			adjustedRunAcceleration = LevelManager.Instance.getCurrentEpisodeInfo().RunAcceleration;
+		}
+		switch (PlayerStatsManager.Instance.getDifficultyLevel())
+		{
+
+		case DifficultyLevel.Normal:
+			adjustedRunAcceleration = adjustedRunAcceleration; //Base value is Normal, so no multiplier
+			break;
+			
+		case DifficultyLevel.Heroic:
+			adjustedRunAcceleration = adjustedRunAcceleration * 1.15f;
+			break;
+			
+		case DifficultyLevel.Legendary:
+			adjustedRunAcceleration = adjustedRunAcceleration * 1.3f;
+			break;
+			
+		}
+		return adjustedRunAcceleration;
+	}
+
+	//Returns the turn speed multiplier. To make turning easier, we slow down the player.
+	//In Normal mode, the player is slowed a lot, in Heroic mode, a bit less, and not at all in Legendary mode.
+	public float getRunSpeedTurnMultiplier()
+	{
+		switch (PlayerStatsManager.Instance.getDifficultyLevel())
+		{
+			case DifficultyLevel.Normal:
+			return 0.9f;
+				
+			case DifficultyLevel.Heroic:
+			return 0.95f;
+				
+			case DifficultyLevel.Legendary:
+			return 1f;
+			
+			default:
+			return 0.9f;
+		}
+	}
+
 	[System.Serializable]
 	public class EpisodeInfo
 	{
@@ -308,72 +404,6 @@ public class LevelData : MonoBehaviour {
 		[Header("Tile Groups")]
 		public List<TileGroupType> tileGroupList = new List<TileGroupType>();
 		
-		//Returns the level run start speed adjusted according to the difficulty level of the game.
-		//The RunStartSpeed is higher in Heroic mode than in Normal mode for example.
-		public float getRunStartSpeed()
-		{
-			float adjustedRunStartSpeed = RunStartSpeed;
-			switch (PlayerStatsManager.Instance.getDifficultyLevel())
-			{
-				case DifficultyLevel.Normal:
-				adjustedRunStartSpeed = RunStartSpeed; //Base value is Normal, so no multiplier
-				break;
-					
-				case DifficultyLevel.Heroic:
-				adjustedRunStartSpeed = RunStartSpeed * 1.15f;
-				break;
-					
-				case DifficultyLevel.Legendary:
-				adjustedRunStartSpeed = RunStartSpeed * 1.3f;
-				break;
-				
-			}
-			return adjustedRunStartSpeed;
-		}
-
-		//Returns the level run acceleration adjusted according to the difficulty level of the game.
-		//The RunAcceleration is higher in Heroic mode than in Normal mode for example.
-		public float getRunAcceleration()
-		{
-			float adjustedRunAcceleration = RunAcceleration;
-			switch (PlayerStatsManager.Instance.getDifficultyLevel())
-			{
-
-			case DifficultyLevel.Normal:
-				adjustedRunAcceleration = RunAcceleration; //Base value is Normal, so no multiplier
-				break;
-				
-			case DifficultyLevel.Heroic:
-				adjustedRunAcceleration = RunAcceleration * 1.15f;
-				break;
-				
-			case DifficultyLevel.Legendary:
-				adjustedRunAcceleration = RunAcceleration * 1.3f;
-				break;
-				
-			}
-			return adjustedRunAcceleration;
-		}
-
-		//Returns the turn speed multiplier. To make turning easier, we slow down the player.
-		//In Normal mode, the player is slowed a lot, in Heroic mode, a bit less, and not at all in Legendary mode.
-		public float getRunSpeedTurnMultiplier()
-		{
-			switch (PlayerStatsManager.Instance.getDifficultyLevel())
-			{
-				case DifficultyLevel.Normal:
-				return 0.9f;
-					
-				case DifficultyLevel.Heroic:
-				return 0.95f;
-					
-				case DifficultyLevel.Legendary:
-				return 1f;
-				
-				default:
-				return 0.9f;
-			}
-		}
 	}
 
 	[System.Serializable]

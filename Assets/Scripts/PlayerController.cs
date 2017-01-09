@@ -384,14 +384,14 @@ sc.playCutscene(CutsceneType.Checkpoint);
 	{
 		//Use the level data to determine what the start run speed and run acceleration should be since they can vary
 		//from eoisode to episode. Final episodes are more difficult than earlier levels.
-		LevelData.EpisodeInfo episodeInfo = LevelManager.Instance.getCurrentEpisodeInfo();
+		LevelData levelData = LevelManager.Instance.getLevelData();
 		//Note: getRunStartSpeed & getRunAcceleration return the values adjusted according to the difficulty level of the game.
 		//The RunStartSpeed is higher in Heroic mode than in normal mode for example.
-		levelRunStartSpeed = episodeInfo.getRunStartSpeed();
-		runAcceleration = episodeInfo.getRunAcceleration();
+		levelRunStartSpeed = levelData.getRunStartSpeed();
+		runAcceleration = levelData.getRunAcceleration();
 		//We need to set this here so that the troll can get the player's speed.
 		newRunSpeed = levelRunStartSpeed;
-		runSpeedTurnMultiplier = episodeInfo.getRunSpeedTurnMultiplier();
+		runSpeedTurnMultiplier = levelData.getRunSpeedTurnMultiplier();
 	}
 	
 	public void startRunning()

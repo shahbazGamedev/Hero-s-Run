@@ -281,6 +281,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		Destroy( hero.GetComponent<PlayerHealth>() );
 		Destroy( hero.GetComponent<PlayerShooting>() );
 		Destroy( hero.GetComponent<Player>() );
+		//Destroy( hero.GetComponent<NetworkTransformVisualizer>() );
 		Destroy( hero.GetComponent<NetworkTransform>() );
 		Destroy( hero.GetComponent<NetworkAnimator>() );
 		Destroy( hero.GetComponent<NetworkIdentity>() ); //Do this one last because other components depend on it
