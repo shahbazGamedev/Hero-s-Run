@@ -17,7 +17,7 @@ public class TakeScreenshot : MonoBehaviour {
 	int pictureHeight;
 	int borderWidth;
 	Camera screenShotCamera;
-	public Light pointLight;
+	Light cameraFlash;
 	Texture2D screenShot;
 	public Button cameraButton;
 	public Image picturePreview;
@@ -33,15 +33,10 @@ public class TakeScreenshot : MonoBehaviour {
 	RenderTexture renderTexture;
 	public PictureRatio pictureRatio = PictureRatio.POLAROID_4_5;
 
-	void Awake()
+	void Start()
 	{
-		screenShotCamera = GetComponent<Camera>();
-
 		//Default value is facing player
 		setCameraDirection();
-
-		screenShotCamera.enabled = false;
-		pointLight.gameObject.SetActive( false );
 
 		calculatePictureSize();
 
@@ -114,8 +109,8 @@ public class TakeScreenshot : MonoBehaviour {
 		pictureCamera.enabled = true;
 		if( flashLightIntensity > 0 )
 		{
-			pointLight.intensity = flashLightIntensity;
-			pointLight.gameObject.SetActive( true );
+			cameraFlash.intensity = flashLightIntensity;
+			cameraFlash.gameObject.SetActive( true );
 		}
 		pictureCamera.targetTexture = renderTexture;
 		pictureCamera.Render();
@@ -132,7 +127,7 @@ public class TakeScreenshot : MonoBehaviour {
 		pictureCamera.targetTexture = null;
 		RenderTexture.active = null; 
 		pictureCamera.enabled = false;
-		pointLight.gameObject.SetActive( false );
+		cameraFlash.gameObject.SetActive( false );
 		selfieTaken = true;
 		fadeInPicturePreview();
 		
@@ -171,12 +166,14 @@ public class TakeScreenshot : MonoBehaviour {
 	{
 		GameManager.gameStateEvent += GameStateChange;
 		TakePictureTrigger.takePictureNowTrigger += TakePictureNowTrigger;
+		PlayerController.localPlayerCreated += LocalPlayerCreated;
 	}
 	
 	void OnDisable()
 	{
 		GameManager.gameStateEvent -= GameStateChange;
 		TakePictureTrigger.takePictureNowTrigger -= TakePictureNowTrigger;
+		PlayerController.localPlayerCreated -= LocalPlayerCreated;
 	}
 
 
@@ -185,14 +182,23 @@ public class TakeScreenshot : MonoBehaviour {
 	
 		if( newState == GameState.Normal )
 		{
-			//cameraButton.gameObject.SetActive( true );
+			cameraButton.gameObject.SetActive( true );
 		}
 		else
 		{
-			//LeanTween.cancel( gameObject );
-			//cameraButton.gameObject.SetActive( false );
-			//hidePicturePreview();
+			LeanTween.cancel( gameObject );
+			cameraButton.gameObject.SetActive( false );
+			hidePicturePreview();
 		}
+	}
+
+	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
+	{
+		GameObject screenShotCameraObject = playerTransform.FindChild("screenShotCamera").gameObject;
+		screenShotCamera = screenShotCameraObject.GetComponent<Camera>();
+		cameraFlash = screenShotCameraObject.transform.FindChild("Camera Flash").GetComponent<Light>();
+		screenShotCamera.enabled = false;
+		cameraFlash.gameObject.SetActive( false );
 	}
 
 	void TakePictureNowTrigger( Camera pictureCamera, float flashLightIntensity )
