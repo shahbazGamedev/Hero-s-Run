@@ -3273,6 +3273,9 @@ public sealed class PlayerController : MonoBehaviour {
 		if( GameManager.Instance.isMultiplayer() )
 		{
 			networkAnimator.SetTrigger( trigger );
+
+			if (NetworkServer.active) 
+   				anim.ResetTrigger( trigger ); //HACK to fix Unity bug where anim plays twice on the host
 		}
 		else
 		{
