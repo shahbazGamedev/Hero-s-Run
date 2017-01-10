@@ -3270,8 +3270,14 @@ public sealed class PlayerController : MonoBehaviour {
 
 	void setAnimationTrigger( int trigger )
 	{
-		if( networkAnimator != null ) networkAnimator.SetTrigger( trigger );
-		anim.SetTrigger( trigger );
+		if( GameManager.Instance.isMultiplayer() )
+		{
+			networkAnimator.SetTrigger( trigger );
+		}
+		else
+		{
+			anim.SetTrigger( trigger );
+		}
 	}
 
 } 

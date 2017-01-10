@@ -12,13 +12,19 @@ public class Torch : MonoBehaviour {
 
 	void createTorch()
 	{
-		Transform torchHolder = transform.Find("Hero/BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand");
-		torch = (GameObject)Instantiate(Torch_Prefab, Vector3.zero, Quaternion.identity );
-		torch.name = "Torch";
-		torch.transform.SetParent( torchHolder, false );
-		torch.transform.localPosition = new Vector3( 0.08f,0.051f,0.161f );
-		torch.transform.localRotation = Quaternion.Euler( -84.7f, 177f, -540f );
-
+		Transform torchHolder = transform.Find("Hero_prefab/BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand");
+		if( torchHolder != null )
+		{
+			torch = (GameObject)Instantiate(Torch_Prefab, Vector3.zero, Quaternion.identity );
+			torch.name = "Torch";
+			torch.transform.SetParent( torchHolder, false );
+			torch.transform.localPosition = new Vector3( 0.08f,0.051f,0.161f );
+			torch.transform.localRotation = Quaternion.Euler( -84.7f, 177f, -540f );
+		}
+		else
+		{
+			Debug.LogError("Torch-createTorch error: unable to find torch holder. Verify the transform hierarchy. It should start with Hero_prefab.");
+		}
 	}
 
 	public void enableTorch( bool enable )
