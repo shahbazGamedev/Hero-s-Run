@@ -288,29 +288,12 @@ public sealed class PlayerController : MonoBehaviour {
 
 	void Awake()
 	{
-		//GameObject hero;
-		print("isMultiplayer: " + GameManager.Instance.isMultiplayer() );
-		if(PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
-		{
-			//hero = (GameObject)Instantiate(Hero_Prefab, Vector3.zero, Quaternion.identity ) ;
-		}
-		else
-		{
-			//hero = (GameObject)Instantiate(Heroine_Prefab, Vector3.zero, Quaternion.identity ) ;
-		}
 		Transform blobShadowProjectorObject = transform.FindChild("Blob Shadow Projector");
 		if( blobShadowProjectorObject == null )
 		{
 			Debug.LogError("PlayerController-error: Unable to find, Blob Shadow Projector." );
 		}
 		shadowProjector = blobShadowProjectorObject.GetComponent<Projector>();
-
-		//hero.transform.parent = transform;
-	//hero.transform.localPosition = Vector3.zero;
-	//hero.transform.localRotation = Quaternion.identity;
-
-		//hero.name = "Hero";
-		//hero.SetActive( true );
 
 		//Calculate the minimum swipe distance in pixels
         float screenDiagonalSize = Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height);
@@ -321,10 +304,11 @@ public sealed class PlayerController : MonoBehaviour {
 		networkAnimator = GetComponent<NetworkAnimator>();
 		audioSource = GetComponent<AudioSource>();
 
+		loadPlayerSkin();
+
 		controller = GetComponent<CharacterController>();
 		controllerOriginalCenter = controller.center;
 		controllerOriginalRadius = controller.radius;
-
 
 		GameObject Troll = GameObject.FindGameObjectWithTag("Troll");
 		trollController = Troll.GetComponent<TrollController>();
@@ -355,6 +339,29 @@ public sealed class PlayerController : MonoBehaviour {
 		Transform cutSceneCamera = transform.FindChild("CutsceneCamera");
 		Skybox skyBox = (Skybox) cutSceneCamera.GetComponent("Skybox");
 		skyBox.material = LevelManager.Instance.getLevelData().skyBoxMaterial;
+	}
+
+	void loadPlayerSkin()
+	{
+		if( !GameManager.Instance.isMultiplayer() )
+		{
+			GameObject hero;
+			if(PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
+			{
+				hero = (GameObject)Instantiate(Hero_Prefab, Vector3.zero, Quaternion.identity ) ;
+			}
+			else
+			{
+				hero = (GameObject)Instantiate(Heroine_Prefab, Vector3.zero, Quaternion.identity ) ;
+			}
+			hero.transform.parent = transform;
+			hero.transform.localPosition = Vector3.zero;
+			hero.transform.localRotation = Quaternion.identity;
+	
+			hero.name = "Hero";
+			GetComponent<Animator>().avatar = hero.GetComponent<PlayerSkinInfo>().animatorAvatar;
+			hero.SetActive( true );
+		}
 	}
 
 	void Start()

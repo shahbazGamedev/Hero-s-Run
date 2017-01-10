@@ -11,8 +11,15 @@ public class Player : NetworkBehaviour
     [SerializeField] ToggleEvent onToggleLocal;
     [SerializeField] ToggleEvent onToggleRemote;
     [SerializeField] float respawnTime = 5f;
+	public GameObject Hero_Prefab;
+	public GameObject Heroine_Prefab;
 
-    void Start()
+    void Awake()
+    {
+		loadPlayerSkin();
+    }
+
+   	void Start()
     {
         EnablePlayer ();
     }
@@ -55,4 +62,27 @@ public class Player : NetworkBehaviour
 
         EnablePlayer ();
     }
+
+	void loadPlayerSkin()
+	{
+		if( GameManager.Instance.isMultiplayer() )
+		{
+			GameObject hero;
+			if(PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
+			{
+				hero = (GameObject)Instantiate(Hero_Prefab, Vector3.zero, Quaternion.identity ) ;
+			}
+			else
+			{
+				hero = (GameObject)Instantiate(Heroine_Prefab, Vector3.zero, Quaternion.identity ) ;
+			}
+			hero.transform.parent = transform;
+			hero.transform.localPosition = Vector3.zero;
+			hero.transform.localRotation = Quaternion.identity;
+	
+			hero.name = "Hero";
+			GetComponent<Animator>().avatar = hero.GetComponent<PlayerSkinInfo>().animatorAvatar;
+			hero.SetActive( true );
+		}
+	}
 }

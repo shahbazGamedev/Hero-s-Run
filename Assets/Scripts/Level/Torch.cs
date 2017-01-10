@@ -12,7 +12,7 @@ public class Torch : MonoBehaviour {
 
 	void createTorch()
 	{
-		Transform torchHolder = transform.Find("Hero_prefab/BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand");
+		Transform torchHolder = transform.Find("Hero/BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand");
 		if( torchHolder != null )
 		{
 			torch = (GameObject)Instantiate(Torch_Prefab, Vector3.zero, Quaternion.identity );
@@ -23,7 +23,7 @@ public class Torch : MonoBehaviour {
 		}
 		else
 		{
-			Debug.LogError("Torch-createTorch error: unable to find torch holder. Verify the transform hierarchy. It should start with Hero_prefab.");
+			Debug.LogError("Torch-createTorch error: unable to find torch holder. Verify the transform hierarchy. It should start with Hero.");
 		}
 	}
 
