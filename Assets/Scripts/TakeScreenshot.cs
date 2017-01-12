@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-
 using UnityEngine.UI;
 
 public enum PictureRatio {
@@ -33,11 +32,8 @@ public class TakeScreenshot : MonoBehaviour {
 	RenderTexture renderTexture;
 	public PictureRatio pictureRatio = PictureRatio.POLAROID_4_5;
 
-	void Start()
-	{
-		//Default value is facing player
-		setCameraDirection();
-
+	void createRenderTexture()
+	{	
 		calculatePictureSize();
 
 		for( int i = 0; i < screenShot.width; i++ )
@@ -194,11 +190,20 @@ public class TakeScreenshot : MonoBehaviour {
 
 	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
 	{
+		initialise( playerTransform );
+	}
+
+	void initialise( Transform playerTransform )
+	{
+		Debug.LogWarning("TakeScreenshot-initialise for " + playerTransform.name );
 		GameObject screenShotCameraObject = playerTransform.FindChild("screenShotCamera").gameObject;
 		screenShotCamera = screenShotCameraObject.GetComponent<Camera>();
 		cameraFlash = screenShotCameraObject.transform.FindChild("Camera Flash").GetComponent<Light>();
 		screenShotCamera.enabled = false;
 		cameraFlash.gameObject.SetActive( false );
+		createRenderTexture();
+		//Default value is facing player
+		setCameraDirection();
 	}
 
 	void TakePictureNowTrigger( Camera pictureCamera, float flashLightIntensity )
@@ -267,4 +272,5 @@ public class TakeScreenshot : MonoBehaviour {
 		}
 		return flashIntensity;
 	}
+
 }
