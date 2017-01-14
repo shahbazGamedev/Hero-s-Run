@@ -188,6 +188,7 @@ public class TreasureIslandManager : MonoBehaviour {
 			levelLoading = true;
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);
+			GameManager.Instance.setGameState(GameState.WorldMapNoPopup);
 			SceneManager.LoadScene( (int)GameScenes.WorldMap );
 		}
 	}
