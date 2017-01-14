@@ -38,7 +38,8 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 
 	void Start()
 	{
-		Debug.Log("\nENTERING MULTIPLAYER");
+		minimumPlayersToStartMatch = LevelManager.Instance.getNumberOfPlayersRequired();
+		Debug.Log("\nENTERING MULTIPLAYER " + minimumPlayersToStartMatch );
 	    mpNetworkLobbyManager = this;
 	    DontDestroyOnLoad(gameObject);
 	}

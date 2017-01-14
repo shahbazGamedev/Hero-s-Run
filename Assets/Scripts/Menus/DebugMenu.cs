@@ -18,6 +18,7 @@ public class DebugMenu : MonoBehaviour {
 	public Text facebookName;
 	public Text toggleOnlyUseUniqueTilesText;
 	public Text clearAssetBundleCacheText;
+	public Text toggleNumberOfPlayersRequiredText;
 
 	// Use this for initialization
 	void Start () {
@@ -44,6 +45,7 @@ public class DebugMenu : MonoBehaviour {
 		{
 			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: Off";
 		}
+		toggleNumberOfPlayersRequiredText.text = "Number of players required: " + LevelManager.Instance.getNumberOfPlayersRequired().ToString();
 
 		updatePlayerStats();
 	}
@@ -131,6 +133,21 @@ public class DebugMenu : MonoBehaviour {
 		GameManager.Instance.journalData.unlockAllEntries(); //also takes care of saving
 	}
 
+	public void toggleOnlyUseUniqueTiles()
+	{
+		Debug.Log("toggleOnlyUseUniqueTiles");
+		UISoundManager.uiSoundManager.playButtonClick();
+		LevelManager.Instance.setOnlyUseUniqueTiles( !LevelManager.Instance.getOnlyUseUniqueTiles() );
+		if( LevelManager.Instance.getOnlyUseUniqueTiles() )
+		{
+			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: On";
+		}
+		else
+		{
+			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: Off";
+		}
+	}
+
 	public void clearAssetBundleCache()
 	{
 		Debug.Log("clearAssetBundleCache");
@@ -146,19 +163,19 @@ public class DebugMenu : MonoBehaviour {
 		}
 	}
 
-	public void toggleOnlyUseUniqueTiles()
+	public void toggleNumberOfPlayersRequired()
 	{
-		Debug.Log("toggleOnlyUseUniqueTiles");
+		Debug.Log("toggleNumberOfPlayersRequired");
 		UISoundManager.uiSoundManager.playButtonClick();
-		LevelManager.Instance.setOnlyUseUniqueTiles( !LevelManager.Instance.getOnlyUseUniqueTiles() );
-		if( LevelManager.Instance.getOnlyUseUniqueTiles() )
+		if( LevelManager.Instance.getNumberOfPlayersRequired() == 1 )
 		{
-			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: On";
+			LevelManager.Instance.setNumberOfPlayersRequired( 2 );
 		}
-		else
+		else if( LevelManager.Instance.getNumberOfPlayersRequired() == 2 )
 		{
-			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: Off";
+			LevelManager.Instance.setNumberOfPlayersRequired( 1 );
 		}
+		toggleNumberOfPlayersRequiredText.text = "Number of players required: " + LevelManager.Instance.getNumberOfPlayersRequired().ToString();
 	}
 
 	void updatePlayerStats()
