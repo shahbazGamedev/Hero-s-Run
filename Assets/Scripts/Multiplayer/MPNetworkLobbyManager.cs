@@ -18,13 +18,81 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 	public int minimumPlayersToStartMatch = 2;
 	bool levelLoading = false;
 	HUDMultiplayer hudMultiplayer;
-	static short MsgLevelSceneLoaded = MsgType.Highest + 1;
+	bool startedCountdown = false;
+	//In the Network Manager component, you must put your player prefabs 
+    //in the Spawn Info -> Registered Spawnable Prefabs section 
+    public short playerPrefabIndex;
+	public Dictionary<int,int> dico = new Dictionary<int,int>();
+	public class MsgTypes
+	{
+		public const short PlayerPrefab = MsgType.Highest + 1;
+		
+		public class PlayerPrefabMsg : MessageBase
+		{
+			public short playerControllerId;
+			public int connectionId;    
+			public int prefabIndex;
+			public string playerName;
+		}
+	}
 
 	void Start()
 	{
 		Debug.Log("\nENTERING MULTIPLAYER");
 	    mpNetworkLobbyManager = this;
 	    DontDestroyOnLoad(gameObject);
+	}
+
+	public override void OnStartServer()
+	{
+		NetworkServer.RegisterHandler(MsgTypes.PlayerPrefab, OnResponsePrefab);
+		base.OnStartServer();
+	}
+
+	public override void OnStopServer()
+	{
+		NetworkServer.UnregisterHandler(MsgTypes.PlayerPrefab);
+		base.OnStopServer();
+	}
+
+	//On server
+	public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
+	{
+		Debug.Log("OnServerAddPlayer: conn.connectionId: " + conn.connectionId + " playerControllerId: " + playerControllerId );
+
+		MsgTypes.PlayerPrefabMsg msg = new MsgTypes.PlayerPrefabMsg();
+		msg.playerControllerId = playerControllerId;
+		msg.connectionId = conn.connectionId;
+
+		//Ask the player that just got added his player information such as his name and his prefab index
+		NetworkServer.SendToClient(conn.connectionId, MsgTypes.PlayerPrefab, msg);
+	}
+
+	//On client
+	private void OnRequestPrefab(NetworkMessage netMsg)
+	{
+		MsgTypes.PlayerPrefabMsg msg = new MsgTypes.PlayerPrefabMsg();
+		//Recopy this info
+		MsgTypes.PlayerPrefabMsg serverMsg = netMsg.ReadMessage<MsgTypes.PlayerPrefabMsg>();
+		msg.connectionId = serverMsg.connectionId;
+		msg.playerControllerId = serverMsg.playerControllerId;
+		//Now copy the player info requested
+		msg.prefabIndex = (int) PlayerStatsManager.Instance.getAvatar();
+		msg.playerName = PlayerStatsManager.Instance.getUserName();
+		
+		//The server just asked us about our player information, so tell him
+		client.Send(MsgTypes.PlayerPrefab, msg);
+		Debug.Log("OnRequestPrefab: " + msg.connectionId + " " + msg.playerName  );
+	}
+	
+	//On server
+	private void OnResponsePrefab(NetworkMessage netMsg)
+	{
+		//The nice client just told us what his player information is
+		MsgTypes.PlayerPrefabMsg msg = netMsg.ReadMessage<MsgTypes.PlayerPrefabMsg>(); 
+		Debug.Log("OnResponsePrefab: " + msg.connectionId + " " + msg.playerName + " Prefab name " + gamePlayerPrefab.name );
+		dico.Add( msg.connectionId, msg.prefabIndex );
+		base.OnServerAddPlayer(netMsg.conn, msg.playerControllerId);
 	}
 
 	public void startMatch()
@@ -44,6 +112,7 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 
 	void OnMatchList(bool success, string extendedInfo, List<MatchInfoSnapshot> matchInfoSnapshotList )
 	{
+
 		if( success )
 		{
 			if( matchInfoSnapshotList.Count == 0)
@@ -103,7 +172,6 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 	{
 		Debug.Log("MPNetworkLobbyManager-OnLobbyClientEnter");
 		base.OnLobbyClientEnter();
-		client.RegisterHandler(MsgLevelSceneLoaded, LevelSceneLoadedMessageHandler);
 	}
 
 	public override void OnLobbyServerPlayersReady()
@@ -131,14 +199,26 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 
 	public override bool OnLobbyServerSceneLoadedForPlayer(GameObject lobbyPlayer, GameObject gamePlayer)
 	{
+		int id = -10;
+		for(int i = 0; i < lobbySlots.Length; i++ )
+		{
+			if( lobbySlots[i] == lobbyPlayer.GetComponent<NetworkLobbyPlayer>() )
+			{
+				id =lobbySlots[i].connectionToClient.connectionId;
+			}
+		}
+
+		gamePlayer.GetComponent<Player>().setSkin(dico[id]);
+		gamePlayer.GetComponent<Player>().setPlayerName(dico[id].ToString() );
 		Debug.Log("MPNetworkLobbyManager-OnLobbyServerSceneLoadedForPlayer" );
 		//This hook allows you to apply state data from the lobby-player to the game-player.
 		GetComponent<MPLobbyHook>().OnLobbyServerSceneLoadedForPlayer(this, lobbyPlayer, gamePlayer);
 		//Do we have enough players to start the match?
 		if( lobbyPlayerCount >=  minimumPlayersToStartMatch )
 		{
-			Debug.Log("MPNetworkLobbyManager-We have everyone: Start countdown after a few seconds" );
-			Invoke("startCountdown", 3f );
+			Debug.Log("MPNetworkLobbyManager-We have everyone." );
+			if( !startedCountdown ) Invoke("startCountdown", 3f );
+			startedCountdown = true;
 		}
 		return true;
 	}
@@ -147,7 +227,6 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 	{
 		base.OnClientSceneChanged( conn );
 		Debug.Log("MPNetworkLobbyManager-OnClientSceneChanged " + SceneManager.GetActiveScene().name + " levelPlayerCount " + levelPlayerCount );
-		informLevelSceneLoaded( lobbySlots[0].connectionToClient);
 	}
 
 	void startCountdown()
@@ -204,6 +283,7 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 			if( lobbyPlayerCount > 0 )lobbyPlayerCount--;
 		}
 		levelPlayerCount = 0;
+		startedCountdown = false;
 	}
 
 	public override void OnDestroyMatch(bool success, string extendedInfo)
@@ -228,8 +308,16 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 		cleanUpOnExit();
 	}
 
+	// Client
+	public override void OnClientConnect(NetworkConnection conn)
+	{
+		client.RegisterHandler(MsgTypes.PlayerPrefab, OnRequestPrefab);
+		base.OnClientConnect(conn);
+	}
+
 	public override void OnClientDisconnect(NetworkConnection conn)
 	{
+		client.UnregisterHandler(MsgTypes.PlayerPrefab);
 		base.OnClientDisconnect(conn);
 		Debug.LogWarning("MPNetworkLobbyManager-OnClientDisconnect");
 	}
@@ -270,17 +358,5 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 			SceneManager.LoadScene( (int)GameScenes.MultiplayerMatchmaking );
 		}
 	}	
-
-	class LevelSceneLoadedMsg : MessageBase { }
-	public void informLevelSceneLoaded(NetworkConnection conn)
-	{
-		//conn.Send(MsgLevelSceneLoaded, new LevelSceneLoadedMsg());
-	}
-
-	public void LevelSceneLoadedMessageHandler(NetworkMessage netMsg)
-	{
-		levelPlayerCount++;
-		Debug.Log("MPNetworkLobbyManager-levelPlayerCount " + levelPlayerCount);
-	}
 
 }
