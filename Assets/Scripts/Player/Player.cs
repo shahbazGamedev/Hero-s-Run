@@ -1,31 +1,67 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Events;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Linq;
 
 [System.Serializable]
 public class ToggleEvent : UnityEvent<bool>{}
 
 public class Player : NetworkBehaviour 
 {
+    [SyncVar (hook = "OnNameChanged")] public string playerName;
+    [SyncVar (hook = "OnColorChanged")] public Color playerColor;
+
     [SerializeField] ToggleEvent onToggleShared;
     [SerializeField] ToggleEvent onToggleLocal;
     [SerializeField] ToggleEvent onToggleRemote;
     [SerializeField] float respawnTime = 5f;
+
+    static List<Player> players = new List<Player> ();
+
+    NetworkAnimator anim;
+
 	public GameObject Hero_Prefab;
 	public GameObject Heroine_Prefab;
 	public int skinIndexTest;
-	public string playerNameTest;
+	public string myPlayerNameTest;
 
 	[SyncVar (hook = "OnSkinIndexChanged" ) ] int skinIndex;
-	[SyncVar (hook = "OnPlayerNameChanged" ) ] string playerName;
+	[SyncVar (hook = "OnPlayerNameChanged" ) ] string myPlayerName;
 
-   	void Start()
+	[Header("Distance Travelled")]
+	Vector3 previousPlayerPosition = Vector3.zero;
+	public float distanceTravelled = 0;
+
+    void Start()
     {
+        anim = GetComponent<NetworkAnimator> ();
+  
         EnablePlayer ();
+    }
+
+    [ServerCallback]
+    void OnEnable()
+    {
+        if (!players.Contains (this))
+            players.Add (this);
+    }
+
+    [ServerCallback]
+    void OnDisable()
+    {
+        if (players.Contains (this))
+            players.Remove (this);
     }
 
     void DisablePlayer()
     {
+        if (isLocalPlayer) 
+        {
+            //PlayerCanvas.canvas.HideReticule ();
+         }
+
         onToggleShared.Invoke (false);
 
         if (isLocalPlayer)
@@ -36,12 +72,96 @@ public class Player : NetworkBehaviour
 
     void EnablePlayer()
     {
+        if (isLocalPlayer) 
+        {
+            //PlayerCanvas.canvas.Initialize ();
+        }
+
         onToggleShared.Invoke (true);
 
         if (isLocalPlayer)
             onToggleLocal.Invoke (true);
         else
             onToggleRemote.Invoke (true);
+    }
+
+    public void Die()
+    {
+        if(isLocalPlayer || playerControllerId == -1)
+            anim.SetTrigger ("Died");
+        
+        if (isLocalPlayer) 
+        {
+            //PlayerCanvas.canvas.WriteGameStatusText ("You Died!");
+            //PlayerCanvas.canvas.PlayDeathAudio ();
+        }
+
+        DisablePlayer ();
+
+        Invoke ("Respawn", respawnTime);
+    }
+
+    void Respawn()
+    {
+        if(isLocalPlayer || playerControllerId == -1)
+            anim.SetTrigger ("Restart");
+
+        if (isLocalPlayer) 
+        {
+            Transform spawn = NetworkManager.singleton.GetStartPosition ();
+            transform.position = spawn.position;
+            transform.rotation = spawn.rotation;
+        }
+
+        EnablePlayer ();
+    }
+
+    void OnNameChanged(string value)
+    {
+        playerName = value;
+        gameObject.name = playerName;
+        GetComponentInChildren<Text> (true).text = playerName;
+    }
+
+    void OnColorChanged(Color value)
+    {
+        playerColor = value;
+        //GetComponentInChildren<RendererToggler> ().ChangeColor (playerColor);
+    }
+
+    [Server]
+    public void Won()
+    {
+        for (int i = 0; i < players.Count; i++)
+            players [i].RpcGameOver (netId, name);
+
+        Invoke ("BackToLobby", 5f);
+    }
+
+    [ClientRpc]
+    void RpcGameOver(NetworkInstanceId networkID, string name)
+    {
+        DisablePlayer ();
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        if (isLocalPlayer)
+        {
+            if (netId == networkID)
+			{
+                //PlayerCanvas.canvas.WriteGameStatusText ("You Won!");
+			}
+            else
+			{
+                //PlayerCanvas.canvas.WriteGameStatusText ("Game Over!\n" + name + " Won");
+			}
+        }
+    }
+
+    void BackToLobby()
+    {
+        FindObjectOfType<NetworkLobbyManager> ().SendReturnToLobby ();
     }
 
 	public void setSkin( int value )
@@ -58,13 +178,13 @@ public class Player : NetworkBehaviour
 
 	public void setPlayerName( string value )
     {
-		playerName = value;
+		myPlayerName = value;
     }
 
 	void OnPlayerNameChanged( string value )
     {
-		playerName = value;
-		playerNameTest = playerName;
+		myPlayerName = value;
+		myPlayerNameTest = myPlayerName;
     }
 	
 	void loadPlayerSkin()
@@ -100,22 +220,29 @@ public class Player : NetworkBehaviour
 		}
 	}
 
-    public void Die()
-    {
-        DisablePlayer ();
+	void Update()
+	{
+		updateDistanceTravelled();
+		//Update the race position of this player i.e. 1st place, 2nd place, and so forth
+		if( isLocalPlayer )
+		{
+			//Order the list using the distance travelled
+			players.Sort((x, y) => -x.distanceTravelled.CompareTo(y.distanceTravelled));
+			//Find where we sit in the list
+			int position = players.FindIndex(a => a.gameObject == this.gameObject);
+			HUDMultiplayer.hudMultiplayer.updateRacePosition(position + 1); //1 is first place, 2 is second place, etc.
+		}
+	}
 
-        Invoke ("Respawn", respawnTime);
-    }
+	void updateDistanceTravelled()
+	{
+		//Do not take height into consideration for distance travelled
+		Vector3 current = new Vector3(transform.position.x, 0, transform.position.z);
+		Vector3 previous = new Vector3(previousPlayerPosition.x, 0, previousPlayerPosition.z);
 
-    void Respawn()
-    {
-        if (isLocalPlayer) 
-        {
-            Transform spawn = NetworkManager.singleton.GetStartPosition ();
-            transform.position = spawn.position;
-            transform.rotation = spawn.rotation;
-        }
+		distanceTravelled = distanceTravelled + Vector3.Distance( current, previous );
 
-        EnablePlayer ();
-    }
+		previousPlayerPosition = transform.position;
+	}
+
 }

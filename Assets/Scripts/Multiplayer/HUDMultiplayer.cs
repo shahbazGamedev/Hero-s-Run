@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class HUDMultiplayer : MonoBehaviour {
 
 	[Header("General")]
+	public static HUDMultiplayer hudMultiplayer;
 	bool raceHasStarted = false;
 	[Header("Countdowm")]
 	public AudioClip beep; //Sound to play every second during countdown
@@ -14,19 +16,25 @@ public class HUDMultiplayer : MonoBehaviour {
 	public GameObject racePosition;
 	public Text racePositionText;
 	int previousPosition = -1;	//Used to avoid updating the canvas for nothing
-	bool first = false;
 
 	//Event management used to notify players to start running
 	public delegate void StartRunningEvent();
 	public static event StartRunningEvent startRunningEvent;
 
+	//Ensure there is only one HUDMultiplayer
 	void Awake()
 	{
 		//We don't want to display multiplayer information in Single player or call update for nothing
 		if( !GameManager.Instance.isMultiplayer() ) Destroy( this );
-		displayRacePosition( false );	
-	}
+		
+		if (hudMultiplayer == null)
+			hudMultiplayer = this;
+		else if (hudMultiplayer != this)
+			Destroy (gameObject);
 
+		displayRacePosition( false );
+	}
+	
 	public void initialiseCountdown()
 	{
 		goText.rectTransform.eulerAngles = new Vector3( 0,0,0 );
@@ -51,7 +59,6 @@ public class HUDMultiplayer : MonoBehaviour {
 			//Race is starting
 			raceHasStarted = true;
 			displayRacePosition( true );	
-			InvokeRepeating( "toggleFirst", 4f, 4f );
 		}
 	}
 
@@ -60,37 +67,17 @@ public class HUDMultiplayer : MonoBehaviour {
 		goText.gameObject.SetActive( false );
 	}
 
-	void toggleFirst()
-	{
-		first = !first;
-	}
-
 	void displayRacePosition( bool display )
 	{
 		racePosition.SetActive( display );
 	}
 
-	void Update()
+	public void updateRacePosition( int position )
 	{
-		//Update the race position of this player i.e. 1st place, 2nd place, and so forth
-		updateRacePosition();
-	}
-
-	void updateRacePosition()
-	{
-		int position = getRacePosition();
 		//For performance reasons, avoid updating strings and canvas if the position has not changed since the last update
 		if( position == previousPosition ) return;
 		previousPosition = position;
 		racePositionText.text = getRacePositionAsString(position);
-	}
-
-	int getRacePosition()
-	{
-		if( first )
-			return 1;
-		else
-			return 2;
 	}
 
 	string getRacePositionAsString( int position )

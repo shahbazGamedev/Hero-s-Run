@@ -310,7 +310,7 @@ public class LevelData : MonoBehaviour {
 			break;
 			
 		}
-		return adjustedRunStartSpeed;
+		return adjustedRunStartSpeed * Random.Range( 0.9f, 1f ); //Hack for testing
 	}
 
 	//Returns the level run acceleration adjusted according to the difficulty level of the game.
