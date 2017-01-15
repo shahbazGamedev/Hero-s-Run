@@ -271,6 +271,7 @@ public sealed class PlayerController : MonoBehaviour {
 	int speedBlendFactor = Animator.StringToHash("Speed");
 	int lookbackBlendFactor = Animator.StringToHash("Look_Back");
 	int Idle_LookTrigger = Animator.StringToHash("Idle_Look");
+	int Finish_LineTrigger = Animator.StringToHash("Finish_Line");
 
 	//For debugging swipes
 	public string reasonDiedAtTurn;
@@ -3273,6 +3274,11 @@ public sealed class PlayerController : MonoBehaviour {
 	{
 		Debug.Log("Multiplayer - PlayerController: received StartRunningEvent");
 		startRunning( false );
+	}
+
+	public void playVictoryAnimation()
+	{
+		setAnimationTrigger( Finish_LineTrigger );
 	}
 
 	void setAnimationTrigger( int trigger )

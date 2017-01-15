@@ -35,6 +35,7 @@ public class Player : NetworkBehaviour
 	[Header("Distance Travelled")]
 	Vector3 previousPlayerPosition = Vector3.zero;
 	public float distanceTravelled = 0;
+	public bool playerCrossedFinishLine = false;
 
     void Start()
     {
@@ -142,10 +143,8 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     void RpcGameOver(NetworkInstanceId networkID, string name)
     {
-        DisablePlayer ();
-
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+		Debug.LogWarning("Player-RpcGameOver: " + networkID + " " + name + " race position: " + (racePosition + 1) );
+        /*DisablePlayer ();
 
         if (isLocalPlayer)
         {
@@ -157,7 +156,7 @@ public class Player : NetworkBehaviour
 			{
                 //PlayerCanvas.canvas.WriteGameStatusText ("Game Over!\n" + name + " Won");
 			}
-        }
+        }*/
     }
 
     void BackToLobby()
@@ -224,17 +223,20 @@ public class Player : NetworkBehaviour
 	[ServerCallback]
 	void FixedUpdate()
 	{
-		//This is called on all the players on the server
-		updateDistanceTravelled();
-		//Update the race position of this player i.e. 1st place, 2nd place, and so forth
-		//Order the list using the distance travelled
-		players.Sort((x, y) => -x.distanceTravelled.CompareTo(y.distanceTravelled));
-		//Find where we sit in the list
-		int newPosition = players.FindIndex(a => a.gameObject == this.gameObject);
-		if( newPosition != previousRacePosition )
+		if( !playerCrossedFinishLine )
 		{
-			racePosition = newPosition; 	//Race position is a syncvar
-			previousRacePosition = racePosition;
+			//This is called on all the players on the server
+			updateDistanceTravelled();
+			//Update the race position of this player i.e. 1st place, 2nd place, and so forth
+			//Order the list using the distance travelled
+			players.Sort((x, y) => -x.distanceTravelled.CompareTo(y.distanceTravelled));
+			//Find where we sit in the list
+			int newPosition = players.FindIndex(a => a.gameObject == this.gameObject);
+			if( newPosition != previousRacePosition )
+			{
+				racePosition = newPosition; 	//Race position is a syncvar
+				previousRacePosition = racePosition;
+			}
 		}
 	}
 
@@ -259,6 +261,54 @@ public class Player : NetworkBehaviour
 			distanceTravelled = distanceTravelled + Vector3.Distance( current, previous );
 			previousPlayerPosition = transform.position;
 		}
+	}
+
+	[ServerCallback]
+	void OnTriggerEnter(Collider other)
+	{
+		if( other.CompareTag("Finish Line") )
+		{
+			//Player has reached the finish line
+			playerCrossedFinishLine = true;
+			Debug.Log ("Finish Line crossed by " + netId + " in race position " + racePosition );
+			if( isLocalPlayer )
+			{
+				GameManager.Instance.setGameState(GameState.Checkpoint);
+				StartCoroutine( GetComponent<PlayerController>().slowDownPlayer( 5.5f, afterPlayerSlowdown, other.transform ) );
+			}
+			if( isRaceFinished() ) returnToLobby();
+		}
+	}
+
+	[Server]
+	void afterPlayerSlowdown()
+	{
+		if( isLocalPlayer )
+		{
+			GetComponent<PlayerController>().playVictoryAnimation();
+		}
+	}
+
+    [Server]
+    public bool isRaceFinished()
+    {
+		bool raceFinished = true;
+        for (int i = 0; i < players.Count; i++)
+		{
+			if( !players[i].playerCrossedFinishLine ) return false;
+		}
+		return raceFinished;
+    }
+
+	[Server]
+	void returnToLobby()
+	{
+        for (int i = 0; i < players.Count; i++)
+		{
+	    	players[i].RpcGameOver (netId, name);
+		}
+
+		Invoke ("BackToLobby", 7f);
 	}
 
 }
