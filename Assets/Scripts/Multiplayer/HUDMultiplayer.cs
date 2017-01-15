@@ -22,7 +22,8 @@ public class HUDMultiplayer : MonoBehaviour {
 
 	void Awake()
 	{
-		//We don't want to display multiplayer information in Single player
+		//We don't want to display multiplayer information in Single player or call update for nothing
+		if( !GameManager.Instance.isMultiplayer() ) Destroy( this );
 		displayRacePosition( false );	
 	}
 
