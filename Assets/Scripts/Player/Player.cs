@@ -222,7 +222,7 @@ public class Player : NetworkBehaviour
 	}
 
 	[ServerCallback]
-	void Update()
+	void FixedUpdate()
 	{
 		//This is called on all the players on the server
 		updateDistanceTravelled();
@@ -233,28 +233,32 @@ public class Player : NetworkBehaviour
 		int newPosition = players.FindIndex(a => a.gameObject == this.gameObject);
 		if( newPosition != previousRacePosition )
 		{
-			racePosition = newPosition; 	//Race position is a sync var
+			racePosition = newPosition; 	//Race position is a syncvar
 			previousRacePosition = racePosition;
-			Debug.LogWarning( "Player-updateRacePositions-race position changed: " + racePosition + " for netID: " + netId + " Players Count: " +  players.Count );
 		}
 	}
 
 	void OnRacePositionChanged( int value )
 	{
 		racePosition = value;
-		Debug.LogWarning("Player-OnRacePositionChanged-racePosition: " + racePosition + " for netId " + netId );
 		if( isLocalPlayer ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
 	}
 
+	[Server]
 	void updateDistanceTravelled()
 	{
-		//Do not take height into consideration for distance travelled
-		Vector3 current = new Vector3(transform.position.x, 0, transform.position.z);
-		Vector3 previous = new Vector3(previousPlayerPosition.x, 0, previousPlayerPosition.z);
-
-		distanceTravelled = distanceTravelled + Vector3.Distance( current, previous );
-
-		previousPlayerPosition = transform.position;
+		//Important: The NetworkTransform component of the remote player can sometimes move a player backwards by a small amount.
+		//So ONLY update the distance if the player moved forward or at least stayed in the same position.
+		//The backward movement value is small but it will add up over time making the distance travelled  inacurate and this, in turn, will cause
+		//the race position value to be wrong.
+		if( transform.position.z >= previousPlayerPosition.z )
+		{
+			//Do not take height into consideration for distance travelled
+			Vector3 current = new Vector3(transform.position.x, 0, transform.position.z);
+			Vector3 previous = new Vector3(transform.position.x, 0, previousPlayerPosition.z);
+			distanceTravelled = distanceTravelled + Vector3.Distance( current, previous );
+			previousPlayerPosition = transform.position;
+		}
 	}
 
 }
