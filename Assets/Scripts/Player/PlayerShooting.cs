@@ -27,8 +27,8 @@ public class PlayerShooting : NetworkBehaviour
 
         if (Input.GetButtonDown ("Fire1") && ellapsedTime > shotCooldown) 
         {
-            ellapsedTime = 0f;
-            CmdFireShot (firePosition.position, firePosition.forward);
+           // ellapsedTime = 0f;
+           // CmdFireShot (firePosition.position, firePosition.forward);
         }
     }
 
