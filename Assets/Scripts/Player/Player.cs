@@ -29,6 +29,8 @@ public class Player : NetworkBehaviour
 
 	[SyncVar (hook = "OnSkinIndexChanged" ) ] int skinIndex;
 	[SyncVar (hook = "OnPlayerNameChanged" ) ] string myPlayerName;
+	[SyncVar (hook = "OnRacePositionChanged" ) ] public int racePosition = -1;
+	int previousRacePosition = -1;	//Used to avoid updating if the value has not changed
 
 	[Header("Distance Travelled")]
 	Vector3 previousPlayerPosition = Vector3.zero;
@@ -39,20 +41,19 @@ public class Player : NetworkBehaviour
         anim = GetComponent<NetworkAnimator> ();
   
         EnablePlayer ();
-    }
-
-    [ServerCallback]
-    void OnEnable()
-    {
-        if (!players.Contains (this))
+		if (!players.Contains (this))
+		{
             players.Add (this);
+		}
     }
 
     [ServerCallback]
     void OnDisable()
     {
         if (players.Contains (this))
+		{
             players.Remove (this);
+		}
     }
 
     void DisablePlayer()
@@ -220,18 +221,29 @@ public class Player : NetworkBehaviour
 		}
 	}
 
+	[ServerCallback]
 	void Update()
 	{
+		//This is called on all the players on the server
 		updateDistanceTravelled();
 		//Update the race position of this player i.e. 1st place, 2nd place, and so forth
-		if( isLocalPlayer )
+		//Order the list using the distance travelled
+		players.Sort((x, y) => -x.distanceTravelled.CompareTo(y.distanceTravelled));
+		//Find where we sit in the list
+		int newPosition = players.FindIndex(a => a.gameObject == this.gameObject);
+		if( newPosition != previousRacePosition )
 		{
-			//Order the list using the distance travelled
-			players.Sort((x, y) => -x.distanceTravelled.CompareTo(y.distanceTravelled));
-			//Find where we sit in the list
-			int position = players.FindIndex(a => a.gameObject == this.gameObject);
-			HUDMultiplayer.hudMultiplayer.updateRacePosition(position + 1); //1 is first place, 2 is second place, etc.
+			racePosition = newPosition; 	//Race position is a sync var
+			previousRacePosition = racePosition;
+			Debug.LogWarning( "Player-updateRacePositions-race position changed: " + racePosition + " for netID: " + netId + " Players Count: " +  players.Count );
 		}
+	}
+
+	void OnRacePositionChanged( int value )
+	{
+		racePosition = value;
+		Debug.LogWarning("Player-OnRacePositionChanged-racePosition: " + racePosition + " for netId " + netId );
+		if( isLocalPlayer ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
 	}
 
 	void updateDistanceTravelled()

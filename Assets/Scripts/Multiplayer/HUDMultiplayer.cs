@@ -15,7 +15,6 @@ public class HUDMultiplayer : MonoBehaviour {
 	[Header("Race Position")]
 	public GameObject racePosition;
 	public Text racePositionText;
-	int previousPosition = -1;	//Used to avoid updating the canvas for nothing
 
 	//Event management used to notify players to start running
 	public delegate void StartRunningEvent();
@@ -74,9 +73,6 @@ public class HUDMultiplayer : MonoBehaviour {
 
 	public void updateRacePosition( int position )
 	{
-		//For performance reasons, avoid updating strings and canvas if the position has not changed since the last update
-		if( position == previousPosition ) return;
-		previousPosition = position;
 		racePositionText.text = getRacePositionAsString(position);
 	}
 

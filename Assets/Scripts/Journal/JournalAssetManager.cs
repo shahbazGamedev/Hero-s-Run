@@ -96,7 +96,7 @@ public class JournalAssetManager : MonoBehaviour {
 
 		//Get all asset bundles 
 		string[] allAssetBundles = manifest.GetAllAssetBundles();
-		Debug.Log("Manifest name: " + manifest.name + " has " + allAssetBundles.Length + " bundles including all variants." );
+		//Debug.Log("Manifest name: " + manifest.name + " has " + allAssetBundles.Length + " bundles including all variants." );
 
 		//Load all asset bundles 
 		AssetBundle[] assetBundles = new AssetBundle[allAssetBundles.Length];
@@ -121,7 +121,6 @@ public class JournalAssetManager : MonoBehaviour {
 			}
 		}
 		//Save all the hashes locally in case the player goes offline
-Debug.Log("JournalAssetManager-Save all the hashes locally" );
 		GameManager.Instance.journalData.serializeJournalEntries();
 	}
 
@@ -136,13 +135,11 @@ Debug.Log("JournalAssetManager-Save all the hashes locally" );
 			//Get the hash from the manifest and store it for future use
 			hash = manifest.GetAssetBundleHash( assetBundleName );
 			//Save the hash in case the player goes offline
-			Debug.Log("JournalAssetManager-loadFromCacheOrDownload: using manifest hash for " + assetBundleName );
 			GameManager.Instance.journalData.assetBundleHashList.Add( new JournalData.AssetBundleHash( assetBundleName, hash.ToString() ) );
 		}
 		else
 		{
 			//Get the local hash from the dictionary. We are either offline or a network error occured.
-			Debug.Log("JournalAssetManager-loadFromCacheOrDownload: using local hash for " + assetBundleName );
 			if( GameManager.Instance.journalData.assetBundleHashDictionary.ContainsKey( assetBundleName ) )
 			{
 				hash = Hash128.Parse( GameManager.Instance.journalData.assetBundleHashDictionary[assetBundleName] );
@@ -163,7 +160,7 @@ Debug.Log("JournalAssetManager-Save all the hashes locally" );
 			yield break;
 		}
 		assetBundleDictionary.Add( assetBundleName, www.assetBundle );
-		Debug.Log("Adding asset bundle: " + assetBundleName + " to dictionary with hash " + hash.ToString() );
+		//Debug.Log("Adding asset bundle: " + assetBundleName + " to dictionary with hash " + hash.ToString() );
 		createAssetsFor( assetBundleName );
 	}
 
@@ -204,7 +201,6 @@ Debug.Log("JournalAssetManager-Save all the hashes locally" );
 		UnityEngine.Object[] prefabs = assetLoadAllTextRequest.allAssets;
 
 		entriesJson = Instantiate<TextAsset>(prefabs[0] as TextAsset );
-		Debug.Log("JournalAssetManager-Entries found: " + entriesJson.text );
 
 		GameObject.FindObjectOfType<JournalManager>().updateEntries( entriesJson.text );
 
@@ -220,7 +216,7 @@ Debug.Log("JournalAssetManager-Save all the hashes locally" );
 		yield return assetLoadAllSpriteRequest;
 		UnityEngine.Object[] prefabs = assetLoadAllSpriteRequest.allAssets;
 
-		Debug.Log("JournalAssetManager-Number of covers found: " + prefabs.Length);
+		//Debug.Log("JournalAssetManager-Number of covers found: " + prefabs.Length);
 		for( int i = 0; i < prefabs.Length; i++ )
 		{
 			covers.Add( prefabs[i].name, Instantiate<Sprite>(prefabs[i] as Sprite ) );
@@ -239,7 +235,7 @@ Debug.Log("JournalAssetManager-Save all the hashes locally" );
 		yield return assetLoadAllTextRequest;
 		UnityEngine.Object[] prefabs = assetLoadAllTextRequest.allAssets;
 
-		Debug.Log("JournalAssetManager-Number of texts found:  " + prefabs.Length);
+		//Debug.Log("JournalAssetManager-Number of texts found:  " + prefabs.Length);
 		for( int i = 0; i < prefabs.Length; i++ )
 		{
 			stories.Add( prefabs[i].name, Instantiate<TextAsset>(prefabs[i] as TextAsset ) );

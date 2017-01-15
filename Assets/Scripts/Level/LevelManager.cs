@@ -30,7 +30,7 @@ public class LevelManager {
 	//onlyUseUniqueTiles is only used for testing. This value is not saved. When enabled, only tile groups with a Frequency of Unique will appear
 	//in the level while in Story mode. This allows you to have shorter episodes with only the essential tile groups, typically, Start, any scripted sequence, and End.
 	bool onlyUseUniqueTiles = false;
-	int numberOfPlayersRequired = 1; //Used to debug multiplayer
+	int numberOfPlayersRequired = 2; //Used to debug multiplayer
 
 	public static LevelManager Instance
 	{

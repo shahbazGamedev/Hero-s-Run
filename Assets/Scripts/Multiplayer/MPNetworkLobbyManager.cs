@@ -21,7 +21,6 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 	bool startedCountdown = false;
 	//In the Network Manager component, you must put your player prefabs 
     //in the Spawn Info -> Registered Spawnable Prefabs section 
-    public short playerPrefabIndex;
 	public Dictionary<int,int> dico = new Dictionary<int,int>();
 	public class MsgTypes
 	{
@@ -285,6 +284,7 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 		}
 		levelPlayerCount = 0;
 		startedCountdown = false;
+		dico.Clear();
 	}
 
 	public override void OnDestroyMatch(bool success, string extendedInfo)
