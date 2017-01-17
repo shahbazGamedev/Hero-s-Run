@@ -15,6 +15,8 @@ public class HUDMultiplayer : MonoBehaviour {
 	[Header("Race Position")]
 	public GameObject racePosition;
 	public Text racePositionText;
+	[Header("Finish Flag")]
+	public Image finishFlag;
 
 	//Event management used to notify players to start running
 	public delegate void StartRunningEvent();
@@ -32,6 +34,7 @@ public class HUDMultiplayer : MonoBehaviour {
 			Destroy (gameObject);
 
 		displayRacePosition( false );
+		finishFlag.gameObject.SetActive( false );
 	}
 	
 	public void initialiseCountdown()
@@ -69,6 +72,11 @@ public class HUDMultiplayer : MonoBehaviour {
 	void displayRacePosition( bool display )
 	{
 		racePosition.SetActive( display );
+	}
+
+	public void displayFinishFlag( bool display )
+	{
+		finishFlag.gameObject.SetActive( display );
 	}
 
 	public void updateRacePosition( int position )

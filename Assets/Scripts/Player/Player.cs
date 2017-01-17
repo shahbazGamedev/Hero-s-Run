@@ -140,6 +140,25 @@ public class Player : NetworkBehaviour
         Invoke ("BackToLobby", 5f);
     }
 
+	[ClientRpc]
+	void RpcCrossedFinishLine(float triggerPositionZ )
+	{
+		if( isLocalPlayer )
+		{
+			//Hack so players dont bump into each other
+			if( racePosition == 0 ) transform.position = new Vector3( -1.3f, transform.position.y, transform.position.z );
+			if( racePosition == 1 ) transform.position = new Vector3( 1.3f, transform.position.y, transform.position.z );
+			GameManager.Instance.setGameState(GameState.Checkpoint);
+			StartCoroutine( GetComponent<PlayerController>().slowDownPlayer( 5.5f, afterPlayerSlowdown, triggerPositionZ ) );
+			HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
+		}
+	}
+
+	void afterPlayerSlowdown()
+	{
+		GetComponent<PlayerController>().playVictoryAnimation();
+	}
+
     [ClientRpc]
     void RpcGameOver(NetworkInstanceId networkID, string name)
     {
@@ -157,11 +176,6 @@ public class Player : NetworkBehaviour
                 //PlayerCanvas.canvas.WriteGameStatusText ("Game Over!\n" + name + " Won");
 			}
         }*/
-    }
-
-    void BackToLobby()
-    {
-        FindObjectOfType<NetworkLobbyManager> ().SendReturnToLobby ();
     }
 
 	public void setSkin( int value )
@@ -271,21 +285,8 @@ public class Player : NetworkBehaviour
 			//Player has reached the finish line
 			playerCrossedFinishLine = true;
 			Debug.Log ("Finish Line crossed by " + netId + " in race position " + racePosition );
-			if( isLocalPlayer )
-			{
-				GameManager.Instance.setGameState(GameState.Checkpoint);
-				StartCoroutine( GetComponent<PlayerController>().slowDownPlayer( 5.5f, afterPlayerSlowdown, other.transform ) );
-			}
+			RpcCrossedFinishLine( other.transform.position.z );
 			if( isRaceFinished() ) returnToLobby();
-		}
-	}
-
-	[Server]
-	void afterPlayerSlowdown()
-	{
-		if( isLocalPlayer )
-		{
-			GetComponent<PlayerController>().playVictoryAnimation();
 		}
 	}
 
@@ -310,5 +311,11 @@ public class Player : NetworkBehaviour
 
 		Invoke ("BackToLobby", 7f);
 	}
+
+    void BackToLobby()
+    {
+        FindObjectOfType<NetworkLobbyManager> ().ServerReturnToLobby ();
+    }
+
 
 }

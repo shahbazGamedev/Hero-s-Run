@@ -57,7 +57,7 @@ public class SocialMediaPopup : MonoBehaviour {
 		UISoundManager.uiSoundManager.playButtonClick();
 		freeUpPictureMemory();
 		GetComponent<Animator>().Play("Panel Slide Out");
-		Invoke("showPostLevelPopup", 1f );
+		if( GameManager.Instance.getGameState() == GameState.PostLevelPopup ) Invoke("showPostLevelPopup", 1f );
 		CancelInvoke("animateEllipsis");
 	}
 
