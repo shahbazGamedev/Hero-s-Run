@@ -3,35 +3,95 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+[NetworkSettings(channel=0,sendInterval=0.1f)]
 public class MPPlayerPositionSync : NetworkBehaviour {
 
-	[SyncVar]
+	[SyncVar (hook = "SyncPositionValues")]
 	private Vector3 syncPos;
 	[SerializeField] Transform myTransform;
-	[SerializeField] float lerpRate = 15f;
-	[SerializeField] float transmitRate = 0.25f;
+	private float lerpRate;
+	[SerializeField] float normalLerpRate = 16f;
+	[SerializeField] float fasterLerpRate = 27f;
 	
-	void OnEnable()
+	private Vector3 lastPos;
+	[SerializeField] float positionThreshold = 0.1f;
+
+	List<Vector3> syncPosList = new List<Vector3>();
+	[SerializeField] bool useHistoricalLerping = false;
+	[SerializeField] float closeEnough = 0.1f;
+	[SerializeField] float snapThreshold = 2f;
+
+	void Start()
 	{
-		InvokeRepeating( "TransmitPosition", 0, transmitRate );
+		lerpRate = normalLerpRate;
 	}
 
-	void OnDisable()
+	// Update is called once per frame
+	void Update ()
 	{
-		CancelInvoke();
+		LerpPosition();
 	}
 
 	// Update is called once per frame
 	void FixedUpdate ()
 	{
-		LerpPosition();
+		TransmitPosition();
 	}
 
 	void LerpPosition()
 	{
 		if( !isLocalPlayer )
 		{
+			if( useHistoricalLerping )
+			{
+				historicalLerping();
+			}
+			else
+			{
+				ordinaryLerping();
+			}
+		}
+	}
+
+	[Client]
+	void SyncPositionValues( Vector3 latestPos )
+	{
+		syncPos = latestPos;
+		if( useHistoricalLerping) syncPosList.Add(syncPos);
+	}
+
+	void ordinaryLerping()
+	{
+		if( Vector3.Distance( myTransform.position, lastPos ) > snapThreshold )
+		{
+			//Remote player is very desynchronised. Do not interpolate. Snap the remote player into the correct position.
+			myTransform.position = syncPos;
+		}
+		else
+		{
+			//Remote player is a little desynchronised. Interpolate to the correct position.
 			myTransform.position = Vector3.Lerp(myTransform.position, syncPos, Time.deltaTime * lerpRate );
+		}
+	}
+
+	void historicalLerping()
+	{
+		if( syncPosList.Count > 0 )
+		{
+			myTransform.position = Vector3.Lerp(myTransform.position, syncPosList[0], Time.deltaTime * lerpRate );
+			if( Vector3.Distance( myTransform.position, syncPosList[0] ) < closeEnough )
+			{
+				syncPosList.RemoveAt(0);
+			}
+
+			if( syncPosList.Count > 10 )
+			{
+				lerpRate = fasterLerpRate;
+			}
+			else
+			{
+				lerpRate = normalLerpRate;
+			}
 		}
 	}
 
@@ -43,9 +103,10 @@ public class MPPlayerPositionSync : NetworkBehaviour {
 	
 	void TransmitPosition()
 	{
-		if( isLocalPlayer )
+		if( isLocalPlayer && Vector3.Distance( myTransform.position, lastPos ) > positionThreshold )
 		{
 			CmdProvidePositionToServer( myTransform.position);
+			lastPos = myTransform.position;
 		}
 	}
 

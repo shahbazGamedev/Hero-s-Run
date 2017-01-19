@@ -58,14 +58,15 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 	//On server
 	public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
 	{
+		base.OnServerAddPlayer(conn, playerControllerId);
 		Debug.Log("OnServerAddPlayer: conn.connectionId: " + conn.connectionId + " playerControllerId: " + playerControllerId );
 
-		MsgTypes.PlayerPrefabMsg msg = new MsgTypes.PlayerPrefabMsg();
-		msg.playerControllerId = playerControllerId;
-		msg.connectionId = conn.connectionId;
+		//MsgTypes.PlayerPrefabMsg msg = new MsgTypes.PlayerPrefabMsg();
+		//msg.playerControllerId = playerControllerId;
+		//msg.connectionId = conn.connectionId;
 
 		//Ask the player that just got added his player information such as his name and his prefab index
-		NetworkServer.SendToClient(conn.connectionId, MsgTypes.PlayerPrefab, msg);
+		//NetworkServer.SendToClient(conn.connectionId, MsgTypes.PlayerPrefab, msg);
 	}
 
 	//On client
@@ -92,7 +93,7 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 		MsgTypes.PlayerPrefabMsg msg = netMsg.ReadMessage<MsgTypes.PlayerPrefabMsg>(); 
 		Debug.Log("OnResponsePrefab: " + msg.connectionId + " " + msg.playerName + " Prefab name " + gamePlayerPrefab.name );
 		dico.Add( msg.connectionId, msg.prefabIndex );
-		base.OnServerAddPlayer(netMsg.conn, msg.playerControllerId);
+		//base.OnServerAddPlayer(netMsg.conn, msg.playerControllerId);
 	}
 
 	public void startMatch()
@@ -172,6 +173,8 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 	{
 		Debug.Log("MPNetworkLobbyManager-OnLobbyClientEnter");
 		base.OnLobbyClientEnter();
+		levelLoading = false;
+
 	}
 
 	public override void OnLobbyServerPlayersReady()
@@ -208,8 +211,8 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 			}
 		}
 
-		gamePlayer.GetComponent<Player>().setSkin(dico[id]);
-		gamePlayer.GetComponent<Player>().setPlayerName(dico[id].ToString() );
+		//gamePlayer.GetComponent<Player>().setSkin(dico[id]);
+		//gamePlayer.GetComponent<Player>().setPlayerName(dico[id].ToString() );
 		Debug.Log("MPNetworkLobbyManager-OnLobbyServerSceneLoadedForPlayer" );
 		//This hook allows you to apply state data from the lobby-player to the game-player.
 		GetComponent<MPLobbyHook>().OnLobbyServerSceneLoadedForPlayer(this, lobbyPlayer, gamePlayer);
@@ -269,21 +272,26 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 
 	public void cleanUpOnExit()
 	{
+		Debug.LogWarning("MPNetworkLobbyManager-cleanUpOnExit" );
+		if( client != null ) client.Disconnect();
+
 		if( hostedMatchInfo != null )
 		{
-			matchMaker.DestroyMatch( hostedMatchInfo.networkId, 0, OnDestroyMatch );
+			if( matchMaker != null ) matchMaker.DestroyMatch( hostedMatchInfo.networkId, 0, OnDestroyMatch );
 			StopHost();
 			hostedMatchInfo = null;
 			lobbyPlayerCount = 0;
 		}
 		else if( joinedMatchInfo != null )
 		{
-			matchMaker.DropConnection(joinedMatchInfo.networkId, joinedMatchInfo.nodeId, 0, OnDropConnection );
+			if( matchMaker != null ) matchMaker.DropConnection(joinedMatchInfo.networkId, joinedMatchInfo.nodeId, 0, OnDropConnection );
 			joinedMatchInfo = null;
 			if( lobbyPlayerCount > 0 )lobbyPlayerCount--;
 		}
 		levelPlayerCount = 0;
 		startedCountdown = false;
+		Player.players.Clear();
+		StopClient();
 		dico.Clear();
 	}
 
@@ -334,10 +342,12 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 	{
 		if( sceneName == "Level" )
 		{
+			Debug.Log("MPNetworkLobbyManager-ServerChangeScene: sceneName is Level" );
 			base.ServerChangeScene( sceneName );
 		}
 		else if( sceneName == "MP Lobby" )
 		{
+			Debug.Log("MPNetworkLobbyManager-ServerChangeScene: sceneName is MP Lobby" );
 			StartCoroutine( returnToLobby() );
 		}
 		else if( sceneName == null )
@@ -352,8 +362,8 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 		if( !levelLoading )
 		{
 			Debug.Log("MPNetworkLobbyManager-returnToLobby");
+			cleanUpOnExit();
 			levelLoading = true;
-			GameManager.Instance.setMultiplayerMode( false );
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);
 			SceneManager.LoadScene( (int)GameScenes.MultiplayerMatchmaking );

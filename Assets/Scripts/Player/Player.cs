@@ -18,7 +18,7 @@ public class Player : NetworkBehaviour
     [SerializeField] ToggleEvent onToggleRemote;
     [SerializeField] float respawnTime = 5f;
 
-    static List<Player> players = new List<Player> ();
+    static public List<Player> players = new List<Player> ();
 
     NetworkAnimator anim;
 
@@ -36,6 +36,9 @@ public class Player : NetworkBehaviour
 	Vector3 previousPlayerPosition = Vector3.zero;
 	public float distanceTravelled = 0;
 	public bool playerCrossedFinishLine = false;
+
+    [SyncVar (hook = "OnAnimationTriggerChanged")]
+	int syncAnimationTrigger;
 
     void Start()
     {
@@ -162,7 +165,10 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     void RpcGameOver(NetworkInstanceId networkID, string name)
     {
-		Debug.LogWarning("Player-RpcGameOver: " + networkID + " " + name + " race position: " + (racePosition + 1) );
+        if (netId == networkID)
+		{
+			Debug.LogWarning("Player-RpcGameOver: " + networkID + " " + name + " race position: " + (racePosition + 1) );
+		}
         /*DisablePlayer ();
 
         if (isLocalPlayer)
@@ -308,7 +314,7 @@ public class Player : NetworkBehaviour
 		{
 	    	players[i].RpcGameOver (netId, name);
 		}
-
+		players.Clear();
 		Invoke ("BackToLobby", 7f);
 	}
 
@@ -316,6 +322,22 @@ public class Player : NetworkBehaviour
     {
         FindObjectOfType<NetworkLobbyManager> ().ServerReturnToLobby ();
     }
+
+
+
+	[Client]
+	void OnAnimationTriggerChanged( int animationTrigger )
+    {
+		syncAnimationTrigger = animationTrigger;
+		if( !isLocalPlayer ) GetComponent<Animator>().SetTrigger( animationTrigger );
+    }
+
+	[Command]
+	public void CmdProvideAnimationTriggerToServer( int animationTrigger )
+	{
+		syncAnimationTrigger = animationTrigger;
+	}
+
 
 
 }

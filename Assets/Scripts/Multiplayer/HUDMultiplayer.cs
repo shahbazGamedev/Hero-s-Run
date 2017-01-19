@@ -17,6 +17,8 @@ public class HUDMultiplayer : MonoBehaviour {
 	public Text racePositionText;
 	[Header("Finish Flag")]
 	public Image finishFlag;
+	[Header("Latency")]
+	public Text latency;
 
 	//Event management used to notify players to start running
 	public delegate void StartRunningEvent();
@@ -35,6 +37,7 @@ public class HUDMultiplayer : MonoBehaviour {
 
 		displayRacePosition( false );
 		finishFlag.gameObject.SetActive( false );
+		latency.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
 	}
 	
 	public void initialiseCountdown()
@@ -62,6 +65,11 @@ public class HUDMultiplayer : MonoBehaviour {
 			raceHasStarted = true;
 			displayRacePosition( true );	
 		}
+	}
+	
+	void Update()
+	{
+		if( latency.gameObject.activeSelf ) latency.text = MPNetworkLobbyManager.mpNetworkLobbyManager.client.GetRTT().ToString();
 	}
 
 	void hideGoText()
@@ -120,10 +128,12 @@ public class HUDMultiplayer : MonoBehaviour {
 		if( newState == GameState.Normal )
 		{
 			if( raceHasStarted) displayRacePosition( true );
+			latency.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
 		}
 		else
 		{
 			displayRacePosition( false );
+			latency.gameObject.SetActive( false );
 		}
 	}
 
