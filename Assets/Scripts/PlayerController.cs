@@ -3131,10 +3131,6 @@ public sealed class PlayerController : MonoBehaviour {
 
 		disableLookOverShoulder();
 
-		//Re-enable the player's blob shadow
-		//Moved to get_up_completed
-		//shadowProjector.enabled = true;
-
 		//Variable for swipe
 		touchStarted = false;
 
