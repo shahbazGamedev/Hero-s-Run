@@ -116,7 +116,8 @@ public enum TileSubType {
 public sealed class GenerateLevel  : MonoBehaviour {
 	
 	private LevelData levelData;
-	public GameObject singlePlayerHeroPrefab;
+	[SerializeField] GameObject singlePlayerHeroPrefab;
+	[SerializeField] GameObject singlePlayerTrollPrefab;
 	public const float TILE_SIZE = 36.4f;
 	const float UNDERNEATH_TILE_BY = 30f;
 	int tileDepthMult = 1; //A value of one means the tile depth is 1 x TILE_SIZE, a value of two means 2 x TILE_SIZE, etc.
@@ -160,8 +161,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	//For the Episode Progress Indicator - to know where to display the checkpoint indicators
 	List<int> indexOfCheckpointTiles = new List<int>();
 
-	GameObject hero;
-	
 	void Awake ()
 	{
 		//The activity indicator may have been started
@@ -271,8 +270,14 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		Camera.main.GetComponent<DynamicFogAndMist.DynamicFog>().enabled = currentEpisode.isFogEnabled;
 		if( currentEpisode.isFogEnabled ) levelData.setFogParameters(currentEpisode.sunType);
 
+		//Create the Troll because he does not exist in the level scene. The troll is not used in multiplayer.
+		GameObject troll = (GameObject)Instantiate( singlePlayerTrollPrefab );
+
 		//Create the Hero because he does not exist in the level scene
-		hero = (GameObject)Instantiate( singlePlayerHeroPrefab );
+		GameObject hero = (GameObject)Instantiate( singlePlayerHeroPrefab );
+
+		//The player needs to have a reference to the troll
+		hero.GetComponent<PlayerController>().setTrollController( troll.GetComponent<TrollController>() );
 
 		Debug.Log("GenerateLevel-CreateLevel: Level " + currentEpisode.episodeName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );

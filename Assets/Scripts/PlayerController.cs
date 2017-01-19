@@ -129,6 +129,8 @@ public sealed class PlayerController : MonoBehaviour {
 	float runSpeedAtTimeOfDeath = 0;
 	public float runSpeedAtTimeOfTurn;
 	public float runSpeedTurnMultiplier;
+	public float runSpeedAtTimeOfStumble;
+	public float stumbleRunSpeedMultiplier = 0.9f; //If the player stumbles, his speed will be multiplied by this number.
 
 	const float MAX_RUN_SPEED = 42f;
 	const float SLOW_DOWN_END_SPEED = 5f;
@@ -199,7 +201,7 @@ public sealed class PlayerController : MonoBehaviour {
 	//If the fall distance is less than DISTANCE_FOR_LAND_ANIMATION meters, the hero plays the Land animation; above, he plays the Stumble animation.
 	const float DISTANCE_FOR_LAND_ANIMATION = 34f;
 
-	public TrollController trollController;
+	TrollController trollController;
 	FairyController fairyController;
 	PowerUpManager powerUpManager;
 	public TakeScreenshot takeScreenshot;
@@ -311,8 +313,6 @@ public sealed class PlayerController : MonoBehaviour {
 		controllerOriginalCenter = controller.center;
 		controllerOriginalRadius = controller.radius;
 
-		GameObject Troll = GameObject.FindGameObjectWithTag("Troll");
-		trollController = Troll.GetComponent<TrollController>();
 		sc = GetComponent<SimpleCamera>();
 
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
@@ -440,7 +440,7 @@ public sealed class PlayerController : MonoBehaviour {
 			sc.playCutscene( CutsceneType.Start );
 			runStartSpeed = levelRunStartSpeed;
 			newRunSpeed = runStartSpeed;
-			trollController.startPursuing();
+			controlTrollPursuit( true );
 		}
 		else
 		{
@@ -549,7 +549,14 @@ public sealed class PlayerController : MonoBehaviour {
 	//It is useful to know on which tile the player is on.
 	public string getCurrentTileName()
 	{
-		return currentTile.name;
+		if( currentTile != null )
+		{
+			return currentTile.name;
+		}
+		else
+		{
+			return string.Empty;
+		}
 	}
 
 	void Update()
@@ -1181,7 +1188,7 @@ public sealed class PlayerController : MonoBehaviour {
 	{
 		if( activate )
 		{
-			trollController.stopPursuing();
+			controlTrollPursuit( false );
 			mainCamera.GetComponent<MotionBlur>().enabled = true;			
 			allowRunSpeedToIncrease = false;
 			newRunSpeed = newRunSpeed * PowerUpManager.SPEED_BOOST_MULTIPLIER;
@@ -1230,7 +1237,7 @@ public sealed class PlayerController : MonoBehaviour {
 				deactivateOverheadObstacles( true );	//reactivate overhead obstacles since they would have been deactivated if we were sliding
 
 				jumping = true;
-				trollController.jump();
+				if( trollController != null ) trollController.jump();
 
 				//Memorize the run speed
 				runSpeedBeforeJump = newRunSpeed;
@@ -2317,7 +2324,7 @@ public sealed class PlayerController : MonoBehaviour {
 			lavaSpurt.transform.position = new Vector3( transform.position.x, transform.position.y, transform.position.z );
 			lavaSpurt.loop = false;
 			lavaSpurt.Play();
-			trollController.stopPursuing();
+			controlTrollPursuit( false );
 			sc.lockCamera( true );
 			managePlayerDeath( DeathType.Lava );
 		}
@@ -2325,7 +2332,7 @@ public sealed class PlayerController : MonoBehaviour {
 		else if( other.name == "Great Fall" )
 		{
 			Debug.Log ("Player is having a great fall.");
-			trollController.stopPursuing();
+			controlTrollPursuit( false );
 			managePlayerDeath( DeathType.GreatFall );
 		}
 		//For the Lock Camera trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
@@ -2362,7 +2369,7 @@ public sealed class PlayerController : MonoBehaviour {
 		{
 			//Player has successfully completed the current level.
 			Debug.Log ("Checkpoint triggered ");
-			trollController.stopPursuing ();
+			controlTrollPursuit( false );
 			GameManager.Instance.setGameState(GameState.Checkpoint);
 			StartCoroutine( slowDownPlayer( 16f, afterPlayerSlowdown, other.transform ) );
 		}
@@ -2420,7 +2427,7 @@ public sealed class PlayerController : MonoBehaviour {
 	public void placePlayerInCenterLane()
 	{
 		print ("placePlayerInCenterLane called");
-		trollController.stopPursuing();
+		controlTrollPursuit( false );
 		//We do not want the player to be jumping or sliding as he reaches the end location.
 		//Disable run acceleration as well.
 		allowRunSpeedToIncrease = false;
@@ -2965,6 +2972,8 @@ public sealed class PlayerController : MonoBehaviour {
 	public void stumble_completed ( AnimationEvent eve )
 	{
 		setCharacterState( PlayerCharacterState.Running );
+		runSpeed = runSpeedAtTimeOfStumble;
+		allowRunSpeedToIncrease = true;
 	}
 	
 	void Stumble()
@@ -2976,20 +2985,53 @@ public sealed class PlayerController : MonoBehaviour {
 			Debug.Log ("Player stumbled");
 			//Play player stumble animation by setting the state
 			setCharacterState( PlayerCharacterState.Stumbling );
-			//audio.PlayOneShot( stumblingSound );
-			//Make enemy appear right behind player
-			//Note that "placeTrollBehindPlayer" may change the state of the character to Dying
-			if( trollController.didPlayerStumblePreviously() )
+			//If the player stumbles, he loses a bit of speed and momentarily stops accelerating.
+			allowRunSpeedToIncrease = false;
+			runSpeedAtTimeOfStumble = runSpeed;
+			runSpeed = stumbleRunSpeedMultiplier * runSpeed; //lower speed a bit
+			if( GameManager.Instance.isMultiplayer() )
 			{
-				//The player falls forward and dies (killed by the troll)
-				setAnimationTrigger(FallForwardTrigger);
-			}
-			else
-			{
+				//There is no troll pursuing you in multiplayer.
 				//The player stumbles but recovers
 				setAnimationTrigger(StumbleTrigger);
 			}
-			trollController.placeTrollBehindPlayer();
+			else
+			{
+				//audio.PlayOneShot( stumblingSound );
+				//Make troll appear right behind player
+				//Note that "placeTrollBehindPlayer" may change the state of the character to Dying
+				if( trollController.didPlayerStumblePreviously() )
+				{
+					//The player falls forward and dies (killed by the troll)
+					setAnimationTrigger(FallForwardTrigger);
+				}
+				else
+				{
+					//The player stumbles but recovers
+					setAnimationTrigger(StumbleTrigger);
+				}
+				trollController.placeTrollBehindPlayer();
+			}
+		}
+	}
+
+	public void setTrollController( TrollController trollController )
+	{
+		this.trollController = trollController;
+	}
+
+	void controlTrollPursuit( bool startPursuit )
+	{
+		if( trollController != null )
+		{
+			if( startPursuit )
+			{
+				trollController.startPursuing();
+			}
+			else
+			{
+				trollController.stopPursuing();
+			}
 		}
 	}
 
@@ -3132,7 +3174,7 @@ public sealed class PlayerController : MonoBehaviour {
 		resetSharedLevelData(true);
 		
 		//1) Stop pursuit
-		trollController.stopPursuing ();
+		controlTrollPursuit( false );
 
 		//2) Hide and reset all zombies and goblins etc. by sending an event
 		if(resurrectionBegin != null) resurrectionBegin();

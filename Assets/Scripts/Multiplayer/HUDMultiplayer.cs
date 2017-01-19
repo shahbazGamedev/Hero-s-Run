@@ -28,7 +28,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	void Awake()
 	{
 		//We don't want to display multiplayer information in Single player or call update for nothing
-		if( !GameManager.Instance.isMultiplayer() ) Destroy( this );
+		if( !GameManager.Instance.isMultiplayer() ) Destroy( gameObject );
 		
 		if (hudMultiplayer == null)
 			hudMultiplayer = this;

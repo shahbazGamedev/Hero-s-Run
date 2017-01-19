@@ -60,7 +60,8 @@ public class TrollController : MonoBehaviour {
 		if (Physics.Raycast(new Vector3(transform.position.x,transform.position.y + 10f,transform.position.z), Vector3.down, out hit, 20.0F ))
 		{
 			transform.position = new Vector3( transform.position.x, hit.point.y, transform.position.z);
-			//gameObject.SetActive( false );
+			//The troll is initially hidden.
+			gameObject.SetActive( false );
 		}
 	}
 
@@ -246,11 +247,6 @@ public class TrollController : MonoBehaviour {
 		if( deactivateTroll ) return;
 		gameObject.SetActive( true );
 
-		if( !gameObject.activeSelf )
-		{
-			gameObject.SetActive( true );
-		}
-
 		//Give the enemy about the same speed as the player. Since the player's
 		//speed increases gradually, unless he stumbles, the enemy should not catch him.
 		Speed = playerController.getSpeed() - 0.2f;
@@ -275,7 +271,7 @@ public class TrollController : MonoBehaviour {
 
 	public void runBehindPlayer()
 	{
-		if( !gameObject.activeSelf ) gameObject.SetActive( true );
+		gameObject.SetActive( true );
 
 		//Give the enemy about the same speed as the player. Since the player's
 		//speed increases gradually, unless he stumbles, the enemy should not catch him.
