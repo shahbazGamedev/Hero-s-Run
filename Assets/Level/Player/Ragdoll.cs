@@ -17,11 +17,11 @@ Animator anim;
 		Debug.Log("controllRagdoll-number of bones: " + bones.Length );
 		foreach (Rigidbody ragdoll in bones)
 		{
-			ragdoll.isKinematic = enableRagdoll;
+			ragdoll.isKinematic = !enableRagdoll;
 
 		}
 	
-		anim.enabled = enableRagdoll;
+		anim.enabled = !enableRagdoll;
 	}
 		
 }
