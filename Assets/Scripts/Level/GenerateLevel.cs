@@ -116,7 +116,7 @@ public enum TileSubType {
 public sealed class GenerateLevel  : MonoBehaviour {
 	
 	private LevelData levelData;
-	public GameObject heroPrefab;
+	public GameObject singlePlayerHeroPrefab;
 	public const float TILE_SIZE = 36.4f;
 	const float UNDERNEATH_TILE_BY = 30f;
 	int tileDepthMult = 1; //A value of one means the tile depth is 1 x TILE_SIZE, a value of two means 2 x TILE_SIZE, etc.
@@ -191,7 +191,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			{
 				GameManager.Instance.setGameState( GameState.Menu );
 			}
-			hero.SetActive( true );
 		}
 	}
 
@@ -273,18 +272,8 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		if( currentEpisode.isFogEnabled ) levelData.setFogParameters(currentEpisode.sunType);
 
 		//Create the Hero because he does not exist in the level scene
-		hero = (GameObject)Instantiate(heroPrefab );
-		//Destroy multiplayer components since this is for single player.
-		//Note: Any GameObject with a network identity component that is not spawned by the server will be set inactive.
-		//So, hero has been made inactive by NetworkIdentity.
-		//We will destroy the unneeded components right away and set the hero active in the Start method.
-		Destroy( hero.GetComponent<PlayerHealth>() );
-		Destroy( hero.GetComponent<PlayerShooting>() );
-		Destroy( hero.GetComponent<Player>() );
-		Destroy( hero.GetComponent<NetworkIdentity>() ); //Do this one last because other components depend on it
-		//These are needed in single player
-		hero.GetComponent<PlayerController>().enabled = true;
-		hero.GetComponent<SimpleCamera>().enabled = true;
+		hero = (GameObject)Instantiate( singlePlayerHeroPrefab );
+
 		Debug.Log("GenerateLevel-CreateLevel: Level " + currentEpisode.episodeName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
 

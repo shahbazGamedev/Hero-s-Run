@@ -361,6 +361,7 @@ public sealed class PlayerController : MonoBehaviour {
 	
 			hero.name = "Hero";
 			GetComponent<Animator>().avatar = hero.GetComponent<PlayerSkinInfo>().animatorAvatar;
+			anim.Rebind();
 			hero.SetActive( true );
 		}
 	}
@@ -3353,9 +3354,14 @@ public sealed class PlayerController : MonoBehaviour {
 	{
 		if( GameManager.Instance.isMultiplayer() )
 		{
-			GetComponent<Player>().CmdProvideAnimationTriggerToServer( animationTrigger );
-		}
-		anim.SetTrigger( animationTrigger );
-	}
+			networkAnimator.SetTrigger( animationTrigger );
 
+			if (NetworkServer.active) 
+   				anim.ResetTrigger( animationTrigger ); //HACK to fix Unity bug where anim plays twice on the host
+		}
+		else
+		{
+			anim.SetTrigger( animationTrigger );
+		}
+	}
 } 
