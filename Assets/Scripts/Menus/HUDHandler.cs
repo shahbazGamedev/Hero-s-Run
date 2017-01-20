@@ -70,7 +70,7 @@ public class HUDHandler : MonoBehaviour {
 			slideInEpisodeName();
 		}
 		else
-		{
+		{	//There is no tap to play button in multiplayer. There is a countdown instead.
 			tapToPlayButton.gameObject.SetActive( false );
 		}
 
