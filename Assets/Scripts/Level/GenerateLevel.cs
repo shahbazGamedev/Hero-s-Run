@@ -352,8 +352,10 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		worldRoadSegments.Clear();
 		tileCreationIndex = 0;
 		playerTileIndex = 0;
+
+		Debug.LogWarning("GenerateLevel-createMultiplayerLevel: selected level is: " + LevelManager.Instance.getCurrentMultiplayerLevel() );
 						
-		LevelData.MultiplayerInfo currentMultiplayer = levelData.multiplayerList[0]; //HACKED FOR INDEX 0
+		LevelData.MultiplayerInfo currentMultiplayer = levelData.getMultiplayerInfo( LevelManager.Instance.getCurrentMultiplayerLevel() );
 
 		//Sets the skybox, the directional light intensity and direction for the current episode
 		levelData.initialise();

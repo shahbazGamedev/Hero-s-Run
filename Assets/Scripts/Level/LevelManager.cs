@@ -31,6 +31,7 @@ public class LevelManager {
 	//in the level while in Story mode. This allows you to have shorter episodes with only the essential tile groups, typically, Start, any scripted sequence, and End.
 	bool onlyUseUniqueTiles = false;
 	int numberOfPlayersRequired = 1; //Used to debug multiplayer
+	private int currentMultiplayerLevel = 0; //the index of the multiplayer level selected by the player.
 
 	public static LevelManager Instance
 	{
@@ -263,5 +264,24 @@ public class LevelManager {
 	{
 		return numberOfPlayersRequired;
 	}
+
+	public int getCurrentMultiplayerLevel()
+	{
+		return currentMultiplayerLevel;
+    }
+
+	public void setCurrentMultiplayerLevel( int selectedLevel )
+	{
+		if( selectedLevel != currentMultiplayerLevel )
+		{
+			currentMultiplayerLevel = selectedLevel;
+			Debug.Log( "setCurrentMultiplayerLevel " + selectedLevel );
+		}
+    }
+
+	public int getNumberOfMultiplayerLevels()
+	{
+		return levelData.multiplayerList.Count;
+    }
 
 }

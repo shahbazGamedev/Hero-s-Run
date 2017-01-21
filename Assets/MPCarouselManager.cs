@@ -6,26 +6,17 @@ using UnityEngine.SceneManagement;
 
 public class MPCarouselManager : MonoBehaviour {
 
-	//Variables for swipe
-	bool touchStarted = false;
-	Vector2 touchStartPos;
-	float MINIMUM_HORIZONTAL_DISTANCE = 0.09f * Screen.width; //How many pixels you need to swipe horizontally to change page.
-	public Scrollbar scrollbarIndicator;
-
-	const int INDEX_OF_LAST_CIRCUIT = 1;
-	int indexOfDisplayedCircuit = 0; 			//0 is the Royal Run, 1 is the Practice Run
-	int previousIndexOfDisplayedCircuit = 0; 
+	public GameObject lobbyManager;
 
 	StoreManager storeManager;
-	LevelData levelData;
 	bool levelLoading = false;
 
 	void Awake ()
 	{
 		SceneManager.LoadScene( (int)GameScenes.Store, LoadSceneMode.Additive );
-
-		//Get the level data. Level data has the parameters for all the levels of the game.
-		levelData = LevelManager.Instance.getLevelData();
+		//The default multiplayer level is 0.
+		//This value is changed when the player swipes to change circuit.
+		LevelManager.Instance.setCurrentMultiplayerLevel( 0 );
 	}
 
 	// Use this for initialization
@@ -37,18 +28,16 @@ public class MPCarouselManager : MonoBehaviour {
 		Handheld.StopActivityIndicator();
 	}
 
-	void OnValueChanged( int newIndex )
-	{
-		if( newIndex == previousIndexOfDisplayedCircuit ) return; //Nothing has changed. Ignore.
-		previousIndexOfDisplayedCircuit = newIndex;
-		//Update the scrollbar indicator which is not interactable
-		scrollbarIndicator.value = (float)newIndex/INDEX_OF_LAST_CIRCUIT;
-	}
-
 	public void OnClickShowShop()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		storeManager.showStore( StoreTab.Shop, StoreReason.None );
+	}
+
+	public void OnClickShowMatchmakingScreen()
+	{
+		UISoundManager.uiSoundManager.playButtonClick();
+		gameObject.SetActive( false );
 	}
 
 	public void OnClickReturnToWorldMap()
@@ -63,12 +52,15 @@ public class MPCarouselManager : MonoBehaviour {
 			Debug.Log("MPCarouselManager - returning to world map.");
 			UISoundManager.uiSoundManager.playButtonClick();
 			levelLoading = true;
+			GameManager.Instance.setMultiplayerMode( false );
 			GameManager.Instance.setGameState(GameState.WorldMapNoPopup);
+			MPNetworkLobbyManager.mpNetworkLobbyManager.cleanUpOnExit();
+			//Some components of the Lobby Manager game object are DontDestroyOnLoad.
+			//Since we are going back to the world map, detroy the Lobby Manager.
+			GameObject.Destroy( lobbyManager );
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);
 			SceneManager.LoadScene( (int)GameScenes.WorldMap );
 		}
 	}
-
-
 }

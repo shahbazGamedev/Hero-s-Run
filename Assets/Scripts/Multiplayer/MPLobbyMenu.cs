@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class MPLobbyMenu : MonoBehaviour {
 
+	public GameObject carouselCanvas;
 	public GameObject lobbyManager;
 	public MultiPurposePopup multiPurposePopup;
 	public Button playButton;
@@ -13,12 +13,6 @@ public class MPLobbyMenu : MonoBehaviour {
 	public Text remotePlayerName;
 	public FacebookPortraitHandler playerPortrait;
 	public FacebookPortraitHandler remotePlayerPortrait;
-	bool levelLoading = false;
-
-	void Awake ()
-	{
-		Handheld.StopActivityIndicator();
-	}
 
 	void Start ()
 	{
@@ -76,26 +70,7 @@ public class MPLobbyMenu : MonoBehaviour {
 
 	public void OnClickCloseMenu()
 	{
-		StartCoroutine( close() );
-	}
-
-	IEnumerator close()
-	{
-		if( !levelLoading )
-		{
-			Debug.Log("MPLobbyMenu - closing lobby.");
-			UISoundManager.uiSoundManager.playButtonClick();
-			levelLoading = true;
-			GameManager.Instance.setMultiplayerMode( false );
-			GameManager.Instance.setGameState(GameState.WorldMapNoPopup);
-			MPNetworkLobbyManager.mpNetworkLobbyManager.cleanUpOnExit();
-			//Dome components of the Lobby Manager game object are DontDestroyOnLoad.
-			//Since we are going back to the world map, detroy the Lobby Manager.
-			GameObject.Destroy( lobbyManager );
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)GameScenes.WorldMap );
-		}
+		carouselCanvas.SetActive( true );
 	}
 
 }
