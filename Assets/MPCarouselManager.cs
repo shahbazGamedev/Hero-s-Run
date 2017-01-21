@@ -7,9 +7,11 @@ using UnityEngine.SceneManagement;
 public class MPCarouselManager : MonoBehaviour {
 
 	public GameObject lobbyManager;
+	[SerializeField] MPLobbyMenu mpLobbyMenu;
 
 	StoreManager storeManager;
 	bool levelLoading = false;
+	[SerializeField] List<CarouselEntry> carouselEntryList = new List<CarouselEntry>(2);
 
 	void Awake ()
 	{
@@ -37,6 +39,8 @@ public class MPCarouselManager : MonoBehaviour {
 	public void OnClickShowMatchmakingScreen()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
+		CarouselEntry selected = carouselEntryList[LevelManager.Instance.getCurrentMultiplayerLevel() ];
+		mpLobbyMenu.configureCircuitData( selected.circuitImage.sprite, selected.circuitName.text, selected.entryFee.text );
 		gameObject.SetActive( false );
 	}
 

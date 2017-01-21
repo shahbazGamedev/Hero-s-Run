@@ -14,12 +14,24 @@ public class MPLobbyMenu : MonoBehaviour {
 	public FacebookPortraitHandler playerPortrait;
 	public FacebookPortraitHandler remotePlayerPortrait;
 
+	//Circuit
+	public Text circuitName;
+	public Image circuitImage;
+	public Text entryFee;
+
 	void Start ()
 	{
 		//The left portrait is always the local player.
 		//Populate his name and player portrait
 		playerName.text = PlayerStatsManager.Instance.getUserName();
 		playerPortrait.setPlayerPortrait();
+	}
+
+	public void configureCircuitData( Sprite circuitImageSprite, string circuitNameString, string entryFeeString )
+	{
+		circuitName.text = circuitNameString;
+		circuitImage.sprite = circuitImageSprite;
+		entryFee.text = entryFeeString;
 	}
 
 	//The other player is on the right, so remotePlayerName.
