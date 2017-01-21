@@ -27,6 +27,15 @@ public enum LevelType
 	Normal = 1
 }
 
+public enum RewardType
+{
+	None=0,
+	Coins=1,	
+	PowerUp = 2,
+	Life = 3,
+	Customization = 4	//Future implementation
+}
+
 public class LevelData : MonoBehaviour {
 	
 	public List<EpisodeInfo> episodeList = new List<EpisodeInfo>();
@@ -411,14 +420,9 @@ public class LevelData : MonoBehaviour {
 	public class MultiplayerInfo
 	{
 		[Header("Multiplayer Parameters")]
-		[Tooltip("Episode name is not used at runtime. It is only used to make the data easier to read in the editor.")]
-		public string episodeName = "Episode Name";
-		[Tooltip("Image used at the top of the pre-level popup.")]
-		public Sprite preLevelSprite;
-		[Tooltip("Total number of chest keys for episode.")]
-		public int numberOfChestKeys = 0;
-		[Tooltip("Stars required to reach one, two, three stars as well as the maximum number of stars for the episode.")]
-		public Vector3 starsRequired = new Vector3( 10000f, 33000f, 50000f );
+		[Tooltip("Circuit name is not used at runtime. It is only used to make the data easier to read in the editor.")]
+		public string circuitName = "Circuit Name";
+		public CircuitInfo circuitInfo = new CircuitInfo();
 		[Tooltip("The type of sun for the level. The sun type will not change until the player starts a new section. The sun type determines characteristics such ambient light, directional light rotation, color, intensity and shadows and skybox material.")]
 		public SunType sunType = SunType.Afternoon;
 		[Tooltip("The player's initial run speed in m/sec.")]
@@ -444,6 +448,34 @@ public class LevelData : MonoBehaviour {
 		[Header("Tile Groups")]
 		public List<TileGroupType> tileGroupList = new List<TileGroupType>();
 		
+	}
+
+	[System.Serializable]
+	public class CircuitInfo
+	{
+		[Header("Race Circuit Parameters")]
+		[Tooltip("The text ID of the race track.")]
+		public string circuitTextID = "CIRCUIT_XXX";
+		[Tooltip("Image used at the top of the carousel.")]
+		public Sprite circuitSprite;
+		[Tooltip("Entry Fee")]
+		public int entryFee = 0;
+		[Header("Prizes")]
+		public List<PrizeInfo> prizeInfoList = new List<PrizeInfo>();
+		
+	}
+
+	[System.Serializable]
+	public class PrizeInfo
+	{
+		[Header("Prize Parameters")]
+		[Tooltip("The prize amount.")]
+		public int quantity = 0;
+		[Tooltip("The reward type. Each loot box should have a different reward type.")]
+		public RewardType rewardType;
+		[Tooltip("Prize Icon.")]
+		public Sprite prizeIcon;
+		public string customizationPrizeTextID;
 	}
 
 }

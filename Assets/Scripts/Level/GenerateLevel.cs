@@ -390,7 +390,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		Camera.main.GetComponent<DynamicFogAndMist.DynamicFog>().enabled = currentMultiplayer.isFogEnabled;
 		if( currentMultiplayer.isFogEnabled ) levelData.setFogParameters(currentMultiplayer.sunType);
 
-		Debug.Log("GenerateLevel-CreateLevel: Level " + currentMultiplayer.episodeName + " has been created." );
+		Debug.Log("GenerateLevel-CreateLevel: Level " + currentMultiplayer.circuitName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
 
 	}
