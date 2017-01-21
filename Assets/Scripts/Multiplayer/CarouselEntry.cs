@@ -11,6 +11,14 @@ public class CarouselEntry : MonoBehaviour {
 	public Image circuitImage;
 	public Text entryFee;
 
+	[Header("Online Players")]
+	public Text numberOnlinePlayers;
+
+	[Header("Shared")]
+	public Text raceButtonText;
+	public Text exitButtonText;
+	public Text prizesLabelText;
+
 	[Header("Prizes")]
 	//Prize 1
 	public Image prize1Image;
@@ -27,10 +35,15 @@ public class CarouselEntry : MonoBehaviour {
 	// Use this for initialization
 	void Awake ()
 	{
+		//Configuration
 		LevelData levelData = LevelManager.Instance.getLevelData();
 		LevelData.CircuitInfo circuitInfo = levelData.getMultiplayerInfo( circuitNumber ).circuitInfo;
+
+		//Circuit
 		circuitName.text = LocalizationManager.Instance.getText( circuitInfo.circuitTextID );
 		circuitImage.sprite = circuitInfo.circuitSprite;
+
+		//Entry fee
 		string entryFeeString = LocalizationManager.Instance.getText( "CIRCUIT_ENTRY_FEE" );
 		if( circuitInfo.entryFee == 0 )
 		{
@@ -42,6 +55,16 @@ public class CarouselEntry : MonoBehaviour {
 		}
 		entryFee.text = entryFeeString;
 
+		//Hack - not implemented
+		//Number of online players in that circuit
+		numberOnlinePlayers.text = Random.Range( 1000, 50001 ).ToString();
+
+		//Common to all carousel entries
+		raceButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_RACE" );
+		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );
+		prizesLabelText.text = LocalizationManager.Instance.getText( "CIRCUIT_PRIZES" );
+
+		//Prizes
 		for( int i = 0; i < circuitInfo.prizeInfoList.Count; i++ )
 		{
 			configurePrize( i, circuitInfo.prizeInfoList[i] );
