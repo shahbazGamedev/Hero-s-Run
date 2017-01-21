@@ -423,7 +423,8 @@ public class NewWorldMapHandler : MonoBehaviour {
 			levelLoading = true;
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)GameScenes.Journal );
+			//SceneManager.LoadScene( (int)GameScenes.Journal );
+			SceneManager.LoadScene( 9 );
 		}	
 	}
 
