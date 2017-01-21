@@ -24,7 +24,6 @@ public class DotsHandler : MonoBehaviour {
 					dotsList[i].color = Color.gray;
 				}
 			}
-			LevelManager.Instance.setCurrentMultiplayerLevel( (int) value );
  		}
 	}
 }

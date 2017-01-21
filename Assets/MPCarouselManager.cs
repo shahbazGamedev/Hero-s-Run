@@ -12,6 +12,7 @@ public class MPCarouselManager : MonoBehaviour {
 	StoreManager storeManager;
 	bool levelLoading = false;
 	[SerializeField] List<CarouselEntry> carouselEntryList = new List<CarouselEntry>(2);
+	[SerializeField] Scrollbar scrollbar;
 
 	void Awake ()
 	{
@@ -39,6 +40,7 @@ public class MPCarouselManager : MonoBehaviour {
 	public void OnClickShowMatchmakingScreen()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
+		LevelManager.Instance.setCurrentMultiplayerLevel( (int) scrollbar.value );
 		CarouselEntry selected = carouselEntryList[LevelManager.Instance.getCurrentMultiplayerLevel() ];
 		mpLobbyMenu.configureCircuitData( selected.circuitImage.sprite, selected.circuitName.text, selected.entryFee.text );
 		gameObject.SetActive( false );
