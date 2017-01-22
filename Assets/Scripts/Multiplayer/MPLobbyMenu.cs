@@ -138,10 +138,4 @@ public class MPLobbyMenu : MonoBehaviour {
 		carouselCanvas.SetActive( true );
 	}
 
-	public void OnClickCloseEndOfGameScreen()
-	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		endOfGameCanvas.SetActive( false );
-	}
-
 }
