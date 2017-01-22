@@ -22,8 +22,13 @@ public class MPLobbyMenu : MonoBehaviour {
 	public Image circuitImage;
 	public Text entryFee;
 
+	StoreManager storeManager;
+
 	void Start ()
 	{
+		GameObject storeManagerObject = GameObject.FindGameObjectWithTag("Store");
+		storeManager = storeManagerObject.GetComponent<StoreManager>();
+
 		//The left portrait is always the local player.
 		//Populate his name and player portrait
 		playerName.text = PlayerStatsManager.Instance.getUserName();
@@ -81,15 +86,43 @@ public class MPLobbyMenu : MonoBehaviour {
 		playButton.interactable = true;
 	}
 
-	public void play()
+	public void OnClickPlay()
 	{
-		playButton.interactable = false;
-		playButtonText.color = Color.gray;
-		MPNetworkLobbyManager.mpNetworkLobbyManager.startMatch();
+		UISoundManager.uiSoundManager.playButtonClick();
+		if( playerCanPayEntryFee() )
+		{
+			playButton.interactable = false;
+			playButtonText.color = Color.gray;
+			MPNetworkLobbyManager.mpNetworkLobbyManager.startMatch();
+		}
+		else
+		{
+			//Player does not have enough for entry fee. Open the store.
+			storeManager.showStore(StoreTab.Store,StoreReason.Need_Stars);
+		}
+
+	}
+
+	bool playerCanPayEntryFee()
+	{
+		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedMultiplayerLevel();
+		//Validate if the player has enough currency for the entry fee
+		int entryFee = multiplayerInfo.circuitInfo.entryFee;
+		if( entryFee <= PlayerStatsManager.Instance.getCurrentCoins() )
+		{
+			//Yes, he has enough
+			return true;
+		}
+		else
+		{
+			//No, he does not have enough
+			return false;
+		}
 	}
 
 	public void OnClickCloseMenu()
 	{
+		UISoundManager.uiSoundManager.playButtonClick();
 		carouselCanvas.SetActive( true );
 	}
 

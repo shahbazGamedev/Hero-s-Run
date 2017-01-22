@@ -161,6 +161,9 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 		{
 			Debug.Log("MPNetworkLobbyManager-OnMatchCreate: Success" );
 			hostedMatchInfo = matchInfo;
+			//Now that the player has successfully created a match, we can deduct the entry fee, if any.
+			//Note that when you create a match, you automatically join it and OnMatchJoined will NOT be called.
+			chargePlayerForMatch();
 		}
 		else
 		{

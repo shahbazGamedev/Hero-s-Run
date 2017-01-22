@@ -96,6 +96,7 @@ public class StoreManager : MonoBehaviour {
 
 	public void closeStore()
 	{
+		UISoundManager.uiSoundManager.playButtonClick();
 		storeCanvas.gameObject.SetActive( false );
 	}
 
