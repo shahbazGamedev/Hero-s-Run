@@ -10,7 +10,9 @@ public class MPLobbyMenu : MonoBehaviour {
 	public MultiPurposePopup multiPurposePopup;
 	public Button playButton;
 	public Text playButtonText;
+	public Text exitButtonText;
 	public Text playerName;
+	public Text versusText;
 	public Text remotePlayerName;
 	public FacebookPortraitHandler playerPortrait;
 	public FacebookPortraitHandler remotePlayerPortrait;
@@ -25,6 +27,10 @@ public class MPLobbyMenu : MonoBehaviour {
 		//The left portrait is always the local player.
 		//Populate his name and player portrait
 		playerName.text = PlayerStatsManager.Instance.getUserName();
+		remotePlayerName.text = LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" );
+		versusText.text = LocalizationManager.Instance.getText( "CIRCUIT_VERSUS" );
+		playButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_PLAY" );
+		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );
 		playerPortrait.setPlayerPortrait();
 	}
 
