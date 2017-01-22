@@ -261,12 +261,27 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 		if( success )
 		{
 			Debug.Log("MPNetworkLobbyManager-OnMatchJoined: Success" );
+			//Now that the player has successfully joined a match, we can deduct the entry fee, if any.
+			chargePlayerForMatch();
 			joinedMatchInfo = matchInfo;
 		}
 		else
 		{
 			Debug.LogWarning("MPNetworkLobbyManager-OnMatchJoined: Error: " + extendedInfo );
 			mpLobbyMenu.showUnableToJoinMatch();
+		}
+	}
+
+	void chargePlayerForMatch()
+	{
+		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedMultiplayerLevel();
+		//If the race is not free, deduct the entry fee and save.
+		int entryFee = multiplayerInfo.circuitInfo.entryFee;
+		if( entryFee > 0 )
+		{
+			PlayerStatsManager.Instance.modifyCurrentCoins(-entryFee, false, false );
+			PlayerStatsManager.Instance.savePlayerStats();
+			Debug.Log("MPNetworkLobbyManager-chargePlayerForMatch: deducting entry fee of: " + entryFee );
 		}
 	}
 

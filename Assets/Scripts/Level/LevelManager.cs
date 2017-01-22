@@ -284,4 +284,9 @@ public class LevelManager {
 		return levelData.multiplayerList.Count;
     }
 
+	public LevelData.MultiplayerInfo getSelectedMultiplayerLevel()
+	{
+		return levelData.multiplayerList[currentMultiplayerLevel];
+    }
+
 }
