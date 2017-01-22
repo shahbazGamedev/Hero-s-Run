@@ -99,7 +99,6 @@ public class JournalAssetManager : MonoBehaviour {
 		//Debug.Log("Manifest name: " + manifest.name + " has " + allAssetBundles.Length + " bundles including all variants." );
 
 		//Load all asset bundles 
-		AssetBundle[] assetBundles = new AssetBundle[allAssetBundles.Length];
 		for( int i = 0; i < allAssetBundles.Length; i++ )
 		{
 			//The voice over asset bundles are handled by a different class. Ignore those.

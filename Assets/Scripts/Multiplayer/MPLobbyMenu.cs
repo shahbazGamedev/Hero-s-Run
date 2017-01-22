@@ -9,6 +9,7 @@ public class MPLobbyMenu : MonoBehaviour {
 	public GameObject lobbyManager;
 	public MultiPurposePopup multiPurposePopup;
 	public Button playButton;
+	public Text playButtonText;
 	public Text playerName;
 	public Text remotePlayerName;
 	public FacebookPortraitHandler playerPortrait;
@@ -77,6 +78,7 @@ public class MPLobbyMenu : MonoBehaviour {
 	public void play()
 	{
 		playButton.interactable = false;
+		playButtonText.color = Color.gray;
 		MPNetworkLobbyManager.mpNetworkLobbyManager.startMatch();
 	}
 
