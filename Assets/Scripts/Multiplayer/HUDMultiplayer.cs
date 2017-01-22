@@ -19,6 +19,10 @@ public class HUDMultiplayer : MonoBehaviour {
 	public Image finishFlag;
 	[Header("Latency")]
 	public Text latency;
+	[Header("Circuit Name and Icon Panel")]
+	[SerializeField] RectTransform circuitDetailsPanel;
+	[SerializeField] Text circuitNameText;
+	[SerializeField] Image circuitIcon;
 
 	//Event management used to notify players to start running
 	public delegate void StartRunningEvent();
@@ -40,6 +44,12 @@ public class HUDMultiplayer : MonoBehaviour {
 		latency.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
 	}
 	
+	void Start()
+	{
+		//Slide in circuit name and icon
+		slideInCircuitDetails();
+	}
+
 	public void initialiseCountdown()
 	{
 		goText.rectTransform.eulerAngles = new Vector3( 0,0,0 );
@@ -135,6 +145,20 @@ public class HUDMultiplayer : MonoBehaviour {
 			displayRacePosition( false );
 			latency.gameObject.SetActive( false );
 		}
+	}
+
+	void slideInCircuitDetails()
+	{
+		LevelData.MultiplayerInfo multiplayerInfo =	LevelManager.Instance.getSelectedMultiplayerLevel();
+		circuitNameText.text = LocalizationManager.Instance.getText(multiplayerInfo.circuitInfo.circuitTextID );
+		circuitIcon.sprite = multiplayerInfo.circuitInfo.circuitIcon;
+		LeanTween.move( circuitDetailsPanel, new Vector2(0, -circuitDetailsPanel.rect.height/2f), 0.5f ).setEase(LeanTweenType.easeOutQuad).setOnComplete(slideOutCircuitDetails).setOnCompleteParam(gameObject);
+	}
+
+	void slideOutCircuitDetails()
+	{
+		//Wait a little before sliding back up
+		LeanTween.move( circuitDetailsPanel, new Vector2(0, circuitDetailsPanel.rect.height/2f ), 0.5f ).setEase(LeanTweenType.easeOutQuad).setDelay(2.75f);
 	}
 
 }

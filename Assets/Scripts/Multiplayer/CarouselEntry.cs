@@ -41,7 +41,7 @@ public class CarouselEntry : MonoBehaviour {
 
 		//Circuit
 		circuitName.text = LocalizationManager.Instance.getText( circuitInfo.circuitTextID );
-		circuitImage.sprite = circuitInfo.circuitSprite;
+		circuitImage.sprite = circuitInfo.circuitImage;
 
 		//Entry fee
 		string entryFeeString = LocalizationManager.Instance.getText( "CIRCUIT_ENTRY_FEE" );

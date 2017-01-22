@@ -12,7 +12,7 @@ public class HUDHandler : MonoBehaviour {
 	public Button pauseButton;
 	[Header("Level Name Panel")]
 	public RectTransform episodeNamePanel;
-	public Text episodeNameText;	//Used to display FPS, player speed, etc.
+	public Text episodeNameText;
 	[Header("Tap To Play")]
 	//Tap to play button (the size of the canvas) with the Tap to play label
 	//This is displayed when you start a level WHEN the game state changes to the MENU state.
@@ -158,7 +158,7 @@ public class HUDHandler : MonoBehaviour {
 	void slideOutEpisodeName()
 	{
 		//Wait a little before sliding back up
-		LeanTween.move( episodeNamePanel, new Vector2(0, episodeNamePanel.rect.height/2f ), 0.5f ).setEase(LeanTweenType.easeOutQuad).setDelay(2.4f);
+		LeanTween.move( episodeNamePanel, new Vector2(0, episodeNamePanel.rect.height/2f ), 0.5f ).setEase(LeanTweenType.easeOutQuad).setDelay(2.5f);
 	}
 	
 	void hideLevelName()

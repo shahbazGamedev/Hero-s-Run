@@ -456,8 +456,10 @@ public class LevelData : MonoBehaviour {
 		[Header("Race Circuit Parameters")]
 		[Tooltip("The text ID of the race track.")]
 		public string circuitTextID = "CIRCUIT_XXX";
-		[Tooltip("Image used at the top of the carousel.")]
-		public Sprite circuitSprite;
+		[Tooltip("Bigger, rectangular image used at the top of the carousel.")]
+		public Sprite circuitImage;
+		[Tooltip("Square icon used at the beginning of the match.")]
+		public Sprite circuitIcon;
 		[Tooltip("Entry Fee")]
 		public int entryFee = 0;
 		[Header("Prizes")]
