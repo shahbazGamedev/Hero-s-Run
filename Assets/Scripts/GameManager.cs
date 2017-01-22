@@ -16,7 +16,8 @@ public enum GameState {
 	Checkpoint = 7,
 	BeforeTapToPlayAllowed = 8,
 	PostLevelPopup = 9,
-	WorldMapNoPopup = 10
+	WorldMapNoPopup = 10,
+	MultiplayerEndOfGame = 11
 }
 
 //The GameScenes enum entries must match the scene numbering in Build Settings.

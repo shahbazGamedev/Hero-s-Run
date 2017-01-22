@@ -382,6 +382,7 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 			Debug.Log("MPNetworkLobbyManager-returnToLobby");
 			cleanUpOnExit();
 			levelLoading = true;
+			GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);
 			SceneManager.LoadScene( (int)GameScenes.MultiplayerMatchmaking );

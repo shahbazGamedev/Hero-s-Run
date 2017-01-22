@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class MPLobbyMenu : MonoBehaviour {
 
 	public GameObject carouselCanvas;
+	public GameObject endOfGameCanvas;
 	public GameObject lobbyManager;
 	public MultiPurposePopup multiPurposePopup;
 	public Button playButton;
@@ -37,6 +38,16 @@ public class MPLobbyMenu : MonoBehaviour {
 		playButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_PLAY" );
 		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );
 		playerPortrait.setPlayerPortrait();
+
+		//If we are returning to the lobby after a race has completed, show the end of game screen which displays XP awarded
+		if( GameManager.Instance.getGameState() == GameState.MultiplayerEndOfGame )
+		{
+			endOfGameCanvas.SetActive( true );
+		}
+		else
+		{
+			endOfGameCanvas.SetActive( false );
+		}
 	}
 
 	public void configureCircuitData( Sprite circuitImageSprite, string circuitNameString, string entryFeeString )
@@ -89,6 +100,7 @@ public class MPLobbyMenu : MonoBehaviour {
 	public void OnClickPlay()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
+ 		GameManager.Instance.setGameState( GameState.WorldMapNoPopup );
 		if( playerCanPayEntryFee() )
 		{
 			playButton.interactable = false;
@@ -124,6 +136,12 @@ public class MPLobbyMenu : MonoBehaviour {
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		carouselCanvas.SetActive( true );
+	}
+
+	public void OnClickCloseEndOfGameScreen()
+	{
+		UISoundManager.uiSoundManager.playButtonClick();
+		endOfGameCanvas.SetActive( false );
 	}
 
 }
