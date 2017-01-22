@@ -223,7 +223,7 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 		if( lobbyPlayerCount >=  minimumPlayersToStartMatch )
 		{
 			Debug.Log("MPNetworkLobbyManager-We have everyone." );
-			if( !startedCountdown ) Invoke("startCountdown", 3f );
+			if( !startedCountdown ) Invoke("startCountdown", 4f );
 			startedCountdown = true;
 		}
 		return true;
