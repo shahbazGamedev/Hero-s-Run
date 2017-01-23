@@ -25,6 +25,7 @@ public class MPGameEndManager : MonoBehaviour {
 	[Header("Other")]
 	[SerializeField] Text exitButtonText;
 	[SerializeField] int timeBeforeNextRace = 30; //in seconds
+	const float SLIDER_PROGRESS_DURATION = 1.8f;
 
 	void Start ()
 	{
@@ -73,8 +74,32 @@ public class MPGameEndManager : MonoBehaviour {
 		int totalXP = currentXP + xpAwardedTest;
 		newAmountXP.text = totalXP.ToString();
 		sliderXP.value = totalXP/(float)XPManager.Instance.getXPRequired( nextLevel );
+		Invoke("animateSlick", 10f);
 	}
 
+	void animateSlick()
+	{
+		sliderXP.value = 0;
+		StartCoroutine( animateSlider( 0.75f ) );
+	}
+
+	public IEnumerator animateSlider( float newValue, System.Action onFinish = null  )
+	{
+		float startTime = Time.time;
+		float elapsedTime = 0;
+	
+		float startValue = sliderXP.value;
+
+		while ( elapsedTime <= SLIDER_PROGRESS_DURATION )
+		{
+			elapsedTime = Time.time - startTime;
+
+			sliderXP.value =  Mathf.Lerp( startValue, newValue, elapsedTime/SLIDER_PROGRESS_DURATION );
+			yield return new WaitForFixedUpdate();  
+	    }
+		if( onFinish != null ) onFinish.Invoke();
+	}
+	
 	string getRacePositionString( int racePosition )
 	{
 		string racePositionString = string.Empty;
@@ -111,7 +136,7 @@ public class MPGameEndManager : MonoBehaviour {
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		//Cancel the countdown
-		StopCoroutine("nextRaceCountdownCoroutine");
+		StopAllCoroutines();
 		gameObject.SetActive( false );
 	}
 
