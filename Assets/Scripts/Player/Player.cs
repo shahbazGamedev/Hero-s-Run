@@ -31,10 +31,13 @@ public class Player : NetworkBehaviour
 	[SyncVar (hook = "OnPlayerNameChanged" ) ] string myPlayerName;
 	[SyncVar (hook = "OnRacePositionChanged" ) ] public int racePosition = -1;
 	int previousRacePosition = -1;	//Used to avoid updating if the value has not changed
+	[SyncVar (hook = "OnRaceDurationChanged" ) ] public float raceDuration = 0;
+	float internalRaceDuration = 0;
 
 	[Header("Distance Travelled")]
 	Vector3 previousPlayerPosition = Vector3.zero;
 	public float distanceTravelled = 0;
+	public bool raceStarted = false;
 	public bool playerCrossedFinishLine = false;
 
     [SyncVar (hook = "OnAnimationTriggerChanged")]
@@ -58,7 +61,13 @@ public class Player : NetworkBehaviour
 		{
             players.Remove (this);
 		}
-    }
+ 		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
+   }
+
+	void OnEnable()
+	{
+		HUDMultiplayer.startRunningEvent += StartRunningEvent;
+	}
 
     void DisablePlayer()
     {
@@ -257,6 +266,8 @@ public class Player : NetworkBehaviour
 				racePosition = newPosition; 	//Race position is a syncvar
 				previousRacePosition = racePosition;
 			}
+
+			if( raceStarted ) internalRaceDuration = internalRaceDuration + Time.deltaTime;
 		}
 	}
 
@@ -292,6 +303,7 @@ public class Player : NetworkBehaviour
 			playerCrossedFinishLine = true;
 			Debug.Log ("Finish Line crossed by " + netId + " in race position " + racePosition );
 			RpcCrossedFinishLine( other.transform.position.z );
+			raceDuration = internalRaceDuration;
 			if( isRaceFinished() ) returnToLobby();
 		}
 	}
@@ -323,7 +335,19 @@ public class Player : NetworkBehaviour
         FindObjectOfType<NetworkLobbyManager> ().ServerReturnToLobby ();
     }
 
+	void StartRunningEvent()
+	{
+		Debug.Log("Multiplayer - Player: received StartRunningEvent");
+		raceStarted = true;
+	}
 
+	[Client]
+	void OnRaceDurationChanged( float value )
+    {
+		raceDuration = value;
+		PlayerRaceManager.Instance.raceDuration = raceDuration;
+		Debug.Log("OnRaceDurationChanged: " + value );
+    }
 
 	[Client]
 	void OnAnimationTriggerChanged( int animationTrigger )

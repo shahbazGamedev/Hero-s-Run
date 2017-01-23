@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class MPGameEndManager : MonoBehaviour {
 
@@ -40,10 +41,14 @@ public class MPGameEndManager : MonoBehaviour {
 
 	void configureRacePanel()
 	{
-		//circuitImage;
+		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedMultiplayerLevel();
+		circuitImage.sprite = multiplayerInfo.circuitInfo.circuitImage;
 		//raceResult;
 		playerName.text = PlayerStatsManager.Instance.getUserName();
-		//raceTime;
+		//Race time
+		TimeSpan ts = TimeSpan.FromSeconds( PlayerRaceManager.Instance.raceDuration );
+		DateTime dt = new DateTime(ts.Ticks);
+		raceTime.text = LocalizationManager.Instance.getText( "EOG_RACE_TIME" ).Replace("<race duration>", dt.ToString("mm:ss") );
 		//nextRaceCountdown;
 
 	}

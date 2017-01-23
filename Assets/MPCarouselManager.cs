@@ -17,9 +17,6 @@ public class MPCarouselManager : MonoBehaviour {
 	void Awake ()
 	{
 		SceneManager.LoadScene( (int)GameScenes.Store, LoadSceneMode.Additive );
-		//The default multiplayer level is 0.
-		//This value is changed when the player swipes to change circuit.
-		LevelManager.Instance.setCurrentMultiplayerLevel( 0 );
 	}
 
 	// Use this for initialization
