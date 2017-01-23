@@ -163,6 +163,7 @@ public class Player : NetworkBehaviour
 			GameManager.Instance.setGameState(GameState.Checkpoint);
 			StartCoroutine( GetComponent<PlayerController>().slowDownPlayer( 5.5f, afterPlayerSlowdown, triggerPositionZ ) );
 			HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
+			PlayerRaceManager.Instance.racePosition = racePosition + 1;
 		}
 	}
 

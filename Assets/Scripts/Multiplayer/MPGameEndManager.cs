@@ -43,7 +43,7 @@ public class MPGameEndManager : MonoBehaviour {
 	{
 		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedMultiplayerLevel();
 		circuitImage.sprite = multiplayerInfo.circuitInfo.circuitImage;
-		//raceResult;
+		raceResult.text = getRacePositionString( PlayerRaceManager.Instance.racePosition );
 		playerName.text = PlayerStatsManager.Instance.getUserName();
 		//Race time
 		TimeSpan ts = TimeSpan.FromSeconds( PlayerRaceManager.Instance.raceDuration );
@@ -61,6 +61,22 @@ public class MPGameEndManager : MonoBehaviour {
 		//awardedXP;
 		//newAmountXP;
 		//sliderXP;
+	}
+
+	string getRacePositionString( int racePosition )
+	{
+		string racePositionString = string.Empty;
+    	switch (racePosition)
+		{
+	        case 1:
+				racePositionString = LocalizationManager.Instance.getText( "CIRCUIT_VICTORY" );
+                break;
+	                
+	        case 2:
+				racePositionString = LocalizationManager.Instance.getText( "CIRCUIT_2ND" );
+                break;                
+		}
+		return racePositionString;
 	}
 
 	void startNextRace()

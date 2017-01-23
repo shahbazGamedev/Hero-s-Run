@@ -7,6 +7,7 @@ public class PlayerRaceManager {
 	[Header("General")]
 	private static PlayerRaceManager playerRaceManager = null;
 	public float raceDuration;
+	public int racePosition;
 
 	public static PlayerRaceManager Instance
 	{
@@ -20,5 +21,5 @@ public class PlayerRaceManager {
             }
             return playerRaceManager;
         }
-    } 
+    }
 }
