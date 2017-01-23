@@ -6,31 +6,31 @@ using UnityEngine.UI;
 public class CarouselEntry : MonoBehaviour {
 
 	[Header("Race Circuit Parameters")]
-	public int circuitNumber = 0; 	//This value corresponds to the index in the multiplayerList of LevelData
+	[SerializeField] int circuitNumber = 0; 	//This value corresponds to the index in the multiplayerList of LevelData
 	public Text circuitName;
 	public Image circuitImage;
 	public Text entryFee;
 
 	[Header("Online Players")]
-	public Text numberOnlinePlayers;
+	[SerializeField] Text numberOnlinePlayers;
 
 	[Header("Shared")]
-	public Text raceButtonText;
-	public Text exitButtonText;
-	public Text prizesLabelText;
+	[SerializeField] Text raceButtonText;
+	[SerializeField] Text exitButtonText;
+	[SerializeField] Text prizesLabelText;
 
 	[Header("Prizes")]
 	//Prize 1
-	public Image prize1Image;
-	public Text prize1;
+	[SerializeField] Image prize1Image;
+	[SerializeField] Text prize1;
 
 	//Prize 2
-	public Image prize2Image;
-	public Text prize2;
+	[SerializeField] Image prize2Image;
+	[SerializeField] Text prize2;
 
 	//Prize 3
-	public Image prize3Image;
-	public Text prize3;
+	[SerializeField] Image prize3Image;
+	[SerializeField] Text prize3;
 	
 	// Use this for initialization
 	void Awake ()

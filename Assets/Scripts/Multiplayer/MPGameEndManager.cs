@@ -15,8 +15,8 @@ public class MPGameEndManager : MonoBehaviour {
 	[SerializeField] Text nextRaceCountdown;
 	
 	[Header("XP Panel")]
-	[SerializeField] Text currentLevel;
-	[SerializeField] Text nextLevel;
+	[SerializeField] Text currentLevelText;
+	[SerializeField] Text nextLevelText;
 	[SerializeField] Text currentAndNextXP;
 	[SerializeField] Text awardedXP;
 	[SerializeField] Text newAmountXP;
@@ -49,18 +49,30 @@ public class MPGameEndManager : MonoBehaviour {
 		TimeSpan ts = TimeSpan.FromSeconds( PlayerRaceManager.Instance.raceDuration );
 		DateTime dt = new DateTime(ts.Ticks);
 		raceTime.text = LocalizationManager.Instance.getText( "EOG_RACE_TIME" ).Replace("<race duration>", dt.ToString("mm:ss") );
-		//nextRaceCountdown;
 
 	}
 
 	void configureXPPanel()
 	{
-		//currentLevel;
-		//nextLevel;
-		//currentAndNextXP;
-		//awardedXP;
-		//newAmountXP;
-		//sliderXP;
+		int currentXP = GameManager.Instance.playerProfile.currentXP;
+		int level = XPManager.Instance.getLevel( GameManager.Instance.playerProfile.currentXP );
+		currentLevelText.text = level.ToString();
+		int nextLevel = level + 1;
+		if( nextLevel > XPManager.MAX_LEVEL )
+		{
+			nextLevel = XPManager.MAX_LEVEL;
+			nextLevelText.text = LocalizationManager.Instance.getText( "EOG_MAX_LEVEL" );
+		}
+		else
+		{
+			nextLevelText.text = nextLevel.ToString();
+		}
+		currentAndNextXP.text = currentXP.ToString() + "/" + XPManager.Instance.getXPRequired( nextLevel ).ToString();
+		int xpAwardedTest = 750;
+		awardedXP.text = xpAwardedTest.ToString();
+		int totalXP = currentXP + xpAwardedTest;
+		newAmountXP.text = totalXP.ToString();
+		sliderXP.value = totalXP/(float)XPManager.Instance.getXPRequired( nextLevel );
 	}
 
 	string getRacePositionString( int racePosition )
@@ -69,11 +81,11 @@ public class MPGameEndManager : MonoBehaviour {
     	switch (racePosition)
 		{
 	        case 1:
-				racePositionString = LocalizationManager.Instance.getText( "CIRCUIT_VICTORY" );
+				racePositionString = LocalizationManager.Instance.getText( "EOG_VICTORY" );
                 break;
 	                
 	        case 2:
-				racePositionString = LocalizationManager.Instance.getText( "CIRCUIT_2ND" );
+				racePositionString = LocalizationManager.Instance.getText( "EOG_2ND" );
                 break;                
 		}
 		return racePositionString;

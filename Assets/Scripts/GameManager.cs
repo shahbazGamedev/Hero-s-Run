@@ -71,6 +71,7 @@ public class GameManager {
 	//We keep a reference to the JournalData and JournalAssetManager here because we need to access it from multiple scenes
 	public JournalData journalData;
 	public JournalAssetManager journalAssetManager;
+	public PlayerProfile playerProfile;
 
 	public static GameManager Instance
 	{

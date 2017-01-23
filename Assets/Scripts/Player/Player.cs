@@ -164,6 +164,7 @@ public class Player : NetworkBehaviour
 			StartCoroutine( GetComponent<PlayerController>().slowDownPlayer( 5.5f, afterPlayerSlowdown, triggerPositionZ ) );
 			HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
 			PlayerRaceManager.Instance.racePosition = racePosition + 1;
+			PlayerRaceManager.Instance.raceStatus = RaceStatus.COMPLETED;
 		}
 	}
 
@@ -340,6 +341,7 @@ public class Player : NetworkBehaviour
 	{
 		Debug.Log("Multiplayer - Player: received StartRunningEvent");
 		raceStarted = true;
+		PlayerRaceManager.Instance.raceStatus = RaceStatus.IN_PROGRESS;
 	}
 
 	[Client]
