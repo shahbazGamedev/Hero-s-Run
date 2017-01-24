@@ -106,8 +106,7 @@ public class MPLobbyMenu : MonoBehaviour {
  		GameManager.Instance.setGameState( GameState.WorldMapNoPopup );
 		if( playerCanPayEntryFee() )
 		{
-			playButton.interactable = false;
-			playButtonText.color = Color.gray;
+			enablePlayButton( false );
 			MPNetworkLobbyManager.mpNetworkLobbyManager.startMatch();
 		}
 		else
