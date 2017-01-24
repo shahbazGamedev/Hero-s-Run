@@ -26,10 +26,8 @@ public class MPGameEndManager : MonoBehaviour {
 	[SerializeField] MPCarouselManager mpCarouselManager;
 	[SerializeField] MPLobbyMenu mpLobbyMenu;
 	[SerializeField] Text exitButtonText;
-	[SerializeField] int timeBeforeNextRace = 30; //in seconds
+	[SerializeField] int timeBeforeNextRace = 60; //in seconds
 	const float SLIDER_PROGRESS_DURATION = 4f;
-
-	int totalXP = 0;
 
 	void Start ()
 	{
@@ -38,10 +36,12 @@ public class MPGameEndManager : MonoBehaviour {
 		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );
 
 		startNextRace();
-
 		configureRacePanel();
 
-		configureXPPanel();
+		//Individual XP Awards
+		StartCoroutine( displayIndividualAwards() );
+
+		StartCoroutine( configureXPPanel() );
 	}
 
 	void configureRacePanel()
@@ -72,42 +72,62 @@ public class MPGameEndManager : MonoBehaviour {
 		return total;
 	}
 
-	void configureXPPanel()
+	IEnumerator configureXPPanel()
 	{
-		//Current level
-		int level = XPManager.Instance.getLevel( GameManager.Instance.playerProfile.currentXP );
-		currentLevelText.text = level.ToString();
+		//Calculate the number of XP won in this race
+		int totalXP = calculatedTotalXPAwarded();
 
-		//Next level
-		int nextLevel = level + 1;
-		if( nextLevel > XPManager.MAX_LEVEL )
-		{
-			nextLevel = XPManager.MAX_LEVEL;
-			nextLevelText.text = LocalizationManager.Instance.getText( "EOG_MAX_LEVEL" );
-		}
-		else
-		{
-			nextLevelText.text = nextLevel.ToString();
-		}
-
-		//Spin the total XP awarded from 0 to the amount earned.
-		totalXP = calculatedTotalXPAwarded();
-		StartCoroutine( spinNumber( 0, totalXP, totalXPAwarded ) );
-
-		//Current XPs/XPs needed for next level
-		//Spin the currentXP value from currentXP to currentXP + totalXP
+		//The current XP value the player had before the race
 		int currentXP = GameManager.Instance.playerProfile.currentXP;
-		StartCoroutine( spinNumber( currentXP, currentXP + totalXP, currentAndNextXP, "/" + XPManager.Instance.getXPRequired( nextLevel ).ToString() ) );
 
-		//Individual XP Awards
-		StartCoroutine( displayIndividualAwards() );
+		//The player's new total
+		int newXPTotal = totalXP + currentXP;
 
-		//Animate the slider from the currentXP value to currentXP + totalXP 
-		float fromValue = currentXP/(float)XPManager.Instance.getXPRequired( nextLevel );
-		float toValue = (currentXP + totalXP)/(float)XPManager.Instance.getXPRequired( nextLevel );
-		StartCoroutine( animateSlider( fromValue, toValue, sliderXP ) );
+		//The player may level up multiple times
+		int numberOfTimesLeveledUp = 0;
+		int totalXPAtStart = totalXP;
+		int playerXPAtBeginning = currentXP;
+		while( totalXPAtStart > 0 )
+		{
+			//Current level
+			int level = XPManager.Instance.getLevel( GameManager.Instance.playerProfile.currentXP ) + numberOfTimesLeveledUp;
+			currentLevelText.text = level.ToString();
+	
+			//Next level
+			int nextLevel = level + 1;
+			if( nextLevel > XPManager.MAX_LEVEL )
+			{
+				nextLevel = XPManager.MAX_LEVEL;
+				nextLevelText.text = LocalizationManager.Instance.getText( "EOG_MAX_LEVEL" );
+			}
+			else
+			{
+				nextLevelText.text = nextLevel.ToString();
+			}
+
+			//The additional XP required to reach the next level
+			int xpNeededToReachNextLevel = XPManager.Instance.getXPRequired( level );
+
+			//Amount we need to increase by
+			int increaseAmount = Mathf.Min( totalXPAtStart, (xpNeededToReachNextLevel - playerXPAtBeginning) );
+
+			//Spin the total XP awarded from 0 to the amount earned or the delta needed to reach the level, whichever is smallest.
+			StartCoroutine( spinNumber( 0, increaseAmount, totalXPAwarded  ) );
+	
+			//Current XPs/XPs needed for next level
+			//Spin the currentXP value from currentXP to increaseAmount
+			StartCoroutine( spinNumber( playerXPAtBeginning, increaseAmount, currentAndNextXP, "/" + XPManager.Instance.getXPRequired( level ).ToString() ) );
+	
+			//Animate the slider from the currentXP value to currentXP + totalXP 
+			float fromValue = playerXPAtBeginning/(float)XPManager.Instance.getXPRequired( nextLevel );
+			float toValue = increaseAmount/(float)xpNeededToReachNextLevel;
+			StartCoroutine( animateSlider( fromValue, toValue, sliderXP ) );
+			
+			totalXPAtStart = totalXPAtStart - increaseAmount;
+			numberOfTimesLeveledUp++;
+			yield return new WaitForSecondsRealtime( SLIDER_PROGRESS_DURATION + 10f );
+		}
 	}
-
 
 	public IEnumerator animateSlider( float fromValue, float toValue, Slider slider, System.Action onFinish = null  )
 	{
@@ -218,6 +238,5 @@ public class MPGameEndManager : MonoBehaviour {
 		StopAllCoroutines();
 		gameObject.SetActive( false );
 	}
-
 
 }
