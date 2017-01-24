@@ -19,7 +19,7 @@ public class MPGameEndManager : MonoBehaviour {
 	[SerializeField] Text nextLevelText;
 	[SerializeField] Text currentAndNextXP;
 	[SerializeField] Text awardedXP;
-	[SerializeField] Text newAmountXP;
+	[SerializeField] Text totalXPAwarded;
 	[SerializeField] Slider sliderXP;
 
 	[Header("Other")]
@@ -27,7 +27,9 @@ public class MPGameEndManager : MonoBehaviour {
 	[SerializeField] MPLobbyMenu mpLobbyMenu;
 	[SerializeField] Text exitButtonText;
 	[SerializeField] int timeBeforeNextRace = 30; //in seconds
-	const float SLIDER_PROGRESS_DURATION = 1.8f;
+	const float SLIDER_PROGRESS_DURATION = 2.5f;
+
+	int totalXP = 0;
 
 	void Start ()
 	{
@@ -38,6 +40,9 @@ public class MPGameEndManager : MonoBehaviour {
 		startNextRace();
 
 		configureRacePanel();
+
+		totalXP = calculatedTotalXPAwarded();
+		StartCoroutine( spinNumber( 0, totalXP, totalXPAwarded, null ) );
 
 		configureXPPanel();
 	}
@@ -53,6 +58,21 @@ public class MPGameEndManager : MonoBehaviour {
 		DateTime dt = new DateTime(ts.Ticks);
 		raceTime.text = LocalizationManager.Instance.getText( "EOG_RACE_TIME" ).Replace("<race duration>", dt.ToString("mm:ss") );
 
+	}
+
+	int calculatedTotalXPAwarded()
+	{
+		XPAwardType awardType;
+		XPManager.XPAward xpAward;
+		int total = 0;
+		for( int i = 0; i < PlayerRaceManager.Instance.raceAwardList.Count; i++ )
+		{
+			awardType = PlayerRaceManager.Instance.raceAwardList[i];
+			xpAward = XPManager.Instance.getXPAward( awardType );
+			total = total + xpAward.xpAmount;
+		}
+		Debug.Log("MPGameEndManager-calculatedTotalXPAwarded: total: " + total );
+		return total;
 	}
 
 	void configureXPPanel()
@@ -74,7 +94,7 @@ public class MPGameEndManager : MonoBehaviour {
 		int xpAwardedTest = 750;
 		awardedXP.text = xpAwardedTest.ToString();
 		int totalXP = currentXP + xpAwardedTest;
-		newAmountXP.text = totalXP.ToString();
+		totalXPAwarded.text = totalXP.ToString();
 		sliderXP.value = totalXP/(float)XPManager.Instance.getXPRequired( nextLevel );
 		Invoke("animateSlick", 10f);
 	}
@@ -97,11 +117,34 @@ public class MPGameEndManager : MonoBehaviour {
 			elapsedTime = Time.time - startTime;
 
 			sliderXP.value =  Mathf.Lerp( startValue, newValue, elapsedTime/SLIDER_PROGRESS_DURATION );
-			yield return new WaitForFixedUpdate();  
+			yield return new WaitForEndOfFrame();  
 	    }
 		if( onFinish != null ) onFinish.Invoke();
 	}
 	
+	public IEnumerator spinNumber( float fromValue, float toValue, Text textField, System.Action onFinish = null  )
+	{
+		float startTime = Time.time;
+		float elapsedTime = 0;
+	
+		float value = 0;
+		int previousValue = -1;
+
+		while ( elapsedTime <= SLIDER_PROGRESS_DURATION )
+		{
+			elapsedTime = Time.time - startTime;
+
+			value =  Mathf.Lerp( fromValue, toValue, elapsedTime/SLIDER_PROGRESS_DURATION );
+			if( (int)value != previousValue )
+			{
+				textField.text = ((int)value).ToString();
+				previousValue = (int)value;
+			}
+			yield return new WaitForEndOfFrame();  
+	    }
+		if( onFinish != null ) onFinish.Invoke();
+	}
+
 	string getRacePositionString( int racePosition )
 	{
 		string racePositionString = string.Empty;

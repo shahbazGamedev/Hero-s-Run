@@ -16,6 +16,7 @@ public class PlayerRaceManager {
 	public float raceDuration;
 	public int racePosition;
 	public RaceStatus raceStatus = RaceStatus.NOT_STARTED;
+	public List<XPAwardType> raceAwardList = new List<XPAwardType>();
 
 	public static PlayerRaceManager Instance
 	{
@@ -30,4 +31,16 @@ public class PlayerRaceManager {
             return playerRaceManager;
         }
     }
+
+	public void grantXPAward( XPAwardType awardType )
+	{
+		if ( raceAwardList.Contains( awardType ) )
+		{
+			Debug.LogWarning("PlayerRaceManager-grantXPAward: award type already exists in list: " + awardType );
+		}
+		else
+		{
+			raceAwardList.Add( awardType );
+		}
+	}
 }
