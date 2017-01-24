@@ -41,9 +41,6 @@ public class MPGameEndManager : MonoBehaviour {
 
 		configureRacePanel();
 
-		totalXP = calculatedTotalXPAwarded();
-		StartCoroutine( spinNumber( 0, totalXP, totalXPAwarded, null ) );
-
 		configureXPPanel();
 	}
 
@@ -77,9 +74,11 @@ public class MPGameEndManager : MonoBehaviour {
 
 	void configureXPPanel()
 	{
-		int currentXP = GameManager.Instance.playerProfile.currentXP;
+		//Current level
 		int level = XPManager.Instance.getLevel( GameManager.Instance.playerProfile.currentXP );
 		currentLevelText.text = level.ToString();
+
+		//Next level
 		int nextLevel = level + 1;
 		if( nextLevel > XPManager.MAX_LEVEL )
 		{
@@ -90,39 +89,42 @@ public class MPGameEndManager : MonoBehaviour {
 		{
 			nextLevelText.text = nextLevel.ToString();
 		}
-		currentAndNextXP.text = currentXP.ToString() + "/" + XPManager.Instance.getXPRequired( nextLevel ).ToString();
-		int xpAwardedTest = 750;
-		awardedXP.text = xpAwardedTest.ToString();
-		int totalXP = currentXP + xpAwardedTest;
-		totalXPAwarded.text = totalXP.ToString();
-		sliderXP.value = totalXP/(float)XPManager.Instance.getXPRequired( nextLevel );
-		Invoke("animateSlick", 10f);
+
+		//Spin the total XP awarded from 0 to the amount earned.
+		totalXP = calculatedTotalXPAwarded();
+		StartCoroutine( spinNumber( 0, totalXP, totalXPAwarded ) );
+
+		//Current XPs/XPs needed for next level
+		//Spin the currentXP value from currentXP to currentXP + totalXP
+		int currentXP = GameManager.Instance.playerProfile.currentXP;
+		StartCoroutine( spinNumber( currentXP, currentXP + totalXP, currentAndNextXP, "/" + XPManager.Instance.getXPRequired( nextLevel ).ToString() ) );
+
+		//Individual XP Awards
+		awardedXP.text = "CONSECUTIVE MATCH<color=orange>+200xp</color>";
+
+		//Animate the slider from the currentXP value to currentXP + totalXP 
+		float fromValue = currentXP/(float)XPManager.Instance.getXPRequired( nextLevel );
+		float toValue = (currentXP + totalXP)/(float)XPManager.Instance.getXPRequired( nextLevel );
+		StartCoroutine( animateSlider( fromValue, toValue, sliderXP ) );
 	}
 
-	void animateSlick()
-	{
-		sliderXP.value = 0;
-		StartCoroutine( animateSlider( 0.75f ) );
-	}
 
-	public IEnumerator animateSlider( float newValue, System.Action onFinish = null  )
+	public IEnumerator animateSlider( float fromValue, float toValue, Slider slider, System.Action onFinish = null  )
 	{
 		float startTime = Time.time;
 		float elapsedTime = 0;
 	
-		float startValue = sliderXP.value;
-
 		while ( elapsedTime <= SLIDER_PROGRESS_DURATION )
 		{
 			elapsedTime = Time.time - startTime;
 
-			sliderXP.value =  Mathf.Lerp( startValue, newValue, elapsedTime/SLIDER_PROGRESS_DURATION );
+			slider.value =  Mathf.Lerp( fromValue, toValue, elapsedTime/SLIDER_PROGRESS_DURATION );
 			yield return new WaitForEndOfFrame();  
 	    }
 		if( onFinish != null ) onFinish.Invoke();
 	}
 	
-	public IEnumerator spinNumber( float fromValue, float toValue, Text textField, System.Action onFinish = null  )
+	public IEnumerator spinNumber( float fromValue, float toValue, Text textField, string endString = null, System.Action onFinish = null  )
 	{
 		float startTime = Time.time;
 		float elapsedTime = 0;
@@ -137,7 +139,14 @@ public class MPGameEndManager : MonoBehaviour {
 			value =  Mathf.Lerp( fromValue, toValue, elapsedTime/SLIDER_PROGRESS_DURATION );
 			if( (int)value != previousValue )
 			{
-				textField.text = ((int)value).ToString();
+				if( endString != null )
+				{
+					textField.text = ((int)value).ToString() + endString;
+				}
+				else
+				{
+					textField.text = ((int)value).ToString();
+				}
 				previousValue = (int)value;
 			}
 			yield return new WaitForEndOfFrame();  
