@@ -23,6 +23,8 @@ public class MPGameEndManager : MonoBehaviour {
 	[SerializeField] Slider sliderXP;
 
 	[Header("Other")]
+	[SerializeField] MPCarouselManager mpCarouselManager;
+	[SerializeField] MPLobbyMenu mpLobbyMenu;
 	[SerializeField] Text exitButtonText;
 	[SerializeField] int timeBeforeNextRace = 30; //in seconds
 	const float SLIDER_PROGRESS_DURATION = 1.8f;
@@ -130,6 +132,16 @@ public class MPGameEndManager : MonoBehaviour {
 			yield return new WaitForSecondsRealtime( 1.0f );
 			countdown --;
 		}
+		showMatchmakingScreen();
+	}
+
+	void showMatchmakingScreen()
+	{
+		CarouselEntry selected = mpCarouselManager.carouselEntryList[LevelManager.Instance.getCurrentMultiplayerLevel() ];
+		mpLobbyMenu.configureCircuitData( selected.circuitImage.sprite, selected.circuitName.text, selected.entryFee.text );
+		mpLobbyMenu.gameObject.SetActive( true );
+		mpCarouselManager.gameObject.SetActive( false );
+		gameObject.SetActive( false );
 	}
 
 	public void OnClickCloseGameEndCanvas()

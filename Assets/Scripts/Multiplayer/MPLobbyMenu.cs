@@ -24,11 +24,13 @@ public class MPLobbyMenu : MonoBehaviour {
 	public Text entryFee;
 
 	StoreManager storeManager;
+	Color originalPlayButtonTextColor;
 
 	void Start ()
 	{
 		GameObject storeManagerObject = GameObject.FindGameObjectWithTag("Store");
 		storeManager = storeManagerObject.GetComponent<StoreManager>();
+		originalPlayButtonTextColor = playButtonText.color;
 
 		//The left portrait is always the local player.
 		//Populate his name and player portrait
@@ -55,6 +57,7 @@ public class MPLobbyMenu : MonoBehaviour {
 		circuitName.text = circuitNameString;
 		circuitImage.sprite = circuitImageSprite;
 		entryFee.text = entryFeeString;
+		enablePlayButton( true );
 	}
 
 	//The other player is on the right, so remotePlayerName.
@@ -73,28 +76,28 @@ public class MPLobbyMenu : MonoBehaviour {
 	{
 		multiPurposePopup.configurePopup( "MENU_CONNECTION_FAILED_TITLE", "MENU_CONNECTION_FAILED_TEXT", "MENU_OK" );
 		multiPurposePopup.display();
-		playButton.interactable = true;
+		enablePlayButton( true );
 	}
 
 	public void showConnectionTimedOut()
 	{
 		multiPurposePopup.configurePopup( "MENU_CONNECTION_FAILED_TITLE", "MENU_MP_TIMED_OUT", "MENU_OK" );
 		multiPurposePopup.display();
-		playButton.interactable = true;
+		enablePlayButton( true );
 	}
 
 	public void showUnableToCreateMatch()
 	{
 		multiPurposePopup.configurePopup( "MENU_CONNECTION_FAILED_TITLE", "MENU_MP_UNABLE_CREATE_MATCH", "MENU_OK" );
 		multiPurposePopup.display();
-		playButton.interactable = true;
+		enablePlayButton( true );
 	}
 
 	public void showUnableToJoinMatch()
 	{
 		multiPurposePopup.configurePopup( "MENU_CONNECTION_FAILED_TITLE", "MENU_MP_UNABLE_JOIN_MATCH", "MENU_OK" );
 		multiPurposePopup.display();
-		playButton.interactable = true;
+		enablePlayButton( true );
 	}
 
 	public void OnClickPlay()
@@ -138,4 +141,17 @@ public class MPLobbyMenu : MonoBehaviour {
 		carouselCanvas.SetActive( true );
 	}
 
+	void enablePlayButton( bool enable )
+	{
+		if( enable )
+		{
+			playButton.interactable = true;
+			playButtonText.color = originalPlayButtonTextColor;
+		}
+		else
+		{
+			playButton.interactable = false;
+			playButtonText.color = Color.gray;
+		}
+	}
 }

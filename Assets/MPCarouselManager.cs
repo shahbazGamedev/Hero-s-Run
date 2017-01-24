@@ -11,7 +11,7 @@ public class MPCarouselManager : MonoBehaviour {
 
 	StoreManager storeManager;
 	bool levelLoading = false;
-	[SerializeField] List<CarouselEntry> carouselEntryList = new List<CarouselEntry>(2);
+	public List<CarouselEntry> carouselEntryList = new List<CarouselEntry>(2);
 	[SerializeField] Scrollbar scrollbar;
 
 	void Awake ()
