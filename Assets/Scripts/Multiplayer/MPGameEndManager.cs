@@ -27,7 +27,7 @@ public class MPGameEndManager : MonoBehaviour {
 	[SerializeField] MPLobbyMenu mpLobbyMenu;
 	[SerializeField] Text exitButtonText;
 	[SerializeField] int timeBeforeNextRace = 30; //in seconds
-	const float SLIDER_PROGRESS_DURATION = 2.5f;
+	const float SLIDER_PROGRESS_DURATION = 4f;
 
 	int totalXP = 0;
 
@@ -100,7 +100,7 @@ public class MPGameEndManager : MonoBehaviour {
 		StartCoroutine( spinNumber( currentXP, currentXP + totalXP, currentAndNextXP, "/" + XPManager.Instance.getXPRequired( nextLevel ).ToString() ) );
 
 		//Individual XP Awards
-		awardedXP.text = "CONSECUTIVE MATCH<color=orange>+200xp</color>";
+		StartCoroutine( displayIndividualAwards() );
 
 		//Animate the slider from the currentXP value to currentXP + totalXP 
 		float fromValue = currentXP/(float)XPManager.Instance.getXPRequired( nextLevel );
@@ -152,6 +152,21 @@ public class MPGameEndManager : MonoBehaviour {
 			yield return new WaitForEndOfFrame();  
 	    }
 		if( onFinish != null ) onFinish.Invoke();
+	}
+
+	IEnumerator displayIndividualAwards()
+	{
+		//Example: "CONSECUTIVE MATCH<color=orange>+200xp</color>"
+		XPAwardType awardType;
+		XPManager.XPAward xpAward;
+		for( int i = 0; i < PlayerRaceManager.Instance.raceAwardList.Count; i++ )
+		{
+			awardType = PlayerRaceManager.Instance.raceAwardList[i];
+			xpAward = XPManager.Instance.getXPAward( awardType );
+			string awardText = LocalizationManager.Instance.getText( xpAward.awardTextID );
+			awardedXP.text = awardText + "<color=orange>+" + xpAward.xpAmount.ToString() + "xp</color>";
+			yield return new WaitForSecondsRealtime( 4.0f );
+		}
 	}
 
 	string getRacePositionString( int racePosition )
