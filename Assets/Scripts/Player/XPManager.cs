@@ -2,12 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum XPAwardType
+ {
+	FINISHED_RACE = 1,
+	WON = 2,
+	FIRST_WIN_OF_THE_DAY = 3,
+	CONSECUTIVE_RACE = 4
+	
+}
+
 public class XPManager : MonoBehaviour {
 
 	[Header("General")]
 	public static XPManager Instance;
 	public const int MAX_LEVEL = 100;
 	[SerializeField] List<int> xpNeededPerLevel = new List<int>(MAX_LEVEL);
+	[SerializeField] List<XPAward> xpAwardList = new List<XPAward>();
 
 	// Use this for initialization
 	void Awake ()
@@ -39,6 +49,19 @@ public class XPManager : MonoBehaviour {
 	{
 		level--;
 		return xpNeededPerLevel[level];
+	}
+
+	public XPAward getXPAward( XPAwardType awardType )
+	{
+		return xpAwardList.Find(award => award.awardType == awardType);
+	}
+
+	[System.Serializable]
+	public class XPAward
+	{
+		public XPAwardType awardType;
+		public string awardTextID = string.Empty;
+		public int xpAmount = 0;
 	}
 	
 }
