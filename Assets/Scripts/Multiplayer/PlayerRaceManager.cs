@@ -49,6 +49,7 @@ public class PlayerRaceManager {
 	//Note: racePosition: 1 is the winner, 2 is second place, and so forth.
 	public void playerCrossedFinishLine( int racePosition )
 	{
+		raceAwardList.Clear();
 		this.racePosition = racePosition;
 		raceStatus = RaceStatus.COMPLETED;
 		grantXPAward(XPAwardType.FINISHED_RACE);
@@ -73,6 +74,7 @@ public class PlayerRaceManager {
 		if( racePosition == 1 ) 
 		{
 			//Is this the next day?
+			Debug.Log("PlayerRaceManager-test for first win :" + DateTime.UtcNow.Date.ToString() + " vs " + GameManager.Instance.playerProfile.getLastMatchWonTime().ToString() );
 			if( DateTime.UtcNow.Date > GameManager.Instance.playerProfile.getLastMatchWonTime() )
 			{
 				grantXPAward(XPAwardType.FIRST_WIN_OF_THE_DAY);

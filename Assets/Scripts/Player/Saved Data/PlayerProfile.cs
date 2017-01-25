@@ -6,18 +6,21 @@ using System;
 [System.Serializable]
 public class PlayerProfile {
 
-	public int currentXP = 0;
-	public string lastMatchPlayedTimeString = string.Empty;
-	public string lastMatchWonTimeString = string.Empty;
+	public int totalXPEarned = 0;
+	public int xpProgressToNextLevel = 0;
+	public int level = 1;
+	public int prestigeLevel = 0;
+	public string lastMatchPlayedTimeString = "01/01/1970 00:00:00";
+	public string lastMatchWonTimeString = "01/01/1970 00:00:00";
 	private DateTime lastMatchPlayedTime = new DateTime(1970,01,01);
 	private DateTime lastMatchWonTime = new DateTime(1970,01,01);
 
-	public void addXP( int xpAmount, bool saveImmediately )
+	public void addToTotalXPEarned( int xpAmount, bool saveImmediately )
 	{
 		if( xpAmount <= 0 || xpAmount > XPManager.MAX_XP_IN_ONE_RACE ) return;	
-		currentXP = currentXP + xpAmount;
+		totalXPEarned = totalXPEarned + xpAmount;
 		if( saveImmediately ) serializePlayerprofile();
-		Debug.Log("PlayerProfile-addXP: adding XP: " + xpAmount + " New total is: " +  currentXP );
+		Debug.Log("PlayerProfile-addXP: adding XP: " + xpAmount + " New total is: " +  totalXPEarned );
 	}
 
 	public void setLastMatchPlayedTime( DateTime timeMatchPlayed )
@@ -27,10 +30,7 @@ public class PlayerProfile {
 
 	public DateTime getLastMatchPlayedTime()
 	{
-		if ( lastMatchPlayedTime == null)
-		{ 
-			lastMatchPlayedTime = Convert.ToDateTime (lastMatchPlayedTimeString); 
-		} 
+		lastMatchPlayedTime = Convert.ToDateTime (lastMatchPlayedTimeString); 
 		return lastMatchPlayedTime; 
 	}
 
@@ -41,10 +41,7 @@ public class PlayerProfile {
 
 	public DateTime getLastMatchWonTime()
 	{
-		if ( lastMatchWonTime == null)
-		{ 
-			lastMatchWonTime = Convert.ToDateTime (lastMatchWonTimeString); 
-		} 
+		lastMatchWonTime = Convert.ToDateTime (lastMatchWonTimeString); 
 		return lastMatchWonTime.Date; //We don't want the time element, only the date
 	}
 

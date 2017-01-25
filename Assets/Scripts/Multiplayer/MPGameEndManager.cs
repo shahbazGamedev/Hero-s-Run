@@ -74,23 +74,24 @@ public class MPGameEndManager : MonoBehaviour {
 
 	IEnumerator configureXPPanel()
 	{
+		//Get the amount of xp progress towards the next level
+		int xpProgressToNextLevel = GameManager.Instance.playerProfile.xpProgressToNextLevel;
+		
 		//Calculate the number of XP won in this race
-		int totalXP = calculatedTotalXPAwarded();
+		int xpEarnedFromRace = calculatedTotalXPAwarded();
 
-		//The current XP value the player had before the race
-		int currentXP = GameManager.Instance.playerProfile.currentXP;
-
-		//The player's new total
-		int newXPTotal = totalXP + currentXP;
+		//Calculate the player's new total towards levels
+		int newXPTotal = xpProgressToNextLevel + xpEarnedFromRace;
 
 		//The player may level up multiple times
-		int numberOfTimesLeveledUp = 0;
-		int totalXPAtStart = totalXP;
-		int playerXPAtBeginning = currentXP;
+		int numberOfTimesLeveledUp = -1;
+		int totalXPAtStart = xpEarnedFromRace;
+		int playerXPAtBeginning = xpProgressToNextLevel;
 		while( totalXPAtStart > 0 )
 		{
+			numberOfTimesLeveledUp++;
 			//Current level
-			int level = XPManager.Instance.getLevel( GameManager.Instance.playerProfile.currentXP ) + numberOfTimesLeveledUp;
+			int level = GameManager.Instance.playerProfile.level + numberOfTimesLeveledUp;
 			currentLevelText.text = level.ToString();
 	
 			//Next level
@@ -104,7 +105,6 @@ public class MPGameEndManager : MonoBehaviour {
 			{
 				nextLevelText.text = nextLevel.ToString();
 			}
-
 			//The additional XP required to reach the next level
 			int xpNeededToReachNextLevel = XPManager.Instance.getXPRequired( level );
 
@@ -124,13 +124,15 @@ public class MPGameEndManager : MonoBehaviour {
 			StartCoroutine( animateSlider( fromValue, toValue, sliderXP ) );
 			
 			totalXPAtStart = totalXPAtStart - increaseAmount;
-			numberOfTimesLeveledUp++;
-			yield return new WaitForSecondsRealtime( ANIMATION_DURATION + 10f );
+			newXPTotal = newXPTotal - increaseAmount;
+			playerXPAtBeginning = newXPTotal;
+			yield return new WaitForSecondsRealtime( ANIMATION_DURATION + 8f );
 		}
 
-		//Add the XP earned and save
-		GameManager.Instance.playerProfile.addXP( totalXP, true );
-
+		//Add to the total amount of XP earned
+		GameManager.Instance.playerProfile.level = GameManager.Instance.playerProfile.level + numberOfTimesLeveledUp;
+		GameManager.Instance.playerProfile.addToTotalXPEarned( xpEarnedFromRace, false );
+		GameManager.Instance.playerProfile.xpProgressToNextLevel = GameManager.Instance.playerProfile.totalXPEarned - XPManager.Instance.getXPRequired( GameManager.Instance.playerProfile.level - 1 );
 	}
 
 	public IEnumerator animateSlider( float fromValue, float toValue, Slider slider, System.Action onFinish = null  )
