@@ -163,14 +163,7 @@ public class Player : NetworkBehaviour
 			GameManager.Instance.setGameState(GameState.Checkpoint);
 			StartCoroutine( GetComponent<PlayerController>().slowDownPlayer( 5.5f, afterPlayerSlowdown, triggerPositionZ ) );
 			HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
-			PlayerRaceManager.Instance.racePosition = racePosition + 1;
-			PlayerRaceManager.Instance.raceStatus = RaceStatus.COMPLETED;
-
-			PlayerRaceManager.Instance.grantXPAward(XPAwardType.FINISHED_RACE);
-			if( racePosition == 0 ) PlayerRaceManager.Instance.grantXPAward(XPAwardType.WON);
-			//Hack for testing
-			PlayerRaceManager.Instance.grantXPAward(XPAwardType.FIRST_WIN_OF_THE_DAY);
-			PlayerRaceManager.Instance.grantXPAward(XPAwardType.CONSECUTIVE_RACE);
+			PlayerRaceManager.Instance.playerCrossedFinishLine( racePosition + 1 );
 		}
 	}
 

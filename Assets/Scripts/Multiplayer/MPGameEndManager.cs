@@ -77,9 +77,6 @@ public class MPGameEndManager : MonoBehaviour {
 		//Calculate the number of XP won in this race
 		int totalXP = calculatedTotalXPAwarded();
 
-		//Add the XP earned and save
-		GameManager.Instance.playerProfile.addXP( totalXP, true );
-
 		//The current XP value the player had before the race
 		int currentXP = GameManager.Instance.playerProfile.currentXP;
 
@@ -130,6 +127,10 @@ public class MPGameEndManager : MonoBehaviour {
 			numberOfTimesLeveledUp++;
 			yield return new WaitForSecondsRealtime( ANIMATION_DURATION + 10f );
 		}
+
+		//Add the XP earned and save
+		GameManager.Instance.playerProfile.addXP( totalXP, true );
+
 	}
 
 	public IEnumerator animateSlider( float fromValue, float toValue, Slider slider, System.Action onFinish = null  )

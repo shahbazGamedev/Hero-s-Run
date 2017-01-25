@@ -150,7 +150,7 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 		else
 		{
 			Debug.LogWarning("MPNetworkLobbyManager-OnMatchList: Error: " + extendedInfo );
-			if( extendedInfo.Contains("Connection time-out") ) mpLobbyMenu.showConnectionTimedOut();
+			if( extendedInfo.Contains("Connection time-out") || extendedInfo.Contains("Couldn't resolve host") ) mpLobbyMenu.showConnectionTimedOut();
 		}
 	}
 	
