@@ -27,7 +27,7 @@ public class MPGameEndManager : MonoBehaviour {
 	[SerializeField] MPLobbyMenu mpLobbyMenu;
 	[SerializeField] Text exitButtonText;
 	[SerializeField] int timeBeforeNextRace = 60; //in seconds
-	const float SLIDER_PROGRESS_DURATION = 4f;
+	const float ANIMATION_DURATION = 4f;
 
 	void Start ()
 	{
@@ -77,6 +77,9 @@ public class MPGameEndManager : MonoBehaviour {
 		//Calculate the number of XP won in this race
 		int totalXP = calculatedTotalXPAwarded();
 
+		//Add the XP earned and save
+		GameManager.Instance.playerProfile.addXP( totalXP, true );
+
 		//The current XP value the player had before the race
 		int currentXP = GameManager.Instance.playerProfile.currentXP;
 
@@ -125,7 +128,7 @@ public class MPGameEndManager : MonoBehaviour {
 			
 			totalXPAtStart = totalXPAtStart - increaseAmount;
 			numberOfTimesLeveledUp++;
-			yield return new WaitForSecondsRealtime( SLIDER_PROGRESS_DURATION + 10f );
+			yield return new WaitForSecondsRealtime( ANIMATION_DURATION + 10f );
 		}
 	}
 
@@ -134,11 +137,11 @@ public class MPGameEndManager : MonoBehaviour {
 		float startTime = Time.time;
 		float elapsedTime = 0;
 	
-		while ( elapsedTime <= SLIDER_PROGRESS_DURATION )
+		while ( elapsedTime <= ANIMATION_DURATION )
 		{
 			elapsedTime = Time.time - startTime;
 
-			slider.value =  Mathf.Lerp( fromValue, toValue, elapsedTime/SLIDER_PROGRESS_DURATION );
+			slider.value =  Mathf.Lerp( fromValue, toValue, elapsedTime/ANIMATION_DURATION );
 			yield return new WaitForEndOfFrame();  
 	    }
 		if( onFinish != null ) onFinish.Invoke();
@@ -152,11 +155,11 @@ public class MPGameEndManager : MonoBehaviour {
 		float value = 0;
 		int previousValue = -1;
 
-		while ( elapsedTime <= SLIDER_PROGRESS_DURATION )
+		while ( elapsedTime <= ANIMATION_DURATION )
 		{
 			elapsedTime = Time.time - startTime;
 
-			value =  Mathf.Lerp( fromValue, toValue, elapsedTime/SLIDER_PROGRESS_DURATION );
+			value =  Mathf.Lerp( fromValue, toValue, elapsedTime/ANIMATION_DURATION );
 			if( (int)value != previousValue )
 			{
 				if( endString != null )
