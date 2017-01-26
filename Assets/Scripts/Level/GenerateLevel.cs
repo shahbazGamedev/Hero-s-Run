@@ -353,7 +353,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		tileCreationIndex = 0;
 		playerTileIndex = 0;
 
-		Debug.LogWarning("GenerateLevel-createMultiplayerLevel: selected level is: " + LevelManager.Instance.getCurrentMultiplayerLevel() );
+		Debug.Log("GenerateLevel-createMultiplayerLevel: selected level is: " + LevelManager.Instance.getCurrentMultiplayerLevel() );
 						
 		LevelData.MultiplayerInfo currentMultiplayer = levelData.getMultiplayerInfo( LevelManager.Instance.getCurrentMultiplayerLevel() );
 

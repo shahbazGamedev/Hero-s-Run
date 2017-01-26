@@ -41,7 +41,7 @@ public class PlayerRaceManager {
 		}
 		else
 		{
-			Debug.LogError("PlayerRaceManager-grantXPAward: granting award: " + awardType );
+			Debug.Log("PlayerRaceManager-grantXPAward: granting award: " + awardType );
 			raceAwardList.Add( awardType );
 		}
 	}
