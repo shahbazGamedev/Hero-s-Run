@@ -29,7 +29,7 @@ public class MPGameEndManager : MonoBehaviour {
 	[SerializeField] MPLobbyMenu mpLobbyMenu;
 	[SerializeField] Text exitButtonText;
 	[SerializeField] int timeBeforeNextRace = 60; //in seconds
-	const float ANIMATION_DURATION = 3.5f;
+	const float ANIMATION_DURATION = 3f;
 
 	void Start ()
 	{
@@ -116,19 +116,25 @@ public class MPGameEndManager : MonoBehaviour {
 			int xpNeededToReachNextLevel = XPManager.Instance.getXPRequired( level );
 
 			//Amount we need to increase by
-			int increaseAmount = Mathf.Min( xpEarnedFromRace, (xpNeededToReachNextLevel - xpAlreadyEarnedForLevel) );
-			//Current XPs/XPs needed for next level
-			//Spin the currentXP value from currentXP to increaseAmount
-			StartCoroutine( spinNumber( xpAlreadyEarnedForLevel, xpAlreadyEarnedForLevel + increaseAmount, currentAndNextXP, "/" + XPManager.Instance.getXPRequired( level ).ToString() ) );
-	
-			//Animate the slider from the currentXP value to currentXP + totalXP 
-			float fromValue = xpAlreadyEarnedForLevel/(float)XPManager.Instance.getXPRequired( level );
-			float toValue = (xpAlreadyEarnedForLevel + increaseAmount)/(float)xpNeededToReachNextLevel;
-			StartCoroutine( animateSlider( fromValue, toValue, sliderXP ) );
+			int increaseAmount = Mathf.Min( xpEarnedFromRace, (xpNeededToReachNextLevel - xpAlreadyEarnedForLevel) );		
+
+			//If the increase amount is 0, we don't want to wait for the animation duration.
+			if( increaseAmount > 0 )
+			{
+				//Current XPs/XPs needed for next level
+				//Spin the currentXP value from currentXP to increaseAmount
+				StartCoroutine( spinNumber( xpAlreadyEarnedForLevel, xpAlreadyEarnedForLevel + increaseAmount, currentAndNextXP, "/" + XPManager.Instance.getXPRequired( level ).ToString() ) );
 		
-			xpEarnedFromRace = xpEarnedFromRace - increaseAmount;
+				//Animate the slider from the currentXP value to currentXP + totalXP 
+				float fromValue = xpAlreadyEarnedForLevel/(float)XPManager.Instance.getXPRequired( level );
+				float toValue = (xpAlreadyEarnedForLevel + increaseAmount)/(float)xpNeededToReachNextLevel;
+				StartCoroutine( animateSlider( fromValue, toValue, sliderXP ) );
+			
+				xpEarnedFromRace = xpEarnedFromRace - increaseAmount;
+				yield return new WaitForSecondsRealtime( ANIMATION_DURATION );
+			}
 			xpAlreadyEarnedForLevel = 0;
-			yield return new WaitForSecondsRealtime( ANIMATION_DURATION );
+			
 		}
 
 		GameManager.Instance.playerProfile.setLevel( GameManager.Instance.playerProfile.getLevel() + numberOfTimesLeveledUp );
