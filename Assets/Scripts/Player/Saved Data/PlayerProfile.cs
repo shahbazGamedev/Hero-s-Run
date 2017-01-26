@@ -8,12 +8,30 @@ public class PlayerProfile {
 
 	public int totalXPEarned = 0;
 	public int xpProgressToNextLevel = 0;
-	public int level = 1;
+	int level = 1;
 	public int prestigeLevel = 0;
 	public string lastMatchPlayedTimeString = "01/01/1970 00:00:00";
 	public string lastMatchWonTimeString = "01/01/1970 00:00:00";
 	private DateTime lastMatchPlayedTime = new DateTime(1970,01,01);
 	private DateTime lastMatchWonTime = new DateTime(1970,01,01);
+
+	public int getLevel()
+	{
+		return level;
+	}
+
+	public void setLevel( int value )
+	{
+		if( value > 0 && value <= 100 )
+		{
+			level = value;
+			Debug.Log("PlayerProfile-setLevel: setting level to: " + value );
+		}
+		else
+		{
+			Debug.LogWarning("PlayerProfile-setLevel: the level specified," + value + " is incorrect. It needs to be between 1 and 100.");
+		}
+	}
 
 	public void addToTotalXPEarned( int xpAmount, bool saveImmediately )
 	{

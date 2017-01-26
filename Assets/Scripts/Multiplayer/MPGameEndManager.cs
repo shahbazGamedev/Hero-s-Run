@@ -28,6 +28,7 @@ public class MPGameEndManager : MonoBehaviour {
 	[SerializeField] Text exitButtonText;
 	[SerializeField] int timeBeforeNextRace = 60; //in seconds
 	const float ANIMATION_DURATION = 4f;
+	[SerializeField] bool xpTestingMode = false;
 
 	void Start ()
 	{
@@ -35,13 +36,14 @@ public class MPGameEndManager : MonoBehaviour {
 		nextRaceBegins.text = LocalizationManager.Instance.getText( "EOG_NEXT_RACE_BEGINS" ).Replace("\\n", System.Environment.NewLine );
 		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );
 
-		startNextRace();
+		if( !xpTestingMode ) startNextRace();
 		configureRacePanel();
 
 		//Individual XP Awards
 		StartCoroutine( displayIndividualAwards() );
+		int xpEarnedFromRace = calculatedTotalXPAwarded();
 
-		StartCoroutine( configureXPPanel() );
+		if( !xpTestingMode ) StartCoroutine( configureXPPanel(xpEarnedFromRace) );
 	}
 
 	void configureRacePanel()
@@ -55,6 +57,11 @@ public class MPGameEndManager : MonoBehaviour {
 		DateTime dt = new DateTime(ts.Ticks);
 		raceTime.text = LocalizationManager.Instance.getText( "EOG_RACE_TIME" ).Replace("<race duration>", dt.ToString("mm:ss") );
 
+	}
+
+	public void grantTestXP( int testXPAmount )
+	{
+		StartCoroutine( configureXPPanel(testXPAmount) );
 	}
 
 	int calculatedTotalXPAwarded()
@@ -72,13 +79,12 @@ public class MPGameEndManager : MonoBehaviour {
 		return total;
 	}
 
-	IEnumerator configureXPPanel()
+	IEnumerator configureXPPanel( int xpEarnedFromRace )
 	{
 		//Get the amount of xp already earned towards the next level
 		int xpAlreadyEarned = GameManager.Instance.playerProfile.xpProgressToNextLevel;
 		
 		//Calculate the number of XP won in this race
-		int xpEarnedFromRace = calculatedTotalXPAwarded();
 		GameManager.Instance.playerProfile.addToTotalXPEarned( xpEarnedFromRace, false );
 
 		//Spin the total XP awarded from 0 to the amount earned in this race.
@@ -91,7 +97,7 @@ public class MPGameEndManager : MonoBehaviour {
 		{
 			numberOfTimesLeveledUp++;
 			//Current level
-			int level = GameManager.Instance.playerProfile.level + numberOfTimesLeveledUp;
+						int level = GameManager.Instance.playerProfile.getLevel() + numberOfTimesLeveledUp;
 			currentLevelText.text = level.ToString();
 	
 			//Next level
@@ -125,8 +131,8 @@ public class MPGameEndManager : MonoBehaviour {
 			yield return new WaitForSecondsRealtime( ANIMATION_DURATION + 8f );
 		}
 
-		GameManager.Instance.playerProfile.level = GameManager.Instance.playerProfile.level + numberOfTimesLeveledUp;
-		GameManager.Instance.playerProfile.xpProgressToNextLevel = GameManager.Instance.playerProfile.totalXPEarned - XPManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.level - 1 );
+		GameManager.Instance.playerProfile.setLevel( GameManager.Instance.playerProfile.getLevel() + numberOfTimesLeveledUp );
+		GameManager.Instance.playerProfile.xpProgressToNextLevel = GameManager.Instance.playerProfile.totalXPEarned - XPManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() - 1 );
 		GameManager.Instance.playerProfile.serializePlayerprofile();
 	}
 
