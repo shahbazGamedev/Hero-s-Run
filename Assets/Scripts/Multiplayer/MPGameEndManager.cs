@@ -6,6 +6,8 @@ using System;
 
 public class MPGameEndManager : MonoBehaviour {
 
+	[Header("Testing Mode")]
+	[SerializeField] bool xpTestingMode = false;
 	[Header("Race Panel")]
 	[SerializeField] Image circuitImage;
 	[SerializeField] Text raceResult;
@@ -27,8 +29,7 @@ public class MPGameEndManager : MonoBehaviour {
 	[SerializeField] MPLobbyMenu mpLobbyMenu;
 	[SerializeField] Text exitButtonText;
 	[SerializeField] int timeBeforeNextRace = 60; //in seconds
-	const float ANIMATION_DURATION = 4f;
-	[SerializeField] bool xpTestingMode = false;
+	const float ANIMATION_DURATION = 3.5f;
 
 	void Start ()
 	{
@@ -116,19 +117,18 @@ public class MPGameEndManager : MonoBehaviour {
 
 			//Amount we need to increase by
 			int increaseAmount = Mathf.Min( xpEarnedFromRace, (xpNeededToReachNextLevel - xpAlreadyEarnedForLevel) );
-
 			//Current XPs/XPs needed for next level
 			//Spin the currentXP value from currentXP to increaseAmount
 			StartCoroutine( spinNumber( xpAlreadyEarnedForLevel, xpAlreadyEarnedForLevel + increaseAmount, currentAndNextXP, "/" + XPManager.Instance.getXPRequired( level ).ToString() ) );
 	
 			//Animate the slider from the currentXP value to currentXP + totalXP 
-			float fromValue = xpAlreadyEarnedForLevel/(float)XPManager.Instance.getXPRequired( nextLevel );
+			float fromValue = xpAlreadyEarnedForLevel/(float)XPManager.Instance.getXPRequired( level );
 			float toValue = (xpAlreadyEarnedForLevel + increaseAmount)/(float)xpNeededToReachNextLevel;
 			StartCoroutine( animateSlider( fromValue, toValue, sliderXP ) );
-			
+		
 			xpEarnedFromRace = xpEarnedFromRace - increaseAmount;
 			xpAlreadyEarnedForLevel = 0;
-			yield return new WaitForSecondsRealtime( ANIMATION_DURATION + 8f );
+			yield return new WaitForSecondsRealtime( ANIMATION_DURATION );
 		}
 
 		GameManager.Instance.playerProfile.setLevel( GameManager.Instance.playerProfile.getLevel() + numberOfTimesLeveledUp );
