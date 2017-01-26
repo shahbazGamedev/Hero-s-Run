@@ -74,20 +74,20 @@ public class MPGameEndManager : MonoBehaviour {
 
 	IEnumerator configureXPPanel()
 	{
-		//Get the amount of xp progress towards the next level
-		int xpProgressToNextLevel = GameManager.Instance.playerProfile.xpProgressToNextLevel;
+		//Get the amount of xp already earned towards the next level
+		int xpAlreadyEarned = GameManager.Instance.playerProfile.xpProgressToNextLevel;
 		
 		//Calculate the number of XP won in this race
 		int xpEarnedFromRace = calculatedTotalXPAwarded();
+		GameManager.Instance.playerProfile.addToTotalXPEarned( xpEarnedFromRace, false );
 
-		//Calculate the player's new total towards levels
-		int newXPTotal = xpProgressToNextLevel + xpEarnedFromRace;
+		//Spin the total XP awarded from 0 to the amount earned in this race.
+		StartCoroutine( spinNumber( 0, xpEarnedFromRace, totalXPAwarded  ) );
 
 		//The player may level up multiple times
 		int numberOfTimesLeveledUp = -1;
-		int totalXPAtStart = xpEarnedFromRace;
-		int playerXPAtBeginning = xpProgressToNextLevel;
-		while( totalXPAtStart > 0 )
+		int xpAlreadyEarnedForLevel = xpAlreadyEarned;
+		while( xpEarnedFromRace > 0 )
 		{
 			numberOfTimesLeveledUp++;
 			//Current level
@@ -109,30 +109,25 @@ public class MPGameEndManager : MonoBehaviour {
 			int xpNeededToReachNextLevel = XPManager.Instance.getXPRequired( level );
 
 			//Amount we need to increase by
-			int increaseAmount = Mathf.Min( totalXPAtStart, (xpNeededToReachNextLevel - playerXPAtBeginning) );
+			int increaseAmount = Mathf.Min( xpEarnedFromRace, (xpNeededToReachNextLevel - xpAlreadyEarnedForLevel) );
 
-			//Spin the total XP awarded from 0 to the amount earned or the delta needed to reach the level, whichever is smallest.
-			StartCoroutine( spinNumber( 0, increaseAmount, totalXPAwarded  ) );
-	
 			//Current XPs/XPs needed for next level
 			//Spin the currentXP value from currentXP to increaseAmount
-			StartCoroutine( spinNumber( playerXPAtBeginning, increaseAmount, currentAndNextXP, "/" + XPManager.Instance.getXPRequired( level ).ToString() ) );
+			StartCoroutine( spinNumber( xpAlreadyEarnedForLevel, xpAlreadyEarnedForLevel + increaseAmount, currentAndNextXP, "/" + XPManager.Instance.getXPRequired( level ).ToString() ) );
 	
 			//Animate the slider from the currentXP value to currentXP + totalXP 
-			float fromValue = playerXPAtBeginning/(float)XPManager.Instance.getXPRequired( nextLevel );
-			float toValue = increaseAmount/(float)xpNeededToReachNextLevel;
+			float fromValue = xpAlreadyEarnedForLevel/(float)XPManager.Instance.getXPRequired( nextLevel );
+			float toValue = (xpAlreadyEarnedForLevel + increaseAmount)/(float)xpNeededToReachNextLevel;
 			StartCoroutine( animateSlider( fromValue, toValue, sliderXP ) );
 			
-			totalXPAtStart = totalXPAtStart - increaseAmount;
-			newXPTotal = newXPTotal - increaseAmount;
-			playerXPAtBeginning = newXPTotal;
+			xpEarnedFromRace = xpEarnedFromRace - increaseAmount;
+			xpAlreadyEarnedForLevel = 0;
 			yield return new WaitForSecondsRealtime( ANIMATION_DURATION + 8f );
 		}
 
-		//Add to the total amount of XP earned
 		GameManager.Instance.playerProfile.level = GameManager.Instance.playerProfile.level + numberOfTimesLeveledUp;
-		GameManager.Instance.playerProfile.addToTotalXPEarned( xpEarnedFromRace, false );
-		GameManager.Instance.playerProfile.xpProgressToNextLevel = GameManager.Instance.playerProfile.totalXPEarned - XPManager.Instance.getXPRequired( GameManager.Instance.playerProfile.level - 1 );
+		GameManager.Instance.playerProfile.xpProgressToNextLevel = GameManager.Instance.playerProfile.totalXPEarned - XPManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.level - 1 );
+		GameManager.Instance.playerProfile.serializePlayerprofile();
 	}
 
 	public IEnumerator animateSlider( float fromValue, float toValue, Slider slider, System.Action onFinish = null  )

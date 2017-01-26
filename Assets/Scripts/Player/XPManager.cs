@@ -32,6 +32,14 @@ public class XPManager : MonoBehaviour {
 			DontDestroyOnLoad(gameObject);
 			Instance = this;
 		}
+		int testLevel = 1;
+		Debug.LogWarning("Total " + testLevel + " " + getTotalXPRequired( testLevel ) );		
+		testLevel = 2;
+		Debug.LogWarning("Total " + testLevel + " " + getTotalXPRequired( testLevel ) );		
+		testLevel = 3;
+		Debug.LogWarning("Total " + testLevel + " " + getTotalXPRequired( testLevel ) );		
+		testLevel = 4;
+		Debug.LogWarning("Total " + testLevel + " " + getTotalXPRequired( testLevel ) );		
 	}
 
 	//Returns the level between 1 and 100
@@ -50,6 +58,16 @@ public class XPManager : MonoBehaviour {
 	{
 		level--;
 		return xpNeededPerLevel[level];
+	}
+
+	public int getTotalXPRequired( int level )
+	{
+		int xpSum = 0;
+		for( int i = 0; i < level; i++ )
+		{
+			xpSum = xpSum + xpNeededPerLevel[i];
+		}
+		return xpSum;
 	}
 
 	public XPAward getXPAward( XPAwardType awardType )
