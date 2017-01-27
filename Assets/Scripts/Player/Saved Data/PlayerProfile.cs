@@ -8,7 +8,7 @@ public class PlayerProfile {
 
 	public int totalXPEarned = 0;
 	public int xpProgressToNextLevel = 0;
-	int level = 1;
+	public int level = 1;
 	public int prestigeLevel = 0;
 	public string lastMatchPlayedTimeString = "01/01/1970 00:00:00";
 	public string lastMatchWonTimeString = "01/01/1970 00:00:00";
@@ -22,7 +22,7 @@ public class PlayerProfile {
 
 	public void setLevel( int value )
 	{
-		if( value > 0 && value <= 100 )
+		if( value > 0 && value <= ProgressionManager.MAX_LEVEL )
 		{
 			level = value;
 			Debug.Log("PlayerProfile-setLevel: setting level to: " + value );
@@ -35,7 +35,7 @@ public class PlayerProfile {
 
 	public void addToTotalXPEarned( int xpAmount, bool saveImmediately )
 	{
-		if( xpAmount <= 0 || xpAmount > XPManager.MAX_XP_IN_ONE_RACE ) return;	
+		if( xpAmount <= 0 || xpAmount > ProgressionManager.MAX_XP_IN_ONE_RACE ) return;	
 		totalXPEarned = totalXPEarned + xpAmount;
 		if( saveImmediately ) serializePlayerprofile();
 		Debug.Log("PlayerProfile-addXP: adding XP: " + xpAmount + " New total is: " +  totalXPEarned );

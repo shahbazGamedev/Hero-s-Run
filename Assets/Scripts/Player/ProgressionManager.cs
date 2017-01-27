@@ -11,14 +11,16 @@ public enum XPAwardType
 	
 }
 
-public class XPManager : MonoBehaviour {
+public class ProgressionManager : MonoBehaviour {
 
 	[Header("General")]
-	public static XPManager Instance;
+	public static ProgressionManager Instance;
 	public const int MAX_LEVEL = 100;
+	public const int LEVEL_BANDS = 10;
 	public const int MAX_XP_IN_ONE_RACE = 2450; //The maximum amount of XP a player can earn in a single race. Used for security checks.
 	[SerializeField] List<int> xpNeededPerLevel = new List<int>(MAX_LEVEL);
 	[SerializeField] List<XPAward> xpAwardList = new List<XPAward>();
+	[SerializeField] List<Color> frameColorList = new List<Color>(LEVEL_BANDS);
 
 	// Use this for initialization
 	void Awake ()
@@ -60,6 +62,23 @@ public class XPManager : MonoBehaviour {
 			xpSum = xpSum + xpNeededPerLevel[i];
 		}
 		return xpSum;
+	}
+
+	//Level parameter is between 1 and MAX_LEVEL
+	//There are 10 level bands each with LEVEL_BANDS levels.
+	public Color getFrameColor( int level )
+	{
+		if( level > 0 && level <= ProgressionManager.MAX_LEVEL )
+		{
+			level--; //frameColorList is zero indexed
+			int frameIndex = (int)Mathf.Floor(level/(float)LEVEL_BANDS);
+			return frameColorList[frameIndex];
+		}
+		else
+		{
+			Debug.LogWarning("ProgressionManager-getFrameColor: the level specified," + level + " is incorrect. It needs to be between 1 and 100.");
+			return Color.clear;
+		}
 	}
 
 	public XPAward getXPAward( XPAwardType awardType )

@@ -35,6 +35,7 @@ public class MPLobbyMenu : MonoBehaviour {
 		//The left portrait is always the local player.
 		//Populate his name and player portrait
 		playerName.text = PlayerStatsManager.Instance.getUserName();
+		setPlayerFrame( GameManager.Instance.playerProfile.getLevel() );
 		remotePlayerName.text = LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" );
 		versusText.text = LocalizationManager.Instance.getText( "CIRCUIT_VERSUS" );
 		playButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_PLAY" );
@@ -50,6 +51,18 @@ public class MPLobbyMenu : MonoBehaviour {
 		{
 			endOfGameCanvas.SetActive( false );
 		}
+	}
+
+	public void setPlayerFrame( int level )
+	{
+		Color frameColor = ProgressionManager.Instance.getFrameColor( level );
+		playerPortrait.GetComponent<Outline>().effectColor = frameColor;
+	}
+
+	public void setRemoteFrame( int level )
+	{
+		Color frameColor = ProgressionManager.Instance.getFrameColor( level );
+		remotePlayerPortrait.GetComponent<Outline>().effectColor = frameColor;
 	}
 
 	public void configureCircuitData( Sprite circuitImageSprite, string circuitNameString, string entryFeeString )

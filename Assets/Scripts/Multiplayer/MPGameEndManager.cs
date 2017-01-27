@@ -68,12 +68,12 @@ public class MPGameEndManager : MonoBehaviour {
 	int calculatedTotalXPAwarded()
 	{
 		XPAwardType awardType;
-		XPManager.XPAward xpAward;
+		ProgressionManager.XPAward xpAward;
 		int total = 0;
 		for( int i = 0; i < PlayerRaceManager.Instance.raceAwardList.Count; i++ )
 		{
 			awardType = PlayerRaceManager.Instance.raceAwardList[i];
-			xpAward = XPManager.Instance.getXPAward( awardType );
+			xpAward = ProgressionManager.Instance.getXPAward( awardType );
 			total = total + xpAward.xpAmount;
 		}
 		Debug.Log("MPGameEndManager-calculatedTotalXPAwarded: total: " + total );
@@ -98,14 +98,14 @@ public class MPGameEndManager : MonoBehaviour {
 		{
 			numberOfTimesLeveledUp++;
 			//Current level
-						int level = GameManager.Instance.playerProfile.getLevel() + numberOfTimesLeveledUp;
+			int level = GameManager.Instance.playerProfile.getLevel() + numberOfTimesLeveledUp;
 			currentLevelText.text = level.ToString();
 	
 			//Next level
 			int nextLevel = level + 1;
-			if( nextLevel > XPManager.MAX_LEVEL )
+			if( nextLevel > ProgressionManager.MAX_LEVEL )
 			{
-				nextLevel = XPManager.MAX_LEVEL;
+				nextLevel = ProgressionManager.MAX_LEVEL;
 				nextLevelText.text = LocalizationManager.Instance.getText( "EOG_MAX_LEVEL" );
 			}
 			else
@@ -113,7 +113,7 @@ public class MPGameEndManager : MonoBehaviour {
 				nextLevelText.text = nextLevel.ToString();
 			}
 			//The additional XP required to reach the next level
-			int xpNeededToReachNextLevel = XPManager.Instance.getXPRequired( level );
+			int xpNeededToReachNextLevel = ProgressionManager.Instance.getXPRequired( level );
 
 			//Amount we need to increase by
 			int increaseAmount = Mathf.Min( xpEarnedFromRace, (xpNeededToReachNextLevel - xpAlreadyEarnedForLevel) );		
@@ -123,10 +123,10 @@ public class MPGameEndManager : MonoBehaviour {
 			{
 				//Current XPs/XPs needed for next level
 				//Spin the currentXP value from currentXP to increaseAmount
-				StartCoroutine( spinNumber( xpAlreadyEarnedForLevel, xpAlreadyEarnedForLevel + increaseAmount, currentAndNextXP, "/" + XPManager.Instance.getXPRequired( level ).ToString() ) );
+				StartCoroutine( spinNumber( xpAlreadyEarnedForLevel, xpAlreadyEarnedForLevel + increaseAmount, currentAndNextXP, "/" + ProgressionManager.Instance.getXPRequired( level ).ToString() ) );
 		
 				//Animate the slider from the currentXP value to currentXP + totalXP 
-				float fromValue = xpAlreadyEarnedForLevel/(float)XPManager.Instance.getXPRequired( level );
+				float fromValue = xpAlreadyEarnedForLevel/(float)ProgressionManager.Instance.getXPRequired( level );
 				float toValue = (xpAlreadyEarnedForLevel + increaseAmount)/(float)xpNeededToReachNextLevel;
 				StartCoroutine( animateSlider( fromValue, toValue, sliderXP ) );
 			
@@ -138,8 +138,10 @@ public class MPGameEndManager : MonoBehaviour {
 		}
 
 		GameManager.Instance.playerProfile.setLevel( GameManager.Instance.playerProfile.getLevel() + numberOfTimesLeveledUp );
-		GameManager.Instance.playerProfile.xpProgressToNextLevel = GameManager.Instance.playerProfile.totalXPEarned - XPManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() - 1 );
+		GameManager.Instance.playerProfile.xpProgressToNextLevel = GameManager.Instance.playerProfile.totalXPEarned - ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() - 1 );
 		GameManager.Instance.playerProfile.serializePlayerprofile();
+		//Also update the matchmaking screen if the player has leveled up so that the player frame gets updated
+		if( numberOfTimesLeveledUp > 0 ) mpLobbyMenu.setPlayerFrame( GameManager.Instance.playerProfile.getLevel() );
 	}
 
 	public IEnumerator animateSlider( float fromValue, float toValue, Slider slider, System.Action onFinish = null  )
@@ -191,11 +193,11 @@ public class MPGameEndManager : MonoBehaviour {
 	{
 		//Example: "CONSECUTIVE MATCH<color=orange>+200xp</color>"
 		XPAwardType awardType;
-		XPManager.XPAward xpAward;
+		ProgressionManager.XPAward xpAward;
 		for( int i = 0; i < PlayerRaceManager.Instance.raceAwardList.Count; i++ )
 		{
 			awardType = PlayerRaceManager.Instance.raceAwardList[i];
-			xpAward = XPManager.Instance.getXPAward( awardType );
+			xpAward = ProgressionManager.Instance.getXPAward( awardType );
 			string awardText = LocalizationManager.Instance.getText( xpAward.awardTextID );
 			awardedXP.text = awardText + "<color=orange>+" + xpAward.xpAmount.ToString() + "xp</color>";
 			yield return new WaitForSecondsRealtime( 4.0f );
