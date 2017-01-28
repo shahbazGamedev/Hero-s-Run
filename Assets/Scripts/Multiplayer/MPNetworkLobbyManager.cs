@@ -292,7 +292,6 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 	{
 		Debug.LogWarning("MPNetworkLobbyManager-cleanUpOnExit" );
 		if( client != null ) client.Disconnect();
-		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 
 		if( hostedMatchInfo != null )
 		{

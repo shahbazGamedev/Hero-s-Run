@@ -160,7 +160,7 @@ public class Player : NetworkBehaviour
 			//Hack so players dont bump into each other
 			if( racePosition == 0 ) transform.position = new Vector3( -1.3f, transform.position.y, transform.position.z );
 			if( racePosition == 1 ) transform.position = new Vector3( 1.3f, transform.position.y, transform.position.z );
-			GameManager.Instance.setGameState(GameState.Checkpoint);
+			GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 			StartCoroutine( GetComponent<PlayerController>().slowDownPlayer( 5.5f, afterPlayerSlowdown, triggerPositionZ ) );
 			HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
 			PlayerRaceManager.Instance.playerCrossedFinishLine( racePosition + 1 );
