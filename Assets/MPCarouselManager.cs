@@ -19,7 +19,7 @@ public class MPCarouselManager : MonoBehaviour {
 		Handheld.StopActivityIndicator();
 	}
 
-	public void OnClickShowShop()
+	public void OnClickShowStore()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		StoreManager.Instance.showStore( StoreTab.Store, StoreReason.None );

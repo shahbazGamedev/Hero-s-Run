@@ -23,19 +23,19 @@ public class StoreManager : MonoBehaviour {
 
 	[Header("General")]
 	public static StoreManager Instance = null;
-	public Canvas storeCanvas;
-	public GameObject topPanel;
-	public GameObject storeTab;
-	public GameObject shopTab;
+	[SerializeField]  GameObject storeParent;
+	[SerializeField]  RectTransform contentRectTransform;
+	[SerializeField]  GameObject storeTab;
+	[SerializeField]  GameObject shopTab;
 	[Header("Store")]
-	public Text starsTitle;
-	public Text starsReason;
-	public Text livesTitle;
-	public Text livesReason;
-	public Scrollbar storeVerticalScrollbar;
+	[SerializeField]  Text starsTitle;
+	[SerializeField]  Text starsReason;
+	[SerializeField]  Text livesTitle;
+	[SerializeField]  Text livesReason;
+	[SerializeField]  Scrollbar storeVerticalScrollbar;
 	[Header("Shop")]
-	public Text upgradeTitle;
-	public Text consumableTitle;
+	[SerializeField]  Text upgradeTitle;
+	[SerializeField]  Text consumableTitle;
 
 	// Use this for initialization
 	void Awake ()
@@ -66,8 +66,7 @@ public class StoreManager : MonoBehaviour {
 
 	public void showStore(StoreTab selectedTab, StoreReason reason )
 	{
-		topPanel.gameObject.SetActive( true );
-		storeCanvas.gameObject.SetActive( true );
+		storeParent.SetActive( true );
 		if( selectedTab == StoreTab.Store )
 		{	
 			showStoreTab();
@@ -98,20 +97,18 @@ public class StoreManager : MonoBehaviour {
 
 	void showStoreTab()
 	{
-		storeTab.gameObject.SetActive( true );
-		shopTab.gameObject.SetActive( false );
+		contentRectTransform.anchoredPosition = new Vector2( 0, contentRectTransform.anchoredPosition.y );
 	}
 
 	void showShopTab()
 	{
-		storeTab.gameObject.SetActive( false );
-		shopTab.gameObject.SetActive( true );
+		contentRectTransform.anchoredPosition = new Vector2( -852f, contentRectTransform.anchoredPosition.y );
 	}
 
 	public void closeStore()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
-		storeCanvas.gameObject.SetActive( false );
+		storeParent.SetActive( false );
 	}
 
 }

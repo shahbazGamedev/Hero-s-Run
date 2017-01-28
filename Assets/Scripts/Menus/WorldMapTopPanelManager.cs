@@ -13,7 +13,7 @@ public class WorldMapTopPanelManager : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		numberOfKeysText.text = PlayerStatsManager.Instance.getTreasureKeysOwned().ToString();
+		if( numberOfKeysText != null ) numberOfKeysText.text = PlayerStatsManager.Instance.getTreasureKeysOwned().ToString();
 		numberOfLivesText.text = PlayerStatsManager.Instance.getLives().ToString();
 		numberOfStarsText.text = PlayerStatsManager.Instance.getCurrentCoins().ToString("N0");
 		starDoublerIcon.gameObject.SetActive( PlayerStatsManager.Instance.getOwnsStarDoubler() );
@@ -35,7 +35,7 @@ public class WorldMapTopPanelManager : MonoBehaviour {
 		switch (eventType)
 		{
 			case PlayerInventoryEvent.Key_Changed:
-				numberOfKeysText.text = PlayerStatsManager.Instance.getTreasureKeysOwned().ToString();
+				if( numberOfKeysText != null ) numberOfKeysText.text = PlayerStatsManager.Instance.getTreasureKeysOwned().ToString();
 			break;
  
 			case PlayerInventoryEvent.Life_Changed:
