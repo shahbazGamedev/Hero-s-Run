@@ -89,7 +89,7 @@ public class MPGameEndManager : MonoBehaviour {
 		GameManager.Instance.playerProfile.addToTotalXPEarned( xpEarnedFromRace, false );
 
 		//Spin the total XP awarded from 0 to the amount earned in this race.
-		StartCoroutine( spinNumber( 0, xpEarnedFromRace, totalXPAwarded  ) );
+		StartCoroutine( spinNumber( 0, xpEarnedFromRace, totalXPAwarded, " " + LocalizationManager.Instance.getText( "EOG_XP" ) ) );
 
 		//The player may level up multiple times
 		int numberOfTimesLeveledUp = -1;
