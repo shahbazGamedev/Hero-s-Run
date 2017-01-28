@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
 
 public class TowerTitleScreen : MonoBehaviour {
 
@@ -8,6 +7,12 @@ public class TowerTitleScreen : MonoBehaviour {
 	FairyController fairyController;
 	public Lightning lightning;
 	public TitleScreenHandler titleScreenHandler;
+
+	void Start()
+	{
+		lightning.controlLightning(GameEvent.Start_Lightning);
+		Invoke("Step1", 3f );
+	}
 
 	void Step1 ()
 	{
@@ -42,22 +47,4 @@ public class TowerTitleScreen : MonoBehaviour {
 	{
 		titleScreenHandler.play();
 	}
-
-	void OnEnable()
-	{
-		//Tell our 'OnLevelFinishedLoading' function to start listening for a scene change as soon as this script is enabled.
-         SceneManager.sceneLoaded += OnLevelFinishedLoading;
-     }
- 
-     void OnDisable()
-     {
-		//Tell our 'OnLevelFinishedLoading' function to stop listening for a scene change as soon as this script is disabled. Remember to always have an unsubscription for every delegate you subscribe to!
-         SceneManager.sceneLoaded -= OnLevelFinishedLoading;
-     }
- 
-     void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
-     {
-		lightning.controlLightning(GameEvent.Start_Lightning);
-		Invoke("Step1", 3f );
-     }
 }

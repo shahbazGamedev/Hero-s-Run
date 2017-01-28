@@ -23,13 +23,10 @@ public class MPLobbyMenu : MonoBehaviour {
 	public Image circuitImage;
 	public Text entryFee;
 
-	StoreManager storeManager;
 	Color originalPlayButtonTextColor;
 
 	void Start ()
 	{
-		GameObject storeManagerObject = GameObject.FindGameObjectWithTag("Store");
-		storeManager = storeManagerObject.GetComponent<StoreManager>();
 		originalPlayButtonTextColor = playButtonText.color;
 
 		//The left portrait is always the local player.
@@ -125,7 +122,7 @@ public class MPLobbyMenu : MonoBehaviour {
 		else
 		{
 			//Player does not have enough for entry fee. Open the store.
-			storeManager.showStore(StoreTab.Store,StoreReason.Need_Stars);
+			StoreManager.Instance.showStore(StoreTab.Store,StoreReason.Need_Stars);
 		}
 
 	}

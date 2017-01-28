@@ -16,7 +16,6 @@ public enum PurchaseType {
 public class StoreEntry : MonoBehaviour {
 
 	[Header("Store Entry")]
-	StoreManager storeManager;
 	public PowerUpType powerUpType = PowerUpType.None;
 	public PurchaseType purchaseType = PurchaseType.None;
 
@@ -36,10 +35,6 @@ public class StoreEntry : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 
-		GameObject storeManagerObject = GameObject.FindGameObjectWithTag("Store");
-		if( storeManagerObject != null ) storeManager = storeManagerObject.GetComponent<StoreManager>();
-
-	
 		//So I can see the text displayed without going through the load menu as well as have valid save data while in the editor
 		#if UNITY_EDITOR
 		LocalizationManager.Instance.initialize(); 
@@ -231,7 +226,7 @@ public class StoreEntry : MonoBehaviour {
 		else
 		{
 			//Player does not have enough stars. Bring him to store.
-			if( storeManager != null ) storeManager.showStore(StoreTab.Store, StoreReason.Need_Stars);
+			StoreManager.Instance.showStore(StoreTab.Store, StoreReason.Need_Stars);
 		}
 	}
 
@@ -257,7 +252,7 @@ public class StoreEntry : MonoBehaviour {
 		else
 		{
 			//Player does not have enough stars. Bring him to store.
-			if( storeManager != null ) storeManager.showStore(StoreTab.Store, StoreReason.Need_Stars);
+			StoreManager.Instance.showStore(StoreTab.Store, StoreReason.Need_Stars);
 		}
 	}
 

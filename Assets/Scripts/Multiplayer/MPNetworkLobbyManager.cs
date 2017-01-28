@@ -292,11 +292,12 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 	{
 		Debug.LogWarning("MPNetworkLobbyManager-cleanUpOnExit" );
 		if( client != null ) client.Disconnect();
+		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 
 		if( hostedMatchInfo != null )
 		{
 			if( matchMaker != null ) matchMaker.DestroyMatch( hostedMatchInfo.networkId, 0, OnDestroyMatch );
-			StopHost();
+			StopHost(); //StopHost() will call ServerChangeScene and cause a return to lobby
 			hostedMatchInfo = null;
 			lobbyPlayerCount = 0;
 		}
@@ -354,39 +355,5 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 		base.OnClientError( conn, errorCode );
 		Debug.LogWarning("MPNetworkLobbyManager-OnClientError: Error Code: " + errorCode);
 	}
-
-	//This is called after StopHost() is called
-	public override void ServerChangeScene (string sceneName)
-	{
-		if( sceneName == "Level" )
-		{
-			Debug.Log("MPNetworkLobbyManager-ServerChangeScene: sceneName is Level" );
-			base.ServerChangeScene( sceneName );
-		}
-		else if( sceneName == "MP Lobby" )
-		{
-			Debug.Log("MPNetworkLobbyManager-ServerChangeScene: sceneName is MP Lobby" );
-			StartCoroutine( returnToLobby() );
-		}
-		else if( sceneName == null )
-		{
-			Debug.Log("MPNetworkLobbyManager-ServerChangeScene: sceneName is null" );
-			StartCoroutine( returnToLobby() );
-		}
-	}
-
-	IEnumerator returnToLobby()
-	{
-		if( !levelLoading )
-		{
-			Debug.Log("MPNetworkLobbyManager-returnToLobby");
-			cleanUpOnExit();
-			levelLoading = true;
-			GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)GameScenes.MultiplayerMatchmaking );
-		}
-	}	
 
 }

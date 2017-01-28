@@ -22,7 +22,9 @@ public enum PurchaseStatus {
 public class StoreManager : MonoBehaviour {
 
 	[Header("General")]
+	public static StoreManager Instance = null;
 	public Canvas storeCanvas;
+	public GameObject topPanel;
 	public GameObject storeTab;
 	public GameObject shopTab;
 	[Header("Store")]
@@ -38,9 +40,20 @@ public class StoreManager : MonoBehaviour {
 	// Use this for initialization
 	void Awake ()
 	{
-		#if UNITY_EDITOR
-		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
-		#endif
+		if(Instance)
+		{
+			DestroyImmediate(gameObject);
+		}
+		else
+		{
+			DontDestroyOnLoad(gameObject);
+			Instance = this;
+		}
+	}
+
+	// Use this for initialization
+	void Start ()
+	{
 		starsTitle.text = LocalizationManager.Instance.getText("STORE_STARS_TITLE");
 		starsReason.text = LocalizationManager.Instance.getText("STORE_STARS_REASON");
 		livesTitle.text = LocalizationManager.Instance.getText("STORE_LIVES_TITLE");
@@ -53,6 +66,7 @@ public class StoreManager : MonoBehaviour {
 
 	public void showStore(StoreTab selectedTab, StoreReason reason )
 	{
+		topPanel.gameObject.SetActive( true );
 		storeCanvas.gameObject.SetActive( true );
 		if( selectedTab == StoreTab.Store )
 		{	
@@ -82,13 +96,13 @@ public class StoreManager : MonoBehaviour {
 		}
 	}
 
-	public void showStoreTab()
+	void showStoreTab()
 	{
 		storeTab.gameObject.SetActive( true );
 		shopTab.gameObject.SetActive( false );
 	}
 
-	public void showShopTab()
+	void showShopTab()
 	{
 		storeTab.gameObject.SetActive( false );
 		shopTab.gameObject.SetActive( true );

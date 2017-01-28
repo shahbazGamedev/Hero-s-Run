@@ -19,7 +19,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 	[Header("Message Center")]
 	public GameObject messageCenterPanel;
 	public Text numberOfMessages;
-	StoreManager storeManager;
 	[Header("Facebook Ask Lives")]
 	public GameObject facebookAskLivesPanel;
 	[Header("Facebook Offer Lives")]
@@ -56,8 +55,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	void Awake ()
 	{
-		SceneManager.LoadScene( (int)GameScenes.Store, LoadSceneMode.Additive );
-
 		//We need to update <User name> in the text dictionary after character selection has happened. This is why we do it here.
 		LocalizationManager.Instance.replaceUserName( PlayerStatsManager.Instance.getUserName() );
 
@@ -70,9 +67,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		GameObject storeManagerObject = GameObject.FindGameObjectWithTag("Store");
-		storeManager = storeManagerObject.GetComponent<StoreManager>();
-
 		Handheld.StopActivityIndicator();
 
 		//If we quit from the pause menu, the audio listener was paused.
@@ -313,13 +307,13 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public void showStoreScreen()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
-		storeManager.showStore( StoreTab.Store, StoreReason.None );
+		StoreManager.Instance.showStore( StoreTab.Store, StoreReason.None );
 	}
 
 	public void showShopScreen()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
-		storeManager.showStore( StoreTab.Shop, StoreReason.None );
+		StoreManager.Instance.showStore( StoreTab.Shop, StoreReason.None );
 	}
 
 	//Middle Panel

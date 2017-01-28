@@ -9,29 +9,20 @@ public class MPCarouselManager : MonoBehaviour {
 	public GameObject lobbyManager;
 	[SerializeField] MPLobbyMenu mpLobbyMenu;
 
-	StoreManager storeManager;
 	bool levelLoading = false;
 	public List<CarouselEntry> carouselEntryList = new List<CarouselEntry>(2);
 	[SerializeField] Scrollbar scrollbar;
 
-	void Awake ()
-	{
-		SceneManager.LoadScene( (int)GameScenes.Store, LoadSceneMode.Additive );
-	}
-
 	// Use this for initialization
 	void Start ()
 	{
-		GameObject storeManagerObject = GameObject.FindGameObjectWithTag("Store");
-		storeManager = storeManagerObject.GetComponent<StoreManager>();
-
 		Handheld.StopActivityIndicator();
 	}
 
 	public void OnClickShowShop()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
-		storeManager.showStore( StoreTab.Shop, StoreReason.None );
+		StoreManager.Instance.showStore( StoreTab.Store, StoreReason.None );
 	}
 
 	public void OnClickShowMatchmakingScreen()
@@ -57,7 +48,6 @@ public class MPCarouselManager : MonoBehaviour {
 			levelLoading = true;
 			GameManager.Instance.setMultiplayerMode( false );
 			GameManager.Instance.setGameState(GameState.WorldMapNoPopup);
-			MPNetworkLobbyManager.mpNetworkLobbyManager.cleanUpOnExit();
 			//Some components of the Lobby Manager game object are DontDestroyOnLoad.
 			//Since we are going back to the world map, detroy the Lobby Manager.
 			GameObject.Destroy( lobbyManager );
