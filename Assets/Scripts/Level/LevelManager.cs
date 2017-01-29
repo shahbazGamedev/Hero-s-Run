@@ -289,4 +289,9 @@ public class LevelManager {
 		return levelData.multiplayerList[currentMultiplayerLevel];
     }
 
+	public LevelData.CircuitInfo getSelectedCircuitInfo()
+	{
+		return levelData.multiplayerList[currentMultiplayerLevel].circuitInfo;
+    }
+
 }

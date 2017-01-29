@@ -11,6 +11,15 @@ public enum XPAwardType
 	
 }
 
+public enum EloRating
+ {
+	BEGINNER = 1,
+	INTERMEDIATE = 2,
+	ADVANCED = 3,
+	COMPETITIVE = 4
+}
+
+
 public class ProgressionManager : MonoBehaviour {
 
 	[Header("General")]
@@ -18,6 +27,7 @@ public class ProgressionManager : MonoBehaviour {
 	public const int MAX_LEVEL = 100;
 	public const int LEVEL_BANDS = 10;
 	public const int MAX_XP_IN_ONE_RACE = 2450; //The maximum amount of XP a player can earn in a single race. Used for security checks.
+	const int ELO_MAX_LEVEL_BEGINNER = 15;
 	[SerializeField] List<int> xpNeededPerLevel = new List<int>(MAX_LEVEL);
 	[SerializeField] List<XPAward> xpAwardList = new List<XPAward>();
 	[SerializeField] List<Color> frameColorList = new List<Color>(LEVEL_BANDS);
@@ -46,6 +56,29 @@ public class ProgressionManager : MonoBehaviour {
 			if( xpSum >= xp ) return (i + 1 ); //levels start at 1 not 0
 		}
 		return MAX_LEVEL;
+	}
+
+	//Used to match players of similar skill.
+	//Only two player pools are used for now: BEGINNER (Elo rating = 1) and ADVANCED (Elo rating = 3).
+	//Level parameter is between 1 and MAX_LEVEL.
+	public int getEloRating( int level )
+	{
+		if( level > 0 && level <= ProgressionManager.MAX_LEVEL )
+		{
+			if( level >= 1 && level <= ELO_MAX_LEVEL_BEGINNER )
+			{
+				return (int)EloRating.BEGINNER;
+			}
+			else
+			{
+				return (int)EloRating.ADVANCED;
+			}
+		}
+		else
+		{
+			Debug.LogWarning("ProgressionManager-getEloRating: the level specified," + level + " is incorrect. It needs to be between 1 and 100.");
+			return (int)EloRating.BEGINNER;
+		}
 	}
 
 	public int getXPRequired( int level )

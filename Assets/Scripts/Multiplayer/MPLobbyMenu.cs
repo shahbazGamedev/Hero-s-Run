@@ -5,25 +5,29 @@ using UnityEngine.UI;
 
 public class MPLobbyMenu : MonoBehaviour {
 
-	public GameObject carouselCanvas;
-	public GameObject endOfGameCanvas;
-	public GameObject lobbyManager;
-	public MultiPurposePopup multiPurposePopup;
-	public Button playButton;
-	public Text playButtonText;
-	public Text exitButtonText;
-	public Text playerName;
-	public Text versusText;
-	public Text remotePlayerName;
-	public FacebookPortraitHandler playerPortrait;
-	public FacebookPortraitHandler remotePlayerPortrait;
+	[Header("General")]
+	[SerializeField] GameObject carouselCanvas;
+	[SerializeField] GameObject endOfGameCanvas;
+	[SerializeField] GameObject lobbyManager;
+	[SerializeField] MultiPurposePopup multiPurposePopup;
+	[SerializeField] Button playButton;
+	[SerializeField] Text playButtonText;
+	[SerializeField] Text exitButtonText;
+	[SerializeField] Text playerName;
+	[SerializeField] Text versusText;
+	[SerializeField] Text remotePlayerName;
+	[SerializeField] FacebookPortraitHandler playerPortrait;
+	[SerializeField] FacebookPortraitHandler remotePlayerPortrait;
 
-	//Circuit
-	public Text circuitName;
-	public Image circuitImage;
-	public Text entryFee;
+	[Header("Preloader")]
+	[SerializeField] GameObject preloader; //displays while looking for a match
 
-	Color originalPlayButtonTextColor;
+	[Header("Circuit")]
+	[SerializeField] Text circuitName;
+	[SerializeField] Image circuitImage;
+	[SerializeField] Text entryFee;
+
+	private Color originalPlayButtonTextColor;
 
 	void Start ()
 	{
@@ -156,11 +160,13 @@ public class MPLobbyMenu : MonoBehaviour {
 		{
 			playButton.interactable = true;
 			playButtonText.color = originalPlayButtonTextColor;
+			preloader.SetActive( false );
 		}
 		else
 		{
 			playButton.interactable = false;
 			playButtonText.color = Color.gray;
+			preloader.SetActive( true );
 		}
 	}
 }

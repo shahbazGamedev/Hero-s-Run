@@ -98,12 +98,20 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 
 	public void startMatch()
 	{
+		LevelData.CircuitInfo circuitInfo = LevelManager.Instance.getSelectedCircuitInfo();
+
+		Debug.Log("MPNetworkLobbyManager-startMatch The circuit selected by the player is: " + circuitInfo.circuitTextID );
+
 		//Player is connected to the Internet
 		if( Application.internetReachability != NetworkReachability.NotReachable )
 		{
 			StartMatchMaker();
 			//Ask for a list of matches. This will determine if we need to create a match or not.
-			matchMaker.ListMatches( 0, 20, "", false, 0, 0, OnMatchList );
+			//Ask the matchmaker for matches that correspond to the circuit the player has selected.
+			//If the player has selected CIRUIT_PRACTICE_RUN for example, only return those matches.
+			//In addition, only request matches that correspond to our elo rating.
+			int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
+			matchMaker.ListMatches( 0, 50, circuitInfo.circuitTextID , false, playerEloRating, 0, OnMatchList );
 		}
 		else
 		{
@@ -116,12 +124,21 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 
 		if( success )
 		{
+			
+			Debug.Log("List of matches for debugging:\n");
+			for( int i = 0; i < matchInfoSnapshotList.Count; i++ )
+			{
+				Debug.Log("MPNetworkLobbyManager-OnMatchList: " + i + " Name: " + matchInfoSnapshotList[i].name + " Elo " +  matchInfoSnapshotList[i].averageEloScore + " Max size " + matchInfoSnapshotList[i].maxSize + " Current size " + matchInfoSnapshotList[i].currentSize );
+			}
+			Debug.Log("\n");
+	
 			if( matchInfoSnapshotList.Count == 0)
 			{
-				Debug.Log("MPNetworkLobbyManager-OnMatchList: No matches found!" );
 				//We will therefore create a match. By doing so, we will become the host of the game.
 				//When creating a match, you automatically join it.
-				matchMaker.CreateMatch( "Match Name 1", (uint)2, true, "", "", "", 0, 0, OnMatchCreate );
+				int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
+				Debug.Log("MPNetworkLobbyManager-OnMatchList: No matches found! Creating match with name: " + LevelManager.Instance.getSelectedCircuitInfo().circuitTextID + " Elo " + playerEloRating );
+				matchMaker.CreateMatch( LevelManager.Instance.getSelectedCircuitInfo().circuitTextID, (uint)2, true, "", "", "", playerEloRating, 0, OnMatchCreate );
 			}
 			else
 			{
