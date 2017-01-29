@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking.Match;
 
 public class CarouselEntry : MonoBehaviour {
 
@@ -55,10 +56,6 @@ public class CarouselEntry : MonoBehaviour {
 		}
 		entryFee.text = entryFeeString;
 
-		//Hack - not implemented
-		//Number of online players in that circuit
-		numberOnlinePlayers.text = Random.Range( 1000, 50001 ).ToString();
-
 		//Common to all carousel entries
 		raceButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_RACE" );
 		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );
@@ -70,7 +67,50 @@ public class CarouselEntry : MonoBehaviour {
 			configurePrize( i, circuitInfo.prizeInfoList[i] );
 		}
 	}
+
+	void Start ()
+	{
+		LevelData levelData = LevelManager.Instance.getLevelData();
+		LevelData.CircuitInfo circuitInfo = levelData.getMultiplayerInfo( circuitNumber ).circuitInfo;
+
+		//Number of online players for this circuit for all Elo ratings.
+		//We call this here because we want MPNetworkLobbyManager to be available.
+		getNumberOfOnlinePlayers( circuitInfo.circuitTextID );
+	}
 	
+	void getNumberOfOnlinePlayers( string circuitTextID )
+	{
+		//Player is connected to the Internet
+		if( Application.internetReachability != NetworkReachability.NotReachable )
+		{
+			MPNetworkLobbyManager.mpNetworkLobbyManager.StartMatchMaker();
+			MPNetworkLobbyManager.mpNetworkLobbyManager.matchMaker.ListMatches( 0, 5000, circuitTextID , false, 0, 0, OnMatchListOnlinePlayerCount );
+		}
+		else
+		{
+			numberOnlinePlayers.text = LocalizationManager.Instance.getText( "CIRCUIT_NOT_AVAILABLE" );
+		}
+	}
+
+	void OnMatchListOnlinePlayerCount(bool success, string extendedInfo, List<MatchInfoSnapshot> matchInfoSnapshotList )
+	{
+		if( success )
+		{	
+			int onlinePlayerCount = 0;
+			for( int i = 0; i < matchInfoSnapshotList.Count; i++ )
+			{
+				onlinePlayerCount = onlinePlayerCount + matchInfoSnapshotList[i].currentSize;
+				Debug.Log("MPNetworkLobbyManager-OnMatchListOnlinePlayerCount: " + i + " Name: " + matchInfoSnapshotList[i].name + " Max size " + matchInfoSnapshotList[i].maxSize + " Current size " + matchInfoSnapshotList[i].currentSize );
+			}
+			numberOnlinePlayers.text = onlinePlayerCount.ToString();
+		}
+		else
+		{
+			Debug.LogWarning("CarouselEntry-OnMatchListOnlinePlayerCount: " + extendedInfo );
+			numberOnlinePlayers.text = LocalizationManager.Instance.getText( "CIRCUIT_NOT_AVAILABLE" );
+		}
+	}
+
 	void configurePrize( int index, LevelData.PrizeInfo prizeInfo )
 	{
     	switch (index)

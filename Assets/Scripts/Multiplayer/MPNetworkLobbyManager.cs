@@ -22,6 +22,7 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 	//In the Network Manager component, you must put your player prefabs 
     //in the Spawn Info -> Registered Spawnable Prefabs section 
 	public Dictionary<int,int> dico = new Dictionary<int,int>();
+
 	public class MsgTypes
 	{
 		public const short PlayerPrefab = MsgType.Highest + 1;
@@ -35,12 +36,16 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 		}
 	}
 
+	void Awake()
+	{
+	    mpNetworkLobbyManager = this;
+	    DontDestroyOnLoad(gameObject);
+	}
+
 	void Start()
 	{
 		minimumPlayersToStartMatch = LevelManager.Instance.getNumberOfPlayersRequired();
 		Debug.Log("\nENTERING MULTIPLAYER " + minimumPlayersToStartMatch );
-	    mpNetworkLobbyManager = this;
-	    DontDestroyOnLoad(gameObject);
 	}
 
 	public override void OnStartServer()
