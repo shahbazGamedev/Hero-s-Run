@@ -24,7 +24,7 @@ public class StoreManager : MonoBehaviour {
 	[Header("General")]
 	public static StoreManager Instance = null;
 	[SerializeField]  GameObject storeParent;
-	[SerializeField]  RectTransform contentRectTransform;
+	[SerializeField]  ScrollRect entireStoreScrollRect;
 	[SerializeField]  GameObject storeTab;
 	[SerializeField]  GameObject shopTab;
 	[Header("Store")]
@@ -99,7 +99,7 @@ public class StoreManager : MonoBehaviour {
 	void showStoreTab()
 	{
 		//Show the store
-		contentRectTransform.anchoredPosition = new Vector2( 0, contentRectTransform.anchoredPosition.y );
+		entireStoreScrollRect.horizontalNormalizedPosition = 0f;
 		//Move to the top of the scroll view
 		storeScrollRect.verticalNormalizedPosition = 1f;
 		shopScrollRect.verticalNormalizedPosition = 1f;
@@ -108,7 +108,7 @@ public class StoreManager : MonoBehaviour {
 	void showShopTab()
 	{
 		//Show the shop
-		contentRectTransform.anchoredPosition = new Vector2( -852f, contentRectTransform.anchoredPosition.y );
+		entireStoreScrollRect.horizontalNormalizedPosition = 1f;
 		//Move to the top of the scroll view
 		storeScrollRect.verticalNormalizedPosition = 1f;
 		shopScrollRect.verticalNormalizedPosition = 1f;
