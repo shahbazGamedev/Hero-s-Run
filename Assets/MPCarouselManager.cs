@@ -47,7 +47,7 @@ public class MPCarouselManager : MonoBehaviour {
 			Debug.Log("MPCarouselManager - returning to world map.");
 			UISoundManager.uiSoundManager.playButtonClick();
 			levelLoading = true;
-			MPNetworkLobbyManager.mpNetworkLobbyManager.StopMatchMaker();
+			MPNetworkLobbyManager.Instance.StopMatchMaker();
 			GameManager.Instance.setMultiplayerMode( false );
 			GameManager.Instance.setGameState(GameState.WorldMapNoPopup);
 			//Some components of the Lobby Manager game object are DontDestroyOnLoad.

@@ -83,8 +83,8 @@ public class CarouselEntry : MonoBehaviour {
 		//Player is connected to the Internet
 		if( Application.internetReachability != NetworkReachability.NotReachable )
 		{
-			MPNetworkLobbyManager.mpNetworkLobbyManager.StartMatchMaker();
-			MPNetworkLobbyManager.mpNetworkLobbyManager.matchMaker.ListMatches( 0, 5000, circuitTextID , false, 0, 0, OnMatchListOnlinePlayerCount );
+			MPNetworkLobbyManager.Instance.StartMatchMaker();
+			MPNetworkLobbyManager.Instance.matchMaker.ListMatches( 0, 5000, circuitTextID , false, 0, 0, OnMatchListOnlinePlayerCount );
 		}
 		else
 		{

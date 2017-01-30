@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 public class MPNetworkLobbyManager : NetworkLobbyManager 
 {
-	public static MPNetworkLobbyManager mpNetworkLobbyManager;
+	public static MPNetworkLobbyManager Instance;
 	public MPLobbyMenu mpLobbyMenu;
 	public MatchInfo hostedMatchInfo = null;
 	public MatchInfo joinedMatchInfo = null;
@@ -38,8 +38,15 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 
 	void Awake()
 	{
-	    mpNetworkLobbyManager = this;
-	    DontDestroyOnLoad(gameObject);
+		if(Instance)
+		{
+			DestroyImmediate(gameObject);
+		}
+		else
+		{
+			DontDestroyOnLoad(gameObject);
+			Instance = this;
+		}
 	}
 
 	void Start()

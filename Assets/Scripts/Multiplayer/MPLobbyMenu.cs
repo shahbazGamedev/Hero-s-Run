@@ -121,7 +121,7 @@ public class MPLobbyMenu : MonoBehaviour {
 		if( playerCanPayEntryFee() )
 		{
 			enablePlayButton( false );
-			MPNetworkLobbyManager.mpNetworkLobbyManager.startMatch();
+			MPNetworkLobbyManager.Instance.startMatch();
 		}
 		else
 		{

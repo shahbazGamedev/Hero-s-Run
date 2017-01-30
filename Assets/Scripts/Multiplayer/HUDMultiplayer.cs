@@ -79,7 +79,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	
 	void Update()
 	{
-		if( latency.gameObject.activeSelf ) latency.text = MPNetworkLobbyManager.mpNetworkLobbyManager.client.GetRTT().ToString();
+		if( latency.gameObject.activeSelf ) latency.text = MPNetworkLobbyManager.Instance.client.GetRTT().ToString();
 	}
 
 	void hideGoText()

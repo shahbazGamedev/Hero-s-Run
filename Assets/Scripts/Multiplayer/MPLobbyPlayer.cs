@@ -37,8 +37,8 @@ public class MPLobbyPlayer : NetworkLobbyPlayer {
 	public override void  OnStartClient()
 	{
 		base.OnStartClient();
-		MPNetworkLobbyManager.mpNetworkLobbyManager.lobbyPlayerCount++;
-		Debug.Log("MPLobbyPlayer-OnStartClient: lobbyPlayerCount: " + MPNetworkLobbyManager.mpNetworkLobbyManager.lobbyPlayerCount + "\n" );
+		MPNetworkLobbyManager.Instance.lobbyPlayerCount++;
+		Debug.Log("MPLobbyPlayer-OnStartClient: lobbyPlayerCount: " + MPNetworkLobbyManager.Instance.lobbyPlayerCount + "\n" );
 	}
 
 	//In this method, isLocalPlayer is reliable. This method is called after OnStartClient.
