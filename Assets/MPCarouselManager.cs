@@ -8,7 +8,7 @@ public class MPCarouselManager : MonoBehaviour {
 
 	public GameObject lobbyManager;
 	[SerializeField] MPLobbyMenu mpLobbyMenu;
-
+	[SerializeField] ScrollRect carouselScrollRect;
 	bool levelLoading = false;
 	public List<CarouselEntry> carouselEntryList = new List<CarouselEntry>(2);
 	[SerializeField] Scrollbar scrollbar;
@@ -17,6 +17,7 @@ public class MPCarouselManager : MonoBehaviour {
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
+		carouselScrollRect.horizontalNormalizedPosition = 0; //Make sure it is on the far left completely or the dot won't light up
 	}
 
 	public void OnClickShowStore()
