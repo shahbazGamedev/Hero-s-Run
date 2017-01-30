@@ -28,12 +28,14 @@ public class StoreManager : MonoBehaviour {
 	[SerializeField]  GameObject storeTab;
 	[SerializeField]  GameObject shopTab;
 	[Header("Store")]
+	[SerializeField]  ScrollRect storeScrollRect;
 	[SerializeField]  Text starsTitle;
 	[SerializeField]  Text starsReason;
 	[SerializeField]  Text livesTitle;
 	[SerializeField]  Text livesReason;
 	[SerializeField]  Scrollbar storeVerticalScrollbar;
 	[Header("Shop")]
+	[SerializeField]  ScrollRect shopScrollRect;
 	[SerializeField]  Text upgradeTitle;
 	[SerializeField]  Text consumableTitle;
 
@@ -80,7 +82,7 @@ public class StoreManager : MonoBehaviour {
 			starsReason.gameObject.SetActive( false );
 			livesReason.gameObject.SetActive( true );
 			//Lives are at the middle of the display
-			storeVerticalScrollbar.value = 0.2096281f;
+			storeScrollRect.verticalNormalizedPosition = 0.0673f;
 		}
 		else if ( reason == StoreReason.Need_Stars )
 		{
@@ -97,12 +99,20 @@ public class StoreManager : MonoBehaviour {
 
 	void showStoreTab()
 	{
+		//Show the store
 		contentRectTransform.anchoredPosition = new Vector2( 0, contentRectTransform.anchoredPosition.y );
+		//Move to the top of the scroll view
+		storeScrollRect.verticalNormalizedPosition = 1f;
+		shopScrollRect.verticalNormalizedPosition = 1f;
 	}
 
 	void showShopTab()
 	{
+		//Show the shop
 		contentRectTransform.anchoredPosition = new Vector2( -852f, contentRectTransform.anchoredPosition.y );
+		//Move to the top of the scroll view
+		storeScrollRect.verticalNormalizedPosition = 1f;
+		shopScrollRect.verticalNormalizedPosition = 1f;
 	}
 
 	public void closeStore()
