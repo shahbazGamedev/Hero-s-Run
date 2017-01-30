@@ -33,7 +33,6 @@ public class StoreManager : MonoBehaviour {
 	[SerializeField]  Text starsReason;
 	[SerializeField]  Text livesTitle;
 	[SerializeField]  Text livesReason;
-	[SerializeField]  Scrollbar storeVerticalScrollbar;
 	[Header("Shop")]
 	[SerializeField]  ScrollRect shopScrollRect;
 	[SerializeField]  Text upgradeTitle;
