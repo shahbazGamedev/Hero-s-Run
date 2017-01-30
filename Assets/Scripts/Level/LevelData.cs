@@ -456,6 +456,8 @@ public class LevelData : MonoBehaviour {
 		[Header("Race Circuit Parameters")]
 		[Tooltip("The text ID of the race track.")]
 		public string circuitTextID = "CIRCUIT_XXX";
+		[Tooltip("The name to use for matchmaking. It must NOT have any underscore characters '_' because this cause Unity matchmaking to return no matches.")]
+		public string matchName = string.Empty;
 		[Tooltip("Bigger, rectangular image used at the top of the carousel.")]
 		public Sprite circuitImage;
 		[Tooltip("Square icon used at the beginning of the match.")]

@@ -75,16 +75,16 @@ public class CarouselEntry : MonoBehaviour {
 
 		//Number of online players for this circuit for all Elo ratings.
 		//We call this here because we want MPNetworkLobbyManager to be available.
-		getNumberOfOnlinePlayers( circuitInfo.circuitTextID );
+		getNumberOfOnlinePlayers( circuitInfo.matchName );
 	}
 	
-	void getNumberOfOnlinePlayers( string circuitTextID )
+	void getNumberOfOnlinePlayers( string matchName )
 	{
 		//Player is connected to the Internet
 		if( Application.internetReachability != NetworkReachability.NotReachable )
 		{
 			MPNetworkLobbyManager.Instance.StartMatchMaker();
-			MPNetworkLobbyManager.Instance.matchMaker.ListMatches( 0, 5000, circuitTextID , false, 0, 0, OnMatchListOnlinePlayerCount );
+			MPNetworkLobbyManager.Instance.matchMaker.ListMatches( 0, 100, matchName , false, 0, 0, OnMatchListOnlinePlayerCount );
 		}
 		else
 		{
