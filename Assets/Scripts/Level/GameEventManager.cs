@@ -8,7 +8,7 @@ public class GameEventManager : MonoBehaviour {
 	public WeatherManager weatherManager;
 	SimpleCamera simpleCamera;
 	public Lightning lightning;
-	public TrollController trollController;
+	TrollController trollController;
 	Transform player;
 	PlayerController playerController;
 	public Transform fairy;
@@ -51,6 +51,12 @@ public class GameEventManager : MonoBehaviour {
 	int zombieHandsBurtsOutFXIndex = 0;
 	List<ParticleSystem> zombieHandsDustList = new List<ParticleSystem>( ZOMBIE_HANDS_FACTORY_SIZE );
 	int zombieHandsDustIndex = 0;
+
+	void Start()
+	{
+		GameObject trollGameObject = GameObject.FindGameObjectWithTag("Troll");
+		trollController = trollGameObject.GetComponent<TrollController>();
+	}
 
 	//Dark Queen sequence that plays before the Kraken tentacles sequence
 	public void setOpeningSequence( DarkQueenKrakenSequence darkQueenKrakenSequence )
