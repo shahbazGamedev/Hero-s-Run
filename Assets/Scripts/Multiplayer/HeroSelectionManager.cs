@@ -8,11 +8,12 @@ public class HeroSelectionManager : MonoBehaviour {
 	[Header("World Map Handler")]
 	[SerializeField] GameObject abilityPanel;
 	[SerializeField] GameObject abilityDetailsPanel;
+	[SerializeField] Text confirmButtonText;
 
 	// Use this for initialization
 	void Start ()
 	{
-		
+		confirmButtonText.text = LocalizationManager.Instance.getText("HERO_SELECTION_CONFIRM");
 	}
 
 	public void OnClickShowAbilityDetails()
@@ -33,6 +34,12 @@ public class HeroSelectionManager : MonoBehaviour {
 	{
 		//Wait until the slide out is finished before displaying the ability panel
 		abilityPanel.SetActive( true );
+	}
+
+	// Update is called once per frame
+	public void OnClickConfirm()
+	{
+		print("Confirm button pressed.");
 	}
 	
 }
