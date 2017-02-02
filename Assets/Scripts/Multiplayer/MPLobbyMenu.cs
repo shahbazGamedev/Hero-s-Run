@@ -31,6 +31,7 @@ public class MPLobbyMenu : MonoBehaviour {
 
 	void Start ()
 	{
+		Handheld.StopActivityIndicator();
 		originalPlayButtonTextColor = playButtonText.color;
 
 		//The left portrait is always the local player.

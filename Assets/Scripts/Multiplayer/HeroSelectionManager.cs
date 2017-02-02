@@ -8,6 +8,7 @@ public class HeroSelectionManager : MonoBehaviour {
 
 	[Header("World Map Handler")]
 	bool levelLoading = false;
+	[SerializeField] AbilityDetails abilityDetails;
 	[SerializeField] GameObject abilityPanel;
 	[SerializeField] GameObject abilityDetailsPanel;
 	[SerializeField] Text confirmButtonText;
@@ -19,16 +20,25 @@ public class HeroSelectionManager : MonoBehaviour {
 		confirmButtonText.text = LocalizationManager.Instance.getText("HERO_SELECTION_CONFIRM");
 	}
 
-	public void OnClickShowAbilityDetails()
+	public void OnClickShowActiveAbilityDetails()
 	{
-		//UISoundManager.uiSoundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
+		abilityDetails.configureActiveAbilityDetails();
+		abilityPanel.SetActive( false );
+		abilityDetailsPanel.GetComponent<Animator>().Play("Panel Slide In");
+	}
+
+	public void OnClickShowPassiveAbilityDetails()
+	{
+		UISoundManager.uiSoundManager.playButtonClick();
+		abilityDetails.configurePassiveAbilityDetails();
 		abilityPanel.SetActive( false );
 		abilityDetailsPanel.GetComponent<Animator>().Play("Panel Slide In");
 	}
 
 	public void OnClickHideAbilityDetails()
 	{
-		//UISoundManager.uiSoundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		Invoke("displayAbilityPanel", 1.1f);
 		abilityDetailsPanel.GetComponent<Animator>().Play("Panel Slide Out");
 	}

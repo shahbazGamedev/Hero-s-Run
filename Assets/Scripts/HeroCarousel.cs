@@ -7,7 +7,7 @@ public class HeroCarousel : MonoBehaviour {
 
 	[Header("General")]
 	ScrollRect scrollRect;
-	int currentIndex = 0;
+	public int currentIndex = 0;
 	const float STEP_VALUE = 1f/3f;
 	[Header("Left Top Corner")]
 	[SerializeField] Image heroIcon;
@@ -53,10 +53,10 @@ public class HeroCarousel : MonoBehaviour {
 		//configure abilities
 		HeroManager.HeroAbility activeAbility = HeroManager.Instance.getHeroAbility( hero.activeAbilityEffect );
 		activeAbilityIcon.sprite = activeAbility.icon;
-		activeAbilityTitle.text = LocalizationManager.Instance.getText( "ABILITY_" + activeAbility.abilityEffect.ToString() );
+		activeAbilityTitle.text = LocalizationManager.Instance.getText( "ABILITY_TITLE_" + activeAbility.abilityEffect.ToString() );
 		HeroManager.HeroAbility passiveAbility = HeroManager.Instance.getHeroAbility( hero.passiveAbilityEffect );
 		passiveAbilityIcon.sprite = passiveAbility.icon;;
-		passiveAbilityTitle.text  = LocalizationManager.Instance.getText( "ABILITY_" + passiveAbility.abilityEffect.ToString() );
+		passiveAbilityTitle.text  = LocalizationManager.Instance.getText( "ABILITY_TITLE_" + passiveAbility.abilityEffect.ToString() );
 
 	}
 
