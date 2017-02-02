@@ -463,23 +463,7 @@ public class LevelData : MonoBehaviour {
 		[Tooltip("Square icon used at the beginning of the match.")]
 		public Sprite circuitIcon;
 		[Tooltip("Entry Fee")]
-		public int entryFee = 0;
-		[Header("Prizes")]
-		public List<PrizeInfo> prizeInfoList = new List<PrizeInfo>();
-		
-	}
-
-	[System.Serializable]
-	public class PrizeInfo
-	{
-		[Header("Prize Parameters")]
-		[Tooltip("The prize amount.")]
-		public int quantity = 0;
-		[Tooltip("The reward type. Each loot box should have a different reward type.")]
-		public RewardType rewardType;
-		[Tooltip("Prize Icon.")]
-		public Sprite prizeIcon;
-		public string customizationPrizeTextID;
+		public int entryFee = 0;		
 	}
 
 }

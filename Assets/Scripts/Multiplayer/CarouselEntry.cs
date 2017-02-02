@@ -18,20 +18,6 @@ public class CarouselEntry : MonoBehaviour {
 	[Header("Shared")]
 	[SerializeField] Text raceButtonText;
 	[SerializeField] Text exitButtonText;
-	[SerializeField] Text prizesLabelText;
-
-	[Header("Prizes")]
-	//Prize 1
-	[SerializeField] Image prize1Image;
-	[SerializeField] Text prize1;
-
-	//Prize 2
-	[SerializeField] Image prize2Image;
-	[SerializeField] Text prize2;
-
-	//Prize 3
-	[SerializeField] Image prize3Image;
-	[SerializeField] Text prize3;
 	
 	// Use this for initialization
 	void Awake ()
@@ -59,13 +45,7 @@ public class CarouselEntry : MonoBehaviour {
 		//Common to all carousel entries
 		raceButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_RACE" );
 		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );
-		prizesLabelText.text = LocalizationManager.Instance.getText( "CIRCUIT_PRIZES" );
 
-		//Prizes
-		for( int i = 0; i < circuitInfo.prizeInfoList.Count; i++ )
-		{
-			configurePrize( i, circuitInfo.prizeInfoList[i] );
-		}
 	}
 
 	void Start ()
@@ -110,61 +90,6 @@ public class CarouselEntry : MonoBehaviour {
 			Debug.LogWarning("CarouselEntry-OnMatchListOnlinePlayerCount: " + extendedInfo );
 			if( numberOnlinePlayers != null ) numberOnlinePlayers.text = LocalizationManager.Instance.getText( "CIRCUIT_NOT_AVAILABLE" );
 		}
-	}
-
-	void configurePrize( int index, LevelData.PrizeInfo prizeInfo )
-	{
-    	switch (index)
-		{
-	        case 0:
-				prize1Image.sprite = prizeInfo.prizeIcon;
-				prize1.text = configurePrizeText( prizeInfo );
-                break;
-	                
-	        case 1:
-				prize2Image.sprite = prizeInfo.prizeIcon;
-				prize2.text = configurePrizeText( prizeInfo );
-                break;
-	                
-	        case 2:
- 				prize3Image.sprite = prizeInfo.prizeIcon;
-				prize3.text = configurePrizeText( prizeInfo );
-                break;      
-		}
-	}
-
-	string configurePrizeText( LevelData.PrizeInfo prizeInfo )
-	{
-		string prizeText = string.Empty;
-		string prizeTextString;
-    	switch (prizeInfo.rewardType)
-		{
-	        case RewardType.Coins:
-				prizeTextString = LocalizationManager.Instance.getText( "CIRCUIT_PRIZE" );
-				prizeTextString = prizeTextString.Replace("<prize quantity>", prizeInfo.quantity.ToString() );
-				prizeText = prizeTextString.Replace("<prize type>", LocalizationManager.Instance.getText( "CIRCUIT_COINS" ) );
-                break;
-	                
-	        case RewardType.PowerUp:
-				string powerUpWord = string.Empty;
-				if( prizeInfo.quantity == 1 )
-				{
-					powerUpWord = LocalizationManager.Instance.getText( "CIRCUIT_POWER_UP_SINGULAR" );
-				}
-				else
-				{
-					powerUpWord = LocalizationManager.Instance.getText( "CIRCUIT_POWER_UP_PLURAL" );
-				}
-				prizeTextString = LocalizationManager.Instance.getText( "CIRCUIT_PRIZE" );
-				prizeTextString = prizeTextString.Replace("<prize quantity>", prizeInfo.quantity.ToString() );
-				prizeText = prizeTextString.Replace("<prize type>", powerUpWord );
-                break;
-	                
-	        case RewardType.Customization:
- 				prizeText = LocalizationManager.Instance.getText( prizeInfo.customizationPrizeTextID );
-                break;      
-		}
-		return prizeText;
 	}
 
 }

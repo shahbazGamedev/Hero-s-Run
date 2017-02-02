@@ -15,6 +15,7 @@ public class HeroSelectionManager : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
+		Handheld.StopActivityIndicator();
 		confirmButtonText.text = LocalizationManager.Instance.getText("HERO_SELECTION_CONFIRM");
 	}
 
