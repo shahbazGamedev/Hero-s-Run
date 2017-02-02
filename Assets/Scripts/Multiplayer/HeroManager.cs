@@ -42,6 +42,11 @@ public class HeroManager : MonoBehaviour {
 		return heroCharacterList[index];
 	}
 
+	public HeroAbility getHeroAbility( AbilityEffect abilityEffect )
+	{
+		return heroAbilityList.Find(ability => ability.abilityEffect == abilityEffect);
+	}
+
 	[System.Serializable]
 	public class HeroAbility
 	{
