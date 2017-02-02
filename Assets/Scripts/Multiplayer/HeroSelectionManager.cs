@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class HeroSelectionManager : MonoBehaviour {
 
 	[Header("World Map Handler")]
+	bool levelLoading = false;
 	[SerializeField] GameObject abilityPanel;
 	[SerializeField] GameObject abilityDetailsPanel;
 	[SerializeField] Text confirmButtonText;
@@ -36,10 +38,27 @@ public class HeroSelectionManager : MonoBehaviour {
 		abilityPanel.SetActive( true );
 	}
 
-	// Update is called once per frame
-	public void OnClickConfirm()
+	public void OnClickShowMatchmaking()
 	{
-		print("Confirm button pressed.");
+		GameManager.Instance.setGameState( GameState.Matchmaking );
+		StartCoroutine( loadScene(GameScenes.Matchmaking) );
+	}
+
+	public void OnClickReturnToCircuitSelection()
+	{
+		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
+	}
+
+	IEnumerator loadScene(GameScenes value)
+	{
+		if( !levelLoading )
+		{
+			UISoundManager.uiSoundManager.playButtonClick();
+			levelLoading = true;
+			Handheld.StartActivityIndicator();
+			yield return new WaitForSeconds(0);
+			SceneManager.LoadScene( (int)value );
+		}
 	}
 	
 }

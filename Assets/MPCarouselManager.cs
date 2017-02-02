@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 public class MPCarouselManager : MonoBehaviour {
 
 	public GameObject lobbyManager;
-	[SerializeField] MPLobbyMenu mpLobbyMenu;
 	[SerializeField] ScrollRect carouselScrollRect;
 	bool levelLoading = false;
 	public List<CarouselEntry> carouselEntryList = new List<CarouselEntry>(2);
@@ -26,36 +25,48 @@ public class MPCarouselManager : MonoBehaviour {
 		StoreManager.Instance.showStore( StoreTab.Store, StoreReason.None );
 	}
 
-	public void OnClickShowMatchmakingScreen()
+	public void OnClickShowHeroSelection()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		LevelManager.Instance.setCurrentMultiplayerLevel( (int) scrollbar.value );
 		CarouselEntry selected = carouselEntryList[LevelManager.Instance.getCurrentMultiplayerLevel() ];
-		mpLobbyMenu.configureCircuitData( selected.circuitImage.sprite, selected.circuitName.text, selected.entryFee.text );
-		gameObject.SetActive( false );
+		LevelManager.Instance.selectedRaceDetails = selected;
+		StartCoroutine( loadHeroSelection() );
 	}
 
 	public void OnClickReturnToWorldMap()
 	{
-		StartCoroutine( close() );
+		StartCoroutine( loadWorldMap() );
 	}
 
-	IEnumerator close()
+	IEnumerator loadHeroSelection()
 	{
 		if( !levelLoading )
 		{
-			Debug.Log("MPCarouselManager - returning to world map.");
+			UISoundManager.uiSoundManager.playButtonClick();
+			levelLoading = true;
+			Handheld.StartActivityIndicator();
+			yield return new WaitForSeconds(0);
+			SceneManager.LoadScene( (int)GameScenes.HeroSelection );
+		}
+	}
+
+	IEnumerator loadWorldMap()
+	{
+		if( !levelLoading )
+		{
 			UISoundManager.uiSoundManager.playButtonClick();
 			levelLoading = true;
 			MPNetworkLobbyManager.Instance.StopMatchMaker();
 			GameManager.Instance.setMultiplayerMode( false );
 			GameManager.Instance.setGameState(GameState.WorldMapNoPopup);
 			//Some components of the Lobby Manager game object are DontDestroyOnLoad.
-			//Since we are going back to the world map, detroy the Lobby Manager.
+			//Since we are going back to the world map, destroy the Lobby Manager.
 			GameObject.Destroy( lobbyManager );
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);
 			SceneManager.LoadScene( (int)GameScenes.WorldMap );
 		}
 	}
+
 }

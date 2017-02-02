@@ -25,7 +25,6 @@ public class MPGameEndManager : MonoBehaviour {
 	[SerializeField] Slider sliderXP;
 
 	[Header("Other")]
-	[SerializeField] MPCarouselManager mpCarouselManager;
 	[SerializeField] MPLobbyMenu mpLobbyMenu;
 	[SerializeField] Text exitButtonText;
 	[SerializeField] int timeBeforeNextRace = 60; //in seconds
@@ -234,24 +233,23 @@ public class MPGameEndManager : MonoBehaviour {
 			yield return new WaitForSecondsRealtime( 1.0f );
 			countdown --;
 		}
-		showMatchmakingScreen();
+		showMatchmaking();
 	}
 
-	void showMatchmakingScreen()
+	void showMatchmaking()
 	{
-		CarouselEntry selected = mpCarouselManager.carouselEntryList[LevelManager.Instance.getCurrentMultiplayerLevel() ];
+		CarouselEntry selected = LevelManager.Instance.selectedRaceDetails;
 		mpLobbyMenu.configureCircuitData( selected.circuitImage.sprite, selected.circuitName.text, selected.entryFee.text );
 		mpLobbyMenu.gameObject.SetActive( true );
-		mpCarouselManager.gameObject.SetActive( false );
 		gameObject.SetActive( false );
 	}
 
-	public void OnClickCloseGameEndCanvas()
+	public void OnClickShowMatchmaking()
 	{
-		UISoundManager.uiSoundManager.playButtonClick();
 		//Cancel the countdown
 		StopAllCoroutines();
-		gameObject.SetActive( false );
+		UISoundManager.uiSoundManager.playButtonClick();
+		showMatchmaking();
 	}
 
 }

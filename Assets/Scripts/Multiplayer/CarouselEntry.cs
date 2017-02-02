@@ -102,12 +102,13 @@ public class CarouselEntry : MonoBehaviour {
 				onlinePlayerCount = onlinePlayerCount + matchInfoSnapshotList[i].currentSize;
 				Debug.Log("MPNetworkLobbyManager-OnMatchListOnlinePlayerCount: " + i + " Name: " + matchInfoSnapshotList[i].name + " Max size " + matchInfoSnapshotList[i].maxSize + " Current size " + matchInfoSnapshotList[i].currentSize );
 			}
-			numberOnlinePlayers.text = onlinePlayerCount.ToString();
+			//If OnMatchListOnlinePlayerCount gets called after we have left the Circuit Selection scene, the text field, numberOnlinePlayers, will be null. This is why we do a null check.
+			if( numberOnlinePlayers != null ) numberOnlinePlayers.text = onlinePlayerCount.ToString();
 		}
 		else
 		{
 			Debug.LogWarning("CarouselEntry-OnMatchListOnlinePlayerCount: " + extendedInfo );
-			numberOnlinePlayers.text = LocalizationManager.Instance.getText( "CIRCUIT_NOT_AVAILABLE" );
+			if( numberOnlinePlayers != null ) numberOnlinePlayers.text = LocalizationManager.Instance.getText( "CIRCUIT_NOT_AVAILABLE" );
 		}
 	}
 

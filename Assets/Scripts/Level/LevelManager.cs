@@ -32,6 +32,7 @@ public class LevelManager {
 	bool onlyUseUniqueTiles = false;
 	int numberOfPlayersRequired = 1; //Used to debug multiplayer
 	private int currentMultiplayerLevel = 0; //the index of the multiplayer level selected by the player.
+	public CarouselEntry selectedRaceDetails;
 
 	public static LevelManager Instance
 	{

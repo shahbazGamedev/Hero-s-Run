@@ -55,7 +55,7 @@ public class GameEventManager : MonoBehaviour {
 	void Start()
 	{
 		GameObject trollGameObject = GameObject.FindGameObjectWithTag("Troll");
-		trollController = trollGameObject.GetComponent<TrollController>();
+		if( !GameManager.Instance.isMultiplayer() ) trollController = trollGameObject.GetComponent<TrollController>();
 	}
 
 	//Dark Queen sequence that plays before the Kraken tentacles sequence

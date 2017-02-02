@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MPLobbyMenu : MonoBehaviour {
 
 	[Header("General")]
-	[SerializeField] GameObject carouselCanvas;
+	bool levelLoading = false;
 	[SerializeField] GameObject endOfGameCanvas;
-	[SerializeField] GameObject lobbyManager;
 	[SerializeField] MultiPurposePopup multiPurposePopup;
 	[SerializeField] Button playButton;
 	[SerializeField] Text playButtonText;
@@ -50,8 +50,11 @@ public class MPLobbyMenu : MonoBehaviour {
 		}
 		else
 		{
+			CarouselEntry selected = LevelManager.Instance.selectedRaceDetails;
+			configureCircuitData( selected.circuitImage.sprite, selected.circuitName.text, selected.entryFee.text );
 			endOfGameCanvas.SetActive( false );
 		}
+		
 	}
 
 	public void setPlayerFrame( int level )
@@ -148,10 +151,21 @@ public class MPLobbyMenu : MonoBehaviour {
 		}
 	}
 
-	public void OnClickCloseMenu()
+	public void OnClickReturnToHeroSelection()
 	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		carouselCanvas.SetActive( true );
+		StartCoroutine( loadScene(GameScenes.HeroSelection) );
+	}
+
+	IEnumerator loadScene(GameScenes value)
+	{
+		if( !levelLoading )
+		{
+			UISoundManager.uiSoundManager.playButtonClick();
+			levelLoading = true;
+			Handheld.StartActivityIndicator();
+			yield return new WaitForSeconds(0);
+			SceneManager.LoadScene( (int)value );
+		}
 	}
 
 	void enablePlayButton( bool enable )

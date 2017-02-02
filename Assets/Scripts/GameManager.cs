@@ -17,7 +17,8 @@ public enum GameState {
 	BeforeTapToPlayAllowed = 8,
 	PostLevelPopup = 9,
 	WorldMapNoPopup = 10,
-	MultiplayerEndOfGame = 11
+	MultiplayerEndOfGame = 11,
+	Matchmaking = 12
 }
 
 //The GameScenes enum entries must match the scene numbering in Build Settings.
@@ -31,7 +32,9 @@ public enum GameScenes {
 	TreasureIsland = 4,
 	CharacterGallery = 5,
 	Journal = 6,
-	MultiplayerMatchmaking = 7
+	CircuitSelection = 7,
+	HeroSelection = 8,
+	Matchmaking = 9
 }
 
 public enum DifficultyLevel {
