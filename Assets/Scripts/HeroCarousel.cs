@@ -6,9 +6,11 @@ using UnityEngine.UI;
 public class HeroCarousel : MonoBehaviour {
 
 	[Header("General")]
-	ScrollRect scrollRect;
-	public int currentIndex = 0;
-	const float STEP_VALUE = 1f/3f;
+	public int currentIndex = 0; //corresponds to center icon
+	[Header("3 carousel images")]
+	[SerializeField] Image leftIcon;
+	[SerializeField] Image centerIcon;
+	[SerializeField] Image rightIcon;
 	[Header("Left Top Corner")]
 	[SerializeField] Image heroIcon;
 	[SerializeField] Text heroName;
@@ -21,31 +23,51 @@ public class HeroCarousel : MonoBehaviour {
 	[Header("Hero Skin")]
 	[SerializeField] List<GameObject> heroSkinList = new List<GameObject>();
 	GameObject previousSkin = null;
+	int maxHeroIndex = 0;
 
 	// Use this for initialization
 	void Awake () {
 		
-		scrollRect = GetComponent<ScrollRect>();
+		maxHeroIndex = HeroManager.Instance.getNumberOfHeroes() - 1;
 		configureHeroDetails();
 	}
 
 	public void previousItem()
 	{
 		currentIndex--;
-		if( currentIndex < 0 ) currentIndex = 3;
-		scrollRect.horizontalNormalizedPosition = currentIndex * STEP_VALUE;
+		if( currentIndex < 0 ) currentIndex = maxHeroIndex;
 		configureHeroDetails();
 	}
 
 	public void nextItem()
 	{
 		currentIndex++;
-		if( currentIndex > 3 )
+		if( currentIndex > maxHeroIndex )
 		{
 			currentIndex = 0;
 		}
-		scrollRect.horizontalNormalizedPosition = currentIndex * STEP_VALUE;
 		configureHeroDetails();
+	}
+
+	void updateCarouselImages()
+	{
+		int initialCurrentIndex = currentIndex;
+
+		//Center Icon
+		HeroManager.HeroCharacter hero = HeroManager.Instance.getHeroCharacter( initialCurrentIndex );
+		centerIcon.sprite = hero.icon;
+
+		//Right Icon
+		initialCurrentIndex = currentIndex + 1;
+		if( initialCurrentIndex > maxHeroIndex ) initialCurrentIndex = 0;
+		hero = HeroManager.Instance.getHeroCharacter( initialCurrentIndex );
+		rightIcon.sprite = hero.icon;
+
+		//Left Icon
+		initialCurrentIndex = currentIndex - 1;
+		if( initialCurrentIndex < 0 ) initialCurrentIndex = maxHeroIndex;
+		hero = HeroManager.Instance.getHeroCharacter( initialCurrentIndex );
+		leftIcon.sprite = hero.icon;
 	}
 
 	void configureHeroDetails()
@@ -62,6 +84,7 @@ public class HeroCarousel : MonoBehaviour {
 		HeroManager.HeroAbility passiveAbility = HeroManager.Instance.getHeroAbility( hero.passiveAbilityEffect );
 		passiveAbilityIcon.sprite = passiveAbility.icon;;
 		passiveAbilityTitle.text  = LocalizationManager.Instance.getText( "ABILITY_TITLE_" + passiveAbility.abilityEffect.ToString() );
+		updateCarouselImages();
 
 	}
 
@@ -71,11 +94,4 @@ public class HeroCarousel : MonoBehaviour {
 		selectedSkin.SetActive( true );
 		previousSkin = selectedSkin;
 	}
-
-
-	public void normalizedPosition ( Vector2 value )
-	{
-		//print("normalizedPosition " + value.x );
-	}
-	
 }

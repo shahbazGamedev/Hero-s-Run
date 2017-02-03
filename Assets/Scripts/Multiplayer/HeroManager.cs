@@ -22,11 +22,10 @@ public enum AbilityEffect
 public class HeroManager : MonoBehaviour {
 
 	[Header("General")]
-	const int NUMBER_OF_CHARACTERS = 6;
 	public static HeroManager Instance;
-	[SerializeField] List<HeroCharacter> heroCharacterList = new List<HeroCharacter>(NUMBER_OF_CHARACTERS);
+	[SerializeField] List<HeroCharacter> heroCharacterList = new List<HeroCharacter>();
 	//Each character has an ACTIVE ability (such as blink) and a PASSIVE ability (such as jump higher)
-	[SerializeField] List<HeroAbility> heroAbilityList = new List<HeroAbility>(NUMBER_OF_CHARACTERS*2);
+	[SerializeField] List<HeroAbility> heroAbilityList = new List<HeroAbility>();
 
 	// Use this for initialization
 	void Awake ()
@@ -45,6 +44,11 @@ public class HeroManager : MonoBehaviour {
 	public HeroCharacter getHeroCharacter( int index )
 	{
 		return heroCharacterList[index];
+	}
+
+	public int getNumberOfHeroes()
+	{
+		return heroCharacterList.Count;
 	}
 
 	public HeroAbility getHeroAbility( AbilityEffect abilityEffect )
