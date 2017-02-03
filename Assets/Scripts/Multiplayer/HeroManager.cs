@@ -8,10 +8,15 @@ public enum AbilityEffect
 	RUN_FASTER = 1,
 	JUMP_HIGHER = 2,
 	NEVER_STUMBLE = 3,
-	IMMUNE_TO_MISSILES = 4,
+	DEFLECT_MISSILES = 4,
+	FEATHER_FALL = 5,
 	//Active
 	BLINK = 100,
-	LIGHTNING_STRIKE = 101
+	LIGHTNING_STRIKE = 101,
+	CHILL_TOUCH = 102,
+	WALL_OF_FIRE = 103,
+	TRANSMOGRIFY = 104,
+	WALL_OF_ICE = 105
 }
 
 public class HeroManager : MonoBehaviour {
