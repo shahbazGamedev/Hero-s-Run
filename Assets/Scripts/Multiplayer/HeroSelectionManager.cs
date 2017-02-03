@@ -12,12 +12,14 @@ public class HeroSelectionManager : MonoBehaviour {
 	[SerializeField] GameObject abilityPanel;
 	[SerializeField] GameObject abilityDetailsPanel;
 	[SerializeField] Text confirmButtonText;
+	[SerializeField] Text exitButtonText;
 
 	// Use this for initialization
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
 		confirmButtonText.text = LocalizationManager.Instance.getText("HERO_SELECTION_CONFIRM");
+		exitButtonText.text = LocalizationManager.Instance.getText("CIRCUIT_EXIT");
 	}
 
 	public void OnClickShowActiveAbilityDetails()
