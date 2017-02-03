@@ -18,6 +18,9 @@ public class HeroCarousel : MonoBehaviour {
 	[Header("Passive Ability")]
 	[SerializeField] Image passiveAbilityIcon;
 	[SerializeField] Text passiveAbilityTitle;
+	[Header("Hero Skin")]
+	[SerializeField] List<GameObject> heroSkinList = new List<GameObject>();
+	GameObject previousSkin = null;
 
 	// Use this for initialization
 	void Awake () {
@@ -50,6 +53,8 @@ public class HeroCarousel : MonoBehaviour {
 		HeroManager.HeroCharacter hero = HeroManager.Instance.getHeroCharacter( currentIndex );
 		heroIcon.sprite = hero.icon;
 		heroName.text = hero.name;
+		//configure skin
+		configureSkin( heroSkinList[hero.skinIndex] );
 		//configure abilities
 		HeroManager.HeroAbility activeAbility = HeroManager.Instance.getHeroAbility( hero.activeAbilityEffect );
 		activeAbilityIcon.sprite = activeAbility.icon;
@@ -59,6 +64,14 @@ public class HeroCarousel : MonoBehaviour {
 		passiveAbilityTitle.text  = LocalizationManager.Instance.getText( "ABILITY_TITLE_" + passiveAbility.abilityEffect.ToString() );
 
 	}
+
+	void configureSkin( GameObject selectedSkin )
+	{
+		if( previousSkin != null ) previousSkin.SetActive( false );
+		selectedSkin.SetActive( true );
+		previousSkin = selectedSkin;
+	}
+
 
 	public void normalizedPosition ( Vector2 value )
 	{

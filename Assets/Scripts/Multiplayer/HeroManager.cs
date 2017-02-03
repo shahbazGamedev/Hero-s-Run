@@ -64,7 +64,9 @@ public class HeroManager : MonoBehaviour {
 	public class HeroCharacter
 	{
 		public string name;
-		public GameObject skin;
+ 		//See heroSkinList in HeroCarousel for how skinIndex is used.
+		//The skins are stored in the Hero Selection scene with the correct position, rotation and scale.
+		public int skinIndex;
 		public Sprite icon;
 		public AbilityEffect activeAbilityEffect;
 		public AbilityEffect passiveAbilityEffect;
