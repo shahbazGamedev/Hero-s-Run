@@ -14,30 +14,33 @@ public class PlayerIconManager : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		PlayerIconData playerIconData;
 		for( int i = 0; i < playerIconList.Count; i++ )
 		{
-			playerIconData = playerIconList[i];
-			GameObject go = (GameObject)Instantiate(playerIconPrefab);
-			go.transform.SetParent(content,false);
-			Button playerIconButton = go.GetComponent<Button>();
-			playerIconButton.onClick.RemoveAllListeners();
-			playerIconButton.onClick.AddListener(() => OnClickPlayerIcon(i));
-			Image playerIconImage = go.GetComponent<Image>();
-			playerIconImage.sprite = playerIconData.icon;
-			Text playerIconName = playerIconButton.GetComponentInChildren<Text>();
-			playerIconName.text = playerIconData.name;
-			//We don't want the text displayed right away
-			playerIconName.gameObject.SetActive( false );
+			createPlayerIcon( i );
 		}
 		//Calculate the content length
 		GridLayoutGroup glg = content.GetComponent<GridLayoutGroup>();
 		//We have 3 player icons per row
 		int numberOfRows = (int)Mathf.Ceil( playerIconList.Count/3f);
 		int contentLength = numberOfRows * ( (int)glg.cellSize.y + (int)glg.spacing.y );
-		print("numberOfRows " + numberOfRows + " " + contentLength );
 		content.GetComponent<RectTransform>().sizeDelta = new Vector2( content.GetComponent<RectTransform>().rect.width, contentLength );
 		
+	}
+
+	void createPlayerIcon( int index )
+	{
+		PlayerIconData playerIconData = playerIconList[index];
+		GameObject go = (GameObject)Instantiate(playerIconPrefab);
+		go.transform.SetParent(content,false);
+		Button playerIconButton = go.GetComponent<Button>();
+		playerIconButton.onClick.RemoveListener(() => OnClickPlayerIcon(index));
+		playerIconButton.onClick.AddListener(() => OnClickPlayerIcon(index));
+		Image playerIconImage = go.GetComponent<Image>();
+		playerIconImage.sprite = playerIconData.icon;
+		Text playerIconName = playerIconButton.GetComponentInChildren<Text>();
+		playerIconName.text = playerIconData.name;
+		//We don't want the text displayed right away
+		playerIconName.gameObject.SetActive( false );
 	}
 
 	public void OnClickPlayerIcon( int index )
