@@ -10,10 +10,14 @@ public class PlayerIconManager : MonoBehaviour {
 	[SerializeField] Transform content;
 	[SerializeField] GameObject playerIconPrefab;
 	[SerializeField] List<PlayerIconData> playerIconList = new List<PlayerIconData>();
+	[Header("Top Right")]
+	[SerializeField] Image currentPlayerIcon;
+	[SerializeField] Text playerName;
 
 	// Use this for initialization
 	void Start ()
 	{
+		playerName.text = PlayerStatsManager.Instance.getUserName();
 		for( int i = 0; i < playerIconList.Count; i++ )
 		{
 			createPlayerIcon( i );
@@ -46,6 +50,7 @@ public class PlayerIconManager : MonoBehaviour {
 	public void OnClickPlayerIcon( int index )
 	{
 		print("OnClickPlayerIcon " + index );
+		currentPlayerIcon.sprite = playerIconList[index].icon;
 	}
 	
 	public void OnClickExit()
