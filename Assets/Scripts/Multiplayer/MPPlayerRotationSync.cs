@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Networking;
 
-[NetworkSettings(channel=0,sendInterval=0.1f)]
+[NetworkSettings(channel=1,sendInterval=0.1f)]
 public class MPPlayerRotationSync : NetworkBehaviour {
 
 	[SyncVar]

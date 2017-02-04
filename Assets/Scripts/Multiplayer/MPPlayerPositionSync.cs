@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-[NetworkSettings(channel=0,sendInterval=0.1f)]
+[NetworkSettings(channel=1,sendInterval=0.1f)]
 public class MPPlayerPositionSync : NetworkBehaviour {
 
 	[SyncVar (hook = "SyncPositionValues")]
@@ -20,7 +20,7 @@ public class MPPlayerPositionSync : NetworkBehaviour {
 	[SerializeField] bool useHistoricalLerping = false;
 	[SerializeField] float closeEnough = 0.1f;
 	[SerializeField] float snapThreshold = 2f;
-
+	private float previousZ = -1f;
 	void Start()
 	{
 		lerpRate = normalLerpRate;
@@ -56,6 +56,8 @@ public class MPPlayerPositionSync : NetworkBehaviour {
 	[Client]
 	void SyncPositionValues( Vector3 latestPos )
 	{
+		if ( latestPos.z <= previousZ ) return;
+		previousZ = latestPos.z;
 		syncPos = latestPos;
 		if( useHistoricalLerping) syncPosList.Add(syncPos);
 	}
