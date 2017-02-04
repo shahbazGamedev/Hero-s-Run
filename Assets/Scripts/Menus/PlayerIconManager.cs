@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 [System.Serializable]
 public class PlayerIconManager : MonoBehaviour {
@@ -22,6 +23,9 @@ public class PlayerIconManager : MonoBehaviour {
 	void Start ()
 	{
 		playerName.text = PlayerStatsManager.Instance.getUserName();
+		//Sort icons using their batch number. Higher batch number icons appear on top.
+		playerIconList = playerIconList.OrderByDescending(data=>data.batch).ToList();
+
 		for( int i = 0; i < playerIconList.Count; i++ )
 		{
 			createPlayerIcon( i );
@@ -102,5 +106,6 @@ public class PlayerIconManager : MonoBehaviour {
 		public string name = string.Empty;
 		public bool isNew = false;
 		public RectTransform rectTransform;
+		public int batch = 0;
 	}
 }
