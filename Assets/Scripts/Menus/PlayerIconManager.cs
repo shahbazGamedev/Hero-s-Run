@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-[System.Serializable]
-public class PlayerIconManager : MonoBehaviour {
+class PlayerIconManager : MonoBehaviour {
 
 	[Header("General")]
 	bool levelLoading = false;
