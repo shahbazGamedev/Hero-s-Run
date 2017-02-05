@@ -28,7 +28,7 @@ public class PlayerIconManager : MonoBehaviour {
 		currentPlayerIcon.sprite = playerIconData.icon;
 		playerName.text = PlayerStatsManager.Instance.getUserName();
 
-		//Higher batch number icons appear on top. This could be used to have newly released icons appear on top.
+		//Newly unlocked icons appear first.
 		List<ProgressionManager.PlayerIconData> playerIconList = ProgressionManager.Instance.getSortedPlayerIconList();
 
 		for( int i = 0; i < playerIconList.Count; i++ )
@@ -56,7 +56,9 @@ public class PlayerIconManager : MonoBehaviour {
 		playerIconImage.sprite = playerIconData.icon;
 		playerIconData.rectTransform = go.GetComponent<RectTransform>();
 		Image[] playerIconNewRibbon = go.GetComponentsInChildren<Image>();
-		playerIconNewRibbon[1].enabled = playerIconData.isNew;
+		playerIconNewRibbon[1].enabled = playerIconData.isNew;		//new ribbon
+		playerIconNewRibbon[2].enabled = playerIconData.isLocked;	//mask when locked
+		playerIconNewRibbon[3].enabled = playerIconData.isLocked;	//lock icon
 	}
 
 	public void OnClickPlayerIcon( int index )
@@ -65,9 +67,6 @@ public class PlayerIconManager : MonoBehaviour {
 		onSelectRectTransform.localScale = Vector3.one;
 
 		ProgressionManager.PlayerIconData playerIconData = ProgressionManager.Instance.getPlayerIconDataByIndex( index );
-
-		//Set the selected icon on top
-		currentPlayerIcon.sprite = playerIconData.icon;
 
 		//Position on select game object on top of the selected entry
 		onSelectButton.transform.SetParent( playerIconData.rectTransform, false );
@@ -84,9 +83,15 @@ public class PlayerIconManager : MonoBehaviour {
 
 		scaleUp();
 
-		//Set this value in Player Profile. It will only be saved when the user exits the scene.
-		//We don't want to be saving each time a user clicks on a icon.
-		GameManager.Instance.playerProfile.setPlayerIconId( playerIconData.uniqueId );
+		if( !playerIconData.isLocked)
+		{
+			//Set the selected icon on top
+			currentPlayerIcon.sprite = playerIconData.icon;
+
+			//Set this value in Player Profile. It will only be saved when the user exits the scene.
+			//We don't want to be saving each time a user clicks on a icon.
+			GameManager.Instance.playerProfile.setPlayerIconId( playerIconData.uniqueId );
+		}
 	}
 
 	void scaleUp()

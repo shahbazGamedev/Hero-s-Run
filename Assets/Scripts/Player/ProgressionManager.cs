@@ -45,8 +45,8 @@ public class ProgressionManager : MonoBehaviour {
 		{
 			DontDestroyOnLoad(gameObject);
 			Instance = this;
-			//Sort the list starting with elements with the highest batch number
-			playerIconList = playerIconList.OrderByDescending(data=>data.batch).ToList();
+			//Sort the list starting with the newly unlocked icons
+			playerIconList = playerIconList.OrderByDescending(data=>data.isNew).ToList();
 
 		}
 	}
@@ -132,10 +132,6 @@ public class ProgressionManager : MonoBehaviour {
 		public int xpAmount = 0;
 	}
 
-	/// <summary>
-	/// Gets the sorted player icon list.
-	/// </summary>
-	/// <returns>The sorted player icon list. Elements with the highest batch number are at the beginning of the list.</returns>
 	public List<PlayerIconData> getSortedPlayerIconList()
 	{
 		return playerIconList;
@@ -162,9 +158,9 @@ public class ProgressionManager : MonoBehaviour {
 		public Sprite icon;
 		public string name = string.Empty;
 		public bool isNew = false;
+		public bool isLocked = true;
 		[HideInInspector]
 		public RectTransform rectTransform;
-		public int batch = 0;
 		//Unique ID to identify the player icon.
 		//When a player selects a player icon, the unique ID for that icon is saved in player profile.
 		public int uniqueId = 0; 
