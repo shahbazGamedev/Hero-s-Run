@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public enum XPAwardType
  {
@@ -31,6 +32,7 @@ public class ProgressionManager : MonoBehaviour {
 	[SerializeField] List<int> xpNeededPerLevel = new List<int>(MAX_LEVEL);
 	[SerializeField] List<XPAward> xpAwardList = new List<XPAward>();
 	[SerializeField] List<Color> frameColorList = new List<Color>(LEVEL_BANDS);
+	[SerializeField] List<PlayerIconData> playerIconList = new List<PlayerIconData>();
 
 	// Use this for initialization
 	void Awake ()
@@ -43,6 +45,9 @@ public class ProgressionManager : MonoBehaviour {
 		{
 			DontDestroyOnLoad(gameObject);
 			Instance = this;
+			//Sort the list starting with elements with the highest batch number
+			playerIconList = playerIconList.OrderByDescending(data=>data.batch).ToList();
+
 		}
 	}
 
@@ -125,6 +130,49 @@ public class ProgressionManager : MonoBehaviour {
 		public XPAwardType awardType;
 		public string awardTextID = string.Empty;
 		public int xpAmount = 0;
+	}
+
+	/// <summary>
+	/// Gets the sorted player icon list.
+	/// </summary>
+	/// <returns>The sorted player icon list. Elements with the highest batch number are at the beginning of the list.</returns>
+	public List<PlayerIconData> getSortedPlayerIconList()
+	{
+		return playerIconList;
+	}
+
+	/// <summary>
+	/// Gets the player icon data by unique identifier.
+	/// </summary>
+	/// <returns>The player icon data by unique identifier.</returns>
+	/// <param name="uniqueId">Unique identifier.</param>
+	public PlayerIconData getPlayerIconDataByUniqueId( int uniqueId )
+	{
+		return playerIconList.Find(playerIcon => playerIcon.uniqueId == uniqueId);
+	}
+
+	/// <summary>
+	/// Gets the player icon data by index.
+	/// </summary>
+	/// <returns>The player icon data.</returns>
+	/// <param name="index">Index.</param>
+	public PlayerIconData getPlayerIconDataByIndex( int index )
+	{
+		return playerIconList[index];
+	}
+
+	[System.Serializable]
+	public class PlayerIconData
+	{
+		public Sprite icon;
+		public string name = string.Empty;
+		public bool isNew = false;
+		[HideInInspector]
+		public RectTransform rectTransform;
+		public int batch = 0;
+		//Unique ID to identify the player icon.
+		//When a player selects a player icon, the unique ID for that icon is saved in player profile.
+		public int uniqueId = 0; 
 	}
 	
 }

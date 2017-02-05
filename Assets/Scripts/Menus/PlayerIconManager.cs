@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
 using UnityEngine.SceneManagement;
 
 [System.Serializable]
@@ -12,7 +11,6 @@ public class PlayerIconManager : MonoBehaviour {
 	bool levelLoading = false;
 	[SerializeField] Transform content;
 	[SerializeField] GameObject playerIconPrefab;
-	[SerializeField] List<PlayerIconData> playerIconList = new List<PlayerIconData>();
 	[Header("Top Right")]
 	[SerializeField] Image currentPlayerIcon;
 	[SerializeField] Text playerName;
@@ -25,8 +23,8 @@ public class PlayerIconManager : MonoBehaviour {
 	void Start ()
 	{
 		playerName.text = PlayerStatsManager.Instance.getUserName();
-		//Sort icons using their batch number. Higher batch number icons appear on top.
-		playerIconList = playerIconList.OrderByDescending(data=>data.batch).ToList();
+		//Higher batch number icons appear on top. This could be used to have newly released icons appear on top.
+		List<ProgressionManager.PlayerIconData> playerIconList = ProgressionManager.Instance.getSortedPlayerIconList();
 
 		for( int i = 0; i < playerIconList.Count; i++ )
 		{
@@ -43,7 +41,7 @@ public class PlayerIconManager : MonoBehaviour {
 
 	void createPlayerIcon( int index )
 	{
-		PlayerIconData playerIconData = playerIconList[index];
+		ProgressionManager.PlayerIconData playerIconData = ProgressionManager.Instance.getPlayerIconDataByIndex( index );
 		GameObject go = (GameObject)Instantiate(playerIconPrefab);
 		go.transform.SetParent(content,false);
 		Button playerIconButton = go.GetComponent<Button>();
@@ -61,7 +59,7 @@ public class PlayerIconManager : MonoBehaviour {
 		RectTransform onSelectRectTransform = onSelectButton.GetComponent<RectTransform>();
 		onSelectRectTransform.localScale = Vector3.one;
 
-		PlayerIconData playerIconData = playerIconList[index];
+		ProgressionManager.PlayerIconData playerIconData = ProgressionManager.Instance.getPlayerIconDataByIndex( index );
 
 		//Set the selected icon on top
 		currentPlayerIcon.sprite = playerIconData.icon;
@@ -120,13 +118,4 @@ public class PlayerIconManager : MonoBehaviour {
 		}
 	}
 
-	[System.Serializable]
-	public class PlayerIconData
-	{
-		public Sprite icon;
-		public string name = string.Empty;
-		public bool isNew = false;
-		public RectTransform rectTransform;
-		public int batch = 0;
-	}
 }
