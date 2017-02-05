@@ -14,6 +14,10 @@ public class PlayerProfile {
 	public string lastMatchWonTimeString = "01/01/1970 00:00:00";
 	private DateTime lastMatchPlayedTime = new DateTime(1970,01,01);
 	private DateTime lastMatchWonTime = new DateTime(1970,01,01);
+	//This is the unique Id of the player icon.
+	//By default, the Id is zero. This is the Id of the default player icon that new players have.
+	//The user can change his player icon in the Player Icon screen.
+	[SerializeField] int playerIconId = 0;
 
 	public int getLevel()
 	{
@@ -61,6 +65,23 @@ public class PlayerProfile {
 	{
 		lastMatchWonTime = Convert.ToDateTime (lastMatchWonTimeString); 
 		return lastMatchWonTime.Date; //We don't want the time element, only the date
+	}
+
+	public void setPlayerIconId( int value )
+	{
+		if( value >= 0 && value < ProgressionManager.Instance.getNumberOfPlayerIcons() )
+		{
+			playerIconId = value;
+		}
+		else
+		{
+			Debug.LogWarning("PlayerProfile-setPlayerIconId: the value specified," + value + " is incorrect. It needs to be between 0 and " + ProgressionManager.Instance.getNumberOfPlayerIcons() + " exclusively." );
+		}
+	}
+
+	public int getPlayerIconId()
+	{
+		return playerIconId;
 	}
 
 	public void serializePlayerprofile()

@@ -141,24 +141,19 @@ public class ProgressionManager : MonoBehaviour {
 		return playerIconList;
 	}
 
-	/// <summary>
-	/// Gets the player icon data by unique identifier.
-	/// </summary>
-	/// <returns>The player icon data by unique identifier.</returns>
-	/// <param name="uniqueId">Unique identifier.</param>
 	public PlayerIconData getPlayerIconDataByUniqueId( int uniqueId )
 	{
 		return playerIconList.Find(playerIcon => playerIcon.uniqueId == uniqueId);
 	}
 
-	/// <summary>
-	/// Gets the player icon data by index.
-	/// </summary>
-	/// <returns>The player icon data.</returns>
-	/// <param name="index">Index.</param>
 	public PlayerIconData getPlayerIconDataByIndex( int index )
 	{
 		return playerIconList[index];
+	}
+
+	public int getNumberOfPlayerIcons()
+	{
+		return playerIconList.Count;
 	}
 
 	[System.Serializable]

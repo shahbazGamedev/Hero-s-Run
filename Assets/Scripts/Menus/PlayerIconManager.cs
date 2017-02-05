@@ -22,7 +22,11 @@ public class PlayerIconManager : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
+		int playerIconId = GameManager.Instance.playerProfile.getPlayerIconId();
+		ProgressionManager.PlayerIconData playerIconData = ProgressionManager.Instance.getPlayerIconDataByUniqueId( playerIconId );
+		currentPlayerIcon.sprite = playerIconData.icon;
 		playerName.text = PlayerStatsManager.Instance.getUserName();
+
 		//Higher batch number icons appear on top. This could be used to have newly released icons appear on top.
 		List<ProgressionManager.PlayerIconData> playerIconList = ProgressionManager.Instance.getSortedPlayerIconList();
 
@@ -78,6 +82,10 @@ public class PlayerIconManager : MonoBehaviour {
 		playerIconNewRibbon[1].enabled = false;
 
 		scaleUp();
+
+		//Set this value in Player Profile. It will only be saved when the user exits the scene.
+		//We don't want to be saving each time a user clicks on a icon.
+		GameManager.Instance.playerProfile.setPlayerIconId( playerIconData.uniqueId );
 	}
 
 	void scaleUp()
@@ -103,6 +111,8 @@ public class PlayerIconManager : MonoBehaviour {
 
 	public void OnClickReturnToWorldMap()
 	{
+		//Save the player profile. The user may have changed his player icon.
+		GameManager.Instance.playerProfile.serializePlayerprofile();
 		StartCoroutine( loadScene(GameScenes.WorldMap) );
 	}
 
