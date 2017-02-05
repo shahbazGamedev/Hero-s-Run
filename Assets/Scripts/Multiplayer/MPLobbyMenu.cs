@@ -7,27 +7,27 @@ using UnityEngine.SceneManagement;
 public class MPLobbyMenu : MonoBehaviour {
 
 	[Header("General")]
-	bool levelLoading = false;
 	[SerializeField] GameObject endOfGameCanvas;
 	[SerializeField] MultiPurposePopup multiPurposePopup;
 	[SerializeField] Button playButton;
 	[SerializeField] Text playButtonText;
 	[SerializeField] Text exitButtonText;
-	[SerializeField] Text playerName;
 	[SerializeField] Text versusText;
+	[Header("Local Player")]
+	[SerializeField] Image playerIcon;
+	[SerializeField] Text playerName;
+	[Header("Remote Player")]
+	[SerializeField] Image remotePlayerIcon;
 	[SerializeField] Text remotePlayerName;
-	[SerializeField] FacebookPortraitHandler playerPortrait;
-	[SerializeField] FacebookPortraitHandler remotePlayerPortrait;
-
-	[Header("Preloader")]
-	[SerializeField] GameObject preloader; //displays while looking for a match
-
+	[SerializeField] GameObject preloader; //animates while looking for an opponent for the match
 	[Header("Circuit")]
 	[SerializeField] Text circuitName;
 	[SerializeField] Image circuitImage;
 	[SerializeField] Text entryFee;
 
+	bool levelLoading = false;
 	private Color originalPlayButtonTextColor;
+
 
 	void Start ()
 	{
@@ -35,14 +35,16 @@ public class MPLobbyMenu : MonoBehaviour {
 		originalPlayButtonTextColor = playButtonText.color;
 
 		//The left portrait is always the local player.
-		//Populate his name and player portrait
-		playerName.text = PlayerStatsManager.Instance.getUserName();
-		setPlayerFrame( GameManager.Instance.playerProfile.getLevel() );
-		remotePlayerName.text = LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" );
+		configureLocalPlayerData();
+
+		//The right portrait is the remote player.
+		//Use default values until we get the remote player info from the network call
+		configureRemotePlayerData( LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0 );
+
+		//Localize
 		versusText.text = LocalizationManager.Instance.getText( "CIRCUIT_VERSUS" );
 		playButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_PLAY" );
 		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );
-		playerPortrait.setPlayerPortrait();
 
 		//If we are returning to the lobby after a race has completed, show the end of game screen which displays XP awarded
 		if( GameManager.Instance.getGameState() == GameState.MultiplayerEndOfGame )
@@ -55,19 +57,34 @@ public class MPLobbyMenu : MonoBehaviour {
 			configureCircuitData( selected.circuitImage.sprite, selected.circuitName.text, selected.entryFee.text );
 			endOfGameCanvas.SetActive( false );
 		}
-		
 	}
 
-	public void setPlayerFrame( int level )
+	public void configureLocalPlayerData()
 	{
-		Color frameColor = ProgressionManager.Instance.getFrameColor( level );
-		playerPortrait.GetComponent<Outline>().effectColor = frameColor;
+		//Name
+		playerName.text = PlayerStatsManager.Instance.getUserName();
+		//Frame based on level
+		Color frameColor = ProgressionManager.Instance.getFrameColor( GameManager.Instance.playerProfile.getLevel() );
+		playerIcon.GetComponent<Outline>().effectColor = frameColor;
+		//Player Icon
+		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 	}
 
-	public void setRemoteFrame( int level )
+	public void configureRemotePlayerData( string name, int level, int iconId )
 	{
+		//Name
+		remotePlayerName.text = name;
+		//Frame based on level
 		Color frameColor = ProgressionManager.Instance.getFrameColor( level );
-		remotePlayerPortrait.GetComponent<Outline>().effectColor = frameColor;
+		remotePlayerIcon.GetComponent<Outline>().effectColor = frameColor;
+		//Player Icon
+		remotePlayerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
+	}
+
+	public void setRemotePlayerName( string name )
+	{
+		//Name
+		remotePlayerName.text = name;
 	}
 
 	public void configureCircuitData( Sprite circuitImageSprite, string circuitNameString, string entryFeeString )
@@ -76,18 +93,6 @@ public class MPLobbyMenu : MonoBehaviour {
 		circuitImage.sprite = circuitImageSprite;
 		entryFee.text = entryFeeString;
 		enablePlayButton( true );
-	}
-
-	//The other player is on the right, so remotePlayerName.
-	public void setRemotePlayerName( string name )
-	{
-		remotePlayerName.text = name;
-	}
-
-	//The other player is on the right, so remotePlayerPortrait.
-	public void setRemotePlayerPortrait( string facebookID )
-	{
-		remotePlayerPortrait.setPortrait( facebookID );
 	}
 
 	public void showNoInternetPopup()

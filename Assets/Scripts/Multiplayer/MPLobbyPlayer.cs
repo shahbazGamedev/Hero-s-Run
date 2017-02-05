@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using Facebook.Unity;
 
 public class MPLobbyPlayer : NetworkLobbyPlayer {
 
@@ -11,9 +10,6 @@ public class MPLobbyPlayer : NetworkLobbyPlayer {
 	//OnMyName function will be invoked on clients when server change the value of playerName
 	[SyncVar(hook = "OnMyName")]
 	public string playerName = "";
-	//OnMyFacebookID function will be invoked on clients when server change the value of facebookID
-	[SyncVar(hook = "OnMyFacebookID")]
-	public string facebookID = "";
 	HUDMultiplayer hudMultiplayer;
 
 	//This method is called before OnStartClient. isLocalPlayer is NOT reliable at this point.
@@ -47,10 +43,6 @@ public class MPLobbyPlayer : NetworkLobbyPlayer {
 		base.OnStartLocalPlayer();
 		Debug.Log("MPLobbyPlayer-OnStartLocalPlayer" );
 		CmdNameChanged( PlayerStatsManager.Instance.getUserName() );
-		if (FB.IsLoggedIn && AccessToken.CurrentAccessToken != null )
-		{
-			CmdFacebookIDChanged( AccessToken.CurrentAccessToken.UserId );
-		}
 		SendReadyToBeginMessage();
 	}
 
@@ -68,17 +60,6 @@ public class MPLobbyPlayer : NetworkLobbyPlayer {
 		{
 			Debug.Log("MPLobbyPlayer-OnMyName: Not Local " + newName );
 			mpLobbyMenu.setRemotePlayerName( playerName );
-		}
-	}
-
- 	//sync var callback
-	public void OnMyFacebookID(string newFacebooID )
-	{
-		facebookID = newFacebooID;
-		if ( !isLocalPlayer )
-		{
-			Debug.Log("MPLobbyPlayer-OnMyFacebookID: Not Local " + newFacebooID );
-			mpLobbyMenu.setRemotePlayerPortrait( newFacebooID );
 		}
 	}
 
@@ -100,12 +81,6 @@ public class MPLobbyPlayer : NetworkLobbyPlayer {
 	public void CmdNameChanged( string newName )
 	{
 		playerName = newName;
-	}
-	
-	[Command]
-	public void CmdFacebookIDChanged( string newFacebookID )
-	{
-		facebookID = newFacebookID;
 	}
 
 }

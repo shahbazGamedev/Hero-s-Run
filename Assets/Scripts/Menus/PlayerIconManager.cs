@@ -22,6 +22,7 @@ public class PlayerIconManager : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
+		Handheld.StopActivityIndicator();
 		int playerIconId = GameManager.Instance.playerProfile.getPlayerIconId();
 		ProgressionManager.PlayerIconData playerIconData = ProgressionManager.Instance.getPlayerIconDataByUniqueId( playerIconId );
 		currentPlayerIcon.sprite = playerIconData.icon;
