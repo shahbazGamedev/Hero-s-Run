@@ -36,7 +36,7 @@ public class PlayerIconManager : MonoBehaviour {
 		GridLayoutGroup glg = content.GetComponent<GridLayoutGroup>();
 		//We have 3 player icons per row
 		int numberOfRows = (int)Mathf.Ceil( playerIconList.Count/3f);
-		int contentLength = numberOfRows * ( (int)glg.cellSize.y + (int)glg.spacing.y );
+		int contentLength = numberOfRows * ( (int)glg.cellSize.y + (int)glg.spacing.y ) + glg.padding.top;
 		content.GetComponent<RectTransform>().sizeDelta = new Vector2( content.GetComponent<RectTransform>().rect.width, contentLength );
 		
 	}
@@ -52,6 +52,8 @@ public class PlayerIconManager : MonoBehaviour {
 		Image playerIconImage = go.GetComponent<Image>();
 		playerIconImage.sprite = playerIconData.icon;
 		playerIconData.rectTransform = go.GetComponent<RectTransform>();
+		Image[] playerIconNewRibbon = go.GetComponentsInChildren<Image>();
+		playerIconNewRibbon[1].enabled = playerIconData.isNew;
 	}
 
 	public void OnClickPlayerIcon( int index )
@@ -71,6 +73,11 @@ public class PlayerIconManager : MonoBehaviour {
 		//Copy the icon and name
 		onSelectPlayerIcon.sprite = playerIconData.icon;
 		onSelectPlayerName.text = playerIconData.name;
+
+		//If it has a new ribbon, disable it
+		Image[] playerIconNewRibbon = playerIconData.rectTransform.GetComponentsInChildren<Image>();
+		playerIconData.isNew = false;
+		playerIconNewRibbon[1].enabled = false;
 
 		scaleUp();
 	}
