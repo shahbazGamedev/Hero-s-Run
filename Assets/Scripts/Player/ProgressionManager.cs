@@ -152,6 +152,16 @@ public class ProgressionManager : MonoBehaviour {
 		return playerIconList.Count;
 	}
 
+	public int getNumberOfNewPlayerIcons()
+	{
+		int counter = 0;
+		for( int i = 0; i < playerIconList.Count; i++ )
+		{
+			if( playerIconList[i].isNew ) counter++;
+		}
+		return counter;
+	}
+
 	[System.Serializable]
 	public class PlayerIconData
 	{

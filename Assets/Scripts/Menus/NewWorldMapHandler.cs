@@ -46,6 +46,8 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public GameObject starDisplayPrefab;
 	[Header("Journal")]
 	public Text newEntriesIndicator;
+	[Header("Player Icons")]
+	public Text newPlayerIconsIndicator;
 
 	private List<FacebookPortraitHandler> facebookPortraitList = new List<FacebookPortraitHandler>( LevelData.NUMBER_OF_EPISODES );
 	private Outline nextLevelToPlayGlowingOutline;
@@ -118,6 +120,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		getUpdatedScores();
 
 		updateNumberOfEntries();
+		updateNumberOfPlayerIcons();
 	}
 
 	void getAllAppRequests()
@@ -135,6 +138,13 @@ public class NewWorldMapHandler : MonoBehaviour {
 		//Update the number of new journal entries
 		int newEntries = GameManager.Instance.journalData.getNumberOfNewEntries();
 		newEntriesIndicator.text = newEntries.ToString();
+	}
+
+	void updateNumberOfPlayerIcons()
+	{
+		//Update the number of newly unlocked player icons
+		int newPlayerIcons = ProgressionManager.Instance.getNumberOfNewPlayerIcons();
+		newPlayerIconsIndicator.text = newPlayerIcons.ToString();
 	}
 
 	void Update()
