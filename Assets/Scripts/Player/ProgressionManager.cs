@@ -166,7 +166,6 @@ public class ProgressionManager : MonoBehaviour {
 	public class PlayerIconData
 	{
 		public Sprite icon;
-		public string name = string.Empty;
 		public bool isNew = false;
 		public bool isLocked = true;
 		[HideInInspector]

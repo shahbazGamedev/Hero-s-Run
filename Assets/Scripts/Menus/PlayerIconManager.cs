@@ -18,6 +18,9 @@ public class PlayerIconManager : MonoBehaviour {
 	[SerializeField] GameObject onSelectButton;
 	[SerializeField] Image onSelectPlayerIcon;
 	[SerializeField] Text onSelectPlayerName;
+	[Header("Texts")]
+	[SerializeField] Text menuTitle;
+	[SerializeField] Text exitButtonText;
 
 	// Use this for initialization
 	void Start ()
@@ -42,6 +45,10 @@ public class PlayerIconManager : MonoBehaviour {
 		int contentLength = numberOfRows * ( (int)glg.cellSize.y + (int)glg.spacing.y ) + glg.padding.top;
 		content.GetComponent<RectTransform>().sizeDelta = new Vector2( content.GetComponent<RectTransform>().rect.width, contentLength );
 		
+		//Localise
+		menuTitle.text = LocalizationManager.Instance.getText( "PLAYER_ICON_MENU_TITLE" );
+		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );
+
 	}
 
 	void createPlayerIcon( int index )
@@ -74,7 +81,7 @@ public class PlayerIconManager : MonoBehaviour {
 
 		//Copy the icon and name
 		onSelectPlayerIcon.sprite = playerIconData.icon;
-		onSelectPlayerName.text = playerIconData.name;
+		onSelectPlayerName.text = LocalizationManager.Instance.getText( "PLAYER_ICON_" + playerIconData.uniqueId.ToString() );
 
 		//If it has a new ribbon, disable it
 		Image[] playerIconNewRibbon = playerIconData.rectTransform.GetComponentsInChildren<Image>();
