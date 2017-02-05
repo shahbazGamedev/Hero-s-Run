@@ -117,6 +117,7 @@ public class PlayerIconManager : MonoBehaviour {
 
 	public void OnClickReturnToWorldMap()
 	{
+		GameManager.Instance.setGameState( GameState.WorldMapNoPopup );
 		//Save the player profile. The user may have changed his player icon.
 		GameManager.Instance.playerProfile.serializePlayerprofile();
 		StartCoroutine( loadScene(GameScenes.WorldMap) );
