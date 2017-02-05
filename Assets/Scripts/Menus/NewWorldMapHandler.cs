@@ -331,21 +331,9 @@ public class NewWorldMapHandler : MonoBehaviour {
 		FacebookManager.Instance.inviteFriends( inviteFriendsCustomImageUri );
 	}
 
-	public void showCharacterGallery()
+	public void OnClickShowCharacterGallery()
 	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		StartCoroutine( loadCharacterGallery() );
-	}
-
-	IEnumerator loadCharacterGallery()
-	{
-		if( !levelLoading )
-		{
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)GameScenes.CharacterGallery );
-		}	
+		StartCoroutine( loadScene(GameScenes.CharacterGallery) );
 	}
 
 	public void showAskLivesPopup()
@@ -379,30 +367,17 @@ public class NewWorldMapHandler : MonoBehaviour {
 	}
 
 	//Treasure island
-	public void showTreasureIsland()
+	public void OnClickShowTreasureIsland()
 	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		StartCoroutine( loadTreasureIsland() );
-	}
-
-	IEnumerator loadTreasureIsland()
-	{
-		if( !levelLoading )
-		{
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)GameScenes.TreasureIsland );
-		}	
+		StartCoroutine( loadScene(GameScenes.TreasureIsland) );
 	}
 
 	//Journal
-	public void openJournal()
+	public void OnClickShowJournal()
 	{
-		UISoundManager.uiSoundManager.playButtonClick();
 		if( GameManager.Instance.journalAssetManager.journalAssetsLoadedSuccessfully )
 		{
-			StartCoroutine( loadJournal() );
+			StartCoroutine( loadScene(GameScenes.Journal) );
 		}
 		else
 		{
@@ -410,34 +385,26 @@ public class NewWorldMapHandler : MonoBehaviour {
 		}
 	}
 
-	IEnumerator loadJournal()
-	{
-		if( !levelLoading )
-		{
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)GameScenes.Journal );
-		}
-	}
-
-	//Multiplayer
 	public void OnClickShowCircuitSelection()
 	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		GameManager.Instance.setMultiplayerMode( true );
-		StartCoroutine( loadCircuitSelection() );
+		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
 	}
 
-	IEnumerator loadCircuitSelection()
+	public void OnClickShowPlayerIconSelection()
+	{
+		StartCoroutine( loadScene(GameScenes.PlayerIconSelection) );
+	}
+
+	IEnumerator loadScene(GameScenes value)
 	{
 		if( !levelLoading )
 		{
+			UISoundManager.uiSoundManager.playButtonClick();
 			levelLoading = true;
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)GameScenes.CircuitSelection );
-		}	
+			SceneManager.LoadScene( (int)value );
+		}
 	}
 
 	void OnEnable()
@@ -515,18 +482,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		LevelManager.Instance.resetNumberOfCheckpointsPassed();
 		LevelManager.Instance.resetStarsAtLastCheckpoint();
 
-		StartCoroutine( loadLevel() );
-	}
-
-	IEnumerator loadLevel()
-	{
-		if( !levelLoading )
-		{
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int) GameScenes.Level );
-		}
+		StartCoroutine( loadScene(GameScenes.Level) );
 	}
 
 	//When the application resumes, the game will refresh both the friend portraits and the message center.

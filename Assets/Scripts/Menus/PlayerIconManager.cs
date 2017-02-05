@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class PlayerIconManager : MonoBehaviour {
 
 	[Header("General")]
+	bool levelLoading = false;
 	[SerializeField] Transform content;
 	[SerializeField] GameObject playerIconPrefab;
 	[SerializeField] List<PlayerIconData> playerIconList = new List<PlayerIconData>();
@@ -94,9 +96,21 @@ public class PlayerIconManager : MonoBehaviour {
 		onSelectButton.SetActive( false );
 	}
 
-	public void OnClickExit()
+	public void OnClickReturnToWorldMap()
 	{
-		print("OnClickExit " );
+		StartCoroutine( loadScene(GameScenes.WorldMap) );
+	}
+
+	IEnumerator loadScene(GameScenes value)
+	{
+		if( !levelLoading )
+		{
+			UISoundManager.uiSoundManager.playButtonClick();
+			levelLoading = true;
+			Handheld.StartActivityIndicator();
+			yield return new WaitForSeconds(0);
+			SceneManager.LoadScene( (int)value );
+		}
 	}
 
 	[System.Serializable]

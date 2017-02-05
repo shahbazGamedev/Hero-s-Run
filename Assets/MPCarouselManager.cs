@@ -16,6 +16,7 @@ public class MPCarouselManager : MonoBehaviour {
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
+		GameManager.Instance.setMultiplayerMode( true );
 		carouselScrollRect.horizontalNormalizedPosition = 0; //Make sure it is on the far left completely or the dot won't light up
 	}
 

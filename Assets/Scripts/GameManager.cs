@@ -34,7 +34,8 @@ public enum GameScenes {
 	Journal = 6,
 	CircuitSelection = 7,
 	HeroSelection = 8,
-	Matchmaking = 9
+	Matchmaking = 9,
+	PlayerIconSelection = 10
 }
 
 public enum DifficultyLevel {
