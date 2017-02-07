@@ -6,13 +6,14 @@ using UnityEngine.SceneManagement;
 
 public class HeroSelectionManager : MonoBehaviour {
 
-	[Header("World Map Handler")]
-	bool levelLoading = false;
-	[SerializeField] AbilityDetails abilityDetails;
-	[SerializeField] GameObject abilityPanel;
-	[SerializeField] GameObject abilityDetailsPanel;
+	[Header("Hero Selection Manager")]
 	[SerializeField] Text confirmButtonText;
 	[SerializeField] Text exitButtonText;
+	bool levelLoading = false;
+	[Header("Active Ability")]
+	[SerializeField] Text activeAbilityType;
+	[Header("Active Ability")]
+	[SerializeField] Text passiveAbilityType;
 
 	// Use this for initialization
 	void Start ()
@@ -20,35 +21,10 @@ public class HeroSelectionManager : MonoBehaviour {
 		Handheld.StopActivityIndicator();
 		confirmButtonText.text = LocalizationManager.Instance.getText("HERO_SELECTION_CONFIRM");
 		exitButtonText.text = LocalizationManager.Instance.getText("CIRCUIT_EXIT");
-	}
-
-	public void OnClickShowActiveAbilityDetails()
-	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		abilityDetails.configureActiveAbilityDetails();
-		abilityPanel.SetActive( false );
-		abilityDetailsPanel.GetComponent<Animator>().Play("Panel Slide In");
-	}
-
-	public void OnClickShowPassiveAbilityDetails()
-	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		abilityDetails.configurePassiveAbilityDetails();
-		abilityPanel.SetActive( false );
-		abilityDetailsPanel.GetComponent<Animator>().Play("Panel Slide In");
-	}
-
-	public void OnClickHideAbilityDetails()
-	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		Invoke("displayAbilityPanel", 1.1f);
-		abilityDetailsPanel.GetComponent<Animator>().Play("Panel Slide Out");
-	}
-
-	public void displayAbilityPanel()
-	{
-		//Wait until the slide out is finished before displaying the ability panel
-		abilityPanel.SetActive( true );
+		//Active
+		activeAbilityType.text = LocalizationManager.Instance.getText("ABILITY_TYPE_ACTIVE");
+		//Passive
+		passiveAbilityType.text = LocalizationManager.Instance.getText("ABILITY_TYPE_PASSIVE");
 	}
 
 	public void OnClickShowMatchmaking()

@@ -17,9 +17,11 @@ public class HeroCarousel : MonoBehaviour {
 	[Header("Active Ability")]
 	[SerializeField] Image activeAbilityIcon;
 	[SerializeField] Text activeAbilityTitle;
+	[SerializeField] Text activeAbilityDescription;
 	[Header("Passive Ability")]
 	[SerializeField] Image passiveAbilityIcon;
 	[SerializeField] Text passiveAbilityTitle;
+	[SerializeField] Text passiveAbilityDescription;
 	[Header("Hero Skin")]
 	[SerializeField] List<GameObject> heroSkinList = new List<GameObject>();
 	GameObject previousSkin = null;
@@ -72,18 +74,27 @@ public class HeroCarousel : MonoBehaviour {
 
 	void configureHeroDetails()
 	{
+		CancelInvoke("hideActiveAbilityDescription");
+		CancelInvoke("hidePassiveAbilityDescription");
+		activeAbilityDescription.gameObject.SetActive( false );
+		passiveAbilityDescription.gameObject.SetActive( false );
+
 		HeroManager.HeroCharacter hero = HeroManager.Instance.getHeroCharacter( currentIndex );
 		heroIcon.sprite = hero.icon;
 		heroName.text = hero.name;
 		//configure skin
 		configureSkin( heroSkinList[hero.skinIndex] );
 		//configure abilities
+		//Active
 		HeroManager.HeroAbility activeAbility = HeroManager.Instance.getHeroAbility( hero.activeAbilityEffect );
 		activeAbilityIcon.sprite = activeAbility.icon;
 		activeAbilityTitle.text = LocalizationManager.Instance.getText( "ABILITY_TITLE_" + activeAbility.abilityEffect.ToString() );
+		activeAbilityDescription.text = LocalizationManager.Instance.getText( "ABILITY_DESC_" + activeAbility.abilityEffect.ToString() );
+		//Passive
 		HeroManager.HeroAbility passiveAbility = HeroManager.Instance.getHeroAbility( hero.passiveAbilityEffect );
-		passiveAbilityIcon.sprite = passiveAbility.icon;;
+		passiveAbilityIcon.sprite = passiveAbility.icon;
 		passiveAbilityTitle.text  = LocalizationManager.Instance.getText( "ABILITY_TITLE_" + passiveAbility.abilityEffect.ToString() );
+		passiveAbilityDescription.text = LocalizationManager.Instance.getText( "ABILITY_DESC_" + passiveAbility.abilityEffect.ToString() );
 		updateCarouselImages();
 
 	}
@@ -94,4 +105,31 @@ public class HeroCarousel : MonoBehaviour {
 		selectedSkin.SetActive( true );
 		previousSkin = selectedSkin;
 	}
+
+	public void OnClickShowActiveAbilityDescription()
+	{
+		CancelInvoke("hideActiveAbilityDescription");
+		UISoundManager.uiSoundManager.playButtonClick();
+		activeAbilityDescription.gameObject.SetActive( true );
+		Invoke( "hideActiveAbilityDescription", 4f );
+	}
+
+	public void OnClickShowPassiveAbilityDescription()
+	{
+		CancelInvoke("hidePassiveAbilityDescription");
+		UISoundManager.uiSoundManager.playButtonClick();
+		passiveAbilityDescription.gameObject.SetActive( true );
+		Invoke( "hidePassiveAbilityDescription", 4f );
+	}
+
+	void hideActiveAbilityDescription()
+	{
+		activeAbilityDescription.gameObject.SetActive( false );
+	}
+
+	void hidePassiveAbilityDescription()
+	{
+		passiveAbilityDescription.gameObject.SetActive( false );
+	}
+
 }
