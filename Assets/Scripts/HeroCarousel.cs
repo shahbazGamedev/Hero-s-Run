@@ -7,6 +7,7 @@ public class HeroCarousel : MonoBehaviour {
 
 	[Header("General")]
 	public int currentIndex = 0; //corresponds to center icon
+	Color fadedDescriptionTextColor;
 	[Header("3 carousel images")]
 	[SerializeField] Image leftIcon;
 	[SerializeField] Image centerIcon;
@@ -31,6 +32,7 @@ public class HeroCarousel : MonoBehaviour {
 	void Awake () {
 		
 		maxHeroIndex = HeroManager.Instance.getNumberOfHeroes() - 1;
+		fadedDescriptionTextColor = new Color( activeAbilityDescription.color.r, activeAbilityDescription.color.g, activeAbilityDescription.color.b, 0 );
 		configureHeroDetails();
 	}
 
@@ -76,8 +78,8 @@ public class HeroCarousel : MonoBehaviour {
 	{
 		CancelInvoke("hideActiveAbilityDescription");
 		CancelInvoke("hidePassiveAbilityDescription");
-		activeAbilityDescription.gameObject.SetActive( false );
-		passiveAbilityDescription.gameObject.SetActive( false );
+		activeAbilityDescription.color = fadedDescriptionTextColor;
+		passiveAbilityDescription.color = fadedDescriptionTextColor;
 
 		HeroManager.HeroCharacter hero = HeroManager.Instance.getHeroCharacter( currentIndex );
 		heroIcon.sprite = hero.icon;
@@ -108,28 +110,30 @@ public class HeroCarousel : MonoBehaviour {
 
 	public void OnClickShowActiveAbilityDescription()
 	{
+		LeanTween.cancel( gameObject );
 		CancelInvoke("hideActiveAbilityDescription");
 		UISoundManager.uiSoundManager.playButtonClick();
-		activeAbilityDescription.gameObject.SetActive( true );
+		LeanTween.alphaText( activeAbilityDescription.GetComponent<RectTransform>(), 1f, 0.4f );
 		Invoke( "hideActiveAbilityDescription", 4f );
 	}
 
 	public void OnClickShowPassiveAbilityDescription()
 	{
+		LeanTween.cancel( gameObject );
 		CancelInvoke("hidePassiveAbilityDescription");
 		UISoundManager.uiSoundManager.playButtonClick();
-		passiveAbilityDescription.gameObject.SetActive( true );
+		LeanTween.alphaText( passiveAbilityDescription.GetComponent<RectTransform>(), 1f, 0.4f );
 		Invoke( "hidePassiveAbilityDescription", 4f );
 	}
 
 	void hideActiveAbilityDescription()
 	{
-		activeAbilityDescription.gameObject.SetActive( false );
+		LeanTween.alphaText( activeAbilityDescription.GetComponent<RectTransform>(), 0f, 0.4f );
 	}
 
 	void hidePassiveAbilityDescription()
 	{
-		passiveAbilityDescription.gameObject.SetActive( false );
+		LeanTween.alphaText( passiveAbilityDescription.GetComponent<RectTransform>(), 0f, 0.4f );
 	}
 
 }
