@@ -135,9 +135,15 @@ public class MPLobbyMenu : MonoBehaviour {
 		else
 		{
 			//Player does not have enough for entry fee. Open the store.
-			StoreManager.Instance.showStore(StoreTab.Store,StoreReason.Need_Stars);
+			StoreManager.Instance.showStore(StoreTab.Store,StoreReason.Need_Coins);
 		}
 
+	}
+
+	public void OnClickShowStore()
+	{
+		UISoundManager.uiSoundManager.playButtonClick();
+		StoreManager.Instance.showStore( StoreTab.Store, StoreReason.None );
 	}
 
 	bool playerCanPayEntryFee()

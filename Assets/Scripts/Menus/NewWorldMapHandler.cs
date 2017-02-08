@@ -13,7 +13,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public Canvas settingsMenuCanvas;
 	public Text numberOfKeysText;
 	public Text numberOfLivesText;
-	public Text numberOfStarsText;
+	public Text numberOfCoinsText;
 	public string inviteFriendsCustomImageUri = "http://i.imgur.com/zkYlB.jpg";
 	public Image playerPortrait;
 	[Header("Message Center")]
@@ -490,7 +490,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		LevelManager.Instance.setEpisodeCompleted( false );
 		LevelManager.Instance.forceNextEpisodeToComplete( episodeNumber );
 		LevelManager.Instance.resetNumberOfCheckpointsPassed();
-		LevelManager.Instance.resetStarsAtLastCheckpoint();
+		LevelManager.Instance.resetCoinsAtLastCheckpoint();
 
 		StartCoroutine( loadScene(GameScenes.Level) );
 	}

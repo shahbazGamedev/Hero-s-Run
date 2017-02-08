@@ -24,8 +24,8 @@ public class Checkpoint : MonoBehaviour {
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		GetComponent<AudioSource>().Play();
 		LevelManager.Instance.incrementNumberOfCheckpointsPassed();
-		int numberOfStarsAtCheckpoint = LevelManager.Instance.getScore();
-		LevelManager.Instance.setStarsAtLastCheckpoint( numberOfStarsAtCheckpoint );
+		int numberOfCoinsAtCheckpoint = LevelManager.Instance.getScore();
+		LevelManager.Instance.setCoinsAtLastCheckpoint( numberOfCoinsAtCheckpoint );
 		//Save the player stats before continuing
 		PlayerStatsManager.Instance.savePlayerStats();
 		Debug.Log("Checkpoint activated " + gameObject.transform.parent.name );

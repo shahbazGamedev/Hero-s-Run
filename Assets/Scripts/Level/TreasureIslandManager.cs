@@ -8,7 +8,7 @@ public class TreasureIslandManager : MonoBehaviour {
 
 	public enum ChestGiftType {
 		None=0,
-		Stars=1,	
+		Coins=1,	
 		PowerUp = 2,
 		Life = 3,
 		Customization = 4	//Future implementation
@@ -254,7 +254,7 @@ public class TreasureIslandManager : MonoBehaviour {
 		switch (chestGiftType)
 		{
 			
-		case ChestGiftType.Stars:
+		case ChestGiftType.Coins:
 			fcProp.m_Prefab = propStar;
 			//Position
 			fcProp.m_PosBegin = new Vector3( 0, 0.4f, 0 );
@@ -435,12 +435,12 @@ public class TreasureIslandManager : MonoBehaviour {
 			Debug.Log("giftPlayerWithTreasure: gave " + quantityToGive + " power-ups of type " + giftPowerUp + " to Hero.");
 			break;
 			
-		case ChestGiftType.Stars:
+		case ChestGiftType.Coins:
 			PlayerStatsManager.Instance.modifyCurrentCoins( quantityToGive, false, false );
-			entryText = LocalizationManager.Instance.getText( "TREASURE_CHEST_STARS" );
+			entryText = LocalizationManager.Instance.getText( "TREASURE_CHEST_COINS" );
 			entryText = entryText.Replace("<quantity>", quantityToGive.ToString("N0") );
 			chestContentText.text = entryText;
-			Debug.Log("giftPlayerWithTreasure: gave " + quantityToGive + " stars to Hero.");
+			Debug.Log("giftPlayerWithTreasure: gave " + quantityToGive + " coins to Hero.");
 			break;
 			
 		case ChestGiftType.Life:

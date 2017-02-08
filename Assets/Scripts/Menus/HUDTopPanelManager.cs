@@ -6,7 +6,7 @@ public class HUDTopPanelManager : MonoBehaviour {
 
 	[Header("Top Panel Shared")]
 	public GameObject contentPanel;
-	public Image starDoublerIcon;
+	public Image coinDoublerIcon;
 	public Text numberOfLivesText;
 	[Header("Top Panel - Story Mode")]
 	public Image keysIcon;
@@ -20,7 +20,7 @@ public class HUDTopPanelManager : MonoBehaviour {
 	{
 		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
 		numberOfLivesText.text = PlayerStatsManager.Instance.getLives().ToString();
-		starDoublerIcon.gameObject.SetActive( PlayerStatsManager.Instance.getOwnsStarDoubler() );
+		coinDoublerIcon.gameObject.SetActive( PlayerStatsManager.Instance.getOwnsCoinDoubler() );
 		if( GameManager.Instance.getGameMode() == GameMode.Story )
 		{
 			//Story mode					
@@ -70,8 +70,8 @@ public class HUDTopPanelManager : MonoBehaviour {
 				numberOfKeysText.text = newValue.ToString() + numberOfChestKeysInEpisode;
 			break;
  
-			case PlayerInventoryEvent.Star_Doubler_Changed:
-				starDoublerIcon.gameObject.SetActive( PlayerStatsManager.Instance.getOwnsStarDoubler() );
+			case PlayerInventoryEvent.Coin_Doubler_Changed:
+				coinDoublerIcon.gameObject.SetActive( PlayerStatsManager.Instance.getOwnsCoinDoubler() );
 			break;
 
 			case PlayerInventoryEvent.Life_Changed:

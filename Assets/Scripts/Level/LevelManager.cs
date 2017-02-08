@@ -20,10 +20,10 @@ public class LevelManager {
 	private bool episodeHasChanged = false;
 	private bool playerFinishedTheGame = false;
 	private int numberOfCheckpointsPassed = 0; //Number of checkpoints passed for the current episode
-	//Number of stars the player had when he passed the last checkpoint.
-	//If the player dies and restarts at a checkpoint, this will be the number of stars he will have.
-	private int numberOfStarsAtLastCheckpoint = 0;
- 	private int score = 0; //currently is equal to the number of stars you picked up while running for a single episode
+	//Number of coins the player had when he passed the last checkpoint.
+	//If the player dies and restarts at a checkpoint, this will be the number of coins he will have.
+	private int numberOfCoinsAtLastCheckpoint = 0;
+ 	private int score = 0; //currently is equal to the number of coins you picked up while running for a single episode
 	private int currentEpisode = 0;
 	private bool episodeCompleted = false;
 	private bool enableTorches = true;
@@ -82,22 +82,22 @@ public class LevelManager {
 		numberOfCheckpointsPassed = 0;
 	}
 
-	public void setStarsAtLastCheckpoint( int value )
+	public void setCoinsAtLastCheckpoint( int value )
 	{
-		numberOfStarsAtLastCheckpoint = value;
-		Debug.Log ("LevelManager-setStarsAtLastCheckpoint: " + numberOfStarsAtLastCheckpoint );
+		numberOfCoinsAtLastCheckpoint = value;
+		Debug.Log ("LevelManager-setCoinsAtLastCheckpoint: " + numberOfCoinsAtLastCheckpoint );
 	}
 
-	public int getStarsAtLastCheckpoint()
+	public int getCoinsAtLastCheckpoint()
 	{
-		Debug.Log ("LevelManager-getStarsAtLastCheckpoint: " + numberOfStarsAtLastCheckpoint );
-		return numberOfStarsAtLastCheckpoint;
+		Debug.Log ("LevelManager-getCoinsAtLastCheckpoint: " + numberOfCoinsAtLastCheckpoint );
+		return numberOfCoinsAtLastCheckpoint;
 	}
 
-	public void resetStarsAtLastCheckpoint()
+	public void resetCoinsAtLastCheckpoint()
 	{
-		Debug.Log ("LevelManager-resetStarsAtLastCheckpoint" );
-		numberOfStarsAtLastCheckpoint = 0;
+		Debug.Log ("LevelManager-resetCoinsAtLastCheckpoint" );
+		numberOfCoinsAtLastCheckpoint = 0;
 	}
 
 	//Called by EpisodePopup to access any episode directly

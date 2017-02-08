@@ -385,8 +385,8 @@ public class LevelData : MonoBehaviour {
 		public Sprite preLevelSprite;
 		[Tooltip("Total number of chest keys for episode.")]
 		public int numberOfChestKeys = 0;
-		[Tooltip("Stars required to reach one, two, three stars as well as the maximum number of stars for the episode.")]
-		public Vector3 starsRequired = new Vector3( 10000f, 33000f, 50000f );
+		[Tooltip("Coins required to reach one, two, or three stars for the episode.")]
+		public Vector3 coinsRequired = new Vector3( 10000f, 33000f, 50000f );
 		[Tooltip("The type of sun for the level. The sun type will not change until the player starts a new section. The sun type determines characteristics such ambient light, directional light rotation, color, intensity and shadows and skybox material.")]
 		public SunType sunType = SunType.Afternoon;
 		[Tooltip("Specifies whether the level should allow Tap To Play right away or wait for a callback. For example, in the opening level, we want to wait a few seconds before the player can start playing.")]

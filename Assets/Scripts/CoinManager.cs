@@ -7,9 +7,9 @@ public class CoinManager : MonoBehaviour {
 	public static CoinManager coinManager = null;
 	/*
 	The following value (realNumberCoinsSpawned) is printed when the level has been created.
-	It contains the total number of stars available in the randomly generated level.
-	This value is useful because it allows the level designer to specify star objectives that are coherent with the number of stars in the level.
-	Currently, the stars given by breakables, zombies and chickens are not counted in this number.
+	It contains the total number of coins available in the randomly generated level.
+	This value is useful because it allows the level designer to specify star objectives that are coherent with the number of coins in the level.
+	Currently, the coins given by breakables, zombies and chickens are not counted in this number.
 	*/
 	public int realNumberCoinsSpawned = 0;
 

@@ -81,7 +81,7 @@ public class PauseMenu : MonoBehaviour {
 	public void quit()
 	{
 		Debug.Log("Quit button pressed");
-		//Save before going to the world map in particular so player does not lose stars he picked up
+		//Save before going to the world map in particular so player does not lose coins he picked up
 		PlayerStatsManager.Instance.savePlayerStats();
 		//We might have the slow down power-up still active, so just to be sure
 		//we will reset the timescale back to 1.

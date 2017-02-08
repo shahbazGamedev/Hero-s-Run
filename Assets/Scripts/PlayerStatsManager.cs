@@ -6,8 +6,8 @@ using System;
 public enum PlayerInventoryEvent {
 	Key_Changed = 0,
 	Life_Changed = 1,
-	Star_Changed = 2,
-	Star_Doubler_Changed = 3,
+	Coin_Changed = 2,
+	Coin_Doubler_Changed = 3,
 	Score_Changed = 4,
 	Key_Found_In_Episode_Changed = 5
 
@@ -18,10 +18,10 @@ public class PlayerStatsManager {
 	private static PlayerStatsManager playerStatsManager = null;
 	
 	//Coin management
-	int currentCoins = 0;			//The amount of coins (stars) the player currently has. This number always goes up, unless the player purchases something.
+	int currentCoins = 0;			//The amount of coins the player currently has. This number always goes up, unless the player purchases something.
 	int coinAccumulator = 0;
 	Transform coinParent = null;
-	int lifetimeCoins = 0;			//The amount of coins (stars) the player has earned over time. This is a statistic. It is used by the achievement system.
+	int lifetimeCoins = 0;			//The amount of coins the player has earned over time. This is a statistic. It is used by the achievement system.
 	//Assume there are 9 episodes for now. For each episode, the player has received between 0 and 3 stars. The number of stars is displayed on the world map.
 	//The index is the episode number. The value is the number of stars between 0 and 3. The initial values are 0.
 	int[] displayStarsArray = new int[LevelData.NUMBER_OF_EPISODES];
@@ -32,7 +32,7 @@ public class PlayerStatsManager {
 	//Number of treasure keys owned by the player
 	int treasureKeysOwned = 0;
 
-	//Delegate used to communicate to other classes when the number of keys, lives, stars or star doubler changes
+	//Delegate used to communicate to other classes when the number of keys, lives, coins or coin doubler changes
 	public delegate void PlayerInventoryChanged( PlayerInventoryEvent eventType, int newValue );
 	public static event PlayerInventoryChanged playerInventoryChanged;
 
@@ -41,7 +41,7 @@ public class PlayerStatsManager {
 	public static event PowerUpInventoryChanged powerUpInventoryChanged;
 
 	//High-score per episode.
-	//The index is the episode number. The value is the score for that episode (sum of stars collected and distance run). The initial values are 0.
+	//The index is the episode number. The value is the score for that episode (sum of coins collected and distance run). The initial values are 0.
 	int[] highScoreArray = new int[LevelData.NUMBER_OF_EPISODES];
 	float distanceTravelled = 0;
 	bool firstTimePlaying;
@@ -112,7 +112,7 @@ public class PlayerStatsManager {
 
 	string userName;
 
-	bool ownsStarDoubler = false; //True if the player has purchased the Star Doubler in the store.
+	bool ownsCoinDoubler = false; //True if the player has purchased the Coin Doubler in the store.
 
 	string challenges = String.Empty; //List of Challenge in JSON format. See ChallengeBoard.
 	string journalEntries = String.Empty; //List of Journal Entries in JSON format. See JournalData.
@@ -347,7 +347,7 @@ public class PlayerStatsManager {
 		{
 			if( coinSeriesInfo.isLastCoinOfSeries )
 			{
-				HUDHandler.hudHandler.displayStarPickup( coinAccumulator, coinSeriesInfo.coinColor );
+				HUDHandler.hudHandler.displayCoinPickup( coinAccumulator );
 				//We don't want to play the coin pickup sound too often, so we only play it when it is the 
 				//last coin of the series.
 				CoinManager.coinManager.playCoinPickupSound();
@@ -357,8 +357,8 @@ public class PlayerStatsManager {
 
 	public void modifyCurrentCoins( int coins, bool incrementLifetimeCoins, bool isPurchase )
 	{
-		//Player gets twice the amount of Stars if they own the star doubler permanent item and this is not a purchase
-		if( ownsStarDoubler && !isPurchase && coins > 0 ) coins = coins * 2;
+		//Player gets twice the amount of Coins if they own the coin doubler permanent item and this is not a purchase
+		if( ownsCoinDoubler && !isPurchase && coins > 0 ) coins = coins * 2;
 
 		currentCoins = currentCoins + coins;
 
@@ -366,7 +366,7 @@ public class PlayerStatsManager {
 
 		//Send an event to interested classes
 		if(playerInventoryChanged != null) playerInventoryChanged(PlayerInventoryEvent.Score_Changed, LevelManager.Instance.getScore() );
-		if(playerInventoryChanged != null) playerInventoryChanged(PlayerInventoryEvent.Star_Changed, currentCoins );
+		if(playerInventoryChanged != null) playerInventoryChanged(PlayerInventoryEvent.Coin_Changed, currentCoins );
 
 		//Also add to lifetime coins.
 		if( incrementLifetimeCoins )
@@ -750,15 +750,15 @@ public class PlayerStatsManager {
 		return showRecordButton;
 	}
 
-	public void setOwnsStarDoubler( bool value )
+	public void setOwnsCoinDoubler( bool value )
 	{
-		ownsStarDoubler = value;
-		if(playerInventoryChanged != null) playerInventoryChanged(PlayerInventoryEvent.Star_Doubler_Changed, 0 );
+		ownsCoinDoubler = value;
+		if(playerInventoryChanged != null) playerInventoryChanged(PlayerInventoryEvent.Coin_Doubler_Changed, 0 );
 	}
 	
-	public bool getOwnsStarDoubler()
+	public bool getOwnsCoinDoubler()
 	{
-		return ownsStarDoubler;
+		return ownsCoinDoubler;
 	}
 
 	public float getMusicVolume()
@@ -1051,14 +1051,14 @@ public class PlayerStatsManager {
 			{
 				sharedOnFacebook = false;	
 			}
-			string ownsStarDoublerString = PlayerPrefs.GetString("ownsStarDoubler", "false" );
-			if( ownsStarDoublerString == "true" )
+			string ownsCoinDoublerString = PlayerPrefs.GetString("ownsCoinDoubler", "false" );
+			if( ownsCoinDoublerString == "true" )
 			{
-				setOwnsStarDoubler( true );
+				setOwnsCoinDoubler( true );
 			}
 			else
 			{
-				setOwnsStarDoubler( false );
+				setOwnsCoinDoubler( false );
 			}
 
 			string usesFacebookString = PlayerPrefs.GetString("usesFacebook", "false" );
@@ -1106,7 +1106,7 @@ public class PlayerStatsManager {
 			challenges = PlayerPrefs.GetString("challenges", "" );
 			journalEntries = PlayerPrefs.GetString("journalEntries", "" );
 			playerProfile = PlayerPrefs.GetString("playerProfile", "" );
-			//Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " Next Episode To Complete: " + nextEpisodeToComplete + " Highest Episode Completed: " + highestEpisodeCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
+			//Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " Next Episode To Complete: " + nextEpisodeToComplete + " Highest Episode Completed: " + highestEpisodeCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
 		{
@@ -1155,13 +1155,13 @@ public class PlayerStatsManager {
 		{
 			PlayerPrefs.SetString( "sharedOnFacebook", "false" );
 		}
-		if( ownsStarDoubler )
+		if( ownsCoinDoubler )
 		{
-			PlayerPrefs.SetString( "ownsStarDoubler", "true" );
+			PlayerPrefs.SetString( "ownsCoinDoubler", "true" );
 		}
 		else
 		{
-			PlayerPrefs.SetString( "ownsStarDoubler", "false" );
+			PlayerPrefs.SetString( "ownsCoinDoubler", "false" );
 		}
 		if( usesFacebook )
 		{
@@ -1199,7 +1199,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetString( "challenges", challenges );
 		PlayerPrefs.SetString( "playerProfile", playerProfile );
 		PlayerPrefs.Save();
-		//Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsStarDoubler: " + ownsStarDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
+		//Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
 	}
 	
 	//Used for debugging
@@ -1227,8 +1227,8 @@ public class PlayerStatsManager {
 			setShowRecordButton( false );
 			PlayerPrefs.SetString( "sharedOnFacebook", "false" );
 			setSharedOnFacebook( false );
-			PlayerPrefs.SetString( "ownsStarDoubler", "false" );
-			setOwnsStarDoubler( false );
+			PlayerPrefs.SetString( "ownsCoinDoubler", "false" );
+			setOwnsCoinDoubler( false );
 			PlayerPrefs.SetString( "usesFacebook", "false" );
 			setUsesFacebook( false );
 			PlayerPrefs.SetString( "isCameraFlipped", "false" );

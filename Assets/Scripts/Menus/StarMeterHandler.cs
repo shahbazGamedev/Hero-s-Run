@@ -8,7 +8,7 @@ public class StarMeterHandler : MonoBehaviour {
 
 	[Header("Star Meter")]
 	public Slider starMeterSlider;
-	public Text starMeterScore;
+	public Text coinMeterScore;
 	public RectTransform StarMarkersPanel;
 	public RectTransform leftStarMarker;
 	public RectTransform middleStarMarker;
@@ -25,9 +25,9 @@ public class StarMeterHandler : MonoBehaviour {
 
 	void Awake()
 	{
-		scoreString = LocalizationManager.Instance.getText("MENU_STARS");
+		scoreString = LocalizationManager.Instance.getText("MENU_COINS");
 		//Replace the string <0> by 0 initially
-		starMeterScore.text = scoreString.Replace( "<0>", LevelManager.Instance.getStarsAtLastCheckpoint().ToString() );
+		coinMeterScore.text = scoreString.Replace( "<0>", LevelManager.Instance.getCoinsAtLastCheckpoint().ToString() );
 	}
 		
 	void Start()
@@ -38,7 +38,7 @@ public class StarMeterHandler : MonoBehaviour {
 	void updatePositionOfStarMarkers()
 	{
 		LevelData.EpisodeInfo selectedEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
-		Vector3 starsRequired = selectedEpisode.starsRequired;
+		Vector3 starsRequired = selectedEpisode.coinsRequired;
 		maxNumberOfStars = 1.1f * starsRequired.z;
 		float sliderWidth = StarMarkersPanel.rect.width;
 		Debug.Log("updatePositionOfStarMarkers " + starsRequired );
@@ -77,7 +77,7 @@ public class StarMeterHandler : MonoBehaviour {
 			currentNumber =  Mathf.Lerp( startValue, playerScore, elapsedTime/scoreSpinDuration );
 			starMeterSlider.value = currentNumber/maxScore;
 			//Replace the string <0> by the score value
-			starMeterScore.text = scoreString.Replace( "<0>", currentNumber.ToString("N0") );
+			coinMeterScore.text = scoreString.Replace( "<0>", currentNumber.ToString("N0") );
 			yield return new WaitForFixedUpdate();  
 	    }		
 	}
@@ -99,7 +99,7 @@ public class StarMeterHandler : MonoBehaviour {
 			case PlayerInventoryEvent.Score_Changed:
 				LevelData.EpisodeInfo selectedEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
 				//Replace the string <0> by the score value
-				starMeterScore.text = scoreString.Replace( "<0>", newScore.ToString("N0") );
+				coinMeterScore.text = scoreString.Replace( "<0>", newScore.ToString("N0") );
 				starMeterSlider.value = newScore/maxNumberOfStars;
 				updateDisplayStars( newScore, selectedEpisode );
 			break;	        
@@ -110,15 +110,15 @@ public class StarMeterHandler : MonoBehaviour {
 	{
 		int numberOfStars = 0;
 
-		if ( newScore >= selectedEpisode.starsRequired.x && newScore < selectedEpisode.starsRequired.y )
+		if ( newScore >= selectedEpisode.coinsRequired.x && newScore < selectedEpisode.coinsRequired.y )
 		{
 			numberOfStars = 1;
 		}
-		else if ( newScore >= selectedEpisode.starsRequired.y && newScore < selectedEpisode.starsRequired.z )
+		else if ( newScore >= selectedEpisode.coinsRequired.y && newScore < selectedEpisode.coinsRequired.z )
 		{
 			numberOfStars = 2;
 		}
-		else if ( newScore >= selectedEpisode.starsRequired.z )
+		else if ( newScore >= selectedEpisode.coinsRequired.z )
 		{
 			numberOfStars = 3;
 		}

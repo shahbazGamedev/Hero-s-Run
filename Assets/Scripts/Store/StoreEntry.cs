@@ -7,10 +7,10 @@ public enum PurchaseType {
 	None = 0,
 	Upgrade = 1,
 	Consumable = 2,
-	Purchase_Star_Doubler = 3,
-	Purchase_Stars = 4,
+	Purchase_Coin_Doubler = 3,
+	Purchase_Coins = 4,
 	Purchase_Lives = 5,
-	Restore_Star_Doubler = 6
+	Restore_Coin_Doubler = 6
 }
 
 public class StoreEntry : MonoBehaviour {
@@ -21,7 +21,7 @@ public class StoreEntry : MonoBehaviour {
 
 	public Text title;
 	public Text description;
-	public int quantity; 	//For example number of stars you get with you purchase or number of lives
+	public int quantity; 	//For example number of coins you get with you purchase or number of lives
 	public float price; 	//For testing. real prices will come from app store
 	public Button buyButton;
 	public Text buyButtonLabel;
@@ -53,20 +53,20 @@ public class StoreEntry : MonoBehaviour {
 				initializeConsumableEntry();
                 break;
 	                
-	        case PurchaseType.Purchase_Star_Doubler:
-				initializeStarDoublerEntry();
+	        case PurchaseType.Purchase_Coin_Doubler:
+				initializeCoinDoublerEntry();
                 break;
 	                
 	        case PurchaseType.Purchase_Lives:
 				initializePurchaseLivesEntry();
                 break;
 	
-	        case PurchaseType.Purchase_Stars:
-				initializePurchaseStarsEntry();
+	        case PurchaseType.Purchase_Coins:
+				initializePurchaseCoinsEntry();
                 break;
 
-			 case PurchaseType.Restore_Star_Doubler:
-				initializeRestoreStarDoublerEntry();
+			 case PurchaseType.Restore_Coin_Doubler:
+				initializeRestoreCoinDoublerEntry();
                 break;
 
 			 case PurchaseType.None:
@@ -114,14 +114,14 @@ public class StoreEntry : MonoBehaviour {
 		buyButtonLabel.text = price.ToString("N0");
 	}
 
-	void initializeStarDoublerEntry()
+	void initializeCoinDoublerEntry()
 	{
-		description.text = LocalizationManager.Instance.getText( "STAR_DOUBLER_DESCRIPTION" );
-		if( PlayerStatsManager.Instance.getOwnsStarDoubler() )
+		description.text = LocalizationManager.Instance.getText( "COIN_DOUBLER_DESCRIPTION" );
+		if( PlayerStatsManager.Instance.getOwnsCoinDoubler() )
 		{
 			//Player already owns it
 			buyButtonLabel.alignment = TextAnchor.MiddleCenter;
-			buyButtonLabel.text = LocalizationManager.Instance.getText("STAR_DOUBLER_OWNED");
+			buyButtonLabel.text = LocalizationManager.Instance.getText("COIN_DOUBLER_OWNED");
 			buyButton.interactable = false;
 		}
 		else
@@ -140,9 +140,9 @@ public class StoreEntry : MonoBehaviour {
 		buyButtonLabel.text = currencySymbol + price.ToString();
 	}
 
-	void initializePurchaseStarsEntry()
+	void initializePurchaseCoinsEntry()
 	{
-		string descriptionString = LocalizationManager.Instance.getText("STORE_ITEM_STARS_DESCRIPTION");
+		string descriptionString = LocalizationManager.Instance.getText("STORE_ITEM_COINS_DESCRIPTION");
 		//Replace the string <quantity> by the quantity the player will receive if he makes the purchase
 		descriptionString = descriptionString.Replace( "<quantity>", quantity.ToString("N0") );
 		description.text = descriptionString;
@@ -150,7 +150,7 @@ public class StoreEntry : MonoBehaviour {
 		buyButtonLabel.text = currencySymbol + price.ToString();
 	}
 
-	void initializeRestoreStarDoublerEntry()
+	void initializeRestoreCoinDoublerEntry()
 	{
 		description.text = LocalizationManager.Instance.getText("RESTORE_PURCHASE_DESCRIPTION");
 		buyButtonLabel.text = LocalizationManager.Instance.getText("RESTORE_PURCHASE_BUTTON_LABEL");
@@ -168,19 +168,19 @@ public class StoreEntry : MonoBehaviour {
 				buyConsumable();
                 break;
 	                
-	        case PurchaseType.Purchase_Star_Doubler:
-				buyStarDoubler();
+	        case PurchaseType.Purchase_Coin_Doubler:
+				buyCoinDoubler();
                 break;
 	                
 	        case PurchaseType.Purchase_Lives:
 				buyLives();
                 break;
 	
-	        case PurchaseType.Purchase_Stars:
-				buyStars();
+	        case PurchaseType.Purchase_Coins:
+				buyCoins();
                 break;
 
-			 case PurchaseType.Restore_Star_Doubler:
+			 case PurchaseType.Restore_Coin_Doubler:
 				restorePurchases();
                 break;
 
@@ -225,8 +225,8 @@ public class StoreEntry : MonoBehaviour {
 		}
 		else
 		{
-			//Player does not have enough stars. Bring him to store.
-			StoreManager.Instance.showStore(StoreTab.Store, StoreReason.Need_Stars);
+			//Player does not have enough coins. Bring him to store.
+			StoreManager.Instance.showStore(StoreTab.Store, StoreReason.Need_Coins);
 		}
 	}
 
@@ -251,22 +251,22 @@ public class StoreEntry : MonoBehaviour {
 		}
 		else
 		{
-			//Player does not have enough stars. Bring him to store.
-			StoreManager.Instance.showStore(StoreTab.Store, StoreReason.Need_Stars);
+			//Player does not have enough coins. Bring him to store.
+			StoreManager.Instance.showStore(StoreTab.Store, StoreReason.Need_Coins);
 		}
 	}
 
 	//This is a real money purchase
-	void buyStarDoubler()
+	void buyCoinDoubler()
 	{
-		Debug.Log("buyStarDoubler");
+		Debug.Log("buyCoinDoubler");
 		UISoundManager.uiSoundManager.playButtonClick();
 		buyButtonLabel.alignment = TextAnchor.MiddleCenter;
-		buyButtonLabel.text = LocalizationManager.Instance.getText("STAR_DOUBLER_OWNED");
+		buyButtonLabel.text = LocalizationManager.Instance.getText("COIN_DOUBLER_OWNED");
 		buyButton.interactable = false;
 
-		//Grant the Star Doubler
-		PlayerStatsManager.Instance.setOwnsStarDoubler( true );
+		//Grant the Coin Doubler
+		PlayerStatsManager.Instance.setOwnsCoinDoubler( true );
 
 		//Save the data
 		PlayerStatsManager.Instance.savePlayerStats();
@@ -284,9 +284,9 @@ public class StoreEntry : MonoBehaviour {
 		PlayerStatsManager.Instance.savePlayerStats();
 	}
 
-	void buyStars()
+	void buyCoins()
 	{
-		Debug.Log("buyStars");
+		Debug.Log("buyCoins");
 		UISoundManager.uiSoundManager.playButtonClick();
 
 		//Grant the purchased lives

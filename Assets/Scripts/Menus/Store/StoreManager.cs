@@ -9,7 +9,7 @@ public enum StoreTab {
 
 public enum StoreReason {
 	None = 0,
-	Need_Stars = 1,
+	Need_Coins = 1,
 	Need_Lives = 2
 }
 
@@ -29,8 +29,8 @@ public class StoreManager : MonoBehaviour {
 	[SerializeField]  GameObject shopTab;
 	[Header("Store")]
 	[SerializeField]  ScrollRect storeScrollRect;
-	[SerializeField]  Text starsTitle;
-	[SerializeField]  Text starsReason;
+	[SerializeField]  Text coinsTitle;
+	[SerializeField]  Text coinsReason;
 	[SerializeField]  Text livesTitle;
 	[SerializeField]  Text livesReason;
 	[Header("Shop")]
@@ -55,8 +55,8 @@ public class StoreManager : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		starsTitle.text = LocalizationManager.Instance.getText("STORE_STARS_TITLE");
-		starsReason.text = LocalizationManager.Instance.getText("STORE_STARS_REASON");
+		coinsTitle.text = LocalizationManager.Instance.getText("STORE_COINS_TITLE");
+		coinsReason.text = LocalizationManager.Instance.getText("STORE_COINS_REASON");
 		livesTitle.text = LocalizationManager.Instance.getText("STORE_LIVES_TITLE");
 		livesReason.text = LocalizationManager.Instance.getText("STORE_LIVES_REASON");
 
@@ -78,20 +78,20 @@ public class StoreManager : MonoBehaviour {
 		}
 		if( reason == StoreReason.Need_Lives )
 		{
-			starsReason.gameObject.SetActive( false );
+			coinsReason.gameObject.SetActive( false );
 			livesReason.gameObject.SetActive( true );
 			//Lives are at the middle of the display
 			storeScrollRect.verticalNormalizedPosition = 0.0673f;
 		}
-		else if ( reason == StoreReason.Need_Stars )
+		else if ( reason == StoreReason.Need_Coins )
 		{
-			starsReason.gameObject.SetActive( true );
+			coinsReason.gameObject.SetActive( true );
 			livesReason.gameObject.SetActive( false );
-			//Stars are at the top of the display
+			//Coins are at the top of the display
 		}
 		else if ( reason == StoreReason.None )
 		{
-			starsReason.gameObject.SetActive( false );
+			coinsReason.gameObject.SetActive( false );
 			livesReason.gameObject.SetActive( false );
 		}
 	}

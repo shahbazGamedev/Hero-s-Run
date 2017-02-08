@@ -56,15 +56,15 @@ public class PostLevelPopup : MonoBehaviour {
 
 		int numberOfStars = 0;
 
-		if ( score >= currentEpisode.starsRequired.x && score < currentEpisode.starsRequired.y )
+		if ( score >= currentEpisode.coinsRequired.x && score < currentEpisode.coinsRequired.y )
 		{
 			numberOfStars = 1;
 		}
-		else if ( score >= currentEpisode.starsRequired.y && score < currentEpisode.starsRequired.z )
+		else if ( score >= currentEpisode.coinsRequired.y && score < currentEpisode.coinsRequired.z )
 		{
 			numberOfStars = 2;
 		}
-		else if ( score >= currentEpisode.starsRequired.z )
+		else if ( score >= currentEpisode.coinsRequired.z )
 		{
 			numberOfStars = 3;
 		}

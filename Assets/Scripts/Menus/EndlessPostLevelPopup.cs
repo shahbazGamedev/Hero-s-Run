@@ -40,15 +40,15 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 
 	public void showEndlessPostLevelPopup(LevelData levelData)
 	{
-		int starsEarned = calculateStarsEarned();
-		Debug.Log( "showEndlessPostLevelPopup-score: " + LevelManager.Instance.getScore() + " stars previous " + PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( LevelManager.Instance.getCurrentEpisodeNumber() ) + " new stars earned " + starsEarned );
-		if( starsEarned > PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( LevelManager.Instance.getCurrentEpisodeNumber() ) )
+		int coinsEarned = calculateStarsEarned();
+		Debug.Log( "showEndlessPostLevelPopup-score: " + LevelManager.Instance.getScore() + " coins previous " + PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( LevelManager.Instance.getCurrentEpisodeNumber() ) + " new coins earned " + coinsEarned );
+		if( coinsEarned > PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( LevelManager.Instance.getCurrentEpisodeNumber() ) )
 		{
 			//For this episode, we have more stars than we had before
 			//Save the value
-			PlayerStatsManager.Instance.setNumberDisplayStarsForEpisode( starsEarned );
+			PlayerStatsManager.Instance.setNumberDisplayStarsForEpisode( coinsEarned );
 			PlayerStatsManager.Instance.savePlayerStats();
-			newWorldMapHandler.updateDisplayStars( LevelManager.Instance.getCurrentEpisodeNumber(), starsEarned );
+			newWorldMapHandler.updateDisplayStars( LevelManager.Instance.getCurrentEpisodeNumber(), coinsEarned );
 			
 		}
 		//Reset values before sliding out
@@ -67,15 +67,15 @@ public class EndlessPostLevelPopup : MonoBehaviour {
 
 		int numberOfStars = 0;
 
-		if ( score >= currentEpisode.starsRequired.x && score < currentEpisode.starsRequired.y )
+		if ( score >= currentEpisode.coinsRequired.x && score < currentEpisode.coinsRequired.y )
 		{
 			numberOfStars = 1;
 		}
-		else if ( score >= currentEpisode.starsRequired.y && score < currentEpisode.starsRequired.z )
+		else if ( score >= currentEpisode.coinsRequired.y && score < currentEpisode.coinsRequired.z )
 		{
 			numberOfStars = 2;
 		}
-		else if ( score >= currentEpisode.starsRequired.z )
+		else if ( score >= currentEpisode.coinsRequired.z )
 		{
 			numberOfStars = 3;
 		}

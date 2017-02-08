@@ -10,9 +10,9 @@ public class DebugMenu : MonoBehaviour {
 	public NewWorldMapHandler newWorldMapHandler;
 	public Text titleText;
 	[Header("Player Stats")]
-	public Text currentStars;
-	public Text lifetimeStars;
-	public Text ownsStarDoubler;
+	public Text currentCoins;
+	public Text lifetimeCoins;
+	public Text ownsCoinDoubler;
 	public Text toggleShowDebugInfoText;
 	public Text deathPerEpisodeText;
 	public Text facebookName;
@@ -74,9 +74,9 @@ public class DebugMenu : MonoBehaviour {
 		GameCenterManager.resetAchievementsCompleted();
 	}
 
-	public void giveStars()
+	public void giveCoins()
 	{
-		Debug.Log("Give 25000 Stars");
+		Debug.Log("Give 25000 Coins");
 		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.modifyCurrentCoins( 25000, false, false );
 		PlayerStatsManager.Instance.savePlayerStats();
@@ -188,15 +188,15 @@ public class DebugMenu : MonoBehaviour {
 		{
 			facebookName.text = "First Name: " + FacebookManager.Instance.firstName;
 		}
-		currentStars.text = "Current Stars: " + PlayerStatsManager.Instance.getCurrentCoins();
-		lifetimeStars.text = "Lifetime Stars: " + PlayerStatsManager.Instance.getLifetimeCoins();
-		if( PlayerStatsManager.Instance.getOwnsStarDoubler() )
+		currentCoins.text = "Current Coins: " + PlayerStatsManager.Instance.getCurrentCoins();
+		lifetimeCoins.text = "Lifetime Coins: " + PlayerStatsManager.Instance.getLifetimeCoins();
+		if( PlayerStatsManager.Instance.getOwnsCoinDoubler() )
 		{
-			ownsStarDoubler.text = "Owns Star Doubler: true";
+			ownsCoinDoubler.text = "Owns Coin Doubler: true";
 		}
 		else
 		{
-			ownsStarDoubler.text = "Owns Star Doubler: false";
+			ownsCoinDoubler.text = "Owns Coin Doubler: false";
 		}
 		deathPerEpisodeText.text = "Death Per Episode: " + PlayerStatsManager.Instance.getDeathInEpisodesAsString();
 	}

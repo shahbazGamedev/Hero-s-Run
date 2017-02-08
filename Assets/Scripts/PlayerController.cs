@@ -1970,7 +1970,7 @@ public sealed class PlayerController : MonoBehaviour {
 						PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
 						
 						//Display coin total picked up icon
-						HUDHandler.hudHandler.displayStarPickup( 10, Color.yellow );
+						HUDHandler.hudHandler.displayCoinPickup( 10 );
 
 						//Give the Chicken Chaser achievement
 						chicken_chaser.incrementCounter();
@@ -2024,7 +2024,7 @@ public sealed class PlayerController : MonoBehaviour {
 						PlayerStatsManager.Instance.modifyCurrentCoins( ZombieManager.NUMBER_STARS_PER_ZOMBIE, true, false );
 						
 						//Display coin total picked up icon
-						HUDHandler.hudHandler.displayStarPickup( ZombieManager.NUMBER_STARS_PER_ZOMBIE, Color.yellow );
+						HUDHandler.hudHandler.displayCoinPickup( ZombieManager.NUMBER_STARS_PER_ZOMBIE );
 
 						zombieController.fallToBack();
 						
@@ -2136,7 +2136,7 @@ public sealed class PlayerController : MonoBehaviour {
 
 						//To do
 						//Display coin total picked up icon
-						HUDHandler.hudHandler.displayStarPickup( 10, Color.yellow );
+						HUDHandler.hudHandler.displayCoinPickup( 10 );
 
 					}	
 					else
@@ -2171,7 +2171,7 @@ public sealed class PlayerController : MonoBehaviour {
 					
 					//To do
 					//Display coin total picked up icon
-					HUDHandler.hudHandler.displayStarPickup( 10, Color.yellow );
+					HUDHandler.hudHandler.displayCoinPickup( 10 );
 					
 				}	
 				else
@@ -2235,10 +2235,10 @@ public sealed class PlayerController : MonoBehaviour {
 			if( ( playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.Turning_and_sliding ) || PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
 			{
 				//Give stars
-				PlayerStatsManager.Instance.modifyCurrentCoins( CreatureManager.NUMBER_STARS_PER_CREATURE, true, false );
+				PlayerStatsManager.Instance.modifyCurrentCoins( CreatureManager.NUMBER_COINS_PER_CREATURE, true, false );
 				
 				//Display coin total picked up icon
-				HUDHandler.hudHandler.displayStarPickup( CreatureManager.NUMBER_STARS_PER_CREATURE, Color.yellow );
+				HUDHandler.hudHandler.displayCoinPickup( CreatureManager.NUMBER_COINS_PER_CREATURE );
 
 				creature.knockback();
 				

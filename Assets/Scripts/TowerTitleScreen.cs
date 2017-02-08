@@ -3,10 +3,10 @@ using System.Collections;
 
 public class TowerTitleScreen : MonoBehaviour {
 
-	public GameObject fairy;
+	GameObject fairy;
 	FairyController fairyController;
-	public Lightning lightning;
-	public TitleScreenHandler titleScreenHandler;
+	[SerializeField] Lightning lightning;
+	[SerializeField] TitleScreenHandler titleScreenHandler;
 
 	void Start()
 	{
@@ -18,6 +18,7 @@ public class TowerTitleScreen : MonoBehaviour {
 	{
 		if(PlayerStatsManager.Instance.isFirstTimePlaying() )
 		{
+			fairy = GameObject.FindGameObjectWithTag("Fairy");
 			fairyController = fairy.GetComponent<FairyController>();
 			fairyController.cutsceneAppear(FairyEmotion.Happy);
 			Invoke("Step2", 2f );

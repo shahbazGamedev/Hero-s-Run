@@ -7,16 +7,16 @@ public class WorldMapTopPanelManager : MonoBehaviour {
 	[Header("Top Panel")]
 	public Text numberOfKeysText;
 	public Text numberOfLivesText;
-	public Text numberOfStarsText;
-	public Image starDoublerIcon;
+	public Text numberOfCoinsText;
+	public Image coinDoublerIcon;
 
 	// Use this for initialization
 	void Start ()
 	{
 		if( numberOfKeysText != null ) numberOfKeysText.text = PlayerStatsManager.Instance.getTreasureKeysOwned().ToString();
 		numberOfLivesText.text = PlayerStatsManager.Instance.getLives().ToString();
-		numberOfStarsText.text = PlayerStatsManager.Instance.getCurrentCoins().ToString("N0");
-		starDoublerIcon.gameObject.SetActive( PlayerStatsManager.Instance.getOwnsStarDoubler() );
+		numberOfCoinsText.text = PlayerStatsManager.Instance.getCurrentCoins().ToString("N0");
+		coinDoublerIcon.gameObject.SetActive( PlayerStatsManager.Instance.getOwnsCoinDoubler() );
 	}	
 
 	void OnEnable()
@@ -42,12 +42,12 @@ public class WorldMapTopPanelManager : MonoBehaviour {
 				if( numberOfLivesText != null ) numberOfLivesText.text = newValue.ToString();	
 			break;
 
-			case PlayerInventoryEvent.Star_Changed:
-				numberOfStarsText.text = newValue.ToString("N0");			
+			case PlayerInventoryEvent.Coin_Changed:
+				numberOfCoinsText.text = newValue.ToString("N0");			
 			break;
 
-			case PlayerInventoryEvent.Star_Doubler_Changed:
-				starDoublerIcon.gameObject.SetActive( PlayerStatsManager.Instance.getOwnsStarDoubler() );
+			case PlayerInventoryEvent.Coin_Doubler_Changed:
+				coinDoublerIcon.gameObject.SetActive( PlayerStatsManager.Instance.getOwnsCoinDoubler() );
 			break;
 		}
 	}

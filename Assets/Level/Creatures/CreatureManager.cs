@@ -22,7 +22,7 @@ public sealed class CreatureManager : MonoBehaviour {
 
 	Transform player;
 	PlayerController playerController;
-	public const int NUMBER_STARS_PER_CREATURE = 20;
+	public const int NUMBER_COINS_PER_CREATURE = 20;
 	const float DEACTIVATE_DIAMETER = 60f;
 	int zombieLayer = 9;
 	int goblinLayer = 11;
@@ -48,8 +48,8 @@ public sealed class CreatureManager : MonoBehaviour {
 		Vector3 relativePos = new Vector3(0f , 0f , impactDiameter/2f );
 		Vector3 exactPos = player.TransformPoint(relativePos);
 
-		//Count the number of creatures that are knocked back so we can give the player stars.
-		//The more creatures he topples, the more stars he gets.
+		//Count the number of creatures that are knocked back so we can give the player coins.
+		//The more creatures he topples, the more coins he gets.
 		int numberOfCreatures = 0;
 		Collider[] hitColliders = Physics.OverlapSphere(exactPos, impactDiameter, getKnockbackCreatureMask() );
 		for( int i =0; i < hitColliders.Length; i++ )
@@ -63,12 +63,12 @@ public sealed class CreatureManager : MonoBehaviour {
 		}
 		if( numberOfCreatures != 0 )
 		{
-			int totalStars = numberOfCreatures * NUMBER_STARS_PER_CREATURE;
-			//Give stars
-			PlayerStatsManager.Instance.modifyCurrentCoins( totalStars, true, false );
+			int totalCoins = numberOfCreatures * NUMBER_COINS_PER_CREATURE;
+			//Give coins
+			PlayerStatsManager.Instance.modifyCurrentCoins( totalCoins, true, false );
 			
-			//Display star total picked up icon
-			HUDHandler.hudHandler.displayStarPickup( totalStars, Color.magenta );
+			//Display coin total picked up icon
+			HUDHandler.hudHandler.displayCoinPickup( totalCoins );
 
 		}
 	}

@@ -175,13 +175,12 @@ public class HUDHandler : MonoBehaviour {
 		return iconPos;
 	}
 	
-	public void displayStarPickup( int quantity, Color starColor )
+	public void displayCoinPickup( int quantity )
 	{
-		if( PlayerStatsManager.Instance.getOwnsStarDoubler() ) quantity = quantity * 2;
+		if( PlayerStatsManager.Instance.getOwnsCoinDoubler() ) quantity = quantity * 2;
 
 		GameObject go = (GameObject)Instantiate(starPrefab);
 		go.transform.SetParent( hudCanvas.transform, false );
-		go.GetComponent<Image>().color = starColor;
 		Text quantityText = go.GetComponentInChildren<Text>();
 		quantityText.text = "+" + quantity.ToString();
 		RectTransform rt = go.GetComponent<RectTransform>();

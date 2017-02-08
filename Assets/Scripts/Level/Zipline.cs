@@ -9,10 +9,10 @@ public class Zipline : MonoBehaviour {
 	const int LINE_VERTEX_COUNT = 200;
     LineRenderer lineRenderer;
 	float step;
-	List<GameObject> starsList = new List<GameObject>();
-	public bool addStars = true;
+	List<GameObject> coinsList = new List<GameObject>();
+	public bool addCoins = true;
 	public GameObject starPrefab;
-	public int distanceBetweenStars = 12;
+	public int distanceBetweenCoins = 12;
 	public float distanceBelowLine = 1f;
 
 	// Use this for initialization
@@ -26,21 +26,21 @@ public class Zipline : MonoBehaviour {
  		step = 1f/LINE_VERTEX_COUNT;
 	}
 
-    void addStarsBelowZipline()
+    void addCoinsBelowZipline()
 	{
-		starsList.Clear();
-		if( addStars )
+		coinsList.Clear();
+		if( addCoins )
 		{
 			GameObject go;
 			Vector3 starToLineOffset = new Vector3( 0, distanceBelowLine, 0 );
-			//Start at 1 to avoid having stars immediately next to the start
-			for(int i=1; i < LINE_VERTEX_COUNT; i = i + distanceBetweenStars )
+			//Start at 1 to avoid having coins immediately next to the start
+			for(int i=1; i < LINE_VERTEX_COUNT; i = i + distanceBetweenCoins )
 			{
 				float t = i * step;
 				Vector3 toPosition = Utilities.Bezier3( bezierData.bezierStart.position, bezierData.bezierControl1.position, bezierData.bezierControl2.position, bezierData.bezierEnd.position, t ) - starToLineOffset;
 				go = (GameObject)Instantiate(starPrefab, toPosition, Quaternion.identity );
 				go.transform.parent = transform;
-				starsList.Add( go );
+				coinsList.Add( go );
 			}
 		}
     }
@@ -60,17 +60,17 @@ public class Zipline : MonoBehaviour {
 
 	void OnEnable()
 	{
-		addStarsBelowZipline();
+		addCoinsBelowZipline();
 	}
 
 	void OnDisable()
 	{
-		for( int i =0; i < starsList.Count; i++ )
+		for( int i =0; i < coinsList.Count; i++ )
 		{
-			GameObject.Destroy( starsList[i] );
-			starsList[i] = null;
+			GameObject.Destroy( coinsList[i] );
+			coinsList[i] = null;
 		}
-		starsList.Clear();
+		coinsList.Clear();
 	}
 
 
