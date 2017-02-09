@@ -23,9 +23,9 @@ public class HUDHandler : MonoBehaviour {
 	//It appears in the center of the screen.
 	[Header("User Message")]
 	public Text userMessageText;
-	[Header("Star and Treasure Key Display")]
+	[Header("Coin and Treasure Key Display")]
 	public RectTransform hudCanvas;
-	public GameObject starPrefab;
+	public GameObject coinPrefab;
 	public GameObject treasurePrefab;
 	public GameObject restartFromCheckpointPanel; //Used to inform the player that he is restarting from a checkpoint and not from the begining
 	public Text restartFromCheckpointText; 
@@ -36,7 +36,7 @@ public class HUDHandler : MonoBehaviour {
 	[Header("Journal")]
 	public GameObject journalCanvas;
 
-	//Used to track the items picked up by the player such as Stars and Treasure Keys. Multiple icons can be displayed at the same time with an offset.
+	//Used to track the items picked up by the player such as Coins and Treasure Keys. Multiple icons can be displayed at the same time with an offset.
 	List<PickupDisplay> pickupDisplayList = new List<PickupDisplay>();
 	const float PICKUP_DISPLAY_DURATION = 4f;
 
@@ -49,7 +49,7 @@ public class HUDHandler : MonoBehaviour {
 	
 	HUDSaveMe hudSaveMe;
 	PlayerController playerController;
-	Rect coinIconRect; //Used to position the stars collected at the top of the HUD
+	Rect coinIconRect; //Used to position the coins collected at the top of the HUD
 
 	// Use this for initialization
 	void Awake ()
@@ -179,7 +179,7 @@ public class HUDHandler : MonoBehaviour {
 	{
 		if( PlayerStatsManager.Instance.getOwnsCoinDoubler() ) quantity = quantity * 2;
 
-		GameObject go = (GameObject)Instantiate(starPrefab);
+		GameObject go = (GameObject)Instantiate(coinPrefab);
 		go.transform.SetParent( hudCanvas.transform, false );
 		Text quantityText = go.GetComponentInChildren<Text>();
 		quantityText.text = "+" + quantity.ToString();

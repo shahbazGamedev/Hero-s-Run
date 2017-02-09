@@ -43,7 +43,7 @@ public class TreasureIslandManager : MonoBehaviour {
 
 	FCMain lastOpenChest;
 
-	public GameObject propStar;
+	public GameObject propCoin;
 	public GameObject propLife;
 	public GameObject propMagicBoots;
 	public GameObject propSlowTime;
@@ -51,7 +51,7 @@ public class TreasureIslandManager : MonoBehaviour {
 	public GameObject propCustomization;
 	PowerUpType giftPowerUp;
 
-	public GameObject propStarParticle;
+	public GameObject propCoinParticle;
 	public GameObject propLifeParticle;
 	public GameObject propMagicBootsParticle;
 	public GameObject propSlowTimeParticle;
@@ -255,7 +255,7 @@ public class TreasureIslandManager : MonoBehaviour {
 		{
 			
 		case ChestGiftType.Coins:
-			fcProp.m_Prefab = propStar;
+			fcProp.m_Prefab = propCoin;
 			//Position
 			fcProp.m_PosBegin = new Vector3( 0, 0.4f, 0 );
 			fcProp.m_PosEnd = new Vector3( 0, 0.6f, 0 );
@@ -275,7 +275,7 @@ public class TreasureIslandManager : MonoBehaviour {
 			fcProp.m_ScaleDelay = 0.5f;
 			fcProp.m_ScaleDuration = 1f;
 			//Prop particle
-			fcPropParticle.m_Prefab = propStarParticle;
+			fcPropParticle.m_Prefab = propCoinParticle;
 			break;
 			
 		case ChestGiftType.PowerUp:
