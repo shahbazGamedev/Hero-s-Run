@@ -25,7 +25,7 @@ public class HUDHandler : MonoBehaviour {
 	[SerializeField] Text userMessageText;
 	[Header("Coin and Treasure Key Display")]
 	[SerializeField] RectTransform hudCanvas;
-	[SerializeField] GameObject coinPrefab;
+	public GameObject coinPrefab;
 	[SerializeField] GameObject treasurePrefab;
 	[SerializeField] GameObject restartFromCheckpointPanel; //Used to inform the player that he is restarting from a checkpoint and not from the begining
 	[SerializeField] Text restartFromCheckpointText; 
