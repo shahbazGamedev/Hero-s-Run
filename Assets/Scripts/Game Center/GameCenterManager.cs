@@ -63,7 +63,7 @@ public class GameCenterManager : MonoBehaviour {
 				}
 				else
 				{
-					Debug.Log ("No achievements returned");
+					//Debug.Log ("No achievements returned");
 				}
 			});
 

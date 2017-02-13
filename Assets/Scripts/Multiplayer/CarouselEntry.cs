@@ -43,28 +43,25 @@ public class CarouselEntry : MonoBehaviour {
 		entryFee.text = entryFeeString;
 
 		//Common to all carousel entries
-		raceButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_RACE" );
+		raceButtonText.text = LocalizationManager.Instance.getText( "HERO_SELECTION_CONFIRM" );
 		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );
 
 	}
 
 	void Start ()
 	{
-		LevelData levelData = LevelManager.Instance.getLevelData();
-		LevelData.CircuitInfo circuitInfo = levelData.getMultiplayerInfo( circuitNumber ).circuitInfo;
-
-		//Number of online players for this circuit for all Elo ratings.
-		//We call this here because we want MPNetworkLobbyManager to be available.
-		getNumberOfOnlinePlayers( circuitInfo.matchName );
+		InvokeRepeating("getNumberOfOnlinePlayers", 0f, 5f );
 	}
 	
-	void getNumberOfOnlinePlayers( string matchName )
+	void getNumberOfOnlinePlayers()
 	{
 		//Player is connected to the Internet
 		if( Application.internetReachability != NetworkReachability.NotReachable )
 		{
-			MPNetworkLobbyManager.Instance.StartMatchMaker();
-			MPNetworkLobbyManager.Instance.matchMaker.ListMatches( 0, 100, matchName , false, 0, 0, OnMatchListOnlinePlayerCount );
+			//The count of players currently using this application (available on MasterServer in 5sec intervals).
+			//This is the total for ALL tracks.
+			numberOnlinePlayers.text = PhotonNetwork.countOfPlayers.ToString();
+
 		}
 		else
 		{

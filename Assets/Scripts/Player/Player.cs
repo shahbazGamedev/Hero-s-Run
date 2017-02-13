@@ -333,7 +333,7 @@ public class Player : NetworkBehaviour
 
     void BackToLobby()
     {
-        MPNetworkLobbyManager.Instance.cleanUpOnExit();
+        //MPNetworkLobbyManager.Instance.cleanUpOnExit();
     }
 
 	void StartRunningEvent()

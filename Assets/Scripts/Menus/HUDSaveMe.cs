@@ -182,8 +182,6 @@ public class HUDSaveMe : MonoBehaviour {
 		closeSaveMeMenu();
 		if( GameManager.Instance.isMultiplayer() )
 		{
-			//Clean-up matches and connections on exit
-			if( MPNetworkLobbyManager.Instance != null ) MPNetworkLobbyManager.Instance.cleanUpOnExit();
 			SceneManager.LoadScene( (int) GameScenes.CircuitSelection );
 		}
 		else

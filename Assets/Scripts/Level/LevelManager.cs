@@ -30,7 +30,7 @@ public class LevelManager {
 	//onlyUseUniqueTiles is only used for testing. This value is not saved. When enabled, only tile groups with a Frequency of Unique will appear
 	//in the level while in Story mode. This allows you to have shorter episodes with only the essential tile groups, typically, Start, any scripted sequence, and End.
 	bool onlyUseUniqueTiles = false;
-	int numberOfPlayersRequired = 2; //Used to debug multiplayer
+	byte numberOfPlayersRequired = 1; //Used to debug multiplayer
 	private int currentMultiplayerLevel = 0; //the index of the multiplayer level selected by the player.
 	public CarouselEntry selectedRaceDetails;
 
@@ -54,8 +54,6 @@ public class LevelManager {
 		if( episodeToComplete > nextEpisodeToComplete )
 		{
 			nextEpisodeToComplete = episodeToComplete;
-			Debug.Log ("LevelManager-setNextEpisodeToComplete: nextEpisodeToComplete " + nextEpisodeToComplete );
-			
 		}
 	}
 
@@ -112,8 +110,6 @@ public class LevelManager {
 		if( episodeCompleted > highestEpisodeCompleted )
 		{
 			highestEpisodeCompleted = episodeCompleted;
-			Debug.Log ("LevelManager-setHighestEpisodeCompleted: highestEpisodeCompleted " + highestEpisodeCompleted );
-			
 		}
 	}
 
@@ -205,7 +201,6 @@ public class LevelManager {
 	public void setPlayerFinishedTheGame( bool didCompleteGame )
 	{
 		playerFinishedTheGame = didCompleteGame;
-		Debug.Log ("LevelManager-setPlayerFinishedTheGame: " + playerFinishedTheGame );
 	}
 
 	//Called by TitleScreenHandler on Awake()
@@ -256,12 +251,12 @@ public class LevelManager {
 		return onlyUseUniqueTiles;
 	}
 
-	public void setNumberOfPlayersRequired( int value )
+	public void setNumberOfPlayersRequired( byte value )
 	{
 		numberOfPlayersRequired = value;
 	}
 
-	public int getNumberOfPlayersRequired()
+	public byte getNumberOfPlayersRequired()
 	{
 		return numberOfPlayersRequired;
 	}

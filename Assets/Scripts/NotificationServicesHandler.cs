@@ -18,7 +18,6 @@ public class NotificationServicesHandler : MonoBehaviour {
 
 	void Start ()
 	{
-		Debug.Log("NotificationServicesHandler - App Start. Cancel all notifications." );
 		NotificationServices.CancelAllLocalNotifications();
 		NotificationServices.ClearLocalNotifications();
 		tokenSent = false;
@@ -73,14 +72,12 @@ public class NotificationServicesHandler : MonoBehaviour {
 			{
 				localNotificationShortTerm.fireDate = DateTime.Now.AddMinutes(minutesBeforeShortTermNotification);
 				NotificationServices.ScheduleLocalNotification(localNotificationShortTerm);
-				Debug.Log("NotificationServicesHandler - OnApplicationPause-App is suspended. Schedule a local notification at this time: " + localNotificationShortTerm.fireDate  );
 			}
 		}
 		else
 		{
 			//App is active. Cancel all notifications
 			NotificationServices.CancelAllLocalNotifications();
-			Debug.Log("NotificationServicesHandler - OnApplicationPause-App is active. Cancel all notifications.");
 		}
 	}
 

@@ -69,7 +69,6 @@ public class TitleScreenHandler : MonoBehaviour {
 
 		PlayerStatsManager.Instance.loadPlayerStats();
 
-		Debug.Log("TitleScreenHandler: Start : uses Facebook " + PlayerStatsManager.Instance.getUsesFacebook() );
 		//If the player agreed to use Facebook, auto-login for him
 		if( PlayerStatsManager.Instance.getUsesFacebook() && Application.internetReachability != NetworkReachability.NotReachable )
 		{

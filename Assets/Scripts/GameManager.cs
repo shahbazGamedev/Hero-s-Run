@@ -84,11 +84,6 @@ public class GameManager {
 			{
 
                 gameManager = new GameManager();
-				if( Debug.isDebugBuild )
-				{
-					Debug.Log("GameManager: the quality setting for this device is: " + QualitySettings.GetQualityLevel() );
-				}
-
             }
             return gameManager;
         }
@@ -137,7 +132,6 @@ public class GameManager {
 	public void setGameMode( GameMode value )
 	{
 		gameMode = value;
-		Debug.Log("Game Mode set to " + value.ToString() );
 	}
 
 	public void setMultiplayerMode( bool value )

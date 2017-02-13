@@ -25,7 +25,7 @@ public class MPGameEndManager : MonoBehaviour {
 	[SerializeField] Slider sliderXP;
 
 	[Header("Other")]
-	[SerializeField] MPLobbyMenu mpLobbyMenu;
+	[SerializeField] MatchmakingManager matchmakingManager;
 	[SerializeField] Text exitButtonText;
 	[SerializeField] int timeBeforeNextRace = 60; //in seconds
 	const float ANIMATION_DURATION = 3f;
@@ -140,7 +140,7 @@ public class MPGameEndManager : MonoBehaviour {
 		GameManager.Instance.playerProfile.xpProgressToNextLevel = GameManager.Instance.playerProfile.totalXPEarned - ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() - 1 );
 		GameManager.Instance.playerProfile.serializePlayerprofile();
 		//Also update the matchmaking screen if the player has leveled up so that the player frame gets updated
-		if( numberOfTimesLeveledUp > 0 ) mpLobbyMenu.configureLocalPlayerData();
+		if( numberOfTimesLeveledUp > 0 ) matchmakingManager.configureLocalPlayerData();
 	}
 
 	public IEnumerator animateSlider( float fromValue, float toValue, Slider slider, System.Action onFinish = null  )
@@ -239,8 +239,8 @@ public class MPGameEndManager : MonoBehaviour {
 	void showMatchmaking()
 	{
 		CarouselEntry selected = LevelManager.Instance.selectedRaceDetails;
-		mpLobbyMenu.configureCircuitData( selected.circuitImage.sprite, selected.circuitName.text, selected.entryFee.text );
-		mpLobbyMenu.gameObject.SetActive( true );
+		matchmakingManager.configureCircuitData( selected.circuitImage.sprite, selected.circuitName.text, selected.entryFee.text );
+		matchmakingManager.gameObject.SetActive( true );
 		gameObject.SetActive( false );
 	}
 

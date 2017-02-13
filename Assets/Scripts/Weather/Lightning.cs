@@ -112,7 +112,6 @@ public class Lightning : MonoBehaviour {
 			//Ignore if already started
 			if( !lightningActive )
 			{
-				print ("Lightning-controlLightning GameEvent.Start_Lightning");
 				Invoke ("FlashRepeat", Random.Range(minInterval, maxInterval));
 				lightningActive = true;
 			}

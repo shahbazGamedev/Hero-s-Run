@@ -9,6 +9,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	[Header("General")]
 	public static HUDMultiplayer hudMultiplayer;
 	bool raceHasStarted = false;
+	const float DELAY_BEFORE_COUNTDOWN_STARTS = 5f;
 	[Header("Countdowm")]
 	public AudioClip beep; //Sound to play every second during countdown
 	public Text goText;
@@ -50,36 +51,42 @@ public class HUDMultiplayer : MonoBehaviour {
 		slideInCircuitDetails();
 	}
 
-	public void initialiseCountdown()
+	public void startCountdown()
 	{
 		goText.rectTransform.eulerAngles = new Vector3( 0,0,0 );
 		goText.gameObject.SetActive( true );
+		StartCoroutine("countdown");
 	}
 
-	public void updateCountdown( int countdown )
+	IEnumerator countdown()
 	{
-		if( countdown > 0 )
+		//Give a few seconds for the player to get used to the scene before starting the countdown
+		yield return new WaitForSecondsRealtime( DELAY_BEFORE_COUNTDOWN_STARTS );
+
+		int countdownNumber = 3;
+		while( countdownNumber > 0 )
 		{
-			goText.text = countdown.ToString();
+			goText.text = countdownNumber.ToString();
 			UISoundManager.uiSoundManager.playAudioClip( beep );
+			yield return new WaitForSecondsRealtime( 1f);
+			countdownNumber--;
 		}
-		else
-		{
-			//Tell the players to start running
-			if(startRunningEvent != null) startRunningEvent();
-			//Display a Go! message and hide after a few seconds
-			goText.rectTransform.eulerAngles = new Vector3( 0,0,4 );
-			goText.text = LocalizationManager.Instance.getText("GO");
-			Invoke ("hideGoText", 1.5f );
-			//Race is starting
-			raceHasStarted = true;
-			displayRacePosition( true );	
-		}
+
+		//Tell the players to start running
+		if(startRunningEvent != null) startRunningEvent();
+		//Display a Go! message and hide after a few seconds
+		goText.rectTransform.eulerAngles = new Vector3( 0,0,4 );
+		goText.text = LocalizationManager.Instance.getText("GO");
+		Invoke ("hideGoText", 1.5f );
+		//Race is starting
+		raceHasStarted = true;
+		displayRacePosition( true );	
+		
 	}
-	
+
 	void Update()
 	{
-		if( latency.gameObject.activeSelf ) latency.text = MPNetworkLobbyManager.Instance.client.GetRTT().ToString();
+		if( latency.gameObject.activeSelf ) latency.text = PhotonNetwork.networkingPeer.RoundTripTime.ToString();
 	}
 
 	void hideGoText()

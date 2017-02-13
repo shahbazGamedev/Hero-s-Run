@@ -18,8 +18,6 @@ public class csvLoader {
 
 		Dictionary<string, string> gameText = new Dictionary<string, string>(rows.Length);
 
-		Debug.Log("Localized text file has " + rows.Length + " rows.");
-
 		string[] rowContent;
 		//Don't import the CSV value header (i.e. row zero)
 		for( int i=1; i < rows.Length; i++ )

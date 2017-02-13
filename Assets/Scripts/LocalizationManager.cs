@@ -32,7 +32,6 @@ public class LocalizationManager {
 	{
 		int languageIndex;
 		SystemLanguage language = Application.systemLanguage;
-		Debug.Log("The device is running in the " + language + " language." );
 		switch (language)
 		{
 		case SystemLanguage.English:

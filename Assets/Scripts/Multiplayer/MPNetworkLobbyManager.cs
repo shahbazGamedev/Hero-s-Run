@@ -1,41 +1,30 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEngine.Networking;
-using UnityEngine.Networking.Types;
-using UnityEngine.Networking.Match;
 using System.Collections;
 using System.Collections.Generic;
+using Photon;
+using ExitGames.Client.Photon;
 
-public class MPNetworkLobbyManager : NetworkLobbyManager 
+public class MPNetworkLobbyManager : PunBehaviour 
 {
+	#region Public Variables
 	public static MPNetworkLobbyManager Instance;
-	public MPLobbyMenu mpLobbyMenu;
-	public MatchInfo hostedMatchInfo = null;
-	public MatchInfo joinedMatchInfo = null;
-	public int lobbyPlayerCount = 0;
-	public int levelPlayerCount = 0;
-	public int minimumPlayersToStartMatch = 2;
-	bool levelLoading = false;
+	MatchmakingManager matchmakingManager;
+	[SerializeField] PhotonLogLevel Loglevel = PhotonLogLevel.Informational;
+	public ExitGames.Client.Photon.Hashtable someCustomPropertiesToSet = new ExitGames.Client.Photon.Hashtable();
+	#endregion
+
+	#region Private Variables
+	//The delay to wait before loading the level. We have this delay so that the player can see the opponent's name and icon for
+	//a few seconds before the match begins.
+	const float DELAY_BEFORE_LOADING_LEVEL = 5f;
+	byte numberOfPlayersRequired = 2;
 	HUDMultiplayer hudMultiplayer;
-	bool startedCountdown = false;
-	//In the Network Manager component, you must put your player prefabs 
-    //in the Spawn Info -> Registered Spawnable Prefabs section 
-	public Dictionary<int,int> dico = new Dictionary<int,int>();
+	//This client's version number. Users are separated from each other by gameversion (which allows you to make breaking changes).
+	string _gameVersion = "1";
+	#endregion
 
-	public class MsgTypes
-	{
-		public const short PlayerPrefab = MsgType.Highest + 1;
-		
-		public class PlayerPrefabMsg : MessageBase
-		{
-			public short playerControllerId;
-			public int connectionId;    
-			public int prefabIndex;
-			public string playerName;
-		}
-	}
-
+	#region MonoBehaviour CallBacks
 	void Awake()
 	{
 		if(Instance)
@@ -47,261 +36,174 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 			DontDestroyOnLoad(gameObject);
 			Instance = this;
 		}
+
+		PhotonNetwork.logLevel = Loglevel;
+		
+		// we don't join the lobby. There is no need to join a lobby to get the list of rooms.
+		PhotonNetwork.autoJoinLobby = false;
+		
+		// this makes sure we can use PhotonNetwork.LoadLevel() on the master client and all clients in the same room sync their level automatically
+		PhotonNetwork.automaticallySyncScene = true;
 	}
 
 	void Start()
 	{
-		minimumPlayersToStartMatch = LevelManager.Instance.getNumberOfPlayersRequired();
-		Debug.Log("\nENTERING MULTIPLAYER " + minimumPlayersToStartMatch );
+		matchmakingManager = GameObject.FindGameObjectWithTag("Matchmaking").GetComponent<MatchmakingManager>();
+		numberOfPlayersRequired = LevelManager.Instance.getNumberOfPlayersRequired();
 	}
+	#endregion
 
-	public override void OnStartServer()
-	{
-		NetworkServer.RegisterHandler(MsgTypes.PlayerPrefab, OnResponsePrefab);
-		base.OnStartServer();
-	}
-
-	public override void OnStopServer()
-	{
-		NetworkServer.UnregisterHandler(MsgTypes.PlayerPrefab);
-		base.OnStopServer();
-	}
-
-	//On server
-	public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
-	{
-		base.OnServerAddPlayer(conn, playerControllerId);
-		Debug.Log("OnServerAddPlayer: conn.connectionId: " + conn.connectionId + " playerControllerId: " + playerControllerId );
-
-		//MsgTypes.PlayerPrefabMsg msg = new MsgTypes.PlayerPrefabMsg();
-		//msg.playerControllerId = playerControllerId;
-		//msg.connectionId = conn.connectionId;
-
-		//Ask the player that just got added his player information such as his name and his prefab index
-		//NetworkServer.SendToClient(conn.connectionId, MsgTypes.PlayerPrefab, msg);
-	}
-
-	//On client
-	private void OnRequestPrefab(NetworkMessage netMsg)
-	{
-		MsgTypes.PlayerPrefabMsg msg = new MsgTypes.PlayerPrefabMsg();
-		//Recopy this info
-		MsgTypes.PlayerPrefabMsg serverMsg = netMsg.ReadMessage<MsgTypes.PlayerPrefabMsg>();
-		msg.connectionId = serverMsg.connectionId;
-		msg.playerControllerId = serverMsg.playerControllerId;
-		//Now copy the player info requested
-		msg.prefabIndex = (int) PlayerStatsManager.Instance.getAvatar();
-		msg.playerName = PlayerStatsManager.Instance.getUserName();
-		
-		//The server just asked us about our player information, so tell him
-		client.Send(MsgTypes.PlayerPrefab, msg);
-		Debug.Log("OnRequestPrefab: " + msg.connectionId + " " + msg.playerName  );
-	}
-	
-	//On server
-	private void OnResponsePrefab(NetworkMessage netMsg)
-	{
-		//The nice client just told us what his player information is
-		MsgTypes.PlayerPrefabMsg msg = netMsg.ReadMessage<MsgTypes.PlayerPrefabMsg>(); 
-		Debug.Log("OnResponsePrefab: " + msg.connectionId + " " + msg.playerName + " Prefab name " + gamePlayerPrefab.name );
-		dico.Add( msg.connectionId, msg.prefabIndex );
-		//base.OnServerAddPlayer(netMsg.conn, msg.playerControllerId);
-	}
-
+	#region Public Methods	
 	public void startMatch()
 	{
-		LevelData.CircuitInfo circuitInfo = LevelManager.Instance.getSelectedCircuitInfo();
-
-		Debug.Log("MPNetworkLobbyManager-startMatch The circuit selected by the player is: " + circuitInfo.matchName );
-
 		//Player is connected to the Internet
 		if( Application.internetReachability != NetworkReachability.NotReachable )
 		{
-			StartMatchMaker();
-			//Ask for a list of matches. This will determine if we need to create a match or not.
-			//Ask the matchmaker for matches that correspond to the circuit the player has selected.
-			//If the player has selected CIRUIT_PRACTICE_RUN for example, only return those matches.
-			//In addition, only request matches that correspond to our elo rating.
-			int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
-			matchMaker.ListMatches( 0, 50, circuitInfo.matchName , false, playerEloRating, 0, OnMatchList );
+			Connect();
 		}
 		else
 		{
-			mpLobbyMenu.showNoInternetPopup();
+			matchmakingManager.showNoInternetPopup();
 		}
 	}
 
-	void OnMatchList(bool success, string extendedInfo, List<MatchInfoSnapshot> matchInfoSnapshotList )
+	/// <summary>
+	/// Start the connection process. 
+	/// - If already connected, we attempt joining a random room
+	/// - if not yet connected, Connect this application instance to Photon Cloud Network
+	/// </summary>
+	void Connect()
 	{
-
-		if( success )
+		// we check if we are connected or not. We join if we are, else we initiate the connection to the server.
+		if (PhotonNetwork.connected)
 		{
-			
-			Debug.Log("List of matches for debugging:\n");
-			for( int i = 0; i < matchInfoSnapshotList.Count; i++ )
-			{
-				Debug.Log("MPNetworkLobbyManager-OnMatchList: " + i + " Name: " + matchInfoSnapshotList[i].name + " Elo " +  matchInfoSnapshotList[i].averageEloScore + " Max size " + matchInfoSnapshotList[i].maxSize + " Current size " + matchInfoSnapshotList[i].currentSize );
-			}
-			Debug.Log("\n");
-	
-			int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
-			if( matchInfoSnapshotList.Count == 0)
-			{
-				//We will therefore create a match. By doing so, we will become the host of the game.
-				//When creating a match, you automatically join it.
-				Debug.Log("MPNetworkLobbyManager-OnMatchList: No matches found! Creating match with name: " + LevelManager.Instance.getSelectedCircuitInfo().matchName + " Elo " + playerEloRating );
-				matchMaker.CreateMatch( LevelManager.Instance.getSelectedCircuitInfo().matchName, (uint)2, true, "", "", "", playerEloRating, 0, OnMatchCreate );
-			}
-			else
-			{
-				Debug.Log("MPNetworkLobbyManager-OnMatchList: Matches found!" );
-				//We found some matches. Let's join the first match that is not full on the list.
-				MatchInfoSnapshot matchToJoin = null;
-				Debug.Log("List of matches\n");
-				for( int i = 0; i < matchInfoSnapshotList.Count; i++ )
-				{
-					if( matchInfoSnapshotList[i].currentSize < matchInfoSnapshotList[i].maxSize )
-					{
-						matchToJoin = matchInfoSnapshotList[i];
-						break;
-					}
-				}
-				if( matchToJoin == null )
-				{
-					Debug.LogWarning("MPNetworkLobbyManager-OnMatchList: All matches found are full." );
-				}
-				else
-				{
-					matchMaker.JoinMatch(matchToJoin.networkId, "","","",playerEloRating,0, OnMatchJoined );
-				}
-			}
+			tryToJoinRoom();
 		}
 		else
 		{
-			Debug.LogWarning("MPNetworkLobbyManager-OnMatchList: Error: " + extendedInfo );
-			if( extendedInfo.Contains("Connection time-out") || extendedInfo.Contains("Couldn't resolve host") ) mpLobbyMenu.showConnectionTimedOut();
+			//We must first and foremost connect to Photon Online Server.
+			PhotonNetwork.ConnectUsingSettings(_gameVersion);
+			matchmakingManager.setConnectionProgress( "Connecting ..." );   
 		}
 	}
-	
-	public override void OnMatchCreate(bool success, string extendedInfo, MatchInfo matchInfo)
+
+ 	void tryToJoinRoom()
 	{
-		base.OnMatchCreate(success, extendedInfo, matchInfo);
-		if( success )
+		matchmakingManager.setConnectionProgress( "Connected. Now Looking for worthy opponent ..." );   
+
+		//Join the selected circuit such as CIRUIT_PRACTICE_RUN.
+		LevelData.CircuitInfo circuitInfo = LevelManager.Instance.getSelectedCircuitInfo();
+		Debug.Log("MPNetworkLobbyManager-tryToJoinRoom-The circuit selected by the player is: " + circuitInfo.matchName );
+
+		//In addition, join a match that corresponds to the player's elo rating.
+		int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
+
+		//Try to join an existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
+		ExitGames.Client.Photon.Hashtable desiredRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", circuitInfo.matchName }, { "Elo", playerEloRating } };
+		PhotonNetwork.JoinRandomRoom( desiredRoomProperties, numberOfPlayersRequired );
+	}	 
+
+	#endregion
+ 
+ 	#region Photon.PunBehaviour CallBacks
+	public override void OnConnectedToMaster()
+	{
+		//First we try to join a potential existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()  
+		tryToJoinRoom();	 
+	}
+
+	public override void OnDisconnectedFromPhoton()
+	{
+	    Debug.LogWarning("MPNetworkLobbyManager: OnDisconnectedFromPhoton() was called by PUN");  
+		matchmakingManager.setConnectionProgress( "Disconnected ..." );   
+	}
+	 
+	public override void OnPhotonRandomJoinFailed (object[] codeAndMsg)
+	{
+	    Debug.Log("MPNetworkLobbyManager:OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one.");
+	 
+	    //We failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
+		int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
+		RoomOptions roomOptions = new RoomOptions();
+		roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", LevelManager.Instance.getSelectedCircuitInfo().matchName }, { "Elo", playerEloRating } };
+		roomOptions.MaxPlayers = numberOfPlayersRequired;
+		//In CreateRoom, do not specify a match name. Let the server assign a random name.
+	    PhotonNetwork.CreateRoom(null, roomOptions, null);
+	}
+	 
+	public override void OnJoinedRoom()
+	{
+				Debug.Log("MPNetworkLobbyManager: OnJoinedRoom() called by PUN. Now this client is in a room. Elo rating is:" + PhotonNetwork.room.CustomProperties["Elo"].ToString() + " Circuit is: " + PhotonNetwork.room.CustomProperties["Track"].ToString() + " SKin is " + PlayerStatsManager.Instance.getAvatar().ToString() );
+		foreach(PhotonPlayer player in PhotonNetwork.playerList)
 		{
-			Debug.Log("MPNetworkLobbyManager-OnMatchCreate: Success" );
-			hostedMatchInfo = matchInfo;
-			//Now that the player has successfully created a match, we can deduct the entry fee, if any.
-			//Note that when you create a match, you automatically join it and OnMatchJoined will NOT be called.
+			if( !player.IsLocal )
+			{
+				matchmakingManager.setRemotePlayerName( player.NickName );
+				matchmakingManager.setRemotePlayerIcon( (int)player.CustomProperties["Icon"] );
+			}
+		}
+		PhotonNetwork.playerName = PlayerStatsManager.Instance.getUserName();
+		if( PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
+		{
+			someCustomPropertiesToSet.Add("Skin", "Hero_prefab" );
+		}
+		else
+		{
+			someCustomPropertiesToSet.Add("Skin", "Heroine_prefab" );
+		}
+		//PlayerPosition will be used to determine the start position. We don't want players to spawn on top of each other.
+		someCustomPropertiesToSet.Add("PlayerPosition", PhotonNetwork.room.PlayerCount );
+		PhotonNetwork.player.SetCustomProperties(someCustomPropertiesToSet); 
+
+		//Since we want to play alone for testing purposes, load level right away.
+	    if ( numberOfPlayersRequired == 1 )
+	    {
+	        PhotonNetwork.LoadLevel("Level");
+		}
+	}
+
+	/// <summary>
+	/// Called when a remote player entered the room. This PhotonPlayer is already added to the playerlist at this time.
+	/// </summary>
+	/// <remarks>If your game starts with a certain number of players, this callback can be useful to check the
+	/// Room.playerCount and find out if you can start.</remarks>
+	/// <param name="newPlayer">New player.</param>
+	public override void OnPhotonPlayerConnected (PhotonPlayer newPlayer )
+	{
+		Debug.Log("MPNetworkLobbyManager: OnPhotonPlayerConnected() called by PUN. Name: " + newPlayer.NickName + " isLocal: " + newPlayer.IsLocal + " PlayerCount: " + PhotonNetwork.room.PlayerCount );
+
+		matchmakingManager.setConnectionProgress( newPlayer.NickName + " just connected. Player count is now: " + PhotonNetwork.room.PlayerCount );   
+		matchmakingManager.setRemotePlayerName( newPlayer.NickName );
+		matchmakingManager.setRemotePlayerIcon( (int)newPlayer.CustomProperties["Icon"] );
+
+		LoadArena();		 
+	}
+
+	public override void OnPhotonPlayerDisconnected( PhotonPlayer other  )
+	{
+		Debug.Log( "MPNetworkLobbyManager: OnPhotonPlayerDisconnected() " + other.NickName ); // seen when other disconnects
+		matchmakingManager.setConnectionProgress( other.NickName + " just disconnected." );   
+	}
+
+	void LoadArena()
+	{
+	    if ( ! PhotonNetwork.isMasterClient ) 
+	    {
+	        Debug.LogError( "MPNetworkLobbyManager: Trying to Load a level but we are not the master Client" );
+			return;
+	    }
+		if( PhotonNetwork.room.PlayerCount == numberOfPlayersRequired )
+		{
+			//Now that we have everyone and we can start the race, deduct the entry fee, if any.
 			chargePlayerForMatch();
-		}
-		else
-		{
-			Debug.LogWarning("MPNetworkLobbyManager-OnMatchCreate: Error: " + extendedInfo );
-			mpLobbyMenu.showUnableToCreateMatch();
+
+	   	 	Invoke("loadLevel", DELAY_BEFORE_LOADING_LEVEL);
 		}
 	}
-
-	public override void OnLobbyClientEnter()
+	 
+	void loadLevel()
 	{
-		Debug.Log("MPNetworkLobbyManager-OnLobbyClientEnter");
-		base.OnLobbyClientEnter();
-		levelLoading = false;
-
-	}
-
-	public override void OnLobbyServerPlayersReady()
-	{
-		//Do we have enough players to start the match?
-		if( lobbyPlayerCount >=  minimumPlayersToStartMatch )
-		{
-			bool allready = true;
-			for(int i = 0; i < lobbySlots.Length; ++i)
-			{
-				if(lobbySlots[i] != null)
-				allready &= lobbySlots[i].readyToBegin;
-			}	
-			if(allready)
-			{
-				Debug.Log("MPNetworkLobbyManager-OnLobbyServerPlayersReady: Loading Play Scene\n");
-				ServerChangeScene(playScene);
-			}
-		}
-		else
-		{
-			Debug.Log("MPNetworkLobbyManager-OnLobbyServerPlayersReady: We have " + lobbyPlayerCount + " players, but we need " + minimumPlayersToStartMatch );
-		}
-	}
-
-	public override bool OnLobbyServerSceneLoadedForPlayer(GameObject lobbyPlayer, GameObject gamePlayer)
-	{
-		int id = -10;
-		for(int i = 0; i < lobbySlots.Length; i++ )
-		{
-			if( lobbySlots[i] == lobbyPlayer.GetComponent<NetworkLobbyPlayer>() )
-			{
-				id =lobbySlots[i].connectionToClient.connectionId;
-			}
-		}
-
-		//gamePlayer.GetComponent<Player>().setSkin(dico[id]);
-		//gamePlayer.GetComponent<Player>().setPlayerName(dico[id].ToString() );
-		Debug.Log("MPNetworkLobbyManager-OnLobbyServerSceneLoadedForPlayer" );
-		//This hook allows you to apply state data from the lobby-player to the game-player.
-		GetComponent<MPLobbyHook>().OnLobbyServerSceneLoadedForPlayer(this, lobbyPlayer, gamePlayer);
-		//Do we have enough players to start the match?
-		if( lobbyPlayerCount >=  minimumPlayersToStartMatch )
-		{
-			Debug.Log("MPNetworkLobbyManager-We have everyone." );
-			if( !startedCountdown ) Invoke("startCountdown", 4f );
-			startedCountdown = true;
-		}
-		return true;
-	}
-
-	public override void OnClientSceneChanged( NetworkConnection conn )
-	{
-		base.OnClientSceneChanged( conn );
-		Debug.Log("MPNetworkLobbyManager-OnClientSceneChanged " + SceneManager.GetActiveScene().name + " levelPlayerCount " + levelPlayerCount );
-	}
-
-	void startCountdown()
-	{
-		StartCoroutine( ServerCountdownCoroutine() );
-	}
-
-	IEnumerator ServerCountdownCoroutine()
-	{
-		//For the 3,2,1 countdown
-		int countdown = 3;
-		while (countdown >= 0)
-		{
-			for (int i = 0; i < lobbySlots.Length; ++i)
-			{
-				if (lobbySlots[i] != null)
-				{
-					(lobbySlots[i] as MPLobbyPlayer).RpcUpdateCountdown(countdown);
-				}
-			}
-			yield return new WaitForSecondsRealtime( 1.0f );
-			countdown --;
-		}
-	}
-
-	public override void OnMatchJoined(bool success, string extendedInfo, MatchInfo matchInfo)
-	{
-		base.OnMatchJoined(success, extendedInfo, matchInfo);
-		if( success )
-		{
-			Debug.Log("MPNetworkLobbyManager-OnMatchJoined: Success" );
-			//Now that the player has successfully joined a match, we can deduct the entry fee, if any.
-			chargePlayerForMatch();
-			joinedMatchInfo = matchInfo;
-		}
-		else
-		{
-			Debug.LogWarning("MPNetworkLobbyManager-OnMatchJoined: Error: " + extendedInfo );
-			mpLobbyMenu.showUnableToJoinMatch();
-		}
+		PhotonNetwork.LoadLevel("Level");
 	}
 
 	void chargePlayerForMatch()
@@ -316,72 +218,6 @@ public class MPNetworkLobbyManager : NetworkLobbyManager
 			Debug.Log("MPNetworkLobbyManager-chargePlayerForMatch: deducting entry fee of: " + entryFee );
 		}
 	}
-
-	public void cleanUpOnExit()
-	{
-		Debug.LogWarning("MPNetworkLobbyManager-cleanUpOnExit" );
-		if( client != null ) client.Disconnect();
-
-		if( hostedMatchInfo != null )
-		{
-			if( matchMaker != null ) matchMaker.DestroyMatch( hostedMatchInfo.networkId, 0, OnDestroyMatch );
-			StopHost(); //StopHost() will call ServerChangeScene and cause a return to lobby
-			hostedMatchInfo = null;
-			lobbyPlayerCount = 0;
-		}
-		else if( joinedMatchInfo != null )
-		{
-			if( matchMaker != null ) matchMaker.DropConnection(joinedMatchInfo.networkId, joinedMatchInfo.nodeId, 0, OnDropConnection );
-			joinedMatchInfo = null;
-			if( lobbyPlayerCount > 0 )lobbyPlayerCount--;
-		}
-		levelPlayerCount = 0;
-		startedCountdown = false;
-		Player.players.Clear();
-		StopClient();
-		dico.Clear();
-	}
-
-	public override void OnDestroyMatch(bool success, string extendedInfo)
-	{
-		Debug.Log("MPNetworkLobbyManager-OnDestroyMatch: Success: " + success);
-		base.OnDestroyMatch(success, extendedInfo);
-		StopMatchMaker();
-	}
-
-	public override void OnDropConnection(bool success, string extendedInfo)
-	{
-		Debug.Log("MPNetworkLobbyManager-OnDropConnection: Success: " + success);
-		base.OnDropConnection(success, extendedInfo);
-		StopMatchMaker();
-	}
-
-	//Error management
-	public override void OnServerDisconnect(NetworkConnection conn)
-	{
-		base.OnServerDisconnect(conn);
-		Debug.LogWarning("MPNetworkLobbyManager-OnServerDisconnect");
-		cleanUpOnExit();
-	}
-
-	// Client
-	public override void OnClientConnect(NetworkConnection conn)
-	{
-		client.RegisterHandler(MsgTypes.PlayerPrefab, OnRequestPrefab);
-		base.OnClientConnect(conn);
-	}
-
-	public override void OnClientDisconnect(NetworkConnection conn)
-	{
-		client.UnregisterHandler(MsgTypes.PlayerPrefab);
-		base.OnClientDisconnect(conn);
-		Debug.LogWarning("MPNetworkLobbyManager-OnClientDisconnect");
-	}
-	
-	public override void OnClientError(NetworkConnection conn, int errorCode)
-	{
-		base.OnClientError( conn, errorCode );
-		Debug.LogWarning("MPNetworkLobbyManager-OnClientError: Error Code: " + errorCode);
-	}
+	#endregion
 
 }
