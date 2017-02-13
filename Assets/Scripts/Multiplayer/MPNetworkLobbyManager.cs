@@ -89,7 +89,14 @@ public class MPNetworkLobbyManager : PunBehaviour
 
  	void tryToJoinRoom()
 	{
-		matchmakingManager.setConnectionProgress( "Connected. Now Looking for worthy opponent ..." );   
+	    if ( numberOfPlayersRequired == 1 )
+	    {
+			matchmakingManager.setConnectionProgress( "Connected. Playing single-player." );   
+		}
+		else
+		{
+			matchmakingManager.setConnectionProgress( "Connected. Now looking for worthy opponent ..." );   
+		}
 
 		//Join the selected circuit such as CIRUIT_PRACTICE_RUN.
 		LevelData.CircuitInfo circuitInfo = LevelManager.Instance.getSelectedCircuitInfo();
@@ -133,7 +140,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	 
 	public override void OnJoinedRoom()
 	{
-				Debug.Log("MPNetworkLobbyManager: OnJoinedRoom() called by PUN. Now this client is in a room. Elo rating is:" + PhotonNetwork.room.CustomProperties["Elo"].ToString() + " Circuit is: " + PhotonNetwork.room.CustomProperties["Track"].ToString() + " SKin is " + PlayerStatsManager.Instance.getAvatar().ToString() );
+		Debug.Log("MPNetworkLobbyManager: OnJoinedRoom() called by PUN. Now this client is in a room. Elo rating is:" + PhotonNetwork.room.CustomProperties["Elo"].ToString() + " Circuit is: " + PhotonNetwork.room.CustomProperties["Track"].ToString() + " SKin is " + PlayerStatsManager.Instance.getAvatar().ToString() );
 		foreach(PhotonPlayer player in PhotonNetwork.playerList)
 		{
 			if( !player.IsLocal )

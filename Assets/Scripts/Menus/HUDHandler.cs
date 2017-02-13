@@ -7,34 +7,34 @@ public class HUDHandler : MonoBehaviour {
 
 	public static HUDHandler hudHandler = null;
 	[Header("HUD Handler")]
- 	public GameObject saveMeCanvas;
-	public Text hudDebugInfo;	//Used to display FPS, player speed, etc.
-	public Button pauseButton;
+ 	[SerializeField] GameObject saveMeCanvas;
+	[SerializeField] Text hudDebugInfo;	//Used to display FPS, player speed, etc.
+	[SerializeField] Button pauseButton;
 	[Header("Level Name Panel")]
-	public RectTransform episodeNamePanel;
-	public Text episodeNameText;
+	[SerializeField] RectTransform episodeNamePanel;
+	[SerializeField] Text episodeNameText;
 	[Header("Tap To Play")]
 	//Tap to play button (the size of the canvas) with the Tap to play label
 	//This is displayed when you start a level WHEN the game state changes to the MENU state.
 	//Also see the waitForTapToPlay bool in LevelData
-	public Button tapToPlayButton; 
-	public Text tapToPlayText;
+	[SerializeField] Button tapToPlayButton; 
+	[SerializeField] Text tapToPlayText;
 	//User Message is used to display the Go! message after resurrection.
 	//It appears in the center of the screen.
 	[Header("User Message")]
-	public Text userMessageText;
+	[SerializeField] Text userMessageText;
 	[Header("Coin and Treasure Key Display")]
-	public RectTransform hudCanvas;
-	public GameObject coinPrefab;
-	public GameObject treasurePrefab;
-	public GameObject restartFromCheckpointPanel; //Used to inform the player that he is restarting from a checkpoint and not from the begining
-	public Text restartFromCheckpointText; 
+	[SerializeField] RectTransform hudCanvas;
+	[SerializeField] GameObject coinPrefab;
+	[SerializeField] GameObject treasurePrefab;
+	[SerializeField] GameObject restartFromCheckpointPanel; //Used to inform the player that he is restarting from a checkpoint and not from the begining
+	[SerializeField] Text restartFromCheckpointText; 
 	[Header("Used for fading effects")]
-	public Image fadeImage;
-	public CanvasGroup canvasGroup;
+	[SerializeField] Image fadeImage;
+	[SerializeField] CanvasGroup canvasGroup;
 	System.Action onFinish;
 	[Header("Journal")]
-	public GameObject journalCanvas;
+	[SerializeField] GameObject journalCanvas;
 
 	//Used to track the items picked up by the player such as Coins and Treasure Keys. Multiple icons can be displayed at the same time with an offset.
 	List<PickupDisplay> pickupDisplayList = new List<PickupDisplay>();

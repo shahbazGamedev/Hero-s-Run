@@ -11,15 +11,15 @@ public class HUDMultiplayer : MonoBehaviour {
 	bool raceHasStarted = false;
 	const float DELAY_BEFORE_COUNTDOWN_STARTS = 5f;
 	[Header("Countdowm")]
-	public AudioClip beep; //Sound to play every second during countdown
-	public Text goText;
+	[SerializeField] AudioClip beep; //Sound to play every second during countdown
+	[SerializeField] Text goText; //Same field as userMessageText in HUDHandler
 	[Header("Race Position")]
-	public GameObject racePosition;
-	public Text racePositionText;
+	[SerializeField] GameObject racePosition;
+	[SerializeField] Text racePositionText;
 	[Header("Finish Flag")]
-	public Image finishFlag;
+	[SerializeField] Image finishFlag;
 	[Header("Latency")]
-	public Text latency;
+	[SerializeField] Text latency;
 	[Header("Circuit Name and Icon Panel")]
 	[SerializeField] RectTransform circuitDetailsPanel;
 	[SerializeField] Text circuitNameText;
@@ -43,6 +43,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		displayRacePosition( false );
 		finishFlag.gameObject.SetActive( false );
 		latency.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
+		goText.gameObject.SetActive( false );
 	}
 	
 	void Start()
@@ -53,8 +54,6 @@ public class HUDMultiplayer : MonoBehaviour {
 
 	public void startCountdown()
 	{
-		goText.rectTransform.eulerAngles = new Vector3( 0,0,0 );
-		goText.gameObject.SetActive( true );
 		StartCoroutine("countdown");
 	}
 
@@ -62,6 +61,9 @@ public class HUDMultiplayer : MonoBehaviour {
 	{
 		//Give a few seconds for the player to get used to the scene before starting the countdown
 		yield return new WaitForSecondsRealtime( DELAY_BEFORE_COUNTDOWN_STARTS );
+
+		goText.rectTransform.eulerAngles = new Vector3( 0,0,0 );
+		goText.gameObject.SetActive( true );
 
 		int countdownNumber = 3;
 		while( countdownNumber > 0 )
