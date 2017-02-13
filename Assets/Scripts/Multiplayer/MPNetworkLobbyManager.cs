@@ -22,6 +22,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	HUDMultiplayer hudMultiplayer;
 	//This client's version number. Users are separated from each other by gameversion (which allows you to make breaking changes).
 	string _gameVersion = "1";
+	bool connecting = false; //true if the player pressed the Play button (which calls startMatch). This bool is to prevent rejoining a room automatically after a race.
 	#endregion
 
 	#region MonoBehaviour CallBacks
@@ -59,6 +60,8 @@ public class MPNetworkLobbyManager : PunBehaviour
 		//Player is connected to the Internet
 		if( Application.internetReachability != NetworkReachability.NotReachable )
 		{
+			someCustomPropertiesToSet.Clear();
+			connecting = true;
 			Connect();
 		}
 		else
@@ -89,25 +92,28 @@ public class MPNetworkLobbyManager : PunBehaviour
 
  	void tryToJoinRoom()
 	{
-	    if ( numberOfPlayersRequired == 1 )
-	    {
-			matchmakingManager.setConnectionProgress( "Connected. Playing single-player." );   
-		}
-		else
+		if( connecting )
 		{
-			matchmakingManager.setConnectionProgress( "Connected. Now looking for worthy opponent ..." );   
+		    if ( numberOfPlayersRequired == 1 )
+		    {
+				matchmakingManager.setConnectionProgress( "Connected. Playing single-player." );   
+			}
+			else
+			{
+				matchmakingManager.setConnectionProgress( "Connected. Now looking for worthy opponent ..." );   
+			}
+	
+			//Join the selected circuit such as CIRUIT_PRACTICE_RUN.
+			LevelData.CircuitInfo circuitInfo = LevelManager.Instance.getSelectedCircuitInfo();
+			Debug.Log("MPNetworkLobbyManager-tryToJoinRoom-The circuit selected by the player is: " + circuitInfo.matchName );
+	
+			//In addition, join a match that corresponds to the player's elo rating.
+			int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
+	
+			//Try to join an existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
+			ExitGames.Client.Photon.Hashtable desiredRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", circuitInfo.matchName }, { "Elo", playerEloRating } };
+			PhotonNetwork.JoinRandomRoom( desiredRoomProperties, numberOfPlayersRequired );
 		}
-
-		//Join the selected circuit such as CIRUIT_PRACTICE_RUN.
-		LevelData.CircuitInfo circuitInfo = LevelManager.Instance.getSelectedCircuitInfo();
-		Debug.Log("MPNetworkLobbyManager-tryToJoinRoom-The circuit selected by the player is: " + circuitInfo.matchName );
-
-		//In addition, join a match that corresponds to the player's elo rating.
-		int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
-
-		//Try to join an existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
-		ExitGames.Client.Photon.Hashtable desiredRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", circuitInfo.matchName }, { "Elo", playerEloRating } };
-		PhotonNetwork.JoinRandomRoom( desiredRoomProperties, numberOfPlayersRequired );
 	}	 
 
 	#endregion
@@ -167,6 +173,11 @@ public class MPNetworkLobbyManager : PunBehaviour
 	    {
 	        PhotonNetwork.LoadLevel("Level");
 		}
+	}
+
+	public override void OnLeftRoom()
+	{
+		connecting = false; //we don't want to rejoin a room automatically
 	}
 
 	/// <summary>

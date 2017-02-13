@@ -25,13 +25,15 @@ public class MPGameEndManager : MonoBehaviour {
 	[SerializeField] Slider sliderXP;
 
 	[Header("Other")]
-	[SerializeField] MatchmakingManager matchmakingManager;
+	MatchmakingManager matchmakingManager;
 	[SerializeField] Text exitButtonText;
 	[SerializeField] int timeBeforeNextRace = 60; //in seconds
 	const float ANIMATION_DURATION = 3f;
 
 	void Start ()
 	{
+		matchmakingManager = GameObject.FindGameObjectWithTag("Matchmaking").GetComponent<MatchmakingManager>();
+
 		//Static values - we just need to localise them
 		nextRaceBegins.text = LocalizationManager.Instance.getText( "EOG_NEXT_RACE_BEGINS" ).Replace("\\n", System.Environment.NewLine );
 		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );

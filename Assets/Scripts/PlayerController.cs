@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using UnityStandardAssets.ImageEffects;
@@ -75,7 +74,6 @@ public sealed class PlayerController : MonoBehaviour {
 
 	//Components
 	public Animator anim;
-	public NetworkAnimator networkAnimator;
 	CharacterController controller;
 	AudioSource audioSource;
 
@@ -304,7 +302,6 @@ public sealed class PlayerController : MonoBehaviour {
 
 		//Get a copy of the components
 		anim = GetComponent<Animator>();
-		networkAnimator = GetComponent<NetworkAnimator>();
 		audioSource = GetComponent<AudioSource>();
 
 		loadPlayerSkin();
