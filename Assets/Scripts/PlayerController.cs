@@ -376,9 +376,9 @@ public sealed class PlayerController : MonoBehaviour {
 		//Place the character at the start position which is always 0,ground height,0
 		//Calculate the ground height
 		RaycastHit hit;
-		if (Physics.Raycast(new Vector3(0,10f,0), Vector3.down, out hit, 12.0F ))
+		if (Physics.Raycast(new Vector3( transform.position.x, 10f, transform.position.z ), Vector3.down, out hit, 12.0F ))
 		{
-			transform.position = new Vector3( 0, hit.point.y, 0);
+			transform.position = new Vector3( transform.position.x, hit.point.y, transform.position.z);
 			//Also adjust the camera height
 			mainCamera.position = new Vector3(mainCamera.position.x, mainCamera.position.y + hit.point.y, mainCamera.transform.position.z); 
 			sc.positionCameraNow();

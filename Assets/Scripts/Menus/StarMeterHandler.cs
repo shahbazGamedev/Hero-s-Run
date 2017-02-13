@@ -41,7 +41,6 @@ public class StarMeterHandler : MonoBehaviour {
 		Vector3 starsRequired = selectedEpisode.coinsRequired;
 		maxNumberOfStars = 1.1f * starsRequired.z;
 		float sliderWidth = StarMarkersPanel.rect.width;
-		Debug.Log("updatePositionOfStarMarkers " + starsRequired );
 
 		float xPosition = (starsRequired.x/maxNumberOfStars ) * sliderWidth;
 		leftStarMarker.anchoredPosition = new Vector2( xPosition,leftStarMarker.anchoredPosition.y);

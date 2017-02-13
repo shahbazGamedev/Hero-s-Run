@@ -53,7 +53,7 @@ public class PlayerManager : Photon.PunBehaviour, IPunObservable
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
 		gameObject.name = info.sender.NickName;
-		Debug.LogError("Skin: " + info.sender.CustomProperties["Skin"] + " isMasterClient: " + PhotonNetwork.isMasterClient + " " + info.sender.NickName );
+		Debug.Log("PlayerManager-OnPhotonInstantiate-Skin: " + info.sender.CustomProperties["Skin"] + " isMasterClient: " + PhotonNetwork.isMasterClient + " Name: " + info.sender.NickName );
 		if ( PhotonNetwork.isMasterClient )
 		{
 			object[] stuff = new object[1];

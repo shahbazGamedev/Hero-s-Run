@@ -17,25 +17,28 @@ public class LevelNetworkingManager : PunBehaviour
 	
 	void Start()
 	{
-		if (playerPrefab == null)
+		if( GameManager.Instance.isMultiplayer() )
 		{
-			Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it in LevelNetworkingManager.");
-		}
-		else
-		{
-			//We're in the level. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-			int playerPosition = (int) PhotonNetwork.player.CustomProperties["PlayerPosition"];
-			Debug.Log("We are Instantiating LocalPlayer. He is in player position: " + playerPosition );
-			Vector3 startPosition = Vector3.zero;
-			if ( playerPosition == 1 )
+			if (playerPrefab == null)
 			{
-				startPosition = leftStartPosition;
+				Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it in LevelNetworkingManager.");
 			}
-			else if ( playerPosition == 2 )
+			else
 			{
-				startPosition = rightStartPosition;
+				//We're in the level. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
+				int playerPosition = (int) PhotonNetwork.player.CustomProperties["PlayerPosition"];
+				Debug.Log("We are Instantiating LocalPlayer. He is in player position: " + playerPosition );
+				Vector3 startPosition = Vector3.zero;
+				if ( playerPosition == 1 )
+				{
+					startPosition = leftStartPosition;
+				}
+				else if ( playerPosition == 2 )
+				{
+					startPosition = rightStartPosition;
+				}
+				PhotonNetwork.Instantiate(this.playerPrefab.name, startPosition, Quaternion.identity, 0);
 			}
-			PhotonNetwork.Instantiate(this.playerPrefab.name, startPosition, Quaternion.identity, 0);
 		}
 	}
 	
