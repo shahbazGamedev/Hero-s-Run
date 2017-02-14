@@ -14,6 +14,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	#endregion
 
 	#region Private Variables
+	ExitGames.Client.Photon.Hashtable playerCustomProperties = new ExitGames.Client.Photon.Hashtable();
 	//The delay to wait before loading the level. We have this delay so that the player can see the opponent's name and icon for
 	//a few seconds before the match begins.
 	const float DELAY_BEFORE_LOADING_LEVEL = 5f;
@@ -66,6 +67,31 @@ public class MPNetworkLobbyManager : PunBehaviour
 		}
 	}
 
+	void configureStaticPlayerData()
+	{
+		//Clear Hashtable
+		playerCustomProperties.Clear();
+		
+		//Set player name
+		PhotonNetwork.playerName = PlayerStatsManager.Instance.getUserName();
+
+		//Set the player's skin
+		if( PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
+		{
+			playerCustomProperties.Add("Skin", "Hero_prefab" );
+		}
+		else
+		{
+			playerCustomProperties.Add("Skin", "Heroine_prefab" );
+		}
+	
+		//Set your icon, which is displayed in the matchmaking screen
+		playerCustomProperties.Add("Icon", GameManager.Instance.playerProfile.getPlayerIconId() );
+
+		//Apply values so that they propagate to other players
+		PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
+	}
+
 	/// <summary>
 	/// Start the connection process. 
 	/// - If already connected, we attempt joining a random room
@@ -91,7 +117,9 @@ public class MPNetworkLobbyManager : PunBehaviour
 	{
 		if( connecting )
 		{
-		    if ( numberOfPlayersRequired == 1 )
+			configureStaticPlayerData();
+
+	    	if ( numberOfPlayersRequired == 1 )
 		    {
 				matchmakingManager.setConnectionProgress( "Connected. Playing single-player." );   
 			}
@@ -159,25 +187,8 @@ public class MPNetworkLobbyManager : PunBehaviour
 			}
 		}
 
-		PhotonNetwork.playerName = PlayerStatsManager.Instance.getUserName();
-
-		ExitGames.Client.Photon.Hashtable playerCustomProperties = new ExitGames.Client.Photon.Hashtable();
-		//The skin for your player
-		if( PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
-		{
-			playerCustomProperties.Add("Skin", "Hero_prefab" );
-		}
-		else
-		{
-			playerCustomProperties.Add("Skin", "Heroine_prefab" );
-		}
-
-		//The icon of your opponent is displayed in the matchmaking screen.
-		playerCustomProperties.Add("Icon", GameManager.Instance.playerProfile.getPlayerIconId() );
-
 		//PlayerPosition will be used to determine the start position. We don't want players to spawn on top of each other.
 		playerCustomProperties.Add("PlayerPosition", PhotonNetwork.room.PlayerCount );
-
 		PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
 
 		//Since we want to play alone for testing purposes, load level right away.
