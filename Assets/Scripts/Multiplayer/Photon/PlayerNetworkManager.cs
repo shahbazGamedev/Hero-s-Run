@@ -10,6 +10,8 @@ using UnityEngine;
 using Photon;
 using ExitGames.Client.Photon;
 using UnityEngine.Events;
+using System.Collections;
+using System.Collections.Generic;
 
 
 [System.Serializable] public class ToggleEvent : UnityEvent<bool>{}
@@ -26,14 +28,14 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 	public int racePosition = -1;
 	int previousRacePosition = -1;	//Used to avoid updating if the value has not changed
 	public float raceDuration = 0;
-	float internalRaceDuration = 0;
 
 	[Header("Distance Travelled")]
 	Vector3 previousPlayerPosition = Vector3.zero;
 	public float distanceTravelled = 0;
 	public bool raceStarted = false;
 	public bool playerCrossedFinishLine = false;
-	
+	static public List<PlayerNetworkManager> players = new List<PlayerNetworkManager> ();
+
 	public void Awake()
 	{
 	    // #Important
@@ -52,6 +54,11 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 	{
 		levelNetworkingManager = GameObject.FindGameObjectWithTag("Level Networking Manager").GetComponent<LevelNetworkingManager>();
         EnablePlayer ();
+
+		if (!players.Contains (this))
+		{
+            players.Add (this);
+		}
 	
 		//Tell the MasterClient that we are ready to go. Our level has been loaded and our player created.
 		//The MasterClient will initiate the countdown
@@ -65,6 +72,10 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 
 	void OnDisable()
 	{
+        if (players.Contains (this))
+		{
+            players.Remove (this);
+		}
 		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
 	}
 
@@ -115,7 +126,7 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 	[PunRPC]
 	void readyToGo()
 	{
-	   levelNetworkingManager.playerReady();
+		levelNetworkingManager.playerReady();
 		Debug.Log("A new player is ready to go " + gameObject.name );
 	}
 
@@ -141,11 +152,10 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 
 	void FixedUpdate()
 	{
-/*
 		if( PhotonNetwork.isMasterClient && !playerCrossedFinishLine )
 		{
 
-			//This is called on all the players on the server
+			//This is called on all the players on the MasterClient
 			updateDistanceTravelled();
 			//Update the race position of this player i.e. 1st place, 2nd place, and so forth
 			//Order the list using the distance travelled
@@ -155,18 +165,20 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 			if( newPosition != previousRacePosition )
 			{
 				racePosition = newPosition; 	//Race position is a syncvar
+				this.photonView.RPC("OnRacePositionChanged", PhotonTargets.AllBufferedViaServer, racePosition );
 				previousRacePosition = racePosition;
 			}
 
-			if( raceStarted ) internalRaceDuration = internalRaceDuration + Time.deltaTime;
+			if( raceStarted ) raceDuration = raceDuration + Time.deltaTime;
 		}
-*/
 	}
 
+	[PunRPC]
 	void OnRacePositionChanged( int value )
 	{
 		racePosition = value;
 		if( PhotonNetwork.player.IsLocal ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
+		Debug.Log("PlayerNetworkManager: OnRacePositionChanged " +  (racePosition + 1 ) );
 	}
 
 	void updateDistanceTravelled()
@@ -198,7 +210,7 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 				playerCrossedFinishLine = true;
 				Debug.Log ("Finish Line crossed by " + PhotonNetwork.player.NickName + " in race position " + racePosition );
 				RpcCrossedFinishLine( other.transform.position.z );
-				raceDuration = internalRaceDuration;
+				this.photonView.RPC("OnRaceDurationChanged", PhotonTargets.AllViaServer, raceDuration );
 				//if( isRaceFinished() ) returnToLobby();
 				returnToLobby();
 			}
@@ -207,15 +219,12 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 
     public bool isRaceFinished()
     {
-		/*
 		bool raceFinished = true;
         for (int i = 0; i < players.Count; i++)
 		{
 			if( !players[i].playerCrossedFinishLine ) return false;
 		}
 		return raceFinished;
-		*/
-		return false;
     }
 
 	void returnToLobby()
@@ -248,6 +257,7 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 		}
 	}
 
+	[PunRPC]
 	void OnRaceDurationChanged( float value )
     {
 		raceDuration = value;
