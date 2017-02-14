@@ -11,7 +11,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 	public static MPNetworkLobbyManager Instance;
 	MatchmakingManager matchmakingManager;
 	[SerializeField] PhotonLogLevel Loglevel = PhotonLogLevel.Informational;
-	ExitGames.Client.Photon.Hashtable playerCustomProperties = new ExitGames.Client.Photon.Hashtable();
 	#endregion
 
 	#region Private Variables
@@ -58,7 +57,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 		//Player is connected to the Internet
 		if( Application.internetReachability != NetworkReachability.NotReachable )
 		{
-			playerCustomProperties.Clear();
 			connecting = true;
 			Connect();
 		}
@@ -111,8 +109,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	
 			//Try to join an existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
 			ExitGames.Client.Photon.Hashtable desiredRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", circuitInfo.matchName }, { "Elo", playerEloRating } };
-			//PhotonNetwork.JoinRandomRoom( desiredRoomProperties, numberOfPlayersRequired );
-			PhotonNetwork.JoinRandomRoom( null, numberOfPlayersRequired );
+			PhotonNetwork.JoinRandomRoom( desiredRoomProperties, numberOfPlayersRequired );
 		}
 	}	 
 
@@ -140,6 +137,12 @@ public class MPNetworkLobbyManager : PunBehaviour
 		RoomOptions roomOptions = new RoomOptions();
 		roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", LevelManager.Instance.getSelectedCircuitInfo().matchName }, { "Elo", playerEloRating } };
 		roomOptions.MaxPlayers = numberOfPlayersRequired;
+		//Mandatory - you must also set customRoomPropertiesForLobby
+		//With customRoomPropertiesForLobby, you define which key-values are relevant for matchmaking.
+		string[] customRoomPropertiesForLobbyStringArray = new string[2];
+		customRoomPropertiesForLobbyStringArray[0] = "Track";
+		customRoomPropertiesForLobbyStringArray[1] = "Elo";
+		roomOptions.CustomRoomPropertiesForLobby = customRoomPropertiesForLobbyStringArray;
 		//In CreateRoom, do not specify a match name. Let the server assign a random name.
 	    PhotonNetwork.CreateRoom(null, roomOptions, null);
 	}
@@ -155,7 +158,11 @@ public class MPNetworkLobbyManager : PunBehaviour
 				matchmakingManager.setRemotePlayerIcon( (int)player.CustomProperties["Icon"] );
 			}
 		}
+
 		PhotonNetwork.playerName = PlayerStatsManager.Instance.getUserName();
+
+		ExitGames.Client.Photon.Hashtable playerCustomProperties = new ExitGames.Client.Photon.Hashtable();
+		//The skin for your player
 		if( PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
 		{
 			playerCustomProperties.Add("Skin", "Hero_prefab" );
@@ -170,7 +177,8 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 		//PlayerPosition will be used to determine the start position. We don't want players to spawn on top of each other.
 		playerCustomProperties.Add("PlayerPosition", PhotonNetwork.room.PlayerCount );
-		PhotonNetwork.player.SetCustomProperties(playerCustomProperties); 
+
+		PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
 
 		//Since we want to play alone for testing purposes, load level right away.
 	    if ( numberOfPlayersRequired == 1 )
