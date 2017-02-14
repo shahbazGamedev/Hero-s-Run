@@ -25,16 +25,16 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 	public static GameObject LocalPlayerInstance;
 	LevelNetworkingManager levelNetworkingManager;
 
-	public int racePosition = -1;
+	int racePosition = -1;
 	int previousRacePosition = -1;	//Used to avoid updating if the value has not changed
-	public float raceDuration = 0;
+	float raceDuration = 0;
 
 	[Header("Distance Travelled")]
 	Vector3 previousPlayerPosition = Vector3.zero;
-	public float distanceTravelled = 0;
-	public bool raceStarted = false;
-	public bool playerCrossedFinishLine = false;
-	static public List<PlayerNetworkManager> players = new List<PlayerNetworkManager> ();
+	float distanceTravelled = 0;
+	bool raceStarted = false;
+	bool playerCrossedFinishLine = false;
+	static public  List<PlayerNetworkManager> players = new List<PlayerNetworkManager> ();
 
 	public void Awake()
 	{
@@ -257,6 +257,8 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 		}
 	}
 
+	//This method is called when the player has crossed the finish line to let the client know the official race duration
+	//as calculated by the MasterClient.
 	[PunRPC]
 	void OnRaceDurationChanged( float value )
     {
@@ -265,6 +267,7 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 		Debug.Log("OnRaceDurationChanged: " + value );
     }
 
+	//This method is used to satisfy the Interface.
 	public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info){}
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )

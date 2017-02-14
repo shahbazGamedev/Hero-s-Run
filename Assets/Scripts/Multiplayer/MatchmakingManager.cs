@@ -164,6 +164,7 @@ public class MatchmakingManager : MonoBehaviour {
 
 	public void OnClickReturnToHeroSelection()
 	{
+		PhotonNetwork.Disconnect();
 		StartCoroutine( loadScene(GameScenes.HeroSelection) );
 	}
 
