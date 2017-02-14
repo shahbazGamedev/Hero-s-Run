@@ -18,39 +18,37 @@ using System.Collections.Generic;
 
 public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 {
-    [SerializeField] ToggleEvent onToggleShared;
+  	//Used to toggle components depending on whether they are shared, only for the local player, or only for the remote player.
+  	[SerializeField] ToggleEvent onToggleShared;
     [SerializeField] ToggleEvent onToggleLocal;
     [SerializeField] ToggleEvent onToggleRemote;
-	[Tooltip("The local player instance. Use this to know if the local player is represented in the Scene")]
-	public static GameObject LocalPlayerInstance;
+	
+	//Private variables
 	LevelNetworkingManager levelNetworkingManager;
-
+	//Race position (1st place, 2nd place, etc.
 	int racePosition = -1;
 	int previousRacePosition = -1;	//Used to avoid updating if the value has not changed
-	float raceDuration = 0;
-
-	[Header("Distance Travelled")]
+	//Distance travelled. This is used to determine who is in 1st place, 2nd place, etc.
 	Vector3 previousPlayerPosition = Vector3.zero;
 	float distanceTravelled = 0;
+	
+	//Race duration which will get displayed in the end of race screen
+	float raceDuration = 0;
+
+	//Control variables
 	bool raceStarted = false;
 	bool playerCrossedFinishLine = false;
+
+	//List of all PlayerNetworkManagers including the opponent(s)
 	static public  List<PlayerNetworkManager> players = new List<PlayerNetworkManager> ();
 
-	public void Awake()
+	void Awake()
 	{
-	    // #Important
-	    // used in GameManager.cs: we keep track of the localPlayer instance to prevent instanciation when levels are synchronized
-	    if (photonView.isMine)
-	    {
-	        LocalPlayerInstance = gameObject;
-	    }
-	
-	    // #Critical
 	    // we flag as don't destroy on load so that instance survives level synchronization, thus giving a seamless experience when levels load.
 	    DontDestroyOnLoad(gameObject);
 	}
 	
-	public void Start()
+	void Start()
 	{
 		levelNetworkingManager = GameObject.FindGameObjectWithTag("Level Networking Manager").GetComponent<LevelNetworkingManager>();
         EnablePlayer ();
@@ -72,11 +70,11 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 
 	void OnDisable()
 	{
+		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
         if (players.Contains (this))
 		{
             players.Remove (this);
 		}
-		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
 	}
 
     void EnablePlayer()
@@ -123,33 +121,6 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
         EnablePlayer ();
     }
 
-	[PunRPC]
-	void readyToGo()
-	{
-		levelNetworkingManager.playerReady();
-		Debug.Log("A new player is ready to go " + gameObject.name );
-	}
-
-	[PunRPC]
-	void RpcCrossedFinishLine(float triggerPositionZ )
-	{
-		if( PhotonNetwork.player.IsLocal )
-		{
-			//Hack so players dont bump into each other
-			if( racePosition == 0 ) transform.position = new Vector3( -1.3f, transform.position.y, transform.position.z );
-			if( racePosition == 1 ) transform.position = new Vector3( 1.3f, transform.position.y, transform.position.z );
-			GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
-			StartCoroutine( GetComponent<PlayerController>().slowDownPlayer( 5.5f, afterPlayerSlowdown, triggerPositionZ ) );
-			HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
-			PlayerRaceManager.Instance.playerCrossedFinishLine( racePosition + 1 );
-		}
-	}
-
-	void afterPlayerSlowdown()
-	{
-		GetComponent<PlayerController>().playVictoryAnimation();
-	}
-
 	void FixedUpdate()
 	{
 		if( PhotonNetwork.isMasterClient && !playerCrossedFinishLine )
@@ -171,14 +142,6 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 
 			if( raceStarted ) raceDuration = raceDuration + Time.deltaTime;
 		}
-	}
-
-	[PunRPC]
-	void OnRacePositionChanged( int value )
-	{
-		racePosition = value;
-		if( PhotonNetwork.player.IsLocal ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
-		Debug.Log("PlayerNetworkManager: OnRacePositionChanged " +  (racePosition + 1 ) );
 	}
 
 	void updateDistanceTravelled()
@@ -209,15 +172,15 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 				//Player has reached the finish line
 				playerCrossedFinishLine = true;
 				Debug.Log ("Finish Line crossed by " + PhotonNetwork.player.NickName + " in race position " + racePosition );
-				RpcCrossedFinishLine( other.transform.position.z );
 				this.photonView.RPC("OnRaceDurationChanged", PhotonTargets.AllViaServer, raceDuration );
+				this.photonView.RPC("OnCrossingFinishLine", PhotonTargets.AllBufferedViaServer, other.transform.position.z );
 				//if( isRaceFinished() ) returnToLobby();
 				returnToLobby();
 			}
 		}
 	}
 
-    public bool isRaceFinished()
+    bool isRaceFinished()
     {
 		bool raceFinished = true;
         for (int i = 0; i < players.Count; i++)
@@ -255,6 +218,40 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 			raceStarted = true;
 			PlayerRaceManager.Instance.raceStatus = RaceStatus.IN_PROGRESS;
 		}
+	}
+	[PunRPC]
+	void readyToGo()
+	{
+		levelNetworkingManager.playerReady();
+		Debug.Log("A new player is ready to go " + gameObject.name );
+	}
+
+	[PunRPC]
+	void OnRacePositionChanged( int value )
+	{
+		racePosition = value;
+		if( PhotonNetwork.player.IsLocal ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
+		Debug.Log("PlayerNetworkManager: OnRacePositionChanged " +  (racePosition + 1 ) );
+	}
+
+	[PunRPC]
+	void OnCrossingFinishLine(float triggerPositionZ )
+	{
+		if( PhotonNetwork.player.IsLocal )
+		{
+			//Hack so players dont bump into each other
+			if( racePosition == 0 ) transform.position = new Vector3( -1.3f, transform.position.y, transform.position.z );
+			if( racePosition == 1 ) transform.position = new Vector3( 1.3f, transform.position.y, transform.position.z );
+			GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
+			StartCoroutine( GetComponent<PlayerController>().slowDownPlayer( 5.5f, afterPlayerSlowdown, triggerPositionZ ) );
+			HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
+			PlayerRaceManager.Instance.playerCrossedFinishLine( racePosition + 1 );
+		}
+	}
+
+	void afterPlayerSlowdown()
+	{
+		GetComponent<PlayerController>().playVictoryAnimation();
 	}
 
 	//This method is called when the player has crossed the finish line to let the client know the official race duration
