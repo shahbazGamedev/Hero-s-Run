@@ -12,8 +12,8 @@ public class LevelNetworkingManager : PunBehaviour
 
 	int numberOfPlayersReadyToRace = 0;	
 	bool levelLoading = false;
-	Vector3 leftStartPosition = new Vector3( -1.3f, 0, 0 );
-	Vector3 rightStartPosition = new Vector3( 1.3f, 0, 0 );
+	Vector3 leftStartPosition = new Vector3( -1.3f, 0.57f, 0 );
+	Vector3 rightStartPosition = new Vector3( 1.3f, 0.57f, 0 );
 	
 	void Start()
 	{
