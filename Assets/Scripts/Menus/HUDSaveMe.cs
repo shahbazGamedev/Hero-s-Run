@@ -182,7 +182,8 @@ public class HUDSaveMe : MonoBehaviour {
 		closeSaveMeMenu();
 		if( GameManager.Instance.isMultiplayer() )
 		{
-			SceneManager.LoadScene( (int) GameScenes.CircuitSelection );
+			//The player will leave the room and go back to the matchmaking screen.
+			PhotonNetwork.LeaveRoom();
 		}
 		else
 		{
