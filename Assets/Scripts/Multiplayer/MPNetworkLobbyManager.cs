@@ -11,7 +11,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	public static MPNetworkLobbyManager Instance;
 	MatchmakingManager matchmakingManager;
 	[SerializeField] PhotonLogLevel Loglevel = PhotonLogLevel.Informational;
-	public ExitGames.Client.Photon.Hashtable someCustomPropertiesToSet = new ExitGames.Client.Photon.Hashtable();
+	ExitGames.Client.Photon.Hashtable playerCustomProperties = new ExitGames.Client.Photon.Hashtable();
 	#endregion
 
 	#region Private Variables
@@ -20,8 +20,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 	const float DELAY_BEFORE_LOADING_LEVEL = 5f;
 	byte numberOfPlayersRequired = 2;
 	HUDMultiplayer hudMultiplayer;
-	//This client's version number. Users are separated from each other by gameversion (which allows you to make breaking changes).
-	string _gameVersion = "1";
 	bool connecting = false; //true if the player pressed the Play button (which calls startMatch). This bool is to prevent rejoining a room automatically after a race.
 	#endregion
 
@@ -60,7 +58,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		//Player is connected to the Internet
 		if( Application.internetReachability != NetworkReachability.NotReachable )
 		{
-			someCustomPropertiesToSet.Clear();
+			playerCustomProperties.Clear();
 			connecting = true;
 			Connect();
 		}
@@ -85,7 +83,8 @@ public class MPNetworkLobbyManager : PunBehaviour
 		else
 		{
 			//We must first and foremost connect to Photon Online Server.
-			PhotonNetwork.ConnectUsingSettings(_gameVersion);
+			//Users are separated from each other by game version (which allows you to make breaking changes).
+			PhotonNetwork.ConnectUsingSettings(GameManager.Instance.getVersionNumber());
 			matchmakingManager.setConnectionProgress( "Connecting ..." );   
 		}
 	}
@@ -112,7 +111,8 @@ public class MPNetworkLobbyManager : PunBehaviour
 	
 			//Try to join an existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
 			ExitGames.Client.Photon.Hashtable desiredRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", circuitInfo.matchName }, { "Elo", playerEloRating } };
-			PhotonNetwork.JoinRandomRoom( desiredRoomProperties, numberOfPlayersRequired );
+			//PhotonNetwork.JoinRandomRoom( desiredRoomProperties, numberOfPlayersRequired );
+			PhotonNetwork.JoinRandomRoom( null, numberOfPlayersRequired );
 		}
 	}	 
 
@@ -158,21 +158,25 @@ public class MPNetworkLobbyManager : PunBehaviour
 		PhotonNetwork.playerName = PlayerStatsManager.Instance.getUserName();
 		if( PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
 		{
-			someCustomPropertiesToSet.Add("Skin", "Hero_prefab" );
+			playerCustomProperties.Add("Skin", "Hero_prefab" );
 		}
 		else
 		{
-			someCustomPropertiesToSet.Add("Skin", "Heroine_prefab" );
+			playerCustomProperties.Add("Skin", "Heroine_prefab" );
 		}
+
+		//The icon of your opponent is displayed in the matchmaking screen.
+		playerCustomProperties.Add("Icon", GameManager.Instance.playerProfile.getPlayerIconId() );
+
 		//PlayerPosition will be used to determine the start position. We don't want players to spawn on top of each other.
-		someCustomPropertiesToSet.Add("PlayerPosition", PhotonNetwork.room.PlayerCount );
-		PhotonNetwork.player.SetCustomProperties(someCustomPropertiesToSet); 
+		playerCustomProperties.Add("PlayerPosition", PhotonNetwork.room.PlayerCount );
+		PhotonNetwork.player.SetCustomProperties(playerCustomProperties); 
 
 		//Since we want to play alone for testing purposes, load level right away.
 	    if ( numberOfPlayersRequired == 1 )
 	    {
 	        PhotonNetwork.LoadLevel("Level");
-		}
+		}				
 	}
 
 	public override void OnLeftRoom()
@@ -192,7 +196,14 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 		matchmakingManager.setConnectionProgress( newPlayer.NickName + " just connected. Player count is now: " + PhotonNetwork.room.PlayerCount );   
 		matchmakingManager.setRemotePlayerName( newPlayer.NickName );
-		matchmakingManager.setRemotePlayerIcon( (int)newPlayer.CustomProperties["Icon"] );
+		if( newPlayer.CustomProperties["Icon"] != null )
+		{
+			matchmakingManager.setRemotePlayerIcon( (int)newPlayer.CustomProperties["Icon"] );
+		}
+		else
+		{
+			Debug.Log("MPNetworkLobbyManager: OnPhotonPlayerConnected() - newPlayer.CustomProperties Icon is NULL.");
+		}
 
 		LoadArena();		 
 	}

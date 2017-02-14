@@ -23,8 +23,6 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
     [SerializeField] ToggleEvent onToggleLocal;
     [SerializeField] ToggleEvent onToggleRemote;
 	
-	//Private variables
-	LevelNetworkingManager levelNetworkingManager;
 	//Race position (1st place, 2nd place, etc.
 	int racePosition = -1;
 	int previousRacePosition = -1;	//Used to avoid updating if the value has not changed
@@ -50,7 +48,6 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 	
 	void Start()
 	{
-		levelNetworkingManager = GameObject.FindGameObjectWithTag("Level Networking Manager").GetComponent<LevelNetworkingManager>();
         EnablePlayer ();
 
 		if (!players.Contains (this))
@@ -81,7 +78,7 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
     {
         onToggleShared.Invoke (true);
 
-        if (PhotonNetwork.player.IsLocal)
+		if (PhotonNetwork.player.IsLocal )
 		{
             onToggleLocal.Invoke (true);
 		}
@@ -222,7 +219,7 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 	[PunRPC]
 	void readyToGo()
 	{
-		levelNetworkingManager.playerReady();
+		GameObject.FindGameObjectWithTag("Level Networking Manager").GetComponent<LevelNetworkingManager>().playerReady();
 		Debug.Log("A new player is ready to go " + gameObject.name );
 	}
 

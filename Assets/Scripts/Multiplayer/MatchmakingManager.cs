@@ -86,12 +86,14 @@ public class MatchmakingManager : MonoBehaviour {
 	public void setRemotePlayerName( string name )
 	{
 		//Name
+		Debug.Log("setRemotePlayerName called with " + name );
 		remotePlayerName.text = name;
 	}
 
 	public void setRemotePlayerIcon( int iconId )
 	{
 		//Player Icon
+		Debug.Log("setRemotePlayerIcon called with " + ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon.name );
 		remotePlayerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
 	}
 
@@ -164,7 +166,6 @@ public class MatchmakingManager : MonoBehaviour {
 
 	public void OnClickReturnToHeroSelection()
 	{
-		PhotonNetwork.Disconnect();
 		StartCoroutine( loadScene(GameScenes.HeroSelection) );
 	}
 

@@ -17,6 +17,9 @@ public class CircuitSelectionManager : MonoBehaviour {
 		Handheld.StopActivityIndicator();
 		GameManager.Instance.setMultiplayerMode( true );
 		carouselScrollRect.horizontalNormalizedPosition = 0; //Make sure it is on the far left completely or the dot won't light up
+		//In order to display the number of online players, we need to be connected to the master server.
+		//Users are separated from each other by game version (which allows you to make breaking changes).
+		PhotonNetwork.ConnectUsingSettings(GameManager.Instance.getVersionNumber());
 	}
 
 	public void OnClickShowStore()
@@ -36,6 +39,7 @@ public class CircuitSelectionManager : MonoBehaviour {
 
 	public void OnClickReturnToWorldMap()
 	{
+		PhotonNetwork.Disconnect();
 		StartCoroutine( loadWorldMap() );
 	}
 
