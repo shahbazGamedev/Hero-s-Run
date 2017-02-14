@@ -127,8 +127,7 @@ public class MatchmakingManager : MonoBehaviour {
 	public void OnClickPlay()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
- 		GameManager.Instance.setGameState( GameState.WorldMapNoPopup );
-		if( playerCanPayEntryFee() )
+ 		if( playerCanPayEntryFee() )
 		{
 			enablePlayButton( false );
 			MPNetworkLobbyManager.Instance.startMatch();
