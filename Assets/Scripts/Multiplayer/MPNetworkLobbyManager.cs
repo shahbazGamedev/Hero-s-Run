@@ -174,8 +174,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		{
 			if( !player.IsLocal )
 			{
-				matchmakingManager.setRemotePlayerName( player.NickName );
-				matchmakingManager.setRemotePlayerIcon( (int)player.CustomProperties["Icon"] );
+				OnRemotePlayerConnect( player );
 			}
 		}
 
@@ -204,20 +203,16 @@ public class MPNetworkLobbyManager : PunBehaviour
 	public override void OnPhotonPlayerConnected (PhotonPlayer newPlayer )
 	{
 		Debug.Log("MPNetworkLobbyManager: OnPhotonPlayerConnected() called by PUN. Name: " + newPlayer.NickName + " isLocal: " + newPlayer.IsLocal + " PlayerCount: " + PhotonNetwork.room.PlayerCount );
-
-		matchmakingManager.setConnectionProgress( newPlayer.NickName + " just connected. Player count is now: " + PhotonNetwork.room.PlayerCount );   
-		matchmakingManager.setRemotePlayerName( newPlayer.NickName );
-		matchmakingManager.disableExitButton();
-		if( newPlayer.CustomProperties["Icon"] != null )
-		{
-			matchmakingManager.setRemotePlayerIcon( (int)newPlayer.CustomProperties["Icon"] );
-		}
-		else
-		{
-			Debug.Log("MPNetworkLobbyManager: OnPhotonPlayerConnected() - newPlayer.CustomProperties Icon is NULL.");
-		}
-
+		OnRemotePlayerConnect( newPlayer );
 		LoadArena();		 
+	}
+
+	void OnRemotePlayerConnect( PhotonPlayer player )
+	{
+		matchmakingManager.disableExitButton();
+		matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedMultiplayerLevel().circuitInfo.circuitTextID ) + " ..." ); 
+		matchmakingManager.setRemotePlayerName( player.NickName );
+		matchmakingManager.setRemotePlayerIcon( (int)player.CustomProperties["Icon"] );
 	}
 
 	public override void OnPhotonPlayerDisconnected( PhotonPlayer other  )
