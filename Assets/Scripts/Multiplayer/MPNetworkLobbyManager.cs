@@ -215,6 +215,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 		matchmakingManager.setConnectionProgress( newPlayer.NickName + " just connected. Player count is now: " + PhotonNetwork.room.PlayerCount );   
 		matchmakingManager.setRemotePlayerName( newPlayer.NickName );
+		matchmakingManager.disableExitButton();
 		if( newPlayer.CustomProperties["Icon"] != null )
 		{
 			matchmakingManager.setRemotePlayerIcon( (int)newPlayer.CustomProperties["Icon"] );

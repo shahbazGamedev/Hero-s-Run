@@ -11,6 +11,7 @@ public class MatchmakingManager : MonoBehaviour {
 	[SerializeField] MultiPurposePopup multiPurposePopup;
 	[SerializeField] Button playButton;
 	[SerializeField] Text playButtonText;
+	[SerializeField] Button exitButton;
 	[SerializeField] Text exitButtonText;
 	[SerializeField] Text versusText;
 	[Tooltip("The label to inform the user that the connection progress.")]
@@ -163,8 +164,18 @@ public class MatchmakingManager : MonoBehaviour {
 		}
 	}
 
+	//Do not allow the player to exit the matchmaking screen if he has initiated matchmaking and a remote player has joined.
+	//If the player still wants to quit, he will be able to do so via the pause menu.
+	//Also, hide the preloader.
+	public void disableExitButton()
+	{
+		preloader.SetActive( false );
+		enableExitButton( false );
+	}
+
 	public void OnClickReturnToHeroSelection()
 	{
+		if( PhotonNetwork.inRoom ) PhotonNetwork.LeaveRoom();
 		StartCoroutine( loadScene(GameScenes.HeroSelection) );
 	}
 
@@ -195,4 +206,19 @@ public class MatchmakingManager : MonoBehaviour {
 			preloader.SetActive( true );
 		}
 	}
+
+	void enableExitButton( bool enable )
+	{
+		if( enable )
+		{
+			exitButton.interactable = true;
+			exitButtonText.color = originalPlayButtonTextColor;
+		}
+		else
+		{
+			exitButton.interactable = false;
+			exitButtonText.color = Color.gray;
+		}
+	}
+
 }
