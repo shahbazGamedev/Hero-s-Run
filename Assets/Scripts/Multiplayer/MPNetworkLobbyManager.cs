@@ -26,15 +26,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	#region MonoBehaviour CallBacks
 	void Awake()
 	{
-		if(Instance)
-		{
-			DestroyImmediate(gameObject);
-		}
-		else
-		{
-			DontDestroyOnLoad(gameObject);
-			Instance = this;
-		}
+		Instance = this;
 
 		PhotonNetwork.logLevel = Loglevel;
 		
