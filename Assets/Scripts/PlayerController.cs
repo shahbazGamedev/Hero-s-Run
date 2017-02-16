@@ -2635,10 +2635,10 @@ public sealed class PlayerController : MonoBehaviour {
 
 	//We pass the triggerPositionZ value because we need its position. We cannot rely on the position of the player at the moment of trigger because it can fluctuate based on frame rate and such.
 	//Therefore the final destination is based on the trigger's Z position plus the desired distance (and not the player's z position plus the desired distance, which is slightly inaccurate).
-	//This version is used in multiplayer.
-	public IEnumerator slowDownPlayer( float distance, System.Action onFinish, float triggerPositionZ )
+	//This version is used in multiplayer. The player slows down but keeps control.
+	public IEnumerator slowDownPlayerAfterFinishLine( float distance, System.Action onFinish, float triggerPositionZ )
 	{
-		if( currentTile.transform.rotation.y != 0 ) Debug.LogError("PlayerController-slowDownPlayer error: slow down only works with tiles with a zero rotation for now.");
+		allowRunSpeedToIncrease = false;
 		float percentageComplete = 0;
 
 		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, triggerPositionZ );
@@ -2668,36 +2668,9 @@ public sealed class PlayerController : MonoBehaviour {
 			//update animation speed
 			anim.speed = Mathf.Lerp( startAnimationSpeed, endAnimationSpeed, percentageComplete );
 
-			//move player forward
-			//1) Get the direction of the player
-			forward = transform.TransformDirection(Vector3.forward);
-			//2) Scale vector based on run speed
-			forward = forward * Time.deltaTime * newRunSpeed;
-			//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
-			forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
-			//4) Get a unit vector that is orthogonal to the direction of the player
-			Vector3 relativePos = new Vector3(1 , 0 , 0 );
-			Vector3 xPos = transform.TransformPoint(relativePos);
-			Vector3 xVector = xPos - transform.position;
-			//5) Scale the X component based on accelerometer and change lane values
-			xVector = xVector * Time.deltaTime * moveDirection.x;
-			//6) If not on a bezier curve, clamp to the max distance we can travel perpendicularly without
-			//exiting the left or right lanes.
-			if( !usesBezierCurve )
-			{
-				xVector =  Vector3.ClampMagnitude(xVector, Mathf.Abs(getMaxDist(moveDirection.x)));
-			}
-			//7) Add the X component to the forward direction
-			forward = forward + xVector;
-			forward =  Vector3.ClampMagnitude(forward, Vector3.Distance( transform.position, finalPlayerPosition ) );
 
-			//8) Move the controller
-			controller.Move( forward );
-			verifyIfDesiredLaneReached();
 			yield return new WaitForFixedUpdate(); 
 		}
-		//Position the player exactly where he should be as we might have overshot the distance in the while loop
-		transform.position = new Vector3( finalPlayerPosition.x, transform.position.y, finalPlayerPosition.z );
 		onFinish.Invoke();
 	}
 

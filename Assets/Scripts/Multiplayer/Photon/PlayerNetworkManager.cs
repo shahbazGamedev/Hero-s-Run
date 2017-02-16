@@ -236,11 +236,7 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 	{
 		if( PhotonNetwork.player.IsLocal )
 		{
-			//Hack so players dont bump into each other
-			if( racePosition == 0 ) transform.position = new Vector3( -1.3f, transform.position.y, transform.position.z );
-			if( racePosition == 1 ) transform.position = new Vector3( 1.3f, transform.position.y, transform.position.z );
-			GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
-			StartCoroutine( GetComponent<PlayerController>().slowDownPlayer( 5.5f, afterPlayerSlowdown, triggerPositionZ ) );
+			StartCoroutine( GetComponent<PlayerController>().slowDownPlayerAfterFinishLine( 10f, afterPlayerSlowdown, triggerPositionZ ) );
 			HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
 			PlayerRaceManager.Instance.playerCrossedFinishLine( racePosition + 1 );
 		}
@@ -249,6 +245,7 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 	void afterPlayerSlowdown()
 	{
 		GetComponent<PlayerController>().playVictoryAnimation();
+		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 	}
 
 	//This method is called when the player has crossed the finish line to let the client know the official race duration
