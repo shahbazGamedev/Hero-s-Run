@@ -2639,6 +2639,7 @@ public sealed class PlayerController : MonoBehaviour {
 	public IEnumerator slowDownPlayerAfterFinishLine( float distance, System.Action onFinish, float triggerPositionZ )
 	{
 		allowRunSpeedToIncrease = false;
+		enablePlayerControl( false );
 		float percentageComplete = 0;
 
 		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, triggerPositionZ );
