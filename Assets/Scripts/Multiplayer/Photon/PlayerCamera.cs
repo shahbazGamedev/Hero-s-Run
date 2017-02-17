@@ -32,7 +32,7 @@ For every of those smoothed values we calculate the wanted value and the current
 Then we smooth it using the Lerp function.
 Then we apply the smoothed values to the transform's position.
 */
-public class SimpleCamera : MonoBehaviour {
+public class PlayerCamera : Photon.PunBehaviour {
 	
 
 	private Transform mainCamera;
@@ -70,13 +70,18 @@ public class SimpleCamera : MonoBehaviour {
 	float yRotationOffset = DEFAULT_Y_ROTATION_OFFSET;
 
 	PlayerController playerController;
+	PlayerControl playerControl;
 
 	// Use this for initialization
-	void Awake () {
-	
+	void Awake ()
+ 	{
+		//If we are not the owner of this component, disable it.
+		if( !this.photonView.isMine ) this.enabled = false;
+
 		mainCamera = Camera.main.transform;
 		cameraTarget = transform; //Set the player as the camera target by default
 		playerController = GetComponent<PlayerController>();
+		playerControl = GetComponent<PlayerControl>();
 	}
 	
 	//A common use for LateUpdate() would be a following third-person camera.
@@ -262,7 +267,8 @@ public class SimpleCamera : MonoBehaviour {
 	
 	public void playCutscene( CutsceneType type )
 	{
-		playerController.enablePlayerControl( false );
+		if( playerController != null ) playerController.enablePlayerControl( false );
+		if( playerControl != null ) playerControl.enablePlayerControl( false );
 		cutsceneCamera.gameObject.SetActive( true );
 		cameraState = CameraState.Cutscene;
 		
@@ -379,7 +385,8 @@ public class SimpleCamera : MonoBehaviour {
 			mainCamera.transform.rotation = Quaternion.Euler( cutsceneCamera.eulerAngles.x, cutsceneCamera.eulerAngles.y, cutsceneCamera.eulerAngles.z );
 			cameraState = CameraState.Normal;
 			cutsceneCamera.gameObject.SetActive( false );
-			playerController.enablePlayerControl( true );
+			if( playerController != null ) playerController.enablePlayerControl( true );
+			if( playerControl != null ) playerControl.enablePlayerControl( true );
 		}
 
 		Debug.Log("SimpleCamera-activateCutscene finished: " + cutsceneCamera.GetComponent<Camera>().fieldOfView + " " + giveBackControl );

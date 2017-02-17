@@ -6,7 +6,7 @@ public class GameEventManager : MonoBehaviour {
 
 	public GenerateLevel generateLevel;
 	public WeatherManager weatherManager;
-	SimpleCamera simpleCamera;
+	PlayerCamera playerCamera;
 	public Lightning lightning;
 	TrollController trollController;
 	Transform player;
@@ -767,7 +767,7 @@ public class GameEventManager : MonoBehaviour {
 		lightning.controlLightning(GameEvent.Start_Lightning);
 		//Position player near the top of the tower
 		player.position = new Vector3( 0, 79.34f, -2f );
-		simpleCamera.playCutscene( CutsceneType.OpeningSequence );
+		playerCamera.playCutscene( CutsceneType.OpeningSequence );
 		trollController.stopPursuing();
 		op.InvokeRepeating("playCrowSound", 3.5f, 10f );
 		Invoke ( "enableTapToPlay", 1.2f );
@@ -822,9 +822,9 @@ public class GameEventManager : MonoBehaviour {
 	//Camera is positioned in back of player but at a different X rotation angle
 	void step4()
 	{
-		simpleCamera.setCameraParameters( 18f, SimpleCamera.DEFAULT_DISTANCE, SimpleCamera.DEFAULT_HEIGHT, SimpleCamera.DEFAULT_Y_ROTATION_OFFSET );
-		simpleCamera.activateMainCamera();
-		simpleCamera.positionCameraNow();
+		playerCamera.setCameraParameters( 18f, PlayerCamera.DEFAULT_DISTANCE, PlayerCamera.DEFAULT_HEIGHT, PlayerCamera.DEFAULT_Y_ROTATION_OFFSET );
+		playerCamera.activateMainCamera();
+		playerCamera.positionCameraNow();
 		weatherManager.setWeatherTarget( player, 8f );
 		Invoke ("step5", 2.1f );
 	}
@@ -832,7 +832,7 @@ public class GameEventManager : MonoBehaviour {
 	void step5()
 	{
 		//Camera default X rotation angle is restored
-		simpleCamera.resetCameraParameters();
+		playerCamera.resetCameraParameters();
 		//Give player control
 		playerController.allowPlayerMovement(true );
 		//Stop the lightning
@@ -961,7 +961,7 @@ public class GameEventManager : MonoBehaviour {
 	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
 	{
 		player = playerTransform;
-		simpleCamera = player.GetComponent<SimpleCamera>();
+		playerCamera = player.GetComponent<PlayerCamera>();
 		this.playerController = playerController;
 	}
 

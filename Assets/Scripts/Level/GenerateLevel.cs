@@ -448,6 +448,11 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		playerController.currentTileType = si.tileType;
 	}
 
+	public GameObject getFirstTile()
+	{
+		return worldRoadSegments[0];
+	}
+
 	private void setCurrentTheme( SegmentTheme newTheme )
 	{
 		currentTheme = newTheme;

@@ -13,16 +13,15 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
-
-[System.Serializable] public class ToggleEvent : UnityEvent<bool>{}
-
-public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
+/// <summary>
+/// This class handles only race related events such as:
+/// 1) Player position (e.g. 1st, 2nd, 3rd position). This is displayed in the HUD and used to decide the victor.
+/// 2) Race Duration. This is displayed in the end of match screen.
+/// 3) Whether the player crossed the finish line.
+/// 4) Updating the HUD with race related events
+/// </summary>
+public class PlayerRace : Photon.PunBehaviour
 {
-  	//Used to toggle components depending on whether they are shared, only for the local player, or only for the remote player.
-  	[SerializeField] ToggleEvent onToggleShared;
-    [SerializeField] ToggleEvent onToggleLocal;
-    [SerializeField] ToggleEvent onToggleRemote;
-	
 	//Race position (1st place, 2nd place, etc.
 	int racePosition = -1;
 	int previousRacePosition = -1;	//Used to avoid updating if the value has not changed
@@ -37,27 +36,15 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 	bool raceStarted = false;
 	bool playerCrossedFinishLine = false;
 
-	//List of all PlayerNetworkManagers including the opponent(s)
-	static public  List<PlayerNetworkManager> players = new List<PlayerNetworkManager> ();
+	//List of all PlayerRaces including the opponent(s)
+	static public  List<PlayerRace> players = new List<PlayerRace> ();
 
-	void Awake()
-	{
-	    // we flag as don't destroy on load so that instance survives level synchronization, thus giving a seamless experience when levels load.
-	    DontDestroyOnLoad(gameObject);
-	}
-	
 	void Start()
 	{
-        EnablePlayer ();
-
-		if (!players.Contains (this))
+  		if (!players.Contains (this))
 		{
             players.Add (this);
 		}
-	
-		//Tell the MasterClient that we are ready to go. Our level has been loaded and our player created.
-		//The MasterClient will initiate the countdown
-		if( this.photonView.isMine ) this.photonView.RPC("readyToGo", PhotonTargets.MasterClient, null );
 	}
 
   	void OnEnable()
@@ -74,55 +61,20 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 		}
 	}
 
-    void EnablePlayer()
-    {
-        onToggleShared.Invoke (true);
-
-		if (PhotonNetwork.player.IsLocal )
+	void StartRunningEvent()
+	{
+		if( PhotonNetwork.player.IsLocal )
 		{
-            onToggleLocal.Invoke (true);
+			Debug.Log("PlayerRace: received StartRunningEvent");
+			raceStarted = true;
+			PlayerRaceManager.Instance.raceStatus = RaceStatus.IN_PROGRESS;
 		}
-        else
-		{
-            onToggleRemote.Invoke (true);
-		}
-    }
-
-    void DisablePlayer()
-    {
-        onToggleShared.Invoke (false);
-
-        if (PhotonNetwork.player.IsLocal)
-		{
-			onToggleLocal.Invoke (false);
-		}
-        else
-		{
-			onToggleRemote.Invoke (false);
-		}
-    }
-
-	public void Die()
-    {
-		DisablePlayer ();
-		Invoke ("Respawn", 5f );
-    }
-
-    void Respawn()
-    {
-        if (PhotonNetwork.player.IsLocal) 
-        {
-			//move player to respawn position
-        }
-
-        EnablePlayer ();
-    }
+	}
 
 	void FixedUpdate()
 	{
 		if( PhotonNetwork.isMasterClient && !playerCrossedFinishLine )
 		{
-
 			//This is called on all the players on the MasterClient
 			updateDistanceTravelled();
 			//Update the race position of this player i.e. 1st place, 2nd place, and so forth
@@ -207,15 +159,6 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 		PhotonNetwork.LeaveRoom();
     }
 
-	void StartRunningEvent()
-	{
-		if( PhotonNetwork.player.IsLocal )
-		{
-			Debug.Log("PlayerNetworkManager: received StartRunningEvent");
-			raceStarted = true;
-			PlayerRaceManager.Instance.raceStatus = RaceStatus.IN_PROGRESS;
-		}
-	}
 	[PunRPC]
 	void readyToGo()
 	{
@@ -228,7 +171,7 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 	{
 		racePosition = value;
 		if( PhotonNetwork.player.IsLocal ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
-		Debug.Log("PlayerNetworkManager: OnRacePositionChanged " +  (racePosition + 1 ) );
+		Debug.Log("PlayerRace: OnRacePositionChanged " +  (racePosition + 1 ) );
 	}
 
 	[PunRPC]
@@ -236,17 +179,12 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 	{
 		if( PhotonNetwork.player.IsLocal )
 		{
-			StartCoroutine( GetComponent<PlayerController>().slowDownPlayerAfterFinishLine( 10f, afterPlayerSlowdown, triggerPositionZ ) );
+			//StartCoroutine( GetComponent<PlayerController>().slowDownPlayerAfterFinishLine( 10f, afterPlayerSlowdown, triggerPositionZ ) );
 			HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
 			PlayerRaceManager.Instance.playerCrossedFinishLine( racePosition + 1 );
 		}
 	}
 
-	void afterPlayerSlowdown()
-	{
-		GetComponent<PlayerController>().playVictoryAnimation();
-		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
-	}
 
 	//This method is called when the player has crossed the finish line to let the client know the official race duration
 	//as calculated by the MasterClient.
@@ -258,24 +196,4 @@ public class PlayerNetworkManager : Photon.PunBehaviour, IPunObservable
 		Debug.Log("OnRaceDurationChanged: " + value );
     }
 
-	//This method is used to satisfy the Interface.
-	public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info){}
-
-	void OnPhotonInstantiate( PhotonMessageInfo info )
-	{
-		gameObject.name = info.sender.NickName;
-		Debug.Log("PlayerManager-OnPhotonInstantiate-Skin: " + info.sender.CustomProperties["Skin"] + " isMasterClient: " + PhotonNetwork.isMasterClient + " Name: " + info.sender.NickName );
-		if ( PhotonNetwork.isMasterClient )
-		{
-			object[] stuff = new object[1];
-			stuff[0] = info.sender.NickName;
-		    GameObject heroSkin = (GameObject)PhotonNetwork.InstantiateSceneObject (info.sender.CustomProperties["Skin"].ToString(), Vector3.zero, Quaternion.identity, 0, stuff);
-			Animator anim = gameObject.GetComponent<Animator>();
-			heroSkin.transform.SetParent( transform, false );
-			heroSkin.transform.localPosition = Vector3.zero;
-			heroSkin.transform.localRotation = Quaternion.identity;
-			anim.avatar = heroSkin.GetComponent<PlayerSkinInfo>().animatorAvatar;
-			anim.Rebind(); //Important
-		}			
-	}
 }

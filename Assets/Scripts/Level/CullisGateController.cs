@@ -6,7 +6,7 @@ public class CullisGateController : MonoBehaviour {
 
 	[Header("General")]
 	public ParticleSystem lightEffect;
-	SimpleCamera simpleCamera;
+	PlayerCamera playerCamera;
 	public bool playCameraCutscene = false;
 	public string messageTextId = "CULLIS_GATE_XXX";
 	//How long to wait before displaying either the stats screen or loading the net level
@@ -16,7 +16,7 @@ public class CullisGateController : MonoBehaviour {
 	void Start ()
 	{
 		GameObject player = GameObject.FindGameObjectWithTag("Player");
-		simpleCamera = player.GetComponent<SimpleCamera>();
+		playerCamera = player.GetComponent<PlayerCamera>();
 	}
 
 	void OnEnable()
@@ -60,7 +60,7 @@ public class CullisGateController : MonoBehaviour {
 
 	void playCutscene()
 	{
-		simpleCamera.playCutscene( CutsceneType.CullisGate );
+		playerCamera.playCutscene( CutsceneType.CullisGate );
 	}
 
 	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )

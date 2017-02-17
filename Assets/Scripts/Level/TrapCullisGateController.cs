@@ -87,7 +87,7 @@ public class TrapCullisGateController : MonoBehaviour {
 		//Center player in the exact center of the cullis gate
 		player.transform.SetParent( transform );
 		player.transform.localPosition = new Vector3 ( 0, 0.54f, 0 );
-		player.GetComponent<SimpleCamera>().lockCamera( true );
+		player.GetComponent<PlayerCamera>().lockCamera( true );
 		player.GetComponent<PlayerController>().anim.speed = 3.8f;
 		player.GetComponent<PlayerController>().anim.CrossFadeInFixedTime("Fall", 0.25f);
 		LeanTween.moveY( player, transform.position.y - 4f, 5f ).setEase(LeanTweenType.easeOutExpo);

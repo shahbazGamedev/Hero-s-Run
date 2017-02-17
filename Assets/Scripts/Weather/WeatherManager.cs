@@ -6,7 +6,7 @@ public class WeatherManager : MonoBehaviour {
 	public ParticleSystem rain;
 	ParticleSystem activeParticleSystem; //either rain or snow
 	Transform player;
-	SimpleCamera simpleCamera;
+	PlayerCamera playerCamera;
 	bool isParticleSystemActive = false;
 
 	Transform weatherTarget; //snow or rain
@@ -15,7 +15,7 @@ public class WeatherManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-		if( simpleCamera != null && !simpleCamera.isCameraLocked )
+		if( playerCamera != null && !playerCamera.isCameraLocked )
 		{
 			if( isParticleSystemActive )
 			{
@@ -66,7 +66,7 @@ public class WeatherManager : MonoBehaviour {
 	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
 	{
 		player = playerTransform;
-		simpleCamera = player.GetComponent<SimpleCamera>();
+		playerCamera = player.GetComponent<PlayerCamera>();
 		weatherTarget = player;
 	}
 

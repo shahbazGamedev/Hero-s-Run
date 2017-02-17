@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WhenCreated : MonoBehaviour
+public class OnSkinCreated : MonoBehaviour
 {
 
+	//When the player skin is instantiated, attach it to the player whose name is stored in the data object array.
 	void OnPhotonInstantiate(PhotonMessageInfo info) 
 	{
 		if ( !PhotonNetwork.isMasterClient )
@@ -20,4 +21,6 @@ public class WhenCreated : MonoBehaviour
 			anim.Rebind(); //Important
 		}
 	}
+
+
 }

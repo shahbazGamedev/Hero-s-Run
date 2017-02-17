@@ -204,7 +204,7 @@ public sealed class PlayerController : MonoBehaviour {
 	PowerUpManager powerUpManager;
 	public TakeScreenshot takeScreenshot;
 
-	public SimpleCamera sc;
+	public PlayerCamera sc;
 	GenerateLevel generateLevel;
 	
 	public static DeathType deathType = DeathType.Alive;
@@ -310,7 +310,7 @@ public sealed class PlayerController : MonoBehaviour {
 		controllerOriginalCenter = controller.center;
 		controllerOriginalRadius = controller.radius;
 
-		sc = GetComponent<SimpleCamera>();
+		sc = GetComponent<PlayerCamera>();
 
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
@@ -619,7 +619,7 @@ public sealed class PlayerController : MonoBehaviour {
 		//Remember at what height the player started to fall because this will help us calculate the fall distance.
 		fallStartYPos = transform.position.y;
 		gravity = DEFAULT_GRAVITY * 2f;
-		sc.heightDamping = SimpleCamera.DEFAULT_HEIGHT_DAMPING * 9f;
+		sc.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING * 9f;
 		allowDistanceTravelledCalculations = false;
 		setCharacterState(PlayerCharacterState.Falling);
 		setAnimationTrigger(FallTrigger);
@@ -631,7 +631,7 @@ public sealed class PlayerController : MonoBehaviour {
 	{
 		//Reset values that we changed in the fall() method
 		gravity = DEFAULT_GRAVITY;
-		sc.heightDamping = SimpleCamera.DEFAULT_HEIGHT_DAMPING;
+		sc.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING;
 		allowRunSpeedToIncrease = true;
 		allowDistanceTravelledCalculations = true;
 		setCharacterState( PlayerCharacterState.Running );
@@ -2933,7 +2933,7 @@ public sealed class PlayerController : MonoBehaviour {
 		GameManager.Instance.setGameState( GameState.Resurrect );
 		anim.speed = 1f;
 		yield return new WaitForSeconds(duration);
-		sc.setCameraParameters( 18f, SimpleCamera.DEFAULT_DISTANCE, SimpleCamera.DEFAULT_HEIGHT, SimpleCamera.DEFAULT_Y_ROTATION_OFFSET );
+		sc.setCameraParameters( 18f, PlayerCamera.DEFAULT_DISTANCE, PlayerCamera.DEFAULT_HEIGHT, PlayerCamera.DEFAULT_Y_ROTATION_OFFSET );
 		sc.activateMainCamera();
 		sc.positionCameraNow();
 		sc.resetCameraParameters();
@@ -3131,7 +3131,7 @@ public sealed class PlayerController : MonoBehaviour {
 
 		reasonDiedAtTurn = "";
 
-		sc.heightDamping = SimpleCamera.DEFAULT_HEIGHT_DAMPING;
+		sc.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING;
 
 	}
 	
