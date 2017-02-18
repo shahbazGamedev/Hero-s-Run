@@ -188,6 +188,12 @@ public class PlayerControl : Photon.PunBehaviour {
 	PowerUpManager powerUpManager;
 	#endregion
 
+	#region Events
+	//Event management used to notify other classes when the character state has changed
+	public delegate void MultiplayerStateChanged( PlayerCharacterState value );
+	public static event MultiplayerStateChanged multiplayerStateChanged;
+	#endregion
+
 	void Awake ()
 	{
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
@@ -211,6 +217,9 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		//The character is in idle while waiting to run. 
 		setCharacterState( PlayerCharacterState.Idle );
+
+		//Initialise the screenshot camera
+		GameObject.FindGameObjectWithTag("HUD Canvas").GetComponent<TakeScreenshot>().initialise( transform );
 
 		playerCamera.playCutscene(CutsceneType.Checkpoint);
 
@@ -1588,11 +1597,9 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void setCharacterState( PlayerCharacterState newState )
 	{
-		//print ("***setCharacterState from " + playerCharacterState + " to new " + newState );
 		playerCharacterState = newState;
 		//Send an event to interested classes
-//if(playerStateChanged != null) playerStateChanged( playerCharacterState );
-
+		if(multiplayerStateChanged != null) multiplayerStateChanged( playerCharacterState );
 	}
 
 	public void enablePlayerControl( bool enabled )

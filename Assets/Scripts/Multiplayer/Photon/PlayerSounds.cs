@@ -22,11 +22,13 @@ public class PlayerSounds : MonoBehaviour {
 	AudioClip rightFootstep;
 
 	AudioSource audioSource;
+	string groundType = "normal"; //Other choices are water and collapsing.
 
 	// Use this for initialization
 	void Start ()
 	{
 		audioSource = GetComponent<AudioSource>();
+		groundTypeChanged("normal" );
 	}
 
 	void playSound(AudioClip soundToPlay, bool isLooping )
@@ -59,6 +61,50 @@ public class PlayerSounds : MonoBehaviour {
 	public void playFireDyingSound()
 	{
 		playSound( deathFireSound, false );
+	}
+
+	public void groundTypeChanged( string groundType )
+	{
+		this.groundType = groundType;
+
+		//Setup proper footsteps
+		if( groundType == "Water" )
+		{
+			leftFootstep = footstepWaterSound;
+			rightFootstep = footstepWaterSound;
+		}
+		else if( groundType == "Snow"  )
+		{
+			leftFootstep = snowFootstepLeftSound;
+			rightFootstep = snowFootstepRightSound;
+		}
+		else
+		{
+			leftFootstep = footstepLeftSound;
+			rightFootstep = footstepRightSound;
+		}
+	}
+
+	public void Footstep_left ( AnimationEvent eve )
+	{
+		audioSource.PlayOneShot( leftFootstep, 0.1f  );
+	}
+
+	public void Footstep_right ( AnimationEvent eve )
+	{
+		audioSource.PlayOneShot( rightFootstep, 0.1f  );
+	}
+
+	public void Land_sound ( AnimationEvent eve )
+	{
+		if( groundType != "Water" )
+		{
+			audioSource.PlayOneShot( landGroundSound, 0.28f );
+		}
+		else
+		{
+			audioSource.PlayOneShot( landWaterSound );
+		}
 	}
 
 }

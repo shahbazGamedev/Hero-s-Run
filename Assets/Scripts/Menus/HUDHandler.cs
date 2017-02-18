@@ -80,7 +80,7 @@ public class HUDHandler : MonoBehaviour {
 	void Update ()
 	{
 		updateFPS();
-		if( hudDebugInfo.gameObject.activeSelf ) hudDebugInfo.text = " FPS: " + fps + "-" + LevelManager.Instance.getNextEpisodeToComplete() + "-" + playerController.getCurrentTileName() + "-" + PlayerStatsManager.Instance.getTimesPlayerRevivedInLevel() + "-" + PlayerController.getPlayerSpeed().ToString("N1");
+		if( hudDebugInfo.gameObject.activeSelf ) hudDebugInfo.text = " FPS: " + fps;
 		managePickUps();
 		//Also support keys for debugging
 		if ( Input.GetKeyDown (KeyCode.U) ) 

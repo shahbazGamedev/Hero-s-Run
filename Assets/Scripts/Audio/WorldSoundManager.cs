@@ -32,11 +32,22 @@ public class WorldSoundManager : MonoBehaviour {
 
     void Awake () 
     {
-		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
-		quietMusicAudioSource.clip = currentEpisode.quietMusicTrack;
-		actionMusicAudioSource.clip = currentEpisode.actionMusicTrack;
-		mainAmbienceAudioSource.clip = currentEpisode.mainAmbienceTrack;
-		secondaryAmbienceAudioSource.clip = currentEpisode.secondaryAmbienceTrack;
+		if( GameManager.Instance.isMultiplayer() )
+		{
+			LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedMultiplayerLevel();
+			quietMusicAudioSource.clip = multiplayerInfo.quietMusicTrack;
+			actionMusicAudioSource.clip = multiplayerInfo.actionMusicTrack;
+			mainAmbienceAudioSource.clip = multiplayerInfo.mainAmbienceTrack;
+			secondaryAmbienceAudioSource.clip = multiplayerInfo.secondaryAmbienceTrack;
+		}
+		else
+		{
+			LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
+			quietMusicAudioSource.clip = currentEpisode.quietMusicTrack;
+			actionMusicAudioSource.clip = currentEpisode.actionMusicTrack;
+			mainAmbienceAudioSource.clip = currentEpisode.mainAmbienceTrack;
+			secondaryAmbienceAudioSource.clip = currentEpisode.secondaryAmbienceTrack;
+		}
 		//Reset values
         ambienceNoneActive.TransitionTo(0f);
 		worldEffectsMixer.SetFloat("Reverb Intensity", -80f );
@@ -78,6 +89,7 @@ public class WorldSoundManager : MonoBehaviour {
 	{
 		TriggerSoundEvent.sendSoundEvent += SendSoundEvent;
 		PlayerController.playerStateChanged += PlayerStateChange;
+		PlayerControl.multiplayerStateChanged += MultiplayerStateChanged;
 		GameManager.gameStateEvent += GameStateChange;
 	}
 	
@@ -85,6 +97,7 @@ public class WorldSoundManager : MonoBehaviour {
 	{
 		TriggerSoundEvent.sendSoundEvent -= SendSoundEvent;
 		PlayerController.playerStateChanged -= PlayerStateChange;
+		PlayerControl.multiplayerStateChanged -= MultiplayerStateChanged;
 		GameManager.gameStateEvent -= GameStateChange;
 	}
 
@@ -123,6 +136,18 @@ public class WorldSoundManager : MonoBehaviour {
 	}
 
 	void PlayerStateChange( PlayerCharacterState newState )
+	{
+		if( newState == PlayerCharacterState.StartRunning )
+		{
+			startMusic();
+		}
+		else if( newState == PlayerCharacterState.Dying )
+		{
+         	lowMusic.TransitionTo(1f);
+		}
+	}
+
+	void MultiplayerStateChanged( PlayerCharacterState newState )
 	{
 		if( newState == PlayerCharacterState.StartRunning )
 		{
