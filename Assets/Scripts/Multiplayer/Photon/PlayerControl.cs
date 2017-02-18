@@ -10,7 +10,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	PlayerCamera playerCamera;
 	PlayerVisuals playerVisuals;
 	PlayerSounds playerSounds;
-	PlayerInput playerInput;
 	PlayerCollisions playerCollisions;
 	#endregion
 
@@ -95,6 +94,9 @@ public class PlayerControl : Photon.PunBehaviour {
 	//as soon as you touch the ground
 	//You can only queue one move at any given time
 	bool queueJump = false;
+	//jumpStarted is used for one frame to prevent controller.isGrounded from preventing the player to jump.
+	//A jump event can come at any time.
+	bool jumpStarted = false;
 	#endregion
 
 	#region Sliding variables
@@ -209,7 +211,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerCamera = GetComponent<PlayerCamera>();
 		playerVisuals = GetComponent<PlayerVisuals>();
 		playerSounds = GetComponent<PlayerSounds>();
-		playerInput = GetComponent<PlayerInput>();
 		playerCollisions = GetComponent<PlayerCollisions>();
 
 		//The character is in idle while waiting to run. 
@@ -352,7 +353,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		
 		verifySlide();
 
-		if (controller.isGrounded)
+		if (controller.isGrounded && !jumpStarted)
 		{
 			//If we we were falling and just landed,reset values and go back to running state.
 			//However, before deciding to land, also check that the distance to the ground is less than 10 cm to avoid false positives (controller.isGrounded is not perfect).
@@ -407,10 +408,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			moveDirection.y -= gravity * Time.deltaTime;
 		}
 
-		//It is important that processInputs gets called here.
-		//PlayerInput is disabled for remote players
-		if( playerInput.enabled ) playerInput.processInputs();
-
 		// Move the controller
 		if( playerCharacterState != PlayerCharacterState.Ziplining )
 		{
@@ -457,7 +454,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			#else
 			controller.Move( forward );
 			#endif
-
+			jumpStarted = false;
 		}
 		else
 		{
@@ -578,6 +575,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				deactivateOverheadObstacles( true );					//reactivate overhead obstacles since they would have been deactivated if we were sliding
 
 				jumping = true;
+				jumpStarted = true;
 	
 				//Memorize the run speed
 				runSpeedAtTimeOfJump = runSpeed;
