@@ -49,14 +49,17 @@ public class PlayerInput : PunBehaviour {
 		if ( Input.GetKeyDown (KeyCode.LeftArrow) ) 
 		{
 			playerControl.sideSwipe( false );
+			this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, false );
 		}
 		else if ( Input.GetKeyDown (KeyCode.RightArrow) ) 
 		{
 			playerControl.sideSwipe( true );
+			this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, true );
 		}
 		else if ( Input.GetKeyDown (KeyCode.DownArrow) ) 
 		{
 			playerControl.startSlide();
+			this.photonView.RPC("startSlideRPC", PhotonTargets.Others );
 		}
 		else if ( Input.GetKeyDown (KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.Space)  ) 
 		{
@@ -64,23 +67,32 @@ public class PlayerInput : PunBehaviour {
 			if( false && playerControl.getCharacterState() != PlayerCharacterState.Ziplining )
 			{
 				playerControl.attachToZipline();
+				this.photonView.RPC("attachToZiplineRPC", PhotonTargets.Others );
 			}
 			else
 			{
 				playerControl.jump();
+				this.photonView.RPC("jumpRPC", PhotonTargets.Others );
 			}
 		}
-		else if ( Input.GetKeyDown (KeyCode.P ) )
+		else if ( Input.GetKeyDown (KeyCode.D ) )
 		{
-			GetComponent<CharacterController>().enabled = !GetComponent<CharacterController>().enabled;
+			playerControl.handlePowerUp();
+			this.photonView.RPC("handlePowerUpRPC", PhotonTargets.Others );
 		}
 		else if ( Input.GetKeyDown (KeyCode.K ) )
 		{
+			//Kill player for testing
 			playerControl.managePlayerDeath(DeathType.Obstacle);
+		}
+		else if ( Input.GetKeyDown (KeyCode.P ) )
+		{
+			//Stop the character from moving for testing
+			GetComponent<CharacterController>().enabled = !GetComponent<CharacterController>().enabled;
 		}
 		else if ( Input.GetKeyDown (KeyCode.S ) )
 		{
-			//Slow down time
+			//Slow down time for testing
 			if( Time.timeScale < 1f )
 			{
 				Time.timeScale = 1f;
@@ -89,20 +101,6 @@ public class PlayerInput : PunBehaviour {
 			{
 				Time.timeScale = 0.5f;
 			}
-		}
-		else if ( Input.GetKeyDown (KeyCode.D ) )
-		{
-			handlePowerUp();
-		}
-		else if ( Input.GetKeyDown (KeyCode.Q ) )
-		{
-			Debug.Log("Activating shield powerup " );
-			powerUpManager.activatePowerUp(PowerUpType.Shield);
-		}
-		else if ( Input.GetKeyDown (KeyCode.T ) )
-		{
-			Debug.Log("Listing all textures: " );
-			Utilities.printAllTexturesInScene();
 		}
 	}
 
@@ -164,16 +162,19 @@ public class PlayerInput : PunBehaviour {
 			{
 				//player swiped RIGHT
 				playerControl.sideSwipe( true );
+				this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, true );
 	        }
 			else if (angle < 180)
 			{
 				//player swiped DOWN
 				playerControl.startSlide ();
+				this.photonView.RPC("startSlideRPC", PhotonTargets.Others );
 	        }
 			else if (angle < 270)
 			{
 				//player swiped LEFT
 				playerControl.sideSwipe( false );
+				this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, false );
 			}
 			else
 			{
@@ -182,10 +183,12 @@ public class PlayerInput : PunBehaviour {
 				if( false && playerControl.getCharacterState() != PlayerCharacterState.Ziplining )
 				{
 					playerControl.attachToZipline();
+					this.photonView.RPC("attachToZiplineRPC", PhotonTargets.Others );
 				}
 				else
 				{
 					playerControl.jump();
+					this.photonView.RPC("jumpRPC", PhotonTargets.Others );
 				}
 	        }
 		}
@@ -200,18 +203,10 @@ public class PlayerInput : PunBehaviour {
 			{
 				if( touch.phase == TouchPhase.Ended  )
 				{
-					handlePowerUp();
+					playerControl.handlePowerUp();
+					this.photonView.RPC("handlePowerUpRPC", PhotonTargets.Others );
 				}
 			}
 		}
 	}
-
-	void handlePowerUp()
-	{
-		if( GameManager.Instance.getGameState() == GameState.Normal && playerControl.getCharacterState() != PlayerCharacterState.Dying )
-		{
-			powerUpManager.activatePowerUp( PlayerStatsManager.Instance.getPowerUpSelected() );
-		}
-	}
-
 }

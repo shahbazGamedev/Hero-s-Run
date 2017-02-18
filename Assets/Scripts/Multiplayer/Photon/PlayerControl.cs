@@ -15,7 +15,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Accelerometer variables 	
-	bool usesAccelerometer = true;
+	bool usesAccelerometer = false;
 	float accelerometerPreviousFrameX = 0;
 	float accelerometerStrength = 22.5f;
 	#endregion
@@ -1834,5 +1834,13 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 	}
 	#endregion
+
+	public void handlePowerUp()
+	{
+		if( GameManager.Instance.getGameState() == GameState.Normal && getCharacterState() != PlayerCharacterState.Dying )
+		{
+			powerUpManager.activatePowerUp( PlayerStatsManager.Instance.getPowerUpSelected() );
+		}
+	}
 
 }
