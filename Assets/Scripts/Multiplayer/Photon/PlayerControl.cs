@@ -214,6 +214,9 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		getFirstTileInfo();
 
+		//We may not have been spawned in the center lane. Make sure the lane values are accurate.
+		recalculateCurrentLane();
+
 		//Tell the MasterClient that we are ready to go. Our level has been loaded and our player created.
 		//The MasterClient will initiate the countdown
 		if( this.photonView.isMine ) this.photonView.RPC("readyToGo", PhotonTargets.MasterClient, null );	
@@ -320,7 +323,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					}
 				}
 
-				//verifyIfDesiredLaneReached();
+				verifyIfDesiredLaneReached();
 			}
 		}
 	}
@@ -544,7 +547,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				moveDirection.x = 0;
 				
 				//Make sure the lane data is correct in case a collision forced us out of our lane
-	//recalculateCurrentLane();
+				recalculateCurrentLane();
 
 				//We are allowed to jump from the slide state.
 				playerSounds.stopAudioSource();							//stop the sliding sound if any
@@ -665,6 +668,8 @@ public class PlayerControl : Photon.PunBehaviour {
 						}
 
 						setAnimationTrigger(Slide_DownTrigger);
+
+						playerSounds.playSlidingSound();
 					}
 				}
 			}
@@ -995,43 +1000,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		currentLane = desiredLane;
 	}
 
-	public void attachToZipline()
-	{
-		SegmentInfo si = currentTile.GetComponent<SegmentInfo>();
-		if( si != null )
-		{
-			List<SegmentInfo.BezierData>  curveList = si.curveList;
-			SegmentInfo.BezierData bezierData = curveList[0];
-			setCharacterState( PlayerCharacterState.Ziplining );
-			enablePlayerControl( false );
-			setAnimationTrigger(Idle_LookTrigger);
-			ziplineAttachPoint = transform.FindChild("Zipline Attach Point");
-			ziplineAttachPoint.localPosition = new Vector3( 0, 2.15f, 0 );
-			ziplineAttachPoint.localEulerAngles = new Vector3( 0, 0, 0 );
-			ziplineAttachPoint.GetComponent<AudioSource>().Play();
-			ziplineAttachPoint.SetParent(null);
-			transform.SetParent( ziplineAttachPoint );
-			transform.eulerAngles =  new Vector3(transform.eulerAngles.x,transform.eulerAngles.y,6f);
-			//A set of points that define one or many bezier paths (the paths should be passed in multiples of 4, which correspond to each individual bezier curve)
-			//It goes in the order: startPoint,endControl,startControl,endPoint
-			LTBezierPath ltBezier = new LTBezierPath( new Vector3[] { bezierData.bezierStart.position, bezierData.bezierControl2.position, bezierData.bezierControl1.position, bezierData.bezierEnd.position } );
-			LeanTween.move(ziplineAttachPoint.gameObject, ltBezier.pts, 4f).setOrientToPath(true).setEase(LeanTweenType.easeOutQuad);
-			playerCamera.playCutscene(CutsceneType.Ziplining);
-		}
-	}
-
-	void detachFromZipline()
-	{
-		LeanTween.cancel( gameObject );
-		transform.SetParent( null );
-		ziplineAttachPoint.SetParent( transform, false );
-		ziplineAttachPoint.localScale = new Vector3( 1f, 1f, 1f ); 	//Just because of rounding when changing parent
-		ziplineAttachPoint.GetComponent<AudioSource>().Stop();
-		enablePlayerControl( true );
-		playerCamera.reactivateMaincamera();
-		transform.eulerAngles = new Vector3(0,270f,0); //we turned left while ziplining
-		fall();
-	}
 
 	void setDesiredLane( float sideMoveInitiatedZ )
 	{
@@ -1307,6 +1275,46 @@ public class PlayerControl : Photon.PunBehaviour {
 	}
 	#endregion
 
+	#region Zipline
+	public void attachToZipline()
+	{
+		SegmentInfo si = currentTile.GetComponent<SegmentInfo>();
+		if( si != null )
+		{
+			List<SegmentInfo.BezierData>  curveList = si.curveList;
+			SegmentInfo.BezierData bezierData = curveList[0];
+			setCharacterState( PlayerCharacterState.Ziplining );
+			enablePlayerControl( false );
+			setAnimationTrigger(Idle_LookTrigger);
+			ziplineAttachPoint = transform.FindChild("Zipline Attach Point");
+			ziplineAttachPoint.localPosition = new Vector3( 0, 2.15f, 0 );
+			ziplineAttachPoint.localEulerAngles = new Vector3( 0, 0, 0 );
+			ziplineAttachPoint.GetComponent<AudioSource>().Play();
+			ziplineAttachPoint.SetParent(null);
+			transform.SetParent( ziplineAttachPoint );
+			transform.eulerAngles =  new Vector3(transform.eulerAngles.x,transform.eulerAngles.y,6f);
+			//A set of points that define one or many bezier paths (the paths should be passed in multiples of 4, which correspond to each individual bezier curve)
+			//It goes in the order: startPoint,endControl,startControl,endPoint
+			LTBezierPath ltBezier = new LTBezierPath( new Vector3[] { bezierData.bezierStart.position, bezierData.bezierControl2.position, bezierData.bezierControl1.position, bezierData.bezierEnd.position } );
+			LeanTween.move(ziplineAttachPoint.gameObject, ltBezier.pts, 4f).setOrientToPath(true).setEase(LeanTweenType.easeOutQuad);
+			playerCamera.playCutscene(CutsceneType.Ziplining);
+		}
+	}
+
+	void detachFromZipline()
+	{
+		LeanTween.cancel( gameObject );
+		transform.SetParent( null );
+		ziplineAttachPoint.SetParent( transform, false );
+		ziplineAttachPoint.localScale = new Vector3( 1f, 1f, 1f ); 	//Just because of rounding when changing parent
+		ziplineAttachPoint.GetComponent<AudioSource>().Stop();
+		enablePlayerControl( true );
+		playerCamera.reactivateMaincamera();
+		transform.eulerAngles = new Vector3(0,270f,0); //we turned left while ziplining
+		fall();
+	}
+	#endregion
+
 	#region Animation
 	public void playVictoryAnimation()
 	{
@@ -1525,6 +1533,32 @@ public class PlayerControl : Photon.PunBehaviour {
 		
 		anim.SetFloat( lookbackBlendFactor, 0 );
 		
+	}
+	#endregion
+
+	#region Stumble
+	void Stumble()
+	{
+		//The OnControllerColliderHit function can send multiple collision events during a single
+		//stumble, so ignore any new events while in the stumbling state.
+		if ( playerCharacterState != PlayerCharacterState.Stumbling && playerCharacterState != PlayerCharacterState.Dying )
+		{	
+			Debug.Log ("Player stumbled");
+			setCharacterState( PlayerCharacterState.Stumbling );
+			//If the player stumbles, he loses a bit of speed and momentarily stops accelerating.
+			allowRunSpeedToIncrease = false;
+			runSpeedAtTimeOfStumble = runSpeed;
+			runSpeed = runSpeedStumbleMultiplier * runSpeed; //lower speed a bit
+			//The player stumbles but recovers
+			setAnimationTrigger(StumbleTrigger);
+		}
+	}
+
+	public void stumble_completed ( AnimationEvent eve )
+	{
+		setCharacterState( PlayerCharacterState.Running );
+		runSpeed = runSpeedAtTimeOfStumble;
+		allowRunSpeedToIncrease = true;
 	}
 	#endregion
 
