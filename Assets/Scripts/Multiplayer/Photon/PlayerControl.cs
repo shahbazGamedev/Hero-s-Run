@@ -402,7 +402,8 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 
 		//It is important that processInputs gets called here.
-		playerInput.processInputs();
+		//PlayerInput is disabled for remote players
+		if( playerInput.enabled ) playerInput.processInputs();
 
 		// Move the controller
 		if( playerCharacterState != PlayerCharacterState.Ziplining )

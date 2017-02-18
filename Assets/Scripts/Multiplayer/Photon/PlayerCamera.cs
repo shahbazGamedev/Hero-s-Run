@@ -75,8 +75,8 @@ public class PlayerCamera : Photon.PunBehaviour {
 	// Use this for initialization
 	void Awake ()
  	{
-		//If we are not the owner of this component, disable it.
-		if( !this.photonView.isMine ) this.enabled = false;
+		//If we are in multiplayer but not the owner of this component, disable it.
+		if( GameManager.Instance.isMultiplayer() && !this.photonView.isMine ) this.enabled = false;
 
 		mainCamera = Camera.main.transform;
 		cameraTarget = transform; //Set the player as the camera target by default
