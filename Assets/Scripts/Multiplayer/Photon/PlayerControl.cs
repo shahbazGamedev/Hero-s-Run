@@ -703,8 +703,6 @@ public class PlayerControl : Photon.PunBehaviour {
 						}
 
 						setAnimationTrigger(Slide_DownTrigger);
-
-						playerSounds.playSlidingSound();
 					}
 				}
 			}
@@ -736,7 +734,6 @@ public class PlayerControl : Photon.PunBehaviour {
 					setCharacterState( PlayerCharacterState.Running );
 				}
 				setAnimationTrigger(Slide_UpTrigger);
-				playerSounds.stopAudioSource();
 				deactivateOverheadObstacles( true );
 			}
 		}

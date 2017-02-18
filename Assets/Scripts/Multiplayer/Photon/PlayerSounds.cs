@@ -42,11 +42,6 @@ public class PlayerSounds : MonoBehaviour {
 		audioSource.Stop();
 	}
 
-	public void playSlidingSound()
-	{
-		playSound( slidingSound, true );
-	}
-
 	public void playSideMoveSound()
 	{
 		audioSource.PlayOneShot( sideMoveSound );
@@ -104,6 +99,16 @@ public class PlayerSounds : MonoBehaviour {
 		{
 			audioSource.PlayOneShot( landWaterSound );
 		}
+	}
+
+	public void Slide_sound_start ( AnimationEvent eve )
+	{
+		playSound( slidingSound, true );
+	}
+
+	public void Slide_sound_stop ( AnimationEvent eve )
+	{
+		audioSource.Stop();
 	}
 
 }
