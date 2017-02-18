@@ -2633,47 +2633,6 @@ public sealed class PlayerController : MonoBehaviour {
 		onFinish.Invoke();
 	}
 
-	//We pass the triggerPositionZ value because we need its position. We cannot rely on the position of the player at the moment of trigger because it can fluctuate based on frame rate and such.
-	//Therefore the final destination is based on the trigger's Z position plus the desired distance (and not the player's z position plus the desired distance, which is slightly inaccurate).
-	//This version is used in multiplayer. The player slows down but keeps control.
-	public IEnumerator slowDownPlayerAfterFinishLine( float distance, System.Action onFinish, float triggerPositionZ )
-	{
-		allowRunSpeedToIncrease = false;
-		enablePlayerControl( false );
-		float percentageComplete = 0;
-
-		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, triggerPositionZ );
-		Vector3 finalPlayerPosition = initialPlayerPosition + (transform.TransformDirection(Vector3.forward) * distance);
-		float distanceTravelled = 0;
-		float brakeFactor = 0.7f; //brake the player before slowing him down
-		float startSpeed = newRunSpeed * brakeFactor;
-		float endSpeed = SLOW_DOWN_END_SPEED;
-
-		float startBlendFactor = blendFactor;
-
-		float startAnimationSpeed = anim.speed;
-		float endAnimationSpeed = 1f;
-
-		while ( distanceTravelled <= distance )
-		{
-			distanceTravelled = Vector3.Distance( transform.position, initialPlayerPosition );
-			percentageComplete = distanceTravelled/distance;
-
-			//Update run speed
-			newRunSpeed =  Mathf.Lerp( startSpeed, endSpeed, percentageComplete );
-
-			//Update the blend amount between Run and Sprint animations based on the current run speed
-			blendFactor =  Mathf.Lerp( startBlendFactor, 0, percentageComplete );
-			anim.SetFloat(speedBlendFactor, blendFactor);
-
-			//update animation speed
-			anim.speed = Mathf.Lerp( startAnimationSpeed, endAnimationSpeed, percentageComplete );
-
-
-			yield return new WaitForFixedUpdate(); 
-		}
-		onFinish.Invoke();
-	}
 
 	public void afterPlayerSlowdown()
 	{

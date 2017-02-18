@@ -1606,7 +1606,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	public void enablePlayerControl( bool enabled )
 	{
 		playerControlsEnabled = enabled;
-		/*if( enabled )
+		if( enabled )
 		{
 			powerUpManager.changeSelectedPowerUp( PlayerStatsManager.Instance.getPowerUpSelected() );
 		}
@@ -1622,12 +1622,49 @@ public class PlayerControl : Photon.PunBehaviour {
 				//Player is dead. Since we are staying in the game, we have time to slide the power-up display out.
 				powerUpManager.slideDisplayOutPowerUp();
 			}
-		}*/
+		}
 	}
 
-	void afterPlayerSlowdown()
+	//We pass the triggerPositionZ value because we need its position. We cannot rely on the position of the player at the moment of trigger because it can fluctuate based on frame rate and such.
+	//Therefore the final destination is based on the trigger's Z position plus the desired distance (and not the player's z position plus the desired distance, which is slightly inaccurate).
+	//The player slows down but keeps control.
+	public IEnumerator slowDownPlayerAfterFinishLine( float distance, float triggerPositionZ )
 	{
-		GetComponent<PlayerController>().playVictoryAnimation();
+		allowRunSpeedToIncrease = false;
+		enablePlayerControl( false );
+		float percentageComplete = 0;
+
+		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, triggerPositionZ );
+		Vector3 finalPlayerPosition = initialPlayerPosition + (transform.TransformDirection(Vector3.forward) * distance);
+		float distanceTravelled = 0;
+		float brakeFactor = 0.7f; //brake the player before slowing him down
+		float startSpeed = runSpeed * brakeFactor;
+		float endSpeed = SLOW_DOWN_END_SPEED;
+
+		float startBlendFactor = blendFactor;
+
+		float startAnimationSpeed = anim.speed;
+		float endAnimationSpeed = 1f;
+
+		while ( distanceTravelled <= distance )
+		{
+			distanceTravelled = Vector3.Distance( transform.position, initialPlayerPosition );
+			percentageComplete = distanceTravelled/distance;
+
+			//Update run speed
+			runSpeed =  Mathf.Lerp( startSpeed, endSpeed, percentageComplete );
+
+			//Update the blend amount between Run and Sprint animations based on the current run speed
+			blendFactor =  Mathf.Lerp( startBlendFactor, 0, percentageComplete );
+			anim.SetFloat(speedBlendFactor, blendFactor);
+
+			//update animation speed
+			anim.speed = Mathf.Lerp( startAnimationSpeed, endAnimationSpeed, percentageComplete );
+
+
+			yield return new WaitForFixedUpdate(); 
+		}
+		playVictoryAnimation();
 		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 	}
 

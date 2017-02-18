@@ -179,7 +179,7 @@ public class PlayerRace : Photon.PunBehaviour
 	{
 		if( PhotonNetwork.player.IsLocal )
 		{
-			//StartCoroutine( GetComponent<PlayerController>().slowDownPlayerAfterFinishLine( 10f, afterPlayerSlowdown, triggerPositionZ ) );
+			StartCoroutine( GetComponent<PlayerControl>().slowDownPlayerAfterFinishLine( 10f, triggerPositionZ ) );
 			HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
 			PlayerRaceManager.Instance.playerCrossedFinishLine( racePosition + 1 );
 		}
