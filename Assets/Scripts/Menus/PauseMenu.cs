@@ -103,7 +103,8 @@ public class PauseMenu : MonoBehaviour {
 	//If the device is paused by pressing the Home button, because of a low battery warning or a phone call, the game will automatically display the pause menu.
 	void OnApplicationPause( bool pauseStatus )
 	{
-		if( pauseStatus && GameManager.Instance.getGameState() != GameState.Paused && playerController.getCharacterState() != PlayerCharacterState.Dying ) pauseGame();
+		//if( pauseStatus && GameManager.Instance.getGameState() != GameState.Paused && playerController.getCharacterState() != PlayerCharacterState.Dying ) pauseGame();
+		if( pauseStatus && GameManager.Instance.getGameState() != GameState.Paused  ) pauseGame();
 	}
 	
 	public void pauseGame()
@@ -121,15 +122,16 @@ public class PauseMenu : MonoBehaviour {
 			System.GC.Collect();
 			updatePowerupData( PlayerStatsManager.Instance.getPowerUpSelected() );
 			pauseMenuPopup.gameObject.SetActive( true );
-			isPlayerControlEnabledBeforePause = playerController.isPlayerControlEnabled();
-			playerController.enablePlayerControl(false);
+			//isPlayerControlEnabledBeforePause = playerController.isPlayerControlEnabled();
+			//playerController.enablePlayerControl(false);
 		}
 		else if( gameState == GameState.Paused )
 		{
 			//We were paused. Start the resume game countdown
 			GameManager.Instance.setGameState( GameState.Countdown );
 			pauseMenuPopup.gameObject.SetActive( false );
-			if( playerController.getCharacterState() != PlayerCharacterState.Dying )
+			//if( playerController.getCharacterState() != PlayerCharacterState.Dying )
+			if( true )
 			{
 				//In case we pause and unpause quickly, make sure we stop the countdown routine
 				StopCoroutine( "StartCountdown" );
@@ -141,7 +143,7 @@ public class PauseMenu : MonoBehaviour {
 				//Resume game but without the countdown
 				AudioListener.pause = false;
 				GameManager.Instance.setGameState( GameState.Normal );
-				if( isPlayerControlEnabledBeforePause ) playerController.enablePlayerControl(true);
+				//if( isPlayerControlEnabledBeforePause ) playerController.enablePlayerControl(true);
 			}
 		}
 	}
@@ -164,7 +166,7 @@ public class PauseMenu : MonoBehaviour {
 				Time.timeScale = timeScaleBeforePause;
 				AudioListener.pause = false;
 				GameManager.Instance.setGameState( GameState.Normal );
-				if( isPlayerControlEnabledBeforePause ) playerController.enablePlayerControl(true);
+				//if( isPlayerControlEnabledBeforePause ) playerController.enablePlayerControl(true);
 				//Display a Go! message and hide after a few seconds
 				goText.rectTransform.eulerAngles = new Vector3( 0,0,4 );
 				goText.text = LocalizationManager.Instance.getText("GO");
