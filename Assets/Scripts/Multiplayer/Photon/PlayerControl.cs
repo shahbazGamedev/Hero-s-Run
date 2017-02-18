@@ -11,6 +11,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	PlayerVisuals playerVisuals;
 	PlayerSounds playerSounds;
 	PlayerInput playerInput;
+	PlayerCollisions playerCollisions;
 	#endregion
 
 	#region Accelerometer variables 	
@@ -119,11 +120,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	bool playerControlsEnabled = true;
 	#endregion
 
-	#region Ground type variables
-	string groundType = "normal"; //Other choices are water and collapsing
-	string previousGroundType = "normal"; //Other choices are water and collapsing
-	#endregion
-
 	#region Powerup variables
 	//When the player is using a slow time power up, this slows down time by a factor of 2.
 	//However, in order for the game to not feel sluggish, we use a smaller value called SLOW_DOWN_FACTOR
@@ -214,6 +210,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerVisuals = GetComponent<PlayerVisuals>();
 		playerSounds = GetComponent<PlayerSounds>();
 		playerInput = GetComponent<PlayerInput>();
+		playerCollisions = GetComponent<PlayerCollisions>();
 
 		//The character is in idle while waiting to run. 
 		setCharacterState( PlayerCharacterState.Idle );
@@ -367,7 +364,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//if we were jumping and just landed, reset values and go back to the running state
 			if (jumping) 
 			{
-				if( groundType != "Water" )
+				if( playerCollisions.getGroundType() != "Water" )
 				{
 					playerVisuals.playDustPuff( false );
 				}
@@ -566,7 +563,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//Only allow a jump if we are not already jumping and if we are on the ground.
 			//However, if the ground type below the player is of type Collapsing, still allow him to jump.
 			//The Collapsing tag is used in the CollapsingBridge code.
-			if (playerCharacterState != PlayerCharacterState.Jumping && ( distanceToGround < 0.5f || groundType == "Collapsing" ) )
+			if (playerCharacterState != PlayerCharacterState.Jumping && ( distanceToGround < 0.5f || playerCollisions.getGroundType() == "Collapsing" ) )
 			{
 				//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
 				moveDirection.x = 0;
@@ -628,7 +625,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		print ( "fall started " + distanceToGround + " " + MIN_DISTANCE_FOR_FALL + " " + playerCharacterState );
 	}
 
-	void land()
+	public void land()
 	{
 		//Reset values that we changed in the fall() method
 		gravity = DEFAULT_GRAVITY;
@@ -696,7 +693,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 						deactivateOverheadObstacles( false );
 						setCharacterState( PlayerCharacterState.Sliding );
-						if( groundType == "Water" )
+						if( playerCollisions.getGroundType() == "Water" )
 						{
 							playerVisuals.playWaterSplashWhileSliding( true );
 						}
@@ -1575,7 +1572,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Stumble
-	void Stumble()
+	public void stumble()
 	{
 		//The OnControllerColliderHit function can send multiple collision events during a single
 		//stumble, so ignore any new events while in the stumbling state.
@@ -1610,6 +1607,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerCharacterState = newState;
 		//Send an event to interested classes
 		if(multiplayerStateChanged != null) multiplayerStateChanged( playerCharacterState );
+	}
+
+	public float getSpeed()
+	{
+		return runSpeed;
 	}
 
 	public void enablePlayerControl( bool enabled )
@@ -1676,5 +1678,164 @@ public class PlayerControl : Photon.PunBehaviour {
 		playVictoryAnimation();
 		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 	}
+
+	#region OnTriggerEnter, OnTriggerStay, OnTriggerExit
+	void OnTriggerEnter(Collider other)
+	{
+		//Carefull, if you turn right inside a deadEnd OnTriggerEnter will be called a second time (but not if your turn left).
+		//This is probably a Unity bug.
+		if( other.name == "deadEnd" )
+		{
+			//Deactivate the speedboost if active because it is really hard to turn when you are going super fast
+			if( PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
+			{
+				powerUpManager.deactivatePowerUp(PowerUpType.SpeedBoost, true );
+			}
+			isInDeadEnd = true;
+			wantToTurn = false;
+
+			currentDeadEndType = other.GetComponent<deadEnd>().deadEndType;
+			deadEndTrigger = other;
+			//Slow dow the player to make it easier to turn
+			allowRunSpeedToIncrease = false;
+			runSpeedAtTimeOfTurn = runSpeed;
+			runSpeed = runSpeed * runSpeedTurnMultiplier;
+		}
+		//For the Great Fall trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
+		else if( other.name == "Great Fall" )
+		{
+			managePlayerDeath( DeathType.GreatFall );
+		}
+		//For the Lock Camera trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
+		else if( other.name == "Lock Camera" )
+		{
+			playerCamera.lockCamera( true );
+		}
+		else if( other.name == "Entrance" )
+		{
+			SegmentInfo si = other.transform.parent.GetComponent<SegmentInfo>();
+			if( si != null )
+			{
+				if( !si.entranceCrossed )
+				{
+					//We might recycle currentTile (the one prior to the one we just entered), this is why we are passing it as a parameter.
+					generateLevel.tileEntranceCrossed( other.transform.parent );
+					//This flag is set to avoid tileEntranceCrossed being called multiple time which can happen with onTriggerEnter.
+					//This flag is set to false when a tile is added.
+					si.entranceCrossed = true;
+				}
+				currentTilePos = si.tile.transform.position;
+				currentTile = si.tile;
+				tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
+				currentTileType = si.tileType;
+			}
+			else
+			{
+				Debug.LogError("PlayerControl-OnTriggerEnter: " + other.transform.parent.name + " tile does not have a SegmentInfo component attached to it.");
+			}
+		}
+		else if( other.name == "ZiplineTrigger" )
+		{
+			//Deactivate the speedboost if active before ziplining
+			if( PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
+			{
+				powerUpManager.deactivatePowerUp(PowerUpType.SpeedBoost, true );
+			}
+			isInZiplineTrigger = true;
+		}
+ 		else if( other.name == "DetachZiplineTrigger" )
+		{
+			detachFromZipline();
+		}
+  	}
+
+	void OnTriggerStay(Collider other)
+	{
+		if( wantToTurn )
+		{
+			float currentZ = 0;
+			float playerRotationY = Mathf.Floor( transform.eulerAngles.y );
+			if( playerRotationY == 0 )
+			{
+				currentZ = deadEndTrigger.transform.position.z - transform.position.z;
+			}
+			else if( playerRotationY == 90f || playerRotationY == -270f )
+			{
+				currentZ = deadEndTrigger.transform.position.x - transform.position.x;
+			}
+			else if( playerRotationY == -90f || playerRotationY == 270f )
+			{
+				currentZ = transform.position.x - deadEndTrigger.transform.position.x;
+			}
+			else
+			{
+				Debug.LogWarning("PlayerControl-OnTriggerStay: returning 0");
+				currentZ = 0;
+			}
+			
+			//Lane 1 is the nearest to the player
+			if ( myLane == 1 )
+			{
+				if ( currentZ <= laneLimit )
+				{
+					//We can turn now
+					turnNow();					
+				}
+			}
+			//Lane 2 is always the center lane
+			else if ( myLane == 2 )
+			{
+				if ( currentZ <= 0 )
+				{
+					//We can turn now
+					turnNow();
+				}
+			}
+			//Lane 3 is the furthest from the player
+			else if ( myLane == 3 )
+			{
+				if ( currentZ <= -laneLimit )
+				{
+					//We can turn now
+					turnNow();
+				}
+			}
+		}
+	}
+
+	void OnTriggerExit(Collider other)
+	{
+		if( GameManager.Instance.getGameState() != GameState.Resurrect )
+		{
+			if( other.name == "deadEnd" )
+			{
+				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight)
+				{
+					reasonDiedAtTurn = "EXITED DEAD END NO TURN";
+					Debug.LogWarning("OnTriggerExit player exited dead end without turning " + other.name + " " + isInDeadEnd + " " + deadEndTurnDone + " " + currentDeadEndType );
+					managePlayerDeath ( DeathType.Turn );
+				}
+				//Reset values
+				isInDeadEnd = false;
+				deadEndTurnDone = false;
+				deadEndTrigger = null;
+				wantToTurn = false;
+			}
+			else if( other.name == "DeadTree" || other.name.StartsWith( "Stumble" ) || other.name == "cart" || other.name.StartsWith( "Breakable" ) || other.name == "Chicken" || other.name == "Pendulum" || other.name == "GroundObstacle" )
+			{
+				if( PowerUpManager.isThisPowerUpActive( PowerUpType.Shield ) )
+				{
+					//This Power Up only works one time, so deactivate it
+					powerUpManager.deactivatePowerUp( PowerUpType.Shield, false );
+				}
+			}
+			else if( other.name == "ZiplineTrigger" )
+			{
+				//Player is no longer in the zipline trigger
+				isInZiplineTrigger = false;
+			}
+		}
+	}
+	#endregion
 
 }

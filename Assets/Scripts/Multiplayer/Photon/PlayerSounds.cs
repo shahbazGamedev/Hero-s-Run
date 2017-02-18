@@ -22,13 +22,12 @@ public class PlayerSounds : MonoBehaviour {
 	AudioClip rightFootstep;
 
 	AudioSource audioSource;
-	string groundType = "normal"; //Other choices are water and collapsing.
+	string groundType = "Normal"; //Other choices are Water and Collapsing.
 
 	// Use this for initialization
 	void Start ()
 	{
 		audioSource = GetComponent<AudioSource>();
-		groundTypeChanged("normal" );
 	}
 
 	void playSound(AudioClip soundToPlay, bool isLooping )

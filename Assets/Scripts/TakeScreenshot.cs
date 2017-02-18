@@ -195,7 +195,6 @@ public class TakeScreenshot : MonoBehaviour {
 
 	public void initialise( Transform playerTransform )
 	{
-		Debug.LogWarning("TakeScreenshot-initialise for " + playerTransform.name );
 		GameObject screenShotCameraObject = playerTransform.FindChild("screenShotCamera").gameObject;
 		screenShotCamera = screenShotCameraObject.GetComponent<Camera>();
 		cameraFlash = screenShotCameraObject.transform.FindChild("Camera Flash").GetComponent<Light>();
