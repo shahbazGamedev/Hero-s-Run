@@ -221,6 +221,15 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Initialise the screenshot camera
 		GameObject.FindGameObjectWithTag("HUD Canvas").GetComponent<TakeScreenshot>().initialise( transform );
 
+		//Calculate the ground height
+		RaycastHit hit;
+		if (Physics.Raycast(new Vector3( transform.position.x, 10f, transform.position.z ), Vector3.down, out hit, 12.0F ))
+		{
+			transform.position = new Vector3( transform.position.x, hit.point.y, transform.position.z);
+			//Also adjust the camera height
+			Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y + hit.point.y, Camera.main.transform.position.z); 
+			playerCamera.positionCameraNow();
+		}
 		playerCamera.playCutscene(CutsceneType.Checkpoint);
 
 		getFirstTileInfo();
