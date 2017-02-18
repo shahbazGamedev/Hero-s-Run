@@ -27,9 +27,12 @@ public class PlayerInput : PunBehaviour {
 		powerUpManager = (PowerUpManager) powerUpManagerObject.GetComponent("PowerUpManager");
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
+	//This is called by PlayerControl. It can not be replaced by an Update() method.
+	//The reason is that if this method is not processed at the appropriate time, some actions like jumping will not work.
+	//For example, controller.isGrounded might be true before the character has jumped from the ground and therefore
+	//reset the jump.
+	public void processInputs()
+	{
 		#if UNITY_EDITOR
 		handleKeyboard();
 		#endif

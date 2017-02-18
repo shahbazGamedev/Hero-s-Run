@@ -10,6 +10,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	PlayerCamera playerCamera;
 	PlayerVisuals playerVisuals;
 	PlayerSounds playerSounds;
+	PlayerInput playerInput;
 	#endregion
 
 	#region Accelerometer variables 	
@@ -206,6 +207,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerCamera = GetComponent<PlayerCamera>();
 		playerVisuals = GetComponent<PlayerVisuals>();
 		playerSounds = GetComponent<PlayerSounds>();
+		playerInput = GetComponent<PlayerInput>();
 
 		//The character is in idle while waiting to run. 
 		setCharacterState( PlayerCharacterState.Idle );
@@ -282,6 +284,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	{
 		if( GameManager.Instance.getGameState() == GameState.Normal )
 		{
+			calculateFallDistance();
+
 			if( playerMovementEnabled )
 			{
 				calculateDistanceToGround();
@@ -388,8 +392,10 @@ public class PlayerControl : Photon.PunBehaviour {
 			moveDirection.y -= gravity * Time.deltaTime;
 		}
 
+		//It is important that processInputs gets called here.
+		playerInput.processInputs();
+
 		// Move the controller
-		
 		if( playerCharacterState != PlayerCharacterState.Ziplining )
 		{
 			//1) Get the direction of the player
@@ -621,6 +627,19 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		moveDirection.y = 0f;
 		print ( "player landed. Fall distance was: " + 	fallDistance );
+	}
+
+	void calculateFallDistance()
+	{
+		if( playerCharacterState == PlayerCharacterState.Falling )
+		{
+			//Calculate the fall distance
+			float fallDistance = fallStartYPos - transform.position.y;
+			if( fallDistance > FALL_TO_DEATH_DISTANCE )
+			{
+				managePlayerDeath(DeathType.Cliff);
+			}
+		}
 	}
 	#endregion
 
