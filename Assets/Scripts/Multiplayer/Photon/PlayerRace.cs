@@ -24,7 +24,7 @@ public class PlayerRace : Photon.PunBehaviour
 {
 	//Race position (1st place, 2nd place, etc.
 	int racePosition = -1;
-	int previousRacePosition = -1;	//Used to avoid updating if the value has not changed
+	int previousRacePosition = -2;	//Used to avoid updating if the value has not changed
 	//Distance travelled. This is used to determine who is in 1st place, 2nd place, etc.
 	Vector3 previousPlayerPosition = Vector3.zero;
 	float distanceTravelled = 0;
@@ -71,25 +71,48 @@ public class PlayerRace : Photon.PunBehaviour
 		}
 	}
 
+	/// <summary>
+	/// This method handles distance travelled, race position and race duration.
+	///	We only want this to run on the master client as we don't want conflicting opinions about the race position for example. 
+	/// </summary>
 	void FixedUpdate()
 	{
-		if( PhotonNetwork.isMasterClient && !playerCrossedFinishLine )
+		if( PhotonNetwork.isMasterClient )
 		{
-			//This is called on all the players on the MasterClient
-			updateDistanceTravelled();
-			//Update the race position of this player i.e. 1st place, 2nd place, and so forth
-			//Order the list using the distance travelled
-			players.Sort((x, y) => -x.distanceTravelled.CompareTo(y.distanceTravelled));
-			//Find where we sit in the list
-			int newPosition = players.FindIndex(a => a.gameObject == this.gameObject);
-			if( newPosition != previousRacePosition )
+			//Only calculate distance travelled, race position and race duration if the race is in progress. 
+			if( raceStarted && !playerCrossedFinishLine )
 			{
-				racePosition = newPosition;
-				this.photonView.RPC("OnRacePositionChanged", PhotonTargets.AllBufferedViaServer, racePosition );
-				previousRacePosition = racePosition;
-			}
+				//We use the distance travelled to determine the race position. All players on the master client need to do this.
+				updateDistanceTravelled();
 
-			if( raceStarted ) raceDuration = raceDuration + Time.deltaTime;
+				//We only want the host to calculate the race position and race duration.
+				//The host is the master client who is owned by this device (so IsMasterClient is true and IsMine is true).
+				if( this.photonView.isMine )
+				{
+					//Update the race position of the players i.e. 1st place, 2nd place, and so forth
+					//Order the list using the distance travelled
+					players.Sort((x, y) => -x.distanceTravelled.CompareTo(y.distanceTravelled));
+
+					for(int i=0; i<players.Count;i++)
+					{
+						//Find out where this player sits in the list
+						int newPosition = players.FindIndex(a => a.gameObject == players[i].gameObject);
+
+						//Verify if his position has changed
+						if( newPosition != players[i].previousRacePosition )
+						{
+							//Yes, it has.
+							//Save the new values
+							players[i].racePosition = newPosition;
+							players[i].previousRacePosition = players[i].racePosition;
+							//Inform the player of his new position so that he can update it on the HUD
+							players[i].photonView.RPC("OnRacePositionChanged", PhotonTargets.AllBufferedViaServer, newPosition );
+						}
+					}
+					//Calculate the race duration. It will be sent at the end of the race.
+					raceDuration = raceDuration + Time.deltaTime;
+				}
+			}
 		}
 	}
 
