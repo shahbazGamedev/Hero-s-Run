@@ -84,7 +84,7 @@ public class PlayerRace : Photon.PunBehaviour
 			int newPosition = players.FindIndex(a => a.gameObject == this.gameObject);
 			if( newPosition != previousRacePosition )
 			{
-				racePosition = newPosition; 	//Race position is a syncvar
+				racePosition = newPosition;
 				this.photonView.RPC("OnRacePositionChanged", PhotonTargets.AllBufferedViaServer, racePosition );
 				previousRacePosition = racePosition;
 			}
@@ -93,22 +93,20 @@ public class PlayerRace : Photon.PunBehaviour
 		}
 	}
 
+	//Only calculated on master client
 	void updateDistanceTravelled()
 	{
-		if( PhotonNetwork.isMasterClient )
+		//Important: The NetworkTransform component of the remote player can sometimes move a player backwards by a small amount.
+		//So ONLY update the distance if the player moved forward or at least stayed in the same position.
+		//The backward movement value is small but it will add up over time making the distance travelled  inacurate and this, in turn, will cause
+		//the race position value to be wrong.
+		if( transform.position.z >= previousPlayerPosition.z )
 		{
-			//Important: The NetworkTransform component of the remote player can sometimes move a player backwards by a small amount.
-			//So ONLY update the distance if the player moved forward or at least stayed in the same position.
-			//The backward movement value is small but it will add up over time making the distance travelled  inacurate and this, in turn, will cause
-			//the race position value to be wrong.
-			if( transform.position.z >= previousPlayerPosition.z )
-			{
-				//Do not take height into consideration for distance travelled
-				Vector3 current = new Vector3(transform.position.x, 0, transform.position.z);
-				Vector3 previous = new Vector3(transform.position.x, 0, previousPlayerPosition.z);
-				distanceTravelled = distanceTravelled + Vector3.Distance( current, previous );
-				previousPlayerPosition = transform.position;
-			}
+			//Do not take height into consideration for distance travelled
+			Vector3 current = new Vector3(transform.position.x, 0, transform.position.z);
+			Vector3 previous = new Vector3(transform.position.x, 0, previousPlayerPosition.z);
+			distanceTravelled = distanceTravelled + Vector3.Distance( current, previous );
+			previousPlayerPosition = transform.position;
 		}
 	}
 
@@ -139,7 +137,7 @@ public class PlayerRace : Photon.PunBehaviour
 	void OnRacePositionChanged( int value )
 	{
 		racePosition = value;
-		if( PhotonNetwork.player.IsLocal ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
+		if( this.photonView.isMine ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
 		//Debug.Log("PlayerRace: OnRacePositionChanged " +  (racePosition + 1 ) );
 	}
 

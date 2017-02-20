@@ -781,10 +781,10 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			//because we inserted tiles to the left of the T-Junction tile when it got created.
 
 			//Deactivate 4 left tiles
-			if( playerTileIndex + 1 < worldRoadSegments.Count ) worldRoadSegments[playerTileIndex + 1].SetActive(false);
-			if( playerTileIndex + 2 < worldRoadSegments.Count ) worldRoadSegments[playerTileIndex + 2].SetActive(false);
-			if( playerTileIndex + 3 < worldRoadSegments.Count ) worldRoadSegments[playerTileIndex + 3].SetActive(false);
-			if( playerTileIndex + 4 < worldRoadSegments.Count ) worldRoadSegments[playerTileIndex + 4].SetActive(false);
+			//if( playerTileIndex + 1 < worldRoadSegments.Count ) worldRoadSegments[playerTileIndex + 1].SetActive(false);
+			//if( playerTileIndex + 2 < worldRoadSegments.Count ) worldRoadSegments[playerTileIndex + 2].SetActive(false);
+			//if( playerTileIndex + 3 < worldRoadSegments.Count ) worldRoadSegments[playerTileIndex + 3].SetActive(false);
+			//if( playerTileIndex + 4 < worldRoadSegments.Count ) worldRoadSegments[playerTileIndex + 4].SetActive(false);
 
 
 			//Activate nbrVisiblesTiles to the right
@@ -821,7 +821,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	{
 		//Disable tile two behind the player
 		int index = playerTileIndex - 2;
-		if( index >= 0 ) worldRoadSegments[index].SetActive(false);
+		//if( index >= 0 ) worldRoadSegments[index].SetActive(false);
 			
 		//Enable next tile nbrVisibleTiles in front of player
 		index = playerTileIndex + nbrVisibleTiles;
