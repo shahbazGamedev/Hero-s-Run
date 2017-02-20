@@ -104,7 +104,7 @@ public class DialogManager : MonoBehaviour {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 	}
 	
-	void GameStateChange( GameState newState )
+	void GameStateChange( GameState previousState, GameState newState )
 	{
 		if( newState != GameState.Normal )
 		{

@@ -13,7 +13,7 @@ public class PlayerCollisions : MonoBehaviour {
 	#endregion
 
 	// Use this for initialization
-	void Start ()
+	void Awake ()
 	{
 		//For powerups
 		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");

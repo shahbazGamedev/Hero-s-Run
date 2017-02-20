@@ -80,7 +80,7 @@ public class HUDTopPanelManager : MonoBehaviour {
 		}
 	}
 
-	void GameStateChange( GameState newState )
+	void GameStateChange( GameState previousState, GameState newState )
 	{
 		if( newState == GameState.Normal )
 		{

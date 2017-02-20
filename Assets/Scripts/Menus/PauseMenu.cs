@@ -104,11 +104,12 @@ public class PauseMenu : MonoBehaviour {
 	void OnApplicationPause( bool pauseStatus )
 	{
 		//if( pauseStatus && GameManager.Instance.getGameState() != GameState.Paused && playerController.getCharacterState() != PlayerCharacterState.Dying ) pauseGame();
-		if( pauseStatus && GameManager.Instance.getGameState() != GameState.Paused  ) pauseGame();
+		if( !GameManager.Instance.isMultiplayer() && pauseStatus && GameManager.Instance.getGameState() != GameState.Paused  ) pauseGame();
 	}
 	
 	public void pauseGame()
 	{
+		if( GameManager.Instance.isMultiplayer() ) return;
 		GameState gameState = GameManager.Instance.getGameState();
 		
 		if( gameState == GameState.Normal )

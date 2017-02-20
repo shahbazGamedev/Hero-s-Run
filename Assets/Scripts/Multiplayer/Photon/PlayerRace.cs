@@ -121,47 +121,16 @@ public class PlayerRace : Photon.PunBehaviour
 				//Player has reached the finish line
 				playerCrossedFinishLine = true;
 				Debug.Log ("Finish Line crossed by " + PhotonNetwork.player.NickName + " in race position " + racePosition );
-				this.photonView.RPC("OnRaceDurationChanged", PhotonTargets.AllViaServer, raceDuration );
+				this.photonView.RPC("OnRaceDurationChanged", PhotonTargets.AllBuffered, raceDuration );
 				this.photonView.RPC("OnCrossingFinishLine", PhotonTargets.AllBufferedViaServer, other.transform.position.z );
-				//if( isRaceFinished() ) returnToLobby();
-				returnToLobby();
 			}
 		}
 	}
-
-    bool isRaceFinished()
-    {
-		bool raceFinished = true;
-        for (int i = 0; i < players.Count; i++)
-		{
-			if( !players[i].playerCrossedFinishLine ) return false;
-		}
-		return raceFinished;
-    }
-
-	void returnToLobby()
-	{
-/*		if( PhotonNetwork.isMasterClient )
-		{
-	        for (int i = 0; i < players.Count; i++)
-			{
-		    	players[i].RpcGameOver (netId, name);
-			}
-			players.Clear();
-		}
-*/
-		Invoke ("BackToLobby", 5f);
-
-	}
-
-    void BackToLobby()
-    {
-		PhotonNetwork.LeaveRoom();
-    }
 
 	[PunRPC]
 	void readyToGo()
 	{
+		//Only MasterClient gets this RPC call
 		GameObject.FindGameObjectWithTag("Level Networking Manager").GetComponent<LevelNetworkingManager>().playerReady();
 		Debug.Log("A new player is ready to go " + gameObject.name );
 	}
@@ -171,18 +140,16 @@ public class PlayerRace : Photon.PunBehaviour
 	{
 		racePosition = value;
 		if( PhotonNetwork.player.IsLocal ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
-		Debug.Log("PlayerRace: OnRacePositionChanged " +  (racePosition + 1 ) );
+		//Debug.Log("PlayerRace: OnRacePositionChanged " +  (racePosition + 1 ) );
 	}
 
 	[PunRPC]
 	void OnCrossingFinishLine(float triggerPositionZ )
 	{
-		if( PhotonNetwork.player.IsLocal )
-		{
-			StartCoroutine( GetComponent<PlayerControl>().slowDownPlayerAfterFinishLine( 10f, triggerPositionZ ) );
-			HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
-			PlayerRaceManager.Instance.playerCrossedFinishLine( racePosition + 1 );
-		}
+		Debug.Log("PlayerRace: OnCrossingFinishLine RPC received for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient + " isMine: " + this.photonView.isMine + " isLocal: " + PhotonNetwork.player.IsLocal );		
+		StartCoroutine( GetComponent<PlayerControl>().slowDownPlayerAfterFinishLine( 10f, triggerPositionZ ) );
+		HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
+		PlayerRaceManager.Instance.playerCrossedFinishLine( racePosition + 1 );
 	}
 
 

@@ -61,7 +61,7 @@ public class GameManager {
 	private static GameManager gameManager = null;
 
 	//Event management used to notify other classes when the game state has changed
-	public delegate void GameStateEvent( GameState value );
+	public delegate void GameStateEvent( GameState previousValue, GameState newValue );
 	public static event GameStateEvent gameStateEvent;
 
 	private GameMode gameMode = GameMode.Story;
@@ -89,13 +89,13 @@ public class GameManager {
         }
     } 
 	
-	public void setGameState( GameState state )
+	public void setGameState( GameState newState )
 	{
-		gameState = state;
-		Debug.Log("setGameState: new state is " + state );
 		//Send an event to interested classes
-		if(gameStateEvent != null) gameStateEvent( gameState );
-	}
+		if(gameStateEvent != null) gameStateEvent( gameState, newState );
+		gameState = newState;
+		Debug.Log("setGameState: new state is " + gameState );
+	} 
 
 	public GameState getGameState()
 	{

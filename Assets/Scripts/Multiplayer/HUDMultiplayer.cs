@@ -142,7 +142,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		GameManager.gameStateEvent -= GameStateChange;
 	}
 
-	void GameStateChange( GameState newState )
+	void GameStateChange( GameState previousState, GameState newState )
 	{
 		if( newState == GameState.Normal )
 		{

@@ -69,7 +69,7 @@ public class TrapSpikes : MonoBehaviour {
 		}
 	}
 	
-	void GameStateChange( GameState newState )
+	void GameStateChange( GameState previousState, GameState newState )
 	{
 		if( newState == GameState.Paused )
 		{

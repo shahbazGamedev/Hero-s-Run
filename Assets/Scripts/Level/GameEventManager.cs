@@ -898,7 +898,7 @@ public class GameEventManager : MonoBehaviour {
 		PlayerController.localPlayerCreated -= LocalPlayerCreated;
 	}
 
-	void GameStateChange( GameState newState )
+	void GameStateChange( GameState previousState, GameState newState )
 	{
 		if( newState == GameState.Paused )
 		{

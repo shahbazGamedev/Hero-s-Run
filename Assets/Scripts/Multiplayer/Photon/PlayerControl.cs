@@ -114,6 +114,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	Vector3 forward;
 	//Used to modify the blend amount between Run and Sprint animations based on the current run speed. Also used by the troll.
 	float blendFactor;
+	//We set the anim speed to 0 when we pause, so we need to remember the value when we unpause
+	float animSpeedAtTimeOfPause;
 	//The state of the character i.e. running, jumping, sliding, etc.
 	PlayerCharacterState playerCharacterState;
 	//True if the player is allowed to move, false otherwise. This flag is useful during camera cut-scenes to prevent the player from moving.
@@ -197,7 +199,8 @@ public class PlayerControl : Photon.PunBehaviour {
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
 		//For power ups
 		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
-		powerUpManager = (PowerUpManager) powerUpManagerObject.GetComponent("PowerUpManager");
+		powerUpManager = powerUpManagerObject.GetComponent<PowerUpManager>();
+		
 	}
 
 	// Use this for initialization
@@ -237,7 +240,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		//Tell the MasterClient that we are ready to go. Our level has been loaded and our player created.
 		//The MasterClient will initiate the countdown
-		if( this.photonView.isMine ) this.photonView.RPC("readyToGo", PhotonTargets.MasterClient, null );	
+		if( this.photonView.isMine ) this.photonView.RPC("readyToGo", PhotonTargets.MasterClient );	
 	}
 
 	//The player control needs info about the tile the player is on.
@@ -253,17 +256,60 @@ public class PlayerControl : Photon.PunBehaviour {
 	void OnEnable()
 	{
 		HUDMultiplayer.startRunningEvent += StartRunningEvent;
+		GameManager.gameStateEvent += GameStateChange;
 	}
 
 	void OnDisable()
 	{
 		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
+		GameManager.gameStateEvent -= GameStateChange;
 	}
 
 	void StartRunningEvent()
 	{
 		Debug.Log("PlayerControl: received StartRunningEvent");
 		startRunning();
+	}
+
+	void GameStateChange( GameState previousState, GameState newState )
+	{
+		//Ignore game state changes if we are not the owner
+		if ( !this.photonView.isMine ) return;
+		if( newState == GameState.Normal )
+		{
+			if( previousState == GameState.Paused )
+			{
+				this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.AllBufferedViaServer, false );
+			}
+		}
+		else if( newState == GameState.Paused )
+		{
+			this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.AllBufferedViaServer, true );
+		}
+	}
+
+	[PunRPC]
+	public void pauseRemotePlayers( bool isPaused )
+	{
+		Debug.Log("pauseRemotePlayers RPC received for: " +  gameObject.name + " isPaused: " + isPaused  + " isMasterClient: " + PhotonNetwork.isMasterClient + " isMine: " + this.photonView.isMine + " isLocal: " + PhotonNetwork.player.IsLocal + " view ID: " + this.photonView.viewID + " owner ID: " + this.photonView.ownerId );		
+		pausePlayer( isPaused );
+	}
+
+	void pausePlayer( bool isPaused )
+	{
+		if( isPaused )
+		{
+			animSpeedAtTimeOfPause = anim.speed;
+			anim.speed = 0;
+			playerControlsEnabled = false;
+			playerMovementEnabled = false;
+		}
+		else
+		{
+			playerControlsEnabled = true;
+			playerMovementEnabled = true;
+			anim.speed = animSpeedAtTimeOfPause;
+		}
 	}
 
 	void setInitialRunningParameters()
@@ -298,53 +344,49 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void Update()
 	{
-		if( GameManager.Instance.getGameState() == GameState.Normal )
+		calculateFallDistance();
+		if( playerMovementEnabled )
 		{
-			calculateFallDistance();
+			calculateDistanceToGround();
+			updateRunSpeed();
+			moveCharacter();
 
-			if( playerMovementEnabled )
+			//Verify if the player is falling.
+			//Also ignore if we are already falling or dying.
+			if( playerCharacterState != PlayerCharacterState.Falling && playerCharacterState != PlayerCharacterState.Dying && playerCharacterState != PlayerCharacterState.Ziplining )
 			{
-				calculateDistanceToGround();
-				updateRunSpeed();
-				moveCharacter();
-
-				//Verify if the player is falling.
-				//Also ignore if we are already falling or dying.
-				if( playerCharacterState != PlayerCharacterState.Falling && playerCharacterState != PlayerCharacterState.Dying && playerCharacterState != PlayerCharacterState.Ziplining )
+				//Verify how far is the ground
+				if( distanceToGround > MIN_DISTANCE_FOR_FALL )
 				{
-					//Verify how far is the ground
-					if( distanceToGround > MIN_DISTANCE_FOR_FALL )
-					{
-						bool isLeftFootOnGround = true;
-						Vector3 leftFootPosition = transform.TransformPoint(new Vector3( -0.12f ,0 ,0.1f ));
-						bool isRightFootOnGround = true;
-						Vector3 rightFootPosition = transform.TransformPoint(new Vector3( 0.12f ,0 ,-0.1f ));
+					bool isLeftFootOnGround = true;
+					Vector3 leftFootPosition = transform.TransformPoint(new Vector3( -0.12f ,0 ,0.1f ));
+					bool isRightFootOnGround = true;
+					Vector3 rightFootPosition = transform.TransformPoint(new Vector3( 0.12f ,0 ,-0.1f ));
 
-						//Test left foot
-						//There might be a small crack between the tiles. We don't want the player to fall if this is the case.
-						//So also check 10cm in front of the player (with left foot test) and 10cm in back of the player (with right foot test) before deciding to fall.	
-						if ( !Physics.Raycast(leftFootPosition, Vector3.down, MIN_DISTANCE_FOR_FALL ))
-						{
-							//Ground is further than MIN_DISTANCE_FOR_FALL meters.
-							//Left foot is not on the ground
-							isLeftFootOnGround = false;
-						}
-						//Test right foot
-						if ( !Physics.Raycast(rightFootPosition, Vector3.down, MIN_DISTANCE_FOR_FALL ))
-						{
-							//Ground is further than MIN_DISTANCE_FOR_FALL meters.
-							//Right foot is not on the ground
-							isRightFootOnGround = false;
-						}
-						if( !isLeftFootOnGround && !isRightFootOnGround )
-						{
-							fall();
-						}
+					//Test left foot
+					//There might be a small crack between the tiles. We don't want the player to fall if this is the case.
+					//So also check 10cm in front of the player (with left foot test) and 10cm in back of the player (with right foot test) before deciding to fall.	
+					if ( !Physics.Raycast(leftFootPosition, Vector3.down, MIN_DISTANCE_FOR_FALL ))
+					{
+						//Ground is further than MIN_DISTANCE_FOR_FALL meters.
+						//Left foot is not on the ground
+						isLeftFootOnGround = false;
+					}
+					//Test right foot
+					if ( !Physics.Raycast(rightFootPosition, Vector3.down, MIN_DISTANCE_FOR_FALL ))
+					{
+						//Ground is further than MIN_DISTANCE_FOR_FALL meters.
+						//Right foot is not on the ground
+						isRightFootOnGround = false;
+					}
+					if( !isLeftFootOnGround && !isRightFootOnGround )
+					{
+						fall();
 					}
 				}
-
-				verifyIfDesiredLaneReached();
 			}
+
+			verifyIfDesiredLaneReached();
 		}
 	}
 
@@ -1631,6 +1673,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 	}
 
+	public bool isPlayerControlEnabled()
+	{
+		return playerControlsEnabled;
+	}
+
 	//We pass the triggerPositionZ value because we need its position. We cannot rely on the position of the player at the moment of trigger because it can fluctuate based on frame rate and such.
 	//Therefore the final destination is based on the trigger's Z position plus the desired distance (and not the player's z position plus the desired distance, which is slightly inaccurate).
 	//The player slows down but keeps control.
@@ -1672,7 +1719,21 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		playVictoryAnimation();
 		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
+		//Wait a few seconds for the victory animation to finish
+		Invoke ("ReturnToMatchmaking", 3.5f);
 	}
+
+    void ReturnToMatchmaking()
+    {
+		if (this.photonView.isMine )
+		{
+			 PhotonNetwork.LeaveRoom();
+		}
+		else
+		{
+			Debug.LogWarning("ReturnToMatchmaking-Not leaving room because the photon view is not mine for: " + gameObject.name );
+		}
+    }
 
 	#region OnTriggerEnter, OnTriggerStay, OnTriggerExit
 	void OnTriggerEnter(Collider other)
@@ -1840,5 +1901,4 @@ public class PlayerControl : Photon.PunBehaviour {
 			powerUpManager.activatePowerUp( PlayerStatsManager.Instance.getPowerUpSelected() );
 		}
 	}
-
 }
