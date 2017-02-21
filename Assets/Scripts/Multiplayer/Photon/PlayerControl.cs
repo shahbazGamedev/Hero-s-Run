@@ -1388,7 +1388,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Animation
-	public void playVictoryAnimation()
+	void playVictoryAnimation()
 	{
 		setAnimationTrigger( Finish_LineTrigger );
 	}
@@ -1400,11 +1400,21 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Player Death
+	[PunRPC]
+	void playerDied( DeathType deathTypeValue )
+	{
+		Debug.Log("PlayerControl-playerDied RPC : " + deathTypeValue + " name " + gameObject.name );
+		managePlayerDeath( deathTypeValue );
+	}
+
 	public void managePlayerDeath( DeathType deathTypeValue )
 	{
 		//Only proceed if the player is not dying already
 		if ( playerCharacterState != PlayerCharacterState.Dying )
 		{
+			//Tell the remote versions of us that we died
+			this.photonView.RPC("playerDied", PhotonTargets.OthersBuffered, deathTypeValue );
+
 			//Remember how we died
 			deathType = deathTypeValue;
 
@@ -1466,11 +1476,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		    switch (deathType)
 			{
 		        case DeathType.Cliff:
-					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2f) );	
+					StartCoroutine( waitBeforeResurrecting(2f) );	
 					break;
 		                
 		        case DeathType.Enemy:
-					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2f) );	
+					StartCoroutine( waitBeforeResurrecting(2f) );	
 					break;
 		                
 				case DeathType.Zombie:
@@ -1495,7 +1505,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					playerCamera.lockCamera ( true );
 					anim.speed = 2.8f;
 					setAnimationTrigger(DeathRiverTrigger);
-					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2.5f) );
+					StartCoroutine( waitBeforeResurrecting(2.5f) );
 					break;
 
 		        case DeathType.VortexTrap:
@@ -1503,11 +1513,11 @@ public class PlayerControl : Photon.PunBehaviour {
 					anim.speed = 3.8f;
 					setAnimationTrigger(FallTrigger);
 					LeanTween.moveLocalY( gameObject, transform.position.y - TrapVortex.distanceTravelledDown, TrapVortex.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutExpo).setDelay(TrapVortex.delayBeforeBeingPulledDown);
-					StartCoroutine( waitBeforeDisplayingSaveMeScreen(5f) );
+					StartCoroutine( waitBeforeResurrecting(5f) );
 					break;
 
 		        case DeathType.GreatFall:
-					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2.5f) );
+					StartCoroutine( waitBeforeResurrecting(2.5f) );
 					break;
 
 		        case DeathType.SpecialFall:
@@ -1515,7 +1525,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					anim.speed = 3.8f;
 					setAnimationTrigger(FallTrigger);
 					LeanTween.moveLocalY( gameObject, transform.position.y - TrapVortex.distanceTravelledDown, TrapVortex.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutExpo).setDelay(0);
-					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2.5f) );
+					StartCoroutine( waitBeforeResurrecting(2.5f) );
 					break;
 
 		        case DeathType.MagicGate:
@@ -1534,13 +1544,9 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 	}
 
-	public IEnumerator waitBeforeDisplayingSaveMeScreen ( float duration )
+	public void death_completed ( AnimationEvent eve )
 	{
-		anim.speed = 1f;
-		yield return new WaitForSeconds(duration);
-		//Save the player stats before continuing
-		PlayerStatsManager.Instance.savePlayerStats();
-		GameManager.Instance.setGameState( GameState.SaveMe );
+		StartCoroutine( waitBeforeResurrecting(1.5f) );
 	}
 
 	public IEnumerator waitBeforeResurrecting ( float duration )
@@ -1553,7 +1559,188 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerCamera.activateMainCamera();
 		playerCamera.positionCameraNow();
 		playerCamera.resetCameraParameters();
-		//resurrectBegin(true);
+		resurrectBegin(true);
+	}
+
+
+	public void resurrectBegin( bool calledByMagicGate )
+	{
+		//0) Reset data
+		resetSharedLevelData(true);
+		
+		//1) Reset the camera. If a cut-scene played when the player died, the camera parameters such as the FOV may have changed.
+		playerCamera.resetCameraParameters();
+		
+		//2) Reposition dead body at the respawn location.
+		//Also, play the dead loop animation
+		anim.Play("DeathWall_Loop");
+		GameObject respawnLocationObject;
+
+		if( currentTileType == TileType.T_Junction || currentTileType == TileType.T_Junction_2 )
+		{
+			//If the player's rotation is zero, this means he has not turned yet.
+			//If this is the case, we will assume he turned right.
+			float playerRotationY = Mathf.Floor ( transform.eulerAngles.y );
+			if( playerRotationY == 0 )
+			{
+				respawnLocationObject = currentTile.transform.Find("respawnLocationRight").gameObject;
+				generateLevel.playerTurnedAtTJunction( true, currentTile );
+				
+			}
+			else
+			{
+				//Player has already turned at the T-Junction
+				if( isGoingRight )
+				{
+					respawnLocationObject = currentTile.transform.Find("respawnLocationRight").gameObject;
+				}
+				else
+				{
+					respawnLocationObject = currentTile.transform.Find("respawnLocationLeft").gameObject;
+				}
+			}
+		}
+		else
+		{
+			respawnLocationObject = currentTile.transform.Find("respawnLocation").gameObject;
+		}
+
+		deathType = DeathType.Alive;
+
+		if( respawnLocationObject != null )
+		{
+			Transform respawn = respawnLocationObject.transform;
+			RaycastHit hit;
+			float groundHeight = 0f;
+	        if (Physics.Raycast(respawn.position, Vector3.down, out hit, 4.0F ))
+			{
+				groundHeight = hit.point.y;
+			}
+			//If the player died in a dead end trigger, the trigger will be activated when we move the player's body
+			//to the respawn location. This in turn will cause isInDeadEnd to become true and when the player will try to change lanes,
+			//he will turn instead and crash into a fence. To avoid that, disable the collider before moving the player and reenable it after.
+			transform.GetComponent<Collider>().enabled = false;
+			//When he is on the last frame of the dead animation, the player is 0.0328f above the ground
+			transform.position = new Vector3( respawn.position.x, groundHeight + 0.0328f, respawn.position.z );
+			//The respawnLocationObject is always point in the correct direction for the resurrected hero
+			//temporarily set the tile has the parent of the hero and simply use the local rotation of the respawn location object
+			transform.SetParent( currentTile.transform );
+			transform.localRotation = Quaternion.Euler ( 0, respawn.localEulerAngles.y, 0 );
+			transform.SetParent( null );
+			tileRotationY = Mathf.Floor ( transform.eulerAngles.y );
+			transform.GetComponent<Collider>().enabled = true;
+			playerCamera.positionCameraNow();
+		}
+		else
+		{
+			Debug.LogError("PlayerControl-ResurrectBegin: Unable to find respawnLocation game object in tile : " + currentTile.name );
+		}
+		Invoke("resurrectMiddle", 3f ); //start get up at around frame 285 of the revive animation
+	}
+
+	public void resetSharedLevelData( bool unlockCamera )
+	{
+		Debug.Log("PlayerControl-resetSharedLevelData: unlockCamera: " + unlockCamera );
+		//Reset values
+		//Teleport_leave_complete changes the scale value so we need to reset it
+		transform.localScale = new Vector3( 1f, 1f, 1f );
+
+		disableLookOverShoulder();
+
+		//Character Controller
+		controller.center = controllerOriginalCenter;
+		controller.radius = controllerOriginalRadius;
+		
+		//Lanes
+		currentLane = Lanes.Center;
+		desiredLane = Lanes.Center;
+		myLane = 0;
+
+		deactivateOverheadObstacles( true );
+		jumping = false;
+		queueSlide = false;
+		queueJump = false;
+		isInDeadEnd = false;
+		deadEndTrigger = null;
+		wantToTurn = false;
+		deadEndTurnDone = false;
+		if( unlockCamera ) playerCamera.lockCamera ( false );
+		gravity = DEFAULT_GRAVITY;
+		moveDirection = new Vector3(0,0,0);
+		accelerometerPreviousFrameX = 0;
+		allowRunSpeedToIncrease = false;
+		deathType = DeathType.Alive;
+
+		reasonDiedAtTurn = "";
+
+		playerCamera.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING;
+
+	}
+
+	void resurrectMiddle()
+	{
+		//3) Play the revive animation
+		anim.speed = 1.6f;
+		anim.Play( "DeathWall_GetUp" );
+	}
+
+	public void get_up_completed ( AnimationEvent eve )
+	{
+		anim.speed = 1f;
+		//Re-enable the player's blob shadow
+		playerVisuals.enablePlayerShadow( true );
+		resurrectEnd();
+	}
+	
+	private void resurrectEnd()
+	{
+		//6) Disable colliders during grace period
+		activateObstacleColliders( false );
+		
+		//7) Start running
+		allowRunSpeedToIncrease = true;
+		startRunning();
+
+		//8) Restore player controls
+		enablePlayerControl( true );
+
+		//9) Give the player a grace period before the obstacles become active again
+		StartCoroutine( waitForGracePeriod( 2 ) );
+		
+		//10) Display a Go! message
+		HUDHandler.hudHandler.activateUserMessage( LocalizationManager.Instance.getText("GO"), 0f, 1.25f );
+	}
+	
+	IEnumerator waitForGracePeriod( float duration )
+	{
+		//Give the player time to clear any immediate obstacles
+		yield return new WaitForSeconds(duration);
+		activateObstacleColliders( true );
+
+	}
+
+	//This is related to the grace period after player died
+	private void activateObstacleColliders( bool isActive )
+	{
+		Collider[] colliders = FindObjectsOfType(typeof(Collider)) as Collider[];
+        foreach (Collider collider in colliders)
+		{
+			if ( collider.name == "DeadTree" || collider.name.StartsWith( "Stumble" ) || collider.name == "cart" || collider.name.StartsWith( "Breakable" ) || collider.name == "Pendulum" || collider.name == "GroundObstacle" )
+			{
+				//Since we are disabling the collider, we need to disable gravity for objects with a rigid body
+				//as well or else the object will fall through the ground.
+				if( collider.GetComponent<Rigidbody>() != null )
+				{
+					collider.GetComponent<Rigidbody>().useGravity = isActive;
+				}
+            	collider.enabled = isActive;
+				//Debug.Log (" activateObstacleColliders " + collider.name + " isActive " + isActive );
+			}
+			else if ( collider.name == "Flame" )
+			{
+				collider.GetComponent<TrapFlame>().isActive = isActive;
+			}
+        }
 	}
 	#endregion
 
@@ -1717,6 +1904,8 @@ public class PlayerControl : Photon.PunBehaviour {
 
 			yield return new WaitForFixedUpdate(); 
 		}
+		//We have arrived. Stop player movement.
+		playerMovementEnabled = false;
 		playVictoryAnimation();
 		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 		//Wait a few seconds for the victory animation to finish
