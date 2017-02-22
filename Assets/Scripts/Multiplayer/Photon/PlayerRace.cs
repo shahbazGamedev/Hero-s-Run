@@ -63,11 +63,12 @@ public class PlayerRace : Photon.PunBehaviour
 
 	void StartRunningEvent()
 	{
-		if( PhotonNetwork.player.IsLocal )
+		if( this.photonView.isMine )
 		{
 			Debug.Log("PlayerRace: received StartRunningEvent");
 			raceStarted = true;
 			PlayerRaceManager.Instance.raceStatus = RaceStatus.IN_PROGRESS;
+			GameManager.Instance.playerStatistics.incrementNumberRacesRun();
 		}
 	}
 
@@ -142,8 +143,7 @@ public class PlayerRace : Photon.PunBehaviour
 				//Player has reached the finish line
 				playerCrossedFinishLine = true;
 				Debug.Log ("Finish Line crossed by " + PhotonNetwork.player.NickName + " in race position " + racePosition );
-				this.photonView.RPC("OnRaceDurationChanged", PhotonTargets.AllBuffered, raceDuration );
-				this.photonView.RPC("OnCrossingFinishLine", PhotonTargets.AllBufferedViaServer, other.transform.position.z );
+				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllBuffered, other.transform.position.z, raceDuration, distanceTravelled );
 			}
 		}
 	}
@@ -164,24 +164,20 @@ public class PlayerRace : Photon.PunBehaviour
 		//Debug.Log("PlayerRace: OnRacePositionChanged " +  (racePosition + 1 ) );
 	}
 
-	[PunRPC]
-	void OnCrossingFinishLine(float triggerPositionZ )
-	{
-		Debug.Log("PlayerRace: OnCrossingFinishLine RPC received for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient + " isMine: " + this.photonView.isMine + " isLocal: " + PhotonNetwork.player.IsLocal );		
-		StartCoroutine( GetComponent<PlayerControl>().slowDownPlayerAfterFinishLine( 10f, triggerPositionZ ) );
-		HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
-		PlayerRaceManager.Instance.playerCrossedFinishLine( racePosition + 1 );
-	}
-
-
-	//This method is called when the player has crossed the finish line to let the client know the official race duration
+	//This method is called when the player has crossed the finish line to let the client know the official race duration and distance travelled
 	//as calculated by the MasterClient.
 	[PunRPC]
-	void OnRaceDurationChanged( float value )
+	void OnRaceCompleted( float triggerPositionZ, float raceDuration, float distanceTravelled )
     {
-		raceDuration = value;
-		PlayerRaceManager.Instance.raceDuration = raceDuration;
-		Debug.Log("OnRaceDurationChanged: " + value );
+		Debug.Log("PlayerRace: OnRaceCompleted RPC received for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient +
+			" isMine: " + this.photonView.isMine + " isLocal: " + PhotonNetwork.player.IsLocal +
+			" raceDuration: " + raceDuration + " distanceTravelled: " + distanceTravelled );
+		
+		StartCoroutine( GetComponent<PlayerControl>().slowDownPlayerAfterFinishLine( 10f, triggerPositionZ ) );
+		HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
+		int numberOfTimesDiedDuringRace = GetComponent<PlayerControl>().getNumberOfTimesDiedDuringRace();
+		PlayerRaceManager.Instance.playerCompletedRace( (racePosition + 1), raceDuration, distanceTravelled, numberOfTimesDiedDuringRace );
+		GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
     }
 
 }

@@ -181,6 +181,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	//We need to be able to reset these values when the player is revived.
 	Vector3 controllerOriginalCenter;
 	float controllerOriginalRadius;
+	int numberOfTimesDiedDuringRace = 0; //Used by PlayerStatistics to determine if the player had a perfect race, that is, he did not die a single time.
 	#endregion
 
 	#region Other variables
@@ -1415,6 +1416,15 @@ public class PlayerControl : Photon.PunBehaviour {
 			//Tell the remote versions of us that we died
 			this.photonView.RPC("playerDied", PhotonTargets.OthersBuffered, deathTypeValue );
 
+			//Update the player statistics		
+			if( this.photonView.isMine )
+			{
+				GameManager.Instance.playerStatistics.incrementNumberOfDeathsLifetime();
+			
+				//Increment the number of times we died during this race
+				numberOfTimesDiedDuringRace++;
+			}
+
 			//Remember how we died
 			deathType = deathTypeValue;
 
@@ -1741,6 +1751,11 @@ public class PlayerControl : Photon.PunBehaviour {
 				collider.GetComponent<TrapFlame>().isActive = isActive;
 			}
         }
+	}
+
+	public int getNumberOfTimesDiedDuringRace()
+	{
+		return numberOfTimesDiedDuringRace;
 	}
 	#endregion
 

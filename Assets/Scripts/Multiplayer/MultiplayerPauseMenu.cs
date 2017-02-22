@@ -64,8 +64,14 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 	/// </summary>
 	void quit()
 	{
+		if( PlayerRaceManager.Instance.raceStatus == RaceStatus.IN_PROGRESS ) GameManager.Instance.playerStatistics.incrementNumberRacesAbandoned();
 		GameManager.Instance.setGameState( GameState.Matchmaking );
 		PhotonNetwork.LeaveRoom();
+	}
+
+	public void hidePauseButton()
+	{
+		pauseButton.gameObject.SetActive( false );
 	}
 
 	void OnEnable()

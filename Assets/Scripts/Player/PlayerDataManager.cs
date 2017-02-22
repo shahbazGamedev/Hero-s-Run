@@ -6,6 +6,7 @@ public class PlayerDataManager : MonoBehaviour {
 
 	public static PlayerDataManager Instance;
 	public PlayerProfile playerProfile;
+	public PlayerStatistics playerStatistics;
 
 	// Use this for initialization
 	void Awake ()
@@ -33,5 +34,15 @@ public class PlayerDataManager : MonoBehaviour {
 			playerProfile = new PlayerProfile();
 		}
 		GameManager.Instance.playerProfile = playerProfile;
+
+		if( PlayerStatsManager.Instance.getPlayerStatistics() != string.Empty )
+		{
+			 playerStatistics = JsonUtility.FromJson<PlayerStatistics>(PlayerStatsManager.Instance.getPlayerStatistics());
+		}
+		else
+		{
+			playerStatistics = new PlayerStatistics();
+		}
+		GameManager.Instance.playerStatistics = playerStatistics;
 	}
 }

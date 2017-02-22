@@ -117,6 +117,7 @@ public class PlayerStatsManager {
 	string challenges = String.Empty; //List of Challenge in JSON format. See ChallengeBoard.
 	string journalEntries = String.Empty; //List of Journal Entries in JSON format. See JournalData.
 	string playerProfile = String.Empty; //Player profile data such as current XP amount
+	string playerStatistics = String.Empty; //Player statistics data such as win/loss ratio, current win streak, best win streak, etc.
 
 	public static PlayerStatsManager Instance
 	{
@@ -993,6 +994,15 @@ public class PlayerStatsManager {
 		return playerProfile;
 	}
 
+	public void setPlayerStatistics( string playerStatistics )
+	{
+		this.playerStatistics = playerStatistics;
+	}
+
+	public string getPlayerStatistics()
+	{
+		return playerStatistics;
+	}
 
 	public void loadPlayerStats()
 	{
@@ -1106,6 +1116,7 @@ public class PlayerStatsManager {
 			challenges = PlayerPrefs.GetString("challenges", "" );
 			journalEntries = PlayerPrefs.GetString("journalEntries", "" );
 			playerProfile = PlayerPrefs.GetString("playerProfile", "" );
+			playerStatistics = PlayerPrefs.GetString("playerStatistics", "" );
 			//Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " Next Episode To Complete: " + nextEpisodeToComplete + " Highest Episode Completed: " + highestEpisodeCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
@@ -1198,6 +1209,7 @@ public class PlayerStatsManager {
 		savePowerUpInventory();
 		PlayerPrefs.SetString( "challenges", challenges );
 		PlayerPrefs.SetString( "playerProfile", playerProfile );
+		PlayerPrefs.SetString( "playerStatistics", playerStatistics );
 		PlayerPrefs.Save();
 		//Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
 	}
@@ -1263,6 +1275,8 @@ public class PlayerStatsManager {
 			PlayerPrefs.SetString( "journalEntries", "" );
 			playerProfile = string.Empty;
 			PlayerPrefs.SetString( "playerProfile", "" );
+			playerStatistics = string.Empty;
+			PlayerPrefs.SetString( "playerStatistics", "" );
 			PlayerPrefs.Save();
 			Debug.Log ("PlayerStatsManager-resetPlayerStats: called." );
 		}

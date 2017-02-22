@@ -75,6 +75,7 @@ public class GameManager {
 	public JournalData journalData;
 	public JournalAssetManager journalAssetManager;
 	public PlayerProfile playerProfile;
+	public PlayerStatistics playerStatistics;
 
 	public static GameManager Instance
 	{

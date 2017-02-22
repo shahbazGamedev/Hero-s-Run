@@ -47,7 +47,7 @@ public class PlayerRaceManager {
 	}
 
 	//Note: racePosition: 1 is the winner, 2 is second place, and so forth.
-	public void playerCrossedFinishLine( int racePosition )
+	public void playerCompletedRace( int racePosition, float raceDuration, float distanceTravelled, int numberOfTimesDiedDuringRace )
 	{
 		raceAwardList.Clear();
 		this.racePosition = racePosition;
@@ -81,6 +81,8 @@ public class PlayerRaceManager {
 				GameManager.Instance.playerProfile.setLastMatchWonTime( DateTime.UtcNow );
 			}
 		}
+		//Update the player statistics
+		GameManager.Instance.playerStatistics.updateRaceStatistics( racePosition, distanceTravelled, numberOfTimesDiedDuringRace );
 		//Save the dates in the player profile
 		GameManager.Instance.playerProfile.serializePlayerprofile();
 
