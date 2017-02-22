@@ -264,7 +264,7 @@ public class HUDHandler : MonoBehaviour {
 		if( newState == GameState.Normal )
 		{
 			hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
-			pauseButton.gameObject.SetActive( true );
+			if( !GameManager.Instance.isMultiplayer() ) pauseButton.gameObject.SetActive( true );
 			journalCanvas.gameObject.SetActive( true );
 		}
 		else

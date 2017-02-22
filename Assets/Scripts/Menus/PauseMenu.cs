@@ -88,16 +88,8 @@ public class PauseMenu : MonoBehaviour {
 		Time.timeScale = 1f;
 		//Report score to Game Center
 		GameCenterManager.updateLeaderboard();
-		if( GameManager.Instance.isMultiplayer() )
-		{
-			//The player will leave the room and go back to the matchmaking screen.
-			PhotonNetwork.LeaveRoom();
-		}
-		else
-		{
-			GameManager.Instance.setGameState(GameState.PostLevelPopup);
-			SceneManager.LoadScene( (int) GameScenes.WorldMap );
-		}
+		GameManager.Instance.setGameState(GameState.PostLevelPopup);
+		SceneManager.LoadScene( (int) GameScenes.WorldMap );
 	}
 
 	//If the device is paused by pressing the Home button, because of a low battery warning or a phone call, the game will automatically display the pause menu.
@@ -109,7 +101,6 @@ public class PauseMenu : MonoBehaviour {
 	
 	public void pauseGame()
 	{
-		if( GameManager.Instance.isMultiplayer() ) return;
 		GameState gameState = GameManager.Instance.getGameState();
 		
 		if( gameState == GameState.Normal )

@@ -10,6 +10,7 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 	[SerializeField] Text titleText;
 	[SerializeField] Text resumeButtonText;
 	[SerializeField] Text quitButtonText;
+	[SerializeField] GameObject pauseButton;
 
 	// Use this for initialization
 	void Awake ()
@@ -42,8 +43,6 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 
 	void togglePause()
 	{
-		if( !GameManager.Instance.isMultiplayer() ) return;
-		
 		if( GameManager.Instance.getGameState() == GameState.Normal )
 		{
 			//Pause game.
@@ -67,6 +66,36 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 	{
 		GameManager.Instance.setGameState( GameState.Matchmaking );
 		PhotonNetwork.LeaveRoom();
+	}
+
+	void OnEnable()
+	{
+		GameManager.gameStateEvent += GameStateChange;
+	}
+	
+	void OnDisable()
+	{
+		GameManager.gameStateEvent -= GameStateChange;
+	}
+
+	void PlayerStateChange( PlayerCharacterState newState )
+	{
+		if( newState == PlayerCharacterState.Dying )
+		{
+			pauseButton.gameObject.SetActive( false );
+		}
+	}
+
+	void GameStateChange( GameState previousState, GameState newState )
+	{
+		if( newState == GameState.Normal )
+		{
+			if( GameManager.Instance.isMultiplayer() ) pauseButton.gameObject.SetActive( true );
+		}
+		else
+		{
+			pauseButton.gameObject.SetActive( false );
+		}
 	}
 
 }
