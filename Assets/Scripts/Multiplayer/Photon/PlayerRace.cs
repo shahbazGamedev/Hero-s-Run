@@ -63,10 +63,10 @@ public class PlayerRace : Photon.PunBehaviour
 
 	void StartRunningEvent()
 	{
+		Debug.Log("PlayerRace: received StartRunningEvent");
+		raceStarted = true;
 		if( this.photonView.isMine )
-		{
-			Debug.Log("PlayerRace: received StartRunningEvent");
-			raceStarted = true;
+		{			
 			PlayerRaceManager.Instance.raceStatus = RaceStatus.IN_PROGRESS;
 			GameManager.Instance.playerStatistics.incrementNumberRacesRun();
 		}

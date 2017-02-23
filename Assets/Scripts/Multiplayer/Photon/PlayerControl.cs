@@ -280,20 +280,31 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			if( previousState == GameState.Paused )
 			{
-				this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.AllBufferedViaServer, false );
+				this.photonView.RPC( "unpauseRemotePlayers", PhotonTargets.AllBufferedViaServer );
 			}
 		}
 		else if( newState == GameState.Paused )
 		{
-			this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.AllBufferedViaServer, true );
+			this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.AllBufferedViaServer, transform.position, transform.eulerAngles.y );
 		}
 	}
 
 	[PunRPC]
-	public void pauseRemotePlayers( bool isPaused )
+	public void unpauseRemotePlayers()
 	{
-		Debug.Log("pauseRemotePlayers RPC received for: " +  gameObject.name + " isPaused: " + isPaused  + " isMasterClient: " + PhotonNetwork.isMasterClient + " isMine: " + this.photonView.isMine + " isLocal: " + PhotonNetwork.player.IsLocal + " view ID: " + this.photonView.viewID + " owner ID: " + this.photonView.ownerId );		
-		pausePlayer( isPaused );
+		pausePlayer( false );
+	}
+
+	[PunRPC]
+	public void pauseRemotePlayers( Vector3 positionAtTimeOfPause, float yRotationAtTimeOfpause )
+	{
+		Debug.Log("pauseRemotePlayers RPC received for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient + " isMine: " + this.photonView.isMine + " isLocal: " + PhotonNetwork.player.IsLocal + " view ID: " + this.photonView.viewID + " owner ID: " + this.photonView.ownerId );		
+		Debug.Log("pauseRemotePlayers-positionAtTimeOfPause: " + positionAtTimeOfPause + " yRotationAtTimeOfpause: " + yRotationAtTimeOfpause );		
+		Debug.Log("pauseRemotePlayers-current position: " +  transform.position + " current rotation: " + transform.eulerAngles.y );
+		Debug.Log("pauseRemotePlayers-delta: " +  Vector3.Distance( transform.position, positionAtTimeOfPause) );
+		transform.position = positionAtTimeOfPause;
+		transform.eulerAngles = new Vector3( transform.eulerAngles.x, yRotationAtTimeOfpause, transform.eulerAngles.z );
+		pausePlayer( true );
 	}
 
 	void pausePlayer( bool isPaused )
