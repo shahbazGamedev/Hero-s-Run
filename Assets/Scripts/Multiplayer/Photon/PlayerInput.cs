@@ -45,17 +45,17 @@ public class PlayerInput : PunBehaviour {
 		if ( Input.GetKeyDown (KeyCode.LeftArrow) ) 
 		{
 			playerControl.sideSwipe( false );
-			this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, false );
+			this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, false, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
 		}
 		else if ( Input.GetKeyDown (KeyCode.RightArrow) ) 
 		{
 			playerControl.sideSwipe( true );
-			this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, true );
+			this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, true, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
 		}
 		else if ( Input.GetKeyDown (KeyCode.DownArrow) ) 
 		{
 			playerControl.startSlide();
-			this.photonView.RPC("startSlideRPC", PhotonTargets.Others );
+			this.photonView.RPC("startSlideRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
 		}
 		else if ( Input.GetKeyDown (KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.Space)  ) 
 		{
@@ -63,12 +63,12 @@ public class PlayerInput : PunBehaviour {
 			if( false && playerControl.getCharacterState() != PlayerCharacterState.Ziplining )
 			{
 				playerControl.attachToZipline();
-				this.photonView.RPC("attachToZiplineRPC", PhotonTargets.Others );
+				this.photonView.RPC("attachToZiplineRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
 			}
 			else
 			{
 				playerControl.jump();
-				this.photonView.RPC("jumpRPC", PhotonTargets.Others );
+				this.photonView.RPC("jumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
 			}
 		}
 		else if ( Input.GetKeyDown (KeyCode.D ) )
@@ -158,19 +158,19 @@ public class PlayerInput : PunBehaviour {
 			{
 				//player swiped RIGHT
 				playerControl.sideSwipe( true );
-				this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, true );
+				this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, true, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
 	        }
 			else if (angle < 180)
 			{
 				//player swiped DOWN
 				playerControl.startSlide ();
-				this.photonView.RPC("startSlideRPC", PhotonTargets.Others );
+				this.photonView.RPC("startSlideRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
 	        }
 			else if (angle < 270)
 			{
 				//player swiped LEFT
 				playerControl.sideSwipe( false );
-				this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, false );
+				this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, false, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
 			}
 			else
 			{
@@ -179,12 +179,12 @@ public class PlayerInput : PunBehaviour {
 				if( false && playerControl.getCharacterState() != PlayerCharacterState.Ziplining )
 				{
 					playerControl.attachToZipline();
-					this.photonView.RPC("attachToZiplineRPC", PhotonTargets.Others );
+					this.photonView.RPC("attachToZiplineRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
 				}
 				else
 				{
 					playerControl.jump();
-					this.photonView.RPC("jumpRPC", PhotonTargets.Others );
+					this.photonView.RPC("jumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
 				}
 	        }
 		}

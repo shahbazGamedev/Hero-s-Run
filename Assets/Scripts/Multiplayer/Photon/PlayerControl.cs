@@ -6,7 +6,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	#region Components cached for performance 	
 	Animator anim;
-	CharacterController controller;
+	public CharacterController controller;
 	PlayerCamera playerCamera;
 	PlayerVisuals playerVisuals;
 	PlayerSounds playerSounds;
@@ -49,7 +49,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	//start running at runStartSpeed.
 	float runStartSpeed = 0;
 	//The run speed of the player
-	float runSpeed = 0;
+	public float runSpeed = 0;
 	//Run acceleration is used to determine how fast the player's run speed
 	//will increase. It is specified in the level data. A good value is 0.1f.
 	float runAcceleration = 0;
@@ -110,7 +110,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	#region General movement variables
 	//Use to move the player along the X, Y and Z axis
-	Vector3 moveDirection;
+	public Vector3 moveDirection;
 	Vector3 forward;
 	//Used to modify the blend amount between Run and Sprint animations based on the current run speed. Also used by the troll.
 	float blendFactor;
@@ -285,7 +285,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		else if( newState == GameState.Paused )
 		{
-			this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.AllBufferedViaServer, transform.position, transform.eulerAngles.y );
+			this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.AllBufferedViaServer, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 		}
 	}
 
@@ -296,12 +296,15 @@ public class PlayerControl : Photon.PunBehaviour {
 	}
 
 	[PunRPC]
-	public void pauseRemotePlayers( Vector3 positionAtTimeOfPause, float yRotationAtTimeOfpause )
+	public void pauseRemotePlayers( Vector3 positionAtTimeOfPause, float yRotationAtTimeOfpause, double timeRPCSent )
 	{
 		Debug.Log("pauseRemotePlayers RPC received for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient + " isMine: " + this.photonView.isMine + " isLocal: " + PhotonNetwork.player.IsLocal + " view ID: " + this.photonView.viewID + " owner ID: " + this.photonView.ownerId );		
 		Debug.Log("pauseRemotePlayers-positionAtTimeOfPause: " + positionAtTimeOfPause + " yRotationAtTimeOfpause: " + yRotationAtTimeOfpause );		
 		Debug.Log("pauseRemotePlayers-current position: " +  transform.position + " current rotation: " + transform.eulerAngles.y );
-		Debug.Log("pauseRemotePlayers-delta: " +  Vector3.Distance( transform.position, positionAtTimeOfPause) );
+		float realDistanceDelta = Vector3.Distance( transform.position, positionAtTimeOfPause);
+		double predictedDistanceDelta = (PhotonNetwork.time - timeRPCSent) * getSpeed();
+		Debug.Log("pauseRemotePlayers-real distance delta: " +  realDistanceDelta + " predictedDistanceDelta " + predictedDistanceDelta );
+		Debug.Log("pauseRemotePlayers-distancePrediction accuracy: " + ((predictedDistanceDelta - realDistanceDelta) * 100).ToString("N1") + "%" );
 		transform.position = positionAtTimeOfPause;
 		transform.eulerAngles = new Vector3( transform.eulerAngles.x, yRotationAtTimeOfpause, transform.eulerAngles.z );
 		pausePlayer( true );
@@ -1316,7 +1319,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	}
 
 	//Called every frame to ensure that the critical current lane value is always accurate
-	private void recalculateCurrentLane()
+	public void recalculateCurrentLane()
 	{
 		float min = -0.65f;
 		float max = 0.65f;

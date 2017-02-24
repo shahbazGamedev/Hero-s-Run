@@ -21,27 +21,31 @@ public class PlayerInputRPC : PunBehaviour {
 	}
 
 	[PunRPC]
-	void sideSwipeRPC( bool direction )
+	void sideSwipeRPC( bool direction, Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
 	{
+		syncMovement( syncPosition, syncRotationY, timeRPCSent, syncSpeed );
 		playerControl.sideSwipe( direction );
 	}
 
 	[PunRPC]
-	void startSlideRPC()
+	void startSlideRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
 	{
-		Debug.Log("startSlide RPC received " + gameObject.name );
+		//Debug.Log("startSlide RPC received " + gameObject.name );
+		syncMovement( syncPosition, syncRotationY, timeRPCSent, syncSpeed );
 		playerControl.startSlide();
 	}
 	
 	[PunRPC]
-	void attachToZiplineRPC()
+	void attachToZiplineRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
 	{
+		syncMovement( syncPosition, syncRotationY, timeRPCSent, syncSpeed );
 		playerControl.attachToZipline();
 	}
 
 	[PunRPC]
-	void jumpRPC()
+	void jumpRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
 	{
+		syncMovement( syncPosition, syncRotationY, timeRPCSent, syncSpeed );
 		playerControl.jump();
 	}
 
@@ -51,4 +55,25 @@ public class PlayerInputRPC : PunBehaviour {
 		playerControl.handlePowerUp();
 	}
 
+	void syncMovement( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
+	{
+		//Use the values we received from the master
+		transform.eulerAngles = new Vector3( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z );
+		transform.position = syncPosition;
+		playerControl.runSpeed = syncSpeed;
+		//We may have switched lanes because of the position change. Make sure the lane values are accurate.
+		playerControl.recalculateCurrentLane();
+		//There was a delay between the master sending us the command and the remote receiving it.
+		//Predict where the player should be and move him there before executing the command.
+		float syncTimeDelta = (float)(PhotonNetwork.time - timeRPCSent);
+		//1) Get the direction of the player
+		Vector3 forward = transform.TransformDirection(Vector3.forward);			
+		//2) Scale vector based on run speed
+		forward = forward * syncTimeDelta * syncSpeed;
+		//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
+		forward.Set( forward.x, playerControl.moveDirection.y * syncTimeDelta, forward.z );
+		Debug.Log("syncMovement received N " + gameObject.name + "TD " + syncTimeDelta + " FL " + forward.magnitude );
+		playerControl.controller.Move( forward );
+		//The master player and the remote player should now be synchronised.
+	}
 }

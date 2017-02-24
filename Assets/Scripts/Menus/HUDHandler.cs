@@ -58,7 +58,8 @@ public class HUDHandler : MonoBehaviour {
 		hudSaveMe = saveMeCanvas.GetComponent<HUDSaveMe>();
 		tapToPlayText.text = LocalizationManager.Instance.getText("MENU_TAP_TO_PLAY");
 		restartFromCheckpointText.text = LocalizationManager.Instance.getText("MENU_RESTART_FROM_CHECKPOINT");
-		hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
+		//hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
+		hudDebugInfo.gameObject.SetActive( false );
 		coinIconRect = new Rect ( Screen.width * 0.6f, 10f, Screen.width * 0.09f, Screen.width * 0.09f );
 	}
 	
@@ -79,7 +80,7 @@ public class HUDHandler : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-		updateFPS();
+		//updateFPS();
 		if( hudDebugInfo.gameObject.activeSelf ) hudDebugInfo.text = " FPS: " + fps;
 		managePickUps();
 		//Also support keys for debugging
@@ -263,7 +264,8 @@ public class HUDHandler : MonoBehaviour {
 
 		if( newState == GameState.Normal )
 		{
-			hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
+			//hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
+			hudDebugInfo.gameObject.SetActive( false );
 			if( !GameManager.Instance.isMultiplayer() ) pauseButton.gameObject.SetActive( true );
 			journalCanvas.gameObject.SetActive( true );
 		}

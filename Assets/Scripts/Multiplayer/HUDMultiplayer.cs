@@ -18,8 +18,9 @@ public class HUDMultiplayer : MonoBehaviour {
 	[SerializeField] Text racePositionText;
 	[Header("Finish Flag")]
 	[SerializeField] Image finishFlag;
-	[Header("Latency")]
-	[SerializeField] Text latency;
+	[Header("Debug Info")]
+	[SerializeField] Text debugInfo;
+	FPSCalculator fpsCalculator;
 	[Header("Circuit Name and Icon Panel")]
 	[SerializeField] RectTransform circuitDetailsPanel;
 	[SerializeField] Text circuitNameText;
@@ -42,7 +43,9 @@ public class HUDMultiplayer : MonoBehaviour {
 
 		displayRacePosition( false );
 		finishFlag.gameObject.SetActive( false );
-		latency.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
+		fpsCalculator = GetComponent<FPSCalculator>();
+		fpsCalculator.enabled = PlayerStatsManager.Instance.getShowDebugInfoOnHUD();
+		debugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
 		goText.gameObject.SetActive( false );
 	}
 	
@@ -88,7 +91,7 @@ public class HUDMultiplayer : MonoBehaviour {
 
 	void Update()
 	{
-		if( latency.gameObject.activeSelf ) latency.text = PhotonNetwork.networkingPeer.RoundTripTime.ToString();
+		if( debugInfo.gameObject.activeSelf ) debugInfo.text = " FPS: " + fpsCalculator.getFPS() + " Latency: " + PhotonNetwork.networkingPeer.RoundTripTime.ToString() + " Name: " + PhotonNetwork.playerName; 
 	}
 
 	void hideGoText()
@@ -147,12 +150,12 @@ public class HUDMultiplayer : MonoBehaviour {
 		if( newState == GameState.Normal )
 		{
 			if( raceHasStarted) displayRacePosition( true );
-			latency.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
+			debugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
 		}
 		else
 		{
 			displayRacePosition( false );
-			latency.gameObject.SetActive( false );
+			debugInfo.gameObject.SetActive( false );
 		}
 	}
 
