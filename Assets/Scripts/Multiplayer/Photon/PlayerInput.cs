@@ -39,23 +39,38 @@ public class PlayerInput : PunBehaviour {
 	
 	}
 
+	public void startSlide()
+	{
+		playerControl.startSlide();
+		this.photonView.RPC("startSlideRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+	}
+
+	public void sideSwipe( bool isGoingRight )
+	{
+		playerControl.sideSwipe( isGoingRight );
+		this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, isGoingRight, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+	}
+
+	public void jump()
+	{
+		playerControl.jump();
+		this.photonView.RPC("jumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+	}
+
 	private void handleKeyboard()
 	{
 		//Also support keys for debugging
 		if ( Input.GetKeyDown (KeyCode.LeftArrow) ) 
 		{
-			playerControl.sideSwipe( false );
-			this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, false, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+			sideSwipe( false );
 		}
 		else if ( Input.GetKeyDown (KeyCode.RightArrow) ) 
 		{
-			playerControl.sideSwipe( true );
-			this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, true, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+			sideSwipe( true );
 		}
 		else if ( Input.GetKeyDown (KeyCode.DownArrow) ) 
 		{
-			playerControl.startSlide();
-			this.photonView.RPC("startSlideRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+			startSlide();
 		}
 		else if ( Input.GetKeyDown (KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.Space)  ) 
 		{
@@ -67,8 +82,7 @@ public class PlayerInput : PunBehaviour {
 			}
 			else
 			{
-				playerControl.jump();
-				this.photonView.RPC("jumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+				jump();
 			}
 		}
 		else if ( Input.GetKeyDown (KeyCode.D ) )
@@ -157,20 +171,17 @@ public class PlayerInput : PunBehaviour {
 			if (angle < 90)
 			{
 				//player swiped RIGHT
-				playerControl.sideSwipe( true );
-				this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, true, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+				sideSwipe( true );
 	        }
 			else if (angle < 180)
 			{
 				//player swiped DOWN
-				playerControl.startSlide ();
-				this.photonView.RPC("startSlideRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+				startSlide();
 	        }
 			else if (angle < 270)
 			{
 				//player swiped LEFT
-				playerControl.sideSwipe( false );
-				this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, false, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+				sideSwipe( false );
 			}
 			else
 			{
@@ -183,8 +194,7 @@ public class PlayerInput : PunBehaviour {
 				}
 				else
 				{
-					playerControl.jump();
-					this.photonView.RPC("jumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+					jump();
 				}
 	        }
 		}
