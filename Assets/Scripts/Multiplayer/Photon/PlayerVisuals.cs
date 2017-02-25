@@ -66,7 +66,16 @@ public class PlayerVisuals : Photon.PunBehaviour {
 			heroSkin.transform.localRotation = Quaternion.identity;
 			anim.avatar = heroSkin.GetComponent<PlayerSkinInfo>().animatorAvatar;
 			anim.Rebind(); //Important
-		}			
+		}
+		//Register with the minimap
+		if( this.photonView.isMine )
+		{
+			MiniMap.Instance.registerLocalPlayer( transform );
+		}
+		else
+		{
+			MiniMap.Instance.registerRadarObject( gameObject );
+		}		
 	}
 
 }

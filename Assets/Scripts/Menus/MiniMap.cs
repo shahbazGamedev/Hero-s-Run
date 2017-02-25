@@ -12,26 +12,27 @@ public class RadarObject
 
 public class MiniMap : MonoBehaviour {
 
-	public static MiniMap miniMap = null;
+	public static MiniMap Instance = null;
 	float mapScale = 1f;
 	Transform player;
 	List<RadarObject> radarObjects = new List<RadarObject>();
+	[SerializeField] Image playerRadarImage;
 
 	// Use this for initialization
 	void Awake () {
 	
-		miniMap = this;
-		player = GameObject.FindGameObjectWithTag("Player").transform;
+		Instance = this;
 	}
 
 	// Use this for initialization
-	void Start () {
-	
+	public void registerLocalPlayer ( Transform player )
+	{
+		this.player = player;
 	}
 	
-	public void registerRadarObject( GameObject go, Image radarImage )
+	public void registerRadarObject( GameObject go )
 	{
-		Image image = Instantiate( radarImage );
+		Image image = Instantiate( playerRadarImage );
 		image.transform.SetParent( transform );
 		radarObjects.Add( new RadarObject(){ owner = go, icon = image } );
 	}
@@ -65,12 +66,18 @@ public class MiniMap : MonoBehaviour {
 	{
 		foreach( RadarObject ro in radarObjects )
 		{
-			Vector3 radarPos = ( ro.owner.transform.position - player.position );
-			float distToObject = Vector3.Distance( player.position, ro.owner.transform.position ) * mapScale;
-			float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270 -player.eulerAngles.y;
-			radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
-			radarPos.z = distToObject * Mathf.Sin( deltaY * Mathf.Deg2Rad );
-			ro.icon.transform.position = new Vector3( radarPos.x, radarPos.z, 0 ) + transform.position;
+			if( player != null )
+			{
+				if( ro.owner != null )
+				{
+					Vector3 radarPos = ( ro.owner.transform.position - player.position );
+					float distToObject = Vector3.Distance( player.position, ro.owner.transform.position ) * mapScale;
+					float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270 -player.eulerAngles.y;
+					radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
+					radarPos.z = distToObject * Mathf.Sin( deltaY * Mathf.Deg2Rad );
+					ro.icon.transform.position = new Vector3( radarPos.x, radarPos.z, 0 ) + transform.position;
+				}
+			}
 		}
 	}
 }
