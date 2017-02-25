@@ -837,7 +837,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	#region Turnining and changing lanes
 
-	public void turnCorner( bool isGoingRight )
+	void turnCorner( bool isGoingRight )
 	{
 		if ( playerCharacterState == PlayerCharacterState.Running || playerCharacterState == PlayerCharacterState.Jumping || playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.SideMove || playerCharacterState == PlayerCharacterState.Stumbling )
 		{
