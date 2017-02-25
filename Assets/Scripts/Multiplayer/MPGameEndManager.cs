@@ -215,7 +215,7 @@ public class MPGameEndManager : MonoBehaviour {
                 break;
 	                
 	        case 2:
-				racePositionString = LocalizationManager.Instance.getText( "EOG_2ND" );
+				racePositionString = LocalizationManager.Instance.getText( "EOG_DEFEAT" );
                 break;                
 		}
 		return racePositionString;

@@ -51,6 +51,7 @@ public class PlayerRaceManager {
 	{
 		raceAwardList.Clear();
 		this.racePosition = racePosition;
+		this.raceDuration = raceDuration;
 		raceStatus = RaceStatus.COMPLETED;
 		grantXPAward(XPAwardType.FINISHED_RACE);
 		if( racePosition == 1 ) grantXPAward(XPAwardType.WON);

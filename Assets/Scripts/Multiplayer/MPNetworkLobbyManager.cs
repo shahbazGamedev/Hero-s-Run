@@ -232,7 +232,8 @@ public class MPNetworkLobbyManager : PunBehaviour
 		{
 			//Now that we have everyone and we can start the race, deduct the entry fee, if any.
 			chargePlayerForMatch();
-
+			//Close the room. We do not want people to join while a race is in progress.
+			PhotonNetwork.room.IsOpen = false;
 	   	 	Invoke("loadLevel", DELAY_BEFORE_LOADING_LEVEL);
 		}
 	}

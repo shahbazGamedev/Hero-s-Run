@@ -161,7 +161,7 @@ public class PlayerRace : Photon.PunBehaviour
 	{
 		racePosition = value;
 		if( this.photonView.isMine ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
-		//Debug.Log("PlayerRace: OnRacePositionChanged " +  (racePosition + 1 ) );
+		Debug.Log("PlayerRace: OnRacePositionChanged " +  (racePosition + 1 ) );
 	}
 
 	//This method is called when the player has crossed the finish line to let the client know the official race duration and distance travelled
@@ -172,12 +172,16 @@ public class PlayerRace : Photon.PunBehaviour
 		Debug.Log("PlayerRace: OnRaceCompleted RPC received for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient +
 			" isMine: " + this.photonView.isMine + " isLocal: " + PhotonNetwork.player.IsLocal +
 			" raceDuration: " + raceDuration + " distanceTravelled: " + distanceTravelled );
-		
+
+		//We want to slow down any player that reaches the finish line
 		StartCoroutine( GetComponent<PlayerControl>().slowDownPlayerAfterFinishLine( 10f, triggerPositionZ ) );
-		HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
-		int numberOfTimesDiedDuringRace = GetComponent<PlayerControl>().getNumberOfTimesDiedDuringRace();
-		PlayerRaceManager.Instance.playerCompletedRace( (racePosition + 1), raceDuration, distanceTravelled, numberOfTimesDiedDuringRace );
-		GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
+		//However, in terms of changing HUD elements, XP, player stats, etc. We only want to proceed if the player is local.
+		if( this.photonView.isMine )
+		{
+			HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
+			GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
+			PlayerRaceManager.Instance.playerCompletedRace( (racePosition + 1), raceDuration, distanceTravelled, GetComponent<PlayerControl>().getNumberOfTimesDiedDuringRace() );
+		}
     }
 
 }

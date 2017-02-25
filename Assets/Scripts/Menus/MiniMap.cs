@@ -64,19 +64,24 @@ public class MiniMap : MonoBehaviour {
 
 	void drawRadarDots()
 	{
-		foreach( RadarObject ro in radarObjects )
+		for(int i = radarObjects.Count - 1; i > -1; i-- )
 		{
-			if( player != null )
+			if( radarObjects[i].owner != null )
 			{
-				if( ro.owner != null )
-				{
-					Vector3 radarPos = ( ro.owner.transform.position - player.position );
-					float distToObject = Vector3.Distance( player.position, ro.owner.transform.position ) * mapScale;
-					float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270 -player.eulerAngles.y;
-					radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
-					radarPos.z = distToObject * Mathf.Sin( deltaY * Mathf.Deg2Rad );
-					ro.icon.transform.position = new Vector3( radarPos.x, radarPos.z, 0 ) + transform.position;
-				}
+				Vector3 radarPos = ( radarObjects[i].owner.transform.position - player.position );
+				float distToObject = Vector3.Distance( player.position, radarObjects[i].owner.transform.position ) * mapScale;
+				float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270 -player.eulerAngles.y;
+				radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
+				radarPos.z = distToObject * Mathf.Sin( deltaY * Mathf.Deg2Rad );
+				radarObjects[i].icon.transform.position = new Vector3( radarPos.x, radarPos.z, 0 ) + transform.position;
+			}
+			else
+			{
+				//The owner of the radar object is null.
+				//This will happen if one of our opponents disconnects.
+				//Simply remove that entry from the radarObjects
+				Destroy( radarObjects[i].icon );
+		        radarObjects.RemoveAt(i);
 			}
 		}
 	}
