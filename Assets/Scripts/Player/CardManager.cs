@@ -145,6 +145,8 @@ public class CardManager : MonoBehaviour {
 		public string descriptionId;
 		[Range(1,9)]
 		public int manaCost;		
+		[HideInInspector]
+		public RectTransform rectTransform;
 	}
 
 }
