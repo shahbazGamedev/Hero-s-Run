@@ -20,10 +20,25 @@ public enum CardType
 
 public class CardManager : MonoBehaviour {
 
+	public static CardManager Instance;
 	[SerializeField] List<CardData> cardDataList = new List<CardData>();
 	int[,] numberOfCardsRequiredForUpgrade;
 	int[,] coinsRequiredForUpgrade;
 	int[,] xpGainedAfterUpgrading;
+
+	// Use this for initialization
+	void Awake ()
+	{
+		if(Instance)
+		{
+			DestroyImmediate(gameObject);
+		}
+		else
+		{
+			DontDestroyOnLoad(gameObject);
+			Instance = this;
+		}
+	}
 
 	void Start()
 	{
@@ -90,6 +105,11 @@ public class CardManager : MonoBehaviour {
 
 	}
 
+	public CardData getCardByName( string name )
+	{
+		return cardDataList.Find(cardData => cardData.name == name);
+	}
+
 	/// <summary>
 	/// Card data. The card data only handles data that never changes.
 	/// </summary>
@@ -102,7 +122,7 @@ public class CardManager : MonoBehaviour {
 		public CardType type;
 		public Sprite icon;
 		public string descriptionId;
-		[Range(1,7)]
+		[Range(1,9)]
 		public int manaCost;		
 	}
 
