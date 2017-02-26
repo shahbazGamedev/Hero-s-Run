@@ -4,10 +4,10 @@ using UnityEngine;
 
 public enum CardRarity
  {
-	COMMON = 1,
-	RARE = 2,
-	EPIC = 3,
-	LEGENDARY = 4
+	COMMON = 0,
+	RARE = 1,
+	EPIC = 2,
+	LEGENDARY = 3
 	
 }
 
@@ -43,6 +43,7 @@ public class CardManager : MonoBehaviour {
 	void Start()
 	{
 		initialize();
+		//GameManager.Instance.playerDeck.initialiseForTesting();
 	}
 
 	void initialize()
@@ -105,9 +106,29 @@ public class CardManager : MonoBehaviour {
 
 	}
 
+	public bool doesCardExist( string name )
+	{
+		return cardDataList.Exists(cardData => cardData.name == name );
+	}
+
 	public CardData getCardByName( string name )
 	{
 		return cardDataList.Find(cardData => cardData.name == name);
+	}
+
+	public int getNumberOfCardsRequiredForUpgrade( int currentCardLevel, CardRarity rarity )
+	{
+		return numberOfCardsRequiredForUpgrade[currentCardLevel, (int) rarity ];
+	}
+
+	public int getCoinsRequiredForUpgrade( int currentCardLevel, CardRarity rarity )
+	{
+		return coinsRequiredForUpgrade[currentCardLevel, (int) rarity ];
+	}
+
+	public int getXPGainedAfterUpgrading( int currentCardLevel, CardRarity rarity )
+	{
+		return xpGainedAfterUpgrading[currentCardLevel, (int) rarity ];
 	}
 
 	/// <summary>

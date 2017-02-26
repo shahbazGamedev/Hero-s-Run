@@ -51,19 +51,29 @@ public class PlayerDeck {
 		//12
 		addCard( "Mortar", 6, 174, false );
 
+		serializePlayerDeck( true );
+
 	}
 
 	public void addCard(  string name, int level, int quantity, bool inBattleDeck )
 	{
-		//Don't add duplicate cards
-		if( playerCardDataList.Exists(playerCardData => playerCardData.cardData.name == name ) ) return;
-
-		PlayerCardData pcd = new PlayerCardData();
-		pcd.cardData = CardManager.Instance.getCardByName( name );
-		pcd.level = level;
-		pcd.quantity = quantity;
-		pcd.inBattleDeck = inBattleDeck;
-		playerCardDataList.Add(pcd);
+		//Make sure the specified card exists
+		if( CardManager.Instance.doesCardExist( name ) )
+		{
+			//Don't add duplicate cards
+			if( playerCardDataList.Exists(playerCardData => playerCardData.cardData.name == name ) ) return;
+	
+			PlayerCardData pcd = new PlayerCardData();
+			pcd.cardData = CardManager.Instance.getCardByName( name );
+			pcd.level = level;
+			pcd.quantity = quantity;
+			pcd.inBattleDeck = inBattleDeck;
+			playerCardDataList.Add(pcd);
+		}
+		else
+		{
+			Debug.LogError("PlayerDeck-addCard: The card you are trying to add to the player deck does not exist: " + name );
+		}
 	}
 
 	public void serializePlayerDeck( bool saveImmediately )
