@@ -118,6 +118,7 @@ public class PlayerStatsManager {
 	string journalEntries = String.Empty; //List of Journal Entries in JSON format. See JournalData.
 	string playerProfile = String.Empty; //Player profile data such as current XP amount
 	string playerStatistics = String.Empty; //Player statistics data such as win/loss ratio, current win streak, best win streak, etc.
+	string playerDeck = String.Empty; //Player cards. Specifies the card's level, whether it is part of the battle deck or not, etc.
 
 	public static PlayerStatsManager Instance
 	{
@@ -1004,6 +1005,16 @@ public class PlayerStatsManager {
 		return playerStatistics;
 	}
 
+	public void setPlayerDeck( string playerDeck )
+	{
+		this.playerDeck = playerDeck;
+	}
+
+	public string getPlayerDeck()
+	{
+		return playerDeck;
+	}
+
 	public void loadPlayerStats()
 	{
 		try
@@ -1117,6 +1128,7 @@ public class PlayerStatsManager {
 			journalEntries = PlayerPrefs.GetString("journalEntries", "" );
 			playerProfile = PlayerPrefs.GetString("playerProfile", "" );
 			playerStatistics = PlayerPrefs.GetString("playerStatistics", "" );
+			playerDeck = PlayerPrefs.GetString("playerDeck", "" );
 			//Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " Next Episode To Complete: " + nextEpisodeToComplete + " Highest Episode Completed: " + highestEpisodeCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
@@ -1210,6 +1222,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetString( "challenges", challenges );
 		PlayerPrefs.SetString( "playerProfile", playerProfile );
 		PlayerPrefs.SetString( "playerStatistics", playerStatistics );
+		PlayerPrefs.SetString( "playerDeck", playerDeck );
 		PlayerPrefs.Save();
 		//Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
 	}
@@ -1277,6 +1290,8 @@ public class PlayerStatsManager {
 			PlayerPrefs.SetString( "playerProfile", "" );
 			playerStatistics = string.Empty;
 			PlayerPrefs.SetString( "playerStatistics", "" );
+			playerDeck = string.Empty;
+			PlayerPrefs.SetString( "playerDeck", "" );
 			PlayerPrefs.Save();
 			Debug.Log ("PlayerStatsManager-resetPlayerStats: called." );
 		}
