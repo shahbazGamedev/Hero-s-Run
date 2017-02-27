@@ -12,13 +12,16 @@ public class TurnRibbonHandler : MonoBehaviour {
 	[SerializeField] GameObject onSelectButton;
 	[SerializeField] Image onSelectPlayerIcon;
 	[Header("Next Card")]
-	[SerializeField] Image nextCard;
+	[SerializeField] Image nextCardImage;
 	[SerializeField] Text nextCardText;
 	[Header("Mana Bar")]
 	[SerializeField] ManaBar manaBar;
 
 	int [] cardIndexArray = new int[]{0,1,2,3,4,5,6,7};
 	List<int> cardIndexList = new List<int>(8);
+	List<CardManager.CardData> turnRibbonList = new List<CardManager.CardData>();
+	List<Button> turnRibbonButtonList = new List<Button>();
+	CardManager.CardData nextCard;
 
 	// Use this for initialization
 	void Start ()
@@ -41,18 +44,31 @@ public class TurnRibbonHandler : MonoBehaviour {
 		GameObject go = (GameObject)Instantiate(cardPrefab);
 		go.transform.SetParent(cardPanel,false);
 		Button cardButton = go.GetComponent<Button>();
+		turnRibbonButtonList.Add(cardButton);
 		cardButton.onClick.RemoveListener(() => OnClickPlayerIcon(card));
 		cardButton.onClick.AddListener(() => OnClickPlayerIcon(card));
 		Image cardImage = go.GetComponent<Image>();
 		CardManager.CardData cardData = CardManager.Instance.getCardByName( card.name );
 		cardImage.sprite = cardData.icon;
 		card.rectTransform = go.GetComponent<RectTransform>();
+		turnRibbonList.Add(cardData);
+
 	}
 
-	void setNextCard( PlayerDeck.PlayerCardData card )
+	void setNextCard( PlayerDeck.PlayerCardData nextCard )
 	{
-		CardManager.CardData cardData = CardManager.Instance.getCardByName( card.name );
-		nextCard.sprite = cardData.icon;
+		CardManager.CardData cardData = CardManager.Instance.getCardByName( nextCard.name );
+		nextCardImage.sprite = cardData.icon;
+		this.nextCard = cardData;
+	}
+
+	void Update()
+	{
+		//If we don't have enough mana to play a card, make it non-interactable
+		for( int i = 0; i < turnRibbonList.Count; i++ )
+		{
+			turnRibbonButtonList[i].interactable = manaBar.hasEnoughMana( turnRibbonList[i].manaCost );
+		}
 	}
 
 	public void OnClickPlayerIcon( PlayerDeck.PlayerCardData card )
