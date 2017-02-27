@@ -113,7 +113,15 @@ public class CardManager : MonoBehaviour {
 
 	public CardData getCardByName( string name )
 	{
-		return cardDataList.Find(cardData => cardData.name == name);
+		if( doesCardExist( name ) )
+		{
+			return cardDataList.Find(cardData => cardData.name == name);
+		}
+		else
+		{
+			Debug.LogError("CardManager-getCardByName: The card you requested does not exist: " + name );
+			return null;
+		}
 	}
 
 	public int getNumberOfCardsRequiredForUpgrade( int currentCardLevel, CardRarity rarity )
@@ -145,8 +153,6 @@ public class CardManager : MonoBehaviour {
 		public string descriptionId;
 		[Range(1,9)]
 		public int manaCost;		
-		[HideInInspector]
-		public RectTransform rectTransform;
 	}
 
 }

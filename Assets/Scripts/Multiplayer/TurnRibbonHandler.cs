@@ -16,41 +16,40 @@ public class TurnRibbonHandler : MonoBehaviour {
 	void Start ()
 	{
 		//Newly unlocked icons appear first.
-		List<ProgressionManager.PlayerIconData> playerIconList = ProgressionManager.Instance.getSortedPlayerIconList();
+		List<PlayerDeck.PlayerCardData> battleDeckList = GameManager.Instance.playerDeck.getBattleDeck();
 
 		for( int i = 0; i < 4; i++ )
 		{
-			createPlayerIcon( i );
+			addCardToTurnRibbon(battleDeckList[i]);
 		}
 	}
 
-	void createPlayerIcon( int index )
+	void addCardToTurnRibbon( PlayerDeck.PlayerCardData card )
 	{
-		ProgressionManager.PlayerIconData playerIconData = ProgressionManager.Instance.getPlayerIconDataByIndex( index );
 		GameObject go = (GameObject)Instantiate(cardPrefab);
 		go.transform.SetParent(cardPanel,false);
-		Button playerIconButton = go.GetComponent<Button>();
-		playerIconButton.onClick.RemoveListener(() => OnClickPlayerIcon(index));
-		playerIconButton.onClick.AddListener(() => OnClickPlayerIcon(index));
-		Image playerIconImage = go.GetComponent<Image>();
-		playerIconImage.sprite = playerIconData.icon;
-		playerIconData.rectTransform = go.GetComponent<RectTransform>();
+		Button cardButton = go.GetComponent<Button>();
+		cardButton.onClick.RemoveListener(() => OnClickPlayerIcon(card));
+		cardButton.onClick.AddListener(() => OnClickPlayerIcon(card));
+		Image cardImage = go.GetComponent<Image>();
+		CardManager.CardData cardData = CardManager.Instance.getCardByName( card.name );
+		cardImage.sprite = cardData.icon;
+		card.rectTransform = go.GetComponent<RectTransform>();
 	}
 
-	public void OnClickPlayerIcon( int index )
+	public void OnClickPlayerIcon( PlayerDeck.PlayerCardData card )
 	{
 		print("OnClickPlayerIcon");
 		RectTransform onSelectRectTransform = onSelectButton.GetComponent<RectTransform>();
 		onSelectRectTransform.localScale = Vector3.one;
 
-		ProgressionManager.PlayerIconData playerIconData = ProgressionManager.Instance.getPlayerIconDataByIndex( index );
-
 		//Position on select game object on top of the selected entry
-		onSelectButton.transform.SetParent( playerIconData.rectTransform, false );
+		onSelectButton.transform.SetParent( card.rectTransform, false );
 		onSelectButton.SetActive( true );
 
 		//Copy the icon and name
-		onSelectPlayerIcon.sprite = playerIconData.icon;
+		CardManager.CardData cardData = CardManager.Instance.getCardByName( card.name );
+		onSelectPlayerIcon.sprite = cardData.icon;
 
 		scaleUp();
 

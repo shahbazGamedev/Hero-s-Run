@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 [System.Serializable]
 /// <summary>
@@ -55,16 +56,27 @@ public class PlayerDeck {
 
 	}
 
+	public List<PlayerCardData> getBattleDeck()
+	{
+		List<PlayerCardData> battleDeck = playerCardDataList.FindAll( card => card.inBattleDeck == true );
+		Debug.Log("Cards in battle deck:\n" );
+		for( int i = 0; i < battleDeck.Count; i++ )
+		{
+			Debug.Log("Card " + i + " " +  battleDeck[i].name );
+		}
+		return battleDeck;
+	}
+ 
 	public void addCard(  string name, int level, int quantity, bool inBattleDeck )
 	{
 		//Make sure the specified card exists
 		if( CardManager.Instance.doesCardExist( name ) )
 		{
 			//Don't add duplicate cards
-			if( playerCardDataList.Exists(playerCardData => playerCardData.cardData.name == name ) ) return;
+			if( playerCardDataList.Exists(playerCardData => playerCardData.name == name ) ) return;
 	
 			PlayerCardData pcd = new PlayerCardData();
-			pcd.cardData = CardManager.Instance.getCardByName( name );
+			pcd.name = name;
 			pcd.level = level;
 			pcd.quantity = quantity;
 			pcd.inBattleDeck = inBattleDeck;
@@ -89,11 +101,13 @@ public class PlayerDeck {
 	[System.Serializable]
 	public class PlayerCardData
 	{
-		public CardManager.CardData cardData; 
+		public string name; 
 		[Range(1,13)]
 		public int level;
 		public int  quantity;
 		public bool inBattleDeck;		
+		[HideInInspector]
+		public RectTransform rectTransform;
 	}
 
 }
