@@ -11,16 +11,20 @@ public class TurnRibbonHandler : MonoBehaviour {
 	[Header("On Select")]
 	[SerializeField] GameObject onSelectButton;
 	[SerializeField] Image onSelectPlayerIcon;
+	int [] cardIndexArray = new int[]{0,1,2,3,4,5,6,7};
+	List<int> cardIndexList = new List<int>(8);
 
 	// Use this for initialization
 	void Start ()
 	{
+		cardIndexList.AddRange(cardIndexArray);
+
 		//Newly unlocked icons appear first.
 		List<PlayerDeck.PlayerCardData> battleDeckList = GameManager.Instance.playerDeck.getBattleDeck();
 
-		for( int i = 0; i < 4; i++ )
+		for( int i = 0; i < CardManager.Instance.cardsInTurnRibbon; i++ )
 		{
-			addCardToTurnRibbon(battleDeckList[i]);
+			addCardToTurnRibbon(battleDeckList[getUniqueRandom()]);
 		}
 	}
 
@@ -76,4 +80,16 @@ public class TurnRibbonHandler : MonoBehaviour {
 		onSelectButton.SetActive( false );
 	}
 
+	int getUniqueRandom()
+	{
+		if(cardIndexList.Count == 0 )
+		{
+			Debug.LogError("TurnRibbonHandler-getUniqueRandom: cardIndexList is empty.");
+			return -1;
+		}
+		int rand = Random.Range(0, cardIndexList.Count);
+		int value = cardIndexList[rand];
+		cardIndexList.RemoveAt(rand);
+		return value;
+	}
 }

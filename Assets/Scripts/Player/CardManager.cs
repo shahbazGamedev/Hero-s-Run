@@ -21,6 +21,8 @@ public enum CardType
 public class CardManager : MonoBehaviour {
 
 	public static CardManager Instance;
+	[Range(3,4)]
+	public int cardsInTurnRibbon = 4; //Number of cards appearing in the turn-ribbon. We will test with both 3 and 4 and see which one feels best.
 	[SerializeField] List<CardData> cardDataList = new List<CardData>();
 	int[,] numberOfCardsRequiredForUpgrade;
 	int[,] coinsRequiredForUpgrade;
