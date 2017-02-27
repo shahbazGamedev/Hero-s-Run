@@ -14,6 +14,8 @@ public class TurnRibbonHandler : MonoBehaviour {
 	[Header("Next Card")]
 	[SerializeField] Image nextCard;
 	[SerializeField] Text nextCardText;
+	[Header("Mana Bar")]
+	[SerializeField] ManaBar manaBar;
 
 	int [] cardIndexArray = new int[]{0,1,2,3,4,5,6,7};
 	List<int> cardIndexList = new List<int>(8);
@@ -68,6 +70,8 @@ public class TurnRibbonHandler : MonoBehaviour {
 		onSelectPlayerIcon.sprite = cardData.icon;
 
 		scaleUp();
+
+		manaBar.deductMana( cardData.manaCost );
 
 	}
 
