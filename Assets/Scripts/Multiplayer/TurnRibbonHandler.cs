@@ -11,6 +11,10 @@ public class TurnRibbonHandler : MonoBehaviour {
 	[Header("On Select")]
 	[SerializeField] GameObject onSelectButton;
 	[SerializeField] Image onSelectPlayerIcon;
+	[Header("Next Card")]
+	[SerializeField] Image nextCard;
+	[SerializeField] Text nextCardText;
+
 	int [] cardIndexArray = new int[]{0,1,2,3,4,5,6,7};
 	List<int> cardIndexList = new List<int>(8);
 
@@ -19,13 +23,15 @@ public class TurnRibbonHandler : MonoBehaviour {
 	{
 		cardIndexList.AddRange(cardIndexArray);
 
-		//Newly unlocked icons appear first.
 		List<PlayerDeck.PlayerCardData> battleDeckList = GameManager.Instance.playerDeck.getBattleDeck();
 
+		//Populate turn-ribbon with 3 or 4 unique, random cards
 		for( int i = 0; i < CardManager.Instance.cardsInTurnRibbon; i++ )
 		{
 			addCardToTurnRibbon(battleDeckList[getUniqueRandom()]);
 		}
+		//Set next card with a unique, random card
+		setNextCard( battleDeckList[getUniqueRandom()] );
 	}
 
 	void addCardToTurnRibbon( PlayerDeck.PlayerCardData card )
@@ -39,6 +45,12 @@ public class TurnRibbonHandler : MonoBehaviour {
 		CardManager.CardData cardData = CardManager.Instance.getCardByName( card.name );
 		cardImage.sprite = cardData.icon;
 		card.rectTransform = go.GetComponent<RectTransform>();
+	}
+
+	void setNextCard( PlayerDeck.PlayerCardData card )
+	{
+		CardManager.CardData cardData = CardManager.Instance.getCardByName( card.name );
+		nextCard.sprite = cardData.icon;
 	}
 
 	public void OnClickPlayerIcon( PlayerDeck.PlayerCardData card )
