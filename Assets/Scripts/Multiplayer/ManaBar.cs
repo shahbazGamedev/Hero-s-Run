@@ -42,6 +42,11 @@ public class ManaBar : MonoBehaviour {
 		}
 	}
 
+	public float getManaAmount()
+	{
+		return manaSlider.value;
+	}
+
 	public void deductMana( int manaToRemove )
 	{
 		if( manaToRemove > manaSlider.value )

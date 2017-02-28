@@ -82,6 +82,16 @@ public class TurnRibbonHandler : MonoBehaviour {
 		for( int i = 0; i < turnRibbonList.Count; i++ )
 		{
 			turnRibbonButtonList[i].interactable = manaBar.hasEnoughMana( turnRibbonList[i].manaCost ) && PlayerRaceManager.Instance.raceStatus == RaceStatus.IN_PROGRESS;
+			if( PlayerRaceManager.Instance.raceStatus == RaceStatus.IN_PROGRESS )
+			{
+				float fillAmount = 1f - manaBar.getManaAmount()/turnRibbonList[i].manaCost;
+				if( fillAmount < 0 ) fillAmount = 0;
+				turnRibbonButtonList[i].transform.FindChild("Radial Mask").GetComponent<Image>().fillAmount = fillAmount;
+			}
+			else
+			{
+				turnRibbonButtonList[i].transform.FindChild("Radial Mask").GetComponent<Image>().fillAmount = 1f;
+			}
 		}
 	}
 
