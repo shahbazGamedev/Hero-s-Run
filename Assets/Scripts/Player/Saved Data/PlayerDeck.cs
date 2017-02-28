@@ -124,8 +124,6 @@ public class PlayerDeck {
 		public int level;
 		public int  quantity;
 		public bool inBattleDeck;		
-		[HideInInspector]
-		public RectTransform rectTransform;
 	}
 
 }
