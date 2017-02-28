@@ -56,6 +56,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		Button cardButton = go.GetComponent<Button>();
 		turnRibbonButtonList.Add(cardButton);
 		cardButton.onClick.AddListener(() => OnClickCard( index ) );
+		cardButton.interactable = false;
 		Image cardImage = go.GetComponent<Image>();
 		CardManager.CardData cardData = CardManager.Instance.getCardByName( cardName );
 		cardImage.sprite = cardData.icon;
@@ -80,7 +81,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		//If we don't have enough mana to play a card, make it non-interactable
 		for( int i = 0; i < turnRibbonList.Count; i++ )
 		{
-			turnRibbonButtonList[i].interactable = manaBar.hasEnoughMana( turnRibbonList[i].manaCost );
+			turnRibbonButtonList[i].interactable = manaBar.hasEnoughMana( turnRibbonList[i].manaCost ) && PlayerRaceManager.Instance.raceStatus == RaceStatus.IN_PROGRESS;
 		}
 	}
 
