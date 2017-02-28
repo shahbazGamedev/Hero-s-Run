@@ -20,9 +20,9 @@ public class TurnRibbonHandler : MonoBehaviour {
 	int [] cardIndexArray = new int[]{0,1,2,3,4,5,6,7};
 	List<int> cardIndexList = new List<int>(NUMBER_CARDS_IN_BATTLE_DECK);
 
-	public List<CardManager.CardData> turnRibbonList = new List<CardManager.CardData>();
-	public List<Button> turnRibbonButtonList = new List<Button>();
-	public Queue<CardManager.CardData> cardQueue = new Queue<CardManager.CardData>();
+	List<CardManager.CardData> turnRibbonList = new List<CardManager.CardData>();
+	List<Button> turnRibbonButtonList = new List<Button>();
+	Queue<CardManager.CardData> cardQueue = new Queue<CardManager.CardData>();
 
 	// Use this for initialization
 	void Start ()
