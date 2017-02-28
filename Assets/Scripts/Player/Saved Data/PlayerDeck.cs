@@ -88,6 +88,24 @@ public class PlayerDeck {
 		}
 	}
 
+	public bool doesCardExist( string name )
+	{
+		return playerCardDataList.Exists(cardData => cardData.name == name );
+	}
+
+	public PlayerCardData getCardByName( string name )
+	{
+		if( doesCardExist( name ) )
+		{
+			return playerCardDataList.Find(playerCardData => playerCardData.name == name);
+		}
+		else
+		{
+			Debug.LogError("PlayerDeck-getCardByName: The card you requested does not exist: " + name );
+			return null;
+		}
+	}
+
 	public void serializePlayerDeck( bool saveImmediately )
 	{
 		string json  = JsonUtility.ToJson( this );
