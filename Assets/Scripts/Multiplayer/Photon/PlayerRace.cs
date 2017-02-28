@@ -161,7 +161,7 @@ public class PlayerRace : Photon.PunBehaviour
 	{
 		racePosition = value;
 		if( this.photonView.isMine ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
-		Debug.Log("PlayerRace: OnRacePositionChanged " +  (racePosition + 1 ) );
+		//Debug.Log("PlayerRace: OnRacePositionChanged " +  (racePosition + 1 ) );
 	}
 
 	//This method is called when the player has crossed the finish line to let the client know the official race duration and distance travelled
