@@ -8,9 +8,6 @@ public class TurnRibbonHandler : MonoBehaviour {
 	[Header("General")]
 	[SerializeField] Transform cardPanel;
 	[SerializeField] GameObject cardPrefab;
-	[Header("On Select")]
-	[SerializeField] GameObject onSelectButton;
-	[SerializeField] Image onSelectPlayerIcon;
 	[Header("Next Card")]
 	[SerializeField] Image nextCardImage;
 	[SerializeField] Text nextCardText;
@@ -91,15 +88,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 
 	public void OnClickCard( PlayerDeck.PlayerCardData card )
 	{
-		/*RectTransform onSelectRectTransform = onSelectButton.GetComponent<RectTransform>();
-		onSelectRectTransform.localScale = Vector3.one;
-		//Position on select game object on top of the selected entry
-		onSelectButton.transform.SetParent( card.rectTransform, false );
-		onSelectButton.SetActive( true );
-		scaleUp();*/
-		//Copy the icon
 		CardManager.CardData cardData = CardManager.Instance.getCardByName( card.name );
-		//onSelectPlayerIcon.sprite = cardData.icon;
 
 		manaBar.deductMana( cardData.manaCost );
 
@@ -121,27 +110,6 @@ public class TurnRibbonHandler : MonoBehaviour {
 	{
 		//To be implemented
 		Debug.Log("TurnRibbonHandler-playCardEffect: playing effect for card: " + cardName );
-	}
-
-	void scaleUp()
-	{
-		CancelInvoke("scaleDown");
-		LeanTween.cancel( gameObject );
-		RectTransform onSelectRectTransform = onSelectButton.GetComponent<RectTransform>();
-		LeanTween.scale( onSelectRectTransform, new Vector3( 1.2f, 1.2f, 1.2f ), 0.18f ).setEaseOutQuad();
-		Invoke( "scaleDown", 0.36f );
-	}
-	
-	void scaleDown()
-	{
-		//Make it the normal size after a few seconds
-		RectTransform onSelectRectTransform = onSelectButton.GetComponent<RectTransform>();
-		LeanTween.scale( onSelectRectTransform, Vector3.one, 0.18f ).setOnComplete(hide).setOnCompleteParam(gameObject).setEaseOutQuad();
-	}
-
-	void hide()
-	{
-		onSelectButton.SetActive( false );
 	}
 
 	int getUniqueRandom()
