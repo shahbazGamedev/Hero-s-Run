@@ -93,7 +93,7 @@ public class PlayerInput : PunBehaviour {
 		else if ( Input.GetKeyDown (KeyCode.K ) )
 		{
 			//Kill player for testing
-			playerControl.managePlayerDeath(DeathType.Obstacle);
+			playerControl.managePlayerDeath(DeathType.FallForward);
 		}
 		else if ( Input.GetKeyDown (KeyCode.P ) )
 		{

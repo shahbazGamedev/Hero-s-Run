@@ -18,7 +18,8 @@ public enum DeathType {
 		VortexTrap = 11,
 		MagicGate = 12,
 		SpecialFall = 13,
-		GreatFall = 14
+		GreatFall = 14,
+		FallForward = 15
 }
 
 public enum PlayerCharacterState {

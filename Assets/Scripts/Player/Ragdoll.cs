@@ -12,9 +12,9 @@ Animator anim;
 		anim = GetComponent<Animator> ();
 	}
 
-	public void controllRagdoll ( bool enableRagdoll ) 
+	public void controlRagdoll ( bool enableRagdoll ) 
 	{
-		Debug.Log("controllRagdoll-number of bones: " + bones.Length );
+		Debug.Log("controlRagdoll-number of bones: " + bones.Length );
 		foreach (Rigidbody ragdoll in bones)
 		{
 			ragdoll.isKinematic = !enableRagdoll;

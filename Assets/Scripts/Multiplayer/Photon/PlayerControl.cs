@@ -1451,7 +1451,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			playerVisuals.enablePlayerShadow( false );
 
 			//Do not change collider if player falls into river.
-			if( deathType != DeathType.Water )
+			if( deathType != DeathType.Water && deathType != DeathType.FallForward )
 			{
 				//Change his collider since he is now lying on the ground,
 				//in particular so zombies will not be able to walk through his body
@@ -1525,6 +1525,13 @@ public class PlayerControl : Photon.PunBehaviour {
 					setAnimationTrigger(DeathWallTrigger);
 					break;
 
+		        case DeathType.FallForward:
+					//Play collision sound
+					playerSounds.playDyingSound();
+					playerCamera.Shake();
+					setAnimationTrigger(FallForwardTrigger);
+					break;
+
 		        case DeathType.Water:
 					playerCamera.lockCamera ( true );
 					anim.speed = 2.8f;
@@ -1569,6 +1576,11 @@ public class PlayerControl : Photon.PunBehaviour {
 	}
 
 	public void death_completed ( AnimationEvent eve )
+	{
+		StartCoroutine( waitBeforeResurrecting(1.5f) );
+	}
+
+	public void fall_forward_completed ( AnimationEvent eve )
 	{
 		StartCoroutine( waitBeforeResurrecting(1.5f) );
 	}

@@ -4043,7 +4043,7 @@ ModelImporter:
       name: Fall_Forward
       takeName: Take 001
       firstFrame: 970
-      lastFrame: 1010
+      lastFrame: 1000
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -4062,7 +4062,14 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.7049375
+        functionName: fall_forward_completed
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
