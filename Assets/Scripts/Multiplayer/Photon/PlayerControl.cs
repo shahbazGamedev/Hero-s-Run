@@ -601,7 +601,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 	}
 
-	#region Jump
+	#region Jump and Double Jump
 	public void jump()
 	{
 		if( playerControlsEnabled )
@@ -658,6 +658,13 @@ public class PlayerControl : Photon.PunBehaviour {
 				//playSound( jumpingSound, false );
 			}
 		}
+	}
+
+	public void doubleJump( float doubleJumpSpeed )
+	{
+		this.doubleJumpSpeed = doubleJumpSpeed;
+		doingDoubleJump = true;
+		jump();
 	}
 	#endregion
 

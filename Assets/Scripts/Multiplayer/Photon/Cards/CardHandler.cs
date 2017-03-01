@@ -24,17 +24,39 @@ public class CardHandler : MonoBehaviour {
 				Debug.LogError("CardHandler-The CardSpeedBoost component is not attached to the CardHandler in the Level scene.");
 			}
 			break;
-
-			default:
-			CardSpeedBoost cardSpeedBoost2 = GetComponent<CardSpeedBoost>();
-			if( cardSpeedBoost2 != null )
+			case "Ice Spirit":
+			CardExplosion cardExplosion = GetComponent<CardExplosion>();
+			if( cardExplosion != null )
 			{
-				cardSpeedBoost2.activateCard( name, level );
+				cardExplosion.activateCard( name, level );
 			}
 			else
 			{
-				Debug.LogError("CardHandler-The CardSpeedBoost component is not attached to the CardHandler in the Level scene.");
+				Debug.LogError("CardHandler-The CardExplosion component is not attached to the CardHandler in the Level scene.");
 			}
+			break;
+			case "Furnace":
+			CardDoubleJump cardDoubleJump = GetComponent<CardDoubleJump>();
+			if( cardDoubleJump != null )
+			{
+				cardDoubleJump.activateCard( name, level );
+			}
+			else
+			{
+				Debug.LogError("CardHandler-The CardDoubleJump component is not attached to the CardHandler in the Level scene.");
+			}
+			break;
+			default:
+			CardDoubleJump cardDoubleJump2 = GetComponent<CardDoubleJump>();
+			if( cardDoubleJump2 != null )
+			{
+				cardDoubleJump2.activateCard( name, level );
+			}
+			else
+			{
+				Debug.LogError("CardHandler-The CardDoubleJump component is not attached to the CardHandler in the Level scene.");
+			}
+			break;
 			//Debug.LogError("Cardhandler-The card name specified, " + name + ", is unknown.");
 			break;
 		}

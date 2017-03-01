@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.ImageEffects;
 
+/// <summary>
+//// The Speed Boost card is a Common card with 13 levels.
+/// </summary>
 public class CardSpeedBoost : Photon.PunBehaviour {
 
 	[SerializeField] AudioClip  soundFx;
-
-	//Speed boost is a common card with 13 levels
 	[SerializeField] float  baseDuration = 1.5f;
 	[SerializeField] float  baseSpeed = 1.5f;
 	[SerializeField] float  durationUpgradePerLevel = 0.15f;
@@ -16,11 +17,11 @@ public class CardSpeedBoost : Photon.PunBehaviour {
 	public void activateCard ( string name, int level )
 	{
 		GameObject playerGameObject = (GameObject)PhotonNetwork.player.TagObject;
-		this.photonView.RPC("activateCardRPC", PhotonTargets.AllViaServer, name, level, playerGameObject.GetComponent<PhotonView>().viewID );	
+		this.photonView.RPC("cardSpeedBoostRPC", PhotonTargets.AllViaServer, level, playerGameObject.GetComponent<PhotonView>().viewID );	
 	}
 
 	[PunRPC]
-	void activateCardRPC( string name, int level, int photonViewID )
+	void cardSpeedBoostRPC( int level, int photonViewID )
 	{
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
