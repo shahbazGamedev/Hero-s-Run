@@ -71,6 +71,7 @@ public class PlayerVisuals : Photon.PunBehaviour {
 		if( this.photonView.isMine )
 		{
 			MiniMap.Instance.registerLocalPlayer( transform );
+			PhotonNetwork.player.TagObject = gameObject;
 		}
 		else
 		{

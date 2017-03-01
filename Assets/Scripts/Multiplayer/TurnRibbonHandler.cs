@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class TurnRibbonHandler : MonoBehaviour {
 
 	[Header("General")]
+	[SerializeField] CardHandler cardHandler;
 	[SerializeField] Transform cardPanel;
 	[SerializeField] GameObject cardPrefab;
 	[Header("Next Card")]
@@ -128,8 +129,9 @@ public class TurnRibbonHandler : MonoBehaviour {
 
 	void playCardEffect( string cardName )
 	{
-		//To be implemented
+		PlayerDeck.PlayerCardData playerCardData = GameManager.Instance.playerDeck.getCardByName( cardName );
 		Debug.Log("TurnRibbonHandler-playCardEffect: playing effect for card: " + cardName );
+		cardHandler.activateCard( cardName, playerCardData.level );
 	}
 
 	int getUniqueRandom()
