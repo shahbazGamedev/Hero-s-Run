@@ -2119,4 +2119,15 @@ public class PlayerControl : Photon.PunBehaviour {
 			powerUpManager.activatePowerUp( PlayerStatsManager.Instance.getPowerUpSelected() );
 		}
 	}
+
+	public void setAllowRunSpeedToIncrease( bool value )
+	{
+		allowRunSpeedToIncrease = value;
+	}
+
+	public bool getAllowRunSpeedToIncrease()
+	{
+		return allowRunSpeedToIncrease;
+	}
+
 }
