@@ -37,6 +37,7 @@ public class CardSpeedBoost : Photon.PunBehaviour {
 		//Only affect the camera for the local player
 		if( isMine ) Camera.main.GetComponent<MotionBlur>().enabled = true;
 		playerControl.setAllowRunSpeedToIncrease( false );
+		playerControl.isSpeedBoostActive = true;
 		playerControl.runSpeed = playerControl.runSpeed * ( baseSpeed + level * speedUpgradePerLevel );
 		playerControl.GetComponent<PlayerSounds>().playSound( soundFx, false );
 		StartCoroutine( stopSpeedBoost( level, playerControl, isMine) );
@@ -48,6 +49,7 @@ public class CardSpeedBoost : Photon.PunBehaviour {
 		if( isMine ) Camera.main.GetComponent<MotionBlur>().enabled = false;
 		if( playerControl.getCharacterState() != PlayerCharacterState.Dying ) playerControl.setAllowRunSpeedToIncrease( true );
 		playerControl.GetComponent<PlayerSounds>().stopAudioSource();
+		playerControl.isSpeedBoostActive = false;
 	}
 
 }

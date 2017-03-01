@@ -138,7 +138,8 @@ public class PlayerCollisions : MonoBehaviour {
 				if( zombieController.getCreatureState() != CreatureState.Dying )
 				{
 					//You can't make a crawling zombie fall backwards
-					if( ( playerControl.getCharacterState() == PlayerCharacterState.Sliding || playerControl.getCharacterState() == PlayerCharacterState.Turning_and_sliding || PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) ) && zombieController.getCreatureState() != CreatureState.Crawling )
+					if( ( playerControl.getCharacterState() == PlayerCharacterState.Sliding || playerControl.getCharacterState() == PlayerCharacterState.Turning_and_sliding
+							|| playerControl.isSpeedBoostActive ) && zombieController.getCreatureState() != CreatureState.Crawling )
 					{
 						//Give stars
 						PlayerStatsManager.Instance.modifyCurrentCoins( ZombieManager.NUMBER_STARS_PER_ZOMBIE, true, false );
@@ -328,7 +329,7 @@ public class PlayerCollisions : MonoBehaviour {
 			else if (hit.collider.name.Equals("Weapon") )
 			{
 				//Skeleton footman or warlord, or goblin piker or wraith or demon
-				if( !PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
+				if( !playerControl.isSpeedBoostActive )
 				{
 					playerControl.managePlayerDeath ( DeathType.Obstacle );
 				}
@@ -341,7 +342,7 @@ public class PlayerCollisions : MonoBehaviour {
 		//Ignore collision event if the creature is already dead.
 		if( creature != null && creature.getCreatureState() != CreatureState.Dying )
 		{
-			if( ( playerControl.getCharacterState() == PlayerCharacterState.Sliding || playerControl.getCharacterState() == PlayerCharacterState.Turning_and_sliding ) || PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
+			if( ( playerControl.getCharacterState() == PlayerCharacterState.Sliding || playerControl.getCharacterState() == PlayerCharacterState.Turning_and_sliding ) || playerControl.isSpeedBoostActive )
 			{
 				//Give stars
 				PlayerStatsManager.Instance.modifyCurrentCoins( CreatureManager.NUMBER_COINS_PER_CREATURE, true, false );

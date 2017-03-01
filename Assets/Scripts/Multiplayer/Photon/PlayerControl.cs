@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.ImageEffects;
 
 public class PlayerControl : Photon.PunBehaviour {
 
@@ -187,6 +188,10 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Other variables
 	GenerateLevel generateLevel;
 	PowerUpManager powerUpManager;
+	#endregion
+
+	#region Card related
+	public bool isSpeedBoostActive = false;
 	#endregion
 
 	#region Events
@@ -1980,10 +1985,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		if( other.name == "deadEnd" )
 		{
 			//Deactivate the speedboost if active because it is really hard to turn when you are going super fast
-			if( PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
-			{
-				powerUpManager.deactivatePowerUp(PowerUpType.SpeedBoost, true );
-			}
+			deactivateSpeedBoost();
 			isInDeadEnd = true;
 			wantToTurn = false;
 
@@ -2030,10 +2032,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		else if( other.name == "ZiplineTrigger" )
 		{
 			//Deactivate the speedboost if active before ziplining
-			if( PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
-			{
-				powerUpManager.deactivatePowerUp(PowerUpType.SpeedBoost, true );
-			}
+			deactivateSpeedBoost();
 			isInZiplineTrigger = true;
 		}
  		else if( other.name == "DetachZiplineTrigger" )
@@ -2149,4 +2148,14 @@ public class PlayerControl : Photon.PunBehaviour {
 		return allowRunSpeedToIncrease;
 	}
 
+	void deactivateSpeedBoost()
+	{
+		if( isSpeedBoostActive )
+		{
+			Camera.main.GetComponent<MotionBlur>().enabled = false;
+			if( getCharacterState() != PlayerCharacterState.Dying ) setAllowRunSpeedToIncrease( true );
+			GetComponent<PlayerSounds>().stopAudioSource();
+			isSpeedBoostActive = false;
+		}
+	}
 }
