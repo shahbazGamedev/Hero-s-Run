@@ -53,6 +53,8 @@ public class PlayerDataManager : MonoBehaviour {
 		else
 		{
 			playerDeck = new PlayerDeck();
+			playerDeck.createNewPlayerDeck();
+
 		}
 		GameManager.Instance.playerDeck = playerDeck;
 	}

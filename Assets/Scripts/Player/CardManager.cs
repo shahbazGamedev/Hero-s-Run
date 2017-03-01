@@ -45,7 +45,6 @@ public class CardManager : MonoBehaviour {
 	void Start()
 	{
 		initialize();
-		//GameManager.Instance.playerDeck.initialiseForTesting();
 	}
 
 	void initialize()

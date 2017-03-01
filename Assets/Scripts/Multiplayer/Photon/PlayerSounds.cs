@@ -30,7 +30,7 @@ public class PlayerSounds : MonoBehaviour {
 		audioSource = GetComponent<AudioSource>();
 	}
 
-	void playSound(AudioClip soundToPlay, bool isLooping )
+	public void playSound(AudioClip soundToPlay, bool isLooping )
     {
 		audioSource.clip = soundToPlay;
 		audioSource.loop = isLooping;

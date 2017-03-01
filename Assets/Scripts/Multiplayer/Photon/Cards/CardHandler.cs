@@ -26,7 +26,16 @@ public class CardHandler : MonoBehaviour {
 			break;
 
 			default:
-				Debug.LogError("Cardhandler-The card name specified, " + name + ", is unknown.");
+			CardSpeedBoost cardSpeedBoost2 = GetComponent<CardSpeedBoost>();
+			if( cardSpeedBoost2 != null )
+			{
+				cardSpeedBoost2.activateCard( name, level );
+			}
+			else
+			{
+				Debug.LogError("CardHandler-The CardSpeedBoost component is not attached to the CardHandler in the Level scene.");
+			}
+			//Debug.LogError("Cardhandler-The card name specified, " + name + ", is unknown.");
 			break;
 		}
 	}

@@ -11,46 +11,48 @@ public class PlayerDeck {
 
 	[SerializeField] List<PlayerCardData> playerCardDataList = new List<PlayerCardData>();
 
-
-	public void initialiseForTesting()
+	/// <summary>
+	/// Creates the new player deck. This has the cards the players has after a new install. All of the cards are level 1. The player has 1 card of each.
+	/// </summary>
+	public void createNewPlayerDeck()
 	{
 		//Cards in battle deck
 		//1
-		addCard( "Barbarians", 6, 174, true );
+		addCard( "Barbarians", 1, 1, true );
 
 		//2
-		addCard( "Dark Prince", 6, 174, true );
+		addCard( "Dark Prince", 1, 1, true );
 
 		//3
-		addCard( "Furnace", 6, 174, true );
+		addCard( "Furnace", 1, 1, true );
 
 		//4
-		addCard( "Giant Skeleton", 6, 174, true );
+		addCard( "Giant Skeleton", 1, 1, true );
 
 		//5
-		addCard( "Goblin Hut", 6, 174, true );
+		addCard( "Goblin Hut", 1, 1, true );
 
 		//6
-		addCard( "Goblins", 6, 174, true );
+		addCard( "Goblins", 1, 1, true );
 
 		//7
-		addCard( "Ice Spirit", 6, 174, true );
+		addCard( "Ice Spirit", 1, 1, true );
 
 		//8
-		addCard( "Inferno Tower", 6, 174, true );
+		addCard( "Inferno Tower", 1, 1, true );
 
 		//Part of card collection, but not in battle deck
 		//9
-		addCard( "Lumberjack", 6, 174, false );
+		addCard( "Lumberjack", 1, 1, false );
 
 		//10
-		addCard( "Mini-PEKKA", 6, 174, false );
+		addCard( "Mini-PEKKA", 1, 1, false );
 
 		//11
-		addCard( "Minions", 6, 174, false );
+		addCard( "Minions", 1, 1, false );
 
 		//12
-		addCard( "Mortar", 6, 174, false );
+		addCard( "Mortar", 1, 1, false );
 
 		serializePlayerDeck( true );
 
