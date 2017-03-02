@@ -95,7 +95,7 @@ public class MiniMap : MonoBehaviour {
 				float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270 -player.eulerAngles.y;
 				radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
 				radarPos.z = distToObject * Mathf.Sin( deltaY * Mathf.Deg2Rad );
-				radarObjects[i].icon.transform.position = new Vector3( radarPos.x, radarPos.z, 0 ) + transform.position;
+				radarObjects[i].icon.rectTransform.anchoredPosition = new Vector2( radarPos.x, radarPos.z );
 				if( radarObjects[i].playerControl )
 				{
 					if( radarObjects[i].playerControl.getCharacterState() == PlayerCharacterState.Dying )

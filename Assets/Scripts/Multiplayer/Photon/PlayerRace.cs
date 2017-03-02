@@ -110,9 +110,9 @@ public class PlayerRace : Photon.PunBehaviour
 							players[i].photonView.RPC("OnRacePositionChanged", PhotonTargets.AllBufferedViaServer, newPosition );
 						}
 					}
-					//Calculate the race duration. It will be sent at the end of the race.
-					raceDuration = raceDuration + Time.deltaTime;
 				}
+				//Calculate the race duration. It will be sent at the end of the race.
+				raceDuration = raceDuration + Time.deltaTime;
 			}
 		}
 	}
@@ -142,7 +142,7 @@ public class PlayerRace : Photon.PunBehaviour
 			{
 				//Player has reached the finish line
 				playerCrossedFinishLine = true;
-				Debug.Log ("Finish Line crossed by " + PhotonNetwork.player.NickName + " in race position " + racePosition );
+				Debug.Log ("Finish Line crossed by " + gameObject.name + " in race position " + racePosition );
 				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllBuffered, other.transform.position.z, raceDuration, distanceTravelled );
 			}
 		}
