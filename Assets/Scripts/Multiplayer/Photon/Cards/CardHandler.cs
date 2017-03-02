@@ -47,14 +47,14 @@ public class CardHandler : MonoBehaviour {
 			}
 			break;
 			default:
-			CardDoubleJump cardDoubleJump2 = GetComponent<CardDoubleJump>();
-			if( cardDoubleJump2 != null )
+			CardExplosion cardExplosion2 = GetComponent<CardExplosion>();
+			if( cardExplosion2 != null )
 			{
-				cardDoubleJump2.activateCard( name, level );
+				cardExplosion2.activateCard( name, level );
 			}
 			else
 			{
-				Debug.LogError("CardHandler-The CardDoubleJump component is not attached to the CardHandler in the Level scene.");
+				Debug.LogError("CardHandler-The CardExplosion component is not attached to the CardHandler in the Level scene.");
 			}
 			break;
 			//Debug.LogError("Cardhandler-The card name specified, " + name + ", is unknown.");

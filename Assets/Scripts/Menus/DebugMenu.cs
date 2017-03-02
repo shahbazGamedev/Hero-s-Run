@@ -169,13 +169,14 @@ public class DebugMenu : MonoBehaviour {
 		UISoundManager.uiSoundManager.playButtonClick();
 		if( LevelManager.Instance.getNumberOfPlayersRequired() == 1 )
 		{
-			LevelManager.Instance.setNumberOfPlayersRequired( 2 );
+			PlayerStatsManager.Instance.setNumberOfPlayersRequired( 2 );
 		}
 		else if( LevelManager.Instance.getNumberOfPlayersRequired() == 2 )
 		{
-			LevelManager.Instance.setNumberOfPlayersRequired( 1 );
+			PlayerStatsManager.Instance.setNumberOfPlayersRequired( 1 );
 		}
 		toggleNumberOfPlayersRequiredText.text = "Number of players required: " + LevelManager.Instance.getNumberOfPlayersRequired().ToString();
+		PlayerStatsManager.Instance.savePlayerStats();
 	}
 
 	void updatePlayerStats()

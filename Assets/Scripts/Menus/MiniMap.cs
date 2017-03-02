@@ -8,6 +8,7 @@ public class RadarObject
 {
 	public Image icon { get; set; }
 	public GameObject owner { get; set; }
+	public PlayerControl playerControl { get; set; }
 }
 
 public class MiniMap : MonoBehaviour {
@@ -17,6 +18,7 @@ public class MiniMap : MonoBehaviour {
 	Transform player;
 	List<RadarObject> radarObjects = new List<RadarObject>();
 	[SerializeField] Image playerRadarImage;
+	[SerializeField] Sprite playerDeadRadarSprite;
 
 	// Use this for initialization
 	void Awake () {
@@ -30,11 +32,11 @@ public class MiniMap : MonoBehaviour {
 		this.player = player;
 	}
 	
-	public void registerRadarObject( GameObject go )
+	public void registerRadarObject( GameObject go, PlayerControl pc = null )
 	{
 		Image image = Instantiate( playerRadarImage );
 		image.transform.SetParent( transform );
-		radarObjects.Add( new RadarObject(){ owner = go, icon = image } );
+		radarObjects.Add( new RadarObject(){ owner = go, icon = image, playerControl = pc } );
 	}
 
 	public void removeRadarObject( GameObject go )
@@ -74,6 +76,17 @@ public class MiniMap : MonoBehaviour {
 				radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
 				radarPos.z = distToObject * Mathf.Sin( deltaY * Mathf.Deg2Rad );
 				radarObjects[i].icon.transform.position = new Vector3( radarPos.x, radarPos.z, 0 ) + transform.position;
+				if( radarObjects[i].playerControl )
+				{
+					if( radarObjects[i].playerControl.getCharacterState() == PlayerCharacterState.Dying )
+					{
+						radarObjects[i].icon.overrideSprite = playerDeadRadarSprite;
+					}
+					else
+					{
+						radarObjects[i].icon.overrideSprite = null;
+					}
+				}
 			}
 			else
 			{

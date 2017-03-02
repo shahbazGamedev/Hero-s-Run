@@ -113,6 +113,7 @@ public class PlayerStatsManager {
 	string userName;
 
 	bool ownsCoinDoubler = false; //True if the player has purchased the Coin Doubler in the store.
+	byte numberOfPlayersRequired = 1; //Used to debug multiplayer
 
 	string challenges = String.Empty; //List of Challenge in JSON format. See ChallengeBoard.
 	string journalEntries = String.Empty; //List of Journal Entries in JSON format. See JournalData.
@@ -1015,6 +1016,17 @@ public class PlayerStatsManager {
 		return playerDeck;
 	}
 
+	public void setNumberOfPlayersRequired( byte numberOfPlayersRequired )
+	{
+		this.numberOfPlayersRequired = numberOfPlayersRequired;
+		LevelManager.Instance.setNumberOfPlayersRequired( numberOfPlayersRequired );
+	}
+
+	public byte getNumberOfPlayersRequired()
+	{
+		return numberOfPlayersRequired;
+	}
+
 	public void loadPlayerStats()
 	{
 		try
@@ -1129,6 +1141,8 @@ public class PlayerStatsManager {
 			playerProfile = PlayerPrefs.GetString("playerProfile", "" );
 			playerStatistics = PlayerPrefs.GetString("playerStatistics", "" );
 			playerDeck = PlayerPrefs.GetString("playerDeck", "" );
+			numberOfPlayersRequired = (byte)PlayerPrefs.GetInt("numberOfPlayersRequired", 2 );
+			setNumberOfPlayersRequired( numberOfPlayersRequired );
 			//Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " Next Episode To Complete: " + nextEpisodeToComplete + " Highest Episode Completed: " + highestEpisodeCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
@@ -1223,6 +1237,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetString( "playerProfile", playerProfile );
 		PlayerPrefs.SetString( "playerStatistics", playerStatistics );
 		PlayerPrefs.SetString( "playerDeck", playerDeck );
+		PlayerPrefs.SetInt( "numberOfPlayersRequired", (int)numberOfPlayersRequired );
 		PlayerPrefs.Save();
 		//Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
 	}
@@ -1292,6 +1307,8 @@ public class PlayerStatsManager {
 			PlayerPrefs.SetString( "playerStatistics", "" );
 			playerDeck = string.Empty;
 			PlayerPrefs.SetString( "playerDeck", "" );
+			PlayerPrefs.SetInt( "numberOfPlayersRequired", 2 );
+			setNumberOfPlayersRequired( 2 );
 			PlayerPrefs.Save();
 			Debug.Log ("PlayerStatsManager-resetPlayerStats: called." );
 		}
