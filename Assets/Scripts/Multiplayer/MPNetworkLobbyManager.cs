@@ -67,10 +67,9 @@ public class MPNetworkLobbyManager : PunBehaviour
 		//Set player name
 		PhotonNetwork.playerName = PlayerStatsManager.Instance.getUserName();
 
-		//Set the player's skin
-		HeroManager.HeroCharacter selectedHero = LevelManager.Instance.selectedHero;
-		playerCustomProperties.Add("Skin", selectedHero.skinPrefab );
-	
+		//Set the index of the selected hero so we can retrieve it later. Hero data is stored in HeroManager.
+		playerCustomProperties.Add("Hero", LevelManager.Instance.selectedHeroIndex );
+		
 		//Set your icon, which is displayed in the matchmaking screen
 		playerCustomProperties.Add("Icon", GameManager.Instance.playerProfile.getPlayerIconId() );
 

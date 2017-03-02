@@ -50,16 +50,17 @@ public class PlayerVisuals : Photon.PunBehaviour {
 		shadowProjector.enabled = activate;
 	}
 
-	//This is where for the master client only, we instantiate the player skin
+	//This is where for the master client only, we instantiate the player skin. PhotonNetwork.InstantiateSceneObject will instantiate the skin on the remote players
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
 		gameObject.name = info.sender.NickName;
-		Debug.Log("PlayerVisuals-OnPhotonInstantiate-Skin: " + info.sender.CustomProperties["Skin"] + " isMasterClient: " + PhotonNetwork.isMasterClient + " Name: " + info.sender.NickName );
+		HeroManager.HeroCharacter selectedHero = HeroManager.Instance.getHeroCharacter( (int)info.sender.CustomProperties["Hero"] );
+		Debug.Log("PlayerVisuals-OnPhotonInstantiate-Hero name: " + selectedHero.name + " Hero Index " + (int)info.sender.CustomProperties["Hero"] + " isMasterClient: " + PhotonNetwork.isMasterClient + " Name: " + info.sender.NickName );
 		if ( PhotonNetwork.isMasterClient )
 		{
 			object[] stuff = new object[1];
 			stuff[0] = info.sender.NickName;
-		    GameObject heroSkin = (GameObject)PhotonNetwork.InstantiateSceneObject (info.sender.CustomProperties["Skin"].ToString(), Vector3.zero, Quaternion.identity, 0, stuff);
+		    GameObject heroSkin = (GameObject)PhotonNetwork.InstantiateSceneObject (selectedHero.skinPrefab, Vector3.zero, Quaternion.identity, 0, stuff);
 			Animator anim = gameObject.GetComponent<Animator>();
 			heroSkin.transform.SetParent( transform, false );
 			heroSkin.transform.localPosition = Vector3.zero;
@@ -75,7 +76,6 @@ public class PlayerVisuals : Photon.PunBehaviour {
 		}
 		else
 		{
-			HeroManager.HeroCharacter selectedHero = LevelManager.Instance.selectedHero;
 			MiniMap.Instance.registerRadarObject( gameObject, selectedHero.minimapIcon, GetComponent<PlayerControl>() );
 		}		
 	}

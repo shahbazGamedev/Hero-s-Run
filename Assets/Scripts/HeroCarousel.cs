@@ -61,7 +61,7 @@ public class HeroCarousel : MonoBehaviour {
 		HeroManager.HeroCharacter hero = HeroManager.Instance.getHeroCharacter( initialCurrentIndex );
 		
 		//Remember the selected hero as we will need to access it later
-		LevelManager.Instance.selectedHero = hero;
+		LevelManager.Instance.selectedHeroIndex = currentIndex;
 
 		centerIcon.sprite = hero.icon;
 
