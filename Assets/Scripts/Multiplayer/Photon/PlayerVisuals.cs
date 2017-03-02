@@ -75,7 +75,8 @@ public class PlayerVisuals : Photon.PunBehaviour {
 		}
 		else
 		{
-			MiniMap.Instance.registerRadarObject( gameObject, GetComponent<PlayerControl>() );
+			HeroManager.HeroCharacter selectedHero = LevelManager.Instance.selectedHero;
+			MiniMap.Instance.registerRadarObject( gameObject, selectedHero.minimapIcon, GetComponent<PlayerControl>() );
 		}		
 	}
 

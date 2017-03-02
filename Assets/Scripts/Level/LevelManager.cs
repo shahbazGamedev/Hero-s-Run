@@ -33,6 +33,7 @@ public class LevelManager {
 	byte numberOfPlayersRequired = 1; //Used to debug multiplayer
 	private int currentMultiplayerLevel = 0; //the index of the multiplayer level selected by the player.
 	public CarouselEntry selectedRaceDetails;
+	public HeroManager.HeroCharacter selectedHero;
 
 	public static LevelManager Instance
 	{

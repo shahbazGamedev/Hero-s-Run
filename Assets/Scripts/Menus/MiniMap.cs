@@ -39,11 +39,12 @@ public class MiniMap : MonoBehaviour {
 		this.player = player;
 	}
 	
-	public void registerRadarObject( GameObject go, PlayerControl pc = null )
+	public void registerRadarObject( GameObject go, Sprite minimapSprite, PlayerControl pc = null )
 	{
 		Image image = Instantiate( playerRadarImage );
 		image.transform.SetParent( transform );
 		image.rectTransform.localScale = Vector3.one;
+		image.sprite = minimapSprite;
 		radarObjects.Add( new RadarObject(){ owner = go, icon = image, playerControl = pc } );
 	}
 

@@ -14,6 +14,7 @@ public class LevelNetworkingManager : PunBehaviour
 	bool levelLoading = false;
 	Vector3 leftStartPosition = new Vector3( -1.3f, 0.57f, 0 );
 	Vector3 rightStartPosition = new Vector3( 1.3f, 0.57f, 0 );
+	Vector3 centerStartPosition = new Vector3( 0, 0.57f, 0 );
 	
 	void Start()
 	{
@@ -36,6 +37,10 @@ public class LevelNetworkingManager : PunBehaviour
 				else if ( playerPosition == 2 )
 				{
 					startPosition = rightStartPosition;
+				}
+				else if ( playerPosition == 3 )
+				{
+					startPosition = centerStartPosition;
 				}
 				PhotonNetwork.Instantiate(this.playerPrefab.name, startPosition, Quaternion.identity, 0);
 			}

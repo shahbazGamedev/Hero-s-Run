@@ -68,14 +68,8 @@ public class MPNetworkLobbyManager : PunBehaviour
 		PhotonNetwork.playerName = PlayerStatsManager.Instance.getUserName();
 
 		//Set the player's skin
-		if( PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
-		{
-			playerCustomProperties.Add("Skin", "Hero_prefab" );
-		}
-		else
-		{
-			playerCustomProperties.Add("Skin", "Heroine_prefab" );
-		}
+		HeroManager.HeroCharacter selectedHero = LevelManager.Instance.selectedHero;
+		playerCustomProperties.Add("Skin", selectedHero.skinPrefab );
 	
 		//Set your icon, which is displayed in the matchmaking screen
 		playerCustomProperties.Add("Icon", GameManager.Instance.playerProfile.getPlayerIconId() );
@@ -178,15 +172,21 @@ public class MPNetworkLobbyManager : PunBehaviour
 			}
 		}
 
-		//PlayerPosition will be used to determine the start position. We don't want players to spawn on top of each other.
-		playerCustomProperties.Add("PlayerPosition", PhotonNetwork.room.PlayerCount );
-		PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
-
 		//Since we want to play alone for testing purposes, load level right away.
 	    if ( numberOfPlayersRequired == 1 )
 	    {
+			//PlayerPosition 3 is the center lane.
+			playerCustomProperties.Add("PlayerPosition", 3 );
+			PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
 	        PhotonNetwork.LoadLevel("Level");
-		}				
+		}
+		else
+		{
+			//PlayerPosition will be used to determine the start position. We don't want players to spawn on top of each other.
+			//PlayerPosition 1 is the left lane. PlayerPosition 2 is the right lane.
+			playerCustomProperties.Add("PlayerPosition", PhotonNetwork.room.PlayerCount );
+			PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
+		}
 	}
 
 	public override void OnLeftRoom()
