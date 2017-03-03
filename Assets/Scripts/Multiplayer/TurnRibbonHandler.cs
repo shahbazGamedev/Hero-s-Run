@@ -13,10 +13,12 @@ public class TurnRibbonHandler : MonoBehaviour {
 	[SerializeField] Image nextCardImage;
 	[SerializeField] Text nextCardText;
 	CardManager.CardData nextCard;
+	[SerializeField] Sprite blankCardSprite;
 	[Header("Mana Bar")]
 	[SerializeField] ManaBar manaBar;
 
 	const int NUMBER_CARDS_IN_BATTLE_DECK = 8;
+	const float DELAY_BEFORE_NEXT_CARD_AVAILABLE = 1f;
 
 	int [] cardIndexArray = new int[]{0,1,2,3,4,5,6,7};
 	List<int> cardIndexList = new List<int>(NUMBER_CARDS_IN_BATTLE_DECK);
@@ -110,8 +112,21 @@ public class TurnRibbonHandler : MonoBehaviour {
 		//Play the card effect
 		playCardEffect( playedCard.name );
 
+		//Temporarily replace the image on the button that was clicked by a blank image
+		Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
+		buttonOfCardPlayed.GetComponent<Image>().overrideSprite = blankCardSprite;
+
+		//Wait a little before moving the Next Card into the free ribbon slot
+		StartCoroutine( moveNextCardIntoTurnRibbon( indexOfCardPlayed, playedCard ) );
+	}
+
+	IEnumerator moveNextCardIntoTurnRibbon( int indexOfCardPlayed, CardManager.CardData playedCard )
+	{
+		yield return new WaitForSecondsRealtime( DELAY_BEFORE_NEXT_CARD_AVAILABLE );
+
 		//Replace the image on the button that was clicked by the image of the Next card
 		Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
+		buttonOfCardPlayed.GetComponent<Image>().overrideSprite = null;
 		buttonOfCardPlayed.GetComponent<Image>().sprite = nextCard.icon;
 
 		//In the turn-ribbon list, replace the card played by the card held in Next
@@ -125,6 +140,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 
 		//Enqueue the card that was just played
 		cardQueue.Enqueue( playedCard );
+		
 	}
 
 	void playCardEffect( string cardName )
