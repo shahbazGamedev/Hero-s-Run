@@ -86,9 +86,9 @@ public class PlayerRace : Photon.PunBehaviour
 				//We use the distance travelled to determine the race position. All players on the master client need to do this.
 				updateDistanceTravelled();
 
-				//We only want the host to calculate the race position and race duration.
+				//We only want the host to calculate the race position and race duration. We don't want a bot to do it.
 				//The host is the master client who is owned by this device (so IsMasterClient is true and IsMine is true).
-				if( this.photonView.isMine )
+				if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
 				{
 					//Update the race position of the players i.e. 1st place, 2nd place, and so forth
 					//Order the list using the distance travelled
@@ -160,8 +160,9 @@ public class PlayerRace : Photon.PunBehaviour
 	void OnRacePositionChanged( int value )
 	{
 		racePosition = value;
-		if( this.photonView.isMine ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
-		//Debug.Log("PlayerRace: OnRacePositionChanged " +  (racePosition + 1 ) );
+		//The bot has a photon view. This photon view, just like the player's, has isMine set to true. But we don't want a bot to affect the HUD, hence we make sure we are not a bot.
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
+		Debug.Log("PlayerRace: OnRacePositionChanged " +  (racePosition + 1 )  + " name " + gameObject.name );
 	}
 
 	//This method is called when the player has crossed the finish line to let the client know the official race duration and distance travelled
@@ -175,8 +176,8 @@ public class PlayerRace : Photon.PunBehaviour
 
 		//We want to slow down any player that reaches the finish line
 		StartCoroutine( GetComponent<PlayerControl>().slowDownPlayerAfterFinishLine( 10f, triggerPositionZ ) );
-		//However, in terms of changing HUD elements, XP, player stats, etc. We only want to proceed if the player is local.
-		if( this.photonView.isMine )
+		//However, in terms of changing HUD elements, XP, player stats, etc. We only want to proceed if the player is local and not a bot.
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
 		{
 			HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
 			GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();

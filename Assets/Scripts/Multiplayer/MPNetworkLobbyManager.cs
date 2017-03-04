@@ -44,18 +44,34 @@ public class MPNetworkLobbyManager : PunBehaviour
 	}
 	#endregion
 
-	#region Public Methods	
+	#region Public Methods
+	//startMatch is called by MatchmakingManager when the Play button is clicked
 	public void startMatch()
 	{
-		//Player is connected to the Internet
-		if( Application.internetReachability != NetworkReachability.NotReachable )
+		Debug.Log("startMatch " + GameManager.Instance.getPlayMode() );
+
+		//Does the selected play mode require Internet?
+		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstEnemy )
 		{
+			//PlayAgainstEnemy is an offline mode. We do not need to check that we have access to the Internet.
 			connecting = true;
 			Connect();
+			setUpBot();
 		}
 		else
 		{
-			matchmakingManager.showNoInternetPopup();
+			//Yes, we need Internet
+			if( Application.internetReachability != NetworkReachability.NotReachable )
+			{
+				//Player is connected to the Internet
+				connecting = true;
+				Connect();
+			}
+			else
+			{
+				//Player is not connected to the Internet
+				matchmakingManager.showNoInternetPopup();
+			}
 		}
 	}
 
@@ -162,7 +178,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	 
 	public override void OnJoinedRoom()
 	{
-		Debug.Log("MPNetworkLobbyManager: OnJoinedRoom() called by PUN. Now this client is in a room. Elo rating is:" + PhotonNetwork.room.CustomProperties["Elo"].ToString() + " Circuit is: " + PhotonNetwork.room.CustomProperties["Track"].ToString() + " SKin is " + PlayerStatsManager.Instance.getAvatar().ToString() );
+		//Debug.Log("MPNetworkLobbyManager: OnJoinedRoom() called by PUN. Now this client is in a room. Elo rating is:" + PhotonNetwork.room.CustomProperties["Elo"].ToString() + " Circuit is: " + PhotonNetwork.room.CustomProperties["Track"].ToString() + " SKin is " + PlayerStatsManager.Instance.getAvatar().ToString() );
 		foreach(PhotonPlayer player in PhotonNetwork.playerList)
 		{
 			if( !player.IsLocal )
@@ -212,6 +228,19 @@ public class MPNetworkLobbyManager : PunBehaviour
 		matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedMultiplayerLevel().circuitInfo.circuitTextID ) + " ..." ); 
 		matchmakingManager.setRemotePlayerName( player.NickName );
 		matchmakingManager.setRemotePlayerIcon( (int)player.CustomProperties["Icon"] );
+	}
+
+	void setUpBot()
+	{
+		HeroManager.HeroCharacter selectedHero = HeroManager.Instance.getHeroCharacter( LevelManager.Instance.selectedHeroIndex );
+		int botHeroIndex = HeroManager.Instance.getIndexOfOppositeSexBot( selectedHero.sex );
+		LevelManager.Instance.selectedBotHeroIndex = botHeroIndex;
+		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( botHeroIndex );
+	
+		//matchmakingManager.disableExitButton();
+		//matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedMultiplayerLevel().circuitInfo.circuitTextID ) + " ..." ); 
+		matchmakingManager.setRemotePlayerName( botHero.userName );
+		matchmakingManager.setRemotePlayerIcon( botHero.playerIcon );
 	}
 
 	public override void OnPhotonPlayerDisconnected( PhotonPlayer other  )

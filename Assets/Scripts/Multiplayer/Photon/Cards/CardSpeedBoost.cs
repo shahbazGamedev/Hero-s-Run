@@ -14,10 +14,9 @@ public class CardSpeedBoost : Photon.PunBehaviour {
 	[SerializeField] float  durationUpgradePerLevel = 0.15f;
 	[SerializeField] float  speedUpgradePerLevel = 0.06f;
 
-	public void activateCard ( string name, int level )
+	public void activateCard ( int photonViewId, int level )
 	{
-		GameObject playerGameObject = (GameObject)PhotonNetwork.player.TagObject;
-		this.photonView.RPC("cardSpeedBoostRPC", PhotonTargets.AllViaServer, level, playerGameObject.GetComponent<PhotonView>().viewID );	
+		this.photonView.RPC("cardSpeedBoostRPC", PhotonTargets.AllViaServer, level, photonViewId );	
 	}
 
 	[PunRPC]
@@ -27,7 +26,7 @@ public class CardSpeedBoost : Photon.PunBehaviour {
 		{
 			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
 			{
-				startSpeedBoost( level, PlayerRace.players[i].GetComponent<PlayerControl>(), PlayerRace.players[i].GetComponent<PhotonView>().isMine );
+								startSpeedBoost( level, PlayerRace.players[i].GetComponent<PlayerControl>(), PlayerRace.players[i].GetComponent<PhotonView>().isMine && PlayerRace.players[i].GetComponent<PlayerAI>() == null );
 			}
 		}
 	}

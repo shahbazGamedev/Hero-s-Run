@@ -10,10 +10,10 @@ public class CardDoubleJump : Photon.PunBehaviour {
 	[SerializeField] float  baseDoubleJumpSpeed = 12f; //for comparaison, the normal jump value is 8.8
 	[SerializeField] float  doubleJumpUpgradePerLevel = 0.5f;
 
-	public void activateCard ( string name, int level )
+	public void activateCard ( int photonViewId, int level )
 	{
 		GameObject playerGameObject = (GameObject)PhotonNetwork.player.TagObject;
-		this.photonView.RPC("cardDoubleJumpRPC", PhotonTargets.AllViaServer, level, playerGameObject.GetComponent<PhotonView>().viewID );	
+		this.photonView.RPC("cardDoubleJumpRPC", PhotonTargets.AllViaServer, level, photonViewId );	
 	}
 
 	[PunRPC]

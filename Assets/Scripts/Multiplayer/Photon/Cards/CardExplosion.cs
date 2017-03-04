@@ -12,10 +12,9 @@ public class CardExplosion : Photon.PunBehaviour {
 	[SerializeField]  ParticleSystem zNukeEffect;
 	int playerLayer = 2;
 
-	public void activateCard ( string name, int level )
+	public void activateCard ( int photonViewId, int level )
 	{
-		GameObject playerGameObject = (GameObject)PhotonNetwork.player.TagObject;
-		this.photonView.RPC("cardExplosionMasterRPC", PhotonTargets.MasterClient, level, playerGameObject.GetComponent<PhotonView>().viewID );	
+		this.photonView.RPC("cardExplosionMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
 	}
 
 	#region Methods only running on master client

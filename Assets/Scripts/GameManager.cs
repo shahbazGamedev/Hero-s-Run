@@ -51,6 +51,15 @@ public enum GameMode {
 	Endless = 2
 }
 
+public enum PlayMode {
+	
+	PlayOthers = 1,
+	PlayWithFriends = 2,
+	PlayAgainstEnemy = 3,
+	PlayAlone = 4
+
+}
+
 
 //This class is a Singleton
 public class GameManager {
@@ -77,6 +86,7 @@ public class GameManager {
 	public PlayerProfile playerProfile;
 	public PlayerStatistics playerStatistics;
 	public PlayerDeck playerDeck;
+	public PlayMode playMode = PlayMode.PlayAgainstEnemy;
 
 	public static GameManager Instance
 	{
@@ -96,12 +106,23 @@ public class GameManager {
 		//Send an event to interested classes
 		if(gameStateEvent != null) gameStateEvent( gameState, newState );
 		gameState = newState;
-		Debug.Log("setGameState: new state is " + gameState );
+		Debug.Log("GameManager-setGameState: new state is " + gameState );
 	} 
 
 	public GameState getGameState()
 	{
 		return gameState;
+	}
+
+	public void setPlayMode( PlayMode playMode )
+	{
+		this.playMode = playMode;
+		Debug.Log("GameManager-setPlayMode: new mode is " + playMode );
+	} 
+
+	public PlayMode getPlayMode()
+	{
+		return playMode;
 	}
 
 

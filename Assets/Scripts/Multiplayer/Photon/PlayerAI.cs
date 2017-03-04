@@ -9,8 +9,13 @@ using UnityEngine;
 /// 2) break barrels
 /// 3) jump over low obstacles and high obstacles.
 /// </summary>
-public class PlayerAI : MonoBehaviour {
+public class PlayerAI : Photon.PunBehaviour {
 
+	[Header("General")]
+	/// <summary>
+	/// The card handler. We need access so that the bot can play cards from his deck.
+	/// </summary>
+	CardHandler cardHandler;
 	const float OBSTACLE_DETECTION_DISTANCE = 3.3f;
 	Vector3 xOffsetStartLow = new Vector3( 0, 0.5f, 0 );	//For low obstacles
 	Vector3 xOffsetStartHigh = new Vector3( 0, 1.3f, 0 );	//For high obstacles
@@ -23,8 +28,15 @@ public class PlayerAI : MonoBehaviour {
 	{
 		playerControl = GetComponent<PlayerControl>();
 		playerInput = GetComponent<PlayerInput>();
+		cardHandler = GameObject.FindGameObjectWithTag("Card Handler").GetComponent<CardHandler>();
+		Invoke("doSpeedBoost",16f);
 	}
 	
+	void doSpeedBoost()
+	{
+		cardHandler.activateCard( this.photonView.viewID, "Barbarians", 2 );
+	}
+
 	// Update is called once per frame
 	void Update ()
 	{

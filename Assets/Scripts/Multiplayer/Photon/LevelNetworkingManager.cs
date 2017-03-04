@@ -9,6 +9,7 @@ public class LevelNetworkingManager : PunBehaviour
 {
 	[SerializeField] HUDMultiplayer hudMultiplayer;
 	[SerializeField] GameObject playerPrefab;
+	[SerializeField] GameObject botPrefab;
 
 	int numberOfPlayersReadyToRace = 0;	
 	bool levelLoading = false;
@@ -43,10 +44,21 @@ public class LevelNetworkingManager : PunBehaviour
 					startPosition = centerStartPosition;
 				}
 				PhotonNetwork.Instantiate(this.playerPrefab.name, startPosition, Quaternion.identity, 0);
+
+				createBot();
 			}
 		}
 	}
 	
+	void createBot()
+	{
+		//In the play against enemy mode, the player plays offline against a bot.
+		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstEnemy )
+		{
+			PhotonNetwork.InstantiateSceneObject(this.botPrefab.name, rightStartPosition, Quaternion.identity, 0, null );
+		}
+	}
+
 	//Called when the local player left the room. We need to load the matchmaking scene.
 	public void OnLeftRoom()
 	{

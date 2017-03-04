@@ -53,6 +53,19 @@ public class PlayerVisuals : Photon.PunBehaviour {
 	//This is where for the master client only, we instantiate the player skin. PhotonNetwork.InstantiateSceneObject will instantiate the skin on the remote players
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
+		if( GetComponent<PlayerAI>() == null )
+		{
+			instantiateHuman( info );
+		}
+		else
+		{
+			instantiateBot( info );
+		}
+	}
+
+	//This is where for the master client only, we instantiate the player skin. PhotonNetwork.InstantiateSceneObject will instantiate the skin on the remote players
+	void instantiateHuman( PhotonMessageInfo info )
+	{
 		gameObject.name = info.sender.NickName;
 		HeroManager.HeroCharacter selectedHero = HeroManager.Instance.getHeroCharacter( (int)info.sender.CustomProperties["Hero"] );
 		Debug.Log("PlayerVisuals-OnPhotonInstantiate-Hero name: " + selectedHero.name + " Hero Index " + (int)info.sender.CustomProperties["Hero"] + " isMasterClient: " + PhotonNetwork.isMasterClient + " Name: " + info.sender.NickName );
@@ -78,6 +91,32 @@ public class PlayerVisuals : Photon.PunBehaviour {
 		{
 			MiniMap.Instance.registerRadarObject( gameObject, selectedHero.minimapIcon, GetComponent<PlayerControl>() );
 		}		
+	}
+
+	//We are a bot.
+	void instantiateBot( PhotonMessageInfo info )
+	{
+		//Get the bot that was selected in MPNetworkLobbyManager and saved in LevelManager.
+		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
+
+		//Name our game object
+		gameObject.name = botHero.userName;
+
+		//Create the skin for the bot and set up the animator
+		if ( PhotonNetwork.isMasterClient )
+		{
+			object[] stuff = new object[1];
+			stuff[0] = info.sender.NickName;
+		    GameObject heroSkin = (GameObject)PhotonNetwork.InstantiateSceneObject (botHero.skinPrefab, Vector3.zero, Quaternion.identity, 0, stuff);
+			Animator anim = gameObject.GetComponent<Animator>();
+			heroSkin.transform.SetParent( transform, false );
+			heroSkin.transform.localPosition = Vector3.zero;
+			heroSkin.transform.localRotation = Quaternion.identity;
+			anim.avatar = heroSkin.GetComponent<PlayerSkinInfo>().animatorAvatar;
+			anim.Rebind(); //Important
+		}
+		//Register with the minimap
+		MiniMap.Instance.registerRadarObject( gameObject, botHero.minimapIcon, GetComponent<PlayerControl>() );
 	}
 
 }

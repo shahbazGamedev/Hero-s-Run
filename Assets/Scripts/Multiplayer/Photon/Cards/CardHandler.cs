@@ -9,7 +9,7 @@ public class CardHandler : MonoBehaviour {
 		
 	}
 	
-	public void activateCard ( string name, int level)
+	public void activateCard ( int photonViewId, string name, int level)
 	{
 		switch (name)
 		{
@@ -17,7 +17,7 @@ public class CardHandler : MonoBehaviour {
 			CardSpeedBoost cardSpeedBoost = GetComponent<CardSpeedBoost>();
 			if( cardSpeedBoost != null )
 			{
-				cardSpeedBoost.activateCard( name, level );
+				cardSpeedBoost.activateCard( photonViewId, level );
 			}
 			else
 			{
@@ -28,7 +28,7 @@ public class CardHandler : MonoBehaviour {
 			CardExplosion cardExplosion = GetComponent<CardExplosion>();
 			if( cardExplosion != null )
 			{
-				cardExplosion.activateCard( name, level );
+				cardExplosion.activateCard( photonViewId,level );
 			}
 			else
 			{
@@ -39,7 +39,7 @@ public class CardHandler : MonoBehaviour {
 			CardDoubleJump cardDoubleJump = GetComponent<CardDoubleJump>();
 			if( cardDoubleJump != null )
 			{
-				cardDoubleJump.activateCard( name, level );
+				cardDoubleJump.activateCard( photonViewId, level );
 			}
 			else
 			{
@@ -50,7 +50,7 @@ public class CardHandler : MonoBehaviour {
 			CardExplosion cardExplosion2 = GetComponent<CardExplosion>();
 			if( cardExplosion2 != null )
 			{
-				cardExplosion2.activateCard( name, level );
+				cardExplosion2.activateCard( photonViewId, level );
 			}
 			else
 			{
