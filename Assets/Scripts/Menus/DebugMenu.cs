@@ -18,7 +18,6 @@ public class DebugMenu : MonoBehaviour {
 	public Text facebookName;
 	public Text toggleOnlyUseUniqueTilesText;
 	public Text clearAssetBundleCacheText;
-	public Text toggleNumberOfPlayersRequiredText;
 
 	// Use this for initialization
 	void Start () {
@@ -45,7 +44,6 @@ public class DebugMenu : MonoBehaviour {
 		{
 			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: Off";
 		}
-		toggleNumberOfPlayersRequiredText.text = "Number of players required: " + LevelManager.Instance.getNumberOfPlayersRequired().ToString();
 
 		updatePlayerStats();
 	}
@@ -161,22 +159,6 @@ public class DebugMenu : MonoBehaviour {
 		{
 			clearAssetBundleCacheText.text = clearAssetBundleCacheText.text + ": Failure";
 		}
-	}
-
-	public void toggleNumberOfPlayersRequired()
-	{
-		Debug.Log("toggleNumberOfPlayersRequired");
-		UISoundManager.uiSoundManager.playButtonClick();
-		if( LevelManager.Instance.getNumberOfPlayersRequired() == 1 )
-		{
-			PlayerStatsManager.Instance.setNumberOfPlayersRequired( 2 );
-		}
-		else if( LevelManager.Instance.getNumberOfPlayersRequired() == 2 )
-		{
-			PlayerStatsManager.Instance.setNumberOfPlayersRequired( 1 );
-		}
-		toggleNumberOfPlayersRequiredText.text = "Number of players required: " + LevelManager.Instance.getNumberOfPlayersRequired().ToString();
-		PlayerStatsManager.Instance.savePlayerStats();
 	}
 
 	void updatePlayerStats()

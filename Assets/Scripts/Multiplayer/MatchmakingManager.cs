@@ -98,6 +98,11 @@ public class MatchmakingManager : MonoBehaviour {
 		remotePlayerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
 	}
 
+	public void hideRemotePlayer()
+	{
+		remotePlayerIcon.gameObject.SetActive( false );
+	}
+
 	public void configureCircuitData( Sprite circuitImageSprite, string circuitNameString, string entryFeeString )
 	{
 		circuitName.text = circuitNameString;

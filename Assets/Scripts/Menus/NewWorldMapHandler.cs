@@ -395,8 +395,27 @@ public class NewWorldMapHandler : MonoBehaviour {
 		}
 	}
 
-	public void OnClickShowCircuitSelection()
+	public void OnClickPlayAgainstEnemy()
 	{
+		GameManager.Instance.setPlayMode(PlayMode.PlayAgainstEnemy);
+		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
+	}
+
+	public void OnClickPlayAlone()
+	{
+		GameManager.Instance.setPlayMode(PlayMode.PlayAlone);
+		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
+	}
+
+	public void OnClickPlayOthers()
+	{
+		GameManager.Instance.setPlayMode(PlayMode.PlayOthers);
+		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
+	}
+
+	public void OnClickPlayWithFriends()
+	{
+		GameManager.Instance.setPlayMode(PlayMode.PlayWithFriends);
 		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
 	}
 

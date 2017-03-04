@@ -30,7 +30,7 @@ public class LevelManager {
 	//onlyUseUniqueTiles is only used for testing. This value is not saved. When enabled, only tile groups with a Frequency of Unique will appear
 	//in the level while in Story mode. This allows you to have shorter episodes with only the essential tile groups, typically, Start, any scripted sequence, and End.
 	bool onlyUseUniqueTiles = false;
-	byte numberOfPlayersRequired = 1; //Used to debug multiplayer
+	byte numberOfPlayersRequired;
 	private int currentMultiplayerLevel = 0; //the index of the multiplayer level selected by the player.
 	public CarouselEntry selectedRaceDetails;
 	public int selectedHeroIndex; //index for heroCharacterList in HeroManager

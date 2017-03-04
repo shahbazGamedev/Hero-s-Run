@@ -18,7 +18,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	//The delay to wait before loading the level. We have this delay so that the player can see the opponent's name and icon for
 	//a few seconds before the match begins.
 	const float DELAY_BEFORE_LOADING_LEVEL = 5f;
-	byte numberOfPlayersRequired = 2;
+	const float DELAY_BEFORE_DISPLAY_BOT = 2.5f;
 	HUDMultiplayer hudMultiplayer;
 	bool connecting = false; //true if the player pressed the Play button (which calls startMatch). This bool is to prevent rejoining a room automatically after a race.
 	#endregion
@@ -40,7 +40,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 	void Start()
 	{
 		matchmakingManager = GameObject.FindGameObjectWithTag("Matchmaking").GetComponent<MatchmakingManager>();
-		numberOfPlayersRequired = LevelManager.Instance.getNumberOfPlayersRequired();
 	}
 	#endregion
 
@@ -120,14 +119,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		{
 			configureStaticPlayerData();
 
-	    	if ( numberOfPlayersRequired == 1 )
-		    {
-				matchmakingManager.setConnectionProgress( "Connected. Playing single-player." );   
-			}
-			else
-			{
-				matchmakingManager.setConnectionProgress( "Connected. Now looking for worthy opponent ..." );   
-			}
+	    	setConnectionProgressOnTryToJoinRoom();
 	
 			//Join the selected circuit such as CIRUIT_PRACTICE_RUN.
 			LevelData.CircuitInfo circuitInfo = LevelManager.Instance.getSelectedCircuitInfo();
@@ -138,9 +130,33 @@ public class MPNetworkLobbyManager : PunBehaviour
 	
 			//Try to join an existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
 			ExitGames.Client.Photon.Hashtable desiredRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", circuitInfo.matchName }, { "Elo", playerEloRating } };
-			PhotonNetwork.JoinRandomRoom( desiredRoomProperties, numberOfPlayersRequired );
+			PhotonNetwork.JoinRandomRoom( desiredRoomProperties, LevelManager.Instance.getNumberOfPlayersRequired() );
 		}
 	}	 
+
+ 	void setConnectionProgressOnTryToJoinRoom()
+	{
+		switch ( GameManager.Instance.getPlayMode() )
+		{
+			case PlayMode.PlayAgainstEnemy:
+				matchmakingManager.setConnectionProgress( "Setting up Player vs. Enemy race." );   
+			break;
+
+			case PlayMode.PlayAlone:
+				matchmakingManager.hideRemotePlayer();
+				matchmakingManager.setConnectionProgress( "Playing alone." );   
+			break;
+
+			case PlayMode.PlayOthers:
+				matchmakingManager.setConnectionProgress( "Looking for worthy opponent ..." );   
+			break;
+
+			case PlayMode.PlayWithFriends:
+				matchmakingManager.setConnectionProgress( "Waiting for friend to join ..." );   
+			break;
+
+		}
+	}
 
 	#endregion
  
@@ -165,7 +181,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
 		RoomOptions roomOptions = new RoomOptions();
 		roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", LevelManager.Instance.getSelectedCircuitInfo().matchName }, { "Elo", playerEloRating } };
-		roomOptions.MaxPlayers = numberOfPlayersRequired;
+		roomOptions.MaxPlayers = LevelManager.Instance.getNumberOfPlayersRequired();
 		//Mandatory - you must also set customRoomPropertiesForLobby
 		//With customRoomPropertiesForLobby, you define which key-values are relevant for matchmaking.
 		string[] customRoomPropertiesForLobbyStringArray = new string[2];
@@ -178,29 +194,59 @@ public class MPNetworkLobbyManager : PunBehaviour
 	 
 	public override void OnJoinedRoom()
 	{
-		//Debug.Log("MPNetworkLobbyManager: OnJoinedRoom() called by PUN. Now this client is in a room. Elo rating is:" + PhotonNetwork.room.CustomProperties["Elo"].ToString() + " Circuit is: " + PhotonNetwork.room.CustomProperties["Track"].ToString() + " SKin is " + PlayerStatsManager.Instance.getAvatar().ToString() );
-		foreach(PhotonPlayer player in PhotonNetwork.playerList)
+		switch ( GameManager.Instance.getPlayMode() )
 		{
-			if( !player.IsLocal )
-			{
-				OnRemotePlayerConnect( player );
-			}
-		}
+			case PlayMode.PlayAgainstEnemy:
+				LevelManager.Instance.setNumberOfPlayersRequired( 1 );
+				//PlayerPosition 3 is the center lane.
+				playerCustomProperties.Add("PlayerPosition", 3 );
+				PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
+				//Fake searching for a player for a few seconds ...
+				Invoke( "displayBotInfo", DELAY_BEFORE_DISPLAY_BOT );
+				//Note: In this case, LoadArena() gets called by displayBotInfo
+			break;
 
-		//Since we want to play alone for testing purposes, load level right away.
-	    if ( numberOfPlayersRequired == 1 )
-	    {
-			//PlayerPosition 3 is the center lane.
-			playerCustomProperties.Add("PlayerPosition", 3 );
-			PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
-	        PhotonNetwork.LoadLevel("Level");
-		}
-		else
-		{
-			//PlayerPosition will be used to determine the start position. We don't want players to spawn on top of each other.
-			//PlayerPosition 1 is the left lane. PlayerPosition 2 is the right lane.
-			playerCustomProperties.Add("PlayerPosition", PhotonNetwork.room.PlayerCount );
-			PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
+			case PlayMode.PlayAlone:
+				LevelManager.Instance.setNumberOfPlayersRequired( 1 );
+				//PlayerPosition 3 is the center lane.
+				playerCustomProperties.Add("PlayerPosition", 3 );
+				PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
+				//Since we want to play alone for testing purposes, load level right away.
+		        PhotonNetwork.LoadLevel("Level");
+				//Note: In this case, LoadArena() never gets called. We load the level directly.
+			break;
+
+			case PlayMode.PlayOthers:
+				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
+				foreach(PhotonPlayer player in PhotonNetwork.playerList)
+				{
+					if( !player.IsLocal )
+					{
+						OnRemotePlayerConnect( player );
+					}
+				}
+				//PlayerPosition will be used to determine the start position. We don't want players to spawn on top of each other.
+				//PlayerPosition 1 is the left lane. PlayerPosition 2 is the right lane.
+				playerCustomProperties.Add("PlayerPosition", PhotonNetwork.room.PlayerCount );
+				PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
+				//Note: In this case, LoadArena() gets called when the remote player connects
+			break;
+
+			case PlayMode.PlayWithFriends:
+				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
+				foreach(PhotonPlayer player in PhotonNetwork.playerList)
+				{
+					if( !player.IsLocal )
+					{
+						OnRemotePlayerConnect( player );
+					}
+				}
+				//PlayerPosition will be used to determine the start position. We don't want players to spawn on top of each other.
+				//PlayerPosition 1 is the left lane. PlayerPosition 2 is the right lane.
+				playerCustomProperties.Add("PlayerPosition", PhotonNetwork.room.PlayerCount );
+				PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
+				//Note: In this case, LoadArena() gets called when the remote player connects
+			break;
 		}
 	}
 
@@ -237,10 +283,16 @@ public class MPNetworkLobbyManager : PunBehaviour
 		LevelManager.Instance.selectedBotHeroIndex = botHeroIndex;
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( botHeroIndex );
 	
-		//matchmakingManager.disableExitButton();
-		//matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedMultiplayerLevel().circuitInfo.circuitTextID ) + " ..." ); 
+	}
+
+	void displayBotInfo()
+	{
+		matchmakingManager.disableExitButton();
+		matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedMultiplayerLevel().circuitInfo.circuitTextID ) + " ..." ); 
+		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
 		matchmakingManager.setRemotePlayerName( botHero.userName );
 		matchmakingManager.setRemotePlayerIcon( botHero.playerIcon );
+		LoadArena();
 	}
 
 	public override void OnPhotonPlayerDisconnected( PhotonPlayer other  )
@@ -256,7 +308,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	        Debug.LogError( "MPNetworkLobbyManager: Trying to Load a level but we are not the master Client" );
 			return;
 	    }
-		if( PhotonNetwork.room.PlayerCount == numberOfPlayersRequired )
+		if( PhotonNetwork.room.PlayerCount == LevelManager.Instance.getNumberOfPlayersRequired() )
 		{
 			//Now that we have everyone and we can start the race, deduct the entry fee, if any.
 			chargePlayerForMatch();
