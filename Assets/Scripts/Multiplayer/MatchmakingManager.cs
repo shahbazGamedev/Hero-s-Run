@@ -101,6 +101,7 @@ public class MatchmakingManager : MonoBehaviour {
 	public void hideRemotePlayer()
 	{
 		remotePlayerIcon.gameObject.SetActive( false );
+		versusText.gameObject.SetActive( false );
 	}
 
 	public void configureCircuitData( Sprite circuitImageSprite, string circuitNameString, string entryFeeString )
