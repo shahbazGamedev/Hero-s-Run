@@ -16,7 +16,8 @@ public class PlayerAI : Photon.PunBehaviour {
 	/// The card handler. We need access so that the bot can play cards from his deck.
 	/// </summary>
 	CardHandler cardHandler;
-	const float OBSTACLE_DETECTION_DISTANCE = 3.3f;
+	const float OBSTACLE_DETECTION_DISTANCE_LOW = 3.4f;
+	const float OBSTACLE_DETECTION_DISTANCE_HIGH = 3.6f;
 	Vector3 xOffsetStartLow = new Vector3( 0, 0.5f, 0 );	//For low obstacles
 	Vector3 xOffsetStartHigh = new Vector3( 0, 1.3f, 0 );	//For high obstacles
 
@@ -29,12 +30,15 @@ public class PlayerAI : Photon.PunBehaviour {
 		playerControl = GetComponent<PlayerControl>();
 		playerInput = GetComponent<PlayerInput>();
 		cardHandler = GameObject.FindGameObjectWithTag("Card Handler").GetComponent<CardHandler>();
-		Invoke("doSpeedBoost",16f);
+		Invoke("doSpeedBoost",30f);
 	}
 	
 	void doSpeedBoost()
 	{
-		cardHandler.activateCard( this.photonView.viewID, "Barbarians", 2 );
+		if( playerControl.getCharacterState() == PlayerCharacterState.Running )
+		{
+			cardHandler.activateCard( this.photonView.viewID, "Barbarians", 2 );
+		}
 	}
 
 	// Update is called once per frame
@@ -48,7 +52,7 @@ public class PlayerAI : Photon.PunBehaviour {
         RaycastHit hit;
 		Vector3 exactPosStart = transform.TransformPoint( xOffsetStartLow );
 		//Debug.DrawLine( exactPosStart, exactPosStart + transform.forward * OBSTACLE_DETECTION_DISTANCE, Color.green );
-        if (Physics.Raycast(exactPosStart, transform.forward, out hit, OBSTACLE_DETECTION_DISTANCE ))
+        if (Physics.Raycast(exactPosStart, transform.forward, out hit, OBSTACLE_DETECTION_DISTANCE_LOW ))
 		{
 			if( playerControl.getCharacterState() == PlayerCharacterState.Running )
 			{
@@ -59,14 +63,33 @@ public class PlayerAI : Photon.PunBehaviour {
 				}
 				else if( hit.collider.name.StartsWith( "Breakable Barrel" ) )
 				{
+					if( Random.value < 0.8f )
+					{
+						playerInput.startSlide();
+					}
+					else
+					{
+						playerInput.jump();
+					}
+				}
+				else if( hit.collider.CompareTag( "Chicken" ) )
+				{
 					playerInput.startSlide();
+				}
+				else if( hit.collider.CompareTag( "Cart" ) )
+				{
+					playerInput.jump();
+				}
+				else if( hit.collider.CompareTag( "Cow" ) )
+				{
+					playerInput.jump();
 				}
 			}
 		}
 
 		exactPosStart = transform.TransformPoint( xOffsetStartHigh );
 		//Debug.DrawLine( exactPosStart, exactPosStart + transform.forward * OBSTACLE_DETECTION_DISTANCE, Color.yellow );
-        if (Physics.Raycast(exactPosStart, transform.forward, out hit, OBSTACLE_DETECTION_DISTANCE ))
+        if (Physics.Raycast(exactPosStart, transform.forward, out hit, OBSTACLE_DETECTION_DISTANCE_HIGH ))
 		{
 			if( playerControl.getCharacterState() == PlayerCharacterState.Running )
 			{

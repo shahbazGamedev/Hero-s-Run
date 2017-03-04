@@ -26,6 +26,7 @@ public class CircuitSelectionManager : MonoBehaviour {
 		else
 		{
 			//All other play modes are online.
+			PhotonNetwork.offlineMode = false;
 			//In order to display the number of online players, we need to be connected to the master server.
 			//Users are separated from each other by game version (which allows you to make breaking changes).
 			PhotonNetwork.ConnectUsingSettings(GameManager.Instance.getVersionNumber());

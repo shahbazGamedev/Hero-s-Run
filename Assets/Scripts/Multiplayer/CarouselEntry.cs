@@ -54,8 +54,9 @@ public class CarouselEntry : MonoBehaviour {
 	
 	void getNumberOfOnlinePlayers()
 	{
-		//Player is connected to the Internet
-		if( Application.internetReachability != NetworkReachability.NotReachable )
+		//The player needs to be connected to the Internet, connected to Photon and not be in offline mode.
+		//Note: if PhotonNetwork.offlineMode is true, PhotonNetwork.connected will also be true, hence the extra test.
+		if( Application.internetReachability != NetworkReachability.NotReachable && PhotonNetwork.connected && !PhotonNetwork.offlineMode )
 		{
 			//The count of players currently using this application (available on MasterServer in 5sec intervals).
 			//This is the total for ALL tracks.

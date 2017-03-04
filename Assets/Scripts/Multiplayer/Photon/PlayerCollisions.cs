@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCollisions : MonoBehaviour {
+public class PlayerCollisions : Photon.PunBehaviour {
 
 	PlayerControl playerControl;
 	PlayerSounds playerSounds;
@@ -89,11 +89,7 @@ public class PlayerCollisions : MonoBehaviour {
 						//Save the collision time to avoid multiple collision events on impact
 						chickenController.timeWasHit = Time.time;
 
-						//Give stars
-						PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
-						
-						//Display coin total picked up icon
-						HUDHandler.hudHandler.displayCoinPickup( 10 );
+						giveCoins( 10 );
 
 						//The faster the player runs, the further the chicken will fly
 						float pushPower = playerControl.getSpeed() * 2.5f;
@@ -141,11 +137,8 @@ public class PlayerCollisions : MonoBehaviour {
 					if( ( playerControl.getCharacterState() == PlayerCharacterState.Sliding || playerControl.getCharacterState() == PlayerCharacterState.Turning_and_sliding
 							|| playerControl.isSpeedBoostActive ) && zombieController.getCreatureState() != CreatureState.Crawling )
 					{
-						//Give stars
-						PlayerStatsManager.Instance.modifyCurrentCoins( ZombieManager.NUMBER_STARS_PER_ZOMBIE, true, false );
-						
-						//Display coin total picked up icon
-						HUDHandler.hudHandler.displayCoinPickup( ZombieManager.NUMBER_STARS_PER_ZOMBIE );
+
+						giveCoins( ZombieManager.NUMBER_STARS_PER_ZOMBIE );
 
 						zombieController.fallToBack();
 						
@@ -251,12 +244,7 @@ public class PlayerCollisions : MonoBehaviour {
 					bo.triggerBreak( GetComponent<Collider>() );
 					if( playerControl.getCharacterState() == PlayerCharacterState.Sliding )
 					{
-						//Give stars
-						PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
-
-						//Display coin total picked up icon
-						HUDHandler.hudHandler.displayCoinPickup( 10 );
-
+						giveCoins( 10 );
 					}	
 					else
 					{
@@ -285,19 +273,14 @@ public class PlayerCollisions : MonoBehaviour {
 				bo.triggerBreak( GetComponent<Collider>() );
 				if( playerControl.getCharacterState() == PlayerCharacterState.Sliding )
 				{
-					//Give stars
-					PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
-					
-					//Display coin total picked up icon
-					HUDHandler.hudHandler.displayCoinPickup( 10 );
-					
+					giveCoins( 10 );	
 				}	
 				else
 				{
 					playerControl.stumble();
 				}
 			}
-			else if (hit.collider.name == "cart" )
+			else if (hit.collider.CompareTag("Cart" ) )
 			{
 				if( hit.normal.y < 0.4f )
 				{
@@ -310,7 +293,7 @@ public class PlayerCollisions : MonoBehaviour {
 				//controller.Move( hit.normal ); //disable test - seems to make Unity 5 crash
 				playerControl.managePlayerDeath ( DeathType.Obstacle );
 			}
-			else if (hit.collider.name.StartsWith( "Cow" ) )
+			else if (hit.collider.CompareTag( "Cow" ) )
 			{
 				SimpleController simpleController = (SimpleController) hit.collider.GetComponent("SimpleController");
 				simpleController.playHitAnim();
@@ -344,11 +327,7 @@ public class PlayerCollisions : MonoBehaviour {
 		{
 			if( ( playerControl.getCharacterState() == PlayerCharacterState.Sliding || playerControl.getCharacterState() == PlayerCharacterState.Turning_and_sliding ) || playerControl.isSpeedBoostActive )
 			{
-				//Give stars
-				PlayerStatsManager.Instance.modifyCurrentCoins( CreatureManager.NUMBER_COINS_PER_CREATURE, true, false );
-				
-				//Display coin total picked up icon
-				HUDHandler.hudHandler.displayCoinPickup( CreatureManager.NUMBER_COINS_PER_CREATURE );
+				giveCoins( CreatureManager.NUMBER_COINS_PER_CREATURE );
 
 				creature.knockback();
 				
@@ -394,6 +373,18 @@ public class PlayerCollisions : MonoBehaviour {
 					playerControl.land ();
 				}
 			}
+		}
+	}
+
+	void giveCoins( int amount )
+	{
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
+		{
+			//Give coins
+			PlayerStatsManager.Instance.modifyCurrentCoins( amount, true, false );
+			
+			//Display coin total picked up icon
+			HUDHandler.hudHandler.displayCoinPickup( amount );
 		}
 	}
 }
