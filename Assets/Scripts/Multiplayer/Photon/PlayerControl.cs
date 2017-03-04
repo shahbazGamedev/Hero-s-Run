@@ -595,15 +595,31 @@ public class PlayerControl : Photon.PunBehaviour {
 		if( allowRunSpeedToIncrease && runSpeed <= MAX_RUN_SPEED )
 		{
 			runSpeed = (Time.time - timeSessionStarted) * runAcceleration + runStartSpeed; //in seconds
-			//Update the blend amount between Run and Sprint animations based on the current run speed
-			blendFactor = (runSpeed - runStartSpeed)/(MAX_RUN_SPEED-runStartSpeed);
-			//If the blendFactor is set to one we will only play the Sprint animation
-			//and the Run animation will stop playing. Because of that, we will no longer hear any footsteps.
-			//For this reason, cap the blend factor to 0.98f so that we always blend in a little of the run animation and therefore
-			//continue to get the run animation sound callbacks.
-			if( blendFactor > 0.98f ) blendFactor = 0.98f;
-			anim.SetFloat(speedBlendFactor, blendFactor);
 		}
+	}
+
+	/// <summary>
+	/// Sets the sprint blend factor. If the value is 0, we play only the run animation; if the value is 1, we play only the Sprint animation.
+	/// </summary>
+	/// <param name="blendFactor">Blend factor.</param>
+	public void setSprintBlendFactor( float blendFactor )
+	{
+		this.blendFactor = blendFactor;
+		//If the blendFactor is set to one we will only play the Sprint animation
+		//and the Run animation will stop playing. Because of that, we will no longer hear any footsteps.
+		//For this reason, cap the blend factor to 0.98f so that we always blend in a little of the run animation and therefore
+		//continue to get the run animation sound callbacks.
+		if( blendFactor > 0.98f ) blendFactor = 0.98f;
+		anim.SetFloat(speedBlendFactor, blendFactor);
+	}
+
+	/// <summary>
+	/// Gets the sprint blend factor.
+	/// </summary>
+	/// <returns>The sprint blend factor.</returns>
+	public float getSprintBlendFactor()
+	{
+		return blendFactor;
 	}
 
 	#region Jump and Double Jump

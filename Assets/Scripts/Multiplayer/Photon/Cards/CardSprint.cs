@@ -1,12 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityStandardAssets.ImageEffects;
 
 /// <summary>
-//// The Speed Boost card is a Rare card with 11 levels.
+//// The Sprint card is a Common card with 13 levels.
 /// </summary>
-public class CardSpeedBoost : Photon.PunBehaviour {
+public class CardSprint : Photon.PunBehaviour {
 
 	[SerializeField] AudioClip  soundFx;
 	[SerializeField] float  baseDuration = 1.5f;
@@ -16,41 +15,36 @@ public class CardSpeedBoost : Photon.PunBehaviour {
 
 	public void activateCard ( int photonViewId, int level )
 	{
-		this.photonView.RPC("cardSpeedBoostRPC", PhotonTargets.AllViaServer, level, photonViewId );	
+		this.photonView.RPC("cardSprintRPC", PhotonTargets.AllViaServer, level, photonViewId );	
 	}
 
 	[PunRPC]
-	void cardSpeedBoostRPC( int level, int photonViewID )
+	void cardSprintRPC( int level, int photonViewID )
 	{
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
 			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
 			{
-				startSpeedBoost( level, PlayerRace.players[i].GetComponent<PlayerControl>(), PlayerRace.players[i].GetComponent<PhotonView>().isMine && PlayerRace.players[i].GetComponent<PlayerAI>() == null );
+				startSprint( level, PlayerRace.players[i].GetComponent<PlayerControl>() );
 			}
 		}
 	}
 
-	void startSpeedBoost( int level, PlayerControl playerControl, bool isMine )
+	void startSprint( int level, PlayerControl playerControl )
 	{
-		//Only affect the camera for the local player
-		if( isMine ) Camera.main.GetComponent<MotionBlur>().enabled = true;
 		playerControl.setAllowRunSpeedToIncrease( false );
-		playerControl.isSpeedBoostActive = true;
 		playerControl.runSpeed = playerControl.runSpeed * ( baseSpeed + level * speedUpgradePerLevel );
 		playerControl.GetComponent<PlayerSounds>().playSound( soundFx, false );
-		StartCoroutine( changeSprintBlendFactor( 1f, 0.7f, playerControl ) );
-		StartCoroutine( stopSpeedBoost( level, playerControl, isMine) );
+		StartCoroutine( changeSprintBlendFactor( 0.85f, 0.8f, playerControl ) );
+		StartCoroutine( stopSprint( level, playerControl ) );
 	}
 
-	IEnumerator stopSpeedBoost( int level, PlayerControl playerControl, bool isMine )
+	IEnumerator stopSprint( int level, PlayerControl playerControl )
 	{
 		yield return new WaitForSeconds( baseDuration + level * durationUpgradePerLevel );
-		if( isMine ) Camera.main.GetComponent<MotionBlur>().enabled = false;
 		if( playerControl.getCharacterState() != PlayerCharacterState.Dying ) playerControl.setAllowRunSpeedToIncrease( true );
 		playerControl.GetComponent<PlayerSounds>().stopAudioSource();
-		playerControl.isSpeedBoostActive = false;
-		StartCoroutine( changeSprintBlendFactor( 0, 0.7f, playerControl ) );
+		StartCoroutine( changeSprintBlendFactor( 0, 0.8f, playerControl ) );
 	}
 
 	IEnumerator changeSprintBlendFactor( float endBlendFactor, float duration, PlayerControl playerControl )
