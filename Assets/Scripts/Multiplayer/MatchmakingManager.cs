@@ -9,6 +9,7 @@ public class MatchmakingManager : MonoBehaviour {
 	[Header("General")]
 	[SerializeField] GameObject endOfGameCanvas;
 	[SerializeField] MultiPurposePopup multiPurposePopup;
+	[SerializeField] Text titleText;
 	[SerializeField] Button playButton;
 	[SerializeField] Text playButtonText;
 	[SerializeField] Button exitButton;
@@ -37,6 +38,8 @@ public class MatchmakingManager : MonoBehaviour {
 		Handheld.StopActivityIndicator();
 		originalPlayButtonTextColor = playButtonText.color;
 
+		setMatchmakingTitle();
+
 		//The left portrait is always the local player.
 		configureLocalPlayerData();
 
@@ -59,6 +62,28 @@ public class MatchmakingManager : MonoBehaviour {
 			CarouselEntry selected = LevelManager.Instance.selectedRaceDetails;
 			configureCircuitData( selected.circuitImage.sprite, selected.circuitName.text, selected.entryFee.text );
 			endOfGameCanvas.SetActive( false );
+		}
+	}
+
+ 	void setMatchmakingTitle()
+	{
+		switch ( GameManager.Instance.getPlayMode() )
+		{
+			case PlayMode.PlayAgainstEnemy:
+				titleText.text = "Play vs. Enemy";   
+			break;
+
+			case PlayMode.PlayAlone:
+				titleText.text = "Play Alone";   
+			break;
+
+			case PlayMode.PlayOthers:
+				titleText.text = "Multiplayer";   
+			break;
+
+			case PlayMode.PlayWithFriends:
+				titleText.text = "Play with Friends";   
+			break;
 		}
 	}
 
@@ -101,6 +126,7 @@ public class MatchmakingManager : MonoBehaviour {
 	public void hideRemotePlayer()
 	{
 		remotePlayerIcon.gameObject.SetActive( false );
+		versusText.gameObject.SetActive( false );
 	}
 
 	public void configureCircuitData( Sprite circuitImageSprite, string circuitNameString, string entryFeeString )
