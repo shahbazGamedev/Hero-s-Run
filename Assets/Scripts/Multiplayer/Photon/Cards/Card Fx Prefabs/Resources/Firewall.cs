@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class Firewall : Photon.PunBehaviour {
 	
+	[SerializeField] Sprite  minimapIcon;
 	string nameOfCaster; //The caster is immune to the firewall.
 
 	void OnTriggerEnter(Collider other)
@@ -20,6 +22,7 @@ public class Firewall : Photon.PunBehaviour {
 		float delayBeforeSpellExpires = (float) data[1];
 		GameObject.Destroy( gameObject, delayBeforeSpellExpires );
 		Debug.Log( "Firewall-OnPhotonInstantiate: name of caster: " + nameOfCaster + " delay before spell expires: " + delayBeforeSpellExpires );
+		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
 	}
 
 }
