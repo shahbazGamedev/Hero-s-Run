@@ -17,7 +17,8 @@ public class PlayerAI : Photon.PunBehaviour {
 	/// </summary>
 	CardHandler cardHandler;
 	const float BASE_RUN_SPEED = 18f;
-	const float BASE_OBSTACLE_DETECTION_DISTANCE = 4.2f; //assuming a run speed of BASE_RUN_SPEED
+	const float BASE_OBSTACLE_DETECTION_LOW_DISTANCE = 4.5f; //assuming a run speed of BASE_RUN_SPEED
+	const float BASE_OBSTACLE_DETECTION_HIGH_DISTANCE = 8f; //assuming a run speed of BASE_RUN_SPEED
 	Vector3 xOffsetStartLow = new Vector3( 0, 0.5f, 0 );	//For low obstacles
 	Vector3 xOffsetStartHigh = new Vector3( 0, 1.3f, 0 );	//For high obstacles
 
@@ -53,7 +54,7 @@ public class PlayerAI : Photon.PunBehaviour {
 	void detectObstacles()
 	{
 		//Step 1) Adjust the obstacle detection range based on our run speed. If we are running fast, we need more time to react.
-		float obstacleDetectionDistance = BASE_OBSTACLE_DETECTION_DISTANCE * playerControl.getSpeed()/BASE_RUN_SPEED;
+		float obstacleDetectionDistance = BASE_OBSTACLE_DETECTION_LOW_DISTANCE * playerControl.getSpeed()/BASE_RUN_SPEED;
 
 		//Step 2) Detect if there are any low level obstacles
         RaycastHit hit;
@@ -95,8 +96,9 @@ public class PlayerAI : Photon.PunBehaviour {
 			}
 		}
 
+		obstacleDetectionDistance = BASE_OBSTACLE_DETECTION_HIGH_DISTANCE * playerControl.getSpeed()/BASE_RUN_SPEED;
 		exactPosStart = transform.TransformPoint( xOffsetStartHigh );
-		//Debug.DrawLine( exactPosStart, exactPosStart + transform.forward * OBSTACLE_DETECTION_DISTANCE, Color.yellow );
+		//Debug.DrawLine( exactPosStart, exactPosStart + transform.forward * obstacleDetectionDistance, Color.yellow );
         if (Physics.Raycast(exactPosStart, transform.forward, out hit, obstacleDetectionDistance ))
 		{
 			if( playerControl.getCharacterState() == PlayerCharacterState.Running )

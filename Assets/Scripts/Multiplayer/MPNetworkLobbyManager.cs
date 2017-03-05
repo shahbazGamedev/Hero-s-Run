@@ -17,7 +17,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	ExitGames.Client.Photon.Hashtable playerCustomProperties = new ExitGames.Client.Photon.Hashtable();
 	//The delay to wait before loading the level. We have this delay so that the player can see the opponent's name and icon for
 	//a few seconds before the match begins.
-	const float DELAY_BEFORE_LOADING_LEVEL = 4f;
+	const float DELAY_BEFORE_LOADING_LEVEL = 3f;
 	const float DELAY_BEFORE_DISPLAY_BOT = 2.5f;
 	HUDMultiplayer hudMultiplayer;
 	bool connecting = false; //true if the player pressed the Play button (which calls startMatch). This bool is to prevent rejoining a room automatically after a race.
