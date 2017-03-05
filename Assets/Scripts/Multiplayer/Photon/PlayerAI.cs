@@ -17,7 +17,7 @@ public class PlayerAI : Photon.PunBehaviour {
 	/// </summary>
 	CardHandler cardHandler;
 	const float BASE_RUN_SPEED = 18f;
-	const float BASE_OBSTACLE_DETECTION_LOW_DISTANCE = 4.5f; //assuming a run speed of BASE_RUN_SPEED
+	const float BASE_OBSTACLE_DETECTION_LOW_DISTANCE = 4.6f; //assuming a run speed of BASE_RUN_SPEED
 	const float BASE_OBSTACLE_DETECTION_HIGH_DISTANCE = 8f; //assuming a run speed of BASE_RUN_SPEED
 	Vector3 xOffsetStartLow = new Vector3( 0, 0.5f, 0 );	//For low obstacles
 	Vector3 xOffsetStartHigh = new Vector3( 0, 1.3f, 0 );	//For high obstacles
