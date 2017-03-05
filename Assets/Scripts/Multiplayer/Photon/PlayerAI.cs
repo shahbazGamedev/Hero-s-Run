@@ -44,6 +44,9 @@ public class PlayerAI : Photon.PunBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
+		#if UNITY_EDITOR
+		handleKeyboard();
+		#endif
 		detectObstacles();
 	}
 
@@ -117,6 +120,15 @@ public class PlayerAI : Photon.PunBehaviour {
 			{
 				playerInput.sideSwipe( true );
 			}
+		}
+	}
+
+	private void handleKeyboard()
+	{
+		if ( Input.GetKeyDown (KeyCode.B ) )
+		{
+			//Kill bot for testing
+			playerControl.managePlayerDeath(DeathType.FallForward);
 		}
 	}
 
