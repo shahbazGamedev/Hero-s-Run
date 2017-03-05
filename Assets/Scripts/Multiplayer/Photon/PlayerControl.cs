@@ -12,6 +12,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	PlayerVisuals playerVisuals;
 	PlayerSounds playerSounds;
 	PlayerCollisions playerCollisions;
+	PlayerAI playerAI;
 	#endregion
 
 	#region Accelerometer variables 	
@@ -221,6 +222,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerVisuals = GetComponent<PlayerVisuals>();
 		playerSounds = GetComponent<PlayerSounds>();
 		playerCollisions = GetComponent<PlayerCollisions>();
+		playerAI = GetComponent<PlayerAI>(); //Null for everyone except bots
 
 		//The character is in idle while waiting to run. 
 		setCharacterState( PlayerCharacterState.Idle );
@@ -234,7 +236,10 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			transform.position = new Vector3( transform.position.x, hit.point.y, transform.position.z);
 			//Also adjust the camera height
-			Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y + hit.point.y, Camera.main.transform.position.z); 
+			if( this.photonView.isMine && playerAI == null )
+			{
+				Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y + hit.point.y, Camera.main.transform.position.z);
+			}
 			playerCamera.positionCameraNow();
 		}
 		playerCamera.playCutscene(CutsceneType.Checkpoint);
@@ -357,7 +362,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		setCharacterState( PlayerCharacterState.Running );
 	
 		//When the GameState is NORMAL, we display the HUD
-		if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) GameManager.Instance.setGameState( GameState.Normal );
+		if( this.photonView.isMine && playerAI == null ) GameManager.Instance.setGameState( GameState.Normal );
 
 		enablePlayerControl( true );
 	}
@@ -1627,7 +1632,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	public void resurrectBegin( bool calledByMagicGate )
 	{
 		//Only send an event if we are the local player and we are not a bot.
-		if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) GameManager.Instance.setGameState( GameState.Resurrect );
+		if( this.photonView.isMine && playerAI == null ) GameManager.Instance.setGameState( GameState.Resurrect );
 
 		//0) Reset data
 		resetSharedLevelData(true);
@@ -1772,7 +1777,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		StartCoroutine( waitForGracePeriod( 2 ) );
 		
 		//10) Display a Go! message
-		HUDHandler.hudHandler.activateUserMessage( LocalizationManager.Instance.getText("GO"), 0f, 1.25f );
+		if( this.photonView.isMine && playerAI == null ) HUDHandler.hudHandler.activateUserMessage( LocalizationManager.Instance.getText("GO"), 0f, 1.25f );
 	}
 	
 	IEnumerator waitForGracePeriod( float duration )
@@ -1976,7 +1981,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//We have arrived. Stop player movement.
 		playerMovementEnabled = false;
 		playVictoryAnimation();
-		if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
+		if( this.photonView.isMine && playerAI == null ) GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 		//Wait a few seconds for the victory animation to finish
 		Invoke ("ReturnToMatchmaking", 3.5f);
 	}
@@ -2168,7 +2173,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	{
 		if( isSpeedBoostActive )
 		{
-			Camera.main.GetComponent<MotionBlur>().enabled = false;
+			if( this.photonView.isMine && playerAI == null ) Camera.main.GetComponent<MotionBlur>().enabled = false;
 			if( getCharacterState() != PlayerCharacterState.Dying ) setAllowRunSpeedToIncrease( true );
 			GetComponent<PlayerSounds>().stopAudioSource();
 			isSpeedBoostActive = false;

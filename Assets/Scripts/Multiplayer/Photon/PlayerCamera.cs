@@ -71,17 +71,19 @@ public class PlayerCamera : Photon.PunBehaviour {
 
 	PlayerController playerController;
 	PlayerControl playerControl;
+	PlayerAI playerAI;
 
 	// Use this for initialization
 	void Awake ()
  	{
 		//If we are in multiplayer but not the owner of this component, disable it.
-		if( GameManager.Instance.isMultiplayer() && !this.photonView.isMine ) this.enabled = false;
+		if( GameManager.Instance.isMultiplayer() && !isAllowed() ) this.enabled = false;
 
 		mainCamera = Camera.main.transform;
 		cameraTarget = transform; //Set the player as the camera target by default
 		playerController = GetComponent<PlayerController>();
 		playerControl = GetComponent<PlayerControl>();
+		playerAI = GetComponent<PlayerAI>(); //Null for everyone except bots
 	}
 	
 	//A common use for LateUpdate() would be a following third-person camera.
@@ -111,6 +113,7 @@ public class PlayerCamera : Photon.PunBehaviour {
 
 	public void setCameraTarget( Transform newTarget, bool instantTransition, float yRotationOffset )
 	{
+		if( !isAllowed() ) return;
 		cameraTarget = newTarget;
 		this.yRotationOffset = yRotationOffset;
 		if( instantTransition )
@@ -141,11 +144,13 @@ public class PlayerCamera : Photon.PunBehaviour {
 
 	public void resetCameraTarget()
 	{
+		if( !isAllowed() ) return;
 		setCameraTarget( transform, true, yRotationOffset );
 	}
 
 	public void setCameraParameters( float cameraXrotation, float distance, float height, float yRotationOffset )
 	{
+		if( !isAllowed() ) return;
 		this.cameraXrotation = cameraXrotation;
 		this.distance = distance;
 		this.height = height;
@@ -154,6 +159,7 @@ public class PlayerCamera : Photon.PunBehaviour {
 	
 	public void resetCameraParameters()
 	{
+		if( !isAllowed() ) return;
 		cameraXrotation = DEFAULT_CAMERA_X_ROT;
 		//mainCamera.rotation = Quaternion.Euler( cameraXrotation, mainCamera.eulerAngles.y, mainCamera.eulerAngles.z );
 		mainCamera.GetComponent<Camera>().fieldOfView = DEFAULT_MAIN_CAMERA_FOV;
@@ -164,6 +170,7 @@ public class PlayerCamera : Photon.PunBehaviour {
 
 	public void resetCutsceneCameraParameters()
 	{
+		if( !isAllowed() ) return;
 		cutsceneCamera.localPosition = new Vector3( 0, 3.5f, 6f ); //Remember the cutscene camera is a child of the hero
 		cutsceneCamera.localRotation = Quaternion.Euler( 17f,180f, 0 );
 		cutsceneCamera.GetComponent<Camera>().fieldOfView = DEFAULT_CUTSCENE_FOV;
@@ -171,6 +178,7 @@ public class PlayerCamera : Photon.PunBehaviour {
 
 	public void activateMainCamera()
 	{
+		if( !isAllowed() ) return;
 		//Give back control to the main camera
 		cameraState = CameraState.Normal;
 		cutsceneCamera.gameObject.SetActive( false );
@@ -211,6 +219,7 @@ public class PlayerCamera : Photon.PunBehaviour {
 	
 	public void positionCameraNow ()
 	{
+		if( !isAllowed() ) return;
 		// Calculate the current rotation angles
 		float wantedRotationAngle = cameraTarget.eulerAngles.y + yRotationOffset;
 		float wantedHeight = cameraTarget.position.y + height;
@@ -246,27 +255,32 @@ public class PlayerCamera : Photon.PunBehaviour {
 	//the camera is looking at the front.
 	public void setRotationOffset( float angle )
 	{
+		if( !isAllowed() ) return;
 		yRotationOffset = angle;
 	}
 
 	public void resetRotationOffset()
 	{
+		if( !isAllowed() ) return;
 		yRotationOffset = DEFAULT_Y_ROTATION_OFFSET;
 	}
 
 	public void lockCamera( bool isCameraLocked )
 	{
+		if( !isAllowed() ) return;
 		this.isCameraLocked = isCameraLocked;
 	}
 	
 	public void Shake()
 	{
+		if( !isAllowed() ) return;
 		shake_intensity = 0.12f;
 		shake_decay = 0.006f;
 	}
 	
 	public void playCutscene( CutsceneType type )
 	{
+		if( !isAllowed() ) return;
 		if( playerController != null ) playerController.enablePlayerControl( false );
 		if( playerControl != null ) playerControl.enablePlayerControl( false );
 		cutsceneCamera.gameObject.SetActive( true );
@@ -440,6 +454,7 @@ public class PlayerCamera : Photon.PunBehaviour {
 
 	public void	reactivateMaincamera()
 	{
+		if( !isAllowed() ) return;
 		//Give back control to the main camera
 		resetCameraParameters();
 		mainCamera.transform.position = new Vector3( cutsceneCamera.position.x, cutsceneCamera.transform.position.y, cutsceneCamera.position.z );
@@ -449,4 +464,19 @@ public class PlayerCamera : Photon.PunBehaviour {
 		cutsceneCamera.transform.parent = transform;
 	}
 
+	/// <summary>
+	/// Used by public methods in PlayerCamera to verify if the call should be allowed. We only want the local real player to affect the camera.
+	/// </summary>
+	/// <returns><c>true</c>, if allowed, <c>false</c> otherwise.</returns>
+	bool isAllowed()
+	{
+		if( GameManager.Instance.isMultiplayer() )
+		{
+			return this.photonView.isMine && playerAI == null;
+		}
+		else
+		{
+			return true;
+		}
+	}
 }
