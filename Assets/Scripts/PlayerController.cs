@@ -3097,7 +3097,10 @@ public sealed class PlayerController : MonoBehaviour {
 	
 	public void resurrectBegin( bool calledByMagicGate )
 	{
+		GameManager.Instance.setGameState(GameState.Resurrect);
+
 		//0) Reset data
+
 		resetSharedLevelData(true);
 		
 		//1) Stop pursuit

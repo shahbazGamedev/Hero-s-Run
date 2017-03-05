@@ -1615,9 +1615,6 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	IEnumerator waitBeforeResurrecting ( float duration )
 	{
-		//In this case, we have NO save screen. It is used by TrapMagicGate
-		//Only send an event if we are the local player and we are not a bot.
-		if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) GameManager.Instance.setGameState( GameState.Resurrect );
 		anim.speed = 1f;
 		yield return new WaitForSeconds(duration);
 		playerCamera.setCameraParameters( 18f, PlayerCamera.DEFAULT_DISTANCE, PlayerCamera.DEFAULT_HEIGHT, PlayerCamera.DEFAULT_Y_ROTATION_OFFSET );
@@ -1627,9 +1624,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		resurrectBegin(true);
 	}
 
-
 	public void resurrectBegin( bool calledByMagicGate )
 	{
+		//Only send an event if we are the local player and we are not a bot.
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) GameManager.Instance.setGameState( GameState.Resurrect );
+
 		//0) Reset data
 		resetSharedLevelData(true);
 		
