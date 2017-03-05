@@ -132,8 +132,6 @@ public class HUDSaveMe : MonoBehaviour {
 	public void tutorialTryAgain()
 	{
 		Debug.Log("Try Again button pressed.");
-		//GameManager.Instance.setGameState( GameState.Resurrect );
-		//playerController.resurrectBegin(false);
 		closeSaveMeMenu();
 		SceneManager.LoadScene( (int) GameScenes.Level );
 	}
@@ -144,7 +142,6 @@ public class HUDSaveMe : MonoBehaviour {
 		if( PlayerStatsManager.Instance.getLives() >= costLives || PlayerStatsManager.Instance.getHasInfiniteLives() )
 		{
 			Debug.Log("Save Me button pressed.");
-			GameManager.Instance.setGameState( GameState.Resurrect );
 			playerController.resurrectBegin(false);
 			PlayerStatsManager.Instance.decreaseLives((int)costLives);
 			PlayerStatsManager.Instance.incrementTimesPlayerRevivedInLevel();

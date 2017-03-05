@@ -2522,7 +2522,7 @@ public sealed class PlayerController : MonoBehaviour {
 
 	void OnTriggerExit(Collider other)
 	{
-		if( GameManager.Instance.getGameState() != GameState.Resurrect )
+		if( getCharacterState() != PlayerCharacterState.Dying )
 		{
 			if( other.name == "deadEnd" )
 			{

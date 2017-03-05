@@ -357,7 +357,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		setCharacterState( PlayerCharacterState.Running );
 	
 		//When the GameState is NORMAL, we display the HUD
-		GameManager.Instance.setGameState( GameState.Normal );
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) GameManager.Instance.setGameState( GameState.Normal );
 
 		enablePlayerControl( true );
 	}
@@ -1470,7 +1470,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//Remember how we died
 			deathType = deathTypeValue;
 
-			Debug.Log("managePlayerDeath : " + deathType );
+			Debug.Log("managePlayerDeath : " + deathType + " " + gameObject.name );
 
 			//If the player was looking over his shoulder, disable that
 			disableLookOverShoulder();
@@ -1613,10 +1613,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		StartCoroutine( waitBeforeResurrecting(1.5f) );
 	}
 
-	public IEnumerator waitBeforeResurrecting ( float duration )
+	IEnumerator waitBeforeResurrecting ( float duration )
 	{
 		//In this case, we have NO save screen. It is used by TrapMagicGate
-		GameManager.Instance.setGameState( GameState.Resurrect );
+		//Only send an event if we are the local player and we are not a bot.
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) GameManager.Instance.setGameState( GameState.Resurrect );
 		anim.speed = 1f;
 		yield return new WaitForSeconds(duration);
 		playerCamera.setCameraParameters( 18f, PlayerCamera.DEFAULT_DISTANCE, PlayerCamera.DEFAULT_HEIGHT, PlayerCamera.DEFAULT_Y_ROTATION_OFFSET );
@@ -1976,7 +1977,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//We have arrived. Stop player movement.
 		playerMovementEnabled = false;
 		playVictoryAnimation();
-		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 		//Wait a few seconds for the victory animation to finish
 		Invoke ("ReturnToMatchmaking", 3.5f);
 	}
@@ -2113,7 +2114,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void OnTriggerExit(Collider other)
 	{
-		if( GameManager.Instance.getGameState() != GameState.Resurrect )
+		if( getCharacterState() != PlayerCharacterState.Dying )
 		{
 			if( other.name == "deadEnd" )
 			{

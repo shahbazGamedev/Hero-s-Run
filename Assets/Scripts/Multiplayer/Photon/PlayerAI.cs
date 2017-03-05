@@ -16,8 +16,8 @@ public class PlayerAI : Photon.PunBehaviour {
 	/// The card handler. We need access so that the bot can play cards from his deck.
 	/// </summary>
 	CardHandler cardHandler;
-	const float OBSTACLE_DETECTION_DISTANCE_LOW = 3.4f;
-	const float OBSTACLE_DETECTION_DISTANCE_HIGH = 3.6f;
+	const float BASE_RUN_SPEED = 18f;
+	const float BASE_OBSTACLE_DETECTION_DISTANCE = 4.2f; //assuming a run speed of BASE_RUN_SPEED
 	Vector3 xOffsetStartLow = new Vector3( 0, 0.5f, 0 );	//For low obstacles
 	Vector3 xOffsetStartHigh = new Vector3( 0, 1.3f, 0 );	//For high obstacles
 
@@ -52,10 +52,15 @@ public class PlayerAI : Photon.PunBehaviour {
 
 	void detectObstacles()
 	{
+		//Step 1) Adjust the obstacle detection range based on our run speed. If we are running fast, we need more time to react.
+		float obstacleDetectionDistance = BASE_OBSTACLE_DETECTION_DISTANCE * playerControl.getSpeed()/BASE_RUN_SPEED;
+
+		//Step 2) Detect if there are any low level obstacles
         RaycastHit hit;
 		Vector3 exactPosStart = transform.TransformPoint( xOffsetStartLow );
-		//Debug.DrawLine( exactPosStart, exactPosStart + transform.forward * OBSTACLE_DETECTION_DISTANCE, Color.green );
-        if (Physics.Raycast(exactPosStart, transform.forward, out hit, OBSTACLE_DETECTION_DISTANCE_LOW ))
+		//Debug.DrawLine( exactPosStart, exactPosStart + transform.forward * obstacleDetectionDistance, Color.green );
+
+        if (Physics.Raycast(exactPosStart, transform.forward, out hit, obstacleDetectionDistance ))
 		{
 			if( playerControl.getCharacterState() == PlayerCharacterState.Running )
 			{
@@ -92,12 +97,20 @@ public class PlayerAI : Photon.PunBehaviour {
 
 		exactPosStart = transform.TransformPoint( xOffsetStartHigh );
 		//Debug.DrawLine( exactPosStart, exactPosStart + transform.forward * OBSTACLE_DETECTION_DISTANCE, Color.yellow );
-        if (Physics.Raycast(exactPosStart, transform.forward, out hit, OBSTACLE_DETECTION_DISTANCE_HIGH ))
+        if (Physics.Raycast(exactPosStart, transform.forward, out hit, obstacleDetectionDistance ))
 		{
 			if( playerControl.getCharacterState() == PlayerCharacterState.Running )
 			{
 				Debug.Log("detectObstacles HIGH: " + hit.collider.name );
 				if( hit.collider.name == "DeadTree" )
+				{
+					playerInput.jump();
+				}
+				else if( hit.collider.CompareTag( "Cart" ) )
+				{
+					playerInput.jump();
+				}
+				else if( hit.collider.CompareTag( "Cow" ) )
 				{
 					playerInput.jump();
 				}
