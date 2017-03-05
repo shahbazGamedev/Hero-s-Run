@@ -57,15 +57,26 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardSprint component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
-			default:
-				CardExplosion cardExplosion2 = GetComponent<CardExplosion>();
-				if( cardExplosion2 != null )
+			case "Inferno Tower":
+				CardFirewall cardFirewall = GetComponent<CardFirewall>();
+				if( cardFirewall != null )
 				{
-					cardExplosion2.activateCard( photonViewId, level );
+					cardFirewall.activateCard( photonViewId, level );
 				}
 				else
 				{
-					Debug.LogError("CardHandler-The CardExplosion component is not attached to the CardHandler in the Level scene.");
+					Debug.LogError("CardHandler-The CardFirewall component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
+			default:
+				CardFirewall cardFirewall2 = GetComponent<CardFirewall>();
+				if( cardFirewall2 != null )
+				{
+					cardFirewall2.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardFirewall component is not attached to the CardHandler in the Level scene.");
 				}
 				//Debug.LogError("Cardhandler-The card name specified, " + name + ", is unknown.");
 			break;
