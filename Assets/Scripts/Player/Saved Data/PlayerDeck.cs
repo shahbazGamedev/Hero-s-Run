@@ -61,10 +61,10 @@ public class PlayerDeck {
 	public List<PlayerCardData> getBattleDeck()
 	{
 		List<PlayerCardData> battleDeck = playerCardDataList.FindAll( card => card.inBattleDeck == true );
-		Debug.Log("Cards in battle deck:\n" );
+		//Debug.Log("Cards in battle deck:\n" );
 		for( int i = 0; i < battleDeck.Count; i++ )
 		{
-			Debug.Log("Card " + i + " " +  battleDeck[i].name );
+			//Debug.Log("Card " + i + " " +  battleDeck[i].name );
 		}
 		return battleDeck;
 	}
