@@ -17,7 +17,7 @@ public class PlayerRaceManager {
 	private TimeSpan MAX_TIME_FOR_CONSECUTIVE_RACE = new TimeSpan(0,2,0); //in minutes
 	public float raceDuration;
 	public int racePosition;
-	public RaceStatus raceStatus = RaceStatus.NOT_STARTED;
+	RaceStatus raceStatus = RaceStatus.NOT_STARTED;
 	public List<XPAwardType> raceAwardList = new List<XPAwardType>();
 	public static PlayerRaceManager Instance
 	{
@@ -32,6 +32,16 @@ public class PlayerRaceManager {
             return playerRaceManager;
         }
     }
+
+	public void setRaceStatus( RaceStatus raceStatus )
+	{
+		this.raceStatus = raceStatus;
+	}
+
+	public RaceStatus getRaceStatus()
+	{
+		return raceStatus;
+	}
 
 	private void grantXPAward( XPAwardType awardType )
 	{

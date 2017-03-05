@@ -84,8 +84,8 @@ public class TurnRibbonHandler : MonoBehaviour {
 		//If we don't have enough mana to play a card, make it non-interactable
 		for( int i = 0; i < turnRibbonList.Count; i++ )
 		{
-			turnRibbonButtonList[i].interactable = manaBar.hasEnoughMana( turnRibbonList[i].manaCost ) && PlayerRaceManager.Instance.raceStatus == RaceStatus.IN_PROGRESS;
-			if( PlayerRaceManager.Instance.raceStatus == RaceStatus.IN_PROGRESS )
+			turnRibbonButtonList[i].interactable = manaBar.hasEnoughMana( turnRibbonList[i].manaCost ) && PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS;
+			if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
 			{
 				float fillAmount = 1f - manaBar.getManaAmount()/turnRibbonList[i].manaCost;
 				if( fillAmount < 0 ) fillAmount = 0;

@@ -8,7 +8,7 @@ using UnityEngine;
 public class CardSprint : Photon.PunBehaviour {
 
 	[SerializeField] AudioClip  soundFx;
-	[SerializeField] float  baseDuration = 3.5f;
+	[SerializeField] float  baseDuration = 4f;
 	[SerializeField] float  baseSpeed = 1.5f;
 	[SerializeField] float  durationUpgradePerLevel = 0.15f;
 	[SerializeField] float  speedUpgradePerLevel = 0.06f;

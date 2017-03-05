@@ -41,7 +41,12 @@ public class PlayerRace : Photon.PunBehaviour
 
 	void Start()
 	{
-  		if (!players.Contains (this))
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
+		{	
+			//Reset value. PlayerRaceManager is an instance and does not get re-created when the level reloads	
+			PlayerRaceManager.Instance.setRaceStatus( RaceStatus.NOT_STARTED );
+		}
+ 		if (!players.Contains (this))
 		{
             players.Add (this);
 		}
@@ -63,11 +68,11 @@ public class PlayerRace : Photon.PunBehaviour
 
 	void StartRunningEvent()
 	{
-		Debug.Log("PlayerRace: received StartRunningEvent");
+		Debug.Log("PlayerRace: received StartRunningEvent " + gameObject.name );
 		raceStarted = true;
 		if( this.photonView.isMine )
 		{			
-			PlayerRaceManager.Instance.raceStatus = RaceStatus.IN_PROGRESS;
+			PlayerRaceManager.Instance.setRaceStatus( RaceStatus.IN_PROGRESS );
 			GameManager.Instance.playerStatistics.incrementNumberRacesRun();
 		}
 	}

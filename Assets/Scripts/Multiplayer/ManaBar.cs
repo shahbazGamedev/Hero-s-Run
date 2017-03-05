@@ -22,7 +22,7 @@ public class ManaBar : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-		if( manaSlider.value < MAX_MANA_POINT && PlayerRaceManager.Instance.raceStatus == RaceStatus.IN_PROGRESS ) manaSlider.value = manaSlider.value + Time.deltaTime/MANA_REFILL_RATE;
+		if( manaSlider.value < MAX_MANA_POINT && PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS ) manaSlider.value = manaSlider.value + Time.deltaTime/MANA_REFILL_RATE;
 	}
 
 	/// <summary>
