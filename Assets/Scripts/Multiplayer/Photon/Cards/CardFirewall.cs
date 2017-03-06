@@ -11,7 +11,7 @@ public class CardFirewall : Photon.PunBehaviour {
 	[SerializeField] float  baseDuration = 5f;
 	[SerializeField] float  durationUpgradePerLevel = 1f;
 	[SerializeField]  string firewallPrefabName;
-	Vector3 offset = new Vector3( 0, 0, 6f );
+	Vector3 offset = new Vector3( 0, 0, 10f );
 
 	public void activateCard ( int photonViewId, int level )
 	{
