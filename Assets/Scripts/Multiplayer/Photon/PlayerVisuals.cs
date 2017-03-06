@@ -71,9 +71,9 @@ public class PlayerVisuals : Photon.PunBehaviour {
 		Debug.Log("PlayerVisuals-OnPhotonInstantiate-Hero name: " + selectedHero.name + " Hero Index " + (int)info.sender.CustomProperties["Hero"] + " isMasterClient: " + PhotonNetwork.isMasterClient + " Name: " + info.sender.NickName );
 		if ( PhotonNetwork.isMasterClient )
 		{
-			object[] stuff = new object[1];
-			stuff[0] = info.sender.NickName;
-		    GameObject heroSkin = (GameObject)PhotonNetwork.InstantiateSceneObject (selectedHero.skinPrefab, Vector3.zero, Quaternion.identity, 0, stuff);
+			object[] data = new object[1];
+			data[0] = this.photonView.viewID;
+		    GameObject heroSkin = (GameObject)PhotonNetwork.InstantiateSceneObject (selectedHero.skinPrefab, Vector3.zero, Quaternion.identity, 0, data);
 			Animator anim = gameObject.GetComponent<Animator>();
 			heroSkin.transform.SetParent( transform, false );
 			heroSkin.transform.localPosition = Vector3.zero;

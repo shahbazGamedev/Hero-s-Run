@@ -10,17 +10,32 @@ public class OnSkinCreated : MonoBehaviour
 	{
 		if ( !PhotonNetwork.isMasterClient )
 		{
-			object[] data = this.gameObject.GetPhotonView ().instantiationData;
-			print( "OnPhotonInstantiate " + info.sender.NickName + " " + data[0]);
-			GameObject myOwner = GameObject.Find(data[0].ToString());
-			Animator anim = myOwner.GetComponent<Animator>();
-			transform.SetParent( myOwner.transform, false );
-			transform.localPosition = Vector3.zero;
-			transform.localRotation = Quaternion.identity;
-			anim.avatar = GetComponent<PlayerSkinInfo>().animatorAvatar;
-			anim.Rebind(); //Important
+			object[] data = gameObject.GetPhotonView ().instantiationData;
+			GameObject myOwner = null;
+			int viewIdOfOwner = (int) data[0];
+			GameObject[] playersArray = GameObject.FindGameObjectsWithTag("Player");
+			for( int i = 0; i < playersArray.Length; i ++ )
+			{
+				if( playersArray[i].GetPhotonView().viewID == viewIdOfOwner )
+				{
+					myOwner = playersArray[i];
+					break;
+				}
+			}
+			if( myOwner != null )
+			{
+				Animator anim = myOwner.GetComponent<Animator>();
+				transform.SetParent( myOwner.transform, false );
+				transform.localPosition = Vector3.zero;
+				transform.localRotation = Quaternion.identity;
+				anim.avatar = GetComponent<PlayerSkinInfo>().animatorAvatar;
+				anim.Rebind(); //Important
+			}
+			else
+			{
+				Debug.LogError("OnSkinCreated error: could not find player with Photon view Id of " + viewIdOfOwner );
+			}
 		}
 	}
-
 
 }

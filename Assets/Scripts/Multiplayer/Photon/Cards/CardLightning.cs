@@ -16,7 +16,7 @@ public class CardLightning : Photon.PunBehaviour {
 	[SerializeField]  string lightningPrefabName = "Lightning";
 	Vector3 offset = new Vector3( 0, 1f, 1f );
 
-	int playerLayer = 8;
+	int playerLayer = 2; //ignoreRaycast is the layer the player has. It avoids player raycasts from colliding with himself.
 	int zombieLayer = 9;
 	int goblinLayer = 11;
 	int demonLayer = 12;
@@ -89,6 +89,8 @@ public class CardLightning : Photon.PunBehaviour {
 			float distanceToTarget = Vector3.Distance( caster.position, hitColliders[i].transform.position );
 			if(  hitColliders[i].transform != caster && distanceToTarget < nearestDistance )
 			{
+				//If hitCollider has an ignoreRaycast layer, make sure that it is a player before continuing
+				if( hitColliders[i].gameObject.layer == playerLayer && !hitColliders[i].gameObject.CompareTag("Player") ) continue;
 				nearestTarget = hitColliders[i].transform;
 				nearestDistance = distanceToTarget;
 			}
