@@ -68,15 +68,26 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardFirewall component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
-			default:
-				CardFirewall cardFirewall2 = GetComponent<CardFirewall>();
-				if( cardFirewall2 != null )
+			case "Goblin Hut":
+				CardLightning cardLightning = GetComponent<CardLightning>();
+				if( cardLightning != null )
 				{
-					cardFirewall2.activateCard( photonViewId, level );
+					cardLightning.activateCard( photonViewId, level );
 				}
 				else
 				{
-					Debug.LogError("CardHandler-The CardFirewall component is not attached to the CardHandler in the Level scene.");
+					Debug.LogError("CardHandler-The CardLightning component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
+			default:
+				CardLightning cardLightning2 = GetComponent<CardLightning>();
+				if( cardLightning2 != null )
+				{
+					cardLightning2.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardLightning component is not attached to the CardHandler in the Level scene.");
 				}
 				//Debug.LogError("Cardhandler-The card name specified, " + name + ", is unknown.");
 			break;
