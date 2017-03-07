@@ -2,6 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum CardRule
+{
+	MANA_COST = 0,
+	OPPONENT_NEAR_LEADING = 1,
+	OPPONENT_NEAR_TRAILING = 2,
+	OPPONENT_FAR_LEADING = 3,
+	OPPONENT_FAR_TRAILING = 4,
+	OPPONENT_NEAR = 5,
+	NO_OBSTACLES_IN_FRONT = 6
+
+}
+
 public class CardHandler : MonoBehaviour {
 
 	// Use this for initialization

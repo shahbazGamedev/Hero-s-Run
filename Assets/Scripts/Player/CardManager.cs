@@ -153,7 +153,16 @@ public class CardManager : MonoBehaviour {
 		public Sprite icon;
 		public string descriptionId;
 		[Range(1,9)]
-		public int manaCost;		
+		public int manaCost;
+		public List<CardDataRule> cardDataRuleList;	 //Used by bots to decide when to play a card	
+	}
+
+	[System.Serializable]
+	public class CardDataRule
+	{
+		public CardRule carRule; 
+		[Range(0f,1f)]
+		public float weight = 0;
 	}
 
 }

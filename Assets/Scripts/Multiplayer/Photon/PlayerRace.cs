@@ -23,7 +23,7 @@ using System.Collections.Generic;
 public class PlayerRace : Photon.PunBehaviour
 {
 	//Race position (1st place, 2nd place, etc.
-	int racePosition = -1;
+	public int racePosition = -1;
 	int previousRacePosition = -2;	//Used to avoid updating if the value has not changed
 	//Distance travelled. This is used to determine who is in 1st place, 2nd place, etc.
 	Vector3 previousPlayerPosition = Vector3.zero;

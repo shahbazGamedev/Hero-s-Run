@@ -14,8 +14,9 @@ public class BotCardHandler : Photon.PunBehaviour {
 	List<CardManager.CardData> turnRibbonList = new List<CardManager.CardData>();
 	Queue<CardManager.CardData> cardQueue = new Queue<CardManager.CardData>();
 	float timeOfLastAnalysis = 0;
-	float DELAY_BEFORE_NEXT_ANALYSIS = 2f; //Check which card to play every DELAY_BEFORE_NEXT_ANALYSIS
+	float DELAY_BEFORE_NEXT_ANALYSIS = 3f; //Check which card to play every DELAY_BEFORE_NEXT_ANALYSIS
 	PlayerControl playerControl;
+	float MINIMUM_EFFECTIVENESS = 0.2f;
 
 	// Use this for initialization
 	void Start ()
@@ -100,10 +101,10 @@ public class BotCardHandler : Photon.PunBehaviour {
 		}
 	}
 
-	void playCard( int indexOfCardPlayed )
+	void playCard( int indexOfCardToPlay )
 	{
 		//Which card did the bot select?
-		string cardName = turnRibbonList[indexOfCardPlayed].name;
+		string cardName = turnRibbonList[indexOfCardToPlay].name;
 
 		//Get data about the card - make sure NOT to modify the card data
 		CardManager.CardData playedCard = CardManager.Instance.getCardByName( cardName );
@@ -115,16 +116,16 @@ public class BotCardHandler : Photon.PunBehaviour {
 		activateCard( playedCard.name );
 
 		//Wait a little before moving the Next Card into the free ribbon slot
-		StartCoroutine( moveNextCardIntoTurnRibbon( indexOfCardPlayed, playedCard ) );
+		StartCoroutine( moveNextCardIntoTurnRibbon( indexOfCardToPlay, playedCard ) );
 	}
 
-	IEnumerator moveNextCardIntoTurnRibbon( int indexOfCardPlayed, CardManager.CardData playedCard )
+	IEnumerator moveNextCardIntoTurnRibbon( int indexOfCardToPlay, CardManager.CardData playedCard )
 	{
 		yield return new WaitForSecondsRealtime( TurnRibbonHandler.DELAY_BEFORE_NEXT_CARD_AVAILABLE );
 
 		//In the turn-ribbon list, replace the card played by the card held in Next
-		turnRibbonList.RemoveAt(indexOfCardPlayed);
-		turnRibbonList.Insert( indexOfCardPlayed, nextCard );
+		turnRibbonList.RemoveAt(indexOfCardToPlay);
+		turnRibbonList.Insert( indexOfCardToPlay, nextCard );
 
 		//Dequeue the oldest card and place it in Next
 		CardManager.CardData oldestCardInQueue = cardQueue.Dequeue();
@@ -138,7 +139,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 	void activateCard( string cardName )
 	{
 		PlayerDeck.PlayerCardData botCardData = getCardByName( cardName );
-		Debug.Log("BotCardHandler-activateCard: playing card: " + cardName + " level: " + botCardData.level );
+		Debug.LogWarning("BotCardHandler-activateCard: playing card: " + cardName + " level: " + botCardData.level + " " + this.photonView.viewID );
 		cardHandler.activateCard( this.photonView.viewID, cardName, botCardData.level );
 	}
 
@@ -195,6 +196,47 @@ public class BotCardHandler : Photon.PunBehaviour {
 		//Debug.Log("BotCardHandler-analyseCards" );
 		List<CardManager.CardData> playableCardsList = getListOfPlayableCards();
 
+		//Do we have at least one playable card?
+		if( playableCardsList.Count > 0 )
+		{
+			//Calculate the distance between the bot and the player
+			GameObject player = ((GameObject)PhotonNetwork.player.TagObject);
+			float botPlayerDistance = Vector3.Distance( transform.position, player.transform.position );
+
+			//Who is leading the race?
+			int botRacePosition = GetComponent<PlayerRace>().racePosition;
+			int playerRacePosition = player.GetComponent<PlayerRace>().racePosition;
+			bool isBotLeading = (botRacePosition < playerRacePosition);
+	
+			float mostEffectiveCardStrength = 0;
+			CardManager.CardData mostEffectiveCard = null;
+	
+			//Find the most effective card if any
+			for( int i = 0; i < playableCardsList.Count; i++ )
+			{
+				float cardEffectiveness = 0;
+				for( int j = 0; j < playableCardsList[i].cardDataRuleList.Count; j++ )
+				{
+					float ruleEffectiveness = calculateRuleEffectiveness ( playableCardsList[i].cardDataRuleList[j].carRule, botPlayerDistance, isBotLeading ) * playableCardsList[i].cardDataRuleList[j].weight;
+					cardEffectiveness = cardEffectiveness + ruleEffectiveness;
+				}
+				if( cardEffectiveness > MINIMUM_EFFECTIVENESS )
+				{
+					if( cardEffectiveness > mostEffectiveCardStrength )
+					{
+						mostEffectiveCardStrength = cardEffectiveness;
+						mostEffectiveCard = playableCardsList[i];
+					}
+				}
+			}
+	
+			//If we found a card, play it
+			if( mostEffectiveCard != null )
+			{
+				int indexOfCardToPlay = getCardIndexInTurnRibbon( mostEffectiveCard.name );
+				playCard( indexOfCardToPlay );
+			}
+		}
 	}
 
 	/// <summary>
@@ -214,6 +256,51 @@ public class BotCardHandler : Photon.PunBehaviour {
 		return playableCardsList;
 	}
  
+	/// <summary>
+	/// Calculates the rule effectiveness. The value should be between 0 (ineffective) and 1 (very effective).
+	/// </summary>
+	/// <returns>The rule effectiveness.</returns>
+	/// <param name="rule">Rule.</param>
+	/// <param name="botPlayerDistance">Bot player distance.</param>
+	float calculateRuleEffectiveness ( CardRule rule, float botPlayerDistance, bool isBotLeading )
+	{
+		Debug.LogWarning("BotCardHandler-calculateRuleEffectiveness Rule: " + rule + " distance " + botPlayerDistance + " isBotLeading " + isBotLeading );
+		float ruleEffectiveness = 0;
+		switch (rule)
+		{
+			case CardRule.OPPONENT_FAR_LEADING:
+				if( botPlayerDistance > 10f && !isBotLeading ) ruleEffectiveness = 1;
+			break;
+			case CardRule.OPPONENT_FAR_TRAILING:
+				if( botPlayerDistance > 10f && isBotLeading ) ruleEffectiveness = 1;
+			break;
+			case CardRule.OPPONENT_NEAR_LEADING:
+				if( botPlayerDistance < 5f && !isBotLeading ) ruleEffectiveness = 1;
+			break;
+			case CardRule.OPPONENT_NEAR_TRAILING:
+				if( botPlayerDistance < 5f && isBotLeading ) ruleEffectiveness = 1;
+			break;
+			case CardRule.OPPONENT_NEAR:
+				if( botPlayerDistance < 5f ) ruleEffectiveness = 1;
+			break;
+			case CardRule.MANA_COST:
+				Debug.LogWarning("BotCardHandler-calculateRuleEffectiveness: MANA_COST rule not implemented.");
+			break;
+			case CardRule.NO_OBSTACLES_IN_FRONT:
+				Debug.LogWarning("BotCardHandler-calculateRuleEffectiveness: NO_OBSTACLES_IN_FRONT rule not implemented.");
+			break;
+			default:
+			break;
+		}
+		return ruleEffectiveness;
+	}
+
+	int getCardIndexInTurnRibbon( string name )
+	{
+		return turnRibbonList.FindIndex(cardData => cardData.name == name);
+	}
+
+
 	#endregion
 
 }
