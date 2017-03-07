@@ -4,10 +4,9 @@ using UnityEngine;
 
 /// <summary>
 /// The Lightning card is a Rare card with 11 levels.
-/// Lightning strikes the nearest creature or player, killing it instantly.
+/// Lightning strikes the nearest player, killing it instantly.
 /// Because of its long range, it can be useful when an opponent is far away.
 /// The spell range depends on the level of the caster.
-/// Killing creatures is not implemented yet.
 /// </summary>
 public class CardLightning : Photon.PunBehaviour {
 
@@ -17,12 +16,6 @@ public class CardLightning : Photon.PunBehaviour {
 	Vector3 offset = new Vector3( 0, 1f, 1f );
 
 	int playerLayer = 2; //ignoreRaycast is the layer the player has. It avoids player raycasts from colliding with himself.
-	int zombieLayer = 9;
-	int goblinLayer = 11;
-	int demonLayer = 12;
-	int cerberusLayer = 13;
-	int wraithLayer = 14;
-	int skeletonLayer = 15;
 
 	public void activateCard ( int photonViewId, int level )
 	{
@@ -67,12 +60,6 @@ public class CardLightning : Photon.PunBehaviour {
 	int getOverlapSphereMask()
 	{
 		int mask = 1 << playerLayer;
-		mask |= 1 << zombieLayer;
-		mask |= 1 << goblinLayer;
- 		mask |= 1 << demonLayer;
-		mask |= 1 << cerberusLayer;
-		mask |= 1 << wraithLayer;
-		mask |= 1 << skeletonLayer;
 		return mask;
 	}
 
@@ -89,8 +76,10 @@ public class CardLightning : Photon.PunBehaviour {
 			float distanceToTarget = Vector3.Distance( caster.position, hitColliders[i].transform.position );
 			if(  hitColliders[i].transform != caster && distanceToTarget < nearestDistance )
 			{
-				//If hitCollider has an ignoreRaycast layer, make sure that it is a player before continuing
-				if( hitColliders[i].gameObject.layer == playerLayer && !hitColliders[i].gameObject.CompareTag("Player") ) continue;
+				//Make sure it is a player before continuing
+				if( !hitColliders[i].gameObject.CompareTag("Player") ) continue;
+				//Ignore dead players
+				if( hitColliders[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying ) continue;
 				nearestTarget = hitColliders[i].transform;
 				nearestDistance = distanceToTarget;
 			}
@@ -100,15 +89,7 @@ public class CardLightning : Photon.PunBehaviour {
 
 	void strike( Transform nearestTarget )
 	{
-		//Verify if it is a player
-		if( nearestTarget.CompareTag("Player") )
-		{
-			nearestTarget.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.Obstacle );
-		}
-		else
-		{
-			//Not implemented for creatures
-		}
+		nearestTarget.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.Obstacle );
 	}
 
 	#endregion

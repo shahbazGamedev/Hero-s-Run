@@ -139,12 +139,12 @@ public class MPNetworkLobbyManager : PunBehaviour
 		switch ( GameManager.Instance.getPlayMode() )
 		{
 			case PlayMode.PlayAgainstEnemy:
-				matchmakingManager.setConnectionProgress( "Setting up Player vs. Enemy race." );   
+				matchmakingManager.setConnectionProgress( "Setting up Player vs. Enemy race" );   
 			break;
 
 			case PlayMode.PlayAlone:
 				matchmakingManager.hideRemotePlayer();
-				matchmakingManager.setConnectionProgress( "Playing alone." );   
+				matchmakingManager.setConnectionProgress( "Playing alone" );   
 			break;
 
 			case PlayMode.PlayOthers:

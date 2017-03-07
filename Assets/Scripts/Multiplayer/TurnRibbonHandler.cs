@@ -26,6 +26,8 @@ public class TurnRibbonHandler : MonoBehaviour {
 	List<CardManager.CardData> turnRibbonList = new List<CardManager.CardData>();
 	List<Button> turnRibbonButtonList = new List<Button>();
 	Queue<CardManager.CardData> cardQueue = new Queue<CardManager.CardData>();
+	
+	PlayerControl playerControl;
 
 	// Use this for initialization
 	void Start ()
@@ -49,7 +51,11 @@ public class TurnRibbonHandler : MonoBehaviour {
 		{
 			addCardToQueue( battleDeckList[getUniqueRandom()].name );
 		}
+	}
 
+	public void setPlayerControl( PlayerControl playerControl )
+	{
+		this.playerControl = playerControl;
 	}
 
 	void addCardToTurnRibbon( int index, string cardName )
@@ -79,13 +85,16 @@ public class TurnRibbonHandler : MonoBehaviour {
 		cardQueue.Enqueue( cardData );
 	}
 
-	void Update()
+	void LateUpdate()
 	{
 		//If we don't have enough mana to play a card, make it non-interactable
 		for( int i = 0; i < turnRibbonList.Count; i++ )
 		{
-			turnRibbonButtonList[i].interactable = manaBar.hasEnoughMana( turnRibbonList[i].manaCost ) && PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS;
-			if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
+			turnRibbonButtonList[i].interactable = manaBar.hasEnoughMana( turnRibbonList[i].manaCost )
+ 				&& PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS
+				&& playerControl.isPlayerControlEnabled();
+
+			if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS && playerControl.isPlayerControlEnabled() )
 			{
 				float fillAmount = 1f - manaBar.getManaAmount()/turnRibbonList[i].manaCost;
 				if( fillAmount < 0 ) fillAmount = 0;

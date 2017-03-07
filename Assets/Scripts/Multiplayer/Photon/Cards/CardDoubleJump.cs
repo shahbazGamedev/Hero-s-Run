@@ -7,8 +7,8 @@ using UnityEngine;
 /// </summary>
 public class CardDoubleJump : Photon.PunBehaviour {
 
-	[SerializeField] float  baseDoubleJumpSpeed = 12f; //for comparaison, the normal jump value is 8.8
-	[SerializeField] float  doubleJumpUpgradePerLevel = 0.5f;
+	[SerializeField] float  baseDoubleJumpSpeed = 11.75f; //for comparaison, the normal jump value is 8.8. Max value before starting to jump too high is about 15.
+	[SerializeField] float  doubleJumpUpgradePerLevel = 0.25f;
 
 	public void activateCard ( int photonViewId, int level )
 	{

@@ -81,11 +81,12 @@ public class PlayerVisuals : Photon.PunBehaviour {
 			anim.avatar = heroSkin.GetComponent<PlayerSkinInfo>().animatorAvatar;
 			anim.Rebind(); //Important
 		}
-		//Register with the minimap
+		//Register with the minimap and the turn-ribbon
 		if( this.photonView.isMine )
 		{
 			MiniMap.Instance.registerLocalPlayer( transform );
 			PhotonNetwork.player.TagObject = gameObject;
+			GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>().setPlayerControl( GetComponent<PlayerControl>() );
 		}
 		else
 		{

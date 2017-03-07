@@ -1762,54 +1762,16 @@ public class PlayerControl : Photon.PunBehaviour {
 	}
 	
 	private void resurrectEnd()
-	{
-		//6) Disable colliders during grace period
-		activateObstacleColliders( false );
-		
-		//7) Start running
+	{		
+		//6) Start running
 		allowRunSpeedToIncrease = true;
 		startRunning();
 
-		//8) Restore player controls
+		//7) Restore player controls
 		enablePlayerControl( true );
-
-		//9) Give the player a grace period before the obstacles become active again
-		StartCoroutine( waitForGracePeriod( 2 ) );
 		
-		//10) Display a Go! message
+		//8) Display a Go! message
 		if( this.photonView.isMine && playerAI == null ) HUDHandler.hudHandler.activateUserMessage( LocalizationManager.Instance.getText("GO"), 0f, 1.25f );
-	}
-	
-	IEnumerator waitForGracePeriod( float duration )
-	{
-		//Give the player time to clear any immediate obstacles
-		yield return new WaitForSeconds(duration);
-		activateObstacleColliders( true );
-
-	}
-
-	//This is related to the grace period after player died
-	private void activateObstacleColliders( bool isActive )
-	{
-		Collider[] colliders = FindObjectsOfType(typeof(Collider)) as Collider[];
-        foreach (Collider collider in colliders)
-		{
-			if ( collider.name == "DeadTree" || collider.name.StartsWith( "Stumble" ) || collider.name == "cart" || collider.name.StartsWith( "Breakable" ) || collider.name == "Pendulum" || collider.name == "GroundObstacle" )
-			{
-				//Since we are disabling the collider, we need to disable gravity for objects with a rigid body
-				//as well or else the object will fall through the ground.
-				if( collider.GetComponent<Rigidbody>() != null )
-				{
-					collider.GetComponent<Rigidbody>().useGravity = isActive;
-				}
-            	collider.enabled = isActive;
-				//Debug.Log (" activateObstacleColliders " + collider.name + " isActive " + isActive );
-			}
-			else if ( collider.name == "Flame" )
-			{
-				collider.GetComponent<TrapFlame>().isActive = isActive;
-			}
-        }
 	}
 
 	public int getNumberOfTimesDiedDuringRace()

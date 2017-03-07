@@ -120,6 +120,10 @@ public class PlayerAI : Photon.PunBehaviour {
 				{
 					playerInput.jump();
 				}
+				else if( hit.collider.CompareTag( "Firewall" ) )
+				{
+					playerInput.jump();
+				}
 			}
 		}
 	}
