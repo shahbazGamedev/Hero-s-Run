@@ -295,15 +295,7 @@ public class LevelData : MonoBehaviour {
 	//The RunStartSpeed is higher in Heroic mode than in Normal mode for example.
 	public float getRunStartSpeed()
 	{
-		float adjustedRunStartSpeed;
-		if( GameManager.Instance.isMultiplayer() )
-		{
-			adjustedRunStartSpeed = multiplayerList[0].RunStartSpeed; //HACK
-		}
-		else
-		{
-			adjustedRunStartSpeed = LevelManager.Instance.getCurrentEpisodeInfo().RunStartSpeed;
-		}
+		float adjustedRunStartSpeed = LevelManager.Instance.getCurrentEpisodeInfo().RunStartSpeed;
 		switch (PlayerStatsManager.Instance.getDifficultyLevel())
 		{
 			case DifficultyLevel.Normal:
@@ -327,15 +319,7 @@ public class LevelData : MonoBehaviour {
 	//The RunAcceleration is higher in Heroic mode than in Normal mode for example.
 	public float getRunAcceleration()
 	{
-		float adjustedRunAcceleration;
-		if( GameManager.Instance.isMultiplayer() )
-		{
-			adjustedRunAcceleration = multiplayerList[0].RunAcceleration; //HACK
-		}
-		else
-		{
-			adjustedRunAcceleration = LevelManager.Instance.getCurrentEpisodeInfo().RunAcceleration;
-		}
+		float adjustedRunAcceleration = LevelManager.Instance.getCurrentEpisodeInfo().RunAcceleration;
 		switch (PlayerStatsManager.Instance.getDifficultyLevel())
 		{
 
