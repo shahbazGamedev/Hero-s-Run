@@ -118,6 +118,7 @@ public class HeroManager : MonoBehaviour {
  		public int playerIcon;		//Bot icon displayed is matchmaking lobby
 		[Range(1, 10 )]
 		public int skillLevel;		//How skillfull is the bot. 1 being very clumsy and 10 being amazing.
+		public List<PlayerDeck.PlayerCardData> botCardDataList;
 	}
 
 }
