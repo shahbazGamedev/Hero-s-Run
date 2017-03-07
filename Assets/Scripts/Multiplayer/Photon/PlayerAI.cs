@@ -97,6 +97,14 @@ public class PlayerAI : Photon.PunBehaviour {
 				{
 					playerInput.jump();
 				}
+				else if( hit.collider.CompareTag( "Player" ) )
+				{
+					if( hit.collider.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
+					{
+						//Jump over dead player
+						playerInput.jump();
+					}
+				}
 			}
 		}
 

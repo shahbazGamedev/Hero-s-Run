@@ -182,12 +182,18 @@ public class PlayerRace : Photon.PunBehaviour
 		//We want to slow down any player that reaches the finish line
 		StartCoroutine( GetComponent<PlayerControl>().slowDownPlayerAfterFinishLine( 10f, triggerPositionZ ) );
 		//However, in terms of changing HUD elements, XP, player stats, etc. We only want to proceed if the player is local and not a bot.
-		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
+		if( this.photonView.isMine )
 		{
-			HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
-			GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
-			PlayerRaceManager.Instance.playerCompletedRace( (racePosition + 1), raceDuration, distanceTravelled, GetComponent<PlayerControl>().getNumberOfTimesDiedDuringRace() );
-		}
+			//Set the character state to idle. When a character is idle, cards can't affect him. For example, we don't want a CardLightning spell to affect someone
+			//who has crossed the finish line.
+			GetComponent<PlayerControl>().setCharacterState(PlayerCharacterState.Idle);
+			if( GetComponent<PlayerAI>() == null )
+			{
+				HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
+				GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
+				PlayerRaceManager.Instance.playerCompletedRace( (racePosition + 1), raceDuration, distanceTravelled, GetComponent<PlayerControl>().getNumberOfTimesDiedDuringRace() );
+			}
+		}		
     }
 
 }

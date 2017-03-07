@@ -78,8 +78,8 @@ public class CardLightning : Photon.PunBehaviour {
 			{
 				//Make sure it is a player before continuing
 				if( !hitColliders[i].gameObject.CompareTag("Player") ) continue;
-				//Ignore dead players
-				if( hitColliders[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying ) continue;
+				//Ignore dead players or players that are idle
+				if( hitColliders[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying || hitColliders[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
 				nearestTarget = hitColliders[i].transform;
 				nearestDistance = distanceToTarget;
 			}

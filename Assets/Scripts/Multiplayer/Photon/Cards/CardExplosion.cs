@@ -74,16 +74,21 @@ public class CardExplosion : Photon.PunBehaviour {
 				//Verify that it is NOT the player activating the card
 				if( hitColliders[i].GetComponent<PhotonView>().viewID != photonViewID )
 				{
-					//The explosion knocked down a player. Send him an RPC.
-					if( getDotProduct( hitColliders[i].transform, player.position ) )
+					//Verify that the player is not in the idle character state.
+					//The player will be in the idle state after crossing the finish line for example.
+					if( hitColliders[i].GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle )
 					{
-						//Explosion is in front of player. He falls backward.
-						hitColliders[i].GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.Obstacle );
-					}
-					else
-					{
-						//Explosion is behind player. He falls forward.
-						hitColliders[i].GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.FallForward );
+						//The explosion knocked down a player. Send him an RPC.
+						if( getDotProduct( hitColliders[i].transform, player.position ) )
+						{
+							//Explosion is in front of player. He falls backward.
+							hitColliders[i].GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.Obstacle );
+						}
+						else
+						{
+							//Explosion is behind player. He falls forward.
+							hitColliders[i].GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.FallForward );
+						}
 					}
 				}
 			}
