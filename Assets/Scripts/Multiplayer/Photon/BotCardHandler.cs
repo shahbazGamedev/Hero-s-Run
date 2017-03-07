@@ -100,13 +100,6 @@ public class BotCardHandler : Photon.PunBehaviour {
 		}
 	}
 
-	void analyseCards()
-	{
-		timeOfLastAnalysis = Time.time;
-		//Debug.Log("BotCardHandler-analyseCards" );
-
-	}
-
 	void playCard( int indexOfCardPlayed )
 	{
 		//Which card did the bot select?
@@ -145,11 +138,8 @@ public class BotCardHandler : Photon.PunBehaviour {
 	void activateCard( string cardName )
 	{
 		PlayerDeck.PlayerCardData botCardData = getCardByName( cardName );
-		if( playerControl.getCharacterState() == PlayerCharacterState.Running )
-		{
-			Debug.Log("BotCardHandler-activateCard: playing card: " + cardName + " level: " + botCardData.level );
-			cardHandler.activateCard( this.photonView.viewID, cardName, botCardData.level );
-		}
+		Debug.Log("BotCardHandler-activateCard: playing card: " + cardName + " level: " + botCardData.level );
+		cardHandler.activateCard( this.photonView.viewID, cardName, botCardData.level );
 	}
 
 	void deductMana( int manaCost )
@@ -194,5 +184,36 @@ public class BotCardHandler : Photon.PunBehaviour {
 		cardIndexList.RemoveAt(rand);
 		return value;
 	}
+
+	#region Card Analysis
+	void analyseCards()
+	{
+		//For the time being, we consider playing a card only in the RUNNING state.
+		if( playerControl.getCharacterState() != PlayerCharacterState.Running ) return;
+
+		timeOfLastAnalysis = Time.time;
+		//Debug.Log("BotCardHandler-analyseCards" );
+		List<CardManager.CardData> playableCardsList = getListOfPlayableCards();
+
+	}
+
+	/// <summary>
+	/// Gets the list of cards for which we have enough mana.
+	/// </summary>
+	/// <returns>The list of playable cards.</returns>
+	List<CardManager.CardData> getListOfPlayableCards()
+	{
+		List<CardManager.CardData> playableCardsList = new List<CardManager.CardData>();
+		for( int i = 0; i < turnRibbonList.Count; i++ )
+		{
+			if( turnRibbonList[i].manaCost <= manaAmount )
+			{
+				playableCardsList.Add( turnRibbonList[i] );
+			}
+		}
+		return playableCardsList;
+	}
+ 
+	#endregion
 
 }
