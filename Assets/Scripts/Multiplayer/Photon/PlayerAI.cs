@@ -31,15 +31,6 @@ public class PlayerAI : Photon.PunBehaviour {
 		playerControl = GetComponent<PlayerControl>();
 		playerInput = GetComponent<PlayerInput>();
 		cardHandler = GameObject.FindGameObjectWithTag("Card Handler").GetComponent<CardHandler>();
-		Invoke("doSpeedBoost",30f);
-	}
-	
-	void doSpeedBoost()
-	{
-		if( playerControl.getCharacterState() == PlayerCharacterState.Running )
-		{
-			cardHandler.activateCard( this.photonView.viewID, "Barbarians", 2 );
-		}
 	}
 
 	// Update is called once per frame
@@ -65,7 +56,7 @@ public class PlayerAI : Photon.PunBehaviour {
 		{
 			if( playerControl.getCharacterState() == PlayerCharacterState.Running )
 			{
-				Debug.Log("detectObstacles LOW: " + hit.collider.name );
+				//Debug.Log("detectObstacles LOW: " + hit.collider.name );
 				if( hit.collider.name == "DeadTree" )
 				{
 					playerInput.jump();
@@ -115,7 +106,7 @@ public class PlayerAI : Photon.PunBehaviour {
 		{
 			if( playerControl.getCharacterState() == PlayerCharacterState.Running )
 			{
-				Debug.Log("detectObstacles HIGH: " + hit.collider.name );
+				//Debug.Log("detectObstacles HIGH: " + hit.collider.name );
 				if( hit.collider.name == "DeadTree" )
 				{
 					playerInput.jump();

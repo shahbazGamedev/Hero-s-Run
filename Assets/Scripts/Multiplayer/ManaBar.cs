@@ -6,10 +6,10 @@ using UnityEngine.UI;
 public class ManaBar : MonoBehaviour {
 
 	[SerializeField] Slider manaSlider;
-	const int MAX_MANA_POINT = 10;
-	const int MIN_MANA_POINT = 0;
-	const int START_MANA_POINT = 5;
-	const float MANA_REFILL_RATE = 2.8f; //Seconds needed to gain 1 mana point
+	public const int MAX_MANA_POINT = 10;
+	public const int MIN_MANA_POINT = 0;
+	public const int START_MANA_POINT = 5;
+	public const float MANA_REFILL_RATE = 2.8f; //Seconds needed to gain 1 mana point
 
 	// Use this for initialization
 	void Start ()

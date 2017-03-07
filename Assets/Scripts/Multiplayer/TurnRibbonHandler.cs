@@ -17,8 +17,8 @@ public class TurnRibbonHandler : MonoBehaviour {
 	[Header("Mana Bar")]
 	[SerializeField] ManaBar manaBar;
 
-	const int NUMBER_CARDS_IN_BATTLE_DECK = 8;
-	const float DELAY_BEFORE_NEXT_CARD_AVAILABLE = 1f;
+	public const int NUMBER_CARDS_IN_BATTLE_DECK = 8;
+	public const float DELAY_BEFORE_NEXT_CARD_AVAILABLE = 1f;
 
 	int [] cardIndexArray = new int[]{0,1,2,3,4,5,6,7};
 	List<int> cardIndexList = new List<int>(NUMBER_CARDS_IN_BATTLE_DECK);
@@ -119,7 +119,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		manaBar.deductMana( playedCard.manaCost );
 
 		//Play the card effect
-		playCardEffect( playedCard.name );
+		activateCard( playedCard.name );
 
 		//Temporarily replace the image on the button that was clicked by a blank image
 		Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
@@ -152,10 +152,10 @@ public class TurnRibbonHandler : MonoBehaviour {
 		
 	}
 
-	void playCardEffect( string cardName )
+	void activateCard( string cardName )
 	{
 		PlayerDeck.PlayerCardData playerCardData = GameManager.Instance.playerDeck.getCardByName( cardName );
-		Debug.Log("TurnRibbonHandler-playCardEffect: playing effect for card: " + cardName );
+		Debug.Log("TurnRibbonHandler-activateCard: playing card: " + cardName );
 		cardHandler.activateCard( ((GameObject)PhotonNetwork.player.TagObject).GetComponent<PhotonView>().viewID, cardName, playerCardData.level );
 	}
 

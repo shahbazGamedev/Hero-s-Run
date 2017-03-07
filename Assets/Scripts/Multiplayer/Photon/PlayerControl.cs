@@ -1865,7 +1865,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	public void setCharacterState( PlayerCharacterState newState )
 	{
 		playerCharacterState = newState;
-		Debug.Log("PlayerControl-setCharacterState to: " + newState + " for " + gameObject.name );
+		//Debug.Log("PlayerControl-setCharacterState to: " + newState + " for " + gameObject.name );
 		//Send an event to interested classes
 		if(multiplayerStateChanged != null) multiplayerStateChanged( playerCharacterState );
 	}
