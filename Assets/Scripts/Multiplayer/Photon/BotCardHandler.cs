@@ -13,7 +13,8 @@ public class BotCardHandler : Photon.PunBehaviour {
 	List<int> cardIndexList = new List<int>(TurnRibbonHandler.NUMBER_CARDS_IN_BATTLE_DECK);
 	List<CardManager.CardData> turnRibbonList = new List<CardManager.CardData>();
 	Queue<CardManager.CardData> cardQueue = new Queue<CardManager.CardData>();
-	
+	float timeOfLastAnalysis = 0;
+	float DELAY_BEFORE_NEXT_ANALYSIS = 2f; //Check which card to play every DELAY_BEFORE_NEXT_ANALYSIS
 	PlayerControl playerControl;
 
 	// Use this for initialization
@@ -89,7 +90,21 @@ public class BotCardHandler : Photon.PunBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-		if( manaAmount < ManaBar.MAX_MANA_POINT && PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS ) manaAmount = manaAmount + Time.deltaTime/ManaBar.MANA_REFILL_RATE;
+		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
+		{
+			if( manaAmount < ManaBar.MAX_MANA_POINT ) manaAmount = manaAmount + Time.deltaTime/ManaBar.MANA_REFILL_RATE;
+			if( Time.time - timeOfLastAnalysis > DELAY_BEFORE_NEXT_ANALYSIS )
+			{
+				analyseCards();
+			}
+		}
+	}
+
+	void analyseCards()
+	{
+		timeOfLastAnalysis = Time.time;
+		//Debug.Log("BotCardHandler-analyseCards" );
+
 	}
 
 	void playCard( int indexOfCardPlayed )
