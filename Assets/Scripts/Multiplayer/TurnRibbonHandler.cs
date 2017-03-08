@@ -69,6 +69,11 @@ public class TurnRibbonHandler : MonoBehaviour {
 		Image cardImage = go.GetComponent<Image>();
 		CardManager.CardData cardData = CardManager.Instance.getCardByName( cardName );
 		cardImage.sprite = cardData.icon;
+		//Card name text and mana cost text
+		Text[] buttonTexts = cardButton.GetComponentsInChildren<Text>();
+		buttonTexts[0].text = cardData.name.ToString();
+		buttonTexts[1].text = cardData.manaCost.ToString();
+
 		turnRibbonList.Add(cardData);
 	}
 
@@ -124,6 +129,10 @@ public class TurnRibbonHandler : MonoBehaviour {
 		//Temporarily replace the image on the button that was clicked by a blank image
 		Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
 		buttonOfCardPlayed.GetComponent<Image>().overrideSprite = blankCardSprite;
+		//Card name text and mana cost text
+		Text[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<Text>();
+		buttonTexts[0].text = string.Empty;
+		buttonTexts[1].text = string.Empty;
 
 		//Wait a little before moving the Next Card into the free ribbon slot
 		StartCoroutine( moveNextCardIntoTurnRibbon( indexOfCardPlayed, playedCard ) );
@@ -137,6 +146,10 @@ public class TurnRibbonHandler : MonoBehaviour {
 		Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
 		buttonOfCardPlayed.GetComponent<Image>().overrideSprite = null;
 		buttonOfCardPlayed.GetComponent<Image>().sprite = nextCard.icon;
+		//Card name text and mana cost text
+		Text[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<Text>();
+		buttonTexts[0].text = nextCard.name.ToString();
+		buttonTexts[1].text = nextCard.manaCost.ToString();
 
 		//In the turn-ribbon list, replace the card played by the card held in Next
 		turnRibbonList.RemoveAt(indexOfCardPlayed);
