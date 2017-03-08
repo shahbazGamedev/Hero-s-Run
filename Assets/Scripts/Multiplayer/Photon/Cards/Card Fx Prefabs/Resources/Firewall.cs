@@ -5,7 +5,7 @@ using System.Collections;
 public class Firewall : Photon.PunBehaviour {
 	
 	[SerializeField] Sprite  minimapIcon;
-	string nameOfCaster; //The caster is immune to the firewall.
+	public string nameOfCaster = string.Empty; //The caster is immune to the firewall.
 
 	void OnTriggerEnter(Collider other)
 	{

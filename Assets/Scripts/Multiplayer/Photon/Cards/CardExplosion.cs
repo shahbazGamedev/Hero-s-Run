@@ -27,7 +27,7 @@ public class CardExplosion : Photon.PunBehaviour {
 		{
 			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
 			{
-				playerGameObject = (GameObject)PhotonNetwork.player.TagObject;
+				playerGameObject = PlayerRace.players[i].gameObject;
 			}
 		}
 		//Do an explosion effect centered on the player

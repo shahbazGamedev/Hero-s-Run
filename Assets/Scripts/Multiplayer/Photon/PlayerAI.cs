@@ -86,7 +86,14 @@ public class PlayerAI : Photon.PunBehaviour {
 				}
 				else if( hit.collider.CompareTag( "Firewall" ) )
 				{
-					playerInput.jump();
+					//Did we cast this firewall?
+					string caster = hit.collider.GetComponent<Firewall>().nameOfCaster;
+					if( gameObject.name != caster )
+					{
+						//We did not cast it. We need to jump over it.
+						//As a reminder, the caster is immune to the firewall he casted.
+						playerInput.jump();
+					}
 				}
 				else if( hit.collider.CompareTag( "Player" ) )
 				{
@@ -121,7 +128,14 @@ public class PlayerAI : Photon.PunBehaviour {
 				}
 				else if( hit.collider.CompareTag( "Firewall" ) )
 				{
-					playerInput.jump();
+					//Did we cast this firewall?
+					string caster = hit.collider.GetComponent<Firewall>().nameOfCaster;
+					if( gameObject.name != caster )
+					{
+						//We did not cast it. We need to jump over it.
+						//As a reminder, the caster is immune to the firewall he casted.
+						playerInput.jump();
+					}
 				}
 			}
 		}
@@ -151,6 +165,18 @@ public class PlayerAI : Photon.PunBehaviour {
 		{
 			//Kill bot for testing
 			playerControl.managePlayerDeath(DeathType.FallForward);
+		}
+		else if ( Input.GetKeyDown (KeyCode.C ) )
+		{
+			cardHandler.activateCard( this.photonView.viewID, "Goblin Hut", 3 );
+		}
+		else if ( Input.GetKeyDown (KeyCode.E ) )
+		{
+			cardHandler.activateCard( this.photonView.viewID, "Ice Spirit", 3 );
+		}
+		else if ( Input.GetKeyDown (KeyCode.I ) )
+		{
+			cardHandler.activateCard( this.photonView.viewID, "Inferno Tower", 3 );
 		}
 	}
 

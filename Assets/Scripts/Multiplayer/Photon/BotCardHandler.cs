@@ -17,6 +17,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 	float DELAY_BEFORE_NEXT_ANALYSIS = 3f; //Check which card to play every DELAY_BEFORE_NEXT_ANALYSIS
 	PlayerControl playerControl;
 	float MINIMUM_EFFECTIVENESS = 0.2f;
+	bool allowCardPlaying = true;
 
 	// Use this for initialization
 	void Start ()
@@ -94,7 +95,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
 		{
 			if( manaAmount < ManaBar.MAX_MANA_POINT ) manaAmount = manaAmount + Time.deltaTime/ManaBar.MANA_REFILL_RATE;
-			if( Time.time - timeOfLastAnalysis > DELAY_BEFORE_NEXT_ANALYSIS )
+			if( allowCardPlaying && (Time.time - timeOfLastAnalysis > DELAY_BEFORE_NEXT_ANALYSIS) )
 			{
 				analyseCards();
 			}
