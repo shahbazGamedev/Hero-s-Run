@@ -18,41 +18,41 @@ public class PlayerDeck {
 	{
 		//Cards in battle deck
 		//1
-		addCard( "Barbarians", 1, 1, true );
+		addCard( CardName.Firewall, 1, 1, true );
 
 		//2
-		addCard( "Dark Prince", 1, 1, true );
+		addCard( CardName.Sprint, 1, 1, true );
 
 		//3
-		addCard( "Furnace", 1, 1, true );
+		addCard( CardName.Raging_Bull, 1, 1, true );
 
 		//4
-		addCard( "Giant Skeleton", 1, 1, true );
+		addCard( CardName.Explosion, 1, 1, true );
 
 		//5
-		addCard( "Goblin Hut", 1, 1, true );
+		addCard( CardName.Double_Jump, 1, 1, true );
 
 		//6
-		addCard( "Goblins", 1, 1, true );
+		addCard( CardName.Lightning, 1, 1, true );
 
 		//7
-		addCard( "Ice Spirit", 1, 1, true );
+		addCard( CardName.Shrink, 1, 1, true );
 
 		//8
-		addCard( "Inferno Tower", 1, 1, true );
+		addCard( CardName.Transmogrify, 1, 1, true );
 
 		//Part of card collection, but not in battle deck
 		//9
-		addCard( "Lumberjack", 1, 1, false );
+		addCard( CardName.Card_One, 1, 1, false );
 
 		//10
-		addCard( "Mini-PEKKA", 1, 1, false );
+		addCard( CardName.Card_Two, 1, 1, false );
 
 		//11
-		addCard( "Minions", 1, 1, false );
+		addCard( CardName.Card_Three, 1, 1, false );
 
 		//12
-		addCard( "Mortar", 1, 1, false );
+		addCard( CardName.Card_Four, 1, 1, false );
 
 		serializePlayerDeck( true );
 
@@ -69,7 +69,7 @@ public class PlayerDeck {
 		return battleDeck;
 	}
  
-	public void addCard(  string name, int level, int quantity, bool inBattleDeck )
+	public void addCard(  CardName name, int level, int quantity, bool inBattleDeck )
 	{
 		//Make sure the specified card exists
 		if( CardManager.Instance.doesCardExist( name ) )
@@ -90,12 +90,12 @@ public class PlayerDeck {
 		}
 	}
 
-	public bool doesCardExist( string name )
+	public bool doesCardExist( CardName name )
 	{
 		return playerCardDataList.Exists(cardData => cardData.name == name );
 	}
 
-	public PlayerCardData getCardByName( string name )
+	public PlayerCardData getCardByName( CardName name )
 	{
 		if( doesCardExist( name ) )
 		{
@@ -121,7 +121,7 @@ public class PlayerDeck {
 	[System.Serializable]
 	public class PlayerCardData
 	{
-		public string name; 
+		public CardName name; 
 		[Range(1,13)]
 		public int level;
 		public int  quantity;

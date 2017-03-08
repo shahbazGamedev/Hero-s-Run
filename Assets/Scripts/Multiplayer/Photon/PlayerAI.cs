@@ -168,15 +168,15 @@ public class PlayerAI : Photon.PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.C ) )
 		{
-			cardHandler.activateCard( this.photonView.viewID, "Goblin Hut", 3 );
+			cardHandler.activateCard( this.photonView.viewID, CardName.Lightning, 3 );
 		}
 		else if ( Input.GetKeyDown (KeyCode.E ) )
 		{
-			cardHandler.activateCard( this.photonView.viewID, "Ice Spirit", 3 );
+			cardHandler.activateCard( this.photonView.viewID, CardName.Explosion, 3 );
 		}
 		else if ( Input.GetKeyDown (KeyCode.I ) )
 		{
-			cardHandler.activateCard( this.photonView.viewID, "Inferno Tower", 3 );
+			cardHandler.activateCard( this.photonView.viewID, CardName.Firewall, 3 );
 		}
 	}
 

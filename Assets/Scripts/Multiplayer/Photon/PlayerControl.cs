@@ -1907,6 +1907,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	//The player slows down but keeps control.
 	public IEnumerator slowDownPlayerAfterFinishLine( float distance, float triggerPositionZ )
 	{
+		deactivateSpeedBoost();
 		allowRunSpeedToIncrease = false;
 		enablePlayerControl( false );
 		float percentageComplete = 0;

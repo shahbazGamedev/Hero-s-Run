@@ -58,7 +58,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		this.playerControl = playerControl;
 	}
 
-	void addCardToTurnRibbon( int index, string cardName )
+	void addCardToTurnRibbon( int index, CardName cardName )
 	{
 		GameObject go = (GameObject)Instantiate(cardPrefab);
 		go.transform.SetParent(cardPanel,false);
@@ -72,14 +72,14 @@ public class TurnRibbonHandler : MonoBehaviour {
 		turnRibbonList.Add(cardData);
 	}
 
-	void setNextCard( string cardName )
+	void setNextCard( CardName cardName )
 	{
 		CardManager.CardData cardData = CardManager.Instance.getCardByName( cardName );
 		nextCardImage.sprite = cardData.icon;
 		this.nextCard = cardData;
 	}
 
-	void addCardToQueue( string cardName )
+	void addCardToQueue( CardName cardName )
 	{
 		CardManager.CardData cardData = CardManager.Instance.getCardByName( cardName );
 		cardQueue.Enqueue( cardData );
@@ -110,7 +110,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 	public void OnClickCard( int indexOfCardPlayed )
 	{
 		//On which card did the player click?
-		string cardName = turnRibbonList[indexOfCardPlayed].name;
+		CardName cardName = turnRibbonList[indexOfCardPlayed].name;
 
 		//Get data about the card - make sure NOT to modify the card data
 		CardManager.CardData playedCard = CardManager.Instance.getCardByName( cardName );
@@ -152,7 +152,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		
 	}
 
-	void activateCard( string cardName )
+	void activateCard( CardName cardName )
 	{
 		PlayerDeck.PlayerCardData playerCardData = GameManager.Instance.playerDeck.getCardByName( cardName );
 		Debug.Log("TurnRibbonHandler-activateCard: playing card: " + cardName );

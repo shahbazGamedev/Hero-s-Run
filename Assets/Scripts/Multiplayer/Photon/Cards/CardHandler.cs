@@ -21,11 +21,11 @@ public class CardHandler : MonoBehaviour {
 		
 	}
 	
-	public void activateCard ( int photonViewId, string name, int level)
+	public void activateCard ( int photonViewId, CardName name, int level)
 	{
 		switch (name)
 		{
-			case "Barbarians":
+			case CardName.Raging_Bull:
 				CardSpeedBoost cardSpeedBoost = GetComponent<CardSpeedBoost>();
 				if( cardSpeedBoost != null )
 				{
@@ -36,7 +36,7 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardSpeedBoost component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
-			case "Ice Spirit":
+			case CardName.Explosion:
 				CardExplosion cardExplosion = GetComponent<CardExplosion>();
 				if( cardExplosion != null )
 				{
@@ -47,7 +47,7 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardExplosion component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
-			case "Furnace":
+			case CardName.Double_Jump:
 				CardDoubleJump cardDoubleJump = GetComponent<CardDoubleJump>();
 				if( cardDoubleJump != null )
 				{
@@ -58,7 +58,7 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardDoubleJump component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
-			case "Giant Skeleton":
+			case CardName.Sprint:
 				CardSprint cardSprint = GetComponent<CardSprint>();
 				if( cardSprint != null )
 				{
@@ -69,7 +69,7 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardSprint component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
-			case "Inferno Tower":
+			case CardName.Firewall:
 				CardFirewall cardFirewall = GetComponent<CardFirewall>();
 				if( cardFirewall != null )
 				{
@@ -80,7 +80,7 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardFirewall component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
-			case "Goblin Hut":
+			case CardName.Lightning:
 				CardLightning cardLightning = GetComponent<CardLightning>();
 				if( cardLightning != null )
 				{
@@ -90,6 +90,8 @@ public class CardHandler : MonoBehaviour {
 				{
 					Debug.LogError("CardHandler-The CardLightning component is not attached to the CardHandler in the Level scene.");
 				}
+			break;
+			case CardName.Shrink:
 			break;
 			default:
 				CardLightning cardLightning2 = GetComponent<CardLightning>();

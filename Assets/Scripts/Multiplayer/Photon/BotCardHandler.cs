@@ -17,7 +17,8 @@ public class BotCardHandler : Photon.PunBehaviour {
 	float DELAY_BEFORE_NEXT_ANALYSIS = 3f; //Check which card to play every DELAY_BEFORE_NEXT_ANALYSIS
 	PlayerControl playerControl;
 	float MINIMUM_EFFECTIVENESS = 0.2f;
-	bool allowCardPlaying = true;
+	bool allowCardPlaying = false;
+	const float START_OF_RACE_GRACE_PERIOD = 15f;
 
 	// Use this for initialization
 	void Start ()
@@ -36,6 +37,12 @@ public class BotCardHandler : Photon.PunBehaviour {
 
 		initializeCards ();
 
+		Invoke("allowBotToPlayCards", START_OF_RACE_GRACE_PERIOD );
+	}
+
+	void allowBotToPlayCards()
+	{
+		 allowCardPlaying = true;
 	}
 
 	List<PlayerDeck.PlayerCardData> getBattleDeck()
@@ -71,19 +78,19 @@ public class BotCardHandler : Photon.PunBehaviour {
 		}
 	}
 
-	void addCardToTurnRibbon( int index, string cardName )
+	void addCardToTurnRibbon( int index, CardName cardName )
 	{
 		CardManager.CardData cardData = CardManager.Instance.getCardByName( cardName );
 		turnRibbonList.Add(cardData);
 	}
 
-	void setNextCard( string cardName )
+	void setNextCard( CardName cardName )
 	{
 		CardManager.CardData cardData = CardManager.Instance.getCardByName( cardName );
 		nextCard = cardData;
 	}
 
-	void addCardToQueue( string cardName )
+	void addCardToQueue( CardName cardName )
 	{
 		CardManager.CardData cardData = CardManager.Instance.getCardByName( cardName );
 		cardQueue.Enqueue( cardData );
@@ -105,7 +112,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 	void playCard( int indexOfCardToPlay )
 	{
 		//Which card did the bot select?
-		string cardName = turnRibbonList[indexOfCardToPlay].name;
+		CardName cardName = turnRibbonList[indexOfCardToPlay].name;
 
 		//Get data about the card - make sure NOT to modify the card data
 		CardManager.CardData playedCard = CardManager.Instance.getCardByName( cardName );
@@ -137,7 +144,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 
 	}
 
-	void activateCard( string cardName )
+	void activateCard( CardName cardName )
 	{
 		PlayerDeck.PlayerCardData botCardData = getCardByName( cardName );
 		Debug.LogWarning("BotCardHandler-activateCard: playing card: " + cardName + " level: " + botCardData.level + " " + this.photonView.viewID );
@@ -156,12 +163,12 @@ public class BotCardHandler : Photon.PunBehaviour {
 		}
 	}
 
-	bool doesCardExist( string name )
+	bool doesCardExist( CardName name )
 	{
 		return battleDeckList.Exists(cardData => cardData.name == name );
 	}
 
-	PlayerDeck.PlayerCardData getCardByName( string name )
+	PlayerDeck.PlayerCardData getCardByName( CardName name )
 	{
 		if( doesCardExist( name ) )
 		{
@@ -296,7 +303,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 		return ruleEffectiveness;
 	}
 
-	int getCardIndexInTurnRibbon( string name )
+	int getCardIndexInTurnRibbon( CardName name )
 	{
 		return turnRibbonList.FindIndex(cardData => cardData.name == name);
 	}

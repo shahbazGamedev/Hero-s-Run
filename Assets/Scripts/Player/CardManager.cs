@@ -11,11 +11,31 @@ public enum CardRarity
 	
 }
 
-public enum CardType
- {
-	SPEED = 1,
-	ATTACK = 2,
-	DEFEND = 3	
+/// <summary>
+/// Card name.
+/// Use numbers 0 to 99 for Common, 100 to 199 for Rare, 200 to 299 for Epic and 300 to 399 for Legendary.
+/// </summary>
+public enum CardName
+{
+	//Common
+	Sprint = 0,
+	Raging_Bull = 1,
+	Double_Jump = 2,
+
+	//Rare
+	Firewall = 100,
+	Explosion = 101,
+	Shrink = 102,
+
+	//Epic
+	Lightning = 200,
+
+	//Legendary
+	Transmogrify = 300,
+	Card_One = 301,
+	Card_Two = 302,
+	Card_Three = 303,
+	Card_Four = 304
 }
 
 public class CardManager : MonoBehaviour {
@@ -107,12 +127,12 @@ public class CardManager : MonoBehaviour {
 
 	}
 
-	public bool doesCardExist( string name )
+	public bool doesCardExist( CardName name )
 	{
 		return cardDataList.Exists(cardData => cardData.name == name );
 	}
 
-	public CardData getCardByName( string name )
+	public CardData getCardByName( CardName name )
 	{
 		if( doesCardExist( name ) )
 		{
@@ -147,11 +167,9 @@ public class CardManager : MonoBehaviour {
 	public class CardData
 	{
 		//Unique name to identify the card.
-		public string name; 
+		public CardName name; 
 		public CardRarity rarity = CardRarity.COMMON;
-		public CardType type;
 		public Sprite icon;
-		public string descriptionId;
 		[Range(1,9)]
 		public int manaCost;
 		public List<CardDataRule> cardDataRuleList;	 //Used by bots to decide when to play a card	
