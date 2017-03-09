@@ -81,6 +81,10 @@ public class TurnRibbonHandler : MonoBehaviour {
 	{
 		CardManager.CardData cardData = CardManager.Instance.getCardByName( cardName );
 		nextCardImage.sprite = cardData.icon;
+		//Card name text and mana cost text
+		Text[] texts = nextCardImage.GetComponentsInChildren<Text>();
+		texts[0].text = cardData.name.ToString();
+		texts[1].text = cardData.manaCost.ToString();
 		this.nextCard = cardData;
 	}
 
@@ -157,8 +161,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 
 		//Dequeue the oldest card and place it in Next
 		CardManager.CardData oldestCardInQueue = cardQueue.Dequeue();
-		nextCard = oldestCardInQueue;
-		nextCardImage.sprite = oldestCardInQueue.icon;
+		setNextCard( oldestCardInQueue.name );
 
 		//Enqueue the card that was just played
 		cardQueue.Enqueue( playedCard );
