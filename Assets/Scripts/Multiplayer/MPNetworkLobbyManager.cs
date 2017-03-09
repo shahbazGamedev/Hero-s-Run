@@ -54,7 +54,9 @@ public class MPNetworkLobbyManager : PunBehaviour
 		{
 			//PlayAgainstEnemy is an offline mode. We do not need to check that we have access to the Internet.
 			connecting = true;
-			Connect();
+			//Do not call PhotonNetwork.ConnectUsingSettings(...) as it does not make sense when playing offline.
+			//The method tryToJoinRoom will behave as expected even when not connected.
+			tryToJoinRoom();
 			setUpBot();
 		}
 		else
