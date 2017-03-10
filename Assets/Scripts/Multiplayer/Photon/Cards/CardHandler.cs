@@ -92,18 +92,18 @@ public class CardHandler : MonoBehaviour {
 				}
 			break;
 			case CardName.Shrink:
-			break;
-			default:
-				CardLightning cardLightning2 = GetComponent<CardLightning>();
-				if( cardLightning2 != null )
+				CardShrink cardShrink = GetComponent<CardShrink>();
+				if( cardShrink != null )
 				{
-					cardLightning2.activateCard( photonViewId, level );
+					cardShrink.activateCard( photonViewId, level );
 				}
 				else
 				{
-					Debug.LogError("CardHandler-The CardLightning component is not attached to the CardHandler in the Level scene.");
+					Debug.LogError("CardHandler-The CardShrink component is not attached to the CardHandler in the Level scene.");
 				}
-				//Debug.LogError("Cardhandler-The card name specified, " + name + ", is unknown.");
+			break;
+			default:
+				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
 		}
 	}
