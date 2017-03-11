@@ -6,6 +6,7 @@ using System.Linq;
 public class BotCardHandler : Photon.PunBehaviour {
 
 	HeroManager.BotHeroCharacter botHero;
+	HeroManager.BotSkillData botSkillData;
 	List<PlayerDeck.PlayerCardData> battleDeckList;
 	float manaAmount = ManaBar.START_MANA_POINT;
 	CardHandler cardHandler;
@@ -15,11 +16,9 @@ public class BotCardHandler : Photon.PunBehaviour {
 	List<CardManager.CardData> turnRibbonList = new List<CardManager.CardData>();
 	Queue<CardManager.CardData> cardQueue = new Queue<CardManager.CardData>();
 	float timeOfLastAnalysis = 0;
-	float DELAY_BEFORE_NEXT_ANALYSIS = 3f; //Check which card to play every DELAY_BEFORE_NEXT_ANALYSIS
 	PlayerControl playerControl;
 	float MINIMUM_EFFECTIVENESS = 0.2f;
 	bool allowCardPlaying = false;
-	const float START_OF_RACE_GRACE_PERIOD = 15f;
 
 	// Use this for initialization
 	void Start ()
@@ -29,7 +28,10 @@ public class BotCardHandler : Photon.PunBehaviour {
 
 		//Get and store the bot that was selected in MPNetworkLobbyManager and saved in LevelManager.
 		botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
-	
+
+		//Get and store the bot skill data for that hero.
+		botSkillData = HeroManager.Instance.getBotSkillData( botHero.skillLevel );
+
 		//Get and store the battle deck for this hero
 		battleDeckList = getBattleDeck();
 
@@ -38,7 +40,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 
 		initializeCards ();
 
-		Invoke("allowBotToPlayCards", START_OF_RACE_GRACE_PERIOD );
+		Invoke("allowBotToPlayCards", botSkillData.raceStartGracePeriod );
 	}
 
 	void allowBotToPlayCards()
@@ -110,7 +112,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
 		{
 			if( manaAmount < ManaBar.MAX_MANA_POINT ) manaAmount = manaAmount + Time.deltaTime/ManaBar.MANA_REFILL_RATE;
-			if( allowCardPlaying && (Time.time - timeOfLastAnalysis > DELAY_BEFORE_NEXT_ANALYSIS) )
+			if( allowCardPlaying && (Time.time - timeOfLastAnalysis > botSkillData.cardPlayFrequency) )
 			{
 				analyseCards();
 			}

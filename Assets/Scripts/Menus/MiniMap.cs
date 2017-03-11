@@ -14,7 +14,7 @@ public class RadarObject
 /// <summary>
 /// Mini map. The local player is not represented. His position is in the center of the minimap.
 /// If the diameter is 160 pixels, the map edge is 72 meters from the center.
-/// Objects further than 72 meters from the local player get drawn at the edge in a different color.
+/// Objects further than 72 meters from the local player get drawn at the edge.
 /// If a player is dead, his icon changes temporarily to a skull.
 /// </summary>
 public class MiniMap : MonoBehaviour {
@@ -83,14 +83,8 @@ public class MiniMap : MonoBehaviour {
 				float distToObject = Vector3.Distance( player.position, radarObjects[i].owner.transform.position ) * mapScale;
 				if( distToObject > MAX_DISTANCE )
 				{
-					//The object is off the map. Render it at the edge in a different color.
+					//The object is off the map. Render it at the edge.
 					distToObject = MAX_DISTANCE;
-					radarObjects[i].icon.color = Color.red;
-				}
-				else
-				{
-					//The object is sufficiently near. Render it normally with the base color.
-					radarObjects[i].icon.color = Color.white;
 				}
 				float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270 -player.eulerAngles.y;
 				radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;

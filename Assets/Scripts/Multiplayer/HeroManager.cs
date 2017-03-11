@@ -25,12 +25,20 @@ public enum Sex
 	FEMALE = 1
 }
 
+public enum BotSkillLevel
+{
+	LOW = 0,
+	MEDIUM = 1,
+	HIGH = 2
+}
+
 public class HeroManager : MonoBehaviour {
 
 	[Header("General")]
 	public static HeroManager Instance;
 	[SerializeField] List<HeroCharacter> heroCharacterList = new List<HeroCharacter>();
 	[SerializeField] List<BotHeroCharacter> botHeroCharacterList = new List<BotHeroCharacter>();
+	Dictionary<BotSkillLevel, BotSkillData> botSkillDataDictionary = new Dictionary<BotSkillLevel, BotSkillData>(3);
 	//Each character has an ACTIVE ability (such as blink) and a PASSIVE ability (such as jump higher)
 	[SerializeField] List<HeroAbility> heroAbilityList = new List<HeroAbility>();
 
@@ -45,6 +53,7 @@ public class HeroManager : MonoBehaviour {
 		{
 			DontDestroyOnLoad(gameObject);
 			Instance = this;
+			initialiseBotSkillData();
 		}
 	}
 
@@ -64,6 +73,33 @@ public class HeroManager : MonoBehaviour {
 	}
 
 	#region Bot related
+
+	void initialiseBotSkillData()
+	{
+		//Low Skill
+		BotSkillData botSkillData = new BotSkillData( 8, 24, 0.9f, 0.92f );
+		botSkillDataDictionary.Add(BotSkillLevel.LOW, botSkillData );
+		//Medium Skill
+		botSkillData = new BotSkillData( 4, 16, 0.95f, 0.95f );
+		botSkillDataDictionary.Add(BotSkillLevel.MEDIUM, botSkillData );
+		//High Skill
+		botSkillData = new BotSkillData( 2, 8, 0.99f, 0.99f );
+		botSkillDataDictionary.Add(BotSkillLevel.HIGH, botSkillData );
+	}
+
+	public BotSkillData getBotSkillData( BotSkillLevel botSkillLevel )
+	{
+		if( botSkillDataDictionary.ContainsKey(botSkillLevel) )
+		{
+			return botSkillDataDictionary[botSkillLevel];
+		}
+		else
+		{
+			Debug.LogError("HeroManager-There is no entry in the bot skill dictionary for " + botSkillLevel );
+			return null;
+		}
+	}
+
 	public BotHeroCharacter getBotHeroCharacter( int index )
 	{
 		return botHeroCharacterList[index];
@@ -116,9 +152,28 @@ public class HeroManager : MonoBehaviour {
 	{
 		public string userName; 	//Bot name displayed is matchmaking lobby
  		public int playerIcon;		//Bot icon displayed is matchmaking lobby
-		[Range(1, 10 )]
-		public int skillLevel;		//How skillfull is the bot. 1 being very clumsy and 10 being amazing.
+		public BotSkillLevel skillLevel;
 		public List<PlayerDeck.PlayerCardData> botCardDataList;
+	}
+
+	[System.Serializable]
+	/// <summary>
+	/// Used to define how skillfull the bot is.
+	/// </summary>
+	public class BotSkillData
+	{
+		public float cardPlayFrequency; 				//How often, in seconds, will the bot consider playing a card.
+ 		public float raceStartGracePeriod;				//How long will the bot wait in seconds before playing cards.
+		public float percentageWillTurnSuccesfully;		//How frequently will the bot turn a corner successfully.
+		public float percentageWillTryToAvoidObstacle;	//How frequently will the bot try to avoid the obstacle in front of him.
+
+		public BotSkillData( float cardPlayFrequency, float raceStartGracePeriod, float percentageWillTurnSuccesfully, float percentageWillTryToAvoidObstacle )
+		{
+			this.cardPlayFrequency = cardPlayFrequency;
+			this.raceStartGracePeriod = raceStartGracePeriod;
+			this.percentageWillTurnSuccesfully = percentageWillTurnSuccesfully;
+			this.percentageWillTryToAvoidObstacle = percentageWillTryToAvoidObstacle;
+		}
 	}
 
 }
