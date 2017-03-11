@@ -9,6 +9,7 @@ using Photon;
 public class PlayerSpell : PunBehaviour {
 
 	[SerializeField] AudioClip shrinkSound;
+	[SerializeField] ParticleSystem shrinkParticleSystem;
 	PlayerControl playerControl;
 	PlayerSounds playerSounds;
 	float runSpeedBeforeSpell;
@@ -24,6 +25,9 @@ public class PlayerSpell : PunBehaviour {
 	void shrinkSpell( float spellDuration )
 	{
 		playerSounds.playSound( shrinkSound, false );
+		ParticleSystem shrinkEffect = ParticleSystem.Instantiate( shrinkParticleSystem, transform );
+		shrinkEffect.transform.localPosition = new Vector3( 0, 1f, 0 );
+		shrinkEffect.Play();
 		StartCoroutine( shrink( new Vector3( 0.3f, 0.3f, 0.3f ), 1.25f, spellDuration ) );
 	}
 
