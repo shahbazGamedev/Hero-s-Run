@@ -16,6 +16,8 @@ public class PlayerAI : Photon.PunBehaviour {
 	/// The card handler. We need access so that the bot can play cards from his deck.
 	/// </summary>
 	CardHandler cardHandler;
+	float percentageWillTryToAvoidObstacle;
+	float percentageWillTurnSuccesfully;
 	const float BASE_RUN_SPEED = 18f;
 	const float BASE_OBSTACLE_DETECTION_LOW_DISTANCE = 4.6f; //assuming a run speed of BASE_RUN_SPEED
 	const float BASE_OBSTACLE_DETECTION_HIGH_DISTANCE = 8f; //assuming a run speed of BASE_RUN_SPEED
@@ -31,6 +33,17 @@ public class PlayerAI : Photon.PunBehaviour {
 		playerControl = GetComponent<PlayerControl>();
 		playerInput = GetComponent<PlayerInput>();
 		cardHandler = GameObject.FindGameObjectWithTag("Card Handler").GetComponent<CardHandler>();
+
+		//Get the bot that was selected in MPNetworkLobbyManager and saved in LevelManager.
+		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
+
+		//Get the bot skill data for that hero.
+		HeroManager.BotSkillData botSkillData = HeroManager.Instance.getBotSkillData( botHero.skillLevel );
+
+		//Save frequently used values for performance
+		percentageWillTryToAvoidObstacle = botSkillData.percentageWillTryToAvoidObstacle;
+		percentageWillTurnSuccesfully = botSkillData.percentageWillTurnSuccesfully;
+		Debug.Log("Bot " + botHero.userName + " will try to avoid obstacled " + (percentageWillTryToAvoidObstacle * 100) + "% of the time." + " and will turn successfully " + (percentageWillTurnSuccesfully * 100) + "% of the time.");
 	}
 
 	// Update is called once per frame
@@ -57,11 +70,11 @@ public class PlayerAI : Photon.PunBehaviour {
 			if( playerControl.getCharacterState() == PlayerCharacterState.Running )
 			{
 				//Debug.Log("detectObstacles LOW: " + hit.collider.name );
-				if( hit.collider.name == "DeadTree" )
+				if( hit.collider.name == "DeadTree" && shouldAvoidObstacle() )
 				{
 					playerInput.jump();
 				}
-				else if( hit.collider.name.StartsWith( "Breakable Barrel" ) )
+				else if( hit.collider.name.StartsWith( "Breakable Barrel" ) && shouldAvoidObstacle() )
 				{
 					if( Random.value < 0.8f )
 					{
@@ -72,19 +85,19 @@ public class PlayerAI : Photon.PunBehaviour {
 						playerInput.jump();
 					}
 				}
-				else if( hit.collider.CompareTag( "Chicken" ) )
+				else if( hit.collider.CompareTag( "Chicken" ) && shouldAvoidObstacle() )
 				{
 					playerInput.startSlide();
 				}
-				else if( hit.collider.CompareTag( "Cart" ) )
+				else if( hit.collider.CompareTag( "Cart" ) && shouldAvoidObstacle() )
 				{
 					playerInput.jump();
 				}
-				else if( hit.collider.CompareTag( "Cow" ) )
+				else if( hit.collider.CompareTag( "Cow" ) && shouldAvoidObstacle() )
 				{
 					playerInput.jump();
 				}
-				else if( hit.collider.CompareTag( "Firewall" ) )
+				else if( hit.collider.CompareTag( "Firewall" ) && shouldAvoidObstacle() )
 				{
 					//Did we cast this firewall?
 					string caster = hit.collider.GetComponent<Firewall>().nameOfCaster;
@@ -114,19 +127,19 @@ public class PlayerAI : Photon.PunBehaviour {
 			if( playerControl.getCharacterState() == PlayerCharacterState.Running )
 			{
 				//Debug.Log("detectObstacles HIGH: " + hit.collider.name );
-				if( hit.collider.name == "DeadTree" )
+				if( hit.collider.name == "DeadTree" && shouldAvoidObstacle() )
 				{
 					playerInput.jump();
 				}
-				else if( hit.collider.CompareTag( "Cart" ) )
+				else if( hit.collider.CompareTag( "Cart" ) && shouldAvoidObstacle() )
 				{
 					playerInput.jump();
 				}
-				else if( hit.collider.CompareTag( "Cow" ) )
+				else if( hit.collider.CompareTag( "Cow" ) && shouldAvoidObstacle() )
 				{
 					playerInput.jump();
 				}
-				else if( hit.collider.CompareTag( "Firewall" ) )
+				else if( hit.collider.CompareTag( "Firewall" ) && shouldAvoidObstacle() )
 				{
 					//Did we cast this firewall?
 					string caster = hit.collider.GetComponent<Firewall>().nameOfCaster;
@@ -141,11 +154,35 @@ public class PlayerAI : Photon.PunBehaviour {
 		}
 	}
 
+	bool shouldAvoidObstacle()
+	{
+		if (Random.value <= percentageWillTryToAvoidObstacle )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	bool shouldTurnSuccessfully()
+	{
+		if (Random.value <= percentageWillTurnSuccesfully )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	void OnTriggerEnter(Collider other)
 	{
 		//Carefull, if you turn right inside a deadEnd OnTriggerEnter will be called a second time (but not if your turn left).
 		//This is probably a Unity bug.
-		if( other.name == "deadEnd" )
+		if( other.name == "deadEnd" && shouldTurnSuccessfully() )
 		{
 			DeadEndType currentDeadEndType = other.GetComponent<deadEnd>().deadEndType;
 			if ( currentDeadEndType == DeadEndType.Left )
