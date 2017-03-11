@@ -26,12 +26,12 @@ public enum CardName
 	Firewall = 100,
 	Explosion = 101,
 	Shrink = 102,
+	Glyph = 103,
 
 	//Epic
 	Lightning = 200,
 
 	//Legendary
-	Transmogrify = 300,
 	Card_One = 301,
 	Card_Two = 302,
 	Card_Three = 303,

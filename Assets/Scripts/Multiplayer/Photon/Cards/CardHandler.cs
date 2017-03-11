@@ -85,6 +85,17 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardShrink component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+			case CardName.Glyph:
+				CardGlyph cardGlyph = GetComponent<CardGlyph>();
+				if( cardGlyph != null )
+				{
+					cardGlyph.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardGlyph component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -116,10 +127,17 @@ public class CardHandler : MonoBehaviour {
 			case CardName.Firewall:
 				if( isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
-					return GetComponent<CardFirewall>().willFirewallBeEffective( caster.transform, level );
+					return GetComponent<CardFirewall>().willSpellBeEffective( caster.transform, level );
 				}
 			break;
-			//Firewall is effective whenever your opponent is far ahead of you
+			//Glyph is effective whenever there is an opponent behind you and not too far
+			case CardName.Glyph:
+				if( isCasterLeading( caster.GetComponent<PlayerRace>() ) )
+				{
+					return GetComponent<CardGlyph>().willSpellBeEffective( caster.transform, level );
+				}
+			break;
+			//Lightning is effective whenever your opponent is far ahead of you
 			case CardName.Lightning:
 				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
@@ -134,10 +152,6 @@ public class CardHandler : MonoBehaviour {
 					Transform nearestTarget = GetComponent<CardShrink>().detectNearestTarget( caster.transform, level, caster.GetComponent<PhotonView>().viewID );
 					if( nearestTarget != null ) return true;
 				}
-			break;
-			case CardName.Transmogrify:
-				//Transmogriphy is not implemented yet. Return true so that it does not stay indefinitively in the ribbon.
-				return true;
 			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");

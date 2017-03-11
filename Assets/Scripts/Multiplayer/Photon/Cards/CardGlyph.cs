@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// The Firewall card is a Rare card with 11 levels. The firewall appears a few meters in front of the player. The duration of the firewall depends on the level of the caster.
-/// The player is immune to its effect.
+/// The Glyph card is a Rare card with 11 levels. The glyph appears a few meters in front of the player on the ground. The duration of the glyph depends on the level of the caster.
+/// The player is immune to its effect. If an opponent passes over the glyph without jumping, he dies instantly.
 /// </summary>
-public class CardFirewall : Photon.PunBehaviour {
+public class CardGlyph : Photon.PunBehaviour {
 
 	[SerializeField] float  baseDuration = 5f;
 	[SerializeField] float  durationUpgradePerLevel = 1f;
@@ -15,12 +15,12 @@ public class CardFirewall : Photon.PunBehaviour {
 
 	public void activateCard ( int photonViewId, int level )
 	{
-		if( isAllowed( photonViewId ) ) this.photonView.RPC("cardFirewallMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
+		if( isAllowed( photonViewId ) ) this.photonView.RPC("cardGlyphMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
 	}
 
 	#region Methods only running on master client
 	[PunRPC]
-	void cardFirewallMasterRPC( int level, int photonViewID )
+	void cardGlyphMasterRPC( int level, int photonViewID )
 	{
 		//Find out which player activated the card
 		GameObject playerGameObject = null;
@@ -32,19 +32,19 @@ public class CardFirewall : Photon.PunBehaviour {
 			}
 		}
 
-		//Spawn a firewall a few meters in front of the player
-		Vector3 firewallPosition = playerGameObject.transform.TransformPoint( offset );
-		Quaternion firewallRotation = playerGameObject.transform.rotation;
+		//Spawn a glyph on the floor a few meters in front of the player
+		Vector3 glyphPosition = playerGameObject.transform.TransformPoint( offset );
+		Quaternion glyphRotation = playerGameObject.transform.rotation;
 
 		object[] data = new object[2];
 
-		//We want the caster to be immune to the firewall
+		//We want the caster to be immune to the spell
 		data[0] = playerGameObject.name;
 
-		//We want the firewall to disappear after a while
+		//We want the glyph to disappear after a while
 		data[1] = baseDuration + level * durationUpgradePerLevel;
 
-		PhotonNetwork.InstantiateSceneObject( prefabName, firewallPosition, firewallRotation, 0, data );
+		PhotonNetwork.InstantiateSceneObject( prefabName, glyphPosition, glyphRotation, 0, data );
 	}
 	#endregion
 
@@ -60,15 +60,15 @@ public class CardFirewall : Photon.PunBehaviour {
 			}
 		}
 
-		//Verify that the player is not spawning a firewall inside the finish line trigger
-		Vector3 firewallPosition = playerGameObject.transform.TransformPoint( offset );
+		//Verify that the player is not spawning a glyph inside the finish line trigger
+		Vector3 position = playerGameObject.transform.TransformPoint( offset );
 
 		GameObject boxColliderObject = GameObject.FindGameObjectWithTag("Finish Line");
 		//If the tile with the finish line is not active, boxColliderObject will be null, so check for that.
 		if( boxColliderObject != null )
 		{
 			BoxCollider boxCollider = boxColliderObject.GetComponent<BoxCollider>();
-			if( boxCollider.bounds.Contains( firewallPosition ) )
+			if( boxCollider.bounds.Contains( position ) )
 			{
 				//Don't allow it
 				return false;
@@ -88,7 +88,7 @@ public class CardFirewall : Photon.PunBehaviour {
 
 	public bool willSpellBeEffective( Transform caster, int level )
 	{
-		//Is it likely that at least one target will encounter the firewall before it expires?
+		//Is it likely that at least one target will encounter the spell before it expires?
 		//The result is not exact, but a best guess.
 		bool result = false;
 		if( isAllowed( caster.GetComponent<PhotonView>().viewID ) )

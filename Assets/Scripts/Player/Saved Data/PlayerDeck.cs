@@ -39,7 +39,7 @@ public class PlayerDeck {
 		addCard( CardName.Shrink, 1, 1, true );
 
 		//8
-		addCard( CardName.Transmogrify, 1, 1, true );
+		addCard( CardName.Glyph, 1, 1, true );
 
 		//Part of card collection, but not in battle deck
 		//9
