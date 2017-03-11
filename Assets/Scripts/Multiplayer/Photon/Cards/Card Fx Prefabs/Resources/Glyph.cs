@@ -27,8 +27,9 @@ public class Glyph : Photon.PunBehaviour {
 		RaycastHit hit;
 		if (Physics.Raycast(new Vector3( transform.position.x, transform.position.y + 5f, transform.position.z ), Vector3.down, out hit, 8.0F ))
 		{
-			transform.position = new Vector3( transform.position.x, hit.point.y, transform.position.z);
+			transform.position = new Vector3( transform.position.x, hit.point.y + 0.03f, transform.position.z);
 		}
+		gameObject.layer = 0; //remove the ignoreRaycast so the bot can detect it
 	}
 
 }

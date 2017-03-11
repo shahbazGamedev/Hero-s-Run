@@ -494,7 +494,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		si.tile = go;
 		previousTilePos = tilePos;
 		previousTileRot = tileRot;
-		powerUpManager.considerAddingPowerUp( go, tileCreationIndex );
+		if( !GameManager.Instance.isMultiplayer() ) powerUpManager.considerAddingPowerUp( go, tileCreationIndex );
 		go.SetActive( false );
 		worldRoadSegments.Add( go );
 		si.tileIndex = tileCreationIndex;

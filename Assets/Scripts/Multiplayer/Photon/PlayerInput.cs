@@ -6,7 +6,6 @@ using Photon;
 public class PlayerInput : PunBehaviour {
 
 	PlayerControl playerControl;
-	PowerUpManager powerUpManager;
 
 	#region Swipe variables
     float minSwipeDistancePixels;
@@ -21,10 +20,6 @@ public class PlayerInput : PunBehaviour {
 		//If we are not the owner of this component, disable it.
 		if( !this.photonView.isMine ) this.enabled = false;
 		playerControl = GetComponent<PlayerControl>();
-
-		//For power ups
-		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
-		powerUpManager = (PowerUpManager) powerUpManagerObject.GetComponent("PowerUpManager");
 	}
 	
 	void Update()
@@ -35,8 +30,6 @@ public class PlayerInput : PunBehaviour {
 
 		//Handle mobile device swipes
 		handleSwipes();
-		detectTaps();
-	
 	}
 
 	public void startSlide()
@@ -84,11 +77,6 @@ public class PlayerInput : PunBehaviour {
 			{
 				jump();
 			}
-		}
-		else if ( Input.GetKeyDown (KeyCode.D ) )
-		{
-			playerControl.handlePowerUp();
-			this.photonView.RPC("handlePowerUpRPC", PhotonTargets.Others );
 		}
 		else if ( Input.GetKeyDown (KeyCode.K ) )
 		{
@@ -197,22 +185,6 @@ public class PlayerInput : PunBehaviour {
 					jump();
 				}
 	        }
-		}
-	}
-
-	void detectTaps()
-	{
-		if ( Input.touchCount > 0 )
-		{
-			Touch touch = Input.GetTouch(0);
-			if( touch.tapCount == 2 )
-			{
-				if( touch.phase == TouchPhase.Ended  )
-				{
-					playerControl.handlePowerUp();
-					this.photonView.RPC("handlePowerUpRPC", PhotonTargets.Others );
-				}
-			}
 		}
 	}
 }

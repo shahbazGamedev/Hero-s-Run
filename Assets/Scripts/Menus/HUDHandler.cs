@@ -54,6 +54,7 @@ public class HUDHandler : MonoBehaviour {
 	// Use this for initialization
 	void Awake ()
 	{
+		if( GameManager.Instance.isMultiplayer() ) Destroy( gameObject );
 		hudHandler = this;
 		hudSaveMe = saveMeCanvas.GetComponent<HUDSaveMe>();
 		tapToPlayText.text = LocalizationManager.Instance.getText("MENU_TAP_TO_PLAY");

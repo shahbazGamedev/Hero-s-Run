@@ -61,10 +61,11 @@ public class PowerUpManager : MonoBehaviour {
 
 	void Awake()
 	{
+		if( GameManager.Instance.isMultiplayer() ) Destroy( gameObject );
 		fillDictionary();
 		audioSource = GetComponent<AudioSource>();
 	}
-	
+
 	public void changeSelectedPowerUp(PowerUpType newPowerUpType )
 	{
 		PlayerStatsManager.Instance.setPowerUpSelected( newPowerUpType );

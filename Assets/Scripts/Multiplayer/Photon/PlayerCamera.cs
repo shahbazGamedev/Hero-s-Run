@@ -280,7 +280,7 @@ public class PlayerCamera : Photon.PunBehaviour {
 	
 	public void playCutscene( CutsceneType type )
 	{
-		if( !isAllowed() ) return;
+		if( cutsceneCamera == null || !isAllowed() ) return;
 		if( playerController != null ) playerController.enablePlayerControl( false );
 		if( playerControl != null ) playerControl.enablePlayerControl( false );
 		cutsceneCamera.gameObject.SetActive( true );

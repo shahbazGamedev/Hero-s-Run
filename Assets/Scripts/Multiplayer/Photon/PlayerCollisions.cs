@@ -6,7 +6,6 @@ public class PlayerCollisions : Photon.PunBehaviour {
 
 	PlayerControl playerControl;
 	PlayerSounds playerSounds;
-	PowerUpManager powerUpManager;
 	#region Ground type variables
 	string groundType = "Normal"; //Other choices are Water and Collapsing
 	string previousGroundType = "Normal"; //Other choices are Water and Collapsing
@@ -15,9 +14,6 @@ public class PlayerCollisions : Photon.PunBehaviour {
 	// Use this for initialization
 	void Awake ()
 	{
-		//For powerups
-		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
-		powerUpManager = (PowerUpManager) powerUpManagerObject.GetComponent("PowerUpManager");
 		playerControl = GetComponent<PlayerControl>();	
 		playerSounds = GetComponent<PlayerSounds>();	
 	}
@@ -254,16 +250,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 			}
 			else if (hit.collider.name.StartsWith( "Thrown Barrel" ) )
 			{
-				//Is the player protected by a Shield Power Up?
-				if( PowerUpManager.isThisPowerUpActive( PowerUpType.Shield ) )
-				{
-					//This Power Up only works one time, so deactivate it
-					powerUpManager.deactivatePowerUp( PowerUpType.Shield, false );
-				}
-				else
-				{
-					playerControl.managePlayerDeath ( DeathType.Obstacle );
-				}
+				playerControl.managePlayerDeath ( DeathType.Obstacle );
 			}
 			else if (hit.collider.name.StartsWith( "Breakable Pumpkin" ) )
 			{

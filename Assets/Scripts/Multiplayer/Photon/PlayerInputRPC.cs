@@ -6,7 +6,6 @@ using Photon;
 public class PlayerInputRPC : PunBehaviour {
 
 	PlayerControl playerControl;
-	PowerUpManager powerUpManager;
 
 	// Use this for initialization
 	void Awake ()
@@ -14,10 +13,6 @@ public class PlayerInputRPC : PunBehaviour {
 		//If we are the owner of this component, disable it. We only need it for remote clients.
 		if( this.photonView.isMine ) this.enabled = false;
 		playerControl = GetComponent<PlayerControl>();
-
-		//For power ups
-		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
-		powerUpManager = (PowerUpManager) powerUpManagerObject.GetComponent("PowerUpManager");
 	}
 
 	[PunRPC]
@@ -47,12 +42,6 @@ public class PlayerInputRPC : PunBehaviour {
 	{
 		syncMovement( syncPosition, syncRotationY, timeRPCSent, syncSpeed );
 		playerControl.jump();
-	}
-
-	[PunRPC]
-	void handlePowerUpRPC()
-	{
-		playerControl.handlePowerUp();
 	}
 
 	void syncMovement( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )

@@ -188,7 +188,6 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	#region Other variables
 	GenerateLevel generateLevel;
-	PowerUpManager powerUpManager;
 	#endregion
 
 	#region Card related
@@ -204,10 +203,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	void Awake ()
 	{
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
-		//For power ups
-		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
-		powerUpManager = powerUpManagerObject.GetComponent<PowerUpManager>();
-		
 	}
 
 	// Use this for initialization
@@ -228,7 +223,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		setCharacterState( PlayerCharacterState.Idle );
 
 		//Initialise the screenshot camera
-		GameObject.FindGameObjectWithTag("HUD Canvas").GetComponent<TakeScreenshot>().initialise( transform );
+		if( this.photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.GetComponent<TakeScreenshot>().initialise( transform );
 
 		//Calculate the ground height
 		RaycastHit hit;
@@ -1771,7 +1766,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		enablePlayerControl( true );
 		
 		//8) Display a Go! message
-		if( this.photonView.isMine && playerAI == null ) HUDHandler.hudHandler.activateUserMessage( LocalizationManager.Instance.getText("GO"), 0f, 1.25f );
+		if( this.photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.activateUserMessage( LocalizationManager.Instance.getText("GO"), 0f, 1.25f );
 	}
 
 	public int getNumberOfTimesDiedDuringRace()
@@ -1878,23 +1873,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	public void enablePlayerControl( bool enabled )
 	{
 		playerControlsEnabled = enabled;
-		if( enabled )
-		{
-			powerUpManager.changeSelectedPowerUp( PlayerStatsManager.Instance.getPowerUpSelected() );
-		}
-		else
-		{
-			//If the player is alive, it means we are leaving the game to go to a menu, so hide immediately
-			if( deathType == DeathType.Alive )
-			{
-				powerUpManager.hideImmediatelyPowerUp();
-			}
-			else
-			{
-				//Player is dead. Since we are staying in the game, we have time to slide the power-up display out.
-				powerUpManager.slideDisplayOutPowerUp();
-			}
-		}
 	}
 
 	public bool isPlayerControlEnabled()
@@ -2098,14 +2076,6 @@ public class PlayerControl : Photon.PunBehaviour {
 				deadEndTrigger = null;
 				wantToTurn = false;
 			}
-			else if( other.name == "DeadTree" || other.name.StartsWith( "Stumble" ) || other.name == "cart" || other.name.StartsWith( "Breakable" ) || other.name == "Chicken" || other.name == "Pendulum" || other.name == "GroundObstacle" )
-			{
-				if( PowerUpManager.isThisPowerUpActive( PowerUpType.Shield ) )
-				{
-					//This Power Up only works one time, so deactivate it
-					powerUpManager.deactivatePowerUp( PowerUpType.Shield, false );
-				}
-			}
 			else if( other.name == "ZiplineTrigger" )
 			{
 				//Player is no longer in the zipline trigger
@@ -2114,14 +2084,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 	}
 	#endregion
-
-	public void handlePowerUp()
-	{
-		if( GameManager.Instance.getGameState() == GameState.Normal && getCharacterState() != PlayerCharacterState.Dying )
-		{
-			powerUpManager.activatePowerUp( PlayerStatsManager.Instance.getPowerUpSelected() );
-		}
-	}
 
 	public void setAllowRunSpeedToIncrease( bool value )
 	{

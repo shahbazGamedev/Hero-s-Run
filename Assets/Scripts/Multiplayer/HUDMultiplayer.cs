@@ -12,7 +12,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	const float DELAY_BEFORE_COUNTDOWN_STARTS = 5f;
 	[Header("Countdowm")]
 	[SerializeField] AudioClip beep; //Sound to play every second during countdown
-	[SerializeField] Text goText; //Same field as userMessageText in HUDHandler
+	[SerializeField] Text userMessageText;
 	[Header("Race Position")]
 	[SerializeField] GameObject racePosition;
 	[SerializeField] Text racePositionText;
@@ -46,7 +46,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		fpsCalculator = GetComponent<FPSCalculator>();
 		fpsCalculator.enabled = PlayerStatsManager.Instance.getShowDebugInfoOnHUD();
 		debugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
-		goText.gameObject.SetActive( false );
+		userMessageText.gameObject.SetActive( false );
 	}
 	
 	void Start()
@@ -65,13 +65,13 @@ public class HUDMultiplayer : MonoBehaviour {
 		//Give a few seconds for the player to get used to the scene before starting the countdown
 		yield return new WaitForSecondsRealtime( DELAY_BEFORE_COUNTDOWN_STARTS );
 
-		goText.rectTransform.eulerAngles = new Vector3( 0,0,0 );
-		goText.gameObject.SetActive( true );
+		userMessageText.rectTransform.eulerAngles = new Vector3( 0,0,0 );
+		userMessageText.gameObject.SetActive( true );
 
 		int countdownNumber = 3;
 		while( countdownNumber > 0 )
 		{
-			goText.text = countdownNumber.ToString();
+			userMessageText.text = countdownNumber.ToString();
 			UISoundManager.uiSoundManager.playAudioClip( beep );
 			yield return new WaitForSecondsRealtime( 1f);
 			countdownNumber--;
@@ -80,8 +80,8 @@ public class HUDMultiplayer : MonoBehaviour {
 		//Tell the players to start running
 		if(startRunningEvent != null) startRunningEvent();
 		//Display a Go! message and hide after a few seconds
-		goText.rectTransform.eulerAngles = new Vector3( 0,0,4 );
-		goText.text = LocalizationManager.Instance.getText("GO");
+		userMessageText.rectTransform.eulerAngles = new Vector3( 0,0,4 );
+		userMessageText.text = LocalizationManager.Instance.getText("GO");
 		Invoke ("hideGoText", 1.5f );
 		//Race is starting
 		raceHasStarted = true;
@@ -96,7 +96,7 @@ public class HUDMultiplayer : MonoBehaviour {
 
 	void hideGoText()
 	{
-		goText.gameObject.SetActive( false );
+		userMessageText.gameObject.SetActive( false );
 	}
 
 	void displayRacePosition( bool display )
@@ -156,6 +156,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		{
 			displayRacePosition( false );
 			debugInfo.gameObject.SetActive( false );
+			userMessageText.gameObject.SetActive( false );
 		}
 	}
 
@@ -171,6 +172,21 @@ public class HUDMultiplayer : MonoBehaviour {
 	{
 		//Wait a little before sliding back up
 		LeanTween.move( circuitDetailsPanel, new Vector2(0, circuitDetailsPanel.rect.height/2f ), 0.5f ).setEase(LeanTweenType.easeOutQuad).setDelay(2.75f);
+	}
+
+	//Activates a horizontally centered text with a drop-shadow.
+	//User Message is only displayed in the Normal game state.
+	public void activateUserMessage( string text, float angle, float duration )
+	{
+		userMessageText.text = text;
+		userMessageText.rectTransform.localRotation = Quaternion.Euler( 0, 0, angle );
+		Invoke( "hideUserMessage", duration );
+		userMessageText.gameObject.SetActive( true );
+	}
+		
+	void hideUserMessage()
+	{
+		userMessageText.gameObject.SetActive( false );
 	}
 
 }
