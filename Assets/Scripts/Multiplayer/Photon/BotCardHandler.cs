@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class BotCardHandler : Photon.PunBehaviour {
 
@@ -48,10 +49,17 @@ public class BotCardHandler : Photon.PunBehaviour {
 	List<PlayerDeck.PlayerCardData> getBattleDeck()
 	{
 		List<PlayerDeck.PlayerCardData> battleDeck = botHero.botCardDataList.FindAll( card => card.inBattleDeck == true );
-		//Debug.Log("Cards in bot battle deck:\n" );
-		for( int i = 0; i < battleDeck.Count; i++ )
+		//Check that each card in the deck is unique. Maybe a data entry error caused 2 cards in the deck to be the same.
+		bool isUnique = battleDeck.Select(card => card.name).Distinct().Count() == battleDeck.Count();
+		if( !isUnique )
 		{
-			//Debug.Log("Card " + i + " " +  battleDeck[i].name );
+			Debug.LogError("BotCardHandler-There are some duplicate cards in the battle deck for " + gameObject.name );
+			for( int i = 0; i < battleDeck.Count; i++ )
+			{
+				Debug.Log("Battle deck contains " + i + " " +  battleDeck[i].name );
+			}
+			battleDeck = null;
+
 		}
 		return battleDeck;
 	}
