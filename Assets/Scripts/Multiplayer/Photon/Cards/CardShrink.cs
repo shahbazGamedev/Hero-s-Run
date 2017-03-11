@@ -34,14 +34,11 @@ public class CardShrink : Photon.PunBehaviour {
 			}
 		}
 
-		//Calculate spell range
-		float spellRange = baseRange + level * rangeUpgradePerLevel;
-
 		//Calculate spell duration
 		float spellDuration = baseDuration + level * durationUpgradePerLevel;
 
 		//Get nearest player
-		Transform nearestTarget = detectNearestTarget( playerGameObject.transform, spellRange, photonViewID );
+		Transform nearestTarget = detectNearestTarget( playerGameObject.transform, level, photonViewID );
 
 		if( nearestTarget != null )
 		{
@@ -53,11 +50,11 @@ public class CardShrink : Photon.PunBehaviour {
 		}
 	}
 
-	Transform detectNearestTarget( Transform caster, float spellRange, int photonViewID )
+	public Transform detectNearestTarget( Transform caster, int level, int photonViewID )
 	{
 		float nearestDistance = 100000;
 		Transform nearestTarget = null;
-		
+		float spellRange = baseRange + level * rangeUpgradePerLevel;
 		//Keep nearest target only
 		for( int i =0; i < PlayerRace.players.Count; i++ )
 		{
@@ -83,6 +80,5 @@ public class CardShrink : Photon.PunBehaviour {
 		return nearestTarget;
 	}
 	#endregion
-
 
 }

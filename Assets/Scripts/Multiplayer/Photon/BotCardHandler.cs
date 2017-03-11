@@ -209,47 +209,28 @@ public class BotCardHandler : Photon.PunBehaviour {
 		if( playerControl.getCharacterState() != PlayerCharacterState.Running ) return;
 
 		timeOfLastAnalysis = Time.time;
-		//Debug.Log("BotCardHandler-analyseCards" );
-		List<CardManager.CardData> playableCardsList = getListOfPlayableCards();
+		
+		List<PlayerDeck.PlayerCardData> playableCardsList = getListOfPlayableCards();
+		List<PlayerDeck.PlayerCardData> effectiveCardsList = new List<PlayerDeck.PlayerCardData>();
 
 		//Do we have at least one playable card?
 		if( playableCardsList.Count > 0 )
 		{
-			//Calculate the distance between the bot and the player
-			GameObject player = ((GameObject)PhotonNetwork.player.TagObject);
-			float botPlayerDistance = Vector3.Distance( transform.position, player.transform.position );
-
-			//Who is leading the race?
-			int botRacePosition = GetComponent<PlayerRace>().racePosition;
-			int playerRacePosition = player.GetComponent<PlayerRace>().racePosition;
-			bool isBotLeading = (botRacePosition < playerRacePosition);
-	
-			float mostEffectiveCardStrength = 0;
-			CardManager.CardData mostEffectiveCard = null;
-	
-			//Find the most effective card if any
+			//Find effective cards, if any
 			for( int i = 0; i < playableCardsList.Count; i++ )
 			{
-				float cardEffectiveness = 0;
-				for( int j = 0; j < playableCardsList[i].cardDataRuleList.Count; j++ )
+				if( cardHandler.isCardEffective( gameObject, playableCardsList[i].name, playableCardsList[i].level ) )
 				{
-					float ruleEffectiveness = calculateRuleEffectiveness ( playableCardsList[i].cardDataRuleList[j].carRule, botPlayerDistance, isBotLeading ) * playableCardsList[i].cardDataRuleList[j].weight;
-					cardEffectiveness = cardEffectiveness + ruleEffectiveness;
-				}
-				if( cardEffectiveness > MINIMUM_EFFECTIVENESS )
-				{
-					if( cardEffectiveness > mostEffectiveCardStrength )
-					{
-						mostEffectiveCardStrength = cardEffectiveness;
-						mostEffectiveCard = playableCardsList[i];
-					}
+					effectiveCardsList.Add( playableCardsList[i] );
 				}
 			}
-	
-			//If we found a card, play it
-			if( mostEffectiveCard != null )
+
+			//Do we have at least one effective card?
+			if( effectiveCardsList.Count > 0 )
 			{
-				int indexOfCardToPlay = getCardIndexInTurnRibbon( mostEffectiveCard.name );
+				//Among the effective cards, play one randomly
+				int random = Random.Range(0,effectiveCardsList.Count);
+				int indexOfCardToPlay = getCardIndexInTurnRibbon( effectiveCardsList[random].name );
 				playCard( indexOfCardToPlay );
 			}
 		}
@@ -259,58 +240,19 @@ public class BotCardHandler : Photon.PunBehaviour {
 	/// Gets the list of cards for which we have enough mana.
 	/// </summary>
 	/// <returns>The list of playable cards.</returns>
-	List<CardManager.CardData> getListOfPlayableCards()
+	List<PlayerDeck.PlayerCardData> getListOfPlayableCards()
 	{
-		List<CardManager.CardData> playableCardsList = new List<CardManager.CardData>();
+		List<PlayerDeck.PlayerCardData> playableCardsList = new List<PlayerDeck.PlayerCardData>();
 		for( int i = 0; i < turnRibbonList.Count; i++ )
 		{
 			if( turnRibbonList[i].manaCost <= manaAmount )
 			{
-				playableCardsList.Add( turnRibbonList[i] );
+				playableCardsList.Add( getCardByName( turnRibbonList[i].name ) );
 			}
 		}
 		return playableCardsList;
 	}
  
-	/// <summary>
-	/// Calculates the rule effectiveness. The value should be between 0 (ineffective) and 1 (very effective).
-	/// </summary>
-	/// <returns>The rule effectiveness.</returns>
-	/// <param name="rule">Rule.</param>
-	/// <param name="botPlayerDistance">Bot player distance.</param>
-	float calculateRuleEffectiveness ( CardRule rule, float botPlayerDistance, bool isBotLeading )
-	{
-		Debug.LogWarning("BotCardHandler-calculateRuleEffectiveness Rule: " + rule + " distance " + botPlayerDistance + " isBotLeading " + isBotLeading );
-		float ruleEffectiveness = 0;
-		switch (rule)
-		{
-			case CardRule.OPPONENT_FAR_LEADING:
-				if( botPlayerDistance > 10f && !isBotLeading ) ruleEffectiveness = 1;
-			break;
-			case CardRule.OPPONENT_FAR_TRAILING:
-				if( botPlayerDistance > 10f && isBotLeading ) ruleEffectiveness = 1;
-			break;
-			case CardRule.OPPONENT_NEAR_LEADING:
-				if( botPlayerDistance < 5f && !isBotLeading ) ruleEffectiveness = 1;
-			break;
-			case CardRule.OPPONENT_NEAR_TRAILING:
-				if( botPlayerDistance < 5f && isBotLeading ) ruleEffectiveness = 1;
-			break;
-			case CardRule.OPPONENT_NEAR:
-				if( botPlayerDistance < 5f ) ruleEffectiveness = 1;
-			break;
-			case CardRule.MANA_COST:
-				Debug.LogWarning("BotCardHandler-calculateRuleEffectiveness: MANA_COST rule not implemented.");
-			break;
-			case CardRule.NO_OBSTACLES_IN_FRONT:
-				Debug.LogWarning("BotCardHandler-calculateRuleEffectiveness: NO_OBSTACLES_IN_FRONT rule not implemented.");
-			break;
-			default:
-			break;
-		}
-		return ruleEffectiveness;
-	}
-
 	int getCardIndexInTurnRibbon( CardName name )
 	{
 		return turnRibbonList.FindIndex(cardData => cardData.name == name);

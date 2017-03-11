@@ -2,25 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum CardRule
-{
-	MANA_COST = 0,
-	OPPONENT_NEAR_LEADING = 1,
-	OPPONENT_NEAR_TRAILING = 2,
-	OPPONENT_FAR_LEADING = 3,
-	OPPONENT_FAR_TRAILING = 4,
-	OPPONENT_NEAR = 5,
-	NO_OBSTACLES_IN_FRONT = 6
-
-}
-
 public class CardHandler : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
 	public void activateCard ( int photonViewId, CardName name, int level)
 	{
 		switch (name)
@@ -107,4 +90,72 @@ public class CardHandler : MonoBehaviour {
 			break;
 		}
 	}
+
+	public bool isCardEffective ( GameObject caster, CardName name, int level )
+	{
+		bool effective = false;
+		switch (name)
+		{
+			//Raging bull is effective whenever you are trailing behind
+			case CardName.Raging_Bull:
+				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) ) return true;
+			break;
+			//Explosion is effective whenever an opponent is near you
+			case CardName.Explosion:
+				return GetComponent<CardExplosion>().isOpponentNear( caster.transform, level );
+			break;
+			//Double jump is effective whenever you are trailing behind by a little
+			case CardName.Double_Jump:
+				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) ) return true;
+			break;
+			//Sprint is effective whenever you are trailing behind
+			case CardName.Sprint:
+				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) ) return true;
+			break;
+			//Firewall is effective whenever there is an opponent behind you and not too far
+			case CardName.Firewall:
+				if( isCasterLeading( caster.GetComponent<PlayerRace>() ) )
+				{
+					return GetComponent<CardFirewall>().willFirewallBeEffective( caster.transform, level );
+				}
+			break;
+			//Firewall is effective whenever your opponent is far ahead of you
+			case CardName.Lightning:
+				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
+				{
+					Transform nearestTarget = GetComponent<CardLightning>().detectNearestTarget( caster.transform, level, caster.GetComponent<PhotonView>().viewID );
+					if( nearestTarget != null ) return true;
+				}
+			break;
+			//Shrink is effective whenever your opponent is far ahead of you
+			case CardName.Shrink:
+				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
+				{
+					Transform nearestTarget = GetComponent<CardShrink>().detectNearestTarget( caster.transform, level, caster.GetComponent<PhotonView>().viewID );
+					if( nearestTarget != null ) return true;
+				}
+			break;
+			case CardName.Transmogrify:
+				//Transmogriphy is not implemented yet. Return true so that it does not stay indefinitively in the ribbon.
+				return true;
+			break;
+			default:
+				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
+			break;
+		}
+		return effective;
+	}
+
+	bool isCasterLeading( PlayerRace caster )
+	{
+		bool isLeading = true;
+		for( int i = 0; i < PlayerRace.players.Count; i++ )
+		{
+			//Ignore the caster
+			if( PlayerRace.players[i] == caster ) continue;
+			if( PlayerRace.players[i].racePosition < caster.racePosition ) return false;
+		}
+		return isLeading;
+	}
+
 }

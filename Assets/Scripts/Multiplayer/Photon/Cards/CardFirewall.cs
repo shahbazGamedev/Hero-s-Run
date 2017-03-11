@@ -86,4 +86,17 @@ public class CardFirewall : Photon.PunBehaviour {
 		}
 	}
 
+	public bool willFirewallBeEffective( Transform caster, int level )
+	{
+		//Is it likely that at least one target will encounter the firewall before it expires?
+		//The result is not exact, but a best guess.
+		bool result = false;
+		if( isAllowed( caster.GetComponent<PhotonView>().viewID ) )
+		{
+			float spellDuration = baseDuration + level * durationUpgradePerLevel;
+			//Not Implemented completily
+			return true;
+		}
+		return result;
+	}
 }

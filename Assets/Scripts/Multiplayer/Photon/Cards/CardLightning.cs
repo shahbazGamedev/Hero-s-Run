@@ -36,11 +36,8 @@ public class CardLightning : Photon.PunBehaviour {
 			}
 		}
 
-		//Calculate spell range
-		float spellRange = baseRange + level * rangeUpgradePerLevel;
-
 		//Get nearest target which could be either a player or creature
-		Transform nearestTarget = detectNearestTarget( playerGameObject.transform, spellRange, photonViewID );
+		Transform nearestTarget = detectNearestTarget( playerGameObject.transform, level, photonViewID );
 
 		if( nearestTarget != null )
 		{
@@ -63,8 +60,9 @@ public class CardLightning : Photon.PunBehaviour {
 		return mask;
 	}
 
-	Transform detectNearestTarget( Transform caster, float spellRange, int photonViewID )
+	public Transform detectNearestTarget( Transform caster, int level, int photonViewID )
 	{
+		float spellRange = baseRange + level * rangeUpgradePerLevel;
 		//Use a sphere centered around the caster
 		Collider[] hitColliders = Physics.OverlapSphere( caster.position, spellRange, getOverlapSphereMask() );
 		float nearestDistance = 100000;
@@ -93,6 +91,5 @@ public class CardLightning : Photon.PunBehaviour {
 	}
 
 	#endregion
-
 
 }

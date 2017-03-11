@@ -96,6 +96,32 @@ public class CardExplosion : Photon.PunBehaviour {
 	}
 	#endregion
 
+	public bool isOpponentNear( Transform caster, int level )
+	{
+		float impactDiameter = baseDiameter + level * diameterUpgradePerLevel;
+		Collider[] hitColliders = Physics.OverlapSphere( caster.position, impactDiameter, getExplosionMask() );
+		for( int i =0; i < hitColliders.Length; i++ )
+		{
+			//Verify that it is a player
+			if( hitColliders[i].CompareTag("Player") )
+			{
+				//Verify that it is NOT the caster activating the card
+				if( hitColliders[i].GetComponent<PhotonView>().viewID != caster.GetComponent<PhotonView>().viewID )
+				{
+					//Verify that the target is not in the Idle character state.
+					//The target will be in the Idle state after crossing the finish line for example.
+					if( hitColliders[i].GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle )
+					{
+						//We found at least one target for the explosion
+						return true;
+					}
+				}
+			}
+		}
+		//No target were found
+		return false;
+	}
+
 	[PunRPC]
 	void cardExplosionRPC( Vector3 explosionPosition )
 	{
