@@ -153,6 +153,10 @@ public class MPNetworkLobbyManager : PunBehaviour
 				matchmakingManager.setConnectionProgress( "Looking for worthy opponent ..." );   
 			break;
 
+			case PlayMode.PlayThreePlayers:
+				matchmakingManager.setConnectionProgress( "Looking for worthy opponents ..." );   
+			break;
+
 			case PlayMode.PlayWithFriends:
 				matchmakingManager.setConnectionProgress( "Waiting for friend to join ..." );   
 			break;
@@ -234,6 +238,22 @@ public class MPNetworkLobbyManager : PunBehaviour
 				//Note: In this case, LoadArena() gets called when the remote player connects
 			break;
 
+			case PlayMode.PlayThreePlayers:
+				LevelManager.Instance.setNumberOfPlayersRequired( 3 );
+				foreach(PhotonPlayer player in PhotonNetwork.playerList)
+				{
+					if( !player.IsLocal )
+					{
+						OnRemotePlayerConnect( player );
+					}
+				}
+				//PlayerPosition will be used to determine the start position. We don't want players to spawn on top of each other.
+				//PlayerPosition 1 is the left lane. PlayerPosition 2 is the right lane.
+				playerCustomProperties.Add("PlayerPosition", PhotonNetwork.room.PlayerCount );
+				PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
+				//Note: In this case, LoadArena() gets called when the remote player connects
+			break;
+
 			case PlayMode.PlayWithFriends:
 				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
 				foreach(PhotonPlayer player in PhotonNetwork.playerList)
@@ -267,7 +287,10 @@ public class MPNetworkLobbyManager : PunBehaviour
 	{
 		Debug.Log("MPNetworkLobbyManager: OnPhotonPlayerConnected() called by PUN. Name: " + newPlayer.NickName + " isLocal: " + newPlayer.IsLocal + " PlayerCount: " + PhotonNetwork.room.PlayerCount );
 		OnRemotePlayerConnect( newPlayer );
-		LoadArena();		 
+	    if ( PhotonNetwork.isMasterClient ) 
+	    {
+			LoadArena();		 
+	    }
 	}
 
 	void OnRemotePlayerConnect( PhotonPlayer player )

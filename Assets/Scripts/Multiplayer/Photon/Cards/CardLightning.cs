@@ -52,6 +52,7 @@ public class CardLightning : Photon.PunBehaviour {
 		{
 			Debug.Log("CardLightning: no target found." );
 		}
+		this.photonView.RPC("cardLightningRPC", PhotonTargets.All, playerGameObject.name );	
 	}
 
 	int getOverlapSphereMask()
@@ -91,5 +92,12 @@ public class CardLightning : Photon.PunBehaviour {
 	}
 
 	#endregion
+
+	[PunRPC]
+	void cardLightningRPC( string casterName )
+	{
+		//Indicate on the minimap which card was played
+		MiniMap.Instance.updateCardFeed( casterName, CardName.Lightning );
+	}
 
 }

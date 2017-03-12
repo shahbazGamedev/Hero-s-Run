@@ -25,6 +25,7 @@ public class MiniMap : MonoBehaviour {
 	List<RadarObject> radarObjects = new List<RadarObject>();
 	[SerializeField] Image playerRadarImage;
 	[SerializeField] Sprite playerDeadRadarSprite;
+	[SerializeField] Text cardFeed; //Used to display the last card played, such as 'Bob played Lightning'
 	const float MAX_DISTANCE = 72f;
 
 	// Use this for initialization
@@ -65,6 +66,17 @@ public class MiniMap : MonoBehaviour {
 		}
 		radarObjects.RemoveRange( 0, radarObjects.Count );
 		radarObjects.AddRange( newList );
+	}
+
+	public void updateCardFeed( string cardPlayerName, CardManager.CardData lastCardPlayed )
+	{
+		cardFeed.text = cardPlayerName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + lastCardPlayed.name + "</color>";
+	}
+
+	public void updateCardFeed( string cardPlayerName, CardName cardName )
+	{
+		CardManager.CardData lastCardPlayed = CardManager.Instance.getCardByName( cardName );
+		cardFeed.text = cardPlayerName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + lastCardPlayed.name + "</color>";
 	}
 
 	// Update is called once per frame

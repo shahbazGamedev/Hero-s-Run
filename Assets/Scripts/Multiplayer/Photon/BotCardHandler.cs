@@ -133,6 +133,9 @@ public class BotCardHandler : Photon.PunBehaviour {
 		//Activate the card
 		activateCard( playedCard.name );
 
+		//Indicate on the minimap which card was played
+		MiniMap.Instance.updateCardFeed( botHero.userName, playedCard );
+
 		//Wait a little before moving the Next Card into the free ribbon slot
 		StartCoroutine( moveNextCardIntoTurnRibbon( indexOfCardToPlay, playedCard ) );
 	}

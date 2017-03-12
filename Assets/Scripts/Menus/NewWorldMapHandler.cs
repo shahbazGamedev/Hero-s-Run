@@ -419,6 +419,12 @@ public class NewWorldMapHandler : MonoBehaviour {
 		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
 	}
 
+	public void OnClickPlayThreePlayers()
+	{
+		GameManager.Instance.setPlayMode(PlayMode.PlayThreePlayers);
+		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
+	}
+
 	public void OnClickShowPlayerIconSelection()
 	{
 		StartCoroutine( loadScene(GameScenes.PlayerIconSelection) );

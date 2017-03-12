@@ -29,7 +29,8 @@ public class CircuitSelectionManager : MonoBehaviour {
 			PhotonNetwork.offlineMode = false;
 			//In order to display the number of online players, we need to be connected to the master server.
 			//Users are separated from each other by game version (which allows you to make breaking changes).
-			PhotonNetwork.ConnectUsingSettings(GameManager.Instance.getVersionNumber());
+			//Don't attempt to connect if you are already connected.
+			if( !PhotonNetwork.connected ) PhotonNetwork.ConnectUsingSettings(GameManager.Instance.getVersionNumber());
 			Debug.Log("CircuitSelectionManager-PhotonNetwork.versionPUN is " + PhotonNetwork.versionPUN );
 		}
 	}

@@ -161,6 +161,35 @@ public class CardManager : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Gets the card color hex value. See Rich Text for details.
+	/// </summary>
+	/// <returns>The card color hex value.</returns>
+	/// <param name="rarity">Rarity.</param>
+	public string getCardColorHexValue( CardRarity rarity )
+	{
+		string cardColor = "#ffffffff";
+    	switch (rarity)
+		{
+	        case CardRarity.COMMON:
+				cardColor = "#ffff00ff"; //yellow
+                break;
+	                
+	        case CardRarity.RARE:
+				cardColor = "#ffa500ff"; //orange
+                break;
+               
+	        case CardRarity.EPIC:
+				cardColor = "#00ff00ff"; //lime
+				break;                
+
+	        case CardRarity.LEGENDARY:
+				cardColor = "#800080ff"; //purple
+				break;                
+		}
+		return cardColor;
+	}
+
+	/// <summary>
 	/// Card data. The card data only handles data that never changes.
 	/// </summary>
 	[System.Serializable]

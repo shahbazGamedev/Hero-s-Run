@@ -12,7 +12,6 @@ public class CardDoubleJump : Photon.PunBehaviour {
 
 	public void activateCard ( int photonViewId, int level )
 	{
-		GameObject playerGameObject = (GameObject)PhotonNetwork.player.TagObject;
 		this.photonView.RPC("cardDoubleJumpRPC", PhotonTargets.AllViaServer, level, photonViewId );	
 	}
 
@@ -20,13 +19,17 @@ public class CardDoubleJump : Photon.PunBehaviour {
 	void cardDoubleJumpRPC( int level, int photonViewID )
 	{
 		float doubleJumpSpeed = baseDoubleJumpSpeed + level * doubleJumpUpgradePerLevel;
+		string casterName = string.Empty;
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
 			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
 			{
 				PlayerRace.players[i].GetComponent<PlayerControl>().doubleJump( doubleJumpSpeed );
+				casterName = PlayerRace.players[i].name;
 			}
 		}
+		//Indicate on the minimap which card was played
+		MiniMap.Instance.updateCardFeed( casterName, CardName.Double_Jump );
 	}
 
 }

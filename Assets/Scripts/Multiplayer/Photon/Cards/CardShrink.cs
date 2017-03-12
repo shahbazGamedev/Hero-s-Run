@@ -42,7 +42,7 @@ public class CardShrink : Photon.PunBehaviour {
 
 		if( nearestTarget != null )
 		{
-			nearestTarget.GetComponent<PhotonView>().RPC("shrinkSpell", PhotonTargets.All, spellDuration );
+			nearestTarget.GetComponent<PhotonView>().RPC("shrinkSpell", PhotonTargets.All, playerGameObject.name, spellDuration );
 		}
 		else
 		{

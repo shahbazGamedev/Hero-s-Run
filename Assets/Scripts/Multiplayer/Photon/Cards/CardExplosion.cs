@@ -31,7 +31,7 @@ public class CardExplosion : Photon.PunBehaviour {
 			}
 		}
 		//Do an explosion effect centered on the player
-		this.photonView.RPC("cardExplosionRPC", PhotonTargets.All, playerGameObject.transform.position );
+		this.photonView.RPC("cardExplosionRPC", PhotonTargets.All, playerGameObject.name, playerGameObject.transform.position );
 		//Determine which players are affected by the explosion. The caster obviously is immune.
 		knockbackPlayers( playerGameObject.transform, level, photonViewID );
 	}
@@ -123,12 +123,14 @@ public class CardExplosion : Photon.PunBehaviour {
 	}
 
 	[PunRPC]
-	void cardExplosionRPC( Vector3 explosionPosition )
+	void cardExplosionRPC( string casterName, Vector3 explosionPosition )
 	{
 		ParticleSystem explosionEffect = GameObject.Instantiate( zNukeEffect );
 		explosionEffect.transform.position = explosionPosition;
 		explosionEffect.GetComponent<AudioSource>().Play ();
 		explosionEffect.Play();
+		//Indicate on the minimap which card was played
+		MiniMap.Instance.updateCardFeed( casterName, CardName.Explosion );
 	}
 
 }

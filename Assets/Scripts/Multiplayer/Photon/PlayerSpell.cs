@@ -22,13 +22,15 @@ public class PlayerSpell : PunBehaviour {
 	}
 
 	[PunRPC]
-	void shrinkSpell( float spellDuration )
+	void shrinkSpell( string casterName, float spellDuration )
 	{
 		playerSounds.playSound( shrinkSound, false );
 		ParticleSystem shrinkEffect = ParticleSystem.Instantiate( shrinkParticleSystem, transform );
 		shrinkEffect.transform.localPosition = new Vector3( 0, 1f, 0 );
 		shrinkEffect.Play();
 		StartCoroutine( shrink( new Vector3( 0.3f, 0.3f, 0.3f ), 1.25f, spellDuration ) );
+		//Indicate on the minimap which card was played
+		MiniMap.Instance.updateCardFeed( casterName, CardName.Shrink );
 	}
 
 	IEnumerator shrink( Vector3 endScale, float shrinkDuration, float spellDuration )

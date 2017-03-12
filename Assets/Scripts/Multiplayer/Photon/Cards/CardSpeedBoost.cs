@@ -22,13 +22,17 @@ public class CardSpeedBoost : Photon.PunBehaviour {
 	[PunRPC]
 	void cardSpeedBoostRPC( int level, int photonViewID )
 	{
+		string casterName = string.Empty;
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
 			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
 			{
 				startSpeedBoost( level, PlayerRace.players[i].GetComponent<PlayerControl>(), PlayerRace.players[i].GetComponent<PhotonView>().isMine && PlayerRace.players[i].GetComponent<PlayerAI>() == null );
+				casterName = PlayerRace.players[i].name;
 			}
 		}
+		//Indicate on the minimap which card was played
+		MiniMap.Instance.updateCardFeed( casterName, CardName.Raging_Bull );
 	}
 
 	void startSpeedBoost( int level, PlayerControl playerControl, bool isMine )

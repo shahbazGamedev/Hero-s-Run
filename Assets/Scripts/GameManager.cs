@@ -56,7 +56,8 @@ public enum PlayMode {
 	PlayOthers = 1,
 	PlayWithFriends = 2,
 	PlayAgainstEnemy = 3,
-	PlayAlone = 4
+	PlayAlone = 4,
+	PlayThreePlayers = 5
 
 }
 

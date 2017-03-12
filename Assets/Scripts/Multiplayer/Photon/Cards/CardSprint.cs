@@ -21,13 +21,17 @@ public class CardSprint : Photon.PunBehaviour {
 	[PunRPC]
 	void cardSprintRPC( int level, int photonViewID )
 	{
+		string casterName = string.Empty;
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
 			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
 			{
 				startSprint( level, PlayerRace.players[i].GetComponent<PlayerControl>() );
+				casterName = PlayerRace.players[i].name;
 			}
 		}
+		//Indicate on the minimap which card was played
+		MiniMap.Instance.updateCardFeed( casterName, CardName.Sprint );
 	}
 
 	void startSprint( int level, PlayerControl playerControl )

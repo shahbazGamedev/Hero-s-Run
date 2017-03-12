@@ -211,12 +211,16 @@ public class MPGameEndManager : MonoBehaviour {
     	switch (racePosition)
 		{
 	        case 1:
-				racePositionString = LocalizationManager.Instance.getText( "EOG_VICTORY" );
+				racePositionString = LocalizationManager.Instance.getText( "EOG_1ST" );
                 break;
 	                
 	        case 2:
-				racePositionString = LocalizationManager.Instance.getText( "EOG_DEFEAT" );
-                break;                
+				racePositionString = LocalizationManager.Instance.getText( "EOG_2ND" );
+                break;
+               
+	        case 3:
+				racePositionString = LocalizationManager.Instance.getText( "EOG_3RD" );
+				break;                
 		}
 		return racePositionString;
 	}

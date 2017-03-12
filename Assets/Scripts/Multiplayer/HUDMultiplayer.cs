@@ -127,6 +127,10 @@ public class HUDMultiplayer : MonoBehaviour {
 				ordinalIndicator = "2<size=22>nd</size>";
 				break;
 
+			case 3:
+				ordinalIndicator = "3<size=22>rd</size>";
+				break;
+
 			default:
 				ordinalIndicator = string.Empty;
 				break;

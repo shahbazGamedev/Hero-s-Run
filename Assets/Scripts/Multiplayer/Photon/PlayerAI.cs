@@ -100,7 +100,7 @@ public class PlayerAI : Photon.PunBehaviour {
 				else if( hit.collider.CompareTag( "Firewall" ) && shouldAvoidObstacle() )
 				{
 					//Did we cast this firewall?
-					string caster = hit.collider.GetComponent<Firewall>().nameOfCaster;
+					string caster = hit.collider.GetComponent<Firewall>().casterName;
 					if( gameObject.name != caster )
 					{
 						//We did not cast it. We need to jump over it.
@@ -142,7 +142,7 @@ public class PlayerAI : Photon.PunBehaviour {
 				else if( hit.collider.CompareTag( "Firewall" ) && shouldAvoidObstacle() )
 				{
 					//Did we cast this firewall?
-					string caster = hit.collider.GetComponent<Firewall>().nameOfCaster;
+					string caster = hit.collider.GetComponent<Firewall>().casterName;
 					if( gameObject.name != caster )
 					{
 						//We did not cast it. We need to jump over it.
