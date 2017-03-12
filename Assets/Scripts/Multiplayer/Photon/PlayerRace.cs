@@ -37,7 +37,8 @@ public class PlayerRace : Photon.PunBehaviour
 	bool playerCrossedFinishLine = false;
 
 	//List of all PlayerRaces including the opponent(s)
-	static public  List<PlayerRace> players = new List<PlayerRace> ();
+	static public List<PlayerRace> players = new List<PlayerRace> ();
+	static public List<PlayerRace> officialRacePositionList = new List<PlayerRace> ();
 
 	void Start()
 	{
@@ -45,6 +46,8 @@ public class PlayerRace : Photon.PunBehaviour
 		{	
 			//Reset value. PlayerRaceManager is an instance and does not get re-created when the level reloads	
 			PlayerRaceManager.Instance.setRaceStatus( RaceStatus.NOT_STARTED );
+			players.Clear();
+			officialRacePositionList.Clear();
 		}
  		if (!players.Contains (this))
 		{
@@ -110,9 +113,9 @@ public class PlayerRace : Photon.PunBehaviour
 							//Yes, it has.
 							//Save the new values
 							players[i].racePosition = newPosition;
-							players[i].previousRacePosition = players[i].racePosition;
+							players[i].previousRacePosition = newPosition;
 							//Inform the player of his new position so that he can update it on the HUD
-							players[i].photonView.RPC("OnRacePositionChanged", PhotonTargets.AllBufferedViaServer, newPosition );
+							if( !officialRacePositionList.Contains( this ) ) players[i].photonView.RPC("OnRacePositionChanged", PhotonTargets.AllBufferedViaServer, newPosition );
 						}
 					}
 				}
@@ -147,8 +150,10 @@ public class PlayerRace : Photon.PunBehaviour
 			{
 				//Player has reached the finish line
 				playerCrossedFinishLine = true;
-				Debug.Log ("Finish Line crossed by " + gameObject.name + " in race position " + racePosition );
-				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllBuffered, other.transform.position.z, raceDuration, distanceTravelled );
+				if( !officialRacePositionList.Contains(this) ) officialRacePositionList.Add( this );
+				int officialRacePosition = officialRacePositionList.FindIndex(playerRace => playerRace == this);
+				Debug.Log ("Finish Line crossed by " + gameObject.name + " in race position " + officialRacePosition );
+				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllBuffered, other.transform.position.z, raceDuration, distanceTravelled, officialRacePosition );
 			}
 		}
 	}
@@ -173,11 +178,11 @@ public class PlayerRace : Photon.PunBehaviour
 	//This method is called when the player has crossed the finish line to let the client know the official race duration and distance travelled
 	//as calculated by the MasterClient.
 	[PunRPC]
-	void OnRaceCompleted( float triggerPositionZ, float raceDuration, float distanceTravelled )
+	void OnRaceCompleted( float triggerPositionZ, float raceDuration, float distanceTravelled, int officialRacePosition )
     {
 		Debug.Log("PlayerRace: OnRaceCompleted RPC received for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient +
 			" isMine: " + this.photonView.isMine + " isLocal: " + PhotonNetwork.player.IsLocal +
-			" raceDuration: " + raceDuration + " distanceTravelled: " + distanceTravelled );
+			" raceDuration: " + raceDuration + " distanceTravelled: " + distanceTravelled + " officialRacePosition: " + officialRacePosition );
 
 		//We want to slow down any player that reaches the finish line
 		StartCoroutine( GetComponent<PlayerControl>().slowDownPlayerAfterFinishLine( 10f, triggerPositionZ ) );
@@ -191,7 +196,7 @@ public class PlayerRace : Photon.PunBehaviour
 			{
 				HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
 				GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
-				PlayerRaceManager.Instance.playerCompletedRace( (racePosition + 1), raceDuration, distanceTravelled, GetComponent<PlayerControl>().getNumberOfTimesDiedDuringRace() );
+				PlayerRaceManager.Instance.playerCompletedRace( (officialRacePosition + 1), raceDuration, distanceTravelled, GetComponent<PlayerControl>().getNumberOfTimesDiedDuringRace() );
 			}
 		}		
     }
