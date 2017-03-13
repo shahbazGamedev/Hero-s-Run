@@ -207,7 +207,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 		switch ( GameManager.Instance.getPlayMode() )
 		{
 			case PlayMode.PlayAgainstEnemy:
-				LevelManager.Instance.setNumberOfPlayersRequired( 1 );
 				//PlayerPosition 3 is the center lane.
 				playerCustomProperties.Add("PlayerPosition", 3 );
 				PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
@@ -217,7 +216,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 			break;
 
 			case PlayMode.PlayAlone:
-				LevelManager.Instance.setNumberOfPlayersRequired( 1 );
 				//PlayerPosition 3 is the center lane.
 				playerCustomProperties.Add("PlayerPosition", 3 );
 				PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
@@ -227,7 +225,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 			break;
 
 			case PlayMode.PlayOthers:
-				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
 				foreach(PhotonPlayer player in PhotonNetwork.playerList)
 				{
 					if( !player.IsLocal )
@@ -243,7 +240,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 			break;
 
 			case PlayMode.PlayThreePlayers:
-				LevelManager.Instance.setNumberOfPlayersRequired( 3 );
 				foreach(PhotonPlayer player in PhotonNetwork.playerList)
 				{
 					if( !player.IsLocal )
@@ -259,7 +255,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 			break;
 
 			case PlayMode.PlayWithFriends:
-				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
 				foreach(PhotonPlayer player in PhotonNetwork.playerList)
 				{
 					if( !player.IsLocal )
