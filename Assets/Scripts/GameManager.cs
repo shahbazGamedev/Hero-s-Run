@@ -115,10 +115,36 @@ public class GameManager {
 		return gameState;
 	}
 
+	/// <summary>
+	/// Sets the play mode. This also sets the number of required players in LevelManager to the correct number.
+	/// </summary>
+	/// <param name="playMode">Play mode.</param>
 	public void setPlayMode( PlayMode playMode )
 	{
 		this.playMode = playMode;
 		Debug.Log("GameManager-setPlayMode: new mode is " + playMode );
+		switch ( playMode )
+		{
+			case PlayMode.PlayAgainstEnemy:
+				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
+			break;
+
+			case PlayMode.PlayAlone:
+				LevelManager.Instance.setNumberOfPlayersRequired( 1 );
+			break;
+
+			case PlayMode.PlayOthers:
+				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
+			break;
+
+			case PlayMode.PlayThreePlayers:
+				LevelManager.Instance.setNumberOfPlayersRequired( 3 );
+			break;
+
+			case PlayMode.PlayWithFriends:
+				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
+			break;
+		}
 	} 
 
 	public PlayMode getPlayMode()

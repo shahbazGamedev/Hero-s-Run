@@ -152,6 +152,7 @@ public class HeroManager : MonoBehaviour {
 	{
 		public string userName; 	//Bot name displayed is matchmaking lobby
  		public int playerIcon;		//Bot icon displayed is matchmaking lobby
+		public int level;			//A number between 1 and 100. Only affects the frame to use in the matchmaking screen.
 		public BotSkillLevel skillLevel;
 		public List<PlayerDeck.PlayerCardData> botCardDataList;
 	}

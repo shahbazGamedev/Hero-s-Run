@@ -19,10 +19,14 @@ public class MatchmakingManager : MonoBehaviour {
 	[Header("Local Player")]
 	[SerializeField] Image playerIcon;
 	[SerializeField] Text playerName;
-	[Header("Remote Player")]
-	[SerializeField] Image remotePlayerIcon;
-	[SerializeField] Text remotePlayerName;
-	[SerializeField] GameObject preloader; //animates while looking for an opponent for the match
+	[Header("Remote Player 1")]
+	[SerializeField] Image remotePlayerIcon1;
+	[SerializeField] Text remotePlayerName1;
+	[SerializeField] GameObject preloader1; //animates while looking for an opponent for the match
+	[Header("Remote Player 2")]
+	[SerializeField] Image remotePlayerIcon2;
+	[SerializeField] Text remotePlayerName2;
+	[SerializeField] GameObject preloader2; //animates while looking for an opponent for the match
 	[Header("Circuit")]
 	[SerializeField] Text circuitName;
 	[SerializeField] Image circuitImage;
@@ -40,9 +44,9 @@ public class MatchmakingManager : MonoBehaviour {
 		//The left portrait is always the local player.
 		configureLocalPlayerData();
 
-		//The right portrait is the remote player.
-		//Use default values until we get the remote player info from the network call
-		configureRemotePlayerData( LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0 );
+		//Use default values for remote player portraits until they connect
+		setRemotePlayerData( 1, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
+		setRemotePlayerData( 2, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
 
 		//Localize
 		versusText.text = LocalizationManager.Instance.getText( "CIRCUIT_VERSUS" );
@@ -73,34 +77,45 @@ public class MatchmakingManager : MonoBehaviour {
 		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 	}
 
-	void configureRemotePlayerData( string name, int level, int iconId )
+	/// <summary>
+	/// Sets the remote player data for the specified index.
+	/// In a 2-player match, there is the local player and one remote player.
+	/// In a 3-player match, there is the local player and two remote players.
+	/// Use an index of 1 for remote player one and 2 for remote player two.
+	/// </summary>
+	/// <param name="remotePlayerIndex">Remote player index.</param>
+	public void setRemotePlayerData( int index, string name, int level, int iconId  )
 	{
-		//Name
-		remotePlayerName.text = name;
-		//Frame based on level
-		Color frameColor = ProgressionManager.Instance.getFrameColor( level );
-		remotePlayerIcon.GetComponent<Outline>().effectColor = frameColor;
-		//Player Icon
-		remotePlayerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
-	}
+		Debug.Log("MatchmakingManager-setRemotePlayerData Index: " + index + " Name: " + name + " Level: " + level + " Icon ID: " + iconId );
+		switch ( index )
+		{
+			//Remote PLayer 1
+			case 1:
+				//Name
+				remotePlayerName1.text = name;
+				//Frame based on level
+				Color frameColor = ProgressionManager.Instance.getFrameColor( level );
+				remotePlayerIcon1.GetComponent<Outline>().effectColor = frameColor;
+				//Player Icon
+				remotePlayerIcon1.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
+			break;
 
-	public void setRemotePlayerName( string name )
-	{
-		//Name
-		Debug.Log("setRemotePlayerName called with " + name );
-		remotePlayerName.text = name;
-	}
-
-	public void setRemotePlayerIcon( int iconId )
-	{
-		//Player Icon
-		Debug.Log("setRemotePlayerIcon called with " + ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon.name );
-		remotePlayerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
+			//Remote PLayer 2
+			case 2:
+				//Name
+				remotePlayerName2.text = name;
+				//Frame based on level
+				frameColor = ProgressionManager.Instance.getFrameColor( level );
+				remotePlayerIcon2.GetComponent<Outline>().effectColor = frameColor;
+				//Player Icon
+				remotePlayerIcon2.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
+			break;
+		}
 	}
 
 	public void hideRemotePlayer()
 	{
-		remotePlayerIcon.gameObject.SetActive( false );
+		remotePlayerIcon1.gameObject.SetActive( false );
 		versusText.gameObject.SetActive( false );
 	}
 
@@ -175,7 +190,8 @@ public class MatchmakingManager : MonoBehaviour {
 	//Also, hide the preloader.
 	public void disableExitButton()
 	{
-		preloader.SetActive( false );
+		preloader1.SetActive( false );
+		preloader2.SetActive( false );
 		enableExitButton( false );
 	}
 
@@ -203,13 +219,15 @@ public class MatchmakingManager : MonoBehaviour {
 		{
 			playButton.interactable = true;
 			playButtonText.color = originalPlayButtonTextColor;
-			preloader.SetActive( false );
+			preloader1.SetActive( false );
+			preloader2.SetActive( false );
 		}
 		else
 		{
 			playButton.interactable = false;
 			playButtonText.color = Color.gray;
-			preloader.SetActive( true );
+			preloader1.SetActive( true );
+			preloader2.SetActive( true );
 		}
 	}
 

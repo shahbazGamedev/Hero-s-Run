@@ -17,6 +17,8 @@ public class CircuitSelectionManager : MonoBehaviour {
 		Handheld.StopActivityIndicator();
 		GameManager.Instance.setMultiplayerMode( true );
 		carouselScrollRect.horizontalNormalizedPosition = 0; //Make sure it is on the far left completely or the dot won't light up
+		// we don't join the lobby. There is no need to join a lobby to get the list of rooms.
+		PhotonNetwork.autoJoinLobby = false;
 		//Are we playing online or doing an offline PvE match?
 		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstEnemy )
 		{

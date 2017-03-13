@@ -21,6 +21,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	const float DELAY_BEFORE_DISPLAY_BOT = 2.5f;
 	HUDMultiplayer hudMultiplayer;
 	bool connecting = false; //true if the player pressed the Play button (which calls startMatch). This bool is to prevent rejoining a room automatically after a race.
+	int numberRemotePlayerConnected = 0;
 	#endregion
 
 	#region MonoBehaviour CallBacks
@@ -89,6 +90,9 @@ public class MPNetworkLobbyManager : PunBehaviour
 		
 		//Set your icon, which is displayed in the matchmaking screen
 		playerCustomProperties.Add("Icon", GameManager.Instance.playerProfile.getPlayerIconId() );
+
+		//Set your level, which determines the frame to use in the matchmaking screen
+		playerCustomProperties.Add("Level", GameManager.Instance.playerProfile.getLevel() );
 
 		//Apply values so that they propagate to other players
 		PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
@@ -195,7 +199,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		customRoomPropertiesForLobbyStringArray[1] = "Elo";
 		roomOptions.CustomRoomPropertiesForLobby = customRoomPropertiesForLobbyStringArray;
 		//In CreateRoom, do not specify a match name. Let the server assign a random name.
-	    PhotonNetwork.CreateRoom(null, roomOptions, null);
+	    PhotonNetwork.CreateRoom(null, roomOptions, TypedLobby.Default);
 	}
 	 
 	public override void OnJoinedRoom()
@@ -295,10 +299,10 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 	void OnRemotePlayerConnect( PhotonPlayer player )
 	{
+		numberRemotePlayerConnected++;
 		matchmakingManager.disableExitButton();
 		matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedMultiplayerLevel().circuitInfo.circuitTextID ) + " ..." ); 
-		matchmakingManager.setRemotePlayerName( player.NickName );
-		matchmakingManager.setRemotePlayerIcon( (int)player.CustomProperties["Icon"] );
+		matchmakingManager.setRemotePlayerData( numberRemotePlayerConnected, player.NickName, (int)player.CustomProperties["Level"], (int)player.CustomProperties["Icon"] );
 	}
 
 	void setUpBot()
@@ -315,8 +319,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		matchmakingManager.disableExitButton();
 		matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedMultiplayerLevel().circuitInfo.circuitTextID ) + " ..." ); 
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
-		matchmakingManager.setRemotePlayerName( botHero.userName );
-		matchmakingManager.setRemotePlayerIcon( botHero.playerIcon );
+		matchmakingManager.setRemotePlayerData( 1, botHero.userName, botHero.level, botHero.playerIcon );
 		LoadArena();
 	}
 
@@ -328,18 +331,20 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 	void LoadArena()
 	{
-	    if ( ! PhotonNetwork.isMasterClient ) 
+	    if ( PhotonNetwork.isMasterClient ) 
 	    {
-	        Debug.LogError( "MPNetworkLobbyManager: Trying to Load a level but we are not the master Client" );
-			return;
-	    }
-		if( PhotonNetwork.room.PlayerCount == LevelManager.Instance.getNumberOfPlayersRequired() )
+			if( PhotonNetwork.room.PlayerCount == LevelManager.Instance.getNumberOfPlayersRequired() )
+			{
+				//Now that we have everyone and we can start the race, deduct the entry fee, if any.
+				chargePlayerForMatch();
+				//Close the room. We do not want people to join while a race is in progress.
+				PhotonNetwork.room.IsOpen = false;
+		   	 	Invoke("loadLevel", DELAY_BEFORE_LOADING_LEVEL);
+			}
+		}
+		else
 		{
-			//Now that we have everyone and we can start the race, deduct the entry fee, if any.
-			chargePlayerForMatch();
-			//Close the room. We do not want people to join while a race is in progress.
-			PhotonNetwork.room.IsOpen = false;
-	   	 	Invoke("loadLevel", DELAY_BEFORE_LOADING_LEVEL);
+	        Debug.LogError( "MPNetworkLobbyManager: Trying to Load a level but we are not the master Client" );
 		}
 	}
 	 

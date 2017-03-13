@@ -273,7 +273,6 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void StartRunningEvent()
 	{
-		Debug.Log("PlayerControl: received StartRunningEvent");
 		startRunning();
 	}
 
