@@ -149,7 +149,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 			break;
 
 			case PlayMode.PlayAlone:
-				matchmakingManager.hideRemotePlayer();
 				matchmakingManager.setConnectionProgress( "Playing alone" );   
 			break;
 

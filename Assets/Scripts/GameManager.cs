@@ -126,7 +126,7 @@ public class GameManager {
 		switch ( playMode )
 		{
 			case PlayMode.PlayAgainstEnemy:
-				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
+				LevelManager.Instance.setNumberOfPlayersRequired( 1 );
 			break;
 
 			case PlayMode.PlayAlone:

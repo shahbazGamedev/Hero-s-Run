@@ -16,37 +16,55 @@ public class MatchmakingManager : MonoBehaviour {
 	[SerializeField] Text versusText;
 	[Tooltip("The label to inform the user that the connection progress.")]
 	[SerializeField] Text connectionProgress;
-	[Header("Local Player")]
-	[SerializeField] Image playerIcon;
-	[SerializeField] Text playerName;
-	[Header("Remote Player 1")]
-	[SerializeField] Image remotePlayerIcon1;
-	[SerializeField] Text remotePlayerName1;
-	[SerializeField] GameObject preloader1; //animates while looking for an opponent for the match
-	[Header("Remote Player 2")]
-	[SerializeField] Image remotePlayerIcon2;
-	[SerializeField] Text remotePlayerName2;
-	[SerializeField] GameObject preloader2; //animates while looking for an opponent for the match
+
 	[Header("Circuit")]
 	[SerializeField] Text circuitName;
 	[SerializeField] Image circuitImage;
 	[SerializeField] Text entryFee;
 
+	[Header("Single Player Panel")]
+	[SerializeField] GameObject singlePlayerPanel;
+	[Header("Local Player")]
+	[SerializeField] Image playerIcon1P;
+	[SerializeField] Text playerName1P;
+
+	[Header("Two Player Panel")]
+	[SerializeField] GameObject twoPlayerPanel;
+	[Header("Local Player")]
+	[SerializeField] Image playerIcon2P;
+	[SerializeField] Text playerName2P;
+	[Header("Remote Player 1")]
+	[SerializeField] Image remotePlayer1Icon2P;
+	[SerializeField] Text remotePlayer1Name2P;
+	[SerializeField] GameObject preloader12P; //animates while looking for an opponent for the match
+
+	[Header("Three Player Panel")]
+	[SerializeField] GameObject threePlayerPanel;
+	[Header("Local Player")]
+	[SerializeField] Image playerIcon3P;
+	[SerializeField] Text playerName3P;
+	[Header("Remote Player 1")]
+	[SerializeField] Image remotePlayer1Icon3P;
+	[SerializeField] Text remotePlayer1Name3P;
+	[SerializeField] GameObject preloader13P; //animates while looking for an opponent for the match
+	[Header("Remote Player 2")]
+	[SerializeField] Image remotePlayer2Icon3P;
+	[SerializeField] Text remotePlayer2Name3P;
+	[SerializeField] GameObject preloader23P; //animates while looking for an opponent for the match
+
 	bool levelLoading = false;
 	private Color originalPlayButtonTextColor;
-
 
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
 		originalPlayButtonTextColor = playButtonText.color;
 
+		//Configure the lobby according to the number of players in the race
+		configureLobby();
+
 		//The left portrait is always the local player.
 		configureLocalPlayerData();
-
-		//Use default values for remote player portraits until they connect
-		setRemotePlayerData( 1, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
-		setRemotePlayerData( 2, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
 
 		//Localize
 		versusText.text = LocalizationManager.Instance.getText( "CIRCUIT_VERSUS" );
@@ -66,15 +84,62 @@ public class MatchmakingManager : MonoBehaviour {
 		}
 	}
 
+	void configureLobby()
+	{
+		singlePlayerPanel.SetActive( false );
+		twoPlayerPanel.SetActive( false );
+		threePlayerPanel.SetActive( false );
+
+		switch ( GameManager.Instance.getPlayMode() )
+		{
+			case PlayMode.PlayAlone:
+				singlePlayerPanel.SetActive( true );
+			break;
+
+			case PlayMode.PlayAgainstEnemy:
+			case PlayMode.PlayOthers:
+			case PlayMode.PlayWithFriends:
+				twoPlayerPanel.SetActive( true );
+				//Use default values for remote player portrait until he connects
+				setRemotePlayerData( 1, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
+			break;
+
+			case PlayMode.PlayThreePlayers:
+				threePlayerPanel.SetActive( true );
+				//Use default values for remote player portraits until they connect
+				setRemotePlayerData( 1, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
+				setRemotePlayerData( 2, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
+			break;
+		}
+	}
+
 	public void configureLocalPlayerData()
 	{
-		//Name
-		playerName.text = PlayerStatsManager.Instance.getUserName();
 		//Frame based on level
 		Color frameColor = ProgressionManager.Instance.getFrameColor( GameManager.Instance.playerProfile.getLevel() );
-		playerIcon.GetComponent<Outline>().effectColor = frameColor;
-		//Player Icon
-		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
+
+		switch ( GameManager.Instance.getPlayMode() )
+		{
+			case PlayMode.PlayAlone:
+				playerName1P.text = PlayerStatsManager.Instance.getUserName();
+				playerIcon1P.GetComponent<Outline>().effectColor = frameColor;
+				playerIcon1P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
+			break;
+
+			case PlayMode.PlayAgainstEnemy:
+			case PlayMode.PlayOthers:
+			case PlayMode.PlayWithFriends:
+				playerName2P.text = PlayerStatsManager.Instance.getUserName();
+				playerIcon2P.GetComponent<Outline>().effectColor = frameColor;
+				playerIcon2P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
+			break;
+
+			case PlayMode.PlayThreePlayers:
+				playerName3P.text = PlayerStatsManager.Instance.getUserName();
+				playerIcon3P.GetComponent<Outline>().effectColor = frameColor;
+				playerIcon3P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
+			break;
+		}
 	}
 
 	/// <summary>
@@ -87,36 +152,35 @@ public class MatchmakingManager : MonoBehaviour {
 	public void setRemotePlayerData( int index, string name, int level, int iconId  )
 	{
 		Debug.Log("MatchmakingManager-setRemotePlayerData Index: " + index + " Name: " + name + " Level: " + level + " Icon ID: " + iconId );
-		switch ( index )
+
+		//Frame based on level
+		Color frameColor = ProgressionManager.Instance.getFrameColor( level );
+
+		switch ( GameManager.Instance.getPlayMode() )
 		{
-			//Remote PLayer 1
-			case 1:
-				//Name
-				remotePlayerName1.text = name;
-				//Frame based on level
-				Color frameColor = ProgressionManager.Instance.getFrameColor( level );
-				remotePlayerIcon1.GetComponent<Outline>().effectColor = frameColor;
-				//Player Icon
-				remotePlayerIcon1.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
+			case PlayMode.PlayAgainstEnemy:
+			case PlayMode.PlayOthers:
+			case PlayMode.PlayWithFriends:
+				remotePlayer1Name2P.text = name;
+				remotePlayer1Icon2P.GetComponent<Outline>().effectColor = frameColor;
+				remotePlayer1Icon2P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
 			break;
 
-			//Remote PLayer 2
-			case 2:
-				//Name
-				remotePlayerName2.text = name;
-				//Frame based on level
-				frameColor = ProgressionManager.Instance.getFrameColor( level );
-				remotePlayerIcon2.GetComponent<Outline>().effectColor = frameColor;
-				//Player Icon
-				remotePlayerIcon2.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
+			case PlayMode.PlayThreePlayers:
+				if( index == 1 )
+				{
+					remotePlayer1Name3P.text = name;
+					remotePlayer1Icon3P.GetComponent<Outline>().effectColor = frameColor;
+					remotePlayer1Icon3P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
+				}
+				else if( index == 2 )
+				{
+					remotePlayer2Name3P.text = name;
+					remotePlayer2Icon3P.GetComponent<Outline>().effectColor = frameColor;
+					remotePlayer2Icon3P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
+				}
 			break;
 		}
-	}
-
-	public void hideRemotePlayer()
-	{
-		remotePlayerIcon1.gameObject.SetActive( false );
-		versusText.gameObject.SetActive( false );
 	}
 
 	public void configureCircuitData( Sprite circuitImageSprite, string circuitNameString, string entryFeeString )
@@ -126,6 +190,7 @@ public class MatchmakingManager : MonoBehaviour {
 		entryFee.text = entryFeeString;
 		enablePlayButton( true );
 	}
+
 
 	public void setConnectionProgress( string value )
 	{
@@ -190,8 +255,7 @@ public class MatchmakingManager : MonoBehaviour {
 	//Also, hide the preloader.
 	public void disableExitButton()
 	{
-		preloader1.SetActive( false );
-		preloader2.SetActive( false );
+		enablePreloader( false );
 		enableExitButton( false );
 	}
 
@@ -219,15 +283,29 @@ public class MatchmakingManager : MonoBehaviour {
 		{
 			playButton.interactable = true;
 			playButtonText.color = originalPlayButtonTextColor;
-			preloader1.SetActive( false );
-			preloader2.SetActive( false );
+			enablePreloader( false );
 		}
 		else
 		{
 			playButton.interactable = false;
 			playButtonText.color = Color.gray;
-			preloader1.SetActive( true );
-			preloader2.SetActive( true );
+			enablePreloader( true );
+		}
+	}
+
+	void enablePreloader( bool enable )
+	{
+		if( enable )
+		{
+			preloader12P.SetActive( true );
+			preloader13P.SetActive( true );
+			preloader23P.SetActive( true );
+		}
+		else
+		{
+			preloader12P.SetActive( false );
+			preloader13P.SetActive( false );
+			preloader23P.SetActive( false );
 		}
 	}
 
