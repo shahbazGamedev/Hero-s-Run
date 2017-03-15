@@ -194,6 +194,29 @@ public class PlayerAI : Photon.PunBehaviour {
 				playerInput.sideSwipe( true );
 			}
 		}
+		else if( other.gameObject.CompareTag( "AttachZiplineTrigger" ) )
+		{
+			if( playerControl.isInZiplineTrigger && playerControl.getCharacterState() != PlayerCharacterState.Ziplining )
+			{
+				playerInput.attachToZipline();
+			}
+			else
+			{
+				playerInput.jump();
+			}
+		}
+		else if( other.gameObject.CompareTag( "MoveToCenterLane" ) )
+		{
+			playerControl.recalculateCurrentLane();
+			if( playerControl.currentLane == PlayerControl.Lanes.Left )
+			{
+				playerInput.sideSwipe( true );
+			}
+			else if( playerControl.currentLane == PlayerControl.Lanes.Right )
+			{
+				playerInput.sideSwipe( false );
+			}
+		}
 	}
 
 	private void handleKeyboard()

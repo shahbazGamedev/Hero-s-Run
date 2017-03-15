@@ -27,6 +27,7 @@ public enum Sex
 
 public enum BotSkillLevel
 {
+	VERY_LOW = -1,
 	LOW = 0,
 	MEDIUM = 1,
 	HIGH = 2
@@ -76,8 +77,11 @@ public class HeroManager : MonoBehaviour {
 
 	void initialiseBotSkillData()
 	{
+		//Very Low Skill (the bot never plays cards)
+		BotSkillData botSkillData = new BotSkillData( 0, 0, 0.9f, 0.9f );
+		botSkillDataDictionary.Add(BotSkillLevel.VERY_LOW, botSkillData );
 		//Low Skill
-		BotSkillData botSkillData = new BotSkillData( 8, 24, 0.9f, 0.92f );
+		botSkillData = new BotSkillData( 8, 24, 0.9f, 0.92f );
 		botSkillDataDictionary.Add(BotSkillLevel.LOW, botSkillData );
 		//Medium Skill
 		botSkillData = new BotSkillData( 4, 16, 0.95f, 0.95f );

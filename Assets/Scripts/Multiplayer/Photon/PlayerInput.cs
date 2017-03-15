@@ -50,6 +50,12 @@ public class PlayerInput : PunBehaviour {
 		this.photonView.RPC("jumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
 	}
 
+	public void attachToZipline()
+	{
+		playerControl.attachToZipline();
+		this.photonView.RPC("attachToZiplineRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+	}
+
 	private void handleKeyboard()
 	{
 		//Also support keys for debugging
@@ -67,11 +73,9 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.Space)  ) 
 		{
-			//if( isInZiplineTrigger && playerControl.getCharacterState() != PlayerCharacterState.Ziplining )
-			if( false && playerControl.getCharacterState() != PlayerCharacterState.Ziplining )
+			if( playerControl.isInZiplineTrigger && playerControl.getCharacterState() != PlayerCharacterState.Ziplining )
 			{
-				playerControl.attachToZipline();
-				this.photonView.RPC("attachToZiplineRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+				attachToZipline();
 			}
 			else
 			{
@@ -174,11 +178,9 @@ public class PlayerInput : PunBehaviour {
 			else
 			{
 				//player swiped UP
-				//if( isInZiplineTrigger && playerControl.getCharacterState() != PlayerCharacterState.Ziplining )
-				if( false && playerControl.getCharacterState() != PlayerCharacterState.Ziplining )
+				if( playerControl.isInZiplineTrigger && playerControl.getCharacterState() != PlayerCharacterState.Ziplining )
 				{
-					playerControl.attachToZipline();
-					this.photonView.RPC("attachToZiplineRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+					attachToZipline();
 				}
 				else
 				{

@@ -38,6 +38,13 @@ public class PlayerInputRPC : PunBehaviour {
 	}
 
 	[PunRPC]
+	void detachToZiplineRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
+	{
+		syncMovement( syncPosition, syncRotationY, timeRPCSent, syncSpeed );
+		playerControl.detachFromZipline();
+	}
+
+	[PunRPC]
 	void jumpRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
 	{
 		syncMovement( syncPosition, syncRotationY, timeRPCSent, syncSpeed );

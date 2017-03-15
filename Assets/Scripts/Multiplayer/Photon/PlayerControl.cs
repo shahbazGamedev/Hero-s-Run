@@ -134,12 +134,12 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Zipline variables
-	bool isInZiplineTrigger;
+	public bool isInZiplineTrigger;
 	Transform ziplineAttachPoint;
 	#endregion
 
 	#region Lane variables
-	enum Lanes {
+	public enum Lanes {
 		Left = -1,
 		Center = 0,
 		Right = 1,
@@ -148,7 +148,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	//Due to rounding errors, the player may not reach exactly the lane limit. If there is less than 1% of the distance
 	//remaining, assume that he did reach the lane limit which will allow us to finalize the side move.
 	float adjustedLaneLimit = laneLimit * 0.99f;
-	Lanes currentLane = Lanes.Center;
+	public Lanes currentLane = Lanes.Center;
 	Lanes desiredLane = Lanes.Center;
 	int myLane = 0; //0 is uninitialized, 1 is the nearest, 2 is in the center and 3 is the furthest
 	float sideMoveSpeed = 6f; //At what speed do you change lanes
@@ -1415,7 +1415,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 	}
 
-	void detachFromZipline()
+	public void detachFromZipline()
 	{
 		LeanTween.cancel( gameObject );
 		transform.SetParent( null );
@@ -1991,15 +1991,16 @@ public class PlayerControl : Photon.PunBehaviour {
 				Debug.LogError("PlayerControl-OnTriggerEnter: " + other.transform.parent.name + " tile does not have a SegmentInfo component attached to it.");
 			}
 		}
-		else if( other.name == "ZiplineTrigger" )
+		else if( other.gameObject.CompareTag( "AttachZiplineTrigger" ) )
 		{
 			//Deactivate the speedboost if active before ziplining
 			deactivateSpeedBoost();
 			isInZiplineTrigger = true;
 		}
- 		else if( other.name == "DetachZiplineTrigger" )
+ 		else if( other.gameObject.CompareTag( "DetachZiplineTrigger" ) )
 		{
 			detachFromZipline();
+			this.photonView.RPC("detachFromZipline", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, getSpeed() );
 		}
   	}
 
