@@ -1401,6 +1401,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			enablePlayerControl( false );
 			setAnimationTrigger(Idle_LookTrigger);
 			ziplineAttachPoint = transform.FindChild("Zipline Attach Point");
+			Debug.Log("attachToZipline for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient + " isMine: " + this.photonView.isMine + " isLocal: " + PhotonNetwork.player.IsLocal + " view ID: " + this.photonView.viewID + " owner ID: " + this.photonView.ownerId );
 			ziplineAttachPoint.localPosition = new Vector3( 0, 2.15f, 0 );
 			ziplineAttachPoint.localEulerAngles = new Vector3( 0, 0, 0 );
 			ziplineAttachPoint.GetComponent<AudioSource>().Play();
@@ -2000,7 +2001,7 @@ public class PlayerControl : Photon.PunBehaviour {
  		else if( other.gameObject.CompareTag( "DetachZiplineTrigger" ) )
 		{
 			detachFromZipline();
-			this.photonView.RPC("detachFromZipline", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, getSpeed() );
+			this.photonView.RPC("detachToZiplineRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, getSpeed() );
 		}
   	}
 
