@@ -87,6 +87,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	bool doingDoubleJump = false;
 	float jumpSpeed = 8.8f;
 	float doubleJumpSpeed = 12.8f;
+	float DOUBLE_JUMP_RUN_SPEED = 1.25f; //We want the player to leap forward during a double jump
 	float distanceToGround = 0;
 	//The gravity for the character
 	const float DEFAULT_GRAVITY = 16f;
@@ -654,22 +655,24 @@ public class PlayerControl : Photon.PunBehaviour {
 				jumping = true;
 				jumpStarted = true;
 	
+				setCharacterState( PlayerCharacterState.Jumping );
 				//Memorize the run speed
 				runSpeedAtTimeOfJump = runSpeed;
-				//Lower the run speed during a jump
-				runSpeed = runSpeed * runSpeedJumpMultiplier;
-				//Don't go lower then levelRunStartSpeed
-				if( runSpeed < levelRunStartSpeed ) runSpeed = levelRunStartSpeed;
 				//Don't accelerate during a jump (also it would reset the runSpeed variable).
 				allowRunSpeedToIncrease = false;
-				setCharacterState( PlayerCharacterState.Jumping );
 				if( doingDoubleJump )
 				{
+					//Increase the run speed during a Double Jump. We want the player to Leap forward.
+					runSpeed = runSpeed * DOUBLE_JUMP_RUN_SPEED;
 					moveDirection.y = doubleJumpSpeed;
 					setAnimationTrigger(Double_JumpTrigger);
 				}
 				else
 				{
+					//Lower the run speed during a normal jump
+					runSpeed = runSpeed * runSpeedJumpMultiplier;
+					//Don't go lower then levelRunStartSpeed
+					if( runSpeed < levelRunStartSpeed ) runSpeed = levelRunStartSpeed;
 					moveDirection.y = jumpSpeed;
 					setAnimationTrigger(JumpTrigger);
 				}
