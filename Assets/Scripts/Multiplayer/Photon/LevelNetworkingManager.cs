@@ -83,14 +83,16 @@ public class LevelNetworkingManager : PunBehaviour
 	    PhotonNetwork.LeaveRoom();
 	}
 		
-	//Only the master client gets these calls
+	//Only the master client gets these calls.
+	//We will initiate the countdown when all of the players are ready.
+	//This includes local and remote players for EACH device.
+	//In a 3-player race, we have 1 local and 2 remote players per device. This means a total of 9 players.
+	//We do this to make sure all of the player instances exist before starting the countdown.
 	public void playerReady()
 	{
 		numberOfPlayersReadyToRace++;			
-		Debug.Log("playerReady " + numberOfPlayersReadyToRace );
-		if( numberOfPlayersReadyToRace == LevelManager.Instance.getNumberOfPlayersRequired() )
+		if( numberOfPlayersReadyToRace == ( LevelManager.Instance.getNumberOfPlayersRequired() * LevelManager.Instance.getNumberOfPlayersRequired() ) )
 		{
-			Debug.Log("RPC countdown" );
 			this.photonView.RPC("initiateCountdown", PhotonTargets.AllViaServer, null );
 		} 
 	}

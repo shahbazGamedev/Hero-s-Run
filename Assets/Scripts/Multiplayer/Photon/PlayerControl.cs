@@ -247,7 +247,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		//Tell the MasterClient that we are ready to go. Our level has been loaded and our player created.
 		//The MasterClient will initiate the countdown
-		if( this.photonView.isMine ) this.photonView.RPC("readyToGo", PhotonTargets.MasterClient );	
+		this.photonView.RPC("readyToGo", PhotonTargets.MasterClient );	
 	}
 
 	//The player control needs info about the tile the player is on.
