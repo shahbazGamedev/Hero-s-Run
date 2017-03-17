@@ -23,7 +23,7 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 	//If the device is paused by pressing the Home button, because of a low battery warning or a phone call, the game will automatically display the pause menu.
 	void OnApplicationPause( bool pauseStatus )
 	{
-		if( GameManager.Instance.isMultiplayer() && pauseStatus && GameManager.Instance.getGameState() != GameState.Paused ) togglePause();
+		if( pauseStatus && GameManager.Instance.getGameState() == GameState.Normal ) togglePause();
 	}
 
 	public void OnClickPause()
