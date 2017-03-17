@@ -6,17 +6,12 @@ using UnityEngine.SceneManagement;
 
 public class CircuitSelectionManager : MonoBehaviour {
 
-	[SerializeField] ScrollRect carouselScrollRect;
-	bool levelLoading = false;
-	public List<CarouselEntry> carouselEntryList = new List<CarouselEntry>(2);
-	[SerializeField] Scrollbar scrollbar;
+	const float DELAY_BEFORE_SHOWING_HERO_SELECTION = 5f;
 
 	// Use this for initialization
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
-		GameManager.Instance.setMultiplayerMode( true );
-		carouselScrollRect.horizontalNormalizedPosition = 0; //Make sure it is on the far left completely or the dot won't light up
 		// we don't join the lobby. There is no need to join a lobby to get the list of rooms.
 		PhotonNetwork.autoJoinLobby = false;
 		//Are we playing online or doing an offline PvE match?
@@ -35,53 +30,20 @@ public class CircuitSelectionManager : MonoBehaviour {
 			if( !PhotonNetwork.connected ) PhotonNetwork.ConnectUsingSettings(GameManager.Instance.getVersionNumber());
 			Debug.Log("CircuitSelectionManager-PhotonNetwork.versionPUN is " + PhotonNetwork.versionPUN );
 		}
+		Invoke("showHeroSelection", DELAY_BEFORE_SHOWING_HERO_SELECTION );
 	}
 
-	public void OnClickShowStore()
+	void showHeroSelection()
 	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		StoreManager.Instance.showStore( StoreTab.Store, StoreReason.None );
-	}
-
-	public void OnClickShowHeroSelection()
-	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		LevelManager.Instance.setCurrentMultiplayerLevel( (int) scrollbar.value );
-		CarouselEntry selected = carouselEntryList[LevelManager.Instance.getCurrentMultiplayerLevel() ];
-		LevelManager.Instance.selectedRaceDetails = selected;
+		LevelManager.Instance.selectedRaceDetails = GetComponentInChildren<CircuitDetails>();
 		StartCoroutine( loadHeroSelection() );
-	}
-
-	public void OnClickReturnToWorldMap()
-	{
-		PhotonNetwork.Disconnect();
-		StartCoroutine( loadWorldMap() );
 	}
 
 	IEnumerator loadHeroSelection()
 	{
-		if( !levelLoading )
-		{
-			UISoundManager.uiSoundManager.playButtonClick();
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)GameScenes.HeroSelection );
-		}
-	}
-
-	IEnumerator loadWorldMap()
-	{
-		if( !levelLoading )
-		{
-			UISoundManager.uiSoundManager.playButtonClick();
-			levelLoading = true;
-			GameManager.Instance.setMultiplayerMode( false );
-			GameManager.Instance.setGameState(GameState.WorldMapNoPopup);
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)GameScenes.WorldMap );
-		}
+		Handheld.StartActivityIndicator();
+		yield return new WaitForSeconds(0);
+		SceneManager.LoadScene( (int)GameScenes.HeroSelection );
 	}
 
 }

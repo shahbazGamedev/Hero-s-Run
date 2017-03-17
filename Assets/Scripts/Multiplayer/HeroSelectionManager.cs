@@ -33,11 +33,6 @@ public class HeroSelectionManager : MonoBehaviour {
 		StartCoroutine( loadScene(GameScenes.Matchmaking) );
 	}
 
-	public void OnClickReturnToCircuitSelection()
-	{
-		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
-	}
-
 	IEnumerator loadScene(GameScenes value)
 	{
 		if( !levelLoading )
@@ -49,5 +44,24 @@ public class HeroSelectionManager : MonoBehaviour {
 			SceneManager.LoadScene( (int)value );
 		}
 	}
-	
+
+	public void OnClickReturnToWorldMap()
+	{
+		PhotonNetwork.Disconnect();
+		StartCoroutine( loadWorldMap() );
+	}
+
+	IEnumerator loadWorldMap()
+	{
+		if( !levelLoading )
+		{
+			UISoundManager.uiSoundManager.playButtonClick();
+			levelLoading = true;
+			GameManager.Instance.setMultiplayerMode( false );
+			GameManager.Instance.setGameState(GameState.WorldMapNoPopup);
+			Handheld.StartActivityIndicator();
+			yield return new WaitForSeconds(0);
+			SceneManager.LoadScene( (int)GameScenes.WorldMap );
+		}
+	}
 }

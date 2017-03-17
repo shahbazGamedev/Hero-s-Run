@@ -121,8 +121,12 @@ public class GameManager {
 	/// <param name="playMode">Play mode.</param>
 	public void setPlayMode( PlayMode playMode )
 	{
+		setMultiplayerMode( true );
 		this.playMode = playMode;
 		Debug.Log("GameManager-setPlayMode: new mode is " + playMode );
+
+		//Select a random multiplayer level to play.
+		LevelManager.Instance.chooseRandomMultiplayerLevel();
 		switch ( playMode )
 		{
 			case PlayMode.PlayAgainstEnemy:

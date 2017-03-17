@@ -32,7 +32,7 @@ public class LevelManager {
 	bool onlyUseUniqueTiles = false;
 	byte numberOfPlayersRequired;
 	private int currentMultiplayerLevel = 0; //the index of the multiplayer level selected by the player.
-	public CarouselEntry selectedRaceDetails;
+	public CircuitDetails selectedRaceDetails;
 	public int selectedHeroIndex; //index for heroCharacterList in HeroManager
 	public int selectedBotHeroIndex; //index for botHeroCharacterList in HeroManager. Used when in the PlayAgainstEnemy mode.
 
@@ -290,6 +290,14 @@ public class LevelManager {
 	public LevelData.CircuitInfo getSelectedCircuitInfo()
 	{
 		return levelData.multiplayerList[currentMultiplayerLevel].circuitInfo;
+    }
+
+	/// <summary>
+	/// Chooses the random multiplayer level and saves the value in currentMultiplayerLevel.
+	/// </summary>
+	public void chooseRandomMultiplayerLevel()
+	{
+		LevelManager.Instance.setCurrentMultiplayerLevel( Random.Range( 0, levelData.multiplayerList.Count ) );
     }
 
 }

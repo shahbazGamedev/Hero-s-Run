@@ -20,7 +20,6 @@ public class MatchmakingManager : MonoBehaviour {
 	[Header("Circuit")]
 	[SerializeField] Text circuitName;
 	[SerializeField] Image circuitImage;
-	[SerializeField] Text entryFee;
 
 	[Header("Single Player Panel")]
 	[SerializeField] GameObject singlePlayerPanel;
@@ -78,8 +77,8 @@ public class MatchmakingManager : MonoBehaviour {
 		}
 		else
 		{
-			CarouselEntry selected = LevelManager.Instance.selectedRaceDetails;
-			configureCircuitData( selected.circuitImage.sprite, selected.circuitName.text, selected.entryFee.text );
+			CircuitDetails selected = LevelManager.Instance.selectedRaceDetails;
+			configureCircuitData( selected.circuitImage.sprite, selected.circuitName.text );
 			endOfGameCanvas.SetActive( false );
 		}
 	}
@@ -183,11 +182,10 @@ public class MatchmakingManager : MonoBehaviour {
 		}
 	}
 
-	public void configureCircuitData( Sprite circuitImageSprite, string circuitNameString, string entryFeeString )
+	public void configureCircuitData( Sprite circuitImageSprite, string circuitNameString )
 	{
 		circuitName.text = circuitNameString;
 		circuitImage.sprite = circuitImageSprite;
-		entryFee.text = entryFeeString;
 		enablePlayButton( true );
 	}
 
@@ -214,40 +212,14 @@ public class MatchmakingManager : MonoBehaviour {
 	public void OnClickPlay()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
- 		if( playerCanPayEntryFee() )
-		{
-			enablePlayButton( false );
-			MPNetworkLobbyManager.Instance.startMatch();
-		}
-		else
-		{
-			//Player does not have enough for entry fee. Open the store.
-			StoreManager.Instance.showStore(StoreTab.Store,StoreReason.Need_Coins);
-		}
-
+		enablePlayButton( false );
+		MPNetworkLobbyManager.Instance.startMatch();
 	}
 
 	public void OnClickShowStore()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		StoreManager.Instance.showStore( StoreTab.Store, StoreReason.None );
-	}
-
-	bool playerCanPayEntryFee()
-	{
-		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedMultiplayerLevel();
-		//Validate if the player has enough currency for the entry fee
-		int entryFee = multiplayerInfo.circuitInfo.entryFee;
-		if( entryFee <= PlayerStatsManager.Instance.getCurrentCoins() )
-		{
-			//Yes, he has enough
-			return true;
-		}
-		else
-		{
-			//No, he does not have enough
-			return false;
-		}
 	}
 
 	//Do not allow the player to exit the matchmaking screen if he has initiated matchmaking and a remote player has joined.
