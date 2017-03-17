@@ -3,30 +3,53 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CircuitDetails : MonoBehaviour {
+public class CarouselEntry : MonoBehaviour {
 
 	[Header("Race Circuit Parameters")]
-	public  Text circuitName;
-	public  Image circuitImage;
+	[SerializeField] int circuitNumber = 0; 	//This value corresponds to the index in the multiplayerList of LevelData
+	public Text circuitName;
+	public Image circuitImage;
+	public Text entryFee;
 
 	[Header("Online Players")]
 	[SerializeField] Text numberOnlinePlayers;
 
+	[Header("Shared")]
+	[SerializeField] Text raceButtonText;
+	[SerializeField] Text exitButtonText;
+	
 	// Use this for initialization
 	void Awake ()
 	{
 		//Configuration
-		LevelData.CircuitInfo circuitInfo = LevelManager.Instance.getSelectedCircuitInfo();
+		LevelData levelData = LevelManager.Instance.getLevelData();
+		LevelData.CircuitInfo circuitInfo = levelData.getMultiplayerInfo( circuitNumber ).circuitInfo;
 
 		//Circuit
 		circuitName.text = LocalizationManager.Instance.getText( circuitInfo.circuitTextID );
 		circuitImage.sprite = circuitInfo.circuitImage;
 
+		//Entry fee
+		string entryFeeString = LocalizationManager.Instance.getText( "CIRCUIT_ENTRY_FEE" );
+		if( circuitInfo.entryFee == 0 )
+		{
+			entryFeeString = entryFeeString.Replace("<entry fee>", LocalizationManager.Instance.getText( "MENU_FREE" ) );
+		}
+		else
+		{
+			entryFeeString = entryFeeString.Replace("<entry fee>", circuitInfo.entryFee.ToString() );
+		}
+		entryFee.text = entryFeeString;
+
+		//Common to all carousel entries
+		raceButtonText.text = LocalizationManager.Instance.getText( "HERO_SELECTION_CONFIRM" );
+		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );
+
 	}
 
 	void Start ()
 	{
-		Invoke("getNumberOfOnlinePlayers", 2f );
+		InvokeRepeating("getNumberOfOnlinePlayers", 0f, 5f );
 	}
 	
 	void getNumberOfOnlinePlayers()

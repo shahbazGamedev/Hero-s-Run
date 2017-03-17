@@ -329,6 +329,8 @@ public class MPNetworkLobbyManager : PunBehaviour
 	    {
 			if( PhotonNetwork.room.PlayerCount == LevelManager.Instance.getNumberOfPlayersRequired() )
 			{
+				//Now that we have everyone and we can start the race, deduct the entry fee, if any.
+				chargePlayerForMatch();
 				//Close the room. We do not want people to join while a race is in progress.
 				PhotonNetwork.room.IsOpen = false;
 		   	 	Invoke("loadLevel", DELAY_BEFORE_LOADING_LEVEL);
@@ -343,6 +345,19 @@ public class MPNetworkLobbyManager : PunBehaviour
 	void loadLevel()
 	{
 		PhotonNetwork.LoadLevel("Level");
+	}
+
+	void chargePlayerForMatch()
+	{
+		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedMultiplayerLevel();
+		//If the race is not free, deduct the entry fee and save.
+		int entryFee = multiplayerInfo.circuitInfo.entryFee;
+		if( entryFee > 0 )
+		{
+			PlayerStatsManager.Instance.modifyCurrentCoins(-entryFee, false, false );
+			PlayerStatsManager.Instance.savePlayerStats();
+			Debug.Log("MPNetworkLobbyManager-chargePlayerForMatch: deducting entry fee of: " + entryFee );
+		}
 	}
 	#endregion
 

@@ -446,6 +446,8 @@ public class LevelData : MonoBehaviour {
 		public Sprite circuitImage;
 		[Tooltip("Square icon used at the beginning of the match.")]
 		public Sprite circuitIcon;
+		[Tooltip("Entry Fee")]
+		public int entryFee = 0;		
 	}
 
 }

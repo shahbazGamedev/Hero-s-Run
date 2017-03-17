@@ -244,8 +244,8 @@ public class MPGameEndManager : MonoBehaviour {
 
 	void showMatchmaking()
 	{
-		CircuitDetails selected = LevelManager.Instance.selectedRaceDetails;
-		matchmakingManager.configureCircuitData( selected.circuitImage.sprite, selected.circuitName.text );
+		CarouselEntry selected = LevelManager.Instance.selectedRaceDetails;
+		matchmakingManager.configureCircuitData( selected.circuitImage.sprite, selected.circuitName.text, selected.entryFee.text );
 		matchmakingManager.gameObject.SetActive( true );
 		gameObject.SetActive( false );
 	}
