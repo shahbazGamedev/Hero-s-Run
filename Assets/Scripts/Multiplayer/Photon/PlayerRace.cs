@@ -154,8 +154,19 @@ public class PlayerRace : Photon.PunBehaviour
 				int officialRacePosition = officialRacePositionList.FindIndex(playerRace => playerRace == this);
 				Debug.Log ("Finish Line crossed by " + gameObject.name + " in race position " + officialRacePosition );
 				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllBuffered, other.transform.position.z, raceDuration, distanceTravelled, officialRacePosition );
+				//if this is the first player to cross the finish line, start the End of Race countdown.
+				if( officialRacePositionList.Count == 1 )
+				{
+					this.photonView.RPC("StartEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
+				}
 			}
 		}
+	}
+
+	[PunRPC]
+	void StartEndOfRaceCountdownRPC()
+	{
+		HUDMultiplayer.hudMultiplayer.startEndOfRaceCountdown();
 	}
 
 	[PunRPC]

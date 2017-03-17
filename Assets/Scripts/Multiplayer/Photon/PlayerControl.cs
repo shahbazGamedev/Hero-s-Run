@@ -1926,22 +1926,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//We have arrived. Stop player movement.
 		playerMovementEnabled = false;
 		playVictoryAnimation();
-		if( this.photonView.isMine && playerAI == null ) GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
-		//Wait a few seconds for the victory animation to finish
-		Invoke ("ReturnToMatchmaking", 3.5f);
 	}
-
-    void ReturnToMatchmaking()
-    {
-		if (this.photonView.isMine )
-		{
-			 PhotonNetwork.LeaveRoom();
-		}
-		else
-		{
-			Debug.LogWarning("ReturnToMatchmaking-Not leaving room because the photon view is not mine for: " + gameObject.name );
-		}
-    }
 
 	#region OnTriggerEnter, OnTriggerStay, OnTriggerExit
 	void OnTriggerEnter(Collider other)

@@ -25,6 +25,8 @@ public class HUDMultiplayer : MonoBehaviour {
 	[SerializeField] RectTransform circuitDetailsPanel;
 	[SerializeField] Text circuitNameText;
 	[SerializeField] Image circuitIcon;
+	[Header("Race About To End Message")]
+	[SerializeField] Text raceEndingText;
 
 	//Event management used to notify players to start running
 	public delegate void StartRunningEvent();
@@ -87,6 +89,28 @@ public class HUDMultiplayer : MonoBehaviour {
 		raceHasStarted = true;
 		displayRacePosition( true );	
 		
+	}
+
+	public void startEndOfRaceCountdown()
+	{
+		StartCoroutine("endOfRaceCountdown");
+	}
+
+	IEnumerator endOfRaceCountdown()
+	{
+		raceEndingText.gameObject.SetActive( true );
+
+		int countdownNumber = 10;
+		while( countdownNumber > 0 )
+		{
+			raceEndingText.text = "Race ends in " + countdownNumber.ToString() + " sec.";
+			UISoundManager.uiSoundManager.playAudioClip( beep );
+			yield return new WaitForSecondsRealtime( 1f);
+			countdownNumber--;
+		}
+	
+		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
+		PhotonNetwork.LeaveRoom();
 	}
 
 	void Update()
