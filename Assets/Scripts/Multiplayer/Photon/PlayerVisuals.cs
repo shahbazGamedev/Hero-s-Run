@@ -21,8 +21,10 @@ public class PlayerVisuals : Photon.PunBehaviour {
 		
 	}
 
-	public void playDustPuff( bool activate )
+	public void playDustPuff( bool activate, bool loop = true )
 	{
+		ParticleSystem.MainModule main = dustPuff.main;
+		main.loop = loop;
 		if( activate )
 		{
 			dustPuff.Play();

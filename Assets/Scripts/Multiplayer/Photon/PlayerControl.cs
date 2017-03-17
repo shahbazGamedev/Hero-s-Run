@@ -713,6 +713,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	public void land()
 	{
 		//Reset values that we changed in the fall() method
+		playerVisuals.playDustPuff( true, false );
+		playerCamera.lockCamera( false );
 		gravity = DEFAULT_GRAVITY;
 		playerCamera.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING;
 		allowRunSpeedToIncrease = true;
@@ -1481,15 +1483,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			//Disable the player's shadow
 			playerVisuals.enablePlayerShadow( false );
 
-			//Do not change collider if player falls into river.
-			if( deathType != DeathType.Water && deathType != DeathType.FallForward )
-			{
-				//Change his collider since he is now lying on the ground,
-				//in particular so zombies will not be able to walk through his body
-				controller.center = new Vector3( 0, controllerOriginalCenter.y ,-1f );
-				controller.radius = 0.9f;
-			}
-
 			//Remember the run speed at time of death because we want to start running again (in case of revive) at a 
 			//percentage of this value.
 			//When we jump, the run speed is reduced.
@@ -1608,12 +1601,14 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void death_completed ( AnimationEvent eve )
 	{
-		StartCoroutine( waitBeforeResurrecting(1.5f) );
+		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.18f, 0.7f, 1f ) );
+		StartCoroutine( waitBeforeResurrecting(2f) );
 	}
 
 	public void fall_forward_completed ( AnimationEvent eve )
 	{
-		StartCoroutine( waitBeforeResurrecting(1.5f) );
+		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.18f, 0.7f, 1f ) );
+		StartCoroutine( waitBeforeResurrecting(2f) );
 	}
 
 	IEnumerator waitBeforeResurrecting ( float duration )
@@ -1627,8 +1622,33 @@ public class PlayerControl : Photon.PunBehaviour {
 		resurrectBegin(true);
 	}
 
+	IEnumerator controlVignetting( float endVignettingFactor, float endBlurFactor, float duration )
+	{
+		VignetteAndChromaticAberration vAcA = Camera.main.GetComponent<VignetteAndChromaticAberration>();
+ 		vAcA.enabled = true;
+
+		float elapsedTime = 0;
+		
+		float startVignettingFactor = vAcA.intensity;
+		float startBlurFactor = vAcA.intensity;
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			vAcA.intensity = Mathf.Lerp( startVignettingFactor, endVignettingFactor, elapsedTime/duration );
+			vAcA.blur = Mathf.Lerp( startBlurFactor, endBlurFactor, elapsedTime/duration );
+			yield return new WaitForFixedUpdate();  
+			
+		} while ( elapsedTime < duration );
+		
+		vAcA.intensity = endVignettingFactor;
+		vAcA.blur = endBlurFactor;
+		if( vAcA.intensity == 0 ) vAcA.enabled = false;
+	}
+
 	public void resurrectBegin( bool calledByMagicGate )
 	{
+		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0f, 0f, 0f ) );
+
 		//Only send an event if we are the local player and we are not a bot.
 		if( this.photonView.isMine && playerAI == null ) GameManager.Instance.setGameState( GameState.Resurrect );
 
@@ -1639,8 +1659,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerCamera.resetCameraParameters();
 		
 		//2) Reposition dead body at the respawn location.
-		//Also, play the dead loop animation
-		anim.Play("DeathWall_Loop");
 		GameObject respawnLocationObject;
 
 		if( currentTileType == TileType.T_Junction || currentTileType == TileType.T_Junction_2 )
@@ -1687,8 +1705,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//to the respawn location. This in turn will cause isInDeadEnd to become true and when the player will try to change lanes,
 			//he will turn instead and crash into a fence. To avoid that, disable the collider before moving the player and reenable it after.
 			transform.GetComponent<Collider>().enabled = false;
-			//When he is on the last frame of the dead animation, the player is 0.0328f above the ground
-			transform.position = new Vector3( respawn.position.x, groundHeight + 0.0328f, respawn.position.z );
+			transform.position = new Vector3( respawn.position.x, groundHeight, respawn.position.z );
 			//The respawnLocationObject is always point in the correct direction for the resurrected hero
 			//temporarily set the tile has the parent of the hero and simply use the local rotation of the respawn location object
 			transform.SetParent( currentTile.transform );
@@ -1696,13 +1713,19 @@ public class PlayerControl : Photon.PunBehaviour {
 			transform.SetParent( null );
 			tileRotationY = Mathf.Floor ( transform.eulerAngles.y );
 			transform.GetComponent<Collider>().enabled = true;
+			//Re-enable the player's blob shadow
+			playerVisuals.enablePlayerShadow( true );
 			playerCamera.positionCameraNow();
+			playerCamera.lockCamera( true );
+			transform.position = new Vector3( respawn.position.x, groundHeight + 8f, respawn.position.z );
+			//Make player fall from sky, land and start running again
+			fall();
 		}
 		else
 		{
 			Debug.LogError("PlayerControl-ResurrectBegin: Unable to find respawnLocation game object in tile : " + currentTile.name );
 		}
-		Invoke("resurrectMiddle", 3f ); //start get up at around frame 285 of the revive animation
+		Invoke("resurrectEnd", 2f );
 	}
 
 	public void resetSharedLevelData( bool unlockCamera )
@@ -1744,32 +1767,24 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	}
 
-	void resurrectMiddle()
-	{
-		//3) Play the revive animation
-		anim.speed = 1.6f;
-		anim.Play( "DeathWall_GetUp" );
-	}
-
-	public void get_up_completed ( AnimationEvent eve )
-	{
-		anim.speed = 1f;
-		//Re-enable the player's blob shadow
-		playerVisuals.enablePlayerShadow( true );
-		resurrectEnd();
-	}
-	
 	private void resurrectEnd()
 	{		
-		//6) Start running
+		//Tell the remote versions of us that we resurrected
+		this.photonView.RPC("playerResurrectedRPC", PhotonTargets.All );
+		anim.speed = 1f;
 		allowRunSpeedToIncrease = true;
-		startRunning();
 
 		//7) Restore player controls
 		enablePlayerControl( true );
 		
 		//8) Display a Go! message
 		if( this.photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.activateUserMessage( LocalizationManager.Instance.getText("GO"), 0f, 1.25f );
+	}
+
+	[PunRPC]
+	public void playerResurrectedRPC()
+	{
+		MiniMap.Instance.updateFeed( gameObject.name, " is back in the game!" );
 	}
 
 	public int getNumberOfTimesDiedDuringRace()

@@ -27,6 +27,8 @@ public class MiniMap : MonoBehaviour {
 	[SerializeField] Sprite playerDeadRadarSprite;
 	[SerializeField] Text cardFeed; //Used to display the last card played, such as 'Bob played Lightning'
 	const float MAX_DISTANCE = 72f;
+	const float CARD_FEED_TTL = 4f; //in seconds
+	float cardFeedTimeOfLastEntry;
 
 	// Use this for initialization
 	void Awake () {
@@ -71,18 +73,27 @@ public class MiniMap : MonoBehaviour {
 	public void updateCardFeed( string cardPlayerName, CardManager.CardData lastCardPlayed )
 	{
 		cardFeed.text = cardPlayerName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + lastCardPlayed.name + "</color>";
+		cardFeedTimeOfLastEntry = Time.time;
 	}
 
 	public void updateCardFeed( string cardPlayerName, CardName cardName )
 	{
 		CardManager.CardData lastCardPlayed = CardManager.Instance.getCardByName( cardName );
 		cardFeed.text = cardPlayerName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + lastCardPlayed.name + "</color>";
+		cardFeedTimeOfLastEntry = Time.time;
+	}
+
+	public void updateFeed( string playerName, string message )
+	{
+		cardFeed.text = playerName + message;
+		cardFeedTimeOfLastEntry = Time.time;
 	}
 
 	// Update is called once per frame
 	void LateUpdate () {
 	
 		drawRadarDots();
+		if( Time.time - cardFeedTimeOfLastEntry > CARD_FEED_TTL ) cardFeed.text = string.Empty;
 	}
 
 	void drawRadarDots()
