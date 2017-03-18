@@ -43,8 +43,6 @@ public class SettingsMenu : MonoBehaviour {
 	public Button debugMenuButton;
 	public Text debugMenuText;
 	public Canvas debugMenuCanvas;
-	[Header("Version Number")]
-	public Text versionNumberText;
 	bool levelLoading = false;
 
 	// Use this for initialization
@@ -102,7 +100,6 @@ public class SettingsMenu : MonoBehaviour {
 		{
 			debugMenuButton.gameObject.SetActive( false );
 		}
-		versionNumberText.text = "v" + GameManager.Instance.getVersionNumber();
 
 		soundFxVolumeSlider.value = PlayerStatsManager.Instance.getSoundFxVolume();
 		musicVolumeSlider.value = PlayerStatsManager.Instance.getMusicVolume();

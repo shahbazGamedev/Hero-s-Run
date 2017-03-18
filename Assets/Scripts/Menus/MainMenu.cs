@@ -8,6 +8,8 @@ public class MainMenu : MonoBehaviour {
 
 	[Header("Main Menu")]
 	bool levelLoading = false;
+	[Header("Version Number")]
+	public Text versionNumberText;
 	[Header("New Player Icons Indicator")]
 	[SerializeField] GameObject newPlayerIconsIndicator;
 
@@ -15,6 +17,7 @@ public class MainMenu : MonoBehaviour {
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
+		versionNumberText.text = GameManager.Instance.getVersionNumber();
 		updateNumberOfPlayerIcons();		
 	}
 	
