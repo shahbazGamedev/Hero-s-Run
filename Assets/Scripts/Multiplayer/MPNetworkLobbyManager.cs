@@ -51,9 +51,9 @@ public class MPNetworkLobbyManager : PunBehaviour
 		Debug.Log("startMatch " + GameManager.Instance.getPlayMode() );
 
 		//Does the selected play mode require Internet?
-		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstEnemy )
+		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstEnemy || GameManager.Instance.getPlayMode() == PlayMode.PlayAlone )
 		{
-			//PlayAgainstEnemy is an offline mode. We do not need to check that we have access to the Internet.
+			//PlayAgainstEnemy and PlayAlone are offline modes. We do not need to check that we have access to the Internet.
 			connecting = true;
 			//Do not call PhotonNetwork.ConnectUsingSettings(...) as it does not make sense when playing offline.
 			//The method tryToJoinRoom will behave as expected even when not connected.
@@ -145,7 +145,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		switch ( GameManager.Instance.getPlayMode() )
 		{
 			case PlayMode.PlayAgainstEnemy:
-				matchmakingManager.setConnectionProgress( "Setting up Player vs. Enemy race" );   
+				matchmakingManager.setConnectionProgress( "Setting up Player vs. AI race" );   
 			break;
 
 			case PlayMode.PlayAlone:
