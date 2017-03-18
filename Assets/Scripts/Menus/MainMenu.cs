@@ -9,12 +9,13 @@ public class MainMenu : MonoBehaviour {
 	[Header("Main Menu")]
 	bool levelLoading = false;
 	[Header("New Player Icons Indicator")]
-	[SerializeField] Text newPlayerIconsIndicator;
+	[SerializeField] GameObject newPlayerIconsIndicator;
 
 	// Use this for initialization
 	void Start ()
 	{
-		Handheld.StopActivityIndicator();		
+		Handheld.StopActivityIndicator();
+		updateNumberOfPlayerIcons();		
 	}
 	
 	public void OnClickOpenPlayModes()
@@ -45,9 +46,9 @@ public class MainMenu : MonoBehaviour {
 
 	void updateNumberOfPlayerIcons()
 	{
-		//Update the number of newly unlocked player icons
+		//Next to the Career Profile button, display a NEW indicator if there are newly aacquired player icons
 		int newPlayerIcons = ProgressionManager.Instance.getNumberOfNewPlayerIcons();
-		newPlayerIconsIndicator.text = newPlayerIcons.ToString();
+		newPlayerIconsIndicator.SetActive( newPlayerIcons > 0 );
 	}
 
 	IEnumerator loadScene(GameScenes value)

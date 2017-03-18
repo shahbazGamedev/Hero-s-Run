@@ -167,15 +167,15 @@ public class CharacterScreenMenu : MonoBehaviour {
 		Debug.Log("User Name is : " + userNameText.text );
 		PlayerStatsManager.Instance.saveUserName( userNameText.text );
 		PlayerStatsManager.Instance.setAvatar(selectedAvatar);
-		StartCoroutine( loadWorldMapAfterDelay( 0.9f ) );
+		StartCoroutine( loadMainMenuAfterDelay( 0.9f ) );
 	}
 
-	IEnumerator loadWorldMapAfterDelay( float waitPeriod )
+	IEnumerator loadMainMenuAfterDelay( float waitPeriod )
 	{
 		//Give time to the player to understand what is going on before loading the world map
 		Handheld.StartActivityIndicator();
 		yield return new WaitForSeconds( waitPeriod );
-		SceneManager.LoadScene( (int) GameScenes.WorldMap );
+		SceneManager.LoadScene( (int) GameScenes.MainMenu );
 	}
 
 	void playHerofrontAnims()
