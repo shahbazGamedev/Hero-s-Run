@@ -7,7 +7,6 @@ public class DebugMenu : MonoBehaviour {
 
 
 	[Header("Debug Menu")]
-	public NewWorldMapHandler newWorldMapHandler;
 	public Text titleText;
 	[Header("Player Stats")]
 	public Text currentCoins;
@@ -119,9 +118,6 @@ public class DebugMenu : MonoBehaviour {
 		UISoundManager.uiSoundManager.playButtonClick();
 		LevelManager.Instance.unlockAllEpisodes();
 		PlayerStatsManager.Instance.savePlayerStats();
-		newWorldMapHandler.drawLevelMarkers();
-		newWorldMapHandler.updateFriendPortraits();
-
 	}
 
 	public void unlockAllStories()

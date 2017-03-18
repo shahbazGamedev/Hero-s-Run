@@ -7,8 +7,6 @@ public class StoryCompletedPopup : MonoBehaviour {
 	[Header("Story Completed Popup")]
 	public Text storyCompletedTitleText;
 	public Text messageText;
-	public Text difficultyLevelLabel;
-	public Text changeDifficultyButtonText;
 	public Text startOverButtonText;
 	public NewWorldMapHandler newWorldMapHandler;
 
@@ -16,18 +14,8 @@ public class StoryCompletedPopup : MonoBehaviour {
 	void Awake ()
 	{
 		storyCompletedTitleText.text = LocalizationManager.Instance.getText("STORY_COMPLETED_TITLE");
-		if( PlayerStatsManager.Instance.getDifficultyLevel() == DifficultyLevel.Legendary )
-		{
-			messageText.text = LocalizationManager.Instance.getText("STORY_COMPLETED_MESSAGE_AT_LEGENDARY");
-		}
-		else
-		{
-			messageText.text = LocalizationManager.Instance.getText("STORY_COMPLETED_MESSAGE_NOT_LEGENDARY");
-		}
+		messageText.text = LocalizationManager.Instance.getText("STORY_COMPLETED_MESSAGE");
 		messageText.text = messageText.text.Replace("\\n", System.Environment.NewLine );
-
-		difficultyLevelLabel.text = LocalizationManager.Instance.getText("STORY_COMPLETED_DIFFICULTY_LEVEL_LABEL");
-		changeDifficultyButtonText.text = PlayerStatsManager.Instance.getDifficultyLevelName();
 		startOverButtonText.text = LocalizationManager.Instance.getText("STORY_COMPLETED_START_OVER");
 	}
 
@@ -41,17 +29,6 @@ public class StoryCompletedPopup : MonoBehaviour {
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		GetComponent<Animator>().Play("Panel Slide Out");
-	}
-
-	//Player changes the difficulty level
-	public void changeDifficultyLevel()
-	{
-		Debug.Log("changeDifficultyLevel");
-		UISoundManager.uiSoundManager.playButtonClick();
-		DifficultyLevel newDifficultyLevel = PlayerStatsManager.Instance.getNextDifficultyLevel();
-		//setDifficultyLevel takes care of saving the new value
-		PlayerStatsManager.Instance.setDifficultyLevel(newDifficultyLevel);
-		changeDifficultyButtonText.text = PlayerStatsManager.Instance.getDifficultyLevelName();
 	}
 
 	//Player starts over

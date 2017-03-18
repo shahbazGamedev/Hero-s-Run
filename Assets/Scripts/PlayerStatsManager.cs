@@ -104,7 +104,6 @@ public class PlayerStatsManager {
 	bool hasInfiniteTreasureIslandKeys = false;
 
 	PowerUpType powerUpSelected = PowerUpType.MagicBoots;
-	DifficultyLevel difficultyLevel = DifficultyLevel.Normal;
 	//The avatar the player has chosen in the character selection screen.
 	//The enum will be converted using toString. The available avatars in the resources/avatar folder must be named
 	//exactly like their enum counterpart.
@@ -155,60 +154,6 @@ public class PlayerStatsManager {
 	public bool getHasInfiniteTreasureIslandKeys()
 	{
 		return hasInfiniteTreasureIslandKeys;
-	}
-
-	public DifficultyLevel getDifficultyLevel()
-	{
-		return difficultyLevel;
-	}
-	
-	public string getDifficultyLevelName()
-	{
-		string difficultyLevelName = System.String.Empty;
-
-		switch (difficultyLevel)
-		{
-		case DifficultyLevel.Normal:
-			difficultyLevelName = LocalizationManager.Instance.getText("MENU_DIFFICULTY_LEVEL_NORMAL");
-			break;
-			
-		case DifficultyLevel.Heroic:
-			difficultyLevelName = LocalizationManager.Instance.getText("MENU_DIFFICULTY_LEVEL_HEROIC");
-			break;
-			
-		case DifficultyLevel.Legendary:
-			difficultyLevelName = LocalizationManager.Instance.getText("MENU_DIFFICULTY_LEVEL_LEGENDARY");
-			break;
-			
-		}
-		return difficultyLevelName;
-	}
-
-	public void setDifficultyLevel( DifficultyLevel difficulty )
-	{
-		difficultyLevel = difficulty;
-		savePlayerStats();
-	}
-	
-	public DifficultyLevel getNextDifficultyLevel()
-	{
-		int index = (int)difficultyLevel;
-		//we want the next one
-		index++;
-		//Make sure we stay within the range of the Difficulty Levels: Normal = 1, Heroic = 2, Legendary = 3
-		if( index > 3 ) index = 1;
-		return (DifficultyLevel)index;
-		
-	}
-	
-	public DifficultyLevel getPreviousDifficultyLevel()
-	{
-		int index = (int)difficultyLevel;
-		//we want the previous one
-		index--;
-		//Make sure we stay within the range of the Difficulty Levels: Normal = 1, Heroic = 2, Legendary = 3
-		if( index < 1 ) index = 3;
-		return (DifficultyLevel)index;
 	}
 	
 	public Avatar getAvatar()
@@ -1120,7 +1065,6 @@ public class PlayerStatsManager {
 			loadKeysFoundInEpisode();
 			loadTreasureKeysFound();
 			powerUpSelected = (PowerUpType)PlayerPrefs.GetInt("powerUpSelected", (int)PowerUpType.SlowTime);
-			difficultyLevel = (DifficultyLevel)PlayerPrefs.GetInt("difficultyLevel", (int)DifficultyLevel.Normal);
 			avatar = (Avatar)PlayerPrefs.GetInt("avatar", (int)Avatar.None);
 			userName = PlayerPrefs.GetString("userName", "" );
 			loadPowerUpInventory();
@@ -1215,7 +1159,6 @@ public class PlayerStatsManager {
 		saveKeysFoundInEpisode();
 		saveTreasureKeysFound();
 		PlayerPrefs.SetInt("powerUpSelected", (int)powerUpSelected );
-		PlayerPrefs.SetInt("difficultyLevel", (int)difficultyLevel );
 		PlayerPrefs.SetInt("avatar", (int)avatar );
 		PlayerPrefs.SetString( "userName", userName );
 		savePowerUpInventory();
@@ -1276,8 +1219,6 @@ public class PlayerStatsManager {
 			resetTreasureKeysFound();
 			PlayerPrefs.SetInt("powerUpSelected", (int)PowerUpType.SlowTime );
 			powerUpSelected = PowerUpType.SlowTime;
-			PlayerPrefs.SetInt("difficultyLevel", (int)DifficultyLevel.Normal );
-			difficultyLevel = DifficultyLevel.Normal;
 			PlayerPrefs.SetInt("avatar", (int)Avatar.None);
 			avatar = Avatar.None;
 			PlayerPrefs.SetString( "userName", "" );

@@ -67,8 +67,6 @@ public class SettingsMenu : MonoBehaviour {
 		{
 			facebookText.text = LocalizationManager.Instance.getText("MENU_LOGGED_OUT");
 		}
-		string difficultyLevel = LocalizationManager.Instance.getText("MENU_DIFFICULTY_LEVEL"); 
-		difficultyText.text = difficultyLevel + "\n" + PlayerStatsManager.Instance.getDifficultyLevelName();
 		achievementsText.text = LocalizationManager.Instance.getText("MENU_ACHIEVEMENTS");
 		if( PlayerStatsManager.Instance.getCameraFlipped() )
 		{
@@ -143,17 +141,6 @@ public class SettingsMenu : MonoBehaviour {
 		{
 			//Login
 		}
-	}
-
-	public void changeDifficultyLevel()
-	{
-		Debug.Log("changeDifficultyLevel");
-		UISoundManager.uiSoundManager.playButtonClick();
-		DifficultyLevel newDifficultyLevel = PlayerStatsManager.Instance.getNextDifficultyLevel();
-		//setDifficultyLevel takes care of saving the new value
-		PlayerStatsManager.Instance.setDifficultyLevel(newDifficultyLevel);
-		string difficultyLevel = LocalizationManager.Instance.getText("MENU_DIFFICULTY_LEVEL"); 
-		difficultyText.text = difficultyLevel + "\n" + PlayerStatsManager.Instance.getDifficultyLevelName();
 	}
 
 	public void showAchievements()

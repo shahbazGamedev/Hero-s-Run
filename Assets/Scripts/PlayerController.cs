@@ -392,16 +392,13 @@ public sealed class PlayerController : MonoBehaviour {
 
 	void determineRunSpeed()
 	{
-		//Use the level data to determine what the start run speed and run acceleration should be since they can vary
-		//from eoisode to episode. Final episodes are more difficult than earlier levels.
-		LevelData levelData = LevelManager.Instance.getLevelData();
-		//Note: getRunStartSpeed & getRunAcceleration return the values adjusted according to the difficulty level of the game.
-		//The RunStartSpeed is higher in Heroic mode than in normal mode for example.
-		levelRunStartSpeed = levelData.getRunStartSpeed();
-		runAcceleration = levelData.getRunAcceleration();
+		//Determine what the start run speed and run acceleration should be since they can vary
+		//from episode to episode. Final episodes are more difficult than earlier levels.
+		levelRunStartSpeed = LevelManager.Instance.getCurrentEpisodeInfo().RunStartSpeed;
+		runAcceleration = LevelManager.Instance.getCurrentEpisodeInfo().RunAcceleration;
 		//We need to set this here so that the troll can get the player's speed.
 		newRunSpeed = levelRunStartSpeed;
-		runSpeedTurnMultiplier = levelData.getRunSpeedTurnMultiplier();
+		runSpeedTurnMultiplier = 0.9f;
 	}
 	
 	public void startRunning()

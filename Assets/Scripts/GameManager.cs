@@ -42,13 +42,6 @@ public enum GameScenes {
 	Training = 14
 }
 
-public enum DifficultyLevel {
-	
-	Normal = 1,
-	Heroic = 2,
-	Legendary = 3
-}
-
 public enum GameMode {
 	
 	Story = 1,

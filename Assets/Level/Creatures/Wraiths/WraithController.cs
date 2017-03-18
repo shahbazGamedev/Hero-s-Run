@@ -165,7 +165,7 @@ public sealed class WraithController : Creature, ICreature {
 								//Charge
 								mainCamera.GetComponent<MotionBlur>().enabled = true;			
 								followsPlayer = true;
-								moveSpeed = getAdjustedChargeSpeed();
+								moveSpeed = NORMAL_CHARGE_SPEED;
 								setCreatureState( CreatureState.Running );
 								anim.CrossFadeInFixedTime( "move" , CROSS_FADE_DURATION );
 								audioSource.PlayOneShot( charge );
@@ -228,27 +228,6 @@ public sealed class WraithController : Creature, ICreature {
 		attackType = AttackType.do_nothing;
 		setCreatureState( CreatureState.Idle );
 		anim.CrossFadeInFixedTime( "idle" , CROSS_FADE_DURATION );
-	}
-
-	public float getAdjustedChargeSpeed()
-	{
-		float adjustedChargeSpeed = NORMAL_CHARGE_SPEED;
-		switch (PlayerStatsManager.Instance.getDifficultyLevel())
-		{
-			case DifficultyLevel.Normal:
-			adjustedChargeSpeed = NORMAL_CHARGE_SPEED; //Base value is Normal, so no multiplier
-			break;
-				
-			case DifficultyLevel.Heroic:
-			adjustedChargeSpeed = NORMAL_CHARGE_SPEED * 1.1f;
-			break;
-				
-			case DifficultyLevel.Legendary:
-			adjustedChargeSpeed = NORMAL_CHARGE_SPEED * 1.3f;
-			break;
-			
-		}
-		return adjustedChargeSpeed;
 	}
 
 	public void victory( bool playWinSound )

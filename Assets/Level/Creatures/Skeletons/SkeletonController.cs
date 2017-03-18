@@ -289,7 +289,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		Physics.IgnoreCollision(magicMissile.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(magicMissile.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
 		magicMissile.GetComponent<Rigidbody>().isKinematic = false;
-		magicMissile.GetComponent<Rigidbody>().AddForce( ( new Vector3( getPlayer().position.x, getPlayer().position.y + 0.4f, getPlayer().position.z ) - magicMissile.transform.position).normalized * getAdjustedBoltForce() );
+		magicMissile.GetComponent<Rigidbody>().AddForce( ( new Vector3( getPlayer().position.x, getPlayer().position.y + 0.4f, getPlayer().position.z ) - magicMissile.transform.position).normalized * bolt_force );
 		magicMissile.GetComponent<Projectile>().launchProjectile();
 		GameObject.Destroy( magicMissile, 10f );
 	}
@@ -373,30 +373,9 @@ public sealed class SkeletonController : Creature, ICreature {
 		Physics.IgnoreCollision(arrow.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(arrow.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
 		arrow.GetComponent<Rigidbody>().isKinematic = false;
-		arrow.GetComponent<Rigidbody>().AddForce( (new Vector3( getPlayer().position.x, getPlayer().position.y + 0.2f, getPlayer().position.z ) - arrow.transform.position).normalized * getAdjustedBoltForce() );
+		arrow.GetComponent<Rigidbody>().AddForce( (new Vector3( getPlayer().position.x, getPlayer().position.y + 0.2f, getPlayer().position.z ) - arrow.transform.position).normalized * bolt_force );
 		arrow.GetComponent<Projectile>().launchProjectile();
 		GameObject.Destroy( arrow, 10f );
-	}
-
-	public float getAdjustedBoltForce()
-	{
-		float adjustedBoltForce = bolt_force;
-		switch (PlayerStatsManager.Instance.getDifficultyLevel())
-		{
-			case DifficultyLevel.Normal:
-			adjustedBoltForce = bolt_force; //Base value is Normal, so no multiplier
-			break;
-				
-			case DifficultyLevel.Heroic:
-			adjustedBoltForce = bolt_force * 1.3f;
-			break;
-				
-			case DifficultyLevel.Legendary:
-			adjustedBoltForce = bolt_force * 1.6f;
-			break;
-			
-		}
-		return adjustedBoltForce;
 	}
 
 	public void sideCollision()
