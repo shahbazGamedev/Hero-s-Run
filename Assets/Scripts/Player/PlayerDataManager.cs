@@ -20,8 +20,12 @@ public class PlayerDataManager : MonoBehaviour {
 		{
 			DontDestroyOnLoad(gameObject);
 			Instance = this;
-			initialise();
 		}
+	}
+
+	void Start ()
+	{
+		initialise();
 	}
 
 	void initialise()

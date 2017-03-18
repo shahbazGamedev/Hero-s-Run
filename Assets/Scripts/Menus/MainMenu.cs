@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour {
 
 	[Header("Main Menu")]
 	bool levelLoading = false;
+	[Header("New Player Icons Indicator")]
+	[SerializeField] Text newPlayerIconsIndicator;
 
 	// Use this for initialization
 	void Start ()
@@ -38,6 +41,13 @@ public class MainMenu : MonoBehaviour {
 	public void OnClickShowPlayerIconSelection()
 	{
 		StartCoroutine( loadScene(GameScenes.PlayerIconSelection) );
+	}
+
+	void updateNumberOfPlayerIcons()
+	{
+		//Update the number of newly unlocked player icons
+		int newPlayerIcons = ProgressionManager.Instance.getNumberOfNewPlayerIcons();
+		newPlayerIconsIndicator.text = newPlayerIcons.ToString();
 	}
 
 	IEnumerator loadScene(GameScenes value)
