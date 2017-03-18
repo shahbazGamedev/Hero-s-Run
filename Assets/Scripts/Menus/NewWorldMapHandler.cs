@@ -363,6 +363,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public void OnClickOpenMainMenu()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
+		GameManager.Instance.setMultiplayerMode( true );
 		StartCoroutine( loadScene(GameScenes.MainMenu) );
 	}
 

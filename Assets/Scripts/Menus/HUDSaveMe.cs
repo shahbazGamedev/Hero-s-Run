@@ -33,6 +33,7 @@ public class HUDSaveMe : MonoBehaviour {
 
 	void Awake()
 	{
+		if( GameManager.Instance.isMultiplayer() ) Destroy( gameObject );
 		//Normal Save Me
 		titleNormalText.text = LocalizationManager.Instance.getText("MENU_SAVE_ME_TITLE");
 		saveMeText.text = LocalizationManager.Instance.getText("MENU_SAVE_ME");
@@ -46,8 +47,8 @@ public class HUDSaveMe : MonoBehaviour {
 		//helpText.text gets set at runtime.
 		tryAgainText.text = LocalizationManager.Instance.getText("MENU_TRY_AGAIN");
 		quitTutorialText.text = LocalizationManager.Instance.getText("MENU_QUIT");
-		//Do not show the retry from last checkpoint button when in endless mode or in multiplayer
-		if( GameManager.Instance.getGameMode() == GameMode.Endless || GameManager.Instance.isMultiplayer() )
+		//Do not show the retry from last checkpoint button when in endless mode
+		if( GameManager.Instance.getGameMode() == GameMode.Endless )
 		{
 			buttonPanel.sizeDelta = new Vector2(buttonPanel.rect.width, buttonPanel.rect.height - checkpointButton.rect.height);
 			checkpointButton.gameObject.SetActive( false );
@@ -121,7 +122,7 @@ public class HUDSaveMe : MonoBehaviour {
 
 		tutorialPanel.SetActive( false );
 		normalPanel.SetActive( true );
-		if( GameManager.Instance.getGameMode() == GameMode.Story && !GameManager.Instance.isMultiplayer() )
+		if( GameManager.Instance.getGameMode() == GameMode.Story )
 		{
 			progressBarPanel.SetActive( true );
 			progressBarPanel.GetComponent<EpisodeProgressIndicator>().updatePlayerIconPosition();
@@ -177,16 +178,8 @@ public class HUDSaveMe : MonoBehaviour {
 		//Report score to Game Center
 		GameCenterManager.updateLeaderboard();
 		closeSaveMeMenu();
-		if( GameManager.Instance.isMultiplayer() )
-		{
-			//The player will leave the room and go back to the matchmaking screen.
-			PhotonNetwork.LeaveRoom();
-		}
-		else
-		{
-			GameManager.Instance.setGameState(GameState.PostLevelPopup);
-			SceneManager.LoadScene( (int) GameScenes.WorldMap );
-		}
+		GameManager.Instance.setGameState(GameState.PostLevelPopup);
+		SceneManager.LoadScene( (int) GameScenes.WorldMap );
 	}
 
 }

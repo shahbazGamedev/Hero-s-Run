@@ -72,7 +72,7 @@ public class GameManager {
 	public static event GameStateEvent gameStateEvent;
 
 	private GameMode gameMode = GameMode.Story;
-	private bool multiplayerMode = false;
+	private bool multiplayerMode = true;
 	public Sprite selfie;
 	public byte[] selfieBytes;
 

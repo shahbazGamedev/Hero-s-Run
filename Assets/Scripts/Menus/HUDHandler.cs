@@ -66,16 +66,8 @@ public class HUDHandler : MonoBehaviour {
 	
 	void Start()
 	{
-		if( !GameManager.Instance.isMultiplayer() )
-		{
-			//Display the name of the current level
-			slideInEpisodeName();
-		}
-		else
-		{	//There is no tap to play button in multiplayer. There is a countdown instead.
-			tapToPlayButton.gameObject.SetActive( false );
-		}
-
+		//Display the name of the current level
+		slideInEpisodeName();
 	}
 		
 	// Update is called once per frame
@@ -267,7 +259,7 @@ public class HUDHandler : MonoBehaviour {
 		{
 			//hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
 			hudDebugInfo.gameObject.SetActive( false );
-			if( !GameManager.Instance.isMultiplayer() ) pauseButton.gameObject.SetActive( true );
+			pauseButton.gameObject.SetActive( true );
 			journalCanvas.gameObject.SetActive( true );
 		}
 		else

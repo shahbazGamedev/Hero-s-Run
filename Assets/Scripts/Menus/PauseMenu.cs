@@ -30,6 +30,7 @@ public class PauseMenu : MonoBehaviour {
 	// Use this for initialization
 	void Awake ()
 	{
+		if( GameManager.Instance.isMultiplayer() ) Destroy( gameObject );
 		#if UNITY_EDITOR
 		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
 		#endif
@@ -96,7 +97,7 @@ public class PauseMenu : MonoBehaviour {
 	void OnApplicationPause( bool pauseStatus )
 	{
 		//if( pauseStatus && GameManager.Instance.getGameState() != GameState.Paused && playerController.getCharacterState() != PlayerCharacterState.Dying ) pauseGame();
-		if( !GameManager.Instance.isMultiplayer() && pauseStatus && GameManager.Instance.getGameState() != GameState.Paused  ) pauseGame();
+		if( pauseStatus && GameManager.Instance.getGameState() != GameState.Paused  ) pauseGame();
 	}
 	
 	public void pauseGame()

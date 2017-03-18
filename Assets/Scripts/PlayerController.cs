@@ -342,26 +342,23 @@ public sealed class PlayerController : MonoBehaviour {
 
 	void loadPlayerSkin()
 	{
-		if( !GameManager.Instance.isMultiplayer() )
+		GameObject hero;
+		if(PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
 		{
-			GameObject hero;
-			if(PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
-			{
-				hero = (GameObject)Instantiate(Hero_Prefab, Vector3.zero, Quaternion.identity ) ;
-			}
-			else
-			{
-				hero = (GameObject)Instantiate(Heroine_Prefab, Vector3.zero, Quaternion.identity ) ;
-			}
-			hero.transform.parent = transform;
-			hero.transform.localPosition = Vector3.zero;
-			hero.transform.localRotation = Quaternion.identity;
-	
-			hero.name = "Hero";
-			GetComponent<Animator>().avatar = hero.GetComponent<PlayerSkinInfo>().animatorAvatar;
-			anim.Rebind();
-			hero.SetActive( true );
+			hero = (GameObject)Instantiate(Hero_Prefab, Vector3.zero, Quaternion.identity ) ;
 		}
+		else
+		{
+			hero = (GameObject)Instantiate(Heroine_Prefab, Vector3.zero, Quaternion.identity ) ;
+		}
+		hero.transform.parent = transform;
+		hero.transform.localPosition = Vector3.zero;
+		hero.transform.localRotation = Quaternion.identity;
+
+		hero.name = "Hero";
+		GetComponent<Animator>().avatar = hero.GetComponent<PlayerSkinInfo>().animatorAvatar;
+		anim.Rebind();
+		hero.SetActive( true );
 	}
 
 	void Start()
@@ -2913,29 +2910,20 @@ public sealed class PlayerController : MonoBehaviour {
 			allowRunSpeedToIncrease = false;
 			runSpeedAtTimeOfStumble = runSpeed;
 			runSpeed = stumbleRunSpeedMultiplier * runSpeed; //lower speed a bit
-			if( GameManager.Instance.isMultiplayer() )
+			//audio.PlayOneShot( stumblingSound );
+			//Make troll appear right behind player
+			//Note that "placeTrollBehindPlayer" may change the state of the character to Dying
+			if( trollController.didPlayerStumblePreviously() )
 			{
-				//There is no troll pursuing you in multiplayer.
-				//The player stumbles but recovers
-				setAnimationTrigger(StumbleTrigger);
+				//The player falls forward and dies (killed by the troll)
+				setAnimationTrigger(FallForwardTrigger);
 			}
 			else
 			{
-				//audio.PlayOneShot( stumblingSound );
-				//Make troll appear right behind player
-				//Note that "placeTrollBehindPlayer" may change the state of the character to Dying
-				if( trollController.didPlayerStumblePreviously() )
-				{
-					//The player falls forward and dies (killed by the troll)
-					setAnimationTrigger(FallForwardTrigger);
-				}
-				else
-				{
-					//The player stumbles but recovers
-					setAnimationTrigger(StumbleTrigger);
-				}
-				trollController.placeTrollBehindPlayer();
+				//The player stumbles but recovers
+				setAnimationTrigger(StumbleTrigger);
 			}
+			trollController.placeTrollBehindPlayer();
 		}
 	}
 

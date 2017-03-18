@@ -15,6 +15,7 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 	// Use this for initialization
 	void Awake ()
 	{
+		if( !GameManager.Instance.isMultiplayer() ) Destroy( gameObject );
 		titleText.text = LocalizationManager.Instance.getText("MENU_PAUSE");
 		resumeButtonText.text = LocalizationManager.Instance.getText("MENU_RESUME");
 		quitButtonText.text = LocalizationManager.Instance.getText("MENU_QUIT");
@@ -96,7 +97,7 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 	{
 		if( newState == GameState.Normal )
 		{
-			if( GameManager.Instance.isMultiplayer() ) pauseButton.gameObject.SetActive( true );
+			pauseButton.gameObject.SetActive( true );
 		}
 		else
 		{
