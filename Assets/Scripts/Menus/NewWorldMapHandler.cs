@@ -10,7 +10,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public RectTransform map;
 	bool levelLoading = false;
 	private LevelData levelData;
-	public Canvas settingsMenuCanvas;
 	public Text numberOfKeysText;
 	public Text numberOfLivesText;
 	public Text numberOfCoinsText;
@@ -370,10 +369,10 @@ public class NewWorldMapHandler : MonoBehaviour {
 		facebookOfferLivesPanel.GetComponent<Animator>().Play("Panel Slide Out");
 	}
 
-	public void showSettingsMenu()
+	public void OnClickOpenMainMenu()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
-		settingsMenuCanvas.GetComponent<SettingsMenu>().showSettingsMenu();
+		StartCoroutine( loadScene(GameScenes.MainMenu) );
 	}
 
 	//Treasure island

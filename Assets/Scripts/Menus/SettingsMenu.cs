@@ -3,6 +3,9 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SocialPlatforms.GameCenter;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
+
+
 #if UNITY_IOS
 using UnityEngine.iOS;
 using UnityEngine.Apple.ReplayKit;
@@ -42,6 +45,7 @@ public class SettingsMenu : MonoBehaviour {
 	public Canvas debugMenuCanvas;
 	[Header("Version Number")]
 	public Text versionNumberText;
+	bool levelLoading = false;
 
 	// Use this for initialization
 	void Start () {
@@ -106,17 +110,11 @@ public class SettingsMenu : MonoBehaviour {
 		musicVolumeSlider.value = PlayerStatsManager.Instance.getMusicVolume();
 	}
 
-	public void showSettingsMenu()
-	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		settingsMenuCanvas.gameObject.SetActive( true );
-	}
-
 	public void closeSettingsMenu()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.savePlayerStats();
-		settingsMenuCanvas.gameObject.SetActive( false );
+		StartCoroutine( loadScene(GameScenes.MainMenu) );
 	}
 
 	public void setSoundFxVolume( Slider volume )
@@ -222,6 +220,18 @@ public class SettingsMenu : MonoBehaviour {
 		UISoundManager.uiSoundManager.playButtonClick();
 		settingsMenuCanvas.gameObject.SetActive( true );
 		debugMenuCanvas.gameObject.SetActive( false );
+	}
+
+	IEnumerator loadScene(GameScenes value)
+	{
+		if( !levelLoading )
+		{
+			UISoundManager.uiSoundManager.playButtonClick();
+			levelLoading = true;
+			Handheld.StartActivityIndicator();
+			yield return new WaitForSeconds(0);
+			SceneManager.LoadScene( (int)value );
+		}
 	}
 	
 }

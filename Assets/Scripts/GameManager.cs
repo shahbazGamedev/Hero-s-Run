@@ -35,7 +35,11 @@ public enum GameScenes {
 	CircuitSelection = 7,
 	HeroSelection = 8,
 	Matchmaking = 9,
-	PlayerIconSelection = 10
+	PlayerIconSelection = 10,
+	MainMenu = 11,
+	PlayModes = 12,
+	Options = 13,
+	Training = 14
 }
 
 public enum DifficultyLevel {

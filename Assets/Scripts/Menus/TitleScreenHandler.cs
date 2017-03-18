@@ -99,8 +99,8 @@ public class TitleScreenHandler : MonoBehaviour {
 		}
 		else
 		{
-			//Player has already selected an avatar, display the world map
-			SceneManager.LoadScene( (int)GameScenes.WorldMap);
+			//Player has already selected an avatar, display the main menu
+			SceneManager.LoadScene( (int)GameScenes.MainMenu);
 		}
 	}
 

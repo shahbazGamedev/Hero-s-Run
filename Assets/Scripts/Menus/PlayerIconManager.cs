@@ -121,12 +121,11 @@ class PlayerIconManager : MonoBehaviour {
 		onSelectButton.SetActive( false );
 	}
 
-	public void OnClickReturnToWorldMap()
+	public void OnClickOpenMainMenu()
 	{
-		GameManager.Instance.setGameState( GameState.WorldMapNoPopup );
 		//Save the player profile. The user may have changed his player icon.
 		GameManager.Instance.playerProfile.serializePlayerprofile();
-		StartCoroutine( loadScene(GameScenes.WorldMap) );
+		StartCoroutine( loadScene(GameScenes.MainMenu) );
 	}
 
 	IEnumerator loadScene(GameScenes value)

@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class HeroSelectionManager : MonoBehaviour {
 
 	[Header("Hero Selection Manager")]
-	[SerializeField] Text confirmButtonText;
+	[SerializeField] Text selectButtonText;
 	[SerializeField] Text exitButtonText;
 	bool levelLoading = false;
 	[Header("Active Ability")]
@@ -19,7 +19,7 @@ public class HeroSelectionManager : MonoBehaviour {
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
-		confirmButtonText.text = LocalizationManager.Instance.getText("HERO_SELECTION_CONFIRM");
+		selectButtonText.text = LocalizationManager.Instance.getText("MENU_SELECT");
 		exitButtonText.text = LocalizationManager.Instance.getText("CIRCUIT_EXIT");
 		//Active
 		activeAbilityType.text = LocalizationManager.Instance.getText("ABILITY_TYPE_ACTIVE");

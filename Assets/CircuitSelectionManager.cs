@@ -49,16 +49,16 @@ public class CircuitSelectionManager : MonoBehaviour {
 		LevelManager.Instance.setCurrentMultiplayerLevel( (int) scrollbar.value );
 		CarouselEntry selected = carouselEntryList[LevelManager.Instance.getCurrentMultiplayerLevel() ];
 		LevelManager.Instance.selectedRaceDetails = selected;
-		StartCoroutine( loadHeroSelection() );
+		StartCoroutine( loadScene(GameScenes.HeroSelection) );
 	}
 
-	public void OnClickReturnToWorldMap()
+	public void OnClickReturnToMainMenu()
 	{
 		PhotonNetwork.Disconnect();
-		StartCoroutine( loadWorldMap() );
+		StartCoroutine( loadScene(GameScenes.MainMenu) );
 	}
 
-	IEnumerator loadHeroSelection()
+	IEnumerator loadScene(GameScenes value)
 	{
 		if( !levelLoading )
 		{
@@ -66,21 +66,7 @@ public class CircuitSelectionManager : MonoBehaviour {
 			levelLoading = true;
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)GameScenes.HeroSelection );
-		}
-	}
-
-	IEnumerator loadWorldMap()
-	{
-		if( !levelLoading )
-		{
-			UISoundManager.uiSoundManager.playButtonClick();
-			levelLoading = true;
-			GameManager.Instance.setMultiplayerMode( false );
-			GameManager.Instance.setGameState(GameState.WorldMapNoPopup);
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)GameScenes.WorldMap );
+			SceneManager.LoadScene( (int)value );
 		}
 	}
 

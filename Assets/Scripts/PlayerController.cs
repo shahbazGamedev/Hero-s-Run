@@ -1229,7 +1229,6 @@ public sealed class PlayerController : MonoBehaviour {
 				recalculateCurrentLane();
 
 				//We are allowed to jump from the slide state.
-				audioSource.Stop ();							//stop the sliding sound if any
 				dustPuff.Stop();						//stop the dust puff that loops while we are sliding
 				slideWaterSplash.Stop();
 				deactivateOverheadObstacles( true );	//reactivate overhead obstacles since they would have been deactivated if we were sliding
@@ -1789,7 +1788,6 @@ public sealed class PlayerController : MonoBehaviour {
 
 						setAnimationTrigger(Slide_DownTrigger);
 
-						playSound( slidingSound, true );
 					}
 				}
 			}
@@ -1821,7 +1819,6 @@ public sealed class PlayerController : MonoBehaviour {
 					setCharacterState( PlayerCharacterState.Running );
 				}
 				setAnimationTrigger(Slide_UpTrigger);
-				audioSource.Stop();
 				deactivateOverheadObstacles( true );
 			}
 		}
@@ -2442,7 +2439,6 @@ public sealed class PlayerController : MonoBehaviour {
 			slideWaterSplash.Stop();
 			setCharacterState( PlayerCharacterState.Running );
 			setAnimationTrigger(Slide_UpTrigger);
-			audioSource.Stop();
 		}
 
 		//Clear move direction of any values. If we still have an x component for example, we will drift.
@@ -3326,4 +3322,15 @@ public sealed class PlayerController : MonoBehaviour {
 	{
 		anim.SetTrigger( animationTrigger );
 	}
+
+	public void Slide_sound_start ( AnimationEvent eve )
+	{
+		playSound( slidingSound, true );
+	}
+
+	public void Slide_sound_stop ( AnimationEvent eve )
+	{
+		audioSource.Stop();
+	}
+
 } 
