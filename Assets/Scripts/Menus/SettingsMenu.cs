@@ -37,7 +37,9 @@ public class SettingsMenu : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+
+		Handheld.StopActivityIndicator();
+
 		#if UNITY_EDITOR
 		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
 		#endif
