@@ -30,7 +30,7 @@ public class SettingsMenu : MonoBehaviour {
 	[Header("Restore Purchases")]
 	[SerializeField] Text restorePurchasesText;
 	[Header("Debug Menu")]
-	[SerializeField] Button debugMenuButton;
+	[SerializeField] Button debugMenuButton; //Important: the button will only be active in a Development Build
 	[SerializeField] Text debugMenuText;
 	[SerializeField] Canvas debugMenuCanvas;
 	bool levelLoading = false;
@@ -69,14 +69,7 @@ public class SettingsMenu : MonoBehaviour {
 		privacyPolicyText.text = LocalizationManager.Instance.getText("MENU_PRIVACY_POLICY");
 		restorePurchasesText.text = LocalizationManager.Instance.getText("MENU_RESTORE_PURCHASES");
 		debugMenuText.text = LocalizationManager.Instance.getText("MENU_SHOW_DEBUG");
-		if( Debug.isDebugBuild )
-		{
-			debugMenuButton.gameObject.SetActive( true );
-		}
-		else
-		{
-			debugMenuButton.gameObject.SetActive( false );
-		}
+		debugMenuButton.gameObject.SetActive( Debug.isDebugBuild );
 
 		soundFxVolumeSlider.value = PlayerStatsManager.Instance.getSoundFxVolume();
 		musicVolumeSlider.value = PlayerStatsManager.Instance.getMusicVolume();
