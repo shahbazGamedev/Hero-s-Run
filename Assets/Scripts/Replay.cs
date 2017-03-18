@@ -14,7 +14,7 @@ public class Replay : MonoBehaviour
 	void Awake()
 	{
 		if( !ReplayKit.APIAvailable ) Destroy( gameObject );
-		toggleRecordingButton.gameObject.SetActive( PlayerStatsManager.Instance.getShowRecordButton() );
+		toggleRecordingButton.gameObject.SetActive( true );
 		recordingText.text = "Not Recording";
 		previewButton.gameObject.SetActive( false );
 		
@@ -75,7 +75,7 @@ public class Replay : MonoBehaviour
 		}
 		else if( newState == GameState.Normal )
 		{
-			toggleRecordingButton.gameObject.SetActive( PlayerStatsManager.Instance.getShowRecordButton() );
+			toggleRecordingButton.gameObject.SetActive( true );
 		}
 		else
 		{

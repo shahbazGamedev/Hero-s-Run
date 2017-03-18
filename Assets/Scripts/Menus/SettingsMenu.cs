@@ -5,44 +5,34 @@ using UnityEngine.SocialPlatforms.GameCenter;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
-
-#if UNITY_IOS
-using UnityEngine.iOS;
-using UnityEngine.Apple.ReplayKit;
-#endif
-
 public class SettingsMenu : MonoBehaviour {
 
-
 	[Header("Settings Menu")]
-	public Canvas settingsMenuCanvas;
-	public Text titleText;
+	[SerializeField] Canvas settingsMenuCanvas;
+	[SerializeField] Text titleText;
 	[Header("Sound")]
-	public AudioMixer mainMixer;
-	public Text soundFxVolumeText;
-	public Slider soundFxVolumeSlider;
-	public Text musicVolumeText;
-	public Slider musicVolumeSlider;
+	[SerializeField] AudioMixer mainMixer;
+	[SerializeField] Text soundFxVolumeText;
+	[SerializeField] Slider soundFxVolumeSlider;
+	[SerializeField] Text musicVolumeText;
+	[SerializeField] Slider musicVolumeSlider;
 	[Header("Facebook")]
-	public Text facebookText;
+	[SerializeField] Text facebookText;
 	[Header("Difficulty")]
-	public Text difficultyText;
+	[SerializeField] Text difficultyText;
 	[Header("Achievements")] //Game Center
-	public Text achievementsText;
-	[Header("Recording Button")]
-	public GameObject showRecordButtonPanel;
-	public Text showRecordButtonText;
+	[SerializeField] Text achievementsText;
 	[Header("Flip Camera")]
-	public Text flipCameraText;
+	[SerializeField] Text flipCameraText;
 	[Header("Privacy Policy")]
-	public Text privacyPolicyText;
-	public string privacyPolicyURL = "http://www.google.com/";
+	[SerializeField] Text privacyPolicyText;
+	[SerializeField] string privacyPolicyURL = "http://www.google.com/";
 	[Header("Restore Purchases")]
-	public Text restorePurchasesText;
+	[SerializeField] Text restorePurchasesText;
 	[Header("Debug Menu")]
-	public Button debugMenuButton;
-	public Text debugMenuText;
-	public Canvas debugMenuCanvas;
+	[SerializeField] Button debugMenuButton;
+	[SerializeField] Text debugMenuText;
+	[SerializeField] Canvas debugMenuCanvas;
 	bool levelLoading = false;
 
 	// Use this for initialization
@@ -74,21 +64,6 @@ public class SettingsMenu : MonoBehaviour {
 		{
 			flipCameraText.text = LocalizationManager.Instance.getText("MENU_CAMERA_FACES_BACK_HERO");
 		}
-		showRecordButtonPanel.gameObject.SetActive( false );
-		#if UNITY_IOS
-		if( ReplayKit.APIAvailable )
-		{
-			showRecordButtonPanel.SetActive( true );
-			if( PlayerStatsManager.Instance.getShowRecordButton() )
-			{
-				showRecordButtonText.text = LocalizationManager.Instance.getText("MENU_SHOW_RECORD_BUTTON");
-			}
-			else
-			{
-				showRecordButtonText.text = LocalizationManager.Instance.getText("MENU_HIDE_RECORD_BUTTON");
-			}
-		}
-		#endif
 		privacyPolicyText.text = LocalizationManager.Instance.getText("MENU_PRIVACY_POLICY");
 		restorePurchasesText.text = LocalizationManager.Instance.getText("MENU_RESTORE_PURCHASES");
 		debugMenuText.text = LocalizationManager.Instance.getText("MENU_SHOW_DEBUG");
@@ -145,21 +120,6 @@ public class SettingsMenu : MonoBehaviour {
 		Debug.Log("showAchievements");
 		UISoundManager.uiSoundManager.playButtonClick();
 		Social.ShowAchievementsUI();
-	}
-
-	public void toggleShowRecordButton()
-	{
-		Debug.Log("toggleShowRecordButton");
-		UISoundManager.uiSoundManager.playButtonClick();
-		PlayerStatsManager.Instance.setShowRecordButton( !PlayerStatsManager.Instance.getShowRecordButton() );
-		if( PlayerStatsManager.Instance.getShowRecordButton() )
-		{
-			showRecordButtonText.text = LocalizationManager.Instance.getText("MENU_SHOW_RECORD_BUTTON");
-		}
-		else
-		{
-			showRecordButtonText.text = LocalizationManager.Instance.getText("MENU_HIDE_RECORD_BUTTON");
-		}
 	}
 
 	public void flipCamera()

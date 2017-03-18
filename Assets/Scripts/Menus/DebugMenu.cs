@@ -7,16 +7,16 @@ public class DebugMenu : MonoBehaviour {
 
 
 	[Header("Debug Menu")]
-	public Text titleText;
+	[SerializeField] Text titleText;
+	[SerializeField] Text toggleShowDebugInfoText;
+	[SerializeField] Text toggleOnlyUseUniqueTilesText;
+	[SerializeField] Text clearAssetBundleCacheText;
 	[Header("Player Stats")]
-	public Text currentCoins;
-	public Text lifetimeCoins;
-	public Text ownsCoinDoubler;
-	public Text toggleShowDebugInfoText;
-	public Text deathPerEpisodeText;
-	public Text facebookName;
-	public Text toggleOnlyUseUniqueTilesText;
-	public Text clearAssetBundleCacheText;
+	[SerializeField] Text currentCoins;
+	[SerializeField] Text lifetimeCoins;
+	[SerializeField] Text ownsCoinDoubler;
+	[SerializeField] Text deathPerEpisodeText;
+	[SerializeField] Text facebookName;
 
 	// Use this for initialization
 	void Start () {
@@ -69,23 +69,6 @@ public class DebugMenu : MonoBehaviour {
 			Debug.Log( (resetResult) ? "Achievement Reset succesfull." : "Achievement Reset failed." );
 		});
 		GameCenterManager.resetAchievementsCompleted();
-	}
-
-	public void giveCoins()
-	{
-		Debug.Log("Give 25000 Coins");
-		UISoundManager.uiSoundManager.playButtonClick();
-		PlayerStatsManager.Instance.modifyCurrentCoins( 25000, false, false );
-		PlayerStatsManager.Instance.savePlayerStats();
-		updatePlayerStats();
-	}
-
-	public void giveLives()
-	{
-		Debug.Log("Give 20 Lives");
-		UISoundManager.uiSoundManager.playButtonClick();
-		PlayerStatsManager.Instance.increaseLives( 20 );
-		PlayerStatsManager.Instance.savePlayerStats();
 	}
 
 	public void giveTreasureChestKeys()
