@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 public class SettingsMenu : MonoBehaviour {
 
 	[Header("Settings Menu")]
-	[SerializeField] Canvas settingsMenuCanvas;
 	[SerializeField] Text titleText;
 	[Header("Sound")]
 	[SerializeField] AudioMixer mainMixer;
@@ -18,8 +17,6 @@ public class SettingsMenu : MonoBehaviour {
 	[SerializeField] Slider musicVolumeSlider;
 	[Header("Facebook")]
 	[SerializeField] Text facebookText;
-	[Header("Difficulty")]
-	[SerializeField] Text difficultyText;
 	[Header("Achievements")] //Game Center
 	[SerializeField] Text achievementsText;
 	[Header("Flip Camera")]
@@ -30,12 +27,10 @@ public class SettingsMenu : MonoBehaviour {
 	[Header("Restore Purchases")]
 	[SerializeField] Text restorePurchasesText;
 	[Header("Debug Menu")]
-	[SerializeField] Button debugMenuButton; //Important: the button will only be active in a Development Build
-	[SerializeField] Text debugMenuText;
-	[SerializeField] Canvas debugMenuCanvas;
+	[SerializeField] ScrollRect  optionsScrollView; 
+	[SerializeField] GameObject  dotsPanel; 
 	bool levelLoading = false;
 
-	// Use this for initialization
 	void Start () {
 
 		Handheld.StopActivityIndicator();
@@ -68,14 +63,16 @@ public class SettingsMenu : MonoBehaviour {
 		}
 		privacyPolicyText.text = LocalizationManager.Instance.getText("MENU_PRIVACY_POLICY");
 		restorePurchasesText.text = LocalizationManager.Instance.getText("MENU_RESTORE_PURCHASES");
-		debugMenuText.text = LocalizationManager.Instance.getText("MENU_SHOW_DEBUG");
-		debugMenuButton.gameObject.SetActive( Debug.isDebugBuild );
+		
+		//Important: Disable horizontal scrolling when not in a Development Build to prevent access to debug options.
+		optionsScrollView.horizontal = Debug.isDebugBuild;
+		dotsPanel.SetActive( Debug.isDebugBuild );
 
 		soundFxVolumeSlider.value = PlayerStatsManager.Instance.getSoundFxVolume();
 		musicVolumeSlider.value = PlayerStatsManager.Instance.getMusicVolume();
 	}
 
-	public void closeSettingsMenu()
+	public void OnClickReturnToMainMenu()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.savePlayerStats();
@@ -94,9 +91,9 @@ public class SettingsMenu : MonoBehaviour {
 		mainMixer.SetFloat( "MusicVolume", volume.value );
 	}
 
-	public void handleFacebookConnect()
+	public void OnClickHandleFacebookConnect()
 	{
-		Debug.Log("handleFacebookConnect");
+		Debug.Log("OnClickHandleFacebookConnect");
 		UISoundManager.uiSoundManager.playButtonClick();
 		if( FacebookManager.Instance.isLoggedIn() )
 		{
@@ -110,16 +107,16 @@ public class SettingsMenu : MonoBehaviour {
 		}
 	}
 
-	public void showAchievements()
+	public void OnClickShowAchievements()
 	{
-		Debug.Log("showAchievements");
+		Debug.Log("OnClickShowAchievements");
 		UISoundManager.uiSoundManager.playButtonClick();
 		Social.ShowAchievementsUI();
 	}
 
-	public void flipCamera()
+	public void OnClickFlipCamera()
 	{
-		Debug.Log("flipCamera");
+		Debug.Log("OnClickFlipCamera");
 		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.setCameraFlipped( !PlayerStatsManager.Instance.getCameraFlipped() );
 		if( PlayerStatsManager.Instance.getCameraFlipped() )
@@ -132,33 +129,17 @@ public class SettingsMenu : MonoBehaviour {
 		}
 	}
 
-	public void showPrivacyPolicy()
+	public void OnClickShowPrivacyPolicy()
 	{
-		Debug.Log("showPrivacyPolicy");
+		Debug.Log("OnClickShowPrivacyPolicy");
 		UISoundManager.uiSoundManager.playButtonClick();
 		Application.OpenURL(privacyPolicyURL);
 	}
 
-	public void restorePurchases()
+	public void OnClickRestorePurchases()
 	{
-		Debug.LogWarning("restorePurchases - Not implemented.");
+		Debug.LogWarning("OnClickRestorePurchases - Not implemented.");
 		UISoundManager.uiSoundManager.playButtonClick();
-	}
-
-	public void showDebugMenu()
-	{
-		Debug.Log("showDebugMenu");
-		UISoundManager.uiSoundManager.playButtonClick();
-		settingsMenuCanvas.gameObject.SetActive( false );
-		debugMenuCanvas.gameObject.SetActive( true );
-	}
-
-	public void closeDebugMenu()
-	{
-		Debug.Log("closeDebugMenu");
-		UISoundManager.uiSoundManager.playButtonClick();
-		settingsMenuCanvas.gameObject.SetActive( true );
-		debugMenuCanvas.gameObject.SetActive( false );
 	}
 
 	IEnumerator loadScene(GameScenes value)

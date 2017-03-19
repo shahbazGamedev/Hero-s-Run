@@ -5,28 +5,15 @@ using UnityEngine.SocialPlatforms.GameCenter;
 
 public class DebugMenu : MonoBehaviour {
 
-
 	[Header("Debug Menu")]
-	[SerializeField] Text titleText;
 	[SerializeField] Text toggleShowDebugInfoText;
 	[SerializeField] Text toggleOnlyUseUniqueTilesText;
 	[SerializeField] Text clearAssetBundleCacheText;
-	[Header("Player Stats")]
-	[SerializeField] Text currentCoins;
-	[SerializeField] Text lifetimeCoins;
-	[SerializeField] Text ownsCoinDoubler;
-	[SerializeField] Text deathPerEpisodeText;
 	[SerializeField] Text facebookName;
 
-	// Use this for initialization
 	void Start () {
 	
-		#if UNITY_EDITOR
-		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
-		#endif
-
 		//Text Inititialization
-		titleText.text = LocalizationManager.Instance.getText("POPUP_TITLE_DEBUG");
 		if( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() )
 		{
 			toggleShowDebugInfoText.text = "Show Debug Info: On";
@@ -44,26 +31,26 @@ public class DebugMenu : MonoBehaviour {
 			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: Off";
 		}
 
-		updatePlayerStats();
+		updateFacebookName();
 	}
 
-	public void resetSavedData()
+	public void OnClickResetSavedData()
 	{
-		Debug.Log("resetSavedData");
+		Debug.Log("OnClickResetSavedData");
 		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.resetPlayerStats();
 	}
 
-	public void deleteRequests()
+	public void OnClickDeleteRequests()
 	{
-		Debug.Log("deleteRequests");
+		Debug.Log("OnClickDeleteRequests");
 		UISoundManager.uiSoundManager.playButtonClick();
 		StartCoroutine( FacebookManager.Instance.deleteAllAppRequests() );
 	}
 
-	public void resetAchievements()
+	public void OnClickResetAchievements()
 	{
-		Debug.Log("resetAchievements");
+		Debug.Log("OnClickResetAchievements");
 		UISoundManager.uiSoundManager.playButtonClick();
 		GameCenterPlatform.ResetAllAchievements( (resetResult) => {
 			Debug.Log( (resetResult) ? "Achievement Reset succesfull." : "Achievement Reset failed." );
@@ -71,7 +58,7 @@ public class DebugMenu : MonoBehaviour {
 		GameCenterManager.resetAchievementsCompleted();
 	}
 
-	public void giveTreasureChestKeys()
+	public void OnClickGiveTreasureChestKeys()
 	{
 		Debug.Log("Give 25 Treasure Chest Keys");
 		UISoundManager.uiSoundManager.playButtonClick();
@@ -79,9 +66,9 @@ public class DebugMenu : MonoBehaviour {
 		PlayerStatsManager.Instance.savePlayerStats();
 	}
 
-	public void toggleShowDebugInfo()
+	public void OnClickToggleShowDebugInfo()
 	{
-		Debug.Log("toggleShowDebugInfo");
+		Debug.Log("OnClickToggleShowDebugInfo");
 		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.setShowDebugInfoOnHUD( !PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
 		if( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() )
@@ -95,24 +82,29 @@ public class DebugMenu : MonoBehaviour {
 		PlayerStatsManager.Instance.savePlayerStats();
 	}
 
-	public void unlockAllLevels()
+	public void OnClickUnlockAllLevels()
 	{
-		Debug.Log("unlockAllLevels");
+		Debug.Log("OnClickUnlockAllLevels");
 		UISoundManager.uiSoundManager.playButtonClick();
 		LevelManager.Instance.unlockAllEpisodes();
 		PlayerStatsManager.Instance.savePlayerStats();
 	}
 
-	public void unlockAllStories()
+	public void OnClickUnlockAllStories()
 	{
-		Debug.Log("unlockAllStories");
+		Debug.Log("OnClickUnlockAllStories");
 		UISoundManager.uiSoundManager.playButtonClick();
-		GameManager.Instance.journalData.unlockAllEntries(); //also takes care of saving
+		//I am not sure if I will release with the Journal code. For now, it only gets initialized
+		//when entering the world map and not when entering the main menu. Because of this, test for null value.
+		if( GameManager.Instance.journalData != null )
+		{
+			GameManager.Instance.journalData.unlockAllEntries(); //also takes care of saving
+		}
 	}
 
-	public void toggleOnlyUseUniqueTiles()
+	public void OnClickToggleOnlyUseUniqueTiles()
 	{
-		Debug.Log("toggleOnlyUseUniqueTiles");
+		Debug.Log("OnClickToggleOnlyUseUniqueTiles");
 		UISoundManager.uiSoundManager.playButtonClick();
 		LevelManager.Instance.setOnlyUseUniqueTiles( !LevelManager.Instance.getOnlyUseUniqueTiles() );
 		if( LevelManager.Instance.getOnlyUseUniqueTiles() )
@@ -125,9 +117,9 @@ public class DebugMenu : MonoBehaviour {
 		}
 	}
 
-	public void clearAssetBundleCache()
+	public void OnClickClearAssetBundleCache()
 	{
-		Debug.Log("clearAssetBundleCache");
+		Debug.Log("OnClickClearAssetBundleCache");
 		UISoundManager.uiSoundManager.playButtonClick();
 		bool result = Caching.CleanCache();
 		if( result )
@@ -140,7 +132,7 @@ public class DebugMenu : MonoBehaviour {
 		}
 	}
 
-	void updatePlayerStats()
+	void updateFacebookName()
 	{
 		if( FacebookManager.Instance.firstName == null )
 		{
@@ -150,22 +142,6 @@ public class DebugMenu : MonoBehaviour {
 		{
 			facebookName.text = "First Name: " + FacebookManager.Instance.firstName;
 		}
-		currentCoins.text = "Current Coins: " + PlayerStatsManager.Instance.getCurrentCoins();
-		lifetimeCoins.text = "Lifetime Coins: " + PlayerStatsManager.Instance.getLifetimeCoins();
-		if( PlayerStatsManager.Instance.getOwnsCoinDoubler() )
-		{
-			ownsCoinDoubler.text = "Owns Coin Doubler: true";
-		}
-		else
-		{
-			ownsCoinDoubler.text = "Owns Coin Doubler: false";
-		}
-		deathPerEpisodeText.text = "Death Per Episode: " + PlayerStatsManager.Instance.getDeathInEpisodesAsString();
-	}
-
-	void OnEnable()
-	{
-		updatePlayerStats();
 	}
 	
 }
