@@ -164,6 +164,10 @@ public class CardHandler : MonoBehaviour {
 					if( nearestTarget != null ) return true;
 				}
 			break;
+			//Linked Fate is effective whenever you are trailing behind
+			case CardName.Linked_Fate:
+				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) ) return true;
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;

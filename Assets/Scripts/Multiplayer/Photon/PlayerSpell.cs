@@ -17,6 +17,7 @@ public class PlayerSpell : PunBehaviour {
 	#region Linked Fate spell
 	bool affectedByLinkedFate = false;
 	bool castLinkedFate = false;
+	[SerializeField] AudioClip linkedFateSound;
 	#endregion
 
 	PlayerControl playerControl;
@@ -86,6 +87,9 @@ public class PlayerSpell : PunBehaviour {
 	[PunRPC]
 	void cardLinkedFateRPC( string casterName, float spellDuration )
 	{
+		//Play a creepy sound
+		playerSounds.playSound( linkedFateSound, false );
+
 		if( gameObject.name == casterName )
 		{
 			castLinkedFate = true;
