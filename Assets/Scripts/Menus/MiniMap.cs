@@ -96,6 +96,19 @@ public class MiniMap : MonoBehaviour {
 		if( Time.time - cardFeedTimeOfLastEntry > CARD_FEED_TTL ) cardFeed.text = string.Empty;
 	}
 
+	public void changeColorOfRadarObject( PlayerControl pc, Color newColor )
+	{
+		RadarObject ro = radarObjects.Find(radarObject => radarObject.playerControl == pc);
+		if( ro != null )
+		{
+			ro.icon.color = newColor;
+		}
+		else
+		{
+			Debug.LogError("MiniMap-changeColorOfRadarObject: radar object for " + pc.name + " was not found." );
+		}
+	}
+
 	void drawRadarDots()
 	{
 		for(int i = radarObjects.Count - 1; i > -1; i-- )

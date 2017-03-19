@@ -1472,6 +1472,9 @@ public class PlayerControl : Photon.PunBehaviour {
 				numberOfTimesDiedDuringRace++;
 			}
 
+			//The PlayerSpell component needs to know that the playerDied
+			GetComponent<PlayerSpell>().playerDied();
+
 			//Remember how we died
 			deathType = deathTypeValue;
 

@@ -42,9 +42,9 @@ public class MainMenu : MonoBehaviour {
 		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
 	}
 
-	public void OnClickShowPlayerIconSelection()
+	public void OnClickShowCareerProfile()
 	{
-		StartCoroutine( loadScene(GameScenes.PlayerIconSelection) );
+		StartCoroutine( loadScene(GameScenes.CareerProfile) );
 	}
 
 	void updateNumberOfPlayerIcons()

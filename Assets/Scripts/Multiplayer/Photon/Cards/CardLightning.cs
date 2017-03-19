@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// The Lightning card is a Rare card with 11 levels.
+/// The Lightning card is an Epic card with 8 levels.
 /// Lightning strikes the nearest player, killing it instantly.
 /// Because of its long range, it can be useful when an opponent is far away.
 /// The spell range depends on the level of the caster.

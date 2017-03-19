@@ -8,11 +8,19 @@ using Photon;
 /// </summary>
 public class PlayerSpell : PunBehaviour {
 
+	#region Shrink spell
 	[SerializeField] AudioClip shrinkSound;
 	[SerializeField] ParticleSystem shrinkParticleSystem;
+	float runSpeedBeforeSpell;
+	#endregion
+
+	#region Linked Fate spell
+	bool affectedByLinkedFate = false;
+	bool castLinkedFate = false;
+	#endregion
+
 	PlayerControl playerControl;
 	PlayerSounds playerSounds;
-	float runSpeedBeforeSpell;
 
 	// Use this for initialization
 	void Awake ()
@@ -21,6 +29,7 @@ public class PlayerSpell : PunBehaviour {
 		playerSounds = GetComponent<PlayerSounds>();
 	}
 
+	#region Shrink spell
 	[PunRPC]
 	void shrinkSpell( string casterName, float spellDuration )
 	{
@@ -71,4 +80,69 @@ public class PlayerSpell : PunBehaviour {
 		playerControl.setAllowRunSpeedToIncrease( true );
 		playerControl.runSpeed = runSpeedBeforeSpell;
 	}
+	#endregion
+
+	#region Linked Fate spell
+	[PunRPC]
+	void cardLinkedFateRPC( string casterName, float spellDuration )
+	{
+		if( gameObject.name == casterName )
+		{
+			castLinkedFate = true;
+		}
+		else
+		{
+			affectedByLinkedFate = true;
+		}
+		//Indicate on the minimap which card was played
+		MiniMap.Instance.updateCardFeed( casterName, CardName.Linked_Fate );
+
+		//For the player affected by Linked Fate, change the color of his icon on the map
+		if( affectedByLinkedFate ) MiniMap.Instance.changeColorOfRadarObject( GetComponent<PlayerControl>(), Color.magenta );
+
+		//Cancel the spell once the duration has run out
+		Invoke("cancelLinkedFateSpell", spellDuration );
+
+		Debug.LogWarning("PlayerSpell cardLinkedFateRPC received-affectedByLinkedFate: " + affectedByLinkedFate + " castLinkedFate: " + castLinkedFate + " name: " + gameObject.name + " caster: " + casterName );
+	}
+
+	void cancelLinkedFateSpell()
+	{
+		if( affectedByLinkedFate ) MiniMap.Instance.changeColorOfRadarObject( GetComponent<PlayerControl>(), Color.white );
+		affectedByLinkedFate = false;
+		castLinkedFate = false;
+	}
+
+	public bool isAffectedByLinkedFate()
+	{
+		return affectedByLinkedFate;
+	}
+
+	public bool hasCastLinkedFate()
+	{
+		return castLinkedFate;
+	}
+
+	public void playerDied()
+	{
+		if( castLinkedFate && PhotonNetwork.isMasterClient && GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
+		{
+			Debug.LogWarning("PlayerSpell-playerDied: affectedByLinkedFate: " + affectedByLinkedFate + " castLinkedFate: " + castLinkedFate + " name: " + gameObject.name );
+
+			//Kill all players with the affectedByLinkedFate flag. Ignore the caster (who is dead anyway).
+			for( int i = 0; i < PlayerRace.players.Count; i++ )
+			{
+				if( PlayerRace.players[i].GetComponent<PlayerSpell>().isAffectedByLinkedFate() && !PlayerRace.players[i].GetComponent<PlayerSpell>().hasCastLinkedFate() )
+				{
+					Debug.LogWarning("PlayerSpell-playerDied LOOP " + PlayerRace.players[i].GetComponent<PlayerSpell>().isAffectedByLinkedFate() + " " + PlayerRace.players[i].GetComponent<PlayerSpell>().hasCastLinkedFate() + " " + PlayerRace.players[i].name );
+					PlayerRace.players[i].GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.AllViaServer, DeathType.Obstacle );
+					//Reset the color
+					MiniMap.Instance.changeColorOfRadarObject( PlayerRace.players[i].GetComponent<PlayerControl>(), Color.white );
+				}
+			}
+		}
+	}
+	#endregion
+
+
 }

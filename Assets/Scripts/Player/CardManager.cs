@@ -30,6 +30,7 @@ public enum CardName
 
 	//Epic
 	Lightning = 200,
+	Linked_Fate = 201,
 
 	//Legendary
 	Card_One = 301,

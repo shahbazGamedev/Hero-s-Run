@@ -96,6 +96,17 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardGlyph component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+			case CardName.Linked_Fate:
+				CardLinkedFate cardLinkedFate = GetComponent<CardLinkedFate>();
+				if( cardLinkedFate != null )
+				{
+					cardLinkedFate.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardLinkedFate component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
