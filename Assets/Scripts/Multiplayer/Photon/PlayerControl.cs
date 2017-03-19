@@ -1464,7 +1464,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			this.photonView.RPC("playerDied", PhotonTargets.OthersBuffered, deathTypeValue );
 
 			//Update the player statistics		
-			if( this.photonView.isMine )
+			if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
 			{
 				GameManager.Instance.playerStatistics.incrementNumberOfDeathsLifetime();
 			

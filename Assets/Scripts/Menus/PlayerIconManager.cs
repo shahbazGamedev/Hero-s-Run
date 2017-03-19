@@ -19,7 +19,6 @@ class PlayerIconManager : MonoBehaviour {
 	[SerializeField] Text onSelectPlayerName;
 	[Header("Texts")]
 	[SerializeField] Text menuTitle;
-	[SerializeField] Text exitButtonText;
 
 	// Use this for initialization
 	void Start ()
@@ -46,7 +45,6 @@ class PlayerIconManager : MonoBehaviour {
 		
 		//Localise
 		menuTitle.text = LocalizationManager.Instance.getText( "PLAYER_ICON_MENU_TITLE" );
-		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );
 
 	}
 

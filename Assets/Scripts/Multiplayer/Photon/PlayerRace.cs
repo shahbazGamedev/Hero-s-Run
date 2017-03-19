@@ -73,7 +73,7 @@ public class PlayerRace : Photon.PunBehaviour
 	{
 		Debug.Log("PlayerRace: received StartRunningEvent " + gameObject.name );
 		raceStarted = true;
-		if( this.photonView.isMine )
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
 		{			
 			PlayerRaceManager.Instance.setRaceStatus( RaceStatus.IN_PROGRESS );
 			GameManager.Instance.playerStatistics.incrementNumberRacesRun();
