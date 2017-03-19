@@ -10,10 +10,10 @@ public class Zipline : MonoBehaviour {
     LineRenderer lineRenderer;
 	float step;
 	List<GameObject> coinsList = new List<GameObject>();
-	public bool addCoins = true;
-	public GameObject starPrefab;
-	public int distanceBetweenCoins = 12;
-	public float distanceBelowLine = 1f;
+	[SerializeField] bool addCoins = true;
+	[SerializeField] GameObject starPrefab;
+	[SerializeField] int distanceBetweenCoins = 12;
+	[SerializeField] float distanceBelowLine = 1f;
 
 	// Use this for initialization
     void Awake()
@@ -29,7 +29,8 @@ public class Zipline : MonoBehaviour {
     void addCoinsBelowZipline()
 	{
 		coinsList.Clear();
-		if( addCoins )
+		//Only add coins if we are not in multiplayer
+		if( addCoins && !GameManager.Instance.isMultiplayer() )
 		{
 			GameObject go;
 			Vector3 starToLineOffset = new Vector3( 0, distanceBelowLine, 0 );
