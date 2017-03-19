@@ -1601,13 +1601,13 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void death_completed ( AnimationEvent eve )
 	{
-		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.18f, 0.7f, 1f ) );
+		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.25f, 0.7f, 1f ) );
 		StartCoroutine( waitBeforeResurrecting(2f) );
 	}
 
 	public void fall_forward_completed ( AnimationEvent eve )
 	{
-		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.18f, 0.7f, 1f ) );
+		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.25f, 0.7f, 1f ) );
 		StartCoroutine( waitBeforeResurrecting(2f) );
 	}
 
@@ -1771,13 +1771,18 @@ public class PlayerControl : Photon.PunBehaviour {
 	{		
 		//Tell the remote versions of us that we resurrected
 		this.photonView.RPC("playerResurrectedRPC", PhotonTargets.All );
+
 		anim.speed = 1f;
+
 		allowRunSpeedToIncrease = true;
 
-		//7) Restore player controls
+		//The GameState was Resurrect - change it back to Normal
+		if( this.photonView.isMine && playerAI == null ) GameManager.Instance.setGameState(GameState.Normal);
+
+		//Restore player controls
 		enablePlayerControl( true );
-		
-		//8) Display a Go! message
+
+		//Display a Go! message
 		if( this.photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.activateUserMessage( LocalizationManager.Instance.getText("GO"), 0f, 1.25f );
 	}
 
