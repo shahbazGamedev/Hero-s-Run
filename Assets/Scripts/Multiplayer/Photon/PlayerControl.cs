@@ -87,7 +87,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	bool doingDoubleJump = false;
 	float jumpSpeed = 8.8f;
 	float doubleJumpSpeed = 12.8f;
-	float DOUBLE_JUMP_RUN_SPEED = 1.25f; //We want the player to leap forward during a double jump
+	float DOUBLE_JUMP_RUN_SPEED = 1f; //We want the player to leap forward during a double jump
 	float distanceToGround = 0;
 	//The gravity for the character
 	const float DEFAULT_GRAVITY = 16f;

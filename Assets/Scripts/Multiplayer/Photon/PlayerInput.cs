@@ -50,6 +50,12 @@ public class PlayerInput : PunBehaviour {
 		this.photonView.RPC("jumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
 	}
 
+	public void doubleJump( float doubleJumpSpeed )
+	{
+		playerControl.doubleJump( doubleJumpSpeed );
+		this.photonView.RPC("doubleJumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed(), doubleJumpSpeed );
+	}
+
 	public void attachToZipline()
 	{
 		playerControl.attachToZipline();

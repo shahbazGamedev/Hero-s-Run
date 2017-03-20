@@ -51,6 +51,13 @@ public class PlayerInputRPC : PunBehaviour {
 		playerControl.jump();
 	}
 
+	[PunRPC]
+	void doubleJumpRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed, float doubleJumpSpeed )
+	{
+		syncMovement( syncPosition, syncRotationY, timeRPCSent, syncSpeed );
+		playerControl.doubleJump( doubleJumpSpeed );
+	}
+
 	void syncMovement( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
 	{
 		//Use the values we received from the master
