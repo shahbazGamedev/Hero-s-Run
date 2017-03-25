@@ -41,6 +41,10 @@ public class MPNetworkLobbyManager : PunBehaviour
 	void Start()
 	{
 		matchmakingManager = GameObject.FindGameObjectWithTag("Matchmaking").GetComponent<MatchmakingManager>();
+		if( GameManager.Instance.getPlayMode() == PlayMode.PlayWithFriends )
+		{
+			matchmakingManager.setRemotePlayerData( 1, LevelManager.Instance.matchInvitation.sender, LevelManager.Instance.matchInvitation.level, LevelManager.Instance.matchInvitation.playerIcon );
+		}
 	}
 	#endregion
 
@@ -86,7 +90,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		PhotonNetwork.playerName = PlayerStatsManager.Instance.getUserName();
 
 		//Set the index of the selected hero so we can retrieve it later. Hero data is stored in HeroManager.
-		playerCustomProperties.Add("Hero", LevelManager.Instance.selectedHeroIndex );
+		playerCustomProperties.Add("Hero", GameManager.Instance.playerProfile.selectedHeroIndex );
 		
 		//Set your icon, which is displayed in the matchmaking screen
 		playerCustomProperties.Add("Icon", GameManager.Instance.playerProfile.getPlayerIconId() );
@@ -126,17 +130,29 @@ public class MPNetworkLobbyManager : PunBehaviour
 			configureStaticPlayerData();
 
 	    	setConnectionProgressOnTryToJoinRoom();
-	
-			//Join the selected circuit such as CIRUIT_PRACTICE_RUN.
-			LevelData.CircuitInfo circuitInfo = LevelManager.Instance.getSelectedCircuitInfo();
-			Debug.Log("MPNetworkLobbyManager-tryToJoinRoom-The circuit selected by the player is: " + circuitInfo.matchName );
-	
-			//In addition, join a match that corresponds to the player's elo rating.
-			int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
-	
-			//Try to join an existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
-			ExitGames.Client.Photon.Hashtable desiredRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", circuitInfo.matchName }, { "Elo", playerEloRating } };
-			PhotonNetwork.JoinRandomRoom( desiredRoomProperties, LevelManager.Instance.getNumberOfPlayersRequired() );
+
+			if( GameManager.Instance.getPlayMode() == PlayMode.PlayWithFriends )
+			{
+				LevelManager.Instance.setCurrentMultiplayerLevel( LevelManager.Instance.matchInvitation.multiplayerLevelIndex );
+				RoomOptions roomOptions = new RoomOptions();
+				roomOptions.MaxPlayers = LevelManager.Instance.getNumberOfPlayersRequired();
+				roomOptions.IsVisible = false;
+			    Debug.Log("tryToJoinRoom: with friends " + LevelManager.Instance.matchInvitation.roomName );
+				PhotonNetwork.JoinOrCreateRoom( LevelManager.Instance.matchInvitation.roomName, roomOptions, TypedLobby.Default );
+			}
+			else
+			{
+				//Join the selected circuit such as CIRUIT_PRACTICE_RUN.
+				LevelData.CircuitInfo circuitInfo = LevelManager.Instance.getSelectedCircuitInfo();
+				Debug.Log("MPNetworkLobbyManager-tryToJoinRoom-The circuit selected by the player is: " + circuitInfo.matchName );
+		
+				//In addition, join a match that corresponds to the player's elo rating.
+				int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
+		
+				//Try to join an existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
+				ExitGames.Client.Photon.Hashtable desiredRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", circuitInfo.matchName }, { "Elo", playerEloRating } };
+				PhotonNetwork.JoinRandomRoom( desiredRoomProperties, LevelManager.Instance.getNumberOfPlayersRequired() );
+			}
 		}
 	}	 
 
@@ -185,7 +201,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 	public override void OnPhotonRandomJoinFailed (object[] codeAndMsg)
 	{
 	    Debug.Log("MPNetworkLobbyManager:OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one.");
-	 
 	    //We failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
 		int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
 		RoomOptions roomOptions = new RoomOptions();
@@ -301,7 +316,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 	void setUpBot()
 	{
-		HeroManager.HeroCharacter selectedHero = HeroManager.Instance.getHeroCharacter( LevelManager.Instance.selectedHeroIndex );
+		HeroManager.HeroCharacter selectedHero = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex );
 		int botHeroIndex = HeroManager.Instance.getIndexOfOppositeSexBot( selectedHero.sex );
 		LevelManager.Instance.selectedBotHeroIndex = botHeroIndex;
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( botHeroIndex );

@@ -42,13 +42,11 @@ public class CircuitSelectionManager : MonoBehaviour {
 		StoreManager.Instance.showStore( StoreTab.Store, StoreReason.None );
 	}
 
-	public void OnClickShowHeroSelection()
+	public void OnClickShowMatchmaking()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		LevelManager.Instance.setCurrentMultiplayerLevel( (int) scrollbar.value );
-		CarouselEntry selected = carouselEntryList[LevelManager.Instance.getCurrentMultiplayerLevel() ];
-		LevelManager.Instance.selectedRaceDetails = selected;
-		StartCoroutine( loadScene(GameScenes.HeroSelection) );
+		StartCoroutine( loadScene(GameScenes.Matchmaking) );
 	}
 
 	public void OnClickReturnToMainMenu()

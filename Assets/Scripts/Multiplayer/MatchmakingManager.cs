@@ -78,8 +78,8 @@ public class MatchmakingManager : MonoBehaviour {
 		}
 		else
 		{
-			CarouselEntry selected = LevelManager.Instance.selectedRaceDetails;
-			configureCircuitData( selected.circuitImage.sprite, selected.circuitName.text, selected.entryFee.text );
+			LevelData.CircuitInfo circuitInfo = LevelManager.Instance.getSelectedCircuitInfo();
+			configureCircuitData( circuitInfo );
 			endOfGameCanvas.SetActive( false );
 		}
 	}
@@ -183,14 +183,13 @@ public class MatchmakingManager : MonoBehaviour {
 		}
 	}
 
-	public void configureCircuitData( Sprite circuitImageSprite, string circuitNameString, string entryFeeString )
+	public void configureCircuitData( LevelData.CircuitInfo circuitInfo )
 	{
-		circuitName.text = circuitNameString;
-		circuitImage.sprite = circuitImageSprite;
-		entryFee.text = entryFeeString;
+		circuitName.text = LocalizationManager.Instance.getText( circuitInfo.circuitTextID );
+		circuitImage.sprite = circuitInfo.circuitImage;
+		entryFee.text = circuitInfo.entryFee.ToString();
 		enablePlayButton( true );
 	}
-
 
 	public void setConnectionProgress( string value )
 	{
@@ -259,10 +258,10 @@ public class MatchmakingManager : MonoBehaviour {
 		enableExitButton( false );
 	}
 
-	public void OnClickReturnToHeroSelection()
+	public void OnClickReturnToMainMenu()
 	{
 		if( PhotonNetwork.inRoom ) PhotonNetwork.LeaveRoom();
-		StartCoroutine( loadScene(GameScenes.HeroSelection) );
+		StartCoroutine( loadScene(GameScenes.MainMenu) );
 	}
 
 	IEnumerator loadScene(GameScenes value)

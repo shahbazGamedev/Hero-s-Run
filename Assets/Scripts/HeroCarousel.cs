@@ -33,6 +33,11 @@ public class HeroCarousel : MonoBehaviour {
 		
 		maxHeroIndex = HeroManager.Instance.getNumberOfHeroes() - 1;
 		fadedDescriptionTextColor = new Color( activeAbilityDescription.color.r, activeAbilityDescription.color.g, activeAbilityDescription.color.b, 0 );
+	}
+
+	void Start()
+	{
+		currentIndex = GameManager.Instance.playerProfile.selectedHeroIndex;
 		configureHeroDetails();
 	}
 
@@ -61,7 +66,7 @@ public class HeroCarousel : MonoBehaviour {
 		HeroManager.HeroCharacter hero = HeroManager.Instance.getHeroCharacter( initialCurrentIndex );
 		
 		//Remember the selected hero as we will need to access it later
-		LevelManager.Instance.selectedHeroIndex = currentIndex;
+		GameManager.Instance.playerProfile.selectedHeroIndex = currentIndex;
 
 		centerIcon.sprite = hero.icon;
 

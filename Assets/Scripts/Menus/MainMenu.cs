@@ -18,9 +18,9 @@ public class MainMenu : MonoBehaviour {
 	{
 		Handheld.StopActivityIndicator();
 		versionNumberText.text = GameManager.Instance.getVersionNumber();
-		updateNumberOfPlayerIcons();		
+		updateNumberOfPlayerIcons();
 	}
-	
+
 	public void OnClickOpenPlayModes()
 	{
 		StartCoroutine( loadScene(GameScenes.PlayModes) );
@@ -29,6 +29,11 @@ public class MainMenu : MonoBehaviour {
 	public void OnClickOpenTraining()
 	{
 		StartCoroutine( loadScene(GameScenes.Training) );
+	}
+
+	public void OnClickOpenHeroSelection()
+	{
+		StartCoroutine( loadScene(GameScenes.HeroSelection) );
 	}
 
 	public void OnClickOpenOptionsMenu()

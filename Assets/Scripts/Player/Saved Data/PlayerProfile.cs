@@ -18,6 +18,7 @@ public class PlayerProfile {
 	//By default, the Id is zero. This is the Id of the default player icon that new players have.
 	//The user can change his player icon in the Player Icon screen.
 	[SerializeField] int playerIconId = 0;
+	public int selectedHeroIndex; //index for heroCharacterList in HeroManager
 
 	public int getLevel()
 	{

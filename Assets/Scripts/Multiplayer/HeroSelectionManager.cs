@@ -27,15 +27,11 @@ public class HeroSelectionManager : MonoBehaviour {
 		passiveAbilityType.text = LocalizationManager.Instance.getText("ABILITY_TYPE_PASSIVE");
 	}
 
-	public void OnClickShowMatchmaking()
+	public void OnClickReturnToMainMenu()
 	{
-		GameManager.Instance.setGameState( GameState.Matchmaking );
-		StartCoroutine( loadScene(GameScenes.Matchmaking) );
-	}
-
-	public void OnClickReturnToCircuitSelection()
-	{
-		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
+		//Save the selection
+		GameManager.Instance.playerProfile.serializePlayerprofile();
+		StartCoroutine( loadScene(GameScenes.MainMenu) );
 	}
 
 	IEnumerator loadScene(GameScenes value)

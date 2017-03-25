@@ -32,9 +32,8 @@ public class LevelManager {
 	bool onlyUseUniqueTiles = false;
 	byte numberOfPlayersRequired;
 	private int currentMultiplayerLevel = 0; //the index of the multiplayer level selected by the player.
-	public CarouselEntry selectedRaceDetails;
-	public int selectedHeroIndex; //index for heroCharacterList in HeroManager
 	public int selectedBotHeroIndex; //index for botHeroCharacterList in HeroManager. Used when in the PlayAgainstEnemy mode.
+	public ChatManager.MatchInvitation matchInvitation;
 
 	public static LevelManager Instance
 	{
