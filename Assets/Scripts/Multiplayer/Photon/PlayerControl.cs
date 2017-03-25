@@ -152,7 +152,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	public Lanes currentLane = Lanes.Center;
 	Lanes desiredLane = Lanes.Center;
 	int myLane = 0; //0 is uninitialized, 1 is the nearest, 2 is in the center and 3 is the furthest
-	float sideMoveSpeed = 6f; //At what speed do you change lanes
+	public float sideMoveSpeed = 5.5f; //At what speed do you change lanes.
 	#endregion
 
 	#region Turning corners variables

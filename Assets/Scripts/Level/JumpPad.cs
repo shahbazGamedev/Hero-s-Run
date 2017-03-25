@@ -8,6 +8,7 @@ public class JumpPad : MonoBehaviour {
 	{
 		if( other.gameObject.CompareTag("Player")  )
 		{
+			GetComponent<AudioSource>().Play();
 			other.gameObject.GetComponent<PlayerInput>().doubleJump( 15f );
 		}
 	}

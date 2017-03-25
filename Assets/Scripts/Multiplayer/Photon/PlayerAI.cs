@@ -44,6 +44,9 @@ public class PlayerAI : Photon.PunBehaviour {
 		percentageWillTryToAvoidObstacle = botSkillData.percentageWillTryToAvoidObstacle;
 		percentageWillTurnSuccesfully = botSkillData.percentageWillTurnSuccesfully;
 		Debug.Log("Bot " + botHero.userName + " will try to avoid obstacled " + (percentageWillTryToAvoidObstacle * 100) + "% of the time." + " and will turn successfully " + (percentageWillTurnSuccesfully * 100) + "% of the time.");
+
+		//Reduce the change lane speed for bots. A high speed does not look natural.
+		playerControl.sideMoveSpeed = 3.5f;
 	}
 
 	// Update is called once per frame
