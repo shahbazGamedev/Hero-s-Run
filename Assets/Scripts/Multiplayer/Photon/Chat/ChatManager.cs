@@ -79,6 +79,9 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		}
 		//Set our chat status to Online
 		this.chatClient.SetOnlineStatus(ChatUserStatus.Online); // You can set your online state (without a message).
+
+		//Limit the number of messages that are cached
+		this.chatClient.MessageLimit = HistoryLengthToFetch;
 	}
 	
 	public void OnDisconnected()
