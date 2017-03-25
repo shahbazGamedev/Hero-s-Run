@@ -56,6 +56,11 @@ public class PlayerInput : PunBehaviour {
 		this.photonView.RPC("doubleJumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed(), doubleJumpSpeed );
 	}
 
+	public void teleport( Vector3  destinationPosition, float destinationRotationY )
+	{
+		this.photonView.RPC("teleportRPC", PhotonTargets.AllViaServer, destinationPosition, destinationRotationY );
+	}
+
 	public void attachToZipline()
 	{
 		playerControl.attachToZipline();

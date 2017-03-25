@@ -58,6 +58,16 @@ public class PlayerInputRPC : PunBehaviour {
 		playerControl.doubleJump( doubleJumpSpeed );
 	}
 
+	[PunRPC]
+	void teleportRPC( Vector3 destinationPosition, float destinationRotationY )
+	{
+		//Use the values we received from the master
+		transform.eulerAngles = new Vector3( transform.eulerAngles.x, destinationRotationY, transform.eulerAngles.z );
+		transform.position = destinationPosition;
+		//We may have switched lanes because of the position change. Make sure the lane values are accurate.
+		playerControl.recalculateCurrentLane();
+	}
+
 	void syncMovement( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
 	{
 		//Use the values we received from the master

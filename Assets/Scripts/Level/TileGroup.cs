@@ -155,7 +155,8 @@ public enum TileGroupType {
 
 	Jousting_Start = 10000,
 	Jousting_End = 10001,
-	Jousting_Straight = 10002
+	Jousting_Straight = 10002,
+	Jousting_Straight_Double = 10003
 
 }
 
