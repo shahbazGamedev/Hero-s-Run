@@ -99,7 +99,10 @@ public enum TileType {
 	Forest_Burning_Bridge = 94,
 	Forest_Magic_Mirror = 95,
 	Cemetery_Endless_Graveyard_Start = 96,
-	Jungle_Waterfall = 97
+	Jungle_Waterfall = 97,
+	Teleport_Tx = 98,
+	Teleport_Rx = 99,
+	Jump_Pad = 100
 
 }
 
@@ -117,7 +120,9 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	private LevelData levelData;
 	[SerializeField] GameObject singlePlayerHeroPrefab;
 	[SerializeField] GameObject singlePlayerTrollPrefab;
-	public const float TILE_SIZE = 36.4f;
+	const float TILE_SIZE_MULTIPLAYER = 50f;
+	const float TILE_SIZE_CAMPAIGN = 36.4f;
+	public static float tileSize = TILE_SIZE_MULTIPLAYER;
 	const float UNDERNEATH_TILE_BY = 30f;
 	int tileDepthMult = 1; //A value of one means the tile depth is 1 x TILE_SIZE, a value of two means 2 x TILE_SIZE, etc.
 	
@@ -224,6 +229,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		worldRoadSegments.Clear();
 		tileCreationIndex = 0;
 		playerTileIndex = 0;
+		tileSize = TILE_SIZE_CAMPAIGN;
 						
 		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
 
@@ -351,6 +357,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		worldRoadSegments.Clear();
 		tileCreationIndex = 0;
 		playerTileIndex = 0;
+		tileSize = TILE_SIZE_MULTIPLAYER;
 
 		Debug.Log("GenerateLevel-createMultiplayerLevel: selected level is: " + LevelManager.Instance.getCurrentMultiplayerLevel() );
 						
@@ -507,7 +514,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	{
 		Vector3 tilePos = Vector3.zero;
 		float previousTileRotY = Mathf.Floor( previousTileRot.eulerAngles.y );
-		float tileDepth =  tileDepthMult * TILE_SIZE;
+		float tileDepth =  tileDepthMult * tileSize;
 		//Determine the tile's height.
 		float tileHeight = tileEndHeight + previousTilePos.y;
 		switch (previousTileType)
@@ -767,10 +774,10 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			for ( int j=startValue; j < worldRoadSegments.Count; j++ )
 		    {
 				//Move the tiles on the right path to the left path. 
-				worldRoadSegments[j].transform.position = new Vector3( worldRoadSegments[j].transform.position.x - (2 * TILE_SIZE), worldRoadSegments[j].transform.position.y, worldRoadSegments[j].transform.position.z + (2 * TILE_SIZE) );
+				worldRoadSegments[j].transform.position = new Vector3( worldRoadSegments[j].transform.position.x - (2 * tileSize), worldRoadSegments[j].transform.position.y, worldRoadSegments[j].transform.position.z + (2 * tileSize) );
 			}
 			//Also change the previousTilePos so that new tiles get added at the right place
-			previousTilePos = new Vector3( previousTilePos.x - (2 * TILE_SIZE), previousTilePos.y, previousTilePos.z + (2 * TILE_SIZE) );
+			previousTilePos = new Vector3( previousTilePos.x - (2 * tileSize), previousTilePos.y, previousTilePos.z + (2 * tileSize) );
 
 		}
 		else
@@ -812,7 +819,20 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		}
 	}
 
-	
+	public void activateTilesAfterTeleport()
+	{
+		playerTileIndex = playerTileIndex + 2; //The teleport tile group is composed of the transmitter tile plus two additional tiles
+		//Activate the current plus nbrVisibleTiles prefabs that are next on the player's path
+		int endIndex = playerTileIndex + nbrVisibleTiles;
+		if( endIndex >= worldRoadSegments.Count ) endIndex = worldRoadSegments.Count - 1;
+		for( int i=playerTileIndex; i <= endIndex; i++ )
+		{
+			getSegmentInfo(worldRoadSegments[i]).entranceCrossed = false;
+			worldRoadSegments[i].SetActive( true );
+			onTileActivation(i);
+		}
+	}
+
 	//At any given time, there are 5 active tiles:
 	//The current tile
 	//The preceding tile

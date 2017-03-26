@@ -244,6 +244,7 @@ public class MPGameEndManager : MonoBehaviour {
 
 	void showMatchmaking()
 	{
+		GameManager.Instance.setGameState(GameState.Matchmaking);
 		LevelData.CircuitInfo circuitInfo = LevelManager.Instance.getSelectedCircuitInfo();
 		matchmakingManager.configureCircuitData( circuitInfo );
 		matchmakingManager.gameObject.SetActive( true );

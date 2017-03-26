@@ -2,13 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Player collisions.
+/// Obstacle naming:
+/// Obstacle_F - the obstacle is impassable
+/// Obstacle_L - the obstacle's height is low. You can jump over it.
+/// Obstacle_M - the obstacle's height is medium. You can either slide under it or jump over it.
+/// Obstacle_H - the obstacle's height is high. You can slide under it.
+/// Obstacle_B - the obstacle is breakable. You can slide into it to break it or jump over it.
+/// </summary>
 public class PlayerCollisions : Photon.PunBehaviour {
 
 	PlayerControl playerControl;
 	PlayerSounds playerSounds;
 	#region Ground type variables
-	string groundType = "Normal"; //Other choices are Water and Collapsing
-	string previousGroundType = "Normal"; //Other choices are Water and Collapsing
+	string groundType = "Floor"; //Other choices are Water and Collapsing
+	string previousGroundType = "Floor"; //Other choices are Water and Collapsing
 	#endregion
 
 	// Use this for initialization
@@ -39,7 +48,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 			previousGroundType = groundType;
 
 			//The CharacterController is constantly colliding with the Quads making up the floor. Ignore those events.
-			if (hit.collider.name == "Quad" || hit.collider.name == "Floor" ) return;
+			if (hit.gameObject.CompareTag("Floor") ) return;
 	
 			//Debug.Log ("OnControllerColliderHit  " + hit.collider.name  );
 			if (hit.collider.name == "DeadTree" )
@@ -293,6 +302,10 @@ public class PlayerCollisions : Photon.PunBehaviour {
 				}
 			}
 			else if (hit.collider.name.StartsWith("Fence") || hit.collider.name.StartsWith("Wall") || hit.collider.name.StartsWith("Portcullis") )
+			{
+				playerControl.managePlayerDeath ( DeathType.Obstacle );
+			}			
+			else if (hit.collider.CompareTag( "Obstacle_F" ) )
 			{
 				playerControl.managePlayerDeath ( DeathType.Obstacle );
 			}			

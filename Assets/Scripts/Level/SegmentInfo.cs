@@ -87,7 +87,7 @@ public class SegmentInfo : MonoBehaviour {
 		{
 			SegmentInfo.BezierData bezierData = new BezierData();
 			curveList.Add( bezierData );
-			float tileLength = GenerateLevel.TILE_SIZE * tileDepth;
+			float tileLength = GenerateLevel.tileSize * tileDepth;
 
 			//Create Start point, but only if one doesn't already exist
 			Transform bezierStart = transform.FindChild("bezierStart");
@@ -100,7 +100,7 @@ public class SegmentInfo : MonoBehaviour {
 				bezierStart.parent = transform;
 				bezierData.bezierStart = bezierStart;
 				//Position it at the beginning of the tile
-				bezierStart.localPosition = new Vector3( 0, distanceToGround, -GenerateLevel.TILE_SIZE/2f );
+				bezierStart.localPosition = new Vector3( 0, distanceToGround, -GenerateLevel.tileSize/2f );
 			}
 			//Create End point, but only if one doesn't already exist
 			Transform bezierEnd = transform.FindChild("bezierEnd");
@@ -115,16 +115,16 @@ public class SegmentInfo : MonoBehaviour {
 		        switch (tileSubType)
 				{
 			        case TileSubType.Straight:
-						bezierEnd.localPosition = new Vector3( 0, distanceToGround, -GenerateLevel.TILE_SIZE/2f + tileLength );
+						bezierEnd.localPosition = new Vector3( 0, distanceToGround, -GenerateLevel.tileSize/2f + tileLength );
 		                break;
 			                
 			        case TileSubType.Right:
 			        case TileSubType.T_Junction:
-						bezierEnd.localPosition = new Vector3( GenerateLevel.TILE_SIZE/2f, distanceToGround, 0 );
+						bezierEnd.localPosition = new Vector3( GenerateLevel.tileSize/2f, distanceToGround, 0 );
 		                break;
 			                
 			        case TileSubType.Left:
-						bezierEnd.localPosition = new Vector3( -GenerateLevel.TILE_SIZE/2f, distanceToGround, 0 );
+						bezierEnd.localPosition = new Vector3( -GenerateLevel.tileSize/2f, distanceToGround, 0 );
 		                break;
 				}
 			}

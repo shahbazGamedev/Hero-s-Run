@@ -156,7 +156,10 @@ public enum TileGroupType {
 	Jousting_Start = 10000,
 	Jousting_End = 10001,
 	Jousting_Straight = 10002,
-	Jousting_Straight_Double = 10003
+	Jousting_Teleporter = 10003, 	//Teleporter_Tx, Straight, Teleporter_Rx
+	Jousting_Jump_Pad = 10004,		//Jump_Pad
+	Jousting_Left_Turn = 10005,		//Left
+	Jousting_Right_Turn = 10006		//Right
 
 }
 

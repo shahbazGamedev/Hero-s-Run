@@ -145,7 +145,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		Center = 0,
 		Right = 1,
 	}
-	static float laneLimit = 1.3f;
+	static float laneLimit = 2f;
 	//Due to rounding errors, the player may not reach exactly the lane limit. If there is less than 1% of the distance
 	//remaining, assume that he did reach the lane limit which will allow us to finalize the side move.
 	float adjustedLaneLimit = laneLimit * 0.99f;
@@ -576,7 +576,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	void calculateDistanceToGround()
 	{
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, 10.0F ))
+		//We add 0.05 just to be sure our raycast starts a tad higher than the player's feet
+		if (Physics.Raycast(new Vector3( transform.position.x, transform.position.y + 0.05f, transform.position.z ) , Vector3.down, out hit, 10.0F ))
 		{
             distanceToGround = hit.distance;
 			//print ("PlayerControl-calculateDistanceToGround: " + hit.collider.name );
@@ -900,7 +901,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				//What we want to do: kill the player. He missed the turn.
 
 				//Case 3: Player turned too late, we want to kill him
-				if (sideMoveInitiatedZ > 1.9f )
+				if (sideMoveInitiatedZ > 2f )
 				{	
 					Debug.LogWarning("turnCorner: game over - player turned too late." );
 					reasonDiedAtTurn = "TURNED TOO LATE";
@@ -909,7 +910,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				}
 
 				//Case 2: Player turned late, we want to turn now
-				if ( sideMoveInitiatedZ > laneLimit && sideMoveInitiatedZ < 1.9f )
+				if ( sideMoveInitiatedZ > laneLimit && sideMoveInitiatedZ < 2f )
 				{	
 					if ( isGoingRight )
 					{
