@@ -317,6 +317,14 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					playerControl.managePlayerDeath ( DeathType.Obstacle );
 				}
 			}			
+			else if (hit.collider.CompareTag( "Obstacle_M" ) )
+			{
+				if( hit.normal.y < 0.4f )
+				{
+					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
+					playerControl.managePlayerDeath ( DeathType.Obstacle );
+				}
+			}
 		}
 	}
 	

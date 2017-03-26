@@ -22,7 +22,7 @@ public class PlayerAI : Photon.PunBehaviour {
 	const float BASE_OBSTACLE_DETECTION_LOW_DISTANCE = 4.6f; //assuming a run speed of BASE_RUN_SPEED
 	const float BASE_OBSTACLE_DETECTION_HIGH_DISTANCE = 8f; //assuming a run speed of BASE_RUN_SPEED
 	Vector3 xOffsetStartLow = new Vector3( 0, 0.5f, 0 );	//For low obstacles
-	Vector3 xOffsetStartHigh = new Vector3( 0, 1.3f, 0 );	//For high obstacles
+	Vector3 xOffsetStartHigh = new Vector3( 0, 1.5f, 0 );	//For high obstacles
 
 	PlayerControl playerControl;
 	PlayerInput playerInput;
@@ -119,6 +119,17 @@ public class PlayerAI : Photon.PunBehaviour {
 						playerInput.jump();
 					}
 				}
+				else if( hit.collider.CompareTag( "Obstacle_B" ) )
+				{
+					if( Random.value < 0.8f )
+					{
+						playerInput.startSlide();
+					}
+					else
+					{
+						playerInput.jump();
+					}
+				}
 			}
 		}
 
@@ -150,6 +161,17 @@ public class PlayerAI : Photon.PunBehaviour {
 					{
 						//We did not cast it. We need to jump over it.
 						//As a reminder, the caster is immune to the firewall he casted.
+						playerInput.jump();
+					}
+				}
+				else if( hit.collider.CompareTag( "Obstacle_M" ) )
+				{
+					if( Random.value < 0.5f )
+					{
+						playerInput.startSlide();
+					}
+					else
+					{
 						playerInput.jump();
 					}
 				}

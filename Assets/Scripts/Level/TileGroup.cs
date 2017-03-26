@@ -159,7 +159,9 @@ public enum TileGroupType {
 	Jousting_Teleporter = 10003, 	//Teleporter_Tx, Straight, Teleporter_Rx
 	Jousting_Jump_Pad = 10004,		//Jump_Pad
 	Jousting_Left_Turn = 10005,		//Left
-	Jousting_Right_Turn = 10006		//Right
+	Jousting_Right_Turn = 10006,	//Right
+	Jousting_Log = 10007,			//Straight_Log
+	Jousting_Zipline = 10008		//zipline, left, straight_log, right
 
 }
 

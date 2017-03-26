@@ -849,6 +849,10 @@ public class PlayerControl : Photon.PunBehaviour {
 			{
 				collider.enabled = deactivate;
 			}
+			else if ( collider.CompareTag("Obstacle_M") )
+			{
+				collider.enabled = deactivate;
+			}
 		}
 	}
 
