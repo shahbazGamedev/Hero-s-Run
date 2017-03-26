@@ -31,6 +31,11 @@ public class MainMenu : MonoBehaviour {
 		StartCoroutine( loadScene(GameScenes.Training) );
 	}
 
+	public void OnClickOpenSocial()
+	{
+		StartCoroutine( loadScene(GameScenes.Social) );
+	}
+
 	public void OnClickOpenHeroSelection()
 	{
 		StartCoroutine( loadScene(GameScenes.HeroSelection) );

@@ -39,7 +39,8 @@ public enum GameScenes {
 	MainMenu = 11,
 	PlayModes = 12,
 	Options = 13,
-	Training = 14
+	Training = 14,
+	Social = 15
 }
 
 public enum GameMode {
