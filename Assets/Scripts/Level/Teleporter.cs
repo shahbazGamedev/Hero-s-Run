@@ -6,7 +6,7 @@ using UnityEngine;
 /// Teleporter. This implementation assumes that the teleporter tile group is composed of three 50 meter long tiles (Teleporter_Tx, Straight and Teleporter_Rx).
 /// Therefore the distance between Tx and Rx is exactly 100 meters as both teleporter pads are in the center of their respective tile.
 /// </summary>
-public class Teleporter : MonoBehaviour {
+public class Teleporter : Device {
 
 	enum TeleporterType {
 		Transmitter = 0,
@@ -17,8 +17,9 @@ public class Teleporter : MonoBehaviour {
 	[Tooltip("The name of the move-to-center-lane game object. This game object is disabled when the teleporter type is set to Receiver.")]
 	[SerializeField] GameObject moveToCenterLaneTrigger;
 
-	void Start ()
+	new void Start ()
 	{
+		base.Start ();
 		if( type == TeleporterType.Receiver )
 		{
 			//The move to center lane trigger for bots is not needed for the receiver
@@ -28,7 +29,7 @@ public class Teleporter : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( type == TeleporterType.Transmitter )
+		if( type == TeleporterType.Transmitter && state == DeviceState.On )
 		{
 			if( other.gameObject.CompareTag("Player") )
 			{
