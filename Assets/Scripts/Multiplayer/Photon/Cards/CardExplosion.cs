@@ -10,7 +10,8 @@ public class CardExplosion : Photon.PunBehaviour {
 	[SerializeField] float  baseDiameter = 10f;
 	[SerializeField] float  diameterUpgradePerLevel = 0.25f;
 	[SerializeField]  ParticleSystem zNukeEffect;
-	int playerLayer = 2;
+	int playerLayer = 8;
+	int deviceLayer = 16;
 
 	public void activateCard ( int photonViewId, int level )
 	{
@@ -39,6 +40,7 @@ public class CardExplosion : Photon.PunBehaviour {
 	int getExplosionMask()
 	{
 		int mask = 1 << playerLayer;
+		mask |= 1 << deviceLayer;
 		return mask;
 	}
 
@@ -91,6 +93,10 @@ public class CardExplosion : Photon.PunBehaviour {
 						}
 					}
 				}
+			}
+			else if( hitColliders[i].CompareTag("Device") )
+			{
+				hitColliders[i].GetComponent<Device>().changeDeviceState(DeviceState.Broken);
 			}
 		}
 	}

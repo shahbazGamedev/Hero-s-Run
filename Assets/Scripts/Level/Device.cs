@@ -34,9 +34,10 @@ public class Device : MonoBehaviour {
 		changeDeviceState( state );
 	}
 
-	void changeDeviceState( DeviceState newState )
+	public void changeDeviceState( DeviceState newState )
 	{
-		switch ( newState )
+		state = newState;
+		switch ( state )
 		{
 			case DeviceState.Broken:
 				changeColor( Color.red );
