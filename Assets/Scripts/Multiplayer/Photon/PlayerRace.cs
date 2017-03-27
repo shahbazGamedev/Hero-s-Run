@@ -48,6 +48,7 @@ public class PlayerRace : Photon.PunBehaviour
 			PlayerRaceManager.Instance.setRaceStatus( RaceStatus.NOT_STARTED );
 			players.Clear();
 			officialRacePositionList.Clear();
+			LevelManager.Instance.distanceTravelled = 0;
 		}
  		if (!players.Contains (this))
 		{
@@ -86,14 +87,14 @@ public class PlayerRace : Photon.PunBehaviour
 	/// </summary>
 	void FixedUpdate()
 	{
-		if( PhotonNetwork.isMasterClient )
+		//Only calculate distance travelled, race position and race duration if the race is in progress. 
+		if( raceStarted && !playerCrossedFinishLine )
 		{
-			//Only calculate distance travelled, race position and race duration if the race is in progress. 
-			if( raceStarted && !playerCrossedFinishLine )
+			//We use the distance travelled to determine the race position. All players on the master client need to do this.
+			updateDistanceTravelled();
+	
+			if( PhotonNetwork.isMasterClient )
 			{
-				//We use the distance travelled to determine the race position. All players on the master client need to do this.
-				updateDistanceTravelled();
-
 				//We only want the host to calculate the race position and race duration. We don't want a bot to do it.
 				//The host is the master client who is owned by this device (so IsMasterClient is true and IsMine is true).
 				if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
@@ -128,18 +129,12 @@ public class PlayerRace : Photon.PunBehaviour
 	//Only calculated on master client
 	void updateDistanceTravelled()
 	{
-		//Important: The NetworkTransform component of the remote player can sometimes move a player backwards by a small amount.
-		//So ONLY update the distance if the player moved forward or at least stayed in the same position.
-		//The backward movement value is small but it will add up over time making the distance travelled  inacurate and this, in turn, will cause
-		//the race position value to be wrong.
-		if( transform.position.z >= previousPlayerPosition.z )
-		{
-			//Do not take height into consideration for distance travelled
-			Vector3 current = new Vector3(transform.position.x, 0, transform.position.z);
-			Vector3 previous = new Vector3(transform.position.x, 0, previousPlayerPosition.z);
-			distanceTravelled = distanceTravelled + Vector3.Distance( current, previous );
-			previousPlayerPosition = transform.position;
-		}
+		//Do not take height into consideration for distance travelled
+		Vector3 current = new Vector3(transform.position.x, 0, transform.position.z);
+		Vector3 previous = new Vector3(previousPlayerPosition.x, 0, previousPlayerPosition.z);
+		distanceTravelled = distanceTravelled + Vector3.Distance( current, previous );
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) LevelManager.Instance.distanceTravelled = distanceTravelled;
+		previousPlayerPosition = transform.position;
 	}
 
 	void OnTriggerEnter(Collider other)

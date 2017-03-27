@@ -10,6 +10,9 @@ public class HUDMultiplayer : MonoBehaviour {
 	public static HUDMultiplayer hudMultiplayer;
 	bool raceHasStarted = false;
 	const float DELAY_BEFORE_COUNTDOWN_STARTS = 5f;
+	[Header("Distance Traveled")]
+	[SerializeField] GameObject distancePanel;
+	[SerializeField] Text distanceText;
 	[Header("Countdowm")]
 	[SerializeField] AudioClip beep; //Sound to play every second during countdown
 	[SerializeField] Text userMessageText;
@@ -49,6 +52,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		fpsCalculator.enabled = PlayerStatsManager.Instance.getShowDebugInfoOnHUD();
 		debugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
 		userMessageText.gameObject.SetActive( false );
+		distancePanel.SetActive( false );
 	}
 	
 	void Start()
@@ -88,6 +92,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		//Race is starting
 		raceHasStarted = true;
 		displayRacePosition( true );	
+		distancePanel.SetActive( true );
 		
 	}
 
@@ -116,6 +121,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	void Update()
 	{
 		if( debugInfo.gameObject.activeSelf ) debugInfo.text = " FPS: " + fpsCalculator.getFPS() + " Latency: " + PhotonNetwork.networkingPeer.RoundTripTime.ToString() + " Name: " + PhotonNetwork.playerName; 
+		distanceText.text = LevelManager.Instance.distanceTravelled.ToString("N0") + " m";
 	}
 
 	void hideGoText()
@@ -131,6 +137,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	public void displayFinishFlag( bool display )
 	{
 		finishFlag.gameObject.SetActive( display );
+		distancePanel.SetActive( false );
 	}
 
 	public void updateRacePosition( int position )

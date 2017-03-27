@@ -34,6 +34,7 @@ public class LevelManager {
 	private int currentMultiplayerLevel = 0; //the index of the multiplayer level selected by the player.
 	public int selectedBotHeroIndex; //index for botHeroCharacterList in HeroManager. Used when in the PlayAgainstEnemy mode.
 	public ChatManager.MatchInvitation matchInvitation;
+	public float distanceTravelled = 0; //See PlayerRace. This value is displayed in the HUD.
 
 	public static LevelManager Instance
 	{
