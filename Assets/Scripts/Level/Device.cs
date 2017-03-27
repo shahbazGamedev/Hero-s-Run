@@ -19,6 +19,7 @@ public class Device : MonoBehaviour {
 
 	public DeviceState state = DeviceState.On;
 	public DeviceCategory category = DeviceCategory.Teleporter;
+	[SerializeField] Sprite  minimapIcon;
 	[SerializeField] GameObject Teleport_VFX1;
 	[SerializeField] GameObject Teleport_VFX2;
 	Color originalColor;
@@ -32,6 +33,7 @@ public class Device : MonoBehaviour {
 	public void Start () {
 		
 		changeDeviceState( state );
+		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
 	}
 
 	public void changeDeviceState( DeviceState newState )

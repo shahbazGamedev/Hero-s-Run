@@ -119,8 +119,21 @@ public class MiniMap : MonoBehaviour {
 				float distToObject = Vector3.Distance( player.position, radarObjects[i].owner.transform.position ) * mapScale;
 				if( distToObject > MAX_DISTANCE )
 				{
-					//The object is off the map. Render it at the edge.
-					distToObject = MAX_DISTANCE;
+					if( radarObjects[i].playerControl != null )
+					{
+						//The player is off the map. Render him at the edge.
+						distToObject = MAX_DISTANCE;
+					}
+					else
+					{
+						//The object (like a teleporter) is off the map. Simply hide it.
+						radarObjects[i].icon.gameObject.SetActive( false );
+						continue;
+					}
+				}
+				else
+				{
+					radarObjects[i].icon.gameObject.SetActive( true );
 				}
 				float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270 -player.eulerAngles.y;
 				radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
