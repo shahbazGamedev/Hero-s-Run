@@ -29,6 +29,7 @@ public class MiniMap : MonoBehaviour {
 	const float MAX_DISTANCE = 72f;
 	const float CARD_FEED_TTL = 4f; //in seconds
 	float cardFeedTimeOfLastEntry;
+	Queue<string> messageQueue = new Queue<string>();
 
 	// Use this for initialization
 	void Awake () {
@@ -72,28 +73,49 @@ public class MiniMap : MonoBehaviour {
 
 	public void updateCardFeed( string cardPlayerName, CardManager.CardData lastCardPlayed )
 	{
-		cardFeed.text = cardPlayerName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + lastCardPlayed.name + "</color>";
-		cardFeedTimeOfLastEntry = Time.time;
+		addMessage( cardPlayerName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + lastCardPlayed.name + "</color>" );
 	}
 
 	public void updateCardFeed( string cardPlayerName, CardName cardName )
 	{
 		CardManager.CardData lastCardPlayed = CardManager.Instance.getCardByName( cardName );
-		cardFeed.text = cardPlayerName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + lastCardPlayed.name + "</color>";
-		cardFeedTimeOfLastEntry = Time.time;
+		addMessage( cardPlayerName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + lastCardPlayed.name + "</color>" );
 	}
 
 	public void updateFeed( string playerName, string message )
 	{
-		cardFeed.text = playerName + message;
-		cardFeedTimeOfLastEntry = Time.time;
+		addMessage( playerName + message );
+	}
+
+	void addMessage( string message )
+	{
+		//Is a message currently being displayed?
+		if( cardFeed.text == string.Empty )
+		{
+			//There is no message. Display it right away.
+			cardFeed.text = message;
+			cardFeedTimeOfLastEntry = Time.time;
+		}
+		else
+		{
+			//There is a message. Put in the queue.
+			messageQueue.Enqueue( message );
+		}
 	}
 
 	// Update is called once per frame
 	void LateUpdate () {
 	
 		drawRadarDots();
-		if( Time.time - cardFeedTimeOfLastEntry > CARD_FEED_TTL ) cardFeed.text = string.Empty;
+		if( Time.time - cardFeedTimeOfLastEntry > CARD_FEED_TTL )
+		{
+			cardFeed.text = string.Empty;
+			//Do we have any other message in the queue?
+			if( messageQueue.Count > 0 )
+			{
+				addMessage( messageQueue.Dequeue() );
+			}
+		}
 	}
 
 	public void changeColorOfRadarObject( PlayerControl pc, Color newColor )
