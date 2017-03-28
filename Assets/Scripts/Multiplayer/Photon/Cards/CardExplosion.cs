@@ -96,7 +96,7 @@ public class CardExplosion : Photon.PunBehaviour {
 			}
 			else if( hitColliders[i].CompareTag("Device") )
 			{
-				hitColliders[i].GetComponent<Device>().changeDeviceState(DeviceState.Broken);
+				hitColliders[i].GetComponent<Device>().changeDeviceState( DeviceState.Broken, player.name );
 			}
 		}
 	}

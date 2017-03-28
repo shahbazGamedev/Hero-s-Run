@@ -109,6 +109,19 @@ public class MiniMap : MonoBehaviour {
 		}
 	}
 
+	public void changeColorOfRadarObject( GameObject owner, Color newColor )
+	{
+		RadarObject ro = radarObjects.Find(radarObject => radarObject.owner == owner);
+		if( ro != null )
+		{
+			ro.icon.color = newColor;
+		}
+		else
+		{
+			Debug.LogError("MiniMap-changeColorOfRadarObject: radar object for " + owner.name + " was not found." );
+		}
+	}
+
 	void drawRadarDots()
 	{
 		for(int i = radarObjects.Count - 1; i > -1; i-- )
