@@ -10,7 +10,8 @@ public class SocialMenu : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+
+		Handheld.StopActivityIndicator();
 	}
 
 	public void OnClickReturnToMainMenu()

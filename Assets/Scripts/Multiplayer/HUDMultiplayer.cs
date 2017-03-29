@@ -98,7 +98,16 @@ public class HUDMultiplayer : MonoBehaviour {
 
 	public void startEndOfRaceCountdown()
 	{
-		StartCoroutine("endOfRaceCountdown");
+		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAlone )
+		{
+			//Since we are playing alone, there is no need for a end of race countdown.
+			//Let's wait for a few seconds for the victory animation to finish and then leave the room.
+			StartCoroutine("leaveRoomShortly");
+		}
+		else
+		{
+			StartCoroutine("endOfRaceCountdown");
+		}
 	}
 
 	IEnumerator endOfRaceCountdown()
@@ -114,6 +123,15 @@ public class HUDMultiplayer : MonoBehaviour {
 			countdownNumber--;
 		}
 	
+		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
+		PhotonNetwork.LeaveRoom();
+	}
+
+	IEnumerator leaveRoomShortly()
+	{
+		StopCoroutine("endOfRaceCountdown");
+		yield return new WaitForSecondsRealtime( 5f );
+		raceEndingText.gameObject.SetActive( false );
 		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 		PhotonNetwork.LeaveRoom();
 	}

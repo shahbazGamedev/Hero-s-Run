@@ -87,6 +87,11 @@ public class MiniMap : MonoBehaviour {
 		addMessage( playerName + message );
 	}
 
+	public void emptyMessageQueue()
+	{
+		messageQueue.Clear();
+	}
+
 	void addMessage( string message )
 	{
 		//Is a message currently being displayed?
