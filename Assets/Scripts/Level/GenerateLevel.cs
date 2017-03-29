@@ -120,9 +120,8 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	private LevelData levelData;
 	[SerializeField] GameObject singlePlayerHeroPrefab;
 	[SerializeField] GameObject singlePlayerTrollPrefab;
-	const float TILE_SIZE_MULTIPLAYER = 50f;
 	const float TILE_SIZE_CAMPAIGN = 36.4f;
-	public static float tileSize = TILE_SIZE_MULTIPLAYER;
+	public static float tileSize;
 	const float UNDERNEATH_TILE_BY = 30f;
 	int tileDepthMult = 1; //A value of one means the tile depth is 1 x TILE_SIZE, a value of two means 2 x TILE_SIZE, etc.
 	
@@ -357,11 +356,11 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		worldRoadSegments.Clear();
 		tileCreationIndex = 0;
 		playerTileIndex = 0;
-		tileSize = TILE_SIZE_MULTIPLAYER;
 
 		Debug.Log("GenerateLevel-createMultiplayerLevel: selected level is: " + LevelManager.Instance.getCurrentMultiplayerLevel() );
 						
 		LevelData.MultiplayerInfo currentMultiplayer = levelData.getMultiplayerInfo( LevelManager.Instance.getCurrentMultiplayerLevel() );
+		tileSize = currentMultiplayer.tileSize;
 
 		//Sets the skybox, the directional light intensity and direction for the current episode
 		levelData.initialise();

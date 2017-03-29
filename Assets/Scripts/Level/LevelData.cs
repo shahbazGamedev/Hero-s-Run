@@ -363,6 +363,8 @@ public class LevelData : MonoBehaviour {
 		public bool isFogEnabled = false;
 		[Header("Tile Groups")]
 		public List<TileGroupType> tileGroupList = new List<TileGroupType>();
+		[Tooltip("Tile size. Either 50 for Jousting or 36.4 for all other.")]
+		public float tileSize;
 		
 	}
 
