@@ -127,11 +127,11 @@ public class HUDMultiplayer : MonoBehaviour {
 		PhotonNetwork.LeaveRoom();
 	}
 
-	IEnumerator leaveRoomShortly()
+	public IEnumerator leaveRoomShortly()
 	{
+		raceEndingText.gameObject.SetActive( false );
 		StopCoroutine("endOfRaceCountdown");
 		yield return new WaitForSecondsRealtime( 5f );
-		raceEndingText.gameObject.SetActive( false );
 		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 		PhotonNetwork.LeaveRoom();
 	}

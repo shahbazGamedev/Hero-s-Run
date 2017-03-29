@@ -10,7 +10,7 @@ public class CardExplosion : Photon.PunBehaviour {
 	[SerializeField] float  baseDiameter = 10f;
 	[SerializeField] float  diameterUpgradePerLevel = 0.25f;
 	[SerializeField]  ParticleSystem zNukeEffect;
-	int playerLayer = 8;
+	int playerLayer = 2; //The player uses the Ignore Raycast layer which has an index of 2 and NOT the player layer which has an index of 8.
 	int deviceLayer = 16;
 
 	public void activateCard ( int photonViewId, int level )

@@ -64,10 +64,20 @@ public class PlayerRace : Photon.PunBehaviour
 	void OnDisable()
 	{
 		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
+		if (players.Contains (this))
+		{
+            players.Remove (this);
+		}
+ 	    Debug.Log("PlayerRace: OnDisable() Players Count: " + players.Count);  
+	}
+
+	public override void OnDisconnectedFromPhoton()
+	{
         if (players.Contains (this))
 		{
             players.Remove (this);
 		}
+		Debug.Log("PlayerRace: OnDisconnectedFromPhoton() Players Count: " + players.Count );  
 	}
 
 	void StartRunningEvent()
@@ -147,12 +157,17 @@ public class PlayerRace : Photon.PunBehaviour
 				playerCrossedFinishLine = true;
 				if( !officialRacePositionList.Contains(this) ) officialRacePositionList.Add( this );
 				int officialRacePosition = officialRacePositionList.FindIndex(playerRace => playerRace == this);
-				Debug.Log ("Finish Line crossed by " + gameObject.name + " in race position " + officialRacePosition );
+				Debug.Log ("Finish Line crossed by " + gameObject.name + " in race position " + officialRacePosition + " players " + players.Count);
 				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllBuffered, other.transform.position.z, raceDuration, distanceTravelled, officialRacePosition );
 				//if this is the first player to cross the finish line, start the End of Race countdown.
 				if( officialRacePositionList.Count == 1 )
 				{
 					this.photonView.RPC("StartEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
+				}
+				else if( officialRacePositionList.Count == players.Count )
+				{
+					//Every player has crossed the finish line. We can stop the countdown and return everyone to the lobby.
+					this.photonView.RPC("CancelEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
 				}
 			}
 		}
@@ -162,6 +177,12 @@ public class PlayerRace : Photon.PunBehaviour
 	void StartEndOfRaceCountdownRPC()
 	{
 		HUDMultiplayer.hudMultiplayer.startEndOfRaceCountdown();
+	}
+
+	[PunRPC]
+	void CancelEndOfRaceCountdownRPC()
+	{
+		StartCoroutine( HUDMultiplayer.hudMultiplayer.leaveRoomShortly() );
 	}
 
 	[PunRPC]
