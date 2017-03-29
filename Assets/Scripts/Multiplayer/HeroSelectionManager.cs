@@ -9,20 +9,12 @@ public class HeroSelectionManager : MonoBehaviour {
 	[Header("Hero Selection Manager")]
 	[SerializeField] Text exitButtonText;
 	bool levelLoading = false;
-	[Header("Active Ability")]
-	[SerializeField] Text activeAbilityType;
-	[Header("Active Ability")]
-	[SerializeField] Text passiveAbilityType;
 
 	// Use this for initialization
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
 		exitButtonText.text = LocalizationManager.Instance.getText("CIRCUIT_EXIT");
-		//Active
-		activeAbilityType.text = LocalizationManager.Instance.getText("ABILITY_TYPE_ACTIVE");
-		//Passive
-		passiveAbilityType.text = LocalizationManager.Instance.getText("ABILITY_TYPE_PASSIVE");
 	}
 
 	public void OnClickReturnToMainMenu()
