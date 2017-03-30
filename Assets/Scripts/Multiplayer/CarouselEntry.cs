@@ -42,7 +42,7 @@ public class CarouselEntry : MonoBehaviour {
 		entryFee.text = entryFeeString;
 
 		//Common to all carousel entries
-		raceButtonText.text = LocalizationManager.Instance.getText( "HERO_SELECTION_CONFIRM" );
+		raceButtonText.text = LocalizationManager.Instance.getText( "MENU_CONFIRM" );
 		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );
 
 	}
