@@ -178,7 +178,8 @@ public class TakeScreenshot : MonoBehaviour {
 	
 		if( newState == GameState.Normal )
 		{
-			cameraButton.gameObject.SetActive( true );
+			//Disable for now - probably won't stay in the HUD
+			//cameraButton.gameObject.SetActive( true );
 		}
 		else
 		{
