@@ -34,6 +34,7 @@ public enum TileGroupType {
 	Tanglewood_Magic_Mirror = 215,
 	Tanglewood_Treasure_Key = 216,
 	Tanglewood_Straight_Section = 217, 	//straight, straight
+	Tanglewood_Finish_Line = 218, 	//Finish_Line
 
 	Fairyland_Start = 300,
 	Fairyland_End = 301,

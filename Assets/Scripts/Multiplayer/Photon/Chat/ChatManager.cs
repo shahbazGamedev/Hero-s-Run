@@ -31,8 +31,6 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	[SerializeField] GameObject invitationStatusPanel;
 	[SerializeField] Text invitationStatusText;
 
-	bool levelLoading = false;
-
 	void Awake ()
 	{
 		if(Instance)
@@ -268,12 +266,12 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 			case InvitationType.INVITATION_ACCEPTED:
 				LevelManager.Instance.setCurrentMultiplayerLevel( LevelManager.Instance.matchInvitation.multiplayerLevelIndex );
 				GameManager.Instance.setPlayMode(PlayMode.PlayWithFriends);
-		Debug.Log( "OnCloseInvitationStatusPanel ACCEPT " + levelLoading);
+				Debug.Log( "OnCloseInvitationStatusPanel ACCEPT" );
 				StartCoroutine( loadScene(GameScenes.Matchmaking) );
 			break;
 			case InvitationType.INVITATION_DECLINED:
 				LevelManager.Instance.matchInvitation = null;
-		Debug.Log( "OnCloseInvitationStatusPanel DECLINE" );
+				Debug.Log( "OnCloseInvitationStatusPanel DECLINE" );
 			break;
 		}
 	}
@@ -281,14 +279,10 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 
 	IEnumerator loadScene(GameScenes value)
 	{
-		if( !levelLoading )
-		{
-			UISoundManager.uiSoundManager.playButtonClick();
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)value );
-		}
+		UISoundManager.uiSoundManager.playButtonClick();
+		Handheld.StartActivityIndicator();
+		yield return new WaitForSeconds(0);
+		SceneManager.LoadScene( (int)value );
 	}
 
 	[System.Serializable]

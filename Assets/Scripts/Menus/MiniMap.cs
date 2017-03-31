@@ -29,7 +29,6 @@ public class MiniMap : MonoBehaviour {
 	const float MAX_DISTANCE = 72f;
 	const float CARD_FEED_TTL = 4f; //in seconds
 	float cardFeedTimeOfLastEntry;
-	Queue<string> messageQueue = new Queue<string>();
 
 	// Use this for initialization
 	void Awake () {
@@ -87,25 +86,10 @@ public class MiniMap : MonoBehaviour {
 		addMessage( playerName + message );
 	}
 
-	public void emptyMessageQueue()
-	{
-		messageQueue.Clear();
-	}
-
 	void addMessage( string message )
 	{
-		//Is a message currently being displayed?
-		if( cardFeed.text == string.Empty )
-		{
-			//There is no message. Display it right away.
-			cardFeed.text = message;
-			cardFeedTimeOfLastEntry = Time.time;
-		}
-		else
-		{
-			//There is a message. Put in the queue.
-			messageQueue.Enqueue( message );
-		}
+		cardFeed.text = message;
+		cardFeedTimeOfLastEntry = Time.time;
 	}
 
 	// Update is called once per frame
@@ -115,11 +99,6 @@ public class MiniMap : MonoBehaviour {
 		if( Time.time - cardFeedTimeOfLastEntry > CARD_FEED_TTL )
 		{
 			cardFeed.text = string.Empty;
-			//Do we have any other message in the queue?
-			if( messageQueue.Count > 0 )
-			{
-				addMessage( messageQueue.Dequeue() );
-			}
 		}
 	}
 

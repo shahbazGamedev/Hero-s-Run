@@ -102,8 +102,8 @@ public enum TileType {
 	Jungle_Waterfall = 97,
 	Teleport_Tx = 98,
 	Teleport_Rx = 99,
-	Jump_Pad = 100
-
+	Jump_Pad = 100,
+	Finish_Line = 101
 }
 
 public enum TileSubType {

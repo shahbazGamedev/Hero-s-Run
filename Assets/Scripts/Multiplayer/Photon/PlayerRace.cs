@@ -224,8 +224,6 @@ public class PlayerRace : Photon.PunBehaviour
 				HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
 				GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
 				PlayerRaceManager.Instance.playerCompletedRace( (officialRacePosition + 1), raceDuration, distanceTravelled, GetComponent<PlayerControl>().getNumberOfTimesDiedDuringRace() );
-				//We don't want to see any queued-up message appear under the minimap since they are irrelevant now that the race is finished.
-				MiniMap.Instance.emptyMessageQueue();
 			}
 		}		
     }

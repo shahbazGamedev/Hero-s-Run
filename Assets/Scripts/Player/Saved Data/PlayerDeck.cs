@@ -33,10 +33,10 @@ public class PlayerDeck {
 		addCard( CardName.Double_Jump, 1, 1, true );
 
 		//6
-		addCard( CardName.Lightning, 1, 1, true );
+		addCard( CardName.Lightning, 5, 1, true );
 
 		//7
-		addCard( CardName.Shrink, 1, 1, true );
+		addCard( CardName.Shrink, 3, 1, true );
 
 		//8
 		addCard( CardName.Linked_Fate, 1, 1, true );
