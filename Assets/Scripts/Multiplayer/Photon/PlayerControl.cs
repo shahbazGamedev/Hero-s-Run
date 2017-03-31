@@ -1780,9 +1780,19 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	private void resurrectEnd()
 	{		
-		//Display a minimap message that this player is back in the game.
-		HeroManager.HeroCharacter selectedHero = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex );
-		this.photonView.RPC("playerResurrectedRPC", PhotonTargets.All, selectedHero.name );
+		//Display a minimap message that this player or bot is back in the game.
+		string heroName;
+		if( playerAI == null )
+		{
+			//We're the player
+			heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name;
+		}
+		else
+		{
+			//We're a bot
+			heroName = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex ).name;
+		}
+		this.photonView.RPC("playerResurrectedRPC", PhotonTargets.All, heroName );
 
 		anim.speed = 1f;
 
