@@ -15,7 +15,7 @@ public enum DeviceCategory
 	Jump_Pad = 1
 }
 
-public class Device : Photon.PunBehaviour {
+public class Device : MonoBehaviour {
 
 	public DeviceState state = DeviceState.On;
 	public DeviceCategory category = DeviceCategory.Teleporter;
@@ -38,7 +38,7 @@ public class Device : Photon.PunBehaviour {
 		changeDeviceState( state );
 	}
 
-	protected void changeDeviceState( DeviceState newState )
+	public void changeDeviceState( DeviceState newState )
 	{
 		state = newState;
 		switch ( state )
@@ -75,12 +75,6 @@ public class Device : Photon.PunBehaviour {
 	{
 		Teleport_VFX1.GetComponent<MeshRenderer>().material.SetColor("_TintColor", newColor);
 		Teleport_VFX2.GetComponent<MeshRenderer>().material.SetColor("_TintColor", newColor);
-	}
-
-	[PunRPC]
-	void changeDeviceStateRPC( int newState )
-	{
-		changeDeviceState( (DeviceState)newState );
 	}
 
 }

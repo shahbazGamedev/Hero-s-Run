@@ -26,10 +26,11 @@ public class CardExplosion : Card {
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
 		//Determine which players are affected by the explosion. The caster obviously is immune.
-		blowUp( playerTransform, level, photonViewID );
+		float impactDiameter = baseDiameter + level * diameterUpgradePerLevel;
+		blowUp( playerTransform, impactDiameter, photonViewID );
 
 		//Do an explosion effect centered around the player
-		this.photonView.RPC("cardExplosionRPC", PhotonTargets.All, playerTransform.position );
+		this.photonView.RPC("cardExplosionRPC", PhotonTargets.All, playerTransform.position, impactDiameter );
 
 	}
 
@@ -60,9 +61,8 @@ public class CardExplosion : Card {
 		}
 	}
 
-	void blowUp( Transform player, int level, int photonViewID )
+	void blowUp( Transform player, float impactDiameter, int photonViewID )
 	{
-		float impactDiameter = baseDiameter + level * diameterUpgradePerLevel;
 		Collider[] hitColliders = Physics.OverlapSphere( player.position, impactDiameter, getExplosionMask() );
 		for( int i =0; i < hitColliders.Length; i++ )
 		{
@@ -89,13 +89,6 @@ public class CardExplosion : Card {
 						}
 					}
 				}
-			}
-			else if( hitColliders[i].CompareTag("Device") )
-			{
-				//The explosion can also break jump pads and teleporters
-				//This currently does not work and throwsn an illgal view message
-				//print(" knockbackPlayers " + hitColliders[i].name + " view id " + hitColliders[i].GetComponent<PhotonView>().viewID );
-				//hitColliders[i].GetComponent<PhotonView>().RPC("changeDeviceStateRPC", PhotonTargets.All, (int)DeviceState.Broken );
 			}
 		}
 	}
@@ -128,12 +121,35 @@ public class CardExplosion : Card {
 	}
 
 	[PunRPC]
-	void cardExplosionRPC( Vector3 explosionPosition )
+	void cardExplosionRPC( Vector3 explosionPosition, float impactDiameter )
 	{
 		ParticleSystem explosionEffect = GameObject.Instantiate( zNukeEffect );
 		explosionEffect.transform.position = explosionPosition;
 		explosionEffect.GetComponent<AudioSource>().Play ();
 		explosionEffect.Play();
+		blowUpLocalDevices(explosionPosition, impactDiameter );
+	}
+
+	/// <summary>
+	/// Blows up local devices.
+	/// In a perfect world, the MasterClient would decide if a device broke because of the explosion and send an RPC to the affected device.
+	/// However, because the tiles containing the devices such as teleporters and jump pads are not network instantiated (and that would be overkill),
+	/// I can't add a PhotonView component on the device (it throws an illegal view exception). Therefore, I can't send an RPC. 
+	/// Doing it locally is an easy yet non-ideal workaround. It does have the benefit of reducing the number of RPCs required however.
+	/// </summary>
+	/// <param name="explosionPosition">Explosion position.</param>
+	/// <param name="impactDiameter">Impact diameter.</param>
+	void blowUpLocalDevices( Vector3 explosionPosition, float impactDiameter )
+	{
+		Collider[] hitColliders = Physics.OverlapSphere( explosionPosition, impactDiameter, getExplosionMask() );
+		for( int i =0; i < hitColliders.Length; i++ )
+		{
+			if( hitColliders[i].CompareTag("Device") )
+			{
+				//The explosion can also break jump pads and teleporters
+				hitColliders[i].GetComponent<Device>().changeDeviceState( DeviceState.Broken );
+			}
+		}
 	}
 
 }
