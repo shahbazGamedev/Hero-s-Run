@@ -17,7 +17,7 @@ using UnityEngine;
 /// If p2 dies, p3 also dies.
 /// If p3 dies, p2 also dies.
 /// </summary>
-public class CardLinkedFate : Photon.PunBehaviour {
+public class CardLinkedFate : Card {
 
 	[SerializeField] float  baseDuration = 10f;
 	[SerializeField] float  durationUpgradePerLevel = 5f;
@@ -33,20 +33,13 @@ public class CardLinkedFate : Photon.PunBehaviour {
 	{
 		float spellDuration = baseDuration + level * durationUpgradePerLevel;
 
-		//Find out which player activated the card
-		GameObject playerGameObject = null;
-		for( int i = 0; i < PlayerRace.players.Count; i++ )
-		{
-			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
-			{
-				playerGameObject = PlayerRace.players[i].gameObject;
-				break;
-			}
-		}
+		//Get the transform of the player who activated the card
+		Transform playerTransform = getPlayerTransform( photonViewID );
+
 		//Send the RPC to everyone including the caster
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
-			PlayerRace.players[i].GetComponent<PhotonView>().RPC("cardLinkedFateRPC", PhotonTargets.AllViaServer, playerGameObject.name, spellDuration );
+			PlayerRace.players[i].GetComponent<PhotonView>().RPC("cardLinkedFateRPC", PhotonTargets.AllViaServer, playerTransform.name, spellDuration );
 		}
 	}
 	#endregion

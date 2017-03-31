@@ -30,8 +30,6 @@ public class Glyph : Photon.PunBehaviour {
 			transform.position = new Vector3( transform.position.x, hit.point.y + 0.03f, transform.position.z);
 		}
 		gameObject.layer = 0; //remove the ignoreRaycast so the bot can detect it
-		//Indicate on the minimap which card was played
-		MiniMap.Instance.updateCardFeed( casterName, CardName.Glyph );
 	}
 
 }

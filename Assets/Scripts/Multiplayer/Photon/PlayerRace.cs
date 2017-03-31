@@ -173,6 +173,11 @@ public class PlayerRace : Photon.PunBehaviour
 		}
 	}
 
+	public PhotonView getMinimapPhotonView()
+	{
+		return HUDMultiplayer.hudMultiplayer.getMinimapPhotonView();
+	}
+
 	[PunRPC]
 	void StartEndOfRaceCountdownRPC()
 	{

@@ -6,7 +6,7 @@ using UnityEngine;
 /// The Firewall card is a Rare card with 11 levels. The firewall appears a few meters in front of the player. The duration of the firewall depends on the level of the caster.
 /// The player is immune to its effect.
 /// </summary>
-public class CardFirewall : Photon.PunBehaviour {
+public class CardFirewall : Card {
 
 	[SerializeField] float  baseDuration = 5f;
 	[SerializeField] float  durationUpgradePerLevel = 1f;
@@ -22,24 +22,17 @@ public class CardFirewall : Photon.PunBehaviour {
 	[PunRPC]
 	void cardFirewallMasterRPC( int level, int photonViewID )
 	{
-		//Find out which player activated the card
-		GameObject playerGameObject = null;
-		for( int i = 0; i < PlayerRace.players.Count; i++ )
-		{
-			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
-			{
-				playerGameObject = PlayerRace.players[i].gameObject;
-			}
-		}
+		//Get the transform of the player who activated the card
+		Transform playerTransform = getPlayerTransform( photonViewID );
 
 		//Spawn a firewall a few meters in front of the player
-		Vector3 firewallPosition = playerGameObject.transform.TransformPoint( offset );
-		Quaternion firewallRotation = playerGameObject.transform.rotation;
+		Vector3 firewallPosition = playerTransform.TransformPoint( offset );
+		Quaternion firewallRotation = playerTransform.rotation;
 
 		object[] data = new object[2];
 
 		//We want the caster to be immune to the firewall
-		data[0] = playerGameObject.name;
+		data[0] = playerTransform.name;
 
 		//We want the firewall to disappear after a while
 		data[1] = baseDuration + level * durationUpgradePerLevel;

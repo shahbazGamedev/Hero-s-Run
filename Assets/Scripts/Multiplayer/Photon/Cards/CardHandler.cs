@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class CardHandler : MonoBehaviour {
 
-	public void activateCard ( int photonViewId, CardName name, int level)
+	public void activateCard ( int photonViewId, CardName name, string heroName, int level )
 	{
+		//Send message to minimap saying which hero played which card
+		sendMinimapMessage( heroName, (int)name );
+
 		switch (name)
 		{
 			case CardName.Raging_Bull:
@@ -110,6 +113,14 @@ public class CardHandler : MonoBehaviour {
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
+		}
+	}
+
+	void sendMinimapMessage( string heroName, int card )
+	{
+		for( int i = 0; i < PlayerRace.players.Count; i++ )
+		{
+			PlayerRace.players[i].getMinimapPhotonView().RPC( "minimapRPC", PhotonTargets.All, heroName, card );
 		}
 	}
 

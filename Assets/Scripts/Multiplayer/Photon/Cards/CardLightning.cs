@@ -8,7 +8,7 @@ using UnityEngine;
 /// Because of its long range, it can be useful when an opponent is far away.
 /// The spell range depends on the level of the caster.
 /// </summary>
-public class CardLightning : Photon.PunBehaviour {
+public class CardLightning : Card {
 
 	[SerializeField] float  baseRange = 50f;
 	[SerializeField] float  rangeUpgradePerLevel = 10f;
@@ -26,18 +26,11 @@ public class CardLightning : Photon.PunBehaviour {
 	[PunRPC]
 	void cardLightningMasterRPC( int level, int photonViewID )
 	{
-		//Find out which player activated the card
-		GameObject playerGameObject = null;
-		for( int i = 0; i < PlayerRace.players.Count; i++ )
-		{
-			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
-			{
-				playerGameObject = PlayerRace.players[i].gameObject;
-			}
-		}
+		//Get the transform of the player who activated the card
+		Transform playerTransform = getPlayerTransform( photonViewID );
 
 		//Get nearest target which could be either a player or creature
-		Transform nearestTarget = detectNearestTarget( playerGameObject.transform, level, photonViewID );
+		Transform nearestTarget = detectNearestTarget( playerTransform, level, photonViewID );
 
 		if( nearestTarget != null )
 		{
@@ -52,7 +45,6 @@ public class CardLightning : Photon.PunBehaviour {
 		{
 			Debug.Log("CardLightning: no target found." );
 		}
-		this.photonView.RPC("cardLightningRPC", PhotonTargets.All, playerGameObject.name );	
 	}
 
 	int getOverlapSphereMask()
@@ -92,12 +84,5 @@ public class CardLightning : Photon.PunBehaviour {
 	}
 
 	#endregion
-
-	[PunRPC]
-	void cardLightningRPC( string casterName )
-	{
-		//Indicate on the minimap which card was played
-		MiniMap.Instance.updateCardFeed( casterName, CardName.Lightning );
-	}
 
 }

@@ -8,7 +8,7 @@ using UnityEngine;
 /// Because of its long range, it can be useful when an opponent is far away.
 /// The spell range and duration depend on the level of the caster.
 /// </summary>
-public class CardShrink : Photon.PunBehaviour {
+public class CardShrink : Card {
 
 	[SerializeField] float  baseRange = 50f;
 	[SerializeField] float  rangeUpgradePerLevel = 10f;
@@ -24,25 +24,18 @@ public class CardShrink : Photon.PunBehaviour {
 	[PunRPC]
 	void cardShrinkMasterRPC( int level, int photonViewID )
 	{
-		//Find out which player activated the card
-		GameObject playerGameObject = null;
-		for( int i = 0; i < PlayerRace.players.Count; i++ )
-		{
-			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
-			{
-				playerGameObject = PlayerRace.players[i].gameObject;
-			}
-		}
+		//Get the transform of the player who activated the card
+		Transform playerTransform = getPlayerTransform( photonViewID );
 
 		//Calculate spell duration
 		float spellDuration = baseDuration + level * durationUpgradePerLevel;
 
 		//Get nearest player
-		Transform nearestTarget = detectNearestTarget( playerGameObject.transform, level, photonViewID );
+		Transform nearestTarget = detectNearestTarget( playerTransform, level, photonViewID );
 
 		if( nearestTarget != null )
 		{
-			nearestTarget.GetComponent<PhotonView>().RPC("shrinkSpell", PhotonTargets.All, playerGameObject.name, spellDuration );
+			nearestTarget.GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.All, spellDuration );
 		}
 		else
 		{

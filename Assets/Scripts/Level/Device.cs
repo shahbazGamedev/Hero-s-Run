@@ -15,7 +15,7 @@ public enum DeviceCategory
 	Jump_Pad = 1
 }
 
-public class Device : MonoBehaviour {
+public class Device : Photon.PunBehaviour {
 
 	public DeviceState state = DeviceState.On;
 	public DeviceCategory category = DeviceCategory.Teleporter;
@@ -38,7 +38,7 @@ public class Device : MonoBehaviour {
 		changeDeviceState( state );
 	}
 
-	public void changeDeviceState( DeviceState newState, string playerName = "" )
+	protected void changeDeviceState( DeviceState newState )
 	{
 		state = newState;
 		switch ( state )
@@ -48,17 +48,6 @@ public class Device : MonoBehaviour {
 				brokenVFX.Play();
 				GetComponent<AudioSource>().PlayOneShot( brokenAudioClip );
 				MiniMap.Instance.changeColorOfRadarObject( gameObject, Color.red );
-				if( !string.IsNullOrEmpty( playerName ) )
-				{
-					if( category == DeviceCategory.Jump_Pad )
-					{
-						MiniMap.Instance.updateFeed( playerName, " destroyed a jump pad." );
-					}
-					else
-					{
-						MiniMap.Instance.updateFeed( playerName, " destroyed a teleporter." );
-					}
-				}
 			break;
 
 			case DeviceState.Off:
@@ -87,4 +76,11 @@ public class Device : MonoBehaviour {
 		Teleport_VFX1.GetComponent<MeshRenderer>().material.SetColor("_TintColor", newColor);
 		Teleport_VFX2.GetComponent<MeshRenderer>().material.SetColor("_TintColor", newColor);
 	}
+
+	[PunRPC]
+	void changeDeviceStateRPC( int newState )
+	{
+		changeDeviceState( (DeviceState)newState );
+	}
+
 }

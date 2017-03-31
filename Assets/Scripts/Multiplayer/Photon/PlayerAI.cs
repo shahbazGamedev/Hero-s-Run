@@ -239,22 +239,47 @@ public class PlayerAI : Photon.PunBehaviour {
 
 	private void handleKeyboard()
 	{
+		BotCardHandler bch = GetComponent<BotCardHandler>();
 		if ( Input.GetKeyDown (KeyCode.B ) )
 		{
 			//Kill bot for testing
 			playerControl.managePlayerDeath(DeathType.FallForward);
 		}
-		else if ( Input.GetKeyDown (KeyCode.C ) )
+		else if ( Input.GetKeyDown (KeyCode.Alpha1) )
 		{
-			cardHandler.activateCard( this.photonView.viewID, CardName.Lightning, 3 );
+			bch.activateCard( CardName.Double_Jump );
 		}
-		else if ( Input.GetKeyDown (KeyCode.E ) )
+		else if ( Input.GetKeyDown (KeyCode.Alpha2 ) )
 		{
-			cardHandler.activateCard( this.photonView.viewID, CardName.Explosion, 3 );
+			bch.activateCard( CardName.Explosion );
 		}
-		else if ( Input.GetKeyDown (KeyCode.I ) )
+		else if ( Input.GetKeyDown (KeyCode.Alpha3 ) )
 		{
-			cardHandler.activateCard( this.photonView.viewID, CardName.Firewall, 3 );
+			bch.activateCard( CardName.Firewall );
+		}
+		else if ( Input.GetKeyDown (KeyCode.Alpha4 ) )
+		{
+			bch.activateCard( CardName.Glyph );
+		}
+		else if ( Input.GetKeyDown (KeyCode.Alpha5 ) )
+		{
+			bch.activateCard( CardName.Lightning );
+		}
+		else if ( Input.GetKeyDown (KeyCode.Alpha6 ) )
+		{
+			bch.activateCard( CardName.Linked_Fate );
+		}
+		else if ( Input.GetKeyDown (KeyCode.Alpha7 ) )
+		{
+			bch.activateCard( CardName.Shrink );
+		}
+		else if ( Input.GetKeyDown (KeyCode.Alpha8 ) )
+		{
+			bch.activateCard( CardName.Raging_Bull );
+		}
+		else if ( Input.GetKeyDown (KeyCode.Alpha9 ) )
+		{
+			bch.activateCard( CardName.Sprint );
 		}
 	}
 

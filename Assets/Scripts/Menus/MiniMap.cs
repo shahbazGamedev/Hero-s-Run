@@ -70,20 +70,20 @@ public class MiniMap : MonoBehaviour {
 		radarObjects.AddRange( newList );
 	}
 
-	public void updateCardFeed( string cardPlayerName, CardManager.CardData lastCardPlayed )
+	public void displayMessage( string heroName, CardManager.CardData lastCardPlayed )
 	{
-		addMessage( cardPlayerName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + lastCardPlayed.name + "</color>" );
+		addMessage( heroName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + lastCardPlayed.name + "</color>" );
 	}
 
-	public void updateCardFeed( string cardPlayerName, CardName cardName )
+	public void displayMessage( string heroName, CardName cardName )
 	{
 		CardManager.CardData lastCardPlayed = CardManager.Instance.getCardByName( cardName );
-		addMessage( cardPlayerName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + lastCardPlayed.name + "</color>" );
+		addMessage( heroName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + lastCardPlayed.name + "</color>" );
 	}
 
-	public void updateFeed( string playerName, string message )
+	public void displayMessage( string heroName, string message )
 	{
-		addMessage( playerName + message );
+		addMessage( heroName + message );
 	}
 
 	void addMessage( string message )
@@ -180,4 +180,11 @@ public class MiniMap : MonoBehaviour {
 			}
 		}
 	}
+
+	[PunRPC]
+	void minimapRPC( string heroName, int card )
+	{
+		displayMessage( heroName, (CardName)card );
+	}
+
 }

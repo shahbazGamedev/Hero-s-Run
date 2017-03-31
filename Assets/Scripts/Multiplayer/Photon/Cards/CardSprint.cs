@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 //// The Sprint card is a Common card with 13 levels.
 /// </summary>
-public class CardSprint : Photon.PunBehaviour {
+public class CardSprint : Card {
 
 	[SerializeField] AudioClip  soundFx;
 	[SerializeField] float  baseDuration = 4f;
@@ -15,54 +15,46 @@ public class CardSprint : Photon.PunBehaviour {
 
 	public void activateCard ( int photonViewId, int level )
 	{
-		this.photonView.RPC("cardSprintRPC", PhotonTargets.AllViaServer, level, photonViewId );	
+		this.photonView.RPC("cardSprintMasterRPC", PhotonTargets.AllViaServer, level, photonViewId );	
 	}
 
+	#region Methods only running on master client
 	[PunRPC]
-	void cardSprintRPC( int level, int photonViewID )
+	void cardSprintMasterRPC( int level, int photonViewID )
 	{
-		string casterName = string.Empty;
+		float spellDuration = baseDuration + level * durationUpgradePerLevel;
+		float speedMultiplier = baseSpeed + level * speedUpgradePerLevel;
+		this.photonView.RPC("cardSprintRPC", PhotonTargets.All, spellDuration, speedMultiplier, photonViewID );	
+	}
+	#endregion
+
+	[PunRPC]
+	void cardSprintRPC( float spellDuration, float speedMultiplier, int photonViewID )
+	{
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
 			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
 			{
-				startSprint( level, PlayerRace.players[i].GetComponent<PlayerControl>() );
-				casterName = PlayerRace.players[i].name;
+				startSprint( spellDuration, speedMultiplier, PlayerRace.players[i].GetComponent<PlayerControl>() );
 			}
 		}
-		//Indicate on the minimap which card was played
-		MiniMap.Instance.updateCardFeed( casterName, CardName.Sprint );
 	}
 
-	void startSprint( int level, PlayerControl playerControl )
+	void startSprint( float spellDuration, float speedMultiplier, PlayerControl playerControl )
 	{
 		playerControl.setAllowRunSpeedToIncrease( false );
-		playerControl.runSpeed = playerControl.runSpeed * ( baseSpeed + level * speedUpgradePerLevel );
+		playerControl.runSpeed = playerControl.runSpeed * speedMultiplier;
 		playerControl.GetComponent<PlayerSounds>().playSound( soundFx, false );
 		StartCoroutine( changeSprintBlendFactor( 0.85f, 0.8f, playerControl ) );
-		StartCoroutine( stopSprint( level, playerControl ) );
+		StartCoroutine( stopSprint( spellDuration, playerControl ) );
 	}
 
-	IEnumerator stopSprint( int level, PlayerControl playerControl )
+	IEnumerator stopSprint( float spellDuration, PlayerControl playerControl )
 	{
-		yield return new WaitForSeconds( baseDuration + level * durationUpgradePerLevel );
+		yield return new WaitForSeconds( spellDuration );
 		if( playerControl.getCharacterState() != PlayerCharacterState.Dying ) playerControl.setAllowRunSpeedToIncrease( true );
 		playerControl.GetComponent<PlayerSounds>().stopAudioSource();
 		StartCoroutine( changeSprintBlendFactor( 0, 0.8f, playerControl ) );
-	}
-
-	IEnumerator changeSprintBlendFactor( float endBlendFactor, float duration, PlayerControl playerControl )
-	{
-		float elapsedTime = 0;
-		float startBlendFactor = playerControl.getSprintBlendFactor();
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			playerControl.setSprintBlendFactor( Mathf.Lerp( startBlendFactor, endBlendFactor, elapsedTime/duration ) );
-			yield return new WaitForFixedUpdate();  
-			
-		} while ( elapsedTime < duration );
-		playerControl.setSprintBlendFactor( endBlendFactor );	
 	}
 
 }

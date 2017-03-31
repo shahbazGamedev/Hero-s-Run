@@ -6,7 +6,7 @@ using UnityEngine;
 /// The Glyph card is a Rare card with 11 levels. The glyph appears a few meters in front of the player on the ground. The duration of the glyph depends on the level of the caster.
 /// The player is immune to its effect. If an opponent passes over the glyph without jumping, he dies instantly.
 /// </summary>
-public class CardGlyph : Photon.PunBehaviour {
+public class CardGlyph : Card {
 
 	[SerializeField] float  baseDuration = 5f;
 	[SerializeField] float  durationUpgradePerLevel = 1f;
@@ -22,24 +22,17 @@ public class CardGlyph : Photon.PunBehaviour {
 	[PunRPC]
 	void cardGlyphMasterRPC( int level, int photonViewID )
 	{
-		//Find out which player activated the card
-		GameObject playerGameObject = null;
-		for( int i = 0; i < PlayerRace.players.Count; i++ )
-		{
-			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
-			{
-				playerGameObject = PlayerRace.players[i].gameObject;
-			}
-		}
+		//Get the transform of the player who activated the card
+		Transform playerTransform = getPlayerTransform( photonViewID );
 
 		//Spawn a glyph on the floor a few meters in front of the player
-		Vector3 glyphPosition = playerGameObject.transform.TransformPoint( offset );
-		Quaternion glyphRotation = playerGameObject.transform.rotation;
+		Vector3 glyphPosition = playerTransform.TransformPoint( offset );
+		Quaternion glyphRotation = playerTransform.rotation;
 
 		object[] data = new object[2];
 
 		//We want the caster to be immune to the spell
-		data[0] = playerGameObject.name;
+		data[0] = playerTransform.name;
 
 		//We want the glyph to disappear after a while
 		data[1] = baseDuration + level * durationUpgradePerLevel;

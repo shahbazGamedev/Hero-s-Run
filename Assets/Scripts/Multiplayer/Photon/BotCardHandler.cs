@@ -133,9 +133,6 @@ public class BotCardHandler : Photon.PunBehaviour {
 		//Activate the card
 		activateCard( playedCard.name );
 
-		//Indicate on the minimap which card was played
-		MiniMap.Instance.updateCardFeed( botHero.userName, playedCard );
-
 		//Wait a little before moving the Next Card into the free ribbon slot
 		StartCoroutine( moveNextCardIntoTurnRibbon( indexOfCardToPlay, playedCard ) );
 	}
@@ -157,11 +154,10 @@ public class BotCardHandler : Photon.PunBehaviour {
 
 	}
 
-	void activateCard( CardName cardName )
+	public void activateCard( CardName cardName )
 	{
 		PlayerDeck.PlayerCardData botCardData = getCardByName( cardName );
-		Debug.LogWarning("BotCardHandler-activateCard: playing card: " + cardName + " level: " + botCardData.level + " " + this.photonView.viewID );
-		cardHandler.activateCard( this.photonView.viewID, cardName, botCardData.level );
+		if( botCardData != null ) cardHandler.activateCard( this.photonView.viewID, cardName, botHero.name, botCardData.level );
 	}
 
 	void deductMana( int manaCost )

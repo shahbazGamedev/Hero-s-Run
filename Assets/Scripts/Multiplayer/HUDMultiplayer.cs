@@ -30,6 +30,8 @@ public class HUDMultiplayer : MonoBehaviour {
 	[SerializeField] Image circuitIcon;
 	[Header("Race About To End Message")]
 	[SerializeField] Text raceEndingText;
+	[Header("Minimap")]
+	[SerializeField] PhotonView minimapPhotonView;
 
 	//Event management used to notify players to start running
 	public delegate void StartRunningEvent();
@@ -242,4 +244,8 @@ public class HUDMultiplayer : MonoBehaviour {
 		userMessageText.gameObject.SetActive( false );
 	}
 
+	public PhotonView getMinimapPhotonView()
+	{
+		return minimapPhotonView;
+	}
 }

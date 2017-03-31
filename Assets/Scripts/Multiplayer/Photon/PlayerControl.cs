@@ -1743,7 +1743,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	{
 		Debug.Log("PlayerControl-resetSharedLevelData: unlockCamera: " + unlockCamera );
 		//Reset values
-		//Teleport_leave_complete changes the scale value so we need to reset it
+		//A shrink spell changes the scale value so we need to reset it
 		transform.localScale = new Vector3( 1f, 1f, 1f );
 
 		disableLookOverShoulder();
@@ -1780,8 +1780,9 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	private void resurrectEnd()
 	{		
-		//Tell the remote versions of us that we resurrected
-		this.photonView.RPC("playerResurrectedRPC", PhotonTargets.All );
+		//Display a minimap message that this player is back in the game.
+		HeroManager.HeroCharacter selectedHero = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex );
+		this.photonView.RPC("playerResurrectedRPC", PhotonTargets.All, selectedHero.name );
 
 		anim.speed = 1f;
 
@@ -1798,9 +1799,9 @@ public class PlayerControl : Photon.PunBehaviour {
 	}
 
 	[PunRPC]
-	public void playerResurrectedRPC()
+	public void playerResurrectedRPC( string heroName )
 	{
-		MiniMap.Instance.updateFeed( gameObject.name, " is back in the game!" );
+		MiniMap.Instance.displayMessage( heroName, " is back in the game!" );
 	}
 
 	public int getNumberOfTimesDiedDuringRace()

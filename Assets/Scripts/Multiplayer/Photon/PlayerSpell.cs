@@ -32,15 +32,13 @@ public class PlayerSpell : PunBehaviour {
 
 	#region Shrink spell
 	[PunRPC]
-	void shrinkSpell( string casterName, float spellDuration )
+	void shrinkSpellRPC( float spellDuration )
 	{
 		playerSounds.playSound( shrinkSound, false );
 		ParticleSystem shrinkEffect = ParticleSystem.Instantiate( shrinkParticleSystem, transform );
 		shrinkEffect.transform.localPosition = new Vector3( 0, 1f, 0 );
 		shrinkEffect.Play();
 		StartCoroutine( shrink( new Vector3( 0.3f, 0.3f, 0.3f ), 1.25f, spellDuration ) );
-		//Indicate on the minimap which card was played
-		MiniMap.Instance.updateCardFeed( casterName, CardName.Shrink );
 	}
 
 	IEnumerator shrink( Vector3 endScale, float shrinkDuration, float spellDuration )
@@ -98,11 +96,11 @@ public class PlayerSpell : PunBehaviour {
 		{
 			affectedByLinkedFate = true;
 		}
-		//Indicate on the minimap which card was played
-		MiniMap.Instance.updateCardFeed( casterName, CardName.Linked_Fate );
 
 		//For the player affected by Linked Fate, change the color of his icon on the map
-		if( affectedByLinkedFate ) MiniMap.Instance.changeColorOfRadarObject( GetComponent<PlayerControl>(), Color.magenta );
+		//The local player does not have an icon on the minimap.
+		//If a bot cast the linked fate spell, do not attempt to change the icon color since it does not exist.
+		if( affectedByLinkedFate &&  GameManager.Instance.getPlayMode() != PlayMode.PlayAgainstEnemy ) MiniMap.Instance.changeColorOfRadarObject( GetComponent<PlayerControl>(), Color.magenta );
 
 		//Cancel the spell once the duration has run out
 		Invoke("cancelLinkedFateSpell", spellDuration );
@@ -112,7 +110,7 @@ public class PlayerSpell : PunBehaviour {
 
 	void cancelLinkedFateSpell()
 	{
-		if( affectedByLinkedFate ) MiniMap.Instance.changeColorOfRadarObject( GetComponent<PlayerControl>(), Color.white );
+		if( affectedByLinkedFate &&  GameManager.Instance.getPlayMode() != PlayMode.PlayAgainstEnemy ) MiniMap.Instance.changeColorOfRadarObject( GetComponent<PlayerControl>(), Color.white );
 		affectedByLinkedFate = false;
 		castLinkedFate = false;
 	}
@@ -141,7 +139,7 @@ public class PlayerSpell : PunBehaviour {
 					Debug.LogWarning("PlayerSpell-playerDied LOOP " + PlayerRace.players[i].GetComponent<PlayerSpell>().isAffectedByLinkedFate() + " " + PlayerRace.players[i].GetComponent<PlayerSpell>().hasCastLinkedFate() + " " + PlayerRace.players[i].name );
 					PlayerRace.players[i].GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.AllViaServer, DeathType.Obstacle );
 					//Reset the color
-					MiniMap.Instance.changeColorOfRadarObject( PlayerRace.players[i].GetComponent<PlayerControl>(), Color.white );
+					if( GameManager.Instance.getPlayMode() != PlayMode.PlayAgainstEnemy) MiniMap.Instance.changeColorOfRadarObject( PlayerRace.players[i].GetComponent<PlayerControl>(), Color.white );
 				}
 			}
 		}

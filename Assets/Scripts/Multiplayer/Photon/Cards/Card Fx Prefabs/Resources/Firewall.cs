@@ -23,8 +23,6 @@ public class Firewall : Photon.PunBehaviour {
 		GameObject.Destroy( gameObject, delayBeforeSpellExpires );
 		Debug.Log( "Firewall-OnPhotonInstantiate: name of caster: " + casterName + " delay before spell expires: " + delayBeforeSpellExpires );
 		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
-		//Indicate on the minimap which card was played
-		MiniMap.Instance.updateCardFeed( casterName, CardName.Firewall );
 	}
 
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// The Explosion card is a Rare card with 11 levels. The explosion is centered around the player activating the card. The player is immune to its effect.
 /// </summary>
-public class CardExplosion : Photon.PunBehaviour {
+public class CardExplosion : Card {
 
 	[SerializeField] float  baseDiameter = 10f;
 	[SerializeField] float  diameterUpgradePerLevel = 0.25f;
@@ -22,19 +22,15 @@ public class CardExplosion : Photon.PunBehaviour {
 	[PunRPC]
 	void cardExplosionMasterRPC( int level, int photonViewID )
 	{
-		//Find out which player activated card
-		GameObject playerGameObject = null;
-		for( int i = 0; i < PlayerRace.players.Count; i++ )
-		{
-			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
-			{
-				playerGameObject = PlayerRace.players[i].gameObject;
-			}
-		}
-		//Do an explosion effect centered on the player
-		this.photonView.RPC("cardExplosionRPC", PhotonTargets.All, playerGameObject.name, playerGameObject.transform.position );
+		//Get the transform of the player who activated the card
+		Transform playerTransform = getPlayerTransform( photonViewID );
+
 		//Determine which players are affected by the explosion. The caster obviously is immune.
-		knockbackPlayers( playerGameObject.transform, level, photonViewID );
+		blowUp( playerTransform, level, photonViewID );
+
+		//Do an explosion effect centered around the player
+		this.photonView.RPC("cardExplosionRPC", PhotonTargets.All, playerTransform.position );
+
 	}
 
 	int getExplosionMask()
@@ -64,7 +60,7 @@ public class CardExplosion : Photon.PunBehaviour {
 		}
 	}
 
-	void knockbackPlayers( Transform player, int level, int photonViewID )
+	void blowUp( Transform player, int level, int photonViewID )
 	{
 		float impactDiameter = baseDiameter + level * diameterUpgradePerLevel;
 		Collider[] hitColliders = Physics.OverlapSphere( player.position, impactDiameter, getExplosionMask() );
@@ -96,7 +92,10 @@ public class CardExplosion : Photon.PunBehaviour {
 			}
 			else if( hitColliders[i].CompareTag("Device") )
 			{
-				hitColliders[i].GetComponent<Device>().changeDeviceState( DeviceState.Broken, player.name );
+				//The explosion can also break jump pads and teleporters
+				//This currently does not work and throwsn an illgal view message
+				//print(" knockbackPlayers " + hitColliders[i].name + " view id " + hitColliders[i].GetComponent<PhotonView>().viewID );
+				//hitColliders[i].GetComponent<PhotonView>().RPC("changeDeviceStateRPC", PhotonTargets.All, (int)DeviceState.Broken );
 			}
 		}
 	}
@@ -129,14 +128,12 @@ public class CardExplosion : Photon.PunBehaviour {
 	}
 
 	[PunRPC]
-	void cardExplosionRPC( string casterName, Vector3 explosionPosition )
+	void cardExplosionRPC( Vector3 explosionPosition )
 	{
 		ParticleSystem explosionEffect = GameObject.Instantiate( zNukeEffect );
 		explosionEffect.transform.position = explosionPosition;
 		explosionEffect.GetComponent<AudioSource>().Play ();
 		explosionEffect.Play();
-		//Indicate on the minimap which card was played
-		MiniMap.Instance.updateCardFeed( casterName, CardName.Explosion );
 	}
 
 }
