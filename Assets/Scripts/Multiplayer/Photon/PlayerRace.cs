@@ -234,6 +234,12 @@ public class PlayerRace : Photon.PunBehaviour
 
 	}
 
+	public void playerDied()
+	{
+		//We don't want the player so say he is in the lead when he just died.
+		CancelInvoke("tookTheLead");
+	}
+
 	//This method is called when the player has crossed the finish line to let the client know the official race duration and distance travelled
 	//as calculated by the MasterClient.
 	[PunRPC]
@@ -247,7 +253,7 @@ public class PlayerRace : Photon.PunBehaviour
 		StartCoroutine( GetComponent<PlayerControl>().slowDownPlayerAfterFinishLine( 10f, triggerPositionZ ) );
 
 		//Cancel all spell effects
-		GetComponent<PlayerSpell>().cancelAllSpellEffects();
+		GetComponent<PlayerSpell>().cancelAllSpells();
 
 		//However, in terms of changing HUD elements, XP, player stats, etc. We only want to proceed if the player is local and not a bot.
 		if( this.photonView.isMine )

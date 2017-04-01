@@ -57,7 +57,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	//will increase. It is specified in the level data. A good value is 0.1f.
 	float runAcceleration = 0;
 	//The run speed is reduced slightly during turns to make them easier
-	float runSpeedAtTimeOfDeath;
 	float runSpeedAtTimeOfTurn;
 	float runSpeedTurnMultiplier = 0.9f;
 	//If the player stumbles, his speed will be reduced while he tumbles.
@@ -170,7 +169,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	bool wantToTurn = false;
 	//Used to indicate whether the player is making a side-move or turn to the right or to the left
 	bool isGoingRight = false;
-	public string reasonDiedAtTurn; //for debugging
 	#endregion
 
 	#region Current tile variables
@@ -736,6 +734,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		moveDirection.y = 0f;
 		print ( "player landed. Fall distance was: " + 	fallDistance );
+		//Was I dead before?
+		if( deathType != DeathType.Alive )
+		{
+			resurrectEnd();
+		}
 	}
 
 	void calculateFallDistance()
@@ -913,7 +916,6 @@ public class PlayerControl : Photon.PunBehaviour {
 				if (sideMoveInitiatedZ > 2f )
 				{	
 					Debug.LogWarning("turnCorner: game over - player turned too late." );
-					reasonDiedAtTurn = "TURNED TOO LATE";
 					managePlayerDeath ( DeathType.Turn );
 					return;
 				}
@@ -934,7 +936,6 @@ public class PlayerControl : Photon.PunBehaviour {
 						{
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way too late." );
-							reasonDiedAtTurn = "LATE WRONG WAY 3";
 							managePlayerDeath ( DeathType.Turn );
 						}				
 					}
@@ -950,7 +951,6 @@ public class PlayerControl : Photon.PunBehaviour {
 						{
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way too late." );
-							reasonDiedAtTurn = "LATE WRONG WAY 4";
 							managePlayerDeath ( DeathType.Turn );
 						}
 					}
@@ -972,7 +972,6 @@ public class PlayerControl : Photon.PunBehaviour {
 						{
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way." );
-							reasonDiedAtTurn = "WRONG WAY 1";
 							managePlayerDeath ( DeathType.Turn );
 						}				
 					}
@@ -987,7 +986,6 @@ public class PlayerControl : Photon.PunBehaviour {
 						{
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way." );
-							reasonDiedAtTurn = "WRONG WAY 2";
 							managePlayerDeath ( DeathType.Turn );
 						}
 					}
@@ -995,9 +993,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			}
 			else
 			{
-				reasonDiedAtTurn = "ALREADY TURNED";
 				Debug.LogWarning("turnCorner: turn denied since player has already turned." );
-
 			}
 		}
 	}
@@ -1470,8 +1466,10 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Only proceed if the player is not dying already
 		if ( playerCharacterState != PlayerCharacterState.Dying )
 		{
+			Debug.Log("managePlayerDeath : " + deathType + " " + gameObject.name );
+
 			//Tell the remote versions of us that we died
-			this.photonView.RPC("playerDied", PhotonTargets.OthersBuffered, deathTypeValue );
+			this.photonView.RPC("playerDied", PhotonTargets.Others, deathTypeValue );
 
 			//Update the player statistics		
 			if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
@@ -1488,35 +1486,21 @@ public class PlayerControl : Photon.PunBehaviour {
 			//Remember how we died
 			deathType = deathTypeValue;
 
-			Debug.Log("managePlayerDeath : " + deathType + " " + gameObject.name );
-
 			//If the player was looking over his shoulder, disable that
 			disableLookOverShoulder();
 
 			//Disable the player's shadow
 			playerVisuals.enablePlayerShadow( false );
 
-			//Remember the run speed at time of death because we want to start running again (in case of revive) at a 
-			//percentage of this value.
-			//When we jump, the run speed is reduced.
-			//If we died while jumping, we want to use runSpeedBeforeJump and not runSpeed.
-			if( playerCharacterState == PlayerCharacterState.Jumping )
-			{
-				runSpeedAtTimeOfDeath = runSpeedAtTimeOfJump;
-			}
-			else
-			{
-				runSpeedAtTimeOfDeath = runSpeed;
-			}
-
 			runSpeed = 0;
 			runSpeedAtTimeOfJump = 0;
 			allowRunSpeedToIncrease = false;
+			anim.speed = 1f;
 
 			//Change character state
 			setCharacterState( PlayerCharacterState.Dying );
 
-			//Stop the dust particle system. It might be playing if we died while sliding.
+			//Stop the particle systems. One might be playing if we died while sliding for example.
 			playerVisuals.playDustPuff( false );
 			playerVisuals.playWaterSplashWhileSliding( false );
 
@@ -1527,11 +1511,17 @@ public class PlayerControl : Photon.PunBehaviour {
 			queueJump = false;
 			queueSlide = false;
 
-			//Reset move direction and forward
+			//Reset move direction and forward. We keep the Y component so the player falls to the ground.
 			moveDirection = new Vector3( 0,moveDirection.y,0 );
 
 			//Stop any currently playing sound
 			playerSounds.stopAudioSource();
+
+			//Also, when the player dies, we don't want him to continue talking.
+			playerVoiceOvers.stopAudioSource();
+
+			//Also tell PlayerRace. For example, we need to cancel the took the lead invoke that might be pending.
+			GetComponent<PlayerRace>().playerDied();
 
 			//Make adjustments depending on death type
 		    switch (deathType)
@@ -1569,40 +1559,8 @@ public class PlayerControl : Photon.PunBehaviour {
 					setAnimationTrigger(FallForwardTrigger);
 					break;
 
-		        case DeathType.Water:
-					playerCamera.lockCamera ( true );
-					anim.speed = 2.8f;
-					setAnimationTrigger(DeathRiverTrigger);
-					StartCoroutine( waitBeforeResurrecting(2.5f) );
-					break;
-
-		        case DeathType.VortexTrap:
-					playerCamera.lockCamera ( true );
-					anim.speed = 3.8f;
-					setAnimationTrigger(FallTrigger);
-					LeanTween.moveLocalY( gameObject, transform.position.y - TrapVortex.distanceTravelledDown, TrapVortex.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutExpo).setDelay(TrapVortex.delayBeforeBeingPulledDown);
-					StartCoroutine( waitBeforeResurrecting(5f) );
-					break;
-
 		        case DeathType.GreatFall:
 					StartCoroutine( waitBeforeResurrecting(2.5f) );
-					break;
-
-		        case DeathType.SpecialFall:
-					playerCamera.lockCamera ( true );
-					anim.speed = 3.8f;
-					setAnimationTrigger(FallTrigger);
-					LeanTween.moveLocalY( gameObject, transform.position.y - TrapVortex.distanceTravelledDown, TrapVortex.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutExpo).setDelay(0);
-					StartCoroutine( waitBeforeResurrecting(2.5f) );
-					break;
-
-		        case DeathType.MagicGate:
-					playerCamera.lockCamera ( true );
-					playerCamera.playCutscene( CutsceneType.MagicGate );
-					anim.speed = 3.8f;
-					setAnimationTrigger(FallTrigger);
-					LeanTween.moveLocalY( gameObject, transform.position.y - TrapMagicGate.distanceTravelledDown, TrapMagicGate.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutQuad).setDelay(TrapMagicGate.delayBeforeBeingPulledDown);
-					StartCoroutine( waitBeforeResurrecting(3.2f) );
 					break;
 
 				default:
@@ -1626,7 +1584,6 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	IEnumerator waitBeforeResurrecting ( float duration )
 	{
-		anim.speed = 1f;
 		yield return new WaitForSeconds(duration);
 		playerCamera.setCameraParameters( 18f, PlayerCamera.DEFAULT_DISTANCE, PlayerCamera.DEFAULT_HEIGHT, PlayerCamera.DEFAULT_Y_ROTATION_OFFSET );
 		playerCamera.activateMainCamera();
@@ -1658,52 +1615,18 @@ public class PlayerControl : Photon.PunBehaviour {
 		if( vAcA.intensity == 0 ) vAcA.enabled = false;
 	}
 
-	public void resurrectBegin( bool calledByMagicGate )
+	void resurrectBegin( bool calledByMagicGate )
 	{
 		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0f, 0f, 0f ) );
 
 		//Only send an event if we are the local player and we are not a bot.
 		if( this.photonView.isMine && playerAI == null ) GameManager.Instance.setGameState( GameState.Resurrect );
 
-		//0) Reset data
+		//Reset data
 		resetSharedLevelData(true);
 		
-		//1) Reset the camera. If a cut-scene played when the player died, the camera parameters such as the FOV may have changed.
-		playerCamera.resetCameraParameters();
-		
-		//2) Reposition dead body at the respawn location.
-		GameObject respawnLocationObject;
-
-		if( currentTileType == TileType.T_Junction || currentTileType == TileType.T_Junction_2 )
-		{
-			//If the player's rotation is zero, this means he has not turned yet.
-			//If this is the case, we will assume he turned right.
-			float playerRotationY = Mathf.Floor ( transform.eulerAngles.y );
-			if( playerRotationY == 0 )
-			{
-				respawnLocationObject = currentTile.transform.Find("respawnLocationRight").gameObject;
-				generateLevel.playerTurnedAtTJunction( true, currentTile );
-				
-			}
-			else
-			{
-				//Player has already turned at the T-Junction
-				if( isGoingRight )
-				{
-					respawnLocationObject = currentTile.transform.Find("respawnLocationRight").gameObject;
-				}
-				else
-				{
-					respawnLocationObject = currentTile.transform.Find("respawnLocationLeft").gameObject;
-				}
-			}
-		}
-		else
-		{
-			respawnLocationObject = currentTile.transform.Find("respawnLocation").gameObject;
-		}
-
-		deathType = DeathType.Alive;
+		//Reposition dead body at the respawn location.
+		GameObject respawnLocationObject = currentTile.transform.Find("respawnLocation").gameObject;
 
 		if( respawnLocationObject != null )
 		{
@@ -1733,6 +1656,9 @@ public class PlayerControl : Photon.PunBehaviour {
 			transform.position = new Vector3( respawn.position.x, groundHeight + 8f, respawn.position.z );
 			//By calling setCharacterState with StartRunning, the WorldSoundManager will know to resume the music.
 			setCharacterState( PlayerCharacterState.StartRunning );
+			//Mecanim Hack - we call rebind because the animation states are not reset properly when you die in the middle of an animation.
+			//For example, if you die during a double jump, after you get resurrected and start running again, if you do another double jump, only part of the double jump animation will play, never the full animation.
+			anim.Rebind();
 			//Make player fall from sky, land and start running again
 			fall();
 		}
@@ -1740,17 +1666,13 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			Debug.LogError("PlayerControl-ResurrectBegin: Unable to find respawnLocation game object in tile : " + currentTile.name );
 		}
-		Invoke("resurrectEnd", 2f );
 	}
 
 	public void resetSharedLevelData( bool unlockCamera )
 	{
-		Debug.Log("PlayerControl-resetSharedLevelData: unlockCamera: " + unlockCamera );
 		//Reset values
 		//A shrink spell changes the scale value so we need to reset it
 		transform.localScale = new Vector3( 1f, 1f, 1f );
-
-		disableLookOverShoulder();
 
 		//Character Controller
 		controller.center = controllerOriginalCenter;
@@ -1773,15 +1695,10 @@ public class PlayerControl : Photon.PunBehaviour {
 		gravity = DEFAULT_GRAVITY;
 		moveDirection = new Vector3(0,0,0);
 		accelerometerPreviousFrameX = 0;
-		allowRunSpeedToIncrease = false;
-		deathType = DeathType.Alive;
-
-		reasonDiedAtTurn = "";
-
 		playerCamera.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING;
-
 	}
 
+	//Called when a player lands after respawn.
 	private void resurrectEnd()
 	{		
 		//Display a minimap message that this player or bot is back in the game.
@@ -1798,8 +1715,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		this.photonView.RPC("playerResurrectedRPC", PhotonTargets.All, heroName );
 
-		anim.speed = 1f;
-
 		allowRunSpeedToIncrease = true;
 
 		//The GameState was Resurrect - change it back to Normal
@@ -1807,7 +1722,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		//Restore player controls
 		enablePlayerControl( true );
-
+		deathType = DeathType.Alive;
 		//Display a Go! message
 		if( this.photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.activateUserMessage( LocalizationManager.Instance.getText("GO"), 0f, 1.25f );
 	}
@@ -2102,7 +2017,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			{
 				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight)
 				{
-					reasonDiedAtTurn = "EXITED DEAD END NO TURN";
 					Debug.LogWarning("OnTriggerExit player exited dead end without turning " + other.name + " " + isInDeadEnd + " " + deadEndTurnDone + " " + currentDeadEndType );
 					managePlayerDeath ( DeathType.Turn );
 				}

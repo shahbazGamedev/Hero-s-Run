@@ -127,33 +127,30 @@ public class PlayerSpell : PunBehaviour {
 	{
 		return castLinkedFate;
 	}
+	#endregion
 
-	public void cancelAllSpellEffects()
+	public void cancelAllSpells()
 	{
-		castLinkedFate = false;
-		affectedByLinkedFate = false;
+		cancelLinkedFateSpell();
 	}
 
 	public void playerDied()
 	{
 		if( castLinkedFate && PhotonNetwork.isMasterClient && GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
 		{
-			Debug.LogWarning("PlayerSpell-playerDied: affectedByLinkedFate: " + affectedByLinkedFate + " castLinkedFate: " + castLinkedFate + " name: " + gameObject.name );
-
 			//Kill all players with the affectedByLinkedFate flag. Ignore the caster (who is dead anyway).
 			for( int i = 0; i < PlayerRace.players.Count; i++ )
 			{
 				if( PlayerRace.players[i].GetComponent<PlayerSpell>().isAffectedByLinkedFate() && !PlayerRace.players[i].GetComponent<PlayerSpell>().hasCastLinkedFate() )
 				{
-					Debug.LogWarning("PlayerSpell-playerDied LOOP " + PlayerRace.players[i].GetComponent<PlayerSpell>().isAffectedByLinkedFate() + " " + PlayerRace.players[i].GetComponent<PlayerSpell>().hasCastLinkedFate() + " " + PlayerRace.players[i].name );
 					PlayerRace.players[i].GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.AllViaServer, DeathType.Obstacle );
 					//Reset the color
 					if( GameManager.Instance.getPlayMode() != PlayMode.PlayAgainstEnemy) MiniMap.Instance.changeColorOfRadarObject( PlayerRace.players[i].GetComponent<PlayerControl>(), Color.white );
 				}
 			}
 		}
+		//Cancel any active spells if the player dies
+		cancelAllSpells();
 	}
-	#endregion
-
 
 }

@@ -49,5 +49,14 @@ public class PlayerVoiceOvers : MonoBehaviour {
 			}
 		}
 	}
+
+	/// <summary>
+	/// Stops the audio source.
+	/// If the player dies, we don't want him to continue talking.
+	/// </summary>
+	public void stopAudioSource()
+	{
+		voiceOverAudioSource.Stop();
+	}
 	
 }
