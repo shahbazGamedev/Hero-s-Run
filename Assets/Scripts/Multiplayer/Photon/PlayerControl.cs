@@ -1422,7 +1422,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//A set of points that define one or many bezier paths (the paths should be passed in multiples of 4, which correspond to each individual bezier curve)
 			//It goes in the order: startPoint,endControl,startControl,endPoint
 			LTBezierPath ltBezier = new LTBezierPath( new Vector3[] { bezierData.bezierStart.position, bezierData.bezierControl2.position, bezierData.bezierControl1.position, bezierData.bezierEnd.position } );
-			LeanTween.move(ziplineAttachPoint.gameObject, ltBezier.pts, 4f).setOrientToPath(true).setEase(LeanTweenType.easeOutQuad);
+			LeanTween.move(ziplineAttachPoint.gameObject, ltBezier.pts, 3.5f).setOrientToPath(true).setEase(LeanTweenType.easeOutQuad);
 			playerCamera.playCutscene(CutsceneType.Ziplining);
 		}
 	}
