@@ -27,13 +27,13 @@ public class PlayerVoiceOvers : MonoBehaviour {
 		
 	}
 
-	public void playVoiceOver( VoiceOverType voiceOverType, CardName card = CardName.None )
+	public void playVoiceOver( VoiceOverType voiceOverType, CardName card = CardName.None, bool activating = true )
 	{
 		//Don't interrupt the current VO for another one.
 		if( voiceOverAudioSource.isPlaying ) return;
 
 		//Do we have one or more VOs that match?
-		List<VoiceOverManager.VoiceOverData> vodList = voiceOverList.FindAll(vo => ( vo.type == voiceOverType && vo.cardName == card ) );
+		List<VoiceOverManager.VoiceOverData> vodList = voiceOverList.FindAll(vo => ( vo.type == voiceOverType && vo.cardName == card && vo.playOnActivationOnly == activating ) );
 
 		if( vodList.Count > 0 )
 		{

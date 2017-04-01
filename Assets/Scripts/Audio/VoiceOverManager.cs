@@ -55,6 +55,7 @@ public class VoiceOverManager : MonoBehaviour {
 	public class VoiceOverData
 	{
 		public VoiceOverType type = VoiceOverType.VO_Spell;
+		public bool playOnActivationOnly = true;
 		public CardName cardName; 
 		public AudioClip clip;
 	}
