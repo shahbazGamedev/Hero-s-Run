@@ -32,10 +32,22 @@ public class PlayerVoiceOvers : MonoBehaviour {
 		//Don't interrupt the current VO for another one.
 		if( voiceOverAudioSource.isPlaying ) return;
 
-		//Do we have a VO that matches?
-		VoiceOverManager.VoiceOverData vod = voiceOverList.Find(vo => ( vo.type == voiceOverType && vo.cardName == card ) );
-		if( vod != null ) voiceOverAudioSource.PlayOneShot( vod.clip );
+		//Do we have one or more VOs that match?
+		List<VoiceOverManager.VoiceOverData> vodList = voiceOverList.FindAll(vo => ( vo.type == voiceOverType && vo.cardName == card ) );
 
+		if( vodList.Count > 0 )
+		{
+			if( vodList.Count == 1 )
+			{
+				voiceOverAudioSource.PlayOneShot( vodList[0].clip );
+			}
+			else
+			{
+				//We have multiple entries that match. Let's play a random one.
+				int random = Random.Range( 0, vodList.Count );
+				voiceOverAudioSource.PlayOneShot(  vodList[random].clip );
+			}
+		}
 	}
 	
 }
