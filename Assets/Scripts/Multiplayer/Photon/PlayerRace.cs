@@ -245,6 +245,10 @@ public class PlayerRace : Photon.PunBehaviour
 
 		//We want to slow down any player that reaches the finish line
 		StartCoroutine( GetComponent<PlayerControl>().slowDownPlayerAfterFinishLine( 10f, triggerPositionZ ) );
+
+		//Cancel all spell effects
+		GetComponent<PlayerSpell>().cancelAllSpellEffects();
+
 		//However, in terms of changing HUD elements, XP, player stats, etc. We only want to proceed if the player is local and not a bot.
 		if( this.photonView.isMine )
 		{

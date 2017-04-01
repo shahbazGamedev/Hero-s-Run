@@ -128,6 +128,12 @@ public class PlayerSpell : PunBehaviour {
 		return castLinkedFate;
 	}
 
+	public void cancelAllSpellEffects()
+	{
+		castLinkedFate = false;
+		affectedByLinkedFate = false;
+	}
+
 	public void playerDied()
 	{
 		if( castLinkedFate && PhotonNetwork.isMasterClient && GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
