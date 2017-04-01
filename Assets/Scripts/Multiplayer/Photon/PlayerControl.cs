@@ -1731,6 +1731,8 @@ public class PlayerControl : Photon.PunBehaviour {
 			playerCamera.positionCameraNow();
 			playerCamera.lockCamera( true );
 			transform.position = new Vector3( respawn.position.x, groundHeight + 8f, respawn.position.z );
+			//By calling setCharacterState with StartRunning, the WorldSoundManager will know to resume the music.
+			setCharacterState( PlayerCharacterState.StartRunning );
 			//Make player fall from sky, land and start running again
 			fall();
 		}
@@ -1910,7 +1912,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerCharacterState = newState;
 		//Debug.Log("PlayerControl-setCharacterState to: " + newState + " for " + gameObject.name );
 		//Send an event to interested classes
-		if(multiplayerStateChanged != null) multiplayerStateChanged( playerCharacterState );
+		if(multiplayerStateChanged != null && this.photonView.isMine && playerAI == null ) multiplayerStateChanged( playerCharacterState );
 	}
 
 	public float getSpeed()
