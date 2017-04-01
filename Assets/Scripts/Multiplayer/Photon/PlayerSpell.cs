@@ -22,12 +22,14 @@ public class PlayerSpell : PunBehaviour {
 
 	PlayerControl playerControl;
 	PlayerSounds playerSounds;
+	PlayerVoiceOvers playerVoiceOvers;
 
 	// Use this for initialization
 	void Awake ()
 	{
 		playerControl = GetComponent<PlayerControl>();
 		playerSounds = GetComponent<PlayerSounds>();
+		playerVoiceOvers = GetComponent<PlayerVoiceOvers>();
 	}
 
 	#region Shrink spell
@@ -43,6 +45,7 @@ public class PlayerSpell : PunBehaviour {
 
 	IEnumerator shrink( Vector3 endScale, float shrinkDuration, float spellDuration )
 	{
+		playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Spell, CardName.Shrink);
 		playerControl.setAllowRunSpeedToIncrease( false );
 		runSpeedBeforeSpell = playerControl.getSpeed();
 

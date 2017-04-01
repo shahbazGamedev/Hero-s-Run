@@ -205,6 +205,33 @@ public class PlayerRace : Photon.PunBehaviour
 		//The bot has a photon view. This photon view, just like the player's, has isMine set to true. But we don't want a bot to affect the HUD, hence we make sure we are not a bot.
 		if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
 		//Debug.Log("PlayerRace: OnRacePositionChanged " +  (racePosition + 1 )  + " name " + gameObject.name );
+		Invoke("tookTheLead", 1f );
+	}
+
+	void tookTheLead()
+	{
+		if( racePosition == 0 && players.Count >= 2)
+		{
+			players.Sort((x, y) => -x.distanceTravelled.CompareTo(y.distanceTravelled));
+			if( players[0].distanceTravelled > players[1].distanceTravelled + 5f )
+			{
+				//Display a minimap message that this player or bot is back in the game.
+				string heroName;
+				if( GetComponent<PlayerAI>() == null )
+				{
+					//We're the player
+					heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name;
+				}
+				else
+				{
+					//We're a bot
+					heroName = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex ).name;
+				}
+				MiniMap.Instance.displayMessage( heroName, " took the lead!" );
+				GetComponent<PlayerVoiceOvers>().playVoiceOver(VoiceOverType.VO_Took_Lead);
+			}
+		}
+
 	}
 
 	//This method is called when the player has crossed the finish line to let the client know the official race duration and distance travelled

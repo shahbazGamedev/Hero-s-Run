@@ -17,6 +17,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 	Queue<CardManager.CardData> cardQueue = new Queue<CardManager.CardData>();
 	float timeOfLastAnalysis = 0;
 	PlayerControl playerControl;
+	PlayerVoiceOvers playerVoiceOvers;
 	float MINIMUM_EFFECTIVENESS = 0.2f;
 	bool allowCardPlaying = false;
 
@@ -35,8 +36,9 @@ public class BotCardHandler : Photon.PunBehaviour {
 		//Get and store the battle deck for this hero
 		battleDeckList = getBattleDeck();
 
-		//Get and store PlayerControl
+		//Get and store components
 		playerControl = GetComponent<PlayerControl>();
+		playerVoiceOvers = GetComponent<PlayerVoiceOvers>();
 
 		initializeCards ();
 
@@ -157,7 +159,11 @@ public class BotCardHandler : Photon.PunBehaviour {
 	public void activateCard( CardName cardName )
 	{
 		PlayerDeck.PlayerCardData botCardData = getCardByName( cardName );
-		if( botCardData != null ) cardHandler.activateCard( this.photonView.viewID, cardName, botHero.name, botCardData.level );
+		if( botCardData != null )
+		{
+			cardHandler.activateCard( this.photonView.viewID, cardName, botHero.name, botCardData.level );
+			playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Spell, cardName );
+		}
 	}
 
 	void deductMana( int manaCost )

@@ -173,7 +173,8 @@ public class TurnRibbonHandler : MonoBehaviour {
 		PlayerDeck.PlayerCardData playerCardData = GameManager.Instance.playerDeck.getCardByName( cardName );
 		Debug.Log("TurnRibbonHandler-activateCard: playing card: " + cardName );
 		HeroManager.HeroCharacter selectedHero = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex );
-		cardHandler.activateCard( ((GameObject)PhotonNetwork.player.TagObject).GetComponent<PhotonView>().viewID, cardName, selectedHero.name, playerCardData.level );
+		cardHandler.activateCard( playerControl.GetComponent<PhotonView>().viewID, cardName, selectedHero.name, playerCardData.level );
+		playerControl.GetComponent<PlayerVoiceOvers>().playVoiceOver(VoiceOverType.VO_Spell, cardName );
 	}
 
 	int getUniqueRandom()

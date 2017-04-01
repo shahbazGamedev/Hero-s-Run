@@ -17,6 +17,8 @@ public enum CardRarity
 /// </summary>
 public enum CardName
 {
+	None = -1,
+
 	//Common
 	Sprint = 0,
 	Raging_Bull = 1,

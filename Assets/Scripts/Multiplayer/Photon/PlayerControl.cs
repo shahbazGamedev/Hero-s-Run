@@ -11,6 +11,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	PlayerCamera playerCamera;
 	PlayerVisuals playerVisuals;
 	PlayerSounds playerSounds;
+	PlayerVoiceOvers playerVoiceOvers;
 	PlayerCollisions playerCollisions;
 	PlayerAI playerAI;
 	#endregion
@@ -218,6 +219,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerCamera = GetComponent<PlayerCamera>();
 		playerVisuals = GetComponent<PlayerVisuals>();
 		playerSounds = GetComponent<PlayerSounds>();
+		playerVoiceOvers = GetComponent<PlayerVoiceOvers>();
 		playerCollisions = GetComponent<PlayerCollisions>();
 		playerAI = GetComponent<PlayerAI>(); //Null for everyone except bots
 
@@ -1812,6 +1814,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	public void playerResurrectedRPC( string heroName )
 	{
 		MiniMap.Instance.displayMessage( heroName, " is back in the game!" );
+		playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Resurrect);
 	}
 
 	public int getNumberOfTimesDiedDuringRace()
