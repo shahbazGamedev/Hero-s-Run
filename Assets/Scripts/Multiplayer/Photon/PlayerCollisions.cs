@@ -10,6 +10,7 @@ using UnityEngine;
 /// Obstacle_M - the obstacle's height is medium. You can either slide under it or jump over it.
 /// Obstacle_H - the obstacle's height is high. You can slide under it.
 /// Obstacle_B - the obstacle is breakable. You can slide into it to break it or jump over it.
+/// Obstacle_DJ - the obstacle is tall. You can double-jump over it.
 /// </summary>
 public class PlayerCollisions : Photon.PunBehaviour {
 
@@ -305,10 +306,6 @@ public class PlayerCollisions : Photon.PunBehaviour {
 			{
 				playerControl.managePlayerDeath ( DeathType.Obstacle );
 			}			
-			else if (hit.collider.CompareTag( "Obstacle_F" ) )
-			{
-				playerControl.managePlayerDeath ( DeathType.Obstacle );
-			}			
 			else if (hit.collider.name.Equals("Weapon") )
 			{
 				//Skeleton footman or warlord, or goblin piker or wraith or demon
@@ -317,7 +314,41 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					playerControl.managePlayerDeath ( DeathType.Obstacle );
 				}
 			}			
+			/// Obstacle_F - the obstacle is impassable
+			/// Obstacle_L - the obstacle's height is low. You can jump over it or land on it.
+			/// Obstacle_M - the obstacle's height is medium. You can either slide under it or jump over it.
+			/// Obstacle_H - the obstacle's height is high. You can slide under it.
+			/// Obstacle_B - the obstacle is breakable. You can slide into it to break it or jump over it.
+			/// Obstacle_DJ - the obstacle is tall. You can double-jump over it.
+			else if (hit.collider.CompareTag( "Obstacle_F" ) )
+			{
+				playerControl.managePlayerDeath ( DeathType.Obstacle );
+			}
+			else if (hit.collider.CompareTag( "Obstacle_L" ) )
+			{
+				if( hit.normal.y < 0.4f )
+				{
+					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
+					playerControl.managePlayerDeath ( DeathType.Obstacle );
+				}
+			}
 			else if (hit.collider.CompareTag( "Obstacle_M" ) )
+			{
+				if( hit.normal.y < 0.4f )
+				{
+					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
+					playerControl.managePlayerDeath ( DeathType.Obstacle );
+				}
+			}
+			else if (hit.collider.CompareTag( "Obstacle_H" ) )
+			{
+				if( hit.normal.y < 0.4f )
+				{
+					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
+					playerControl.managePlayerDeath ( DeathType.Obstacle );
+				}
+			}
+			else if (hit.collider.CompareTag( "Obstacle_DJ" ) )
 			{
 				if( hit.normal.y < 0.4f )
 				{

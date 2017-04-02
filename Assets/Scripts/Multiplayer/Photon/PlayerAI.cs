@@ -19,7 +19,7 @@ public class PlayerAI : Photon.PunBehaviour {
 	float percentageWillTryToAvoidObstacle;
 	float percentageWillTurnSuccesfully;
 	const float BASE_RUN_SPEED = 18f;
-	const float BASE_OBSTACLE_DETECTION_LOW_DISTANCE = 4.6f; //assuming a run speed of BASE_RUN_SPEED
+	const float BASE_OBSTACLE_DETECTION_LOW_DISTANCE = 5.2f; //assuming a run speed of BASE_RUN_SPEED
 	const float BASE_OBSTACLE_DETECTION_HIGH_DISTANCE = 8f; //assuming a run speed of BASE_RUN_SPEED
 	Vector3 xOffsetStartLow = new Vector3( 0, 0.5f, 0 );	//For low obstacles
 	Vector3 xOffsetStartHigh = new Vector3( 0, 1.5f, 0 );	//For high obstacles
@@ -130,6 +130,14 @@ public class PlayerAI : Photon.PunBehaviour {
 						playerInput.jump();
 					}
 				}
+				else if( hit.collider.CompareTag( "Obstacle_L" ) )
+				{
+					playerInput.jump();
+				}
+				else if( hit.collider.CompareTag( "Obstacle_DJ" ) )
+				{
+					moveToCenterLane();
+				}
 			}
 		}
 
@@ -225,15 +233,20 @@ public class PlayerAI : Photon.PunBehaviour {
 		}
 		else if( other.gameObject.CompareTag( "MoveToCenterLane" ) )
 		{
-			playerControl.recalculateCurrentLane();
-			if( playerControl.currentLane == PlayerControl.Lanes.Left )
-			{
-				playerInput.sideSwipe( true );
-			}
-			else if( playerControl.currentLane == PlayerControl.Lanes.Right )
-			{
-				playerInput.sideSwipe( false );
-			}
+			moveToCenterLane();
+		}
+	}
+
+	private void moveToCenterLane()
+	{
+		playerControl.recalculateCurrentLane();
+		if( playerControl.currentLane == PlayerControl.Lanes.Left )
+		{
+			playerInput.sideSwipe( true );
+		}
+		else if( playerControl.currentLane == PlayerControl.Lanes.Right )
+		{
+			playerInput.sideSwipe( false );
 		}
 	}
 
