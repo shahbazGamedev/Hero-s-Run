@@ -72,24 +72,27 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 
 	public void hidePauseButton()
 	{
-		pauseButton.gameObject.SetActive( false );
+		pauseButton.SetActive( false );
 	}
 
 	void OnEnable()
 	{
+		PlayerControl.multiplayerStateChanged += MultiplayerStateChanged;
 		GameManager.gameStateEvent += GameStateChange;
 	}
 	
 	void OnDisable()
 	{
+		PlayerControl.multiplayerStateChanged -= MultiplayerStateChanged;
 		GameManager.gameStateEvent -= GameStateChange;
 	}
 
-	void PlayerStateChange( PlayerCharacterState newState )
+
+	void MultiplayerStateChanged( PlayerCharacterState newState )
 	{
 		if( newState == PlayerCharacterState.Dying )
 		{
-			pauseButton.gameObject.SetActive( false );
+  			pauseButton.SetActive( false );
 		}
 	}
 
@@ -97,12 +100,7 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 	{
 		if( newState == GameState.Normal )
 		{
-			pauseButton.gameObject.SetActive( true );
-		}
-		else
-		{
-			pauseButton.gameObject.SetActive( false );
+ 			pauseButton.SetActive( true );
 		}
 	}
-
 }

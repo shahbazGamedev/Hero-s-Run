@@ -417,7 +417,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 
 	void giveCoins( int amount )
 	{
-		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null && HUDHandler.hudHandler != null )
 		{
 			//Give coins
 			PlayerStatsManager.Instance.modifyCurrentCoins( amount, true, false );
