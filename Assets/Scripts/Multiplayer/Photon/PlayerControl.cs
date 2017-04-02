@@ -88,7 +88,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	float jumpSpeed = 8.8f;
 	float doubleJumpSpeed = 12.8f;
 	float DOUBLE_JUMP_RUN_SPEED = 1f; //We want the player to leap forward during a double jump
-	float MAX_RUN_SPEED_FOR_DOUBLE_JUMP = 22f; //We want to cap the maximum run speed during a double jump. If the player is sprinting for example, we don't want him to leap into a wall.
+	float MAX_RUN_SPEED_FOR_DOUBLE_JUMP = 20f; //We want to cap the maximum run speed during a double jump. If the player is sprinting for example, we don't want him to leap into a wall.
 	float distanceToGround = 0;
 	//The gravity for the character
 	const float DEFAULT_GRAVITY = 16f;
