@@ -33,11 +33,12 @@ public class SentryController : MonoBehaviour {
 	private Transform myOwnerTransform;
 	private PlayerRace myOwnerPlayerRace;
 	private SentryState sentryState = SentryState.Initialising;
+	private LineRenderer lineRenderer;
 	[Header("Target")]
 	float aimSpeed = 7.6f;
 	Transform nearestTarget = null;
 	[Header("Card Parameters")]
-	float spellRange = 50f;
+	float spellRange = 40f;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
@@ -59,6 +60,7 @@ public class SentryController : MonoBehaviour {
 				playSoundEffect( Emotion.Happy );
 				StartCoroutine( changeMaterialOnCreate( 2f ) );
 				myOwner.GetComponent<PlayerSpell>().registerSentry( this );
+				lineRenderer = GetComponent<LineRenderer>();
 				break;
 			}
 		}
@@ -101,7 +103,25 @@ public class SentryController : MonoBehaviour {
 					nearestTarget = PlayerRace.players[i].transform;
 					print("Sentry-The nearest target is " + nearestTarget.name );
 					nearestDistance = distanceToTarget;
+					lineRenderer.enabled = true;
 				}
+			}
+		}
+	}
+
+	void useLaser()
+	{
+		RaycastHit hit;
+		if (Physics.Raycast(transform.position, transform.forward, out hit, spellRange ))
+		{
+			float length = Mathf.Min( hit.distance, spellRange );
+			lineRenderer.SetPosition(1, new Vector3( 0, 0, length ) );
+			if( hit.collider.transform == nearestTarget )
+			{
+ 				nearestTarget.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.Obstacle );
+				print("Kill " + hit.collider.name + " " + nearestTarget.name );
+				nearestTarget = null;
+				lineRenderer.enabled = false;
 			}
 		}
 	}
@@ -123,9 +143,15 @@ public class SentryController : MonoBehaviour {
 		{
 			Vector3 relativePos = nearestTarget.position - transform.position;
 			Quaternion desiredRotation = Quaternion.LookRotation( relativePos ); 
-			desiredRotation.x = 0f;
 			desiredRotation.z = 0f;
 			transform.rotation = Quaternion.Lerp( transform.rotation, desiredRotation, Time.deltaTime * aimSpeed );
+			useLaser();
+		}
+		else
+		{
+			Quaternion desiredRotation = myOwnerTransform.rotation; 
+			desiredRotation.z = 0f;
+			transform.rotation = Quaternion.Lerp( transform.rotation, myOwnerTransform.rotation, Time.deltaTime * aimSpeed );
 		}
 	}
 
