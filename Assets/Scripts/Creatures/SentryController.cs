@@ -12,9 +12,16 @@ public enum Emotion {
 
 public class SentryController : MonoBehaviour {
 
-	[Header("Sentry Sound Effects")]
+	[Header("Sentry")]
+	[Header("Sound Effects")]
 	[SerializeField] AudioSource audioSource;
 	[SerializeField] List<SentrySoundData> sentrySoundList = new List<SentrySoundData>();
+	[Header("Materials")]
+	[SerializeField] Material onCreate;
+	[SerializeField] Material onDestroy;
+	[SerializeField] Material onFunctioning;
+	[Header("Particle Systems")]
+	[SerializeField] ParticleSystem onDestroyFx;
 	private GameObject myOwner;
 	private Transform myOwnerTransform;
 	private PlayerControl myOwnerPlayerControl;
@@ -37,6 +44,8 @@ public class SentryController : MonoBehaviour {
 				myOwnerPlayerControl = myOwner.GetComponent<PlayerControl>();
 				transform.SetParent( myOwnerTransform );
 				playSoundEffect( Emotion.Happy );
+				StartCoroutine( changeMaterialOnCreate( 2f ) );
+				myOwner.GetComponent<PlayerSpell>().registerSentry( this );
 				break;
 			}
 		}
@@ -50,10 +59,27 @@ public class SentryController : MonoBehaviour {
 		}
 	}
 
-	public void playSoundEffect( Emotion emotion )
+	IEnumerator changeMaterialOnCreate( float delayBeforeMaterialChange )
+	{
+		yield return new WaitForSeconds(delayBeforeMaterialChange);
+		GetComponent<Renderer>().material = onFunctioning;
+	}
+
+	public IEnumerator destroySentry( float delayBeforeEffects )
+	{
+		StopCoroutine( "changeMaterialOnCreate" );
+		GetComponent<Renderer>().material = onDestroy;
+		playSoundEffect( Emotion.Sad, true );
+		yield return new WaitForSeconds(delayBeforeEffects);
+		onDestroyFx.transform.SetParent( null );
+		onDestroyFx.Play();
+		Destroy( gameObject );
+	}
+
+	public void playSoundEffect( Emotion emotion, bool forcePlay = false )
 	{
 		//Don't interrupt the current sound effect for another one.
-		if( audioSource.isPlaying ) return;
+		if( audioSource.isPlaying && !forcePlay ) return;
 
 		//Do we have one or more sound effects that match?
 		List<SentrySoundData> availableSoundsList = sentrySoundList.FindAll(soundClip => ( soundClip.emotion == emotion ) );

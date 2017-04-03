@@ -20,6 +20,10 @@ public class PlayerSpell : PunBehaviour {
 	[SerializeField] AudioClip linkedFateSound;
 	#endregion
 
+	#region Sentry spell
+	SentryController sentryController;
+	#endregion
+
 	PlayerControl playerControl;
 	PlayerSounds playerSounds;
 	PlayerVoiceOvers playerVoiceOvers;
@@ -118,6 +122,7 @@ public class PlayerSpell : PunBehaviour {
 		castLinkedFate = false;
 	}
 
+
 	public bool isAffectedByLinkedFate()
 	{
 		return affectedByLinkedFate;
@@ -129,9 +134,26 @@ public class PlayerSpell : PunBehaviour {
 	}
 	#endregion
 
+	#region Sentry Spell
+	public void registerSentry( SentryController sentryController )
+	{
+		this.sentryController = sentryController;
+	}
+
+	void cancelSentrySpell()
+	{
+		if( sentryController != null )
+		{
+			StartCoroutine( sentryController.destroySentry( 1.3f ) );
+			sentryController = null;
+		}
+	}
+	#endregion
+
 	public void cancelAllSpells()
 	{
 		cancelLinkedFateSpell();
+		cancelSentrySpell();
 	}
 
 	public void playerDied()
