@@ -18,7 +18,6 @@ public class BotCardHandler : Photon.PunBehaviour {
 	float timeOfLastAnalysis = 0;
 	PlayerControl playerControl;
 	PlayerVoiceOvers playerVoiceOvers;
-	float MINIMUM_EFFECTIVENESS = 0.2f;
 	bool allowCardPlaying = false;
 
 	// Use this for initialization

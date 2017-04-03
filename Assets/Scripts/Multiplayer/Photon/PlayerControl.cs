@@ -175,7 +175,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	Vector3 currentTilePos = Vector3.zero;
 	GameObject currentTile;
 	float tileRotationY = 0; //Since we use this value often, we will store it.
-	TileType currentTileType;
 	#endregion
 
 	#region Death variables
@@ -258,7 +257,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		currentTile = firstTile;
 		tileRotationY = firstTile.transform.eulerAngles.y;
 		currentTilePos = firstTile.transform.position;
-		currentTileType =firstTile.GetComponent<SegmentInfo>().tileType;
 	}
 
 	void OnEnable()
@@ -1856,7 +1854,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		float percentageComplete = 0;
 
 		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, triggerPositionZ );
-		Vector3 finalPlayerPosition = initialPlayerPosition + (transform.TransformDirection(Vector3.forward) * distance);
 		float distanceTravelled = 0;
 		float brakeFactor = 0.7f; //brake the player before slowing him down
 		float startSpeed = runSpeed * brakeFactor;
@@ -1935,7 +1932,6 @@ public class PlayerControl : Photon.PunBehaviour {
 				currentTilePos = si.tile.transform.position;
 				currentTile = si.tile;
 				tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
-				currentTileType = si.tileType;
 			}
 			else
 			{

@@ -319,8 +319,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 		HeroManager.HeroCharacter selectedHero = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex );
 		int botHeroIndex = HeroManager.Instance.getIndexOfOppositeSexBot( selectedHero.sex );
 		LevelManager.Instance.selectedBotHeroIndex = botHeroIndex;
-		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( botHeroIndex );
-	
 	}
 
 	void displayBotInfo()

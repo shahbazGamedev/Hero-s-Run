@@ -15,7 +15,6 @@ public class PlayerAI : Photon.PunBehaviour {
 	/// <summary>
 	/// The card handler. We need access so that the bot can play cards from his deck.
 	/// </summary>
-	CardHandler cardHandler;
 	float percentageWillTryToAvoidObstacle;
 	float percentageWillTurnSuccesfully;
 	const float BASE_RUN_SPEED = 18f;
@@ -32,7 +31,6 @@ public class PlayerAI : Photon.PunBehaviour {
 	{
 		playerControl = GetComponent<PlayerControl>();
 		playerInput = GetComponent<PlayerInput>();
-		cardHandler = GameObject.FindGameObjectWithTag("Card Handler").GetComponent<CardHandler>();
 
 		//Get the bot that was selected in MPNetworkLobbyManager and saved in LevelManager.
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );

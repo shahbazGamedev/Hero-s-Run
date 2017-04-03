@@ -51,6 +51,19 @@ public class VoiceOverManager : MonoBehaviour {
 		}
 	}
 	
+	public List<VoiceOverData> getVoiceOverList ( string listName )
+	{
+		if( voiceOverDictionary.ContainsKey(listName) )
+		{
+			return voiceOverDictionary[listName];
+		}
+		else
+		{
+			Debug.LogError("VoiceOverManager-the voice over dictionary doesn't contain an entry for " + listName );
+			return null;
+		}
+	}
+
 	[System.Serializable]
 	public class VoiceOverData
 	{
