@@ -29,6 +29,7 @@ public class SentryController : MonoBehaviour {
 	[SerializeField] Material onFunctioning;
 	[Header("Particle Systems")]
 	[SerializeField] ParticleSystem onDestroyFx;
+	const float DELAY_BEFORE_DESTROY_EFFECTS = 1.3f;
 	private GameObject myOwner;
 	private Transform myOwnerTransform;
 	private PlayerRace myOwnerPlayerRace;
@@ -41,7 +42,7 @@ public class SentryController : MonoBehaviour {
 	float timeOfLastShot;
 	[Header("Card Parameters")]
 	float spellRange = 40f;
-	float spreadFactor = 0.02f;
+	float spreadFactor = 0.01f;
 
 	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
@@ -65,6 +66,8 @@ public class SentryController : MonoBehaviour {
 				StartCoroutine( changeMaterialOnCreate( 2f ) );
 				myOwner.GetComponent<PlayerSpell>().registerSentry( this );
 				lineRenderer = GetComponent<LineRenderer>();
+				//The Sentry has a limited lifespan which depends on the level of the Card.
+				StartCoroutine( destroySentry( 15f, DELAY_BEFORE_DESTROY_EFFECTS ) );
 				break;
 			}
 		}
@@ -97,8 +100,11 @@ public class SentryController : MonoBehaviour {
 	{
 		if( sentryState == SentryState.Functioning )
 		{
-			//If the nearest target is dead or idle, reset the nearest target
-			if( nearestTarget != null && ( nearestTarget.GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) ) nearestTarget = null;
+			//If the nearest target is no longer within spell range, reset it.
+			if( nearestTarget != null && Vector3.Distance( transform.position, nearestTarget.position ) > spellRange ) nearestTarget = null;
+
+			//If the nearest target is dead or idle, reset it.
+			if( nearestTarget != null && ( nearestTarget.GetComponent<PlayerControl>().deathType != DeathType.Alive || nearestTarget.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) ) nearestTarget = null;
 
 			//Ignore if we already have a target
 			if( nearestTarget != null ) return;
@@ -142,12 +148,14 @@ public class SentryController : MonoBehaviour {
 			Quaternion desiredRotation = Quaternion.LookRotation( relativePos ); 
 			desiredRotation.z = 0f;
 			transform.rotation = Quaternion.Lerp( transform.rotation, desiredRotation, Time.deltaTime * aimSpeed );
+			//Verify if we can hit the nearest target
 			aim();
 		}
 		else
 		{
-			//The sentry does not have a target. Resume looking in the same direction as the player
+			//The sentry does not have a target. Resume looking in the same direction as the player.
 			Quaternion desiredRotation = myOwnerTransform.rotation; 
+			desiredRotation.x = 0f;
 			desiredRotation.z = 0f;
 			transform.rotation = Quaternion.Lerp( transform.rotation, myOwnerTransform.rotation, Time.deltaTime * aimSpeed );
 		}
@@ -155,7 +163,7 @@ public class SentryController : MonoBehaviour {
 
 	void aim()
 	{
-		//Verify if we can hit the target
+		//Verify if we can hit the nearest target
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position, transform.forward, out hit, spellRange ))
 		{
@@ -173,6 +181,7 @@ public class SentryController : MonoBehaviour {
 		{
 			timeOfLastShot = Time.time;
 
+			//The sentry is not perfectly accurate when shooting.
 			Vector3 direction = transform.forward;
 			direction.x += Random.Range( -spreadFactor, spreadFactor );
 			direction.y += Random.Range( -spreadFactor, spreadFactor );
@@ -191,17 +200,26 @@ public class SentryController : MonoBehaviour {
 		sentryState = newState;
 	}
 
-	public IEnumerator destroySentry( float delayBeforeEffects )
+	public void destroySentryNow()
 	{
+		StartCoroutine( destroySentry( 0, DELAY_BEFORE_DESTROY_EFFECTS ) );
+	}
+
+	IEnumerator destroySentry( float delayBeforeSentryExpires, float delayBeforeDestroyEffects )
+	{
+		yield return new WaitForSeconds(delayBeforeSentryExpires);
+
 		setSentryState(SentryState.BeingDestroyed);
 		nearestTarget = null;
 		StopCoroutine( "changeMaterialOnCreate" );
 		GetComponent<Renderer>().material = onDestroy;
 		playSoundEffect( Emotion.Sad, true );
-		yield return new WaitForSeconds(delayBeforeEffects);
+
+		yield return new WaitForSeconds(delayBeforeDestroyEffects);
 		onDestroyFx.transform.SetParent( null );
 		onDestroyFx.Play();
 		Destroy( gameObject );
+		Destroy( onDestroyFx, 3f );
 	}
 
 	#region Sound

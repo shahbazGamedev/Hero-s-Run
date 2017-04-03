@@ -256,6 +256,11 @@ public class PlayerAI : Photon.PunBehaviour {
 			//Kill bot for testing
 			playerControl.managePlayerDeath(DeathType.FallForward);
 		}
+		else if ( Input.GetKeyDown (KeyCode.Y ) )
+		{
+			//Stop the character from moving for testing
+			GetComponent<CharacterController>().enabled = !GetComponent<CharacterController>().enabled;
+		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha1) )
 		{
 			bch.activateCard( CardName.Double_Jump );

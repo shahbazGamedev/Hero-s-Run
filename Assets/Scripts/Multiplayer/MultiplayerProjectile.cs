@@ -9,7 +9,7 @@ public class MultiplayerProjectile : MonoBehaviour {
 	public ParticleSystem impactParticleSystem;
 	public AudioClip inFlightSound;
 	public AudioClip collisionSound;
-	public float bolt_force = 175f;
+	public float bolt_force = 1000f;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
