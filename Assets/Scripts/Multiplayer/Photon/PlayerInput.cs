@@ -98,6 +98,15 @@ public class PlayerInput : PunBehaviour {
 			//Kill player for testing
 			playerControl.managePlayerDeath(DeathType.FallForward);
 		}
+		else if ( Input.GetKeyDown (KeyCode.N ) )
+		{
+			//Create sentry
+			Vector3 sentryOffsetToPlayer = new Vector3( 0.8f, 2.3f, 0 );
+			Vector3 sentrySpawnPosition = transform.TransformPoint( sentryOffsetToPlayer );
+			object[] data = new object[1];
+			data[0] = this.photonView.viewID;
+			PhotonNetwork.InstantiateSceneObject( "sentry", sentrySpawnPosition, transform.rotation, 0, data );
+		}
 		else if ( Input.GetKeyDown (KeyCode.P ) )
 		{
 			//Stop the character from moving for testing
