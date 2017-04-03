@@ -12,6 +12,13 @@ public enum Emotion {
 
 public class SentryController : MonoBehaviour {
 
+	enum SentryState {
+	
+		Initialising = 1,
+		Functioning = 2,
+		BeingDestroyed = 3
+	}
+
 	[Header("Sentry")]
 	[Header("Sound Effects")]
 	[SerializeField] AudioSource audioSource;
@@ -24,7 +31,13 @@ public class SentryController : MonoBehaviour {
 	[SerializeField] ParticleSystem onDestroyFx;
 	private GameObject myOwner;
 	private Transform myOwnerTransform;
-	private PlayerControl myOwnerPlayerControl;
+	private PlayerRace myOwnerPlayerRace;
+	private SentryState sentryState = SentryState.Initialising;
+	[Header("Target")]
+	float aimSpeed = 7.6f;
+	Transform nearestTarget = null;
+	[Header("Card Parameters")]
+	float spellRange = 50f;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
@@ -41,7 +54,7 @@ public class SentryController : MonoBehaviour {
 			{
 				myOwner = playersArray[i];
 				myOwnerTransform = myOwner.transform;
-				myOwnerPlayerControl = myOwner.GetComponent<PlayerControl>();
+				myOwnerPlayerRace = myOwner.GetComponent<PlayerRace>();
 				transform.SetParent( myOwnerTransform );
 				playSoundEffect( Emotion.Happy );
 				StartCoroutine( changeMaterialOnCreate( 2f ) );
@@ -59,14 +72,74 @@ public class SentryController : MonoBehaviour {
 		}
 	}
 
+	void detectNearestTarget()
+	{
+		if( sentryState == SentryState.Functioning )
+		{
+			//Ignore if we already have a target
+			if( nearestTarget != null ) return;
+	
+			float nearestDistance = 100000;
+			//Keep nearest target only
+			for( int i =0; i < PlayerRace.players.Count; i++ )
+			{
+				//Ignore the sentry owner
+				if( PlayerRace.players[i] == myOwnerPlayerRace ) continue;
+	
+				//Calculate the distance to the other player
+				float distanceToTarget = Vector3.Distance( transform.position, PlayerRace.players[i].transform.position );
+	
+				//Is this player within spell range?
+				if( distanceToTarget > spellRange ) continue;
+	
+				//Is the player dead or Idle? If so, ignore.
+				if( PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
+	
+				//Is it the closest player?
+				if( distanceToTarget < nearestDistance )
+				{
+					nearestTarget = PlayerRace.players[i].transform;
+					print("Sentry-The nearest target is " + nearestTarget.name );
+					nearestDistance = distanceToTarget;
+				}
+			}
+		}
+	}
+
+	void setSentryState( SentryState newState )
+	{
+		sentryState = newState;
+	}
+
+	void LateUpdate()
+	{
+		detectNearestTarget();
+		lookAtTarget();
+	}
+
+	void lookAtTarget()
+	{
+		if( nearestTarget != null )
+		{
+			Vector3 relativePos = nearestTarget.position - transform.position;
+			Quaternion desiredRotation = Quaternion.LookRotation( relativePos ); 
+			desiredRotation.x = 0f;
+			desiredRotation.z = 0f;
+			transform.rotation = Quaternion.Lerp( transform.rotation, desiredRotation, Time.deltaTime * aimSpeed );
+		}
+	}
+
 	IEnumerator changeMaterialOnCreate( float delayBeforeMaterialChange )
 	{
 		yield return new WaitForSeconds(delayBeforeMaterialChange);
 		GetComponent<Renderer>().material = onFunctioning;
+		setSentryState(SentryState.Functioning);
 	}
 
 	public IEnumerator destroySentry( float delayBeforeEffects )
 	{
+		setSentryState(SentryState.BeingDestroyed);
+		nearestTarget = null;
 		StopCoroutine( "changeMaterialOnCreate" );
 		GetComponent<Renderer>().material = onDestroy;
 		playSoundEffect( Emotion.Sad, true );
