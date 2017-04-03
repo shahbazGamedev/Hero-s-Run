@@ -178,7 +178,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Death variables
-	DeathType deathType = DeathType.Alive;
+	public DeathType deathType = DeathType.Alive;
 	//When the player dies, we change the center and radius.
 	//We need to be able to reset these values when the player is revived.
 	Vector3 controllerOriginalCenter;

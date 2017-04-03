@@ -33,13 +33,17 @@ public class SentryController : MonoBehaviour {
 	private Transform myOwnerTransform;
 	private PlayerRace myOwnerPlayerRace;
 	private SentryState sentryState = SentryState.Initialising;
-	private LineRenderer lineRenderer;
+	private LineRenderer lineRenderer; //The line renderer is used for debuging
 	[Header("Target")]
 	float aimSpeed = 7.6f;
 	Transform nearestTarget = null;
+	float weaponCoolDown = 3f;
+	float timeOfLastShot;
 	[Header("Card Parameters")]
 	float spellRange = 40f;
+	float spreadFactor = 0.02f;
 
+	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
 		findOwner( gameObject.GetPhotonView ().instantiationData );
@@ -74,10 +78,28 @@ public class SentryController : MonoBehaviour {
 		}
 	}
 
+	IEnumerator changeMaterialOnCreate( float delayBeforeMaterialChange )
+	{
+		yield return new WaitForSeconds(delayBeforeMaterialChange);
+		GetComponent<Renderer>().material = onFunctioning;
+		setSentryState(SentryState.Functioning);
+	}
+	#endregion
+
+	#region Target detection and shooting
+	void LateUpdate()
+	{
+		detectNearestTarget();
+		lookAtTarget();
+	}
+
 	void detectNearestTarget()
 	{
 		if( sentryState == SentryState.Functioning )
 		{
+			//If the nearest target is dead or idle, reset the nearest target
+			if( nearestTarget != null && ( nearestTarget.GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) ) nearestTarget = null;
+
 			//Ignore if we already have a target
 			if( nearestTarget != null ) return;
 	
@@ -95,7 +117,7 @@ public class SentryController : MonoBehaviour {
 				if( distanceToTarget > spellRange ) continue;
 	
 				//Is the player dead or Idle? If so, ignore.
-				if( PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
+				if( PlayerRace.players[i].GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
 	
 				//Is it the closest player?
 				if( distanceToTarget < nearestDistance )
@@ -103,63 +125,70 @@ public class SentryController : MonoBehaviour {
 					nearestTarget = PlayerRace.players[i].transform;
 					print("Sentry-The nearest target is " + nearestTarget.name );
 					nearestDistance = distanceToTarget;
-					lineRenderer.enabled = true;
+					lineRenderer.enabled = false;
 				}
 			}
 		}
-	}
-
-	void useLaser()
-	{
-		RaycastHit hit;
-		if (Physics.Raycast(transform.position, transform.forward, out hit, spellRange ))
-		{
-			float length = Mathf.Min( hit.distance, spellRange );
-			lineRenderer.SetPosition(1, new Vector3( 0, 0, length ) );
-			if( hit.collider.transform == nearestTarget )
-			{
- 				nearestTarget.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.Obstacle );
-				print("Kill " + hit.collider.name + " " + nearestTarget.name );
-				nearestTarget = null;
-				lineRenderer.enabled = false;
-			}
-		}
-	}
-
-	void setSentryState( SentryState newState )
-	{
-		sentryState = newState;
-	}
-
-	void LateUpdate()
-	{
-		detectNearestTarget();
-		lookAtTarget();
 	}
 
 	void lookAtTarget()
 	{
 		if( nearestTarget != null )
 		{
-			Vector3 relativePos = nearestTarget.position - transform.position;
+			//The sentry has a target. Turn towards it at aimSpeed.
+			//Note that the transform position of the player is at his feet. Let's aim at his torso.
+			Vector3 playerTorso = new Vector3( nearestTarget.position.x, nearestTarget.position.y + 0.9f, nearestTarget.position.z );
+			Vector3 relativePos = playerTorso - transform.position;
 			Quaternion desiredRotation = Quaternion.LookRotation( relativePos ); 
 			desiredRotation.z = 0f;
 			transform.rotation = Quaternion.Lerp( transform.rotation, desiredRotation, Time.deltaTime * aimSpeed );
-			useLaser();
+			aim();
 		}
 		else
 		{
+			//The sentry does not have a target. Resume looking in the same direction as the player
 			Quaternion desiredRotation = myOwnerTransform.rotation; 
 			desiredRotation.z = 0f;
 			transform.rotation = Quaternion.Lerp( transform.rotation, myOwnerTransform.rotation, Time.deltaTime * aimSpeed );
 		}
 	}
 
-	IEnumerator changeMaterialOnCreate( float delayBeforeMaterialChange )
+	void aim()
 	{
-		yield return new WaitForSeconds(delayBeforeMaterialChange);
-		GetComponent<Renderer>().material = onFunctioning;
-		setSentryState(SentryState.Functioning);
+		//Verify if we can hit the target
+		RaycastHit hit;
+		if (Physics.Raycast(transform.position, transform.forward, out hit, spellRange ))
+		{
+			lineRenderer.SetPosition(1, new Vector3( 0, 0, spellRange ) );
+			if( hit.collider.transform == nearestTarget )
+			{
+				shoot();
+			}
+		}
+	}
+
+	void shoot()
+	{
+		if( Time.time - timeOfLastShot > weaponCoolDown )
+		{
+			timeOfLastShot = Time.time;
+
+			Vector3 direction = transform.forward;
+			direction.x += Random.Range( -spreadFactor, spreadFactor );
+			direction.y += Random.Range( -spreadFactor, spreadFactor );
+			direction.z += Random.Range( -spreadFactor, spreadFactor );
+	
+			//Create missile
+			object[] data = new object[1];
+			data[0] = direction;
+			PhotonNetwork.InstantiateSceneObject( "Sentry Missile", transform.position + transform.forward.normalized, Quaternion.Euler( direction ), 0, data );
+		}
+	}
+	#endregion
+
+	void setSentryState( SentryState newState )
+	{
+		sentryState = newState;
 	}
 
 	public IEnumerator destroySentry( float delayBeforeEffects )
@@ -175,6 +204,7 @@ public class SentryController : MonoBehaviour {
 		Destroy( gameObject );
 	}
 
+	#region Sound
 	public void playSoundEffect( Emotion emotion, bool forcePlay = false )
 	{
 		//Don't interrupt the current sound effect for another one.
@@ -205,6 +235,7 @@ public class SentryController : MonoBehaviour {
 	{
 		audioSource.Stop();
 	}
+	#endregion
 
 	[System.Serializable]
 	public class SentrySoundData
