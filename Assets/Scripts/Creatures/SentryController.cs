@@ -41,8 +41,8 @@ public class SentryController : MonoBehaviour {
 	float weaponCoolDown = 3f;
 	float timeOfLastShot;
 	[Header("Card Parameters")]
-	float spellRange = 40f;
-	float spreadFactor = 0.01f;
+	float aimRange = 40f;
+	float accuracy = 0.01f;
 
 	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
@@ -58,6 +58,8 @@ public class SentryController : MonoBehaviour {
 		{
 			if( playersArray[i].GetPhotonView().viewID == viewIdOfOwner )
 			{
+				aimRange = (float) data[2];
+				accuracy = (float) data[3];
 				myOwner = playersArray[i];
 				myOwnerTransform = myOwner.transform;
 				myOwnerPlayerRace = myOwner.GetComponent<PlayerRace>();
@@ -67,7 +69,7 @@ public class SentryController : MonoBehaviour {
 				myOwner.GetComponent<PlayerSpell>().registerSentry( this );
 				lineRenderer = GetComponent<LineRenderer>();
 				//The Sentry has a limited lifespan which depends on the level of the Card.
-				StartCoroutine( destroySentry( 15f, DELAY_BEFORE_DESTROY_EFFECTS ) );
+				StartCoroutine( destroySentry( (float) data[1], DELAY_BEFORE_DESTROY_EFFECTS ) );
 				break;
 			}
 		}
@@ -101,7 +103,7 @@ public class SentryController : MonoBehaviour {
 		if( sentryState == SentryState.Functioning )
 		{
 			//If the nearest target is no longer within spell range, reset it.
-			if( nearestTarget != null && Vector3.Distance( transform.position, nearestTarget.position ) > spellRange ) nearestTarget = null;
+			if( nearestTarget != null && Vector3.Distance( transform.position, nearestTarget.position ) > aimRange ) nearestTarget = null;
 
 			//If the nearest target is dead or idle, reset it.
 			if( nearestTarget != null && ( nearestTarget.GetComponent<PlayerControl>().deathType != DeathType.Alive || nearestTarget.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) ) nearestTarget = null;
@@ -119,8 +121,8 @@ public class SentryController : MonoBehaviour {
 				//Calculate the distance to the other player
 				float distanceToTarget = Vector3.Distance( transform.position, PlayerRace.players[i].transform.position );
 	
-				//Is this player within spell range?
-				if( distanceToTarget > spellRange ) continue;
+				//Is this player within aiming range?
+				if( distanceToTarget > aimRange ) continue;
 	
 				//Is the player dead or Idle? If so, ignore.
 				if( PlayerRace.players[i].GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
@@ -165,9 +167,9 @@ public class SentryController : MonoBehaviour {
 	{
 		//Verify if we can hit the nearest target
 		RaycastHit hit;
-		if (Physics.Raycast(transform.position, transform.forward, out hit, spellRange ))
+		if (Physics.Raycast(transform.position, transform.forward, out hit, aimRange ))
 		{
-			lineRenderer.SetPosition(1, new Vector3( 0, 0, spellRange ) );
+			lineRenderer.SetPosition(1, new Vector3( 0, 0, aimRange ) );
 			if( hit.collider.transform == nearestTarget )
 			{
 				shoot();
@@ -183,9 +185,9 @@ public class SentryController : MonoBehaviour {
 
 			//The sentry is not perfectly accurate when shooting.
 			Vector3 direction = transform.forward;
-			direction.x += Random.Range( -spreadFactor, spreadFactor );
-			direction.y += Random.Range( -spreadFactor, spreadFactor );
-			direction.z += Random.Range( -spreadFactor, spreadFactor );
+			direction.x += Random.Range( -accuracy, accuracy );
+			direction.y += Random.Range( -accuracy, accuracy );
+			direction.z += Random.Range( -accuracy, accuracy );
 	
 			//Create missile
 			object[] data = new object[1];
