@@ -4,17 +4,29 @@ using System.Collections;
 
 public class MultiplayerProjectile : MonoBehaviour {
 
-	public Light fireLight;
-	public ParticleSystem fireParticleSystem;
-	public ParticleSystem impactParticleSystem;
-	public AudioClip inFlightSound;
-	public AudioClip collisionSound;
-	public float bolt_force = 1000f;
+	[SerializeField] Light fireLight;
+	[SerializeField] ParticleSystem fireParticleSystem;
+	[SerializeField] ParticleSystem impactParticleSystem;
+	[SerializeField] AudioClip inFlightSound;
+	[SerializeField] AudioClip collisionSound;
+	float bolt_force = 1000f;
+	SentryController sentryController;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
 		object[] data = gameObject.GetPhotonView ().instantiationData;
 		launchProjectile((Vector3) data[0]);
+		int sentryPhotonViewID = (int) data[1]; 
+		//Find out which Sentry fired this projectile.
+		//If the projectile hits a target, we can tell the Sentry to play a victory sound and animation.
+		SentryController[] sentryControllers = GameObject.FindObjectsOfType<SentryController>();
+		for( int i = 0; i < sentryControllers.Length; i++ )
+		{
+			if( sentryControllers[i].GetComponent<PhotonView>().viewID == sentryPhotonViewID )
+			{
+				sentryController = sentryControllers[i];
+			}
+		}
 	}
 
 	void launchProjectile( Vector3 direction )
@@ -48,6 +60,10 @@ public class MultiplayerProjectile : MonoBehaviour {
 		if( collision.gameObject.CompareTag("Player") )
 		{
 			Debug.Log("Sentry Projectile hit target: " + collision.gameObject.name );
+
+			//Tell the Sentry that it was succesfull in killing a target.
+			if( sentryController != null ) sentryController.targetHit();
+
 			//The explosion knocked down a player. Send him an RPC.
 			if( getDotProduct( collision.transform, transform.position ) )
 			{

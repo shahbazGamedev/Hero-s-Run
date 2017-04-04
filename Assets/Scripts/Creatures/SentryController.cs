@@ -6,8 +6,7 @@ public enum Emotion {
 
 	Happy = 1,
 	Sad = 2,
-	Surprised = 3,
-	Disapointed = 4
+	Victory = 3
 }
 
 public class SentryController : MonoBehaviour {
@@ -190,8 +189,9 @@ public class SentryController : MonoBehaviour {
 			direction.z += Random.Range( -accuracy, accuracy );
 	
 			//Create missile
-			object[] data = new object[1];
+			object[] data = new object[2];
 			data[0] = direction;
+			data[1] = GetComponent<PhotonView>().viewID;
 			PhotonNetwork.InstantiateSceneObject( "Sentry Missile", transform.position + transform.forward.normalized, Quaternion.Euler( direction ), 0, data );
 		}
 	}
@@ -256,6 +256,15 @@ public class SentryController : MonoBehaviour {
 		audioSource.Stop();
 	}
 	#endregion
+
+	/// <summary>
+	/// If a projectile fired by the Sentry kills a target, the projectile will call this method.
+	/// The Sentry then plays a victory sound.
+	/// </summary>
+	public void targetHit()
+	{
+		playSoundEffect( Emotion.Victory );
+	}
 
 	[System.Serializable]
 	public class SentrySoundData
