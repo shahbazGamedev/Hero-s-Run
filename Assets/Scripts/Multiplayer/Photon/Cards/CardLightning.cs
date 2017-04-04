@@ -15,7 +15,7 @@ public class CardLightning : Card {
 	[SerializeField]  string lightningPrefabName = "Lightning";
 	Vector3 offset = new Vector3( 0, 1f, 1f );
 
-	int playerLayer = 2; //ignoreRaycast is the layer the player has. It avoids player raycasts from colliding with himself.
+	int playerLayer = 8;
 
 	public void activateCard ( int photonViewId, int level )
 	{
