@@ -227,6 +227,8 @@ public class PlayerControl : Photon.PunBehaviour {
 		if( this.photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.GetComponent<TakeScreenshot>().initialise( transform );
 
 		//Calculate the ground height
+		//Change the layer to ignore raycast so the raycast doesn't detect the player, but the ground.
+		gameObject.layer = 2;
 		RaycastHit hit;
 		if (Physics.Raycast(new Vector3( transform.position.x, 10f, transform.position.z ), Vector3.down, out hit, 12.0F ))
 		{
@@ -238,6 +240,8 @@ public class PlayerControl : Photon.PunBehaviour {
 			}
 			playerCamera.positionCameraNow();
 		}
+		//Restore the layer to Player which has an index of 8. CardExplosion relies on it.
+		gameObject.layer = 8;
 		playerCamera.playCutscene(CutsceneType.Checkpoint);
 
 		getFirstTileInfo();
