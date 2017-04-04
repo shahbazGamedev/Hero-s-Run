@@ -110,6 +110,17 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardLinkedFate component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+			case CardName.Sentry:
+				CardSentry cardSentry = GetComponent<CardSentry>();
+				if( cardSentry != null )
+				{
+					cardSentry.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardSentry component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -178,6 +189,10 @@ public class CardHandler : MonoBehaviour {
 			//Linked Fate is effective whenever you are trailing behind
 			case CardName.Linked_Fate:
 				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) ) return true;
+			break;
+			//Sentry is effective whenever the Sentry would have a valid target within aim range
+			case CardName.Sentry:
+				return GetComponent<Card>().isTargetInRange( caster.GetComponent<PlayerRace>(), GetComponent<CardSentry>().getAimRange( level ) );
 			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");

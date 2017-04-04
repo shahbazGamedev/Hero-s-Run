@@ -29,6 +29,7 @@ public enum CardName
 	Explosion = 101,
 	Shrink = 102,
 	Glyph = 103,
+	Sentry = 104,
 
 	//Epic
 	Lightning = 200,

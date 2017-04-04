@@ -19,6 +19,11 @@ public class CardSentry : Card {
 		this.photonView.RPC("cardSentryMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
 	}
 
+	public float getAimRange( int level )
+	{
+		return baseAimRange + level * rangeAimUpgradePerLevel;
+	}
+
 	#region Methods only running on master client
 	[PunRPC]
 	void cardSentryMasterRPC( int level, int photonViewID )

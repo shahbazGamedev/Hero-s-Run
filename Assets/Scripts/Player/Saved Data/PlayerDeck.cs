@@ -39,7 +39,7 @@ public class PlayerDeck {
 		addCard( CardName.Shrink, 3, 1, true );
 
 		//8
-		addCard( CardName.Linked_Fate, 1, 1, true );
+		addCard( CardName.Sentry, 1, 1, true );
 
 		//Part of card collection, but not in battle deck
 		//9
