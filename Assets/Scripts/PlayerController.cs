@@ -313,9 +313,6 @@ public sealed class PlayerController : MonoBehaviour {
 
 		sc = GetComponent<PlayerCamera>();
 
-		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
-		fairyController = fairyObject.GetComponent<FairyController>();
-
 		//For coins
 		Vector2 coinIconPos = HUDHandler.hudHandler.getCoinIconPos();
 		coinScreenPos = new Vector3( coinIconPos.x, coinIconPos.y, 3f );

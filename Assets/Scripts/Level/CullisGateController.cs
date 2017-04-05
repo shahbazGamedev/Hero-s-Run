@@ -78,7 +78,7 @@ public class CullisGateController : MonoBehaviour {
 		//We might have zombies nearby.
 		//Zombies play a groan sound every few seconds.
 		//We need to cancel the Invoke call in the zombie controller and might as well reset all zombies while we're at it.
-		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("CreatureManager");
+		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("Zombie Manager");
 		ZombieManager zombieManager = zombieManagerObject.GetComponent<ZombieManager>();
 		zombieManager.resetAllZombies();
 	}

@@ -29,11 +29,8 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	public List<HexagonRowData> hexagonsActivePerRow = new List<HexagonRowData>(NUMBER_OF_ROWS);
 
 	// Use this for initialization
-	void Awake () {
-
-		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
-		fairyController = fairyObject.GetComponent<FairyController>();
-
+	void Awake ()
+	{
 		lane1StartLocalPos = lane3StartLocalPos + HEXAGON_SIZE; 	//Leftmost lane
 		lane2StartLocalPos = lane3StartLocalPos + HALF_HEXAGON_SIZE; 	
 		lane4StartLocalPos = lane3StartLocalPos; 	
@@ -44,6 +41,9 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	
 	void Start()
 	{
+		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
+		fairyController = fairyObject.GetComponent<FairyController>();
+
 		dragonController.placeDragon( transform, new Vector3( 34.5f, 35.2f, 79.93f), new Vector3( 23, 210, 0), "G_Idle", 12f );
 		dragonController.enableAttack( false );
 	}

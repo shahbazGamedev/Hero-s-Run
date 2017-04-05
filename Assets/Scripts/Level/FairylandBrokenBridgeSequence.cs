@@ -28,7 +28,7 @@ public class FairylandBrokenBridgeSequence : MonoBehaviour {
 	public List<HexagonRowData> hexagonsActivePerRow = new List<HexagonRowData>(NUMBER_OF_ROWS);
 
 	// Use this for initialization
-	void Awake () {
+	void Start () {
 
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();

@@ -12,7 +12,7 @@ public class CerberusSequence : MonoBehaviour {
 	bool hasBeenTriggered = false;
 
 	// Use this for initialization
-	void Awake () {
+	void Start () {
 
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();

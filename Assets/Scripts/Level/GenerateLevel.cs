@@ -121,6 +121,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	[SerializeField] GameObject singlePlayerHeroPrefab;
 	[SerializeField] GameObject singlePlayerTrollPrefab;
 	[SerializeField] GameObject singlePlayerFairyPrefab;
+	[SerializeField] GameObject zombieManagerPrefab;
 	const float TILE_SIZE_CAMPAIGN = 36.4f;
 	public static float tileSize;
 	const float UNDERNEATH_TILE_BY = 30f;
@@ -280,6 +281,9 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 		//Create the Fairy because she does not exist in the level scene. The fairy is not used in multiplayer.
 		GameObject fairy = (GameObject)Instantiate( singlePlayerFairyPrefab );
+
+		//Create the ZombieManager because it does not exist in the level scene. The zombies are not used in multiplayer.
+		GameObject zombieManager = (GameObject)Instantiate( zombieManagerPrefab );
 
 		//Create the Hero because he does not exist in the level scene
 		GameObject hero = (GameObject)Instantiate( singlePlayerHeroPrefab );

@@ -12,7 +12,7 @@ public class TasteOfHellSequence : MonoBehaviour {
 	bool hasBeenTriggered = false;
 
 	// Use this for initialization
-	void Awake () {
+	void Start () {
 
 		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
 		playerController = playerObject.GetComponent<PlayerController>();
