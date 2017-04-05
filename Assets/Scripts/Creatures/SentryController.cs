@@ -93,8 +93,13 @@ public class SentryController : MonoBehaviour {
 	#region Target detection and shooting
 	void LateUpdate()
 	{
-		detectNearestTarget();
-		lookAtTarget();
+		//We don't want the sentry to shoot while paused.
+		//Remember that in multiplayer the time scale is not set to 0 while paused.
+		if( GameManager.Instance.getGameState() == GameState.Normal )
+		{
+			detectNearestTarget();
+			lookAtTarget();
+		}
 	}
 
 	void detectNearestTarget()
