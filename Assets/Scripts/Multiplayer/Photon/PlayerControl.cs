@@ -869,16 +869,19 @@ public class PlayerControl : Photon.PunBehaviour {
 	//Returns true if there is a collider less than 1.5 meters above the player
 	bool checkAbove()
 	{
- 		//The Player uses the Ignore Raycast layer
+ 		//Temporarily use Ignore Raycast layer so we don't detect the player
+		gameObject.layer = 2;
         if (Physics.Raycast(transform.position, Vector3.up, 1.5f ))
 		{
+ 			gameObject.layer = 8;
             return true;
 		}
 		else
 		{
-			return false;
+			gameObject.layer = 8;
+ 			return false;
 		}
-        
+       
 	}
 	#endregion
 

@@ -144,7 +144,7 @@ public class SentryController : MonoBehaviour {
 		{
 			//The sentry has a target. Turn towards it at aimSpeed.
 			//Note that the transform position of the player is at his feet. Let's aim at his torso.
-			Vector3 playerTorso = new Vector3( nearestTarget.position.x, nearestTarget.position.y + 0.9f, nearestTarget.position.z );
+			Vector3 playerTorso = new Vector3( nearestTarget.position.x, nearestTarget.position.y + 1f, nearestTarget.position.z );
 			Vector3 relativePos = playerTorso - transform.position;
 			Quaternion desiredRotation = Quaternion.LookRotation( relativePos ); 
 			desiredRotation.z = 0f;
