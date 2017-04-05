@@ -2932,6 +2932,11 @@ public sealed class PlayerController : MonoBehaviour {
 		this.trollController = trollController;
 	}
 
+	public void setFairyController( FairyController fairyController )
+	{
+		this.fairyController = fairyController;
+	}
+
 	void controlTrollPursuit( bool startPursuit )
 	{
 		if( trollController != null )

@@ -120,6 +120,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	private LevelData levelData;
 	[SerializeField] GameObject singlePlayerHeroPrefab;
 	[SerializeField] GameObject singlePlayerTrollPrefab;
+	[SerializeField] GameObject singlePlayerFairyPrefab;
 	const float TILE_SIZE_CAMPAIGN = 36.4f;
 	public static float tileSize;
 	const float UNDERNEATH_TILE_BY = 30f;
@@ -277,11 +278,15 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		//Create the Troll because he does not exist in the level scene. The troll is not used in multiplayer.
 		GameObject troll = (GameObject)Instantiate( singlePlayerTrollPrefab );
 
+		//Create the Fairy because she does not exist in the level scene. The fairy is not used in multiplayer.
+		GameObject fairy = (GameObject)Instantiate( singlePlayerFairyPrefab );
+
 		//Create the Hero because he does not exist in the level scene
 		GameObject hero = (GameObject)Instantiate( singlePlayerHeroPrefab );
 
-		//The player needs to have a reference to the troll
+		//The player needs to have a reference to the troll and fairy
 		hero.GetComponent<PlayerController>().setTrollController( troll.GetComponent<TrollController>() );
+		hero.GetComponent<PlayerController>().setFairyController( fairy.GetComponent<FairyController>() );
 
 		Debug.Log("GenerateLevel-CreateLevel: Level " + currentEpisode.episodeName + " has been created." );
 		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
