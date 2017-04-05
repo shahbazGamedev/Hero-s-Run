@@ -1468,7 +1468,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Only proceed if the player is not dying already
 		if ( playerCharacterState != PlayerCharacterState.Dying )
 		{
-			Debug.Log("managePlayerDeath : " + deathType + " " + gameObject.name );
+			Debug.Log("managePlayerDeath : " + deathTypeValue + " " + gameObject.name );
 
 			//Tell the remote versions of us that we died
 			this.photonView.RPC("playerDied", PhotonTargets.Others, deathTypeValue );
