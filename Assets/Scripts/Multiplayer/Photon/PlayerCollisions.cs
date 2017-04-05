@@ -356,6 +356,21 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					playerControl.managePlayerDeath ( DeathType.Obstacle );
 				}
 			}
+			else if (hit.collider.CompareTag( "Player" ) )
+			{
+				if( hit.normal.y < 0.4f )
+				{
+					//If this player ran squarely into another player while using SpeedBoost (i.e. Raging Bull), kill the other player.
+					if( playerControl.isSpeedBoostActive )
+					{
+						PlayerControl otherPlayer = hit.collider.GetComponent<PlayerControl>();
+						if( otherPlayer.getCharacterState() != PlayerCharacterState.Dying || otherPlayer.getCharacterState() != PlayerCharacterState.Idle )
+						{
+							otherPlayer.managePlayerDeath ( DeathType.FallForward );
+						}
+					}
+				}
+			}
 		}
 	}
 	
