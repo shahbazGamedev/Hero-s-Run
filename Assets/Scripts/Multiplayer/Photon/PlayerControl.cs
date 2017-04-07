@@ -183,6 +183,11 @@ public class PlayerControl : Photon.PunBehaviour {
 	//We need to be able to reset these values when the player is revived.
 	Vector3 controllerOriginalCenter;
 	float controllerOriginalRadius;
+	float controllerOriginalHeight;
+	const float DEAD_CONTROLLER_CENTER_Y = 0.075f;
+	const float DEAD_CONTROLLER_RADIUS = 0.15f;
+	const float DEAD_CONTROLLER_HEIGHT = 0.15f;
+
 	int numberOfTimesDiedDuringRace = 0; //Used by PlayerStatistics to determine if the player had a perfect race, that is, he did not die a single time.
 	#endregion
 
@@ -213,6 +218,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		controller = GetComponent<CharacterController>();
 		controllerOriginalCenter = controller.center;
 		controllerOriginalRadius = controller.radius;
+		controllerOriginalHeight = controller.height;
 		playerCamera = GetComponent<PlayerCamera>();
 		playerVisuals = GetComponent<PlayerVisuals>();
 		playerSounds = GetComponent<PlayerSounds>();
@@ -1471,6 +1477,8 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Only proceed if the player is not dying already
 		if ( playerCharacterState != PlayerCharacterState.Dying )
 		{
+			scaleControllerCollider( true );
+
 			Debug.Log("managePlayerDeath : " + deathTypeValue + " " + gameObject.name );
 
 			//Tell the remote versions of us that we died
@@ -1597,6 +1605,25 @@ public class PlayerControl : Photon.PunBehaviour {
 		resurrectBegin(true);
 	}
 
+	void scaleControllerCollider( bool isPlayerDead )
+	{
+		if( isPlayerDead )
+		{
+			//Shrink the size so that other players have an easier time
+			//going over the body.
+			controller.center = new Vector3( controller.center.x, DEAD_CONTROLLER_CENTER_Y, controller.center.z );
+			controller.radius = DEAD_CONTROLLER_RADIUS;
+			controller.height = DEAD_CONTROLLER_HEIGHT;
+		}
+		else
+		{
+			//Restore the original size
+			controller.center = controllerOriginalCenter;
+			controller.radius = controllerOriginalRadius;
+			controller.height = controllerOriginalHeight;
+		}
+	}
+
 	IEnumerator controlVignetting( float endVignettingFactor, float endBlurFactor, float duration )
 	{
 		VignetteAndChromaticAberration vAcA = Camera.main.GetComponent<VignetteAndChromaticAberration>();
@@ -1661,6 +1688,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			transform.position = new Vector3( respawn.position.x, groundHeight + 8f, respawn.position.z );
 			//By calling setCharacterState with StartRunning, the WorldSoundManager will know to resume the music.
 			setCharacterState( PlayerCharacterState.StartRunning );
+			scaleControllerCollider( false );
 			//Mecanim Hack - we call rebind because the animation states are not reset properly when you die in the middle of an animation.
 			//For example, if you die during a double jump, after you get resurrected and start running again, if you do another double jump, only part of the double jump animation will play, never the full animation.
 			anim.Rebind();
