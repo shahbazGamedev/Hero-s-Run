@@ -65,7 +65,7 @@ public class CardStasis : Card {
 			if( PlayerRace.players[i] == playerRace ) continue;
 
 			//Calculate the distance to the other player
-			float distanceToTarget = Vector3.Distance( transform.position, PlayerRace.players[i].transform.position );
+			float distanceToTarget = Vector3.Distance( playerRace.transform.position, PlayerRace.players[i].transform.position );
 
 			//Is this player within spell range?
 			if( distanceToTarget > spellRange ) continue;
