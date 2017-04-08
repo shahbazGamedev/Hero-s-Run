@@ -345,8 +345,6 @@ public class LevelData : MonoBehaviour {
 		public float RunStartSpeed = 18f;
 		[Tooltip("How fast will the player accelerate.")]
 		public float RunAcceleration = 0.13f;
-		[Tooltip("The number of tiles between power ups. Zero means there is no power up in that level.")]
-		public int powerUpDensity = 4;
 		[Tooltip("The ambience sound for the level. It plays in addition to the music. It is optional.")]
 		public AudioClip mainAmbienceTrack;
 		[Tooltip("A secondary ambience sound for the level. It plays in addition to the music. It is optional.")]
