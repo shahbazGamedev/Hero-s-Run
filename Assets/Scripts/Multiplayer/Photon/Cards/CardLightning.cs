@@ -10,12 +10,8 @@ using UnityEngine;
 /// </summary>
 public class CardLightning : Card {
 
-	[SerializeField] float  baseRange = 50f;
-	[SerializeField] float  rangeUpgradePerLevel = 10f;
 	[SerializeField]  string lightningPrefabName = "Lightning";
 	Vector3 offset = new Vector3( 0, 1f, 1f );
-
-	int playerLayer = 8;
 
 	public void activateCard ( int photonViewId, int level )
 	{
@@ -30,7 +26,7 @@ public class CardLightning : Card {
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
 		//Get nearest target which could be either a player or creature
-		Transform nearestTarget = detectNearestTarget( playerTransform, level, photonViewID );
+		Transform nearestTarget = detectNearestTarget( playerTransform.GetComponent<PlayerRace>(), getRange( level ) );
 
 		if( nearestTarget != null )
 		{
@@ -45,37 +41,6 @@ public class CardLightning : Card {
 		{
 			Debug.Log("CardLightning: no target found." );
 		}
-	}
-
-	int getOverlapSphereMask()
-	{
-		int mask = 1 << playerLayer;
-		return mask;
-	}
-
-	public Transform detectNearestTarget( Transform caster, int level, int photonViewID )
-	{
-		float spellRange = baseRange + level * rangeUpgradePerLevel;
-		//Use a sphere centered around the caster
-		Collider[] hitColliders = Physics.OverlapSphere( caster.position, spellRange, getOverlapSphereMask() );
-		float nearestDistance = 100000;
-		Transform nearestTarget = null;
-		
-		//Keep nearest target only
-		for( int i =0; i < hitColliders.Length; i++ )
-		{
-			float distanceToTarget = Vector3.Distance( caster.position, hitColliders[i].transform.position );
-			if(  hitColliders[i].transform != caster && distanceToTarget < nearestDistance )
-			{
-				//Make sure it is a player before continuing
-				if( !hitColliders[i].gameObject.CompareTag("Player") ) continue;
-				//Ignore dead players or players that are idle
-				if( hitColliders[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying || hitColliders[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
-				nearestTarget = hitColliders[i].transform;
-				nearestDistance = distanceToTarget;
-			}
-		}
-		return nearestTarget;
 	}
 
 	void strike( Transform nearestTarget )

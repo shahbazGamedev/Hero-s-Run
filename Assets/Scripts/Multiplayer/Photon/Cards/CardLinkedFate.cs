@@ -19,9 +19,6 @@ using UnityEngine;
 /// </summary>
 public class CardLinkedFate : Card {
 
-	[SerializeField] float  baseDuration = 10f;
-	[SerializeField] float  durationUpgradePerLevel = 5f;
-
 	public void activateCard ( int photonViewId, int level )
 	{
 		this.photonView.RPC("cardLinkedFateMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
@@ -31,15 +28,13 @@ public class CardLinkedFate : Card {
 	[PunRPC]
 	void cardLinkedFateMasterRPC( int level, int photonViewID )
 	{
-		float spellDuration = baseDuration + level * durationUpgradePerLevel;
-
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
 		//Send the RPC to everyone including the caster
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
-			PlayerRace.players[i].GetComponent<PhotonView>().RPC("cardLinkedFateRPC", PhotonTargets.AllViaServer, playerTransform.name, spellDuration );
+			PlayerRace.players[i].GetComponent<PhotonView>().RPC("cardLinkedFateRPC", PhotonTargets.AllViaServer, playerTransform.name, getDuration( level ) );
 		}
 	}
 	#endregion

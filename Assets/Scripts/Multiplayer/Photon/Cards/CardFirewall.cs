@@ -8,8 +8,6 @@ using UnityEngine;
 /// </summary>
 public class CardFirewall : Card {
 
-	[SerializeField] float  baseDuration = 5f;
-	[SerializeField] float  durationUpgradePerLevel = 1f;
 	[SerializeField]  string prefabName;
 	Vector3 offset = new Vector3( 0, 0, 10f );
 
@@ -35,26 +33,19 @@ public class CardFirewall : Card {
 		data[0] = playerTransform.name;
 
 		//We want the firewall to disappear after a while
-		data[1] = baseDuration + level * durationUpgradePerLevel;
+		data[1] = getDuration( level );
 
 		PhotonNetwork.InstantiateSceneObject( prefabName, firewallPosition, firewallRotation, 0, data );
 	}
 	#endregion
 
-	bool isAllowed( int photonViewID )
+	public bool isAllowed( int photonViewID )
 	{
 		//Find out which player activated the card
-		GameObject playerGameObject = null;
-		for( int i = 0; i < PlayerRace.players.Count; i++ )
-		{
-			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
-			{
-				playerGameObject = (GameObject)PhotonNetwork.player.TagObject;
-			}
-		}
+		Transform playerTransform = getPlayerTransform( photonViewID );
 
 		//Verify that the player is not spawning a firewall inside the finish line trigger
-		Vector3 firewallPosition = playerGameObject.transform.TransformPoint( offset );
+		Vector3 firewallPosition = playerTransform.TransformPoint( offset );
 
 		GameObject boxColliderObject = GameObject.FindGameObjectWithTag("Finish Line");
 		//If the tile with the finish line is not active, boxColliderObject will be null, so check for that.
@@ -77,19 +68,5 @@ public class CardFirewall : Card {
 			//In this case, return true.
 			return true;
 		}
-	}
-
-	public bool willSpellBeEffective( Transform caster, int level )
-	{
-		//Is it likely that at least one target will encounter the firewall before it expires?
-		//The result is not exact, but a best guess.
-		bool result = false;
-		if( isAllowed( caster.GetComponent<PhotonView>().viewID ) )
-		{
-			float spellDuration = baseDuration + level * durationUpgradePerLevel;
-			//Not Implemented completily
-			return true;
-		}
-		return result;
 	}
 }

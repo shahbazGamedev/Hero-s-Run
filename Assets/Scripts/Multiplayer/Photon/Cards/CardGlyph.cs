@@ -8,8 +8,6 @@ using UnityEngine;
 /// </summary>
 public class CardGlyph : Card {
 
-	[SerializeField] float  baseDuration = 5f;
-	[SerializeField] float  durationUpgradePerLevel = 1f;
 	[SerializeField]  string prefabName;
 	Vector3 offset = new Vector3( 0, 0, 10f );
 
@@ -35,13 +33,13 @@ public class CardGlyph : Card {
 		data[0] = playerTransform.name;
 
 		//We want the glyph to disappear after a while
-		data[1] = baseDuration + level * durationUpgradePerLevel;
+		data[1] = getDuration( level );
 
 		PhotonNetwork.InstantiateSceneObject( prefabName, glyphPosition, glyphRotation, 0, data );
 	}
 	#endregion
 
-	bool isAllowed( int photonViewID )
+	public bool isAllowed( int photonViewID )
 	{
 		//Find out which player activated the card
 		GameObject playerGameObject = null;
@@ -77,19 +75,5 @@ public class CardGlyph : Card {
 			//In this case, return true.
 			return true;
 		}
-	}
-
-	public bool willSpellBeEffective( Transform caster, int level )
-	{
-		//Is it likely that at least one target will encounter the spell before it expires?
-		//The result is not exact, but a best guess.
-		bool result = false;
-		if( isAllowed( caster.GetComponent<PhotonView>().viewID ) )
-		{
-			float spellDuration = baseDuration + level * durationUpgradePerLevel;
-			//Not Implemented completily
-			return true;
-		}
-		return result;
 	}
 }

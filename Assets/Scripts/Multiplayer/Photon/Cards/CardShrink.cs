@@ -10,11 +10,6 @@ using UnityEngine;
 /// </summary>
 public class CardShrink : Card {
 
-	[SerializeField] float  baseRange = 50f;
-	[SerializeField] float  rangeUpgradePerLevel = 10f;
-	[SerializeField] float  baseDuration = 5f;
-	[SerializeField] float  durationUpgradePerLevel = 0.25f;
-
 	public void activateCard ( int photonViewId, int level )
 	{
 		this.photonView.RPC("cardShrinkMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
@@ -27,50 +22,17 @@ public class CardShrink : Card {
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
-		//Calculate spell duration
-		float spellDuration = baseDuration + level * durationUpgradePerLevel;
-
-		//Get nearest player
-		Transform nearestTarget = detectNearestTarget( playerTransform, level, photonViewID );
+		//Find the nearest target
+		Transform nearestTarget = detectNearestTarget( playerTransform.GetComponent<PlayerRace>(), getRange( level ) );
 
 		if( nearestTarget != null )
 		{
-			nearestTarget.GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.All, spellDuration );
+			nearestTarget.GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.All, getDuration( level ) );
 		}
 		else
 		{
 			Debug.Log("CardShrink: no target found." );
 		}
-	}
-
-	public Transform detectNearestTarget( Transform caster, int level, int photonViewID )
-	{
-		float nearestDistance = 100000;
-		Transform nearestTarget = null;
-		float spellRange = baseRange + level * rangeUpgradePerLevel;
-		//Keep nearest target only
-		for( int i =0; i < PlayerRace.players.Count; i++ )
-		{
-			//Ignore the caster
-			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID ) continue;
-
-			//Calculate the distance to the other player
-			float distanceToTarget = Vector3.Distance( caster.position, PlayerRace.players[i].transform.position );
-
-			//Is this player within spell range?
-			if( distanceToTarget > spellRange ) continue;
-
-			//Is the player dead or Idle? If so, ignore.
-			if( PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
-
-			//Is it the closest player?
-			if( distanceToTarget < nearestDistance )
-			{
-				nearestTarget = PlayerRace.players[i].transform;
-				nearestDistance = distanceToTarget;
-			}
-		}
-		return nearestTarget;
 	}
 	#endregion
 

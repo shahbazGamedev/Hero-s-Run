@@ -10,11 +10,7 @@ using UnityEngine;
 /// </summary>
 public class CardStasis : Card {
 
-	[SerializeField] float  baseDuration = 3f;
-	[SerializeField] float  durationUpgradePerLevel = 0.5f;
-	[SerializeField] float  baseRange = 100f;
-	[SerializeField] float  rangeUpgradePerLevel = 10f;
-	[SerializeField]  string prefabName;
+	[SerializeField]  string prefabName = "Statis";
 
 	public void activateCard ( int photonViewId, int level )
 	{
@@ -28,11 +24,8 @@ public class CardStasis : Card {
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
-		//Calculate the spell range
-		float spellRange = baseRange + level * rangeUpgradePerLevel;
-
 		//Find the nearest target
-		Transform nearestTarget = detectNearestTarget( playerTransform.GetComponent<PlayerRace>(), spellRange );
+		Transform nearestTarget = detectNearestTarget( playerTransform.GetComponent<PlayerRace>(), getRange( level ) );
 
 		//Only continue if we found a target
 		if( nearestTarget != null )
@@ -43,7 +36,7 @@ public class CardStasis : Card {
 			data[0] = nearestTarget.GetComponent<PhotonView>().viewID;
 	
 			//We want the stasis sphere to disappear after a while
-			data[1] = baseDuration + level * durationUpgradePerLevel;
+			data[1] = getDuration( level );
 	
 			PhotonNetwork.InstantiateSceneObject( prefabName, nearestTarget.position, nearestTarget.rotation, 0, data );
 		}
@@ -54,43 +47,4 @@ public class CardStasis : Card {
 	}
 	#endregion
 
-	Transform detectNearestTarget( PlayerRace playerRace, float spellRange )
-	{
-		Transform nearestTarget = null;
-		float nearestDistance = 100000;
-		//Keep nearest target only
-		for( int i =0; i < PlayerRace.players.Count; i++ )
-		{
-			//Ignore the caster
-			if( PlayerRace.players[i] == playerRace ) continue;
-
-			//Calculate the distance to the other player
-			float distanceToTarget = Vector3.Distance( playerRace.transform.position, PlayerRace.players[i].transform.position );
-
-			//Is this player within spell range?
-			if( distanceToTarget > spellRange ) continue;
-
-			//Is the player dead or Idle? If so, ignore.
-			if( PlayerRace.players[i].GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
-
-			//Is it the closest player?
-			if( distanceToTarget < nearestDistance )
-			{
-				nearestTarget = PlayerRace.players[i].transform;
-				nearestDistance = distanceToTarget;
-			}
-		}
-		return nearestTarget;
-	}
-
-	public bool willSpellBeEffective( Transform caster, int level )
-	{
-		//Calculate the spell range
-		float spellRange = baseRange + level * rangeUpgradePerLevel;
-
-		//See if there is a target
-		Transform nearestTarget = detectNearestTarget( caster.GetComponent<PlayerRace>(), spellRange );
-
-		return nearestTarget != null;
-	}
 }

@@ -182,30 +182,28 @@ public class CardHandler : MonoBehaviour {
 			case CardName.Firewall:
 				if( isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
-					return GetComponent<CardFirewall>().willSpellBeEffective( caster.transform, level );
+					return GetComponent<CardFirewall>().isAllowed( caster.GetComponent<PhotonView>().viewID );
 				}
 			break;
 			//Glyph is effective whenever there is an opponent behind you and not too far
 			case CardName.Glyph:
 				if( isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
-					return GetComponent<CardGlyph>().willSpellBeEffective( caster.transform, level );
+					return GetComponent<CardGlyph>().isAllowed( caster.GetComponent<PhotonView>().viewID );
 				}
 			break;
 			//Lightning is effective whenever your opponent is far ahead of you
 			case CardName.Lightning:
 				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
-					Transform nearestTarget = GetComponent<CardLightning>().detectNearestTarget( caster.transform, level, caster.GetComponent<PhotonView>().viewID );
-					if( nearestTarget != null ) return true;
+					return GetComponent<Card>().isThereATargetWithinRange( caster.transform, level );
 				}
 			break;
 			//Shrink is effective whenever your opponent is far ahead of you
 			case CardName.Shrink:
 				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
-					Transform nearestTarget = GetComponent<CardShrink>().detectNearestTarget( caster.transform, level, caster.GetComponent<PhotonView>().viewID );
-					if( nearestTarget != null ) return true;
+					return GetComponent<Card>().isThereATargetWithinRange( caster.transform, level );
 				}
 			break;
 			//Linked Fate is effective whenever you are trailing behind
@@ -214,13 +212,13 @@ public class CardHandler : MonoBehaviour {
 			break;
 			//Sentry is effective whenever the Sentry would have a valid target within aim range
 			case CardName.Sentry:
-				return GetComponent<Card>().isTargetInRange( caster.GetComponent<PlayerRace>(), GetComponent<CardSentry>().getAimRange( level ) );
+				return GetComponent<Card>().isTargetInRange( caster.GetComponent<PlayerRace>(), GetComponent<Card>().getRange( level ) );
 			break;
 			//Stasis is effective whenever your opponent is far ahead of you
 			case CardName.Stasis:
 				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
-					return GetComponent<CardStasis>().willSpellBeEffective( caster.transform, level );
+					return GetComponent<Card>().isThereATargetWithinRange( caster.transform, level );
 				}
 			break;
 			default:

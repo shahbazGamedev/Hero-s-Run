@@ -7,21 +7,12 @@ using UnityEngine;
 /// </summary>
 public class CardSentry : Card {
 
-	[SerializeField] float  baseDuration = 15f;
-	[SerializeField] float  durationUpgradePerLevel = 1f;
-	[SerializeField] float  baseAimRange = 30f;
-	[SerializeField] float  rangeAimUpgradePerLevel = 2f;
 	[SerializeField] float  baseAccuracy = 0.02f;
 	[SerializeField] float  AccuracyUpgradePerLevel = -0.0018f;
 
 	public void activateCard ( int photonViewId, int level )
 	{
 		this.photonView.RPC("cardSentryMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
-	}
-
-	public float getAimRange( int level )
-	{
-		return baseAimRange + level * rangeAimUpgradePerLevel;
 	}
 
 	#region Methods only running on master client
@@ -39,8 +30,8 @@ public class CardSentry : Card {
 		data[0] = photonViewID;
 
 		//Level related parameters
-		data[1] = baseDuration + level * durationUpgradePerLevel;
-		data[2] = baseAimRange + level * rangeAimUpgradePerLevel;
+		data[1] = getDuration( level );
+		data[2] = getRange( level );
 		data[3] = baseAccuracy + level * AccuracyUpgradePerLevel;
 
 		PhotonNetwork.InstantiateSceneObject( "sentry", sentrySpawnPosition, transform.rotation, 0, data );
