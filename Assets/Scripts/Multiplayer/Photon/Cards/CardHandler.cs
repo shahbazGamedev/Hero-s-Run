@@ -121,6 +121,17 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardSentry component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+			case CardName.Stasis:
+				CardStasis cardStasis = GetComponent<CardStasis>();
+				if( cardStasis != null )
+				{
+					cardStasis.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardStasis component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -193,6 +204,13 @@ public class CardHandler : MonoBehaviour {
 			//Sentry is effective whenever the Sentry would have a valid target within aim range
 			case CardName.Sentry:
 				return GetComponent<Card>().isTargetInRange( caster.GetComponent<PlayerRace>(), GetComponent<CardSentry>().getAimRange( level ) );
+			break;
+			//Stasis is effective whenever your opponent is far ahead of you
+			case CardName.Stasis:
+				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
+				{
+					return GetComponent<CardStasis>().willSpellBeEffective( caster.transform, level );
+				}
 			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");

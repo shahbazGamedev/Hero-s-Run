@@ -23,6 +23,7 @@ public enum CardName
 	Sprint = 0,
 	Raging_Bull = 1,
 	Double_Jump = 2,
+	Stasis = 3,
 
 	//Rare
 	Firewall = 100,

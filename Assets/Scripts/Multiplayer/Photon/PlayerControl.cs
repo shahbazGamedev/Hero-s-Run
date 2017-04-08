@@ -704,7 +704,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Fall and Land
-	void fall()
+	public void fall()
 	{
 		if( playerCharacterState == PlayerCharacterState.Falling || playerCharacterState == PlayerCharacterState.Jumping ) return; //ignore, we are already falling or jumping
 
@@ -1876,6 +1876,11 @@ public class PlayerControl : Photon.PunBehaviour {
 	public bool isPlayerControlEnabled()
 	{
 		return playerControlsEnabled;
+	}
+
+	public void enablePlayerMovement( bool enabled )
+	{
+		playerMovementEnabled = enabled;
 	}
 
 	//We pass the triggerPositionZ value because we need its position. We cannot rely on the position of the player at the moment of trigger because it can fluctuate based on frame rate and such.

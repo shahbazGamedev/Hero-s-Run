@@ -261,6 +261,10 @@ public class PlayerAI : Photon.PunBehaviour {
 			//Stop the character from moving for testing
 			GetComponent<CharacterController>().enabled = !GetComponent<CharacterController>().enabled;
 		}
+		else if ( Input.GetKeyDown (KeyCode.Alpha0) )
+		{
+			bch.activateCard( CardName.Stasis );
+		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha1) )
 		{
 			bch.activateCard( CardName.Double_Jump );
