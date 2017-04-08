@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class CardHandler : MonoBehaviour {
 
-	public void activateCard ( int photonViewId, CardName name, string heroName, int level )
+	public void activateCard ( PhotonView casterPhotonView, CardName name, string heroName, int level )
 	{
-		//Send message to minimap saying which hero played which card
-		sendMinimapMessage( heroName, (int)name );
+		int photonViewId = casterPhotonView.viewID;
 
 		switch (name)
 		{
@@ -136,6 +135,12 @@ public class CardHandler : MonoBehaviour {
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
 		}
+
+		//Send message to minimap saying which hero played which card
+		sendMinimapMessage( heroName, (int)name );
+
+		//Play the activate card voice over if there is one
+		playActivateCardVoiceOver( casterPhotonView, name );
 	}
 
 	void sendMinimapMessage( string heroName, int card )
@@ -144,6 +149,12 @@ public class CardHandler : MonoBehaviour {
 		{
 			PlayerRace.players[i].getMinimapPhotonView().RPC( "minimapRPC", PhotonTargets.All, heroName, card );
 		}
+	}
+
+	void playActivateCardVoiceOver( PhotonView casterPhotonView, CardName name )
+	{
+		//Play the activate card voice over but only if there is one. We don't want to send RPCs for nothing and waste bandwidth.
+		if( casterPhotonView.GetComponent<PlayerVoiceOvers>().isSpellVoiceOverAvailable( name ) ) casterPhotonView.RPC( "activateCardVoiceOverRPC", PhotonTargets.All, (int)name );
 	}
 
 	public bool isCardEffective ( GameObject caster, CardName name, int level )

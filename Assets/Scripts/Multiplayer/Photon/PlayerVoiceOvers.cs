@@ -27,6 +27,20 @@ public class PlayerVoiceOvers : MonoBehaviour {
 		
 	}
 
+	[PunRPC]
+	void activateCardVoiceOverRPC( int name )
+    {
+		playVoiceOver( VoiceOverType.VO_Spell, (CardName) name );
+	}
+
+	public bool isSpellVoiceOverAvailable( CardName card )
+	{
+		//Do we have one or more VOs that match?
+		List<VoiceOverManager.VoiceOverData> vodList = voiceOverList.FindAll(vo => vo.type == VoiceOverType.VO_Spell && vo.cardName == card && vo.playOnActivationOnly == true );
+
+		return vodList.Count > 0;
+	}
+
 	public void playVoiceOver( VoiceOverType voiceOverType, CardName card = CardName.None, bool activating = true )
 	{
 		//Don't interrupt the current VO for another one.

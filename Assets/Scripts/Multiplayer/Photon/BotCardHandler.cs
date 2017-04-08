@@ -160,8 +160,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 		PlayerDeck.PlayerCardData botCardData = getCardByName( cardName );
 		if( botCardData != null )
 		{
-			cardHandler.activateCard( this.photonView.viewID, cardName, botHero.name, botCardData.level );
-			playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Spell, cardName );
+			cardHandler.activateCard( this.photonView, cardName, botHero.name, botCardData.level );
 		}
 	}
 
