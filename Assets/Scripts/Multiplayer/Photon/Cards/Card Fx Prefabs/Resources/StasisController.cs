@@ -9,7 +9,7 @@ public class StasisController : MonoBehaviour {
 
 	Transform affectedPlayerTransform;
 	PlayerControl affectedPlayerControl;
-	const float DISTANCE_ABOVE_GROUND = 2f;
+	const float DISTANCE_ABOVE_GROUND = 2.5f;
 	const float Y_POS_PLAYER_IN_SPHERE = -0.35f;
 
 	#region Initialisation
