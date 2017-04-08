@@ -5,6 +5,7 @@ using UnityEngine;
 /// <summary>
 /// The Stasis card is a Common card with 13 levels.
 /// The spell traps the player in a stasis force field for the spell duration, which depends on the level of the card.
+/// If the trapped player has a Sentry, it will be destroyed.
 /// The player is immune to other spells while in stasis.
 /// The spell range depends on the level of the card.
 /// </summary>

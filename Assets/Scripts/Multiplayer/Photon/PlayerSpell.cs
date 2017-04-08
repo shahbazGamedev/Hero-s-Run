@@ -140,7 +140,7 @@ public class PlayerSpell : PunBehaviour {
 		this.sentryController = sentryController;
 	}
 
-	void cancelSentrySpell()
+	public void cancelSentrySpell()
 	{
 		if( sentryController != null )
 		{

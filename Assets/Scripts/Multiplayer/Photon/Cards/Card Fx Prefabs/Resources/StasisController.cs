@@ -57,6 +57,9 @@ public class StasisController : MonoBehaviour {
 				//Set the player state to Idle so that other spells don't affect the player while he is in Statis.
 				affectedPlayerControl.setCharacterState( PlayerCharacterState.Idle );
 
+				//If the player has a Sentry, it will be destroyed.
+				affectedPlayerTransform.GetComponent<PlayerSpell>().cancelSentrySpell();
+
 				//The Stasis Sphere has a limited lifespan which depends on the level of the Card.
 				float spellDuration = (float) data[1];
 				StartCoroutine( destroyStasisSphere( spellDuration ) );
