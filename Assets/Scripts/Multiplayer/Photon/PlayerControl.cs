@@ -1493,9 +1493,6 @@ public class PlayerControl : Photon.PunBehaviour {
 				numberOfTimesDiedDuringRace++;
 			}
 
-			//The PlayerSpell component needs to know that the playerDied
-			GetComponent<PlayerSpell>().playerDied();
-
 			//Remember how we died
 			deathType = deathTypeValue;
 
@@ -1512,6 +1509,9 @@ public class PlayerControl : Photon.PunBehaviour {
 
 			//Change character state
 			setCharacterState( PlayerCharacterState.Dying );
+
+			//The PlayerSpell component needs to know that the playerDied
+			GetComponent<PlayerSpell>().playerDied();
 
 			//Stop the particle systems. One might be playing if we died while sliding for example.
 			playerVisuals.playDustPuff( false );

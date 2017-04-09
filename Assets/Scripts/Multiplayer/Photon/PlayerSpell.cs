@@ -86,6 +86,20 @@ public class PlayerSpell : PunBehaviour {
 		playerControl.setAllowRunSpeedToIncrease( true );
 		playerControl.runSpeed = runSpeedBeforeSpell;
 	}
+
+	void cancelShrinkSpell()
+	{
+		//Are we shrunk?
+		if( transform.localScale.y != 1f )
+		{
+			//If we died while shrunk, do nothing i.e. stay small, that's fine.
+			//If we crossed the finish line while shrunk, enlarge the player quickly back to his normal size.
+			if( playerControl.deathType == DeathType.Alive )
+			{
+				StartCoroutine( enlarge( new Vector3( 1f, 1f, 1f ), 0.9f, 0 ) );
+			}
+		}
+	}
 	#endregion
 
 	#region Linked Fate spell
@@ -152,8 +166,10 @@ public class PlayerSpell : PunBehaviour {
 
 	public void cancelAllSpells()
 	{
+		StopAllCoroutines();
 		cancelLinkedFateSpell();
 		cancelSentrySpell();
+		cancelShrinkSpell();
 	}
 
 	public void playerDied()
