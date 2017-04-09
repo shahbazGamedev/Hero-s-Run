@@ -76,7 +76,7 @@ public class StasisController : MonoBehaviour {
 	IEnumerator destroyStasisSphere( float delayBeforeSpellExpires )
 	{
 		yield return new WaitForSeconds(delayBeforeSpellExpires);
-
+		MiniMap.Instance.hideSecondaryIcon( affectedPlayerTransform.gameObject );
 		affectedPlayerTransform.SetParent( null );
 		affectedPlayerTransform.GetComponent<Animator>().speed = 1f;
 		affectedPlayerControl.fall();

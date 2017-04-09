@@ -226,6 +226,7 @@ public class SentryController : MonoBehaviour {
 		playSoundEffect( Emotion.Sad, true );
 
 		yield return new WaitForSeconds(delayBeforeDestroyEffects);
+		MiniMap.Instance.hideSecondaryIcon( myOwner );
 		onDestroyFx.transform.SetParent( null );
 		onDestroyFx.Play();
 		Destroy( gameObject );

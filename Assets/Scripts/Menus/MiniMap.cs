@@ -155,7 +155,6 @@ public class MiniMap : MonoBehaviour {
 					if( radarObjects[i].playerControl.getCharacterState() == PlayerCharacterState.Dying )
 					{
 						radarObjects[i].icon.overrideSprite = playerDeadRadarSprite;
-						radarObjects[i].secondaryIcon.gameObject.SetActive( false );
 					}
 					else
 					{
@@ -209,6 +208,12 @@ public class MiniMap : MonoBehaviour {
 		{
 			Debug.LogError("MiniMap-minimapSecondaryRPC: radar object for " + pc.name + " was not found." );
 		}
+	}
+
+	public void hideSecondaryIcon( GameObject go )
+	{
+		RadarObject ro = radarObjects.FirstOrDefault(radarObject => radarObject.owner == go);
+		if(ro != null) ro.secondaryIcon.gameObject.SetActive( false );
 	}
 
 	PlayerControl getPlayerControl( int photonViewID )
