@@ -143,6 +143,7 @@ public class CardHandler : MonoBehaviour {
 		playActivateCardVoiceOver( casterPhotonView, name );
 	}
 
+	//revisit this code. Not sure I need the for loop. Would need to handle bot (which is not a photon player).
 	void sendMinimapMessage( string heroName, int card )
 	{
 		for( int i = 0; i < PlayerRace.players.Count; i++ )

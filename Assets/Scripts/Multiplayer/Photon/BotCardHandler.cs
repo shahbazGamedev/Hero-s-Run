@@ -41,7 +41,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 
 		initializeCards ();
 
-		if( botHero.skillLevel != BotSkillLevel.VERY_LOW ) Invoke("allowBotToPlayCards", botSkillData.raceStartGracePeriod );
+		if( botHero.skillLevel != BotSkillLevel.VERY_LOW && LevelManager.Instance.allowBotToPlayCards ) Invoke("allowBotToPlayCards", botSkillData.raceStartGracePeriod );
 	}
 
 	void allowBotToPlayCards()

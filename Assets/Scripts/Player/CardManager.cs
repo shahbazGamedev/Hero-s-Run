@@ -204,6 +204,10 @@ public class CardManager : MonoBehaviour {
 		public CardName name; 
 		public CardRarity rarity = CardRarity.COMMON;
 		public Sprite icon;
+		//The secondary icon is optional.
+		//It appears on the top-left corner of the player icon using or affected by a card.
+		//Double Jump doesn't have a secondary icon, but Sentry does for example.
+		public Sprite secondaryIcon;
 		[Range(1,9)]
 		public int manaCost;
 	}

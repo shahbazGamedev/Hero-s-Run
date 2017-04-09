@@ -46,6 +46,7 @@ public class CardLightning : Card {
 	void strike( Transform nearestTarget )
 	{
 		nearestTarget.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.Obstacle );
+		MiniMap.Instance.displaySecondaryIcon( nearestTarget.GetComponent<PhotonView>().viewID, (int)CardName.Lightning, 2.5f );
 	}
 
 	#endregion

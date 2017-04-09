@@ -10,6 +10,8 @@ public class DebugMenu : MonoBehaviour {
 	[SerializeField] Text toggleOnlyUseUniqueTilesText;
 	[SerializeField] Text clearAssetBundleCacheText;
 	[SerializeField] Text facebookName;
+	[SerializeField] Text allowBotToPlayCardsText;
+	[SerializeField] Text speedOverrideMultiplierText;
 
 	void Start () {
 	
@@ -30,6 +32,14 @@ public class DebugMenu : MonoBehaviour {
 		{
 			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: Off";
 		}
+		if( LevelManager.Instance.allowBotToPlayCards )
+		{
+			allowBotToPlayCardsText.text = "Bot plays cards: On";
+		}
+		else
+		{
+			allowBotToPlayCardsText.text = "Bot plays cards: Off";
+		}
 
 		updateFacebookName();
 	}
@@ -39,6 +49,26 @@ public class DebugMenu : MonoBehaviour {
 		Debug.Log("OnClickResetSavedData");
 		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.resetPlayerStats();
+	}
+
+	public void setSpeedOverride( Slider slider )
+	{
+		LevelManager.Instance.speedOverrideMultiplier = slider.value/10; //We want 1.1 not 1.123567. Slider uses whole numbers from 0 to 30 converted to 0 to 3.
+		speedOverrideMultiplierText.text = (slider.value/10).ToString();
+	}
+
+	public void OnClickAllowBotToPlayCards()
+	{
+		UISoundManager.uiSoundManager.playButtonClick();
+		LevelManager.Instance.allowBotToPlayCards = !LevelManager.Instance.allowBotToPlayCards;
+		if( LevelManager.Instance.allowBotToPlayCards )
+		{
+			allowBotToPlayCardsText.text = "Bot plays cards: On";
+		}
+		else
+		{
+			allowBotToPlayCardsText.text = "Bot plays cards: Off";
+		}
 	}
 
 	public void OnClickDeleteRequests()

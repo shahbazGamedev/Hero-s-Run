@@ -2,11 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Linq;
 
 
 public class RadarObject
 {
 	public Image icon { get; set; }
+	public Image secondaryIcon { get; set; }
+	public float secondaryIconTTL { get; set; }
+	public float secondaryIconTimeDisplayStarted { get; set; }
 	public GameObject owner { get; set; }
 	public PlayerControl playerControl { get; set; }
 }
@@ -45,29 +49,17 @@ public class MiniMap : MonoBehaviour {
 	public void registerRadarObject( GameObject go, Sprite minimapSprite, PlayerControl pc = null )
 	{
 		Image image = Instantiate( playerRadarImage );
+		Image secondaryImage = image.transform.FindChild("Secondary Image").GetComponent<Image>();
 		image.transform.SetParent( transform );
 		image.rectTransform.localScale = Vector3.one;
 		image.sprite = minimapSprite;
-		radarObjects.Add( new RadarObject(){ owner = go, icon = image, playerControl = pc } );
+		radarObjects.Add( new RadarObject(){ owner = go, icon = image, playerControl = pc, secondaryIcon = secondaryImage } );
 	}
 
 	public void removeRadarObject( GameObject go )
 	{
-		List<RadarObject> newList = new List<RadarObject>();
-		for( int i = 0; i < radarObjects.Count; i++ )
-		{
-			if( radarObjects[i].owner == go )
-			{
-				Destroy( radarObjects[i].icon );
-				continue;
-			}
-			else
-			{
-				newList.Add(radarObjects[i]);
-			}
-		}
-		radarObjects.RemoveRange( 0, radarObjects.Count );
-		radarObjects.AddRange( newList );
+		RadarObject ro = radarObjects.FirstOrDefault(radarObject => radarObject.owner == go);
+		if(ro != null) radarObjects.Remove(ro);
 	}
 
 	public void displayMessage( string heroName, CardManager.CardData lastCardPlayed )
@@ -163,12 +155,15 @@ public class MiniMap : MonoBehaviour {
 					if( radarObjects[i].playerControl.getCharacterState() == PlayerCharacterState.Dying )
 					{
 						radarObjects[i].icon.overrideSprite = playerDeadRadarSprite;
+						radarObjects[i].secondaryIcon.gameObject.SetActive( false );
 					}
 					else
 					{
 						radarObjects[i].icon.overrideSprite = null;
 					}
 				}
+				//Handle secondary image which may have expired
+				if( radarObjects[i].secondaryIcon.gameObject.activeSelf && ( Time.time - radarObjects[i].secondaryIconTimeDisplayStarted ) > radarObjects[i].secondaryIconTTL ) radarObjects[i].secondaryIcon.gameObject.SetActive( false );
 			}
 			else
 			{
@@ -184,7 +179,50 @@ public class MiniMap : MonoBehaviour {
 	[PunRPC]
 	void minimapRPC( string heroName, int card )
 	{
+		//Display a message under the minimap.
 		displayMessage( heroName, (CardName)card );
+	}
+
+	public void displaySecondaryIcon( int photonViewID, int card, float duration )
+	{
+		GetComponent<PhotonView>().RPC( "minimapSecondaryRPC", PhotonTargets.All, photonViewID, card, duration );
+	}
+
+	[PunRPC]
+	void minimapSecondaryRPC( int photonViewID, int card, float duration )
+	{
+		//Some cards have a secondary icon on the top-left of the player icon.
+		PlayerControl pc = getPlayerControl( photonViewID );
+		RadarObject ro = radarObjects.Find(radarObject => radarObject.playerControl == pc);
+		if( ro != null )
+		{
+			Sprite secondarySprite = CardManager.Instance.getCardByName( (CardName)card ).secondaryIcon;
+			if( secondarySprite != null )
+			{
+				ro.secondaryIcon.sprite = secondarySprite;
+				ro.secondaryIcon.gameObject.SetActive( true );
+				ro.secondaryIconTTL = duration;
+				ro.secondaryIconTimeDisplayStarted = Time.time;
+			}
+		}
+		else
+		{
+			Debug.LogError("MiniMap-minimapSecondaryRPC: radar object for " + pc.name + " was not found." );
+		}
+	}
+
+	PlayerControl getPlayerControl( int photonViewID )
+	{
+		PlayerControl playerControl = null;
+		for( int i = 0; i < PlayerRace.players.Count; i++ )
+		{
+			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
+			{
+				playerControl = PlayerRace.players[i].GetComponent<PlayerControl>();
+				break;
+			}
+		}
+		return playerControl;
 	}
 
 }

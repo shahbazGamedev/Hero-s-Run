@@ -40,12 +40,6 @@ public class StasisController : MonoBehaviour {
 				if (Physics.Raycast(new Vector3( transform.position.x, 10f, transform.position.z ), Vector3.down, out hit, 15.0F ))
 				{
 					transform.position = new Vector3( transform.position.x, hit.point.y + DISTANCE_ABOVE_GROUND, transform.position.z );
-					//Also adjust the camera height
-					if( GetComponent<PhotonView>().isMine && GetComponent<PlayerAI>() == null )
-					{
-						Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y + hit.point.y + DISTANCE_ABOVE_GROUND, Camera.main.transform.position.z);
-					}
-					affectedPlayerTransform.GetComponent<PlayerCamera>().positionCameraNow();
 				}
 				//Make the player a child of the Statis Sphere
 				affectedPlayerTransform.SetParent( transform );
@@ -63,7 +57,9 @@ public class StasisController : MonoBehaviour {
 				//The Stasis Sphere has a limited lifespan which depends on the level of the Card.
 				float spellDuration = (float) data[1];
 				StartCoroutine( destroyStasisSphere( spellDuration ) );
-				break;
+
+				//Display the Stasis secondary icon on the minimap
+				MiniMap.Instance.displaySecondaryIcon( affectedPlayerTransform.GetComponent<PhotonView>().viewID, (int) CardName.Stasis, spellDuration );
 			}
 		}
 		if( affectedPlayerTransform != null )

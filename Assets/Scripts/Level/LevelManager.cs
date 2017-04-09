@@ -35,6 +35,9 @@ public class LevelManager {
 	public int selectedBotHeroIndex; //index for botHeroCharacterList in HeroManager. Used when in the PlayAgainstEnemy mode.
 	public ChatManager.MatchInvitation matchInvitation;
 	public float distanceTravelled = 0; //See PlayerRace. This value is displayed in the HUD.
+	//for debugging
+	public float speedOverrideMultiplier = 1f;
+	public bool allowBotToPlayCards = true;
 
 	public static LevelManager Instance
 	{

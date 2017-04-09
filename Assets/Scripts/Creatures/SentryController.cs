@@ -57,6 +57,7 @@ public class SentryController : MonoBehaviour {
 		{
 			if( playersArray[i].GetPhotonView().viewID == viewIdOfOwner )
 			{
+				float spellDuration = (float) data[1];
 				aimRange = (float) data[2];
 				accuracy = (float) data[3];
 				myOwner = playersArray[i];
@@ -68,7 +69,9 @@ public class SentryController : MonoBehaviour {
 				myOwner.GetComponent<PlayerSpell>().registerSentry( this );
 				lineRenderer = GetComponent<LineRenderer>();
 				//The Sentry has a limited lifespan which depends on the level of the Card.
-				StartCoroutine( destroySentry( (float) data[1], DELAY_BEFORE_DESTROY_EFFECTS ) );
+				StartCoroutine( destroySentry( spellDuration, DELAY_BEFORE_DESTROY_EFFECTS ) );
+				//Display the Sentry secondary icon on the minimap
+				MiniMap.Instance.displaySecondaryIcon( myOwnerTransform.GetComponent<PhotonView>().viewID, (int) CardName.Sentry, spellDuration );
 				break;
 			}
 		}

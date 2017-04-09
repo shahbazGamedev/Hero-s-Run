@@ -301,6 +301,10 @@ public class PlayerAI : Photon.PunBehaviour {
 		{
 			bch.activateCard( CardName.Sprint );
 		}
+		else if ( Input.GetKeyDown (KeyCode.X ) )
+		{
+			bch.activateCard( CardName.Sentry );
+		}
 	}
 
 

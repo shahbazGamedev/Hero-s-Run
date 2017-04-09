@@ -20,8 +20,17 @@ public class PlayerInput : PunBehaviour {
 		//If we are not the owner of this component, disable it.
 		if( !this.photonView.isMine ) this.enabled = false;
 		playerControl = GetComponent<PlayerControl>();
+		calculateMinimumSwipeDistance();
 	}
 	
+	//Calculate the minimum swipe distance in pixels.
+	//Basically, the bigger the screen, the further you have to swipe.
+	void calculateMinimumSwipeDistance()
+	{
+        float screenDiagonalSize = Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height);
+        minSwipeDistancePixels = minSwipeDistance * screenDiagonalSize;
+	}
+
 	void Update()
 	{
 		#if UNITY_EDITOR
