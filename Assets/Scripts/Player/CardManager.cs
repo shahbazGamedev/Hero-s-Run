@@ -31,6 +31,7 @@ public enum CardName
 	Shrink = 102,
 	Glyph = 103,
 	Sentry = 104,
+	IceWall = 105,
 
 	//Epic
 	Lightning = 200,

@@ -131,6 +131,17 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardStasis component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+			case CardName.IceWall:
+				CardIceWall cardIceWall = GetComponent<CardIceWall>();
+				if( cardIceWall != null )
+				{
+					cardIceWall.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardIceWall component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -180,10 +191,12 @@ public class CardHandler : MonoBehaviour {
 				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) ) return true;
 			break;
 			//Firewall is effective whenever there is an opponent behind you and not too far
+			//IceWall is effective whenever there is an opponent behind you and not too far
+			case CardName.IceWall:
 			case CardName.Firewall:
 				if( isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
-					return GetComponent<CardFirewall>().isAllowed( caster.GetComponent<PhotonView>().viewID );
+					return GetComponent<Card>().isAllowed( caster.GetComponent<PhotonView>().viewID );
 				}
 			break;
 			//Glyph is effective whenever there is an opponent behind you and not too far

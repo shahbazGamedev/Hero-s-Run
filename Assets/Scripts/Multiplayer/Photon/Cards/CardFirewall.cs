@@ -9,7 +9,6 @@ using UnityEngine;
 public class CardFirewall : Card {
 
 	[SerializeField]  string prefabName;
-	Vector3 offset = new Vector3( 0, 0, 10f );
 
 	public void activateCard ( int photonViewId, int level )
 	{
@@ -24,7 +23,7 @@ public class CardFirewall : Card {
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
 		//Spawn a firewall a few meters in front of the player
-		Vector3 firewallPosition = playerTransform.TransformPoint( offset );
+		Vector3 firewallPosition = playerTransform.TransformPoint( spawnOffset );
 		Quaternion firewallRotation = playerTransform.rotation;
 
 		object[] data = new object[2];
@@ -39,34 +38,4 @@ public class CardFirewall : Card {
 	}
 	#endregion
 
-	public bool isAllowed( int photonViewID )
-	{
-		//Find out which player activated the card
-		Transform playerTransform = getPlayerTransform( photonViewID );
-
-		//Verify that the player is not spawning a firewall inside the finish line trigger
-		Vector3 firewallPosition = playerTransform.TransformPoint( offset );
-
-		GameObject boxColliderObject = GameObject.FindGameObjectWithTag("Finish Line");
-		//If the tile with the finish line is not active, boxColliderObject will be null, so check for that.
-		if( boxColliderObject != null )
-		{
-			BoxCollider boxCollider = boxColliderObject.GetComponent<BoxCollider>();
-			if( boxCollider.bounds.Contains( firewallPosition ) )
-			{
-				//Don't allow it
-				return false;
-			}
-			else
-			{
-				return true;
-			}
-		}
-		else
-		{
-			//If boxColliderObject is null, that means the tile with the finish line is not yet active and therefore, we are far from the finish line.
-			//In this case, return true.
-			return true;
-		}
-	}
 }

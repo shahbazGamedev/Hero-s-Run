@@ -8,6 +8,7 @@ public class Card : Photon.PunBehaviour {
 	[SerializeField] float  durationUpgradePerLevel = 1f;
 	[SerializeField] float  baseRange = 100f;
 	[SerializeField] float  rangeUpgradePerLevel = 10f;
+	protected Vector3 spawnOffset = new Vector3( 0, 0, 10f );
 
 	protected PlayerControl getPlayerControl( int photonViewID )
 	{
@@ -130,6 +131,37 @@ public class Card : Photon.PunBehaviour {
 			return true;
 		}
 		return false;
+	}
+
+	public bool isAllowed( int photonViewID )
+	{
+		//Find out which player activated the card
+		Transform playerTransform = getPlayerTransform( photonViewID );
+
+		//Verify that the player is not spawning the object inside the finish line trigger
+		Vector3 objectPosition = playerTransform.TransformPoint( spawnOffset );
+
+		GameObject boxColliderObject = GameObject.FindGameObjectWithTag("Finish Line");
+		//If the tile with the finish line is not active, boxColliderObject will be null, so check for that.
+		if( boxColliderObject != null )
+		{
+			BoxCollider boxCollider = boxColliderObject.GetComponent<BoxCollider>();
+			if( boxCollider.bounds.Contains( objectPosition ) )
+			{
+				//Don't allow it
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+		else
+		{
+			//If boxColliderObject is null, that means the tile with the finish line is not yet active and therefore, we are far from the finish line.
+			//In this case, return true.
+			return true;
+		}
 	}
 
 }
