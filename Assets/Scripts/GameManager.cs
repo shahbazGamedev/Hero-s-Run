@@ -26,21 +26,20 @@ public enum GameState {
 public enum GameScenes {	
 	
 	TitleScreen = 0,
-	CharacterSelection = 1,
-	WorldMap = 2,
-	Level = 3,
-	TreasureIsland = 4,
-	CharacterGallery = 5,
-	Journal = 6,
-	CircuitSelection = 7,
-	HeroSelection = 8,
-	Matchmaking = 9,
-	CareerProfile = 10,
-	MainMenu = 11,
-	PlayModes = 12,
-	Options = 13,
-	Training = 14,
-	Social = 15
+	WorldMap = 1,
+	Level = 2,
+	TreasureIsland = 3,
+	CharacterGallery = 4,
+	Journal = 5,
+	CircuitSelection = 6,
+	HeroSelection = 7,
+	Matchmaking = 8,
+	CareerProfile = 9,
+	MainMenu = 10,
+	PlayModes = 11,
+	Options = 12,
+	Training = 13,
+	Social = 14
 }
 
 public enum GameMode {

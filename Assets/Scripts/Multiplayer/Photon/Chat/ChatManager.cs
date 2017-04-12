@@ -65,7 +65,14 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		chatClient = new ChatClient(this);
 		chatClient.ChatRegion =  "EU";
 		string userName = PlayerStatsManager.Instance.getUserName();
-		chatClient.Connect(PhotonNetwork.PhotonServerSettings.ChatAppID, GameManager.Instance.getVersionNumber(), new ExitGames.Client.Photon.Chat.AuthenticationValues(userName));
+		if( string.IsNullOrEmpty( userName ) )
+		{
+			Debug.LogError("ChatManager-Unable to connect to chat because the player's user name is either null or empty.");
+		}
+		else
+		{
+			chatClient.Connect(PhotonNetwork.PhotonServerSettings.ChatAppID, GameManager.Instance.getVersionNumber(), new ExitGames.Client.Photon.Chat.AuthenticationValues(userName));
+		}
 	}
 	
 	public void OnConnected()

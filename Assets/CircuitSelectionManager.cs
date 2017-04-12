@@ -22,6 +22,7 @@ public class CircuitSelectionManager : MonoBehaviour {
 		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstEnemy || GameManager.Instance.getPlayMode() == PlayMode.PlayAlone )
 		{
 			//PvE is an offline mode. We will not connect. We will also set Photon to offline.
+			if( PhotonNetwork.connected ) PhotonNetwork.Disconnect();
 			PhotonNetwork.offlineMode = true;
 		}
 		else

@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class TipHandler : MonoBehaviour {
 
 	[Header("Game Tips")]
-	[SerializeField] Text tipTitle;
 	[SerializeField] Text tipDescription;
 	List<string> tipList = new List<string>();
 
@@ -18,11 +17,11 @@ public class TipHandler : MonoBehaviour {
 
 	void populateTipList()
 	{
-		string tip = "I like coffee especially in the morning.";
+		string tip = "You can plough through an ice wall with raging Bull.";
 		tipList.Add(tip);
-		tip = "I also like a cold beer on a hot summer day.";
+		tip = "A player hit with Statis will lose his Sentry bot if he has one.";
 		tipList.Add(tip);
-		tip = "But enjoy the most a good glass of red wine.";
+		tip = "You can't play cards while ziplining.";
 		tipList.Add(tip);
 	}
 
