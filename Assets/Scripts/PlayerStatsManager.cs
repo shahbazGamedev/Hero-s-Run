@@ -666,6 +666,11 @@ public class PlayerStatsManager {
 		return firstTimePlaying;
 	}
 
+	public void setFirstTimePlaying( bool value )
+	{
+		firstTimePlaying = value;
+	}
+
 	public void setSharedOnFacebook( bool value )
 	{
 		sharedOnFacebook = value;

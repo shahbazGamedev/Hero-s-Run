@@ -9,9 +9,11 @@ public class MainMenu : MonoBehaviour {
 	[Header("Main Menu")]
 	bool levelLoading = false;
 	[Header("Version Number")]
-	public Text versionNumberText;
+	[SerializeField]  Text versionNumberText;
 	[Header("New Player Icons Indicator")]
 	[SerializeField] GameObject newPlayerIconsIndicator;
+	[Header("User Name")]
+	[SerializeField] GameObject userNameCanvas;
 
 	// Use this for initialization
 	void Start ()
@@ -19,6 +21,13 @@ public class MainMenu : MonoBehaviour {
 		Handheld.StopActivityIndicator();
 		versionNumberText.text = GameManager.Instance.getVersionNumber();
 		updateNumberOfPlayerIcons();
+		//If this is a new user, display the user name panel.
+		//Entering a user name is mandatory.
+		if( PlayerStatsManager.Instance.isFirstTimePlaying() )
+		{
+			gameObject.SetActive( false ); //To increase legibility, hide the main menu while the user name panel is played.
+			userNameCanvas.SetActive(  true );
+		}
 	}
 
 	public void OnClickOpenPlayModes()
