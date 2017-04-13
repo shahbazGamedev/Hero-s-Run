@@ -149,7 +149,14 @@ public class FacebookManager
             //Login canceled by Player
 			facebookState = FacebookState.Canceled;
 		}
-		myCallback( facebookState );
+		if( myCallback != null )
+		{
+			myCallback( facebookState );
+		}
+		else
+		{
+			Debug.LogWarning("FacebookManager-LoginCallback: myCallback is null.");
+		}
 	}
 
 	private void CallFBLoginForPublish()

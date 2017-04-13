@@ -18,13 +18,13 @@ public class FacebookConnectionHandler : MonoBehaviour {
 	{
 		Handheld.StopActivityIndicator();
 
-		//connectButtonText.text = LocalizationManager.Instance.getText("MENU_CONNECT");
+		connectButtonText.text = LocalizationManager.Instance.getText("MENU_CONNECT");
 
 		//Connection status popup (connecting, connected, failure)
 		connectionOkayButtonText.text = LocalizationManager.Instance.getText("MENU_OK");
 
-		//If not already connected to Facebook, show the Connect button on the main menu to encourage player to login.
-		//connectButton.gameObject.SetActive( !FacebookManager.Instance.isLoggedIn() );
+		//If not already connected to Facebook, show the Connect button to encourage player to login.
+		connectButton.gameObject.SetActive( !FacebookManager.Instance.isLoggedIn() );
 
 	}
 

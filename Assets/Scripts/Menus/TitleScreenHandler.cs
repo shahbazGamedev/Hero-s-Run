@@ -48,7 +48,23 @@ public class TitleScreenHandler : MonoBehaviour {
 		//If the player agreed to use Facebook, auto-login for him
 		if( PlayerStatsManager.Instance.getUsesFacebook() && Application.internetReachability != NetworkReachability.NotReachable )
 		{
-			FacebookManager.Instance.CallFBInit( null );
+			FacebookManager.Instance.CallFBInit( updateState );
+		}
+	}
+
+	public void updateState( FacebookState newState )
+	{
+		if( newState == FacebookState.LoggedIn )
+		{
+			Debug.Log("The player is now logged in to Facebook.");
+		}
+		else if ( newState == FacebookState.Error )
+		{
+			Debug.LogWarning("An error occured while connecting to Facebook.");
+		}
+		else if ( newState == FacebookState.Canceled )
+		{
+			Debug.Log("The player has canceled is connection request to Facebook.");
 		}
 	}
 
