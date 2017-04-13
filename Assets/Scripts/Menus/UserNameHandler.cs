@@ -11,6 +11,7 @@ public class UserNameHandler : MonoBehaviour {
 	[SerializeField] Text confirmButtonText;
 	[Header("Main Menu")]
 	[SerializeField] GameObject mainMenuCanvas;
+	const int MINIMUM_USER_NAME_LENGTH = 4;
 
 	// Use this for initialization
 	void Awake ()
@@ -23,9 +24,19 @@ public class UserNameHandler : MonoBehaviour {
 	public void OnClickConfirm()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
+		userNameText.text = userNameText.text.Trim();
+		if( userNameText.text.Length < MINIMUM_USER_NAME_LENGTH )
+		{
+			userNameText.text = string.Empty;
+			userNamePlaceholderText.text = LocalizationManager.Instance.getText( "USER_NAME_NOT_LONG_ENOUGH" ).Replace("<MINIMUM_LENGTH>", MINIMUM_USER_NAME_LENGTH.ToString() );
+			return;
+		}
+
 		Debug.Log("User Name is : " + userNameText.text );
 		PlayerStatsManager.Instance.saveUserName( userNameText.text );
 		PlayerStatsManager.Instance.setFirstTimePlaying( false );
+		//Now that we have a user name, we can connect to chat.
+		ChatManager.Instance.ChatConnect();
 		gameObject.SetActive( false );
 		mainMenuCanvas.SetActive( true );
 	}

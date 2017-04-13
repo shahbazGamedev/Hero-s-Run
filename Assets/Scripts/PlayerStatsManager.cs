@@ -44,7 +44,7 @@ public class PlayerStatsManager {
 	//The index is the episode number. The value is the score for that episode (sum of coins collected and distance run). The initial values are 0.
 	int[] highScoreArray = new int[LevelData.NUMBER_OF_EPISODES];
 	float distanceTravelled = 0;
-	bool firstTimePlaying;
+	bool firstTimePlaying = true;
 	bool sharedOnFacebook = false;	//Has the player shared an image on Facebook?
 
 	bool showDebugInfoOnHUD = false; 	//Should we show the FPS, player speed, etc. on the HUD or not.
@@ -103,10 +103,11 @@ public class PlayerStatsManager {
 	bool hasInfiniteTreasureIslandKeys = false;
 
 	PowerUpType powerUpSelected = PowerUpType.MagicBoots;
-	//The avatar the player has chosen in the character selection screen.
+	//The avatar the player has chosen in the character selection screen. 
 	//The enum will be converted using toString. The available avatars in the resources/avatar folder must be named
 	//exactly like their enum counterpart.
-	Avatar avatar = Avatar.None;
+	//NOTE: There is no more character selection screen. Default to Hero.
+	Avatar avatar = Avatar.Hero;
 
 	string userName;
 
@@ -1082,7 +1083,14 @@ public class PlayerStatsManager {
 		{
 			PlayerPrefs.SetString( "Finished Game", "false" );
 		}
-		PlayerPrefs.SetString( "First Time Playing", "false" );
+		if( firstTimePlaying )
+		{
+			PlayerPrefs.SetString( "First Time Playing", "true" );
+		}
+		else
+		{
+			PlayerPrefs.SetString( "First Time Playing", "false" );
+		}
 		if( showDebugInfoOnHUD )
 		{
 			PlayerPrefs.SetString( "showDebugInfoOnHUD", "true" );

@@ -53,7 +53,9 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 			return;
 		}
 		Application.runInBackground = true; // this must run in background or it will drop connection if not focussed.
-		ChatConnect();
+		//If this is a new player, don't try to connect to chat yet as we don't have a user name.
+		//We will connect to chat when a user name has been entered.
+		if( !PlayerStatsManager.Instance.isFirstTimePlaying() ) ChatConnect();
 
 		invitationReceivedPanel.SetActive( false );
 		inviteFriendPanel.SetActive( false );		
