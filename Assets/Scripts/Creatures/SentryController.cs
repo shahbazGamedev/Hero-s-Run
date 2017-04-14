@@ -41,7 +41,10 @@ public class SentryController : MonoBehaviour {
 	float timeOfLastShot;
 	[Header("Card Parameters")]
 	float aimRange = 40f;
-	float accuracy = 0.01f;
+	float accuracy = 0.005f;
+
+	int playerLayer = 8;
+	int destroyableObjectLayer = 17;
 
 	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
@@ -113,7 +116,10 @@ public class SentryController : MonoBehaviour {
 			if( nearestTarget != null && Vector3.Distance( transform.position, nearestTarget.position ) > aimRange ) nearestTarget = null;
 
 			//If the nearest target is dead or idle, reset it.
-			if( nearestTarget != null && ( nearestTarget.GetComponent<PlayerControl>().deathType != DeathType.Alive || nearestTarget.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) ) nearestTarget = null;
+			if( nearestTarget != null && nearestTarget.CompareTag("Player") && ( nearestTarget.GetComponent<PlayerControl>().deathType != DeathType.Alive || nearestTarget.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) ) nearestTarget = null;
+
+			//Search first for destroyable objects like ice walls
+			detectDestructableObject();
 
 			//Ignore if we already have a target
 			if( nearestTarget != null ) return;
@@ -146,17 +152,59 @@ public class SentryController : MonoBehaviour {
 		}
 	}
 
+	int getMask()
+	{
+		int mask = 1 << destroyableObjectLayer;
+		return mask;
+	}
+
+	void detectDestructableObject()
+	{
+		Collider[] hitColliders = Physics.OverlapSphere( transform.position, aimRange, getMask() );
+		for( int i =0; i < hitColliders.Length; i++ )
+		{
+			IceWall iceWall = hitColliders[i].GetComponent<IceWall>();
+			//Verify that it is a ice wall
+			if( iceWall != null )
+			{
+				//Verify that it was not cast by the player
+				if( iceWall.casterName != myOwner.name )
+				{
+					//Make sure the Ice Wall state is Functioning
+					if( iceWall.getIceWallState() == IceWallState.Functioning )
+					{
+						nearestTarget = iceWall.transform;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	Quaternion getDesiredRotation()
+	{
+		float heightAdjustment = 0;
+		if( nearestTarget.CompareTag("Player") )
+		{
+			//The transform position of the player is at his feet. Let's aim at his torso.
+			heightAdjustment = 1f;
+		}
+		else
+		{
+			//For destroyable objects, aim a bit above the center of the object
+			heightAdjustment = nearestTarget.localScale.y * 0.01f;
+		}
+		Vector3 targetCenter = new Vector3( nearestTarget.position.x, nearestTarget.position.y + heightAdjustment, nearestTarget.position.z );
+		Vector3 relativePos = targetCenter - transform.position;
+		return Quaternion.LookRotation( relativePos ); 
+	}
+
 	void lookAtTarget()
 	{
 		if( nearestTarget != null )
 		{
 			//The sentry has a target. Turn towards it at aimSpeed.
-			//Note that the transform position of the player is at his feet. Let's aim at his torso.
-			Vector3 playerTorso = new Vector3( nearestTarget.position.x, nearestTarget.position.y + 1f, nearestTarget.position.z );
-			Vector3 relativePos = playerTorso - transform.position;
-			Quaternion desiredRotation = Quaternion.LookRotation( relativePos ); 
-			desiredRotation.z = 0f;
-			transform.rotation = Quaternion.Lerp( transform.rotation, desiredRotation, Time.deltaTime * aimSpeed );
+			transform.rotation = Quaternion.Lerp( transform.rotation, getDesiredRotation(), Time.deltaTime * aimSpeed );
 			//Verify if we can hit the nearest target
 			aim();
 		}
@@ -189,6 +237,8 @@ public class SentryController : MonoBehaviour {
 		if( Time.time - timeOfLastShot > weaponCoolDown )
 		{
 			timeOfLastShot = Time.time;
+
+			transform.rotation = getDesiredRotation();
 
 			//The sentry is not perfectly accurate when shooting.
 			Vector3 direction = transform.forward;

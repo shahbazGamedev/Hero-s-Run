@@ -76,6 +76,19 @@ public class MultiplayerProjectile : MonoBehaviour {
 				collision.gameObject.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.FallForward );
 			}
 		}
+		else
+		{
+			//Can we destroy it?
+			int destroyableObjectLayer = 17;
+			if( collision.gameObject.layer == destroyableObjectLayer )
+			{
+				//Yes!
+				Debug.Log("Sentry Projectile will destroy " + collision.gameObject.name );
+				//Tell the Sentry that it was succesfull in destroying a target.
+				if( sentryController != null ) sentryController.targetHit();
+				collision.gameObject.GetComponent<IceWall>().destroyIceWallNow();
+			}
+		}
   	}
 
 	/// <summary>
