@@ -5,7 +5,7 @@ using System.Collections;
 public class IceWall : Photon.PunBehaviour {
 	
 	[SerializeField] Sprite  minimapIcon;
-	public string casterName = string.Empty; //The caster is immune to the ice wall.
+	string casterName = string.Empty; //The caster can run through the ice wall like it did not exist.
 
 	void OnTriggerEnter(Collider other)
 	{
@@ -17,43 +17,38 @@ public class IceWall : Photon.PunBehaviour {
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
+		//Read the data
 		object[] data = this.gameObject.GetPhotonView ().instantiationData;
+
+		//Remember who the caster is
 		casterName = data[0].ToString();
+
+		//Destroy the ice wall when the spell expires
 		float delayBeforeSpellExpires = (float) data[1];
 		GameObject.Destroy( gameObject, delayBeforeSpellExpires );
-		Debug.Log( "IceWall-OnPhotonInstantiate: name of caster: " + casterName + " delay before spell expires: " + delayBeforeSpellExpires );
+
+		//Display the ice wall icon on the minimap
 		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
-		float objectHalfHeight = transform.localScale.y * 0.5f;
-		//Determine the ground height
+
+		//Position the ice wall flush with the ground and try to center it in the middle of the road if possible.
 		RaycastHit hit;
-		gameObject.layer = 2; //Ignore Raycast
-		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + transform.localScale.y, transform.position.z ), Vector3.down, out hit, 2 * transform.localScale.y ))
+		gameObject.layer = 2; //Set the layer to Ignore Raycast so the raycast doesn't collide with the object itself.
+		if (Physics.Raycast( transform.position, Vector3.down, out hit, 10 * transform.localScale.y ))
 		{
-			print(" OnPhotonInstantiate " + hit.collider.name + " " + hit.point.y + " " + objectHalfHeight );
-			//Try to center the object in the middle of the road
 			if(  hit.collider.transform.parent.GetComponent<SegmentInfo>() != null )
 			{
 				Transform tile = hit.collider.transform.parent;
-				float tileRotationY = Mathf.Floor ( tile.eulerAngles.y );
-				print(" OnPhotonInstantiate 2 tile " + tile.name + "  tileRotationY " + tileRotationY );
 				transform.SetParent( tile );
-				if( tileRotationY == 0 )
-				{
-					transform.localPosition = new Vector3( 0, hit.point.y + objectHalfHeight, transform.localPosition.z );
-				}
-				else if( tileRotationY == 90f || tileRotationY == -270f || tileRotationY == -90f || tileRotationY == 270f )
-				{
-					transform.localPosition = new Vector3( transform.localPosition.x, hit.point.y + objectHalfHeight, 0 );
-				}
+				//Center the object in the middle of the road
+				transform.localPosition = new Vector3( 0, 0, transform.localPosition.z );
 				transform.SetParent( null );
 			}
-			else
-			{
-				transform.position = new Vector3( transform.position.x, hit.point.y + objectHalfHeight, transform.position.z );
-			}
+			//Position it flush with the ground
+			float objectHalfHeight = transform.localScale.y * 0.5f;
+			transform.position = new Vector3( transform.position.x, hit.point.y + objectHalfHeight, transform.position.z );
 		}
-		gameObject.layer = 0; //Default
-
+		//Now that our raycast is finished, reset the object's layer to Default.
+		gameObject.layer = 0;
 	}
 
 

@@ -23,7 +23,9 @@ public class TipHandler : MonoBehaviour {
 		tipList.Add(tip);
 		tip = "You can't play cards while ziplining.";
 		tipList.Add(tip);
-	}
+		tip = "You can invite a friend to race if you know their user name.";
+		tipList.Add(tip);
+	} 
 
 	void displayRandomTip ()
 	{

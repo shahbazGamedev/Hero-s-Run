@@ -109,22 +109,11 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.N ) )
 		{
-			//Create sentry
-			Vector3 sentryOffsetToPlayer = new Vector3( 0.8f, 2.3f, 0 );
-			Vector3 sentrySpawnPosition = transform.TransformPoint( sentryOffsetToPlayer );
-
-			object[] data = new object[4];
-			data[0] = this.photonView.viewID;
-
-			//Level related parameters
-			float duration = 15f;
-			float aimRange = 40f;
-			float accuracy = 0.008f;
-			data[1] = duration;
-			data[2] = aimRange;
-			data[3] = accuracy;
-
-			PhotonNetwork.InstantiateSceneObject( "sentry", sentrySpawnPosition, transform.rotation, 0, data );
+			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Sentry, PlayerStatsManager.Instance.getUserName(), 4 );
+		}
+		else if ( Input.GetKeyDown (KeyCode.O ) )
+		{
+			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.IceWall, PlayerStatsManager.Instance.getUserName(), 4 );
 		}
 		else if ( Input.GetKeyDown (KeyCode.P ) )
 		{
