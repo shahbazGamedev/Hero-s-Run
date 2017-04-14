@@ -5,79 +5,75 @@ using UnityEngine.UI;
 public class FacebookConnectionHandler : MonoBehaviour {
 
 	[Header("Facebook Connection")]
-	public Button connectButton;
-	public Text connectButtonText;
-
-	[Header("Connection Status Popup")]
-	public GameObject connectionPopup;
-	public Text connectionTitleText;
-	public Text connectionContentText;
-	public Text connectionOkayButtonText;
+	[SerializeField] Button connectButton;
+	[SerializeField] Text connectButtonText;
+	[SerializeField] Image connectionStatusImage;
+	[SerializeField] Sprite connectionSuccessSprite;
+	[SerializeField] Sprite connectionFailureSprite;
+	const float DELAY_BEFORE_HIDING_STATUS = 5f;
 
 	void Awake ()
 	{
 		Handheld.StopActivityIndicator();
-
-		connectButtonText.text = LocalizationManager.Instance.getText("MENU_CONNECT");
-
-		//Connection status popup (connecting, connected, failure)
-		connectionOkayButtonText.text = LocalizationManager.Instance.getText("MENU_OK");
-
-		//If not already connected to Facebook, show the Connect button to encourage player to login.
-		connectButton.gameObject.SetActive( !FacebookManager.Instance.isLoggedIn() );
-
+		connectionStatusImage.gameObject.SetActive( false );
+		if( FacebookManager.Instance.isLoggedIn() )
+		{
+			connectButtonText.text = LocalizationManager.Instance.getText("MENU_CONNECTED");
+			connectButton.interactable = false;
+		}
+		else
+		{
+			connectButtonText.text = LocalizationManager.Instance.getText("MENU_CONNECT");
+			connectButton.interactable = true;
+		}
 	}
 
 	public void OnClickLoginToFacebook()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
-		//Hide Connect buttons while showing the popup
-		connectButton.gameObject.SetActive( false );
-
-		connectionPopup.gameObject.SetActive( true );
+		connectButton.interactable = false;
+		connectionStatusImage.gameObject.SetActive( false );
+		CancelInvoke();
 		if( Application.internetReachability != NetworkReachability.NotReachable )
 		{
 			PlayerStatsManager.Instance.setUsesFacebook( true );
 			PlayerStatsManager.Instance.savePlayerStats();
-			connectionTitleText.text = LocalizationManager.Instance.getText("MENU_CONNECTING_TITLE");
-			connectionContentText.text = LocalizationManager.Instance.getText("MENU_CONNECTING_TEXT");
 			FacebookManager.Instance.CallFBInit( updateState );
 		}
 		else
 		{
-			connectionTitleText.text = LocalizationManager.Instance.getText("MENU_CONNECTION_FAILED_TITLE");
-			connectionContentText.text = LocalizationManager.Instance.getText("MENU_CONNECTION_FAILED_TEXT");
+			//To do: display a popup
+			Debug.LogWarning("OnClickLoginToFacebook-you are not connected to the Internet.");
 		}
-	}
-
-	public void OnClickCloseConnectionPopup()
-	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		connectionPopup.gameObject.SetActive( false );
-		//Show Connect buttons since we are dismissing the popup
-		//If not already connected to Facebook, show the Connect button on the main menu to encourage player to login.
-		connectButton.gameObject.SetActive( !FacebookManager.Instance.isLoggedIn() );
 	}
 
 	public void updateState( FacebookState newState )
 	{
 		if( newState == FacebookState.LoggedIn )
 		{
-			connectionTitleText.text = LocalizationManager.Instance.getText("MENU_SUCCESS_TITLE");
-			connectionContentText.text = LocalizationManager.Instance.getText("MENU_SUCCESS_TEXT");
-			//Hide the Connect button since the player successfully connected
-			connectButton.gameObject.SetActive( false );
+			connectionStatusImage.sprite = connectionSuccessSprite;
+			connectionStatusImage.gameObject.SetActive( true );
+			connectButtonText.text = LocalizationManager.Instance.getText("MENU_CONNECTED");
+			Invoke("hideConnectionStatusImage", DELAY_BEFORE_HIDING_STATUS );
 		}
 		else if ( newState == FacebookState.Error )
 		{
-			connectionTitleText.text = LocalizationManager.Instance.getText("MENU_FB_ERROR_TITLE");
-			connectionContentText.text = LocalizationManager.Instance.getText("MENU_FB_ERROR_TEXT");
+			connectionStatusImage.sprite = connectionFailureSprite;
+			connectionStatusImage.gameObject.SetActive( true );
+			Invoke("hideConnectionStatusImage", DELAY_BEFORE_HIDING_STATUS );
+			connectButton.interactable = true;
 		}
 		else if ( newState == FacebookState.Canceled )
 		{
-			connectionTitleText.text = LocalizationManager.Instance.getText("MENU_CONNECTION_CANCELED_TITLE");
-			connectionContentText.text = LocalizationManager.Instance.getText("MENU_CONNECTION_CANCELED_TEXT");
+			connectionStatusImage.sprite = connectionFailureSprite;
+			connectionStatusImage.gameObject.SetActive( true );
+			Invoke("hideConnectionStatusImage", DELAY_BEFORE_HIDING_STATUS );
+			connectButton.interactable = true;
 		}
 	}
-	
+
+	void hideConnectionStatusImage()
+	{
+		connectionStatusImage.gameObject.SetActive( false );
+	}
 }

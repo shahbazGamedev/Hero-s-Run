@@ -79,10 +79,20 @@ public class FacebookManager
 		}
 	} 
 
-	//Called by TitleScreenHandler
 	public void CallFBInit(Action<FacebookState> updateState)
     {
-        FB.Init(OnInitComplete, OnHideUnity);
+		if( FB.IsInitialized )
+		{
+			if( !FB.IsLoggedIn )
+			{
+				CallFBLogin();
+			}
+		}
+		else
+		{
+			//Note: OnInitComplete will take care of calling CallFBLogin()
+			FB.Init(OnInitComplete, OnHideUnity);
+		}
 		myCallback = updateState;
 	}
 
