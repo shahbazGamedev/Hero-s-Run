@@ -100,9 +100,13 @@ public class SentryController : CardSpawnedObject {
 
 	void detectNearestTarget()
 	{
-		if( spawnedObjectState == SpawnedObjectState.Functioning )
+		//Only the master client can shoot at targets
+		if( PhotonNetwork.isMasterClient )
 		{
-			nearestTarget = getNearestTargetWithinRange( aimRange );
+			if( spawnedObjectState == SpawnedObjectState.Functioning )
+			{
+				nearestTarget = getNearestTargetWithinRange( aimRange );
+			}
 		}
 	}
 
