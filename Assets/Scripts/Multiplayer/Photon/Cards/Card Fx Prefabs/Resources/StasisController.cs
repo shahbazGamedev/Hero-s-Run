@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// See CardStasis for details.
 /// </summary>
-public class StasisController : MonoBehaviour {
+public class StasisController : CardSpawnedObject {
 
 	Transform affectedPlayerTransform;
 	PlayerControl affectedPlayerControl;

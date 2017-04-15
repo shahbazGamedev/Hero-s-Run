@@ -158,7 +158,7 @@ public class PlayerSpell : PunBehaviour {
 	{
 		if( sentryController != null )
 		{
-			sentryController.destroySentryNow();
+			sentryController.destroySpawnedObjectNow();
 			sentryController = null;
 		}
 	}

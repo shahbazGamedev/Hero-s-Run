@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class LightningSpell : Photon.PunBehaviour {
+public class LightningSpell : CardSpawnedObject {
 	
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{

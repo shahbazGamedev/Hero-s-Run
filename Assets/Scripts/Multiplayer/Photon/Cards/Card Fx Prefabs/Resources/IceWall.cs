@@ -2,25 +2,8 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public enum IceWallState {
+public class IceWall : CardSpawnedObject {
 	
-		Initialising = 1,
-		Functioning = 2,
-		BeingDestroyed = 3
-	}
-
-public class IceWall : Photon.PunBehaviour {
-	
-	[SerializeField] Sprite  minimapIcon;
-	public string casterName = string.Empty;
-	[Header("Materials")]
-	[SerializeField] Material onCreate;
-	[SerializeField] Material onDestroy;
-	[SerializeField] Material onFunctioning;
-	IceWallState iceWallState = IceWallState.Initialising;
-	const float DELAY_BEFORE_DESTROY_EFFECTS = 1.3f;
-
-
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
 		//Read the data
@@ -33,7 +16,7 @@ public class IceWall : Photon.PunBehaviour {
 
 		//Destroy the ice wall when the spell expires
 		float spellDuration = (float) data[1];
-		StartCoroutine( destroyIceWall( spellDuration, DELAY_BEFORE_DESTROY_EFFECTS ) );
+		StartCoroutine( destroySpawnedObject( spellDuration, DELAY_BEFORE_DESTROY_EFFECTS ) );
 
 		//Display the ice wall icon on the minimap
 		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
@@ -59,35 +42,26 @@ public class IceWall : Photon.PunBehaviour {
 		gameObject.layer = 17;
 		StartCoroutine( changeMaterialOnCreate( 1.1f ) );
 	}
+
 	IEnumerator changeMaterialOnCreate( float delayBeforeMaterialChange )
 	{
 		yield return new WaitForSeconds(delayBeforeMaterialChange);
 		GetComponent<Renderer>().material = onFunctioning;
-		setIceWallState(IceWallState.Functioning);
+		setSpawnedObjectState(SpawnedObjectState.Functioning);
 		GetComponent<BoxCollider>().isTrigger = false;
 	}
 
-	void setIceWallState( IceWallState newState )
+	public void destroySpawnedObjectNow()
 	{
-		iceWallState = newState;
+		StartCoroutine( destroySpawnedObject( 0, DELAY_BEFORE_DESTROY_EFFECTS ) );
 	}
 
-	public IceWallState getIceWallState()
-	{
-		return iceWallState;
-	}
-
-	public void destroyIceWallNow()
-	{
-		StartCoroutine( destroyIceWall( 0, DELAY_BEFORE_DESTROY_EFFECTS ) );
-	}
-
-	IEnumerator destroyIceWall( float delayBeforeSentryExpires, float delayBeforeDestroyEffects )
+	IEnumerator destroySpawnedObject( float delayBeforeSentryExpires, float delayBeforeDestroyEffects )
 	{
 		yield return new WaitForSeconds(delayBeforeSentryExpires);
 		GetComponent<BoxCollider>().isTrigger = true;
 
-		setIceWallState(IceWallState.BeingDestroyed);
+		setSpawnedObjectState(SpawnedObjectState.BeingDestroyed);
 		StopCoroutine( "changeMaterialOnCreate" );
 		GetComponent<Renderer>().material = onDestroy;
 		//playSoundEffect( Emotion.Sad, true );

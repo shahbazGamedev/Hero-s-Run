@@ -11,12 +11,25 @@ public enum SpawnedObjectState
 
 public class CardSpawnedObject : MonoBehaviour {
 
-	protected SpawnedObjectState spawnedObjectState = SpawnedObjectState.Initialising;
-	protected string casterName;
-	const int playerLayer = 8;
-	const int deviceLayer = 16;
-	const int destructibleLayer = 17;
+	[Header("Minimap")]
+	public Sprite  minimapIcon;
+
+	[Header("Materials")]
+	public Material onCreate;
+	public Material onDestroy;
+	public Material onFunctioning;
+
+	public SpawnedObjectState spawnedObjectState = SpawnedObjectState.Initialising;
+
+	public string casterName;
+
+	protected const int ignoreRaycastLayer = 2;
+	protected const int playerLayer = 8;
+	protected const int deviceLayer = 16;
+	protected const int destructibleLayer = 17;
 	int defaultMask;
+
+	protected const float DELAY_BEFORE_DESTROY_EFFECTS = 1.3f;
 
 	// Use this for initialization
 	void Start ()
@@ -26,7 +39,7 @@ public class CardSpawnedObject : MonoBehaviour {
 
 	void initialiseMask()
 	{
-		int defaultMask = 1 << playerLayer;
+		defaultMask = 1 << playerLayer;
 		defaultMask |= 1 << deviceLayer;
 		defaultMask |= 1 << destructibleLayer;
 	}
@@ -95,7 +108,7 @@ public class CardSpawnedObject : MonoBehaviour {
 				valid = pc.deathType == DeathType.Alive;
  				valid = valid && pc.getCharacterState() != PlayerCharacterState.Idle;
 				valid = valid && casterName != potentialTarget.name;
-               break;
+				break;
 	                
 	        case deviceLayer:
 				//A device is a valid target if:
@@ -113,6 +126,7 @@ public class CardSpawnedObject : MonoBehaviour {
 				valid = valid && casterName != cso.getCasterName();
                 break;
 		}
+		//if( valid ) Debug.Log("isTargetValid " + potentialTarget.name );
 		return valid;
 	}
 

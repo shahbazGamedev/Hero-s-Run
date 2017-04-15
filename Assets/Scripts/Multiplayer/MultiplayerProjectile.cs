@@ -86,7 +86,7 @@ public class MultiplayerProjectile : MonoBehaviour {
 				Debug.Log("Sentry Projectile will destroy " + collision.gameObject.name );
 				//Tell the Sentry that it was succesfull in destroying a target.
 				if( sentryController != null ) sentryController.targetHit();
-				collision.gameObject.GetComponent<IceWall>().destroyIceWallNow();
+				collision.gameObject.GetComponent<IceWall>().destroySpawnedObjectNow();
 			}
 		}
   	}

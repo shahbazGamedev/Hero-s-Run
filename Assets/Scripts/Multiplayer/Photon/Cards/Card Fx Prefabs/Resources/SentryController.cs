@@ -9,42 +9,32 @@ public enum Emotion {
 	Victory = 3
 }
 
-public class SentryController : MonoBehaviour {
-
-	enum SentryState {
-	
-		Initialising = 1,
-		Functioning = 2,
-		BeingDestroyed = 3
-	}
+public class SentryController : CardSpawnedObject {
 
 	[Header("Sentry")]
+
 	[Header("Sound Effects")]
 	[SerializeField] AudioSource audioSource;
 	[SerializeField] List<SentrySoundData> sentrySoundList = new List<SentrySoundData>();
-	[Header("Materials")]
-	[SerializeField] Material onCreate;
-	[SerializeField] Material onDestroy;
-	[SerializeField] Material onFunctioning;
+
 	[Header("Particle Systems")]
 	[SerializeField] ParticleSystem onDestroyFx;
 	const float DELAY_BEFORE_DESTROY_EFFECTS = 1.3f;
+
+	//My owner (i.e. the player who created this Sentry)
 	private GameObject myOwner;
 	private Transform myOwnerTransform;
 	private PlayerRace myOwnerPlayerRace;
-	private SentryState sentryState = SentryState.Initialising;
-	private LineRenderer lineRenderer; //The line renderer is used for debuging
-	[Header("Target")]
-	float aimSpeed = 7.6f;
+
+	//Target
 	Transform nearestTarget = null;
+
+	//Shooting related
+	float aimSpeed = 7.6f;
 	float weaponCoolDown = 3f;
 	float timeOfLastShot;
-	[Header("Card Parameters")]
 	float aimRange = 40f;
 	float accuracy = 0.005f;
-
-	int playerLayer = 8;
-	int destroyableObjectLayer = 17;
 
 	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
@@ -64,15 +54,15 @@ public class SentryController : MonoBehaviour {
 				aimRange = (float) data[2];
 				accuracy = (float) data[3];
 				myOwner = playersArray[i];
+				casterName = myOwner.name;
 				myOwnerTransform = myOwner.transform;
 				myOwnerPlayerRace = myOwner.GetComponent<PlayerRace>();
 				transform.SetParent( myOwnerTransform );
 				playSoundEffect( Emotion.Happy );
 				StartCoroutine( changeMaterialOnCreate( 2f ) );
 				myOwner.GetComponent<PlayerSpell>().registerSentry( this );
-				lineRenderer = GetComponent<LineRenderer>();
 				//The Sentry has a limited lifespan which depends on the level of the Card.
-				StartCoroutine( destroySentry( spellDuration, DELAY_BEFORE_DESTROY_EFFECTS ) );
+				StartCoroutine( destroySpawnedObject( spellDuration, DELAY_BEFORE_DESTROY_EFFECTS ) );
 				//Display the Sentry secondary icon on the minimap
 				MiniMap.Instance.displaySecondaryIcon( myOwnerTransform.GetComponent<PhotonView>().viewID, (int) CardName.Sentry, spellDuration );
 				break;
@@ -92,7 +82,7 @@ public class SentryController : MonoBehaviour {
 	{
 		yield return new WaitForSeconds(delayBeforeMaterialChange);
 		GetComponent<Renderer>().material = onFunctioning;
-		setSentryState(SentryState.Functioning);
+		setSpawnedObjectState( SpawnedObjectState.Functioning );
 	}
 	#endregion
 
@@ -110,74 +100,9 @@ public class SentryController : MonoBehaviour {
 
 	void detectNearestTarget()
 	{
-		if( sentryState == SentryState.Functioning )
+		if( spawnedObjectState == SpawnedObjectState.Functioning )
 		{
-			//If the nearest target is no longer within spell range, reset it.
-			if( nearestTarget != null && Vector3.Distance( transform.position, nearestTarget.position ) > aimRange ) nearestTarget = null;
-
-			//If the nearest target is dead or idle, reset it.
-			if( nearestTarget != null && nearestTarget.CompareTag("Player") && ( nearestTarget.GetComponent<PlayerControl>().deathType != DeathType.Alive || nearestTarget.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) ) nearestTarget = null;
-
-			//Search first for destroyable objects like ice walls
-			detectDestructableObject();
-
-			//Ignore if we already have a target
-			if( nearestTarget != null ) return;
-	
-			float nearestDistance = 100000;
-			//Keep nearest target only
-			for( int i =0; i < PlayerRace.players.Count; i++ )
-			{
-				//Ignore the sentry owner
-				if( PlayerRace.players[i] == myOwnerPlayerRace ) continue;
-	
-				//Calculate the distance to the other player
-				float distanceToTarget = Vector3.Distance( transform.position, PlayerRace.players[i].transform.position );
-	
-				//Is this player within aiming range?
-				if( distanceToTarget > aimRange ) continue;
-	
-				//Is the player dead or Idle? If so, ignore.
-				if( PlayerRace.players[i].GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
-	
-				//Is it the closest player?
-				if( distanceToTarget < nearestDistance )
-				{
-					nearestTarget = PlayerRace.players[i].transform;
-					print("Sentry-The nearest target is " + nearestTarget.name );
-					nearestDistance = distanceToTarget;
-					lineRenderer.enabled = false;
-				}
-			}
-		}
-	}
-
-	int getMask()
-	{
-		int mask = 1 << destroyableObjectLayer;
-		return mask;
-	}
-
-	void detectDestructableObject()
-	{
-		Collider[] hitColliders = Physics.OverlapSphere( transform.position, aimRange, getMask() );
-		for( int i =0; i < hitColliders.Length; i++ )
-		{
-			IceWall iceWall = hitColliders[i].GetComponent<IceWall>();
-			//Verify that it is a ice wall
-			if( iceWall != null )
-			{
-				//Verify that it was not cast by the player
-				if( iceWall.casterName != myOwner.name )
-				{
-					//Make sure the Ice Wall state is Functioning
-					if( iceWall.getIceWallState() == IceWallState.Functioning )
-					{
-						nearestTarget = iceWall.transform;
-						break;
-					}
-				}
-			}
+			nearestTarget = getNearestTargetWithinRange( aimRange );
 		}
 	}
 
@@ -191,7 +116,7 @@ public class SentryController : MonoBehaviour {
 		}
 		else
 		{
-			//For destroyable objects, aim a bit above the center of the object
+			//For other objects, aim a bit above the center of the object
 			heightAdjustment = nearestTarget.localScale.y * 0.01f;
 		}
 		Vector3 targetCenter = new Vector3( nearestTarget.position.x, nearestTarget.position.y + heightAdjustment, nearestTarget.position.z );
@@ -222,14 +147,15 @@ public class SentryController : MonoBehaviour {
 	{
 		//Verify if we can hit the nearest target
 		RaycastHit hit;
+		gameObject.layer = ignoreRaycastLayer;
 		if (Physics.Raycast(transform.position, transform.forward, out hit, aimRange ))
 		{
-			lineRenderer.SetPosition(1, new Vector3( 0, 0, aimRange ) );
 			if( hit.collider.transform == nearestTarget )
 			{
 				shoot();
 			}
 		}
+		gameObject.layer = destructibleLayer;
 	}
 
 	void shoot()
@@ -255,21 +181,16 @@ public class SentryController : MonoBehaviour {
 	}
 	#endregion
 
-	void setSentryState( SentryState newState )
+	public void destroySpawnedObjectNow()
 	{
-		sentryState = newState;
+		StartCoroutine( destroySpawnedObject( 0, DELAY_BEFORE_DESTROY_EFFECTS ) );
 	}
 
-	public void destroySentryNow()
-	{
-		StartCoroutine( destroySentry( 0, DELAY_BEFORE_DESTROY_EFFECTS ) );
-	}
-
-	IEnumerator destroySentry( float delayBeforeSentryExpires, float delayBeforeDestroyEffects )
+	IEnumerator destroySpawnedObject( float delayBeforeSentryExpires, float delayBeforeDestroyEffects )
 	{
 		yield return new WaitForSeconds(delayBeforeSentryExpires);
 
-		setSentryState(SentryState.BeingDestroyed);
+		setSpawnedObjectState(SpawnedObjectState.BeingDestroyed);
 		nearestTarget = null;
 		StopCoroutine( "changeMaterialOnCreate" );
 		GetComponent<Renderer>().material = onDestroy;
