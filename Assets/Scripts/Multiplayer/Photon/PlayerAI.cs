@@ -225,11 +225,11 @@ public class PlayerAI : Photon.PunBehaviour {
 				playerInput.sideSwipe( true );
 			}
 		}
-		else if( other.gameObject.CompareTag( "AttachZiplineTrigger" ) )
+		else if( other.CompareTag( "AttachZiplineTrigger" ) )
 		{
 			if( playerControl.getCharacterState() != PlayerCharacterState.Ziplining ) playerInput.attachToZipline();
 		}
-		else if( other.gameObject.CompareTag( "MoveToCenterLane" ) )
+		else if( other.CompareTag( "MoveToCenterLane" ) )
 		{
 			moveToCenterLane();
 		}
