@@ -23,13 +23,8 @@ public class Glyph : CardSpawnedObject {
 
 		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
 
-		//Calculate the ground height
-		RaycastHit hit;
-		if (Physics.Raycast(new Vector3( transform.position.x, transform.position.y + 5f, transform.position.z ), Vector3.down, out hit, 8.0F ))
-		{
-			transform.position = new Vector3( transform.position.x, hit.point.y + 0.03f, transform.position.z);
-		}
-		gameObject.layer = 0; //remove the ignoreRaycast so the bot can detect it
+		//Position the glyph flush with the ground and try to center it in the middle of the road if possible.
+		positionSpawnedObject( 0.05f );
 	}
 
 }

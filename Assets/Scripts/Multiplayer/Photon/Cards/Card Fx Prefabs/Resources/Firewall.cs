@@ -22,6 +22,10 @@ public class Firewall : CardSpawnedObject {
 		GameObject.Destroy( gameObject, delayBeforeSpellExpires );
 
 		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
+
+		//Position the fire wall flush with the ground and try to center it in the middle of the road if possible.
+		positionSpawnedObject();
+
 	}
 
 }

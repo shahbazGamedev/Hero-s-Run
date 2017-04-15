@@ -64,6 +64,31 @@ public class CardSpawnedObject : MonoBehaviour {
 		return casterName;
 	}
 
+	//Position the object flush with the ground and try to center it in the middle of the road if possible.
+	//Use the optional additionalHeight if you want to further adjust the height.
+	protected void positionSpawnedObject( float additionalHeight = 0 )
+	{
+		RaycastHit hit;
+		int originalLayer = gameObject.layer;
+		gameObject.layer = ignoreRaycastLayer;
+		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + transform.localScale.y, transform.position.z ), Vector3.down, out hit, 10 * transform.localScale.y ))
+		{
+			if(  hit.collider.transform.parent.GetComponent<SegmentInfo>() != null )
+			{
+				Transform tile = hit.collider.transform.parent;
+				transform.SetParent( tile );
+				//Center the object in the middle of the road
+				transform.localPosition = new Vector3( 0, 0, transform.localPosition.z );
+				transform.SetParent( null );
+			}
+			//Position it flush with the ground
+			float objectHalfHeight = transform.localScale.y * 0.5f;
+			transform.position = new Vector3( transform.position.x, hit.point.y + objectHalfHeight + additionalHeight, transform.position.z );
+		}
+		//Now that our raycast is finished, reset the object's layer to its original value.
+		gameObject.layer = originalLayer;
+	}
+
 	public virtual void destroySpawnedObjectNow()
 	{
 	}
