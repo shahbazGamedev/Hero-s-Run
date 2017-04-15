@@ -185,7 +185,7 @@ public class SentryController : CardSpawnedObject {
 	}
 	#endregion
 
-	public void destroySpawnedObjectNow()
+	public override void destroySpawnedObjectNow()
 	{
 		StartCoroutine( destroySpawnedObject( 0, DELAY_BEFORE_DESTROY_EFFECTS ) );
 	}

@@ -64,6 +64,10 @@ public class CardSpawnedObject : MonoBehaviour {
 		return casterName;
 	}
 
+	public virtual void destroySpawnedObjectNow()
+	{
+	}
+
 	protected Transform getNearestTargetWithinRange( float range )
 	{
 		Transform nearestTarget;

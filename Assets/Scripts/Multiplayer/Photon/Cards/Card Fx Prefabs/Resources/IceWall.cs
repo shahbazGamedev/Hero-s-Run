@@ -51,7 +51,7 @@ public class IceWall : CardSpawnedObject {
 		GetComponent<BoxCollider>().isTrigger = false;
 	}
 
-	public void destroySpawnedObjectNow()
+	public override void destroySpawnedObjectNow()
 	{
 		StartCoroutine( destroySpawnedObject( 0, DELAY_BEFORE_DESTROY_EFFECTS ) );
 	}

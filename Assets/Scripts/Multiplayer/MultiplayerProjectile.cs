@@ -11,6 +11,9 @@ public class MultiplayerProjectile : MonoBehaviour {
 	[SerializeField] AudioClip collisionSound;
 	float bolt_force = 1000f;
 	SentryController sentryController;
+	const int playerLayer = 8;
+	const int deviceLayer = 16;
+	const int destructibleLayer = 17;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
@@ -57,39 +60,48 @@ public class MultiplayerProjectile : MonoBehaviour {
 			GameObject.Destroy( impactParticleSystem, 5f );
 		}
 		if( GetComponent<MeshRenderer>() != null ) GetComponent<MeshRenderer>().enabled = false;
-		if( collision.gameObject.CompareTag("Player") )
-		{
-			Debug.Log("Sentry Projectile hit target: " + collision.gameObject.name );
+		
+		destroyValidTarget( collision.transform );
+  	}
 
+	void destroyValidTarget( Transform potentialTarget )
+	{
+		bool valid = false;
+   		switch (potentialTarget.gameObject.layer)
+		{
+			case playerLayer:
+				valid = true;
+				//The projectile knocked down a player. Send him an RPC.
+				if( getDotProduct( potentialTarget, transform.position ) )
+				{
+					//Explosion is in front of player. He falls backward.
+					potentialTarget.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.Obstacle );
+				}
+				else
+				{
+					//Explosion is behind player. He falls forward.
+					potentialTarget.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.FallForward );
+				}
+				break;
+	                
+	        case deviceLayer:
+				valid = true;
+				Device dev = potentialTarget.GetComponent<Device>();
+				dev.changeDeviceState(DeviceState.Broken);
+                break;
+
+	        case destructibleLayer:
+				valid = true;
+				potentialTarget.GetComponent<CardSpawnedObject>().destroySpawnedObjectNow();
+                break;
+		}
+		if( valid )
+		{
+			 Debug.Log("destroyValidTarget " + potentialTarget.name );
 			//Tell the Sentry that it was succesfull in killing a target.
 			if( sentryController != null ) sentryController.targetHit();
-
-			//The explosion knocked down a player. Send him an RPC.
-			if( getDotProduct( collision.transform, transform.position ) )
-			{
-				//Explosion is in front of player. He falls backward.
-				collision.gameObject.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.Obstacle );
-			}
-			else
-			{
-				//Explosion is behind player. He falls forward.
-				collision.gameObject.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.FallForward );
-			}
-		}
-		else
-		{
-			//Can we destroy it?
-			int destroyableObjectLayer = 17;
-			if( collision.gameObject.layer == destroyableObjectLayer )
-			{
-				//Yes!
-				Debug.Log("Sentry Projectile will destroy " + collision.gameObject.name );
-				//Tell the Sentry that it was succesfull in destroying a target.
-				if( sentryController != null ) sentryController.targetHit();
-				collision.gameObject.GetComponent<IceWall>().destroySpawnedObjectNow();
-			}
-		}
-  	}
+		}		
+	}
 
 	/// <summary>
 	/// Gets the dot product.
