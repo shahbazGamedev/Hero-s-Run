@@ -206,7 +206,7 @@ public class MiniMap : MonoBehaviour {
 		}
 		else
 		{
-			Debug.LogError("MiniMap-minimapSecondaryRPC: radar object for " + pc.name + " was not found." );
+			Debug.LogWarning("MiniMap-minimapSecondaryRPC: radar object for " + pc.name + " was not found." );
 		}
 	}
 
