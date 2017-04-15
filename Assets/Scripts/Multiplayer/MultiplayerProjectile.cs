@@ -9,7 +9,7 @@ public class MultiplayerProjectile : MonoBehaviour {
 	[SerializeField] ParticleSystem impactParticleSystem;
 	[SerializeField] AudioClip inFlightSound;
 	[SerializeField] AudioClip collisionSound;
-	float bolt_force = 1000f;
+	float bolt_force = 1100f;
 	SentryController sentryController;
 	const int playerLayer = 8;
 	const int deviceLayer = 16;

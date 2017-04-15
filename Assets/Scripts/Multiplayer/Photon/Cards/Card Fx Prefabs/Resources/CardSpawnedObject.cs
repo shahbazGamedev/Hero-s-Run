@@ -19,9 +19,13 @@ public class CardSpawnedObject : MonoBehaviour {
 	public Material onDestroy;
 	public Material onFunctioning;
 
+	//My owner (i.e. the caster who created this object)
+	public string casterName;
+	protected GameObject casterGameObject;
+	protected Transform casterTransform;
+
 	public SpawnedObjectState spawnedObjectState = SpawnedObjectState.Initialising;
 
-	public string casterName;
 
 	protected const int ignoreRaycastLayer = 2;
 	protected const int playerLayer = 8;
@@ -142,8 +146,12 @@ public class CardSpawnedObject : MonoBehaviour {
 	        case deviceLayer:
 				//A device is a valid target if:
 				//The device is not in the Broken state.
+				//Additional we want to only destroy devices that are behind the player.
+				//For example: We don't want to destroy the jump pad in front of us which we'll most likely want to use.
+				//We do however want to destroy the jump pad if it is behind us to prevent others players from using it.
 				Device dev = potentialTarget.GetComponent<Device>();
 				valid = dev.state != DeviceState.Broken;
+				valid = valid && !getDotProduct( potentialTarget.position );
                 break;
 
 	        case destructibleLayer:
@@ -157,6 +165,25 @@ public class CardSpawnedObject : MonoBehaviour {
 		}
 		//if( valid ) Debug.Log("isTargetValid " + potentialTarget.name );
 		return valid;
+	}
+
+	/// <summary>
+	/// Gets the dot product.
+	/// </summary>
+	/// <returns><c>true</c>, if the target is in front of this object, <c>false</c> otherwise.</returns>
+	/// <param name="targetLocation">Target location.</param>
+	bool getDotProduct( Vector3 targetLocation )
+	{
+		Vector3 forward = casterTransform.TransformDirection(Vector3.forward);
+		Vector3 toOther = targetLocation - transform.position;
+		if (Vector3.Dot(forward, toOther) < 0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
 
 }

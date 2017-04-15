@@ -21,11 +21,6 @@ public class SentryController : CardSpawnedObject {
 	[SerializeField] ParticleSystem onDestroyFx;
 	const float DELAY_BEFORE_DESTROY_EFFECTS = 1.3f;
 
-	//My owner (i.e. the player who created this Sentry)
-	private GameObject myOwner;
-	private Transform myOwnerTransform;
-	private PlayerRace myOwnerPlayerRace;
-
 	//Target
 	Transform nearestTarget = null;
 
@@ -53,24 +48,23 @@ public class SentryController : CardSpawnedObject {
 				float spellDuration = (float) data[1];
 				aimRange = (float) data[2];
 				accuracy = (float) data[3];
-				myOwner = playersArray[i];
-				casterName = myOwner.name;
-				myOwnerTransform = myOwner.transform;
-				myOwnerPlayerRace = myOwner.GetComponent<PlayerRace>();
-				transform.SetParent( myOwnerTransform );
+				casterGameObject = playersArray[i];
+				casterName = casterGameObject.name;
+				casterTransform = casterGameObject.transform;
+				transform.SetParent( casterTransform );
 				playSoundEffect( Emotion.Happy );
 				StartCoroutine( changeMaterialOnCreate( 2f ) );
-				myOwner.GetComponent<PlayerSpell>().registerSentry( this );
+				casterGameObject.GetComponent<PlayerSpell>().registerSentry( this );
 				//The Sentry has a limited lifespan which depends on the level of the Card.
 				StartCoroutine( destroySpawnedObject( spellDuration, DELAY_BEFORE_DESTROY_EFFECTS ) );
 				//Display the Sentry secondary icon on the minimap
-				MiniMap.Instance.displaySecondaryIcon( myOwnerTransform.GetComponent<PhotonView>().viewID, (int) CardName.Sentry, spellDuration );
+				MiniMap.Instance.displaySecondaryIcon( casterTransform.GetComponent<PhotonView>().viewID, (int) CardName.Sentry, spellDuration );
 				break;
 			}
 		}
-		if( myOwner != null )
+		if( casterGameObject != null )
 		{
-			Debug.Log("SentryController-The owner of this sentry is: " + myOwner.name );
+			Debug.Log("SentryController-The owner of this sentry is: " + casterName );
 		}
 		else
 		{
@@ -140,10 +134,10 @@ public class SentryController : CardSpawnedObject {
 		else
 		{
 			//The sentry does not have a target. Resume looking in the same direction as the player.
-			Quaternion desiredRotation = myOwnerTransform.rotation; 
+			Quaternion desiredRotation = casterTransform.rotation; 
 			desiredRotation.x = 0f;
 			desiredRotation.z = 0f;
-			transform.rotation = Quaternion.Lerp( transform.rotation, myOwnerTransform.rotation, Time.deltaTime * aimSpeed );
+			transform.rotation = Quaternion.Lerp( transform.rotation, casterTransform.rotation, Time.deltaTime * aimSpeed );
 		}
 	}
 
@@ -201,7 +195,7 @@ public class SentryController : CardSpawnedObject {
 		playSoundEffect( Emotion.Sad, true );
 
 		yield return new WaitForSeconds(delayBeforeDestroyEffects);
-		MiniMap.Instance.hideSecondaryIcon( myOwner );
+		MiniMap.Instance.hideSecondaryIcon( casterGameObject );
 		onDestroyFx.transform.SetParent( null );
 		onDestroyFx.Play();
 		Destroy( gameObject );

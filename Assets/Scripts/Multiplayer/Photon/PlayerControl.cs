@@ -1440,26 +1440,29 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void detachFromZipline()
 	{
-		LeanTween.cancel( gameObject );
-		transform.SetParent( null );
-		ziplineAttachPoint.SetParent( transform, false );
-		ziplineAttachPoint.localScale = new Vector3( 1f, 1f, 1f ); 	//Just because of rounding when changing parent
-		ziplineAttachPoint.GetComponent<AudioSource>().Stop();
-		playerCamera.reactivateMaincamera();
-		isInZiplineTrigger = false; //Reset in case player died inside trigger
-		//The player might have died while ziplining.
-		//managePlayerDeath calls detachFromZipline().
-		//We only do the last steps if the player is alive.
-		if( deathType == DeathType.Alive )
+		if( getCharacterState() == PlayerCharacterState.Ziplining )
 		{
-			enablePlayerControl( true );
-			transform.eulerAngles = new Vector3(0,270f,0); //we turned left while ziplining
-			fall();
-		}
-		else
-		{
-			//If the player is dead, it looks nicer with the camera locked.
-			playerCamera.lockCamera( true );
+			LeanTween.cancel( gameObject );
+			transform.SetParent( null );
+			ziplineAttachPoint.SetParent( transform, false );
+			ziplineAttachPoint.localScale = new Vector3( 1f, 1f, 1f ); 	//Just because of rounding when changing parent
+			ziplineAttachPoint.GetComponent<AudioSource>().Stop();
+			playerCamera.reactivateMaincamera();
+			isInZiplineTrigger = false; //Reset in case player died inside trigger
+			//The player might have died while ziplining.
+			//managePlayerDeath calls detachFromZipline().
+			//We only do the last steps if the player is alive.
+			if( deathType == DeathType.Alive )
+			{
+				enablePlayerControl( true );
+				transform.eulerAngles = new Vector3(0,270f,0); //we turned left while ziplining
+				fall();
+			}
+			else
+			{
+				//If the player is dead, it looks nicer with the camera locked.
+				playerCamera.lockCamera( true );
+			}
 		}
 	}
 	#endregion
