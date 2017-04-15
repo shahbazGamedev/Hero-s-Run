@@ -56,21 +56,15 @@ public class IceWall : CardSpawnedObject {
 		StartCoroutine( destroySpawnedObject( 0, DELAY_BEFORE_DESTROY_EFFECTS ) );
 	}
 
-	IEnumerator destroySpawnedObject( float delayBeforeSentryExpires, float delayBeforeDestroyEffects )
+	IEnumerator destroySpawnedObject( float delayBeforeExpires, float delayBeforeDestroyEffects )
 	{
-		yield return new WaitForSeconds(delayBeforeSentryExpires);
+		yield return new WaitForSeconds(delayBeforeExpires);
 		GetComponent<BoxCollider>().isTrigger = true;
-
 		setSpawnedObjectState(SpawnedObjectState.BeingDestroyed);
 		StopCoroutine( "changeMaterialOnCreate" );
 		GetComponent<Renderer>().material = onDestroy;
-		//playSoundEffect( Emotion.Sad, true );
-
 		yield return new WaitForSeconds(delayBeforeDestroyEffects);
-		//onDestroyFx.transform.SetParent( null );
-		//onDestroyFx.Play();
 		Destroy( gameObject );
-		//Destroy( onDestroyFx, 3f );
 	}
 
 
