@@ -16,12 +16,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	PlayerAI playerAI;
 	#endregion
 
-	#region Accelerometer variables 	
-	bool usesAccelerometer = false;
-	float accelerometerPreviousFrameX = 0;
-	float accelerometerStrength = 22.5f;
-	#endregion
-
 	#region Hash IDs for player animations	
 	//Hash IDs for player animations. These are used to improve performance.
 	int RunTrigger = Animator.StringToHash("Run");
@@ -492,31 +486,11 @@ public class PlayerControl : Photon.PunBehaviour {
 			Vector3 relativePos = new Vector3(1 , 0 , 0 );
 			Vector3 xPos = transform.TransformPoint(relativePos);
 			Vector3 xVector = xPos - transform.position;
-			//5) Scale the X component based on accelerometer and change lane values
-			float accelerometerAverage = 0;
-			if( playerControlsEnabled && usesAccelerometer )
-			{
-				//For accelerometer
-				float accelerometerCurrentFrameX = Input.acceleration.x;
-				if( Time.timeScale < 1f )
-				{
-					//Player is using a slow time power up.
-					accelerometerCurrentFrameX = accelerometerCurrentFrameX * accelerometerStrength * SLOW_DOWN_FACTOR;
-				}
-				else
-				{
-					//Time is normal.
-					accelerometerCurrentFrameX = accelerometerCurrentFrameX * accelerometerStrength;
-				}
-				accelerometerAverage = (accelerometerCurrentFrameX + accelerometerPreviousFrameX) * 0.5f;
-				accelerometerPreviousFrameX = accelerometerCurrentFrameX;
-			}
-			xVector = xVector * Time.deltaTime * (moveDirection.x + accelerometerAverage);
-
+			//5) Scale the X component
+			xVector = xVector * Time.deltaTime * moveDirection.x;
 			//6) Clamp to the max distance we can travel perpendicularly without
 			//exiting the left or right lanes.
-			xVector =  Vector3.ClampMagnitude(xVector, Mathf.Abs(getMaxDist(moveDirection.x + accelerometerAverage)));
-
+			xVector =  Vector3.ClampMagnitude(xVector, Mathf.Abs(getMaxDist(moveDirection.x)));
 			//7) Add the X component to the forward direction
 			forward = forward + xVector;
 			//8) Move the controller
@@ -527,10 +501,8 @@ public class PlayerControl : Photon.PunBehaviour {
 			#endif
 			jumpStarted = false;
 		}
-		else
-		{
-			//Player is ziplining. He is moved by a LeanTween function
-		}
+		//Note: if the player is ziplining. He is moved by a LeanTween function.
+
 	}
 
 	//Returns the maximum distance the player can travel perpendicularly without
@@ -635,63 +607,60 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Jump and Double Jump
 	public void jump()
 	{
-		if( playerControlsEnabled )
+		if( jumping )
 		{
-			if( jumping )
-			{
-				//Delay the second jump request until we are on the ground
-				//Cancel any slide queue since we can only queue one movement at a time
-				queueJump = true;
-				queueSlide = false;
-			}
-	
-			//Only allow a jump if we are not already jumping and if we are on the ground.
-			//However, if the ground type below the player is of type Collapsing, still allow him to jump.
-			//The Collapsing tag is used in the CollapsingBridge code.
-			if (playerCharacterState != PlayerCharacterState.Jumping && ( distanceToGround < 0.5f || playerCollisions.getGroundType() == "Collapsing" ) )
-			{
-				//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
-				moveDirection.x = 0;
-				
-				//Make sure the lane data is correct in case a collision forced us out of our lane
-				recalculateCurrentLane();
+			//Delay the second jump request until we are on the ground
+			//Cancel any slide queue since we can only queue one movement at a time
+			queueJump = true;
+			queueSlide = false;
+		}
 
-				//We are allowed to jump from the slide state.
-				playerSounds.stopAudioSource();							//stop the sliding sound if any
-				playerVisuals.playDustPuff( false );					//stop the dust puff that loops while we are sliding
-				playerVisuals.playWaterSplashWhileSliding( false );
-				deactivateOverheadObstacles( true );					//reactivate overhead obstacles since they would have been deactivated if we were sliding
+		//Only allow a jump if we are not already jumping and if we are on the ground.
+		//However, if the ground type below the player is of type Collapsing, still allow him to jump.
+		//The Collapsing tag is used in the CollapsingBridge code.
+		if (playerCharacterState != PlayerCharacterState.Jumping && ( distanceToGround < 0.5f || playerCollisions.getGroundType() == "Collapsing" ) )
+		{
+			//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
+			moveDirection.x = 0;
+			
+			//Make sure the lane data is correct in case a collision forced us out of our lane
+			recalculateCurrentLane();
 
-				jumping = true;
-				jumpStarted = true;
-	
-				setCharacterState( PlayerCharacterState.Jumping );
-				//Memorize the run speed
-				runSpeedAtTimeOfJump = runSpeed;
-				//Don't accelerate during a jump (also it would reset the runSpeed variable).
-				allowRunSpeedToIncrease = false;
-				if( doingDoubleJump )
-				{
-					//Increase the run speed during a Double Jump. We want the player to Leap forward.
-					runSpeed = runSpeed * DOUBLE_JUMP_RUN_SPEED;
-					//Cap the run speed to a maximum.
-					if( runSpeed > MAX_RUN_SPEED_FOR_DOUBLE_JUMP ) runSpeed = MAX_RUN_SPEED_FOR_DOUBLE_JUMP;
-					moveDirection.y = doubleJumpSpeed;
-					setAnimationTrigger(Double_JumpTrigger);
-				}
-				else
-				{
-					//Lower the run speed during a normal jump
-					runSpeed = runSpeed * runSpeedJumpMultiplier;
-					//Don't go lower then levelRunStartSpeed
-					if( runSpeed < levelRunStartSpeed ) runSpeed = levelRunStartSpeed;
-					moveDirection.y = jumpSpeed;
-					setAnimationTrigger(JumpTrigger);
-				}
-				//for debugging
-				//remove jump sound for now because it is annoying
-				//playSound( jumpingSound, false );
+			//We are allowed to jump from the slide state.
+			playerSounds.stopAudioSource();							//stop the sliding sound if any
+			playerVisuals.playDustPuff( false );					//stop the dust puff that loops while we are sliding
+			playerVisuals.playWaterSplashWhileSliding( false );
+			deactivateOverheadObstacles( true );					//reactivate overhead obstacles since they would have been deactivated if we were sliding
+
+			jumping = true;
+			jumpStarted = true;
+
+			setCharacterState( PlayerCharacterState.Jumping );
+			//Memorize the run speed
+			runSpeedAtTimeOfJump = runSpeed;
+			//Don't accelerate during a jump (also it would reset the runSpeed variable).
+			allowRunSpeedToIncrease = false;
+			if( doingDoubleJump )
+			{
+				//Increase the run speed during a Double Jump. We want the player to Leap forward.
+				runSpeed = runSpeed * DOUBLE_JUMP_RUN_SPEED;
+				//Cap the run speed to a maximum.
+				if( runSpeed > MAX_RUN_SPEED_FOR_DOUBLE_JUMP ) runSpeed = MAX_RUN_SPEED_FOR_DOUBLE_JUMP;
+				moveDirection.y = doubleJumpSpeed;
+				setAnimationTrigger(Double_JumpTrigger);
 			}
+			else
+			{
+				//Lower the run speed during a normal jump
+				runSpeed = runSpeed * runSpeedJumpMultiplier;
+				//Don't go lower then levelRunStartSpeed
+				if( runSpeed < levelRunStartSpeed ) runSpeed = levelRunStartSpeed;
+				moveDirection.y = jumpSpeed;
+				setAnimationTrigger(JumpTrigger);
+			}
+			//for debugging
+			//remove jump sound for now because it is annoying
+			//playSound( jumpingSound, false );
 		}
 	}
 
@@ -766,48 +735,45 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Sliding
 	public void startSlide()
 	{
-		if( playerControlsEnabled )
+		if( playerCharacterState != PlayerCharacterState.SideMove && playerCharacterState != PlayerCharacterState.Falling )
 		{
-			if( playerCharacterState != PlayerCharacterState.SideMove && playerCharacterState != PlayerCharacterState.Falling )
+			if( jumping )
 			{
-				if( jumping )
+				//Delay the slide until we are on the ground
+				queueSlide = true;
+				//Cancel any queued jump
+				queueJump = false;
+				//Since the player wants to slide, let's make the character fall back
+				//down faster than normal by increasing gravity
+				gravity = DEFAULT_GRAVITY  * gravityModifier;
+			
+			}
+			else
+			{
+				//Slides cant be prolonged indefinitely. This is why you can reset the start time.
+				slideStartTime = Time.time;
+				//Don't reset values for nothing if we are extending the slide
+				if( playerCharacterState != PlayerCharacterState.Sliding )
 				{
-					//Delay the slide until we are on the ground
-					queueSlide = true;
-					//Cancel any queued jump
-					queueJump = false;
-					//Since the player wants to slide, let's make the character fall back
-					//down faster than normal by increasing gravity
-					gravity = DEFAULT_GRAVITY  * gravityModifier;
-				
-				}
-				else
-				{
-					//Slides cant be prolonged indefinitely. This is why you can reset the start time.
-					slideStartTime = Time.time;
-					//Don't reset values for nothing if we are extending the slide
-					if( playerCharacterState != PlayerCharacterState.Sliding )
+					/*I used to change the controller capsule height,radius and position.
+					  However, when sliding across the Entrance trigger, it would cause multiple
+					  OnTriggerEnter events to be triggered causing in turn, the playerTileIndex
+					  to be incremented incorrectly and ultimately, there was no more floor
+					  under the player and he would fall. So instead, I disable and re-enable
+					  overhead obstacles.*/
+
+					deactivateOverheadObstacles( false );
+					setCharacterState( PlayerCharacterState.Sliding );
+					if( playerCollisions.getGroundType() == "Water" )
 					{
-						/*I used to change the controller capsule height,radius and position.
-						  However, when sliding across the Entrance trigger, it would cause multiple
-						  OnTriggerEnter events to be triggered causing in turn, the playerTileIndex
-						  to be incremented incorrectly and ultimately, there was no more floor
-						  under the player and he would fall. So instead, I disable and re-enable
-						  overhead obstacles.*/
-
-						deactivateOverheadObstacles( false );
-						setCharacterState( PlayerCharacterState.Sliding );
-						if( playerCollisions.getGroundType() == "Water" )
-						{
-							playerVisuals.playWaterSplashWhileSliding( true );
-						}
-						else
-						{
-							playerVisuals.playDustPuff( true );
-						}
-
-						setAnimationTrigger(Slide_DownTrigger);
+						playerVisuals.playWaterSplashWhileSliding( true );
 					}
+					else
+					{
+						playerVisuals.playDustPuff( true );
+					}
+
+					setAnimationTrigger(Slide_DownTrigger);
 				}
 			}
 		}
@@ -1213,18 +1179,15 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void sideSwipe( bool isGoingRight )
 	{
-		if( playerControlsEnabled )
+		if (isInDeadEnd )
+		{	
+			//We want to turn the corner
+			turnCorner ( isGoingRight );
+		}
+		else
 		{
-			if (isInDeadEnd )
-			{	
-				//We want to turn the corner
-				turnCorner ( isGoingRight );
-			}
-			else
-			{
-				//we want to change lanes
-				changeLane ( isGoingRight );
-			}
+			//we want to change lanes
+			changeLane ( isGoingRight );
 		}
 	}
 
@@ -1745,7 +1708,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		if( unlockCamera ) playerCamera.lockCamera ( false );
 		gravity = DEFAULT_GRAVITY;
 		moveDirection = new Vector3(0,0,0);
-		accelerometerPreviousFrameX = 0;
 		playerCamera.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING;
 	}
 

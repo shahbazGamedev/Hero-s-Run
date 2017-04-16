@@ -11,11 +11,14 @@ public class DebugMenu : MonoBehaviour {
 	[SerializeField] Text clearAssetBundleCacheText;
 	[SerializeField] Text facebookName;
 	[SerializeField] Text allowBotToPlayCardsText;
+	[SerializeField] Slider speedOverrideMultiplierSlider;
 	[SerializeField] Text speedOverrideMultiplierText;
 
 	void Start () {
 	
-		//Text Inititialization
+		speedOverrideMultiplierSlider.value = LevelManager.Instance.speedOverrideMultiplier * 10;
+		speedOverrideMultiplierText.text = LevelManager.Instance.speedOverrideMultiplier.ToString();
+
 		if( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() )
 		{
 			toggleShowDebugInfoText.text = "Show Debug Info: On";

@@ -14,6 +14,11 @@ public class PlayerInput : PunBehaviour {
 	float minSwipeDistance = 0.022f; //About 17 pixels if width is 768 pixels
 	#endregion
 
+	#region Accelerometer
+	bool usesAccelerometer = true;
+	const float ACCELEROMETER_TILT_THRESHOLD = 0.33f;
+	#endregion
+
 	// Use this for initialization
 	void Awake ()
 	{
@@ -33,12 +38,18 @@ public class PlayerInput : PunBehaviour {
 
 	void Update()
 	{
-		#if UNITY_EDITOR
-		handleKeyboard();
-		#endif
-
-		//Handle mobile device swipes
-		handleSwipes();
+		if( playerControl.isPlayerControlEnabled()  )
+		{
+			#if UNITY_EDITOR
+			handleKeyboard();
+			#endif
+	
+			//Handle accelerometer. If you tilt left or right quickly, you can change lanes.
+			handleAccelerometer();
+	
+			//Handle mobile device swipes
+			handleSwipes();
+		}
 	}
 
 	public void startSlide()
@@ -74,6 +85,21 @@ public class PlayerInput : PunBehaviour {
 	{
 		playerControl.attachToZipline();
 		this.photonView.RPC("attachToZiplineRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+	}
+
+	private void handleAccelerometer()
+	{
+		if( usesAccelerometer )
+		{
+			if ( Input.acceleration.x > ACCELEROMETER_TILT_THRESHOLD ) 
+			{
+				sideSwipe( true );
+			}
+			else if ( Input.acceleration.x < -ACCELEROMETER_TILT_THRESHOLD ) 
+			{
+				sideSwipe( false );
+			}
+		}
 	}
 
 	private void handleKeyboard()
@@ -169,8 +195,7 @@ public class PlayerInput : PunBehaviour {
 	                }
 	                break;
 			}
-		}	
-
+		}
 	}
 	
 	void TestForSwipeGesture(Touch touch)
