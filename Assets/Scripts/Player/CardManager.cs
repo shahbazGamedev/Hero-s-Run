@@ -211,6 +211,8 @@ public class CardManager : MonoBehaviour {
 		public Sprite secondaryIcon;
 		[Range(1,9)]
 		public int manaCost;
+		[HideInInspector]
+		public RectTransform rectTransform;
 	}
 
 }

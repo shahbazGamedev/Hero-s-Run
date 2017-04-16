@@ -50,6 +50,11 @@ public class MainMenu : MonoBehaviour {
 		StartCoroutine( loadScene(GameScenes.HeroSelection) );
 	}
 
+	public void OnClickOpenLootBoxMenu()
+	{
+		StartCoroutine( loadScene(GameScenes.Battle_Deck) );
+	}
+
 	public void OnClickOpenOptionsMenu()
 	{
 		StartCoroutine( loadScene(GameScenes.Options) );
