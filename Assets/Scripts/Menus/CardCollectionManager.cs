@@ -63,13 +63,7 @@ class CardCollectionManager : MonoBehaviour {
 		Button cardButton = go.GetComponent<Button>();
 		cardButton.onClick.RemoveListener(() => OnClickPlayerIcon(index,pcd, cd));
 		cardButton.onClick.AddListener(() => OnClickPlayerIcon(index,pcd, cd));
-		Image cardImage = go.GetComponent<Image>();
-		cardImage.sprite = cd.icon;
-		cd.rectTransform = go.GetComponent<RectTransform>();
-		Image[] playerIconNewRibbon = go.GetComponentsInChildren<Image>();
-		//playerIconNewRibbon[1].enabled = playerIconData.isNew;		//new ribbon
-		//playerIconNewRibbon[2].enabled = playerIconData.isLocked;	//mask when locked
-		//playerIconNewRibbon[3].enabled = playerIconData.isLocked;	//lock icon
+		go.GetComponent<CardUIDetails>().configureCard( pcd, cd );
 	}
 
 	public void OnClickPlayerIcon( int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
