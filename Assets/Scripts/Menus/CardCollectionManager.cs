@@ -70,6 +70,7 @@ class CardCollectionManager : MonoBehaviour {
 	{
 		RectTransform onSelectRectTransform = onSelectButton.GetComponent<RectTransform>();
 		onSelectRectTransform.localScale = Vector3.one;
+		onSelectRectTransform.localPosition = Vector3.zero;
 
 		//Position on select game object on top of the selected entry
 		onSelectButton.transform.SetParent( cd.rectTransform, false );
