@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class CardUIDetails : MonoBehaviour {
 
@@ -60,7 +61,7 @@ public class CardUIDetails : MonoBehaviour {
 		if( pcd.level + 1 < CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ) )
 		{
 			numberOfCardsForUpgrade = CardManager.Instance.getNumberOfCardsRequiredForUpgrade( pcd.level + 1, cd.rarity );
-			levelText.text = pcd.level.ToString();
+			levelText.text = String.Format( "Level {0}", pcd.level.ToString() );
 		}
 		else
 		{

@@ -24,8 +24,8 @@ class CardCollectionManager : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		/*Handheld.StopActivityIndicator();
-		int playerIconId = GameManager.Instance.playerProfile.getPlayerIconId();
+		Handheld.StopActivityIndicator();
+		/*int playerIconId = GameManager.Instance.playerProfile.getPlayerIconId();
 		ProgressionManager.PlayerIconData playerIconData = ProgressionManager.Instance.getPlayerIconDataByUniqueId( playerIconId );
 		currentPlayerIcon.sprite = playerIconData.icon;
 		playerName.text = PlayerStatsManager.Instance.getUserName();
