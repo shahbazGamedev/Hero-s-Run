@@ -54,19 +54,19 @@ public class CardUIDetails : MonoBehaviour {
 		//Level background
 		Color color;
 		ColorUtility.TryParseHtmlString (CardManager.Instance.getCardColorHexValue(cd.rarity), out color);
-		levelBackground.color = color;
+		if( levelBackground != null ) levelBackground.color = color;
 
 		//Level text and numberOfCardsForUpgrade
 		int numberOfCardsForUpgrade;
 		if( pcd.level + 1 < CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ) )
 		{
 			numberOfCardsForUpgrade = CardManager.Instance.getNumberOfCardsRequiredForUpgrade( pcd.level + 1, cd.rarity );
-			levelText.text = String.Format( "Level {0}", pcd.level.ToString() );
+			if( levelText != null ) levelText.text = String.Format( "Level {0}", pcd.level.ToString() );
 		}
 		else
 		{
 			numberOfCardsForUpgrade = CardManager.Instance.getNumberOfCardsRequiredForUpgrade( CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ), cd.rarity );
-			levelText.text = "Max Level";
+			if( levelText != null ) levelText.text = "Max Level";
 		}
 
 		//Progress bar section
