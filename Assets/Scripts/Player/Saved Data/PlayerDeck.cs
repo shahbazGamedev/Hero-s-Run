@@ -18,19 +18,19 @@ public class PlayerDeck {
 	{
 		//Cards in battle deck
 		//1
-		addCard( CardName.IceWall, 1, 1, true );
+		addCard( CardName.IceWall, 18, 1000, true );
 
 		//2
 		addCard( CardName.Sprint, 1, 1, true );
 
 		//3
-		addCard( CardName.Raging_Bull, 1, 1, true );
+		addCard( CardName.Raging_Bull, 1, 54, true );
 
 		//4
-		addCard( CardName.Explosion, 1, 1, true );
+		addCard( CardName.Explosion, 4, 12, true );
 
 		//5
-		addCard( CardName.Stasis, 1, 1, true );
+		addCard( CardName.Stasis, 1, 5, true );
 
 		//6
 		addCard( CardName.Lightning, 5, 1, true );
@@ -39,7 +39,7 @@ public class PlayerDeck {
 		addCard( CardName.Shrink, 3, 1, true );
 
 		//8
-		addCard( CardName.Sentry, 1, 1, true );
+		addCard( CardName.Sentry, 1, 69, true );
 
 		//Part of card collection, but not in battle deck
 		//9

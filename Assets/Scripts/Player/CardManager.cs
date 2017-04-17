@@ -73,6 +73,30 @@ public class CardManager : MonoBehaviour {
 		initialize();
 	}
 
+	public int getMaxCardLevelForThisRarity( CardRarity rarity )
+	{
+		int maxCardLevelForThisRarity = 0;
+    	switch (rarity)
+		{
+	        case CardRarity.COMMON:
+				maxCardLevelForThisRarity = 13;
+                break;
+	                
+	        case CardRarity.RARE:
+				maxCardLevelForThisRarity = 11;
+                break;
+               
+	        case CardRarity.EPIC:
+				maxCardLevelForThisRarity = 8;
+				break;                
+
+	        case CardRarity.LEGENDARY:
+				maxCardLevelForThisRarity = 5;
+				break;                
+		}
+		return maxCardLevelForThisRarity;
+	}
+
 	void initialize()
 	{
 		//Common, Rare, Epic, Legendary
@@ -80,7 +104,7 @@ public class CardManager : MonoBehaviour {
         numberOfCardsRequiredForUpgrade = new int[,]
 		{
 			{ -1, -1, -1, -1 }, 	//Level 0 is not used
-			{ 1, 1, 1, 1 },			//1
+			{ -1, -1, -1, -1 },		//1
 			{ 2, 2, 2, 2 },			//2
 			{ 4, 4, 4, 4 },			//3
 			{ 10, 10, 10, 10 },		//4
