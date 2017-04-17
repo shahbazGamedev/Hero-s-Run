@@ -52,9 +52,9 @@ public class CardUIDetails : MonoBehaviour {
 
 		//Level section
 		//Level background
-		Color color;
-		ColorUtility.TryParseHtmlString (CardManager.Instance.getCardColorHexValue(cd.rarity), out color);
-		if( levelBackground != null ) levelBackground.color = color;
+		Color rarityColor;
+		ColorUtility.TryParseHtmlString (CardManager.Instance.getCardColorHexValue(cd.rarity), out rarityColor);
+		if( levelBackground != null ) levelBackground.color = rarityColor;
 
 		//Level text and numberOfCardsForUpgrade
 		int numberOfCardsForUpgrade;
