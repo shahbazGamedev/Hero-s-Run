@@ -44,7 +44,7 @@ public class CardUIDetails : MonoBehaviour {
 		}
 
 		//We need to save the RectTransform in order to know where to place the card overlay when the card is clicked.
-		cd.rectTransform = GetComponent<RectTransform>();
+		cd.rectTransform = cardImage.GetComponent<RectTransform>();
 
 		//Card image and mana cost
 		cardImage.sprite = cd.icon;

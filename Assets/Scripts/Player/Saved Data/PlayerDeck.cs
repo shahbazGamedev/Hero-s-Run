@@ -61,14 +61,21 @@ public class PlayerDeck {
 	public List<PlayerCardData> getBattleDeck()
 	{
 		List<PlayerCardData> battleDeck = playerCardDataList.FindAll( card => card.inBattleDeck == true );
-		//Debug.Log("Cards in battle deck:\n" );
-		for( int i = 0; i < battleDeck.Count; i++ )
-		{
-			//Debug.Log("Card " + i + " " +  battleDeck[i].name );
-		}
 		return battleDeck;
 	}
  
+	public float getAverageManaCost()
+	{
+		List<PlayerCardData> battleDeck = getBattleDeck();
+		float totalBattleDeckMana = 0;
+		for( int i = 0; i < battleDeck.Count; i++ )
+		{
+			CardManager.CardData cd = CardManager.Instance.getCardByName( battleDeck[i].name );
+			totalBattleDeckMana += cd.manaCost;
+		}
+		return totalBattleDeckMana/battleDeck.Count;
+	}
+
 	public void addCard(  CardName name, int level, int quantity, bool inBattleDeck )
 	{
 		//Make sure the specified card exists

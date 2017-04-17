@@ -20,6 +20,8 @@ class CardCollectionManager : MonoBehaviour {
 	[Header("Texts")]
 	[SerializeField] Text menuTitle;
 	public PlayerDeck playerDeck;
+	[SerializeField] Text battleDeckTitle;
+	[SerializeField] Text averageManaCost;
 
 	// Use this for initialization
 	void Start ()
@@ -52,7 +54,8 @@ class CardCollectionManager : MonoBehaviour {
 		{
 			createCard( i, battleDeckList[i] );
 		}
-
+		battleDeckTitle.text = "Battle Deck";
+		averageManaCost.text = string.Format("Average Mana Cost: {0}", GameManager.Instance.playerDeck.getAverageManaCost().ToString("N1") );
 	}
 
 	void createCard( int index, PlayerDeck.PlayerCardData pcd )
