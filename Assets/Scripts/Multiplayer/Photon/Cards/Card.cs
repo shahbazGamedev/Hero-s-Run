@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class Card : Photon.PunBehaviour {
 
-	[SerializeField] float  baseDuration = 5f;
-	[SerializeField] float  durationUpgradePerLevel = 1f;
-	[SerializeField] float  baseRange = 100f;
-	[SerializeField] float  rangeUpgradePerLevel = 10f;
+	public CardName  cardName;
 	protected Vector3 spawnOffset = new Vector3( 0, 0, 10f );
 
 	protected PlayerControl getPlayerControl( int photonViewID )
@@ -96,19 +93,10 @@ public class Card : Photon.PunBehaviour {
 	public bool isThereATargetWithinRange( Transform caster, int level )
 	{
 		//See if there is a target
-		Transform nearestTarget = detectNearestTarget( caster.GetComponent<PlayerRace>(), getRange( level ) );
+		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
+		Transform nearestTarget = detectNearestTarget( caster.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
 
 		return nearestTarget != null;
-	}
-
-	public float getRange( int level )
-	{
-		return baseRange + level *  rangeUpgradePerLevel;
-	}
-
-	public float getDuration( int level )
-	{
-		return baseDuration + level *  durationUpgradePerLevel;
 	}
 
 	public bool isTargetInRange( PlayerRace playerRace, float aimRange )

@@ -7,8 +7,6 @@ using UnityEngine;
 /// </summary>
 public class CardExplosion : Card {
 
-	[SerializeField] float  baseDiameter = 10f;
-	[SerializeField] float  diameterUpgradePerLevel = 0.25f;
 	[SerializeField]  ParticleSystem zNukeEffect;
 	int playerLayer = 8;
 	int deviceLayer = 16;
@@ -22,15 +20,16 @@ public class CardExplosion : Card {
 	[PunRPC]
 	void cardExplosionMasterRPC( int level, int photonViewID )
 	{
+		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
+
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
 		//Determine which players are affected by the explosion. The caster obviously is immune.
-		float impactDiameter = baseDiameter + level * diameterUpgradePerLevel;
-		blowUp( playerTransform, impactDiameter, photonViewID );
+		blowUp( playerTransform, cd.getCardPropertyValue( CardPropertyType.RADIUS, level ), photonViewID );
 
 		//Do an explosion effect centered around the player
-		this.photonView.RPC("cardExplosionRPC", PhotonTargets.All, playerTransform.position, impactDiameter );
+		this.photonView.RPC("cardExplosionRPC", PhotonTargets.All, playerTransform.position, cd.getCardPropertyValue( CardPropertyType.RADIUS, level ) );
 
 	}
 
@@ -61,9 +60,9 @@ public class CardExplosion : Card {
 		}
 	}
 
-	void blowUp( Transform player, float impactDiameter, int photonViewID )
+	void blowUp( Transform player, float impactRadius, int photonViewID )
 	{
-		Collider[] hitColliders = Physics.OverlapSphere( player.position, impactDiameter, getExplosionMask() );
+		Collider[] hitColliders = Physics.OverlapSphere( player.position, impactRadius, getExplosionMask() );
 		for( int i =0; i < hitColliders.Length; i++ )
 		{
 			//Verify that it is a player
@@ -96,8 +95,9 @@ public class CardExplosion : Card {
 
 	public bool isOpponentNear( Transform caster, int level )
 	{
-		float impactDiameter = baseDiameter + level * diameterUpgradePerLevel;
-		Collider[] hitColliders = Physics.OverlapSphere( caster.position, impactDiameter, getExplosionMask() );
+		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
+		float impactRadius = cd.getCardPropertyValue( CardPropertyType.RADIUS, level );
+		Collider[] hitColliders = Physics.OverlapSphere( caster.position, impactRadius, getExplosionMask() );
 		for( int i =0; i < hitColliders.Length; i++ )
 		{
 			//Verify that it is a player

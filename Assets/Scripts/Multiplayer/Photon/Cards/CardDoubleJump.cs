@@ -7,9 +7,6 @@ using UnityEngine;
 /// </summary>
 public class CardDoubleJump : Card {
 
-	[SerializeField] float  baseDoubleJumpSpeed = 11.75f; //for comparaison, the normal jump value is 8.8. Max value before starting to jump too high is about 15.
-	[SerializeField] float  doubleJumpUpgradePerLevel = 0.25f;
-
 	public void activateCard ( int photonViewId, int level )
 	{
 		this.photonView.RPC("cardDoubleJumpMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
@@ -19,8 +16,8 @@ public class CardDoubleJump : Card {
 	[PunRPC]
 	void cardDoubleJumpMasterRPC( int level, int photonViewID )
 	{
-		float doubleJumpSpeed = baseDoubleJumpSpeed + level * doubleJumpUpgradePerLevel;
-		this.photonView.RPC("cardDoubleJumpRPC", PhotonTargets.All, doubleJumpSpeed, photonViewID );	
+		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
+		this.photonView.RPC("cardDoubleJumpRPC", PhotonTargets.All, cd.getCardPropertyValue( CardPropertyType.DOUBLE_JUMP_SPEED, level ), photonViewID );
 	}
 	#endregion
 

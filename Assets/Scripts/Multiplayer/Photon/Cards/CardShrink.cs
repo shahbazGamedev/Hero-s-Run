@@ -23,11 +23,12 @@ public class CardShrink : Card {
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
 		//Find the nearest target
-		Transform nearestTarget = detectNearestTarget( playerTransform.GetComponent<PlayerRace>(), getRange( level ) );
+		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
+		Transform nearestTarget = detectNearestTarget( playerTransform.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
 
 		if( nearestTarget != null )
 		{
-			nearestTarget.GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.All, getDuration( level ) );
+			nearestTarget.GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.All, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
 		}
 		else
 		{

@@ -33,7 +33,8 @@ public class CardGlyph : Card {
 		data[0] = playerTransform.name;
 
 		//We want the glyph to disappear after a while
-		data[1] = getDuration( level );
+		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
+		data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
 
 		PhotonNetwork.InstantiateSceneObject( prefabName, glyphPosition, glyphRotation, 0, data );
 	}

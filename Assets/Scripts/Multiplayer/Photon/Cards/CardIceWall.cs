@@ -19,6 +19,8 @@ public class CardIceWall : Card {
 	[PunRPC]
 	void cardIceWallMasterRPC( int level, int photonViewID )
 	{
+		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
+
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
@@ -33,7 +35,7 @@ public class CardIceWall : Card {
 		data[0] = playerTransform.name;
 
 		//We want the ice wall to disappear after a while.
-		data[1] = getDuration( level );
+		data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
 
 		PhotonNetwork.InstantiateSceneObject( prefabName, objectPosition, objectRotation, 0, data );
 	}

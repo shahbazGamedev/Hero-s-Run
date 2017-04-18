@@ -7,9 +7,6 @@ using UnityEngine;
 /// </summary>
 public class CardSentry : Card {
 
-	[SerializeField] float  baseAccuracy = 0.02f;
-	[SerializeField] float  AccuracyUpgradePerLevel = -0.0018f;
-
 	public void activateCard ( int photonViewId, int level )
 	{
 		this.photonView.RPC("cardSentryMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
@@ -19,6 +16,8 @@ public class CardSentry : Card {
 	[PunRPC]
 	void cardSentryMasterRPC( int level, int photonViewID )
 	{
+		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
+
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
@@ -30,9 +29,9 @@ public class CardSentry : Card {
 		data[0] = photonViewID;
 
 		//Level related parameters
-		data[1] = getDuration( level );
-		data[2] = getRange( level );
-		data[3] = baseAccuracy + level * AccuracyUpgradePerLevel;
+		data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
+		data[2] = cd.getCardPropertyValue( CardPropertyType.AIM_RANGE, level );
+		data[3] = cd.getCardPropertyValue( CardPropertyType.ACCURACY, level );
 
 		PhotonNetwork.InstantiateSceneObject( "sentry", sentrySpawnPosition, transform.rotation, 0, data );
 	}

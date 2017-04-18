@@ -226,7 +226,8 @@ public class CardHandler : MonoBehaviour {
 			break;
 			//Sentry is effective whenever the Sentry would have a valid target within aim range
 			case CardName.Sentry:
-				return GetComponent<Card>().isTargetInRange( caster.GetComponent<PlayerRace>(), GetComponent<Card>().getRange( level ) );
+				CardManager.CardData cd = CardManager.Instance.getCardByName( CardName.Sentry );
+				return GetComponent<Card>().isTargetInRange( caster.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.AIM_RANGE, level ) );
 			break;
 			//Stasis is effective whenever your opponent is far ahead of you
 			case CardName.Stasis:

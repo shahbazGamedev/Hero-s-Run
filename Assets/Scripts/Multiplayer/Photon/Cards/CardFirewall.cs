@@ -32,7 +32,8 @@ public class CardFirewall : Card {
 		data[0] = playerTransform.name;
 
 		//We want the firewall to disappear after a while
-		data[1] = getDuration( level );
+		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
+		data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
 
 		PhotonNetwork.InstantiateSceneObject( prefabName, firewallPosition, firewallRotation, 0, data );
 	}

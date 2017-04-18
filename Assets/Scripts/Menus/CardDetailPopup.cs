@@ -12,6 +12,9 @@ public class CardDetailPopup : MonoBehaviour {
 	[SerializeField] Text rarityText;
 	[Header("Description")]
 	[SerializeField] Text descriptionText;
+	[Header("Properties Panel")]
+	[SerializeField] RectTransform propertiesPanel;
+	[SerializeField] GameObject cardPropertyPrefab;
 	[Header("Upgrade Button")]
 	[SerializeField] Button upgradeButton;
 	[SerializeField] Text upgradeButtonText;
@@ -32,8 +35,32 @@ public class CardDetailPopup : MonoBehaviour {
 		ColorUtility.TryParseHtmlString (CardManager.Instance.getCardColorHexValue(cd.rarity), out rarityColor);
 		rarityIcon.color = rarityColor;
 		rarityText.text = cd.rarity.ToString();
+		//Configure card properties
+		configureCardProperties( pcd, cd );
 		//Upgrade button
 		configureUpgradeButton( pcd, cd );
+	}
+
+	void configureCardProperties( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
+	{
+		//Make sure we removed properties that were previously generated first
+		for( int i = propertiesPanel.transform.childCount-1; i >= 0; i-- )
+		{
+			Transform child = propertiesPanel.transform.GetChild( i );
+			GameObject.Destroy( child.gameObject );
+		}
+
+		for( int i=0; i < cd.cardProperties.Count; i++ )
+		{
+			createCardProperty( i, cd.cardProperties[i], pcd, cd );
+		}
+	}
+
+	void createCardProperty( int index, CardManager.CardProperty cp, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
+	{
+		GameObject go = (GameObject)Instantiate(cardPropertyPrefab);
+		go.transform.SetParent(propertiesPanel,false);
+		go.GetComponent<CardPropertyUI>().configureProperty( index, cp, pcd, cd );
 	}
 
 	/// <summary>

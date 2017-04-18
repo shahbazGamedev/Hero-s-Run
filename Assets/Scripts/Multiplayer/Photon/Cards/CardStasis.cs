@@ -22,11 +22,13 @@ public class CardStasis : Card {
 	[PunRPC]
 	void cardStasisMasterRPC( int level, int photonViewID )
 	{
+		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
+
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
 		//Find the nearest target
-		Transform nearestTarget = detectNearestTarget( playerTransform.GetComponent<PlayerRace>(), getRange( level ) );
+		Transform nearestTarget = detectNearestTarget( playerTransform.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ));
 
 		//Only continue if we found a target
 		if( nearestTarget != null )
@@ -37,7 +39,7 @@ public class CardStasis : Card {
 			data[0] = nearestTarget.GetComponent<PhotonView>().viewID;
 	
 			//We want the stasis sphere to disappear after a while
-			data[1] = getDuration( level );
+			data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
 	
 			PhotonNetwork.InstantiateSceneObject( prefabName, nearestTarget.position, nearestTarget.rotation, 0, data );
 		}

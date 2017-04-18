@@ -30,11 +30,12 @@ public class CardLinkedFate : Card {
 	{
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
+		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
 
 		//Send the RPC to everyone including the caster
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
-			PlayerRace.players[i].GetComponent<PhotonView>().RPC("cardLinkedFateRPC", PhotonTargets.AllViaServer, playerTransform.name, getDuration( level ) );
+			PlayerRace.players[i].GetComponent<PhotonView>().RPC("cardLinkedFateRPC", PhotonTargets.AllViaServer, playerTransform.name, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
 		}
 	}
 	#endregion

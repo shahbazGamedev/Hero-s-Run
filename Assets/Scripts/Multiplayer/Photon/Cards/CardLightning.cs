@@ -26,7 +26,8 @@ public class CardLightning : Card {
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
 		//Get nearest target which could be either a player or creature
-		Transform nearestTarget = detectNearestTarget( playerTransform.GetComponent<PlayerRace>(), getRange( level ) );
+		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
+		Transform nearestTarget = detectNearestTarget( playerTransform.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
 
 		if( nearestTarget != null )
 		{

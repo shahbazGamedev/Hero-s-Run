@@ -8,8 +8,6 @@ using UnityEngine;
 public class CardSprint : Card {
 
 	[SerializeField] AudioClip  soundFx;
-	[SerializeField] float  baseSpeed = 1.5f;
-	[SerializeField] float  speedUpgradePerLevel = 0.06f;
 
 	public void activateCard ( int photonViewId, int level )
 	{
@@ -20,8 +18,8 @@ public class CardSprint : Card {
 	[PunRPC]
 	void cardSprintMasterRPC( int level, int photonViewID )
 	{
-		float speedMultiplier = baseSpeed + level * speedUpgradePerLevel;
-		this.photonView.RPC("cardSprintRPC", PhotonTargets.All, getDuration( level ), speedMultiplier, photonViewID );	
+		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
+		this.photonView.RPC("cardSprintRPC", PhotonTargets.All, cd.getCardPropertyValue( CardPropertyType.DURATION, level ), cd.getCardPropertyValue( CardPropertyType.RUN_SPEED, level ), photonViewID );	
 	}
 	#endregion
 

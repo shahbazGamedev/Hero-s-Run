@@ -141,6 +141,10 @@ public class PlayerInput : PunBehaviour {
 		{
 			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.IceWall, PlayerStatsManager.Instance.getUserName(), 4 );
 		}
+		else if ( Input.GetKeyDown (KeyCode.T ) )
+		{
+			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Double_Jump, PlayerStatsManager.Instance.getUserName(), 4 );
+		}
 		else if ( Input.GetKeyDown (KeyCode.P ) )
 		{
 			//Stop the character from moving for testing

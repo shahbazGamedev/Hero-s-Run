@@ -11,6 +11,18 @@ public enum CardRarity
 	
 }
 
+public enum CardPropertyType
+ {
+	DURATION = 0,
+	RANGE = 1,
+	DOUBLE_JUMP_SPEED = 2,
+	RADIUS = 3,
+	ACCURACY = 4,
+	RUN_SPEED = 5,
+	AIM_RANGE = 6
+	
+}
+
 /// <summary>
 /// Card name.
 /// Use numbers 0 to 99 for Common, 100 to 199 for Rare, 200 to 299 for Epic and 300 to 399 for Legendary.
@@ -50,6 +62,7 @@ public class CardManager : MonoBehaviour {
 	[Range(3,4)]
 	public int cardsInTurnRibbon = 4; //Number of cards appearing in the turn-ribbon. We will test with both 3 and 4 and see which one feels best.
 	[SerializeField] List<CardData> cardDataList = new List<CardData>();
+	[SerializeField] List<CardPropertyIcon> cardPropertyIconList = new List<CardPropertyIcon>();
 	int[,] numberOfCardsRequiredForUpgrade;
 	int[,] coinsRequiredForUpgrade;
 	int[,] xpGainedAfterUpgrading;
@@ -219,6 +232,20 @@ public class CardManager : MonoBehaviour {
 		return cardColor;
 	}
 
+	public Sprite getCardPropertyIcon( CardPropertyType type )
+	{
+		CardPropertyIcon cardPropertyIcon = cardPropertyIconList.Find(property => property.type == type);
+		if( cardPropertyIcon != null )
+		{
+			return cardPropertyIcon.icon;
+		}
+		else
+		{
+			Debug.LogError("CardManager-Could not find icon for property " + type );
+			return null;
+		}
+	}
+
 	/// <summary>
 	/// Card data. The card data only handles data that never changes.
 	/// </summary>
@@ -229,6 +256,7 @@ public class CardManager : MonoBehaviour {
 		public CardName name; 
 		public CardRarity rarity = CardRarity.COMMON;
 		public Sprite icon;
+		public List<CardProperty> cardProperties;
 		//The secondary icon is optional.
 		//It appears on the top-left corner of the player icon using or affected by a card.
 		//Double Jump doesn't have a secondary icon, but Sentry does for example.
@@ -237,6 +265,45 @@ public class CardManager : MonoBehaviour {
 		public int manaCost;
 		[HideInInspector]
 		public RectTransform rectTransform;
+
+		public float getCardPropertyValue( CardPropertyType type, int level )
+		{
+			float cardPropertyValue = 0;
+			CardProperty cardProperty = cardProperties.Find(property => property.type == type);
+			if( cardProperty != null )
+			{
+				if( level > CardManager.Instance.getMaxCardLevelForThisRarity( rarity ) )
+				{
+					Debug.LogError("CardManager-The level specified for the card " + name + " is too high. Using maximum allowed value instead.");
+					level = CardManager.Instance.getMaxCardLevelForThisRarity( rarity );
+					cardPropertyValue = cardProperty.baseValue + level * cardProperty.upgradeValue;
+				}
+				else
+				{
+					cardPropertyValue = cardProperty.baseValue + level * cardProperty.upgradeValue;
+				}
+			}
+			else
+			{
+				Debug.LogError("CardManager-The card " + name + " does not have the " + type + " property.");
+			}
+			return cardPropertyValue;
+		}
+	}
+
+	[System.Serializable]
+	public class CardProperty
+	{
+		public CardPropertyType type; 
+		public float baseValue;
+		public float upgradeValue;
+	}
+
+	[System.Serializable]
+	public class CardPropertyIcon
+	{
+		public CardPropertyType type; 
+		public Sprite icon;
 	}
 
 }
