@@ -12,9 +12,7 @@ public class CardUIDetails : MonoBehaviour {
 	[SerializeField] Text manaCost;
 
 	[Header("Level")]
-	[Tooltip("The level background is displayed on top of the card. The color of the background varies with the card rarity.")]
-	[SerializeField] Image levelBackground;
-	[Tooltip("The level text is displayed on top of the level background. For example: 'Level 5' or 'Max Level'.")]
+	[Tooltip("The level text is displayed on top of the card image. For example: 'Level 5' or 'Max Level'. The text color varies with the card rarity.")]
 	[SerializeField] Text levelText;
 
 	[Header("Progress Bar")]
@@ -54,7 +52,7 @@ public class CardUIDetails : MonoBehaviour {
 		//Level background
 		Color rarityColor;
 		ColorUtility.TryParseHtmlString (CardManager.Instance.getCardColorHexValue(cd.rarity), out rarityColor);
-		if( levelBackground != null ) levelBackground.color = rarityColor;
+		if( levelText != null ) levelText.color = rarityColor;
 
 		//Level text and numberOfCardsForUpgrade
 		int numberOfCardsForUpgrade;
