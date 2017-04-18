@@ -64,13 +64,15 @@ public class MiniMap : MonoBehaviour {
 
 	public void displayMessage( string heroName, CardManager.CardData lastCardPlayed )
 	{
-		addMessage( heroName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + lastCardPlayed.name + "</color>" );
+		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + lastCardPlayed.name.ToString().ToUpper() );
+		addMessage( heroName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + localizedCardName + "</color>" );
 	}
 
 	public void displayMessage( string heroName, CardName cardName )
 	{
 		CardManager.CardData lastCardPlayed = CardManager.Instance.getCardByName( cardName );
-		addMessage( heroName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + lastCardPlayed.name + "</color>" );
+		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + lastCardPlayed.name.ToString().ToUpper() );
+		addMessage( heroName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + localizedCardName + "</color>" );
 	}
 
 	public void displayMessage( string heroName, string message )

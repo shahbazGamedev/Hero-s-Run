@@ -19,8 +19,14 @@ public class CardDetailPopup : MonoBehaviour {
 
 	public void configureCard( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
-		topPanelText.text = string.Format("Level {0} {1}", pcd.level, pcd.name );
+		//Title
+		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + pcd.name.ToString().ToUpper() );
+		topPanelText.text = string.Format("Level {0} {1}", pcd.level, localizedCardName );
+		//Card
 		card.GetComponent<CardUIDetails>().configureCard( pcd, cd );
+		//Description
+		string localizedCardDescription = LocalizationManager.Instance.getText( "CARD_DESCRIPTION_" + pcd.name.ToString().ToUpper() );
+		descriptionText.text = localizedCardDescription;
 		//Rarity
 		Color rarityColor;
 		ColorUtility.TryParseHtmlString (CardManager.Instance.getCardColorHexValue(cd.rarity), out rarityColor);

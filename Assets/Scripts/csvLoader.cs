@@ -30,7 +30,14 @@ public class csvLoader {
 				//Commas in the text are identified by <comma>
 				text = text.Replace("<comma>", "," );
 				//Debug.Log( "row: " + i + " " + rowContent[0] + ", " + rowContent[languageIndex] );
-				gameText.Add( rowContent[0].Trim (), text );
+				if( !gameText.ContainsKey( rowContent[0].Trim() ) )
+				{
+					gameText.Add( rowContent[0].Trim (), text );
+				}
+				else
+				{
+					Debug.LogWarning("csvLoader-The game text identifier, " + rowContent[0].Trim () + ", already exists in the dictionary. Skipping it.");
+				}
 			}
 		}
 		return gameText;

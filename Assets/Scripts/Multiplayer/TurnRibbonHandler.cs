@@ -71,7 +71,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		cardImage.sprite = cardData.icon;
 		//Card name text and mana cost text
 		Text[] buttonTexts = cardButton.GetComponentsInChildren<Text>();
-		buttonTexts[0].text = cardData.name.ToString();
+		buttonTexts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + cardData.name.ToString().ToUpper() );
 		buttonTexts[1].text = cardData.manaCost.ToString();
 
 		turnRibbonList.Add(cardData);
@@ -83,7 +83,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		nextCardImage.sprite = cardData.icon;
 		//Card name text and mana cost text
 		Text[] texts = nextCardImage.GetComponentsInChildren<Text>();
-		texts[0].text = cardData.name.ToString();
+		texts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + cardData.name.ToString().ToUpper() );
 		texts[1].text = cardData.manaCost.ToString();
 		this.nextCard = cardData;
 	}
@@ -152,7 +152,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		buttonOfCardPlayed.GetComponent<Image>().sprite = nextCard.icon;
 		//Card name text and mana cost text
 		Text[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<Text>();
-		buttonTexts[0].text = nextCard.name.ToString();
+		buttonTexts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + nextCard.name.ToString().ToUpper() );
 		buttonTexts[1].text = nextCard.manaCost.ToString();
 
 		//In the turn-ribbon list, replace the card played by the card held in Next
