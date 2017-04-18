@@ -15,10 +15,15 @@ public class CardDetailPopup : MonoBehaviour {
 	[Header("Properties Panel")]
 	[SerializeField] RectTransform propertiesPanel;
 	[SerializeField] GameObject cardPropertyPrefab;
+	[Header("XP Granted Panel")]
+	[SerializeField] GameObject xpPanel;
+	[SerializeField] Text xpTitleText;
+	[SerializeField] Text xpValueText;
 	[Header("Upgrade Button")]
 	[SerializeField] Button upgradeButton;
 	[SerializeField] Text upgradeButtonText;
 	[SerializeField] Text upgradeCostText;
+	[SerializeField] Image coinIcon; //The coin icon is hidden when the card is Maxed Out
 
 	public void configureCard( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
@@ -64,6 +69,18 @@ public class CardDetailPopup : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Configures the XP panel. The XP panel is only shown when the player can upgrade.
+	/// </summary>
+	/// <param name="pcd">Pcd.</param>
+	/// <param name="cd">Cd.</param>
+	void configureXPPanel( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
+	{
+		xpPanel.SetActive( true );
+		xpTitleText.text = LocalizationManager.Instance.getText("CARD_XP_GRANTED_ON_UPGRADE");
+		xpValueText.text = string.Format("{0:n0}", CardManager.Instance.getXPGainedAfterUpgrading( pcd.level + 1, cd.rarity ) );
+	}
+
+	/// <summary>
 	/// Configures the upgrade button. To allow upgrading we need to validate these conditions:
 	/// a) The card must not be maxed out
 	/// b) The player has enough coin to pay.
@@ -73,6 +90,8 @@ public class CardDetailPopup : MonoBehaviour {
 	/// <param name="cd">Card data.</param>
 	void configureUpgradeButton( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
+		xpPanel.SetActive( false );
+		coinIcon.gameObject.SetActive( true );
 		upgradeButtonText.text = "Upgrade";
 		int numberOfCardsForUpgrade;
 		int upgradeCost;
@@ -98,6 +117,7 @@ public class CardDetailPopup : MonoBehaviour {
 					//The player has enough coins.
 					upgradeButton.interactable = true;
 					upgradeCostText.color = upgradeButton.colors.normalColor;
+					configureXPPanel( pcd, cd );
 				}
 				else
 				{
@@ -120,6 +140,7 @@ public class CardDetailPopup : MonoBehaviour {
 			upgradeButton.interactable = false;
 			upgradeCostText.text = "Maxed Out";
 			upgradeCostText.color = upgradeButton.colors.disabledColor;
+			coinIcon.gameObject.SetActive( false );
 		}
 	}
 
