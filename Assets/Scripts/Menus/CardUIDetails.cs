@@ -83,6 +83,7 @@ public class CardUIDetails : MonoBehaviour {
 				progressBarBackground.color = NOT_ENOUGH_CARDS_TO_UPGRADE;
 				progressBarIndicator.color = NOT_ENOUGH_CARDS_TO_UPGRADE;
 			}
+			progressBarIndicator.overrideSprite = null;
 		}
 		else
 		{

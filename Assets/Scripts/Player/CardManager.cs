@@ -246,6 +246,23 @@ public class CardManager : MonoBehaviour {
 		}
 	}
 
+	public string getCardPropertyValueType( CardPropertyType type )
+	{
+   		switch (type)
+		{
+	        case CardPropertyType.DURATION:
+	             return "Sec.";
+	                
+			case CardPropertyType.RANGE:
+ 			case CardPropertyType.AIM_RANGE:
+ 			case CardPropertyType.RADIUS:
+ 	             return "M";
+               
+			default:
+				return string.Empty;               
+		}
+	}
+
 	/// <summary>
 	/// Card data. The card data only handles data that never changes.
 	/// </summary>

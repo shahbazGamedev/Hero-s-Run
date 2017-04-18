@@ -25,7 +25,7 @@ public class CardPropertyUI : MonoBehaviour {
 		}
 		propertyIcon.sprite = CardManager.Instance.getCardPropertyIcon( cp.type );
 		propertyTitle.text = LocalizationManager.Instance.getText( "CARD_PROPERTIES_" + cp.type.ToString() );
-		propertyValue.text = cd.getCardPropertyValue( cp.type, pcd.level ).ToString();
+		propertyValue.text = string.Format( cd.getCardPropertyValue( cp.type, pcd.level ).ToString() + " {0}", CardManager.Instance.getCardPropertyValueType( cp.type ) );
 	}
 	
 }
