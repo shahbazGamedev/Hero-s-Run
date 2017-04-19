@@ -68,12 +68,31 @@ public class PlayerDeck {
 	}
  
 	/// <summary>
-	/// Returns a list of all of the cards owned by the player that are not in his battle deck.
+	/// Returns a list of all of the cards owned by the player that are not in his battle deck sorted according to parameter specified.
 	/// </summary>
 	/// <returns>The card deck.</returns>
-	public List<PlayerCardData> getCardDeck()
+	public List<CardManager.CardData> getCardDeck( CardSortMode cardSortMode )
 	{
-		return playerCardDataList.FindAll( card => card.inBattleDeck == false );
+		List<PlayerCardData> playerCardDeck = playerCardDataList.FindAll( card => card.inBattleDeck == false );
+		List<CardManager.CardData> cardDeck = new List<CardManager.CardData>();
+		for( int i = 0; i < playerCardDeck.Count; i++ )
+		{
+			cardDeck.Add( CardManager.Instance.getCardByName( playerCardDeck[i].name ) );
+		}
+
+		if( cardSortMode == CardSortMode.BY_MANA_COST )
+		{
+			cardDeck.Sort((x, y) => x.manaCost.CompareTo(y.manaCost));
+		}
+		else if( cardSortMode == CardSortMode.BY_RARITY )
+		{
+			cardDeck.Sort((x, y) => x.rarity.CompareTo(y.rarity));
+		}
+		else
+		{
+			Debug.LogError("PlayerDeck-The card sort mode specified " + cardSortMode + " is not handled by getCardDeck."); 
+		}
+		return cardDeck;
 	}
 
 	public int getTotalNumberOfCards()

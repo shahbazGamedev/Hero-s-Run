@@ -19,7 +19,8 @@ class CardCollectionManager : MonoBehaviour {
 	[SerializeField] Text cardCollectionTitle;
 	[SerializeField] Transform cardCollectionHolder;
 	[SerializeField] Text cardFoundText;
-
+	[SerializeField] Text sortCards;
+	CardSortMode cardSortMode = CardSortMode.BY_RARITY;
 	bool levelLoading = false;
 	
 
@@ -65,17 +66,18 @@ class CardCollectionManager : MonoBehaviour {
 		cardCollectionTitle.text = LocalizationManager.Instance.getText("CARD_COLLECTION_TITLE");
 		string cardFound = LocalizationManager.Instance.getText("CARD_FOUND");
 		cardFoundText.text = string.Format( cardFound, GameManager.Instance.playerDeck.getTotalNumberOfCards().ToString() + "/" + CardManager.Instance.getTotalNumberOfCards().ToString() );
-		List<PlayerDeck.PlayerCardData> cardDeckList = GameManager.Instance.playerDeck.getCardDeck();
+		sortCards.text = LocalizationManager.Instance.getText("CARD_SORT_" + cardSortMode.ToString() );
+		List<CardManager.CardData> cardDeckList = GameManager.Instance.playerDeck.getCardDeck( cardSortMode );
 		for( int i = 0; i < cardDeckList.Count; i++ )
 		{
 			createCollectionCard( i, cardDeckList[i] );
 		}
 	}
 
-	void createCollectionCard( int index, PlayerDeck.PlayerCardData pcd )
+	void createCollectionCard( int index, CardManager.CardData cd )
 	{
 		GameObject go = (GameObject)Instantiate(cardPrefab);
-		CardManager.CardData cd = CardManager.Instance.getCardByName( pcd.name );
+		PlayerDeck.PlayerCardData pcd = GameManager.Instance.playerDeck.getCardByName( cd.name );
 		go.transform.SetParent(cardCollectionHolder,false);
 		Button cardButton = go.GetComponent<Button>();
 		cardButton.onClick.RemoveListener(() => OnClickCollectionCard(index,pcd, cd));
@@ -88,6 +90,34 @@ class CardCollectionManager : MonoBehaviour {
 		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( pcd, cd );
 		cardDetailPopup.SetActive( true );
 		scaleUp();
+	}
+
+	public void OnClickSortCards()
+	{
+		//Change the sort mode
+		cardSortMode = getNextCardSortMode();
+
+		//Remove previous cards
+		for( int i = cardCollectionHolder.transform.childCount-1; i >= 0; i-- )
+		{
+			Transform child = cardCollectionHolder.transform.GetChild( i );
+			GameObject.Destroy( child.gameObject );
+		}
+
+		//Re-create card collection
+		createCardCollection();
+	}
+
+	CardSortMode getNextCardSortMode()
+	{
+		if( cardSortMode == CardSortMode.BY_MANA_COST )
+		{
+			return CardSortMode.BY_RARITY;
+		}
+		else
+		{
+			return CardSortMode.BY_MANA_COST;
+		}
 	}
 
 	void scaleUp()

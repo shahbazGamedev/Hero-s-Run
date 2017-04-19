@@ -23,6 +23,14 @@ public enum CardPropertyType
 	
 }
 
+public enum CardSortMode
+{
+	BY_RARITY = 0,
+	BY_MANA_COST = 1
+}
+
+
+
 /// <summary>
 /// Card name.
 /// Use numbers 0 to 99 for Common, 100 to 199 for Rare, 200 to 299 for Epic and 300 to 399 for Legendary.
