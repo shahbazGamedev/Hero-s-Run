@@ -6,14 +6,18 @@ using UnityEngine.SceneManagement;
 
 class CardCollectionManager : MonoBehaviour {
 
+	[Header("Battle Deck")]
 	[Tooltip("TBC.")]
-	[SerializeField] Transform content;
+	[SerializeField] Transform battleDeckCardHolder;
 	[Tooltip("TBC.")]
 	[SerializeField] GameObject cardPrefab;
 	[SerializeField] Text battleDeckTitle;
 	[SerializeField] Text averageManaCost;
 	[Header("Texts")]
 	[SerializeField] GameObject cardDetailPopup;
+	[Header("Card Collection")]
+	[SerializeField] Text cardCollectionTitle;
+	[SerializeField] Transform cardCollectionHolder;
 
 	bool levelLoading = false;
 	
@@ -22,28 +26,61 @@ class CardCollectionManager : MonoBehaviour {
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
+		createBattleDeck();
+		createCardCollection();
+	}
 
+	void createBattleDeck()
+	{
+		battleDeckTitle.text = LocalizationManager.Instance.getText("CARD_BATTLE_DECK_TITLE");
 		List<PlayerDeck.PlayerCardData> battleDeckList = GameManager.Instance.playerDeck.getBattleDeck();
 		for( int i = 0; i < battleDeckList.Count; i++ )
 		{
-			createCard( i, battleDeckList[i] );
+			createBattleDeckCard( i, battleDeckList[i] );
 		}
-		battleDeckTitle.text = "Battle Deck";
 		averageManaCost.text = string.Format("Average Mana Cost: {0}", GameManager.Instance.playerDeck.getAverageManaCost().ToString("N1") );
 	}
 
-	void createCard( int index, PlayerDeck.PlayerCardData pcd )
+	void createBattleDeckCard( int index, PlayerDeck.PlayerCardData pcd )
 	{
 		GameObject go = (GameObject)Instantiate(cardPrefab);
 		CardManager.CardData cd = CardManager.Instance.getCardByName( pcd.name );
-		go.transform.SetParent(content,false);
+		go.transform.SetParent(battleDeckCardHolder,false);
 		Button cardButton = go.GetComponent<Button>();
-		cardButton.onClick.RemoveListener(() => OnClickCardIcon(index,pcd, cd));
-		cardButton.onClick.AddListener(() => OnClickCardIcon(index,pcd, cd));
+		cardButton.onClick.RemoveListener(() => OnClickBattleCard(index,pcd, cd));
+		cardButton.onClick.AddListener(() => OnClickBattleCard(index,pcd, cd));
 		go.GetComponent<CardUIDetails>().configureCard( pcd, cd );
 	}
 
-	public void OnClickCardIcon( int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
+	public void OnClickBattleCard( int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
+	{
+		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( pcd, cd );
+		cardDetailPopup.SetActive( true );
+		scaleUp();
+	}
+
+	void createCardCollection()
+	{
+		cardCollectionTitle.text = LocalizationManager.Instance.getText("CARD_COLLECTION_TITLE");
+		List<PlayerDeck.PlayerCardData> cardDeckList = GameManager.Instance.playerDeck.getCardDeck();
+		for( int i = 0; i < cardDeckList.Count; i++ )
+		{
+			createCollectionCard( i, cardDeckList[i] );
+		}
+	}
+
+	void createCollectionCard( int index, PlayerDeck.PlayerCardData pcd )
+	{
+		GameObject go = (GameObject)Instantiate(cardPrefab);
+		CardManager.CardData cd = CardManager.Instance.getCardByName( pcd.name );
+		go.transform.SetParent(cardCollectionHolder,false);
+		Button cardButton = go.GetComponent<Button>();
+		cardButton.onClick.RemoveListener(() => OnClickCollectionCard(index,pcd, cd));
+		cardButton.onClick.AddListener(() => OnClickCollectionCard(index,pcd, cd));
+		go.GetComponent<CardUIDetails>().configureCard( pcd, cd );
+	}
+
+	public void OnClickCollectionCard( int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
 		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( pcd, cd );
 		cardDetailPopup.SetActive( true );

@@ -58,12 +58,24 @@ public class PlayerDeck {
 
 	}
 
+	/// <summary>
+	/// Returns a list of cards in the player's battle deck.
+	/// </summary>
+	/// <returns>The battle deck.</returns>
 	public List<PlayerCardData> getBattleDeck()
 	{
-		List<PlayerCardData> battleDeck = playerCardDataList.FindAll( card => card.inBattleDeck == true );
-		return battleDeck;
+		return playerCardDataList.FindAll( card => card.inBattleDeck == true );
 	}
  
+	/// <summary>
+	/// Returns a list of all of the cards owned by the player that are not in his battle deck.
+	/// </summary>
+	/// <returns>The card deck.</returns>
+	public List<PlayerCardData> getCardDeck()
+	{
+		return playerCardDataList.FindAll( card => card.inBattleDeck == false );
+	}
+
 	public float getAverageManaCost()
 	{
 		List<PlayerCardData> battleDeck = getBattleDeck();
