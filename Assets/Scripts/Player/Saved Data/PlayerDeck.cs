@@ -76,6 +76,11 @@ public class PlayerDeck {
 		return playerCardDataList.FindAll( card => card.inBattleDeck == false );
 	}
 
+	public int getTotalNumberOfCards()
+	{
+		return playerCardDataList.Count;
+	}
+
 	public float getAverageManaCost()
 	{
 		List<PlayerCardData> battleDeck = getBattleDeck();

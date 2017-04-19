@@ -18,6 +18,7 @@ class CardCollectionManager : MonoBehaviour {
 	[Header("Card Collection")]
 	[SerializeField] Text cardCollectionTitle;
 	[SerializeField] Transform cardCollectionHolder;
+	[SerializeField] Text cardFoundText;
 
 	bool levelLoading = false;
 	
@@ -62,6 +63,8 @@ class CardCollectionManager : MonoBehaviour {
 	void createCardCollection()
 	{
 		cardCollectionTitle.text = LocalizationManager.Instance.getText("CARD_COLLECTION_TITLE");
+		string cardFound = LocalizationManager.Instance.getText("CARD_FOUND");
+		cardFoundText.text = string.Format( cardFound, GameManager.Instance.playerDeck.getTotalNumberOfCards().ToString() + "/" + CardManager.Instance.getTotalNumberOfCards().ToString() );
 		List<PlayerDeck.PlayerCardData> cardDeckList = GameManager.Instance.playerDeck.getCardDeck();
 		for( int i = 0; i < cardDeckList.Count; i++ )
 		{
