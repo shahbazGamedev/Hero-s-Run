@@ -25,7 +25,15 @@ public class CardPropertyUI : MonoBehaviour {
 		}
 		propertyIcon.sprite = CardManager.Instance.getCardPropertyIcon( cp.type );
 		propertyTitle.text = LocalizationManager.Instance.getText( "CARD_PROPERTIES_" + cp.type.ToString() );
-		propertyValue.text = string.Format( cd.getCardPropertyValue( cp.type, pcd.level ).ToString() + " {0}", CardManager.Instance.getCardPropertyValueType( cp.type ) );
+		if( cp.type == CardPropertyType.ACCURACY )
+		{
+			//Convert to percentage
+			float valueAsPercentage = 1f - cd.getCardPropertyValue( cp.type, pcd.level );
+			propertyValue.text = string.Format("{0:P}", valueAsPercentage );
+		}
+		else
+		{
+			propertyValue.text = string.Format( cd.getCardPropertyValue( cp.type, pcd.level ).ToString() + " {0}", CardManager.Instance.getCardPropertyValueType( cp.type ) );
+		}
 	}
-	
 }

@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 class CardCollectionManager : MonoBehaviour {
 
 	[Header("Battle Deck")]
+	[SerializeField] GameObject closeButton;
 	[Tooltip("TBC.")]
 	[SerializeField] Transform battleDeckCardHolder;
 	[Tooltip("TBC.")]
@@ -56,6 +57,8 @@ class CardCollectionManager : MonoBehaviour {
 
 	public void OnClickBattleCard( int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
+		//Hide the close button since we are showing the popup.
+		closeButton.SetActive( false );
 		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( pcd, cd );
 		cardDetailPopup.SetActive( true );
 		scaleUp();
@@ -87,6 +90,8 @@ class CardCollectionManager : MonoBehaviour {
 
 	public void OnClickCollectionCard( int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
+		//Hide the close button since we are showing the popup.
+		closeButton.SetActive( false );
 		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( pcd, cd );
 		cardDetailPopup.SetActive( true );
 		scaleUp();
@@ -131,6 +136,13 @@ class CardCollectionManager : MonoBehaviour {
 	{
 		LeanTween.scale( cardDetailPopup.GetComponent<RectTransform>(), Vector3.one, 0.25f );
 	}
+
+	public void OnClickShowCloseButton()
+	{
+		//Popup has been closed. Show the scene close button again.
+		closeButton.SetActive( true );
+	}
+
 
 	public void OnClickOpenMainMenu()
 	{
