@@ -8,6 +8,7 @@ public class PlayerDataManager : MonoBehaviour {
 	public PlayerProfile playerProfile;
 	public PlayerStatistics playerStatistics;
 	public PlayerDeck playerDeck;
+	public PlayerFriends playerFriends;
 
 	// Use this for initialization
 	void Awake ()
@@ -61,5 +62,17 @@ public class PlayerDataManager : MonoBehaviour {
 
 		}
 		GameManager.Instance.playerDeck = playerDeck;
+
+		if( PlayerStatsManager.Instance.getPlayerFriends() != string.Empty )
+		{
+			 playerFriends = JsonUtility.FromJson<PlayerFriends>(PlayerStatsManager.Instance.getPlayerFriends());
+		}
+		else
+		{
+			playerFriends = new PlayerFriends();
+			playerFriends.createNewPlayerFriends();
+
+		}
+		GameManager.Instance.playerFriends = playerFriends;
 	}
 }

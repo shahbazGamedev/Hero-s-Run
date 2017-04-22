@@ -85,6 +85,7 @@ public class GameManager {
 	public PlayerProfile playerProfile;
 	public PlayerStatistics playerStatistics;
 	public PlayerDeck playerDeck;
+	public PlayerFriends playerFriends;
 	PlayMode playMode = PlayMode.PlayOthers;
 
 	public static GameManager Instance

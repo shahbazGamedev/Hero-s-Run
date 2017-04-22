@@ -118,6 +118,7 @@ public class PlayerStatsManager {
 	string playerProfile = String.Empty; //Player profile data such as current XP amount
 	string playerStatistics = String.Empty; //Player statistics data such as win/loss ratio, current win streak, best win streak, etc.
 	string playerDeck = String.Empty; //Player cards. Specifies the card's level, whether it is part of the battle deck or not, etc.
+	string playerFriends = String.Empty; //List of player friends.
 
 	public static PlayerStatsManager Instance
 	{
@@ -955,6 +956,16 @@ public class PlayerStatsManager {
 		return playerDeck;
 	}
 
+	public void setPlayerFriends( string playerFriends )
+	{
+		this.playerFriends = playerFriends;
+	}
+
+	public string getPlayerFriends()
+	{
+		return playerFriends;
+	}
+
 	public void loadPlayerStats()
 	{
 		try
@@ -1059,6 +1070,7 @@ public class PlayerStatsManager {
 			playerProfile = PlayerPrefs.GetString("playerProfile", "" );
 			playerStatistics = PlayerPrefs.GetString("playerStatistics", "" );
 			playerDeck = PlayerPrefs.GetString("playerDeck", "" );
+			playerFriends = PlayerPrefs.GetString("playerFriends", "" );
 			//Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " Next Episode To Complete: " + nextEpisodeToComplete + " Highest Episode Completed: " + highestEpisodeCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
@@ -1151,6 +1163,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetString( "playerProfile", playerProfile );
 		PlayerPrefs.SetString( "playerStatistics", playerStatistics );
 		PlayerPrefs.SetString( "playerDeck", playerDeck );
+		PlayerPrefs.SetString( "playerFriends", playerFriends );
 		PlayerPrefs.Save();
 		//Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
 	}
@@ -1216,6 +1229,8 @@ public class PlayerStatsManager {
 			PlayerPrefs.SetString( "playerStatistics", "" );
 			playerDeck = string.Empty;
 			PlayerPrefs.SetString( "playerDeck", "" );
+			playerFriends = string.Empty;
+			PlayerPrefs.SetString( "playerFriends", "" );
 			PlayerPrefs.Save();
 			Debug.Log ("PlayerStatsManager-resetPlayerStats: called." );
 		}
