@@ -6,9 +6,9 @@ using UnityEngine.SceneManagement;
 
 class CardCollectionManager : MonoBehaviour {
 
+	[Header("General")]
+	[SerializeField] GameObject topPanel;
 	[Header("Battle Deck")]
-	[SerializeField] GameObject closeButton;
-	[Tooltip("TBC.")]
 	[SerializeField] Transform battleDeckCardHolder;
 	[Tooltip("TBC.")]
 	[SerializeField] GameObject cardPrefab;
@@ -22,6 +22,10 @@ class CardCollectionManager : MonoBehaviour {
 	[SerializeField] Text cardFoundText;
 	[SerializeField] Text sortCards;
 	CardSortMode cardSortMode = CardSortMode.BY_RARITY;
+	[Header("Cards to be Found")]
+	[SerializeField] Text cardsToBeFoundTitle;
+	[SerializeField] Transform cardsToBeFoundHolder;
+	[SerializeField] GameObject cardToBeFoundPrefab;
 	bool levelLoading = false;
 	
 
@@ -31,8 +35,10 @@ class CardCollectionManager : MonoBehaviour {
 		Handheld.StopActivityIndicator();
 		createBattleDeck();
 		createCardCollection();
+		createCardsToBeFoundSection();
 	}
 
+	#region Battle Deck
 	void createBattleDeck()
 	{
 		battleDeckTitle.text = LocalizationManager.Instance.getText("CARD_BATTLE_DECK_TITLE");
@@ -57,13 +63,15 @@ class CardCollectionManager : MonoBehaviour {
 
 	public void OnClickBattleCard( int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
-		//Hide the close button since we are showing the popup.
-		closeButton.SetActive( false );
+		//Hide the top panel since we are showing the popup.
+		topPanel.SetActive( false );
 		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( pcd, cd );
 		cardDetailPopup.SetActive( true );
 		scaleUp();
 	}
+	#endregion
 
+	#region Card Collection
 	void createCardCollection()
 	{
 		cardCollectionTitle.text = LocalizationManager.Instance.getText("CARD_COLLECTION_TITLE");
@@ -90,8 +98,8 @@ class CardCollectionManager : MonoBehaviour {
 
 	public void OnClickCollectionCard( int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
-		//Hide the close button since we are showing the popup.
-		closeButton.SetActive( false );
+		//Hide the top panel since we are showing the popup.
+		topPanel.SetActive( false );
 		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( pcd, cd );
 		cardDetailPopup.SetActive( true );
 		scaleUp();
@@ -124,6 +132,36 @@ class CardCollectionManager : MonoBehaviour {
 			return CardSortMode.BY_MANA_COST;
 		}
 	}
+	#endregion
+
+	#region Cards to be Found
+	void createCardsToBeFoundSection()
+	{
+		cardsToBeFoundTitle.text = LocalizationManager.Instance.getText("CARD_TO_BE_FOUND_TITLE");
+		List<CardManager.CardData> cardDeckList = GameManager.Instance.playerDeck.getCardDeck( cardSortMode );
+		for( int i = 0; i < cardDeckList.Count; i++ )
+		{
+			createCardToBeFound( i, cardDeckList[i] );
+		}
+	}
+
+	void createCardToBeFound( int index, CardManager.CardData cd )
+	{
+		GameObject go = (GameObject)Instantiate(cardToBeFoundPrefab);
+		go.transform.SetParent(cardsToBeFoundHolder,false);
+		Button cardButton = go.GetComponent<Button>();
+		cardButton.onClick.RemoveListener(() => OnClickCardToBeFound(index, cd));
+		cardButton.onClick.AddListener(() => OnClickCardToBeFound(index, cd));
+		Image cardImage = cardButton.GetComponentInChildren<Image>();
+		cardImage.sprite = cd.icon;
+	}
+
+	public void OnClickCardToBeFound( int index, CardManager.CardData cd )
+	{
+		//Not implemented
+		Debug.Log("OnClickCardToBeFound " + cd.name );
+	}
+	#endregion
 
 	void scaleUp()
 	{
@@ -139,8 +177,8 @@ class CardCollectionManager : MonoBehaviour {
 
 	public void OnClickShowCloseButton()
 	{
-		//Popup has been closed. Show the scene close button again.
-		closeButton.SetActive( true );
+		//Popup has been closed. Show the top panel again.
+		topPanel.SetActive( true );
 	}
 
 

@@ -40,6 +40,11 @@ public class StasisController : CardSpawnedObject {
 				if (Physics.Raycast(new Vector3( transform.position.x, 10f, transform.position.z ), Vector3.down, out hit, 15.0F ))
 				{
 					transform.position = new Vector3( transform.position.x, hit.point.y + DISTANCE_ABOVE_GROUND, transform.position.z );
+					Debug.LogWarning("StasisController-collider below stasis is " + hit.collider.name + ", the trapped player is " + affectedPlayerControl.name + " and the ground height is " + hit.point.y );
+				}
+				else
+				{
+					Debug.LogWarning("StasisController-there is no ground found below stasis while trapping " + affectedPlayerControl.name );
 				}
 				//Make the player a child of the Statis Sphere
 				affectedPlayerTransform.SetParent( transform );
