@@ -59,6 +59,20 @@ public class PlayerDeck {
 	}
 
 	/// <summary>
+	/// Returns the complete list of cards owned by the player.
+	/// </summary>
+	/// <returns>The player's complete card deck.</returns>
+	public List<CardManager.CardData> getPlayerCardDeck()
+	{
+		List<CardManager.CardData> completeCardDeck = new List<CardManager.CardData>();
+		for( int i = 0; i < playerCardDataList.Count; i++ )
+		{
+			completeCardDeck.Add( CardManager.Instance.getCardByName( playerCardDataList[i].name ) );
+		}
+		return completeCardDeck;
+	}
+
+	/// <summary>
 	/// Returns a list of cards in the player's battle deck.
 	/// </summary>
 	/// <returns>The battle deck.</returns>

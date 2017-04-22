@@ -183,6 +183,11 @@ public class CardManager : MonoBehaviour {
 		return cardDataList.Exists(cardData => cardData.name == name );
 	}
 
+	public List<CardData> getAllCards()
+	{
+		return cardDataList;
+	}
+
 	public int getTotalNumberOfCards()
 	{
 		return cardDataList.Count;

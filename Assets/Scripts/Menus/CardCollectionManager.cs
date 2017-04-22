@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 class CardCollectionManager : MonoBehaviour {
 
@@ -138,10 +139,12 @@ class CardCollectionManager : MonoBehaviour {
 	void createCardsToBeFoundSection()
 	{
 		cardsToBeFoundTitle.text = LocalizationManager.Instance.getText("CARD_TO_BE_FOUND_TITLE");
-		List<CardManager.CardData> cardDeckList = GameManager.Instance.playerDeck.getCardDeck( cardSortMode );
-		for( int i = 0; i < cardDeckList.Count; i++ )
+		var cardsNotFoundList = CardManager.Instance.getAllCards().Except( GameManager.Instance.playerDeck.getPlayerCardDeck() );
+		int index = 0;
+		foreach( CardManager.CardData cardData in cardsNotFoundList )
 		{
-			createCardToBeFound( i, cardDeckList[i] );
+			createCardToBeFound( index, cardData );
+			index++;
 		}
 	}
 
