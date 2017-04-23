@@ -4,9 +4,6 @@ using UnityEngine;
 using System.Linq;
 
 [System.Serializable]
-/// <summary>
-/// Player deck.
-/// </summary>
 public class PlayerFriends {
 
 	[SerializeField] List<OnlineFriendData> onlineFriendDataList = new List<OnlineFriendData>();
@@ -22,6 +19,16 @@ public class PlayerFriends {
 	public List<OnlineFriendData> getFriendList()
 	{
 		return onlineFriendDataList;
+	}
+
+	public string[] getFriendNames()
+	{
+		string[] friendNamesArray = new string[onlineFriendDataList.Count];
+		for( int i = 0; i < onlineFriendDataList.Count; i++ )
+		{
+			friendNamesArray[i] = onlineFriendDataList[i].userName;
+		}
+		return friendNamesArray;
 	}
 
 	public void serializePlayerFriends( bool saveImmediately )
@@ -45,8 +52,13 @@ public class PlayerFriends {
 	[System.Serializable]
 	public class OnlineFriendData
 	{
-		public string userName { get; set; }
-		public int level { get; set; }
+		public string userName;
+		public int level;
+
+		public void print()
+		{
+			Debug.Log("OnlineFriendData-userName: " + userName + " Level: " + level );
+		}
 	}
 
 }

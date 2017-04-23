@@ -89,6 +89,13 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 
 		//Limit the number of messages that are cached
 		this.chatClient.MessageLimit = HistoryLengthToFetch;
+
+		//Add friends so we can get their online status. See OnStatusUpdate for more details.
+		string[] friendNamesArray = GameManager.Instance.playerFriends.getFriendNames();
+		if( friendNamesArray.Length > 0 )
+		{
+			chatClient.AddFriends( friendNamesArray );
+		}
 	}
 	
 	public void OnDisconnected()
@@ -124,9 +131,9 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 
 	public void Update()
 	{
-		if (this.chatClient != null)
+		if (chatClient != null)
 		{
-			this.chatClient.Service(); // make sure to call this regularly! it limits effort internally, so calling often is ok!
+			chatClient.Service(); // make sure to call this regularly! it limits effort internally, so calling often is ok!
 		}
 	}
 
@@ -159,11 +166,6 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		
 		Debug.LogWarning("status: " + string.Format("{0} is {1}. Msg:{2}", user, status, message));
 		
-		/*if (friendListItemLUT.ContainsKey(user))
-		{
-			FriendItem _friendItem = friendListItemLUT[user];
-			if ( _friendItem!=null) _friendItem.OnFriendStatusUpdate(status,gotMessage,message);
-		}*/
 	}
 
 	/// <summary>To avoid that the Editor becomes unresponsive, disconnect all Photon connections in OnApplicationQuit.</summary>

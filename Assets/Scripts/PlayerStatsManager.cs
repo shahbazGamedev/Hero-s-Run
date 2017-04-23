@@ -118,7 +118,7 @@ public class PlayerStatsManager {
 	string playerProfile = String.Empty; //Player profile data such as current XP amount
 	string playerStatistics = String.Empty; //Player statistics data such as win/loss ratio, current win streak, best win streak, etc.
 	string playerDeck = String.Empty; //Player cards. Specifies the card's level, whether it is part of the battle deck or not, etc.
-	string playerFriends = String.Empty; //List of player friends.
+	string playerFriends = String.Empty; //List of player's friends.
 
 	public static PlayerStatsManager Instance
 	{
