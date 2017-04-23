@@ -28,6 +28,44 @@ public class FriendUIDetails : MonoBehaviour {
 		}
 		userName.text = fd.userName;
 		levelText.text = fd.level.ToString();
+		configureStatus( fd );
+	}
+
+	void configureStatus( PlayerFriends.OnlineFriendData fd )
+	{
+		switch ( fd.status )
+		{
+			//Offline
+			case 0:
+				onlineText.text = "Offline";;
+				onlineStatusIcon.color = Color.red;
+			break;
+
+			//Invisible
+			case 1:
+				onlineText.text = "Invisible";;
+				onlineStatusIcon.color = Color.red;
+			break;
+			
+			//Online
+			case 2:
+				onlineText.text = "Online";;
+				onlineStatusIcon.color = Color.green;
+			break;
+
+			//Away
+			case 3:
+				onlineText.text = "Away";;
+				onlineStatusIcon.color = Color.yellow;
+			break;
+
+			//DND
+			case 4:
+				onlineText.text = "Do Not Disturb";
+				onlineStatusIcon.color = Color.blue;
+			break;
+		}
+
 	}
 
 	public void OnClickInviteFriend()

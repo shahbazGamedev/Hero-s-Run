@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using Photon;
 
 public enum InvitationType
- {
+{
 	INVITE_FRIEND = 1,
 	INVITATION_ACCEPTED = 2,
 	INVITATION_DECLINED = 3
@@ -163,9 +163,8 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	/// <param name="message">Message that user set.</param>
 	public void OnStatusUpdate(string user, int status, bool gotMessage, object message)
 	{
-		
 		Debug.LogWarning("status: " + string.Format("{0} is {1}. Msg:{2}", user, status, message));
-		
+		GameManager.Instance.playerFriends.updateStatus( user, status );
 	}
 
 	/// <summary>To avoid that the Editor becomes unresponsive, disconnect all Photon connections in OnApplicationQuit.</summary>

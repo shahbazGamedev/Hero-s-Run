@@ -31,6 +31,18 @@ public class PlayerFriends {
 		return friendNamesArray;
 	}
 
+	public void updateStatus( string userName, int status )
+	{
+		if( onlineFriendDataList.Exists(ofd => ofd.userName == userName ) )
+		{
+			onlineFriendDataList.Find(ofd => ofd.userName == userName ).status = status;
+		}
+		else
+		{
+			Debug.LogError("PlayerFriends-updateStatus: The user name specified " + userName + " is not in the friend's list.");
+		}
+	}
+
 	public void serializePlayerFriends( bool saveImmediately )
 	{
 		string json  = JsonUtility.ToJson( this );
@@ -46,6 +58,7 @@ public class PlayerFriends {
 		OnlineFriendData ofd = new OnlineFriendData();
 		ofd.userName = userName;
 		ofd.level = level;
+		ofd.status = 0;
 		onlineFriendDataList.Add(ofd);
 	}
 
@@ -54,10 +67,11 @@ public class PlayerFriends {
 	{
 		public string userName;
 		public int level;
+		public int status;
 
 		public void print()
 		{
-			Debug.Log("OnlineFriendData-userName: " + userName + " Level: " + level );
+			Debug.Log("OnlineFriendData-userName: " + userName + " Level: " + level + " Status " + status );
 		}
 	}
 
