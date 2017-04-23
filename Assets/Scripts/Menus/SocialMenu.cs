@@ -30,7 +30,6 @@ public class SocialMenu : MonoBehaviour {
 
 	void createFriend( int index, PlayerFriends.OnlineFriendData fd )
 	{
-		print("createFriend " + index + " " + fd.userName);
 		GameObject go = (GameObject)Instantiate(friendEntryPrefab);
 		go.transform.SetParent(friendsHolder,false);
 		go.GetComponent<FriendUIDetails>().configureFriend( index, fd );

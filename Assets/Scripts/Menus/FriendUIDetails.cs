@@ -8,27 +8,35 @@ public class FriendUIDetails : MonoBehaviour {
 	[SerializeField] Image playerIcon;
 	[SerializeField] Text userName;
 	[SerializeField] Text levelText;
+	[SerializeField] Button inviteButton;
 	[SerializeField] Text inviteButtonText;
+	[SerializeField] Button chatButton;
 	[SerializeField] Text chatButtonText;
 	[SerializeField] Image onlineStatusIcon;
 	[SerializeField] Text onlineText;
 	[SerializeField] Text lastOnlineText;
-	Color lightBackground = new Color( 180f/255f, 180f/255f, 180f/255f, 0.5f );
-	Color darkerBackground = Color.gray;
+	Color lightGray = new Color( 180f/255f, 180f/255f, 180f/255f, 0.5f );
+	Color darkGray = Color.gray;
 
 	public void configureFriend ( int index, PlayerFriends.OnlineFriendData fd )
 	{
 		if( index%2 == 0 )
 		{
-			background.color = darkerBackground;
+			background.color = darkGray;
 		}
 		else
 		{
-			background.color = lightBackground;
+			background.color = lightGray;
 		}
 		userName.text = fd.userName;
 		levelText.text = fd.level.ToString();
 		configureStatus( fd );
+		//if the friend is not Online (2), disable the Invite and Chat buttons
+		if( fd.status != 2 )
+		{
+			inviteButton.interactable = false;
+			chatButton.interactable = false;
+		}
 	}
 
 	void configureStatus( PlayerFriends.OnlineFriendData fd )
