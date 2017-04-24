@@ -67,6 +67,7 @@ public class PlayerFriends {
 	{
 		public string userName;
 		public int level;
+		[System.NonSerialized]
 		public int status;
 
 		public void print()
