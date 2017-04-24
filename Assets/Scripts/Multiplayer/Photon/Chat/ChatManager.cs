@@ -209,7 +209,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		inviteFriendInputField.text = string.Empty;
    	}
 
-	void sendInvitationToFriend(string friendName )
+	public void sendInvitationToFriend(string friendName )
 	{
 		Debug.Log("sendInvitationToFriend " + friendName );
 		string roomName = PlayerStatsManager.Instance.getUserName() + "_" + friendName;

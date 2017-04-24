@@ -9,6 +9,7 @@ public class SocialMenu : MonoBehaviour {
 	[Header("Social Menu")]
 	[SerializeField] Transform friendsHolder;
 	[SerializeField] GameObject friendEntryPrefab;
+	[SerializeField] InputField addFriendInputField;
 
 	bool levelLoading = false;
 
@@ -35,6 +36,18 @@ public class SocialMenu : MonoBehaviour {
 		go.GetComponent<FriendUIDetails>().configureFriend( index, fd );
 	}
 
+	/// <summary>
+	/// Raises the end edit event when the name of the friend has been entered.
+	/// </summary>
+	/// <param name="friendName">Friend name.</param>
+ 	public void OnEndEdit( string friendName )
+    {
+		if (!string.IsNullOrEmpty(friendName))
+		{
+			ChatManager.Instance.sendInvitationToFriend( friendName.Trim() );
+ 		}
+		addFriendInputField.text = string.Empty;
+   	}
 
 	public void OnClickReturnToMainMenu()
 	{
