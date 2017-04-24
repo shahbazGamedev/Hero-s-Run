@@ -29,6 +29,7 @@ public class PlayModes : MonoBehaviour {
 	public void OnClickRaceWithFriend()
 	{
 		GameManager.Instance.setPlayMode(PlayMode.PlayWithFriends);
+		StartCoroutine( loadScene(GameScenes.Social) );
 	}
 
 	public void OnClickPlayAgainstAI()
