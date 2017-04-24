@@ -35,16 +35,17 @@ public class StasisController : CardSpawnedObject {
 				affectedPlayerControl.enablePlayerControl( false );
 
 				//We want the statis sphere to float above ground.
+				//The transform Y position is at the player's feet (and so right next to the ground).
+				//We do not want to start the raycast there because of precision issues.
 				affectedPlayerControl.gameObject.layer = 2; //change temporarily to Ignore Raycast
 				RaycastHit hit;
-				if (Physics.Raycast(new Vector3( transform.position.x, 10f, transform.position.z ), Vector3.down, out hit, 15.0F ))
+				if (Physics.Raycast(new Vector3( affectedPlayerTransform.position.x, affectedPlayerTransform.position.y + 2.5f, affectedPlayerTransform.position.z ), Vector3.down, out hit, 30.0F ))
 				{
 					transform.position = new Vector3( transform.position.x, hit.point.y + DISTANCE_ABOVE_GROUND, transform.position.z );
-					Debug.LogWarning("StasisController-collider below stasis is " + hit.collider.name + ", the trapped player is " + affectedPlayerControl.name + " and the ground height is " + hit.point.y );
 				}
 				else
 				{
-					Debug.LogWarning("StasisController-there is no ground found below stasis while trapping " + affectedPlayerControl.name );
+					Debug.LogWarning("StasisController-there is no ground below the affected player: " + affectedPlayerControl.name );
 				}
 				//Make the player a child of the Statis Sphere
 				affectedPlayerTransform.SetParent( transform );

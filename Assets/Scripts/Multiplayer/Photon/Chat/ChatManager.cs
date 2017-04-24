@@ -21,9 +21,6 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	[Header("Channels")]
 	[SerializeField] string[] ChannelsToJoinOnConnect; 	// set in inspector. Channels to join automatically.
 	[SerializeField] int HistoryLengthToFetch; 			// set in inspector. Up to a certain degree, previously sent messages can be fetched for context
-	[Header("Invite Friend")]
-	[SerializeField] GameObject inviteFriendPanel;
-	[SerializeField] InputField inviteFriendInputField;
 	[Header("Invitation Received")]
 	[SerializeField] GameObject invitationReceivedPanel;
 	[SerializeField] Text invitationReceivedText;
@@ -58,7 +55,6 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		if( !PlayerStatsManager.Instance.isFirstTimePlaying() ) ChatConnect();
 
 		invitationReceivedPanel.SetActive( false );
-		inviteFriendPanel.SetActive( false );		
 		invitationStatusPanel.SetActive( false );		
 	}
 	
@@ -164,7 +160,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	public void OnStatusUpdate(string user, int status, bool gotMessage, object message)
 	{
 		Debug.LogWarning("status: " + string.Format("{0} is {1}. Msg:{2}", user, status, message));
-		GameManager.Instance.playerFriends.updateStatus( user, status );
+		if( user != PlayerStatsManager.Instance.getUserName() ) GameManager.Instance.playerFriends.updateStatus( user, status );
 	}
 
 	/// <summary>To avoid that the Editor becomes unresponsive, disconnect all Photon connections in OnApplicationQuit.</summary>
@@ -188,14 +184,6 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 
 	#region Invite Friend
 	/// <summary>
-	/// Invites a friend to play. Called by PlayModes.
-	/// </summary>
-	public void inviteFriendToPlay()
-	{
-		inviteFriendPanel.SetActive( true );
-	}
-
-	/// <summary>
 	/// Raises the end edit event when the name of the friend has been entered.
 	/// </summary>
 	/// <param name="friendName">Friend name.</param>
@@ -205,8 +193,6 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		{
 			sendInvitationToFriend( friendName.Trim() );
  		}
-		inviteFriendPanel.SetActive( false );
-		inviteFriendInputField.text = string.Empty;
    	}
 
 	public void sendInvitationToFriend(string friendName )

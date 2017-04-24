@@ -54,13 +54,13 @@ public class HeroManager : MonoBehaviour {
 	void initialiseBotSkillData()
 	{
 		//Very Low Skill (the bot never plays cards)
-		BotSkillData botSkillData = new BotSkillData( 0, 0, 0.9f, 0.9f );
+		BotSkillData botSkillData = new BotSkillData( 0, 0, 0.93f, 0.93f );
 		botSkillDataDictionary.Add(BotSkillLevel.VERY_LOW, botSkillData );
 		//Low Skill
-		botSkillData = new BotSkillData( 8, 24, 0.9f, 0.92f );
+		botSkillData = new BotSkillData( 8, 24, 0.95f, 0.95f );
 		botSkillDataDictionary.Add(BotSkillLevel.LOW, botSkillData );
 		//Medium Skill
-		botSkillData = new BotSkillData( 4, 16, 0.95f, 0.95f );
+		botSkillData = new BotSkillData( 4, 16, 0.97f, 0.97f );
 		botSkillDataDictionary.Add(BotSkillLevel.MEDIUM, botSkillData );
 		//High Skill
 		botSkillData = new BotSkillData( 2, 8, 0.99f, 0.99f );

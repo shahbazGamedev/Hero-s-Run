@@ -29,7 +29,6 @@ public class PlayModes : MonoBehaviour {
 	public void OnClickRaceWithFriend()
 	{
 		GameManager.Instance.setPlayMode(PlayMode.PlayWithFriends);
-		ChatManager.Instance.inviteFriendToPlay();
 	}
 
 	public void OnClickPlayAgainstAI()
