@@ -65,5 +65,26 @@ public class SocialMenu : MonoBehaviour {
 			SceneManager.LoadScene( (int)value );
 		}
 	}
+
+	void OnEnable()
+	{
+		ChatManager.onStatusUpdateEvent += OnStatusUpdateEvent;
+	}
+
+	void OnDisable()
+	{
+		ChatManager.onStatusUpdateEvent -= OnStatusUpdateEvent;
+	}
+
+	void OnStatusUpdateEvent( string userName, int newStatus )
+	{
+		print("OnStatusUpdateEvent " + userName + " " + newStatus );
+		FriendUIDetails fud;
+		for( int i = 0; i < friendsHolder.transform.childCount; i++ )
+		{
+			fud = friendsHolder.transform.GetChild( i ).GetComponent<FriendUIDetails>();
+			if( fud != null && fud.user == userName ) fud.configureStatus( newStatus );
+		}
+	}
 	
 }

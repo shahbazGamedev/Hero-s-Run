@@ -18,6 +18,8 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	public static ChatManager Instance;
 	ChatClient chatClient;
 
+	[Header("Online Indicator")]
+	[SerializeField] Image onlineIndicator;
 	[Header("Channels")]
 	[SerializeField] string[] ChannelsToJoinOnConnect; 	// set in inspector. Channels to join automatically.
 	[SerializeField] int HistoryLengthToFetch; 			// set in inspector. Up to a certain degree, previously sent messages can be fetched for context
@@ -27,6 +29,9 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	[Header("Invitation Status")]
 	[SerializeField] GameObject invitationStatusPanel;
 	[SerializeField] Text invitationStatusText;
+	//Event management used to notify other classes when the status for the player or a friend changes
+	public delegate void OnStatusUpdateEvent( string userName, int newStatus );
+	public static event OnStatusUpdateEvent onStatusUpdateEvent;
 
 	void Awake ()
 	{
@@ -49,7 +54,6 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 			Debug.LogError("ChatManager-You need to set the chat app ID in the PhotonServerSettings file in order to continue.");
 			return;
 		}
-		Application.runInBackground = true; // this must run in background or it will drop connection if not focussed.
 		//If this is a new player, don't try to connect to chat yet as we don't have a user name.
 		//We will connect to chat when a user name has been entered.
 		if( !PlayerStatsManager.Instance.isFirstTimePlaying() ) ChatConnect();
@@ -99,6 +103,33 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		Debug.LogWarning( PlayerStatsManager.Instance.getUserName() + " has been disconnected from chat." );
 	}
 	
+	public bool canChat()
+	{
+		return chatClient.CanChat;
+	}
+
+	void OnApplicationFocus( bool hasFocus )
+	{
+		if ( hasFocus )
+		{
+			if( !chatClient.CanChat )
+			{
+				//We are no longer connected to the chat backend. Reconnect.
+				ChatConnect();
+			}
+			else
+			{
+				//We are connected and the app is back in focus. Change our status back to Online.
+				chatClient.SetOnlineStatus(ChatUserStatus.Online);
+			}
+		}
+		else
+		{
+			chatClient.SetOnlineStatus(ChatUserStatus.Offline); // You can set your online state (without a message).
+		}
+		
+	}
+
 	public void OnSubscribed(string[] channels, bool[] results)
 	{
 		//Send a message into each channel.
@@ -160,7 +191,57 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	public void OnStatusUpdate(string user, int status, bool gotMessage, object message)
 	{
 		Debug.LogWarning("status: " + string.Format("{0} is {1}. Msg:{2}", user, status, message));
-		if( user != PlayerStatsManager.Instance.getUserName() ) GameManager.Instance.playerFriends.updateStatus( user, status );
+		if( user == PlayerStatsManager.Instance.getUserName() )
+		{
+			configureStatus( status );
+		}
+		else
+		{
+ 			GameManager.Instance.playerFriends.updateStatus( user, status );
+			if( onStatusUpdateEvent != null ) onStatusUpdateEvent( user, status );
+		}
+	}
+
+	void configureStatus( int status )
+	{
+		onlineIndicator.color = getStatusColor( status );
+	}
+
+	public Color getStatusColor( int status )
+	{
+		Color statusColor;
+		switch ( status )
+		{
+			//Offline
+			case 0:
+				statusColor = Color.red;
+			break;
+
+			//Invisible
+			case 1:
+				statusColor = Color.red;
+			break;
+			
+			//Online
+			case 2:
+				statusColor = Color.green;
+			break;
+
+			//Away
+			case 3:
+				statusColor = Color.yellow;
+			break;
+
+			//DND
+			case 4:
+				statusColor = Color.blue;
+			break;
+
+			default:
+				statusColor = Color.white;
+			break;
+		}
+		return  statusColor;
 	}
 
 	/// <summary>To avoid that the Editor becomes unresponsive, disconnect all Photon connections in OnApplicationQuit.</summary>
