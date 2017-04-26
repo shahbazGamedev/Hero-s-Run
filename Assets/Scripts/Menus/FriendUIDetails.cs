@@ -33,12 +33,6 @@ public class FriendUIDetails : MonoBehaviour {
 		userName.text = fd.userName;
 		levelText.text = fd.level.ToString();
 		configureStatus( fd );
-		//if the friend is not Online (2) or if the player is not connected to the chat backend, disable the Invite and Chat buttons
-		if( fd.status != 2 || !ChatManager.Instance.canChat() )
-		{
-			inviteButton.interactable = false;
-			chatButton.interactable = false;
-		}
 	}
 
 	public void configureStatus( PlayerFriends.OnlineFriendData fd )
@@ -48,26 +42,27 @@ public class FriendUIDetails : MonoBehaviour {
 
 	public void configureStatus( int status )
 	{
+		//Text
 		switch ( status )
 		{
 			//Offline
 			case 0:
-				onlineText.text = "Offline";;
+				onlineText.text = "Offline";
 			break;
 
 			//Invisible
 			case 1:
-				onlineText.text = "Invisible";;
+				onlineText.text = "Invisible";
 			break;
 			
 			//Online
 			case 2:
-				onlineText.text = "Online";;
+				onlineText.text = "Online";
 			break;
 
 			//Away
 			case 3:
-				onlineText.text = "Away";;
+				onlineText.text = "Away";
 			break;
 
 			//DND
@@ -75,7 +70,22 @@ public class FriendUIDetails : MonoBehaviour {
 				onlineText.text = "Do Not Disturb";
 			break;
 		}
+
+		//Color
 		onlineStatusIcon.color = ChatManager.Instance.getStatusColor( status );
+
+		//Buttons
+		//if the friend is Online and the player is connected to the chat backend, enable the Invite and Chat buttons
+		if( status == 2 && ChatManager.Instance.canChat() )
+		{
+			inviteButton.interactable = true;
+			chatButton.interactable = true;
+		}
+		else
+		{
+			inviteButton.interactable = false;
+			chatButton.interactable = false;
+		}
 	}
 
 	public void OnClickInviteFriend()

@@ -46,24 +46,26 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		}
 	}
 	
- 	public void Start()
+ 	void Start()
 	{
+		invitationReceivedPanel.SetActive( false );
+		invitationStatusPanel.SetActive( false );
+		ChatConnect();	
+	}
+	
+	public void ChatConnect()
+	{
+		//If this is a new player, don't try to connect to chat yet as we don't have a user name.
+		//We will connect to chat when a user name has been entered.
+		if( PlayerStatsManager.Instance.isFirstTimePlaying() ) return;
+
 		//Verify that the mandatory Photon Chat App Id is configured
 		if (string.IsNullOrEmpty(PhotonNetwork.PhotonServerSettings.ChatAppID))
 		{
 			Debug.LogError("ChatManager-You need to set the chat app ID in the PhotonServerSettings file in order to continue.");
 			return;
 		}
-		//If this is a new player, don't try to connect to chat yet as we don't have a user name.
-		//We will connect to chat when a user name has been entered.
-		if( !PlayerStatsManager.Instance.isFirstTimePlaying() ) ChatConnect();
 
-		invitationReceivedPanel.SetActive( false );
-		invitationStatusPanel.SetActive( false );		
-	}
-	
-	public void ChatConnect()
-	{
 		chatClient = new ChatClient(this);
 		chatClient.ChatRegion =  "EU";
 		string userName = PlayerStatsManager.Instance.getUserName();
@@ -101,6 +103,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	public void OnDisconnected()
 	{
 		Debug.LogWarning( PlayerStatsManager.Instance.getUserName() + " has been disconnected from chat." );
+		configureStatus( 0 );
 	}
 	
 	public bool canChat()
@@ -112,22 +115,12 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	{
 		if ( hasFocus )
 		{
-			if( !chatClient.CanChat )
-			{
-				//We are no longer connected to the chat backend. Reconnect.
-				ChatConnect();
-			}
-			else
-			{
-				//We are connected and the app is back in focus. Change our status back to Online.
-				chatClient.SetOnlineStatus(ChatUserStatus.Online);
-			}
+			ChatConnect();
 		}
 		else
 		{
-			chatClient.SetOnlineStatus(ChatUserStatus.Offline); // You can set your online state (without a message).
+			chatClient.Disconnect();
 		}
-		
 	}
 
 	public void OnSubscribed(string[] channels, bool[] results)
