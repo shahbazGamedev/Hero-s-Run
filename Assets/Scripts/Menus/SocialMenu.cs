@@ -22,6 +22,13 @@ public class SocialMenu : MonoBehaviour {
 
 	void createFriendList()
 	{
+		//Remove previous friends if any. We want to keep the first object which is used to add friends however.
+		for( int i = friendsHolder.transform.childCount-1; i >= 1; i-- )
+		{
+			Transform child = friendsHolder.transform.GetChild( i );
+			GameObject.Destroy( child.gameObject );
+		}
+
 		List<PlayerFriends.FriendData> friendList = GameManager.Instance.playerFriends.getFriendList();
 		for( int i = 0; i < friendList.Count; i++ )
 		{
@@ -70,11 +77,13 @@ public class SocialMenu : MonoBehaviour {
 	void OnEnable()
 	{
 		ChatManager.onStatusUpdateEvent += OnStatusUpdateEvent;
+		PlayerFriends.onFriendChangedEvent += OnFriendChangedEvent;
 	}
 
 	void OnDisable()
 	{
 		ChatManager.onStatusUpdateEvent -= OnStatusUpdateEvent;
+		PlayerFriends.onFriendChangedEvent -= OnFriendChangedEvent;
 	}
 
 	void OnStatusUpdateEvent( string userName, int newStatus )
@@ -86,6 +95,12 @@ public class SocialMenu : MonoBehaviour {
 			fud = friendsHolder.transform.GetChild( i ).GetComponent<FriendUIDetails>();
 			if( fud != null && fud.user == userName ) fud.configureStatus( newStatus );
 		}
+	}
+
+	void OnFriendChangedEvent()
+	{
+		print("OnFriendChangedEvent" );
+		createFriendList();
 	}
 	
 }

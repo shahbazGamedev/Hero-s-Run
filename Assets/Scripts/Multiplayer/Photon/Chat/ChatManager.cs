@@ -16,20 +16,15 @@ public enum InvitationType
 public class ChatManager : PunBehaviour, IChatClientListener {
 
 	public static ChatManager Instance;
-	ChatClient chatClient;
+	public ChatClient chatClient;
 	public ChatMessageHandler chatMessageHandler;
+	public ChatMessageUI chatMessageUI;
 
 	[Header("Online Indicator")]
 	[SerializeField] Image onlineIndicator;
 	[Header("Channels")]
 	[SerializeField] string[] ChannelsToJoinOnConnect; 	// set in inspector. Channels to join automatically.
 	[SerializeField] int HistoryLengthToFetch; 			// set in inspector. Up to a certain degree, previously sent messages can be fetched for context
-	[Header("Invitation Received")]
-	[SerializeField] GameObject invitationReceivedPanel;
-	[SerializeField] Text invitationReceivedText;
-	[Header("Invitation Status")]
-	[SerializeField] GameObject invitationStatusPanel;
-	[SerializeField] Text invitationStatusText;
 	//Event management used to notify other classes when the status for the player or a friend changes
 	public delegate void OnStatusUpdateEvent( string userName, int newStatus );
 	public static event OnStatusUpdateEvent onStatusUpdateEvent;
@@ -50,8 +45,6 @@ public class ChatManager : PunBehaviour, IChatClientListener {
  	void Start()
 	{
 		chatMessageHandler = new ChatMessageHandler();
-		invitationReceivedPanel.SetActive( false );
-		invitationStatusPanel.SetActive( false );
 		ChatConnect();	
 	}
 	
@@ -185,7 +178,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	/// <param name="message">Message that user set.</param>
 	public void OnStatusUpdate(string user, int status, bool gotMessage, object message)
 	{
-		Debug.LogWarning("status: " + string.Format("{0} is {1}. Msg:{2}", user, status, message));
+		Debug.Log("OnStatusUpdate: " + string.Format("{0} is {1}.", user, status));
 		if( user == PlayerStatsManager.Instance.getUserName() )
 		{
 			configureStatus( status );
@@ -283,12 +276,11 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	public void sendPrivateMessage( string target, string message )
 	{
 		Debug.Log("sendPrivateMessage " + target + " " + message );
-		//chatClient.SendPrivateMessage( target, message );
-		chatMessageHandler.parseMessage( target, message );
+		chatClient.SendPrivateMessage( target, message );
 	}
 
 	
-	public void OnPrivateMessage(string sender, object message, string channelName)
+	public void OnPrivateMessage( string sender, object message, string channelName )
 	{
 		//The sender also gets a copy of the messages he sends.
 		//Ignore those.
@@ -296,7 +288,9 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 
 		Debug.Log("OnPrivateMessage " + sender + " " + message.ToString() );
 
-		MatchInvitation match = new MatchInvitation();
+		chatMessageHandler.parseMessage( sender, message.ToString() );
+
+		/*MatchInvitation match = new MatchInvitation();
 		match.parseMessage(message.ToString());
 		LevelManager.Instance.matchInvitation = match;
 		switch ( match.type )
@@ -313,48 +307,10 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 				invitationStatusText.text = sender + " has declined.";
 				invitationStatusPanel.SetActive( true );
 			break;
-		}
+		}*/
 
 	}
 
-	public void OnAcceptInvitation()
-	{
-		Debug.Log( "OnAcceptInvitation" );
-		//Reply to the sender that we have accepted
-		MatchInvitation match = new MatchInvitation( InvitationType.INVITATION_ACCEPTED, PlayerStatsManager.Instance.getUserName(), LevelManager.Instance.matchInvitation.multiplayerLevelIndex, LevelManager.Instance.matchInvitation.roomName, GameManager.Instance.playerProfile.getPlayerIconId(), GameManager.Instance.playerProfile.getLevel(), GameManager.Instance.playerProfile.prestigeLevel );
-		chatClient.SendPrivateMessage( LevelManager.Instance.matchInvitation.sender, match.getAsCSV()  );
-		invitationReceivedPanel.SetActive( false );
-		//Since we are skipping the PlayModes scene, make sure we set the play mode.
-		GameManager.Instance.setPlayMode( PlayMode.PlayWithFriends );
-		StartCoroutine( loadScene(GameScenes.Matchmaking) );
-	}
-
-	public void OnDeclineInvitation()
-	{
-		Debug.Log( "OnDeclineInvitation" );
-		//Reply to the sender that we have declined
-		MatchInvitation match = new MatchInvitation( InvitationType.INVITATION_DECLINED, PlayerStatsManager.Instance.getUserName(), LevelManager.Instance.matchInvitation.multiplayerLevelIndex, LevelManager.Instance.matchInvitation.roomName, GameManager.Instance.playerProfile.getPlayerIconId(), GameManager.Instance.playerProfile.getLevel(), GameManager.Instance.playerProfile.prestigeLevel );
-		chatClient.SendPrivateMessage( LevelManager.Instance.matchInvitation.sender, match.getAsCSV()  );
-		invitationReceivedPanel.SetActive( false );
-	}
-
-	public void OnCloseInvitationStatusPanel()
-	{
-		invitationStatusPanel.SetActive( false );
-		switch ( LevelManager.Instance.matchInvitation.type )
-		{
-			case InvitationType.INVITATION_ACCEPTED:
-				LevelManager.Instance.setCurrentMultiplayerLevel( LevelManager.Instance.matchInvitation.multiplayerLevelIndex );
-				GameManager.Instance.setPlayMode(PlayMode.PlayWithFriends);
-				Debug.Log( "OnCloseInvitationStatusPanel ACCEPT" );
-				StartCoroutine( loadScene(GameScenes.Matchmaking) );
-			break;
-			case InvitationType.INVITATION_DECLINED:
-				LevelManager.Instance.matchInvitation = null;
-				Debug.Log( "OnCloseInvitationStatusPanel DECLINE" );
-			break;
-		}
-	}
 	#endregion
 
 	IEnumerator loadScene(GameScenes value)

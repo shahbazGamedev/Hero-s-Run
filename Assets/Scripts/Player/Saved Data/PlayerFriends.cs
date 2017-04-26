@@ -3,25 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public enum ChatMessageType {
-	ADD_FRIEND = 69
-
-}
-
-
 [System.Serializable]
 public class PlayerFriends {
 
 	[SerializeField] List<FriendData> onlineFriendDataList = new List<FriendData>();
+	//Event management used to notify other classes when friends are added or removed
+	public delegate void OnFriendChangedEvent();
+	public static event OnFriendChangedEvent onFriendChangedEvent;
 
 	/// <summary>
 	/// Creates the dummy friends for testing.
 	/// </summary>
 	public void createDummyFriends()
 	{
-		addFriend( "Régis", 69 );
-		addFriend( "Marie", 68 );
-		addFriend( "Emma", 24 );
+		addDummyFriend( "Régis", 69 );
+		addDummyFriend( "Marie", 68 );
+		addDummyFriend( "Emma", 24 );
 		serializePlayerFriends( true );
 	}
 
@@ -59,7 +56,16 @@ public class PlayerFriends {
 		if( saveImmediately ) PlayerStatsManager.Instance.savePlayerStats();
 	}
 
-	public void addFriend(  string userName, int level )
+	public void addFriendAndSave( FriendData fd )
+	{
+		//Don't add duplicate friends
+		if( onlineFriendDataList.Exists(friendData => friendData.userName == fd.userName ) ) return;
+		onlineFriendDataList.Add(fd);
+		serializePlayerFriends( true );
+		if( onFriendChangedEvent != null ) onFriendChangedEvent();
+	}
+
+	public void addDummyFriend(  string userName, int level )
 	{
 		//Don't add duplicate friends
 		if( onlineFriendDataList.Exists(friendData => friendData.userName == userName ) ) return;
