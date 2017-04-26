@@ -8,15 +8,16 @@ public class FriendUIDetails : MonoBehaviour {
 	[SerializeField] Image playerIcon;
 	[SerializeField] Text userName;
 	[SerializeField] Text levelText;
+	[SerializeField] Text winStreakText;
 	[SerializeField] Button inviteButton;
 	[SerializeField] Text inviteButtonText;
 	[SerializeField] Button chatButton;
 	[SerializeField] Text chatButtonText;
 	[SerializeField] Image onlineStatusIcon;
 	[SerializeField] Text onlineText;
-	[SerializeField] Text lastOnlineText;
 	Color lightGray = new Color( 180f/255f, 180f/255f, 180f/255f, 0.5f );
 	Color darkGray = Color.gray;
+	[HideInInspector]
 	public string user;
 
 	public void configureFriend ( int index, PlayerFriends.FriendData fd )
@@ -30,8 +31,19 @@ public class FriendUIDetails : MonoBehaviour {
 		{
 			background.color = lightGray;
 		}
+		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( fd.playerIcon ).icon;
 		userName.text = fd.userName;
 		levelText.text = fd.level.ToString();
+		if( fd.currentWinStreak >= 3 )
+		{
+			winStreakText.gameObject.SetActive( true );
+			winStreakText.text = string.Format( LocalizationManager.Instance.getText( "WIN_STREAK" ), fd.currentWinStreak );
+		}
+		else
+		{
+			winStreakText.gameObject.SetActive( false );
+		}
+
 		configureStatus( fd );
 	}
 
