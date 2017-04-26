@@ -27,6 +27,16 @@ public class PlayerFriends {
 		return onlineFriendDataList;
 	}
 
+	/// <summary>
+	/// Returns true if this user is already in your friend's list.
+	/// </summary>
+	/// <returns><c>true</c>, if this user is already in your friend's list, <c>false</c> otherwise.</returns>
+	/// <param name="userName">User name.</param>
+	public bool isFriend( string userName )
+	{
+		return onlineFriendDataList.Exists( fd => fd.userName == userName );
+	}
+
 	public string[] getFriendNames()
 	{
 		string[] friendNamesArray = new string[onlineFriendDataList.Count];

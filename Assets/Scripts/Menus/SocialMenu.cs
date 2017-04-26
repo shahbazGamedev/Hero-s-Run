@@ -60,6 +60,18 @@ public class SocialMenu : MonoBehaviour {
 				addFriendPlaceholderText.text = string.Format( LocalizationManager.Instance.getText( "USER_NAME_NOT_LONG_ENOUGH" ), UserNameHandler.MINIMUM_USER_NAME_LENGTH.ToString() );
 				return;
 			}
+			if( GameManager.Instance.playerFriends.isFriend( friendName ) )
+			{
+				addFriendInputField.text = string.Empty;
+				addFriendPlaceholderText.text = string.Format( LocalizationManager.Instance.getText( "SOCIAL_ALREADY_FRIEND" ), friendName );
+				return;
+			}
+			if( friendName == PlayerStatsManager.Instance.getUserName() )
+			{
+				addFriendInputField.text = string.Empty;
+				addFriendPlaceholderText.text = LocalizationManager.Instance.getText( "SOCIAL_YOUR_OWN_USER_NAME" );
+				return;
+			}
 			ChatManager.Instance.chatMessageHandler.sendAddFriendMessage( friendName );
  			addFriendInputField.text = string.Empty;
  			addFriendPlaceholderText.text = LocalizationManager.Instance.getText( "USER_NAME_PLACEHOLDER" );
