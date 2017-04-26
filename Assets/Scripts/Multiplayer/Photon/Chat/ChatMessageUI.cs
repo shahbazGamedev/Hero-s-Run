@@ -19,9 +19,9 @@ public class ChatMessageUI : MonoBehaviour {
 				acceptButton.gameObject.SetActive( true );
 				declineButton.gameObject.SetActive( true );
 				acceptButton.onClick.RemoveAllListeners();
-				acceptButton.onClick.AddListener(() => OnAcceptFriendRequest( type, sender, fd ));
+				acceptButton.onClick.AddListener(() => OnAcceptFriendRequest( sender, fd ));
 				declineButton.onClick.RemoveAllListeners();
-				declineButton.onClick.AddListener(() => OnDeclineFriendRequest( type, sender, fd ));
+				declineButton.onClick.AddListener(() => OnDeclineFriendRequest( sender ));
 				gameObject.SetActive( true );
 			break;
 
@@ -36,12 +36,19 @@ public class ChatMessageUI : MonoBehaviour {
 				//To do
 			break;
 
+			case ChatMessageType.FRIEND_REQUEST_DECLINED:
+				mainText.text = string.Format( "{0} declined your friend request.", sender );
+				acceptButton.gameObject.SetActive( false );
+				declineButton.gameObject.SetActive( false );
+				gameObject.SetActive( true );
+			break;
+
 			default:
 			break;
 		}
 	}
 
-	void OnAcceptFriendRequest( ChatMessageType type, string sender, PlayerFriends.FriendData fd )
+	void OnAcceptFriendRequest( string sender, PlayerFriends.FriendData fd )
 	{
 		Debug.Log( "OnAcceptFriendRequest from " + sender );
 		gameObject.SetActive( false );
@@ -53,10 +60,12 @@ public class ChatMessageUI : MonoBehaviour {
 		//To do
 	}
 
-	void OnDeclineFriendRequest( ChatMessageType type, string sender, PlayerFriends.FriendData fd )
+	void OnDeclineFriendRequest( string sender )
 	{
 		Debug.Log( "OnDeclineFriendRequest" );
 		gameObject.SetActive( false );
+		//Send a message back saying that the friend request has been declined.
+		ChatManager.Instance.chatMessageHandler.sendFriendRequestDeclinedMessage ( sender );
 	}
 
 	public void OnClose()
