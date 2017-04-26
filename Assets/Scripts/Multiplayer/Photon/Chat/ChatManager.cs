@@ -17,6 +17,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 
 	public static ChatManager Instance;
 	ChatClient chatClient;
+	public ChatMessageHandler chatMessageHandler;
 
 	[Header("Online Indicator")]
 	[SerializeField] Image onlineIndicator;
@@ -48,6 +49,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	
  	void Start()
 	{
+		chatMessageHandler = new ChatMessageHandler();
 		invitationReceivedPanel.SetActive( false );
 		invitationStatusPanel.SetActive( false );
 		ChatConnect();	
@@ -278,6 +280,14 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		chatClient.SendPrivateMessage( friendName, match.getAsCSV()  );
 	}
 
+	public void sendPrivateMessage( string target, string message )
+	{
+		Debug.Log("sendPrivateMessage " + target + " " + message );
+		//chatClient.SendPrivateMessage( target, message );
+		chatMessageHandler.parseMessage( target, message );
+	}
+
+	
 	public void OnPrivateMessage(string sender, object message, string channelName)
 	{
 		//The sender also gets a copy of the messages he sends.

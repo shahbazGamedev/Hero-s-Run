@@ -70,7 +70,7 @@ public class PlayerDataManager : MonoBehaviour {
 		else
 		{
 			playerFriends = new PlayerFriends();
-			playerFriends.createNewPlayerFriends();
+			playerFriends.createDummyFriends();
 
 		}
 		GameManager.Instance.playerFriends = playerFriends;

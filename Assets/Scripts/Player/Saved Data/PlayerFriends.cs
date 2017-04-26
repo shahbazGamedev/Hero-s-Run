@@ -3,12 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+public enum ChatMessageType {
+	ADD_FRIEND = 69
+
+}
+
+
 [System.Serializable]
 public class PlayerFriends {
 
-	[SerializeField] List<OnlineFriendData> onlineFriendDataList = new List<OnlineFriendData>();
+	[SerializeField] List<FriendData> onlineFriendDataList = new List<FriendData>();
 
-	public void createNewPlayerFriends()
+	/// <summary>
+	/// Creates the dummy friends for testing.
+	/// </summary>
+	public void createDummyFriends()
 	{
 		addFriend( "Régis", 69 );
 		addFriend( "Marie", 68 );
@@ -16,7 +25,7 @@ public class PlayerFriends {
 		serializePlayerFriends( true );
 	}
 
-	public List<OnlineFriendData> getFriendList()
+	public List<FriendData> getFriendList()
 	{
 		return onlineFriendDataList;
 	}
@@ -55,24 +64,53 @@ public class PlayerFriends {
 		//Don't add duplicate friends
 		if( onlineFriendDataList.Exists(friendData => friendData.userName == userName ) ) return;
 
-		OnlineFriendData ofd = new OnlineFriendData();
-		ofd.userName = userName;
-		ofd.level = level;
-		ofd.status = 0;
-		onlineFriendDataList.Add(ofd);
+		FriendData fd = new FriendData( userName, 2, level, 0, 3 );
+		onlineFriendDataList.Add(fd);
+	}
+
+	/// <summary>
+	/// Gets the friend data for the player.
+	/// </summary>
+	/// <returns>The player's friend data.</returns>
+	public FriendData getMyFriendData()
+	{
+		PlayerFriends.FriendData fd = new PlayerFriends.FriendData(
+			PlayerStatsManager.Instance.getUserName(),
+			GameManager.Instance.playerProfile.getPlayerIconId(), 
+			GameManager.Instance.playerProfile.getLevel(), 
+			GameManager.Instance.playerProfile.prestigeLevel, 
+			GameManager.Instance.playerStatistics.currentWinStreak );
+		return fd;
 	}
 
 	[System.Serializable]
-	public class OnlineFriendData
+	public class FriendData
 	{
 		public string userName;
-		public int level;
 		[System.NonSerialized]
 		public int status;
+		public int playerIcon;
+		public int level;
+		public int prestige;
+		public int currentWinStreak;
+
+		public FriendData ( string userName, int playerIcon, int level, int prestige, int currentWinStreak )
+		{
+			this.userName = userName;
+			this.playerIcon = playerIcon;
+			this.level = level;
+			this.prestige = prestige;
+			this.currentWinStreak = currentWinStreak;
+		}
+
+		public string getJson()
+		{
+			return JsonUtility.ToJson( this );
+		}
 
 		public void print()
 		{
-			Debug.Log("OnlineFriendData-userName: " + userName + " Level: " + level + " Status " + status );
+			Debug.Log("FriendData-User Name: " + userName + " Status: " + status + " Player Icon: " + playerIcon  + " Level: " + level + " Prestige: " + prestige + " Current Win Streak: " + currentWinStreak );
 		}
 	}
 

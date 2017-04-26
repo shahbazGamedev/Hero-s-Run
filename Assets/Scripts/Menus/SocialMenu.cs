@@ -22,14 +22,14 @@ public class SocialMenu : MonoBehaviour {
 
 	void createFriendList()
 	{
-		List<PlayerFriends.OnlineFriendData> friendList = GameManager.Instance.playerFriends.getFriendList();
+		List<PlayerFriends.FriendData> friendList = GameManager.Instance.playerFriends.getFriendList();
 		for( int i = 0; i < friendList.Count; i++ )
 		{
 			createFriend( i, friendList[i] );
 		}
 	}
 
-	void createFriend( int index, PlayerFriends.OnlineFriendData fd )
+	void createFriend( int index, PlayerFriends.FriendData fd )
 	{
 		GameObject go = (GameObject)Instantiate(friendEntryPrefab);
 		go.transform.SetParent(friendsHolder,false);
@@ -44,7 +44,8 @@ public class SocialMenu : MonoBehaviour {
     {
 		if (!string.IsNullOrEmpty(friendName))
 		{
-			ChatManager.Instance.sendInvitationToFriend( friendName.Trim() );
+			//ChatManager.Instance.sendInvitationToFriend( friendName.Trim() );
+			ChatManager.Instance.chatMessageHandler.sendAddFriendMessage( friendName.Trim() );
  		}
 		addFriendInputField.text = string.Empty;
    	}

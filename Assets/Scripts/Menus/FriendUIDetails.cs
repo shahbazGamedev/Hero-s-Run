@@ -19,7 +19,7 @@ public class FriendUIDetails : MonoBehaviour {
 	Color darkGray = Color.gray;
 	public string user;
 
-	public void configureFriend ( int index, PlayerFriends.OnlineFriendData fd )
+	public void configureFriend ( int index, PlayerFriends.FriendData fd )
 	{
 		user = fd.userName;
 		if( index%2 == 0 )
@@ -35,7 +35,7 @@ public class FriendUIDetails : MonoBehaviour {
 		configureStatus( fd );
 	}
 
-	public void configureStatus( PlayerFriends.OnlineFriendData fd )
+	public void configureStatus( PlayerFriends.FriendData fd )
 	{
 		configureStatus( fd.status );
 	}
