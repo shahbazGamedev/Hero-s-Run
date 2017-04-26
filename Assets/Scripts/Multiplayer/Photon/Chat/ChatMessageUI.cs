@@ -15,7 +15,7 @@ public class ChatMessageUI : MonoBehaviour {
 		switch ( type )
 		{
 			case ChatMessageType.FRIEND_REQUEST_SEND:
-				mainText.text = string.Format( "{0} wants to add you as a friend.", sender );
+				mainText.text = string.Format( "{0} wants to be friend.", sender );
 				acceptButton.gameObject.SetActive( true );
 				declineButton.gameObject.SetActive( true );
 				acceptButton.onClick.RemoveAllListeners();
@@ -30,6 +30,10 @@ public class ChatMessageUI : MonoBehaviour {
 				acceptButton.gameObject.SetActive( false );
 				declineButton.gameObject.SetActive( false );
 				gameObject.SetActive( true );
+				//Add friend to player's friends and save. This will also get the friend's list in social menu re-populated.
+				GameManager.Instance.playerFriends.addFriendAndSave( fd );
+				//We want to get status updates from this new friend.
+				//To do
 			break;
 
 			default:
@@ -46,8 +50,8 @@ public class ChatMessageUI : MonoBehaviour {
 		//Add friend to player's friends and save. This will also get the friend's list in social menu re-populated.
 		GameManager.Instance.playerFriends.addFriendAndSave( fd );
 		//We want to get status updates from this new friend.
-
-		}
+		//To do
+	}
 
 	void OnDeclineFriendRequest( ChatMessageType type, string sender, PlayerFriends.FriendData fd )
 	{
