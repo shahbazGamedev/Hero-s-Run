@@ -9,8 +9,8 @@ public class FriendUIDetails : MonoBehaviour {
 	[SerializeField] Text userName;
 	[SerializeField] Text levelText;
 	[SerializeField] Text winStreakText;
-	[SerializeField] Button inviteButton;
-	[SerializeField] Text inviteButtonText;
+	[SerializeField] Button raceMeButton;
+	[SerializeField] Text raceMeButtonText;
 	[SerializeField] Button chatButton;
 	[SerializeField] Text chatButtonText;
 	[SerializeField] Image onlineStatusIcon;
@@ -90,19 +90,20 @@ public class FriendUIDetails : MonoBehaviour {
 		//if the friend is Online and the player is connected to the chat backend, enable the Invite and Chat buttons
 		if( status == 2 && ChatManager.Instance.canChat() )
 		{
-			inviteButton.interactable = true;
+			raceMeButton.interactable = true;
 			chatButton.interactable = true;
 		}
 		else
 		{
-			inviteButton.interactable = false;
+			raceMeButton.interactable = false;
 			chatButton.interactable = false;
 		}
 	}
 
-	public void OnClickInviteFriend()
+	public void OnClickSendMatchRequest()
 	{
-		print("OnClickInviteFriend " + userName.text);
+		print("OnClickSendMatchRequest " + user );
+		ChatManager.Instance.chatMessageHandler.sendMatchRequestMessage( user );
 	}
 
 	public void OnClickChat()

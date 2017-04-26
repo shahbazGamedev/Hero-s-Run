@@ -6,13 +6,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon;
 
-public enum InvitationType
-{
-	INVITE_FRIEND = 1,
-	INVITATION_ACCEPTED = 2,
-	INVITATION_DECLINED = 3
-}
-
 public class ChatManager : PunBehaviour, IChatClientListener {
 
 	public static ChatManager Instance;
@@ -253,27 +246,6 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		Debug.Log( "OnGetMessages: " + channelName + " " + senders.Length + " " + msgs );
 	}
 
-	#region Invite Friend
-	/// <summary>
-	/// Raises the end edit event when the name of the friend has been entered.
-	/// </summary>
-	/// <param name="friendName">Friend name.</param>
- 	public void OnEndEdit( string friendName )
-    {
-		if (!string.IsNullOrEmpty(friendName))
-		{
-			sendInvitationToFriend( friendName.Trim() );
- 		}
-   	}
-
-	public void sendInvitationToFriend(string friendName )
-	{
-		Debug.Log("sendInvitationToFriend " + friendName );
-		string roomName = PlayerStatsManager.Instance.getUserName() + "_" + friendName;
-		int multiplayerLevelndex = 0;
-		MatchInvitation match = new MatchInvitation( InvitationType.INVITE_FRIEND, PlayerStatsManager.Instance.getUserName(), multiplayerLevelndex, roomName, GameManager.Instance.playerProfile.getPlayerIconId(), GameManager.Instance.playerProfile.getLevel(), GameManager.Instance.playerProfile.prestigeLevel );
-		chatClient.SendPrivateMessage( friendName, match.getAsCSV()  );
-	}
 
 	public void sendPrivateMessage( string target, string message )
 	{
@@ -281,7 +253,6 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		chatClient.SendPrivateMessage( target, message );
 	}
 
-	
 	public void OnPrivateMessage( string sender, object message, string channelName )
 	{
 		//The sender also gets a copy of the messages he sends.
@@ -291,101 +262,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		Debug.Log("OnPrivateMessage " + sender + " " + message.ToString() );
 
 		chatMessageHandler.parseMessage( sender, message.ToString() );
-
-		/*MatchInvitation match = new MatchInvitation();
-		match.parseMessage(message.ToString());
-		LevelManager.Instance.matchInvitation = match;
-		switch ( match.type )
-		{
-			case InvitationType.INVITE_FRIEND:
-				invitationReceivedText.text = sender + " has challenged you.";
-				invitationReceivedPanel.SetActive( true );
-			break;
-			case InvitationType.INVITATION_ACCEPTED:
-				invitationStatusText.text = sender + " has accepted.";
-				invitationStatusPanel.SetActive( true );
-			break;
-			case InvitationType.INVITATION_DECLINED:
-				invitationStatusText.text = sender + " has declined.";
-				invitationStatusPanel.SetActive( true );
-			break;
-		}*/
-
 	}
 
-	#endregion
-
-	IEnumerator loadScene(GameScenes value)
-	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		Handheld.StartActivityIndicator();
-		yield return new WaitForSeconds(0);
-		SceneManager.LoadScene( (int)value );
-	}
-
-	[System.Serializable]
-	public class MatchInvitation
-	{
-		public InvitationType type; 
-		public string sender;		
-		public int multiplayerLevelIndex;
-		public string roomName;
-		public int playerIcon;
-		public int level;
-		public int prestige;
-	
-		public MatchInvitation()
-		{
-		}
-
-		public MatchInvitation( InvitationType type, string sender, int multiplayerLevelIndex, string roomName, int playerIcon, int level, int prestige )
-		{
-			this.type = type;
-			this.sender = sender;
-			this.multiplayerLevelIndex = multiplayerLevelIndex;
-			this.roomName = roomName;
-			this.roomName = roomName;
-			this.playerIcon = playerIcon;
-			this.level = level;
-			this.prestige = prestige;
-		}
-
-		public void parseMessage( string message )
-		{
-			//Message parameters are comma-separated
-			string[] messageParameters = message.Split(',');
-			//Invitation type
-			int invitationType;
-			int.TryParse(messageParameters[0], out invitationType);
-			type = (InvitationType) invitationType;
-			//Sender
-			sender = messageParameters[1];
-			//Multiplayer Level Index
-			int index;
-			int.TryParse(messageParameters[2], out index);
-			multiplayerLevelIndex = index;
-			//Room Name
-			roomName = messageParameters[3];
-			//Player Icon Index
-			int.TryParse(messageParameters[4], out playerIcon);
-			//Player Level
-			int.TryParse(messageParameters[5], out level);
-			//Player Prestige Level
-			int.TryParse(messageParameters[6], out prestige);
-
-			printInvitation();
-		}
-
-		public string getAsCSV()
-		{
-			return ((int)type).ToString() + "," + sender + "," + multiplayerLevelIndex.ToString() + "," + roomName + "," + playerIcon.ToString() + "," + level.ToString() + "," + prestige.ToString();
-		}
-
-		public void printInvitation()
-		{
-			Debug.Log( "Type: " + type.ToString() + " Sender: " + sender + " Multiplayer Index Level: " + multiplayerLevelIndex  + " Room Name: " + roomName +
-				" Player Icon Index: " + playerIcon + " Player Level: " + level + " Player Prestige Level: " + prestige );
-		}
-	}
 	
 }

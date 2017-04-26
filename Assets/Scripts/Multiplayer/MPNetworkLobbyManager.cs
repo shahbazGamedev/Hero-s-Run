@@ -43,7 +43,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		matchmakingManager = GameObject.FindGameObjectWithTag("Matchmaking").GetComponent<MatchmakingManager>();
 		if( GameManager.Instance.getPlayMode() == PlayMode.PlayWithFriends )
 		{
-			matchmakingManager.setRemotePlayerData( 1, LevelManager.Instance.matchInvitation.sender, LevelManager.Instance.matchInvitation.level, LevelManager.Instance.matchInvitation.playerIcon );
+			matchmakingManager.setRemotePlayerData( 1, LevelManager.Instance.matchData.sender, LevelManager.Instance.matchData.level, LevelManager.Instance.matchData.playerIcon );
 		}
 	}
 	#endregion
@@ -133,12 +133,12 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 			if( GameManager.Instance.getPlayMode() == PlayMode.PlayWithFriends )
 			{
-				LevelManager.Instance.setCurrentMultiplayerLevel( LevelManager.Instance.matchInvitation.multiplayerLevelIndex );
+				LevelManager.Instance.setCurrentMultiplayerLevel( LevelManager.Instance.matchData.multiplayerLevelIndex );
 				RoomOptions roomOptions = new RoomOptions();
 				roomOptions.MaxPlayers = LevelManager.Instance.getNumberOfPlayersRequired();
 				roomOptions.IsVisible = false;
-			    Debug.Log("tryToJoinRoom: with friends " + LevelManager.Instance.matchInvitation.roomName );
-				PhotonNetwork.JoinOrCreateRoom( LevelManager.Instance.matchInvitation.roomName, roomOptions, TypedLobby.Default );
+			    Debug.Log("tryToJoinRoom: with friends " + LevelManager.Instance.matchData.roomName );
+				PhotonNetwork.JoinOrCreateRoom( LevelManager.Instance.matchData.roomName, roomOptions, TypedLobby.Default );
 			}
 			else
 			{
