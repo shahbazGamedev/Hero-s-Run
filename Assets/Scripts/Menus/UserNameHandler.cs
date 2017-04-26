@@ -11,7 +11,7 @@ public class UserNameHandler : MonoBehaviour {
 	[SerializeField] Text confirmButtonText;
 	[Header("Main Menu")]
 	[SerializeField] GameObject mainMenuCanvas;
-	const int MINIMUM_USER_NAME_LENGTH = 4;
+	public const int MINIMUM_USER_NAME_LENGTH = 4;
 
 	// Use this for initialization
 	void Awake ()

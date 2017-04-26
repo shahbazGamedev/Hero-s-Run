@@ -60,7 +60,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 			Debug.LogError("ChatManager-You need to set the chat app ID in the PhotonServerSettings file in order to continue.");
 			return;
 		}
-
+		Application.runInBackground = true; //This does nothing on mobile devices, but helps with testing.
 		chatClient = new ChatClient(this);
 		chatClient.ChatRegion =  "EU";
 		string userName = PlayerStatsManager.Instance.getUserName();
@@ -108,6 +108,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 
 	void OnApplicationFocus( bool hasFocus )
 	{
+		#if !UNITY_EDITOR
 		if ( hasFocus )
 		{
 			ChatConnect();
@@ -116,6 +117,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		{
 			chatClient.Disconnect();
 		}
+		#endif
 	}
 
 	public void OnSubscribed(string[] channels, bool[] results)

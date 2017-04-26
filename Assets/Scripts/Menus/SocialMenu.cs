@@ -10,6 +10,7 @@ public class SocialMenu : MonoBehaviour {
 	[SerializeField] Transform friendsHolder;
 	[SerializeField] GameObject friendEntryPrefab;
 	[SerializeField] InputField addFriendInputField;
+	[SerializeField] Text addFriendPlaceholderText;
 
 	bool levelLoading = false;
 
@@ -51,11 +52,19 @@ public class SocialMenu : MonoBehaviour {
     {
 		if (!string.IsNullOrEmpty(friendName))
 		{
-			//ChatManager.Instance.sendInvitationToFriend( friendName.Trim() );
-			ChatManager.Instance.chatMessageHandler.sendAddFriendMessage( friendName.Trim() );
- 		}
-		addFriendInputField.text = string.Empty;
-   	}
+			UISoundManager.uiSoundManager.playButtonClick();
+			friendName = friendName.Trim();
+			if( friendName.Length < UserNameHandler.MINIMUM_USER_NAME_LENGTH )
+			{
+				addFriendInputField.text = string.Empty;
+				addFriendPlaceholderText.text = string.Format( LocalizationManager.Instance.getText( "USER_NAME_NOT_LONG_ENOUGH" ), UserNameHandler.MINIMUM_USER_NAME_LENGTH.ToString() );
+				return;
+			}
+			ChatManager.Instance.chatMessageHandler.sendAddFriendMessage( friendName );
+ 			addFriendInputField.text = string.Empty;
+ 			addFriendPlaceholderText.text = LocalizationManager.Instance.getText( "USER_NAME_PLACEHOLDER" );
+		}
+  	}
 
 	public void OnClickReturnToMainMenu()
 	{
