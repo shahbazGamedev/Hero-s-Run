@@ -24,9 +24,9 @@ public class SocialMenu : MonoBehaviour {
 	void createFriendList()
 	{
 		//Remove previous friends if any. We want to keep the first object which is used to add friends however.
-		for( int i = friendsHolder.transform.childCount-1; i >= 1; i-- )
+		for( int i = friendsHolder.childCount-1; i >= 1; i-- )
 		{
-			Transform child = friendsHolder.transform.GetChild( i );
+			Transform child = friendsHolder.GetChild( i );
 			GameObject.Destroy( child.gameObject );
 		}
 
@@ -35,6 +35,14 @@ public class SocialMenu : MonoBehaviour {
 		{
 			createFriend( i, friendList[i] );
 		}
+
+		//Adjust the length of the content based on the number of entries.
+		//All entries have the same height.
+		//There is spacing between the entries.
+		float elementHeight = friendsHolder.GetChild( 0 ).GetComponent<LayoutElement>().preferredHeight;
+		float spacing = friendsHolder.GetComponent<VerticalLayoutGroup>().spacing;
+		float contentHeight = friendsHolder.childCount * elementHeight + ( friendsHolder.childCount - 1 ) * spacing;
+		friendsHolder.GetComponent<RectTransform>().sizeDelta = new Vector2( friendsHolder.GetComponent<RectTransform>().sizeDelta.x, contentHeight );
 	}
 
 	void createFriend( int index, PlayerFriends.FriendData fd )
