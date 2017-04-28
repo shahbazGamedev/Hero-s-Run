@@ -77,6 +77,11 @@ public class LevelData : MonoBehaviour {
 		}
 	}
 
+	public int getNumberOfMultiplayerLevels()
+	{
+		return multiplayerList.Count;
+	}
+
 	//This method sets the skybox material as well as the light intensity and direction 
 	//for the current level. The skybox materials should be located under the Skybox directory under Resources.
 	public void setSunParameters( SunType sunType )

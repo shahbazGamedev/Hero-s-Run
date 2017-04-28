@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum ChatMessageType {
 	FRIEND_REQUEST_SEND = 1,
@@ -45,12 +46,11 @@ public class ChatMessageHandler {
 	#region Race Me
 	public void sendMatchRequestMessage ( string target )
 	{
-		int multiplayerLevelndex = 0;
-		string roomName = PlayerStatsManager.Instance.getUserName() + "_" + target;
+		//multiplayerLevelndex and roomName are not needed just yet. They will be set when the player accepts the challenge.
 		int playerIcon = GameManager.Instance.playerProfile.getPlayerIconId();
 		int level = GameManager.Instance.playerProfile.getLevel();
 		int prestige = GameManager.Instance.playerProfile.prestigeLevel; 
-		MatchData matchData = new MatchData( multiplayerLevelndex, roomName, playerIcon, level, prestige );
+		MatchData matchData = new MatchData( PlayerStatsManager.Instance.getUserName(), 0, string.Empty, playerIcon, level, prestige );
 
 		ChatMessage chatMessage = new ChatMessage();
 		chatMessage.chatMessageType = ChatMessageType.MATCH_REQUEST_SEND;
@@ -60,9 +60,22 @@ public class ChatMessageHandler {
 
 	public void sendMatchRequestAcceptedMessage ( string target )
 	{
+		//Choose a random level
+		int multiplayerLevelndex = Random.Range( 0, LevelManager.Instance.getLevelData().getNumberOfMultiplayerLevels() );
+		//Set the room name to use
+		string roomName = PlayerStatsManager.Instance.getUserName() + "_" + target;
+		//Now save these values in the match data we got from the inviter.
+		LevelManager.Instance.matchData.multiplayerLevelIndex = multiplayerLevelndex;
+		LevelManager.Instance.matchData.roomName = roomName;
+		//Send also our player info so that the inviter can populate the matchmaking screen.
+		int playerIcon = GameManager.Instance.playerProfile.getPlayerIconId();
+		int level = GameManager.Instance.playerProfile.getLevel();
+		int prestige = GameManager.Instance.playerProfile.prestigeLevel; 
+		MatchData matchData = new MatchData( PlayerStatsManager.Instance.getUserName(), multiplayerLevelndex, roomName, playerIcon, level, prestige );
+
 		ChatMessage chatMessage = new ChatMessage();
 		chatMessage.chatMessageType = ChatMessageType.MATCH_REQUEST_ACCEPTED;
-		chatMessage.chatMessageContent = string.Empty;
+		chatMessage.chatMessageContent = matchData.getJson();
 		ChatManager.Instance.sendPrivateMessage( target, chatMessage.getJson() );
 	}
 
@@ -98,22 +111,31 @@ public class ChatMessageHandler {
 			break;
 
 			case ChatMessageType.MATCH_REQUEST_SEND:
-				MatchData md = JsonUtility.FromJson<MatchData>( chatMessage.chatMessageContent );
-				md.print();
-				ChatManager.Instance.chatMessageUI.configureMatchUI( (ChatMessageType)chatMessage.chatMessageType, sender, md );
-				md.sender = sender;
-				LevelManager.Instance.matchData = md;
+				MatchData md1 = JsonUtility.FromJson<MatchData>( chatMessage.chatMessageContent );
+				md1.print();
+				ChatManager.Instance.chatMessageUI.configureMatchUI( (ChatMessageType)chatMessage.chatMessageType, sender );
+				LevelManager.Instance.matchData = md1;
 
 			break;
 
 			case ChatMessageType.MATCH_REQUEST_ACCEPTED:
 				ChatManager.Instance.chatMessageUI.configureMatchUI( (ChatMessageType)chatMessage.chatMessageType, sender );
+				MatchData md2 = JsonUtility.FromJson<MatchData>( chatMessage.chatMessageContent );
+				md2.print();
+				LevelManager.Instance.matchData = md2;
 			break;
 
 			case ChatMessageType.MATCH_REQUEST_DECLINED:
 				ChatManager.Instance.chatMessageUI.configureMatchUI( (ChatMessageType)chatMessage.chatMessageType, sender );
 			break;
 		}
+	}
+
+	public void startMatch()
+	{
+		//Since we are skipping the PlayModes scene, make sure we set the play mode.
+		GameManager.Instance.setPlayMode(PlayMode.PlayWithFriends);
+		SceneManager.LoadScene( (int) GameScenes.Matchmaking );
 	}
 
 	[System.Serializable]
@@ -138,9 +160,9 @@ public class ChatMessageHandler {
 		public int level;
 		public int prestige;
 	
-		public MatchData ( int multiplayerLevelIndex, string roomName, int playerIcon, int level, int prestige )
+		public MatchData ( string sender, int multiplayerLevelIndex, string roomName, int playerIcon, int level, int prestige )
 		{
-			this.sender = string.Empty;
+			this.sender = sender;
 			this.multiplayerLevelIndex = multiplayerLevelIndex;
 			this.roomName = roomName;
 			this.playerIcon = playerIcon;
@@ -155,7 +177,7 @@ public class ChatMessageHandler {
 
 		public void print()
 		{
-			Debug.Log("MatchData-Sender: " + sender + " Multiplayer Level Index: " + multiplayerLevelIndex + " Rroom Name: " + roomName + " Player Icon: " + playerIcon  + " Level: " + level + " Prestige: " + prestige );
+			Debug.Log("MatchData-Sender: " + sender + " Multiplayer Level Index: " + multiplayerLevelIndex + " Room Name: " + roomName + " Player Icon: " + playerIcon  + " Level: " + level + " Prestige: " + prestige );
 		}
 	}
 }

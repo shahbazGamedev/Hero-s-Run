@@ -261,6 +261,7 @@ public class MatchmakingManager : MonoBehaviour {
 	public void OnClickReturnToMainMenu()
 	{
 		if( PhotonNetwork.inRoom ) PhotonNetwork.LeaveRoom();
+		LevelManager.Instance.matchData = null;
 		StartCoroutine( loadScene(GameScenes.MainMenu) );
 	}
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class ChatMessageUI : MonoBehaviour {
 
@@ -10,6 +9,7 @@ public class ChatMessageUI : MonoBehaviour {
 	[SerializeField] Text mainText;
 	[SerializeField] Button acceptButton;
 	[SerializeField] Button declineButton;
+	[SerializeField] Button closeButton;
 
 	public void configureFriendUI ( ChatMessageType type, string sender, PlayerFriends.FriendData fd = null )
 	{
@@ -19,6 +19,7 @@ public class ChatMessageUI : MonoBehaviour {
 				mainText.text = string.Format( "{0} wants to be friend.", sender );
 				acceptButton.gameObject.SetActive( true );
 				declineButton.gameObject.SetActive( true );
+				closeButton.gameObject.SetActive( false );
 				acceptButton.onClick.RemoveAllListeners();
 				acceptButton.onClick.AddListener(() => OnAcceptFriendRequest( sender, fd ));
 				declineButton.onClick.RemoveAllListeners();
@@ -30,6 +31,9 @@ public class ChatMessageUI : MonoBehaviour {
 				mainText.text = string.Format( "You are now friends with {0}.", sender );
 				acceptButton.gameObject.SetActive( false );
 				declineButton.gameObject.SetActive( false );
+				closeButton.gameObject.SetActive( true );
+				closeButton.onClick.RemoveAllListeners();
+				closeButton.onClick.AddListener(() => OnClose());
 				gameObject.SetActive( true );
 				//Add friend to player's friends and save. This will also get the friend's list in social menu re-populated.
 				GameManager.Instance.playerFriends.addFriendAndSave( fd );
@@ -41,12 +45,15 @@ public class ChatMessageUI : MonoBehaviour {
 				mainText.text = string.Format( "{0} declined your friend request.", sender );
 				acceptButton.gameObject.SetActive( false );
 				declineButton.gameObject.SetActive( false );
+				closeButton.gameObject.SetActive( true );
+				closeButton.onClick.RemoveAllListeners();
+				closeButton.onClick.AddListener(() => OnClose());
 				gameObject.SetActive( true );
 			break;
 		}
 	}
 
-	public void configureMatchUI ( ChatMessageType type, string sender, ChatMessageHandler.MatchData md = null )
+	public void configureMatchUI ( ChatMessageType type, string sender )
 	{
 		switch ( type )
 		{
@@ -54,8 +61,9 @@ public class ChatMessageUI : MonoBehaviour {
 				mainText.text = string.Format( "{0} challenges you to a race.", sender );
 				acceptButton.gameObject.SetActive( true );
 				declineButton.gameObject.SetActive( true );
+				closeButton.gameObject.SetActive( false );
 				acceptButton.onClick.RemoveAllListeners();
-				acceptButton.onClick.AddListener(() => OnAcceptMatchRequest( sender, md ));
+				acceptButton.onClick.AddListener(() => OnAcceptMatchRequest( sender ));
 				declineButton.onClick.RemoveAllListeners();
 				declineButton.onClick.AddListener(() => OnDeclineMatchRequest( sender ));
 				gameObject.SetActive( true );
@@ -65,6 +73,9 @@ public class ChatMessageUI : MonoBehaviour {
 				mainText.text = string.Format( "{0} has accepted the challenge.", sender );
 				acceptButton.gameObject.SetActive( false );
 				declineButton.gameObject.SetActive( false );
+				closeButton.gameObject.SetActive( true );
+				closeButton.onClick.RemoveAllListeners();
+				closeButton.onClick.AddListener(() => OnCloseStartMatch( sender ));
 				gameObject.SetActive( true );
 			break;
 
@@ -72,6 +83,9 @@ public class ChatMessageUI : MonoBehaviour {
 				mainText.text = string.Format( "{0} declined your race request.", sender );
 				acceptButton.gameObject.SetActive( false );
 				declineButton.gameObject.SetActive( false );
+				closeButton.gameObject.SetActive( true );
+				closeButton.onClick.RemoveAllListeners();
+				closeButton.onClick.AddListener(() => OnClose());
 				gameObject.SetActive( true );
 			break;
 		}
@@ -97,12 +111,15 @@ public class ChatMessageUI : MonoBehaviour {
 		ChatManager.Instance.chatMessageHandler.sendFriendRequestDeclinedMessage ( sender );
 	}
 
-	void OnAcceptMatchRequest( string sender, ChatMessageHandler.MatchData md )
+	void OnAcceptMatchRequest( string sender )
 	{
 		Debug.Log( "OnAcceptMatchRequest from " + sender );
 		gameObject.SetActive( false );
 		//Send a message back saying that the match request has been accepted.
+		//This message will specify the level to play and the room name.
+		//These 2 values will be saved in the match data we got from the inviter.
 		ChatManager.Instance.chatMessageHandler.sendMatchRequestAcceptedMessage ( sender );
+		ChatManager.Instance.chatMessageHandler.startMatch();
 	}
 
 	void OnDeclineMatchRequest( string sender )
@@ -119,43 +136,12 @@ public class ChatMessageUI : MonoBehaviour {
 		gameObject.SetActive( false );
 	}
 
-	IEnumerator loadScene(GameScenes value)
+	public void OnCloseStartMatch( string sender )
 	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		Handheld.StartActivityIndicator();
-		yield return new WaitForSeconds(0);
-		SceneManager.LoadScene( (int)value );
-	}	
-
-/*
-	public void OnAcceptInvitation() receiver side
-	{
-		Debug.Log( "OnAcceptInvitation" );
-		//Reply to the sender that we have accepted
-		MatchInvitation match = new MatchInvitation( InvitationType.INVITATION_ACCEPTED, PlayerStatsManager.Instance.getUserName(), LevelManager.Instance.matchInvitation.multiplayerLevelIndex, LevelManager.Instance.matchInvitation.roomName, GameManager.Instance.playerProfile.getPlayerIconId(), GameManager.Instance.playerProfile.getLevel(), GameManager.Instance.playerProfile.prestigeLevel );
-		chatClient.SendPrivateMessage( LevelManager.Instance.matchInvitation.sender, match.getAsCSV()  );
-		invitationReceivedPanel.SetActive( false );
-		//Since we are skipping the PlayModes scene, make sure we set the play mode.
-		GameManager.Instance.setPlayMode( PlayMode.PlayWithFriends );
-		StartCoroutine( loadScene(GameScenes.Matchmaking) );
+		Debug.Log( "OnCloseStartMatch" );
+		gameObject.SetActive( false );
+		ChatManager.Instance.chatMessageHandler.startMatch();
 	}
 
-	public void OnCloseInvitationStatusPanel() sender side
-	{
-		invitationStatusPanel.SetActive( false );
-		switch ( LevelManager.Instance.matchInvitation.type )
-		{
-			case InvitationType.INVITATION_ACCEPTED:
-				LevelManager.Instance.setCurrentMultiplayerLevel( LevelManager.Instance.matchInvitation.multiplayerLevelIndex );
-				GameManager.Instance.setPlayMode(PlayMode.PlayWithFriends);
-				Debug.Log( "OnCloseInvitationStatusPanel ACCEPT" );
-				StartCoroutine( loadScene(GameScenes.Matchmaking) );
-			break;
-			case InvitationType.INVITATION_DECLINED:
-				LevelManager.Instance.matchInvitation = null;
-				Debug.Log( "OnCloseInvitationStatusPanel DECLINE" );
-			break;
-		}
-	}
-*/
+
 }

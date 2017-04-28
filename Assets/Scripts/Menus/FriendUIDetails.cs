@@ -11,6 +11,7 @@ public class FriendUIDetails : MonoBehaviour {
 	[SerializeField] Text winStreakText;
 	[SerializeField] Button raceMeButton;
 	[SerializeField] Text raceMeButtonText;
+	[SerializeField] Text raceMeButtonConfirmationText;
 	[SerializeField] Button chatButton;
 	[SerializeField] Text chatButtonText;
 	[SerializeField] Image onlineStatusIcon;
@@ -23,6 +24,7 @@ public class FriendUIDetails : MonoBehaviour {
 	public void configureFriend ( int index, PlayerFriends.FriendData fd )
 	{
 		user = fd.userName;
+		raceMeButtonConfirmationText.gameObject.SetActive( false );
 		if( index%2 == 0 )
 		{
 			background.color = darkGray;
@@ -104,6 +106,13 @@ public class FriendUIDetails : MonoBehaviour {
 	{
 		print("OnClickSendMatchRequest " + user );
 		ChatManager.Instance.chatMessageHandler.sendMatchRequestMessage( user );
+		raceMeButtonConfirmationText.gameObject.SetActive( true );
+		Invoke("hideRaceMeButtonConfirmationText", 2.5f );
+	}
+
+	public void hideRaceMeButtonConfirmationText()
+	{
+		raceMeButtonConfirmationText.gameObject.SetActive( false );
 	}
 
 	public void OnClickChat()
