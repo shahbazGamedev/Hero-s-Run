@@ -81,13 +81,29 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		this.chatClient.MessageLimit = HistoryLengthToFetch;
 
 		//Add friends so we can get their online status. See OnStatusUpdate for more details.
+		addChatFriends();
+	}
+	
+	public void removeChatFriends()
+	{
+		//Remove friends.
+		string[] friendNamesArray = GameManager.Instance.playerFriends.getFriendNames();
+		if( friendNamesArray.Length > 0 )
+		{
+			chatClient.RemoveFriends( friendNamesArray );
+		}
+	}
+
+	public void addChatFriends()
+	{
+		//Add friends so we can get their online status. See OnStatusUpdate for more details.
 		string[] friendNamesArray = GameManager.Instance.playerFriends.getFriendNames();
 		if( friendNamesArray.Length > 0 )
 		{
 			chatClient.AddFriends( friendNamesArray );
 		}
 	}
-	
+
 	public void OnDisconnected()
 	{
 		Debug.LogWarning( PlayerStatsManager.Instance.getUserName() + " has been disconnected from chat." );

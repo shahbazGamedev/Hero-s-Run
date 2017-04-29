@@ -16,6 +16,7 @@ public class MatchmakingManager : MonoBehaviour {
 	[SerializeField] Text versusText;
 	[Tooltip("The label to inform the user that the connection progress.")]
 	[SerializeField] Text connectionProgress;
+	public Text statusLine;
 
 	[Header("Circuit")]
 	[SerializeField] Text circuitName;
