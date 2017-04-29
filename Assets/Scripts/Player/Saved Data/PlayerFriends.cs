@@ -111,7 +111,7 @@ public class PlayerFriends {
 	/// <returns>The player's friend data.</returns>
 	public FriendData getMyFriendData()
 	{
-		PlayerFriends.FriendData fd = new PlayerFriends.FriendData(
+		FriendData fd = new FriendData(
 			PlayerStatsManager.Instance.getUserName(),
 			GameManager.Instance.playerProfile.getPlayerIconId(), 
 			GameManager.Instance.playerProfile.getLevel(), 

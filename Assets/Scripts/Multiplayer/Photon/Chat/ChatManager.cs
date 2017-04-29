@@ -75,7 +75,13 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 			this.chatClient.Subscribe(this.ChannelsToJoinOnConnect, this.HistoryLengthToFetch);
 		}
 		//Set our chat status to Online
-		this.chatClient.SetOnlineStatus(ChatUserStatus.Online); // You can set your online state (without a message).
+		int[] onlinePlayerData = new int[4];
+		onlinePlayerData[0] = GameManager.Instance.playerProfile.getPlayerIconId();
+		onlinePlayerData[1] = GameManager.Instance.playerProfile.getLevel();
+		onlinePlayerData[2] = GameManager.Instance.playerProfile.prestigeLevel;
+		onlinePlayerData[3] = GameManager.Instance.playerStatistics.currentWinStreak;
+
+		this.chatClient.SetOnlineStatus(ChatUserStatus.Online, onlinePlayerData );
 
 		//Limit the number of messages that are cached
 		this.chatClient.MessageLimit = HistoryLengthToFetch;
@@ -189,7 +195,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	/// <param name="message">Message that user set.</param>
 	public void OnStatusUpdate(string user, int status, bool gotMessage, object message)
 	{
-		Debug.Log("OnStatusUpdate: " + string.Format("{0} is {1}.", user, status));
+		Debug.Log("OnStatusUpdate: gotMsg " + gotMessage + " "+ string.Format("{0} is {1}.", user, status));
 		if( user == PlayerStatsManager.Instance.getUserName() )
 		{
 			configureStatus( status );
@@ -198,10 +204,13 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		{
  			GameManager.Instance.playerFriends.updateStatus( user, status );
 			if( onStatusUpdateEvent != null ) onStatusUpdateEvent( user, status );
-			if( status == 2 )
+			if( status == 2 && gotMessage && message != null )
 			{
-				//Since that friend is online, ask him for his details (player icon, level, prestige level ...)
-				chatMessageHandler.sendAskFriendData( user );
+				int[] onlinePlayerData = (int[]) message;					
+				//Update the friend's list with this information
+				PlayerFriends.FriendData friendData = new PlayerFriends.FriendData( user, onlinePlayerData[0], onlinePlayerData[1], onlinePlayerData[2], onlinePlayerData[3] );
+				friendData.print();
+				chatMessageHandler.updateFriendData( user, friendData );
 			}
 		}
 	}

@@ -7,10 +7,14 @@ using UnityEngine.UI;
 public class SocialMenu : MonoBehaviour {
 
 	[Header("Social Menu")]
+	[Header("Friend List")]
 	[SerializeField] Transform friendsHolder;
 	[SerializeField] GameObject friendEntryPrefab;
 	[SerializeField] InputField addFriendInputField;
 	[SerializeField] Text addFriendPlaceholderText;
+	[Header("Recent Player List")]
+	[SerializeField] Transform recentPlayersHolder;
+	[SerializeField] GameObject recentPlayerPrefab;
 
 	bool levelLoading = false;
 
@@ -19,6 +23,7 @@ public class SocialMenu : MonoBehaviour {
 
 		Handheld.StopActivityIndicator();
 		createFriendList();
+		createRecentPlayerList();
 	}
 
 	void createFriendList()
@@ -49,6 +54,37 @@ public class SocialMenu : MonoBehaviour {
 	{
 		GameObject go = (GameObject)Instantiate(friendEntryPrefab);
 		go.transform.SetParent(friendsHolder,false);
+		go.GetComponent<FriendUIDetails>().configureFriend( index, fd );
+	}
+
+	void createRecentPlayerList()
+	{
+		//Remove previous recent players if any.
+		for( int i = recentPlayersHolder.childCount-1; i >= 0; i-- )
+		{
+			Transform child = recentPlayersHolder.GetChild( i );
+			GameObject.Destroy( child.gameObject );
+		}
+
+		List<PlayerFriends.FriendData> recentPlayerList = GameManager.Instance.recentPlayers.getRecentPlayersList();
+		for( int i = 0; i < recentPlayerList.Count; i++ )
+		{
+			createRecentPlayer( i, recentPlayerList[i] );
+		}
+
+		//Adjust the length of the content based on the number of entries.
+		//All entries have the same height.
+		//There is spacing between the entries.
+		float elementHeight = recentPlayersHolder.GetChild( 0 ).GetComponent<LayoutElement>().preferredHeight;
+		float spacing = recentPlayersHolder.GetComponent<VerticalLayoutGroup>().spacing;
+		float contentHeight = recentPlayersHolder.childCount * elementHeight + ( recentPlayersHolder.childCount - 1 ) * spacing;
+		recentPlayersHolder.GetComponent<RectTransform>().sizeDelta = new Vector2( recentPlayersHolder.GetComponent<RectTransform>().sizeDelta.x, contentHeight );
+	}
+
+	void createRecentPlayer( int index, PlayerFriends.FriendData fd )
+	{
+		GameObject go = (GameObject)Instantiate(recentPlayerPrefab);
+		go.transform.SetParent(recentPlayersHolder,false);
 		go.GetComponent<FriendUIDetails>().configureFriend( index, fd );
 	}
 

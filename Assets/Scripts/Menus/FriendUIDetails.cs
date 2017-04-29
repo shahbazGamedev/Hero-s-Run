@@ -24,7 +24,7 @@ public class FriendUIDetails : MonoBehaviour {
 	public void configureFriend ( int index, PlayerFriends.FriendData fd )
 	{
 		user = fd.userName;
-		raceMeButtonConfirmationText.gameObject.SetActive( false );
+		if( raceMeButtonConfirmationText != null ) raceMeButtonConfirmationText.gameObject.SetActive( false );
 		if( index%2 == 0 )
 		{
 			background.color = darkGray;
@@ -107,13 +107,13 @@ public class FriendUIDetails : MonoBehaviour {
 		//if the friend is Online and the player is connected to the chat backend, enable the Invite and Chat buttons
 		if( status == 2 && ChatManager.Instance.canChat() )
 		{
-			raceMeButton.interactable = true;
-			chatButton.interactable = true;
+			if( raceMeButton != null ) raceMeButton.interactable = true;
+			if( chatButton != null ) chatButton.interactable = true;
 		}
 		else
 		{
-			raceMeButton.interactable = false;
-			chatButton.interactable = false;
+			if( raceMeButton != null ) raceMeButton.interactable = false;
+			if( chatButton != null ) chatButton.interactable = false;
 		}
 	}
 
@@ -133,6 +133,12 @@ public class FriendUIDetails : MonoBehaviour {
 	public void OnClickChat()
 	{
 		print("OnClickChat " );
+	}
+
+	public void OnClickSendFriendRequest()
+	{
+		print("OnClickSendFriendRequest " );
+		ChatManager.Instance.chatMessageHandler.sendAddFriendMessage( user );
 	}
 
 }

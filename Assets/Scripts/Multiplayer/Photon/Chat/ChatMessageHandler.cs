@@ -162,10 +162,15 @@ public class ChatMessageHandler {
 				PlayerFriends.FriendData fd3 = JsonUtility.FromJson<PlayerFriends.FriendData>( chatMessage.chatMessageContent );
 				fd3.print();
 				//Update the friend's list with this information
-				GameManager.Instance.playerFriends.updateFriendData( sender, fd3 );
-				if( onFriendDataEvent != null ) onFriendDataEvent( sender, fd3 );
+				updateFriendData( sender, fd3 );
 			break;
 		}
+	}
+
+	public void updateFriendData( string sender, PlayerFriends.FriendData friendData )
+	{
+		GameManager.Instance.playerFriends.updateFriendData( sender, friendData );
+		if( onFriendDataEvent != null ) onFriendDataEvent( sender, friendData );
 	}
 
 	public void startMatch()
