@@ -107,12 +107,14 @@ public class SocialMenu : MonoBehaviour {
 	{
 		ChatManager.onStatusUpdateEvent += OnStatusUpdateEvent;
 		PlayerFriends.onFriendChangedEvent += OnFriendChangedEvent;
+		ChatMessageHandler.onFriendDataEvent += OnFriendDataEvent;
 	}
 
 	void OnDisable()
 	{
 		ChatManager.onStatusUpdateEvent -= OnStatusUpdateEvent;
 		PlayerFriends.onFriendChangedEvent -= OnFriendChangedEvent;
+		ChatMessageHandler.onFriendDataEvent -= OnFriendDataEvent;
 	}
 
 	void OnStatusUpdateEvent( string userName, int newStatus )
@@ -123,6 +125,19 @@ public class SocialMenu : MonoBehaviour {
 		{
 			fud = friendsHolder.transform.GetChild( i ).GetComponent<FriendUIDetails>();
 			if( fud != null && fud.user == userName ) fud.configureStatus( newStatus );
+			break;
+		}
+	}
+
+	void OnFriendDataEvent( string userName, PlayerFriends.FriendData updatedFriendData )
+	{
+		updatedFriendData.print();
+		FriendUIDetails fud;
+		for( int i = 0; i < friendsHolder.transform.childCount; i++ )
+		{
+			fud = friendsHolder.transform.GetChild( i ).GetComponent<FriendUIDetails>();
+			if( fud != null && fud.user == userName ) fud.updateFriendData( updatedFriendData );
+			break;
 		}
 	}
 

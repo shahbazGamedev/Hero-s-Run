@@ -182,6 +182,11 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		{
  			GameManager.Instance.playerFriends.updateStatus( user, status );
 			if( onStatusUpdateEvent != null ) onStatusUpdateEvent( user, status );
+			if( status == 2 )
+			{
+				//Since that friend is online, ask him for his details (player icon, level, prestige level ...)
+				chatMessageHandler.sendAskFriendData( user );
+			}
 		}
 	}
 

@@ -37,6 +37,22 @@ public class PlayerFriends {
 		return onlineFriendDataList.Exists( fd => fd.userName == userName );
 	}
 
+	public void updateFriendData( string userName, FriendData updatedFriendData )
+	{
+		if( onlineFriendDataList.Exists( fd => fd.userName == userName ) )
+		{
+			FriendData currentFriendData = onlineFriendDataList.Find( fd => fd.userName == userName );
+			currentFriendData.playerIcon = updatedFriendData.playerIcon;
+			currentFriendData.level = updatedFriendData.level;
+			currentFriendData.prestige = updatedFriendData.prestige;
+			currentFriendData.currentWinStreak = updatedFriendData.currentWinStreak;
+		}
+		else
+		{
+			Debug.LogError("PlayerFriends-updateFriendData: The user name specified " + userName + " is not in the friend's list.");
+		}
+	}
+
 	public string[] getFriendNames()
 	{
 		string[] friendNamesArray = new string[onlineFriendDataList.Count];

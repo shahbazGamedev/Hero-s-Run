@@ -49,6 +49,21 @@ public class FriendUIDetails : MonoBehaviour {
 		configureStatus( fd );
 	}
 
+	public void updateFriendData ( PlayerFriends.FriendData fd )
+	{
+		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( fd.playerIcon ).icon;
+		levelText.text = fd.level.ToString();
+		if( fd.currentWinStreak >= 3 )
+		{
+			winStreakText.gameObject.SetActive( true );
+			winStreakText.text = string.Format( LocalizationManager.Instance.getText( "WIN_STREAK" ), fd.currentWinStreak );
+		}
+		else
+		{
+			winStreakText.gameObject.SetActive( false );
+		}
+	}
+
 	public void configureStatus( PlayerFriends.FriendData fd )
 	{
 		configureStatus( fd.status );

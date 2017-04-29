@@ -9,11 +9,17 @@ public enum ChatMessageType {
 	FRIEND_REQUEST_DECLINED = 3,
 	MATCH_REQUEST_SEND = 4,
 	MATCH_REQUEST_ACCEPTED = 5,
-	MATCH_REQUEST_DECLINED = 6
+	MATCH_REQUEST_DECLINED = 6,
+	DATA_REQUEST_ASK = 7,
+	DATA_REQUEST_RESPOND = 8
 
 }
 
 public class ChatMessageHandler {
+
+	//Event management used to notify other classes when we received updated friend data
+	public delegate void OnFriendDataEvent( string userName, PlayerFriends.FriendData friendData );
+	public static event OnFriendDataEvent onFriendDataEvent;
 
 	#region Friend Request
 	public void sendAddFriendMessage ( string target )
@@ -88,6 +94,25 @@ public class ChatMessageHandler {
 	}
 	#endregion
 
+	#region Friend Data Request
+	public void sendAskFriendData ( string target )
+	{
+		ChatMessage chatMessage = new ChatMessage();
+		chatMessage.chatMessageType = ChatMessageType.DATA_REQUEST_ASK;
+		chatMessage.chatMessageContent = string.Empty;
+		ChatManager.Instance.sendPrivateMessage( target, chatMessage.getJson() );
+	}
+
+	public void sendRespondFriendData ( string target )
+	{
+		string playerFriendData = GameManager.Instance.playerFriends.getMyFriendData().getJson();
+		ChatMessage chatMessage = new ChatMessage();
+		chatMessage.chatMessageType = ChatMessageType.DATA_REQUEST_RESPOND;
+		chatMessage.chatMessageContent = playerFriendData;
+		ChatManager.Instance.sendPrivateMessage( target, chatMessage.getJson() );
+	}
+	#endregion
+
 	public void parseMessage ( string sender, string message )
 	{
 		ChatMessage chatMessage = JsonUtility.FromJson<ChatMessage>( message );
@@ -127,6 +152,18 @@ public class ChatMessageHandler {
 
 			case ChatMessageType.MATCH_REQUEST_DECLINED:
 				ChatManager.Instance.chatMessageUI.configureMatchUI( (ChatMessageType)chatMessage.chatMessageType, sender );
+			break;
+			
+			case ChatMessageType.DATA_REQUEST_ASK:
+				sendRespondFriendData ( sender );
+			break;
+
+			case ChatMessageType.DATA_REQUEST_RESPOND:
+				PlayerFriends.FriendData fd3 = JsonUtility.FromJson<PlayerFriends.FriendData>( chatMessage.chatMessageContent );
+				fd3.print();
+				//Update the friend's list with this information
+				GameManager.Instance.playerFriends.updateFriendData( sender, fd3 );
+				if( onFriendDataEvent != null ) onFriendDataEvent( sender, fd3 );
 			break;
 		}
 	}
