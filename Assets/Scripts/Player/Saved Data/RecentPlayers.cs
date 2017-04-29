@@ -8,7 +8,7 @@ public class RecentPlayers {
 
 	const int MAX_NUMBER_OF_RECENT_PLAYERS = 8;
 	[SerializeField] List<PlayerFriends.FriendData> recentPlayersList = new List<PlayerFriends.FriendData>();
-	//Event management used to notify other classes when friends are added or removed
+	//Event management used to notify other classes when a recent player is added or removed
 	public delegate void OnRecentPlayerChangedEvent();
 	public static event OnRecentPlayerChangedEvent onRecentPlayerChangedEvent;
 
@@ -61,14 +61,14 @@ public class RecentPlayers {
 		PlayerStatsManager.Instance.setRecentPlayers( json );
 		if( saveImmediately ) PlayerStatsManager.Instance.savePlayerStats();
 	}
-
+	
+	//This list contains the data for the last 8 players that were raced against.
+	//It is sorted from the most recent to the least recent.
 	public void addRecentPlayer( PlayerFriends.FriendData fd )
 	{
 		if( fd == null ) return;
 
-		//We want the most recent players displayed on top
-
-		//If the player is already in the list, move him to the top
+		//If the player is already in the list, move him to the top.
 		if( recentPlayersList.Exists(recentPlayerData => recentPlayerData.userName == fd.userName ) )
 		{
 			PlayerFriends.FriendData current = recentPlayersList.Find(recentPlayerData => recentPlayerData.userName == fd.userName );
@@ -77,16 +77,18 @@ public class RecentPlayers {
 		}
 		else if( recentPlayersList.Count == MAX_NUMBER_OF_RECENT_PLAYERS )
 		{
-			//Our list is full and doesn't contain this player. Remove the oldest entry. Add the most recent entry. We keep the MAX_NUMBER_OF_RECENT_PLAYERS most recent.
+			//Our list is full and it doesn't contain this player.
+			//Remove the oldest entry.
 			recentPlayersList.RemoveAt( MAX_NUMBER_OF_RECENT_PLAYERS - 1 );
 		}
+		//Add the entry.
 		recentPlayersList.Insert( 0, fd);
 
 		if( onRecentPlayerChangedEvent != null ) onRecentPlayerChangedEvent();
 		Debug.LogWarning( "RecentPlayers-addRecentPlayer: " + fd.userName );
 	}
 
-	public void addDummyRecentPlayer(  string userName, int level )
+	void addDummyRecentPlayer(  string userName, int level )
 	{
 		//Don't add duplicate recent players
 		if( recentPlayersList.Exists(friendData => friendData.userName == userName ) ) return;
