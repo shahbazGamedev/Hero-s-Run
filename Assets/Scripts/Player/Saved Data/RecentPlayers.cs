@@ -68,6 +68,8 @@ public class RecentPlayers {
 	{
 		if( fd == null ) return;
 
+		fd.status = 2;
+
 		//If the player is already in the list, move him to the top.
 		if( recentPlayersList.Exists(recentPlayerData => recentPlayerData.userName == fd.userName ) )
 		{

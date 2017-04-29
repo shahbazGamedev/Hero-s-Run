@@ -85,7 +85,7 @@ public class SocialMenu : MonoBehaviour {
 	{
 		GameObject go = (GameObject)Instantiate(recentPlayerPrefab);
 		go.transform.SetParent(recentPlayersHolder,false);
-		go.GetComponent<FriendUIDetails>().configureFriend( index, fd );
+		go.GetComponent<RecentPlayerUIDetails>().configureRecentPlayer( index, fd );
 	}
 
 	/// <summary>
