@@ -348,6 +348,10 @@ public class MPNetworkLobbyManager : PunBehaviour
 				//Close the room. We do not want people to join while a race is in progress.
 				PhotonNetwork.room.IsOpen = false;
 		   	 	Invoke("loadLevel", DELAY_BEFORE_LOADING_LEVEL);
+				//Also add our opponent(s) to the recent players list
+				GameManager.Instance.recentPlayers.addRecentPlayer( matchmakingManager.remotePlayer1Data );
+				GameManager.Instance.recentPlayers.addRecentPlayer( matchmakingManager.remotePlayer2Data );
+				GameManager.Instance.recentPlayers.serializeRecentPlayers( true );
 			}
 		}
 		else

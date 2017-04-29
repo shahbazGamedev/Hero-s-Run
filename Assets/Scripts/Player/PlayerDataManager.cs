@@ -83,8 +83,6 @@ public class PlayerDataManager : MonoBehaviour {
 		else
 		{
 			recentPlayers = new RecentPlayers();
-			recentPlayers.createDummyRecentPlayers();
-
 		}
 		GameManager.Instance.recentPlayers = recentPlayers;
 

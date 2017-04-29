@@ -75,7 +75,7 @@ public class SocialMenu : MonoBehaviour {
 		//Adjust the length of the content based on the number of entries.
 		//All entries have the same height.
 		//There is spacing between the entries.
-		float elementHeight = recentPlayersHolder.GetChild( 0 ).GetComponent<LayoutElement>().preferredHeight;
+		float elementHeight = friendsHolder.GetChild( 0 ).GetComponent<LayoutElement>().preferredHeight;
 		float spacing = recentPlayersHolder.GetComponent<VerticalLayoutGroup>().spacing;
 		float contentHeight = recentPlayersHolder.childCount * elementHeight + ( recentPlayersHolder.childCount - 1 ) * spacing;
 		recentPlayersHolder.GetComponent<RectTransform>().sizeDelta = new Vector2( recentPlayersHolder.GetComponent<RectTransform>().sizeDelta.x, contentHeight );

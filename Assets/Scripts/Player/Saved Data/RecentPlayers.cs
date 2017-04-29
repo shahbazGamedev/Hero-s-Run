@@ -6,21 +6,11 @@ using System.Linq;
 [System.Serializable]
 public class RecentPlayers {
 
+	const int MAX_NUMBER_OF_RECENT_PLAYERS = 8;
 	[SerializeField] List<PlayerFriends.FriendData> recentPlayersList = new List<PlayerFriends.FriendData>();
 	//Event management used to notify other classes when friends are added or removed
 	public delegate void OnRecentPlayerChangedEvent();
 	public static event OnRecentPlayerChangedEvent onRecentPlayerChangedEvent;
-
-	/// <summary>
-	/// Creates the dummy friends for testing.
-	/// </summary>
-	public void createDummyRecentPlayers()
-	{
-		addDummyRecentPlayer( "Régis", 69 );
-		addDummyRecentPlayer( "Marie", 68 );
-		addDummyRecentPlayer( "Emma", 24 );
-		serializeRecentPlayers( true );
-	}
 
 	public List<PlayerFriends.FriendData> getRecentPlayersList()
 	{
@@ -72,18 +62,28 @@ public class RecentPlayers {
 		if( saveImmediately ) PlayerStatsManager.Instance.savePlayerStats();
 	}
 
-	public void addRecentPlayerAndSave( PlayerFriends.FriendData fd )
+	public void addRecentPlayer( PlayerFriends.FriendData fd )
 	{
-		//Don't add duplicate recent players
-		if( recentPlayersList.Exists(recentPlayerData => recentPlayerData.userName == fd.userName ) ) return;
-		//Remove the current friends list @important before adding the one with the added friend.
-	//ChatManager.Instance.removeChatFriends();
-		recentPlayersList.Add(fd);
-		serializeRecentPlayers( true );
+		if( fd == null ) return;
+
+		//We want the most recent players displayed on top
+
+		//If the player is already in the list, move him to the top
+		if( recentPlayersList.Exists(recentPlayerData => recentPlayerData.userName == fd.userName ) )
+		{
+			PlayerFriends.FriendData current = recentPlayersList.Find(recentPlayerData => recentPlayerData.userName == fd.userName );
+			int index = recentPlayersList.IndexOf( current );
+			recentPlayersList.RemoveAt( index );
+		}
+		else if( recentPlayersList.Count == MAX_NUMBER_OF_RECENT_PLAYERS )
+		{
+			//Our list is full and doesn't contain this player. Remove the oldest entry. Add the most recent entry. We keep the MAX_NUMBER_OF_RECENT_PLAYERS most recent.
+			recentPlayersList.RemoveAt( MAX_NUMBER_OF_RECENT_PLAYERS - 1 );
+		}
+		recentPlayersList.Insert( 0, fd);
+
 		if( onRecentPlayerChangedEvent != null ) onRecentPlayerChangedEvent();
-		//Make sure we get online status updates
-	//ChatManager.Instance.addChatFriends();
-		
+		Debug.LogWarning( "RecentPlayers-addRecentPlayer: " + fd.userName );
 	}
 
 	public void addDummyRecentPlayer(  string userName, int level )
