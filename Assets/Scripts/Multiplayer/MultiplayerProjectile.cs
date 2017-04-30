@@ -70,17 +70,22 @@ public class MultiplayerProjectile : MonoBehaviour {
    		switch (potentialTarget.gameObject.layer)
 		{
 			case playerLayer:
-				valid = true;
-				//The projectile knocked down a player. Send him an RPC.
-				if( getDotProduct( potentialTarget, transform.position ) )
+				//The player is immune to projectiles while in the IDLE state.
+				//The player is in the IDLE state after crossing the finish line for example.
+				if( potentialTarget.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle )
 				{
-					//Explosion is in front of player. He falls backward.
-					potentialTarget.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.Obstacle );
-				}
-				else
-				{
-					//Explosion is behind player. He falls forward.
-					potentialTarget.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.FallForward );
+					valid = true;
+					//The projectile knocked down a player. Send him an RPC.
+					if( getDotProduct( potentialTarget, transform.position ) )
+					{
+						//Explosion is in front of player. He falls backward.
+						potentialTarget.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.Obstacle );
+					}
+					else
+					{
+						//Explosion is behind player. He falls forward.
+						potentialTarget.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.FallForward );
+					}
 				}
 				break;
 	                

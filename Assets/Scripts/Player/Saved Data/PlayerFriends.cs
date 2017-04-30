@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using ExitGames.Client.Photon.Chat;
 
 [System.Serializable]
 public class PlayerFriends {
@@ -25,6 +26,11 @@ public class PlayerFriends {
 	public List<FriendData> getFriendList()
 	{
 		return onlineFriendDataList;
+	}
+
+	public int getNumberOfFriendsOnline()
+	{
+		return onlineFriendDataList.Count( fd => fd.status == ChatUserStatus.Online );
 	}
 
 	/// <summary>

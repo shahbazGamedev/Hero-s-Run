@@ -86,6 +86,9 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		//Limit the number of messages that are cached
 		this.chatClient.MessageLimit = HistoryLengthToFetch;
 
+		//Set your own online status
+		configureStatus( ChatUserStatus.Online );
+
 		//Add friends so we can get their online status. See OnStatusUpdate for more details.
 		addChatFriends();
 	}
@@ -113,7 +116,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	public void OnDisconnected()
 	{
 		Debug.LogWarning( PlayerStatsManager.Instance.getUserName() + " has been disconnected from chat." );
-		configureStatus( 0 );
+		configureStatus( ChatUserStatus.Offline );
 	}
 	
 	public bool canChat()
@@ -121,16 +124,16 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		return chatClient.CanChat;
 	}
 
-	void OnApplicationFocus( bool hasFocus )
+	void OnApplicationPause( bool isPaused )
 	{
 		#if !UNITY_EDITOR
-		if ( hasFocus )
+		if ( isPaused )
 		{
-			ChatConnect();
+			chatClient.Disconnect();
 		}
 		else
 		{
-			chatClient.Disconnect();
+			ChatConnect();
 		}
 		#endif
 	}
@@ -196,23 +199,16 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	public void OnStatusUpdate(string user, int status, bool gotMessage, object message)
 	{
 		Debug.Log("OnStatusUpdate: gotMsg " + gotMessage + " "+ string.Format("{0} is {1}.", user, status));
-		if( user == PlayerStatsManager.Instance.getUserName() )
+		GameManager.Instance.playerFriends.updateStatus( user, status );
+		if( onStatusUpdateEvent != null ) onStatusUpdateEvent( user, status );
+		if( status == 2 && gotMessage && message != null )
 		{
-			configureStatus( status );
-		}
-		else
-		{
- 			GameManager.Instance.playerFriends.updateStatus( user, status );
-			if( onStatusUpdateEvent != null ) onStatusUpdateEvent( user, status );
-			if( status == 2 && gotMessage && message != null )
-			{
-				int[] onlinePlayerData = (int[]) message;					
-				//Update the friend's list with this information
-				PlayerFriends.FriendData friendData = new PlayerFriends.FriendData( user, onlinePlayerData[0], onlinePlayerData[1], onlinePlayerData[2], onlinePlayerData[3] );
-				friendData.status = 2;
-				friendData.print();
-				chatMessageHandler.updateFriendData( user, friendData );
-			}
+			int[] onlinePlayerData = (int[]) message;					
+			//Update the friend's list with this information
+			PlayerFriends.FriendData friendData = new PlayerFriends.FriendData( user, onlinePlayerData[0], onlinePlayerData[1], onlinePlayerData[2], onlinePlayerData[3] );
+			friendData.status = 2;
+			friendData.print();
+			chatMessageHandler.updateFriendData( user, friendData );
 		}
 	}
 
