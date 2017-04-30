@@ -9,14 +9,13 @@ using Photon;
 public class ChatManager : PunBehaviour, IChatClientListener {
 
 	public static ChatManager Instance;
-	public ChatClient chatClient;
+	ChatClient chatClient;
 	public ChatMessageHandler chatMessageHandler;
 	public ChatMessageUI chatMessageUI;
 
 	[Header("Online Indicator")]
 	[SerializeField] Image onlineIndicator;
 	[Header("Channels")]
-	[SerializeField] string[] ChannelsToJoinOnConnect; 	// set in inspector. Channels to join automatically.
 	[SerializeField] int HistoryLengthToFetch; 			// set in inspector. Up to a certain degree, previously sent messages can be fetched for context
 	//Event management used to notify other classes when the status for the player or a friend changes
 	public delegate void OnStatusUpdateEvent( string userName, int newStatus );
@@ -69,11 +68,6 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	
 	public void OnConnected()
 	{
-		//Now that we are connected, subscribe to chat channels
-		if (this.ChannelsToJoinOnConnect != null && this.ChannelsToJoinOnConnect.Length > 0)
-		{
-			this.chatClient.Subscribe(this.ChannelsToJoinOnConnect, this.HistoryLengthToFetch);
-		}
 		//Set our chat status to Online
 		int[] onlinePlayerData = new int[4];
 		onlinePlayerData[0] = GameManager.Instance.playerProfile.getPlayerIconId();
@@ -201,7 +195,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		Debug.Log("OnStatusUpdate: gotMsg " + gotMessage + " "+ string.Format("{0} is {1}.", user, status));
 		GameManager.Instance.playerFriends.updateStatus( user, status );
 		if( onStatusUpdateEvent != null ) onStatusUpdateEvent( user, status );
-		if( status == 2 && gotMessage && message != null )
+		if( status == ChatUserStatus.Online && gotMessage && message != null )
 		{
 			int[] onlinePlayerData = (int[]) message;					
 			//Update the friend's list with this information
@@ -222,28 +216,23 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		Color statusColor;
 		switch ( status )
 		{
-			//Offline
-			case 0:
+			case ChatUserStatus.Offline:
 				statusColor = Color.red;
 			break;
 
-			//Invisible
-			case 1:
+			case ChatUserStatus.Invisible:
 				statusColor = Color.red;
 			break;
 			
-			//Online
-			case 2:
+			case ChatUserStatus.Online:
 				statusColor = Color.green;
 			break;
 
-			//Away
-			case 3:
+			case ChatUserStatus.Away:
 				statusColor = Color.yellow;
 			break;
 
-			//DND
-			case 4:
+			case ChatUserStatus.DND:
 				statusColor = Color.blue;
 			break;
 
