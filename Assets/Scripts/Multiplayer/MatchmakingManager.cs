@@ -55,16 +55,11 @@ public class MatchmakingManager : MonoBehaviour {
 
 	bool levelLoading = false;
 	private Color originalPlayButtonTextColor;
-	public PlayerFriends.FriendData remotePlayer1Data;
-	public PlayerFriends.FriendData remotePlayer2Data;
 
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
 		originalPlayButtonTextColor = playButtonText.color;
-		//Reset to null
-		remotePlayer1Data = null;
-		remotePlayer2Data = null;
 		//Configure the lobby according to the number of players in the race
 		configureLobby();
 
@@ -169,7 +164,6 @@ public class MatchmakingManager : MonoBehaviour {
 				remotePlayer1Name2P.text = name;
 				remotePlayer1Icon2P.GetComponent<Outline>().effectColor = frameColor;
 				remotePlayer1Icon2P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
-				remotePlayer1Data = new PlayerFriends.FriendData( name, iconId, level, 0, 0 );
 			break;
 
 			case PlayMode.PlayThreePlayers:
@@ -178,14 +172,12 @@ public class MatchmakingManager : MonoBehaviour {
 					remotePlayer1Name3P.text = name;
 					remotePlayer1Icon3P.GetComponent<Outline>().effectColor = frameColor;
 					remotePlayer1Icon3P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
-					remotePlayer1Data = new PlayerFriends.FriendData( name, iconId, level, 0, 0 );
 				}
 				else if( index == 2 )
 				{
 					remotePlayer2Name3P.text = name;
 					remotePlayer2Icon3P.GetComponent<Outline>().effectColor = frameColor;
 					remotePlayer2Icon3P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
-					remotePlayer2Data = new PlayerFriends.FriendData( name, iconId, level, 0, 0 );
 				}
 			break;
 		}

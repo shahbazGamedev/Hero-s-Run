@@ -160,8 +160,11 @@ public class SocialMenu : MonoBehaviour {
 		for( int i = 0; i < friendsHolder.transform.childCount; i++ )
 		{
 			fud = friendsHolder.transform.GetChild( i ).GetComponent<FriendUIDetails>();
-			if( fud != null && fud.user == userName ) fud.configureStatus( newStatus );
-			break;
+			if( fud != null && fud.user == userName )
+			{
+				fud.configureStatus( newStatus );
+				break;
+			}
 		}
 	}
 
@@ -172,14 +175,17 @@ public class SocialMenu : MonoBehaviour {
 		for( int i = 0; i < friendsHolder.transform.childCount; i++ )
 		{
 			fud = friendsHolder.transform.GetChild( i ).GetComponent<FriendUIDetails>();
-			if( fud != null && fud.user == userName ) fud.updateFriendData( updatedFriendData );
-			break;
+			if( fud != null && fud.user == userName )
+			{
+				fud.updateFriendData( updatedFriendData );
+				break;
+			}
 		}
 	}
 
 	void OnFriendChangedEvent()
 	{
-		print("OnFriendChangedEvent" );
+		print("OnFriendChangedEvent-recreating friend list" );
 		createFriendList();
 	}
 	

@@ -56,7 +56,8 @@ public class ChatMessageHandler {
 		int playerIcon = GameManager.Instance.playerProfile.getPlayerIconId();
 		int level = GameManager.Instance.playerProfile.getLevel();
 		int prestige = GameManager.Instance.playerProfile.prestigeLevel; 
-		MatchData matchData = new MatchData( PlayerStatsManager.Instance.getUserName(), 0, string.Empty, playerIcon, level, prestige );
+		int currentWinStreak = GameManager.Instance.playerStatistics.currentWinStreak;
+		MatchData matchData = new MatchData( PlayerStatsManager.Instance.getUserName(), 0, string.Empty, playerIcon, level, prestige, currentWinStreak );
 
 		ChatMessage chatMessage = new ChatMessage();
 		chatMessage.chatMessageType = ChatMessageType.MATCH_REQUEST_SEND;
@@ -77,7 +78,8 @@ public class ChatMessageHandler {
 		int playerIcon = GameManager.Instance.playerProfile.getPlayerIconId();
 		int level = GameManager.Instance.playerProfile.getLevel();
 		int prestige = GameManager.Instance.playerProfile.prestigeLevel; 
-		MatchData matchData = new MatchData( PlayerStatsManager.Instance.getUserName(), multiplayerLevelndex, roomName, playerIcon, level, prestige );
+		int currentWinStreak = GameManager.Instance.playerStatistics.currentWinStreak;
+		MatchData matchData = new MatchData( PlayerStatsManager.Instance.getUserName(), multiplayerLevelndex, roomName, playerIcon, level, prestige, currentWinStreak );
 
 		ChatMessage chatMessage = new ChatMessage();
 		chatMessage.chatMessageType = ChatMessageType.MATCH_REQUEST_ACCEPTED;
@@ -201,8 +203,9 @@ public class ChatMessageHandler {
 		public int playerIcon;
 		public int level;
 		public int prestige;
+		public int currentWinStreak;
 	
-		public MatchData ( string sender, int multiplayerLevelIndex, string roomName, int playerIcon, int level, int prestige )
+		public MatchData ( string sender, int multiplayerLevelIndex, string roomName, int playerIcon, int level, int prestige, int currentWinStreak )
 		{
 			this.sender = sender;
 			this.multiplayerLevelIndex = multiplayerLevelIndex;
@@ -210,6 +213,7 @@ public class ChatMessageHandler {
 			this.playerIcon = playerIcon;
 			this.level = level;
 			this.prestige = prestige;
+			this.currentWinStreak = currentWinStreak;
 		}
 
 		public string getJson()
@@ -219,7 +223,7 @@ public class ChatMessageHandler {
 
 		public void print()
 		{
-			Debug.Log("MatchData-Sender: " + sender + " Multiplayer Level Index: " + multiplayerLevelIndex + " Room Name: " + roomName + " Player Icon: " + playerIcon  + " Level: " + level + " Prestige: " + prestige );
+			Debug.Log("MatchData-Sender: " + sender + " Multiplayer Level Index: " + multiplayerLevelIndex + " Room Name: " + roomName + " Player Icon: " + playerIcon  + " Level: " + level + " Prestige: " + prestige + " Current Win Streak: " + currentWinStreak );
 		}
 	}
 }

@@ -44,6 +44,9 @@ public class MPNetworkLobbyManager : PunBehaviour
 		if( GameManager.Instance.getPlayMode() == PlayMode.PlayWithFriends )
 		{
 			matchmakingManager.setRemotePlayerData( 1, LevelManager.Instance.matchData.sender, LevelManager.Instance.matchData.level, LevelManager.Instance.matchData.playerIcon );
+			ChatMessageHandler.MatchData md = LevelManager.Instance.matchData;
+			PlayerFriends.FriendData playerData = new PlayerFriends.FriendData(  md.sender,  md.playerIcon,  md.level,  md.prestige, md.currentWinStreak );
+			GameManager.Instance.recentPlayers.addRecentPlayer( playerData );
 		}
 	}
 	#endregion
@@ -97,6 +100,12 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 		//Set your level, which determines the frame to use in the matchmaking screen
 		playerCustomProperties.Add("Level", GameManager.Instance.playerProfile.getLevel() );
+
+		//Set your prestige, which determines the extra frame to use in the matchmaking screen
+		playerCustomProperties.Add("Prestige", GameManager.Instance.playerProfile.prestigeLevel );
+
+		//Set your win streak, which is displayed in the social screen
+		playerCustomProperties.Add("WinStreak", GameManager.Instance.playerStatistics.currentWinStreak );
 
 		//Apply values so that they propagate to other players
 		PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
@@ -313,6 +322,8 @@ public class MPNetworkLobbyManager : PunBehaviour
 		matchmakingManager.disableExitButton();
 		matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedMultiplayerLevel().circuitInfo.circuitTextID ) + " ..." ); 
 		matchmakingManager.setRemotePlayerData( numberRemotePlayerConnected, player.NickName, (int)player.CustomProperties["Level"], (int)player.CustomProperties["Icon"] );
+		PlayerFriends.FriendData playerData = new PlayerFriends.FriendData( player.NickName, (int)player.CustomProperties["Icon"], (int)player.CustomProperties["Level"], (int)player.CustomProperties["Prestige"], (int)player.CustomProperties["WinStreak"] );		
+		GameManager.Instance.recentPlayers.addRecentPlayer( playerData );
 	}
 
 	void setUpBot()
@@ -348,10 +359,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 				//Close the room. We do not want people to join while a race is in progress.
 				PhotonNetwork.room.IsOpen = false;
 		   	 	Invoke("loadLevel", DELAY_BEFORE_LOADING_LEVEL);
-				//Also add our opponent(s) to the recent players list
-				GameManager.Instance.recentPlayers.addRecentPlayer( matchmakingManager.remotePlayer1Data );
-				GameManager.Instance.recentPlayers.addRecentPlayer( matchmakingManager.remotePlayer2Data );
-				GameManager.Instance.recentPlayers.serializeRecentPlayers( true );
 			}
 		}
 		else

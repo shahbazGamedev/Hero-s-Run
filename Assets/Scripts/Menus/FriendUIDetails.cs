@@ -66,6 +66,7 @@ public class FriendUIDetails : MonoBehaviour {
 
 	public void configureStatus( PlayerFriends.FriendData fd )
 	{
+		print("configureStatus " + fd.userName + " " + fd.status );
 		configureStatus( fd.status );
 	}
 

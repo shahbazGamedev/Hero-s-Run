@@ -209,6 +209,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 				int[] onlinePlayerData = (int[]) message;					
 				//Update the friend's list with this information
 				PlayerFriends.FriendData friendData = new PlayerFriends.FriendData( user, onlinePlayerData[0], onlinePlayerData[1], onlinePlayerData[2], onlinePlayerData[3] );
+				friendData.status = 2;
 				friendData.print();
 				chatMessageHandler.updateFriendData( user, friendData );
 			}

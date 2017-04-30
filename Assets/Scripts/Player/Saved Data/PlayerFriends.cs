@@ -93,7 +93,7 @@ public class PlayerFriends {
 		if( onFriendChangedEvent != null ) onFriendChangedEvent();
 		//Make sure we get online status updates
 		ChatManager.Instance.addChatFriends();
-		
+		Debug.Log("	addFriendAndSave " + fd.userName );
 	}
 
 	public void addDummyFriend(  string userName, int level )
