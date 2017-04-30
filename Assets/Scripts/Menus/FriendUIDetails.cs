@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using ExitGames.Client.Photon.Chat;
 
 public class FriendUIDetails : MonoBehaviour {
 
@@ -64,7 +65,7 @@ public class FriendUIDetails : MonoBehaviour {
 		}
 	}
 
-	public void configureStatus( PlayerFriends.FriendData fd )
+	void configureStatus( PlayerFriends.FriendData fd )
 	{
 		print("configureStatus " + fd.userName + " " + fd.status );
 		configureStatus( fd.status );
@@ -75,28 +76,23 @@ public class FriendUIDetails : MonoBehaviour {
 		//Text
 		switch ( status )
 		{
-			//Offline
-			case 0:
+			case ChatUserStatus.Offline:
 				onlineText.text = "Offline";
 			break;
 
-			//Invisible
-			case 1:
+			case ChatUserStatus.Invisible:
 				onlineText.text = "Invisible";
 			break;
 			
-			//Online
-			case 2:
+			case ChatUserStatus.Online:
 				onlineText.text = "Online";
 			break;
 
-			//Away
-			case 3:
+			case ChatUserStatus.Away:
 				onlineText.text = "Away";
 			break;
 
-			//DND
-			case 4:
+			case ChatUserStatus.DND:
 				onlineText.text = "Do Not Disturb";
 			break;
 		}
@@ -106,7 +102,7 @@ public class FriendUIDetails : MonoBehaviour {
 
 		//Buttons
 		//if the friend is Online and the player is connected to the chat backend, enable the Invite and Chat buttons
-		if( status == 2 && ChatManager.Instance.canChat() )
+		if( status == ChatUserStatus.Online && ChatManager.Instance.canChat() )
 		{
 			if( raceMeButton != null ) raceMeButton.interactable = true;
 			if( chatButton != null ) chatButton.interactable = true;
@@ -121,12 +117,13 @@ public class FriendUIDetails : MonoBehaviour {
 	public void OnClickSendMatchRequest()
 	{
 		print("OnClickSendMatchRequest " + user );
+		UISoundManager.uiSoundManager.playButtonClick();
 		ChatManager.Instance.chatMessageHandler.sendMatchRequestMessage( user );
 		raceMeButtonConfirmationText.gameObject.SetActive( true );
 		Invoke("hideRaceMeButtonConfirmationText", 2.5f );
 	}
 
-	public void hideRaceMeButtonConfirmationText()
+	void hideRaceMeButtonConfirmationText()
 	{
 		raceMeButtonConfirmationText.gameObject.SetActive( false );
 	}
@@ -134,11 +131,13 @@ public class FriendUIDetails : MonoBehaviour {
 	public void OnClickChat()
 	{
 		print("OnClickChat " );
+		UISoundManager.uiSoundManager.playButtonClick();
 	}
 
 	public void OnClickSendFriendRequest()
 	{
 		print("OnClickSendFriendRequest " );
+		UISoundManager.uiSoundManager.playButtonClick();
 		ChatManager.Instance.chatMessageHandler.sendAddFriendMessage( user );
 	}
 

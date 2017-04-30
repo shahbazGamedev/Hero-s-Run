@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using ExitGames.Client.Photon.Chat;
 
 public class RecentPlayerUIDetails : MonoBehaviour {
 
@@ -22,7 +23,9 @@ public class RecentPlayerUIDetails : MonoBehaviour {
 	public void configureRecentPlayer ( int index, PlayerFriends.FriendData fd )
 	{
 		user = fd.userName;
-		if( addFriendButtonConfirmationText != null ) addFriendButtonConfirmationText.gameObject.SetActive( false );
+
+		addFriendButtonConfirmationText.gameObject.SetActive( false );
+
 		if( index%2 == 0 )
 		{
 			background.color = darkGray;
@@ -44,18 +47,6 @@ public class RecentPlayerUIDetails : MonoBehaviour {
 			winStreakText.gameObject.SetActive( false );
 		}
 
-		if( GameManager.Instance.playerFriends.isFriend( fd.userName ) )
-		{
-			//This recent player is already your friend.
-			addFriendButtonText.text = "Already a Friend";
-			addFriendButton.interactable = false;
-		}
-		else
-		{
-			//This recent player is not our friend.
-			addFriendButtonText.text = "Add Friend";
-			addFriendButton.interactable = true;
-		}
 		configureStatus( fd );
 	}
 
@@ -74,7 +65,7 @@ public class RecentPlayerUIDetails : MonoBehaviour {
 		}
 	}
 
-	public void configureStatus( PlayerFriends.FriendData fd )
+	void configureStatus( PlayerFriends.FriendData fd )
 	{
 		configureStatus( fd.status );
 	}
@@ -84,28 +75,23 @@ public class RecentPlayerUIDetails : MonoBehaviour {
 		//Text
 		switch ( status )
 		{
-			//Offline
-			case 0:
+			case ChatUserStatus.Offline:
 				onlineText.text = "Offline";
 			break;
 
-			//Invisible
-			case 1:
+			case ChatUserStatus.Invisible:
 				onlineText.text = "Invisible";
 			break;
 			
-			//Online
-			case 2:
+			case ChatUserStatus.Online:
 				onlineText.text = "Online";
 			break;
 
-			//Away
-			case 3:
+			case ChatUserStatus.Away:
 				onlineText.text = "Away";
 			break;
 
-			//DND
-			case 4:
+			case ChatUserStatus.DND:
 				onlineText.text = "Do Not Disturb";
 			break;
 		}
@@ -113,27 +99,57 @@ public class RecentPlayerUIDetails : MonoBehaviour {
 		//Color
 		onlineStatusIcon.color = ChatManager.Instance.getStatusColor( status );
 
-		//Buttons
-		//if the friend is Online and the player is connected to the chat backend, enable the Invite and Chat buttons
-		if( status == 2 && ChatManager.Instance.canChat() )
+		//Button
+		configureAddFriendButton( status );
+
+	}
+
+	/// <summary>
+	/// Configures the add friend button.
+	/// The add friend button will be interactable if 3 conditions are met:
+	/// 1) The player is online.
+	/// 2) The recent player is online.
+	/// 3) The recent player is not already a friend.
+	/// </summary>
+	/// <param name="status">Status.</param>
+	void configureAddFriendButton( int status )
+	{
+		bool isRecentPlayerAFriend = GameManager.Instance.playerFriends.isFriend( user );
+
+		if( isRecentPlayerAFriend )
 		{
-			if( addFriendButton != null ) addFriendButton.interactable = true;
+			//This recent player is already your friend.
+			addFriendButtonText.text = "Already a Friend";
 		}
 		else
 		{
-			if( addFriendButton != null ) addFriendButton.interactable = false;
+			//This recent player is not our friend.
+			addFriendButtonText.text = "Add Friend";
 		}
-	}
 
-	public void hideAddFriendButtonConfirmationText()
-	{
-		addFriendButtonConfirmationText.gameObject.SetActive( false );
+		if( ChatManager.Instance.canChat() && status == ChatUserStatus.Online && !isRecentPlayerAFriend )
+		{
+			addFriendButton.interactable = true;
+		}
+		else
+		{
+			addFriendButton.interactable = false;
+		}
 	}
 
 	public void OnClickSendFriendRequest()
 	{
+		UISoundManager.uiSoundManager.playButtonClick();
 		print("OnClickSendFriendRequest " );
 		ChatManager.Instance.chatMessageHandler.sendAddFriendMessage( user );
+		addFriendButtonConfirmationText.gameObject.SetActive( true );
+		Invoke("hideAddFriendButtonConfirmationText", 2.5f );
 	}
+
+	void hideAddFriendButtonConfirmationText()
+	{
+		addFriendButtonConfirmationText.gameObject.SetActive( false );
+	}
+
 
 }

@@ -7,7 +7,7 @@ public class UISoundManager : MonoBehaviour {
 
 	// Audio - GUI
 	AudioSource uiAudioSource;
-	public AudioClip buttonClick;
+	[SerializeField] AudioClip buttonClick;
 
 	void Awake ()
 	{
