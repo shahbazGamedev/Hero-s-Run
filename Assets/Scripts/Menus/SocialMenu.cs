@@ -187,6 +187,7 @@ public class SocialMenu : MonoBehaviour {
 	{
 		print("OnFriendChangedEvent-recreating friend list" );
 		createFriendList();
+		createRecentPlayerList();
 	}
 	
 }
