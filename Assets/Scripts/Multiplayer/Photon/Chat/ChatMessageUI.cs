@@ -13,6 +13,8 @@ public class ChatMessageUI : MonoBehaviour {
 
 	public void configureFriendUI ( ChatMessageType type, string sender, PlayerFriends.FriendData fd = null )
 	{
+		if( LeanTween.isTweening( gameObject ) ) return;
+
 		switch ( type )
 		{
 			case ChatMessageType.FRIEND_REQUEST_SEND:
@@ -24,7 +26,7 @@ public class ChatMessageUI : MonoBehaviour {
 				acceptButton.onClick.AddListener(() => OnAcceptFriendRequest( sender, fd ));
 				declineButton.onClick.RemoveAllListeners();
 				declineButton.onClick.AddListener(() => OnDeclineFriendRequest( sender ));
-				gameObject.SetActive( true );
+				slideIn();
 			break;
 
 			case ChatMessageType.FRIEND_REQUEST_ACCEPTED:
@@ -34,7 +36,7 @@ public class ChatMessageUI : MonoBehaviour {
 				closeButton.gameObject.SetActive( true );
 				closeButton.onClick.RemoveAllListeners();
 				closeButton.onClick.AddListener(() => OnClose());
-				gameObject.SetActive( true );
+				slideIn();
 				//Add friend to player's friends and save. This will also get the friend's list in social menu re-populated.
 				GameManager.Instance.playerFriends.addFriendAndSave( fd );
 				//We want to get status updates from this new friend.
@@ -48,13 +50,15 @@ public class ChatMessageUI : MonoBehaviour {
 				closeButton.gameObject.SetActive( true );
 				closeButton.onClick.RemoveAllListeners();
 				closeButton.onClick.AddListener(() => OnClose());
-				gameObject.SetActive( true );
+				slideIn();
 			break;
 		}
 	}
 
 	public void configureMatchUI ( ChatMessageType type, string sender )
 	{
+		if( LeanTween.isTweening( gameObject ) ) return;
+
 		switch ( type )
 		{
 			case ChatMessageType.MATCH_REQUEST_SEND:
@@ -66,7 +70,7 @@ public class ChatMessageUI : MonoBehaviour {
 				acceptButton.onClick.AddListener(() => OnAcceptMatchRequest( sender ));
 				declineButton.onClick.RemoveAllListeners();
 				declineButton.onClick.AddListener(() => OnDeclineMatchRequest( sender ));
-				gameObject.SetActive( true );
+				slideIn();
 			break;
 
 			case ChatMessageType.MATCH_REQUEST_ACCEPTED:
@@ -76,7 +80,7 @@ public class ChatMessageUI : MonoBehaviour {
 				closeButton.gameObject.SetActive( true );
 				closeButton.onClick.RemoveAllListeners();
 				closeButton.onClick.AddListener(() => OnCloseStartMatch( sender ));
-				gameObject.SetActive( true );
+				slideIn();
 			break;
 
 			case ChatMessageType.MATCH_REQUEST_DECLINED:
@@ -86,7 +90,7 @@ public class ChatMessageUI : MonoBehaviour {
 				closeButton.gameObject.SetActive( true );
 				closeButton.onClick.RemoveAllListeners();
 				closeButton.onClick.AddListener(() => OnClose());
-				gameObject.SetActive( true );
+				slideIn();
 			break;
 		}
 	}
@@ -94,7 +98,7 @@ public class ChatMessageUI : MonoBehaviour {
 	void OnAcceptFriendRequest( string sender, PlayerFriends.FriendData fd )
 	{
 		Debug.Log( "OnAcceptFriendRequest from " + sender );
-		gameObject.SetActive( false );
+		slideOut();
 		//Send a message back saying that the friend request has been accepted.
 		ChatManager.Instance.chatMessageHandler.sendFriendRequestAcceptedMessage ( sender );
 		//Add friend to player's friends and save. This will also get the friend's list in social menu re-populated.
@@ -106,7 +110,7 @@ public class ChatMessageUI : MonoBehaviour {
 	void OnDeclineFriendRequest( string sender )
 	{
 		Debug.Log( "OnDeclineFriendRequest" );
-		gameObject.SetActive( false );
+		slideOut();
 		//Send a message back saying that the friend request has been declined.
 		ChatManager.Instance.chatMessageHandler.sendFriendRequestDeclinedMessage ( sender );
 	}
@@ -114,7 +118,7 @@ public class ChatMessageUI : MonoBehaviour {
 	void OnAcceptMatchRequest( string sender )
 	{
 		Debug.Log( "OnAcceptMatchRequest from " + sender );
-		gameObject.SetActive( false );
+		slideOut();
 		//Send a message back saying that the match request has been accepted.
 		//This message will specify the level to play and the room name.
 		//These 2 values will be saved in the match data we got from the inviter.
@@ -125,7 +129,7 @@ public class ChatMessageUI : MonoBehaviour {
 	void OnDeclineMatchRequest( string sender )
 	{
 		Debug.Log( "OnDeclineMatchRequest" );
-		gameObject.SetActive( false );
+		slideOut();
 		//Send a message back saying that the match request has been declined.
 		ChatManager.Instance.chatMessageHandler.sendMatchRequestDeclinedMessage ( sender );
 	}
@@ -133,14 +137,24 @@ public class ChatMessageUI : MonoBehaviour {
 	public void OnClose()
 	{
 		Debug.Log( "OnClose" );
-		gameObject.SetActive( false );
+		slideOut();
 	}
 
 	public void OnCloseStartMatch( string sender )
 	{
 		Debug.Log( "OnCloseStartMatch" );
-		gameObject.SetActive( false );
+		slideOut();
 		ChatManager.Instance.chatMessageHandler.startMatch();
+	}
+
+	void slideIn()
+	{
+		LeanTween.moveX( gameObject.GetComponent<RectTransform>(), -512, 0.28f ).setEaseInOutQuad();
+	}
+
+	void slideOut()
+	{
+		LeanTween.moveX( gameObject.GetComponent<RectTransform>(), 512, 0.2f ).setEaseInOutQuad();
 	}
 
 

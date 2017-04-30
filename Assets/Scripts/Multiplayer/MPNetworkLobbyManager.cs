@@ -147,7 +147,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 				roomOptions.MaxPlayers = LevelManager.Instance.getNumberOfPlayersRequired();
 				roomOptions.IsVisible = false;
 			    Debug.Log("tryToJoinRoom: with friends " + LevelManager.Instance.matchData.roomName + " MP Level " + LevelManager.Instance.matchData.multiplayerLevelIndex + " Max " +  LevelManager.Instance.getNumberOfPlayersRequired() );
-				matchmakingManager.statusLine.text = LevelManager.Instance.matchData.roomName + " MP Level " + LevelManager.Instance.matchData.multiplayerLevelIndex + " Max " +  LevelManager.Instance.getNumberOfPlayersRequired();
 				PhotonNetwork.JoinOrCreateRoom( LevelManager.Instance.matchData.roomName, roomOptions, TypedLobby.Default );
 			}
 			else
