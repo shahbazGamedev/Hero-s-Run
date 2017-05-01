@@ -1,4 +1,6 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
 Shader "Zololgo/Sci-Fi Hologram" 
 {
@@ -53,9 +55,9 @@ Shader "Zololgo/Sci-Fi Hologram"
 			v2f vert (appdata v)
 			{
 				v2f o;
-				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.uv_main = TRANSFORM_TEX(v.uv_main, _MainTex);
-				float4 screenPosOrigin = ComputeScreenPos(mul(UNITY_MATRIX_MVP, half4(0,0,0,1)));
+				float4 screenPosOrigin = ComputeScreenPos(UnityObjectToClipPos(half4(0,0,0,1)));
 				float4 screenPos = ComputeScreenPos(o.vertex);		
 				float dis = length(ObjSpaceViewDir(half4(0,0,0,0)));				
 				float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;

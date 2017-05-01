@@ -1,4 +1,6 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
 #ifndef VACUUM_SHADERS_T2M_ODL_CGINC
 #define VACUUM_SHADERS_T2M_ODL_CGINC
@@ -61,7 +63,7 @@ vOutput vert(vInput v)
 	vOutput o;
 	UNITY_INITIALIZE_OUTPUT(vOutput,o); 
 
-	o.pos = mul(UNITY_MATRIX_MVP, v.vertex);	
+	o.pos = UnityObjectToClipPos(v.vertex);	
 	o.uv_V_T2M_Control = v.texcoord.xy * _V_T2M_Control_ST.xy + _V_T2M_Control_ST.zw;
 
 	#ifdef V_T2M_2_CONTROL_MAPS
