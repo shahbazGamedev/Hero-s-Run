@@ -10,6 +10,7 @@ public class PlayerDataManager : MonoBehaviour {
 	public PlayerDeck playerDeck;
 	public PlayerFriends playerFriends;
 	public RecentPlayers recentPlayers;
+	public PlayerInventory playerInventory;
 
 	// Use this for initialization
 	void Awake ()
@@ -85,6 +86,16 @@ public class PlayerDataManager : MonoBehaviour {
 			recentPlayers = new RecentPlayers();
 		}
 		GameManager.Instance.recentPlayers = recentPlayers;
+
+		if( PlayerStatsManager.Instance.getPlayerInventory() != string.Empty )
+		{
+			 playerInventory = JsonUtility.FromJson<PlayerInventory>(PlayerStatsManager.Instance.getPlayerInventory());
+		}
+		else
+		{
+			playerInventory = new PlayerInventory();
+		}
+		GameManager.Instance.playerInventory = playerInventory;
 
 	}
 }

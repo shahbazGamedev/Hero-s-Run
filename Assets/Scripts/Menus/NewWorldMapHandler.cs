@@ -55,7 +55,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 	void Awake ()
 	{
 		//We need to update <User name> in the text dictionary after character selection has happened. This is why we do it here.
-		LocalizationManager.Instance.replaceUserName( PlayerStatsManager.Instance.getUserName() );
+		LocalizationManager.Instance.replaceUserName( GameManager.Instance.playerProfile.getUserName() );
 
 		episodePopup = episodePopupPanel.GetComponent<EpisodePopup>();
 

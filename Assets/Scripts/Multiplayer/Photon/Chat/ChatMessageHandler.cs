@@ -57,7 +57,7 @@ public class ChatMessageHandler {
 		int level = GameManager.Instance.playerProfile.getLevel();
 		int prestige = GameManager.Instance.playerProfile.prestigeLevel; 
 		int currentWinStreak = GameManager.Instance.playerStatistics.currentWinStreak;
-		MatchData matchData = new MatchData( PlayerStatsManager.Instance.getUserName(), 0, string.Empty, playerIcon, level, prestige, currentWinStreak );
+		MatchData matchData = new MatchData( GameManager.Instance.playerProfile.getUserName(), 0, string.Empty, playerIcon, level, prestige, currentWinStreak );
 
 		ChatMessage chatMessage = new ChatMessage();
 		chatMessage.chatMessageType = ChatMessageType.MATCH_REQUEST_SEND;
@@ -70,7 +70,7 @@ public class ChatMessageHandler {
 		//Choose a random level
 		int multiplayerLevelndex = Random.Range( 0, LevelManager.Instance.getLevelData().getNumberOfMultiplayerLevels() );
 		//Set the room name to use
-		string roomName = PlayerStatsManager.Instance.getUserName() + "_" + target;
+		string roomName = GameManager.Instance.playerProfile.getUserName() + "_" + target;
 		//Now save these values in the match data we got from the inviter.
 		LevelManager.Instance.matchData.multiplayerLevelIndex = multiplayerLevelndex;
 		LevelManager.Instance.matchData.roomName = roomName;
@@ -79,7 +79,7 @@ public class ChatMessageHandler {
 		int level = GameManager.Instance.playerProfile.getLevel();
 		int prestige = GameManager.Instance.playerProfile.prestigeLevel; 
 		int currentWinStreak = GameManager.Instance.playerStatistics.currentWinStreak;
-		MatchData matchData = new MatchData( PlayerStatsManager.Instance.getUserName(), multiplayerLevelndex, roomName, playerIcon, level, prestige, currentWinStreak );
+		MatchData matchData = new MatchData( GameManager.Instance.playerProfile.getUserName(), multiplayerLevelndex, roomName, playerIcon, level, prestige, currentWinStreak );
 
 		ChatMessage chatMessage = new ChatMessage();
 		chatMessage.chatMessageType = ChatMessageType.MATCH_REQUEST_ACCEPTED;

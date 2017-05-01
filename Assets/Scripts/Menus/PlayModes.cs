@@ -38,11 +38,6 @@ public class PlayModes : MonoBehaviour {
 		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
 	}
 
-	public void OnClickOpenMainMenu()
-	{
-		StartCoroutine( loadScene(GameScenes.MainMenu) );
-	}
-
 	IEnumerator loadScene(GameScenes value)
 	{
 		if( !levelLoading )

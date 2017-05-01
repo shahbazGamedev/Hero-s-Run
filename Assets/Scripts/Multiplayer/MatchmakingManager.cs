@@ -120,7 +120,7 @@ public class MatchmakingManager : MonoBehaviour {
 		switch ( GameManager.Instance.getPlayMode() )
 		{
 			case PlayMode.PlayAlone:
-				playerName1P.text = PlayerStatsManager.Instance.getUserName();
+				playerName1P.text = GameManager.Instance.playerProfile.getUserName();
 				playerIcon1P.GetComponent<Outline>().effectColor = frameColor;
 				playerIcon1P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 			break;
@@ -128,13 +128,13 @@ public class MatchmakingManager : MonoBehaviour {
 			case PlayMode.PlayAgainstEnemy:
 			case PlayMode.PlayOthers:
 			case PlayMode.PlayWithFriends:
-				playerName2P.text = PlayerStatsManager.Instance.getUserName();
+				playerName2P.text = GameManager.Instance.playerProfile.getUserName();
 				playerIcon2P.GetComponent<Outline>().effectColor = frameColor;
 				playerIcon2P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 			break;
 
 			case PlayMode.PlayThreePlayers:
-				playerName3P.text = PlayerStatsManager.Instance.getUserName();
+				playerName3P.text = GameManager.Instance.playerProfile.getUserName();
 				playerIcon3P.GetComponent<Outline>().effectColor = frameColor;
 				playerIcon3P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 			break;

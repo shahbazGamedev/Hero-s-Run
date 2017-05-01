@@ -9,8 +9,8 @@ public enum PlayerInventoryEvent {
 	Coin_Changed = 2,
 	Coin_Doubler_Changed = 3,
 	Score_Changed = 4,
-	Key_Found_In_Episode_Changed = 5
-
+	Key_Found_In_Episode_Changed = 5,
+	Gem_Balance_Changed = 6
 }
 
 public class PlayerStatsManager {
@@ -109,8 +109,6 @@ public class PlayerStatsManager {
 	//NOTE: There is no more character selection screen. Default to Hero.
 	Avatar avatar = Avatar.Hero;
 
-	string userName;
-
 	bool ownsCoinDoubler = false; //True if the player has purchased the Coin Doubler in the store.
 
 	string challenges = String.Empty; //List of Challenge in JSON format. See ChallengeBoard.
@@ -120,6 +118,7 @@ public class PlayerStatsManager {
 	string playerDeck = String.Empty; //Player cards. Specifies the card's level, whether it is part of the battle deck or not, etc.
 	string playerFriends = String.Empty; //List of player's friends.
 	string recentPlayers = String.Empty; //List of the last 8 players the player played against.
+	string playerInventory = String.Empty; //List of the player's inventory including gem balance.
 
 	public static PlayerStatsManager Instance
 	{
@@ -206,17 +205,6 @@ public class PlayerStatsManager {
 		{
 			return false;
 		}
-	}
-
-	public string getUserName()
-	{
-		return userName;
-	}
-	
-	public void saveUserName( string value )
-	{
-		userName = value;
-		savePlayerStats();
 	}
 
 	public void setPowerUpSelected( PowerUpType value )
@@ -977,6 +965,16 @@ public class PlayerStatsManager {
 		return recentPlayers;
 	}
 
+	public void setPlayerInventory( string playerInventory )
+	{
+		this.playerInventory = playerInventory;
+	}
+
+	public string getPlayerInventory()
+	{
+		return playerInventory;
+	}
+
 	public void loadPlayerStats()
 	{
 		try
@@ -1074,7 +1072,6 @@ public class PlayerStatsManager {
 			loadTreasureKeysFound();
 			powerUpSelected = (PowerUpType)PlayerPrefs.GetInt("powerUpSelected", (int)PowerUpType.SlowTime);
 			avatar = (Avatar)PlayerPrefs.GetInt("avatar", (int)Avatar.None);
-			userName = PlayerPrefs.GetString("userName", "" );
 			loadPowerUpInventory();
 			challenges = PlayerPrefs.GetString("challenges", "" );
 			journalEntries = PlayerPrefs.GetString("journalEntries", "" );
@@ -1083,6 +1080,7 @@ public class PlayerStatsManager {
 			playerDeck = PlayerPrefs.GetString("playerDeck", "" );
 			playerFriends = PlayerPrefs.GetString("playerFriends", "" );
 			recentPlayers = PlayerPrefs.GetString("recentPlayers", "" );
+			playerInventory = PlayerPrefs.GetString("playerInventory", "" );
 			//Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " Next Episode To Complete: " + nextEpisodeToComplete + " Highest Episode Completed: " + highestEpisodeCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
@@ -1169,7 +1167,6 @@ public class PlayerStatsManager {
 		saveTreasureKeysFound();
 		PlayerPrefs.SetInt("powerUpSelected", (int)powerUpSelected );
 		PlayerPrefs.SetInt("avatar", (int)avatar );
-		PlayerPrefs.SetString( "userName", userName );
 		savePowerUpInventory();
 		PlayerPrefs.SetString( "challenges", challenges );
 		PlayerPrefs.SetString( "playerProfile", playerProfile );
@@ -1177,6 +1174,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetString( "playerDeck", playerDeck );
 		PlayerPrefs.SetString( "playerFriends", playerFriends );
 		PlayerPrefs.SetString( "recentPlayers", recentPlayers );
+		PlayerPrefs.SetString( "playerInventory", playerInventory );
 		PlayerPrefs.Save();
 		//Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
 	}
@@ -1230,7 +1228,6 @@ public class PlayerStatsManager {
 			powerUpSelected = PowerUpType.SlowTime;
 			PlayerPrefs.SetInt("avatar", (int)Avatar.None);
 			avatar = Avatar.None;
-			PlayerPrefs.SetString( "userName", "" );
 			ClearPowerUpInventory();
 			challenges = string.Empty;
 			PlayerPrefs.SetString( "challenges", "" );
@@ -1246,6 +1243,8 @@ public class PlayerStatsManager {
 			PlayerPrefs.SetString( "playerFriends", "" );
 			recentPlayers = string.Empty;
 			PlayerPrefs.SetString( "recentPlayers", "" );
+			playerInventory = string.Empty;
+			PlayerPrefs.SetString( "playerInventory", "" );
 			PlayerPrefs.Save();
 			Debug.Log ("PlayerStatsManager-resetPlayerStats: called." );
 		}

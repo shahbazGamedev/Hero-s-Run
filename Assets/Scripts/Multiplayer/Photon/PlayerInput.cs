@@ -135,15 +135,15 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.N ) )
 		{
-			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Sentry, PlayerStatsManager.Instance.getUserName(), 4 );
+			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Sentry, GameManager.Instance.playerProfile.getUserName(), 4 );
 		}
 		else if ( Input.GetKeyDown (KeyCode.O ) )
 		{
-			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.IceWall, PlayerStatsManager.Instance.getUserName(), 4 );
+			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.IceWall, GameManager.Instance.playerProfile.getUserName(), 4 );
 		}
 		else if ( Input.GetKeyDown (KeyCode.T ) )
 		{
-			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Double_Jump, PlayerStatsManager.Instance.getUserName(), 4 );
+			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Double_Jump, GameManager.Instance.playerProfile.getUserName(), 4 );
 		}
 		else if ( Input.GetKeyDown (KeyCode.P ) )
 		{

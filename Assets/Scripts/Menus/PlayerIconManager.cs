@@ -10,15 +10,10 @@ class PlayerIconManager : MonoBehaviour {
 	bool levelLoading = false;
 	[SerializeField] Transform content;
 	[SerializeField] GameObject playerIconPrefab;
-	[Header("Top Right")]
-	[SerializeField] Image currentPlayerIcon;
-	[SerializeField] Text playerName;
 	[Header("On Select")]
 	[SerializeField] GameObject onSelectButton;
 	[SerializeField] Image onSelectPlayerIcon;
 	[SerializeField] Text onSelectPlayerName;
-	[Header("Texts")]
-	[SerializeField] Text menuTitle;
 
 	// Use this for initialization
 	void Start ()
@@ -26,8 +21,6 @@ class PlayerIconManager : MonoBehaviour {
 		Handheld.StopActivityIndicator();
 		int playerIconId = GameManager.Instance.playerProfile.getPlayerIconId();
 		ProgressionManager.PlayerIconData playerIconData = ProgressionManager.Instance.getPlayerIconDataByUniqueId( playerIconId );
-		currentPlayerIcon.sprite = playerIconData.icon;
-		playerName.text = PlayerStatsManager.Instance.getUserName();
 
 		//Newly unlocked icons appear first.
 		List<ProgressionManager.PlayerIconData> playerIconList = ProgressionManager.Instance.getSortedPlayerIconList();
@@ -41,11 +34,7 @@ class PlayerIconManager : MonoBehaviour {
 		//We have 3 player icons per row
 		int numberOfRows = (int)Mathf.Ceil( playerIconList.Count/3f);
 		int contentLength = numberOfRows * ( (int)glg.cellSize.y + (int)glg.spacing.y ) + glg.padding.top;
-		content.GetComponent<RectTransform>().sizeDelta = new Vector2( content.GetComponent<RectTransform>().rect.width, contentLength );
-		
-		//Localise
-		menuTitle.text = LocalizationManager.Instance.getText( "PLAYER_ICON_MENU_TITLE" );
-
+		content.GetComponent<RectTransform>().sizeDelta = new Vector2( content.GetComponent<RectTransform>().rect.width, contentLength );		
 	}
 
 	void createPlayerIcon( int index )
@@ -89,9 +78,6 @@ class PlayerIconManager : MonoBehaviour {
 
 		if( !playerIconData.isLocked)
 		{
-			//Set the selected icon on top
-			currentPlayerIcon.sprite = playerIconData.icon;
-
 			//Set this value in Player Profile. It will only be saved when the user exits the scene.
 			//We don't want to be saving each time a user clicks on a icon.
 			GameManager.Instance.playerProfile.setPlayerIconId( playerIconData.uniqueId );

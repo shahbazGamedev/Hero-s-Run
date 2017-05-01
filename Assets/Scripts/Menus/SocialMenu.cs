@@ -110,7 +110,7 @@ public class SocialMenu : MonoBehaviour {
 				addFriendPlaceholderText.text = string.Format( LocalizationManager.Instance.getText( "SOCIAL_ALREADY_FRIEND" ), friendName );
 				return;
 			}
-			if( friendName == PlayerStatsManager.Instance.getUserName() )
+			if( friendName == GameManager.Instance.playerProfile.getUserName() )
 			{
 				addFriendInputField.text = string.Empty;
 				addFriendPlaceholderText.text = LocalizationManager.Instance.getText( "SOCIAL_YOUR_OWN_USER_NAME" );

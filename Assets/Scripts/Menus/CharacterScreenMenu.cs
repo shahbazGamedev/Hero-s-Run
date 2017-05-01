@@ -165,7 +165,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 			}
 		}
 		Debug.Log("User Name is : " + userNameText.text );
-		PlayerStatsManager.Instance.saveUserName( userNameText.text );
+		GameManager.Instance.playerProfile.saveUserName( userNameText.text );
 		PlayerStatsManager.Instance.setAvatar(selectedAvatar);
 		StartCoroutine( loadMainMenuAfterDelay( 0.9f ) );
 	}

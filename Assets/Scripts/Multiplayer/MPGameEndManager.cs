@@ -53,7 +53,7 @@ public class MPGameEndManager : MonoBehaviour {
 		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedMultiplayerLevel();
 		circuitImage.sprite = multiplayerInfo.circuitInfo.circuitImage;
 		raceResult.text = getRacePositionString( PlayerRaceManager.Instance.racePosition );
-		playerName.text = PlayerStatsManager.Instance.getUserName();
+		playerName.text = GameManager.Instance.playerProfile.getUserName();
 		//Race time
 		TimeSpan ts = TimeSpan.FromSeconds( PlayerRaceManager.Instance.raceDuration );
 		DateTime dt = new DateTime(ts.Ticks);

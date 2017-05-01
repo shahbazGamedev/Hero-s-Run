@@ -3,9 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+public enum PlayerProfileEvent {
+	Level_Changed = 0,
+	Player_Icon_Changed = 1,
+	XP_Changed = 2,
+	User_Name_Changed = 3
+}
+
 [System.Serializable]
 public class PlayerProfile {
 
+	[SerializeField] string userName;
 	public int totalXPEarned = 0;
 	public int xpProgressToNextLevel = 0;
 	public int level = 1;
@@ -20,6 +28,22 @@ public class PlayerProfile {
 	[SerializeField] int playerIconId = 0;
 	public int selectedHeroIndex; //index for heroCharacterList in HeroManager
 
+	//Delegate used to communicate to other classes when the a value changes
+	public delegate void PlayerProfileChanged( PlayerProfileEvent eventType, int newValue = 0 );
+	public static event PlayerProfileChanged playerProfileChanged;
+
+	public string getUserName()
+	{
+		return userName;
+	}
+	
+	public void saveUserName( string value )
+	{
+		userName = value;
+		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.User_Name_Changed );
+		serializePlayerprofile();
+	}
+
 	public int getLevel()
 	{
 		return level;
@@ -30,6 +54,7 @@ public class PlayerProfile {
 		if( value > 0 && value <= ProgressionManager.MAX_LEVEL )
 		{
 			level = value;
+			if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Level_Changed, level );
 			Debug.Log("PlayerProfile-setLevel: setting level to: " + value );
 		}
 		else
@@ -42,6 +67,7 @@ public class PlayerProfile {
 	{
 		if( xpAmount <= 0 || xpAmount > ProgressionManager.MAX_XP_IN_ONE_RACE ) return;	
 		totalXPEarned = totalXPEarned + xpAmount;
+		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.XP_Changed, totalXPEarned );
 		if( saveImmediately ) serializePlayerprofile();
 		Debug.Log("PlayerProfile-addXP: adding XP: " + xpAmount + " New total is: " +  totalXPEarned );
 	}
@@ -73,6 +99,7 @@ public class PlayerProfile {
 		if( value >= 0 && value < ProgressionManager.Instance.getNumberOfPlayerIcons() )
 		{
 			playerIconId = value;
+			if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Player_Icon_Changed, playerIconId );
 		}
 		else
 		{

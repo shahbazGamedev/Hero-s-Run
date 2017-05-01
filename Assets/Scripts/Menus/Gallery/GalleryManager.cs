@@ -318,7 +318,7 @@ public class GalleryManager : MonoBehaviour {
 			break;
 			case (int)Characters.Hero:
 				//Character Name
-				characterName.text = PlayerStatsManager.Instance.getUserName();
+				characterName.text = GameManager.Instance.playerProfile.getUserName();
 				if( PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
 				{
 					//Character Bio

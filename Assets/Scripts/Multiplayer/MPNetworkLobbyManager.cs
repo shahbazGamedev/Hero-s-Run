@@ -90,7 +90,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		playerCustomProperties.Clear();
 		
 		//Set player name
-		PhotonNetwork.playerName = PlayerStatsManager.Instance.getUserName();
+		PhotonNetwork.playerName = GameManager.Instance.playerProfile.getUserName();
 
 		//Set the index of the selected hero so we can retrieve it later. Hero data is stored in HeroManager.
 		playerCustomProperties.Add("Hero", GameManager.Instance.playerProfile.selectedHeroIndex );

@@ -13,8 +13,6 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	public ChatMessageHandler chatMessageHandler;
 	public ChatMessageUI chatMessageUI;
 
-	[Header("Online Indicator")]
-	[SerializeField] Image onlineIndicator;
 	[Header("Channels")]
 	[SerializeField] int HistoryLengthToFetch; 			// set in inspector. Up to a certain degree, previously sent messages can be fetched for context
 	//Event management used to notify other classes when the status for the player or a friend changes
@@ -55,7 +53,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		Application.runInBackground = true; //This does nothing on mobile devices, but helps with testing.
 		chatClient = new ChatClient(this);
 		chatClient.ChatRegion =  "EU";
-		string userName = PlayerStatsManager.Instance.getUserName();
+		string userName = GameManager.Instance.playerProfile.getUserName();
 		if( string.IsNullOrEmpty( userName ) )
 		{
 			Debug.LogError("ChatManager-Unable to connect to chat because the player's user name is either null or empty.");
@@ -81,7 +79,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		this.chatClient.MessageLimit = HistoryLengthToFetch;
 
 		//Set your own online status
-		configureStatus( ChatUserStatus.Online );
+		UniversalTopBar.Instance.configureChatStatusColor( getStatusColor( ChatUserStatus.Online ) );
 
 		//Add friends so we can get their online status. See OnStatusUpdate for more details.
 		addChatFriends();
@@ -109,8 +107,8 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 
 	public void OnDisconnected()
 	{
-		Debug.LogWarning( PlayerStatsManager.Instance.getUserName() + " has been disconnected from chat." );
-		configureStatus( ChatUserStatus.Offline );
+		Debug.LogWarning( GameManager.Instance.playerProfile.getUserName() + " has been disconnected from chat." );
+		UniversalTopBar.Instance.configureChatStatusColor( getStatusColor( ChatUserStatus.Offline ) );
 	}
 	
 	public bool canChat()
@@ -155,7 +153,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 
 	public void OnChatStateChange(ChatState state)
 	{
-		Debug.Log("ChatManager-OnChatStateChange: " + PlayerStatsManager.Instance.getUserName() + " is now in chat state: " + state.ToString() );
+		Debug.Log("ChatManager-OnChatStateChange: " + GameManager.Instance.playerProfile.getUserName() + " is now in chat state: " + state.ToString() );
 	}
 
 	public void Update()
@@ -204,11 +202,6 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 			friendData.print();
 			chatMessageHandler.updateFriendData( user, friendData );
 		}
-	}
-
-	void configureStatus( int status )
-	{
-		onlineIndicator.color = getStatusColor( status );
 	}
 
 	public Color getStatusColor( int status )
@@ -273,7 +266,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	{
 		//The sender also gets a copy of the messages he sends.
 		//Ignore those.
-		if( sender == PlayerStatsManager.Instance.getUserName() ) return;
+		if( sender == GameManager.Instance.playerProfile.getUserName() ) return;
 
 		Debug.Log("OnPrivateMessage " + sender + " " + message.ToString() );
 

@@ -118,7 +118,7 @@ public class PlayerFriends {
 	public FriendData getMyFriendData()
 	{
 		FriendData fd = new FriendData(
-			PlayerStatsManager.Instance.getUserName(),
+			GameManager.Instance.playerProfile.getUserName(),
 			GameManager.Instance.playerProfile.getPlayerIconId(), 
 			GameManager.Instance.playerProfile.getLevel(), 
 			GameManager.Instance.playerProfile.prestigeLevel, 

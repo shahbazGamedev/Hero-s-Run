@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -24,11 +23,6 @@ public class TrainingModes : MonoBehaviour {
 	{
 		GameManager.Instance.setMultiplayerMode( false );
 		StartCoroutine( loadScene(GameScenes.WorldMap) );
-	}
-
-	public void OnClickOpenMainMenu()
-	{
-		StartCoroutine( loadScene(GameScenes.MainMenu) );
 	}
 
 	IEnumerator loadScene(GameScenes value)
