@@ -13,6 +13,9 @@ public class UniversalTopBar : MonoBehaviour {
 	[SerializeField] GameObject middlePanel;
 
 	[Header("Top Section")]
+	[SerializeField] GameObject balanceHolder;
+	[SerializeField] GameObject progressHolder;
+
 	[SerializeField] Text playerLevelText;
 	[SerializeField] Text currentAndNeededXPText;
 	[SerializeField] Slider progressBarSlider;
@@ -74,14 +77,17 @@ public class UniversalTopBar : MonoBehaviour {
 		{
 			case GameScenes.MainMenu:
 				configurePanels( true, true, true );
+				onlyShowCloseButton( false );
 			break;
 
 			case GameScenes.PlayModes:
-				configurePanels( true, true, true );
+				configurePanels( true, true, false );
+				onlyShowCloseButton( true );
 			break;
 
 			case GameScenes.Training:
-				configurePanels( true, true, true );
+				configurePanels( true, true, false );
+				onlyShowCloseButton( true );
 			break;
 
 			case GameScenes.HeroSelection:
@@ -90,22 +96,27 @@ public class UniversalTopBar : MonoBehaviour {
 
 			case GameScenes.Social:
 				configurePanels( true, true, true );
+				onlyShowCloseButton( true );
 			break;
 
 			case GameScenes.CareerProfile:
 				configurePanels( true, true, true );
+				onlyShowCloseButton( true );
 			break;
 
 			case GameScenes.Options:
-				configurePanels( false );
+				configurePanels( true, true );
+				onlyShowCloseButton( true );
 			break;
 
 			case GameScenes.CircuitSelection:
 				configurePanels( true, true );
+				onlyShowCloseButton( true );
 			break;
 
 			case GameScenes.Matchmaking:
 				configurePanels( true, true );
+				onlyShowCloseButton( true );
 			break;
 
 			case GameScenes.WorldMap:
@@ -244,6 +255,13 @@ public class UniversalTopBar : MonoBehaviour {
 		holderPanel.SetActive( holderPanelVisible );
 		topPanel.SetActive( topPanelVisible );
 		middlePanel.SetActive( middlePanelVisible );
+	}
+
+	void onlyShowCloseButton( bool closeButtonOnly )
+	{
+		balanceHolder.gameObject.SetActive( !closeButtonOnly );
+		progressHolder.gameObject.SetActive( !closeButtonOnly );
+		topPanel.GetComponent<Image>().enabled = !closeButtonOnly;
 	}
 
 }

@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 public class SettingsMenu : MonoBehaviour {
 
 	[Header("Settings Menu")]
-	[SerializeField] Text titleText;
 	[Header("Sound")]
 	[SerializeField] AudioMixer mainMixer;
 	[SerializeField] Text soundFxVolumeText;
@@ -38,9 +37,6 @@ public class SettingsMenu : MonoBehaviour {
 		#if UNITY_EDITOR
 		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
 		#endif
-
-		//Text Inititialization
-		titleText.text = LocalizationManager.Instance.getText("POPUP_TITLE_SETTINGS");
 
 		soundFxVolumeText.text = LocalizationManager.Instance.getText("MENU_SOUND_FX_VOLUME");
 		musicVolumeText.text = LocalizationManager.Instance.getText("MENU_MUSIC_VOLUME");
