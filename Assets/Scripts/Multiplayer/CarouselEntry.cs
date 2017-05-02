@@ -16,7 +16,6 @@ public class CarouselEntry : MonoBehaviour {
 
 	[Header("Shared")]
 	[SerializeField] Text raceButtonText;
-	[SerializeField] Text exitButtonText;
 	
 	// Use this for initialization
 	void Awake ()
@@ -43,8 +42,6 @@ public class CarouselEntry : MonoBehaviour {
 
 		//Common to all carousel entries
 		raceButtonText.text = LocalizationManager.Instance.getText( "MENU_CONFIRM" );
-		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );
-
 	}
 
 	void Start ()

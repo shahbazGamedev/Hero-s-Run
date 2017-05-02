@@ -29,6 +29,8 @@ public class UniversalTopBar : MonoBehaviour {
 	[SerializeField] Text playerNameText;
 	[SerializeField] Image onlineIndicator;
 
+	bool isBrowsingStore = false;
+
 	void Awake ()
 	{
 		if(Instance)
@@ -56,59 +58,48 @@ public class UniversalTopBar : MonoBehaviour {
 		switch( gameScene )
 		{
 			case GameScenes.MainMenu:
-				holderPanel.SetActive( true );
-				topPanel.SetActive( true );
-				middlePanel.SetActive( true );
+				configurePanels( true, true, true );
 			break;
 
 			case GameScenes.PlayModes:
-				holderPanel.SetActive( true );
-				topPanel.SetActive( true );
-				middlePanel.SetActive( true );
+				configurePanels( true, true, true );
 			break;
 
 			case GameScenes.Training:
-				holderPanel.SetActive( true );
-				topPanel.SetActive( true );
-				middlePanel.SetActive( true );
+				configurePanels( true, true, true );
 			break;
 
 			case GameScenes.HeroSelection:
-				holderPanel.SetActive( false );
+				configurePanels( false );
 			break;
 
 			case GameScenes.Battle_Deck:
-				holderPanel.SetActive( true );
-				topPanel.SetActive( true );
-				middlePanel.SetActive( true );
+				configurePanels( true, true );
 			break;
 
 			case GameScenes.Social:
-				holderPanel.SetActive( true );
-				topPanel.SetActive( true );
-				middlePanel.SetActive( true );
+				configurePanels( true, true, true );
 			break;
 
 			case GameScenes.CareerProfile:
-				holderPanel.SetActive( true );
-				topPanel.SetActive( true );
-				middlePanel.SetActive( true );
+				configurePanels( true, true, true );
 			break;
 
 			case GameScenes.Options:
-				holderPanel.SetActive( false );
+				configurePanels( false );
 			break;
 
 			case GameScenes.CircuitSelection:
-				holderPanel.SetActive( true );
-				topPanel.SetActive( true );
-				middlePanel.SetActive( true );
+				configurePanels( true, true );
 			break;
 
 			case GameScenes.Matchmaking:
-				holderPanel.SetActive( true );
-				topPanel.SetActive( true );
-				middlePanel.SetActive( false );
+				configurePanels( true, true );
+			break;
+
+			case GameScenes.WorldMap:
+			case GameScenes.Level:
+				configurePanels( false );
 			break;
 		}
 	}	
@@ -193,11 +184,21 @@ public class UniversalTopBar : MonoBehaviour {
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		StoreManager.Instance.showStore( StoreTab.Store, StoreReason.None );
+		configurePanels( true, true );
+		isBrowsingStore = true;
 	}
 
 	public void OnClose()
 	{
-		StartCoroutine( loadScene() );
+		if( isBrowsingStore )
+		{
+			StoreManager.Instance.closeStore();
+			isBrowsingStore = false;
+		}
+		else
+		{
+			StartCoroutine( loadScene() );
+		}
 	}
 
 	IEnumerator loadScene()
@@ -210,6 +211,27 @@ public class UniversalTopBar : MonoBehaviour {
 			yield return new WaitForSeconds(0);
 			SceneManager.LoadScene( (int)GameScenes.MainMenu );
 		}
+	}
+
+	public void enableCloseButton( bool enable )
+	{
+		if( enable )
+		{
+			closeButton.interactable = true;
+			closeButtonText.color = Color.white;
+		}
+		else
+		{
+			closeButton.interactable = false;
+			closeButtonText.color = Color.gray;
+		}
+	}
+
+	void configurePanels( bool holderPanelVisible, bool topPanelVisible = false, bool middlePanelVisible = false )
+	{
+		holderPanel.SetActive( holderPanelVisible );
+		topPanel.SetActive( topPanelVisible );
+		middlePanel.SetActive( middlePanelVisible );
 	}
 
 }

@@ -11,8 +11,6 @@ public class MatchmakingManager : MonoBehaviour {
 	[SerializeField] MultiPurposePopup multiPurposePopup;
 	[SerializeField] Button playButton;
 	[SerializeField] Text playButtonText;
-	[SerializeField] Button exitButton;
-	[SerializeField] Text exitButtonText;
 	[SerializeField] Text versusText;
 	[Tooltip("The label to inform the user that the connection progress.")]
 	[SerializeField] Text connectionProgress;
@@ -68,7 +66,6 @@ public class MatchmakingManager : MonoBehaviour {
 		//Localize
 		versusText.text = LocalizationManager.Instance.getText( "CIRCUIT_VERSUS" );
 		playButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_PLAY" );
-		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );
 
 		//If we are returning to the lobby after a race has completed, show the end of game screen which displays XP awarded
 		if( GameManager.Instance.getGameState() == GameState.MultiplayerEndOfGame )
@@ -254,7 +251,7 @@ public class MatchmakingManager : MonoBehaviour {
 	public void disableExitButton()
 	{
 		enablePreloader( false );
-		enableExitButton( false );
+		UniversalTopBar.Instance.enableCloseButton( false );
 	}
 
 	public void OnClickReturnToMainMenu()
@@ -305,20 +302,6 @@ public class MatchmakingManager : MonoBehaviour {
 			preloader12P.SetActive( false );
 			preloader13P.SetActive( false );
 			preloader23P.SetActive( false );
-		}
-	}
-
-	void enableExitButton( bool enable )
-	{
-		if( enable )
-		{
-			exitButton.interactable = true;
-			exitButtonText.color = originalPlayButtonTextColor;
-		}
-		else
-		{
-			exitButton.interactable = false;
-			exitButtonText.color = Color.gray;
 		}
 	}
 
