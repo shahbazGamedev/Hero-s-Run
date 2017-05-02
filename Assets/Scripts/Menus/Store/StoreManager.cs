@@ -25,18 +25,12 @@ public class StoreManager : MonoBehaviour {
 	public static StoreManager Instance = null;
 	[SerializeField]  GameObject storeParent;
 	[SerializeField]  ScrollRect entireStoreScrollRect;
-	[SerializeField]  GameObject storeTab;
-	[SerializeField]  GameObject shopTab;
 	[Header("Store")]
 	[SerializeField]  ScrollRect storeScrollRect;
 	[SerializeField]  Text coinsTitle;
 	[SerializeField]  Text coinsReason;
 	[SerializeField]  Text livesTitle;
 	[SerializeField]  Text livesReason;
-	[Header("Shop")]
-	[SerializeField]  ScrollRect shopScrollRect;
-	[SerializeField]  Text upgradeTitle;
-	[SerializeField]  Text consumableTitle;
 
 	// Use this for initialization
 	void Awake ()
@@ -59,22 +53,18 @@ public class StoreManager : MonoBehaviour {
 		coinsReason.text = LocalizationManager.Instance.getText("STORE_COINS_REASON");
 		livesTitle.text = LocalizationManager.Instance.getText("STORE_LIVES_TITLE");
 		livesReason.text = LocalizationManager.Instance.getText("STORE_LIVES_REASON");
-
-		upgradeTitle.text = LocalizationManager.Instance.getText("STORE_UPGRADE_TITLE");
-		consumableTitle.text = LocalizationManager.Instance.getText("STORE_CONSUMABLE_TITLE");
-
 	}
 
 	public void showStore(StoreTab selectedTab, StoreReason reason )
 	{
 		storeParent.SetActive( true );
 		if( selectedTab == StoreTab.Store )
-		{	
-			showStoreTab();
+		{
+			//to be re-implemented
 		}
 		else if( selectedTab == StoreTab.Shop )
 		{	
-			showShopTab();
+			//to be re-implemented
 		}
 		if( reason == StoreReason.Need_Lives )
 		{
@@ -94,24 +84,6 @@ public class StoreManager : MonoBehaviour {
 			coinsReason.gameObject.SetActive( false );
 			livesReason.gameObject.SetActive( false );
 		}
-	}
-
-	void showStoreTab()
-	{
-		//Show the store
-		entireStoreScrollRect.horizontalNormalizedPosition = 0f;
-		//Move to the top of the scroll view
-		storeScrollRect.verticalNormalizedPosition = 1f;
-		shopScrollRect.verticalNormalizedPosition = 1f;
-	}
-
-	void showShopTab()
-	{
-		//Show the shop
-		entireStoreScrollRect.horizontalNormalizedPosition = 1f;
-		//Move to the top of the scroll view
-		storeScrollRect.verticalNormalizedPosition = 1f;
-		shopScrollRect.verticalNormalizedPosition = 1f;
 	}
 
 	public void closeStore()

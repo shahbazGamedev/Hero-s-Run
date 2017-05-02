@@ -5,10 +5,12 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Linq;
 
+/// <summary>
+/// Card collection manager.
+/// The execution time has been delayed by 200 msec to give time to Card Manager to initialize. See Script Execution Order Settings.
+/// </summary>
 class CardCollectionManager : MonoBehaviour {
 
-	[Header("General")]
-	[SerializeField] GameObject topPanel;
 	[Header("Battle Deck")]
 	[SerializeField] Transform battleDeckCardHolder;
 	[Tooltip("TBC.")]
@@ -64,8 +66,6 @@ class CardCollectionManager : MonoBehaviour {
 
 	public void OnClickBattleCard( int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
-		//Hide the top panel since we are showing the popup.
-		topPanel.SetActive( false );
 		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( pcd, cd );
 		cardDetailPopup.SetActive( true );
 		scaleUp();
@@ -99,8 +99,6 @@ class CardCollectionManager : MonoBehaviour {
 
 	public void OnClickCollectionCard( int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
-		//Hide the top panel since we are showing the popup.
-		topPanel.SetActive( false );
 		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( pcd, cd );
 		cardDetailPopup.SetActive( true );
 		scaleUp();
@@ -177,13 +175,6 @@ class CardCollectionManager : MonoBehaviour {
 	{
 		LeanTween.scale( cardDetailPopup.GetComponent<RectTransform>(), Vector3.one, 0.25f );
 	}
-
-	public void OnClickShowCloseButton()
-	{
-		//Popup has been closed. Show the top panel again.
-		topPanel.SetActive( true );
-	}
-
 
 	public void OnClickOpenMainMenu()
 	{
