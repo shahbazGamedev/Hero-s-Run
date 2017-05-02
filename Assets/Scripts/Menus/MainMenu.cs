@@ -51,11 +51,6 @@ public class MainMenu : MonoBehaviour {
 		StartCoroutine( loadScene(GameScenes.HeroSelection) );
 	}
 
-	public void OnClickOpenOptionsMenu()
-	{
-		StartCoroutine( loadScene(GameScenes.Options) );
-	}
-
 	public void OnClickPlayAlone()
 	{
 		GameManager.Instance.setPlayMode(PlayMode.PlayAlone);

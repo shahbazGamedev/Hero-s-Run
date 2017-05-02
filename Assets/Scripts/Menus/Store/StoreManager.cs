@@ -35,15 +35,7 @@ public class StoreManager : MonoBehaviour {
 	// Use this for initialization
 	void Awake ()
 	{
-		if(Instance)
-		{
-			DestroyImmediate(gameObject);
-		}
-		else
-		{
-			DontDestroyOnLoad(gameObject);
-			Instance = this;
-		}
+		Instance = this;
 	}
 
 	// Use this for initialization

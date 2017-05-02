@@ -24,6 +24,8 @@ public class UniversalTopBar : MonoBehaviour {
 	[SerializeField] Button closeButton;
 	[SerializeField] Text closeButtonText;
 
+	[SerializeField] Button settingsButton;
+
 	[Header("Middle Section")]
 	[SerializeField] Image playerIcon;
 	[SerializeField] Text playerNameText;
@@ -55,6 +57,19 @@ public class UniversalTopBar : MonoBehaviour {
 	void OnSceneLoaded ( Scene scene, LoadSceneMode mode )
 	{
 		GameScenes gameScene = (GameScenes) scene.buildIndex;
+
+		//In the main menu, the Close button becomes a Settings button
+		if( gameScene == GameScenes.MainMenu )
+		{
+			closeButton.gameObject.SetActive( false );
+			settingsButton.gameObject.SetActive( true );
+		}
+		else
+		{
+			closeButton.gameObject.SetActive( true );
+			settingsButton.gameObject.SetActive( false );
+		}
+
 		switch( gameScene )
 		{
 			case GameScenes.MainMenu:
@@ -193,20 +208,21 @@ public class UniversalTopBar : MonoBehaviour {
 		}
 		else
 		{
-			StartCoroutine( loadScene() );
+			StartCoroutine( loadScene(GameScenes.MainMenu) );
 		}
 	}
 
-	IEnumerator loadScene()
+	public void OnClickOpenOptionsMenu()
 	{
-		//From the main menu, you cannot go to another scene via the close button.
-		if( SceneManager.GetActiveScene().buildIndex != (int) GameScenes.MainMenu )
-		{
-			UISoundManager.uiSoundManager.playButtonClick();
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)GameScenes.MainMenu );
-		}
+		StartCoroutine( loadScene(GameScenes.Options) );
+	}
+
+	IEnumerator loadScene( GameScenes value )
+	{
+		UISoundManager.uiSoundManager.playButtonClick();
+		Handheld.StartActivityIndicator();
+		yield return new WaitForSeconds(0);
+		SceneManager.LoadScene( (int)value );
 	}
 
 	public void enableCloseButton( bool enable )
