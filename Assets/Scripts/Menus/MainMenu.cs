@@ -25,7 +25,8 @@ public class MainMenu : MonoBehaviour {
 		//Entering a user name is mandatory.
 		if( PlayerStatsManager.Instance.isFirstTimePlaying() )
 		{
-			gameObject.SetActive( false ); //To increase legibility, hide the main menu while the user name panel is played.
+			gameObject.SetActive( false ); //To increase legibility, hide the main menu and top bar while the user name panel is played.
+			UniversalTopBar.Instance.configurePanels( false );
 			userNameCanvas.SetActive(  true );
 		}
 	}

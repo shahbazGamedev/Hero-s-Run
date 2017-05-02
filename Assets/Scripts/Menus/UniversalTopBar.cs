@@ -227,7 +227,7 @@ public class UniversalTopBar : MonoBehaviour {
 		}
 	}
 
-	void configurePanels( bool holderPanelVisible, bool topPanelVisible = false, bool middlePanelVisible = false )
+	public void configurePanels( bool holderPanelVisible, bool topPanelVisible = false, bool middlePanelVisible = false )
 	{
 		holderPanel.SetActive( holderPanelVisible );
 		topPanel.SetActive( topPanelVisible );

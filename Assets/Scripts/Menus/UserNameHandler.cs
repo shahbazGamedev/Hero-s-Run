@@ -10,7 +10,7 @@ public class UserNameHandler : MonoBehaviour {
 	[SerializeField] Text userNamePlaceholderText;
 	[SerializeField] Text confirmButtonText;
 	[Header("Main Menu")]
-	[SerializeField] GameObject mainMenuCanvas;
+	[SerializeField] GameObject mainMenu;
 	public const int MINIMUM_USER_NAME_LENGTH = 4;
 
 	// Use this for initialization
@@ -38,7 +38,8 @@ public class UserNameHandler : MonoBehaviour {
 		//Now that we have a user name, we can connect to chat.
 		ChatManager.Instance.ChatConnect();
 		gameObject.SetActive( false );
-		mainMenuCanvas.SetActive( true );
+		mainMenu.SetActive( true );
+		UniversalTopBar.Instance.configurePanels( true, true, true );
 	}
 
 }
