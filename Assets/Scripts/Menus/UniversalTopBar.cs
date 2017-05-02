@@ -101,7 +101,7 @@ public class UniversalTopBar : MonoBehaviour {
 
 			case GameScenes.CareerProfile:
 				configurePanels( true, true, true );
-				onlyShowCloseButton( true );
+				onlyShowCloseButton( false );
 			break;
 
 			case GameScenes.Options:
