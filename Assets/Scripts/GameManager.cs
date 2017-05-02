@@ -39,8 +39,7 @@ public enum GameScenes {
 	PlayModes = 11,
 	Options = 12,
 	Training = 13,
-	Social = 14,
-	Battle_Deck = 15
+	Social = 14
 }
 
 public enum GameMode {

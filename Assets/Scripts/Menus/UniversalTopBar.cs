@@ -73,10 +73,6 @@ public class UniversalTopBar : MonoBehaviour {
 				configurePanels( false );
 			break;
 
-			case GameScenes.Battle_Deck:
-				configurePanels( true, true );
-			break;
-
 			case GameScenes.Social:
 				configurePanels( true, true, true );
 			break;
