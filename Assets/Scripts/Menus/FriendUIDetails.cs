@@ -13,8 +13,6 @@ public class FriendUIDetails : MonoBehaviour {
 	[SerializeField] Button raceMeButton;
 	[SerializeField] Text raceMeButtonText;
 	[SerializeField] Text raceMeButtonConfirmationText;
-	[SerializeField] Button chatButton;
-	[SerializeField] Text chatButtonText;
 	[SerializeField] Image onlineStatusIcon;
 	[SerializeField] Text onlineText;
 	Color lightGray = new Color( 180f/255f, 180f/255f, 180f/255f, 0.5f );
@@ -105,12 +103,10 @@ public class FriendUIDetails : MonoBehaviour {
 		if( status == ChatUserStatus.Online && ChatManager.Instance.canChat() )
 		{
 			if( raceMeButton != null ) raceMeButton.interactable = true;
-			if( chatButton != null ) chatButton.interactable = true;
 		}
 		else
 		{
 			if( raceMeButton != null ) raceMeButton.interactable = false;
-			if( chatButton != null ) chatButton.interactable = false;
 		}
 	}
 
