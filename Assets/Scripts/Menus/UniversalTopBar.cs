@@ -6,7 +6,12 @@ using UnityEngine.UI;
 public class UniversalTopBar : MonoBehaviour {
 
 	public static UniversalTopBar Instance;
+	const float COIN_STORE_VERTICAL_POSITION = 0;
+	const float GEM_STORE_VERTICAL_POSITION = 1174f;
 
+	[Header("For Store Access")]
+	[SerializeField] RectTransform horizontalContent;
+	[SerializeField] RectTransform storeVerticalContent;
 	[Header("Holder Panel")]
 	[SerializeField] GameObject holderPanel;
 	[SerializeField] GameObject topPanel;
@@ -205,12 +210,42 @@ public class UniversalTopBar : MonoBehaviour {
 		}
 	}
 
-	public void OnClickShowStore()
+	public void OnClickShowCoinStore()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
-		StoreManager.Instance.showStore( StoreTab.Store, StoreReason.None );
+		StartCoroutine( scrollToStorePosition( 0.4f, COIN_STORE_VERTICAL_POSITION ) );
 		configurePanels( true, true );
 		isBrowsingStore = true;
+	}
+
+	public void OnClickShowGemStore()
+	{
+		UISoundManager.uiSoundManager.playButtonClick();
+		StartCoroutine( scrollToStorePosition( 0.4f, GEM_STORE_VERTICAL_POSITION ) );
+		configurePanels( true, true );
+		isBrowsingStore = true;
+	}
+
+	IEnumerator scrollToStorePosition( float duration, float verticalPosition )
+	{
+		float elapsedTime = 0;
+		
+		Vector2 startHorizontalPosition = horizontalContent.anchoredPosition;
+		Vector2 endHorizontalPosition = new Vector2( 0, horizontalContent.anchoredPosition.y );
+
+		Vector2 startVerticalPosition = storeVerticalContent.anchoredPosition;
+		Vector2 endVerticalPosition = new Vector2( storeVerticalContent.anchoredPosition.x, verticalPosition );
+
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			horizontalContent.anchoredPosition = Vector2.Lerp( startHorizontalPosition, endHorizontalPosition, elapsedTime/duration );
+			storeVerticalContent.anchoredPosition = Vector2.Lerp( startVerticalPosition, endVerticalPosition, elapsedTime/duration );
+			yield return new WaitForFixedUpdate();  
+			
+		} while ( elapsedTime < duration );
+		horizontalContent.anchoredPosition = new Vector2( 0, horizontalContent.anchoredPosition.y );
+		storeVerticalContent.anchoredPosition = new Vector2( storeVerticalContent.anchoredPosition.x, verticalPosition );
 	}
 
 	public void OnClose()
