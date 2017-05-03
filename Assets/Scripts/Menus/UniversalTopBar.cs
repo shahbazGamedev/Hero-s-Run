@@ -107,7 +107,7 @@ public class UniversalTopBar : MonoBehaviour {
 
 			case GameScenes.CareerProfile:
 				configurePanels( true, true, true );
-				onlyShowCloseButton( false );
+				onlyShowCloseButton( true );
 			break;
 
 			case GameScenes.Options:
@@ -210,16 +210,32 @@ public class UniversalTopBar : MonoBehaviour {
 
 	public void OnClickShowCoinStore()
 	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		StartCoroutine( scrollToStorePosition( 0.4f, COIN_STORE_VERTICAL_POSITION ) );
-		configurePanels( true, true );
+		//The store button only works when you are in the main menu
+		if( SceneManager.GetActiveScene().buildIndex == (int)GameScenes.MainMenu )
+		{
+			UISoundManager.uiSoundManager.playButtonClick();
+			StartCoroutine( scrollToStorePosition( 0.4f, COIN_STORE_VERTICAL_POSITION ) );
+			configurePanels( true, true );
+		}
+		else
+		{
+			Debug.LogWarning("OnClickShowCoinStore: you can only access the store from the main menu."); 
+		}
 	}
 
 	public void OnClickShowGemStore()
 	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		StartCoroutine( scrollToStorePosition( 0.4f, GEM_STORE_VERTICAL_POSITION ) );
-		configurePanels( true, true );
+		//The store button only works when you are in the main menu
+		if( SceneManager.GetActiveScene().buildIndex == (int)GameScenes.MainMenu )
+		{
+			UISoundManager.uiSoundManager.playButtonClick();
+			StartCoroutine( scrollToStorePosition( 0.4f, GEM_STORE_VERTICAL_POSITION ) );
+			configurePanels( true, true );
+		}
+		else
+		{
+			Debug.LogWarning("OnClickShowCoinStore: you can only access the store from the main menu."); 
+		}
 	}
 
 	IEnumerator scrollToStorePosition( float duration, float verticalPosition )
