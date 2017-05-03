@@ -39,8 +39,6 @@ public class UniversalTopBar : MonoBehaviour {
 	[SerializeField] Text playerNameText;
 	[SerializeField] Image onlineIndicator;
 
-	bool isBrowsingStore = false;
-
 	void Awake ()
 	{
 		if(Instance)
@@ -215,7 +213,6 @@ public class UniversalTopBar : MonoBehaviour {
 		UISoundManager.uiSoundManager.playButtonClick();
 		StartCoroutine( scrollToStorePosition( 0.4f, COIN_STORE_VERTICAL_POSITION ) );
 		configurePanels( true, true );
-		isBrowsingStore = true;
 	}
 
 	public void OnClickShowGemStore()
@@ -223,7 +220,6 @@ public class UniversalTopBar : MonoBehaviour {
 		UISoundManager.uiSoundManager.playButtonClick();
 		StartCoroutine( scrollToStorePosition( 0.4f, GEM_STORE_VERTICAL_POSITION ) );
 		configurePanels( true, true );
-		isBrowsingStore = true;
 	}
 
 	IEnumerator scrollToStorePosition( float duration, float verticalPosition )
@@ -250,15 +246,7 @@ public class UniversalTopBar : MonoBehaviour {
 
 	public void OnClose()
 	{
-		if( isBrowsingStore )
-		{
-			StoreManager.Instance.closeStore();
-			isBrowsingStore = false;
-		}
-		else
-		{
-			StartCoroutine( loadScene(GameScenes.MainMenu) );
-		}
+		StartCoroutine( loadScene(GameScenes.MainMenu) );
 	}
 
 	public void OnClickOpenOptionsMenu()
