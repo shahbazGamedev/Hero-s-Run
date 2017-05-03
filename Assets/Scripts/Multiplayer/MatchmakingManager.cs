@@ -183,7 +183,6 @@ public class MatchmakingManager : MonoBehaviour {
 	{
 		circuitName.text = LocalizationManager.Instance.getText( circuitInfo.circuitTextID );
 		circuitImage.sprite = circuitInfo.circuitImage;
-		entryFee.text = circuitInfo.entryFee.ToString();
 		enablePlayButton( true );
 	}
 
@@ -209,40 +208,8 @@ public class MatchmakingManager : MonoBehaviour {
 	public void OnClickPlay()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
- 		if( playerCanPayEntryFee() )
-		{
-			enablePlayButton( false );
-			MPNetworkLobbyManager.Instance.startMatch();
-		}
-		else
-		{
-			//Player does not have enough for entry fee. Open the store.
-			StoreManager.Instance.showStore(StoreTab.Store,StoreReason.Need_Coins);
-		}
-
-	}
-
-	public void OnClickShowStore()
-	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		StoreManager.Instance.showStore( StoreTab.Store, StoreReason.None );
-	}
-
-	bool playerCanPayEntryFee()
-	{
-		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedMultiplayerLevel();
-		//Validate if the player has enough currency for the entry fee
-		int entryFee = multiplayerInfo.circuitInfo.entryFee;
-		if( entryFee <= PlayerStatsManager.Instance.getCurrentCoins() )
-		{
-			//Yes, he has enough
-			return true;
-		}
-		else
-		{
-			//No, he does not have enough
-			return false;
-		}
+ 		enablePlayButton( false );
+		MPNetworkLobbyManager.Instance.startMatch();
 	}
 
 	//Do not allow the player to exit the matchmaking screen if he has initiated matchmaking and a remote player has joined.

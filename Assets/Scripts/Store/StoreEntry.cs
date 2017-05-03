@@ -225,8 +225,7 @@ public class StoreEntry : MonoBehaviour {
 		}
 		else
 		{
-			//Player does not have enough coins. Bring him to store.
-			StoreManager.Instance.showStore(StoreTab.Store, StoreReason.Need_Coins);
+			//Player does not have enough coins.
 		}
 	}
 
@@ -251,8 +250,7 @@ public class StoreEntry : MonoBehaviour {
 		}
 		else
 		{
-			//Player does not have enough coins. Bring him to store.
-			StoreManager.Instance.showStore(StoreTab.Store, StoreReason.Need_Coins);
+			//Player does not have enough coins.
 		}
 	}
 

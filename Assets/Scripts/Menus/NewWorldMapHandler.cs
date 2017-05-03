@@ -307,13 +307,13 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public void showStoreScreen()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
-		StoreManager.Instance.showStore( StoreTab.Store, StoreReason.None );
+		StoreManager.Instance.showStore( StoreTab.Store );
 	}
 
 	public void showShopScreen()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
-		StoreManager.Instance.showStore( StoreTab.Shop, StoreReason.None );
+		StoreManager.Instance.showStore( StoreTab.Shop );
 	}
 
 	//Middle Panel
