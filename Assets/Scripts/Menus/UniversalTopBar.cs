@@ -73,6 +73,9 @@ public class UniversalTopBar : MonoBehaviour {
 			settingsButton.gameObject.SetActive( false );
 		}
 
+		//In all cases, reset value
+		enableCloseButton( true );
+
 		switch( gameScene )
 		{
 			case GameScenes.MainMenu:

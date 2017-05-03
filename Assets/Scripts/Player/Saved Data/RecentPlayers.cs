@@ -48,6 +48,7 @@ public class RecentPlayers {
 		if( recentPlayersList.Exists(ofd => ofd.userName == userName ) )
 		{
 			recentPlayersList.Find(ofd => ofd.userName == userName ).status = status;
+			Debug.LogError("RecentPlayers-updateStatus: " + userName + " was found and the status is " + recentPlayersList.Find(ofd => ofd.userName == userName ).status);
 		}
 		else
 		{
@@ -55,7 +56,7 @@ public class RecentPlayers {
 		}
 	}
 
-	public void serializeRecentPlayers( bool saveImmediately )
+	void serializeRecentPlayers( bool saveImmediately )
 	{
 		string json  = JsonUtility.ToJson( this );
 		PlayerStatsManager.Instance.setRecentPlayers( json );
@@ -67,8 +68,6 @@ public class RecentPlayers {
 	public void addRecentPlayer( PlayerFriends.FriendData fd )
 	{
 		if( fd == null ) return;
-
-		fd.status = 2;
 
 		//If the player is already in the list, move him to the top.
 		if( recentPlayersList.Exists(recentPlayerData => recentPlayerData.userName == fd.userName ) )
@@ -85,6 +84,12 @@ public class RecentPlayers {
 		}
 		//Add the entry.
 		recentPlayersList.Insert( 0, fd);
+
+		//Make sure we get online status updates for this recent player
+		ChatManager.Instance.addChatFriend( fd.userName );
+
+		//Save
+		serializeRecentPlayers( true );
 
 		if( onRecentPlayerChangedEvent != null ) onRecentPlayerChangedEvent();
 		Debug.LogWarning( "RecentPlayers-addRecentPlayer: " + fd.userName );

@@ -172,6 +172,7 @@ public class ChatMessageHandler {
 	public void updateFriendData( string sender, PlayerFriends.FriendData friendData )
 	{
 		GameManager.Instance.playerFriends.updateFriendData( sender, friendData );
+		GameManager.Instance.recentPlayers.updateRecentPlayerData( sender, friendData );
 		if( onFriendDataEvent != null ) onFriendDataEvent( sender, friendData );
 	}
 

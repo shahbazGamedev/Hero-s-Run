@@ -92,13 +92,11 @@ public class PlayerFriends {
 	{
 		//Don't add duplicate friends
 		if( onlineFriendDataList.Exists(friendData => friendData.userName == fd.userName ) ) return;
-		//Remove the current friends list @important before adding the one with the added friend.
-		ChatManager.Instance.removeChatFriends();
 		onlineFriendDataList.Add(fd);
 		serializePlayerFriends( true );
 		if( onFriendChangedEvent != null ) onFriendChangedEvent();
-		//Make sure we get online status updates
-		ChatManager.Instance.addChatFriends();
+		//Make sure we get online status updates for this new friend
+		ChatManager.Instance.addChatFriend( fd.userName );
 		Debug.Log("	addFriendAndSave " + fd.userName );
 	}
 

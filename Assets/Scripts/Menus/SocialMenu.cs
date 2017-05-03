@@ -143,6 +143,7 @@ public class SocialMenu : MonoBehaviour {
 	{
 		ChatManager.onStatusUpdateEvent += OnStatusUpdateEvent;
 		PlayerFriends.onFriendChangedEvent += OnFriendChangedEvent;
+		RecentPlayers.onRecentPlayerChangedEvent += OnRecentPlayerChangedEvent;
 		ChatMessageHandler.onFriendDataEvent += OnFriendDataEvent;
 	}
 
@@ -150,12 +151,14 @@ public class SocialMenu : MonoBehaviour {
 	{
 		ChatManager.onStatusUpdateEvent -= OnStatusUpdateEvent;
 		PlayerFriends.onFriendChangedEvent -= OnFriendChangedEvent;
+		RecentPlayers.onRecentPlayerChangedEvent -= OnRecentPlayerChangedEvent;
 		ChatMessageHandler.onFriendDataEvent -= OnFriendDataEvent;
 	}
 
 	void OnStatusUpdateEvent( string userName, int newStatus )
 	{
 		print("OnStatusUpdateEvent " + userName + " " + newStatus );
+		//Go through friends
 		FriendUIDetails fud;
 		for( int i = 0; i < friendsHolder.transform.childCount; i++ )
 		{
@@ -166,11 +169,24 @@ public class SocialMenu : MonoBehaviour {
 				break;
 			}
 		}
+
+		//Go through recent players
+		RecentPlayerUIDetails rpud;
+		for( int i = 0; i < recentPlayersHolder.transform.childCount; i++ )
+		{
+			rpud = recentPlayersHolder.transform.GetChild( i ).GetComponent<RecentPlayerUIDetails>();
+			if( rpud != null && rpud.user == userName )
+			{
+				rpud.configureStatus( newStatus );
+				break;
+			}
+		}
 	}
 
 	void OnFriendDataEvent( string userName, PlayerFriends.FriendData updatedFriendData )
 	{
 		updatedFriendData.print();
+		//Go through friends
 		FriendUIDetails fud;
 		for( int i = 0; i < friendsHolder.transform.childCount; i++ )
 		{
@@ -181,6 +197,23 @@ public class SocialMenu : MonoBehaviour {
 				break;
 			}
 		}
+		//Go through recent players
+		RecentPlayerUIDetails rpud;
+		for( int i = 0; i < recentPlayersHolder.transform.childCount; i++ )
+		{
+			rpud = recentPlayersHolder.transform.GetChild( i ).GetComponent<RecentPlayerUIDetails>();
+			if( rpud != null && rpud.user == userName )
+			{
+				rpud.updateRecentPlayerData( updatedFriendData );
+				break;
+			}
+		}
+	}
+
+	void OnRecentPlayerChangedEvent()
+	{
+		print("OnRecentPlayerChangedEvent-recreating recent player list" );
+		createRecentPlayerList();
 	}
 
 	void OnFriendChangedEvent()

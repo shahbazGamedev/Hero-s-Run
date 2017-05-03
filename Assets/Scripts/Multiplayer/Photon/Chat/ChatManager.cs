@@ -81,27 +81,46 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		//Set your own online status
 		UniversalTopBar.Instance.configureChatStatusColor( getStatusColor( ChatUserStatus.Online ) );
 
-		//Add friends so we can get their online status. See OnStatusUpdate for more details.
+		//Add friends and recent players so we can get their online status. See OnStatusUpdate for more details.
 		addChatFriends();
+		addRecentPlayers();
 	}
 	
-	public void removeChatFriends()
+	public void removeChatFriend( string userName )
 	{
-		//Remove friends.
-		string[] friendNamesArray = GameManager.Instance.playerFriends.getFriendNames();
-		if( friendNamesArray.Length > 0 )
+		if( !string.IsNullOrEmpty( userName ) )
 		{
-			chatClient.RemoveFriends( friendNamesArray );
+			string[] friendNameArray = { userName };
+			chatClient.RemoveFriends( friendNameArray );
 		}
 	}
 
-	public void addChatFriends()
+	public void addChatFriend( string userName )
+	{
+		if( !string.IsNullOrEmpty( userName ) )
+		{
+			string[] friendNameArray = { userName };
+			chatClient.AddFriends( friendNameArray );
+		}
+	}
+
+	void addChatFriends()
 	{
 		//Add friends so we can get their online status. See OnStatusUpdate for more details.
 		string[] friendNamesArray = GameManager.Instance.playerFriends.getFriendNames();
 		if( friendNamesArray.Length > 0 )
 		{
 			chatClient.AddFriends( friendNamesArray );
+		}
+	}
+
+	void addRecentPlayers()
+	{
+		//Add recent players so we can get their online status. See OnStatusUpdate for more details.
+		string[] recentPlayersNamesArray = GameManager.Instance.recentPlayers.getRecentPlayersNames();
+		if( recentPlayersNamesArray.Length > 0 )
+		{
+			chatClient.AddFriends( recentPlayersNamesArray );
 		}
 	}
 
@@ -192,13 +211,14 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	{
 		Debug.Log("OnStatusUpdate: gotMsg " + gotMessage + " "+ string.Format("{0} is {1}.", user, status));
 		GameManager.Instance.playerFriends.updateStatus( user, status );
+		GameManager.Instance.recentPlayers.updateStatus( user, status );
 		if( onStatusUpdateEvent != null ) onStatusUpdateEvent( user, status );
 		if( status == ChatUserStatus.Online && gotMessage && message != null )
 		{
-			int[] onlinePlayerData = (int[]) message;					
+			int[] onlinePlayerData = (int[]) message;				
 			//Update the friend's list with this information
 			PlayerFriends.FriendData friendData = new PlayerFriends.FriendData( user, onlinePlayerData[0], onlinePlayerData[1], onlinePlayerData[2], onlinePlayerData[3] );
-			friendData.status = 2;
+			friendData.status = (int)ChatUserStatus.Online;
 			friendData.print();
 			chatMessageHandler.updateFriendData( user, friendData );
 		}
