@@ -8,9 +8,9 @@ public class HorizontalScrollSnap : MonoBehaviour, IEndDragHandler
 {
  	ScrollRect scrollRect;
 
-	float lowerBoundary = 0.2f;
+	float lowerBoundary = 0.25f;
 	float centerBoundary = 0.5f;
-	float upperBoundary = 0.8f;
+	float upperBoundary = 0.75f;
 
 	float lowerDestination = 0;
 	float centerDestination = 0.5f;
