@@ -8,6 +8,14 @@ public class HorizontalScrollSnap : MonoBehaviour, IEndDragHandler
 {
  	ScrollRect scrollRect;
 
+	float lowerBoundary = 0.2f;
+	float centerBoundary = 0.5f;
+	float upperBoundary = 0.8f;
+
+	float lowerDestination = 0;
+	float centerDestination = 0.5f;
+	float upperDestination = 1f;
+
 	void Awake()
 	{
 		scrollRect = GetComponent<ScrollRect>();
@@ -18,16 +26,15 @@ public class HorizontalScrollSnap : MonoBehaviour, IEndDragHandler
     /// </summary>
     public void OnEndDrag (UnityEngine.EventSystems.PointerEventData eventData)
     {
-		StartCoroutine( snapToPosition( 0.4f ) );
+		StartCoroutine( snapToPosition( 0.24f ) );
     }
 
 	IEnumerator snapToPosition( float duration )
 	{
-		print("snapToPosition " + scrollRect.horizontalNormalizedPosition );
 		float elapsedTime = 0;
 		
 		float startHorizontalPosition = scrollRect.horizontalNormalizedPosition;
-		float endHorizontalPosition = 0;
+		float endHorizontalPosition = getDesiredPosition( scrollRect.horizontalNormalizedPosition );
 
 		do
 		{
@@ -36,9 +43,22 @@ public class HorizontalScrollSnap : MonoBehaviour, IEndDragHandler
 			yield return new WaitForFixedUpdate();  
 			
 		} while ( elapsedTime < duration );
-		scrollRect.horizontalNormalizedPosition = 0;
-		print("snapToPosition after " + scrollRect.horizontalNormalizedPosition );
 	}
 
+	float getDesiredPosition( float currentPosition )
+	{
+		if( currentPosition >= upperBoundary )
+		{
+			return upperDestination;
+		}
+		else if( currentPosition > lowerBoundary && currentPosition < upperBoundary )
+		{
+			return centerDestination;
+		}
+		else
+		{
+			return lowerDestination;
+		}
+	}
 }
 
