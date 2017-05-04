@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerInventory {
 
 	const int MAXIMUM_INCREASE_TO_GEM_BALANCE = 14000;
-	int currentGems = 23;
+	[SerializeField] int currentGems = 23;
 
 	//Delegate used to communicate to other classes when an inventory value changes such as the gem balance
 	public delegate void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int newValue );
@@ -35,6 +35,8 @@ public class PlayerInventory {
 		{
 			currentGems = value;
 			if( playerInventoryChangedNew != null ) playerInventoryChangedNew( PlayerInventoryEvent.Gem_Balance_Changed, currentGems );
+			//Save
+			serializePlayerprofile();
 			Debug.Log("PlayerInventory-setting current gems to: " + value );
 		}
 		else

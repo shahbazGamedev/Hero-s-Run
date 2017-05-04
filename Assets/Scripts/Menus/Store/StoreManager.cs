@@ -15,7 +15,7 @@ public enum PurchaseStatus {
 
 public class StoreManager : MonoBehaviour {
 
-	public const int GEM_TO_COINS_RATIO = 20; //1 gem is equal to 20 coins
+	public const float GEM_TO_COINS_RATIO = 20; //1 gem is equal to 20 coins
 	[Header("General")]
 	public static StoreManager Instance = null;
 	[SerializeField]  GameObject storeParent;

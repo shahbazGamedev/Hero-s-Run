@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class CardDetailPopup : MonoBehaviour {
 	
@@ -28,12 +29,10 @@ public class CardDetailPopup : MonoBehaviour {
 	[Header("Not Enough Currency Popup")]
 	[SerializeField] GameObject notEnoughCurrencyPopup;
 
-	public void configureCard( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
+	public void configureCard( GameObject go, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
 		//Disable scrolling while popup is displayed
 		horizontalScrollview.enabled = false;
-
-notEnoughCurrencyPopup.SetActive( false );
 
 		//Title
 		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + pcd.name.ToString().ToUpper() );
@@ -51,7 +50,7 @@ notEnoughCurrencyPopup.SetActive( false );
 		//Configure card properties
 		configureCardProperties( pcd, cd );
 		//Upgrade button
-		configureUpgradeButton( pcd, cd );
+		configureUpgradeButton( go, pcd, cd );
 	}
 
 	void configureCardProperties( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
@@ -96,7 +95,7 @@ notEnoughCurrencyPopup.SetActive( false );
 	/// </summary>
 	/// <param name="pcd"Player card data.</param>
 	/// <param name="cd">Card data.</param>
-	void configureUpgradeButton( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
+	void configureUpgradeButton( GameObject go, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
 		xpPanel.SetActive( false );
 		coinIcon.gameObject.SetActive( true );
@@ -114,13 +113,13 @@ notEnoughCurrencyPopup.SetActive( false );
 		 	upgradeCost= CardManager.Instance.getCoinsRequiredForUpgrade(CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ), cd.rarity );
 		}
 
-		if( pcd.level + 1 < CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ) )
+		if( pcd.level + 1 <= CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ) )
 		{
 			//Do I have enough cards to level up the card?
 			if( pcd.quantity >= numberOfCardsForUpgrade )
 			{
 				upgradeButton.onClick.RemoveAllListeners();
-				upgradeButton.onClick.AddListener(() => OnClickUpgrade(upgradeCost));
+				upgradeButton.onClick.AddListener(() => OnClickUpgrade( go, cd.name, upgradeCost));
 
 				//Does the player have enough coins?
 				if( upgradeCost <= PlayerStatsManager.Instance.getCurrentCoins() )
@@ -157,7 +156,7 @@ notEnoughCurrencyPopup.SetActive( false );
 		}
 	}
 
-		public void OnClickUpgrade( int upgradeCost )
+	public void OnClickUpgrade( GameObject go, CardName name, int upgradeCost )
 	{
 		//Does the player have enough coins?
 		if( upgradeCost <= PlayerStatsManager.Instance.getCurrentCoins() )
@@ -170,10 +169,11 @@ notEnoughCurrencyPopup.SetActive( false );
 			//The player does not have enough coins.
 			//Ask him if he wants to convert gems to coins.
 			notEnoughCurrencyPopup.SetActive( true );
-			int coinsMissing = upgradeCost - PlayerStatsManager.Instance.getCurrentCoins();
-			int gemsNeeded = coinsMissing/StoreManager.GEM_TO_COINS_RATIO;
+			int coinsAvailable = PlayerStatsManager.Instance.getCurrentCoins();
+			int coinsMissing = upgradeCost - coinsAvailable;
+			int gemsNeeded = (int) Math.Ceiling( coinsMissing/StoreManager.GEM_TO_COINS_RATIO );
 			Debug.Log("coinsMissing: " + coinsMissing + " gemsNeeded " + gemsNeeded );
-			notEnoughCurrencyPopup.GetComponent<CardNotEnoughCurrencyPopup>().configure( gemsNeeded );
+			notEnoughCurrencyPopup.GetComponent<CardNotEnoughCurrencyPopup>().configure( go, name, coinsAvailable, gemsNeeded );
 		}
 	}
 

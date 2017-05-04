@@ -13,14 +13,14 @@ public class CardNotEnoughCurrencyPopup : MonoBehaviour {
 	[SerializeField] Button goToShopButton;
 	[SerializeField] Text goToShopButtonText;
 
-	public void configure ( int gemsNeeded )
+	public void configure ( GameObject go, CardName card, int coinsAvailable, int gemsNeeded )
 	{
 		titleText.text = "Not Enough Coins!";
 		convertButtonText.text = gemsNeeded.ToString();
 		descriptionText.text = "Buy missing coins?";
 		convertButton.gameObject.SetActive( true );
 		convertButton.onClick.RemoveAllListeners();
-		convertButton.onClick.AddListener(() => OnClickConvert( gemsNeeded ) );
+		convertButton.onClick.AddListener(() => OnClickConvert( go, card, coinsAvailable, gemsNeeded ) );
 		goToShopButton.gameObject.SetActive( false );
 		//Does the player have enough gems?
 		if( gemsNeeded <= GameManager.Instance.playerInventory.getGemBalance() )
@@ -33,7 +33,7 @@ public class CardNotEnoughCurrencyPopup : MonoBehaviour {
 		}
 	}
 
-	public void OnClickConvert( int gemsNeeded )
+	public void OnClickConvert( GameObject go, CardName card, int coinsAvailable, int gemsNeeded )
 	{
 		print("OnClickConvert");
 		UISoundManager.uiSoundManager.playButtonClick();
@@ -41,8 +41,19 @@ public class CardNotEnoughCurrencyPopup : MonoBehaviour {
 		if( gemsNeeded <= GameManager.Instance.playerInventory.getGemBalance() )
 		{
 			//Yes, he does
+			PlayerStatsManager.Instance.deductCoins( coinsAvailable );
 			GameManager.Instance.playerInventory.deductGems( gemsNeeded );
-			print("deductGems " + gemsNeeded);
+			GameManager.Instance.playerDeck.upgradeCardByOneLevel( card );
+			//TO DO
+			//Display upgrade ceremony panel
+			//Update the Card Detail popup since some values have changed
+			transform.parent.GetComponent<CardDetailPopup>().configureCard( go, GameManager.Instance.playerDeck.getCardByName( card ), CardManager.Instance.getCardByName( card ) );
+			//Update the Card Collection entry as well
+			go.GetComponent<CardUIDetails>().configureCard( GameManager.Instance.playerDeck.getCardByName( card ), CardManager.Instance.getCardByName( card ) );
+
+			//Hide this popup
+			gameObject.SetActive( false );
+			print("Card upgraded " + card + " gemsNeeded " + gemsNeeded + " coinsAvailable " + coinsAvailable );
 		}
 		else
 		{

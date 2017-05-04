@@ -165,6 +165,34 @@ public class PlayerDeck {
 		}
 	}
 
+	public void upgradeCardByOneLevel( CardName name )
+	{
+		if( doesCardExist( name ) )
+		{
+			PlayerCardData playerCard = playerCardDataList.Find(playerCardData => playerCardData.name == name);
+			CardManager.CardData card = CardManager.Instance.getCardByName( name );
+			//Verify if not at maximum level before continuing
+			int maxCardLevel = CardManager.Instance.getMaxCardLevelForThisRarity( card.rarity );
+			if( playerCard.level + 1 <= maxCardLevel )
+			{
+				//We are okay to upgrade
+				playerCard.level++;
+				//Reset the number of cards
+				playerCard.quantity = 0;
+				//Save
+				serializePlayerDeck( true );
+			}
+			else
+			{
+				Debug.LogWarning("PlayerDeck-This card " + name + " is already maxed out." );
+			}
+		}
+		else
+		{
+			Debug.LogWarning("PlayerDeck-upgradeCardByOneLevel: The card you requested does not exist: " + name );
+		}
+	}
+
 	public void serializePlayerDeck( bool saveImmediately )
 	{
 		string json  = JsonUtility.ToJson( this );

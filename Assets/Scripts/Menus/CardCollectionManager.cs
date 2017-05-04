@@ -59,14 +59,14 @@ class CardCollectionManager : MonoBehaviour {
 		CardManager.CardData cd = CardManager.Instance.getCardByName( pcd.name );
 		go.transform.SetParent(battleDeckCardHolder,false);
 		Button cardButton = go.GetComponent<Button>();
-		cardButton.onClick.RemoveListener(() => OnClickBattleCard(index,pcd, cd));
-		cardButton.onClick.AddListener(() => OnClickBattleCard(index,pcd, cd));
+		cardButton.onClick.RemoveAllListeners();
+		cardButton.onClick.AddListener(() => OnClickBattleCard( go, index, pcd, cd ));
 		go.GetComponent<CardUIDetails>().configureCard( pcd, cd );
 	}
 
-	public void OnClickBattleCard( int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
+	public void OnClickBattleCard( GameObject go, int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
-		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( pcd, cd );
+		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( go, pcd, cd );
 		cardDetailPopup.SetActive( true );
 		scaleUp();
 	}
@@ -92,14 +92,14 @@ class CardCollectionManager : MonoBehaviour {
 		PlayerDeck.PlayerCardData pcd = GameManager.Instance.playerDeck.getCardByName( cd.name );
 		go.transform.SetParent(cardCollectionHolder,false);
 		Button cardButton = go.GetComponent<Button>();
-		cardButton.onClick.RemoveListener(() => OnClickCollectionCard(index,pcd, cd));
-		cardButton.onClick.AddListener(() => OnClickCollectionCard(index,pcd, cd));
+		cardButton.onClick.RemoveAllListeners();
+		cardButton.onClick.AddListener(() => OnClickCollectionCard( go, index, pcd, cd ));
 		go.GetComponent<CardUIDetails>().configureCard( pcd, cd );
 	}
 
-	public void OnClickCollectionCard( int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
+	public void OnClickCollectionCard( GameObject go, int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
-		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( pcd, cd );
+		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( go, pcd, cd );
 		cardDetailPopup.SetActive( true );
 		scaleUp();
 	}
