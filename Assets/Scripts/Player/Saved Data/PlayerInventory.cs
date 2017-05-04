@@ -17,6 +17,18 @@ public class PlayerInventory {
 		return currentGems;
 	}
 
+	public void deductGems( int gemAmount )
+	{
+		if( currentGems >= gemAmount )
+		{
+			setGemBalance( currentGems - gemAmount );
+		}
+		else
+		{
+			Debug.LogWarning("PlayerInventory-the gem amount you want to deduct " + gemAmount + " is bigger than your current balance " + currentGems + "." );
+		}
+	}
+
 	public void setGemBalance( int value )
 	{
 		if( value >= 0 && value <= MAXIMUM_INCREASE_TO_GEM_BALANCE )

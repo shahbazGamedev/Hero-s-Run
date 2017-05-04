@@ -25,11 +25,15 @@ public class CardDetailPopup : MonoBehaviour {
 	[SerializeField] Text upgradeButtonText;
 	[SerializeField] Text upgradeCostText;
 	[SerializeField] Image coinIcon; //The coin icon is hidden when the card is Maxed Out
+	[Header("Not Enough Currency Popup")]
+	[SerializeField] GameObject notEnoughCurrencyPopup;
 
 	public void configureCard( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
 		//Disable scrolling while popup is displayed
 		horizontalScrollview.enabled = false;
+
+notEnoughCurrencyPopup.SetActive( false );
 
 		//Title
 		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + pcd.name.ToString().ToUpper() );
@@ -115,6 +119,9 @@ public class CardDetailPopup : MonoBehaviour {
 			//Do I have enough cards to level up the card?
 			if( pcd.quantity >= numberOfCardsForUpgrade )
 			{
+				upgradeButton.onClick.RemoveAllListeners();
+				upgradeButton.onClick.AddListener(() => OnClickUpgrade(upgradeCost));
+
 				//Does the player have enough coins?
 				if( upgradeCost <= PlayerStatsManager.Instance.getCurrentCoins() )
 				{
@@ -126,8 +133,10 @@ public class CardDetailPopup : MonoBehaviour {
 				else
 				{
 					//The player does not have enough coins.
-					upgradeButton.interactable = false;
-					upgradeCostText.color = upgradeButton.colors.disabledColor;
+					//He can still click the button.
+					//If he does, he will get a popup asking if wants to convert gems to coins.
+					upgradeButton.interactable = true;
+					upgradeCostText.color = Color.red;
 				}
 			}
 			else
@@ -148,9 +157,24 @@ public class CardDetailPopup : MonoBehaviour {
 		}
 	}
 
-	public void OnClickUpgrade()
+		public void OnClickUpgrade( int upgradeCost )
 	{
-		Debug.Log("Upgrading card.");
+		//Does the player have enough coins?
+		if( upgradeCost <= PlayerStatsManager.Instance.getCurrentCoins() )
+		{
+			//The player has enough coins.
+			Debug.Log("Upgrading card.");
+		}
+		else
+		{
+			//The player does not have enough coins.
+			//Ask him if he wants to convert gems to coins.
+			notEnoughCurrencyPopup.SetActive( true );
+			int coinsMissing = upgradeCost - PlayerStatsManager.Instance.getCurrentCoins();
+			int gemsNeeded = coinsMissing/StoreManager.GEM_TO_COINS_RATIO;
+			Debug.Log("coinsMissing: " + coinsMissing + " gemsNeeded " + gemsNeeded );
+			notEnoughCurrencyPopup.GetComponent<CardNotEnoughCurrencyPopup>().configure( gemsNeeded );
+		}
 	}
 
 	public void OnClickHide()
