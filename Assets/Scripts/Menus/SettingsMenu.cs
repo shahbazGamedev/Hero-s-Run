@@ -30,6 +30,11 @@ public class SettingsMenu : MonoBehaviour {
 	[SerializeField] GameObject  dotsPanel; 
 	bool levelLoading = false;
 
+	void OnEnable ()
+	{
+		SceneManager.sceneUnloaded += OnSceneUnloaded;
+	}
+
 	void Start () {
 
 		Handheld.StopActivityIndicator();
@@ -136,6 +141,12 @@ public class SettingsMenu : MonoBehaviour {
 	{
 		Debug.LogWarning("OnClickRestorePurchases - Not implemented.");
 		UISoundManager.uiSoundManager.playButtonClick();
+	}
+
+	void OnSceneUnloaded( Scene scene )
+	{
+		PlayerStatsManager.Instance.savePlayerStats();
+		SceneManager.sceneUnloaded -= OnSceneUnloaded;
 	}
 
 	IEnumerator loadScene(GameScenes value)
