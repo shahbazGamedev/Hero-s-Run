@@ -4,30 +4,36 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
  
-public class HorizontalScrollSnap : MonoBehaviour, IEndDragHandler
+public class HorizontalScrollSnap : MonoBehaviour, IEndDragHandler, IBeginDragHandler
 {
  	ScrollRect scrollRect;
 
-	float lowerBoundary = 0.25f;
-	float centerBoundary = 0.5f;
-	float upperBoundary = 0.75f;
+	float lowerBoundaryR = 0.2f;
+	float upperBoundaryR = 0.7f;
+
+	float lowerBoundaryL = 0.3f;
+	float upperBoundaryL = 0.8f;
 
 	float lowerDestination = 0;
 	float centerDestination = 0.5f;
 	float upperDestination = 1f;
+
+	float horizontalNormalizedPositionOnBeginDrag;
 
 	void Awake()
 	{
 		scrollRect = GetComponent<ScrollRect>();
 	}
 
-    /// <summary>
-    /// End drag event
-    /// </summary>
+    public void OnBeginDrag (UnityEngine.EventSystems.PointerEventData eventData)
+    {
+ 		horizontalNormalizedPositionOnBeginDrag = scrollRect.horizontalNormalizedPosition;
+	}
+
     public void OnEndDrag (UnityEngine.EventSystems.PointerEventData eventData)
     {
-		StartCoroutine( snapToPosition( 0.24f ) );
-    }
+ 		StartCoroutine( snapToPosition( 0.2f ) );
+	}
 
 	IEnumerator snapToPosition( float duration )
 	{
@@ -47,17 +53,36 @@ public class HorizontalScrollSnap : MonoBehaviour, IEndDragHandler
 
 	float getDesiredPosition( float currentPosition )
 	{
-		if( currentPosition >= upperBoundary )
+		bool isGoingRight = currentPosition - horizontalNormalizedPositionOnBeginDrag > 0;
+		if( isGoingRight )
 		{
-			return upperDestination;
-		}
-		else if( currentPosition > lowerBoundary && currentPosition < upperBoundary )
-		{
-			return centerDestination;
+			if( currentPosition >= upperBoundaryR )
+			{
+				return upperDestination;
+			}
+			else if( currentPosition <= lowerBoundaryR )
+			{
+				return lowerDestination;
+			}
+			else
+			{
+				return centerDestination;
+			}
 		}
 		else
 		{
-			return lowerDestination;
+			if( currentPosition <= upperBoundaryL && currentPosition >= lowerBoundaryL )
+			{
+				return centerDestination;
+			}
+			else if( currentPosition < lowerBoundaryL )
+			{
+				return lowerDestination;
+			}
+			else
+			{
+				return upperDestination;
+			}
 		}
 	}
 }
