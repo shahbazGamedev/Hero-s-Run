@@ -10,8 +10,8 @@ public class UniversalTopBar : MonoBehaviour {
 	const float GEM_STORE_VERTICAL_POSITION = 1174f;
 
 	[Header("For Store Access")]
-	[SerializeField] RectTransform horizontalContent;
-	[SerializeField] RectTransform storeVerticalContent;
+	RectTransform horizontalContent;
+	RectTransform storeVerticalContent;
 	[Header("Holder Panel")]
 	[SerializeField] GameObject holderPanel;
 	[SerializeField] GameObject topPanel;
@@ -82,6 +82,11 @@ public class UniversalTopBar : MonoBehaviour {
 		switch( gameScene )
 		{
 			case GameScenes.MainMenu:
+				//We need to get references to these values every time we load the main menu since when we leave the main menu, the references get lost.
+				//horizontalContent holds the main menu, the card collection and the store
+				horizontalContent = GameObject.FindGameObjectWithTag("Horizontal Content").GetComponent<RectTransform>();
+				//storeVerticalContent holds the store
+				storeVerticalContent = GameObject.FindGameObjectWithTag("Store Vertical Content").GetComponent<RectTransform>();
 				configurePanels( true, true, true );
 				onlyShowCloseButton( false );
 			break;
