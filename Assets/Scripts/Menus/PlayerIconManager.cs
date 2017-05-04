@@ -78,9 +78,10 @@ class PlayerIconManager : MonoBehaviour {
 
 		if( !playerIconData.isLocked)
 		{
-			//Set this value in Player Profile. It will only be saved when the user exits the scene.
-			//We don't want to be saving each time a user clicks on a icon.
+			//Set this value in Player Profile.
 			GameManager.Instance.playerProfile.setPlayerIconId( playerIconData.uniqueId );
+			//Save the player profile. The user may have changed his player icon.
+			GameManager.Instance.playerProfile.serializePlayerprofile();
 		}
 	}
 
