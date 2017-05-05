@@ -68,7 +68,6 @@ class CardCollectionManager : MonoBehaviour {
 	{
 		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( go, pcd, cd );
 		cardDetailPopup.SetActive( true );
-		scaleUp();
 	}
 	#endregion
 
@@ -101,7 +100,6 @@ class CardCollectionManager : MonoBehaviour {
 	{
 		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( go, pcd, cd );
 		cardDetailPopup.SetActive( true );
-		scaleUp();
 	}
 
 	public void OnClickSortCards()
@@ -163,18 +161,6 @@ class CardCollectionManager : MonoBehaviour {
 		Debug.Log("OnClickCardToBeFound " + cd.name );
 	}
 	#endregion
-
-	void scaleUp()
-	{
-		CancelInvoke("scaleDown");
-		LeanTween.cancel( gameObject );
-		LeanTween.scale( cardDetailPopup.GetComponent<RectTransform>(), new Vector3( 1.015f, 1.015f, 1.015f ), 0.18f ).setOnComplete(scaleDown).setOnCompleteParam(gameObject);
-	}
-	
-	void scaleDown()
-	{
-		LeanTween.scale( cardDetailPopup.GetComponent<RectTransform>(), Vector3.one, 0.25f );
-	}
 
 	public void OnClickOpenMainMenu()
 	{

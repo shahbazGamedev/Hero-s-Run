@@ -30,7 +30,7 @@ public class PlayerDeck {
 		addCard( CardName.Explosion, 4, 12, true );
 
 		//5
-		addCard( CardName.Stasis, 1, 5, true );
+		addCard( CardName.Stasis, 6, 100, true );
 
 		//6
 		addCard( CardName.Lightning, 5, 1, true );

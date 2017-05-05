@@ -181,7 +181,7 @@ public class CardDetailPopup : MonoBehaviour {
 			int coinsMissing = upgradeCost - coinsAvailable;
 			int gemsNeeded = (int) Math.Ceiling( coinsMissing/StoreManager.GEM_TO_COINS_RATIO );
 			Debug.Log("coinsMissing: " + coinsMissing + " gemsNeeded " + gemsNeeded );
-			notEnoughCurrencyPopup.GetComponent<CardNotEnoughCurrencyPopup>().configure( go, card, coinsAvailable, gemsNeeded );
+			notEnoughCurrencyPopup.GetComponent<CardNotEnoughCurrencyPopup>().configureForNotEnoughCoins( go, card, coinsAvailable, gemsNeeded );
 		}
 	}
 

@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class CardNotEnoughCurrencyPopup : MonoBehaviour {
 
-	[Header("Description")]
 	[SerializeField] Text titleText;
 	[SerializeField] Text descriptionText;
 	[SerializeField] Button convertButton;
@@ -13,7 +12,7 @@ public class CardNotEnoughCurrencyPopup : MonoBehaviour {
 	[SerializeField] Button goToShopButton;
 	[SerializeField] Text goToShopButtonText;
 
-	public void configure ( GameObject go, CardName card, int coinsAvailable, int gemsNeeded )
+	public void configureForNotEnoughCoins ( GameObject go, CardName card, int coinsAvailable, int gemsNeeded )
 	{
 		titleText.text = "Not Enough Coins!";
 		convertButtonText.text = gemsNeeded.ToString();
@@ -33,9 +32,8 @@ public class CardNotEnoughCurrencyPopup : MonoBehaviour {
 		}
 	}
 
-	public void OnClickConvert( GameObject go, CardName card, int coinsAvailable, int gemsNeeded )
+	void OnClickConvert( GameObject go, CardName card, int coinsAvailable, int gemsNeeded )
 	{
-		print("OnClickConvert");
 		UISoundManager.uiSoundManager.playButtonClick();
 		//Does the player have enough gems?
 		if( gemsNeeded <= GameManager.Instance.playerInventory.getGemBalance() )
@@ -53,25 +51,32 @@ public class CardNotEnoughCurrencyPopup : MonoBehaviour {
 
 			//Hide this popup
 			gameObject.SetActive( false );
-			print("Card upgraded " + card + " gemsNeeded " + gemsNeeded + " coinsAvailable " + coinsAvailable );
 		}
 		else
 		{
 			//No, he doesn't
+			configureForNotEnoughGems( go, card, coinsAvailable, gemsNeeded );
 		}
+	}
+
+	void configureForNotEnoughGems( GameObject go, CardName card, int coinsAvailable, int gemsNeeded )
+	{
+		titleText.text = "Not Enough Gems!";
+		descriptionText.text = "You don't have enough gems. You can get some at the shop.";
+		convertButton.gameObject.SetActive( false );
+		goToShopButton.gameObject.SetActive( true );
 	}
 
 	public void OnClickGoToShop()
 	{
-		print("OnClickGoToShop");
 		UISoundManager.uiSoundManager.playButtonClick();
 		gameObject.SetActive( false );
 		transform.parent.GetComponent<CardDetailPopup>().OnClickHide();
+		UniversalTopBar.Instance.OnClickShowGemStore();
 	}
 
 	public void OnClickHide()
 	{
-		print("OnClickHide");
 		UISoundManager.uiSoundManager.playButtonClick();
 		gameObject.SetActive( false );
 	}
