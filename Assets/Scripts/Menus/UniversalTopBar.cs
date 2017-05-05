@@ -51,6 +51,7 @@ public class UniversalTopBar : MonoBehaviour {
 			DontDestroyOnLoad(gameObject);
 			SceneManager.sceneLoaded += OnSceneLoaded;
 			PlayerProfile.playerProfileChanged += PlayerProfileChanged;
+			PlayerInventory.playerInventoryChangedNew += PlayerInventoryChangedNew;
 		}
 	}
 
@@ -143,7 +144,7 @@ public class UniversalTopBar : MonoBehaviour {
 		currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.totalXPEarned, ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ) );
 		progressBarSlider.value = GameManager.Instance.playerProfile.totalXPEarned/ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
 	
-		numberOfCoinsText.text = PlayerStatsManager.Instance.getCurrentCoins().ToString("N0");
+		numberOfCoinsText.text = GameManager.Instance.playerInventory.getCoinBalance().ToString("N0");
 	
 		numberOfGemsText.text = GameManager.Instance.playerInventory.getGemBalance().ToString("N0");
 	
@@ -157,33 +158,16 @@ public class UniversalTopBar : MonoBehaviour {
 		onlineIndicator.color = chatStatusColor;
 	}
 
-	void OnEnable()
-	{
-		PlayerStatsManager.playerInventoryChanged += PlayerInventoryChanged;
-		PlayerInventory.playerInventoryChangedNew += PlayerInventoryChangedNew;
-	}
-	
-	void OnDisable()
-	{
-		PlayerStatsManager.playerInventoryChanged -= PlayerInventoryChanged;
-	}
-
-	void PlayerInventoryChanged( PlayerInventoryEvent eventType, int newValue )
-	{
-		switch (eventType)
-		{
-			case PlayerInventoryEvent.Coin_Changed:
-				numberOfCoinsText.text = newValue.ToString("N0");			
-			break;
-		}
-	}
-
 	void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int newValue )
 	{
 		switch (eventType)
 		{
 			case PlayerInventoryEvent.Gem_Balance_Changed:
 				numberOfGemsText.text = newValue.ToString("N0");
+			break;
+
+			case PlayerInventoryEvent.Coin_Changed:
+				numberOfCoinsText.text = newValue.ToString("N0");			
 			break;
 		}
 	}

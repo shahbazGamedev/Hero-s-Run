@@ -23,7 +23,7 @@ public class StoreManager : MonoBehaviour {
 	[Header("Store")]
 	[SerializeField]  ScrollRect storeScrollRect;
 	[SerializeField]  Text coinsTitle;
-	[SerializeField]  Text livesTitle;
+	[SerializeField]  Text gemsTitle;
 
 	// Use this for initialization
 	void Awake ()
@@ -35,7 +35,7 @@ public class StoreManager : MonoBehaviour {
 	void Start ()
 	{
 		coinsTitle.text = LocalizationManager.Instance.getText("STORE_COINS_TITLE");
-		livesTitle.text = LocalizationManager.Instance.getText("STORE_LIVES_TITLE");
+		gemsTitle.text = LocalizationManager.Instance.getText("STORE_GEMS_TITLE");
 	}
 
 	public void showStore( StoreTab selectedTab )

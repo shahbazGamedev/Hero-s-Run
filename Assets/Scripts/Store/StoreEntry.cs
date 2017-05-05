@@ -10,7 +10,8 @@ public enum PurchaseType {
 	Purchase_Coin_Doubler = 3,
 	Purchase_Coins = 4,
 	Purchase_Lives = 5,
-	Restore_Coin_Doubler = 6
+	Restore_Coin_Doubler = 6,
+	Purchase_Gems = 7
 }
 
 public class StoreEntry : MonoBehaviour {
@@ -63,6 +64,10 @@ public class StoreEntry : MonoBehaviour {
 	
 	        case PurchaseType.Purchase_Coins:
 				initializePurchaseCoinsEntry();
+                break;
+
+	        case PurchaseType.Purchase_Gems:
+				initializePurchaseGemsEntry();
                 break;
 
 			 case PurchaseType.Restore_Coin_Doubler:
@@ -150,6 +155,12 @@ public class StoreEntry : MonoBehaviour {
 		buyButtonLabel.text = currencySymbol + price.ToString();
 	}
 
+	void initializePurchaseGemsEntry()
+	{
+		description.text = string.Format( LocalizationManager.Instance.getText("STORE_ITEM_GEMS_DESCRIPTION"), quantity.ToString("N0") );
+		buyButtonLabel.text = currencySymbol + price.ToString();
+	}
+
 	void initializeRestoreCoinDoublerEntry()
 	{
 		description.text = LocalizationManager.Instance.getText("RESTORE_PURCHASE_DESCRIPTION");
@@ -178,6 +189,10 @@ public class StoreEntry : MonoBehaviour {
 	
 	        case PurchaseType.Purchase_Coins:
 				buyCoins();
+                break;
+
+	        case PurchaseType.Purchase_Gems:
+				buyGems();
                 break;
 
 			 case PurchaseType.Restore_Coin_Doubler:
@@ -286,12 +301,14 @@ public class StoreEntry : MonoBehaviour {
 	{
 		Debug.Log("buyCoins");
 		UISoundManager.uiSoundManager.playButtonClick();
+		GameManager.Instance.playerInventory.addCoins( quantity );
+	}
 
-		//Grant the purchased lives
-		PlayerStatsManager.Instance.modifyCurrentCoins( quantity, false, true );
-
-		//Save the data
-		PlayerStatsManager.Instance.savePlayerStats();
+	void buyGems()
+	{
+		Debug.Log("buyGems");
+		UISoundManager.uiSoundManager.playButtonClick();
+		GameManager.Instance.playerInventory.addGems( quantity );
 	}
 
 	void restorePurchases()

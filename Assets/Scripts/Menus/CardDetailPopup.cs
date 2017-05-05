@@ -122,7 +122,7 @@ public class CardDetailPopup : MonoBehaviour {
 				upgradeButton.onClick.AddListener(() => OnClickUpgrade( go, cd.name, upgradeCost));
 
 				//Does the player have enough coins?
-				if( upgradeCost <= PlayerStatsManager.Instance.getCurrentCoins() )
+				if( upgradeCost <= GameManager.Instance.playerInventory.getCoinBalance() )
 				{
 					//The player has enough coins.
 					upgradeButton.interactable = true;
@@ -159,10 +159,10 @@ public class CardDetailPopup : MonoBehaviour {
 	public void OnClickUpgrade( GameObject go, CardName card, int upgradeCost )
 	{
 		//Does the player have enough coins?
-		if( upgradeCost <= PlayerStatsManager.Instance.getCurrentCoins() )
+		if( upgradeCost <= GameManager.Instance.playerInventory.getCoinBalance() )
 		{
 			//The player has enough coins and does not need gems.
-			PlayerStatsManager.Instance.deductCoins( upgradeCost );
+			GameManager.Instance.playerInventory.deductCoins( upgradeCost );
 			GameManager.Instance.playerDeck.upgradeCardByOneLevel( card );
 			//TO DO
 			//Display upgrade ceremony panel
@@ -177,7 +177,7 @@ public class CardDetailPopup : MonoBehaviour {
 			//The player does not have enough coins.
 			//Ask him if he wants to convert gems to coins.
 			notEnoughCurrencyPopup.SetActive( true );
-			int coinsAvailable = PlayerStatsManager.Instance.getCurrentCoins();
+			int coinsAvailable = GameManager.Instance.playerInventory.getCoinBalance();
 			int coinsMissing = upgradeCost - coinsAvailable;
 			int gemsNeeded = (int) Math.Ceiling( coinsMissing/StoreManager.GEM_TO_COINS_RATIO );
 			Debug.Log("coinsMissing: " + coinsMissing + " gemsNeeded " + gemsNeeded );
