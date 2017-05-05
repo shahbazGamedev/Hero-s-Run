@@ -1197,73 +1197,13 @@ public class PlayerStatsManager {
 	{
 		try
 		{
-			PlayerPrefs.SetInt("Next Episode To Complete", 0 );
-			LevelManager.Instance.setNextEpisodeToComplete( 0 );
-			PlayerPrefs.SetInt("Game Mode", (int) GameMode.Story );
-			GameManager.Instance.setGameMode( GameMode.Story );
-			PlayerPrefs.SetInt("Highest Episode Completed", 0 );
-			LevelManager.Instance.setHighestEpisodeCompleted( 0 );
-			PlayerPrefs.SetInt("Lives", INITIAL_NUMBER_LIVES );
-			setLives( INITIAL_NUMBER_LIVES );
-			PlayerPrefs.SetInt("treasureKeysOwned", 0 );
-			setTreasureKeysOwned( 0 );
-			PlayerPrefs.SetString( "Finished Game", "false" );
-			LevelManager.Instance.setPlayerFinishedTheGame( false );
-			PlayerPrefs.SetString( "First Time Playing", "true" );
-			firstTimePlaying = true;
-			PlayerPrefs.SetString( "showDebugInfoOnHUD", "false" );
-			setShowDebugInfoOnHUD( false );
-			PlayerPrefs.SetString( "sharedOnFacebook", "false" );
-			setSharedOnFacebook( false );
-			PlayerPrefs.SetString( "ownsCoinDoubler", "false" );
-			setOwnsCoinDoubler( false );
-			PlayerPrefs.SetString( "usesFacebook", "false" );
-			setUsesFacebook( false );
-			PlayerPrefs.SetString( "isCameraFlipped", "false" );
-			setCameraFlipped( false );
-			dateLastPlayed = DateTime.Now;
-			PlayerPrefs.SetString( "dateLastPlayed", dateLastPlayed.ToString() );
-			PlayerPrefs.SetFloat("soundFxVolume", 0f );
-			setSoundFxVolume( 0 );
-			PlayerPrefs.SetFloat("musicVolume", 0f );
-			setMusicVolume( 0 );
-	
-			PlayerPrefs.SetInt("currentCoins", 0 );
-			currentCoins = 0;
-			PlayerPrefs.SetInt("lifetimeCoins", 0 );
-			lifetimeCoins = 0;
-			resetDisplayStars();
-			resetHighScores();
-			resetDeathInEpisodes();
-			resetKeysFoundInEpisode();
-			resetTreasureKeysFound();
-			PlayerPrefs.SetInt("powerUpSelected", (int)PowerUpType.SlowTime );
-			powerUpSelected = PowerUpType.SlowTime;
-			PlayerPrefs.SetInt("avatar", (int)Avatar.None);
-			avatar = Avatar.None;
-			ClearPowerUpInventory();
-			challenges = string.Empty;
-			PlayerPrefs.SetString( "challenges", "" );
-			journalEntries = string.Empty;
-			PlayerPrefs.SetString( "journalEntries", "" );
-			playerProfile = string.Empty;
-			PlayerPrefs.SetString( "playerProfile", "" );
-			playerStatistics = string.Empty;
-			PlayerPrefs.SetString( "playerStatistics", "" );
-			playerDeck = string.Empty;
-			PlayerPrefs.SetString( "playerDeck", "" );
-			playerFriends = string.Empty;
-			PlayerPrefs.SetString( "playerFriends", "" );
-			recentPlayers = string.Empty;
-			PlayerPrefs.SetString( "recentPlayers", "" );
-			playerInventory = string.Empty;
-			PlayerPrefs.SetString( "playerInventory", "" );
+			PlayerPrefs.DeleteAll();
 			PlayerPrefs.Save();
-			Debug.Log ("PlayerStatsManager-resetPlayerStats: called." );
+			Debug.Log ("PlayerStatsManager-delete all called." );
 		}
 		catch (Exception e)
 		{
-			Debug.LogWarning("PlayerStatsManager-exception occured while resetting stats: " + e.Message );
+			Debug.LogWarning("PlayerStatsManager-exception occured while deleting all data: " + e.Message );
 		}
 	}
 

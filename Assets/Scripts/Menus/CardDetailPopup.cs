@@ -156,13 +156,21 @@ public class CardDetailPopup : MonoBehaviour {
 		}
 	}
 
-	public void OnClickUpgrade( GameObject go, CardName name, int upgradeCost )
+	public void OnClickUpgrade( GameObject go, CardName card, int upgradeCost )
 	{
 		//Does the player have enough coins?
 		if( upgradeCost <= PlayerStatsManager.Instance.getCurrentCoins() )
 		{
-			//The player has enough coins.
-			Debug.Log("Upgrading card.");
+			//The player has enough coins and does not need gems.
+			PlayerStatsManager.Instance.deductCoins( upgradeCost );
+			GameManager.Instance.playerDeck.upgradeCardByOneLevel( card );
+			//TO DO
+			//Display upgrade ceremony panel
+			//Update the Card Detail popup since some values have changed
+			configureCard( go, GameManager.Instance.playerDeck.getCardByName( card ), CardManager.Instance.getCardByName( card ) );
+			//Update the Card Collection entry as well
+			go.GetComponent<CardUIDetails>().configureCard( GameManager.Instance.playerDeck.getCardByName( card ), CardManager.Instance.getCardByName( card ) );
+			Debug.Log("Upgrading card " + name );
 		}
 		else
 		{
@@ -173,7 +181,7 @@ public class CardDetailPopup : MonoBehaviour {
 			int coinsMissing = upgradeCost - coinsAvailable;
 			int gemsNeeded = (int) Math.Ceiling( coinsMissing/StoreManager.GEM_TO_COINS_RATIO );
 			Debug.Log("coinsMissing: " + coinsMissing + " gemsNeeded " + gemsNeeded );
-			notEnoughCurrencyPopup.GetComponent<CardNotEnoughCurrencyPopup>().configure( go, name, coinsAvailable, gemsNeeded );
+			notEnoughCurrencyPopup.GetComponent<CardNotEnoughCurrencyPopup>().configure( go, card, coinsAvailable, gemsNeeded );
 		}
 	}
 
