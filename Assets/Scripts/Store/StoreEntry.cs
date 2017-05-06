@@ -147,11 +147,7 @@ public class StoreEntry : MonoBehaviour {
 
 	void initializePurchaseCoinsEntry()
 	{
-		string descriptionString = LocalizationManager.Instance.getText("STORE_ITEM_COINS_DESCRIPTION");
-		//Replace the string <quantity> by the quantity the player will receive if he makes the purchase
-		descriptionString = descriptionString.Replace( "<quantity>", quantity.ToString("N0") );
-		description.text = descriptionString;
-		
+		description.text = string.Format( LocalizationManager.Instance.getText("STORE_ITEM_COINS_DESCRIPTION"), quantity.ToString("N0") );
 		buyButtonLabel.text = currencySymbol + price.ToString();
 	}
 
