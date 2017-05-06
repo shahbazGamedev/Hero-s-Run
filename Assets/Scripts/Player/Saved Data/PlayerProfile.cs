@@ -49,7 +49,12 @@ public class PlayerProfile {
 		return level;
 	}
 
-	public void setLevel( int value )
+	public void incrementLevel()
+	{
+		setLevel( level + 1 );
+	}
+
+	void setLevel( int value )
 	{
 		if( value > 0 && value <= ProgressionManager.MAX_LEVEL )
 		{

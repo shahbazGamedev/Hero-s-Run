@@ -39,6 +39,8 @@ public class UniversalTopBar : MonoBehaviour {
 	[SerializeField] Text playerNameText;
 	[SerializeField] Image onlineIndicator;
 
+	int residualXP = 0;
+
 	void Awake ()
 	{
 		if(Instance)
@@ -187,7 +189,7 @@ public class UniversalTopBar : MonoBehaviour {
 			break;
 
 			case PlayerProfileEvent.XP_Changed:
-				animateProgressBar( previousValue, newValue, 3f );
+				handleXPChanged( previousValue, newValue, 1.5f );
 			break;
 
 			case PlayerProfileEvent.User_Name_Changed:
@@ -196,15 +198,41 @@ public class UniversalTopBar : MonoBehaviour {
 		}
 	}
 
-	void animateProgressBar( int previousValue, int newValue, float duration )
+	void handleXPChanged( int previousValue, int newValue, float duration )
+	{
+		if( newValue > ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ) )
+		{
+			//Player is leveling up. Bravo!
+			residualXP = newValue - ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
+			animateProgressBar( previousValue, ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ), duration, animationCompletedCallback );
+		}
+		else
+		{
+			//Player is not leveling up.
+			animateProgressBar( previousValue, newValue, duration );
+		}
+	}
+
+	void animateProgressBar( int previousValue, int newValue, float duration, System.Action onFinish = null )
 	{
 		//Animate Text
 		string currentAndNeededXPString = "{0}/" + ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ).ToString();
-		currentAndNeededXPText.GetComponent<UISpinNumber>().spinNumber( currentAndNeededXPString, previousValue, newValue, duration );
+		currentAndNeededXPText.GetComponent<UISpinNumber>().spinNumber( currentAndNeededXPString, previousValue, newValue, duration, onFinish );
 
 		//Animate Slider
 		float toValue = newValue/(float)ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
 		progressBarSlider.GetComponent<UIAnimateSlider>().animateSlider( toValue, duration );
+	}
+
+	/// <summary>
+	/// Animation completed callback. This is called when the progress bar text has finished animating.
+	/// It will trigger a second animation since the player has leveled up in this case.
+	/// </summary>
+	void animationCompletedCallback()
+	{
+		GameManager.Instance.playerProfile.incrementLevel();
+		progressBarSlider.value = 0;
+		animateProgressBar( 0, residualXP, 3f );
 	}
 
 	public void OnClickShowCoinStore()
