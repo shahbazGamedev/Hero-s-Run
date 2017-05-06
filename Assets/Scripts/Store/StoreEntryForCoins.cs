@@ -20,7 +20,32 @@ public class StoreEntryForCoins : MonoBehaviour {
 		title.text = LocalizationManager.Instance.getText(titleID);
 		buyWithGemsButtonLabel.text = priceInGems.ToString("N0");
 		quantityText.text = quantity.ToString("N0");
-		if( priceInGems <= GameManager.Instance.playerInventory.getGemBalance() )
+		setTextColorBasedOnGemBalance( GameManager.Instance.playerInventory.getGemBalance() );
+	}
+
+	void OnEnable()
+	{
+		PlayerInventory.playerInventoryChangedNew += PlayerInventoryChangedNew;
+	}
+
+	void OnDisable()
+	{
+		PlayerInventory.playerInventoryChangedNew -= PlayerInventoryChangedNew;
+	}
+
+	void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int newValue )
+	{
+		switch (eventType)
+		{
+			case PlayerInventoryEvent.Gem_Balance_Changed:
+				setTextColorBasedOnGemBalance( newValue );
+			break;
+		}
+	}
+
+	void setTextColorBasedOnGemBalance( int gemBalance )
+	{
+		if( priceInGems <= gemBalance )
 		{
 			//We can afford it.
 			buyWithGemsButtonLabel.color = Color.white;
