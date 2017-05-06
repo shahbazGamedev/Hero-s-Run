@@ -172,7 +172,7 @@ public class UniversalTopBar : MonoBehaviour {
 		}
 	}
 
-	void PlayerProfileChanged( PlayerProfileEvent eventType, int newValue )
+	void PlayerProfileChanged( PlayerProfileEvent eventType, int previousValue, int newValue )
 	{
 		switch (eventType)
 		{
@@ -187,14 +187,24 @@ public class UniversalTopBar : MonoBehaviour {
 			break;
 
 			case PlayerProfileEvent.XP_Changed:
-				currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.totalXPEarned, ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ) );
-				progressBarSlider.value = GameManager.Instance.playerProfile.totalXPEarned/(float)ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
+				animateProgressBar( previousValue, newValue, 3f );
 			break;
 
 			case PlayerProfileEvent.User_Name_Changed:
 				playerNameText.text = GameManager.Instance.playerProfile.getUserName();
 			break;
 		}
+	}
+
+	void animateProgressBar( int previousValue, int newValue, float duration )
+	{
+		//Animate Text
+		string currentAndNeededXPString = "{0}/" + ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ).ToString();
+		currentAndNeededXPText.GetComponent<UISpinNumber>().spinNumber( currentAndNeededXPString, previousValue, newValue, duration );
+
+		//Animate Slider
+		float toValue = newValue/(float)ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
+		progressBarSlider.GetComponent<UIAnimateSlider>().animateSlider( toValue, duration );
 	}
 
 	public void OnClickShowCoinStore()

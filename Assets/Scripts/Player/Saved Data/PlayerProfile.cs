@@ -29,7 +29,7 @@ public class PlayerProfile {
 	public int selectedHeroIndex; //index for heroCharacterList in HeroManager
 
 	//Delegate used to communicate to other classes when the a value changes
-	public delegate void PlayerProfileChanged( PlayerProfileEvent eventType, int newValue = 0 );
+	public delegate void PlayerProfileChanged( PlayerProfileEvent eventType, int previousValue = 0, int newValue = 0 );
 	public static event PlayerProfileChanged playerProfileChanged;
 
 	public string getUserName()
@@ -53,8 +53,8 @@ public class PlayerProfile {
 	{
 		if( value > 0 && value <= ProgressionManager.MAX_LEVEL )
 		{
+			if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Level_Changed, level, value );
 			level = value;
-			if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Level_Changed, level );
 			Debug.Log("PlayerProfile-setLevel: setting level to: " + value );
 		}
 		else
@@ -65,9 +65,10 @@ public class PlayerProfile {
 
 	public void addToTotalXPEarned( int xpAmount, bool saveImmediately )
 	{
-		if( xpAmount <= 0 || xpAmount > ProgressionManager.MAX_XP_IN_ONE_RACE ) return;	
+		if( xpAmount <= 0 || xpAmount > ProgressionManager.MAX_XP_IN_ONE_RACE ) return;
+		int previousAmount = totalXPEarned;
 		totalXPEarned = totalXPEarned + xpAmount;
-		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.XP_Changed, totalXPEarned );
+		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.XP_Changed, previousAmount, totalXPEarned );
 		if( saveImmediately ) serializePlayerprofile();
 		Debug.Log("PlayerProfile-addXP: adding XP: " + xpAmount + " New total is: " +  totalXPEarned );
 	}
