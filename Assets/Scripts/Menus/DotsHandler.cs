@@ -2,28 +2,59 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class DotsHandler : MonoBehaviour {
 
 	[SerializeField] List<Image> dotsList = new List<Image>();
-	float scrollBarPreviousValue = 0;
 
-	public void OnValueChanged( float value )
+	public void OnValueChanged( Vector2 value )
 	{
-		if( value != scrollBarPreviousValue )
+		float xPosition = (float) Math.Round( value.x, 1 );
+		//print("value.x " + xPosition );
+
+		for( int i = 0; i < dotsList.Count; i ++ )
 		{
-			scrollBarPreviousValue = value;
-			for( int i = 0; i < dotsList.Count; i ++ )
+			if( dotsList.Count == 2 )
 			{
-				if( i == value )
+				//leftmost entry
+				if( xPosition == 0 ) 					
 				{
-					dotsList[i].color = Color.white;
+					dotsList[0].color = Color.white;
+				}
+				//rightmost entry
+				else if( xPosition == 1f ) 			
+				{
+					dotsList[1].color = Color.white;
 				}
 				else
 				{
 					dotsList[i].color = Color.gray;
 				}
 			}
- 		}
+			else if( dotsList.Count == 3 )
+			{
+				//leftmost entry
+				if( xPosition == 0 )
+				{
+					dotsList[0].color = Color.white;
+				}
+				//middle entry
+				else if( xPosition == 0.5f )
+				{
+					dotsList[1].color = Color.white;
+				}
+				//rightmost entry
+				else if( xPosition == 1f )
+				{
+					dotsList[2].color = Color.white;
+				}
+				else
+				{
+					dotsList[i].color = Color.gray;
+				}
+			}
+		}
 	}
+
 }
