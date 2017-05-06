@@ -11,7 +11,6 @@ public class StoreEntryForGems : MonoBehaviour {
 	[Tooltip("For example, the number of gems you get with your purchase. Gems are bought with real money.")]
 	[SerializeField]  Text quantityText;
 	[SerializeField]  int quantity;
-	[SerializeField]  Button buyGemsButton;	
 	[SerializeField]  Text buyGemsButtonLabel;
 	[Tooltip("Gems price will ultimately come from the app store. For now, we use dummy values.")]
 	[SerializeField]  float price;

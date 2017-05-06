@@ -7,7 +7,7 @@ public class UniversalTopBar : MonoBehaviour {
 
 	public static UniversalTopBar Instance;
 	const float COIN_STORE_VERTICAL_POSITION = 0;
-	const float GEM_STORE_VERTICAL_POSITION = 1174f;
+	const float GEM_STORE_VERTICAL_POSITION = 269f;
 
 	[Header("For Store Access")]
 	RectTransform horizontalContent;

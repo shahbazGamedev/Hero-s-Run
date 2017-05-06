@@ -10,9 +10,10 @@ public class StoreEntryForCoins : MonoBehaviour {
 	[Tooltip("For example, the number of coins you get with your purchase.")]
 	[SerializeField]  Text quantityText;
 	[SerializeField]  int quantity;
-	[SerializeField] Button buyWithGemsButton;
 	[SerializeField] Text buyWithGemsButtonLabel;
 	[SerializeField] int priceInGems;
+
+	[SerializeField] GameObject notEnoughGemsPanel;
 
 	// Use this for initialization
 	void Start ()
@@ -70,6 +71,7 @@ public class StoreEntryForCoins : MonoBehaviour {
 		else
 		{
 			//We can't afford it. Offer to go to shop.
+			notEnoughGemsPanel.SetActive( true );
 		}
 	}
 }
