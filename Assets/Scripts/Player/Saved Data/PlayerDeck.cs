@@ -177,6 +177,8 @@ public class PlayerDeck {
 			{
 				//We are okay to upgrade
 				playerCard.level++;
+				//Upgrading gives XP
+				GameManager.Instance.playerProfile.addToTotalXPEarned( CardManager.Instance.getXPGainedAfterUpgrading( playerCard.level, card.rarity ), true );
 				//Reset the number of cards
 				playerCard.quantity = 0;
 				//Save

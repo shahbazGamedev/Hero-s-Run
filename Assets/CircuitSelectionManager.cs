@@ -9,7 +9,7 @@ public class CircuitSelectionManager : MonoBehaviour {
 	[SerializeField] ScrollRect carouselScrollRect;
 	bool levelLoading = false;
 	public List<CarouselEntry> carouselEntryList = new List<CarouselEntry>(2);
-	[SerializeField] Scrollbar scrollbar;
+	[SerializeField] DotsHandler dotsHandler;
 
 	// Use this for initialization
 	void Start ()
@@ -40,7 +40,7 @@ public class CircuitSelectionManager : MonoBehaviour {
 	public void OnClickShowMatchmaking()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
-		LevelManager.Instance.setCurrentMultiplayerLevel( (int) scrollbar.value );
+		LevelManager.Instance.setCurrentMultiplayerLevel( dotsHandler.activePanel );
 		StartCoroutine( loadScene(GameScenes.Matchmaking) );
 	}
 
