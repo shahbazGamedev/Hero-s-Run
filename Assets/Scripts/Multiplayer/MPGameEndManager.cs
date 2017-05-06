@@ -138,7 +138,7 @@ public class MPGameEndManager : MonoBehaviour {
 			
 		}
 
-		GameManager.Instance.playerProfile.incrementLevel();
+		if( numberOfTimesLeveledUp > 0 ) GameManager.Instance.playerProfile.incrementLevel();
 		GameManager.Instance.playerProfile.xpProgressToNextLevel = GameManager.Instance.playerProfile.totalXPEarned - ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() - 1 );
 		GameManager.Instance.playerProfile.serializePlayerprofile();
 		//Also update the matchmaking screen if the player has leveled up so that the player frame gets updated
