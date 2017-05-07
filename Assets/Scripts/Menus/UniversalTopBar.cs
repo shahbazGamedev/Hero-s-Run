@@ -35,6 +35,7 @@ public class UniversalTopBar : MonoBehaviour {
 	[SerializeField] Button settingsButton;
 
 	[Header("Middle Section")]
+	[SerializeField] Text numberOfTrophiesText;
 	[SerializeField] Image playerIcon;
 	[SerializeField] Text playerNameText;
 	[SerializeField] Image onlineIndicator;
@@ -142,6 +143,7 @@ public class UniversalTopBar : MonoBehaviour {
 	
 	void configureUI()
 	{
+		numberOfTrophiesText.text = GameManager.Instance.playerInventory.getTrophyBalance().ToString("N0");
 		playerLevelText.text = GameManager.Instance.playerProfile.getLevel().ToString();
 		currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.totalXPEarned, ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ) );
 		progressBarSlider.value = GameManager.Instance.playerProfile.totalXPEarned/ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
@@ -170,6 +172,10 @@ public class UniversalTopBar : MonoBehaviour {
 
 			case PlayerInventoryEvent.Coin_Changed:
 				numberOfCoinsText.text = newValue.ToString("N0");			
+			break;
+
+			case PlayerInventoryEvent.Trophy_Balance_Changed:
+				numberOfTrophiesText.text = newValue.ToString("N0");
 			break;
 		}
 	}

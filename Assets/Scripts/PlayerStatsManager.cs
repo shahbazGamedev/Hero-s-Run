@@ -3,15 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public enum PlayerInventoryEvent {
-	Key_Changed = 0,
-	Life_Changed = 1,
-	Coin_Changed = 2,
-	Coin_Doubler_Changed = 3,
-	Score_Changed = 4,
-	Key_Found_In_Episode_Changed = 5,
-	Gem_Balance_Changed = 6
-}
 
 public class PlayerStatsManager {
 	
