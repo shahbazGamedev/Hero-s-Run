@@ -46,7 +46,7 @@ public class CardDetailPopup : MonoBehaviour {
 		Color rarityColor;
 		ColorUtility.TryParseHtmlString (CardManager.Instance.getCardColorHexValue(cd.rarity), out rarityColor);
 		rarityIcon.color = rarityColor;
-		rarityText.text = cd.rarity.ToString();
+		rarityText.text = LocalizationManager.Instance.getText( "CARD_RARITY_" + cd.rarity.ToString() );
 		//Configure card properties
 		configureCardProperties( pcd, cd );
 		//Upgrade button

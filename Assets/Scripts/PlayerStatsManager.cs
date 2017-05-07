@@ -321,19 +321,6 @@ public class PlayerStatsManager {
 		return currentCoins;
 	}
 	
-	public void deductCoins( int coinAmount )
-	{
-		if( currentCoins >= coinAmount )
-		{
-			currentCoins = currentCoins - coinAmount ;
-			if(playerInventoryChanged != null) playerInventoryChanged(PlayerInventoryEvent.Coin_Changed, currentCoins );
-		}
-		else
-		{
-			Debug.LogWarning("PlayerStatsManager-the coin amount you want to deduct " + coinAmount + " is bigger than your current balance " + currentCoins + "." );
-		}
-	}
-
 	public int getLifetimeCoins()
 	{
 		return lifetimeCoins;

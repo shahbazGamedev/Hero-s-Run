@@ -39,7 +39,7 @@ public class CardNotEnoughCurrencyPopup : MonoBehaviour {
 		if( gemsNeeded <= GameManager.Instance.playerInventory.getGemBalance() )
 		{
 			//Yes, he does
-			PlayerStatsManager.Instance.deductCoins( coinsAvailable );
+			GameManager.Instance.playerInventory.deductCoins( coinsAvailable );
 			GameManager.Instance.playerInventory.deductGems( gemsNeeded );
 			GameManager.Instance.playerDeck.upgradeCardByOneLevel( card );
 			//TO DO
@@ -55,14 +55,14 @@ public class CardNotEnoughCurrencyPopup : MonoBehaviour {
 		else
 		{
 			//No, he doesn't
-			configureForNotEnoughGems( go, card, coinsAvailable, gemsNeeded );
+			configureForNotEnoughGems();
 		}
 	}
 
-	void configureForNotEnoughGems( GameObject go, CardName card, int coinsAvailable, int gemsNeeded )
+	void configureForNotEnoughGems()
 	{
 		titleText.text = "Not Enough Gems!";
-		descriptionText.text = "You don't have enough gems. You can get some at the shop.";
+		descriptionText.text = "You don't have enough gems. No worries. You can get some at the shop.";
 		convertButton.gameObject.SetActive( false );
 		goToShopButton.gameObject.SetActive( true );
 	}
