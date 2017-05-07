@@ -4,21 +4,27 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// Card collection manager.
 /// The execution time has been delayed by 200 msec to give time to Card Manager to initialize. See Script Execution Order Settings.
 /// </summary>
-class CardCollectionManager : MonoBehaviour {
+class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 
 	[Header("Battle Deck")]
 	[SerializeField] Transform battleDeckCardHolder;
-	[Tooltip("TBC.")]
 	[SerializeField] GameObject cardPrefab;
 	[SerializeField] Text battleDeckTitle;
 	[SerializeField] Text averageManaCost;
-	[Header("Texts")]
-	[SerializeField] GameObject cardDetailPopup;
+	[Header("Replace Card")]
+	[SerializeField] GameObject replaceCardArea;
+	[SerializeField] RectTransform cardVerticalContent;
+	const float CARD_REPLACEMENT_POSITION = 280f;
+	[SerializeField] GameObject cardToAddToBattleDeck;
+	CardName cardToAddToBattleDeckName;
+	[SerializeField] ScrollRect cardCollectionScollRect;
+	bool cardReplacementInProgress = false;
 	[Header("Card Collection")]
 	[SerializeField] Text cardCollectionTitle;
 	[SerializeField] Transform cardCollectionHolder;
@@ -29,8 +35,8 @@ class CardCollectionManager : MonoBehaviour {
 	[SerializeField] Text cardsToBeFoundTitle;
 	[SerializeField] Transform cardsToBeFoundHolder;
 	[SerializeField] GameObject cardToBeFoundPrefab;
-	bool levelLoading = false;
-	
+	[Header("Card Details Popup")]
+	[SerializeField] GameObject cardDetailPopup;
 
 	// Use this for initialization
 	void Start ()
@@ -66,8 +72,18 @@ class CardCollectionManager : MonoBehaviour {
 
 	public void OnClickBattleCard( GameObject go, int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
-		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( go, pcd, cd );
-		cardDetailPopup.SetActive( true );
+		if( cardReplacementInProgress )
+		{
+			//The player wants to replace the card
+			print("player is replacing " + cd.name + " by " + cardToAddToBattleDeckName );
+			stopCardReplacement();
+		}
+		else
+		{
+			//Simply show the card details popup
+			cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( go, pcd, cd );
+			cardDetailPopup.SetActive( true );
+		}
 	}
 	#endregion
 
@@ -162,23 +178,56 @@ class CardCollectionManager : MonoBehaviour {
 	}
 	#endregion
 
-	public void OnClickOpenMainMenu()
+	#region Adding Card to Battle Deck
+	public void replaceCard( CardName cardToAddToBattleDeckName )
 	{
-		//TO DO SAVING
-		GameManager.Instance.playerProfile.serializePlayerprofile();
-		StartCoroutine( loadScene(GameScenes.MainMenu) );
+		this.cardToAddToBattleDeckName = cardToAddToBattleDeckName;
+		cardReplacementInProgress = true;
+		replaceCardArea.SetActive( true );
+		StartCoroutine( scrollToCardReplacementPosition( 0.28f, CARD_REPLACEMENT_POSITION, showCardToAddToBattleDeck ) );
+	}
+	
+	IEnumerator scrollToCardReplacementPosition( float duration, float verticalPosition, System.Action onFinish )
+	{
+		float elapsedTime = 0;
+		Vector2 startVerticalPosition = cardVerticalContent.anchoredPosition;
+		Vector2 endVerticalPosition = new Vector2( cardVerticalContent.anchoredPosition.x, verticalPosition );
+
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			cardVerticalContent.anchoredPosition = Vector2.Lerp( startVerticalPosition, endVerticalPosition, elapsedTime/duration );
+			yield return new WaitForFixedUpdate();  
+			
+		} while ( elapsedTime < duration );
+		cardVerticalContent.anchoredPosition = new Vector2( cardVerticalContent.anchoredPosition.x, verticalPosition );
+		onFinish.Invoke();
 	}
 
-	IEnumerator loadScene(GameScenes value)
+	void showCardToAddToBattleDeck()
 	{
-		if( !levelLoading )
-		{
-			UISoundManager.uiSoundManager.playButtonClick();
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)value );
-		}
+		//Stop vertical scrolling
+		cardCollectionScollRect.enabled = false;
+		PlayerDeck.PlayerCardData pcd = GameManager.Instance.playerDeck.getCardByName( cardToAddToBattleDeckName );
+		CardManager.CardData cd = CardManager.Instance.getCardByName( cardToAddToBattleDeckName );
+		cardToAddToBattleDeck.GetComponent<CardUIDetails>().configureCard( pcd, cd );
+		cardToAddToBattleDeck.SetActive( true );
 	}
+
+    public void OnPointerDown(PointerEventData data)
+    {
+		//If we get a pointer down event, it means the player tapped on something other than a card in the battle deck.
+		//Assume he changed his mind and no longer wants to replace the card.
+		stopCardReplacement();
+    }
+
+	void stopCardReplacement()
+	{
+		cardReplacementInProgress = false;
+		cardCollectionScollRect.enabled = true;
+		replaceCardArea.SetActive( false );
+		cardToAddToBattleDeck.SetActive( false );	
+	}
+	#endregion
 
 }

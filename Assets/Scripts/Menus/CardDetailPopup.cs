@@ -2,12 +2,15 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Collections.Generic;
 
 public class CardDetailPopup : MonoBehaviour {
 	
+	[SerializeField] CardCollectionManager cardCollectionManager;
 	[SerializeField] ScrollRect horizontalScrollview;
 	[SerializeField] Text topPanelText;
 	[SerializeField] GameObject card;
+	CardName cardDisplayed;
 	[Header("Rarity")]
 	[SerializeField] Image rarityIcon;
 	[SerializeField] Text rarityText;
@@ -25,6 +28,9 @@ public class CardDetailPopup : MonoBehaviour {
 	[SerializeField] Text upgradeButtonText;
 	[SerializeField] Text upgradeCostText;
 	[SerializeField] Image coinIcon; //The coin icon is hidden when the card is Maxed Out
+	[Header("Use Button")]
+	[SerializeField] Button useButton;
+	[SerializeField] Text useButtonText;
 	[Header("Not Enough Currency Popup")]
 	[SerializeField] GameObject notEnoughCurrencyPopup;
 
@@ -32,6 +38,9 @@ public class CardDetailPopup : MonoBehaviour {
 	{
 		//Disable scrolling while popup is displayed
 		horizontalScrollview.enabled = false;
+
+		//Save the name of the card
+		cardDisplayed = cd.name;
 
 		//Title
 		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + pcd.name.ToString().ToUpper() );
@@ -50,6 +59,9 @@ public class CardDetailPopup : MonoBehaviour {
 		configureCardProperties( pcd, cd );
 		//Upgrade button
 		configureUpgradeButton( go, pcd, cd );
+		//The Use button is only shown if the card is not in the battle deck
+		List<CardManager.CardData> cardCollectionList = GameManager.Instance.playerDeck.getCardDeck( CardSortMode.BY_MANA_COST );
+		useButton.gameObject.SetActive( cardCollectionList.Exists(cardData => cardData.name == cardDisplayed ) );
 	}
 
 	void configureCardProperties( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
@@ -182,6 +194,12 @@ public class CardDetailPopup : MonoBehaviour {
 			Debug.Log("coinsMissing: " + coinsMissing + " gemsNeeded " + gemsNeeded );
 			notEnoughCurrencyPopup.GetComponent<CardNotEnoughCurrencyPopup>().configureForNotEnoughCoins( go, card, coinsAvailable, gemsNeeded );
 		}
+	}
+
+	public void OnClickUse()
+	{
+		gameObject.SetActive( false );
+		cardCollectionManager.replaceCard( cardDisplayed );
 	}
 
 	public void OnClickHide()
