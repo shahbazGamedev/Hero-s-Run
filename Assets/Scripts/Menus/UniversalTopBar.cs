@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class UniversalTopBar : MonoBehaviour {
 
 	public static UniversalTopBar Instance;
-	const float COIN_STORE_VERTICAL_POSITION = 0;
+	const float COIN_STORE_VERTICAL_POSITION = 1300f;
 	const float GEM_STORE_VERTICAL_POSITION = 269f;
 
 	[Header("For Store Access")]

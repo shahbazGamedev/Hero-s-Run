@@ -13,7 +13,7 @@ public class StoreEntryForCoins : MonoBehaviour {
 	[SerializeField] Text buyWithGemsButtonLabel;
 	[SerializeField] int priceInGems;
 
-	[SerializeField] GameObject notEnoughGemsPanel;
+	[SerializeField] StoreNotEnoughGemsPopup storeNotEnoughGemsPopup;
 
 	// Use this for initialization
 	void Start ()
@@ -71,7 +71,7 @@ public class StoreEntryForCoins : MonoBehaviour {
 		else
 		{
 			//We can't afford it. Offer to go to shop.
-			notEnoughGemsPanel.SetActive( true );
+			storeNotEnoughGemsPopup.Show();
 		}
 	}
 }
