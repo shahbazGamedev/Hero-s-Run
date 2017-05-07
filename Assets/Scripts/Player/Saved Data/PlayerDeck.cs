@@ -147,6 +147,20 @@ public class PlayerDeck {
 		}
 	}
 
+	public void changeInBattleDeckStatus(  CardName name, bool inBattleDeck )
+	{
+		//Make sure the specified card exists
+		if( doesCardExist( name ) )
+		{
+			PlayerCardData pcd = playerCardDataList.Find(playerCardData => playerCardData.name == name);
+			pcd.inBattleDeck = inBattleDeck;
+		}
+		else
+		{
+			Debug.LogError("PlayerDeck-changeInBattleDeckStatus: The card you are trying to modify is not in the player's deck: " + name );
+		}
+	}
+
 	public bool doesCardExist( CardName name )
 	{
 		return playerCardDataList.Exists(cardData => cardData.name == name );

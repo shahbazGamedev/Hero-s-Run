@@ -25,6 +25,7 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 	CardName cardToAddToBattleDeckName;
 	[SerializeField] ScrollRect cardCollectionScollRect;
 	bool cardReplacementInProgress = false;
+	GameObject cardInCollection;
 	[Header("Card Collection")]
 	[SerializeField] Text cardCollectionTitle;
 	[SerializeField] Transform cardCollectionHolder;
@@ -54,28 +55,48 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 		List<PlayerDeck.PlayerCardData> battleDeckList = GameManager.Instance.playerDeck.getBattleDeck();
 		for( int i = 0; i < battleDeckList.Count; i++ )
 		{
-			createBattleDeckCard( i, battleDeckList[i] );
+			createBattleDeckCard( battleDeckList[i] );
 		}
 		averageManaCost.text = string.Format("Average Mana Cost: {0}", GameManager.Instance.playerDeck.getAverageManaCost().ToString("N1") );
 	}
 
-	void createBattleDeckCard( int index, PlayerDeck.PlayerCardData pcd )
+	void createBattleDeckCard( PlayerDeck.PlayerCardData pcd )
 	{
 		GameObject go = (GameObject)Instantiate(cardPrefab);
 		CardManager.CardData cd = CardManager.Instance.getCardByName( pcd.name );
 		go.transform.SetParent(battleDeckCardHolder,false);
 		Button cardButton = go.GetComponent<Button>();
 		cardButton.onClick.RemoveAllListeners();
-		cardButton.onClick.AddListener(() => OnClickBattleCard( go, index, pcd, cd ));
+		cardButton.onClick.AddListener(() => OnClickBattleCard( go, pcd, cd ));
 		go.GetComponent<CardUIDetails>().configureCard( pcd, cd );
 	}
 
-	public void OnClickBattleCard( GameObject go, int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
+	public void OnClickBattleCard( GameObject go, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
 		if( cardReplacementInProgress )
 		{
 			//The player wants to replace the card
 			print("player is replacing " + cd.name + " by " + cardToAddToBattleDeckName );
+			//1) mark card added as being in battle deck
+			GameManager.Instance.playerDeck.changeInBattleDeckStatus( cardToAddToBattleDeckName, true );
+			//2) remove card replaced from being in battle deck
+			GameManager.Instance.playerDeck.changeInBattleDeckStatus( cd.name, false );
+			//3) In the battle deck section, update the UI with the card details
+			PlayerDeck.PlayerCardData cardAddedPlayer = GameManager.Instance.playerDeck.getCardByName( cardToAddToBattleDeckName );
+			CardManager.CardData cardAdded = CardManager.Instance.getCardByName( cardToAddToBattleDeckName );
+			Button cardAddedButton = go.GetComponent<Button>();
+			cardAddedButton.onClick.RemoveAllListeners();
+			cardAddedButton.onClick.AddListener(() => OnClickBattleCard( go, cardAddedPlayer, cardAdded ));
+			go.GetComponent<CardUIDetails>().configureCard( cardAddedPlayer, cardAdded );
+			//4) In the card collection section, update the UI with the card details
+			PlayerDeck.PlayerCardData cardReplacedPlayer = GameManager.Instance.playerDeck.getCardByName( cd.name );
+			CardManager.CardData cardReplaced = CardManager.Instance.getCardByName( cd.name );
+			Button cardReplacedButton = cardInCollection.GetComponent<Button>();
+			cardReplacedButton.onClick.RemoveAllListeners();
+			cardReplacedButton.onClick.AddListener(() => OnClickCollectionCard( cardInCollection, cardReplacedPlayer, cardReplaced ));
+			cardInCollection.GetComponent<CardUIDetails>().configureCard( cardReplacedPlayer, cardReplaced );
+			//5) save card collection
+			GameManager.Instance.playerDeck.serializePlayerDeck( true );
 			stopCardReplacement();
 		}
 		else
@@ -97,22 +118,22 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 		List<CardManager.CardData> cardDeckList = GameManager.Instance.playerDeck.getCardDeck( cardSortMode );
 		for( int i = 0; i < cardDeckList.Count; i++ )
 		{
-			createCollectionCard( i, cardDeckList[i] );
+			createCollectionCard( cardDeckList[i] );
 		}
 	}
 
-	void createCollectionCard( int index, CardManager.CardData cd )
+	void createCollectionCard( CardManager.CardData cd )
 	{
 		GameObject go = (GameObject)Instantiate(cardPrefab);
 		PlayerDeck.PlayerCardData pcd = GameManager.Instance.playerDeck.getCardByName( cd.name );
 		go.transform.SetParent(cardCollectionHolder,false);
 		Button cardButton = go.GetComponent<Button>();
 		cardButton.onClick.RemoveAllListeners();
-		cardButton.onClick.AddListener(() => OnClickCollectionCard( go, index, pcd, cd ));
+		cardButton.onClick.AddListener(() => OnClickCollectionCard( go, pcd, cd ));
 		go.GetComponent<CardUIDetails>().configureCard( pcd, cd );
 	}
 
-	public void OnClickCollectionCard( GameObject go, int index, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
+	public void OnClickCollectionCard( GameObject go, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
 		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( go, pcd, cd );
 		cardDetailPopup.SetActive( true );
@@ -152,26 +173,24 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 	{
 		cardsToBeFoundTitle.text = LocalizationManager.Instance.getText("CARD_TO_BE_FOUND_TITLE");
 		var cardsNotFoundList = CardManager.Instance.getAllCards().Except( GameManager.Instance.playerDeck.getPlayerCardDeck() );
-		int index = 0;
 		foreach( CardManager.CardData cardData in cardsNotFoundList )
 		{
-			createCardToBeFound( index, cardData );
-			index++;
+			createCardToBeFound( cardData );
 		}
 	}
 
-	void createCardToBeFound( int index, CardManager.CardData cd )
+	void createCardToBeFound( CardManager.CardData cd )
 	{
 		GameObject go = (GameObject)Instantiate(cardToBeFoundPrefab);
 		go.transform.SetParent(cardsToBeFoundHolder,false);
 		Button cardButton = go.GetComponent<Button>();
-		cardButton.onClick.RemoveListener(() => OnClickCardToBeFound(index, cd));
-		cardButton.onClick.AddListener(() => OnClickCardToBeFound(index, cd));
+		cardButton.onClick.RemoveListener(() => OnClickCardToBeFound(cd));
+		cardButton.onClick.AddListener(() => OnClickCardToBeFound(cd));
 		Image cardImage = cardButton.GetComponentInChildren<Image>();
 		cardImage.sprite = cd.icon;
 	}
 
-	public void OnClickCardToBeFound( int index, CardManager.CardData cd )
+	public void OnClickCardToBeFound( CardManager.CardData cd )
 	{
 		//Not implemented
 		Debug.Log("OnClickCardToBeFound " + cd.name );
@@ -179,41 +198,29 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 	#endregion
 
 	#region Adding Card to Battle Deck
-	public void replaceCard( CardName cardToAddToBattleDeckName )
+	public void replaceCard( GameObject cardInCollection, CardName cardToAddToBattleDeckName )
 	{
+		StartCoroutine( cardReplace( cardInCollection, cardToAddToBattleDeckName ) );
+	}
+
+	IEnumerator cardReplace( GameObject cardInCollection, CardName cardToAddToBattleDeckName )
+	{
+		this.cardInCollection = cardInCollection;
 		this.cardToAddToBattleDeckName = cardToAddToBattleDeckName;
 		cardReplacementInProgress = true;
 		replaceCardArea.SetActive( true );
-		StartCoroutine( scrollToCardReplacementPosition( 0.28f, CARD_REPLACEMENT_POSITION, showCardToAddToBattleDeck ) );
-	}
-	
-	IEnumerator scrollToCardReplacementPosition( float duration, float verticalPosition, System.Action onFinish )
-	{
-		float elapsedTime = 0;
-		Vector2 startVerticalPosition = cardVerticalContent.anchoredPosition;
-		Vector2 endVerticalPosition = new Vector2( cardVerticalContent.anchoredPosition.x, verticalPosition );
-
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			cardVerticalContent.anchoredPosition = Vector2.Lerp( startVerticalPosition, endVerticalPosition, elapsedTime/duration );
-			yield return new WaitForFixedUpdate();  
-			
-		} while ( elapsedTime < duration );
-		cardVerticalContent.anchoredPosition = new Vector2( cardVerticalContent.anchoredPosition.x, verticalPosition );
-		onFinish.Invoke();
-	}
-
-	void showCardToAddToBattleDeck()
-	{
-		//Stop vertical scrolling
-		cardCollectionScollRect.enabled = false;
+		cardVerticalContent.anchoredPosition = new Vector2( cardVerticalContent.anchoredPosition.x, CARD_REPLACEMENT_POSITION );
 		PlayerDeck.PlayerCardData pcd = GameManager.Instance.playerDeck.getCardByName( cardToAddToBattleDeckName );
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardToAddToBattleDeckName );
 		cardToAddToBattleDeck.GetComponent<CardUIDetails>().configureCard( pcd, cd );
 		cardToAddToBattleDeck.SetActive( true );
+		//If we don't wait for the end of frame to disable the scrolling, the vertical layout will not expand to show
+		//the replace card area.
+		yield return new WaitForEndOfFrame();  
+		//Stop vertical scrolling
+		cardCollectionScollRect.enabled = false;
 	}
-
+	
     public void OnPointerDown(PointerEventData data)
     {
 		//If we get a pointer down event, it means the player tapped on something other than a card in the battle deck.

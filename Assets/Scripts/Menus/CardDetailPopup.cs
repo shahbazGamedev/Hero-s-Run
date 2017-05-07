@@ -10,7 +10,6 @@ public class CardDetailPopup : MonoBehaviour {
 	[SerializeField] ScrollRect horizontalScrollview;
 	[SerializeField] Text topPanelText;
 	[SerializeField] GameObject card;
-	CardName cardDisplayed;
 	[Header("Rarity")]
 	[SerializeField] Image rarityIcon;
 	[SerializeField] Text rarityText;
@@ -39,9 +38,6 @@ public class CardDetailPopup : MonoBehaviour {
 		//Disable scrolling while popup is displayed
 		horizontalScrollview.enabled = false;
 
-		//Save the name of the card
-		cardDisplayed = cd.name;
-
 		//Title
 		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + pcd.name.ToString().ToUpper() );
 		topPanelText.text = string.Format(LocalizationManager.Instance.getText( "CARD_LEVEL_TITLE" ), pcd.level, localizedCardName );
@@ -61,7 +57,14 @@ public class CardDetailPopup : MonoBehaviour {
 		configureUpgradeButton( go, pcd, cd );
 		//The Use button is only shown if the card is not in the battle deck
 		List<CardManager.CardData> cardCollectionList = GameManager.Instance.playerDeck.getCardDeck( CardSortMode.BY_MANA_COST );
-		useButton.gameObject.SetActive( cardCollectionList.Exists(cardData => cardData.name == cardDisplayed ) );
+		bool isMemberOfCardCollection = cardCollectionList.Exists(cardData => cardData.name == cd.name );
+		useButton.gameObject.SetActive( isMemberOfCardCollection  );
+		if( isMemberOfCardCollection )
+		{
+			useButton.onClick.RemoveAllListeners();
+			useButton.onClick.AddListener(() => OnClickUse( go, cd.name ));
+		}
+
 	}
 
 	void configureCardProperties( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
@@ -181,7 +184,6 @@ public class CardDetailPopup : MonoBehaviour {
 			configureCard( go, GameManager.Instance.playerDeck.getCardByName( card ), CardManager.Instance.getCardByName( card ) );
 			//Update the Card Collection entry as well
 			go.GetComponent<CardUIDetails>().configureCard( GameManager.Instance.playerDeck.getCardByName( card ), CardManager.Instance.getCardByName( card ) );
-			Debug.Log("Upgrading card " + name );
 		}
 		else
 		{
@@ -191,15 +193,14 @@ public class CardDetailPopup : MonoBehaviour {
 			int coinsAvailable = GameManager.Instance.playerInventory.getCoinBalance();
 			int coinsMissing = upgradeCost - coinsAvailable;
 			int gemsNeeded = (int) Math.Ceiling( coinsMissing/StoreManager.GEM_TO_COINS_RATIO );
-			Debug.Log("coinsMissing: " + coinsMissing + " gemsNeeded " + gemsNeeded );
 			notEnoughCurrencyPopup.GetComponent<CardNotEnoughCurrencyPopup>().configureForNotEnoughCoins( go, card, coinsAvailable, gemsNeeded );
 		}
 	}
 
-	public void OnClickUse()
+	public void OnClickUse( GameObject go, CardName card )
 	{
 		gameObject.SetActive( false );
-		cardCollectionManager.replaceCard( cardDisplayed );
+		cardCollectionManager.replaceCard( go, card );
 	}
 
 	public void OnClickHide()
