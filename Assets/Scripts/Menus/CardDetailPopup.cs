@@ -5,7 +5,6 @@ using System;
 
 public class CardDetailPopup : MonoBehaviour {
 	
-	[Tooltip("TBC.")]
 	[SerializeField] ScrollRect horizontalScrollview;
 	[SerializeField] Text topPanelText;
 	[SerializeField] GameObject card;
@@ -99,7 +98,7 @@ public class CardDetailPopup : MonoBehaviour {
 	{
 		xpPanel.SetActive( false );
 		coinIcon.gameObject.SetActive( true );
-		upgradeButtonText.text = "Upgrade";
+		upgradeButtonText.text = LocalizationManager.Instance.getText("CARD_UPGRADE");
 		int numberOfCardsForUpgrade;
 		int upgradeCost;
 		if( pcd.level + 1 < CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ) )
