@@ -16,7 +16,6 @@ public class TrapFlame : MonoBehaviour {
 	// Use this for initialization
 	void Awake ()
 	{
-		GameObject player = GameObject.FindGameObjectWithTag("Player");
 		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
 		powerUpManager = powerUpManagerObject.GetComponent<PowerUpManager>();
 

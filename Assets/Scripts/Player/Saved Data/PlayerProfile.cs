@@ -77,11 +77,6 @@ public class PlayerProfile {
 		return highestTrackUnlocked;
 	}
 
-	public void incrementHighestTrackUnlocked()
-	{
-		setHighestTrackUnlocked( highestTrackUnlocked + 1 );
-	}
-
 	void setHighestTrackUnlocked( int value )
 	{
 		if( value > 0 && value <= ProgressionManager.MAX_NUMBER_OF_TRACKS )
@@ -119,6 +114,10 @@ public class PlayerProfile {
 			if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Track_Changed, currentTrack, value );
 			currentTrack = value;
 			Debug.Log("PlayerProfile-setting current track to: " + value );
+			if( currentTrack > highestTrackUnlocked )
+			{
+				setHighestTrackUnlocked( currentTrack );
+			}
 		}
 		else
 		{

@@ -17,7 +17,6 @@ public class BotCardHandler : Photon.PunBehaviour {
 	Queue<CardManager.CardData> cardQueue = new Queue<CardManager.CardData>();
 	float timeOfLastAnalysis = 0;
 	PlayerControl playerControl;
-	PlayerVoiceOvers playerVoiceOvers;
 	bool allowCardPlaying = false;
 
 	// Use this for initialization
@@ -37,7 +36,6 @@ public class BotCardHandler : Photon.PunBehaviour {
 
 		//Get and store components
 		playerControl = GetComponent<PlayerControl>();
-		playerVoiceOvers = GetComponent<PlayerVoiceOvers>();
 
 		initializeCards ();
 

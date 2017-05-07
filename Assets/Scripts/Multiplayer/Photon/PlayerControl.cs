@@ -25,8 +25,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	int JumpTrigger = Animator.StringToHash("Jump");
 	int Slide_DownTrigger = Animator.StringToHash("Slide Down");
 	int Slide_UpTrigger = Animator.StringToHash("Slide Up");
-	int VictoryTrigger = Animator.StringToHash("Victory");
-	int DeathRiverTrigger = Animator.StringToHash("DeathRiver");
 	int DeathWallTrigger = Animator.StringToHash("DeathWall");
 	int StumbleTrigger = Animator.StringToHash("Stumble");
 	int FallForwardTrigger = Animator.StringToHash("Fall_Forward");
