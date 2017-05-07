@@ -36,7 +36,7 @@ public class CardDetailPopup : MonoBehaviour {
 
 		//Title
 		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + pcd.name.ToString().ToUpper() );
-		topPanelText.text = string.Format("Level {0} {1}", pcd.level, localizedCardName );
+		topPanelText.text = string.Format(LocalizationManager.Instance.getText( "CARD_LEVEL_TITLE" ), pcd.level, localizedCardName );
 		//Card
 		card.GetComponent<CardUIDetails>().configureCard( pcd, cd );
 		//Description
