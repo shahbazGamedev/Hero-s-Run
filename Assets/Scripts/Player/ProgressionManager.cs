@@ -25,6 +25,7 @@ public class ProgressionManager : MonoBehaviour {
 
 	[Header("General")]
 	public static ProgressionManager Instance;
+	public const int MAX_NUMBER_OF_TRACKS = 10;
 	public const int MAX_LEVEL = 100;
 	public const int LEVEL_BANDS = 10;
 	public const int MAX_XP_IN_ONE_RACE = 2450; //The maximum amount of XP a player can earn in a single race. Used for security checks.
