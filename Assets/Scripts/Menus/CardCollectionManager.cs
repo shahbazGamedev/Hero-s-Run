@@ -24,6 +24,7 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 	[SerializeField] GameObject cardToAddToBattleDeck;
 	CardName cardToAddToBattleDeckName;
 	[SerializeField] ScrollRect cardCollectionScollRect;
+	[SerializeField] ScrollRect horizontalScrollview;
 	bool cardReplacementInProgress = false;
 	GameObject cardInCollection;
 	[Header("Card Collection")]
@@ -234,6 +235,8 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 		cardCollectionScollRect.enabled = true;
 		replaceCardArea.SetActive( false );
 		cardToAddToBattleDeck.SetActive( false );	
+		//Re-enable scrolling
+		horizontalScrollview.enabled = true;
 	}
 	#endregion
 

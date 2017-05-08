@@ -291,6 +291,7 @@ public class UniversalTopBar : MonoBehaviour {
 		} while ( elapsedTime < duration );
 		horizontalContent.anchoredPosition = new Vector2( 0, horizontalContent.anchoredPosition.y );
 		storeVerticalContent.anchoredPosition = new Vector2( storeVerticalContent.anchoredPosition.x, verticalPosition );
+		configurePanels( true, true, true );
 	}
 
 	public void OnClose()
