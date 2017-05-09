@@ -32,6 +32,8 @@ public class CardDetailPopup : MonoBehaviour {
 	[SerializeField] Text useButtonText;
 	[Header("Not Enough Currency Popup")]
 	[SerializeField] GameObject notEnoughCurrencyPopup;
+	[Header("Card UI Upgrade")]
+	[SerializeField]  CardUIUpgrade cardUIUpgrade;
 
 	public void configureCard( GameObject go, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
@@ -178,8 +180,8 @@ public class CardDetailPopup : MonoBehaviour {
 			//The player has enough coins and does not need gems.
 			GameManager.Instance.playerInventory.deductCoins( upgradeCost );
 			GameManager.Instance.playerDeck.upgradeCardByOneLevel( card );
-			//TO DO
 			//Display upgrade ceremony panel
+			cardUIUpgrade.configureUpgradePanel( GameManager.Instance.playerDeck.getCardByName( card ), CardManager.Instance.getCardByName( card ) );
 			//Update the Card Detail popup since some values have changed
 			configureCard( go, GameManager.Instance.playerDeck.getCardByName( card ), CardManager.Instance.getCardByName( card ) );
 			//Update the Card Collection entry as well
