@@ -18,7 +18,7 @@ public class PlayerDeck {
 	{
 		//Cards in battle deck
 		//1
-		addCard( CardName.IceWall, 18, 1000, true );
+		addCard( CardName.IceWall, 11, 1000, true );
 
 		//2
 		addCard( CardName.Sprint, 1, 1, true );
