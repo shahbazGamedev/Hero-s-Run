@@ -91,7 +91,7 @@ public class UniversalTopBar : MonoBehaviour {
 				horizontalContent = GameObject.FindGameObjectWithTag("Horizontal Content").GetComponent<RectTransform>();
 				//storeVerticalContent holds the store
 				storeVerticalContent = GameObject.FindGameObjectWithTag("Store Vertical Content").GetComponent<RectTransform>();
-				configurePanels( true, true, true );
+				configurePanels( true, true );
 				onlyShowCloseButton( false );
 			break;
 
@@ -291,7 +291,6 @@ public class UniversalTopBar : MonoBehaviour {
 		} while ( elapsedTime < duration );
 		horizontalContent.anchoredPosition = new Vector2( 0, horizontalContent.anchoredPosition.y );
 		storeVerticalContent.anchoredPosition = new Vector2( storeVerticalContent.anchoredPosition.x, verticalPosition );
-		configurePanels( true, true, true );
 	}
 
 	public void OnClose()

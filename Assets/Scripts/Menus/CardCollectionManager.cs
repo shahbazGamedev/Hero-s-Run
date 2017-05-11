@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using UnityEngine.EventSystems;
+using System;
 
 /// <summary>
 /// Card collection manager.
@@ -12,12 +13,12 @@ using UnityEngine.EventSystems;
 /// </summary>
 class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 
-	[Header("Battle Deck")]
+	[Header("Battle Deck Area")]
 	[SerializeField] Transform battleDeckCardHolder;
 	[SerializeField] GameObject cardPrefab;
 	[SerializeField] Text battleDeckTitle;
 	[SerializeField] Text averageManaCost;
-	[Header("Replace Card")]
+	[Header("Replace Card Area")]
 	[SerializeField] GameObject replaceCardArea;
 	[SerializeField] RectTransform cardVerticalContent;
 	const float CARD_REPLACEMENT_POSITION = 280f;
@@ -27,13 +28,15 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 	[SerializeField] ScrollRect horizontalScrollview;
 	bool cardReplacementInProgress = false;
 	GameObject cardInCollection;
-	[Header("Card Collection")]
+	[Header("Card Collection Area")]
+	[SerializeField] LayoutElement cardCollectionLayoutElement;
 	[SerializeField] Text cardCollectionTitle;
 	[SerializeField] Transform cardCollectionHolder;
 	[SerializeField] Text cardFoundText;
 	[SerializeField] Text sortCardsText;
 	CardSortMode cardSortMode = CardSortMode.BY_RARITY;
-	[Header("Cards to be Found")]
+	[Header("Cards to be Found Area")]
+	[SerializeField] LayoutElement cardsToBeFoundLayoutElement;
 	[SerializeField] Text cardsToBeFoundTitle;
 	[SerializeField] Transform cardsToBeFoundHolder;
 	[SerializeField] GameObject cardToBeFoundPrefab;
@@ -134,6 +137,13 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 		{
 			createCollectionCard( cardDeckList[i] );
 		}
+
+		//Now adjust the height of the area based on the number of card rows. We have 4 cards per row. We also have a title.
+		float titleHeight = cardCollectionTitle.transform.parent.GetComponent<RectTransform>().sizeDelta.y;
+		int numberOfRows = (int) Math.Ceiling( (cardDeckList.Count)/4f );
+		float cardCollectionAreaHeight = titleHeight + cardCollectionHolder.GetComponent<GridLayoutGroup>().cellSize.y * numberOfRows;
+		cardCollectionLayoutElement.preferredHeight = cardCollectionAreaHeight;
+		cardCollectionLayoutElement.minHeight = cardCollectionAreaHeight;
 	}
 
 	void createCollectionCard( CardManager.CardData cd )
@@ -196,6 +206,13 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 		{
 			createCardToBeFound( cardData );
 		}
+
+		//Now adjust the height of the area based on the number of card rows. We have 4 cards per row. We also have a title.
+		float titleHeight = cardsToBeFoundTitle.transform.parent.GetComponent<RectTransform>().sizeDelta.y;
+		int numberOfRows = (int) Math.Ceiling( cardsNotFoundList.Count()/4f );
+		float cardsToBeFoundAreaHeight = titleHeight + cardsToBeFoundHolder.GetComponent<GridLayoutGroup>().cellSize.y * numberOfRows;
+		cardsToBeFoundLayoutElement.preferredHeight = cardsToBeFoundAreaHeight;
+		cardsToBeFoundLayoutElement.minHeight = cardsToBeFoundAreaHeight;
 	}
 
 	void createCardToBeFound( CardManager.CardData cd )
@@ -249,12 +266,15 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 
 	void stopCardReplacement()
 	{
-		cardReplacementInProgress = false;
-		cardCollectionScollRect.enabled = true;
-		replaceCardArea.SetActive( false );
-		cardToAddToBattleDeck.SetActive( false );	
-		//Re-enable scrolling
-		horizontalScrollview.enabled = true;
+		if( cardReplacementInProgress )
+		{
+			cardReplacementInProgress = false;
+			cardCollectionScollRect.enabled = true;
+			replaceCardArea.SetActive( false );
+			cardToAddToBattleDeck.SetActive( false );	
+			//Re-enable scrolling
+			horizontalScrollview.enabled = true;
+		}
 	}
 	#endregion
 
