@@ -162,8 +162,8 @@ public class PlayerProfile {
 	{
 		if( value >= 0 && value < ProgressionManager.Instance.getNumberOfPlayerIcons() )
 		{
+			if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Player_Icon_Changed, playerIconId, value );
 			playerIconId = value;
-			if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Player_Icon_Changed, playerIconId );
 		}
 		else
 		{
