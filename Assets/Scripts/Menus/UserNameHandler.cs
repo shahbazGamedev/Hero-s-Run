@@ -39,7 +39,7 @@ public class UserNameHandler : MonoBehaviour {
 		ChatManager.Instance.ChatConnect();
 		gameObject.SetActive( false );
 		mainMenu.SetActive( true );
-		UniversalTopBar.Instance.configurePanels( true, true, true );
+		UniversalTopBar.Instance.configurePanels( true, true );
 	}
 
 }

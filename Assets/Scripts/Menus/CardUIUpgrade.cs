@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class CardUIUpgrade : MonoBehaviour, IPointerDownHandler
 {
 	[Header("General")]
+	[SerializeField] ScrollRect horizontalScrollview;
 	[Tooltip("The card image.")]
 	[SerializeField] Image cardImage;
 	[Tooltip("The card name.")]
@@ -119,9 +120,15 @@ public class CardUIUpgrade : MonoBehaviour, IPointerDownHandler
 		go.GetComponent<CardPropertyUI>().configureProperty( index, cp, pcd, cd );
 	}
 
+	/// <summary>
+	/// Raises the pointer down event. If the player clicks anywhere, it dismisses this popup and its parent.
+	/// </summary>
+	/// <param name="data">Data.</param>
     public void OnPointerDown(PointerEventData data)
     {
 		gameObject.SetActive( false );
 		transform.parent.gameObject.SetActive( false );
+		//Re-enable scrolling since the popups are dismissed.
+		horizontalScrollview.enabled = true;
     }
 }
