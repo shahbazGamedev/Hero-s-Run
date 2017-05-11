@@ -14,6 +14,7 @@ public class MultiplayerProjectile : MonoBehaviour {
 	const int playerLayer = 8;
 	const int deviceLayer = 16;
 	const int destructibleLayer = 17;
+	const int levelDestructibleLayer = 18;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
@@ -60,6 +61,7 @@ public class MultiplayerProjectile : MonoBehaviour {
 			GameObject.Destroy( impactParticleSystem, 5f );
 		}
 		if( GetComponent<MeshRenderer>() != null ) GetComponent<MeshRenderer>().enabled = false;
+		if( collision.transform.GetComponent<FracturedObject>() != null ) collision.transform.GetComponent<FracturedObject>().Explode( collision.contacts[0].point, 500f );
 		
 		destroyValidTarget( collision.transform );
   	}
@@ -98,6 +100,11 @@ public class MultiplayerProjectile : MonoBehaviour {
 	        case destructibleLayer:
 				valid = true;
 				potentialTarget.GetComponent<CardSpawnedObject>().destroySpawnedObjectNow();
+                break;
+
+	        case levelDestructibleLayer:
+				valid = true;
+				GameObject.Destroy( potentialTarget.gameObject );
                 break;
 		}
 		if( valid )

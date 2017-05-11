@@ -31,6 +31,7 @@ public class CardSpawnedObject : MonoBehaviour {
 	protected const int playerLayer = 8;
 	protected const int deviceLayer = 16;
 	protected const int destructibleLayer = 17;
+	protected const int levelDestructibleLayer = 18;
 	int defaultMask;
 
 	protected const float DELAY_BEFORE_DESTROY_EFFECTS = 1.3f;
@@ -46,6 +47,7 @@ public class CardSpawnedObject : MonoBehaviour {
 		defaultMask = 1 << playerLayer;
 		defaultMask |= 1 << deviceLayer;
 		defaultMask |= 1 << destructibleLayer;
+		defaultMask |= 1 << levelDestructibleLayer;
 	}
 
 	protected void setSpawnedObjectState( SpawnedObjectState newState )
@@ -161,6 +163,12 @@ public class CardSpawnedObject : MonoBehaviour {
 				CardSpawnedObject cso = potentialTarget.GetComponent<CardSpawnedObject>();
 				valid = cso.spawnedObjectState == SpawnedObjectState.Functioning;
 				valid = valid && casterName != cso.getCasterName();
+                break;
+
+	        case levelDestructibleLayer:
+				//A destructible object that is part of the level and does not have any special functionality such
+				//as a simple wall or a bridge.
+				valid = true;
                 break;
 		}
 		//if( valid ) Debug.Log("isTargetValid " + potentialTarget.name );
