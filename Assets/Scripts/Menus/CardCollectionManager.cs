@@ -31,7 +31,7 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 	[SerializeField] Text cardCollectionTitle;
 	[SerializeField] Transform cardCollectionHolder;
 	[SerializeField] Text cardFoundText;
-	[SerializeField] Text sortCards;
+	[SerializeField] Text sortCardsText;
 	CardSortMode cardSortMode = CardSortMode.BY_RARITY;
 	[Header("Cards to be Found")]
 	[SerializeField] Text cardsToBeFoundTitle;
@@ -78,26 +78,39 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 		{
 			//The player wants to replace the card
 			print("player is replacing " + cd.name + " by " + cardToAddToBattleDeckName );
-			//1) mark card added as being in battle deck
+
+			//Mark card added as being in battle deck
 			GameManager.Instance.playerDeck.changeInBattleDeckStatus( cardToAddToBattleDeckName, true );
-			//2) remove card replaced from being in battle deck
+
+			//Remove card replaced from being in battle deck
 			GameManager.Instance.playerDeck.changeInBattleDeckStatus( cd.name, false );
-			//3) In the battle deck section, update the UI with the card details
+
+			//Recalculate the average mana cost
+			averageManaCost.text = string.Format("Average Mana Cost: {0}", GameManager.Instance.playerDeck.getAverageManaCost().ToString("N1") );
+
+			//Re-sort the cards in the card collection section
+			sortCards();
+
+			//In the battle deck section, update the UI with the card details
 			PlayerDeck.PlayerCardData cardAddedPlayer = GameManager.Instance.playerDeck.getCardByName( cardToAddToBattleDeckName );
 			CardManager.CardData cardAdded = CardManager.Instance.getCardByName( cardToAddToBattleDeckName );
 			Button cardAddedButton = go.GetComponent<Button>();
 			cardAddedButton.onClick.RemoveAllListeners();
 			cardAddedButton.onClick.AddListener(() => OnClickBattleCard( go, cardAddedPlayer, cardAdded ));
 			go.GetComponent<CardUIDetails>().configureCard( cardAddedPlayer, cardAdded );
-			//4) In the card collection section, update the UI with the card details
+
+			//In the card collection section, update the UI with the card details
 			PlayerDeck.PlayerCardData cardReplacedPlayer = GameManager.Instance.playerDeck.getCardByName( cd.name );
 			CardManager.CardData cardReplaced = CardManager.Instance.getCardByName( cd.name );
 			Button cardReplacedButton = cardInCollection.GetComponent<Button>();
 			cardReplacedButton.onClick.RemoveAllListeners();
 			cardReplacedButton.onClick.AddListener(() => OnClickCollectionCard( cardInCollection, cardReplacedPlayer, cardReplaced ));
 			cardInCollection.GetComponent<CardUIDetails>().configureCard( cardReplacedPlayer, cardReplaced );
-			//5) save card collection
+
+			//Save card collection
 			GameManager.Instance.playerDeck.serializePlayerDeck( true );
+	
+			//Stop the card replacement mode
 			stopCardReplacement();
 		}
 		else
@@ -115,7 +128,7 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 		cardCollectionTitle.text = LocalizationManager.Instance.getText("CARD_COLLECTION_TITLE");
 		string cardFound = LocalizationManager.Instance.getText("CARD_FOUND");
 		cardFoundText.text = string.Format( cardFound, GameManager.Instance.playerDeck.getTotalNumberOfCards().ToString() + "/" + CardManager.Instance.getTotalNumberOfCards().ToString() );
-		sortCards.text = LocalizationManager.Instance.getText("CARD_SORT_" + cardSortMode.ToString() );
+		sortCardsText.text = LocalizationManager.Instance.getText("CARD_SORT_" + cardSortMode.ToString() );
 		List<CardManager.CardData> cardDeckList = GameManager.Instance.playerDeck.getCardDeck( cardSortMode );
 		for( int i = 0; i < cardDeckList.Count; i++ )
 		{
@@ -145,6 +158,11 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 		//Change the sort mode
 		cardSortMode = getNextCardSortMode();
 
+		sortCards();
+	}
+
+	void sortCards()
+	{
 		//Remove previous cards
 		for( int i = cardCollectionHolder.transform.childCount-1; i >= 0; i-- )
 		{
