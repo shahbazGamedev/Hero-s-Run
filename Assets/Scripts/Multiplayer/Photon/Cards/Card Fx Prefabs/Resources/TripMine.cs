@@ -2,6 +2,10 @@
 using UnityEngine.UI;
 using System.Collections;
 
+/// <summary>
+/// Trip mine.
+/// For the OnTriggerEnter method to be called, the BoxCollider component which is used as the trigger must be above the MeshCollider component.
+/// </summary>
 public class TripMine : CardSpawnedObject {
 	
 	[SerializeField] ParticleSystem explosionEffect;
