@@ -9,6 +9,7 @@ public class TripMine : CardSpawnedObject {
 		if( other.gameObject.CompareTag("Player") && other.gameObject.name != casterName )
 		{
 			destroyAllTargetsWithinBlastRadius( 10f, true );
+			GameObject.Destroy( gameObject );
 		}
 	}
 

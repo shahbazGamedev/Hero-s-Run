@@ -253,13 +253,15 @@ public class CardSpawnedObject : MonoBehaviour {
 
 	        case destructibleLayer:
 				valid = true;
-				potentialTarget.GetComponent<CardSpawnedObject>().destroySpawnedObjectNow();
+				if( potentialTarget.GetComponent<FracturedObject>() != null ) potentialTarget.GetComponent<FracturedObject>().Explode( potentialTarget.transform.position, 400f );
+				Destroy( potentialTarget.gameObject );
                 break;
 
 	        case levelDestructibleLayer:
 				valid = true;
-				GameObject.Destroy( potentialTarget.gameObject );
-                break;
+				if( potentialTarget.GetComponent<FracturedObject>() != null ) potentialTarget.GetComponent<FracturedObject>().Explode( potentialTarget.transform.position, 400f );
+				Destroy( potentialTarget.gameObject );
+               break;
 		}
 		if( valid )
 		{
