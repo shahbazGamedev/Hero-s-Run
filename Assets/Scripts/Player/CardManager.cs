@@ -49,7 +49,7 @@ public enum CardName
 	Firewall = 100,
 	Explosion = 101,
 	Shrink = 102,
-	Glyph = 103,
+	Trip_Mine = 103,
 	Sentry = 104,
 	IceWall = 105,
 

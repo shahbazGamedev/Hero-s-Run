@@ -33,7 +33,7 @@ public class PlayerDeck {
 		addCard( CardName.Stasis, 6, 100, true );
 
 		//6
-		addCard( CardName.Lightning, 5, 1, true );
+		addCard( CardName.Trip_Mine, 5, 8, true );
 
 		//7
 		addCard( CardName.Shrink, 3, 1, true );

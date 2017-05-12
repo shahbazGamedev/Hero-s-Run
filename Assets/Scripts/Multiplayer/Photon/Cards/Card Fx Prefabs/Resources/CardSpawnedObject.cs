@@ -32,22 +32,27 @@ public class CardSpawnedObject : MonoBehaviour {
 	protected const int deviceLayer = 16;
 	protected const int destructibleLayer = 17;
 	protected const int levelDestructibleLayer = 18;
-	int defaultMask;
+	int maskWithPlayer;
+	int maskWithoutPlayer;
 
 	protected const float DELAY_BEFORE_DESTROY_EFFECTS = 1.3f;
 
 	// Use this for initialization
 	void Start ()
 	{
-		initialiseMask();
+		initialiseMasks();
 	}
 
-	void initialiseMask()
+	void initialiseMasks()
 	{
-		defaultMask = 1 << playerLayer;
-		defaultMask |= 1 << deviceLayer;
-		defaultMask |= 1 << destructibleLayer;
-		defaultMask |= 1 << levelDestructibleLayer;
+		maskWithPlayer = 1 << playerLayer;
+		maskWithPlayer |= 1 << deviceLayer;
+		maskWithPlayer |= 1 << destructibleLayer;
+		maskWithPlayer |= 1 << levelDestructibleLayer;
+
+		maskWithoutPlayer = 1 << deviceLayer;
+		maskWithoutPlayer |= 1 << destructibleLayer;
+		maskWithoutPlayer |= 1 << levelDestructibleLayer;
 	}
 
 	protected void setSpawnedObjectState( SpawnedObjectState newState )
@@ -77,7 +82,7 @@ public class CardSpawnedObject : MonoBehaviour {
 		RaycastHit hit;
 		int originalLayer = gameObject.layer;
 		gameObject.layer = ignoreRaycastLayer;
-		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + transform.localScale.y, transform.position.z ), Vector3.down, out hit, 10 * transform.localScale.y ))
+		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y, transform.position.z ), Vector3.down, out hit, 15f ))
 		{
 			if(  hit.collider.transform.parent.GetComponent<SegmentInfo>() != null )
 			{
@@ -88,8 +93,7 @@ public class CardSpawnedObject : MonoBehaviour {
 				transform.SetParent( null );
 			}
 			//Position it flush with the ground
-			float objectHalfHeight = transform.localScale.y * 0.5f;
-			transform.position = new Vector3( transform.position.x, hit.point.y + objectHalfHeight + additionalHeight, transform.position.z );
+			transform.position = new Vector3( transform.position.x, hit.point.y + additionalHeight, transform.position.z );
 		}
 		//Now that our raycast is finished, reset the object's layer to its original value.
 		gameObject.layer = originalLayer;
@@ -102,7 +106,7 @@ public class CardSpawnedObject : MonoBehaviour {
 	protected Transform getNearestTargetWithinRange( float range )
 	{
 		Transform nearestTarget;
-		Collider[] hitColliders = Physics.OverlapSphere( transform.position, range, defaultMask );
+		Collider[] hitColliders = Physics.OverlapSphere( transform.position, range, maskWithPlayer );
 		nearestTarget = getNearestValidTarget( hitColliders );
 		return nearestTarget;
 	}
@@ -194,15 +198,92 @@ public class CardSpawnedObject : MonoBehaviour {
 		}
 	}
 
-	protected void destroyAllTargetsWithinBlastRadius( float blastRadius )
+	protected void destroyAllTargetsWithinBlastRadius( float blastRadius, bool includePlayers )
 	{
-		Collider[] hitColliders = Physics.OverlapSphere( transform.position, blastRadius, defaultMask );
+		Collider[] hitColliders;
+		if( includePlayers )
+		{
+			hitColliders = Physics.OverlapSphere( transform.position, blastRadius, maskWithPlayer );
+		}
+		else
+		{
+			hitColliders = Physics.OverlapSphere( transform.position, blastRadius, maskWithoutPlayer );
+		}
+
 		for( int i = 0; i < hitColliders.Length; i++ )
 		{
 			if( isTargetValid( hitColliders[i].transform ) )
 			{
-				destroyTarget( hitColliders[i].transform );
+				destroyValidTarget( hitColliders[i].transform );
 			}
 		}
 	}
+
+	void destroyValidTarget( Transform potentialTarget )
+	{
+		bool valid = false;
+   		switch (potentialTarget.gameObject.layer)
+		{
+			case playerLayer:
+				//The player is immune to projectiles while in the IDLE state.
+				//The player is in the IDLE state after crossing the finish line for example.
+				if( potentialTarget.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle )
+				{
+					valid = true;
+					//The projectile knocked down a player. Send him an RPC.
+					if( getDotProduct( potentialTarget, transform.position ) )
+					{
+						//Explosion is in front of player. He falls backward.
+						potentialTarget.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.Obstacle );
+					}
+					else
+					{
+						//Explosion is behind player. He falls forward.
+						potentialTarget.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.FallForward );
+					}
+				}
+				break;
+	                
+	        case deviceLayer:
+				valid = true;
+				Device dev = potentialTarget.GetComponent<Device>();
+				dev.changeDeviceState(DeviceState.Broken);
+                break;
+
+	        case destructibleLayer:
+				valid = true;
+				potentialTarget.GetComponent<CardSpawnedObject>().destroySpawnedObjectNow();
+                break;
+
+	        case levelDestructibleLayer:
+				valid = true;
+				GameObject.Destroy( potentialTarget.gameObject );
+                break;
+		}
+		if( valid )
+		{
+			 Debug.Log("destroyValidTarget " + potentialTarget.name );
+		}		
+	}
+
+	/// <summary>
+	/// Gets the dot product.
+	/// </summary>
+	/// <returns><c>true</c>, if the explosion is in front of the player, <c>false</c> otherwise.</returns>
+	/// <param name="player">Player.</param>
+	/// <param name="explosionLocation">Explosion location.</param>
+	bool getDotProduct( Transform player, Vector3 explosionLocation )
+	{
+		Vector3 forward = player.TransformDirection(Vector3.forward);
+		Vector3 toOther = explosionLocation - player.position;
+		if (Vector3.Dot(forward, toOther) < 0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
 }

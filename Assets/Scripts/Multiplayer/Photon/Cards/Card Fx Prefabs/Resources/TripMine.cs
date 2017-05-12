@@ -2,13 +2,13 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class Glyph : CardSpawnedObject {
+public class TripMine : CardSpawnedObject {
 	
 	void OnTriggerEnter(Collider other)
 	{
 		if( other.gameObject.CompareTag("Player") && other.gameObject.name != casterName )
 		{
-			other.GetComponent<PlayerControl>().managePlayerDeath ( DeathType.FallForward );
+			destroyAllTargetsWithinBlastRadius( 10f, true );
 		}
 	}
 
@@ -23,8 +23,8 @@ public class Glyph : CardSpawnedObject {
 
 		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
 
-		//Position the glyph flush with the ground and try to center it in the middle of the road if possible.
-		positionSpawnedObject( 0.05f );
+		//Position the trip mine flush with the ground and try to center it in the middle of the road if possible.
+		positionSpawnedObject( 0 );
 	}
 
 }

@@ -87,15 +87,15 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardShrink component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
-			case CardName.Glyph:
-				CardGlyph cardGlyph = GetComponent<CardGlyph>();
-				if( cardGlyph != null )
+			case CardName.Trip_Mine:
+				CardTripMine cardTripMine = GetComponent<CardTripMine>();
+				if( cardTripMine != null )
 				{
-					cardGlyph.activateCard( photonViewId, level );
+					cardTripMine.activateCard( photonViewId, level );
 				}
 				else
 				{
-					Debug.LogError("CardHandler-The CardGlyph component is not attached to the CardHandler in the Level scene.");
+					Debug.LogError("CardHandler-The CardTripMine component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
 			case CardName.Linked_Fate:
@@ -199,11 +199,11 @@ public class CardHandler : MonoBehaviour {
 					return GetComponent<Card>().isAllowed( caster.GetComponent<PhotonView>().viewID );
 				}
 			break;
-			//Glyph is effective whenever there is an opponent behind you and not too far
-			case CardName.Glyph:
+			//Trip Mine is effective whenever there is an opponent behind you and not too far
+			case CardName.Trip_Mine:
 				if( isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
-					return GetComponent<CardGlyph>().isAllowed( caster.GetComponent<PhotonView>().viewID );
+					return GetComponent<CardTripMine>().isAllowed( caster.GetComponent<PhotonView>().viewID );
 				}
 			break;
 			//Lightning is effective whenever your opponent is far ahead of you

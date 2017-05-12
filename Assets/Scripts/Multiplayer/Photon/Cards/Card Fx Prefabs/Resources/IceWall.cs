@@ -22,7 +22,7 @@ public class IceWall : CardSpawnedObject {
 		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
 
 		//Position the ice wall flush with the ground and try to center it in the middle of the road if possible.
-		positionSpawnedObject();
+		positionSpawnedObject( 1.1f );
 
 		StartCoroutine( changeMaterialOnCreate( 1f ) );
 	}

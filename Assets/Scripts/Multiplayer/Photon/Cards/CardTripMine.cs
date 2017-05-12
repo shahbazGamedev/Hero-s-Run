@@ -3,40 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// The Glyph card is a Rare card with 11 levels. The glyph appears a few meters in front of the player on the ground. The duration of the glyph depends on the level of the caster.
-/// The player is immune to its effect. If an opponent passes over the glyph without jumping, he dies instantly.
+/// The Trip Mine card is a Rare card with 11 levels. The mine appears a few meters in front of the player on the ground. The duration of the mine depends on the level of the caster.
+/// The player is immune to its effect. If an opponent passes near without jumping, he triggers an explosion.
 /// </summary>
-public class CardGlyph : Card {
+public class CardTripMine : Card {
 
 	[SerializeField]  string prefabName;
 	Vector3 offset = new Vector3( 0, 0, 10f );
 
 	public void activateCard ( int photonViewId, int level )
 	{
-		if( isAllowed( photonViewId ) ) this.photonView.RPC("cardGlyphMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
+		if( isAllowed( photonViewId ) ) this.photonView.RPC("cardTripMineMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
 	}
 
 	#region Methods only running on master client
 	[PunRPC]
-	void cardGlyphMasterRPC( int level, int photonViewID )
+	void cardTripMineMasterRPC( int level, int photonViewID )
 	{
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
-		//Spawn a glyph on the floor a few meters in front of the player
-		Vector3 glyphPosition = playerTransform.TransformPoint( offset );
-		Quaternion glyphRotation = playerTransform.rotation;
+		//Spawn a mine on the floor a few meters in front of the player
+		Vector3 tripMinePosition = playerTransform.TransformPoint( offset );
+		Quaternion tripMineRotation = playerTransform.rotation;
 
 		object[] data = new object[2];
 
 		//We want the caster to be immune to the spell
 		data[0] = playerTransform.name;
 
-		//We want the glyph to disappear after a while
+		//We want the trip mine to disappear after a while
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
 		data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
 
-		PhotonNetwork.InstantiateSceneObject( prefabName, glyphPosition, glyphRotation, 0, data );
+		PhotonNetwork.InstantiateSceneObject( prefabName, tripMinePosition, tripMineRotation, 0, data );
 	}
 	#endregion
 
@@ -52,7 +52,7 @@ public class CardGlyph : Card {
 			}
 		}
 
-		//Verify that the player is not spawning a glyph inside the finish line trigger
+		//Verify that the player is not spawning a mine inside the finish line trigger
 		Vector3 position = playerGameObject.transform.TransformPoint( offset );
 
 		GameObject boxColliderObject = GameObject.FindGameObjectWithTag("Finish Line");

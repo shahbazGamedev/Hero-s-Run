@@ -279,7 +279,7 @@ public class PlayerAI : Photon.PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha4 ) )
 		{
-			bch.activateCard( CardName.Glyph );
+			bch.activateCard( CardName.Trip_Mine );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha5 ) )
 		{
