@@ -36,7 +36,7 @@ public class TripMine : CardSpawnedObject {
 	void startDetonationCountdown()
 	{
 		GetComponent<AudioSource>().Play();
-		Invoke( "detonate", 2f ); //the bomb countdown lasts 2 seconds
+		Invoke( "detonate", 1.94f ); //the bomb countdown lasts 1.94 seconds
 	}
 
 	void detonate()
