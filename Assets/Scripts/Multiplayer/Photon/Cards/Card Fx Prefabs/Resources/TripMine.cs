@@ -25,8 +25,14 @@ public class TripMine : CardSpawnedObject {
 	{
 		if( other.gameObject.CompareTag("Player") && other.gameObject.name != casterName )
 		{
-			detonate();
+			startDetonationCountdown();
 		}
+	}
+
+	void startDetonationCountdown()
+	{
+		GetComponent<AudioSource>().Play();
+		Invoke( "detonate", 2f ); //the bomb countdown lasts 2 seconds
 	}
 
 	void detonate()
@@ -41,6 +47,8 @@ public class TripMine : CardSpawnedObject {
 		ParticleSystem effect = GameObject.Instantiate( explosionEffect, transform.position, transform.rotation );
 		effect.GetComponent<AudioSource>().Play ();
 		effect.Play();
+		//Destroy the particle effect after a few seconds
+		GameObject.Destroy( effect.gameObject, 3f );
 	}
 
 	void Update()
@@ -55,7 +63,7 @@ public class TripMine : CardSpawnedObject {
 		//Also support keys for debugging
 		if ( Input.GetKeyDown (KeyCode.Y) ) 
 		{
-			detonate();
+			startDetonationCountdown();
 		}
 	}
 }
