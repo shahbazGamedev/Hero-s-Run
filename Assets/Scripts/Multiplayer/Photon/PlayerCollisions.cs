@@ -382,7 +382,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 						FracturedObject fracturedObject = hit.collider.GetComponent<FracturedObject>();
 						if( fracturedObject != null )
 						{
-							fracturedObject.Explode(hit.point, 4000f, 2.5f, false, true, false, false );
+							fracturedObject.Explode(hit.point, 5000f, 2.5f, false, true, false, false );
 							GameObject.Destroy( hit.collider.gameObject );
 						}
 						else

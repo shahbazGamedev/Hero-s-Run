@@ -24,7 +24,7 @@ public class IceWall : CardSpawnedObject {
 		//Position the ice wall flush with the ground and try to center it in the middle of the road if possible.
 		positionSpawnedObject();
 
-		StartCoroutine( changeMaterialOnCreate( 1.1f ) );
+		StartCoroutine( changeMaterialOnCreate( 1f ) );
 	}
 
 	IEnumerator changeMaterialOnCreate( float delayBeforeMaterialChange )
