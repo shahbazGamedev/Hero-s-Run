@@ -194,4 +194,15 @@ public class CardSpawnedObject : MonoBehaviour {
 		}
 	}
 
+	protected void destroyAllTargetsWithinBlastRadius( float blastRadius )
+	{
+		Collider[] hitColliders = Physics.OverlapSphere( transform.position, blastRadius, defaultMask );
+		for( int i = 0; i < hitColliders.Length; i++ )
+		{
+			if( isTargetValid( hitColliders[i].transform ) )
+			{
+				destroyTarget( hitColliders[i].transform );
+			}
+		}
+	}
 }
