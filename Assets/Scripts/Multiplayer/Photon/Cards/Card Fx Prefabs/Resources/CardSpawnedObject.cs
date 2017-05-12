@@ -104,10 +104,10 @@ public class CardSpawnedObject : MonoBehaviour {
 	{
 	}
 
-	protected Transform getNearestTargetWithinRange( float range )
+	protected Transform getNearestTargetWithinRange( float range, int mask )
 	{
 		Transform nearestTarget;
-		Collider[] hitColliders = Physics.OverlapSphere( transform.position, range, maskWithPlayer );
+		Collider[] hitColliders = Physics.OverlapSphere( transform.position, range, mask );
 		nearestTarget = getNearestValidTarget( hitColliders );
 		return nearestTarget;
 	}
