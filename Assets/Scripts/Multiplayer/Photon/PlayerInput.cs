@@ -143,7 +143,7 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.T ) )
 		{
-			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Double_Jump, GameManager.Instance.playerProfile.getUserName(), 4 );
+			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Raging_Bull, GameManager.Instance.playerProfile.getUserName(), 9 );
 		}
 		else if ( Input.GetKeyDown (KeyCode.P ) )
 		{

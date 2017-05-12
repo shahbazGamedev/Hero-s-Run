@@ -371,6 +371,32 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					}
 				}
 			}
+			else if (hit.collider.CompareTag( "Destructible" ) )
+			{
+				if( hit.normal.y < 0.4f )
+				{
+					//This player ran squarely into a destructible object.
+					if( playerControl.isSpeedBoostActive )
+					{
+						//Speedboost is active. Fracture the object.
+						FracturedObject fracturedObject = hit.collider.GetComponent<FracturedObject>();
+						if( fracturedObject != null )
+						{
+							fracturedObject.Explode(hit.point, 4000f, 2.5f, false, true, false, false );
+							GameObject.Destroy( hit.collider.gameObject );
+						}
+						else
+						{
+							Debug.LogWarning( "Player collided with object " + hit.collider.name + ". It has a Destructible tag, but no FractureObject component." );
+						}
+					}
+					else
+					{
+						//Speedboost is not active. Kill the player.
+						playerControl.managePlayerDeath ( DeathType.Obstacle );
+					}
+				}
+			}
 		}
 	}
 	
