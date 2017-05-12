@@ -2,6 +2,9 @@
 using UnityEngine.UI;
 using System.Collections;
 
+/// <summary>
+/// Ice wall. Make sure to set the parent layer to Destructible and the children's layer to Ignore Raycast (or else the ice wall will not be positioned properly).
+/// </summary>
 public class IceWall : CardSpawnedObject {
 	
 	void OnPhotonInstantiate( PhotonMessageInfo info )

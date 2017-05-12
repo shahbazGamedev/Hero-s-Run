@@ -82,7 +82,8 @@ public class CardSpawnedObject : MonoBehaviour {
 		RaycastHit hit;
 		int originalLayer = gameObject.layer;
 		gameObject.layer = ignoreRaycastLayer;
-		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y, transform.position.z ), Vector3.down, out hit, 15f ))
+		//Important: we need the +2f to start a bit above ground, or else the raycast may start a tad below the road and miss.
+		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + 2f, transform.position.z ), Vector3.down, out hit, 15f ))
 		{
 			if(  hit.collider.transform.parent.GetComponent<SegmentInfo>() != null )
 			{
