@@ -25,10 +25,15 @@ public class TripMine : CardSpawnedObject {
 	{
 		if( other.gameObject.CompareTag("Player") && other.gameObject.name != casterName )
 		{
-			destroyAllTargetsWithinBlastRadius( 10f, true );
-			explode();
-			GameObject.Destroy( gameObject );
+			detonate();
 		}
+	}
+
+	void detonate()
+	{
+		destroyAllTargetsWithinBlastRadius( 10f, true );
+		explode();
+		GameObject.Destroy( gameObject );
 	}
 
 	void explode()
@@ -38,4 +43,19 @@ public class TripMine : CardSpawnedObject {
 		effect.Play();
 	}
 
+	void Update()
+	{
+		#if UNITY_EDITOR
+		handleKeyboard();
+		#endif
+	}
+
+	private void handleKeyboard()
+	{
+		//Also support keys for debugging
+		if ( Input.GetKeyDown (KeyCode.Y) ) 
+		{
+			detonate();
+		}
+	}
 }

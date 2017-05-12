@@ -135,7 +135,7 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.N ) )
 		{
-			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Sentry, GameManager.Instance.playerProfile.getUserName(), 4 );
+			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Trip_Mine, GameManager.Instance.playerProfile.getUserName(), 5 );
 		}
 		else if ( Input.GetKeyDown (KeyCode.O ) )
 		{

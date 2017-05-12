@@ -259,7 +259,7 @@ public class CardSpawnedObject : MonoBehaviour {
 
 	        case levelDestructibleLayer:
 				valid = true;
-				if( potentialTarget.GetComponent<FracturedObject>() != null ) potentialTarget.GetComponent<FracturedObject>().Explode( potentialTarget.transform.position, 400f );
+				if( potentialTarget.GetComponent<FracturedObject>() != null ) potentialTarget.GetComponent<FracturedObject>().Explode( potentialTarget.transform.position, 15f );
 				Destroy( potentialTarget.gameObject );
                break;
 		}
