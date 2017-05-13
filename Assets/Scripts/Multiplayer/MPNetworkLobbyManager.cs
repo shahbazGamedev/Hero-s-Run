@@ -105,7 +105,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		playerCustomProperties.Add("Prestige", GameManager.Instance.playerProfile.prestigeLevel );
 
 		//Set your win streak, which is displayed in the social screen
-		playerCustomProperties.Add("WinStreak", GameManager.Instance.playerStatistics.currentWinStreak );
+		playerCustomProperties.Add("WinStreak", GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK) );
 
 		//Apply values so that they propagate to other players
 		PhotonNetwork.player.SetCustomProperties(playerCustomProperties);

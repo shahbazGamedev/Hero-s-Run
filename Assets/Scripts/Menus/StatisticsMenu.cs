@@ -5,30 +5,44 @@ using UnityEngine.UI;
 
 public class StatisticsMenu : MonoBehaviour {
 
-	[SerializeField] Text numberRacesRunText;				//Player at least started the race, may did not finish it.
-	[SerializeField] Text numberRacesWonText;				//Player completed race in first position.
-
-	[SerializeField] Text distanceTravelledLifetimeText;	//Sum of the distance travelled for all the completed races.
-	[SerializeField] Text numberOfDeathsLifetimeText;		//Sum of all the times the player died during a race, whether it was completed or not.
-	[SerializeField] Text perfectRacesLifetimeText;			//Sum of all the races where the player did not die once during a completed race.
-
-	[SerializeField] Text currentWinStreakText;				//The number of races won in a row. Resets as soon as you lose or abandon a race.
-	[SerializeField] Text bestWinStreakLifetimeText;		//The player's best win streak ever.
+	[Header("Statistics Panel")]
+	[SerializeField] RectTransform statisticEntriesPanel;
+	[SerializeField] GameObject statisticEntryPrefab;
+	[SerializeField] List<StatisticEntryIcon> statisticEntriesList = new List <StatisticEntryIcon>();
 
 	// Use this for initialization
 	void Start ()
 	{	
-		PlayerStatistics playerStatistics = GameManager.Instance.playerStatistics;
-
-		numberRacesRunText.text = numberRacesRunText.text + ": " + playerStatistics.numberRacesRun;
-		numberRacesWonText.text = numberRacesWonText.text + ": " + playerStatistics.numberRacesWon;
-
-		distanceTravelledLifetimeText.text = distanceTravelledLifetimeText.text + ": " + playerStatistics.distanceTravelledLifetime.ToString("N1") + "M";
-		numberOfDeathsLifetimeText.text = numberOfDeathsLifetimeText.text + ": " + playerStatistics.numberOfDeathsLifetime;
-		perfectRacesLifetimeText.text = perfectRacesLifetimeText.text + ": " + playerStatistics.perfectRacesLifetime;
-
-		currentWinStreakText.text = currentWinStreakText.text + ": " + playerStatistics.currentWinStreak;
-		bestWinStreakLifetimeText.text = bestWinStreakLifetimeText.text + ": " + playerStatistics.bestWinStreakLifetime;
+		configureEntries();
 	}
-	
+
+	void configureEntries()
+	{
+		List<PlayerStatistics.StatisticData> statisticEntriesList = GameManager.Instance.playerStatistics.getStatisticEntriesList();
+
+		for( int i=0; i < statisticEntriesList.Count; i++ )
+		{
+			createStatisticEntry( i, statisticEntriesList[i].type, getIcon( statisticEntriesList[i].type ), statisticEntriesList[i].value  );
+		}
+	}
+
+	void createStatisticEntry( int index, StatisticDataType type, Sprite icon, int value )
+	{
+		GameObject go = (GameObject)Instantiate(statisticEntryPrefab);
+		go.transform.SetParent(statisticEntriesPanel,false);
+		go.GetComponent<StatisticEntryUI>().configureEntry( index, type, icon, value );
+	}
+
+	Sprite getIcon( StatisticDataType type )
+	{
+		return statisticEntriesList.Find( data => data.type == type).icon;
+	}	
+
+	[System.Serializable]
+	public class StatisticEntryIcon
+	{
+		public StatisticDataType type; 
+		public Sprite icon;
+	}
+
 }

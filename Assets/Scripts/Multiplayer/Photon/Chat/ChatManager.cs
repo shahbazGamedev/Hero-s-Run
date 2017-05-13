@@ -71,7 +71,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		onlinePlayerData[0] = GameManager.Instance.playerProfile.getPlayerIconId();
 		onlinePlayerData[1] = GameManager.Instance.playerProfile.getLevel();
 		onlinePlayerData[2] = GameManager.Instance.playerProfile.prestigeLevel;
-		onlinePlayerData[3] = GameManager.Instance.playerStatistics.currentWinStreak;
+		onlinePlayerData[3] = GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK);
 
 		this.chatClient.SetOnlineStatus(ChatUserStatus.Online, onlinePlayerData );
 

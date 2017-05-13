@@ -50,6 +50,7 @@ public class PlayerDataManager : MonoBehaviour {
 		else
 		{
 			playerStatistics = new PlayerStatistics();
+			playerStatistics.initialize();
 		}
 		GameManager.Instance.playerStatistics = playerStatistics;
 

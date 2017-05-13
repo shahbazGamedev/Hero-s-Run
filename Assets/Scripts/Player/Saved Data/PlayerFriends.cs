@@ -120,7 +120,7 @@ public class PlayerFriends {
 			GameManager.Instance.playerProfile.getPlayerIconId(), 
 			GameManager.Instance.playerProfile.getLevel(), 
 			GameManager.Instance.playerProfile.prestigeLevel, 
-			GameManager.Instance.playerStatistics.currentWinStreak );
+			GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK) );
 		return fd;
 	}
 

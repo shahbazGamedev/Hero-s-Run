@@ -56,7 +56,7 @@ public class ChatMessageHandler {
 		int playerIcon = GameManager.Instance.playerProfile.getPlayerIconId();
 		int level = GameManager.Instance.playerProfile.getLevel();
 		int prestige = GameManager.Instance.playerProfile.prestigeLevel; 
-		int currentWinStreak = GameManager.Instance.playerStatistics.currentWinStreak;
+		int currentWinStreak = GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK);
 		MatchData matchData = new MatchData( GameManager.Instance.playerProfile.getUserName(), 0, string.Empty, playerIcon, level, prestige, currentWinStreak );
 
 		ChatMessage chatMessage = new ChatMessage();
@@ -78,7 +78,7 @@ public class ChatMessageHandler {
 		int playerIcon = GameManager.Instance.playerProfile.getPlayerIconId();
 		int level = GameManager.Instance.playerProfile.getLevel();
 		int prestige = GameManager.Instance.playerProfile.prestigeLevel; 
-		int currentWinStreak = GameManager.Instance.playerStatistics.currentWinStreak;
+		int currentWinStreak = GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK);
 		MatchData matchData = new MatchData( GameManager.Instance.playerProfile.getUserName(), multiplayerLevelndex, roomName, playerIcon, level, prestige, currentWinStreak );
 
 		ChatMessage chatMessage = new ChatMessage();
