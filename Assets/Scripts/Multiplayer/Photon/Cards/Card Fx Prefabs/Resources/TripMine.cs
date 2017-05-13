@@ -9,6 +9,7 @@ using System.Collections;
 public class TripMine : CardSpawnedObject {
 	
 	[SerializeField] ParticleSystem explosionEffect;
+	float blastRadius;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
@@ -18,6 +19,8 @@ public class TripMine : CardSpawnedObject {
 
 		float delayBeforeSpellExpires = (float) data[1];
 		GameObject.Destroy( gameObject, delayBeforeSpellExpires );
+
+		blastRadius = (float) data[2];
 
 		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
 
@@ -36,12 +39,12 @@ public class TripMine : CardSpawnedObject {
 	void startDetonationCountdown()
 	{
 		GetComponent<AudioSource>().Play();
-		Invoke( "detonate", 1.94f ); //the bomb countdown lasts 1.94 seconds
+		Invoke( "detonate", 0.94f ); //the bomb beeps lasts 0.94 seconds
 	}
 
 	void detonate()
 	{
-		destroyAllTargetsWithinBlastRadius( 10f, true );
+		destroyAllTargetsWithinBlastRadius( blastRadius, true );
 		explode();
 		GameObject.Destroy( gameObject );
 	}

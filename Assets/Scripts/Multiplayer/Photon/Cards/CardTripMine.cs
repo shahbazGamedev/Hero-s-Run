@@ -27,14 +27,17 @@ public class CardTripMine : Card {
 		Vector3 tripMinePosition = playerTransform.TransformPoint( offset );
 		Quaternion tripMineRotation = playerTransform.rotation;
 
-		object[] data = new object[2];
+		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
+		object[] data = new object[3];
 
 		//We want the caster to be immune to the spell
 		data[0] = playerTransform.name;
 
 		//We want the trip mine to disappear after a while
-		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
 		data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
+
+		//We want to transmit the blast radius
+		data[2] = cd.getCardPropertyValue( CardPropertyType.RADIUS, level );
 
 		PhotonNetwork.InstantiateSceneObject( prefabName, tripMinePosition, tripMineRotation, 0, data );
 	}
