@@ -27,7 +27,7 @@ public class PlayerDeck {
 		addCard( CardName.Raging_Bull, 1, 54, true );
 
 		//4
-		addCard( CardName.Explosion, 4, 12, true );
+		addCard( CardName.Grenade, 4, 12, true );
 
 		//5
 		addCard( CardName.Stasis, 6, 100, true );

@@ -271,7 +271,7 @@ public class PlayerAI : Photon.PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha2 ) )
 		{
-			bch.activateCard( CardName.Explosion );
+			bch.activateCard( CardName.Grenade );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha3 ) )
 		{

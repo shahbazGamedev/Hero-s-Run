@@ -23,10 +23,6 @@ public class CardTripMine : Card {
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
-		//Spawn a mine on the floor a few meters in front of the player
-		Vector3 tripMinePosition = playerTransform.TransformPoint( offset );
-		Quaternion tripMineRotation = playerTransform.rotation;
-
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
 		object[] data = new object[3];
 
@@ -39,7 +35,8 @@ public class CardTripMine : Card {
 		//We want to transmit the blast radius
 		data[2] = cd.getCardPropertyValue( CardPropertyType.RADIUS, level );
 
-		PhotonNetwork.InstantiateSceneObject( prefabName, tripMinePosition, tripMineRotation, 0, data );
+		//Spawn a mine on the floor a few meters in front of the player
+		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( offset ), playerTransform.rotation, 0, data );
 	}
 	#endregion
 

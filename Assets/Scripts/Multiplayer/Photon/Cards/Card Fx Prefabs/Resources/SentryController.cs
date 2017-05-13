@@ -31,23 +31,10 @@ public class SentryController : CardSpawnedObject {
 	float aimRange = 40f;
 	float accuracy = 0.005f;
 
-	const int playerLayer = 8;
-	const int deviceLayer = 16;
-	const int destructibleLayer = 17;
-	int maskWithPlayer;
-
 	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
-		initialiseMask();
 		findOwner( gameObject.GetPhotonView ().instantiationData );
-	}
-
-	void initialiseMask()
-	{
-		maskWithPlayer = 1 << playerLayer;
-		maskWithPlayer |= 1 << deviceLayer;
-		maskWithPlayer |= 1 << destructibleLayer;
 	}
 
 	void findOwner(object[] data) 
@@ -112,7 +99,7 @@ public class SentryController : CardSpawnedObject {
 		{
 			if( spawnedObjectState == SpawnedObjectState.Functioning )
 			{
-				nearestTarget = getNearestTargetWithinRange( aimRange, maskWithPlayer );
+				nearestTarget = getNearestTargetWithinRange( aimRange, MaskHandler.getMaskWithPlayerWithoutLevelDestructible() );
 			}
 		}
 	}
@@ -158,7 +145,7 @@ public class SentryController : CardSpawnedObject {
 	{
 		//Verify if we can hit the nearest target
 		RaycastHit hit;
-		gameObject.layer = ignoreRaycastLayer;
+		gameObject.layer = MaskHandler.ignoreRaycastLayer;
 		if (Physics.Raycast(transform.position, transform.forward, out hit, aimRange ))
 		{
 			if( hit.collider.transform == nearestTarget )
@@ -166,7 +153,7 @@ public class SentryController : CardSpawnedObject {
 				shoot();
 			}
 		}
-		gameObject.layer = destructibleLayer;
+		gameObject.layer = MaskHandler.destructibleLayer;
 	}
 
 	void shoot()

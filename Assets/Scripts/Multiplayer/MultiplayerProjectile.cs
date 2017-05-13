@@ -11,10 +11,6 @@ public class MultiplayerProjectile : MonoBehaviour {
 	[SerializeField] AudioClip collisionSound;
 	float bolt_force = 1100f;
 	SentryController sentryController;
-	const int playerLayer = 8;
-	const int deviceLayer = 16;
-	const int destructibleLayer = 17;
-	const int levelDestructibleLayer = 18;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
@@ -71,7 +67,7 @@ public class MultiplayerProjectile : MonoBehaviour {
 		bool valid = false;
    		switch (potentialTarget.gameObject.layer)
 		{
-			case playerLayer:
+			case MaskHandler.playerLayer:
 				//The player is immune to projectiles while in the IDLE state.
 				//The player is in the IDLE state after crossing the finish line for example.
 				if( potentialTarget.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle )
@@ -91,18 +87,18 @@ public class MultiplayerProjectile : MonoBehaviour {
 				}
 				break;
 	                
-	        case deviceLayer:
+	        case MaskHandler.deviceLayer:
 				valid = true;
 				Device dev = potentialTarget.GetComponent<Device>();
 				dev.changeDeviceState(DeviceState.Broken);
                 break;
 
-	        case destructibleLayer:
+	        case MaskHandler.destructibleLayer:
 				valid = true;
 				potentialTarget.GetComponent<CardSpawnedObject>().destroySpawnedObjectNow();
                 break;
 
-	        case levelDestructibleLayer:
+	        case MaskHandler.levelDestructibleLayer:
 				valid = true;
 				GameObject.Destroy( potentialTarget.gameObject );
                 break;

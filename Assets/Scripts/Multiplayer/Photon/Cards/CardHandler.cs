@@ -21,15 +21,15 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardSpeedBoost component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
-			case CardName.Explosion:
-				CardExplosion cardExplosion = GetComponent<CardExplosion>();
-				if( cardExplosion != null )
+			case CardName.Grenade:
+				CardGrenade cardGrenade = GetComponent<CardGrenade>();
+				if( cardGrenade != null )
 				{
-					cardExplosion.activateCard( photonViewId,level );
+					cardGrenade.activateCard( photonViewId,level );
 				}
 				else
 				{
-					Debug.LogError("CardHandler-The CardExplosion component is not attached to the CardHandler in the Level scene.");
+					Debug.LogError("CardHandler-The CardGrenade component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
 			case CardName.Double_Jump:
@@ -179,8 +179,8 @@ public class CardHandler : MonoBehaviour {
 				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) ) return true;
 			break;
 			//Explosion is effective whenever an opponent is near you
-			case CardName.Explosion:
-				return GetComponent<CardExplosion>().isOpponentNear( caster.transform, level );
+			case CardName.Grenade:
+				return GetComponent<CardGrenade>().isOpponentNear( caster.transform, level );
 			break;
 			//Double jump is effective whenever you are trailing behind by a little
 			case CardName.Double_Jump:

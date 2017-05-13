@@ -23,37 +23,9 @@ public class CardSpawnedObject : MonoBehaviour {
 	public string casterName;
 	protected GameObject casterGameObject;
 	protected Transform casterTransform;
-
 	public SpawnedObjectState spawnedObjectState = SpawnedObjectState.Initialising;
-
-
-	protected const int ignoreRaycastLayer = 2;
-	protected const int playerLayer = 8;
-	protected const int deviceLayer = 16;
-	protected const int destructibleLayer = 17;
-	protected const int levelDestructibleLayer = 18;
-	int maskWithPlayer;
-	int maskWithoutPlayer;
-
 	protected const float DELAY_BEFORE_DESTROY_EFFECTS = 1.3f;
 
-	// Use this for initialization
-	void Start ()
-	{
-		initialiseMasks();
-	}
-
-	void initialiseMasks()
-	{
-		maskWithPlayer = 1 << playerLayer;
-		maskWithPlayer |= 1 << deviceLayer;
-		maskWithPlayer |= 1 << destructibleLayer;
-		maskWithPlayer |= 1 << levelDestructibleLayer;
-
-		maskWithoutPlayer = 1 << deviceLayer;
-		maskWithoutPlayer |= 1 << destructibleLayer;
-		maskWithoutPlayer |= 1 << levelDestructibleLayer;
-	}
 
 	protected void setSpawnedObjectState( SpawnedObjectState newState )
 	{
@@ -81,7 +53,7 @@ public class CardSpawnedObject : MonoBehaviour {
 	{
 		RaycastHit hit;
 		int originalLayer = gameObject.layer;
-		gameObject.layer = ignoreRaycastLayer;
+		gameObject.layer = MaskHandler.ignoreRaycastLayer;
 		//Important: we need the +2f to start a bit above ground, or else the raycast may start a tad below the road and miss.
 		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + 2f, transform.position.z ), Vector3.down, out hit, 15f ))
 		{
@@ -139,7 +111,7 @@ public class CardSpawnedObject : MonoBehaviour {
 		bool valid = false;
    		switch (potentialTarget.gameObject.layer)
 		{
-	        case playerLayer:
+	        case MaskHandler.playerLayer:
 				PlayerControl pc = potentialTarget.GetComponent<PlayerControl>();
 				//A player is a valid target if:
 				//He is alive.
@@ -150,7 +122,7 @@ public class CardSpawnedObject : MonoBehaviour {
 				valid = valid && casterName != potentialTarget.name;
 				break;
 	                
-	        case deviceLayer:
+	        case MaskHandler.deviceLayer:
 				//A device is a valid target if:
 				//The device is not in the Broken state.
 				//Additional we want to only destroy devices that are behind the player.
@@ -161,7 +133,7 @@ public class CardSpawnedObject : MonoBehaviour {
 				valid = valid && !getDotProduct( potentialTarget.position );
                 break;
 
-	        case destructibleLayer:
+	        case MaskHandler.destructibleLayer:
 				//A destructible object is a valid target if:
 				//The destructible object is in the Functioning state.
 				//You do not own the target. For example, if you create an Ice Wall, you don't want your Sentry to destroy it.
@@ -170,7 +142,7 @@ public class CardSpawnedObject : MonoBehaviour {
 				valid = valid && casterName != cso.getCasterName();
                 break;
 
-	        case levelDestructibleLayer:
+	        case MaskHandler.levelDestructibleLayer:
 				//A destructible object that is part of the level and does not have any special functionality such
 				//as a simple wall or a bridge.
 				valid = true;
@@ -204,11 +176,11 @@ public class CardSpawnedObject : MonoBehaviour {
 		Collider[] hitColliders;
 		if( includePlayers )
 		{
-			hitColliders = Physics.OverlapSphere( transform.position, blastRadius, maskWithPlayer );
+			hitColliders = Physics.OverlapSphere( transform.position, blastRadius, MaskHandler.getMaskWithPlayerWithLevelDestructible() );
 		}
 		else
 		{
-			hitColliders = Physics.OverlapSphere( transform.position, blastRadius, maskWithoutPlayer );
+			hitColliders = Physics.OverlapSphere( transform.position, blastRadius, MaskHandler.getMaskWithoutPlayerWithLevelDestructible() );
 		}
 
 		for( int i = 0; i < hitColliders.Length; i++ )
@@ -225,7 +197,7 @@ public class CardSpawnedObject : MonoBehaviour {
 		bool valid = false;
    		switch (potentialTarget.gameObject.layer)
 		{
-			case playerLayer:
+			case MaskHandler.playerLayer:
 				//The player is immune to projectiles while in the IDLE state.
 				//The player is in the IDLE state after crossing the finish line for example.
 				if( potentialTarget.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle )
@@ -245,19 +217,19 @@ public class CardSpawnedObject : MonoBehaviour {
 				}
 				break;
 	                
-	        case deviceLayer:
+	        case MaskHandler.deviceLayer:
 				valid = true;
 				Device dev = potentialTarget.GetComponent<Device>();
 				dev.changeDeviceState(DeviceState.Broken);
                 break;
 
-	        case destructibleLayer:
+	        case MaskHandler.destructibleLayer:
 				valid = true;
 				if( potentialTarget.GetComponent<FracturedObject>() != null ) potentialTarget.GetComponent<FracturedObject>().Explode( potentialTarget.transform.position, 400f );
 				Destroy( potentialTarget.gameObject );
                 break;
 
-	        case levelDestructibleLayer:
+	        case MaskHandler.levelDestructibleLayer:
 				valid = true;
 				if( potentialTarget.GetComponent<FracturedObject>() != null ) potentialTarget.GetComponent<FracturedObject>().Explode( potentialTarget.transform.position, 15f );
 				Destroy( potentialTarget.gameObject );

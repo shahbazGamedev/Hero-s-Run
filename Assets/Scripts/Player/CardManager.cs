@@ -47,7 +47,7 @@ public enum CardName
 
 	//Rare
 	Firewall = 100,
-	Explosion = 101,
+	Grenade = 101,
 	Shrink = 102,
 	Trip_Mine = 103,
 	Sentry = 104,
