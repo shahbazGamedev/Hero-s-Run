@@ -14,7 +14,7 @@ public class StatisticEntryUI : MonoBehaviour {
 	public void configureEntry( int index, StatisticDataType type, Sprite icon, int value )
 	{
 		//Alternate light and dark backgrounds to increase legibility
-		if( index == 0 || index == 1 || index == 4 || index == 5 )
+		if( index == 0 || index == 1 || index == 4 || index == 5 || index == 8 )
 		{
 			propertyBackground.color = darkerBackground;
 		}
@@ -27,6 +27,18 @@ public class StatisticEntryUI : MonoBehaviour {
 		if( type == StatisticDataType.DISTANCE_TRAVELED_LIFETIME )
 		{
 			propertyValue.text = value.ToString("N1") + "M";
+		}
+		else if( type == StatisticDataType.WIN_LOSS_RATIO )
+		{
+			float winLossRatio = GameManager.Instance.playerStatistics.getWinLoss();
+			if( winLossRatio > 0 )
+			{
+				propertyValue.text = string.Format( "{0:P1}", winLossRatio );
+			}
+			else
+			{
+				propertyValue.text = "N/A";
+			}
 		}
 		else
 		{

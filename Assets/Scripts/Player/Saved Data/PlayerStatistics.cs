@@ -39,6 +39,7 @@ public class PlayerStatistics {
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.PERFECT_RACES_LIFETIME, 0 ) );
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.CURRENT_WIN_STREAK, 0 ) );
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.BEST_WIN_STREAK_LIFETIME, 0 ) );
+		statisticEntriesList.Add( new StatisticData( StatisticDataType.WIN_LOSS_RATIO, 0 ) );
 	}
 
 	public List<StatisticData> getStatisticEntriesList()
@@ -58,11 +59,20 @@ public class PlayerStatistics {
 
 	/// <summary>
 	/// Gets the win/loss ratio, that is the number of races won divided by the number of races run.
+	/// Returns zero if the the number of races run is zero.
 	/// </summary>
 	/// <returns>The win/loss ratio.</returns>
 	public float getWinLoss()
 	{
-		return getStatisticData(StatisticDataType.RACES_WON)/(float)getStatisticData(StatisticDataType.RACES_RUN);
+		//Don't divide by zero.
+		if( getStatisticData(StatisticDataType.RACES_RUN) > 0 )
+		{
+			return getStatisticData(StatisticDataType.RACES_WON)/(float)getStatisticData(StatisticDataType.RACES_RUN);
+		}
+		else
+		{
+			return 0;
+		}
 	}
 
 	/// <summary>
