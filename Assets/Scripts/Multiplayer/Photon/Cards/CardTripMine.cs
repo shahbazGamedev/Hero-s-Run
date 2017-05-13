@@ -43,41 +43,4 @@ public class CardTripMine : Card {
 	}
 	#endregion
 
-	public bool isAllowed( int photonViewID )
-	{
-		//Find out which player activated the card
-		GameObject playerGameObject = null;
-		for( int i = 0; i < PlayerRace.players.Count; i++ )
-		{
-			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
-			{
-				playerGameObject = (GameObject)PhotonNetwork.player.TagObject;
-			}
-		}
-
-		//Verify that the player is not spawning a mine inside the finish line trigger
-		Vector3 position = playerGameObject.transform.TransformPoint( offset );
-
-		GameObject boxColliderObject = GameObject.FindGameObjectWithTag("Finish Line");
-		//If the tile with the finish line is not active, boxColliderObject will be null, so check for that.
-		if( boxColliderObject != null )
-		{
-			BoxCollider boxCollider = boxColliderObject.GetComponent<BoxCollider>();
-			if( boxCollider.bounds.Contains( position ) )
-			{
-				//Don't allow it
-				return false;
-			}
-			else
-			{
-				return true;
-			}
-		}
-		else
-		{
-			//If boxColliderObject is null, that means the tile with the finish line is not yet active and therefore, we are far from the finish line.
-			//In this case, return true.
-			return true;
-		}
-	}
 }
