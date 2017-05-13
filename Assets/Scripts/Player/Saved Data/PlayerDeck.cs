@@ -43,16 +43,16 @@ public class PlayerDeck {
 
 		//Part of card collection, but not in battle deck
 		//9
-		addCard( CardName.Card_One, 1, 1, false );
+		addCard( CardName.Lightning, 1, 1, false );
 
 		//10
-		addCard( CardName.Card_Two, 1, 1, false );
+		addCard( CardName.Linked_Fate, 1, 1, false );
 
 		//11
-		addCard( CardName.Card_Three, 1, 1, false );
+		addCard( CardName.Double_Jump, 1, 1, false );
 
 		//12
-		addCard( CardName.Card_Four, 1, 1, false );
+		addCard( CardName.Firewall, 1, 1, false );
 
 		serializePlayerDeck( true );
 
