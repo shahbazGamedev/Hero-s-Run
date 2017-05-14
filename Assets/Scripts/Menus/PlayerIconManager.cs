@@ -14,13 +14,16 @@ class PlayerIconManager : MonoBehaviour {
 	[SerializeField] GameObject onSelectButton;
 	[SerializeField] Image onSelectPlayerIcon;
 	[SerializeField] Text onSelectPlayerName;
+	[Header("Name and Icon")]
+	[SerializeField] Image playerIcon;
+	[SerializeField] Text playerNameText;
 
 	// Use this for initialization
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
-		int playerIconId = GameManager.Instance.playerProfile.getPlayerIconId();
-		ProgressionManager.PlayerIconData playerIconData = ProgressionManager.Instance.getPlayerIconDataByUniqueId( playerIconId );
+		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
+		playerNameText.text = GameManager.Instance.playerProfile.getUserName();
 
 		//Newly unlocked icons appear first.
 		List<ProgressionManager.PlayerIconData> playerIconList = ProgressionManager.Instance.getSortedPlayerIconList();
@@ -80,6 +83,8 @@ class PlayerIconManager : MonoBehaviour {
 		{
 			//Set this value in Player Profile.
 			GameManager.Instance.playerProfile.setPlayerIconId( playerIconData.uniqueId );
+			//Update the player icon at the top right
+			playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 			//Save the player profile. The user may have changed his player icon.
 			GameManager.Instance.playerProfile.serializePlayerprofile();
 		}

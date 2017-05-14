@@ -9,10 +9,13 @@ public class StatisticsMenu : MonoBehaviour {
 	[SerializeField] RectTransform statisticEntriesPanel;
 	[SerializeField] GameObject statisticEntryPrefab;
 	[SerializeField] List<StatisticEntryIcon> statisticEntriesList = new List <StatisticEntryIcon>();
+	[Header("Trophies")]
+	[SerializeField] Text numberOfTrophiesText;
 
 	// Use this for initialization
 	void Start ()
 	{	
+		numberOfTrophiesText.text = GameManager.Instance.playerInventory.getTrophyBalance().ToString("N0");
 		configureEntries();
 	}
 
