@@ -37,7 +37,7 @@ public class StatisticEntryUI : MonoBehaviour {
 			}
 			else
 			{
-				propertyValue.text = "N/A";
+				propertyValue.text = LocalizationManager.Instance.getText( "STATISTICS_NOT_AVAILABLE" );
 			}
 		}
 		else
