@@ -38,7 +38,6 @@ public class UniversalTopBar : MonoBehaviour {
 	[SerializeField] Text numberOfTrophiesText;
 	[SerializeField] Image playerIcon;
 	[SerializeField] Text playerNameText;
-	[SerializeField] Image onlineIndicator;
 
 	int residualXP = 0;
 
@@ -155,11 +154,6 @@ public class UniversalTopBar : MonoBehaviour {
 		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 		playerNameText.text = GameManager.Instance.playerProfile.getUserName();
 
-	}
-
-	public void configureChatStatusColor( Color chatStatusColor )
-	{
-		onlineIndicator.color = chatStatusColor;
 	}
 
 	void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int newValue )

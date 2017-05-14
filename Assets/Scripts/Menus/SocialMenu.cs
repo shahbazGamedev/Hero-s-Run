@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using ExitGames.Client.Photon.Chat;
 
 public class SocialMenu : MonoBehaviour {
 
@@ -15,6 +16,8 @@ public class SocialMenu : MonoBehaviour {
 	[Header("Recent Player List")]
 	[SerializeField] Transform recentPlayersHolder;
 	[SerializeField] GameObject recentPlayerPrefab;
+	[Header("Chat Online Indicator")]
+	[SerializeField] Image onlineIndicator;
 
 	bool levelLoading = false;
 
@@ -24,6 +27,14 @@ public class SocialMenu : MonoBehaviour {
 		Handheld.StopActivityIndicator();
 		createFriendList();
 		createRecentPlayerList();
+		if( ChatManager.Instance.canChat() )
+		{
+			onlineIndicator.color = ChatManager.Instance.getStatusColor( (int)ChatUserStatus.Online );
+		}
+		else
+		{
+			onlineIndicator.color = ChatManager.Instance.getStatusColor( (int)ChatUserStatus.Offline );
+		}
 	}
 
 	void createFriendList()
@@ -158,27 +169,37 @@ public class SocialMenu : MonoBehaviour {
 	void OnStatusUpdateEvent( string userName, int newStatus )
 	{
 		print("OnStatusUpdateEvent " + userName + " " + newStatus );
-		//Go through friends
-		FriendUIDetails fud;
-		for( int i = 0; i < friendsHolder.transform.childCount; i++ )
-		{
-			fud = friendsHolder.transform.GetChild( i ).GetComponent<FriendUIDetails>();
-			if( fud != null && fud.user == userName )
-			{
-				fud.configureStatus( newStatus );
-				break;
-			}
-		}
 
-		//Go through recent players
-		RecentPlayerUIDetails rpud;
-		for( int i = 0; i < recentPlayersHolder.transform.childCount; i++ )
+		//Is it our own status?
+		if( userName == GameManager.Instance.playerProfile.getUserName() )
 		{
-			rpud = recentPlayersHolder.transform.GetChild( i ).GetComponent<RecentPlayerUIDetails>();
-			if( rpud != null && rpud.user == userName )
+			//Yes, this is our own status
+			onlineIndicator.color = ChatManager.Instance.getStatusColor( newStatus );
+		}
+		else
+		{
+			//Go through friends
+			FriendUIDetails fud;
+			for( int i = 0; i < friendsHolder.transform.childCount; i++ )
 			{
-				rpud.configureStatus( newStatus );
-				break;
+				fud = friendsHolder.transform.GetChild( i ).GetComponent<FriendUIDetails>();
+				if( fud != null && fud.user == userName )
+				{
+					fud.configureStatus( newStatus );
+					break;
+				}
+			}
+	
+			//Go through recent players
+			RecentPlayerUIDetails rpud;
+			for( int i = 0; i < recentPlayersHolder.transform.childCount; i++ )
+			{
+				rpud = recentPlayersHolder.transform.GetChild( i ).GetComponent<RecentPlayerUIDetails>();
+				if( rpud != null && rpud.user == userName )
+				{
+					rpud.configureStatus( newStatus );
+					break;
+				}
 			}
 		}
 	}

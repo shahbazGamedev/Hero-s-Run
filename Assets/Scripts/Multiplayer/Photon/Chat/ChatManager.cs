@@ -79,7 +79,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		this.chatClient.MessageLimit = HistoryLengthToFetch;
 
 		//Set your own online status
-		UniversalTopBar.Instance.configureChatStatusColor( getStatusColor( ChatUserStatus.Online ) );
+		if( onStatusUpdateEvent != null ) onStatusUpdateEvent( GameManager.Instance.playerProfile.getUserName(), (int)ChatUserStatus.Online );
 
 		//Add friends and recent players so we can get their online status. See OnStatusUpdate for more details.
 		addChatFriends();
@@ -127,7 +127,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	public void OnDisconnected()
 	{
 		Debug.LogWarning( GameManager.Instance.playerProfile.getUserName() + " has been disconnected from chat." );
-		UniversalTopBar.Instance.configureChatStatusColor( getStatusColor( ChatUserStatus.Offline ) );
+		if( onStatusUpdateEvent != null ) onStatusUpdateEvent( GameManager.Instance.playerProfile.getUserName(), (int)ChatUserStatus.Offline );
 	}
 	
 	public bool canChat()
