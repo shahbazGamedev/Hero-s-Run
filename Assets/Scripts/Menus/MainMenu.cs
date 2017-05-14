@@ -12,8 +12,12 @@ public class MainMenu : MonoBehaviour {
 	[SerializeField]  Text versionNumberText;
 	[Header("New Player Icons Indicator")]
 	[SerializeField] GameObject newPlayerIconsIndicator;
-	[Header("User Name")]
+	[Header("User Name Selector")]
 	[SerializeField] GameObject userNameCanvas;
+	[Header("Trophies, icon and name Panel")]
+	[SerializeField] Text numberOfTrophiesText;
+	[SerializeField] Image playerIcon;
+	[SerializeField] Text playerNameText;
 
 	// Use this for initialization
 	void Start ()
@@ -26,9 +30,17 @@ public class MainMenu : MonoBehaviour {
 		if( PlayerStatsManager.Instance.isFirstTimePlaying() )
 		{
 			gameObject.SetActive( false ); //To increase legibility, hide the main menu and top bar while the user name panel is played.
-			UniversalTopBar.Instance.configurePanels( false );
+			UniversalTopBar.Instance.showTopBar( false );
 			userNameCanvas.SetActive(  true );
 		}
+		numberOfTrophiesText.text = GameManager.Instance.playerInventory.getTrophyBalance().ToString("N0");
+		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
+		playerNameText.text = GameManager.Instance.playerProfile.getUserName();
+	}
+
+	public void updateUserName( string newUserName )
+	{
+		playerNameText.text = newUserName;
 	}
 
 	public void OnClickOpenPlayModes()

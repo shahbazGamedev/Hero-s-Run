@@ -39,7 +39,8 @@ public class UserNameHandler : MonoBehaviour {
 		ChatManager.Instance.ChatConnect();
 		gameObject.SetActive( false );
 		mainMenu.SetActive( true );
-		UniversalTopBar.Instance.configurePanels( true, true );
+		UniversalTopBar.Instance.showTopBar( true );
+		mainMenu.GetComponent<MainMenu>().updateUserName( userNameText.text );
 	}
 
 }

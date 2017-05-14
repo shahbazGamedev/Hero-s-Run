@@ -12,10 +12,8 @@ public class UniversalTopBar : MonoBehaviour {
 	[Header("For Store Access")]
 	RectTransform horizontalContent;
 	RectTransform storeVerticalContent;
-	[Header("Holder Panel")]
-	[SerializeField] GameObject holderPanel;
+	[Header("Top Panel")]
 	[SerializeField] GameObject topPanel;
-	[SerializeField] GameObject middlePanel;
 
 	[Header("Top Section")]
 	[SerializeField] GameObject balanceHolder;
@@ -34,10 +32,6 @@ public class UniversalTopBar : MonoBehaviour {
 
 	[SerializeField] Button settingsButton;
 
-	[Header("Middle Section")]
-	[SerializeField] Text numberOfTrophiesText;
-	[SerializeField] Image playerIcon;
-	[SerializeField] Text playerNameText;
 
 	int residualXP = 0;
 
@@ -90,59 +84,58 @@ public class UniversalTopBar : MonoBehaviour {
 				horizontalContent = GameObject.FindGameObjectWithTag("Horizontal Content").GetComponent<RectTransform>();
 				//storeVerticalContent holds the store
 				storeVerticalContent = GameObject.FindGameObjectWithTag("Store Vertical Content").GetComponent<RectTransform>();
-				configurePanels( true, true );
+				showTopBar( true );
 				onlyShowCloseButton( false );
 			break;
 
 			case GameScenes.PlayModes:
-				configurePanels( true, true, false );
+				showTopBar( true );
 				onlyShowCloseButton( true );
 			break;
 
 			case GameScenes.Training:
-				configurePanels( true, true, false );
+				showTopBar( true );
 				onlyShowCloseButton( true );
 			break;
 
 			case GameScenes.HeroSelection:
-				configurePanels( false );
+				showTopBar( false );
 			break;
 
 			case GameScenes.Social:
-				configurePanels( true, true );
+				showTopBar( true );
 				onlyShowCloseButton( true );
 			break;
 
 			case GameScenes.CareerProfile:
-				configurePanels( true, true );
+				showTopBar( true );
 				onlyShowCloseButton( true );
 			break;
 
 			case GameScenes.Options:
-				configurePanels( true, true );
+				showTopBar( true );
 				onlyShowCloseButton( true );
 			break;
 
 			case GameScenes.CircuitSelection:
-				configurePanels( true, true );
+				showTopBar( true );
 				onlyShowCloseButton( true );
 			break;
 
 			case GameScenes.Matchmaking:
-				configurePanels( true, true );
+				showTopBar( true );
 				onlyShowCloseButton( true );
 			break;
 
 			case GameScenes.WorldMap:
 			case GameScenes.Level:
-				configurePanels( false );
+				showTopBar( false );
 			break;
 		}
 	}	
 	
 	void configureUI()
 	{
-		numberOfTrophiesText.text = GameManager.Instance.playerInventory.getTrophyBalance().ToString("N0");
 		playerLevelText.text = GameManager.Instance.playerProfile.getLevel().ToString();
 		currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.totalXPEarned, ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ) );
 		progressBarSlider.value = GameManager.Instance.playerProfile.totalXPEarned/ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
@@ -150,10 +143,6 @@ public class UniversalTopBar : MonoBehaviour {
 		numberOfCoinsText.text = GameManager.Instance.playerInventory.getCoinBalance().ToString("N0");
 	
 		numberOfGemsText.text = GameManager.Instance.playerInventory.getGemBalance().ToString("N0");
-	
-		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
-		playerNameText.text = GameManager.Instance.playerProfile.getUserName();
-
 	}
 
 	void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int newValue )
@@ -166,10 +155,6 @@ public class UniversalTopBar : MonoBehaviour {
 
 			case PlayerInventoryEvent.Coin_Changed:
 				numberOfCoinsText.text = newValue.ToString("N0");			
-			break;
-
-			case PlayerInventoryEvent.Trophy_Balance_Changed:
-				numberOfTrophiesText.text = newValue.ToString("N0");
 			break;
 		}
 	}
@@ -184,16 +169,8 @@ public class UniversalTopBar : MonoBehaviour {
 				progressBarSlider.value = GameManager.Instance.playerProfile.totalXPEarned/(float)ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
 			break;
 
-			case PlayerProfileEvent.Player_Icon_Changed:
-				playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( newValue ).icon;
-			break;
-
 			case PlayerProfileEvent.XP_Changed:
 				handleXPChanged( previousValue, newValue, 1.5f );
-			break;
-
-			case PlayerProfileEvent.User_Name_Changed:
-				playerNameText.text = GameManager.Instance.playerProfile.getUserName();
 			break;
 		}
 	}
@@ -215,13 +192,24 @@ public class UniversalTopBar : MonoBehaviour {
 
 	void animateProgressBar( int previousValue, int newValue, float duration, System.Action onFinish = null )
 	{
-		//Animate Text
-		string currentAndNeededXPString = "{0}/" + ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ).ToString();
-		currentAndNeededXPText.GetComponent<UISpinNumber>().spinNumber( currentAndNeededXPString, previousValue, newValue, duration, onFinish );
-
-		//Animate Slider
-		float toValue = newValue/(float)ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
-		progressBarSlider.GetComponent<UIAnimateSlider>().animateSlider( toValue, duration );
+		//Only proceed if the progress bar is displayed. A coroutine cannot be started on an inactive object.
+		if( progressHolder.gameObject.activeSelf )
+		{
+			//Animate Text
+			string currentAndNeededXPString = "{0}/" + ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ).ToString();
+			currentAndNeededXPText.GetComponent<UISpinNumber>().spinNumber( currentAndNeededXPString, previousValue, newValue, duration, onFinish );
+	
+			//Animate Slider
+			float toValue = newValue/(float)ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
+			progressBarSlider.GetComponent<UIAnimateSlider>().animateSlider( toValue, duration );
+		}
+		else
+		{
+			//Update the values, but don't animate.
+			playerLevelText.text = GameManager.Instance.playerProfile.getLevel().ToString();
+			currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.totalXPEarned, ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ) );
+			progressBarSlider.value = GameManager.Instance.playerProfile.totalXPEarned/ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
+		}
 	}
 
 	/// <summary>
@@ -242,7 +230,7 @@ public class UniversalTopBar : MonoBehaviour {
 		{
 			UISoundManager.uiSoundManager.playButtonClick();
 			StartCoroutine( scrollToStorePosition( 0.4f, COIN_STORE_VERTICAL_POSITION ) );
-			configurePanels( true, true );
+			showTopBar( true );
 		}
 		else
 		{
@@ -257,7 +245,7 @@ public class UniversalTopBar : MonoBehaviour {
 		{
 			UISoundManager.uiSoundManager.playButtonClick();
 			StartCoroutine( scrollToStorePosition( 0.4f, GEM_STORE_VERTICAL_POSITION ) );
-			configurePanels( true, true );
+			showTopBar( true );
 		}
 		else
 		{
@@ -319,11 +307,9 @@ public class UniversalTopBar : MonoBehaviour {
 		}
 	}
 
-	public void configurePanels( bool holderPanelVisible, bool topPanelVisible = false, bool middlePanelVisible = false )
+	public void showTopBar( bool showTopBar )
 	{
-		holderPanel.SetActive( holderPanelVisible );
-		topPanel.SetActive( topPanelVisible );
-		middlePanel.SetActive( middlePanelVisible );
+		topPanel.SetActive( showTopBar );
 	}
 
 	void onlyShowCloseButton( bool closeButtonOnly )
