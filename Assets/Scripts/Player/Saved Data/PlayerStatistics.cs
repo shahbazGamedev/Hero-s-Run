@@ -30,16 +30,20 @@ public class PlayerStatistics {
 	/// Populate the entries list for first time user.
 	/// </summary>
 	public void initialize()
-	{
-		statisticEntriesList.Add( new StatisticData( StatisticDataType.RACES_RUN, 0 ) );
-		statisticEntriesList.Add( new StatisticData( StatisticDataType.RACES_WON, 0 ) );
-		statisticEntriesList.Add( new StatisticData( StatisticDataType.RACES_ABANDONED, 0 ) );
-		statisticEntriesList.Add( new StatisticData( StatisticDataType.DISTANCE_TRAVELED_LIFETIME, 0 ) );
-		statisticEntriesList.Add( new StatisticData( StatisticDataType.DEATHS_LIFETIME, 0 ) );
-		statisticEntriesList.Add( new StatisticData( StatisticDataType.PERFECT_RACES_LIFETIME, 0 ) );
+	{		
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.CURRENT_WIN_STREAK, 0 ) );
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.BEST_WIN_STREAK_LIFETIME, 0 ) );
+
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.WIN_LOSS_RATIO, 0 ) );
+		statisticEntriesList.Add( new StatisticData( StatisticDataType.PERFECT_RACES_LIFETIME, 0 ) );
+
+		statisticEntriesList.Add( new StatisticData( StatisticDataType.RACES_WON, 0 ) );
+		statisticEntriesList.Add( new StatisticData( StatisticDataType.RACES_RUN, 0 ) );
+
+		statisticEntriesList.Add( new StatisticData( StatisticDataType.RACES_ABANDONED, 0 ) );
+		statisticEntriesList.Add( new StatisticData( StatisticDataType.DEATHS_LIFETIME, 0 ) );
+
+		statisticEntriesList.Add( new StatisticData( StatisticDataType.DISTANCE_TRAVELED_LIFETIME, 0 ) );
 	}
 
 	public List<StatisticData> getStatisticEntriesList()

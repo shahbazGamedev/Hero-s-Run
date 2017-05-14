@@ -28,7 +28,7 @@ public class UserNameHandler : MonoBehaviour {
 		if( userNameText.text.Length < MINIMUM_USER_NAME_LENGTH )
 		{
 			userNameText.text = string.Empty;
-			userNamePlaceholderText.text = LocalizationManager.Instance.getText( "USER_NAME_NOT_LONG_ENOUGH" ).Replace("<MINIMUM_LENGTH>", MINIMUM_USER_NAME_LENGTH.ToString() );
+			userNamePlaceholderText.text = string.Format( LocalizationManager.Instance.getText( "USER_NAME_NOT_LONG_ENOUGH" ), MINIMUM_USER_NAME_LENGTH.ToString() );
 			return;
 		}
 
