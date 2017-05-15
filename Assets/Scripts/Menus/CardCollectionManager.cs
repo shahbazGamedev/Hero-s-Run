@@ -61,7 +61,7 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 		{
 			createBattleDeckCard( battleDeckList[i] );
 		}
-		averageManaCost.text = string.Format("Average Mana Cost: {0}", GameManager.Instance.playerDeck.getAverageManaCost().ToString("N1") );
+		averageManaCost.text = string.Format(LocalizationManager.Instance.getText("CARD_AVERAGE_MANA_COST"), GameManager.Instance.playerDeck.getAverageManaCost().ToString("N1") );
 	}
 
 	void createBattleDeckCard( PlayerDeck.PlayerCardData pcd )
@@ -89,7 +89,7 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 			GameManager.Instance.playerDeck.changeInBattleDeckStatus( cd.name, false );
 
 			//Recalculate the average mana cost
-			averageManaCost.text = string.Format("Average Mana Cost: {0}", GameManager.Instance.playerDeck.getAverageManaCost().ToString("N1") );
+			averageManaCost.text = string.Format(LocalizationManager.Instance.getText("CARD_AVERAGE_MANA_COST"), GameManager.Instance.playerDeck.getAverageManaCost().ToString("N1") );
 
 			//Re-sort the cards in the card collection section
 			sortCards();

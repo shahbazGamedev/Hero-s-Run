@@ -166,7 +166,7 @@ public class CardDetailPopup : MonoBehaviour {
 		{
 			//The card is already maxed out.
 			upgradeButton.interactable = false;
-			upgradeCostText.text = "Maxed Out";
+			upgradeCostText.text = LocalizationManager.Instance.getText( "CARD_MAXED_OUT" );
 			upgradeCostText.color = upgradeButton.colors.disabledColor;
 			coinIcon.gameObject.SetActive( false );
 		}
