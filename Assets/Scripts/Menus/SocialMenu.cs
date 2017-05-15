@@ -13,9 +13,13 @@ public class SocialMenu : MonoBehaviour {
 	[SerializeField] GameObject friendEntryPrefab;
 	[SerializeField] InputField addFriendInputField;
 	[SerializeField] Text addFriendPlaceholderText;
+	[SerializeField] GameObject noFriendsPanel;
+	[SerializeField] Text noFriendsText;
 	[Header("Recent Player List")]
 	[SerializeField] Transform recentPlayersHolder;
 	[SerializeField] GameObject recentPlayerPrefab;
+	[SerializeField] GameObject noRecentPlayersPanel;
+	[SerializeField] Text noRecentPlayersText;
 	[Header("Chat Online Indicator")]
 	[SerializeField] Image onlineIndicator;
 
@@ -25,6 +29,10 @@ public class SocialMenu : MonoBehaviour {
 	void Start () {
 
 		Handheld.StopActivityIndicator();
+
+		noFriendsText.text = LocalizationManager.Instance.getText("SOCIAL_NO_FRIENDS_YET" );
+		noRecentPlayersText.text = LocalizationManager.Instance.getText("SOCIAL_NO_RECENT_PLAYERS_YET" );
+
 		createFriendList();
 		createRecentPlayerList();
 		if( ChatManager.Instance.canChat() )
@@ -39,26 +47,38 @@ public class SocialMenu : MonoBehaviour {
 
 	void createFriendList()
 	{
-		//Remove previous friends if any. We want to keep the first object which is used to add friends however.
-		for( int i = friendsHolder.childCount-1; i >= 1; i-- )
+		//Remove previous friends if any. We want to keep the first two objects which are to to add friends and display instructions however.
+		for( int i = friendsHolder.childCount-1; i >= 2; i-- )
 		{
 			Transform child = friendsHolder.GetChild( i );
 			GameObject.Destroy( child.gameObject );
 		}
 
 		List<PlayerFriends.FriendData> friendList = GameManager.Instance.playerFriends.getFriendList();
-		for( int i = 0; i < friendList.Count; i++ )
-		{
-			createFriend( i, friendList[i] );
-		}
 
-		//Adjust the length of the content based on the number of entries.
-		//All entries have the same height.
-		//There is spacing between the entries.
-		float elementHeight = friendsHolder.GetChild( 0 ).GetComponent<LayoutElement>().preferredHeight;
-		float spacing = friendsHolder.GetComponent<VerticalLayoutGroup>().spacing;
-		float contentHeight = friendsHolder.childCount * elementHeight + ( friendsHolder.childCount - 1 ) * spacing;
-		friendsHolder.GetComponent<RectTransform>().sizeDelta = new Vector2( friendsHolder.GetComponent<RectTransform>().sizeDelta.x, contentHeight );
+		//Do we have friends?
+		if( friendList.Count > 0 )
+		{
+			//Yes, we do
+			noFriendsPanel.SetActive( false );
+			for( int i = 0; i < friendList.Count; i++ )
+			{
+				createFriend( i, friendList[i] );
+			}
+	
+			//Adjust the length of the content based on the number of entries.
+			//All entries have the same height.
+			//There is spacing between the entries.
+			float elementHeight = friendsHolder.GetChild( 0 ).GetComponent<LayoutElement>().preferredHeight;
+			float spacing = friendsHolder.GetComponent<VerticalLayoutGroup>().spacing;
+			float contentHeight = friendsHolder.childCount * elementHeight + ( friendsHolder.childCount - 1 ) * spacing;
+			friendsHolder.GetComponent<RectTransform>().sizeDelta = new Vector2( friendsHolder.GetComponent<RectTransform>().sizeDelta.x, contentHeight );
+		}
+		else
+		{
+			//No, we don't
+			noFriendsPanel.SetActive( true );
+		}
 	}
 
 	void createFriend( int index, PlayerFriends.FriendData fd )
@@ -70,26 +90,38 @@ public class SocialMenu : MonoBehaviour {
 
 	void createRecentPlayerList()
 	{
-		//Remove previous recent players if any.
-		for( int i = recentPlayersHolder.childCount-1; i >= 0; i-- )
+		//Remove previous recent players if any. We want to keep the first object which displays instructions however.
+		for( int i = recentPlayersHolder.childCount-1; i >= 1; i-- )
 		{
 			Transform child = recentPlayersHolder.GetChild( i );
 			GameObject.Destroy( child.gameObject );
 		}
 
 		List<PlayerFriends.FriendData> recentPlayerList = GameManager.Instance.recentPlayers.getRecentPlayersList();
-		for( int i = 0; i < recentPlayerList.Count; i++ )
-		{
-			createRecentPlayer( i, recentPlayerList[i] );
-		}
 
-		//Adjust the length of the content based on the number of entries.
-		//All entries have the same height.
-		//There is spacing between the entries.
-		float elementHeight = friendsHolder.GetChild( 0 ).GetComponent<LayoutElement>().preferredHeight;
-		float spacing = recentPlayersHolder.GetComponent<VerticalLayoutGroup>().spacing;
-		float contentHeight = recentPlayersHolder.childCount * elementHeight + ( recentPlayersHolder.childCount - 1 ) * spacing;
-		recentPlayersHolder.GetComponent<RectTransform>().sizeDelta = new Vector2( recentPlayersHolder.GetComponent<RectTransform>().sizeDelta.x, contentHeight );
+		//Do we have recent players?
+		if( recentPlayerList.Count > 0 )
+		{
+			//Yes, we do
+			noRecentPlayersPanel.SetActive( false );
+			for( int i = 0; i < recentPlayerList.Count; i++ )
+			{
+				createRecentPlayer( i, recentPlayerList[i] );
+			}
+	
+			//Adjust the length of the content based on the number of entries.
+			//All entries have the same height.
+			//There is spacing between the entries.
+			float elementHeight = friendsHolder.GetChild( 0 ).GetComponent<LayoutElement>().preferredHeight;
+			float spacing = recentPlayersHolder.GetComponent<VerticalLayoutGroup>().spacing;
+			float contentHeight = recentPlayersHolder.childCount * elementHeight + ( recentPlayersHolder.childCount - 1 ) * spacing;
+			recentPlayersHolder.GetComponent<RectTransform>().sizeDelta = new Vector2( recentPlayersHolder.GetComponent<RectTransform>().sizeDelta.x, contentHeight );
+		}
+		else
+		{
+			//No, we don't
+			noRecentPlayersPanel.SetActive( true );
+		}
 	}
 
 	void createRecentPlayer( int index, PlayerFriends.FriendData fd )

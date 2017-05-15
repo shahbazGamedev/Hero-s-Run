@@ -12,17 +12,6 @@ public class PlayerFriends {
 	public delegate void OnFriendChangedEvent();
 	public static event OnFriendChangedEvent onFriendChangedEvent;
 
-	/// <summary>
-	/// Creates the dummy friends for testing.
-	/// </summary>
-	public void createDummyFriends()
-	{
-		addDummyFriend( "Régis", 69 );
-		addDummyFriend( "Marie", 68 );
-		addDummyFriend( "Emma", 24 );
-		serializePlayerFriends( true );
-	}
-
 	public List<FriendData> getFriendList()
 	{
 		return onlineFriendDataList;
@@ -98,15 +87,6 @@ public class PlayerFriends {
 		//Make sure we get online status updates for this new friend
 		ChatManager.Instance.addChatFriend( fd.userName );
 		Debug.Log("	addFriendAndSave " + fd.userName );
-	}
-
-	public void addDummyFriend(  string userName, int level )
-	{
-		//Don't add duplicate friends
-		if( onlineFriendDataList.Exists(friendData => friendData.userName == userName ) ) return;
-
-		FriendData fd = new FriendData( userName, 2, level, 0, 3 );
-		onlineFriendDataList.Add(fd);
 	}
 
 	/// <summary>
