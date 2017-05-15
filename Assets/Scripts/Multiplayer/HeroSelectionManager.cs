@@ -7,14 +7,12 @@ using UnityEngine.SceneManagement;
 public class HeroSelectionManager : MonoBehaviour {
 
 	[Header("Hero Selection Manager")]
-	[SerializeField] Text exitButtonText;
 	bool levelLoading = false;
 
 	// Use this for initialization
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
-		exitButtonText.text = LocalizationManager.Instance.getText("CIRCUIT_EXIT");
 	}
 
 	public void OnClickReturnToMainMenu()
