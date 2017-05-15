@@ -11,9 +11,9 @@ public class StoreNotEnoughGemsPopup : MonoBehaviour {
 
 	void Start()
 	{
-		titleText.text = "Not Enough Gems!";
-		descriptionText.text = "You don't have enough gems. No worries. You can get some at the shop.";
-		goToShopButtonText.text = "Go to Shop";
+		titleText.text = LocalizationManager.Instance.getText( "CURRENCY_POPUP_NOT_ENOUGH_GEMS" );
+		descriptionText.text = LocalizationManager.Instance.getText( "CURRENCY_POPUP_GET_GEMS_AT_SHOP" );
+		goToShopButtonText.text = LocalizationManager.Instance.getText( "CURRENCY_BUTTON_GO_TO_SHOP" );
 	}
 
 	public void Show()
