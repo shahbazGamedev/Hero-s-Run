@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SocialPlatforms.GameCenter;
+using UnityEngine.SceneManagement;
 
 public class DebugMenu : MonoBehaviour {
 
@@ -13,11 +14,18 @@ public class DebugMenu : MonoBehaviour {
 	[SerializeField] Text allowBotToPlayCardsText;
 	[SerializeField] Slider speedOverrideMultiplierSlider;
 	[SerializeField] Text speedOverrideMultiplierText;
+	[SerializeField] Slider trophyOverrideMultiplierSlider;
+	[SerializeField] Text trophyOverrideMultiplierText;
 
 	void Start () {
-	
+				
+		SceneManager.sceneUnloaded += OnSceneUnloaded;
+
 		speedOverrideMultiplierSlider.value = LevelManager.Instance.speedOverrideMultiplier * 10;
 		speedOverrideMultiplierText.text = LevelManager.Instance.speedOverrideMultiplier.ToString();
+
+		trophyOverrideMultiplierSlider.value = GameManager.Instance.playerProfile.getTrophies();
+		trophyOverrideMultiplierText.text = GameManager.Instance.playerProfile.getTrophies().ToString("N0");
 
 		if( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() )
 		{
@@ -58,6 +66,18 @@ public class DebugMenu : MonoBehaviour {
 	{
 		LevelManager.Instance.speedOverrideMultiplier = slider.value/10; //We want 1.1 not 1.123567. Slider uses whole numbers from 0 to 30 converted to 0 to 3.
 		speedOverrideMultiplierText.text = (slider.value/10).ToString();
+	}
+
+	public void setTrophyOverride( Slider slider )
+	{
+		GameManager.Instance.playerProfile.setNumberOfTrophies( (int) slider.value );
+		trophyOverrideMultiplierText.text = (slider.value).ToString("N0");
+	}
+
+	void OnSceneUnloaded ( Scene scene )
+	{
+		//Save the player profile. The number of trophies may have been saved.
+		GameManager.Instance.playerProfile.serializePlayerprofile();
 	}
 
 	public void OnClickAllowBotToPlayCards()

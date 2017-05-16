@@ -107,7 +107,7 @@ public class PlayerProfile {
 		}
 	}
 
-	void setNumberOfTrophies( int value )
+	public void setNumberOfTrophies( int value )
 	{
 		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Trophies_Changed, numberOfTrophies, value );
 		numberOfTrophies = value;
