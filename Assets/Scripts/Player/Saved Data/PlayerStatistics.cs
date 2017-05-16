@@ -15,7 +15,10 @@ public enum StatisticDataType
 
 	CURRENT_WIN_STREAK = 6,				//The number of races won in a row. Resets as soon as you lose or abandon a race.
 	BEST_WIN_STREAK_LIFETIME = 7,		//The player's best win streak ever.
-	WIN_LOSS_RATIO = 8					//Races won divided by races run.
+	WIN_LOSS_RATIO = 8,					//Races won divided by races run.
+
+	HIGHEST_TROPHIES = 9,				//Highest number of trophies ever reached.
+	FAVORITE_CARD = 10					//The card most frequently played.
 }
 
 [System.Serializable]
@@ -36,6 +39,9 @@ public class PlayerStatistics {
 
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.WIN_LOSS_RATIO, 0 ) );
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.PERFECT_RACES_LIFETIME, 0 ) );
+
+		statisticEntriesList.Add( new StatisticData( StatisticDataType.HIGHEST_TROPHIES, 0 ) );
+		statisticEntriesList.Add( new StatisticData( StatisticDataType.FAVORITE_CARD, 0 ) );
 
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.RACES_WON, 0 ) );
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.RACES_RUN, 0 ) );
@@ -59,6 +65,15 @@ public class PlayerStatistics {
 	public void setStatisticData( StatisticDataType type, int value )
 	{
 		statisticEntriesList.Find( data => data.type == type).value = value;
+	}
+
+	public void setHighestNumberOfTrophies( int value )
+	{
+		if( value > getStatisticData(StatisticDataType.HIGHEST_TROPHIES) )
+		{
+			setStatisticData( StatisticDataType.HIGHEST_TROPHIES, value );
+			serializePlayerStatistics( true );
+		}
 	}
 
 	/// <summary>

@@ -174,6 +174,8 @@ public class TurnRibbonHandler : MonoBehaviour {
 		Debug.Log("TurnRibbonHandler-activateCard: playing card: " + cardName );
 		HeroManager.HeroCharacter selectedHero = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex );
 		cardHandler.activateCard( playerControl.GetComponent<PhotonView>(), cardName, selectedHero.name, playerCardData.level );
+		//Increase the card usage count. This is used to determine the player's favorite card.
+		playerCardData.timesUsed++;
 	}
 
 	int getUniqueRandom()

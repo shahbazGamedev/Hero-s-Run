@@ -96,6 +96,9 @@ public class PlayerRaceManager {
 		GameManager.Instance.playerStatistics.updateRaceStatistics( racePosition, distanceTravelled, numberOfTimesDiedDuringRace );
 		//Save the dates in the player profile
 		GameManager.Instance.playerProfile.serializePlayerprofile();
+		//Save the player deck because every time the players plays a card, we increment the timesUsed value in PlayerCardData.
+		//We don't want to save every time the player plays a card while racing, so we do it once at the end of the race or if he quits.
+		GameManager.Instance.playerDeck.serializePlayerDeck(true);
 
 	}
 
@@ -103,6 +106,9 @@ public class PlayerRaceManager {
 	{
 		Debug.Log("PlayerRaceManager-playerAbandonedRace" );
 		GameManager.Instance.playerStatistics.incrementNumberRacesAbandoned();
+		//Save the player deck because every time the players plays a card, we increment the timesUsed value in PlayerCardData.
+		//We don't want to save every time the player plays a card while racing, so we do it once at the end of the race or if he quits.
+		GameManager.Instance.playerDeck.serializePlayerDeck(true);
 		//TO DO - remove trophies
 
 	}

@@ -147,6 +147,15 @@ public class PlayerDeck {
 		}
 	}
 
+	/// <summary>
+	/// Gets the favorite card.
+	/// </summary>
+	/// <returns>The favorite card.</returns>
+	public CardName getFavoriteCard()
+	{
+		return playerCardDataList.OrderByDescending( entry => entry.timesUsed ).First().name;
+	}
+
 	public void changeInBattleDeckStatus(  CardName name, bool inBattleDeck )
 	{
 		//Make sure the specified card exists
@@ -227,6 +236,7 @@ public class PlayerDeck {
 		public int level;
 		public int  quantity;
 		public bool inBattleDeck;		
+		public int timesUsed;
 	}
 
 }

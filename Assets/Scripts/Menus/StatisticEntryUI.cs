@@ -14,7 +14,7 @@ public class StatisticEntryUI : MonoBehaviour {
 	public void configureEntry( int index, StatisticDataType type, Sprite icon, int value )
 	{
 		//Alternate light and dark backgrounds to increase legibility
-		if( index == 0 || index == 1 || index == 4 || index == 5 || index == 8 )
+		if( index == 0 || index == 1 || index == 4 || index == 5 || index == 8 || index == 9 )
 		{
 			propertyBackground.color = darkerBackground;
 		}
@@ -39,6 +39,10 @@ public class StatisticEntryUI : MonoBehaviour {
 			{
 				propertyValue.text = LocalizationManager.Instance.getText( "STATISTICS_NOT_AVAILABLE" );
 			}
+		}
+		else if( type == StatisticDataType.FAVORITE_CARD )
+		{
+			propertyValue.text = LocalizationManager.Instance.getText( "CARD_NAME_" + GameManager.Instance.playerDeck.getFavoriteCard().ToString().ToUpper() );
 		}
 		else
 		{

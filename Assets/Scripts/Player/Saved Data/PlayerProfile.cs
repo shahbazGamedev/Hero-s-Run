@@ -111,22 +111,8 @@ public class PlayerProfile {
 	{
 		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Trophies_Changed, numberOfTrophies, value );
 		numberOfTrophies = value;
-		setHighestNumberOfTrophies( numberOfTrophies );
+		GameManager.Instance.playerStatistics.setHighestNumberOfTrophies( numberOfTrophies );
 		Debug.Log("PlayerProfile-setNumberOfTrophies to: " + value );
-	}
-
-	public int getHighestHighestNumberOfTrophies()
-	{
-		return highestNumberOfTrophies;
-	}
-
-	void setHighestNumberOfTrophies( int value )
-	{
-		if( value > highestNumberOfTrophies )
-		{
-			highestNumberOfTrophies = value;
-			Debug.Log("PlayerProfile-setting highest number of trophies to " + value );
-		}
 	}
 	#endregion
 
