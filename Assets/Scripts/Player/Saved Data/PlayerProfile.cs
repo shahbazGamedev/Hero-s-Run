@@ -32,7 +32,7 @@ public class PlayerProfile {
 	[SerializeField] bool completedTutorial = true; //TRUE FOR TESTING
 	//Trophies indicate your success in racing. Players gain or lose Trophies by either winning or losing races in online multiplayer races.
 	//The number of trophies you have indicate which race track you will be racing in for multiplayer races.
-	[SerializeField] int numberOfTrophies = 867;
+	[SerializeField] int numberOfTrophies = 0;
 	//The highest number of trophies ever reached is used to determine the highest race track you have unlocked.
 	//Here are the rules:
 	//If playing alone to practice or against AI, the player can select any race track he has unlocked via the circuit selection menu.
