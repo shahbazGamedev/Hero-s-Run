@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using DynamicFogAndMist;
+using System.Linq;
 
 public enum SunType 
 {
@@ -337,6 +338,58 @@ public class LevelData : MonoBehaviour {
 		
 	}
 
+	/// <summary>
+	/// Gets the appropriate race track name based on the number of trophies the player has.
+	/// </summary>
+	/// <returns>The race track name based on the number of trophies the player has.</returns>
+	public string getRaceTrackByTrophies()
+	{
+		return getRaceTrackByTrophies( GameManager.Instance.playerProfile.numberOfTrophies );
+	}
+
+	/// <summary>
+	/// Gets the appropriate race track name based on the number of trophies specified.
+	/// If the tutorial has not been completed, it will return the tutorial track.
+	/// Race track 0 is the tutorial.
+	/// Race Track 1 is unlocked upon completing the tutorial.
+	/// 400 Trophy unlocks Race Track 2.
+	/// 800 Trophy unlocks Race Track 3.
+	/// 1,100 Trophy unlocks Race Track 4.
+	/// 1,400 Trophy unlocks Race Track 5.
+	/// 1,700 Trophy unlocks Race Track 6.
+	/// </summary>
+	/// <returns>The appropriate race track name based on the number of trophies specified</returns>
+	/// <param name="numberOfTrophies">Number of trophies.</param>
+	public string getRaceTrackByTrophies( int numberOfTrophies )
+	{
+		if( numberOfTrophies < 0 )
+		{
+			Debug.LogError("LevelData-getRaceTrackByTrophies: The number of trophies must be greater than 0." );
+			return string.Empty;
+		}
+		string matchName = string.Empty;
+		if( !GameManager.Instance.playerProfile.hasCompletedTutorial() )
+		{
+			matchName = multiplayerList[0].circuitInfo.matchName;
+		}
+		else
+		{
+			List<MultiplayerInfo> firstElement = new List<MultiplayerInfo>();
+			firstElement.Add( multiplayerList[0] ); //exclude the tutorial track
+			var sortedList = multiplayerList.Except(firstElement).OrderByDescending( entry => entry.trophiesNeededToUnlock );
+			foreach( MultiplayerInfo mi in sortedList )
+			{
+				if( numberOfTrophies >= mi.trophiesNeededToUnlock )
+				{
+					matchName = mi.circuitInfo.matchName;
+					print( "***getRaceTrackByTrophies-the one we want is " + mi.circuitInfo.matchName + " " + mi.trophiesNeededToUnlock + " needed: " + numberOfTrophies );
+					break;
+				}
+			}
+		}
+		return matchName;
+	}
+
 	[System.Serializable]
 	public class MultiplayerInfo
 	{
@@ -368,6 +421,8 @@ public class LevelData : MonoBehaviour {
 		public List<TileGroupType> tileGroupList = new List<TileGroupType>();
 		[Tooltip("Tile size. Either 50 for Jousting or 36.4 for all other.")]
 		public float tileSize;
+		[Tooltip("Trophies needed to unlock race track.")]
+		public int trophiesNeededToUnlock;
 		
 	}
 

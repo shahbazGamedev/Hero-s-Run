@@ -14,8 +14,9 @@ public class MainMenu : MonoBehaviour {
 	[SerializeField] GameObject newPlayerIconsIndicator;
 	[Header("User Name Selector")]
 	[SerializeField] GameObject userNameCanvas;
-	[Header("Trophies, icon and name Panel")]
+	[Header("Trophies, current race track, icon and name Panel")]
 	[SerializeField] Text numberOfTrophiesText;
+	[SerializeField] Text currentRaceTrackText;
 	[SerializeField] Image playerIcon;
 	[SerializeField] Text playerNameText;
 
@@ -34,6 +35,7 @@ public class MainMenu : MonoBehaviour {
 			userNameCanvas.SetActive(  true );
 		}
 		numberOfTrophiesText.text = GameManager.Instance.playerInventory.getTrophyBalance().ToString("N0");
+		currentRaceTrackText.text = LevelManager.Instance.getLevelData().getRaceTrackByTrophies();
 		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 		playerNameText.text = GameManager.Instance.playerProfile.getUserName();
 	}

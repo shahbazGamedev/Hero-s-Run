@@ -30,6 +30,8 @@ public class PlayerProfile {
 	public int selectedHeroIndex; //index for heroCharacterList in HeroManager
 	[SerializeField] int currentTrack = 0;
 	[SerializeField] int highestTrackUnlocked = 0;
+	[SerializeField] bool completedTutorial = true; //TRUE FOR TESTING
+	public int numberOfTrophies = 867;
 
 	//Delegate used to communicate to other classes when the a value changes
 	public delegate void PlayerProfileChanged( PlayerProfileEvent eventType, int previousValue = 0, int newValue = 0 );
@@ -45,6 +47,16 @@ public class PlayerProfile {
 		userName = value;
 		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.User_Name_Changed );
 		serializePlayerprofile();
+	}
+
+	public bool hasCompletedTutorial()
+	{
+		return completedTutorial;
+	}
+
+	public void setHasCompletedTutorial( bool value )
+	{
+		completedTutorial = value;
 	}
 
 	public int getLevel()
