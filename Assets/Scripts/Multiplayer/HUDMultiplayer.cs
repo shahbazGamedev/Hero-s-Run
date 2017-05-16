@@ -217,7 +217,7 @@ public class HUDMultiplayer : MonoBehaviour {
 
 	void slideInCircuitDetails()
 	{
-		LevelData.MultiplayerInfo multiplayerInfo =	LevelManager.Instance.getSelectedMultiplayerLevel();
+		LevelData.MultiplayerInfo multiplayerInfo =	LevelManager.Instance.getSelectedCircuit();
 		circuitNameText.text = LocalizationManager.Instance.getText(multiplayerInfo.circuitInfo.circuitTextID );
 		circuitIcon.sprite = multiplayerInfo.circuitInfo.circuitIcon;
 		LeanTween.move( circuitDetailsPanel, new Vector2(0, -circuitDetailsPanel.rect.height/2f), 0.5f ).setEase(LeanTweenType.easeOutQuad).setOnComplete(slideOutCircuitDetails).setOnCompleteParam(gameObject);

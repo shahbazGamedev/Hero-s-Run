@@ -64,19 +64,6 @@ public class LevelData : MonoBehaviour {
 			return episodeList[episodeNumber];
 		}
 	}
-	
-	public MultiplayerInfo getMultiplayerInfo( int multiplayerNumber )
-	{
-		if( multiplayerNumber < 0 || multiplayerNumber >= multiplayerList.Count )
-		{
-			Debug.LogError("LevelData-getMultiplayerInfo: multiplayer number specified, " + multiplayerNumber + ", is out of range." );
-			return null;
-		}
-		else
-		{		
-			return multiplayerList[multiplayerNumber];
-		}
-	}
 
 	public int getNumberOfMultiplayerLevels()
 	{
@@ -338,17 +325,29 @@ public class LevelData : MonoBehaviour {
 		
 	}
 
+	public MultiplayerInfo getRaceTrackByName( string raceTrackName )
+	{
+		for( int i =0; i < multiplayerList.Count; i++ )
+		{
+			if( multiplayerList[i].circuitInfo.raceTrackName == raceTrackName )
+			{	
+				return multiplayerList[i];
+			}
+		}
+		return null;
+	}
+
 	/// <summary>
-	/// Gets the appropriate race track name based on the number of trophies the player has.
+	/// Gets the appropriate multiplayer info based on the number of trophies the player has.
 	/// </summary>
-	/// <returns>The race track name based on the number of trophies the player has.</returns>
-	public string getRaceTrackByTrophies()
+	/// <returns>The multiplayer info based on the number of trophies the player has.</returns>
+	public MultiplayerInfo getRaceTrackByTrophies()
 	{
 		return getRaceTrackByTrophies( GameManager.Instance.playerProfile.getTrophies() );
 	}
 
 	/// <summary>
-	/// Gets the appropriate race track name based on the number of trophies specified.
+	/// Gets the appropriate multiplayer info based on the number of trophies specified.
 	/// If the tutorial has not been completed, it will return the tutorial track.
 	/// Race track 0 is the tutorial.
 	/// Race Track 1 is unlocked upon completing the tutorial.
@@ -358,19 +357,19 @@ public class LevelData : MonoBehaviour {
 	/// 1,400 Trophy unlocks Race Track 5.
 	/// 1,700 Trophy unlocks Race Track 6.
 	/// </summary>
-	/// <returns>The appropriate race track name based on the number of trophies specified</returns>
+	/// <returns>The appropriate multiplayer info based on the number of trophies specified</returns>
 	/// <param name="numberOfTrophies">Number of trophies.</param>
-	public string getRaceTrackByTrophies( int numberOfTrophies )
+	public MultiplayerInfo getRaceTrackByTrophies( int numberOfTrophies )
 	{
 		if( numberOfTrophies < 0 )
 		{
 			Debug.LogError("LevelData-getRaceTrackByTrophies: The number of trophies must be greater than 0." );
-			return string.Empty;
+			return null;
 		}
-		string matchName = string.Empty;
+		MultiplayerInfo multiplayerInfo = null;
 		if( !GameManager.Instance.playerProfile.hasCompletedTutorial() )
 		{
-			matchName = multiplayerList[0].circuitInfo.matchName;
+			multiplayerInfo = multiplayerList[0];
 		}
 		else
 		{
@@ -381,13 +380,13 @@ public class LevelData : MonoBehaviour {
 			{
 				if( numberOfTrophies >= mi.trophiesNeededToUnlock )
 				{
-					matchName = mi.circuitInfo.matchName;
-					print( "***getRaceTrackByTrophies-the one we want is " + mi.circuitInfo.matchName + " " + mi.trophiesNeededToUnlock + " needed: " + numberOfTrophies );
+					multiplayerInfo = mi;
+					print( "***getRaceTrackByTrophies-the one we want is " + mi.circuitInfo.raceTrackName + " " + mi.trophiesNeededToUnlock + " needed: " + numberOfTrophies );
 					break;
 				}
 			}
 		}
-		return matchName;
+		return multiplayerInfo;
 	}
 
 	[System.Serializable]
@@ -432,8 +431,8 @@ public class LevelData : MonoBehaviour {
 		[Header("Race Circuit Parameters")]
 		[Tooltip("The text ID of the race track.")]
 		public string circuitTextID = "CIRCUIT_XXX";
-		[Tooltip("The name to use for matchmaking. It must NOT have any underscore characters '_' because this cause Unity matchmaking to return no matches.")]
-		public string matchName = string.Empty;
+		[Tooltip("The name to use for matchmaking. It must NOT have any underscore characters '_'.")]
+		public string raceTrackName = string.Empty;
 		[Tooltip("Bigger, rectangular image used at the top of the carousel.")]
 		public Sprite circuitImage;
 		[Tooltip("Square icon used at the beginning of the match.")]

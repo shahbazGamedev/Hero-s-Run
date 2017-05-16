@@ -50,7 +50,7 @@ public enum GameMode {
 
 public enum PlayMode {
 	
-	PlayOthers = 1,
+	PlayTwoPlayers = 1,
 	PlayWithFriends = 2,
 	PlayAgainstEnemy = 3,
 	PlayAlone = 4,
@@ -87,7 +87,7 @@ public class GameManager {
 	public PlayerFriends playerFriends;
 	public RecentPlayers recentPlayers;
 	public PlayerInventory playerInventory;
-	PlayMode playMode = PlayMode.PlayOthers;
+	PlayMode playMode = PlayMode.PlayTwoPlayers;
 
 	public static GameManager Instance
 	{
@@ -133,7 +133,7 @@ public class GameManager {
 				LevelManager.Instance.setNumberOfPlayersRequired( 1 );
 			break;
 
-			case PlayMode.PlayOthers:
+			case PlayMode.PlayTwoPlayers:
 				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
 			break;
 

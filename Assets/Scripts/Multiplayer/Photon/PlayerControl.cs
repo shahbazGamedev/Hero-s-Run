@@ -336,7 +336,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	void setInitialRunningParameters()
 	{
 		//Use the level data to determine what the start run speed, run acceleration since they can vary
-		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedMultiplayerLevel();
+		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedCircuit();
 		levelRunStartSpeed = multiplayerInfo.RunStartSpeed * LevelManager.Instance.speedOverrideMultiplier;
 		runAcceleration = multiplayerInfo.RunAcceleration;
 		runSpeedTurnMultiplier = 0.9f; //Hack = how does this impact player synchro? Should I use 1f?

@@ -48,7 +48,7 @@ public class MPGameEndManager : MonoBehaviour {
 
 	void configureRacePanel()
 	{
-		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedMultiplayerLevel();
+		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedCircuit();
 		circuitImage.sprite = multiplayerInfo.circuitInfo.circuitImage;
 		raceResult.text = getRacePositionString( PlayerRaceManager.Instance.racePosition );
 		playerName.text = GameManager.Instance.playerProfile.getUserName();
@@ -243,7 +243,7 @@ public class MPGameEndManager : MonoBehaviour {
 	void showMatchmaking()
 	{
 		GameManager.Instance.setGameState(GameState.Matchmaking);
-		LevelData.CircuitInfo circuitInfo = LevelManager.Instance.getSelectedCircuitInfo();
+		LevelData.CircuitInfo circuitInfo = LevelManager.Instance.getSelectedCircuit().circuitInfo;
 		matchmakingManager.configureCircuitData( circuitInfo );
 		matchmakingManager.gameObject.SetActive( true );
 		gameObject.SetActive( false );

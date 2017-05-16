@@ -34,7 +34,7 @@ public class WorldSoundManager : MonoBehaviour {
     {
 		if( GameManager.Instance.isMultiplayer() )
 		{
-			LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedMultiplayerLevel();
+			LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedCircuit();
 			quietMusicAudioSource.clip = multiplayerInfo.quietMusicTrack;
 			actionMusicAudioSource.clip = multiplayerInfo.actionMusicTrack;
 			mainAmbienceAudioSource.clip = multiplayerInfo.mainAmbienceTrack;

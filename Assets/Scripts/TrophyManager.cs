@@ -59,7 +59,7 @@ public class TrophyManager : MonoBehaviour {
 				return 0;
 
 			case PlayMode.PlayThreePlayers:
-			case PlayMode.PlayOthers:
+			case PlayMode.PlayTwoPlayers:
 				return getTrophiesEarned( playMode, racePosition );
 
 			default:
@@ -71,7 +71,7 @@ public class TrophyManager : MonoBehaviour {
 	{
 		int trophies = 0;
 
-		if( playMode == PlayMode.PlayOthers )
+		if( playMode == PlayMode.PlayTwoPlayers )
 		{
 			switch ( racePosition )
 			{

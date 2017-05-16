@@ -52,12 +52,13 @@ public class ChatMessageHandler {
 	#region Race Me
 	public void sendMatchRequestMessage ( string target )
 	{
-		//multiplayerLevelndex and roomName are not needed just yet. They will be set when the player accepts the challenge.
+		string raceTrackName = LevelManager.Instance.getLevelData().getRaceTrackByTrophies().circuitInfo.raceTrackName;
+		string roomName = GameManager.Instance.playerProfile.getUserName() + "_" + target;
 		int playerIcon = GameManager.Instance.playerProfile.getPlayerIconId();
 		int level = GameManager.Instance.playerProfile.getLevel();
 		int prestige = GameManager.Instance.playerProfile.prestigeLevel; 
 		int currentWinStreak = GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK);
-		MatchData matchData = new MatchData( GameManager.Instance.playerProfile.getUserName(), 0, string.Empty, playerIcon, level, prestige, currentWinStreak );
+		MatchData matchData = new MatchData( GameManager.Instance.playerProfile.getUserName(), raceTrackName, roomName, playerIcon, level, prestige, currentWinStreak );
 
 		ChatMessage chatMessage = new ChatMessage();
 		chatMessage.chatMessageType = ChatMessageType.MATCH_REQUEST_SEND;
@@ -67,19 +68,12 @@ public class ChatMessageHandler {
 
 	public void sendMatchRequestAcceptedMessage ( string target )
 	{
-		//Choose a random level
-		int multiplayerLevelndex = Random.Range( 0, LevelManager.Instance.getLevelData().getNumberOfMultiplayerLevels() );
-		//Set the room name to use
-		string roomName = GameManager.Instance.playerProfile.getUserName() + "_" + target;
-		//Now save these values in the match data we got from the inviter.
-		LevelManager.Instance.matchData.multiplayerLevelIndex = multiplayerLevelndex;
-		LevelManager.Instance.matchData.roomName = roomName;
 		//Send also our player info so that the inviter can populate the matchmaking screen.
 		int playerIcon = GameManager.Instance.playerProfile.getPlayerIconId();
 		int level = GameManager.Instance.playerProfile.getLevel();
 		int prestige = GameManager.Instance.playerProfile.prestigeLevel; 
 		int currentWinStreak = GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK);
-		MatchData matchData = new MatchData( GameManager.Instance.playerProfile.getUserName(), multiplayerLevelndex, roomName, playerIcon, level, prestige, currentWinStreak );
+		MatchData matchData = new MatchData( GameManager.Instance.playerProfile.getUserName(), LevelManager.Instance.matchData.raceTrackName, LevelManager.Instance.matchData.roomName, playerIcon, level, prestige, currentWinStreak );
 
 		ChatMessage chatMessage = new ChatMessage();
 		chatMessage.chatMessageType = ChatMessageType.MATCH_REQUEST_ACCEPTED;
@@ -199,17 +193,17 @@ public class ChatMessageHandler {
 	public class MatchData
 	{
 		public string sender;
-		public int multiplayerLevelIndex;
+		public string raceTrackName;
 		public string roomName;
 		public int playerIcon;
 		public int level;
 		public int prestige;
 		public int currentWinStreak;
 	
-		public MatchData ( string sender, int multiplayerLevelIndex, string roomName, int playerIcon, int level, int prestige, int currentWinStreak )
+		public MatchData ( string sender, string raceTrackName, string roomName, int playerIcon, int level, int prestige, int currentWinStreak )
 		{
 			this.sender = sender;
-			this.multiplayerLevelIndex = multiplayerLevelIndex;
+			this.raceTrackName = raceTrackName;
 			this.roomName = roomName;
 			this.playerIcon = playerIcon;
 			this.level = level;
@@ -224,7 +218,7 @@ public class ChatMessageHandler {
 
 		public void print()
 		{
-			Debug.Log("MatchData-Sender: " + sender + " Multiplayer Level Index: " + multiplayerLevelIndex + " Room Name: " + roomName + " Player Icon: " + playerIcon  + " Level: " + level + " Prestige: " + prestige + " Current Win Streak: " + currentWinStreak );
+			Debug.Log("MatchData-Sender: " + sender + " Race Track Name: " + raceTrackName + " Room Name: " + roomName + " Player Icon: " + playerIcon  + " Level: " + level + " Prestige: " + prestige + " Current Win Streak: " + currentWinStreak );
 		}
 	}
 }

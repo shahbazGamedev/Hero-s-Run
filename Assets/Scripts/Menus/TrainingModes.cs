@@ -16,6 +16,8 @@ public class TrainingModes : MonoBehaviour {
 	public void OnClickPlaySolo()
 	{
 		GameManager.Instance.setPlayMode(PlayMode.PlayAlone);
+		//The race track is chosen by the player.
+		//Open circuit selection.
 		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
 	}
 

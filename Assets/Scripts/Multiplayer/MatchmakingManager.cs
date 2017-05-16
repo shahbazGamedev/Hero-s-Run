@@ -74,8 +74,16 @@ public class MatchmakingManager : MonoBehaviour {
 		}
 		else
 		{
-			LevelData.CircuitInfo circuitInfo = LevelManager.Instance.getSelectedCircuitInfo();
-			configureCircuitData( circuitInfo );
+			//If we are playing a 2 or 3 player online multiplayer match, the race track is
+			//selected automatically based on the player's number of trophies.
+			//If the player is playing alone or against AI, the race track has been selected in
+			//the circuit selection screen.
+			//If the player is inviting a friend, they will race in a track based on the inviter's number of trophies.
+			if( GameManager.Instance.getPlayMode() == PlayMode.PlayTwoPlayers || GameManager.Instance.getPlayMode() == PlayMode.PlayThreePlayers )
+			{
+				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRaceTrackByTrophies() );
+			}
+			configureCircuitData( LevelManager.Instance.getSelectedCircuit().circuitInfo );
 			endOfGameCanvas.SetActive( false );
 		}
 	}
@@ -93,7 +101,7 @@ public class MatchmakingManager : MonoBehaviour {
 			break;
 
 			case PlayMode.PlayAgainstEnemy:
-			case PlayMode.PlayOthers:
+			case PlayMode.PlayTwoPlayers:
 			case PlayMode.PlayWithFriends:
 				twoPlayerPanel.SetActive( true );
 				//Use default values for remote player portrait until he connects
@@ -123,7 +131,7 @@ public class MatchmakingManager : MonoBehaviour {
 			break;
 
 			case PlayMode.PlayAgainstEnemy:
-			case PlayMode.PlayOthers:
+			case PlayMode.PlayTwoPlayers:
 			case PlayMode.PlayWithFriends:
 				playerName2P.text = GameManager.Instance.playerProfile.getUserName();
 				playerIcon2P.GetComponent<Outline>().effectColor = frameColor;
@@ -155,7 +163,7 @@ public class MatchmakingManager : MonoBehaviour {
 		switch ( GameManager.Instance.getPlayMode() )
 		{
 			case PlayMode.PlayAgainstEnemy:
-			case PlayMode.PlayOthers:
+			case PlayMode.PlayTwoPlayers:
 			case PlayMode.PlayWithFriends:
 				remotePlayer1Name2P.text = name;
 				remotePlayer1Icon2P.GetComponent<Outline>().effectColor = frameColor;

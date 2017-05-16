@@ -16,14 +16,18 @@ public class PlayModes : MonoBehaviour {
 	
 	public void OnClickTwoPlayerRace()
 	{
-		GameManager.Instance.setPlayMode(PlayMode.PlayOthers);
-		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
+		GameManager.Instance.setPlayMode(PlayMode.PlayTwoPlayers);
+		//The race track is automatically chosen based on the number of trophies.
+		//We head directly to matchmaking.
+		StartCoroutine( loadScene(GameScenes.Matchmaking) );
 	}
 
 	public void OnClickThreePlayerRace()
 	{
 		GameManager.Instance.setPlayMode(PlayMode.PlayThreePlayers);
-		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
+		//The race track is automatically chosen based on the number of trophies.
+		//We head directly to matchmaking.
+		StartCoroutine( loadScene(GameScenes.Matchmaking) );
 	}
 
 	public void OnClickRaceWithFriend()
@@ -35,6 +39,8 @@ public class PlayModes : MonoBehaviour {
 	public void OnClickPlayAgainstAI()
 	{
 		GameManager.Instance.setPlayMode(PlayMode.PlayAgainstEnemy);
+		//The race track is chosen by the player.
+		//Open circuit selection.
 		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
 	}
 

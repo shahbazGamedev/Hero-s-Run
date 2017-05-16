@@ -15,6 +15,8 @@ public class LevelManager {
 
 	private static LevelManager levelManager = null;
 	private LevelData levelData = null;
+
+	//Campaign mode
 	private int nextEpisodeToComplete = 0;
 	private int highestEpisodeCompleted = 0;
 	private bool episodeHasChanged = false;
@@ -30,8 +32,10 @@ public class LevelManager {
 	//onlyUseUniqueTiles is only used for testing. This value is not saved. When enabled, only tile groups with a Frequency of Unique will appear
 	//in the level while in Story mode. This allows you to have shorter episodes with only the essential tile groups, typically, Start, any scripted sequence, and End.
 	bool onlyUseUniqueTiles = false;
+
+	//Racing mode
 	byte numberOfPlayersRequired;
-	private int currentMultiplayerLevel = 0; //the index of the multiplayer level selected by the player.
+	private LevelData.MultiplayerInfo selectedCircuit; //the race track selected.
 	public int selectedBotHeroIndex; //index for botHeroCharacterList in HeroManager. Used when in the PlayAgainstEnemy mode.
 	public ChatMessageHandler.MatchData matchData;
 	public float distanceTravelled = 0; //See PlayerRace. This value is displayed in the HUD.
@@ -53,6 +57,20 @@ public class LevelManager {
         }
     } 
 
+	#region General
+	//Called by TitleScreenHandler on Awake()
+	public void setLevelData( LevelData levelData )
+	{
+		this.levelData = levelData;
+	}
+
+	public LevelData getLevelData()
+	{
+		return levelData;
+	}
+	#endregion
+
+	#region Campaign Mode
 	//Called by PlayerStatsManager
 	public void setNextEpisodeToComplete( int episodeToComplete )
 	{
@@ -208,17 +226,6 @@ public class LevelManager {
 		playerFinishedTheGame = didCompleteGame;
 	}
 
-	//Called by TitleScreenHandler on Awake()
-	public void setLevelData( LevelData levelData )
-	{
-		this.levelData = levelData;
-	}
-
-	public LevelData getLevelData()
-	{
-		return levelData;
-	}
-
 	public void setEpisodeChanged( bool hasChanged )
 	{
 		episodeHasChanged = hasChanged;
@@ -255,7 +262,9 @@ public class LevelManager {
 	{
 		return onlyUseUniqueTiles;
 	}
+	#endregion
 
+	#region Racing Mode
 	public void setNumberOfPlayersRequired( byte value )
 	{
 		numberOfPlayersRequired = value;
@@ -266,33 +275,16 @@ public class LevelManager {
 		return numberOfPlayersRequired;
 	}
 
-	public int getCurrentMultiplayerLevel()
+	public LevelData.MultiplayerInfo getSelectedCircuit()
 	{
-		return currentMultiplayerLevel;
+		return selectedCircuit;
     }
 
-	public void setCurrentMultiplayerLevel( int selectedLevel )
+	public void setSelectedCircuit( LevelData.MultiplayerInfo selectedCircuit  )
 	{
-		if( selectedLevel != currentMultiplayerLevel )
-		{
-			currentMultiplayerLevel = selectedLevel;
-			Debug.Log( "setCurrentMultiplayerLevel " + selectedLevel );
-		}
+		this.selectedCircuit = selectedCircuit;
+		Debug.Log( "setSelectedCircuit " + selectedCircuit.circuitInfo.raceTrackName );
     }
-
-	public int getNumberOfMultiplayerLevels()
-	{
-		return levelData.multiplayerList.Count;
-    }
-
-	public LevelData.MultiplayerInfo getSelectedMultiplayerLevel()
-	{
-		return levelData.multiplayerList[currentMultiplayerLevel];
-    }
-
-	public LevelData.CircuitInfo getSelectedCircuitInfo()
-	{
-		return levelData.multiplayerList[currentMultiplayerLevel].circuitInfo;
-    }
+	#endregion
 
 }

@@ -37,13 +37,6 @@ public class CircuitSelectionManager : MonoBehaviour {
 		}
 	}
 
-	public void OnClickShowMatchmaking()
-	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		LevelManager.Instance.setCurrentMultiplayerLevel( dotsHandler.activePanel );
-		StartCoroutine( loadScene(GameScenes.Matchmaking) );
-	}
-
 	public void OnClickReturnToMainMenu()
 	{
 		PhotonNetwork.Disconnect();

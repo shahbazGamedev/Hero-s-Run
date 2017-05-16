@@ -2,26 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CarouselEntry : MonoBehaviour {
 
 	[Header("Race Circuit Parameters")]
-	[SerializeField] int circuitNumber = 0; 	//This value corresponds to the index in the multiplayerList of LevelData
+	[SerializeField] string raceTrackName;
 	public Text circuitName;
 	public Image circuitImage;
 
 	[Header("Online Players")]
 	[SerializeField] Text numberOnlinePlayers;
 
-	[Header("Shared")]
 	[SerializeField] Text raceButtonText;
+
+	bool levelLoading = false;
 	
 	// Use this for initialization
 	void Awake ()
 	{
 		//Configuration
 		LevelData levelData = LevelManager.Instance.getLevelData();
-		LevelData.CircuitInfo circuitInfo = levelData.getMultiplayerInfo( circuitNumber ).circuitInfo;
+		LevelData.CircuitInfo circuitInfo = levelData.getRaceTrackByName( raceTrackName ).circuitInfo;
 
 		//Circuit
 		circuitName.text = LocalizationManager.Instance.getText( circuitInfo.circuitTextID );
@@ -52,4 +54,24 @@ public class CarouselEntry : MonoBehaviour {
 			numberOnlinePlayers.text = LocalizationManager.Instance.getText( "CIRCUIT_NOT_AVAILABLE" );
 		}
 	}
+
+	public void OnClickShowMatchmaking()
+	{
+		LevelData.MultiplayerInfo selectedCircuit = LevelManager.Instance.getLevelData().getRaceTrackByName( raceTrackName ); 
+		LevelManager.Instance.setSelectedCircuit( selectedCircuit );
+		StartCoroutine( loadScene(GameScenes.Matchmaking) );
+	}
+
+	IEnumerator loadScene(GameScenes value)
+	{
+		if( !levelLoading )
+		{
+			UISoundManager.uiSoundManager.playButtonClick();
+			levelLoading = true;
+			Handheld.StartActivityIndicator();
+			yield return new WaitForSeconds(0);
+			SceneManager.LoadScene( (int)value );
+		}
+	}
+
 }

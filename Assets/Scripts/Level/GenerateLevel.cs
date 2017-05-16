@@ -366,9 +366,9 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		tileCreationIndex = 0;
 		playerTileIndex = 0;
 
-		Debug.Log("GenerateLevel-createMultiplayerLevel: selected level is: " + LevelManager.Instance.getCurrentMultiplayerLevel() );
+		Debug.Log("GenerateLevel-createMultiplayerLevel: selected level is: " + LevelManager.Instance.getSelectedCircuit().circuitInfo.raceTrackName );
 						
-		LevelData.MultiplayerInfo currentMultiplayer = levelData.getMultiplayerInfo( LevelManager.Instance.getCurrentMultiplayerLevel() );
+		LevelData.MultiplayerInfo currentMultiplayer = LevelManager.Instance.getSelectedCircuit();
 		if( currentMultiplayer.tileSize == 0 ) Debug.LogError("GenerateLevel error: the tile size for this level is 0. You must set the tile size in MultiplayerInfo. See LevelData.");
 		tileSize = currentMultiplayer.tileSize;
 

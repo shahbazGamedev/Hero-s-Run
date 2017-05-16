@@ -142,24 +142,24 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 			if( GameManager.Instance.getPlayMode() == PlayMode.PlayWithFriends )
 			{
-				LevelManager.Instance.setCurrentMultiplayerLevel( LevelManager.Instance.matchData.multiplayerLevelIndex );
+				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRaceTrackByName( LevelManager.Instance.matchData.raceTrackName ) );
 				RoomOptions roomOptions = new RoomOptions();
 				roomOptions.MaxPlayers = LevelManager.Instance.getNumberOfPlayersRequired();
 				roomOptions.IsVisible = false;
-			    Debug.Log("tryToJoinRoom: with friends " + LevelManager.Instance.matchData.roomName + " MP Level " + LevelManager.Instance.matchData.multiplayerLevelIndex + " Max " +  LevelManager.Instance.getNumberOfPlayersRequired() );
+			    Debug.Log("tryToJoinRoom: with friends " + LevelManager.Instance.matchData.roomName + " Max " +  LevelManager.Instance.getNumberOfPlayersRequired() );
 				PhotonNetwork.JoinOrCreateRoom( LevelManager.Instance.matchData.roomName, roomOptions, TypedLobby.Default );
 			}
 			else
 			{
+				LevelData.CircuitInfo selectedCircuit = LevelManager.Instance.getSelectedCircuit().circuitInfo;
 				//Join the selected circuit such as CIRUIT_PRACTICE_RUN.
-				LevelData.CircuitInfo circuitInfo = LevelManager.Instance.getSelectedCircuitInfo();
-				Debug.Log("MPNetworkLobbyManager-tryToJoinRoom-The circuit selected by the player is: " + circuitInfo.matchName );
+				Debug.Log("MPNetworkLobbyManager-tryToJoinRoom-The circuit selected by the player is: " + selectedCircuit.raceTrackName );
 		
 				//In addition, join a match that corresponds to the player's elo rating.
 				int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
 		
 				//Try to join an existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
-				ExitGames.Client.Photon.Hashtable desiredRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", circuitInfo.matchName }, { "Elo", playerEloRating } };
+				ExitGames.Client.Photon.Hashtable desiredRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", selectedCircuit.raceTrackName }, { "Elo", playerEloRating } };
 				PhotonNetwork.JoinRandomRoom( desiredRoomProperties, LevelManager.Instance.getNumberOfPlayersRequired() );
 			}
 		}
@@ -177,7 +177,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 				matchmakingManager.setConnectionProgress( "Playing alone" );   
 			break;
 
-			case PlayMode.PlayOthers:
+			case PlayMode.PlayTwoPlayers:
 				matchmakingManager.setConnectionProgress( "Looking for worthy opponent ..." );   
 			break;
 
@@ -213,7 +213,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	    //We failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
 		int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
 		RoomOptions roomOptions = new RoomOptions();
-		roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", LevelManager.Instance.getSelectedCircuitInfo().matchName }, { "Elo", playerEloRating } };
+		roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", LevelManager.Instance.getSelectedCircuit().circuitInfo.raceTrackName }, { "Elo", playerEloRating } };
 		roomOptions.MaxPlayers = LevelManager.Instance.getNumberOfPlayersRequired();
 		//Mandatory - you must also set customRoomPropertiesForLobby
 		//With customRoomPropertiesForLobby, you define which key-values are relevant for matchmaking.
@@ -247,7 +247,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 				//Note: In this case, LoadArena() never gets called. We load the level directly.
 			break;
 
-			case PlayMode.PlayOthers:
+			case PlayMode.PlayTwoPlayers:
 				foreach(PhotonPlayer player in PhotonNetwork.playerList)
 				{
 					if( !player.IsLocal )
@@ -319,7 +319,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	{
 		numberRemotePlayerConnected++;
 		matchmakingManager.disableExitButton();
-		matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedMultiplayerLevel().circuitInfo.circuitTextID ) + " ..." ); 
+		matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedCircuit().circuitInfo.circuitTextID ) + " ..." ); 
 		matchmakingManager.setRemotePlayerData( numberRemotePlayerConnected, player.NickName, (int)player.CustomProperties["Level"], (int)player.CustomProperties["Icon"] );
 		PlayerFriends.FriendData playerData = new PlayerFriends.FriendData( player.NickName, (int)player.CustomProperties["Icon"], (int)player.CustomProperties["Level"], (int)player.CustomProperties["Prestige"], (int)player.CustomProperties["WinStreak"] );		
 		GameManager.Instance.recentPlayers.addRecentPlayer( playerData );
@@ -335,7 +335,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	void displayBotInfo()
 	{
 		matchmakingManager.disableExitButton();
-		matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedMultiplayerLevel().circuitInfo.circuitTextID ) + " ..." ); 
+		matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedCircuit().circuitInfo.circuitTextID ) + " ..." ); 
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
 		matchmakingManager.setRemotePlayerData( 1, botHero.userName, botHero.level, botHero.playerIcon );
 		LoadArena();
