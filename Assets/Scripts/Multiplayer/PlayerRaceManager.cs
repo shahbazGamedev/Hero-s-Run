@@ -99,4 +99,11 @@ public class PlayerRaceManager {
 
 	}
 
+	public void playerAbandonedRace()
+	{
+		Debug.Log("PlayerRaceManager-playerAbandonedRace" );
+		GameManager.Instance.playerStatistics.incrementNumberRacesAbandoned();
+		//TO DO - remove trophies
+
+	}
 }
