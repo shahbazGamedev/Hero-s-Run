@@ -15,7 +15,7 @@ public class StatisticsMenu : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{	
-		numberOfTrophiesText.text = GameManager.Instance.playerInventory.getTrophyBalance().ToString("N0");
+		numberOfTrophiesText.text = GameManager.Instance.playerProfile.getTrophies().ToString("N0");
 		configureEntries();
 	}
 

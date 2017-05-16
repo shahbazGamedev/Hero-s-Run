@@ -34,7 +34,7 @@ public class MainMenu : MonoBehaviour {
 			UniversalTopBar.Instance.showTopBar( false );
 			userNameCanvas.SetActive(  true );
 		}
-		numberOfTrophiesText.text = GameManager.Instance.playerInventory.getTrophyBalance().ToString("N0");
+		numberOfTrophiesText.text = GameManager.Instance.playerProfile.getTrophies().ToString("N0");
 		currentRaceTrackText.text = LevelManager.Instance.getLevelData().getRaceTrackByTrophies();
 		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 		playerNameText.text = GameManager.Instance.playerProfile.getUserName();

@@ -8,7 +8,7 @@ public enum PlayerProfileEvent {
 	Player_Icon_Changed = 1,
 	XP_Changed = 2,
 	User_Name_Changed = 3,
-	Track_Changed = 4
+	Trophies_Changed = 4
 }
 
 [System.Serializable]
@@ -28,36 +28,107 @@ public class PlayerProfile {
 	//The user can change his player icon in the Player Icon screen.
 	[SerializeField] int playerIconId = 0;
 	public int selectedHeroIndex; //index for heroCharacterList in HeroManager
-	[SerializeField] int currentTrack = 0;
-	[SerializeField] int highestTrackUnlocked = 0;
+
 	[SerializeField] bool completedTutorial = true; //TRUE FOR TESTING
-	public int numberOfTrophies = 867;
+	//Trophies indicate your success in racing. Players gain or lose Trophies by either winning or losing races in online multiplayer races.
+	//The number of trophies you have indicate which race track you will be racing in for multiplayer races.
+	[SerializeField] int numberOfTrophies = 867;
+	//The highest number of trophies ever reached is used to determine the highest race track you have unlocked.
+	//Here are the rules:
+	//If playing alone to practice or against AI, the player can select any race track he has unlocked via the circuit selection menu.
+	//If inviting a friend to race, the inviter can select any race track he has unlocked even if the invitee has not unlocked that track yet. 
+	[SerializeField] int highestNumberOfTrophies = 0;
 
 	//Delegate used to communicate to other classes when the a value changes
 	public delegate void PlayerProfileChanged( PlayerProfileEvent eventType, int previousValue = 0, int newValue = 0 );
 	public static event PlayerProfileChanged playerProfileChanged;
 
+	#region User Name
 	public string getUserName()
 	{
 		return userName;
 	}
 	
+	/// <summary>
+	/// Saves the user name and sends a PlayerProfileEvent.User_Name_Changed.
+	/// </summary>
+	/// <param name="value">Value.</param>
 	public void saveUserName( string value )
 	{
 		userName = value;
 		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.User_Name_Changed );
 		serializePlayerprofile();
 	}
+	#endregion
 
+	#region Tutorial
 	public bool hasCompletedTutorial()
 	{
 		return completedTutorial;
 	}
 
-	public void setHasCompletedTutorial( bool value )
+	/// <summary>
+	/// Saves the fact that the player has completed tutorial.
+	/// </summary>
+	public void saveHasCompletedTutorial()
 	{
-		completedTutorial = value;
+		completedTutorial = true;
+		serializePlayerprofile();
 	}
+	#endregion
+
+	#region Trophies
+	public int getTrophies()
+	{
+		return numberOfTrophies;
+	}
+
+	public void addTrophies( int value )
+	{
+		if( value > 0 && value <= TrophyManager.MAX_NUMBER_TROPHIES_ADDED )
+		{
+			setNumberOfTrophies( numberOfTrophies + value );
+		}
+		else
+		{
+			Debug.LogWarning("PlayerProfile-the number of trophies to add " + value + " is incorrect. It needs to be between 1 and " + TrophyManager.MAX_NUMBER_TROPHIES_ADDED.ToString() + ".");
+		}
+	}
+
+	public void removeTrophies( int value )
+	{
+		if( value > 0 && value <= TrophyManager.MAX_NUMBER_TROPHIES_ADDED )
+		{
+			setNumberOfTrophies( numberOfTrophies - value );
+		}
+		else
+		{
+			Debug.LogWarning("PlayerProfile-the number of trophies to remove " + value + " is incorrect. It needs to be between 1 and " + TrophyManager.MAX_NUMBER_TROPHIES_ADDED.ToString() + ".");
+		}
+	}
+
+	void setNumberOfTrophies( int value )
+	{
+		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Trophies_Changed, numberOfTrophies, value );
+		numberOfTrophies = value;
+		setHighestNumberOfTrophies( numberOfTrophies );
+		Debug.Log("PlayerProfile-setNumberOfTrophies to: " + value );
+	}
+
+	public int getHighestHighestNumberOfTrophies()
+	{
+		return highestNumberOfTrophies;
+	}
+
+	void setHighestNumberOfTrophies( int value )
+	{
+		if( value > highestNumberOfTrophies )
+		{
+			highestNumberOfTrophies = value;
+			Debug.Log("PlayerProfile-setting highest number of trophies to " + value );
+		}
+	}
+	#endregion
 
 	public int getLevel()
 	{
@@ -82,61 +153,6 @@ public class PlayerProfile {
 			Debug.LogWarning("PlayerProfile-the level specified " + value + " is incorrect. It needs to be between 1 and " + ProgressionManager.MAX_LEVEL.ToString() + ".");
 		}
 	}
-
-	#region Highest Track Unlocked
-	public int getHighestTrackUnlocked()
-	{
-		return highestTrackUnlocked;
-	}
-
-	void setHighestTrackUnlocked( int value )
-	{
-		if( value > 0 && value <= ProgressionManager.MAX_NUMBER_OF_TRACKS )
-		{
-			highestTrackUnlocked = value;
-			Debug.Log("PlayerProfile-setting highest track unlocked to: " + value );
-		}
-		else
-		{
-		Debug.LogWarning("PlayerProfile-the highest track unlocked value specified " + value + " is incorrect. It needs to be between 1 and " + ProgressionManager.MAX_NUMBER_OF_TRACKS.ToString() + ".");
-		}
-	}
-	#endregion
-
-	#region Current Track
-	public int getCurrentTrack()
-	{
-		return currentTrack;
-	}
-
-	public void incrementCurrentTrack()
-	{
-		setCurrentTrack( currentTrack + 1 );
-	}
-
-	public void decrementCurrentTrack()
-	{
-		setCurrentTrack( currentTrack - 1 );
-	}
-
-	void setCurrentTrack( int value )
-	{
-		if( value >= 0 && value <= ProgressionManager.MAX_NUMBER_OF_TRACKS )
-		{
-			if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Track_Changed, currentTrack, value );
-			currentTrack = value;
-			Debug.Log("PlayerProfile-setting current track to: " + value );
-			if( currentTrack > highestTrackUnlocked )
-			{
-				setHighestTrackUnlocked( currentTrack );
-			}
-		}
-		else
-		{
-			Debug.LogWarning("PlayerProfile-the current track value specified " + value + " is incorrect. It needs to be between 0 and " + ProgressionManager.MAX_NUMBER_OF_TRACKS.ToString() + ".");
-		}
-	}
-	#endregion
 
 	public void addToTotalXPEarned( int xpAmount, bool saveImmediately )
 	{

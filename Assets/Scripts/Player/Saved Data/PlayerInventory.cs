@@ -9,8 +9,7 @@ public enum PlayerInventoryEvent {
 	Coin_Doubler_Changed = 3,
 	Score_Changed = 4,
 	Key_Found_In_Episode_Changed = 5,
-	Gem_Balance_Changed = 6,
-	Trophy_Balance_Changed = 7
+	Gem_Balance_Changed = 6
 }
 
 [System.Serializable]
@@ -18,10 +17,8 @@ public class PlayerInventory {
 
 	const int MAXIMUM_INCREASE_TO_COIN_BALANCE = 100000;
 	const int MAXIMUM_INCREASE_TO_GEM_BALANCE = 14000;
-	const int MAXIMUM_INCREASE_TO_TROPHIES = 30;
 	[SerializeField] int currentCoins = 0;
 	[SerializeField] int currentGems = 25;
-	[SerializeField] int currentTrophies = 0;
 
 	//Delegate used to communicate to other classes when an inventory value changes such as the gem balance
 	public delegate void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int newValue );
@@ -117,53 +114,6 @@ public class PlayerInventory {
 		else
 		{
 			Debug.LogWarning("PlayerInventory-the gem value specified " + value + " is incorrect. It needs to be zero or greater." );
-		}
-	}
-	#endregion
-
-	#region Trophies
-	public int getTrophyBalance()
-	{
-		return currentTrophies;
-	}
-
-	public void deductTrophies( int trophyAmount )
-	{
-		if( currentTrophies >= trophyAmount )
-		{
-			setTrophyBalance( currentTrophies - trophyAmount );
-		}
-		else
-		{
-			Debug.LogWarning("PlayerInventory-the trophy amount you want to deduct " + trophyAmount + " is bigger than your current balance " + currentTrophies + "." );
-		}
-	}
-
-	public void addTrophies( int trophyAmount )
-	{
-		if( trophyAmount >= 0 && trophyAmount <= MAXIMUM_INCREASE_TO_TROPHIES )
-		{
-			setTrophyBalance( currentTrophies + trophyAmount );
-		}
-		else
-		{
-			Debug.LogWarning("PlayerInventory-the trophy value specified " + trophyAmount + " is incorrect. It needs to be between 0 and " + MAXIMUM_INCREASE_TO_TROPHIES.ToString() + ".");
-		}
-	}
-
-	void setTrophyBalance( int value )
-	{
-		if( value >= 0 )
-		{
-			currentTrophies = value;
-			if( playerInventoryChangedNew != null ) playerInventoryChangedNew( PlayerInventoryEvent.Trophy_Balance_Changed, currentTrophies );
-			//Save
-			serializePlayerprofile();
-			Debug.Log("PlayerInventory-setting current trophies to: " + value );
-		}
-		else
-		{
-			Debug.LogWarning("PlayerInventory-the trophy value specified " + value + " is incorrect. It needs to be zero or greater." );
 		}
 	}
 	#endregion

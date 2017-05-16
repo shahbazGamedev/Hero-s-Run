@@ -26,7 +26,6 @@ public class MPGameEndManager : MonoBehaviour {
 
 	[Header("Other")]
 	MatchmakingManager matchmakingManager;
-	[SerializeField] Text exitButtonText;
 	[SerializeField] int timeBeforeNextRace = 60; //in seconds
 	const float ANIMATION_DURATION = 3f;
 
@@ -36,7 +35,6 @@ public class MPGameEndManager : MonoBehaviour {
 
 		//Static values - we just need to localise them
 		nextRaceBegins.text = LocalizationManager.Instance.getText( "EOG_NEXT_RACE_BEGINS" ).Replace("\\n", System.Environment.NewLine );
-		exitButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_EXIT" );
 
 		if( !xpTestingMode ) startNextRace();
 		configureRacePanel();

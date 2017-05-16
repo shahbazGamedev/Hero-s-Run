@@ -344,7 +344,7 @@ public class LevelData : MonoBehaviour {
 	/// <returns>The race track name based on the number of trophies the player has.</returns>
 	public string getRaceTrackByTrophies()
 	{
-		return getRaceTrackByTrophies( GameManager.Instance.playerProfile.numberOfTrophies );
+		return getRaceTrackByTrophies( GameManager.Instance.playerProfile.getTrophies() );
 	}
 
 	/// <summary>

@@ -28,6 +28,7 @@ using UnityEngine;
 public class TrophyManager : MonoBehaviour {
 
 	public static TrophyManager Instance;
+	public const int MAX_NUMBER_TROPHIES_ADDED = 40;
 
 	void Awake ()
 	{
