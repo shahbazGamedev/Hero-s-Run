@@ -83,6 +83,11 @@ public class MatchmakingManager : MonoBehaviour {
 			{
 				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRaceTrackByTrophies() );
 			}
+			else if( GameManager.Instance.getPlayMode() == PlayMode.PlayWithFriends )
+			{
+				//Use the race track name saved in the match data
+				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRaceTrackByName( LevelManager.Instance.matchData.raceTrackName ) );
+			}
 			configureCircuitData( LevelManager.Instance.getSelectedCircuit().circuitInfo );
 			endOfGameCanvas.SetActive( false );
 		}
