@@ -8,7 +8,9 @@ public class RaceTrackUI : MonoBehaviour {
 	[SerializeField] Text raceTrackDescription;
 	[SerializeField] Image raceTrackImage;
 	[SerializeField] Text raceTrackNumber;
+	[SerializeField] GameObject trophyIcon;
 	[SerializeField] Text trophiesNeeded;
+	[SerializeField] Material grayscale;
 
 	public void configure ( int index, LevelData.MultiplayerInfo info )
 	{
@@ -16,6 +18,19 @@ public class RaceTrackUI : MonoBehaviour {
 		raceTrackName.text = LocalizationManager.Instance.getText( info.circuitInfo.circuitTextID );
 		raceTrackDescription.text = "Lopsum Irum.";
 		raceTrackImage.sprite = info.circuitInfo.circuitImage;
-		trophiesNeeded.text = info.trophiesNeededToUnlock.ToString("N0");
+		if( info.trophiesNeededToUnlock == 0 )
+		{
+			//If it does not require trophies, hide the trophy icon and trophies needed text
+			trophyIcon.SetActive( false );
+		}
+		else
+		{
+			trophiesNeeded.text = info.trophiesNeededToUnlock.ToString("N0") + "+";
+		}
+		if( GameManager.Instance.playerProfile.getTrophies() < info.trophiesNeededToUnlock )
+		{
+			raceTrackImage.material = grayscale;
+			GetComponent<Button>().interactable = false;
+		}
 	}
 }
