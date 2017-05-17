@@ -145,6 +145,25 @@ public class GameManager {
 				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
 			break;
 		}
+		// we don't join the lobby. There is no need to join a lobby to get the list of rooms.
+		PhotonNetwork.autoJoinLobby = false;
+		//Are we playing online or doing an offline PvE/solo match?
+		if( getPlayMode() == PlayMode.PlayAgainstEnemy || getPlayMode() == PlayMode.PlayAlone )
+		{
+			//PvE is an offline mode. We will not connect. We will also set Photon to offline.
+			if( PhotonNetwork.connected ) PhotonNetwork.Disconnect();
+			PhotonNetwork.offlineMode = true;
+		}
+		else
+		{
+			//All other play modes are online.
+			PhotonNetwork.offlineMode = false;
+			//In order to display the number of online players, we need to be connected to the master server.
+			//Users are separated from each other by game version (which allows you to make breaking changes).
+			//Don't attempt to connect if you are already connected.
+			if( !PhotonNetwork.connected ) PhotonNetwork.ConnectUsingSettings(GameManager.Instance.getVersionNumber());
+			Debug.Log("GameManager-PhotonNetwork.versionPUN is " + PhotonNetwork.versionPUN );
+		}
 	} 
 
 	public PlayMode getPlayMode()

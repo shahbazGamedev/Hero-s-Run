@@ -6,41 +6,56 @@ using UnityEngine.SceneManagement;
 
 public class CircuitSelectionManager : MonoBehaviour {
 
-	[SerializeField] ScrollRect carouselScrollRect;
+	[Header("Race Track Details")]
+	[SerializeField] Transform raceTrackHolder;
+	[SerializeField] GameObject raceTrackPrefab;
 	bool levelLoading = false;
-	public List<CarouselEntry> carouselEntryList = new List<CarouselEntry>(2);
-	[SerializeField] DotsHandler dotsHandler;
 
 	// Use this for initialization
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
-		carouselScrollRect.horizontalNormalizedPosition = 0; //Make sure it is on the far left completely or the dot won't light up
-		// we don't join the lobby. There is no need to join a lobby to get the list of rooms.
-		PhotonNetwork.autoJoinLobby = false;
-		//Are we playing online or doing an offline PvE/solo match?
-		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstEnemy || GameManager.Instance.getPlayMode() == PlayMode.PlayAlone )
+		createRaceTracks();
+		adjustContentHeight();
+	}
+
+	void adjustContentHeight()
+	{
+		//Adjust the length of the content based on the number of entries.
+		//All entries have the same height.
+		//There is spacing between the entries.
+		float top = raceTrackHolder.GetComponent<VerticalLayoutGroup>().padding.top;
+		float elementHeight = raceTrackPrefab.GetComponent<LayoutElement>().preferredHeight;
+		float spacing = raceTrackHolder.GetComponent<VerticalLayoutGroup>().spacing;
+		float buffer = 50;
+		float contentHeight = top + buffer + raceTrackHolder.childCount * elementHeight + ( raceTrackHolder.childCount - 1 ) * spacing;
+		raceTrackHolder.GetComponent<RectTransform>().sizeDelta = new Vector2( raceTrackHolder.GetComponent<RectTransform>().sizeDelta.x, contentHeight );
+	}
+
+	#region Race Tracks
+	void createRaceTracks()
+	{
+		List<LevelData.MultiplayerInfo> raceTrackList = LevelManager.Instance.getLevelData().getSortedRaceTrackList();
+		for( int i = 0; i < raceTrackList.Count; i++ )
 		{
-			//PvE is an offline mode. We will not connect. We will also set Photon to offline.
-			if( PhotonNetwork.connected ) PhotonNetwork.Disconnect();
-			PhotonNetwork.offlineMode = true;
-		}
-		else
-		{
-			//All other play modes are online.
-			PhotonNetwork.offlineMode = false;
-			//In order to display the number of online players, we need to be connected to the master server.
-			//Users are separated from each other by game version (which allows you to make breaking changes).
-			//Don't attempt to connect if you are already connected.
-			if( !PhotonNetwork.connected ) PhotonNetwork.ConnectUsingSettings(GameManager.Instance.getVersionNumber());
-			Debug.Log("CircuitSelectionManager-PhotonNetwork.versionPUN is " + PhotonNetwork.versionPUN );
+			createRaceTrack( raceTrackList[i] );
 		}
 	}
 
-	public void OnClickReturnToMainMenu()
+	void createRaceTrack( LevelData.MultiplayerInfo info )
 	{
-		PhotonNetwork.Disconnect();
-		StartCoroutine( loadScene(GameScenes.MainMenu) );
+		GameObject go = (GameObject)Instantiate(raceTrackPrefab);
+		go.transform.SetParent(raceTrackHolder,false);
+		Button raceTrackButton = go.GetComponent<Button>();
+		raceTrackButton.onClick.RemoveAllListeners();
+		raceTrackButton.onClick.AddListener(() => OnClickRaceTrack( info ));
+		go.GetComponent<RaceTrackUI>().configure( info );
+	}
+
+	public void OnClickRaceTrack( LevelData.MultiplayerInfo info )
+	{
+		LevelManager.Instance.setSelectedCircuit( info );
+		StartCoroutine( loadScene(GameScenes.Matchmaking) );
 	}
 
 	IEnumerator loadScene(GameScenes value)
@@ -54,5 +69,6 @@ public class CircuitSelectionManager : MonoBehaviour {
 			SceneManager.LoadScene( (int)value );
 		}
 	}
+	#endregion
 
 }

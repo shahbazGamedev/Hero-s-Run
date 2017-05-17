@@ -389,6 +389,15 @@ public class LevelData : MonoBehaviour {
 		return multiplayerInfo;
 	}
 
+	/// <summary>
+	/// Gets the sorted race track list. It is sorted in ascending order based on the number of trophies required.
+	/// </summary>
+	/// <returns>The sorted race track list.</returns>
+	public List<MultiplayerInfo> getSortedRaceTrackList()
+	{
+		return multiplayerList.OrderBy( entry => entry.trophiesNeededToUnlock ).ToList();
+	}
+
 	[System.Serializable]
 	public class MultiplayerInfo
 	{
