@@ -38,6 +38,8 @@ public class PlayerProfile {
 	//If playing alone to practice or against AI, the player can select any race track he has unlocked via the circuit selection menu.
 	//If inviting a friend to race, the inviter can select any race track he has unlocked even if the invitee has not unlocked that track yet. 
 	[SerializeField] int highestNumberOfTrophies = 0;
+ 	//Not serialized. trophiesEarnedOrLost is set by PlayerRaceManager in the Level scene, but must be read by GameEndManager in the Matchmaking Scene.
+	private int trophiesEarnedLastRace = 0;
 
 	//Delegate used to communicate to other classes when the a value changes
 	public delegate void PlayerProfileChanged( PlayerProfileEvent eventType, int previousValue = 0, int newValue = 0 );
@@ -78,6 +80,16 @@ public class PlayerProfile {
 	#endregion
 
 	#region Trophies
+	public int getTrophiesEarnedLastRace()
+	{
+		return trophiesEarnedLastRace;
+	}
+
+	public void setTrophiesEarnedLastRace( int value )
+	{
+		trophiesEarnedLastRace = value;
+	}
+
 	public int getTrophies()
 	{
 		return numberOfTrophies;

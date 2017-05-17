@@ -114,7 +114,11 @@ public class PlayerRaceManager {
 				GameManager.Instance.playerProfile.setLastMatchWonTime( DateTime.UtcNow );
 			}
 		}
-		GameManager.Instance.playerProfile.changeTrophies( TrophyManager.Instance.getTrophiesEarned( GameManager.Instance.getPlayMode(), racePosition, GameManager.Instance.playerProfile.getTrophies(), trophiesOwnedByOpponent1 ) );
+		//Note: trophiesEarnedLastRace will be negative if the player lost.
+		int trophiesEarnedLastRace = TrophyManager.Instance.getTrophiesEarned( GameManager.Instance.getPlayMode(), racePosition, GameManager.Instance.playerProfile.getTrophies(), trophiesOwnedByOpponent1 );
+		//Store this value temporarily in player profile so the GameEndManager can retrieve it.
+		GameManager.Instance.playerProfile.setTrophiesEarnedLastRace( trophiesEarnedLastRace );
+		GameManager.Instance.playerProfile.changeTrophies( trophiesEarnedLastRace );
 		//Update the player statistics
 		GameManager.Instance.playerStatistics.updateRaceStatistics( racePosition, distanceTravelled, numberOfTimesDiedDuringRace );
 		//Save the dates in the player profile
