@@ -24,6 +24,8 @@ public class MPGameEndManager : MonoBehaviour {
 	[SerializeField] Text totalXPAwarded;
 	[SerializeField] Slider sliderXP;
 
+	[SerializeField] Text numberOfTrophiesText;
+
 	[Header("Other")]
 	MatchmakingManager matchmakingManager;
 	[SerializeField] int timeBeforeNextRace = 60; //in seconds
@@ -52,6 +54,8 @@ public class MPGameEndManager : MonoBehaviour {
 		circuitImage.sprite = multiplayerInfo.circuitInfo.circuitImage;
 		raceResult.text = getRacePositionString( PlayerRaceManager.Instance.racePosition );
 		playerName.text = GameManager.Instance.playerProfile.getUserName();
+		numberOfTrophiesText.text = GameManager.Instance.playerProfile.getTrophies().ToString("N0");
+
 		//Race time
 		TimeSpan ts = TimeSpan.FromSeconds( PlayerRaceManager.Instance.raceDuration );
 		DateTime dt = new DateTime(ts.Ticks);

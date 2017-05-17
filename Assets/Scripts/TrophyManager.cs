@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 /// <summary>
 /// Trophy manager.
@@ -28,7 +29,10 @@ using UnityEngine;
 public class TrophyManager : MonoBehaviour {
 
 	public static TrophyManager Instance;
-	public const int MAX_NUMBER_TROPHIES_ADDED = 40;
+	public const int MAX_CHANGE_IN_TROPHIES = 50;
+	public const int BASE_TROPHIES = 30;
+	public const int VARIABLE_TROPHIES = 20;
+	public const float TROPHIES_TRACK_DELTA = 400f;
 
 	void Awake ()
 	{
@@ -43,70 +47,33 @@ public class TrophyManager : MonoBehaviour {
 		}
 	}
 
-	/// <summary>
-	/// Gets the number of trophies.
-	/// </summary>
-	/// <returns>The number of trophies.</returns>
-	/// <param name="playMode">Play mode.</param>
-	/// <param name="racePosition">Race position. Either 1,2 or 3 if the race was completed, -1 otherwise (player abandoned or lost connection during race).</param>
-	public int getNumberOfTrophies( PlayMode playMode, int racePosition )
-	{
-		switch ( playMode )
-		{
-			case PlayMode.PlayAgainstEnemy:
-			case PlayMode.PlayAlone:
-			case PlayMode.PlayWithFriends:
-				return 0;
-
-			case PlayMode.PlayThreePlayers:
-			case PlayMode.PlayTwoPlayers:
-				return getTrophiesEarned( playMode, racePosition );
-
-			default:
-				return 0;
-		}
-	}
-
-	int getTrophiesEarned( PlayMode playMode, int racePosition )
+	public int getTrophiesEarned( PlayMode playMode, int racePosition, int playersTrophies, int opponentTrophies )
 	{
 		int trophies = 0;
-
-		if( playMode == PlayMode.PlayTwoPlayers )
+		if( playMode == PlayMode.PlayTwoPlayers || playMode == PlayMode.PlayThreePlayers )
 		{
-			switch ( racePosition )
+			if( playersTrophies == opponentTrophies )
 			{
-				case 1:
-					trophies = 30;
-					break;
-	
-				case 2:
-				case -1:
-					trophies = -25;
-					break;
+				trophies = BASE_TROPHIES;
 			}
-		}
-		else if ( playMode == PlayMode.PlayThreePlayers )
-		{
-			switch ( racePosition )
+			if( playersTrophies > opponentTrophies )
 			{
-				case 1:
-					trophies = 30;
-					break;
-	
-				case 2:
-					trophies = 20;
-					break;
-	
-				case 3:
-				case -1:
-					trophies = -25;
-					break;
+				trophies = (int)Math.Ceiling( BASE_TROPHIES + VARIABLE_TROPHIES * ( 1f - ( playersTrophies - opponentTrophies )/TROPHIES_TRACK_DELTA ) );
+			}
+			else
+			{
+				trophies = (int)Math.Ceiling( BASE_TROPHIES + VARIABLE_TROPHIES * ( opponentTrophies - playersTrophies )/TROPHIES_TRACK_DELTA );
+			}
+			if( racePosition >= 2 )
+			{
+				trophies = -Mathf.Abs( trophies );
 			}
 		}
 		else
 		{
 			trophies = 0;
 		}
+		print( "getTrophiesEarned-Mode: " + playMode.ToString() + " racePosition: " + racePosition + " playersTrophies: " + playersTrophies + " opponentTrophies: " + opponentTrophies + " >Trophies: " + trophies );
 		return trophies;
 	}
 

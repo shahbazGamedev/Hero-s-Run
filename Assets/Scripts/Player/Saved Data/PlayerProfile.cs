@@ -83,27 +83,18 @@ public class PlayerProfile {
 		return numberOfTrophies;
 	}
 
-	public void addTrophies( int value )
+	public void changeTrophies( int value )
 	{
-		if( value > 0 && value <= TrophyManager.MAX_NUMBER_TROPHIES_ADDED )
+		if( value > 0 && value <= TrophyManager.MAX_CHANGE_IN_TROPHIES )
 		{
-			setNumberOfTrophies( numberOfTrophies + value );
+			int newValue = numberOfTrophies + value;
+			//Don't allow the number of trophies to go below 0.
+			if( newValue  < 0 ) newValue = 0;
+			setNumberOfTrophies( newValue );
 		}
 		else
 		{
-			Debug.LogWarning("PlayerProfile-the number of trophies to add " + value + " is incorrect. It needs to be between 1 and " + TrophyManager.MAX_NUMBER_TROPHIES_ADDED.ToString() + ".");
-		}
-	}
-
-	public void removeTrophies( int value )
-	{
-		if( value > 0 && value <= TrophyManager.MAX_NUMBER_TROPHIES_ADDED )
-		{
-			setNumberOfTrophies( numberOfTrophies - value );
-		}
-		else
-		{
-			Debug.LogWarning("PlayerProfile-the number of trophies to remove " + value + " is incorrect. It needs to be between 1 and " + TrophyManager.MAX_NUMBER_TROPHIES_ADDED.ToString() + ".");
+			Debug.LogWarning("PlayerProfile-the number of trophies to add " + value + " is incorrect. It needs to be between 1 and " + TrophyManager.MAX_CHANGE_IN_TROPHIES.ToString() + ".");
 		}
 	}
 

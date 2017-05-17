@@ -353,9 +353,9 @@ public class LevelData : MonoBehaviour {
 	/// Race Track 1 is unlocked upon completing the tutorial.
 	/// 400 Trophy unlocks Race Track 2.
 	/// 800 Trophy unlocks Race Track 3.
-	/// 1,100 Trophy unlocks Race Track 4.
-	/// 1,400 Trophy unlocks Race Track 5.
-	/// 1,700 Trophy unlocks Race Track 6.
+	/// 1,200 Trophy unlocks Race Track 4.
+	/// 1,600 Trophy unlocks Race Track 5.
+	/// 2,000 Trophy unlocks Race Track 6.
 	/// </summary>
 	/// <returns>The appropriate multiplayer info based on the number of trophies specified</returns>
 	/// <param name="numberOfTrophies">Number of trophies.</param>

@@ -17,6 +17,10 @@ public class PlayerRaceManager {
 	private TimeSpan MAX_TIME_FOR_CONSECUTIVE_RACE = new TimeSpan(0,2,0); //in minutes
 	public float raceDuration;
 	public int racePosition;
+
+	public int trophiesOwnedByOpponent1;
+	public int trophiesOwnedByOpponent2;
+
 	RaceStatus raceStatus = RaceStatus.NOT_STARTED;
 	public List<XPAwardType> raceAwardList = new List<XPAwardType>();
 	public static PlayerRaceManager Instance
@@ -41,6 +45,24 @@ public class PlayerRaceManager {
 	public RaceStatus getRaceStatus()
 	{
 		return raceStatus;
+	}
+
+	public void setTrophiesOwnedByOpponent( int opponentNumber, int trophiesOwned )
+	{
+		if( opponentNumber == 1 )
+		{
+			trophiesOwnedByOpponent1 = trophiesOwned;
+			Debug.Log("setTrophiesOwnedByOpponent " + opponentNumber + " " + trophiesOwned );
+		}
+		else if( opponentNumber == 2 )
+		{
+			trophiesOwnedByOpponent2 = trophiesOwned;
+			Debug.Log("setTrophiesOwnedByOpponent " + opponentNumber + " " + trophiesOwned );
+		}
+		else
+		{
+			Debug.LogError( "setTrophiesOwnedByOpponent-the opponent number specified " + opponentNumber + " is invalid. It should be 1 or 2.");
+		}
 	}
 
 	private void grantXPAward( XPAwardType awardType )
@@ -92,6 +114,7 @@ public class PlayerRaceManager {
 				GameManager.Instance.playerProfile.setLastMatchWonTime( DateTime.UtcNow );
 			}
 		}
+		GameManager.Instance.playerProfile.changeTrophies( TrophyManager.Instance.getTrophiesEarned( GameManager.Instance.getPlayMode(), racePosition, GameManager.Instance.playerProfile.getTrophies(), trophiesOwnedByOpponent1 ) );
 		//Update the player statistics
 		GameManager.Instance.playerStatistics.updateRaceStatistics( racePosition, distanceTravelled, numberOfTimesDiedDuringRace );
 		//Save the dates in the player profile
