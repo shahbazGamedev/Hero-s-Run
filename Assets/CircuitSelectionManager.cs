@@ -38,18 +38,18 @@ public class CircuitSelectionManager : MonoBehaviour {
 		List<LevelData.MultiplayerInfo> raceTrackList = LevelManager.Instance.getLevelData().getSortedRaceTrackList();
 		for( int i = 0; i < raceTrackList.Count; i++ )
 		{
-			createRaceTrack( raceTrackList[i] );
+			createRaceTrack( i, raceTrackList[i] );
 		}
 	}
 
-	void createRaceTrack( LevelData.MultiplayerInfo info )
+	void createRaceTrack( int index, LevelData.MultiplayerInfo info )
 	{
 		GameObject go = (GameObject)Instantiate(raceTrackPrefab);
 		go.transform.SetParent(raceTrackHolder,false);
 		Button raceTrackButton = go.GetComponent<Button>();
 		raceTrackButton.onClick.RemoveAllListeners();
 		raceTrackButton.onClick.AddListener(() => OnClickRaceTrack( info ));
-		go.GetComponent<RaceTrackUI>().configure( info );
+		go.GetComponent<RaceTrackUI>().configure( index, info );
 	}
 
 	public void OnClickRaceTrack( LevelData.MultiplayerInfo info )
