@@ -113,6 +113,12 @@ public class PlayerRaceManager {
 				grantXPAward(XPAwardType.FIRST_WIN_OF_THE_DAY);
 				GameManager.Instance.playerProfile.setLastMatchWonTime( DateTime.UtcNow );
 			}
+			//The victor is given coins but only in certain play modes.
+			if( GameManager.Instance.getPlayMode() == PlayMode.PlayTwoPlayers || GameManager.Instance.getPlayMode() == PlayMode.PlayThreePlayers )
+			{
+				int coinsAwardedOnVictory = LevelManager.Instance.getSelectedCircuit().coinsAwardedOnVictory;
+				GameManager.Instance.playerInventory.addCoins( coinsAwardedOnVictory );
+			}
 		}
 		//Note: trophiesEarnedLastRace will be negative if the player lost.
 		int trophiesEarnedLastRace = TrophyManager.Instance.getTrophiesEarned( GameManager.Instance.getPlayMode(), racePosition, GameManager.Instance.playerProfile.getTrophies(), trophiesOwnedByOpponent1 );

@@ -431,6 +431,8 @@ public class LevelData : MonoBehaviour {
 		public float tileSize;
 		[Tooltip("Trophies needed to unlock race track.")]
 		public int trophiesNeededToUnlock;
+		[Tooltip("Coins awarded on victory. This number varies per track.")]
+		public int coinsAwardedOnVictory;
 		
 	}
 
