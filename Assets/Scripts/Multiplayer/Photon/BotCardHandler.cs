@@ -17,6 +17,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 	Queue<CardManager.CardData> cardQueue = new Queue<CardManager.CardData>();
 	float timeOfLastAnalysis = 0;
 	PlayerControl playerControl;
+	PlayerSpell playerSpell;
 	bool allowCardPlaying = false;
 
 	// Use this for initialization
@@ -36,6 +37,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 
 		//Get and store components
 		playerControl = GetComponent<PlayerControl>();
+		playerSpell = GetComponent<PlayerSpell>();
 
 		initializeCards ();
 
@@ -111,7 +113,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
 		{
 			if( manaAmount < ManaBar.MAX_MANA_POINT ) manaAmount = manaAmount + Time.deltaTime/ManaBar.MANA_REFILL_RATE;
-			if( allowCardPlaying && (Time.time - timeOfLastAnalysis > botSkillData.cardPlayFrequency) )
+			if( allowCardPlaying && (Time.time - timeOfLastAnalysis > botSkillData.cardPlayFrequency) && !playerSpell.isAffectedByHack() )
 			{
 				analyseCards();
 			}

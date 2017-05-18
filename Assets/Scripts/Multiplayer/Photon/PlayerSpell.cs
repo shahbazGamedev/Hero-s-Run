@@ -20,6 +20,14 @@ public class PlayerSpell : PunBehaviour {
 	[SerializeField] AudioClip linkedFateSound;
 	#endregion
 
+	#region Hack
+	public bool affectedByHack = false;
+	#endregion
+
+	#region Supercharger
+	bool affectedBySupercharger = false;
+	#endregion
+
 	#region Sentry spell
 	SentryController sentryController;
 	#endregion
@@ -164,12 +172,70 @@ public class PlayerSpell : PunBehaviour {
 	}
 	#endregion
 
+	#region Hack
+	[PunRPC]
+	void cardHackRPC( float spellDuration )
+	{
+		affectedByHack = true;
+		//Cancel the hack effect once the duration has run out
+		Invoke("cancelHack", spellDuration );
+
+		//Display the Hacked secondary icon on the minimap
+		MiniMap.Instance.displaySecondaryIcon( GetComponent<PhotonView>().viewID, (int) CardName.Hack, spellDuration );
+
+		//To Do
+		//Add a reddish glow and electric sparks to the omni-tool so it appears broken.
+
+		Debug.LogWarning("PlayerSpell cardHackRPC received-affectedByHack: " + affectedByHack + " name: " + gameObject.name );
+	}
+
+	void cancelHack()
+	{
+		affectedByHack = false;
+	}
+
+	public bool isAffectedByHack()
+	{
+		return affectedByHack;
+	}
+	#endregion
+
+	#region Supercharger
+	[PunRPC]
+	void cardSuperchargerRPC( float spellDuration )
+	{
+		affectedBySupercharger = true;
+		//Cancel the supercharger effect once the duration has run out
+		Invoke("cancelSupercharger", spellDuration );
+
+		//Display the Supercharger secondary icon on the minimap
+		MiniMap.Instance.displaySecondaryIcon( GetComponent<PhotonView>().viewID, (int) CardName.Supercharger, spellDuration );
+
+		//To Do
+		//Display a Supercharger timer on the HUD so the player knows when it is going to run out.
+		//Add a cool glow to the omni-tool
+		Debug.LogWarning("PlayerSpell cardSuperchargerRPC received " + gameObject.name );
+	}
+
+	void cancelSupercharger()
+	{
+		affectedBySupercharger = false;
+	}
+
+	public bool isAffectedBySupercharger()
+	{
+		return affectedBySupercharger;
+	}
+	#endregion
+
 	public void cancelAllSpells()
 	{
 		StopAllCoroutines();
+		CancelInvoke();
 		cancelLinkedFateSpell();
 		cancelSentrySpell();
 		cancelShrinkSpell();
+		cancelSupercharger();
 	}
 
 	public void playerDied()

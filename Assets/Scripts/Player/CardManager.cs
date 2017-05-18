@@ -56,9 +56,11 @@ public enum CardName
 	//Epic
 	Lightning = 200,
 	Linked_Fate = 201,
+	Supercharger = 202,
+	Homing_Missile = 203,
 
 	//Legendary
-	Card_One = 301,
+	Hack = 301,
 	Card_Two = 302,
 	Card_Three = 303,
 	Card_Four = 304

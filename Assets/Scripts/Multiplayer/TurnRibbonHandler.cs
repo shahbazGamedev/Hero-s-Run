@@ -28,6 +28,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 	Queue<CardManager.CardData> cardQueue = new Queue<CardManager.CardData>();
 	
 	PlayerControl playerControl;
+	PlayerSpell playerSpell;
 
 	// Use this for initialization
 	void Start ()
@@ -56,6 +57,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 	public void setPlayerControl( PlayerControl playerControl )
 	{
 		this.playerControl = playerControl;
+		playerSpell = playerControl.GetComponent<PlayerSpell>();
 	}
 
 	void addCardToTurnRibbon( int index, CardName cardName )
@@ -101,7 +103,8 @@ public class TurnRibbonHandler : MonoBehaviour {
 		{
 			turnRibbonButtonList[i].interactable = manaBar.hasEnoughMana( turnRibbonList[i].manaCost )
  				&& PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS
-				&& playerControl.isPlayerControlEnabled();
+				&& playerControl.isPlayerControlEnabled()
+				&& !playerSpell.isAffectedByHack();
 
 			if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS && playerControl.isPlayerControlEnabled() )
 			{

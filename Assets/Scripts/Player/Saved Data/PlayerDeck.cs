@@ -54,6 +54,15 @@ public class PlayerDeck {
 		//12
 		addCard( CardName.Firewall, 1, 1, false );
 
+		//13
+		addCard( CardName.Supercharger, 1, 1, false );
+
+		//14
+		addCard( CardName.Hack, 1, 1, false );
+
+		//15
+		addCard( CardName.Homing_Missile, 1, 1, false );
+
 		serializePlayerDeck( true );
 
 	}

@@ -8,6 +8,16 @@ public class CardHandler : MonoBehaviour {
 	{
 		int photonViewId = casterPhotonView.viewID;
 
+		//If the player or bot used the Supercharger card, he is casting every card for a short duration at a higher level than normal.
+		//Increase the level but do not exceed the maximum level for this card.
+		if( casterPhotonView.GetComponent<PlayerSpell>().isAffectedBySupercharger() )
+		{
+			print( casterPhotonView.gameObject.name + " is affected by supercharger. The normal card level for " + name.ToString() + " is " + level );
+			CardManager.CardData cd = CardManager.Instance.getCardByName( name );
+			int maxLevel = CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity );
+			level = Mathf.Min( maxLevel, level + CardSupercharger.SUPERCHARGER_LEVEL_BOOST );
+			print( "Adjusted level is " + level );
+		}
 		switch (name)
 		{
 			case CardName.Raging_Bull:
@@ -142,6 +152,41 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardIceWall component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+
+
+			case CardName.Supercharger:
+				CardSupercharger cardSupercharger = GetComponent<CardSupercharger>();
+				if( cardSupercharger != null )
+				{
+					cardSupercharger.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardSupercharger component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
+			case CardName.Hack:
+				CardHack cardHack = GetComponent<CardHack>();
+				if( cardHack != null )
+				{
+					cardHack.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardHack component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
+			case CardName.Homing_Missile:
+				CardHomingMissile cardHomingMissile = GetComponent<CardHomingMissile>();
+				if( cardHomingMissile != null )
+				{
+					cardHomingMissile.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardHomingMissile component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -234,6 +279,15 @@ public class CardHandler : MonoBehaviour {
 				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
 					return GetComponent<Card>().isThereATargetWithinRange( caster.transform, level );
+				}
+			break;
+			//The following cards are effective whenever your opponent is far ahead of you
+			case CardName.Homing_Missile:
+			case CardName.Supercharger:
+			case CardName.Hack:
+				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
+				{
+					return true;
 				}
 			break;
 			default:

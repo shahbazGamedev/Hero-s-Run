@@ -171,9 +171,11 @@ public class SentryController : CardSpawnedObject {
 			direction.z += Random.Range( -accuracy, accuracy );
 	
 			//Create missile
-			object[] data = new object[2];
+			object[] data = new object[3];
 			data[0] = direction;
 			data[1] = GetComponent<PhotonView>().viewID;
+			//Self-destruct time for missile
+			data[2] = 10f;
 			PhotonNetwork.InstantiateSceneObject( "Sentry Missile", transform.position + transform.forward.normalized, Quaternion.Euler( direction ), 0, data );
 		}
 	}

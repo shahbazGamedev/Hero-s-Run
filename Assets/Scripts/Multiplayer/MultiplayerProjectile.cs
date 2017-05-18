@@ -15,7 +15,7 @@ public class MultiplayerProjectile : MonoBehaviour {
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
 		object[] data = gameObject.GetPhotonView ().instantiationData;
-		launchProjectile((Vector3) data[0]);
+		launchProjectile((Vector3) data[0], (float) data[2] );
 		int sentryPhotonViewID = (int) data[1]; 
 		//Find out which Sentry fired this projectile.
 		//If the projectile hits a target, we can tell the Sentry to play a victory sound and animation.
@@ -29,11 +29,11 @@ public class MultiplayerProjectile : MonoBehaviour {
 		}
 	}
 
-	void launchProjectile( Vector3 direction )
+	void launchProjectile( Vector3 direction, float selfDestructTime )
 	{
 		GetComponent<Rigidbody>().isKinematic = false;
 		GetComponent<Rigidbody>().AddForce( direction.normalized * bolt_force );
-		GameObject.Destroy( gameObject, 10f );
+		GameObject.Destroy( gameObject, selfDestructTime );
 		GetComponent<AudioSource>().clip = inFlightSound;
 		GetComponent<AudioSource>().Play();
 		if( fireLight != null ) fireLight.enabled = true;
