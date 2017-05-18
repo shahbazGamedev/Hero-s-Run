@@ -193,6 +193,11 @@ public class CardManager : MonoBehaviour {
 		return cardDataList.Count;
 	}
 
+	public List<CardData> getCardsUnlockedByRaceTrack( string raceTrackName )
+	{
+		return cardDataList.FindAll(cardData => cardData.unlockRaceTrack == raceTrackName);
+	}
+
 	public CardData getCardByName( CardName name )
 	{
 		if( doesCardExist( name ) )
@@ -298,6 +303,7 @@ public class CardManager : MonoBehaviour {
 		public Sprite secondaryIcon;
 		[Range(1,9)]
 		public int manaCost;
+		public string unlockRaceTrack;
 		[HideInInspector]
 		public RectTransform rectTransform;
 
