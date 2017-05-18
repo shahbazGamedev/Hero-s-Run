@@ -31,6 +31,19 @@ public class CardPropertyUI : MonoBehaviour {
 			float valueAsPercentage = 1f - cd.getCardPropertyValue( cp.type, pcd.level );
 			propertyValue.text = string.Format("{0:P}", valueAsPercentage );
 		}
+		else if( cp.type == CardPropertyType.RANGE )
+		{
+			float range = cd.getCardPropertyValue( cp.type, pcd.level );
+			if( range == -1f )
+			{
+				//Range is infinite
+				propertyValue.text = LocalizationManager.Instance.getText( "CARD_PROPERTIES_INFINITE" );
+			}
+			else
+			{
+				propertyValue.text = string.Format( range.ToString() + " {0}", CardManager.Instance.getCardPropertyValueType( cp.type ) );
+			}
+		}
 		else
 		{
 			propertyValue.text = string.Format( cd.getCardPropertyValue( cp.type, pcd.level ).ToString() + " {0}", CardManager.Instance.getCardPropertyValueType( cp.type ) );
