@@ -30,6 +30,10 @@ public class TurnRibbonHandler : MonoBehaviour {
 	PlayerControl playerControl;
 	PlayerSpell playerSpell;
 
+	//Delegate used to communicate to other classes when the local player has played a card
+	public delegate void CardPlayedEvent( CardName name );
+	public static event CardPlayedEvent cardPlayedEvent;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -144,6 +148,8 @@ public class TurnRibbonHandler : MonoBehaviour {
 
 		//Wait a little before moving the Next Card into the free ribbon slot
 		StartCoroutine( moveNextCardIntoTurnRibbon( indexOfCardPlayed, playedCard ) );
+
+		if( cardPlayedEvent != null ) cardPlayedEvent( cardName );
 	}
 
 	IEnumerator moveNextCardIntoTurnRibbon( int indexOfCardPlayed, CardManager.CardData playedCard )

@@ -332,6 +332,11 @@ public class CardManager : MonoBehaviour {
 			}
 			return cardPropertyValue;
 		}
+
+		public bool doesCardHaveThisProperty( CardPropertyType type )
+		{
+			return cardProperties.Exists(property => property.type == type);
+		}
 	}
 
 	[System.Serializable]
