@@ -9,7 +9,7 @@ public class HomingMissile : CardSpawnedObject {
 	[SerializeField] ParticleSystem impactParticleSystem;
 	[SerializeField] AudioClip inFlightSound;
 	[SerializeField] AudioClip collisionSound;
-	float missileVelocity = 30f;
+	float missileVelocity = 40f;
 	float turn = 20f;
 	Rigidbody homingMissile;
 	Transform target;
@@ -45,7 +45,8 @@ public class HomingMissile : CardSpawnedObject {
 		if( target == null || homingMissile == null ) return;
 
 		homingMissile.velocity = transform.forward * missileVelocity;
-		Quaternion targetRotation = Quaternion.LookRotation( target.position - transform.position ); 
+		//Aim for the head, not the feet
+		Quaternion targetRotation = Quaternion.LookRotation( new Vector3( target.position.x, target.position.y + 2f, target.position.z ) - transform.position ); 
 		homingMissile.MoveRotation( Quaternion.RotateTowards( transform.rotation, targetRotation, turn ) );
 	}
 

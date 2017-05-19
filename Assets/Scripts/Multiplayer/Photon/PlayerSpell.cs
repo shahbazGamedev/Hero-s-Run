@@ -238,6 +238,7 @@ public class PlayerSpell : PunBehaviour {
 		cancelSentrySpell();
 		cancelShrinkSpell();
 		cancelSupercharger();
+		cancelHack();
 	}
 
 	public void playerDied()

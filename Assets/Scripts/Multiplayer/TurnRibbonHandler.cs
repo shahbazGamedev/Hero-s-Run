@@ -110,10 +110,12 @@ public class TurnRibbonHandler : MonoBehaviour {
 				float fillAmount = 1f - manaBar.getManaAmount()/turnRibbonList[i].manaCost;
 				if( fillAmount < 0 ) fillAmount = 0;
 				turnRibbonButtonList[i].transform.FindChild("Radial Mask").GetComponent<Image>().fillAmount = fillAmount;
+				turnRibbonButtonList[i].interactable = true;
 			}
 			else
 			{
 				turnRibbonButtonList[i].transform.FindChild("Radial Mask").GetComponent<Image>().fillAmount = 1f;
+				turnRibbonButtonList[i].interactable = false;
 			}
 		}
 	}
