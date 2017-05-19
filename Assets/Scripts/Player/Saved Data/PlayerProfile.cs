@@ -33,11 +33,6 @@ public class PlayerProfile {
 	//Trophies indicate your success in racing. Players gain or lose Trophies by either winning or losing races in online multiplayer races.
 	//The number of trophies you have indicate which race track you will be racing in for multiplayer races.
 	[SerializeField] int numberOfTrophies = 0;
-	//The highest number of trophies ever reached is used to determine the highest race track you have unlocked.
-	//Here are the rules:
-	//If playing alone to practice or against AI, the player can select any race track he has unlocked via the circuit selection menu.
-	//If inviting a friend to race, the inviter can select any race track he has unlocked even if the invitee has not unlocked that track yet. 
-	[SerializeField] int highestNumberOfTrophies = 0;
  	//Not serialized. trophiesEarnedOrLost is set by PlayerRaceManager in the Level scene, but must be read by GameEndManager in the Matchmaking Scene.
 	private int trophiesEarnedLastRace = 0;
 

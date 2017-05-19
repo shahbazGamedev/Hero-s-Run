@@ -17,7 +17,11 @@ public enum StatisticDataType
 	BEST_WIN_STREAK_LIFETIME = 7,		//The player's best win streak ever.
 	WIN_LOSS_RATIO = 8,					//Races won divided by races run.
 
-	HIGHEST_TROPHIES = 9,				//Highest number of trophies ever reached.
+	HIGHEST_TROPHIES = 9,				//Highest number of trophies ever reached. It is used to determine the highest race track you have unlocked.
+										//Here are the rules:
+										//If playing alone or against AI, the player can select any unlocked race track via the circuit selection menu.
+										//If inviting a friend to race, the inviter can select any unlocked race track even if the invitee has not unlocked that track yet. 
+	
 	FAVORITE_CARD = 10					//The card most frequently played.
 }
 

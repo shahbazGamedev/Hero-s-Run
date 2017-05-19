@@ -13,6 +13,7 @@ public class CardHomingMissile : Card {
 
 	public void activateCard ( int photonViewId, int level )
 	{
+		spawnOffset = new Vector3( 0, 5f, -7f );
 		if( isAllowed( photonViewId ) ) this.photonView.RPC("cardHomingMissileMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
 	}
 
@@ -24,13 +25,11 @@ public class CardHomingMissile : Card {
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
 		//Create homing missile
-		object[] data = new object[3];
-		data[0] = playerTransform.forward; 		//Direction
-		data[1] = 0; 							//Not used in this case
+		object[] data = new object[2];
+		data[0] = playerTransform.name; 		//Caster Name
 		//We want the homing missile to self-destruct after a while
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
-		data[2] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
-		spawnOffset = new Vector3( 0, 2f, 10f );
+		data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
 		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( spawnOffset ), playerTransform.rotation, 0, data );
 
 	}

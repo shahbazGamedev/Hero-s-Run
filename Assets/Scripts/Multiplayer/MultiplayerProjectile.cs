@@ -43,23 +43,22 @@ public class MultiplayerProjectile : MonoBehaviour {
 	void OnCollisionEnter(Collision collision)
 	{
 	    GetComponent<Rigidbody>().velocity = Vector3.zero;
-	    GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-	    GetComponent<Rigidbody>().Sleep();
-		//Play collision sound
-		GetComponent<AudioSource>().clip = collisionSound;
-		GetComponent<AudioSource>().Play();
-		if( fireLight != null ) fireLight.enabled = false;
-		if( fireParticleSystem != null ) fireParticleSystem.gameObject.SetActive(false);
+
+		//Play collision sound at point of impact
+		AudioSource.PlayClipAtPoint( collisionSound, collision.contacts[0].point );
+
 		if( impactParticleSystem != null )
 		{
 			impactParticleSystem.transform.SetParent( null );
 			impactParticleSystem.gameObject.SetActive(true);
 			GameObject.Destroy( impactParticleSystem, 5f );
 		}
-		if( GetComponent<MeshRenderer>() != null ) GetComponent<MeshRenderer>().enabled = false;
-		if( collision.transform.GetComponent<FracturedObject>() != null ) collision.transform.GetComponent<FracturedObject>().Explode( collision.contacts[0].point, 500f );
+
+		if( collision.transform.GetComponent<FracturedObject>() != null ) collision.transform.GetComponent<FracturedObject>().Explode( collision.contacts[0].point, 400f );
 		
 		destroyValidTarget( collision.transform );
+
+		GameObject.Destroy( gameObject );
   	}
 
 	void destroyValidTarget( Transform potentialTarget )

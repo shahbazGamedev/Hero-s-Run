@@ -12,6 +12,7 @@ public class MaskHandler : MonoBehaviour {
 	static int maskWithPlayerWithLevelDestructible;
 	static int maskWithPlayerWithoutLevelDestructible;
 	static int maskWithoutPlayerWithLevelDestructible;
+	static int maskOnlyPlayer;
 
 	void Awake ()
 	{
@@ -32,6 +33,8 @@ public class MaskHandler : MonoBehaviour {
 		maskWithoutPlayerWithLevelDestructible = 1 << deviceLayer;
 		maskWithoutPlayerWithLevelDestructible |= 1 << destructibleLayer;
 		maskWithoutPlayerWithLevelDestructible |= 1 << levelDestructibleLayer;
+
+		maskOnlyPlayer = 1 << playerLayer;
 	}
 
 	public static int getMaskWithPlayerWithLevelDestructible()
@@ -47,6 +50,11 @@ public class MaskHandler : MonoBehaviour {
 	public static int getMaskWithoutPlayerWithLevelDestructible()
 	{
 		return maskWithoutPlayerWithLevelDestructible;
+	}
+
+	public static int getMaskOnlyPlayer()
+	{
+		return maskOnlyPlayer;
 	}
 
 }

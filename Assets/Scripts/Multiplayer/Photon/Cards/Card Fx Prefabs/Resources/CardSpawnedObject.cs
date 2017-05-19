@@ -87,7 +87,7 @@ public class CardSpawnedObject : MonoBehaviour {
 	Transform getNearestValidTarget( Collider[] hitColliders )
 	{
 		Transform nearestTarget = null;
-		float nearestDistance = 100000;
+		float nearestDistance = Mathf.Infinity;
 		for( int i =0; i < hitColliders.Length; i++ )
 		{
 			//Is the target valid?
