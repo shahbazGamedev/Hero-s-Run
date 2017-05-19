@@ -103,10 +103,9 @@ public class TurnRibbonHandler : MonoBehaviour {
 		{
 			turnRibbonButtonList[i].interactable = manaBar.hasEnoughMana( turnRibbonList[i].manaCost )
  				&& PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS
-				&& playerControl.isPlayerControlEnabled()
-				&& !playerSpell.isAffectedByHack();
+				&& playerControl.isPlayerControlEnabled();
 
-			if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS && playerControl.isPlayerControlEnabled() )
+			if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS && playerControl.isPlayerControlEnabled() && !playerSpell.isAffectedByHack() )
 			{
 				float fillAmount = 1f - manaBar.getManaAmount()/turnRibbonList[i].manaCost;
 				if( fillAmount < 0 ) fillAmount = 0;

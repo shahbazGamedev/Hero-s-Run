@@ -186,12 +186,13 @@ public class PlayerSpell : PunBehaviour {
 		//To Do
 		//Add a reddish glow and electric sparks to the omni-tool so it appears broken.
 
-		Debug.LogWarning("PlayerSpell cardHackRPC received-affectedByHack: " + affectedByHack + " name: " + gameObject.name );
+		print("PlayerSpell cardHackRPC received-affectedByHack: " + affectedByHack + " name: " + gameObject.name );
 	}
 
 	void cancelHack()
 	{
 		affectedByHack = false;
+		print("PlayerSpell cancelHack for " + gameObject.name );
 	}
 
 	public bool isAffectedByHack()
@@ -214,12 +215,13 @@ public class PlayerSpell : PunBehaviour {
 		//To Do
 		//Display a Supercharger timer on the HUD so the player knows when it is going to run out.
 		//Add a cool glow to the omni-tool
-		Debug.LogWarning("PlayerSpell cardSuperchargerRPC received " + gameObject.name );
+		print("PlayerSpell cardSuperchargerRPC received " + gameObject.name );
 	}
 
 	void cancelSupercharger()
 	{
 		affectedBySupercharger = false;
+		print("PlayerSpell cancelSupercharger for " + gameObject.name );
 	}
 
 	public bool isAffectedBySupercharger()

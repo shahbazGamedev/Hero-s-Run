@@ -44,7 +44,7 @@ public class PlayerFriends {
 		}
 		else
 		{
-			Debug.LogError("PlayerFriends-updateFriendData: The user name specified " + userName + " is not in the friend's list.");
+			Debug.LogWarning("PlayerFriends-updateFriendData: The user name specified " + userName + " is not in the friend's list.");
 		}
 	}
 
@@ -66,7 +66,7 @@ public class PlayerFriends {
 		}
 		else
 		{
-			Debug.LogError("PlayerFriends-updateStatus: The user name specified " + userName + " is not in the friend's list.");
+			Debug.LogWarning("PlayerFriends-updateStatus: The user name specified " + userName + " is not in the friend's list.");
 		}
 	}
 

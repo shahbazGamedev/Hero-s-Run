@@ -263,19 +263,19 @@ public class PlayerAI : Photon.PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha0) )
 		{
-			bch.activateCard( CardName.Stasis );
+			bch.activateCard( CardName.Homing_Missile );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha1) )
 		{
-			bch.activateCard( CardName.Double_Jump );
+			bch.activateCard( CardName.Supercharger );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha2 ) )
 		{
-			bch.activateCard( CardName.Grenade );
+			bch.activateCard( CardName.Hack );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha3 ) )
 		{
-			bch.activateCard( CardName.Firewall );
+			bch.activateCard( CardName.Grenade );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha4 ) )
 		{

@@ -54,18 +54,28 @@ public class MPGameEndManager : MonoBehaviour {
 		circuitImage.sprite = multiplayerInfo.circuitInfo.circuitImage;
 		raceResult.text = getRacePositionString( PlayerRaceManager.Instance.racePosition );
 		playerName.text = GameManager.Instance.playerProfile.getUserName();
-		int trophiesEarnedLastRace = GameManager.Instance.playerProfile.getTrophiesEarnedLastRace();
-		if( trophiesEarnedLastRace > 0 )
+
+		if( GameManager.Instance.canEarnTrophies() )
 		{
-			//Add a plus sign to make it clearer
-			numberOfTrophiesText.text = "+" + trophiesEarnedLastRace.ToString();
+			numberOfTrophiesText.gameObject.SetActive( true );
+			int trophiesEarnedLastRace = GameManager.Instance.playerProfile.getTrophiesEarnedLastRace();
+			if( trophiesEarnedLastRace > 0 )
+			{
+				//Add a plus sign to make it clearer
+				numberOfTrophiesText.text = "+" + trophiesEarnedLastRace.ToString();
+			}
+			else
+			{
+				numberOfTrophiesText.text = trophiesEarnedLastRace.ToString();
+			}
+			//Reset value just to be safe
+			GameManager.Instance.playerProfile.setTrophiesEarnedLastRace(0);
 		}
 		else
 		{
-			numberOfTrophiesText.text = trophiesEarnedLastRace.ToString();
+			//In this play mode, no trophies can be earned, so hide the trophy details.
+			numberOfTrophiesText.gameObject.SetActive( false );
 		}
-		//Reset value just to be safe
-		GameManager.Instance.playerProfile.setTrophiesEarnedLastRace(0);
 
 		//Race time
 		TimeSpan ts = TimeSpan.FromSeconds( PlayerRaceManager.Instance.raceDuration );
