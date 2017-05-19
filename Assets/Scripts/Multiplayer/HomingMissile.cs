@@ -45,8 +45,8 @@ public class HomingMissile : CardSpawnedObject {
 		if( target == null || homingMissile == null ) return;
 
 		homingMissile.velocity = transform.forward * missileVelocity;
-		//Aim for the head, not the feet
-		Quaternion targetRotation = Quaternion.LookRotation( new Vector3( target.position.x, target.position.y + 2f, target.position.z ) - transform.position ); 
+		//Aim for the torso, not the feet
+		Quaternion targetRotation = Quaternion.LookRotation( new Vector3( target.position.x, target.position.y + 1.4f, target.position.z ) - transform.position ); 
 		homingMissile.MoveRotation( Quaternion.RotateTowards( transform.rotation, targetRotation, turn ) );
 	}
 

@@ -36,6 +36,10 @@ public class PlayerSpell : PunBehaviour {
 	PlayerSounds playerSounds;
 	PlayerVoiceOvers playerVoiceOvers;
 
+	//Delegate used to communicate to other classes when an enemy has played a special card such as Hack
+	public delegate void CardPlayedByOpponentEvent( CardName name, float duration );
+	public static event CardPlayedByOpponentEvent cardPlayedByOpponentEvent;
+
 	// Use this for initialization
 	void Awake ()
 	{
@@ -53,6 +57,7 @@ public class PlayerSpell : PunBehaviour {
 		shrinkEffect.transform.localPosition = new Vector3( 0, 1f, 0 );
 		shrinkEffect.Play();
 		StartCoroutine( shrink( new Vector3( 0.3f, 0.3f, 0.3f ), 1.25f, spellDuration ) );
+		if( cardPlayedByOpponentEvent != null && GetComponent<PhotonView>().isMine ) cardPlayedByOpponentEvent( CardName.Shrink, spellDuration );
 	}
 
 	IEnumerator shrink( Vector3 endScale, float shrinkDuration, float spellDuration )
@@ -124,6 +129,7 @@ public class PlayerSpell : PunBehaviour {
 		else
 		{
 			affectedByLinkedFate = true;
+			if( cardPlayedByOpponentEvent != null && GetComponent<PhotonView>().isMine ) cardPlayedByOpponentEvent( CardName.Linked_Fate, spellDuration );
 		}
 
 		//For the player affected by Linked Fate, change the color of his icon on the map
@@ -176,6 +182,8 @@ public class PlayerSpell : PunBehaviour {
 	[PunRPC]
 	void cardHackRPC( float spellDuration )
 	{
+		if( cardPlayedByOpponentEvent != null && GetComponent<PhotonView>().isMine ) cardPlayedByOpponentEvent( CardName.Hack, spellDuration );
+
 		affectedByHack = true;
 		//Cancel the hack effect once the duration has run out
 		Invoke("cancelHack", spellDuration );

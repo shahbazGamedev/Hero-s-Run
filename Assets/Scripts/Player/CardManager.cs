@@ -19,8 +19,8 @@ public enum CardPropertyType
 	RADIUS = 3,
 	ACCURACY = 4,
 	RUN_SPEED = 5,
-	AIM_RANGE = 6
-	
+	AIM_RANGE = 6,
+	DURATION_WITH_TIMER = 7	
 }
 
 public enum CardSortMode
