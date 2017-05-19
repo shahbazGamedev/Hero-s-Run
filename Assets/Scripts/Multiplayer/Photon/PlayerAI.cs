@@ -233,6 +233,10 @@ public class PlayerAI : Photon.PunBehaviour {
 		{
 			moveToCenterLane();
 		}
+		else if( other.CompareTag( "DropGrenade" ) )
+		{
+			GetComponent<BotCardHandler>().dropGrenade();
+		}
 	}
 
 	private void moveToCenterLane()

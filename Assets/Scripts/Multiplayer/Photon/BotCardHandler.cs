@@ -207,6 +207,24 @@ public class BotCardHandler : Photon.PunBehaviour {
 		return value;
 	}
 
+	/// <summary>
+	/// Drops a grenade.
+	/// This is called as the bot is exiting a bridge.
+	/// If the bot has a CardGrenade, is allowed to play cards, is not affected by Hack, and has enough mana, drop a grenade to destroy the bridge.
+	/// </summary>
+	public void dropGrenade()
+	{
+		if( allowCardPlaying && !playerSpell.isAffectedByHack() )
+		{
+			List<PlayerDeck.PlayerCardData> playableCardsList = getListOfPlayableCards();
+			if( playableCardsList.Exists( card => card.name == CardName.Grenade ) )
+			{
+				int indexOfCardToPlay = getCardIndexInTurnRibbon( CardName.Grenade );
+				playCard(indexOfCardToPlay);
+			}
+		}
+	}
+
 	#region Card Analysis
 	void analyseCards()
 	{
