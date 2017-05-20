@@ -38,6 +38,9 @@ public class HomingMissile : CardSpawnedObject {
 		GetComponent<AudioSource>().Play();
 		if( fireLight != null ) fireLight.enabled = true;
 		if( fireParticleSystem != null ) fireParticleSystem.gameObject.SetActive(true);
+
+		//Add an icon on the minimap
+		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
 	}
 
 	void LateUpdate()

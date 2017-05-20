@@ -26,7 +26,7 @@ public class StatisticEntryUI : MonoBehaviour {
 		propertyTitle.text = LocalizationManager.Instance.getText( "STATISTICS_" + type.ToString() );
 		if( type == StatisticDataType.DISTANCE_TRAVELED_LIFETIME )
 		{
-			propertyValue.text = value.ToString("N1") + "M";
+			propertyValue.text = value.ToString("N0") + "M";
 		}
 		else if( type == StatisticDataType.WIN_LOSS_RATIO )
 		{
