@@ -35,7 +35,7 @@ public class MainMenu : MonoBehaviour {
 			userNameCanvas.SetActive(  true );
 		}
 		numberOfTrophiesText.text = GameManager.Instance.playerProfile.getTrophies().ToString("N0");
-		currentRaceTrackText.text = LevelManager.Instance.getLevelData().getRaceTrackByTrophies().circuitInfo.raceTrackName;
+		currentRaceTrackText.text = LocalizationManager.Instance.getText( LevelManager.Instance.getLevelData().getRaceTrackByTrophies().circuitInfo.circuitTextID );
 		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 		playerNameText.text = GameManager.Instance.playerProfile.getUserName();
 	}
