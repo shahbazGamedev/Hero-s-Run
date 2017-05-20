@@ -280,8 +280,28 @@ public class BotCardHandler : Photon.PunBehaviour {
 	{
 		return turnRibbonList.FindIndex(cardData => cardData.name == name);
 	}
-
-
 	#endregion
+
+	void OnEnable()
+	{
+		PlayerControl.multiplayerStateChanged += MultiplayerStateChanged;
+	}
+
+	void OnDisable()
+	{
+		PlayerControl.multiplayerStateChanged -= MultiplayerStateChanged;
+	}
+
+	void MultiplayerStateChanged( PlayerCharacterState newState )
+	{
+		if( newState == PlayerCharacterState.Dying )
+		{
+			//When the bot respawns, he usually has enough mana to play a card immediately.
+			//We don't want the bot to play as soon as he lands on the ground however because it doesn't feel right.
+			//So we reset the time analysis value to half the time it would take before analysing his deck.
+			//So for a MEDIUM skilled bot, this means that the bot will wait exactly 2 seconds after respawning before playing a card.
+			timeOfLastAnalysis = Time.time - botSkillData.cardPlayFrequency * 0.5f;
+		}
+	}
 
 }
