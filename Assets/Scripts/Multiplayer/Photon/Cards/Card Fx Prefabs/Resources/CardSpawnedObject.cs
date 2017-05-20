@@ -159,6 +159,9 @@ public class CardSpawnedObject : MonoBehaviour {
 	/// <param name="targetLocation">Target location.</param>
 	bool getDotProduct( Vector3 targetLocation )
 	{
+		//The caster transform could be null. This is the case for Grenade and Trip Mine for example.
+		//Since they destroy indiscriminately regardless of whether the explosion is in front or behind, return false.
+		if( casterTransform == null ) return false;
 		Vector3 forward = casterTransform.TransformDirection(Vector3.forward);
 		Vector3 toOther = targetLocation - transform.position;
 		if (Vector3.Dot(forward, toOther) < 0)
