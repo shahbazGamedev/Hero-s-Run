@@ -157,14 +157,16 @@ public class MiniMap : MonoBehaviour {
 					if( radarObjects[i].playerControl.getCharacterState() == PlayerCharacterState.Dying )
 					{
 						radarObjects[i].icon.overrideSprite = playerDeadRadarSprite;
+						//Also hide the secondary icon
+						radarObjects[i].secondaryIcon.gameObject.SetActive( false );
 					}
 					else
 					{
 						radarObjects[i].icon.overrideSprite = null;
 					}
+					//Handle secondary icons which may have expired
+					if( radarObjects[i].secondaryIcon.gameObject.activeSelf && ( Time.time - radarObjects[i].secondaryIconTimeDisplayStarted ) > radarObjects[i].secondaryIconTTL ) radarObjects[i].secondaryIcon.gameObject.SetActive( false );
 				}
-				//Handle secondary image which may have expired
-				if( radarObjects[i].secondaryIcon.gameObject.activeSelf && ( Time.time - radarObjects[i].secondaryIconTimeDisplayStarted ) > radarObjects[i].secondaryIconTTL ) radarObjects[i].secondaryIcon.gameObject.SetActive( false );
 			}
 			else
 			{
