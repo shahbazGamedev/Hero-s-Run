@@ -21,7 +21,7 @@ public class PlayerDeck {
 		addCard( CardName.IceWall, 11, 1000, true );
 
 		//2
-		addCard( CardName.Sprint, 1, 1, true );
+		addCard( CardName.Sprint, 8, 1, true );
 
 		//3
 		addCard( CardName.Raging_Bull, 1, 54, true );

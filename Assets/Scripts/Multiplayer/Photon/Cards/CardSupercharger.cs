@@ -21,7 +21,7 @@ public class CardSupercharger : Card {
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
-		playerTransform.GetComponent<PhotonView>().RPC("cardSuperchargerRPC", PhotonTargets.All, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
+		playerTransform.GetComponent<PhotonView>().RPC("cardSuperchargerRPC", PhotonTargets.All, cd.getCardPropertyValue( CardPropertyType.DURATION_WITH_TIMER, level ) );
 	}
 	#endregion
 
