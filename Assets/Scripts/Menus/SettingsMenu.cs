@@ -23,8 +23,6 @@ public class SettingsMenu : MonoBehaviour {
 	[Header("Privacy Policy")]
 	[SerializeField] Text privacyPolicyText;
 	[SerializeField] string privacyPolicyURL = "http://www.google.com/";
-	[Header("Restore Purchases")]
-	[SerializeField] Text restorePurchasesText;
 	[Header("Debug Menu")]
 	[SerializeField] ScrollRect  optionsScrollView; 
 	[SerializeField] GameObject  dotsPanel; 
@@ -63,7 +61,6 @@ public class SettingsMenu : MonoBehaviour {
 			flipCameraText.text = LocalizationManager.Instance.getText("MENU_CAMERA_FACES_BACK_HERO");
 		}
 		privacyPolicyText.text = LocalizationManager.Instance.getText("MENU_PRIVACY_POLICY");
-		restorePurchasesText.text = LocalizationManager.Instance.getText("MENU_RESTORE_PURCHASES");
 		
 		//Important: Disable horizontal scrolling when not in a Development Build to prevent access to debug options.
 		optionsScrollView.horizontal = Debug.isDebugBuild;
@@ -135,12 +132,6 @@ public class SettingsMenu : MonoBehaviour {
 		Debug.Log("OnClickShowPrivacyPolicy");
 		UISoundManager.uiSoundManager.playButtonClick();
 		Application.OpenURL(privacyPolicyURL);
-	}
-
-	public void OnClickRestorePurchases()
-	{
-		Debug.LogWarning("OnClickRestorePurchases - Not implemented.");
-		UISoundManager.uiSoundManager.playButtonClick();
 	}
 
 	void OnSceneUnloaded( Scene scene )
