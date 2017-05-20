@@ -269,7 +269,7 @@ public class PlayerSpell : PunBehaviour {
 
 	public void playerDied()
 	{
-		if( castLinkedFate && PhotonNetwork.isMasterClient && GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
+		if( castLinkedFate && PhotonNetwork.isMasterClient )
 		{
 			//Kill all players with the affectedByLinkedFate flag. Ignore the caster (who is dead anyway).
 			for( int i = 0; i < PlayerRace.players.Count; i++ )
