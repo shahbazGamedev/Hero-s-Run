@@ -32,7 +32,7 @@ public class HomingMissile : CardSpawnedObject {
 
 		homingMissile = GetComponent<Rigidbody>();
 		target = getNearestTargetWithinRange( Mathf.Infinity, MaskHandler.getMaskOnlyPlayer() );
-		if( target != null ) print("Homing Missile target is: " + target.name );
+		//if( target != null ) print("Homing Missile target is " + target.name );
 		homingMissile.isKinematic = false;
 		GetComponent<AudioSource>().clip = inFlightSound;
 		GetComponent<AudioSource>().Play();
@@ -45,12 +45,20 @@ public class HomingMissile : CardSpawnedObject {
 
 	void LateUpdate()
 	{
-		if( target == null || homingMissile == null ) return;
+		if( homingMissile == null ) return;
 
-		homingMissile.velocity = transform.forward * missileVelocity;
-		//Aim for the torso, not the feet
-		Quaternion targetRotation = Quaternion.LookRotation( new Vector3( target.position.x, target.position.y + 1.4f, target.position.z ) - transform.position ); 
-		homingMissile.MoveRotation( Quaternion.RotateTowards( transform.rotation, targetRotation, turn ) );
+		if( target == null )
+		{
+			//If the target couldn't be found or is no longer present (maybe a player disconnected), just continue straight until you either self-destruct or hit an obstacle.
+			homingMissile.velocity = transform.forward * missileVelocity;
+		}
+		else
+		{
+			homingMissile.velocity = transform.forward * missileVelocity;
+			//Aim for the torso, not the feet
+			Quaternion targetRotation = Quaternion.LookRotation( new Vector3( target.position.x, target.position.y + 1.4f, target.position.z ) - transform.position ); 
+			homingMissile.MoveRotation( Quaternion.RotateTowards( transform.rotation, targetRotation, turn ) );
+		}
 	}
 
 	void OnCollisionEnter(Collision collision)
