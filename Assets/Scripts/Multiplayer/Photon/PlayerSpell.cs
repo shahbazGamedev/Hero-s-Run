@@ -57,7 +57,7 @@ public class PlayerSpell : PunBehaviour {
 		shrinkEffect.transform.localPosition = new Vector3( 0, 1f, 0 );
 		shrinkEffect.Play();
 		StartCoroutine( shrink( new Vector3( 0.3f, 0.3f, 0.3f ), 1.25f, spellDuration ) );
-		if( cardPlayedByOpponentEvent != null && GetComponent<PhotonView>().isMine ) cardPlayedByOpponentEvent( CardName.Shrink, spellDuration );
+		displayCardTimerOnHUD( CardName.Shrink, spellDuration );
 	}
 
 	IEnumerator shrink( Vector3 endScale, float shrinkDuration, float spellDuration )
@@ -129,7 +129,7 @@ public class PlayerSpell : PunBehaviour {
 		else
 		{
 			affectedByLinkedFate = true;
-			if( cardPlayedByOpponentEvent != null && GetComponent<PhotonView>().isMine ) cardPlayedByOpponentEvent( CardName.Linked_Fate, spellDuration );
+			displayCardTimerOnHUD( CardName.Linked_Fate, spellDuration );
 		}
 
 		//For the player affected by Linked Fate, change the color of his icon on the map
@@ -182,7 +182,7 @@ public class PlayerSpell : PunBehaviour {
 	[PunRPC]
 	void cardHackRPC( float spellDuration )
 	{
-		if( cardPlayedByOpponentEvent != null && GetComponent<PhotonView>().isMine ) cardPlayedByOpponentEvent( CardName.Hack, spellDuration );
+		displayCardTimerOnHUD( CardName.Hack, spellDuration );
 
 		affectedByHack = true;
 		//Cancel the hack effect once the duration has run out
@@ -237,6 +237,22 @@ public class PlayerSpell : PunBehaviour {
 		return affectedBySupercharger;
 	}
 	#endregion
+
+	/// <summary>
+	/// Send an event to display a timer on the HUD showing the duration of the opponent's card effect.
+	/// If Hack lasts 10 seconds, then show a 10-second timer for example.
+	/// The timer outline color for negative effects is red.
+	/// </summary>
+	/// <param name="name">Name.</param>
+	/// <param name="duration">Duration.</param>
+	void displayCardTimerOnHUD( CardName name, float duration )
+	{
+		//Only send an event for the local player (and not for bots).
+		if( cardPlayedByOpponentEvent != null && GetComponent<PhotonView>().isMine && GetComponent<PlayerAI>() == null )
+		{
+			cardPlayedByOpponentEvent( name, duration );
+		}
+	}
 
 	public void cancelAllSpells()
 	{
