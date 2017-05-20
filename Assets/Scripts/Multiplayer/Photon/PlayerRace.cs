@@ -40,6 +40,10 @@ public class PlayerRace : Photon.PunBehaviour
 	static public List<PlayerRace> players = new List<PlayerRace> ();
 	static public List<PlayerRace> officialRacePositionList = new List<PlayerRace> ();
 
+	//Delegate used to communicate to other classes when the local player (and not a bot) has crossed the finish line.
+	public delegate void CrossedFinishLine();
+	public static event CrossedFinishLine crossedFinishLine;
+
 	void Start()
 	{
 		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
@@ -263,6 +267,8 @@ public class PlayerRace : Photon.PunBehaviour
 			GetComponent<PlayerControl>().setCharacterState(PlayerCharacterState.Idle);
 			if( GetComponent<PlayerAI>() == null )
 			{
+				//Send a crossedFinishLine event to tell the HUD to remove the card timers
+				if( crossedFinishLine != null ) crossedFinishLine();
 				HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
 				GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
 				PlayerRaceManager.Instance.playerCompletedRace( (officialRacePosition + 1), raceDuration, distanceTravelled, GetComponent<PlayerControl>().getNumberOfTimesDiedDuringRace() );

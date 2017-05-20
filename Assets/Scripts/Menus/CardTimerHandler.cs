@@ -1,17 +1,16 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CardTimerHandler : MonoBehaviour {
 
 	[SerializeField] GameObject radialTimerPrefab;
 	[SerializeField] Transform timerHolder;
-	List<GameObject> timerList = new List<GameObject>();
 
 	void OnEnable()
 	{
 		TurnRibbonHandler.cardPlayedEvent += CardPlayedEvent;
 		PlayerSpell.cardPlayedByOpponentEvent += CardPlayedByOpponentEvent;
+		PlayerRace.crossedFinishLine += CrossedFinishLine;
 		PlayerControl.multiplayerStateChanged += MultiplayerStateChanged;
 	}
 
@@ -19,6 +18,7 @@ public class CardTimerHandler : MonoBehaviour {
 	{
 		TurnRibbonHandler.cardPlayedEvent -= CardPlayedEvent;
 		PlayerSpell.cardPlayedByOpponentEvent -= CardPlayedByOpponentEvent;
+		PlayerRace.crossedFinishLine -= CrossedFinishLine;
 		PlayerControl.multiplayerStateChanged -= MultiplayerStateChanged;
 	}
 
@@ -48,7 +48,6 @@ public class CardTimerHandler : MonoBehaviour {
 	/// <param name="duration">Duration.</param>
 	void CardPlayedByOpponentEvent( CardName name, float duration )
 	{
-		CardManager.CardData playedCard = CardManager.Instance.getCardByName( name );
 		string localizedName = LocalizationManager.Instance.getText( "CARD_NAME_" + name.ToString().ToUpper() );
 		addTimer( localizedName, duration, Color.red );
 	}
@@ -57,7 +56,6 @@ public class CardTimerHandler : MonoBehaviour {
 	{
 		GameObject go = (GameObject)Instantiate(radialTimerPrefab);
 		go.transform.SetParent(timerHolder,false);
-		timerList.Add( go );
 		go.GetComponent<RadialTimerUI>().startAnimation( localizedName, duration, color );
 	}
 
@@ -67,6 +65,11 @@ public class CardTimerHandler : MonoBehaviour {
 		{
 			removeAllTimers();
 		}
+	}
+
+	void CrossedFinishLine()
+	{
+		removeAllTimers();
 	}
 
 	/// <summary>
@@ -79,7 +82,6 @@ public class CardTimerHandler : MonoBehaviour {
 			Transform child = timerHolder.transform.GetChild( i );
 			GameObject.Destroy( child.gameObject );
 		}
-		timerList.Clear();
 	}
 
 }

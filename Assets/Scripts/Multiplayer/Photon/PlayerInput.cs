@@ -135,15 +135,15 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.N ) )
 		{
-			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Trip_Mine, GameManager.Instance.playerProfile.getUserName(), 5 );
+			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Supercharger, GameManager.Instance.playerProfile.getUserName(), 5 );
 		}
 		else if ( Input.GetKeyDown (KeyCode.O ) )
 		{
-			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.IceWall, GameManager.Instance.playerProfile.getUserName(), 4 );
+			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Linked_Fate, GameManager.Instance.playerProfile.getUserName(), 4 );
 		}
 		else if ( Input.GetKeyDown (KeyCode.T ) )
 		{
-			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Raging_Bull, GameManager.Instance.playerProfile.getUserName(), 9 );
+			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Hack, GameManager.Instance.playerProfile.getUserName(), 9 );
 		}
 		else if ( Input.GetKeyDown (KeyCode.P ) )
 		{

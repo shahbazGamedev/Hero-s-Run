@@ -105,6 +105,7 @@ public class PlayerSpell : PunBehaviour {
 		//Are we shrunk?
 		if( transform.localScale.y != 1f )
 		{
+			StopCoroutine( "shrink" );
 			//If we died while shrunk, do nothing i.e. stay small, that's fine.
 			//If we crossed the finish line while shrunk, enlarge the player quickly back to his normal size.
 			if( playerControl.deathType == DeathType.Alive )
@@ -145,6 +146,7 @@ public class PlayerSpell : PunBehaviour {
 
 	void cancelLinkedFateSpell()
 	{
+		CancelInvoke( "cancelLinkedFateSpell" );
 		if( affectedByLinkedFate &&  GameManager.Instance.getPlayMode() != PlayMode.PlayAgainstEnemy ) MiniMap.Instance.changeColorOfRadarObject( GetComponent<PlayerControl>(), Color.white );
 		affectedByLinkedFate = false;
 		castLinkedFate = false;
@@ -199,6 +201,7 @@ public class PlayerSpell : PunBehaviour {
 
 	void cancelHack()
 	{
+		CancelInvoke( "cancelHack" );
 		affectedByHack = false;
 		print("PlayerSpell cancelHack for " + gameObject.name );
 	}
@@ -228,6 +231,7 @@ public class PlayerSpell : PunBehaviour {
 
 	void cancelSupercharger()
 	{
+		CancelInvoke("cancelSupercharger" );
 		affectedBySupercharger = false;
 		print("PlayerSpell cancelSupercharger for " + gameObject.name );
 	}
@@ -256,8 +260,6 @@ public class PlayerSpell : PunBehaviour {
 
 	public void cancelAllSpells()
 	{
-		StopAllCoroutines();
-		CancelInvoke();
 		cancelLinkedFateSpell();
 		cancelSentrySpell();
 		cancelShrinkSpell();
