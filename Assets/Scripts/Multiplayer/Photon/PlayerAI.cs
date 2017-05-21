@@ -25,12 +25,14 @@ public class PlayerAI : Photon.PunBehaviour {
 
 	PlayerControl playerControl;
 	PlayerInput playerInput;
+	PlayerRace playerRace;
 
 	// Use this for initialization
 	void Awake ()
 	{
 		playerControl = GetComponent<PlayerControl>();
 		playerInput = GetComponent<PlayerInput>();
+		playerRace = GetComponent<PlayerRace>();
 
 		//Get the bot that was selected in MPNetworkLobbyManager and saved in LevelManager.
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
@@ -235,7 +237,9 @@ public class PlayerAI : Photon.PunBehaviour {
 		}
 		else if( other.CompareTag( "DropGrenade" ) )
 		{
-			GetComponent<BotCardHandler>().dropGrenade();
+			// This is called as the bot is exiting a bridge.
+			// If the bot has a CardGrenade, is allowed to play cards, is not affected by Hack, has enough mana, and is leading, drop a grenade to destroy the bridge.
+			if( isBotLeading() ) GetComponent<BotCardHandler>().tryToPlayCard( CardName.Grenade );
 		}
 	}
 
@@ -313,6 +317,18 @@ public class PlayerAI : Photon.PunBehaviour {
 		{
 			bch.activateCard( CardName.IceWall );
 		}
+	}
+
+	bool isBotLeading()
+	{
+		bool isLeading = true;
+		for( int i = 0; i < PlayerRace.players.Count; i++ )
+		{
+			//Ignore the caster
+			if( PlayerRace.players[i] == playerRace ) continue;
+			if( PlayerRace.players[i].racePosition < playerRace.racePosition ) return false;
+		}
+		return isLeading;
 	}
 
 
