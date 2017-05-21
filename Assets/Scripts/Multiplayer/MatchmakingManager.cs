@@ -8,7 +8,6 @@ public class MatchmakingManager : MonoBehaviour {
 
 	[Header("General")]
 	[SerializeField] GameObject endOfGameCanvas;
-	[SerializeField] MultiPurposePopup multiPurposePopup;
 	[SerializeField] Button playButton;
 	[SerializeField] Text playButtonText;
 	[SerializeField] Text versusText;
@@ -18,7 +17,6 @@ public class MatchmakingManager : MonoBehaviour {
 	[Header("Circuit")]
 	[SerializeField] Text circuitName;
 	[SerializeField] Image circuitImage;
-	[SerializeField] Text entryFee;
 
 	[Header("Single Player Panel")]
 	[SerializeField] GameObject singlePlayerPanel;
@@ -206,15 +204,7 @@ public class MatchmakingManager : MonoBehaviour {
 
 	public void showNoInternetPopup()
 	{
-		multiPurposePopup.configurePopup( "MENU_CONNECTION_FAILED_TITLE", "MENU_CONNECTION_FAILED_TEXT", "MENU_OK" );
-		multiPurposePopup.display();
-		enablePlayButton( true );
-	}
-
-	public void showConnectionTimedOut()
-	{
-		multiPurposePopup.configurePopup( "MENU_CONNECTION_FAILED_TITLE", "MENU_MP_TIMED_OUT", "MENU_OK" );
-		multiPurposePopup.display();
+		MultiPurposePopup.Instance.displayPopup( "MENU_NO_INTERNET" );
 		enablePlayButton( true );
 	}
 

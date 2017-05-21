@@ -1,30 +1,38 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class MultiPurposePopup : MonoBehaviour {
+public class MultiPurposePopup : MonoBehaviour, IPointerDownHandler {
 
-	[Header("Multi-purpose Popup")]
-	public Text titleText;
-	public Text contentText;
-	public Text buttonText;
+	public static MultiPurposePopup Instance;
+	[SerializeField] GameObject panel;
+	[SerializeField] Image topImage;
+	[SerializeField] Text contentText;
 
-	public void configurePopup( string titleID, string contentID, string buttonID )
+	void Awake ()
 	{
-		titleText.text = LocalizationManager.Instance.getText( titleID );
+		if(Instance)
+		{
+			DestroyImmediate(gameObject);
+		}
+		else
+		{
+			Instance = this;
+			DontDestroyOnLoad(gameObject);
+		}
+	}
+
+	public void displayPopup( string contentID, Sprite alternateTopImage = null )
+	{
 		contentText.text = LocalizationManager.Instance.getText( contentID );
-		buttonText.text = LocalizationManager.Instance.getText( buttonID );
+		topImage.overrideSprite = alternateTopImage;
+		panel.SetActive( true );
 	}
 
-	public void display()
-	{
-		gameObject.SetActive( true );
-	}
-
-	public void hide()
-	{
-		gameObject.SetActive( false );
-	}
+   public void OnPointerDown(PointerEventData data)
+    {
+		panel.SetActive( false );
+    }
 
 }
