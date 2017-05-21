@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class TipHandler : MonoBehaviour {
 
 	[Header("Game Tips")]
-	[SerializeField] Text tipDescription;
+	[SerializeField] TextMeshProUGUI tipDescription;
 	List<string> tipList = new List<string>();
 
 	void Start ()
