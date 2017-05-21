@@ -27,8 +27,18 @@ public class StoreEntryForGems : MonoBehaviour {
 
 	public void buy()
 	{
-		Debug.Log("Buy " + quantity + " gems.");
 		UISoundManager.uiSoundManager.playButtonClick();
-		GameManager.Instance.playerInventory.addGems( quantity );
+		//We need Internet to make a real money Gem purchase
+		if( Application.internetReachability != NetworkReachability.NotReachable )
+		{
+			//Player is connected to the Internet
+			Debug.Log("Buy " + quantity + " gems.");
+			GameManager.Instance.playerInventory.addGems( quantity );
+		}
+		else
+		{
+			//Player is not connected to the Internet
+			MultiPurposePopup.Instance.displayPopup( "MENU_NO_INTERNET" );
+		}
 	}
 }
