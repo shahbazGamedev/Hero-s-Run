@@ -32,6 +32,8 @@ public class HUDMultiplayer : MonoBehaviour {
 	[SerializeField] Text raceEndingText;
 	[Header("Minimap")]
 	[SerializeField] PhotonView minimapPhotonView;
+	[Header("Emotes")]
+	[SerializeField] GameObject emotePanel;
 
 	//Event management used to notify players to start running
 	public delegate void StartRunningEvent();
@@ -133,7 +135,8 @@ public class HUDMultiplayer : MonoBehaviour {
 	{
 		raceEndingText.gameObject.SetActive( false );
 		StopCoroutine("endOfRaceCountdown");
-		yield return new WaitForSecondsRealtime( 5f );
+		emotePanel.SetActive ( true );
+		yield return new WaitForSecondsRealtime( 10f );
 		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 		PhotonNetwork.LeaveRoom();
 	}
