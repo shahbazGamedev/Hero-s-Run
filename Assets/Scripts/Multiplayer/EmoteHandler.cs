@@ -54,7 +54,7 @@ public class EmoteHandler : MonoBehaviour {
 	#region Send and receive emotes
 	public void sendEmote( byte uniqueID )
 	{
-		GetComponent<PhotonView>().RPC("emoteRPC", PhotonTargets.All, uniqueID );
+		GetComponent<PhotonView>().RPC("emoteRPC", PhotonTargets.Others, uniqueID );
 	}
 
 	[PunRPC]

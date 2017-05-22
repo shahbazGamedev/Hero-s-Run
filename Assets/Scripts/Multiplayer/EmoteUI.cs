@@ -3,6 +3,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// This class displays the emote sent to us by our opponent such as Good Game!
+/// It is highly flexible.
+/// In all cases, the text will be updated to show Good Game!, Well Played! etc.
+/// If there is a sound byte audio clip, it will be played.
+/// For the visual aspects, the choice as to what to display is done in the following order:
+/// If a video clip is specified, it will be played
+/// If there is no video clip, but there is a video URL, the streamed video will be played.
+/// If there is no video clip or URL, a still image will be displayed if available.
+/// If there is not even a still image, only the text bubble will be shown.
+/// </summary>
 public class EmoteUI : MonoBehaviour {
 
  	[SerializeField] Image emoteImage;

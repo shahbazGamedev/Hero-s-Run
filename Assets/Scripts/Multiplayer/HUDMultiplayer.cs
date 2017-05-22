@@ -135,10 +135,26 @@ public class HUDMultiplayer : MonoBehaviour {
 	{
 		raceEndingText.gameObject.SetActive( false );
 		StopCoroutine("endOfRaceCountdown");
-		emotePanel.SetActive ( true );
+		showEmotePanel();
 		yield return new WaitForSecondsRealtime( 12f );
 		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 		PhotonNetwork.LeaveRoom();
+	}
+
+	/// <summary>
+	/// Shows the emote panel if these conditions are met:
+	/// We are in one of these play modes: PlayTwoPlayers, PlayThreePlayers or PlayWithFriends.
+	/// There are at least two players at the end of the race. Some players may have quit or lost connection. That's why we check.
+	/// </summary>
+	void showEmotePanel()
+	{
+		if( GameManager.Instance.getPlayMode() == PlayMode.PlayTwoPlayers || GameManager.Instance.getPlayMode() == PlayMode.PlayThreePlayers || GameManager.Instance.getPlayMode() == PlayMode.PlayWithFriends )
+		{
+			if( PlayerRace.players.Count > 1 )
+			{
+				emotePanel.SetActive ( true );
+			}
+		}
 	}
 
 	void Update()
