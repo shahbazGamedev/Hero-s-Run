@@ -25,6 +25,9 @@ public class EmoteUI : MonoBehaviour {
 	public void displayEmote ( EmoteHandler.EmoteData ed )
 	{
 		gameObject.SetActive( true );
+		//The game object displaying the video will be activated when the video starts playing. See VideoPlayerHandler.
+		//If we do not do that, we will see a white texture for a few frame while the video prepares.
+		rawImageForVideo.gameObject.SetActive( false );
 
 		//In all cases, set up the text
 		emoteText.text = LocalizationManager.Instance.getText( ed.textID );
@@ -39,26 +42,22 @@ public class EmoteUI : MonoBehaviour {
 		if( ed.videoClip != null )
 		{
 			emoteImage.gameObject.SetActive( false );
-			rawImageForVideo.gameObject.SetActive( true );
 			videoPlayerHandler.startVideo( ed.videoClip );
 		}
 		//If we have a URL for the video, play that
 		else if(  !string.IsNullOrEmpty( ed.videoURL ) )
 		{
 			emoteImage.gameObject.SetActive( false );
-			rawImageForVideo.gameObject.SetActive( true );
 			videoPlayerHandler.startVideo( ed.videoURL );
 		}
 		else if(  ed.stillImage != null )
 		{
 			emoteImage.sprite = ed.stillImage;
 			emoteImage.gameObject.SetActive( true );
-			rawImageForVideo.gameObject.SetActive( false );
 		}
 		else
 		{
 			emoteImage.gameObject.SetActive( false );
-			rawImageForVideo.gameObject.SetActive( false );
 		}
 	}
 }

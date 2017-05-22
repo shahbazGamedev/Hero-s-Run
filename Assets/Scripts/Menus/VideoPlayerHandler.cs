@@ -15,12 +15,14 @@ public class VideoPlayerHandler : MonoBehaviour {
 		audioSource = GetComponent<AudioSource>();
 		videoPlayer.prepareCompleted += Prepared;
 		videoPlayer.loopPointReached += EndReached;
+		videoPlayer.started += Started;
 	}
 
 	void OnDisable()
 	{
 		videoPlayer.prepareCompleted -= Prepared;
 		videoPlayer.loopPointReached -= EndReached;
+		videoPlayer.started -= Started;
 	}
 
 	public void startVideo ( string videoURL, bool loop = false )
@@ -67,6 +69,11 @@ public class VideoPlayerHandler : MonoBehaviour {
 		videoPlayer.Play();
 		//NOTE: can't get audio to work
 		audioSource.Play();
+	}
+
+	void Started( VideoPlayer videoPlayer )
+	{
+		rawImageForPlayback.gameObject.SetActive( true );
 	}
 
 	/// <summary>
