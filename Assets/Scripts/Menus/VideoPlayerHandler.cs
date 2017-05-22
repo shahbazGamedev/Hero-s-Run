@@ -14,11 +14,13 @@ public class VideoPlayerHandler : MonoBehaviour {
 		videoPlayer = GetComponent<VideoPlayer>();
 		audioSource = GetComponent<AudioSource>();
 		videoPlayer.prepareCompleted += Prepared;
+		videoPlayer.loopPointReached += EndReached;
 	}
 
 	void OnDisable()
 	{
 		videoPlayer.prepareCompleted -= Prepared;
+		videoPlayer.loopPointReached -= EndReached;
 	}
 
 	public void startVideo ( string videoURL, bool loop = false )
@@ -63,5 +65,15 @@ public class VideoPlayerHandler : MonoBehaviour {
 		videoPlayer.Play();
 		//NOTE: can't get audio to work
 		audioSource.Play();
+	}
+
+	/// <summary>
+	/// Called when the end of the video clip is reached.
+	/// It is NOT called when the end of a streaming URL video is reached.
+	/// </summary>
+	/// <param name="videoPlayer">Video player.</param>
+	void EndReached( VideoPlayer videoPlayer )
+	{
+		//print("Video " + videoPlayer.clip.name + " has finished playing." );
 	}
 }

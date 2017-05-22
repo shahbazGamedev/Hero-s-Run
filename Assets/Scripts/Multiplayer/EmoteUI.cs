@@ -32,7 +32,6 @@ public class EmoteUI : MonoBehaviour {
 		//If we have an audio clip, play it
 		if( ed.soundByte != null )
 		{
-			print("Sound byte " + ed.soundByte.name );
 			audioSourceForSoundByte.PlayOneShot( ed.soundByte );
 		}
 
