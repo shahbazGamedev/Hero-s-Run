@@ -2,65 +2,41 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
+using TMPro;
 
-public enum EmoteType
-{
-	ANIMATED = 0,
-	TEXT = 1
-}
+//2 valid MP4 videos for testing:
+//Tracer video is: 480x458
+//McCree video is: 480x384
+//Tracer https://media.giphy.com/media/WH1CTjz57LkWc/giphy.mp4?response_id=592291966300b212499a7a14
+//McCree https://media.giphy.com/media/NwxtUBYgoz9sI/giphy.mp4?response_id=592292b365a16233448c8f56
 
 public class EmoteHandler : MonoBehaviour {
 
 	const float DELAY_BEFORE_HIDING = 3f;
 
-	[Header("Configuration")]
-	[SerializeField] List<EmoteData> emoteList = new List<EmoteData>();
-
 	[Header("For Sending Emotes")]
- 	[SerializeField] GameObject animatedEmotePrefab;
  	[SerializeField] GameObject textEmotePrefab;
- 	[SerializeField] Transform animatedEmoteHolder;
  	[SerializeField] Transform textEmoteHolder;
 
 	[Header("For Receiving Emotes")]
-	[SerializeField] Image animatedEmote;
- 	[SerializeField] GameObject textEmoteObject;
+	[SerializeField] GameObject receivingEmote;
+
+	[Header("Configuration")]
+	[SerializeField] List<EmoteData> emoteList = new List<EmoteData>();
 
 	// Use this for initialization
 	void Start ()
 	{
-		createAnimatedEmotes();
 		createTextEmotes();
 	}
-
-	#region Animated emote creation
-	void createAnimatedEmotes()
-	{
-		List<EmoteData> animatedEmoteList = emoteList.FindAll(emoteData => emoteData.type == EmoteType.ANIMATED);
-		for( int i = 0; i < animatedEmoteList.Count; i++ )
-		{
-			createAnimatedEmote( animatedEmoteList[i] );
-		}
-	}
-
-	void createAnimatedEmote( EmoteData ed )
-	{
-		GameObject go = (GameObject)Instantiate(animatedEmotePrefab);
-		go.transform.SetParent(animatedEmoteHolder,false);
-		Button button = go.GetComponent<Button>();
-		button.onClick.RemoveAllListeners();
-		button.onClick.AddListener(() => sendEmote( ed.uniqueID ));
-		go.GetComponent<EmoteUI>().configureEmote( ed );
-	}
-	#endregion
 
 	#region Text emote creation
 	void createTextEmotes()
 	{
-		List<EmoteData> textEmoteList = emoteList.FindAll(emoteData => emoteData.type == EmoteType.TEXT);
-		for( int i = 0; i < textEmoteList.Count; i++ )
+		for( int i = 0; i < emoteList.Count; i++ )
 		{
-			createTextEmote( textEmoteList[i] );
+			createTextEmote( emoteList[i] );
 		}
 	}
 
@@ -71,7 +47,7 @@ public class EmoteHandler : MonoBehaviour {
 		Button button = go.GetComponent<Button>();
 		button.onClick.RemoveAllListeners();
 		button.onClick.AddListener(() => sendEmote( ed.uniqueID ));
-		go.GetComponent<EmoteUI>().configureEmote( ed );
+		go.GetComponentInChildren<TextMeshProUGUI>().text = LocalizationManager.Instance.getText( ed.textID );
 	}
 	#endregion
 
@@ -89,17 +65,7 @@ public class EmoteHandler : MonoBehaviour {
 		EmoteData ed = emoteList.Find(emoteData => emoteData.uniqueID == emoteID);
 		if( ed != null )
 		{
-			if( ed.type == EmoteType.ANIMATED )
-			{
-				animatedEmote.gameObject.GetComponent<EmoteUI>().configureEmote( ed );
-				animatedEmote.gameObject.SetActive( true );
-				if( ed.animatedSpriteAudio != null ) animatedEmote.GetComponent<AudioSource>().PlayOneShot( ed.animatedSpriteAudio );
-			}
-			else
-			{
-				textEmoteObject.GetComponent<EmoteUI>().configureEmote( ed );
-				textEmoteObject.SetActive( true );
-			}
+			receivingEmote.GetComponent<EmoteUI>().displayEmote( ed );
 		}
 		else
 		{
@@ -111,18 +77,18 @@ public class EmoteHandler : MonoBehaviour {
 
 	void hideEmoteAfterDelay()
 	{
-		animatedEmote.gameObject.SetActive( false );
-		textEmoteObject.SetActive( false );
+		receivingEmote.gameObject.SetActive( false );
 	}
 
 	[System.Serializable]
 	public class EmoteData
 	{
 		public byte uniqueID;
-		public EmoteType type; 
-		public Sprite animatedSprite;
-		public AudioClip animatedSpriteAudio;
+		public VideoClip videoClip;
+		public string  videoURL;
+		public Sprite stillImage;
 		public string textID;
+		public AudioClip soundByte;
 	}
 	
 }

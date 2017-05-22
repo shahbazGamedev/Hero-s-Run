@@ -136,7 +136,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		raceEndingText.gameObject.SetActive( false );
 		StopCoroutine("endOfRaceCountdown");
 		emotePanel.SetActive ( true );
-		yield return new WaitForSecondsRealtime( 10f );
+		yield return new WaitForSecondsRealtime( 12f );
 		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 		PhotonNetwork.LeaveRoom();
 	}
