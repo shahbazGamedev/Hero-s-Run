@@ -13,7 +13,7 @@ using TMPro;
 
 public class EmoteHandler : MonoBehaviour {
 
-	const float DELAY_BEFORE_HIDING = 3f;
+	const float DELAY_BEFORE_HIDING = 3.5f;
 
 	[Header("For Sending Emotes")]
  	[SerializeField] GameObject textEmotePrefab;

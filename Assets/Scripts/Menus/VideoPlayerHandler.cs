@@ -25,6 +25,7 @@ public class VideoPlayerHandler : MonoBehaviour {
 
 	public void startVideo ( string videoURL, bool loop = false )
 	{
+		if( videoPlayer.isPlaying ) videoPlayer.Stop();
 		videoPlayer.source = VideoSource.Url;
 		videoPlayer.url = videoURL;
 
@@ -36,6 +37,7 @@ public class VideoPlayerHandler : MonoBehaviour {
 
 	public void startVideo ( VideoClip videoClip, bool loop = false )
 	{
+		if( videoPlayer.isPlaying ) videoPlayer.Stop();
 		videoPlayer.source = VideoSource.VideoClip;
 		videoPlayer.clip = videoClip;
 
