@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 
 public class HUDMultiplayer : MonoBehaviour {
 
@@ -10,23 +10,25 @@ public class HUDMultiplayer : MonoBehaviour {
 	public static HUDMultiplayer hudMultiplayer;
 	bool raceHasStarted = false;
 	const float DELAY_BEFORE_COUNTDOWN_STARTS = 5f;
+	const float RETURN_TO_LOBBY_DELAY_ALONE = 8f;
+	const float RETURN_TO_LOBBY_DELAY_MULTI = 11f;
 	[Header("Distance Traveled")]
 	[SerializeField] GameObject distancePanel;
-	[SerializeField] Text distanceText;
+	[SerializeField] TextMeshProUGUI distanceText;
 	[Header("Countdowm")]
 	[SerializeField] AudioClip beep; //Sound to play every second during countdown
-	[SerializeField] Text userMessageText;
+	[SerializeField] TextMeshProUGUI userMessageText;
 	[Header("Race Position")]
 	[SerializeField] GameObject racePosition;
-	[SerializeField] Text racePositionText;
+	[SerializeField] TextMeshProUGUI racePositionText;
 	[Header("Finish Flag")]
 	[SerializeField] Image finishFlag;
 	[Header("Debug Info")]
-	[SerializeField] Text debugInfo;
+	[SerializeField] TextMeshProUGUI debugInfo;
 	FPSCalculator fpsCalculator;
 	[Header("Circuit Name and Icon Panel")]
 	[SerializeField] RectTransform circuitDetailsPanel;
-	[SerializeField] Text circuitNameText;
+	[SerializeField] TextMeshProUGUI circuitNameText;
 	[SerializeField] Image circuitIcon;
 	[Header("Race About To End Message")]
 	[SerializeField] Text raceEndingText;
@@ -136,7 +138,15 @@ public class HUDMultiplayer : MonoBehaviour {
 		raceEndingText.gameObject.SetActive( false );
 		StopCoroutine("endOfRaceCountdown");
 		showEmotePanel();
-		yield return new WaitForSecondsRealtime( 12f );
+		if( PlayerRace.players.Count > 1 )
+		{
+			//Stay longer in case the players want to exchange emotes
+			yield return new WaitForSecondsRealtime( RETURN_TO_LOBBY_DELAY_MULTI );
+		}
+		else
+		{
+			yield return new WaitForSecondsRealtime( RETURN_TO_LOBBY_DELAY_ALONE );
+		}
 		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 		PhotonNetwork.LeaveRoom();
 	}
