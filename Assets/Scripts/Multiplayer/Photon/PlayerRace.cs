@@ -65,6 +65,9 @@ public class PlayerRace : Photon.PunBehaviour
 		HUDMultiplayer.startRunningEvent += StartRunningEvent;
 	}
 
+	/// <summary>
+	/// This method gets reliably called when a player disconnects either by using the Pause menu and quitting or because of a loss of connection.
+	/// </summary>
 	void OnDisable()
 	{
 		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
@@ -72,16 +75,11 @@ public class PlayerRace : Photon.PunBehaviour
 		{
             players.Remove (this);
 		}
- 	    Debug.Log("PlayerRace: OnDisable() Players Count: " + players.Count);  
-	}
-
-	public override void OnDisconnectedFromPhoton()
-	{
-        if (players.Contains (this))
+		Debug.Log("PlayerRace: OnDisable() Players Count: " + players.Count + " " + gameObject.name );
+		if( !playerCrossedFinishLine )
 		{
-            players.Remove (this);
+			PlayerRaceManager.Instance.playerAbandonedRace();
 		}
-		Debug.Log("PlayerRace: OnDisconnectedFromPhoton() Players Count: " + players.Count );  
 	}
 
 	void StartRunningEvent()
