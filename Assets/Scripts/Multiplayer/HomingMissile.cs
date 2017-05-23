@@ -10,7 +10,9 @@ public class HomingMissile : CardSpawnedObject {
 	[SerializeField] AudioClip inFlightSound;
 	[SerializeField] AudioClip collisionSound;
 	float missileVelocity = 40f;
-	float turn = 20f;
+	//Important: if the turn value is too small, you may see the missile spin around the target without ever hitting it because the turn radius is too big.
+	//A turn value of 24 for a missile velocity of 40 works well.
+	float turn = 24f;
 	Rigidbody homingMissile;
 	Transform target;
 
