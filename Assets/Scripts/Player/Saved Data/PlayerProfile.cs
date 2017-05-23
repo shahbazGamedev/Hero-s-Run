@@ -92,7 +92,7 @@ public class PlayerProfile {
 
 	public void changeTrophies( int value )
 	{
-		if( value > 0 && value <= TrophyManager.MAX_CHANGE_IN_TROPHIES )
+		if( value >= -TrophyManager.MAX_CHANGE_IN_TROPHIES && value <= TrophyManager.MAX_CHANGE_IN_TROPHIES )
 		{
 			int newValue = numberOfTrophies + value;
 			//Don't allow the number of trophies to go below 0.
@@ -101,7 +101,7 @@ public class PlayerProfile {
 		}
 		else
 		{
-			Debug.LogWarning("PlayerProfile-the number of trophies to add " + value + " is incorrect. It needs to be between 1 and " + TrophyManager.MAX_CHANGE_IN_TROPHIES.ToString() + ".");
+			Debug.LogWarning("PlayerProfile-the number of trophies to change " + value + " is incorrect. It needs to be between " + (-TrophyManager.MAX_CHANGE_IN_TROPHIES) + " and " + TrophyManager.MAX_CHANGE_IN_TROPHIES.ToString() + ".");
 		}
 	}
 

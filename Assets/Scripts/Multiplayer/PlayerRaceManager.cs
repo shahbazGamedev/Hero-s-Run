@@ -145,7 +145,15 @@ public class PlayerRaceManager {
 		//Save the player deck because every time the players plays a card, we increment the timesUsed value in PlayerCardData.
 		//We don't want to save every time the player plays a card while racing, so we do it once at the end of the race or if he quits.
 		GameManager.Instance.playerDeck.serializePlayerDeck(true);
-		//TO DO - remove trophies
-
+		//Remove trophies when you abandon a race
+		if( GameManager.Instance.canEarnTrophies() )
+		{
+			// trophiesLost will be negative.
+			// Assume you are in 3rd position if you abandon a race.
+			int trophiesLost = TrophyManager.Instance.getTrophiesEarned( GameManager.Instance.getPlayMode(), 3, GameManager.Instance.playerProfile.getTrophies(), trophiesOwnedByOpponent1 );
+			GameManager.Instance.playerProfile.changeTrophies( trophiesLost );
+			GameManager.Instance.playerProfile.serializePlayerprofile();
+			Debug.Log("PlayerRaceManager-playerAbandonedRace: trophies lost " + trophiesLost );
+		}
 	}
 }

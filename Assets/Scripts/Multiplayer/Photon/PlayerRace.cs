@@ -76,7 +76,7 @@ public class PlayerRace : Photon.PunBehaviour
             players.Remove (this);
 		}
 		Debug.Log("PlayerRace: OnDisable() Players Count: " + players.Count + " " + gameObject.name );
-		if( !playerCrossedFinishLine )
+		if( !playerCrossedFinishLine && this.photonView.isMine && GetComponent<PlayerAI>() == null )
 		{
 			PlayerRaceManager.Instance.playerAbandonedRace();
 		}
