@@ -36,14 +36,6 @@ public class PlayModes : MonoBehaviour {
 		StartCoroutine( loadScene(GameScenes.Social) );
 	}
 
-	public void OnClickPlayAgainstAI()
-	{
-		GameManager.Instance.setPlayMode(PlayMode.PlayAgainstEnemy);
-		//The race track is chosen by the player.
-		//Open circuit selection.
-		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
-	}
-
 	IEnumerator loadScene(GameScenes value)
 	{
 		if( !levelLoading )
