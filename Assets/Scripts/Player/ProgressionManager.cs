@@ -143,6 +143,21 @@ public class ProgressionManager : MonoBehaviour {
 		return playerIconList.Find(playerIcon => playerIcon.uniqueId == uniqueId);
 	}
 
+	public void unlockPlayerIcon( int uniqueId )
+	{
+		PlayerIconData pid = playerIconList.Find(playerIcon => playerIcon.uniqueId == uniqueId);
+		if( pid != null )
+		{
+			if( !pid.isLocked ) return; //it is already unlocked. Ignore.
+			pid.isLocked = false;
+			pid.isNew = true;
+		}
+		else
+		{
+			Debug.LogWarning("The player icon with id " + uniqueId + " that you want to unlock could not be found." );
+		}
+	}
+
 	public PlayerIconData getPlayerIconDataByIndex( int index )
 	{
 		return playerIconList[index];

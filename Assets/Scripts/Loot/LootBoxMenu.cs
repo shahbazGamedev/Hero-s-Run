@@ -10,8 +10,52 @@ public class LootBoxMenu : MonoBehaviour {
 		Handheld.StopActivityIndicator();
 	}
 
-	public void OnClickFreeLootBox ()
+	void OnEnable()
 	{
-		LootBoxClientManager.Instance.requestLootBox(LootBoxType.FREE);
+		LootBoxClientManager.lootBoxGrantedEvent += LootBoxGrantedEvent;
 	}
+
+	void OnDisable()
+	{
+		LootBoxClientManager.lootBoxGrantedEvent -= LootBoxGrantedEvent;
+	}
+
+	public void LootBoxGrantedEvent( LootBox lootBox )
+	{
+		lootBox.print();
+		giveLootBoxContent( lootBox );
+	}
+
+	void giveLootBoxContent( LootBox lootBox )
+	{
+		List<LootBox.Loot> lootList = lootBox.getLootList();
+		for( int i = 0; i < lootList.Count; i++ )
+		{
+			switch( lootList[i].type )
+			{
+				case LootType.COINS:
+					GameManager.Instance.playerInventory.addCoins( lootList[i].quantity );
+				break;
+
+				case LootType.GEMS:
+					GameManager.Instance.playerInventory.addGems( lootList[i].quantity );
+				break;
+
+				case LootType.CARDS:
+					//To do
+				break;
+
+				case LootType.PLAYER_ICON:
+					ProgressionManager.Instance.unlockPlayerIcon( lootList[i].uniqueItemID );
+				break;
+				
+				default:
+					Debug.LogError("Give loot content encountered an unknown loot type: " + lootList[i].type );
+				break;
+			}
+		}
+		//Save
+		GameManager.Instance.playerInventory.serializePlayerInventory();
+	}
+
 }

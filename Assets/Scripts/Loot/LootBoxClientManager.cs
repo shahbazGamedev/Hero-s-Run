@@ -5,6 +5,9 @@ using UnityEngine;
 public class LootBoxClientManager : MonoBehaviour {
 
 	public static LootBoxClientManager Instance;
+	//Event management used to notify other classes when a loot box has been granted by the server
+	public delegate void LootBoxGrantedEvent( LootBox lootBox );
+	public static event LootBoxGrantedEvent lootBoxGrantedEvent;
 
 	// Use this for initialization
 	void Awake ()
@@ -19,6 +22,21 @@ public class LootBoxClientManager : MonoBehaviour {
 			Instance = this;
 		}
 	}
+
+	void OnEnable()
+	{
+		AnimatedLootBox.lootBoxOpenedEvent += LootBoxOpenedEvent;
+	}
+
+	void OnDisable()
+	{
+		AnimatedLootBox.lootBoxOpenedEvent -= LootBoxOpenedEvent;
+	}
+
+	public void LootBoxOpenedEvent ( LootBoxType lootBoxType )
+	{
+		requestLootBox(lootBoxType);
+	}
 	
 	public void requestLootBox( LootBoxType lootBoxType )
 	{
@@ -30,7 +48,7 @@ public class LootBoxClientManager : MonoBehaviour {
 	{
 		LootBox lootBox = JsonUtility.FromJson<LootBox>( lootBoxJson );
 		Debug.Log( GameManager.Instance.playerProfile.getUserName() + " was granted a loot box by the server: " + lootBoxJson );
-		lootBox.print();
+		if( lootBoxGrantedEvent != null ) lootBoxGrantedEvent( lootBox );
 	}
 
 }

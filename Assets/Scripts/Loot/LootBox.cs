@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum LootType
- {
+{
 	COINS = 0,
 	GEMS = 1,
 	CARDS = 2,
@@ -18,6 +18,11 @@ public class LootBox {
 	public void addLoot( Loot loot )
 	{
 		lootList.Add( loot );
+	}
+
+	public List<Loot> getLootList()
+	{
+		return lootList;
 	}
 
 	public string getJson()

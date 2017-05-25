@@ -38,11 +38,17 @@ public class LootBoxServerManager : MonoBehaviour {
 	string fulfillOrder()
 	{
 		LootBox lootBox = new LootBox();
+
 		LootBox.Loot loot = new LootBox.Loot();
 		loot.type = LootType.COINS;
 		loot.quantity = 200;
 		lootBox.addLoot( loot );
-		lootBox.print();
+
+		loot = new LootBox.Loot();
+		loot.type = LootType.PLAYER_ICON;
+		loot.uniqueItemID = 1;
+		lootBox.addLoot( loot );
+
 		return lootBox.getJson();
 	}
 

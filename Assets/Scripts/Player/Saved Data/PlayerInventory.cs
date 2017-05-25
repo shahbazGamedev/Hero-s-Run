@@ -61,7 +61,7 @@ public class PlayerInventory {
 			currentCoins = value;
 			if( playerInventoryChangedNew != null ) playerInventoryChangedNew( PlayerInventoryEvent.Coin_Changed, currentCoins );
 			//Save
-			serializePlayerprofile();
+			serializePlayerInventory();
 			Debug.Log("PlayerInventory-setting current coins to: " + value );
 		}
 		else
@@ -108,7 +108,7 @@ public class PlayerInventory {
 			currentGems = value;
 			if( playerInventoryChangedNew != null ) playerInventoryChangedNew( PlayerInventoryEvent.Gem_Balance_Changed, currentGems );
 			//Save
-			serializePlayerprofile();
+			serializePlayerInventory();
 			Debug.Log("PlayerInventory-setting current gems to: " + value );
 		}
 		else
@@ -118,7 +118,7 @@ public class PlayerInventory {
 	}
 	#endregion
 
-	public void serializePlayerprofile()
+	public void serializePlayerInventory()
 	{
 		string json  = JsonUtility.ToJson( this );
 		PlayerStatsManager.Instance.setPlayerInventory( json );
