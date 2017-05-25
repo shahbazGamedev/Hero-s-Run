@@ -13,7 +13,25 @@ public enum LootType
 [System.Serializable]
 public class LootBox {
 
-	[SerializeField] List<Loot> LootList = new List<Loot>();
+	[SerializeField] List<Loot> lootList = new List<Loot>();
+
+	public void addLoot( Loot loot )
+	{
+		lootList.Add( loot );
+	}
+
+	public string getJson()
+	{
+		return JsonUtility.ToJson( this );
+	}
+
+	public void print()
+	{
+		for( int i = 0; i < lootList.Count; i++ )
+		{
+			lootList[i].print();
+		}
+	}
 
 	[System.Serializable]
 	public class Loot
@@ -22,6 +40,11 @@ public class LootBox {
 		public int quantity;
 		public CardName cardName;
 		public int uniqueItemID;
+
+		public void print()
+		{
+			Debug.Log("Loot-LootType: " + type.ToString() + " Quantity: " + quantity + " CardName: " + cardName + " UniqueItemID: " + uniqueItemID );
+		}
 	}
 	
 }

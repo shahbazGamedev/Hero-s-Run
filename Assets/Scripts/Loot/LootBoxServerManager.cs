@@ -31,6 +31,19 @@ public class LootBoxServerManager : MonoBehaviour {
 	public void requestLootBox( LootBoxType lootBoxType )
 	{
 		Debug.Log( GameManager.Instance.playerProfile.getUserName() + " is requesting a server loot box of type " + lootBoxType );
+		string lootBoxJson = fulfillOrder();
+		LootBoxClientManager.Instance.lootBoxGranted( lootBoxJson );
 	}
-	
+
+	string fulfillOrder()
+	{
+		LootBox lootBox = new LootBox();
+		LootBox.Loot loot = new LootBox.Loot();
+		loot.type = LootType.COINS;
+		loot.quantity = 200;
+		lootBox.addLoot( loot );
+		lootBox.print();
+		return lootBox.getJson();
+	}
+
 }

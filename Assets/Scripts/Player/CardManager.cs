@@ -37,13 +37,13 @@ public enum CardSortMode
 /// </summary>
 public enum CardName
 {
-	None = -1,
+	None = 0,
 
 	//Common
-	Sprint = 0,
 	Raging_Bull = 1,
 	Double_Jump = 2,
 	Stasis = 3,
+	Sprint = 4,
 
 	//Rare
 	Firewall = 100,

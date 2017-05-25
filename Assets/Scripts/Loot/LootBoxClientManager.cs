@@ -25,4 +25,12 @@ public class LootBoxClientManager : MonoBehaviour {
 		Debug.Log( GameManager.Instance.playerProfile.getUserName() + " is requesting a client loot box of type " + lootBoxType );
 		LootBoxServerManager.Instance.requestLootBox(LootBoxType.FREE);
 	}
+
+	public void lootBoxGranted( string lootBoxJson )
+	{
+		LootBox lootBox = JsonUtility.FromJson<LootBox>( lootBoxJson );
+		Debug.Log( GameManager.Instance.playerProfile.getUserName() + " was granted a loot box by the server: " + lootBoxJson );
+		lootBox.print();
+	}
+
 }
