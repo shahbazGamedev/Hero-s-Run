@@ -45,6 +45,14 @@ public class MainMenu : MonoBehaviour {
 		playerNameText.text = newUserName;
 	}
 
+	void updateNumberOfPlayerIcons()
+	{
+		//Next to the Career Profile button, display a NEW indicator if there are newly aacquired player icons
+		int newPlayerIcons = ProgressionManager.Instance.getNumberOfNewPlayerIcons();
+		newPlayerIconsIndicator.SetActive( newPlayerIcons > 0 );
+	}
+
+	#region Menu options
 	public void OnClickOpenPlayModes()
 	{
 		StartCoroutine( loadScene(GameScenes.PlayModes) );
@@ -55,32 +63,24 @@ public class MainMenu : MonoBehaviour {
 		StartCoroutine( loadScene(GameScenes.Training) );
 	}
 
-	public void OnClickOpenSocial()
-	{
-		StartCoroutine( loadScene(GameScenes.Social) );
-	}
-
 	public void OnClickOpenHeroSelection()
 	{
 		StartCoroutine( loadScene(GameScenes.HeroSelection) );
 	}
 
-	public void OnClickPlayAlone()
+	public void OnClickOpenLootBox()
 	{
-		GameManager.Instance.setPlayMode(PlayMode.PlayAlone);
-		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
+		StartCoroutine( loadScene(GameScenes.LootBox) );
+	}
+
+	public void OnClickOpenSocial()
+	{
+		StartCoroutine( loadScene(GameScenes.Social) );
 	}
 
 	public void OnClickShowCareerProfile()
 	{
 		StartCoroutine( loadScene(GameScenes.CareerProfile) );
-	}
-
-	void updateNumberOfPlayerIcons()
-	{
-		//Next to the Career Profile button, display a NEW indicator if there are newly aacquired player icons
-		int newPlayerIcons = ProgressionManager.Instance.getNumberOfNewPlayerIcons();
-		newPlayerIconsIndicator.SetActive( newPlayerIcons > 0 );
 	}
 
 	IEnumerator loadScene(GameScenes value)
@@ -94,4 +94,6 @@ public class MainMenu : MonoBehaviour {
 			SceneManager.LoadScene( (int)value );
 		}
 	}
+	#endregion
+
 }
