@@ -5,8 +5,9 @@ using UnityEngine;
 public class LootBoxMenu : MonoBehaviour {
 
 	// Use this for initialization
-	void Start () {
-		
+	void Start ()
+	{
+		Handheld.StopActivityIndicator();
 	}
 
 	public void OnClickFreeLootBox ()
