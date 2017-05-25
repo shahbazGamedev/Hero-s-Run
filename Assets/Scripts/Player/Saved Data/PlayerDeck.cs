@@ -156,6 +156,30 @@ public class PlayerDeck {
 		}
 	}
 
+	public void addCardFromLootBox( CardName name, int quantity )
+	{
+		//Make sure the specified card exists
+		if( CardManager.Instance.doesCardExist( name ) )
+		{
+			//Does the player already own this card?
+			PlayerCardData card = playerCardDataList.Find(playerCardData => playerCardData.name == name );
+			if( card != null )
+			{
+				//Yes, he does. Simply increase the card quantity.
+				card.quantity += quantity;
+			}
+			else
+			{
+				//No, he doesn't. Let's add it to his card collection.
+				addCard(  name, 1, quantity, false );
+			}
+		}
+		else
+		{
+			Debug.LogError("PlayerDeck-addCardFromLootBox: The card you are trying to add to the player deck does not exist: " + name );
+		}
+	}
+
 	/// <summary>
 	/// Gets the favorite card.
 	/// </summary>

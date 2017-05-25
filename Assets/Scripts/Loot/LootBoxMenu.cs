@@ -42,7 +42,7 @@ public class LootBoxMenu : MonoBehaviour {
 				break;
 
 				case LootType.CARDS:
-					//To do
+					GameManager.Instance.playerDeck.addCardFromLootBox( lootList[i].cardName, lootList[i].quantity );
 				break;
 
 				case LootType.PLAYER_ICON:
@@ -56,6 +56,7 @@ public class LootBoxMenu : MonoBehaviour {
 		}
 		//Save
 		GameManager.Instance.playerInventory.serializePlayerInventory();
+		GameManager.Instance.playerDeck.serializePlayerDeck(true);
 	}
 
 }

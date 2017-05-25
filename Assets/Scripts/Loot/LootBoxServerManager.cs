@@ -45,8 +45,25 @@ public class LootBoxServerManager : MonoBehaviour {
 		lootBox.addLoot( loot );
 
 		loot = new LootBox.Loot();
+		loot.type = LootType.GEMS;
+		loot.quantity = Random.Range(2,4);
+		lootBox.addLoot( loot );
+
+		loot = new LootBox.Loot();
 		loot.type = LootType.PLAYER_ICON;
 		loot.uniqueItemID = 1;
+		lootBox.addLoot( loot );
+
+		loot = new LootBox.Loot();
+		loot.type = LootType.CARDS;
+		loot.cardName = CardName.Card_Four;
+		loot.quantity = 10;
+		lootBox.addLoot( loot );
+
+		loot = new LootBox.Loot();
+		loot.type = LootType.CARDS;
+		loot.cardName = CardName.Sentry;
+		loot.quantity = 20;
 		lootBox.addLoot( loot );
 
 		return lootBox.getJson();
