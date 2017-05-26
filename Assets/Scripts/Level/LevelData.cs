@@ -448,6 +448,8 @@ public class LevelData : MonoBehaviour {
 		public Sprite circuitImage;
 		[Tooltip("Square icon used at the beginning of the match.")]
 		public Sprite circuitIcon;
+		[Tooltip("The race track level where training track is 0, the first race track unlocked is 1, the second race track unlocked is 2, etc.")]
+		public int raceTrackLevel;
 	}
 
 }

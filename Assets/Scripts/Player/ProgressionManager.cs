@@ -152,6 +152,12 @@ public class ProgressionManager : MonoBehaviour {
 		return iconList;
 	}
 
+	public int getRandomPlayerIconUniqueId()
+	{
+		int randomNumber = Random.Range(0, iconList.Count );
+		return iconList[randomNumber].uniqueId;
+	}
+
 	public int getNumberOfPlayerIcons()
 	{
 		return iconList.Count;

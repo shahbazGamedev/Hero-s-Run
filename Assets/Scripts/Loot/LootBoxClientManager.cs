@@ -40,8 +40,9 @@ public class LootBoxClientManager : MonoBehaviour {
 	
 	public void requestLootBox( LootBoxType lootBoxType )
 	{
-		Debug.Log( GameManager.Instance.playerProfile.getUserName() + " is requesting a client loot box of type " + lootBoxType );
-		LootBoxServerManager.Instance.requestLootBox(LootBoxType.FREE);
+		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getLevelData().getRaceTrackByTrophies();
+		Debug.Log( GameManager.Instance.playerProfile.getUserName() + " is requesting a client loot box of type " + lootBoxType + ". His current race track level is " + multiplayerInfo.circuitInfo.raceTrackLevel );
+		LootBoxServerManager.Instance.requestLootBox(LootBoxType.FREE, multiplayerInfo.circuitInfo.raceTrackLevel);
 	}
 
 	public void lootBoxGranted( string lootBoxJson )

@@ -28,20 +28,20 @@ public class LootBoxServerManager : MonoBehaviour {
 		}
 	}
 
-	public void requestLootBox( LootBoxType lootBoxType )
+		public void requestLootBox( LootBoxType lootBoxType, int raceTrackLevel )
 	{
 		Debug.Log( GameManager.Instance.playerProfile.getUserName() + " is requesting a server loot box of type " + lootBoxType );
-		string lootBoxJson = fulfillOrder();
+		string lootBoxJson = getFreeLootBox( raceTrackLevel );
 		LootBoxClientManager.Instance.lootBoxGranted( lootBoxJson );
 	}
 
-	string fulfillOrder()
+	string getFreeLootBox( int raceTrackLevel )
 	{
 		LootBox lootBox = new LootBox();
 
 		LootBox.Loot loot = new LootBox.Loot();
 		loot.type = LootType.COINS;
-		loot.quantity = 200;
+		loot.quantity = Random.Range(40,51);
 		lootBox.addLoot( loot );
 
 		loot = new LootBox.Loot();
@@ -50,20 +50,32 @@ public class LootBoxServerManager : MonoBehaviour {
 		lootBox.addLoot( loot );
 
 		loot = new LootBox.Loot();
+		loot.type = LootType.CARDS;
+		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, CardRarity.COMMON );
+		loot.quantity = 5;
+		lootBox.addLoot( loot );
+
+		loot = new LootBox.Loot();
+		loot.type = LootType.CARDS;
+		CardRarity rarity;
+		if( raceTrackLevel <= 3 )
+		{
+			rarity = CardRarity.RARE;
+		}
+		else
+		{
+			rarity = CardRarity.EPIC;
+		}
+		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, rarity );
+		loot.quantity = 1;
+		lootBox.addLoot( loot );
+
+		//For testing - there are NO player Icons in the free loot boxes
+		loot = new LootBox.Loot();
 		loot.type = LootType.PLAYER_ICON;
-		loot.uniqueItemID = 4;
-		lootBox.addLoot( loot );
-
-		loot = new LootBox.Loot();
-		loot.type = LootType.CARDS;
-		loot.cardName = CardName.Card_Four;
-		loot.quantity = 10;
-		lootBox.addLoot( loot );
-
-		loot = new LootBox.Loot();
-		loot.type = LootType.CARDS;
-		loot.cardName = CardName.Sentry;
-		loot.quantity = 20;
+		loot.uniqueItemID = ProgressionManager.Instance.getRandomPlayerIconUniqueId();
+		//To do
+		//If the player already has that player icon, convert to 15 coins.
 		lootBox.addLoot( loot );
 
 		return lootBox.getJson();

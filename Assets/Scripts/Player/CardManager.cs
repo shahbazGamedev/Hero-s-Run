@@ -195,9 +195,20 @@ public class CardManager : MonoBehaviour {
 		return cardDataList.Count;
 	}
 
-	public List<CardData> getCardsUnlockedByRaceTrack( string raceTrackName )
+	public CardName getRandomCard( int currentRaceTrackLevel, CardRarity rarity )
 	{
-		return cardDataList.FindAll(cardData => cardData.unlockRaceTrack == raceTrackName);
+		List<CardData> possibleRandomCardList = cardDataList.FindAll(cardData => cardData.rarity == rarity && cardData.raceTrackLevel <= currentRaceTrackLevel );
+		Debug.LogWarning("CardManager-getRandomCard: possibleRandomCardList.Count " +  possibleRandomCardList.Count );
+		if( possibleRandomCardList.Count > 0 )
+		{
+			int randomNumber = Random.Range( 0, possibleRandomCardList.Count );
+			return possibleRandomCardList[randomNumber].name;
+		}
+		else
+		{
+			Debug.LogError("CardManager-getRandomCard: No card was found. Returning CardName.None.");
+			return CardName.None;
+		}
 	}
 
 	public CardData getCardByName( CardName name )
@@ -305,7 +316,8 @@ public class CardManager : MonoBehaviour {
 		public Sprite secondaryIcon;
 		[Range(1,9)]
 		public int manaCost;
-		public string unlockRaceTrack;
+		//The race track level where training track is 0, the first race track unlocked is 1, the second race track unlocked is 2, etc.
+		public int raceTrackLevel;
 		[HideInInspector]
 		public RectTransform rectTransform;
 
