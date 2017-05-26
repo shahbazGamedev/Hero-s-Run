@@ -102,23 +102,33 @@ public class TurnRibbonHandler : MonoBehaviour {
 
 	void LateUpdate()
 	{
-		//If we don't have enough mana to play a card, make it non-interactable
 		for( int i = 0; i < turnRibbonList.Count; i++ )
 		{
-			turnRibbonButtonList[i].interactable = manaBar.hasEnoughMana( turnRibbonList[i].manaCost )
- 				&& PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS
-				&& playerControl.isPlayerControlEnabled();
-
+			//If the race is not in progress, don't allow the player to play cards.
+			//If the player cannot control his character (e.g. because of Stasis), don't allow him to play cards.
+			//If the player has been Hacked, don't allow him to play cards.
+			Image radialMask = turnRibbonButtonList[i].transform.FindChild("Radial Mask").GetComponent<Image>();
 			if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS && playerControl.isPlayerControlEnabled() && !playerSpell.isAffectedByHack() )
 			{
-				float fillAmount = 1f - manaBar.getManaAmount()/turnRibbonList[i].manaCost;
-				if( fillAmount < 0 ) fillAmount = 0;
-				turnRibbonButtonList[i].transform.FindChild("Radial Mask").GetComponent<Image>().fillAmount = fillAmount;
-				turnRibbonButtonList[i].interactable = true;
+				if( manaBar.hasEnoughMana( turnRibbonList[i].manaCost ) )
+				{
+					//We have enough mana to play this card.
+					radialMask.fillAmount = 0;
+					turnRibbonButtonList[i].interactable = true;
+				}
+				else
+				{
+					//We don't have enough mana to play this card. Make it non-interactable.
+					turnRibbonButtonList[i].interactable = false;
+
+					float fillAmount = 1f - manaBar.getManaAmount()/turnRibbonList[i].manaCost;
+					if( fillAmount < 0 ) fillAmount = 0;
+					radialMask.fillAmount = fillAmount;
+				}
 			}
 			else
 			{
-				turnRibbonButtonList[i].transform.FindChild("Radial Mask").GetComponent<Image>().fillAmount = 1f;
+				radialMask.fillAmount = 1f;
 				turnRibbonButtonList[i].interactable = false;
 			}
 		}
