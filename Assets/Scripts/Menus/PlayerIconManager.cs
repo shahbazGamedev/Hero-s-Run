@@ -22,11 +22,11 @@ class PlayerIconManager : MonoBehaviour {
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
-		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
+		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 		playerNameText.text = GameManager.Instance.playerProfile.getUserName();
 
 		//Newly unlocked icons appear first.
-		List<ProgressionManager.PlayerIconData> playerIconList = ProgressionManager.Instance.getSortedPlayerIconList();
+		List<PlayerIcons.PlayerIconData> playerIconList = GameManager.Instance.playerIcons.getSortedPlayerIconList();
 
 		for( int i = 0; i < playerIconList.Count; i++ )
 		{
@@ -42,14 +42,15 @@ class PlayerIconManager : MonoBehaviour {
 
 	void createPlayerIcon( int index )
 	{
-		ProgressionManager.PlayerIconData playerIconData = ProgressionManager.Instance.getPlayerIconDataByIndex( index );
+		PlayerIcons.PlayerIconData playerIconData = GameManager.Instance.playerIcons.getPlayerIconDataByIndex( index );
+		Sprite sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( playerIconData.uniqueId ).icon;
 		GameObject go = (GameObject)Instantiate(playerIconPrefab);
 		go.transform.SetParent(content,false);
 		Button playerIconButton = go.GetComponent<Button>();
 		playerIconButton.onClick.RemoveListener(() => OnClickPlayerIcon(index));
 		playerIconButton.onClick.AddListener(() => OnClickPlayerIcon(index));
 		Image playerIconImage = go.GetComponent<Image>();
-		playerIconImage.sprite = playerIconData.icon;
+		playerIconImage.sprite = sprite;
 		playerIconData.rectTransform = go.GetComponent<RectTransform>();
 		Image[] playerIconNewRibbon = go.GetComponentsInChildren<Image>();
 		playerIconNewRibbon[1].enabled = playerIconData.isNew;		//new ribbon
@@ -62,20 +63,23 @@ class PlayerIconManager : MonoBehaviour {
 		RectTransform onSelectRectTransform = onSelectButton.GetComponent<RectTransform>();
 		onSelectRectTransform.localScale = Vector3.one;
 
-		ProgressionManager.PlayerIconData playerIconData = ProgressionManager.Instance.getPlayerIconDataByIndex( index );
+		PlayerIcons.PlayerIconData playerIconData = GameManager.Instance.playerIcons.getPlayerIconDataByIndex( index );
+		Sprite sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( playerIconData.uniqueId ).icon;
 
 		//Position on select game object on top of the selected entry
 		onSelectButton.transform.SetParent( playerIconData.rectTransform, false );
 		onSelectButton.SetActive( true );
 
 		//Copy the icon and name
-		onSelectPlayerIcon.sprite = playerIconData.icon;
+		onSelectPlayerIcon.sprite = sprite;
 		onSelectPlayerName.text = LocalizationManager.Instance.getText( "PLAYER_ICON_" + playerIconData.uniqueId.ToString() );
 
 		//If it has a new ribbon, disable it
 		Image[] playerIconNewRibbon = playerIconData.rectTransform.GetComponentsInChildren<Image>();
 		playerIconData.isNew = false;
 		playerIconNewRibbon[1].enabled = false;
+		playerIconData.isNew = false;
+		GameManager.Instance.playerIcons.serializePlayerIcons( true );
 
 		scaleUp();
 
@@ -84,7 +88,7 @@ class PlayerIconManager : MonoBehaviour {
 			//Set this value in Player Profile.
 			GameManager.Instance.playerProfile.setPlayerIconId( playerIconData.uniqueId );
 			//Update the player icon at the top right
-			playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
+			playerIcon.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 			//Save the player profile. The user may have changed his player icon.
 			GameManager.Instance.playerProfile.serializePlayerprofile();
 		}

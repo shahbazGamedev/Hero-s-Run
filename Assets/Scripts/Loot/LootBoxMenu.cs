@@ -46,7 +46,7 @@ public class LootBoxMenu : MonoBehaviour {
 				break;
 
 				case LootType.PLAYER_ICON:
-					ProgressionManager.Instance.unlockPlayerIcon( lootList[i].uniqueItemID );
+					GameManager.Instance.playerIcons.unlockPlayerIcon( lootList[i].uniqueItemID );
 				break;
 				
 				default:

@@ -32,7 +32,7 @@ public class FriendUIDetails : MonoBehaviour {
 		{
 			background.color = lightGray;
 		}
-		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( fd.playerIcon ).icon;
+		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( fd.playerIcon ).icon;
 		userName.text = fd.userName;
 		levelText.text = fd.level.ToString();
 		if( fd.currentWinStreak >= 3 )
@@ -50,7 +50,7 @@ public class FriendUIDetails : MonoBehaviour {
 
 	public void updateFriendData ( PlayerFriends.FriendData fd )
 	{
-		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( fd.playerIcon ).icon;
+		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( fd.playerIcon ).icon;
 		levelText.text = fd.level.ToString();
 		if( fd.currentWinStreak >= 3 )
 		{

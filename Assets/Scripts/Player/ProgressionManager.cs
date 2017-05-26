@@ -9,7 +9,6 @@ public enum XPAwardType
 	WON = 2,
 	FIRST_WIN_OF_THE_DAY = 3,
 	CONSECUTIVE_RACE = 4
-	
 }
 
 public enum EloRating
@@ -19,7 +18,6 @@ public enum EloRating
 	ADVANCED = 3,
 	COMPETITIVE = 4
 }
-
 
 public class ProgressionManager : MonoBehaviour {
 
@@ -33,7 +31,7 @@ public class ProgressionManager : MonoBehaviour {
 	[SerializeField] List<int> xpNeededPerLevel = new List<int>(MAX_LEVEL);
 	[SerializeField] List<XPAward> xpAwardList = new List<XPAward>();
 	[SerializeField] List<Color> frameColorList = new List<Color>(LEVEL_BANDS);
-	[SerializeField] List<PlayerIconData> playerIconList = new List<PlayerIconData>();
+	[SerializeField] List<IconData> iconList = new List<IconData>();
 
 	// Use this for initialization
 	void Awake ()
@@ -46,9 +44,6 @@ public class ProgressionManager : MonoBehaviour {
 		{
 			DontDestroyOnLoad(gameObject);
 			Instance = this;
-			//Sort the list starting with the newly unlocked icons
-			playerIconList = playerIconList.OrderByDescending(data=>data.isNew).ToList();
-
 		}
 	}
 
@@ -132,63 +127,43 @@ public class ProgressionManager : MonoBehaviour {
 		public string awardTextID = string.Empty;
 		public int xpAmount = 0;
 	}
-
-	public List<PlayerIconData> getSortedPlayerIconList()
+	
+	#region Icon Data
+	public bool doesPlayerIconExist( int uniqueId )
 	{
-		return playerIconList;
+		return iconList.Exists(icon => icon.uniqueId == uniqueId);
 	}
 
-	public PlayerIconData getPlayerIconDataByUniqueId( int uniqueId )
+	public IconData getPlayerIconSpriteByUniqueId( int uniqueId )
 	{
-		return playerIconList.Find(playerIcon => playerIcon.uniqueId == uniqueId);
-	}
-
-	public void unlockPlayerIcon( int uniqueId )
-	{
-		PlayerIconData pid = playerIconList.Find(playerIcon => playerIcon.uniqueId == uniqueId);
-		if( pid != null )
+		if( iconList.Exists(icon => icon.uniqueId == uniqueId) )
 		{
-			if( !pid.isLocked ) return; //it is already unlocked. Ignore.
-			pid.isLocked = false;
-			pid.isNew = true;
+			return iconList.Find(icon => icon.uniqueId == uniqueId);
 		}
 		else
 		{
-			Debug.LogWarning("The player icon with id " + uniqueId + " that you want to unlock could not be found." );
+			Debug.LogWarning("ProgressionManager-the player icon with id " + uniqueId + " could not be found." );
+			return null;
 		}
 	}
 
-	public PlayerIconData getPlayerIconDataByIndex( int index )
+	public List<IconData> getPlayerIcons()
 	{
-		return playerIconList[index];
+		return iconList;
 	}
 
 	public int getNumberOfPlayerIcons()
 	{
-		return playerIconList.Count;
-	}
-
-	public int getNumberOfNewPlayerIcons()
-	{
-		int counter = 0;
-		for( int i = 0; i < playerIconList.Count; i++ )
-		{
-			if( playerIconList[i].isNew ) counter++;
-		}
-		return counter;
+		return iconList.Count;
 	}
 
 	[System.Serializable]
-	public class PlayerIconData
+	public class IconData
 	{
-		public Sprite icon;
-		public bool isNew = false;
-		public bool isLocked = true;
-		[HideInInspector]
-		public RectTransform rectTransform;
 		//Unique ID to identify the player icon.
-		//When a player selects a player icon, the unique ID for that icon is saved in player profile.
 		public int uniqueId = 0; 
+		public Sprite icon;
 	}
+	#endregion
 	
 }

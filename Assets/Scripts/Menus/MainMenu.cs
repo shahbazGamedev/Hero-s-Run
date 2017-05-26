@@ -36,7 +36,7 @@ public class MainMenu : MonoBehaviour {
 		}
 		numberOfTrophiesText.text = GameManager.Instance.playerProfile.getTrophies().ToString("N0");
 		currentRaceTrackText.text = LocalizationManager.Instance.getText( LevelManager.Instance.getLevelData().getRaceTrackByTrophies().circuitInfo.circuitTextID );
-		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
+		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 		playerNameText.text = GameManager.Instance.playerProfile.getUserName();
 	}
 
@@ -48,7 +48,7 @@ public class MainMenu : MonoBehaviour {
 	void updateNumberOfPlayerIcons()
 	{
 		//Next to the Career Profile button, display a NEW indicator if there are newly aacquired player icons
-		int newPlayerIcons = ProgressionManager.Instance.getNumberOfNewPlayerIcons();
+		int newPlayerIcons = GameManager.Instance.playerIcons.getNumberOfNewPlayerIcons();
 		newPlayerIconsIndicator.SetActive( newPlayerIcons > 0 );
 	}
 

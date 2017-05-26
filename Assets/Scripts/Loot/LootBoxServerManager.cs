@@ -51,7 +51,7 @@ public class LootBoxServerManager : MonoBehaviour {
 
 		loot = new LootBox.Loot();
 		loot.type = LootType.PLAYER_ICON;
-		loot.uniqueItemID = 1;
+		loot.uniqueItemID = 4;
 		lootBox.addLoot( loot );
 
 		loot = new LootBox.Loot();

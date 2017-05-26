@@ -89,6 +89,7 @@ public class GameManager {
 	public PlayerFriends playerFriends;
 	public RecentPlayers recentPlayers;
 	public PlayerInventory playerInventory;
+	public PlayerIcons playerIcons;
 	PlayMode playMode = PlayMode.PlayTwoPlayers;
 
 	public static GameManager Instance

@@ -11,6 +11,7 @@ public class PlayerDataManager : MonoBehaviour {
 	public PlayerFriends playerFriends;
 	public RecentPlayers recentPlayers;
 	public PlayerInventory playerInventory;
+	public PlayerIcons playerIcons;
 
 	// Use this for initialization
 	void Awake ()
@@ -95,6 +96,18 @@ public class PlayerDataManager : MonoBehaviour {
 			playerInventory = new PlayerInventory();
 		}
 		GameManager.Instance.playerInventory = playerInventory;
+
+		if( PlayerStatsManager.Instance.getPlayerIcons() != string.Empty )
+		{
+			 playerIcons = JsonUtility.FromJson<PlayerIcons>(PlayerStatsManager.Instance.getPlayerIcons());
+		}
+		else
+		{
+			playerIcons = new PlayerIcons();
+			playerIcons.createNewPlayerIcons();
+			
+		}
+		GameManager.Instance.playerIcons = playerIcons;
 
 	}
 }

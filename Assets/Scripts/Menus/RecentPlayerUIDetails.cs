@@ -34,7 +34,7 @@ public class RecentPlayerUIDetails : MonoBehaviour {
 		{
 			background.color = lightGray;
 		}
-		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( fd.playerIcon ).icon;
+		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( fd.playerIcon ).icon;
 		userName.text = fd.userName;
 		levelText.text = fd.level.ToString();
 		if( fd.currentWinStreak >= 3 )
@@ -52,7 +52,7 @@ public class RecentPlayerUIDetails : MonoBehaviour {
 
 	public void updateRecentPlayerData ( PlayerFriends.FriendData fd )
 	{
-		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( fd.playerIcon ).icon;
+		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( fd.playerIcon ).icon;
 		levelText.text = fd.level.ToString();
 		if( fd.currentWinStreak >= 3 )
 		{

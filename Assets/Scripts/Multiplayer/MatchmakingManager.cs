@@ -130,7 +130,7 @@ public class MatchmakingManager : MonoBehaviour {
 			case PlayMode.PlayAlone:
 				playerName1P.text = GameManager.Instance.playerProfile.getUserName();
 				playerIcon1P.GetComponent<Outline>().effectColor = frameColor;
-				playerIcon1P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
+				playerIcon1P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 			break;
 
 			case PlayMode.PlayAgainstEnemy:
@@ -138,13 +138,13 @@ public class MatchmakingManager : MonoBehaviour {
 			case PlayMode.PlayWithFriends:
 				playerName2P.text = GameManager.Instance.playerProfile.getUserName();
 				playerIcon2P.GetComponent<Outline>().effectColor = frameColor;
-				playerIcon2P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
+				playerIcon2P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 			break;
 
 			case PlayMode.PlayThreePlayers:
 				playerName3P.text = GameManager.Instance.playerProfile.getUserName();
 				playerIcon3P.GetComponent<Outline>().effectColor = frameColor;
-				playerIcon3P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
+				playerIcon3P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 			break;
 		}
 	}
@@ -170,7 +170,7 @@ public class MatchmakingManager : MonoBehaviour {
 			case PlayMode.PlayWithFriends:
 				remotePlayer1Name2P.text = name;
 				remotePlayer1Icon2P.GetComponent<Outline>().effectColor = frameColor;
-				remotePlayer1Icon2P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
+				remotePlayer1Icon2P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( iconId ).icon;
 			break;
 
 			case PlayMode.PlayThreePlayers:
@@ -178,13 +178,13 @@ public class MatchmakingManager : MonoBehaviour {
 				{
 					remotePlayer1Name3P.text = name;
 					remotePlayer1Icon3P.GetComponent<Outline>().effectColor = frameColor;
-					remotePlayer1Icon3P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
+					remotePlayer1Icon3P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( iconId ).icon;
 				}
 				else if( index == 2 )
 				{
 					remotePlayer2Name3P.text = name;
 					remotePlayer2Icon3P.GetComponent<Outline>().effectColor = frameColor;
-					remotePlayer2Icon3P.sprite = ProgressionManager.Instance.getPlayerIconDataByUniqueId( iconId ).icon;
+					remotePlayer2Icon3P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( iconId ).icon;
 				}
 			break;
 		}

@@ -110,6 +110,7 @@ public class PlayerStatsManager {
 	string playerFriends = String.Empty; //List of player's friends.
 	string recentPlayers = String.Empty; //List of the last 8 players the player played against.
 	string playerInventory = String.Empty; //List of the player's inventory including gem balance.
+	string playerIcons = String.Empty; //List of the player icons available in the game. Include both locked and unlocked icons.
 
 	public static PlayerStatsManager Instance
 	{
@@ -966,6 +967,16 @@ public class PlayerStatsManager {
 		return playerInventory;
 	}
 
+	public void setPlayerIcons( string playerIcons )
+	{
+		this.playerIcons = playerIcons;
+	}
+
+	public string getPlayerIcons()
+	{
+		return playerIcons;
+	}
+
 	public void loadPlayerStats()
 	{
 		try
@@ -1072,6 +1083,7 @@ public class PlayerStatsManager {
 			playerFriends = PlayerPrefs.GetString("playerFriends", "" );
 			recentPlayers = PlayerPrefs.GetString("recentPlayers", "" );
 			playerInventory = PlayerPrefs.GetString("playerInventory", "" );
+			playerIcons = PlayerPrefs.GetString("playerIcons", "" );
 			//Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " Next Episode To Complete: " + nextEpisodeToComplete + " Highest Episode Completed: " + highestEpisodeCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
@@ -1165,7 +1177,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetString( "playerDeck", playerDeck );
 		PlayerPrefs.SetString( "playerFriends", playerFriends );
 		PlayerPrefs.SetString( "recentPlayers", recentPlayers );
-		PlayerPrefs.SetString( "playerInventory", playerInventory );
+		PlayerPrefs.SetString( "playerIcons", playerIcons );
 		PlayerPrefs.Save();
 		//Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
 	}
