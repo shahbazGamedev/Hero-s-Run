@@ -51,11 +51,6 @@ public class PlayerIcons {
 		return playerIconList.OrderByDescending(data=>data.isNew).ToList();
 	}
 
-	public PlayerIconData getPlayerIconDataByIndex( int index )
-	{
-		return playerIconList[index];
-	}
-
 	public PlayerIconData getPlayerIconDataByUniqueId( int uniqueId )
 	{
 		return playerIconList.Find(playerIcon => playerIcon.uniqueId == uniqueId);

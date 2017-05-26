@@ -18,6 +18,8 @@ class PlayerIconManager : MonoBehaviour {
 	[SerializeField] Image playerIcon;
 	[SerializeField] Text playerNameText;
 
+	List<PlayerIcons.PlayerIconData> sortedPlayerIconList;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -26,23 +28,23 @@ class PlayerIconManager : MonoBehaviour {
 		playerNameText.text = GameManager.Instance.playerProfile.getUserName();
 
 		//Newly unlocked icons appear first.
-		List<PlayerIcons.PlayerIconData> playerIconList = GameManager.Instance.playerIcons.getSortedPlayerIconList();
+		sortedPlayerIconList = GameManager.Instance.playerIcons.getSortedPlayerIconList();
 
-		for( int i = 0; i < playerIconList.Count; i++ )
+		for( int i = 0; i < sortedPlayerIconList.Count; i++ )
 		{
 			createPlayerIcon( i );
 		}
 		//Calculate the content length
 		GridLayoutGroup glg = content.GetComponent<GridLayoutGroup>();
 		//We have 3 player icons per row
-		int numberOfRows = (int)Mathf.Ceil( playerIconList.Count/3f);
+		int numberOfRows = (int)Mathf.Ceil( sortedPlayerIconList.Count/3f);
 		int contentLength = numberOfRows * ( (int)glg.cellSize.y + (int)glg.spacing.y ) + glg.padding.top;
 		content.GetComponent<RectTransform>().sizeDelta = new Vector2( content.GetComponent<RectTransform>().rect.width, contentLength );		
 	}
 
 	void createPlayerIcon( int index )
 	{
-		PlayerIcons.PlayerIconData playerIconData = GameManager.Instance.playerIcons.getPlayerIconDataByIndex( index );
+		PlayerIcons.PlayerIconData playerIconData = sortedPlayerIconList[index];
 		Sprite sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( playerIconData.uniqueId ).icon;
 		GameObject go = (GameObject)Instantiate(playerIconPrefab);
 		go.transform.SetParent(content,false);
@@ -63,7 +65,7 @@ class PlayerIconManager : MonoBehaviour {
 		RectTransform onSelectRectTransform = onSelectButton.GetComponent<RectTransform>();
 		onSelectRectTransform.localScale = Vector3.one;
 
-		PlayerIcons.PlayerIconData playerIconData = GameManager.Instance.playerIcons.getPlayerIconDataByIndex( index );
+		PlayerIcons.PlayerIconData playerIconData = sortedPlayerIconList[index];
 		Sprite sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( playerIconData.uniqueId ).icon;
 
 		//Position on select game object on top of the selected entry
