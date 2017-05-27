@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class LootBoxMenu : MonoBehaviour {
 
@@ -31,6 +32,7 @@ public class LootBoxMenu : MonoBehaviour {
 	public void LootBoxGrantedEvent( LootBox lootBox )
 	{
 		lootBox.print();
+		GameManager.Instance.playerProfile.setLastFreeLootBoxOpenedTime( DateTime.UtcNow );
 		StartCoroutine( giveLootBoxContent( lootBox ) );
 	}
 
@@ -67,7 +69,7 @@ public class LootBoxMenu : MonoBehaviour {
 					Debug.LogError("Give loot content encountered an unknown loot type: " + lootList[i].type );
 				break;
 			}
-			yield return new WaitForSecondsRealtime( 3f );
+			yield return new WaitForSecondsRealtime( 2.25f );
 		}
 		//Save
 		GameManager.Instance.playerInventory.serializePlayerInventory();
