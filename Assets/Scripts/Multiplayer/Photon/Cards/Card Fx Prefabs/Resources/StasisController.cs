@@ -29,8 +29,12 @@ public class StasisController : CardSpawnedObject {
 				//We found the spell's target
 				affectedPlayerTransform = playersArray[i].transform;
 	
-				//Freeze the player's movement and remove player control.
 				affectedPlayerControl = affectedPlayerTransform.GetComponent<PlayerControl>();
+
+				//If the player was ziplining when he got affected by stasis, detach him from the zipline.
+				affectedPlayerControl.detachFromZipline();
+
+				//Freeze the player's movement and remove player control.
 				affectedPlayerControl.enablePlayerMovement( false );
 				affectedPlayerControl.enablePlayerControl( false );
 
