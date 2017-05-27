@@ -52,6 +52,7 @@ public enum CardName
 	Trip_Mine = 103,
 	Sentry = 104,
 	IceWall = 105,
+	Steal = 106,
 
 	//Epic
 	Lightning = 200,

@@ -29,7 +29,7 @@ public class RecentPlayers {
 		}
 		else
 		{
-			Debug.LogError("RecentPlayers-updateRecentPlayerData: The user name specified " + userName + " is not in the recent player's list.");
+			Debug.LogWarning("RecentPlayers-updateRecentPlayerData: The user name specified " + userName + " is not in the recent player's list.");
 		}
 	}
 
@@ -48,11 +48,11 @@ public class RecentPlayers {
 		if( recentPlayersList.Exists(ofd => ofd.userName == userName ) )
 		{
 			recentPlayersList.Find(ofd => ofd.userName == userName ).status = status;
-			Debug.LogError("RecentPlayers-updateStatus: " + userName + " was found and the status is " + recentPlayersList.Find(ofd => ofd.userName == userName ).status);
+			Debug.Log("RecentPlayers-updateStatus: " + userName + " was found and the status is " + recentPlayersList.Find(ofd => ofd.userName == userName ).status);
 		}
 		else
 		{
-			Debug.LogError("RecentPlayers-updateStatus: The user name specified " + userName + " is not in the recent player's list.");
+			Debug.Log("RecentPlayers-updateStatus: The user name specified " + userName + " is not in the recent player's list.");
 		}
 	}
 

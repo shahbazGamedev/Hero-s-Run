@@ -212,6 +212,59 @@ public class PlayerSpell : PunBehaviour {
 	}
 	#endregion
 
+	#region Steal
+	[PunRPC]
+	void cardStealTargetRPC( int photonViewID, int cardLevel )
+	{
+		if( GetComponent<PhotonView>().isMine )
+		{
+			CardName stolenCard = CardName.None;
+			if( GetComponent<PlayerAI>() == null )
+			{
+				TurnRibbonHandler trh = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
+				stolenCard = trh.stealCard( cardLevel );
+			}
+			else
+			{
+				BotCardHandler bch = GetComponent<BotCardHandler>();
+				stolenCard = bch.stealCard( cardLevel );
+			}
+			//Tell the caster which card was stolen
+			PhotonView casterPhotonView = null;
+			for( int i = 0; i < PlayerRace.players.Count; i++ )
+			{
+				if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
+				{
+					casterPhotonView = PlayerRace.players[i].GetComponent<PhotonView>();
+					break;
+				}
+			}
+			if( casterPhotonView != null)
+			{
+				casterPhotonView.RPC("cardStealDetailsRPC", PhotonTargets.All, (int) stolenCard );
+			}
+		}
+	}
+
+	[PunRPC]
+	void cardStealDetailsRPC( int cardName )
+	{
+		if( GetComponent<PhotonView>().isMine )
+		{
+			if( GetComponent<PlayerAI>() == null )
+			{
+				TurnRibbonHandler trh = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
+				trh.replaceCard( (CardName) cardName);
+			}
+			else
+			{
+				BotCardHandler bch = GetComponent<BotCardHandler>();
+				bch.replaceCard( (CardName) cardName);
+			}
+		}
+	}
+	#endregion
+
 	#region Supercharger
 	[PunRPC]
 	void cardSuperchargerRPC( float spellDuration )

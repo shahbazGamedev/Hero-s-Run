@@ -187,6 +187,17 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardHomingMissile component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+			case CardName.Steal:
+				CardSteal cardSteal = GetComponent<CardSteal>();
+				if( cardSteal != null )
+				{
+					cardSteal.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardSteal component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -238,10 +249,15 @@ public class CardHandler : MonoBehaviour {
 			//Firewall is effective whenever there is an opponent behind you and not too far
 			//IceWall is effective whenever there is an opponent behind you and not too far
 			case CardName.IceWall:
+				if( isCasterLeading( caster.GetComponent<PlayerRace>() ) )
+				{
+					return GetComponent<CardIceWall>().isAllowed( caster.GetComponent<PhotonView>().viewID );
+				}
+			break;
 			case CardName.Firewall:
 				if( isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
-					return GetComponent<Card>().isAllowed( caster.GetComponent<PhotonView>().viewID );
+					return GetComponent<CardFirewall>().isAllowed( caster.GetComponent<PhotonView>().viewID );
 				}
 			break;
 			//Trip Mine is effective whenever there is an opponent behind you and not too far
@@ -255,14 +271,14 @@ public class CardHandler : MonoBehaviour {
 			case CardName.Lightning:
 				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
-					return GetComponent<Card>().isThereATargetWithinRange( caster.transform, level );
+					return GetComponent<CardLightning>().isThereATargetWithinRange( caster.transform, level );
 				}
 			break;
 			//Shrink is effective whenever your opponent is far ahead of you
 			case CardName.Shrink:
 				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
-					return GetComponent<Card>().isThereATargetWithinRange( caster.transform, level );
+					return GetComponent<CardShrink>().isThereATargetWithinRange( caster.transform, level );
 				}
 			break;
 			//Linked Fate is effective whenever you are trailing behind
@@ -272,13 +288,13 @@ public class CardHandler : MonoBehaviour {
 			//Sentry is effective whenever the Sentry would have a valid target within aim range
 			case CardName.Sentry:
 				CardManager.CardData cd = CardManager.Instance.getCardByName( CardName.Sentry );
-				return GetComponent<Card>().isTargetInRange( caster.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.AIM_RANGE, level ) );
+				return GetComponent<CardSentry>().isTargetInRange( caster.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.AIM_RANGE, level ) );
 			break;
 			//Stasis is effective whenever your opponent is far ahead of you
 			case CardName.Stasis:
 				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
-					return GetComponent<Card>().isThereATargetWithinRange( caster.transform, level );
+					return GetComponent<CardStasis>().isThereATargetWithinRange( caster.transform, level );
 				}
 			break;
 			//The following cards are effective whenever your opponent is far ahead of you
@@ -289,6 +305,10 @@ public class CardHandler : MonoBehaviour {
 				{
 					return true;
 				}
+			break;
+			//Steal could be effective at any time
+			case CardName.Steal:
+				return true;
 			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");

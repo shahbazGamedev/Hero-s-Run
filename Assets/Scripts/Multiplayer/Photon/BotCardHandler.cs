@@ -134,8 +134,13 @@ public class BotCardHandler : Photon.PunBehaviour {
 		//Activate the card
 		activateCard( playedCard.name );
 
-		//Wait a little before moving the Next Card into the free ribbon slot
-		StartCoroutine( moveNextCardIntoTurnRibbon( indexOfCardToPlay, playedCard ) );
+		//When you play the Steal card, it does not get replaced by the card in the Next slot but by the card
+		//you are stealing.
+		if( cardName != CardName.Steal )
+		{
+			//Wait a little before moving the Next Card into the free ribbon slot
+			StartCoroutine( moveNextCardIntoTurnRibbon( indexOfCardToPlay, playedCard ) );
+		}
 	}
 
 	IEnumerator moveNextCardIntoTurnRibbon( int indexOfCardToPlay, CardManager.CardData playedCard )
@@ -278,6 +283,37 @@ public class BotCardHandler : Photon.PunBehaviour {
 	int getCardIndexInTurnRibbon( CardName name )
 	{
 		return turnRibbonList.FindIndex(cardData => cardData.name == name);
+	}
+	#endregion
+
+	#region Steal Card
+	public CardName stealCard( int cardLevel )
+	{
+		//Pick a random card from the turn ribbon
+		int randomCardInTurnRibbon = Random.Range(0, turnRibbonList.Count);
+		CardName stolenCardName = turnRibbonList[randomCardInTurnRibbon].name;
+
+		//Get data about the card - make sure NOT to modify the card data
+		CardManager.CardData stolenCard = CardManager.Instance.getCardByName( stolenCardName );
+
+		//Wait a little before moving the Next Card into the free ribbon slot
+		StartCoroutine( moveNextCardIntoTurnRibbon( randomCardInTurnRibbon, stolenCard ) );
+
+		return stolenCardName;
+	}
+
+	public void replaceCard( CardName stolenCardName )
+	{
+		CardManager.CardData stealCard = CardManager.Instance.getCardByName( CardName.Steal );
+		int stealCardIndex = turnRibbonList.IndexOf(stealCard);
+		CardManager.CardData stolenCard = CardManager.Instance.getCardByName( stolenCardName );
+		turnRibbonList[stealCardIndex] = stolenCard;
+		//Also add it to the Bot's battle deck-this will not be saved so it's fine
+		PlayerDeck.PlayerCardData stolenPlayerCardData = new PlayerDeck.PlayerCardData();
+		stolenPlayerCardData.name = stolenCardName;
+		stolenPlayerCardData.level = 3;
+		battleDeckList.Add( stolenPlayerCardData );
+		Debug.LogWarning("BotCardHandler-replaceCard " + stealCard.name + " by " + stolenCard.name );
 	}
 	#endregion
 

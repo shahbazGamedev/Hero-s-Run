@@ -33,7 +33,7 @@ public class PlayerDeck {
 		addCard( CardName.Stasis, 6, 100, true );
 
 		//6
-		addCard( CardName.Trip_Mine, 5, 8, true );
+		addCard( CardName.Trip_Mine, 5, 8, false );
 
 		//7
 		addCard( CardName.Shrink, 3, 1, true );
@@ -62,6 +62,9 @@ public class PlayerDeck {
 
 		//15
 		addCard( CardName.Homing_Missile, 1, 1, false );
+
+		//16
+		addCard( CardName.Steal, 1, 1, true );
 
 		serializePlayerDeck( true );
 

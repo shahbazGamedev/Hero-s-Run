@@ -14,6 +14,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 	[SerializeField] Text nextCardText;
 	CardManager.CardData nextCard;
 	[SerializeField] Sprite blankCardSprite;
+	[SerializeField] Sprite stolenCardSprite;
 	[Header("Mana Bar")]
 	[SerializeField] ManaBar manaBar;
 
@@ -148,18 +149,23 @@ public class TurnRibbonHandler : MonoBehaviour {
 		//Play the card effect
 		activateCard( playedCard.name );
 
-		//Temporarily replace the image on the button that was clicked by a blank image
-		Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
-		buttonOfCardPlayed.GetComponent<Image>().overrideSprite = blankCardSprite;
-		//Card name text and mana cost text
-		Text[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<Text>();
-		buttonTexts[0].text = string.Empty;
-		buttonTexts[1].text = string.Empty;
-
-		//Wait a little before moving the Next Card into the free ribbon slot
-		StartCoroutine( moveNextCardIntoTurnRibbon( indexOfCardPlayed, playedCard ) );
-
-		if( cardPlayedEvent != null ) cardPlayedEvent( cardName );
+		//When you play the Steal card, it does not get replaced by the card in the Next slot but by the card
+		//you are stealing.
+		if( cardName != CardName.Steal )
+		{
+			//Temporarily replace the image on the button that was clicked by a blank image
+			Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
+			buttonOfCardPlayed.GetComponent<Image>().overrideSprite = blankCardSprite;
+			//Card name text and mana cost text
+			Text[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<Text>();
+			buttonTexts[0].text = string.Empty;
+			buttonTexts[1].text = string.Empty;
+	
+			//Wait a little before moving the Next Card into the free ribbon slot
+			StartCoroutine( moveNextCardIntoTurnRibbon( indexOfCardPlayed, playedCard ) );
+	
+			if( cardPlayedEvent != null ) cardPlayedEvent( cardName );
+		}
 	}
 
 	IEnumerator moveNextCardIntoTurnRibbon( int indexOfCardPlayed, CardManager.CardData playedCard )
@@ -197,6 +203,49 @@ public class TurnRibbonHandler : MonoBehaviour {
 		//Increase the card usage count. This is used to determine the player's favorite card.
 		playerCardData.timesUsed++;
 	}
+
+	#region Steal Card
+	public CardName stealCard( int cardLevel )
+	{
+		//Pick a random card from the turn ribbon
+		int randomCardInTurnRibbon = Random.Range(0, turnRibbonList.Count);
+		CardName stolenCardName = turnRibbonList[randomCardInTurnRibbon].name;
+
+		//Get data about the card - make sure NOT to modify the card data
+		CardManager.CardData stolenCard = CardManager.Instance.getCardByName( stolenCardName );
+
+		//Temporarily replace the image on the button that was clicked by a blank image
+		Button buttonOfCardPlayed = turnRibbonButtonList[randomCardInTurnRibbon];
+		buttonOfCardPlayed.GetComponent<Image>().overrideSprite = stolenCardSprite;
+		//Card name text and mana cost text
+		Text[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<Text>();
+		buttonTexts[0].text = string.Empty;
+		buttonTexts[1].text = string.Empty;
+
+		//Wait a little before moving the Next Card into the free ribbon slot
+		StartCoroutine( moveNextCardIntoTurnRibbon( randomCardInTurnRibbon, stolenCard ) );
+
+		return stolenCardName;
+	}
+
+	public void replaceCard( CardName cardName )
+	{
+		CardManager.CardData stealCard = CardManager.Instance.getCardByName( CardName.Steal );
+		int stealCardIndex = turnRibbonList.IndexOf(stealCard);
+		CardManager.CardData stolenCard = CardManager.Instance.getCardByName( cardName );
+		turnRibbonList[stealCardIndex] = stolenCard;
+		Debug.LogWarning("TurnRibbonHandler-replaceCard " + stealCard.name + " by " + stolenCard.name );
+
+		//Replace the image on the button that was clicked by the image of the Next card
+		Button buttonOfCardPlayed = turnRibbonButtonList[stealCardIndex];
+		buttonOfCardPlayed.GetComponent<Image>().overrideSprite = null;
+		buttonOfCardPlayed.GetComponent<Image>().sprite = stolenCard.icon;
+		//Card name text and mana cost text
+		Text[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<Text>();
+		buttonTexts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + stolenCard.name.ToString().ToUpper() );
+		buttonTexts[1].text = stolenCard.manaCost.ToString();
+	}
+	#endregion
 
 	int getUniqueRandom()
 	{
