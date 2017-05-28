@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UISpinNumber : MonoBehaviour {
 
-	Text text;
+	TextMeshProUGUI text;
 
 	void Start ()
 	{
-		text = GetComponent<Text>();
+		text = GetComponent<TextMeshProUGUI>();
 	}
 
 	/// <summary>

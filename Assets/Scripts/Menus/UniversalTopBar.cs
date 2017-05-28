@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class UniversalTopBar : MonoBehaviour {
 
@@ -19,16 +20,16 @@ public class UniversalTopBar : MonoBehaviour {
 	[SerializeField] GameObject balanceHolder;
 	[SerializeField] GameObject progressHolder;
 
-	[SerializeField] Text playerLevelText;
-	[SerializeField] Text currentAndNeededXPText;
+	[SerializeField] TextMeshProUGUI playerLevelText;
+	[SerializeField] TextMeshProUGUI currentAndNeededXPText;
 	[SerializeField] Slider progressBarSlider;
 
-	[SerializeField] Text numberOfCoinsText;
+	[SerializeField] TextMeshProUGUI numberOfCoinsText;
 
-	[SerializeField] Text numberOfGemsText;
+	[SerializeField] TextMeshProUGUI numberOfGemsText;
 
 	[SerializeField] Button closeButton;
-	[SerializeField] Text closeButtonText;
+	[SerializeField] TextMeshProUGUI closeButtonText;
 
 	[SerializeField] Button settingsButton;
 
