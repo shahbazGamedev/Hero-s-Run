@@ -175,6 +175,15 @@ public class GameManager {
 	}
 
 	/// <summary>
+	/// Returns true for the following play modes: 2-player, 3-player, and play with friends.
+	/// </summary>
+	/// <returns><c>true</c>, for the following play modes: 2-player, 3-player and play with friends, <c>false</c> otherwise.</returns>
+	public bool isOnlinePlayMode()
+	{
+		return playMode == PlayMode.PlayTwoPlayers || playMode == PlayMode.PlayThreePlayers || playMode == PlayMode.PlayWithFriends;
+	}
+
+	/// <summary>
 	/// Returns true if trophies can be earned for the current play mode.
 	/// </summary>
 	/// <returns><c>true</c>, if trophies can be earned for the current play mode, <c>false</c> otherwise.</returns>

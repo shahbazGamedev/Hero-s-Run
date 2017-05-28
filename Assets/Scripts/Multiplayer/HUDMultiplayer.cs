@@ -10,8 +10,8 @@ public class HUDMultiplayer : MonoBehaviour {
 	public static HUDMultiplayer hudMultiplayer;
 	bool raceHasStarted = false;
 	const float DELAY_BEFORE_COUNTDOWN_STARTS = 5f;
-	const float RETURN_TO_LOBBY_DELAY_ALONE = 8f;
-	const float RETURN_TO_LOBBY_DELAY_MULTI = 11f;
+	const float DELAY_WHEN_NOT_SHOWING_EMOTES = 8f;
+	const float DELAY_WHEN_SHOWING_EMOTES = 11f;
 	[Header("Distance Traveled")]
 	[SerializeField] GameObject distancePanel;
 	[SerializeField] TextMeshProUGUI distanceText;
@@ -138,14 +138,14 @@ public class HUDMultiplayer : MonoBehaviour {
 		raceEndingText.gameObject.SetActive( false );
 		StopCoroutine("endOfRaceCountdown");
 		showEmotePanel();
-		if( PlayerRace.players.Count > 1 )
+		if( GameManager.Instance.isOnlinePlayMode() && PlayerRace.players.Count > 1 )
 		{
 			//Stay longer in case the players want to exchange emotes
-			yield return new WaitForSecondsRealtime( RETURN_TO_LOBBY_DELAY_MULTI );
+			yield return new WaitForSecondsRealtime( DELAY_WHEN_SHOWING_EMOTES );
 		}
 		else
 		{
-			yield return new WaitForSecondsRealtime( RETURN_TO_LOBBY_DELAY_ALONE );
+			yield return new WaitForSecondsRealtime( DELAY_WHEN_NOT_SHOWING_EMOTES );
 		}
 		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 		PhotonNetwork.LeaveRoom();
@@ -158,7 +158,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	/// </summary>
 	void showEmotePanel()
 	{
-		if( GameManager.Instance.getPlayMode() == PlayMode.PlayTwoPlayers || GameManager.Instance.getPlayMode() == PlayMode.PlayThreePlayers || GameManager.Instance.getPlayMode() == PlayMode.PlayWithFriends )
+		if( GameManager.Instance.isOnlinePlayMode() )
 		{
 			if( PlayerRace.players.Count > 1 )
 			{
