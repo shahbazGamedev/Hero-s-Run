@@ -207,7 +207,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 	}
 
 	#region Steal Card
-	public CardName stealCard( int cardLevel )
+	public CardName stealCard()
 	{
 		//Pick a random card from the turn ribbon
 		int randomCardInTurnRibbon = Random.Range(0, turnRibbonList.Count);
@@ -215,7 +215,6 @@ public class TurnRibbonHandler : MonoBehaviour {
 
 		//Get data about the card - make sure NOT to modify the card data
 		CardManager.CardData stolenCard = CardManager.Instance.getCardByName( stolenCardName );
-
 		//Temporarily replace the image on the button that was clicked by a blank image
 		Button buttonOfCardPlayed = turnRibbonButtonList[randomCardInTurnRibbon];
 		buttonOfCardPlayed.GetComponent<Image>().overrideSprite = stolenCardSprite;
@@ -236,6 +235,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		CardManager.CardData stealCard = CardManager.Instance.getCardByName( CardName.Steal );
 		int stealCardIndex = turnRibbonList.IndexOf(stealCard);
 		CardManager.CardData stolenCard = CardManager.Instance.getCardByName( stolenCardName );
+		stolenCard.isStolenCard = true;
 		turnRibbonList[stealCardIndex] = stolenCard;
 		Debug.LogWarning("TurnRibbonHandler-replaceCard " + stealCard.name + " by " + stolenCardName );
 

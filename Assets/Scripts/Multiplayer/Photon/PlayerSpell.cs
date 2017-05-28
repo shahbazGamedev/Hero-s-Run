@@ -214,7 +214,7 @@ public class PlayerSpell : PunBehaviour {
 
 	#region Steal
 	[PunRPC]
-	void cardStealTargetRPC( int photonViewID, int cardLevel )
+	void cardStealTargetRPC( int photonViewID )
 	{
 		if( GetComponent<PhotonView>().isMine )
 		{
@@ -222,12 +222,12 @@ public class PlayerSpell : PunBehaviour {
 			if( GetComponent<PlayerAI>() == null )
 			{
 				TurnRibbonHandler trh = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
-				stolenCard = trh.stealCard( cardLevel );
+				stolenCard = trh.stealCard();
 			}
 			else
 			{
 				BotCardHandler bch = GetComponent<BotCardHandler>();
-				stolenCard = bch.stealCard( cardLevel );
+				stolenCard = bch.stealCard();
 			}
 			//Tell the caster which card was stolen
 			PhotonView casterPhotonView = null;

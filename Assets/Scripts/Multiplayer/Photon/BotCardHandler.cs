@@ -287,7 +287,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 	#endregion
 
 	#region Steal Card
-	public CardName stealCard( int cardLevel )
+	public CardName stealCard()
 	{
 		//Pick a random card from the turn ribbon
 		int randomCardInTurnRibbon = Random.Range(0, turnRibbonList.Count);

@@ -10,14 +10,25 @@ public class CardHandler : MonoBehaviour {
 
 		//If the player or bot used the Supercharger card, he is casting every card for a short duration at a higher level than normal.
 		//Increase the level but do not exceed the maximum level for this card.
+		CardManager.CardData cd = CardManager.Instance.getCardByName( name );
 		if( casterPhotonView.GetComponent<PlayerSpell>().isAffectedBySupercharger() )
 		{
 			print( casterPhotonView.gameObject.name + " is affected by supercharger. The normal card level for " + name.ToString() + " is " + level );
-			CardManager.CardData cd = CardManager.Instance.getCardByName( name );
 			int maxLevel = CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity );
 			level = Mathf.Min( maxLevel, level + CardSupercharger.SUPERCHARGER_LEVEL_BOOST );
 			print( "Adjusted level is " + level );
 		}
+
+		if( cd.isStolenCard )
+		{
+			//The maximum level for the stolen card is
+			int maxLevel = CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity );
+			//The level of Steal card in the player's deck is
+			int stealCardLevel = GameManager.Instance.playerDeck.getCardByName(CardName.Steal).level;
+			//We do not want to exceed the max level so take the smallest number of the two
+			level = Mathf.Min( maxLevel, stealCardLevel );
+		}
+
 		switch (name)
 		{
 			case CardName.Raging_Bull:

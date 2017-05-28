@@ -319,8 +319,10 @@ public class CardManager : MonoBehaviour {
 		public int manaCost;
 		//The race track level where training track is 0, the first race track unlocked is 1, the second race track unlocked is 2, etc.
 		public int raceTrackLevel;
-		[HideInInspector]
+		[System.NonSerialized]
 		public RectTransform rectTransform;
+		[System.NonSerialized]
+		public bool isStolenCard;
 
 		public float getCardPropertyValue( CardPropertyType type, int level )
 		{

@@ -11,12 +11,12 @@ public class CardSteal : Card {
 
 	public void activateCard ( int photonViewId, int level )
 	{
-		this.photonView.RPC("cardStealMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
+		this.photonView.RPC("cardStealMasterRPC", PhotonTargets.MasterClient, photonViewId );	
 	}
 
 	#region Methods only running on master client
 	[PunRPC]
-	void cardStealMasterRPC( int level, int photonViewID )
+	void cardStealMasterRPC( int photonViewID )
 	{
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
@@ -36,7 +36,7 @@ public class CardSteal : Card {
 		if( target != null )
 		{	
 			//Send an RPC to the player we will be stealing a card from
-			target.GetComponent<PhotonView>().RPC("cardStealTargetRPC", PhotonTargets.All, photonViewID, level );
+			target.GetComponent<PhotonView>().RPC("cardStealTargetRPC", PhotonTargets.All, photonViewID );
 		}
 	}
 
