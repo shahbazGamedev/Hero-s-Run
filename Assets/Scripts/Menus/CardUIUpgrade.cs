@@ -21,10 +21,6 @@ public class CardUIUpgrade : MonoBehaviour, IPointerDownHandler
 	[SerializeField] RectTransform propertiesPanel;
 	[SerializeField] GameObject cardPropertyPrefab;
 
-	Color NOT_ENOUGH_CARDS_TO_UPGRADE = Color.blue;
-	Color ENOUGH_CARDS_TO_UPGRADE = Color.green;
-	Color MAXED_OUT = Color.red;
-
 	public void configureUpgradePanel( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
 		UniversalTopBar.Instance.showTopBar( false );
