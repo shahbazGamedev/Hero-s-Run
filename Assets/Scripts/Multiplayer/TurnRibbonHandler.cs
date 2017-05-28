@@ -90,7 +90,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		CardManager.CardData cardData = CardManager.Instance.getCardByName( cardName );
 		nextCardImage.sprite = cardData.icon;
 		//Card name text and mana cost text
-		Text[] texts = nextCardImage.GetComponentsInChildren<Text>();
+		TextMeshProUGUI[] texts = nextCardImage.GetComponentsInChildren<TextMeshProUGUI>();
 		texts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + cardData.name.ToString().ToUpper() );
 		texts[1].text = cardData.manaCost.ToString();
 		this.nextCard = cardData;
