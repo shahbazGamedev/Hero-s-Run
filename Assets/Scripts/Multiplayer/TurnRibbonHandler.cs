@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class TurnRibbonHandler : MonoBehaviour {
 
@@ -77,7 +78,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		CardManager.CardData cardData = CardManager.Instance.getCardByName( cardName );
 		cardImage.sprite = cardData.icon;
 		//Card name text and mana cost text
-		Text[] buttonTexts = cardButton.GetComponentsInChildren<Text>();
+		TextMeshProUGUI[] buttonTexts = cardButton.GetComponentsInChildren<TextMeshProUGUI>();
 		buttonTexts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + cardData.name.ToString().ToUpper() );
 		buttonTexts[1].text = cardData.manaCost.ToString();
 
@@ -157,7 +158,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 			Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
 			buttonOfCardPlayed.GetComponent<Image>().overrideSprite = blankCardSprite;
 			//Card name text and mana cost text
-			Text[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<Text>();
+			TextMeshProUGUI[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<TextMeshProUGUI>();
 			buttonTexts[0].text = string.Empty;
 			buttonTexts[1].text = string.Empty;
 	
@@ -177,9 +178,10 @@ public class TurnRibbonHandler : MonoBehaviour {
 		buttonOfCardPlayed.GetComponent<Image>().overrideSprite = null;
 		buttonOfCardPlayed.GetComponent<Image>().sprite = nextCard.icon;
 		//Card name text and mana cost text
-		Text[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<Text>();
+		TextMeshProUGUI[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<TextMeshProUGUI>();
 		buttonTexts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + nextCard.name.ToString().ToUpper() );
 		buttonTexts[1].text = nextCard.manaCost.ToString();
+		buttonTexts[2].text = string.Empty;
 
 		//In the turn-ribbon list, replace the card played by the card held in Next
 		turnRibbonList.RemoveAt(indexOfCardPlayed);
@@ -218,9 +220,10 @@ public class TurnRibbonHandler : MonoBehaviour {
 		Button buttonOfCardPlayed = turnRibbonButtonList[randomCardInTurnRibbon];
 		buttonOfCardPlayed.GetComponent<Image>().overrideSprite = stolenCardSprite;
 		//Card name text and mana cost text
-		Text[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<Text>();
+		TextMeshProUGUI[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<TextMeshProUGUI>();
 		buttonTexts[0].text = string.Empty;
 		buttonTexts[1].text = string.Empty;
+		buttonTexts[2].text = LocalizationManager.Instance.getText("CARD_STOLEN");
 
 		//Wait a little before moving the Next Card into the free ribbon slot
 		StartCoroutine( moveNextCardIntoTurnRibbon( randomCardInTurnRibbon, stolenCard ) );
@@ -228,22 +231,22 @@ public class TurnRibbonHandler : MonoBehaviour {
 		return stolenCardName;
 	}
 
-	public void replaceCard( CardName cardName )
+	public void replaceCard( CardName stolenCardName )
 	{
 		CardManager.CardData stealCard = CardManager.Instance.getCardByName( CardName.Steal );
 		int stealCardIndex = turnRibbonList.IndexOf(stealCard);
-		CardManager.CardData stolenCard = CardManager.Instance.getCardByName( cardName );
+		CardManager.CardData stolenCard = CardManager.Instance.getCardByName( stolenCardName );
 		turnRibbonList[stealCardIndex] = stolenCard;
-		Debug.LogWarning("TurnRibbonHandler-replaceCard " + stealCard.name + " by " + stolenCard.name );
+		Debug.LogWarning("TurnRibbonHandler-replaceCard " + stealCard.name + " by " + stolenCardName );
 
-		//Replace the image on the button that was clicked by the image of the Next card
 		Button buttonOfCardPlayed = turnRibbonButtonList[stealCardIndex];
 		buttonOfCardPlayed.GetComponent<Image>().overrideSprite = null;
 		buttonOfCardPlayed.GetComponent<Image>().sprite = stolenCard.icon;
 		//Card name text and mana cost text
-		Text[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<Text>();
+		TextMeshProUGUI[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<TextMeshProUGUI>();
 		buttonTexts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + stolenCard.name.ToString().ToUpper() );
 		buttonTexts[1].text = stolenCard.manaCost.ToString();
+
 	}
 	#endregion
 
