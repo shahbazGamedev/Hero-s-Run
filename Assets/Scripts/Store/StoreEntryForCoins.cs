@@ -34,7 +34,7 @@ public class StoreEntryForCoins : MonoBehaviour {
 		PlayerInventory.playerInventoryChangedNew -= PlayerInventoryChangedNew;
 	}
 
-	void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int newValue )
+	void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int previousValue, int newValue )
 	{
 		switch (eventType)
 		{

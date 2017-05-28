@@ -21,9 +21,23 @@ public class UISpinNumber : MonoBehaviour {
 	/// <param name="toValue">To value.</param>
 	/// <param name="duration">Duration.</param>
 	/// <param name="onFinish">On finish.</param>
-	public void spinNumber ( string mainText, float fromValue, float toValue, float duration, System.Action onFinish = null )
+	public void spinNumber ( string mainText, float fromValue, float toValue, float duration, bool onlySpinIfIncreasing, System.Action onFinish = null )
 	{
-		StartCoroutine( numberSpin(  mainText, fromValue, toValue, duration, onFinish ) );
+		if( onlySpinIfIncreasing )
+		{
+			if( toValue > fromValue )
+			{
+				StartCoroutine( numberSpin(  mainText, fromValue, toValue, duration, onFinish ) );
+			}
+			else
+			{
+				text.text = string.Format( mainText, ((int)toValue).ToString("N0") );
+			}
+		}
+		else
+		{
+			StartCoroutine( numberSpin(  mainText, fromValue, toValue, duration, onFinish ) );
+		}
 	}
 
 	IEnumerator numberSpin( string mainText, float fromValue, float toValue, float duration, System.Action onFinish = null )
@@ -41,7 +55,7 @@ public class UISpinNumber : MonoBehaviour {
 			value =  Mathf.Lerp( fromValue, toValue, elapsedTime/duration );
 			if( (int)value != previousValue )
 			{
-				text.text = string.Format( mainText, ((int)value).ToString() );
+				text.text = string.Format( mainText, ((int)value).ToString("N0") );
 				previousValue = (int)value;
 			}
 			yield return new WaitForEndOfFrame();  

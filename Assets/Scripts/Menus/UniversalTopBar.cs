@@ -9,6 +9,7 @@ public class UniversalTopBar : MonoBehaviour {
 	public static UniversalTopBar Instance;
 	const float COIN_STORE_VERTICAL_POSITION = 1300f;
 	const float GEM_STORE_VERTICAL_POSITION = 269f;
+	const float NUMBER_SPIN_DURATION = 1.25f;
 
 	[Header("For Store Access")]
 	RectTransform horizontalContent;
@@ -146,16 +147,16 @@ public class UniversalTopBar : MonoBehaviour {
 		numberOfGemsText.text = GameManager.Instance.playerInventory.getGemBalance().ToString("N0");
 	}
 
-	void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int newValue )
+	void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int previousValue, int newValue )
 	{
 		switch (eventType)
 		{
 			case PlayerInventoryEvent.Gem_Balance_Changed:
-				numberOfGemsText.text = newValue.ToString("N0");
+				numberOfGemsText.GetComponent<UISpinNumber>().spinNumber( "{0}", previousValue, newValue, NUMBER_SPIN_DURATION, true );
 			break;
 
 			case PlayerInventoryEvent.Coin_Changed:
-				numberOfCoinsText.text = newValue.ToString("N0");			
+				numberOfCoinsText.GetComponent<UISpinNumber>().spinNumber( "{0}", previousValue, newValue, NUMBER_SPIN_DURATION, true );
 			break;
 		}
 	}
@@ -198,7 +199,7 @@ public class UniversalTopBar : MonoBehaviour {
 		{
 			//Animate Text
 			string currentAndNeededXPString = "{0}/" + ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ).ToString();
-			currentAndNeededXPText.GetComponent<UISpinNumber>().spinNumber( currentAndNeededXPString, previousValue, newValue, duration, onFinish );
+			currentAndNeededXPText.GetComponent<UISpinNumber>().spinNumber( currentAndNeededXPString, previousValue, newValue, duration, true, onFinish );
 	
 			//Animate Slider
 			float toValue = newValue/(float)ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );

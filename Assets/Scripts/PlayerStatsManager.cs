@@ -1177,6 +1177,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetString( "playerDeck", playerDeck );
 		PlayerPrefs.SetString( "playerFriends", playerFriends );
 		PlayerPrefs.SetString( "recentPlayers", recentPlayers );
+		PlayerPrefs.SetString( "playerInventory", playerInventory );
 		PlayerPrefs.SetString( "playerIcons", playerIcons );
 		PlayerPrefs.Save();
 		//Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );

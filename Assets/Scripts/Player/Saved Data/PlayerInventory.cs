@@ -21,7 +21,7 @@ public class PlayerInventory {
 	[SerializeField] int currentGems = 25;
 
 	//Delegate used to communicate to other classes when an inventory value changes such as the gem balance
-	public delegate void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int newValue );
+	public delegate void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int previousValue, int newValue );
 	public static event PlayerInventoryChangedNew playerInventoryChangedNew;
 
 	#region Coins
@@ -58,8 +58,8 @@ public class PlayerInventory {
 	{
 		if( value >= 0 )
 		{
+			if( playerInventoryChangedNew != null ) playerInventoryChangedNew( PlayerInventoryEvent.Coin_Changed, currentCoins, value );
 			currentCoins = value;
-			if( playerInventoryChangedNew != null ) playerInventoryChangedNew( PlayerInventoryEvent.Coin_Changed, currentCoins );
 			//Save
 			serializePlayerInventory();
 			Debug.Log("PlayerInventory-setting current coins to: " + value );
@@ -105,8 +105,8 @@ public class PlayerInventory {
 	{
 		if( value >= 0 )
 		{
+			if( playerInventoryChangedNew != null ) playerInventoryChangedNew( PlayerInventoryEvent.Gem_Balance_Changed, currentGems, value );
 			currentGems = value;
-			if( playerInventoryChangedNew != null ) playerInventoryChangedNew( PlayerInventoryEvent.Gem_Balance_Changed, currentGems );
 			//Save
 			serializePlayerInventory();
 			Debug.Log("PlayerInventory-setting current gems to: " + value );
