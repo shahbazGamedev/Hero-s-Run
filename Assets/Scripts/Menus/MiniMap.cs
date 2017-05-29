@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Linq;
-
+using TMPro;
 
 public class RadarObject
 {
@@ -29,7 +29,7 @@ public class MiniMap : MonoBehaviour {
 	List<RadarObject> radarObjects = new List<RadarObject>();
 	[SerializeField] Image playerRadarImage;
 	[SerializeField] Sprite playerDeadRadarSprite;
-	[SerializeField] Text cardFeed; //Used to display the last card played, such as 'Bob played Lightning'
+	[SerializeField] TextMeshProUGUI cardFeed; //Used to display the last card played, such as 'Bob played Lightning'
 	const float MAX_DISTANCE = 72f;
 	const float CARD_FEED_TTL = 4f; //in seconds
 	float cardFeedTimeOfLastEntry;
@@ -62,17 +62,17 @@ public class MiniMap : MonoBehaviour {
 		if(ro != null) radarObjects.Remove(ro);
 	}
 
-	public void displayMessage( string heroName, CardManager.CardData lastCardPlayed )
-	{
-		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + lastCardPlayed.name.ToString().ToUpper() );
-		addMessage( heroName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + localizedCardName + "</color>" );
-	}
-
 	public void displayMessage( string heroName, CardName cardName )
 	{
 		CardManager.CardData lastCardPlayed = CardManager.Instance.getCardByName( cardName );
+		displayMessage( heroName, lastCardPlayed );
+	}
+
+	public void displayMessage( string heroName, CardManager.CardData lastCardPlayed )
+	{
 		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + lastCardPlayed.name.ToString().ToUpper() );
-		addMessage( heroName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + localizedCardName + "</color>" );
+		string message = string.Format( LocalizationManager.Instance.getText("MINIMAP_CARD_PLAYED"), heroName, CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ), localizedCardName );
+		addMessage( message );
 	}
 
 	public void displayMessage( string message )
