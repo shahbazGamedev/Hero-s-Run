@@ -75,9 +75,9 @@ public class MiniMap : MonoBehaviour {
 		addMessage( heroName + " played <color=" + CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ) + ">" + localizedCardName + "</color>" );
 	}
 
-	public void displayMessage( string heroName, string message )
+	public void displayMessage( string message )
 	{
-		addMessage( heroName + message );
+		addMessage( message );
 	}
 
 	void addMessage( string message )

@@ -197,6 +197,11 @@ public class PlayerControl : Photon.PunBehaviour {
 	public static event MultiplayerStateChanged multiplayerStateChanged;
 	#endregion
 
+	#region Cached localized strings
+	//Cache the string to avoid the runtime lookup
+	string backInTheGameString;
+	#endregion
+
 	void Awake ()
 	{
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
@@ -217,6 +222,9 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerVoiceOvers = GetComponent<PlayerVoiceOvers>();
 		playerCollisions = GetComponent<PlayerCollisions>();
 		playerAI = GetComponent<PlayerAI>(); //Null for everyone except bots
+
+		//Cache the string to avoid the runtime lookup
+		backInTheGameString = LocalizationManager.Instance.getText( "MINIMAP_BACK_IN_GAME" );
 
 		//The character is in idle while waiting to run. 
 		setCharacterState( PlayerCharacterState.Idle );
@@ -1741,7 +1749,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	[PunRPC]
 	public void playerResurrectedRPC( string heroName )
 	{
-		MiniMap.Instance.displayMessage( heroName, " is back in the game!" );
+		MiniMap.Instance.displayMessage( string.Format( backInTheGameString, heroName ) );
 		playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Resurrect);
 	}
 
