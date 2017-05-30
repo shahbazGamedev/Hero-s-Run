@@ -20,9 +20,6 @@ public class StoreManager : MonoBehaviour {
 	public static StoreManager Instance = null;
 	[SerializeField]  GameObject storeParent;
 	[SerializeField]  RectTransform storeVerticalContent;
-	[Header("Store")]
-	[SerializeField]  Text coinsTitle;
-	[SerializeField]  Text gemsTitle;
 
 	// Use this for initialization
 	void Awake ()
@@ -33,9 +30,6 @@ public class StoreManager : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		coinsTitle.text = LocalizationManager.Instance.getText("STORE_COINS_TITLE");
-		gemsTitle.text = LocalizationManager.Instance.getText("STORE_GEMS_TITLE");
-
 		//Adjust the content height so that everything fits
 		LayoutElement[] elements = storeVerticalContent.GetComponentsInChildren<LayoutElement>();
 		float contentHeight = 0;
