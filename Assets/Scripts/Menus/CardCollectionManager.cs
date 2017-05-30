@@ -13,7 +13,11 @@ using System;
 /// </summary>
 class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 
+	[Header("Content")]
+	[SerializeField] RectTransform contentRectTransfom;
+	[SerializeField] LayoutElement topImageLayoutElement;
 	[Header("Battle Deck Area")]
+	[SerializeField] LayoutElement battleDeckLayoutElement;
 	[SerializeField] Transform battleDeckCardHolder;
 	[SerializeField] GameObject cardPrefab;
 	[SerializeField] Text battleDeckTitle;
@@ -50,6 +54,10 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 		createBattleDeck();
 		createCardCollection();
 		createCardsToBeFoundSection();
+
+		//Adjust the overall length of the content including all areas
+		float totalLength = topImageLayoutElement.minHeight + battleDeckLayoutElement.minHeight + cardCollectionLayoutElement.minHeight + cardsToBeFoundLayoutElement.minHeight;
+		contentRectTransfom.sizeDelta = new Vector2( contentRectTransfom.sizeDelta.x, totalLength );
 	}
 
 	#region Battle Deck
