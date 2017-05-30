@@ -5,9 +5,9 @@ using UnityEngine;
 public enum LootBoxType
  {
 	FREE = 0,
-	CROWNS = 1,
-	SHOP = 2,
-	RACE_TRACK_UNLOCK = 3
+	SHOP_GIANT = 1,
+	SHOP_SUPER_SIZED = 2,
+	SHOP_MEGA = 3
 }
 
 public class LootBoxServerManager : MonoBehaviour {
