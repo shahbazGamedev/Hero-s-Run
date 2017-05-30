@@ -66,7 +66,7 @@ public class StoreEntryForLootBoxes : MonoBehaviour {
 		{
 			//We can afford it.
 			GameManager.Instance.playerInventory.deductGems( priceInGems );
-			LootBoxClientManager.Instance.requestLootBox(LootBoxType.FREE);
+			LootBoxClientManager.Instance.requestLootBox(lootBoxType);
 		}
 		else
 		{
