@@ -19,9 +19,8 @@ public class StoreManager : MonoBehaviour {
 	[Header("General")]
 	public static StoreManager Instance = null;
 	[SerializeField]  GameObject storeParent;
-	[SerializeField]  ScrollRect entireStoreScrollRect;
+	[SerializeField]  RectTransform storeVerticalContent;
 	[Header("Store")]
-	[SerializeField]  ScrollRect storeScrollRect;
 	[SerializeField]  Text coinsTitle;
 	[SerializeField]  Text gemsTitle;
 
@@ -36,6 +35,15 @@ public class StoreManager : MonoBehaviour {
 	{
 		coinsTitle.text = LocalizationManager.Instance.getText("STORE_COINS_TITLE");
 		gemsTitle.text = LocalizationManager.Instance.getText("STORE_GEMS_TITLE");
+
+		//Adjust the content height so that everything fits
+		LayoutElement[] elements = storeVerticalContent.GetComponentsInChildren<LayoutElement>();
+		float contentHeight = 0;
+		for( int i =0; i < elements.Length; i++ )
+		{
+			contentHeight += elements[i].minHeight;
+		}
+		storeVerticalContent.sizeDelta = new Vector2( storeVerticalContent.sizeDelta.x, contentHeight );
 	}
 
 	public void showStore( StoreTab selectedTab )
