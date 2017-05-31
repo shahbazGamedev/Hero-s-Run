@@ -43,18 +43,16 @@ public class TurnRibbonHandler : MonoBehaviour {
 
 		List<PlayerDeck.PlayerCardData> battleDeckList = GameManager.Instance.playerDeck.getBattleDeck();
 
-		//Populate turn-ribbon with 3 or 4 unique, random cards
-		for( int i = 0; i < CardManager.Instance.cardsInTurnRibbon; i++ )
+		//Populate turn-ribbon with 4 unique, random cards
+		for( int i = 0; i < CardManager.CARDS_IN_TURN_RIBBON; i++ )
 		{
 			addCardToTurnRibbon( i, battleDeckList[getUniqueRandom()].name );
 		}
 		//Set next card with a unique, random card
 		setNextCard( battleDeckList[getUniqueRandom()].name );
 
-		//We are testing with 3 and with 4 cards in the turn ribbon
-		//So we are either queuing 4 cards: 8 - 3 - 1 or 3 cards: 8 - 4 - 1
-		int cardsToQueue = NUMBER_CARDS_IN_BATTLE_DECK - CardManager.Instance.cardsInTurnRibbon - 1;
-		for( int i = 0; i < cardsToQueue; i++ )
+		//We are queuing 3 cards: 8 - 4 - 1 (card in battle decks - cards in turn ribbon - 1)
+		for( int i = 0; i < 3; i++ )
 		{
 			addCardToQueue( battleDeckList[getUniqueRandom()].name );
 		}

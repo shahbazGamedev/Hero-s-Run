@@ -62,7 +62,7 @@ public enum CardName
 
 	//Legendary
 	Hack = 301,
-	Card_Two = 302,
+	Reflect = 302,
 	Card_Three = 303,
 	Card_Four = 304
 }
@@ -70,8 +70,7 @@ public enum CardName
 public class CardManager : MonoBehaviour {
 
 	public static CardManager Instance;
-	[Range(3,4)]
-	public int cardsInTurnRibbon = 4; //Number of cards appearing in the turn-ribbon. We will test with both 3 and 4 and see which one feels best.
+	public const int CARDS_IN_TURN_RIBBON = 4;
 	[SerializeField] List<CardData> cardDataList = new List<CardData>();
 	[SerializeField] List<CardPropertyIcon> cardPropertyIconList = new List<CardPropertyIcon>();
 	int[,] numberOfCardsRequiredForUpgrade;

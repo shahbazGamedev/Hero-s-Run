@@ -52,17 +52,26 @@ public class BotCardHandler : Photon.PunBehaviour {
 	List<PlayerDeck.PlayerCardData> getBattleDeck()
 	{
 		List<PlayerDeck.PlayerCardData> battleDeck = botHero.botCardDataList.FindAll( card => card.inBattleDeck == true );
-		//Check that each card in the deck is unique. Maybe a data entry error caused 2 cards in the deck to be the same.
-		bool isUnique = battleDeck.Select(card => card.name).Distinct().Count() == battleDeck.Count();
-		if( !isUnique )
+		//Check that we have the right number of cards in the Battle Deck
+		if( battleDeck.Count == TurnRibbonHandler.NUMBER_CARDS_IN_BATTLE_DECK )
 		{
-			Debug.LogError("BotCardHandler-There are some duplicate cards in the battle deck for " + gameObject.name );
-			for( int i = 0; i < battleDeck.Count; i++ )
+			//Check that each card in the deck is unique. Maybe a data entry error caused 2 cards in the deck to be the same.
+			bool isUnique = battleDeck.Select(card => card.name).Distinct().Count() == battleDeck.Count();
+			if( !isUnique )
 			{
-				Debug.Log("Battle deck contains " + i + " " +  battleDeck[i].name );
+				Debug.LogError("BotCardHandler-There are some duplicate cards in the battle deck for " + gameObject.name );
+				for( int i = 0; i < battleDeck.Count; i++ )
+				{
+					Debug.Log("Battle deck contains " + i + " " +  battleDeck[i].name );
+				}
+				battleDeck = null;
+	
 			}
+		}
+		else
+		{
+			Debug.LogError("The battle deck for " + botHero.userName + " does not contain " +  TurnRibbonHandler.NUMBER_CARDS_IN_BATTLE_DECK + " cards. This is set in HeroManager." );
 			battleDeck = null;
-
 		}
 		return battleDeck;
 	}
@@ -72,18 +81,15 @@ public class BotCardHandler : Photon.PunBehaviour {
 	{
 		cardIndexList.AddRange(cardIndexArray);
 
-		//Populate turn-ribbon with 3 or 4 unique, random cards
-		for( int i = 0; i < CardManager.Instance.cardsInTurnRibbon; i++ )
+		for( int i = 0; i < CardManager.CARDS_IN_TURN_RIBBON; i++ )
 		{
 			addCardToTurnRibbon( i, battleDeckList[getUniqueRandom()].name );
 		}
 		//Set next card with a unique, random card
 		setNextCard( battleDeckList[getUniqueRandom()].name );
 
-		//We are testing with 3 and with 4 cards in the turn ribbon
-		//So we are either queuing 4 cards: 8 - 3 - 1 or 3 cards: 8 - 4 - 1
-		int cardsToQueue = TurnRibbonHandler.NUMBER_CARDS_IN_BATTLE_DECK - CardManager.Instance.cardsInTurnRibbon - 1;
-		for( int i = 0; i < cardsToQueue; i++ )
+		//We are queuing 3 cards: 8 - 4 - 1 (card in battle decks - cards in turn ribbon - 1)
+		for( int i = 0; i < 3; i++ )
 		{
 			addCardToQueue( battleDeckList[getUniqueRandom()].name );
 		}

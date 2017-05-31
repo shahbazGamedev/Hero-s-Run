@@ -28,6 +28,10 @@ public class PlayerSpell : PunBehaviour {
 	bool affectedBySupercharger = false;
 	#endregion
 
+	#region Reflect
+	bool hasReflectEnabled = false;
+	#endregion
+
 	#region Sentry spell
 	SentryController sentryController;
 	#endregion
@@ -262,6 +266,27 @@ public class PlayerSpell : PunBehaviour {
 				bch.replaceCard( (CardName) cardName);
 			}
 		}
+	}
+	#endregion
+
+	#region Reflect
+	public void cardReflectRPC( float spellDuration )
+	{
+		hasReflectEnabled = true;
+		//Cancel the hack effect once the duration has run out
+		Invoke("cancelReflect", spellDuration );
+	}
+
+	void cancelReflect()
+	{
+		CancelInvoke( "cancelReflect" );
+		hasReflectEnabled = false;
+		print("PlayerSpell cancelReflect for " + gameObject.name );
+	}
+
+	public bool isReflectEnabled()
+	{
+		return hasReflectEnabled;
 	}
 	#endregion
 

@@ -31,12 +31,20 @@ public class CardLightning : Card {
 
 		if( nearestTarget != null )
 		{
+			if( nearestTarget.GetComponent<PlayerSpell>().isReflectEnabled() )
+			{
+				//The target has the Reflect spell active.
+				//Reflect to caster
+				nearestTarget = playerTransform;
+			
+			}
 			//Spawn a lightning on the nearest player or creature
 			Vector3 lightningPosition = nearestTarget.transform.TransformPoint( offset );
 			PhotonNetwork.InstantiateSceneObject( lightningPrefabName, lightningPosition, nearestTarget.rotation, 0, null );
 	
 			//Kill nearest target
 			strike( nearestTarget );
+
 		}
 		else
 		{

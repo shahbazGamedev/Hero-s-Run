@@ -209,6 +209,17 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardSteal component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+			case CardName.Reflect:
+				CardReflect cardReflect = GetComponent<CardReflect>();
+				if( cardReflect != null )
+				{
+					cardReflect.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardReflect component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -321,6 +332,9 @@ public class CardHandler : MonoBehaviour {
 			case CardName.Steal:
 				return true;
 			break;
+			//Reflect is a bit more effective when you are leading
+			case CardName.Reflect:
+				return isCasterLeading( caster.GetComponent<PlayerRace>() );
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;

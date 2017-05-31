@@ -39,7 +39,7 @@ public class PlayerDeck {
 		addCard( CardName.Shrink, 3, 1, true );
 
 		//8
-		addCard( CardName.Sentry, 1, 69, true );
+		addCard( CardName.Sentry, 1, 69, false );
 
 		//Part of card collection, but not in battle deck
 		//9
@@ -65,6 +65,9 @@ public class PlayerDeck {
 
 		//16
 		addCard( CardName.Steal, 1, 1, true );
+
+		//17
+		addCard( CardName.Reflect, 1, 1, true );
 
 		serializePlayerDeck( true );
 

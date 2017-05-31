@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// The Hack card is a Legendary card with 5 levels. Hack into your opponents omni-tools and disable them for a short while. The effect remains active until it expires even if the player respawns.
+/// The Hack card is a Legendary card with 5 levels. Hack into your opponents omni-tools and disable them for a short while. The effect remains active until it expires or the player respawns.
 /// </summary>
 public class CardHack : Card {
 
