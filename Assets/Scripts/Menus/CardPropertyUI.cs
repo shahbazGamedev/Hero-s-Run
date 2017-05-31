@@ -44,6 +44,11 @@ public class CardPropertyUI : MonoBehaviour {
 				propertyValue.text = string.Format( range.ToString() + " {0}", CardManager.Instance.getCardPropertyValueType( cp.type ) );
 			}
 		}
+		else if( cp.type == CardPropertyType.TARGET )
+		{
+			CardPropertyTargetType targetType = cd.getCardPropertyTargetType();
+			propertyValue.text = LocalizationManager.Instance.getText( "CARD_PROPERTIES_TARGET_" + targetType.ToString() );
+		}
 		else
 		{
 			propertyValue.text = string.Format( cd.getCardPropertyValue( cp.type, pcd.level ).ToString() + " {0}", CardManager.Instance.getCardPropertyValueType( cp.type ) );

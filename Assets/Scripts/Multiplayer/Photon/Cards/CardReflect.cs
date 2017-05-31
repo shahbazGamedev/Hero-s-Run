@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// The Reflect card is a Legendary card with 5 levels. Reflect certains spells back to the caster for a short while. Currently only works for Lightning.
-/// If player A casts Lightning on player B, and player B has Reflect active, player A will be struck by his own Lightning.
+/// The Reflect card is a Legendary card with 5 levels. Reflect certains spells back to the caster for a short while.
+/// Currently works for Lightning, Stasis, Shrink, and Hack.
+/// Example: If player A casts Lightning on player B, and player B has Reflect active, player A will be struck by the Lightning.
 /// </summary>
 public class CardReflect : Card {
 

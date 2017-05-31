@@ -20,7 +20,16 @@ public enum CardPropertyType
 	ACCURACY = 4,
 	RUN_SPEED = 5,
 	AIM_RANGE = 6,
-	DURATION_WITH_TIMER = 7	
+	DURATION_WITH_TIMER = 7,
+	TARGET = 8
+}
+
+public enum CardPropertyTargetType
+ {
+	NOT_APPLICABLE = 0,
+	NEAREST = 1,
+	RANDOM = 2,
+	ALL = 3,
 }
 
 public enum CardSortMode
@@ -347,6 +356,20 @@ public class CardManager : MonoBehaviour {
 			return cardPropertyValue;
 		}
 
+		public CardPropertyTargetType getCardPropertyTargetType()
+		{
+			CardProperty cardProperty = cardProperties.Find(property => property.type == CardPropertyType.TARGET );
+			if( cardProperty != null )
+			{
+				return cardProperty.targetType;
+			}
+			else
+			{
+				Debug.LogError("CardManager-The card " + name + " does not have the " + CardPropertyType.TARGET.ToString() + " property.");
+				return CardPropertyTargetType.NOT_APPLICABLE;
+			}
+		}
+
 		public bool doesCardHaveThisProperty( CardPropertyType type )
 		{
 			return cardProperties.Exists(property => property.type == type);
@@ -359,6 +382,7 @@ public class CardManager : MonoBehaviour {
 		public CardPropertyType type; 
 		public float baseValue;
 		public float upgradeValue;
+		public CardPropertyTargetType targetType;
 	}
 
 	[System.Serializable]

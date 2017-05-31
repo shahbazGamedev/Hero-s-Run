@@ -28,6 +28,13 @@ public class CardShrink : Card {
 
 		if( nearestTarget != null )
 		{
+			if( nearestTarget.GetComponent<PlayerSpell>().isReflectEnabled() )
+			{
+				//The target has the Reflect spell active.
+				//Reflect to caster
+				nearestTarget = playerTransform;
+			
+			}
 			nearestTarget.GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.All, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
 		}
 		else
