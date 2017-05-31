@@ -33,6 +33,13 @@ public class CardStasis : Card {
 		//Only continue if we found a target
 		if( nearestTarget != null )
 		{
+			if( nearestTarget.GetComponent<PlayerSpell>().isReflectEnabled() )
+			{
+				//The target has the Reflect spell active.
+				//Reflect to caster
+				nearestTarget = playerTransform;
+			
+			}
 			object[] data = new object[2];
 	
 			//We will need to find a reference to the player we are targeting
