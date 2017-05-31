@@ -7,40 +7,51 @@ using System;
 
 public class NotificationServicesHandler : MonoBehaviour {
 
-	bool tokenSent;
-	UnityEngine.iOS.LocalNotification localNotificationShortTerm;
-	public int minutesBeforeShortTermNotification = 1440; //1 day
+	public static NotificationServicesHandler Instance;
+	bool tokenSent = false;
 
 	void Awake()
 	{
 		DontDestroyOnLoad(gameObject);
+		Instance = this;
 	}
 
 	void Start ()
 	{
-		NotificationServices.CancelAllLocalNotifications();
-		NotificationServices.ClearLocalNotifications();
-		tokenSent = false;
  		NotificationServices.RegisterForNotifications( NotificationType.Alert | NotificationType.Badge | NotificationType.Sound, true);
-		prepareLocalNotification();
+		clearNotifications();
+	}
+
+	void clearNotifications()
+	{
+		for( int i = 0; i < UnityEngine.iOS.NotificationServices.localNotificationCount; i++ )
+		{
+			NotificationServices.GetLocalNotification( i ).applicationIconBadgeNumber = -1;
+		}
+		NotificationServices.ClearLocalNotifications();
+		NotificationServices.ClearRemoteNotifications(); //Apparently you need to do both clears for the badge counter to reset
 	}
 	
-	void prepareLocalNotification()
+	public void scheduleFreeLootBoxNotification( int inMinutes )
 	{
+		//Before rescheduling another notification, cancel the existing ones first
+		NotificationServices.CancelAllLocalNotifications();
+
 		//IMPORTANT: when you don't set the time zone, your notification is scheduled for GMT time.
 		//Also, TimeZoneInfo.Local throws an exception in Unity. This is a known bug.
-		//I was not able to change the alertlaunchImage
-		localNotificationShortTerm = new UnityEngine.iOS.LocalNotification();
-		localNotificationShortTerm.alertAction = LocalizationManager.Instance.getText("LOCAL_NOTIFICATION_SHORT_TERM_ALERT_ACTION");
-		string alertBody = LocalizationManager.Instance.getText("LOCAL_NOTIFICATION_SHORT_TERM_ALERT_BODY");
-		localNotificationShortTerm.alertBody = alertBody;
-		localNotificationShortTerm.applicationIconBadgeNumber = 1;
-		localNotificationShortTerm.hasAction = true;
-		localNotificationShortTerm.soundName = UnityEngine.iOS.LocalNotification.defaultSoundName;
+		//I was not able to change the alertlaunchImage or the sound
+		UnityEngine.iOS.LocalNotification freeLootBoxNotification = new UnityEngine.iOS.LocalNotification();
+		freeLootBoxNotification.alertBody = LocalizationManager.Instance.getText("LOCAL_NOTIFICATION_FREE_LOOT_BOX");
+		freeLootBoxNotification.applicationIconBadgeNumber = 1;
+		freeLootBoxNotification.hasAction = true;
+		freeLootBoxNotification.soundName = UnityEngine.iOS.LocalNotification.defaultSoundName;
+		freeLootBoxNotification.fireDate = DateTime.Now.AddMinutes(inMinutes);
+		NotificationServices.ScheduleLocalNotification(freeLootBoxNotification);
 	}
 
 	void Update ()
 	{
+		//This is for remote notifications
 		if (!tokenSent)
 		{
 			byte[] token = UnityEngine.iOS.NotificationServices.deviceToken;
@@ -53,39 +64,7 @@ public class NotificationServicesHandler : MonoBehaviour {
 				tokenSent = true;
 			}
 		}
-		if (UnityEngine.iOS.NotificationServices.localNotificationCount > 0)
-		{
-			//Reset the badge number first
-			NotificationServices.GetLocalNotification( 0 ).applicationIconBadgeNumber = -1;
-			NotificationServices.ClearLocalNotifications();
-		}
 	}
 
-	//If the device is paused by pressing the Home button, because of a low battery warning or a phone call, the game will automatically display the pause menu.
-	void OnApplicationPause( bool pauseStatus )
-	{
-
-		if( pauseStatus )
-		{
-			//App is suspended. Schedule a local notification, but only if the player has not finished the game
-			if( !LevelManager.Instance.getPlayerFinishedTheGame() && localNotificationShortTerm != null )
-			{
-				localNotificationShortTerm.fireDate = DateTime.Now.AddMinutes(minutesBeforeShortTermNotification);
-				NotificationServices.ScheduleLocalNotification(localNotificationShortTerm);
-			}
-		}
-		else
-		{
-			//App is active. Cancel all notifications
-			NotificationServices.CancelAllLocalNotifications();
-		}
-	}
-
-	public void sendTestLocalNotification()
-	{
-		// schedule notification to be delivered in 12 seconds
-		localNotificationShortTerm.fireDate = DateTime.Now.AddSeconds(12);
-		NotificationServices.ScheduleLocalNotification(localNotificationShortTerm);
-	}
 
 }

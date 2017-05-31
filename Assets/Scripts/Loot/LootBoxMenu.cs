@@ -33,6 +33,8 @@ public class LootBoxMenu : MonoBehaviour {
 	{
 		lootBox.print();
 		GameManager.Instance.playerProfile.setLastFreeLootBoxOpenedTime( DateTime.UtcNow );
+		//Schedule a local notification to remind the player of when his next free loot box will be available
+		NotificationServicesHandler.Instance.scheduleFreeLootBoxNotification(240);
 		StartCoroutine( giveLootBoxContent( lootBox ) );
 	}
 

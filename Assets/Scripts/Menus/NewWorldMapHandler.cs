@@ -426,7 +426,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 		UISoundManager.uiSoundManager.playButtonClick();
 		//postLevelPopupPanel.GetComponent<PostLevelPopup>().showPostLevelPopup(levelData);
 		GameObject CoreManagers = GameObject.FindGameObjectWithTag("CoreManagers");
-		CoreManagers.GetComponent<NotificationServicesHandler>().sendTestLocalNotification();
 		PlayerStatsManager.Instance.resetDeathInEpisodes();
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		PlayerStatsManager.Instance.resetTreasureKeysFound();
