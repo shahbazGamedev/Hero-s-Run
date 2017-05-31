@@ -214,6 +214,25 @@ public class MiniMap : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// This method sends a reflectMessageRPC message. Once this message is received, two messages will be displayed on the HUD.
+	/// The first message will say that this player reflected this card to the caster.
+	/// The second message will say that the caster got affected by his own spell.
+	/// </summary>
+	/// <param name="casterPhotonViewID">Caster photon view ID.</param>
+	/// <param name="cardName">Card name.</param>
+	/// <param name="playerWithReflectPhotonViewID">Player with reflect photon view ID.</param>
+	public void reflectMessage( int casterPhotonViewID, int cardName, int playerWithReflectPhotonViewID )
+	{
+		GetComponent<PhotonView>().RPC( "reflectMessageRPC", PhotonTargets.All, casterPhotonViewID, cardName, playerWithReflectPhotonViewID );
+	}
+
+	[PunRPC]
+	void reflectMessageRPC( int casterPhotonViewID, int cardName, int playerWithReflectPhotonViewID )
+	{
+		print("Minimap-reflectMessageRPC: casterPhotonViewID: " + casterPhotonViewID + " cardName " + (CardName)cardName + " playerWithReflectPhotonViewID: " + playerWithReflectPhotonViewID );
+	}
+
 	public void hideSecondaryIcon( GameObject go )
 	{
 		RadarObject ro = radarObjects.FirstOrDefault(radarObject => radarObject.owner == go);

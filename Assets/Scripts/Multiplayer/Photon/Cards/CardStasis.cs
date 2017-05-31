@@ -35,6 +35,8 @@ public class CardStasis : Card {
 		{
 			if( nearestTarget.GetComponent<PlayerSpell>().isReflectEnabled() )
 			{
+				MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, nearestTarget.GetComponent<PhotonView>().viewID );
+
 				//The target has the Reflect spell active.
 				//Reflect to caster
 				nearestTarget = playerTransform;
