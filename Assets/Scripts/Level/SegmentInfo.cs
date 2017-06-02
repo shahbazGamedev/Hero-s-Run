@@ -20,6 +20,7 @@ public class SegmentInfo : MonoBehaviour {
 	public int tileIndex = -1;
 	public int tileDepth = 1;
 	public TileSubType tileSubType = TileSubType.Straight;
+	public Sprite tileSprite;
 
 	[Header("Coin Generator")]
 	[Tooltip("The name of the coin prefab to use. It should be located in the Resources/Level/Props/ folder.")]

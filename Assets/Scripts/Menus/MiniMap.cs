@@ -27,17 +27,20 @@ public class MiniMap : MonoBehaviour {
 	float mapScale = 1f;
 	Transform player;
 	List<RadarObject> radarObjects = new List<RadarObject>();
-	[SerializeField] Image playerRadarImage;
+	[SerializeField] Image playerMinimapPrefab;
+	[SerializeField] Image tileMinimapPrefab;
 	[SerializeField] Sprite playerDeadRadarSprite;
 	[SerializeField] TextMeshProUGUI cardFeed; //Used to display the last card played, such as 'Bob played Lightning'
-	const float MAX_DISTANCE = 72f;
+	const float MAX_DISTANCE = 78f;
 	const float CARD_FEED_TTL = 4f; //in seconds
 	float cardFeedTimeOfLastEntry;
-
+	Queue<RadarObject> tileQueue = new Queue<RadarObject>();
+	float tileSize = 0;
 	// Use this for initialization
 	void Awake () {
 	
 		Instance = this;
+		tileSize = LevelManager.Instance.getSelectedCircuit().tileSize;
 	}
 
 	// Use this for initialization
@@ -48,7 +51,7 @@ public class MiniMap : MonoBehaviour {
 	
 	public void registerRadarObject( GameObject go, Sprite minimapSprite, PlayerControl pc = null )
 	{
-		Image image = Instantiate( playerRadarImage );
+		Image image = Instantiate( playerMinimapPrefab );
 		Image secondaryImage = image.transform.FindChild("Secondary Image").GetComponent<Image>();
 		image.transform.SetParent( transform );
 		image.rectTransform.localScale = Vector3.one;
@@ -56,10 +59,82 @@ public class MiniMap : MonoBehaviour {
 		radarObjects.Add( new RadarObject(){ owner = go, icon = image, playerControl = pc, secondaryIcon = secondaryImage } );
 	}
 
+	void registerTileObject( GameObject go, Sprite minimapSprite, float tileYRotation )
+	{
+		Image image = Instantiate( tileMinimapPrefab );
+		Image secondaryImage = image.transform.FindChild("Secondary Image").GetComponent<Image>();
+		image.transform.SetParent( transform );
+		image.rectTransform.localScale = Vector3.one;
+		image.sprite = minimapSprite;
+		RadarObject ro = new RadarObject(){ owner = go, icon = image, playerControl = null, secondaryIcon = secondaryImage };
+		ro.icon.GetComponent<RectTransform>().localEulerAngles = new Vector3( 0, 0, -tileYRotation );
+		radarObjects.Add( ro );
+		tileQueue.Enqueue( ro );
+	}
+
 	public void removeRadarObject( GameObject go )
 	{
 		RadarObject ro = radarObjects.FirstOrDefault(radarObject => radarObject.owner == go);
 		if(ro != null) radarObjects.Remove(ro);
+	}
+
+	public void updateTopmostTile( Transform newTile )
+	{
+		//Dequeue
+		RadarObject bottomMostTile = tileQueue.Dequeue();
+
+		//Update the tile object
+		bottomMostTile.owner = newTile.gameObject;
+
+		//Adjust the image size based on the tile depth.
+		//A tile depth of 1 is 50 meters, a depth of 2, is a 100 meters, etc.
+		//One pixel is one meter
+		adjustTileImageSize( bottomMostTile.icon.GetComponent<RectTransform>(), newTile );
+
+		//Update sprite
+		bottomMostTile.icon.sprite = newTile.GetComponent<SegmentInfo>().tileSprite;
+
+		//Update rotation
+		bottomMostTile.icon.GetComponent<RectTransform>().localEulerAngles = new Vector3( 0, 0, -newTile.eulerAngles.y );
+
+		//Enqueue
+		tileQueue.Enqueue(bottomMostTile);
+	}
+
+	private void adjustTileImageSize( RectTransform tileImage, Transform newTile )
+	{
+		float tileRotationY = Mathf.Floor ( newTile.eulerAngles.y );
+		//Tile is facing straight. Adjust height.
+		if( tileRotationY == 0 )
+		{
+			tileImage.sizeDelta = new Vector2( tileSize, newTile.GetComponent<SegmentInfo>().tileDepth * tileSize );
+		}
+		//Tile is facing right.
+		else if( tileRotationY == 90f || tileRotationY == -270f )
+		{
+			tileImage.sizeDelta = new Vector2( newTile.GetComponent<SegmentInfo>().tileDepth * tileSize, tileSize );
+		}
+		//Tile is facing left.
+		else if( tileRotationY == -90f || tileRotationY == 270f )
+		{
+			tileImage.sizeDelta = new Vector2( newTile.GetComponent<SegmentInfo>().tileDepth * tileSize, tileSize );
+		}
+	}
+
+	public void inititalizedStartTiles( Transform[] firstThreeTiles )
+	{
+		//top of queue positioned at top of minimap
+		registerTileObject( firstThreeTiles[2].gameObject, firstThreeTiles[2].GetComponent<SegmentInfo>().tileSprite, firstThreeTiles[2].eulerAngles.y );
+		registerTileObject( firstThreeTiles[1].gameObject, firstThreeTiles[1].GetComponent<SegmentInfo>().tileSprite, firstThreeTiles[1].eulerAngles.y );
+		registerTileObject( firstThreeTiles[0].gameObject, firstThreeTiles[0].GetComponent<SegmentInfo>().tileSprite, firstThreeTiles[0].eulerAngles.y );
+		
+		GameObject tileMinusOne = new GameObject();
+		tileMinusOne.transform.position = new Vector3( 0, 0, -50f );
+		registerTileObject( tileMinusOne, firstThreeTiles[0].GetComponent<SegmentInfo>().tileSprite, firstThreeTiles[0].eulerAngles.y );
+
+		GameObject tileMinusTwo = new GameObject();
+		tileMinusTwo.transform.position = new Vector3( 0, 0, -100f );
+		registerTileObject( tileMinusTwo, firstThreeTiles[0].GetComponent<SegmentInfo>().tileSprite, firstThreeTiles[0].eulerAngles.y );
 	}
 
 	public void displayMessage( string heroName, CardName cardName )
