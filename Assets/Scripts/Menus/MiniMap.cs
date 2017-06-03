@@ -31,9 +31,11 @@ public class MiniMap : MonoBehaviour {
 	[SerializeField] Image tileMinimapPrefab;
 	[SerializeField] Sprite playerDeadRadarSprite;
 	[SerializeField] TextMeshProUGUI cardFeed; //Used to display the last card played, such as 'Bob played Lightning'
+	[SerializeField] TextMeshProUGUI cardFeed2; //Used to display reflected cards
 	const float MAX_DISTANCE = 78f;
 	const float CARD_FEED_TTL = 4f; //in seconds
 	float cardFeedTimeOfLastEntry;
+	float cardFeedTimeOfLastEntry2;
 	Queue<RadarObject> tileQueue = new Queue<RadarObject>();
 	float tileSize = 0;
 	// Use this for initialization
@@ -159,6 +161,12 @@ public class MiniMap : MonoBehaviour {
 	{
 		cardFeed.text = message;
 		cardFeedTimeOfLastEntry = Time.time;
+	}
+
+	void addMessage2( string message )
+	{
+		cardFeed2.text = message;
+		cardFeedTimeOfLastEntry2 = Time.time;
 	}
 
 	// Update is called once per frame
@@ -305,7 +313,12 @@ public class MiniMap : MonoBehaviour {
 	[PunRPC]
 	void reflectMessageRPC( int casterPhotonViewID, int cardName, int playerWithReflectPhotonViewID )
 	{
+		if( cardFeed2 == null ) return;
 		print("Minimap-reflectMessageRPC: casterPhotonViewID: " + casterPhotonViewID + " cardName " + (CardName)cardName + " playerWithReflectPhotonViewID: " + playerWithReflectPhotonViewID );
+		string nameOfPlayerWithReflect = getPlayerControl( playerWithReflectPhotonViewID ).name;
+		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + ((CardName)cardName).ToString().ToUpper() );
+		string nameOfPlayerWhoCastSpell = getPlayerControl( casterPhotonViewID ).name;
+		addMessage2( string.Format( "{0} reflected {1} activated by {2}", nameOfPlayerWithReflect, localizedCardName, nameOfPlayerWhoCastSpell ) );
 	}
 
 	public void hideSecondaryIcon( GameObject go )
