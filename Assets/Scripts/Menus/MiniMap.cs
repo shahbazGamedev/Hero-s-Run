@@ -82,6 +82,7 @@ public class MiniMap : MonoBehaviour {
 
 	public void updateTopmostTile( Transform newTile )
 	{
+		return; //code not finished
 		//Dequeue
 		RadarObject bottomMostTile = tileQueue.Dequeue();
 
@@ -125,6 +126,8 @@ public class MiniMap : MonoBehaviour {
 
 	public void inititalizedStartTiles( Transform[] firstThreeTiles )
 	{
+		return; //code not finished
+
 		//top of queue positioned at top of minimap
 		registerTileObject( firstThreeTiles[2].gameObject, firstThreeTiles[2].GetComponent<SegmentInfo>().tileSprite, firstThreeTiles[2].eulerAngles.y );
 		registerTileObject( firstThreeTiles[1].gameObject, firstThreeTiles[1].GetComponent<SegmentInfo>().tileSprite, firstThreeTiles[1].eulerAngles.y );

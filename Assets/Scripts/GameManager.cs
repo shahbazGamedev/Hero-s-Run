@@ -56,7 +56,8 @@ public enum PlayMode {
 	PlayWithFriends = 2,
 	PlayAgainstEnemy = 3,
 	PlayAlone = 4,
-	PlayThreePlayers = 5
+	PlayThreePlayers = 5,
+	PlayAgainstTwoEnemies = 6
 
 }
 
@@ -128,6 +129,7 @@ public class GameManager {
 		Debug.Log("GameManager-setPlayMode: new mode is " + playMode );
 		switch ( playMode )
 		{
+			case PlayMode.PlayAgainstTwoEnemies:
 			case PlayMode.PlayAgainstEnemy:
 				LevelManager.Instance.setNumberOfPlayersRequired( 1 );
 			break;
@@ -151,7 +153,7 @@ public class GameManager {
 		// we don't join the lobby. There is no need to join a lobby to get the list of rooms.
 		PhotonNetwork.autoJoinLobby = false;
 		//Are we playing online or doing an offline PvE/solo match?
-		if( getPlayMode() == PlayMode.PlayAgainstEnemy || getPlayMode() == PlayMode.PlayAlone )
+		if( getPlayMode() == PlayMode.PlayAgainstEnemy || getPlayMode() == PlayMode.PlayAgainstTwoEnemies || getPlayMode() == PlayMode.PlayAlone )
 		{
 			//PvE is an offline mode. We will not connect. We will also set Photon to offline.
 			if( PhotonNetwork.connected ) PhotonNetwork.Disconnect();

@@ -37,6 +37,7 @@ public class LevelManager {
 	byte numberOfPlayersRequired;
 	private LevelData.MultiplayerInfo selectedCircuit; //the race track selected.
 	public int selectedBotHeroIndex; //index for botHeroCharacterList in HeroManager. Used when in the PlayAgainstEnemy mode.
+	public int selectedBotHeroIndex2; //index for botHeroCharacterList in HeroManager. Used when in the PlayAgainstTwoEnemies mode.
 	public ChatMessageHandler.MatchData matchData;
 	public float distanceTravelled = 0; //See PlayerRace. This value is displayed in the HUD.
 	//for debugging

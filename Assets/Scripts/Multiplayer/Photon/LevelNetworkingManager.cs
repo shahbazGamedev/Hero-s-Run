@@ -57,6 +57,11 @@ public class LevelNetworkingManager : PunBehaviour
 		{
 			PhotonNetwork.InstantiateSceneObject(this.botPrefab.name, rightStartPosition, Quaternion.identity, 0, null );
 		}
+		else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoEnemies )
+		{
+			PhotonNetwork.InstantiateSceneObject(this.botPrefab.name, leftStartPosition, Quaternion.identity, 0, null );
+			PhotonNetwork.InstantiateSceneObject(this.botPrefab.name, rightStartPosition, Quaternion.identity, 0, null );
+		}
 	}
 
 	//Called when the local player left the room. We need to load the matchmaking scene.

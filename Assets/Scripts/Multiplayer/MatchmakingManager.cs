@@ -111,6 +111,7 @@ public class MatchmakingManager : MonoBehaviour {
 				setRemotePlayerData( 1, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
 			break;
 
+			case PlayMode.PlayAgainstTwoEnemies:
 			case PlayMode.PlayThreePlayers:
 				threePlayerPanel.SetActive( true );
 				//Use default values for remote player portraits until they connect
@@ -141,6 +142,7 @@ public class MatchmakingManager : MonoBehaviour {
 				playerIcon2P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 			break;
 
+			case PlayMode.PlayAgainstTwoEnemies:
 			case PlayMode.PlayThreePlayers:
 				playerName3P.text = GameManager.Instance.playerProfile.getUserName();
 				playerIcon3P.GetComponent<Outline>().effectColor = frameColor;
@@ -173,6 +175,7 @@ public class MatchmakingManager : MonoBehaviour {
 				remotePlayer1Icon2P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( iconId ).icon;
 			break;
 
+			case PlayMode.PlayAgainstTwoEnemies:
 			case PlayMode.PlayThreePlayers:
 				if( index == 1 )
 				{

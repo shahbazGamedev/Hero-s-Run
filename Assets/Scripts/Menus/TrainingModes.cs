@@ -29,6 +29,14 @@ public class TrainingModes : MonoBehaviour {
 		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
 	}
 
+	public void OnClickPlayAgainstTwoAI()
+	{
+		GameManager.Instance.setPlayMode(PlayMode.PlayAgainstTwoEnemies);
+		//The race track is chosen by the player.
+		//Open circuit selection.
+		StartCoroutine( loadScene(GameScenes.CircuitSelection) );
+	}
+
 	IEnumerator loadScene(GameScenes value)
 	{
 		if( !levelLoading )

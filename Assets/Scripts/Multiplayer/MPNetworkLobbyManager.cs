@@ -58,14 +58,21 @@ public class MPNetworkLobbyManager : PunBehaviour
 		Debug.Log("startMatch " + GameManager.Instance.getPlayMode() );
 
 		//Does the selected play mode require Internet?
-		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstEnemy || GameManager.Instance.getPlayMode() == PlayMode.PlayAlone )
+		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstEnemy || GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoEnemies || GameManager.Instance.getPlayMode() == PlayMode.PlayAlone )
 		{
-			//PlayAgainstEnemy and PlayAlone are offline modes. We do not need to check that we have access to the Internet.
+			//PlayAgainstEnemy, PlayAgainstTwoEnemies and PlayAlone are offline modes. We do not need to check that we have access to the Internet.
 			connecting = true;
 			//Do not call PhotonNetwork.ConnectUsingSettings(...) as it does not make sense when playing offline.
 			//The method tryToJoinRoom will behave as expected even when not connected.
 			tryToJoinRoom();
-			setUpBot();
+			if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstEnemy )
+			{
+				setUpBot();
+			}
+			else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoEnemies )
+			{
+				setUpBots();
+			}
 		}
 		else
 		{
@@ -178,6 +185,10 @@ public class MPNetworkLobbyManager : PunBehaviour
 				matchmakingManager.setConnectionProgress( "Setting up Player vs. AI race" );   
 			break;
 
+			case PlayMode.PlayAgainstTwoEnemies:
+				matchmakingManager.setConnectionProgress( "Setting up Player vs. Two AI race" );   
+			break;
+
 			case PlayMode.PlayAlone:
 				matchmakingManager.setConnectionProgress( "Playing alone" );   
 			break;
@@ -241,6 +252,15 @@ public class MPNetworkLobbyManager : PunBehaviour
 				//Fake searching for a player for a few seconds ...
 				Invoke( "displayBotInfo", DELAY_BEFORE_DISPLAY_BOT );
 				//Note: In this case, LoadArena() gets called by displayBotInfo
+			break;
+
+			case PlayMode.PlayAgainstTwoEnemies:
+				//PlayerPosition 3 is the center lane.
+				playerCustomProperties.Add("PlayerPosition", 3 );
+				PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
+				//Fake searching for players for a few seconds ...
+				Invoke( "displayBotsInfoPart1", DELAY_BEFORE_DISPLAY_BOT );
+				//Note: In this case, LoadArena() gets called by displayBotsInfoPart2
 			break;
 
 			case PlayMode.PlayAlone:
@@ -338,12 +358,37 @@ public class MPNetworkLobbyManager : PunBehaviour
 		LevelManager.Instance.selectedBotHeroIndex = botHeroIndex;
 	}
 
+	void setUpBots()
+	{
+		LevelManager.Instance.selectedBotHeroIndex = 0;
+		LevelManager.Instance.selectedBotHeroIndex2 = 1;
+	}
+
 	void displayBotInfo()
 	{
 		matchmakingManager.disableExitButton();
-		matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedCircuit().circuitInfo.circuitTextID ) + " ..." ); 
+		matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedCircuit().circuitInfo.circuitTextID ) + " ..." );
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
 		matchmakingManager.setRemotePlayerData( 1, botHero.userName, botHero.level, botHero.playerIcon );
+		LoadArena();
+	}
+
+	void displayBotsInfoPart1()
+	{
+		matchmakingManager.disableExitButton();
+		matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedCircuit().circuitInfo.circuitTextID ) + " ..." );
+
+		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
+		matchmakingManager.setRemotePlayerData( 1, botHero.userName, botHero.level, botHero.playerIcon );
+
+		Invoke("displayBotsInfoPart2", Random.Range(0.4f, 0.9f ) );
+	}
+
+	void displayBotsInfoPart2()
+	{
+		HeroManager.BotHeroCharacter botHero2 = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex2 );
+		matchmakingManager.setRemotePlayerData( 2, botHero2.userName, botHero2.level, botHero2.playerIcon );
+
 		LoadArena();
 	}
 
