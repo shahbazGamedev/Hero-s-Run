@@ -55,12 +55,19 @@ public class LevelNetworkingManager : PunBehaviour
 		//In the play against enemy mode, the player plays offline against a bot.
 		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstEnemy )
 		{
-			PhotonNetwork.InstantiateSceneObject(this.botPrefab.name, rightStartPosition, Quaternion.identity, 0, null );
+			object[] dataBot1 = new object[1];
+			dataBot1[0] = LevelManager.Instance.selectedBotHeroIndex;
+			PhotonNetwork.InstantiateSceneObject(this.botPrefab.name, rightStartPosition, Quaternion.identity, 0, dataBot1 );
 		}
 		else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoEnemies )
 		{
-			PhotonNetwork.InstantiateSceneObject(this.botPrefab.name, leftStartPosition, Quaternion.identity, 0, null );
-			PhotonNetwork.InstantiateSceneObject(this.botPrefab.name, rightStartPosition, Quaternion.identity, 0, null );
+			object[] dataBot1 = new object[1];
+			dataBot1[0] =  LevelManager.Instance.selectedBotHeroIndex;
+			PhotonNetwork.InstantiateSceneObject(this.botPrefab.name, leftStartPosition, Quaternion.identity, 0, dataBot1 );
+
+			object[] dataBot2 = new object[1];
+			dataBot2[0] =  LevelManager.Instance.selectedBotHeroIndex2;
+			PhotonNetwork.InstantiateSceneObject(this.botPrefab.name, rightStartPosition, Quaternion.identity, 0, dataBot2 );
 		}
 	}
 

@@ -1730,7 +1730,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		else
 		{
 			//We're a bot
-			heroName = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex ).name;
+			heroName = 	GetComponent<PlayerAI>().botHero.userName;
 		}
 		this.photonView.RPC("playerResurrectedRPC", PhotonTargets.All, heroName );
 

@@ -752,7 +752,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		playerTileIndex++;
 		if( playerTileIndex + 1 < worldRoadSegments.Count ) MiniMap.Instance.updateTopmostTile( worldRoadSegments[playerTileIndex+1].transform );
 
-		print ("tileEntranceCrossed: player entered " + currentTile.name + " and the player tile index is: " + playerTileIndex );
+		//print ("tileEntranceCrossed: player entered " + currentTile.name + " and the player tile index is: " + playerTileIndex );
 
 		//If in endless runner mode, each time we enter a new tile, add a new tile at the end
 		if( GameManager.Instance.getGameMode() == GameMode.Endless &&  !GameManager.Instance.isMultiplayer() )

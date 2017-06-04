@@ -21,7 +21,7 @@ public class PlayerVoiceOvers : MonoBehaviour {
 		else
 		{
 			//We're a bot
-			sex = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex ).sex;
+			sex = GetComponent<PlayerAI>().botHero.sex;
 		}
 		voiceOverList = VoiceOverManager.Instance.getVoiceOverList( sex );
 		

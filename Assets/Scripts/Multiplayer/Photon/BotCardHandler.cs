@@ -26,8 +26,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 		//Get a reference to the CardHandler
 		cardHandler = GameObject.FindGameObjectWithTag("Card Handler").GetComponent<CardHandler>();
 
-		//Get and store the bot that was selected in MPNetworkLobbyManager and saved in LevelManager.
-		botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
+		botHero = GetComponent<PlayerAI>().botHero;
 
 		//Get and store the bot skill data for that hero.
 		botSkillData = HeroManager.Instance.getBotSkillData( botHero.skillLevel );
@@ -171,7 +170,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 		PlayerDeck.PlayerCardData botCardData = getCardByName( cardName );
 		if( botCardData != null )
 		{
-			cardHandler.activateCard( this.photonView, cardName, botHero.name, botCardData.level );
+			cardHandler.activateCard( this.photonView, cardName, botHero.userName, botCardData.level );
 		}
 	}
 

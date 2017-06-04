@@ -99,8 +99,7 @@ public class PlayerVisuals : Photon.PunBehaviour {
 	//We are a bot.
 	void instantiateBot( PhotonMessageInfo info )
 	{
-		//Get the bot that was selected in MPNetworkLobbyManager and saved in LevelManager.
-		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
+		HeroManager.BotHeroCharacter botHero = GetComponent<PlayerAI>().botHero;
 
 		//Name our game object
 		gameObject.name = botHero.userName;

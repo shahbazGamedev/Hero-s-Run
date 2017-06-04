@@ -238,7 +238,7 @@ public class PlayerRace : Photon.PunBehaviour
 			else
 			{
 				//We're a bot
-				heroName = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex ).name;
+				heroName = 	GetComponent<PlayerAI>().botHero.userName;
 			}
 			MiniMap.Instance.displayMessage( string.Format( tookTheLeadString, heroName ) );
 			GetComponent<PlayerVoiceOvers>().playVoiceOver(VoiceOverType.VO_Took_Lead);

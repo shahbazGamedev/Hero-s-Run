@@ -26,6 +26,8 @@ public class PlayerAI : Photon.PunBehaviour {
 	PlayerControl playerControl;
 	PlayerInput playerInput;
 	PlayerRace playerRace;
+	
+	public HeroManager.BotHeroCharacter botHero;
 
 	// Use this for initialization
 	void Awake ()
@@ -34,8 +36,11 @@ public class PlayerAI : Photon.PunBehaviour {
 		playerInput = GetComponent<PlayerInput>();
 		playerRace = GetComponent<PlayerRace>();
 
-		//Get the bot that was selected in MPNetworkLobbyManager and saved in LevelManager.
-		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
+		//Get the selected bot index specified by LevelNetworkingManager.
+		object[] botData = gameObject.GetPhotonView ().instantiationData;
+		int selectedBotHeroIndex = (int) botData[0];
+		//Save the bot hero character as other classes need it
+		botHero = HeroManager.Instance.getBotHeroCharacter( selectedBotHeroIndex );
 
 		//Get the bot skill data for that hero.
 		HeroManager.BotSkillData botSkillData = HeroManager.Instance.getBotSkillData( botHero.skillLevel );
