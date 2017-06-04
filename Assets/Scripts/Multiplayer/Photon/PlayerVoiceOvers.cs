@@ -30,24 +30,24 @@ public class PlayerVoiceOvers : MonoBehaviour {
 	[PunRPC]
 	void activateCardVoiceOverRPC( int name )
     {
-		playVoiceOver( VoiceOverType.VO_Spell, (CardName) name );
+		playVoiceOver( VoiceOverType.VO_Casting_Spell, (CardName) name );
 	}
 
-	public bool isSpellVoiceOverAvailable( CardName card )
+	public bool isSpellVoiceOverAvailable( CardName card, bool playOnActivationOnly = true )
 	{
 		//Do we have one or more VOs that match?
-		List<VoiceOverManager.VoiceOverData> vodList = voiceOverList.FindAll(vo => vo.type == VoiceOverType.VO_Spell && vo.cardName == card && vo.playOnActivationOnly == true );
+		List<VoiceOverManager.VoiceOverData> vodList = voiceOverList.FindAll(vo => vo.type == VoiceOverType.VO_Casting_Spell && vo.cardName == card && vo.playOnActivationOnly == playOnActivationOnly );
 
 		return vodList.Count > 0;
 	}
 
-	public void playVoiceOver( VoiceOverType voiceOverType, CardName card = CardName.None, bool activating = true )
+	public void playVoiceOver( VoiceOverType voiceOverType, CardName card = CardName.None )
 	{
 		//Don't interrupt the current VO for another one.
 		if( voiceOverAudioSource.isPlaying ) return;
 
 		//Do we have one or more VOs that match?
-		List<VoiceOverManager.VoiceOverData> vodList = voiceOverList.FindAll(vo => ( vo.type == voiceOverType && vo.cardName == card && vo.playOnActivationOnly == activating ) );
+		List<VoiceOverManager.VoiceOverData> vodList = voiceOverList.FindAll(vo => ( vo.type == voiceOverType && vo.cardName == card ) );
 
 		if( vodList.Count > 0 )
 		{

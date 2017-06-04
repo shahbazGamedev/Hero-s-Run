@@ -66,7 +66,7 @@ public class PlayerSpell : PunBehaviour {
 
 	IEnumerator shrink( Vector3 endScale, float shrinkDuration, float spellDuration )
 	{
-		playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Spell, CardName.Shrink, false );
+		playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Affected_by_Spell, CardName.Shrink );
 		playerControl.setAllowRunSpeedToIncrease( false );
 		runSpeedBeforeSpell = playerControl.getSpeed();
 

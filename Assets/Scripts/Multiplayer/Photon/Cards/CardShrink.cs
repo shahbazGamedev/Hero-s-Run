@@ -30,11 +30,19 @@ public class CardShrink : Card {
 		{
 			if( nearestTarget.GetComponent<PlayerSpell>().isReflectEnabled() )
 			{
+				MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, nearestTarget.GetComponent<PhotonView>().viewID );
+
 				//The target has the Reflect spell active.
 				//Reflect to caster
 				nearestTarget = playerTransform;
 			
 			}
+
+			//1) We do have a target.
+			//2) The target is not the caster.
+			//3) Play an appropriate VO such as "Gotcha!" for Stasis.
+			if( nearestTarget != playerTransform ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
+
 			nearestTarget.GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.All, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
 		}
 		else

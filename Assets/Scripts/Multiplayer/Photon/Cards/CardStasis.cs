@@ -42,6 +42,12 @@ public class CardStasis : Card {
 				nearestTarget = playerTransform;
 			
 			}
+
+			//1) We do have a target.
+			//2) The target is not the caster.
+			//3) Play an appropriate VO such as "Gotcha!" for Stasis.
+			if( nearestTarget != playerTransform ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
+
 			object[] data = new object[2];
 	
 			//We will need to find a reference to the player we are targeting

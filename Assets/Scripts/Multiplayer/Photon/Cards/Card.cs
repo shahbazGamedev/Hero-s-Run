@@ -181,4 +181,11 @@ public class Card : Photon.PunBehaviour {
 		return false;
 	}
 
+	#region Voice Overs activated by Cards
+	public void playActivateCardVoiceOver( PhotonView casterPhotonView )
+	{
+		//Play the activate card voice over but only if there is a VO available to play. We don't want to send RPCs for nothing and waste bandwidth.
+		if( casterPhotonView.GetComponent<PlayerVoiceOvers>().isSpellVoiceOverAvailable( cardName, false ) ) casterPhotonView.RPC( "activateCardVoiceOverRPC", PhotonTargets.All, (int)cardName );
+	}
+	#endregion
 }
