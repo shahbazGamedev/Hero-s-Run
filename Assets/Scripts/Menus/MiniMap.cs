@@ -180,6 +180,10 @@ public class MiniMap : MonoBehaviour {
 		{
 			cardFeed.text = string.Empty;
 		}
+		if( Time.time - cardFeedTimeOfLastEntry2 > CARD_FEED_TTL )
+		{
+			cardFeed2.text = string.Empty;
+		}
 	}
 
 	public void changeColorOfRadarObject( PlayerControl pc, Color newColor )

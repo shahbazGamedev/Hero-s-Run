@@ -828,11 +828,11 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			onTileActivation(i);
 		}
 		//Update the minimap
-		Transform[] firstThreeTiles = new Transform[3];
-		firstThreeTiles[0] = worldRoadSegments[startIndex].transform;
-		firstThreeTiles[1] = worldRoadSegments[startIndex + 1 ].transform;
-		firstThreeTiles[2] = worldRoadSegments[startIndex + 2 ].transform;
-		MiniMap.Instance.inititalizedStartTiles( firstThreeTiles );
+		//Transform[] firstThreeTiles = new Transform[3];
+		//firstThreeTiles[0] = worldRoadSegments[startIndex].transform;
+		//firstThreeTiles[1] = worldRoadSegments[startIndex + 1 ].transform;
+		//firstThreeTiles[2] = worldRoadSegments[startIndex + 2 ].transform;
+		//MiniMap.Instance.inititalizedStartTiles( firstThreeTiles );
 	}
 
 	public void activateTilesAfterTeleport()
