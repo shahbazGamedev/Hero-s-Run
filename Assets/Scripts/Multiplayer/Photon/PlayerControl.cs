@@ -3,6 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.ImageEffects;
 
+public enum DeathType {
+		Alive = 0,
+		Obstacle = 1,
+		Cliff = 2,
+		Flame = 3,
+		Trap = 4,
+		Enemy = 5,
+		Water = 6,
+		Turn = 7,
+		Lava = 8,
+		Fireball = 9,
+		Zombie = 10,
+		VortexTrap = 11,
+		MagicGate = 12,
+		SpecialFall = 13,
+		GreatFall = 14,
+		FallForward = 15
+}
+
+public enum PlayerCharacterState {
+	None = -1,
+	Idle = 0,
+	SideMove = 1,
+	Sliding = 2,
+	Running = 3,
+	Jumping = 4,
+	Dying = 5,
+	Stumbling = 6,
+	Winning = 7,
+	Flying = 8,
+	StartRunning = 9,
+	Falling = 10,
+	Turning = 11,
+	Turning_and_sliding = 12,
+	Ziplining = 13
+}
+
 public class PlayerControl : Photon.PunBehaviour {
 
 	#region Components cached for performance 	
