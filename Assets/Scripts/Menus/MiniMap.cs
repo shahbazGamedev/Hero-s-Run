@@ -34,6 +34,7 @@ public class MiniMap : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI cardFeed2; //Used to display reflected cards
 	const float MAX_DISTANCE = 78f;
 	const float CARD_FEED_TTL = 4f; //in seconds
+	const float CARD_FEED_TTL2 = 7f; //in seconds
 	float cardFeedTimeOfLastEntry;
 	float cardFeedTimeOfLastEntry2;
 	Queue<RadarObject> tileQueue = new Queue<RadarObject>();
@@ -180,7 +181,7 @@ public class MiniMap : MonoBehaviour {
 		{
 			cardFeed.text = string.Empty;
 		}
-		if( Time.time - cardFeedTimeOfLastEntry2 > CARD_FEED_TTL )
+		if( Time.time - cardFeedTimeOfLastEntry2 > CARD_FEED_TTL2 )
 		{
 			cardFeed2.text = string.Empty;
 		}

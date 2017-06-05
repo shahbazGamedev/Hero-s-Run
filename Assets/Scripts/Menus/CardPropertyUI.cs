@@ -88,7 +88,7 @@ public class CardPropertyUI : MonoBehaviour {
 			float previousValue = cd.getCardPropertyValue( cp.type, pcd.level - 1 );
 			float currentValue = cd.getCardPropertyValue( cp.type, pcd.level );
 			float increase = currentValue - previousValue;
-			propertyValue.text = propertyValue.text + "  <color=#1CF26DFF>+" + increase.ToString("N1") + "</color>";
+			propertyValue.text = propertyValue.text + "  <color=#1CF26DFF>+" + increase.ToString("0.##") + "</color>";
 		}
 	}
 }
