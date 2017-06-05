@@ -69,6 +69,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		GameObject go = (GameObject)Instantiate(cardPrefab);
 		go.transform.SetParent(cardPanel,false);
 		Button cardButton = go.GetComponent<Button>();
+		cardButton.name = "Button " + index.ToString();
 		turnRibbonButtonList.Add(cardButton);
 		cardButton.onClick.AddListener(() => OnClickCard( index ) );
 		Image cardImage = go.GetComponent<Image>();
@@ -144,14 +145,15 @@ public class TurnRibbonHandler : MonoBehaviour {
 				//Deduct the mana
 				manaBar.deductMana( playedCard.manaCost );
 		
-				//Play the card effect
-				activateCard( playedCard.name );
 		
 				//Temporarily replace the image on the button that was clicked by a blank image
 				Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
 
 				//Disable the button to avoid multiple clicks
 				buttonOfCardPlayed.interactable = false;
+
+				//Play the card effect
+				activateCard( playedCard.name );
 
 				//When you play the Steal card, it does not get replaced by the card in the Next slot but by the card
 				//you are stealing.
