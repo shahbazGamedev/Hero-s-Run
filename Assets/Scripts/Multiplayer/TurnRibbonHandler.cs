@@ -71,7 +71,6 @@ public class TurnRibbonHandler : MonoBehaviour {
 		Button cardButton = go.GetComponent<Button>();
 		turnRibbonButtonList.Add(cardButton);
 		cardButton.onClick.AddListener(() => OnClickCard( index ) );
-		cardButton.interactable = false;
 		Image cardImage = go.GetComponent<Image>();
 		CardManager.CardData cardData = CardManager.Instance.getCardByName( cardName );
 		cardImage.sprite = cardData.icon;
@@ -114,13 +113,10 @@ public class TurnRibbonHandler : MonoBehaviour {
 				{
 					//We have enough mana to play this card.
 					radialMask.fillAmount = 0;
-					turnRibbonButtonList[i].interactable = true;
 				}
 				else
 				{
-					//We don't have enough mana to play this card. Make it non-interactable.
-					turnRibbonButtonList[i].interactable = false;
-
+					//We don't have enough mana to play this card.
 					float fillAmount = 1f - manaBar.getManaAmount()/turnRibbonList[i].manaCost;
 					if( fillAmount < 0 ) fillAmount = 0;
 					radialMask.fillAmount = fillAmount;
@@ -129,50 +125,59 @@ public class TurnRibbonHandler : MonoBehaviour {
 			else
 			{
 				radialMask.fillAmount = 1f;
-				turnRibbonButtonList[i].interactable = false;
 			}
 		}
 	}
 
 	public void OnClickCard( int indexOfCardPlayed )
 	{
-		//On which card did the player click?
-		CardName cardName = turnRibbonList[indexOfCardPlayed].name;
-
-		//Get data about the card - make sure NOT to modify the card data
-		CardManager.CardData playedCard = CardManager.Instance.getCardByName( cardName );
-
-		//Deduct the mana
-		manaBar.deductMana( playedCard.manaCost );
-
-		//Play the card effect
-		activateCard( playedCard.name );
-
-		//When you play the Steal card, it does not get replaced by the card in the Next slot but by the card
-		//you are stealing.
-		if( cardName != CardName.Steal )
+		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS && playerControl.isPlayerControlEnabled() && !playerSpell.isAffectedByHack() )
 		{
-			//Temporarily replace the image on the button that was clicked by a blank image
-			Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
-			buttonOfCardPlayed.GetComponent<Image>().overrideSprite = blankCardSprite;
-			//Card name text and mana cost text
-			TextMeshProUGUI[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<TextMeshProUGUI>();
-			buttonTexts[0].text = string.Empty;
-			buttonTexts[1].text = string.Empty;
-	
-			//Wait a little before moving the Next Card into the free ribbon slot
-			StartCoroutine( moveNextCardIntoTurnRibbon( indexOfCardPlayed, playedCard ) );
-	
-			//Determine the level of the card since it may be modified by Supercharger.
-			PlayerDeck.PlayerCardData playerCardData = GameManager.Instance.playerDeck.getCardByName( cardName );
-			int level = playerCardData.level;
-			if( playerSpell.isAffectedBySupercharger() )
+			if( manaBar.hasEnoughMana( turnRibbonList[indexOfCardPlayed].manaCost ) )
 			{
-				int maxLevel = CardManager.Instance.getMaxCardLevelForThisRarity( playedCard.rarity );
-				level = Mathf.Min( maxLevel, level + CardSupercharger.SUPERCHARGER_LEVEL_BOOST );
-			}
+				//On which card did the player click?
+				CardName cardName = turnRibbonList[indexOfCardPlayed].name;
+		
+				//Get data about the card - make sure NOT to modify the card data
+				CardManager.CardData playedCard = CardManager.Instance.getCardByName( cardName );
+		
+				//Deduct the mana
+				manaBar.deductMana( playedCard.manaCost );
+		
+				//Play the card effect
+				activateCard( playedCard.name );
+		
+				//Temporarily replace the image on the button that was clicked by a blank image
+				Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
 
-			if( cardPlayedEvent != null ) cardPlayedEvent( cardName, level );
+				//Disable the button to avoid multiple clicks
+				buttonOfCardPlayed.interactable = false;
+
+				//When you play the Steal card, it does not get replaced by the card in the Next slot but by the card
+				//you are stealing.
+				if( cardName != CardName.Steal )
+				{
+					buttonOfCardPlayed.GetComponent<Image>().overrideSprite = blankCardSprite;
+					//Card name text and mana cost text
+					TextMeshProUGUI[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<TextMeshProUGUI>();
+					buttonTexts[0].text = string.Empty;
+					buttonTexts[1].text = string.Empty;
+			
+					//Wait a little before moving the Next Card into the free ribbon slot
+					StartCoroutine( moveNextCardIntoTurnRibbon( indexOfCardPlayed, playedCard ) );
+			
+					//Determine the level of the card since it may be modified by Supercharger.
+					PlayerDeck.PlayerCardData playerCardData = GameManager.Instance.playerDeck.getCardByName( cardName );
+					int level = playerCardData.level;
+					if( playerSpell.isAffectedBySupercharger() )
+					{
+						int maxLevel = CardManager.Instance.getMaxCardLevelForThisRarity( playedCard.rarity );
+						level = Mathf.Min( maxLevel, level + CardSupercharger.SUPERCHARGER_LEVEL_BOOST );
+					}
+		
+					if( cardPlayedEvent != null ) cardPlayedEvent( cardName, level );
+				}
+			}
 		}
 	}
 
@@ -182,6 +187,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 
 		//Replace the image on the button that was clicked by the image of the Next card
 		Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
+		buttonOfCardPlayed.interactable = true;
 		buttonOfCardPlayed.GetComponent<Image>().overrideSprite = null;
 		buttonOfCardPlayed.GetComponent<Image>().sprite = nextCard.icon;
 		//Card name text and mana cost text
@@ -247,6 +253,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		Debug.LogWarning("TurnRibbonHandler-replaceCard " + stealCard.name + " by " + stolenCardName );
 
 		Button buttonOfCardPlayed = turnRibbonButtonList[stealCardIndex];
+		buttonOfCardPlayed.interactable = true;
 		buttonOfCardPlayed.GetComponent<Image>().overrideSprite = null;
 		buttonOfCardPlayed.GetComponent<Image>().sprite = stolenCard.icon;
 		//Card name text and mana cost text
