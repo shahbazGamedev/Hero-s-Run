@@ -12,7 +12,7 @@ public class CardPropertyUI : MonoBehaviour {
 	Color lightBackground = new Color( 180f/255f, 180f/255f, 180f/255f, 0.5f );
 	Color darkerBackground = Color.gray;
 
-	public void configureProperty( int index, CardManager.CardProperty cp, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
+	public void configureProperty( int index, CardManager.CardProperty cp, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd, bool displayIncrease )
 	{
 		//Alternate light and dark backgrounds to increase legibility
 		if( index == 0 || index == 1 || index == 4 || index == 5 )
@@ -52,6 +52,43 @@ public class CardPropertyUI : MonoBehaviour {
 		else
 		{
 			propertyValue.text = string.Format( cd.getCardPropertyValue( cp.type, pcd.level ).ToString() + " {0}", CardManager.Instance.getCardPropertyValueType( cp.type ) );
+		}
+		if( displayIncrease ) displayPropertyIncrease( cp, pcd, cd );
+	}
+
+	void displayPropertyIncrease( CardManager.CardProperty cp, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
+	{
+		//At this point, the card ALREADY has been upgraded by one level
+		if( cp.type == CardPropertyType.ACCURACY )
+		{
+			//Convert to percentage
+			float previousValueAsPercentage = 1f - cd.getCardPropertyValue( cp.type, pcd.level - 1 );
+			float currentValueAsPercentage = 1f - cd.getCardPropertyValue( cp.type, pcd.level );
+			float increase = currentValueAsPercentage - previousValueAsPercentage;
+			propertyValue.text = propertyValue.text + "  <color=#1CF26DFF>+" + string.Format("{0:P}", increase ) + "</color>";
+		}
+		else if( cp.type == CardPropertyType.RANGE )
+		{
+			float range = cd.getCardPropertyValue( cp.type, pcd.level );
+			if( range != -1f )
+			{
+				//Range is not infinite
+				float previousValue = cd.getCardPropertyValue( cp.type, pcd.level - 1 );
+				float currentValue = cd.getCardPropertyValue( cp.type, pcd.level );
+				float increase = currentValue - previousValue;
+				propertyValue.text = propertyValue.text + "  <color=#1CF26DFF>+" + increase.ToString("N0") + "</color>";
+			}
+		}
+		else if( cp.type == CardPropertyType.TARGET )
+		{
+			//Do nothing
+		}
+		else
+		{
+			float previousValue = cd.getCardPropertyValue( cp.type, pcd.level - 1 );
+			float currentValue = cd.getCardPropertyValue( cp.type, pcd.level );
+			float increase = currentValue - previousValue;
+			propertyValue.text = propertyValue.text + "  <color=#1CF26DFF>+" + increase.ToString("N1") + "</color>";
 		}
 	}
 }

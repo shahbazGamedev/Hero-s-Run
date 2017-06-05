@@ -75,7 +75,7 @@ public class CardUIUpgrade : MonoBehaviour, IPointerDownHandler
 	{
 		GameObject go = (GameObject)Instantiate(cardPropertyPrefab);
 		go.transform.SetParent(propertiesPanel,false);
-		go.GetComponent<CardPropertyUI>().configureProperty( index, cp, pcd, cd );
+		go.GetComponent<CardPropertyUI>().configureProperty( index, cp, pcd, cd, true );
 	}
 
 	/// <summary>
