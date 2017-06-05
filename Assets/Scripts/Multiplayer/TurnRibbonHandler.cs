@@ -33,7 +33,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 	PlayerSpell playerSpell;
 
 	//Delegate used to communicate to other classes when the local player has played a card
-	public delegate void CardPlayedEvent( CardName name );
+	public delegate void CardPlayedEvent( CardName name, int level );
 	public static event CardPlayedEvent cardPlayedEvent;
 
 	// Use this for initialization
@@ -163,7 +163,16 @@ public class TurnRibbonHandler : MonoBehaviour {
 			//Wait a little before moving the Next Card into the free ribbon slot
 			StartCoroutine( moveNextCardIntoTurnRibbon( indexOfCardPlayed, playedCard ) );
 	
-			if( cardPlayedEvent != null ) cardPlayedEvent( cardName );
+			//Determine the level of the card since it may be modified by Supercharger.
+			PlayerDeck.PlayerCardData playerCardData = GameManager.Instance.playerDeck.getCardByName( cardName );
+			int level = playerCardData.level;
+			if( playerSpell.isAffectedBySupercharger() )
+			{
+				int maxLevel = CardManager.Instance.getMaxCardLevelForThisRarity( playedCard.rarity );
+				level = Mathf.Min( maxLevel, level + CardSupercharger.SUPERCHARGER_LEVEL_BOOST );
+			}
+
+			if( cardPlayedEvent != null ) cardPlayedEvent( cardName, level );
 		}
 	}
 

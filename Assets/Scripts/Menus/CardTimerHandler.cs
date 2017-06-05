@@ -27,7 +27,8 @@ public class CardTimerHandler : MonoBehaviour {
 	/// Timers will only be added for Cards with a DURATION_WITH_TIMER property.
 	/// </summary>
 	/// <param name="name">Name.</param>
-	void CardPlayedEvent( CardName name )
+	/// <param name="level">Level.</param>
+	void CardPlayedEvent( CardName name, int level )
 	{
 		CardManager.CardData playedCard = CardManager.Instance.getCardByName( name );
 		//Does this card have a DURATION_WITH_TIMER property?
@@ -35,7 +36,7 @@ public class CardTimerHandler : MonoBehaviour {
 		{
 			string localizedName = LocalizationManager.Instance.getText( "CARD_NAME_" + name.ToString().ToUpper() );
 			PlayerDeck.PlayerCardData playerCardData = GameManager.Instance.playerDeck.getCardByName( name );
-			float duration = playedCard.getCardPropertyValue( CardPropertyType.DURATION_WITH_TIMER, playerCardData.level );
+			float duration = playedCard.getCardPropertyValue( CardPropertyType.DURATION_WITH_TIMER, level );
 			addTimer( localizedName, duration, Color.green );
 		}
 	}
