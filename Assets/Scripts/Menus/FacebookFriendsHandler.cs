@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class FacebookFriendsHandler : MonoBehaviour {
 
 	[SerializeField] Button inviteButton;
+	[SerializeField] string inviteFriendsCustomImageUri = "http://i.imgur.com/zkYlB.jpg";
 
 	// Use this for initialization
 	void Start ()
@@ -34,6 +35,21 @@ public class FacebookFriendsHandler : MonoBehaviour {
 		else
 		{
 			inviteButton.interactable = false;
+		}
+	}
+
+
+	public void OnClickInviteFacebookFriends()
+	{
+		UISoundManager.uiSoundManager.playButtonClick();
+		if( Application.internetReachability != NetworkReachability.NotReachable )
+		{
+			FacebookManager.Instance.inviteFriends( inviteFriendsCustomImageUri );
+		}
+		else
+		{
+			//Player is not connected to the Internet
+			MultiPurposePopup.Instance.displayPopup( "MENU_NO_INTERNET" );
 		}
 	}
 

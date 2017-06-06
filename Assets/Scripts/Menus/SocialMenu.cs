@@ -23,7 +23,6 @@ public class SocialMenu : MonoBehaviour {
 	[Header("Chat Online Indicator")]
 	[SerializeField] Image onlineIndicator;
 	[Header("Invite Facebook Friends")]
-	[SerializeField] string inviteFriendsCustomImageUri = "http://i.imgur.com/zkYlB.jpg";
 	[SerializeField] GameObject inviteFacebookFriendsPanel;
 
 	bool levelLoading = false;
@@ -267,12 +266,6 @@ public class SocialMenu : MonoBehaviour {
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		inviteFacebookFriendsPanel.SetActive( true );
-	}
-
-	public void OnClickInviteFacebookFriends()
-	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		FacebookManager.Instance.inviteFriends( inviteFriendsCustomImageUri );
 	}
 	#endregion
 
