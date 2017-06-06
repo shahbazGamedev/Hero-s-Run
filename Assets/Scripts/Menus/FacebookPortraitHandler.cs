@@ -115,14 +115,14 @@ public class FacebookPortraitHandler : MonoBehaviour {
 	{
 		FacebookManager.facebookFriendPortraitReceived += FacebookFriendPortraitReceived;
 		FacebookManager.facebookPlayerPortraitReceived += FacebookPlayerPortraitReceived;
-		FacebookManager.facebookLogout += FacebookLogout;
+		FacebookManager.facebookStateChanged += FacebookStateChanged;
 	}
 
 	void OnDisable()
 	{
 		FacebookManager.facebookFriendPortraitReceived -= FacebookFriendPortraitReceived;
 		FacebookManager.facebookPlayerPortraitReceived -= FacebookPlayerPortraitReceived;
-		FacebookManager.facebookLogout -= FacebookLogout;
+		FacebookManager.facebookStateChanged -= FacebookStateChanged;
 	}
 
 	void FacebookFriendPortraitReceived( string facebookID )
@@ -137,16 +137,20 @@ public class FacebookPortraitHandler : MonoBehaviour {
 		setPlayerPortrait ();
 	}
 
-	void FacebookLogout()
+	public void FacebookStateChanged( FacebookState newState )
 	{
-		if( isPlayerPortrait )
+		if( newState == FacebookState.LoggedOut )
 		{
-			//Simply draw the default portrait
-			GetComponent<Image>().sprite = defaultPortrait;
-		}
-		else
-		{
-			setFriendPortrait();
+			if( isPlayerPortrait )
+			{
+				//Simply draw the default portrait
+				GetComponent<Image>().sprite = defaultPortrait;
+			}
+			else
+			{
+				setFriendPortrait();
+			}
 		}
 	}
+
 }

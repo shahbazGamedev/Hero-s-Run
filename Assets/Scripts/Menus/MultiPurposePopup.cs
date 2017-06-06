@@ -30,9 +30,9 @@ public class MultiPurposePopup : MonoBehaviour, IPointerDownHandler {
 		panel.SetActive( true );
 	}
 
-   public void OnPointerDown(PointerEventData data)
-    {
+	public void OnPointerDown(PointerEventData data)
+	{
 		panel.SetActive( false );
-    }
-
+	}
+	
 }

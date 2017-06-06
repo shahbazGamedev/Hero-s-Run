@@ -97,7 +97,6 @@ public class SettingsMenu : MonoBehaviour {
 		{
 			//Logout
 			FacebookManager.Instance.CallFBLogout();
-			PlayerStatsManager.Instance.setUsesFacebook( false );
 		}
 		else
 		{

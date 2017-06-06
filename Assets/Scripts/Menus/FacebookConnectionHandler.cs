@@ -39,7 +39,7 @@ public class FacebookConnectionHandler : MonoBehaviour {
 		{
 			PlayerStatsManager.Instance.setUsesFacebook( true );
 			PlayerStatsManager.Instance.savePlayerStats();
-			FacebookManager.Instance.CallFBInit( updateState );
+			FacebookManager.Instance.CallFBInit();
 		}
 		else
 		{
@@ -48,7 +48,17 @@ public class FacebookConnectionHandler : MonoBehaviour {
 		}
 	}
 
-	public void updateState( FacebookState newState )
+	void OnEnable()
+	{
+		FacebookManager.facebookStateChanged += FacebookStateChanged;
+	}
+
+	void OnDisable()
+	{
+		FacebookManager.facebookStateChanged -= FacebookStateChanged;
+	}
+
+	public void FacebookStateChanged( FacebookState newState )
 	{
 		if( newState == FacebookState.LoggedIn )
 		{

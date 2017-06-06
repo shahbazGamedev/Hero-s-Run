@@ -50,7 +50,7 @@ public class ConnectToFacebookPopup : MonoBehaviour {
 			PlayerStatsManager.Instance.savePlayerStats();
 			connectionStatusTitleText.text = LocalizationManager.Instance.getText("MENU_CONNECTING_TITLE");
 			connectionStatusMessageText.text = LocalizationManager.Instance.getText("MENU_CONNECTING_TEXT");
-			FacebookManager.Instance.CallFBInit( updateState );
+			FacebookManager.Instance.CallFBInit();
 		}
 		else
 		{
@@ -66,7 +66,17 @@ public class ConnectToFacebookPopup : MonoBehaviour {
 		StartCoroutine( showEpisodedPopupThread() );
 	}
 
-	public void updateState( FacebookState newState )
+	void OnEnable()
+	{
+		FacebookManager.facebookStateChanged += FacebookStateChanged;
+	}
+
+	void OnDisable()
+	{
+		FacebookManager.facebookStateChanged -= FacebookStateChanged;
+	}
+
+	public void FacebookStateChanged( FacebookState newState )
 	{
 		if( newState == FacebookState.LoggedIn )
 		{

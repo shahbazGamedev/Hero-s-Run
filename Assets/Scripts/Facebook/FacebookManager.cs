@@ -14,7 +14,8 @@ public enum FacebookState {
 	Initialised = 1,
 	LoggedIn = 2,
 	Error = 3,
-	Canceled = 4
+	Canceled = 4,
+	LoggedOut = 5
 }
 
 public class FacebookManager
@@ -22,7 +23,6 @@ public class FacebookManager
 	private const string FACEBOOK_NAMESPACE = "dragonrunsaga";
 
 	private FacebookState facebookState = FacebookState.NotInitialised;
-	private Action<FacebookState> myCallback;
 	private Action<IAppRequestResult, string > directRequestCallback;
 	private string appRequestIDToDelete;
 	private const int NUMBER_OF_FRIENDS = 20;
@@ -59,9 +59,9 @@ public class FacebookManager
 	public static event AppRequestsReceived appRequestsReceived;
 	TimeSpan allowedAppRequestLifetime = new TimeSpan(0, 0, 5, 0, 0); //Fives minute. How long do we keep a processed AppRequest before deleting it.
 
-	//Delegate used to communicate to other classes when the player logouts of Facebook
-	public delegate void FacebookLogout();
-	public static event FacebookLogout facebookLogout;
+	//Delegate used to communicate to other classes when the Facebook state changes
+	public delegate void FacebookStateChanged( FacebookState facebookState );
+	public static event FacebookStateChanged facebookStateChanged;
 
 	private static FacebookManager facebookManager = null;
 
@@ -79,7 +79,7 @@ public class FacebookManager
 		}
 	} 
 
-	public void CallFBInit(Action<FacebookState> updateState)
+	public void CallFBInit()
     {
 		if( FB.IsInitialized )
 		{
@@ -93,7 +93,6 @@ public class FacebookManager
 			//Note: OnInitComplete will take care of calling CallFBLogin()
 			FB.Init(OnInitComplete, OnHideUnity);
 		}
-		myCallback = updateState;
 	}
 
     private void OnInitComplete()
@@ -101,23 +100,25 @@ public class FacebookManager
 		if( facebookState != FacebookState.LoggedIn )
 		{
 			Debug.Log("FacebookManager-OnInitComplete: IsLoggedIn: " + FB.IsLoggedIn + " IsInitialized: " + FB.IsInitialized );
-	 		facebookState = FacebookState.Initialised;
+			setFacebookState( FacebookState.Initialised );
 			if( !FB.IsLoggedIn )
 			{
 				CallFBLogin();
 			}
 			else
 			{
-				facebookState = FacebookState.LoggedIn;
-				if( myCallback != null )
-				{
-					myCallback( facebookState );
-				}
+				setFacebookState( FacebookState.LoggedIn );
 				OnLoggedIn();
 			}
 		}
 	}
 	
+	private void setFacebookState( FacebookState state )
+	{
+		facebookState = state;
+		if( facebookStateChanged != null ) facebookStateChanged( facebookState );
+	}
+
 	private void OnHideUnity(bool isGameShown)
     {
 		Debug.Log("FacebookManager-OnHideUnity: Is game showing? " + isGameShown);
@@ -145,27 +146,19 @@ public class FacebookManager
 		if (FB.IsLoggedIn)
 		{
 			Debug.Log ("FacebookManager-LoginCallback: user is successfully logged in.");
-			facebookState = FacebookState.LoggedIn;
+			setFacebookState( FacebookState.LoggedIn );
 			OnLoggedIn();
 		}
 
         if (result.Error != null)
 		{
 			Debug.LogWarning("FacebookManager-LoginCallback: Facebook error: " + result.Error );
- 			facebookState = FacebookState.Error;
+			setFacebookState( FacebookState.Error );
 		}
         else if (!FB.IsLoggedIn)
 		{
             //Login canceled by Player
-			facebookState = FacebookState.Canceled;
-		}
-		if( myCallback != null )
-		{
-			myCallback( facebookState );
-		}
-		else
-		{
-			Debug.LogWarning("FacebookManager-LoginCallback: myCallback is null.");
+			setFacebookState( FacebookState.Canceled );
 		}
 	}
 
@@ -183,14 +176,12 @@ public class FacebookManager
     public void CallFBLogout()
     {
 		FB.LogOut();
-		facebookState = FacebookState.Initialised;
 		firstName = null;
 		FBUserId = string.Empty;
 		playerPortrait = null;
 		PlayerStatsManager.Instance.setUsesFacebook( false );
 		PlayerStatsManager.Instance.savePlayerStats();
-		//Inform interested classes
-		if( facebookLogout != null ) facebookLogout();
+		setFacebookState(FacebookState.LoggedOut);
 	}
 
 	public bool isLoggedIn()
