@@ -25,33 +25,33 @@ public class CardLightning : Card {
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
-		//Get nearest target which could be either a player or creature
+		//Get a random target
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
-		Transform nearestTarget = detectNearestTarget( playerTransform.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
+		Transform randomTarget = detectRandomTarget( playerTransform.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
 
-		if( nearestTarget != null )
+		if( randomTarget != null )
 		{
-			if( nearestTarget.GetComponent<PlayerSpell>().isReflectEnabled() )
+			if( randomTarget.GetComponent<PlayerSpell>().isReflectEnabled() )
 			{
-				MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, nearestTarget.GetComponent<PhotonView>().viewID );
+				MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, randomTarget.GetComponent<PhotonView>().viewID );
 
 				//The target has the Reflect spell active.
 				//Reflect to caster
-				nearestTarget = playerTransform;
+				randomTarget = playerTransform;
 			
 			}
 
 			//1) We do have a target.
 			//2) The target is not the caster.
 			//3) Play an appropriate VO such as "Gotcha!" for Stasis.
-			if( nearestTarget != playerTransform ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
+			if( randomTarget != playerTransform ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
 
 			//Spawn a lightning on the nearest player or creature
-			Vector3 lightningPosition = nearestTarget.transform.TransformPoint( offset );
-			PhotonNetwork.InstantiateSceneObject( lightningPrefabName, lightningPosition, nearestTarget.rotation, 0, null );
+			Vector3 lightningPosition = randomTarget.transform.TransformPoint( offset );
+			PhotonNetwork.InstantiateSceneObject( lightningPrefabName, lightningPosition, randomTarget.rotation, 0, null );
 	
 			//Kill nearest target
-			strike( nearestTarget );
+			strike( randomTarget );
 
 		}
 		else

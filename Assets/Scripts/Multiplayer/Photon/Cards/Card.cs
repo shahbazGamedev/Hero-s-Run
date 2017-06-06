@@ -85,6 +85,49 @@ public class Card : Photon.PunBehaviour {
 	}
 
 	/// <summary>
+	/// Returns a random player target or null if none were found within the spell range.
+	/// </summary>
+	/// <returns>The random target.</returns>
+	/// <param name="playerRace">Player race.</param>
+	/// <param name="spellRange">Spell range.</param>
+	protected Transform detectRandomTarget( PlayerRace playerRace, float spellRange )
+	{
+		List<Transform> potentialTargets = new List<Transform>();
+		
+		for( int i =0; i < PlayerRace.players.Count; i++ )
+		{
+			//Ignore the caster
+			if( PlayerRace.players[i] == playerRace ) continue;
+
+			//Calculate the distance to the other player
+			float distanceToTarget = Vector3.Distance( playerRace.transform.position, PlayerRace.players[i].transform.position );
+
+			//Is this player within spell range?
+			if( distanceToTarget > spellRange ) continue;
+
+			//Is the player dead or Idle? If so, ignore.
+			if( PlayerRace.players[i].GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
+
+			//We have a potential target
+			potentialTargets.Add( PlayerRace.players[i].transform );
+		}
+		
+		if( potentialTargets.Count == 0 )
+		{
+			return null;
+		}
+		else if ( potentialTargets.Count == 1 )
+		{
+			return potentialTargets[0];
+		}
+		else
+		{
+			int random = Random.Range(0, potentialTargets.Count ); 
+			return potentialTargets[random];
+		}
+	}
+
+	/// <summary>
 	/// Returns true if there is a player target within spell range.
 	/// </summary>
 	/// <returns><c>true</c>, if there is a player target within range, <c>false</c> otherwise.</returns>
