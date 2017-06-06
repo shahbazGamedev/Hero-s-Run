@@ -31,6 +31,7 @@ public class FacebookConnectionHandler : MonoBehaviour {
 	public void OnClickLoginToFacebook()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
+		Debug.LogWarning("OnClickLoginToFacebook");
 		connectButton.interactable = false;
 		connectionStatusImage.gameObject.SetActive( false );
 		CancelInvoke();
@@ -42,8 +43,8 @@ public class FacebookConnectionHandler : MonoBehaviour {
 		}
 		else
 		{
-			//To do: display a popup
-			Debug.LogWarning("OnClickLoginToFacebook-you are not connected to the Internet.");
+			//Player is not connected to the Internet
+			MultiPurposePopup.Instance.displayPopup( "MENU_NO_INTERNET" );
 		}
 	}
 

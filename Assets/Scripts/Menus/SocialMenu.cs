@@ -22,6 +22,9 @@ public class SocialMenu : MonoBehaviour {
 	[SerializeField] Text noRecentPlayersText;
 	[Header("Chat Online Indicator")]
 	[SerializeField] Image onlineIndicator;
+	[Header("Invite Facebook Friends")]
+	[SerializeField] string inviteFriendsCustomImageUri = "http://i.imgur.com/zkYlB.jpg";
+	[SerializeField] GameObject inviteFacebookFriendsPanel;
 
 	bool levelLoading = false;
 
@@ -47,8 +50,8 @@ public class SocialMenu : MonoBehaviour {
 
 	void createFriendList()
 	{
-		//Remove previous friends if any. We want to keep the first two objects which are to to add friends and display instructions however.
-		for( int i = friendsHolder.childCount-1; i >= 2; i-- )
+		//Remove previous friends if any. We want to keep the first three objects which are to invite Facebook friends, add friends and display instructions however.
+		for( int i = friendsHolder.childCount-1; i >= 3; i-- )
 		{
 			Transform child = friendsHolder.GetChild( i );
 			GameObject.Destroy( child.gameObject );
@@ -165,23 +168,6 @@ public class SocialMenu : MonoBehaviour {
 		}
   	}
 
-	public void OnClickReturnToMainMenu()
-	{
-		StartCoroutine( loadScene(GameScenes.MainMenu) );
-	}
-
-	IEnumerator loadScene(GameScenes value)
-	{
-		if( !levelLoading )
-		{
-			UISoundManager.uiSoundManager.playButtonClick();
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)value );
-		}
-	}
-
 	void OnEnable()
 	{
 		ChatManager.onStatusUpdateEvent += OnStatusUpdateEvent;
@@ -276,4 +262,18 @@ public class SocialMenu : MonoBehaviour {
 		createRecentPlayerList();
 	}
 	
+	#region Invite Facebook Friends
+	public void OnClickShowInviteFacebookFriendsPanel()
+	{
+		UISoundManager.uiSoundManager.playButtonClick();
+		inviteFacebookFriendsPanel.SetActive( true );
+	}
+
+	public void OnClickInviteFacebookFriends()
+	{
+		UISoundManager.uiSoundManager.playButtonClick();
+		FacebookManager.Instance.inviteFriends( inviteFriendsCustomImageUri );
+	}
+	#endregion
+
 }
