@@ -46,10 +46,13 @@ public class TitleScreenHandler : MonoBehaviour {
 		PlayerStatsManager.Instance.loadPlayerStats();
 
 		//If the player agreed to use Facebook, auto-login for him
+		//We don't want to do this in the Editor as it slows the work flow since it causes a popup to appear
+		#if !UNITY_EDITOR
 		if( PlayerStatsManager.Instance.getUsesFacebook() && Application.internetReachability != NetworkReachability.NotReachable )
 		{
 			FacebookManager.Instance.CallFBInit();
 		}
+		#endif
 	}
 
 	void Start()
