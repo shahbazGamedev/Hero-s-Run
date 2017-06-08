@@ -142,7 +142,12 @@ public class PlayerInventory {
 	{
 		if( crownAmount >= 0 && crownAmount <= CrownLootBoxHandler.CROWNS_NEEDED_TO_OPEN )
 		{
-			setCrownBalance( currentCrowns + crownAmount );
+			//You cannot store more than CROWNS_NEEDED_TO_OPEN crowns.
+			//If the you have reached the maximum number of crowns, you must open the crown loot box to reset the count to 0.
+			int newCrownAmount = currentCrowns + crownAmount;
+			if( newCrownAmount > CrownLootBoxHandler.CROWNS_NEEDED_TO_OPEN ) newCrownAmount = CrownLootBoxHandler.CROWNS_NEEDED_TO_OPEN;
+	
+			if( currentCrowns != newCrownAmount ) setCrownBalance( newCrownAmount );
 		}
 		else
 		{

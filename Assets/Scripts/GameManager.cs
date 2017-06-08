@@ -194,7 +194,6 @@ public class GameManager {
 		return playMode == PlayMode.PlayTwoPlayers || playMode == PlayMode.PlayThreePlayers;
 	}
 
-
 	//Note the version number stored in version.txt should match the bundle version in PlayerSettings.
 	public void loadVersionNumber()
 	{
