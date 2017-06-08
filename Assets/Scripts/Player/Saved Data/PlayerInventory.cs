@@ -9,7 +9,8 @@ public enum PlayerInventoryEvent {
 	Coin_Doubler_Changed = 3,
 	Score_Changed = 4,
 	Key_Found_In_Episode_Changed = 5,
-	Gem_Balance_Changed = 6
+	Gem_Balance_Changed = 6,
+	Crown_Balance_Changed = 7
 }
 
 [System.Serializable]
@@ -19,6 +20,7 @@ public class PlayerInventory {
 	const int MAXIMUM_INCREASE_TO_GEM_BALANCE = 14000;
 	[SerializeField] int currentCoins = 0;
 	[SerializeField] int currentGems = 25;
+	[SerializeField] int currentCrowns = 0;
 
 	//Delegate used to communicate to other classes when an inventory value changes such as the gem balance
 	public delegate void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int previousValue, int newValue );
@@ -114,6 +116,53 @@ public class PlayerInventory {
 		else
 		{
 			Debug.LogWarning("PlayerInventory-the gem value specified " + value + " is incorrect. It needs to be zero or greater." );
+		}
+	}
+	#endregion
+
+	#region Crowns
+	public int getCrownBalance()
+	{
+		return currentCrowns;
+	}
+
+	public void deductCrowns( int crownAmount )
+	{
+		if( currentCrowns >= crownAmount )
+		{
+			setCrownBalance( currentCrowns - crownAmount );
+		}
+		else
+		{
+			Debug.LogWarning("PlayerInventory-the crown amount you want to deduct " + crownAmount + " is bigger than your current balance " + currentCrowns + "." );
+		}
+	}
+
+	public void addCrowns( int crownAmount )
+	{
+		if( crownAmount >= 0 && crownAmount <= CrownLootBoxHandler.CROWNS_NEEDED_TO_OPEN )
+		{
+			setCrownBalance( currentCrowns + crownAmount );
+		}
+		else
+		{
+			Debug.LogWarning("PlayerInventory-the crown value specified " + crownAmount + " is incorrect. It needs to be between 0 and " + CrownLootBoxHandler.CROWNS_NEEDED_TO_OPEN.ToString() + ".");
+		}
+	}
+
+	void setCrownBalance( int value )
+	{
+		if( value >= 0 )
+		{
+			if( playerInventoryChangedNew != null ) playerInventoryChangedNew( PlayerInventoryEvent.Crown_Balance_Changed, currentCrowns, value );
+			currentCrowns = value;
+			//Save
+			serializePlayerInventory();
+			Debug.Log("PlayerInventory-setting current crowns to: " + value );
+		}
+		else
+		{
+			Debug.LogWarning("PlayerInventory-the crown value specified " + value + " is incorrect. It needs to be zero or greater." );
 		}
 	}
 	#endregion
