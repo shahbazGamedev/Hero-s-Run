@@ -13,7 +13,14 @@ public class UIAnimateSlider : MonoBehaviour {
 	
 	public void animateSlider ( float toValue, float duration, System.Action onFinish = null )
 	{
-		StartCoroutine( sliderAnimate( toValue, duration, onFinish ) );
+		if( toValue > 1f ) 
+		{
+			Debug.LogError("When animating the slider " + gameObject.name + " the toValue must be between 0 and 1.");
+		}
+		else
+		{
+			StartCoroutine( sliderAnimate( toValue, duration, onFinish ) );
+		}
 	}
 
 	IEnumerator sliderAnimate( float toValue, float duration, System.Action onFinish = null  )
@@ -22,7 +29,6 @@ public class UIAnimateSlider : MonoBehaviour {
 		float elapsedTime = 0;
 
 		float fromValue = slider.value;
-	
 		while ( elapsedTime <= duration )
 		{
 			elapsedTime = Time.time - startTime;

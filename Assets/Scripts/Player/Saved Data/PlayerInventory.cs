@@ -21,6 +21,8 @@ public class PlayerInventory {
 	[SerializeField] int currentCoins = 0;
 	[SerializeField] int currentGems = 25;
 	[SerializeField] int currentCrowns = 0;
+	//lastDisplayedCrownBalance is used in the Main Menu to determine if the number of crowns has changed.
+	[SerializeField] int lastDisplayedCrownBalance = 0;
 
 	//Delegate used to communicate to other classes when an inventory value changes such as the gem balance
 	public delegate void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int previousValue, int newValue );
@@ -121,6 +123,17 @@ public class PlayerInventory {
 	#endregion
 
 	#region Crowns
+	public int getLastDisplayedCrownBalance()
+	{
+		return lastDisplayedCrownBalance;
+	}
+
+	public void saveLastDisplayedCrownBalance( int value )
+	{
+		lastDisplayedCrownBalance = value;
+		serializePlayerInventory();
+	}
+
 	public int getCrownBalance()
 	{
 		return currentCrowns;
