@@ -6,6 +6,7 @@ using TMPro;
 public class CrownLootBoxHandler : MonoBehaviour {
 
 	[SerializeField] TextMeshProUGUI crownsOwned;
+	[SerializeField] TextMeshProUGUI notEnoughCrownsText;
 	[SerializeField] Slider crownsOwnedProgressBar;
 	public const int CROWNS_NEEDED_TO_OPEN = 10;
 	const float ANIMATION_DURATION = 1.6f;
@@ -32,5 +33,27 @@ public class CrownLootBoxHandler : MonoBehaviour {
 			crownsOwnedProgressBar.value = GameManager.Instance.playerInventory.getCrownBalance()/(float)CROWNS_NEEDED_TO_OPEN;
 		}
 	}
+
+	public void OnClickOpenCrownLootBox()
+	{
+		if( GameManager.Instance.playerInventory.getCrownBalance() == CROWNS_NEEDED_TO_OPEN )
+		{
+			//Player has enough crowns. Open loot box.
+
+
+		}
+		else
+		{
+			CancelInvoke( "hideNotEnoughCrownsText" );
+			//Player doesn't have enough crowns. Display a message.
+			notEnoughCrownsText.text = string.Format( LocalizationManager.Instance.getText("CROWN_LOOT_BOX_NOT_ENOUGH_CROWNS"), CROWNS_NEEDED_TO_OPEN );
+			notEnoughCrownsText.gameObject.SetActive( true );
+			Invoke("hideNotEnoughCrownsText", 5f);
+		}
+	}
 	
+	void hideNotEnoughCrownsText()
+	{
+		notEnoughCrownsText.gameObject.SetActive( false );
+	}
 }
