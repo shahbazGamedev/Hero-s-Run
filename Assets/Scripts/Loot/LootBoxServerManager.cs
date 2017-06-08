@@ -7,7 +7,10 @@ public enum LootBoxType
 	FREE = 0,
 	SHOP_GIANT = 1,
 	SHOP_SUPER_SIZED = 2,
-	SHOP_MEGA = 3
+	SHOP_MEGA = 3,
+	CROWN = 4,
+	LEVEL_UP = 5,
+	NEW_RACE_TRACK_UNLOCKED = 6
 }
 
 public class LootBoxServerManager : MonoBehaviour {
@@ -45,6 +48,9 @@ public class LootBoxServerManager : MonoBehaviour {
 			break;
 			case LootBoxType.SHOP_MEGA:
 				lootBoxJson = getMegaLootBox( raceTrackLevel );
+			break;
+			case LootBoxType.CROWN:
+				lootBoxJson = getCrownLootBox( raceTrackLevel );
 			break;
 		}
 
@@ -84,14 +90,6 @@ public class LootBoxServerManager : MonoBehaviour {
 		}
 		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, rarity );
 		loot.quantity = 1;
-		lootBox.addLoot( loot );
-
-		//For testing - there are NO player Icons in the free loot boxes
-		loot = new LootBox.Loot();
-		loot.type = LootType.PLAYER_ICON;
-		loot.uniqueItemID = ProgressionManager.Instance.getRandomPlayerIconUniqueId();
-		//To do
-		//If the player already has that player icon, convert to 15 coins.
 		lootBox.addLoot( loot );
 
 		return lootBox.getJson();
@@ -196,6 +194,52 @@ public class LootBoxServerManager : MonoBehaviour {
 	}
 
 	string getMegaLootBox( int raceTrackLevel )
+	{
+		LootBox lootBox = new LootBox();
+
+		LootBox.Loot loot = new LootBox.Loot();
+		loot.type = LootType.COINS;
+		loot.quantity = Random.Range(40,51);
+		lootBox.addLoot( loot );
+
+		loot = new LootBox.Loot();
+		loot.type = LootType.GEMS;
+		loot.quantity = Random.Range(2,4);
+		lootBox.addLoot( loot );
+
+		loot = new LootBox.Loot();
+		loot.type = LootType.CARDS;
+		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, CardRarity.COMMON );
+		loot.quantity = 5;
+		lootBox.addLoot( loot );
+
+		loot = new LootBox.Loot();
+		loot.type = LootType.CARDS;
+		CardRarity rarity;
+		if( raceTrackLevel <= 3 )
+		{
+			rarity = CardRarity.RARE;
+		}
+		else
+		{
+			rarity = CardRarity.EPIC;
+		}
+		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, rarity );
+		loot.quantity = 1;
+		lootBox.addLoot( loot );
+
+		//For testing - there are NO player Icons in the free loot boxes
+		loot = new LootBox.Loot();
+		loot.type = LootType.PLAYER_ICON;
+		loot.uniqueItemID = ProgressionManager.Instance.getRandomPlayerIconUniqueId();
+		//To do
+		//If the player already has that player icon, convert to 15 coins.
+		lootBox.addLoot( loot );
+
+		return lootBox.getJson();
+	}
+
+	string getCrownLootBox( int raceTrackLevel )
 	{
 		LootBox lootBox = new LootBox();
 

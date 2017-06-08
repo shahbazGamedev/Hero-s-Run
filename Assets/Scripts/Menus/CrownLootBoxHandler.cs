@@ -39,8 +39,9 @@ public class CrownLootBoxHandler : MonoBehaviour {
 		if( GameManager.Instance.playerInventory.getCrownBalance() == CROWNS_NEEDED_TO_OPEN )
 		{
 			//Player has enough crowns. Open loot box.
-
-
+			GameManager.Instance.playerInventory.resetCrowns();
+			GameManager.Instance.playerInventory.saveLastDisplayedCrownBalance( 0 );
+			LootBoxClientManager.Instance.requestLootBox( LootBoxType.CROWN );
 		}
 		else
 		{

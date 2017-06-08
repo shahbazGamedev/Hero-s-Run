@@ -136,19 +136,15 @@ public class PlayerInventory {
 
 	public int getCrownBalance()
 	{
-		return currentCrowns;
+		return 10;
 	}
 
-	public void deductCrowns( int crownAmount )
+	/// <summary>
+	/// Sets the crown balance to zero. Does not save the value.
+	/// </summary>
+	public void resetCrowns()
 	{
-		if( currentCrowns >= crownAmount )
-		{
-			setCrownBalance( currentCrowns - crownAmount );
-		}
-		else
-		{
-			Debug.LogWarning("PlayerInventory-the crown amount you want to deduct " + crownAmount + " is bigger than your current balance " + currentCrowns + "." );
-		}
+		setCrownBalance(0);
 	}
 
 	public void addCrowns( int crownAmount )
