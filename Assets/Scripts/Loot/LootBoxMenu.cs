@@ -50,6 +50,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 
 	public void LootBoxGrantedEvent( LootBox lootBox )
 	{
+		lootCounter = 0;
 		lootList = lootBox.getLootList();
 		lootBox.print();
 		GameManager.Instance.playerProfile.setLastFreeLootBoxOpenedTime( DateTime.UtcNow );
@@ -68,15 +69,16 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		switch( loot.type )
 		{
 			case LootType.COINS:
+				levelText.color = Color.white;
 				levelText.gameObject.SetActive( true );
-				levelText.text = "You have:";
+				levelText.text = LocalizationManager.Instance.getText( "LOOT_BOX_YOU_HAVE" );
 				rarityPanel.SetActive( false );
 				currencyPanel.SetActive( true );
 				cardProgressPanel.SetActive( false );
 				yield return new WaitForEndOfFrame();
-				currencyIcon.sprite = coinCardSprite;
+				currencyIcon.sprite = coinSprite;
 				lootNameText.text = LocalizationManager.Instance.getText( "STORE_COINS_TITLE" );
-				displayLootReceived( "+" + loot.quantity.ToString(), coinSprite );
+				displayLootReceived( "+" + loot.quantity.ToString(), coinCardSprite );
 				int coinBalance = GameManager.Instance.playerInventory.getCoinBalance();
 				int newCoinBalance = coinBalance + loot.quantity;
 				currencyAmountText.gameObject.SetActive( true);
@@ -85,12 +87,13 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 			break;
 
 			case LootType.GEMS:
+				levelText.color = Color.white;
 				levelText.gameObject.SetActive( true );
-				levelText.text = "You have:";
+				levelText.text = LocalizationManager.Instance.getText( "LOOT_BOX_YOU_HAVE" );
 				cardProgressPanel.SetActive( false );
 				currencyPanel.SetActive( true );
 				yield return new WaitForEndOfFrame();
-				currencyIcon.sprite = gemCardSprite;
+				currencyIcon.sprite = gemSprite;
 				rarityPanel.SetActive( false );
 				lootNameText.text = LocalizationManager.Instance.getText( "STORE_GEMS_TITLE" );
 				int gemBalance = GameManager.Instance.playerInventory.getGemBalance();
@@ -98,7 +101,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 				currencyAmountText.gameObject.SetActive( true);
 				currencyAmountText.GetComponent<UISpinNumber>().spinNumber( "{0}", gemBalance, newGemBalance, 2f, true );
 				GameManager.Instance.playerInventory.addGems( loot.quantity );
-				displayLootReceived( "+" + loot.quantity.ToString(), null );
+				displayLootReceived( "+" + loot.quantity.ToString(), gemCardSprite );
 			break;
 
 			case LootType.CARDS:

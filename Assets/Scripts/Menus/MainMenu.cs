@@ -68,11 +68,6 @@ public class MainMenu : MonoBehaviour {
 		StartCoroutine( loadScene(GameScenes.HeroSelection) );
 	}
 
-	public void OnClickOpenLootBox()
-	{
-		StartCoroutine( loadScene(GameScenes.LootBox) );
-	}
-
 	public void OnClickOpenSocial()
 	{
 		StartCoroutine( loadScene(GameScenes.Social) );
