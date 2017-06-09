@@ -40,6 +40,7 @@ public class LevelManager {
 	public int selectedBotHeroIndex2; //index for botHeroCharacterList in HeroManager. Used when in the PlayAgainstTwoEnemies mode.
 	public ChatMessageHandler.MatchData matchData;
 	public float distanceTravelled = 0; //See PlayerRace. This value is displayed in the HUD.
+	public bool isRecordingSelected = false; //True if the race should be recorded using ReplayKit
 	//for debugging
 	public float speedOverrideMultiplier = 1f;
 	public bool allowBotToPlayCards = true;

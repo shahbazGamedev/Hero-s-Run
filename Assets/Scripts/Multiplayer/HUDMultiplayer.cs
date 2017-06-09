@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Apple.ReplayKit;
+using System;
 
 public class HUDMultiplayer : MonoBehaviour {
 
@@ -127,8 +129,18 @@ public class HUDMultiplayer : MonoBehaviour {
 			UISoundManager.uiSoundManager.playAudioClip( beep );
 			yield return new WaitForSecondsRealtime( 1f);
 			countdownNumber--;
+		}	
+		#if UNITY_IOS
+		try
+		{
+			if( ReplayKit.isRecording ) ReplayKit.StopRecording();
 		}
-	
+   		catch (Exception e)
+		{
+			Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
+    	}
+		yield return new WaitForEndOfFrame();
+		#endif
 		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 		PhotonNetwork.LeaveRoom();
 	}
@@ -147,6 +159,17 @@ public class HUDMultiplayer : MonoBehaviour {
 		{
 			yield return new WaitForSecondsRealtime( DELAY_WHEN_NOT_SHOWING_EMOTES );
 		}
+		#if UNITY_IOS
+		try
+		{
+			if( ReplayKit.isRecording ) ReplayKit.StopRecording();
+		}
+   		catch (Exception e)
+		{
+			Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
+    	}
+		yield return new WaitForEndOfFrame();
+		#endif
 		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 		PhotonNetwork.LeaveRoom();
 	}

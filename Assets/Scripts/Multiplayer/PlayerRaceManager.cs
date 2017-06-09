@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.Apple.ReplayKit;
 
 public enum RaceStatus {
 	
@@ -158,6 +159,21 @@ public class PlayerRaceManager {
 			GameManager.Instance.playerProfile.serializePlayerprofile();
 			Debug.Log("PlayerRaceManager-playerAbandonedRace: trophies lost " + trophiesLost );
 		}
+		#if UNITY_IOS
+		//When the player quits the race stop the recording and discard the video
+		try
+		{
+			if( ReplayKit.isRecording )
+			{
+				ReplayKit.StopRecording();
+				ReplayKit.Discard();
+			}
+		}
+   		catch (Exception e)
+		{
+			Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
+    	}
+		#endif
 	}
 
 	void earnCrowns()

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI; 
 using UnityEngine.SceneManagement;
 using Photon;
+using UnityEngine.Apple.ReplayKit;
 
 public class LevelNetworkingManager : PunBehaviour
 {
@@ -46,6 +47,22 @@ public class LevelNetworkingManager : PunBehaviour
 				PhotonNetwork.Instantiate(this.playerPrefab.name, startPosition, Quaternion.identity, 0);
 
 				createBot();
+
+				//Verify if the player wants to record the race
+				#if UNITY_IOS
+				if( LevelManager.Instance.isRecordingSelected  )
+				{
+					try
+					{
+						ReplayKit.StartRecording();
+					}
+			   		catch (Exception e)
+					{
+						Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
+			    	}
+				}
+				#endif
+
 			}
 		}
 	}

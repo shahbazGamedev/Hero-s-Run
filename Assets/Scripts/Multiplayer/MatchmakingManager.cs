@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Apple.ReplayKit;
 
 public class MatchmakingManager : MonoBehaviour {
 
@@ -231,6 +232,10 @@ public class MatchmakingManager : MonoBehaviour {
 	{
 		if( PhotonNetwork.inRoom ) PhotonNetwork.LeaveRoom();
 		LevelManager.Instance.matchData = null;
+		#if UNITY_IOS
+		//When returning to the main menu, discard any video that might have been recorded
+		if( ReplayKit.APIAvailable ) ReplayKit.Discard();
+		#endif
 		StartCoroutine( loadScene(GameScenes.MainMenu) );
 	}
 
