@@ -31,6 +31,8 @@ public class CardUIUpgrade : MonoBehaviour, IPointerDownHandler
 
 		//Card image
 		cardImage.sprite = cd.icon;
+		//Legendary cards have special effects
+		cardImage.material = cd.cardMaterial;
 
 		//Level section
 		//Level background

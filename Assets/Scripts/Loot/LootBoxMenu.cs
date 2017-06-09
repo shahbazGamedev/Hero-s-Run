@@ -81,6 +81,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 
 	IEnumerator giveLoot( LootBox.Loot loot )
 	{
+		lootSprite.material = null;
 		switch( loot.type )
 		{
 			case LootType.COINS:
@@ -152,6 +153,8 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 				rarityIcon.color = rarityColor;
 				rarityText.text = LocalizationManager.Instance.getText( "CARD_RARITY_" + cd.rarity.ToString() );
 				updateCardProgressBar( pcd, cd );
+				lootSprite.material = cd.cardMaterial;
+
 			break;
 
 			case LootType.PLAYER_ICON:

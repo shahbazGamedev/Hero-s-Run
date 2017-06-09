@@ -46,6 +46,10 @@ public class CardUIDetails : MonoBehaviour {
 
 		//Card image and mana cost
 		cardImage.sprite = cd.icon;
+
+		//Legendary cards have special effects
+		cardImage.material = cd.cardMaterial;
+
 		if( manaCost != null ) manaCost.text = cd.manaCost.ToString();
 
 		//Level section

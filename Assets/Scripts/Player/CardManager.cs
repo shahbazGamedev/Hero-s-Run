@@ -331,6 +331,8 @@ public class CardManager : MonoBehaviour {
 		public RectTransform rectTransform;
 		[System.NonSerialized]
 		public bool isStolenCard;
+		//Legendary cards have special effects on them
+		public Material cardMaterial;
 
 		public float getCardPropertyValue( CardPropertyType type, int level )
 		{
