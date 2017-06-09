@@ -188,6 +188,8 @@ Shader "Hearthstone/Golden"
 
 				fixed4 col = tex2D(_MainTex, i.uv + dist * distMask * 0.025);
 				fixed bg = col.a;
+				// alpha test
+				if (col.a <= 0.05) clip(-1);
 
 #if EFFECTS_LAYER_1_ON		
 
