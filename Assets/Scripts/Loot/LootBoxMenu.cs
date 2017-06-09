@@ -14,11 +14,17 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 	[SerializeField] TextMeshProUGUI lootNameText;
 	[SerializeField] TextMeshProUGUI lootAmountText;
 	[SerializeField] TextMeshProUGUI lootCounterText;
+	[SerializeField] GameObject cardProgressPanel;
 	[SerializeField] Sprite coinSprite;
 	[SerializeField] Sprite gemSprite;
+	[SerializeField] Sprite coinCardSprite;
+	[SerializeField] Sprite gemCardSprite;
 	[SerializeField] GameObject rarityPanel;
 	[SerializeField] TextMeshProUGUI rarityText;
 	[SerializeField] Image rarityIcon;
+	[SerializeField] GameObject currencyPanel;
+	[SerializeField] Image currencyIcon;
+	[SerializeField] TextMeshProUGUI currencyAmountText;
 
 	[Header("Level")]
 	[Tooltip("The level text is displayed on top of the card image. For example: 'Level 5' or 'Max Level'. The text color varies with the card rarity.")]
@@ -51,30 +57,54 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		NotificationServicesHandler.Instance.scheduleFreeLootBoxNotification(240);
 		//Display the number of loot items in the loot box
 		lootCounterText.text = lootList.Count.ToString();
-		giveLoot( lootList[lootCounter] );
+		StopAllCoroutines();
+		StartCoroutine( giveLoot( lootList[lootCounter] ) );
 		lootCounter++;
 		lootPanel.SetActive (true );
 	}
 
-	void giveLoot( LootBox.Loot loot )
+	IEnumerator giveLoot( LootBox.Loot loot )
 	{
 		switch( loot.type )
 		{
 			case LootType.COINS:
+				levelText.gameObject.SetActive( true );
+				levelText.text = "You have:";
 				rarityPanel.SetActive( false );
+				currencyPanel.SetActive( true );
+				cardProgressPanel.SetActive( false );
+				yield return new WaitForEndOfFrame();
+				currencyIcon.sprite = coinCardSprite;
 				lootNameText.text = LocalizationManager.Instance.getText( "STORE_COINS_TITLE" );
-				GameManager.Instance.playerInventory.addCoins( loot.quantity );
 				displayLootReceived( "+" + loot.quantity.ToString(), coinSprite );
+				int coinBalance = GameManager.Instance.playerInventory.getCoinBalance();
+				int newCoinBalance = coinBalance + loot.quantity;
+				currencyAmountText.gameObject.SetActive( true);
+				currencyAmountText.GetComponent<UISpinNumber>().spinNumber( "{0}", coinBalance, newCoinBalance, 2f, true );
+				GameManager.Instance.playerInventory.addCoins( loot.quantity );
 			break;
 
 			case LootType.GEMS:
+				levelText.gameObject.SetActive( true );
+				levelText.text = "You have:";
+				cardProgressPanel.SetActive( false );
+				currencyPanel.SetActive( true );
+				yield return new WaitForEndOfFrame();
+				currencyIcon.sprite = gemCardSprite;
 				rarityPanel.SetActive( false );
 				lootNameText.text = LocalizationManager.Instance.getText( "STORE_GEMS_TITLE" );
+				int gemBalance = GameManager.Instance.playerInventory.getGemBalance();
+				int newGemBalance = gemBalance + loot.quantity;
+				currencyAmountText.gameObject.SetActive( true);
+				currencyAmountText.GetComponent<UISpinNumber>().spinNumber( "{0}", gemBalance, newGemBalance, 2f, true );
 				GameManager.Instance.playerInventory.addGems( loot.quantity );
-				displayLootReceived( "+" + loot.quantity.ToString(), gemSprite );
+				displayLootReceived( "+" + loot.quantity.ToString(), null );
 			break;
 
 			case LootType.CARDS:
+				levelText.gameObject.SetActive( true );
+				cardProgressPanel.SetActive( true );
+				currencyPanel.SetActive( false );
 				rarityPanel.SetActive( true );
 				GameManager.Instance.playerDeck.addCardFromLootBox( loot.cardName, loot.quantity );
 				CardManager.CardData cd = CardManager.Instance.getCardByName( loot.cardName );
@@ -106,17 +136,22 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 			break;
 
 			case LootType.PLAYER_ICON:
+				cardProgressPanel.SetActive( false );
+				currencyPanel.SetActive( false );
 				rarityPanel.SetActive( false );
 				lootNameText.text = LocalizationManager.Instance.getText( "PLAYER_ICON_MENU_TITLE" );
 				GameManager.Instance.playerIcons.unlockPlayerIcon( loot.uniqueItemID );
 				string iconName = LocalizationManager.Instance.getText( "PLAYER_ICON_" + loot.uniqueItemID.ToString() );
 				displayLootReceived( iconName, ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( loot.uniqueItemID ).icon );
+				levelText.gameObject.SetActive( false );
 			break;
 			
 			default:
 				Debug.LogError("Give loot content encountered an unknown loot type: " + loot.type );
 			break;
 		}
+		yield return new WaitForEndOfFrame();
+
 	}
 
 	void displayLootReceived( string text, Sprite sprite = null )
@@ -129,7 +164,8 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 	{
 		if( lootCounter < lootList.Count )
 		{
-			giveLoot( lootList[lootCounter] );
+			StopAllCoroutines();
+			StartCoroutine( giveLoot( lootList[lootCounter] ) );
 			lootCounter++;
 			lootCounterText.text = (lootList.Count - lootCounter).ToString();
 
