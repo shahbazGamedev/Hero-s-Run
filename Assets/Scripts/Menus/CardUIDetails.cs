@@ -46,7 +46,7 @@ public class CardUIDetails : MonoBehaviour {
 
 		//Card image and mana cost
 		cardImage.sprite = cd.icon;
-		manaCost.text = cd.manaCost.ToString();
+		if( manaCost != null ) manaCost.text = cd.manaCost.ToString();
 
 		//Level section
 		//Level background
