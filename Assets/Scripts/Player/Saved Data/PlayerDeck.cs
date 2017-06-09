@@ -18,56 +18,56 @@ public class PlayerDeck {
 	{
 		//Cards in battle deck
 		//1
-		addCard( CardName.IceWall, 11, 1000, true );
+		addCard( CardName.IceWall, 11, 1, true );
 
 		//2
-		addCard( CardName.Sprint, 8, 1000, true );
+		addCard( CardName.Sprint, 8, 2, true );
 
 		//3
-		addCard( CardName.Raging_Bull, 1, 1000, true );
+		addCard( CardName.Raging_Bull, 1, 3, true );
 
 		//4
-		addCard( CardName.Grenade, 4, 1000, true );
+		addCard( CardName.Grenade, 4, 4, true );
 
 		//5
-		addCard( CardName.Stasis, 6, 1000, true );
+		addCard( CardName.Stasis, 6, 5, true );
 
 		//6
-		addCard( CardName.Trip_Mine, 5, 1000, false );
+		addCard( CardName.Trip_Mine, 5, 6, false );
 
 		//7
-		addCard( CardName.Shrink, 3, 1000, true );
+		addCard( CardName.Shrink, 3, 7, true );
 
 		//8
-		addCard( CardName.Sentry, 1, 1000, false );
+		addCard( CardName.Sentry, 1, 8, false );
 
 		//Part of card collection, but not in battle deck
 		//9
-		addCard( CardName.Lightning, 1, 1000, false );
+		addCard( CardName.Lightning, 1, 9, false );
 
 		//10
-		addCard( CardName.Linked_Fate, 1, 1000, false );
+		addCard( CardName.Linked_Fate, 1, 10, false );
 
 		//11
-		addCard( CardName.Double_Jump, 1, 1000, false );
+		addCard( CardName.Double_Jump, 1, 11, false );
 
 		//12
-		addCard( CardName.Firewall, 1, 1000, false );
+		addCard( CardName.Firewall, 1, 12, false );
 
 		//13
-		addCard( CardName.Supercharger, 1, 1000, false );
+		addCard( CardName.Supercharger, 1, 13, false );
 
 		//14
-		addCard( CardName.Hack, 1, 1000, false );
+		addCard( CardName.Hack, 1, 14, false );
 
 		//15
-		addCard( CardName.Homing_Missile, 1, 1000, false );
+		addCard( CardName.Homing_Missile, 1, 15, false );
 
 		//16
-		addCard( CardName.Steal, 1, 1000, true );
+		addCard( CardName.Steal, 1, 16, true );
 
 		//17
-		addCard( CardName.Reflect, 1, 1000, true );
+		addCard( CardName.Reflect, 1, 17, true );
 
 		serializePlayerDeck( true );
 
