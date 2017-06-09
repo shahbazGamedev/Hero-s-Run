@@ -15,6 +15,7 @@ public class Replay : MonoBehaviour
 	{
 		if (ReplayKit.APIAvailable)
 		{
+			recordingToggle.isOn = LevelManager.Instance.isRecordingSelected;
 			recordingToggle.gameObject.SetActive( true );
 			previewButton.gameObject.SetActive( true );
 		}

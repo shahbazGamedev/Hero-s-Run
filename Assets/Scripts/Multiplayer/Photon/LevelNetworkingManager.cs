@@ -18,7 +18,7 @@ public class LevelNetworkingManager : PunBehaviour
 	Vector3 rightStartPosition = new Vector3( 2f, 0.01f, 0 );
 	Vector3 centerStartPosition = new Vector3( 0, 0.01f, 0 );
 	
-	void Start()
+	IEnumerator Start()
 	{
 		if( GameManager.Instance.isMultiplayer() )
 		{
@@ -47,6 +47,9 @@ public class LevelNetworkingManager : PunBehaviour
 				PhotonNetwork.Instantiate(this.playerPrefab.name, startPosition, Quaternion.identity, 0);
 
 				createBot();
+				
+				//The yield is to prevent having one frame of the matchmaking screen in the video
+				yield return new WaitForEndOfFrame();
 
 				//Verify if the player wants to record the race
 				#if UNITY_IOS
