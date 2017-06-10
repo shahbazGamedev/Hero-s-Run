@@ -235,6 +235,6 @@ public class PlayerRaceManager {
 			#endif
 		}
 		GameManager.Instance.playerInventory.addCrowns( crownsEarned );
-		GameManager.Instance.playerInventory.serializePlayerInventory();
+		GameManager.Instance.playerInventory.serializePlayerInventory( true );
 	}
 }

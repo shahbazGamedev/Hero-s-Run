@@ -8,7 +8,6 @@ using UnityEngine.EventSystems;
 
 public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 
-	
 	[Header("Panels")]
 	[SerializeField] GameObject masterPanel;
 
@@ -115,6 +114,8 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 
 			case LootType.CARDS:
 				activateLootPanel( LootType.CARDS );
+				//The yield is needed or else the spin number coroutine won't start because the text will not be active (it takes a frame).
+				yield return new WaitForEndOfFrame();
 				CardManager.CardData cd = CardManager.Instance.getCardByName( loot.cardName );
 				PlayerDeck.PlayerCardData pcd = GameManager.Instance.playerDeck.getCardByName( loot.cardName );
 				//Card Image
@@ -200,8 +201,9 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		else
 		{
 			//Save
-			GameManager.Instance.playerInventory.serializePlayerInventory();
-			GameManager.Instance.playerDeck.serializePlayerDeck(true);
+			GameManager.Instance.playerInventory.serializePlayerInventory( false );
+			GameManager.Instance.playerDeck.serializePlayerDeck( false );
+			GameManager.Instance.playerIcons.serializePlayerIcons( true );
 			masterPanel.SetActive (false );
 		}
 	}

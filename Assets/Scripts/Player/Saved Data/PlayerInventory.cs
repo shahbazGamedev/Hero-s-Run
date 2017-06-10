@@ -65,7 +65,7 @@ public class PlayerInventory {
 			if( playerInventoryChangedNew != null ) playerInventoryChangedNew( PlayerInventoryEvent.Coin_Changed, currentCoins, value );
 			currentCoins = value;
 			//Save
-			serializePlayerInventory();
+			serializePlayerInventory( true );
 			Debug.Log("PlayerInventory-setting current coins to: " + value );
 		}
 		else
@@ -112,7 +112,7 @@ public class PlayerInventory {
 			if( playerInventoryChangedNew != null ) playerInventoryChangedNew( PlayerInventoryEvent.Gem_Balance_Changed, currentGems, value );
 			currentGems = value;
 			//Save
-			serializePlayerInventory();
+			serializePlayerInventory( true );
 			Debug.Log("PlayerInventory-setting current gems to: " + value );
 		}
 		else
@@ -131,7 +131,7 @@ public class PlayerInventory {
 	public void saveLastDisplayedCrownBalance( int value )
 	{
 		lastDisplayedCrownBalance = value;
-		serializePlayerInventory();
+		serializePlayerInventory( true );
 	}
 
 	public int getCrownBalance()
@@ -171,7 +171,7 @@ public class PlayerInventory {
 			if( playerInventoryChangedNew != null ) playerInventoryChangedNew( PlayerInventoryEvent.Crown_Balance_Changed, currentCrowns, value );
 			currentCrowns = value;
 			//Save
-			serializePlayerInventory();
+			serializePlayerInventory( true );
 			Debug.Log("PlayerInventory-setting current crowns to: " + value );
 		}
 		else
@@ -181,11 +181,11 @@ public class PlayerInventory {
 	}
 	#endregion
 
-	public void serializePlayerInventory()
+	public void serializePlayerInventory( bool saveImmediately )
 	{
 		string json  = JsonUtility.ToJson( this );
 		PlayerStatsManager.Instance.setPlayerInventory( json );
-		PlayerStatsManager.Instance.savePlayerStats();
+		if( saveImmediately ) PlayerStatsManager.Instance.savePlayerStats();
 	}
 }
 
