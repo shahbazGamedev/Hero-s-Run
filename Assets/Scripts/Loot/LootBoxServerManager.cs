@@ -111,11 +111,6 @@ public class LootBoxServerManager : MonoBehaviour {
 		lootBox.addLoot( loot );
 
 		loot = new LootBox.Loot();
-		loot.type = LootType.GEMS;
-		loot.quantity = Random.Range(2,4);
-		lootBox.addLoot( loot );
-
-		loot = new LootBox.Loot();
 		loot.type = LootType.CARDS;
 		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, CardRarity.COMMON );
 		loot.quantity = 5;
@@ -136,7 +131,6 @@ public class LootBoxServerManager : MonoBehaviour {
 		loot.quantity = 1;
 		lootBox.addLoot( loot );
 
-		//For testing - there are NO player Icons in the free loot boxes
 		loot = new LootBox.Loot();
 		loot.type = LootType.PLAYER_ICON;
 		loot.uniqueItemID = ProgressionManager.Instance.getRandomPlayerIconUniqueId();
@@ -157,11 +151,6 @@ public class LootBoxServerManager : MonoBehaviour {
 		lootBox.addLoot( loot );
 
 		loot = new LootBox.Loot();
-		loot.type = LootType.GEMS;
-		loot.quantity = Random.Range(2,4);
-		lootBox.addLoot( loot );
-
-		loot = new LootBox.Loot();
 		loot.type = LootType.CARDS;
 		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, CardRarity.COMMON );
 		loot.quantity = 5;
@@ -182,7 +171,6 @@ public class LootBoxServerManager : MonoBehaviour {
 		loot.quantity = 1;
 		lootBox.addLoot( loot );
 
-		//For testing - there are NO player Icons in the free loot boxes
 		loot = new LootBox.Loot();
 		loot.type = LootType.PLAYER_ICON;
 		loot.uniqueItemID = ProgressionManager.Instance.getRandomPlayerIconUniqueId();
@@ -203,11 +191,6 @@ public class LootBoxServerManager : MonoBehaviour {
 		lootBox.addLoot( loot );
 
 		loot = new LootBox.Loot();
-		loot.type = LootType.GEMS;
-		loot.quantity = Random.Range(2,4);
-		lootBox.addLoot( loot );
-
-		loot = new LootBox.Loot();
 		loot.type = LootType.CARDS;
 		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, CardRarity.COMMON );
 		loot.quantity = 5;
@@ -228,7 +211,6 @@ public class LootBoxServerManager : MonoBehaviour {
 		loot.quantity = 1;
 		lootBox.addLoot( loot );
 
-		//For testing - there are NO player Icons in the free loot boxes
 		loot = new LootBox.Loot();
 		loot.type = LootType.PLAYER_ICON;
 		loot.uniqueItemID = ProgressionManager.Instance.getRandomPlayerIconUniqueId();
@@ -245,7 +227,7 @@ public class LootBoxServerManager : MonoBehaviour {
 
 		LootBox.Loot loot = new LootBox.Loot();
 		loot.type = LootType.COINS;
-		loot.quantity = Random.Range(40,51);
+		loot.quantity = Random.Range(140,160);
 		lootBox.addLoot( loot );
 
 		loot = new LootBox.Loot();
@@ -274,7 +256,6 @@ public class LootBoxServerManager : MonoBehaviour {
 		loot.quantity = 1;
 		lootBox.addLoot( loot );
 
-		//For testing - there are NO player Icons in the free loot boxes
 		loot = new LootBox.Loot();
 		loot.type = LootType.PLAYER_ICON;
 		loot.uniqueItemID = ProgressionManager.Instance.getRandomPlayerIconUniqueId();

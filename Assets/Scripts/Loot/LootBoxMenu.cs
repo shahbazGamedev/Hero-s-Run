@@ -78,7 +78,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		lootList = lootBox.getLootList();
 		lootBox.print();
 		//Display the number of loot items in the loot box
-		lootCounterText.text = lootList.Count.ToString();
+		lootCounterText.text = ( lootList.Count -1 ).ToString();
 		StopAllCoroutines();
 		StartCoroutine( giveLoot( lootList[lootCounter] ) );
 		lootCounter++;

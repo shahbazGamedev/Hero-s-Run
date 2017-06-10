@@ -8,12 +8,14 @@ public class FreeLootBoxHandler : MonoBehaviour {
 
 	[SerializeField] TextMeshProUGUI nextFreeLootBoxText;
 	[SerializeField] TextMeshProUGUI freeLootBoxExplanationText;
+	[SerializeField] GameObject nextOneText;
 	const int HOURS_BETWEEN_FREE_LOOT_BOX = 2; //TO DO should be 4 hours
 
 	void Start ()
 	{
 		if( DateTime.UtcNow > getOpenTime() )
 		{
+			nextOneText.SetActive( false );
 			nextFreeLootBoxText.text = LocalizationManager.Instance.getText("FREE_LOOT_BOX_OPEN");
 		}
 		else
@@ -24,6 +26,7 @@ public class FreeLootBoxHandler : MonoBehaviour {
 
 	IEnumerator updateNextFreeLootBoxTime()
 	{
+		nextOneText.SetActive( true );
 		while( DateTime.UtcNow < getOpenTime() )
 		{
 			TimeSpan openTime = getOpenTime().Subtract( DateTime.UtcNow );
@@ -32,6 +35,7 @@ public class FreeLootBoxHandler : MonoBehaviour {
 			//Update every fifteen seconds
 			yield return new WaitForSecondsRealtime( 15 );
 		}
+		nextOneText.SetActive( false );
 		nextFreeLootBoxText.text = LocalizationManager.Instance.getText("FREE_LOOT_BOX_OPEN");
 	}
 
