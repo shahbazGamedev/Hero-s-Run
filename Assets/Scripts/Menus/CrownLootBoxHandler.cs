@@ -36,6 +36,7 @@ public class CrownLootBoxHandler : MonoBehaviour {
 
 	public void OnClickOpenCrownLootBox()
 	{
+		UISoundManager.uiSoundManager.playButtonClick();
 		if( GameManager.Instance.playerInventory.getCrownBalance() == CROWNS_NEEDED_TO_OPEN )
 		{
 			//Player has enough crowns. Open loot box.
