@@ -51,10 +51,6 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 
 	[Header("Loot Counter")]
 	[SerializeField] TextMeshProUGUI lootCounterText;
-	
-	Color NOT_ENOUGH_CARDS_TO_UPGRADE = Color.blue;
-	Color ENOUGH_CARDS_TO_UPGRADE = Color.green;
-	Color MAXED_OUT = Color.red;
 
 	List<LootBox.Loot> lootList;
 	int lootCounter = 0;
@@ -217,7 +213,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		//Progress bar section
 		if( CardManager.Instance.isCardAtMaxLevel( pcd.level, cd.rarity ) )
 		{
-			progressBarBackground.color = MAXED_OUT;
+			progressBarBackground.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.MAXED_OUT );
 			progressBarIndicator.color = Color.white;
 			progressBarIndicator.overrideSprite = progressBarMaxLevelIndicator;
 		}
@@ -225,13 +221,13 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		{
 			if( pcd.quantity >= numberOfCardsForUpgrade )
 			{
-				progressBarBackground.color = ENOUGH_CARDS_TO_UPGRADE;
-				progressBarIndicator.color = ENOUGH_CARDS_TO_UPGRADE;
+				progressBarBackground.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.ENOUGH_CARDS_TO_UPGRADE );
+				progressBarIndicator.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.ENOUGH_CARDS_TO_UPGRADE );
 			}
 			else
 			{
-				progressBarBackground.color = NOT_ENOUGH_CARDS_TO_UPGRADE;
-				progressBarIndicator.color = NOT_ENOUGH_CARDS_TO_UPGRADE;
+				progressBarBackground.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.NOT_ENOUGH_CARDS_TO_UPGRADE );
+				progressBarIndicator.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.NOT_ENOUGH_CARDS_TO_UPGRADE );
 			}
 			progressBarIndicator.overrideSprite = null;
 		}

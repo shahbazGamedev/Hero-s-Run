@@ -38,7 +38,13 @@ public enum CardSortMode
 	BY_MANA_COST = 1
 }
 
+public enum CardUpgradeColor
+{
+	NOT_ENOUGH_CARDS_TO_UPGRADE = 0,
+	ENOUGH_CARDS_TO_UPGRADE = 1,
+	MAXED_OUT = 2
 
+}
 
 /// <summary>
 /// Card name.
@@ -132,6 +138,26 @@ public class CardManager : MonoBehaviour {
 	public bool isCardAtMaxLevel( int level, CardRarity rarity )
 	{
 		return level == getMaxCardLevelForThisRarity( rarity );
+	}
+
+	public Color getCardUpgradeColor( CardUpgradeColor value )
+	{
+		Color cardUpgradeColor = Color.white;
+    	switch (value)
+		{
+	        case CardUpgradeColor.ENOUGH_CARDS_TO_UPGRADE:
+				cardUpgradeColor = Color.green;
+                break;
+	                
+	        case CardUpgradeColor.MAXED_OUT:
+				cardUpgradeColor = Color.red;
+                break;
+               
+	        case CardUpgradeColor.NOT_ENOUGH_CARDS_TO_UPGRADE:
+				cardUpgradeColor = Color.blue;
+				break;                
+		}
+		return cardUpgradeColor;
 	}
 
 	void initialize()

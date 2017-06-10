@@ -27,10 +27,6 @@ public class CardUIDetails : MonoBehaviour {
 	[Tooltip("The text displayed on top of the progress bar. If the player has 23 cards and needs 50 to upgrade, it will display '23/50'.")]
 	[SerializeField] Text progressBarText;
 
-	Color NOT_ENOUGH_CARDS_TO_UPGRADE = Color.blue;
-	Color ENOUGH_CARDS_TO_UPGRADE = Color.green;
-	Color MAXED_OUT = Color.red;
-
 	public void configureCard (PlayerDeck.PlayerCardData pcd, CardManager.CardData cd)
 	{
 		//security Check
@@ -77,19 +73,19 @@ public class CardUIDetails : MonoBehaviour {
 			//Do I have enough cards to level up the card?
 			if( pcd.quantity >= numberOfCardsForUpgrade )
 			{
-				progressBarBackground.color = ENOUGH_CARDS_TO_UPGRADE;
-				progressBarIndicator.color = ENOUGH_CARDS_TO_UPGRADE;
+				progressBarBackground.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.ENOUGH_CARDS_TO_UPGRADE );
+				progressBarIndicator.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.ENOUGH_CARDS_TO_UPGRADE );
 			}
 			else
 			{
-				progressBarBackground.color = NOT_ENOUGH_CARDS_TO_UPGRADE;
-				progressBarIndicator.color = NOT_ENOUGH_CARDS_TO_UPGRADE;
+				progressBarBackground.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.NOT_ENOUGH_CARDS_TO_UPGRADE );
+				progressBarIndicator.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.NOT_ENOUGH_CARDS_TO_UPGRADE );
 			}
 			progressBarIndicator.overrideSprite = null;
 		}
 		else
 		{
-			progressBarBackground.color = MAXED_OUT;
+			progressBarBackground.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.MAXED_OUT );
 			progressBarIndicator.color = Color.white;
 			progressBarIndicator.overrideSprite = progressBarMaxLevelIndicator;
 		}
