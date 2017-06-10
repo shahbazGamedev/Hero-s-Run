@@ -53,6 +53,8 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 
 	List<LootBox.Loot> lootList;
 	int lootCounter = 0;
+	const float ANIMATION_DURATION = 0.75f;
+	const float SHORT_ANIMATION_DURATION = 0.5f;
 
 	// Use this for initialization
 	void Start ()
@@ -141,7 +143,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 				{
 					cardLevelText.text = String.Format( LocalizationManager.Instance.getText( "CARD_LEVEL"), pcd.level.ToString() );
 				}
-				updateCardProgressBar( pcd, cd );
+				updateCardProgressBar( pcd, cd, loot.quantity );
 				//Add to player deck
 				GameManager.Instance.playerDeck.addCardFromLootBox( loot.cardName, loot.quantity );
 			break;
@@ -208,7 +210,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		}
 	}
 
-	void updateCardProgressBar( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
+	void updateCardProgressBar( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd, int numberCardsAdded )
 	{
 		int numberOfCardsForUpgrade;
 		if( pcd.level + 1 <= CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ) )
@@ -223,12 +225,17 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		//Progress bar section
 		if( CardManager.Instance.isCardAtMaxLevel( pcd.level, cd.rarity ) )
 		{
+			//MAXED OUT
 			progressBarFill.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.MAXED_OUT );
 			progressBarIndicator.color = Color.white;
 			progressBarIndicator.overrideSprite = progressBarMaxLevelIndicator;
+			//Slider is full
+			progressBarSlider.value = 1f;
+			progressBarText.text = string.Empty;
 		}
 		else
 		{
+			//NOT MAXED OUT
 			if( pcd.quantity >= numberOfCardsForUpgrade )
 			{
 				progressBarFill.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.ENOUGH_CARDS_TO_UPGRADE );
@@ -240,8 +247,23 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 				progressBarIndicator.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.NOT_ENOUGH_CARDS_TO_UPGRADE );
 			}
 			progressBarIndicator.overrideSprite = null;
+
+			//The number of cards has changed. Let's animate.
+			float animationDuration;
+			if( numberCardsAdded == 1 )
+			{
+				animationDuration = SHORT_ANIMATION_DURATION;
+			}
+			else
+			{
+				animationDuration = ANIMATION_DURATION;
+			}
+			float newNumberOfCards = pcd.quantity + numberCardsAdded;
+			string cardsOwned = "{0}/" + numberOfCardsForUpgrade.ToString();
+			progressBarText.GetComponent<UISpinNumber>().spinNumber( cardsOwned, pcd.quantity, newNumberOfCards, animationDuration, true );
+			progressBarSlider.value = pcd.quantity/(float)numberOfCardsForUpgrade;
+			float toValue = newNumberOfCards/numberOfCardsForUpgrade;
+			if( toValue <= 1f ) progressBarSlider.GetComponent<UIAnimateSlider>().animateSlider( toValue, animationDuration );
 		}
-		progressBarSlider.value = pcd.quantity/(float)numberOfCardsForUpgrade;
-		progressBarText.text = pcd.quantity.ToString() + "/" + numberOfCardsForUpgrade.ToString();
 	}
 }

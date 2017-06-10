@@ -82,15 +82,18 @@ public class CardUIDetails : MonoBehaviour {
 				progressBarIndicator.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.NOT_ENOUGH_CARDS_TO_UPGRADE );
 			}
 			progressBarIndicator.overrideSprite = null;
+			progressBarSlider.value = pcd.quantity/(float)numberOfCardsForUpgrade;
+			progressBarText.text = pcd.quantity.ToString() + "/" + numberOfCardsForUpgrade.ToString();
 		}
 		else
 		{
 			progressBarFill.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.MAXED_OUT );
 			progressBarIndicator.color = Color.white;
 			progressBarIndicator.overrideSprite = progressBarMaxLevelIndicator;
+			//Slider is full
+			progressBarSlider.value = 1f;
+			progressBarText.text = LocalizationManager.Instance.getText( "CARD_MAX_LEVEL");
 		}
-		progressBarSlider.value = pcd.quantity/(float)numberOfCardsForUpgrade;
-		progressBarText.text = pcd.quantity.ToString() + "/" + numberOfCardsForUpgrade.ToString();
 	}
 	
 }
