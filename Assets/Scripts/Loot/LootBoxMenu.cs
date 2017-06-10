@@ -46,7 +46,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 	[Tooltip("The slider used to show the progress before the card can be upgraded.")]
 	[SerializeField] Slider progressBarSlider;
 	[Tooltip("The text displayed on top of the progress bar. If the player has 23 cards and needs 50 to upgrade, it will display '23/50'.")]
-	[SerializeField] Text progressBarText;
+	[SerializeField] TextMeshProUGUI progressBarText;
 
 	[Header("Loot Counter")]
 	[SerializeField] TextMeshProUGUI lootCounterText;
@@ -141,7 +141,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 				{
 					cardLevelText.text = String.Format( LocalizationManager.Instance.getText( "CARD_LEVEL"), pcd.level.ToString() );
 				}
-				//updateCardProgressBar( pcd, cd );
+				updateCardProgressBar( pcd, cd );
 				//Add to player deck
 				GameManager.Instance.playerDeck.addCardFromLootBox( loot.cardName, loot.quantity );
 			break;
@@ -210,7 +210,15 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 
 	void updateCardProgressBar( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
-		int numberOfCardsForUpgrade = CardManager.Instance.getNumberOfCardsRequiredForUpgrade( CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ), cd.rarity );
+		int numberOfCardsForUpgrade;
+		if( pcd.level + 1 <= CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ) )
+		{
+			numberOfCardsForUpgrade = CardManager.Instance.getNumberOfCardsRequiredForUpgrade( pcd.level + 1, cd.rarity );
+		}
+		else
+		{
+			numberOfCardsForUpgrade = CardManager.Instance.getNumberOfCardsRequiredForUpgrade( CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ), cd.rarity );
+		}
 
 		//Progress bar section
 		if( CardManager.Instance.isCardAtMaxLevel( pcd.level, cd.rarity ) )
