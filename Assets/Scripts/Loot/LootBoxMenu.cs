@@ -37,8 +37,8 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 	[SerializeField] TextMeshProUGUI cardLevelText;
 
 	[Header("Progress Bar")]
-	[Tooltip("The progress bar is displayed below the card. The color of the background varies depending on whether the card is: not ready to be upgraded, ready to to be upgraded or maxed out.")]
-	[SerializeField] Image progressBarBackground;
+	[Tooltip("The color of the slider fill varies depending on whether the card is: not ready to be upgraded, ready to to be upgraded or maxed out.")]
+	[SerializeField] Image progressBarFill;
 	[Tooltip("The indicator varies depending on whether the card is not ready to be upgraded, ready to to be upgraded or maxed out. If it is not ready to be upgraded, it is an arrow. If it is ready to be upgraded, it is an arrow bouncing up and down. If it is maxed out, it displays the sprite specified by progressBarMaxLevelIndicator.")]
 	[SerializeField] Image progressBarIndicator;	
 	[Tooltip("The sprite to use when the card is Maxed Out.")]
@@ -223,7 +223,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		//Progress bar section
 		if( CardManager.Instance.isCardAtMaxLevel( pcd.level, cd.rarity ) )
 		{
-			progressBarBackground.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.MAXED_OUT );
+			progressBarFill.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.MAXED_OUT );
 			progressBarIndicator.color = Color.white;
 			progressBarIndicator.overrideSprite = progressBarMaxLevelIndicator;
 		}
@@ -231,12 +231,12 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		{
 			if( pcd.quantity >= numberOfCardsForUpgrade )
 			{
-				progressBarBackground.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.ENOUGH_CARDS_TO_UPGRADE );
+				progressBarFill.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.ENOUGH_CARDS_TO_UPGRADE );
 				progressBarIndicator.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.ENOUGH_CARDS_TO_UPGRADE );
 			}
 			else
 			{
-				progressBarBackground.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.NOT_ENOUGH_CARDS_TO_UPGRADE );
+				progressBarFill.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.NOT_ENOUGH_CARDS_TO_UPGRADE );
 				progressBarIndicator.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.NOT_ENOUGH_CARDS_TO_UPGRADE );
 			}
 			progressBarIndicator.overrideSprite = null;
