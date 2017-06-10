@@ -129,6 +129,11 @@ public class CardManager : MonoBehaviour {
 		return maxCardLevelForThisRarity;
 	}
 
+	public bool isCardAtMaxLevel( int level, CardRarity rarity )
+	{
+		return level == getMaxCardLevelForThisRarity( rarity );
+	}
+
 	void initialize()
 	{
 		//Common, Rare, Epic, Legendary

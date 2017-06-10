@@ -8,23 +8,34 @@ using UnityEngine.EventSystems;
 
 public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 
-	[SerializeField] GameObject lootPanel;
-	[SerializeField] CardUIDetails cardUIDetails;
-	[SerializeField] Image lootSprite;
-	[SerializeField] TextMeshProUGUI lootNameText;
-	[SerializeField] TextMeshProUGUI lootAmountText;
-	[SerializeField] TextMeshProUGUI lootCounterText;
-	[SerializeField] GameObject cardProgressPanel;
-	[SerializeField] Sprite coinSprite;
-	[SerializeField] Sprite gemSprite;
-	[SerializeField] Sprite coinCardSprite;
-	[SerializeField] Sprite gemCardSprite;
-	[SerializeField] GameObject rarityPanel;
-	[SerializeField] TextMeshProUGUI rarityText;
+	
+	[Header("Panels")]
+	[SerializeField] GameObject masterPanel;
+
+	[SerializeField] GameObject coinPanel;
+	[SerializeField] GameObject gemPanel;
+	[SerializeField] GameObject cardPanel;
+	[SerializeField] GameObject playerIconPanel;
+
+	[Header("Coin Panel")]
+	[SerializeField] TextMeshProUGUI coinAmountText;
+	[SerializeField] TextMeshProUGUI coinBalanceText;
+
+	[Header("Gem Panel")]
+	[SerializeField] TextMeshProUGUI gemAmountText;
+	[SerializeField] TextMeshProUGUI gemBalanceText;
+
+	[Header("Player Icon Panel")]
+	[SerializeField] Image playerIconImage;
+	[SerializeField] TextMeshProUGUI playerIconNameText;
+
+	[Header("Card Panel")]
+	[SerializeField] Image cardImage;
+	[SerializeField] TextMeshProUGUI cardAmountText;
+	[SerializeField] TextMeshProUGUI cardNameText;
 	[SerializeField] Image rarityIcon;
-	[SerializeField] GameObject currencyPanel;
-	[SerializeField] Image currencyIcon;
-	[SerializeField] TextMeshProUGUI currencyAmountText;
+	[SerializeField] TextMeshProUGUI rarityText;
+	[SerializeField] TextMeshProUGUI cardLevelText;
 
 	[Header("Progress Bar")]
 	[Tooltip("The progress bar is displayed below the card. The color of the background varies depending on whether the card is: not ready to be upgraded, ready to to be upgraded or maxed out.")]
@@ -37,13 +48,14 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 	[SerializeField] Slider progressBarSlider;
 	[Tooltip("The text displayed on top of the progress bar. If the player has 23 cards and needs 50 to upgrade, it will display '23/50'.")]
 	[SerializeField] Text progressBarText;
+
+	[Header("Loot Counter")]
+	[SerializeField] TextMeshProUGUI lootCounterText;
+	
 	Color NOT_ENOUGH_CARDS_TO_UPGRADE = Color.blue;
 	Color ENOUGH_CARDS_TO_UPGRADE = Color.green;
 	Color MAXED_OUT = Color.red;
 
-	[Header("Level")]
-	[Tooltip("The level text is displayed on top of the card image. For example: 'Level 5' or 'Max Level'. The text color varies with the card rarity.")]
-	[SerializeField] TextMeshProUGUI levelText;
 	List<LootBox.Loot> lootList;
 	int lootCounter = 0;
 
@@ -76,96 +88,72 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		StopAllCoroutines();
 		StartCoroutine( giveLoot( lootList[lootCounter] ) );
 		lootCounter++;
-		lootPanel.SetActive (true );
+		masterPanel.SetActive (true );
 	}
 
 	IEnumerator giveLoot( LootBox.Loot loot )
 	{
-		lootSprite.material = null;
 		switch( loot.type )
 		{
 			case LootType.COINS:
-				levelText.color = Color.white;
-				levelText.gameObject.SetActive( true );
-				levelText.text = LocalizationManager.Instance.getText( "LOOT_BOX_YOU_HAVE" );
-				rarityPanel.SetActive( false );
-				currencyPanel.SetActive( true );
-				cardProgressPanel.SetActive( false );
+				activateLootPanel( LootType.COINS );
+				//The yield is needed or else the spin number coroutine won't start because the text will not be active (it takes a frame).
 				yield return new WaitForEndOfFrame();
-				currencyIcon.sprite = coinSprite;
-				lootNameText.text = LocalizationManager.Instance.getText( "STORE_COINS_TITLE" );
-				displayLootReceived( "+" + loot.quantity.ToString(), coinCardSprite );
+				coinAmountText.text = "+" + loot.quantity.ToString();
 				int coinBalance = GameManager.Instance.playerInventory.getCoinBalance();
 				int newCoinBalance = coinBalance + loot.quantity;
-				currencyAmountText.gameObject.SetActive( true);
-				currencyAmountText.GetComponent<UISpinNumber>().spinNumber( "{0}", coinBalance, newCoinBalance, 2f, true );
+				coinBalanceText.GetComponent<UISpinNumber>().spinNumber( "{0}", coinBalance, newCoinBalance, 2f, true );
 				GameManager.Instance.playerInventory.addCoins( loot.quantity );
 			break;
 
 			case LootType.GEMS:
-				levelText.color = Color.white;
-				levelText.gameObject.SetActive( true );
-				levelText.text = LocalizationManager.Instance.getText( "LOOT_BOX_YOU_HAVE" );
-				cardProgressPanel.SetActive( false );
-				currencyPanel.SetActive( true );
+				activateLootPanel( LootType.GEMS );
+				//The yield is needed or else the spin number coroutine won't start because the text will not be active (it takes a frame).
 				yield return new WaitForEndOfFrame();
-				currencyIcon.sprite = gemSprite;
-				rarityPanel.SetActive( false );
-				lootNameText.text = LocalizationManager.Instance.getText( "STORE_GEMS_TITLE" );
+				gemAmountText.text = "+" + loot.quantity.ToString();
 				int gemBalance = GameManager.Instance.playerInventory.getGemBalance();
 				int newGemBalance = gemBalance + loot.quantity;
-				currencyAmountText.gameObject.SetActive( true);
-				currencyAmountText.GetComponent<UISpinNumber>().spinNumber( "{0}", gemBalance, newGemBalance, 2f, true );
+				gemBalanceText.GetComponent<UISpinNumber>().spinNumber( "{0}", gemBalance, newGemBalance, 2f, true );
 				GameManager.Instance.playerInventory.addGems( loot.quantity );
-				displayLootReceived( "+" + loot.quantity.ToString(), gemCardSprite );
 			break;
 
 			case LootType.CARDS:
-				levelText.gameObject.SetActive( true );
-				cardProgressPanel.SetActive( true );
-				currencyPanel.SetActive( false );
-				rarityPanel.SetActive( true );
-				GameManager.Instance.playerDeck.addCardFromLootBox( loot.cardName, loot.quantity );
+				activateLootPanel( LootType.CARDS );
 				CardManager.CardData cd = CardManager.Instance.getCardByName( loot.cardName );
 				PlayerDeck.PlayerCardData pcd = GameManager.Instance.playerDeck.getCardByName( loot.cardName );
-				cardUIDetails.configureCard( pcd, cd );
-				//Card name
-				string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + pcd.name.ToString().ToUpper() );
-				lootNameText.text = localizedCardName;
-				displayLootReceived( "+" + loot.quantity.ToString() );
-				//Level section
-				//Level background
+				//Card Image
+				cardImage.sprite = cd.icon;
+				//Legendary cards may have special effects
+				cardImage.material = cd.cardMaterial;
+				//The amount of cards you are receiving
+				cardAmountText.text = "x" + loot.quantity.ToString();
+				//The localized name of the card
+				cardNameText.text = LocalizationManager.Instance.getText( "CARD_NAME_" + pcd.name.ToString().ToUpper() );
+				//Card rarity icon and text
 				Color rarityColor;
-				ColorUtility.TryParseHtmlString (CardManager.Instance.getCardColorHexValue(cd.rarity), out rarityColor);
-				if( levelText != null ) levelText.color = rarityColor;
-		
-				//Level text
-				if( pcd.level + 1 < CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ) )
-				{
-					if( levelText != null ) levelText.text = String.Format( LocalizationManager.Instance.getText( "CARD_LEVEL"), pcd.level.ToString() );
-				}
-				else
-				{
-					if( levelText != null ) levelText.text = LocalizationManager.Instance.getText( "CARD_MAX_LEVEL");
-				}
-				//Rarity
 				ColorUtility.TryParseHtmlString (CardManager.Instance.getCardColorHexValue(cd.rarity), out rarityColor);
 				rarityIcon.color = rarityColor;
 				rarityText.text = LocalizationManager.Instance.getText( "CARD_RARITY_" + cd.rarity.ToString() );
-				updateCardProgressBar( pcd, cd );
-				lootSprite.material = cd.cardMaterial;
-
+				//Card level
+				cardLevelText.color = rarityColor;
+				if( CardManager.Instance.isCardAtMaxLevel( pcd.level, cd.rarity ) )
+				{
+					cardLevelText.text = LocalizationManager.Instance.getText( "CARD_MAX_LEVEL");
+				}
+				else
+				{
+					cardLevelText.text = String.Format( LocalizationManager.Instance.getText( "CARD_LEVEL"), pcd.level.ToString() );
+				}
+				//updateCardProgressBar( pcd, cd );
+				//Add to player deck
+				GameManager.Instance.playerDeck.addCardFromLootBox( loot.cardName, loot.quantity );
 			break;
 
 			case LootType.PLAYER_ICON:
-				cardProgressPanel.SetActive( false );
-				currencyPanel.SetActive( false );
-				rarityPanel.SetActive( false );
-				lootNameText.text = LocalizationManager.Instance.getText( "PLAYER_ICON_MENU_TITLE" );
+				activateLootPanel( LootType.PLAYER_ICON );
+				playerIconImage.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( loot.uniqueItemID ).icon;
+				playerIconNameText.text = LocalizationManager.Instance.getText( "PLAYER_ICON_" + loot.uniqueItemID.ToString() );
 				GameManager.Instance.playerIcons.unlockPlayerIcon( loot.uniqueItemID );
-				string iconName = LocalizationManager.Instance.getText( "PLAYER_ICON_" + loot.uniqueItemID.ToString() );
-				displayLootReceived( iconName, ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( loot.uniqueItemID ).icon );
-				levelText.gameObject.SetActive( false );
 			break;
 			
 			default:
@@ -176,10 +164,31 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 
 	}
 
-	void displayLootReceived( string text, Sprite sprite = null )
+	void activateLootPanel( LootType type )
 	{
-		if( sprite != null ) lootSprite.sprite = sprite;
-		lootAmountText.text = text;
+		coinPanel.SetActive( false );
+		gemPanel.SetActive( false );
+		cardPanel.SetActive( false );
+		playerIconPanel.SetActive( false );
+
+		switch( type )
+		{
+			case LootType.COINS:
+				coinPanel.SetActive( true );
+			break;
+
+			case LootType.GEMS:
+				gemPanel.SetActive( true );
+			break;
+
+			case LootType.CARDS:
+				cardPanel.SetActive( true );
+			break;
+
+			case LootType.PLAYER_ICON:
+				playerIconPanel.SetActive( true );
+			break;
+		}
 	}
 
 	public void OnPointerDown(PointerEventData data)
@@ -197,29 +206,23 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 			//Save
 			GameManager.Instance.playerInventory.serializePlayerInventory();
 			GameManager.Instance.playerDeck.serializePlayerDeck(true);
-			lootPanel.SetActive (false );
+			masterPanel.SetActive (false );
 		}
 	}
 
 	void updateCardProgressBar( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
-		//Level text and numberOfCardsForUpgrade
-		int numberOfCardsForUpgrade;
-		if( pcd.level + 1 < CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ) )
+		int numberOfCardsForUpgrade = CardManager.Instance.getNumberOfCardsRequiredForUpgrade( CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ), cd.rarity );
+
+		//Progress bar section
+		if( CardManager.Instance.isCardAtMaxLevel( pcd.level, cd.rarity ) )
 		{
-			numberOfCardsForUpgrade = CardManager.Instance.getNumberOfCardsRequiredForUpgrade( pcd.level + 1, cd.rarity );
-			if( levelText != null ) levelText.text = String.Format( LocalizationManager.Instance.getText( "CARD_LEVEL"), pcd.level.ToString() );
+			progressBarBackground.color = MAXED_OUT;
+			progressBarIndicator.color = Color.white;
+			progressBarIndicator.overrideSprite = progressBarMaxLevelIndicator;
 		}
 		else
 		{
-			numberOfCardsForUpgrade = CardManager.Instance.getNumberOfCardsRequiredForUpgrade( CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ), cd.rarity );
-			if( levelText != null ) levelText.text = LocalizationManager.Instance.getText( "CARD_MAX_LEVEL");
-		}
-
-		//Progress bar section
-		if( pcd.level + 1 < CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ) )
-		{
-			//Do I have enough cards to level up the card?
 			if( pcd.quantity >= numberOfCardsForUpgrade )
 			{
 				progressBarBackground.color = ENOUGH_CARDS_TO_UPGRADE;
@@ -231,12 +234,6 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 				progressBarIndicator.color = NOT_ENOUGH_CARDS_TO_UPGRADE;
 			}
 			progressBarIndicator.overrideSprite = null;
-		}
-		else
-		{
-			progressBarBackground.color = MAXED_OUT;
-			progressBarIndicator.color = Color.white;
-			progressBarIndicator.overrideSprite = progressBarMaxLevelIndicator;
 		}
 		progressBarSlider.value = pcd.quantity/(float)numberOfCardsForUpgrade;
 		progressBarText.text = pcd.quantity.ToString() + "/" + numberOfCardsForUpgrade.ToString();
