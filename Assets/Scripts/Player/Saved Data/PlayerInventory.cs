@@ -136,7 +136,7 @@ public class PlayerInventory {
 
 	public int getCrownBalance()
 	{
-		return 10;
+		return currentCrowns;
 	}
 
 	/// <summary>

@@ -77,9 +77,6 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		lootCounter = 0;
 		lootList = lootBox.getLootList();
 		lootBox.print();
-		GameManager.Instance.playerProfile.setLastFreeLootBoxOpenedTime( DateTime.UtcNow );
-		//Schedule a local notification to remind the player of when his next free loot box will be available
-		NotificationServicesHandler.Instance.scheduleFreeLootBoxNotification(240);
 		//Display the number of loot items in the loot box
 		lootCounterText.text = lootList.Count.ToString();
 		StopAllCoroutines();
