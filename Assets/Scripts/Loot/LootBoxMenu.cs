@@ -53,6 +53,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 
 	List<LootBox.Loot> lootList;
 	int lootCounter = 0;
+	int numberOfCardsForUpgrade;
 	const float ANIMATION_DURATION = 0.75f;
 	const float SHORT_ANIMATION_DURATION = 0.5f;
 
@@ -209,7 +210,6 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 
 	void updateCardProgressBar( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd, int numberCardsAdded )
 	{
-		int numberOfCardsForUpgrade;
 		if( pcd.level + 1 <= CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ) )
 		{
 			numberOfCardsForUpgrade = CardManager.Instance.getNumberOfCardsRequiredForUpgrade( pcd.level + 1, cd.rarity );
@@ -260,12 +260,22 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 			progressBarText.GetComponent<UISpinNumber>().spinNumber( cardsOwned, pcd.quantity, newNumberOfCards, animationDuration, true, onCardIncrement );
 			progressBarSlider.value = pcd.quantity/(float)numberOfCardsForUpgrade;
 			float toValue = newNumberOfCards/numberOfCardsForUpgrade;
-			if( toValue <= 1f ) progressBarSlider.GetComponent<UIAnimateSlider>().animateSlider( toValue, animationDuration );
+			if( toValue > 1f ) toValue = 1f;
+			progressBarSlider.GetComponent<UIAnimateSlider>().animateSlider( toValue, animationDuration );
 		}
 	}
 
 	void onCardIncrement( int value)
 	{
-		print("onCardIncrement " + value );
+		if( value >= numberOfCardsForUpgrade )
+		{
+			progressBarFill.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.ENOUGH_CARDS_TO_UPGRADE );
+			progressBarIndicator.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.ENOUGH_CARDS_TO_UPGRADE );
+		}
+		else
+		{
+			progressBarFill.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.NOT_ENOUGH_CARDS_TO_UPGRADE );
+			progressBarIndicator.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.NOT_ENOUGH_CARDS_TO_UPGRADE );
+		}
 	}
 }

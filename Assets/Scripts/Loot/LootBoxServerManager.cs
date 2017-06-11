@@ -113,7 +113,7 @@ public class LootBoxServerManager : MonoBehaviour {
 		loot = new LootBox.Loot();
 		loot.type = LootType.CARDS;
 		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, CardRarity.COMMON );
-		loot.quantity = 5;
+		loot.quantity = 50;
 		lootBox.addLoot( loot );
 
 		loot = new LootBox.Loot();
