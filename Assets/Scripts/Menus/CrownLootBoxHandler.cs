@@ -20,11 +20,11 @@ public class CrownLootBoxHandler : MonoBehaviour {
 		int previousCrowns = GameManager.Instance.playerInventory.getLastDisplayedCrownBalance();
 		int currentCrowns = GameManager.Instance.playerInventory.getCrownBalance();
 
-		if( GameManager.Instance.playerInventory.getLastDisplayedCrownBalance() != GameManager.Instance.playerInventory.getCrownBalance() )
+		if( previousCrowns != currentCrowns )
 		{
 			//The number of crowns has changed. Let's animate.
 			crownLootBoxText.GetComponent<UISpinNumber>().spinNumber( crownLootBoxOwned, previousCrowns, currentCrowns, ANIMATION_DURATION, true, OnIncrement );
-			crownsOwnedProgressBar.value = GameManager.Instance.playerInventory.getLastDisplayedCrownBalance()/(float)CROWNS_NEEDED_TO_OPEN;
+			crownsOwnedProgressBar.value = previousCrowns/(float)CROWNS_NEEDED_TO_OPEN;
 			crownsOwnedProgressBar.GetComponent<UIAnimateSlider>().animateSlider( (float)currentCrowns/CROWNS_NEEDED_TO_OPEN, ANIMATION_DURATION );
 			GameManager.Instance.playerInventory.saveLastDisplayedCrownBalance( currentCrowns );
 		}
@@ -73,7 +73,7 @@ public class CrownLootBoxHandler : MonoBehaviour {
 			GameManager.Instance.playerInventory.saveLastDisplayedCrownBalance( 0 );
 			LootBoxClientManager.Instance.requestLootBox( LootBoxType.CROWN );
 			crownLootBoxText.alignment = TextAlignmentOptions.Left;
-			crownLootBoxText.text = string.Format( crownLootBoxOwned, GameManager.Instance.playerInventory.getCrownBalance(), CROWNS_NEEDED_TO_OPEN );
+			crownLootBoxText.text = string.Format( crownLootBoxOwned, 0, CROWNS_NEEDED_TO_OPEN );
 			crownsOwnedProgressBar.value = 0;
 			toOpenText.SetActive( true );
 		}
