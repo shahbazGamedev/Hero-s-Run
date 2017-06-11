@@ -21,7 +21,7 @@ public class Replay : MonoBehaviour
 		}
 		else
 		{
-			recordingToggle.gameObject.SetActive( false );
+			if( recordingToggle != null ) recordingToggle.gameObject.SetActive( false );
 			previewButton.gameObject.SetActive( false );
 		}
 	}

@@ -207,6 +207,9 @@ public class PlayerRaceManager {
 				}
 			break;
 			#if UNITY_EDITOR
+			case PlayMode.PlayAlone:
+				crownsEarned = 6;
+			break;
 			case PlayMode.PlayAgainstEnemy:
 				if( racePosition == 1 ) 
 				{
