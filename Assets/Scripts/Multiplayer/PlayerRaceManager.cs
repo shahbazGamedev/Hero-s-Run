@@ -120,7 +120,15 @@ public class PlayerRaceManager {
 				int coinsAwardedOnVictory = LevelManager.Instance.getSelectedCircuit().coinsAwardedOnVictory;
 				GameManager.Instance.playerInventory.addCoins( coinsAwardedOnVictory );
 			}
+			//For rate this app
+			LevelManager.Instance.consecutiveRacesWon++;
 		}
+		else
+		{
+			//For rate this app
+			LevelManager.Instance.consecutiveRacesWon = 0;
+		}
+
 		if( GameManager.Instance.canEarnTrophies() )
 		{
 			//Note: trophiesEarnedLastRace will be negative if the player lost.
@@ -159,6 +167,10 @@ public class PlayerRaceManager {
 			GameManager.Instance.playerProfile.serializePlayerprofile();
 			Debug.Log("PlayerRaceManager-playerAbandonedRace: trophies lost " + trophiesLost );
 		}
+
+		//For rate this app
+		LevelManager.Instance.consecutiveRacesWon = 0;
+
 		#if UNITY_IOS
 		//When the player quits the race stop the recording and discard the video
 		try

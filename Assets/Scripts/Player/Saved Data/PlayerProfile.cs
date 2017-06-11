@@ -25,6 +25,12 @@ public class PlayerProfile {
 	private DateTime lastMatchPlayedTime = new DateTime(1970,01,01);
 	private DateTime lastMatchWonTime = new DateTime(1970,01,01);
 	private DateTime lastFreeLootBoxOpenedTime = new DateTime(1970,01,01);
+	//Rate This App
+	public string lastTimeRateThisAppWasShownString = "01/01/1970 00:00:00";
+	private DateTime lastTimeRateThisAppWasShown = new DateTime(1970,01,01);
+	public bool didPlayerRateApp = false;
+	public int timesRateThisAppDisplayed = 0;
+
 	//This is the unique Id of the player icon.
 	//By default, the Id is zero. This is the Id of the default player icon that new players have.
 	//The user can change his player icon in the Player Icon screen.
@@ -184,6 +190,18 @@ public class PlayerProfile {
 		return lastFreeLootBoxOpenedTime;
 	}
 
+	public void setLastTimeRateThisAppWasShown( DateTime lastTimeRateThisAppWasShown )
+	{
+		this.lastTimeRateThisAppWasShown = lastTimeRateThisAppWasShown;
+		serializePlayerprofile();
+	}
+
+	public DateTime getLastTimeRateThisAppWasShown()
+	{
+		lastTimeRateThisAppWasShown = Convert.ToDateTime (lastTimeRateThisAppWasShownString); 
+		return lastTimeRateThisAppWasShown;
+	}
+
 	public void setPlayerIconId( int value )
 	{
 		if( value >= 0 && value < ProgressionManager.Instance.getNumberOfPlayerIcons() )
@@ -207,6 +225,7 @@ public class PlayerProfile {
 		lastMatchPlayedTimeString = lastMatchPlayedTime.ToString();
 		lastMatchWonTimeString = lastMatchWonTime.ToString();
 		lastFreeLootBoxOpenedTimeString = lastFreeLootBoxOpenedTime.ToString();
+		lastTimeRateThisAppWasShownString = lastTimeRateThisAppWasShown.ToString();
 		string json  = JsonUtility.ToJson( this );
 		PlayerStatsManager.Instance.setPlayerProfile( json );
 		PlayerStatsManager.Instance.savePlayerStats();
