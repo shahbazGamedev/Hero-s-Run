@@ -21,13 +21,13 @@ public class UISpinNumber : MonoBehaviour {
 	/// <param name="toValue">To value.</param>
 	/// <param name="duration">Duration.</param>
 	/// <param name="onFinish">On finish.</param>
-	public void spinNumber ( string mainText, float fromValue, float toValue, float duration, bool onlySpinIfIncreasing, System.Action onFinish = null )
+	public void spinNumber ( string mainText, float fromValue, float toValue, float duration, bool onlySpinIfIncreasing, System.Action<int> onIncrement = null )
 	{
 		if( onlySpinIfIncreasing )
 		{
 			if( toValue > fromValue )
 			{
-				StartCoroutine( numberSpin(  mainText, fromValue, toValue, duration, onFinish ) );
+				StartCoroutine( numberSpin(  mainText, fromValue, toValue, duration, onIncrement ) );
 			}
 			else
 			{
@@ -36,11 +36,11 @@ public class UISpinNumber : MonoBehaviour {
 		}
 		else
 		{
-			StartCoroutine( numberSpin(  mainText, fromValue, toValue, duration, onFinish ) );
+			StartCoroutine( numberSpin(  mainText, fromValue, toValue, duration, onIncrement ) );
 		}
 	}
 
-	IEnumerator numberSpin( string mainText, float fromValue, float toValue, float duration, System.Action onFinish = null )
+	IEnumerator numberSpin( string mainText, float fromValue, float toValue, float duration, System.Action<int> onIncrement = null )
 	{
 		float startTime = Time.time;
 		float elapsedTime = 0;
@@ -56,11 +56,11 @@ public class UISpinNumber : MonoBehaviour {
 			if( (int)value != previousValue )
 			{
 				text.text = string.Format( mainText, ((int)value).ToString("N0") );
+				if( onIncrement != null && previousValue != -1 ) onIncrement((int)value);
 				previousValue = (int)value;
 			}
 			yield return new WaitForEndOfFrame();  
 	    }
-		if( onFinish != null ) onFinish.Invoke();
 	}
 
 }

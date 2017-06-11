@@ -192,7 +192,7 @@ public class UniversalTopBar : MonoBehaviour {
 		}
 	}
 
-	void animateProgressBar( int previousValue, int newValue, float duration, System.Action onFinish = null )
+	void animateProgressBar( int previousValue, int newValue, float duration, System.Action<int> onFinish = null )
 	{
 		//Only proceed if the progress bar is displayed. A coroutine cannot be started on an inactive object.
 		if( progressHolder.gameObject.activeSelf )
@@ -218,7 +218,7 @@ public class UniversalTopBar : MonoBehaviour {
 	/// Animation completed callback. This is called when the progress bar text has finished animating.
 	/// It will trigger a second animation since the player has leveled up in this case.
 	/// </summary>
-	void animationCompletedCallback()
+	void animationCompletedCallback( int value )
 	{
 		GameManager.Instance.playerProfile.incrementLevel();
 		progressBarSlider.value = 0;

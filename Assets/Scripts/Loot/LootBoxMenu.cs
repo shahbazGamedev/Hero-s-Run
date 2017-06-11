@@ -257,10 +257,15 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 			}
 			float newNumberOfCards = pcd.quantity + numberCardsAdded;
 			string cardsOwned = "{0}/" + numberOfCardsForUpgrade.ToString();
-			progressBarText.GetComponent<UISpinNumber>().spinNumber( cardsOwned, pcd.quantity, newNumberOfCards, animationDuration, true );
+			progressBarText.GetComponent<UISpinNumber>().spinNumber( cardsOwned, pcd.quantity, newNumberOfCards, animationDuration, true, onCardIncrement );
 			progressBarSlider.value = pcd.quantity/(float)numberOfCardsForUpgrade;
 			float toValue = newNumberOfCards/numberOfCardsForUpgrade;
 			if( toValue <= 1f ) progressBarSlider.GetComponent<UIAnimateSlider>().animateSlider( toValue, animationDuration );
 		}
+	}
+
+	void onCardIncrement( int value)
+	{
+		print("onCardIncrement " + value );
 	}
 }
