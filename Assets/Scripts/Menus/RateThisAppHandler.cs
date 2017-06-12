@@ -8,14 +8,14 @@ public class RateThisAppHandler : MonoBehaviour {
 	const int MAX_TIMES_DISPLAY_RATE_THIS_APP = 3;
 	const int HOURS_TO_WAIT_BEFORE_SHOWING_AGAIN = 48;
 	const int NUMBER_OF_CONSECUTIVE_WINS_NEEDED = 2;
-	const string IOS_RATE_THIS_APP = "itms-apps://itunes.apple.com/apps/id";
-	const string BUNDLE_ID = "com.redlondongames.DragonRunSaga";
+
+	const string IOS_RATE_THIS_APP = "itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=";
 	const string IOS_ID = "797936081";
 	const string IOS_RATE_THIS_APP_URL = IOS_RATE_THIS_APP + IOS_ID;
-	const string ANDROID_RATE_THIS_APP = "market://details?id=";
-	const string ANDROID_RATE_THIS_APP_URL = ANDROID_RATE_THIS_APP + BUNDLE_ID;
-	[SerializeField] GameObject rateThisAppPanel;
+
 	const string TEST_RATE_THIS_APP_URL = "itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=1078466627";
+
+	[SerializeField] GameObject rateThisAppPanel;
 
 	// Use this for initialization
 	void Start ()
