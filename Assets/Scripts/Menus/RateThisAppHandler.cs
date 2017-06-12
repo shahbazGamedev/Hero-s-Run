@@ -15,6 +15,7 @@ public class RateThisAppHandler : MonoBehaviour {
 	const string ANDROID_RATE_THIS_APP = "market://details?id=";
 	const string ANDROID_RATE_THIS_APP_URL = ANDROID_RATE_THIS_APP + BUNDLE_ID;
 	[SerializeField] GameObject rateThisAppPanel;
+	const string TEST_RATE_THIS_APP_URL = "itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=1078466627";
 
 	// Use this for initialization
 	void Start ()
