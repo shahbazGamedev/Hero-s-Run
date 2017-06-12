@@ -9,7 +9,7 @@ public class FreeLootBoxHandler : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI nextFreeLootBoxText;
 	[SerializeField] TextMeshProUGUI freeLootBoxExplanationText;
 	[SerializeField] GameObject nextOneText;
-	const int HOURS_BETWEEN_FREE_LOOT_BOX = 2; //TO DO should be 4 hours
+	const int HOURS_BETWEEN_FREE_LOOT_BOX = 4;
 
 	void Start ()
 	{

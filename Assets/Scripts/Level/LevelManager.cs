@@ -41,8 +41,6 @@ public class LevelManager {
 	public ChatMessageHandler.MatchData matchData;
 	public float distanceTravelled = 0; //See PlayerRace. This value is displayed in the HUD.
 	public bool isRecordingSelected = false; //True if the race should be recorded using ReplayKit
-	//For rate this app
-	public int consecutiveRacesWon = 0;
 
 	//for debugging
 	public float speedOverrideMultiplier = 1f;

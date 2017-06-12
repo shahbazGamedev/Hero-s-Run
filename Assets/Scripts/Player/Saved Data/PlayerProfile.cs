@@ -12,7 +12,7 @@ public enum PlayerProfileEvent {
 }
 
 [System.Serializable]
-public class PlayerProfile {
+public sealed class PlayerProfile {
 
 	[SerializeField] string userName;
 	public int totalXPEarned = 0;
@@ -25,12 +25,15 @@ public class PlayerProfile {
 	private DateTime lastMatchPlayedTime = new DateTime(1970,01,01);
 	private DateTime lastMatchWonTime = new DateTime(1970,01,01);
 	private DateTime lastFreeLootBoxOpenedTime = new DateTime(1970,01,01);
-	//Rate This App
+
+	[Header("Rate this App")]
 	public string lastTimeRateThisAppWasShownString = "01/01/1970 00:00:00";
 	private DateTime lastTimeRateThisAppWasShown = new DateTime(1970,01,01);
 	public bool didPlayerRateApp = false;
 	public int timesRateThisAppDisplayed = 0;
+	[System.NonSerialized] int consecutiveRacesWon = 0;
 
+	[Header("Other")]
 	//This is the unique Id of the player icon.
 	//By default, the Id is zero. This is the Id of the default player icon that new players have.
 	//The user can change his player icon in the Player Icon screen.
@@ -159,6 +162,7 @@ public class PlayerProfile {
 	public void setLastMatchPlayedTime( DateTime timeMatchPlayed )
 	{
 		lastMatchPlayedTime = timeMatchPlayed;
+		lastMatchPlayedTimeString = lastMatchPlayedTime.ToString();
 	}
 
 	public DateTime getLastMatchPlayedTime()
@@ -170,6 +174,7 @@ public class PlayerProfile {
 	public void setLastMatchWonTime( DateTime timeMatchWon )
 	{
 		lastMatchWonTime = timeMatchWon;
+		lastMatchWonTimeString = lastMatchWonTime.ToString();
 	}
 
 	public DateTime getLastMatchWonTime()
@@ -181,6 +186,7 @@ public class PlayerProfile {
 	public void setLastFreeLootBoxOpenedTime( DateTime lastFreeLootBoxOpenedTime )
 	{
 		this.lastFreeLootBoxOpenedTime = lastFreeLootBoxOpenedTime;
+		lastFreeLootBoxOpenedTimeString = lastFreeLootBoxOpenedTime.ToString();
 		serializePlayerprofile();
 	}
 
@@ -190,9 +196,11 @@ public class PlayerProfile {
 		return lastFreeLootBoxOpenedTime;
 	}
 
+	#region Rate this App
 	public void setLastTimeRateThisAppWasShown( DateTime lastTimeRateThisAppWasShown )
 	{
 		this.lastTimeRateThisAppWasShown = lastTimeRateThisAppWasShown;
+		lastTimeRateThisAppWasShownString = lastTimeRateThisAppWasShown.ToString();
 		serializePlayerprofile();
 	}
 
@@ -201,6 +209,22 @@ public class PlayerProfile {
 		lastTimeRateThisAppWasShown = Convert.ToDateTime (lastTimeRateThisAppWasShownString); 
 		return lastTimeRateThisAppWasShown;
 	}
+
+	public void resetConsecutiveWins()
+	{
+		consecutiveRacesWon = 0;
+	}
+
+	public void incrementConsecutiveWins()
+	{
+		consecutiveRacesWon++;
+	}
+
+	public int getConsecutiveWins()
+	{
+		return consecutiveRacesWon;
+	}
+	#endregion
 
 	public void setPlayerIconId( int value )
 	{
@@ -222,10 +246,6 @@ public class PlayerProfile {
 
 	public void serializePlayerprofile()
 	{
-		lastMatchPlayedTimeString = lastMatchPlayedTime.ToString();
-		lastMatchWonTimeString = lastMatchWonTime.ToString();
-		lastFreeLootBoxOpenedTimeString = lastFreeLootBoxOpenedTime.ToString();
-		lastTimeRateThisAppWasShownString = lastTimeRateThisAppWasShown.ToString();
 		string json  = JsonUtility.ToJson( this );
 		PlayerStatsManager.Instance.setPlayerProfile( json );
 		PlayerStatsManager.Instance.savePlayerStats();

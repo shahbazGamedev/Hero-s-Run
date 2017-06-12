@@ -121,12 +121,12 @@ public class PlayerRaceManager {
 				GameManager.Instance.playerInventory.addCoins( coinsAwardedOnVictory );
 			}
 			//For rate this app
-			LevelManager.Instance.consecutiveRacesWon++;
+			GameManager.Instance.playerProfile.incrementConsecutiveWins();
 		}
 		else
 		{
 			//For rate this app
-			LevelManager.Instance.consecutiveRacesWon = 0;
+			GameManager.Instance.playerProfile.resetConsecutiveWins();
 		}
 
 		if( GameManager.Instance.canEarnTrophies() )
@@ -169,7 +169,7 @@ public class PlayerRaceManager {
 		}
 
 		//For rate this app
-		LevelManager.Instance.consecutiveRacesWon = 0;
+		GameManager.Instance.playerProfile.resetConsecutiveWins();
 
 		#if UNITY_IOS
 		//When the player quits the race stop the recording and discard the video
@@ -220,7 +220,7 @@ public class PlayerRaceManager {
 			break;
 			#if UNITY_EDITOR
 			case PlayMode.PlayAlone:
-				crownsEarned = 6;
+				crownsEarned = 3;
 			break;
 			case PlayMode.PlayAgainstEnemy:
 				if( racePosition == 1 ) 

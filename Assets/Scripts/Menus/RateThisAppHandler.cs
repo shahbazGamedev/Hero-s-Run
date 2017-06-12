@@ -8,12 +8,13 @@ public class RateThisAppHandler : MonoBehaviour {
 	const int MAX_TIMES_DISPLAY_RATE_THIS_APP = 3;
 	const int HOURS_TO_WAIT_BEFORE_SHOWING_AGAIN = 48;
 	const int NUMBER_OF_CONSECUTIVE_WINS_NEEDED = 2;
-	const string IOS_RATE_THIS_APP = "itms-apps://itunes.apple.com/app/id";
+	const string IOS_RATE_THIS_APP = "itms-apps://itunes.apple.com/apps/id";
 	const string BUNDLE_ID = "com.redlondongames.DragonRunSaga";
-	const string TEST_BUNDLE_ID = "com.appsfresh.kolorklone";
-	const string IOS_RATE_THIS_APP_URL = IOS_RATE_THIS_APP + TEST_BUNDLE_ID;
+	const string IOS_ID = "797936081";
+	const string IOS_RATE_THIS_APP_URL = IOS_RATE_THIS_APP + IOS_ID;
 	const string ANDROID_RATE_THIS_APP = "market://details?id=";
-	const string ANDROID_RATE_THIS_APP_URL = ANDROID_RATE_THIS_APP + TEST_BUNDLE_ID;
+	const string ANDROID_RATE_THIS_APP_URL = ANDROID_RATE_THIS_APP + BUNDLE_ID;
+	[SerializeField] GameObject rateThisAppPanel;
 
 	// Use this for initialization
 	void Start ()
@@ -34,7 +35,7 @@ public class RateThisAppHandler : MonoBehaviour {
 
 		//Is this a good time to display the rate this app popup?
 		//We assume it is a good time if the player returns to the main menu after winning NUMBER_OF_CONSECUTIVE_WINS_NEEDED or more races.
-		if( LevelManager.Instance.consecutiveRacesWon < NUMBER_OF_CONSECUTIVE_WINS_NEEDED ) return;
+		if( GameManager.Instance.playerProfile.getConsecutiveWins() < NUMBER_OF_CONSECUTIVE_WINS_NEEDED ) return;
 
 		//If the player has no Internet connection, return.
 		if( Application.internetReachability == NetworkReachability.NotReachable ) return;
@@ -45,13 +46,13 @@ public class RateThisAppHandler : MonoBehaviour {
 
 	void displayRateThisApp()
 	{
-		gameObject.SetActive( true );
+		rateThisAppPanel.SetActive( true );
 	}
 
 	public void OnClickRateThisApp()
 	{
 		#if UNITY_IOS
-		gameObject.SetActive( false );
+		rateThisAppPanel.SetActive( false );
 		GameManager.Instance.playerProfile.didPlayerRateApp = true;
 		GameManager.Instance.playerProfile.serializePlayerprofile();
 		Application.OpenURL( IOS_RATE_THIS_APP_URL );
@@ -63,7 +64,8 @@ public class RateThisAppHandler : MonoBehaviour {
 		GameManager.Instance.playerProfile.timesRateThisAppDisplayed++;
  		//This method also saves the profile, so do it last
 		GameManager.Instance.playerProfile.setLastTimeRateThisAppWasShown( DateTime.UtcNow );
-		gameObject.SetActive( false );
+		GameManager.Instance.playerProfile.resetConsecutiveWins();
+		rateThisAppPanel.SetActive( false );
 	}
 
 }
