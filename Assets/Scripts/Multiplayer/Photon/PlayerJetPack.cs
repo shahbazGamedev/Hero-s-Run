@@ -20,7 +20,7 @@ public class PlayerJetPack : MonoBehaviour {
 	float accelerometerStrength = 14f;
 
 	public Vector3 moveDirection;
-	float runSpeed;
+	float flySpeed;
 	int FallTrigger = Animator.StringToHash("Fall");
 	int RunTrigger = Animator.StringToHash("Run");
 
@@ -49,7 +49,7 @@ public class PlayerJetPack : MonoBehaviour {
 		controller = GetComponent<CharacterController>();
 
 		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedCircuit();
-		runSpeed = multiplayerInfo.RunStartSpeed * LevelManager.Instance.speedOverrideMultiplier;;
+		flySpeed = multiplayerInfo.RunStartSpeed * LevelManager.Instance.speedOverrideMultiplier * 1.5f;
 	}
 	
 	void startFlying()
@@ -62,15 +62,18 @@ public class PlayerJetPack : MonoBehaviour {
 		accelerometerPreviousFrameX = 0;
 		accelerometerPreviousFrameY = 0;
 		playerCamera.setCameraParameters( 30f, 4f, 5.5f,0 );
+		//Tilt the player's skin forward (superman style)
+		GetComponent<PlayerVisuals>().heroSkin.transform.localRotation = Quaternion.Euler( 75f, 0, 0 );
 		//generateLevel.setNumberVisibleTiles( 4 );
 		
 		//Disable screen dimming while flying since the only input is the accelerometer
-		Screen.sleepTimeout = SleepTimeout.NeverSleep;
+		//Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		Debug.Log("startFlying" );
 	}
 	
 	void stopFlying()
 	{		
+		GetComponent<PlayerVisuals>().heroSkin.transform.localRotation = Quaternion.Euler( 0, 0, 0 );
 		playerControl.fall();
 		
 		//Orient the player in the same direction as the current tile
@@ -80,7 +83,7 @@ public class PlayerJetPack : MonoBehaviour {
 		//generateLevel.resetNumberVisibleTiles();
 		
 		//Reenable screen dimming since we are no longer flying to preserve battery life.
-		Screen.sleepTimeout = SleepTimeout.SystemSetting;
+		//Screen.sleepTimeout = SleepTimeout.SystemSetting;
 		Debug.Log("stopFlying");
 
 	}
@@ -148,7 +151,7 @@ public class PlayerJetPack : MonoBehaviour {
 					//3 - Calculate Yaw - Y axis				
 					float yaw = transform.eulerAngles.y + accelerometerCurrentFrameX * yawStrength;
 					//Do not allow player to fly back to where he started. He must always move forward.
-					//yaw = Utilities.clampRotation ( yaw, 80f );
+					yaw = Utilities.clampRotation ( yaw, 80f );
 
 					//4 - Rotate
 					transform.rotation = Quaternion.Euler ( pitch, yaw, roll );
@@ -169,7 +172,7 @@ public class PlayerJetPack : MonoBehaviour {
 		//1) Get the direction of the player
 		Vector3 forward = transform.TransformDirection(Vector3.forward);			
 		//2) Scale vector based on run speed
-		forward = forward * Time.deltaTime * runSpeed;
+		forward = forward * Time.deltaTime * flySpeed;
 		//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
 		forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
 		//4) Get a unit vector that is orthogonal to the direction of the player
@@ -193,7 +196,7 @@ public class PlayerJetPack : MonoBehaviour {
 
 	void LateUpdate()
 	{
-		if( playerControl.getCharacterState() == PlayerCharacterState.Flying )
+		/*if( playerControl.getCharacterState() == PlayerCharacterState.Flying )
 		{
 			//Make sure the player remains above a certain height
 			if( transform.position.y < -0.6f )
@@ -205,7 +208,7 @@ public class PlayerJetPack : MonoBehaviour {
 			{
 				transform.position = new Vector3 (  transform.position.x, 60f, transform.position.z );
 			}
-		}
+		}*/
 	}
 
 	void detectTaps()
