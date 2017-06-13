@@ -38,7 +38,7 @@ public class PlayerInput : PunBehaviour {
 
 	void Update()
 	{
-		if( playerControl.isPlayerControlEnabled()  )
+		if( playerControl.isPlayerControlEnabled() && playerControl.getCharacterState() != PlayerCharacterState.Flying )
 		{
 			#if UNITY_EDITOR
 			handleKeyboard();

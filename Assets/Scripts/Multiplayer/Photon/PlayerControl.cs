@@ -203,7 +203,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Current tile variables
 	Vector3 currentTilePos = Vector3.zero;
 	GameObject currentTile;
-	float tileRotationY = 0; //Since we use this value often, we will store it.
+	public float tileRotationY = 0; //Since we use this value often, we will store it.
 	#endregion
 
 	#region Death variables
@@ -410,49 +410,52 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void Update()
 	{
-		calculateFallDistance();
-		if( playerMovementEnabled )
+		if( getCharacterState() != PlayerCharacterState.Flying )
 		{
-			calculateDistanceToGround();
-			updateRunSpeed();
-			moveCharacter();
-
-			//Verify if the player is falling.
-			//Also ignore if we are already falling or dying.
-			if( playerCharacterState != PlayerCharacterState.Falling && playerCharacterState != PlayerCharacterState.Dying && playerCharacterState != PlayerCharacterState.Ziplining )
+			calculateFallDistance();
+			if( playerMovementEnabled )
 			{
-				//Verify how far is the ground
-				if( distanceToGround > MIN_DISTANCE_FOR_FALL )
+				calculateDistanceToGround();
+				updateRunSpeed();
+				moveCharacter();
+	
+				//Verify if the player is falling.
+				//Also ignore if we are already falling or dying.
+				if( playerCharacterState != PlayerCharacterState.Falling && playerCharacterState != PlayerCharacterState.Dying && playerCharacterState != PlayerCharacterState.Ziplining )
 				{
-					bool isLeftFootOnGround = true;
-					Vector3 leftFootPosition = transform.TransformPoint(new Vector3( -0.12f ,0 ,0.1f ));
-					bool isRightFootOnGround = true;
-					Vector3 rightFootPosition = transform.TransformPoint(new Vector3( 0.12f ,0 ,-0.1f ));
-
-					//Test left foot
-					//There might be a small crack between the tiles. We don't want the player to fall if this is the case.
-					//So also check 10cm in front of the player (with left foot test) and 10cm in back of the player (with right foot test) before deciding to fall.	
-					if ( !Physics.Raycast(leftFootPosition, Vector3.down, MIN_DISTANCE_FOR_FALL ))
+					//Verify how far is the ground
+					if( distanceToGround > MIN_DISTANCE_FOR_FALL )
 					{
-						//Ground is further than MIN_DISTANCE_FOR_FALL meters.
-						//Left foot is not on the ground
-						isLeftFootOnGround = false;
-					}
-					//Test right foot
-					if ( !Physics.Raycast(rightFootPosition, Vector3.down, MIN_DISTANCE_FOR_FALL ))
-					{
-						//Ground is further than MIN_DISTANCE_FOR_FALL meters.
-						//Right foot is not on the ground
-						isRightFootOnGround = false;
-					}
-					if( !isLeftFootOnGround && !isRightFootOnGround )
-					{
-						fall();
+						bool isLeftFootOnGround = true;
+						Vector3 leftFootPosition = transform.TransformPoint(new Vector3( -0.12f ,0 ,0.1f ));
+						bool isRightFootOnGround = true;
+						Vector3 rightFootPosition = transform.TransformPoint(new Vector3( 0.12f ,0 ,-0.1f ));
+	
+						//Test left foot
+						//There might be a small crack between the tiles. We don't want the player to fall if this is the case.
+						//So also check 10cm in front of the player (with left foot test) and 10cm in back of the player (with right foot test) before deciding to fall.	
+						if ( !Physics.Raycast(leftFootPosition, Vector3.down, MIN_DISTANCE_FOR_FALL ))
+						{
+							//Ground is further than MIN_DISTANCE_FOR_FALL meters.
+							//Left foot is not on the ground
+							isLeftFootOnGround = false;
+						}
+						//Test right foot
+						if ( !Physics.Raycast(rightFootPosition, Vector3.down, MIN_DISTANCE_FOR_FALL ))
+						{
+							//Ground is further than MIN_DISTANCE_FOR_FALL meters.
+							//Right foot is not on the ground
+							isRightFootOnGround = false;
+						}
+						if( !isLeftFootOnGround && !isRightFootOnGround )
+						{
+							fall();
+						}
 					}
 				}
+	
+				verifyIfDesiredLaneReached();
 			}
-
-			verifyIfDesiredLaneReached();
 		}
 	}
 
