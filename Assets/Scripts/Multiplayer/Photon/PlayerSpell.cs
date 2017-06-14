@@ -327,7 +327,7 @@ public class PlayerSpell : PunBehaviour {
 	/// </summary>
 	/// <param name="name">Name.</param>
 	/// <param name="duration">Duration.</param>
-	void displayCardTimerOnHUD( CardName name, float duration )
+	public void displayCardTimerOnHUD( CardName name, float duration )
 	{
 		//Only send an event for the local player (and not for bots).
 		if( cardPlayedByOpponentEvent != null && GetComponent<PhotonView>().isMine && GetComponent<PlayerAI>() == null )

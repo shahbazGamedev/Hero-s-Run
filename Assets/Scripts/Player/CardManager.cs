@@ -74,6 +74,7 @@ public enum CardName
 	Linked_Fate = 201,
 	Supercharger = 202,
 	Homing_Missile = 203,
+	Jet_Pack = 204,
 
 	//Legendary
 	Hack = 301,

@@ -36,7 +36,7 @@ public class PlayerDeck {
 		addCard( CardName.Trip_Mine, 5, 6, false );
 
 		//7
-		addCard( CardName.Shrink, 3, 7, true );
+		addCard( CardName.Shrink, 3, 7, false );
 
 		//8
 		addCard( CardName.Sentry, 1, 8, false );
@@ -68,6 +68,9 @@ public class PlayerDeck {
 
 		//17
 		addCard( CardName.Reflect, 1, 17, true );
+
+		//18
+		addCard( CardName.Jet_Pack, 1, 18, true );
 
 		serializePlayerDeck( true );
 

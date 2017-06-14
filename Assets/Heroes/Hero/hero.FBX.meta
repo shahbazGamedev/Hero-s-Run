@@ -205,6 +205,7 @@ ModelImporter:
     7400048: Teleport_Arrive
     7400050: Run_Look_Back
     7400052: Sprint_Look_Back
+    7400054: Fly
     9500000: //RootNode
     13700000: Mesh_Hero_Backpack
     13700002: Mesh_Hero_Body
@@ -223,13 +224,16 @@ ModelImporter:
     resampleCurves: 1
     optimizeGameObjects: 1
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: "Avatar Rig Configuration mis-match. Inbetween bone rotation
+      in configuration does not match rotation in animation file:\n\t'BASE_Spine3'
+      : rotation error = 12.148074 deg\n"
     animationImportErrors: 
-    animationImportWarnings: "Avatar Rig Configuration mis-match. Inbetween bone rotation
-      in configuration does not match rotation in animation file\nhero\nClip 'Take
-      001' has import animation warnings that might lower retargeting quality:\nNote:
-      Activate translation DOF on avatar to improve retargeting quality.\n\t'BASE_Hips'
-      is inbetween humanoid transforms and has rotation animation that will be discarded.\n\t'BASE_Spine3'
-      is inbetween humanoid transforms and has rotation animation that will be discarded.\n\t'BASE_Head'
+    animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
+      might lower retargeting quality:\nNote: Activate translation DOF on avatar to
+      improve retargeting quality.\n\t'BASE_Hips' is inbetween humanoid transforms
+      and has rotation animation that will be discarded.\n\t'BASE_Spine3' is inbetween
+      humanoid transforms and has rotation animation that will be discarded.\n\t'BASE_Head'
       has translation animation that will be discarded.\n\t'BASE_Left_Index01' has
       translation animation that will be discarded.\n\t'BASE_Left_Index02' has translation
       animation that will be discarded.\n\t'BASE_Left_MiddleFinger01' has translation
@@ -4835,6 +4839,202 @@ ModelImporter:
       - path: Mesh_Hero_Robe
         weight: 1
       maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Fly
+      takeName: Take 001
+      firstFrame: 1050
+      lastFrame: 1080
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: BASE_Master_Root
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Hips
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Hips/BASE_Right_Hip
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Hips/BASE_Right_Hip/BASE_Right_Knee
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Hips/BASE_Right_Hip/BASE_Right_Knee/BASE_Right_Ankle
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Hips/BASE_Right_Hip/BASE_Right_Knee/BASE_Right_Ankle/BASE_Right_Ball
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Hips/BASE_Right_Hip/BASE_Right_Knee/BASE_Right_Ankle/BASE_Right_Ball/BASE_Right_Toe
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Hips/BASE_Left_Hip
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Hips/BASE_Left_Hip/BASE_Left_Knee
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Hips/BASE_Left_Hip/BASE_Left_Knee/BASE_Left_Ankle
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Hips/BASE_Left_Hip/BASE_Left_Knee/BASE_Left_Ankle/BASE_Left_Ball
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Hips/BASE_Left_Hip/BASE_Left_Knee/BASE_Left_Ankle/BASE_Left_Ball/BASE_Left_Toe
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Hair
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Jaw
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Left_Snear
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Left_Cheek
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Left_Puff
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Left_Smile
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Left_UpperLip
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_UpperLip
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Left_LowerLip
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_LowerLip
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Left_InEyebrow
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Left_MidEyebrow
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Left_OutEyebrow
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Left_Eyeball
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Left_UpperLid
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Right_Eyeball
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Right_UpperLid
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Right_MidEyebrow
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Right_InEyebrow
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Right_OutEyebrow
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Right_Cheek
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Right_Puff
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Right_Snear
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Right_Smile
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Right_LowerLip
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Face/BASE_Right_UpperLip
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Ponytail_1
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Neck/BASE_Head/BASE_Ponytail_1/BASE_Ponytail_2
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Left_Clavicle
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Left_Clavicle/BASE_Left_Shoulder
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Left_Clavicle/BASE_Left_Shoulder/BASE_Left_Elbow
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Left_Clavicle/BASE_Left_Shoulder/BASE_Left_Elbow/BASE_Left_Hand
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Left_Clavicle/BASE_Left_Shoulder/BASE_Left_Elbow/BASE_Left_Hand/BASE_Left_Index01
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Left_Clavicle/BASE_Left_Shoulder/BASE_Left_Elbow/BASE_Left_Hand/BASE_Left_Index01/BASE_Left_Index02
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Left_Clavicle/BASE_Left_Shoulder/BASE_Left_Elbow/BASE_Left_Hand/BASE_Left_MiddleFinger01
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Left_Clavicle/BASE_Left_Shoulder/BASE_Left_Elbow/BASE_Left_Hand/BASE_Left_MiddleFinger01/BASE_Left_MiddleFinger02
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Left_Clavicle/BASE_Left_Shoulder/BASE_Left_Elbow/BASE_Left_Hand/BASE_Left_RingFinger01
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Left_Clavicle/BASE_Left_Shoulder/BASE_Left_Elbow/BASE_Left_Hand/BASE_Left_RingFinger01/BASE_Left_RingFinger02
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Left_Clavicle/BASE_Left_Shoulder/BASE_Left_Elbow/BASE_Left_Hand/BASE_Left_Pinky01
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Left_Clavicle/BASE_Left_Shoulder/BASE_Left_Elbow/BASE_Left_Hand/BASE_Left_Pinky01/BASE_Left_Pinky02
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Left_Clavicle/BASE_Left_Shoulder/BASE_Left_Elbow/BASE_Left_Hand/BASE_Left_Thumb01
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Left_Clavicle/BASE_Left_Shoulder/BASE_Left_Elbow/BASE_Left_Hand/BASE_Left_Thumb01/BASE_Left_Thumb02
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_BackPack
+        weight: 0
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand/BASE_Right_Index01
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand/BASE_Right_Index01/BASE_Right_Index02
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand/BASE_Right_MiddleFinger01
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand/BASE_Right_MiddleFinger01/BASE_Right_MiddleFinger02
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand/BASE_Right_RingFinger01
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand/BASE_Right_RingFinger01/BASE_Right_RingFinger02
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand/BASE_Right_Pinky01
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand/BASE_Right_Pinky01/BASE_Right_Pinky02
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand/BASE_Right_Thumb01
+        weight: 1
+      - path: BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_Right_Clavicle/BASE_Right_Shoulder/BASE_Right_Elbow/BASE_Right_Hand/BASE_Right_Thumb01/BASE_Right_Thumb02
+        weight: 1
+      - path: Mesh_Hero_Hair
+        weight: 0
+      - path: Mesh_Hero_Body
+        weight: 0
+      - path: Mesh_Hero_Tunic
+        weight: 0
+      - path: Mesh_Hero_Gloves
+        weight: 0
+      - path: Mesh_Hero_Boots
+        weight: 0
+      - path: Mesh_Hero_Backpack
+        weight: 0
+      - path: Mesh_Hero_Robe
+        weight: 0
+      maskType: 3
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     isReadable: 1

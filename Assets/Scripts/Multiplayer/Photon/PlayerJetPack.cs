@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerJetPack : MonoBehaviour {
+public sealed class PlayerJetPack : MonoBehaviour {
 
 
 	private float yawStrength = 4.5f;
@@ -21,8 +21,7 @@ public class PlayerJetPack : MonoBehaviour {
 
 	public Vector3 moveDirection;
 	float flySpeed;
-	int FallTrigger = Animator.StringToHash("Fall");
-	int RunTrigger = Animator.StringToHash("Run");
+	int FlyTrigger = Animator.StringToHash("Fly");
 
 	#region Other variables
 	GenerateLevel generateLevel;
@@ -47,15 +46,25 @@ public class PlayerJetPack : MonoBehaviour {
 		playerSounds = GetComponent<PlayerSounds>();
 		playerCamera = GetComponent<PlayerCamera>();
 		controller = GetComponent<CharacterController>();
-
-		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedCircuit();
-		flySpeed = multiplayerInfo.RunStartSpeed * LevelManager.Instance.speedOverrideMultiplier * 1.5f;
 	}
 	
-	void startFlying()
+	[PunRPC]
+	void cardJetPackRPC( float spellDuration, float flySpeed )
+	{
+		//Display a timer under the minimap
+		GetComponent<PlayerSpell>().displayCardTimerOnHUD( CardName.Jet_Pack, spellDuration );
+		//Display the Jet Pack secondary icon on the minimap
+		MiniMap.Instance.displaySecondaryIcon( GetComponent<PhotonView>().viewID, (int) CardName.Jet_Pack, spellDuration );
+		//Cancel the Jet Pack effect once the duration has run out
+		Invoke("stopFlying", spellDuration );
+		startFlying( flySpeed );
+	}
+
+	void startFlying( float flySpeed )
 	{		
+		this.flySpeed = flySpeed;
 		playerControl.setCharacterState( PlayerCharacterState.Flying );
-		GetComponent<Animator>().SetTrigger(FallTrigger);
+		GetComponent<Animator>().SetTrigger(FlyTrigger);
 		playerSounds.stopAudioSource();
 		//Clear move direction of any values. If we still have an x component for example, we will drift.
 		moveDirection = Vector3.zero;
@@ -73,6 +82,7 @@ public class PlayerJetPack : MonoBehaviour {
 	
 	void stopFlying()
 	{		
+		CancelInvoke( "stopFlying" );
 		GetComponent<PlayerVisuals>().heroSkin.transform.localRotation = Quaternion.Euler( 0, 0, 0 );
 		playerControl.fall();
 		
@@ -223,7 +233,7 @@ public class PlayerJetPack : MonoBehaviour {
 					if( playerControl.getCharacterState() != PlayerCharacterState.Flying )
 					{
 						print("Double-tap while flying.");
-						startFlying();
+						startFlying( 36f );
 					}
 					else
 					{
@@ -240,7 +250,7 @@ public class PlayerJetPack : MonoBehaviour {
 		{
 			if( playerControl.getCharacterState() != PlayerCharacterState.Flying )
 			{
-				startFlying();
+				startFlying( 36f );
 			}
 		}
 		else if ( Input.GetKeyDown (KeyCode.A ) )
@@ -248,4 +258,23 @@ public class PlayerJetPack : MonoBehaviour {
 			stopFlying();
 		}
 	}
+
+	void OnEnable()
+	{
+		PlayerControl.multiplayerStateChanged += MultiplayerStateChanged;
+	}
+
+	void OnDisable()
+	{
+		PlayerControl.multiplayerStateChanged -= MultiplayerStateChanged;
+	}
+
+	void MultiplayerStateChanged( PlayerCharacterState newState )
+	{
+		if( newState == PlayerCharacterState.Dying )
+		{
+			stopFlying();
+		}
+	}
+
 }
