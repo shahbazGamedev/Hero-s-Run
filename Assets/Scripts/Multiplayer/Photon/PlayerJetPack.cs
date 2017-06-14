@@ -51,8 +51,6 @@ public sealed class PlayerJetPack : MonoBehaviour {
 	[PunRPC]
 	void cardJetPackRPC( float spellDuration, float flySpeed )
 	{
-		//Display a timer under the minimap
-		GetComponent<PlayerSpell>().displayCardTimerOnHUD( CardName.Jet_Pack, spellDuration );
 		//Display the Jet Pack secondary icon on the minimap
 		MiniMap.Instance.displaySecondaryIcon( GetComponent<PhotonView>().viewID, (int) CardName.Jet_Pack, spellDuration );
 		//Cancel the Jet Pack effect once the duration has run out
