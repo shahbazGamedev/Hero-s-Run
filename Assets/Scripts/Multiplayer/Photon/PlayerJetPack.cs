@@ -22,6 +22,7 @@ public sealed class PlayerJetPack : MonoBehaviour {
 	public Vector3 moveDirection;
 	float flySpeed;
 	int FlyTrigger = Animator.StringToHash("Fly");
+	const float MAXIMUM_YAW = 30f;
 
 	#region Other variables
 	GenerateLevel generateLevel;
@@ -80,20 +81,24 @@ public sealed class PlayerJetPack : MonoBehaviour {
 	
 	void stopFlying()
 	{		
-		CancelInvoke( "stopFlying" );
-		GetComponent<PlayerVisuals>().heroSkin.transform.localRotation = Quaternion.Euler( 0, 0, 0 );
-		playerControl.fall();
-		
-		//Orient the player in the same direction as the current tile
-		transform.rotation = Quaternion.Euler ( 0, playerControl.tileRotationY, 0 );
-		
-		playerCamera.resetCameraParameters();
-		//generateLevel.resetNumberVisibleTiles();
-		
-		//Reenable screen dimming since we are no longer flying to preserve battery life.
-		//Screen.sleepTimeout = SleepTimeout.SystemSetting;
-		Debug.Log("stopFlying");
-
+		if( playerControl.getCharacterState() == PlayerCharacterState.Flying )
+		{
+			CancelInvoke( "stopFlying" );
+			GetComponent<PlayerVisuals>().heroSkin.transform.localRotation = Quaternion.Euler( 0, 0, 0 );
+			//If we stop flying because the timer expired, fall.
+			//If we stop flying because we died, don't call fall since resurrect will do it.
+			if( playerControl.getCharacterState() != PlayerCharacterState.Dying ) playerControl.fall();
+			
+			//Orient the player in the same direction as the current tile
+			transform.rotation = Quaternion.Euler ( 0, playerControl.tileRotationY, 0 );
+			
+			playerCamera.resetCameraParameters();
+			//generateLevel.resetNumberVisibleTiles();
+			
+			//Reenable screen dimming since we are no longer flying to preserve battery life.
+			//Screen.sleepTimeout = SleepTimeout.SystemSetting;
+			Debug.Log("stopFlying");
+		}
 	}
 	
 	// Update is called once per frame
@@ -159,7 +164,7 @@ public sealed class PlayerJetPack : MonoBehaviour {
 					//3 - Calculate Yaw - Y axis				
 					float yaw = transform.eulerAngles.y + accelerometerCurrentFrameX * yawStrength;
 					//Do not allow player to fly back to where he started. He must always move forward.
-					yaw = Utilities.clampRotation ( yaw, 80f );
+					yaw = Utilities.clampRotation ( yaw, MAXIMUM_YAW );
 
 					//4 - Rotate
 					transform.rotation = Quaternion.Euler ( pitch, yaw, roll );
