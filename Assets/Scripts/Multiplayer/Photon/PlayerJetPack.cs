@@ -35,6 +35,12 @@ public sealed class PlayerJetPack : MonoBehaviour {
 	CharacterController controller;
 	#endregion
 
+	#region Special Effects 	
+	public Transform jetPack;
+	public ParticleSystem exhaustRight;
+	public ParticleSystem exhaustLeft;
+	#endregion
+
 	void Awake ()
 	{
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
@@ -47,6 +53,29 @@ public sealed class PlayerJetPack : MonoBehaviour {
 		playerSounds = GetComponent<PlayerSounds>();
 		playerCamera = GetComponent<PlayerCamera>();
 		controller = GetComponent<CharacterController>();
+		locateJetPack();
+	}
+
+	void locateJetPack()
+	{
+		//Try male prefab
+		jetPack = transform.Find("Hero_prefab(Clone)/BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_BackPack/Jet Pack");
+
+		if( jetPack == null )
+		{
+			//Try female prefab
+			jetPack = transform.Find("Heroine_prefab(Clone)/BASE_Master_Root/BASE_Root/BASE_Spine1/BASE_Spine2/BASE_Spine3/BASE_BackPack/Jet Pack");
+		}
+
+		if( jetPack != null )
+		{
+			exhaustLeft = jetPack.Find("Left Exhaust/Flames").GetComponent<ParticleSystem>(); 
+			exhaustRight = jetPack.Find("Right Exhaust/Flames").GetComponent<ParticleSystem>(); 
+		}
+		else
+		{
+			Debug.LogError("PlayerJetPack-locateJetPack error: unable to find jet pack. Verify the transform hierarchy.");
+		}
 	}
 	
 	[PunRPC]
@@ -73,7 +102,9 @@ public sealed class PlayerJetPack : MonoBehaviour {
 		//Tilt the player's skin forward (superman style)
 		GetComponent<PlayerVisuals>().heroSkin.transform.localRotation = Quaternion.Euler( 75f, 0, 0 );
 		//generateLevel.setNumberVisibleTiles( 4 );
-		
+		jetPack.gameObject.SetActive( true );		
+		exhaustRight.gameObject.SetActive( true );		
+		exhaustLeft.gameObject.SetActive( true );		
 		//Disable screen dimming while flying since the only input is the accelerometer
 		//Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		Debug.Log("startFlying" );
@@ -81,7 +112,7 @@ public sealed class PlayerJetPack : MonoBehaviour {
 	
 	void stopFlying()
 	{		
-		if( playerControl.getCharacterState() == PlayerCharacterState.Flying )
+		if( playerControl.getCharacterState() == PlayerCharacterState.Flying || playerControl.getCharacterState() == PlayerCharacterState.Dying )
 		{
 			CancelInvoke( "stopFlying" );
 			GetComponent<PlayerVisuals>().heroSkin.transform.localRotation = Quaternion.Euler( 0, 0, 0 );
@@ -95,6 +126,10 @@ public sealed class PlayerJetPack : MonoBehaviour {
 			playerCamera.resetCameraParameters();
 			//generateLevel.resetNumberVisibleTiles();
 			
+			jetPack.gameObject.SetActive( false );		
+			exhaustRight.gameObject.SetActive( false );		
+			exhaustLeft.gameObject.SetActive( false );		
+
 			//Reenable screen dimming since we are no longer flying to preserve battery life.
 			//Screen.sleepTimeout = SleepTimeout.SystemSetting;
 			Debug.Log("stopFlying");
