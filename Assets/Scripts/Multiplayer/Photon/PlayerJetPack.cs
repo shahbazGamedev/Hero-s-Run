@@ -102,9 +102,7 @@ public sealed class PlayerJetPack : MonoBehaviour {
 		//Tilt the player's skin forward (superman style)
 		GetComponent<PlayerVisuals>().heroSkin.transform.localRotation = Quaternion.Euler( 75f, 0, 0 );
 		//generateLevel.setNumberVisibleTiles( 4 );
-		jetPack.gameObject.SetActive( true );		
-		exhaustRight.gameObject.SetActive( true );		
-		exhaustLeft.gameObject.SetActive( true );		
+		activateEffects( true );
 		//Disable screen dimming while flying since the only input is the accelerometer
 		//Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		Debug.Log("startFlying" );
@@ -123,17 +121,22 @@ public sealed class PlayerJetPack : MonoBehaviour {
 			//Orient the player in the same direction as the current tile
 			transform.rotation = Quaternion.Euler ( 0, playerControl.tileRotationY, 0 );
 			
+			activateEffects( false );
+
 			playerCamera.resetCameraParameters();
-			//generateLevel.resetNumberVisibleTiles();
-			
-			jetPack.gameObject.SetActive( false );		
-			exhaustRight.gameObject.SetActive( false );		
-			exhaustLeft.gameObject.SetActive( false );		
+			//generateLevel.resetNumberVisibleTiles();	
 
 			//Reenable screen dimming since we are no longer flying to preserve battery life.
 			//Screen.sleepTimeout = SleepTimeout.SystemSetting;
 			Debug.Log("stopFlying");
 		}
+	}
+
+	void activateEffects( bool activate )
+	{
+		jetPack.gameObject.SetActive( activate );		
+		exhaustRight.gameObject.SetActive( activate );		
+		exhaustLeft.gameObject.SetActive( activate );		
 	}
 	
 	// Update is called once per frame
