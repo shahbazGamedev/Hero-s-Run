@@ -100,11 +100,8 @@ public sealed class PlayerJetPack : MonoBehaviour {
 		accelerometerPreviousFrameY = 0;
 		playerCamera.setCameraParameters( 30f, 4f, 5.5f,0 );
 		//Tilt the player's skin forward (superman style)
-		GetComponent<PlayerVisuals>().heroSkin.transform.localRotation = Quaternion.Euler( 55f, 0, 0 );
-		//generateLevel.setNumberVisibleTiles( 4 );
+		GetComponent<PlayerVisuals>().heroSkin.transform.localRotation = Quaternion.Euler( 65f, 0, 0 );
 		activateEffects( true );
-		//Disable screen dimming while flying since the only input is the accelerometer
-		//Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		Debug.Log("startFlying" );
 	}
 	
@@ -124,10 +121,7 @@ public sealed class PlayerJetPack : MonoBehaviour {
 			activateEffects( false );
 
 			playerCamera.resetCameraParameters();
-			//generateLevel.resetNumberVisibleTiles();	
 
-			//Reenable screen dimming since we are no longer flying to preserve battery life.
-			//Screen.sleepTimeout = SleepTimeout.SystemSetting;
 			Debug.Log("stopFlying");
 		}
 	}
@@ -245,9 +239,10 @@ public sealed class PlayerJetPack : MonoBehaviour {
 		#endif
 	}
 
+/*
 	void LateUpdate()
 	{
-		/*if( playerControl.getCharacterState() == PlayerCharacterState.Flying )
+		if( playerControl.getCharacterState() == PlayerCharacterState.Flying )
 		{
 			//Make sure the player remains above a certain height
 			if( transform.position.y < -0.6f )
@@ -259,8 +254,9 @@ public sealed class PlayerJetPack : MonoBehaviour {
 			{
 				transform.position = new Vector3 (  transform.position.x, 60f, transform.position.z );
 			}
-		}*/
+		}
 	}
+*/
 
 	void detectTaps()
 	{
@@ -273,8 +269,7 @@ public sealed class PlayerJetPack : MonoBehaviour {
 				{
 					if( playerControl.getCharacterState() != PlayerCharacterState.Flying )
 					{
-						print("Double-tap while flying.");
-						startFlying( 36f );
+						startFlying( 28f );
 					}
 					else
 					{
@@ -291,30 +286,12 @@ public sealed class PlayerJetPack : MonoBehaviour {
 		{
 			if( playerControl.getCharacterState() != PlayerCharacterState.Flying )
 			{
-				startFlying( 36f );
+				startFlying( 28f );
 			}
 		}
 		else if ( Input.GetKeyDown (KeyCode.A ) )
 		{
 			stopFlying();
-		}
-	}
-
-	void OnEnable()
-	{
-		PlayerControl.multiplayerStateChanged += MultiplayerStateChanged;
-	}
-
-	void OnDisable()
-	{
-		PlayerControl.multiplayerStateChanged -= MultiplayerStateChanged;
-	}
-
-	void MultiplayerStateChanged( PlayerCharacterState newState )
-	{
-		if( newState == PlayerCharacterState.Dying )
-		{
-			stopFlying( false );
 		}
 	}
 

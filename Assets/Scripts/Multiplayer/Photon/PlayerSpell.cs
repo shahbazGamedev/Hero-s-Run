@@ -311,12 +311,18 @@ public class PlayerSpell : PunBehaviour {
 	{
 		CancelInvoke("cancelSupercharger" );
 		affectedBySupercharger = false;
-		print("PlayerSpell cancelSupercharger for " + gameObject.name );
 	}
 
 	public bool isAffectedBySupercharger()
 	{
 		return affectedBySupercharger;
+	}
+	#endregion
+
+	#region Jet Pack
+	void cancelJetPack()
+	{
+		GetComponent<PlayerJetPack>().stopFlying( false );
 	}
 	#endregion
 
@@ -343,6 +349,7 @@ public class PlayerSpell : PunBehaviour {
 		cancelShrinkSpell();
 		cancelSupercharger();
 		cancelHack();
+		cancelJetPack();
 	}
 
 	public void playerDied()
