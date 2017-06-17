@@ -2077,7 +2077,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			if( other.name == "deadEnd" )
 			{
-				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight)
+				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight && getCharacterState() != PlayerCharacterState.Flying )
 				{
 					Debug.LogWarning("OnTriggerExit player exited dead end without turning " + other.name + " " + isInDeadEnd + " " + deadEndTurnDone + " " + currentDeadEndType );
 					managePlayerDeath ( DeathType.Turn );

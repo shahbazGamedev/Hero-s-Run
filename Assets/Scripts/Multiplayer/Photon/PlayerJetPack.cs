@@ -7,7 +7,7 @@ public sealed class PlayerJetPack : MonoBehaviour {
 
 	private float yawStrength = 4.5f;
 	private float pitchStrength = 0.8f;
-	private float rollStrength = 0.8f;
+	private float rollStrength = 0.9f;
 	private float verticalStrength = 10f;
 	private float rotationDamping = 5f;
 	//Used to apply a temporary speed boost diving down
@@ -90,7 +90,7 @@ public sealed class PlayerJetPack : MonoBehaviour {
 
 	void startFlying( float flySpeed )
 	{		
-		this.flySpeed = flySpeed;
+		this.flySpeed = flySpeed * LevelManager.Instance.speedOverrideMultiplier;
 		playerControl.setCharacterState( PlayerCharacterState.Flying );
 		GetComponent<Animator>().SetTrigger(FlyTrigger);
 		playerSounds.stopAudioSource();
@@ -100,7 +100,7 @@ public sealed class PlayerJetPack : MonoBehaviour {
 		accelerometerPreviousFrameY = 0;
 		playerCamera.setCameraParameters( 30f, 4f, 5.5f,0 );
 		//Tilt the player's skin forward (superman style)
-		GetComponent<PlayerVisuals>().heroSkin.transform.localRotation = Quaternion.Euler( 75f, 0, 0 );
+		GetComponent<PlayerVisuals>().heroSkin.transform.localRotation = Quaternion.Euler( 55f, 0, 0 );
 		//generateLevel.setNumberVisibleTiles( 4 );
 		activateEffects( true );
 		//Disable screen dimming while flying since the only input is the accelerometer
@@ -108,7 +108,7 @@ public sealed class PlayerJetPack : MonoBehaviour {
 		Debug.Log("startFlying" );
 	}
 	
-	void stopFlying()
+	public void stopFlying( bool fall = true )
 	{		
 		if( playerControl.getCharacterState() == PlayerCharacterState.Flying || playerControl.getCharacterState() == PlayerCharacterState.Dying )
 		{
@@ -116,7 +116,7 @@ public sealed class PlayerJetPack : MonoBehaviour {
 			GetComponent<PlayerVisuals>().heroSkin.transform.localRotation = Quaternion.Euler( 0, 0, 0 );
 			//If we stop flying because the timer expired, fall.
 			//If we stop flying because we died, don't call fall since resurrect will do it.
-			if( playerControl.getCharacterState() != PlayerCharacterState.Dying ) playerControl.fall();
+			if( fall ) playerControl.fall();
 			
 			//Orient the player in the same direction as the current tile
 			transform.rotation = Quaternion.Euler ( 0, playerControl.tileRotationY, 0 );
@@ -186,7 +186,7 @@ public sealed class PlayerJetPack : MonoBehaviour {
 					{	
 						//The player is tilting the device sufficiently, so tilt
 						roll = transform.eulerAngles.z - accelerometerCurrentFrameX * rollStrength;
-						roll = Utilities.clampRotation ( roll, 10f );
+						roll = Utilities.clampRotation ( roll, 15f );
 					}
 					else
 					{
@@ -197,12 +197,12 @@ public sealed class PlayerJetPack : MonoBehaviour {
 					//2 - Calculate Pitch - X axis				
 					float pitch = transform.eulerAngles.x - accelerometerCurrentFrameY * pitchStrength;
 					//X axis is counter-clockwise, so +10 degrees tilts forward and 350 degrees tilts backward.
-					pitch = Utilities.clampRotation ( pitch, 10f );
+					pitch = Utilities.clampRotation ( pitch, 30f );
 					
 					//3 - Calculate Yaw - Y axis				
 					float yaw = transform.eulerAngles.y + accelerometerCurrentFrameX * yawStrength;
 					//Do not allow player to fly back to where he started. He must always move forward.
-					yaw = Utilities.clampRotation ( yaw, MAXIMUM_YAW );
+				//yaw = Utilities.clampRotation ( yaw, MAXIMUM_YAW );
 
 					//4 - Rotate
 					transform.rotation = Quaternion.Euler ( pitch, yaw, roll );
@@ -314,7 +314,7 @@ public sealed class PlayerJetPack : MonoBehaviour {
 	{
 		if( newState == PlayerCharacterState.Dying )
 		{
-			stopFlying();
+			stopFlying( false );
 		}
 	}
 
