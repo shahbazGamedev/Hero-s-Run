@@ -57,7 +57,7 @@ public class StasisController : CardSpawnedObject {
 				//Make the player a child of the Statis Sphere
 				affectedPlayerTransform.SetParent( transform );
 				affectedPlayerTransform.localPosition = new Vector3( 0, Y_POS_PLAYER_IN_SPHERE, 0 );
-				affectedPlayerTransform.gameObject.layer = 8; //Restore to Player
+				affectedPlayerTransform.gameObject.layer = MaskHandler.playerLayer; //Restore to Player
 				//Slow down the anim speed to give the impression of the player being stuck
 				affectedPlayerTransform.GetComponent<Animator>().speed = 0.3f;
 				affectedPlayerTransform.GetComponent<Animator>().Play( "Fall_Loop" );

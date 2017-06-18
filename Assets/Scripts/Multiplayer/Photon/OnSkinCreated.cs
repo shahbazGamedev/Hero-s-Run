@@ -24,6 +24,7 @@ public class OnSkinCreated : MonoBehaviour
 			}
 			if( myOwner != null )
 			{
+				gameObject.name = "Hero Skin";
 				Animator anim = myOwner.GetComponent<Animator>();
 				transform.SetParent( myOwner.transform, false );
 				transform.localPosition = Vector3.zero;

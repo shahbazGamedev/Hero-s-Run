@@ -9,7 +9,6 @@ public class PlayerVisuals : Photon.PunBehaviour {
 	public ParticleSystem waterSplashWhileSliding; //Plays when player slides in water.It loops.
 	//Casts a circular shadow at the feet of the player
 	Projector shadowProjector;
-	public GameObject heroSkin;
 
 	// Use this for initialization
 	void Start () {
@@ -76,7 +75,8 @@ public class PlayerVisuals : Photon.PunBehaviour {
 		{
 			object[] data = new object[1];
 			data[0] = this.photonView.viewID;
-		    heroSkin = (GameObject)PhotonNetwork.InstantiateSceneObject (selectedHero.skinPrefab, Vector3.zero, Quaternion.identity, 0, data);
+		    GameObject heroSkin = (GameObject)PhotonNetwork.InstantiateSceneObject (selectedHero.skinPrefab, Vector3.zero, Quaternion.identity, 0, data);
+			heroSkin.name = "Hero Skin";
 			Animator anim = gameObject.GetComponent<Animator>();
 			heroSkin.transform.SetParent( transform, false );
 			heroSkin.transform.localPosition = Vector3.zero;
@@ -110,7 +110,8 @@ public class PlayerVisuals : Photon.PunBehaviour {
 		{
 			object[] stuff = new object[1];
 			stuff[0] = info.sender.NickName;
-		    heroSkin = (GameObject)PhotonNetwork.InstantiateSceneObject (botHero.skinPrefab, Vector3.zero, Quaternion.identity, 0, stuff);
+		    GameObject heroSkin = (GameObject)PhotonNetwork.InstantiateSceneObject (botHero.skinPrefab, Vector3.zero, Quaternion.identity, 0, stuff);
+			heroSkin.name = "Hero Skin";
 			Animator anim = gameObject.GetComponent<Animator>();
 			heroSkin.transform.SetParent( transform, false );
 			heroSkin.transform.localPosition = Vector3.zero;
