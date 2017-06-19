@@ -18,10 +18,11 @@ public enum CardPropertyType
 	DOUBLE_JUMP_SPEED = 2,
 	RADIUS = 3,
 	ACCURACY = 4,
-	RUN_SPEED = 5,
+	SPEED_MULTIPLIER = 5,
 	AIM_RANGE = 6,
 	DURATION_WITH_TIMER = 7,
-	TARGET = 8
+	TARGET = 8,
+	FLIGHT_SPEED = 9
 }
 
 public enum CardPropertyTargetType
@@ -328,13 +329,16 @@ public class CardManager : MonoBehaviour {
    		switch (type)
 		{
 	        case CardPropertyType.DURATION:
-	             return "Sec.";
+	             return "sec.";
 	                
 			case CardPropertyType.RANGE:
  			case CardPropertyType.AIM_RANGE:
  			case CardPropertyType.RADIUS:
- 	             return "M";
+ 	             return "m";
                
+			case CardPropertyType.FLIGHT_SPEED:
+ 	             return "m/s";
+
 			default:
 				return string.Empty;               
 		}

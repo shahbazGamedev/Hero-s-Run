@@ -19,7 +19,7 @@ public class CardSprint : Card {
 	void cardSprintMasterRPC( int level, int photonViewID )
 	{
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
-		this.photonView.RPC("cardSprintRPC", PhotonTargets.All, cd.getCardPropertyValue( CardPropertyType.DURATION, level ), cd.getCardPropertyValue( CardPropertyType.RUN_SPEED, level ), photonViewID );	
+		this.photonView.RPC("cardSprintRPC", PhotonTargets.All, cd.getCardPropertyValue( CardPropertyType.DURATION, level ), cd.getCardPropertyValue( CardPropertyType.SPEED_MULTIPLIER, level ), photonViewID );	
 	}
 	#endregion
 
