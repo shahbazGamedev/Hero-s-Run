@@ -1498,8 +1498,8 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void managePlayerDeath( DeathType deathTypeValue )
 	{
-		//Only proceed if the player is not dying already
-		if ( playerCharacterState != PlayerCharacterState.Dying )
+		//Only proceed if the player is the master client and is not dying already
+		if ( PhotonNetwork.isMasterClient && playerCharacterState != PlayerCharacterState.Dying )
 		{
 			scaleControllerCollider( true );
 
