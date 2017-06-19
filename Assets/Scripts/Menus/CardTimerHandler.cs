@@ -1,15 +1,18 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CardTimerHandler : MonoBehaviour {
 
 	[SerializeField] GameObject radialTimerPrefab;
 	[SerializeField] Transform timerHolder;
+	List<CardTimerData> cardTimerDataList = new List<CardTimerData>();
 
 	void OnEnable()
 	{
 		TurnRibbonHandler.cardPlayedEvent += CardPlayedEvent;
 		PlayerSpell.cardPlayedByOpponentEvent += CardPlayedByOpponentEvent;
+		PlayerSpell.cardCanceledEvent += CardCanceledEvent;
 		PlayerRace.crossedFinishLine += CrossedFinishLine;
 		PlayerControl.multiplayerStateChanged += MultiplayerStateChanged;
 	}
@@ -18,6 +21,7 @@ public class CardTimerHandler : MonoBehaviour {
 	{
 		TurnRibbonHandler.cardPlayedEvent -= CardPlayedEvent;
 		PlayerSpell.cardPlayedByOpponentEvent -= CardPlayedByOpponentEvent;
+		PlayerSpell.cardCanceledEvent -= CardCanceledEvent;
 		PlayerRace.crossedFinishLine -= CrossedFinishLine;
 		PlayerControl.multiplayerStateChanged -= MultiplayerStateChanged;
 	}
@@ -37,7 +41,8 @@ public class CardTimerHandler : MonoBehaviour {
 			string localizedName = LocalizationManager.Instance.getText( "CARD_NAME_" + name.ToString().ToUpper() );
 			PlayerDeck.PlayerCardData playerCardData = GameManager.Instance.playerDeck.getCardByName( name );
 			float duration = playedCard.getCardPropertyValue( CardPropertyType.DURATION_WITH_TIMER, level );
-			addTimer( localizedName, duration, Color.green );
+			GameObject go = addTimer( localizedName, duration, Color.green );
+			cardTimerDataList.Add( new CardTimerData( name, go, false ) );
 		}
 	}
 
@@ -50,14 +55,16 @@ public class CardTimerHandler : MonoBehaviour {
 	void CardPlayedByOpponentEvent( CardName name, float duration )
 	{
 		string localizedName = LocalizationManager.Instance.getText( "CARD_NAME_" + name.ToString().ToUpper() );
-		addTimer( localizedName, duration, Color.red );
+		GameObject go = addTimer( localizedName, duration, Color.red );
+		cardTimerDataList.Add( new CardTimerData( name, go, true ) );
 	}
 
-	void addTimer(string localizedName, float duration, Color color )
+	GameObject addTimer(string localizedName, float duration, Color color )
 	{
 		GameObject go = (GameObject)Instantiate(radialTimerPrefab);
 		go.transform.SetParent(timerHolder,false);
 		go.GetComponent<RadialTimerUI>().startAnimation( localizedName, duration, color );
+		return go;
 	}
 
 	void MultiplayerStateChanged( PlayerCharacterState newState )
@@ -73,6 +80,11 @@ public class CardTimerHandler : MonoBehaviour {
 		removeAllTimers();
 	}
 
+	void CardCanceledEvent( CardName name, bool playedByOpponent )
+	{
+		removeTimer( name, playedByOpponent );
+	}
+
 	/// <summary>
 	/// Will Remove all timers. Called when the player dies.
 	/// </summary>
@@ -82,6 +94,33 @@ public class CardTimerHandler : MonoBehaviour {
 		{
 			Transform child = timerHolder.transform.GetChild( i );
 			GameObject.Destroy( child.gameObject );
+		}
+		cardTimerDataList.Clear();
+	}
+
+	void removeTimer( CardName name, bool playedByOpponent )
+	{
+		CardTimerData cardTimerData = cardTimerDataList.Find(cardTimer => ( cardTimer.name == name && cardTimer.playedByOpponent == playedByOpponent ) );
+		if( cardTimerData != null )
+		{
+			Debug.Log( "CardTimerHandler-removeTimer-Card Name: " + name + " playedByOpponent: " + playedByOpponent );
+			//Destroy the radial timer on the HUD
+			GameObject.Destroy( cardTimerData.radialTimerObject );
+			cardTimerDataList.Remove( cardTimerData );
+		}
+	}
+
+	public class CardTimerData
+	{
+		public CardName name;
+		public GameObject radialTimerObject; 
+		public bool playedByOpponent;
+
+		public CardTimerData ( CardName name, GameObject radialTimerObject, bool playedByOpponent )
+		{
+			this.name = name;
+			this.radialTimerObject = radialTimerObject;
+			this.playedByOpponent = playedByOpponent;
 		}
 	}
 

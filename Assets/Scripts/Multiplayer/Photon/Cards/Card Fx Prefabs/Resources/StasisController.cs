@@ -32,7 +32,7 @@ public class StasisController : CardSpawnedObject {
 				affectedPlayerControl = affectedPlayerTransform.GetComponent<PlayerControl>();
 
 				//If the player was using his jet packs, stop flying
-				if( affectedPlayerControl.getCharacterState() == PlayerCharacterState.Flying ) affectedPlayerControl.GetComponent<PlayerJetPack>().stopFlying( false );
+				if( affectedPlayerControl.getCharacterState() == PlayerCharacterState.Flying ) affectedPlayerControl.GetComponent<PlayerSpell>().cancelJetPack();
 
 				//If the player was ziplining when he got affected by stasis, detach him from the zipline.
 				affectedPlayerControl.detachFromZipline();

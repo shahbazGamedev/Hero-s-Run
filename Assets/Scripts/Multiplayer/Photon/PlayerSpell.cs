@@ -44,6 +44,11 @@ public class PlayerSpell : PunBehaviour {
 	public delegate void CardPlayedByOpponentEvent( CardName name, float duration );
 	public static event CardPlayedByOpponentEvent cardPlayedByOpponentEvent;
 
+	//Delegate used to communicate to other classes when a card effect is canceled.
+	//For example, if the player gets hit by Stasis while using his Jet Pack, the jet pack card gets canceled.
+	public delegate void CardCanceledEvent( CardName name, bool playedByOpponent );
+	public static event CardCanceledEvent cardCanceledEvent;
+
 	// Use this for initialization
 	void Awake ()
 	{
@@ -320,9 +325,17 @@ public class PlayerSpell : PunBehaviour {
 	#endregion
 
 	#region Jet Pack
-	void cancelJetPack()
+	public void cancelJetPack()
 	{
 		GetComponent<PlayerJetPack>().stopFlying( false );
+		sendCancelCardEvent( CardName.Jet_Pack, false );
+	}
+	#endregion
+
+	#region Cancel Card
+	void sendCancelCardEvent( CardName name, bool playedByOpponent )
+	{
+		if( cardCanceledEvent != null ) cardCanceledEvent( name, playedByOpponent );
 	}
 	#endregion
 
