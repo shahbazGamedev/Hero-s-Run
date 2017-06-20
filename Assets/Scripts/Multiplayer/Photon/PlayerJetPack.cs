@@ -292,9 +292,10 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 		//The master player and the remote player should now be synchronised.
 	}
 
+	#region For debugging Jet Pack. Normal way to activate is by playing the Jet Pack card.
 	void detectTaps()
 	{
-		if( this.photonView.isMine )
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
 		{			
 			//We only want the host to calculate the race position and race duration. We don't want a bot to do it.
 			if ( Input.touchCount > 0 )
@@ -320,7 +321,7 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 
 	private void handleKeyboard()
 	{
-		if( this.photonView.isMine )
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
 		{			
 			if ( Input.GetKeyDown (KeyCode.F) ) 
 			{
@@ -328,12 +329,12 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 				{
 					startFlying( 28f );
 				}
-			}
-			else if ( Input.GetKeyDown (KeyCode.A ) )
-			{
-				stopFlying( true );
+				else
+				{
+					stopFlying( true );
+				}
 			}
 		}
 	}
-
+	#endregion
 }

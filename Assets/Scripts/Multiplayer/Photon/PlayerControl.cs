@@ -2006,6 +2006,9 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		else if( other.CompareTag( "AttachZiplineTrigger" ) )
 		{
+			//Ignore if the player is Flying
+			if( getCharacterState() == PlayerCharacterState.Flying ) return;
+
 			//Deactivate the speedboost if active before ziplining
 			deactivateSpeedBoost();
 			isInZiplineTrigger = true;
