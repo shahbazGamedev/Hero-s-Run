@@ -15,6 +15,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 	[SerializeField] GameObject gemPanel;
 	[SerializeField] GameObject cardPanel;
 	[SerializeField] GameObject playerIconPanel;
+	[SerializeField] GameObject voiceLinePanel;
 
 	[Header("Coin Panel")]
 	[SerializeField] TextMeshProUGUI coinAmountText;
@@ -27,6 +28,9 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 	[Header("Player Icon Panel")]
 	[SerializeField] Image playerIconImage;
 	[SerializeField] TextMeshProUGUI playerIconNameText;
+
+	[Header("Voice Line Panel")]
+	[SerializeField] AudioWaveFormVisualizer audioWaveFormVisualizer;
 
 	[Header("Card Panel")]
 	[SerializeField] Image cardImage;
@@ -152,6 +156,14 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 				playerIconNameText.text = LocalizationManager.Instance.getText( "PLAYER_ICON_" + loot.uniqueItemID.ToString() );
 				GameManager.Instance.playerIcons.unlockPlayerIcon( loot.uniqueItemID );
 			break;
+
+			case LootType.VOICE_LINE:
+				audioWaveFormVisualizer.initialize();
+				activateLootPanel( LootType.VOICE_LINE );
+				//playerIconImage.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( loot.uniqueItemID ).icon;
+				//playerIconNameText.text = LocalizationManager.Instance.getText( "PLAYER_ICON_" + loot.uniqueItemID.ToString() );
+				//GameManager.Instance.playerIcons.unlockPlayerIcon( loot.uniqueItemID );
+			break;
 			
 			default:
 				Debug.LogError("Give loot content encountered an unknown loot type: " + loot.type );
@@ -167,6 +179,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		gemPanel.SetActive( false );
 		cardPanel.SetActive( false );
 		playerIconPanel.SetActive( false );
+		voiceLinePanel.SetActive( false );
 
 		switch( type )
 		{
@@ -184,6 +197,10 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 
 			case LootType.PLAYER_ICON:
 				playerIconPanel.SetActive( true );
+			break;
+
+			case LootType.VOICE_LINE:
+				voiceLinePanel.SetActive( true );
 			break;
 		}
 	}

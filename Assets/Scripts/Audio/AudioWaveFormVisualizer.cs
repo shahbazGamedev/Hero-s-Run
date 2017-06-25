@@ -19,7 +19,7 @@ public class AudioWaveFormVisualizer : MonoBehaviour
 	Texture2D texture;
 	AudioSource audioSource;
 	
-	IEnumerator Start ()
+	public void initialize ()
 	{ 
 		audioSource = GetComponent<AudioSource>();
 		rawImage = GetComponent<RawImage>();
@@ -38,17 +38,25 @@ public class AudioWaveFormVisualizer : MonoBehaviour
 		for (int i = 0; i < blank.Length; i++)
 		{ 
 			blank [i] = backgroundColor; 
-		} 
-		
-		// refresh the display each 100 ms
-		while (true)
-		{
-			GetCurWave (); 
-			yield return new WaitForSeconds (0.1f); 
-		} 
+		}
+		//This line will make sure we have our flat wave displayed in the middle.
+		getCurrentWave ();
 	}
 	
-	void GetCurWave ()
+	IEnumerator displayAudioWave ( float length )
+	{ 
+		// refresh the display periodically
+		float timeStarted = Time.time;
+		do
+		{
+			getCurrentWave (); 
+			yield return new WaitForSeconds (0.5f); 
+		} while ( (Time.time - timeStarted) <= length );
+
+		getCurrentWave (); //to make sure we have a flat line once the clip has finished playing
+	}
+
+	void getCurrentWave ()
 	{ 
 		// clear the texture 
 		texture.SetPixels (blank, 0); 
@@ -64,5 +72,12 @@ public class AudioWaveFormVisualizer : MonoBehaviour
 
 		// upload to the graphics card 
 		texture.Apply (); 
+	}
+
+	public void playClip()
+	{
+		StopAllCoroutines();
+		audioSource.Play();
+		StartCoroutine( displayAudioWave ( audioSource.clip.length ) );
 	}
 }

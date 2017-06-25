@@ -7,7 +7,8 @@ public enum LootType
 	COINS = 0,
 	GEMS = 1,
 	CARDS = 2,
-	PLAYER_ICON = 3
+	PLAYER_ICON = 3,
+	VOICE_LINE = 4
 }
 
 [System.Serializable]

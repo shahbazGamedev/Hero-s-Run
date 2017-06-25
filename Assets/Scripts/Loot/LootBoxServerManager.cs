@@ -138,6 +138,10 @@ public class LootBoxServerManager : MonoBehaviour {
 		//If the player already has that player icon, convert to 15 coins.
 		lootBox.addLoot( loot );
 
+		loot = new LootBox.Loot();
+		loot.type = LootType.VOICE_LINE;
+		lootBox.addLoot( loot );
+
 		return lootBox.getJson();
 	}
 
