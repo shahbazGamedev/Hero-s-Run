@@ -50,7 +50,7 @@ public class AudioWaveFormVisualizer : MonoBehaviour
 		do
 		{
 			getCurrentWave (); 
-			yield return new WaitForSeconds (0.5f); 
+			yield return new WaitForSeconds (0.1f); 
 		} while ( (Time.time - timeStarted) <= length );
 
 		getCurrentWave (); //to make sure we have a flat line once the clip has finished playing
