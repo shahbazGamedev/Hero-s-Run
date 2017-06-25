@@ -19,10 +19,12 @@ public class AudioWaveFormVisualizer : MonoBehaviour
 	Texture2D texture;
 	AudioSource audioSource;
 	
-	public void initialize ()
+	public void initialize ( AudioClip clip )
 	{ 
 		audioSource = GetComponent<AudioSource>();
 		rawImage = GetComponent<RawImage>();
+
+		audioSource.clip = clip;
 		
 		// create the samples array 
 		samples = new float[size]; 

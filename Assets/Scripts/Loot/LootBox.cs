@@ -46,10 +46,11 @@ public class LootBox {
 		public int quantity;
 		public CardName cardName;
 		public int uniqueItemID;
+		public Sex sex;
 
 		public void print()
 		{
-			Debug.Log("Loot-LootType: " + type.ToString() + " Quantity: " + quantity + " CardName: " + cardName + " UniqueItemID: " + uniqueItemID );
+			Debug.Log("Loot-LootType: " + type.ToString() + " Quantity: " + quantity + " CardName: " + cardName + " UniqueItemID: " + uniqueItemID + " Sex " + sex );
 		}
 	}
 	

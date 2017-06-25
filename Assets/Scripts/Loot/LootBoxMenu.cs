@@ -31,6 +31,9 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 
 	[Header("Voice Line Panel")]
 	[SerializeField] AudioWaveFormVisualizer audioWaveFormVisualizer;
+	[SerializeField] TextMeshProUGUI voiceLineNameText;
+	[SerializeField] Toggle equipNowToggle;
+	int voiceLineId = -1;
 
 	[Header("Card Panel")]
 	[SerializeField] Image cardImage;
@@ -158,11 +161,12 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 			break;
 
 			case LootType.VOICE_LINE:
-				audioWaveFormVisualizer.initialize();
+				AudioClip clip = VoiceOverManager.Instance.getTauntClip( loot.sex, loot.uniqueItemID );
+				audioWaveFormVisualizer.initialize( clip );
+				voiceLineNameText.text = "\"" + LocalizationManager.Instance.getText( "VO_TAUNT_" + loot.sex.ToString().ToUpper() + "_" + loot.uniqueItemID.ToString() ) + "\"";
+				equipNowToggle.onValueChanged.RemoveAllListeners();
+				equipNowToggle.onValueChanged.AddListener ( (value) => { OnEquipNowToggle(loot); } );
 				activateLootPanel( LootType.VOICE_LINE );
-				//playerIconImage.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( loot.uniqueItemID ).icon;
-				//playerIconNameText.text = LocalizationManager.Instance.getText( "PLAYER_ICON_" + loot.uniqueItemID.ToString() );
-				//GameManager.Instance.playerIcons.unlockPlayerIcon( loot.uniqueItemID );
 			break;
 			
 			default:
@@ -171,6 +175,19 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		}
 		yield return new WaitForEndOfFrame();
 
+	}
+
+	public void OnEquipNowToggle( LootBox.Loot loot )
+	{
+		UISoundManager.uiSoundManager.playButtonClick();
+		if( equipNowToggle.isOn ) 
+		{
+			voiceLineId = loot.uniqueItemID;
+		}
+		else
+		{
+			voiceLineId = -1;
+		}
 	}
 
 	void activateLootPanel( LootType type )
@@ -218,6 +235,8 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		else
 		{
 			//Save
+			//if the player decided to equip his new voice line (i.e. the value is not -1), set it in player profile before saving.
+			if( voiceLineId != -1 ) GameManager.Instance.playerProfile.setVoiceLineId( voiceLineId );
 			GameManager.Instance.playerInventory.serializePlayerInventory( false );
 			GameManager.Instance.playerDeck.serializePlayerDeck( false );
 			GameManager.Instance.playerIcons.serializePlayerIcons( true );

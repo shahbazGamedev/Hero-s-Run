@@ -140,6 +140,9 @@ public class LootBoxServerManager : MonoBehaviour {
 
 		loot = new LootBox.Loot();
 		loot.type = LootType.VOICE_LINE;
+		int randomSex = Random.Range( 0, 2 );
+		loot.uniqueItemID = VoiceOverManager.Instance.getRandomTaunt ( (Sex) randomSex );
+		loot.sex = (Sex) randomSex;
 		lootBox.addLoot( loot );
 
 		return lootBox.getJson();

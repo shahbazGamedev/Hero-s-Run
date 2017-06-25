@@ -64,34 +64,25 @@ public class PlayerVoiceOvers : MonoBehaviour {
 		}
 	}
 
-	public void playTaunt ()
+	/// <summary>
+	/// Plays the taunt clip locally and sends an RPC so that the remote players play it as well.
+	/// </summary>
+	/// <param name="clip">Clip.</param>
+	/// <param name="sex">Sex.</param>
+	/// <param name="voiceLineId">Voice line identifier.</param>
+	public void playTaunt ( AudioClip clip, Sex sex, int voiceLineId )
 	{
-		//Do we have one or more VOs that match?
-		List<VoiceOverManager.VoiceOverData> vodList = voiceOverList.FindAll(vo => ( vo.type == VoiceOverType.VO_Taunt ) );
-
-		if( vodList.Count > 0 )
-		{
-			if( vodList.Count == 1 )
-			{
-				voiceOverAudioSource.PlayOneShot( vodList[0].clip );
-				int voIndex = voiceOverList.IndexOf(vodList[0]);
-				GetComponent<PhotonView>().RPC("playTauntRPC", PhotonTargets.Others, voIndex );
-			}
-			else
-			{
-				//We have multiple entries that match. Let's play a random one.
-				int random = Random.Range( 0, vodList.Count );
-				voiceOverAudioSource.PlayOneShot(  vodList[random].clip );
-				int voIndex = voiceOverList.IndexOf(vodList[random]);
-				GetComponent<PhotonView>().RPC("playTauntRPC", PhotonTargets.Others, voIndex );
-			}
-		}
+		voiceOverAudioSource.PlayOneShot( clip );
+		GetComponent<PhotonView>().RPC("playTauntRPC", PhotonTargets.Others, GetComponent<PhotonView>().viewID, (int) sex, voiceLineId );
 	}
 
-	[PunRPC]
-	void playTauntRPC( int index )
-    {
-		voiceOverAudioSource.PlayOneShot( voiceOverList[index].clip );
+	/// <summary>
+	/// Simply plays the taunt clip for the remote player.
+	/// </summary>
+	/// <param name="clip">Clip.</param>
+	public void playTauntForRemote ( AudioClip clip )
+	{
+		voiceOverAudioSource.PlayOneShot( clip );
 	}
 
 	/// <summary>

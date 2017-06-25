@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI; 
 using UnityEngine.SceneManagement;
@@ -136,5 +137,29 @@ public class LevelNetworkingManager : PunBehaviour
 		hudMultiplayer.startCountdown();
 	}
 
+	[PunRPC]
+	void playTauntRPC( int photonViewID, int sex, int voiceLineId )
+    {
+		//Find the player who spoke
+		PlayerVoiceOvers playerVoiceOvers = null;
+		for( int i = 0; i < PlayerRace.players.Count; i++ )
+		{
+			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
+			{
+				playerVoiceOvers = PlayerRace.players[i].GetComponent<PlayerVoiceOvers>();
+				break;
+			}
+		}
+		//If we have not found the player, return. The player could have disconnected right after the RPC was sent.
+		if( playerVoiceOvers == null ) return;
+
+		//Find the clip to play
+		List<VoiceOverManager.VoiceOverData> voiceOverList = VoiceOverManager.Instance.getVoiceOverList( (Sex) sex );
+		VoiceOverManager.VoiceOverData equippedVoiceLine = voiceOverList.Find(vo => ( vo.type == VoiceOverType.VO_Taunt && vo.voiceLineId == voiceLineId ) );
+		if( equippedVoiceLine != null )
+		{
+			playerVoiceOvers.playTauntForRemote( equippedVoiceLine.clip );
+		}
+	}
 
 }

@@ -51,7 +51,44 @@ public class VoiceOverManager : MonoBehaviour {
 
 	public void playTaunt ()
 	{
-		player.GetComponent<PlayerVoiceOvers>().playTaunt();		
+		Sex sex = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).sex;
+		List<VoiceOverData> voiceOverList = getVoiceOverList( sex );
+		int voiceLineId = GameManager.Instance.playerProfile.getVoiceLineId();
+		VoiceOverData equipedVoiceLine = voiceOverList.Find(vo => ( vo.type == VoiceOverType.VO_Taunt && vo.voiceLineId == voiceLineId ) );
+		if( equipedVoiceLine != null )
+		{
+			player.GetComponent<PlayerVoiceOvers>().playTaunt( equipedVoiceLine.clip, sex, voiceLineId );
+		}
+	}
+
+	public int getRandomTaunt ( Sex sex )
+	{
+		List<VoiceOverData> voiceOverList = getVoiceOverList( sex );
+		//Do we have one or more VOs that match?
+		List<VoiceOverManager.VoiceOverData> vodList = voiceOverList.FindAll(vo => ( vo.type == VoiceOverType.VO_Taunt ) );
+		if( vodList.Count > 0 )
+		{
+			if( vodList.Count == 1 )
+			{
+				return vodList[0].voiceLineId;
+			}
+			else
+			{
+				//We have multiple entries that match. Let's select a random one.
+				int random = Random.Range( 0, vodList.Count );
+				return vodList[random].voiceLineId;
+			}
+		}
+		Debug.LogError("getRandomTaunt-no taunt found for sex " + sex );
+		return 0;
+	}
+
+	public AudioClip getTauntClip( Sex sex, int voiceLineId )
+    {
+		//Find the clip to play
+		List<VoiceOverData> voiceOverList = getVoiceOverList( (Sex) sex );
+		VoiceOverData equippedVoiceLine = voiceOverList.Find(vo => vo.type == VoiceOverType.VO_Taunt && vo.voiceLineId == voiceLineId );
+		return equippedVoiceLine.clip;
 	}
 	#endregion
 
@@ -83,6 +120,7 @@ public class VoiceOverManager : MonoBehaviour {
 	[System.Serializable]
 	public class VoiceOverData
 	{
+		public int voiceLineId;
 		public VoiceOverType type = VoiceOverType.VO_Casting_Spell;
 		//playOnActivationOnly is only used for cards.
 		//For some cards (such as Sprint) a VO is automatically played. This is handled by CardHandler.
