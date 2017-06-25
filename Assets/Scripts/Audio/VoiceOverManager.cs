@@ -20,6 +20,7 @@ public class VoiceOverManager : MonoBehaviour {
 	Dictionary<string,List<VoiceOverData>> voiceOverDictionary = new Dictionary<string,List<VoiceOverData>>();
 	[SerializeField] List<VoiceOverData> McCreeList = new List<VoiceOverData>();
 	[SerializeField] List<VoiceOverData> TracerList = new List<VoiceOverData>();
+	Transform player;
 	
 	// Use this for initialization
 	void Awake ()
@@ -41,6 +42,18 @@ public class VoiceOverManager : MonoBehaviour {
 		voiceOverDictionary.Add( "Male", McCreeList );
 		voiceOverDictionary.Add( "Female", TracerList );
 	}
+
+	#region Taunt
+	public void registerLocalPlayer ( Transform player )
+	{
+		this.player = player;
+	}
+
+	public void playTaunt ()
+	{
+		player.GetComponent<PlayerVoiceOvers>().playTaunt();		
+	}
+	#endregion
 
 	public List<VoiceOverData> getVoiceOverList ( Sex sex )
 	{

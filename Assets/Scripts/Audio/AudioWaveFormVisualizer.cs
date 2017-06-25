@@ -11,6 +11,7 @@ public class AudioWaveFormVisualizer : MonoBehaviour
 	[SerializeField] Color backgroundColor = Color.black; 
 	[SerializeField] Color waveformColor = Color.green; 
 	[SerializeField] int size = 2048; 		// size of sound segment displayed in texture
+	[SerializeField] float amplitudeModifier = 1f; 	// used to boost the amplitude
 	
 	Color[] blank; 							// blank image array 
 	RawImage rawImage; 
@@ -58,7 +59,7 @@ public class AudioWaveFormVisualizer : MonoBehaviour
 		// draw the waveform 
 		for (int i = 0; i < size; i++)
 		{ 
-			texture.SetPixel ((int)(width * i / size), (int)(height * (samples [i] + 1f) / 2f), waveformColor);
+			texture.SetPixel ((int)(width * i / size), (int)(height * (( samples [i] * amplitudeModifier ) + 1f) / 2f), waveformColor);
 		}
 
 		// upload to the graphics card 

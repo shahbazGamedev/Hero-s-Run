@@ -64,6 +64,36 @@ public class PlayerVoiceOvers : MonoBehaviour {
 		}
 	}
 
+	public void playTaunt ()
+	{
+		//Do we have one or more VOs that match?
+		List<VoiceOverManager.VoiceOverData> vodList = voiceOverList.FindAll(vo => ( vo.type == VoiceOverType.VO_Taunt ) );
+
+		if( vodList.Count > 0 )
+		{
+			if( vodList.Count == 1 )
+			{
+				voiceOverAudioSource.PlayOneShot( vodList[0].clip );
+				int voIndex = voiceOverList.IndexOf(vodList[0]);
+				GetComponent<PhotonView>().RPC("playTauntRPC", PhotonTargets.Others, voIndex );
+			}
+			else
+			{
+				//We have multiple entries that match. Let's play a random one.
+				int random = Random.Range( 0, vodList.Count );
+				voiceOverAudioSource.PlayOneShot(  vodList[random].clip );
+				int voIndex = voiceOverList.IndexOf(vodList[random]);
+				GetComponent<PhotonView>().RPC("playTauntRPC", PhotonTargets.Others, voIndex );
+			}
+		}
+	}
+
+	[PunRPC]
+	void playTauntRPC( int index )
+    {
+		voiceOverAudioSource.PlayOneShot( voiceOverList[index].clip );
+	}
+
 	/// <summary>
 	/// Stops the audio source.
 	/// If the player dies, we don't want him to continue talking.
