@@ -31,6 +31,7 @@ public enum CardPropertyTargetType
 	NEAREST = 1,
 	RANDOM = 2,
 	ALL = 3,
+	SELECTED = 4
 }
 
 public enum CardSortMode
@@ -80,7 +81,7 @@ public enum CardName
 	//Legendary
 	Hack = 301,
 	Reflect = 302,
-	Card_Three = 303,
+	Frisbee = 303,
 	Card_Four = 304
 }
 

@@ -231,6 +231,17 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardJetPack component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+			case CardName.Frisbee:
+				CardFrisbee cardFrisbee = GetComponent<CardFrisbee>();
+				if( cardFrisbee != null )
+				{
+					cardFrisbee.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardFrisbee component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -347,6 +358,9 @@ public class CardHandler : MonoBehaviour {
 				return isCasterLeading( caster.GetComponent<PlayerRace>() );
 			//Jet Pack could be effective at any time
 			case CardName.Jet_Pack:
+				return true;
+			//Frisbee could be effective at any time
+			case CardName.Frisbee:
 				return true;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");

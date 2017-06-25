@@ -64,13 +64,16 @@ public class PlayerDeck {
 		addCard( CardName.Homing_Missile, 1, 15, false );
 
 		//16
-		addCard( CardName.Steal, 1, 16, true );
+		addCard( CardName.Steal, 1, 16, false );
 
 		//17
 		addCard( CardName.Reflect, 1, 17, true );
 
 		//18
 		addCard( CardName.Jet_Pack, 1, 18, true );
+
+		//19
+		addCard( CardName.Frisbee, 1, 19, true );
 
 		serializePlayerDeck( true );
 
