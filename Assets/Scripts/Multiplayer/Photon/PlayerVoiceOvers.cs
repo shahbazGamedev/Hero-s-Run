@@ -8,10 +8,12 @@ public class PlayerVoiceOvers : MonoBehaviour {
 	[Header("Voice Overs")]
 	[SerializeField] AudioSource voiceOverAudioSource;
 	List<VoiceOverManager.VoiceOverData> voiceOverList = new List<VoiceOverManager.VoiceOverData>();
+	LevelNetworkingManager levelNetworkingManager;
 
 	// Use this for initialization
 	void Start ()
 	{
+		levelNetworkingManager = GameObject.FindGameObjectWithTag("Level Networking Manager").GetComponent<LevelNetworkingManager>();
 		Sex sex;
 		if( GetComponent<PlayerAI>() == null )
 		{
@@ -73,7 +75,7 @@ public class PlayerVoiceOvers : MonoBehaviour {
 	public void playTaunt ( AudioClip clip, Sex sex, int voiceLineId )
 	{
 		voiceOverAudioSource.PlayOneShot( clip );
-		GetComponent<PhotonView>().RPC("playTauntRPC", PhotonTargets.Others, GetComponent<PhotonView>().viewID, (int) sex, voiceLineId );
+		levelNetworkingManager.GetComponent<PhotonView>().RPC("playTauntRPC", PhotonTargets.Others, GetComponent<PhotonView>().viewID, (int) sex, voiceLineId );
 	}
 
 	/// <summary>
