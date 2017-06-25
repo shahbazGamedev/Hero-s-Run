@@ -8,12 +8,10 @@ public class PlayerVoiceOvers : MonoBehaviour {
 	[Header("Voice Overs")]
 	[SerializeField] AudioSource voiceOverAudioSource;
 	List<VoiceOverManager.VoiceOverData> voiceOverList = new List<VoiceOverManager.VoiceOverData>();
-	LevelNetworkingManager levelNetworkingManager;
 
 	// Use this for initialization
 	void Start ()
 	{
-		levelNetworkingManager = GameObject.FindGameObjectWithTag("Level Networking Manager").GetComponent<LevelNetworkingManager>();
 		Sex sex;
 		if( GetComponent<PlayerAI>() == null )
 		{
@@ -75,16 +73,19 @@ public class PlayerVoiceOvers : MonoBehaviour {
 	public void playTaunt ( AudioClip clip, Sex sex, int voiceLineId )
 	{
 		voiceOverAudioSource.PlayOneShot( clip );
-		levelNetworkingManager.GetComponent<PhotonView>().RPC("playTauntRPC", PhotonTargets.Others, GetComponent<PhotonView>().viewID, (int) sex, voiceLineId );
+		GetComponent<PhotonView>().RPC("playTauntRPC", PhotonTargets.Others, (int) sex, voiceLineId );
 	}
 
-	/// <summary>
-	/// Simply plays the taunt clip for the remote player.
-	/// </summary>
-	/// <param name="clip">Clip.</param>
-	public void playTauntForRemote ( AudioClip clip )
-	{
-		voiceOverAudioSource.PlayOneShot( clip );
+	[PunRPC]
+	void playTauntRPC( int sex, int voiceLineId )
+    {
+		//Find the clip to play
+		List<VoiceOverManager.VoiceOverData> voiceOverList = VoiceOverManager.Instance.getVoiceOverList( (Sex) sex );
+		VoiceOverManager.VoiceOverData equippedVoiceLine = voiceOverList.Find(vo => ( vo.type == VoiceOverType.VO_Taunt && vo.voiceLineId == voiceLineId ) );
+		if( equippedVoiceLine != null )
+		{
+			voiceOverAudioSource.PlayOneShot( equippedVoiceLine.clip );
+		}
 	}
 
 	/// <summary>
