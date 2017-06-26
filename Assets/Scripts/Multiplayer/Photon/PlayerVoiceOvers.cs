@@ -23,7 +23,7 @@ public class PlayerVoiceOvers : MonoBehaviour {
 			//We're a bot
 			heroName = GetComponent<PlayerAI>().botHero.name;
 		}
-		voiceOverList = VoiceOverManager.Instance.getVoiceOverList( heroName );
+		voiceOverList = VoiceOverManager.Instance.getHeroVoiceOverList( heroName );
 		
 	}
 
