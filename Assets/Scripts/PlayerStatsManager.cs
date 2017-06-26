@@ -111,6 +111,7 @@ public class PlayerStatsManager {
 	string recentPlayers = String.Empty; //List of the last 8 players the player played against.
 	string playerInventory = String.Empty; //List of the player's inventory including gem balance.
 	string playerIcons = String.Empty; //List of the player icons available in the game. Include both locked and unlocked icons.
+	string voiceLines = String.Empty; //List of the voice lines available in the game. Include both locked and unlocked voice lines.
 
 	public static PlayerStatsManager Instance
 	{
@@ -977,6 +978,16 @@ public class PlayerStatsManager {
 		return playerIcons;
 	}
 
+	public void setVoiceLines( string voiceLines )
+	{
+		this.voiceLines = voiceLines;
+	}
+
+	public string getVoiceLines()
+	{
+		return voiceLines;
+	}
+
 	public void loadPlayerStats()
 	{
 		try
@@ -1084,6 +1095,7 @@ public class PlayerStatsManager {
 			recentPlayers = PlayerPrefs.GetString("recentPlayers", "" );
 			playerInventory = PlayerPrefs.GetString("playerInventory", "" );
 			playerIcons = PlayerPrefs.GetString("playerIcons", "" );
+			voiceLines = PlayerPrefs.GetString("voiceLines", "" );
 			//Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " Next Episode To Complete: " + nextEpisodeToComplete + " Highest Episode Completed: " + highestEpisodeCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
@@ -1179,6 +1191,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetString( "recentPlayers", recentPlayers );
 		PlayerPrefs.SetString( "playerInventory", playerInventory );
 		PlayerPrefs.SetString( "playerIcons", playerIcons );
+		PlayerPrefs.SetString( "voiceLines", voiceLines );
 		PlayerPrefs.Save();
 		//Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
 	}

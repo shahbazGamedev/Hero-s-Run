@@ -39,8 +39,8 @@ public class VoiceOverManager : MonoBehaviour {
 
 	void initialiseDictionary ()
 	{
-		voiceOverDictionary.Add( "Male", McCreeList );
-		voiceOverDictionary.Add( "Female", TracerList );
+		voiceOverDictionary.Add( "McCree", McCreeList );
+		voiceOverDictionary.Add( "Tracer", TracerList );
 	}
 
 	#region Taunt
@@ -51,76 +51,111 @@ public class VoiceOverManager : MonoBehaviour {
 
 	public void playTaunt ()
 	{
-		Sex sex = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).sex;
-		List<VoiceOverData> voiceOverList = getVoiceOverList( sex );
-		int voiceLineId = GameManager.Instance.playerProfile.getVoiceLineId();
-		VoiceOverData equipedVoiceLine = voiceOverList.Find(vo => ( vo.type == VoiceOverType.VO_Taunt && vo.voiceLineId == voiceLineId ) );
+		string heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name;
+		//For now, we only have two VO lists: McCree and Tracer
+		if( heroName == "Tracer" || heroName == "McCree" )
+		{
+			//All good
+		}
+		else
+		{
+			if( heroName == "Hanzo" || heroName == "Reinhart" )
+			{
+				//Swap for McCree
+				heroName = "McCree";
+			}
+			else if( heroName == "Mercy" || heroName == "Mei" )
+			{
+				//Swap for Tracer
+				heroName = "Tracer";
+			}
+		}
+
+		int uniqueId = GameManager.Instance.playerVoiceLines.getEquippedVoiceLineIdForHero( heroName );
+		VoiceOverData equipedVoiceLine = getAllTaunts ().Find(vo => vo.uniqueId == uniqueId );
 		if( equipedVoiceLine != null )
 		{
-			player.GetComponent<PlayerVoiceOvers>().playTaunt( equipedVoiceLine.clip, sex, voiceLineId );
+			player.GetComponent<PlayerVoiceOvers>().playTaunt( equipedVoiceLine.clip, uniqueId );
 		}
 	}
 
-	public int getRandomTaunt ( Sex sex )
+	public int getRandomTaunt ( string heroName )
 	{
-		List<VoiceOverData> voiceOverList = getVoiceOverList( sex );
+		List<VoiceOverData> voiceOverList = getVoiceOverList( heroName );
 		//Do we have one or more VOs that match?
 		List<VoiceOverManager.VoiceOverData> vodList = voiceOverList.FindAll(vo => ( vo.type == VoiceOverType.VO_Taunt ) );
 		if( vodList.Count > 0 )
 		{
 			if( vodList.Count == 1 )
 			{
-				return vodList[0].voiceLineId;
+				return vodList[0].uniqueId;
 			}
 			else
 			{
 				//We have multiple entries that match. Let's select a random one.
 				int random = Random.Range( 0, vodList.Count );
-				return vodList[random].voiceLineId;
+				return vodList[random].uniqueId;
 			}
 		}
-		Debug.LogError("getRandomTaunt-no taunt found for sex " + sex );
+		Debug.LogError("getRandomTaunt-no taunt found for hero name " + heroName );
 		return 0;
 	}
 
-	public AudioClip getTauntClip( Sex sex, int voiceLineId )
+	public AudioClip getTauntClip( string heroName, int uniqueId )
     {
 		//Find the clip to play
-		List<VoiceOverData> voiceOverList = getVoiceOverList( (Sex) sex );
-		VoiceOverData equippedVoiceLine = voiceOverList.Find(vo => vo.type == VoiceOverType.VO_Taunt && vo.voiceLineId == voiceLineId );
+		List<VoiceOverData> voiceOverList = getVoiceOverList( heroName );
+		VoiceOverData equippedVoiceLine = voiceOverList.Find(vo => vo.type == VoiceOverType.VO_Taunt && vo.uniqueId == uniqueId );
 		return equippedVoiceLine.clip;
+	}
+
+	public List<VoiceOverData> getAllTaunts ()
+	{
+		List<VoiceOverData> allHeroesTauntListList = new List<VoiceOverData>();
+		//McCree
+		List<VoiceOverManager.VoiceOverData> heroTaunts = McCreeList.FindAll(vo => ( vo.type == VoiceOverType.VO_Taunt ) );
+		allHeroesTauntListList.AddRange( heroTaunts );
+		//Tracer
+		heroTaunts = TracerList.FindAll(vo => ( vo.type == VoiceOverType.VO_Taunt ) );
+		allHeroesTauntListList.AddRange( heroTaunts );
+		return allHeroesTauntListList;
 	}
 	#endregion
 
-	public List<VoiceOverData> getVoiceOverList ( Sex sex )
+	public bool doesVoiceLineExist( int uniqueId )
 	{
-		if( sex == Sex.MALE )
-		{
-			return voiceOverDictionary["Male"];
-		}
-		else
-		{
-			return voiceOverDictionary["Female"];
-		}
+		//NOT IMPLEMENTED
+		return true;
 	}
-	
-	public List<VoiceOverData> getVoiceOverList ( string listName )
+
+	public List<VoiceOverData> getVoiceOverList ( string heroName )
 	{
-		if( voiceOverDictionary.ContainsKey(listName) )
+		//For now, we only have two VO lists: McCree and Tracer
+		if( voiceOverDictionary.ContainsKey( heroName ) )
 		{
-			return voiceOverDictionary[listName];
+			return voiceOverDictionary[heroName];
 		}
 		else
 		{
-			Debug.LogError("VoiceOverManager-the voice over dictionary doesn't contain an entry for " + listName );
-			return null;
+			if( heroName == "Hanzo" || heroName == "Reinhart" )
+			{
+				//Return a male voice set
+				return voiceOverDictionary["McCree"];
+			}
+			else if( heroName == "Mercy" || heroName == "Mei" )
+			{
+				//Return a female voice set
+				return voiceOverDictionary["Tracer"];
+			}
 		}
+		return null;
 	}
 
 	[System.Serializable]
 	public class VoiceOverData
 	{
-		public int voiceLineId;
+		public int uniqueId;
+		public string heroName;
 		public VoiceOverType type = VoiceOverType.VO_Casting_Spell;
 		//playOnActivationOnly is only used for cards.
 		//For some cards (such as Sprint) a VO is automatically played. This is handled by CardHandler.
@@ -128,7 +163,10 @@ public class VoiceOverManager : MonoBehaviour {
 		//So, when setting up the VoiceOverData, Sprint would have playOnActivationOnly set to true, but Stasis
 		//would have playOnActivationOnly set to false (since the Card class will play the VO if it found a target).
 		public bool playOnActivationOnly = true;
-		public CardName cardName; 
+		public CardName cardName;
+		//Each hero has one default taunt that is immediately available for new players.
+		//All other taunts need to be found, for example in loot boxes.
+		public bool isDefaultTaunt = false;
 		public AudioClip clip;
 	}
 }

@@ -40,12 +40,6 @@ public sealed class PlayerProfile {
 	[SerializeField] int playerIconId = 0;
 	public int selectedHeroIndex; //index for heroCharacterList in HeroManager
 
-	[Header("Voice Line")]
-	//This is the unique Id of the currently equipped voice line.
-	//By default, the Id is zero. This is the Id of the default voice line that new players have.
-	//The user can change his voice line in the Voice Line screen.
-	[SerializeField] int voiceLineId = 0;
-
 	[SerializeField] bool completedTutorial = true; //TRUE FOR TESTING
 	//Trophies indicate your success in racing. Players gain or lose Trophies by either winning or losing races in online multiplayer races.
 	//The number of trophies you have indicate which race track you will be racing in for multiplayer races.
@@ -249,25 +243,6 @@ public sealed class PlayerProfile {
 	public int getPlayerIconId()
 	{
 		return playerIconId;
-	}
-	#endregion
-
-	#region Voice Line
-	public void setVoiceLineId( int value )
-	{
-		if( value >= 0 )
-		{
-			voiceLineId = value;
-		}
-		else
-		{
-			Debug.LogWarning("PlayerProfile-setVoiceLineId: the value specified " + value + " is incorrect. It needs to be bigger than 0" );
-		}
-	}
-
-	public int getVoiceLineId()
-	{
-		return voiceLineId;
 	}
 	#endregion
 

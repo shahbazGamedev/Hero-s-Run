@@ -12,6 +12,7 @@ public class PlayerDataManager : MonoBehaviour {
 	public RecentPlayers recentPlayers;
 	public PlayerInventory playerInventory;
 	public PlayerIcons playerIcons;
+	public PlayerVoiceLines playerVoiceLines;
 
 	// Use this for initialization
 	void Awake ()
@@ -108,6 +109,18 @@ public class PlayerDataManager : MonoBehaviour {
 			
 		}
 		GameManager.Instance.playerIcons = playerIcons;
+
+		if( PlayerStatsManager.Instance.getVoiceLines() != string.Empty )
+		{
+			 playerVoiceLines = JsonUtility.FromJson<PlayerVoiceLines>(PlayerStatsManager.Instance.getVoiceLines());
+		}
+		else
+		{
+			playerVoiceLines = new PlayerVoiceLines();
+			playerVoiceLines.createNewVoiceLines();
+			
+		}
+		GameManager.Instance.playerVoiceLines = playerVoiceLines;
 
 	}
 }

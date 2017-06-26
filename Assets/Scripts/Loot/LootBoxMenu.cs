@@ -34,6 +34,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 	[SerializeField] TextMeshProUGUI voiceLineNameText;
 	[SerializeField] Toggle equipNowToggle;
 	int voiceLineId = -1;
+	string heroName;
 
 	[Header("Card Panel")]
 	[SerializeField] Image cardImage;
@@ -82,7 +83,10 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 
 	public void LootBoxGrantedEvent( LootBox lootBox )
 	{
+		//Reset
 		lootCounter = 0;
+		equipNowToggle.isOn = false;
+
 		lootList = lootBox.getLootList();
 		lootBox.print();
 		//Display the number of loot items in the loot box
@@ -161,9 +165,9 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 			break;
 
 			case LootType.VOICE_LINE:
-				AudioClip clip = VoiceOverManager.Instance.getTauntClip( loot.sex, loot.uniqueItemID );
+				AudioClip clip = VoiceOverManager.Instance.getTauntClip( loot.heroName, loot.uniqueItemID );
 				audioWaveFormVisualizer.initialize( clip );
-				voiceLineNameText.text = "\"" + LocalizationManager.Instance.getText( "VO_TAUNT_" + loot.sex.ToString().ToUpper() + "_" + loot.uniqueItemID.ToString() ) + "\"";
+				voiceLineNameText.text = "\"" + LocalizationManager.Instance.getText( "VO_TAUNT_" + loot.heroName.ToString().ToUpper() + "_" + loot.uniqueItemID.ToString() ) + "\"";
 				equipNowToggle.onValueChanged.RemoveAllListeners();
 				equipNowToggle.onValueChanged.AddListener ( (value) => { OnEquipNowToggle(loot); } );
 				activateLootPanel( LootType.VOICE_LINE );
@@ -183,6 +187,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		if( equipNowToggle.isOn ) 
 		{
 			voiceLineId = loot.uniqueItemID;
+			heroName = loot.heroName;
 		}
 		else
 		{
@@ -236,10 +241,11 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		{
 			//Save
 			//if the player decided to equip his new voice line (i.e. the value is not -1), set it in player profile before saving.
-			if( voiceLineId != -1 ) GameManager.Instance.playerProfile.setVoiceLineId( voiceLineId );
+			if( voiceLineId != -1 ) GameManager.Instance.playerVoiceLines.unlockAndEquipVoiceLine( voiceLineId, heroName );
 			GameManager.Instance.playerInventory.serializePlayerInventory( false );
 			GameManager.Instance.playerDeck.serializePlayerDeck( false );
-			GameManager.Instance.playerIcons.serializePlayerIcons( true );
+			GameManager.Instance.playerIcons.serializePlayerIcons( false );
+			GameManager.Instance.playerVoiceLines.serializeVoiceLines( true );
 			masterPanel.SetActive (false );
 		}
 	}

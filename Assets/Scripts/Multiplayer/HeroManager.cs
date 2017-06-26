@@ -49,6 +49,23 @@ public class HeroManager : MonoBehaviour {
 		return heroCharacterList.Count;
 	}
 
+	public List<string> getHeroNames()
+	{
+		List<string> heroNames = new List<string>();
+		for( int i = 0; i < heroCharacterList.Count; i++ )
+		{
+			heroNames.Add( heroCharacterList[i].name );
+		}
+		return heroNames;
+	}
+
+	public string getRandomHeroName()
+	{
+		List<string> heroNames = getHeroNames();
+		int random = Random.Range(0, heroNames.Count );
+		return heroNames[random];
+	}
+
 	#region Bot related
 
 	void initialiseBotSkillData()

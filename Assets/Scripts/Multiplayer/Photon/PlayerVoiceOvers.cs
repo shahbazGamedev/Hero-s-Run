@@ -12,18 +12,18 @@ public class PlayerVoiceOvers : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		Sex sex;
+		string heroName;
 		if( GetComponent<PlayerAI>() == null )
 		{
 			//We're the player
-			sex = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).sex;
+			heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name;
 		}
 		else
 		{
 			//We're a bot
-			sex = GetComponent<PlayerAI>().botHero.sex;
+			heroName = GetComponent<PlayerAI>().botHero.name;
 		}
-		voiceOverList = VoiceOverManager.Instance.getVoiceOverList( sex );
+		voiceOverList = VoiceOverManager.Instance.getVoiceOverList( heroName );
 		
 	}
 
@@ -70,18 +70,17 @@ public class PlayerVoiceOvers : MonoBehaviour {
 	/// <param name="clip">Clip.</param>
 	/// <param name="sex">Sex.</param>
 	/// <param name="voiceLineId">Voice line identifier.</param>
-	public void playTaunt ( AudioClip clip, Sex sex, int voiceLineId )
+	public void playTaunt ( AudioClip clip, int voiceLineId )
 	{
 		voiceOverAudioSource.PlayOneShot( clip );
-		GetComponent<PhotonView>().RPC("playTauntRPC", PhotonTargets.Others, (int) sex, voiceLineId );
+		GetComponent<PhotonView>().RPC("playTauntRPC", PhotonTargets.Others, voiceLineId );
 	}
 
 	[PunRPC]
-	void playTauntRPC( int sex, int voiceLineId )
+	void playTauntRPC( int uniqueId )
     {
 		//Find the clip to play
-		List<VoiceOverManager.VoiceOverData> voiceOverList = VoiceOverManager.Instance.getVoiceOverList( (Sex) sex );
-		VoiceOverManager.VoiceOverData equippedVoiceLine = voiceOverList.Find(vo => ( vo.type == VoiceOverType.VO_Taunt && vo.voiceLineId == voiceLineId ) );
+		VoiceOverManager.VoiceOverData equippedVoiceLine = VoiceOverManager.Instance.getAllTaunts ().Find(vo => vo.uniqueId == uniqueId );
 		if( equippedVoiceLine != null )
 		{
 			voiceOverAudioSource.PlayOneShot( equippedVoiceLine.clip );

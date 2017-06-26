@@ -140,9 +140,27 @@ public class LootBoxServerManager : MonoBehaviour {
 
 		loot = new LootBox.Loot();
 		loot.type = LootType.VOICE_LINE;
-		int randomSex = Random.Range( 0, 2 );
-		loot.uniqueItemID = VoiceOverManager.Instance.getRandomTaunt ( (Sex) randomSex );
-		loot.sex = (Sex) randomSex;
+		string randomHeroName = HeroManager.Instance.getRandomHeroName();
+		//For now, we only have two VO lists: McCree and Tracer
+		if( randomHeroName == "Tracer" || randomHeroName == "McCree" )
+		{
+			//All good
+		}
+		else
+		{
+			if( randomHeroName == "Hanzo" || randomHeroName == "Reinhart" )
+			{
+				//Swap for McCree
+				randomHeroName = "McCree";
+			}
+			else if( randomHeroName == "Mercy" || randomHeroName == "Mei" )
+			{
+				//Swap for Tracer
+				randomHeroName = "Tracer";
+			}
+		}
+		loot.uniqueItemID = VoiceOverManager.Instance.getRandomTaunt ( randomHeroName );
+		loot.heroName =  randomHeroName;
 		lootBox.addLoot( loot );
 
 		return lootBox.getJson();
