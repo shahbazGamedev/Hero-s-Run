@@ -267,7 +267,7 @@ public class PlayerAI : Photon.PunBehaviour {
 		if ( Input.GetKeyDown (KeyCode.B ) )
 		{
 			//Kill bot for testing
-			playerControl.managePlayerDeath(DeathType.FallForward);
+			playerControl.killPlayer(DeathType.FallForward);
 		}
 		else if ( Input.GetKeyDown (KeyCode.Y ) )
 		{

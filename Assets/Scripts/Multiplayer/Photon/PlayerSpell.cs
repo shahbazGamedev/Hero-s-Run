@@ -374,7 +374,7 @@ public class PlayerSpell : PunBehaviour {
 			{
 				if( PlayerRace.players[i].GetComponent<PlayerSpell>().isAffectedByLinkedFate() && !PlayerRace.players[i].GetComponent<PlayerSpell>().hasCastLinkedFate() )
 				{
-					PlayerRace.players[i].GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.AllViaServer, DeathType.Obstacle );
+					PlayerRace.players[i].GetComponent<PlayerControl>().killPlayer( DeathType.Obstacle );
 					//Reset the color
 					if( GameManager.Instance.getPlayMode() != PlayMode.PlayAgainstEnemy) MiniMap.Instance.changeColorOfRadarObject( PlayerRace.players[i].GetComponent<PlayerControl>(), Color.white );
 				}

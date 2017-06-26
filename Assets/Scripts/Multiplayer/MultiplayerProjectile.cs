@@ -76,12 +76,12 @@ public class MultiplayerProjectile : MonoBehaviour {
 					if( getDotProduct( potentialTarget, transform.position ) )
 					{
 						//Explosion is in front of player. He falls backward.
-						potentialTarget.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.Obstacle );
+						potentialTarget.GetComponent<PlayerControl>().killPlayer( DeathType.Obstacle );
 					}
 					else
 					{
 						//Explosion is behind player. He falls forward.
-						potentialTarget.GetComponent<PhotonView>().RPC("playerDied", PhotonTargets.All, DeathType.FallForward );
+						potentialTarget.GetComponent<PlayerControl>().killPlayer( DeathType.FallForward );
 					}
 				}
 				break;

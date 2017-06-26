@@ -772,7 +772,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			float fallDistance = fallStartYPos - transform.position.y;
 			if( fallDistance > FALL_TO_DEATH_DISTANCE )
 			{
-				managePlayerDeath(DeathType.Cliff);
+				killPlayer(DeathType.Cliff);
 			}
 		}
 	}
@@ -939,7 +939,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				if (sideMoveInitiatedZ > 2f )
 				{	
 					Debug.LogWarning("turnCorner: game over - player turned too late." );
-					managePlayerDeath ( DeathType.Turn );
+					killPlayer ( DeathType.Turn );
 					return;
 				}
 
@@ -959,7 +959,7 @@ public class PlayerControl : Photon.PunBehaviour {
 						{
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way too late." );
-							managePlayerDeath ( DeathType.Turn );
+							killPlayer ( DeathType.Turn );
 						}				
 					}
 					else
@@ -974,7 +974,7 @@ public class PlayerControl : Photon.PunBehaviour {
 						{
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way too late." );
-							managePlayerDeath ( DeathType.Turn );
+							killPlayer ( DeathType.Turn );
 						}
 					}
 					return;
@@ -995,7 +995,7 @@ public class PlayerControl : Photon.PunBehaviour {
 						{
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way." );
-							managePlayerDeath ( DeathType.Turn );
+							killPlayer ( DeathType.Turn );
 						}				
 					}
 					else
@@ -1009,7 +1009,7 @@ public class PlayerControl : Photon.PunBehaviour {
 						{
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way." );
-							managePlayerDeath ( DeathType.Turn );
+							killPlayer ( DeathType.Turn );
 						}
 					}
 				}
@@ -1489,124 +1489,127 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Player Death
-	[PunRPC]
-	void playerDied( DeathType deathTypeValue )
+	/// <summary>
+	/// This is the official way to kill the player. Do not call playerDiedRPC directly.
+	/// This method verifies that it is the master client before sending the playerDiedRPC.
+	/// The playerDiedRPC call is sent to All.
+	/// </summary>
+	/// <param name="deathTypeValue">Death type value.</param>
+	public void killPlayer( DeathType deathTypeValue )
 	{
-		Debug.Log("PlayerControl-playerDied RPC : " + deathTypeValue + " name " + gameObject.name );
-		managePlayerDeath( deathTypeValue );
-	}
-
-	public void managePlayerDeath( DeathType deathTypeValue )
-	{
-		//Only proceed if the player is the master client and is not dying already
+		//Only proceed if the player is the master client and he is not dying already
 		if ( PhotonNetwork.isMasterClient && playerCharacterState != PlayerCharacterState.Dying )
 		{
-			scaleControllerCollider( true );
+			Debug.Log("PlayerControl-killPlayer : " + deathTypeValue + " name " + gameObject.name );
+			this.photonView.RPC("playerDiedRPC", PhotonTargets.All, deathTypeValue );
+		}
+	}
 
-			Debug.Log("managePlayerDeath : " + deathTypeValue + " " + gameObject.name );
+	[PunRPC]
+	void playerDiedRPC( DeathType deathTypeValue )
+	{
+		scaleControllerCollider( true );
 
-			//Tell the remote versions of us that we died
-			this.photonView.RPC("playerDied", PhotonTargets.Others, deathTypeValue );
+		Debug.Log("playerDiedRPC : " + deathTypeValue + " " + gameObject.name );
 
-			//Update the player statistics		
-			if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
-			{
-				GameManager.Instance.playerStatistics.incrementNumberOfDeathsLifetime();
-			
-				//Increment the number of times we died during this race
-				numberOfTimesDiedDuringRace++;
-			}
+		//Update the player statistics		
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
+		{
+			GameManager.Instance.playerStatistics.incrementNumberOfDeathsLifetime();
+		
+			//Increment the number of times we died during this race
+			numberOfTimesDiedDuringRace++;
+		}
 
-			//Remember how we died
-			deathType = deathTypeValue;
+		//Remember how we died
+		deathType = deathTypeValue;
 
-			//If we were ziplining, detach from the zipline
-			detachFromZipline();
+		//If we were ziplining, detach from the zipline
+		detachFromZipline();
 
-			//If the player was looking over his shoulder, disable that
-			disableLookOverShoulder();
+		//If the player was looking over his shoulder, disable that
+		disableLookOverShoulder();
 
-			//Disable the player's shadow
-			playerVisuals.enablePlayerShadow( false );
+		//Disable the player's shadow
+		playerVisuals.enablePlayerShadow( false );
 
-			runSpeed = 0;
-			runSpeedAtTimeOfJump = 0;
-			allowRunSpeedToIncrease = false;
-			anim.speed = 1f;
+		runSpeed = 0;
+		runSpeedAtTimeOfJump = 0;
+		allowRunSpeedToIncrease = false;
+		anim.speed = 1f;
 
-			//Change character state
-			setCharacterState( PlayerCharacterState.Dying );
+		//Change character state
+		setCharacterState( PlayerCharacterState.Dying );
 
-			//The PlayerSpell component needs to know that the playerDied
-			GetComponent<PlayerSpell>().playerDied();
+		//The PlayerSpell component needs to know that the player died
+		GetComponent<PlayerSpell>().playerDied();
 
-			//Stop the particle systems. One might be playing if we died while sliding for example.
-			playerVisuals.playDustPuff( false );
-			playerVisuals.playWaterSplashWhileSliding( false );
+		//Stop the particle systems. One might be playing if we died while sliding for example.
+		playerVisuals.playDustPuff( false );
+		playerVisuals.playWaterSplashWhileSliding( false );
 
-			//Disable player controls when dying
-			enablePlayerControl( false );
-			
-			//Deactivate any queued jump or slide
-			queueJump = false;
-			queueSlide = false;
+		//Disable player controls when dying
+		enablePlayerControl( false );
+		
+		//Deactivate any queued jump or slide
+		queueJump = false;
+		queueSlide = false;
 
-			//Reset move direction and forward. We keep the Y component so the player falls to the ground.
-			moveDirection = new Vector3( 0,moveDirection.y,0 );
+		//Reset move direction and forward. We keep the Y component so the player falls to the ground.
+		moveDirection = new Vector3( 0,moveDirection.y,0 );
 
-			//Stop any currently playing sound
-			playerSounds.stopAudioSource();
+		//Stop any currently playing sound
+		playerSounds.stopAudioSource();
 
-			//Also, when the player dies, we don't want him to continue talking.
-			playerVoiceOvers.stopAudioSource();
+		//Also, when the player dies, we don't want him to continue talking.
+		playerVoiceOvers.stopAudioSource();
 
-			//Also tell PlayerRace. For example, we need to cancel the took the lead invoke that might be pending.
-			GetComponent<PlayerRace>().playerDied();
+		//Also tell PlayerRace. For example, we need to cancel the took the lead invoke that might be pending.
+		GetComponent<PlayerRace>().playerDied();
 
-			//Make adjustments depending on death type
-		    switch (deathType)
-			{
-		        case DeathType.Cliff:
-					StartCoroutine( waitBeforeResurrecting(2f) );	
-					break;
-		                
-		        case DeathType.Enemy:
-					StartCoroutine( waitBeforeResurrecting(2f) );	
-					break;
-		                
-				case DeathType.Zombie:
-					//Play collision sound
-					playerSounds.playDyingSound();
-					setAnimationTrigger(DeathWallTrigger);
-					break;
-			
-				case DeathType.Flame:
-					playerSounds.playFireDyingSound();
-					setAnimationTrigger(DeathWallTrigger);
-					break;
-		                
-		        case DeathType.Obstacle:
-					//Play collision sound
-					playerSounds.playDyingSound();
-					playerCamera.Shake();
-					setAnimationTrigger(DeathWallTrigger);
-					break;
+		//Make adjustments depending on death type
+	    switch (deathType)
+		{
+	        case DeathType.Cliff:
+				StartCoroutine( waitBeforeResurrecting(2f) );	
+				break;
+	                
+	        case DeathType.Enemy:
+				StartCoroutine( waitBeforeResurrecting(2f) );	
+				break;
+	                
+			case DeathType.Zombie:
+				//Play collision sound
+				playerSounds.playDyingSound();
+				setAnimationTrigger(DeathWallTrigger);
+				break;
+		
+			case DeathType.Flame:
+				playerSounds.playFireDyingSound();
+				setAnimationTrigger(DeathWallTrigger);
+				break;
+	                
+	        case DeathType.Obstacle:
+				//Play collision sound
+				playerSounds.playDyingSound();
+				playerCamera.Shake();
+				setAnimationTrigger(DeathWallTrigger);
+				break;
 
-		        case DeathType.FallForward:
-					//Play collision sound
-					playerSounds.playDyingSound();
-					playerCamera.Shake();
-					setAnimationTrigger(FallForwardTrigger);
-					break;
+	        case DeathType.FallForward:
+				//Play collision sound
+				playerSounds.playDyingSound();
+				playerCamera.Shake();
+				setAnimationTrigger(FallForwardTrigger);
+				break;
 
-		        case DeathType.GreatFall:
-					StartCoroutine( waitBeforeResurrecting(2.5f) );
-					break;
+	        case DeathType.GreatFall:
+				StartCoroutine( waitBeforeResurrecting(2.5f) );
+				break;
 
-				default:
-					setAnimationTrigger(DeathWallTrigger);
-					break;
-			}
+			default:
+				setAnimationTrigger(DeathWallTrigger);
+				break;
 		}
 	}
 
@@ -1975,7 +1978,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//For the Great Fall trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
 		else if( other.name == "Great Fall" )
 		{
-			managePlayerDeath( DeathType.GreatFall );
+			killPlayer( DeathType.GreatFall );
 		}
 		//For the Lock Camera trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
 		else if( other.name == "Lock Camera" )
@@ -2083,7 +2086,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight && getCharacterState() != PlayerCharacterState.Flying )
 				{
 					Debug.LogWarning("OnTriggerExit player exited dead end without turning " + other.name + " " + isInDeadEnd + " " + deadEndTurnDone + " " + currentDeadEndType );
-					managePlayerDeath ( DeathType.Turn );
+					killPlayer ( DeathType.Turn );
 				}
 				//Reset values
 				isInDeadEnd = false;

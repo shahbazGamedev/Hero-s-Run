@@ -59,7 +59,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
 					//Move the player back so he does not float in the air in case he hit the log while landing after a jump.
 					//controller.Move( hit.normal );
-					playerControl.managePlayerDeath ( DeathType.Obstacle );
+					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}
 			else if (hit.collider.name == "GroundObstacle" )
@@ -69,7 +69,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
 					//Move the player back so he does not float in the air in case he hit the log while landing after a jump.
 					//controller.Move( hit.normal );
-					playerControl.managePlayerDeath ( DeathType.Obstacle );
+					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}
 			else if( hit.gameObject.CompareTag("Chicken") )
@@ -165,7 +165,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 								else
 								{
 									//Player collided squarely with zombie. Kill the player.
-									playerControl.managePlayerDeath ( DeathType.Zombie );
+									playerControl.killPlayer ( DeathType.Zombie );
 									zombieController.victory( true );
 								}
 							}
@@ -180,7 +180,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 								else
 								{
 									//Player collided squarely with zombie. Kill the player.
-									playerControl.managePlayerDeath ( DeathType.Zombie );
+									playerControl.killPlayer ( DeathType.Zombie );
 									zombieController.victory( true );
 								}
 							}
@@ -221,7 +221,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 						else
 						{
 							//Player collided squarely with firepit. Kill the player.
-							playerControl.managePlayerDeath ( DeathType.Obstacle);
+							playerControl.killPlayer ( DeathType.Obstacle);
 						}
 					}
 					//Player is running along X axis
@@ -234,7 +234,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 						else
 						{
 							//Player collided squarely with firepit. Kill the player.
-							playerControl.managePlayerDeath ( DeathType.Obstacle);
+							playerControl.killPlayer ( DeathType.Obstacle);
 						}
 					}
 				}
@@ -260,7 +260,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 			}
 			else if (hit.collider.name.StartsWith( "Thrown Barrel" ) )
 			{
-				playerControl.managePlayerDeath ( DeathType.Obstacle );
+				playerControl.killPlayer ( DeathType.Obstacle );
 			}
 			else if (hit.collider.name.StartsWith( "Breakable Pumpkin" ) )
 			{
@@ -281,14 +281,14 @@ public class PlayerCollisions : Photon.PunBehaviour {
 			{
 				if( hit.normal.y < 0.4f )
 				{
-					playerControl.managePlayerDeath ( DeathType.Obstacle );
+					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}
 			else if (hit.collider.name == "Pendulum" )
 			{
 				//Move the player back so he does not get stuck in the pendulum.
 				//controller.Move( hit.normal ); //disable test - seems to make Unity 5 crash
-				playerControl.managePlayerDeath ( DeathType.Obstacle );
+				playerControl.killPlayer ( DeathType.Obstacle );
 			}
 			else if (hit.collider.CompareTag( "Cow" ) )
 			{
@@ -299,19 +299,19 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					//Player collided with cow squarely
 					//Move the player back so he does not get stuck in the cow.
 					//controller.Move( hit.normal );
-					playerControl.managePlayerDeath ( DeathType.Obstacle );
+					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}
 			else if (hit.collider.name.StartsWith("Fence") || hit.collider.name.StartsWith("Wall") || hit.collider.name.StartsWith("Portcullis") )
 			{
-				playerControl.managePlayerDeath ( DeathType.Obstacle );
+				playerControl.killPlayer ( DeathType.Obstacle );
 			}			
 			else if (hit.collider.name.Equals("Weapon") )
 			{
 				//Skeleton footman or warlord, or goblin piker or wraith or demon
 				if( !playerControl.isSpeedBoostActive )
 				{
-					playerControl.managePlayerDeath ( DeathType.Obstacle );
+					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}			
 			/// Obstacle_F - the obstacle is impassable
@@ -322,14 +322,14 @@ public class PlayerCollisions : Photon.PunBehaviour {
 			/// Obstacle_DJ - the obstacle is tall. You can double-jump over it.
 			else if (hit.collider.CompareTag( "Obstacle_F" ) )
 			{
-				playerControl.managePlayerDeath ( DeathType.Obstacle );
+				playerControl.killPlayer ( DeathType.Obstacle );
 			}
 			else if (hit.collider.CompareTag( "Obstacle_L" ) )
 			{
 				if( hit.normal.y < 0.4f )
 				{
 					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
-					playerControl.managePlayerDeath ( DeathType.Obstacle );
+					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}
 			else if (hit.collider.CompareTag( "Obstacle_M" ) )
@@ -337,7 +337,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 				if( hit.normal.y < 0.4f )
 				{
 					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
-					playerControl.managePlayerDeath ( DeathType.Obstacle );
+					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}
 			else if (hit.collider.CompareTag( "Obstacle_H" ) )
@@ -345,7 +345,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 				if( hit.normal.y < 0.4f )
 				{
 					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
-					playerControl.managePlayerDeath ( DeathType.Obstacle );
+					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}
 			else if (hit.collider.CompareTag( "Obstacle_DJ" ) )
@@ -353,7 +353,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 				if( hit.normal.y < 0.4f )
 				{
 					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
-					playerControl.managePlayerDeath ( DeathType.Obstacle );
+					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}
 			else if (hit.collider.CompareTag( "Player" ) )
@@ -366,7 +366,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 						PlayerControl otherPlayer = hit.collider.GetComponent<PlayerControl>();
 						if( otherPlayer.getCharacterState() != PlayerCharacterState.Dying || otherPlayer.getCharacterState() != PlayerCharacterState.Idle )
 						{
-							otherPlayer.managePlayerDeath ( DeathType.FallForward );
+							otherPlayer.killPlayer ( DeathType.FallForward );
 						}
 					}
 				}
@@ -393,7 +393,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					else
 					{
 						//Speedboost is not active. Kill the player.
-						playerControl.managePlayerDeath ( DeathType.Obstacle );
+						playerControl.killPlayer ( DeathType.Obstacle );
 					}
 				}
 			}
@@ -427,7 +427,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 						else
 						{
 							//Player collided squarely with goblin. Kill the player.
-							playerControl.managePlayerDeath ( DeathType.Zombie );
+							playerControl.killPlayer ( DeathType.Zombie );
 							creature.victory( true );
 						}
 					}
@@ -442,7 +442,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 						else
 						{
 							//Player collided squarely with zombie. Kill the player.
-							playerControl.managePlayerDeath ( DeathType.Zombie );
+							playerControl.killPlayer ( DeathType.Zombie );
 							creature.victory( true );
 						}
 					}

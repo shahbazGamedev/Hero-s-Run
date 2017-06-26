@@ -8,7 +8,7 @@ public class Firewall : CardSpawnedObject {
 	{
 		if( other.gameObject.CompareTag("Player") && other.gameObject.name != casterName )
 		{
-			other.GetComponent<PlayerControl>().managePlayerDeath ( DeathType.Flame );
+			other.GetComponent<PlayerControl>().killPlayer ( DeathType.Flame );
 		}
 	}
 
