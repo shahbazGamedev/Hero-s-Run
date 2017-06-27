@@ -14,7 +14,11 @@ public class VoiceLinesMenu : MonoBehaviour {
 	[SerializeField] Image heroIcon;
 	[SerializeField] TextMeshProUGUI heroName;
 
+	[Header("Entry")]
+	[SerializeField] Sprite lockIcon;
+	[SerializeField] Sprite equippedIcon;
 	[SerializeField] TextMeshProUGUI voiceLineText;
+	[SerializeField] AudioClip lockedSound;
 
 	// Use this for initialization
 	void Start ()
@@ -85,15 +89,55 @@ public class VoiceLinesMenu : MonoBehaviour {
 		go.transform.SetParent(voiceLineHolder,false);
 		Button voiceLineButton = go.GetComponent<Button>();
 		voiceLineButton.onClick.RemoveAllListeners();
-		voiceLineButton.onClick.AddListener(() => OnClickVoiceLine( go, vo ));
+		voiceLineButton.onClick.AddListener(() => OnClickVoiceLine( vo ));
 		TextMeshProUGUI[] texts = voiceLineButton.GetComponentsInChildren<TextMeshProUGUI>();
 		texts[0].text =  LocalizationManager.Instance.getText( "VO_TAUNT_" + heroName.ToString().ToUpper() + "_" + vo.uniqueId.ToString() );
-
+		Image[] images = voiceLineButton.GetComponentsInChildren<Image>();
+		//We have 3 possibilities:
+		//The voice line is locked
+		//The voice line is equipped (and therefore unlocked)
+		//The voice line is not locked and not equipped
+		if( vo.isLocked )
+		{
+			images[1].sprite = lockIcon;
+		}
+		else
+		{
+			if( vo.isEquipped )
+			{
+				images[1].sprite = equippedIcon;
+			}
+			else
+			{
+				images[1].gameObject.SetActive( false );
+			}
+		}
 	}
 
-	void OnClickVoiceLine( GameObject go, PlayerVoiceLines.VoiceLineData vo )
+	void OnClickVoiceLine( PlayerVoiceLines.VoiceLineData vo )
 	{
+		if( vo.isLocked )
+		{
+			GetComponent<AudioSource>().PlayOneShot( lockedSound );
+		}
+		else
+		{
+			if( vo.isEquipped )
+			{
+				AudioClip clip = VoiceOverManager.Instance.getTauntClip( vo.heroName, vo.uniqueId );
+				GetComponent<AudioSource>().PlayOneShot( clip );
+			}
+			else
+			{
+				GameManager.Instance.playerVoiceLines.equipVoiceLine( vo.uniqueId, vo.heroName );
+				GameManager.Instance.playerVoiceLines.serializeVoiceLines( true );
+				AudioClip clip = VoiceOverManager.Instance.getTauntClip( vo.heroName, vo.uniqueId );
+				GetComponent<AudioSource>().PlayOneShot( clip );
 
+				HeroManager.HeroCharacter hero = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex );
+				createVoiceLines( hero );
+			}
+		}
 	}
 
 
