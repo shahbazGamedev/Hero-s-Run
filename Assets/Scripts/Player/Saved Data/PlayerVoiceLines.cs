@@ -16,7 +16,7 @@ public class PlayerVoiceLines {
 		List<VoiceOverManager.VoiceOverData> voiceOverList = VoiceOverManager.Instance.getAllTaunts ();
 		for( int i = 0; i < voiceOverList.Count; i++ )
 		{
-			addVoiceLine( voiceOverList[i].uniqueId, voiceOverList[i].heroName, voiceOverList[i].clip.name, !voiceOverList[i].isDefaultTaunt, !voiceOverList[i].isDefaultTaunt, voiceOverList[i].isDefaultTaunt  );
+			addVoiceLine( voiceOverList[i].uniqueId, voiceOverList[i].heroName, voiceOverList[i].clip.name, false, !voiceOverList[i].isDefaultTaunt, voiceOverList[i].isDefaultTaunt  );
 		}
 		serializeVoiceLines( true );
 	}
@@ -52,6 +52,16 @@ public class PlayerVoiceLines {
 		return voiceLineList.Find(voiceLineData => voiceLineData.uniqueId == uniqueId);
 	}
 
+	public int getUnlockedCountForHero( string heroName )
+	{
+		return voiceLineList.FindAll(voiceLineData => voiceLineData.heroName == heroName && voiceLineData.isLocked == false ).Count;
+	}
+
+	public List<VoiceLineData> getVoiceLinesForHero( string heroName )
+	{
+		return voiceLineList.FindAll(voiceLineData => voiceLineData.heroName == heroName );
+	}
+
 	public int getNumberOfNewVoiceLines()
 	{
 		int counter = 0;
@@ -62,16 +72,29 @@ public class PlayerVoiceLines {
 		return counter;
 	}
 
-	public void unlockAndEquipVoiceLine( int uniqueId, string heroName )
+	public void equipVoiceLine( int uniqueId, string heroName )
 	{
 		VoiceLineData vld = voiceLineList.Find(voiceLineData => voiceLineData.uniqueId == uniqueId);
 		if( vld != null )
 		{
 			//We only ever want one equipped VO per hero at any given time
 			unquippedVoiceLineForHero( heroName );
-			vld.isLocked = false;
-			vld.isNew = true;
 			vld.isEquipped = true;
+		}
+		else
+		{
+			Debug.LogWarning("The voice line with id " + uniqueId + " that you want to equip could not be found." );
+		}
+	}
+
+	public void unlockVoiceLineAndSave( int uniqueId )
+	{
+		VoiceLineData vld = voiceLineList.Find(voiceLineData => voiceLineData.uniqueId == uniqueId);
+		if( vld != null )
+		{
+			vld.isNew = true;
+			vld.isLocked = false;
+			serializeVoiceLines( true );
 		}
 		else
 		{

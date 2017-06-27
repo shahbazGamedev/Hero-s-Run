@@ -172,6 +172,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 				equipNowToggle.onValueChanged.RemoveAllListeners();
 				equipNowToggle.onValueChanged.AddListener ( (value) => { OnEquipNowToggle(loot); } );
 				heroIcon.sprite = HeroManager.Instance.getHeroSprite( loot.heroName );
+				GameManager.Instance.playerVoiceLines.unlockVoiceLineAndSave( loot.uniqueItemID );
 				activateLootPanel( LootType.VOICE_LINE );
 			break;
 			
@@ -243,7 +244,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		{
 			//Save
 			//if the player decided to equip his new voice line (i.e. the value is not -1), set it in player profile before saving.
-			if( voiceLineId != -1 ) GameManager.Instance.playerVoiceLines.unlockAndEquipVoiceLine( voiceLineId, heroName );
+			if( equipNowToggle.isOn ) GameManager.Instance.playerVoiceLines.equipVoiceLine( voiceLineId, heroName );
 			GameManager.Instance.playerInventory.serializePlayerInventory( false );
 			GameManager.Instance.playerDeck.serializePlayerDeck( false );
 			GameManager.Instance.playerIcons.serializePlayerIcons( false );

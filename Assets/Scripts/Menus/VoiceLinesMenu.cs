@@ -14,6 +14,8 @@ public class VoiceLinesMenu : MonoBehaviour {
 	[SerializeField] Image heroIcon;
 	[SerializeField] TextMeshProUGUI heroName;
 
+	[SerializeField] TextMeshProUGUI voiceLineText;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -53,20 +55,31 @@ public class VoiceLinesMenu : MonoBehaviour {
 			Transform child = voiceLineHolder.transform.GetChild( i );
 			GameObject.Destroy( child.gameObject );
 		}
+		//Get all of the voice lines that the player has in his inventory
+		List<PlayerVoiceLines.VoiceLineData> playerVoiceOverList = GameManager.Instance.playerVoiceLines.getVoiceLinesForHero ( hero.name ); 
 
-		List<VoiceOverManager.VoiceOverData> voiceOverList = VoiceOverManager.Instance.getHeroTaunts ( hero.name ); 
+		//Get all of the taunts that exist for that hero
+		List<VoiceOverManager.VoiceOverData> allHeroTaunts = VoiceOverManager.Instance.getHeroTaunts ( hero.name );
 
-		for( int i = 0; i < voiceOverList.Count; i++ )
+		//Indicate number of voice lines found versus total number of voice lines
+		int unlockedCount = GameManager.Instance.playerVoiceLines.getUnlockedCountForHero( hero.name );
+		int total = allHeroTaunts.Count;
+
+		voiceLineText.text = string.Format( LocalizationManager.Instance.getText( "VOICE_LINES" ), unlockedCount, total );
+
+	
+		for( int i = 0; i < playerVoiceOverList.Count; i++ )
 		{
-			createVoiceLine( i, hero.name, voiceOverList[i] );
+			createVoiceLine( i, hero.name, playerVoiceOverList[i] );
 		}
+
 		//Calculate the content length
 		VerticalLayoutGroup vlg = voiceLineHolder.GetComponent<VerticalLayoutGroup>();
-		int contentLength = ( voiceOverList.Count + 1 )* ( (int)vlg.preferredHeight + (int)vlg.spacing ) + vlg.padding.top;
+		int contentLength = ( playerVoiceOverList.Count + 1 )* ( (int)vlg.preferredHeight + (int)vlg.spacing ) + vlg.padding.top;
 		voiceLineHolder.GetComponent<RectTransform>().sizeDelta = new Vector2( voiceLineHolder.GetComponent<RectTransform>().rect.width, contentLength );		
 	}
 
-	void createVoiceLine( int index, string heroName, VoiceOverManager.VoiceOverData vo )
+	void createVoiceLine( int index, string heroName, PlayerVoiceLines.VoiceLineData vo )
 	{
 		GameObject go = (GameObject)Instantiate(voiceLinePrefab);
 		go.transform.SetParent(voiceLineHolder,false);
@@ -78,7 +91,7 @@ public class VoiceLinesMenu : MonoBehaviour {
 
 	}
 
-	void OnClickVoiceLine( GameObject go, VoiceOverManager.VoiceOverData vo )
+	void OnClickVoiceLine( GameObject go, PlayerVoiceLines.VoiceLineData vo )
 	{
 
 	}
