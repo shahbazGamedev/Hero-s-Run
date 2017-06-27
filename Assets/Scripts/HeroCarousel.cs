@@ -20,6 +20,10 @@ public class HeroCarousel : MonoBehaviour {
 	GameObject previousSkin = null;
 	int maxHeroIndex = 0;
 
+	//Delegate used to communicate to other classes when the selected hero has changed.
+	public delegate void HeroChangedEvent( int selectedHeroIndex );
+	public static event HeroChangedEvent heroChangedEvent;
+
 	// Use this for initialization
 	void Awake () {
 		
@@ -58,6 +62,7 @@ public class HeroCarousel : MonoBehaviour {
 		
 		//Remember the selected hero as we will need to access it later
 		GameManager.Instance.playerProfile.selectedHeroIndex = currentIndex;
+		if( heroChangedEvent != null ) heroChangedEvent( currentIndex );
 
 		centerIcon.sprite = hero.icon;
 

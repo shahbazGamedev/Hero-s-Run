@@ -123,6 +123,11 @@ public class VoiceOverManager : MonoBehaviour {
 		return voiceOverList.FindAll(vo => ( vo.heroName == heroName ) );
 	}
 
+	public List<VoiceOverData> getHeroTaunts ( string heroName )
+	{
+		return voiceOverList.FindAll(vo => ( vo.heroName == heroName && vo.type == VoiceOverType.VO_Taunt ) );
+	}
+
 	[System.Serializable]
 	public class VoiceOverData
 	{
