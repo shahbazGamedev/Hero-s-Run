@@ -295,9 +295,8 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 	#region For debugging Jet Pack. Normal way to activate is by playing the Jet Pack card.
 	void detectTaps()
 	{
-		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null && PlayerStatsManager.Instance.getShowDebugInfoOnHUD() )
 		{			
-			//We only want the host to calculate the race position and race duration. We don't want a bot to do it.
 			if ( Input.touchCount > 0 )
 			{
 				Touch touch = Input.GetTouch(0);
@@ -321,7 +320,7 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 
 	private void handleKeyboard()
 	{
-		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null && PlayerStatsManager.Instance.getShowDebugInfoOnHUD() )
 		{			
 			if ( Input.GetKeyDown (KeyCode.F) ) 
 			{
