@@ -71,12 +71,17 @@ public class VoiceOverManager : MonoBehaviour {
 		}
 	}
 
-	//To do: remove default taunts for loot boxes
+	/// <summary>
+	/// Returns the unique Id of random taunt, excluding default taunts.
+	/// </summary>
+	/// <returns>The unique Id of random taunt.</returns>
+	/// <param name="heroName">Hero name.</param>
 	public int getRandomTaunt ( string heroName )
 	{
 		List<VoiceOverData> heroVoiceOverList = getHeroVoiceOverList( heroName );
 		//Do we have one or more VOs that match?
-		List<VoiceOverManager.VoiceOverData> tauntList = heroVoiceOverList.FindAll(vo => ( vo.type == VoiceOverType.VO_Taunt ) );
+		//We exclude the default taunts.
+		List<VoiceOverManager.VoiceOverData> tauntList = heroVoiceOverList.FindAll(vo => ( vo.type == VoiceOverType.VO_Taunt && vo.isDefaultTaunt == false  ) );
 		if( tauntList.Count > 0 )
 		{
 			if( tauntList.Count == 1 )
