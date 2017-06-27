@@ -13,15 +13,8 @@ public class PlayerIcons {
 		List<ProgressionManager.IconData> iconList = ProgressionManager.Instance.getPlayerIcons();
 		for( int i = 0; i < iconList.Count; i++ )
 		{
-			addPlayerIcon(  iconList[i].uniqueId, false, true );
+			addPlayerIcon(  iconList[i].uniqueId, false, !iconList[i].isDefaultIcon );
 		}
-
-		//for a brand new player, we want the first 4 entries to be unlocked and with a new label.
-		unlockPlayerIcon( 0 );
-		unlockPlayerIcon( 1 );
-		unlockPlayerIcon( 2 );
-		unlockPlayerIcon( 3 );
-
 		serializePlayerIcons( true );
 	}
 

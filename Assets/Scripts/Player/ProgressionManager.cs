@@ -169,6 +169,9 @@ public class ProgressionManager : MonoBehaviour {
 		//Unique ID to identify the player icon.
 		public int uniqueId = 0; 
 		public Sprite icon;
+		//New players have a few icons that are immediately available to them.
+		//All other icons need to be found, for example in loot boxes.
+		public bool isDefaultIcon;
 	}
 	#endregion
 	
