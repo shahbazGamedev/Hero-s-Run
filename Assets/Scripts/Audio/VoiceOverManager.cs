@@ -30,6 +30,27 @@ public class VoiceOverManager : MonoBehaviour {
 		{
 			DontDestroyOnLoad(gameObject);
 			Instance = this;
+			checkForDuplicateIds();
+		}
+	}
+
+	/// <summary>
+	/// Checks for duplicate Ids and prints an error message if any are found.
+	/// </summary>
+	void checkForDuplicateIds()
+	{
+		List<int> uniqueIdList = new List<int>();
+
+		for( int i = 0; i < voiceOverList.Count; i++ )
+		{
+			if( uniqueIdList.Exists( id => id == voiceOverList[i].uniqueId  ) )
+			{
+				Debug.LogError("VoiceOverManager-the voice over list contains a duplicate id: " + voiceOverList[i].uniqueId + " for audio clip: " + voiceOverList[i].clip.name );
+			}
+			else
+			{
+				uniqueIdList.Add( voiceOverList[i].uniqueId );
+			}
 		}
 	}
 
