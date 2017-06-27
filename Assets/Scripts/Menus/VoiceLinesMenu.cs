@@ -93,16 +93,19 @@ public class VoiceLinesMenu : MonoBehaviour {
 		TextMeshProUGUI[] texts = voiceLineButton.GetComponentsInChildren<TextMeshProUGUI>();
 		texts[0].text =  LocalizationManager.Instance.getText( "VO_TAUNT_" + heroName.ToString().ToUpper() + "_" + vo.uniqueId.ToString() );
 		Image[] images = voiceLineButton.GetComponentsInChildren<Image>();
+
 		//We have 3 possibilities:
 		//The voice line is locked
-		//The voice line is equipped (and therefore unlocked)
-		//The voice line is not locked and not equipped
+		//The voice line is equipped and unlocked
+		//The voice line is not equipped and unlocked
 		if( vo.isLocked )
 		{
 			images[1].sprite = lockIcon;
+			texts[0].color = Color.gray;
 		}
 		else
 		{
+			texts[0].color = Color.black;
 			if( vo.isEquipped )
 			{
 				images[1].sprite = equippedIcon;
