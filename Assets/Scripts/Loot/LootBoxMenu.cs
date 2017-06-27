@@ -32,6 +32,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 	[Header("Voice Line Panel")]
 	[SerializeField] AudioWaveFormVisualizer audioWaveFormVisualizer;
 	[SerializeField] TextMeshProUGUI voiceLineNameText;
+	[SerializeField] Image heroIcon;
 	[SerializeField] Toggle equipNowToggle;
 	int voiceLineId = -1;
 	string heroName;
@@ -170,6 +171,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 				voiceLineNameText.text = "\"" + LocalizationManager.Instance.getText( "VO_TAUNT_" + loot.heroName.ToString().ToUpper() + "_" + loot.uniqueItemID.ToString() ) + "\"";
 				equipNowToggle.onValueChanged.RemoveAllListeners();
 				equipNowToggle.onValueChanged.AddListener ( (value) => { OnEquipNowToggle(loot); } );
+				heroIcon.sprite = HeroManager.Instance.getHeroSprite( loot.heroName );
 				activateLootPanel( LootType.VOICE_LINE );
 			break;
 			

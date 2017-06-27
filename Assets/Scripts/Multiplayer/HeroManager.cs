@@ -39,6 +39,11 @@ public class HeroManager : MonoBehaviour {
 		}
 	}
 
+	public Sprite getHeroSprite( string heroName )
+	{
+		return heroCharacterList.Find(hero => hero.name == heroName ).icon;
+	}
+
 	public HeroCharacter getHeroCharacter( int index )
 	{
 		return heroCharacterList[index];
