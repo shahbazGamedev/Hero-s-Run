@@ -78,9 +78,10 @@ public class VoiceLinesMenu : MonoBehaviour {
 		}
 
 		//Calculate the content length
+		int entryHeight = (int) voiceLinePrefab.GetComponent<RectTransform>().sizeDelta.y;
 		VerticalLayoutGroup vlg = voiceLineHolder.GetComponent<VerticalLayoutGroup>();
-		int contentLength = ( playerVoiceOverList.Count + 1 )* ( (int)vlg.preferredHeight + (int)vlg.spacing ) + vlg.padding.top;
-		voiceLineHolder.GetComponent<RectTransform>().sizeDelta = new Vector2( voiceLineHolder.GetComponent<RectTransform>().rect.width, contentLength );		
+		int contentLength = ( playerVoiceOverList.Count + 1 ) * ( entryHeight + (int)vlg.spacing ) + vlg.padding.top;
+		voiceLineHolder.GetComponent<RectTransform>().sizeDelta = new Vector2( voiceLineHolder.GetComponent<RectTransform>().rect.width, contentLength );
 	}
 
 	void createVoiceLine( int index, string heroName, PlayerVoiceLines.VoiceLineData vo )
