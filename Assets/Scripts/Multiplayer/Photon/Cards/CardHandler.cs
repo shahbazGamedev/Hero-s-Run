@@ -242,6 +242,17 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardFrisbee component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+			case CardName.Hyper_Focus:
+				CardHyperFocus cardHyperFocus = GetComponent<CardHyperFocus>();
+				if( cardHyperFocus != null )
+				{
+					cardHyperFocus.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardHyperFocus component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -269,6 +280,13 @@ public class CardHandler : MonoBehaviour {
 		if( casterPhotonView.GetComponent<PlayerVoiceOvers>().isSpellVoiceOverAvailable( name ) ) casterPhotonView.RPC( "activateCardVoiceOverRPC", PhotonTargets.All, (int)name );
 	}
 
+	/// <summary>
+	/// Verify if playing a card would be effective. Used by bots.
+	/// </summary>
+	/// <returns><c>true</c>, if card would be effective, <c>false</c> otherwise.</returns>
+	/// <param name="caster">Caster.</param>
+	/// <param name="name">Name.</param>
+	/// <param name="level">Level.</param>
 	public bool isCardEffective ( GameObject caster, CardName name, int level )
 	{
 		bool effective = false;
@@ -362,6 +380,9 @@ public class CardHandler : MonoBehaviour {
 			//Frisbee could be effective at any time
 			case CardName.Frisbee:
 				return true;
+			//HyperFocus should NOT be used by bots
+			case CardName.Hyper_Focus:
+				return false;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;

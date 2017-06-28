@@ -17,7 +17,7 @@ public class CardDoubleJump : Card {
 	void cardDoubleJumpMasterRPC( int level, int photonViewID )
 	{
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
-		this.photonView.RPC("cardDoubleJumpRPC", PhotonTargets.All, cd.getCardPropertyValue( CardPropertyType.DOUBLE_JUMP_SPEED, level ), photonViewID );
+		this.photonView.RPC("cardDoubleJumpRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DOUBLE_JUMP_SPEED, level ), photonViewID );
 	}
 	#endregion
 

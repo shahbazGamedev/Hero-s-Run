@@ -11,7 +11,7 @@ public class CardSprint : Card {
 
 	public void activateCard ( int photonViewId, int level )
 	{
-		this.photonView.RPC("cardSprintMasterRPC", PhotonTargets.AllViaServer, level, photonViewId );	
+		this.photonView.RPC("cardSprintMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
 	}
 
 	#region Methods only running on master client
@@ -19,7 +19,7 @@ public class CardSprint : Card {
 	void cardSprintMasterRPC( int level, int photonViewID )
 	{
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
-		this.photonView.RPC("cardSprintRPC", PhotonTargets.All, cd.getCardPropertyValue( CardPropertyType.DURATION, level ), cd.getCardPropertyValue( CardPropertyType.SPEED_MULTIPLIER, level ), photonViewID );	
+		this.photonView.RPC("cardSprintRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ), cd.getCardPropertyValue( CardPropertyType.SPEED_MULTIPLIER, level ), photonViewID );	
 	}
 	#endregion
 

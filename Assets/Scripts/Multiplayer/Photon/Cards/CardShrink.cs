@@ -43,7 +43,7 @@ public class CardShrink : Card {
 			//3) Play an appropriate VO such as "Gotcha!" for Stasis.
 			if( randomTarget != playerTransform ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
 
-			randomTarget.GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.All, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
+			randomTarget.GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
 		}
 		else
 		{

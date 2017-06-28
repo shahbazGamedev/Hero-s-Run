@@ -20,7 +20,7 @@ public class CardSpeedBoost : Card {
 	void cardSpeedBoostMasterRPC( int level, int photonViewID )
 	{
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
-		this.photonView.RPC("cardSpeedBoostRPC", PhotonTargets.All, cd.getCardPropertyValue( CardPropertyType.DURATION, level ), cd.getCardPropertyValue( CardPropertyType.SPEED_MULTIPLIER, level ), photonViewID );	
+		this.photonView.RPC("cardSpeedBoostRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ), cd.getCardPropertyValue( CardPropertyType.SPEED_MULTIPLIER, level ), photonViewID );	
 	}
 	#endregion
 

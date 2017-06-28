@@ -133,7 +133,7 @@ public class PlayerRace : Photon.PunBehaviour
 							players[i].racePosition = newPosition;
 							players[i].previousRacePosition = newPosition;
 							//Inform the player of his new position so that he can update it on the HUD
-							if( !officialRacePositionList.Contains( this ) ) players[i].photonView.RPC("OnRacePositionChanged", PhotonTargets.AllBufferedViaServer, newPosition );
+							if( !officialRacePositionList.Contains( this ) ) players[i].photonView.RPC("OnRacePositionChanged", PhotonTargets.AllViaServer, newPosition );
 						}
 					}
 				}
@@ -165,7 +165,7 @@ public class PlayerRace : Photon.PunBehaviour
 				if( !officialRacePositionList.Contains(this) ) officialRacePositionList.Add( this );
 				int officialRacePosition = officialRacePositionList.FindIndex(playerRace => playerRace == this);
 				Debug.Log ("Finish Line crossed by " + gameObject.name + " in race position " + officialRacePosition + " players " + players.Count);
-				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllBuffered, other.transform.position.z, raceDuration, distanceTravelled, officialRacePosition );
+				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllViaServer, other.transform.position.z, raceDuration, distanceTravelled, officialRacePosition );
 				//if this is the first player to cross the finish line, start the End of Race countdown.
 				if( officialRacePositionList.Count == 1 )
 				{

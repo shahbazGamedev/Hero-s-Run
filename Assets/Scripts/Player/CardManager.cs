@@ -61,6 +61,7 @@ public enum CardName
 	Double_Jump = 2,
 	Stasis = 3,
 	Sprint = 4,
+	Hyper_Focus = 5,
 
 	//Rare
 	Firewall = 100,

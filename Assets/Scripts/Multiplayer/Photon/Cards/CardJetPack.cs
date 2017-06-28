@@ -16,7 +16,7 @@ public class CardJetPack : Card {
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
-		playerTransform.GetComponent<PhotonView>().RPC("cardJetPackRPC", PhotonTargets.All, cd.getCardPropertyValue( CardPropertyType.DURATION_WITH_TIMER, level ), cd.getCardPropertyValue( CardPropertyType.FLIGHT_SPEED, level ) );
+		playerTransform.GetComponent<PhotonView>().RPC("cardJetPackRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION_WITH_TIMER, level ), cd.getCardPropertyValue( CardPropertyType.FLIGHT_SPEED, level ) );
 	}
 	#endregion
 }

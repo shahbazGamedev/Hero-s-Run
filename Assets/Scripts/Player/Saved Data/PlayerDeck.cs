@@ -73,7 +73,10 @@ public class PlayerDeck {
 		addCard( CardName.Jet_Pack, 1, 18, true );
 
 		//19
-		addCard( CardName.Frisbee, 1, 19, true );
+		addCard( CardName.Frisbee, 1, 19, false );
+
+		//20
+		addCard( CardName.Hyper_Focus, 1, 20, true );
 
 		serializePlayerDeck( true );
 

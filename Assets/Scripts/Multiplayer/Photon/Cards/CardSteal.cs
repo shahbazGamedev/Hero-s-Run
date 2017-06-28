@@ -36,7 +36,7 @@ public class CardSteal : Card {
 		if( target != null )
 		{	
 			//Send an RPC to the player we will be stealing a card from
-			target.GetComponent<PhotonView>().RPC("cardStealTargetRPC", PhotonTargets.All, photonViewID );
+			target.GetComponent<PhotonView>().RPC("cardStealTargetRPC", PhotonTargets.AllViaServer, photonViewID );
 		}
 	}
 

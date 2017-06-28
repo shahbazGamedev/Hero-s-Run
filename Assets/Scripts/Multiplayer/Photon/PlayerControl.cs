@@ -336,12 +336,12 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			if( previousState == GameState.Paused )
 			{
-				this.photonView.RPC( "unpauseRemotePlayers", PhotonTargets.AllBufferedViaServer );
+				this.photonView.RPC( "unpauseRemotePlayers", PhotonTargets.AllViaServer );
 			}
 		}
 		else if( newState == GameState.Paused )
 		{
-			this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.AllBufferedViaServer, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
+			this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.AllViaServer, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 		}
 	}
 
@@ -1645,7 +1645,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		if ( PhotonNetwork.isMasterClient && playerCharacterState != PlayerCharacterState.Dying )
 		{
 			Debug.Log("PlayerControl-killPlayer : " + deathTypeValue + " name " + gameObject.name );
-			this.photonView.RPC("playerDiedRPC", PhotonTargets.All, deathTypeValue );
+			this.photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, deathTypeValue );
 		}
 	}
 
@@ -1922,7 +1922,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//We're a bot
 			heroName = 	GetComponent<PlayerAI>().botHero.userName;
 		}
-		this.photonView.RPC("playerResurrectedRPC", PhotonTargets.All, heroName );
+		this.photonView.RPC("playerResurrectedRPC", PhotonTargets.AllViaServer, heroName );
 
 		allowRunSpeedToIncrease = true;
 
