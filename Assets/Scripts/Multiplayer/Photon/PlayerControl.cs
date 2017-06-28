@@ -183,6 +183,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	Lanes desiredLane = Lanes.Center;
 	int myLane = 0; //0 is uninitialized, 1 is the nearest, 2 is in the center and 3 is the furthest
 	public float sideMoveSpeed = 5.5f; //At what speed do you change lanes.
+	bool useLanes = true;
+	Vector3 playerPositionWhenSideMoveStarted;
 	#endregion
 
 	#region Turning corners variables
@@ -454,7 +456,14 @@ public class PlayerControl : Photon.PunBehaviour {
 					}
 				}
 	
-				verifyIfDesiredLaneReached();
+				if( useLanes )
+				{
+					verifyIfDesiredLaneReached();
+				}
+				else
+				{
+					verifyIfDesiredLaneReached2();
+				}
 			}
 		}
 	}
@@ -536,7 +545,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			xVector = xVector * Time.deltaTime * moveDirection.x;
 			//6) Clamp to the max distance we can travel perpendicularly without
 			//exiting the left or right lanes.
-			xVector =  Vector3.ClampMagnitude(xVector, Mathf.Abs(getMaxDist(moveDirection.x)));
+			if( useLanes) xVector =  Vector3.ClampMagnitude(xVector, Mathf.Abs(getMaxDist(moveDirection.x)));
 			//7) Add the X component to the forward direction
 			forward = forward + xVector;
 			//8) Move the controller
@@ -1134,6 +1143,55 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 	}
 	
+	//move the player to the left lane if false,
+	//and to the right lane if true
+	void changeLane2( bool isGoingRight )
+	{
+		//You can only change lanes while running
+		//You can also change your mind 
+		if ( playerCharacterState == PlayerCharacterState.Running || ( playerCharacterState == PlayerCharacterState.SideMove && this.isGoingRight != isGoingRight ) )
+		{
+			playerPositionWhenSideMoveStarted = transform.position;
+			this.isGoingRight = isGoingRight;
+
+			//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
+			moveDirection.x = 0;
+
+			//Make sure the lane data is correct in case a collision forced us out of our lane
+			recalculateCurrentLane();
+
+			float currentSideMoveSpeed;
+			if( Time.timeScale < 1f )
+			{
+				//Player is using a slow time power up.
+				currentSideMoveSpeed = sideMoveSpeed * SLOW_DOWN_FACTOR;
+			}
+			else
+			{
+				//Time is normal.
+				currentSideMoveSpeed = sideMoveSpeed;
+			}
+
+			if ( isGoingRight )
+			{
+				desiredLane = Lanes.Right;
+				setCharacterState( PlayerCharacterState.SideMove );
+				moveDirection.x = currentSideMoveSpeed;
+				playerSounds.playSideMoveSound();
+				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
+
+			}
+			else
+			{
+				desiredLane = Lanes.Left;
+				setCharacterState( PlayerCharacterState.SideMove );
+				moveDirection.x = -currentSideMoveSpeed;
+				playerSounds.playSideMoveSound();
+				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
+			}
+		}
+	}
+
 	void finalizeSideMove()
 	{
 		if (jumping)
@@ -1233,7 +1291,15 @@ public class PlayerControl : Photon.PunBehaviour {
 		else
 		{
 			//we want to change lanes
-			changeLane ( isGoingRight );
+			if( useLanes )
+			{
+				changeLane ( isGoingRight );
+			}
+			else
+			{
+				changeLane2 ( isGoingRight );
+			}
+
 		}
 	}
 
@@ -1369,6 +1435,78 @@ public class PlayerControl : Photon.PunBehaviour {
 					if( transform.position.z - currentTilePos.z <= 0 )
 					{
 						transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z );
+						finalizeSideMove();
+					}
+				}
+			}
+		}
+	}
+
+	void verifyIfDesiredLaneReached2()
+	{
+		if ( playerCharacterState == PlayerCharacterState.SideMove || playerCharacterState == PlayerCharacterState.Stumbling )
+		{
+			float playerRotationY = Mathf.Floor( transform.eulerAngles.y );
+			if ( isGoingRight )
+			{
+				//I want to reach the right lane
+				//Facing straight
+				if( playerRotationY == 0 )
+				{
+					if( transform.position.x - playerPositionWhenSideMoveStarted.x >= adjustedLaneLimit )
+					{
+						transform.position = new Vector3 (  playerPositionWhenSideMoveStarted.x + laneLimit, transform.position.y, transform.position.z );
+						finalizeSideMove();
+					}
+				
+				}
+				//Facing right
+				else if( playerRotationY == 90f ||  playerRotationY == -270f )
+				{
+					if( transform.position.z - playerPositionWhenSideMoveStarted.z <= -adjustedLaneLimit )
+					{
+						transform.position = new Vector3 (  transform.position.x, transform.position.y, playerPositionWhenSideMoveStarted.z - laneLimit );
+						finalizeSideMove();
+					}
+				}
+				//Facing left
+				else
+				{
+					if( transform.position.z - playerPositionWhenSideMoveStarted.z >= adjustedLaneLimit )
+					{
+						transform.position = new Vector3 (  transform.position.x, transform.position.y, playerPositionWhenSideMoveStarted.z + laneLimit );
+						finalizeSideMove();
+					}
+				}
+			}
+			else
+			{
+				//I want to reach the left lane
+				//Facing straight
+				if( playerRotationY == 0 )
+				{
+					if( transform.position.x - playerPositionWhenSideMoveStarted.x <= -adjustedLaneLimit )
+					{
+						transform.position = new Vector3 (  playerPositionWhenSideMoveStarted.x -laneLimit, transform.position.y, transform.position.z );
+						finalizeSideMove();
+					}
+				
+				}
+				//Facing right
+				else if( playerRotationY == 90f ||  playerRotationY == -270f )
+				{
+					if( transform.position.z - playerPositionWhenSideMoveStarted.z >= adjustedLaneLimit )
+					{
+						transform.position = new Vector3 (  transform.position.x, transform.position.y, playerPositionWhenSideMoveStarted.z + laneLimit );
+						finalizeSideMove();
+					}
+				}
+				//Facing left
+				else
+				{
+					if( transform.position.z - playerPositionWhenSideMoveStarted.z <= -adjustedLaneLimit )
+					{
+						transform.position = new Vector3 (  transform.position.x, transform.position.y, playerPositionWhenSideMoveStarted.z - laneLimit );
 						finalizeSideMove();
 					}
 				}
