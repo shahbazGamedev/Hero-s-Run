@@ -2,37 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AutoPilot : MonoBehaviour {
+public class AutoPilot : Photon.PunBehaviour {
 
 	[Header("General")]
 	/// <summary>
 	/// The card handler. We need access so that the bot can play cards from his deck.
 	/// </summary>
-	float percentageWillTryToAvoidObstacle;
-	float percentageWillTurnSuccesfully;
-	const float BASE_RUN_SPEED = 18f;
-	const float BASE_OBSTACLE_DETECTION_LOW_DISTANCE = 5.2f; //assuming a run speed of BASE_RUN_SPEED
-	const float BASE_OBSTACLE_DETECTION_HIGH_DISTANCE = 8f; //assuming a run speed of BASE_RUN_SPEED
-	Vector3 xOffsetStartLow = new Vector3( 0, 0.5f, 0 );	//For low obstacles
-	Vector3 xOffsetStartHigh = new Vector3( 0, 1.5f, 0 );	//For high obstacles
+	protected float percentageWillTryToAvoidObstacle;
+	protected float percentageWillTurnSuccesfully;
+	protected const float BASE_RUN_SPEED = 18f;
+	protected const float BASE_OBSTACLE_DETECTION_LOW_DISTANCE = 5.2f; //assuming a run speed of BASE_RUN_SPEED
+	protected const float BASE_OBSTACLE_DETECTION_HIGH_DISTANCE = 8f; //assuming a run speed of BASE_RUN_SPEED
+	protected Vector3 xOffsetStartLow = new Vector3( 0, 0.5f, 0 );	//For low obstacles
+	protected Vector3 xOffsetStartHigh = new Vector3( 0, 1.5f, 0 );	//For high obstacles
 
-	PlayerControl playerControl;
-	PlayerInput playerInput;
-	PlayerRace playerRace;
+	protected PlayerControl playerControl;
+	protected PlayerInput playerInput;
+	protected PlayerRace playerRace;
 
 	// Use this for initialization
-	void Awake ()
+	protected void Awake ()
 	{
 		playerControl = GetComponent<PlayerControl>();
 		playerInput = GetComponent<PlayerInput>();
 		playerRace = GetComponent<PlayerRace>();
-
-		//Save frequently used values for performance
-		percentageWillTryToAvoidObstacle = 1f;
-		percentageWillTurnSuccesfully = 1f;
-
-		//Reduce the change lane speed while in hyper focus. A high speed does not look natural.
-		playerControl.sideMoveSpeed = 3.5f;
 	}
 
 	protected void detectObstacles()
@@ -188,7 +181,7 @@ public class AutoPilot : MonoBehaviour {
 		}
 	}
 
-	void OnTriggerEnter(Collider other)
+	protected void OnTriggerEnter(Collider other)
 	{
 		//Carefull, if you turn right inside a deadEnd OnTriggerEnter will be called a second time (but not if your turn left).
 		//This is probably a Unity bug.
@@ -226,4 +219,5 @@ public class AutoPilot : MonoBehaviour {
 			playerInput.sideSwipe( false );
 		}
 	}
+
 }

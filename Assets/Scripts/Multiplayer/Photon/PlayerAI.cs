@@ -9,33 +9,14 @@ using UnityEngine;
 /// 2) break barrels
 /// 3) jump over low obstacles and high obstacles.
 /// </summary>
-public class PlayerAI : Photon.PunBehaviour {
-
-	[Header("General")]
-	/// <summary>
-	/// The card handler. We need access so that the bot can play cards from his deck.
-	/// </summary>
-	float percentageWillTryToAvoidObstacle;
-	float percentageWillTurnSuccesfully;
-	const float BASE_RUN_SPEED = 18f;
-	const float BASE_OBSTACLE_DETECTION_LOW_DISTANCE = 5.2f; //assuming a run speed of BASE_RUN_SPEED
-	const float BASE_OBSTACLE_DETECTION_HIGH_DISTANCE = 8f; //assuming a run speed of BASE_RUN_SPEED
-	Vector3 xOffsetStartLow = new Vector3( 0, 0.5f, 0 );	//For low obstacles
-	Vector3 xOffsetStartHigh = new Vector3( 0, 1.5f, 0 );	//For high obstacles
-
-	PlayerControl playerControl;
-	PlayerInput playerInput;
-	PlayerRace playerRace;
+public class PlayerAI : AutoPilot {
 	
 	public HeroManager.BotHeroCharacter botHero;
 
 	// Use this for initialization
 	void Awake ()
 	{
-		playerControl = GetComponent<PlayerControl>();
-		playerInput = GetComponent<PlayerInput>();
-		playerRace = GetComponent<PlayerRace>();
-
+		base.Awake();
 		//Get the selected bot index specified by LevelNetworkingManager.
 		object[] botData = gameObject.GetPhotonView ().instantiationData;
 		int selectedBotHeroIndex = (int) botData[0];
@@ -45,13 +26,14 @@ public class PlayerAI : Photon.PunBehaviour {
 		//Get the bot skill data for that hero.
 		HeroManager.BotSkillData botSkillData = HeroManager.Instance.getBotSkillData( botHero.skillLevel );
 
+		//Reduce the change lane speed for bots. A high speed does not look natural.
+		playerControl.sideMoveSpeed = 3.5f;
+
 		//Save frequently used values for performance
 		percentageWillTryToAvoidObstacle = botSkillData.percentageWillTryToAvoidObstacle;
 		percentageWillTurnSuccesfully = botSkillData.percentageWillTurnSuccesfully;
 		Debug.Log("Bot " + botHero.userName + " will try to avoid obstacled " + (percentageWillTryToAvoidObstacle * 100) + "% of the time." + " and will turn successfully " + (percentageWillTurnSuccesfully * 100) + "% of the time.");
 
-		//Reduce the change lane speed for bots. A high speed does not look natural.
-		playerControl.sideMoveSpeed = 3.5f;
 	}
 
 	// Update is called once per frame
@@ -61,204 +43,6 @@ public class PlayerAI : Photon.PunBehaviour {
 		handleKeyboard();
 		#endif
 		detectObstacles();
-	}
-
-	void detectObstacles()
-	{
-		//Step 1) Adjust the obstacle detection range based on our run speed. If we are running fast, we need more time to react.
-		float obstacleDetectionDistance = BASE_OBSTACLE_DETECTION_LOW_DISTANCE * playerControl.getSpeed()/BASE_RUN_SPEED;
-
-		//Step 2) Detect if there are any low level obstacles
-        RaycastHit hit;
-		Vector3 exactPosStart = transform.TransformPoint( xOffsetStartLow );
-		//Debug.DrawLine( exactPosStart, exactPosStart + transform.forward * obstacleDetectionDistance, Color.green );
-
-        if (Physics.Raycast(exactPosStart, transform.forward, out hit, obstacleDetectionDistance ))
-		{
-			if( playerControl.getCharacterState() == PlayerCharacterState.Running )
-			{
-				//Debug.Log("detectObstacles LOW: " + hit.collider.name );
-				if( hit.collider.name == "DeadTree" && shouldAvoidObstacle() )
-				{
-					playerInput.jump();
-				}
-				else if( hit.collider.name.StartsWith( "Breakable Barrel" ) && shouldAvoidObstacle() )
-				{
-					if( Random.value < 0.8f )
-					{
-						playerInput.startSlide();
-					}
-					else
-					{
-						playerInput.jump();
-					}
-				}
-				else if( hit.collider.CompareTag( "Chicken" ) && shouldAvoidObstacle() )
-				{
-					playerInput.startSlide();
-				}
-				else if( hit.collider.CompareTag( "Cart" ) && shouldAvoidObstacle() )
-				{
-					playerInput.jump();
-				}
-				else if( hit.collider.CompareTag( "Cow" ) && shouldAvoidObstacle() )
-				{
-					playerInput.jump();
-				}
-				else if( hit.collider.CompareTag( "Firewall" ) && shouldAvoidObstacle() )
-				{
-					//Did we cast this firewall?
-					string caster = hit.collider.GetComponent<Firewall>().casterName;
-					if( gameObject.name != caster )
-					{
-						//We did not cast it. We need to jump over it.
-						//As a reminder, the caster is immune to the firewall he casted.
-						playerInput.jump();
-					}
-				}
-				else if( hit.collider.CompareTag( "Player" ) )
-				{
-					if( hit.collider.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
-					{
-						//Jump over dead player
-						playerInput.jump();
-					}
-				}
-				else if( hit.collider.CompareTag( "Obstacle_B" ) )
-				{
-					if( Random.value < 0.8f )
-					{
-						playerInput.startSlide();
-					}
-					else
-					{
-						playerInput.jump();
-					}
-				}
-				else if( hit.collider.CompareTag( "Obstacle_L" ) )
-				{
-					playerInput.jump();
-				}
-				else if( hit.collider.CompareTag( "Obstacle_DJ" ) )
-				{
-					moveToCenterLane();
-				}
-			}
-		}
-
-		obstacleDetectionDistance = BASE_OBSTACLE_DETECTION_HIGH_DISTANCE * playerControl.getSpeed()/BASE_RUN_SPEED;
-		exactPosStart = transform.TransformPoint( xOffsetStartHigh );
-		//Debug.DrawLine( exactPosStart, exactPosStart + transform.forward * obstacleDetectionDistance, Color.yellow );
-        if (Physics.Raycast(exactPosStart, transform.forward, out hit, obstacleDetectionDistance ))
-		{
-			if( playerControl.getCharacterState() == PlayerCharacterState.Running )
-			{
-				//Debug.Log("detectObstacles HIGH: " + hit.collider.name );
-				if( hit.collider.name == "DeadTree" && shouldAvoidObstacle() )
-				{
-					playerInput.jump();
-				}
-				else if( hit.collider.CompareTag( "Cart" ) && shouldAvoidObstacle() )
-				{
-					playerInput.jump();
-				}
-				else if( hit.collider.CompareTag( "Cow" ) && shouldAvoidObstacle() )
-				{
-					playerInput.jump();
-				}
-				else if( hit.collider.CompareTag( "Firewall" ) && shouldAvoidObstacle() )
-				{
-					//Did we cast this firewall?
-					string caster = hit.collider.GetComponent<Firewall>().casterName;
-					if( gameObject.name != caster )
-					{
-						//We did not cast it. We need to jump over it.
-						//As a reminder, the caster is immune to the firewall he casted.
-						playerInput.jump();
-					}
-				}
-				else if( hit.collider.CompareTag( "Obstacle_M" ) )
-				{
-					if( Random.value < 0.5f )
-					{
-						playerInput.startSlide();
-					}
-					else
-					{
-						playerInput.jump();
-					}
-				}
-			}
-		}
-	}
-
-	bool shouldAvoidObstacle()
-	{
-		if (Random.value <= percentageWillTryToAvoidObstacle )
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	bool shouldTurnSuccessfully()
-	{
-		if (Random.value <= percentageWillTurnSuccesfully )
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	void OnTriggerEnter(Collider other)
-	{
-		//Carefull, if you turn right inside a deadEnd OnTriggerEnter will be called a second time (but not if your turn left).
-		//This is probably a Unity bug.
-		if( other.name == "deadEnd" && shouldTurnSuccessfully() )
-		{
-			DeadEndType currentDeadEndType = other.GetComponent<deadEnd>().deadEndType;
-			if ( currentDeadEndType == DeadEndType.Left )
-			{
-				playerInput.sideSwipe( false );
-			}
-			else if ( currentDeadEndType == DeadEndType.Right )
-			{
-				playerInput.sideSwipe( true );
-			}
-		}
-		else if( other.CompareTag( "AttachZiplineTrigger" ) )
-		{
-			if( playerControl.getCharacterState() != PlayerCharacterState.Ziplining ) playerInput.attachToZipline();
-		}
-		else if( other.CompareTag( "MoveToCenterLane" ) )
-		{
-			moveToCenterLane();
-		}
-		else if( other.CompareTag( "DropGrenade" ) )
-		{
-			// This is called as the bot is exiting a bridge.
-			// If the bot has a CardGrenade, is allowed to play cards, is not affected by Hack, has enough mana, and is leading, drop a grenade to destroy the bridge.
-			if( isBotLeading() ) GetComponent<BotCardHandler>().tryToPlayCard( CardName.Grenade );
-		}
-	}
-
-	private void moveToCenterLane()
-	{
-		playerControl.recalculateCurrentLane();
-		if( playerControl.currentLane == PlayerControl.Lanes.Left )
-		{
-			playerInput.sideSwipe( true );
-		}
-		else if( playerControl.currentLane == PlayerControl.Lanes.Right )
-		{
-			playerInput.sideSwipe( false );
-		}
 	}
 
 	private void handleKeyboard()
@@ -324,6 +108,17 @@ public class PlayerAI : Photon.PunBehaviour {
 		}
 	}
 
+	void OnTriggerEnter(Collider other)
+	{
+		base.OnTriggerEnter( other );
+		if( other.CompareTag( "DropGrenade" ) )
+		{
+			// This is called as the bot is exiting a bridge.
+			// If the bot has a CardGrenade, is allowed to play cards, is not affected by Hack, has enough mana, and is leading, drop a grenade to destroy the bridge.
+			if( isBotLeading() ) GetComponent<BotCardHandler>().tryToPlayCard( CardName.Grenade );
+		}
+	}
+
 	bool isBotLeading()
 	{
 		bool isLeading = true;
@@ -335,6 +130,4 @@ public class PlayerAI : Photon.PunBehaviour {
 		}
 		return isLeading;
 	}
-
-
 }
