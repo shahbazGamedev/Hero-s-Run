@@ -1571,6 +1571,9 @@ public class PlayerControl : Photon.PunBehaviour {
 			SegmentInfo.BezierData bezierData = curveList[0];
 			setCharacterState( PlayerCharacterState.Ziplining );
 			enablePlayerControl( false );
+			//It is possible for a change lane to be in progress when we attach to the zipline.
+			//To avoid drifting along the X axis when we detach from the zipline, make sure we reset moveDirection.
+			moveDirection = Vector3.zero;
 			setAnimationTrigger(Idle_LookTrigger);
 			ziplineAttachPoint = transform.FindChild("Zipline Attach Point");
 			Debug.Log("attachToZipline for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient + " isMine: " + this.photonView.isMine + " isLocal: " + PhotonNetwork.player.IsLocal + " view ID: " + this.photonView.viewID + " owner ID: " + this.photonView.ownerId );
