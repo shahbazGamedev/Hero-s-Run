@@ -1389,7 +1389,7 @@ public sealed class PlayerController : MonoBehaviour {
 				{	
 					Debug.LogWarning("turnCorner: game over - player turned too late." );
 					reasonDiedAtTurn = "TURNED TOO LATE";
-					managePlayerDeath ( DeathType.Turn );
+					managePlayerDeath ( DeathType.Turned_Too_Late );
 					return;
 				}
 
@@ -1410,7 +1410,7 @@ public sealed class PlayerController : MonoBehaviour {
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way too late." );
 							reasonDiedAtTurn = "LATE WRONG WAY 3";
-							managePlayerDeath ( DeathType.Turn );
+							managePlayerDeath ( DeathType.Turned_Too_Late );
 						}				
 					}
 					else
@@ -1426,7 +1426,7 @@ public sealed class PlayerController : MonoBehaviour {
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way too late." );
 							reasonDiedAtTurn = "LATE WRONG WAY 4";
-							managePlayerDeath ( DeathType.Turn );
+							managePlayerDeath ( DeathType.Turned_Too_Late );
 						}
 					}
 					return;
@@ -1448,7 +1448,7 @@ public sealed class PlayerController : MonoBehaviour {
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way." );
 							reasonDiedAtTurn = "WRONG WAY 1";
-							managePlayerDeath ( DeathType.Turn );
+							managePlayerDeath ( DeathType.Turned_Wrong_Way );
 						}				
 					}
 					else
@@ -1463,7 +1463,7 @@ public sealed class PlayerController : MonoBehaviour {
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way." );
 							reasonDiedAtTurn = "WRONG WAY 2";
-							managePlayerDeath ( DeathType.Turn );
+							managePlayerDeath ( DeathType.Turned_Wrong_Way );
 						}
 					}
 				}
@@ -2481,7 +2481,7 @@ public sealed class PlayerController : MonoBehaviour {
 				{
 					reasonDiedAtTurn = "EXITED DEAD END NO TURN";
 					Debug.LogWarning("OnTriggerExit player exited dead end without turning " + other.name + " " + isInDeadEnd + " " + deadEndTurnDone + " " + currentDeadEndType );
-					managePlayerDeath ( DeathType.Turn );
+					managePlayerDeath ( DeathType.Exited_Without_Turning );
 				}
 				//Reset values
 				isInDeadEnd = false;

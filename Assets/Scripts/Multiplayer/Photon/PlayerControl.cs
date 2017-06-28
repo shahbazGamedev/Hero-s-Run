@@ -11,7 +11,7 @@ public enum DeathType {
 		Trap = 4,
 		Enemy = 5,
 		Water = 6,
-		Turn = 7,
+		Turned_Too_Late = 7,
 		Lava = 8,
 		Fireball = 9,
 		Zombie = 10,
@@ -19,7 +19,10 @@ public enum DeathType {
 		MagicGate = 12,
 		SpecialFall = 13,
 		GreatFall = 14,
-		FallForward = 15
+		FallForward = 15,
+		Turned_Wrong_Way = 16,
+		Exited_Without_Turning = 17
+
 }
 
 public enum PlayerCharacterState {
@@ -183,7 +186,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	Lanes desiredLane = Lanes.Center;
 	int myLane = 0; //0 is uninitialized, 1 is the nearest, 2 is in the center and 3 is the furthest
 	public float sideMoveSpeed = 5.5f; //At what speed do you change lanes.
-	bool useLanes = true;
+	bool useLanes = false;
 	Vector3 playerPositionWhenSideMoveStarted;
 	#endregion
 
@@ -948,7 +951,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				if (sideMoveInitiatedZ > 2f )
 				{	
 					Debug.LogWarning("turnCorner: game over - player turned too late." );
-					killPlayer ( DeathType.Turn );
+					killPlayer ( DeathType.Turned_Too_Late );
 					return;
 				}
 
@@ -968,7 +971,7 @@ public class PlayerControl : Photon.PunBehaviour {
 						{
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way too late." );
-							killPlayer ( DeathType.Turn );
+							killPlayer ( DeathType.Turned_Too_Late );
 						}				
 					}
 					else
@@ -983,7 +986,7 @@ public class PlayerControl : Photon.PunBehaviour {
 						{
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way too late." );
-							killPlayer ( DeathType.Turn );
+							killPlayer ( DeathType.Turned_Too_Late );
 						}
 					}
 					return;
@@ -1004,7 +1007,7 @@ public class PlayerControl : Photon.PunBehaviour {
 						{
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way." );
-							killPlayer ( DeathType.Turn );
+							killPlayer ( DeathType.Turned_Wrong_Way );
 						}				
 					}
 					else
@@ -1018,7 +1021,7 @@ public class PlayerControl : Photon.PunBehaviour {
 						{
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way." );
-							killPlayer ( DeathType.Turn );
+							killPlayer ( DeathType.Turned_Wrong_Way );
 						}
 					}
 				}
@@ -1650,6 +1653,9 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		Debug.Log("playerDiedRPC : " + deathTypeValue + " " + gameObject.name );
 
+		//For debugging
+		if( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() ) HUDMultiplayer.hudMultiplayer.activateUserMessage( "Died: " + deathTypeValue + " " + gameObject.name, 0, 10f );
+
 		//Update the player statistics		
 		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
 		{
@@ -2224,7 +2230,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight && getCharacterState() != PlayerCharacterState.Flying )
 				{
 					Debug.LogWarning("OnTriggerExit player exited dead end without turning " + other.name + " " + isInDeadEnd + " " + deadEndTurnDone + " " + currentDeadEndType );
-					killPlayer ( DeathType.Turn );
+					killPlayer ( DeathType.Exited_Without_Turning );
 				}
 				//Reset values
 				isInDeadEnd = false;
