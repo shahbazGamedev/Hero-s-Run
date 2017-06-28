@@ -34,6 +34,8 @@ public class PlayerAI : AutoPilot {
 		percentageWillTurnSuccesfully = botSkillData.percentageWillTurnSuccesfully;
 		Debug.Log("Bot " + botHero.userName + " will try to avoid obstacled " + (percentageWillTryToAvoidObstacle * 100) + "% of the time." + " and will turn successfully " + (percentageWillTurnSuccesfully * 100) + "% of the time.");
 
+		//Play a taunt after a short while
+		Invoke( "playTaunt", Random.Range( 45f, 55f ) );
 	}
 
 	// Update is called once per frame
@@ -116,6 +118,19 @@ public class PlayerAI : AutoPilot {
 			// This is called as the bot is exiting a bridge.
 			// If the bot has a CardGrenade, is allowed to play cards, is not affected by Hack, has enough mana, and is leading, drop a grenade to destroy the bridge.
 			if( isBotLeading() ) GetComponent<BotCardHandler>().tryToPlayCard( CardName.Grenade );
+		}
+	}
+
+	void playTaunt()
+	{
+		//Only be cocky if you are in the lead. This also avoids having 2 bots saying a taunt at the same time.
+		if( isBotLeading() && PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED )
+		{
+			VoiceOverManager.VoiceOverData vod = VoiceOverManager.Instance.getRandomHeroTaunt ( botHero.name );
+			if( vod != null )
+			{
+				GetComponent<PlayerVoiceOvers>().playTaunt( vod.clip, vod.uniqueId );
+			}
 		}
 	}
 

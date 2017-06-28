@@ -186,7 +186,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	Lanes desiredLane = Lanes.Center;
 	int myLane = 0; //0 is uninitialized, 1 is the nearest, 2 is in the center and 3 is the furthest
 	public float sideMoveSpeed = 5.5f; //At what speed do you change lanes.
-	bool useLanes = false;
+	bool useLanes = true; //if true, forces player to remain in the 3 lanes
 	Vector3 playerPositionWhenSideMoveStarted;
 	#endregion
 

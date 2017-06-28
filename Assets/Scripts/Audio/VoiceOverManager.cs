@@ -95,7 +95,7 @@ public class VoiceOverManager : MonoBehaviour {
 				return tauntList[random].uniqueId;
 			}
 		}
-		Debug.LogError("getRandomTaunt-no taunt found for hero name " + heroName );
+		Debug.LogError("getRandomTaunt-no taunt found for hero: " + heroName );
 		return 0;
 	}
 
@@ -126,6 +126,21 @@ public class VoiceOverManager : MonoBehaviour {
 	public List<VoiceOverData> getHeroTaunts ( string heroName )
 	{
 		return voiceOverList.FindAll(vo => ( vo.heroName == heroName && vo.type == VoiceOverType.VO_Taunt ) );
+	}
+
+	public VoiceOverData getRandomHeroTaunt ( string heroName )
+	{
+		List<VoiceOverData> allHeroTaunts = voiceOverList.FindAll(vo => ( vo.heroName == heroName && vo.type == VoiceOverType.VO_Taunt ) );
+		if( allHeroTaunts.Count > 0 )
+		{
+			int random = Random.Range(0, allHeroTaunts.Count );
+			return allHeroTaunts[random];
+		}
+		else
+		{
+			Debug.LogError("getRandomHeroTaunt-no taunt found for hero: " + heroName );
+			return null;
+		}
 	}
 
 	[System.Serializable]
