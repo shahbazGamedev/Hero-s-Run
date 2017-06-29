@@ -103,7 +103,8 @@ public enum TileType {
 	Teleport_Tx = 98,
 	Teleport_Rx = 99,
 	Jump_Pad = 100,
-	Finish_Line = 101
+	Finish_Line = 101,
+	Left_Straight = 102
 }
 
 public enum TileSubType {
@@ -507,7 +508,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		previousTileType = si.tileSubType; //for constructing the level, we use the simpler types like straight, left and right
 		tileEndHeight = si.tileEndHeight;
 		si.entranceCrossed = false;
-		si.tile = go;
 		previousTilePos = tilePos;
 		previousTileRot = tileRot;
 		if( !GameManager.Instance.isMultiplayer() ) powerUpManager.considerAddingPowerUp( go, tileCreationIndex );

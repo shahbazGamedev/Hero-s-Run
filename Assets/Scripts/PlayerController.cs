@@ -2336,8 +2336,8 @@ public sealed class PlayerController : MonoBehaviour {
 					//This flag is set to false when a tile is added.
 					si.entranceCrossed = true;
 				}
-				currentTilePos = si.tile.transform.position;
-				currentTile = si.tile;
+				currentTilePos = si.transform.position;
+				currentTile = si.gameObject;
 				tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
 				currentTileType = si.tileType;
 				usesBezierCurve = si.usesBezierCurve;

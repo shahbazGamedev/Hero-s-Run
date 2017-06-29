@@ -6,7 +6,9 @@ public enum DeadEndType {
 		Right = 1,
 		LeftRight = 2,
 		RightStraight = 3,
-		None = 4
+		None = 4,
+		LeftStraight = 5
+
 	}
 
 public class deadEnd : MonoBehaviour {

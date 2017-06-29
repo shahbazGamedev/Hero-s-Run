@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class SegmentInfo : MonoBehaviour {
 	
-	public GameObject tile;
 	public TileType tileType;
 	//Does this tile use straight corridors or bezier curves?
 	public bool usesBezierCurve = false;

@@ -976,7 +976,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					}
 					else
 					{
-						if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight )
+						if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight  || currentDeadEndType == DeadEndType.LeftStraight)
 						{
 							//Turn is valid
 							desiredLane = Lanes.Right;
@@ -1012,7 +1012,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					}
 					else
 					{
-						if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight )
+						if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight || currentDeadEndType == DeadEndType.LeftStraight )
 						{
 							//Turn is valid
 							setDesiredLane( sideMoveInitiatedZ );
@@ -2145,8 +2145,8 @@ public class PlayerControl : Photon.PunBehaviour {
 					//This flag is set to false when a tile is added.
 					si.entranceCrossed = true;
 				}
-				currentTilePos = si.tile.transform.position;
-				currentTile = si.tile;
+				currentTilePos = si.transform.position;
+				currentTile = si.gameObject;
 				tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
 			}
 			else
@@ -2230,7 +2230,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			if( other.name == "deadEnd" )
 			{
-				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight && getCharacterState() != PlayerCharacterState.Flying )
+				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight && currentDeadEndType != DeadEndType.LeftStraight && getCharacterState() != PlayerCharacterState.Flying )
 				{
 					Debug.LogWarning("OnTriggerExit player exited dead end without turning " + other.name + " " + isInDeadEnd + " " + deadEndTurnDone + " " + currentDeadEndType );
 					killPlayer ( DeathType.Exited_Without_Turning );
