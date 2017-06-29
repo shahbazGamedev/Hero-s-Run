@@ -2110,8 +2110,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		//This is probably a Unity bug.
 		if( other.name == "deadEnd" )
 		{
-			//Deactivate the speedboost if active because it is really hard to turn when you are going super fast
-			deactivateSpeedBoost();
 			isInDeadEnd = true;
 			wantToTurn = false;
 
