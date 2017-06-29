@@ -188,11 +188,11 @@ public class AutoPilot : Photon.PunBehaviour {
 		if( other.name == "deadEnd" && shouldTurnSuccessfully() )
 		{
 			DeadEndType currentDeadEndType = other.GetComponent<deadEnd>().deadEndType;
-			if ( currentDeadEndType == DeadEndType.Left )
+			if ( currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftStraight )
 			{
 				playerInput.sideSwipe( false );
 			}
-			else if ( currentDeadEndType == DeadEndType.Right )
+			else if ( currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.RightStraight)
 			{
 				playerInput.sideSwipe( true );
 			}
