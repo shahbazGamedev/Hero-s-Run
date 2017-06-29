@@ -225,23 +225,27 @@ public class PlayerRace : Photon.PunBehaviour
 
 	void tookTheLead()
 	{
-		players.Sort((x, y) => -x.distanceTravelled.CompareTo(y.distanceTravelled));
-		if( players[0].distanceTravelled > players[1].distanceTravelled + REQUIRED_LEAD_DISTANCE )
+		//Only proceed if we have at least two players. One or more players may have just disconnected.
+		if( players.Count > 1 )
 		{
-			//Display a minimap message that this player or bot is back in the game.
-			string heroName;
-			if( GetComponent<PlayerAI>() == null )
+			players.Sort((x, y) => -x.distanceTravelled.CompareTo(y.distanceTravelled));
+			if( players[0].distanceTravelled > players[1].distanceTravelled + REQUIRED_LEAD_DISTANCE )
 			{
-				//We're the player
-				heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name;
+				//Display a minimap message that this player or bot is back in the game.
+				string heroName;
+				if( GetComponent<PlayerAI>() == null )
+				{
+					//We're the player
+					heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name;
+				}
+				else
+				{
+					//We're a bot
+					heroName = 	GetComponent<PlayerAI>().botHero.userName;
+				}
+				MiniMap.Instance.displayMessage( string.Format( tookTheLeadString, heroName ) );
+				GetComponent<PlayerVoiceOvers>().playVoiceOver(VoiceOverType.VO_Took_Lead);
 			}
-			else
-			{
-				//We're a bot
-				heroName = 	GetComponent<PlayerAI>().botHero.userName;
-			}
-			MiniMap.Instance.displayMessage( string.Format( tookTheLeadString, heroName ) );
-			GetComponent<PlayerVoiceOvers>().playVoiceOver(VoiceOverType.VO_Took_Lead);
 		}
 	}
 
