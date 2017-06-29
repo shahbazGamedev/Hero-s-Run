@@ -217,7 +217,7 @@ public class MiniMap : MonoBehaviour {
 	{
 		for(int i = radarObjects.Count - 1; i > -1; i-- )
 		{
-			if( radarObjects[i].owner != null )
+			if( radarObjects[i].owner != null && player != null )
 			{
 				Vector3 radarPos = ( radarObjects[i].owner.transform.position - player.position );
 				float distToObject = Vector3.Distance( player.position, radarObjects[i].owner.transform.position ) * mapScale;
