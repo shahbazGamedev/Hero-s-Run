@@ -61,7 +61,6 @@ public enum CardName
 	Double_Jump = 2,
 	Stasis = 3,
 	Sprint = 4,
-	Hyper_Focus = 5,
 
 	//Rare
 	Firewall = 100,
@@ -82,8 +81,7 @@ public enum CardName
 	//Legendary
 	Hack = 301,
 	Reflect = 302,
-	Frisbee = 303,
-	Card_Four = 304
+	Card_Four = 303
 }
 
 public class CardManager : MonoBehaviour {

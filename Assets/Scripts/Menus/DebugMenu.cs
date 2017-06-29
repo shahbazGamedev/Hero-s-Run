@@ -12,6 +12,7 @@ public class DebugMenu : MonoBehaviour {
 	[SerializeField] Text clearAssetBundleCacheText;
 	[SerializeField] Text facebookName;
 	[SerializeField] Text allowBotToPlayCardsText;
+	[SerializeField] Text autoPilotText;
 	[SerializeField] Slider speedOverrideMultiplierSlider;
 	[SerializeField] Text speedOverrideMultiplierText;
 	[SerializeField] Slider trophyOverrideMultiplierSlider;
@@ -50,6 +51,14 @@ public class DebugMenu : MonoBehaviour {
 		else
 		{
 			allowBotToPlayCardsText.text = "Bot plays cards: Off";
+		}
+		if( LevelManager.Instance.autoPilot )
+		{
+			autoPilotText.text = "Auto-pilot: On";
+		}
+		else
+		{
+			autoPilotText.text = "Auto-pilot: Off";
 		}
 
 		updateFacebookName();
@@ -111,12 +120,18 @@ public class DebugMenu : MonoBehaviour {
 		GameCenterManager.resetAchievementsCompleted();
 	}
 
-	public void OnClickGiveTreasureChestKeys()
+	public void OnClickToggleAutoPilot()
 	{
-		Debug.Log("Give 25 Treasure Chest Keys");
 		UISoundManager.uiSoundManager.playButtonClick();
-		PlayerStatsManager.Instance.increaseTreasureKeysOwned( 25 );
-		PlayerStatsManager.Instance.savePlayerStats();
+		LevelManager.Instance.autoPilot = !LevelManager.Instance.autoPilot;
+		if( LevelManager.Instance.autoPilot )
+		{
+			autoPilotText.text = "Auto-pilot: On";
+		}
+		else
+		{
+			autoPilotText.text = "Auto-pilot: Off";
+		}
 	}
 
 	public void OnClickToggleShowDebugInfo()

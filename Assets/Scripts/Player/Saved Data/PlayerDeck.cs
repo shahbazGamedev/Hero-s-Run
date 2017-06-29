@@ -61,7 +61,7 @@ public class PlayerDeck {
 		addCard( CardName.Hack, 1, 14, false );
 
 		//15
-		addCard( CardName.Homing_Missile, 1, 15, false );
+		addCard( CardName.Homing_Missile, 1, 15, true );
 
 		//16
 		addCard( CardName.Steal, 1, 16, false );
@@ -71,12 +71,6 @@ public class PlayerDeck {
 
 		//18
 		addCard( CardName.Jet_Pack, 1, 18, true );
-
-		//19
-		addCard( CardName.Frisbee, 1, 19, false );
-
-		//20
-		addCard( CardName.Hyper_Focus, 1, 20, true );
 
 		serializePlayerDeck( true );
 

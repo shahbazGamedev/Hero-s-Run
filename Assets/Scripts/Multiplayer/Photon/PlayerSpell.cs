@@ -221,34 +221,6 @@ public class PlayerSpell : PunBehaviour {
 	}
 	#endregion
 
-	#region HyperFocus
-	[PunRPC]
-	void cardHyperFocusRPC( float spellDuration, float speedMultiplier )
-	{
-		//Cancel the hyper focus effect once the duration has run out
-		Invoke("cancelHyperFocus", spellDuration );
-
-		//Display the Hyper Focus secondary icon on the minimap
-		MiniMap.Instance.displaySecondaryIcon( GetComponent<PhotonView>().viewID, (int) CardName.Hyper_Focus, spellDuration );
-
-		gameObject.AddComponent<HyperFocus>();
-		startHyperFocusSprint( spellDuration, speedMultiplier );		
-	}
-
-	void startHyperFocusSprint( float spellDuration, float speedMultiplier )
-	{
-		playerControl.setAllowRunSpeedToIncrease( false );
-		playerControl.runSpeed = playerControl.runSpeed * speedMultiplier;
-	}
-
-	void cancelHyperFocus()
-	{
-		CancelInvoke( "cancelHyperFocus" );
-		Destroy(GetComponent<HyperFocus>());
-		if( playerControl.getCharacterState() != PlayerCharacterState.Dying ) playerControl.setAllowRunSpeedToIncrease( true );
-	}
-	#endregion
-
 	#region Steal
 	[PunRPC]
 	void cardStealTargetRPC( int photonViewID )
@@ -391,7 +363,6 @@ public class PlayerSpell : PunBehaviour {
 		cancelSupercharger();
 		cancelHack();
 		cancelJetPack();
-		cancelHyperFocus();
 	}
 
 	public void playerDied()

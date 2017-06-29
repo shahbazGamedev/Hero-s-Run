@@ -83,6 +83,8 @@ public class PlayerVisuals : Photon.PunBehaviour {
 			heroSkin.transform.localRotation = Quaternion.identity;
 			anim.avatar = heroSkin.GetComponent<PlayerSkinInfo>().animatorAvatar;
 			anim.Rebind(); //Important
+			//For debugging only
+			if( Debug.isDebugBuild && LevelManager.Instance.autoPilot ) gameObject.AddComponent<HyperFocus>();
 		}
 		//Register with the minimap, voiceOverManager and the turn-ribbon
 		if( this.photonView.isMine )

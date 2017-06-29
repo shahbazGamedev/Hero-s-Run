@@ -231,28 +231,6 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardJetPack component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
-			case CardName.Frisbee:
-				CardFrisbee cardFrisbee = GetComponent<CardFrisbee>();
-				if( cardFrisbee != null )
-				{
-					cardFrisbee.activateCard( photonViewId, level );
-				}
-				else
-				{
-					Debug.LogError("CardHandler-The CardFrisbee component is not attached to the CardHandler in the Level scene.");
-				}
-			break;
-			case CardName.Hyper_Focus:
-				CardHyperFocus cardHyperFocus = GetComponent<CardHyperFocus>();
-				if( cardHyperFocus != null )
-				{
-					cardHyperFocus.activateCard( photonViewId, level );
-				}
-				else
-				{
-					Debug.LogError("CardHandler-The CardHyperFocus component is not attached to the CardHandler in the Level scene.");
-				}
-			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -377,12 +355,6 @@ public class CardHandler : MonoBehaviour {
 			//Jet Pack could be effective at any time
 			case CardName.Jet_Pack:
 				return true;
-			//Frisbee could be effective at any time
-			case CardName.Frisbee:
-				return true;
-			//HyperFocus should NOT be used by bots
-			case CardName.Hyper_Focus:
-				return false;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;

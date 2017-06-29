@@ -45,6 +45,7 @@ public class LevelManager {
 	//for debugging
 	public float speedOverrideMultiplier = 1f;
 	public bool allowBotToPlayCards = true;
+	public bool autoPilot = false; //Allows the player to use the same AI as bots to avoid obstacles
 
 	public static LevelManager Instance
 	{
