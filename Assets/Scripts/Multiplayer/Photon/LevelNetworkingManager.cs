@@ -93,9 +93,16 @@ public class LevelNetworkingManager : PunBehaviour
 	}
 
 	//Called when the local player left the room. We need to load the matchmaking scene.
-	public void OnLeftRoom()
+	public override void OnLeftRoom()
 	{
 		StartCoroutine( loadScene(GameScenes.Matchmaking) );
+	}
+
+	public override void OnPhotonPlayerDisconnected( PhotonPlayer other  )
+	{
+		Debug.Log( "LevelNetworkingManager: OnPhotonPlayerDisconnected() " + other.NickName ); // seen when other disconnects
+		string leftTheRace = LocalizationManager.Instance.getText("MULTI_LEFT_THE_RACE");
+		HUDMultiplayer.hudMultiplayer.activateUserMessage( string.Format( leftTheRace, other.NickName ), 0, 2f );
 	}
 
 	IEnumerator loadScene(GameScenes value)
