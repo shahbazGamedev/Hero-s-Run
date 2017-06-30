@@ -9,12 +9,13 @@ public class HomingMissile : CardSpawnedObject {
 	[SerializeField] ParticleSystem impactParticleSystem;
 	[SerializeField] AudioClip inFlightSound;
 	[SerializeField] AudioClip collisionSound;
-	float missileVelocity = 40f;
+	float missileVelocity = 42f;
 	//Important: if the turn value is too small, you may see the missile spin around the target without ever hitting it because the turn radius is too big.
 	//A turn value of 24 for a missile velocity of 40 works well.
 	float turn = 24f;
 	Rigidbody homingMissile;
 	Transform target;
+	PlayerControl targetPlayerControl;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
@@ -34,6 +35,7 @@ public class HomingMissile : CardSpawnedObject {
 
 		homingMissile = GetComponent<Rigidbody>();
 		target = getNearestTargetWithinRange( Mathf.Infinity, MaskHandler.getMaskOnlyPlayer() );
+		if( target != null ) targetPlayerControl = target.GetComponent<PlayerControl>();
 		//if( target != null ) print("Homing Missile target is " + target.name );
 		homingMissile.isKinematic = false;
 		GetComponent<AudioSource>().clip = inFlightSound;
@@ -48,6 +50,13 @@ public class HomingMissile : CardSpawnedObject {
 	void LateUpdate()
 	{
 		if( homingMissile == null ) return;
+
+		//If the player died or is in the Idle state (because of Stasis for example), nullify the target
+		if( targetPlayerControl != null && ( targetPlayerControl.getCharacterState() == PlayerCharacterState.Dying || targetPlayerControl.getCharacterState() == PlayerCharacterState.Idle ) )
+		{
+			target = null;
+			targetPlayerControl = null;
+		}
 
 		if( target == null )
 		{
