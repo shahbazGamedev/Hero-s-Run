@@ -8,6 +8,14 @@ Shader "Hearthstone/Golden"
 		_DistTex("Distortion Texture", 2D) = "grey" {}
 		_DistMask("Distortion Mask", 2D) = "black" {}
 
+		// required for UI.Mask
+		_StencilComp ("Stencil Comparison", Float) = 8
+		_Stencil ("Stencil ID", Float) = 0
+		_StencilOp ("Stencil Operation", Float) = 0
+		_StencilWriteMask ("Stencil Write Mask", Float) = 255
+		_StencilReadMask ("Stencil Read Mask", Float) = 255
+		_ColorMask ("Color Mask", Float) = 15
+
 		_EffectsLayer1Tex("", 2D) = "black"{}
 		_EffectsLayer1Color("", Color) = (1,1,1,1)
 		_EffectsLayer1Motion("", 2D) = "black"{}
@@ -54,6 +62,16 @@ Shader "Hearthstone/Golden"
 			}
 			LOD 100
 			ZWrite Off
+			// required for UI.Mask
+			Stencil
+			{
+				Ref [_Stencil]
+				Comp [_StencilComp]
+				Pass [_StencilOp] 
+				ReadMask [_StencilReadMask]
+				WriteMask [_StencilWriteMask]
+			}
+			ColorMask [_ColorMask]
 
 		Pass
 		{
