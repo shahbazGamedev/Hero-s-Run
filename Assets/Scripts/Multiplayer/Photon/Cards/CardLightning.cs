@@ -56,6 +56,8 @@ public class CardLightning : Card {
 		}
 		else
 		{
+			//Display a Minimap message stating that no target was found in range
+			playerTransform.GetComponent<PhotonView>().RPC("cardNoTargetRPC", PhotonTargets.All );
 			Debug.Log("CardLightning: no target found." );
 		}
 	}

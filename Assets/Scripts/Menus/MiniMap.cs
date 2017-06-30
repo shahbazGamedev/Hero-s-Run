@@ -33,8 +33,8 @@ public class MiniMap : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI cardFeed; //Used to display the last card played, such as 'Bob played Lightning'
 	[SerializeField] TextMeshProUGUI cardFeed2; //Used to display reflected cards
 	const float MAX_DISTANCE = 78f;
-	const float CARD_FEED_TTL = 4f; //in seconds
-	const float CARD_FEED_TTL2 = 7f; //in seconds
+	const float CARD_FEED_TTL = 5f; //in seconds
+	const float CARD_FEED_TTL2 = 5f; //in seconds
 	float cardFeedTimeOfLastEntry;
 	float cardFeedTimeOfLastEntry2;
 	Queue<RadarObject> tileQueue = new Queue<RadarObject>();
@@ -167,8 +167,14 @@ public class MiniMap : MonoBehaviour {
 		cardFeedTimeOfLastEntry = Time.time;
 	}
 
-	void addMessage2( string message )
+	public void displayMessage2( string message, Color textColor )
 	{
+		addMessage2( message, textColor );
+	}
+
+	void addMessage2( string message, Color textColor )
+	{
+		cardFeed2.color = textColor;
 		cardFeed2.text = message;
 		cardFeedTimeOfLastEntry2 = Time.time;
 	}
@@ -326,7 +332,7 @@ public class MiniMap : MonoBehaviour {
 		string nameOfPlayerWithReflect = getPlayerControl( playerWithReflectPhotonViewID ).name;
 		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + ((CardName)cardName).ToString().ToUpper() );
 		string nameOfPlayerWhoCastSpell = getPlayerControl( casterPhotonViewID ).name;
-		addMessage2( string.Format( "{0} reflected {1} activated by {2}", nameOfPlayerWithReflect, localizedCardName, nameOfPlayerWhoCastSpell ) );
+		displayMessage2( string.Format( "{0} reflected {1} activated by {2}", nameOfPlayerWithReflect, localizedCardName, nameOfPlayerWhoCastSpell ), Color.white );
 	}
 
 	public void hideSecondaryIcon( GameObject go )

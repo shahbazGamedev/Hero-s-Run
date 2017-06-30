@@ -339,6 +339,15 @@ public class PlayerSpell : PunBehaviour {
 	}
 	#endregion
 
+
+	#region Display No Target In Range Message
+	[PunRPC]
+	void cardNoTargetRPC()
+	{
+		MiniMap.Instance.displayMessage2( LocalizationManager.Instance.getText( "CARD_NO_TARGET_IN_RANGE" ), Color.red );
+	}
+	#endregion
+
 	/// <summary>
 	/// Send an event to display a timer on the HUD showing the duration of the opponent's card effect.
 	/// If Hack lasts 10 seconds, then show a 10-second timer for example.

@@ -47,6 +47,8 @@ public class CardShrink : Card {
 		}
 		else
 		{
+			//Display a Minimap message stating that no target was found in range
+			playerTransform.GetComponent<PhotonView>().RPC("cardNoTargetRPC", PhotonTargets.All );
 			Debug.Log("CardShrink: no target found." );
 		}
 	}

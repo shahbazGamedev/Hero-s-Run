@@ -60,7 +60,9 @@ public class CardStasis : Card {
 		}
 		else
 		{
-			Debug.Log("CardStasis - No target found.");
+			//Display a Minimap message stating that no target was found in range
+			playerTransform.GetComponent<PhotonView>().RPC("cardNoTargetRPC", PhotonTargets.All );
+			Debug.Log("CardStasis: No target found.");
 		}
 	}
 	#endregion
