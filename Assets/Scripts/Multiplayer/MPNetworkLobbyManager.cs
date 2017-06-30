@@ -139,7 +139,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		{
 			//We must first and foremost connect to Photon Online Server.
 			//Users are separated from each other by game version (which allows you to make breaking changes).
-			PhotonNetwork.ConnectUsingSettings(GameManager.Instance.getVersionNumber());
+			PhotonNetwork.ConnectToBestCloudServer(GameManager.Instance.getVersionNumber());
 			matchmakingManager.setConnectionProgress( "Connecting ..." );   
 		}
 	}
@@ -213,7 +213,8 @@ public class MPNetworkLobbyManager : PunBehaviour
  	#region Photon.PunBehaviour CallBacks
 	public override void OnConnectedToMaster()
 	{
-		//First we try to join a potential existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()  
+		//First we try to join a potential existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
+		Debug.Log("MPNetworkLobbyManager: OnConnectedToMaster-Photon Cloud Region is " + PhotonNetwork.CloudRegion.ToString() );
 		tryToJoinRoom();	 
 	}
 
