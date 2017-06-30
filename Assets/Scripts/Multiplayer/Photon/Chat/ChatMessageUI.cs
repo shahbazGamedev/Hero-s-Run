@@ -9,11 +9,14 @@ public class ChatMessageUI : MonoBehaviour {
 	[SerializeField] Text mainText;
 	[SerializeField] Button acceptButton;
 	[SerializeField] Button declineButton;
+	[SerializeField] Button playButton;
 	[SerializeField] Button closeButton;
 
 	public void configureFriendUI ( ChatMessageType type, string sender, PlayerFriends.FriendData fd = null )
 	{
 		if( LeanTween.isTweening( gameObject ) ) return;
+		
+		playButton.gameObject.SetActive( false );
 
 		switch ( type )
 		{
@@ -65,6 +68,7 @@ public class ChatMessageUI : MonoBehaviour {
 				mainText.text = string.Format( "{0} challenges you to a race.", sender );
 				acceptButton.gameObject.SetActive( true );
 				declineButton.gameObject.SetActive( true );
+				playButton.gameObject.SetActive( false );
 				closeButton.gameObject.SetActive( false );
 				acceptButton.onClick.RemoveAllListeners();
 				acceptButton.onClick.AddListener(() => OnAcceptMatchRequest( sender ));
@@ -77,9 +81,10 @@ public class ChatMessageUI : MonoBehaviour {
 				mainText.text = string.Format( "{0} has accepted the challenge.", sender );
 				acceptButton.gameObject.SetActive( false );
 				declineButton.gameObject.SetActive( false );
+				playButton.gameObject.SetActive( true );
 				closeButton.gameObject.SetActive( true );
 				closeButton.onClick.RemoveAllListeners();
-				closeButton.onClick.AddListener(() => OnCloseStartMatch( sender ));
+				closeButton.onClick.AddListener(() => OnClickSendNoLongerAvailable( sender ));
 				slideIn();
 			break;
 
@@ -87,6 +92,18 @@ public class ChatMessageUI : MonoBehaviour {
 				mainText.text = string.Format( "{0} declined your race request.", sender );
 				acceptButton.gameObject.SetActive( false );
 				declineButton.gameObject.SetActive( false );
+				playButton.gameObject.SetActive( false );
+				closeButton.gameObject.SetActive( true );
+				closeButton.onClick.RemoveAllListeners();
+				closeButton.onClick.AddListener(() => OnClose());
+				slideIn();
+			break;
+
+			case ChatMessageType.MATCH_REQUEST_NO_LONGER_AVAILABLE:
+				mainText.text = string.Format( "{0} is no longer available.", sender );
+				acceptButton.gameObject.SetActive( false );
+				declineButton.gameObject.SetActive( false );
+				playButton.gameObject.SetActive( false );
 				closeButton.gameObject.SetActive( true );
 				closeButton.onClick.RemoveAllListeners();
 				closeButton.onClick.AddListener(() => OnClose());
@@ -140,11 +157,19 @@ public class ChatMessageUI : MonoBehaviour {
 		slideOut();
 	}
 
-	public void OnCloseStartMatch( string sender )
+	public void OnClickStartMatch( string sender )
 	{
-		Debug.Log( "OnCloseStartMatch" );
+		Debug.Log( "OnClickStartMatch" );
 		slideOut();
 		ChatManager.Instance.chatMessageHandler.startMatch();
+	}
+
+	void OnClickSendNoLongerAvailable( string sender )
+	{
+		Debug.Log( "OnClickSendNoLongerAvailable" );
+		slideOut();
+		//Send a message back saying that you are no longer available to play.
+		ChatManager.Instance.chatMessageHandler.sendMatchRequestNoLongerAvailableMessage ( sender );
 	}
 
 	void slideIn()

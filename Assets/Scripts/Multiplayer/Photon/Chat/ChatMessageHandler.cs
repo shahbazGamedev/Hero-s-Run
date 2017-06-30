@@ -10,8 +10,9 @@ public enum ChatMessageType {
 	MATCH_REQUEST_SEND = 4,
 	MATCH_REQUEST_ACCEPTED = 5,
 	MATCH_REQUEST_DECLINED = 6,
-	DATA_REQUEST_ASK = 7,
-	DATA_REQUEST_RESPOND = 8
+	MATCH_REQUEST_NO_LONGER_AVAILABLE = 7,
+	DATA_REQUEST_ASK = 8,
+	DATA_REQUEST_RESPOND = 9
 
 }
 
@@ -88,6 +89,14 @@ public class ChatMessageHandler {
 		chatMessage.chatMessageContent = string.Empty;
 		ChatManager.Instance.sendPrivateMessage( target, chatMessage.getJson() );
 	}
+
+	public void sendMatchRequestNoLongerAvailableMessage ( string target )
+	{
+		ChatMessage chatMessage = new ChatMessage();
+		chatMessage.chatMessageType = ChatMessageType.MATCH_REQUEST_NO_LONGER_AVAILABLE;
+		chatMessage.chatMessageContent = string.Empty;
+		ChatManager.Instance.sendPrivateMessage( target, chatMessage.getJson() );
+	}
 	#endregion
 
 	#region Friend Data Request
@@ -150,6 +159,10 @@ public class ChatMessageHandler {
 				ChatManager.Instance.chatMessageUI.configureMatchUI( (ChatMessageType)chatMessage.chatMessageType, sender );
 			break;
 			
+			case ChatMessageType.MATCH_REQUEST_NO_LONGER_AVAILABLE:
+				ChatManager.Instance.chatMessageUI.configureMatchUI( (ChatMessageType)chatMessage.chatMessageType, sender );
+			break;
+
 			case ChatMessageType.DATA_REQUEST_ASK:
 				sendRespondFriendData ( sender );
 			break;
