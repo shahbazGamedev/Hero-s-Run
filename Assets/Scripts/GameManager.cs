@@ -166,7 +166,7 @@ public class GameManager {
 			//In order to display the number of online players, we need to be connected to the master server.
 			//Users are separated from each other by game version (which allows you to make breaking changes).
 			//Don't attempt to connect if you are already connected.
-			if( !PhotonNetwork.connected ) PhotonNetwork.ConnectToBestCloudServer( GameManager.Instance.getVersionNumber() );
+			if( !PhotonNetwork.connected ) PhotonNetwork.ConnectUsingSettings( GameManager.Instance.getVersionNumber() );
 			Debug.Log("GameManager-PhotonNetwork.versionPUN is " + PhotonNetwork.versionPUN );
 		}
 	} 

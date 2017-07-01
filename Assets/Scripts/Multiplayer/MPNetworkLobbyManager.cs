@@ -139,7 +139,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		{
 			//We must first and foremost connect to Photon Online Server.
 			//Users are separated from each other by game version (which allows you to make breaking changes).
-			PhotonNetwork.ConnectToBestCloudServer(GameManager.Instance.getVersionNumber());
+			PhotonNetwork.ConnectUsingSettings(GameManager.Instance.getVersionNumber());
 			matchmakingManager.setConnectionProgress( "Connecting ..." );   
 		}
 	}
