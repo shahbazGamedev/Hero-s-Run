@@ -218,9 +218,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	Vector3 controllerOriginalCenter;
 	float controllerOriginalRadius;
 	float controllerOriginalHeight;
-	const float DEAD_CONTROLLER_CENTER_Y = 0.075f;
-	const float DEAD_CONTROLLER_RADIUS = 0.15f;
-	const float DEAD_CONTROLLER_HEIGHT = 0.15f;
+	float PRONE_CAPSULE_CENTER_Y = 0.57f;
 
 	int numberOfTimesDiedDuringRace = 0; //Used by PlayerStatistics to determine if the player had a perfect race, that is, he did not die a single time.
 	#endregion
@@ -685,7 +683,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			playerSounds.stopAudioSource();							//stop the sliding sound if any
 			playerVisuals.playDustPuff( false );					//stop the dust puff that loops while we are sliding
 			playerVisuals.playWaterSplashWhileSliding( false );
-			deactivateOverheadObstacles( true );					//reactivate overhead obstacles since they would have been deactivated if we were sliding
 
 			jumping = true;
 			jumpStarted = true;
@@ -810,14 +807,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				//Don't reset values for nothing if we are extending the slide
 				if( playerCharacterState != PlayerCharacterState.Sliding )
 				{
-					/*I used to change the controller capsule height,radius and position.
-					  However, when sliding across the Entrance trigger, it would cause multiple
-					  OnTriggerEnter events to be triggered causing in turn, the playerTileIndex
-					  to be incremented incorrectly and ultimately, there was no more floor
-					  under the player and he would fall. So instead, I disable and re-enable
-					  overhead obstacles.*/
-
-					deactivateOverheadObstacles( false );
+					changeColliderAxis( Axis.Z );
 					setCharacterState( PlayerCharacterState.Sliding );
 					if( playerCollisions.getGroundType() == "Water" )
 					{
@@ -859,39 +849,11 @@ public class PlayerControl : Photon.PunBehaviour {
 					setCharacterState( PlayerCharacterState.Running );
 				}
 				setAnimationTrigger(Slide_UpTrigger);
-				deactivateOverheadObstacles( true );
+				//Reset capsule collider to upright position
+				changeColliderAxis( Axis.Y );
 			}
 		}
 	}	
-
-	//This is related to sliding
-	private void deactivateOverheadObstacles( bool deactivate )
-	{
-		Collider[] colliders = FindObjectsOfType(typeof(Collider)) as Collider[];
-        foreach (Collider collider in colliders)
-		{
-			if ( collider.name == "DeadTree" )
-			{
-            	collider.enabled = deactivate;
-			}
-			else if ( collider.name == "Portcullis" )
-			{
-				collider.enabled = deactivate;
-			}
-			else if ( collider.name == "Flame" )
-			{
-				collider.GetComponent<TrapFlame>().isActive = deactivate;
-			}
-			else if ( collider.name == "Cerberus" )
-			{
-				collider.enabled = deactivate;
-			}
-			else if ( collider.CompareTag("Obstacle_M") )
-			{
-				collider.enabled = deactivate;
-			}
-		}
-	}
 
 	//Returns true if there is a collider less than 1.5 meters above the player
 	bool checkAbove()
@@ -1601,6 +1563,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			playerCamera.reactivateMaincamera();
 			isInZiplineTrigger = false; //Reset in case player died inside trigger
 			capsuleCollider.attachedRigidbody.isKinematic = false;
+			transform.localScale = new Vector3( 1f, 1f, 1f ); 	//Just because of rounding when changing parent
 			//The player might have died while ziplining.
 			//managePlayerDeath calls detachFromZipline().
 			//We only do the last steps if the player is alive.
@@ -1651,7 +1614,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	[PunRPC]
 	void playerDiedRPC( DeathType deathTypeValue )
 	{
-		scaleControllerCollider( true );
+		changeColliderAxis( Axis.Z );
 
 		Debug.Log("playerDiedRPC : " + deathTypeValue + " " + gameObject.name );
 
@@ -1782,22 +1745,21 @@ public class PlayerControl : Photon.PunBehaviour {
 		resurrectBegin(true);
 	}
 
-	void scaleControllerCollider( bool isPlayerDead )
+	void changeColliderAxis( Axis axis )
 	{
-		if( isPlayerDead )
+		if( axis == Axis.Y)
 		{
-			//Shrink the size so that other players have an easier time
-			//going over the body.
-			capsuleCollider.center = new Vector3( capsuleCollider.center.x, DEAD_CONTROLLER_CENTER_Y, capsuleCollider.center.z );
-			capsuleCollider.radius = DEAD_CONTROLLER_RADIUS;
-			capsuleCollider.height = DEAD_CONTROLLER_HEIGHT;
-		}
-		else
-		{
-			//Restore the original size
+			//Upright position
+			capsuleCollider.direction = (int)Axis.Y;
 			capsuleCollider.center = controllerOriginalCenter;
 			capsuleCollider.radius = controllerOriginalRadius;
 			capsuleCollider.height = controllerOriginalHeight;
+		}
+		else if( axis == Axis.Z )
+		{
+			//Sliding or dead position
+			capsuleCollider.direction = (int)Axis.Z;
+			capsuleCollider.center = new Vector3( controllerOriginalCenter.x, PRONE_CAPSULE_CENTER_Y, controllerOriginalCenter.z );
 		}
 	}
 
@@ -1865,7 +1827,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			transform.position = new Vector3( respawn.position.x, groundHeight + 8f, respawn.position.z );
 			//By calling setCharacterState with StartRunning, the WorldSoundManager will know to resume the music.
 			setCharacterState( PlayerCharacterState.StartRunning );
-			scaleControllerCollider( false );
+			changeColliderAxis( Axis.Y );
 			//Mecanim Hack - we call rebind because the animation states are not reset properly when you die in the middle of an animation.
 			//For example, if you die during a double jump, after you get resurrected and start running again, if you do another double jump, only part of the double jump animation will play, never the full animation.
 			anim.Rebind();
@@ -1893,7 +1855,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		desiredLane = Lanes.Center;
 		myLane = 0;
 
-		deactivateOverheadObstacles( true );
 		jumping = false;
 		queueSlide = false;
 		queueJump = false;
