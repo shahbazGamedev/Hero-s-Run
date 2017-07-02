@@ -37,11 +37,15 @@ public class PlayerCollisions : Photon.PunBehaviour {
 		return groundType;
 	}
 	
-	void OnControllerColliderHit (ControllerColliderHit hit )
+	void OnCollisionEnter(Collision collision)
 	{
 		if( playerControl.getCharacterState() != PlayerCharacterState.Dying )
 		{
-			groundType = hit.gameObject.tag;
+			Transform collided = collision.transform;
+			Vector3 normal =  collision.contacts[0].normal;
+
+			groundType = collided.tag;
+
 			if( groundType != previousGroundType )
 			{
 				playerSounds.groundTypeChanged( groundType );
@@ -49,12 +53,12 @@ public class PlayerCollisions : Photon.PunBehaviour {
 			previousGroundType = groundType;
 
 			//The CharacterController is constantly colliding with the Quads making up the floor. Ignore those events.
-			if (hit.gameObject.CompareTag("Floor") ) return;
+			if (collided.CompareTag("Floor") ) return;
 	
 			//Debug.Log ("OnControllerColliderHit  " + hit.collider.name  );
-			if (hit.collider.name == "DeadTree" )
+			if (collided.name == "DeadTree" )
 			{
-				if( hit.normal.y < 0.4f )
+				if( normal.y < 0.4f )
 				{
 					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
 					//Move the player back so he does not float in the air in case he hit the log while landing after a jump.
@@ -62,9 +66,9 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}
-			else if (hit.collider.name == "GroundObstacle" )
+			else if (collided.name == "GroundObstacle" )
 			{
-				if( hit.normal.y < 0.4f )
+				if( normal.y < 0.4f )
 				{
 					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
 					//Move the player back so he does not float in the air in case he hit the log while landing after a jump.
@@ -72,9 +76,9 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}
-			else if( hit.gameObject.CompareTag("Chicken") )
+			else if( collided.CompareTag("Chicken") )
 			{
-				Transform chickenTransform = hit.transform.FindChild("Chicken Trigger");
+				Transform chickenTransform = collided.FindChild("Chicken Trigger");
 				if( chickenTransform == null )
 				{
 					Debug.LogError("PlayerController-OnControllerColliderHit: chicken collision error. Could not find chicken trigger.");
@@ -101,17 +105,17 @@ public class PlayerCollisions : Photon.PunBehaviour {
 						float pushPower = playerControl.getSpeed() * 2.5f;
 
 						//Make the chicken go flying
-						Rigidbody body = hit.collider.attachedRigidbody;
-						Vector3 force = new Vector3 (hit.controller.velocity.x, 7f, hit.controller.velocity.z) * pushPower;
-						body.AddForceAtPosition(force, hit.point);
-						hit.transform.eulerAngles = new Vector3( 0, transform.eulerAngles.y + Random.Range(-7,8),0);
+						Rigidbody body = collision.collider.attachedRigidbody;
+						Vector3 force = new Vector3 (GetComponent<Rigidbody>().velocity.x, 7f, GetComponent<Rigidbody>().velocity.z) * pushPower;
+						body.AddForceAtPosition(force, collision.contacts[0].point);
+						collided.eulerAngles = new Vector3( 0, transform.eulerAngles.y + Random.Range(-7,8),0);
 
 						//Play the animations
-						Animation chickenAnimation = hit.gameObject.GetComponent<Animation>();
+						Animation chickenAnimation = collided.GetComponent<Animation>();
 						chickenAnimation.CrossFade("A_Chicken_Spawn");
 
 						//Destroy the chicken after a while
-						DestroyObject(hit.gameObject,10f);
+						DestroyObject(collided.gameObject,10f);
 					}
 				}
 				else
@@ -124,18 +128,18 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					else
 					{
 						//Allow the player to go right through the chicken
-						hit.collider.attachedRigidbody.useGravity = false;
-						hit.collider.enabled = false;
+						collision.collider.attachedRigidbody.useGravity = false;
+						//GetComponent<CapsuleCollider>().enabled = false;
 					}
 				}
 			}
-			else if (hit.collider.name.StartsWith( "Stumble" ) )
+			else if (collided.name.StartsWith( "Stumble" ) )
 			{
 				playerControl.stumble();
 			}
-			else if (hit.gameObject.CompareTag( "Zombie" ) )
+			else if (collided.CompareTag( "Zombie" ) )
 			{
-				ZombieController zombieController = (ZombieController) hit.gameObject.GetComponent("ZombieController");
+				ZombieController zombieController = (ZombieController) collided.GetComponent("ZombieController");
 				//Ignore collision event if Zombie already dead.
 				if( zombieController.getCreatureState() != CreatureState.Dying )
 				{
@@ -151,13 +155,13 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					}
 					else
 					{
-						Debug.Log( "Player collided with zombie: " + hit.collider.name + " Normal" + hit.normal.y + " but CANT TOPPLE HIM " + playerControl.getCharacterState() + "  STATE Z "+ zombieController.getCreatureState());
-						if( hit.normal.y < 0.4f )
+						Debug.Log( "Player collided with zombie: " + collided.name + " Normal" + normal.y + " but CANT TOPPLE HIM " + playerControl.getCharacterState() + "  STATE Z "+ zombieController.getCreatureState());
+						if( normal.y < 0.4f )
 						{
 							//Player is running up Z axis
 							if( Mathf.Floor( transform.eulerAngles.y ) == 0 )
 							{
-								if( Mathf.Abs( hit.normal.x ) > Mathf.Abs( hit.normal.z ) )
+								if( Mathf.Abs( normal.x ) > Mathf.Abs( normal.z ) )
 								{
 									//Player collided with zombie on the side, just play an animation on the zombie
 									zombieController.sideCollision();
@@ -172,7 +176,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 							//Player is running along X axis
 							else 
 							{
-								if( Mathf.Abs( hit.normal.z ) > Mathf.Abs( hit.normal.x ) )
+								if( Mathf.Abs( normal.z ) > Mathf.Abs( normal.x ) )
 								{
 									//Player collided with zombie on the side, just play an animation on the zombie
 									zombieController.sideCollision();
@@ -184,7 +188,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 									zombieController.victory( true );
 								}
 							}
-							Debug.Log( "PLayer collided with: " + hit.collider.name + " Normal" + hit.normal );
+							Debug.Log( "PLayer collided with: " + collided.name + " Normal" + normal );
 						}
 						else
 						{
@@ -198,23 +202,23 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					Debug.LogError("Zombie already dead");
 				}
 			}
-			else if (hit.collider.name.StartsWith( "Goblin" ) )
+			else if (collided.name.StartsWith( "Goblin" ) )
 			{
-				handleCreatureCollision( hit, hit.gameObject.GetComponent<ICreature>() );
+				handleCreatureCollision( collision, collided.GetComponent<ICreature>() );
 			}
-			else if (hit.collider.name.StartsWith( "Skeleton" ) )
+			else if (collided.name.StartsWith( "Skeleton" ) )
 			{
-				handleCreatureCollision( hit, hit.gameObject.GetComponent<ICreature>() );
+				handleCreatureCollision( collision, collided.GetComponent<ICreature>() );
 			}
-			else if (hit.collider.name.StartsWith( "Firepit" ) )
+			else if (collided.name.StartsWith( "Firepit" ) )
 			{
-				Debug.Log( "Player collided with firepit: " + hit.collider.name + " Normal" + hit.normal.y );
-				if( hit.normal.y < 0.4f )
+				Debug.Log( "Player collided with firepit: " + collided.name + " Normal" + normal.y );
+				if( normal.y < 0.4f )
 				{
 					//Player is running up Z axis
 					if( Mathf.Floor( transform.eulerAngles.y ) == 0 )
 					{
-						if( Mathf.Abs( hit.normal.x ) > Mathf.Abs( hit.normal.z ) )
+						if( Mathf.Abs(normal.x ) > Mathf.Abs( normal.z ) )
 						{
 							//Player collided with firepit on the side. Ignore.
 						}
@@ -227,7 +231,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					//Player is running along X axis
 					else 
 					{
-						if( Mathf.Abs( hit.normal.z ) > Mathf.Abs( hit.normal.x ) )
+						if( Mathf.Abs( normal.z ) > Mathf.Abs( normal.x ) )
 						{
 							//Player collided with firepit on the side. Ignore.
 						}
@@ -239,13 +243,13 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					}
 				}
 			}
-			else if (hit.collider.name.StartsWith( "Breakable Barrel" ) )
+			else if (collided.name.StartsWith( "Breakable Barrel" ) )
 			{
 				//Don't break if you land on top of the barrel
-				if( hit.normal.y < 0.4f )
+				if( normal.y < 0.4f )
 				{
-					BreakableObject bo = (BreakableObject) hit.collider.GetComponent("BreakableObject");
-					Debug.Log( "PLayer collided with breakable: " + hit.collider.name );
+					BreakableObject bo = (BreakableObject) collided.GetComponent("BreakableObject");
+					Debug.Log( "PLayer collided with breakable: " + collided.name );
 					//We pass the player collider to triggerBreak() because we do not want the barrel fragments to collide with the player.
 					bo.triggerBreak( GetComponent<Collider>() );
 					if( playerControl.getCharacterState() == PlayerCharacterState.Sliding )
@@ -258,14 +262,14 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					}
 				}
 			}
-			else if (hit.collider.name.StartsWith( "Thrown Barrel" ) )
+			else if (collided.name.StartsWith( "Thrown Barrel" ) )
 			{
 				playerControl.killPlayer ( DeathType.Obstacle );
 			}
-			else if (hit.collider.name.StartsWith( "Breakable Pumpkin" ) )
+			else if (collided.name.StartsWith( "Breakable Pumpkin" ) )
 			{
-				BreakableObject bo = (BreakableObject) hit.collider.GetComponent("BreakableObject");
-				Debug.Log( "PLayer collided with breakable: " + hit.collider.name );
+				BreakableObject bo = (BreakableObject) collided.GetComponent("BreakableObject");
+				Debug.Log( "PLayer collided with breakable: " + collided.name );
 				//We pass the player collider to triggerBreak() because we do not want the barrel fragments to collide with the player.
 				bo.triggerBreak( GetComponent<Collider>() );
 				if( playerControl.getCharacterState() == PlayerCharacterState.Sliding )
@@ -277,24 +281,24 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					playerControl.stumble();
 				}
 			}
-			else if (hit.collider.CompareTag("Cart" ) )
+			else if (collided.CompareTag("Cart" ) )
 			{
-				if( hit.normal.y < 0.4f )
+				if( normal.y < 0.4f )
 				{
 					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}
-			else if (hit.collider.name == "Pendulum" )
+			else if (collided.name == "Pendulum" )
 			{
 				//Move the player back so he does not get stuck in the pendulum.
 				//controller.Move( hit.normal ); //disable test - seems to make Unity 5 crash
 				playerControl.killPlayer ( DeathType.Obstacle );
 			}
-			else if (hit.collider.CompareTag( "Cow" ) )
+			else if (collided.CompareTag( "Cow" ) )
 			{
-				SimpleController simpleController = (SimpleController) hit.collider.GetComponent("SimpleController");
+				SimpleController simpleController = (SimpleController) collided.GetComponent("SimpleController");
 				simpleController.playHitAnim();
-				if( hit.normal.y < 0.4f )
+				if( normal.y < 0.4f )
 				{
 					//Player collided with cow squarely
 					//Move the player back so he does not get stuck in the cow.
@@ -302,11 +306,11 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}
-			else if (hit.collider.name.StartsWith("Fence") || hit.collider.name.StartsWith("Wall") || hit.collider.name.StartsWith("Portcullis") )
+			else if (collided.name.StartsWith("Fence") || collided.name.StartsWith("Wall") || collided.name.StartsWith("Portcullis") )
 			{
 				playerControl.killPlayer ( DeathType.Obstacle );
 			}			
-			else if (hit.collider.name.Equals("Weapon") )
+			else if (collided.name.Equals("Weapon") )
 			{
 				//Skeleton footman or warlord, or goblin piker or wraith or demon
 				if( !playerControl.isSpeedBoostActive )
@@ -320,50 +324,50 @@ public class PlayerCollisions : Photon.PunBehaviour {
 			/// Obstacle_H - the obstacle's height is high. You can slide under it.
 			/// Obstacle_B - the obstacle is breakable. You can slide into it to break it or jump over it.
 			/// Obstacle_DJ - the obstacle is tall. You can double-jump over it.
-			else if (hit.collider.CompareTag( "Obstacle_F" ) )
+			else if (collided.CompareTag( "Obstacle_F" ) )
 			{
 				playerControl.killPlayer ( DeathType.Obstacle );
 			}
-			else if (hit.collider.CompareTag( "Obstacle_L" ) )
+			else if (collided.CompareTag( "Obstacle_L" ) )
 			{
-				if( hit.normal.y < 0.4f )
+				if( normal.y < 0.4f )
 				{
 					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
 					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}
-			else if (hit.collider.CompareTag( "Obstacle_M" ) )
+			else if (collided.CompareTag( "Obstacle_M" ) )
 			{
-				if( hit.normal.y < 0.4f )
+				if( normal.y < 0.4f )
 				{
 					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
 					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}
-			else if (hit.collider.CompareTag( "Obstacle_H" ) )
+			else if (collided.CompareTag( "Obstacle_H" ) )
 			{
-				if( hit.normal.y < 0.4f )
+				if( normal.y < 0.4f )
 				{
 					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
 					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}
-			else if (hit.collider.CompareTag( "Obstacle_DJ" ) )
+			else if (collided.CompareTag( "Obstacle_DJ" ) )
 			{
-				if( hit.normal.y < 0.4f )
+				if( normal.y < 0.4f )
 				{
 					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
 					playerControl.killPlayer ( DeathType.Obstacle );
 				}
 			}
-			else if (hit.collider.CompareTag( "Player" ) )
+			else if (collided.CompareTag( "Player" ) )
 			{
-				if( hit.normal.y < 0.4f )
+				if( normal.y < 0.4f )
 				{
 					//If this player ran squarely into another player while using SpeedBoost (i.e. Raging Bull), kill the other player.
 					if( playerControl.isSpeedBoostActive )
 					{
-						PlayerControl otherPlayer = hit.collider.GetComponent<PlayerControl>();
+						PlayerControl otherPlayer = collided.GetComponent<PlayerControl>();
 						if( otherPlayer.getCharacterState() != PlayerCharacterState.Dying || otherPlayer.getCharacterState() != PlayerCharacterState.Idle )
 						{
 							otherPlayer.killPlayer ( DeathType.FallForward );
@@ -371,23 +375,23 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					}
 				}
 			}
-			else if (hit.collider.CompareTag( "Destructible" ) )
+			else if (collided.CompareTag( "Destructible" ) )
 			{
-				if( hit.normal.y < 0.4f )
+				if( normal.y < 0.4f )
 				{
 					//This player ran squarely into a destructible object.
 					if( playerControl.isSpeedBoostActive )
 					{
 						//Speedboost is active. Fracture the object.
-						FracturedObject fracturedObject = hit.collider.GetComponent<FracturedObject>();
+						FracturedObject fracturedObject = collided.GetComponent<FracturedObject>();
 						if( fracturedObject != null )
 						{
-							fracturedObject.Explode(hit.point, 5000f, 2.5f, false, true, false, false );
-							GameObject.Destroy( hit.collider.gameObject );
+							fracturedObject.Explode(collision.contacts[0].point, 5000f, 2.5f, false, true, false, false );
+							GameObject.Destroy( collided.gameObject );
 						}
 						else
 						{
-							Debug.LogWarning( "Player collided with object " + hit.collider.name + ". It has a Destructible tag, but no FractureObject component." );
+							Debug.LogWarning( "Player collided with object " + collided.name + ". It has a Destructible tag, but no FractureObject component." );
 						}
 					}
 					else
@@ -400,11 +404,14 @@ public class PlayerCollisions : Photon.PunBehaviour {
 		}
 	}
 	
-	void handleCreatureCollision( ControllerColliderHit hit, ICreature creature )
+	void handleCreatureCollision( Collision collision, ICreature creature )
 	{
 		//Ignore collision event if the creature is already dead.
 		if( creature != null && creature.getCreatureState() != CreatureState.Dying )
 		{
+			Transform collided = collision.transform;
+			Vector3 normal =  collision.contacts[0].normal;
+
 			if( ( playerControl.getCharacterState() == PlayerCharacterState.Sliding || playerControl.getCharacterState() == PlayerCharacterState.Turning_and_sliding ) || playerControl.isSpeedBoostActive )
 			{
 				giveCoins( CreatureManager.NUMBER_COINS_PER_CREATURE );
@@ -414,12 +421,12 @@ public class PlayerCollisions : Photon.PunBehaviour {
 			}
 			else
 			{
-				if( hit.normal.y < 0.4f )
+				if( normal.y < 0.4f )
 				{
 					//Player is running up Z axis
 					if( Mathf.Floor( transform.eulerAngles.y ) == 0 )
 					{
-						if( Mathf.Abs( hit.normal.x ) > Mathf.Abs( hit.normal.z ) )
+						if( Mathf.Abs( normal.x ) > Mathf.Abs( normal.z ) )
 						{
 							//Player collided with goblin on the side, just play an animation on the goblin
 							creature.sideCollision();
@@ -434,7 +441,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					//Player is running along X axis
 					else 
 					{
-						if( Mathf.Abs( hit.normal.z ) > Mathf.Abs( hit.normal.x ) )
+						if( Mathf.Abs( normal.z ) > Mathf.Abs( normal.x ) )
 						{
 							//Player collided with zombie on the side, just play an animation on the zombie
 							creature.sideCollision();

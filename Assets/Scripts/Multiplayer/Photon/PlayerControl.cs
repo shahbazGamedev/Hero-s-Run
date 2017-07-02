@@ -47,13 +47,13 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	#region Components cached for performance 	
 	Animator anim;
-	public CharacterController controller;
 	PlayerCamera playerCamera;
 	PlayerVisuals playerVisuals;
 	PlayerSounds playerSounds;
 	PlayerVoiceOvers playerVoiceOvers;
 	PlayerCollisions playerCollisions;
 	PlayerAI playerAI;
+	CapsuleCollider capsuleCollider;
 	#endregion
 
 	#region Hash IDs for player animations	
@@ -121,7 +121,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	float doubleJumpSpeed = 12.8f;
 	float DOUBLE_JUMP_RUN_SPEED = 1f; //We want the player to leap forward during a double jump
 	float MAX_RUN_SPEED_FOR_DOUBLE_JUMP = 20f; //We want to cap the maximum run speed during a double jump. If the player is sprinting for example, we don't want him to leap into a wall.
-	float distanceToGround = 0;
+	public float distanceToGround = 0;
 	//The gravity for the character
 	const float DEFAULT_GRAVITY = 16f;
 	float gravity = DEFAULT_GRAVITY;
@@ -130,7 +130,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	//as soon as you touch the ground
 	//You can only queue one move at any given time
 	bool queueJump = false;
-	//jumpStarted is used for one frame to prevent controller.isGrounded from preventing the player to jump.
+	//jumpStarted is used for one frame to prevent isGrounded from preventing the player to jump.
 	//A jump event can come at any time.
 	bool jumpStarted = false;
 	#endregion
@@ -254,10 +254,10 @@ public class PlayerControl : Photon.PunBehaviour {
 	{
 		//Cache components for performance
 		anim = GetComponent<Animator>();
-		controller = GetComponent<CharacterController>();
-		controllerOriginalCenter = controller.center;
-		controllerOriginalRadius = controller.radius;
-		controllerOriginalHeight = controller.height;
+		capsuleCollider = GetComponent<CapsuleCollider>();
+		controllerOriginalCenter = capsuleCollider.center;
+		controllerOriginalRadius = capsuleCollider.radius;
+		controllerOriginalHeight = capsuleCollider.height;
 		playerCamera = GetComponent<PlayerCamera>();
 		playerVisuals = GetComponent<PlayerVisuals>();
 		playerSounds = GetComponent<PlayerSounds>();
@@ -372,13 +372,13 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			animSpeedAtTimeOfPause = anim.speed;
 			anim.speed = 0;
-			playerControlsEnabled = false;
-			playerMovementEnabled = false;
+			enablePlayerControl( false );
+			enablePlayerMovement( false );
 		}
 		else
 		{
-			playerControlsEnabled = true;
-			playerMovementEnabled = true;
+			enablePlayerControl( true );
+			enablePlayerMovement( true );
 			anim.speed = animSpeedAtTimeOfPause;
 		}
 	}
@@ -413,7 +413,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		enablePlayerControl( true );
 	}
 
-	void Update()
+	void FixedUpdate()
 	{
 		if( getCharacterState() != PlayerCharacterState.Flying )
 		{
@@ -476,10 +476,10 @@ public class PlayerControl : Photon.PunBehaviour {
 		
 		verifySlide();
 
-		if (controller.isGrounded && !jumpStarted)
+		if (GetComponent<PlayerThirdPersonController>().m_IsGrounded && !jumpStarted)
 		{
 			//If we we were falling and just landed,reset values and go back to running state.
-			//However, before deciding to land, also check that the distance to the ground is less than 10 cm to avoid false positives (controller.isGrounded is not perfect).
+			//However, before deciding to land, also check that the distance to the ground is less than 10 cm to avoid false positives (isGrounded is not perfect).
 			if( playerCharacterState == PlayerCharacterState.Falling && distanceToGround < 0.1f )
 			{
 				land();
@@ -539,7 +539,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//2) Scale vector based on run speed
 			forward = forward * Time.deltaTime * runSpeed;
 			//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
-			forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
+		//forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
 			//4) Get a unit vector that is orthogonal to the direction of the player
 			Vector3 relativePos = new Vector3(1 , 0 , 0 );
 			Vector3 xPos = transform.TransformPoint(relativePos);
@@ -552,11 +552,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//7) Add the X component to the forward direction
 			forward = forward + xVector;
 			//8) Move the controller
-			#if UNITY_EDITOR
-			if( controller.enabled ) controller.Move( forward );
-			#else
-			controller.Move( forward );
-			#endif
+			GetComponent<PlayerThirdPersonController>().Move( forward, false, jumping );
 			jumpStarted = false;
 		}
 		//Note: if the player is ziplining. He is moved by a LeanTween function.
@@ -615,8 +611,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	void calculateDistanceToGround()
 	{
         RaycastHit hit;
-		//We add 0.05 just to be sure our raycast starts a tad higher than the player's feet
-		if (Physics.Raycast(new Vector3( transform.position.x, transform.position.y + 0.05f, transform.position.z ) , Vector3.down, out hit, 10.0F ))
+		//We add 0.1f just to be sure our raycast starts a tad higher than the player's feet
+		if (Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, out hit, 10f))
 		{
             distanceToGround = hit.distance;
 			//print ("PlayerControl-calculateDistanceToGround: " + hit.collider.name );
@@ -626,6 +622,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//Ground is further than 10 meters or possibly there is no collider below the player.
 			//Just set an Arbitrarily big value.
 			distanceToGround = 1000f;
+			//print ("PlayerControl-calculateDistanceToGround: " + distanceToGround );
 		}
         
 	}
@@ -1702,8 +1699,9 @@ public class PlayerControl : Photon.PunBehaviour {
 		queueJump = false;
 		queueSlide = false;
 
-		//Reset move direction and forward. We keep the Y component so the player falls to the ground.
+		//Reset move direction and velocity. We keep the Y component so the player falls to the ground.
 		moveDirection = new Vector3( 0,moveDirection.y,0 );
+		GetComponent<Rigidbody>().velocity = new Vector3( 0,moveDirection.y,0 );
 
 		//Stop any currently playing sound
 		playerSounds.stopAudioSource();
@@ -1788,16 +1786,16 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			//Shrink the size so that other players have an easier time
 			//going over the body.
-			controller.center = new Vector3( controller.center.x, DEAD_CONTROLLER_CENTER_Y, controller.center.z );
-			controller.radius = DEAD_CONTROLLER_RADIUS;
-			controller.height = DEAD_CONTROLLER_HEIGHT;
+			capsuleCollider.center = new Vector3( capsuleCollider.center.x, DEAD_CONTROLLER_CENTER_Y, capsuleCollider.center.z );
+			capsuleCollider.radius = DEAD_CONTROLLER_RADIUS;
+			capsuleCollider.height = DEAD_CONTROLLER_HEIGHT;
 		}
 		else
 		{
 			//Restore the original size
-			controller.center = controllerOriginalCenter;
-			controller.radius = controllerOriginalRadius;
-			controller.height = controllerOriginalHeight;
+			capsuleCollider.center = controllerOriginalCenter;
+			capsuleCollider.radius = controllerOriginalRadius;
+			capsuleCollider.height = controllerOriginalHeight;
 		}
 	}
 
@@ -1885,8 +1883,8 @@ public class PlayerControl : Photon.PunBehaviour {
 		transform.localScale = new Vector3( 1f, 1f, 1f );
 
 		//Character Controller
-		controller.center = controllerOriginalCenter;
-		controller.radius = controllerOriginalRadius;
+		capsuleCollider.center = controllerOriginalCenter;
+		capsuleCollider.radius = controllerOriginalRadius;
 		
 		//Lanes
 		currentLane = Lanes.Center;
@@ -2057,6 +2055,11 @@ public class PlayerControl : Photon.PunBehaviour {
 	public void enablePlayerMovement( bool enabled )
 	{
 		playerMovementEnabled = enabled;
+	}
+
+	public bool isPlayerMovementEnabled()
+	{
+		return playerMovementEnabled;
 	}
 
 	//We pass the triggerPositionZ value because we need its position. We cannot rely on the position of the player at the moment of trigger because it can fluctuate based on frame rate and such.
