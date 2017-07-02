@@ -117,8 +117,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Jumping and gravity variables
 	bool jumping = false;
 	bool doingDoubleJump = false;
-	float jumpSpeed = 8.8f;
-	float doubleJumpSpeed = 12.8f;
+	float jumpSpeed = 12f;
+	float doubleJumpSpeed = 20f;
 	float DOUBLE_JUMP_RUN_SPEED = 1f; //We want the player to leap forward during a double jump
 	float MAX_RUN_SPEED_FOR_DOUBLE_JUMP = 20f; //We want to cap the maximum run speed during a double jump. If the player is sprinting for example, we don't want him to leap into a wall.
 	public float distanceToGround = 0;
@@ -452,7 +452,7 @@ public class PlayerControl : Photon.PunBehaviour {
 						}
 						if( !isLeftFootOnGround && !isRightFootOnGround )
 						{
-							fall();
+							fall( false );
 						}
 					}
 				}
@@ -474,7 +474,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		
 		verifySlide();
 
-		if (GetComponent<PlayerThirdPersonController>().m_IsGrounded && !jumpStarted)
+		if (distanceToGround < 0.1f && !jumpStarted)
 		{
 			//If we we were falling and just landed,reset values and go back to running state.
 			//However, before deciding to land, also check that the distance to the ground is less than 10 cm to avoid false positives (isGrounded is not perfect).
@@ -537,7 +537,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//2) Scale vector based on run speed
 			forward = forward * Time.deltaTime * runSpeed;
 			//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
-		//forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
+			forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
 			//4) Get a unit vector that is orthogonal to the direction of the player
 			Vector3 relativePos = new Vector3(1 , 0 , 0 );
 			Vector3 xPos = transform.TransformPoint(relativePos);
@@ -550,7 +550,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//7) Add the X component to the forward direction
 			forward = forward + xVector;
 			//8) Move the controller
-			GetComponent<PlayerThirdPersonController>().Move( forward, false, jumping );
+			capsuleCollider.attachedRigidbody.velocity = forward * 25f;
 			jumpStarted = false;
 		}
 		//Note: if the player is ziplining. He is moved by a LeanTween function.
@@ -725,12 +725,12 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Fall and Land
-	public void fall()
+	public void fall( bool useFallLoop )
 	{
 		if( playerCharacterState == PlayerCharacterState.Falling || playerCharacterState == PlayerCharacterState.Jumping ) return; //ignore, we are already falling or jumping
 
-		//Reset moveDirection.y to 0 so we dont start falling very fast
-		moveDirection.y = 0f;
+		//Give a little downward impetus
+		moveDirection.y = -1f;
 		allowRunSpeedToIncrease = false;
 		runSpeed = runSpeed * 0.65f;
 		//Remember at what height the player started to fall because this will help us calculate the fall distance.
@@ -738,7 +738,16 @@ public class PlayerControl : Photon.PunBehaviour {
 		gravity = DEFAULT_GRAVITY * 2f;
 		playerCamera.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING * 9f;
 		setCharacterState(PlayerCharacterState.Falling);
-		setAnimationTrigger(FallTrigger);
+		if( useFallLoop )
+		{
+			//Going straight to fall loop is better when respawning and falling from the sky
+			anim.Play( "Fall_Loop");
+		}
+		else
+		{
+			//This fall animation blends with the run animation
+			setAnimationTrigger(FallTrigger);
+		}
 		//playSound( fallingSound, false );
 		print ( "fall started " + distanceToGround + " " + MIN_DISTANCE_FOR_FALL + " " + playerCharacterState );
 	}
@@ -1571,7 +1580,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			{
 				enablePlayerControl( true );
 				transform.eulerAngles = new Vector3(0,270f,0); //we turned left while ziplining
-				fall();
+				fall( true );
 			}
 			else
 			{
@@ -1824,7 +1833,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			playerVisuals.enablePlayerShadow( true );
 			playerCamera.positionCameraNow();
 			playerCamera.lockCamera( true );
-			transform.position = new Vector3( respawn.position.x, groundHeight + 8f, respawn.position.z );
+			transform.position = new Vector3( respawn.position.x, groundHeight + 9f, respawn.position.z );
 			//By calling setCharacterState with StartRunning, the WorldSoundManager will know to resume the music.
 			setCharacterState( PlayerCharacterState.StartRunning );
 			changeColliderAxis( Axis.Y );
@@ -1832,7 +1841,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//For example, if you die during a double jump, after you get resurrected and start running again, if you do another double jump, only part of the double jump animation will play, never the full animation.
 			anim.Rebind();
 			//Make player fall from sky, land and start running again
-			fall();
+			fall( true );
 		}
 		else
 		{

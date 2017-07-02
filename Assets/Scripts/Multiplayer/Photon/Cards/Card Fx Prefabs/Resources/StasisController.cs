@@ -92,7 +92,7 @@ public class StasisController : CardSpawnedObject {
 		MiniMap.Instance.hideSecondaryIcon( affectedPlayerTransform.gameObject );
 		affectedPlayerTransform.SetParent( null );
 		affectedPlayerTransform.GetComponent<Animator>().speed = 1f;
-		affectedPlayerControl.fall();
+		affectedPlayerControl.fall( true );
 		affectedPlayerControl.enablePlayerMovement( true );
 		affectedPlayerControl.enablePlayerControl( true );
 		Destroy( gameObject );

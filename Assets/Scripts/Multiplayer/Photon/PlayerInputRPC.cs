@@ -86,7 +86,7 @@ public class PlayerInputRPC : PunBehaviour {
 		//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
 		forward.Set( forward.x, playerControl.moveDirection.y * syncTimeDelta, forward.z );
 		Debug.Log("syncMovement received N " + gameObject.name + "TD " + syncTimeDelta + " FL " + forward.magnitude );
-		GetComponent<PlayerThirdPersonController>().Move( forward, false, false );
+		playerControl.GetComponent<CapsuleCollider>().attachedRigidbody.velocity = forward;
 		//The master player and the remote player should now be synchronised.
 	}
 }

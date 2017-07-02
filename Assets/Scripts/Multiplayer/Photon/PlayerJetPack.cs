@@ -121,7 +121,7 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 			if( heroSkin != null ) heroSkin.transform.localRotation = Quaternion.Euler( 0, 0, 0 );
 			//If we stop flying because the timer expired, fall.
 			//If we stop flying because we died, don't call fall since resurrect will do it.
-			if( fall ) playerControl.fall();
+			if( fall ) playerControl.fall( true );
 			
 			//Orient the player in the same direction as the current tile
 			transform.rotation = Quaternion.Euler ( 0, playerControl.tileRotationY, 0 );
