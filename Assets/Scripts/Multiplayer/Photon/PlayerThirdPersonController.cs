@@ -187,7 +187,7 @@ public class PlayerThirdPersonController : MonoBehaviour
 	{
 		// we implement this function to override the default root motion.
 		// this allows us to modify the positional speed before it's applied.
-		if (m_IsGrounded && playerControl.isPlayerMovementEnabled() && playerControl.isPlayerControlEnabled() && playerControl.getCharacterState() != PlayerCharacterState.Dying && playerControl.getCharacterState() != PlayerCharacterState.Idle && Time.deltaTime > 0)
+		if (m_IsGrounded && playerControl.isPlayerMovementEnabled() && playerControl.getCharacterState() != PlayerCharacterState.Dying && playerControl.getCharacterState() != PlayerCharacterState.Ziplining && Time.deltaTime > 0)
 		{
 			Vector3 v = ( ( moveForward ) * m_MoveSpeedMultiplier) / Time.deltaTime;
 

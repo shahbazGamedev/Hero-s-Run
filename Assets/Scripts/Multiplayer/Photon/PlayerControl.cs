@@ -153,7 +153,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	//We set the anim speed to 0 when we pause, so we need to remember the value when we unpause
 	float animSpeedAtTimeOfPause;
 	//The state of the character i.e. running, jumping, sliding, etc.
-	PlayerCharacterState playerCharacterState;
+	public PlayerCharacterState playerCharacterState;
 	//True if the player is allowed to move, false otherwise. This flag is useful during camera cut-scenes to prevent the player from moving.
 	bool playerMovementEnabled = true;
  	//Are inputs allowed?
@@ -1571,9 +1571,10 @@ public class PlayerControl : Photon.PunBehaviour {
 			//It is possible for a change lane to be in progress when we attach to the zipline.
 			//To avoid drifting along the X axis when we detach from the zipline, make sure we reset moveDirection.
 			moveDirection = Vector3.zero;
+			capsuleCollider.attachedRigidbody.isKinematic = true;
 			setAnimationTrigger(Idle_LookTrigger);
 			ziplineAttachPoint = transform.FindChild("Zipline Attach Point");
-			Debug.Log("attachToZipline for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient + " isMine: " + this.photonView.isMine + " isLocal: " + PhotonNetwork.player.IsLocal + " view ID: " + this.photonView.viewID + " owner ID: " + this.photonView.ownerId );
+			Debug.Log("attachToZipline for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient + " isMine: " + this.photonView.isMine + " view ID: " + this.photonView.viewID + " owner ID: " + this.photonView.ownerId );
 			ziplineAttachPoint.localPosition = new Vector3( 0, 2.15f, 0 );
 			ziplineAttachPoint.localEulerAngles = new Vector3( 0, 0, 0 );
 			ziplineAttachPoint.GetComponent<AudioSource>().Play();
@@ -1599,6 +1600,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			ziplineAttachPoint.GetComponent<AudioSource>().Stop();
 			playerCamera.reactivateMaincamera();
 			isInZiplineTrigger = false; //Reset in case player died inside trigger
+			capsuleCollider.attachedRigidbody.isKinematic = false;
 			//The player might have died while ziplining.
 			//managePlayerDeath calls detachFromZipline().
 			//We only do the last steps if the player is alive.
@@ -1701,7 +1703,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		//Reset move direction and velocity. We keep the Y component so the player falls to the ground.
 		moveDirection = new Vector3( 0,moveDirection.y,0 );
-		GetComponent<Rigidbody>().velocity = new Vector3( 0,moveDirection.y,0 );
+		capsuleCollider.attachedRigidbody.velocity = new Vector3( 0,moveDirection.y,0 );
 
 		//Stop any currently playing sound
 		playerSounds.stopAudioSource();
@@ -2052,9 +2054,14 @@ public class PlayerControl : Photon.PunBehaviour {
 		return playerControlsEnabled;
 	}
 
+	/// <summary>
+	/// Enables the player movement. If set to false, also sets the velocity of the rigid body to zero.
+	/// </summary>
+	/// <param name="enabled">If set to <c>true</c> enabled.</param>
 	public void enablePlayerMovement( bool enabled )
 	{
 		playerMovementEnabled = enabled;
+		if( !enabled ) capsuleCollider.attachedRigidbody.velocity = Vector3.zero;
 	}
 
 	public bool isPlayerMovementEnabled()
@@ -2067,6 +2074,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	//The player slows down but keeps control.
 	public IEnumerator slowDownPlayerAfterFinishLine( float distance, float triggerPositionZ )
 	{
+		capsuleCollider.attachedRigidbody.velocity = new Vector3( 0,moveDirection.y,0 );
 		deactivateSpeedBoost();
 		allowRunSpeedToIncrease = false;
 		enablePlayerControl( false );
@@ -2102,7 +2110,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			yield return new WaitForFixedUpdate(); 
 		}
 		//We have arrived. Stop player movement.
-		playerMovementEnabled = false;
+		enablePlayerMovement( false );
 		playVictoryAnimation();
 	}
 
