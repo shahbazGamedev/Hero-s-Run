@@ -216,8 +216,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	//When the player dies, we change the center and radius.
 	//We need to be able to reset these values when the player is revived.
 	Vector3 controllerOriginalCenter;
-	float controllerOriginalRadius;
-	float controllerOriginalHeight;
 	float PRONE_CAPSULE_CENTER_Y = 0.57f;
 
 	int numberOfTimesDiedDuringRace = 0; //Used by PlayerStatistics to determine if the player had a perfect race, that is, he did not die a single time.
@@ -254,8 +252,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		anim = GetComponent<Animator>();
 		capsuleCollider = GetComponent<CapsuleCollider>();
 		controllerOriginalCenter = capsuleCollider.center;
-		controllerOriginalRadius = capsuleCollider.radius;
-		controllerOriginalHeight = capsuleCollider.height;
 		playerCamera = GetComponent<PlayerCamera>();
 		playerVisuals = GetComponent<PlayerVisuals>();
 		playerSounds = GetComponent<PlayerSounds>();
@@ -1761,8 +1757,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			//Upright position
 			capsuleCollider.direction = (int)Axis.Y;
 			capsuleCollider.center = controllerOriginalCenter;
-			capsuleCollider.radius = controllerOriginalRadius;
-			capsuleCollider.height = controllerOriginalHeight;
 		}
 		else if( axis == Axis.Z )
 		{
@@ -1849,16 +1843,12 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 	}
 
-	public void resetSharedLevelData( bool unlockCamera )
+	void resetSharedLevelData( bool unlockCamera )
 	{
 		//Reset values
 		//A shrink spell changes the scale value so we need to reset it
 		transform.localScale = new Vector3( 1f, 1f, 1f );
 
-		//Character Controller
-		capsuleCollider.center = controllerOriginalCenter;
-		capsuleCollider.radius = controllerOriginalRadius;
-		
 		//Lanes
 		currentLane = Lanes.Center;
 		desiredLane = Lanes.Center;
