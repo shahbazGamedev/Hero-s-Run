@@ -13,6 +13,7 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 	//Used to apply a temporary speed boost diving down
 	private static float speedBoost = 0f;
 	private float pitchSpeedBoostStrength = 12f;
+	const float FLY_SPEED_MULTIPLIER = 60f; //or else you just don't fly fast enough
 
 	//For accelerometer
 	float accelerometerPreviousFrameX = 0;
@@ -32,7 +33,7 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 	PlayerControl playerControl;
 	PlayerSounds playerSounds;
 	PlayerCamera playerCamera;
-	CharacterController controller;
+	Rigidbody rigidbody;
 	#endregion
 
 	#region Special Effects 	
@@ -58,7 +59,7 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 		playerControl = GetComponent<PlayerControl>();
 		playerSounds = GetComponent<PlayerSounds>();
 		playerCamera = GetComponent<PlayerCamera>();
-		controller = GetComponent<CharacterController>();
+		rigidbody = GetComponent<Rigidbody>();
 	}
 
 	void locateJetPack()
@@ -95,6 +96,7 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 		locateJetPack();
 		this.flySpeed = flySpeed * LevelManager.Instance.speedOverrideMultiplier;
 		playerControl.setCharacterState( PlayerCharacterState.Flying );
+		GetComponent<Rigidbody>().useGravity = false;
 		GetComponent<Animator>().SetTrigger(FlyTrigger);
 		playerSounds.stopAudioSource();
 		//Clear move direction of any values. If we still have an x component for example, we will drift.
@@ -121,6 +123,7 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 			if( heroSkin != null ) heroSkin.transform.localRotation = Quaternion.Euler( 0, 0, 0 );
 			//If we stop flying because the timer expired, fall.
 			//If we stop flying because we died, don't call fall since resurrect will do it.
+			GetComponent<Rigidbody>().useGravity = true;
 			if( fall ) playerControl.fall( true );
 			
 			//Orient the player in the same direction as the current tile
@@ -143,7 +146,7 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update ()
+	void FixedUpdate ()
 	{
 		if( GameManager.Instance.getGameState() == GameState.Normal )
 		{
@@ -243,12 +246,8 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 		//xVector =  Vector3.ClampMagnitude(xVector, Mathf.Abs(getMaxDist(moveDirection.x)));
 		//7) Add the X component to the forward direction
 		forward = forward + xVector;
-		//8) Move the controller
-		#if UNITY_EDITOR
-		if( controller.enabled ) controller.Move( forward );
-		#else
-		controller.Move( forward );
-		#endif
+		//8) Move
+		rigidbody.velocity = forward * FLY_SPEED_MULTIPLIER;
 	}
 
 
@@ -286,9 +285,8 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 		//1) Get the direction of the player
 		Vector3 forward = transform.TransformDirection(Vector3.forward);			
 		//2) Scale vector based on flight speed
-		forward = forward * syncTimeDelta * flySpeed;
+		rigidbody.velocity = forward * syncTimeDelta * flySpeed * FLY_SPEED_MULTIPLIER;
 		
-		controller.Move( forward );
 		//The master player and the remote player should now be synchronised.
 	}
 

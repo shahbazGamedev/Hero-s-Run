@@ -28,6 +28,7 @@ public class StasisController : CardSpawnedObject {
 			{
 				//We found the spell's target
 				affectedPlayerTransform = playersArray[i].transform;
+				affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = true;
 	
 				affectedPlayerControl = affectedPlayerTransform.GetComponent<PlayerControl>();
 
@@ -91,6 +92,7 @@ public class StasisController : CardSpawnedObject {
 		yield return new WaitForSeconds(delayBeforeSpellExpires);
 		MiniMap.Instance.hideSecondaryIcon( affectedPlayerTransform.gameObject );
 		affectedPlayerTransform.SetParent( null );
+		affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = false;
 		affectedPlayerTransform.GetComponent<Animator>().speed = 1f;
 		affectedPlayerControl.fall( true );
 		affectedPlayerControl.enablePlayerMovement( true );
