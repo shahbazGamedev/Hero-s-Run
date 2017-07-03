@@ -34,7 +34,7 @@ public class FriendUIDetails : MonoBehaviour {
 		}
 		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( fd.playerIcon ).icon;
 		userName.text = fd.userName;
-		levelText.text = fd.level.ToString();
+		levelText.text = string.Format( LocalizationManager.Instance.getText( "SOCIAL_FRIEND_LEVEL" ), fd.level );
 		if( fd.currentWinStreak >= 3 )
 		{
 			winStreakText.gameObject.SetActive( true );
@@ -51,7 +51,7 @@ public class FriendUIDetails : MonoBehaviour {
 	public void updateFriendData ( PlayerFriends.FriendData fd )
 	{
 		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( fd.playerIcon ).icon;
-		levelText.text = fd.level.ToString();
+		levelText.text = string.Format( LocalizationManager.Instance.getText( "SOCIAL_FRIEND_LEVEL" ), fd.level );
 		if( fd.currentWinStreak >= 3 )
 		{
 			winStreakText.gameObject.SetActive( true );
