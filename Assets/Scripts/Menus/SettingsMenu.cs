@@ -18,8 +18,8 @@ public class SettingsMenu : MonoBehaviour {
 	[SerializeField] Text facebookText;
 	[Header("Achievements")] //Game Center
 	[SerializeField] Text achievementsText;
-	[Header("Flip Camera")]
-	[SerializeField] Text flipCameraText;
+	[Header("Enable tilt to turn or switch lanes")]
+	[SerializeField] Text enableTiltText;
 	[Header("Privacy Policy")]
 	[SerializeField] Text privacyPolicyText;
 	[SerializeField] string privacyPolicyURL = "http://www.google.com/";
@@ -52,13 +52,13 @@ public class SettingsMenu : MonoBehaviour {
 			facebookText.text = LocalizationManager.Instance.getText("MENU_LOGGED_OUT");
 		}
 		achievementsText.text = LocalizationManager.Instance.getText("MENU_ACHIEVEMENTS");
-		if( PlayerStatsManager.Instance.getCameraFlipped() )
+		if( PlayerStatsManager.Instance.getTiltEnabled() )
 		{
-			flipCameraText.text = LocalizationManager.Instance.getText("MENU_CAMERA_FACES_FRONT_HERO");
+			enableTiltText.text = LocalizationManager.Instance.getText("MENU_TILT_ENABLED");
 		}
 		else
 		{
-			flipCameraText.text = LocalizationManager.Instance.getText("MENU_CAMERA_FACES_BACK_HERO");
+			enableTiltText.text = LocalizationManager.Instance.getText("MENU_TILT_DISABLED");
 		}
 		privacyPolicyText.text = LocalizationManager.Instance.getText("MENU_PRIVACY_POLICY");
 		
@@ -111,18 +111,18 @@ public class SettingsMenu : MonoBehaviour {
 		Social.ShowAchievementsUI();
 	}
 
-	public void OnClickFlipCamera()
+	public void OnClickToggleTilt()
 	{
-		Debug.Log("OnClickFlipCamera");
+		Debug.Log("OnClickToggleTilt");
 		UISoundManager.uiSoundManager.playButtonClick();
-		PlayerStatsManager.Instance.setCameraFlipped( !PlayerStatsManager.Instance.getCameraFlipped() );
-		if( PlayerStatsManager.Instance.getCameraFlipped() )
+		PlayerStatsManager.Instance.setEnableTilt( !PlayerStatsManager.Instance.getTiltEnabled() );
+		if( PlayerStatsManager.Instance.getTiltEnabled() )
 		{
-			flipCameraText.text = LocalizationManager.Instance.getText("MENU_CAMERA_FACES_FRONT_HERO");
+			enableTiltText.text = LocalizationManager.Instance.getText("MENU_TILT_ENABLED");
 		}
 		else
 		{
-			flipCameraText.text = LocalizationManager.Instance.getText("MENU_CAMERA_FACES_BACK_HERO");
+			enableTiltText.text = LocalizationManager.Instance.getText("MENU_TILT_DISABLED");
 		}
 	}
 

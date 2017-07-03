@@ -167,7 +167,6 @@ public sealed class PlayerController : MonoBehaviour {
 	TrollController trollController;
 	FairyController fairyController;
 	PowerUpManager powerUpManager;
-	public TakeScreenshot takeScreenshot;
 
 	public PlayerCamera sc;
 	GenerateLevel generateLevel;

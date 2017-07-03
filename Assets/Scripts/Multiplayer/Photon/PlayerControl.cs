@@ -265,9 +265,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		//The character is in idle while waiting to run. 
 		setCharacterState( PlayerCharacterState.Idle );
 
-		//Initialise the screenshot camera
-		if( this.photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.GetComponent<TakeScreenshot>().initialise( transform );
-
 		//Calculate the ground height
 		//Change the layer to ignore raycast so the raycast doesn't detect the player, but the ground.
 		gameObject.layer = 2;

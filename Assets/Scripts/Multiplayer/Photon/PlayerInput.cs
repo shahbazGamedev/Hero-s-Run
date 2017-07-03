@@ -15,7 +15,7 @@ public class PlayerInput : PunBehaviour {
 	#endregion
 
 	#region Accelerometer
-	bool usesAccelerometer = true;
+	bool isTiltingEnabled = false;
 	const float ACCELEROMETER_TILT_THRESHOLD = 0.33f;
 	#endregion
 
@@ -26,6 +26,7 @@ public class PlayerInput : PunBehaviour {
 		if( !this.photonView.isMine ) this.enabled = false;
 		playerControl = GetComponent<PlayerControl>();
 		calculateMinimumSwipeDistance();
+		isTiltingEnabled = PlayerStatsManager.Instance.getTiltEnabled();
 	}
 	
 	//Calculate the minimum swipe distance in pixels.
@@ -89,7 +90,7 @@ public class PlayerInput : PunBehaviour {
 
 	private void handleAccelerometer()
 	{
-		if( usesAccelerometer )
+		if( isTiltingEnabled )
 		{
 			if ( Input.acceleration.x > ACCELEROMETER_TILT_THRESHOLD ) 
 			{

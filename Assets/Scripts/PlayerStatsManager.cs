@@ -45,8 +45,8 @@ public class PlayerStatsManager {
 	//If the user has logged in with Facebook this value is true, if he is logged in as guest, this value is false.
 	bool usesFacebook = false;
 
-	//If false, camera looks at front of player. If true, camera looks at back of player.
-	bool isCameraFlipped = false;
+	//If true, tilting the device will allow the player to switch lanes or turn corners
+	bool isTiltEnabled = false;
 
 	//DateTime when player last started WorldMapHandler
 	DateTime dateLastPlayed;
@@ -716,14 +716,14 @@ public class PlayerStatsManager {
 		return usesFacebook;
 	}
 
-	public void setCameraFlipped( bool value )
+	public void setEnableTilt( bool value )
 	{
-		isCameraFlipped = value;
+		isTiltEnabled = value;
 	}
 	
-	public bool getCameraFlipped()
+	public bool getTiltEnabled()
 	{
-		return isCameraFlipped;
+		return isTiltEnabled;
 	}
 
 	void setLives( int value )
@@ -1055,14 +1055,14 @@ public class PlayerStatsManager {
 			{
 				usesFacebook = false;	
 			}
-			string isCameraFlippedString = PlayerPrefs.GetString("isCameraFlipped", "false" );
-			if( isCameraFlippedString == "true" )
+			string isTiltEnabledString = PlayerPrefs.GetString("isTiltEnabled", "false" );
+			if( isTiltEnabledString == "true" )
 			{
-				isCameraFlipped = true;
+				isTiltEnabled = true;
 			}
 			else
 			{
-				isCameraFlipped = false;	
+				isTiltEnabled = false;	
 			}
 			string dateLastPlayedString = PlayerPrefs.GetString( "dateLastPlayed", "" );
 			if( dateLastPlayedString == "" )
@@ -1160,13 +1160,13 @@ public class PlayerStatsManager {
 		{
 			PlayerPrefs.SetString( "usesFacebook", "false" );
 		}
-		if( isCameraFlipped )
+		if( isTiltEnabled )
 		{
-			PlayerPrefs.SetString( "isCameraFlipped", "true" );
+			PlayerPrefs.SetString( "isTiltEnabled", "true" );
 		}
 		else
 		{
-			PlayerPrefs.SetString( "isCameraFlipped", "false" );
+			PlayerPrefs.SetString( "isTiltEnabled", "false" );
 		}
 		PlayerPrefs.SetString( "dateLastPlayed", dateLastPlayed.ToString() );
 

@@ -22,7 +22,7 @@ public class TakeScreenshot : MonoBehaviour {
 	public Image picturePreview;
 	public static bool selfieTaken = false;
 	bool saveToFile = false; //for testing in Editor
-
+	bool isCameraFlipped = false;
 	Vector3 frontLocation = new Vector3( 0, 0.8f, 5f ); 				//Looking at player's face
 	Quaternion frontRotation = Quaternion.Euler( -6.86f, 180f, 0 );
 
@@ -82,7 +82,7 @@ public class TakeScreenshot : MonoBehaviour {
 
 	void setCameraDirection()
 	{
-		if( PlayerStatsManager.Instance.getCameraFlipped() )
+		if(isCameraFlipped )
 		{
 			screenShotCamera.transform.localPosition = frontLocation;
 			screenShotCamera.transform.localRotation = frontRotation;
