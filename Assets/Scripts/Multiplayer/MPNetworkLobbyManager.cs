@@ -139,6 +139,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		{
 			//We must first and foremost connect to Photon Online Server.
 			//Users are separated from each other by game version (which allows you to make breaking changes).
+			//In PhotonServerSettings, Hosting is set to Best Region excluding South Korea, Asia and Japan
 			PhotonNetwork.ConnectUsingSettings(GameManager.Instance.getVersionNumber());
 			matchmakingManager.setConnectionProgress( "Connecting ..." );   
 		}
