@@ -15,9 +15,10 @@ public class LevelNetworkingManager : PunBehaviour
 
 	int numberOfPlayersReadyToRace = 0;	
 	bool levelLoading = false;
-	Vector3 leftStartPosition = new Vector3( -2f, 0.01f, 0 );
-	Vector3 rightStartPosition = new Vector3( 2f, 0.01f, 0 );
-	Vector3 centerStartPosition = new Vector3( 0, 0.01f, 0 );
+	//The ground height is 1 meter.
+	Vector3 leftStartPosition = new Vector3( -2f, 1f, 0 );
+	Vector3 rightStartPosition = new Vector3( 2f, 1f, 0 );
+	Vector3 centerStartPosition = new Vector3( 0, 1f, 0 );
 	
 	IEnumerator Start()
 	{

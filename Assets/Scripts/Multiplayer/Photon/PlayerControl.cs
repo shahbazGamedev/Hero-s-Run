@@ -266,12 +266,12 @@ public class PlayerControl : Photon.PunBehaviour {
 		setCharacterState( PlayerCharacterState.Idle );
 
 		//Calculate the ground height
-		//Change the layer to ignore raycast so the raycast doesn't detect the player, but the ground.
-		gameObject.layer = 2;
 		RaycastHit hit;
-		if (Physics.Raycast(new Vector3( transform.position.x, 10f, transform.position.z ), Vector3.down, out hit, 12.0F ))
+
+		if (Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, out hit, 10f ))
 		{
 			transform.position = new Vector3( transform.position.x, hit.point.y, transform.position.z);
+			//Debug.Log( "There is ground underneath the player on Start. The collider is: " + hit.collider.name + " at height: " + hit.point.y );
 			//Also adjust the camera height
 			if( this.photonView.isMine && playerAI == null )
 			{
@@ -279,8 +279,10 @@ public class PlayerControl : Photon.PunBehaviour {
 			}
 			playerCamera.positionCameraNow();
 		}
-		//Restore the layer to Player which has an index of 8. CardExplosion relies on it.
-		gameObject.layer = 8;
+		else
+		{
+			Debug.LogError( "There is no ground below the player during PlayerControl Start. Check LevelNetworkingManager to see if the spawn position height values are correct." );
+		}
 		playerCamera.playCutscene(CutsceneType.Checkpoint);
 
 		getFirstTileInfo();
@@ -464,7 +466,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void moveCharacter()
 	{
-		
+
 		verifySlide();
 
 		if (distanceToGround < 0.1f && !jumpStarted)
