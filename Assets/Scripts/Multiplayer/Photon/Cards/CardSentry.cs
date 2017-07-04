@@ -29,7 +29,7 @@ public class CardSentry : Card {
 		data[0] = photonViewID;
 
 		//Level related parameters
-		data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
+		data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION_WITH_TIMER, level );
 		data[2] = cd.getCardPropertyValue( CardPropertyType.AIM_RANGE, level );
 		data[3] = cd.getCardPropertyValue( CardPropertyType.ACCURACY, level );
 
