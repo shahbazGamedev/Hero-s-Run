@@ -381,7 +381,7 @@ public class LevelData : MonoBehaviour {
 				if( numberOfTrophies >= mi.trophiesNeededToUnlock )
 				{
 					multiplayerInfo = mi;
-					print( "***getRaceTrackByTrophies-the one we want is " + mi.circuitInfo.raceTrackName + " " + mi.trophiesNeededToUnlock + " needed: " + numberOfTrophies );
+					//print( "getRaceTrackByTrophies-the one we want is " + mi.circuitInfo.raceTrackName + " " + mi.trophiesNeededToUnlock + " needed: " + numberOfTrophies );
 					break;
 				}
 			}
