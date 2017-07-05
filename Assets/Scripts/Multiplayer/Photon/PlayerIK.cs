@@ -152,8 +152,8 @@ public class PlayerIK : MonoBehaviour {
 				}
 				//Now look-at the player after a short delay.
 				//We don't want the player to start looking at a right angle. We want the opponent to be
-				//about 0.075 * 20 (average run speed) = 1.5 meters in front before looking.
-				StartCoroutine( setLookAtTarget( 0.075f, playerOvertaking.transform ) );
+				//about 0.05 * 20 (average run speed) = 1 meter in front before looking.
+				StartCoroutine( setLookAtTarget( 0.05f, playerOvertaking.transform ) );
 			}
 			else
 			{

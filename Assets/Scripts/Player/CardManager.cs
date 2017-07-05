@@ -61,12 +61,12 @@ public enum CardName
 	Double_Jump = 2,
 	Stasis = 3,
 	Sprint = 4,
+	Trip_Mine = 5,
 
 	//Rare
 	Firewall = 100,
 	Grenade = 101,
 	Shrink = 102,
-	Trip_Mine = 103,
 	Sentry = 104,
 	IceWall = 105,
 	Steal = 106,
