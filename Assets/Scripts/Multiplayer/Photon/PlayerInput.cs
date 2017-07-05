@@ -149,7 +149,7 @@ public class PlayerInput : PunBehaviour {
 		else if ( Input.GetKeyDown (KeyCode.P ) )
 		{
 			//Stop the character from moving for testing
-			GetComponent<CharacterController>().enabled = !GetComponent<CharacterController>().enabled;
+			playerControl.enablePlayerMovement ( !playerControl.isPlayerMovementEnabled() );
 		}
 		else if ( Input.GetKeyDown (KeyCode.S ) )
 		{

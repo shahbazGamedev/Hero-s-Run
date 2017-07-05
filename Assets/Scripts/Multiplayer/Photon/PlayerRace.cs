@@ -214,14 +214,23 @@ public class PlayerRace : Photon.PunBehaviour
 			//The bot has a photon view. This photon view, just like the player's, has isMine set to true. But we don't want a bot to affect the HUD, hence we make sure we are not a bot.
 			if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
 			//Debug.Log("PlayerRace: OnRacePositionChanged " +  (racePosition + 1 )  + " name " + gameObject.name );
-			if( racePosition == 0 && players.Count >= 2)
+			if( players.Count >= 2)
 			{
-				//If someone else just took the lead, cancel any pending invoke
-				CancelInvoke("tookTheLead");
-				Invoke("tookTheLead", 1f );
+				if( racePosition == 0 )
+				{
+					//If someone else just took the lead, cancel any pending invoke
+					CancelInvoke("tookTheLead");
+					Invoke("tookTheLead", 1f );
+				}
+				else
+				{
+					//We want the player to look at the other player overtaking him to add some emotion
+					GetComponent<PlayerIK>().isOvertaking( racePosition );
+				}
 			}
 		}
 	}
+
 
 	void tookTheLead()
 	{
@@ -231,7 +240,7 @@ public class PlayerRace : Photon.PunBehaviour
 			players.Sort((x, y) => -x.distanceTravelled.CompareTo(y.distanceTravelled));
 			if( players[0].distanceTravelled > players[1].distanceTravelled + REQUIRED_LEAD_DISTANCE )
 			{
-				//Display a minimap message that this player or bot is back in the game.
+				//Display a minimap message that this player or bot took the lead.
 				string heroName;
 				if( GetComponent<PlayerAI>() == null )
 				{

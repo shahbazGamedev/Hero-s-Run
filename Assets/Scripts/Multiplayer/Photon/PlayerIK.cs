@@ -1,10 +1,13 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-//For SetLookAtPosition to work, there are 2 conditions:
-//The rig must be Humanoid
-//In the Animator windows, under Layers, under Settings, you must have the IK Pass toggled on.
+//PlayerIK is used to have the player loot at a specific target for a short duration.
+//For now, there are two trigger conditions:
+//a) Another player died within active distance
+//b) A player is passing you
+//For the IK to work, there are 2 conditions:
+//a) The rig must be Humanoid
+//b) In the Animator windows, under Layers, under Settings, you must have the IK Pass toggled on.
 public class PlayerIK : MonoBehaviour {
 
 	[Header("Look At IK")]
@@ -15,12 +18,12 @@ public class PlayerIK : MonoBehaviour {
 	[SerializeField] float headWeight = 1f;
 	[SerializeField] float eyesWeight = 1f;
 	[SerializeField] float clampWeight = 1f;
-	[SerializeField] float activeDistanceIK = 24f;
+	[SerializeField] float activeDistanceSquared = 50f * 50f;
 	[SerializeField] float dotProductIK = 0.55f;
-	bool lookAtActive = false;
-	bool enableIK = true;
+	public bool lookAtActive = false;
+	public bool enableIK = true; //this could be used to disable IK in case the rig does not support it or the performance on the device suffers
 
-	protected void Awake ()
+	void Awake ()
 	{
 		anim = GetComponent<Animator>();
 	}
@@ -42,44 +45,42 @@ public class PlayerIK : MonoBehaviour {
 	{
 		if( lookAtTarget != null && enableIK && getDotProduct() > dotProductIK )
 		{
-			float distance = Vector3.Distance(lookAtTarget.position,transform.position);
-			if( distance < activeDistanceIK )			
+			float distance = Vector3.SqrMagnitude(lookAtTarget.position - transform.position);
+			if( distance < activeDistanceSquared )			
 			{
-				if( !lookAtActive )
-				{
- 					StartCoroutine( fadeInLookAtPosition( 0.8f, 0.7f ) );
-				} 
 				anim.SetLookAtPosition( lookAtTarget.position );
 				anim.SetLookAtWeight( lookAtWeight, bodyWeight, headWeight, eyesWeight, clampWeight );
+			}
+			else
+			{
+				//Look-at target is no longer in range
+				StartCoroutine( fadeOutLookAtPosition( 0.2f, 0.9f ) );									
 			}
 		}
 	}
 
-	public IEnumerator fadeOutLookAtPosition( float finalWeight, float stayDuration, float fadeDuration )
+	IEnumerator setLookAtTarget( float activationDelay, Transform lookAtTarget )
 	{
-		float elapsedTime = 0;
-		
-		//Stay
-		yield return new WaitForSeconds(stayDuration);
-		
-		//Fade out
-		elapsedTime = 0;
-		
-		float initialWeight = lookAtWeight;
-		
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			lookAtWeight = Mathf.Lerp( initialWeight, finalWeight, elapsedTime/fadeDuration );
-			yield return new WaitForFixedUpdate();  
-			
-		} while ( elapsedTime < fadeDuration );
-		
-		lookAtWeight = finalWeight;
-	
+		//Ignore null targets
+		if( lookAtTarget == null  ) yield break;
+
+		print("setLookAtTarget " + lookAtTarget.name );
+
+		//Don't interrupt the current look-at if one is active
+		if( lookAtActive ) yield break;
+
+		//Don't do anything if the proposed target is too far
+		float distance = Vector3.SqrMagnitude(lookAtTarget.position - transform.position);
+		if( distance > activeDistanceSquared ) yield break;		
+
+		//Wait before activating
+		yield return new WaitForSeconds(activationDelay);
+
+		this.lookAtTarget = lookAtTarget;
+		StartCoroutine( fadeInLookAtPosition( 0.8f, 0.6f, 3f ) );
 	}
 
-	public IEnumerator fadeInLookAtPosition( float finalWeight, float fadeDuration )
+	IEnumerator fadeInLookAtPosition( float finalWeight, float fadeDuration, float stayDuration  )
 	{
 		lookAtActive = true;
 		float elapsedTime = 0;
@@ -98,12 +99,83 @@ public class PlayerIK : MonoBehaviour {
 		} while ( elapsedTime < fadeDuration );
 		
 		lookAtWeight = finalWeight;
+
+		//Stay
+		yield return new WaitForSeconds(stayDuration);
+
+		//Fade out
+		StartCoroutine( fadeOutLookAtPosition( 0.2f, 0.5f ) );
 	
+	}
+
+	IEnumerator fadeOutLookAtPosition( float finalWeight, float fadeDuration )
+	{
+		float elapsedTime = 0;
+		
+		//Fade out
+		elapsedTime = 0;
+		
+		float initialWeight = lookAtWeight;
+		
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			lookAtWeight = Mathf.Lerp( initialWeight, finalWeight, elapsedTime/fadeDuration );
+			yield return new WaitForFixedUpdate();  
+			
+		} while ( elapsedTime < fadeDuration );
+		
+		lookAtWeight = finalWeight;
+		lookAtTarget = null;
+		lookAtActive = false;
+	}
+
+	public void isOvertaking( int racePosition )
+	{
+		//Race position has a value of -1 until updated for the first time
+		if( racePosition > 0 )
+		{
+			//Find out who is the player overtaking us
+			PlayerRace playerOvertaking = PlayerRace.players.Find(p => p.racePosition == racePosition - 1 );
+			if( playerOvertaking != null )
+			{
+				string heroName;
+				if( playerOvertaking.GetComponent<PlayerAI>() == null )
+				{
+					//A the player
+					heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name;
+				}
+				else
+				{
+					//We're a bot
+					heroName = 	playerOvertaking.GetComponent<PlayerAI>().botHero.userName;
+				}
+				//Now look-at the player after a short delay.
+				//We don't want the player to start looking at a right angle. We want the opponent to be
+				//about 0.075 * 20 (average run speed) = 1.5 meters in front before looking.
+				StartCoroutine( setLookAtTarget( 0.075f, playerOvertaking.transform ) );
+			}
+			else
+			{
+				Debug.LogError("PlayerIK: could not find overtaking player in race position: " + (racePosition - 1) );
+			}
+		}
 	}
 
 	public void playerDied()
 	{
-		if( lookAtTarget != null && enableIK ) StartCoroutine( fadeOutLookAtPosition( 0.2f, 0, 0.9f ) );
+		StopCoroutine("setLookAtTarget");
+
+		if( lookAtTarget != null && enableIK ) StartCoroutine( fadeOutLookAtPosition( 0.2f, 0.9f ) );
+
+		//Advise other players of death so that they can do a look-at
+		for( int i = 0; i < PlayerRace.players.Count; i ++ )
+		{
+			if( PlayerRace.players[i] != this )
+			{
+				StartCoroutine( PlayerRace.players[i].GetComponent<PlayerIK>().setLookAtTarget( 0, transform ) );
+			}
+		}
 	}
 
 }
