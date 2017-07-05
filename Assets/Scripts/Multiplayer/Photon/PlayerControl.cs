@@ -1619,6 +1619,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	void playerDiedRPC( DeathType deathTypeValue )
 	{
 		changeColliderAxis( Axis.Z );
+		ignorePlayerCollisions( true );
 
 		Debug.Log("playerDiedRPC : " + deathTypeValue + " " + gameObject.name );
 
@@ -1730,6 +1731,24 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// When set to true, the player will ignore collisions with other players.
+	/// Typically used when the player is dead so that other players can go through his body.
+	/// </summary>
+	/// <param name="ignore">If set to <c>true</c> the player will ignore collisions with other players.</param>
+	void ignorePlayerCollisions( bool ignore )
+	{
+		//We want a dead player to not collided with an alive player
+		for( int i = 0; i < PlayerRace.players.Count; i++ )
+		{
+			if( PlayerRace.players[i] != GetComponent<PlayerRace>() )
+			{
+				//print("Changing collision with: " +  PlayerRace.players[i].name + " Collision is ignored: " + ignore );
+				Physics.IgnoreCollision(capsuleCollider, PlayerRace.players[i].GetComponent<Collider>(), ignore );
+			}
+		}
+	}
+
 	public void death_completed ( AnimationEvent eve )
 	{
 		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.25f, 0.7f, 1f ) );
@@ -1833,6 +1852,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//By calling setCharacterState with StartRunning, the WorldSoundManager will know to resume the music.
 			setCharacterState( PlayerCharacterState.StartRunning );
 			changeColliderAxis( Axis.Y );
+			ignorePlayerCollisions( false );
 			//Mecanim Hack - we call rebind because the animation states are not reset properly when you die in the middle of an animation.
 			//For example, if you die during a double jump, after you get resurrected and start running again, if you do another double jump, only part of the double jump animation will play, never the full animation.
 			anim.Rebind();

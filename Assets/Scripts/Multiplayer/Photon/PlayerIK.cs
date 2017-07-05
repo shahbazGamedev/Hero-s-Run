@@ -43,10 +43,10 @@ public class PlayerIK : MonoBehaviour {
 
 	void OnAnimatorIK()
 	{
-		if( lookAtTarget != null && enableIK && getDotProduct() > dotProductIK )
+		if( lookAtTarget != null && enableIK )
 		{
 			float distance = Vector3.SqrMagnitude(lookAtTarget.position - transform.position);
-			if( distance < activeDistanceSquared )			
+			if( distance < activeDistanceSquared && getDotProduct() > dotProductIK )			
 			{
 				anim.SetLookAtPosition( lookAtTarget.position );
 				anim.SetLookAtWeight( lookAtWeight, bodyWeight, headWeight, eyesWeight, clampWeight );
