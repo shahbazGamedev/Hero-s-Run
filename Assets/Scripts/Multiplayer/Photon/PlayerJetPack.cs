@@ -13,7 +13,7 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 	//Used to apply a temporary speed boost diving down
 	private static float speedBoost = 0f;
 	private float pitchSpeedBoostStrength = 12f;
-	const float FLY_SPEED_MULTIPLIER = 60f; //or else you just don't fly fast enough
+	const float FLY_SPEED_MULTIPLIER = 25f; //or else you just don't fly fast enough
 
 	//For accelerometer
 	float accelerometerPreviousFrameX = 0;

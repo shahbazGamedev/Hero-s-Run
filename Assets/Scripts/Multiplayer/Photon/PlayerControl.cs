@@ -1037,7 +1037,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Reset the run speed to what it was at the beginning of the turn.
 		allowRunSpeedToIncrease = true;
 		runSpeed = runSpeedAtTimeOfTurn;
-
+		recalculateCurrentLane();
 		//Debug.Log ("turnNow completed " + isGoingRight + " " + transform.eulerAngles.y + " " + playerCharacterState );
 
 	}
@@ -1656,6 +1656,9 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		//The PlayerSpell component needs to know that the player died
 		GetComponent<PlayerSpell>().playerDied();
+
+		//The PlayerIK component needs to know that the player died
+		GetComponent<PlayerIK>().playerDied();
 
 		//Stop the particle systems. One might be playing if we died while sliding for example.
 		playerVisuals.playDustPuff( false );
