@@ -471,9 +471,11 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		if (distanceToGround < 0.1f && !jumpStarted)
 		{
+			//We are on the ground. Do not apply a downward force.
+			moveDirection.y = 0f;
+
 			//If we we were falling and just landed,reset values and go back to running state.
-			//However, before deciding to land, also check that the distance to the ground is less than 10 cm to avoid false positives (isGrounded is not perfect).
-			if( playerCharacterState == PlayerCharacterState.Falling && distanceToGround < 0.1f )
+			if( playerCharacterState == PlayerCharacterState.Falling )
 			{
 				land();
 			}
@@ -486,7 +488,6 @@ public class PlayerControl : Photon.PunBehaviour {
 					playerVisuals.playDustPuff( false );
 				}
 				setAnimationTrigger(LandTrigger);
-				moveDirection.y = 0f;
 				jumping = false;
 				doingDoubleJump = false;
 				runSpeed = runSpeedAtTimeOfJump;
@@ -549,7 +550,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			jumpStarted = false;
 		}
 		//Note: if the player is ziplining. He is moved by a LeanTween function.
-
 	}
 
 	//Returns the maximum distance the player can travel perpendicularly without
@@ -765,7 +765,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			anim.CrossFadeInFixedTime( "Stumble", 0.25f );
 		}
-		moveDirection.y = 0f;
 		print ( "player landed. Fall distance was: " + 	fallDistance );
 		//Was I dead before?
 		if( deathType != DeathType.Alive )

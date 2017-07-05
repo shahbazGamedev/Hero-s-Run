@@ -10,7 +10,7 @@ public class JumpPad : Device {
 		if( other.gameObject.CompareTag("Player") && state == DeviceState.On && other.gameObject.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Flying )
 		{
 			GetComponent<AudioSource>().Play();
-			other.gameObject.GetComponent<PlayerInput>().doubleJump( 20f );
+			other.gameObject.GetComponent<PlayerInput>().doubleJump( 16f );
 		}
 	}
 }
