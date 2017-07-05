@@ -117,8 +117,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Jumping and gravity variables
 	bool jumping = false;
 	bool doingDoubleJump = false;
-	float jumpSpeed = 12f;
-	float doubleJumpSpeed = 18f;
+	float jumpSpeed = 10f;
+	float doubleJumpSpeed = 16f;
 	float DOUBLE_JUMP_RUN_SPEED = 1f; //We want the player to leap forward during a double jump
 	float MAX_RUN_SPEED_FOR_DOUBLE_JUMP = 20f; //We want to cap the maximum run speed during a double jump. If the player is sprinting for example, we don't want him to leap into a wall.
 	public float distanceToGround = 0;
@@ -1037,7 +1037,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Reset the run speed to what it was at the beginning of the turn.
 		allowRunSpeedToIncrease = true;
 		runSpeed = runSpeedAtTimeOfTurn;
-		recalculateCurrentLane();
 		//Debug.Log ("turnNow completed " + isGoingRight + " " + transform.eulerAngles.y + " " + playerCharacterState );
 
 	}
