@@ -86,11 +86,8 @@ public class PlayerCamera : Photon.PunBehaviour {
 		playerAI = GetComponent<PlayerAI>(); //Null for everyone except bots
 	}
 	
-	//A common use for LateUpdate() would be a following third-person camera.
-	//If you make your character move and turn inside Update(), you can perform all
-	//camera movement and rotation calculations in LateUpdate().
-	//This will ensure that the character has moved completely before the camera tracks its position.
-	void LateUpdate ()
+	//When moving a player using rigid bodies, you need to use FixedUpdate or else you will have jitter.
+	void FixedUpdate ()
 	{
 		if( cameraState == CameraState.Normal )
 		{
