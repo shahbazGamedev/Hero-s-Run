@@ -281,13 +281,7 @@ public class PlayerRace : Photon.PunBehaviour
 		//Cancel all spell effects
 		GetComponent<PlayerSpell>().cancelAllSpells();
 
-		//Play either a win or a lose voice over
-		//If the player won, the voice over will be triggered by the victory animation. See @Victory_win_start.
-		//If the player lost, we play it a short time after the player crossed the finish line. It is not linked to an animation.
-		if( officialRacePosition != 0 )
-		{
-			Invoke("playLoseVoiceOver", Random.Range( 0.5f, 2f) );
-		}
+		//Note: if the player won, a voice over will be triggered by the victory animation. See Victory_win_start.
 
 		//However, in terms of changing HUD elements, XP, player stats, etc. We only want to proceed if the player is local and not a bot.
 		if( this.photonView.isMine )
@@ -309,17 +303,11 @@ public class PlayerRace : Photon.PunBehaviour
     }
 
 	#region End of match voice over
-	void playLoseVoiceOver()
-	{
-		//Play a lost Voice Over
-		GetComponent<PlayerVoiceOvers>().playVoiceOver(VoiceOverType.VO_Lose);
-	}
-
 	public void Victory_win_start ( AnimationEvent eve )
 	{
-		//Play a win Voice Over
 		if( racePosition == 0 )
 		{
+			//Play a win Voice Over
 			GetComponent<PlayerVoiceOvers>().playVoiceOver(VoiceOverType.VO_Win);
 		}
 	}
