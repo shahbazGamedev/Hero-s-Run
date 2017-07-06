@@ -8,7 +8,9 @@ public enum VoiceOverType {
 	VO_Resurrect = 2,
 	VO_Took_Lead = 3,
 	VO_Affected_by_Spell = 4,
-	VO_Taunt = 5
+	VO_Taunt = 5,
+	VO_Win = 6,
+	VO_Lose = 7
 
 }
 

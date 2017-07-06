@@ -270,14 +270,24 @@ public class PlayerRace : Photon.PunBehaviour
 	void OnRaceCompleted( float triggerPositionZ, float raceDuration, float distanceTravelled, int officialRacePosition )
     {
 		Debug.Log("PlayerRace: OnRaceCompleted RPC received for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient +
-			" isMine: " + this.photonView.isMine + " isLocal: " + PhotonNetwork.player.IsLocal +
+			" isMine: " + this.photonView.isMine +
 			" raceDuration: " + raceDuration + " distanceTravelled: " + distanceTravelled + " officialRacePosition: " + officialRacePosition );
 
 		//We want to slow down any player that reaches the finish line
 		StartCoroutine( GetComponent<PlayerControl>().slowDownPlayerAfterFinishLine( 10f - (officialRacePosition * 1.4f), triggerPositionZ ) );
 
+		racePosition = officialRacePosition;
+
 		//Cancel all spell effects
 		GetComponent<PlayerSpell>().cancelAllSpells();
+
+		//Play either a win or a lose voice over
+		//If the player won, the voice over will be triggered by the victory animation. See @Victory_win_start.
+		//If the player lost, we play it a short time after the player crossed the finish line. It is not linked to an animation.
+		if( officialRacePosition != 0 )
+		{
+			Invoke("playLoseVoiceOver", Random.Range( 0.5f, 2f) );
+		}
 
 		//However, in terms of changing HUD elements, XP, player stats, etc. We only want to proceed if the player is local and not a bot.
 		if( this.photonView.isMine )
@@ -297,5 +307,22 @@ public class PlayerRace : Photon.PunBehaviour
 			}
 		}		
     }
+
+	#region End of match voice over
+	void playLoseVoiceOver()
+	{
+		//Play a lost Voice Over
+		GetComponent<PlayerVoiceOvers>().playVoiceOver(VoiceOverType.VO_Lose);
+	}
+
+	public void Victory_win_start ( AnimationEvent eve )
+	{
+		//Play a win Voice Over
+		if( racePosition == 0 )
+		{
+			GetComponent<PlayerVoiceOvers>().playVoiceOver(VoiceOverType.VO_Win);
+		}
+	}
+	#endregion
 
 }

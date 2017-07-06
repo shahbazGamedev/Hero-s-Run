@@ -86,7 +86,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		while( countdownNumber > 0 )
 		{
 			userMessageText.text = countdownNumber.ToString();
-			UISoundManager.uiSoundManager.playAudioClip( beep );
+			//UISoundManager.uiSoundManager.playAudioClip( beep );
 			yield return new WaitForSecondsRealtime( 1f);
 			countdownNumber--;
 		}
@@ -126,7 +126,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		while( countdownNumber > 0 )
 		{
 			raceEndingText.text = "Race ends in " + countdownNumber.ToString() + " sec.";
-			UISoundManager.uiSoundManager.playAudioClip( beep );
+			//UISoundManager.uiSoundManager.playAudioClip( beep );
 			yield return new WaitForSecondsRealtime( 1f);
 			countdownNumber--;
 		}	
