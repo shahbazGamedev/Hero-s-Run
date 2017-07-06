@@ -7,10 +7,21 @@ public class JumpPad : Device {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.gameObject.CompareTag("Player") && state == DeviceState.On && other.gameObject.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Flying )
+		if( state == DeviceState.On )
 		{
-			GetComponent<AudioSource>().Play();
-			other.gameObject.GetComponent<PlayerInput>().doubleJump( 16f );
+			if( other.gameObject.CompareTag("Player")  )
+			{
+				if( other.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Flying )
+				{				
+					GetComponent<AudioSource>().Play();
+					other.GetComponent<PlayerInput>().doubleJump( 16f );
+				}
+			}
+			else if( other.attachedRigidbody != null )
+			{
+				GetComponent<AudioSource>().Play();
+				other.attachedRigidbody.AddForce( 0, 250f, 0, ForceMode.Force );
+			}
 		}
 	}
 }
