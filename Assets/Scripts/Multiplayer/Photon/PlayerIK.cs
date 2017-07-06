@@ -171,7 +171,7 @@ public class PlayerIK : MonoBehaviour {
 		//Advise other players of death so that they can do a look-at
 		for( int i = 0; i < PlayerRace.players.Count; i ++ )
 		{
-			if( PlayerRace.players[i] != this )
+			if( PlayerRace.players[i] != GetComponent<PlayerRace>() )
 			{
 				StartCoroutine( PlayerRace.players[i].GetComponent<PlayerIK>().setLookAtTarget( 0, transform ) );
 			}
