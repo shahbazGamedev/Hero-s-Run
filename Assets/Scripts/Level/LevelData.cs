@@ -19,7 +19,8 @@ public enum SunType
 	Blizzard = 9,
 	Jungle = 10,
 	Caves = 11,
-	Countryside = 12
+	Countryside = 12,
+	Island = 13
 }
 
 public enum LevelType 
@@ -206,6 +207,20 @@ public class LevelData : MonoBehaviour {
 				Sun.GetComponent<Light>().color = new Color(0.623f,0.729f,0.882f); //bluish
 				RenderSettings.ambientLight = new Color(0.13f,0.21f,0.3f);
 				Sun.GetComponent<Light>().color = Color.white;
+				break;
+
+
+			case SunType.Island:
+				skyBoxName = "skybox island";
+				lightIntensity = 1.15f;
+				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
+				shadowStrength = 0.5f;
+				sunDirection = Quaternion.Euler( 80f,119f,42f );
+				RenderSettings.ambientSkyColor = new Color(0.764f, 0.764f, 0.764f ); //greyish
+				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+				RenderSettings.ambientIntensity = 0.6f;
+				RenderSettings.fog = false;
+
 				break;
 
 			case SunType.Countryside:

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class JumpPad : Device {
 
+	[SerializeField] float doubleJumpSpeed = 17f;
 
 	void OnTriggerEnter(Collider other)
 	{
@@ -14,7 +15,7 @@ public class JumpPad : Device {
 				if( other.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Flying )
 				{				
 					GetComponent<AudioSource>().Play();
-					other.GetComponent<PlayerInput>().doubleJump( 16f );
+					other.GetComponent<PlayerInput>().doubleJump( doubleJumpSpeed );
 				}
 			}
 			else if( other.attachedRigidbody != null )

@@ -47,7 +47,7 @@ public class AutoPilot : Photon.PunBehaviour {
 				{
 					playerInput.jump();
 				}
-				else if( hit.collider.name.StartsWith( "Breakable Barrel" ) && shouldAvoidObstacle() )
+				else if( hit.collider.CompareTag( "Barrel" ) && shouldAvoidObstacle() )
 				{
 					if( Random.value < 0.8f )
 					{
@@ -104,6 +104,10 @@ public class AutoPilot : Photon.PunBehaviour {
 				{
 					playerInput.jump();
 				}
+				else if( hit.collider.CompareTag( "Obstacle_S" ) )
+				{
+					playerInput.startSlide();
+				}
 				else if( hit.collider.CompareTag( "Obstacle_DJ" ) )
 				{
 					moveToCenterLane();
@@ -152,6 +156,10 @@ public class AutoPilot : Photon.PunBehaviour {
 					{
 						playerInput.jump();
 					}
+				}
+				else if( hit.collider.CompareTag( "Obstacle_S" ) )
+				{
+					playerInput.startSlide();
 				}
 			}
 		}

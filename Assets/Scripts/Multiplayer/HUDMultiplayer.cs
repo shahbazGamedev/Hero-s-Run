@@ -23,8 +23,6 @@ public class HUDMultiplayer : MonoBehaviour {
 	[Header("Race Position")]
 	[SerializeField] GameObject racePosition;
 	[SerializeField] TextMeshProUGUI racePositionText;
-	[Header("Finish Flag")]
-	[SerializeField] Image finishFlag;
 	[Header("Debug Info")]
 	[SerializeField] TextMeshProUGUI debugInfo;
 	FPSCalculator fpsCalculator;
@@ -55,7 +53,6 @@ public class HUDMultiplayer : MonoBehaviour {
 			Destroy (gameObject);
 
 		displayRacePosition( false );
-		finishFlag.gameObject.SetActive( false );
 		fpsCalculator = GetComponent<FPSCalculator>();
 		fpsCalculator.enabled = PlayerStatsManager.Instance.getShowDebugInfoOnHUD();
 		debugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
@@ -204,12 +201,6 @@ public class HUDMultiplayer : MonoBehaviour {
 	void displayRacePosition( bool display )
 	{
 		racePosition.SetActive( display );
-	}
-
-	public void displayFinishFlag( bool display )
-	{
-		finishFlag.gameObject.SetActive( display );
-		distancePanel.SetActive( false );
 	}
 
 	public void updateRacePosition( int position )

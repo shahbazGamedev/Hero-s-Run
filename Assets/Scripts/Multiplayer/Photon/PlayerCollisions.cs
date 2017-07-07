@@ -243,22 +243,25 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					}
 				}
 			}
-			else if (collided.name.StartsWith( "Breakable Barrel" ) )
+			else if (collided.CompareTag( "Barrel" ) )
 			{
 				//Don't break if you land on top of the barrel
 				if( normal.y < 0.4f )
 				{
-					BreakableObject bo = (BreakableObject) collided.GetComponent("BreakableObject");
 					Debug.Log( "PLayer collided with breakable: " + collided.name );
-					//We pass the player collider to triggerBreak() because we do not want the barrel fragments to collide with the player.
-					bo.triggerBreak( GetComponent<Collider>() );
-					if( playerControl.getCharacterState() == PlayerCharacterState.Sliding )
+					BreakableObject bo = collided.GetComponent<BreakableObject>();
+					if( bo != null )
 					{
-						giveCoins( 10 );
-					}	
-					else
-					{
-						playerControl.stumble();
+						//We pass the player collider to triggerBreak() because we do not want the barrel fragments to collide with the player.
+						bo.triggerBreak( GetComponent<Collider>() );
+						if( playerControl.getCharacterState() == PlayerCharacterState.Sliding )
+						{
+							giveCoins( 10 );
+						}	
+						else
+						{
+							playerControl.stumble();
+						}
 					}
 				}
 			}
@@ -337,6 +340,14 @@ public class PlayerCollisions : Photon.PunBehaviour {
 				}
 			}
 			else if (collided.CompareTag( "Obstacle_M" ) )
+			{
+				if( normal.y < 0.4f )
+				{
+					//If the Y component of the hit normal is too small, assume that the player hit the obstacle squarely and should die.
+					playerControl.killPlayer ( DeathType.Obstacle );
+				}
+			}
+			else if (collided.CompareTag( "Obstacle_S" ) )
 			{
 				if( normal.y < 0.4f )
 				{

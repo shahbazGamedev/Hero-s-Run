@@ -274,7 +274,7 @@ public class PlayerRace : Photon.PunBehaviour
 			" raceDuration: " + raceDuration + " distanceTravelled: " + distanceTravelled + " officialRacePosition: " + officialRacePosition );
 
 		//We want to slow down any player that reaches the finish line
-		StartCoroutine( GetComponent<PlayerControl>().slowDownPlayerAfterFinishLine( 10f - (officialRacePosition * 1.4f), triggerPositionZ ) );
+		StartCoroutine( GetComponent<PlayerControl>().slowDownPlayerAfterFinishLine( 5f - (officialRacePosition * 1.4f), triggerPositionZ ) );
 
 		racePosition = officialRacePosition;
 
@@ -295,7 +295,6 @@ public class PlayerRace : Photon.PunBehaviour
 				if( crossedFinishLine != null ) crossedFinishLine();
 				CancelInvoke("tookTheLead");
 				HUDMultiplayer.hudMultiplayer.updateRacePosition(officialRacePosition + 1);
-				HUDMultiplayer.hudMultiplayer.displayFinishFlag( true );
 				GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
 				PlayerRaceManager.Instance.playerCompletedRace( (officialRacePosition + 1), raceDuration, distanceTravelled, GetComponent<PlayerControl>().getNumberOfTimesDiedDuringRace() );
 			}
