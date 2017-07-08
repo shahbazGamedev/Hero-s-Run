@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class BotCardHandler : Photon.PunBehaviour {
+public sealed class BotCardHandler : MonoBehaviour {
 
 	HeroManager.BotHeroCharacter botHero;
 	HeroManager.BotSkillData botSkillData;
@@ -15,10 +15,14 @@ public class BotCardHandler : Photon.PunBehaviour {
 	List<int> cardIndexList = new List<int>(TurnRibbonHandler.NUMBER_CARDS_IN_BATTLE_DECK);
 	List<CardManager.CardData> turnRibbonList = new List<CardManager.CardData>();
 	Queue<CardManager.CardData> cardQueue = new Queue<CardManager.CardData>();
-	float timeOfLastAnalysis = 0;
 	PlayerControl playerControl;
 	PlayerSpell playerSpell;
 	bool allowCardPlaying = false;
+	float timeOfLastAnalysis = 0;
+	#region Game Paused
+	bool gamePaused = false;
+	float timeRemainingNextAnalysis = 0;
+	#endregion
 
 	// Use this for initialization
 	void Start ()
@@ -115,6 +119,8 @@ public class BotCardHandler : Photon.PunBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
+		if( gamePaused ) return;
+
 		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
 		{
 			if( manaAmount < ManaBar.MAX_MANA_POINT ) manaAmount = manaAmount + Time.deltaTime/ManaBar.MANA_REFILL_RATE;
@@ -122,6 +128,26 @@ public class BotCardHandler : Photon.PunBehaviour {
 			{
 				analyseCards();
 			}
+		}
+	}
+
+	void GameStateChange( GameState previousState, GameState newState )
+	{
+		if( newState == GameState.Normal && previousState == GameState.Paused )
+		{
+			//Unpause
+  			gamePaused = false;
+			//Recalculate the time of last analysis now that we are unpaused.
+			//Why are we doing this? If the player paused for longer than cardPlayFrequency, when the game would be unpaused, the bots would all
+			//analyseCards immediately and possibly play cards all at the same time.
+			timeOfLastAnalysis = Time.time - timeRemainingNextAnalysis;
+		}
+		else if( newState == GameState.Paused )
+		{
+			//Pause
+  			gamePaused = true;
+			//Measure the time until the next card analysis and save it
+			timeRemainingNextAnalysis = ( timeOfLastAnalysis + botSkillData.cardPlayFrequency ) - Time.time;
 		}
 	}
 
@@ -170,7 +196,7 @@ public class BotCardHandler : Photon.PunBehaviour {
 		PlayerDeck.PlayerCardData botCardData = getCardByName( cardName );
 		if( botCardData != null )
 		{
-			cardHandler.activateCard( this.photonView, cardName, botHero.userName, botCardData.level );
+			cardHandler.activateCard( GetComponent<PhotonView>(), cardName, botHero.userName, botCardData.level );
 		}
 	}
 
@@ -325,11 +351,13 @@ public class BotCardHandler : Photon.PunBehaviour {
 	void OnEnable()
 	{
 		PlayerControl.multiplayerStateChanged += MultiplayerStateChanged;
+		GameManager.gameStateEvent += GameStateChange;
 	}
 
 	void OnDisable()
 	{
 		PlayerControl.multiplayerStateChanged -= MultiplayerStateChanged;
+		GameManager.gameStateEvent -= GameStateChange;
 	}
 
 	void MultiplayerStateChanged( PlayerCharacterState newState )
