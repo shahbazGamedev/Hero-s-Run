@@ -290,10 +290,14 @@ public class PlayerControl : Photon.PunBehaviour {
 		//We may not have been spawned in the center lane. Make sure the lane values are accurate.
 		recalculateCurrentLane();
 
-		//We want the cutscene camera which is a child of the player to use the same skybox as the main camera
-		Transform cutSceneCamera = transform.FindChild("CutsceneCamera");
-		Skybox skyBox = cutSceneCamera.GetComponent<Skybox>();
-		skyBox.material = LevelManager.Instance.getLevelData().skyBoxMaterial;
+		//We want the cutscene camera which is a child of the player to use the same skybox as the main camera.
+		//The bot does not have a cutscene camera.
+		if( playerAI == null )
+		{
+			Transform cutSceneCamera = transform.FindChild("CutsceneCamera");
+			Skybox skyBox = cutSceneCamera.GetComponent<Skybox>();
+			skyBox.material = LevelManager.Instance.getLevelData().skyBoxMaterial;
+		}
 
 		//Tell the MasterClient that we are ready to go. Our level has been loaded and our player created.
 		//The MasterClient will initiate the countdown
@@ -2104,7 +2108,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	{
 		//Carefull, if you turn right inside a deadEnd OnTriggerEnter will be called a second time (but not if your turn left).
 		//This is probably a Unity bug.
-		if( other.name == "deadEnd" )
+		if( other.CompareTag( "deadEnd" ) )
 		{
 			isInDeadEnd = true;
 			wantToTurn = false;
@@ -2117,16 +2121,16 @@ public class PlayerControl : Photon.PunBehaviour {
 			runSpeed = runSpeed * runSpeedTurnMultiplier;
 		}
 		//For the Great Fall trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
-		else if( other.name == "Great Fall" )
+		else if( other.CompareTag( "Great Fall" ) )
 		{
 			killPlayer( DeathType.GreatFall );
 		}
 		//For the Lock Camera trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
-		else if( other.name == "Lock Camera" )
+		else if( other.CompareTag( "Lock Camera" ) )
 		{
 			playerCamera.lockCamera( true );
 		}
-		else if( other.name == "Entrance" )
+		else if( other.CompareTag( "Entrance" ) )
 		{
 			SegmentInfo si = other.transform.parent.GetComponent<SegmentInfo>();
 			if( si != null )
@@ -2222,7 +2226,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	{
 		if( getCharacterState() != PlayerCharacterState.Dying )
 		{
-			if( other.name == "deadEnd" )
+			if( other.CompareTag( "deadEnd" ) )
 			{
 				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight && currentDeadEndType != DeadEndType.LeftStraight && getCharacterState() != PlayerCharacterState.Flying )
 				{

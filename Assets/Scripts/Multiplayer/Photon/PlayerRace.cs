@@ -277,7 +277,6 @@ public class PlayerRace : Photon.PunBehaviour
 		StartCoroutine( GetComponent<PlayerControl>().slowDownPlayerAfterFinishLine( 5f - (officialRacePosition * 1.4f), triggerPositionZ ) );
 
 		racePosition = officialRacePosition;
-
 		//Cancel all spell effects
 		GetComponent<PlayerSpell>().cancelAllSpells();
 
@@ -294,6 +293,8 @@ public class PlayerRace : Photon.PunBehaviour
 				//Send a crossedFinishLine event to tell the HUD to remove the card timers
 				if( crossedFinishLine != null ) crossedFinishLine();
 				CancelInvoke("tookTheLead");
+				string victory = LocalizationManager.Instance.getText("RACE_VICTORY");
+				if( racePosition == 0 ) HUDMultiplayer.hudMultiplayer.activateUserMessage( victory, 0, 2.25f );
 				HUDMultiplayer.hudMultiplayer.updateRacePosition(officialRacePosition + 1);
 				GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
 				PlayerRaceManager.Instance.playerCompletedRace( (officialRacePosition + 1), raceDuration, distanceTravelled, GetComponent<PlayerControl>().getNumberOfTimesDiedDuringRace() );

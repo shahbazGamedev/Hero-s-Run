@@ -193,7 +193,7 @@ public class AutoPilot : Photon.PunBehaviour {
 	{
 		//Carefull, if you turn right inside a deadEnd OnTriggerEnter will be called a second time (but not if your turn left).
 		//This is probably a Unity bug.
-		if( other.name == "deadEnd" && shouldTurnSuccessfully() )
+		if( other.CompareTag( "deadEnd" ) && shouldTurnSuccessfully() )
 		{
 			DeadEndType currentDeadEndType = other.GetComponent<deadEnd>().deadEndType;
 			if ( currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftStraight )

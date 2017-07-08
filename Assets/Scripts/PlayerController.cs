@@ -2240,7 +2240,7 @@ public sealed class PlayerController : MonoBehaviour {
 	{
 		//Carefull, if you turn right inside a deadEnd OnTriggerEnter will be called a second time (but not if your turn left).
 		//This is probably a Unity bug.
-		if( other.name == "deadEnd" )
+		if( other.CompareTag( "deadEnd" ) )
 		{
 			//Deactivate the speedboost if active because it is really hard to turn when you are going super fast
 			if( PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
@@ -2278,14 +2278,14 @@ public sealed class PlayerController : MonoBehaviour {
 			managePlayerDeath( DeathType.Lava );
 		}
 		//For the Great Fall trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
-		else if( other.name == "Great Fall" )
+		else if( other.CompareTag( "Great Fall" ) )
 		{
 			Debug.Log ("Player is having a great fall.");
 			controlTrollPursuit( false );
 			managePlayerDeath( DeathType.GreatFall );
 		}
 		//For the Lock Camera trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
-		else if( other.name == "Lock Camera" )
+		else if( other.CompareTag( "Lock Camera" ) )
 		{
 			Debug.Log ("Locking camera.");
 			sc.lockCamera( true );
@@ -2322,7 +2322,7 @@ public sealed class PlayerController : MonoBehaviour {
 			GameManager.Instance.setGameState(GameState.Checkpoint);
 			StartCoroutine( slowDownPlayer( 16f, afterPlayerSlowdown, other.transform ) );
 		}
-		else if( other.name == "Entrance" )
+		else if( other.CompareTag( "Entrance" ) )
 		{
 			SegmentInfo si = other.transform.parent.GetComponent<SegmentInfo>();
 			if( si != null )
@@ -2474,7 +2474,7 @@ public sealed class PlayerController : MonoBehaviour {
 	{
 		if( getCharacterState() != PlayerCharacterState.Dying )
 		{
-			if( other.name == "deadEnd" )
+			if( other.CompareTag( "deadEnd" ) )
 			{
 				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight)
 				{
