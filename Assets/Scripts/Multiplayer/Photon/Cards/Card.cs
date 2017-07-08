@@ -172,12 +172,12 @@ public class Card : Photon.PunBehaviour {
 		//Verify that the player is not spawning the object inside the finish line trigger
 		Vector3 objectPosition = playerTransform.TransformPoint( spawnOffset );
 
-		GameObject boxColliderObject = GameObject.FindGameObjectWithTag("Finish Line");
+		GameObject finishLineColliderObject = GameObject.FindGameObjectWithTag("Finish Line");
 		//If the tile with the finish line is not active, boxColliderObject will be null, so check for that.
-		if( boxColliderObject != null )
+		if( finishLineColliderObject != null )
 		{
-			BoxCollider boxCollider = boxColliderObject.GetComponent<BoxCollider>();
-			if( boxCollider.bounds.Contains( objectPosition ) )
+			Collider collider = finishLineColliderObject.GetComponent<Collider>();
+			if( collider.bounds.Contains( objectPosition ) )
 			{
 				//Don't allow it
 				return false;
@@ -189,7 +189,7 @@ public class Card : Photon.PunBehaviour {
 		}
 		else
 		{
-			//If boxColliderObject is null, that means the tile with the finish line is not yet active and therefore, we are far from the finish line.
+			//If finishLineColliderObject is null, that means the tile with the finish line is not yet active and therefore, we are far from the finish line.
 			//In this case, return true.
 			return true;
 		}
