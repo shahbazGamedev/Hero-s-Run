@@ -13,6 +13,7 @@ public class IceWall : CardSpawnedObject {
 		object[] data = this.gameObject.GetPhotonView ().instantiationData;
 		
 		GetComponent<BoxCollider>().isTrigger = true;
+		enableChunkColliders( false );
 
 		//Remember who the caster is
 		casterName = data[0].ToString();
@@ -36,6 +37,7 @@ public class IceWall : CardSpawnedObject {
 		GetComponent<Renderer>().material = onFunctioning;
 		setSpawnedObjectState(SpawnedObjectState.Functioning);
 		GetComponent<BoxCollider>().isTrigger = false;
+		enableChunkColliders( true );
 	}
 
 	public override void destroySpawnedObjectNow()
@@ -54,5 +56,12 @@ public class IceWall : CardSpawnedObject {
 		Destroy( gameObject );
 	}
 
-
+	void enableChunkColliders( bool value )
+	{
+		for( int i = 0; i < transform.childCount; i++ )
+		{
+			MeshCollider mc = transform.GetChild( i ).GetComponent<MeshCollider>();
+			if( mc != null ) mc.enabled = value;
+		}
+	}
 }
