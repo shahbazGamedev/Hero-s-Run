@@ -116,11 +116,8 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	#region Jumping and gravity variables
 	bool jumping = false;
-	bool doingDoubleJump = false;
 	float jumpSpeed = 10f;
-	float doubleJumpSpeed = 16f;
-	float DOUBLE_JUMP_RUN_SPEED = 1f; //We want the player to leap forward during a double jump
-	float MAX_RUN_SPEED_FOR_DOUBLE_JUMP = 20f; //We want to cap the maximum run speed during a double jump. If the player is sprinting for example, we don't want him to leap into a wall.
+	float MAX_RUN_SPEED_FOR_DOUBLE_JUMP = 18f; //We want to cap the maximum run speed during a double jump. If the player is sprinting for example, we don't want him to leap into a wall.
 	public float distanceToGround = 0;
 	//The gravity for the character
 	const float DEFAULT_GRAVITY = 16f;
@@ -498,7 +495,6 @@ public class PlayerControl : Photon.PunBehaviour {
 				}
 				setAnimationTrigger(LandTrigger);
 				jumping = false;
-				doingDoubleJump = false;
 				runSpeed = runSpeedAtTimeOfJump;
 				if( playerCharacterState != PlayerCharacterState.Dying )
 				{
@@ -516,7 +512,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				{
 					setCharacterState( PlayerCharacterState.Running );
 					queueJump = false;
-					jump();
+					jump( false );
 				}
 				else
 				{
@@ -662,7 +658,14 @@ public class PlayerControl : Photon.PunBehaviour {
 	}
 
 	#region Jump and Double Jump
-	public void jump()
+	/// <summary>
+	/// Makes the player jump. If doingDoubleJump is set to true, the player will do a higher double-jump.
+	/// During a normal jump, the run speed is reduced by runSpeedJumpMultiplier.
+	/// During a double-jump, the run speed is capped to MAX_RUN_SPEED_FOR_DOUBLE_JUMP to avoid the player hitting a wall instead of clearing the obstacle.
+	/// </summary>
+	/// <param name="doingDoubleJump">If set to <c>true</c> player will do a double-jump.</param>
+	/// <param name="doubleJumpSpeed">Double jump speed.</param>
+	public void jump( bool doingDoubleJump, float doubleJumpSpeed = 0 )
 	{
 		if( jumping )
 		{
@@ -698,8 +701,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			allowRunSpeedToIncrease = false;
 			if( doingDoubleJump )
 			{
-				//Increase the run speed during a Double Jump. We want the player to Leap forward.
-				runSpeed = runSpeed * DOUBLE_JUMP_RUN_SPEED;
 				//Cap the run speed to a maximum.
 				if( runSpeed > MAX_RUN_SPEED_FOR_DOUBLE_JUMP ) runSpeed = MAX_RUN_SPEED_FOR_DOUBLE_JUMP;
 				moveDirection.y = doubleJumpSpeed;
@@ -718,13 +719,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			//remove jump sound for now because it is annoying
 			//playSound( jumpingSound, false );
 		}
-	}
-
-	public void doubleJump( float doubleJumpSpeed )
-	{
-		this.doubleJumpSpeed = doubleJumpSpeed;
-		doingDoubleJump = true;
-		jump();
 	}
 	#endregion
 

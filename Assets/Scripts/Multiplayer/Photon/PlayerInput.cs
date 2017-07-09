@@ -67,13 +67,13 @@ public class PlayerInput : PunBehaviour {
 
 	public void jump()
 	{
-		playerControl.jump();
+		playerControl.jump( false );
 		this.photonView.RPC("jumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
 	}
 
 	public void doubleJump( float doubleJumpSpeed )
 	{
-		playerControl.doubleJump( doubleJumpSpeed );
+		playerControl.jump( true, doubleJumpSpeed );
 		this.photonView.RPC("doubleJumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed(), doubleJumpSpeed );
 	}
 

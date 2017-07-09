@@ -48,14 +48,14 @@ public class PlayerInputRPC : PunBehaviour {
 	void jumpRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
 	{
 		syncMovement( syncPosition, syncRotationY, timeRPCSent, syncSpeed );
-		playerControl.jump();
+		playerControl.jump( false );
 	}
 
 	[PunRPC]
 	void doubleJumpRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed, float doubleJumpSpeed )
 	{
 		syncMovement( syncPosition, syncRotationY, timeRPCSent, syncSpeed );
-		playerControl.doubleJump( doubleJumpSpeed );
+		playerControl.jump( true, doubleJumpSpeed );
 	}
 
 	[PunRPC]
