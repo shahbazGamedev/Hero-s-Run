@@ -9,7 +9,7 @@ public class StasisController : CardSpawnedObject {
 
 	Transform affectedPlayerTransform;
 	PlayerControl affectedPlayerControl;
-	const float DISTANCE_ABOVE_GROUND = 2.5f;
+	const float DISTANCE_ABOVE_GROUND = 3.5f;
 	const float Y_POS_PLAYER_IN_SPHERE = -0.35f;
 
 	#region Initialisation
@@ -21,13 +21,12 @@ public class StasisController : CardSpawnedObject {
 	void findAffectedPlayer(object[] data) 
 	{
 		int viewIdOfAffectedPlayer = (int) data[0];
-		GameObject[] playersArray = GameObject.FindGameObjectsWithTag("Player");
-		for( int i = 0; i < playersArray.Length; i ++ )
+		for( int i = 0; i < PlayerRace.players.Count; i ++ )
 		{
-			if( playersArray[i].GetPhotonView().viewID == viewIdOfAffectedPlayer )
+			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == viewIdOfAffectedPlayer )
 			{
 				//We found the spell's target
-				affectedPlayerTransform = playersArray[i].transform;
+				affectedPlayerTransform = PlayerRace.players[i].transform;
 				affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = true;
 	
 				affectedPlayerControl = affectedPlayerTransform.GetComponent<PlayerControl>();
@@ -42,12 +41,12 @@ public class StasisController : CardSpawnedObject {
 				affectedPlayerControl.enablePlayerMovement( false );
 				affectedPlayerControl.enablePlayerControl( false );
 
-				//We want the statis sphere to float above ground.
-				//The transform Y position is at the player's feet (and so right next to the ground).
-				//We do not want to start the raycast there because of precision issues.
-				affectedPlayerControl.gameObject.layer = 2; //change temporarily to Ignore Raycast
+				//We want the statis sphere to float DISTANCE_ABOVE_GROUND above ground.
+				//We add 0.1f because we do not want to start the raycast at the player's feet.
+				//The Stasis prefab has the ignoreRaycast layer.
+				affectedPlayerControl.gameObject.layer = MaskHandler.ignoreRaycastLayer; //change temporarily to Ignore Raycast
 				RaycastHit hit;
-				if (Physics.Raycast(new Vector3( affectedPlayerTransform.position.x, affectedPlayerTransform.position.y + 2.5f, affectedPlayerTransform.position.z ), Vector3.down, out hit, 30.0F ))
+				if (Physics.Raycast(new Vector3( affectedPlayerTransform.position.x, affectedPlayerTransform.position.y + 0.1f, affectedPlayerTransform.position.z ), Vector3.down, out hit, 30.0F ))
 				{
 					transform.position = new Vector3( transform.position.x, hit.point.y + DISTANCE_ABOVE_GROUND, transform.position.z );
 				}
