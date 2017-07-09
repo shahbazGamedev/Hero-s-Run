@@ -59,6 +59,10 @@ public class MatchmakingManager : MonoBehaviour {
 		//Configure the lobby according to the number of players in the race
 		configureLobby();
 
+		//Make sure the audio listener is not paused.
+		//It gets set to true when you Pause the game.
+		AudioListener.pause = false;
+
 		//The left portrait is always the local player.
 		configureLocalPlayerData();
 

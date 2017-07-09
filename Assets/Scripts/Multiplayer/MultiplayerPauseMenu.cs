@@ -51,12 +51,14 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 			//Take this opportunity to do a garbage collection
 			System.GC.Collect();
 			pausePanel.SetActive( true );
+			AudioListener.pause = true;
 		}
 		else if( GameManager.Instance.getGameState() == GameState.Paused )
 		{
 			//We were paused. Resume game.
 			pausePanel.SetActive( false );
 			GameManager.Instance.setGameState( GameState.Normal );
+			AudioListener.pause = false;
 		}
 	}
 
