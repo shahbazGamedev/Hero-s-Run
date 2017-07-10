@@ -74,6 +74,7 @@ public class HomingMissile : CardSpawnedObject {
 
 	void OnCollisionEnter(Collision collision)
 	{
+		if( homingMissile == null ) return;
 		homingMissile.velocity = Vector3.zero;
 		homingMissile = null;
 

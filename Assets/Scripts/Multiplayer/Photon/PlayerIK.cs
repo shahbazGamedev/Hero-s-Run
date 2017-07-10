@@ -64,7 +64,12 @@ public class PlayerIK : MonoBehaviour {
 		//Ignore null targets
 		if( lookAtTarget == null  ) yield break;
 
-		print("setLookAtTarget " + lookAtTarget.name );
+		//print( name + " has a look-at target of " + lookAtTarget.name );
+		if( transform == lookAtTarget )
+		{
+ 			Debug.LogError("PlayerIK error: you should not set the look-at target to be yourself: " + name );
+			yield break;
+		}
 
 		//Don't interrupt the current look-at if one is active
 		if( lookAtActive ) yield break;

@@ -22,9 +22,6 @@ public class CardSentry : Card {
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
 		//Create sentry
-		Vector3 sentryOffsetToPlayer = new Vector3( 0.8f, 2.3f, 0 );
-		Vector3 sentrySpawnPosition = playerTransform.TransformPoint( sentryOffsetToPlayer );
-
 		object[] data = new object[4];
 		data[0] = photonViewID;
 
@@ -33,7 +30,7 @@ public class CardSentry : Card {
 		data[2] = cd.getCardPropertyValue( CardPropertyType.AIM_RANGE, level );
 		data[3] = cd.getCardPropertyValue( CardPropertyType.ACCURACY, level );
 
-		PhotonNetwork.InstantiateSceneObject( "sentry", sentrySpawnPosition, transform.rotation, 0, data );
+		PhotonNetwork.InstantiateSceneObject( "Sentry", playerTransform.position, transform.rotation, 0, data );
 	}
 	#endregion
 

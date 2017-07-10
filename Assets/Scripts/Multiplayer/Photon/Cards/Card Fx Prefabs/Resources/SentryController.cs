@@ -12,6 +12,11 @@ public enum Emotion {
 public class SentryController : CardSpawnedObject {
 
 	[Header("Sentry")]
+	Vector3 sentryOffsetToPlayer = new Vector3( 0.8f, 2.3f, 0 );
+	
+	[Tooltip("Determines how fast does the Sentry match the player's position.")]
+	[Range(10,20)]
+	[SerializeField] float followSpeed = 15f;
 
 	[Header("Sound Effects")]
 	[SerializeField] AudioSource audioSource;
@@ -29,7 +34,8 @@ public class SentryController : CardSpawnedObject {
 	float weaponCoolDown = 3f;
 	float timeOfLastShot;
 	float aimRange = 40f;
-	float accuracy = 0.005f;
+	float accuracy = 0.002f;
+	const float FORWARD_MOVEMENT_ANTICIPATION = 0.24f;
 
 	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
@@ -51,7 +57,6 @@ public class SentryController : CardSpawnedObject {
 				casterGameObject = playersArray[i];
 				casterName = casterGameObject.name;
 				casterTransform = casterGameObject.transform;
-				transform.SetParent( casterTransform );
 				playSoundEffect( Emotion.Happy );
 				StartCoroutine( changeMaterialOnCreate( 2f ) );
 				casterGameObject.GetComponent<PlayerSpell>().registerSentry( this );
@@ -81,15 +86,22 @@ public class SentryController : CardSpawnedObject {
 	#endregion
 
 	#region Target detection and shooting
-	void LateUpdate()
+	void FixedUpdate()
 	{
 		//We don't want the sentry to shoot while paused.
 		//Remember that in multiplayer the time scale is not set to 0 while paused.
 		if( GameManager.Instance.getGameState() == GameState.Normal )
 		{
+			followPlayer();
 			detectNearestTarget();
 			lookAtTarget();
 		}
+	}
+
+	void followPlayer()
+	{
+		Vector3 desiredPosition = casterTransform.TransformPoint( sentryOffsetToPlayer );
+		transform.position = Vector3.Lerp( transform.position, desiredPosition, Time.deltaTime * followSpeed );
 	}
 
 	void detectNearestTarget()
@@ -104,7 +116,16 @@ public class SentryController : CardSpawnedObject {
 		}
 	}
 
-	Quaternion getDesiredRotation()
+	/// <summary>
+	/// Gets the desired rotation for aiming and shooting.
+	/// The forward adjustment parameter is used to anticipate the player's movement.
+	/// Typically you use 0 when aiming and 0.5 when shooting.
+	/// For example, with a value of 0.24, the missile will head for a position 0.24 meters in front of the player.
+	/// Since the missile has a limited velocity and the player is moving very fast, this gives the missile more accuracy. 
+	/// </summary>
+	/// <returns>The desired rotation.</returns>
+	/// <param name="forwardAdjustment">Forward adjustment.</param>
+	Quaternion getDesiredRotation( float forwardAdjustment )
 	{
 		float heightAdjustment = 0;
 		if( nearestTarget.CompareTag("Player") )
@@ -117,7 +138,7 @@ public class SentryController : CardSpawnedObject {
 			//For other objects, aim a bit above the center of the object
 			heightAdjustment = nearestTarget.localScale.y * 0.01f;
 		}
-		Vector3 targetCenter = new Vector3( nearestTarget.position.x, nearestTarget.position.y + heightAdjustment, nearestTarget.position.z );
+		Vector3 targetCenter = nearestTarget.TransformPoint(0, heightAdjustment, forwardAdjustment );
 		Vector3 relativePos = targetCenter - transform.position;
 		return Quaternion.LookRotation( relativePos ); 
 	}
@@ -127,7 +148,7 @@ public class SentryController : CardSpawnedObject {
 		if( nearestTarget != null )
 		{
 			//The sentry has a target. Turn towards it at aimSpeed.
-			transform.rotation = Quaternion.Lerp( transform.rotation, getDesiredRotation(), Time.deltaTime * aimSpeed );
+			transform.rotation = Quaternion.Lerp( transform.rotation, getDesiredRotation( 0 ), Time.deltaTime * aimSpeed );
 			//Verify if we can hit the nearest target
 			aim();
 		}
@@ -162,7 +183,7 @@ public class SentryController : CardSpawnedObject {
 		{
 			timeOfLastShot = Time.time;
 
-			transform.rotation = getDesiredRotation();
+			transform.rotation = getDesiredRotation( FORWARD_MOVEMENT_ANTICIPATION );
 
 			//The sentry is not perfectly accurate when shooting.
 			Vector3 direction = transform.forward;
