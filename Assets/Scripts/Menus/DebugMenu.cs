@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.SocialPlatforms.GameCenter;
 using UnityEngine.SceneManagement;
+using System;
 
 public class DebugMenu : MonoBehaviour {
 
@@ -17,6 +19,7 @@ public class DebugMenu : MonoBehaviour {
 	[SerializeField] Text speedOverrideMultiplierText;
 	[SerializeField] Slider trophyOverrideMultiplierSlider;
 	[SerializeField] Text trophyOverrideMultiplierText;
+	[SerializeField] Dropdown regionOverrideDropdown;
 
 	void Start () {
 				
@@ -62,6 +65,7 @@ public class DebugMenu : MonoBehaviour {
 		}
 
 		updateFacebookName();
+		populatePhotonCloudRegionDropdown();
 	}
 
 	public void OnClickResetSavedData()
@@ -210,6 +214,18 @@ public class DebugMenu : MonoBehaviour {
 		{
 			facebookName.text = "First Name: " + FacebookManager.Instance.firstName;
 		}
+	}
+
+	void populatePhotonCloudRegionDropdown()
+	{
+		string[] enumRegions = Enum.GetNames( typeof( CloudRegionCode ) );
+		List<string> regions = new List<string>( enumRegions);
+		regionOverrideDropdown.AddOptions( regions );
+	}
+
+	public void OnRegionDropdownValueChanged()
+	{
+		print("OnRegionDropdownValueChanged " + regionOverrideDropdown.value );
 	}
 	
 }
