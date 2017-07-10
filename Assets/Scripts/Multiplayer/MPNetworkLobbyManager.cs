@@ -58,7 +58,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		Debug.Log("startMatch " + GameManager.Instance.getPlayMode() );
 
 		//Does the selected play mode require Internet?
-		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstEnemy || GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoEnemies || GameManager.Instance.getPlayMode() == PlayMode.PlayAlone )
+		if( !GameManager.Instance.isOnlinePlayMode() )
 		{
 			//PlayAgainstEnemy, PlayAgainstTwoEnemies and PlayAlone are offline modes. We do not need to check that we have access to the Internet.
 			connecting = true;
@@ -131,9 +131,14 @@ public class MPNetworkLobbyManager : PunBehaviour
 	void Connect()
 	{
 		// we check if we are connected or not. We join if we are, else we initiate the connection to the server.
-		if (PhotonNetwork.connected)
+		if (PhotonNetwork.connectedAndReady)
 		{
 			tryToJoinRoom();
+			matchmakingManager.setPhotonCloudRegionText( PhotonNetwork.CloudRegion.ToString() );
+		}
+		else if (PhotonNetwork.connecting)
+		{
+			matchmakingManager.setConnectionProgress( "Connecting ..." );				
 		}
 		else
 		{
@@ -217,12 +222,14 @@ public class MPNetworkLobbyManager : PunBehaviour
 		//First we try to join a potential existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
 		Debug.Log("MPNetworkLobbyManager: OnConnectedToMaster-Photon Cloud Region is " + PhotonNetwork.CloudRegion.ToString() );
 		tryToJoinRoom();	 
+		matchmakingManager.setPhotonCloudRegionText( PhotonNetwork.CloudRegion.ToString() );
 	}
 
 	public override void OnDisconnectedFromPhoton()
 	{
 	    Debug.LogWarning("MPNetworkLobbyManager: OnDisconnectedFromPhoton() was called by PUN");  
 		matchmakingManager.setConnectionProgress( "Disconnected ..." );   
+		matchmakingManager.setPhotonCloudRegionText( "N/A" );
 	}
 	 
 	public override void OnPhotonRandomJoinFailed (object[] codeAndMsg)

@@ -14,6 +14,8 @@ public class MatchmakingManager : MonoBehaviour {
 	[SerializeField] Text versusText;
 	[Tooltip("The label to inform the user that the connection progress.")]
 	[SerializeField] Text connectionProgress;
+	[Tooltip("The selected Photon cloud region. Used for debugging.")]
+	[SerializeField] Text PhotonCloudRegionText;
 
 	[Header("Circuit")]
 	[SerializeField] Text circuitName;
@@ -208,6 +210,11 @@ public class MatchmakingManager : MonoBehaviour {
 	public void setConnectionProgress( string value )
 	{
 		if( connectionProgress != null ) connectionProgress.text = value;
+	}
+
+	public void setPhotonCloudRegionText( string region )
+	{
+		PhotonCloudRegionText.text = region;
 	}
 
 	public void showNoInternetPopup()
