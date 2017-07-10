@@ -22,35 +22,34 @@ public class CardShrink : Card {
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
-		//Find a random target
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
-		Transform randomTarget = detectRandomTarget( playerTransform.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
 
-		if( randomTarget != null )
+		//Send the RPC to everyone excluding the caster
+		//Shrink affects all opponents
+		bool atLeastOneTarget = false;
+		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
-			if( randomTarget.GetComponent<PlayerSpell>().isReflectEnabled() )
+			if( PlayerRace.players[i].name != playerTransform.name )
 			{
-				MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, randomTarget.GetComponent<PhotonView>().viewID );
+				if( PlayerRace.players[i].GetComponent<PlayerSpell>().isReflectEnabled() )
+				{
+					MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, PlayerRace.players[i].GetComponent<PhotonView>().viewID );
 
-				//The target has the Reflect spell active.
-				//Reflect to caster
-				randomTarget = playerTransform;
-			
+					//The target has the Reflect spell active.
+					//Reflect to caster
+					playerTransform.GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
+				
+				}
+				else
+				{
+					PlayerRace.players[i].GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
+					atLeastOneTarget = true;
+				}
 			}
-
-			//1) We do have a target.
-			//2) The target is not the caster.
-			//3) Play an appropriate VO such as "Gotcha!" for Stasis.
-			if( randomTarget != playerTransform ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
-
-			randomTarget.GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
 		}
-		else
-		{
-			//Display a Minimap message stating that no target was found in range
-			playerTransform.GetComponent<PhotonView>().RPC("cardNoTargetRPC", PhotonTargets.All );
-			Debug.Log("CardShrink: no target found." );
-		}
+		//1) We do have at least one target.
+		//2) Play an appropriate VO such as "Wicked!" for Shrink.
+		if( atLeastOneTarget ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
 	}
 	#endregion
 
