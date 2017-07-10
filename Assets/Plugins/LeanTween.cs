@@ -324,7 +324,7 @@ public class LeanTween : MonoBehaviour {
 		Destroy(_tweenEmpty);
 	}
 
-	public void Update(){
+	public void FixedUpdate(){
 		LeanTween.update();
 	}
 
