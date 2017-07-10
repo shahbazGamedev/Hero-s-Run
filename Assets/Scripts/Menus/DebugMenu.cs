@@ -216,16 +216,20 @@ public class DebugMenu : MonoBehaviour {
 		}
 	}
 
+	#region Photon Cloud Region override
 	void populatePhotonCloudRegionDropdown()
 	{
 		string[] enumRegions = Enum.GetNames( typeof( CloudRegionCode ) );
 		List<string> regions = new List<string>( enumRegions);
 		regionOverrideDropdown.AddOptions( regions );
+		regionOverrideDropdown.value = (int) GameManager.Instance.overrideCloudRegionCode;
 	}
 
 	public void OnRegionDropdownValueChanged()
 	{
-		print("OnRegionDropdownValueChanged " + regionOverrideDropdown.value );
+		GameManager.Instance.overrideCloudRegionCode = (CloudRegionCode) regionOverrideDropdown.value;
+		if( PhotonNetwork.connected) PhotonNetwork.Disconnect();
 	}
+	#endregion
 	
 }

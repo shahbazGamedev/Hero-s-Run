@@ -92,6 +92,7 @@ public class GameManager {
 	public PlayerIcons playerIcons;
 	public PlayerVoiceLines playerVoiceLines;
 	PlayMode playMode = PlayMode.PlayTwoPlayers;
+	public CloudRegionCode overrideCloudRegionCode = CloudRegionCode.none;
 
 	public static GameManager Instance
 	{
@@ -163,11 +164,18 @@ public class GameManager {
 		{
 			//All other play modes are online.
 			PhotonNetwork.offlineMode = false;
-			//In order to display the number of online players, we need to be connected to the master server.
+
 			//Users are separated from each other by game version (which allows you to make breaking changes).
 			//Don't attempt to connect if you are already connected.
-			if( !PhotonNetwork.connected ) PhotonNetwork.ConnectUsingSettings( GameManager.Instance.getVersionNumber() );
-			Debug.Log("GameManager-PhotonNetwork.versionPUN is " + PhotonNetwork.versionPUN );
+			if ( !PhotonNetwork.connectedAndReady && !PhotonNetwork.connecting )
+			{
+				//We must first and foremost connect to Photon Online Server.
+				//Users are separated from each other by game version (which allows you to make breaking changes).
+				//In PhotonServerSettings, Hosting is set to Best Region excluding South Korea, Asia and Japan
+				if( GameManager.Instance.overrideCloudRegionCode != CloudRegionCode.none ) PhotonNetwork.OverrideBestCloudServer( GameManager.Instance.overrideCloudRegionCode );
+				PhotonNetwork.ConnectUsingSettings(GameManager.Instance.getVersionNumber());
+				Debug.Log("GameManager-PhotonNetwork.versionPUN is " + PhotonNetwork.versionPUN );
+			}
 		}
 	} 
 
