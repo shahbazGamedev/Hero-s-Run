@@ -124,7 +124,7 @@ public class PlayerAI : AutoPilot {
 	void playTaunt()
 	{
 		//Only be cocky if you are in the lead. This also avoids having 2 bots saying a taunt at the same time.
-		if( isBotLeading() && PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED )
+		if( isBotLeading() && PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED && GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
 		{
 			VoiceOverManager.VoiceOverData vod = VoiceOverManager.Instance.getRandomHeroTaunt ( botHero.name );
 			if( vod != null )
