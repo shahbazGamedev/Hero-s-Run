@@ -454,17 +454,17 @@ public class LevelData : MonoBehaviour {
 	[System.Serializable]
 	public class CircuitInfo
 	{
-		[Header("Race Circuit Parameters")]
-		[Tooltip("The text ID of the race track.")]
-		public string circuitTextID = "CIRCUIT_XXX";
+		[Header("Sector Parameters")]
 		[Tooltip("The name to use for matchmaking. It must NOT have any underscore characters '_'.")]
 		public string raceTrackName = string.Empty;
-		[Tooltip("Bigger, rectangular image used at the top of the carousel.")]
+		[Tooltip("Bigger rectangular image.")]
 		public Sprite circuitImage;
 		[Tooltip("Square icon used at the beginning of the match.")]
 		public Sprite circuitIcon;
-		[Tooltip("The race track level where training track is 0, the first race track unlocked is 1, the second race track unlocked is 2, etc.")]
-		public int raceTrackLevel;
+		[Tooltip("The sector number is displayed in various UI elements. The training sector is 0.")]
+		public int sectorNumber;
+		[Tooltip("The background color is used in various UI elements to match the main color of the sector image.")]
+		public Color backgroundColor;
 	}
 
 }

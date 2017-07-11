@@ -14,7 +14,8 @@ public class RaceTrackUI : MonoBehaviour {
 	public void configure ( int index, LevelData.MultiplayerInfo info )
 	{
 		raceTrackNumber.text = (index + 1).ToString();
-		raceTrackName.text = LocalizationManager.Instance.getText( info.circuitInfo.circuitTextID );
+		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + info.circuitInfo.sectorNumber.ToString() );
+		raceTrackName.text = sectorName;
 		raceTrackImage.sprite = info.circuitInfo.circuitImage;
 		if( info.trophiesNeededToUnlock == 0 )
 		{

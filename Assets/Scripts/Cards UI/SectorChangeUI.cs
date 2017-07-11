@@ -12,10 +12,21 @@ public class SectorChangeUI : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI sectorNameText;
 	[SerializeField] TextMeshProUGUI trophiesNeededText;
 	[SerializeField] Image sectorImage;
+	[SerializeField] Image sectorBackground;
 
 	// Use this for initialization
 	void Start ()
 	{
+		//Determine the player's current sector.
+		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getLevelData().getRaceTrackByTrophies();
+
+		//Now that we know the sector, initialize the various UI elements.
+ 		sectorNumberText.text = string.Format( LocalizationManager.Instance.getText( "SECTOR_NUMBER" ), multiplayerInfo.circuitInfo.sectorNumber );
+		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + multiplayerInfo.circuitInfo.sectorNumber.ToString() );
+		sectorNameText.text = sectorName;
+		trophiesNeededText.text = multiplayerInfo.trophiesNeededToUnlock.ToString();
+		sectorImage.sprite = multiplayerInfo.circuitInfo.circuitImage;
+		sectorBackground.color = multiplayerInfo.circuitInfo.backgroundColor;
 	}
 
 	void OnEnable()

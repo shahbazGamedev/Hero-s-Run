@@ -237,9 +237,9 @@ public class CardManager : MonoBehaviour {
 		return cardDataList.Count;
 	}
 
-	public CardName getRandomCard( int currentRaceTrackLevel, CardRarity rarity )
+	public CardName getRandomCard( int currentSector, CardRarity rarity )
 	{
-		List<CardData> possibleRandomCardList = cardDataList.FindAll(cardData => cardData.rarity == rarity && cardData.raceTrackLevel <= currentRaceTrackLevel );
+		List<CardData> possibleRandomCardList = cardDataList.FindAll(cardData => cardData.rarity == rarity && cardData.sector <= currentSector );
 		Debug.LogWarning("CardManager-getRandomCard: possibleRandomCardList.Count " +  possibleRandomCardList.Count );
 		if( possibleRandomCardList.Count > 0 )
 		{
@@ -361,8 +361,8 @@ public class CardManager : MonoBehaviour {
 		public Sprite secondaryIcon;
 		[Range(1,9)]
 		public int manaCost;
-		//The race track level where training track is 0, the first race track unlocked is 1, the second race track unlocked is 2, etc.
-		public int raceTrackLevel;
+		//The sector needed for this card to be unlocked
+		public int sector;
 		[System.NonSerialized]
 		public RectTransform rectTransform;
 		[System.NonSerialized]

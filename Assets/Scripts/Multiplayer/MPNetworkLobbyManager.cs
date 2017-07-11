@@ -354,7 +354,8 @@ public class MPNetworkLobbyManager : PunBehaviour
 	{
 		numberRemotePlayerConnected++;
 		matchmakingManager.disableExitButton();
-		matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedCircuit().circuitInfo.circuitTextID ) + " ..." ); 
+		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + LevelManager.Instance.getSelectedCircuit().circuitInfo.sectorNumber.ToString() );
+		matchmakingManager.setConnectionProgress( "Traveling to " + sectorName + " ..." ); 
 		matchmakingManager.setRemotePlayerData( numberRemotePlayerConnected, player.NickName, (int)player.CustomProperties["Level"], (int)player.CustomProperties["Icon"] );
 		PlayerRaceManager.Instance.setTrophiesOwnedByOpponent( numberRemotePlayerConnected, (int)player.CustomProperties["Trophies"] );
 		PlayerFriends.FriendData playerData = new PlayerFriends.FriendData( player.NickName, (int)player.CustomProperties["Icon"], (int)player.CustomProperties["Level"], (int)player.CustomProperties["Prestige"], (int)player.CustomProperties["WinStreak"] );		
@@ -377,7 +378,8 @@ public class MPNetworkLobbyManager : PunBehaviour
 	void displayBotInfo()
 	{
 		matchmakingManager.disableExitButton();
-		matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedCircuit().circuitInfo.circuitTextID ) + " ..." );
+		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + LevelManager.Instance.getSelectedCircuit().circuitInfo.sectorNumber.ToString() );
+		matchmakingManager.setConnectionProgress( "Traveling to " + sectorName + " ..." );
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
 		matchmakingManager.setRemotePlayerData( 1, botHero.userName, botHero.level, botHero.playerIcon );
 		LoadArena();
@@ -386,8 +388,8 @@ public class MPNetworkLobbyManager : PunBehaviour
 	void displayBotsInfoPart1()
 	{
 		matchmakingManager.disableExitButton();
-		matchmakingManager.setConnectionProgress( "Traveling to " + LocalizationManager.Instance.getText( LevelManager.Instance.getSelectedCircuit().circuitInfo.circuitTextID ) + " ..." );
-
+		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + LevelManager.Instance.getSelectedCircuit().circuitInfo.sectorNumber.ToString() );
+		matchmakingManager.setConnectionProgress( "Traveling to " + sectorName + " ..." );
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
 		matchmakingManager.setRemotePlayerData( 1, botHero.userName, botHero.level, botHero.playerIcon );
 

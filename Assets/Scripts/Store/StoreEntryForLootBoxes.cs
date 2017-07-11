@@ -18,7 +18,8 @@ public class StoreEntryForLootBoxes : MonoBehaviour {
 	void Start ()
 	{
 		lootBoxNameText.text = LocalizationManager.Instance.getText("STORE_ITEM_" + lootBoxType.ToString() );
-		currentRaceTrackText.text = LocalizationManager.Instance.getText( LevelManager.Instance.getLevelData().getRaceTrackByTrophies().circuitInfo.circuitTextID );
+		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + LevelManager.Instance.getLevelData().getRaceTrackByTrophies().circuitInfo.sectorNumber.ToString() );
+		currentRaceTrackText.text = sectorName;
 		buyWithGemsButtonLabel.text = priceInGems.ToString("N0");
 		setTextColorBasedOnGemBalance( GameManager.Instance.playerInventory.getGemBalance() );
 	}

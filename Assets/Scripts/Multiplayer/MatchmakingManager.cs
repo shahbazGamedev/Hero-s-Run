@@ -202,7 +202,8 @@ public class MatchmakingManager : MonoBehaviour {
 
 	public void configureCircuitData( LevelData.CircuitInfo circuitInfo )
 	{
-		circuitName.text = LocalizationManager.Instance.getText( circuitInfo.circuitTextID );
+		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + circuitInfo.sectorNumber.ToString() );
+		circuitName.text = sectorName;
 		circuitImage.sprite = circuitInfo.circuitImage;
 		enablePlayButton( true );
 	}
