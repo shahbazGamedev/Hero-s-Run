@@ -253,6 +253,20 @@ public class CardManager : MonoBehaviour {
 		}
 	}
 
+	public List<CardData> geAllCardsForSector( int selectedSector )
+	{
+		List<CardData> allCardsForSectorList = cardDataList.FindAll(cardData => cardData.sector == selectedSector );
+		if( allCardsForSectorList.Count > 0 )
+		{
+			return allCardsForSectorList;
+		}
+		else
+		{
+			Debug.LogError("CardManager-geAllCardsForSector: No cards are assigned to sector: " + selectedSector + ". Returning null." );
+			return null;
+		}
+	}
+
 	public CardData getCardByName( CardName name )
 	{
 		if( doesCardExist( name ) )
@@ -362,6 +376,7 @@ public class CardManager : MonoBehaviour {
 		[Range(1,9)]
 		public int manaCost;
 		//The sector needed for this card to be unlocked
+		[Range(1,10)]
 		public int sector;
 		[System.NonSerialized]
 		public RectTransform rectTransform;

@@ -30,23 +30,29 @@ public class CardsUnlockedUI : MonoBehaviour {
 
 	void createUnlockedCards()
 	{
-		List<PlayerDeck.PlayerCardData> battleDeckList = GameManager.Instance.playerDeck.getBattleDeck();
-		for( int i = 0; i < battleDeckList.Count; i++ )
+		//Determine the player's current sector.
+		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getLevelData().getRaceTrackByTrophies();
+
+		//Get all the cards assigned to that sector and display them
+		List<CardManager.CardData> allCardsForSectorList = CardManager.Instance.geAllCardsForSector( multiplayerInfo.circuitInfo.sectorNumber );
+		for( int i = 0; i < allCardsForSectorList.Count; i++ )
 		{
-			createUnlockedCard( battleDeckList[i] );
+			createUnlockedCard( allCardsForSectorList[i] );
 		}
 	}
 
-	void createUnlockedCard( PlayerDeck.PlayerCardData pcd )
+	void createUnlockedCard( CardManager.CardData cd )
 	{
 		GameObject go = (GameObject)Instantiate(cardPrefab);
-		CardManager.CardData cd = CardManager.Instance.getCardByName( pcd.name );
 		go.transform.SetParent(cardsUnlockedHolder,false);
 		Button cardButton = go.GetComponent<Button>();
 		cardButton.onClick.RemoveAllListeners();
 		cardButton.onClick.AddListener(() => OnClickUnlockedCard( cd ));
 		Image cardImage = go.GetComponent<Image>();
 		cardImage.sprite = cd.icon;
+		//Legendary cards have special effects
+		cardImage.material = cd.cardMaterial;
+
 	}
 
 	public void OnClickUnlockedCard( CardManager.CardData cd )

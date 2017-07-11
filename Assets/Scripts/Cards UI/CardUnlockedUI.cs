@@ -32,6 +32,9 @@ public class CardUnlockedUI : MonoBehaviour {
 
 		//Card
 		cardIcon.sprite = cd.icon;
+		//Legendary cards have special effects
+		cardIcon.material = cd.cardMaterial;
+
 		cardManaText.text = cd.manaCost.ToString();
 
 		//Description
