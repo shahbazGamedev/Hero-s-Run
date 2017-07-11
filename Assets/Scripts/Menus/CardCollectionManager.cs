@@ -182,9 +182,9 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 	void sortCards()
 	{
 		//Remove previous cards
-		for( int i = cardCollectionHolder.transform.childCount-1; i >= 0; i-- )
+		for( int i = cardCollectionHolder.childCount-1; i >= 0; i-- )
 		{
-			Transform child = cardCollectionHolder.transform.GetChild( i );
+			Transform child = cardCollectionHolder.GetChild( i );
 			GameObject.Destroy( child.gameObject );
 		}
 

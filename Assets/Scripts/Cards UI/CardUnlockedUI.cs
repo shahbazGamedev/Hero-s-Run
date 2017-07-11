@@ -18,9 +18,11 @@ public class CardUnlockedUI : MonoBehaviour {
 	[SerializeField] RectTransform propertiesPanel;
 	[SerializeField] GameObject cardPropertyPrefab;
 
-	[Header("Fields on Sector Change popup")]
-	[SerializeField] GameObject closeButton;
-	[SerializeField] TextMeshProUGUI sectorNumberText;
+	#region Events
+	//Event management used to notify other classes when this popup is displayed or hidden
+	public delegate void CardUnlockedUIDisplayed( bool displayed );
+	public static event CardUnlockedUIDisplayed cardUnlockedUIDisplayed;
+	#endregion
 
 	public void configureCard( CardManager.CardData cd )
 	{
@@ -70,8 +72,15 @@ public class CardUnlockedUI : MonoBehaviour {
 
 	public void OnClickHide()
 	{
-		sectorNumberText.gameObject.SetActive( true );
-		closeButton.SetActive( true );
-		gameObject.SetActive( false );
+		show( false );
 	}
+
+	public void show( bool value )
+	{
+		if( cardUnlockedUIDisplayed !=  null ) cardUnlockedUIDisplayed( value );
+		gameObject.SetActive( value );
+	}
+
+
+
 }

@@ -6,13 +6,6 @@ using TMPro;
 
 public class CardsUnlockedUI : MonoBehaviour {
 
-	[Header("Top Section")]
-	[SerializeField] GameObject closeButton;
-	[SerializeField] TextMeshProUGUI sectorNumberText;
-	[SerializeField] TextMeshProUGUI sectorNameText;
-	[SerializeField] TextMeshProUGUI trophiesNeededText;
-	[SerializeField] Image sectorImage;
-
 	[Header("Cards Unlocked")]
 	[SerializeField] Transform cardsUnlockedHolder;
 	[SerializeField] GameObject cardPrefab;
@@ -21,7 +14,18 @@ public class CardsUnlockedUI : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
+		removePreviousCards();
 		createUnlockedCards();
+	}
+
+	void removePreviousCards()
+	{
+		//Remove previous cards
+		for( int i = cardsUnlockedHolder.childCount-1; i >= 0; i-- )
+		{
+			Transform child = cardsUnlockedHolder.GetChild( i );
+			GameObject.Destroy( child.gameObject );
+		}
 	}
 
 	void createUnlockedCards()
@@ -47,17 +51,8 @@ public class CardsUnlockedUI : MonoBehaviour {
 
 	public void OnClickUnlockedCard( CardManager.CardData cd )
 	{
-		//Simply show the card detail popup
-		//It looks better if the close button and sector number text are hidden
-		closeButton.SetActive( false );
-		sectorNumberText.gameObject.SetActive( false );
 		cardDetailPopup.GetComponent<CardUnlockedUI>().configureCard( cd );
-		cardDetailPopup.SetActive( true );
+		cardDetailPopup.GetComponent<CardUnlockedUI>().show( true );
 	}
 
-	public void OnClickHide()
-	{
-		gameObject.SetActive( false );
-	}
-	
 }
