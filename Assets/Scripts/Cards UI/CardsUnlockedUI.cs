@@ -2,9 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CardsUnlockedUI : MonoBehaviour {
 
+	[Header("Top Section")]
+	[SerializeField] GameObject closeButton;
+	[SerializeField] TextMeshProUGUI sectorNumberText;
+	[SerializeField] TextMeshProUGUI sectorNameText;
+	[SerializeField] TextMeshProUGUI trophiesNeededText;
+	[SerializeField] Image sectorImage;
+
+	[Header("Cards Unlocked")]
 	[SerializeField] Transform cardsUnlockedHolder;
 	[SerializeField] GameObject cardPrefab;
 	[SerializeField] GameObject cardDetailPopup;
@@ -38,7 +47,10 @@ public class CardsUnlockedUI : MonoBehaviour {
 
 	public void OnClickUnlockedCard( CardManager.CardData cd )
 	{
-		//Simply show the card details popup
+		//Simply show the card detail popup
+		//It looks better if the close button and sector number text are hidden
+		closeButton.SetActive( false );
+		sectorNumberText.gameObject.SetActive( false );
 		cardDetailPopup.GetComponent<CardUnlockedUI>().configureCard( cd );
 		cardDetailPopup.SetActive( true );
 	}

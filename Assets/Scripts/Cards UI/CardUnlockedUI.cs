@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CardUnlockedUI : MonoBehaviour {
 
@@ -16,6 +17,10 @@ public class CardUnlockedUI : MonoBehaviour {
 	[Header("Properties Panel")]
 	[SerializeField] RectTransform propertiesPanel;
 	[SerializeField] GameObject cardPropertyPrefab;
+
+	[Header("Fields on Sector Change popup")]
+	[SerializeField] GameObject closeButton;
+	[SerializeField] TextMeshProUGUI sectorNumberText;
 
 	public void configureCard( CardManager.CardData cd )
 	{
@@ -65,6 +70,8 @@ public class CardUnlockedUI : MonoBehaviour {
 
 	public void OnClickHide()
 	{
+		sectorNumberText.gameObject.SetActive( true );
+		closeButton.SetActive( true );
 		gameObject.SetActive( false );
 	}
 }
