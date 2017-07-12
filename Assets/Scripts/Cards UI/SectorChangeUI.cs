@@ -24,7 +24,7 @@ public class SectorChangeUI : MonoBehaviour {
  		sectorNumberText.text = string.Format( LocalizationManager.Instance.getText( "SECTOR_NUMBER" ), multiplayerInfo.circuitInfo.sectorNumber );
 		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + multiplayerInfo.circuitInfo.sectorNumber.ToString() );
 		sectorNameText.text = sectorName;
-		trophiesNeededText.text = multiplayerInfo.trophiesNeededToUnlock.ToString();
+		trophiesNeededText.text = multiplayerInfo.trophiesNeededToUnlock.ToString() + "+";
 		sectorImage.sprite = multiplayerInfo.circuitInfo.circuitImage;
 		sectorBackground.color = multiplayerInfo.circuitInfo.backgroundColor;
 	}
