@@ -193,15 +193,6 @@ public class GameManager {
 		return playMode == PlayMode.PlayTwoPlayers || playMode == PlayMode.PlayThreePlayers || playMode == PlayMode.PlayWithFriends;
 	}
 
-	/// <summary>
-	/// Returns true if trophies can be earned for the current play mode.
-	/// </summary>
-	/// <returns><c>true</c>, if trophies can be earned for the current play mode, <c>false</c> otherwise.</returns>
-	public bool canEarnTrophies()
-	{
-		return playMode == PlayMode.PlayTwoPlayers || playMode == PlayMode.PlayThreePlayers;
-	}
-
 	//Note the version number stored in version.txt should match the bundle version in PlayerSettings.
 	public void loadVersionNumber()
 	{

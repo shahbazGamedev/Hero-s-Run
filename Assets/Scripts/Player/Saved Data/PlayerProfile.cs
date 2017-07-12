@@ -11,6 +11,13 @@ public enum PlayerProfileEvent {
 	Trophies_Changed = 4
 }
 
+public enum SectorStatus {
+	
+	NO_CHANGE = 0,
+	WENT_UP = 1,
+	WENT_DOWN = -1
+}
+
 [System.Serializable]
 public sealed class PlayerProfile {
 
@@ -50,6 +57,9 @@ public sealed class PlayerProfile {
 	//Delegate used to communicate to other classes when the a value changes
 	public delegate void PlayerProfileChanged( PlayerProfileEvent eventType, int previousValue = 0, int newValue = 0 );
 	public static event PlayerProfileChanged playerProfileChanged;
+
+	public delegate void SectorChanged( SectorStatus sectorChanged, int previousSector, int newSector );
+	public static event SectorChanged sectorChanged;
 
 	#region User Name
 	public string getUserName()
@@ -118,7 +128,21 @@ public sealed class PlayerProfile {
 
 	public void setNumberOfTrophies( int value )
 	{
+		//Verify if the player changed sector because of the change in trophies.
+		int previousSector = LevelManager.Instance.getLevelData().getRaceTrackByTrophies( numberOfTrophies ).circuitInfo.sectorNumber;
+		int newSector = LevelManager.Instance.getLevelData().getRaceTrackByTrophies( value ).circuitInfo.sectorNumber;
+		if( newSector > previousSector )
+		{
+			if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_UP, previousSector, newSector );
+
+		}
+		else if( newSector < previousSector )
+		{
+			if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_DOWN, previousSector, newSector );
+		}
+
 		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Trophies_Changed, numberOfTrophies, value );
+
 		numberOfTrophies = value;
 		GameManager.Instance.playerStatistics.setHighestNumberOfTrophies( numberOfTrophies );
 		Debug.Log("PlayerProfile-setNumberOfTrophies to: " + value );

@@ -26,6 +26,9 @@ public class MPGameEndManager : MonoBehaviour {
 
 	[SerializeField] Text numberOfTrophiesText;
 
+	[Header("Sector Change Popup")]
+	[SerializeField] GameObject sectorChangePopup;
+
 	[Header("Other")]
 	MatchmakingManager matchmakingManager;
 	[SerializeField] int timeBeforeNextRace = 60; //in seconds
@@ -55,7 +58,7 @@ public class MPGameEndManager : MonoBehaviour {
 		raceResult.text = getRacePositionString( PlayerRaceManager.Instance.racePosition );
 		playerName.text = GameManager.Instance.playerProfile.getUserName();
 
-		if( GameManager.Instance.canEarnTrophies() )
+		if( TrophyManager.Instance.canEarnTrophies() )
 		{
 			numberOfTrophiesText.gameObject.SetActive( true );
 			int trophiesEarnedLastRace = GameManager.Instance.playerProfile.getTrophiesEarnedLastRace();
@@ -279,7 +282,22 @@ public class MPGameEndManager : MonoBehaviour {
 		//Cancel the countdown
 		StopAllCoroutines();
 		UISoundManager.uiSoundManager.playButtonClick();
+		verifyIfSectorChanged();
 		showMatchmaking();
 	}
+
+	/// <summary>
+	/// Verify if the player has changed sector. If he did, display the Sector Change popup.
+	/// </summary>
+	void verifyIfSectorChanged()
+	{
+		if( PlayerRaceManager.Instance.sectorStatus != SectorStatus.NO_CHANGE )
+		{
+			sectorChangePopup.SetActive( true );
+			//Reset value
+			PlayerRaceManager.Instance.sectorStatus = SectorStatus.NO_CHANGE;
+		}
+	}
+
 
 }

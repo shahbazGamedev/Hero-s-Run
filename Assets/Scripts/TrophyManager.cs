@@ -47,6 +47,19 @@ public class TrophyManager : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Returns true if trophies can be earned.
+	/// You can earn trophies while playing online in the 2-player or 3-player mode.
+	/// You don't earn trophies while playing with a friend or if playing offline.
+	/// However, trophies can always be earned regardless of the mode in a debug build to facilitate testing.
+	/// </summary>
+	/// <returns><c>true</c>, if trophies can be earned, <c>false</c> otherwise.</returns>
+	public bool canEarnTrophies()
+	{
+		PlayMode playMode = GameManager.Instance.getPlayMode();
+		return Debug.isDebugBuild || playMode == PlayMode.PlayTwoPlayers || playMode == PlayMode.PlayThreePlayers;
+	}
+
 	public int getTrophiesEarned( PlayMode playMode, int racePosition, int playersTrophies, int opponentTrophies )
 	{
 		int trophies = 0;
@@ -69,11 +82,36 @@ public class TrophyManager : MonoBehaviour {
 				trophies = -Mathf.Abs( trophies );
 			}
 		}
-		else
+		else if( Debug.isDebugBuild )
 		{
-			trophies = 0;
+			if( playMode == PlayMode.PlayAlone )
+			{
+				trophies = BASE_TROPHIES;
+			}
+			else if( playMode == PlayMode.PlayAgainstEnemy || playMode == PlayMode.PlayAgainstTwoEnemies )
+			{
+				if( racePosition == 0 )
+				{
+					trophies = BASE_TROPHIES;
+				}
+				else
+				{
+					trophies = -BASE_TROPHIES;
+				}
+			}
+			else if( playMode == PlayMode.PlayWithFriends )
+			{
+				if( racePosition == 0 )
+				{
+					trophies = BASE_TROPHIES;
+				}
+				else
+				{
+					trophies = -BASE_TROPHIES;
+				}
+			}
 		}
-		print( "getTrophiesEarned-Mode: " + playMode.ToString() + " racePosition: " + racePosition + " playersTrophies: " + playersTrophies + " opponentTrophies: " + opponentTrophies + " >Trophies: " + trophies );
+		Debug.Log( "getTrophiesEarned-Mode: " + playMode + " Race Position: " + racePosition + " Players trophies: " + playersTrophies + " Opponent trophies: " + opponentTrophies + " Trophies earned: " + trophies );
 		return trophies;
 	}
 

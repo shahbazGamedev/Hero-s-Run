@@ -24,6 +24,9 @@ public class PlayerRaceManager {
 
 	RaceStatus raceStatus = RaceStatus.NOT_STARTED;
 	public List<XPAwardType> raceAwardList = new List<XPAwardType>();
+	public SectorStatus sectorStatus = SectorStatus.NO_CHANGE;
+	bool initialized = false;
+
 	public static PlayerRaceManager Instance
 	{
         get
@@ -38,8 +41,18 @@ public class PlayerRaceManager {
         }
     }
 
+	void initialize()
+	{
+		PlayerProfile.sectorChanged += SectorChanged;		
+		initialized = true;
+	}
+
 	public void setRaceStatus( RaceStatus raceStatus )
 	{
+		if ( !initialized )
+		{
+			initialize();
+		}
 		this.raceStatus = raceStatus;
 	}
 
@@ -129,7 +142,7 @@ public class PlayerRaceManager {
 			GameManager.Instance.playerProfile.resetConsecutiveWins();
 		}
 
-		if( GameManager.Instance.canEarnTrophies() )
+		if( TrophyManager.Instance.canEarnTrophies() )
 		{
 			//Note: trophiesEarnedLastRace will be negative if the player lost.
 			int trophiesEarnedLastRace = TrophyManager.Instance.getTrophiesEarned( GameManager.Instance.getPlayMode(), racePosition, GameManager.Instance.playerProfile.getTrophies(), trophiesOwnedByOpponent1 );
@@ -158,7 +171,7 @@ public class PlayerRaceManager {
 		//We don't want to save every time the player plays a card while racing, so we do it once at the end of the race or if he quits.
 		GameManager.Instance.playerDeck.serializePlayerDeck(true);
 		//Remove trophies when you abandon a race
-		if( GameManager.Instance.canEarnTrophies() )
+		if( TrophyManager.Instance.canEarnTrophies() )
 		{
 			// trophiesLost will be negative.
 			// Assume you are in 3rd position if you abandon a race.
@@ -252,4 +265,14 @@ public class PlayerRaceManager {
 		GameManager.Instance.playerInventory.addCrowns( crownsEarned );
 		GameManager.Instance.playerInventory.serializePlayerInventory( true );
 	}
+
+	void SectorChanged( SectorStatus sectorStatus, int previousSector, int newSector )
+	{
+		//The ultimate user of sectorStatus is MPGameEndManager.
+		//However, MPGameEndManager resides in the Matchmaking scene and not the Level scene.
+		//This is why we save sectorStatus in PlayerRaceManager.
+		this.sectorStatus = sectorStatus;
+		Debug.Log("PlayerRaceManager- Sector changed event: Sector status is: " + sectorStatus + " Previous sector was: " + previousSector + " New sector is: " +  newSector );
+	}
+
 }
