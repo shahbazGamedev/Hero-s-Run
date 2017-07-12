@@ -13,8 +13,6 @@ public class MPGameEndManager : MonoBehaviour {
 	[SerializeField] Text raceResult;
 	[SerializeField] Text playerName;
 	[SerializeField] Text raceTime;
-	[SerializeField] Text nextRaceBegins;
-	[SerializeField] Text nextRaceCountdown;
 	
 	[Header("XP Panel")]
 	[SerializeField] Text currentLevelText;
@@ -38,10 +36,6 @@ public class MPGameEndManager : MonoBehaviour {
 	{
 		matchmakingManager = GameObject.FindGameObjectWithTag("Matchmaking").GetComponent<MatchmakingManager>();
 
-		//Static values - we just need to localise them
-		nextRaceBegins.text = LocalizationManager.Instance.getText( "EOG_NEXT_RACE_BEGINS" ).Replace("\\n", System.Environment.NewLine );
-
-		if( !xpTestingMode ) startNextRace();
 		configureRacePanel();
 
 		//Individual XP Awards
@@ -249,23 +243,6 @@ public class MPGameEndManager : MonoBehaviour {
 				break;                
 		}
 		return racePositionString;
-	}
-
-	void startNextRace()
-	{
-		StartCoroutine( "nextRaceCountdownCoroutine" );
-	}
-
-	IEnumerator nextRaceCountdownCoroutine()
-	{
-		int countdown = timeBeforeNextRace;
-		while (countdown >= 0)
-		{
-			nextRaceCountdown.text = countdown.ToString();
-			yield return new WaitForSecondsRealtime( 1.0f );
-			countdown --;
-		}
-		showMatchmaking();
 	}
 
 	void showMatchmaking()

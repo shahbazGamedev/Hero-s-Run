@@ -72,6 +72,9 @@ public class MatchmakingManager : MonoBehaviour {
 		versusText.text = LocalizationManager.Instance.getText( "CIRCUIT_VERSUS" );
 		playButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_PLAY" );
 
+		//Only show the Photon Cloud Region text when playing in an online mode.
+		PhotonCloudRegionText.gameObject.SetActive( GameManager.Instance.isOnlinePlayMode() );
+
 		//If we are returning to the lobby after a race has completed, show the end of game screen which displays XP awarded
 		if( GameManager.Instance.getGameState() == GameState.MultiplayerEndOfGame )
 		{

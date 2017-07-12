@@ -33,7 +33,6 @@ public class TrophyManager : MonoBehaviour {
 	public const int BASE_TROPHIES = 30;
 	public const int VARIABLE_TROPHIES = 20;
 	public const float TROPHIES_TRACK_DELTA = 400f;
-	const int DEBUG_TROPHIES_WON_PLAYING_ALONE = 150;
 
 	void Awake ()
 	{
@@ -87,7 +86,7 @@ public class TrophyManager : MonoBehaviour {
 		{
 			if( playMode == PlayMode.PlayAlone )
 			{
-				trophies = DEBUG_TROPHIES_WON_PLAYING_ALONE;
+				trophies = MAX_CHANGE_IN_TROPHIES;
 			}
 			else if( playMode == PlayMode.PlayAgainstEnemy || playMode == PlayMode.PlayAgainstTwoEnemies )
 			{
