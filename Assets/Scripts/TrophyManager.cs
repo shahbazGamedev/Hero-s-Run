@@ -90,7 +90,7 @@ public class TrophyManager : MonoBehaviour {
 			}
 			else if( playMode == PlayMode.PlayAgainstEnemy || playMode == PlayMode.PlayAgainstTwoEnemies )
 			{
-				if( racePosition == 0 )
+				if( racePosition == 1 )
 				{
 					trophies = BASE_TROPHIES;
 				}
@@ -101,7 +101,7 @@ public class TrophyManager : MonoBehaviour {
 			}
 			else if( playMode == PlayMode.PlayWithFriends )
 			{
-				if( racePosition == 0 )
+				if( racePosition == 1 )
 				{
 					trophies = BASE_TROPHIES;
 				}
