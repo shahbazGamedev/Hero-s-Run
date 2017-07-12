@@ -271,8 +271,6 @@ public class MPGameEndManager : MonoBehaviour {
 		if( PlayerRaceManager.Instance.sectorStatus != SectorStatus.NO_CHANGE )
 		{
 			sectorChangePopup.SetActive( true );
-			//Reset value
-			PlayerRaceManager.Instance.sectorStatus = SectorStatus.NO_CHANGE;
 		}
 	}
 

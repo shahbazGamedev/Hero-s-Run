@@ -21,6 +21,8 @@ public class DebugMenu : MonoBehaviour {
 	[SerializeField] Text trophyOverrideMultiplierText;
 	[SerializeField] Dropdown regionOverrideDropdown;
 
+	int numberOfTrophies;
+
 	void Start () {
 				
 		SceneManager.sceneUnloaded += OnSceneUnloaded;
@@ -28,8 +30,9 @@ public class DebugMenu : MonoBehaviour {
 		speedOverrideMultiplierSlider.value = LevelManager.Instance.speedOverrideMultiplier * 10;
 		speedOverrideMultiplierText.text = LevelManager.Instance.speedOverrideMultiplier.ToString();
 
-		trophyOverrideMultiplierSlider.value = GameManager.Instance.playerProfile.getTrophies();
-		trophyOverrideMultiplierText.text = GameManager.Instance.playerProfile.getTrophies().ToString("N0");
+		numberOfTrophies = GameManager.Instance.playerProfile.getTrophies();
+		trophyOverrideMultiplierSlider.value = numberOfTrophies;
+		trophyOverrideMultiplierText.text = numberOfTrophies.ToString("N0");
 
 		if( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() )
 		{
@@ -83,14 +86,19 @@ public class DebugMenu : MonoBehaviour {
 
 	public void setTrophyOverride( Slider slider )
 	{
-		GameManager.Instance.playerProfile.setNumberOfTrophies( (int) slider.value );
-		trophyOverrideMultiplierText.text = (slider.value).ToString("N0");
+		numberOfTrophies = (int) slider.value;
+		trophyOverrideMultiplierText.text = numberOfTrophies.ToString("N0");
 	}
 
 	void OnSceneUnloaded ( Scene scene )
 	{
-		//Save the player profile. The number of trophies may have been saved.
-		GameManager.Instance.playerProfile.serializePlayerprofile();
+		//Only proceed if the unloaded scene is Options
+		if( scene.buildIndex == (int) GameScenes.Options )
+		{
+			//Set and save the number of trophies since it may have been changed.
+			GameManager.Instance.playerProfile.setNumberOfTrophies( numberOfTrophies );
+			GameManager.Instance.playerProfile.serializePlayerprofile();
+		}
 	}
 
 	public void OnClickAllowBotToPlayCards()

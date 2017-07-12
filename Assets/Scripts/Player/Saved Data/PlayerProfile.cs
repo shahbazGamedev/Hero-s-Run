@@ -15,7 +15,8 @@ public enum SectorStatus {
 	
 	NO_CHANGE = 0,
 	WENT_UP = 1,
-	WENT_DOWN = -1
+	WENT_DOWN = -1,
+	WENT_UP_AND_NEW = 2
 }
 
 [System.Serializable]
@@ -129,12 +130,21 @@ public sealed class PlayerProfile {
 	public void setNumberOfTrophies( int value )
 	{
 		//Verify if the player changed sector because of the change in trophies.
+		int highestTrophies = GameManager.Instance.playerStatistics.getStatisticData( StatisticDataType.HIGHEST_TROPHIES );
+		int highestSector = LevelManager.Instance.getLevelData().getRaceTrackByTrophies( highestTrophies ).circuitInfo.sectorNumber;
 		int previousSector = LevelManager.Instance.getLevelData().getRaceTrackByTrophies( numberOfTrophies ).circuitInfo.sectorNumber;
 		int newSector = LevelManager.Instance.getLevelData().getRaceTrackByTrophies( value ).circuitInfo.sectorNumber;
+
 		if( newSector > previousSector )
 		{
-			if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_UP, previousSector, newSector );
-
+			if( newSector > highestSector )
+			{
+				if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_UP_AND_NEW, previousSector, newSector );
+			}
+			else if( newSector <= highestSector )
+			{
+				if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_UP, previousSector, newSector );
+			}
 		}
 		else if( newSector < previousSector )
 		{

@@ -13,6 +13,7 @@ public class SectorChangeUI : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI trophiesNeededText;
 	[SerializeField] Image sectorImage;
 	[SerializeField] Image sectorBackground;
+	[SerializeField] GameObject newSectorRibbon;
 
 	// Use this for initialization
 	void Start ()
@@ -27,6 +28,9 @@ public class SectorChangeUI : MonoBehaviour {
 		trophiesNeededText.text = multiplayerInfo.trophiesNeededToUnlock.ToString() + "+";
 		sectorImage.sprite = multiplayerInfo.circuitInfo.circuitImage;
 		sectorBackground.color = multiplayerInfo.circuitInfo.backgroundColor;
+		newSectorRibbon.SetActive( PlayerRaceManager.Instance.sectorStatus == SectorStatus.WENT_UP_AND_NEW );
+		//Reset value
+		PlayerRaceManager.Instance.sectorStatus = SectorStatus.NO_CHANGE;
 	}
 
 	void OnEnable()
