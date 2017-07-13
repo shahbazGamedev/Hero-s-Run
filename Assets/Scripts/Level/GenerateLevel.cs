@@ -397,9 +397,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			surroundingPlane.gameObject.SetActive( false );
 		}
 
-		List<TileGroupType> tileGroupList = currentMultiplayer.tileGroupList;
-
-		generateMultiplayerLevel( tileGroupList );
+		generateMultiplayerLevel( currentMultiplayer.numberOfTileGroups, currentMultiplayer.tileGroupList, currentMultiplayer.endTileGroupList  );
 
 		//Make the first few tiles active
 		activateInitialTiles(0);
@@ -413,26 +411,57 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 	}
 
-	private void generateMultiplayerLevel( List<TileGroupType> tileGroupList )
+	private void generateMultiplayerLevel( int numberOfTileGroups, List<TileGroupType> tileGroupList, List<TileGroupType> endTileGroupList )
 	{
+		//First, add the preset tile groups from tileGroupList
 		for( int i=0; i < tileGroupList.Count; i++ )
 		{
 			TileGroup tg = tileGroupManager.getTileGroup(tileGroupList[i]);
-			if( tg.frequency != TileGroup.FrequencyType.Never && (tg.validGameMode == ValidGameMode.Any || tg.validGameMode == ValidGameMode.Multiplayer) )
+			addTileGroup( tg );
+		}
+
+		//Second, calculate how many additional random tile groups we need to reach the desired number of tile groups.
+		//We substract one because we always add an end tile group.
+		int additionalTileGroupsNeeded = numberOfTileGroups - tileGroupList.Count - 1;
+
+		if( additionalTileGroupsNeeded > 0 )
+		{
+			//Third, populate the rest of the level with random tile groups.
+			for( int i=0; i < additionalTileGroupsNeeded; i++ )
 			{
-				setCurrentTheme(tg.theme );
-				List<TileType> individualTiles = tg.tileList;
-				for( int j=0; j < individualTiles.Count; j++ )
-				{
-					if( individualTiles[j] == TileType.Checkpoint )
-					{
-						indexOfCheckpointTiles.Add( tileCreationIndex );
-					}
-					addTileNew( individualTiles[j] );
-				}
+				TileGroup rtg = tileGroupManager.getRandomTileGroup( currentTheme );
+				//Try to avoid having two identical tile groups back to back if possible.
+				//We will make one attempt to change it if it is identical.
+				if( rtg.tileGroupType == previousRandomTileGroupType ) rtg = tileGroupManager.getRandomTileGroup( currentTheme );
+				previousRandomTileGroupType = rtg.tileGroupType;
+				addTileGroup( rtg );
 			}
 		}
+
+		//Fourth, add one random end tile
+		if( endTileGroupList.Count > 0 )
+		{
+			int random = Random.Range(0, endTileGroupList.Count );
+			TileGroupType etgt = endTileGroupList[random];
+			TileGroup etg = tileGroupManager.getTileGroup(etgt);
+			addTileGroup( etg );
+		}
+		else
+		{
+			Debug.LogError("GenerateLevel: Error while generating multiplayer level. The endTileGroupList is empty. It must contain at least one tile.");
+		}
+		
 		worldRoadSegments.TrimExcess();		
+	}
+
+	private void addTileGroup( TileGroup tg )
+	{
+		setCurrentTheme(tg.theme );
+		List <TileType> tiles = tg.tileList;
+		for( int j=0; j < tiles.Count; j++ )
+		{
+			addTileNew( tiles[j] );
+		}
 	}
 
 	private void addRandomTileGroupToEndlessTilesQueue()

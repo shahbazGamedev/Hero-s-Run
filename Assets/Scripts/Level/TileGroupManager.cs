@@ -51,9 +51,7 @@ public class TileGroupManager : MonoBehaviour {
 	}
 
 	//Returns a random tile group that belongs to the specified theme.
-	//Only used in Endless mode.
 	//Only tile groups with a non-zero frequency will be returned.
-	//In addition, only tiles groups with an Endless or Any ValidGameMode will be returned.
 	//The frequency of a tile group being selected is based on how big the frequency for that tile group is compared to that of the other tile groups.
 	public TileGroup getRandomTileGroup( SegmentTheme theme )
 	{
@@ -64,7 +62,7 @@ public class TileGroupManager : MonoBehaviour {
 		foreach(KeyValuePair<TileGroupType, TileGroup> pair in tileGroupDictionary) 
 		{
 			tg = pair.Value;
-			if( tg.tileGroupType != TileGroupType.Mines_Start && tg.theme == theme && tg.frequency != TileGroup.FrequencyType.Never && ( tg.validGameMode == ValidGameMode.Endless || tg.validGameMode == ValidGameMode.Any ) )
+			if( tg.tileGroupType != TileGroupType.Mines_Start && tg.theme == theme && tg.frequency != TileGroup.FrequencyType.Never && ( tg.validGameMode == ValidGameMode.Endless || tg.validGameMode == ValidGameMode.Any || tg.validGameMode == ValidGameMode.Multiplayer ) )
 			{
 				totalFrequencyPoints = totalFrequencyPoints + (int)tg.frequency;
 				tileGroupListForTheme.Add( tg );

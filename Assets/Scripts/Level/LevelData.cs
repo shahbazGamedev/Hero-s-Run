@@ -337,7 +337,6 @@ public class LevelData : MonoBehaviour {
 		public bool isFogEnabled = false;
 		[Header("Tile Groups")]
 		public List<TileGroupType> tileGroupList = new List<TileGroupType>();
-		
 	}
 
 	public MultiplayerInfo getRaceTrackByName( string raceTrackName )
@@ -441,9 +440,15 @@ public class LevelData : MonoBehaviour {
 		[Header("Dynamic Fog")]
 		public bool isFogEnabled = false;
 		[Header("Tile Groups")]
+		[Tooltip("Defines the number of tile groups for the level including the end tile group. If the number specified is bigger than the number of tile groups in tileGroupList plus one (for the end tile group), random tile groups will be added.")]
+		public int numberOfTileGroups = 25;
+		[Tooltip("Defines the mandatory tile groups for the level. It should not contain an end tile group. It is preferable, but not mandatory, that it contains a start tile group.")]
 		public List<TileGroupType> tileGroupList = new List<TileGroupType>();
+		[Tooltip("A list of end tile groups. A random tile group from this list will be added at the end of the level. It should not be empty.")]
+		public List<TileGroupType> endTileGroupList = new List<TileGroupType>();
 		[Tooltip("Tile size. Either 50 for Jousting or 36.4 for all other.")]
 		public float tileSize;
+		[Header("Other")]
 		[Tooltip("Trophies needed to unlock race track.")]
 		public int trophiesNeededToUnlock;
 		[Tooltip("Coins awarded on victory. This number varies per track.")]
