@@ -37,6 +37,9 @@ public class StasisController : CardSpawnedObject {
 				//If the player was ziplining when he got affected by stasis, detach him from the zipline.
 				affectedPlayerControl.detachFromZipline();
 
+				//If the player is affected by shrink, cancel it. The player will enlarge back to his normal size.
+				affectedPlayerTransform.GetComponent<PlayerSpell>().cancelShrinkSpell();
+
 				//Freeze the player's movement and remove player control.
 				affectedPlayerControl.enablePlayerMovement( false );
 				affectedPlayerControl.enablePlayerControl( false );
@@ -54,9 +57,7 @@ public class StasisController : CardSpawnedObject {
 				{
 					Debug.LogWarning("StasisController-there is no ground below the affected player: " + affectedPlayerControl.name );
 				}
-				//Make the player a child of the Statis Sphere
-				affectedPlayerTransform.SetParent( transform );
-				affectedPlayerTransform.localPosition = new Vector3( 0, Y_POS_PLAYER_IN_SPHERE, 0 );
+				affectedPlayerTransform.position = transform.TransformPoint( new Vector3( 0, Y_POS_PLAYER_IN_SPHERE, 0 ) );
 				affectedPlayerTransform.gameObject.layer = MaskHandler.playerLayer; //Restore to Player
 				//Slow down the anim speed to give the impression of the player being stuck
 				affectedPlayerTransform.GetComponent<Animator>().speed = 0.3f;
@@ -90,7 +91,6 @@ public class StasisController : CardSpawnedObject {
 	{
 		yield return new WaitForSeconds(delayBeforeSpellExpires);
 		MiniMap.Instance.hideSecondaryIcon( affectedPlayerTransform.gameObject );
-		affectedPlayerTransform.SetParent( null );
 		affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = false;
 		affectedPlayerTransform.GetComponent<Animator>().speed = 1f;
 		affectedPlayerControl.fall( true );

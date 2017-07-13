@@ -31,19 +31,23 @@ public class CardShrink : Card {
 		{
 			if( PlayerRace.players[i].name != playerTransform.name )
 			{
-				if( PlayerRace.players[i].GetComponent<PlayerSpell>().isReflectEnabled() )
+				//Shrink doesn't affect a player in the Idle or Dying state.
+				if( PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle && PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
 				{
-					MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, PlayerRace.players[i].GetComponent<PhotonView>().viewID );
-
-					//The target has the Reflect spell active.
-					//Reflect to caster
-					playerTransform.GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
-				
-				}
-				else
-				{
-					PlayerRace.players[i].GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
-					atLeastOneTarget = true;
+					if( PlayerRace.players[i].GetComponent<PlayerSpell>().isReflectEnabled() )
+					{
+						MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, PlayerRace.players[i].GetComponent<PhotonView>().viewID );
+	
+						//The target has the Reflect spell active.
+						//Reflect to caster
+						playerTransform.GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
+					
+					}
+					else
+					{
+						PlayerRace.players[i].GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
+						atLeastOneTarget = true;
+					}
 				}
 			}
 		}

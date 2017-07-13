@@ -109,11 +109,12 @@ public class PlayerSpell : PunBehaviour {
 		playerControl.runSpeed = runSpeedBeforeSpell;
 	}
 
-	void cancelShrinkSpell()
+	public void cancelShrinkSpell()
 	{
 		//Are we shrunk?
 		if( transform.localScale.y != 1f )
 		{
+			StopCoroutine( "enlarge" );
 			StopCoroutine( "shrink" );
 			//If we died while shrunk, do nothing i.e. stay small, that's fine.
 			//If we crossed the finish line while shrunk, enlarge the player quickly back to his normal size.
