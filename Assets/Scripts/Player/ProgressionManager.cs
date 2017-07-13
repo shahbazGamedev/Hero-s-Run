@@ -152,10 +152,16 @@ public class ProgressionManager : MonoBehaviour {
 		return iconList;
 	}
 
+	/// <summary>
+	/// Returns a random player icon unique identifier.
+	/// Default icons are excluded.
+	/// </summary>
+	/// <returns>A random player icon unique identifier.</returns>
 	public int getRandomPlayerIconUniqueId()
 	{
-		int randomNumber = Random.Range(0, iconList.Count );
-		return iconList[randomNumber].uniqueId;
+		List<IconData> iconListExcludingDefaults = iconList.FindAll( icon => icon.isDefaultIcon == false );
+		int randomNumber = Random.Range(0, iconListExcludingDefaults.Count );
+		return iconListExcludingDefaults[randomNumber].uniqueId;
 	}
 
 	public int getNumberOfPlayerIcons()
