@@ -165,7 +165,8 @@ public enum TileGroupType {
 	Jousting_Zipline = 10008,		//zipline, left, straight_log, right
 	Jousting_Bridge = 10009,		//Straight_Slope, Landmark_Broken_Bridge
 	Jousting_Shortcut_left = 10010,	//Straight, Left_Straight
-	Jousting_Flamethrower = 10011	//Straight_River
+	Jousting_Flamethrower = 10011,	//Straight_River
+	Jousting_Broken_Path = 10012	//Straight_River_Log_Crossing
 
 }
 
