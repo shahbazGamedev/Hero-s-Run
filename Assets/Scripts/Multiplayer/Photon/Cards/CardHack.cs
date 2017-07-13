@@ -26,18 +26,21 @@ public class CardHack : Card {
 		{
 			if( PlayerRace.players[i].name != playerTransform.name )
 			{
-				if( PlayerRace.players[i].GetComponent<PlayerSpell>().isReflectEnabled() )
+				if( !isPlayerImmune( PlayerRace.players[i].transform  ) )
 				{
-					MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, PlayerRace.players[i].GetComponent<PhotonView>().viewID );
-
-					//The target has the Reflect spell active.
-					//Reflect to caster
-					playerTransform.GetComponent<PhotonView>().RPC("cardHackRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
-				
-				}
-				else
-				{
-					PlayerRace.players[i].GetComponent<PhotonView>().RPC("cardHackRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
+					if( PlayerRace.players[i].GetComponent<PlayerSpell>().isReflectEnabled() )
+					{
+						MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, PlayerRace.players[i].GetComponent<PhotonView>().viewID );
+	
+						//The target has the Reflect spell active.
+						//Reflect to caster
+						playerTransform.GetComponent<PhotonView>().RPC("cardHackRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
+					
+					}
+					else
+					{
+						PlayerRace.players[i].GetComponent<PhotonView>().RPC("cardHackRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
+					}
 				}
 			}
 		}

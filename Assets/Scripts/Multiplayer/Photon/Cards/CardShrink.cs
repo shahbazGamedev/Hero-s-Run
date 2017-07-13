@@ -31,8 +31,7 @@ public class CardShrink : Card {
 		{
 			if( PlayerRace.players[i].name != playerTransform.name )
 			{
-				//Shrink doesn't affect a player in the Idle or Dying state.
-				if( PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle && PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
+				if( !isPlayerImmune( PlayerRace.players[i].transform  ) )
 				{
 					if( PlayerRace.players[i].GetComponent<PlayerSpell>().isReflectEnabled() )
 					{

@@ -34,6 +34,24 @@ public class Card : Photon.PunBehaviour {
 		}
 		return playerTransform;
 	}
+
+	/// <summary>
+	/// Returns true if the player is immune to spells.
+	/// A player is immune when in the Idle or Dying state.
+	/// </summary>
+	/// <returns><c>true</c>, if the player is immune, <c>false</c> otherwise.</returns>
+	/// <param name="player">Player.</param>
+	protected bool isPlayerImmune( Transform player  )
+	{
+		if( player.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle && player.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
 	
 	protected IEnumerator changeSprintBlendFactor( float endBlendFactor, float duration, PlayerControl playerControl )
 	{

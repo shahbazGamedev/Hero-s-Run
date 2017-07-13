@@ -32,10 +32,10 @@ public class CardLinkedFate : Card {
 		Transform playerTransform = getPlayerTransform( photonViewID );
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
 
-		//Send the RPC to everyone including the caster
+		//Send the RPC to everyone who is not immune including the caster
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
-			PlayerRace.players[i].GetComponent<PhotonView>().RPC("cardLinkedFateRPC", PhotonTargets.AllViaServer, playerTransform.name, cd.getCardPropertyValue( CardPropertyType.DURATION_WITH_TIMER, level ) );
+			if( !isPlayerImmune( PlayerRace.players[i].transform ) ) PlayerRace.players[i].GetComponent<PhotonView>().RPC("cardLinkedFateRPC", PhotonTargets.AllViaServer, playerTransform.name, cd.getCardPropertyValue( CardPropertyType.DURATION_WITH_TIMER, level ) );
 		}
 	}
 	#endregion
