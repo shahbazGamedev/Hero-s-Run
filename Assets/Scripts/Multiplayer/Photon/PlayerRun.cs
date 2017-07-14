@@ -90,7 +90,6 @@ public class PlayerRun : Photon.PunBehaviour {
 
 	void MultiplayerStateChanged( PlayerCharacterState newState )
 	{
-		print("PlayerRun MultiplayerStateChanged " + newState );
 	    switch (newState)
 		{
 	        case PlayerCharacterState.Dying:
@@ -141,8 +140,6 @@ public class PlayerRun : Photon.PunBehaviour {
 		//Don't add the same speed multiplier twice
 		if( !activeSpeedMultipliersList.Exists( mult => mult.type == type ) )
 		{
-			print("addSpeedMultiplier: " + type );
-			
 			activeSpeedMultipliersList.Add( getSpeedMultiplierByType( type ) );
 			calculateOverallSpeedMultiplier();
 		}
@@ -223,7 +220,6 @@ public class PlayerRun : Photon.PunBehaviour {
 		if( activeSpeedMultipliersList.Exists( mult => mult.type == type ) )
 		{
 			SpeedMultiplier speedMultiplier = getActiveSpeedMultiplierByType( type );
-			print("removeVariableSpeedMultiplier " + speedMultiplier.type + " " + speedMultiplier.multiplier );
 			float elapsedTime = 0;
 			float startSpeedMultiplier = speedMultiplier.multiplier;
 			do
@@ -236,10 +232,6 @@ public class PlayerRun : Photon.PunBehaviour {
 			} while ( elapsedTime < duration );
 			activeSpeedMultipliersList.Remove( speedMultiplier );
 		}
-		else
-		{
-			Debug.LogError("PlayerRun error: the variable speed modifier of type " + type + " you want to remove does not exists."  );
-		}
 	}
 
 	/// <summary>
@@ -251,7 +243,6 @@ public class PlayerRun : Photon.PunBehaviour {
 		SpeedMultiplier mult = getSpeedMultiplierByType( type );
 		if( activeSpeedMultipliersList.Contains( mult ) )
 		{
-			print("removeSpeedMultiplier: " + mult.type );
 			activeSpeedMultipliersList.Remove( mult );
 			calculateOverallSpeedMultiplier();
 		}
@@ -280,7 +271,7 @@ public class PlayerRun : Photon.PunBehaviour {
 			setSprintBlendFactor( blendFactor );
 
 		}
-		print("PlayerRun calculateOverallSpeedMultiplier: " + overallSpeedMultiplier + " runSpeed: " +  runSpeed + " defaultOverallSpeedMultiplier: " + defaultOverallSpeedMultiplier + " " + getActiveSpeedMultipliers() );
+		//print("PlayerRun calculateOverallSpeedMultiplier: " + overallSpeedMultiplier + " runSpeed: " +  runSpeed + " defaultOverallSpeedMultiplier: " + defaultOverallSpeedMultiplier + " " + getActiveSpeedMultipliers() );
 
 	}
 
@@ -290,7 +281,6 @@ public class PlayerRun : Photon.PunBehaviour {
 	/// <param name="includeCardBased">If set to <c>true</c> include card based spreed modifiers.</param>
 	void removeAllSpeedMultipliers( bool includeCardBased )
 	{
-		print("removeAllSpeedMultipliers: " + includeCardBased );
 		if( includeCardBased )
 		{
 			activeSpeedMultipliersList.Clear();
