@@ -15,63 +15,57 @@ public enum SpeedMultiplierType {
 
 public class PlayerRun : Photon.PunBehaviour {
 
-	#region Run speed and acceleration	
-	//This value is used to accelerate the run speed as time goes by
-	float timeSessionStarted = 0;
+	[Tooltip("List of run speed mofifiers to apply when the character state changes. For example, when the player stumbles, we want to temporarily slow down the player. This can be done by adding a Stumble type with a value of 0.9f.")]
+	[SerializeField] List<SpeedMultiplier> speedMultipliersList =  new List<SpeedMultiplier>();
 
-	//The run start speed specified in the level data.
+	#region Run speed
+	//The run speed specified in the level data.
 	float levelRunStartSpeed = 0;
-	//when a new level starts or if the player dies and he is revived, he will
-	//start running at runStartSpeed.
-	float runStartSpeed = 0;
+
 	//The run speed of the player
-	public float runSpeed = 0;
-	//Run acceleration is used to determine how fast the player's run speed
-	//will increase. It is specified in the level data. A good value is 0.1f.
-	float runAcceleration = 0;
-	//The run speed is reduced slightly during turns to make them easier
-	float runSpeedAtTimeOfTurn;
-	float runSpeedTurnMultiplier = 0.9f;
-	//If the player stumbles, his speed will be reduced while he tumbles.
-	float runSpeedAtTimeOfStumble;
-	float runSpeedStumbleMultiplier = 0.9f; 
-	//allowRunSpeedToIncrease is set to false while jumping
-	bool allowRunSpeedToIncrease = true;
-	float runSpeedAtTimeOfJump;
-	//By what percentage should we reduce the run speed during a jump
-	float runSpeedJumpMultiplier = 0.75f;
-	//The maximum run speed allowed.
-	const float MAX_RUN_SPEED = 42f;
+	float runSpeed = 0;
+
+	//List of active speed multipliers.
+	public List<SpeedMultiplier> activeSpeedMultipliersList =  new List<SpeedMultiplier>();
+
+	float defaultOverallSpeedMultiplier = 1f; //this value may be overriden in the debug menu
+	float overallSpeedMultiplier; //this value is multiplied by levelRunStartSpeed to give the run speed
+
 	//The speed to reduce to after crossing finish line
 	const float SLOW_DOWN_END_SPEED = 5f;
-	float MAX_RUN_SPEED_FOR_DOUBLE_JUMP = 18f; //We want to cap the maximum run speed during a double jump. If the player is sprinting for example, we don't want him to leap into a wall.
+
+ 	//We want to cap the maximum run speed during a double jump. If the player is sprinting for example, we don't want him to leap into a wall.
+	float MAX_RUN_SPEED_FOR_DOUBLE_JUMP = 18f;
 	#endregion
 
-	//Used to modify the blend amount between Run and Sprint animations based on the current run speed. Also used by the troll.
+	#region Run to Sprint animations blending
+	//Used to modify the blend amount between Run and Sprint animations based on the current run speed.
 	float blendFactor;
 	int speedBlendFactor = Animator.StringToHash("Speed");
-	int RunTrigger = Animator.StringToHash("Run");
+	#endregion
 
+	#region Cached for performance
 	Animator anim;
 	PlayerControl playerControl;
-	[SerializeField] List<SpeedMultiplier> speedMultipliersList =  new List<SpeedMultiplier>();
-	public List<SpeedMultiplier> activeSpeedMultipliersList =  new List<SpeedMultiplier>();
-	float defaultOverallSpeedMultiplier = 1f;
-	float overallSpeedMultiplier;
+	#endregion
 
 	// Use this for initialization
 	void Start ()
 	{
 		anim = GetComponent<Animator>();
 		playerControl = GetComponent<PlayerControl>();
+
 		defaultOverallSpeedMultiplier = LevelManager.Instance.speedOverrideMultiplier;
 		overallSpeedMultiplier = defaultOverallSpeedMultiplier;
+
+		//Get the base run speed from the level data.
+		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedCircuit();
+		levelRunStartSpeed = LevelManager.Instance.getSelectedCircuit().RunStartSpeed;
 	}
 
 	void OnEnable()
 	{
 		HUDMultiplayer.startRunningEvent += StartRunningEvent;
-		GameManager.gameStateEvent += GameStateChange;
 		PlayerControl.multiplayerStateChanged += MultiplayerStateChanged;
 	}
 
@@ -83,25 +77,7 @@ public class PlayerRun : Photon.PunBehaviour {
 
 	void StartRunningEvent()
 	{
-		startRunning();
-	}
-	
-	void GameStateChange( GameState previousState, GameState newState )
-	{
-		/*
-		//Ignore game state changes if we are not the owner
-		if ( !this.photonView.isMine ) return;
-		if( newState == GameState.Normal )
-		{
-			if( previousState == GameState.Paused )
-			{
-				this.photonView.RPC( "unpauseRemotePlayers", PhotonTargets.AllViaServer );
-			}
-		}
-		else if( newState == GameState.Paused )
-		{
-			this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.AllViaServer, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
-		}*/
+		runSpeed = levelRunStartSpeed;
 	}
 
 	void MultiplayerStateChanged( PlayerCharacterState newState )
@@ -111,7 +87,6 @@ public class PlayerRun : Photon.PunBehaviour {
 		{
 	        case PlayerCharacterState.Dying:
 				runSpeed = 0;
-				allowRunSpeedToIncrease = false;
 				removeAllSpeedMultipliers( true );
 				break;
 	                
@@ -149,6 +124,10 @@ public class PlayerRun : Photon.PunBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Adds a speed multiplier of the given type.
+	/// </summary>
+	/// <param name="type">Type.</param>
 	void addSpeedMultiplier( SpeedMultiplierType type )
 	{
 		//Don't add the same speed multiplier twice
@@ -159,9 +138,12 @@ public class PlayerRun : Photon.PunBehaviour {
 			activeSpeedMultipliersList.Add( getSpeedMultiplierByType( type ) );
 			calculateOverallSpeedMultiplier();
 		}
-
 	}
 
+	/// <summary>
+	/// Returns a predefined speed multiplier of the given type. The type must exist in speedMultipliersList.
+	/// </summary>
+	/// <param name="type">Type.</param>
 	SpeedMultiplier getSpeedMultiplierByType( SpeedMultiplierType type )
 	{
 		if( speedMultipliersList.Exists( mult => mult.type == type ) )
@@ -175,6 +157,10 @@ public class PlayerRun : Photon.PunBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Returns an active speed multiplier of the given type from the activeSpeedMultipliersList.
+	/// </summary>
+	/// <param name="type">Type.</param>
 	SpeedMultiplier getActiveSpeedMultiplierByType( SpeedMultiplierType type )
 	{
 		if( activeSpeedMultipliersList.Exists( mult => mult.type == type ) )
@@ -183,11 +169,18 @@ public class PlayerRun : Photon.PunBehaviour {
 		}
 		else
 		{
-			Debug.LogError("PlayerRun error: could not find speed multiplier of type " + type + " in activeSpeedMultipliersList.");
+			Debug.LogError("PlayerRun error: could not find active speed multiplier of type " + type + " in activeSpeedMultipliersList.");
 			return null;
 		}
 	}
 
+	/// <summary>
+	/// Adds a variable speed multiplier of the specified type. The speed multiplier value will change to endSpeedMultiplier in the time specified by duration.
+	/// </summary>
+	/// <returns>Adds a variable speed multiplier.</returns>
+	/// <param name="type">Type.</param>
+	/// <param name="endSpeedMultiplier">End speed multiplier.</param>
+	/// <param name="duration">Duration.</param>
 	public IEnumerator addVariableSpeedMultiplier( SpeedMultiplierType type, float endSpeedMultiplier, float duration )
 	{
 		//Don't add the same speed multiplier twice
@@ -209,9 +202,15 @@ public class PlayerRun : Photon.PunBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Removes a variable speed multiplier of the specified type. The speed multiplier value will change back to 1f in the time specified by duration.
+	/// </summary>
+	/// <returns>Adds a variable speed multiplier.</returns>
+	/// <param name="type">Type.</param>
+	/// <param name="endSpeedMultiplier">End speed multiplier.</param>
+	/// <param name="duration">Duration.</param>
 	public IEnumerator removeVariableSpeedMultiplier( SpeedMultiplierType type, float duration )
 	{
-		print("removeVariableSpeedMultiplier " + type + " " + duration );
 		//Only try to remove if it exists
 		if( activeSpeedMultipliersList.Exists( mult => mult.type == type ) )
 		{
@@ -231,10 +230,14 @@ public class PlayerRun : Photon.PunBehaviour {
 		}
 		else
 		{
-			print("removeVariableSpeedMultiplier does not exists " + type  );
+			Debug.LogError("PlayerRun error: the variable speed modifier of type " + type + " you want to remove does not exists."  );
 		}
 	}
 
+	/// <summary>
+	/// Removes the speed multiplier of the given type.
+	/// </summary>
+	/// <param name="type">Type.</param>
 	void removeSpeedMultiplier( SpeedMultiplierType type )
 	{
 		SpeedMultiplier mult = getSpeedMultiplierByType( type );
@@ -246,6 +249,9 @@ public class PlayerRun : Photon.PunBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Calculates the overall speed multiplier.
+	/// </summary>
 	void calculateOverallSpeedMultiplier()
 	{
 		overallSpeedMultiplier = defaultOverallSpeedMultiplier;
@@ -258,6 +264,10 @@ public class PlayerRun : Photon.PunBehaviour {
 
 	}
 
+	/// <summary>
+	/// Removes all speed multipliers.
+	/// </summary>
+	/// <param name="includeCardBased">If set to <c>true</c> include card based spreed modifiers.</param>
 	void removeAllSpeedMultipliers( bool includeCardBased )
 	{
 		print("removeAllSpeedMultipliers: " + includeCardBased );
@@ -274,6 +284,10 @@ public class PlayerRun : Photon.PunBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Returns a string listing all of the active speed multipliers. Used for debugging.
+	/// </summary>
+	/// <returns>The active speed multipliers.</returns>
 	string getActiveSpeedMultipliers()
 	{
 		string activeSpeedMultipliersString = string.Empty;
@@ -284,62 +298,13 @@ public class PlayerRun : Photon.PunBehaviour {
 		return activeSpeedMultipliersString;
 	}
 
-	void setInitialRunningParameters()
-	{
-		//Use the level data to determine what the start run speed, run acceleration since they can vary
-		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedCircuit();
-		levelRunStartSpeed = multiplayerInfo.RunStartSpeed;
-		runAcceleration = multiplayerInfo.RunAcceleration;
-		runSpeedTurnMultiplier = 0.9f; //Hack = how does this impact player synchro? Should I use 1f?
-		runStartSpeed = levelRunStartSpeed;
-		runSpeed = levelRunStartSpeed;
-	}
-
-	public void startRunning()
-	{	
-		//Mecanim Hack - we call rebind because the animation states are not reset properly when you die in the middle of an animation.
-		//For example, if you die during a double jump, after you get resurrected and start running again, if you do another double jump, only part of the double jump animation will play, never the full animation.
-		anim.Rebind();
-
-		setInitialRunningParameters();
-
-		//The player starts off running
-		playerControl.setAnimationTrigger(RunTrigger);
-		playerControl.setCharacterState( PlayerCharacterState.StartRunning );
-		playerControl.setCharacterState( PlayerCharacterState.Running );
-	
-		//When the GameState is NORMAL, we display the HUD
-		if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) GameManager.Instance.setGameState( GameState.Normal );
-
-		playerControl.enablePlayerControl( true );
-	}
-
+	/// <summary>
+	/// Returns the current run speed.
+	/// </summary>
+	/// <returns>The current run speed.</returns>
 	public float getRunSpeed()
 	{
 		return runSpeed;
-	}
-
-	public float getSpeedForState( PlayerCharacterState state )
-	{
-		return runSpeed;
-	}
-
-	public void setSpeedForState( PlayerCharacterState state )
-	{
-
-	}
-
-	void FixedUpdate()
-	{
-		updateRunSpeed();
-	}
-
-	void updateRunSpeed()
-	{
-		if( allowRunSpeedToIncrease && playerControl.getCharacterState() != PlayerCharacterState.Dying && runSpeed <= MAX_RUN_SPEED )
-		{
-			//runSpeed = (Time.time - timeSessionStarted) * runAcceleration + runStartSpeed; //in seconds
-		}
 	}
 
 	//We pass the triggerPositionZ value because we need its position. We cannot rely on the position of the player at the moment of trigger because it can fluctuate based on frame rate and such.
@@ -349,7 +314,6 @@ public class PlayerRun : Photon.PunBehaviour {
 	{
 		GetComponent<Rigidbody>().velocity = new Vector3( 0,playerControl.moveDirection.y,0 );
 		GetComponent<PlayerSpell>().cancelSpeedBoost();
-		allowRunSpeedToIncrease = false;
 		playerControl.enablePlayerControl( false );
 		float percentageComplete = 0;
 
@@ -393,7 +357,6 @@ public class PlayerRun : Photon.PunBehaviour {
 	/// <param name="blendFactor">Blend factor.</param>
 	public void setSprintBlendFactor( float blendFactor )
 	{
-		this.blendFactor = blendFactor;
 		//If the blendFactor is set to one we will only play the Sprint animation
 		//and the Run animation will stop playing. Because of that, we will no longer hear any footsteps.
 		//For this reason, cap the blend factor to 0.98f so that we always blend in a little of the run animation and therefore
@@ -402,155 +365,11 @@ public class PlayerRun : Photon.PunBehaviour {
 		anim.SetFloat(speedBlendFactor, blendFactor);
 	}
 
-	/// <summary>
-	/// Gets the sprint blend factor.
-	/// </summary>
-	/// <returns>The sprint blend factor.</returns>
-	public float getSprintBlendFactor()
-	{
-		return blendFactor;
-	}
-
 	public void syncRunSpeed( float remoteSpeed )
 	{
-
+		//Needs to be implemented
 	}
 
-	public void setAllowRunSpeedToIncrease( bool value )
-	{
-		allowRunSpeedToIncrease = value;
-	}
-
-	public bool getAllowRunSpeedToIncrease()
-	{
-		return allowRunSpeedToIncrease;
-	}
-
-	protected IEnumerator changeSprintBlendFactor( float endBlendFactor, float duration, PlayerControl playerControl )
-	{
-		float elapsedTime = 0;
-		float startBlendFactor = getSprintBlendFactor();
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			setSprintBlendFactor( Mathf.Lerp( startBlendFactor, endBlendFactor, elapsedTime/duration ) );
-			yield return new WaitForFixedUpdate();  
-			
-		} while ( elapsedTime < duration );
-		setSprintBlendFactor( endBlendFactor );	
-	}
-
-	public void startSpeedBoost( float spellDuration, float speedMultiplier, PlayerControl playerControl, bool isMine )
-	{
-		//Only affect the camera for the local player
-		if( isMine ) Camera.main.GetComponent<MotionBlur>().enabled = true;
-		setAllowRunSpeedToIncrease( false );
-		GetComponent<PlayerSpell>().isSpeedBoostActive = true;
-		runSpeed = runSpeed * speedMultiplier;
-	//playerControl.GetComponent<PlayerSounds>().playSound( soundFx, false );
-		StartCoroutine( changeSprintBlendFactor( 1f, 0.7f, playerControl ) );
-		StartCoroutine( stopSpeedBoost( spellDuration, playerControl, isMine) );
-	}
-
-	IEnumerator stopSpeedBoost( float spellDuration, PlayerControl playerControl, bool isMine )
-	{
-		yield return new WaitForSeconds( spellDuration );
-		if( isMine ) Camera.main.GetComponent<MotionBlur>().enabled = false;
-		if( playerControl.getCharacterState() != PlayerCharacterState.Dying ) setAllowRunSpeedToIncrease( true );
-		playerControl.GetComponent<PlayerSounds>().stopAudioSource();
-		GetComponent<PlayerSpell>().isSpeedBoostActive = false;
-		StartCoroutine( changeSprintBlendFactor( 0, 0.7f, playerControl ) );
-	}
-
-	public void startSprint( float spellDuration, float speedMultiplier, PlayerControl playerControl )
-	{
-		setAllowRunSpeedToIncrease( false );
-		runSpeed = runSpeed * speedMultiplier;
-	//playerControl.GetComponent<PlayerSounds>().playSound( soundFx, false );
-		StartCoroutine( changeSprintBlendFactor( 0.85f, 0.8f, playerControl ) );
-		StartCoroutine( stopSprint( spellDuration, playerControl ) );
-	}
-
-	IEnumerator stopSprint( float spellDuration, PlayerControl playerControl )
-	{
-		yield return new WaitForSeconds( spellDuration );
-		if( playerControl.getCharacterState() != PlayerCharacterState.Dying ) setAllowRunSpeedToIncrease( true );
-		playerControl.GetComponent<PlayerSounds>().stopAudioSource();
-		StartCoroutine( changeSprintBlendFactor( 0, 0.8f, playerControl ) );
-	}
-
-	/*
-double jump
-				//Cap the run speed to a maximum.
-				if( runSpeed > MAX_RUN_SPEED_FOR_DOUBLE_JUMP ) runSpeed = MAX_RUN_SPEED_FOR_DOUBLE_JUMP;
-
-jump
-				//Lower the run speed during a normal jump
-				runSpeed = runSpeed * runSpeedJumpMultiplier;
-				//Don't go lower then levelRunStartSpeed
-				if( runSpeed < levelRunStartSpeed ) runSpeed = levelRunStartSpeed;
-
-Fall
-		allowRunSpeedToIncrease = false;
-		runSpeed = runSpeed * 0.65f;
-
-Land
-		allowRunSpeedToIncrease = true;
-
-Turn
-		//Reset the run speed to what it was at the beginning of the turn.
-		allowRunSpeedToIncrease = true;
-		runSpeed = runSpeedAtTimeOfTurn;
-
-runSpeed = base + stack of modifiers that multiply each other + acceleration
-
-Death
-		runSpeed = 0;
-		runSpeedAtTimeOfJump = 0;
-		allowRunSpeedToIncrease = false;
-
-Resurrect end
-		allowRunSpeedToIncrease = true;
-
-Stumble
-			//If the player stumbles, he loses a bit of speed and momentarily stops accelerating.
-			allowRunSpeedToIncrease = false;
-			runSpeedAtTimeOfStumble = runSpeed;
-			runSpeed = runSpeedStumbleMultiplier * runSpeed; //lower speed a bit
-
-Stumble_completed
-		runSpeed = runSpeedAtTimeOfStumble;
-		allowRunSpeedToIncrease = true;
-
-		allowRunSpeedToIncrease = false;
-
-Turn
-		if( other.CompareTag( "deadEnd" ) )
-		{
-			isInDeadEnd = true;
-			wantToTurn = false;
-
-			currentDeadEndType = other.GetComponent<deadEnd>().deadEndType;
-			deadEndTrigger = other;
-			//Slow dow the player to make it easier to turn
-			allowRunSpeedToIncrease = false;
-			runSpeedAtTimeOfTurn = runSpeed;
-			runSpeed = runSpeed * runSpeedTurnMultiplier;
-		}
-
-Enlarge player spell
-		playerControl.setAllowRunSpeedToIncrease( true );
-		playerControl.runSpeed = runSpeedBeforeSpell;
-
-Shrink in player spell
-		playerControl.setAllowRunSpeedToIncrease( false );
-		runSpeedBeforeSpell = playerControl.getSpeed();
-
-			playerControl.runSpeed = runSpeedBeforeSpell * transform.localScale.y;
-enlarge
-			playerControl.runSpeed = runSpeedBeforeSpell * transform.localScale.y;
-
-*/
 
 	[System.Serializable]
 	public class SpeedMultiplier

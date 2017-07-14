@@ -423,8 +423,6 @@ public class LevelData : MonoBehaviour {
 		public SunType sunType = SunType.Afternoon;
 		[Tooltip("The player's initial run speed in m/sec.")]
 		public float RunStartSpeed = 18f;
-		[Tooltip("How fast will the player accelerate.")]
-		public float RunAcceleration = 0.13f;
 		[Tooltip("The ambience sound for the level. It plays in addition to the music. It is optional.")]
 		public AudioClip mainAmbienceTrack;
 		[Tooltip("A secondary ambience sound for the level. It plays in addition to the music. It is optional.")]

@@ -276,12 +276,32 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void OnEnable()
 	{
+		HUDMultiplayer.startRunningEvent += StartRunningEvent;
 		GameManager.gameStateEvent += GameStateChange;
 	}
 
 	void OnDisable()
 	{
+		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
 		GameManager.gameStateEvent -= GameStateChange;
+	}
+
+	void StartRunningEvent()
+	{
+		startRunning();
+	}
+
+	public void startRunning()
+	{	
+		//The player starts off running
+		setAnimationTrigger(RunTrigger);
+		setCharacterState( PlayerCharacterState.StartRunning );
+		setCharacterState( PlayerCharacterState.Running );
+	
+		//When the GameState is NORMAL, we display the HUD
+		if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) GameManager.Instance.setGameState( GameState.Normal );
+
+		enablePlayerControl( true );
 	}
 
 	void GameStateChange( GameState previousState, GameState newState )
@@ -455,7 +475,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//1) Get the direction of the player
 			forward = transform.TransformDirection(Vector3.forward);			
 			//2) Scale vector based on run speed
-			forward = forward * Time.deltaTime * playerRun.getSpeedForState( getCharacterState() );
+			forward = forward * Time.deltaTime * playerRun.getRunSpeed();
 			//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
 			forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
 			//4) Get a unit vector that is orthogonal to the direction of the player
@@ -1464,7 +1484,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		setAnimationTrigger( Finish_LineTrigger );
 	}
 
-	public void setAnimationTrigger( int animationTrigger )
+	void setAnimationTrigger( int animationTrigger )
 	{
 		anim.SetTrigger( animationTrigger );
 	}
