@@ -54,6 +54,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	PlayerCollisions playerCollisions;
 	PlayerAI playerAI;
 	CapsuleCollider capsuleCollider;
+	PlayerRun playerRun;
+	PlayerSpell playerSpell;
 	#endregion
 
 	#region Hash IDs for player animations	
@@ -68,41 +70,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	int DeathWallTrigger = Animator.StringToHash("DeathWall");
 	int StumbleTrigger = Animator.StringToHash("Stumble");
 	int FallForwardTrigger = Animator.StringToHash("Fall_Forward");
-	int speedBlendFactor = Animator.StringToHash("Speed");
-	int lookbackBlendFactor = Animator.StringToHash("Look_Back");
 	int Idle_LookTrigger = Animator.StringToHash("Idle_Look");
 	int Finish_LineTrigger = Animator.StringToHash("Finish_Line");
-	#endregion
-
-	#region Run speed and acceleration	
-	//This value is used to accelerate the run speed as time goes by
-	float timeSessionStarted = 0;
-
-	//The run start speed specified in the level data.
-	float levelRunStartSpeed = 0;
-	//when a new level starts or if the player dies and he is revived, he will
-	//start running at runStartSpeed.
-	float runStartSpeed = 0;
-	//The run speed of the player
-	public float runSpeed = 0;
-	//Run acceleration is used to determine how fast the player's run speed
-	//will increase. It is specified in the level data. A good value is 0.1f.
-	float runAcceleration = 0;
-	//The run speed is reduced slightly during turns to make them easier
-	float runSpeedAtTimeOfTurn;
-	float runSpeedTurnMultiplier = 0.9f;
-	//If the player stumbles, his speed will be reduced while he tumbles.
-	float runSpeedAtTimeOfStumble;
-	float runSpeedStumbleMultiplier = 0.9f; 
-	//allowRunSpeedToIncrease is set to false while jumping
-	bool allowRunSpeedToIncrease = true;
-	float runSpeedAtTimeOfJump;
-	//By what percentage should we reduce the run speed during a jump
-	float runSpeedJumpMultiplier = 0.75f;
-	//The maximum run speed allowed.
-	const float MAX_RUN_SPEED = 42f;
-	//The speed to reduce to after crossing finish line
-	const float SLOW_DOWN_END_SPEED = 5f;
 	#endregion
 
 	#region Falling variables
@@ -117,7 +86,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Jumping and gravity variables
 	bool jumping = false;
 	float jumpSpeed = 10f;
-	float MAX_RUN_SPEED_FOR_DOUBLE_JUMP = 18f; //We want to cap the maximum run speed during a double jump. If the player is sprinting for example, we don't want him to leap into a wall.
 	public float distanceToGround = 0;
 	//The gravity for the character
 	const float DEFAULT_GRAVITY = 16f;
@@ -145,8 +113,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	//Use to move the player along the X, Y and Z axis
 	public Vector3 moveDirection;
 	Vector3 forward;
-	//Used to modify the blend amount between Run and Sprint animations based on the current run speed. Also used by the troll.
-	float blendFactor;
 	//We set the anim speed to 0 when we pause, so we need to remember the value when we unpause
 	float animSpeedAtTimeOfPause;
 	//The state of the character i.e. running, jumping, sliding, etc.
@@ -222,10 +188,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	GenerateLevel generateLevel;
 	#endregion
 
-	#region Card related
-	public bool isSpeedBoostActive = false;
-	#endregion
-
 	#region Events
 	//Event management used to notify other classes when the character state has changed
 	public delegate void MultiplayerStateChanged( PlayerCharacterState value );
@@ -255,6 +217,8 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerVoiceOvers = GetComponent<PlayerVoiceOvers>();
 		playerCollisions = GetComponent<PlayerCollisions>();
 		playerAI = GetComponent<PlayerAI>(); //Null for everyone except bots
+		playerRun = GetComponent<PlayerRun>();
+		playerSpell = GetComponent<PlayerSpell>();
 
 		//Cache the string to avoid the runtime lookup
 		backInTheGameString = LocalizationManager.Instance.getText( "MINIMAP_BACK_IN_GAME" );
@@ -312,19 +276,12 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void OnEnable()
 	{
-		HUDMultiplayer.startRunningEvent += StartRunningEvent;
 		GameManager.gameStateEvent += GameStateChange;
 	}
 
 	void OnDisable()
 	{
-		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
 		GameManager.gameStateEvent -= GameStateChange;
-	}
-
-	void StartRunningEvent()
-	{
-		startRunning();
 	}
 
 	void GameStateChange( GameState previousState, GameState newState )
@@ -357,7 +314,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Debug.Log("pauseRemotePlayers-positionAtTimeOfPause: " + positionAtTimeOfPause + " yRotationAtTimeOfpause: " + yRotationAtTimeOfpause );		
 		//Debug.Log("pauseRemotePlayers-current position: " +  transform.position + " current rotation: " + transform.eulerAngles.y );
 		float realDistanceDelta = Vector3.Distance( transform.position, positionAtTimeOfPause);
-		double predictedDistanceDelta = (PhotonNetwork.time - timeRPCSent) * getSpeed();
+		double predictedDistanceDelta = (PhotonNetwork.time - timeRPCSent) * playerRun.getRunSpeed();
 		//Debug.Log("pauseRemotePlayers-real distance delta: " +  realDistanceDelta + " predictedDistanceDelta " + predictedDistanceDelta );
 		//Debug.Log("pauseRemotePlayers-distancePrediction accuracy: " + ((predictedDistanceDelta - realDistanceDelta) * 100).ToString("N1") + "%" );
 		transform.position = positionAtTimeOfPause;
@@ -382,36 +339,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 	}
 
-	void setInitialRunningParameters()
-	{
-		//Use the level data to determine what the start run speed, run acceleration since they can vary
-		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedCircuit();
-		levelRunStartSpeed = multiplayerInfo.RunStartSpeed * LevelManager.Instance.speedOverrideMultiplier;
-		runAcceleration = multiplayerInfo.RunAcceleration;
-		runSpeedTurnMultiplier = 0.9f; //Hack = how does this impact player synchro? Should I use 1f?
-		runStartSpeed = levelRunStartSpeed;
-		runSpeed = levelRunStartSpeed;
-	}
-
-	public void startRunning()
-	{	
-		//Mecanim Hack - we call rebind because the animation states are not reset properly when you die in the middle of an animation.
-		//For example, if you die during a double jump, after you get resurrected and start running again, if you do another double jump, only part of the double jump animation will play, never the full animation.
-		anim.Rebind();
-
-		setInitialRunningParameters();
-
-		//The player starts off running
-		setAnimationTrigger(RunTrigger);
-		setCharacterState( PlayerCharacterState.StartRunning );
-		setCharacterState( PlayerCharacterState.Running );
-	
-		//When the GameState is NORMAL, we display the HUD
-		if( this.photonView.isMine && playerAI == null ) GameManager.Instance.setGameState( GameState.Normal );
-
-		enablePlayerControl( true );
-	}
-
 	void FixedUpdate()
 	{
 		if( getCharacterState() != PlayerCharacterState.Flying )
@@ -420,7 +347,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			if( playerMovementEnabled )
 			{
 				calculateDistanceToGround();
-				updateRunSpeed();
 				moveCharacter();
 	
 				//Verify if the player is falling.
@@ -495,13 +421,6 @@ public class PlayerControl : Photon.PunBehaviour {
 				}
 				setAnimationTrigger(LandTrigger);
 				jumping = false;
-				runSpeed = runSpeedAtTimeOfJump;
-				if( playerCharacterState != PlayerCharacterState.Dying )
-				{
-					//Don't allow the run speed to increase if the player is dead because this will cause
-					//the player to continue to move forward even if he is dead because runSpeed won't stay at 0.
-					allowRunSpeedToIncrease = true;
-				}
 				if ( queueSlide )
 				{
 					queueSlide = false;
@@ -536,7 +455,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//1) Get the direction of the player
 			forward = transform.TransformDirection(Vector3.forward);			
 			//2) Scale vector based on run speed
-			forward = forward * Time.deltaTime * runSpeed;
+			forward = forward * Time.deltaTime * playerRun.getSpeedForState( getCharacterState() );
 			//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
 			forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
 			//4) Get a unit vector that is orthogonal to the direction of the player
@@ -625,38 +544,6 @@ public class PlayerControl : Photon.PunBehaviour {
         
 	}
 
-	void updateRunSpeed()
-	{
-		if( allowRunSpeedToIncrease && runSpeed <= MAX_RUN_SPEED )
-		{
-			runSpeed = (Time.time - timeSessionStarted) * runAcceleration + runStartSpeed; //in seconds
-		}
-	}
-
-	/// <summary>
-	/// Sets the sprint blend factor. If the value is 0, we play only the run animation; if the value is 1, we play only the Sprint animation.
-	/// </summary>
-	/// <param name="blendFactor">Blend factor.</param>
-	public void setSprintBlendFactor( float blendFactor )
-	{
-		this.blendFactor = blendFactor;
-		//If the blendFactor is set to one we will only play the Sprint animation
-		//and the Run animation will stop playing. Because of that, we will no longer hear any footsteps.
-		//For this reason, cap the blend factor to 0.98f so that we always blend in a little of the run animation and therefore
-		//continue to get the run animation sound callbacks.
-		if( blendFactor > 0.98f ) blendFactor = 0.98f;
-		anim.SetFloat(speedBlendFactor, blendFactor);
-	}
-
-	/// <summary>
-	/// Gets the sprint blend factor.
-	/// </summary>
-	/// <returns>The sprint blend factor.</returns>
-	public float getSprintBlendFactor()
-	{
-		return blendFactor;
-	}
-
 	#region Jump and Double Jump
 	/// <summary>
 	/// Makes the player jump. If doingDoubleJump is set to true, the player will do a higher double-jump.
@@ -695,23 +582,13 @@ public class PlayerControl : Photon.PunBehaviour {
 			jumpStarted = true;
 
 			setCharacterState( PlayerCharacterState.Jumping );
-			//Memorize the run speed
-			runSpeedAtTimeOfJump = runSpeed;
-			//Don't accelerate during a jump (also it would reset the runSpeed variable).
-			allowRunSpeedToIncrease = false;
 			if( doingDoubleJump )
 			{
-				//Cap the run speed to a maximum.
-				if( runSpeed > MAX_RUN_SPEED_FOR_DOUBLE_JUMP ) runSpeed = MAX_RUN_SPEED_FOR_DOUBLE_JUMP;
 				moveDirection.y = doubleJumpSpeed;
 				setAnimationTrigger(Double_JumpTrigger);
 			}
 			else
 			{
-				//Lower the run speed during a normal jump
-				runSpeed = runSpeed * runSpeedJumpMultiplier;
-				//Don't go lower then levelRunStartSpeed
-				if( runSpeed < levelRunStartSpeed ) runSpeed = levelRunStartSpeed;
 				moveDirection.y = jumpSpeed;
 				setAnimationTrigger(JumpTrigger);
 			}
@@ -729,8 +606,6 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		//Give a little downward impetus
 		moveDirection.y = -1f;
-		allowRunSpeedToIncrease = false;
-		runSpeed = runSpeed * 0.65f;
 		//Remember at what height the player started to fall because this will help us calculate the fall distance.
 		fallStartYPos = transform.position.y;
 		gravity = DEFAULT_GRAVITY * 2f;
@@ -757,7 +632,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerCamera.lockCamera( false );
 		gravity = DEFAULT_GRAVITY;
 		playerCamera.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING;
-		allowRunSpeedToIncrease = true;
 		setCharacterState( PlayerCharacterState.Running );
 		float fallDistance = fallStartYPos - transform.position.y;
 		if( fallDistance < DISTANCE_FOR_LAND_ANIMATION )
@@ -1036,9 +910,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			setCharacterState( PlayerCharacterState.Running );
 		}
-		//Reset the run speed to what it was at the beginning of the turn.
-		allowRunSpeedToIncrease = true;
-		runSpeed = runSpeedAtTimeOfTurn;
 		//Debug.Log ("turnNow completed " + isGoingRight + " " + transform.eulerAngles.y + " " + playerCharacterState );
 
 	}
@@ -1588,12 +1459,12 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Animation
-	void playVictoryAnimation()
+	public void playVictoryAnimation()
 	{
 		setAnimationTrigger( Finish_LineTrigger );
 	}
 
-	void setAnimationTrigger( int animationTrigger )
+	public void setAnimationTrigger( int animationTrigger )
 	{
 		anim.SetTrigger( animationTrigger );
 	}
@@ -1642,15 +1513,9 @@ public class PlayerControl : Photon.PunBehaviour {
 		//If we were ziplining, detach from the zipline
 		detachFromZipline();
 
-		//If the player was looking over his shoulder, disable that
-		disableLookOverShoulder();
-
 		//Disable the player's shadow
 		playerVisuals.enablePlayerShadow( false );
 
-		runSpeed = 0;
-		runSpeedAtTimeOfJump = 0;
-		allowRunSpeedToIncrease = false;
 		anim.speed = 1f;
 
 		//Change character state
@@ -1907,7 +1772,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		this.photonView.RPC("playerResurrectedRPC", PhotonTargets.AllViaServer, heroName );
 
-		allowRunSpeedToIncrease = true;
 
 		//The GameState was Resurrect - change it back to Normal
 		if( this.photonView.isMine && playerAI == null ) GameManager.Instance.setGameState(GameState.Normal);
@@ -1932,57 +1796,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	}
 	#endregion
 
-	#region Look over shoulder
-	public void disableLookOverShoulder()
-	{
-		anim.SetFloat( lookbackBlendFactor, 0f );
-	}
-
-	public void lookOverShoulder( float endBlendFactor, float stayDuration )
-	{
-		StartCoroutine(lookOverShoulderAnim(endBlendFactor, stayDuration) );
-	}
-
-	public IEnumerator lookOverShoulderAnim( float endBlendFactor, float stayDuration )
-	{
-		float elapsedTime = 0;
-		
-		float fadeInDuration = 0.4f;
-		float fadeOutDuration = 0.5f;
-		
-		float startBlendFactor = 0;
-		//Fade in
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			anim.SetFloat( lookbackBlendFactor, Mathf.Lerp( startBlendFactor, endBlendFactor, elapsedTime/fadeInDuration ) );
-			yield return new WaitForFixedUpdate();  
-			
-		} while ( elapsedTime < fadeInDuration );
-		
-		anim.SetFloat( lookbackBlendFactor, endBlendFactor );
-		
-		//Stay
-		yield return new WaitForSeconds(stayDuration);
-		
-		//Fade out
-		elapsedTime = 0;
-		
-		startBlendFactor = endBlendFactor;
-		
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			anim.SetFloat( lookbackBlendFactor, Mathf.Lerp( startBlendFactor, 0, elapsedTime/fadeOutDuration ) );
-			yield return new WaitForFixedUpdate();  
-			
-		} while ( elapsedTime < fadeOutDuration );
-		
-		anim.SetFloat( lookbackBlendFactor, 0 );
-		
-	}
-	#endregion
-
 	#region Stumble
 	public void stumble()
 	{
@@ -1992,10 +1805,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		{	
 			Debug.Log ("Player stumbled");
 			setCharacterState( PlayerCharacterState.Stumbling );
-			//If the player stumbles, he loses a bit of speed and momentarily stops accelerating.
-			allowRunSpeedToIncrease = false;
-			runSpeedAtTimeOfStumble = runSpeed;
-			runSpeed = runSpeedStumbleMultiplier * runSpeed; //lower speed a bit
 			//The player stumbles but recovers
 			setAnimationTrigger(StumbleTrigger);
 		}
@@ -2004,8 +1813,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	public void stumble_completed ( AnimationEvent eve )
 	{
 		setCharacterState( PlayerCharacterState.Running );
-		runSpeed = runSpeedAtTimeOfStumble;
-		allowRunSpeedToIncrease = true;
 	}
 	#endregion
 
@@ -2020,11 +1827,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Debug.Log("PlayerControl-setCharacterState to: " + newState + " for " + gameObject.name );
 		//Send an event to interested classes
 		if(multiplayerStateChanged != null && this.photonView.isMine && playerAI == null ) multiplayerStateChanged( playerCharacterState );
-	}
-
-	public float getSpeed()
-	{
-		return runSpeed;
 	}
 
 	public void enablePlayerControl( bool enabled )
@@ -2052,51 +1854,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		return playerMovementEnabled;
 	}
 
-	//We pass the triggerPositionZ value because we need its position. We cannot rely on the position of the player at the moment of trigger because it can fluctuate based on frame rate and such.
-	//Therefore the final destination is based on the trigger's Z position plus the desired distance (and not the player's z position plus the desired distance, which is slightly inaccurate).
-	//The player slows down but keeps control.
-	public IEnumerator slowDownPlayerAfterFinishLine( float distance, float triggerPositionZ )
-	{
-		capsuleCollider.attachedRigidbody.velocity = new Vector3( 0,moveDirection.y,0 );
-		deactivateSpeedBoost();
-		allowRunSpeedToIncrease = false;
-		enablePlayerControl( false );
-		float percentageComplete = 0;
-
-		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, triggerPositionZ );
-		float distanceTravelled = 0;
-		float brakeFactor = 0.7f; //brake the player before slowing him down
-		float startSpeed = runSpeed * brakeFactor;
-		float endSpeed = SLOW_DOWN_END_SPEED;
-
-		float startBlendFactor = blendFactor;
-
-		float startAnimationSpeed = anim.speed;
-		float endAnimationSpeed = 1f;
-
-		while ( distanceTravelled <= distance )
-		{
-			distanceTravelled = Vector3.Distance( transform.position, initialPlayerPosition );
-			percentageComplete = distanceTravelled/distance;
-
-			//Update run speed
-			runSpeed =  Mathf.Lerp( startSpeed, endSpeed, percentageComplete );
-
-			//Update the blend amount between Run and Sprint animations based on the current run speed
-			blendFactor =  Mathf.Lerp( startBlendFactor, 0, percentageComplete );
-			anim.SetFloat(speedBlendFactor, blendFactor);
-
-			//update animation speed
-			anim.speed = Mathf.Lerp( startAnimationSpeed, endAnimationSpeed, percentageComplete );
-
-
-			yield return new WaitForFixedUpdate(); 
-		}
-		//We have arrived. Stop player movement.
-		enablePlayerMovement( false );
-		playVictoryAnimation();
-	}
-
 	#region OnTriggerEnter, OnTriggerStay, OnTriggerExit
 	void OnTriggerEnter(Collider other)
 	{
@@ -2109,10 +1866,6 @@ public class PlayerControl : Photon.PunBehaviour {
 
 			currentDeadEndType = other.GetComponent<deadEnd>().deadEndType;
 			deadEndTrigger = other;
-			//Slow dow the player to make it easier to turn
-			allowRunSpeedToIncrease = false;
-			runSpeedAtTimeOfTurn = runSpeed;
-			runSpeed = runSpeed * runSpeedTurnMultiplier;
 		}
 		//For the Great Fall trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
 		else if( other.CompareTag( "Great Fall" ) )
@@ -2151,14 +1904,14 @@ public class PlayerControl : Photon.PunBehaviour {
 			//Ignore if the player is Flying
 			if( getCharacterState() == PlayerCharacterState.Flying ) return;
 
-			//Deactivate the speedboost if active before ziplining
-			deactivateSpeedBoost();
+			//Cancel the speedboost if active before ziplining
+			playerSpell.cancelSpeedBoost();
 			isInZiplineTrigger = true;
 		}
  		else if( other.CompareTag( "DetachZiplineTrigger" ) )
 		{
 			detachFromZipline();
-			this.photonView.RPC("detachToZiplineRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, getSpeed() );
+			this.photonView.RPC("detachToZiplineRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed() );
 		}
   	}
 
@@ -2242,24 +1995,5 @@ public class PlayerControl : Photon.PunBehaviour {
 	}
 	#endregion
 
-	public void setAllowRunSpeedToIncrease( bool value )
-	{
-		allowRunSpeedToIncrease = value;
-	}
 
-	public bool getAllowRunSpeedToIncrease()
-	{
-		return allowRunSpeedToIncrease;
-	}
-
-	void deactivateSpeedBoost()
-	{
-		if( isSpeedBoostActive )
-		{
-			if( this.photonView.isMine && playerAI == null ) Camera.main.GetComponent<MotionBlur>().enabled = false;
-			if( getCharacterState() != PlayerCharacterState.Dying ) setAllowRunSpeedToIncrease( true );
-			GetComponent<PlayerSounds>().stopAudioSource();
-			isSpeedBoostActive = false;
-		}
-	}
 }

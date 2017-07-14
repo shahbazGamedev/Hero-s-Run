@@ -6,6 +6,7 @@ using Photon;
 public class PlayerInput : PunBehaviour {
 
 	PlayerControl playerControl;
+	PlayerRun playerRun;
 
 	#region Swipe variables
     float minSwipeDistancePixels;
@@ -25,6 +26,7 @@ public class PlayerInput : PunBehaviour {
 		//If we are not the owner of this component, disable it.
 		if( !this.photonView.isMine ) this.enabled = false;
 		playerControl = GetComponent<PlayerControl>();
+		playerRun = GetComponent<PlayerRun>();
 		calculateMinimumSwipeDistance();
 		isTiltingEnabled = PlayerStatsManager.Instance.getTiltEnabled();
 	}
@@ -56,25 +58,25 @@ public class PlayerInput : PunBehaviour {
 	public void startSlide()
 	{
 		playerControl.startSlide();
-		this.photonView.RPC("startSlideRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+		this.photonView.RPC("startSlideRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed() );
 	}
 
 	public void sideSwipe( bool isGoingRight )
 	{
 		playerControl.sideSwipe( isGoingRight );
-		this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, isGoingRight, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+		this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, isGoingRight, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed() );
 	}
 
 	public void jump()
 	{
 		playerControl.jump( false );
-		this.photonView.RPC("jumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+		this.photonView.RPC("jumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed() );
 	}
 
 	public void doubleJump( float doubleJumpSpeed )
 	{
 		playerControl.jump( true, doubleJumpSpeed );
-		this.photonView.RPC("doubleJumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed(), doubleJumpSpeed );
+		this.photonView.RPC("doubleJumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed(), doubleJumpSpeed );
 	}
 
 	public void teleport( Vector3  destinationPosition, float destinationRotationY )
@@ -85,7 +87,7 @@ public class PlayerInput : PunBehaviour {
 	public void attachToZipline()
 	{
 		playerControl.attachToZipline();
-		this.photonView.RPC("attachToZiplineRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerControl.getSpeed() );
+		this.photonView.RPC("attachToZiplineRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed() );
 	}
 
 	private void handleAccelerometer()

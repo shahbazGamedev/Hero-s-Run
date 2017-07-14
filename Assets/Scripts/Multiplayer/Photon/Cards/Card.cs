@@ -53,20 +53,6 @@ public class Card : Photon.PunBehaviour {
 		}
 	}
 	
-	protected IEnumerator changeSprintBlendFactor( float endBlendFactor, float duration, PlayerControl playerControl )
-	{
-		float elapsedTime = 0;
-		float startBlendFactor = playerControl.getSprintBlendFactor();
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			playerControl.setSprintBlendFactor( Mathf.Lerp( startBlendFactor, endBlendFactor, elapsedTime/duration ) );
-			yield return new WaitForFixedUpdate();  
-			
-		} while ( elapsedTime < duration );
-		playerControl.setSprintBlendFactor( endBlendFactor );	
-	}
-
 	/// <summary>
 	/// Returns the transform of the nearest player within spell range.
 	/// </summary>

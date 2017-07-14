@@ -31,31 +31,28 @@ public class CardSpeedBoost : Card {
 		{
 			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
 			{
-				startSpeedBoost( spellDuration, speedMultiplier, PlayerRace.players[i].GetComponent<PlayerControl>(), PlayerRace.players[i].GetComponent<PhotonView>().isMine && PlayerRace.players[i].GetComponent<PlayerAI>() == null );
+				startSpeedBoost( spellDuration, speedMultiplier, PlayerRace.players[i].GetComponent<PlayerRun>(), PlayerRace.players[i].GetComponent<PhotonView>().isMine && PlayerRace.players[i].GetComponent<PlayerAI>() == null );
 			}
 		}
 	}
 
-	void startSpeedBoost( float spellDuration, float speedMultiplier, PlayerControl playerControl, bool isMine )
+	void startSpeedBoost( float spellDuration, float speedMultiplier, PlayerRun playerRun, bool isMine )
 	{
 		//Only affect the camera for the local player
 		if( isMine ) Camera.main.GetComponent<MotionBlur>().enabled = true;
-		playerControl.setAllowRunSpeedToIncrease( false );
-		playerControl.isSpeedBoostActive = true;
-		playerControl.runSpeed = playerControl.runSpeed * speedMultiplier;
-		playerControl.GetComponent<PlayerSounds>().playSound( soundFx, false );
-		StartCoroutine( changeSprintBlendFactor( 1f, 0.7f, playerControl ) );
-		StartCoroutine( stopSpeedBoost( spellDuration, playerControl, isMine) );
+		playerRun.GetComponent<PlayerSpell>().isSpeedBoostActive = true;
+		StartCoroutine( playerRun.addVariableSpeedMultiplier( SpeedMultiplierType.Raging_Bull, speedMultiplier, 0.5f ) );
+		playerRun.GetComponent<PlayerSounds>().playSound( soundFx, false );
+		StartCoroutine( stopSpeedBoost( spellDuration, playerRun, isMine) );
 	}
 
-	IEnumerator stopSpeedBoost( float spellDuration, PlayerControl playerControl, bool isMine )
+	IEnumerator stopSpeedBoost( float spellDuration, PlayerRun playerRun, bool isMine )
 	{
 		yield return new WaitForSeconds( spellDuration );
 		if( isMine ) Camera.main.GetComponent<MotionBlur>().enabled = false;
-		if( playerControl.getCharacterState() != PlayerCharacterState.Dying ) playerControl.setAllowRunSpeedToIncrease( true );
-		playerControl.GetComponent<PlayerSounds>().stopAudioSource();
-		playerControl.isSpeedBoostActive = false;
-		StartCoroutine( changeSprintBlendFactor( 0, 0.7f, playerControl ) );
+		playerRun.GetComponent<PlayerSounds>().stopAudioSource();
+		playerRun.GetComponent<PlayerSpell>().isSpeedBoostActive = false;
+		StartCoroutine( playerRun.removeVariableSpeedMultiplier( SpeedMultiplierType.Raging_Bull, 0.5f ) );
 	}
 
 }

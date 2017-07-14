@@ -19,6 +19,7 @@ public class AutoPilot : Photon.PunBehaviour {
 	protected PlayerControl playerControl;
 	protected PlayerInput playerInput;
 	protected PlayerRace playerRace;
+	PlayerRun playerRun;
 
 	// Use this for initialization
 	protected void Awake ()
@@ -26,12 +27,13 @@ public class AutoPilot : Photon.PunBehaviour {
 		playerControl = GetComponent<PlayerControl>();
 		playerInput = GetComponent<PlayerInput>();
 		playerRace = GetComponent<PlayerRace>();
+		playerRun = GetComponent<PlayerRun>();
 	}
 
 	protected void detectObstacles()
 	{
 		//Step 1) Adjust the obstacle detection range based on our run speed. If we are running fast, we need more time to react.
-		float obstacleDetectionDistance = BASE_OBSTACLE_DETECTION_LOW_DISTANCE * playerControl.getSpeed()/BASE_RUN_SPEED;
+		float obstacleDetectionDistance = BASE_OBSTACLE_DETECTION_LOW_DISTANCE * playerRun.getRunSpeed()/BASE_RUN_SPEED;
 
 		//Step 2) Detect if there are any low level obstacles
         RaycastHit hit;
@@ -115,7 +117,7 @@ public class AutoPilot : Photon.PunBehaviour {
 			}
 		}
 
-		obstacleDetectionDistance = BASE_OBSTACLE_DETECTION_HIGH_DISTANCE * playerControl.getSpeed()/BASE_RUN_SPEED;
+		obstacleDetectionDistance = BASE_OBSTACLE_DETECTION_HIGH_DISTANCE * playerRun.getRunSpeed()/BASE_RUN_SPEED;
 		exactPosStart = transform.TransformPoint( xOffsetStartHigh );
 		//Debug.DrawLine( exactPosStart, exactPosStart + transform.forward * obstacleDetectionDistance, Color.yellow );
         if (Physics.Raycast(exactPosStart, transform.forward, out hit, obstacleDetectionDistance ))

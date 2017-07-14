@@ -274,7 +274,7 @@ public class PlayerRace : Photon.PunBehaviour
 			" raceDuration: " + raceDuration + " distanceTravelled: " + distanceTravelled + " officialRacePosition: " + officialRacePosition );
 
 		//We want to slow down any player that reaches the finish line
-		StartCoroutine( GetComponent<PlayerControl>().slowDownPlayerAfterFinishLine( 5f - (officialRacePosition * 1.4f), triggerPositionZ ) );
+		StartCoroutine( GetComponent<PlayerRun>().slowDownPlayerAfterFinishLine( 5f - (officialRacePosition * 1.4f), triggerPositionZ ) );
 
 		racePosition = officialRacePosition;
 		//Cancel all spell effects

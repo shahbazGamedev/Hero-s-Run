@@ -16,6 +16,8 @@ public class PlayerCollisions : Photon.PunBehaviour {
 
 	PlayerControl playerControl;
 	PlayerSounds playerSounds;
+	PlayerRun playerRun;
+	PlayerSpell playerSpell;
 	#region Ground type variables
 	string groundType = "Floor"; //Other choices are Water and Collapsing
 	string previousGroundType = "Floor"; //Other choices are Water and Collapsing
@@ -26,6 +28,8 @@ public class PlayerCollisions : Photon.PunBehaviour {
 	{
 		playerControl = GetComponent<PlayerControl>();	
 		playerSounds = GetComponent<PlayerSounds>();	
+		playerRun = GetComponent<PlayerRun>();	
+		playerSpell = GetComponent<PlayerSpell>();	
 	}
 
 	/// <summary>
@@ -102,7 +106,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 						giveCoins( 10 );
 
 						//The faster the player runs, the further the chicken will fly
-						float pushPower = playerControl.getSpeed() * 2.5f;
+						float pushPower = playerRun.getRunSpeed() * 2.5f;
 
 						//Make the chicken go flying
 						Rigidbody body = collision.collider.attachedRigidbody;
@@ -145,7 +149,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 				{
 					//You can't make a crawling zombie fall backwards
 					if( ( playerControl.getCharacterState() == PlayerCharacterState.Sliding || playerControl.getCharacterState() == PlayerCharacterState.Turning_and_sliding
-							|| playerControl.isSpeedBoostActive ) && zombieController.getCreatureState() != CreatureState.Crawling )
+							|| playerSpell.isSpeedBoostActive ) && zombieController.getCreatureState() != CreatureState.Crawling )
 					{
 
 						giveCoins( ZombieManager.NUMBER_STARS_PER_ZOMBIE );
@@ -316,7 +320,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 			else if (collided.name.Equals("Weapon") )
 			{
 				//Skeleton footman or warlord, or goblin piker or wraith or demon
-				if( !playerControl.isSpeedBoostActive )
+				if( !playerSpell.isSpeedBoostActive )
 				{
 					playerControl.killPlayer ( DeathType.Obstacle );
 				}
@@ -376,7 +380,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 				if( normal.y < 0.4f )
 				{
 					//If this player ran squarely into another player while using SpeedBoost (i.e. Raging Bull), kill the other player.
-					if( playerControl.isSpeedBoostActive )
+					if( playerSpell.isSpeedBoostActive )
 					{
 						PlayerControl otherPlayer = collided.GetComponent<PlayerControl>();
 						if( otherPlayer.getCharacterState() != PlayerCharacterState.Dying || otherPlayer.getCharacterState() != PlayerCharacterState.Idle )
@@ -391,7 +395,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 				if( normal.y < 0.4f )
 				{
 					//This player ran squarely into a destructible object.
-					if( playerControl.isSpeedBoostActive )
+					if( playerSpell.isSpeedBoostActive )
 					{
 						//Speedboost is active. Fracture the object.
 						FracturedObject fracturedObject = collided.GetComponent<FracturedObject>();
@@ -423,7 +427,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 			Transform collided = collision.transform;
 			Vector3 normal =  collision.contacts[0].normal;
 
-			if( ( playerControl.getCharacterState() == PlayerCharacterState.Sliding || playerControl.getCharacterState() == PlayerCharacterState.Turning_and_sliding ) || playerControl.isSpeedBoostActive )
+			if( ( playerControl.getCharacterState() == PlayerCharacterState.Sliding || playerControl.getCharacterState() == PlayerCharacterState.Turning_and_sliding ) || playerSpell.isSpeedBoostActive )
 			{
 				giveCoins( CreatureManager.NUMBER_COINS_PER_CREATURE );
 

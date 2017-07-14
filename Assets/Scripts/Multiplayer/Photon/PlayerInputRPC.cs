@@ -6,6 +6,7 @@ using Photon;
 public class PlayerInputRPC : PunBehaviour {
 
 	PlayerControl playerControl;
+	PlayerRun playerRun;
 
 	// Use this for initialization
 	void Awake ()
@@ -13,6 +14,7 @@ public class PlayerInputRPC : PunBehaviour {
 		//If we are the owner of this component, disable it. We only need it for remote clients.
 		if( this.photonView.isMine ) this.enabled = false;
 		playerControl = GetComponent<PlayerControl>();
+		playerRun = GetComponent<PlayerRun>();
 	}
 
 	[PunRPC]
@@ -73,7 +75,7 @@ public class PlayerInputRPC : PunBehaviour {
 		//Use the values we received from the master
 		transform.eulerAngles = new Vector3( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z );
 		transform.position = syncPosition;
-		playerControl.runSpeed = syncSpeed;
+		playerRun.syncRunSpeed( syncSpeed );
 		//We may have switched lanes because of the position change. Make sure the lane values are accurate.
 		playerControl.recalculateCurrentLane();
 		//There was a delay between the master sending us the command and the remote receiving it.

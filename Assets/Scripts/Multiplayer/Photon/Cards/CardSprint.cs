@@ -30,26 +30,23 @@ public class CardSprint : Card {
 		{
 			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
 			{
-				startSprint( spellDuration, speedMultiplier, PlayerRace.players[i].GetComponent<PlayerControl>() );
+				startSprint( spellDuration, speedMultiplier, PlayerRace.players[i].GetComponent<PlayerRun>() );
 			}
 		}
 	}
 
-	void startSprint( float spellDuration, float speedMultiplier, PlayerControl playerControl )
+	void startSprint( float spellDuration, float speedMultiplier, PlayerRun playerRun )
 	{
-		playerControl.setAllowRunSpeedToIncrease( false );
-		playerControl.runSpeed = playerControl.runSpeed * speedMultiplier;
-		playerControl.GetComponent<PlayerSounds>().playSound( soundFx, false );
-		StartCoroutine( changeSprintBlendFactor( 0.85f, 0.8f, playerControl ) );
-		StartCoroutine( stopSprint( spellDuration, playerControl ) );
+		playerRun.GetComponent<PlayerSounds>().playSound( soundFx, false );
+		StartCoroutine( playerRun.addVariableSpeedMultiplier( SpeedMultiplierType.Sprint, speedMultiplier, 0.5f ) );
+		StartCoroutine( stopSprint( spellDuration, playerRun ) );
 	}
 
-	IEnumerator stopSprint( float spellDuration, PlayerControl playerControl )
+	IEnumerator stopSprint( float spellDuration, PlayerRun playerRun )
 	{
 		yield return new WaitForSeconds( spellDuration );
-		if( playerControl.getCharacterState() != PlayerCharacterState.Dying ) playerControl.setAllowRunSpeedToIncrease( true );
-		playerControl.GetComponent<PlayerSounds>().stopAudioSource();
-		StartCoroutine( changeSprintBlendFactor( 0, 0.8f, playerControl ) );
+		playerRun.GetComponent<PlayerSounds>().stopAudioSource();
+		StartCoroutine( playerRun.removeVariableSpeedMultiplier( SpeedMultiplierType.Sprint, 0.5f ) );
 	}
 
 }

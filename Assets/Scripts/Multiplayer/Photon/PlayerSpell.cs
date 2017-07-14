@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon;
+using UnityStandardAssets.ImageEffects;
 
 /// <summary>
 /// This class handles all spells that affect the player such as Shrink.
@@ -12,6 +13,7 @@ public class PlayerSpell : PunBehaviour {
 	[SerializeField] AudioClip shrinkSound;
 	[SerializeField] ParticleSystem shrinkParticleSystem;
 	float runSpeedBeforeSpell;
+	const float SHRINK_SIZE = 0.3f;
 	#endregion
 
 	#region Linked Fate spell
@@ -36,9 +38,14 @@ public class PlayerSpell : PunBehaviour {
 	SentryController sentryController;
 	#endregion
 
+	#region Speed Boost a.k.a Raging Bull
+	public bool isSpeedBoostActive = false;
+	#endregion
+
 	PlayerControl playerControl;
 	PlayerSounds playerSounds;
 	PlayerVoiceOvers playerVoiceOvers;
+	PlayerRun playerRun;
 
 	//Delegate used to communicate to other classes when an enemy has played a special card such as Hack
 	public delegate void CardPlayedByOpponentEvent( CardName name, float duration );
@@ -55,6 +62,7 @@ public class PlayerSpell : PunBehaviour {
 		playerControl = GetComponent<PlayerControl>();
 		playerSounds = GetComponent<PlayerSounds>();
 		playerVoiceOvers = GetComponent<PlayerVoiceOvers>();
+		playerRun = GetComponent<PlayerRun>();
 	}
 
 	#region Shrink spell
@@ -65,15 +73,14 @@ public class PlayerSpell : PunBehaviour {
 		ParticleSystem shrinkEffect = ParticleSystem.Instantiate( shrinkParticleSystem, transform );
 		shrinkEffect.transform.localPosition = new Vector3( 0, 1f, 0 );
 		shrinkEffect.Play();
-		StartCoroutine( shrink( new Vector3( 0.3f, 0.3f, 0.3f ), 1.25f, spellDuration ) );
+		StartCoroutine( shrink( new Vector3( SHRINK_SIZE, SHRINK_SIZE, SHRINK_SIZE ), 1.25f, spellDuration ) );
 		displayCardTimerOnHUD( CardName.Shrink, spellDuration );
+		StartCoroutine( playerRun.addVariableSpeedMultiplier( SpeedMultiplierType.Shrink, SHRINK_SIZE, 0.5f ) );
 	}
 
 	IEnumerator shrink( Vector3 endScale, float shrinkDuration, float spellDuration )
 	{
 		playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Affected_by_Spell, CardName.Shrink );
-		playerControl.setAllowRunSpeedToIncrease( false );
-		runSpeedBeforeSpell = playerControl.getSpeed();
 
 		float elapsedTime = 0;
 		Vector3 startScale = transform.localScale;
@@ -81,7 +88,6 @@ public class PlayerSpell : PunBehaviour {
 		{
 			elapsedTime = elapsedTime + Time.deltaTime;
 			transform.localScale = Vector3.Lerp( startScale, endScale, elapsedTime/shrinkDuration );
-			playerControl.runSpeed = runSpeedBeforeSpell * transform.localScale.y;
 
 			yield return new WaitForFixedUpdate();  
 			
@@ -93,20 +99,18 @@ public class PlayerSpell : PunBehaviour {
 	IEnumerator enlarge( Vector3 endScale, float shrinkDuration, float spellDuration )
 	{
 		yield return new WaitForSeconds( spellDuration );
+		StartCoroutine( playerRun.removeVariableSpeedMultiplier( SpeedMultiplierType.Shrink, 0.5f ) );
 		float elapsedTime = 0;
 		Vector3 startScale = transform.localScale;
 		do
 		{
 			elapsedTime = elapsedTime + Time.deltaTime;
 			transform.localScale = Vector3.Lerp( startScale, endScale, elapsedTime/shrinkDuration );
-			playerControl.runSpeed = runSpeedBeforeSpell * transform.localScale.y;
 
 			yield return new WaitForFixedUpdate();  
 			
 		} while ( elapsedTime < shrinkDuration );
 		transform.localScale = endScale;	
-		playerControl.setAllowRunSpeedToIncrease( true );
-		playerControl.runSpeed = runSpeedBeforeSpell;
 	}
 
 	public void cancelShrinkSpell()
@@ -333,6 +337,18 @@ public class PlayerSpell : PunBehaviour {
 	}
 	#endregion
 
+	#region Speedboost a.k.a. Raging Bull
+	public void cancelSpeedBoost()
+	{
+		if( isSpeedBoostActive )
+		{
+			if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) Camera.main.GetComponent<MotionBlur>().enabled = false;
+			GetComponent<PlayerSounds>().stopAudioSource();
+			isSpeedBoostActive = false;
+		}
+	}
+	#endregion
+
 	#region Cancel Card
 	void sendCancelCardEvent( CardName name, bool playedByOpponent )
 	{
@@ -373,6 +389,7 @@ public class PlayerSpell : PunBehaviour {
 		cancelSupercharger();
 		cancelHack();
 		cancelJetPack();
+		cancelSpeedBoost();
 	}
 
 	public void playerDied()
