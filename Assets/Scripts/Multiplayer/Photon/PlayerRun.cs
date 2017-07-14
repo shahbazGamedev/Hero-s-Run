@@ -40,8 +40,12 @@ public class PlayerRun : Photon.PunBehaviour {
 
 	#region Run to Sprint animations blending
 	//Used to modify the blend amount between Run and Sprint animations based on the current run speed.
-	float blendFactor;
+	//The desired behavior is as follows:
+	//If the run speed is less or equal to the level start speed, we want a blend value of 0 (pure run).
+	//If the run speed is equal or bigger than RUN_SPEED_FOR_FULL_BLENDING, we want a blend value of 1 (pure sprint).
 	int speedBlendFactor = Animator.StringToHash("Speed");
+	float RUN_SPEED_FOR_FULL_BLENDING = 28f;
+	float baseBlend;
 	#endregion
 
 	#region Cached for performance
@@ -49,18 +53,22 @@ public class PlayerRun : Photon.PunBehaviour {
 	PlayerControl playerControl;
 	#endregion
 
-	// Use this for initialization
-	void Start ()
+	void Awake ()
 	{
 		anim = GetComponent<Animator>();
 		playerControl = GetComponent<PlayerControl>();
+	}
 
+	void Start ()
+	{
 		defaultOverallSpeedMultiplier = LevelManager.Instance.speedOverrideMultiplier;
 		overallSpeedMultiplier = defaultOverallSpeedMultiplier;
 
 		//Get the base run speed from the level data.
 		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedCircuit();
 		levelRunStartSpeed = LevelManager.Instance.getSelectedCircuit().RunStartSpeed;
+		baseBlend = RUN_SPEED_FOR_FULL_BLENDING - levelRunStartSpeed;
+		if ( baseBlend < 0 ) baseBlend = 1f;
 	}
 
 	void OnEnable()
@@ -260,6 +268,18 @@ public class PlayerRun : Photon.PunBehaviour {
 			overallSpeedMultiplier = overallSpeedMultiplier * activeSpeedMultipliersList[i].multiplier;
 		}
 		runSpeed = levelRunStartSpeed * overallSpeedMultiplier;
+		
+		//Now update the run/sprint blend factor
+		if( runSpeed <= levelRunStartSpeed )
+		{
+			setSprintBlendFactor( 0 );
+		}
+		else
+		{
+			float blendFactor = ( runSpeed - levelRunStartSpeed )/baseBlend;
+			setSprintBlendFactor( blendFactor );
+
+		}
 		print("PlayerRun calculateOverallSpeedMultiplier: " + overallSpeedMultiplier + " runSpeed: " +  runSpeed + " defaultOverallSpeedMultiplier: " + defaultOverallSpeedMultiplier + " " + getActiveSpeedMultipliers() );
 
 	}
@@ -323,7 +343,7 @@ public class PlayerRun : Photon.PunBehaviour {
 		float startSpeed = runSpeed * brakeFactor;
 		float endSpeed = SLOW_DOWN_END_SPEED;
 
-		float startBlendFactor = blendFactor;
+		float startBlendFactor = anim.GetFloat( speedBlendFactor );
 
 		float startAnimationSpeed = anim.speed;
 		float endAnimationSpeed = 1f;
@@ -337,7 +357,7 @@ public class PlayerRun : Photon.PunBehaviour {
 			runSpeed =  Mathf.Lerp( startSpeed, endSpeed, percentageComplete );
 
 			//Update the blend amount between Run and Sprint animations based on the current run speed
-			blendFactor =  Mathf.Lerp( startBlendFactor, 0, percentageComplete );
+			float blendFactor =  Mathf.Lerp( startBlendFactor, 0, percentageComplete );
 			anim.SetFloat(speedBlendFactor, blendFactor);
 
 			//update animation speed
