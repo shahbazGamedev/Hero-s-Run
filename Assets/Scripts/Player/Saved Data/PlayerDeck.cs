@@ -18,7 +18,7 @@ public class PlayerDeck {
 	{
 		//Cards in battle deck
 		//1
-		addCard( CardName.Force_Field, 11, 1, true );
+		addCard( CardName.Force_Field, 1, 1, true );
 
 		//2
 		addCard( CardName.Sprint, 8, 2, true );
