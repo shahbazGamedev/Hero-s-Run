@@ -88,7 +88,15 @@ public class PlayerRun : Photon.PunBehaviour {
 		runSpeed = levelRunStartSpeed;
 	}
 
+	//Human players receive player state changes via MultiplayerStateChanged events.
 	void MultiplayerStateChanged( PlayerCharacterState newState )
+	{
+		if( GetComponent<PlayerAI>() != null ) return;
+		handlePlayerStateChange( newState );
+	}
+
+	//Note: bots call handlePlayerStateChange directly.
+	public void handlePlayerStateChange( PlayerCharacterState newState )
 	{
 	    switch (newState)
 		{

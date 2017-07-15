@@ -1845,8 +1845,10 @@ public class PlayerControl : Photon.PunBehaviour {
 	{
 		playerCharacterState = newState;
 		//Debug.Log("PlayerControl-setCharacterState to: " + newState + " for " + gameObject.name );
-		//Send an event to interested classes
+		//Send an event to interested classes if you are a human player
 		if(multiplayerStateChanged != null && this.photonView.isMine && playerAI == null ) multiplayerStateChanged( playerCharacterState );
+		//Bots call the method directly.
+		if( playerAI != null ) playerRun.handlePlayerStateChange( playerCharacterState );
 	}
 
 	public void enablePlayerControl( bool enabled )
