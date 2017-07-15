@@ -22,7 +22,8 @@ public enum CardPropertyType
 	AIM_RANGE = 6,
 	DURATION_WITH_TIMER = 7,
 	TARGET = 8,
-	FLIGHT_SPEED = 9
+	FLIGHT_SPEED = 9,
+	HEIGHT = 10
 }
 
 public enum CardPropertyTargetType
@@ -68,7 +69,7 @@ public enum CardName
 	Grenade = 101,
 	Shrink = 102,
 	Sentry = 104,
-	IceWall = 105,
+	Force_Field = 105,
 	Steal = 106,
 
 	//Epic
@@ -348,7 +349,8 @@ public class CardManager : MonoBehaviour {
 			case CardPropertyType.RANGE:
  			case CardPropertyType.AIM_RANGE:
  			case CardPropertyType.RADIUS:
- 	             return "m";
+  			case CardPropertyType.HEIGHT:
+	             return "m";
                
 			case CardPropertyType.FLIGHT_SPEED:
  	             return "m/s";

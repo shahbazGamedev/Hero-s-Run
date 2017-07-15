@@ -106,7 +106,7 @@ public class PlayerAI : AutoPilot {
 		}
 		else if ( Input.GetKeyDown (KeyCode.I ) )
 		{
-			bch.activateCard( CardName.IceWall );
+			bch.activateCard( CardName.Force_Field );
 		}
 	}
 

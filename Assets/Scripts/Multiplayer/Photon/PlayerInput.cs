@@ -146,7 +146,7 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.T ) )
 		{
-			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.IceWall, GameManager.Instance.playerProfile.getUserName(), 9 );
+			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Force_Field, GameManager.Instance.playerProfile.getUserName(), 9 );
 		}
 		else if ( Input.GetKeyDown (KeyCode.P ) )
 		{

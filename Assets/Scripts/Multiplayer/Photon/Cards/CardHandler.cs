@@ -152,15 +152,15 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardStasis component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
-			case CardName.IceWall:
-				CardIceWall cardIceWall = GetComponent<CardIceWall>();
-				if( cardIceWall != null )
+			case CardName.Force_Field:
+				CardForceField cardForceField = GetComponent<CardForceField>();
+				if( cardForceField != null )
 				{
-					cardIceWall.activateCard( photonViewId, level );
+					cardForceField.activateCard( photonViewId, level );
 				}
 				else
 				{
-					Debug.LogError("CardHandler-The CardIceWall component is not attached to the CardHandler in the Level scene.");
+					Debug.LogError("CardHandler-The CardForceField component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
 
@@ -288,10 +288,10 @@ public class CardHandler : MonoBehaviour {
 			break;
 			//Firewall is effective whenever there is an opponent behind you and not too far
 			//IceWall is effective whenever there is an opponent behind you and not too far
-			case CardName.IceWall:
+			case CardName.Force_Field:
 				if( isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
-					return GetComponent<CardIceWall>().isAllowed( caster.GetComponent<PhotonView>().viewID );
+					return GetComponent<CardForceField>().isAllowed( caster.GetComponent<PhotonView>().viewID );
 				}
 			break;
 			case CardName.Firewall:

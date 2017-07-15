@@ -66,7 +66,7 @@ public class PlayerRun : Photon.PunBehaviour {
 
 		//Get the base run speed from the level data.
 		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedCircuit();
-		levelRunStartSpeed = LevelManager.Instance.getSelectedCircuit().RunStartSpeed;
+		levelRunStartSpeed = LevelManager.Instance.getSelectedCircuit().RunStartSpeed * defaultOverallSpeedMultiplier;
 		baseBlend = RUN_SPEED_FOR_FULL_BLENDING - levelRunStartSpeed;
 		if ( baseBlend < 0 ) baseBlend = 1f;
 	}

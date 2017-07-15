@@ -2,42 +2,50 @@
 using UnityEngine.UI;
 using System.Collections;
 
-/// <summary>
-/// Ice wall. Make sure to set the parent layer to Destructible and the children's layer to Ignore Raycast (or else the ice wall will not be positioned properly).
-/// </summary>
-public class IceWall : CardSpawnedObject {
+public class ForceField : CardSpawnedObject {
 	
+	[SerializeField] ParticleSystem activeForceFieldFx;
+	[SerializeField] AudioClip collisionSound;
+
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
 		//Read the data
 		object[] data = this.gameObject.GetPhotonView ().instantiationData;
 		
 		GetComponent<BoxCollider>().isTrigger = true;
-		enableChunkColliders( false );
 
 		//Remember who the caster is
 		casterName = data[0].ToString();
 
-		//Destroy the ice wall when the spell expires
+		//Destroy the force field when the spell expires
 		float spellDuration = (float) data[1];
 		StartCoroutine( destroySpawnedObject( spellDuration, DELAY_BEFORE_DESTROY_EFFECTS ) );
 
-		//Display the ice wall icon on the minimap
+		//Adjust the height
+		float height = (float) data[2];
+		transform.localScale = new Vector3( 8f, height, 1f );
+
+		//Display the force field icon on the minimap
 		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
 
-		//Position the ice wall flush with the ground and try to center it in the middle of the road if possible.
-		positionSpawnedObject( 1.1f );
+		//Position it flush with the ground and try to center it in the middle of the road if possible.
+		positionSpawnedObject( height * 0.5f );
 
-		StartCoroutine( changeMaterialOnCreate( 1f ) );
+		StartCoroutine( activate( 1f ) );
 	}
 
-	IEnumerator changeMaterialOnCreate( float delayBeforeMaterialChange )
+	void OnCollisionEnter(Collision collision)
 	{
-		yield return new WaitForSeconds(delayBeforeMaterialChange);
-		GetComponent<Renderer>().material = onFunctioning;
+		//Play collision sound at point of impact
+		AudioSource.PlayClipAtPoint( collisionSound, collision.contacts[0].point );
+  	}
+
+	IEnumerator activate( float delayBeforeActivation )
+	{
+		yield return new WaitForSeconds(delayBeforeActivation);
 		setSpawnedObjectState(SpawnedObjectState.Functioning);
 		GetComponent<BoxCollider>().isTrigger = false;
-		enableChunkColliders( true );
+		activeForceFieldFx.Play();
 	}
 
 	public override void destroySpawnedObjectNow()
@@ -50,18 +58,9 @@ public class IceWall : CardSpawnedObject {
 		yield return new WaitForSeconds(delayBeforeExpires);
 		GetComponent<BoxCollider>().isTrigger = true;
 		setSpawnedObjectState(SpawnedObjectState.BeingDestroyed);
-		StopCoroutine( "changeMaterialOnCreate" );
-		GetComponent<Renderer>().material = onDestroy;
+		StopCoroutine( "activate" );
+		activeForceFieldFx.Stop();
 		yield return new WaitForSeconds(delayBeforeDestroyEffects);
 		Destroy( gameObject );
-	}
-
-	void enableChunkColliders( bool value )
-	{
-		for( int i = 0; i < transform.childCount; i++ )
-		{
-			MeshCollider mc = transform.GetChild( i ).GetComponent<MeshCollider>();
-			if( mc != null ) mc.enabled = value;
-		}
 	}
 }
