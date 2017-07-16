@@ -20,7 +20,9 @@ public enum SunType
 	Jungle = 10,
 	Caves = 11,
 	Countryside = 12,
-	Island = 13
+	Sky_city = 13,
+	Sky_city_night = 14
+
 }
 
 public enum LevelType 
@@ -209,17 +211,46 @@ public class LevelData : MonoBehaviour {
 				Sun.GetComponent<Light>().color = Color.white;
 				break;
 
+			case SunType.Sky_city:
+				skyBoxName = "Skybox_backgound";
 
-			case SunType.Island:
-				skyBoxName = "skybox island";
 				lightIntensity = 1.15f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				shadowStrength = 0.5f;
 				sunDirection = Quaternion.Euler( 80f,119f,42f );
+
 				RenderSettings.ambientSkyColor = new Color(0.764f, 0.764f, 0.764f ); //greyish
 				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
 				RenderSettings.ambientIntensity = 0.6f;
-				RenderSettings.fog = false;
+
+				//RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
+				//RenderSettings.ambientIntensity = 1f;
+
+				RenderSettings.fog = true;
+				RenderSettings.fogMode = FogMode.Linear;
+				RenderSettings.fogColor = new Color(109f/255f, 169f/255f, 226f/255f ); //bluish
+				RenderSettings.fogStartDistance = 100f;
+				RenderSettings.fogEndDistance = 120f;
+
+				break;
+
+			case SunType.Sky_city_night:
+				skyBoxName = "Skybox_backgound_night";
+
+				lightIntensity = 2.6f;
+				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
+				Sun.GetComponent<Light>().color = new Color(44f/255f,96f/255f,146f/255f); //purple
+				shadowStrength = 1f;
+				sunDirection = Quaternion.Euler( 122.7f,-55.8f,30.7f );
+
+				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
+				RenderSettings.ambientIntensity = 2f;
+
+				RenderSettings.fog = true;
+				RenderSettings.fogMode = FogMode.Linear;
+				RenderSettings.fogColor = new Color( 2f/255f, 52f/255f, 105f/255f ); //dark purple
+				RenderSettings.fogStartDistance = 100f;
+				RenderSettings.fogEndDistance = 120f;
 
 				break;
 
