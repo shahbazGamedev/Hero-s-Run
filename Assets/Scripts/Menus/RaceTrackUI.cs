@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class RaceTrackUI : MonoBehaviour {
 
+	[SerializeField] Image textBackground;
 	[SerializeField] Text raceTrackName;
 	[SerializeField] Image raceTrackImage;
 	[SerializeField] Text raceTrackNumber;
@@ -17,6 +18,8 @@ public class RaceTrackUI : MonoBehaviour {
 		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + info.circuitInfo.sectorNumber.ToString() );
 		raceTrackName.text = sectorName;
 		raceTrackImage.sprite = info.circuitInfo.circuitImage;
+		textBackground.color = info.circuitInfo.backgroundColor;
+
 		if( info.trophiesNeededToUnlock == 0 )
 		{
 			//If it does not require trophies, hide the trophy icon and trophies needed text
