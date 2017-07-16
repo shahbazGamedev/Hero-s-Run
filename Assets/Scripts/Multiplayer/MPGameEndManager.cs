@@ -9,6 +9,7 @@ public class MPGameEndManager : MonoBehaviour {
 	[Header("Testing Mode")]
 	[SerializeField] bool xpTestingMode = false;
 	[Header("Race Panel")]
+	[SerializeField] Image backgroundImage;
 	[SerializeField] Image circuitImage;
 	[SerializeField] Text raceResult;
 	[SerializeField] Text playerName;
@@ -51,6 +52,7 @@ public class MPGameEndManager : MonoBehaviour {
 		circuitImage.sprite = multiplayerInfo.circuitInfo.circuitImage;
 		raceResult.text = getRacePositionString( PlayerRaceManager.Instance.racePosition );
 		playerName.text = GameManager.Instance.playerProfile.getUserName();
+		backgroundImage.color = multiplayerInfo.circuitInfo.backgroundColor;
 
 		if( TrophyManager.Instance.canEarnTrophies() )
 		{
