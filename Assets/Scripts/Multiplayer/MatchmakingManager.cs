@@ -9,6 +9,7 @@ public class MatchmakingManager : MonoBehaviour {
 
 	[Header("General")]
 	[SerializeField] GameObject endOfGameCanvas;
+	[SerializeField] Image backgroundImage;
 	[SerializeField] Button playButton;
 	[SerializeField] Text playButtonText;
 	[SerializeField] Text versusText;
@@ -97,6 +98,7 @@ public class MatchmakingManager : MonoBehaviour {
 				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRaceTrackByName( LevelManager.Instance.matchData.raceTrackName ) );
 			}
 			configureCircuitData( LevelManager.Instance.getSelectedCircuit().circuitInfo );
+			backgroundImage.color = LevelManager.Instance.getSelectedCircuit().circuitInfo.backgroundColor;
 			endOfGameCanvas.SetActive( false );
 		}
 	}
