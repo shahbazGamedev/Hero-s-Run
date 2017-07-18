@@ -238,9 +238,9 @@ public class LevelData : MonoBehaviour {
 				skyBoxName = "Skybox_backgound_night";
 
 				lightIntensity = 2.6f;
-				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
+				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				Sun.GetComponent<Light>().color = new Color(44f/255f,96f/255f,146f/255f); //purple
-				shadowStrength = 1f;
+				shadowStrength = 0.1f;
 				sunDirection = Quaternion.Euler( 122.7f,-55.8f,30.7f );
 
 				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;

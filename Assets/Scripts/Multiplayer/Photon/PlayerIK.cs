@@ -22,6 +22,7 @@ public class PlayerIK : MonoBehaviour {
 	[SerializeField] float dotProductIK = 0.55f;
 	public bool lookAtActive = false;
 	public bool enableIK = true; //this could be used to disable IK in case the rig does not support it or the performance on the device suffers
+	Vector3 playerOffset = new Vector3( 0, 1.4f, 0 ); //Look at the player's eyes, not his feet.
 
 	void Awake ()
 	{
@@ -48,7 +49,7 @@ public class PlayerIK : MonoBehaviour {
 			float distance = Vector3.SqrMagnitude(lookAtTarget.position - transform.position);
 			if( distance < activeDistanceSquared && getDotProduct() > dotProductIK )			
 			{
-				anim.SetLookAtPosition( lookAtTarget.position );
+				anim.SetLookAtPosition( lookAtTarget.TransformPoint( playerOffset ) );
 				anim.SetLookAtWeight( lookAtWeight, bodyWeight, headWeight, eyesWeight, clampWeight );
 			}
 			else
