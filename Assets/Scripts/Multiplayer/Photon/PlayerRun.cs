@@ -91,7 +91,7 @@ public class PlayerRun : Photon.PunBehaviour {
 	//Human players receive player state changes via MultiplayerStateChanged events.
 	void MultiplayerStateChanged( PlayerCharacterState newState )
 	{
-		if( GetComponent<PlayerAI>() != null ) return;
+		if( GetComponent<PlayerAI>() != null || !this.photonView.isMine ) return;
 		handlePlayerStateChange( newState );
 	}
 
