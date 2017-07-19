@@ -478,6 +478,9 @@ public class LevelData : MonoBehaviour {
 		[Tooltip("Tile size. Either 50 for Jousting or 36.4 for all other.")]
 		public float tileSize;
 		[Header("Other")]
+		[Range(0,1)]
+		[Tooltip("Percentage chance of rain. Set to 0 if you do not want any rain. The level tiles must have rain particle systems with the RainActivator component for this to work.")]
+		public float rainChance;
 		[Tooltip("Trophies needed to unlock race track.")]
 		public int trophiesNeededToUnlock;
 		[Tooltip("Coins awarded on victory. This number varies per track.")]

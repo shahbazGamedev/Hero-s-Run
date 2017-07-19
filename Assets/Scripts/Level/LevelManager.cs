@@ -33,6 +33,9 @@ public class LevelManager {
 	//in the level while in Story mode. This allows you to have shorter episodes with only the essential tile groups, typically, Start, any scripted sequence, and End.
 	bool onlyUseUniqueTiles = false;
 
+	//Weather
+	public RainType rainType = RainType.No_Rain;
+
 	//Racing mode
 	byte numberOfPlayersRequired;
 	private LevelData.MultiplayerInfo selectedCircuit; //the race track selected.

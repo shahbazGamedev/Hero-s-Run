@@ -397,6 +397,24 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			surroundingPlane.gameObject.SetActive( false );
 		}
 
+		//See if it can rain in the level.
+		if( currentMultiplayer.rainChance > 0 )
+		{
+			//It rains randomly ...
+			float random = Random.Range( 0, currentMultiplayer.rainChance );
+			if( random <= currentMultiplayer.rainChance )
+			{
+				//Yes, it is raining.
+				//Decide between Light rain and Heavy rain.
+				LevelManager.Instance.rainType = (RainType) Random.Range( 1, 3 );
+			}
+		}
+		else
+		{
+			//It doesn't rain in this level.
+			LevelManager.Instance.rainType = RainType.No_Rain;
+		}
+
 		generateMultiplayerLevel( currentMultiplayer.numberOfTileGroups, currentMultiplayer.tileGroupList, currentMultiplayer.endTileGroupList  );
 
 		//Make the first few tiles active
