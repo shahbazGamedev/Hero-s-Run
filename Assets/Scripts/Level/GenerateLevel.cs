@@ -125,7 +125,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	[SerializeField] GameObject zombieManagerPrefab;
 	const float TILE_SIZE_CAMPAIGN = 36.4f;
 	public static float tileSize;
-	const float UNDERNEATH_TILE_BY = 10f;
+	const float UNDERNEATH_TILE_BY = 12f;
 	int tileDepthMult = 1; //A value of one means the tile depth is 1 x TILE_SIZE, a value of two means 2 x TILE_SIZE, etc.
 	
 	//worldRoadSegments is a List of game object tiles
