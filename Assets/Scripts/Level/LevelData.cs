@@ -216,7 +216,7 @@ public class LevelData : MonoBehaviour {
 
 				lightIntensity = 1.15f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
-				shadowStrength = 0.5f;
+				shadowStrength = 0.42f;
 				sunDirection = Quaternion.Euler( 80f,119f,42f );
 
 				RenderSettings.ambientSkyColor = new Color(0.764f, 0.764f, 0.764f ); //greyish
@@ -237,7 +237,7 @@ public class LevelData : MonoBehaviour {
 			case SunType.Sky_city_night:
 				skyBoxName = "Skybox_backgound_night";
 
-				lightIntensity = 2.6f;
+				lightIntensity = 2.5f;
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				Sun.GetComponent<Light>().color = new Color(44f/255f,96f/255f,146f/255f); //purple
 				shadowStrength = 0.1f;
