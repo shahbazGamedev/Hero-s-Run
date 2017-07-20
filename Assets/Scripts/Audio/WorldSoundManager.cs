@@ -54,12 +54,6 @@ public class WorldSoundManager : MonoBehaviour {
 		worldDialogMixer.SetFloat("Echo Intensity", -80f );
     }
 
-	void Start()
-	{
-		if( !mainAmbienceAudioSource.isPlaying ) mainAmbienceAudioSource.Play();
-		ambienceMainActive.TransitionTo( 4f );
-	}
-
     void PlaySting()
     {
         int randClip = Random.Range (0, stings.Length);
@@ -73,8 +67,11 @@ public class WorldSoundManager : MonoBehaviour {
 		ambienceSecondaryActive.TransitionTo( timeToReach );
 	}
 
-	public void crossFadeToMainAmbience( float timeToReach )
+	public IEnumerator crossFadeToMainAmbience( float timeToReach )
 	{
+		//You need to reset the mixer values or else the transition will not occur.
+      	ambienceNoneActive.TransitionTo(0f);
+		yield return new WaitForEndOfFrame(); //Important
 		if( !mainAmbienceAudioSource.isPlaying ) mainAmbienceAudioSource.Play();
 		ambienceMainActive.TransitionTo( timeToReach );
 	}

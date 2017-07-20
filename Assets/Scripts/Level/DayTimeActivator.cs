@@ -12,7 +12,6 @@ public class DayTimeActivator : MonoBehaviour {
 		if( sunType == activateForThisSunType )
 		{
 			gameObject.SetActive( true );
-			print("DayTimeActivator " + sunType + " " + name );
 		}
 		else
 		{

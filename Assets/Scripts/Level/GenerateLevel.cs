@@ -397,22 +397,50 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			surroundingPlane.gameObject.SetActive( false );
 		}
 
+		GameObject wsmgo = GameObject.FindGameObjectWithTag("World Sound Manager");
+		WorldSoundManager wsm = null;
+		if( wsmgo != null )
+		{
+			wsm = wsmgo.GetComponent<WorldSoundManager>();
+		}
+		else
+		{
+			Debug.LogError("GenerateLevel error-can't locate game object with the tag 'World Sound Manager' in the Level scene.");
+		}
+
 		//See if it can rain in the level.
 		if( currentMultiplayer.rainChance > 0 )
 		{
 			//It rains randomly ...
-			float random = Random.Range( 0, currentMultiplayer.rainChance );
-			if( random <= currentMultiplayer.rainChance )
+			if( Random.value <= currentMultiplayer.rainChance )
 			{
 				//Yes, it is raining.
 				//Decide between Light rain and Heavy rain.
 				LevelManager.Instance.rainType = (RainType) Random.Range( 1, 3 );
+
+				//Get the rain audio clip and play it as an ambience track.
+				if( currentMultiplayer.rainAudio != null )
+				{
+					wsm.mainAmbienceAudioSource.clip = currentMultiplayer.rainAudio;
+					StartCoroutine( wsm.crossFadeToMainAmbience( 3f ) );
+				}
+				else
+				{
+					Debug.LogWarning("GenerateLevel warning-the level has rain, but no rain audio clip is specified.");
+				}
+			}
+			else
+			{
+				//It's not raining this time.
+				LevelManager.Instance.rainType = RainType.No_Rain;
+				wsm.mainAmbienceAudioSource.clip = null;
 			}
 		}
 		else
 		{
 			//It doesn't rain in this level.
 			LevelManager.Instance.rainType = RainType.No_Rain;
+			wsm.mainAmbienceAudioSource.clip = null;
 		}
 
 		generateMultiplayerLevel( currentMultiplayer.numberOfTileGroups, currentMultiplayer.tileGroupList, currentMultiplayer.endTileGroupList  );

@@ -481,6 +481,8 @@ public class LevelData : MonoBehaviour {
 		[Range(0,1)]
 		[Tooltip("Percentage chance of rain. Set to 0 if you do not want any rain. The level tiles must have rain particle systems with the RainActivator component for this to work.")]
 		public float rainChance;
+		[Tooltip("The rain clip will use the main ambience audio source.")]
+		public AudioClip rainAudio;
 		[Tooltip("Trophies needed to unlock race track.")]
 		public int trophiesNeededToUnlock;
 		[Tooltip("Coins awarded on victory. This number varies per track.")]
