@@ -370,6 +370,26 @@ public class LevelData : MonoBehaviour {
 		public List<TileGroupType> tileGroupList = new List<TileGroupType>();
 	}
 
+	/// <summary>
+	/// Gets a random level excluding level zero which is the training level.
+	/// If 'show debug info' is set to true, it will ALWAYS return level 2 to facilitate online testing.
+	/// </summary>
+	/// <returns>The random level.</returns>
+	public MultiplayerInfo getRandomLevel()
+	{
+		if( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() )
+		{
+			//For testing, always return level 2 to guarantee a match
+			return multiplayerList[2];
+		}
+		else
+		{
+			//0 is the training level. We want to exclude it.
+			int random = Random.Range( 1, multiplayerList.Count);
+			return multiplayerList[random];
+		}
+	}
+
 	public MultiplayerInfo getRaceTrackByName( string raceTrackName )
 	{
 		for( int i =0; i < multiplayerList.Count; i++ )

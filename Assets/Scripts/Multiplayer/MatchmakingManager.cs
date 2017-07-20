@@ -83,14 +83,14 @@ public class MatchmakingManager : MonoBehaviour {
 		}
 		else
 		{
-			//If we are playing a 2 or 3 player online multiplayer match, the race track is
-			//selected automatically based on the player's number of trophies.
+			//If we are playing a 2 or 3 player online multiplayer match, the level is
+			//selected randomly (excluding level zero which is the training level).
 			//If the player is playing alone or against AI, the race track has been selected in
 			//the circuit selection screen.
 			//If the player is inviting a friend, they will race in a track based on the inviter's number of trophies.
 			if( GameManager.Instance.getPlayMode() == PlayMode.PlayTwoPlayers || GameManager.Instance.getPlayMode() == PlayMode.PlayThreePlayers )
 			{
-				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRaceTrackByTrophies() );
+				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomLevel() );
 			}
 			else if( GameManager.Instance.getPlayMode() == PlayMode.PlayWithFriends )
 			{
