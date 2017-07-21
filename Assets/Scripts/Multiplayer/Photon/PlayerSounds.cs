@@ -4,20 +4,22 @@ using UnityEngine;
 
 public class PlayerSounds : MonoBehaviour {
 
-	public AudioClip 	slidingSound;
-	public AudioClip 	jumpingSound;
-	public AudioClip 	sideMoveSound;
-	public AudioClip 	dyingSound;
-	public AudioClip 	stumblingSound;
-	public AudioClip 	fallingSound;
-	public AudioClip 	footstepLeftSound;
-	public AudioClip 	footstepRightSound;
-	public AudioClip 	footstepWaterSound; //We do not need one for each foot.
-	public AudioClip 	landGroundSound;
-	public AudioClip 	landWaterSound;
-	public AudioClip 	deathFireSound;
-	public AudioClip 	snowFootstepLeftSound;
-	public AudioClip 	snowFootstepRightSound;
+	[SerializeField] AudioClip 	slidingSound;
+	[SerializeField] AudioClip 	jumpingSound;
+	[SerializeField] AudioClip 	sideMoveSound;
+	[SerializeField] AudioClip 	landGroundSound;
+	[SerializeField] AudioClip 	landWaterSound;
+	[SerializeField] AudioClip 	stumblingSound;
+	[SerializeField] AudioClip 	fallingSound;
+	[Header("Dying")]
+	[SerializeField] AudioClip 	deathFireSound;
+	[SerializeField] AudioClip 	dyingSound;
+	[Header("Footsteps")]
+	[SerializeField] AudioClip 	footstepLeftSound;
+	[SerializeField] AudioClip 	footstepRightSound;
+	[SerializeField] AudioClip 	footstepWaterSound; //We do not need one for each foot.
+	[SerializeField] AudioClip 	snowFootstepLeftSound;
+	[SerializeField] AudioClip 	snowFootstepRightSound;
 	AudioClip leftFootstep;	//Footsteps sounds to use for current ground type
 	AudioClip rightFootstep;
 
