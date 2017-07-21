@@ -24,7 +24,7 @@ public class RainActivator : MonoBehaviour {
 				break;
 
 	        case RainType.Heavy_Rain:
-				module.rateOverTime = 200;
+				module.rateOverTime = 175;
 				break;
 		}
 	}
