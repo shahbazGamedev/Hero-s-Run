@@ -215,6 +215,10 @@ public class AutoPilot : Photon.PunBehaviour {
 		{
 			moveToCenterLane();
 		}
+		else if( other.CompareTag( "Jump" ) )
+		{
+			playerInput.jump();
+		}
 	}
 
 	private void moveToCenterLane()

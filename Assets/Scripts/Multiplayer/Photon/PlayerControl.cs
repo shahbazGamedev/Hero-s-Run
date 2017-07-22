@@ -75,7 +75,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Falling variables
-	const float MIN_DISTANCE_FOR_FALL = 7f;
+	const float MIN_DISTANCE_FOR_FALL = 3f;
 	//When the player falls, we start calculating his fall distance. If the fall distance is greater than FALL_TO_DEATH_DISTANCE, then the player will die.
 	float fallStartYPos = 0;
 	const float FALL_TO_DEATH_DISTANCE = 60f;
