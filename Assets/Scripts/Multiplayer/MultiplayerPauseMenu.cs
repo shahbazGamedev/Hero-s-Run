@@ -19,8 +19,6 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 		titleText.text = LocalizationManager.Instance.getText("MENU_PAUSE");
 		resumeButtonText.text = LocalizationManager.Instance.getText("MENU_RESUME");
 		quitButtonText.text = LocalizationManager.Instance.getText("MENU_QUIT");
-		//Reset in case player paused to quit last game
-		Time.timeScale = 1f;
 	}
 
 	//If the device is paused by pressing the Home button, because of a low battery warning or a phone call, the game will automatically display the pause menu.
@@ -53,14 +51,12 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 			//Take this opportunity to do a garbage collection
 			System.GC.Collect();
 			pausePanel.SetActive( true );
-			AudioListener.pause = true;
 		}
 		else if( GameManager.Instance.getGameState() == GameState.Paused )
 		{
 			//We were paused. Resume game.
 			pausePanel.SetActive( false );
 			GameManager.Instance.setGameState( GameState.Normal );
-			AudioListener.pause = false;
 		}
 	}
 

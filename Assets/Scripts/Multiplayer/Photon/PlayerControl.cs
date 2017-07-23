@@ -337,8 +337,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			{
 				Time.timeScale = 0;
 				AudioListener.pause = true;
-				//Take this opportunity to do a garbage collection
-				System.GC.Collect();
 			}
 		}
 	}

@@ -63,8 +63,10 @@ public class MatchmakingManager : MonoBehaviour {
 		configureLobby();
 
 		//Make sure the audio listener is not paused.
-		//It gets set to true when you Pause the game.
+		//It gets set to true when you Pause the game in offline mode.
+		//Same for the timeScale.
 		AudioListener.pause = false;
+		Time.timeScale = 1f;
 
 		//The left portrait is always the local player.
 		configureLocalPlayerData();
