@@ -312,12 +312,34 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			if( previousState == GameState.Paused )
 			{
-				this.photonView.RPC( "unpauseRemotePlayers", PhotonTargets.AllViaServer );
+				//If in an online mode, unpause the player via RPC
+				if( GameManager.Instance.isOnlinePlayMode() )
+				{
+					this.photonView.RPC( "unpauseRemotePlayers", PhotonTargets.AllViaServer );
+				}
+				//If in an offline mode, resume time
+				else
+				{
+					Time.timeScale = 1f;
+					AudioListener.pause = false;
+				}
 			}
 		}
 		else if( newState == GameState.Paused )
 		{
-			this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.AllViaServer, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
+			//If in an online mode, only pause this player but the rest of the world continues as normal
+			if( GameManager.Instance.isOnlinePlayMode() )
+			{
+				this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.AllViaServer, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
+			}
+			//If in an offline mode, stop time
+			else
+			{
+				Time.timeScale = 0;
+				AudioListener.pause = true;
+				//Take this opportunity to do a garbage collection
+				System.GC.Collect();
+			}
 		}
 	}
 

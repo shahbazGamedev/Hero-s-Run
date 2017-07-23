@@ -19,6 +19,8 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 		titleText.text = LocalizationManager.Instance.getText("MENU_PAUSE");
 		resumeButtonText.text = LocalizationManager.Instance.getText("MENU_RESUME");
 		quitButtonText.text = LocalizationManager.Instance.getText("MENU_QUIT");
+		//Reset in case player paused to quit last game
+		Time.timeScale = 1f;
 	}
 
 	//If the device is paused by pressing the Home button, because of a low battery warning or a phone call, the game will automatically display the pause menu.
