@@ -231,6 +231,17 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardJetPack component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+			case CardName.Smoke_Bomb:
+				CardSmokeBomb cardSmokeBomb = GetComponent<CardSmokeBomb>();
+				if( cardSmokeBomb != null )
+				{
+					cardSmokeBomb.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardSmokeBomb component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -298,6 +309,12 @@ public class CardHandler : MonoBehaviour {
 				if( isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
 					return GetComponent<CardFirewall>().isAllowed( caster.GetComponent<PhotonView>().viewID );
+				}
+			break;
+			case CardName.Smoke_Bomb:
+				if( isCasterLeading( caster.GetComponent<PlayerRace>() ) )
+				{
+					return GetComponent<CardSmokeBomb>().isAllowed( caster.GetComponent<PhotonView>().viewID );
 				}
 			break;
 			//Trip Mine is effective whenever there is an opponent behind you and not too far

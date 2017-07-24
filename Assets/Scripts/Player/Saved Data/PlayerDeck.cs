@@ -27,7 +27,7 @@ public class PlayerDeck {
 		addCard( CardName.Raging_Bull, 1, 3, true );
 
 		//4
-		addCard( CardName.Grenade, 4, 4, true );
+		addCard( CardName.Grenade, 4, 4, false );
 
 		//5
 		addCard( CardName.Stasis, 6, 5, true );
@@ -71,6 +71,9 @@ public class PlayerDeck {
 
 		//18
 		addCard( CardName.Jet_Pack, 1, 18, true );
+
+		//19
+		addCard( CardName.Smoke_Bomb, 4, 4, true );
 
 		serializePlayerDeck( true );
 

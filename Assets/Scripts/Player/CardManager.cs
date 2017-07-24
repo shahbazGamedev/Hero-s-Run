@@ -63,6 +63,7 @@ public enum CardName
 	Stasis = 3,
 	Sprint = 4,
 	Trip_Mine = 5,
+	Smoke_Bomb = 6,
 
 	//Rare
 	Firewall = 100,
