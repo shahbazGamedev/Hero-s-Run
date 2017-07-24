@@ -8,7 +8,7 @@ using UnityEngine;
 public class CardSmokeBomb : Card {
 
 	[SerializeField]  string prefabName;
-	Vector3 offset = new Vector3( 0, 1.2f, 2f );
+	Vector3 offset = new Vector3( 0, 1.3f, 3f );
 
 	public void activateCard ( int photonViewId, int level )
 	{
@@ -29,7 +29,8 @@ public class CardSmokeBomb : Card {
 		data[0] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
 
 		//Drop the smoke bomb in front of the player at arm's length. It has a rigidbody and hence it has gravity and will fall to the ground.
-		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( offset ), playerTransform.rotation, 0, data );
+		//We add 5 degrees in X so that the grenade topples.
+		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( offset ), Quaternion.Euler( 5f, playerTransform.rotation.y, 0 ), 0, data );
 	}
 	#endregion
 
