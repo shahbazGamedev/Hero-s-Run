@@ -39,7 +39,6 @@ public class PlayerFriends {
 			FriendData currentFriendData = onlineFriendDataList.Find( fd => fd.userName == userName );
 			currentFriendData.playerIcon = updatedFriendData.playerIcon;
 			currentFriendData.level = updatedFriendData.level;
-			currentFriendData.prestige = updatedFriendData.prestige;
 			currentFriendData.currentWinStreak = updatedFriendData.currentWinStreak;
 		}
 		else
@@ -99,7 +98,6 @@ public class PlayerFriends {
 			GameManager.Instance.playerProfile.getUserName(),
 			GameManager.Instance.playerProfile.getPlayerIconId(), 
 			GameManager.Instance.playerProfile.getLevel(), 
-			GameManager.Instance.playerProfile.prestigeLevel, 
 			GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK) );
 		return fd;
 	}
@@ -112,15 +110,13 @@ public class PlayerFriends {
 		public int status;
 		public int playerIcon;
 		public int level;
-		public int prestige;
 		public int currentWinStreak;
 
-		public FriendData ( string userName, int playerIcon, int level, int prestige, int currentWinStreak )
+		public FriendData ( string userName, int playerIcon, int level, int currentWinStreak )
 		{
 			this.userName = userName;
 			this.playerIcon = playerIcon;
 			this.level = level;
-			this.prestige = prestige;
 			this.currentWinStreak = currentWinStreak;
 		}
 
@@ -131,7 +127,7 @@ public class PlayerFriends {
 
 		public void print()
 		{
-			Debug.Log("FriendData-User Name: " + userName + " Status: " + status + " Player Icon: " + playerIcon  + " Level: " + level + " Prestige: " + prestige + " Current Win Streak: " + currentWinStreak );
+			Debug.Log("FriendData-User Name: " + userName + " Status: " + status + " Player Icon: " + playerIcon  + " Level: " + level + " Current Win Streak: " + currentWinStreak );
 		}
 	}
 

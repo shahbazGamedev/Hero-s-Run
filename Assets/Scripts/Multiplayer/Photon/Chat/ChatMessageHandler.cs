@@ -57,9 +57,8 @@ public class ChatMessageHandler {
 		string roomName = GameManager.Instance.playerProfile.getUserName() + "_" + target;
 		int playerIcon = GameManager.Instance.playerProfile.getPlayerIconId();
 		int level = GameManager.Instance.playerProfile.getLevel();
-		int prestige = GameManager.Instance.playerProfile.prestigeLevel; 
 		int currentWinStreak = GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK);
-		MatchData matchData = new MatchData( GameManager.Instance.playerProfile.getUserName(), raceTrackName, roomName, playerIcon, level, prestige, currentWinStreak );
+		MatchData matchData = new MatchData( GameManager.Instance.playerProfile.getUserName(), raceTrackName, roomName, playerIcon, level, currentWinStreak );
 
 		ChatMessage chatMessage = new ChatMessage();
 		chatMessage.chatMessageType = ChatMessageType.MATCH_REQUEST_SEND;
@@ -72,9 +71,8 @@ public class ChatMessageHandler {
 		//Send also our player info so that the inviter can populate the matchmaking screen.
 		int playerIcon = GameManager.Instance.playerProfile.getPlayerIconId();
 		int level = GameManager.Instance.playerProfile.getLevel();
-		int prestige = GameManager.Instance.playerProfile.prestigeLevel; 
 		int currentWinStreak = GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK);
-		MatchData matchData = new MatchData( GameManager.Instance.playerProfile.getUserName(), LevelManager.Instance.matchData.raceTrackName, LevelManager.Instance.matchData.roomName, playerIcon, level, prestige, currentWinStreak );
+		MatchData matchData = new MatchData( GameManager.Instance.playerProfile.getUserName(), LevelManager.Instance.matchData.raceTrackName, LevelManager.Instance.matchData.roomName, playerIcon, level, currentWinStreak );
 
 		ChatMessage chatMessage = new ChatMessage();
 		chatMessage.chatMessageType = ChatMessageType.MATCH_REQUEST_ACCEPTED;
@@ -210,17 +208,15 @@ public class ChatMessageHandler {
 		public string roomName;
 		public int playerIcon;
 		public int level;
-		public int prestige;
 		public int currentWinStreak;
 	
-		public MatchData ( string sender, string raceTrackName, string roomName, int playerIcon, int level, int prestige, int currentWinStreak )
+		public MatchData ( string sender, string raceTrackName, string roomName, int playerIcon, int level, int currentWinStreak )
 		{
 			this.sender = sender;
 			this.raceTrackName = raceTrackName;
 			this.roomName = roomName;
 			this.playerIcon = playerIcon;
 			this.level = level;
-			this.prestige = prestige;
 			this.currentWinStreak = currentWinStreak;
 		}
 
@@ -231,7 +227,7 @@ public class ChatMessageHandler {
 
 		public void print()
 		{
-			Debug.Log("MatchData-Sender: " + sender + " Race Track Name: " + raceTrackName + " Room Name: " + roomName + " Player Icon: " + playerIcon  + " Level: " + level + " Prestige: " + prestige + " Current Win Streak: " + currentWinStreak );
+			Debug.Log("MatchData-Sender: " + sender + " Race Track Name: " + raceTrackName + " Room Name: " + roomName + " Player Icon: " + playerIcon  + " Level: " + level + " Current Win Streak: " + currentWinStreak );
 		}
 	}
 }

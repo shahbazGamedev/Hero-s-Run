@@ -67,11 +67,10 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	public void OnConnected()
 	{
 		//Set our chat status to Online
-		int[] onlinePlayerData = new int[4];
+		int[] onlinePlayerData = new int[3];
 		onlinePlayerData[0] = GameManager.Instance.playerProfile.getPlayerIconId();
 		onlinePlayerData[1] = GameManager.Instance.playerProfile.getLevel();
-		onlinePlayerData[2] = GameManager.Instance.playerProfile.prestigeLevel;
-		onlinePlayerData[3] = GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK);
+		onlinePlayerData[2] = GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK);
 
 		this.chatClient.SetOnlineStatus(ChatUserStatus.Online, onlinePlayerData );
 
@@ -217,7 +216,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		{
 			int[] onlinePlayerData = (int[]) message;				
 			//Update the friend's list with this information
-			PlayerFriends.FriendData friendData = new PlayerFriends.FriendData( user, onlinePlayerData[0], onlinePlayerData[1], onlinePlayerData[2], onlinePlayerData[3] );
+			PlayerFriends.FriendData friendData = new PlayerFriends.FriendData( user, onlinePlayerData[0], onlinePlayerData[1], onlinePlayerData[2] );
 			friendData.status = (int)ChatUserStatus.Online;
 			friendData.print();
 			chatMessageHandler.updateFriendData( user, friendData );

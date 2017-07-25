@@ -45,7 +45,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		{
 			matchmakingManager.setRemotePlayerData( 1, LevelManager.Instance.matchData.sender, LevelManager.Instance.matchData.level, LevelManager.Instance.matchData.playerIcon );
 			ChatMessageHandler.MatchData md = LevelManager.Instance.matchData;
-			PlayerFriends.FriendData playerData = new PlayerFriends.FriendData(  md.sender,  md.playerIcon,  md.level,  md.prestige, md.currentWinStreak );
+			PlayerFriends.FriendData playerData = new PlayerFriends.FriendData(  md.sender,  md.playerIcon,  md.level, md.currentWinStreak );
 			GameManager.Instance.recentPlayers.addRecentPlayer( playerData );
 		}
 	}
@@ -107,9 +107,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 		//Set your level, which determines the frame to use in the matchmaking screen
 		playerCustomProperties.Add("Level", GameManager.Instance.playerProfile.getLevel() );
-
-		//Set your prestige, which determines the extra frame to use in the matchmaking screen
-		playerCustomProperties.Add("Prestige", GameManager.Instance.playerProfile.prestigeLevel );
 
 		//Set your win streak, which is displayed in the social screen
 		playerCustomProperties.Add("WinStreak", GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK) );
@@ -358,7 +355,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		matchmakingManager.setConnectionProgress( "Traveling to " + sectorName + " ..." ); 
 		matchmakingManager.setRemotePlayerData( numberRemotePlayerConnected, player.NickName, (int)player.CustomProperties["Level"], (int)player.CustomProperties["Icon"] );
 		PlayerRaceManager.Instance.setTrophiesOwnedByOpponent( numberRemotePlayerConnected, (int)player.CustomProperties["Trophies"] );
-		PlayerFriends.FriendData playerData = new PlayerFriends.FriendData( player.NickName, (int)player.CustomProperties["Icon"], (int)player.CustomProperties["Level"], (int)player.CustomProperties["Prestige"], (int)player.CustomProperties["WinStreak"] );		
+		PlayerFriends.FriendData playerData = new PlayerFriends.FriendData( player.NickName, (int)player.CustomProperties["Icon"], (int)player.CustomProperties["Level"], (int)player.CustomProperties["WinStreak"] );		
 		GameManager.Instance.recentPlayers.addRecentPlayer( playerData );
 	}
 

@@ -24,7 +24,6 @@ public class RecentPlayers {
 			PlayerFriends.FriendData currentRecentPlayerData = recentPlayersList.Find( fd => fd.userName == userName );
 			currentRecentPlayerData.playerIcon = updatedRecentPlayerData.playerIcon;
 			currentRecentPlayerData.level = updatedRecentPlayerData.level;
-			currentRecentPlayerData.prestige = updatedRecentPlayerData.prestige;
 			currentRecentPlayerData.currentWinStreak = updatedRecentPlayerData.currentWinStreak;
 		}
 		else
@@ -100,7 +99,7 @@ public class RecentPlayers {
 		//Don't add duplicate recent players
 		if( recentPlayersList.Exists(friendData => friendData.userName == userName ) ) return;
 
-		PlayerFriends.FriendData fd = new PlayerFriends.FriendData( userName, 2, level, 0, 3 );
+		PlayerFriends.FriendData fd = new PlayerFriends.FriendData( userName, 2, level, 3 );
 		recentPlayersList.Add(fd);
 	}
 

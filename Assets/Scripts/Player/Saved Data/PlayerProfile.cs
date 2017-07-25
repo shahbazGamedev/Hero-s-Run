@@ -26,7 +26,6 @@ public sealed class PlayerProfile {
 	public int totalXPEarned = 0;
 	public int xpProgressToNextLevel = 0;
 	public int level = 1;
-	public int prestigeLevel = 0;
 	public string lastMatchPlayedTimeString = "01/01/1970 00:00:00";
 	public string lastMatchWonTimeString = "01/01/1970 00:00:00";
 	public string lastFreeLootBoxOpenedTimeString = "01/01/1970 00:00:00";
