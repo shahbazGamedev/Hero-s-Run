@@ -14,13 +14,21 @@ public class SmokeBomb : CardSpawnedObject {
 
 	IEnumerator activate( float duration )
 	{
-		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
-		GetComponentInChildren<ParticleSystem>().Play( true );
+		//Separate the smoke from the canister.
+		Transform smoke = transform.FindChild("Smoke");
+		smoke.SetParent( null, true );
+		//Position the smoke in the center of the tile if possible.
+		positionSpecifiedObject( smoke, 0 );
+		//Register the smoke on the minimap
+		MiniMap.Instance.registerRadarObject( smoke.gameObject, minimapIcon );
+		//Start the smoke particle system
+		smoke.GetComponentInChildren<ParticleSystem>().Play( true );
 		yield return new WaitForSeconds( duration );
-		GetComponentInChildren<ParticleSystem>().Stop( true );
+		smoke.GetComponentInChildren<ParticleSystem>().Stop( true );
 		//Give time for the smoke to dissipate before destroying object
-		yield return new WaitForSeconds(2f);
+		yield return new WaitForSeconds(2.2f);
 		GameObject.Destroy( gameObject );
+		GameObject.Destroy( smoke.gameObject );
 	}
 
 }

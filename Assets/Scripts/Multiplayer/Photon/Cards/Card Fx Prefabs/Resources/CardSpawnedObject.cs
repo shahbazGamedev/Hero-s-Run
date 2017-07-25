@@ -47,8 +47,10 @@ public class CardSpawnedObject : MonoBehaviour {
 		return casterName;
 	}
 
-	//Position the object flush with the ground and try to center it in the middle of the road if possible.
-	//Use the optional additionalHeight if you want to further adjust the height.
+	/// <summary>
+	/// Positions the spawned object in the center of the tile, flush with the ground if possible. The tile will become the parent of the object.
+	/// </summary>
+	/// <param name="additionalHeight">Use the optional additionalHeight if you want to further adjust the height.</param>
 	protected void positionSpawnedObject( float additionalHeight = 0 )
 	{
 		RaycastHit hit;
@@ -57,19 +59,44 @@ public class CardSpawnedObject : MonoBehaviour {
 		//Important: we need the +2f to start a bit above ground, or else the raycast may start a tad below the road and miss.
 		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + 2f, transform.position.z ), Vector3.down, out hit, 15f ))
 		{
-			if(  hit.collider.transform.parent.GetComponent<SegmentInfo>() != null )
+			if(  hit.collider.transform.root.GetComponent<SegmentInfo>() != null )
 			{
-				Transform tile = hit.collider.transform.parent;
+				Transform tile = hit.collider.transform.root;
 				transform.SetParent( tile );
 				//Center the object in the middle of the road
 				transform.localPosition = new Vector3( 0, 0, transform.localPosition.z );
-				transform.SetParent( null );
 			}
 			//Position it flush with the ground
 			transform.position = new Vector3( transform.position.x, hit.point.y + additionalHeight, transform.position.z );
 		}
 		//Now that our raycast is finished, reset the object's layer to its original value.
 		gameObject.layer = originalLayer;
+	}
+
+	/// <summary>
+	/// Positions the specified object in the center of the tile, flush with the ground if possible. The tile will become the parent of the object.
+	/// </summary>
+	/// <param name="additionalHeight">Use the optional additionalHeight if you want to further adjust the height.</param>
+	protected void positionSpecifiedObject( Transform objectToCenter, float additionalHeight = 0 )
+	{
+		RaycastHit hit;
+		int originalLayer = objectToCenter.gameObject.layer;
+		objectToCenter.gameObject.layer = MaskHandler.ignoreRaycastLayer;
+		//Important: we need the +2f to start a bit above ground, or else the raycast may start a tad below the road and miss.
+		if (Physics.Raycast( new Vector3( objectToCenter.position.x, objectToCenter.position.y + 2f, objectToCenter.position.z ), Vector3.down, out hit, 15f ))
+		{
+			if(  hit.collider.transform.root.GetComponent<SegmentInfo>() != null )
+			{
+				Transform tile = hit.collider.transform.root;
+				objectToCenter.SetParent( tile );
+				//Center the object in the middle of the road
+				objectToCenter.localPosition = new Vector3( 0, 0, objectToCenter.localPosition.z );
+			}
+			//Position it flush with the ground
+			objectToCenter.position = new Vector3( objectToCenter.position.x, hit.point.y + additionalHeight, objectToCenter.position.z );
+		}
+		//Now that our raycast is finished, reset the object's layer to its original value.
+		objectToCenter.gameObject.layer = originalLayer;
 	}
 
 	public virtual void destroySpawnedObjectNow()
