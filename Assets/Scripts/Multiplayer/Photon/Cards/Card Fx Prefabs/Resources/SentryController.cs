@@ -222,7 +222,7 @@ public class SentryController : CardSpawnedObject {
 		onDestroyFx.transform.SetParent( null );
 		onDestroyFx.Play();
 		Destroy( gameObject );
-		Destroy( onDestroyFx, 3f );
+		Destroy( onDestroyFx.gameObject, 3f );
 	}
 
 	#region Sound
