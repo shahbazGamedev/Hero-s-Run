@@ -30,7 +30,6 @@ public class MPGameEndManager : MonoBehaviour {
 
 	[Header("Other")]
 	MatchmakingManager matchmakingManager;
-	[SerializeField] int timeBeforeNextRace = 60; //in seconds
 	const float ANIMATION_DURATION = 3f;
 
 	void Start ()

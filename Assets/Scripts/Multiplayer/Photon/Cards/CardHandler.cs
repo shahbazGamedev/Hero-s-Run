@@ -288,7 +288,6 @@ public class CardHandler : MonoBehaviour {
 			//Explosion is effective whenever an opponent is near you
 			case CardName.Grenade:
 				return GetComponent<CardGrenade>().isOpponentNear( caster.transform, level );
-			break;
 			//Double jump is effective whenever you are trailing behind by a little
 			case CardName.Double_Jump:
 				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) ) return true;
@@ -346,7 +345,6 @@ public class CardHandler : MonoBehaviour {
 			case CardName.Sentry:
 				CardManager.CardData cd = CardManager.Instance.getCardByName( CardName.Sentry );
 				return GetComponent<CardSentry>().isTargetInRange( caster.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.AIM_RANGE, level ) );
-			break;
 			//Stasis is effective whenever your opponent is far ahead of you
 			case CardName.Stasis:
 				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )

@@ -145,17 +145,6 @@ public class PlayerIK : MonoBehaviour {
 			PlayerRace playerOvertaking = PlayerRace.players.Find(p => p.racePosition == racePosition - 1 );
 			if( playerOvertaking != null )
 			{
-				string heroName;
-				if( playerOvertaking.GetComponent<PlayerAI>() == null )
-				{
-					//A the player
-					heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name;
-				}
-				else
-				{
-					//We're a bot
-					heroName = 	playerOvertaking.GetComponent<PlayerAI>().botHero.userName;
-				}
 				//Now look-at the player after a short delay.
 				//We don't want the player to start looking at a right angle. We want the opponent to be
 				//about 0.05 * 20 (average run speed) = 1 meter in front before looking.

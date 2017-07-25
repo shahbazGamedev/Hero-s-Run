@@ -39,7 +39,6 @@ public class CardTimerHandler : MonoBehaviour {
 		if( playedCard.doesCardHaveThisProperty( CardPropertyType.DURATION_WITH_TIMER ) )
 		{
 			string localizedName = LocalizationManager.Instance.getText( "CARD_NAME_" + name.ToString().ToUpper() );
-			PlayerDeck.PlayerCardData playerCardData = GameManager.Instance.playerDeck.getCardByName( name );
 			float duration = playedCard.getCardPropertyValue( CardPropertyType.DURATION_WITH_TIMER, level );
 			GameObject go = addTimer( localizedName, duration, Color.green );
 			cardTimerDataList.Add( new CardTimerData( name, go, false ) );

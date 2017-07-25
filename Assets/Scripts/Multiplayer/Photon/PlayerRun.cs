@@ -33,9 +33,6 @@ public class PlayerRun : Photon.PunBehaviour {
 
 	//The speed to reduce to after crossing finish line
 	const float SLOW_DOWN_END_SPEED = 5f;
-
- 	//We want to cap the maximum run speed during a double jump. If the player is sprinting for example, we don't want him to leap into a wall.
-	float MAX_RUN_SPEED_FOR_DOUBLE_JUMP = 18f;
 	#endregion
 
 	#region Run to Sprint animations blending
@@ -65,7 +62,6 @@ public class PlayerRun : Photon.PunBehaviour {
 		overallSpeedMultiplier = defaultOverallSpeedMultiplier;
 
 		//Get the base run speed from the level data.
-		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedCircuit();
 		levelRunStartSpeed = LevelManager.Instance.getSelectedCircuit().RunStartSpeed * defaultOverallSpeedMultiplier;
 		baseBlend = RUN_SPEED_FOR_FULL_BLENDING - levelRunStartSpeed;
 		if ( baseBlend < 0 ) baseBlend = 1f;

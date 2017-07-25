@@ -25,8 +25,6 @@ public class SocialMenu : MonoBehaviour {
 	[Header("Invite Facebook Friends")]
 	[SerializeField] GameObject inviteFacebookFriendsPanel;
 
-	bool levelLoading = false;
-
 	// Use this for initialization
 	void Start () {
 

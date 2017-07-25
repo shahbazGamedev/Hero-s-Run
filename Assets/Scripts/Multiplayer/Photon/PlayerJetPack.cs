@@ -16,18 +16,12 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 	const float FLY_SPEED_MULTIPLIER = 25f; //or else you just don't fly fast enough
 
 	//For accelerometer
-	float accelerometerPreviousFrameX = 0;
 	float accelerometerPreviousFrameY = 0;
-	float accelerometerStrength = 14f;
 
 	public Vector3 moveDirection;
 	float flySpeed;
 	int FlyTrigger = Animator.StringToHash("Fly");
 	const float MAXIMUM_YAW = 30f;
-
-	#region Other variables
-	GenerateLevel generateLevel;
-	#endregion
 
 	#region Components cached for performance 	
 	PlayerControl playerControl;
@@ -47,11 +41,6 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 	float timeOfLastSync;
 	const float DELAY_BETWEEN_SYNC = 0.1f; //in seconds
 	#endregion
-
-	void Awake ()
-	{
-		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
-	}
 
 	// Use this for initialization
 	void Start ()
@@ -101,7 +90,6 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 		playerSounds.stopAudioSource();
 		//Clear move direction of any values. If we still have an x component for example, we will drift.
 		moveDirection = Vector3.zero;
-		accelerometerPreviousFrameX = 0;
 		accelerometerPreviousFrameY = 0;
 		playerCamera.setCameraParameters( 30f, 4f, 5.5f,0 );
 		//Tilt the player's skin forward (superman style)
