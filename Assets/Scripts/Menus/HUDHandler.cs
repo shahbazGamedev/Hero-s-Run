@@ -47,7 +47,7 @@ public class HUDHandler : MonoBehaviour {
 	int fpsFrameCounter = 0;
 	int fpsWaitFrames = 30;
 	
-	HUDSaveMe hudSaveMe;
+	//HUDSaveMe hudSaveMe;
 	PlayerController playerController;
 	Rect coinIconRect; //Used to position the coins collected at the top of the HUD
 
@@ -56,7 +56,7 @@ public class HUDHandler : MonoBehaviour {
 	{
 		if( GameManager.Instance.isMultiplayer() ) Destroy( gameObject );
 		hudHandler = this;
-		hudSaveMe = saveMeCanvas.GetComponent<HUDSaveMe>();
+		//hudSaveMe = saveMeCanvas.GetComponent<HUDSaveMe>();
 		tapToPlayText.text = LocalizationManager.Instance.getText("MENU_TAP_TO_PLAY");
 		restartFromCheckpointText.text = LocalizationManager.Instance.getText("MENU_RESTART_FROM_CHECKPOINT");
 		//hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
@@ -252,7 +252,7 @@ public class HUDHandler : MonoBehaviour {
 		}
 		else if( newState == GameState.SaveMe )
 		{
-			hudSaveMe.showSaveMeMenu();
+			//hudSaveMe.showSaveMeMenu();
 		}
 
 		if( newState == GameState.Normal )
