@@ -100,6 +100,7 @@ public class MatchmakingManager : MonoBehaviour {
 				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRaceTrackByName( LevelManager.Instance.matchData.raceTrackName ) );
 			}
 			configureCircuitData( LevelManager.Instance.getSelectedCircuit().circuitInfo );
+			backgroundImage.color = LevelManager.Instance.getSelectedCircuit().circuitInfo.backgroundColor;
 			endOfGameCanvas.SetActive( false );
 		}
 	}
@@ -211,7 +212,6 @@ public class MatchmakingManager : MonoBehaviour {
 		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + circuitInfo.sectorNumber.ToString() );
 		circuitName.text = sectorName;
 		circuitImage.sprite = circuitInfo.circuitImage;
-		backgroundImage.color = circuitInfo.backgroundColor;
 		enablePlayButton( true );
 	}
 
