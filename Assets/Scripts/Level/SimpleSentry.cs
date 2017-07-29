@@ -97,7 +97,7 @@ public class SimpleSentry : MonoBehaviour {
 		PlayerRace.crossedFinishLine -= CrossedFinishLine;
 	}
 
-	void CrossedFinishLine( Transform player, int officialRacePosition )
+	void CrossedFinishLine( Transform player, int officialRacePosition, bool isBot )
 	{
 		print("SimpleSentry-CrossedFinishLine " + player.name + " officialRacePosition " +  officialRacePosition );
 

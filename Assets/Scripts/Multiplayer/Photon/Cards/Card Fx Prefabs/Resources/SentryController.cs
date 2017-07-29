@@ -130,8 +130,8 @@ public class SentryController : CardSpawnedObject {
 		float heightAdjustment = 0;
 		if( nearestTarget.CompareTag("Player") )
 		{
-			//The transform position of the player is at his feet. Let's aim at his torso.
-			heightAdjustment = 1f;
+			//The transform position of the player is at his feet. Let's aim at his eyes.
+			heightAdjustment = 1.4f;
 		}
 		else
 		{
