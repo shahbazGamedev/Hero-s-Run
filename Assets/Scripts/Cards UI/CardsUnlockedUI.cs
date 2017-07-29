@@ -35,6 +35,7 @@ public class CardsUnlockedUI : MonoBehaviour {
 
 		//Get all the cards assigned to that sector and display them
 		List<CardManager.CardData> allCardsForSectorList = CardManager.Instance.geAllCardsForSector( multiplayerInfo.circuitInfo.sectorNumber );
+		if( allCardsForSectorList == null ) return;
 		for( int i = 0; i < allCardsForSectorList.Count; i++ )
 		{
 			createUnlockedCard( allCardsForSectorList[i] );

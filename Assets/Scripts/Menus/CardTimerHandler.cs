@@ -74,7 +74,7 @@ public class CardTimerHandler : MonoBehaviour {
 		}
 	}
 
-	void CrossedFinishLine( Transform player, int officialRacePosition )
+	void CrossedFinishLine( Transform player, int officialRacePosition, bool isBot )
 	{
 		//Only remove the timers if the player is not a bot.
 		if( player.GetComponent<PlayerAI>() == null ) removeAllTimers();

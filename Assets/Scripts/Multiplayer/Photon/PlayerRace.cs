@@ -44,7 +44,7 @@ public class PlayerRace : Photon.PunBehaviour
 	static public List<PlayerRace> officialRacePositionList = new List<PlayerRace> ();
 
 	//Delegate used to communicate to other classes when the local player (and not a bot) has crossed the finish line.
-	public delegate void CrossedFinishLine( Transform player, int officialRacePosition );
+	public delegate void CrossedFinishLine( Transform player, int officialRacePosition, bool isBot );
 	public static event CrossedFinishLine crossedFinishLine;
 
 	void Start()
@@ -289,7 +289,7 @@ public class PlayerRace : Photon.PunBehaviour
 			//who has crossed the finish line.
 			GetComponent<PlayerControl>().setCharacterState(PlayerCharacterState.Idle);
 			//Send a crossedFinishLine event to tell the HUD to remove the card timers
-			if( crossedFinishLine != null ) crossedFinishLine( transform, officialRacePosition );
+			if( crossedFinishLine != null ) crossedFinishLine( transform, officialRacePosition, GetComponent<PlayerAI>() != null );
 			if( GetComponent<PlayerAI>() == null )
 			{
 				CancelInvoke("tookTheLead");
