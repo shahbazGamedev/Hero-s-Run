@@ -10,11 +10,13 @@ public class HeroPowerTimer : MonoBehaviour {
 	[SerializeField] Text nameText;
 	[SerializeField] Text centerText;
 	bool ready = false;
+	Transform localPlayer;
 
 	void OnEnable()
 	{
 		PlayerRace.crossedFinishLine += CrossedFinishLine;
 		HUDMultiplayer.startRunningEvent += StartRunningEvent;
+
 	}
 
 	void OnDisable()
@@ -25,6 +27,16 @@ public class HeroPowerTimer : MonoBehaviour {
 
 	void StartRunningEvent()
 	{
+		//get a reference to the local player
+		for(int i = 0; i < PlayerRace.players.Count; i++ )
+		{
+			if( PlayerRace.players[i].GetComponent<PhotonView>().isMine && PlayerRace.players[i].GetComponent<PlayerAI>() == null )
+			{
+				localPlayer = PlayerRace.players[i].transform;
+				print("HeroPowerTimer-StartRunningEvent " + localPlayer.name  );
+				break;
+			}
+		}
 		startAnimation ( "Sentry", 30, Color.gray );
 	}
 
@@ -71,7 +83,19 @@ public class HeroPowerTimer : MonoBehaviour {
 			ready = false;
 			print("Gros prout");
 			startAnimation ( "Sentry", 30, Color.gray );
+			activate();
 		}
 	}
 
+	void activate()
+	{
+		object[] data = new object[4];
+		data[0] = localPlayer.GetComponent<PhotonView>().viewID;
+		data[1] = 10f;
+		data[2] = 100f;
+		data[3] = 1f;
+
+		PhotonNetwork.InstantiateSceneObject( "Sentry", localPlayer.position, localPlayer.rotation, 0, data );
+
+	}
 }
