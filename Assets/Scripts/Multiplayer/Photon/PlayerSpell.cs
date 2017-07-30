@@ -105,16 +105,18 @@ public class PlayerSpell : PunBehaviour {
 		yield return new WaitForSeconds( spellDuration );
 		StartCoroutine( playerRun.removeVariableSpeedMultiplier( SpeedMultiplierType.Shrink, 0.5f ) );
 		float elapsedTime = 0;
+		float startPitch = playerVoiceOvers.getPitch();
 		Vector3 startScale = transform.localScale;
 		do
 		{
 			elapsedTime = elapsedTime + Time.deltaTime;
 			transform.localScale = Vector3.Lerp( startScale, endScale, elapsedTime/shrinkDuration );
-
+			playerVoiceOvers.setPitch( Mathf.Lerp( startPitch, 1f, elapsedTime/shrinkDuration ) );
 			yield return new WaitForFixedUpdate();  
 			
 		} while ( elapsedTime < shrinkDuration );
 		transform.localScale = endScale;	
+		playerVoiceOvers.resetPitch();
 	}
 
 	public void cancelShrinkSpell()

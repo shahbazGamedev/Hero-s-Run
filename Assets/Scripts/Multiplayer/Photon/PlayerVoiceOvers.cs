@@ -64,6 +64,11 @@ public class PlayerVoiceOvers : MonoBehaviour {
 		}
 	}
 
+	public float getPitch() 
+	{
+		return voiceOverAudioSource.pitch;	
+	}
+
 	public void setPitch( float pitch ) 
 	{
 		voiceOverAudioSource.pitch = pitch;	
