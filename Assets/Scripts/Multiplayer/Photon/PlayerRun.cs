@@ -97,6 +97,7 @@ public class PlayerRun : Photon.PunBehaviour {
 	    switch (newState)
 		{
 	        case PlayerCharacterState.Dying:
+				StopAllCoroutines();
 				runSpeed = 0;
 				removeAllSpeedMultipliers( true );
 				break;
@@ -257,6 +258,15 @@ public class PlayerRun : Photon.PunBehaviour {
 	/// </summary>
 	void calculateOverallSpeedMultiplier()
 	{
+		//When the player dies, we stop all coroutines on this behavior.
+		//However, it may take a few frames for the coroutines to be fully stopped (typically 3 frames if you are curious).
+		//This would mean that runSpeed, which was set to 0 when the player died, would be changed back to a non-zero value and the dead player would slide on the floor.
+		//This is why we add a test here to force runSpeed to zero if the player is dead.
+		if( playerControl.getCharacterState() == PlayerCharacterState.Dying )
+		{
+			runSpeed = 0;
+			return;
+		}
 		overallSpeedMultiplier = defaultOverallSpeedMultiplier;
 		for( int i = 0; i < activeSpeedMultipliersList.Count; i++ )
 		{
