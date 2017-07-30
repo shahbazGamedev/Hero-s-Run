@@ -27,8 +27,8 @@ public class CardStasis : Card {
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
-		//Find a random target
-		Transform randomTarget = detectRandomTarget( playerTransform.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ));
+		//Find a target
+		Transform randomTarget = detectTarget( playerTransform.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ));
 
 		//Only continue if we found a target
 		if( randomTarget != null )

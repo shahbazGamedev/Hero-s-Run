@@ -89,12 +89,14 @@ public class Card : Photon.PunBehaviour {
 	}
 
 	/// <summary>
-	/// Returns a random player target or null if none were found within the spell range.
+	/// Returns a player target or null if none were found within the spell range.
+	/// If multiple targets are within spell range, it will privilege returning a player that is in front of the caster.
+	/// If all targets are behind the caster, it will return one at random.
 	/// </summary>
 	/// <returns>The random target.</returns>
 	/// <param name="playerRace">Player race.</param>
 	/// <param name="spellRange">Spell range.</param>
-	protected Transform detectRandomTarget( PlayerRace playerRace, float spellRange )
+	protected Transform detectTarget( PlayerRace playerRace, float spellRange )
 	{
 		List<Transform> potentialTargets = new List<Transform>();
 		
@@ -126,8 +128,34 @@ public class Card : Photon.PunBehaviour {
 		}
 		else
 		{
-			int random = Random.Range(0, potentialTargets.Count ); 
-			return potentialTargets[random];
+			//Privilege a player that is in front of you
+			for( int i =0; i < potentialTargets.Count; i++ )
+			{
+				if( getDotProduct( playerRace.transform, potentialTargets[i].position ) ) return  potentialTargets[i];
+			}
+			//If we are here, it means that all targets are behind the player. Simply pick a random one.
+			int random = Random.Range(0, potentialTargets.Count);
+			return potentialTargets[random];				
+		}
+	}
+
+	/// <summary>
+	/// Gets the dot product.
+	/// </summary>
+	/// <returns><c>true</c>, if the other player is in front of the caster, <c>false</c> otherwise.</returns>
+	/// <param name="caster">Caster.</param>
+	/// <param name="otherPlayerPosition">The other player's position.</param>
+	bool getDotProduct( Transform caster, Vector3 otherPlayerPosition )
+	{
+		Vector3 forward = caster.TransformDirection(Vector3.forward);
+		Vector3 toOther = otherPlayerPosition - caster.position;
+		if (Vector3.Dot(forward, toOther) < 0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
 		}
 	}
 

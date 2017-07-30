@@ -330,13 +330,9 @@ public class CardHandler : MonoBehaviour {
 					return GetComponent<CardLightning>().isThereATargetWithinRange( caster.transform, level );
 				}
 			break;
-			//Shrink is effective whenever your opponent is far ahead of you
+			//Shrink is always effective. It has infinite range.
 			case CardName.Shrink:
-				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
-				{
-					return GetComponent<CardShrink>().isThereATargetWithinRange( caster.transform, level );
-				}
-			break;
+				return true;
 			//Linked Fate is effective whenever you are trailing behind
 			case CardName.Linked_Fate:
 				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) ) return true;

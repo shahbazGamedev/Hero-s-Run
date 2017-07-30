@@ -64,6 +64,16 @@ public class PlayerVoiceOvers : MonoBehaviour {
 		}
 	}
 
+	public void setPitch( float pitch ) 
+	{
+		voiceOverAudioSource.pitch = pitch;	
+	}
+
+	public void resetPitch() 
+	{
+		voiceOverAudioSource.pitch = 1f;
+	}
+
 	/// <summary>
 	/// Plays the taunt clip locally and sends an RPC so that the remote players play it as well.
 	/// </summary>

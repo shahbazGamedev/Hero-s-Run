@@ -25,9 +25,9 @@ public class CardLightning : Card {
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
-		//Get a random target
+		//Find a target
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
-		Transform randomTarget = detectRandomTarget( playerTransform.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
+		Transform randomTarget = detectTarget( playerTransform.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
 
 		if( randomTarget != null )
 		{

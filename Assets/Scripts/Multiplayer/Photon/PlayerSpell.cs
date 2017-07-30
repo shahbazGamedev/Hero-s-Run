@@ -69,6 +69,10 @@ public class PlayerSpell : PunBehaviour {
 	[PunRPC]
 	void shrinkSpellRPC( float spellDuration )
 	{
+		//if you have a Sentry, destroy it.
+		cancelSentrySpell();
+		//Make the voice overs higher pitch, just for fun
+		playerVoiceOvers.setPitch( 1.18f );
 		playerSounds.playSound( shrinkSound, false );
 		ParticleSystem shrinkEffect = ParticleSystem.Instantiate( shrinkParticleSystem, transform );
 		shrinkEffect.transform.localPosition = new Vector3( 0, 1f, 0 );
@@ -118,6 +122,7 @@ public class PlayerSpell : PunBehaviour {
 		//Are we shrunk?
 		if( transform.localScale.y != 1f )
 		{
+			playerVoiceOvers.resetPitch();
 			StopCoroutine( "enlarge" );
 			StopCoroutine( "shrink" );
 			//If we died while shrunk, do nothing i.e. stay small, that's fine.

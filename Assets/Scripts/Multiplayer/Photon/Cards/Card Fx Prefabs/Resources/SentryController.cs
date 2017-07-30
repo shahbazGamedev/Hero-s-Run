@@ -209,6 +209,7 @@ public class SentryController : CardSpawnedObject {
 
 	IEnumerator destroySpawnedObject( float delayBeforeSentryExpires, float delayBeforeDestroyEffects )
 	{
+		GetComponent<SphereCollider>().enabled = false;
 		yield return new WaitForSeconds(delayBeforeSentryExpires);
 
 		setSpawnedObjectState(SpawnedObjectState.BeingDestroyed);
