@@ -17,24 +17,28 @@ public class HeroPowerTimer : MonoBehaviour {
 	[SerializeField] Image radialImageMask;
 	[SerializeField] Text nameText;
 	[SerializeField] Text centerText;
-	[SerializeField] ParticleSystem shockwaveEffect;
+	[SerializeField] ParticleSystem shockwaveEffect; //The particle systems has the audio source
 
 	bool ready = false;
 	Transform localPlayer;
 	HeroPowerType currentHeroPower = HeroPowerType.SHOCKWAVE;
 	string powerName;
-	float chargeTime = 5f;
+	float chargeTime = 30f;
 
 	void OnEnable()
 	{
 		PlayerRace.crossedFinishLine += CrossedFinishLine;
 		HUDMultiplayer.startRunningEvent += StartRunningEvent;
+		PlayerControl.multiplayerStateChanged += MultiplayerStateChanged;
+		GameManager.gameStateEvent += GameStateChange;
 	}
 
 	void OnDisable()
 	{
 		PlayerRace.crossedFinishLine -= CrossedFinishLine;
 		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
+		PlayerControl.multiplayerStateChanged -= MultiplayerStateChanged;
+		GameManager.gameStateEvent -= GameStateChange;
 	}
 
 	void StartRunningEvent()
@@ -68,6 +72,22 @@ public class HeroPowerTimer : MonoBehaviour {
 		if( !isBot )
 		{
 			holder.SetActive( false );
+		}
+	}
+
+	void MultiplayerStateChanged( PlayerCharacterState newState )
+	{
+		if( newState == PlayerCharacterState.Dying )
+		{
+  			holder.SetActive( false );
+		}
+	}
+
+	void GameStateChange( GameState previousState, GameState newState )
+	{
+		if( previousState == GameState.Resurrect && newState == GameState.Normal )
+		{
+			holder.SetActive( true );
 		}
 	}
 
@@ -171,7 +191,7 @@ public class HeroPowerTimer : MonoBehaviour {
 			if( hitColliders[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle || hitColliders[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying ) continue;
 
 			float distance = Vector3.Distance( hitColliders[i].transform.position, localPlayer.position );
-			if( distance < 25f )
+			if( distance < 50f )
 			{
 				//Player is near. Kill him.
 				topplePlayer( hitColliders[i].transform );

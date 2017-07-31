@@ -9,7 +9,7 @@ public class MultiplayerProjectile : MonoBehaviour {
 	[SerializeField] ParticleSystem impactParticleSystem;
 	[SerializeField] AudioClip inFlightSound;
 	[SerializeField] AudioClip collisionSound;
-	float bolt_force = 1250f;
+	float bolt_force = 1500f;
 	SentryController sentryController;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
