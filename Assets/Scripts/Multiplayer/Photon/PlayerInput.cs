@@ -138,7 +138,7 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.N ) )
 		{
-			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Smoke_Bomb, GameManager.Instance.playerProfile.getUserName(), 2 );
+			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Double_Jump, GameManager.Instance.playerProfile.getUserName(), 2 );
 		}
 		else if ( Input.GetKeyDown (KeyCode.O ) )
 		{

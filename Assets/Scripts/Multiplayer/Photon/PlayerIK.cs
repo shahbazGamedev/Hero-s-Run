@@ -83,7 +83,7 @@ public class PlayerIK : MonoBehaviour {
 		yield return new WaitForSeconds(activationDelay);
 
 		this.lookAtTarget = lookAtTarget;
-		StartCoroutine( fadeInLookAtPosition( 0.8f, 0.6f, 3f ) );
+		StartCoroutine( fadeInLookAtPosition( 0.8f, 0.6f, 1.2f ) );
 	}
 
 	IEnumerator fadeInLookAtPosition( float finalWeight, float fadeDuration, float stayDuration  )
@@ -161,7 +161,7 @@ public class PlayerIK : MonoBehaviour {
 	{
 		StopCoroutine("setLookAtTarget");
 
-		if( lookAtTarget != null && enableIK ) StartCoroutine( fadeOutLookAtPosition( 0.2f, 0.9f ) );
+		if( lookAtTarget != null && enableIK ) StartCoroutine( fadeOutLookAtPosition( 0.2f, 0.8f ) );
 
 		//Advise other players of death so that they can do a look-at
 		for( int i = 0; i < PlayerRace.players.Count; i ++ )
