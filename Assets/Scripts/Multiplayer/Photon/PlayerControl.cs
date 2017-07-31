@@ -172,6 +172,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	Vector3 currentTilePos = Vector3.zero;
 	GameObject currentTile;
 	public float tileRotationY = 0; //Since we use this value often, we will store it.
+ 	//Number of tiles left to travel before reaching the end tile. Used to determine this player's race position.
+	public int tilesLeftBeforeReachingEnd;
 	#endregion
 
 	#region Death variables
@@ -272,6 +274,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		currentTile = firstTile;
 		tileRotationY = firstTile.transform.eulerAngles.y;
 		currentTilePos = firstTile.transform.position;
+		tilesLeftBeforeReachingEnd = generateLevel.getNumberOfTiles();
 	}
 
 	void OnEnable()
@@ -1935,6 +1938,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				currentTilePos = si.transform.position;
 				currentTile = si.gameObject;
 				tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
+				tilesLeftBeforeReachingEnd--;
 			}
 			else
 			{
