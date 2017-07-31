@@ -226,7 +226,7 @@ public class LevelData : MonoBehaviour {
 				//RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
 				//RenderSettings.ambientIntensity = 1f;
 
-				RenderSettings.fog = true;
+				RenderSettings.fog = false;
 				RenderSettings.fogMode = FogMode.Linear;
 				RenderSettings.fogColor = new Color(109f/255f, 169f/255f, 226f/255f ); //bluish
 				RenderSettings.fogStartDistance = 100f;
@@ -246,7 +246,7 @@ public class LevelData : MonoBehaviour {
 				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
 				RenderSettings.ambientIntensity = 2f;
 
-				RenderSettings.fog = true;
+				RenderSettings.fog = false;
 				RenderSettings.fogMode = FogMode.Linear;
 				RenderSettings.fogColor = new Color( 2f/255f, 52f/255f, 105f/255f ); //dark purple
 				RenderSettings.fogStartDistance = 100f;
