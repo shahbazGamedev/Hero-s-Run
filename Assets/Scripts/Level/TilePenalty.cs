@@ -10,7 +10,7 @@ public class TilePenalty : MonoBehaviour {
 	{
 		if( other.CompareTag("Player") && other.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
 		{
-			other.GetComponent<PlayerControl>().tilesLeftBeforeReachingEnd = other.GetComponent<PlayerControl>().tilesLeftBeforeReachingEnd + tilePenalty;
+			other.GetComponent<PlayerRace>().tilesLeftBeforeReachingEnd = other.GetComponent<PlayerRace>().tilesLeftBeforeReachingEnd + tilePenalty;
 		}
 	}
 }

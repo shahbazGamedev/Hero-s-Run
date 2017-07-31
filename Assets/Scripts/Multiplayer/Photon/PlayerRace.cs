@@ -12,6 +12,7 @@ using ExitGames.Client.Photon;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// This class handles only race related events such as:
@@ -46,6 +47,11 @@ public class PlayerRace : Photon.PunBehaviour
 	//Delegate used to communicate to other classes when the local player (and not a bot) has crossed the finish line.
 	public delegate void CrossedFinishLine( Transform player, int officialRacePosition, bool isBot );
 	public static event CrossedFinishLine crossedFinishLine;
+
+	//Number of tiles left to travel before reaching the end tile. Used to determine this player's race position.
+	public int tilesLeftBeforeReachingEnd;
+	public int numberPlayersBehindMe = 0;
+	int previousNumberPlayersBehindMe = -1;
 
 	void Start()
 	{
@@ -109,16 +115,16 @@ public class PlayerRace : Photon.PunBehaviour
 		{
 			//We use the distance travelled to determine the race position. All players on the master client need to do this.
 			updateDistanceTravelled();
-	
 			if( PhotonNetwork.isMasterClient )
 			{
+				calculateNumberPlayersBehindMe();
+
 				//We only want the host to calculate the race position and race duration. We don't want a bot to do it.
 				//The host is the master client who is owned by this device (so IsMasterClient is true and IsMine is true).
 				if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
 				{
 					//Update the race position of the players i.e. 1st place, 2nd place, and so forth
-					//Order the list using the distance travelled
-					players.Sort((x, y) => -x.distanceTravelled.CompareTo(y.distanceTravelled));
+					players = players.OrderBy( p => p.tilesLeftBeforeReachingEnd ).ThenByDescending( p => p.numberPlayersBehindMe ).ToList();
 
 					for(int i=0; i<players.Count;i++)
 					{
@@ -231,14 +237,17 @@ public class PlayerRace : Photon.PunBehaviour
 		}
 	}
 
-
 	void tookTheLead()
 	{
 		//Only proceed if we have at least two players. One or more players may have just disconnected.
 		if( players.Count > 1 )
 		{
-			players.Sort((x, y) => -x.distanceTravelled.CompareTo(y.distanceTravelled));
-			if( players[0].distanceTravelled > players[1].distanceTravelled + REQUIRED_LEAD_DISTANCE )
+			//Only proceed if this player is still in the lead.
+			PlayerRace p1 = players.Find(a => a.racePosition == 0 );
+			if( p1 != this ) return;
+			PlayerRace p2 = players.Find(a => a.racePosition == 1 );
+
+			if( Vector3.Distance( p1.transform.position, p2.transform.position) >= REQUIRED_LEAD_DISTANCE )
 			{
 				//Display a minimap message that this player or bot took the lead.
 				string heroName;
@@ -313,4 +322,34 @@ public class PlayerRace : Photon.PunBehaviour
 	}
 	#endregion
 
+	void calculateNumberPlayersBehindMe()
+	{
+		int count = 0;
+		for(int i=0; i<players.Count;i++)
+		{
+			//Ignore yourself
+			if( players[i] == this ) continue;
+			count += getDotProduct( transform, players[i].transform.position );
+			
+		}
+		if( count != previousNumberPlayersBehindMe )
+		{
+			numberPlayersBehindMe = count;
+			previousNumberPlayersBehindMe = numberPlayersBehindMe;
+		}
+	}
+
+	int getDotProduct( Transform player1, Vector3 player2Position )
+	{
+		Vector3 forward = player1.TransformDirection(Vector3.forward);
+		Vector3 toOther = player2Position - player1.position;
+		if (Vector3.Dot(forward, toOther) < 0)
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
 }
