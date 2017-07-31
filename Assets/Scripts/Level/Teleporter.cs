@@ -13,6 +13,7 @@ public class Teleporter : Device {
 		Receiver = 1
 	}
 
+	[SerializeField] int numberOfTilesSkippedBecauseOfTeleportation = 2; //important for the race position to be exact
 	[SerializeField] TeleporterType type = TeleporterType.Transmitter;
 	[Tooltip("The name of the move-to-center-lane game object. This game object is disabled when the teleporter type is set to Receiver.")]
 	[SerializeField] GameObject moveToCenterLaneTrigger;
@@ -31,12 +32,13 @@ public class Teleporter : Device {
 	{
 		if( type == TeleporterType.Transmitter && state == DeviceState.On )
 		{
-			if( other.gameObject.CompareTag("Player") )
+			if( other.CompareTag("Player") )
 			{
 				GetComponent<AudioSource>().Play();
 				other.gameObject.GetComponent<PlayerInput>().teleport( new Vector3( transform.position.x, transform.position.y, transform.position.z + 100f), transform.eulerAngles.y );
 				GenerateLevel generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
 				generateLevel.activateTilesAfterTeleport();
+				other.GetComponent<PlayerRace>().tilesLeftBeforeReachingEnd -= numberOfTilesSkippedBecauseOfTeleportation;
 			}
 		}
 	}
