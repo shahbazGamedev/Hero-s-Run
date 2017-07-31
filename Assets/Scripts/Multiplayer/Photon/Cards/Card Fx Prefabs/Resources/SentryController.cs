@@ -35,7 +35,7 @@ public class SentryController : CardSpawnedObject {
 	float timeOfLastShot;
 	float aimRange = 40f;
 	float accuracy = 0.002f;
-	const float FORWARD_MOVEMENT_ANTICIPATION = 0.24f;
+	const float FORWARD_MOVEMENT_ANTICIPATION = 0.15f;
 
 	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
@@ -130,8 +130,8 @@ public class SentryController : CardSpawnedObject {
 		float heightAdjustment = 0;
 		if( nearestTarget.CompareTag("Player") )
 		{
-			//The transform position of the player is at his feet. Let's aim at his eyes.
-			heightAdjustment = 1.4f;
+			//The transform position of the player is at his feet. Let's aim at his neck.
+			heightAdjustment = 1.2f;
 		}
 		else
 		{
