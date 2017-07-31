@@ -289,6 +289,11 @@ public class PlayerRace : Photon.PunBehaviour
 		//Cancel all spell effects
 		GetComponent<PlayerSpell>().cancelAllSpells();
 
+		//Sanity check
+		//tilesLeftBeforeReachingEnd should ALWAYS be zero when reaching the End tile. If it's not the case, make sure the tilePenalty
+		//values are correct on shortcut tiles and that the teleporter has the right number of tiles skipped.
+		if( tilesLeftBeforeReachingEnd != 0 ) Debug.LogError("The race is completed but tilesLeftBeforeReachingEnd is not equal to 0. Make sure the tilePenalty values are correct on shortcut tiles and that the teleporter has the right number of tiles skipped.");
+
 		//Note: if the player won, a voice over will be triggered by the victory animation. See Victory_win_start.
 
 		//However, in terms of changing HUD elements, XP, player stats, etc. We only want to proceed if the player is local and not a bot.
