@@ -79,6 +79,7 @@ public enum CardName
 	Supercharger = 202,
 	Homing_Missile = 203,
 	Jet_Pack = 204,
+	Shockwave = 205,
 
 	//Legendary
 	Hack = 301,

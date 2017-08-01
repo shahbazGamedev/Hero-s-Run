@@ -242,6 +242,17 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardSmokeBomb component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+			case CardName.Shockwave:
+				CardShockwave cardShockwave = GetComponent<CardShockwave>();
+				if( cardShockwave != null )
+				{
+					cardShockwave.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardShockwave component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -366,6 +377,9 @@ public class CardHandler : MonoBehaviour {
 			//Jet Pack could be effective at any time
 			case CardName.Jet_Pack:
 				return true;
+			//Shockwave is effective whenever there are opponents near you
+			case CardName.Shockwave:
+				return GetComponent<CardShockwave>().isOpponentNear( caster.transform, level );
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;

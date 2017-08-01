@@ -18,7 +18,7 @@ public class PlayerDeck {
 	{
 		//Cards in battle deck
 		//1
-		addCard( CardName.Force_Field, 1, 1, true );
+		addCard( CardName.Force_Field, 1, 1, false );
 
 		//2
 		addCard( CardName.Sprint, 8, 2, true );
@@ -74,6 +74,9 @@ public class PlayerDeck {
 
 		//19
 		addCard( CardName.Smoke_Bomb, 4, 4, true );
+
+		//20
+		addCard( CardName.Shockwave, 1, 1, true );
 
 		serializePlayerDeck( true );
 

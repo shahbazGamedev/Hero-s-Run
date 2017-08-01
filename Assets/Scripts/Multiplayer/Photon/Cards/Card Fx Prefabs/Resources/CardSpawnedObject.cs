@@ -47,6 +47,21 @@ public class CardSpawnedObject : MonoBehaviour {
 		return casterName;
 	}
 
+	protected Transform getCaster( int casterPhotonViewId )
+	{
+		Transform caster = null;
+		for( int i = 0; i < PlayerRace.players.Count; i ++ )
+		{
+			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == casterPhotonViewId )
+			{
+				//We found the caster
+				caster = PlayerRace.players[i].transform;
+				break;
+			}
+		}
+		return caster;
+	}
+
 	/// <summary>
 	/// Positions the spawned object in the center of the tile, flush with the ground if possible. The tile will become the parent of the object.
 	/// </summary>
