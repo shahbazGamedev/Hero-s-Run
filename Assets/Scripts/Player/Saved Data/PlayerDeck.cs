@@ -73,10 +73,13 @@ public class PlayerDeck {
 		addCard( CardName.Jet_Pack, 1, 18, true );
 
 		//19
-		addCard( CardName.Smoke_Bomb, 4, 4, true );
+		addCard( CardName.Smoke_Bomb, 4, 4, false );
 
 		//20
 		addCard( CardName.Shockwave, 1, 1, true );
+
+		//21
+		addCard( CardName.Cloak, 1, 1, true );
 
 		serializePlayerDeck( true );
 

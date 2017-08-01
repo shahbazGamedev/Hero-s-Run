@@ -10,7 +10,8 @@ public enum SpeedMultiplierType {
 		Stumbling = 3,
 		Shrink = 100,
 		Sprint = 101,
-		Raging_Bull = 102
+		Raging_Bull = 102,
+		Cloak = 103
 }
 
 public class PlayerRun : Photon.PunBehaviour {

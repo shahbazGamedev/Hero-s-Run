@@ -1567,6 +1567,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		//The PlayerSpell component needs to know that the player died
 		GetComponent<PlayerSpell>().playerDied();
 
+		//Reset the color correction curves. It is used by Cloak.
+		ColorCorrectionCurves ccc = Camera.main.GetComponent<ColorCorrectionCurves>();
+ 		ccc.enabled = false;
+		ccc.saturation = 1f;
+
 		//The PlayerIK component needs to know that the player died
 		GetComponent<PlayerIK>().playerDied();
 

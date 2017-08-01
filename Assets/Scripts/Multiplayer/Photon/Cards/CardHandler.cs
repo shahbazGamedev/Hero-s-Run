@@ -253,6 +253,17 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardShockwave component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+			case CardName.Cloak:
+				CardCloak cardCloak = GetComponent<CardCloak>();
+				if( cardCloak != null )
+				{
+					cardCloak.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardCloak component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -380,6 +391,9 @@ public class CardHandler : MonoBehaviour {
 			//Shockwave is effective whenever there are opponents near you
 			case CardName.Shockwave:
 				return GetComponent<CardShockwave>().isOpponentNear( caster.transform, level );
+			//Cloak is effective anytime
+			case CardName.Cloak:
+				return true;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
