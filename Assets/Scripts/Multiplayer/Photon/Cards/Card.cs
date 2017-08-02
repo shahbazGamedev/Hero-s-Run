@@ -38,6 +38,7 @@ public class Card : Photon.PunBehaviour {
 	/// <summary>
 	/// Returns true if the player is immune to spells.
 	/// A player is immune when in the Idle or Dying state.
+	/// Having the Cloak card active also makes the player immune.
 	/// </summary>
 	/// <returns><c>true</c>, if the player is immune, <c>false</c> otherwise.</returns>
 	/// <param name="player">Player.</param>
@@ -45,7 +46,14 @@ public class Card : Photon.PunBehaviour {
 	{
 		if( player.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle && player.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
 		{
-			return false;
+			if( player.GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) )
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{
@@ -77,6 +85,9 @@ public class Card : Photon.PunBehaviour {
 
 			//Is the player dead or Idle? If so, ignore.
 			if( PlayerRace.players[i].GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
+
+			//Is the player using the Cloak card? If so, ignore.
+			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) continue;
 
 			//Is it the closest player?
 			if( distanceToTarget < nearestDistance )
@@ -113,6 +124,9 @@ public class Card : Photon.PunBehaviour {
 
 			//Is the player dead or Idle? If so, ignore.
 			if( PlayerRace.players[i].GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
+
+			//Is the player using the Cloak card? If so, ignore.
+			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) continue;
 
 			//We have a potential target
 			potentialTargets.Add( PlayerRace.players[i].transform );
@@ -190,6 +204,9 @@ public class Card : Photon.PunBehaviour {
 			//Is the player dead or Idle? If so, ignore.
 			if( PlayerRace.players[i].GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
 
+			//Is the player using the Cloak card? If so, ignore.
+			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) continue;
+
 			//We found at least one target
 			return true;
 		}
@@ -245,10 +262,15 @@ public class Card : Photon.PunBehaviour {
 			{
 				//Verify that the target is not in the Idle character state.
 				//The target will be in the Idle state after crossing the finish line for example.
-				if( hitColliders[i].GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle )
+				//Make the sure the player is not dead.
+				//Make sure the player does not have the Cloak card active.
+				if( hitColliders[i].GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle && hitColliders[i].GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
 				{
-					//We found at least one target
-					return true;
+					if( !hitColliders[i].GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) )
+					{
+						//We found at least one target
+						return true;
+					}
 				}
 			}
 		}

@@ -162,6 +162,7 @@ public class CardSpawnedObject : MonoBehaviour {
 				valid = pc.deathType == DeathType.Alive;
  				valid = valid && pc.getCharacterState() != PlayerCharacterState.Idle;
 				valid = valid && casterName != potentialTarget.name;
+				valid = valid && !pc.GetComponent<PlayerSpell>().isCardActive(CardName.Cloak);
 				break;
 	                
 	        case MaskHandler.deviceLayer:

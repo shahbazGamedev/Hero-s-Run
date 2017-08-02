@@ -51,8 +51,8 @@ public class HomingMissile : CardSpawnedObject {
 	{
 		if( homingMissile == null ) return;
 
-		//If the player died or is in the Idle state (because of Stasis for example), nullify the target
-		if( targetPlayerControl != null && ( targetPlayerControl.getCharacterState() == PlayerCharacterState.Dying || targetPlayerControl.getCharacterState() == PlayerCharacterState.Idle ) )
+		//If the player died or is now in the Idle state (because of Stasis for example) or the player now has the Cloak card active, nullify the target
+		if( targetPlayerControl != null && ( targetPlayerControl.getCharacterState() == PlayerCharacterState.Dying || targetPlayerControl.getCharacterState() == PlayerCharacterState.Idle || targetPlayerControl.GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) )
 		{
 			target = null;
 			targetPlayerControl = null;
