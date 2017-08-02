@@ -389,6 +389,10 @@ public class CardManager : MonoBehaviour {
 		public bool isStolenCard;
 		//Legendary cards have special effects on them
 		public Material cardMaterial;
+		//This boolean specifies which duration-based cards affect the player directly and should be kept in the activeCardList.
+		//For example, Force Field has a duration but does not affect the player directly, so the value should be false.
+		//However, Reflect has a duration and affects the player directly, so the value should be true.
+		public bool affectsPlayerDirectly = false;
 
 		public float getCardPropertyValue( CardPropertyType type, int level )
 		{

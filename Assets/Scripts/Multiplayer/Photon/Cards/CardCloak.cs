@@ -23,13 +23,8 @@ public class CardCloak : Card {
 	[PunRPC]
 	void cardCloakRPC( float spellDuration, float speedMultiplier, int photonViewID )
 	{
-		for( int i = 0; i < PlayerRace.players.Count; i++ )
-		{
-			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
-			{
-				startCloaking( spellDuration, speedMultiplier, PlayerRace.players[i].GetComponent<PlayerRun>() );
-			}
-		}
+		Transform caster = getPlayerTransform( photonViewID );
+		if( caster != null ) startCloaking( spellDuration, speedMultiplier, caster.GetComponent<PlayerRun>() );
 	}
 
 	void startCloaking( float spellDuration, float speedMultiplier, PlayerRun playerRun )
@@ -46,6 +41,7 @@ public class CardCloak : Card {
 		playerRun.GetComponent<PlayerSounds>().stopAudioSource();
 		StartCoroutine( playerRun.removeVariableSpeedMultiplier( SpeedMultiplierType.Cloak, 0.8f ) );
 		StartCoroutine( controlSaturation( 1f, 0.8f ) );
+		playerRun.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Cloak);
 	}
 
 	IEnumerator controlSaturation( float endSaturationLevel, float duration )

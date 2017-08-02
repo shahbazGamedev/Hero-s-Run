@@ -34,7 +34,7 @@ public class CardShrink : Card {
 				//You can't shrink a player who is ziplining because it causes too many bugs
 				if( !isPlayerImmune( PlayerRace.players[i].transform ) && PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Ziplining )
 				{
-					if( PlayerRace.players[i].GetComponent<PlayerSpell>().isReflectEnabled() )
+					if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive( CardName.Reflect) )
 					{
 						MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, PlayerRace.players[i].GetComponent<PhotonView>().viewID );
 	

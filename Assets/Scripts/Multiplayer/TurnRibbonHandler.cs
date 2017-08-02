@@ -108,7 +108,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 			//If the player cannot control his character (e.g. because of Stasis), don't allow him to play cards.
 			//If the player has been Hacked, don't allow him to play cards.
 			Image radialMask = turnRibbonButtonList[i].transform.FindChild("Radial Mask").GetComponent<Image>();
-			if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS && playerControl.isPlayerControlEnabled() && !playerSpell.isAffectedByHack() )
+			if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS && playerControl.isPlayerControlEnabled() && !playerSpell.isCardActive(CardName.Hack) )
 			{
 				if( manaBar.hasEnoughMana( turnRibbonList[i].manaCost ) )
 				{
@@ -132,7 +132,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 
 	public void OnClickCard( int indexOfCardPlayed )
 	{
-		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS && playerControl.isPlayerControlEnabled() && !playerSpell.isAffectedByHack() )
+		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS && playerControl.isPlayerControlEnabled() && !playerSpell.isCardActive(CardName.Hack) )
 		{
 			if( manaBar.hasEnoughMana( turnRibbonList[indexOfCardPlayed].manaCost ) )
 			{
@@ -171,7 +171,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 					//Determine the level of the card since it may be modified by Supercharger.
 					PlayerDeck.PlayerCardData playerCardData = GameManager.Instance.playerDeck.getCardByName( cardName );
 					int level = playerCardData.level;
-					if( playerSpell.isAffectedBySupercharger() )
+					if( playerSpell.isCardActive( CardName.Supercharger) )
 					{
 						int maxLevel = CardManager.Instance.getMaxCardLevelForThisRarity( playedCard.rarity );
 						level = Mathf.Min( maxLevel, level + CardSupercharger.SUPERCHARGER_LEVEL_BOOST );

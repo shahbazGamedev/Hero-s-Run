@@ -31,7 +31,7 @@ public class CardLightning : Card {
 
 		if( randomTarget != null )
 		{
-			if( randomTarget.GetComponent<PlayerSpell>().isReflectEnabled() )
+			if( randomTarget.GetComponent<PlayerSpell>().isCardActive( CardName.Reflect) )
 			{
 				MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, randomTarget.GetComponent<PhotonView>().viewID );
 

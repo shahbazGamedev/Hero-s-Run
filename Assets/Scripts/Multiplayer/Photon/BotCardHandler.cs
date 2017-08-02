@@ -124,7 +124,7 @@ public sealed class BotCardHandler : MonoBehaviour {
 		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
 		{
 			if( manaAmount < ManaBar.MAX_MANA_POINT ) manaAmount = manaAmount + Time.deltaTime/ManaBar.MANA_REFILL_RATE;
-			if( allowCardPlaying && (Time.time - timeOfLastAnalysis > botSkillData.cardPlayFrequency) && !playerSpell.isAffectedByHack() )
+			if( allowCardPlaying && (Time.time - timeOfLastAnalysis > botSkillData.cardPlayFrequency) && !playerSpell.isCardActive( CardName.Hack) )
 			{
 				analyseCards();
 			}
@@ -249,7 +249,7 @@ public sealed class BotCardHandler : MonoBehaviour {
 	/// </summary>
 	public void tryToPlayCard( CardName cardName )
 	{
-		if( allowCardPlaying && !playerSpell.isAffectedByHack() )
+		if( allowCardPlaying && !playerSpell.isCardActive(CardName.Hack) )
 		{
 			List<PlayerDeck.PlayerCardData> playableCardsList = getListOfPlayableCards();
 			if( playableCardsList.Exists( card => card.name == cardName ) )

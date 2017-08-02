@@ -72,12 +72,14 @@ public class PlayerRun : Photon.PunBehaviour {
 	{
 		HUDMultiplayer.startRunningEvent += StartRunningEvent;
 		PlayerControl.multiplayerStateChanged += MultiplayerStateChanged;
+		PlayerRace.crossedFinishLine += CrossedFinishLine;
 	}
 
 	void OnDisable()
 	{
 		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
 		PlayerControl.multiplayerStateChanged -= MultiplayerStateChanged;
+		PlayerRace.crossedFinishLine -= CrossedFinishLine;
 	}
 
 	void StartRunningEvent()
@@ -135,6 +137,11 @@ public class PlayerRun : Photon.PunBehaviour {
 				calculateOverallSpeedMultiplier();
 				break;
 		}
+	}
+
+	void CrossedFinishLine( Transform player, int officialRacePosition, bool isBot )
+	{
+		removeAllSpeedMultipliers( true );
 	}
 
 	/// <summary>
@@ -338,7 +345,6 @@ public class PlayerRun : Photon.PunBehaviour {
 	public IEnumerator slowDownPlayerAfterFinishLine( float distance, float triggerPositionZ )
 	{
 		GetComponent<Rigidbody>().velocity = new Vector3( 0,playerControl.moveDirection.y,0 );
-		GetComponent<PlayerSpell>().cancelSpeedBoost();
 		playerControl.enablePlayerControl( false );
 		float percentageComplete = 0;
 

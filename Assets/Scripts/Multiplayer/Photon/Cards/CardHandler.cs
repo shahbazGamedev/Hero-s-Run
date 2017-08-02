@@ -11,7 +11,7 @@ public class CardHandler : MonoBehaviour {
 		//If the player or bot used the Supercharger card, he is casting every card for a short duration at a higher level than normal.
 		//Increase the level but do not exceed the maximum level for this card.
 		CardManager.CardData cd = CardManager.Instance.getCardByName( name );
-		if( casterPhotonView.GetComponent<PlayerSpell>().isAffectedBySupercharger() )
+		if( casterPhotonView.GetComponent<PlayerSpell>().isCardActive( CardName.Supercharger) )
 		{
 			print( casterPhotonView.gameObject.name + " is affected by supercharger. The normal card level for " + name.ToString() + " is " + level );
 			int maxLevel = CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity );

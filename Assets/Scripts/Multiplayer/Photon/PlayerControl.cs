@@ -1956,7 +1956,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			if( getCharacterState() == PlayerCharacterState.Flying ) return;
 
 			//Cancel the speedboost if active before ziplining
-			playerSpell.cancelSpeedBoost();
+			playerSpell.cancelRagingBull();
 			isInZiplineTrigger = true;
 		}
  		else if( other.CompareTag( "DetachZiplineTrigger" ) )

@@ -28,7 +28,7 @@ public class CardHack : Card {
 			{
 				if( !isPlayerImmune( PlayerRace.players[i].transform  ) )
 				{
-					if( PlayerRace.players[i].GetComponent<PlayerSpell>().isReflectEnabled() )
+					if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive( CardName.Reflect) )
 					{
 						MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, PlayerRace.players[i].GetComponent<PhotonView>().viewID );
 	

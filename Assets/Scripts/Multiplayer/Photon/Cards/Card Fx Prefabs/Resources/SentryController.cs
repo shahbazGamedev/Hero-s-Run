@@ -211,7 +211,7 @@ public class SentryController : CardSpawnedObject {
 	{
 		GetComponent<SphereCollider>().enabled = false;
 		yield return new WaitForSeconds(delayBeforeSentryExpires);
-
+		casterTransform.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Sentry );
 		setSpawnedObjectState(SpawnedObjectState.BeingDestroyed);
 		nearestTarget = null;
 		StopCoroutine( "changeMaterialOnCreate" );

@@ -33,7 +33,7 @@ public class CardStasis : Card {
 		//Only continue if we found a target
 		if( randomTarget != null )
 		{
-			if( randomTarget.GetComponent<PlayerSpell>().isReflectEnabled() )
+			if( randomTarget.GetComponent<PlayerSpell>().isCardActive( CardName.Reflect) )
 			{
 				MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, randomTarget.GetComponent<PhotonView>().viewID );
 
@@ -54,7 +54,7 @@ public class CardStasis : Card {
 			data[0] = randomTarget.GetComponent<PhotonView>().viewID;
 	
 			//We want the stasis sphere to disappear after a while
-			data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
+			data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION_WITH_TIMER, level );
 	
 			PhotonNetwork.InstantiateSceneObject( prefabName, randomTarget.position, randomTarget.rotation, 0, data );
 		}

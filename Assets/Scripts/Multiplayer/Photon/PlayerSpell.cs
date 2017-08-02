@@ -9,43 +9,34 @@ using UnityStandardAssets.ImageEffects;
 /// </summary>
 public class PlayerSpell : PunBehaviour {
 
+	#region List of active cards
+	//List of active cards (that have the affectsPlayerDirectly flag) either played by the local player or cast on the local player by an opponent.
+	//For example, Force Field has a duration but does not affect the player directly, so affectsPlayerDirectly would be false.
+	//However, Reflect has a duration and affects the player directly, so affectsPlayerDirectly would be true and therefore would be in this list while active.
+	public List<CardName> activeCardList = new List<CardName>();
+	#endregion
+
 	#region Shrink spell
 	[SerializeField] AudioClip shrinkSound;
 	[SerializeField] ParticleSystem shrinkParticleSystem;
-	float runSpeedBeforeSpell;
 	const float SHRINK_SIZE = 0.3f;
 	#endregion
 
 	#region Linked Fate spell
-	bool affectedByLinkedFate = false;
 	bool castLinkedFate = false;
 	[SerializeField] AudioClip linkedFateSound;
-	#endregion
-
-	#region Hack
-	public bool affectedByHack = false;
-	#endregion
-
-	#region Supercharger
-	bool affectedBySupercharger = false;
-	#endregion
-
-	#region Reflect
-	bool hasReflectEnabled = false;
 	#endregion
 
 	#region Sentry spell
 	SentryController sentryController;
 	#endregion
 
-	#region Speed Boost a.k.a Raging Bull
-	public bool isSpeedBoostActive = false;
-	#endregion
-
+	#region Cached for performance
 	PlayerControl playerControl;
 	PlayerSounds playerSounds;
 	PlayerVoiceOvers playerVoiceOvers;
 	PlayerRun playerRun;
+	#endregion
 
 	//Delegate used to communicate to other classes when an enemy has played a special card such as Hack
 	public delegate void CardPlayedByOpponentEvent( CardName name, float duration );
@@ -63,6 +54,57 @@ public class PlayerSpell : PunBehaviour {
 		playerSounds = GetComponent<PlayerSounds>();
 		playerVoiceOvers = GetComponent<PlayerVoiceOvers>();
 		playerRun = GetComponent<PlayerRun>();
+	}
+
+	void OnEnable()
+	{
+		TurnRibbonHandler.cardPlayedEvent += CardPlayedEvent;
+	}
+
+	void OnDisable()
+	{
+		TurnRibbonHandler.cardPlayedEvent -= CardPlayedEvent;
+	}
+
+	/// <summary>
+	/// A card was played by the local player.
+	/// </summary>
+	/// <param name="name">Name.</param>
+	/// <param name="level">Level.</param>
+	void CardPlayedEvent( CardName name, int level )
+	{
+		CardManager.CardData playedCard = CardManager.Instance.getCardByName( name );
+		if( playedCard.affectsPlayerDirectly )
+		{
+			if( activeCardList.Contains( name ) )
+			{
+				Debug.LogWarning("PlayerSpell-the activeCardList already contains the card " + name );
+			}
+			else
+			{
+				activeCardList.Add( name );
+			}
+		}
+	}
+
+	public bool isCardActive( CardName name )
+	{
+		return activeCardList.Contains( name );
+	}
+
+	void removeActiveCard( CardName name )
+	{
+		if( activeCardList.Contains( name ) ) activeCardList.Remove( name );
+	}
+
+	/// <summary>
+	/// Call this function when a card duration has expired normally and the card should be removed from the activeCardList.
+	/// Note: use a cancel function if you need to stop an active card before expiry.
+	/// </summary>
+	/// <param name="name">Name.</param>
+	public void cardDurationExpired( CardName name )
+	{
+		removeActiveCard( name );
 	}
 
 	#region Shrink spell
@@ -117,6 +159,7 @@ public class PlayerSpell : PunBehaviour {
 		} while ( elapsedTime < shrinkDuration );
 		transform.localScale = endScale;	
 		playerVoiceOvers.resetPitch();
+		cardDurationExpired( CardName.Shrink );
 	}
 
 	public void cancelShrinkSpell()
@@ -133,6 +176,7 @@ public class PlayerSpell : PunBehaviour {
 			{
 				StartCoroutine( enlarge( new Vector3( 1f, 1f, 1f ), 0.9f, 0 ) );
 			}
+			removeActiveCard( CardName.Shrink );
 		}
 	}
 	#endregion
@@ -150,33 +194,25 @@ public class PlayerSpell : PunBehaviour {
 		}
 		else
 		{
-			affectedByLinkedFate = true;
 			displayCardTimerOnHUD( CardName.Linked_Fate, spellDuration );
 		}
 
 		//For the player affected by Linked Fate, change the color of his icon on the map
 		//The local player does not have an icon on the minimap.
 		//If a bot cast the linked fate spell, do not attempt to change the icon color since it does not exist.
-		if( affectedByLinkedFate &&  GameManager.Instance.getPlayMode() != PlayMode.PlayAgainstEnemy ) MiniMap.Instance.changeColorOfRadarObject( GetComponent<PlayerControl>(), Color.magenta );
+		if( isCardActive(CardName.Linked_Fate) &&  GameManager.Instance.getPlayMode() != PlayMode.PlayAgainstEnemy ) MiniMap.Instance.changeColorOfRadarObject( GetComponent<PlayerControl>(), Color.magenta );
 
 		//Cancel the spell once the duration has run out
 		Invoke("cancelLinkedFateSpell", spellDuration );
 
-		Debug.LogWarning("PlayerSpell cardLinkedFateRPC received-affectedByLinkedFate: " + affectedByLinkedFate + " castLinkedFate: " + castLinkedFate + " name: " + gameObject.name + " caster: " + casterName );
 	}
 
 	void cancelLinkedFateSpell()
 	{
 		CancelInvoke( "cancelLinkedFateSpell" );
-		if( affectedByLinkedFate &&  GameManager.Instance.getPlayMode() != PlayMode.PlayAgainstEnemy ) MiniMap.Instance.changeColorOfRadarObject( GetComponent<PlayerControl>(), Color.white );
-		affectedByLinkedFate = false;
+		if( isCardActive(CardName.Linked_Fate) &&  GameManager.Instance.getPlayMode() != PlayMode.PlayAgainstEnemy ) MiniMap.Instance.changeColorOfRadarObject( GetComponent<PlayerControl>(), Color.white );
 		castLinkedFate = false;
-	}
-
-
-	public bool isAffectedByLinkedFate()
-	{
-		return affectedByLinkedFate;
+		removeActiveCard( CardName.Linked_Fate );
 	}
 
 	public bool hasCastLinkedFate()
@@ -197,6 +233,7 @@ public class PlayerSpell : PunBehaviour {
 		{
 			sentryController.destroySpawnedObjectNow();
 			sentryController = null;
+			removeActiveCard( CardName.Sentry );
 		}
 	}
 	#endregion
@@ -207,7 +244,6 @@ public class PlayerSpell : PunBehaviour {
 	{
 		displayCardTimerOnHUD( CardName.Hack, spellDuration );
 
-		affectedByHack = true;
 		//Cancel the hack effect once the duration has run out
 		Invoke("cancelHack", spellDuration );
 
@@ -217,19 +253,13 @@ public class PlayerSpell : PunBehaviour {
 		//To Do
 		//Add a reddish glow and electric sparks to the omni-tool so it appears broken.
 
-		print("PlayerSpell cardHackRPC received-affectedByHack: " + affectedByHack + " name: " + gameObject.name );
 	}
 
 	void cancelHack()
 	{
 		CancelInvoke( "cancelHack" );
-		affectedByHack = false;
 		print("PlayerSpell cancelHack for " + gameObject.name );
-	}
-
-	public bool isAffectedByHack()
-	{
-		return affectedByHack;
+		removeActiveCard( CardName.Hack );
 	}
 	#endregion
 
@@ -289,7 +319,6 @@ public class PlayerSpell : PunBehaviour {
 	#region Reflect
 	public void cardReflectRPC( float spellDuration )
 	{
-		hasReflectEnabled = true;
 		//Cancel the hack effect once the duration has run out
 		Invoke("cancelReflect", spellDuration );
 	}
@@ -297,13 +326,8 @@ public class PlayerSpell : PunBehaviour {
 	void cancelReflect()
 	{
 		CancelInvoke( "cancelReflect" );
-		hasReflectEnabled = false;
 		print("PlayerSpell cancelReflect for " + gameObject.name );
-	}
-
-	public bool isReflectEnabled()
-	{
-		return hasReflectEnabled;
+		removeActiveCard( CardName.Reflect );
 	}
 	#endregion
 
@@ -311,7 +335,6 @@ public class PlayerSpell : PunBehaviour {
 	[PunRPC]
 	void cardSuperchargerRPC( float spellDuration )
 	{
-		affectedBySupercharger = true;
 		//Cancel the supercharger effect once the duration has run out
 		Invoke("cancelSupercharger", spellDuration );
 
@@ -327,12 +350,7 @@ public class PlayerSpell : PunBehaviour {
 	void cancelSupercharger()
 	{
 		CancelInvoke("cancelSupercharger" );
-		affectedBySupercharger = false;
-	}
-
-	public bool isAffectedBySupercharger()
-	{
-		return affectedBySupercharger;
+		removeActiveCard( CardName.Supercharger );
 	}
 	#endregion
 
@@ -341,17 +359,18 @@ public class PlayerSpell : PunBehaviour {
 	{
 		GetComponent<PlayerJetPack>().stopFlying( false );
 		sendCancelCardEvent( CardName.Jet_Pack, false );
+		removeActiveCard( CardName.Jet_Pack );
 	}
 	#endregion
 
 	#region Speedboost a.k.a. Raging Bull
-	public void cancelSpeedBoost()
+	public void cancelRagingBull()
 	{
-		if( isSpeedBoostActive )
+		if( isCardActive(CardName.Raging_Bull) )
 		{
 			if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) Camera.main.GetComponent<MotionBlur>().enabled = false;
 			GetComponent<PlayerSounds>().stopAudioSource();
-			isSpeedBoostActive = false;
+			removeActiveCard( CardName.Raging_Bull );
 		}
 	}
 	#endregion
@@ -379,12 +398,13 @@ public class PlayerSpell : PunBehaviour {
 	/// </summary>
 	/// <param name="name">Name.</param>
 	/// <param name="duration">Duration.</param>
-	void displayCardTimerOnHUD( CardName name, float duration )
+	public void displayCardTimerOnHUD( CardName name, float duration )
 	{
 		//Only send an event for the local player (and not for bots).
 		if( cardPlayedByOpponentEvent != null && GetComponent<PhotonView>().isMine && GetComponent<PlayerAI>() == null )
 		{
 			cardPlayedByOpponentEvent( name, duration );
+			activeCardList.Add( name );
 		}
 	}
 
@@ -396,7 +416,9 @@ public class PlayerSpell : PunBehaviour {
 		cancelSupercharger();
 		cancelHack();
 		cancelJetPack();
-		cancelSpeedBoost();
+		cancelRagingBull();
+		cancelReflect();
+		activeCardList.Clear();
 	}
 
 	public void playerDied()
@@ -406,7 +428,7 @@ public class PlayerSpell : PunBehaviour {
 			//Kill all players with the affectedByLinkedFate flag. Ignore the caster (who is dead anyway).
 			for( int i = 0; i < PlayerRace.players.Count; i++ )
 			{
-				if( PlayerRace.players[i].GetComponent<PlayerSpell>().isAffectedByLinkedFate() && !PlayerRace.players[i].GetComponent<PlayerSpell>().hasCastLinkedFate() )
+				if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Linked_Fate) && !PlayerRace.players[i].GetComponent<PlayerSpell>().hasCastLinkedFate() )
 				{
 					PlayerRace.players[i].GetComponent<PlayerControl>().killPlayer( DeathType.Obstacle );
 					//Reset the color

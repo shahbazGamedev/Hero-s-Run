@@ -40,7 +40,6 @@ public class CardSpeedBoost : Card {
 	{
 		//Only affect the camera for the local player
 		if( isMine ) Camera.main.GetComponent<MotionBlur>().enabled = true;
-		playerRun.GetComponent<PlayerSpell>().isSpeedBoostActive = true;
 		StartCoroutine( playerRun.addVariableSpeedMultiplier( SpeedMultiplierType.Raging_Bull, speedMultiplier, 0.5f ) );
 		playerRun.GetComponent<PlayerSounds>().playSound( soundFx, false );
 		StartCoroutine( stopSpeedBoost( spellDuration, playerRun, isMine) );
@@ -51,8 +50,8 @@ public class CardSpeedBoost : Card {
 		yield return new WaitForSeconds( spellDuration );
 		if( isMine ) Camera.main.GetComponent<MotionBlur>().enabled = false;
 		playerRun.GetComponent<PlayerSounds>().stopAudioSource();
-		playerRun.GetComponent<PlayerSpell>().isSpeedBoostActive = false;
 		StartCoroutine( playerRun.removeVariableSpeedMultiplier( SpeedMultiplierType.Raging_Bull, 0.5f ) );
+		playerRun.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Raging_Bull );
 	}
 
 }

@@ -70,6 +70,7 @@ public class StasisController : CardSpawnedObject {
 
 				//The Stasis Sphere has a limited lifespan which depends on the level of the Card.
 				float spellDuration = (float) data[1];
+				affectedPlayerTransform.GetComponent<PlayerSpell>().displayCardTimerOnHUD(CardName.Stasis, spellDuration );
 				StartCoroutine( destroyStasisSphere( spellDuration ) );
 
 				//Display the Stasis secondary icon on the minimap
@@ -96,6 +97,7 @@ public class StasisController : CardSpawnedObject {
 		affectedPlayerControl.fall( true );
 		affectedPlayerControl.enablePlayerMovement( true );
 		affectedPlayerControl.enablePlayerControl( true );
+		affectedPlayerTransform.GetComponent<PlayerSpell>().cardDurationExpired(CardName.Stasis);
 		Destroy( gameObject );
 	}
 

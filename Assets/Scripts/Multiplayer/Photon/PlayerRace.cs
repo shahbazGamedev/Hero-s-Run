@@ -279,12 +279,13 @@ public class PlayerRace : Photon.PunBehaviour
 			" isMine: " + this.photonView.isMine +
 			" raceDuration: " + raceDuration + " distanceTravelled: " + distanceTravelled + " officialRacePosition: " + officialRacePosition );
 
-		//We want to slow down any player that reaches the finish line
-		StartCoroutine( GetComponent<PlayerRun>().slowDownPlayerAfterFinishLine( 5f - (officialRacePosition * 1.4f), triggerPositionZ ) );
-
-		racePosition = officialRacePosition;
 		//Cancel all spell effects
 		GetComponent<PlayerSpell>().cancelAllSpells();
+
+		racePosition = officialRacePosition;
+
+		//We want to slow down any player that reaches the finish line
+		StartCoroutine( GetComponent<PlayerRun>().slowDownPlayerAfterFinishLine( 5f - (officialRacePosition * 1.4f), triggerPositionZ ) );
 
 		//Sanity check
 		//tilesLeftBeforeReachingEnd should ALWAYS be zero when reaching the End tile. If it's not the case, make sure the tilePenalty

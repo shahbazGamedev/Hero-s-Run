@@ -101,6 +101,7 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 	void durationHasExpired()
 	{		
 		stopFlying( true );
+		GetComponent<PlayerSpell>().cardDurationExpired(CardName.Jet_Pack);
 	}
 
 	public void stopFlying( bool fall )
@@ -138,11 +139,6 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 	{
 		if( GameManager.Instance.getGameState() == GameState.Normal )
 		{
-			#if UNITY_EDITOR
-			handleKeyboard();
-			#endif
-			detectTaps();
-
 			if( PhotonNetwork.isMasterClient )
 			{
 				if( playerControl.getCharacterState() == PlayerCharacterState.Flying )
@@ -278,48 +274,4 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 		//The master player and the remote player should now be synchronised.
 	}
 
-	#region For debugging Jet Pack. Normal way to activate is by playing the Jet Pack card.
-	void detectTaps()
-	{
-		if( this.photonView.isMine && GetComponent<PlayerAI>() == null && PlayerStatsManager.Instance.getShowDebugInfoOnHUD() )
-		{			
-			if ( Input.touchCount > 0 )
-			{
-				Touch touch = Input.GetTouch(0);
-				if( touch.tapCount == 2 )
-				{
-					if( touch.phase == TouchPhase.Ended  )
-					{
-						if( playerControl.getCharacterState() != PlayerCharacterState.Flying )
-						{
-							startFlying( 28f );
-						}
-						else
-						{
-							stopFlying( true );
-						}
-					}
-				}
-			}
-		}
-	}
-
-	private void handleKeyboard()
-	{
-		if( this.photonView.isMine && GetComponent<PlayerAI>() == null && PlayerStatsManager.Instance.getShowDebugInfoOnHUD() )
-		{			
-			if ( Input.GetKeyDown (KeyCode.F) ) 
-			{
-				if( playerControl.getCharacterState() != PlayerCharacterState.Flying )
-				{
-					startFlying( 28f );
-				}
-				else
-				{
-					stopFlying( true );
-				}
-			}
-		}
-	}
-	#endregion
 }
