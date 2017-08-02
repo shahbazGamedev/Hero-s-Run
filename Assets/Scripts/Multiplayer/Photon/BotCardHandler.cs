@@ -24,6 +24,10 @@ public sealed class BotCardHandler : MonoBehaviour {
 	float timeRemainingNextAnalysis = 0;
 	#endregion
 
+	//Delegate used to communicate to other classes when a bot has played a card
+	public delegate void BotPlayedCardEvent( CardName name );
+	public static event BotPlayedCardEvent botPlayedCardEvent;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -197,6 +201,7 @@ public sealed class BotCardHandler : MonoBehaviour {
 		if( botCardData != null )
 		{
 			cardHandler.activateCard( GetComponent<PhotonView>(), cardName, botHero.userName, botCardData.level );
+			if( botPlayedCardEvent != null ) botPlayedCardEvent( cardName );
 		}
 	}
 
