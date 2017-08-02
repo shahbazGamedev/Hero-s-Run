@@ -56,48 +56,12 @@ public class PlayerSpell : PunBehaviour {
 		playerRun = GetComponent<PlayerRun>();
 	}
 
-	void OnEnable()
-	{
-		TurnRibbonHandler.cardPlayedEvent += CardPlayedEvent;
-		BotCardHandler.botPlayedCardEvent += BotPlayedCardEvent;
-	}
-
-	void OnDisable()
-	{
-		TurnRibbonHandler.cardPlayedEvent -= CardPlayedEvent;
-		BotCardHandler.botPlayedCardEvent -= BotPlayedCardEvent;
-	}
-
 	/// <summary>
-	/// A card was played by the local player.
+	/// A card was played by either the local player or a bot.
 	/// </summary>
 	/// <param name="name">Name.</param>
-	/// <param name="level">Level.</param>
-	void CardPlayedEvent( CardName name, int level )
+	public void playedCard( CardName name )
 	{
-		CardManager.CardData playedCard = CardManager.Instance.getCardByName( name );
-		if( playedCard.affectsPlayerDirectly )
-		{
-			if( activeCardList.Contains( name ) )
-			{
-				Debug.LogWarning("PlayerSpell-the activeCardList already contains the card " + name );
-			}
-			else
-			{
-				activeCardList.Add( name );
-			}
-		}
-	}
-
-	/// <summary>
-	/// A card was played by a bot.
-	/// </summary>
-	/// <param name="name">Name.</param>
-	void BotPlayedCardEvent( CardName name )
-	{
-		//if I am not a bot, ignore
-		if( GetComponent<PlayerAI>() == null ) return;
-
 		CardManager.CardData playedCard = CardManager.Instance.getCardByName( name );
 		if( playedCard.affectsPlayerDirectly )
 		{

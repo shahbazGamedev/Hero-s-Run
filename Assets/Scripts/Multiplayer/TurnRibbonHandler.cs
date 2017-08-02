@@ -178,6 +178,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 					}
 		
 					if( cardPlayedEvent != null ) cardPlayedEvent( cardName, level );
+					playerSpell.playedCard( cardName );
 				}
 			}
 		}
