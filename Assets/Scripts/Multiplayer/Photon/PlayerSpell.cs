@@ -10,9 +10,7 @@ using UnityStandardAssets.ImageEffects;
 public class PlayerSpell : PunBehaviour {
 
 	#region List of active cards
-	//List of active cards (that have the affectsPlayerDirectly flag) either played by the local player or cast on the local player by an opponent.
-	//For example, Force Field has a duration but does not affect the player directly, so affectsPlayerDirectly would be false.
-	//However, Reflect has a duration and affects the player directly, so affectsPlayerDirectly would be true and therefore would be in this list while active.
+	//List of active cards either played by the local player or cast on the local player by an opponent.
 	public List<CardName> activeCardList = new List<CardName>();
 	#endregion
 
