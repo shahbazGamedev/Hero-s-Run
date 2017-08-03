@@ -75,6 +75,8 @@ public class StasisController : CardSpawnedObject {
 
 				//Display the Stasis secondary icon on the minimap
 				MiniMap.Instance.displaySecondaryIcon( affectedPlayerTransform.GetComponent<PhotonView>().viewID, (int) CardName.Stasis, spellDuration );
+
+				break;
 			}
 		}
 		if( affectedPlayerTransform != null )

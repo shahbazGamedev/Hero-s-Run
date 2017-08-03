@@ -54,7 +54,7 @@ public class CardStasis : Card {
 			data[0] = randomTarget.GetComponent<PhotonView>().viewID;
 	
 			//We want the stasis sphere to disappear after a while
-			data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION_WITH_TIMER, level );
+			data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
 	
 			PhotonNetwork.InstantiateSceneObject( prefabName, randomTarget.position, randomTarget.rotation, 0, data );
 		}
