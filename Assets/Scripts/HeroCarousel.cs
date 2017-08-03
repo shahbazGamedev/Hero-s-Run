@@ -85,7 +85,7 @@ public class HeroCarousel : MonoBehaviour {
 	{
 		HeroManager.HeroCharacter hero = HeroManager.Instance.getHeroCharacter( currentIndex );
 		heroIcon.sprite = hero.icon;
-		heroName.text = hero.name;
+		heroName.text = hero.name.ToString();
 		//configure skin
 		configureSkin( heroSkinList[hero.skinIndex] );
 		updateCarouselImages();

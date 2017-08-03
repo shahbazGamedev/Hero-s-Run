@@ -35,7 +35,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 	[SerializeField] Image heroIcon;
 	[SerializeField] Toggle equipNowToggle;
 	int voiceLineId = -1;
-	string heroName;
+	HeroName heroName;
 
 	[Header("Card Panel")]
 	[SerializeField] Image cardImage;

@@ -251,7 +251,7 @@ public class PlayerRace : Photon.PunBehaviour
 				if( GetComponent<PlayerAI>() == null )
 				{
 					//We're the player
-					heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name;
+					heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name.ToString();
 				}
 				else
 				{

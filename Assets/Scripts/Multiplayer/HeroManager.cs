@@ -8,6 +8,17 @@ public enum Sex
 	FEMALE = 1
 }
 
+public enum HeroName
+{
+	NONE = 0,
+	RUG = 1,
+	BIT = 2,
+	GIN = 3,
+	SOPHIA = 4,
+	HEX = 5,
+	BROOKE = 6
+}
+
 public enum BotSkillLevel
 {
 	VERY_LOW = -1,
@@ -39,7 +50,7 @@ public class HeroManager : MonoBehaviour {
 		}
 	}
 
-	public Sprite getHeroSprite( string heroName )
+	public Sprite getHeroSprite( HeroName heroName )
 	{
 		return heroCharacterList.Find(hero => hero.name == heroName ).icon;
 	}
@@ -54,9 +65,9 @@ public class HeroManager : MonoBehaviour {
 		return heroCharacterList.Count;
 	}
 
-	public List<string> getHeroNames()
+	public List<HeroName> getHeroNames()
 	{
-		List<string> heroNames = new List<string>();
+		List<HeroName> heroNames = new List<HeroName>();
 		for( int i = 0; i < heroCharacterList.Count; i++ )
 		{
 			heroNames.Add( heroCharacterList[i].name );
@@ -64,9 +75,9 @@ public class HeroManager : MonoBehaviour {
 		return heroNames;
 	}
 
-	public string getRandomHeroName()
+	public HeroName getRandomHeroName()
 	{
-		List<string> heroNames = getHeroNames();
+		List<HeroName> heroNames = getHeroNames();
 		int random = Random.Range(0, heroNames.Count );
 		return heroNames[random];
 	}
@@ -121,7 +132,7 @@ public class HeroManager : MonoBehaviour {
 	[System.Serializable]
 	public class HeroCharacter
 	{
-		public string name;
+		public HeroName name;
 		public Sex sex;
  		//See heroSkinList in HeroCarousel for how skinIndex is used.
 		//The skins are stored in the Hero Selection scene with the correct position, rotation and scale.

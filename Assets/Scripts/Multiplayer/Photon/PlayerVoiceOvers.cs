@@ -12,7 +12,7 @@ public class PlayerVoiceOvers : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		string heroName;
+		HeroName heroName;
 		if( GetComponent<PlayerAI>() == null )
 		{
 			//We're the player

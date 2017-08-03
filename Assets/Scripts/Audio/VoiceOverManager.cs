@@ -62,7 +62,7 @@ public class VoiceOverManager : MonoBehaviour {
 
 	public void playTaunt ()
 	{
-		string heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name;
+		HeroName heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name;
 		int uniqueId = GameManager.Instance.playerVoiceLines.getEquippedVoiceLineIdForHero( heroName );
 		VoiceOverData equipedVoiceLine = getAllTaunts ().Find(vo => vo.uniqueId == uniqueId );
 		if( equipedVoiceLine != null )
@@ -76,7 +76,7 @@ public class VoiceOverManager : MonoBehaviour {
 	/// </summary>
 	/// <returns>The unique Id of random taunt.</returns>
 	/// <param name="heroName">Hero name.</param>
-	public int getRandomTaunt ( string heroName )
+	public int getRandomTaunt ( HeroName heroName )
 	{
 		List<VoiceOverData> heroVoiceOverList = getHeroVoiceOverList( heroName );
 		//Do we have one or more VOs that match?
@@ -99,7 +99,7 @@ public class VoiceOverManager : MonoBehaviour {
 		return 0;
 	}
 
-	public AudioClip getTauntClip( string heroName, int uniqueId )
+	public AudioClip getTauntClip( HeroName heroName, int uniqueId )
     {
 		//Find the clip to play
 		List<VoiceOverData> heroVoiceOverList = getHeroVoiceOverList( heroName );
@@ -118,17 +118,17 @@ public class VoiceOverManager : MonoBehaviour {
 		return voiceOverList.Exists(vo => ( vo.uniqueId == uniqueId ) );
 	}
 
-	public List<VoiceOverData> getHeroVoiceOverList ( string heroName )
+	public List<VoiceOverData> getHeroVoiceOverList ( HeroName heroName )
 	{
 		return voiceOverList.FindAll(vo => ( vo.heroName == heroName ) );
 	}
 
-	public List<VoiceOverData> getHeroTaunts ( string heroName )
+	public List<VoiceOverData> getHeroTaunts ( HeroName heroName )
 	{
 		return voiceOverList.FindAll(vo => ( vo.heroName == heroName && vo.type == VoiceOverType.VO_Taunt ) );
 	}
 
-	public VoiceOverData getRandomHeroTaunt ( string heroName )
+	public VoiceOverData getRandomHeroTaunt ( HeroName heroName )
 	{
 		List<VoiceOverData> allHeroTaunts = voiceOverList.FindAll(vo => ( vo.heroName == heroName && vo.type == VoiceOverType.VO_Taunt ) );
 		if( allHeroTaunts.Count > 0 )
@@ -147,7 +147,7 @@ public class VoiceOverManager : MonoBehaviour {
 	public class VoiceOverData
 	{
 		public int uniqueId;
-		public string heroName;
+		public HeroName heroName;
 		public VoiceOverType type = VoiceOverType.VO_Casting_Spell;
 		//playOnActivationOnly is only used for cards.
 		//For some cards (such as Sprint) a VO is automatically played. This is handled by CardHandler.

@@ -1814,7 +1814,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		if( playerAI == null )
 		{
 			//We're the player
-			heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name;
+			heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name.ToString();
 		}
 		else
 		{

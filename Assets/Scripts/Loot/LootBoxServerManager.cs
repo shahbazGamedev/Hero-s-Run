@@ -140,7 +140,7 @@ public class LootBoxServerManager : MonoBehaviour {
 
 		loot = new LootBox.Loot();
 		loot.type = LootType.VOICE_LINE;
-		string randomHeroName = HeroManager.Instance.getRandomHeroName();
+		HeroName randomHeroName = HeroManager.Instance.getRandomHeroName();
 		loot.uniqueItemID = VoiceOverManager.Instance.getRandomTaunt ( randomHeroName );
 		loot.heroName =  randomHeroName;
 		lootBox.addLoot( loot );

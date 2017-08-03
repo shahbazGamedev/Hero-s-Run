@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class HeroCardHandler : MonoBehaviour {
 
@@ -16,7 +17,9 @@ public class HeroCardHandler : MonoBehaviour {
 		cardImage.sprite = cd.icon;
 		//Legendary cards have special effects
 		cardImage.material = cd.cardMaterial;
-
+		TextMeshProUGUI cardNameText = heroCardButton.GetComponentInChildren<TextMeshProUGUI>();
+		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + cd.name.ToString().ToUpper() );
+		cardNameText.text = localizedCardName;
 	}
 	
 	public void OnClickCard( CardManager.CardData cd )

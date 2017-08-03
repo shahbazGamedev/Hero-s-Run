@@ -21,7 +21,7 @@ public class PlayerVoiceLines {
 		serializeVoiceLines( true );
 	}
 
-	void addVoiceLine( int uniqueId, string heroName, string clipName, bool isNew, bool isLocked, bool isEquipped )
+	void addVoiceLine( int uniqueId, HeroName heroName, string clipName, bool isNew, bool isLocked, bool isEquipped )
 	{
 		//Make sure the specified voice line exists
 		if( VoiceOverManager.Instance.doesVoiceLineExist( uniqueId ) )
@@ -52,12 +52,12 @@ public class PlayerVoiceLines {
 		return voiceLineList.Find(voiceLineData => voiceLineData.uniqueId == uniqueId);
 	}
 
-	public int getUnlockedCountForHero( string heroName )
+	public int getUnlockedCountForHero( HeroName heroName )
 	{
 		return voiceLineList.FindAll(voiceLineData => voiceLineData.heroName == heroName && voiceLineData.isLocked == false ).Count;
 	}
 
-	public List<VoiceLineData> getVoiceLinesForHero( string heroName )
+	public List<VoiceLineData> getVoiceLinesForHero( HeroName heroName )
 	{
 		return voiceLineList.FindAll(voiceLineData => voiceLineData.heroName == heroName );
 	}
@@ -72,7 +72,7 @@ public class PlayerVoiceLines {
 		return counter;
 	}
 
-	public void equipVoiceLine( int uniqueId, string heroName )
+	public void equipVoiceLine( int uniqueId, HeroName heroName )
 	{
 		VoiceLineData vld = voiceLineList.Find(voiceLineData => voiceLineData.uniqueId == uniqueId);
 		if( vld != null )
@@ -102,7 +102,7 @@ public class PlayerVoiceLines {
 		}
 	}
 
-	public int getEquippedVoiceLineIdForHero( string heroName )
+	public int getEquippedVoiceLineIdForHero( HeroName heroName )
 	{
 		VoiceLineData vld = voiceLineList.Find(voiceLineData => voiceLineData.heroName == heroName && voiceLineData.isEquipped == true );
 		if( vld != null )
@@ -116,7 +116,7 @@ public class PlayerVoiceLines {
 		}
 	}
 
-	public void unquippedVoiceLineForHero( string heroName )
+	public void unquippedVoiceLineForHero( HeroName heroName )
 	{
 		VoiceLineData vld = voiceLineList.Find(voiceLineData => voiceLineData.heroName == heroName && voiceLineData.isEquipped == true );
 		if( vld != null )
@@ -139,8 +139,8 @@ public class PlayerVoiceLines {
 	[System.Serializable]
 	public class VoiceLineData
 	{
-		public int uniqueId = 0; 
-		public string heroName;
+		public int uniqueId = 0;
+		public HeroName heroName;
 		public string clipName; //not strictly needed, but helps to debug when you can see the audio clip name
 		public bool isNew = false;
 		public bool isLocked = true;

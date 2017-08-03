@@ -48,7 +48,7 @@ public class VoiceLinesMenu : MonoBehaviour {
 	void updateHero( HeroManager.HeroCharacter hero )
 	{
 		heroIcon.sprite = hero.icon;
-		heroName.text = hero.name;
+		heroName.text = hero.name.ToString();
 	}
 
 	void createVoiceLines( HeroManager.HeroCharacter hero )
@@ -84,7 +84,7 @@ public class VoiceLinesMenu : MonoBehaviour {
 		voiceLineHolder.GetComponent<RectTransform>().sizeDelta = new Vector2( voiceLineHolder.GetComponent<RectTransform>().rect.width, contentLength );
 	}
 
-	void createVoiceLine( int index, string heroName, PlayerVoiceLines.VoiceLineData vo )
+	void createVoiceLine( int index, HeroName heroName, PlayerVoiceLines.VoiceLineData vo )
 	{
 		GameObject go = (GameObject)Instantiate(voiceLinePrefab);
 		go.transform.SetParent(voiceLineHolder,false);
