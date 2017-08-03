@@ -19,6 +19,8 @@ public class HeroCarousel : MonoBehaviour {
 	[SerializeField] List<GameObject> heroSkinList = new List<GameObject>();
 	GameObject previousSkin = null;
 	int maxHeroIndex = 0;
+	[Header("Card reserved For Hero")]
+	[SerializeField] HeroCardHandler heroCardhandler;
 
 	//Delegate used to communicate to other classes when the selected hero has changed.
 	public delegate void HeroChangedEvent( int selectedHeroIndex );
@@ -87,6 +89,8 @@ public class HeroCarousel : MonoBehaviour {
 		//configure skin
 		configureSkin( heroSkinList[hero.skinIndex] );
 		updateCarouselImages();
+		//configure card
+		heroCardhandler.configureHeroCard( hero.reservedCard );
 	}
 
 	void configureSkin( GameObject selectedSkin )

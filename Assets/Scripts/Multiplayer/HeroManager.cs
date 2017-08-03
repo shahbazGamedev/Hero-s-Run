@@ -129,6 +129,8 @@ public class HeroManager : MonoBehaviour {
 		public string skinPrefab;
 		public Sprite icon;
 		public Sprite minimapIcon;
+		//Only this hero can use this card.
+		public CardName reservedCard =  CardName.None;
 	}
 
 	[System.Serializable]
