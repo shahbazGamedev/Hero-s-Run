@@ -81,6 +81,16 @@ public class MiniMap : MonoBehaviour {
 		if(ro != null) radarObjects.Remove(ro);
 	}
 
+	public void changeAlphaOfRadarObject( PlayerControl pc, float alpha )
+	{
+		RadarObject ro = radarObjects.Find(radarObject => radarObject.playerControl == pc);
+		if( ro != null )
+		{
+			ro.icon.color = new Color(ro.icon.color.r, ro.icon.color.g, ro.icon.color.b, alpha ) ;
+			ro.secondaryIcon.color = new Color(ro.icon.color.r, ro.icon.color.g, ro.icon.color.b, alpha ) ;
+		}
+	}
+
 	public void updateTopmostTile( Transform newTile )
 	{
 		return; //code not finished

@@ -66,7 +66,7 @@ public class PlayerAI : AutoPilot {
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha1) )
 		{
-			bch.activateCard( CardName.Supercharger );
+			bch.activateCard( CardName.Cloak );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha2 ) )
 		{

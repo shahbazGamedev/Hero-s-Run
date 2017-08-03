@@ -1575,6 +1575,9 @@ public class PlayerControl : Photon.PunBehaviour {
 		//The PlayerIK component needs to know that the player died
 		GetComponent<PlayerIK>().playerDied();
 
+		//Reset the icon on the Minimap. The alpha might have been changed during Cloak.
+		MiniMap.Instance.changeAlphaOfRadarObject( this, 1f );
+
 		//Stop the particle systems. One might be playing if we died while sliding for example.
 		playerVisuals.playDustPuff( false );
 		playerVisuals.playWaterSplashWhileSliding( false );
