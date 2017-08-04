@@ -15,11 +15,11 @@ public class PlayerIK : MonoBehaviour {
 	Animator anim;
 	[SerializeField] float lookAtWeight = 0.8f;
 	[SerializeField] float bodyWeight = 0.7f;
-	[SerializeField] float headWeight = 1f;
-	[SerializeField] float eyesWeight = 1f;
+	[SerializeField] float headWeight = 0.9f;
+	[SerializeField] float eyesWeight = 0.9f;
 	[SerializeField] float clampWeight = 1f;
 	[SerializeField] float activeDistanceSquared = 50f * 50f;
-	[SerializeField] float dotProductIK = 0.55f;
+	[SerializeField] float dotProductIK = 0.58f;
 	public bool lookAtActive = false;
 	public bool enableIK = true; //this could be used to disable IK in case the rig does not support it or the performance on the device suffers
 	Vector3 playerOffset = new Vector3( 0, 1.4f, 0 ); //Look at the player's eyes, not his feet.
