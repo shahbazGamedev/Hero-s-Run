@@ -386,15 +386,18 @@ public class PlayerSpell : PunBehaviour {
 
 	public void makePlayerVisible()
 	{
-		ParticleSystem go = GameObject.Instantiate( appearFx );
-		go.transform.position = transform.TransformPoint( 0, 1.2f, 0 );
-		go.Play();
-		GameObject.Destroy( go, 2f );
-		Transform heroSkin = transform.FindChild("Hero Skin");
-		SkinnedMeshRenderer[] smr = heroSkin.GetComponentsInChildren<SkinnedMeshRenderer>();
-		for( int i = 0; i < smr.Length; i++ )
+		if( isCardActive(CardName.Cloak) )
 		{
-			smr[i].enabled = true;
+			ParticleSystem go = GameObject.Instantiate( appearFx );
+			go.transform.position = transform.TransformPoint( 0, 1.2f, 0 );
+			go.Play();
+			GameObject.Destroy( go, 2f );
+			Transform heroSkin = transform.FindChild("Hero Skin");
+			SkinnedMeshRenderer[] smr = heroSkin.GetComponentsInChildren<SkinnedMeshRenderer>();
+			for( int i = 0; i < smr.Length; i++ )
+			{
+				smr[i].enabled = true;
+			}
 		}
 	}
 	#endregion
