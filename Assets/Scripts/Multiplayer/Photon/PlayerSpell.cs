@@ -350,6 +350,17 @@ public class PlayerSpell : PunBehaviour {
 	}
 	#endregion
 
+	#region Cloak
+	public void cancelCloak()
+	{
+		//Reset the color correction curves used by Cloak.
+		ColorCorrectionCurves ccc = Camera.main.GetComponent<ColorCorrectionCurves>();
+ 		ccc.enabled = false;
+		ccc.saturation = 1f;
+		removeActiveCard( CardName.Cloak );
+	}
+	#endregion
+
 	#region Speedboost a.k.a. Raging Bull
 	public void cancelRagingBull()
 	{
@@ -405,6 +416,7 @@ public class PlayerSpell : PunBehaviour {
 		cancelJetPack();
 		cancelRagingBull();
 		cancelReflect();
+		cancelCloak();
 		activeCardList.Clear();
 	}
 
