@@ -34,7 +34,12 @@ public class CardCloak : Card {
 		StartCoroutine( stopCloaking( spellDuration, playerRun, isMine ) );
 		//Only affect the camera for the local player
 		if( isMine ) StartCoroutine( controlSaturation( 0f, 0.8f ) );
+		//Hide the player's icon on the minimap
 		MiniMap.Instance.changeAlphaOfRadarObject( playerRun.GetComponent<PlayerControl>(), 0 );
+		//Make the online remote players invisible but not the local player.
+		//A cloaked bot also becomes invisible.
+		//Note that you will still be able to hear the cloaked player's footsteps.
+		if( !playerRun.GetComponent<PhotonView>().isMine || playerRun.GetComponent<PlayerAI>() != null ) playerRun.GetComponent<PlayerSpell>().makePlayerInvisible();
 	}
 
 	IEnumerator stopCloaking( float spellDuration, PlayerRun playerRun, bool isMine  )
@@ -46,6 +51,7 @@ public class CardCloak : Card {
 		if( isMine ) StartCoroutine( controlSaturation( 1f, 0.8f ) );
 		playerRun.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Cloak);
 		MiniMap.Instance.changeAlphaOfRadarObject( playerRun.GetComponent<PlayerControl>(), 1f );
+		if( !playerRun.GetComponent<PhotonView>().isMine || playerRun.GetComponent<PlayerAI>() != null ) playerRun.GetComponent<PlayerSpell>().makePlayerVisible();
 	}
 
 	IEnumerator controlSaturation( float endSaturationLevel, float duration )

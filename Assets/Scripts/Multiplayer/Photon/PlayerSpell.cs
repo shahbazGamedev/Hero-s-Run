@@ -29,6 +29,12 @@ public class PlayerSpell : PunBehaviour {
 	SentryController sentryController;
 	#endregion
 
+	#region Cloak spell
+	[SerializeField] Material invisibleMaterial;
+	Material originalMaterial;
+	#endregion
+
+
 	#region Cached for performance
 	PlayerControl playerControl;
 	PlayerSounds playerSounds;
@@ -357,7 +363,33 @@ public class PlayerSpell : PunBehaviour {
 		ColorCorrectionCurves ccc = Camera.main.GetComponent<ColorCorrectionCurves>();
  		ccc.enabled = false;
 		ccc.saturation = 1f;
+		makePlayerVisible();
+		originalMaterial = null;
 		removeActiveCard( CardName.Cloak );
+	}
+
+	public void makePlayerInvisible()
+	{
+		Transform heroSkin = transform.FindChild("Hero Skin");
+		SkinnedMeshRenderer[] smr = heroSkin.GetComponentsInChildren<SkinnedMeshRenderer>();
+		for( int i = 0; i < smr.Length; i++ )
+		{
+			if( i == 0 ) originalMaterial = smr[0].material;
+			smr[i].material = invisibleMaterial;
+		} 
+	}
+
+	public void makePlayerVisible()
+	{
+		if( originalMaterial != null )
+		{
+			Transform heroSkin = transform.FindChild("Hero Skin");
+			SkinnedMeshRenderer[] smr = heroSkin.GetComponentsInChildren<SkinnedMeshRenderer>();
+			for( int i = 0; i < smr.Length; i++ )
+			{
+				smr[i].material = originalMaterial;
+			}
+		}
 	}
 	#endregion
 
