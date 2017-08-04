@@ -30,8 +30,7 @@ public class PlayerSpell : PunBehaviour {
 	#endregion
 
 	#region Cloak spell
-	[SerializeField] Material invisibleMaterial;
-	Material originalMaterial;
+	[SerializeField] ParticleSystem appearFx;
 	#endregion
 
 
@@ -364,31 +363,34 @@ public class PlayerSpell : PunBehaviour {
  		ccc.enabled = false;
 		ccc.saturation = 1f;
 		makePlayerVisible();
-		originalMaterial = null;
 		removeActiveCard( CardName.Cloak );
 	}
 
 	public void makePlayerInvisible()
 	{
+		ParticleSystem go = GameObject.Instantiate( appearFx );
+		go.transform.position = transform.TransformPoint( 0, 1.2f, 0 );
+		go.Play();
+		GameObject.Destroy( go, 2f );
 		Transform heroSkin = transform.FindChild("Hero Skin");
 		SkinnedMeshRenderer[] smr = heroSkin.GetComponentsInChildren<SkinnedMeshRenderer>();
 		for( int i = 0; i < smr.Length; i++ )
 		{
-			if( i == 0 ) originalMaterial = smr[0].material;
-			smr[i].material = invisibleMaterial;
+			smr[i].enabled = false;
 		} 
 	}
 
 	public void makePlayerVisible()
 	{
-		if( originalMaterial != null )
+		ParticleSystem go = GameObject.Instantiate( appearFx );
+		go.transform.position = transform.TransformPoint( 0, 1.2f, 0 );
+		go.Play();
+		GameObject.Destroy( go, 2f );
+		Transform heroSkin = transform.FindChild("Hero Skin");
+		SkinnedMeshRenderer[] smr = heroSkin.GetComponentsInChildren<SkinnedMeshRenderer>();
+		for( int i = 0; i < smr.Length; i++ )
 		{
-			Transform heroSkin = transform.FindChild("Hero Skin");
-			SkinnedMeshRenderer[] smr = heroSkin.GetComponentsInChildren<SkinnedMeshRenderer>();
-			for( int i = 0; i < smr.Length; i++ )
-			{
-				smr[i].material = originalMaterial;
-			}
+			smr[i].enabled = true;
 		}
 	}
 	#endregion
