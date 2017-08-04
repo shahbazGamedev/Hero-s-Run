@@ -127,6 +127,7 @@ public class HUDMultiplayer : MonoBehaviour {
 			yield return new WaitForSecondsRealtime( 1f);
 			countdownNumber--;
 		}	
+		raceEndingText.gameObject.SetActive( false );
 		#if UNITY_IOS
 		try
 		{
@@ -137,9 +138,55 @@ public class HUDMultiplayer : MonoBehaviour {
 			Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
     	}
 		yield return new WaitForEndOfFrame();
-		#endif
-		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
-		PhotonNetwork.LeaveRoom();
+		#endif 
+		StartCoroutine( endOfRaceSlowdown() );
+	}
+
+	IEnumerator endOfRaceSlowdown()
+	{
+		float duration = 2.5f;
+		float elapsedTime = 0;
+		float startTimeScale = 1f;
+
+		//Get a reference to the local player
+		PlayerRace localPlayerRace = null;
+		for(int i=0; i<PlayerRace.players.Count;i++)
+		{
+			if( PlayerRace.players[i].GetComponent<PhotonView>().isMine && PlayerRace.players[i].GetComponent<PlayerAI>() == null )
+			{
+			 	localPlayerRace = PlayerRace.players[i];
+				break;
+			}
+		}
+
+		//If the local player has crossed the finish line, don't delay any further and leave the room.
+		if( localPlayerRace.playerCrossedFinishLine )
+		{
+			GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
+			PhotonNetwork.LeaveRoom();
+			yield break;
+		}
+		//However, if the local player has not crossed the finish line by the time the 10 second countdown has finished,
+		//remove player control, gradually slowdown the world, and then leave the room.
+		else
+		{
+			//Remove player control
+			localPlayerRace.GetComponent<PlayerControl>().enablePlayerControl( false );
+			//Display a Defeat text
+			string defeat = LocalizationManager.Instance.getText("RACE_DEFEAT");
+			activateUserMessage( defeat, 0, 2f );
+			//Slowdown the world
+			do
+			{
+				elapsedTime = elapsedTime + Time.unscaledDeltaTime;
+				Time.timeScale = Mathf.Lerp( startTimeScale, 0, elapsedTime/duration );
+				yield return new WaitForEndOfFrame();  
+				
+			} while ( elapsedTime < duration );
+			//Leave room
+			GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
+			PhotonNetwork.LeaveRoom();
+		}
 	}
 
 	public IEnumerator leaveRoomShortly()

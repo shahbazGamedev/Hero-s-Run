@@ -38,7 +38,7 @@ public class PlayerRace : Photon.PunBehaviour
 
 	//Control variables
 	bool raceStarted = false;
-	bool playerCrossedFinishLine = false;
+	public bool playerCrossedFinishLine = false;
 
 	//List of all PlayerRaces including the opponent(s)
 	static public List<PlayerRace> players = new List<PlayerRace> ();
