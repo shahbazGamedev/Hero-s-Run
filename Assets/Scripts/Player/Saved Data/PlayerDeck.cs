@@ -25,11 +25,11 @@ public class PlayerDeck {
 		{
 			if( i == 0 )
 			{
-				addCard( heroCardsList[i], 1, 1, true );
+				addCard( heroCardsList[i], 1, 1, true, true );
 			}
 			else
 			{
-				addCard( heroCardsList[i], 1, 1, false );
+				addCard( heroCardsList[i], 1, 1, false, true );
 			}
 		}
 
@@ -69,6 +69,14 @@ public class PlayerDeck {
 	/// <returns>The battle deck.</returns>
 	public List<PlayerCardData> getBattleDeck()
 	{
+		//Reset inBattleDeck to false for the current hero card. There should only ever be one card.
+		playerCardDataList.Find( c => c.inBattleDeck == true && c.isHeroCard == true ).inBattleDeck = false;
+
+		//Now, set inBattleDeck to true for the card of the currently selected hero
+		int heroIndex = GameManager.Instance.playerProfile.selectedHeroIndex;
+		HeroManager.HeroCharacter hero = HeroManager.Instance.getHeroCharacter( heroIndex );
+		getCardByName( hero.reservedCard ).inBattleDeck = true;
+
 		return playerCardDataList.FindAll( card => card.inBattleDeck == true );
 	}
  
@@ -117,7 +125,7 @@ public class PlayerDeck {
 		return totalBattleDeckMana/battleDeck.Count;
 	}
 
-	public void addCard(  CardName name, int level, int quantity, bool inBattleDeck )
+	public void addCard(  CardName name, int level, int quantity, bool inBattleDeck, bool isHeroCard = false )
 	{
 		//Make sure the specified card exists
 		if( CardManager.Instance.doesCardExist( name ) )
@@ -130,6 +138,7 @@ public class PlayerDeck {
 			pcd.level = level;
 			pcd.quantity = quantity;
 			pcd.inBattleDeck = inBattleDeck;
+			pcd.isHeroCard = isHeroCard;
 			playerCardDataList.Add(pcd);
 		}
 		else
@@ -252,6 +261,7 @@ public class PlayerDeck {
 		public int  quantity;
 		public bool inBattleDeck;		
 		public int timesUsed;
+		public bool isHeroCard;		
 	}
 
 }
