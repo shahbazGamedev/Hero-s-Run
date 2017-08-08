@@ -199,6 +199,11 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 
 	public void OnClickCollectionCard( GameObject go, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
+		//Remove the new flag
+		pcd.isNew = false;
+		go.GetComponent<CardUIDetails>().configureCard( pcd, cd );
+		GameManager.Instance.playerDeck.serializePlayerDeck( true );
+
 		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( go, pcd, cd );
 		cardDetailPopup.SetActive( true );
 	}

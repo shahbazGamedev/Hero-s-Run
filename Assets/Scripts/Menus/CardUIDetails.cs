@@ -8,6 +8,7 @@ public class CardUIDetails : MonoBehaviour {
 	[Header("General")]
 	[Tooltip("The card image.")]
 	[SerializeField] Image cardImage;
+	[SerializeField] GameObject newRibbon; //in some instances this value is null and it is normal
 	[Tooltip("The mana needed to use the card.")]
 	[SerializeField] Text manaCost;
 
@@ -42,6 +43,9 @@ public class CardUIDetails : MonoBehaviour {
 
 		//Card image and mana cost
 		cardImage.sprite = cd.icon;
+
+		//New ribbon
+		if( newRibbon != null ) newRibbon.SetActive( pcd.isNew );
 
 		//Legendary cards have special effects
 		cardImage.material = cd.cardMaterial;

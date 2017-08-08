@@ -137,13 +137,13 @@ public class PlayerDeck {
 		return totalBattleDeckMana/battleDeck.Count;
 	}
 
-	public void addCard(  CardName name, int level, int quantity, bool inBattleDeck, bool isHeroCard = false )
+	public PlayerCardData addCard(  CardName name, int level, int quantity, bool inBattleDeck, bool isHeroCard = false )
 	{
 		//Make sure the specified card exists
 		if( CardManager.Instance.doesCardExist( name ) )
 		{
 			//Don't add duplicate cards
-			if( playerCardDataList.Exists(playerCardData => playerCardData.name == name ) ) return;
+			if( playerCardDataList.Exists(playerCardData => playerCardData.name == name ) ) return null;
 	
 			PlayerCardData pcd = new PlayerCardData();
 			pcd.name = name;
@@ -152,10 +152,12 @@ public class PlayerDeck {
 			pcd.inBattleDeck = inBattleDeck;
 			pcd.isHeroCard = isHeroCard;
 			playerCardDataList.Add(pcd);
+			return pcd;
 		}
 		else
 		{
 			Debug.LogError("PlayerDeck-addCard: The card you are trying to add to the player deck does not exist: " + name );
+			return null;
 		}
 	}
 
@@ -174,8 +176,10 @@ public class PlayerDeck {
 			else
 			{
 				//No, he doesn't. Let's add it to his card collection.
-				addCard(  name, 1, quantity, false );
+				PlayerCardData pcd = addCard(  name, 1, quantity, false );
+				pcd.isNew = true;
 			}
+			serializePlayerDeck( true );
 		}
 		else
 		{
@@ -273,7 +277,8 @@ public class PlayerDeck {
 		public int  quantity;
 		public bool inBattleDeck;		
 		public int timesUsed;
-		public bool isHeroCard;		
+		public bool isHeroCard;
+		public bool isNew;	
 	}
 
 }
