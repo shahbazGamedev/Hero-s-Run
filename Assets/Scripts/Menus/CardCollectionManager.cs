@@ -47,10 +47,35 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 	[Header("Card Details Popup")]
 	[SerializeField] GameObject cardDetailPopup;
 
-	// Use this for initialization
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
+		initialize ();
+	}
+
+	// Use this for initialization
+	public void initialize ()
+	{
+		//Remove previous cards in all 3 sections since this method can get called multiple times (for example
+		//if a player finds a brand new card in a loot box).
+		for( int i = battleDeckCardHolder.childCount-1; i >= 0; i-- )
+		{
+			Transform child = battleDeckCardHolder.GetChild( i );
+			GameObject.Destroy( child.gameObject );
+		}
+
+		for( int i = cardCollectionHolder.childCount-1; i >= 0; i-- )
+		{
+			Transform child = cardCollectionHolder.GetChild( i );
+			GameObject.Destroy( child.gameObject );
+		}
+
+		for( int i = cardsToBeFoundHolder.childCount-1; i >= 0; i-- )
+		{
+			Transform child = cardsToBeFoundHolder.GetChild( i );
+			GameObject.Destroy( child.gameObject );
+		}
+
 		createBattleDeck();
 		createCardCollection();
 		createCardsToBeFoundSection();
@@ -87,39 +112,46 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 	{
 		if( cardReplacementInProgress )
 		{
-			//The player wants to replace the card
-			print("player is replacing " + cd.name + " by " + cardToAddToBattleDeckName );
-
-			//Mark card added as being in battle deck
-			GameManager.Instance.playerDeck.changeInBattleDeckStatus( cardToAddToBattleDeckName, true );
-
-			//Remove card replaced from being in battle deck
-			GameManager.Instance.playerDeck.changeInBattleDeckStatus( cd.name, false );
-
-			//Recalculate the average mana cost
-			averageManaCost.text = string.Format(LocalizationManager.Instance.getText("CARD_AVERAGE_MANA_COST"), GameManager.Instance.playerDeck.getAverageManaCost().ToString("N1") );
-
-			//Re-sort the cards in the card collection section
-			sortCards();
-
-			//In the battle deck section, update the UI with the card details
-			PlayerDeck.PlayerCardData cardAddedPlayer = GameManager.Instance.playerDeck.getCardByName( cardToAddToBattleDeckName );
-			CardManager.CardData cardAdded = CardManager.Instance.getCardByName( cardToAddToBattleDeckName );
-			Button cardAddedButton = go.GetComponent<Button>();
-			cardAddedButton.onClick.RemoveAllListeners();
-			cardAddedButton.onClick.AddListener(() => OnClickBattleCard( go, cardAddedPlayer, cardAdded ));
-			go.GetComponent<CardUIDetails>().configureCard( cardAddedPlayer, cardAdded );
-
-			//In the card collection section, update the UI with the card details
-			PlayerDeck.PlayerCardData cardReplacedPlayer = GameManager.Instance.playerDeck.getCardByName( cd.name );
-			CardManager.CardData cardReplaced = CardManager.Instance.getCardByName( cd.name );
-			Button cardReplacedButton = cardInCollection.GetComponent<Button>();
-			cardReplacedButton.onClick.RemoveAllListeners();
-			cardReplacedButton.onClick.AddListener(() => OnClickCollectionCard( cardInCollection, cardReplacedPlayer, cardReplaced ));
-			cardInCollection.GetComponent<CardUIDetails>().configureCard( cardReplacedPlayer, cardReplaced );
-
-			//Save card collection
-			GameManager.Instance.playerDeck.serializePlayerDeck( true );
+			if( pcd.isHeroCard )
+			{
+				print("You are not allowed to replace the hero card: " + pcd.name );			
+			}
+			else
+			{
+				//The player wants to replace the card
+				print("player is replacing " + cd.name + " by " + cardToAddToBattleDeckName );
+	
+				//Mark card added as being in battle deck
+				GameManager.Instance.playerDeck.changeInBattleDeckStatus( cardToAddToBattleDeckName, true );
+	
+				//Remove card replaced from being in battle deck
+				GameManager.Instance.playerDeck.changeInBattleDeckStatus( cd.name, false );
+	
+				//Recalculate the average mana cost
+				averageManaCost.text = string.Format(LocalizationManager.Instance.getText("CARD_AVERAGE_MANA_COST"), GameManager.Instance.playerDeck.getAverageManaCost().ToString("N1") );
+	
+				//Re-sort the cards in the card collection section
+				sortCards();
+	
+				//In the battle deck section, update the UI with the card details
+				PlayerDeck.PlayerCardData cardAddedPlayer = GameManager.Instance.playerDeck.getCardByName( cardToAddToBattleDeckName );
+				CardManager.CardData cardAdded = CardManager.Instance.getCardByName( cardToAddToBattleDeckName );
+				Button cardAddedButton = go.GetComponent<Button>();
+				cardAddedButton.onClick.RemoveAllListeners();
+				cardAddedButton.onClick.AddListener(() => OnClickBattleCard( go, cardAddedPlayer, cardAdded ));
+				go.GetComponent<CardUIDetails>().configureCard( cardAddedPlayer, cardAdded );
+	
+				//In the card collection section, update the UI with the card details
+				PlayerDeck.PlayerCardData cardReplacedPlayer = GameManager.Instance.playerDeck.getCardByName( cd.name );
+				CardManager.CardData cardReplaced = CardManager.Instance.getCardByName( cd.name );
+				Button cardReplacedButton = cardInCollection.GetComponent<Button>();
+				cardReplacedButton.onClick.RemoveAllListeners();
+				cardReplacedButton.onClick.AddListener(() => OnClickCollectionCard( cardInCollection, cardReplacedPlayer, cardReplaced ));
+				cardInCollection.GetComponent<CardUIDetails>().configureCard( cardReplacedPlayer, cardReplaced );
+	
+				//Save card collection
+				GameManager.Instance.playerDeck.serializePlayerDeck( true );
+			}
 	
 			//Stop the card replacement mode
 			stopCardReplacement();

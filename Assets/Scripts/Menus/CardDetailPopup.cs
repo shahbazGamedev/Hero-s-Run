@@ -57,11 +57,11 @@ public class CardDetailPopup : MonoBehaviour {
 		configureCardProperties( pcd, cd );
 		//Upgrade button
 		configureUpgradeButton( go, pcd, cd );
-		//The Use button is only shown if the card is not in the battle deck
+		//The Use button is only shown if the card is not in the battle deck and it is not a Hero Card
 		useButtonText.text = LocalizationManager.Instance.getText( "CARD_USE" );
 		List<CardManager.CardData> cardCollectionList = GameManager.Instance.playerDeck.getCardDeck( CardSortMode.BY_MANA_COST );
 		bool isMemberOfCardCollection = cardCollectionList.Exists(cardData => cardData.name == cd.name );
-		useButton.gameObject.SetActive( isMemberOfCardCollection  );
+		useButton.gameObject.SetActive( isMemberOfCardCollection && !pcd.isHeroCard  );
 		if( isMemberOfCardCollection )
 		{
 			useButton.onClick.RemoveAllListeners();

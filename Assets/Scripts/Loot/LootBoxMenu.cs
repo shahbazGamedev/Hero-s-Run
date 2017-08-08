@@ -60,6 +60,9 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 	[Header("Loot Counter")]
 	[SerializeField] TextMeshProUGUI lootCounterText;
 
+	[Header("Card Collection Manager")]
+	[SerializeField] CardCollectionManager cardCollectionManager;
+
 	List<LootBox.Loot> lootList;
 	int lootCounter = 0;
 	int numberOfCardsForUpgrade;
@@ -129,7 +132,6 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 				//The yield is needed or else the spin number coroutine won't start because the text will not be active (it takes a frame).
 				yield return new WaitForEndOfFrame();
 				CardManager.CardData cd = CardManager.Instance.getCardByName( loot.cardName );
-				PlayerDeck.PlayerCardData pcd = GameManager.Instance.playerDeck.getCardByName( loot.cardName );
 				//Card Image
 				cardImage.sprite = cd.icon;
 				//Legendary cards may have special effects
@@ -137,7 +139,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 				//The amount of cards you are receiving
 				cardAmountText.text = "x" + loot.quantity.ToString();
 				//The localized name of the card
-				cardNameText.text = LocalizationManager.Instance.getText( "CARD_NAME_" + pcd.name.ToString().ToUpper() );
+				cardNameText.text = LocalizationManager.Instance.getText( "CARD_NAME_" + cd.name.ToString().ToUpper() );
 				//Card rarity icon and text
 				Color rarityColor;
 				ColorUtility.TryParseHtmlString (CardManager.Instance.getCardColorHexValue(cd.rarity), out rarityColor);
@@ -145,6 +147,10 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 				rarityText.text = LocalizationManager.Instance.getText( "CARD_RARITY_" + cd.rarity.ToString() );
 				//Card level
 				cardLevelText.color = rarityColor;
+				//Add to player deck
+				GameManager.Instance.playerDeck.addCardFromLootBox( loot.cardName, loot.quantity );
+				PlayerDeck.PlayerCardData pcd = GameManager.Instance.playerDeck.getCardByName( loot.cardName );
+				updateCardProgressBar( pcd, cd, loot.quantity );
 				if( CardManager.Instance.isCardAtMaxLevel( pcd.level, cd.rarity ) )
 				{
 					cardLevelText.text = LocalizationManager.Instance.getText( "CARD_MAX_LEVEL");
@@ -153,9 +159,8 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 				{
 					cardLevelText.text = String.Format( LocalizationManager.Instance.getText( "CARD_LEVEL"), pcd.level.ToString() );
 				}
-				updateCardProgressBar( pcd, cd, loot.quantity );
-				//Add to player deck
-				GameManager.Instance.playerDeck.addCardFromLootBox( loot.cardName, loot.quantity );
+				//Refresh the card collections
+				cardCollectionManager.initialize ();
 			break;
 
 			case LootType.PLAYER_ICON:

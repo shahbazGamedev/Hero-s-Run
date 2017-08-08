@@ -244,7 +244,6 @@ public class CardManager : MonoBehaviour {
 	public CardName getRandomCard( int currentSector, CardRarity rarity )
 	{
 		List<CardData> possibleRandomCardList = cardDataList.FindAll(cardData => cardData.rarity == rarity && cardData.sector <= currentSector );
-		Debug.LogWarning("CardManager-getRandomCard: possibleRandomCardList.Count " +  possibleRandomCardList.Count );
 		if( possibleRandomCardList.Count > 0 )
 		{
 			int randomNumber = Random.Range( 0, possibleRandomCardList.Count );

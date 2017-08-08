@@ -45,8 +45,20 @@ public class PlayerDeck {
 		{
 			addCard( defaultCardsList[i].name, 1, 1, true );
 		}
+
+		//If this is a debug build, add additional cards to the card collection to facilitate testing
+		addAdditionalCardsForTesting();
+
 		//We should have a total of 8 cards in the Battle Deck (1 + 7).
 		serializePlayerDeck( true );
+	}
+	
+	void addAdditionalCardsForTesting()
+	{
+		if( Debug.isDebugBuild )
+		{
+			//addCard( CardName.Firewall, 1, 1, false );
+		}
 	}
 
 	/// <summary>
@@ -207,7 +219,7 @@ public class PlayerDeck {
 		}
 		else
 		{
-			Debug.LogError("PlayerDeck-getCardByName: The card you requested does not exist: " + name );
+			Debug.LogWarning("PlayerDeck-getCardByName: The card you requested does not exist: " + name );
 			return null;
 		}
 	}
