@@ -75,6 +75,16 @@ public class HeroManager : MonoBehaviour {
 		return heroNames;
 	}
 
+	public List<CardName> getHeroCards()
+	{
+		List<CardName> heroCards = new List<CardName>();
+		for( int i = 0; i < heroCharacterList.Count; i++ )
+		{
+			if(  heroCharacterList[i].reservedCard != null ) heroCards.Add( heroCharacterList[i].reservedCard );
+		}
+		return heroCards;
+	}
+
 	public HeroName getRandomHeroName()
 	{
 		List<HeroName> heroNames = getHeroNames();

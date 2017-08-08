@@ -271,6 +271,20 @@ public class CardManager : MonoBehaviour {
 		}
 	}
 
+	public List<CardData> getAllDefaultCards()
+	{
+		List<CardData> defaultCardsList = cardDataList.FindAll(cardData => cardData.isDefaultCard == true );
+		if( defaultCardsList.Count > 0 )
+		{
+			return defaultCardsList;
+		}
+		else
+		{
+			Debug.LogError("CardManager-getAllDefaultCards: No cards have the isDefaultCard flag set to true. Cards that are available on a new install (except Hero cards) should have isDefaultCard set to true. There should be 7 of them exactly. Configure properly in the CardManager. Returning null." );
+			return null;
+		}
+	}
+
 	public CardData getCardByName( CardName name )
 	{
 		if( doesCardExist( name ) )
@@ -395,6 +409,9 @@ public class CardManager : MonoBehaviour {
 		//2) Reflect has a duration and affects the player directly, so affectsPlayerDirectly should be true.
 		//3) Hack does have a duration and it does affect the player but it is cast by an opponent, so affectsPlayerDirectly should be false.
 		public bool affectsPlayerDirectly = false;
+		//If set to true, a new player will automatically get this card in his deck after a fresh install.
+		//Hero cards should have isDefaultCard set to true since they are part of the initial deck.
+		public bool isDefaultCard = false;
 
 		public float getCardPropertyValue( CardPropertyType type, int level )
 		{

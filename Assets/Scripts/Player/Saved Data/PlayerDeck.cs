@@ -12,77 +12,41 @@ public class PlayerDeck {
 	[SerializeField] List<PlayerCardData> playerCardDataList = new List<PlayerCardData>();
 
 	/// <summary>
-	/// Creates the new player deck. This has the cards the players has after a new install. All of the cards are level 1. The player has 1 card of each.
+	/// Creates a new player deck containing the cards the players has after a new install. All of the cards are level 1. The player has 1 card of each.
 	/// </summary>
 	public void createNewPlayerDeck()
 	{
-		//Cards in battle deck
-		//1
-		addCard( CardName.Force_Field, 1, 1, false );
+		//Each Hero has a unique card. All heroes are unlocked immediately.
+		//The card for the default hero (index of 0) is added to the deck first
+		//because we want the Hero card to always appear in the top-left corner of the battle deck menu.
+		//All other Hero cards are added as part of the Card Collection (but not as part of the Battle Deck).
+		List<CardName> heroCardsList = HeroManager.Instance.getHeroCards();
+		for( int i = 0; i < heroCardsList.Count; i++ )
+		{
+			if( i == 0 )
+			{
+				addCard( heroCardsList[i], 1, 1, true );
+			}
+			else
+			{
+				addCard( heroCardsList[i], 1, 1, false );
+			}
+		}
 
-		//2
-		addCard( CardName.Sprint, 8, 2, true );
-
-		//3
-		addCard( CardName.Raging_Bull, 1, 3, true );
-
-		//4
-		addCard( CardName.Grenade, 4, 4, false );
-
-		//5
-		addCard( CardName.Stasis, 6, 5, true );
-
-		//6
-		addCard( CardName.Trip_Mine, 5, 6, false );
-
-		//7
-		addCard( CardName.Shrink, 3, 7, false );
-
-		//8
-		addCard( CardName.Sentry, 1, 8, false );
-
-		//Part of card collection, but not in battle deck
-		//9
-		addCard( CardName.Lightning, 1, 9, false );
-
-		//10
-		addCard( CardName.Linked_Fate, 1, 10, false );
-
-		//11
-		addCard( CardName.Double_Jump, 1, 11, false );
-
-		//12
-		addCard( CardName.Firewall, 1, 12, false );
-
-		//13
-		addCard( CardName.Supercharger, 1, 13, false );
-
-		//14
-		addCard( CardName.Hack, 1, 14, false );
-
-		//15
-		addCard( CardName.Homing_Missile, 1, 15, true );
-
-		//16
-		addCard( CardName.Steal, 1, 16, false );
-
-		//17
-		addCard( CardName.Reflect, 1, 17, true );
-
-		//18
-		addCard( CardName.Jet_Pack, 1, 18, true );
-
-		//19
-		addCard( CardName.Smoke_Bomb, 4, 4, false );
-
-		//20
-		addCard( CardName.Shockwave, 1, 1, true );
-
-		//21
-		addCard( CardName.Cloak, 1, 1, true );
-
+		//Add the 7 default cards.
+		List<CardManager.CardData> defaultCardsList = CardManager.Instance.getAllDefaultCards();
+		
+		//Verify configuration
+		if( defaultCardsList.Count != 7 )
+		{
+			Debug.LogError("PlayerDeck-createNewPlayerDeck: There should be exactly 7 cards in the defaultCardsList. Configure properly in the CardManager. The current number of default cards is: " + defaultCardsList.Count );
+		}
+		for( int i = 0; i < defaultCardsList.Count; i++ )
+		{
+			addCard( defaultCardsList[i].name, 1, 1, true );
+		}
+		//We should have a total of 8 cards in the Battle Deck (1 + 7).
 		serializePlayerDeck( true );
-
 	}
 
 	/// <summary>
