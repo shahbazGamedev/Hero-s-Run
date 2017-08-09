@@ -32,6 +32,10 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 	[SerializeField] ScrollRect horizontalScrollview;
 	bool cardReplacementInProgress = false;
 	GameObject cardInCollection;
+	[Header("Hero Cards Area")]
+	[SerializeField] LayoutElement heroCardsLayoutElement;
+	[SerializeField] Text heroCardsTitle;
+	[SerializeField] Transform heroCardsHolder;
 	[Header("Card Collection Area")]
 	[SerializeField] LayoutElement cardCollectionLayoutElement;
 	[SerializeField] Text cardCollectionTitle;
@@ -64,6 +68,12 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 			GameObject.Destroy( child.gameObject );
 		}
 
+		for( int i = heroCardsHolder.childCount-1; i >= 0; i-- )
+		{
+			Transform child = heroCardsHolder.GetChild( i );
+			GameObject.Destroy( child.gameObject );
+		}
+
 		for( int i = cardCollectionHolder.childCount-1; i >= 0; i-- )
 		{
 			Transform child = cardCollectionHolder.GetChild( i );
@@ -77,11 +87,12 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 		}
 
 		createBattleDeck();
+		createHeroCards();
 		createCardCollection();
 		createCardsToBeFoundSection();
 
 		//Adjust the overall length of the content including all areas
-		float totalLength = topImageLayoutElement.minHeight + battleDeckLayoutElement.minHeight + cardCollectionLayoutElement.minHeight + cardsToBeFoundLayoutElement.minHeight;
+		float totalLength = topImageLayoutElement.minHeight + battleDeckLayoutElement.minHeight + + heroCardsLayoutElement.minHeight + cardCollectionLayoutElement.minHeight + cardsToBeFoundLayoutElement.minHeight;
 		contentRectTransfom.sizeDelta = new Vector2( contentRectTransfom.sizeDelta.x, totalLength );
 	}
 
@@ -165,6 +176,51 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 	}
 	#endregion
 
+	#region Hero Cards
+	void createHeroCards()
+	{
+		heroCardsTitle.text = LocalizationManager.Instance.getText("CARD_HERO_TITLE");
+		List<CardName> heroCardsList = HeroManager.Instance.getHeroCards();
+		for( int i = 0; i < heroCardsList.Count; i++ )
+		{
+			CardManager.CardData cd = CardManager.Instance.getCardByName( heroCardsList[i] );
+			if( cd != null ) createHeroCard( cd );
+		}
+
+		//Now adjust the height of the area based on the number of card rows. We have 4 cards per row. We also have a title.
+		float titleHeight = heroCardsTitle.transform.parent.GetComponent<RectTransform>().sizeDelta.y;
+		int numberOfRows = (int) Math.Ceiling( (heroCardsList.Count)/4f );
+		float heroCardsAreaHeight = titleHeight + heroCardsHolder.GetComponent<GridLayoutGroup>().cellSize.y * numberOfRows;
+		heroCardsLayoutElement.preferredHeight = heroCardsAreaHeight;
+		heroCardsLayoutElement.minHeight = heroCardsAreaHeight;
+	}
+
+	void createHeroCard( CardManager.CardData cd )
+	{
+		GameObject go = (GameObject)Instantiate(cardPrefab);
+		PlayerDeck.PlayerCardData pcd = GameManager.Instance.playerDeck.getCardByName( cd.name );
+		go.transform.SetParent(heroCardsHolder,false);
+		Button cardButton = go.GetComponent<Button>();
+		cardButton.onClick.RemoveAllListeners();
+		cardButton.onClick.AddListener(() => OnClickHeroCard( go, pcd, cd ));
+		go.GetComponent<CardUIDetails>().configureCard( pcd, cd );
+	}
+
+	public void OnClickHeroCard( GameObject go, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
+	{
+		//Remove the new flag if set
+		if( pcd.isNew )
+		{
+			pcd.isNew = false;
+			GameManager.Instance.playerDeck.serializePlayerDeck( true );
+			go.GetComponent<CardUIDetails>().configureCard( pcd, cd );
+		}
+
+		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( go, pcd, cd );
+		cardDetailPopup.SetActive( true );
+	}
+	#endregion
+
 	#region Card Collection
 	void createCardCollection()
 	{
@@ -199,10 +255,13 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 
 	public void OnClickCollectionCard( GameObject go, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
-		//Remove the new flag
-		pcd.isNew = false;
-		go.GetComponent<CardUIDetails>().configureCard( pcd, cd );
-		GameManager.Instance.playerDeck.serializePlayerDeck( true );
+		//Remove the new flag if set
+		if( pcd.isNew )
+		{
+			pcd.isNew = false;
+			GameManager.Instance.playerDeck.serializePlayerDeck( true );
+			go.GetComponent<CardUIDetails>().configureCard( pcd, cd );
+		}
 
 		cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( go, pcd, cd );
 		cardDetailPopup.SetActive( true );

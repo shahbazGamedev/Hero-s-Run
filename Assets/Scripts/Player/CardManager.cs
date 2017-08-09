@@ -409,7 +409,6 @@ public class CardManager : MonoBehaviour {
 		//3) Hack does have a duration and it does affect the player but it is cast by an opponent, so affectsPlayerDirectly should be false.
 		public bool affectsPlayerDirectly = false;
 		//If set to true, a new player will automatically get this card in his deck after a fresh install.
-		//Hero cards should have isDefaultCard set to true since they are part of the initial deck.
 		public bool isDefaultCard = false;
 
 		public float getCardPropertyValue( CardPropertyType type, int level )

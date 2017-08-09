@@ -93,12 +93,12 @@ public class PlayerDeck {
 	}
  
 	/// <summary>
-	/// Returns a list of all of the cards owned by the player that are not in his battle deck sorted according to parameter specified.
+	/// Returns a list of all of the cards owned by the player that are not in his battle deck and that are not Hero cards sorted according to parameter specified.
 	/// </summary>
 	/// <returns>The card deck.</returns>
 	public List<CardManager.CardData> getCardDeck( CardSortMode cardSortMode )
 	{
-		List<PlayerCardData> playerCardDeck = playerCardDataList.FindAll( card => card.inBattleDeck == false );
+		List<PlayerCardData> playerCardDeck = playerCardDataList.FindAll( card => card.inBattleDeck == false && card.isHeroCard == false );
 		List<CardManager.CardData> cardDeck = new List<CardManager.CardData>();
 		for( int i = 0; i < playerCardDeck.Count; i++ )
 		{
