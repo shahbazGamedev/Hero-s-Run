@@ -24,34 +24,34 @@ public class CardCloak : Card {
 	void cardCloakRPC( float spellDuration, float speedMultiplier, int photonViewID )
 	{
 		Transform caster = getPlayerTransform( photonViewID );
-		if( caster != null ) startCloaking( spellDuration, speedMultiplier, caster.GetComponent<PlayerRun>(), caster.GetComponent<PhotonView>().isMine && caster.GetComponent<PlayerAI>() == null );
+		if( caster != null ) startCloaking( spellDuration, speedMultiplier, caster.GetComponent<PlayerRun>(), caster.GetComponent<PhotonView>().isMine, caster.GetComponent<PlayerAI>() == null );
 	}
 
-	void startCloaking( float spellDuration, float speedMultiplier, PlayerRun playerRun, bool isMine )
+	void startCloaking( float spellDuration, float speedMultiplier, PlayerRun playerRun, bool isMine, bool isHuman )
 	{
 		playerRun.GetComponent<PlayerSounds>().playSound( soundFx, false );
 		StartCoroutine( playerRun.addVariableSpeedMultiplier( SpeedMultiplierType.Cloak, speedMultiplier, 0.8f ) );
-		StartCoroutine( stopCloaking( spellDuration, playerRun, isMine ) );
-		//Only affect the camera for the local player
-		if( isMine ) StartCoroutine( controlSaturation( 0f, 0.8f ) );
+		StartCoroutine( stopCloaking( spellDuration, playerRun, isMine, isHuman ) );
+		//Only affect the camera for the local non-bot player
+		if( isMine && isHuman ) StartCoroutine( controlSaturation( 0f, 0.8f ) );
 		//Hide the player's icon on the minimap
 		MiniMap.Instance.changeAlphaOfRadarObject( playerRun.GetComponent<PlayerControl>(), 0 );
 		//Make the online remote players invisible but not the local player.
 		//A cloaked bot also becomes invisible.
 		//Note that you will still be able to hear the cloaked player's footsteps.
-		if( !playerRun.GetComponent<PhotonView>().isMine || playerRun.GetComponent<PlayerAI>() != null ) playerRun.GetComponent<PlayerSpell>().makePlayerInvisible();
+		if( !isMine || !isHuman ) playerRun.GetComponent<PlayerSpell>().makePlayerInvisible();
 	}
 
-	IEnumerator stopCloaking( float spellDuration, PlayerRun playerRun, bool isMine  )
+	IEnumerator stopCloaking( float spellDuration, PlayerRun playerRun, bool isMine, bool isHuman  )
 	{
 		yield return new WaitForSeconds( spellDuration );
 		playerRun.GetComponent<PlayerSounds>().stopAudioSource();
 		StartCoroutine( playerRun.removeVariableSpeedMultiplier( SpeedMultiplierType.Cloak, 0.8f ) );
-		//Only affect the camera for the local player
-		if( isMine ) StartCoroutine( controlSaturation( 1f, 0.8f ) );
-		playerRun.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Cloak);
+		//Only affect the camera for the local non-bot player
+		if( isMine && isHuman ) StartCoroutine( controlSaturation( 1f, 0.8f ) );
 		MiniMap.Instance.changeAlphaOfRadarObject( playerRun.GetComponent<PlayerControl>(), 1f );
-		if( !playerRun.GetComponent<PhotonView>().isMine || playerRun.GetComponent<PlayerAI>() != null ) playerRun.GetComponent<PlayerSpell>().makePlayerVisible();
+		if( !isMine || !isHuman )  playerRun.GetComponent<PlayerSpell>().makePlayerVisible();
+		playerRun.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Cloak);
 	}
 
 	IEnumerator controlSaturation( float endSaturationLevel, float duration )
