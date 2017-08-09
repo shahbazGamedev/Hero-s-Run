@@ -137,7 +137,7 @@ public class PlayerDeck {
 		return totalBattleDeckMana/battleDeck.Count;
 	}
 
-	public PlayerCardData addCard(  CardName name, int level, int quantity, bool inBattleDeck, bool isHeroCard = false )
+	public PlayerCardData addCard(  CardName name, int level, int quantity, bool inBattleDeck, bool isHeroCard = false, bool isNew = false )
 	{
 		//Make sure the specified card exists
 		if( CardManager.Instance.doesCardExist( name ) )
@@ -151,6 +151,7 @@ public class PlayerDeck {
 			pcd.quantity = quantity;
 			pcd.inBattleDeck = inBattleDeck;
 			pcd.isHeroCard = isHeroCard;
+			pcd.isNew = isNew;
 			playerCardDataList.Add(pcd);
 			return pcd;
 		}
@@ -161,29 +162,16 @@ public class PlayerDeck {
 		}
 	}
 
-	public void addCardFromLootBox( CardName name, int quantity )
+	public void changeCardQuantity(  PlayerCardData pcd, int quantityToAdd )
 	{
-		//Make sure the specified card exists
-		if( CardManager.Instance.doesCardExist( name ) )
+		//Make sure the specified card exists in the deck
+		if( doesCardExist( pcd.name ) )
 		{
-			//Does the player already own this card?
-			PlayerCardData card = playerCardDataList.Find(playerCardData => playerCardData.name == name );
-			if( card != null )
-			{
-				//Yes, he does. Simply increase the card quantity.
-				card.quantity += quantity;
-			}
-			else
-			{
-				//No, he doesn't. Let's add it to his card collection.
-				PlayerCardData pcd = addCard(  name, 1, quantity, false );
-				pcd.isNew = true;
-			}
-			serializePlayerDeck( true );
+			pcd.quantity += quantityToAdd;
 		}
 		else
 		{
-			Debug.LogError("PlayerDeck-addCardFromLootBox: The card you are trying to add to the player deck does not exist: " + name );
+			Debug.LogError("PlayerDeck-changeCardQuantity: The card you are trying to change isn't in the player's deck: " + pcd.name );
 		}
 	}
 

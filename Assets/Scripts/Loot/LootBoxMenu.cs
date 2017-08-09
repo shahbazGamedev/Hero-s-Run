@@ -147,11 +147,26 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 				rarityText.text = LocalizationManager.Instance.getText( "CARD_RARITY_" + cd.rarity.ToString() );
 				//Card level
 				cardLevelText.color = rarityColor;
-				//Add to player deck
-				GameManager.Instance.playerDeck.addCardFromLootBox( loot.cardName, loot.quantity );
+				//Does the player already own this card?
 				PlayerDeck.PlayerCardData pcd = GameManager.Instance.playerDeck.getCardByName( loot.cardName );
-				updateCardProgressBar( pcd, cd, loot.quantity );
-				if( CardManager.Instance.isCardAtMaxLevel( pcd.level, cd.rarity ) )
+				if( pcd == null )
+				{
+					//No, this is a new card.
+					//Add it to the player's deck. Tag is as new so the "New" ribbon gets displayed.
+					pcd = GameManager.Instance.playerDeck.addCard(  loot.cardName, 1, loot.quantity, false, false, true );
+					updateCardProgressBar( pcd, cd, 0, loot.quantity );
+				}
+				else
+				{
+					//Yes, he already owns it
+					//Add the cards obtained
+					updateCardProgressBar( pcd, cd, pcd.quantity, loot.quantity );
+					GameManager.Instance.playerDeck.changeCardQuantity(  pcd, loot.quantity );
+				}
+				//Save
+				GameManager.Instance.playerDeck.serializePlayerDeck( true );
+
+ 				if( CardManager.Instance.isCardAtMaxLevel( pcd.level, cd.rarity ) )
 				{
 					cardLevelText.text = LocalizationManager.Instance.getText( "CARD_MAX_LEVEL");
 				}
@@ -258,7 +273,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		}
 	}
 
-	void updateCardProgressBar( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd, int numberCardsAdded )
+	void updateCardProgressBar( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd, int initialNumberOfCards, int numberCardsAdded )
 	{
 		if( pcd.level + 1 <= CardManager.Instance.getMaxCardLevelForThisRarity( cd.rarity ) )
 		{
@@ -283,7 +298,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 		else
 		{
 			//NOT MAXED OUT
-			if( pcd.quantity >= numberOfCardsForUpgrade )
+			if( initialNumberOfCards >= numberOfCardsForUpgrade )
 			{
 				progressBarFill.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.ENOUGH_CARDS_TO_UPGRADE );
 				progressBarIndicator.color = CardManager.Instance.getCardUpgradeColor( CardUpgradeColor.ENOUGH_CARDS_TO_UPGRADE );
@@ -305,10 +320,10 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 			{
 				animationDuration = ANIMATION_DURATION;
 			}
-			float newNumberOfCards = pcd.quantity + numberCardsAdded;
+			float newNumberOfCards = initialNumberOfCards + numberCardsAdded;
 			string cardsOwned = "{0}/" + numberOfCardsForUpgrade.ToString();
-			progressBarText.GetComponent<UISpinNumber>().spinNumber( cardsOwned, pcd.quantity, newNumberOfCards, animationDuration, true, onCardIncrement );
-			progressBarSlider.value = pcd.quantity/(float)numberOfCardsForUpgrade;
+			progressBarText.GetComponent<UISpinNumber>().spinNumber( cardsOwned, initialNumberOfCards, newNumberOfCards, animationDuration, true, onCardIncrement );
+			progressBarSlider.value = initialNumberOfCards/(float)numberOfCardsForUpgrade;
 			float toValue = newNumberOfCards/numberOfCardsForUpgrade;
 			if( toValue > 1f ) toValue = 1f;
 			progressBarSlider.GetComponent<UIAnimateSlider>().animateSlider( toValue, animationDuration );
