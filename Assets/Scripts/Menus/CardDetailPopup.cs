@@ -34,6 +34,8 @@ public class CardDetailPopup : MonoBehaviour {
 	[SerializeField] GameObject notEnoughCurrencyPopup;
 	[Header("Card UI Upgrade")]
 	[SerializeField]  CardUIUpgrade cardUIUpgrade;
+	[Header("Only for Hero Card")]
+	[SerializeField] Image heroIcon;
 
 	public void configureCard( GameObject go, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
@@ -67,7 +69,16 @@ public class CardDetailPopup : MonoBehaviour {
 			useButton.onClick.RemoveAllListeners();
 			useButton.onClick.AddListener(() => OnClickUse( go, cd.name ));
 		}
-
+		//Hero Card
+		if( pcd.isHeroCard )
+		{
+			heroIcon.sprite = HeroManager.Instance.getHeroSpriteByCardName( cd.name );
+			heroIcon.gameObject.SetActive( true );
+		}
+		else
+		{
+			heroIcon.gameObject.SetActive( false );
+		}
 	}
 
 	void configureCardProperties( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )

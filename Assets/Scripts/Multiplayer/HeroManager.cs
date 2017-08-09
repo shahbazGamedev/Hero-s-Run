@@ -85,6 +85,20 @@ public class HeroManager : MonoBehaviour {
 		return heroCards;
 	}
 
+	public Sprite getHeroSpriteByCardName( CardName cardName )
+	{
+		HeroCharacter hc = heroCharacterList.Find(hero => hero.reservedCard == cardName );
+		if( hc != null )
+		{
+			return hc.icon;
+		}
+		else
+		{
+			Debug.LogError("HeroManager-There are no heroes associated to the specified card " + cardName );
+			return null;
+		}
+	}
+
 	public HeroName getRandomHeroName()
 	{
 		List<HeroName> heroNames = getHeroNames();
