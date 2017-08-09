@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using UnityEngine.EventSystems;
@@ -22,6 +23,7 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 	[SerializeField] GameObject cardPrefab;
 	[SerializeField] Text battleDeckTitle;
 	[SerializeField] Text averageManaCost;
+	[SerializeField] TextMeshProUGUI heroCardExplanationText;
 	[Header("Replace Card Area")]
 	[SerializeField] GameObject replaceCardArea;
 	[SerializeField] RectTransform cardVerticalContent;
@@ -121,11 +123,14 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 
 	public void OnClickBattleCard( GameObject go, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
+		heroCardExplanationText.gameObject.SetActive( false );			
 		if( cardReplacementInProgress )
 		{
 			if( pcd.isHeroCard )
 			{
-				print("You are not allowed to replace the hero card: " + pcd.name );			
+				heroCardExplanationText.text = LocalizationManager.Instance.getText("CARD_HERO_EXPLANATION_TEXT");
+				heroCardExplanationText.gameObject.SetActive( true );
+				Invoke("hideHeroCardExplanationText", 5f );		
 			}
 			else
 			{
@@ -173,6 +178,11 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 			cardDetailPopup.GetComponent<CardDetailPopup>().configureCard( go, pcd, cd );
 			cardDetailPopup.SetActive( true );
 		}
+	}
+
+	void hideHeroCardExplanationText()
+	{
+		heroCardExplanationText.gameObject.SetActive( false );
 	}
 	#endregion
 
