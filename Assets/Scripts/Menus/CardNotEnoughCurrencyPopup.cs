@@ -16,9 +16,9 @@ public class CardNotEnoughCurrencyPopup : MonoBehaviour {
 
 	public void configureForNotEnoughCoins ( GameObject go, CardName card, int coinsAvailable, int gemsNeeded )
 	{
-		titleText.text = LocalizationManager.Instance.getText( "CURRENCY_POPUP_NOT_ENOUGH_COINS" );
+		titleText.text = LocalizationManager.Instance.getText( "CURRENCY_POPUP_NOT_ENOUGH_SOFT_CURRENCY" );
 		convertButtonText.text = gemsNeeded.ToString();
-		descriptionText.text = LocalizationManager.Instance.getText( "CURRENCY_POPUP_BUY_MISSING_COINS" );
+		descriptionText.text = LocalizationManager.Instance.getText( "CURRENCY_POPUP_BUY_MISSING_SOFT_CURRENCY" );
 		goToShopButtonText.text = LocalizationManager.Instance.getText( "CURRENCY_BUTTON_GO_TO_SHOP" );
 		convertButton.gameObject.SetActive( true );
 		convertButton.onClick.RemoveAllListeners();
@@ -64,8 +64,8 @@ public class CardNotEnoughCurrencyPopup : MonoBehaviour {
 
 	void configureForNotEnoughGems()
 	{
-		titleText.text = LocalizationManager.Instance.getText( "CURRENCY_POPUP_NOT_ENOUGH_GEMS" );
-		descriptionText.text = LocalizationManager.Instance.getText( "CURRENCY_POPUP_GET_GEMS_AT_SHOP" );
+		titleText.text = LocalizationManager.Instance.getText( "CURRENCY_POPUP_NOT_ENOUGH_HARD_CURRENCY" );
+		descriptionText.text = LocalizationManager.Instance.getText( "CURRENCY_POPUP_GET_HARD_CURRENCY_AT_SHOP" );
 		convertButton.gameObject.SetActive( false );
 		goToShopButton.gameObject.SetActive( true );
 	}

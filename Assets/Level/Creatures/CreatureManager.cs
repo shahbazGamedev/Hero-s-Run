@@ -22,7 +22,7 @@ public sealed class CreatureManager : MonoBehaviour {
 
 	Transform player;
 	PlayerController playerController;
-	public const int NUMBER_COINS_PER_CREATURE = 20;
+	public const int NUMBER_SOFT_CURRENCY_PER_CREATURE = 20;
 	const float DEACTIVATE_DIAMETER = 60f;
 	int zombieLayer = 9;
 	int goblinLayer = 11;
@@ -63,7 +63,7 @@ public sealed class CreatureManager : MonoBehaviour {
 		}
 		if( numberOfCreatures != 0 )
 		{
-			int totalCoins = numberOfCreatures * NUMBER_COINS_PER_CREATURE;
+			int totalCoins = numberOfCreatures * NUMBER_SOFT_CURRENCY_PER_CREATURE;
 			//Give coins
 			PlayerStatsManager.Instance.modifyCurrentCoins( totalCoins, true, false );
 			

@@ -11,8 +11,8 @@ public class StoreNotEnoughGemsPopup : MonoBehaviour {
 
 	void Start()
 	{
-		titleText.text = LocalizationManager.Instance.getText( "CURRENCY_POPUP_NOT_ENOUGH_GEMS" );
-		descriptionText.text = LocalizationManager.Instance.getText( "CURRENCY_POPUP_GET_GEMS_AT_SHOP" );
+		titleText.text = LocalizationManager.Instance.getText( "CURRENCY_POPUP_NOT_ENOUGH_HARD_CURRENCY" );
+		descriptionText.text = LocalizationManager.Instance.getText( "CURRENCY_POPUP_GET_HARD_CURRENCY_AT_SHOP" );
 		goToShopButtonText.text = LocalizationManager.Instance.getText( "CURRENCY_BUTTON_GO_TO_SHOP" );
 	}
 

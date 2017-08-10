@@ -2184,10 +2184,10 @@ public sealed class PlayerController : MonoBehaviour {
 			if( ( playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.Turning_and_sliding ) || PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
 			{
 				//Give stars
-				PlayerStatsManager.Instance.modifyCurrentCoins( CreatureManager.NUMBER_COINS_PER_CREATURE, true, false );
+				PlayerStatsManager.Instance.modifyCurrentCoins( CreatureManager.NUMBER_SOFT_CURRENCY_PER_CREATURE, true, false );
 				
 				//Display coin total picked up icon
-				HUDHandler.hudHandler.displayCoinPickup( CreatureManager.NUMBER_COINS_PER_CREATURE );
+				HUDHandler.hudHandler.displayCoinPickup( CreatureManager.NUMBER_SOFT_CURRENCY_PER_CREATURE );
 
 				creature.knockback();
 				

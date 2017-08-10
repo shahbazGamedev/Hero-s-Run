@@ -437,7 +437,7 @@ public class TreasureIslandManager : MonoBehaviour {
 			
 		case ChestGiftType.Coins:
 			PlayerStatsManager.Instance.modifyCurrentCoins( quantityToGive, false, false );
-			entryText = LocalizationManager.Instance.getText( "TREASURE_CHEST_COINS" );
+			entryText = LocalizationManager.Instance.getText( "TREASURE_CHEST_SOFT_CURRENCY" );
 			entryText = entryText.Replace("<quantity>", quantityToGive.ToString("N0") );
 			chestContentText.text = entryText;
 			Debug.Log("giftPlayerWithTreasure: gave " + quantityToGive + " coins to Hero.");

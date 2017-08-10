@@ -25,7 +25,7 @@ public class StarMeterHandler : MonoBehaviour {
 
 	void Awake()
 	{
-		scoreString = LocalizationManager.Instance.getText("MENU_COINS");
+		scoreString = LocalizationManager.Instance.getText("MENU_SOFT_CURRENCY");
 		//Replace the string <0> by 0 initially
 		coinMeterScore.text = scoreString.Replace( "<0>", LevelManager.Instance.getCoinsAtLastCheckpoint().ToString() );
 	}

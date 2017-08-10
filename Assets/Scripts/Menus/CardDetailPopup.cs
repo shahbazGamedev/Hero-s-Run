@@ -206,7 +206,7 @@ public class CardDetailPopup : MonoBehaviour {
 			notEnoughCurrencyPopup.SetActive( true );
 			int coinsAvailable = GameManager.Instance.playerInventory.getCoinBalance();
 			int coinsMissing = upgradeCost - coinsAvailable;
-			int gemsNeeded = (int) Math.Ceiling( coinsMissing/StoreManager.GEM_TO_COINS_RATIO );
+			int gemsNeeded = (int) Math.Ceiling( coinsMissing/StoreManager.HARD_CURRENCY_TO_SOFT_CURRENCY_RATIO );
 			notEnoughCurrencyPopup.GetComponent<CardNotEnoughCurrencyPopup>().configureForNotEnoughCoins( go, card, coinsAvailable, gemsNeeded );
 		}
 	}
