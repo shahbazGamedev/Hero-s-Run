@@ -127,7 +127,7 @@ public class PlayerSpell : PunBehaviour {
 			elapsedTime = elapsedTime + Time.deltaTime;
 			transform.localScale = Vector3.Lerp( startScale, endScale, elapsedTime/shrinkDuration );
 
-			yield return new WaitForFixedUpdate();  
+			yield return new WaitForEndOfFrame();  
 			
 		} while ( elapsedTime < shrinkDuration );
 		transform.localScale = endScale;	
@@ -146,7 +146,7 @@ public class PlayerSpell : PunBehaviour {
 			elapsedTime = elapsedTime + Time.deltaTime;
 			transform.localScale = Vector3.Lerp( startScale, endScale, elapsedTime/shrinkDuration );
 			playerVoiceOvers.setPitch( Mathf.Lerp( startPitch, 1f, elapsedTime/shrinkDuration ) );
-			yield return new WaitForFixedUpdate();  
+			yield return new WaitForEndOfFrame();  
 			
 		} while ( elapsedTime < shrinkDuration );
 		transform.localScale = endScale;	
