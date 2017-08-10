@@ -7,6 +7,7 @@ public class HeroCardHandler : MonoBehaviour {
 
 	[SerializeField] Button heroCardButton;
 	[SerializeField] GameObject cardDetailPopup;
+	[SerializeField] GameObject heroSelectionTopPanel;
 
 	public void configureHeroCard( CardName cardName )
 	{
@@ -26,5 +27,14 @@ public class HeroCardHandler : MonoBehaviour {
 	{
 		cardDetailPopup.GetComponent<CardUnlockedUI>().configureCard( cd );
 		cardDetailPopup.GetComponent<CardUnlockedUI>().show( true );
+		//Hide the top panel or else you will have 2 top panels and it does not look nice
+		heroSelectionTopPanel.gameObject.SetActive( false );
 	}
+
+	public void OnClickHide()
+	{
+		cardDetailPopup.gameObject.SetActive( false );
+		heroSelectionTopPanel.gameObject.SetActive( true );
+	}
+
 }
