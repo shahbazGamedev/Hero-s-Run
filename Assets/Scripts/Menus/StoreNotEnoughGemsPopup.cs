@@ -29,7 +29,7 @@ public class StoreNotEnoughGemsPopup : MonoBehaviour {
 		gameObject.SetActive( false );
 		//Re-enable scrolling
 		horizontalScrollview.enabled = true;
-		UniversalTopBar.Instance.OnClickShowGemStore();
+		UniversalTopBar.Instance.OnClickShowHardCurrencyStore();
 	}
 
 	public void OnClickHide()

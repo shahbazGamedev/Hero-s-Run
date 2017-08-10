@@ -7,8 +7,8 @@ using TMPro;
 public class UniversalTopBar : MonoBehaviour {
 
 	public static UniversalTopBar Instance;
-	const float COIN_STORE_VERTICAL_POSITION = 1300f;
-	const float GEM_STORE_VERTICAL_POSITION = 269f;
+	const float SOFT_CURRENCY_STORE_VERTICAL_POSITION = 1872f;
+	const float HARD_CURRENCY_STORE_VERTICAL_POSITION = 850f;
 	const float NUMBER_SPIN_DURATION = 1.25f;
 
 	[Header("For Store Access")]
@@ -225,33 +225,33 @@ public class UniversalTopBar : MonoBehaviour {
 		animateProgressBar( 0, residualXP, 3f );
 	}
 
-	public void OnClickShowCoinStore()
+	public void OnClickShowSoftCurrencyStore()
 	{
 		//The store button only works when you are in the main menu
 		if( SceneManager.GetActiveScene().buildIndex == (int)GameScenes.MainMenu )
 		{
 			UISoundManager.uiSoundManager.playButtonClick();
-			StartCoroutine( scrollToStorePosition( 0.4f, COIN_STORE_VERTICAL_POSITION ) );
+			StartCoroutine( scrollToStorePosition( 0.4f, SOFT_CURRENCY_STORE_VERTICAL_POSITION ) );
 			showTopBar( true );
 		}
 		else
 		{
-			Debug.LogWarning("OnClickShowCoinStore: you can only access the store from the main menu."); 
+			Debug.LogWarning("OnClickShowSoftCurrencyStore: you can only access the store from the main menu."); 
 		}
 	}
 
-	public void OnClickShowGemStore()
+	public void OnClickShowHardCurrencyStore()
 	{
 		//The store button only works when you are in the main menu
 		if( SceneManager.GetActiveScene().buildIndex == (int)GameScenes.MainMenu )
 		{
 			UISoundManager.uiSoundManager.playButtonClick();
-			StartCoroutine( scrollToStorePosition( 0.4f, GEM_STORE_VERTICAL_POSITION ) );
+			StartCoroutine( scrollToStorePosition( 0.4f, HARD_CURRENCY_STORE_VERTICAL_POSITION ) );
 			showTopBar( true );
 		}
 		else
 		{
-			Debug.LogWarning("OnClickShowCoinStore: you can only access the store from the main menu."); 
+			Debug.LogWarning("OnClickShowHardCurrencyStore: you can only access the store from the main menu."); 
 		}
 	}
 

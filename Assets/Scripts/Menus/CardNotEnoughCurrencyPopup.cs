@@ -75,7 +75,7 @@ public class CardNotEnoughCurrencyPopup : MonoBehaviour {
 		UISoundManager.uiSoundManager.playButtonClick();
 		gameObject.SetActive( false );
 		transform.parent.GetComponent<CardDetailPopup>().OnClickHide();
-		UniversalTopBar.Instance.OnClickShowGemStore();
+		UniversalTopBar.Instance.OnClickShowHardCurrencyStore();
 	}
 
 	public void OnClickHide()
