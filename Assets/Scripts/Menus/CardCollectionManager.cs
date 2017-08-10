@@ -130,6 +130,7 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 			{
 				heroCardExplanationText.text = LocalizationManager.Instance.getText("CARD_HERO_EXPLANATION_TEXT");
 				heroCardExplanationText.gameObject.SetActive( true );
+				CancelInvoke("hideHeroCardExplanationText");		
 				Invoke("hideHeroCardExplanationText", 5f );		
 			}
 			else

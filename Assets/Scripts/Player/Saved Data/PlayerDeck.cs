@@ -228,10 +228,10 @@ public class PlayerDeck {
 			{
 				//We are okay to upgrade
 				playerCard.level++;
+				//Deduct the number of cards needed to upgrade
+				playerCard.quantity -= CardManager.Instance.getNumberOfCardsRequiredForUpgrade( playerCard.level, card.rarity);
 				//Upgrading gives XP
 				GameManager.Instance.playerProfile.addToTotalXPEarned( CardManager.Instance.getXPGainedAfterUpgrading( playerCard.level, card.rarity ), true );
-				//Reset the number of cards
-				playerCard.quantity = 0;
 				//Save
 				serializePlayerDeck( true );
 			}
