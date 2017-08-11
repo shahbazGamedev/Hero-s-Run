@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Card : Photon.PunBehaviour {
 
@@ -100,27 +101,26 @@ public class Card : Photon.PunBehaviour {
 	}
 
 	/// <summary>
-	/// Returns a player target or null if none were found within the spell range.
-	/// If multiple targets are within spell range, it will privilege returning a player that is in front of the caster.
-	/// If all targets are behind the caster, it will return one at random.
+	/// Returns a player target or null if none were found within the range.
+	/// If multiple targets are within range, it returns the player who is leading the most.
 	/// </summary>
-	/// <returns>The random target.</returns>
-	/// <param name="playerRace">Player race.</param>
-	/// <param name="spellRange">Spell range.</param>
-	protected Transform detectTarget( PlayerRace playerRace, float spellRange )
+	/// <returns>A player target or null if none were found within the range.</returns>
+	/// <param name="playerRace">Player race of the caster.</param>
+	/// <param name="range">Range.</param>
+	protected Transform detectBestTarget( PlayerRace playerRace, float range )
 	{
-		List<Transform> potentialTargets = new List<Transform>();
-		
+		List<PlayerRace> potentialTargets = new List<PlayerRace>();
+		float sqrRange = range * range;
 		for( int i =0; i < PlayerRace.players.Count; i++ )
 		{
 			//Ignore the caster
 			if( PlayerRace.players[i] == playerRace ) continue;
 
 			//Calculate the distance to the other player
-			float distanceToTarget = Vector3.Distance( playerRace.transform.position, PlayerRace.players[i].transform.position );
+			float sqrMagnitude = Vector3.SqrMagnitude( playerRace.transform.position - PlayerRace.players[i].transform.position );
 
-			//Is this player within spell range?
-			if( distanceToTarget > spellRange ) continue;
+			//Is this player within range?
+			if( sqrMagnitude > sqrRange ) continue;
 
 			//Is the player dead or Idle? If so, ignore.
 			if( PlayerRace.players[i].GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
@@ -129,7 +129,7 @@ public class Card : Photon.PunBehaviour {
 			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) continue;
 
 			//We have a potential target
-			potentialTargets.Add( PlayerRace.players[i].transform );
+			potentialTargets.Add( PlayerRace.players[i] );
 		}
 		
 		if( potentialTargets.Count == 0 )
@@ -138,18 +138,12 @@ public class Card : Photon.PunBehaviour {
 		}
 		else if ( potentialTargets.Count == 1 )
 		{
-			return potentialTargets[0];
+			return potentialTargets[0].transform;
 		}
 		else
 		{
-			//Privilege a player that is in front of you
-			for( int i =0; i < potentialTargets.Count; i++ )
-			{
-				if( getDotProduct( playerRace.transform, potentialTargets[i].position ) ) return  potentialTargets[i];
-			}
-			//If we are here, it means that all targets are behind the player. Simply pick a random one.
-			int random = Random.Range(0, potentialTargets.Count);
-			return potentialTargets[random];				
+			//Privilege the player that has the lowest race position (i.e. the player leading the most)
+			return potentialTargets.OrderBy( p => p.racePosition ).First().transform;			
 		}
 	}
 

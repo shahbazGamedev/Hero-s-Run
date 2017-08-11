@@ -27,7 +27,7 @@ public class CardLightning : Card {
 
 		//Find a target
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
-		Transform randomTarget = detectTarget( playerTransform.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
+		Transform randomTarget = detectBestTarget( playerTransform.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
 
 		if( randomTarget != null )
 		{
