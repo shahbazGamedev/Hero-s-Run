@@ -142,27 +142,27 @@ public class TurnRibbonHandler : MonoBehaviour {
 	/// <param name="Card">Card.</param>
 	void isEffective( int indexInTurnRibbon, CardManager.CardData card )
 	{
-		PlayerDeck.PlayerCardData pcd = GameManager.Instance.playerDeck.getCardByName( card.name );
-		
-		Button buttonOfCard = turnRibbonButtonList[indexInTurnRibbon];
-		TextMeshProUGUI[] buttonTexts = buttonOfCard.GetComponentsInChildren<TextMeshProUGUI>();
-		float range = card.getCardPropertyValue( CardPropertyType.RANGE, pcd.level );
-		if( range <= 0 )
+		if( card.doesCardHaveThisProperty( CardPropertyType.RANGE ) )
 		{
-			//This means that either the RANGE is infinite or this card does not have the RANGE property. Make the text white.
-			buttonTexts[0].color = Color.white;
-		}
-		else
-		{
-			if( isThereAtLeastOnePlayerWithinRange( range ) )
+			PlayerDeck.PlayerCardData pcd = GameManager.Instance.playerDeck.getCardByName( card.name );
+			float range = card.getCardPropertyValue( CardPropertyType.RANGE, pcd.level );
+			
+			Button buttonOfCard = turnRibbonButtonList[indexInTurnRibbon];
+			TextMeshProUGUI[] buttonTexts = buttonOfCard.GetComponentsInChildren<TextMeshProUGUI>();
+			
+			//This means that the RANGE is not infinite. Check for targets.
+			if( range > 0 )
 			{
-				//We have at least one target within range. Make the text white.
-				buttonTexts[0].color = Color.white;				
-			}
-			else
-			{
-				//We have no targets within range. Make the text red.
-				buttonTexts[0].color = Color.red;
+				if( isThereAtLeastOnePlayerWithinRange( range ) )
+				{
+					//We have at least one target within range. Make the text white.
+					buttonTexts[0].color = Color.white;				
+				}
+				else
+				{
+					//We have no targets within range. Make the text red.
+					buttonTexts[0].color = Color.red;
+				}
 			}
 		}
 	}
