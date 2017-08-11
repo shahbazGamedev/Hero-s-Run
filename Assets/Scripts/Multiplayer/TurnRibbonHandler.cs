@@ -30,6 +30,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 	Queue<CardManager.CardData> cardQueue = new Queue<CardManager.CardData>();
 	
 	PlayerControl playerControl;
+	PlayerRace playerRace;
 	PlayerSpell playerSpell;
 
 	//Delegate used to communicate to other classes when the local player has played a card
@@ -61,6 +62,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 	public void setPlayerControl( PlayerControl playerControl )
 	{
 		this.playerControl = playerControl;
+		playerRace = playerControl.GetComponent<PlayerRace>();
 		playerSpell = playerControl.GetComponent<PlayerSpell>();
 	}
 
@@ -122,12 +124,73 @@ public class TurnRibbonHandler : MonoBehaviour {
 					if( fillAmount < 0 ) fillAmount = 0;
 					radialMask.fillAmount = fillAmount;
 				}
+				//Verify if this card is effective.
+				isEffective( i, turnRibbonList[i] );
 			}
 			else
 			{
 				radialMask.fillAmount = 1f;
 			}
 		}
+	}
+
+	/// <summary>
+	/// If the card is effective, the card name will be white, if not, the card name will be red.
+	/// For now, a card is not effective if it has the RANGE property, and the RANGE property is not infinite, and there no players within range.
+	/// </summary>
+	/// <param name="indexInTurnRibbon">Index in turn ribbon.</param>
+	/// <param name="Card">Card.</param>
+	void isEffective( int indexInTurnRibbon, CardManager.CardData card )
+	{
+		PlayerDeck.PlayerCardData pcd = GameManager.Instance.playerDeck.getCardByName( card.name );
+		
+		Button buttonOfCard = turnRibbonButtonList[indexInTurnRibbon];
+		TextMeshProUGUI[] buttonTexts = buttonOfCard.GetComponentsInChildren<TextMeshProUGUI>();
+		float range = card.getCardPropertyValue( CardPropertyType.RANGE, pcd.level );
+		if( range <= 0 )
+		{
+			//This means that either the RANGE is infinite or this card does not have the RANGE property. Make the text white.
+			buttonTexts[0].color = Color.white;
+		}
+		else
+		{
+			if( isThereAtLeastOnePlayerWithinRange( range ) )
+			{
+				//We have at least one target within range. Make the text white.
+				buttonTexts[0].color = Color.white;				
+			}
+			else
+			{
+				//We have no targets within range. Make the text red.
+				buttonTexts[0].color = Color.red;
+			}
+		}
+	}
+
+	bool isThereAtLeastOnePlayerWithinRange( float range )
+	{
+		float sqrRange = range * range;
+		for( int i =0; i < PlayerRace.players.Count; i++ )
+		{
+			//Ignore the local player
+			if( PlayerRace.players[i] == playerRace ) continue;
+
+			//Calculate the square magnitude to the other player
+			float sqrMagnitude = Vector3.SqrMagnitude( playerRace.transform.position - PlayerRace.players[i].transform.position );
+
+			//Is this player within range?
+			if( sqrMagnitude > sqrRange ) continue;
+
+			//Is the player dead or Idle? If so, ignore.
+			if( PlayerRace.players[i].GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
+
+			//Is the player using the Cloak card? If so, ignore.
+			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) continue;
+
+			//We found at least one target
+			return true;
+		}
+		return false;
 	}
 
 	public void OnClickCard( int indexOfCardPlayed )
