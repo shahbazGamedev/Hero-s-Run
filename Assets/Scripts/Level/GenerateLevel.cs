@@ -294,8 +294,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		hero.GetComponent<PlayerController>().setFairyController( fairy.GetComponent<FairyController>() );
 
 		Debug.Log("GenerateLevel-CreateLevel: Level " + currentEpisode.episodeName + " has been created." );
-		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
-
 	}
 
 	private void generateStoryLevel( List<TileGroupType> tileGroupList )
@@ -453,7 +451,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		if( currentMultiplayer.isFogEnabled ) levelData.setFogParameters(currentMultiplayer.sunType);
 
 		Debug.Log("GenerateLevel-CreateLevel: Level " + currentMultiplayer.circuitName + " has been created." );
-		Debug.Log("GenerateLevel-CreateLevel: The number of coins spawned is : " + CoinManager.coinManager.realNumberCoinsSpawned );
 
 	}
 

@@ -278,9 +278,6 @@ public class PlayerStatsManager {
 			if( coinSeriesInfo.isLastCoinOfSeries )
 			{
 				HUDHandler.hudHandler.displayCoinPickup( coinAccumulator );
-				//We don't want to play the coin pickup sound too often, so we only play it when it is the 
-				//last coin of the series.
-				CoinManager.coinManager.playCoinPickupSound();
 			}
 		}
 	}
