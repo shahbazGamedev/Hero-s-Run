@@ -259,6 +259,8 @@ public class TurnRibbonHandler : MonoBehaviour {
 		//Card name text and mana cost text
 		TextMeshProUGUI[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<TextMeshProUGUI>();
 		buttonTexts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + nextCard.name.ToString().ToUpper() );
+		//Reset the color to white
+		buttonTexts[0].color = Color.white;
 		buttonTexts[1].text = nextCard.manaCost.ToString();
 		buttonTexts[2].text = string.Empty;
 
