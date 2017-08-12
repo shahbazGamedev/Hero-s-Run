@@ -6,7 +6,8 @@ public enum LockstepActionType {
 
 	NONE = 0,
 	RACE_START = 1,
-	RESURRECT = 2
+	RESURRECT = 2,
+	UNPAUSE = 3
 }
 
 public class LockstepManager : MonoBehaviour {
@@ -66,6 +67,10 @@ public class LockstepManager : MonoBehaviour {
 
 			case LockstepActionType.RESURRECT:
 				lockstepAction.actor.GetComponent<PlayerControl>().resurrectBegin();
+			break;
+
+			case LockstepActionType.UNPAUSE:
+				lockstepAction.actor.GetComponent<PlayerControl>().pausePlayer( false );
 			break;
 		}
 	}

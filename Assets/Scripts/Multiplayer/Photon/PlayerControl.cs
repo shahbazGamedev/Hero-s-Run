@@ -332,7 +332,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//If in an online mode, only pause this player but the rest of the world continues as normal
 			if( GameManager.Instance.isOnlinePlayMode() )
 			{
-				this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.AllViaServer, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
+				this.photonView.RPC( "pauseRemotePlayersMaster", PhotonTargets.MasterClient );
 			}
 			//If in an offline mode, stop time
 			else
@@ -346,7 +346,13 @@ public class PlayerControl : Photon.PunBehaviour {
 	[PunRPC]
 	public void unpauseRemotePlayers()
 	{
-		pausePlayer( false );
+		LockstepManager.Instance.addActionToQueue( new LockstepManager.LockstepAction( LockstepActionType.UNPAUSE, gameObject ) );
+	}
+
+	[PunRPC]
+	public void pauseRemotePlayersMaster()
+	{
+		this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.MasterClient, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 	}
 
 	[PunRPC]
@@ -355,8 +361,8 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Debug.Log("pauseRemotePlayers RPC received for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient + " isMine: " + this.photonView.isMine + " isLocal: " + PhotonNetwork.player.IsLocal + " view ID: " + this.photonView.viewID + " owner ID: " + this.photonView.ownerId );		
 		//Debug.Log("pauseRemotePlayers-positionAtTimeOfPause: " + positionAtTimeOfPause + " yRotationAtTimeOfpause: " + yRotationAtTimeOfpause );		
 		//Debug.Log("pauseRemotePlayers-current position: " +  transform.position + " current rotation: " + transform.eulerAngles.y );
-		float realDistanceDelta = Vector3.Distance( transform.position, positionAtTimeOfPause);
-		double predictedDistanceDelta = (PhotonNetwork.time - timeRPCSent) * playerRun.getRunSpeed();
+		//float realDistanceDelta = Vector3.Distance( transform.position, positionAtTimeOfPause);
+		//double predictedDistanceDelta = (PhotonNetwork.time - timeRPCSent) * playerRun.getRunSpeed();
 		//Debug.Log("pauseRemotePlayers-real distance delta: " +  realDistanceDelta + " predictedDistanceDelta " + predictedDistanceDelta );
 		//Debug.Log("pauseRemotePlayers-distancePrediction accuracy: " + ((predictedDistanceDelta - realDistanceDelta) * 100).ToString("N1") + "%" );
 		transform.position = positionAtTimeOfPause;
@@ -364,7 +370,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		pausePlayer( true );
 	}
 
-	void pausePlayer( bool isPaused )
+	public void pausePlayer( bool isPaused )
 	{
 		if( isPaused )
 		{
