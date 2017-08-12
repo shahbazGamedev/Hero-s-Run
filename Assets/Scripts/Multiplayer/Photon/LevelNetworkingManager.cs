@@ -19,6 +19,7 @@ public class LevelNetworkingManager : PunBehaviour
 	Vector3 leftStartPosition = new Vector3( -2f, 1f, 0 );
 	Vector3 rightStartPosition = new Vector3( 2f, 1f, 0 );
 	Vector3 centerStartPosition = new Vector3( 0, 1f, 0 );
+	const double DELAY_TO_ALLOW_ALL_PACKETS_TO_ARRIVE = 0.5;
 	
 	IEnumerator Start()
 	{
@@ -134,15 +135,17 @@ public class LevelNetworkingManager : PunBehaviour
 		numberOfPlayersReadyToRace++;			
 		if( numberOfPlayersReadyToRace == ( LevelManager.Instance.getNumberOfPlayersRequired() * LevelManager.Instance.getNumberOfPlayersRequired() ) )
 		{
-			this.photonView.RPC("initiateCountdown", PhotonTargets.AllViaServer, null );
+			object[] data = new object[1];
+			data[0] = PhotonNetwork.time + DELAY_TO_ALLOW_ALL_PACKETS_TO_ARRIVE;
+			this.photonView.RPC("initiateCountdown", PhotonTargets.AllViaServer, data[0] );
 		} 
 	}
 
 	[PunRPC]
-	void initiateCountdown()
+	void initiateCountdown( double timeWhenFirstActionShouldBeProcessed )
 	{
-		Debug.Log("initiateCountdown We have everyone ready. Start countdown" );
-		hudMultiplayer.startCountdown();
+		Debug.Log("initiateCountdown We have everyone ready. Start countdown " + (timeWhenFirstActionShouldBeProcessed - PhotonNetwork.time) );
+		LockstepManager.Instance.initiateFirstAction ( timeWhenFirstActionShouldBeProcessed - PhotonNetwork.time );
 	}
 
 }

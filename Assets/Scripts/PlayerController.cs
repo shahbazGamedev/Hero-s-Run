@@ -2785,15 +2785,6 @@ public sealed class PlayerController : MonoBehaviour {
 					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2.5f) );
 					break;
 
-		        case DeathType.MagicGate:
-					sc.lockCamera ( true );
-					sc.playCutscene( CutsceneType.MagicGate );
-					anim.speed = 3.8f;
-					setAnimationTrigger(FallTrigger);
-					LeanTween.moveLocalY( gameObject, transform.position.y - TrapMagicGate.distanceTravelledDown, TrapMagicGate.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutQuad).setDelay(TrapMagicGate.delayBeforeBeingPulledDown);
-					StartCoroutine( waitBeforeResurrecting(3.2f) );
-					break;
-
 				default:
 					setAnimationTrigger(DeathWallTrigger);
 					break;

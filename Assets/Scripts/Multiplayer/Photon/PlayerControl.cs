@@ -16,12 +16,11 @@ public enum DeathType {
 		Fireball = 9,
 		Zombie = 10,
 		VortexTrap = 11,
-		MagicGate = 12,
-		SpecialFall = 13,
-		GreatFall = 14,
-		FallForward = 15,
-		Turned_Wrong_Way = 16,
-		Exited_Without_Turning = 17
+		SpecialFall = 12,
+		GreatFall = 13,
+		FallForward = 14,
+		Turned_Wrong_Way = 15,
+		Exited_Without_Turning = 16
 
 }
 
@@ -1676,11 +1675,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	IEnumerator waitBeforeResurrecting ( float duration )
 	{
 		yield return new WaitForSeconds(duration);
-		playerCamera.setCameraParameters( 18f, PlayerCamera.DEFAULT_DISTANCE, PlayerCamera.DEFAULT_HEIGHT, PlayerCamera.DEFAULT_Y_ROTATION_OFFSET );
-		playerCamera.activateMainCamera();
-		playerCamera.positionCameraNow();
-		playerCamera.resetCameraParameters();
-		resurrectBegin(true);
+		LockstepManager.Instance.addActionToQueue( new LockstepManager.LockstepAction( LockstepActionType.RESURRECT, gameObject ) );
 	}
 
 	void changeColliderAxis( Axis axis )
@@ -1722,8 +1717,14 @@ public class PlayerControl : Photon.PunBehaviour {
 		if( vAcA.intensity == 0 ) vAcA.enabled = false;
 	}
 
-	void resurrectBegin( bool calledByMagicGate )
+	//LockstepManager is in charge of calling this. Do not call directly.
+	public void resurrectBegin()
 	{
+		playerCamera.setCameraParameters( 18f, PlayerCamera.DEFAULT_DISTANCE, PlayerCamera.DEFAULT_HEIGHT, PlayerCamera.DEFAULT_Y_ROTATION_OFFSET );
+		playerCamera.activateMainCamera();
+		playerCamera.positionCameraNow();
+		playerCamera.resetCameraParameters();
+
 		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0f, 0f, 0f ) );
 
 		//Only send an event if we are the local player and we are not a bot.
