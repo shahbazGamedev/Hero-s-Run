@@ -58,25 +58,25 @@ public class PlayerInput : PunBehaviour {
 	public void startSlide()
 	{
 		playerControl.startSlide();
-		this.photonView.RPC("startSlideRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed() );
+		this.photonView.RPC("startSlideRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 	}
 
 	public void sideSwipe( bool isGoingRight )
 	{
 		playerControl.sideSwipe( isGoingRight );
-		this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, isGoingRight, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed() );
+		this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, isGoingRight, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 	}
 
 	public void jump()
 	{
 		playerControl.jump( false );
-		this.photonView.RPC("jumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed() );
+		this.photonView.RPC("jumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 	}
 
 	public void doubleJump( float doubleJumpSpeed )
 	{
 		playerControl.jump( true, doubleJumpSpeed );
-		this.photonView.RPC("doubleJumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed(), doubleJumpSpeed );
+		this.photonView.RPC("doubleJumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, doubleJumpSpeed );
 	}
 
 	public void attachToZipline()
@@ -84,7 +84,7 @@ public class PlayerInput : PunBehaviour {
 		//stop the player control and movement immediately locally
 		playerControl.enablePlayerControl( false );
 		playerControl.enablePlayerMovement( false );
-		this.photonView.RPC("attachToZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed() );
+		this.photonView.RPC("attachToZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 	}
 
 	private void handleAccelerometer()

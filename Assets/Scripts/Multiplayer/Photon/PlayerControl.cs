@@ -1983,7 +1983,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
  		else if( other.CompareTag( "DetachZiplineTrigger" ) )
 		{
-			if( PhotonNetwork.isMasterClient ) this.photonView.RPC("detachToZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed() );
+			if( PhotonNetwork.isMasterClient ) this.photonView.RPC("detachFromZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 		}
   	}
 

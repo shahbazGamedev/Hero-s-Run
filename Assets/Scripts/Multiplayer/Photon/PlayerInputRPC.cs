@@ -18,20 +18,20 @@ public class PlayerInputRPC : PunBehaviour {
 	}
 
 	[PunRPC]
-	void sideSwipeRPC( bool direction, Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
+	void sideSwipeRPC( bool direction, Vector3 syncPosition, float syncRotationY, double timeRPCSent )
 	{
 		playerControl.sideSwipe( direction );
 	}
 
 	[PunRPC]
-	void startSlideRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
+	void startSlideRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent )
 	{
 		//Debug.Log("startSlide RPC received " + gameObject.name );
 		playerControl.startSlide();
 	}
 	
 	[PunRPC]
-	void attachToZiplineRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
+	void attachToZiplineRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent )
 	{
 		//force all players to be at the beginning of the zipline
 		transform.position = syncPosition;
@@ -40,7 +40,7 @@ public class PlayerInputRPC : PunBehaviour {
 	}
 
 	[PunRPC]
-	void detachToZiplineRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
+	void detachFromZiplineRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent )
 	{
 		//force all players to be at the end of the zipline
 		transform.position = syncPosition;
@@ -49,13 +49,13 @@ public class PlayerInputRPC : PunBehaviour {
 	}
 
 	[PunRPC]
-	void jumpRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
+	void jumpRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent )
 	{
 		playerControl.jump( false );
 	}
 
 	[PunRPC]
-	void doubleJumpRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed, float doubleJumpSpeed )
+	void doubleJumpRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float doubleJumpSpeed )
 	{
 		playerControl.jump( true, doubleJumpSpeed );
 	}
