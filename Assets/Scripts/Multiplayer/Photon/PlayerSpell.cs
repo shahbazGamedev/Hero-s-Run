@@ -31,6 +31,7 @@ public class PlayerSpell : PunBehaviour {
 
 	#region Cloak spell
 	[SerializeField] ParticleSystem appearFx;
+	bool isInvisible = false;
 	#endregion
 
 
@@ -39,6 +40,7 @@ public class PlayerSpell : PunBehaviour {
 	PlayerSounds playerSounds;
 	PlayerVoiceOvers playerVoiceOvers;
 	PlayerRun playerRun;
+	PlayerVisuals playerVisuals;
 	#endregion
 
 	//Delegate used to communicate to other classes when an enemy has played a special card such as Hack
@@ -57,6 +59,7 @@ public class PlayerSpell : PunBehaviour {
 		playerSounds = GetComponent<PlayerSounds>();
 		playerVoiceOvers = GetComponent<PlayerVoiceOvers>();
 		playerRun = GetComponent<PlayerRun>();
+		playerVisuals = GetComponent<PlayerVisuals>();
 	}
 
 	/// <summary>
@@ -372,6 +375,7 @@ public class PlayerSpell : PunBehaviour {
 
 	public void makePlayerInvisible()
 	{
+		isInvisible = true;
 		ParticleSystem go = GameObject.Instantiate( appearFx );
 		go.transform.position = transform.TransformPoint( 0, 1.2f, 0 );
 		go.Play();
@@ -382,12 +386,14 @@ public class PlayerSpell : PunBehaviour {
 		{
 			smr[i].enabled = false;
 		} 
+		playerVisuals.enablePlayerShadow( false );
 	}
 
 	public void makePlayerVisible()
 	{
-		if( isCardActive(CardName.Cloak) )
+		if( isInvisible )
 		{
+			isInvisible = false;
 			ParticleSystem go = GameObject.Instantiate( appearFx );
 			go.transform.position = transform.TransformPoint( 0, 1.2f, 0 );
 			go.Play();
@@ -398,6 +404,7 @@ public class PlayerSpell : PunBehaviour {
 			{
 				smr[i].enabled = true;
 			}
+			playerVisuals.enablePlayerShadow( true );
 		}
 	}
 	#endregion

@@ -45,7 +45,7 @@ public class CardCloak : Card {
 	IEnumerator stopCloaking( float spellDuration, PlayerRun playerRun, bool isMine, bool isHuman  )
 	{
 		yield return new WaitForSeconds( spellDuration );
-		playerRun.GetComponent<PlayerSounds>().stopAudioSource();
+		playerRun.GetComponent<PlayerSounds>().playSound( soundFx, false );
 		StartCoroutine( playerRun.removeVariableSpeedMultiplier( SpeedMultiplierType.Cloak, 0.8f ) );
 		//Only affect the camera for the local non-bot player
 		if( isMine && isHuman ) StartCoroutine( controlSaturation( 1f, 0.8f ) );
