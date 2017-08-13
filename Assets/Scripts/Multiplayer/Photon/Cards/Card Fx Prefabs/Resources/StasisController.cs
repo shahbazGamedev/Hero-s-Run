@@ -15,6 +15,15 @@ public class StasisController : CardSpawnedObject {
 	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
+		//Note that the Stasis sphere prefab has its MeshRenderer and SphereCollider disabled.
+		//We will enable them only when the card gets activated by the lockstep manager.
+		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Stasis );
+		lsa.cardSpawnedObject = this;
+		LockstepManager.Instance.addActionToQueue( lsa );
+	}
+
+	public override void activateCard()
+	{
 		findAffectedPlayer( gameObject.GetPhotonView ().instantiationData );
 	}
 
@@ -76,6 +85,9 @@ public class StasisController : CardSpawnedObject {
 				//Display the Stasis secondary icon on the minimap
 				MiniMap.Instance.displaySecondaryIcon( affectedPlayerTransform.GetComponent<PhotonView>().viewID, (int) CardName.Stasis, spellDuration );
 
+				//We can now make the sphere visible and collidable
+				GetComponent<SphereCollider>().enabled = true;
+				GetComponent<MeshRenderer>().enabled = true;
 				break;
 			}
 		}

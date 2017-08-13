@@ -13,9 +13,16 @@ public class JumpPad : Device {
 			if( other.gameObject.CompareTag("Player")  )
 			{
 				if( other.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Flying )
-				{				
-					GetComponent<AudioSource>().Play();
-					other.GetComponent<PlayerInput>().doubleJump( doubleJumpSpeed );
+				{	
+					//Only the Master Client can trigger the jump.
+					//The Master Client stops moving until the RPC action gets processed.			
+					if( PhotonNetwork.isMasterClient )
+					{				
+						GetComponent<AudioSource>().Play();
+						other.GetComponent<PlayerControl>().enablePlayerMovement( false );
+
+						other.GetComponent<PhotonView>().RPC("jumpPadRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time, doubleJumpSpeed );
+					}
 				}
 			}
 			else if( other.attachedRigidbody != null )

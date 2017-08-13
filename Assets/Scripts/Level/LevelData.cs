@@ -379,8 +379,8 @@ public class LevelData : MonoBehaviour {
 	{
 		if( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() )
 		{
-			//For testing, always return level 2 to guarantee a match
-			return multiplayerList[2];
+			//For testing, always return level 0 to guarantee a match
+			return multiplayerList[0];
 		}
 		else
 		{

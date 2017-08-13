@@ -32,13 +32,17 @@ public class Teleporter : Device {
 	{
 		if( type == TeleporterType.Transmitter && state == DeviceState.On )
 		{
-			if( other.CompareTag("Player") )
+			//Only the Master Client can trigger the teleporter.
+			//The Master Client stops moving until the RPC action gets processed.			
+			if( other.CompareTag("Player") && PhotonNetwork.isMasterClient )
 			{
 				GetComponent<AudioSource>().Play();
-				other.gameObject.GetComponent<PlayerInput>().teleport( new Vector3( transform.position.x, transform.position.y, transform.position.z + 100f), transform.eulerAngles.y );
-				GenerateLevel generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
-				generateLevel.activateTilesAfterTeleport();
-				other.GetComponent<PlayerRace>().tilesLeftBeforeReachingEnd -= numberOfTilesSkippedBecauseOfTeleportation;
+				other.GetComponent<PlayerControl>().enablePlayerMovement( false );
+
+				Vector3 destinationTeleporterPosition = new Vector3( transform.position.x, transform.position.y, transform.position.z + 100f);
+				float destinationTeleporterYRotation = transform.eulerAngles.y;
+
+				other.GetComponent<PhotonView>().RPC("teleportRPC", PhotonTargets.All, other.transform.position, other.transform.eulerAngles.y, destinationTeleporterPosition, destinationTeleporterYRotation, numberOfTilesSkippedBecauseOfTeleportation );
 			}
 		}
 	}

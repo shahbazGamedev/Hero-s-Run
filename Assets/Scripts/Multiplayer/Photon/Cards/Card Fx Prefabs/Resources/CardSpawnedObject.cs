@@ -47,6 +47,10 @@ public class CardSpawnedObject : MonoBehaviour {
 		return casterName;
 	}
 
+	public virtual void activateCard()
+	{
+	}
+
 	protected Transform getCaster( int casterPhotonViewId )
 	{
 		Transform caster = null;

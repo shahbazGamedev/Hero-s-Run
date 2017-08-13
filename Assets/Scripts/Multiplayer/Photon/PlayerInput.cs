@@ -79,15 +79,12 @@ public class PlayerInput : PunBehaviour {
 		this.photonView.RPC("doubleJumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed(), doubleJumpSpeed );
 	}
 
-	public void teleport( Vector3  destinationPosition, float destinationRotationY )
-	{
-		this.photonView.RPC("teleportRPC", PhotonTargets.AllViaServer, destinationPosition, destinationRotationY );
-	}
-
 	public void attachToZipline()
 	{
-		playerControl.attachToZipline();
-		this.photonView.RPC("attachToZiplineRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed() );
+		//stop the player control and movement immediately locally
+		playerControl.enablePlayerControl( false );
+		playerControl.enablePlayerMovement( false );
+		this.photonView.RPC("attachToZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed() );
 	}
 
 	private void handleAccelerometer()

@@ -20,7 +20,6 @@ public class PlayerInputRPC : PunBehaviour {
 	[PunRPC]
 	void sideSwipeRPC( bool direction, Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
 	{
-		syncMovement( syncPosition, syncRotationY, timeRPCSent, syncSpeed );
 		playerControl.sideSwipe( direction );
 	}
 
@@ -28,67 +27,67 @@ public class PlayerInputRPC : PunBehaviour {
 	void startSlideRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
 	{
 		//Debug.Log("startSlide RPC received " + gameObject.name );
-		syncMovement( syncPosition, syncRotationY, timeRPCSent, syncSpeed );
 		playerControl.startSlide();
 	}
 	
 	[PunRPC]
 	void attachToZiplineRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
 	{
-		syncMovement( syncPosition, syncRotationY, timeRPCSent, syncSpeed );
-		playerControl.attachToZipline();
+		//force all players to be at the beginning of the zipline
+		transform.position = syncPosition;
+		transform.eulerAngles = new Vector3( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z );
+		LockstepManager.Instance.addActionToQueue( new LockstepManager.LockstepAction( LockstepActionType.ATTACH_TO_ZIPLINE, gameObject ) );
 	}
 
 	[PunRPC]
 	void detachToZiplineRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
 	{
-		syncMovement( syncPosition, syncRotationY, timeRPCSent, syncSpeed );
-		playerControl.detachFromZipline();
+		//force all players to be at the end of the zipline
+		transform.position = syncPosition;
+		transform.eulerAngles = new Vector3( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z );
+		LockstepManager.Instance.addActionToQueue( new LockstepManager.LockstepAction( LockstepActionType.DETACH_FROM_ZIPLINE, gameObject ) );
 	}
 
 	[PunRPC]
 	void jumpRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
 	{
-		syncMovement( syncPosition, syncRotationY, timeRPCSent, syncSpeed );
 		playerControl.jump( false );
 	}
 
 	[PunRPC]
 	void doubleJumpRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed, float doubleJumpSpeed )
 	{
-		syncMovement( syncPosition, syncRotationY, timeRPCSent, syncSpeed );
 		playerControl.jump( true, doubleJumpSpeed );
 	}
 
 	[PunRPC]
-	void teleportRPC( Vector3 destinationPosition, float destinationRotationY )
+	//Sent by the Master client only.
+	void jumpPadRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float doubleJumpSpeed )
 	{
-		//Use the values we received from the master
-		transform.eulerAngles = new Vector3( transform.eulerAngles.x, destinationRotationY, transform.eulerAngles.z );
-		transform.position = destinationPosition;
+		//Force all clients to be on the jump pad
+		transform.position = syncPosition;
+		transform.eulerAngles = new Vector3( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z );
 		//We may have switched lanes because of the position change. Make sure the lane values are accurate.
 		playerControl.recalculateCurrentLane();
+
+		LockstepManager.Instance.addActionToQueue( new LockstepManager.LockstepAction( LockstepActionType.JUMP_PAD, gameObject, CardName.None, doubleJumpSpeed ) );
 	}
 
-	void syncMovement( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float syncSpeed )
+	[PunRPC]
+	//Sent by the Master client only.
+	void teleportRPC( Vector3 syncPosition, float syncRotationY, Vector3 destinationPosition, float destinationRotationY, int numberOfTilesSkippedBecauseOfTeleportation )
 	{
-		//Use the values we received from the master
-		transform.eulerAngles = new Vector3( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z );
+		//Force all clients to be on the teleporter
 		transform.position = syncPosition;
-		playerRun.syncRunSpeed( syncSpeed );
+		transform.eulerAngles = new Vector3( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z );
 		//We may have switched lanes because of the position change. Make sure the lane values are accurate.
 		playerControl.recalculateCurrentLane();
-		//There was a delay between the master sending us the command and the remote receiving it.
-		//Predict where the player should be and move him there before executing the command.
-		float syncTimeDelta = (float)(PhotonNetwork.time - timeRPCSent);
-		//1) Get the direction of the player
-		Vector3 forward = transform.TransformDirection(Vector3.forward);			
-		//2) Scale vector based on run speed
-		forward = forward * syncTimeDelta * syncSpeed;
-		//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
-		forward.Set( forward.x, playerControl.moveDirection.y * syncTimeDelta, forward.z );
-		Debug.Log("syncMovement received N " + gameObject.name + "TD " + syncTimeDelta + " FL " + forward.magnitude );
-		playerControl.GetComponent<CapsuleCollider>().attachedRigidbody.velocity = forward;
-		//The master player and the remote player should now be synchronised.
+
+		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.TELEPORTER, gameObject );
+		lsa.param1 = destinationRotationY;
+		lsa.param2 = numberOfTilesSkippedBecauseOfTeleportation;
+		lsa.param3 = destinationPosition;
+		LockstepManager.Instance.addActionToQueue( lsa );
 	}
+
 }

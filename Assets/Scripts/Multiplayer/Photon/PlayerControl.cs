@@ -180,7 +180,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	//We need to be able to reset these values when the player is revived.
 	Vector3 controllerOriginalCenter;
 	float PRONE_CAPSULE_CENTER_Y = 0.57f;
-
+	string tileWherePlayerDied = string.Empty;
 	int numberOfTimesDiedDuringRace = 0; //Used by PlayerStatistics to determine if the player had a perfect race, that is, he did not die a single time.
 	#endregion
 
@@ -332,6 +332,9 @@ public class PlayerControl : Photon.PunBehaviour {
 			//If in an online mode, only pause this player but the rest of the world continues as normal
 			if( GameManager.Instance.isOnlinePlayMode() )
 			{
+				//The reason that we pass by the Master Client and don't send the RPC directly to all the clients is
+				//that this will allow the Master Client to send his position and rotation.
+				//This will ensure that all clients have the same position and rotation when paused.			
 				this.photonView.RPC( "pauseRemotePlayersMaster", PhotonTargets.MasterClient );
 			}
 			//If in an offline mode, stop time
@@ -344,15 +347,9 @@ public class PlayerControl : Photon.PunBehaviour {
 	}
 
 	[PunRPC]
-	public void unpauseRemotePlayers()
-	{
-		LockstepManager.Instance.addActionToQueue( new LockstepManager.LockstepAction( LockstepActionType.UNPAUSE, gameObject ) );
-	}
-
-	[PunRPC]
 	public void pauseRemotePlayersMaster()
 	{
-		this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.MasterClient, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
+		this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 	}
 
 	[PunRPC]
@@ -368,6 +365,15 @@ public class PlayerControl : Photon.PunBehaviour {
 		transform.position = positionAtTimeOfPause;
 		transform.eulerAngles = new Vector3( transform.eulerAngles.x, yRotationAtTimeOfpause, transform.eulerAngles.z );
 		pausePlayer( true );
+	}
+
+	[PunRPC]
+	public void unpauseRemotePlayers()
+	{
+		//We don't want one of the clients to unpause faster than the others. If a client got this RPC call 100ms faster than
+		//another client, with a player running at 20 meters/second, this will lead to an immediate desynchronization of 2 meters.
+		//This is why we use lockstep to unpause.
+		LockstepManager.Instance.addActionToQueue( new LockstepManager.LockstepAction( LockstepActionType.UNPAUSE, gameObject ) );
 	}
 
 	public void pausePlayer( bool isPaused )
@@ -1454,6 +1460,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			SegmentInfo.BezierData bezierData = curveList[0];
 			setCharacterState( PlayerCharacterState.Ziplining );
 			enablePlayerControl( false );
+			enablePlayerMovement( false );
 			//It is possible for a change lane to be in progress when we attach to the zipline.
 			//To avoid drifting along the X axis when we detach from the zipline, make sure we reset moveDirection.
 			moveDirection = Vector3.zero;
@@ -1494,6 +1501,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			if( deathType == DeathType.Alive )
 			{
 				enablePlayerControl( true );
+				enablePlayerMovement( true );
 				transform.eulerAngles = new Vector3(0,270f,0); //we turned left while ziplining
 				fall( true );
 			}
@@ -1531,13 +1539,14 @@ public class PlayerControl : Photon.PunBehaviour {
 		if ( PhotonNetwork.isMasterClient && playerCharacterState != PlayerCharacterState.Dying )
 		{
 			Debug.Log("PlayerControl-killPlayer : " + deathTypeValue + " name " + gameObject.name );
-			this.photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, deathTypeValue );
+			this.photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, deathTypeValue, currentTile.name );
 		}
 	}
 
 	[PunRPC]
-	void playerDiedRPC( DeathType deathTypeValue )
+	void playerDiedRPC( DeathType deathTypeValue, string tileWherePlayerDied )
 	{
+		this.tileWherePlayerDied = tileWherePlayerDied;
 		changeColliderAxis( Axis.Z );
 		ignorePlayerCollisions( true );
 
@@ -1740,7 +1749,10 @@ public class PlayerControl : Photon.PunBehaviour {
 		resetSharedLevelData(true);
 		
 		//Reposition dead body at the respawn location.
-		GameObject respawnLocationObject = currentTile.transform.Find("respawnLocation").gameObject;
+		//Don't use the currentTile which is local since it may be out of sync.
+		//Use the name of the tile sent by the master client when the player died.
+		GameObject tileWherePlayerDiedGameObject = GameObject.Find( tileWherePlayerDied );
+		GameObject respawnLocationObject = tileWherePlayerDiedGameObject.transform.Find("respawnLocation").gameObject;
 
 		if( respawnLocationObject != null )
 		{
@@ -1880,8 +1892,8 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Debug.Log("PlayerControl-setCharacterState to: " + newState + " for " + gameObject.name );
 		//Send an event to interested classes if you are a human player
 		if(multiplayerStateChanged != null && this.photonView.isMine && playerAI == null ) multiplayerStateChanged( playerCharacterState );
-		//Bots call the method directly.
-		if( playerAI != null ) playerRun.handlePlayerStateChange( playerCharacterState );
+		
+		playerRun.handlePlayerStateChange( playerCharacterState );
 	}
 
 	public void enablePlayerControl( bool enabled )
@@ -1966,8 +1978,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
  		else if( other.CompareTag( "DetachZiplineTrigger" ) )
 		{
-			detachFromZipline();
-			this.photonView.RPC("detachToZiplineRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed() );
+			if( PhotonNetwork.isMasterClient ) this.photonView.RPC("detachToZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time, playerRun.getRunSpeed() );
 		}
   	}
 

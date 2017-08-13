@@ -71,14 +71,12 @@ public class PlayerRun : Photon.PunBehaviour {
 	void OnEnable()
 	{
 		HUDMultiplayer.startRunningEvent += StartRunningEvent;
-		PlayerControl.multiplayerStateChanged += MultiplayerStateChanged;
 		PlayerRace.crossedFinishLine += CrossedFinishLine;
 	}
 
 	void OnDisable()
 	{
 		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
-		PlayerControl.multiplayerStateChanged -= MultiplayerStateChanged;
 		PlayerRace.crossedFinishLine -= CrossedFinishLine;
 	}
 
@@ -87,14 +85,6 @@ public class PlayerRun : Photon.PunBehaviour {
 		runSpeed = levelRunStartSpeed;
 	}
 
-	//Human players receive player state changes via MultiplayerStateChanged events.
-	void MultiplayerStateChanged( PlayerCharacterState newState )
-	{
-		if( GetComponent<PlayerAI>() != null || !this.photonView.isMine ) return;
-		handlePlayerStateChange( newState );
-	}
-
-	//Note: bots call handlePlayerStateChange directly.
 	public void handlePlayerStateChange( PlayerCharacterState newState )
 	{
 	    switch (newState)
