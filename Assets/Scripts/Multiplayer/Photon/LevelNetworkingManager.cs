@@ -103,8 +103,12 @@ public class LevelNetworkingManager : PunBehaviour
 	public override void OnPhotonPlayerDisconnected( PhotonPlayer other  )
 	{
 		Debug.Log( "LevelNetworkingManager: OnPhotonPlayerDisconnected() " + other.NickName ); // seen when other disconnects
-		string leftTheRace = LocalizationManager.Instance.getText("MULTI_LEFT_THE_RACE");
-		HUDMultiplayer.hudMultiplayer.activateUserMessage( string.Format( leftTheRace, other.NickName ), 0, 2f );
+		//Only display the disconnect message on the HUD if the race is not completed
+		if( PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED )
+		{
+			string leftTheRace = LocalizationManager.Instance.getText("MULTI_LEFT_THE_RACE");
+			HUDMultiplayer.hudMultiplayer.activateUserMessage( string.Format( leftTheRace, other.NickName ), 0, 2f );
+		}
 	}
 
 	IEnumerator loadScene(GameScenes value)
