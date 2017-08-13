@@ -306,6 +306,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		enablePlayerControl( true );
 	}
 
+	#region Pause/Resume
 	void GameStateChange( GameState previousState, GameState newState )
 	{
 		//Ignore game state changes if we are not the owner
@@ -364,6 +365,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Debug.Log("pauseRemotePlayers-distancePrediction accuracy: " + ((predictedDistanceDelta - realDistanceDelta) * 100).ToString("N1") + "%" );
 		transform.position = positionAtTimeOfPause;
 		transform.eulerAngles = new Vector3( transform.eulerAngles.x, yRotationAtTimeOfpause, transform.eulerAngles.z );
+		recalculateCurrentLane();
 		pausePlayer( true );
 	}
 
@@ -392,6 +394,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			anim.speed = animSpeedAtTimeOfPause;
 		}
 	}
+	#endregion
 
 	void FixedUpdate()
 	{
@@ -1503,6 +1506,8 @@ public class PlayerControl : Photon.PunBehaviour {
 				enablePlayerControl( true );
 				enablePlayerMovement( true );
 				transform.eulerAngles = new Vector3(0,270f,0); //we turned left while ziplining
+				//We may have switched lanes because of the position change. Make sure the lane values are accurate.
+				recalculateCurrentLane();
 				fall( true );
 			}
 			else
