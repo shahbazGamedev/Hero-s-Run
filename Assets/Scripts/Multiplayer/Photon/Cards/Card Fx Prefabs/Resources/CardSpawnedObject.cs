@@ -26,6 +26,7 @@ public class CardSpawnedObject : MonoBehaviour {
 	public SpawnedObjectState spawnedObjectState = SpawnedObjectState.Initialising;
 	protected const float DELAY_BEFORE_DESTROY_EFFECTS = 1.3f;
 
+	const float MAXIMUM_IMPACT_DISTANCE_PERCENTAGE = 0.2f;
 
 	protected void setSpawnedObjectState( SpawnedObjectState newState )
 	{
@@ -237,33 +238,23 @@ public class CardSpawnedObject : MonoBehaviour {
 		{
 			if( isTargetValid( hitColliders[i].transform ) )
 			{
-				destroyValidTarget( hitColliders[i].transform );
+				destroyValidTarget( hitColliders[i].transform, blastRadius );
 			}
 		}
 	}
 
-	void destroyValidTarget( Transform potentialTarget )
+	void destroyValidTarget( Transform potentialTarget, float blastRadius )
 	{
 		bool valid = false;
    		switch (potentialTarget.gameObject.layer)
 		{
 			case MaskHandler.playerLayer:
-				//The player is immune to projectiles while in the IDLE state.
+				//The player is immune while in the IDLE or DYING states.
 				//The player is in the IDLE state after crossing the finish line for example.
-				if( potentialTarget.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle )
+				if( potentialTarget.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle && potentialTarget.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
 				{
 					valid = true;
-					//The projectile knocked down a player. Send him an RPC.
-					if( getDotProduct( potentialTarget, transform.position ) )
-					{
-						//Explosion is in front of player. He falls backward.
-						potentialTarget.GetComponent<PlayerControl>().killPlayer( DeathType.Obstacle );
-					}
-					else
-					{
-						//Explosion is behind player. He falls forward.
-						potentialTarget.GetComponent<PlayerControl>().killPlayer( DeathType.FallForward );
-					}
+					assessPlayerDamage( potentialTarget, blastRadius );
 				}
 				break;
 	                
@@ -289,6 +280,62 @@ public class CardSpawnedObject : MonoBehaviour {
 		{
 			 Debug.Log("destroyValidTarget " + potentialTarget.name );
 		}		
+	}
+
+	//If the player-to-explosion distance is within MAXIMUM_IMPACT_DISTANCE_PERCENTAGE of the blast radius, the player gets maximum damage.
+	//If the player-to-explosion distance is bigger than MAXIMUM_IMPACT_DISTANCE_PERCENTAGE of the blast radius, the amount of damage decreases linearly based on the distance.
+	void assessPlayerDamage( Transform potentialTarget, float blastRadius )
+	{
+		float distance = Vector3.Distance( potentialTarget.position, transform.position );
+
+		if( distance <= MAXIMUM_IMPACT_DISTANCE_PERCENTAGE * blastRadius )
+		{
+			//The player is really close. He is getting maximum damage and it will kill him.
+			if( getDotProduct( potentialTarget, transform.position ) )
+			{
+				//Explosion is in front of player. He falls backward.
+				potentialTarget.GetComponent<PlayerControl>().killPlayer( DeathType.Obstacle );
+			}
+			else
+			{
+				//Explosion is behind player. He falls forward.
+				potentialTarget.GetComponent<PlayerControl>().killPlayer( DeathType.FallForward );
+			}
+		}
+		else
+		{
+			distance = distance - MAXIMUM_IMPACT_DISTANCE_PERCENTAGE * blastRadius;
+
+			//Slope is (y2 - y1)/(x2 - x1)
+			float slope = ( 0 - PlayerHealth.DEFAULT_HEALTH ) / blastRadius - MAXIMUM_IMPACT_DISTANCE_PERCENTAGE * blastRadius;
+
+			//Linear equation is f(x) = a.x + b
+			int damageReceivedByPlayer = (int) ( slope * distance + PlayerHealth.DEFAULT_HEALTH );
+
+			print("assessPlayerDamage " + damageReceivedByPlayer + " for " + potentialTarget.name );
+
+			//Will this damage kill the player?
+			if ( potentialTarget.GetComponent<PlayerHealth>().getHealth() > damageReceivedByPlayer )
+			{
+				//No it won't. Simply deduct the damage.
+				potentialTarget.GetComponent<PlayerHealth>().deductHealth( damageReceivedByPlayer );
+
+			}
+			else
+			{
+				//Yes it will.
+				if( getDotProduct( potentialTarget, transform.position ) )
+				{
+					//Explosion is in front of player. He falls backward.
+					potentialTarget.GetComponent<PlayerControl>().killPlayer( DeathType.Obstacle );
+				}
+				else
+				{
+					//Explosion is behind player. He falls forward.
+					potentialTarget.GetComponent<PlayerControl>().killPlayer( DeathType.FallForward );
+				}
+			}
+		}
 	}
 
 	/// <summary>

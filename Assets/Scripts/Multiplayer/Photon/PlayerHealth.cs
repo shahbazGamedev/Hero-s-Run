@@ -45,6 +45,11 @@ public class PlayerHealth : Photon.PunBehaviour {
 		}
 	}
 
+	public int getHealth ()
+	{
+		return currentHealth;
+	}
+
 	public void resetHealth ()
 	{
 		if( photonView.isMine ) healthBarHandler.resetHealth();
