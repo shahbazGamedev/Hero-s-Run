@@ -14,7 +14,7 @@ public class TriggerSpecialFall : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.gameObject.CompareTag("Player")  )
+		if( other.CompareTag("Player")  )
 		{
 			playerController.managePlayerDeath(DeathType.SpecialFall);
 		}

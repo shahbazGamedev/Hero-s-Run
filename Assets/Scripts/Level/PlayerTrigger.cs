@@ -55,7 +55,7 @@ public class PlayerTrigger : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.gameObject.CompareTag("Player") && Random.value <= percentageChanceEventTriggered )
+		if( other.CompareTag("Player") && Random.value <= percentageChanceEventTriggered )
 		{
 			//Send an event to interested classes
 			if(playerEnteredTrigger != null) playerEnteredTrigger(eventType, uniqueGameObjectIdentifier );

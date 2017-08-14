@@ -16,7 +16,7 @@ public class TakePictureTrigger : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( useTrigger && other.gameObject.CompareTag("Player") )
+		if( useTrigger && other.CompareTag("Player") )
 		{
 			if(takePictureNowTrigger != null) takePictureNowTrigger( pictureCamera, flashLightIntensity );
 		}

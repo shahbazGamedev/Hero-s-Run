@@ -9,7 +9,7 @@ public class ChickenController : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.gameObject.CompareTag("Player") )
+		if( other.CompareTag("Player") )
 		{
 			Animation anim = transform.parent.GetComponent<Animation>();
 			anim.CrossFade("A_Chicken_Panic");

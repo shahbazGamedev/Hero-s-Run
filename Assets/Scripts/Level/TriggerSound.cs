@@ -10,7 +10,7 @@ public class TriggerSound : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.gameObject.CompareTag("Player") && Random.value <= percentageChanceEventTriggered )
+		if( other.CompareTag("Player") && Random.value <= percentageChanceEventTriggered )
 		{
 			if( objectWithAudioSource != null )
 			{

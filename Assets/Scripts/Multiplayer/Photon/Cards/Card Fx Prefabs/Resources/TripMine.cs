@@ -30,7 +30,7 @@ public class TripMine : CardSpawnedObject {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.gameObject.CompareTag("Player") && other.gameObject.name != casterName )
+		if( other.CompareTag("Player") && other.name != casterName )
 		{
 			startDetonationCountdown();
 		}

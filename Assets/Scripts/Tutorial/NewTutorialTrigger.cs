@@ -27,7 +27,7 @@ public class NewTutorialTrigger : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.gameObject.CompareTag("Player") )
+		if( other.CompareTag("Player") )
 		{
 			if( tutorialEventTriggered != null ) tutorialEventTriggered( tutorialEvent );
 		}

@@ -6,7 +6,7 @@ public class TreasureKey : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.gameObject.CompareTag("Player") )
+		if( other.CompareTag("Player") )
 		{
 			//Because we will be destroying the key game object, we will ask the parent (which does not get destroyed) to play the sound.
 			transform.parent.GetComponent<TreasureKeyHandler>().keyPickedUp();

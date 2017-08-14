@@ -10,7 +10,7 @@ public class JumpPad : Device {
 	{
 		if( state == DeviceState.On )
 		{
-			if( other.gameObject.CompareTag("Player")  )
+			if( other.CompareTag("Player")  )
 			{
 				if( other.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Flying )
 				{	

@@ -207,7 +207,7 @@ public class GhostController : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.gameObject.CompareTag("Player") )
+		if( other.CompareTag("Player") )
 		{
 			print ("Player is touching ghost");
 		}

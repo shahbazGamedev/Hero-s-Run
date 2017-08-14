@@ -50,7 +50,7 @@ public class ZombieTrigger : MonoBehaviour {
 	//Only trigger if by hero or zombie
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.gameObject.CompareTag("Player") )
+		if( other.CompareTag("Player") )
 		{
 			configureWave( Random.Range(0, zombieWaveList.Count ) );
 			ZombieManager.numberOfZombieWavesTriggered++;

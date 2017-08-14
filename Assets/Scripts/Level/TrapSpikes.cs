@@ -39,7 +39,7 @@ public class TrapSpikes : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.gameObject.CompareTag("Player") )
+		if( other.CompareTag("Player") )
 		{
 			//Is the player protected by a Shield Power Up?
 			if( PowerUpManager.isThisPowerUpActive( PowerUpType.Shield ) )

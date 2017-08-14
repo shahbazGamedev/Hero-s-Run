@@ -7,7 +7,7 @@ public class TriggerParticle : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.gameObject.CompareTag("Player") )
+		if( other.CompareTag("Player") )
 		{
 			//Send an event to interested classes
 			if(effect != null) effect.Play();
