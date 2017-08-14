@@ -3,23 +3,26 @@ using System.Collections;
 
 public class Firewall : CardSpawnedObject {
 	
+	int flameDamage;
+
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.gameObject.CompareTag("Player") && other.gameObject.name != casterName )
+		if( other.CompareTag("Player") && other.name != casterName )
 		{
-			//other.GetComponent<PlayerControl>().killPlayer ( DeathType.Flame );
-			other.GetComponent<PlayerHealth>().deductHealth( 30 );
+			other.GetComponent<PlayerHealth>().deductHealth( flameDamage );
 		}
 	}
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
-		object[] data = this.gameObject.GetPhotonView ().instantiationData;
+		object[] data = gameObject.GetPhotonView ().instantiationData;
 
 		casterName = data[0].ToString();
 
 		float delayBeforeSpellExpires = (float) data[1];
 		GameObject.Destroy( gameObject, delayBeforeSpellExpires );
+
+		flameDamage = (int) data[2];
 
 		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
 

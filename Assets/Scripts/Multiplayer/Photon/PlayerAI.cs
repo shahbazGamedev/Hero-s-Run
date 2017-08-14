@@ -62,7 +62,7 @@ public class PlayerAI : AutoPilot {
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha0) )
 		{
-			bch.activateCard( CardName.Stasis );
+			bch.activateCard( CardName.Firewall );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha1) )
 		{

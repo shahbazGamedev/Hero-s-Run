@@ -26,7 +26,7 @@ public class CardFirewall : Card {
 		Vector3 firewallPosition = playerTransform.TransformPoint( spawnOffset );
 		Quaternion firewallRotation = playerTransform.rotation;
 
-		object[] data = new object[2];
+		object[] data = new object[3];
 
 		//We want the caster to be immune to the firewall
 		data[0] = playerTransform.name;
@@ -34,6 +34,7 @@ public class CardFirewall : Card {
 		//We want the firewall to disappear after a while
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
 		data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
+		data[2] = (int) cd.getCardPropertyValue( CardPropertyType.DAMAGE, level );
 
 		PhotonNetwork.InstantiateSceneObject( prefabName, firewallPosition, firewallRotation, 0, data );
 	}

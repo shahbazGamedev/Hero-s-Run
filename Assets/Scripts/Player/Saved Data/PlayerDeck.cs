@@ -57,7 +57,7 @@ public class PlayerDeck {
 	{
 		if( Debug.isDebugBuild )
 		{
-			//addCard( CardName.Firewall, 1, 1, false );
+			addCard( CardName.Firewall, 2, 1, false );
 		}
 	}
 

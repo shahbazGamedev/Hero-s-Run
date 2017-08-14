@@ -23,7 +23,8 @@ public enum CardPropertyType
 	DURATION_WITH_TIMER = 7,
 	TARGET = 8,
 	FLIGHT_SPEED = 9,
-	HEIGHT = 10
+	HEIGHT = 10,
+	DAMAGE = 11
 }
 
 public enum CardPropertyTargetType
