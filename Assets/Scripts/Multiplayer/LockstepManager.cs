@@ -17,7 +17,7 @@ public enum LockstepActionType {
 
 public class LockstepManager : MonoBehaviour {
 
-	[SerializeField] double lockedStepTime = 0.1; //100 ms time per frame. Note: 62.5 ms is the value used in Hero of the Storm
+	[SerializeField] double lockedStepTime = 0.0625; //Note: 62.5 ms is the value used in Hero of the Storm
 	double lastActionTime = 0;
 	public static LockstepManager Instance;
 	public Queue<LockstepAction> lockstepCurrentActionQueue = new Queue<LockstepAction>();
@@ -42,9 +42,17 @@ public class LockstepManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-		if( PhotonNetwork.time - lastActionTime >= lockedStepTime)
+		if( GameManager.Instance.isOnlinePlayMode() )
 		{
-			lastActionTime = PhotonNetwork.time;
+			if( PhotonNetwork.time - lastActionTime >= lockedStepTime)
+			{
+				lastActionTime = PhotonNetwork.time;
+				processQueue();
+			}
+		}
+		else
+		{
+			//When playing offline, might as well process actions immediately
 			processQueue();
 		}
 	}

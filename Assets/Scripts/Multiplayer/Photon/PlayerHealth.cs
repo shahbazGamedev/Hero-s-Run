@@ -11,12 +11,6 @@ public class PlayerHealth : Photon.PunBehaviour {
 	void Start ()
 	{
 		healthBarHandler = HUDMultiplayer.hudMultiplayer.getHealthBarHandler();
-		//Invoke("test", 10f) ;
-	}
-
-	void test ()
-	{
-		healthBarHandler.deductHealth( currentHealth, currentHealth - 50 );
 	}
 
 	public void deductHealth ( int amountToDeduct )
@@ -34,7 +28,7 @@ public class PlayerHealth : Photon.PunBehaviour {
 
 				int newHealth = currentHealth - amountToDeduct;
 
-				healthBarHandler.deductHealth( currentHealth, newHealth );
+				if( photonView.isMine ) healthBarHandler.deductHealth( currentHealth, newHealth );
 
 				currentHealth = newHealth;
 
@@ -53,7 +47,7 @@ public class PlayerHealth : Photon.PunBehaviour {
 
 	public void resetHealth ()
 	{
-		healthBarHandler.resetHealth();
+		if( photonView.isMine ) healthBarHandler.resetHealth();
 		currentHealth = DEFAULT_HEALTH;
 	}
 
