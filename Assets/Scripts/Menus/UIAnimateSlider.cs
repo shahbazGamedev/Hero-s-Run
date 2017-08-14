@@ -13,14 +13,7 @@ public class UIAnimateSlider : MonoBehaviour {
 	
 	public void animateSlider ( float toValue, float duration, System.Action onFinish = null )
 	{
-		if( toValue > 1f ) 
-		{
-			Debug.LogError("When animating the slider " + gameObject.name + " the toValue must be between 0 and 1.");
-		}
-		else
-		{
-			StartCoroutine( sliderAnimate( toValue, duration, onFinish ) );
-		}
+		StartCoroutine( sliderAnimate( toValue, duration, onFinish ) );
 	}
 
 	IEnumerator sliderAnimate( float toValue, float duration, System.Action onFinish = null  )

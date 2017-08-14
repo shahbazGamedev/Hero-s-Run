@@ -1,0 +1,36 @@
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
+public class HealthBarHandler : MonoBehaviour {
+
+	[Header("Health Bar")]
+	[SerializeField] Slider healthBar;
+	[SerializeField] TextMeshProUGUI healthNumber;
+	const float ANIMATION_DURATION_NORMAL = 0.8f;
+	const float ANIMATION_DURATION_FAST = 0.2f;
+
+	public void deductHealth (int currentHealth, int newHealth, System.Action onFinish = null )
+	{
+	float animationSpeed;
+		if( newHealth == 0 )
+		{
+			//Player will die because his health is zero so animate super fast.
+			animationSpeed = ANIMATION_DURATION_FAST;
+		}
+		else
+		{
+			animationSpeed = ANIMATION_DURATION_NORMAL;
+		}
+		healthBar.GetComponent<UIAnimateSlider>().animateSlider( newHealth, animationSpeed, onFinish );
+		healthNumber.GetComponent<UISpinNumber>().spinNumber( "{0}", currentHealth, newHealth, animationSpeed, false );			
+	}
+
+	public void resetHealth ()
+	{
+		healthNumber.text = PlayerHealth.DEFAULT_HEALTH.ToString();
+		healthBar.value = PlayerHealth.DEFAULT_HEALTH;			
+	}
+	
+}

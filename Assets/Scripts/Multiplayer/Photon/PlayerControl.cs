@@ -20,7 +20,8 @@ public enum DeathType {
 		GreatFall = 13,
 		FallForward = 14,
 		Turned_Wrong_Way = 15,
-		Exited_Without_Turning = 16
+		Exited_Without_Turning = 16,
+		NO_MORE_HEALTH = 17
 
 }
 
@@ -1823,6 +1824,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		gravity = DEFAULT_GRAVITY;
 		moveDirection = new Vector3(0,0,0);
 		playerCamera.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING;
+		GetComponent<PlayerHealth>().resetHealth();
 	}
 
 	//Called when a player lands after respawn.
@@ -1933,11 +1935,17 @@ public class PlayerControl : Photon.PunBehaviour {
 		//This is probably a Unity bug.
 		if( other.CompareTag( "deadEnd" ) )
 		{
-			isInDeadEnd = true;
-			wantToTurn = false;
+			if( photonView.isMine )
+			{
+				//Do normal turn logic
+				isInDeadEnd = true;
+				wantToTurn = false;
 
-			currentDeadEndType = other.GetComponent<deadEnd>().deadEndType;
-			deadEndTrigger = other;
+				currentDeadEndType = other.GetComponent<deadEnd>().deadEndType;
+				deadEndTrigger = other;
+				//Force peers to be positioned at the beginning of the deadEnd trigger.
+				photonView.RPC("deadEndEnterRPC", PhotonTargets.Others, transform.position, transform.rotation);
+			}
 		}
 		//For the Great Fall trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
 		else if( other.CompareTag( "Great Fall" ) )
@@ -2047,16 +2055,22 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			if( other.CompareTag( "deadEnd" ) )
 			{
-				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight && currentDeadEndType != DeadEndType.LeftStraight && getCharacterState() != PlayerCharacterState.Flying )
+				if( photonView.isMine )
 				{
-					Debug.LogWarning("OnTriggerExit player exited dead end without turning " + other.name + " " + isInDeadEnd + " " + deadEndTurnDone + " " + currentDeadEndType );
-					killPlayer ( DeathType.Exited_Without_Turning );
+					//Do normal turn logic
+					if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight && currentDeadEndType != DeadEndType.LeftStraight && getCharacterState() != PlayerCharacterState.Flying )
+					{
+						Debug.LogWarning("OnTriggerExit player exited dead end without turning " + other.name + " " + isInDeadEnd + " " + deadEndTurnDone + " " + currentDeadEndType );
+						killPlayer ( DeathType.Exited_Without_Turning );
+					}
+					//Reset values
+					isInDeadEnd = false;
+					deadEndTurnDone = false;
+					deadEndTrigger = null;
+					wantToTurn = false;
+					//Force peers to be positioned at the exit of the deadEnd trigger.
+					photonView.RPC("deadEndExitRPC", PhotonTargets.Others, transform.position, transform.rotation);
 				}
-				//Reset values
-				isInDeadEnd = false;
-				deadEndTurnDone = false;
-				deadEndTrigger = null;
-				wantToTurn = false;
 			}
 			else if( other.name == "ZiplineTrigger" )
 			{

@@ -36,6 +36,8 @@ public class HUDMultiplayer : MonoBehaviour {
 	[SerializeField] PhotonView minimapPhotonView;
 	[Header("Emotes")]
 	[SerializeField] GameObject emotePanel;
+	[Header("Health Bar")]
+	[SerializeField] HealthBarHandler healthBarHandler;
 
 	//Event management used to notify players to start running
 	public delegate void StartRunningEvent();
@@ -64,6 +66,11 @@ public class HUDMultiplayer : MonoBehaviour {
 	{
 		//Slide in circuit name and icon
 		slideInCircuitDetails();
+	}
+
+	public HealthBarHandler getHealthBarHandler()
+	{
+		return healthBarHandler;
 	}
 
 	public void startCountdown()
