@@ -27,6 +27,7 @@ public class CardSpawnedObject : MonoBehaviour {
 	protected const float DELAY_BEFORE_DESTROY_EFFECTS = 1.3f;
 
 	const float MAXIMUM_IMPACT_DISTANCE_PERCENTAGE = 0.2f;
+	const float EXPLOSION_FORCE = 1500f;
 
 	protected void setSpawnedObjectState( SpawnedObjectState newState )
 	{
@@ -224,6 +225,17 @@ public class CardSpawnedObject : MonoBehaviour {
 
 	protected void destroyAllTargetsWithinBlastRadius( float blastRadius, bool includePlayers )
 	{
+		//To add a dramatic effect, make all of the objects that have the Movable layer and a rigidbody move because of the shockwave.
+		float halfRadius = blastRadius * 0.5f;
+		Collider[] movableHitColliders = Physics.OverlapSphere( transform.position, blastRadius, MaskHandler.getMaskOnlyMovable() );
+		for( int i = 0; i < movableHitColliders.Length; i++ )
+		{
+			if( movableHitColliders[i].attachedRigidbody != null )
+			{
+				movableHitColliders[i].attachedRigidbody.AddExplosionForce( EXPLOSION_FORCE, movableHitColliders[i].transform.position, halfRadius, EXPLOSION_FORCE );
+			}
+		}
+
 		Collider[] hitColliders;
 		if( includePlayers )
 		{
@@ -233,6 +245,7 @@ public class CardSpawnedObject : MonoBehaviour {
 		{
 			hitColliders = Physics.OverlapSphere( transform.position, blastRadius, MaskHandler.getMaskWithoutPlayerWithLevelDestructible() );
 		}
+
 
 		for( int i = 0; i < hitColliders.Length; i++ )
 		{
@@ -253,8 +266,12 @@ public class CardSpawnedObject : MonoBehaviour {
 				//The player is in the IDLE state after crossing the finish line for example.
 				if( potentialTarget.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle && potentialTarget.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
 				{
-					valid = true;
-					assessPlayerDamage( potentialTarget, blastRadius );
+					//Ignore the caster
+					if( potentialTarget.name != casterName )
+					{
+						valid = true;
+						assessPlayerDamage( potentialTarget, blastRadius );
+					}
 				}
 				break;
 	                
@@ -317,9 +334,9 @@ public class CardSpawnedObject : MonoBehaviour {
 			//Will this damage kill the player?
 			if ( potentialTarget.GetComponent<PlayerHealth>().getHealth() > damageReceivedByPlayer )
 			{
-				//No it won't. Simply deduct the damage.
+				//No it won't. Simply deduct the damage and make the player stumble.
 				potentialTarget.GetComponent<PlayerHealth>().deductHealth( damageReceivedByPlayer );
-
+				potentialTarget.GetComponent<PlayerControl>().stumble();
 			}
 			else
 			{
