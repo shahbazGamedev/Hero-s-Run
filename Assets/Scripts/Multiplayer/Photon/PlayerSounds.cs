@@ -54,11 +54,6 @@ public class PlayerSounds : MonoBehaviour {
 		playSound( dyingSound, false );
 	}
 
-	public void playFireDyingSound()
-	{
-		playSound( deathFireSound, false );
-	}
-
 	public void groundTypeChanged( string groundType )
 	{
 		this.groundType = groundType;

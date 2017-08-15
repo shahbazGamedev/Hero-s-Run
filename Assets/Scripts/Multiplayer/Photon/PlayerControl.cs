@@ -1639,7 +1639,6 @@ public class PlayerControl : Photon.PunBehaviour {
 				break;
 		
 			case DeathType.Flame:
-				playerSounds.playFireDyingSound();
 				setAnimationTrigger(DeathWallTrigger);
 				break;
 	                

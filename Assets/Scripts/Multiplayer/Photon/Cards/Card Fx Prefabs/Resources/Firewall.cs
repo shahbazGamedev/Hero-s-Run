@@ -4,11 +4,13 @@ using System.Collections;
 public class Firewall : CardSpawnedObject {
 	
 	int flameDamage;
+	[SerializeField] AudioClip onFlameContact;
 
 	void OnTriggerEnter(Collider other)
 	{
 		if( other.CompareTag("Player") && other.name != casterName )
 		{
+			other.GetComponent<AudioSource>().PlayOneShot(onFlameContact);
 			other.GetComponent<PlayerHealth>().deductHealth( flameDamage );
 		}
 	}
