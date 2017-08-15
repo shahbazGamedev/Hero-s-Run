@@ -9,11 +9,26 @@ public class HealthBarHandler : MonoBehaviour {
 	[SerializeField] Slider healthBar;
 	[SerializeField] TextMeshProUGUI healthNumber;
 	const float ANIMATION_DURATION_NORMAL = 0.8f;
-	const float ANIMATION_DURATION_FAST = 0.2f;
+	const float ANIMATION_DURATION_FAST = 0.3f;
+
+	void OnEnable()
+	{
+		PlayerRace.crossedFinishLine += CrossedFinishLine;
+	}
+	
+	void OnDisable()
+	{
+		PlayerRace.crossedFinishLine -= CrossedFinishLine;
+	}
+
+	void CrossedFinishLine( Transform player, int officialRacePosition, bool isBot )
+	{
+		healthBar.gameObject.SetActive( false );
+	}
 
 	public void deductHealth (int currentHealth, int newHealth, System.Action onFinish = null )
 	{
-	float animationSpeed;
+		float animationSpeed;
 		if( newHealth == 0 )
 		{
 			//Player will die because his health is zero so animate super fast.

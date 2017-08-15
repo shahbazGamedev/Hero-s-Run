@@ -57,6 +57,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	PlayerRun playerRun;
 	PlayerSpell playerSpell;
 	PlayerRace playerRace;
+	PlayerHealth playerHealth;
 	#endregion
 
 	#region Hash IDs for player animations	
@@ -221,6 +222,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerRun = GetComponent<PlayerRun>();
 		playerSpell = GetComponent<PlayerSpell>();
 		playerRace = GetComponent<PlayerRace>();
+		playerHealth = GetComponent<PlayerHealth>();
 
 		//Cache the string to avoid the runtime lookup
 		backInTheGameString = LocalizationManager.Instance.getText( "MINIMAP_BACK_IN_GAME" );
@@ -1555,6 +1557,8 @@ public class PlayerControl : Photon.PunBehaviour {
 		this.tileWherePlayerDied = tileWherePlayerDied;
 		changeColliderAxis( Axis.Z );
 		ignorePlayerCollisions( true );
+
+		playerHealth.deductHealth( playerHealth.getHealth() );
 
 		Debug.Log("playerDiedRPC : " + deathTypeValue + " " + gameObject.name );
 
