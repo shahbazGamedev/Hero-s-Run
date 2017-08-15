@@ -76,6 +76,10 @@ public sealed class BotCardHandler : MonoBehaviour {
 			Debug.LogError("The battle deck for " + botHero.userName + " does not contain " +  TurnRibbonHandler.NUMBER_CARDS_IN_BATTLE_DECK + " cards. This is set in HeroManager." );
 			battleDeck = null;
 		}
+		if( !battleDeck.Exists( card => card.name == botHero.reservedCard ) )
+		{
+			Debug.LogError("The battle deck for the bot " + botHero.userName + " and using the hero " + botHero.name + " does not contain the appropriate hero card. It should contain: " + botHero.reservedCard + ". Also make sure the flag inBattleDeck is set to true." );
+		}
 		return battleDeck;
 	}
 	
