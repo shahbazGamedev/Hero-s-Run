@@ -6,11 +6,22 @@ public class PlayerHealth : Photon.PunBehaviour {
 	public const int DEFAULT_HEALTH = 100;
 	public int currentHealth = DEFAULT_HEALTH;
 	HealthBarHandler healthBarHandler;
+	PlayerAI playerAI;
 
 	// Use this for initialization
 	void Start ()
 	{
+		playerAI = GetComponent<PlayerAI>();
 		healthBarHandler = HUDMultiplayer.hudMultiplayer.getHealthBarHandler();
+	}
+
+	public void deductAllHealth ()
+	{
+		if( PhotonNetwork.isMasterClient )
+		{
+			if( photonView.isMine && playerAI == null ) healthBarHandler.deductHealth( currentHealth, 0 );
+			this.photonView.RPC("changeHealthRPC", PhotonTargets.All, 0 );
+		}
 	}
 
 	public void deductHealth ( int amountToDeduct )
@@ -28,9 +39,7 @@ public class PlayerHealth : Photon.PunBehaviour {
 
 				int newHealth = currentHealth - amountToDeduct;
 
-				if( photonView.isMine ) healthBarHandler.deductHealth( currentHealth, newHealth );
-
-				currentHealth = newHealth;
+				if( photonView.isMine && playerAI == null ) healthBarHandler.deductHealth( currentHealth, newHealth );
 
 				if( newHealth == 0 )
 				{
@@ -39,7 +48,7 @@ public class PlayerHealth : Photon.PunBehaviour {
 				}
 				else
 				{
-					this.photonView.RPC("changeHealthRPC", PhotonTargets.Others, newHealth );
+					this.photonView.RPC("changeHealthRPC", PhotonTargets.All, newHealth );
 				}
 			}
 		}
@@ -52,8 +61,11 @@ public class PlayerHealth : Photon.PunBehaviour {
 
 	public void resetHealth ()
 	{
-		if( photonView.isMine ) healthBarHandler.resetHealth();
-		currentHealth = DEFAULT_HEALTH;
+		if( PhotonNetwork.isMasterClient )
+		{
+			if( photonView.isMine && playerAI == null ) healthBarHandler.resetHealth();
+			this.photonView.RPC("changeHealthRPC", PhotonTargets.All, DEFAULT_HEALTH );
+		}
 	}
 
 	[PunRPC]

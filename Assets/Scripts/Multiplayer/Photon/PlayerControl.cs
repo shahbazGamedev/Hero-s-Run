@@ -1558,7 +1558,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		changeColliderAxis( Axis.Z );
 		ignorePlayerCollisions( true );
 
-		playerHealth.deductHealth( playerHealth.getHealth() );
+		if( deathTypeValue != DeathType.NO_MORE_HEALTH ) playerHealth.deductAllHealth();
 
 		Debug.Log("playerDiedRPC : " + deathTypeValue + " " + gameObject.name );
 
@@ -1828,7 +1828,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		gravity = DEFAULT_GRAVITY;
 		moveDirection = new Vector3(0,0,0);
 		playerCamera.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING;
-		GetComponent<PlayerHealth>().resetHealth();
+		playerHealth.resetHealth();
 	}
 
 	//Called when a player lands after respawn.
