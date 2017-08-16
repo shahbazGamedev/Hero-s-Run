@@ -1,0 +1,112 @@
+fileFormatVersion: 2
+guid: d4f765299991f9e418f3c097a6ce6baf
+timeCreated: 1480511372
+licenseType: Store
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Body
+    100002: //RootNode
+    100004: Drone
+    100006: Eye.L
+    100008: Eye.R
+    100010: Eyes
+    100012: EyesGlow
+    100014: Glass
+    100016: Gun.L
+    100018: Gun.R
+    100020: LaserPointer
+    100022: Root
+    100024: Shoulder.L
+    100026: Shoulder.R
+    100028: Skeleton
+    400000: Body
+    400002: //RootNode
+    400004: Drone
+    400006: Eye.L
+    400008: Eye.R
+    400010: Eyes
+    400012: EyesGlow
+    400014: Glass
+    400016: Gun.L
+    400018: Gun.R
+    400020: LaserPointer
+    400022: Root
+    400024: Shoulder.L
+    400026: Shoulder.R
+    400028: Skeleton
+    4300000: EyesGlow
+    4300002: LaserPointer
+    4300004: Drone
+    4300006: Glass
+    4300008: Eyes
+    9500000: //RootNode
+    13700000: Drone
+    13700002: Eyes
+    13700004: EyesGlow
+    13700006: Glass
+    13700008: LaserPointer
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

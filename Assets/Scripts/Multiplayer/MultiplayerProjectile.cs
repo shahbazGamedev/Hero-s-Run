@@ -9,7 +9,7 @@ public class MultiplayerProjectile : MonoBehaviour {
 	[SerializeField] ParticleSystem impactParticleSystem;
 	[SerializeField] AudioClip inFlightSound;
 	[SerializeField] AudioClip collisionSound;
-	float bolt_force = 1500f;
+	float bolt_force = 1600f;
 	SentryController sentryController;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
@@ -17,6 +17,7 @@ public class MultiplayerProjectile : MonoBehaviour {
 		object[] data = gameObject.GetPhotonView ().instantiationData;
 		launchProjectile((Vector3) data[0], (float) data[2] );
 		int sentryPhotonViewID = (int) data[1]; 
+		if( sentryPhotonViewID == -1 ) return;
 		//Find out which Sentry fired this projectile.
 		//If the projectile hits a target, we can tell the Sentry to play a victory sound and animation.
 		SentryController[] sentryControllers = GameObject.FindObjectsOfType<SentryController>();
