@@ -8,7 +8,7 @@ using UnityEngine;
 public class CardSmokeBomb : Card {
 
 	[SerializeField]  string prefabName;
-	Vector3 offset = new Vector3( 0, 1.3f, 3f );
+	Vector3 offset = new Vector3( 0, 1.3f, 4.5f );
 
 	public void activateCard ( int photonViewId, int level )
 	{

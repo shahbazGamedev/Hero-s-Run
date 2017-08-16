@@ -17,7 +17,7 @@ public class PlayerInput : PunBehaviour {
 
 	#region Accelerometer
 	bool isTiltingEnabled = false;
-	const float ACCELEROMETER_TILT_THRESHOLD = 0.33f;
+	const float ACCELEROMETER_TILT_THRESHOLD = 0.28f;
 	#endregion
 
 	// Use this for initialization
@@ -135,7 +135,7 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.N ) )
 		{
-			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Cloak, GameManager.Instance.playerProfile.getUserName(), 2 );
+			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Stasis, GameManager.Instance.playerProfile.getUserName(), 2 );
 		}
 		else if ( Input.GetKeyDown (KeyCode.O ) )
 		{
