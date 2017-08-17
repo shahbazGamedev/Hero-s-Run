@@ -264,6 +264,17 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardCloak component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+			case CardName.Health_Boost:
+				CardHealthBoost cardHealthBoost = GetComponent<CardHealthBoost>();
+				if( cardHealthBoost != null )
+				{
+					cardHealthBoost.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardHealthBoost component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -394,6 +405,9 @@ public class CardHandler : MonoBehaviour {
 			//Cloak is effective anytime
 			case CardName.Cloak:
 				return true;
+			//Health Boost is effective when your current health is less than 80% of MAX. Health
+			case CardName.Health_Boost:
+				return ( caster.GetComponent<PlayerHealth>().getHealth() < 0.8f * PlayerHealth.DEFAULT_HEALTH );
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;

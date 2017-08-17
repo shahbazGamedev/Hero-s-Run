@@ -1551,6 +1551,16 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 	}
 
+	public void localKillPlayer( DeathType deathTypeValue )
+	{
+		//Only proceed if the player is isMine and he is not dying already
+		if (photonView.isMine && playerCharacterState != PlayerCharacterState.Dying )
+		{
+			Debug.Log("PlayerControl-killPlayer : " + deathTypeValue + " name " + gameObject.name );
+			this.photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, deathTypeValue, currentTile.name );
+		}
+	}
+
 	[PunRPC]
 	void playerDiedRPC( DeathType deathTypeValue, string tileWherePlayerDied )
 	{
@@ -1946,7 +1956,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 			//Auto-turn
 			bool autoTurn = true;
-			if( autoTurn && playerAI == null )
+			if( autoTurn && playerAI == null && !photonView.isMine )
 			{
 				if ( currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftStraight )
 				{
@@ -2069,7 +2079,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight && currentDeadEndType != DeadEndType.LeftStraight && getCharacterState() != PlayerCharacterState.Flying )
 				{
 					Debug.LogWarning("OnTriggerExit player exited dead end without turning " + other.name + " " + isInDeadEnd + " " + deadEndTurnDone + " " + currentDeadEndType );
-					killPlayer ( DeathType.Exited_Without_Turning );
+					localKillPlayer ( DeathType.Exited_Without_Turning );
 				}
 				//Reset values
 				isInDeadEnd = false;

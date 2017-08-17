@@ -58,6 +58,7 @@ public class PlayerDeck {
 		if( Debug.isDebugBuild )
 		{
 			addCard( CardName.Firewall, 2, 1, false );
+			addCard( CardName.Health_Boost, 2, 1, false );
 		}
 	}
 
