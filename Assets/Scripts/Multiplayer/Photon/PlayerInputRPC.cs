@@ -24,28 +24,6 @@ public class PlayerInputRPC : PunBehaviour {
 	}
 
 	[PunRPC]
-	//Sent by isMine client only.
-	void deadEndEnterRPC( Vector3 syncPosition, float syncRotationY )
-	{
-		//Force all clients to be at the beginning of the dead end trigger
-		transform.position = syncPosition;
-		transform.eulerAngles = new Vector3( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z );
-		//We may have switched lanes because of the position change. Make sure the lane values are accurate.
-		playerControl.recalculateCurrentLane();
-	}
-
-	[PunRPC]
-	//Sent by isMine client only.
-	void deadEndExitRPC( Vector3 syncPosition, float syncRotationY )
-	{
-		//Force all clients to be at the exit of the dead end trigger
-		transform.position = syncPosition;
-		transform.eulerAngles = new Vector3( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z );
-		//We may have switched lanes because of the position change. Make sure the lane values are accurate.
-		playerControl.recalculateCurrentLane();
-	}
-
-	[PunRPC]
 	void startSlideRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent )
 	{
 		//Debug.Log("startSlide RPC received " + gameObject.name );

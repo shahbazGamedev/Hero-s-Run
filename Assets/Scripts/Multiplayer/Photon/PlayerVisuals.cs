@@ -84,10 +84,10 @@ public class PlayerVisuals : Photon.PunBehaviour {
 			anim.avatar = heroSkin.GetComponent<PlayerSkinInfo>().animatorAvatar;
 			anim.Rebind(); //Important
 			//For debugging only
-			if( Debug.isDebugBuild && LevelManager.Instance.autoPilot ) gameObject.AddComponent<HyperFocus>();
+			if( Debug.isDebugBuild && LevelManager.Instance.autoPilot && photonView.isMine ) gameObject.AddComponent<HyperFocus>();
 		}
 		//Register with the minimap, voiceOverManager and the turn-ribbon
-		if( this.photonView.isMine )
+		if( photonView.isMine )
 		{
 			MiniMap.Instance.registerLocalPlayer( transform );
 			VoiceOverManager.Instance.registerLocalPlayer( transform );
