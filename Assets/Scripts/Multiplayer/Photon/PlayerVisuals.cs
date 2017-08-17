@@ -70,6 +70,8 @@ public class PlayerVisuals : Photon.PunBehaviour {
 	{
 		gameObject.name = info.sender.NickName;
 		HeroManager.HeroCharacter selectedHero = HeroManager.Instance.getHeroCharacter( (int)info.sender.CustomProperties["Hero"] );
+		//Load the voice overs for that hero
+		GetComponent<PlayerVoiceOvers>().initializeVoiceOvers( selectedHero.name );
 		Debug.Log("PlayerVisuals-OnPhotonInstantiate-Hero name: " + selectedHero.name + " Hero Index " + (int)info.sender.CustomProperties["Hero"] + " isMasterClient: " + PhotonNetwork.isMasterClient + " Name: " + info.sender.NickName );
 		if ( PhotonNetwork.isMasterClient )
 		{
@@ -104,6 +106,8 @@ public class PlayerVisuals : Photon.PunBehaviour {
 	void instantiateBot( PhotonMessageInfo info )
 	{
 		HeroManager.BotHeroCharacter botHero = GetComponent<PlayerAI>().botHero;
+		//Load the voice overs for that hero
+		GetComponent<PlayerVoiceOvers>().initializeVoiceOvers( botHero.name );
 
 		//Name our game object
 		gameObject.name = botHero.userName;

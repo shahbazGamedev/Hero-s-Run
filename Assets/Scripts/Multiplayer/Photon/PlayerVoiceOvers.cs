@@ -10,21 +10,9 @@ public class PlayerVoiceOvers : MonoBehaviour {
 	List<VoiceOverManager.VoiceOverData> voiceOverList = new List<VoiceOverManager.VoiceOverData>();
 
 	// Use this for initialization
-	void Start ()
+	public void initializeVoiceOvers ( HeroName heroName )
 	{
-		HeroName heroName;
-		if( GetComponent<PlayerAI>() == null )
-		{
-			//We're the player
-			heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name;
-		}
-		else
-		{
-			//We're a bot
-			heroName = GetComponent<PlayerAI>().botHero.name;
-		}
-		voiceOverList = VoiceOverManager.Instance.getHeroVoiceOverList( heroName );
-		
+		voiceOverList = VoiceOverManager.Instance.getHeroVoiceOverList( heroName );	
 	}
 
 	[PunRPC]
