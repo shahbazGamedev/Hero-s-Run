@@ -20,9 +20,9 @@ public class DroneHandler : CardSpawnedObject {
 
 	//Shooting related
 	float aimSpeed = 12f;
-	float weaponCoolDown = 2f;
+	float weaponCoolDown = 3f;
 	float timeOfLastShot;
-	float aimRange = 80f;
+	float aimRange = 50f;
 	float accuracy = 0.0005f;
 	const float FORWARD_MOVEMENT_ANTICIPATION = 0.15f;
 
