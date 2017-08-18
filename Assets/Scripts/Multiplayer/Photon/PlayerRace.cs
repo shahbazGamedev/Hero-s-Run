@@ -216,6 +216,8 @@ public class PlayerRace : Photon.PunBehaviour
 	{
 		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
 		{
+				print("OnRacePositionChanged new " + newRacePosition + " old " + racePosition + " " + gameObject.name );
+
 			racePosition = newRacePosition;
 			//The bot has a photon view. This photon view, just like the player's, has isMine set to true. But we don't want a bot to affect the HUD, hence we make sure we are not a bot.
 			if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
@@ -258,6 +260,7 @@ public class PlayerRace : Photon.PunBehaviour
 					//We're a bot
 					heroName = 	GetComponent<PlayerAI>().botHero.userName;
 				}
+				print("tookTheLead " + heroName + " " + gameObject.name );
 				MiniMap.Instance.displayMessage( string.Format( tookTheLeadString, heroName ) );
 				GetComponent<PlayerVoiceOvers>().playVoiceOver(VoiceOverType.VO_Took_Lead);
 			}

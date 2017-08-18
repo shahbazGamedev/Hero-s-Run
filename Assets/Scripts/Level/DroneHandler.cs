@@ -55,7 +55,7 @@ public class DroneHandler : CardSpawnedObject {
 		{
 			if( spawnedObjectState == SpawnedObjectState.Functioning )
 			{
-				nearestTarget = getNearestTargetWithinRange( aimRange, MaskHandler.getMaskWithPlayerWithoutLevelDestructible() );
+				nearestTarget = getNearestTargetWithinRange( aimRange, MaskHandler.getMaskOnlyPlayer() );
 			}
 		}
 	}
