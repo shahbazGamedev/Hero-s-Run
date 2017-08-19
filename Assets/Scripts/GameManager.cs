@@ -93,6 +93,7 @@ public class GameManager {
 	public PlayerVoiceLines playerVoiceLines;
 	PlayMode playMode = PlayMode.PlayTwoPlayers;
 	public CloudRegionCode overrideCloudRegionCode = CloudRegionCode.none;
+	public int overrideSector = -1;
 
 	public static GameManager Instance
 	{

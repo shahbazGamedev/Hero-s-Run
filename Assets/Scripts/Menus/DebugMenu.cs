@@ -20,6 +20,7 @@ public class DebugMenu : MonoBehaviour {
 	[SerializeField] Slider trophyOverrideMultiplierSlider;
 	[SerializeField] Text trophyOverrideMultiplierText;
 	[SerializeField] Dropdown regionOverrideDropdown;
+	[SerializeField] Dropdown sectorOverrideDropdown;
 
 	int numberOfTrophies;
 
@@ -69,6 +70,7 @@ public class DebugMenu : MonoBehaviour {
 
 		updateFacebookName();
 		populatePhotonCloudRegionDropdown();
+		populateSectorDropdown();
 	}
 
 	public void OnClickResetSavedData()
@@ -237,6 +239,34 @@ public class DebugMenu : MonoBehaviour {
 	{
 		GameManager.Instance.overrideCloudRegionCode = (CloudRegionCode) regionOverrideDropdown.value;
 		if( PhotonNetwork.connected) PhotonNetwork.Disconnect();
+	}
+	#endregion
+
+	#region Sector override
+	void populateSectorDropdown()
+	{
+		List<string> sectors = new List<string>();
+		string sectorName;
+		for( int i = -1; i < LevelManager.Instance.getLevelData().getNumberOfMultiplayerLevels(); i++ )
+		{
+			if( i == -1 )
+			{
+				sectors.Add( "Don't override" );
+			}
+			else
+			{
+		 		sectorName = LocalizationManager.Instance.getText( "SECTOR_" + i.ToString() );
+				sectors.Add( sectorName );
+			}
+		}
+		sectorOverrideDropdown.AddOptions( sectors );
+		//A value of -1 (None) means do not override
+		sectorOverrideDropdown.value = GameManager.Instance.overrideSector + 1; //we are starting from -1
+	}
+
+	public void OnSectorDropdownValueChanged()
+	{
+		GameManager.Instance.overrideSector = sectorOverrideDropdown.value - 1; //we are starting from -1
 	}
 	#endregion
 	
