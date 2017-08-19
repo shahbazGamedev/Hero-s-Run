@@ -259,9 +259,9 @@ public class CardManager : MonoBehaviour {
 		}
 	}
 
-	public List<CardData> geAllCardsForSector( int selectedSector )
+	public List<CardData> getAllCardsForSector( int selectedSector )
 	{
-		List<CardData> allCardsForSectorList = cardDataList.FindAll(cardData => cardData.sector == selectedSector );
+		List<CardData> allCardsForSectorList = cardDataList.FindAll(cardData => cardData.sector == selectedSector && !HeroManager.Instance.isHeroCard( cardData.name ) );
 		if( allCardsForSectorList.Count > 0 )
 		{
 			return allCardsForSectorList;

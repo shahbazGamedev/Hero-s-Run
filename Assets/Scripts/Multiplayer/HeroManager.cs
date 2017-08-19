@@ -99,6 +99,11 @@ public class HeroManager : MonoBehaviour {
 		}
 	}
 
+	public bool isHeroCard( CardName cardName )
+	{
+		return heroCharacterList.Exists(hero => hero.reservedCard == cardName );
+	}
+
 	public HeroName getRandomHeroName()
 	{
 		List<HeroName> heroNames = getHeroNames();
