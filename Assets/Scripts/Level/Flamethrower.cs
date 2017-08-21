@@ -10,7 +10,7 @@ public class Flamethrower : MonoBehaviour {
 	{
 		if( other.CompareTag("Player") )
 		{
-			other.GetComponent<AudioSource>().PlayOneShot(onFlameContact);
+			GetComponent<AudioSource>().PlayOneShot(onFlameContact);
 			other.GetComponent<PlayerControl>().killPlayer ( DeathType.Flame );
 		}
 	}

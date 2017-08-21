@@ -11,7 +11,7 @@ public class Firewall : CardSpawnedObject {
 	{
 		if( other.CompareTag("Player") && other.name != casterName )
 		{
-			other.GetComponent<AudioSource>().PlayOneShot(onFlameContact);
+			GetComponent<AudioSource>().PlayOneShot(onFlameContact);
 			other.GetComponent<PlayerHealth>().deductHealth( flameDamage );
 		}
 	}
