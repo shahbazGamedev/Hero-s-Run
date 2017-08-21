@@ -32,6 +32,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 	PlayerControl playerControl;
 	PlayerRace playerRace;
 	PlayerSpell playerSpell;
+	PlayerHealth playerHealth;
 
 	//Delegate used to communicate to other classes when the local player has played a card
 	public delegate void CardPlayedEvent( CardName name, int level );
@@ -64,6 +65,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		this.playerControl = playerControl;
 		playerRace = playerControl.GetComponent<PlayerRace>();
 		playerSpell = playerControl.GetComponent<PlayerSpell>();
+		playerHealth = playerControl.GetComponent<PlayerHealth>();
 	}
 
 	void addCardToTurnRibbon( int index, CardName cardName )
@@ -163,6 +165,23 @@ public class TurnRibbonHandler : MonoBehaviour {
 					//We have no targets within range. Make the text red.
 					buttonTexts[0].color = Color.red;
 				}
+			}
+		}
+		if( card.doesCardHaveThisProperty( CardPropertyType.HEALTH ) )
+		{
+			Button buttonOfCard = turnRibbonButtonList[indexInTurnRibbon];
+			TextMeshProUGUI[] buttonTexts = buttonOfCard.GetComponentsInChildren<TextMeshProUGUI>();
+			
+			//Is the player at maximum health?
+			if( playerHealth.isFullHealth() )
+			{
+				//Yes. Make the text red to indicate that it would be wasteful to use a health potion.
+				buttonTexts[0].color = Color.red;				
+			}
+			else
+			{
+				//No. Make the text white.
+				buttonTexts[0].color = Color.white;
 			}
 		}
 	}

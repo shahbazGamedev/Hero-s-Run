@@ -24,7 +24,9 @@ public class CardHealthBoost : Card {
 
 		//Calculate the new health value, but do not exceed the maximum.
 		int newHealth = Mathf.Min( currentHealth + healthBoost, PlayerHealth.DEFAULT_HEALTH );
-		playerTransform.GetComponent<PhotonView>().RPC("changeHealthRPC", PhotonTargets.AllViaServer, newHealth );
+
+		//Don't send an RPC if the newHealth is equal to the currentHealth.
+		if( newHealth != currentHealth ) playerTransform.GetComponent<PhotonView>().RPC("changeHealthRPC", PhotonTargets.AllViaServer, newHealth );
 
 	}
 	#endregion

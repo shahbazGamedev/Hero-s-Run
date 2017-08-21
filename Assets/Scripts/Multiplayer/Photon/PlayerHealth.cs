@@ -55,6 +55,11 @@ public class PlayerHealth : Photon.PunBehaviour {
 		return currentHealth;
 	}
 
+	public bool isFullHealth()
+	{
+		return currentHealth == DEFAULT_HEALTH;
+	}
+
 	[PunRPC]
 	void changeHealthRPC( int newHealth )
 	{
