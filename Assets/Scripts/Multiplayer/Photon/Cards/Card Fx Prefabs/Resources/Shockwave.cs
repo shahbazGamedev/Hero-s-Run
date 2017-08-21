@@ -5,6 +5,16 @@ public class Shockwave : CardSpawnedObject {
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
+		//Note that the Shockwave Effect child object is disabled.
+		//We will enable it when the card gets activated by the lockstep manager.
+		//This will cause both the particle system and audio to play.
+		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Shockwave );
+		lsa.cardSpawnedObject = this;
+		LockstepManager.Instance.addActionToQueue( lsa );
+	}
+
+	public override void activateCard()
+	{
 		object[] data = this.gameObject.GetPhotonView ().instantiationData;
 		int casterViewId = (int) data[0];
 		Transform caster = getCaster( casterViewId );
@@ -26,7 +36,10 @@ public class Shockwave : CardSpawnedObject {
 		//Shake the camera
 		caster.GetComponent<PlayerCamera>().Shake();
 
+		Transform shockwaveEffect = transform.FindChild("Shockwave Effect");
+		shockwaveEffect.gameObject.SetActive( true );
 		destroyAllTargetsWithinBlastRadius( radius, true );
+		GameObject.Destroy( gameObject, 3 );
 	}
 
 }

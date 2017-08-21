@@ -8,7 +8,7 @@ using UnityEngine;
 /// </summary>
 public class CardForceField : Card {
 
-	[SerializeField]  string prefabName = "ForceField";
+	[SerializeField]  string prefabName = "Force Field";
 
 	public void activateCard ( int photonViewId, int level )
 	{
@@ -24,16 +24,13 @@ public class CardForceField : Card {
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
-		object[] data = new object[3];
-
-		//We want the caster to be able to run through the ice wall.
-		data[0] = playerTransform.name;
+		object[] data = new object[2];
 
 		//We want the force field to disappear after a while.
-		data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
+		data[0] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
 
 		//Height.
-		data[2] = cd.getCardPropertyValue( CardPropertyType.HEIGHT, level );
+		data[1] = cd.getCardPropertyValue( CardPropertyType.HEIGHT, level );
 
 		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( spawnOffset ), playerTransform.rotation, 0, data );
 	}

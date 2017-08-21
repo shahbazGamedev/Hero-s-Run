@@ -11,7 +11,6 @@ using UnityEngine;
 public class CardLightning : Card {
 
 	[SerializeField]  string lightningPrefabName = "Lightning";
-	Vector3 offset = new Vector3( 0, 1f, 1f );
 
 	public void activateCard ( int photonViewId, int level )
 	{
@@ -47,7 +46,7 @@ public class CardLightning : Card {
 			if( randomTarget != playerTransform ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
 
 			//Spawn a lightning on the nearest player or creature
-			Vector3 lightningPosition = randomTarget.transform.TransformPoint( offset );
+			Vector3 lightningPosition = randomTarget.transform.TransformPoint( spawnOffset );
 			PhotonNetwork.InstantiateSceneObject( lightningPrefabName, lightningPosition, randomTarget.rotation, 0, null );
 	
 			//Kill nearest target

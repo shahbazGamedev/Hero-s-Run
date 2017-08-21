@@ -16,7 +16,7 @@ public class StasisController : CardSpawnedObject {
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
 		//Note that the Stasis sphere prefab has its MeshRenderer and SphereCollider disabled.
-		//We will enable them only when the card gets activated by the lockstep manager.
+		//We will enable them when the card gets activated by the lockstep manager.
 		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Stasis );
 		lsa.cardSpawnedObject = this;
 		LockstepManager.Instance.addActionToQueue( lsa );

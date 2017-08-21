@@ -13,12 +13,21 @@ public class TripMine : CardSpawnedObject {
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
+		//Note that the Trip Mine prefab has its MeshRenderer disabled and trigger box collider.
+		//We will enable them only when the card gets activated by the lockstep manager.
+		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Trip_Mine );
+		lsa.cardSpawnedObject = this;
+		LockstepManager.Instance.addActionToQueue( lsa );
+	}
+
+	public override void activateCard()
+	{
 		object[] data = this.gameObject.GetPhotonView ().instantiationData;
 
 		casterName = data[0].ToString();
 
-		float delayBeforeSpellExpires = (float) data[1];
-		GameObject.Destroy( gameObject, delayBeforeSpellExpires );
+		float delayBeforeExpires = (float) data[1];
+		GameObject.Destroy( gameObject, delayBeforeExpires );
 
 		blastRadius = (float) data[2];
 
@@ -26,6 +35,11 @@ public class TripMine : CardSpawnedObject {
 
 		//Position the trip mine flush with the ground and try to center it in the middle of the road if possible.
 		positionSpawnedObject( 0 );
+
+		//We can now make the trip mine visible and triggerable
+		GetComponent<BoxCollider>().enabled = true;
+		transform.FindChild("Sci-fi Mine base").GetComponent<MeshRenderer>().enabled = true;
+		transform.FindChild("Sci-fi Mine leg").GetComponent<MeshRenderer>().enabled = true;
 	}
 
 	void OnTriggerEnter(Collider other)
@@ -56,21 +70,5 @@ public class TripMine : CardSpawnedObject {
 		effect.Play();
 		//Destroy the particle effect after a few seconds
 		GameObject.Destroy( effect.gameObject, 3f );
-	}
-
-	void Update()
-	{
-		#if UNITY_EDITOR
-		handleKeyboard();
-		#endif
-	}
-
-	private void handleKeyboard()
-	{
-		//Also support keys for debugging
-		if ( Input.GetKeyDown (KeyCode.Y) ) 
-		{
-			startDetonationCountdown();
-		}
 	}
 }

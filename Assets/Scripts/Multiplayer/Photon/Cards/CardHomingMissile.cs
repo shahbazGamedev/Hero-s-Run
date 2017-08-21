@@ -13,7 +13,6 @@ public class CardHomingMissile : Card {
 
 	public void activateCard ( int photonViewId, int level )
 	{
-		spawnOffset = new Vector3( 0, 5f, -7f );
 		if( isAllowed( photonViewId ) ) this.photonView.RPC("cardHomingMissileMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
 	}
 

@@ -9,7 +9,6 @@ using UnityEngine;
 public class CardTripMine : Card {
 
 	[SerializeField]  string prefabName;
-	Vector3 offset = new Vector3( 0, 0, 10f );
 
 	public void activateCard ( int photonViewId, int level )
 	{
@@ -36,7 +35,7 @@ public class CardTripMine : Card {
 		data[2] = cd.getCardPropertyValue( CardPropertyType.RADIUS, level );
 
 		//Spawn a mine on the floor a few meters in front of the player
-		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( offset ), playerTransform.rotation, 0, data );
+		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( spawnOffset ), playerTransform.rotation, 0, data );
 	}
 	#endregion
 

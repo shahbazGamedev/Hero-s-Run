@@ -6,7 +6,8 @@ using System.Linq;
 public class Card : Photon.PunBehaviour {
 
 	public CardName  cardName;
-	protected Vector3 spawnOffset = new Vector3( 0, 0, 10f );
+	[Tooltip("The spawn offset is used to determine where to spawn the object relative to the caster. This value is ALSO used to determine if you are allowed to spawn an object in certain areas. For example, we would not want the player to spawn an object inside the finish line area.")]
+	public Vector3 spawnOffset;
 
 	protected PlayerControl getPlayerControl( int photonViewID )
 	{

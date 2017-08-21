@@ -40,6 +40,13 @@ public class SentryController : CardSpawnedObject {
 	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
+		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Sentry );
+		lsa.cardSpawnedObject = this;
+		LockstepManager.Instance.addActionToQueue( lsa );
+	}
+
+	public override void activateCard()
+	{
 		findOwner( gameObject.GetPhotonView ().instantiationData );
 	}
 
@@ -90,7 +97,7 @@ public class SentryController : CardSpawnedObject {
 	{
 		//We don't want the sentry to shoot while paused.
 		//Remember that in multiplayer the time scale is not set to 0 while paused.
-		if( GameManager.Instance.getGameState() == GameState.Normal )
+		if( GameManager.Instance.getGameState() == GameState.Normal && casterTransform != null )
 		{
 			followPlayer();
 			detectNearestTarget();

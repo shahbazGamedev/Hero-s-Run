@@ -11,9 +11,21 @@ public class Grenade : CardSpawnedObject {
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
+		//Note that the Grenade prefab has its MeshRenderer disabled.
+		//We will enable it when the card gets activated by the lockstep manager.
+		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Grenade );
+		lsa.cardSpawnedObject = this;
+		LockstepManager.Instance.addActionToQueue( lsa );
+	}
+
+	public override void activateCard()
+	{
 		object[] data = this.gameObject.GetPhotonView ().instantiationData;
 
 		casterName = data[0].ToString();
+
+		//We can now make the Grenade visible
+		GetComponent<MeshRenderer>().enabled = true;
 
 		StartCoroutine( startDetonationCountdown( (float) data[1] ) );
 	}

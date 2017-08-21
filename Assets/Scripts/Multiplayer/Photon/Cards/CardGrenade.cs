@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -8,7 +7,6 @@ using UnityEngine;
 public class CardGrenade : Card {
 
 	[SerializeField]  string prefabName;
-	Vector3 offset = new Vector3( 0, 1.2f, 2f );
 
 	public void activateCard ( int photonViewId, int level )
 	{
@@ -25,14 +23,14 @@ public class CardGrenade : Card {
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
 		object[] data = new object[2];
 
-		//We want the caster to be immune to the spell
+		//We want the caster to be immune to the blast
 		data[0] = playerTransform.name;
 
 		//We want to transmit the blast radius
 		data[1] = cd.getCardPropertyValue( CardPropertyType.RADIUS, level );
 
 		//Drop the grenade in front of the player at arm's length. It has a rigidbody and hence it has gravity and will fall to the ground.
-		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( offset ), playerTransform.rotation, 0, data );
+		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( spawnOffset ), playerTransform.rotation, 0, data );
 	}
 	#endregion
 

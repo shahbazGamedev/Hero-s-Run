@@ -293,11 +293,6 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void StartRunningEvent()
 	{
-		startRunning();
-	}
-
-	public void startRunning()
-	{	
 		//The player starts off running
 		setAnimationTrigger(RunTrigger);
 		setCharacterState( PlayerCharacterState.StartRunning );
