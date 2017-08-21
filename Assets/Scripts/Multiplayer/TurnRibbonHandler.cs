@@ -10,6 +10,8 @@ public class TurnRibbonHandler : MonoBehaviour {
 	[SerializeField] CardHandler cardHandler;
 	[SerializeField] Transform cardPanel;
 	[SerializeField] GameObject cardPrefab;
+	[Tooltip("The text color to use for the card name if the card in the turn-ribbon is currently not effective e.g. you have a Health Boost card but your health is already at maximum.")]
+	[SerializeField] Color cardNotEffectiveTextColor;
 	[Header("Next Card")]
 	[SerializeField] Image nextCardImage;
 	[SerializeField] Text nextCardText;
@@ -163,7 +165,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 				else
 				{
 					//We have no targets within range. Make the text red.
-					buttonTexts[0].color = Color.red;
+					buttonTexts[0].color = cardNotEffectiveTextColor;
 				}
 			}
 		}
@@ -176,7 +178,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 			if( playerHealth.isFullHealth() )
 			{
 				//Yes. Make the text red to indicate that it would be wasteful to use a health potion.
-				buttonTexts[0].color = Color.red;				
+				buttonTexts[0].color = cardNotEffectiveTextColor;				
 			}
 			else
 			{
