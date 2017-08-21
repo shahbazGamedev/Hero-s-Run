@@ -78,8 +78,8 @@ public class HomingMissile : CardSpawnedObject {
 		homingMissile.velocity = Vector3.zero;
 		homingMissile = null;
 
-		//Play collision sound at point of impact
-		AudioSource.PlayClipAtPoint( collisionSound, collision.contacts[0].point );
+		//Play collision sound.
+		GetComponent<AudioSource>().PlayOneShot( collisionSound );
 
 		if( impactParticleSystem != null )
 		{

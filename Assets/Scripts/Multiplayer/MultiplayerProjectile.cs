@@ -45,8 +45,8 @@ public class MultiplayerProjectile : MonoBehaviour {
 	{
 	    GetComponent<Rigidbody>().velocity = Vector3.zero;
 
-		//Play collision sound at point of impact
-		AudioSource.PlayClipAtPoint( collisionSound, collision.contacts[0].point );
+		//Play collision sound.
+		GetComponent<AudioSource>().PlayOneShot( collisionSound );
 
 		if( impactParticleSystem != null )
 		{
