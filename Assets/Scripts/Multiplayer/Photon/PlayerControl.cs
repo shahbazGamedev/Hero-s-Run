@@ -1468,7 +1468,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			capsuleCollider.attachedRigidbody.isKinematic = true;
 			setAnimationTrigger(Idle_LookTrigger);
 			ziplineAttachPoint = transform.FindChild("Zipline Attach Point");
-			Debug.Log("attachToZipline for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient + " isMine: " + this.photonView.isMine + " view ID: " + this.photonView.viewID + " owner ID: " + this.photonView.ownerId );
 			ziplineAttachPoint.localPosition = new Vector3( 0, 2.15f, 0 );
 			ziplineAttachPoint.localEulerAngles = new Vector3( 0, 0, 0 );
 			ziplineAttachPoint.GetComponent<AudioSource>().Play();
@@ -1532,27 +1531,17 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Player Death
 	/// <summary>
 	/// This is the official way to kill the player. Do not call playerDiedRPC directly.
-	/// This method verifies that it is the master client before sending the playerDiedRPC.
+	/// This method verifies that isMine is true before sending the playerDiedRPC.
 	/// The playerDiedRPC call is sent to All.
 	/// </summary>
 	/// <param name="deathTypeValue">Death type value.</param>
 	public void killPlayer( DeathType deathTypeValue )
 	{
-		//Only proceed if the player is the master client and he is not dying already
-		if ( PhotonNetwork.isMasterClient && playerCharacterState != PlayerCharacterState.Dying )
+		//Only proceed if not dying already
+		if ( photonView.isMine && playerCharacterState != PlayerCharacterState.Dying )
 		{
 			Debug.Log("PlayerControl-killPlayer : " + deathTypeValue + " name " + gameObject.name );
-			this.photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, deathTypeValue, currentTile.name );
-		}
-	}
-
-	public void localKillPlayer( DeathType deathTypeValue )
-	{
-		//Only proceed if the player is isMine and he is not dying already
-		if (photonView.isMine && playerCharacterState != PlayerCharacterState.Dying )
-		{
-			Debug.Log("PlayerControl-killPlayer : " + deathTypeValue + " name " + gameObject.name );
-			this.photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, deathTypeValue, currentTile.name );
+			photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, deathTypeValue, currentTile.name );
 		}
 	}
 
@@ -1764,7 +1753,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		
 		//Reposition dead body at the respawn location.
 		//Don't use the currentTile which is local since it may be out of sync.
-		//Use the name of the tile sent by the master client when the player died.
+		//Use the name of the tile sent when the player died.
 		GameObject tileWherePlayerDiedGameObject = GameObject.Find( tileWherePlayerDied );
 		GameObject respawnLocationObject = tileWherePlayerDiedGameObject.transform.Find("respawnLocation").gameObject;
 
@@ -1985,6 +1974,8 @@ public class PlayerControl : Photon.PunBehaviour {
 					//This flag is set to avoid tileEntranceCrossed being called multiple time which can happen with onTriggerEnter.
 					//This flag is set to false when a tile is added.
 					si.entranceCrossed = true;
+					//Every time a new tile is entered, force synchronization
+					forcePositionSynchronization();
 				}
 				currentTilePos = si.transform.position;
 				currentTile = si.gameObject;
@@ -2010,6 +2001,21 @@ public class PlayerControl : Photon.PunBehaviour {
 			if( PhotonNetwork.isMasterClient ) this.photonView.RPC("detachFromZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 		}
   	}
+
+	void forcePositionSynchronization()
+	{
+		if( photonView.isMine ) this.photonView.RPC("positionSynchronizationRPC", PhotonTargets.Others, transform.position, capsuleCollider.attachedRigidbody.velocity, PhotonNetwork.time );
+	}
+
+	[PunRPC]
+	void positionSynchronizationRPC( Vector3 syncPosition, Vector3 syncVelocity, double photonTime )
+	{
+		//Discard old packets
+		if( PhotonNetwork.time - photonTime > 0.5 ) return;
+
+		float syncDelay = (float) (PhotonNetwork.time - photonTime);
+		transform.position = syncPosition + syncVelocity * syncDelay;
+	}
 
 	void OnTriggerStay(Collider other)
 	{
@@ -2074,7 +2080,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight && currentDeadEndType != DeadEndType.LeftStraight && getCharacterState() != PlayerCharacterState.Flying )
 				{
 					Debug.LogWarning("OnTriggerExit player exited dead end without turning " + other.name + " " + isInDeadEnd + " " + deadEndTurnDone + " " + currentDeadEndType );
-					localKillPlayer ( DeathType.Exited_Without_Turning );
+					killPlayer ( DeathType.Exited_Without_Turning );
 				}
 				//Reset values
 				isInDeadEnd = false;

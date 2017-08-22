@@ -162,25 +162,29 @@ public class PlayerRace : Photon.PunBehaviour
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( PhotonNetwork.isMasterClient )
+		if( this.photonView.isMine )
 		{
 			if( other.CompareTag("Finish Line") )
 			{
 				//Player has reached the finish line
 				playerCrossedFinishLine = true;
-				if( !officialRacePositionList.Contains(this) ) officialRacePositionList.Add( this );
-				int officialRacePosition = officialRacePositionList.FindIndex(playerRace => playerRace == this);
-				Debug.Log ("Finish Line crossed by " + gameObject.name + " in race position " + officialRacePosition + " players " + players.Count);
-				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllViaServer, other.transform.position.z, raceDuration, distanceTravelled, officialRacePosition );
-				//if this is the first player to cross the finish line, start the End of Race countdown.
-				if( officialRacePositionList.Count == 1 )
+				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllViaServer, other.transform.position.z, raceDuration, distanceTravelled, racePosition );
+
+				if( PhotonNetwork.isMasterClient )
 				{
-					this.photonView.RPC("StartEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
-				}
-				else if( officialRacePositionList.Count == players.Count )
-				{
-					//Every player has crossed the finish line. We can stop the countdown and return everyone to the lobby.
-					this.photonView.RPC("CancelEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
+					if( !officialRacePositionList.Contains(this) ) officialRacePositionList.Add( this );
+					int officialRacePosition = officialRacePositionList.FindIndex(playerRace => playerRace == this);
+					Debug.Log ("Finish Line crossed by " + gameObject.name + " in race position " + officialRacePosition + " players " + players.Count);
+					//if this is the first player to cross the finish line, start the End of Race countdown.
+					if( officialRacePositionList.Count == 1 )
+					{
+						this.photonView.RPC("StartEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
+					}
+					else if( officialRacePositionList.Count == players.Count )
+					{
+						//Every player has crossed the finish line. We can stop the countdown and return everyone to the lobby.
+						this.photonView.RPC("CancelEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
+					}
 				}
 			}
 		}

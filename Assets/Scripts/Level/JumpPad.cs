@@ -14,9 +14,8 @@ public class JumpPad : Device {
 			{
 				if( other.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Flying )
 				{	
-					//Only the Master Client can trigger the jump.
-					//The Master Client stops moving until the RPC action gets processed.			
-					if( PhotonNetwork.isMasterClient )
+					//The client stops moving until the RPC action gets processed.			
+					if( other.GetComponent<PhotonView>().isMine )
 					{				
 						GetComponent<AudioSource>().Play();
 						other.GetComponent<PlayerControl>().enablePlayerMovement( false );

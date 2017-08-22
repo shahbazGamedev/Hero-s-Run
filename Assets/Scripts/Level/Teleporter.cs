@@ -32,9 +32,8 @@ public class Teleporter : Device {
 	{
 		if( type == TeleporterType.Transmitter && state == DeviceState.On )
 		{
-			//Only the Master Client can trigger the teleporter.
-			//The Master Client stops moving until the RPC action gets processed.			
-			if( other.CompareTag("Player") && PhotonNetwork.isMasterClient )
+			//The client stops moving until the RPC action gets processed.			
+			if( other.CompareTag("Player") && other.GetComponent<PhotonView>().isMine )
 			{
 				GetComponent<AudioSource>().Play();
 				other.GetComponent<PlayerControl>().enablePlayerMovement( false );
