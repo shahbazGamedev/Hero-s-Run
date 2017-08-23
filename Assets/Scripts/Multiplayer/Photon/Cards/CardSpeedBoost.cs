@@ -32,6 +32,7 @@ public class CardSpeedBoost : Card {
 			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
 			{
 				startSpeedBoost( spellDuration, speedMultiplier, PlayerRace.players[i].GetComponent<PlayerRun>(), PlayerRace.players[i].GetComponent<PhotonView>().isMine && PlayerRace.players[i].GetComponent<PlayerAI>() == null );
+				break;
 			}
 		}
 	}
@@ -43,6 +44,7 @@ public class CardSpeedBoost : Card {
 		StartCoroutine( playerRun.addVariableSpeedMultiplier( SpeedMultiplierType.Raging_Bull, speedMultiplier, 0.5f ) );
 		playerRun.GetComponent<PlayerSounds>().playSound( soundFx, false );
 		StartCoroutine( stopSpeedBoost( spellDuration, playerRun, isMine) );
+		playerRun.GetComponent<PlayerSpell>().isRagingBullActive = true;
 	}
 
 	IEnumerator stopSpeedBoost( float spellDuration, PlayerRun playerRun, bool isMine )
@@ -52,6 +54,7 @@ public class CardSpeedBoost : Card {
 		playerRun.GetComponent<PlayerSounds>().stopAudioSource();
 		StartCoroutine( playerRun.removeVariableSpeedMultiplier( SpeedMultiplierType.Raging_Bull, 0.5f ) );
 		playerRun.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Raging_Bull );
+		playerRun.GetComponent<PlayerSpell>().isRagingBullActive = false;
 	}
 
 }

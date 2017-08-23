@@ -19,7 +19,7 @@ public class DroneHandler : CardSpawnedObject {
 	Transform nearestTarget = null;
 
 	//Shooting related
-	float aimSpeed = 12f;
+	[SerializeField] float seekSpeed = 3f;
 	float weaponCoolDown = 3f;
 	float timeOfLastShot;
 	float aimRange = 50f;
@@ -91,8 +91,20 @@ public class DroneHandler : CardSpawnedObject {
 	{
 		if( nearestTarget != null )
 		{
-			//The sentry has a target. Turn towards it at aimSpeed.
-			transform.rotation = Quaternion.Lerp( transform.rotation, getDesiredRotation( 0 ), Time.deltaTime * aimSpeed );
+			//The sentry has a target. Change lane to face it at seekSpeed.
+			float nearestTargetRotationY = Mathf.Floor( nearestTarget.eulerAngles.y );
+			Vector3 targetPosition;
+			if( nearestTargetRotationY == 0 )
+			{
+				//Target is running South-North. Use X.
+				targetPosition = new Vector3( nearestTarget.position.x, transform.position.y, transform.position.z );
+			}
+			else
+			{
+				//Target is running West-East. Use Z.
+				targetPosition = new Vector3( transform.position.x, transform.position.y, nearestTarget.position.z );
+			}
+			transform.position = Vector3.MoveTowards( transform.position, targetPosition, Time.deltaTime * seekSpeed );
 			//Verify if we can hit the nearest target
 			aim();
 		}
@@ -102,7 +114,7 @@ public class DroneHandler : CardSpawnedObject {
 			Quaternion desiredRotation = initialRotation; 
 			desiredRotation.x = 0f;
 			desiredRotation.z = 0f;
-			transform.rotation = Quaternion.Lerp( transform.rotation, initialRotation, Time.deltaTime * aimSpeed );
+			transform.rotation = Quaternion.Lerp( transform.rotation, initialRotation, Time.deltaTime * seekSpeed );
 		}
 	}
 

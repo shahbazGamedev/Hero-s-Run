@@ -34,6 +34,9 @@ public class PlayerSpell : PunBehaviour {
 	bool isInvisible = false;
 	#endregion
 
+	#region Raging Bull
+	public bool isRagingBullActive = false;
+	#endregion
 
 	#region Cached for performance
 	PlayerControl playerControl;
@@ -412,8 +415,9 @@ public class PlayerSpell : PunBehaviour {
 	#region Speedboost a.k.a. Raging Bull
 	public void cancelRagingBull()
 	{
-		if( isCardActive(CardName.Raging_Bull) )
+		if( isRagingBullActive )
 		{
+			isRagingBullActive = false;
 			if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) Camera.main.GetComponent<MotionBlur>().enabled = false;
 			GetComponent<PlayerSounds>().stopAudioSource();
 			removeActiveCard( CardName.Raging_Bull );

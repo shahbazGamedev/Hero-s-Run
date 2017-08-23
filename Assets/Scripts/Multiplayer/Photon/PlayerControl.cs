@@ -1545,6 +1545,22 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// This is the official way to kill the player. Do not call playerDiedRPC directly.
+	/// This method verifies that isMine is true before sending the playerDiedRPC.
+	/// The playerDiedRPC call is sent to All.
+	/// </summary>
+	/// <param name="deathTypeValue">Death type value.</param>
+	public void killPlayerIsMaster( DeathType deathTypeValue )
+	{
+		//Only proceed if not dying already
+		if ( PhotonNetwork.isMasterClient && playerCharacterState != PlayerCharacterState.Dying )
+		{
+			Debug.Log("PlayerControl-killPlayerMaster : " + deathTypeValue + " name " + gameObject.name );
+			photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, deathTypeValue, currentTile.name );
+		}
+	}
+
 	[PunRPC]
 	void playerDiedRPC( DeathType deathTypeValue, string tileWherePlayerDied )
 	{
@@ -1998,7 +2014,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
  		else if( other.CompareTag( "DetachZiplineTrigger" ) )
 		{
-			if( PhotonNetwork.isMasterClient ) this.photonView.RPC("detachFromZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
+			if( photonView.isMine ) this.photonView.RPC("detachFromZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 		}
   	}
 
@@ -2015,6 +2031,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		float syncDelay = (float) (PhotonNetwork.time - photonTime);
 		transform.position = syncPosition + syncVelocity * syncDelay;
+		recalculateCurrentLane();
 	}
 
 	void OnTriggerStay(Collider other)

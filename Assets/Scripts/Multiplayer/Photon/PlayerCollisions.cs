@@ -86,7 +86,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					if( normal.y < 0.4f )
 					{
 						//If this player ran squarely into another player while using SpeedBoost (i.e. Raging Bull), kill the other player.
-						if( playerSpell.isCardActive(CardName.Raging_Bull) )
+						if( playerSpell.isRagingBullActive )
 						{
 							PlayerControl otherPlayer = collided.GetComponent<PlayerControl>();
 							if( otherPlayer.getCharacterState() != PlayerCharacterState.Dying || otherPlayer.getCharacterState() != PlayerCharacterState.Idle )
@@ -100,7 +100,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					if( normal.y < 0.4f )
 					{
 						//This player ran squarely into a destructible object.
-						if( playerSpell.isCardActive(CardName.Raging_Bull) )
+						if( playerSpell.isRagingBullActive )
 						{
 							//Speedboost is active. Fracture the object.
 							FracturedObject fracturedObject = collided.GetComponent<FracturedObject>();

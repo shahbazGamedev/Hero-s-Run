@@ -31,6 +31,9 @@ public class PlayerRun : Photon.PunBehaviour {
 
 	float defaultOverallSpeedMultiplier = 1f; //this value may be overriden in the debug menu
 	float overallSpeedMultiplier; //this value is multiplied by levelRunStartSpeed to give the run speed
+	//Used to cap the speed multiplier value so the player does not run too fast especially when stacking up
+	//multiple multipliers (Sprint, plus Raging Bull, plus Cloak for instance).
+	const float MAX_OVERALL_SPEED_MULTIPLIER = 1.7f;
 
 	//The speed to reduce to after crossing finish line
 	const float SLOW_DOWN_END_SPEED = 5f;
@@ -270,6 +273,8 @@ public class PlayerRun : Photon.PunBehaviour {
 		{
 			overallSpeedMultiplier = overallSpeedMultiplier * activeSpeedMultipliersList[i].multiplier;
 		}
+		//Cap the overall speed multiplier to MAX_OVERALL_SPEED_MULTIPLIER
+		overallSpeedMultiplier = Mathf.Min( overallSpeedMultiplier, MAX_OVERALL_SPEED_MULTIPLIER );
 		runSpeed = levelRunStartSpeed * overallSpeedMultiplier;
 		
 		//Now update the run/sprint blend factor

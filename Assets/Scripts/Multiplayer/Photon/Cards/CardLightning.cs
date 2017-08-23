@@ -63,7 +63,7 @@ public class CardLightning : Card {
 
 	void strike( Transform nearestTarget )
 	{
-		nearestTarget.GetComponent<PlayerControl>().killPlayer( DeathType.Obstacle );
+		nearestTarget.GetComponent<PlayerControl>().killPlayerIsMaster( DeathType.Obstacle );
 		MiniMap.Instance.displaySecondaryIcon( nearestTarget.GetComponent<PhotonView>().viewID, (int)CardName.Lightning, 2.5f );
 	}
 
