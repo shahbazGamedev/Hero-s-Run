@@ -4,6 +4,8 @@ using System.Collections;
 public class Firewall : CardSpawnedObject {
 	
 	int flameDamage;
+	const float DELAY_BEFORE_DESTROYING = 2.2f;
+
 	[SerializeField] AudioClip onFlameContact;
 	[SerializeField] GameObject flames;
 
@@ -27,12 +29,16 @@ public class Firewall : CardSpawnedObject {
 
 	public override void activateCard()
 	{
+		StartCoroutine( activate() );
+	}
+
+	IEnumerator activate()
+	{
 		object[] data = gameObject.GetPhotonView ().instantiationData;
 
 		casterName = data[0].ToString();
 
 		float delayBeforeSpellExpires = (float) data[1];
-		GameObject.Destroy( gameObject, delayBeforeSpellExpires );
 
 		flameDamage = (int) data[2];
 
@@ -42,8 +48,19 @@ public class Firewall : CardSpawnedObject {
 		positionSpawnedObject();
 
 		GetComponent<BoxCollider>().enabled = true;
+
 		flames.SetActive( true );
+
+		yield return new WaitForSeconds( delayBeforeSpellExpires );
+
+		//Firewall has expired.
+		GetComponent<BoxCollider>().enabled = false;
+		flames.GetComponentInChildren<ParticleSystem>().Stop( true );
+		//The flames plays the looping fire sound.
+		//Reduce the volume
+		StartCoroutine( dimVolume( flames.GetComponent<AudioSource>(), DELAY_BEFORE_DESTROYING ) );
+		//Give time for the flames to dissipate before destroying object
+		yield return new WaitForSeconds(DELAY_BEFORE_DESTROYING);
+		GameObject.Destroy( gameObject );
 	}
-
-
 }

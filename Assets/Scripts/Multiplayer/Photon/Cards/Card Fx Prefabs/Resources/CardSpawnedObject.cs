@@ -375,4 +375,17 @@ public class CardSpawnedObject : MonoBehaviour {
 		}
 	}
 
+	protected IEnumerator dimVolume( AudioSource audioSource, float duration )
+	{
+		float elapsedTime = 0;	
+		float startVolume = audioSource.volume;
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			audioSource.volume = Mathf.Lerp( startVolume, 0, elapsedTime/duration );
+			yield return new WaitForEndOfFrame();  
+			
+		} while ( elapsedTime < duration );
+	}
+
 }
