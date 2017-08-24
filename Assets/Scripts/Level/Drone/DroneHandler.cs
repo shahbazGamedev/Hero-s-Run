@@ -4,14 +4,10 @@ using UnityEngine;
 
 public class DroneHandler : CardSpawnedObject {
 
-	[Header("Sentry")]
-	Vector3 sentryOffsetToPlayer = new Vector3( 0.8f, 2.3f, 0 );
-	public float speed = 1000;
-   	RaycastHit hit;
-    [SerializeField] GameObject projectilePrefab;
-    public Transform spawnPositionLeft;
-    public Transform spawnPositionRight;
-
+	[Header("Drone")]
+	[SerializeField] float projectileSpeed = 1000;
+    [SerializeField] Transform spawnPositionLeft;
+    [SerializeField] Transform spawnPositionRight;
 	
 	[Header("Sound Effects")]
 	[SerializeField] AudioSource audioSource;
@@ -22,7 +18,7 @@ public class DroneHandler : CardSpawnedObject {
 	const float DELAY_BEFORE_DESTROY_EFFECTS = 1.3f;
 
 	//Target
-	Transform nearestTarget = null;
+	public Transform nearestTarget = null;
 
 	//Shooting related
 	[SerializeField] float seekSpeed = 3f;
@@ -31,14 +27,17 @@ public class DroneHandler : CardSpawnedObject {
 	float aimRange = 50f;
 	float accuracy = 0.0005f;
 	const float FORWARD_MOVEMENT_ANTICIPATION = 0.15f;
+   	RaycastHit hit;
 
 	Quaternion initialRotation;
+	Vector3 initialPosition;
 
 	#region Initialisation
 	void Start()
 	{
 		setSpawnedObjectState( SpawnedObjectState.Functioning );
 		initialRotation = transform.rotation;
+		initialPosition = transform.position;
 	}
 	#endregion
 
@@ -50,7 +49,7 @@ public class DroneHandler : CardSpawnedObject {
 		if( GameManager.Instance.getGameState() == GameState.Normal )
 		{
 			detectNearestTarget();
-			//lookAtTarget();
+			lookAtTarget();
 		}
 	}
 
@@ -66,38 +65,11 @@ public class DroneHandler : CardSpawnedObject {
 		}
 	}
 
-	/// <summary>
-	/// Gets the desired rotation for aiming and shooting.
-	/// The forward adjustment parameter is used to anticipate the player's movement.
-	/// Typically you use 0 when aiming and 0.5 when shooting.
-	/// For example, with a value of 0.24, the missile will head for a position 0.24 meters in front of the player.
-	/// Since the missile has a limited velocity and the player is moving very fast, this gives the missile more accuracy. 
-	/// </summary>
-	/// <returns>The desired rotation.</returns>
-	/// <param name="forwardAdjustment">Forward adjustment.</param>
-	Quaternion getDesiredRotation( float forwardAdjustment )
-	{
-		float heightAdjustment = 0;
-		if( nearestTarget.CompareTag("Player") )
-		{
-			//The transform position of the player is at his feet. Let's aim at his neck.
-			heightAdjustment = 1.2f;
-		}
-		else
-		{
-			//For other objects, aim a bit above the center of the object
-			heightAdjustment = nearestTarget.localScale.y * 0.01f;
-		}
-		Vector3 targetCenter = nearestTarget.TransformPoint(0, heightAdjustment, forwardAdjustment );
-		Vector3 relativePos = targetCenter - transform.position;
-		return Quaternion.LookRotation( relativePos ); 
-	}
-
 	void lookAtTarget()
 	{
 		if( nearestTarget != null )
 		{
-			//The sentry has a target. Change lane to face it at seekSpeed.
+			//The drone has a target. Change lane to face it at seekSpeed.
 			float nearestTargetRotationY = Mathf.Floor( nearestTarget.eulerAngles.y );
 			Vector3 targetPosition;
 			if( nearestTargetRotationY == 0 )
@@ -111,56 +83,21 @@ public class DroneHandler : CardSpawnedObject {
 				targetPosition = new Vector3( transform.position.x, transform.position.y, nearestTarget.position.z );
 			}
 			transform.position = Vector3.MoveTowards( transform.position, targetPosition, Time.deltaTime * seekSpeed );
+
+			//Now orient the drone so that it aims towards the player
+			transform.LookAt(nearestTarget.position);
+			//Cap the X angle
+			float xAngle = Mathf.Min( transform.eulerAngles.x, 30f );
+			transform.rotation = Quaternion.Euler (xAngle, 180f, 0 );
+
 			//Verify if we can hit the nearest target
-			aim();
-		}
+			shoot();
+ 		}
 		else
 		{
-			//The sentry does not have a target. Resume looking in the same direction as the player.
-			Quaternion desiredRotation = initialRotation; 
-			desiredRotation.x = 0f;
-			desiredRotation.z = 0f;
+			//The drone doesn't have a target. Go back to the initial position and rotation.
 			transform.rotation = Quaternion.Lerp( transform.rotation, initialRotation, Time.deltaTime * seekSpeed );
-		}
-	}
-
-	void aim()
-	{
-		//Verify if we can hit the nearest target
-		RaycastHit hit;
-		gameObject.layer = MaskHandler.ignoreRaycastLayer;
-		if (Physics.Raycast(transform.position, transform.forward, out hit, aimRange ))
-		{
-			if( hit.collider.transform == nearestTarget )
-			{
-				//shoot();
-				newShoot();
-			}
-		}
-		gameObject.layer = MaskHandler.destructibleLayer;
-	}
-
-	void shoot()
-	{
-		if( Time.time - timeOfLastShot > weaponCoolDown )
-		{
-			timeOfLastShot = Time.time;
-
-			transform.rotation = getDesiredRotation( FORWARD_MOVEMENT_ANTICIPATION );
-
-			//The sentry is not perfectly accurate when shooting.
-			Vector3 direction = transform.forward;
-			direction.x += Random.Range( -accuracy, accuracy );
-			direction.y += Random.Range( -accuracy, accuracy );
-			direction.z += Random.Range( -accuracy, accuracy );
-	
-			//Create missile
-			object[] data = new object[3];
-			data[0] = direction;
-			data[1] = -1;
-			//Self-destruct time for missile
-			data[2] = 10f;
-			PhotonNetwork.InstantiateSceneObject( "Sentry Missile", transform.position + transform.forward.normalized, Quaternion.Euler( direction ), 0, data );
+			transform.position = Vector3.MoveTowards( transform.position, initialPosition, Time.deltaTime * seekSpeed );
 		}
 	}
 
@@ -168,27 +105,28 @@ public class DroneHandler : CardSpawnedObject {
 	{
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-			newShoot();
+			shoot();
         }
 	}
 
-	void newShoot()
+	void shoot()
 	{
-		if (Physics.Raycast( spawnPositionLeft.position, transform.forward, out hit, 100f))
+		if( nearestTarget == null ) return;
+		if( Time.time - timeOfLastShot > weaponCoolDown )
 		{
-			GameObject projectileL = Instantiate(projectilePrefab, spawnPositionLeft.position, Quaternion.identity) as GameObject;
-			projectileL.transform.LookAt(hit.point);
-			projectileL.GetComponent<Rigidbody>().AddForce(projectileL.transform.forward * speed);
-		}
-
-		if (Physics.Raycast( spawnPositionRight.position, transform.forward, out hit, 100f))
-		{
-			GameObject projectileR = Instantiate(projectilePrefab, spawnPositionRight.position, Quaternion.identity) as GameObject;
-			projectileR.transform.LookAt(hit.point);
-			projectileR.GetComponent<Rigidbody>().AddForce(projectileR.transform.forward * speed);
+			timeOfLastShot = Time.time;
+			//Create projectiles
+			object[] data = new object[6];
+			data[0] = projectileSpeed;
+			data[1] = aimRange;
+			data[2] = nearestTarget.TransformPoint(0.25f,0.8f,0);
+			data[3] = nearestTarget.TransformPoint(-0.25f,0.8f,0);
+			data[4] = spawnPositionLeft.position;
+			data[5] = spawnPositionRight.position;
+			PhotonNetwork.InstantiateSceneObject( "Drone Projectiles", transform.position, transform.rotation, 0, data );
 		}
 	}
-
+	
 	#endregion
 
 	public override void destroySpawnedObjectNow()

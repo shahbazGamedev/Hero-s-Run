@@ -10,7 +10,7 @@ public class SciFiProjectileScript : MonoBehaviour
     public GameObject muzzleParticle;
     public GameObject[] trailParticles;
     [HideInInspector]
-    public Vector3 impactNormal; //Used to rotate impactparticle.
+    public Vector3 impactNormal; //Used to rotate impact particle.
 
     private bool hasCollided = false;
 
@@ -36,14 +36,12 @@ public class SciFiProjectileScript : MonoBehaviour
             impactParticle = Instantiate(impactParticle, transform.position, Quaternion.FromToRotation(Vector3.up, impactNormal)) as GameObject;
             //Debug.DrawRay(hit.contacts[0].point, hit.contacts[0].normal * 1, Color.yellow);
 
-            if (hit.gameObject.tag == "Destructible") // Projectile will destroy objects tagged as Destructible
+            if ( hit.collider.CompareTag("Player") )
             {
-                Destroy(hit.gameObject);
+                hit.collider.GetComponent<PlayerHealth>().deductHealth( 20 );
             }
 
-
-            //yield WaitForSeconds (0.05);
-            foreach (GameObject trail in trailParticles)
+             foreach (GameObject trail in trailParticles)
             {
                 GameObject curTrail = transform.Find(projectileParticle.name + "/" + trail.name).gameObject;
                 curTrail.transform.parent = null;
@@ -52,8 +50,7 @@ public class SciFiProjectileScript : MonoBehaviour
             Destroy(projectileParticle, 3f);
             Destroy(impactParticle, 5f);
             Destroy(gameObject);
-            //projectileParticle.Stop();
-        }
+         }
     }
 }
 }
