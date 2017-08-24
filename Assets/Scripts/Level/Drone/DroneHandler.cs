@@ -2,21 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DroneHandler : CardSpawnedObject {
+public class DroneHandler : MonoBehaviour {
 
 	[Header("Drone")]
 	[SerializeField] float projectileSpeed = 1000;
     [SerializeField] Transform spawnPositionLeft;
     [SerializeField] Transform spawnPositionRight;
 	
-	[Header("Sound Effects")]
-	[SerializeField] AudioSource audioSource;
-	[SerializeField] List<SentrySoundData> sentrySoundList = new List<SentrySoundData>();
-
-	[Header("Particle Systems")]
-	[SerializeField] ParticleSystem onDestroyFx;
-	const float DELAY_BEFORE_DESTROY_EFFECTS = 1.3f;
-
 	//Target
 	public Transform nearestTarget = null;
 
@@ -24,18 +16,14 @@ public class DroneHandler : CardSpawnedObject {
 	[SerializeField] float seekSpeed = 3f;
 	[SerializeField] float weaponCoolDown = 2f;
 	float timeOfLastShot;
-	[SerializeField] float aimRange = 50f;
-	[SerializeField] float accuracy = 0.0005f;
-	const float FORWARD_MOVEMENT_ANTICIPATION = 0.15f;
-   	RaycastHit hit;
+	[SerializeField] float aimRange = 70f;
 
-	public Quaternion initialRotation;
+	Quaternion initialRotation;
 	Vector3 initialPosition;
 
 	#region Initialisation
 	void Start()
 	{
-		setSpawnedObjectState( SpawnedObjectState.Functioning );
 		initialRotation = transform.localRotation;
 		initialPosition = transform.position;
 	}
@@ -48,20 +36,7 @@ public class DroneHandler : CardSpawnedObject {
 		//Remember that in multiplayer the time scale is not set to 0 while paused.
 		if( GameManager.Instance.getGameState() == GameState.Normal )
 		{
-			detectNearestTarget();
 			lookAtTarget();
-		}
-	}
-
-	void detectNearestTarget()
-	{
-		//Only the master client can shoot at targets
-		if( PhotonNetwork.isMasterClient )
-		{
-			if( spawnedObjectState == SpawnedObjectState.Functioning )
-			{
-				nearestTarget = getNearestTargetWithinRange( aimRange, MaskHandler.getMaskOnlyPlayer() );
-			}
 		}
 	}
 
@@ -113,13 +88,13 @@ public class DroneHandler : CardSpawnedObject {
 	{
 		if( nearestTarget == null ) return;
 
-		//Verify if we can hit the nearest target
-		RaycastHit hit;
-		if (Physics.Raycast(transform.position, transform.forward, out hit, aimRange ))
+		if( Time.time - timeOfLastShot > weaponCoolDown )
 		{
-			if( hit.collider.transform == nearestTarget )
+			//Verify if we can hit the nearest target
+			RaycastHit hit;
+			if (Physics.Raycast(transform.position, transform.forward, out hit, aimRange ))
 			{
-				if( Time.time - timeOfLastShot > weaponCoolDown )
+				if( hit.collider.transform == nearestTarget )
 				{
 					timeOfLastShot = Time.time;
 
@@ -139,78 +114,26 @@ public class DroneHandler : CardSpawnedObject {
 	
 	#endregion
 
-	public override void destroySpawnedObjectNow()
+	void OnTriggerEnter(Collider other)
 	{
-		StartCoroutine( destroySpawnedObject( 0, DELAY_BEFORE_DESTROY_EFFECTS ) );
-	}
-
-	IEnumerator destroySpawnedObject( float delayBeforeSentryExpires, float delayBeforeDestroyEffects )
-	{
-		GetComponent<SphereCollider>().enabled = false;
-		yield return new WaitForSeconds(delayBeforeSentryExpires);
-		//casterTransform.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Sentry );
-		setSpawnedObjectState(SpawnedObjectState.BeingDestroyed);
-		nearestTarget = null;
-		StopCoroutine( "changeMaterialOnCreate" );
-		GetComponent<Renderer>().material = onDestroy;
-		playSoundEffect( Emotion.Sad, true );
-
-		yield return new WaitForSeconds(delayBeforeDestroyEffects);
-		//MiniMap.Instance.hideSecondaryIcon( casterGameObject );
-		onDestroyFx.transform.SetParent( null );
-		onDestroyFx.Play();
-		Destroy( gameObject );
-		Destroy( onDestroyFx.gameObject, 3f );
-	}
-
-	#region Sound
-	public void playSoundEffect( Emotion emotion, bool forcePlay = false )
-	{
-		//Don't interrupt the current sound effect for another one.
-		if( audioSource.isPlaying && !forcePlay ) return;
-
-		//Do we have one or more sound effects that match?
-		List<SentrySoundData> availableSoundsList = sentrySoundList.FindAll(soundClip => ( soundClip.emotion == emotion ) );
-
-		if( availableSoundsList.Count > 0 )
+		if( PhotonNetwork.isMasterClient )
 		{
-			if( availableSoundsList.Count == 1 )
+			if( other.CompareTag( "Player" ) )
 			{
-				audioSource.PlayOneShot( availableSoundsList[0].clip );
-			}
-			else
-			{
-				//We have multiple entries that match. Let's play a random one.
-				int random = Random.Range( 0, availableSoundsList.Count );
-				audioSource.PlayOneShot(  availableSoundsList[random].clip );
+				if( nearestTarget == null ) nearestTarget = other.transform;
 			}
 		}
 	}
 
-	/// <summary>
-	/// Stops the audio source.
-	/// </summary>
-	public void stopAudioSource()
+	void OnTriggerExit(Collider other)
 	{
-		audioSource.Stop();
+		if( PhotonNetwork.isMasterClient )
+		{
+			if( other.CompareTag( "Player" ) )
+			{
+				nearestTarget = null;
+			}
+		}
 	}
-	#endregion
-
-	/// <summary>
-	/// If a projectile fired by the Sentry kills a target, the projectile will call this method.
-	/// The Sentry then plays a victory sound.
-	/// </summary>
-	public void targetHit()
-	{
-		playSoundEffect( Emotion.Victory );
-	}
-
-	[System.Serializable]
-	public class SentrySoundData
-	{
-		public Emotion emotion;
-		public AudioClip clip;
-	}
-
 }
 
