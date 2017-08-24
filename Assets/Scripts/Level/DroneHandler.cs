@@ -6,6 +6,12 @@ public class DroneHandler : CardSpawnedObject {
 
 	[Header("Sentry")]
 	Vector3 sentryOffsetToPlayer = new Vector3( 0.8f, 2.3f, 0 );
+	public float speed = 1000;
+   	RaycastHit hit;
+    [SerializeField] GameObject projectilePrefab;
+    public Transform spawnPositionLeft;
+    public Transform spawnPositionRight;
+
 	
 	[Header("Sound Effects")]
 	[SerializeField] AudioSource audioSource;
@@ -44,7 +50,7 @@ public class DroneHandler : CardSpawnedObject {
 		if( GameManager.Instance.getGameState() == GameState.Normal )
 		{
 			detectNearestTarget();
-			lookAtTarget();
+			//lookAtTarget();
 		}
 	}
 
@@ -127,7 +133,8 @@ public class DroneHandler : CardSpawnedObject {
 		{
 			if( hit.collider.transform == nearestTarget )
 			{
-				shoot();
+				//shoot();
+				newShoot();
 			}
 		}
 		gameObject.layer = MaskHandler.destructibleLayer;
@@ -156,6 +163,32 @@ public class DroneHandler : CardSpawnedObject {
 			PhotonNetwork.InstantiateSceneObject( "Sentry Missile", transform.position + transform.forward.normalized, Quaternion.Euler( direction ), 0, data );
 		}
 	}
+
+	void Update () 
+	{
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+			newShoot();
+        }
+	}
+
+	void newShoot()
+	{
+		if (Physics.Raycast( spawnPositionLeft.position, transform.forward, out hit, 100f))
+		{
+			GameObject projectileL = Instantiate(projectilePrefab, spawnPositionLeft.position, Quaternion.identity) as GameObject;
+			projectileL.transform.LookAt(hit.point);
+			projectileL.GetComponent<Rigidbody>().AddForce(projectileL.transform.forward * speed);
+		}
+
+		if (Physics.Raycast( spawnPositionRight.position, transform.forward, out hit, 100f))
+		{
+			GameObject projectileR = Instantiate(projectilePrefab, spawnPositionRight.position, Quaternion.identity) as GameObject;
+			projectileR.transform.LookAt(hit.point);
+			projectileR.GetComponent<Rigidbody>().AddForce(projectileR.transform.forward * speed);
+		}
+	}
+
 	#endregion
 
 	public override void destroySpawnedObjectNow()

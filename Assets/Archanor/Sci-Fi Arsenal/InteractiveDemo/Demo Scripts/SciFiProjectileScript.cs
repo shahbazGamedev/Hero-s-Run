@@ -30,6 +30,7 @@ public class SciFiProjectileScript : MonoBehaviour
     {
         if (!hasCollided)
         {
+			impactNormal = hit.contacts[0].normal; //Used to rotate impactparticle.
             hasCollided = true;
             //transform.DetachChildren();
             impactParticle = Instantiate(impactParticle, transform.position, Quaternion.FromToRotation(Vector3.up, impactNormal)) as GameObject;
