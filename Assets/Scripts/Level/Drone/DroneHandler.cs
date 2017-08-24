@@ -22,21 +22,21 @@ public class DroneHandler : CardSpawnedObject {
 
 	//Shooting related
 	[SerializeField] float seekSpeed = 3f;
-	float weaponCoolDown = 3f;
+	[SerializeField] float weaponCoolDown = 2f;
 	float timeOfLastShot;
-	float aimRange = 50f;
-	float accuracy = 0.0005f;
+	[SerializeField] float aimRange = 50f;
+	[SerializeField] float accuracy = 0.0005f;
 	const float FORWARD_MOVEMENT_ANTICIPATION = 0.15f;
    	RaycastHit hit;
 
-	Quaternion initialRotation;
+	public Quaternion initialRotation;
 	Vector3 initialPosition;
 
 	#region Initialisation
 	void Start()
 	{
 		setSpawnedObjectState( SpawnedObjectState.Functioning );
-		initialRotation = transform.rotation;
+		initialRotation = transform.localRotation;
 		initialPosition = transform.position;
 	}
 	#endregion
@@ -84,11 +84,11 @@ public class DroneHandler : CardSpawnedObject {
 			}
 			transform.position = Vector3.MoveTowards( transform.position, targetPosition, Time.deltaTime * seekSpeed );
 
-			//Now orient the drone so that it aims towards the player
-			transform.LookAt(nearestTarget.position);
+			//Now orient the drone so that it aims towards the player's torso
+			transform.LookAt(nearestTarget.TransformPoint( 0, 1.2f, 0 ));
 			//Cap the X angle
 			float xAngle = Mathf.Min( transform.eulerAngles.x, 30f );
-			transform.rotation = Quaternion.Euler (xAngle, 180f, 0 );
+			transform.localRotation = Quaternion.Euler (xAngle, initialRotation.eulerAngles.y, 0 );
 
 			//Verify if we can hit the nearest target
 			shoot();
@@ -96,7 +96,7 @@ public class DroneHandler : CardSpawnedObject {
 		else
 		{
 			//The drone doesn't have a target. Go back to the initial position and rotation.
-			transform.rotation = Quaternion.Lerp( transform.rotation, initialRotation, Time.deltaTime * seekSpeed );
+			transform.localRotation = Quaternion.Lerp( transform.localRotation, initialRotation, Time.deltaTime * seekSpeed );
 			transform.position = Vector3.MoveTowards( transform.position, initialPosition, Time.deltaTime * seekSpeed );
 		}
 	}
@@ -112,18 +112,28 @@ public class DroneHandler : CardSpawnedObject {
 	void shoot()
 	{
 		if( nearestTarget == null ) return;
-		if( Time.time - timeOfLastShot > weaponCoolDown )
+
+		//Verify if we can hit the nearest target
+		RaycastHit hit;
+		if (Physics.Raycast(transform.position, transform.forward, out hit, aimRange ))
 		{
-			timeOfLastShot = Time.time;
-			//Create projectiles
-			object[] data = new object[6];
-			data[0] = projectileSpeed;
-			data[1] = aimRange;
-			data[2] = nearestTarget.TransformPoint(0.25f,0.8f,0);
-			data[3] = nearestTarget.TransformPoint(-0.25f,0.8f,0);
-			data[4] = spawnPositionLeft.position;
-			data[5] = spawnPositionRight.position;
-			PhotonNetwork.InstantiateSceneObject( "Drone Projectiles", transform.position, transform.rotation, 0, data );
+			if( hit.collider.transform == nearestTarget )
+			{
+				if( Time.time - timeOfLastShot > weaponCoolDown )
+				{
+					timeOfLastShot = Time.time;
+
+					//Create projectiles
+					object[] data = new object[6];
+					data[0] = projectileSpeed;
+					data[1] = aimRange;
+					data[2] = nearestTarget.TransformPoint(0.2f,1.2f,0);
+					data[3] = nearestTarget.TransformPoint(-0.2f,1.2f,0);
+					data[4] = spawnPositionLeft.position;
+					data[5] = spawnPositionRight.position;
+					PhotonNetwork.InstantiateSceneObject( "Drone Projectiles", transform.position, transform.rotation, 0, data );
+				}
+			}
 		}
 	}
 	
