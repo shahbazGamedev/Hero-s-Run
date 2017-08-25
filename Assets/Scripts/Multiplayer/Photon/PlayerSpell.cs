@@ -44,6 +44,7 @@ public class PlayerSpell : PunBehaviour {
 	PlayerVoiceOvers playerVoiceOvers;
 	PlayerRun playerRun;
 	PlayerVisuals playerVisuals;
+	PlayerAI playerAI;
 	TurnRibbonHandler turnRibbonHandler;
 	#endregion
 
@@ -64,6 +65,7 @@ public class PlayerSpell : PunBehaviour {
 		playerVoiceOvers = GetComponent<PlayerVoiceOvers>();
 		playerRun = GetComponent<PlayerRun>();
 		playerVisuals = GetComponent<PlayerVisuals>();
+		playerAI = GetComponent<PlayerAI>();
 		turnRibbonHandler = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
 	}
 
@@ -248,13 +250,13 @@ public class PlayerSpell : PunBehaviour {
 		Invoke("cancelHack", spellDuration );
 
 		//Display the Hacked secondary icon on the minimap
-		MiniMap.Instance.displaySecondaryIcon( GetComponent<PhotonView>().viewID, (int) CardName.Hack, spellDuration );
+		MiniMap.Instance.displaySecondaryIcon( photonView.viewID, (int) CardName.Hack, spellDuration );
 
 		//To Do
 		//Add a reddish glow and electric sparks to the omni-tool so it appears broken.
 
-		turnRibbonHandler.playerIsHacked( true );
-
+		//Only affect the turn-ribbon on the HUD if you are the local player and not a bot
+		if( photonView.isMine && playerAI == null ) turnRibbonHandler.playerIsHacked( true );
 	}
 
 	void cancelHack()
@@ -262,7 +264,8 @@ public class PlayerSpell : PunBehaviour {
 		CancelInvoke( "cancelHack" );
 		print("PlayerSpell cancelHack for " + gameObject.name );
 		removeActiveCard( CardName.Hack );
-		turnRibbonHandler.playerIsHacked( false );
+		//Only affect the turn-ribbon on the HUD if you are the local player and not a bot
+		if( photonView.isMine && playerAI == null ) turnRibbonHandler.playerIsHacked( false );
 	}
 	#endregion
 
@@ -270,10 +273,10 @@ public class PlayerSpell : PunBehaviour {
 	[PunRPC]
 	void cardStealTargetRPC( int photonViewID )
 	{
-		if( GetComponent<PhotonView>().isMine )
+		if( photonView.isMine )
 		{
 			CardName stolenCard = CardName.None;
-			if( GetComponent<PlayerAI>() == null )
+			if( playerAI == null )
 			{
 				stolenCard = turnRibbonHandler.stealCard();
 			}
@@ -302,9 +305,9 @@ public class PlayerSpell : PunBehaviour {
 	[PunRPC]
 	void cardStealDetailsRPC( int cardName )
 	{
-		if( GetComponent<PhotonView>().isMine )
+		if( photonView.isMine )
 		{
-			if( GetComponent<PlayerAI>() == null )
+			if( playerAI == null )
 			{
 				turnRibbonHandler.replaceCard( (CardName) cardName);
 			}
@@ -340,7 +343,7 @@ public class PlayerSpell : PunBehaviour {
 		Invoke("cancelSupercharger", spellDuration );
 
 		//Display the Supercharger secondary icon on the minimap
-		MiniMap.Instance.displaySecondaryIcon( GetComponent<PhotonView>().viewID, (int) CardName.Supercharger, spellDuration );
+		MiniMap.Instance.displaySecondaryIcon( photonView.viewID, (int) CardName.Supercharger, spellDuration );
 
 		//To Do
 		//Display a Supercharger timer on the HUD so the player knows when it is going to run out.
@@ -368,7 +371,7 @@ public class PlayerSpell : PunBehaviour {
 	public void cancelCloak()
 	{
 		//Don't change camera settings if you are a bot.
-		if( GetComponent<PlayerAI>() == null )
+		if( playerAI == null )
 		{
 			//Reset the color correction curves used by Cloak.
 			ColorCorrectionCurves ccc = Camera.main.GetComponent<ColorCorrectionCurves>();
@@ -421,7 +424,7 @@ public class PlayerSpell : PunBehaviour {
 		if( isRagingBullActive )
 		{
 			isRagingBullActive = false;
-			if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) Camera.main.GetComponent<MotionBlur>().enabled = false;
+			if( photonView.isMine && playerAI == null ) Camera.main.GetComponent<MotionBlur>().enabled = false;
 			GetComponent<PlayerSounds>().stopAudioSource();
 			removeActiveCard( CardName.Raging_Bull );
 		}
@@ -454,7 +457,7 @@ public class PlayerSpell : PunBehaviour {
 	public void displayCardTimerOnHUD( CardName name, float duration )
 	{
 		//Only send an event for the local player (and not for bots).
-		if( cardPlayedByOpponentEvent != null && GetComponent<PhotonView>().isMine && GetComponent<PlayerAI>() == null )
+		if( cardPlayedByOpponentEvent != null && photonView.isMine && playerAI == null )
 		{
 			cardPlayedByOpponentEvent( name, duration );
 		}
