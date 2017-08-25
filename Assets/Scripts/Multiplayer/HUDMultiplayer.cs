@@ -6,6 +6,14 @@ using TMPro;
 using UnityEngine.Apple.ReplayKit;
 using System;
 
+public enum DebugInfoType
+{
+	NONE = 0,
+	FPS = 1,
+	NETWORK = 2,
+	LATENCY = 3
+}
+
 public class HUDMultiplayer : MonoBehaviour {
 
 	[Header("General")]
@@ -25,6 +33,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI racePositionText;
 	[Header("Debug Info")]
 	[SerializeField] TextMeshProUGUI debugInfo;
+	DebugInfoType debugInfoType;
 	FPSCalculator fpsCalculator;
 	[Header("Circuit Name and Icon Panel")]
 	[SerializeField] RectTransform circuitDetailsPanel;
@@ -55,9 +64,13 @@ public class HUDMultiplayer : MonoBehaviour {
 			Destroy (gameObject);
 
 		displayRacePosition( false );
+
+		//HUD Debug Info
+		debugInfoType = PlayerStatsManager.Instance.getDebugInfoType();
+		debugInfo.gameObject.SetActive( debugInfoType != DebugInfoType.NONE );
 		fpsCalculator = GetComponent<FPSCalculator>();
-		fpsCalculator.enabled = PlayerStatsManager.Instance.getShowDebugInfoOnHUD();
-		debugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
+		fpsCalculator.enabled = (debugInfoType == DebugInfoType.FPS);
+
 		userMessageText.gameObject.SetActive( false );
 		distancePanel.SetActive( false );
 	}
@@ -243,8 +256,38 @@ public class HUDMultiplayer : MonoBehaviour {
 
 	void Update()
 	{
-		if( debugInfo.gameObject.activeSelf ) debugInfo.text = " FPS: " + fpsCalculator.getFPS() + " Latency: " + PhotonNetwork.networkingPeer.RoundTripTime.ToString() + " Name: " + PhotonNetwork.playerName; 
+		if( debugInfoType != DebugInfoType.NONE ) debugInfo.text = getDebugInfo();
 		distanceText.text = LevelManager.Instance.distanceTravelled.ToString("N0") + " m";
+	}
+
+	string getDebugInfo()
+	{
+		string infoToDisplay = string.Empty;
+		switch( debugInfoType )
+		{
+			case DebugInfoType.FPS:
+				infoToDisplay = " FPS: " + fpsCalculator.getFPS(); 
+			break;
+
+			case DebugInfoType.NETWORK:
+				infoToDisplay = " isMaster: " + PhotonNetwork.isMasterClient + " " + getDebugInfoForAllPlayers(); 
+			break;
+
+			case DebugInfoType.LATENCY:
+				infoToDisplay = " isMaster: " + PhotonNetwork.isMasterClient + " Latency: " + PhotonNetwork.networkingPeer.RoundTripTime.ToString(); 
+			break;
+		}
+		return infoToDisplay;
+	}
+
+	string getDebugInfoForAllPlayers()
+	{
+		string infoForAllPlayers = string.Empty;
+		for( int i = 0; i < PlayerRace.players.Count; i++ )
+		{
+			infoForAllPlayers = infoForAllPlayers + "| " + PlayerRace.players[i].name + " isMine: " + PlayerRace.players[i].GetComponent<PhotonView>().isMine + " " + PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState();
+		}
+		return infoForAllPlayers;
 	}
 
 	void hideGoText()
@@ -302,7 +345,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		if( newState == GameState.Normal )
 		{
 			if( raceHasStarted) displayRacePosition( true );
-			debugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
+			debugInfo.gameObject.SetActive( debugInfoType != DebugInfoType.NONE );
 		}
 		else
 		{

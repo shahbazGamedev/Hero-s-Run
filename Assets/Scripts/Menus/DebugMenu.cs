@@ -9,7 +9,7 @@ using System;
 public class DebugMenu : MonoBehaviour {
 
 	[Header("Debug Menu")]
-	[SerializeField] Text toggleShowDebugInfoText;
+	[SerializeField] Dropdown debugInfoTypeDropdown;
 	[SerializeField] Text toggleOnlyUseUniqueTilesText;
 	[SerializeField] Text clearAssetBundleCacheText;
 	[SerializeField] Text facebookName;
@@ -35,14 +35,6 @@ public class DebugMenu : MonoBehaviour {
 		trophyOverrideMultiplierSlider.value = numberOfTrophies;
 		trophyOverrideMultiplierText.text = numberOfTrophies.ToString("N0");
 
-		if( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() )
-		{
-			toggleShowDebugInfoText.text = "Show Debug Info: On";
-		}
-		else
-		{
-			toggleShowDebugInfoText.text = "Show Debug Info: Off";
-		}
 		if( LevelManager.Instance.getOnlyUseUniqueTiles() )
 		{
 			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: On";
@@ -71,6 +63,7 @@ public class DebugMenu : MonoBehaviour {
 		updateFacebookName();
 		populatePhotonCloudRegionDropdown();
 		populateSectorDropdown();
+		populateDebugInfoTypeDropdown();
 	}
 
 	public void OnClickResetSavedData()
@@ -146,22 +139,6 @@ public class DebugMenu : MonoBehaviour {
 		{
 			autoPilotText.text = "Auto-pilot: Off";
 		}
-	}
-
-	public void OnClickToggleShowDebugInfo()
-	{
-		Debug.Log("OnClickToggleShowDebugInfo");
-		UISoundManager.uiSoundManager.playButtonClick();
-		PlayerStatsManager.Instance.setShowDebugInfoOnHUD( !PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
-		if( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() )
-		{
-			toggleShowDebugInfoText.text = "Show Debug Info: On";
-		}
-		else
-		{
-			toggleShowDebugInfoText.text = "Show Debug Info: Off";
-		}
-		PlayerStatsManager.Instance.savePlayerStats();
 	}
 
 	public void OnClickUnlockAllLevels()
@@ -267,6 +244,22 @@ public class DebugMenu : MonoBehaviour {
 	public void OnSectorDropdownValueChanged()
 	{
 		GameManager.Instance.overrideSector = sectorOverrideDropdown.value - 1; //we are starting from -1
+	}
+	#endregion
+
+	#region Debug Info Type
+	void populateDebugInfoTypeDropdown()
+	{
+		string[] enumDebugInfoTypes = Enum.GetNames( typeof( DebugInfoType ) );
+		List<string> debugInfoTypes = new List<string>( enumDebugInfoTypes);
+		debugInfoTypeDropdown.AddOptions( debugInfoTypes );
+		debugInfoTypeDropdown.value = (int) PlayerStatsManager.Instance.getDebugInfoType();
+	}
+
+	public void OnDebugInfoTypeDropdownValueChanged()
+	{
+		PlayerStatsManager.Instance.setDebugInfoType( (DebugInfoType) debugInfoTypeDropdown.value );
+		PlayerStatsManager.Instance.savePlayerStats();
 	}
 	#endregion
 	

@@ -38,7 +38,7 @@ public class PlayerStatsManager {
 	bool firstTimePlaying = true;
 	bool sharedOnFacebook = false;	//Has the player shared an image on Facebook?
 
-	bool showDebugInfoOnHUD = false; 	//Should we show the FPS, player speed, etc. on the HUD or not.
+	DebugInfoType debugInfoType = DebugInfoType.NONE; //The type of debug information to display on the HUD such as FPS, Latency, etc.
 	int lives = 0;
 	const int INITIAL_NUMBER_LIVES = 6;
 
@@ -662,14 +662,14 @@ public class PlayerStatsManager {
 		return sharedOnFacebook;
 	}
 
-	public void setShowDebugInfoOnHUD( bool value )
+	public void setDebugInfoType( DebugInfoType debugInfoType )
 	{
-		showDebugInfoOnHUD = value;
+		this.debugInfoType = debugInfoType;
 	}
 
-	public bool getShowDebugInfoOnHUD()
+	public DebugInfoType getDebugInfoType()
 	{
-		return showDebugInfoOnHUD;
+		return debugInfoType;
 	}
 
 	public void setOwnsCoinDoubler( bool value )
@@ -1015,15 +1015,7 @@ public class PlayerStatsManager {
 			{
 				firstTimePlaying = false;	
 			}
-			string showDebugInfoOnHUDString = PlayerPrefs.GetString("showDebugInfoOnHUD", "false" );
-			if( showDebugInfoOnHUDString == "true" )
-			{
-				showDebugInfoOnHUD = true;
-			}
-			else
-			{
-				showDebugInfoOnHUD = false;	
-			}
+			debugInfoType = (DebugInfoType) PlayerPrefs.GetInt("debugInfoType", 0 );
 			string sharedOnFacebookString = PlayerPrefs.GetString("sharedOnFacebook", "false" );
 			if( sharedOnFacebookString == "true" )
 			{
@@ -1125,14 +1117,7 @@ public class PlayerStatsManager {
 		{
 			PlayerPrefs.SetString( "First Time Playing", "false" );
 		}
-		if( showDebugInfoOnHUD )
-		{
-			PlayerPrefs.SetString( "showDebugInfoOnHUD", "true" );
-		}
-		else
-		{
-			PlayerPrefs.SetString( "showDebugInfoOnHUD", "false" );
-		}
+		PlayerPrefs.SetInt("debugInfoType", (int)debugInfoType );
 		if( sharedOnFacebook )
 		{
 			PlayerPrefs.SetString( "sharedOnFacebook", "true" );

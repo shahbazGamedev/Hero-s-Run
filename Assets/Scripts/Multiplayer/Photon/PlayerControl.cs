@@ -1572,9 +1572,6 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		Debug.Log("playerDiedRPC : " + deathTypeValue + " " + gameObject.name );
 
-		//For debugging
-		if( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() ) HUDMultiplayer.hudMultiplayer.activateUserMessage( "Died: " + deathTypeValue + " " + gameObject.name, 0, 10f );
-
 		//Update the player statistics		
 		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
 		{
