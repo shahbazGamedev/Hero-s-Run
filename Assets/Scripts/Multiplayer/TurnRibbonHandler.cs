@@ -276,15 +276,28 @@ public class TurnRibbonHandler : MonoBehaviour {
 		//Replace the image on the button that was clicked by the image of the Next card
 		Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
 		buttonOfCardPlayed.interactable = true;
-		buttonOfCardPlayed.GetComponent<Image>().overrideSprite = null;
 		buttonOfCardPlayed.GetComponent<Image>().sprite = nextCard.icon;
-		//Card name text and mana cost text
 		TextMeshProUGUI[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<TextMeshProUGUI>();
-		buttonTexts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + nextCard.name.ToString().ToUpper() );
-		//Reset the color to white
-		buttonTexts[0].color = Color.white;
-		buttonTexts[1].text = nextCard.manaCost.ToString();
-		buttonTexts[2].text = string.Empty;
+
+		if( playerSpell.isCardActive(CardName.Hack) )
+		{
+			buttonOfCardPlayed.GetComponent<Image>().overrideSprite = hackedCardSprite;
+			//Card name text and mana cost text
+			buttonTexts[0].text = string.Empty;
+			buttonTexts[1].text = string.Empty;
+			buttonTexts[2].text = LocalizationManager.Instance.getText("CARD_HACKED");
+			buttonTexts[2].color = Color.magenta;
+		}
+		else
+		{
+			buttonOfCardPlayed.GetComponent<Image>().overrideSprite = null;
+			//Card name text and mana cost text
+			buttonTexts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + nextCard.name.ToString().ToUpper() );
+			//Reset the color to white
+			buttonTexts[0].color = Color.white;
+			buttonTexts[1].text = nextCard.manaCost.ToString();
+			buttonTexts[2].text = string.Empty;
+		}
 
 		//In the turn-ribbon list, replace the card played by the card held in Next
 		turnRibbonList.RemoveAt(indexOfCardPlayed);
