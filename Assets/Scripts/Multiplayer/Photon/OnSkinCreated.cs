@@ -6,6 +6,7 @@ public class OnSkinCreated : MonoBehaviour
 {
 
 	//When the player skin is instantiated, attach it to the player whose name is stored in the data object array.
+	//This is for non-MasterClient players. See PlayerVisuals for the MasterClient players.
 	void OnPhotonInstantiate(PhotonMessageInfo info) 
 	{
 		if ( !PhotonNetwork.isMasterClient )
@@ -31,6 +32,7 @@ public class OnSkinCreated : MonoBehaviour
 				transform.localRotation = Quaternion.identity;
 				anim.avatar = GetComponent<PlayerSkinInfo>().animatorAvatar;
 				anim.Rebind(); //Important
+				if( Debug.isDebugBuild && LevelManager.Instance.autoPilot && transform.root.GetComponent<PhotonView>().isMine ) transform.root.gameObject.AddComponent<HyperFocus>();
 			}
 			else
 			{
