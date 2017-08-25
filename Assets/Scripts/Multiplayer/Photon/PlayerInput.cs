@@ -6,7 +6,6 @@ using Photon;
 public class PlayerInput : PunBehaviour {
 
 	PlayerControl playerControl;
-	PlayerRun playerRun;
 
 	#region Swipe variables
     float minSwipeDistancePixels;
@@ -26,7 +25,6 @@ public class PlayerInput : PunBehaviour {
 		//If we are not the owner of this component, disable it.
 		if( !this.photonView.isMine ) this.enabled = false;
 		playerControl = GetComponent<PlayerControl>();
-		playerRun = GetComponent<PlayerRun>();
 		calculateMinimumSwipeDistance();
 		isTiltingEnabled = PlayerStatsManager.Instance.getTiltEnabled();
 	}

@@ -87,7 +87,11 @@ public class DroneHandler : MonoBehaviour {
 	void shoot()
 	{
 		if( nearestTarget == null ) return;
-
+		if( nearestTarget.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
+		{
+			nearestTarget = null;
+			return;
+		}
 		if( Time.time - timeOfLastShot > weaponCoolDown )
 		{
 			//Verify if we can hit the nearest target
@@ -120,9 +124,18 @@ public class DroneHandler : MonoBehaviour {
 		{
 			if( other.CompareTag( "Player" ) )
 			{
-				if( nearestTarget == null ) nearestTarget = other.transform;
+				if( nearestTarget == null )
+				{
+					nearestTarget = other.transform;
+					Invoke("resetNearestTarget", 3.5f );
+				}
 			}
 		}
+	}
+
+	void resetNearestTarget()
+	{
+		nearestTarget = null;
 	}
 
 	void OnTriggerExit(Collider other)

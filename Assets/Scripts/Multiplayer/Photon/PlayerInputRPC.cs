@@ -6,7 +6,6 @@ using Photon;
 public class PlayerInputRPC : PunBehaviour {
 
 	PlayerControl playerControl;
-	PlayerRun playerRun;
 
 	// Use this for initialization
 	void Awake ()
@@ -14,7 +13,6 @@ public class PlayerInputRPC : PunBehaviour {
 		//If we are the owner of this component, disable it. We only need it for remote clients.
 		if( this.photonView.isMine ) this.enabled = false;
 		playerControl = GetComponent<PlayerControl>();
-		playerRun = GetComponent<PlayerRun>();
 	}
 
 	[PunRPC]

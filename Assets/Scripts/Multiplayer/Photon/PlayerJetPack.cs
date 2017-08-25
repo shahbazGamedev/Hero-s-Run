@@ -10,8 +10,6 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 	private float rollStrength = 0.9f;
 	private float verticalStrength = 10f;
 	private float rotationDamping = 5f;
-	//Used to apply a temporary speed boost diving down
-	private static float speedBoost = 0f;
 	private float pitchSpeedBoostStrength = 12f;
 	const float FLY_SPEED_MULTIPLIER = 25f; //or else you just don't fly fast enough
 
@@ -145,8 +143,6 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 				{
 					if( playerControl.isPlayerControlEnabled() )
 					{
-						//Reset value
-						speedBoost = 0;
 						//Section A - adjust accelerometer values
 						float accelerometerCurrentFrameX = Input.acceleration.x;
 						//Notes:
@@ -159,12 +155,6 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 						//If the phone is really tilted down (i.e. accelerometerCurrentFrameY is less then zero), we cap the value.
 						if( accelerometerCurrentFrameY < 0 ) accelerometerCurrentFrameY = 0;
 						
-						//Should we add a speed boost due to pitch?
-						if( accelerometerCurrentFrameY < 0.65f )
-						{
-							//We are doing a nose dive, boost the speed.
-							speedBoost = ( 0.65f - accelerometerCurrentFrameY ) * pitchSpeedBoostStrength;
-						}
 						//verticalStrength controls how fast we move up and down as well as pitch
 						accelerometerCurrentFrameY = -( 0.65f - accelerometerCurrentFrameY ) * verticalStrength;
 						
