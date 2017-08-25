@@ -18,6 +18,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 	CardManager.CardData nextCard;
 	[SerializeField] Sprite blankCardSprite;
 	[SerializeField] Sprite stolenCardSprite;
+	[SerializeField] Sprite hackedCardSprite;
 	[Header("Mana Bar")]
 	[SerializeField] ManaBar manaBar;
 
@@ -307,6 +308,42 @@ public class TurnRibbonHandler : MonoBehaviour {
 		//Increase the card usage count. This is used to determine the player's favorite card.
 		playerCardData.timesUsed++;
 	}
+
+	#region Player is Hacked
+	public void playerIsHacked( bool isHacked )
+	{
+		for( int i = 0; i < turnRibbonList.Count; i++ )
+		{
+			if( isHacked )
+			{
+				//Temporarily replace the image on the button by a Hacked image
+				Button buttonOfHackedCard = turnRibbonButtonList[i];
+				buttonOfHackedCard.GetComponent<Image>().overrideSprite = hackedCardSprite;
+				//Card name text and mana cost text
+				TextMeshProUGUI[] buttonTexts = buttonOfHackedCard.GetComponentsInChildren<TextMeshProUGUI>();
+				buttonTexts[0].text = string.Empty;
+				buttonTexts[1].text = string.Empty;
+				buttonTexts[2].text = LocalizationManager.Instance.getText("CARD_HACKED");
+				buttonTexts[2].color = Color.magenta;
+			}
+			else
+			{
+				CardName restoredCardName = turnRibbonList[i].name;
+				//Get data about the card - make sure NOT to modify the card data
+				CardManager.CardData restoredCard = CardManager.Instance.getCardByName( restoredCardName );
+				//Restore the image on the button
+				Button buttonOfRestoredCard = turnRibbonButtonList[i];
+				buttonOfRestoredCard.GetComponent<Image>().overrideSprite = null;
+				//Card name text and mana cost text
+				TextMeshProUGUI[] buttonTexts = buttonOfRestoredCard.GetComponentsInChildren<TextMeshProUGUI>();
+				buttonTexts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + restoredCard.name.ToString().ToUpper() );
+				buttonTexts[1].text = restoredCard.manaCost.ToString();
+				buttonTexts[2].text = string.Empty;
+				buttonTexts[2].color = Color.white;
+			}
+		}
+	}
+	#endregion
 
 	#region Steal Card
 	public CardName stealCard()

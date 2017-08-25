@@ -44,6 +44,7 @@ public class PlayerSpell : PunBehaviour {
 	PlayerVoiceOvers playerVoiceOvers;
 	PlayerRun playerRun;
 	PlayerVisuals playerVisuals;
+	TurnRibbonHandler turnRibbonHandler;
 	#endregion
 
 	//Delegate used to communicate to other classes when an enemy has played a special card such as Hack
@@ -63,6 +64,7 @@ public class PlayerSpell : PunBehaviour {
 		playerVoiceOvers = GetComponent<PlayerVoiceOvers>();
 		playerRun = GetComponent<PlayerRun>();
 		playerVisuals = GetComponent<PlayerVisuals>();
+		turnRibbonHandler = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
 	}
 
 	/// <summary>
@@ -251,6 +253,8 @@ public class PlayerSpell : PunBehaviour {
 		//To Do
 		//Add a reddish glow and electric sparks to the omni-tool so it appears broken.
 
+		turnRibbonHandler.playerIsHacked( true );
+
 	}
 
 	void cancelHack()
@@ -258,6 +262,7 @@ public class PlayerSpell : PunBehaviour {
 		CancelInvoke( "cancelHack" );
 		print("PlayerSpell cancelHack for " + gameObject.name );
 		removeActiveCard( CardName.Hack );
+		turnRibbonHandler.playerIsHacked( false );
 	}
 	#endregion
 
@@ -270,8 +275,7 @@ public class PlayerSpell : PunBehaviour {
 			CardName stolenCard = CardName.None;
 			if( GetComponent<PlayerAI>() == null )
 			{
-				TurnRibbonHandler trh = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
-				stolenCard = trh.stealCard();
+				stolenCard = turnRibbonHandler.stealCard();
 			}
 			else
 			{
@@ -302,8 +306,7 @@ public class PlayerSpell : PunBehaviour {
 		{
 			if( GetComponent<PlayerAI>() == null )
 			{
-				TurnRibbonHandler trh = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
-				trh.replaceCard( (CardName) cardName);
+				turnRibbonHandler.replaceCard( (CardName) cardName);
 			}
 			else
 			{
