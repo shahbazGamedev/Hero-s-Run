@@ -58,7 +58,7 @@ public class PlayerAI : AutoPilot {
 		else if ( Input.GetKeyDown (KeyCode.Y ) )
 		{
 			//Stop the character from moving for testing
-			GetComponent<CharacterController>().enabled = !GetComponent<CharacterController>().enabled;
+			playerControl.enablePlayerMovement ( !playerControl.isPlayerMovementEnabled() );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha0) )
 		{

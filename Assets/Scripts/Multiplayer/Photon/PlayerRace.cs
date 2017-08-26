@@ -52,6 +52,10 @@ public class PlayerRace : Photon.PunBehaviour
 	public int tilesLeftBeforeReachingEnd;
 	public int numberPlayersBehindMe = 0;
 	int previousNumberPlayersBehindMe = -1;
+	//Power bar boost used when player is losing.
+	public bool isPowerBoostActive = false;
+	const int TILE_DIFFERENCE_ACTIVATOR = 3;
+	TurnRibbonHandler turnRibbonHandler;
 
 	void Start()
 	{
@@ -62,6 +66,7 @@ public class PlayerRace : Photon.PunBehaviour
 			players.Clear();
 			officialRacePositionList.Clear();
 			LevelManager.Instance.distanceTravelled = 0;
+			turnRibbonHandler = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
 		}
  		if (!players.Contains (this))
 		{
@@ -146,8 +151,80 @@ public class PlayerRace : Photon.PunBehaviour
 				//Calculate the race duration. It will be sent at the end of the race.
 				raceDuration = raceDuration + Time.deltaTime;
 			}
+			verifyIfPowerBoostNeeded();
 		}
 	}
+
+	#region Power Boost
+	/// <summary>
+	/// Verifies if a power boost is needed.
+	/// The power boost is a rubber-band mechanism that gives players who are losing significantly a chance to make a comeback.
+ 	/// Power is what is used to play cards during a race. The power bar recharges at a constant rate up to a maximum.
+	/// If a player is losing significantly, his recharge rate will be increased thus allowing him to play more cards, and hopefully get him back into the lead.
+	/// By default, the power boost is off.
+	/// When in the PlayAlone game mode, the power boost does not apply.
+	/// If the player count drops to 1 (some players may have quit), the power boost will be disengaged.
+	/// If a player is in first place, he will have no power boost.
+	/// </summary>
+	void verifyIfPowerBoostNeeded()
+	{
+		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAlone ) return;
+
+		bool powerBoostNeeded = isPowerBoostActive;
+
+		if( players.Count == 1 )
+		{
+			powerBoostNeeded = false;
+		}
+		else if( racePosition == 0 )
+		{
+			//The player is in first place.
+			powerBoostNeeded = false;
+		}
+		else
+		{
+			//If we are here, it means that there are multiple players and this player is not in first place.
+	
+			//Get a list of players ordered by position.
+			List<PlayerRace> playersOrderedByRacePosition = players.OrderBy( p => p.racePosition ).ToList();
+	
+			//Calculate the tile difference between this player and the player immediately ahead.
+			int indexOfPlayerImmediatelyAhead = racePosition - 1;
+			int tileDifference = playersOrderedByRacePosition[racePosition].tilesLeftBeforeReachingEnd - playersOrderedByRacePosition[indexOfPlayerImmediatelyAhead].tilesLeftBeforeReachingEnd;
+			//If this player is behind by more than TILE_DIFFERENCE_ACTIVATOR tiles the person ahead of him, engage the power boost.
+			if( tileDifference > TILE_DIFFERENCE_ACTIVATOR )
+			{
+				powerBoostNeeded = true;
+			}
+			else
+			{
+				powerBoostNeeded = false;
+			}
+		}
+
+		//Verify if the need for a power boost has changed.
+		if( powerBoostNeeded != isPowerBoostActive )
+		{
+			//Yes, it has changed.
+			isPowerBoostActive = powerBoostNeeded;
+			if( powerBoostNeeded )
+			{
+				//HUDMultiplayer.hudMultiplayer.activateUserMessage( "Power Boost Engaged for " + gameObject.name, 0, 4f );
+				if( photonView.isMine && GetComponent<PlayerAI>() == null ) turnRibbonHandler.increaseRefillRate();
+			}
+			else
+			{
+				//HUDMultiplayer.hudMultiplayer.activateUserMessage( "Power Boost Disengaged for " + gameObject.name , 0, 4f );
+				if( photonView.isMine && GetComponent<PlayerAI>() == null ) turnRibbonHandler.resetRefillRate();
+			}
+		}
+	}
+
+	public bool isPowerBoostEnabled()
+	{
+		return isPowerBoostActive;
+	}
+	#endregion
 
 	//Only calculated on master client
 	void updateDistanceTravelled()

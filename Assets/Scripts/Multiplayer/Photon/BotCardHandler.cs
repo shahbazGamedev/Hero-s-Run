@@ -8,7 +8,7 @@ public sealed class BotCardHandler : MonoBehaviour {
 	HeroManager.BotHeroCharacter botHero;
 	HeroManager.BotSkillData botSkillData;
 	List<PlayerDeck.PlayerCardData> battleDeckList;
-	float manaAmount = ManaBar.START_MANA_POINT;
+	float powerAmount = PowerBar.START_POWER_POINT;
 	CardHandler cardHandler;
 	CardManager.CardData nextCard;
 	int [] cardIndexArray = new int[]{0,1,2,3,4,5,6,7};
@@ -17,6 +17,7 @@ public sealed class BotCardHandler : MonoBehaviour {
 	Queue<CardManager.CardData> cardQueue = new Queue<CardManager.CardData>();
 	PlayerControl playerControl;
 	PlayerSpell playerSpell;
+	PlayerRace playerRace;
 	bool allowCardPlaying = false;
 	float timeOfLastAnalysis = 0;
 	#region Game Paused
@@ -41,6 +42,7 @@ public sealed class BotCardHandler : MonoBehaviour {
 		//Get and store components
 		playerControl = GetComponent<PlayerControl>();
 		playerSpell = GetComponent<PlayerSpell>();
+		playerRace = GetComponent<PlayerRace>();
 
 		initializeCards ();
 
@@ -127,7 +129,17 @@ public sealed class BotCardHandler : MonoBehaviour {
 
 		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
 		{
-			if( manaAmount < ManaBar.MAX_MANA_POINT ) manaAmount = manaAmount + Time.deltaTime/ManaBar.MANA_REFILL_RATE;
+			if( powerAmount < PowerBar.MAX_POWER_POINT )
+			{
+				if( playerRace.isPowerBoostEnabled() )
+				{
+					powerAmount = powerAmount + Time.deltaTime/PowerBar.FAST_POWER_REFILL_RATE;
+				}
+				else
+				{
+					powerAmount = powerAmount + Time.deltaTime/PowerBar.DEFAULT_POWER_REFILL_RATE;
+				}
+			}
 			if( allowCardPlaying && (Time.time - timeOfLastAnalysis > botSkillData.cardPlayFrequency) && !playerSpell.isCardActive( CardName.Hack) )
 			{
 				analyseCards();
@@ -163,8 +175,8 @@ public sealed class BotCardHandler : MonoBehaviour {
 		//Get data about the card - make sure NOT to modify the card data
 		CardManager.CardData playedCard = CardManager.Instance.getCardByName( cardName );
 
-		//Deduct the mana
-		deductMana( playedCard.manaCost );
+		//Deduct the power
+		deductPower( playedCard.manaCost );
 
 		//Activate the card
 		activateCard( playedCard.name );
@@ -205,15 +217,15 @@ public sealed class BotCardHandler : MonoBehaviour {
 		}
 	}
 
-	void deductMana( int manaCost )
+	void deductPower( int powerCost )
 	{
-		if( manaAmount >= manaCost )
+		if( powerAmount >= powerCost )
 		{
-			manaAmount = manaAmount - manaCost;
+			powerAmount = powerAmount - powerCost;
 		}
 		else
 		{
-			Debug.LogError("BotCardHandler-deductMana: insufficent mana.");
+			Debug.LogError("BotCardHandler-deductPower: insufficent power.");
 		}
 	}
 
@@ -250,7 +262,7 @@ public sealed class BotCardHandler : MonoBehaviour {
 
 	/// <summary>
 	/// Attempt to play this card.
-	/// If the bot has this card, is allowed to play cards, is not affected by Hack, and has enough mana, play the card.
+	/// If the bot has this card, is allowed to play cards, is not affected by Hack, and has enough power, play the card.
 	/// </summary>
 	public void tryToPlayCard( CardName cardName )
 	{
@@ -300,7 +312,7 @@ public sealed class BotCardHandler : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Gets the list of cards for which we have enough mana.
+	/// Gets the list of cards for which we have enough power.
 	/// </summary>
 	/// <returns>The list of playable cards.</returns>
 	List<PlayerDeck.PlayerCardData> getListOfPlayableCards()
@@ -308,7 +320,7 @@ public sealed class BotCardHandler : MonoBehaviour {
 		List<PlayerDeck.PlayerCardData> playableCardsList = new List<PlayerDeck.PlayerCardData>();
 		for( int i = 0; i < turnRibbonList.Count; i++ )
 		{
-			if( turnRibbonList[i].manaCost <= manaAmount )
+			if( turnRibbonList[i].manaCost <=powerAmount )
 			{
 				playableCardsList.Add( getCardByName( turnRibbonList[i].name ) );
 			}
@@ -369,7 +381,7 @@ public sealed class BotCardHandler : MonoBehaviour {
 	{
 		if( newState == PlayerCharacterState.Dying )
 		{
-			//When the bot respawns, he usually has enough mana to play a card immediately.
+			//When the bot respawns, he usually has enough power to play a card immediately.
 			//We don't want the bot to play as soon as he lands on the ground however because it doesn't feel right.
 			//So we reset the time analysis value to half the time it would take before analysing his deck.
 			//So for a MEDIUM skilled bot, this means that the bot will wait exactly 2 seconds after respawning before playing a card.
