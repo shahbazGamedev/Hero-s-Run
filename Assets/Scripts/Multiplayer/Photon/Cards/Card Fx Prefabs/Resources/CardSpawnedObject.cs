@@ -223,7 +223,7 @@ public class CardSpawnedObject : MonoBehaviour {
 		}
 	}
 
-	protected void destroyAllTargetsWithinBlastRadius( float blastRadius, bool includePlayers )
+	protected void destroyAllTargetsWithinBlastRadius( float blastRadius, int mask )
 	{
 		//To add a dramatic effect, make all of the objects that have the Movable layer and a rigidbody move because of the shockwave.
 		float halfRadius = blastRadius * 0.5f;
@@ -236,16 +236,7 @@ public class CardSpawnedObject : MonoBehaviour {
 			}
 		}
 
-		Collider[] hitColliders;
-		if( includePlayers )
-		{
-			hitColliders = Physics.OverlapSphere( transform.position, blastRadius, MaskHandler.getMaskWithPlayerWithLevelDestructible() );
-		}
-		else
-		{
-			hitColliders = Physics.OverlapSphere( transform.position, blastRadius, MaskHandler.getMaskWithoutPlayerWithLevelDestructible() );
-		}
-
+		Collider[] hitColliders = Physics.OverlapSphere( transform.position, blastRadius, mask );
 
 		for( int i = 0; i < hitColliders.Length; i++ )
 		{

@@ -38,7 +38,7 @@ public class Shockwave : CardSpawnedObject {
 
 		Transform shockwaveEffect = transform.FindChild("Shockwave Effect");
 		shockwaveEffect.gameObject.SetActive( true );
-		destroyAllTargetsWithinBlastRadius( radius, true );
+		destroyAllTargetsWithinBlastRadius( radius, MaskHandler.getMaskWithPlayerWithoutDevices() );
 		GameObject.Destroy( gameObject, 3 );
 	}
 

@@ -56,6 +56,8 @@ public class PlayerRace : Photon.PunBehaviour
 	public bool isPowerBoostActive = false;
 	const int TILE_DIFFERENCE_ACTIVATOR = 3;
 	TurnRibbonHandler turnRibbonHandler;
+	bool powerBoostBusy = false;
+	const float MINIMUM_POWER_BOOST_DURATION = 3f;
 
 	void Start()
 	{
@@ -170,6 +172,9 @@ public class PlayerRace : Photon.PunBehaviour
 	{
 		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAlone ) return;
 
+		//The power boost is already active. Let it run for its minimum duration before re-evaluating.
+		if( powerBoostBusy ) return;
+
 		bool powerBoostNeeded = isPowerBoostActive;
 
 		if( players.Count == 1 )
@@ -209,15 +214,29 @@ public class PlayerRace : Photon.PunBehaviour
 			isPowerBoostActive = powerBoostNeeded;
 			if( powerBoostNeeded )
 			{
-				//HUDMultiplayer.hudMultiplayer.activateUserMessage( "Power Boost Engaged for " + gameObject.name, 0, 4f );
-				if( photonView.isMine && GetComponent<PlayerAI>() == null ) turnRibbonHandler.increaseRefillRate();
+				if( photonView.isMine && GetComponent<PlayerAI>() == null )
+				{
+					HUDMultiplayer.hudMultiplayer.activateUserMessage( LocalizationManager.Instance.getText("RACE_EMERGENCY_POWER_ENGAGED"), 0, 3f );
+					turnRibbonHandler.increaseRefillRate();
+				}
+				//We don't want the power boost to flicker on and off and thus the power boost has a minimum duration of MINIMUM_POWER_BOOST_DURATION.
+				powerBoostBusy = true;
+				Invoke( "powerBoostExpired", MINIMUM_POWER_BOOST_DURATION );
 			}
 			else
 			{
-				//HUDMultiplayer.hudMultiplayer.activateUserMessage( "Power Boost Disengaged for " + gameObject.name , 0, 4f );
-				if( photonView.isMine && GetComponent<PlayerAI>() == null ) turnRibbonHandler.resetRefillRate();
+				if( photonView.isMine && GetComponent<PlayerAI>() == null )
+				{
+					HUDMultiplayer.hudMultiplayer.activateUserMessage( LocalizationManager.Instance.getText("RACE_EMERGENCY_POWER_DISENGAGED"), 0, 2.5f );
+					turnRibbonHandler.resetRefillRate();
+				}
 			}
 		}
+	}
+
+	void powerBoostExpired()
+	{
+		powerBoostBusy = false;
 	}
 
 	public bool isPowerBoostEnabled()

@@ -58,7 +58,7 @@ public class TripMine : CardSpawnedObject {
 
 	void detonate()
 	{
-		destroyAllTargetsWithinBlastRadius( blastRadius, true );
+		destroyAllTargetsWithinBlastRadius( blastRadius, MaskHandler.getMaskWithPlayerWithLevelDestructible() );
 		explode();
 		GameObject.Destroy( gameObject );
 	}

@@ -64,6 +64,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	//Hash IDs for player animations. These are used to improve performance.
 	int RunTrigger = Animator.StringToHash("Run");
 	int FallTrigger = Animator.StringToHash("Fall");
+	int FallLoopTrigger = Animator.StringToHash("Fall_Loop");
 	int LandTrigger = Animator.StringToHash("Land");
 	int Double_JumpTrigger = Animator.StringToHash("Double Jump");
 	int JumpTrigger = Animator.StringToHash("Jump");
@@ -620,7 +621,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Only allow a jump if we are not already jumping and if we are on the ground.
 		//However, if the ground type below the player is of type Collapsing, still allow him to jump.
 		//The Collapsing tag is used in the CollapsingBridge code.
-		if (playerCharacterState != PlayerCharacterState.Jumping && ( distanceToGround < 0.5f || playerCollisions.getGroundType() == "Collapsing" ) )
+		if (playerCharacterState != PlayerCharacterState.Jumping && playerCharacterState != PlayerCharacterState.Falling && ( distanceToGround < 0.5f || playerCollisions.getGroundType() == "Collapsing" ) )
 		{
 			//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
 			moveDirection.x = 0;
@@ -669,7 +670,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		if( useFallLoop )
 		{
 			//Going straight to fall loop is better when respawning and falling from the sky
-			anim.Play( "Fall_Loop");
+			setAnimationTrigger(FallLoopTrigger);
 		}
 		else
 		{
@@ -691,11 +692,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		float fallDistance = fallStartYPos - transform.position.y;
 		if( fallDistance < DISTANCE_FOR_LAND_ANIMATION )
 		{
-			anim.CrossFadeInFixedTime( "Land", 0.25f );
+			setAnimationTrigger(LandTrigger);
 		}
 		else
 		{
-			anim.CrossFadeInFixedTime( "Stumble", 0.25f );
+			setAnimationTrigger(StumbleTrigger);
 		}
 		print ( "player landed. Fall distance was: " + 	fallDistance );
 		//Was I dead before?
