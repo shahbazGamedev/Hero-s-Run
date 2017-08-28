@@ -454,17 +454,29 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 	}
 
+	//Note that the level is generated in two steps:
+	//Step one creates a list of TileGroupType stored in multiplayerTileGroupList.
+	//Step two then takes that list and generates the individual tiles.
+	//Why are we doing this?
+	//A level may contain random tiles.
+	//We want the master client to create the official tile group list and send it to the other players so that everyone sees the same level.
+	//Sending the tile group list to the other players is NOT coded yet.
 	private void generateMultiplayerLevel( int numberOfTileGroups, List<TileGroupType> tileGroupList, List<TileGroupType> endTileGroupList )
 	{
+		List<TileGroupType> multiplayerTileGroupList = new List<TileGroupType>();
+
 		//First, add the preset tile groups from tileGroupList
 		for( int i=0; i < tileGroupList.Count; i++ )
 		{
-			TileGroup tg = tileGroupManager.getTileGroup(tileGroupList[i]);
-			addTileGroup( tg );
+			multiplayerTileGroupList.Add( tileGroupManager.getTileGroup(tileGroupList[i]).tileGroupType );
 		}
 
 		//Second, calculate how many additional random tile groups we need to reach the desired number of tile groups.
 		//We substract one because we always add an end tile group.
+		//We will use the same theme as the Start tile for the random tiles.
+		TileGroup startTileGroup = tileGroupManager.getTileGroup(multiplayerTileGroupList[0]);
+		setCurrentTheme( startTileGroup.theme );
+
 		int additionalTileGroupsNeeded = numberOfTileGroups - tileGroupList.Count - 1;
 
 		if( additionalTileGroupsNeeded > 0 )
@@ -477,7 +489,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 				//We will make one attempt to change it if it is identical.
 				if( rtg.tileGroupType == previousRandomTileGroupType ) rtg = tileGroupManager.getRandomTileGroup( currentTheme );
 				previousRandomTileGroupType = rtg.tileGroupType;
-				addTileGroup( rtg );
+				multiplayerTileGroupList.Add( rtg.tileGroupType );
 			}
 		}
 
@@ -486,12 +498,24 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		{
 			int random = Random.Range(0, endTileGroupList.Count );
 			TileGroupType etgt = endTileGroupList[random];
-			TileGroup etg = tileGroupManager.getTileGroup(etgt);
-			addTileGroup( etg );
+			multiplayerTileGroupList.Add( etgt );
 		}
 		else
 		{
 			Debug.LogError("GenerateLevel: Error while generating multiplayer level. The endTileGroupList is empty. It must contain at least one tile.");
+		}
+
+		//Five, create the individual tiles
+ 		addTileGroups( multiplayerTileGroupList );
+	}
+
+	private void addTileGroups( List<TileGroupType> tileGroupList )
+	{
+		for( int i=0; i < tileGroupList.Count; i++ )
+		{
+			TileGroup tg = tileGroupManager.getTileGroup(tileGroupList[i]);
+			//print("addTileGroups " + tg.tileGroupType );
+			addTileGroup( tg );
 		}
 		
 		worldRoadSegments.TrimExcess();		
