@@ -621,7 +621,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Only allow a jump if we are not already jumping and if we are on the ground.
 		//However, if the ground type below the player is of type Collapsing, still allow him to jump.
 		//The Collapsing tag is used in the CollapsingBridge code.
-		if (playerCharacterState != PlayerCharacterState.Jumping && playerCharacterState != PlayerCharacterState.Falling && ( distanceToGround < 0.5f || playerCollisions.getGroundType() == "Collapsing" ) )
+		if (playerCharacterState != PlayerCharacterState.Jumping && ( distanceToGround < 0.5f || playerCollisions.getGroundType() == "Collapsing" ) )
 		{
 			//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
 			moveDirection.x = 0;
