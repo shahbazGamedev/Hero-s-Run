@@ -8,6 +8,7 @@ public class HealthBarHandler : MonoBehaviour {
 	[Header("Health Bar")]
 	[SerializeField] Slider healthBar;
 	[SerializeField] TextMeshProUGUI healthNumber;
+	[SerializeField] Slider armorBar;
 	const float ANIMATION_DURATION_NORMAL = 0.8f;
 	const float ANIMATION_DURATION_FAST = 0.3f;
 
@@ -47,6 +48,16 @@ public class HealthBarHandler : MonoBehaviour {
 	{
 		healthNumber.text = PlayerHealth.DEFAULT_HEALTH.ToString();
 		healthBar.value = PlayerHealth.DEFAULT_HEALTH;			
+	}
+
+	public void changeArmor (int currentArmor, int newArmor, System.Action onFinish = null )
+	{
+		armorBar.GetComponent<UIAnimateSlider>().animateSlider( newArmor, ANIMATION_DURATION_FAST, onFinish );
+	}
+
+	public void removeAllArmor ()
+	{
+		armorBar.value = 0;			
 	}
 	
 }
