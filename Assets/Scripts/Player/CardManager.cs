@@ -25,7 +25,8 @@ public enum CardPropertyType
 	FLIGHT_SPEED = 9,
 	HEIGHT = 10,
 	DAMAGE = 11,
-	HEALTH = 12
+	HEALTH = 12,
+	ARMOR = 13
 }
 
 public enum CardPropertyTargetType
@@ -67,6 +68,7 @@ public enum CardName
 	Trip_Mine = 5,
 	Smoke_Bomb = 6,
 	Health_Boost = 7,
+	Armor = 8,
 
 	//Rare
 	Firewall = 100,

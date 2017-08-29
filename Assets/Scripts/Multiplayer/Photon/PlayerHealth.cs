@@ -60,6 +60,11 @@ public class PlayerHealth : Photon.PunBehaviour {
 		}
 	}
 
+	public void deductAllHealth ()
+	{
+		if( PhotonNetwork.isMasterClient ) this.photonView.RPC("changeHealthRPC", PhotonTargets.All, 0 );
+	}
+
 	public void resetHealth ()
 	{
 		if( PhotonNetwork.isMasterClient ) this.photonView.RPC("changeHealthRPC", PhotonTargets.All, DEFAULT_HEALTH );
@@ -181,6 +186,11 @@ public class PlayerHealth : Photon.PunBehaviour {
 			healthBarHandler.removeAllArmor();
 		}
 		currentArmor = 0;
+	}
+
+	public int getArmor ()
+	{
+		return currentArmor;
 	}
 	#endregion
 

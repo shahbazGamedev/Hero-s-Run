@@ -1571,6 +1571,8 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		Debug.Log("playerDiedRPC : " + deathTypeValue + " " + gameObject.name );
 
+		if( deathTypeValue != DeathType.NO_MORE_HEALTH ) playerHealth.deductAllHealth();
+
 		//Update the player statistics		
 		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
 		{

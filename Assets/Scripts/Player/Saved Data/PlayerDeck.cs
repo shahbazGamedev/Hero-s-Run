@@ -59,6 +59,7 @@ public class PlayerDeck {
 		{
 			addCard( CardName.Firewall, 2, 1, false );
 			addCard( CardName.Health_Boost, 2, 1, false );
+			addCard( CardName.Armor, 2, 1, false );
 		}
 	}
 

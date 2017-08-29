@@ -275,6 +275,17 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardHealthBoost component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+			case CardName.Armor:
+				CardArmor cardArmor = GetComponent<CardArmor>();
+				if( cardArmor != null )
+				{
+					cardArmor.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardArmor component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -408,6 +419,9 @@ public class CardHandler : MonoBehaviour {
 			//Health Boost is effective when your current health is less than 80% of MAX. Health
 			case CardName.Health_Boost:
 				return ( caster.GetComponent<PlayerHealth>().getHealth() < 0.8f * PlayerHealth.DEFAULT_HEALTH );
+			//Adding armor is always a good idea.
+			case CardName.Armor:
+				return true;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
