@@ -377,10 +377,10 @@ public class LevelData : MonoBehaviour {
 	/// <returns>The random level.</returns>
 	public MultiplayerInfo getRandomLevel()
 	{
-		if( GameManager.Instance.overrideSector != -1 )
+		if( GameManager.Instance.playerDebugConfiguration.getOverrideSector() != -1 )
 		{
 			//For testing, use the override to specify which sector you want to play in
-			return multiplayerList[GameManager.Instance.overrideSector];
+			return multiplayerList[GameManager.Instance.playerDebugConfiguration.getOverrideSector()];
 		}
 		else
 		{

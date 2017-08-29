@@ -38,7 +38,6 @@ public class PlayerStatsManager {
 	bool firstTimePlaying = true;
 	bool sharedOnFacebook = false;	//Has the player shared an image on Facebook?
 
-	DebugInfoType debugInfoType = DebugInfoType.NONE; //The type of debug information to display on the HUD such as FPS, Latency, etc.
 	int lives = 0;
 	const int INITIAL_NUMBER_LIVES = 6;
 
@@ -112,6 +111,7 @@ public class PlayerStatsManager {
 	string playerInventory = String.Empty; //List of the player's inventory including gem balance.
 	string playerIcons = String.Empty; //List of the player icons available in the game. Include both locked and unlocked icons.
 	string voiceLines = String.Empty; //List of the voice lines available in the game. Include both locked and unlocked voice lines.
+	string debugConfiguration = String.Empty; //Debug configuration. See Debug menu for the various options.
 
 	public static PlayerStatsManager Instance
 	{
@@ -662,16 +662,6 @@ public class PlayerStatsManager {
 		return sharedOnFacebook;
 	}
 
-	public void setDebugInfoType( DebugInfoType debugInfoType )
-	{
-		this.debugInfoType = debugInfoType;
-	}
-
-	public DebugInfoType getDebugInfoType()
-	{
-		return debugInfoType;
-	}
-
 	public void setOwnsCoinDoubler( bool value )
 	{
 		ownsCoinDoubler = value;
@@ -985,6 +975,16 @@ public class PlayerStatsManager {
 		return voiceLines;
 	}
 
+	public void setDebugConfiguration( string debugConfiguration )
+	{
+		this.debugConfiguration = debugConfiguration;
+	}
+
+	public string getDebugConfiguration()
+	{
+		return debugConfiguration;
+	}
+
 	public void loadPlayerStats()
 	{
 		try
@@ -1015,7 +1015,6 @@ public class PlayerStatsManager {
 			{
 				firstTimePlaying = false;	
 			}
-			debugInfoType = (DebugInfoType) PlayerPrefs.GetInt("debugInfoType", 0 );
 			string sharedOnFacebookString = PlayerPrefs.GetString("sharedOnFacebook", "false" );
 			if( sharedOnFacebookString == "true" )
 			{
@@ -1085,6 +1084,7 @@ public class PlayerStatsManager {
 			playerInventory = PlayerPrefs.GetString("playerInventory", "" );
 			playerIcons = PlayerPrefs.GetString("playerIcons", "" );
 			voiceLines = PlayerPrefs.GetString("voiceLines", "" );
+			debugConfiguration = PlayerPrefs.GetString("debugConfiguration", "" );
 			//Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " Next Episode To Complete: " + nextEpisodeToComplete + " Highest Episode Completed: " + highestEpisodeCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
@@ -1117,7 +1117,6 @@ public class PlayerStatsManager {
 		{
 			PlayerPrefs.SetString( "First Time Playing", "false" );
 		}
-		PlayerPrefs.SetInt("debugInfoType", (int)debugInfoType );
 		if( sharedOnFacebook )
 		{
 			PlayerPrefs.SetString( "sharedOnFacebook", "true" );
@@ -1174,6 +1173,7 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetString( "playerInventory", playerInventory );
 		PlayerPrefs.SetString( "playerIcons", playerIcons );
 		PlayerPrefs.SetString( "voiceLines", voiceLines );
+		PlayerPrefs.SetString( "debugConfiguration", debugConfiguration );
 		PlayerPrefs.Save();
 		//Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
 	}

@@ -62,7 +62,7 @@ public class PlayerRun : Photon.PunBehaviour {
 
 	void Start ()
 	{
-		defaultOverallSpeedMultiplier = LevelManager.Instance.speedOverrideMultiplier;
+		defaultOverallSpeedMultiplier = GameManager.Instance.playerDebugConfiguration.getSpeedOverrideMultiplier();
 		overallSpeedMultiplier = defaultOverallSpeedMultiplier;
 
 		//Get the base run speed from the level data.

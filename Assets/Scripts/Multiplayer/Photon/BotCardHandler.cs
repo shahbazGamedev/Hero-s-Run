@@ -46,7 +46,7 @@ public sealed class BotCardHandler : MonoBehaviour {
 
 		initializeCards ();
 
-		if( botHero.skillLevel != BotSkillLevel.VERY_LOW && LevelManager.Instance.allowBotToPlayCards ) Invoke("allowBotToPlayCards", botSkillData.raceStartGracePeriod );
+		if( botHero.skillLevel != BotSkillLevel.VERY_LOW && GameManager.Instance.playerDebugConfiguration.getAllowBotToPlayCards() ) Invoke("allowBotToPlayCards", botSkillData.raceStartGracePeriod );
 	}
 
 	void allowBotToPlayCards()

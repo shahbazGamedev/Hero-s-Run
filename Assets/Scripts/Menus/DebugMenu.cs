@@ -28,8 +28,8 @@ public class DebugMenu : MonoBehaviour {
 				
 		SceneManager.sceneUnloaded += OnSceneUnloaded;
 
-		speedOverrideMultiplierSlider.value = LevelManager.Instance.speedOverrideMultiplier * 10;
-		speedOverrideMultiplierText.text = LevelManager.Instance.speedOverrideMultiplier.ToString();
+		speedOverrideMultiplierSlider.value = GameManager.Instance.playerDebugConfiguration.getSpeedOverrideMultiplier() * 10;
+		speedOverrideMultiplierText.text = GameManager.Instance.playerDebugConfiguration.getSpeedOverrideMultiplier().ToString();
 
 		numberOfTrophies = GameManager.Instance.playerProfile.getTrophies();
 		trophyOverrideMultiplierSlider.value = numberOfTrophies;
@@ -43,7 +43,7 @@ public class DebugMenu : MonoBehaviour {
 		{
 			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: Off";
 		}
-		if( LevelManager.Instance.allowBotToPlayCards )
+		if( GameManager.Instance.playerDebugConfiguration.getAllowBotToPlayCards() )
 		{
 			allowBotToPlayCardsText.text = "Bot plays cards: On";
 		}
@@ -51,7 +51,7 @@ public class DebugMenu : MonoBehaviour {
 		{
 			allowBotToPlayCardsText.text = "Bot plays cards: Off";
 		}
-		if( LevelManager.Instance.autoPilot )
+		if( GameManager.Instance.playerDebugConfiguration.getAutoPilot() )
 		{
 			autoPilotText.text = "Auto-pilot: On";
 		}
@@ -75,7 +75,7 @@ public class DebugMenu : MonoBehaviour {
 
 	public void setSpeedOverride( Slider slider )
 	{
-		LevelManager.Instance.speedOverrideMultiplier = slider.value/10; //We want 1.1 not 1.123567. Slider uses whole numbers from 0 to 30 converted to 0 to 3.
+		GameManager.Instance.playerDebugConfiguration.setSpeedOverrideMultiplier( slider.value/10 ); //We want 1.1 not 1.123567. Slider uses whole numbers from 0 to 30 converted to 0 to 3.
 		speedOverrideMultiplierText.text = (slider.value/10).ToString();
 	}
 
@@ -92,6 +92,7 @@ public class DebugMenu : MonoBehaviour {
 		{
 			//Set and save the number of trophies since it may have been changed.
 			GameManager.Instance.playerProfile.setNumberOfTrophies( numberOfTrophies );
+			GameManager.Instance.playerDebugConfiguration.serializeDebugConfiguration( false );
 			GameManager.Instance.playerProfile.serializePlayerprofile();
 		}
 	}
@@ -99,8 +100,8 @@ public class DebugMenu : MonoBehaviour {
 	public void OnClickAllowBotToPlayCards()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
-		LevelManager.Instance.allowBotToPlayCards = !LevelManager.Instance.allowBotToPlayCards;
-		if( LevelManager.Instance.allowBotToPlayCards )
+		GameManager.Instance.playerDebugConfiguration.setAllowBotToPlayCards( !GameManager.Instance.playerDebugConfiguration.getAllowBotToPlayCards() );
+		if( GameManager.Instance.playerDebugConfiguration.getAllowBotToPlayCards() )
 		{
 			allowBotToPlayCardsText.text = "Bot plays cards: On";
 		}
@@ -130,8 +131,8 @@ public class DebugMenu : MonoBehaviour {
 	public void OnClickToggleAutoPilot()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
-		LevelManager.Instance.autoPilot = !LevelManager.Instance.autoPilot;
-		if( LevelManager.Instance.autoPilot )
+		GameManager.Instance.playerDebugConfiguration.setAutoPilot( !GameManager.Instance.playerDebugConfiguration.getAutoPilot() );
+		if( GameManager.Instance.playerDebugConfiguration.getAutoPilot() )
 		{
 			autoPilotText.text = "Auto-pilot: On";
 		}
@@ -209,12 +210,12 @@ public class DebugMenu : MonoBehaviour {
 		string[] enumRegions = Enum.GetNames( typeof( CloudRegionCode ) );
 		List<string> regions = new List<string>( enumRegions);
 		regionOverrideDropdown.AddOptions( regions );
-		regionOverrideDropdown.value = (int) GameManager.Instance.overrideCloudRegionCode;
+		regionOverrideDropdown.value = (int) GameManager.Instance.playerDebugConfiguration.getOverrideCloudRegionCode();
 	}
 
 	public void OnRegionDropdownValueChanged()
 	{
-		GameManager.Instance.overrideCloudRegionCode = (CloudRegionCode) regionOverrideDropdown.value;
+		GameManager.Instance.playerDebugConfiguration.setOverrideCloudRegionCode( (CloudRegionCode) regionOverrideDropdown.value );
 		if( PhotonNetwork.connected) PhotonNetwork.Disconnect();
 	}
 	#endregion
@@ -238,12 +239,12 @@ public class DebugMenu : MonoBehaviour {
 		}
 		sectorOverrideDropdown.AddOptions( sectors );
 		//A value of -1 (None) means do not override
-		sectorOverrideDropdown.value = GameManager.Instance.overrideSector + 1; //we are starting from -1
+		sectorOverrideDropdown.value = GameManager.Instance.playerDebugConfiguration.getOverrideSector() + 1; //we are starting from -1
 	}
 
 	public void OnSectorDropdownValueChanged()
 	{
-		GameManager.Instance.overrideSector = sectorOverrideDropdown.value - 1; //we are starting from -1
+		GameManager.Instance.playerDebugConfiguration.setOverrideSector( sectorOverrideDropdown.value - 1 ); //we are starting from -1
 	}
 	#endregion
 
@@ -253,13 +254,12 @@ public class DebugMenu : MonoBehaviour {
 		string[] enumDebugInfoTypes = Enum.GetNames( typeof( DebugInfoType ) );
 		List<string> debugInfoTypes = new List<string>( enumDebugInfoTypes);
 		debugInfoTypeDropdown.AddOptions( debugInfoTypes );
-		debugInfoTypeDropdown.value = (int) PlayerStatsManager.Instance.getDebugInfoType();
+		debugInfoTypeDropdown.value = (int) GameManager.Instance.playerDebugConfiguration.getDebugInfoType();
 	}
 
 	public void OnDebugInfoTypeDropdownValueChanged()
 	{
-		PlayerStatsManager.Instance.setDebugInfoType( (DebugInfoType) debugInfoTypeDropdown.value );
-		PlayerStatsManager.Instance.savePlayerStats();
+		GameManager.Instance.playerDebugConfiguration.setDebugInfoType( ( (DebugInfoType) debugInfoTypeDropdown.value ) );
 	}
 	#endregion
 	

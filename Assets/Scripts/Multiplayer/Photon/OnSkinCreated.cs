@@ -32,7 +32,7 @@ public class OnSkinCreated : MonoBehaviour
 				transform.localRotation = Quaternion.identity;
 				anim.avatar = GetComponent<PlayerSkinInfo>().animatorAvatar;
 				anim.Rebind(); //Important
-				if( Debug.isDebugBuild && LevelManager.Instance.autoPilot && transform.root.GetComponent<PhotonView>().isMine ) transform.root.gameObject.AddComponent<HyperFocus>();
+				if( Debug.isDebugBuild && GameManager.Instance.playerDebugConfiguration.getAutoPilot() && transform.root.GetComponent<PhotonView>().isMine ) transform.root.gameObject.AddComponent<HyperFocus>();
 			}
 			else
 			{

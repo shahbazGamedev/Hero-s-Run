@@ -13,6 +13,7 @@ public class PlayerDataManager : MonoBehaviour {
 	public PlayerInventory playerInventory;
 	public PlayerIcons playerIcons;
 	public PlayerVoiceLines playerVoiceLines;
+	public PlayerDebugConfiguration playerDebugConfiguration;
 
 	// Use this for initialization
 	void Awake ()
@@ -121,6 +122,17 @@ public class PlayerDataManager : MonoBehaviour {
 			
 		}
 		GameManager.Instance.playerVoiceLines = playerVoiceLines;
+
+		if( PlayerStatsManager.Instance.getDebugConfiguration() != string.Empty )
+		{
+			 playerDebugConfiguration = JsonUtility.FromJson<PlayerDebugConfiguration>(PlayerStatsManager.Instance.getDebugConfiguration());
+		}
+		else
+		{
+			playerDebugConfiguration = new PlayerDebugConfiguration();
+			playerDebugConfiguration.createNewDebugConfiguration();
+		}
+		GameManager.Instance.playerDebugConfiguration = playerDebugConfiguration;
 
 	}
 }

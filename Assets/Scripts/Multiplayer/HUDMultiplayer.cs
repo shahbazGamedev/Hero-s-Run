@@ -66,7 +66,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		displayRacePosition( false );
 
 		//HUD Debug Info
-		debugInfoType = PlayerStatsManager.Instance.getDebugInfoType();
+		debugInfoType = GameManager.Instance.playerDebugConfiguration.getDebugInfoType();
 		debugInfo.gameObject.SetActive( debugInfoType != DebugInfoType.NONE );
 		fpsCalculator = GetComponent<FPSCalculator>();
 		fpsCalculator.enabled = (debugInfoType == DebugInfoType.FPS);

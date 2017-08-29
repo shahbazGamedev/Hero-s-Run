@@ -81,7 +81,7 @@ public sealed class PlayerJetPack : Photon.PunBehaviour {
 	void startFlying( float flySpeed )
 	{		
 		locateJetPack();
-		this.flySpeed = flySpeed * LevelManager.Instance.speedOverrideMultiplier;
+		this.flySpeed = flySpeed * GameManager.Instance.playerDebugConfiguration.getSpeedOverrideMultiplier();
 		playerControl.setCharacterState( PlayerCharacterState.Flying );
 		GetComponent<Rigidbody>().useGravity = false;
 		GetComponent<Animator>().SetTrigger(FlyTrigger);
