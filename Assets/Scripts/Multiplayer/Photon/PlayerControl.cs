@@ -1569,8 +1569,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		changeColliderAxis( Axis.Z );
 		ignorePlayerCollisions( true );
 
-		if( deathTypeValue != DeathType.NO_MORE_HEALTH ) playerHealth.deductAllHealth();
-
 		Debug.Log("playerDiedRPC : " + deathTypeValue + " " + gameObject.name );
 
 		//Update the player statistics		

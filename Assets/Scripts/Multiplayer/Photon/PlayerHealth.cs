@@ -18,11 +18,6 @@ public class PlayerHealth : Photon.PunBehaviour {
 	}
 
 	#region Health
-	public void deductAllHealth ()
-	{
-		if( PhotonNetwork.isMasterClient ) this.photonView.RPC("changeHealthRPC", PhotonTargets.All, 0 );
-	}
-
 	public void deductHealth ( int amountToDeduct )
 	{
 		if( amountToDeduct <= 0 )
@@ -31,6 +26,26 @@ public class PlayerHealth : Photon.PunBehaviour {
 		}
 		else
 		{
+
+			//If the player has armor, deduct from armor before deducting from health
+			if( currentArmor > 0 )
+			{
+				if( currentArmor >= amountToDeduct )
+				{
+					//The player has enough armor to absorb all of the damage
+					removeArmor( amountToDeduct );
+					return;
+				}
+				else
+				{
+					//The player can only absorb a portion of the damage.
+					//Deduct the current armor from the damage.
+					//All the armor is used up.
+					amountToDeduct = amountToDeduct - currentArmor;
+					removeArmor( currentArmor );
+				}
+			}
+
 			//Never deduct more than the current health
 			amountToDeduct = Mathf.Min( currentHealth, amountToDeduct );
 
@@ -38,13 +53,10 @@ public class PlayerHealth : Photon.PunBehaviour {
 
 			if( newHealth == 0 )
 			{
-				//Player died because his health is zero. Note that killPlayer checks for isMasterClient
+				//Player died because his health is zero.
 				GetComponent<PlayerControl>().killPlayer( DeathType.NO_MORE_HEALTH );
 			}
-			else
-			{
-				if( PhotonNetwork.isMasterClient ) this.photonView.RPC("changeHealthRPC", PhotonTargets.All, newHealth );
-			}
+			if( PhotonNetwork.isMasterClient ) this.photonView.RPC("changeHealthRPC", PhotonTargets.All, newHealth );
 		}
 	}
 
@@ -212,6 +224,22 @@ public class PlayerHealth : Photon.PunBehaviour {
 		else if ( Input.GetKeyDown (KeyCode.I) ) 
 		{
 			removeArmor( 120 );
+		}
+		else if ( Input.GetKeyDown (KeyCode.S) ) 
+		{
+			deductHealth( 0 );
+		}
+		else if ( Input.GetKeyDown (KeyCode.D) ) 
+		{
+			deductHealth( 1000 );
+		}
+		else if ( Input.GetKeyDown (KeyCode.F) ) 
+		{
+			deductHealth( 55 );
+		}
+		else if ( Input.GetKeyDown (KeyCode.G) ) 
+		{
+			resetHealth();
 		}
 	}
 	#endif
