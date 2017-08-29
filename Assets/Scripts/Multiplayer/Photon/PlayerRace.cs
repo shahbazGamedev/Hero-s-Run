@@ -56,8 +56,8 @@ public class PlayerRace : Photon.PunBehaviour
 	public bool isPowerBoostActive = false;
 	const int TILE_DIFFERENCE_ACTIVATOR = 3;
 	TurnRibbonHandler turnRibbonHandler;
-	bool powerBoostBusy = false;
-	const float MINIMUM_POWER_BOOST_DURATION = 3f;
+	const float MINIMUM_POWER_BOOST_DURATION = 5f;
+	float timePowerBoostStarted;
 
 	void Start()
 	{
@@ -172,8 +172,8 @@ public class PlayerRace : Photon.PunBehaviour
 	{
 		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAlone ) return;
 
-		//The power boost is already active. Let it run for its minimum duration before re-evaluating.
-		if( powerBoostBusy ) return;
+		//If the power boost is active, let it run for its minimum duration before re-evaluating.
+		if( isPowerBoostActive && (Time.time - timePowerBoostStarted) < MINIMUM_POWER_BOOST_DURATION ) return;
 
 		bool powerBoostNeeded = isPowerBoostActive;
 
@@ -219,9 +219,7 @@ public class PlayerRace : Photon.PunBehaviour
 					HUDMultiplayer.hudMultiplayer.activateUserMessage( LocalizationManager.Instance.getText("RACE_EMERGENCY_POWER_ENGAGED"), 0, 3f );
 					turnRibbonHandler.increaseRefillRate();
 				}
-				//We don't want the power boost to flicker on and off and thus the power boost has a minimum duration of MINIMUM_POWER_BOOST_DURATION.
-				powerBoostBusy = true;
-				Invoke( "powerBoostExpired", MINIMUM_POWER_BOOST_DURATION );
+				timePowerBoostStarted = Time.time;
 			}
 			else
 			{
@@ -232,11 +230,6 @@ public class PlayerRace : Photon.PunBehaviour
 				}
 			}
 		}
-	}
-
-	void powerBoostExpired()
-	{
-		powerBoostBusy = false;
 	}
 
 	public bool isPowerBoostEnabled()
