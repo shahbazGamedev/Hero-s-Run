@@ -24,8 +24,12 @@ public class HealthBarHandler : MonoBehaviour {
 
 	void CrossedFinishLine( Transform player, int officialRacePosition, bool isBot )
 	{
-		//Only hide the health bar if the player who crossed the finish line is not a bot.
-		if( !isBot ) healthBar.gameObject.SetActive( false );
+		//Only hide the health and armor bars if the player who crossed the finish line is not a bot.
+		if( !isBot )
+		{
+			healthBar.gameObject.SetActive( false );
+			armorBar.gameObject.SetActive( false );
+		}
 	}
 
 	public void changeHealth (int currentHealth, int newHealth, System.Action onFinish = null )
