@@ -38,7 +38,7 @@ public class SciFiProjectileScript : MonoBehaviour
 
             if ( hit.collider.CompareTag("Player") )
             {
-                hit.collider.GetComponent<PlayerHealth>().deductHealth( 20 );
+                hit.collider.GetComponent<PlayerHealth>().deductHealth( 15 );
             }
 
              foreach (GameObject trail in trailParticles)

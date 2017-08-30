@@ -141,8 +141,9 @@ public class DroneHandler : MonoBehaviour {
 	{
 		if( PhotonNetwork.isMasterClient )
 		{
-			if( other.CompareTag( "Player" ) )
+			if( other.transform == nearestTarget )
 			{
+				//The drone's target has left the target area.
 				nearestTarget = null;
 			}
 		}
