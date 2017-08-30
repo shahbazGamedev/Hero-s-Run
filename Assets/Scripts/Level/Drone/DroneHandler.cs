@@ -103,13 +103,12 @@ public class DroneHandler : MonoBehaviour {
 					timeOfLastShot = Time.time;
 
 					//Create projectiles
-					object[] data = new object[6];
+					object[] data = new object[5];
 					data[0] = projectileSpeed;
-					data[1] = aimRange;
-					data[2] = nearestTarget.TransformPoint(0.2f,1.2f,0);
-					data[3] = nearestTarget.TransformPoint(-0.2f,1.2f,0);
-					data[4] = spawnPositionLeft.position;
-					data[5] = spawnPositionRight.position;
+					data[1] = nearestTarget.TransformPoint(0.2f,1.2f,0);
+					data[2] = nearestTarget.TransformPoint(-0.2f,1.2f,0);
+					data[3] = spawnPositionLeft.position;
+					data[4] = spawnPositionRight.position;
 					PhotonNetwork.InstantiateSceneObject( "Drone Projectiles", transform.position, transform.rotation, 0, data );
 				}
 			}
