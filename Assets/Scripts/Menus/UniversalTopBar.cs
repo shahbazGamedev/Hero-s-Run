@@ -139,7 +139,7 @@ public class UniversalTopBar : MonoBehaviour {
 	void configureUI()
 	{
 		playerLevelText.text = GameManager.Instance.playerProfile.getLevel().ToString();
-		currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.totalXPEarned, ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ) );
+		currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.totalXPEarned.ToString("N0"), ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ).ToString("N0") );
 		progressBarSlider.value = GameManager.Instance.playerProfile.totalXPEarned/ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
 	
 		numberOfCoinsText.text = GameManager.Instance.playerInventory.getCoinBalance().ToString("N0");
