@@ -41,7 +41,7 @@ public enum CardPropertyTargetType
 public enum CardSortMode
 {
 	BY_RARITY = 0,
-	BY_MANA_COST = 1
+	BY_POWER_COST = 1
 }
 
 public enum CardUpgradeColor

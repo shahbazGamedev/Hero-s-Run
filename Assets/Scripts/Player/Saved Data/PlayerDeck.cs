@@ -107,7 +107,7 @@ public class PlayerDeck {
 			cardDeck.Add( CardManager.Instance.getCardByName( playerCardDeck[i].name ) );
 		}
 
-		if( cardSortMode == CardSortMode.BY_MANA_COST )
+		if( cardSortMode == CardSortMode.BY_POWER_COST )
 		{
 			cardDeck.Sort((x, y) => x.manaCost.CompareTo(y.manaCost));
 		}
