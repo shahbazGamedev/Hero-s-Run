@@ -14,6 +14,7 @@ public class StoreEntryForCoins : MonoBehaviour {
 	[SerializeField] int priceInGems;
 
 	[SerializeField] StoreNotEnoughGemsPopup storeNotEnoughGemsPopup;
+	[SerializeField] PurchaseConfirmationPopup purchaseConfirmationPopup;
 
 	// Use this for initialization
 	void Start ()
@@ -64,9 +65,8 @@ public class StoreEntryForCoins : MonoBehaviour {
 		UISoundManager.uiSoundManager.playButtonClick();
 		if( priceInGems <= GameManager.Instance.playerInventory.getGemBalance() )
 		{
-			//We can afford it.
-			GameManager.Instance.playerInventory.deductGems( priceInGems );
-			GameManager.Instance.playerInventory.addCoins( quantity );
+			//We can afford it. Show the purchase confirmation popup.
+			purchaseConfirmationPopup.Show( priceInGems, title.text, quantity );
 		}
 		else
 		{
