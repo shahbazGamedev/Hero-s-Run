@@ -3,6 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+public enum BattleDeck
+{
+	ASSIGN_TO_ALL_BATTLE_DECKS = -2,
+	REMOVE_FROM_ALL_BATTLE_DECKS = -1,
+	BATTLE_DECK_ONE = 0,
+	BATTLE_DECK_TWO = 1,
+	BATTLE_DECK_THREE = 2
+}
+
 [System.Serializable]
 /// <summary>
 /// Player deck.
@@ -10,6 +19,7 @@ using System.Linq;
 public class PlayerDeck {
 
 	[SerializeField] List<PlayerCardData> playerCardDataList = new List<PlayerCardData>();
+	[SerializeField] BattleDeck activeDeck = BattleDeck.BATTLE_DECK_ONE;
 
 	/// <summary>
 	/// Creates a new player deck containing the cards the players has after a new install. All of the cards are level 1. The player has 1 card of each.
@@ -25,11 +35,11 @@ public class PlayerDeck {
 		{
 			if( i == 0 )
 			{
-				addCard( heroCardsList[i], 1, 1, true, true );
+				addCard( heroCardsList[i], 1, 1, BattleDeck.ASSIGN_TO_ALL_BATTLE_DECKS, true );
 			}
 			else
 			{
-				addCard( heroCardsList[i], 1, 1, false, true );
+				addCard( heroCardsList[i], 1, 1, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS, true );
 			}
 		}
 
@@ -43,7 +53,7 @@ public class PlayerDeck {
 		}
 		for( int i = 0; i < defaultCardsList.Count; i++ )
 		{
-			addCard( defaultCardsList[i].name, 1, 1, true );
+			addCard( defaultCardsList[i].name, 1, 1, BattleDeck.ASSIGN_TO_ALL_BATTLE_DECKS );
 		}
 
 		//If this is a debug build, add additional cards to the card collection to facilitate testing
@@ -57,9 +67,25 @@ public class PlayerDeck {
 	{
 		if( Debug.isDebugBuild )
 		{
-			addCard( CardName.Firewall, 2, 1, false );
-			addCard( CardName.Health_Boost, 2, 1, false );
-			addCard( CardName.Armor, 2, 1, false );
+			addCard( CardName.Firewall, 2, 1, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS );
+			addCard( CardName.Health_Boost, 2, 1, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS );
+			addCard( CardName.Armor, 2, 1, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS );
+		}
+	}
+
+	public BattleDeck getActiveDeck()
+	{
+		return activeDeck;
+	}
+
+	public void setActiveDeck( BattleDeck desiredDeck )
+	{
+		//ignore if the value has not changed
+		if( desiredDeck != activeDeck )
+		{
+			activeDeck = desiredDeck;
+			serializePlayerDeck( true );
+			Debug.Log("setActiveDeck " + activeDeck );
 		}
 	}
 
@@ -83,15 +109,15 @@ public class PlayerDeck {
 	/// <returns>The battle deck.</returns>
 	public List<PlayerCardData> getBattleDeck()
 	{
-		//Reset inBattleDeck to false for the current hero card. There should only ever be one card.
-		playerCardDataList.Find( c => c.inBattleDeck == true && c.isHeroCard == true ).inBattleDeck = false;
+		//Remove the current hero card from the active battle deck. There should only ever be one card.
+		playerCardDataList.Find( c => c.memberOfTheseBattleDecks[(int)activeDeck] == true && c.isHeroCard == true ).memberOfTheseBattleDecks[(int)activeDeck] = false;
 
 		//Now, set inBattleDeck to true for the card of the currently selected hero
 		int heroIndex = GameManager.Instance.playerProfile.selectedHeroIndex;
 		HeroManager.HeroCharacter hero = HeroManager.Instance.getHeroCharacter( heroIndex );
-		getCardByName( hero.reservedCard ).inBattleDeck = true;
+		getCardByName( hero.reservedCard ).memberOfTheseBattleDecks[(int)activeDeck] = true;
 
-		return playerCardDataList.FindAll( card => card.inBattleDeck == true );
+		return playerCardDataList.FindAll( card => card.memberOfTheseBattleDecks[(int)activeDeck] == true );
 	}
  
 	/// <summary>
@@ -100,7 +126,7 @@ public class PlayerDeck {
 	/// <returns>The card deck.</returns>
 	public List<CardManager.CardData> getCardDeck( CardSortMode cardSortMode )
 	{
-		List<PlayerCardData> playerCardDeck = playerCardDataList.FindAll( card => card.inBattleDeck == false && card.isHeroCard == false );
+		List<PlayerCardData> playerCardDeck = playerCardDataList.FindAll( card => card.memberOfTheseBattleDecks[(int)activeDeck] == false && card.isHeroCard == false );
 		List<CardManager.CardData> cardDeck = new List<CardManager.CardData>();
 		for( int i = 0; i < playerCardDeck.Count; i++ )
 		{
@@ -139,7 +165,7 @@ public class PlayerDeck {
 		return totalBattleDeckMana/battleDeck.Count;
 	}
 
-	public PlayerCardData addCard(  CardName name, int level, int quantity, bool inBattleDeck, bool isHeroCard = false, bool isNew = false )
+	public PlayerCardData addCard(  CardName name, int level, int quantity, BattleDeck assignToThisBattleDeck, bool isHeroCard = false, bool isNew = false )
 	{
 		//Make sure the specified card exists
 		if( CardManager.Instance.doesCardExist( name ) )
@@ -151,7 +177,24 @@ public class PlayerDeck {
 			pcd.name = name;
 			pcd.level = level;
 			pcd.quantity = quantity;
-			pcd.inBattleDeck = inBattleDeck;
+			if( assignToThisBattleDeck == BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS )
+			{
+				for( int i = 0; i < pcd.memberOfTheseBattleDecks.Length; i++ )
+				{
+					pcd.memberOfTheseBattleDecks[i] = false;
+				}
+			}
+			else if( assignToThisBattleDeck == BattleDeck.ASSIGN_TO_ALL_BATTLE_DECKS )
+			{
+				for( int i = 0; i < pcd.memberOfTheseBattleDecks.Length; i++ )
+				{
+					pcd.memberOfTheseBattleDecks[i] = true;
+				}
+			}
+			else
+			{
+				pcd.memberOfTheseBattleDecks[(int)assignToThisBattleDeck] = true;
+			}
 			pcd.isHeroCard = isHeroCard;
 			pcd.isNew = isNew;
 			playerCardDataList.Add(pcd);
@@ -192,7 +235,7 @@ public class PlayerDeck {
 		if( doesCardExist( name ) )
 		{
 			PlayerCardData pcd = playerCardDataList.Find(playerCardData => playerCardData.name == name);
-			pcd.inBattleDeck = inBattleDeck;
+			pcd.memberOfTheseBattleDecks[(int)activeDeck] = inBattleDeck;
 		}
 		else
 		{
@@ -265,7 +308,7 @@ public class PlayerDeck {
 		[Range(1,13)]
 		public int level;
 		public int  quantity;
-		public bool inBattleDeck;		
+		public bool[] memberOfTheseBattleDecks = new bool[3];
 		public int timesUsed;
 		public bool isHeroCard;
 		public bool isNew;	

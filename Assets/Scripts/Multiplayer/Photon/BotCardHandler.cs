@@ -56,7 +56,8 @@ public sealed class BotCardHandler : MonoBehaviour {
 
 	List<PlayerDeck.PlayerCardData> getBattleDeck()
 	{
-		List<PlayerDeck.PlayerCardData> battleDeck = botHero.botCardDataList.FindAll( card => card.inBattleDeck == true );
+		//All bot cards belong to BATTLE_DECK_ONE. They have only one deck.
+		List<PlayerDeck.PlayerCardData> battleDeck = botHero.botCardDataList.FindAll( card => card.memberOfTheseBattleDecks[(int)BattleDeck.BATTLE_DECK_ONE] == true );
 		//Check that we have the right number of cards in the Battle Deck
 		if( battleDeck.Count == TurnRibbonHandler.NUMBER_CARDS_IN_BATTLE_DECK )
 		{

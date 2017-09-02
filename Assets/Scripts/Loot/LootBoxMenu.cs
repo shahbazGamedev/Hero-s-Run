@@ -153,7 +153,7 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 				{
 					//No, this is a new card.
 					//Add it to the player's deck. Tag is as new so the "New" ribbon gets displayed.
-					pcd = GameManager.Instance.playerDeck.addCard(  loot.cardName, 1, loot.quantity, false, false, true );
+					pcd = GameManager.Instance.playerDeck.addCard(  loot.cardName, 1, loot.quantity, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS, false, true );
 					updateCardProgressBar( pcd, cd, 0, loot.quantity );
 				}
 				else
