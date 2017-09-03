@@ -35,7 +35,8 @@ public enum CardPropertyTargetType
 	NEAREST = 1,
 	RANDOM = 2,
 	ALL = 3,
-	SELECTED = 4
+	SELECTED = 4,
+	LEADING = 5
 }
 
 public enum CardSortMode
