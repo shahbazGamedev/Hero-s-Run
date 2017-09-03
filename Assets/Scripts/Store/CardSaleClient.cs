@@ -6,13 +6,11 @@ using TMPro;
 
 public class CardSaleClient : MonoBehaviour {
 
-	[Header("Content")]
-	[SerializeField] RectTransform contentRectTransfom;
-	[SerializeField] LayoutElement topImageLayoutElement;
 	[Header("Card Sale Area")]
-	[SerializeField] LayoutElement cardSaleLayoutElement;
+	[SerializeField] TextMeshProUGUI timeRemainingBeforeNextCards;
 	[SerializeField] Transform cardSaleHolder;
 	[SerializeField] GameObject cardOnSalePrefab;
+	List<CardName> cardOnSaleList = new List<CardName>();
 
 	void Start ()
 	{
@@ -30,24 +28,20 @@ public class CardSaleClient : MonoBehaviour {
 			GameObject.Destroy( child.gameObject );
 		}
 
+		//cardOnSaleList.Add(CardName.Armor);
+		//cardOnSaleList.Add(CardName.Hack);
+		//cardOnSaleList.Add(CardName.Health_Boost);
+		cardOnSaleList.Add(CardName.Shrink);
+		cardOnSaleList.Add(CardName.Shockwave);
+		cardOnSaleList.Add(CardName.Smoke_Bomb);
+
 		createCardsOnSale();
 
-		//Adjust the overall length of the content including all areas
-		//float totalLength = topImageLayoutElement.minHeight + battleDeckLayoutElement.minHeight + + heroCardsLayoutElement.minHeight + cardCollectionLayoutElement.minHeight + cardsToBeFoundLayoutElement.minHeight;
-		//contentRectTransfom.sizeDelta = new Vector2( contentRectTransfom.sizeDelta.x, totalLength );
 	}
 
 	#region Card Sale
 	void createCardsOnSale()
 	{
-		List<CardName> cardOnSaleList = new List<CardName>();
-		cardOnSaleList.Add(CardName.Armor);
-		cardOnSaleList.Add(CardName.Hack);
-		cardOnSaleList.Add(CardName.Health_Boost);
-		cardOnSaleList.Add(CardName.Shrink);
-		cardOnSaleList.Add(CardName.Shockwave);
-		cardOnSaleList.Add(CardName.Smoke_Bomb);
-
 		for( int i = 0; i < cardOnSaleList.Count; i++ )
 		{
 			createCardOnSale( cardOnSaleList[i] );
