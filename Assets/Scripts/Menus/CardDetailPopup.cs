@@ -27,6 +27,7 @@ public class CardDetailPopup : MonoBehaviour {
 	[SerializeField] Text upgradeButtonText;
 	[SerializeField] Text upgradeCostText;
 	[SerializeField] Image coinIcon; //The coin icon is hidden when the card is Maxed Out
+	bool canUpgrade = false;
 	[Header("Use Button")]
 	[SerializeField] Button useButton;
 	[SerializeField] Text useButtonText;
@@ -55,10 +56,10 @@ public class CardDetailPopup : MonoBehaviour {
 		ColorUtility.TryParseHtmlString (CardManager.Instance.getCardColorHexValue(cd.rarity), out rarityColor);
 		rarityIcon.color = rarityColor;
 		rarityText.text = LocalizationManager.Instance.getText( "CARD_RARITY_" + cd.rarity.ToString() );
-		//Configure card properties
-		configureCardProperties( pcd, cd );
 		//Upgrade button
 		configureUpgradeButton( go, pcd, cd );
+		//Configure card properties
+		configureCardProperties( pcd, cd );
 		//The Use button is only shown if the card is not in the battle deck and it is not a Hero Card
 		useButtonText.text = LocalizationManager.Instance.getText( "CARD_USE" );
 		List<CardManager.CardData> cardCollectionList = GameManager.Instance.playerDeck.getCardDeck( CardSortMode.BY_POWER_COST );
@@ -100,7 +101,7 @@ public class CardDetailPopup : MonoBehaviour {
 	{
 		GameObject go = (GameObject)Instantiate(cardPropertyPrefab);
 		go.transform.SetParent(propertiesPanel,false);
-		go.GetComponent<CardPropertyUI>().configureProperty( index, cp, pcd, cd, false );
+		go.GetComponent<CardPropertyUI>().configureProperty( index, cp, pcd, cd, canUpgrade );
 	}
 
 	/// <summary>
@@ -148,7 +149,7 @@ public class CardDetailPopup : MonoBehaviour {
 			{
 				upgradeButton.onClick.RemoveAllListeners();
 				upgradeButton.onClick.AddListener(() => OnClickUpgrade( go, cd.name, upgradeCost));
-
+				canUpgrade = true;
 				//Does the player have enough coins?
 				if( upgradeCost <= GameManager.Instance.playerInventory.getCoinBalance() )
 				{
@@ -169,6 +170,7 @@ public class CardDetailPopup : MonoBehaviour {
 			else
 			{
 				//The player does have enough cards.
+				canUpgrade = false;
 				upgradeButton.interactable = false;
 				upgradeCostText.color = upgradeButton.colors.disabledColor;
 			}
@@ -177,6 +179,7 @@ public class CardDetailPopup : MonoBehaviour {
 		else
 		{
 			//The card is already maxed out.
+			canUpgrade = false;
 			upgradeButton.interactable = false;
 			upgradeCostText.text = LocalizationManager.Instance.getText( "CARD_MAXED_OUT" );
 			upgradeCostText.color = upgradeButton.colors.disabledColor;
