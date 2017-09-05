@@ -7,8 +7,8 @@ using TMPro;
 public class UniversalTopBar : MonoBehaviour {
 
 	public static UniversalTopBar Instance;
-	const float SOFT_CURRENCY_STORE_VERTICAL_POSITION = 1872f;
-	const float HARD_CURRENCY_STORE_VERTICAL_POSITION = 850f;
+	const float SOFT_CURRENCY_STORE_VERTICAL_POSITION = 2508f;
+	const float HARD_CURRENCY_STORE_VERTICAL_POSITION = 1550f;
 	const float NUMBER_SPIN_DURATION = 1.25f;
 
 	[Header("For Store Access")]

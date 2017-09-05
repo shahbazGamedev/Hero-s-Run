@@ -37,7 +37,7 @@ public class StoreManager : MonoBehaviour {
 		{
 			contentHeight += elements[i].minHeight;
 		}
-		storeVerticalContent.sizeDelta = new Vector2( storeVerticalContent.sizeDelta.x, contentHeight );
+		//storeVerticalContent.sizeDelta = new Vector2( storeVerticalContent.sizeDelta.x, contentHeight );
 	}
 
 	public void showStore( StoreTab selectedTab )
