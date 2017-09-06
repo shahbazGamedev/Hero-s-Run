@@ -139,7 +139,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 		#if !UNITY_EDITOR
 		if ( isPaused )
 		{
-			chatClient.Disconnect();
+			if( chatClient != null ) chatClient.Disconnect();
 		}
 		else
 		{
