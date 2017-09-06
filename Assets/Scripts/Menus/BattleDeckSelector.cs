@@ -38,6 +38,8 @@ public class BattleDeckSelector : MonoBehaviour {
 		if( GameManager.Instance.playerDeck.getActiveDeck() != BattleDeck.BATTLE_DECK_ONE )
 		{
 			GameManager.Instance.playerDeck.setActiveDeck( BattleDeck.BATTLE_DECK_ONE );
+			//If card replacement is in progress, stop it.
+			cardCollectionManager.stopCardReplacement();
 			cardCollectionManager.initialize();
 		}
 	}
@@ -47,6 +49,8 @@ public class BattleDeckSelector : MonoBehaviour {
 		if( GameManager.Instance.playerDeck.getActiveDeck() != BattleDeck.BATTLE_DECK_TWO )
 		{
 			GameManager.Instance.playerDeck.setActiveDeck( BattleDeck.BATTLE_DECK_TWO );
+			//If card replacement is in progress, stop it.
+			cardCollectionManager.stopCardReplacement();
 			cardCollectionManager.initialize();
 		}
 	}
@@ -56,6 +60,8 @@ public class BattleDeckSelector : MonoBehaviour {
 		if( GameManager.Instance.playerDeck.getActiveDeck() != BattleDeck.BATTLE_DECK_THREE )
 		{
 			GameManager.Instance.playerDeck.setActiveDeck( BattleDeck.BATTLE_DECK_THREE );
+			//If card replacement is in progress, stop it.
+			cardCollectionManager.stopCardReplacement();
 			cardCollectionManager.initialize();
 		}
 	}

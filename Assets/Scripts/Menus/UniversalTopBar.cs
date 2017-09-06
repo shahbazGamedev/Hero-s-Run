@@ -104,6 +104,10 @@ public class UniversalTopBar : MonoBehaviour {
 				showTopBar( false );
 			break;
 
+			case GameScenes.Hangout:
+				showTopBar( true );
+			break;
+
 			case GameScenes.Social:
 				showTopBar( true );
 				onlyShowCloseButton( true );

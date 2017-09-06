@@ -27,7 +27,7 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 	[Header("Replace Card Area")]
 	[SerializeField] GameObject replaceCardArea;
 	[SerializeField] RectTransform cardVerticalContent;
-	const float CARD_REPLACEMENT_POSITION = 280f;
+	const float CARD_REPLACEMENT_POSITION = 370f;
 	[SerializeField] GameObject cardToAddToBattleDeck;
 	CardName cardToAddToBattleDeckName;
 	[SerializeField] ScrollRect cardCollectionScollRect;
@@ -94,8 +94,8 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 		createCardsToBeFoundSection();
 
 		//Adjust the overall length of the content including all areas
-		float totalLength = topImageLayoutElement.minHeight + battleDeckLayoutElement.minHeight + + heroCardsLayoutElement.minHeight + cardCollectionLayoutElement.minHeight + cardsToBeFoundLayoutElement.minHeight;
-		contentRectTransfom.sizeDelta = new Vector2( contentRectTransfom.sizeDelta.x, totalLength );
+		//float totalLength = topImageLayoutElement.minHeight + battleDeckLayoutElement.minHeight + + heroCardsLayoutElement.minHeight + cardCollectionLayoutElement.minHeight + cardsToBeFoundLayoutElement.minHeight;
+		//contentRectTransfom.sizeDelta = new Vector2( contentRectTransfom.sizeDelta.x, totalLength );
 	}
 
 	#region Battle Deck
@@ -199,11 +199,11 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 		}
 
 		//Now adjust the height of the area based on the number of card rows. We have 4 cards per row. We also have a title.
-		float titleHeight = heroCardsTitle.transform.parent.GetComponent<RectTransform>().sizeDelta.y;
+		/*float titleHeight = heroCardsTitle.transform.parent.GetComponent<RectTransform>().sizeDelta.y;
 		int numberOfRows = (int) Math.Ceiling( (heroCardsList.Count)/4f );
 		float heroCardsAreaHeight = titleHeight + heroCardsHolder.GetComponent<GridLayoutGroup>().cellSize.y * numberOfRows;
 		heroCardsLayoutElement.preferredHeight = heroCardsAreaHeight;
-		heroCardsLayoutElement.minHeight = heroCardsAreaHeight;
+		heroCardsLayoutElement.minHeight = heroCardsAreaHeight;*/
 	}
 
 	void createHeroCard( CardManager.CardData cd )
@@ -246,11 +246,11 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 		}
 
 		//Now adjust the height of the area based on the number of card rows. We have 4 cards per row. We also have a title.
-		float titleHeight = cardCollectionTitle.transform.parent.GetComponent<RectTransform>().sizeDelta.y;
+		/*float titleHeight = cardCollectionTitle.transform.parent.GetComponent<RectTransform>().sizeDelta.y;
 		int numberOfRows = (int) Math.Ceiling( (cardDeckList.Count)/4f );
 		float cardCollectionAreaHeight = titleHeight + cardCollectionHolder.GetComponent<GridLayoutGroup>().cellSize.y * numberOfRows;
 		cardCollectionLayoutElement.preferredHeight = cardCollectionAreaHeight;
-		cardCollectionLayoutElement.minHeight = cardCollectionAreaHeight;
+		cardCollectionLayoutElement.minHeight = cardCollectionAreaHeight;*/
 	}
 
 	void createCollectionCard( CardManager.CardData cd )
@@ -323,11 +323,11 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 		}
 
 		//Now adjust the height of the area based on the number of card rows. We have 4 cards per row. We also have a title.
-		float titleHeight = cardsToBeFoundTitle.transform.parent.GetComponent<RectTransform>().sizeDelta.y;
+		/*float titleHeight = cardsToBeFoundTitle.transform.parent.GetComponent<RectTransform>().sizeDelta.y;
 		int numberOfRows = (int) Math.Ceiling( cardsNotFoundList.Count()/4f );
 		float cardsToBeFoundAreaHeight = titleHeight + cardsToBeFoundHolder.GetComponent<GridLayoutGroup>().cellSize.y * numberOfRows;
 		cardsToBeFoundLayoutElement.preferredHeight = cardsToBeFoundAreaHeight;
-		cardsToBeFoundLayoutElement.minHeight = cardsToBeFoundAreaHeight;
+		cardsToBeFoundLayoutElement.minHeight = cardsToBeFoundAreaHeight;*/
 	}
 
 	void createCardToBeFound( CardManager.CardData cd )
@@ -379,7 +379,7 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 		stopCardReplacement();
     }
 
-	void stopCardReplacement()
+	public void stopCardReplacement()
 	{
 		if( cardReplacementInProgress )
 		{

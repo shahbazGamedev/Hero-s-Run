@@ -36,11 +36,13 @@ public enum GameScenes {
 	Options = 8,
 	Training = 9,
 	Social = 10,
+	Hangout = 11,
 
-	WorldMap = 11,
-	TreasureIsland = 12,
-	CharacterGallery = 13,
-	Journal = 14
+	//Not used
+	WorldMap = 12,
+	TreasureIsland = 13,
+	CharacterGallery = 14,
+	Journal = 15
 }
 
 public enum GameMode {

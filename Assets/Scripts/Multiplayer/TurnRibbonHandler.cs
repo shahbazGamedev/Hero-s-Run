@@ -14,7 +14,6 @@ public class TurnRibbonHandler : MonoBehaviour {
 	[SerializeField] Color cardNotEffectiveTextColor;
 	[Header("Next Card")]
 	[SerializeField] Image nextCardImage;
-	[SerializeField] Text nextCardText;
 	CardManager.CardData nextCard;
 	[SerializeField] Sprite blankCardSprite;
 	[SerializeField] Sprite stolenCardSprite;
