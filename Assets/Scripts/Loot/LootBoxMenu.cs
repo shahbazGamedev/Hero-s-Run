@@ -5,8 +5,11 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
+
+	public static LootBoxMenu Instance;
 
 	[Header("Panels")]
 	[SerializeField] GameObject masterPanel;
@@ -60,14 +63,24 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 	[Header("Loot Counter")]
 	[SerializeField] TextMeshProUGUI lootCounterText;
 
-	[Header("Card Collection Manager")]
-	[SerializeField] CardCollectionManager cardCollectionManager;
-
 	List<LootBox.Loot> lootList;
 	int lootCounter = 0;
 	int numberOfCardsForUpgrade;
 	const float ANIMATION_DURATION = 0.75f;
 	const float SHORT_ANIMATION_DURATION = 0.5f;
+
+	void Awake ()
+	{
+		if(Instance)
+		{
+			DestroyImmediate(gameObject);
+		}
+		else
+		{
+			Instance = this;
+			DontDestroyOnLoad(gameObject);
+		}
+	}
 
 	// Use this for initialization
 	void Start ()
@@ -175,7 +188,11 @@ public class LootBoxMenu : MonoBehaviour, IPointerDownHandler {
 					cardLevelText.text = String.Format( LocalizationManager.Instance.getText( "CARD_LEVEL"), pcd.level.ToString() );
 				}
 				//Refresh the card collections
-				cardCollectionManager.initialize ();
+				//LootBoxMenu is used in multiple scenes. CardCollectionManager however is only available in the main menu.
+				if( (GameScenes) SceneManager.GetActiveScene().buildIndex == GameScenes.MainMenu )
+				{
+					GameObject.FindObjectOfType<CardCollectionManager>().initialize ();
+				}
 			break;
 
 			case LootType.PLAYER_ICON:
