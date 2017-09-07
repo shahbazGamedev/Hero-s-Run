@@ -44,6 +44,7 @@ public class RadialTimerButton : MonoBehaviour, IPointerUpHandler, IPointerDownH
 
 	void CallOnClick()
 	{
+		//This code will call the OnClick () event defined for this button in the Editor.
 		GetComponent<Button>().interactable = true;
 		PointerEventData pointer = new PointerEventData(EventSystem.current);
 		ExecuteEvents.Execute( gameObject, pointer, ExecuteEvents.pointerClickHandler);
