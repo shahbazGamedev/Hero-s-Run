@@ -24,6 +24,8 @@ public class PlayerInventory {
 	//lastDisplayedCrownBalance is used in the Main Menu to determine if the number of crowns has changed.
 	[SerializeField] int lastDisplayedCrownBalance = 0;
 
+	[SerializeField] List<LootBoxData> lootBoxesOwned = new List<LootBoxData>();
+
 	//Delegate used to communicate to other classes when an inventory value changes such as the gem balance
 	public delegate void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int previousValue, int newValue );
 	public static event PlayerInventoryChangedNew playerInventoryChangedNew;
@@ -178,6 +180,30 @@ public class PlayerInventory {
 		{
 			Debug.LogWarning("PlayerInventory-the crown value specified " + value + " is incorrect. It needs to be zero or greater." );
 		}
+	}
+	#endregion
+
+	#region Loot Boxes
+	public List<LootBoxData> getAllLootBoxesOwned()
+	{
+		return lootBoxesOwned;
+	}
+
+	public void addLootBox( LootBoxData lootBoxData )
+	{
+		lootBoxesOwned.Add( lootBoxData );
+		Debug.Log("PlayerInventory - addLootBox: " + lootBoxData.ToString() );
+	}
+
+	public void removeLootBox( LootBoxData lootBoxData )
+	{
+		Debug.Log("PlayerInventory - removeLootBox: " + lootBoxData.ToString() );
+		lootBoxesOwned.Remove( lootBoxData );
+	}
+
+	public int getNumberOfLootBoxesOwned()
+	{
+		return lootBoxesOwned.Count;
 	}
 	#endregion
 

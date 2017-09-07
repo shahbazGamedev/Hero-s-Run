@@ -7,6 +7,7 @@ public class RadialTimerButton : MonoBehaviour, IPointerUpHandler, IPointerDownH
 
 	[SerializeField] Image radialImageMask;
 	[SerializeField] float duration = 2f;
+	[SerializeField] float delayBeforeCallingOnClick = 1f;
 
 	void Awake()
 	{
@@ -33,7 +34,7 @@ public class RadialTimerButton : MonoBehaviour, IPointerUpHandler, IPointerDownH
 			yield return new WaitForEndOfFrame();  
 	    }
 		radialImageMask.fillAmount =  0;
-		CallOnClick();
+		Invoke( "CallOnClick", delayBeforeCallingOnClick );
 	}
 
 	public void OnPointerUp(PointerEventData eventData )
