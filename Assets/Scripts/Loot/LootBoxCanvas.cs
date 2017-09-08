@@ -7,7 +7,7 @@ public class LootBoxCanvas : MonoBehaviour {
 
 	int currentIndex = 0;
 	int lootBoxesOwned = 0;
-	LootBoxData selectedLootBoxData;
+	LootBoxOwnedData selectedLootBoxData;
 	[SerializeField] TextMeshProUGUI lootBoxTypeText;
 	[SerializeField] RadialTimerButton radialTimerButton;
 
@@ -32,12 +32,12 @@ public class LootBoxCanvas : MonoBehaviour {
 	void addLootBoxesForTesting ()
 	{
 		GameManager.Instance.playerInventory.removeAllLootBoxesOwned();
-		GameManager.Instance.playerInventory.addLootBox( new LootBoxData( LootBoxType.LEVEL_UP, 1, 1 ) );
-		GameManager.Instance.playerInventory.addLootBox( new LootBoxData( LootBoxType.RACE_WON, 1, 1 ) );
-		GameManager.Instance.playerInventory.addLootBox( new LootBoxData( LootBoxType.FREE, 1, 1 ) );
-		GameManager.Instance.playerInventory.addLootBox( new LootBoxData( LootBoxType.LEVEL_UP, 2, 2 ) );
-		GameManager.Instance.playerInventory.addLootBox( new LootBoxData( LootBoxType.RACE_WON, 2, 2 ) );
-		GameManager.Instance.playerInventory.addLootBox( new LootBoxData( LootBoxType.FREE, 2, 2 ) );
+		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.LEVEL_UP, 1, 1 ) );
+		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.RACE_WON, 1, 1 ) );
+		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.FREE, 1, 1 ) );
+		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.LEVEL_UP, 2, 2 ) );
+		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.RACE_WON, 2, 2 ) );
+		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.FREE, 2, 2 ) );
 	}
 
 	public void OnClickLootBox()

@@ -2,13 +2,13 @@
 using UnityEngine;
 
 [System.Serializable]
-public class LootBoxData
+public class LootBoxOwnedData
 {
 	public LootBoxType type; 
 	public int earnedAtLevel;
 	public int earnedInSector;
 
-	public LootBoxData( LootBoxType type, int earnedAtLevel, int earnedInSector )
+	public LootBoxOwnedData( LootBoxType type, int earnedAtLevel, int earnedInSector )
 	{
 		this.type = type; 
 		this.earnedAtLevel = earnedAtLevel;
@@ -17,7 +17,7 @@ public class LootBoxData
 
 	public string ToString()
 	{
-		return "LootBoxData-LootBoxType: " + type + " Earned at level: " + " Earned in sector: " + earnedInSector;
+		return "LootBoxOwnedData-LootBoxType: " + type + " Earned at level: " + " Earned in sector: " + earnedInSector;
 	}
 
 }

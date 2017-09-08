@@ -23,7 +23,7 @@ public class PlayerInventory {
 
 	//lastDisplayedLootBoxesOwned is used in the Main Menu to determine if the number of loot boxes owned has changed.
 	[SerializeField] int lastDisplayedLootBoxesOwned = 0;
-	[SerializeField] List<LootBoxData> lootBoxesOwned = new List<LootBoxData>();
+	[SerializeField] List<LootBoxOwnedData> lootBoxesOwned = new List<LootBoxOwnedData>();
 
 	//Delegate used to communicate to other classes when an inventory value changes such as the gem balance
 	public delegate void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int previousValue, int newValue );
@@ -124,24 +124,24 @@ public class PlayerInventory {
 	#endregion
 
 	#region Loot Boxes
-	public List<LootBoxData> getAllLootBoxesOwned()
+	public List<LootBoxOwnedData> getAllLootBoxesOwned()
 	{
 		return lootBoxesOwned;
 	}
 
-	public void addLootBox( LootBoxData lootBoxData )
+	public void addLootBox( LootBoxOwnedData lootBoxOwnedData )
 	{
-		lootBoxesOwned.Add( lootBoxData );
-		Debug.Log("PlayerInventory - addLootBox: " + lootBoxData.ToString() );
+		lootBoxesOwned.Add( lootBoxOwnedData );
+		Debug.Log("PlayerInventory - addLootBox: " + lootBoxOwnedData.ToString() );
 	}
 
-	public void removeLootBox( LootBoxData lootBoxData )
+	public void removeLootBox( LootBoxOwnedData lootBoxOwnedData )
 	{
-		Debug.Log("PlayerInventory - removeLootBox: " + lootBoxData.ToString() );
-		lootBoxesOwned.Remove( lootBoxData );
+		Debug.Log("PlayerInventory - removeLootBox: " + lootBoxOwnedData.ToString() );
+		lootBoxesOwned.Remove( lootBoxOwnedData );
 	}
 
-	public LootBoxData getLootBoxAt( int index )
+	public LootBoxOwnedData getLootBoxAt( int index )
 	{
 		if( index < 0 || index >= lootBoxesOwned.Count ) return null;
 		return lootBoxesOwned[index];

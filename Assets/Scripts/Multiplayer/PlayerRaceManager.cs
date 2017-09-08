@@ -139,7 +139,7 @@ public class PlayerRaceManager {
 			//Grant victor a loot box
 			int playerLevel = GameManager.Instance.playerProfile.level;
 			int currentSector = LevelManager.Instance.getLevelData().getRaceTrackByTrophies().circuitInfo.sectorNumber;
-			GameManager.Instance.playerInventory.addLootBox( new LootBoxData( LootBoxType.RACE_WON, playerLevel, currentSector ) );
+			GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.RACE_WON, playerLevel, currentSector ) );
 		}
 		else
 		{
