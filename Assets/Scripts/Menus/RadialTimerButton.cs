@@ -8,6 +8,7 @@ public class RadialTimerButton : MonoBehaviour, IPointerUpHandler, IPointerDownH
 	[SerializeField] Image radialImageMask;
 	[SerializeField] float duration = 2f;
 	[SerializeField] float delayBeforeCallingOnClick = 1f;
+	public bool isActive = true;
 
 	void Awake()
 	{
@@ -18,7 +19,7 @@ public class RadialTimerButton : MonoBehaviour, IPointerUpHandler, IPointerDownH
 
 	public void OnPointerDown(PointerEventData eventData )
 	{
-		StartCoroutine( animate() );
+		if( isActive) StartCoroutine( animate() );
 	}
 
 	IEnumerator animate()

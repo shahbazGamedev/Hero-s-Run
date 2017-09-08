@@ -201,6 +201,23 @@ public class PlayerInventory {
 		lootBoxesOwned.Remove( lootBoxData );
 	}
 
+	public LootBoxData getLootBoxAt( int index )
+	{
+		if( index < 0 || index >= lootBoxesOwned.Count ) return null;
+		return lootBoxesOwned[index];
+	}
+
+	public void removeLootBoxAt( int index )
+	{
+		if( index < 0 || index >= lootBoxesOwned.Count ) return;
+		lootBoxesOwned.RemoveAt( index );
+	}
+
+	public void removeAllLootBoxesOwned()
+	{
+		lootBoxesOwned.Clear();
+	}
+
 	public int getNumberOfLootBoxesOwned()
 	{
 		return lootBoxesOwned.Count;
