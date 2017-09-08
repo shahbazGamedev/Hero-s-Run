@@ -8,8 +8,12 @@ public class LootBoxCanvas : MonoBehaviour {
 	int currentIndex = 0;
 	int lootBoxesOwned = 0;
 	LootBoxOwnedData selectedLootBoxData;
+	GameObject lootBox;
+	[SerializeField] Transform lootBoxSpawn;
 	[SerializeField] TextMeshProUGUI lootBoxTypeText;
 	[SerializeField] RadialTimerButton radialTimerButton;
+	[SerializeField] List<LootBoxData> lootBoxDataList = new List<LootBoxData>();
+	[SerializeField] Transform holder3D;
 
 	// Use this for initialization
 	void Start ()
@@ -69,6 +73,12 @@ public class LootBoxCanvas : MonoBehaviour {
 	{
 		selectedLootBoxData = GameManager.Instance.playerInventory.getLootBoxAt( currentIndex );
 		lootBoxTypeText.text = selectedLootBoxData.type.ToString() + "-" + lootBoxesOwned;
+		LootBoxData lootBoxData = getLootBoxData( selectedLootBoxData.type );
+		print("lootBoxData.lootBoxPrefab " + lootBoxData.lootBoxPrefab.name );
+		GameObject.DestroyImmediate( lootBox );
+		lootBox = GameObject.Instantiate( lootBoxData.lootBoxPrefab, lootBoxSpawn.position, lootBoxSpawn.rotation );
+		lootBox.transform.SetParent( holder3D );
+		lootBox.transform.localScale = new Vector3( lootBoxData.lootBoxPrefab.transform.localScale.x, lootBoxData.lootBoxPrefab.transform.localScale.y, lootBoxData.lootBoxPrefab.transform.localScale.z );
 	}
 
 	public void OnClickPrevious()
@@ -90,4 +100,20 @@ public class LootBoxCanvas : MonoBehaviour {
 		configureLootBox();
 	}
 	
+	#region Loot Box Data
+	public LootBoxData getLootBoxData( LootBoxType type )
+	{
+		LootBoxData lootBoxData = lootBoxDataList.Find( lbd => lbd.type == type);
+		if( lootBoxData != null )
+		{
+			return lootBoxData;
+		}
+		else
+		{
+			Debug.LogError("LootBoxCanvas-Could not find LootBoxData for type: " + type + ". Please configure this type in the editor." );
+			return null;
+		}
+	}
+	#endregion
+
 }
