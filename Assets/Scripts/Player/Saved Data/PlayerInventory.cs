@@ -24,6 +24,8 @@ public class PlayerInventory {
 	//lastDisplayedCrownBalance is used in the Main Menu to determine if the number of crowns has changed.
 	[SerializeField] int lastDisplayedCrownBalance = 0;
 
+	//lastDisplayedLootBoxesOwned is used in the Main Menu to determine if the number of loot boxes owned has changed.
+	[SerializeField] int lastDisplayedLootBoxesOwned = 0;
 	[SerializeField] List<LootBoxData> lootBoxesOwned = new List<LootBoxData>();
 
 	//Delegate used to communicate to other classes when an inventory value changes such as the gem balance
@@ -221,6 +223,17 @@ public class PlayerInventory {
 	public int getNumberOfLootBoxesOwned()
 	{
 		return lootBoxesOwned.Count;
+	}
+
+	public int getLastDisplayedLootBoxesOwned()
+	{
+		return lastDisplayedLootBoxesOwned;
+	}
+
+	public void saveLastDisplayedLootBoxesOwned( int value )
+	{
+		lastDisplayedLootBoxesOwned = value;
+		serializePlayerInventory( true );
 	}
 	#endregion
 

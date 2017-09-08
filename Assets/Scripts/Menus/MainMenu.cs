@@ -20,8 +20,6 @@ public class MainMenu : MonoBehaviour {
 	[SerializeField] Image playerIcon;
 	[SerializeField] Text playerNameText;
 
-	[SerializeField] Text numberLootBoxesOwnedText;
-
 	// Use this for initialization
 	void Start ()
 	{
@@ -41,17 +39,6 @@ public class MainMenu : MonoBehaviour {
 		currentRaceTrackText.text = sectorName;
 		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 		playerNameText.text = GameManager.Instance.playerProfile.getUserName();
-
-		int numberOfLootBoxesOwned = GameManager.Instance.playerInventory.getNumberOfLootBoxesOwned();
-		if( numberOfLootBoxesOwned > 0 )
-		{
-			numberLootBoxesOwnedText.text = GameManager.Instance.playerInventory.getNumberOfLootBoxesOwned().ToString();
-			numberLootBoxesOwnedText.transform.parent.gameObject.SetActive( true );
-		}
-		else
-		{
-			numberLootBoxesOwnedText.transform.parent.gameObject.SetActive( false );
-		}
 	}
 
 	public void updateUserName( string newUserName )
