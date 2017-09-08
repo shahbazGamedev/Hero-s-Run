@@ -156,8 +156,6 @@ public class PlayerRaceManager {
 			GameManager.Instance.playerProfile.changeTrophies( trophiesEarnedLastRace );
 		}
 
-		earnCrowns();
-
 		//Update the player statistics
 		GameManager.Instance.playerStatistics.updateRaceStatistics( racePosition, distanceTravelled, numberOfTimesDiedDuringRace );
 		//Save the dates in the player profile
@@ -204,71 +202,6 @@ public class PlayerRaceManager {
 			Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
     	}
 		#endif
-	}
-
-	void earnCrowns()
-	{
-		int crownsEarned = 0;
-		switch ( GameManager.Instance.getPlayMode() )
-		{
-			case PlayMode.PlayTwoPlayers:
-				if( racePosition == 1 ) 
-				{
-					crownsEarned = 3;
-				}
-				else if( racePosition == 2 ) 
-				{
-					crownsEarned = 0;
-				}
-			break;
-
-			case PlayMode.PlayThreePlayers:
-				if( racePosition == 1 ) 
-				{
-					crownsEarned = 3;
-				}
-				else if( racePosition == 2 ) 
-				{
-					crownsEarned = 1;
-				}
-				else if( racePosition == 3 ) 
-				{
-					crownsEarned = 0;
-				}
-			break;
-			#if UNITY_EDITOR
-			case PlayMode.PlayAlone:
-				crownsEarned = 3;
-			break;
-			case PlayMode.PlayAgainstEnemy:
-				if( racePosition == 1 ) 
-				{
-					crownsEarned = 3;
-				}
-				else if( racePosition == 2 ) 
-				{
-					crownsEarned = 0;
-				}
-			break;
-
-			case PlayMode.PlayAgainstTwoEnemies:
-				if( racePosition == 1 ) 
-				{
-					crownsEarned = 3;
-				}
-				else if( racePosition == 2 ) 
-				{
-					crownsEarned = 1;
-				}
-				else if( racePosition == 3 ) 
-				{
-					crownsEarned = 0;
-				}
-			break;
-			#endif
-		}
-		GameManager.Instance.playerInventory.addCrowns( crownsEarned );
-		GameManager.Instance.playerInventory.serializePlayerInventory( true );
 	}
 
 	void SectorChanged( SectorStatus sectorStatus, int previousSector, int newSector )

@@ -16,13 +16,10 @@ public enum PlayerInventoryEvent {
 [System.Serializable]
 public class PlayerInventory {
 
-	const int MAXIMUM_INCREASE_TO_COIN_BALANCE = 100000;
-	const int MAXIMUM_INCREASE_TO_GEM_BALANCE = 14000;
+	const int MAXIMUM_INCREASE_TO_SOFT_CURRENCY_BALANCE = 100000;
+	const int MAXIMUM_INCREASE_TO_HARD_CURRENCY_BALANCE = 14000;
 	[SerializeField] int currentCoins = 0;
 	[SerializeField] int currentGems = 25;
-	[SerializeField] int currentCrowns = 0;
-	//lastDisplayedCrownBalance is used in the Main Menu to determine if the number of crowns has changed.
-	[SerializeField] int lastDisplayedCrownBalance = 0;
 
 	//lastDisplayedLootBoxesOwned is used in the Main Menu to determine if the number of loot boxes owned has changed.
 	[SerializeField] int lastDisplayedLootBoxesOwned = 0;
@@ -52,13 +49,13 @@ public class PlayerInventory {
 
 	public void addCoins( int coinAmount )
 	{
-		if( coinAmount >= 0 && coinAmount <= MAXIMUM_INCREASE_TO_COIN_BALANCE )
+		if( coinAmount >= 0 && coinAmount <= MAXIMUM_INCREASE_TO_SOFT_CURRENCY_BALANCE )
 		{
 			setCoinBalance( currentCoins + coinAmount );
 		}
 		else
 		{
-			Debug.LogWarning("PlayerInventory-the coin value specified " + coinAmount + " is incorrect. It needs to be between 0 and " + MAXIMUM_INCREASE_TO_COIN_BALANCE.ToString() + ".");
+			Debug.LogWarning("PlayerInventory-the coin value specified " + coinAmount + " is incorrect. It needs to be between 0 and " + MAXIMUM_INCREASE_TO_SOFT_CURRENCY_BALANCE.ToString() + ".");
 		}
 	}
 
@@ -99,13 +96,13 @@ public class PlayerInventory {
 
 	public void addGems( int gemAmount )
 	{
-		if( gemAmount >= 0 && gemAmount <= MAXIMUM_INCREASE_TO_GEM_BALANCE )
+		if( gemAmount >= 0 && gemAmount <= MAXIMUM_INCREASE_TO_HARD_CURRENCY_BALANCE )
 		{
 			setGemBalance( currentGems + gemAmount );
 		}
 		else
 		{
-			Debug.LogWarning("PlayerInventory-the gem value specified " + gemAmount + " is incorrect. It needs to be between 0 and " + MAXIMUM_INCREASE_TO_GEM_BALANCE.ToString() + ".");
+			Debug.LogWarning("PlayerInventory-the gem value specified " + gemAmount + " is incorrect. It needs to be between 0 and " + MAXIMUM_INCREASE_TO_HARD_CURRENCY_BALANCE.ToString() + ".");
 		}
 	}
 
@@ -122,65 +119,6 @@ public class PlayerInventory {
 		else
 		{
 			Debug.LogWarning("PlayerInventory-the gem value specified " + value + " is incorrect. It needs to be zero or greater." );
-		}
-	}
-	#endregion
-
-	#region Crowns
-	public int getLastDisplayedCrownBalance()
-	{
-		return lastDisplayedCrownBalance;
-	}
-
-	public void saveLastDisplayedCrownBalance( int value )
-	{
-		lastDisplayedCrownBalance = value;
-		serializePlayerInventory( true );
-	}
-
-	public int getCrownBalance()
-	{
-		return currentCrowns;
-	}
-
-	/// <summary>
-	/// Sets the crown balance to zero. Does not save the value.
-	/// </summary>
-	public void resetCrowns()
-	{
-		setCrownBalance(0);
-	}
-
-	public void addCrowns( int crownAmount )
-	{
-		if( crownAmount >= 0 && crownAmount <= CrownLootBoxHandler.CROWNS_NEEDED_TO_OPEN )
-		{
-			//You cannot store more than CROWNS_NEEDED_TO_OPEN crowns.
-			//If the you have reached the maximum number of crowns, you must open the crown loot box to reset the count to 0.
-			int newCrownAmount = currentCrowns + crownAmount;
-			if( newCrownAmount > CrownLootBoxHandler.CROWNS_NEEDED_TO_OPEN ) newCrownAmount = CrownLootBoxHandler.CROWNS_NEEDED_TO_OPEN;
-	
-			if( currentCrowns != newCrownAmount ) setCrownBalance( newCrownAmount );
-		}
-		else
-		{
-			Debug.LogWarning("PlayerInventory-the crown value specified " + crownAmount + " is incorrect. It needs to be between 0 and " + CrownLootBoxHandler.CROWNS_NEEDED_TO_OPEN.ToString() + ".");
-		}
-	}
-
-	void setCrownBalance( int value )
-	{
-		if( value >= 0 )
-		{
-			if( playerInventoryChangedNew != null ) playerInventoryChangedNew( PlayerInventoryEvent.Crown_Balance_Changed, currentCrowns, value );
-			currentCrowns = value;
-			//Save
-			serializePlayerInventory( true );
-			Debug.Log("PlayerInventory-setting current crowns to: " + value );
-		}
-		else
-		{
-			Debug.LogWarning("PlayerInventory-the crown value specified " + value + " is incorrect. It needs to be zero or greater." );
 		}
 	}
 	#endregion
