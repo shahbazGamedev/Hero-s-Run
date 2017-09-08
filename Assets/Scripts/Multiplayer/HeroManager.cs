@@ -166,7 +166,8 @@ public class HeroManager : MonoBehaviour {
  		//See heroSkinList in HeroCarousel for how skinIndex is used.
 		//The skins are stored in the Hero Selection scene with the correct position, rotation and scale.
 		public int skinIndex;
-		public string skinPrefab;
+		public GameObject skinPrefab;
+		public string skinPrefabName;
 		public Sprite icon;
 		public Sprite minimapIcon;
 		//Only this hero can use this card.

@@ -9,7 +9,9 @@ public class LootBoxCanvas : MonoBehaviour {
 	int lootBoxesOwned = 0;
 	LootBoxOwnedData selectedLootBoxData;
 	GameObject lootBox;
-	[SerializeField] Transform lootBoxSpawn;
+	[SerializeField] Transform lootBoxSpawnLocation;
+	GameObject hero;
+	[SerializeField] Transform heroSpawnLocation;
 	[SerializeField] TextMeshProUGUI lootBoxTypeText;
 	[SerializeField] RadialTimerButton radialTimerButton;
 	[SerializeField] List<LootBoxData> lootBoxDataList = new List<LootBoxData>();
@@ -19,6 +21,7 @@ public class LootBoxCanvas : MonoBehaviour {
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
+		loadHero();
 		if( Debug.isDebugBuild ) addLootBoxesForTesting ();
 		lootBoxesOwned = GameManager.Instance.playerInventory.getNumberOfLootBoxesOwned();
 		if( lootBoxesOwned > 0 )
@@ -33,6 +36,18 @@ public class LootBoxCanvas : MonoBehaviour {
 		}
 	}
 	
+	void loadHero()
+	{
+		int heroIndex = GameManager.Instance.playerProfile.selectedHeroIndex;
+		HeroManager.HeroCharacter heroCharacter = HeroManager.Instance.getHeroCharacter( heroIndex );
+		if( heroCharacter != null )
+		{
+			hero = GameObject.Instantiate( heroCharacter.skinPrefab, heroSpawnLocation.position, heroSpawnLocation.rotation );
+			hero.transform.SetParent( holder3D );
+			hero.transform.localScale = Vector3.one;
+		}
+	}
+
 	void addLootBoxesForTesting ()
 	{
 		GameManager.Instance.playerInventory.removeAllLootBoxesOwned();
@@ -76,7 +91,7 @@ public class LootBoxCanvas : MonoBehaviour {
 		LootBoxData lootBoxData = getLootBoxData( selectedLootBoxData.type );
 		print("lootBoxData.lootBoxPrefab " + lootBoxData.lootBoxPrefab.name );
 		GameObject.DestroyImmediate( lootBox );
-		lootBox = GameObject.Instantiate( lootBoxData.lootBoxPrefab, lootBoxSpawn.position, lootBoxSpawn.rotation );
+		lootBox = GameObject.Instantiate( lootBoxData.lootBoxPrefab, lootBoxSpawnLocation.position, lootBoxSpawnLocation.rotation );
 		lootBox.transform.SetParent( holder3D );
 		lootBox.transform.localScale = new Vector3( lootBoxData.lootBoxPrefab.transform.localScale.x, lootBoxData.lootBoxPrefab.transform.localScale.y, lootBoxData.lootBoxPrefab.transform.localScale.z );
 	}
