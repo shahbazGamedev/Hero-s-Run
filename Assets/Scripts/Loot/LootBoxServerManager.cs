@@ -4,14 +4,14 @@ using UnityEngine;
 
 public enum LootBoxType
  {
-	FREE = 0,
 	SHOP_GIANT = 1,
 	SHOP_SUPER_SIZED = 2,
 	SHOP_MEGA = 3,
-	CROWN = 4,
-	LEVEL_UP = 5,
-	NEW_RACE_TRACK_UNLOCKED = 6,
-	RACE_WON = 7
+
+	FREE = 100,
+	LEVEL_UP = 101,
+	SECTOR_UNLOCKED = 102,
+	RACE_WON = 103
 }
 
 public class LootBoxServerManager : MonoBehaviour {
@@ -50,9 +50,9 @@ public class LootBoxServerManager : MonoBehaviour {
 			case LootBoxType.SHOP_MEGA:
 				lootBoxJson = getMegaLootBox( raceTrackLevel );
 			break;
+			case LootBoxType.SECTOR_UNLOCKED:
 			case LootBoxType.LEVEL_UP:
 			case LootBoxType.RACE_WON:
-			case LootBoxType.CROWN:
 				lootBoxJson = getCrownLootBox( raceTrackLevel );
 			break;
 		}

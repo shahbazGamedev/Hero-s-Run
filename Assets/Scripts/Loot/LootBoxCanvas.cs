@@ -12,6 +12,7 @@ public class LootBoxCanvas : MonoBehaviour {
 	[SerializeField] Transform lootBoxSpawnLocation;
 	GameObject hero;
 	[SerializeField] Transform heroSpawnLocation;
+	[SerializeField] TextMeshProUGUI lootBoxOwnedText;
 	[SerializeField] TextMeshProUGUI lootBoxTypeText;
 	[SerializeField] RadialTimerButton radialTimerButton;
 	[SerializeField] List<LootBoxData> lootBoxDataList = new List<LootBoxData>();
@@ -32,7 +33,7 @@ public class LootBoxCanvas : MonoBehaviour {
 		else
 		{
 			radialTimerButton.isActive = false;
-			lootBoxTypeText.text = "No loot boxes";
+			lootBoxTypeText.text = LocalizationManager.Instance.getText( "LOOT_BOX_NAME_NONE_LEFT" );
 		}
 	}
 	
@@ -54,6 +55,7 @@ public class LootBoxCanvas : MonoBehaviour {
 		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.LEVEL_UP, 1, 1 ) );
 		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.RACE_WON, 1, 1 ) );
 		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.FREE, 1, 1 ) );
+		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.SECTOR_UNLOCKED, 1, 1 ) );
 		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.LEVEL_UP, 2, 2 ) );
 		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.RACE_WON, 2, 2 ) );
 		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.FREE, 2, 2 ) );
@@ -80,14 +82,15 @@ public class LootBoxCanvas : MonoBehaviour {
 		else
 		{
 			radialTimerButton.isActive = false;
-			lootBoxTypeText.text = "No loot boxes";
+			lootBoxTypeText.text = LocalizationManager.Instance.getText( "LOOT_BOX_NAME_NONE_LEFT" );
 		}
 	}
 
 	void configureLootBox()
 	{
 		selectedLootBoxData = GameManager.Instance.playerInventory.getLootBoxAt( currentIndex );
-		lootBoxTypeText.text = selectedLootBoxData.type.ToString() + "-" + lootBoxesOwned;
+		lootBoxOwnedText.text = lootBoxesOwned.ToString();
+		lootBoxTypeText.text = LocalizationManager.Instance.getText( "LOOT_BOX_NAME_" + selectedLootBoxData.type.ToString().ToUpper() );
 		LootBoxData lootBoxData = getLootBoxData( selectedLootBoxData.type );
 		print("lootBoxData.lootBoxPrefab " + lootBoxData.lootBoxPrefab.name );
 		GameObject.DestroyImmediate( lootBox );
