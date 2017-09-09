@@ -68,7 +68,7 @@ public class PlayerDeck {
 		if( Debug.isDebugBuild )
 		{
 			addCard( CardName.Firewall, 2, 1, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS );
-			addCard( CardName.Health_Boost, 2, 1, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS );
+			addCard( CardName.Heal, 2, 1, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS );
 			addCard( CardName.Armor, 2, 1, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS );
 		}
 	}

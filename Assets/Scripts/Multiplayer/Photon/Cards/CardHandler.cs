@@ -264,15 +264,15 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardCloak component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
-			case CardName.Health_Boost:
-				CardHealthBoost cardHealthBoost = GetComponent<CardHealthBoost>();
-				if( cardHealthBoost != null )
+			case CardName.Heal:
+				CardHeal cardHeal = GetComponent<CardHeal>();
+				if( cardHeal != null )
 				{
-					cardHealthBoost.activateCard( photonViewId, level );
+					cardHeal.activateCard( photonViewId, level );
 				}
 				else
 				{
-					Debug.LogError("CardHandler-The CardHealthBoost component is not attached to the CardHandler in the Level scene.");
+					Debug.LogError("CardHandler-The CardHeal component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
 			case CardName.Armor:
@@ -417,7 +417,7 @@ public class CardHandler : MonoBehaviour {
 			case CardName.Cloak:
 				return true;
 			//Health Boost is effective when your current health is less than 80% of MAX. Health
-			case CardName.Health_Boost:
+			case CardName.Heal:
 				return ( caster.GetComponent<PlayerHealth>().getHealth() < 0.8f * PlayerHealth.DEFAULT_HEALTH );
 			//Adding armor is always a good idea.
 			case CardName.Armor:

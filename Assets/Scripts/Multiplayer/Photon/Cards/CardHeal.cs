@@ -1,16 +1,16 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class CardHealthBoost : Card {
+public class CardHeal : Card {
 
 	public void activateCard ( int photonViewId, int level )
 	{
-		photonView.RPC("cardHealthBoostMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
+		photonView.RPC("cardHealMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
 	}
 
 	#region Methods only running on master client
 	[PunRPC]
-	void cardHealthBoostMasterRPC( int level, int photonViewID )
+	void cardHealMasterRPC( int level, int photonViewID )
 	{
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );

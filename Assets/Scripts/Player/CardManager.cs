@@ -68,7 +68,7 @@ public enum CardName
 	Sprint = 4,
 	Trip_Mine = 5,
 	Smoke_Bomb = 6,
-	Health_Boost = 7,
+	Heal = 7,
 	Armor = 8,
 
 	//Rare
