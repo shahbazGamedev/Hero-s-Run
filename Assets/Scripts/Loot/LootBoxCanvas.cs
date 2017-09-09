@@ -152,6 +152,10 @@ public class LootBoxCanvas : MonoBehaviour {
 		{
 			radialTimerButton.isActive = ( DateTime.UtcNow > getOpenTime() );
 		}
+		else
+		{
+			radialTimerButton.isActive = true;
+		}
 	}
 
 	public void OnClickPrevious()
