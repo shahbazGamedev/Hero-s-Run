@@ -9,6 +9,7 @@ public class RadialTimerButton : MonoBehaviour, IPointerUpHandler, IPointerDownH
 	[SerializeField] float duration = 2f;
 	[SerializeField] float delayBeforeCallingOnClick = 1f;
 	public bool isActive = true;
+	System.Action callback;
 
 	void Awake()
 	{
@@ -17,13 +18,20 @@ public class RadialTimerButton : MonoBehaviour, IPointerUpHandler, IPointerDownH
 		GetComponent<Button>().interactable = false;
 	}
 
+	public void setOnInitialClickCallback( System.Action callback )
+	{
+		this.callback = callback;
+	}
+
 	public void OnPointerDown(PointerEventData eventData )
 	{
+		if( callback != null ) callback.Invoke();
 		if( isActive) StartCoroutine( animate() );
 	}
 
 	IEnumerator animate()
 	{
+		Handheld.Vibrate();
 		float startTime = Time.time;
 		float elapsedTime = 0;
 

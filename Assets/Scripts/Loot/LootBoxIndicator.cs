@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class LootBoxIndicator : MonoBehaviour {
 
@@ -14,6 +15,17 @@ public class LootBoxIndicator : MonoBehaviour {
 	{
 
 		int currentLootBoxOwned = GameManager.Instance.playerInventory.getNumberOfLootBoxesOwned();
+
+		//Is the free loot box ready to open?
+		if( DateTime.UtcNow > getOpenTime() )
+		{
+			//The free loot box is ready.
+		}
+		else
+		{
+			//The free loot box is not ready. Substract one.
+			currentLootBoxOwned--;
+		}
 
 		if( currentLootBoxOwned > 0 )
 		{
@@ -47,4 +59,10 @@ public class LootBoxIndicator : MonoBehaviour {
 	{
 		//Maybe play a VFX each time the number increases
 	}
+
+	DateTime getOpenTime()
+	{
+		return GameManager.Instance.playerInventory.getFreeLootBoxOwnedData().getLastFreeLootBoxOpenedTime().AddHours(LootBoxCanvas.HOURS_BETWEEN_FREE_LOOT_BOX);
+	}
+
 }

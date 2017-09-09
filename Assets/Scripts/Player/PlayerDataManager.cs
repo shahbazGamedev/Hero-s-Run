@@ -96,6 +96,7 @@ public class PlayerDataManager : MonoBehaviour {
 		else
 		{
 			playerInventory = new PlayerInventory();
+			playerInventory.createInitialInventory();
 		}
 		GameManager.Instance.playerInventory = playerInventory;
 

@@ -28,10 +28,8 @@ public sealed class PlayerProfile {
 	public int level = 1;
 	public string lastMatchPlayedTimeString = "01/01/1970 00:00:00";
 	public string lastMatchWonTimeString = "01/01/1970 00:00:00";
-	public string lastFreeLootBoxOpenedTimeString = "01/01/1970 00:00:00";
 	private DateTime lastMatchPlayedTime = new DateTime(1970,01,01);
 	private DateTime lastMatchWonTime = new DateTime(1970,01,01);
-	private DateTime lastFreeLootBoxOpenedTime = new DateTime(1970,01,01);
 
 	[Header("Rate this App")]
 	public string lastTimeRateThisAppWasShownString = "01/01/1970 00:00:00";
@@ -214,19 +212,6 @@ public sealed class PlayerProfile {
 	{
 		lastMatchWonTime = Convert.ToDateTime (lastMatchWonTimeString); 
 		return lastMatchWonTime.Date; //We don't want the time element, only the date
-	}
-
-	public void setLastFreeLootBoxOpenedTime( DateTime lastFreeLootBoxOpenedTime )
-	{
-		this.lastFreeLootBoxOpenedTime = lastFreeLootBoxOpenedTime;
-		lastFreeLootBoxOpenedTimeString = lastFreeLootBoxOpenedTime.ToString();
-		serializePlayerprofile();
-	}
-
-	public DateTime getLastFreeLootBoxOpenedTime()
-	{
-		lastFreeLootBoxOpenedTime = Convert.ToDateTime (lastFreeLootBoxOpenedTimeString); 
-		return lastFreeLootBoxOpenedTime;
 	}
 
 	#region Rate this App

@@ -10,7 +10,7 @@ public enum LootBoxType
 
 	FREE = 100,
 	LEVEL_UP = 101,
-	SECTOR_UNLOCKED = 102,
+	BASE_UNLOCKED = 102,
 	RACE_WON = 103
 }
 
@@ -50,7 +50,7 @@ public class LootBoxServerManager : MonoBehaviour {
 			case LootBoxType.SHOP_MEGA:
 				lootBoxJson = getMegaLootBox( raceTrackLevel );
 			break;
-			case LootBoxType.SECTOR_UNLOCKED:
+			case LootBoxType.BASE_UNLOCKED:
 			case LootBoxType.LEVEL_UP:
 			case LootBoxType.RACE_WON:
 				lootBoxJson = getCrownLootBox( raceTrackLevel );

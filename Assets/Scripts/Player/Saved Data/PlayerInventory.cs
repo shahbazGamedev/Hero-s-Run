@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public enum PlayerInventoryEvent {
 	Key_Changed = 0,
@@ -28,6 +29,19 @@ public class PlayerInventory {
 	//Delegate used to communicate to other classes when an inventory value changes such as the gem balance
 	public delegate void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int previousValue, int newValue );
 	public static event PlayerInventoryChangedNew playerInventoryChangedNew;
+
+	#region Initial inventory
+	public void createInitialInventory()
+	{
+		//You have ONE free loot box in your inventory at all times, however, you can only open it once every HOURS_BETWEEN_FREE_LOOT_BOX hours.
+		LootBoxOwnedData freeLootBoxOwnedData = new LootBoxOwnedData( LootBoxType.FREE, -1, -1 );
+		freeLootBoxOwnedData.setLastFreeLootBoxOpenedTime( DateTime.UtcNow );
+		addLootBox( freeLootBoxOwnedData );
+		//Schedule a local notification to remind the player of when his next free loot box will be available
+		NotificationServicesHandler.Instance.scheduleFreeLootBoxNotification( LootBoxCanvas.HOURS_BETWEEN_FREE_LOOT_BOX * 60 );
+		serializePlayerInventory( true );
+	}
+	#endregion
 
 	#region Coins
 	public int getCoinBalance()
@@ -172,6 +186,11 @@ public class PlayerInventory {
 	{
 		lastDisplayedLootBoxesOwned = value;
 		serializePlayerInventory( true );
+	}
+
+	public LootBoxOwnedData getFreeLootBoxOwnedData()
+	{
+		return lootBoxesOwned.Find(lb => lb.type == LootBoxType.FREE);
 	}
 	#endregion
 
