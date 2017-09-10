@@ -71,7 +71,7 @@ public class MainMenu : MonoBehaviour {
 
 	public void OnClickOpenHangout()
 	{
-		StartCoroutine( loadScene(GameScenes.Hangout) );
+		StartCoroutine( loadScene(GameScenes.LootBox) );
 	}
 
 	public void OnClickOpenSocial()

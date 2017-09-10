@@ -104,7 +104,7 @@ public class UniversalTopBar : MonoBehaviour {
 				showTopBar( false );
 			break;
 
-			case GameScenes.Hangout:
+			case GameScenes.LootBox:
 				showTopBar( true );
 			break;
 

@@ -6,38 +6,63 @@ using System;
 
 public class LootBoxCanvas : MonoBehaviour {
 
-	public const int HOURS_BETWEEN_FREE_LOOT_BOX = 4;
-	int currentIndex = -1;
-	int lootBoxesOwned;
-	LootBoxOwnedData selectedLootBoxData;
-
+	[Header("General")]
 	//Data for every type of loot box. This data is static.
 	[SerializeField] List<LootBoxData> lootBoxDataList = new List<LootBoxData>();
-
 	//The transform holding the 3D models incuding the hero and the loot box.
 	[SerializeField] Transform holder3D;
 
 	//3D model of loot box. It can vary depending on the loot box types.
-	GameObject lootBox;
+	[Header("Loot Box Model")]
 	[SerializeField] Transform lootBoxSpawnLocation;
-	const float FALL_HEIGHT = 2f;
+	GameObject lootBox;
 
 	//The hero in the scene is the same as the one chosen in the Hero selection menu
-	GameObject hero;
+	[Header("Hero")]
 	[SerializeField] Transform heroSpawnLocation;
+	GameObject hero;
 
-	//General UI
-	[SerializeField] TextMeshProUGUI lootBoxOwnedText;
+	[Header("Loot Box UI")]
+	//Shared
 	[SerializeField] TextMeshProUGUI lootBoxTypeText;
-	[SerializeField] GameObject freeLootBoxUI;
+
+	[Header("Loot box details like Base or Level")]
+	[SerializeField] GameObject lootBoxDetails;
+	[SerializeField] TextMeshProUGUI lootBoxDetailsText;
 	
-	//UI related to the free loot box
-	[SerializeField] TextMeshProUGUI nextFreeLootBoxText;
-	[SerializeField] TextMeshProUGUI freeLootBoxExplanationText;
+	[Header("Time remaining")]
+	[SerializeField] GameObject timeRemaining;
+	[SerializeField] TextMeshProUGUI timeRemainingText;
 	[SerializeField] GameObject nextOneText;
 
-	//Radial button.
+	[Header("Unlock Information")]
+	[SerializeField] GameObject unlockInformation;
+	[SerializeField] TextMeshProUGUI unlockDetailText;
+	[SerializeField] TextMeshProUGUI unlockCostText;
+
+	[Header("Time to unlock information")]
+	[SerializeField] GameObject timeToUnlockInformation;
+	[SerializeField] TextMeshProUGUI timeToUnlockDetailText;
+	[SerializeField] TextMeshProUGUI timeToUnlockText;
+
+	[Header("Number of loot boxes ready to open")]
+	[SerializeField] TextMeshProUGUI lootBoxOwnedText;
+
+	[Header("Free loot box not ready to open")]
+	[SerializeField] TextMeshProUGUI freeLootBoxExplanationText;
+
+	[Header("Radial Button")]
 	[SerializeField] RadialTimerButton radialTimerButton;
+	[SerializeField] TextMeshProUGUI radialTimerText;
+
+	[Header("Unlock Now Popup")]
+	[SerializeField] GameObject unlockNowPopup;
+
+	//Other variables
+	public const int HOURS_BETWEEN_FREE_LOOT_BOX = 4;
+	int currentIndex = -1;
+	int lootBoxesOwned;
+	LootBoxOwnedData selectedLootBoxData;
 
 	void Start ()
 	{
@@ -144,10 +169,32 @@ public class LootBoxCanvas : MonoBehaviour {
 		//Destroy the previous loot box model
 		GameObject.DestroyImmediate( lootBox );
 		//Create a new loot box model
-		lootBox = GameObject.Instantiate( lootBoxData.lootBoxPrefab, lootBoxSpawnLocation.TransformPoint( 0, FALL_HEIGHT, 0), lootBoxSpawnLocation.rotation );
+		lootBox = GameObject.Instantiate( lootBoxData.lootBoxPrefab, lootBoxSpawnLocation.position, lootBoxSpawnLocation.rotation );
 		lootBox.transform.SetParent( holder3D );
 		lootBox.transform.localScale = new Vector3( lootBoxData.lootBoxPrefab.transform.localScale.x, lootBoxData.lootBoxPrefab.transform.localScale.y, lootBoxData.lootBoxPrefab.transform.localScale.z );
-		freeLootBoxUI.SetActive( selectedLootBoxData.type == LootBoxType.FREE );	
+
+		//Configure the UI
+		switch( selectedLootBoxData.type )
+		{
+			case LootBoxType.FREE:
+				configureFreeUI();
+			break;
+
+			case LootBoxType.LEVEL_UP:
+				configureLevelUpUI();
+			break;
+			case LootBoxType.BASE_UNLOCKED:
+				configureBaseUnlockedUI();
+			break;
+			case LootBoxType.RACE_WON:
+				configureRaceWonUI();
+			break;
+		}
+	}
+
+	void configureFreeUI()
+	{
+		//freeLootBoxUI.SetActive( selectedLootBoxData.type == LootBoxType.FREE );	
 		if( selectedLootBoxData.type == LootBoxType.FREE )
 		{
 			radialTimerButton.isActive = ( DateTime.UtcNow > getOpenTime() );
@@ -156,6 +203,18 @@ public class LootBoxCanvas : MonoBehaviour {
 		{
 			radialTimerButton.isActive = true;
 		}
+	}
+
+	void configureLevelUpUI()
+	{
+	}
+
+	void configureBaseUnlockedUI()
+	{
+	}
+
+	void configureRaceWonUI()
+	{
 	}
 
 	public void OnClickPrevious()
@@ -199,12 +258,12 @@ public class LootBoxCanvas : MonoBehaviour {
 		{
 			TimeSpan openTime = getOpenTime().Subtract( DateTime.UtcNow );
 			string timeDisplayed = string.Format( LocalizationManager.Instance.getText( "FREE_LOOT_BOX_TIME_FORMAT" ), openTime.Hours, openTime.Minutes, openTime.Seconds );
-			nextFreeLootBoxText.text = timeDisplayed;
+			timeRemainingText.text = timeDisplayed;
 			//Update every fifteen seconds
 			yield return new WaitForSecondsRealtime( 15 );
 		}
 		nextOneText.SetActive( false );
-		nextFreeLootBoxText.text = LocalizationManager.Instance.getText("FREE_LOOT_BOX_OPEN");
+		timeRemainingText.text = LocalizationManager.Instance.getText("FREE_LOOT_BOX_OPEN");
 	}
 
 	void openFreeLootBox()

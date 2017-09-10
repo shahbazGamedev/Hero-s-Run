@@ -36,7 +36,7 @@ public enum GameScenes {
 	Options = 8,
 	Training = 9,
 	Social = 10,
-	Hangout = 11,
+	LootBox = 11,
 
 	//Not used
 	WorldMap = 12,
