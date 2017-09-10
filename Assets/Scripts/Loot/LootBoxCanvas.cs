@@ -4,7 +4,16 @@ using UnityEngine;
 using TMPro;
 using System;
 
+public enum LootBoxState
+{
+	NOT_INITIALIZED = 0,
+	READY_TO_UNLOCK = 1,
+	UNLOCKING = 2,
+	UNLOCKED = 3
+}
+
 public class LootBoxCanvas : MonoBehaviour {
+
 
 	[Header("General")]
 	//Data for every type of loot box. This data is static.
@@ -27,7 +36,7 @@ public class LootBoxCanvas : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI lootBoxTypeText;
 
 	[Header("Loot box details like Base or Level")]
-	[SerializeField] GameObject lootBoxDetails;
+	[SerializeField] GameObject earnedFor;
 	[SerializeField] TextMeshProUGUI lootBoxDetailsText;
 	
 	[Header("Time remaining")]
@@ -59,7 +68,7 @@ public class LootBoxCanvas : MonoBehaviour {
 	[SerializeField] GameObject unlockNowPopup;
 
 	//Other variables
-	public const int HOURS_BETWEEN_FREE_LOOT_BOX = 4;
+	public const int HOURS_BETWEEN_FREE_LOOT_BOX = 1;
 	int currentIndex = -1;
 	int lootBoxesOwned;
 	LootBoxOwnedData selectedLootBoxData;
@@ -71,7 +80,6 @@ public class LootBoxCanvas : MonoBehaviour {
 		loadHero();
 		addLootBoxesForTesting ();
 		updateNumberOfLootBoxesReadyToOpen();
-		StartCoroutine( updateNextFreeLootBoxTime() );
 	}
 	
 	void loadHero()
@@ -89,9 +97,9 @@ public class LootBoxCanvas : MonoBehaviour {
 	void addLootBoxesForTesting ()
 	{
 		if( !Debug.isDebugBuild ) return;
-		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.LEVEL_UP, 1, 1 ) );
-		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.RACE_WON, 1, 1 ) );
-		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.BASE_UNLOCKED, 1, 1 ) );
+		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.LEVEL_UP, 1, -1 ) );
+		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.RACE_WON, 1, LootBoxState.READY_TO_UNLOCK ) );
+		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.BASE_UNLOCKED, -1, 1 ) );
 	}
 
 	void updateNumberOfLootBoxesReadyToOpen()
@@ -147,14 +155,34 @@ public class LootBoxCanvas : MonoBehaviour {
 	public void OnInitialClick()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
-		print("OnInitialClick");
 		if( selectedLootBoxData.type == LootBoxType.FREE )
 		{
-			CancelInvoke( "hideFreeLootBoxExplanationText" );
-			//The free loot box is not ready. Display a message.
-			freeLootBoxExplanationText.text = string.Format( LocalizationManager.Instance.getText("FREE_LOOT_BOX_EXPLANATION"), HOURS_BETWEEN_FREE_LOOT_BOX );
-			freeLootBoxExplanationText.gameObject.SetActive( true );
-			Invoke("hideFreeLootBoxExplanationText", 5f);
+			//It is not ready to open.
+			if( DateTime.UtcNow < getOpenTime() )
+			{
+				CancelInvoke( "hideFreeLootBoxExplanationText" );
+				//The free loot box is not ready. Display a message.
+				freeLootBoxExplanationText.text = string.Format( LocalizationManager.Instance.getText("FREE_LOOT_BOX_EXPLANATION"), HOURS_BETWEEN_FREE_LOOT_BOX );
+				freeLootBoxExplanationText.gameObject.SetActive( true );
+				Invoke("hideFreeLootBoxExplanationText", 5f);
+			}
+		}
+		else if( selectedLootBoxData.type == LootBoxType.RACE_WON )
+		{
+			switch( selectedLootBoxData.state )
+			{
+				case LootBoxState.READY_TO_UNLOCK:
+					unlockNowPopup.SetActive( true );
+				break;
+	
+				case LootBoxState.UNLOCKING:
+					unlockNowPopup.SetActive( true );
+				break;
+	
+				case LootBoxState.UNLOCKED:
+					//Nothing to do
+				break;
+			}
 		}
 	}
 
@@ -172,49 +200,120 @@ public class LootBoxCanvas : MonoBehaviour {
 		lootBox = GameObject.Instantiate( lootBoxData.lootBoxPrefab, lootBoxSpawnLocation.position, lootBoxSpawnLocation.rotation );
 		lootBox.transform.SetParent( holder3D );
 		lootBox.transform.localScale = new Vector3( lootBoxData.lootBoxPrefab.transform.localScale.x, lootBoxData.lootBoxPrefab.transform.localScale.y, lootBoxData.lootBoxPrefab.transform.localScale.z );
+		
+		radialTimerButton.isActive = true;
+		nextOneText.SetActive( false );
 
 		//Configure the UI
 		switch( selectedLootBoxData.type )
 		{
 			case LootBoxType.FREE:
-				configureFreeUI();
+				configureFreeUI( lootBoxData, selectedLootBoxData );
 			break;
 
 			case LootBoxType.LEVEL_UP:
-				configureLevelUpUI();
+				configureLevelUpUI( lootBoxData, selectedLootBoxData );
 			break;
 			case LootBoxType.BASE_UNLOCKED:
-				configureBaseUnlockedUI();
+				configureBaseUnlockedUI( lootBoxData, selectedLootBoxData );
 			break;
 			case LootBoxType.RACE_WON:
-				configureRaceWonUI();
+				configureRaceWonUI( lootBoxData, selectedLootBoxData );
 			break;
 		}
 	}
 
-	void configureFreeUI()
+	void configureFreeUI( LootBoxData lootBoxData, LootBoxOwnedData lootBoxOwnedData )
 	{
-		//freeLootBoxUI.SetActive( selectedLootBoxData.type == LootBoxType.FREE );	
-		if( selectedLootBoxData.type == LootBoxType.FREE )
+		StartCoroutine( updateNextFreeLootBoxTime() );
+		if( DateTime.UtcNow > getOpenTime() )
 		{
-			radialTimerButton.isActive = ( DateTime.UtcNow > getOpenTime() );
+			//The free loot box is ready to open
+			timeRemaining.SetActive (false);
+			timeToUnlockInformation.SetActive (false);
+			unlockInformation.SetActive (false);
+			earnedFor.SetActive (false);
+
+			radialTimerButton.isActive = true;
+			radialTimerText.text = "(Hold) Open";
 		}
 		else
 		{
-			radialTimerButton.isActive = true;
+			//The free loot box is not yet ready to open
+			timeRemaining.SetActive (true);
+			timeToUnlockInformation.SetActive (false);
+			unlockInformation.SetActive (false);
+			earnedFor.SetActive (false);
+
+			nextOneText.SetActive( true );
+			radialTimerButton.isActive = false;
+			radialTimerText.text = "Not ready";
 		}
 	}
 
-	void configureLevelUpUI()
+	void configureLevelUpUI( LootBoxData lootBoxData, LootBoxOwnedData lootBoxOwnedData )
 	{
+		timeRemaining.SetActive (false);
+		timeToUnlockInformation.SetActive (false);
+		unlockInformation.SetActive (false);
+
+		earnedFor.SetActive (true);
+		string earnedForString = string.Format("Earned for level {0}", lootBoxOwnedData.earnedAtLevel );
+		lootBoxDetailsText.text = earnedForString;
+
+		radialTimerText.text = "(Hold) Open";
 	}
 
-	void configureBaseUnlockedUI()
+	void configureBaseUnlockedUI( LootBoxData lootBoxData, LootBoxOwnedData lootBoxOwnedData )
 	{
+		timeRemaining.SetActive (false);
+		timeToUnlockInformation.SetActive (false);
+		unlockInformation.SetActive (false);
+
+		earnedFor.SetActive (true);
+		string earnedForString = string.Format("Earned for unlocking base {0}", lootBoxOwnedData.earnedInBase );
+		lootBoxDetailsText.text = earnedForString;
+
+		radialTimerText.text = "(Hold) Open";
 	}
 
-	void configureRaceWonUI()
+	void configureRaceWonUI( LootBoxData lootBoxData, LootBoxOwnedData lootBoxOwnedData )
 	{
+		//Configure the UI
+		switch( lootBoxOwnedData.state )
+		{
+			case LootBoxState.READY_TO_UNLOCK:
+				radialTimerButton.isActive = false;
+				earnedFor.SetActive (false);
+				timeRemaining.SetActive (true);
+				timeToUnlockInformation.SetActive (true);
+				unlockInformation.SetActive (false);
+		
+				radialTimerText.text = "Start Unlock";
+
+			break;
+
+			case LootBoxState.UNLOCKING:
+				radialTimerButton.isActive = false;
+				earnedFor.SetActive (false);
+				timeRemaining.SetActive (true);
+				timeToUnlockInformation.SetActive (false);
+				unlockInformation.SetActive (true);
+		
+				radialTimerText.text = "Open sooner";
+
+			break;
+
+			case LootBoxState.UNLOCKED:
+				radialTimerButton.isActive = true;
+				earnedFor.SetActive (false);
+				timeRemaining.SetActive (false);
+				timeToUnlockInformation.SetActive (false);
+				unlockInformation.SetActive (false);
+		
+				radialTimerText.text = "(Hold) Open";
+			break;
+		}
 	}
 
 	public void OnClickPrevious()
@@ -263,7 +362,14 @@ public class LootBoxCanvas : MonoBehaviour {
 			yield return new WaitForSecondsRealtime( 15 );
 		}
 		nextOneText.SetActive( false );
-		timeRemainingText.text = LocalizationManager.Instance.getText("FREE_LOOT_BOX_OPEN");
+		//The free loot box is ready to open
+		timeRemaining.SetActive (false);
+		timeToUnlockInformation.SetActive (false);
+		unlockInformation.SetActive (false);
+		lootBoxDetailsText.gameObject.SetActive( false );
+
+		radialTimerButton.isActive = true;
+		radialTimerText.text = "(Hold) Open";
 	}
 
 	void openFreeLootBox()

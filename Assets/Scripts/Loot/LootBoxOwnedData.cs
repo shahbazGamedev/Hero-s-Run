@@ -7,15 +7,23 @@ public class LootBoxOwnedData
 {
 	public LootBoxType type; 
 	public int earnedAtLevel;
-	public int earnedInSector;
+	public int earnedInBase;
+	public LootBoxState state = LootBoxState.NOT_INITIALIZED;
 	public string lastFreeLootBoxOpenedTimeString = "01/01/1970 00:00:00";
 	private DateTime lastFreeLootBoxOpenedTime = new DateTime(1970,01,01);
 
-	public LootBoxOwnedData( LootBoxType type, int earnedAtLevel, int earnedInSector )
+	public LootBoxOwnedData( LootBoxType type, int earnedAtLevel, int earnedInBase )
 	{
 		this.type = type; 
 		this.earnedAtLevel = earnedAtLevel;
-		this.earnedInSector = earnedInSector;
+		this.earnedInBase = earnedInBase;
+	}
+
+	public LootBoxOwnedData( LootBoxType type, int earnedInBase, LootBoxState state )
+	{
+		this.type = type; 
+		this.earnedInBase = earnedInBase;
+		this.state = state;
 	}
 
 	public void setLastFreeLootBoxOpenedTime( DateTime lastFreeLootBoxOpenedTime )
@@ -32,7 +40,7 @@ public class LootBoxOwnedData
 
 	public string ToString()
 	{
-		return "LootBoxOwnedData-LootBoxType: " + type + " Earned at level: " + " Earned in sector: " + earnedInSector;
+		return "LootBoxOwnedData-LootBoxType: " + type + " Earned at level: " + " Earned in base: " + earnedInBase;
 	}
 
 }
