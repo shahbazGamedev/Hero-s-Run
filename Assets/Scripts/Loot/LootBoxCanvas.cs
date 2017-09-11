@@ -366,7 +366,6 @@ public class LootBoxCanvas : MonoBehaviour {
 		timeRemaining.SetActive (false);
 		timeToUnlockInformation.SetActive (false);
 		unlockInformation.SetActive (false);
-		lootBoxDetailsText.gameObject.SetActive( false );
 
 		radialTimerButton.isActive = true;
 		radialTimerText.text = "(Hold) Open";
