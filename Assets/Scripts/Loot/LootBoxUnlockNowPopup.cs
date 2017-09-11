@@ -109,6 +109,7 @@ public class LootBoxUnlockNowPopup : MonoBehaviour {
 
 	public void OnClickStartUnlock()
 	{
+		UISoundManager.uiSoundManager.playButtonClick();
 		lootBoxOwnedData.setUnlockStartTime( DateTime.UtcNow );
 		lootBoxOwnedData.state = LootBoxState.UNLOCKING;
 		GameManager.Instance.playerInventory.serializePlayerInventory( true );
@@ -117,13 +118,18 @@ public class LootBoxUnlockNowPopup : MonoBehaviour {
 
 	public void OnClickOpenNow()
 	{
+		UISoundManager.uiSoundManager.playButtonClick();
 		//Make sure the player has enough hard currency to unlock immediately
 		if( GameManager.Instance.playerInventory.getGemBalance() >= lootBoxData.unlockHardCurrencyCost )
 		{
 			GameManager.Instance.playerInventory.deductGems( lootBoxData.unlockHardCurrencyCost );
 			lootBoxOwnedData.state = LootBoxState.UNLOCKED;
 			GameManager.Instance.playerInventory.serializePlayerInventory( true );
-			OnClickHide();
+			StopAllCoroutines();
+			gameObject.SetActive( false );
+			//Show the canvas
+			lootBoxCanvas.gameObject.SetActive( true );
+			lootBoxCanvas.OpenRaceWonLootBoxImmediately();
 		}
 		else
 		{
@@ -134,8 +140,11 @@ public class LootBoxUnlockNowPopup : MonoBehaviour {
 
 	public void OnClickHide()
 	{
+		UISoundManager.uiSoundManager.playButtonClick();
 		StopAllCoroutines();
 		gameObject.SetActive( false );
+		//Show the canvas
+		lootBoxCanvas.gameObject.SetActive( true );
 		lootBoxCanvas.configureLootBox();
 	}
 	

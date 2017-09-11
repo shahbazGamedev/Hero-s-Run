@@ -152,6 +152,13 @@ public class LootBoxCanvas : MonoBehaviour {
 
 	}
 
+	public void OpenRaceWonLootBoxImmediately()
+	{
+		LootBoxClientManager.Instance.requestLootBox( selectedLootBoxData.type );
+		GameManager.Instance.playerInventory.removeLootBoxAt( currentIndex );
+		updateNumberOfLootBoxesReadyToOpen();
+	}
+
 	public void OnInitialClick()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
@@ -174,11 +181,15 @@ public class LootBoxCanvas : MonoBehaviour {
 				case LootBoxState.READY_TO_UNLOCK:
 					unlockNowPopup.SetActive( true );
 					unlockNowPopup.GetComponent<LootBoxUnlockNowPopup>().configure(  getLootBoxData( selectedLootBoxData.type ), GameManager.Instance.playerInventory.getLootBoxAt( currentIndex ) );
+					//Hide the canvas to make the popup standout more
+					gameObject.SetActive( false );
 				break;
 	
 				case LootBoxState.UNLOCKING:
 					unlockNowPopup.SetActive( true );
 					unlockNowPopup.GetComponent<LootBoxUnlockNowPopup>().configure(  getLootBoxData( selectedLootBoxData.type ), GameManager.Instance.playerInventory.getLootBoxAt( currentIndex ) );
+					//Hide the canvas to make the popup standout more
+					gameObject.SetActive( false );
 				break;
 	
 				case LootBoxState.UNLOCKED:
@@ -190,6 +201,7 @@ public class LootBoxCanvas : MonoBehaviour {
 
 	public void configureLootBox()
 	{
+		StopAllCoroutines();
 		//Get the LootBoxOwned data
 		selectedLootBoxData = GameManager.Instance.playerInventory.getLootBoxAt( currentIndex );
 		//Localize the loot box name
@@ -294,7 +306,7 @@ public class LootBoxCanvas : MonoBehaviour {
 				timeToUnlockText.text = string.Format( hourString, lootBoxData.timeToUnlockInHours );
 				unlockInformation.SetActive (false);
 		
-				radialTimerText.text = "Start Unlock";
+				radialTimerText.text = LocalizationManager.Instance.getText( "LOOT_BOX_START_UNLOCK" );
 
 			break;
 
@@ -307,7 +319,7 @@ public class LootBoxCanvas : MonoBehaviour {
 				unlockInformation.SetActive (true);
 				unlockCostText.text = lootBoxData.unlockHardCurrencyCost.ToString(); //TO DO LINEARY DECREASE COST
 	
-				radialTimerText.text = "Open sooner";
+				radialTimerText.text = LocalizationManager.Instance.getText( "LOOT_BOX_OPEN_SOONER" );
 
 			break;
 
@@ -318,7 +330,7 @@ public class LootBoxCanvas : MonoBehaviour {
 				timeToUnlockInformation.SetActive (false);
 				unlockInformation.SetActive (false);
 		
-				radialTimerText.text = "(Hold) Open";
+				radialTimerText.text = LocalizationManager.Instance.getText( "LOOT_BOX_HOLD_OPEN" );
 			break;
 		}
 	}
@@ -416,11 +428,22 @@ public class LootBoxCanvas : MonoBehaviour {
 
 	IEnumerator updateCostRemaining( DateTime openLootBoxTime )
 	{
+		int updatedCost = 0;
 		while( DateTime.UtcNow < openLootBoxTime )
 		{
 			TimeSpan openTime = openLootBoxTime.Subtract( DateTime.UtcNow );
 			string costDisplayed = string.Format( LocalizationManager.Instance.getText( "LOOT_BOX_TIME_FORMAT" ), openTime.Hours, openTime.Minutes, openTime.Seconds );
 			timeRemainingText.text = costDisplayed;
+			//If the player doesn't have enough hard currency, make the cost text color red.
+			if( GameManager.Instance.playerInventory.getGemBalance() >= updatedCost )
+			{
+				timeRemainingText.color = Color.white;
+			}
+			else
+			{
+				timeRemainingText.color = Color.red;
+			}
+
 			//Update every five seconds
 			yield return new WaitForSecondsRealtime( 5 );
 		}
