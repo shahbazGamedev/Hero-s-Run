@@ -156,7 +156,7 @@ public class UniversalTopBar : MonoBehaviour {
 		switch (eventType)
 		{
 			case PlayerInventoryEvent.Gem_Balance_Changed:
-				numberOfGemsText.GetComponent<UISpinNumber>().spinNumber( "{0}", previousValue, newValue, NUMBER_SPIN_DURATION, true );
+				numberOfGemsText.GetComponent<UISpinNumber>().spinNumber( "{0}", previousValue, newValue, NUMBER_SPIN_DURATION, false );
 			break;
 
 			case PlayerInventoryEvent.Coin_Changed:
