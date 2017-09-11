@@ -162,7 +162,7 @@ public class LootBoxCanvas : MonoBehaviour {
 			{
 				CancelInvoke( "hideFreeLootBoxExplanationText" );
 				//The free loot box is not ready. Display a message.
-				freeLootBoxExplanationText.text = string.Format( LocalizationManager.Instance.getText("FREE_LOOT_BOX_EXPLANATION"), HOURS_BETWEEN_FREE_LOOT_BOX );
+				freeLootBoxExplanationText.text = string.Format( LocalizationManager.Instance.getText("LOOT_BOX_FREE_EXPLANATION"), HOURS_BETWEEN_FREE_LOOT_BOX );
 				freeLootBoxExplanationText.gameObject.SetActive( true );
 				Invoke("hideFreeLootBoxExplanationText", 5f);
 			}
@@ -172,10 +172,12 @@ public class LootBoxCanvas : MonoBehaviour {
 			switch( selectedLootBoxData.state )
 			{
 				case LootBoxState.READY_TO_UNLOCK:
+					unlockNowPopup.GetComponent<LootBoxUnlockNowPopup>().configure(  getLootBoxData( selectedLootBoxData.type ), GameManager.Instance.playerInventory.getLootBoxAt( currentIndex ) );
 					unlockNowPopup.SetActive( true );
 				break;
 	
 				case LootBoxState.UNLOCKING:
+					unlockNowPopup.GetComponent<LootBoxUnlockNowPopup>().configure(  getLootBoxData( selectedLootBoxData.type ), GameManager.Instance.playerInventory.getLootBoxAt( currentIndex ) );
 					unlockNowPopup.SetActive( true );
 				break;
 	
@@ -258,7 +260,8 @@ public class LootBoxCanvas : MonoBehaviour {
 		unlockInformation.SetActive (false);
 
 		earnedFor.SetActive (true);
-		string earnedForString = string.Format("Earned for level {0}", lootBoxOwnedData.earnedAtLevel );
+		string earnedForString = string.Format( LocalizationManager.Instance.getText( "LOOTBOX_EARNED_FOR_OBTAINING_LEVEL" ), lootBoxOwnedData.earnedAtLevel );
+
 		lootBoxDetailsText.text = earnedForString;
 
 		radialTimerText.text = "(Hold) Open";
@@ -271,7 +274,7 @@ public class LootBoxCanvas : MonoBehaviour {
 		unlockInformation.SetActive (false);
 
 		earnedFor.SetActive (true);
-		string earnedForString = string.Format("Earned for unlocking base {0}", lootBoxOwnedData.earnedInBase );
+		string earnedForString = string.Format( LocalizationManager.Instance.getText( "LOOTBOX_EARNED_FOR_UNLOCKING_BASE" ), lootBoxOwnedData.earnedInBase );
 		lootBoxDetailsText.text = earnedForString;
 
 		radialTimerText.text = "(Hold) Open";
@@ -356,7 +359,7 @@ public class LootBoxCanvas : MonoBehaviour {
 		while( DateTime.UtcNow < getOpenTime() )
 		{
 			TimeSpan openTime = getOpenTime().Subtract( DateTime.UtcNow );
-			string timeDisplayed = string.Format( LocalizationManager.Instance.getText( "FREE_LOOT_BOX_TIME_FORMAT" ), openTime.Hours, openTime.Minutes, openTime.Seconds );
+			string timeDisplayed = string.Format( LocalizationManager.Instance.getText( "LOOT_BOX_TIME_FORMAT" ), openTime.Hours, openTime.Minutes, openTime.Seconds );
 			timeRemainingText.text = timeDisplayed;
 			//Update every fifteen seconds
 			yield return new WaitForSecondsRealtime( 15 );

@@ -6,7 +6,6 @@ public class LootBoxData {
 
 	public LootBoxType type; 
 	public GameObject lootBoxPrefab;
-	public bool isLocked = false;
 	public int timeToUnlockInHours;
 	public Sprite lootBoxSprite;
 	public int unlockHardCurrencyCost = 0;
