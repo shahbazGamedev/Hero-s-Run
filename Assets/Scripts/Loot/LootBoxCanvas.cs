@@ -56,6 +56,8 @@ public class LootBoxCanvas : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI timeToUnlockDetailText;
 	[SerializeField] TextMeshProUGUI timeToUnlockText;
 
+	[SerializeField] TextMeshProUGUI earnedForBaseText; //only use for race won
+
 	[Header("Number of loot boxes ready to open")]
 	[SerializeField] TextMeshProUGUI lootBoxOwnedText;
 
@@ -221,6 +223,7 @@ public class LootBoxCanvas : MonoBehaviour {
 		
 		radialTimerButton.isActive = true;
 		nextOneText.SetActive( false );
+		earnedForBaseText.gameObject.SetActive( false );
 
 		//Configure the UI
 		switch( selectedLootBoxData.type )
@@ -299,6 +302,11 @@ public class LootBoxCanvas : MonoBehaviour {
 	void configureRaceWonUI( LootBoxData lootBoxData, LootBoxOwnedData lootBoxOwnedData )
 	{
 		//Configure the UI
+		//Configure the base number located under the loot box sprite
+		earnedForBaseText.gameObject.SetActive( true );
+		string earnedForString = string.Format( LocalizationManager.Instance.getText( "LOOTBOX_BASE" ), lootBoxOwnedData.earnedInBase );
+		earnedForBaseText.text = earnedForString;
+
 		switch( lootBoxOwnedData.state )
 		{
 			case LootBoxState.READY_TO_UNLOCK:
