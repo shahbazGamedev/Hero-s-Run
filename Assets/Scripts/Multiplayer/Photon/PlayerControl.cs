@@ -640,6 +640,9 @@ public class PlayerControl : Photon.PunBehaviour {
 			setCharacterState( PlayerCharacterState.Jumping );
 			if( doingDoubleJump )
 			{
+				//if the player is shrunk, we still want him to successfully do a double jump, esp. on the jump pad.
+				//This is why we increase the double-jump speed.
+				if( playerSpell.isCardActive( CardName.Shrink ) ) doubleJumpSpeed = doubleJumpSpeed * 2;
 				moveDirection.y = doubleJumpSpeed;
 				setAnimationTrigger(Double_JumpTrigger);
 			}
