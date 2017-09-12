@@ -132,7 +132,7 @@ public sealed class BotCardHandler : MonoBehaviour {
 		{
 			if( powerAmount < PowerBar.MAX_POWER_POINT )
 			{
-				if( playerRace.isPowerBoostEnabled() )
+				if( playerRace.isPowerBoostActivated() )
 				{
 					powerAmount = powerAmount + Time.deltaTime/PowerBar.FAST_POWER_REFILL_RATE;
 				}
