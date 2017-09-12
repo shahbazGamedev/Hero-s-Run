@@ -316,12 +316,12 @@ public class LootBoxCanvas : MonoBehaviour {
 
 			case LootBoxState.UNLOCKING:
 				StartCoroutine( updateTimeRemaining( lootBoxOwnedData.getUnlockStartTimeTime().AddHours( lootBoxData.timeToUnlockInHours ) ) );
+				StartCoroutine( updateCostRemaining( lootBoxOwnedData.getUnlockStartTimeTime().AddHours( lootBoxData.timeToUnlockInHours ), lootBoxData, lootBoxOwnedData ) );
 				radialTimerButton.isActive = false;
 				earnedFor.SetActive (false);
 				timeRemaining.SetActive (true);
 				timeToUnlockInformation.SetActive (false);
 				unlockInformation.SetActive (true);
-				unlockCostText.text = lootBoxData.unlockHardCurrencyCost.ToString(); //TO DO LINEARY DECREASE COST
 	
 				radialTimerText.text = LocalizationManager.Instance.getText( "LOOT_BOX_OPEN_SOONER" );
 
@@ -379,7 +379,7 @@ public class LootBoxCanvas : MonoBehaviour {
 		while( DateTime.UtcNow < getOpenTime() )
 		{
 			TimeSpan openTime = getOpenTime().Subtract( DateTime.UtcNow );
-			string timeDisplayed = string.Format( LocalizationManager.Instance.getText( "LOOT_BOX_TIME_FORMAT" ), openTime.Hours, openTime.Minutes, openTime.Seconds );
+			string timeDisplayed = string.Format( LocalizationManager.Instance.getText( "LOOT_BOX_TIME_FORMAT" ), openTime.Hours, openTime.Minutes );
 			timeRemainingText.text = timeDisplayed;
 			//Update every five seconds
 			yield return new WaitForSecondsRealtime( 5 );
@@ -420,40 +420,47 @@ public class LootBoxCanvas : MonoBehaviour {
 		while( DateTime.UtcNow < openLootBoxTime )
 		{
 			TimeSpan openTime = openLootBoxTime.Subtract( DateTime.UtcNow );
-			string timeDisplayed = string.Format( LocalizationManager.Instance.getText( "LOOT_BOX_TIME_FORMAT" ), openTime.Hours, openTime.Minutes, openTime.Seconds );
+			string timeDisplayed = string.Format( LocalizationManager.Instance.getText( "LOOT_BOX_TIME_FORMAT" ), openTime.Hours, openTime.Minutes );
 			timeRemainingText.text = timeDisplayed;
-			//Update every five seconds
-			yield return new WaitForSecondsRealtime( 5 );
+			//Update every second
+			yield return new WaitForSecondsRealtime( 1 );
 		}
 		//The loot box is ready to open
 		configureLootBox();
 
 	}
 
-	IEnumerator updateCostRemaining( DateTime openLootBoxTime )
+	//The cost to open the loot box early decreases linearly over time.
+	IEnumerator updateCostRemaining( DateTime openLootBoxTime, LootBoxData lootBoxData, LootBoxOwnedData lootBoxOwnedData )
 	{
-		int updatedCost = 0;
+		float updatedCost = 0;
+		int startCost = lootBoxData.unlockHardCurrencyCost;
+		float timeToUnlockInSeconds = lootBoxData.timeToUnlockInHours * 3600; //convert to seconds
+
 		while( DateTime.UtcNow < openLootBoxTime )
 		{
-			TimeSpan openTime = openLootBoxTime.Subtract( DateTime.UtcNow );
-			string costDisplayed = string.Format( LocalizationManager.Instance.getText( "LOOT_BOX_TIME_FORMAT" ), openTime.Hours, openTime.Minutes, openTime.Seconds );
-			timeRemainingText.text = costDisplayed;
+			TimeSpan timeLeft = openLootBoxTime.Subtract( DateTime.UtcNow );
+			float percentage = (float)timeLeft.TotalSeconds/timeToUnlockInSeconds;
+			updatedCost = percentage * startCost;
+			unlockCostText.text = updatedCost.ToString("F0");
+
 			//If the player doesn't have enough hard currency, make the cost text color red.
 			if( GameManager.Instance.playerInventory.getGemBalance() >= updatedCost )
 			{
-				timeRemainingText.color = Color.white;
+				unlockCostText.color = Color.white;
 			}
 			else
 			{
-				timeRemainingText.color = Color.red;
+				unlockCostText.color = Color.red;
 			}
 
-			//Update every five seconds
-			yield return new WaitForSecondsRealtime( 5 );
+			//Update every second
+			yield return new WaitForSecondsRealtime( 1 );
 		}
-		//The loot box is ready to open
+		//The loot box is unlocked and ready to be opened
+		lootBoxOwnedData.state = LootBoxState.UNLOCKED;
+		GameManager.Instance.playerInventory.serializePlayerInventory( true );
 		configureLootBox();
-
 	}
 
 }

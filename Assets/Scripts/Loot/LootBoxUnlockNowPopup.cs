@@ -75,7 +75,7 @@ public class LootBoxUnlockNowPopup : MonoBehaviour {
 			//Unlocking
 			unlock.SetActive( false );
 			unlocking.SetActive( true );
-			StartCoroutine( updateTimeRemaining( lootBoxOwnedData.getUnlockStartTimeTime().AddHours( lootBoxData.timeToUnlockInHours ) ) );
+			StartCoroutine( updateValues( lootBoxOwnedData.getUnlockStartTimeTime().AddHours( lootBoxData.timeToUnlockInHours ) ) );
 			//If the player doesn't have enough hard currency, make the cost text color red.
 			if( GameManager.Instance.playerInventory.getGemBalance() >= lootBoxData.unlockHardCurrencyCost )
 			{
@@ -90,19 +90,45 @@ public class LootBoxUnlockNowPopup : MonoBehaviour {
 		
 	}
 
-	IEnumerator updateTimeRemaining( DateTime openLootBoxTime )
+	//Update both the time remaining and the cost.
+	//The cost to open now decreases linearly with time.
+	IEnumerator updateValues( DateTime openLootBoxTime )
 	{
+		//Cost related variables
+		float updatedCost = 0;
+		int startCost = lootBoxData.unlockHardCurrencyCost;
+		float timeToUnlockInSeconds = lootBoxData.timeToUnlockInHours * 3600; //convert to seconds
+
 		while( DateTime.UtcNow < openLootBoxTime )
 		{
-			TimeSpan openTime = openLootBoxTime.Subtract( DateTime.UtcNow );
-			string timeDisplayed = string.Format( LocalizationManager.Instance.getText( "LOOT_BOX_TIME_FORMAT" ), openTime.Hours, openTime.Minutes, openTime.Seconds );
+			TimeSpan timeLeft = openLootBoxTime.Subtract( DateTime.UtcNow );
+
+			//Update the time remaining
+			string timeDisplayed = string.Format( LocalizationManager.Instance.getText( "LOOT_BOX_TIME_FORMAT" ), timeLeft.Hours, timeLeft.Minutes );
 			timeRemainingText.text = timeDisplayed;
-						print("timeDisplayed " + timeDisplayed );
-			//Update every five seconds
-			yield return new WaitForSecondsRealtime( 5 );
+
+			//Update the cost
+			float percentage = (float)timeLeft.TotalSeconds/timeToUnlockInSeconds;
+			updatedCost = percentage * startCost;
+			openNowCostText.text = updatedCost.ToString("F0");
+
+			//If the player doesn't have enough hard currency, make the cost text color red.
+			if( GameManager.Instance.playerInventory.getGemBalance() >= updatedCost )
+			{
+				openNowCostText.color = Color.white;
+			}
+			else
+			{
+				openNowCostText.color = Color.red;
+			}
+
+			//Update every second
+			yield return new WaitForSecondsRealtime( 1 );
 		}
-		//The loot box is ready to open
+		//The loot box is unlocked and ready to be opened.
 		//The popup is no longer needed. OnClickHide will make sure the loot box configuration is updated.
+		lootBoxOwnedData.state = LootBoxState.UNLOCKED;
+		GameManager.Instance.playerInventory.serializePlayerInventory( true );
 		OnClickHide();
 
 	}
