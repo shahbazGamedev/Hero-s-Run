@@ -20,6 +20,8 @@ public class LootBoxCanvas : MonoBehaviour {
 	[SerializeField] List<LootBoxData> lootBoxDataList = new List<LootBoxData>();
 	//The transform holding the 3D models incuding the hero and the loot box.
 	[SerializeField] Transform holder3D;
+	[Tooltip("If enabled, a few loot boxes will get added each time the scene loads to facilitate testing. Only works for debug builds.")]
+	[SerializeField] bool addTestLootBoxes = false;
 
 	//3D model of loot box. It can vary depending on the loot box types.
 	[Header("Loot Box Model")]
@@ -96,10 +98,12 @@ public class LootBoxCanvas : MonoBehaviour {
 
 	void addLootBoxesForTesting ()
 	{
-		if( !Debug.isDebugBuild ) return;
-		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.LEVEL_UP, 1, -1 ) );
-		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.RACE_WON, 1, LootBoxState.READY_TO_UNLOCK ) );
-		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.BASE_UNLOCKED, -1, 1 ) );
+		if( Debug.isDebugBuild && addTestLootBoxes )
+		{
+			GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.LEVEL_UP, 1, -1 ) );
+			GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.RACE_WON, 1, LootBoxState.READY_TO_UNLOCK ) );
+			GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.BASE_UNLOCKED, -1, 1 ) );
+		}
 	}
 
 	void updateNumberOfLootBoxesReadyToOpen()
@@ -249,7 +253,7 @@ public class LootBoxCanvas : MonoBehaviour {
 			earnedFor.SetActive (false);
 
 			radialTimerButton.isActive = true;
-			radialTimerText.text = "(Hold) Open";
+			radialTimerText.text = LocalizationManager.Instance.getText( "LOOT_BOX_HOLD_OPEN" );
 		}
 		else
 		{
@@ -261,7 +265,7 @@ public class LootBoxCanvas : MonoBehaviour {
 
 			nextOneText.SetActive( true );
 			radialTimerButton.isActive = false;
-			radialTimerText.text = "Not ready";
+			radialTimerText.text = LocalizationManager.Instance.getText( "LOOT_BOX_NOT_READY" );
 		}
 	}
 
@@ -276,7 +280,7 @@ public class LootBoxCanvas : MonoBehaviour {
 
 		lootBoxDetailsText.text = earnedForString;
 
-		radialTimerText.text = "(Hold) Open";
+		radialTimerText.text = LocalizationManager.Instance.getText( "LOOT_BOX_HOLD_OPEN" );
 	}
 
 	void configureBaseUnlockedUI( LootBoxData lootBoxData, LootBoxOwnedData lootBoxOwnedData )
@@ -289,7 +293,7 @@ public class LootBoxCanvas : MonoBehaviour {
 		string earnedForString = string.Format( LocalizationManager.Instance.getText( "LOOTBOX_EARNED_FOR_UNLOCKING_BASE" ), lootBoxOwnedData.earnedInBase );
 		lootBoxDetailsText.text = earnedForString;
 
-		radialTimerText.text = "(Hold) Open";
+		radialTimerText.text = LocalizationManager.Instance.getText( "LOOT_BOX_HOLD_OPEN" );
 	}
 
 	void configureRaceWonUI( LootBoxData lootBoxData, LootBoxOwnedData lootBoxOwnedData )
@@ -377,8 +381,8 @@ public class LootBoxCanvas : MonoBehaviour {
 			TimeSpan openTime = getOpenTime().Subtract( DateTime.UtcNow );
 			string timeDisplayed = string.Format( LocalizationManager.Instance.getText( "LOOT_BOX_TIME_FORMAT" ), openTime.Hours, openTime.Minutes, openTime.Seconds );
 			timeRemainingText.text = timeDisplayed;
-			//Update every fifteen seconds
-			yield return new WaitForSecondsRealtime( 15 );
+			//Update every five seconds
+			yield return new WaitForSecondsRealtime( 5 );
 		}
 		nextOneText.SetActive( false );
 		//The free loot box is ready to open
@@ -387,7 +391,7 @@ public class LootBoxCanvas : MonoBehaviour {
 		unlockInformation.SetActive (false);
 
 		radialTimerButton.isActive = true;
-		radialTimerText.text = "(Hold) Open";
+		radialTimerText.text = LocalizationManager.Instance.getText( "LOOT_BOX_HOLD_OPEN" );
 	}
 
 	void openFreeLootBox()
