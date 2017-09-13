@@ -39,6 +39,8 @@ public class MiniMap : MonoBehaviour {
 	float cardFeedTimeOfLastEntry2;
 	Queue<RadarObject> tileQueue = new Queue<RadarObject>();
 	float tileSize = 0;
+	[SerializeField] RectTransform levelMap;
+
 	// Use this for initialization
 	void Awake () {
 	
@@ -62,17 +64,38 @@ public class MiniMap : MonoBehaviour {
 		radarObjects.Add( new RadarObject(){ owner = go, icon = image, playerControl = pc, secondaryIcon = secondaryImage } );
 	}
 
-	void registerTileObject( GameObject go, Sprite minimapSprite, float tileYRotation )
+	public void registerTileObject( GameObject go, Sprite minimapSprite, float tileYRotation )
 	{
 		Image image = Instantiate( tileMinimapPrefab );
+		image.name = go.name;
 		Image secondaryImage = image.transform.FindChild("Secondary Image").GetComponent<Image>();
-		image.transform.SetParent( transform );
+		image.transform.SetParent( levelMap );
 		image.rectTransform.localScale = Vector3.one;
+		secondaryImage.gameObject.SetActive( false );
 		image.sprite = minimapSprite;
-		RadarObject ro = new RadarObject(){ owner = go, icon = image, playerControl = null, secondaryIcon = secondaryImage };
-		ro.icon.GetComponent<RectTransform>().localEulerAngles = new Vector3( 0, 0, -tileYRotation );
-		radarObjects.Add( ro );
-		tileQueue.Enqueue( ro );
+		//RadarObject ro = new RadarObject(){ owner = go, icon = image, playerControl = null, secondaryIcon = secondaryImage };
+		image.GetComponent<RectTransform>().localEulerAngles = new Vector3( 0, 0, -tileYRotation );
+		//radarObjects.Add( ro );
+		//tileQueue.Enqueue( ro );
+		Vector3 radarPos = ( go.transform.position - Vector3.zero );
+		float distToObject = Vector3.Distance( Vector3.zero, go.transform.position ) * mapScale;
+		float playerEulerAnglesY = 0;
+		float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270 -playerEulerAnglesY;
+		radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
+		radarPos.z = distToObject * Mathf.Sin( deltaY * Mathf.Deg2Rad );
+		image.rectTransform.anchoredPosition = new Vector2( radarPos.x, radarPos.z );
+	}
+
+	public void updateLevelMapPosition()
+	{
+		//Vector3 radarPos = ( Vector3.zero - player.position );
+		//float distToObject = Vector3.Distance( player.position, Vector3.zero ) * mapScale;
+		//float playerEulerAnglesY = player.eulerAngles.y;
+		//float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270 -playerEulerAnglesY;
+		//radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
+		//radarPos.z = distToObject * Mathf.Sin( deltaY * Mathf.Deg2Rad );
+		//levelMap.anchoredPosition = new Vector2( radarPos.x, radarPos.z );
+		levelMap.anchoredPosition = new Vector2( -player.position.x, -player.position.z );
 	}
 
 	public void removeRadarObject( GameObject go )
@@ -231,6 +254,7 @@ public class MiniMap : MonoBehaviour {
 
 	void drawRadarDots()
 	{
+		updateLevelMapPosition();
 		for(int i = radarObjects.Count - 1; i > -1; i-- )
 		{
 			if( radarObjects[i].owner != null && player != null )

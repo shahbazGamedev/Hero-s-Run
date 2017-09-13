@@ -611,7 +611,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		worldRoadSegments.Add( go );
 		si.tileIndex = tileCreationIndex;
 		tileCreationIndex++;
-
+		MiniMap.Instance.registerTileObject( go, si.tileSprite, go.transform.eulerAngles.y );
 		return go;
 	}
 
@@ -846,7 +846,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	public void tileEntranceCrossed( Transform currentTile )
 	{
 		playerTileIndex++;
-		if( playerTileIndex + 1 < worldRoadSegments.Count ) MiniMap.Instance.updateTopmostTile( worldRoadSegments[playerTileIndex+1].transform );
+		//if( playerTileIndex + 1 < worldRoadSegments.Count ) MiniMap.Instance.updateTopmostTile( worldRoadSegments[playerTileIndex+1].transform );
 
 		//print ("tileEntranceCrossed: player entered " + currentTile.name + " and the player tile index is: " + playerTileIndex );
 
