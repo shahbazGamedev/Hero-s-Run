@@ -611,7 +611,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		worldRoadSegments.Add( go );
 		si.tileIndex = tileCreationIndex;
 		tileCreationIndex++;
-		MiniMap.Instance.registerTileObject( go, si.tileSprite, go.transform.eulerAngles.y );
+		MiniMap.Instance.registerTileObject( go, si.tileSprite, go.transform.eulerAngles.y, tileDepthMult );
 		return go;
 	}
 
