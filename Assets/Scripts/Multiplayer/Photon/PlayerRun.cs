@@ -8,6 +8,7 @@ public enum SpeedMultiplierType {
 		Turning = 1,
 		Falling = 2,
 		Stumbling = 3,
+		Power_Speed_Boost = 4,
 		Shrink = 100,
 		Sprint = 101,
 		Raging_Bull = 102,
@@ -141,7 +142,7 @@ public class PlayerRun : Photon.PunBehaviour {
 	/// Adds a speed multiplier of the given type.
 	/// </summary>
 	/// <param name="type">Type.</param>
-	void addSpeedMultiplier( SpeedMultiplierType type )
+	public void addSpeedMultiplier( SpeedMultiplierType type )
 	{
 		//Don't add the same speed multiplier twice
 		if( !activeSpeedMultipliersList.Exists( mult => mult.type == type ) )
@@ -244,7 +245,7 @@ public class PlayerRun : Photon.PunBehaviour {
 	/// Removes the speed multiplier of the given type.
 	/// </summary>
 	/// <param name="type">Type.</param>
-	void removeSpeedMultiplier( SpeedMultiplierType type )
+	public void removeSpeedMultiplier( SpeedMultiplierType type )
 	{
 		SpeedMultiplier mult = getSpeedMultiplierByType( type );
 		if( activeSpeedMultipliersList.Contains( mult ) )

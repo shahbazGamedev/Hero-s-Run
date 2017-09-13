@@ -56,13 +56,13 @@ public class PlayerRace : Photon.PunBehaviour
 	#region Emergency Power Boost
 	//The power boost is activated when a player is losing significantly to give him a chance to get back in the lead.
 	//The power boost activates only once during a race.
-	//The effect of the power boost is to increase the refill rate of the power bar.
+	//The effect of the power boost is to increase the refill rate of the power bar and to increase the player's run speed.
 	//Whether the power boost is active or not.
 	bool isPowerBoostActive = false;
 	//The number of tiles the player must be losing by for the power boost to activate.
 	const int TILE_DIFFERENCE_ACTIVATOR = 3;
 	TurnRibbonHandler turnRibbonHandler;
-	const float POWER_BOOST_DURATION = 10f;
+	const float POWER_BOOST_DURATION = 12f;
 	bool wasPowerBoostUsed = false;
 	#endregion
 
@@ -171,6 +171,7 @@ public class PlayerRace : Photon.PunBehaviour
 	/// The effect of the power boost is to increase the refill rate of the power bar.
  	/// Power is what is used to play cards during a race. The power bar recharges at a constant rate up to a maximum.
 	/// If a player is losing significantly, his recharge rate will be increased thus allowing him to play more cards, and hopefully get him back into the lead.
+	/// In addition, his run speed increases for the duration.
 	/// </summary>
 	void verifyIfPowerBoostNeeded()
 	{
@@ -209,6 +210,8 @@ public class PlayerRace : Photon.PunBehaviour
 			HUDMultiplayer.hudMultiplayer.activateUserMessage( LocalizationManager.Instance.getText("RACE_EMERGENCY_POWER_ENGAGED"), 0, 2.5f );
 			turnRibbonHandler.increaseRefillRate();
 		}
+		GetComponent<PlayerRun>().addSpeedMultiplier( SpeedMultiplierType.Power_Speed_Boost );
+
 		Invoke( "disablePowerBoost", POWER_BOOST_DURATION );
 		print("Activating power boost for " + gameObject.name );
 	}
@@ -221,6 +224,7 @@ public class PlayerRace : Photon.PunBehaviour
 			HUDMultiplayer.hudMultiplayer.activateUserMessage( LocalizationManager.Instance.getText("RACE_EMERGENCY_POWER_DISENGAGED"), 0, 2.5f );
 			turnRibbonHandler.resetRefillRate();
 		}
+		GetComponent<PlayerRun>().removeSpeedMultiplier( SpeedMultiplierType.Power_Speed_Boost );
 		print("Deactivating power boost for " + gameObject.name );
 	}
 
