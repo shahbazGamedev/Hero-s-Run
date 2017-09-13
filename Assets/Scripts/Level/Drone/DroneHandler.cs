@@ -8,6 +8,7 @@ public class DroneHandler : MonoBehaviour {
 	[SerializeField] float projectileSpeed = 1000;
     [SerializeField] Transform spawnPositionLeft;
     [SerializeField] Transform spawnPositionRight;
+	[SerializeField] Sprite  minimapIcon;
 	
 	//Target
 	public Transform nearestTarget = null;
@@ -26,6 +27,7 @@ public class DroneHandler : MonoBehaviour {
 	{
 		initialRotation = transform.localRotation;
 		initialPosition = transform.position;
+		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
 	}
 	#endregion
 

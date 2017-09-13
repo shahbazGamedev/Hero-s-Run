@@ -92,6 +92,7 @@ public class PlayerVisuals : Photon.PunBehaviour {
 		if( photonView.isMine )
 		{
 			MiniMap.Instance.registerLocalPlayer( transform );
+			MiniMap.Instance.registerRadarObject( gameObject, selectedHero.minimapIcon, GetComponent<PlayerControl>() );
 			VoiceOverManager.Instance.registerLocalPlayer( transform );
 			PhotonNetwork.player.TagObject = gameObject;
 			GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>().setPlayerControl( GetComponent<PlayerControl>() );
