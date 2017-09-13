@@ -64,23 +64,21 @@ public class MiniMap : MonoBehaviour {
 		radarObjects.Add( new RadarObject(){ owner = go, icon = image, playerControl = pc, secondaryIcon = secondaryImage } );
 	}
 
-	public void registerTileObject( GameObject go, Sprite minimapSprite, float tileYRotation, int tileDepth )
+	public void registerTileObject( string tileName, Vector3 tilePosition, Sprite minimapSprite, float tileYRotation, int tileDepth )
 	{
 		tileYRotation = Mathf.Floor( tileYRotation );
 		int tileDepthOverOne = tileDepth - 1;
 		Image image = Instantiate( tileMinimapPrefab );
-		image.name = go.name;
-		Image secondaryImage = image.transform.FindChild("Secondary Image").GetComponent<Image>();
+		image.name = "Tile Icon " + tileName;
 		image.transform.SetParent( levelMap );
 		image.rectTransform.localScale = Vector3.one;
-		secondaryImage.gameObject.SetActive( false );
 		image.sprite = minimapSprite;
 		//RadarObject ro = new RadarObject(){ owner = go, icon = image, playerControl = null, secondaryIcon = secondaryImage };
 		image.GetComponent<RectTransform>().localEulerAngles = new Vector3( 0, 0, -tileYRotation );
 		//radarObjects.Add( ro );
 		//tileQueue.Enqueue( ro );
-		Vector3 radarPos = ( go.transform.position - Vector3.zero );
-		float distToObject = Vector3.Distance( Vector3.zero, go.transform.position ) * mapScale;
+		Vector3 radarPos = ( tilePosition - Vector3.zero );
+		float distToObject = Vector3.Distance( Vector3.zero, tilePosition ) * mapScale;
 		float playerEulerAnglesY = 0;
 		float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270 -playerEulerAnglesY;
 		radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
@@ -99,13 +97,7 @@ public class MiniMap : MonoBehaviour {
 
 	public void updateLevelMapPosition()
 	{
-		//Vector3 radarPos = ( Vector3.zero - player.position );
-		//float distToObject = Vector3.Distance( player.position, Vector3.zero ) * mapScale;
-		//float playerEulerAnglesY = player.eulerAngles.y;
-		//float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270 -playerEulerAnglesY;
-		//radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
-		//radarPos.z = distToObject * Mathf.Sin( deltaY * Mathf.Deg2Rad );
-		//levelMap.anchoredPosition = new Vector2( radarPos.x, radarPos.z );
+		//levelMap.rotation = Quaternion.Euler( 0, 0, player.eulerAngles.y );
 		levelMap.anchoredPosition = new Vector2( -player.position.x, -player.position.z );
 	}
 
