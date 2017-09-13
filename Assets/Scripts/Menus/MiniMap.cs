@@ -28,7 +28,6 @@ public class MiniMap : MonoBehaviour {
 	Transform player;
 	List<RadarObject> radarObjects = new List<RadarObject>();
 	[SerializeField] Image playerMinimapPrefab;
-	[SerializeField] Image tileMinimapPrefab;
 	[SerializeField] Sprite playerDeadRadarSprite;
 	[SerializeField] TextMeshProUGUI cardFeed; //Used to display the last card played, such as 'Bob played Lightning'
 	[SerializeField] TextMeshProUGUI cardFeed2; //Used to display reflected cards
@@ -37,9 +36,11 @@ public class MiniMap : MonoBehaviour {
 	const float CARD_FEED_TTL2 = 5f; //in seconds
 	float cardFeedTimeOfLastEntry;
 	float cardFeedTimeOfLastEntry2;
-	Queue<RadarObject> tileQueue = new Queue<RadarObject>();
-	float tileSize = 0;
+	#region Level Map
 	[SerializeField] RectTransform levelMap;
+	[SerializeField] Image tileMinimapPrefab;
+	float tileSize = 0;
+	#endregion
 
 	// Use this for initialization
 	void Awake () {
@@ -69,21 +70,22 @@ public class MiniMap : MonoBehaviour {
 		tileYRotation = Mathf.Floor( tileYRotation );
 		int tileDepthOverOne = tileDepth - 1;
 		Image image = Instantiate( tileMinimapPrefab );
+ 		//Don't use the exact same name as the tile as this will cause issues with Find
+		//because two objects will have the same name.
 		image.name = "Tile Icon " + tileName;
 		image.transform.SetParent( levelMap );
 		image.rectTransform.localScale = Vector3.one;
 		image.sprite = minimapSprite;
-		//RadarObject ro = new RadarObject(){ owner = go, icon = image, playerControl = null, secondaryIcon = secondaryImage };
 		image.GetComponent<RectTransform>().localEulerAngles = new Vector3( 0, 0, -tileYRotation );
-		//radarObjects.Add( ro );
-		//tileQueue.Enqueue( ro );
-		Vector3 radarPos = ( tilePosition - Vector3.zero );
+		
+		Vector3 radarPos = tilePosition;
 		float distToObject = Vector3.Distance( Vector3.zero, tilePosition ) * mapScale;
-		float playerEulerAnglesY = 0;
-		float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270 -playerEulerAnglesY;
+		float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270;
 		radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
 		radarPos.z = distToObject * Mathf.Sin( deltaY * Mathf.Deg2Rad );
 
+		//For a square 1 x 1 tile the center of the tile corresponds to the middle of the tile as expected.
+		//However, for a rectangular 1 x 2 tile, the center is off by half a tile size.
 		if( tileYRotation == 0 )
 		{
 			image.rectTransform.anchoredPosition = new Vector2( radarPos.x, radarPos.z + (tileDepthOverOne * tileSize * 0.5f)  );
@@ -97,7 +99,7 @@ public class MiniMap : MonoBehaviour {
 
 	public void updateLevelMapPosition()
 	{
-		//levelMap.rotation = Quaternion.Euler( 0, 0, player.eulerAngles.y );
+		//levelMap.rotation = Quaternion.Euler( 0, 0, -player.eulerAngles.y );
 		levelMap.anchoredPosition = new Vector2( -player.position.x, -player.position.z );
 	}
 
@@ -115,68 +117,6 @@ public class MiniMap : MonoBehaviour {
 			ro.icon.color = new Color(ro.icon.color.r, ro.icon.color.g, ro.icon.color.b, alpha ) ;
 			ro.secondaryIcon.color = new Color(ro.icon.color.r, ro.icon.color.g, ro.icon.color.b, alpha ) ;
 		}
-	}
-
-	public void updateTopmostTile( Transform newTile )
-	{
-		return; //code not finished
-		//Dequeue
-		RadarObject bottomMostTile = tileQueue.Dequeue();
-
-		//Update the tile object
-		bottomMostTile.owner = newTile.gameObject;
-
-		//Adjust the image size based on the tile depth.
-		//A tile depth of 1 is 50 meters, a depth of 2, is a 100 meters, etc.
-		//One pixel is one meter
-		adjustTileImageSize( bottomMostTile.icon.GetComponent<RectTransform>(), newTile );
-
-		//Update sprite
-		bottomMostTile.icon.sprite = newTile.GetComponent<SegmentInfo>().tileSprite;
-
-		//Update rotation
-		bottomMostTile.icon.GetComponent<RectTransform>().localEulerAngles = new Vector3( 0, 0, -newTile.eulerAngles.y );
-
-		//Enqueue
-		tileQueue.Enqueue(bottomMostTile);
-	}
-
-	private void adjustTileImageSize( RectTransform tileImage, Transform newTile )
-	{
-		float tileRotationY = Mathf.Floor ( newTile.eulerAngles.y );
-		//Tile is facing straight. Adjust height.
-		if( tileRotationY == 0 )
-		{
-			tileImage.sizeDelta = new Vector2( tileSize, newTile.GetComponent<SegmentInfo>().tileDepth * tileSize );
-		}
-		//Tile is facing right.
-		else if( tileRotationY == 90f || tileRotationY == -270f )
-		{
-			tileImage.sizeDelta = new Vector2( newTile.GetComponent<SegmentInfo>().tileDepth * tileSize, tileSize );
-		}
-		//Tile is facing left.
-		else if( tileRotationY == -90f || tileRotationY == 270f )
-		{
-			tileImage.sizeDelta = new Vector2( newTile.GetComponent<SegmentInfo>().tileDepth * tileSize, tileSize );
-		}
-	}
-
-	public void inititalizedStartTiles( Transform[] firstThreeTiles )
-	{
-		return; //code not finished
-
-		//top of queue positioned at top of minimap
-		//registerTileObject( firstThreeTiles[2].gameObject, firstThreeTiles[2].GetComponent<SegmentInfo>().tileSprite, firstThreeTiles[2].eulerAngles.y );
-		//registerTileObject( firstThreeTiles[1].gameObject, firstThreeTiles[1].GetComponent<SegmentInfo>().tileSprite, firstThreeTiles[1].eulerAngles.y );
-		//registerTileObject( firstThreeTiles[0].gameObject, firstThreeTiles[0].GetComponent<SegmentInfo>().tileSprite, firstThreeTiles[0].eulerAngles.y );
-		
-		GameObject tileMinusOne = new GameObject();
-		tileMinusOne.transform.position = new Vector3( 0, 0, -50f );
-		//registerTileObject( tileMinusOne, firstThreeTiles[0].GetComponent<SegmentInfo>().tileSprite, firstThreeTiles[0].eulerAngles.y );
-
-		GameObject tileMinusTwo = new GameObject();
-		tileMinusTwo.transform.position = new Vector3( 0, 0, -100f );
-		//registerTileObject( tileMinusTwo, firstThreeTiles[0].GetComponent<SegmentInfo>().tileSprite, firstThreeTiles[0].eulerAngles.y );
 	}
 
 	public void displayMessage( string heroName, CardName cardName )

@@ -846,7 +846,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	public void tileEntranceCrossed( Transform currentTile )
 	{
 		playerTileIndex++;
-		//if( playerTileIndex + 1 < worldRoadSegments.Count ) MiniMap.Instance.updateTopmostTile( worldRoadSegments[playerTileIndex+1].transform );
 
 		//print ("tileEntranceCrossed: player entered " + currentTile.name + " and the player tile index is: " + playerTileIndex );
 
@@ -923,12 +922,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			worldRoadSegments[i].SetActive( true );
 			onTileActivation(i);
 		}
-		//Update the minimap
-		//Transform[] firstThreeTiles = new Transform[3];
-		//firstThreeTiles[0] = worldRoadSegments[startIndex].transform;
-		//firstThreeTiles[1] = worldRoadSegments[startIndex + 1 ].transform;
-		//firstThreeTiles[2] = worldRoadSegments[startIndex + 2 ].transform;
-		//MiniMap.Instance.inititalizedStartTiles( firstThreeTiles );
 	}
 
 	public void activateTilesAfterTeleport()
