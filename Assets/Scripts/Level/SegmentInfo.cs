@@ -15,6 +15,7 @@ public class SegmentInfo : MonoBehaviour {
 	public bool entranceCrossed = false;
 	public bool addJumpBoost = false; //If true, give an extra boost when jumping
 	public float tileEndHeight = 0; //if not zero, the height of the NEXT tile will be adjusted
+	public float tileHorizontalShift = 0; //if not zero, the X position of the NEXT tile will be adjusted
 	//tileIndex is populated at runtime. The Start tile has an index of 0, the second tile in the level has an index of 1, etc.
 	public int tileIndex = -1;
 	public int tileDepth = 1;

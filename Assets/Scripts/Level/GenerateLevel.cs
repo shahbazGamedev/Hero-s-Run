@@ -104,7 +104,9 @@ public enum TileType {
 	Teleport_Rx = 99,
 	Jump_Pad = 100,
 	Finish_Line = 101,
-	Left_Straight = 102
+	Left_Straight = 102,
+	Angled = 103
+
 }
 
 public enum TileSubType {
@@ -112,6 +114,7 @@ public enum TileSubType {
 	Straight = 3,
 	Left = 4,
 	Right = 5,
+	Angled = 6,
 	T_Junction = 15,
 }
 
@@ -624,6 +627,21 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		float tileHeight = tileEndHeight + previousTilePos.y;
 		switch (previousTileType)
 		{
+			case TileSubType.Angled:
+			if( previousTileRotY == 0 )
+			{
+				tilePos.Set ( previousTilePos.x -20.5f, tileHeight, previousTilePos.z + tileDepth );
+			}
+			else if( previousTileRotY == 270f || previousTileRotY == -90f )
+			{
+				tilePos.Set ( previousTilePos.x - tileDepth, tileHeight, previousTilePos.z );				
+			}
+			else
+			{
+				tilePos.Set ( previousTilePos.x + tileDepth, tileHeight, previousTilePos.z  );				
+			}
+			return tilePos;
+
 			case TileSubType.Straight:
 			if( previousTileRotY == 0 )
 			{
@@ -688,6 +706,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			case TileSubType.None:
 			return Quaternion.identity;
 		
+			case TileSubType.Angled:
 			case TileSubType.Straight:
 			tileRot =  Quaternion.Euler( 0, previousTileRot.eulerAngles.y, 0 );
 			return tileRot;

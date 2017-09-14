@@ -1969,6 +1969,10 @@ public class PlayerControl : Photon.PunBehaviour {
 				}
 			}
 		}
+		else if( other.CompareTag( "Angled Tile Entrance" ) )
+		{
+			transform.rotation = Quaternion.Euler( 0, -25.692f, 0 );
+		}
 		//For the Great Fall trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
 		else if( other.CompareTag( "Great Fall" ) )
 		{
@@ -2110,6 +2114,10 @@ public class PlayerControl : Photon.PunBehaviour {
 			{
 				//Player is no longer in the zipline trigger
 				isInZiplineTrigger = false;
+			}
+			else if( other.CompareTag( "Angled Tile Exit" ) )
+			{
+				transform.rotation = Quaternion.Euler( 0, 0, 0 );
 			}
 		}
 	}
