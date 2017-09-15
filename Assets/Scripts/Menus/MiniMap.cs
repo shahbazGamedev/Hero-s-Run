@@ -211,7 +211,7 @@ public class MiniMap : MonoBehaviour {
 			{
 				Vector3 radarPos = ( radarObjects[i].owner.transform.position - player.position );
 				float distToObject = Vector3.Distance( player.position, radarObjects[i].owner.transform.position ) * mapScale;
-				float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270 -player.eulerAngles.y;
+				float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270;
 
 				if( radarObjects[i].playerControl )
 				{
