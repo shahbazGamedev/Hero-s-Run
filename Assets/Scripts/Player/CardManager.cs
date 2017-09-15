@@ -129,15 +129,15 @@ public class CardManager : MonoBehaviour {
     	switch (rarity)
 		{
 	        case CardRarity.COMMON:
-				maxCardLevelForThisRarity = 13;
+				maxCardLevelForThisRarity = 11;
                 break;
 	                
 	        case CardRarity.RARE:
-				maxCardLevelForThisRarity = 11;
+				maxCardLevelForThisRarity = 9;
                 break;
                
 	        case CardRarity.EPIC:
-				maxCardLevelForThisRarity = 8;
+				maxCardLevelForThisRarity = 7;
 				break;                
 
 	        case CardRarity.LEGENDARY:
