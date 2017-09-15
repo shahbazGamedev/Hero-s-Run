@@ -33,11 +33,13 @@ public class MiniMap : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI cardFeed; //Used to display the last card played, such as 'Bob played Lightning'
 	[SerializeField] TextMeshProUGUI cardFeed2; //Used to display reflected cards
 	const float MAX_DISTANCE = 78f;
-	[SerializeField] float distanceToDrawOnTheEdge = 88f; //98f is a good value. Using 88 for testing while mask issues fixed.
+	[SerializeField] float distanceToDrawOnTheEdge = 98f;
 	const float CARD_FEED_TTL = 5f; //in seconds
 	const float CARD_FEED_TTL2 = 5f; //in seconds
 	float cardFeedTimeOfLastEntry;
 	float cardFeedTimeOfLastEntry2;
+	[SerializeField] RectTransform mapWithPeriphery;
+	[SerializeField] RectTransform mapWithoutPeriphery;
 	#region Level Map
 	[SerializeField] RectTransform levelMap;
 	[SerializeField] Image tileMinimapPrefab;
@@ -61,7 +63,7 @@ public class MiniMap : MonoBehaviour {
 	{
 		Image image = Instantiate( playerMinimapPrefab );
 		Image secondaryImage = image.transform.FindChild("Secondary Image").GetComponent<Image>();
-		image.transform.SetParent( transform );
+		image.transform.SetParent( mapWithPeriphery );
 		image.rectTransform.localScale = Vector3.one;
 		image.sprite = minimapSprite;
 		radarObjects.Add( new RadarObject(){ owner = go, icon = image, playerControl = pc, secondaryIcon = secondaryImage } );
@@ -209,6 +211,7 @@ public class MiniMap : MonoBehaviour {
 			{
 				Vector3 radarPos = ( radarObjects[i].owner.transform.position - player.position );
 				float distToObject = Vector3.Distance( player.position, radarObjects[i].owner.transform.position ) * mapScale;
+				float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270 -player.eulerAngles.y;
 
 				if( radarObjects[i].playerControl )
 				{
@@ -221,16 +224,31 @@ public class MiniMap : MonoBehaviour {
 						if( distToObject > MAX_DISTANCE )
 						{
 							//Yes, the player is far.
-							//The player is off the map. Render him at the edge.
+							//Render the icon on the periphery of the minimap.
 							distToObject = distanceToDrawOnTheEdge;
+							radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
+							radarPos.z = distToObject * Mathf.Sin( deltaY * Mathf.Deg2Rad );
+
 							//A dead far player uses the far sprite.
 							radarObjects[i].icon.overrideSprite = playerFarSprite;
+
+							//We need to change the parent. mapWithoutPeriphery has a mask.
+							//For the icon to be visble on the periphery, we need to change its parent to an object without a mask: mapWithPeriphery.
+							radarObjects[i].icon.transform.SetParent( mapWithPeriphery );
+
+							//When an icon is on the periphery, we want it to face the center of the minimap.
+							radarObjects[i].icon.rectTransform.rotation = Quaternion.Euler( 0, 0, Mathf.Atan2( radarPos.z, radarPos.x ) * Mathf.Rad2Deg -90 );
 						}
 						else
 						{
 							//No, he is not far
 							//A dead nearby player uses the dead player sprite.
+							radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
+							radarPos.z = distToObject * Mathf.Sin( deltaY * Mathf.Deg2Rad );
 							radarObjects[i].icon.overrideSprite = playerDeadSprite;
+							radarObjects[i].icon.transform.SetParent( mapWithoutPeriphery );
+							radarObjects[i].icon.rectTransform.rotation = Quaternion.identity;
+
 						}
 						//In all cases, hide the secondary icon when a player is dead.
 						radarObjects[i].secondaryIcon.gameObject.SetActive( false );
@@ -242,16 +260,30 @@ public class MiniMap : MonoBehaviour {
 						if( distToObject > MAX_DISTANCE )
 						{
 							//Yes, the player is far.
-							//A far alive player uses the player far sprite
-							radarObjects[i].icon.overrideSprite = playerFarSprite;
-							//Render him at the edge of the minimap.
+							//Render the icon on the periphery of the minimap.
 							distToObject = distanceToDrawOnTheEdge;
+							radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
+							radarPos.z = distToObject * Mathf.Sin( deltaY * Mathf.Deg2Rad );
+
+							//An alive far player uses the player far sprite
+							radarObjects[i].icon.overrideSprite = playerFarSprite;
+
+							//We need to change the parent. mapWithoutPeriphery has a mask.
+							//For the icon to be visble on the periphery, we need to change its parent to an object without a mask: mapWithPeriphery.
+							radarObjects[i].icon.transform.SetParent( mapWithPeriphery );
+
+							//When an icon is on the periphery, we want it to face the center of the minimap.
+							radarObjects[i].icon.rectTransform.rotation = Quaternion.Euler( 0, 0, Mathf.Atan2( radarPos.z, radarPos.x ) * Mathf.Rad2Deg -90 );
 						}
 						else
 						{
 							//No, he is not far
 							//A nearby alive player uses his initial icon.
+							radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
+							radarPos.z = distToObject * Mathf.Sin( deltaY * Mathf.Deg2Rad );
 							radarObjects[i].icon.overrideSprite = null;
+							radarObjects[i].icon.transform.SetParent( mapWithoutPeriphery );
+							radarObjects[i].icon.rectTransform.rotation = Quaternion.identity;
 						}
 					}
 
@@ -275,9 +307,6 @@ public class MiniMap : MonoBehaviour {
 				}
 
 				//Position icon on the minimap
-				float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270 -player.eulerAngles.y;
-				radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
-				radarPos.z = distToObject * Mathf.Sin( deltaY * Mathf.Deg2Rad );
 				radarObjects[i].icon.rectTransform.anchoredPosition = new Vector2( radarPos.x, radarPos.z );
 
 			}
