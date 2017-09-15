@@ -28,10 +28,12 @@ public class MiniMap : MonoBehaviour {
 	Transform player;
 	List<RadarObject> radarObjects = new List<RadarObject>();
 	[SerializeField] Image playerMinimapPrefab;
-	[SerializeField] Sprite playerDeadRadarSprite;
+	[SerializeField] Sprite playerDeadSprite;
+	[SerializeField] Sprite playerFarSprite;
 	[SerializeField] TextMeshProUGUI cardFeed; //Used to display the last card played, such as 'Bob played Lightning'
 	[SerializeField] TextMeshProUGUI cardFeed2; //Used to display reflected cards
 	const float MAX_DISTANCE = 78f;
+	[SerializeField] float distanceToDrawOnTheEdge = 88f; //98f is a good value. Using 88 for testing while mask issues fixed.
 	const float CARD_FEED_TTL = 5f; //in seconds
 	const float CARD_FEED_TTL2 = 5f; //in seconds
 	float cardFeedTimeOfLastEntry;
@@ -156,8 +158,12 @@ public class MiniMap : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void LateUpdate () {
-	
+	void LateUpdate ()
+	{
+		//The minimap will get instantiated before the player. We need the player in order to update the minimap.
+		if( player == null ) return;
+
+		updateLevelMapPosition();
 		drawRadarDots();
 		if( Time.time - cardFeedTimeOfLastEntry > CARD_FEED_TTL )
 		{
@@ -197,50 +203,83 @@ public class MiniMap : MonoBehaviour {
 
 	void drawRadarDots()
 	{
-		updateLevelMapPosition();
 		for(int i = radarObjects.Count - 1; i > -1; i-- )
 		{
-			if( radarObjects[i].owner != null && player != null )
+			if( radarObjects[i].owner != null )
 			{
 				Vector3 radarPos = ( radarObjects[i].owner.transform.position - player.position );
 				float distToObject = Vector3.Distance( player.position, radarObjects[i].owner.transform.position ) * mapScale;
-				if( distToObject > MAX_DISTANCE )
+
+				if( radarObjects[i].playerControl )
 				{
-					if( radarObjects[i].playerControl != null )
+					//Handle players
+					//Is the player dead?
+					if( radarObjects[i].playerControl.getCharacterState() == PlayerCharacterState.Dying )
 					{
-						//The player is off the map. Render him at the edge.
-						distToObject = MAX_DISTANCE;
+						//Yes, he is dead
+						//Is the player far?
+						if( distToObject > MAX_DISTANCE )
+						{
+							//Yes, the player is far.
+							//The player is off the map. Render him at the edge.
+							distToObject = distanceToDrawOnTheEdge;
+							//A dead far player uses the far sprite.
+							radarObjects[i].icon.overrideSprite = playerFarSprite;
+						}
+						else
+						{
+							//No, he is not far
+							//A dead nearby player uses the dead player sprite.
+							radarObjects[i].icon.overrideSprite = playerDeadSprite;
+						}
+						//In all cases, hide the secondary icon when a player is dead.
+						radarObjects[i].secondaryIcon.gameObject.SetActive( false );
 					}
 					else
+					{
+						//No, the player is alive
+						//Is the player far?
+						if( distToObject > MAX_DISTANCE )
+						{
+							//Yes, the player is far.
+							//A far alive player uses the player far sprite
+							radarObjects[i].icon.overrideSprite = playerFarSprite;
+							//Render him at the edge of the minimap.
+							distToObject = distanceToDrawOnTheEdge;
+						}
+						else
+						{
+							//No, he is not far
+							//A nearby alive player uses his initial icon.
+							radarObjects[i].icon.overrideSprite = null;
+						}
+					}
+
+					//Only players have secondary icons.
+					//Handle secondary icons which may have expired.
+					if( radarObjects[i].secondaryIcon.gameObject.activeSelf && ( Time.time - radarObjects[i].secondaryIconTimeDisplayStarted ) > radarObjects[i].secondaryIconTTL ) radarObjects[i].secondaryIcon.gameObject.SetActive( false );
+				}
+				else
+				{
+					//Handle other icons like those for devices.
+					if( distToObject > MAX_DISTANCE )
 					{
 						//The object (like a teleporter) is off the map. Simply hide it.
 						radarObjects[i].icon.gameObject.SetActive( false );
 						continue;
 					}
+					else
+					{
+						radarObjects[i].icon.gameObject.SetActive( true );
+					}
 				}
-				else
-				{
-					radarObjects[i].icon.gameObject.SetActive( true );
-				}
+
+				//Position icon on the minimap
 				float deltaY = Mathf.Atan2( radarPos.x, radarPos.z ) * Mathf.Rad2Deg -270 -player.eulerAngles.y;
 				radarPos.x = distToObject * Mathf.Cos(deltaY * Mathf.Deg2Rad ) * -1;
 				radarPos.z = distToObject * Mathf.Sin( deltaY * Mathf.Deg2Rad );
 				radarObjects[i].icon.rectTransform.anchoredPosition = new Vector2( radarPos.x, radarPos.z );
-				if( radarObjects[i].playerControl )
-				{
-					if( radarObjects[i].playerControl.getCharacterState() == PlayerCharacterState.Dying )
-					{
-						radarObjects[i].icon.overrideSprite = playerDeadRadarSprite;
-						//Also hide the secondary icon
-						radarObjects[i].secondaryIcon.gameObject.SetActive( false );
-					}
-					else
-					{
-						radarObjects[i].icon.overrideSprite = null;
-					}
-					//Handle secondary icons which may have expired
-					if( radarObjects[i].secondaryIcon.gameObject.activeSelf && ( Time.time - radarObjects[i].secondaryIconTimeDisplayStarted ) > radarObjects[i].secondaryIconTTL ) radarObjects[i].secondaryIcon.gameObject.SetActive( false );
-				}
+
 			}
 			else
 			{

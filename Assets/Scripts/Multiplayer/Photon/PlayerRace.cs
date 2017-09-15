@@ -62,7 +62,7 @@ public class PlayerRace : Photon.PunBehaviour
 	//The number of tiles the player must be losing by for the power boost to activate.
 	const int TILE_DIFFERENCE_ACTIVATOR = 3;
 	TurnRibbonHandler turnRibbonHandler;
-	const float POWER_BOOST_DURATION = 12f;
+	const float POWER_BOOST_DURATION = 15f;
 	bool wasPowerBoostUsed = false;
 	#endregion
 
