@@ -202,6 +202,10 @@ public class PlayerControl : Photon.PunBehaviour {
 	string backInTheGameString;
 	#endregion
 
+	#region Related to angled tiles
+	Coroutine angledTurnCoroutine = null;
+	#endregion
+
 	void Awake ()
 	{
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
@@ -1569,6 +1573,12 @@ public class PlayerControl : Photon.PunBehaviour {
 	void playerDiedRPC( DeathType deathTypeValue, string tileWherePlayerDied )
 	{
 		this.tileWherePlayerDied = tileWherePlayerDied;
+		
+		//When entering an angled tile, a coroutine makes the player turn to match the orientation of the tile.
+		//When a player dies, we need to make sure to stop that coroutine or else
+		//the player's rotation will continue to change.
+		if( angledTurnCoroutine != null ) StopCoroutine( angledTurnCoroutine );
+
 		changeColliderAxis( Axis.Z );
 		ignorePlayerCollisions( true );
 
@@ -1971,7 +1981,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		else if( other.CompareTag( "Angled Tile Entrance" ) )
 		{
-			transform.rotation = Quaternion.Euler( 0, -25.692f, 0 );
+			angledTurnCoroutine = StartCoroutine( angledTurn( -25.692f, 0.5f ) );
 		}
 		//For the Great Fall trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
 		else if( other.CompareTag( "Great Fall" ) )
@@ -2022,6 +2032,21 @@ public class PlayerControl : Photon.PunBehaviour {
 			if( photonView.isMine ) this.photonView.RPC("detachFromZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 		}
   	}
+
+	IEnumerator angledTurn( float endRotationY, float duration )
+	{
+		float elapsedTime = 0;
+		Quaternion startRotation = transform.rotation;
+		Quaternion endRotation = Quaternion.Euler( 0, endRotationY, 0 );
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			transform.rotation = Quaternion.Lerp( transform.rotation, endRotation, elapsedTime/duration );
+			yield return new WaitForFixedUpdate();  
+			
+		} while ( elapsedTime < duration );
+		transform.rotation = endRotation;
+	}
 
 	void forcePositionSynchronization()
 	{
@@ -2117,7 +2142,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			}
 			else if( other.CompareTag( "Angled Tile Exit" ) )
 			{
-				transform.rotation = Quaternion.Euler( 0, 0, 0 );
+				angledTurnCoroutine = StartCoroutine( angledTurn( 0, 0.5f ) );
 			}
 		}
 	}
