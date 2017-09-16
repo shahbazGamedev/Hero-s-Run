@@ -35,7 +35,6 @@ public enum PlayerCharacterState {
 	Dying = 5,
 	Stumbling = 6,
 	Winning = 7,
-	Flying = 8,
 	StartRunning = 9,
 	Falling = 10,
 	Turning = 11,
@@ -401,57 +400,54 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void FixedUpdate()
 	{
-		if( getCharacterState() != PlayerCharacterState.Flying )
+		calculateFallDistance();
+		if( playerMovementEnabled )
 		{
-			calculateFallDistance();
-			if( playerMovementEnabled )
+			calculateDistanceToGround();
+			moveCharacter();
+
+			//Verify if the player is falling.
+			//Also ignore if we are already falling or dying.
+			if( playerCharacterState != PlayerCharacterState.Falling && playerCharacterState != PlayerCharacterState.Dying && playerCharacterState != PlayerCharacterState.Ziplining )
 			{
-				calculateDistanceToGround();
-				moveCharacter();
-	
-				//Verify if the player is falling.
-				//Also ignore if we are already falling or dying.
-				if( playerCharacterState != PlayerCharacterState.Falling && playerCharacterState != PlayerCharacterState.Dying && playerCharacterState != PlayerCharacterState.Ziplining )
+				//Verify how far is the ground
+				if( distanceToGround > MIN_DISTANCE_FOR_FALL )
 				{
-					//Verify how far is the ground
-					if( distanceToGround > MIN_DISTANCE_FOR_FALL )
+					bool isLeftFootOnGround = true;
+					Vector3 leftFootPosition = transform.TransformPoint(new Vector3( -0.12f ,0 ,0.1f ));
+					bool isRightFootOnGround = true;
+					Vector3 rightFootPosition = transform.TransformPoint(new Vector3( 0.12f ,0 ,-0.1f ));
+
+					//Test left foot
+					//There might be a small crack between the tiles. We don't want the player to fall if this is the case.
+					//So also check 10cm in front of the player (with left foot test) and 10cm in back of the player (with right foot test) before deciding to fall.	
+					if ( !Physics.Raycast(leftFootPosition, Vector3.down, MIN_DISTANCE_FOR_FALL ))
 					{
-						bool isLeftFootOnGround = true;
-						Vector3 leftFootPosition = transform.TransformPoint(new Vector3( -0.12f ,0 ,0.1f ));
-						bool isRightFootOnGround = true;
-						Vector3 rightFootPosition = transform.TransformPoint(new Vector3( 0.12f ,0 ,-0.1f ));
-	
-						//Test left foot
-						//There might be a small crack between the tiles. We don't want the player to fall if this is the case.
-						//So also check 10cm in front of the player (with left foot test) and 10cm in back of the player (with right foot test) before deciding to fall.	
-						if ( !Physics.Raycast(leftFootPosition, Vector3.down, MIN_DISTANCE_FOR_FALL ))
-						{
-							//Ground is further than MIN_DISTANCE_FOR_FALL meters.
-							//Left foot is not on the ground
-							isLeftFootOnGround = false;
-						}
-						//Test right foot
-						if ( !Physics.Raycast(rightFootPosition, Vector3.down, MIN_DISTANCE_FOR_FALL ))
-						{
-							//Ground is further than MIN_DISTANCE_FOR_FALL meters.
-							//Right foot is not on the ground
-							isRightFootOnGround = false;
-						}
-						if( !isLeftFootOnGround && !isRightFootOnGround )
-						{
-							fall( false );
-						}
+						//Ground is further than MIN_DISTANCE_FOR_FALL meters.
+						//Left foot is not on the ground
+						isLeftFootOnGround = false;
+					}
+					//Test right foot
+					if ( !Physics.Raycast(rightFootPosition, Vector3.down, MIN_DISTANCE_FOR_FALL ))
+					{
+						//Ground is further than MIN_DISTANCE_FOR_FALL meters.
+						//Right foot is not on the ground
+						isRightFootOnGround = false;
+					}
+					if( !isLeftFootOnGround && !isRightFootOnGround )
+					{
+						fall( false );
 					}
 				}
-	
-				if( useLanes )
-				{
-					verifyIfDesiredLaneReached();
-				}
-				else
-				{
-					verifyIfDesiredLaneReached2();
-				}
+			}
+
+			if( useLanes )
+			{
+				verifyIfDesiredLaneReached();
+			}
+			else
+			{
+				verifyIfDesiredLaneReached2();
 			}
 		}
 	}
@@ -2020,9 +2016,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		else if( other.CompareTag( "AttachZiplineTrigger" ) )
 		{
-			//Ignore if the player is Flying
-			if( getCharacterState() == PlayerCharacterState.Flying ) return;
-
 			//Cancel the speedboost if active before ziplining
 			playerSpell.cancelRagingBull();
 			isInZiplineTrigger = true;
@@ -2124,7 +2117,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			if( other.CompareTag( "deadEnd" ) )
 			{
-				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight && currentDeadEndType != DeadEndType.LeftStraight && getCharacterState() != PlayerCharacterState.Flying )
+				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight && currentDeadEndType != DeadEndType.LeftStraight )
 				{
 					Debug.LogWarning("OnTriggerExit player exited dead end without turning " + other.name + " " + isInDeadEnd + " " + deadEndTurnDone + " " + currentDeadEndType );
 					killPlayer ( DeathType.Exited_Without_Turning );

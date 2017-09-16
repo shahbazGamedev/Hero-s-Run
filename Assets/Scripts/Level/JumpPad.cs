@@ -12,16 +12,13 @@ public class JumpPad : Device {
 		{
 			if( other.CompareTag("Player")  )
 			{
-				if( other.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Flying )
-				{	
-					//The client stops moving until the RPC action gets processed.			
-					if( other.GetComponent<PhotonView>().isMine )
-					{				
-						GetComponent<AudioSource>().Play();
-						other.GetComponent<PlayerControl>().enablePlayerMovement( false );
+				//The client stops moving until the RPC action gets processed.			
+				if( other.GetComponent<PhotonView>().isMine )
+				{				
+					GetComponent<AudioSource>().Play();
+					other.GetComponent<PlayerControl>().enablePlayerMovement( false );
 
-						other.GetComponent<PhotonView>().RPC("jumpPadRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time, doubleJumpSpeed );
-					}
+					other.GetComponent<PhotonView>().RPC("jumpPadRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time, doubleJumpSpeed );
 				}
 			}
 			else if( other.attachedRigidbody != null )

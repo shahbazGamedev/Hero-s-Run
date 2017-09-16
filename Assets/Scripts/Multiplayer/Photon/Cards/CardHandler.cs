@@ -220,17 +220,6 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardReflect component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
-			case CardName.Jet_Pack:
-				CardJetPack cardJetPack = GetComponent<CardJetPack>();
-				if( cardJetPack != null )
-				{
-					cardJetPack.activateCard( photonViewId, level );
-				}
-				else
-				{
-					Debug.LogError("CardHandler-The CardJetPack component is not attached to the CardHandler in the Level scene.");
-				}
-			break;
 			case CardName.Smoke_Bomb:
 				CardSmokeBomb cardSmokeBomb = GetComponent<CardSmokeBomb>();
 				if( cardSmokeBomb != null )
@@ -407,9 +396,6 @@ public class CardHandler : MonoBehaviour {
 			//Reflect is a bit more effective when you are leading
 			case CardName.Reflect:
 				return isCasterLeading( caster.GetComponent<PlayerRace>() );
-			//Jet Pack could be effective at any time
-			case CardName.Jet_Pack:
-				return true;
 			//Shockwave is effective whenever there are opponents near you
 			case CardName.Shockwave:
 				return GetComponent<CardShockwave>().isOpponentNear( caster.transform, level );

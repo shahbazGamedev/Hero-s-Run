@@ -53,7 +53,6 @@ public class PlayerSpell : PunBehaviour {
 	public static event CardPlayedByOpponentEvent cardPlayedByOpponentEvent;
 
 	//Delegate used to communicate to other classes when a card effect is canceled.
-	//For example, if the player gets hit by Stasis while using his Jet Pack, the jet pack card gets canceled.
 	public delegate void CardCanceledEvent( CardName name, bool playedByOpponent );
 	public static event CardCanceledEvent cardCanceledEvent;
 
@@ -358,15 +357,6 @@ public class PlayerSpell : PunBehaviour {
 	}
 	#endregion
 
-	#region Jet Pack
-	public void cancelJetPack()
-	{
-		GetComponent<PlayerJetPack>().stopFlying( false );
-		sendCancelCardEvent( CardName.Jet_Pack, false );
-		removeActiveCard( CardName.Jet_Pack );
-	}
-	#endregion
-
 	#region Cloak
 	public void cancelCloak()
 	{
@@ -471,7 +461,6 @@ public class PlayerSpell : PunBehaviour {
 		cancelShrinkSpell();
 		cancelSupercharger();
 		cancelHack();
-		//cancelJetPack();
 		cancelRagingBull();
 		cancelReflect();
 		cancelCloak();

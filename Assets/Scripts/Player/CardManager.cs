@@ -22,7 +22,6 @@ public enum CardPropertyType
 	AIM_RANGE = 6,
 	DURATION_WITH_TIMER = 7,
 	TARGET = 8,
-	FLIGHT_SPEED = 9,
 	HEIGHT = 10,
 	DAMAGE = 11,
 	HEALTH = 12,
@@ -84,7 +83,6 @@ public enum CardName
 	Linked_Fate = 201,
 	Supercharger = 202,
 	Homing_Missile = 203,
-	Jet_Pack = 204,
 	Shockwave = 205,
 	Cloak = 206,
 
@@ -373,9 +371,6 @@ public class CardManager : MonoBehaviour {
  			case CardPropertyType.RADIUS:
   			case CardPropertyType.HEIGHT:
 	             return "m";
-               
-			case CardPropertyType.FLIGHT_SPEED:
- 	             return "m/s";
 
 			default:
 				return string.Empty;               
