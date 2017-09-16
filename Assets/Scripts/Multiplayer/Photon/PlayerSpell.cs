@@ -471,7 +471,7 @@ public class PlayerSpell : PunBehaviour {
 		cancelShrinkSpell();
 		cancelSupercharger();
 		cancelHack();
-		cancelJetPack();
+		//cancelJetPack();
 		cancelRagingBull();
 		cancelReflect();
 		cancelCloak();
