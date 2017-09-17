@@ -62,8 +62,8 @@ public class PlayerInputRPC : PunBehaviour {
 	//Sent by the Master client only.
 	void jumpPadRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float doubleJumpSpeed )
 	{
-		//Force all clients to be on the jump pad
-		transform.position = syncPosition;
+		//Force all clients to be on the jump pad, but preserve the Y value.
+		transform.position = new Vector3( syncPosition.x, transform.position.y, syncPosition.z );
 		transform.eulerAngles = new Vector3( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z );
 		//We may have switched lanes because of the position change. Make sure the lane values are accurate.
 		playerControl.recalculateCurrentLane();

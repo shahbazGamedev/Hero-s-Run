@@ -454,7 +454,6 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void moveCharacter()
 	{
-
 		verifySlide();
 
 		if (distanceToGround < 0.1f && !jumpStarted)
@@ -616,39 +615,55 @@ public class PlayerControl : Photon.PunBehaviour {
 			queueSlide = false;
 		}
 
-		//Only allow a jump if we are not already jumping and if we are on the ground.
-		//However, if the ground type below the player is of type Collapsing, still allow him to jump.
-		//The Collapsing tag is used in the CollapsingBridge code.
-		if (playerCharacterState != PlayerCharacterState.Jumping && ( distanceToGround < 0.5f || playerCollisions.getGroundType() == "Collapsing" ) )
+		if (playerCharacterState == PlayerCharacterState.Jumping )
 		{
-			//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
-			moveDirection.x = 0;
-			
-			//Make sure the lane data is correct in case a collision forced us out of our lane
-			recalculateCurrentLane();
-
-			//We are allowed to jump from the slide state.
-			playerSounds.stopAudioSource();							//stop the sliding sound if any
-			playerVisuals.playDustPuff( false );					//stop the dust puff that loops while we are sliding
-			playerVisuals.playWaterSplashWhileSliding( false );
-
-			jumping = true;
-			jumpStarted = true;
-
-			setCharacterState( PlayerCharacterState.Jumping );
+			//Player is already jumping.
+			//If we're being asked to do a normal jump, ignore because we are already jumping.
+			//If we're asked to do a double jump, simply update the jump speed.
 			if( doingDoubleJump )
 			{
 				moveDirection.y = doubleJumpSpeed;
 				setAnimationTrigger(Double_JumpTrigger);
+				jumpStarted = true;
+				queueJump = false;
 			}
-			else
+		}
+		else
+		{
+			//Player is not jumping.
+			//Allow jump if the player is either near the ground or above ground marked as Collapsing.
+ 			//The Collapsing tag is used in the CollapsingBridge code.
+			if ( distanceToGround < 0.5f || playerCollisions.getGroundType() == "Collapsing" )
 			{
-				moveDirection.y = jumpSpeed;
-				setAnimationTrigger(JumpTrigger);
+				//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
+				moveDirection.x = 0;
+				
+				//Make sure the lane data is correct in case a collision forced us out of our lane
+				recalculateCurrentLane();
+	
+				//We are allowed to jump from the slide state.
+				playerSounds.stopAudioSource();							//stop the sliding sound if any
+				playerVisuals.playDustPuff( false );					//stop the dust puff that loops while we are sliding
+				playerVisuals.playWaterSplashWhileSliding( false );
+	
+				jumping = true;
+				jumpStarted = true;
+	
+				setCharacterState( PlayerCharacterState.Jumping );
+				if( doingDoubleJump )
+				{
+					moveDirection.y = doubleJumpSpeed;
+					setAnimationTrigger(Double_JumpTrigger);
+				}
+				else
+				{
+					moveDirection.y = jumpSpeed;
+					setAnimationTrigger(JumpTrigger);
+				}
+				//for debugging
+				//remove jump sound for now because it is annoying
+				//playSound( jumpingSound, false );
 			}
-			//for debugging
-			//remove jump sound for now because it is annoying
-			//playSound( jumpingSound, false );
 		}
 	}
 	#endregion
