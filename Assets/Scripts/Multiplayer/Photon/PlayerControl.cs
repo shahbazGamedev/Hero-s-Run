@@ -603,8 +603,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Jump and Double Jump
 	/// <summary>
 	/// Makes the player jump. If doingDoubleJump is set to true, the player will do a higher double-jump.
-	/// During a normal jump, the run speed is reduced by runSpeedJumpMultiplier.
-	/// During a double-jump, the run speed is capped to MAX_RUN_SPEED_FOR_DOUBLE_JUMP to avoid the player hitting a wall instead of clearing the obstacle.
 	/// </summary>
 	/// <param name="doingDoubleJump">If set to <c>true</c> player will do a double-jump.</param>
 	/// <param name="doubleJumpSpeed">Double jump speed.</param>
@@ -640,9 +638,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			setCharacterState( PlayerCharacterState.Jumping );
 			if( doingDoubleJump )
 			{
-				//if the player is shrunk, we still want him to successfully do a double jump, esp. on the jump pad.
-				//This is why we increase the double-jump speed.
-				if( playerSpell.isCardActive( CardName.Shrink ) ) doubleJumpSpeed = doubleJumpSpeed * 2;
 				moveDirection.y = doubleJumpSpeed;
 				setAnimationTrigger(Double_JumpTrigger);
 			}

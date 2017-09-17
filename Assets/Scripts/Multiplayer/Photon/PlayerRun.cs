@@ -104,7 +104,7 @@ public class PlayerRun : Photon.PunBehaviour {
 				break;
 	                
 			case PlayerCharacterState.Jumping:
-				addSpeedMultiplier( SpeedMultiplierType.Jumping );
+				calculateRunSpeedDuringJump();
 				break;
 		
 			case PlayerCharacterState.Turning:
@@ -256,10 +256,17 @@ public class PlayerRun : Photon.PunBehaviour {
 	}
 
 	/// <summary>
-	/// Calculates the overall speed multiplier.
+	/// Calculates the overall speed multiplier. If the player is jumping, this method returns immediately.
 	/// </summary>
 	void calculateOverallSpeedMultiplier()
 	{
+		//When the player jumps, we want exact control of where he lands.
+		//Therefore we want the run speed to be constant during a jump.
+		//This is why we return immediately when the player is jumping as we don't want to change the run speed.
+		//Example: Player plays Raging Bull right after jumping. We do not want the player's run speed to be affected while he
+		//is in the air.
+		if( playerControl.getCharacterState() == PlayerCharacterState.Jumping ) return;
+
 		//When the player dies, we stop all coroutines on this behavior.
 		//However, it may take a few frames for the coroutines to be fully stopped (typically 3 frames if you are curious).
 		//This would mean that runSpeed, which was set to 0 when the player died, would be changed back to a non-zero value and the dead player would slide on the floor.
@@ -290,6 +297,44 @@ public class PlayerRun : Photon.PunBehaviour {
 
 		}
 		//print("PlayerRun calculateOverallSpeedMultiplier: " + overallSpeedMultiplier + " runSpeed: " +  runSpeed + " defaultOverallSpeedMultiplier: " + defaultOverallSpeedMultiplier + " " + getActiveSpeedMultipliers() );
+
+	}
+
+	/// <summary>
+	/// This method calculates the run speed while the player is jumping and ignores
+	/// all speed multipliers except the Jump Speed Multiplier.
+	/// When the player jumps, we want exact control of where he lands.
+	/// Therefore we want the run speed to be constant during a jump.
+	/// </summary>
+	void calculateRunSpeedDuringJump()
+	{
+		//When the player dies, we stop all coroutines on this behavior.
+		//However, it may take a few frames for the coroutines to be fully stopped (typically 3 frames if you are curious).
+		//This would mean that runSpeed, which was set to 0 when the player died, would be changed back to a non-zero value and the dead player would slide on the floor.
+		//This is why we add a test here to force runSpeed to zero if the player is dead.
+		if( playerControl.getCharacterState() == PlayerCharacterState.Dying )
+		{
+			runSpeed = 0;
+			return;
+		}
+		overallSpeedMultiplier = defaultOverallSpeedMultiplier;
+		overallSpeedMultiplier = overallSpeedMultiplier * getSpeedMultiplierByType(SpeedMultiplierType.Jumping).multiplier;
+		//Cap the overall speed multiplier to MAX_OVERALL_SPEED_MULTIPLIER
+		overallSpeedMultiplier = Mathf.Min( overallSpeedMultiplier, MAX_OVERALL_SPEED_MULTIPLIER );
+		runSpeed = levelRunStartSpeed * overallSpeedMultiplier;
+		
+		//Now update the run/sprint blend factor
+		if( runSpeed <= levelRunStartSpeed )
+		{
+			setSprintBlendFactor( 0 );
+		}
+		else
+		{
+			float blendFactor = ( runSpeed - levelRunStartSpeed )/baseBlend;
+			setSprintBlendFactor( blendFactor );
+
+		}
+		//print("PlayerRun calculateJumpSpeedMultiplier: " + overallSpeedMultiplier + " runSpeed: " +  runSpeed + " defaultOverallSpeedMultiplier: " + defaultOverallSpeedMultiplier + " " + getActiveSpeedMultipliers() );
 
 	}
 
