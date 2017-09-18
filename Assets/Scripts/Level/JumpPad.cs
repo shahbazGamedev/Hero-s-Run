@@ -7,6 +7,11 @@ public class JumpPad : Device {
 	[Range(10,19)]
 	[SerializeField] float doubleJumpSpeed = 19f;
 
+	//We change the color of these items to red when the jump pad is broken.
+	[SerializeField] Light pointLight;
+	[SerializeField] ParticleSystem swirlyAura;
+	[SerializeField] ParticleSystem glow;
+		
 	void OnTriggerEnter(Collider other)
 	{
 		if( state == DeviceState.On )
@@ -29,4 +34,23 @@ public class JumpPad : Device {
 			}
 		}
 	}
+
+	new public void changeDeviceState( DeviceState newState )
+	{
+		base.changeDeviceState( newState );
+		switch ( state )
+		{
+			case DeviceState.Broken:
+				pointLight.color = Color.red;
+
+				ParticleSystem.MainModule swirlyAuraMain = swirlyAura.main;
+				swirlyAuraMain.startColor = Color.red;
+
+				ParticleSystem.MainModule glowMain = glow.main;
+				glowMain.startColor = new Color( 255f, 0, 0, 47f/255f );
+
+			break;
+		}
+	}
+
 }
