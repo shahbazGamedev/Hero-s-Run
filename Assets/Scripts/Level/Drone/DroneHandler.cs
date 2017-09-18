@@ -14,8 +14,9 @@ public class DroneHandler : MonoBehaviour {
 	public Transform nearestTarget = null;
 
 	//Shooting related
-	[SerializeField] float seekSpeed = 3f;
-	[SerializeField] float weaponCoolDown = 2f;
+	[Tooltip("The speed used by the drone when changing lanes to face its target.")]
+	[SerializeField] float seekSpeed = 3.1f;
+	[SerializeField] float weaponCoolDown = 0.9f;
 	float timeOfLastShot;
 	[SerializeField] float aimRange = 70f;
 
