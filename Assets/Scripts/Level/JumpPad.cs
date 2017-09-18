@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class JumpPad : Device {
 
-	[SerializeField] float doubleJumpSpeed = 17f;
+	[Range(10,19)]
+	[SerializeField] float doubleJumpSpeed = 19f;
 
 	void OnTriggerEnter(Collider other)
 	{
