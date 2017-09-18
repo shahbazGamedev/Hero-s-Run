@@ -4,9 +4,7 @@ using UnityEngine;
 
 /// <summary>
 /// The Lightning card is an Epic card with 8 levels.
-/// Lightning strikes the nearest player, killing it instantly.
-/// Because of its long range, it can be useful when an opponent is far away.
-/// The spell range depends on the level of the caster.
+/// Lightning strikes the nearest leading player within range, causing damage.
 /// </summary>
 public class CardLightning : Card {
 
@@ -26,31 +24,33 @@ public class CardLightning : Card {
 
 		//Find a target
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
-		Transform randomTarget = detectBestTarget( playerTransform.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
+		Transform bestTarget = detectBestTarget( playerTransform.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
 
-		if( randomTarget != null )
+		if( bestTarget != null )
 		{
-			if( randomTarget.GetComponent<PlayerSpell>().isCardActive( CardName.Reflect) )
+			if( bestTarget.GetComponent<PlayerSpell>().isCardActive( CardName.Reflect) )
 			{
-				MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, randomTarget.GetComponent<PhotonView>().viewID );
+				MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, bestTarget.GetComponent<PhotonView>().viewID );
 
 				//The target has the Reflect spell active.
 				//Reflect to caster
-				randomTarget = playerTransform;
+				bestTarget = playerTransform;
 			
 			}
 
 			//1) We do have a target.
 			//2) The target is not the caster.
 			//3) Play an appropriate VO such as "Gotcha!" for Stasis.
-			if( randomTarget != playerTransform ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
+			if( bestTarget != playerTransform ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
 
 			//Spawn a lightning on the nearest player or creature
-			Vector3 lightningPosition = randomTarget.transform.TransformPoint( spawnOffset );
-			PhotonNetwork.InstantiateSceneObject( lightningPrefabName, lightningPosition, randomTarget.rotation, 0, null );
+			Vector3 lightningPosition = bestTarget.transform.TransformPoint( spawnOffset );
+			PhotonNetwork.InstantiateSceneObject( lightningPrefabName, lightningPosition, bestTarget.rotation, 0, null );
 	
-			//Kill nearest target
-			strike( randomTarget );
+			//Damage nearest target
+			int damageAmount = (int) cd.getCardPropertyValue( CardPropertyType.DAMAGE, level );
+			bestTarget.GetComponent<PlayerHealth>().deductHealth( damageAmount );
+			MiniMap.Instance.displaySecondaryIcon( bestTarget.GetComponent<PhotonView>().viewID, (int)CardName.Lightning, 2.5f );
 
 		}
 		else
@@ -61,11 +61,6 @@ public class CardLightning : Card {
 		}
 	}
 
-	void strike( Transform nearestTarget )
-	{
-		nearestTarget.GetComponent<PlayerControl>().killPlayerIsMaster( DeathType.Obstacle );
-		MiniMap.Instance.displaySecondaryIcon( nearestTarget.GetComponent<PhotonView>().viewID, (int)CardName.Lightning, 2.5f );
-	}
 
 	#endregion
 
