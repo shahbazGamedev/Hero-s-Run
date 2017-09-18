@@ -77,6 +77,8 @@ public class CardSpawnedObject : MonoBehaviour {
 		RaycastHit hit;
 		int originalLayer = gameObject.layer;
 		gameObject.layer = MaskHandler.ignoreRaycastLayer;
+
+		//Are we trying to spawn the object in a dead end?
 		//Important: we need the +2f to start a bit above ground, or else the raycast may start a tad below the road and miss.
 		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + 2f, transform.position.z ), Vector3.down, out hit, 15f ))
 		{
@@ -84,8 +86,38 @@ public class CardSpawnedObject : MonoBehaviour {
 			{
 				Transform tile = hit.collider.transform.root;
 				transform.SetParent( tile );
-				//Center the object in the middle of the road
-				transform.localPosition = new Vector3( 0, 0, transform.localPosition.z );
+		
+				Transform currentDeadEnd = tile.FindChild("deadEnd");
+				if( currentDeadEnd != null )
+				{
+					//We are trying to spawn the object in either a left or right turn tile
+					//Are we trying to spawn it inside the dead end collider or outside?
+					if( currentDeadEnd.GetComponent<BoxCollider>().bounds.Contains( transform.TransformPoint( 0, 2f, 0 ) ) )
+					{
+						//Yes, this would be inside the deadEnd collider
+						//Is this a right-turn tile or a left-turn tile?
+						if( currentDeadEnd.GetComponent<deadEnd>().deadEndType == DeadEndType.Right )
+						{
+							transform.localPosition = new Vector3( 5, 0, 0 );
+						}
+						else if( currentDeadEnd.GetComponent<deadEnd>().deadEndType == DeadEndType.Left )
+						{
+							transform.localPosition = new Vector3( -5, 0, 0 );
+						}
+						transform.localRotation = Quaternion.Euler(0, 90, 0 );
+					}
+					else
+					{
+						//No, this would be outside the deadEnd collider
+						transform.localPosition = new Vector3( 0, 0, transform.localPosition.z );
+					}
+				}
+				else
+				{
+					//We are trying to spawn the object in none-turn tile
+					//Center the object in the middle of the road
+					transform.localPosition = new Vector3( 0, 0, transform.localPosition.z );
+				}
 			}
 			//Position it flush with the ground
 			transform.position = new Vector3( transform.position.x, hit.point.y + additionalHeight, transform.position.z );
