@@ -18,6 +18,8 @@ public class PlayerSpell : PunBehaviour {
 	[SerializeField] AudioClip shrinkSound;
 	[SerializeField] ParticleSystem shrinkParticleSystem;
 	const float SHRINK_SIZE = 0.3f;
+	Coroutine shrinkCoroutine;
+	Coroutine enlargeCoroutine;
 	#endregion
 
 	#region Linked Fate spell
@@ -120,7 +122,7 @@ public class PlayerSpell : PunBehaviour {
 		ParticleSystem shrinkEffect = ParticleSystem.Instantiate( shrinkParticleSystem, transform );
 		shrinkEffect.transform.localPosition = new Vector3( 0, 1f, 0 );
 		shrinkEffect.Play();
-		StartCoroutine( shrink( new Vector3( SHRINK_SIZE, SHRINK_SIZE, SHRINK_SIZE ), 1.25f, spellDuration ) );
+		shrinkCoroutine = StartCoroutine( shrink( new Vector3( SHRINK_SIZE, SHRINK_SIZE, SHRINK_SIZE ), 1.25f, spellDuration ) );
 		displayCardTimerOnHUD( CardName.Shrink, spellDuration );
 		StartCoroutine( playerRun.addVariableSpeedMultiplier( SpeedMultiplierType.Shrink, SHRINK_SIZE, 0.5f ) );
 	}
@@ -139,7 +141,7 @@ public class PlayerSpell : PunBehaviour {
 			
 		} while ( elapsedTime < shrinkDuration );
 		transform.localScale = endScale;	
-		StartCoroutine( enlarge( new Vector3( 1f, 1f, 1f ), 1.1f, spellDuration ) );
+		enlargeCoroutine = StartCoroutine( enlarge( Vector3.one, 1.1f, spellDuration ) );
 	}
 
 	IEnumerator enlarge( Vector3 endScale, float shrinkDuration, float spellDuration )
@@ -165,17 +167,31 @@ public class PlayerSpell : PunBehaviour {
 	public void cancelShrinkSpell()
 	{
 		//Are we shrunk?
-		if( transform.localScale.y != 1f )
+		if( transform.localScale.y < 1f )
 		{
 			playerVoiceOvers.resetPitch();
-			StopCoroutine( "enlarge" );
-			StopCoroutine( "shrink" );
+			if( enlargeCoroutine != null ) StopCoroutine( enlargeCoroutine );
+			if( shrinkCoroutine != null ) StopCoroutine( shrinkCoroutine );
 			//If we died while shrunk, do nothing i.e. stay small, that's fine.
 			//If we crossed the finish line while shrunk, enlarge the player quickly back to his normal size.
 			if( playerControl.deathType == DeathType.Alive )
 			{
-				StartCoroutine( enlarge( new Vector3( 1f, 1f, 1f ), 0.9f, 0 ) );
+				enlargeCoroutine = StartCoroutine( enlarge( Vector3.one, 0.9f, 0 ) );
 			}
+			removeActiveCard( CardName.Shrink );
+		}
+	}
+
+	[PunRPC]
+	public void unshrinkRPC()
+	{
+		//Are we shrunk?
+		if( transform.localScale.y < 1f )
+		{
+			playerVoiceOvers.resetPitch();
+			if( enlargeCoroutine != null ) StopCoroutine( enlargeCoroutine );
+			if( shrinkCoroutine != null ) StopCoroutine( shrinkCoroutine );
+			enlargeCoroutine = StartCoroutine( enlarge( Vector3.one, 0.9f, 0 ) );
 			removeActiveCard( CardName.Shrink );
 		}
 	}
