@@ -254,7 +254,7 @@ public class PlayerRace : Photon.PunBehaviour
 			{
 				//Player has reached the finish line
 				playerCrossedFinishLine = true;
-				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllViaServer, other.transform.position.z, raceDuration, distanceTravelled, racePosition );
+				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllViaServer, raceDuration, distanceTravelled, racePosition );
 
 				if( PhotonNetwork.isMasterClient )
 				{
@@ -366,7 +366,7 @@ public class PlayerRace : Photon.PunBehaviour
 	//This method is called when the player has crossed the finish line to let the client know the official race duration and distance travelled
 	//as calculated by the MasterClient.
 	[PunRPC]
-	void OnRaceCompleted( float triggerPositionZ, float raceDuration, float distanceTravelled, int officialRacePosition )
+	void OnRaceCompleted( float raceDuration, float distanceTravelled, int officialRacePosition )
     {
 		Debug.Log("PlayerRace: OnRaceCompleted RPC received for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient +
 			" isMine: " + this.photonView.isMine +
@@ -378,7 +378,7 @@ public class PlayerRace : Photon.PunBehaviour
 		racePosition = officialRacePosition;
 
 		//We want to slow down any player that reaches the finish line
-		StartCoroutine( GetComponent<PlayerRun>().slowDownPlayerAfterFinishLine( 5f - (officialRacePosition * 1.4f), triggerPositionZ ) );
+		StartCoroutine( GetComponent<PlayerRun>().slowDownPlayerAfterFinishLine( 5f - (officialRacePosition * 1.5f) ) );
 
 		//Sanity check
 		//tilesLeftBeforeReachingEnd should ALWAYS be zero when reaching the End tile. If it's not the case, make sure the tilePenalty

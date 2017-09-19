@@ -380,16 +380,26 @@ public class PlayerRun : Photon.PunBehaviour {
 		return runSpeed;
 	}
 
-	//We pass the triggerPositionZ value because we need its position. We cannot rely on the position of the player at the moment of trigger because it can fluctuate based on frame rate and such.
-	//Therefore the final destination is based on the trigger's Z position plus the desired distance (and not the player's z position plus the desired distance, which is slightly inaccurate).
-	//The player slows down but keeps control.
-	public IEnumerator slowDownPlayerAfterFinishLine( float distance, float triggerPositionZ )
+	/// <summary>
+	/// Slows down player after he crosses the finish line.
+	/// The player will travel the distance specified starting from his current position.
+	/// Note: Because we are not using the Z position of the finish line trigger, the end position of the player will vary depending on latency.
+	/// This method only guarantees that the distance travelled will be the one specified.
+	/// The alternative would be to send the Z position of the finish line trigger and then calculate the distance from that position.
+	/// The problem again is latency. For the distance to be accurate, we would have to "teleport" the player at the trigger position.
+	/// Assuming 50 ms latency and 20 m/s run speed, this would jerk the player back by 1 meter.
+	/// To summarize, this method does not guarantee the same end position for a player crossing the finish line across all clients, however it
+	/// does ensure that every player will travel the distance specified.
+	/// </summary>
+	/// <returns>Slows down the player after he crosses the finish line.</returns>
+	/// <param name="distance">Distance.</param>
+	public IEnumerator slowDownPlayerAfterFinishLine( float distance )
 	{
 		GetComponent<Rigidbody>().velocity = new Vector3( 0,playerControl.moveDirection.y,0 );
 		playerControl.enablePlayerControl( false );
 		float percentageComplete = 0;
 
-		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, triggerPositionZ );
+		Vector3 initialPlayerPosition = transform.position;
 		float distanceTravelled = 0;
 		float brakeFactor = 0.7f; //brake the player before slowing him down
 		float startSpeed = runSpeed * brakeFactor;
@@ -415,8 +425,7 @@ public class PlayerRun : Photon.PunBehaviour {
 			//update animation speed
 			anim.speed = Mathf.Lerp( startAnimationSpeed, endAnimationSpeed, percentageComplete );
 
-
-			yield return new WaitForFixedUpdate(); 
+			yield return new WaitForEndOfFrame(); 
 		}
 		//We have arrived. Stop player movement.
 		playerControl.enablePlayerMovement( false );
