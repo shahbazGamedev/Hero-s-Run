@@ -17,6 +17,8 @@ public class Teleporter : Device {
 	[SerializeField] TeleporterType type = TeleporterType.Transmitter;
 	[Tooltip("The name of the move-to-center-lane game object. This game object is disabled when the teleporter type is set to Receiver.")]
 	[SerializeField] GameObject moveToCenterLaneTrigger;
+	[Tooltip("The particle effect to play when teleporting a player.")]
+	[SerializeField] ParticleSystem activationEffect;
 
 	new void Start ()
 	{
@@ -30,18 +32,30 @@ public class Teleporter : Device {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( type == TeleporterType.Transmitter && state == DeviceState.On )
+		if( state == DeviceState.On )
 		{
-			//The client stops moving until the RPC action gets processed.			
-			if( other.CompareTag("Player") && other.GetComponent<PhotonView>().isMine )
+			if( type == TeleporterType.Transmitter )
 			{
-				GetComponent<AudioSource>().Play();
-				other.GetComponent<PlayerControl>().enablePlayerMovement( false );
-
-				Vector3 destinationTeleporterPosition = new Vector3( transform.position.x, transform.position.y, transform.position.z + 100f);
-				float destinationTeleporterYRotation = transform.eulerAngles.y;
-
-				other.GetComponent<PhotonView>().RPC("teleportRPC", PhotonTargets.All, other.transform.position, other.transform.eulerAngles.y, destinationTeleporterPosition, destinationTeleporterYRotation, numberOfTilesSkippedBecauseOfTeleportation );
+				//The client stops moving until the RPC action gets processed.			
+				if( other.CompareTag("Player") && other.GetComponent<PhotonView>().isMine )
+				{
+					GetComponent<AudioSource>().Play();
+					activationEffect.Play();
+					other.GetComponent<PlayerControl>().enablePlayerMovement( false );
+	
+					Vector3 destinationTeleporterPosition = new Vector3( transform.position.x, transform.position.y, transform.position.z + 100f);
+					float destinationTeleporterYRotation = transform.eulerAngles.y;
+	
+					other.GetComponent<PhotonView>().RPC("teleportRPC", PhotonTargets.All, other.transform.position, other.transform.eulerAngles.y, destinationTeleporterPosition, destinationTeleporterYRotation, numberOfTilesSkippedBecauseOfTeleportation );
+				}
+			}
+			else if( type == TeleporterType.Receiver )
+			{
+				if( other.CompareTag("Player") )
+				{
+					GetComponent<AudioSource>().Play();
+					activationEffect.Play();
+				}
 			}
 		}
 	}
