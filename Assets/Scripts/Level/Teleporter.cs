@@ -42,6 +42,7 @@ public class Teleporter : Device {
 					GetComponent<AudioSource>().Play();
 					activationEffect.Play();
 					other.GetComponent<PlayerControl>().enablePlayerMovement( false );
+					other.GetComponent<PlayerSpell>().isBeingTeleported = true;
 	
 					Vector3 destinationTeleporterPosition = new Vector3( transform.position.x, transform.position.y, transform.position.z + 100f);
 					float destinationTeleporterYRotation = transform.eulerAngles.y;
@@ -51,8 +52,10 @@ public class Teleporter : Device {
 			}
 			else if( type == TeleporterType.Receiver )
 			{
-				if( other.CompareTag("Player") )
+				//Only play the activation effects if you were teleported (and not just because you ran through the rx teleporter).
+				if( other.CompareTag("Player") && other.GetComponent<PlayerSpell>().isBeingTeleported )
 				{
+					other.GetComponent<PlayerSpell>().isBeingTeleported = false;
 					GetComponent<AudioSource>().Play();
 					activationEffect.Play();
 				}

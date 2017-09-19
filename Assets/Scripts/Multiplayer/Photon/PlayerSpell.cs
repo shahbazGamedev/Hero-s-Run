@@ -9,6 +9,11 @@ using UnityStandardAssets.ImageEffects;
 /// </summary>
 public class PlayerSpell : PunBehaviour {
 
+	#region Used when being teleported
+	//See Teleporter class.
+	public bool isBeingTeleported = false;
+	#endregion
+
 	#region List of active cards
 	//List of active cards either played by the local player or cast on the local player by an opponent.
 	public List<CardName> activeCardList = new List<CardName>();
