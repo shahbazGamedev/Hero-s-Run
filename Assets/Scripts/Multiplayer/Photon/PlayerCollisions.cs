@@ -17,10 +17,12 @@ public class PlayerCollisions : Photon.PunBehaviour {
 	PlayerControl playerControl;
 	PlayerSounds playerSounds;
 	PlayerSpell playerSpell;
+	PlayerRun playerRun;
 	#region Ground type variables
 	string groundType = "Floor"; //Other choices are Water and Collapsing
 	string previousGroundType = "Floor"; //Other choices are Water and Collapsing
 	#endregion
+	const float RAGING_BULL_BASE_DAMAGE = 25;
 
 	// Use this for initialization
 	void Awake ()
@@ -28,6 +30,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 		playerControl = GetComponent<PlayerControl>();	
 		playerSounds = GetComponent<PlayerSounds>();	
 		playerSpell = GetComponent<PlayerSpell>();	
+		playerRun = GetComponent<PlayerRun>();	
 	}
 
 	/// <summary>
@@ -85,13 +88,26 @@ public class PlayerCollisions : Photon.PunBehaviour {
 		        case "Player":
 					if( normal.y < 0.4f )
 					{
-						//If this player ran squarely into another player while using SpeedBoost (i.e. Raging Bull), kill the other player.
+						//If this player ran squarely into another player while using SpeedBoost (i.e. Raging Bull), damage the other player.
 						if( playerSpell.isRagingBullActive )
 						{
 							PlayerControl otherPlayer = collided.GetComponent<PlayerControl>();
-							if( otherPlayer.getCharacterState() != PlayerCharacterState.Dying || otherPlayer.getCharacterState() != PlayerCharacterState.Idle )
+
+							//Important: OnCollisionEnter may be called multiple times.
+							//To avoid having the health deducted more than once, since we know that the player that was hit will stumble, we only pursue
+							//if the player is not already stumbling.
+							if( otherPlayer.getCharacterState() != PlayerCharacterState.Dying && otherPlayer.getCharacterState() != PlayerCharacterState.Idle && otherPlayer.getCharacterState() != PlayerCharacterState.Stumbling )
 							{
-								otherPlayer.killPlayer ( DeathType.FallForward );
+								//The damage done increases the faster the player is running.
+								float levelRunStartSpeed = playerRun.getLevelRunStartSpeed();
+								float runSpeed = playerRun.getRunSpeed();
+								float damageMultiplier = runSpeed/levelRunStartSpeed;
+								
+								//Note that the maximum multiplier is: PlayerRun.MAX_OVERALL_SPEED_MULTIPLIER which is currently set to 1.7.
+								//So the damage will vary between RAGING_BULL_BASE_DAMAGE and MAX_OVERALL_SPEED_MULTIPLIER * RAGING_BULL_BASE_DAMAGE
+								//Using current numbers, that is between 25 and 42.5.
+								otherPlayer.GetComponent<PlayerHealth>().deductHealth( (int) (RAGING_BULL_BASE_DAMAGE *  damageMultiplier) );
+								otherPlayer.stumble();			
 							}
 						}
 					}

@@ -446,9 +446,9 @@ public class PlayerRun : Photon.PunBehaviour {
 		anim.SetFloat(speedBlendFactor, blendFactor);
 	}
 
-	public void syncRunSpeed( float remoteSpeed )
+	public float getLevelRunStartSpeed()
 	{
-		//Needs to be implemented
+		return levelRunStartSpeed;
 	}
 
 
