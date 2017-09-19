@@ -35,7 +35,7 @@ public class JumpPad : Device {
 		}
 	}
 
-	new public void changeDeviceState( DeviceState newState )
+	public override void changeDeviceState( DeviceState newState )
 	{
 		base.changeDeviceState( newState );
 		switch ( state )

@@ -38,7 +38,7 @@ public class Device : MonoBehaviour {
 		changeDeviceState( state );
 	}
 
-	public void changeDeviceState( DeviceState newState )
+	public virtual void changeDeviceState( DeviceState newState )
 	{
 		state = newState;
 		switch ( state )
