@@ -22,8 +22,9 @@ public class HUDMultiplayer : MonoBehaviour {
 	const float DELAY_BEFORE_COUNTDOWN_STARTS = 5f;
 	const float DELAY_WHEN_NOT_SHOWING_EMOTES = 8f;
 	const float DELAY_WHEN_SHOWING_EMOTES = 11f;
-	[Header("Distance Traveled")]
-	[SerializeField] GameObject distancePanel;
+	[Header("Distance Remaining")]
+	[SerializeField] GameObject canvasGroupForFading;
+	[SerializeField] Image distanceRemainingCounterRed;  //Radial 360 image
 	[SerializeField] TextMeshProUGUI distanceText;
 	[Header("Countdowm")]
 	[SerializeField] AudioClip beep; //Sound to play every second during countdown
@@ -35,10 +36,6 @@ public class HUDMultiplayer : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI debugInfo;
 	DebugInfoType debugInfoType;
 	FPSCalculator fpsCalculator;
-	[Header("Circuit Name and Icon Panel")]
-	[SerializeField] RectTransform circuitDetailsPanel;
-	[SerializeField] TextMeshProUGUI circuitNameText;
-	[SerializeField] Image circuitIcon;
 	[Header("Race About To End Message")]
 	[SerializeField] Text raceEndingText;
 	[Header("Minimap")]
@@ -73,13 +70,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		fpsCalculator.enabled = (debugInfoType == DebugInfoType.FPS);
 
 		userMessageText.gameObject.SetActive( false );
-		distancePanel.SetActive( false );
-	}
-	
-	void Start()
-	{
-		//Slide in circuit name and icon
-		slideInCircuitDetails();
+		canvasGroupForFading.SetActive( false );
 	}
 
 	public HealthBarHandler getHealthBarHandler()
@@ -157,7 +148,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		//Race is starting
 		raceHasStarted = true;
 		displayRacePosition( true );	
-		distancePanel.SetActive( true );
+		canvasGroupForFading.SetActive( true );
 		
 	}
 
@@ -297,7 +288,9 @@ public class HUDMultiplayer : MonoBehaviour {
 	void Update()
 	{
 		if( debugInfoType != DebugInfoType.NONE ) debugInfo.text = getDebugInfo();
-		distanceText.text = LevelManager.Instance.distanceTravelled.ToString("N0") + " m";
+		int distance = (int)(1000 - LevelManager.Instance.distanceTravelled);
+		distanceText.text = distance.ToString("N0") + " <color=#FF396D><size=38><sub>M</sub></size></color>";
+		distanceRemainingCounterRed.fillAmount = LevelManager.Instance.distanceTravelled/1000f;
 	}
 
 	string getDebugInfo()
@@ -351,15 +344,15 @@ public class HUDMultiplayer : MonoBehaviour {
 		switch (position)
 		{
 			case 1:
-				ordinalIndicator = "1<size=22>st</size>";
+				ordinalIndicator = "1<size=38><sup>st</sup></size>";
 				break;
 				
 			case 2:
-				ordinalIndicator = "2<size=22>nd</size>";
+				ordinalIndicator = "2<size=38><sup>nd</sup</size>";
 				break;
 
 			case 3:
-				ordinalIndicator = "3<size=22>rd</size>";
+				ordinalIndicator = "3<size=38><sup>rd</sup</size>";
 				break;
 
 			default:
@@ -393,21 +386,6 @@ public class HUDMultiplayer : MonoBehaviour {
 			debugInfo.gameObject.SetActive( false );
 			userMessageText.gameObject.SetActive( false );
 		}
-	}
-
-	void slideInCircuitDetails()
-	{
-		LevelData.MultiplayerInfo multiplayerInfo =	LevelManager.Instance.getSelectedCircuit();
-		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + multiplayerInfo.circuitInfo.sectorNumber.ToString() );
-		circuitNameText.text = sectorName;
-		circuitIcon.sprite = multiplayerInfo.circuitInfo.circuitIcon;
-		LeanTween.move( circuitDetailsPanel, new Vector2(0, -circuitDetailsPanel.rect.height/2f), 0.5f ).setEase(LeanTweenType.easeOutQuad).setOnComplete(slideOutCircuitDetails).setOnCompleteParam(gameObject);
-	}
-
-	void slideOutCircuitDetails()
-	{
-		//Wait a little before sliding back up
-		LeanTween.move( circuitDetailsPanel, new Vector2(0, circuitDetailsPanel.rect.height/2f ), 0.5f ).setEase(LeanTweenType.easeOutQuad).setDelay(2.75f);
 	}
 
 	//Activates a horizontally centered text with a drop-shadow.
