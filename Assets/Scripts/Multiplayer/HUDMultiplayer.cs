@@ -97,9 +97,9 @@ public class HUDMultiplayer : MonoBehaviour {
 	/// </summary>
 	public IEnumerator displayDamageEffect()
 	{
-		float maxAlpha = 0.65f;
+		float maxAlpha = 0.85f;
 		damageTakenEffect.color = new Color( damageTakenEffect.color.r, damageTakenEffect.color.g, damageTakenEffect.color.b, 0 );
-		float duration = 0.7f;
+		float duration = 0.5f;
 		float elapsedTime = 0;
 		
 		float startAlpha = 0;
@@ -114,7 +114,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		} while ( elapsedTime < duration );
 		damageTakenEffect.color = new Color( damageTakenEffect.color.r, damageTakenEffect.color.g, damageTakenEffect.color.b, maxAlpha );
 
-		yield return new WaitForSeconds( 0.35f );
+		yield return new WaitForSeconds( 0.85f );
 
 		duration = 0.4f;
 		elapsedTime = 0;

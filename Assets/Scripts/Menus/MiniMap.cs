@@ -203,6 +203,19 @@ public class MiniMap : MonoBehaviour {
 		}
 	}
 
+	public void overrideRadarObjectIcon( GameObject owner, Sprite overrideSprite )
+	{
+		RadarObject ro = radarObjects.Find(radarObject => radarObject.owner == owner);
+		if( ro != null )
+		{
+			ro.icon.overrideSprite = overrideSprite;
+		}
+		else
+		{
+			Debug.LogError("MiniMap-overrideRadarObjectIcon: radar object for " + owner.name + " was not found." );
+		}
+	}
+
 	void drawRadarDots()
 	{
 		for(int i = radarObjects.Count - 1; i > -1; i-- )

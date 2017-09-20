@@ -27,7 +27,7 @@ public class PlayerIK : MonoBehaviour {
 	Coroutine fadeOutLookAtCoroutine;
 	//We want the IK to be disabled at the beginning of the race. It looks weird when the opponents stare at the player right at the get go.
 	bool isIKEnabled = false;
-	const float DELAY_BEFORE_ACTIVATING_IK = 10f;
+	const float DELAY_BEFORE_ACTIVATING_IK = 12f;
 
 	void Awake ()
 	{
