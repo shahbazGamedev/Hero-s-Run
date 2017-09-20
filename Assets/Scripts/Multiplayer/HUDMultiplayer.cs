@@ -47,6 +47,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	[SerializeField] GameObject emotePanel;
 	[Header("Health Bar")]
 	[SerializeField] HealthBarHandler healthBarHandler;
+	[SerializeField] Image damageTakenEffect;
 
 	//Event management used to notify players to start running
 	public delegate void StartRunningEvent();
@@ -89,6 +90,45 @@ public class HUDMultiplayer : MonoBehaviour {
 	public void startCountdown()
 	{
 		StartCoroutine("countdown");
+	}
+
+	/// <summary>
+	/// Flashes a damage effect on the HUD.
+	/// </summary>
+	public IEnumerator displayDamageEffect()
+	{
+		float maxAlpha = 0.65f;
+		damageTakenEffect.color = new Color( damageTakenEffect.color.r, damageTakenEffect.color.g, damageTakenEffect.color.b, 0 );
+		float duration = 0.7f;
+		float elapsedTime = 0;
+		
+		float startAlpha = 0;
+		float endAlpha = maxAlpha;
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			float alpha = Mathf.Lerp( startAlpha, endAlpha, elapsedTime/duration );
+			damageTakenEffect.color = new Color( damageTakenEffect.color.r, damageTakenEffect.color.g, damageTakenEffect.color.b, alpha );
+			yield return new WaitForEndOfFrame();  
+			
+		} while ( elapsedTime < duration );
+		damageTakenEffect.color = new Color( damageTakenEffect.color.r, damageTakenEffect.color.g, damageTakenEffect.color.b, maxAlpha );
+
+		yield return new WaitForSeconds( 0.35f );
+
+		duration = 0.4f;
+		elapsedTime = 0;
+		
+		startAlpha = maxAlpha;
+		endAlpha = 0;
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			float alpha = Mathf.Lerp( startAlpha, endAlpha, elapsedTime/duration );
+			damageTakenEffect.color = new Color( damageTakenEffect.color.r, damageTakenEffect.color.g, damageTakenEffect.color.b, alpha );
+			yield return new WaitForEndOfFrame();  
+			
+		} while ( elapsedTime < duration );
 	}
 
 	IEnumerator countdown()

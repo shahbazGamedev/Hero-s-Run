@@ -93,6 +93,8 @@ public class PlayerHealth : Photon.PunBehaviour {
 			else
 			{
 				healthBarHandler.changeHealth( currentHealth, newHealth );
+				//If the player is not dead and took damage, flash an effect on the HUD.
+				if( newHealth < currentHealth && newHealth != 0 ) StartCoroutine( HUDMultiplayer.hudMultiplayer.displayDamageEffect() );
 			}
 		}
 		currentHealth = newHealth;
@@ -245,7 +247,7 @@ public class PlayerHealth : Photon.PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.F) ) 
 		{
-			deductHealth( 55 );
+			deductHealth( 10 );
 		}
 		else if ( Input.GetKeyDown (KeyCode.G) ) 
 		{

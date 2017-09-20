@@ -1759,7 +1759,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			elapsedTime = elapsedTime + Time.deltaTime;
 			vAcA.intensity = Mathf.Lerp( startVignettingFactor, endVignettingFactor, elapsedTime/duration );
 			vAcA.blur = Mathf.Lerp( startBlurFactor, endBlurFactor, elapsedTime/duration );
-			yield return new WaitForFixedUpdate();  
+			yield return new WaitForEndOfFrame();  
 			
 		} while ( elapsedTime < duration );
 		
