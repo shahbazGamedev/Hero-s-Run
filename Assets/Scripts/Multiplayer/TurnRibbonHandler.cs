@@ -234,7 +234,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 					buttonOfCardPlayed.GetComponent<CardTurnRibbon>().overrideCardImage( blankCardSprite );
 					//Card name text and power cost text
 					buttonOfCardPlayed.GetComponent<CardTurnRibbon>().cardName.text = string.Empty;
-					buttonOfCardPlayed.GetComponent<CardTurnRibbon>().additionalText.text = string.Empty;
+					buttonOfCardPlayed.GetComponent<CardTurnRibbon>().powerCost.text = string.Empty;
 			
 					//Wait a little before moving the Next Card into the free ribbon slot
 					StartCoroutine( moveNextCardIntoTurnRibbon( indexOfCardPlayed, playedCard ) );
@@ -327,7 +327,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 				Button buttonOfRestoredCard = turnRibbonButtonList[i];
 				buttonOfRestoredCard.GetComponent<CardTurnRibbon>().overrideCardImage( null );
 				//Card name text and power cost text
-				buttonOfRestoredCard.GetComponent<CardTurnRibbon>().configureCardTexts( getCardNameAsString( nextCard.name ), restoredCard.manaCost.ToString(), string.Empty );
+				buttonOfRestoredCard.GetComponent<CardTurnRibbon>().configureCardTexts( getCardNameAsString( restoredCard.name ), restoredCard.manaCost.ToString(), string.Empty );
 				buttonOfRestoredCard.GetComponent<CardTurnRibbon>().additionalText.color = Color.white;
 			}
 		}
