@@ -170,6 +170,8 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	//For the Episode Progress Indicator - to know where to display the checkpoint indicators
 	List<int> indexOfCheckpointTiles = new List<int>();
 
+	public float levelLengthInMeters = 0;
+
 	void Awake ()
 	{
 		//The activity indicator may have been started
@@ -446,6 +448,12 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 		generateMultiplayerLevel( currentMultiplayer.numberOfTileGroups, currentMultiplayer.tileGroupList, currentMultiplayer.endTileGroupList  );
 
+		//Adjust the length of the level
+		//When we added the length of the Start tile, we added its full length. However, the player starts in the center of the Start tile. So we added 50 - 25 = 25 meters too much.
+		levelLengthInMeters = levelLengthInMeters - 25f;
+		//When we added the length of the End tile, we added its full length. However, the finish line is located at 28.9 meters. So we added 50 - 28.9 = 21.1 meters too much.
+		levelLengthInMeters = levelLengthInMeters - 21.1f;
+
 		//Make the first few tiles active
 		activateInitialTiles(0);
 
@@ -615,6 +623,8 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		si.tileIndex = tileCreationIndex;
 		tileCreationIndex++;
 		MiniMap.Instance.registerTileObject( go.name, go.transform.position, si.tileSprite, go.transform.eulerAngles.y, tileDepthMult );
+		//Update the length of the map in meters
+		levelLengthInMeters = levelLengthInMeters + tileDepthMult * tileSize;
 		return go;
 	}
 

@@ -2011,6 +2011,8 @@ public class PlayerControl : Photon.PunBehaviour {
 					//This flag is set to avoid tileEntranceCrossed being called multiple time which can happen with onTriggerEnter.
 					//This flag is set to false when a tile is added.
 					si.entranceCrossed = true;
+					//Not great, but at least guarantees arriving at the finish line with 0 meters left on the meter in the HUD.
+					if( si.tileType == TileType.End ) playerRace.distanceTravelled = generateLevel.levelLengthInMeters - 29f;
 					//Every time a new tile is entered, force synchronization
 					forcePositionSynchronization();
 				}

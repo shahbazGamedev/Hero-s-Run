@@ -28,7 +28,7 @@ public class PlayerRace : Photon.PunBehaviour
 	int previousRacePosition = -2;	//Used to avoid updating if the value has not changed
 	//Distance travelled. This is used to determine who is in 1st place, 2nd place, etc.
 	Vector3 previousPlayerPosition = Vector3.zero;
-	float distanceTravelled = 0;
+	public float distanceTravelled = 0;
 	const float REQUIRED_LEAD_DISTANCE = 5f;
 	//Cache the string to avoid the runtime lookup
 	string tookTheLeadString;

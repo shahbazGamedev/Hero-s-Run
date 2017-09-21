@@ -46,6 +46,10 @@ public class HUDMultiplayer : MonoBehaviour {
 	[SerializeField] HealthBarHandler healthBarHandler;
 	[SerializeField] Image damageTakenEffect;
 
+	#region Other variables
+	GenerateLevel generateLevel;
+	#endregion
+
 	//Event management used to notify players to start running
 	public delegate void StartRunningEvent();
 	public static event StartRunningEvent startRunningEvent;
@@ -60,6 +64,8 @@ public class HUDMultiplayer : MonoBehaviour {
 			hudMultiplayer = this;
 		else if (hudMultiplayer != this)
 			Destroy (gameObject);
+
+		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
 
 		displayRacePosition( false );
 
@@ -288,9 +294,10 @@ public class HUDMultiplayer : MonoBehaviour {
 	void Update()
 	{
 		if( debugInfoType != DebugInfoType.NONE ) debugInfo.text = getDebugInfo();
-		int distance = (int)(1000 - LevelManager.Instance.distanceTravelled);
-		distanceText.text = distance.ToString("N0") + " <color=#FF396D><size=38><sub>M</sub></size></color>";
-		distanceRemainingCounterRed.fillAmount = LevelManager.Instance.distanceTravelled/1000f;
+		float distance = generateLevel.levelLengthInMeters - LevelManager.Instance.distanceTravelled;
+		if( distance < 0 ) distance = 0; //Added as a safeguard.
+		distanceText.text = distance.ToString("N0") + " <color=#FF396D><size=32><sub>M</sub></size></color>";
+		distanceRemainingCounterRed.fillAmount = LevelManager.Instance.distanceTravelled/generateLevel.levelLengthInMeters;
 	}
 
 	string getDebugInfo()
@@ -348,11 +355,11 @@ public class HUDMultiplayer : MonoBehaviour {
 				break;
 				
 			case 2:
-				ordinalIndicator = "2<size=38><sup>nd</sup</size>";
+				ordinalIndicator = "2<size=38><sup>nd</sup></size>";
 				break;
 
 			case 3:
-				ordinalIndicator = "3<size=38><sup>rd</sup</size>";
+				ordinalIndicator = "3<size=38><sup>rd</sup></size>";
 				break;
 
 			default:
