@@ -4,27 +4,50 @@ using UnityEngine.UI;
 
 public class PowerBar : MonoBehaviour {
 
-	[SerializeField] Slider powerBarSlider;
 	[SerializeField] Image powerBarFill;
-	public const int MAX_POWER_POINT = 10;
-	public const int MIN_POWER_POINT = 0;
-	public const int START_POWER_POINT = 0;
+	[SerializeField] Color normalPowerBarFillColor;
+	[SerializeField] Color emergencyPowerEngagedFillColor;
+	[SerializeField] RectTransform powerBarLitTipRect;  //Should be anchored bottom, center
+	[SerializeField] Image powerBarLitTip;
+
+	public const float MAX_POWER_POINT = 10f;
+	public const float START_POWER_POINT = 0;
 	public const float DEFAULT_POWER_REFILL_RATE = 2.8f; //Seconds needed to gain 1 power point
 	public const float FAST_POWER_REFILL_RATE = 1.4f; //Seconds needed to gain 1 power point
-	public float powerRefillRate = DEFAULT_POWER_REFILL_RATE;
+	float powerBarFillLength;
+	float powerRefillRate = DEFAULT_POWER_REFILL_RATE;
+	float power = START_POWER_POINT; //Value between 0 and MAX_POWER_POINT
 
 	// Use this for initialization
 	void Start ()
 	{
-		powerBarSlider.minValue = MIN_POWER_POINT;
-		powerBarSlider.maxValue = MAX_POWER_POINT;
-		powerBarSlider.value 	= START_POWER_POINT;
+		powerBarFillLength = powerBarFill.GetComponent<RectTransform>().sizeDelta.y;
+		updatePower ();
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-		if( powerBarSlider.value < MAX_POWER_POINT && PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS ) powerBarSlider.value = powerBarSlider.value + Time.deltaTime/powerRefillRate;
+		if( power < MAX_POWER_POINT && PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
+		{
+			power = power + Time.deltaTime/powerRefillRate;
+			updatePower ();
+		}
+	}
+
+	void updatePower ()
+	{
+		powerBarFill.fillAmount = power/MAX_POWER_POINT;
+		if( power > 0 )
+		{
+			if( !powerBarLitTipRect.gameObject.activeSelf ) powerBarLitTipRect.gameObject.SetActive( true );
+			//Position the light at the tip of the power bar
+			powerBarLitTipRect.anchoredPosition = new Vector2( powerBarLitTipRect.anchoredPosition.x, powerBarFillLength * powerBarFill.fillAmount );
+		}
+		else
+		{
+			if( powerBarLitTipRect.gameObject.activeSelf ) powerBarLitTipRect.gameObject.SetActive( false );
+		}
 	}
 
 	/// <summary>
@@ -34,43 +57,43 @@ public class PowerBar : MonoBehaviour {
 	/// <param name="powerCost">Power cost.</param>
 	public bool hasEnoughPower( int powerCost )
 	{
-		if(powerCost <= powerBarSlider.value )
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return (powerCost <= power );
 	}
 
+	/// <summary>
+	/// Gets the power amount, which is a value between 0 and MAX_POWER_POINT.
+	/// </summary>
+	/// <returns>The power amount</returns>
 	public float getPowerAmount()
 	{
-		return powerBarSlider.value;
+		return power;
 	}
 
 	public void deductPower( int powerToRemove )
 	{
-		if( powerToRemove > powerBarSlider.value )
+		if( powerToRemove > power )
 		{
 			Debug.LogError("PowerBar-deducPower: the amount of power you want to deduct, " + powerToRemove + ", is bigger than the power available.");
 		}
 		else
 		{
-			powerBarSlider.value = powerBarSlider.value - powerToRemove;
+			power = power - powerToRemove;
+			updatePower ();
 		}
 	}
 
 	public void increaseRefillRate()
 	{
 		powerRefillRate = FAST_POWER_REFILL_RATE;
-		powerBarFill.color = Color.red;
+		powerBarFill.color = emergencyPowerEngagedFillColor;
+		powerBarLitTip.color = emergencyPowerEngagedFillColor;
 	}
 
 	public void resetRefillRate()
 	{
 		powerRefillRate = DEFAULT_POWER_REFILL_RATE;
-		powerBarFill.color = Color.green;
+		powerBarFill.color = normalPowerBarFillColor;
+		powerBarLitTip.color = emergencyPowerEngagedFillColor;
 	}
 
 }
