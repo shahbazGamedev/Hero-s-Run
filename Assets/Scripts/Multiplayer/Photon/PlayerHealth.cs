@@ -20,6 +20,7 @@ public class PlayerHealth : Photon.PunBehaviour {
 	#region Health
 	public void deductHealth ( int amountToDeduct )
 	{
+		Debug.Log("deductHealth " + gameObject.name + " amountToDeduct " + amountToDeduct + " currentHealth " + currentHealth);
 		if( amountToDeduct <= 0 )
 		{
 			Debug.LogWarning("PlayerHealth: you cannot deduct from health a value less or equal to 0.");
@@ -62,11 +63,13 @@ public class PlayerHealth : Photon.PunBehaviour {
 
 	public void deductAllHealth ()
 	{
+		Debug.Log("deductAllHealth " + gameObject.name  );
 		if( PhotonNetwork.isMasterClient ) this.photonView.RPC("changeHealthRPC", PhotonTargets.All, 0 );
 	}
 
 	public void resetHealth ()
 	{
+		Debug.Log("resetHealth " + gameObject.name  );
 		if( PhotonNetwork.isMasterClient ) this.photonView.RPC("changeHealthRPC", PhotonTargets.All, DEFAULT_HEALTH );
 	}
 
@@ -83,7 +86,7 @@ public class PlayerHealth : Photon.PunBehaviour {
 	[PunRPC]
 	void changeHealthRPC( int newHealth )
 	{
-		Debug.Log("changeHealthRPC received " + gameObject.name + " new health " + newHealth );
+		Debug.Log("changeHealthRPC received " + gameObject.name + " currentHealth " + currentHealth + " new health " + newHealth );
 		if( photonView.isMine && playerAI == null )
 		{
 			if( newHealth == DEFAULT_HEALTH )
