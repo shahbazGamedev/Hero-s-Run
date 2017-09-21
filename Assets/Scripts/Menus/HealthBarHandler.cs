@@ -6,9 +6,10 @@ using TMPro;
 public class HealthBarHandler : MonoBehaviour {
 
 	[Header("Health Bar")]
-	[SerializeField] Slider healthBar;
-	[SerializeField] TextMeshProUGUI healthNumber;
-	[SerializeField] Slider armorBar;
+	[SerializeField] GameObject healthBarHolder;	//Parent of the 3 radial images.
+	[SerializeField] Image lowHealthRadial; 		//The first 3 boxes (out of 10) are orange to indicate low health (30/100). The other 7 are gray.
+	[SerializeField] Image fullHealthRadial; 		//All 10 boxes are blue. Blue means healthy.
+	[SerializeField] Image armorRadial;				//the armor indicator sits on top of the full health radial.
 	const float ANIMATION_DURATION_NORMAL = 0.8f;
 	const float ANIMATION_DURATION_FAST = 0.3f;
 
@@ -27,8 +28,7 @@ public class HealthBarHandler : MonoBehaviour {
 		//Only hide the health and armor bars if the player who crossed the finish line is not a bot.
 		if( !isBot )
 		{
-			healthBar.gameObject.SetActive( false );
-			armorBar.gameObject.SetActive( false );
+			healthBarHolder.SetActive( false );
 		}
 	}
 
@@ -44,24 +44,27 @@ public class HealthBarHandler : MonoBehaviour {
 		{
 			animationSpeed = ANIMATION_DURATION_NORMAL;
 		}
-		healthBar.GetComponent<UIAnimateSlider>().animateSlider( newHealth, animationSpeed, onFinish );
-		healthNumber.GetComponent<UISpinNumber>().spinNumber( "{0}", currentHealth, newHealth, animationSpeed, false );			
+		//Low and full radial images should always be in sync
+		float fillAmount = newHealth/(float)PlayerHealth.DEFAULT_HEALTH;
+		lowHealthRadial.GetComponent<UIAnimateRadialImage>().animateFillAmount( fillAmount, animationSpeed, onFinish );
+		fullHealthRadial.GetComponent<UIAnimateRadialImage>().animateFillAmount( fillAmount, animationSpeed, onFinish );
 	}
 
 	public void resetHealth ()
 	{
-		healthNumber.text = PlayerHealth.DEFAULT_HEALTH.ToString();
-		healthBar.value = PlayerHealth.DEFAULT_HEALTH;			
+		lowHealthRadial.fillAmount = 1f;			
+		fullHealthRadial.fillAmount = 1f;			
 	}
 
 	public void changeArmor (int currentArmor, int newArmor, System.Action onFinish = null )
 	{
-		armorBar.GetComponent<UIAnimateSlider>().animateSlider( newArmor, ANIMATION_DURATION_FAST, onFinish );
+		float fillAmount = newArmor/(float)PlayerHealth.MAXIMUM_ARMOR;
+		armorRadial.GetComponent<UIAnimateRadialImage>().animateFillAmount( newArmor, ANIMATION_DURATION_FAST, onFinish );
 	}
 
 	public void removeAllArmor ()
 	{
-		armorBar.value = 0;			
+		armorRadial.fillAmount = 0;	
 	}
 	
 }
