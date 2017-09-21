@@ -78,14 +78,9 @@ public class TurnRibbonHandler : MonoBehaviour {
 		cardButton.name = "Button " + index.ToString();
 		turnRibbonButtonList.Add(cardButton);
 		cardButton.onClick.AddListener(() => OnClickCard( index ) );
-		Image cardImage = go.GetComponent<Image>();
-		CardManager.CardData cardData = CardManager.Instance.getCardByName( cardName );
-		cardImage.sprite = cardData.icon;
-		//Card name text and power cost text
-		TextMeshProUGUI[] buttonTexts = cardButton.GetComponentsInChildren<TextMeshProUGUI>();
-		buttonTexts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + cardData.name.ToString().ToUpper() );
-		buttonTexts[1].text = cardData.manaCost.ToString();
 
+		CardManager.CardData cardData = CardManager.Instance.getCardByName( cardName );
+		go.GetComponent<CardTurnRibbon>().configureTurnRibbonCard( cardData );
 		turnRibbonList.Add(cardData);
 	}
 
@@ -95,7 +90,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		nextCardImage.sprite = cardData.icon;
 		//Card name text and power cost text
 		TextMeshProUGUI[] texts = nextCardImage.GetComponentsInChildren<TextMeshProUGUI>();
-		texts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + cardData.name.ToString().ToUpper() );
+		texts[0].text = getCardNameAsString( cardData.name );
 		texts[1].text = cardData.manaCost.ToString();
 		this.nextCard = cardData;
 	}
@@ -113,7 +108,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 			//If the race is not in progress, don't allow the player to play cards.
 			//If the player cannot control his character (e.g. because of Stasis), don't allow him to play cards.
 			//If the player has been Hacked, don't allow him to play cards.
-			Image radialMask = turnRibbonButtonList[i].transform.FindChild("Radial Mask").GetComponent<Image>();
+			Image radialMask = turnRibbonButtonList[i].GetComponent<CardTurnRibbon>().radialMask;
 			if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS && playerControl.isPlayerControlEnabled() && !playerSpell.isCardActive(CardName.Hack) )
 			{
 				if( powerBar.hasEnoughPower( turnRibbonList[i].manaCost ) )
@@ -152,7 +147,6 @@ public class TurnRibbonHandler : MonoBehaviour {
 			float range = card.getCardPropertyValue( CardPropertyType.RANGE, pcd.level );
 			
 			Button buttonOfCard = turnRibbonButtonList[indexInTurnRibbon];
-			TextMeshProUGUI[] buttonTexts = buttonOfCard.GetComponentsInChildren<TextMeshProUGUI>();
 			
 			//This means that the RANGE is not infinite. Check for targets.
 			if( range > 0 )
@@ -160,30 +154,29 @@ public class TurnRibbonHandler : MonoBehaviour {
 				if( isThereAtLeastOnePlayerWithinRange( range ) )
 				{
 					//We have at least one target within range. Make the text white.
-					buttonTexts[0].color = Color.white;				
+					buttonOfCard.GetComponent<CardTurnRibbon>().changeCardNameColor( Color.white );				
 				}
 				else
 				{
 					//We have no targets within range. Make the text red.
-					buttonTexts[0].color = cardNotEffectiveTextColor;
+					buttonOfCard.GetComponent<CardTurnRibbon>().changeCardNameColor( cardNotEffectiveTextColor );
 				}
 			}
 		}
 		if( card.doesCardHaveThisProperty( CardPropertyType.HEALTH ) )
 		{
 			Button buttonOfCard = turnRibbonButtonList[indexInTurnRibbon];
-			TextMeshProUGUI[] buttonTexts = buttonOfCard.GetComponentsInChildren<TextMeshProUGUI>();
 			
 			//Is the player at maximum health?
 			if( playerHealth.isFullHealth() )
 			{
 				//Yes. Make the text red to indicate that it would be wasteful to use a health potion.
-				buttonTexts[0].color = cardNotEffectiveTextColor;				
+				buttonOfCard.GetComponent<CardTurnRibbon>().changeCardNameColor( cardNotEffectiveTextColor );
 			}
 			else
 			{
 				//No. Make the text white.
-				buttonTexts[0].color = Color.white;
+				buttonOfCard.GetComponent<CardTurnRibbon>().changeCardNameColor( Color.white );				
 			}
 		}
 	}
@@ -228,9 +221,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		
 				//Deduct the power
 				powerBar.deductPower( playedCard.manaCost );
-		
-		
-				//Temporarily replace the image on the button that was clicked by a blank image
+			
 				Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
 
 				//Disable the button to avoid multiple clicks
@@ -243,11 +234,11 @@ public class TurnRibbonHandler : MonoBehaviour {
 				//you are stealing.
 				if( cardName != CardName.Steal )
 				{
-					buttonOfCardPlayed.GetComponent<Image>().overrideSprite = blankCardSprite;
+					//Temporarily replace the image on the button that was clicked by a blank image
+					buttonOfCardPlayed.GetComponent<CardTurnRibbon>().overrideCardImage( blankCardSprite );
 					//Card name text and power cost text
-					TextMeshProUGUI[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<TextMeshProUGUI>();
-					buttonTexts[0].text = string.Empty;
-					buttonTexts[1].text = string.Empty;
+					buttonOfCardPlayed.GetComponent<CardTurnRibbon>().cardName.text = string.Empty;
+					buttonOfCardPlayed.GetComponent<CardTurnRibbon>().additionalText.text = string.Empty;
 			
 					//Wait a little before moving the Next Card into the free ribbon slot
 					StartCoroutine( moveNextCardIntoTurnRibbon( indexOfCardPlayed, playedCard ) );
@@ -275,27 +266,22 @@ public class TurnRibbonHandler : MonoBehaviour {
 		//Replace the image on the button that was clicked by the image of the Next card
 		Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
 		buttonOfCardPlayed.interactable = true;
-		buttonOfCardPlayed.GetComponent<Image>().sprite = nextCard.icon;
-		TextMeshProUGUI[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<TextMeshProUGUI>();
+		buttonOfCardPlayed.GetComponent<CardTurnRibbon>().cardImage.sprite = nextCard.icon;
 
 		if( playerSpell.isCardActive(CardName.Hack) )
 		{
-			buttonOfCardPlayed.GetComponent<Image>().overrideSprite = hackedCardSprite;
+			buttonOfCardPlayed.GetComponent<CardTurnRibbon>().overrideCardImage( hackedCardSprite );
 			//Card name text and power cost text
-			buttonTexts[0].text = string.Empty;
-			buttonTexts[1].text = string.Empty;
-			buttonTexts[2].text = LocalizationManager.Instance.getText("CARD_HACKED");
-			buttonTexts[2].color = Color.magenta;
+			buttonOfCardPlayed.GetComponent<CardTurnRibbon>().configureCardTexts( string.Empty, string.Empty, LocalizationManager.Instance.getText("CARD_HACKED") );
+			buttonOfCardPlayed.GetComponent<CardTurnRibbon>().additionalText.color = Color.magenta;
 		}
 		else
 		{
-			buttonOfCardPlayed.GetComponent<Image>().overrideSprite = null;
+			buttonOfCardPlayed.GetComponent<CardTurnRibbon>().overrideCardImage( null );
 			//Card name text and power cost text
-			buttonTexts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + nextCard.name.ToString().ToUpper() );
+			buttonOfCardPlayed.GetComponent<CardTurnRibbon>().configureCardTexts( getCardNameAsString( nextCard.name ), nextCard.manaCost.ToString(), string.Empty );
 			//Reset the color to white
-			buttonTexts[0].color = Color.white;
-			buttonTexts[1].text = nextCard.manaCost.ToString();
-			buttonTexts[2].text = string.Empty;
+			buttonOfCardPlayed.GetComponent<CardTurnRibbon>().changeCardNameColor( Color.white );
 		}
 
 		//In the turn-ribbon list, replace the card played by the card held in Next
@@ -330,13 +316,11 @@ public class TurnRibbonHandler : MonoBehaviour {
 			{
 				//Temporarily replace the image on the button by a Hacked image
 				Button buttonOfHackedCard = turnRibbonButtonList[i];
-				buttonOfHackedCard.GetComponent<Image>().overrideSprite = hackedCardSprite;
+				buttonOfHackedCard.GetComponent<CardTurnRibbon>().overrideCardImage( hackedCardSprite );
+
 				//Card name text and power cost text
-				TextMeshProUGUI[] buttonTexts = buttonOfHackedCard.GetComponentsInChildren<TextMeshProUGUI>();
-				buttonTexts[0].text = string.Empty;
-				buttonTexts[1].text = string.Empty;
-				buttonTexts[2].text = LocalizationManager.Instance.getText("CARD_HACKED");
-				buttonTexts[2].color = Color.magenta;
+				buttonOfHackedCard.GetComponent<CardTurnRibbon>().configureCardTexts( string.Empty,  string.Empty, LocalizationManager.Instance.getText("CARD_HACKED") );
+				buttonOfHackedCard.GetComponent<CardTurnRibbon>().additionalText.color = Color.magenta;
 			}
 			else
 			{
@@ -345,13 +329,10 @@ public class TurnRibbonHandler : MonoBehaviour {
 				CardManager.CardData restoredCard = CardManager.Instance.getCardByName( restoredCardName );
 				//Restore the image on the button
 				Button buttonOfRestoredCard = turnRibbonButtonList[i];
-				buttonOfRestoredCard.GetComponent<Image>().overrideSprite = null;
+				buttonOfRestoredCard.GetComponent<CardTurnRibbon>().overrideCardImage( null );
 				//Card name text and power cost text
-				TextMeshProUGUI[] buttonTexts = buttonOfRestoredCard.GetComponentsInChildren<TextMeshProUGUI>();
-				buttonTexts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + restoredCard.name.ToString().ToUpper() );
-				buttonTexts[1].text = restoredCard.manaCost.ToString();
-				buttonTexts[2].text = string.Empty;
-				buttonTexts[2].color = Color.white;
+				buttonOfRestoredCard.GetComponent<CardTurnRibbon>().configureCardTexts( getCardNameAsString( nextCard.name ), restoredCard.manaCost.ToString(), string.Empty );
+				buttonOfRestoredCard.GetComponent<CardTurnRibbon>().additionalText.color = Color.white;
 			}
 		}
 	}
@@ -367,13 +348,11 @@ public class TurnRibbonHandler : MonoBehaviour {
 		//Get data about the card - make sure NOT to modify the card data
 		CardManager.CardData stolenCard = CardManager.Instance.getCardByName( stolenCardName );
 		//Temporarily replace the image on the button that was clicked by a blank image
+
 		Button buttonOfCardPlayed = turnRibbonButtonList[randomCardInTurnRibbon];
-		buttonOfCardPlayed.GetComponent<Image>().overrideSprite = stolenCardSprite;
+		buttonOfCardPlayed.GetComponent<CardTurnRibbon>().overrideCardImage( stolenCardSprite );
 		//Card name text and power cost text
-		TextMeshProUGUI[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<TextMeshProUGUI>();
-		buttonTexts[0].text = string.Empty;
-		buttonTexts[1].text = string.Empty;
-		buttonTexts[2].text = LocalizationManager.Instance.getText("CARD_STOLEN");
+		buttonOfCardPlayed.GetComponent<CardTurnRibbon>().configureCardTexts( string.Empty, string.Empty, LocalizationManager.Instance.getText("CARD_STOLEN") );
 
 		//Wait a little before moving the Next Card into the free ribbon slot
 		StartCoroutine( moveNextCardIntoTurnRibbon( randomCardInTurnRibbon, stolenCard ) );
@@ -392,12 +371,11 @@ public class TurnRibbonHandler : MonoBehaviour {
 
 		Button buttonOfCardPlayed = turnRibbonButtonList[stealCardIndex];
 		buttonOfCardPlayed.interactable = true;
-		buttonOfCardPlayed.GetComponent<Image>().overrideSprite = null;
-		buttonOfCardPlayed.GetComponent<Image>().sprite = stolenCard.icon;
+		buttonOfCardPlayed.GetComponent<CardTurnRibbon>().overrideCardImage( null );
+		buttonOfCardPlayed.GetComponent<CardTurnRibbon>().cardImage.sprite = stolenCard.icon;
 		//Card name text and power cost text
-		TextMeshProUGUI[] buttonTexts = buttonOfCardPlayed.GetComponentsInChildren<TextMeshProUGUI>();
-		buttonTexts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + stolenCard.name.ToString().ToUpper() );
-		buttonTexts[1].text = stolenCard.manaCost.ToString();
+		buttonOfCardPlayed.GetComponent<CardTurnRibbon>().cardName.text = getCardNameAsString( stolenCard.name );
+		buttonOfCardPlayed.GetComponent<CardTurnRibbon>().powerCost.text = stolenCard.manaCost.ToString();
 
 	}
 	#endregion
@@ -425,4 +403,8 @@ public class TurnRibbonHandler : MonoBehaviour {
 		powerBar.resetRefillRate();
 	}
 
+	string getCardNameAsString( CardName cardName )
+	{
+		return LocalizationManager.Instance.getText( "CARD_NAME_" + cardName.ToString().ToUpper() );
+	}
 }
