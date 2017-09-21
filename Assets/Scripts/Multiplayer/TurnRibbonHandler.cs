@@ -87,11 +87,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 	void setNextCard( CardName cardName )
 	{
 		CardManager.CardData cardData = CardManager.Instance.getCardByName( cardName );
-		nextCardImage.sprite = cardData.icon;
-		//Card name text and power cost text
-		TextMeshProUGUI[] texts = nextCardImage.GetComponentsInChildren<TextMeshProUGUI>();
-		texts[0].text = getCardNameAsString( cardData.name );
-		texts[1].text = cardData.manaCost.ToString();
+		nextCardImage.GetComponent<CardTurnRibbon>().configureTurnRibbonCard( cardData );
 		this.nextCard = cardData;
 	}
 
