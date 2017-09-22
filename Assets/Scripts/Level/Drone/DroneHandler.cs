@@ -12,6 +12,7 @@ public class DroneHandler : MonoBehaviour {
 	
 	//Target
 	public Transform nearestTarget = null;
+	public PlayerControl nearestTargetPlayerControl = null;
 
 	//Shooting related
 	[Tooltip("The speed used by the drone when changing lanes to face its target.")]
@@ -35,7 +36,13 @@ public class DroneHandler : MonoBehaviour {
 	#region Target detection and shooting
 	void FixedUpdate()
 	{
-		//We don't want the sentry to shoot while paused.
+		//If the player died or is now in the Idle state (because of Stasis for example) or the player now has the Cloak card active, nullify the target
+		if( nearestTargetPlayerControl != null && ( nearestTargetPlayerControl.getCharacterState() == PlayerCharacterState.Dying || nearestTargetPlayerControl.getCharacterState() == PlayerCharacterState.Idle || nearestTargetPlayerControl.GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) )
+		{
+			resetNearestTarget();
+		}
+
+		//We don't want the drone to shoot while paused.
 		//Remember that in multiplayer the time scale is not set to 0 while paused.
 		if( GameManager.Instance.getGameState() == GameState.Normal )
 		{
@@ -79,22 +86,10 @@ public class DroneHandler : MonoBehaviour {
 		}
 	}
 
-	void Update () 
-	{
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-			shoot();
-        }
-	}
-
 	void shoot()
 	{
 		if( nearestTarget == null ) return;
-		if( nearestTarget.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
-		{
-			nearestTarget = null;
-			return;
-		}
+
 		if( Time.time - timeOfLastShot > weaponCoolDown )
 		{
 			//Verify if we can hit the nearest target
@@ -129,6 +124,7 @@ public class DroneHandler : MonoBehaviour {
 				if( nearestTarget == null )
 				{
 					nearestTarget = other.transform;
+					nearestTargetPlayerControl = nearestTarget.GetComponent<PlayerControl>();
 					Invoke("resetNearestTarget", 3.5f );
 				}
 			}
@@ -138,6 +134,7 @@ public class DroneHandler : MonoBehaviour {
 	void resetNearestTarget()
 	{
 		nearestTarget = null;
+		nearestTargetPlayerControl = null;
 	}
 
 	void OnTriggerExit(Collider other)
@@ -147,7 +144,7 @@ public class DroneHandler : MonoBehaviour {
 			if( other.transform == nearestTarget )
 			{
 				//The drone's target has left the target area.
-				nearestTarget = null;
+				resetNearestTarget();
 			}
 		}
 	}
