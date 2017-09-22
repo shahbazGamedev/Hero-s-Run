@@ -93,7 +93,7 @@ public class PowerBar : MonoBehaviour {
 	{
 		powerRefillRate = DEFAULT_POWER_REFILL_RATE;
 		powerBarFill.color = normalPowerBarFillColor;
-		powerBarLitTip.color = emergencyPowerEngagedFillColor;
+		powerBarLitTip.color = normalPowerBarFillColor;
 	}
 
 }
