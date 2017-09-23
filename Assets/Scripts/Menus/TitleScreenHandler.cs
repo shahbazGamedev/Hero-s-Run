@@ -45,6 +45,10 @@ public class TitleScreenHandler : MonoBehaviour {
 
 		PlayerStatsManager.Instance.loadPlayerStats();
 
+	}
+
+	void Start()
+	{
 		//If the player agreed to use Facebook, auto-login for him
 		//We don't want to do this in the Editor as it slows the work flow since it causes a popup to appear
 		#if !UNITY_EDITOR
@@ -53,10 +57,6 @@ public class TitleScreenHandler : MonoBehaviour {
 			FacebookManager.Instance.CallFBInit();
 		}
 		#endif
-	}
-
-	void Start()
-	{
 		mainMixer.SetFloat( "SoundEffectsVolume", GameManager.Instance.playerConfiguration.getSoundFxVolume() );
 		mainMixer.SetFloat( "MusicVolume", GameManager.Instance.playerConfiguration.getMusicVolume() );
 		StartCoroutine( loadMainMenu( 2.5f ) );
