@@ -5,13 +5,15 @@ using System.Collections;
 public class Flamethrower : MonoBehaviour {
 
 	[SerializeField] AudioClip onFlameContact;
+	[Range(0,PlayerHealth.DEFAULT_HEALTH)]
+	[SerializeField] int flameDamage = 50;
 
 	void OnTriggerEnter(Collider other)
 	{
 		if( other.CompareTag("Player") )
 		{
 			GetComponent<AudioSource>().PlayOneShot(onFlameContact);
-			other.GetComponent<PlayerControl>().killPlayer ( DeathType.Flame );
+			other.GetComponent<PlayerHealth>().deductHealth( flameDamage );
 		}
 	}
 
