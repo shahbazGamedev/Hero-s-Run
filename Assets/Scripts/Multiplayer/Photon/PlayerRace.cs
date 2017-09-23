@@ -74,7 +74,6 @@ public class PlayerRace : Photon.PunBehaviour
 			PlayerRaceManager.Instance.setRaceStatus( RaceStatus.NOT_STARTED );
 			players.Clear();
 			officialRacePositionList.Clear();
-			LevelManager.Instance.distanceTravelled = 0;
 			turnRibbonHandler = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
 		}
  		if (!players.Contains (this))
@@ -235,14 +234,12 @@ public class PlayerRace : Photon.PunBehaviour
 	}
 	#endregion
 
-	//Only calculated on master client
 	void updateDistanceTravelled()
 	{
 		//Do not take height into consideration for distance travelled
 		Vector3 current = new Vector3(transform.position.x, 0, transform.position.z);
 		Vector3 previous = new Vector3(previousPlayerPosition.x, 0, previousPlayerPosition.z);
 		distanceTravelled = distanceTravelled + Vector3.Distance( current, previous );
-		if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) LevelManager.Instance.distanceTravelled = distanceTravelled;
 		previousPlayerPosition = transform.position;
 	}
 
@@ -254,7 +251,7 @@ public class PlayerRace : Photon.PunBehaviour
 			{
 				//Player has reached the finish line
 				playerCrossedFinishLine = true;
-				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllViaServer, raceDuration, distanceTravelled, racePosition );
+				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllViaServer, raceDuration, racePosition );
 
 				if( PhotonNetwork.isMasterClient )
 				{
@@ -366,11 +363,11 @@ public class PlayerRace : Photon.PunBehaviour
 	//This method is called when the player has crossed the finish line to let the client know the official race duration and distance travelled
 	//as calculated by the MasterClient.
 	[PunRPC]
-	void OnRaceCompleted( float raceDuration, float distanceTravelled, int officialRacePosition )
+	void OnRaceCompleted( float raceDuration, int officialRacePosition )
     {
 		Debug.Log("PlayerRace: OnRaceCompleted RPC received for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient +
 			" isMine: " + this.photonView.isMine +
-			" raceDuration: " + raceDuration + " distanceTravelled: " + distanceTravelled + " officialRacePosition: " + officialRacePosition );
+			" raceDuration: " + raceDuration + " officialRacePosition: " + officialRacePosition );
 
 		//Cancel all spell effects
 		GetComponent<PlayerSpell>().cancelAllSpells();
@@ -402,7 +399,8 @@ public class PlayerRace : Photon.PunBehaviour
 				if( racePosition == 0 ) HUDMultiplayer.hudMultiplayer.activateUserMessage( victory, 0, 2.25f );
 				HUDMultiplayer.hudMultiplayer.updateRacePosition(officialRacePosition + 1);
 				GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
-				PlayerRaceManager.Instance.playerCompletedRace( (officialRacePosition + 1), raceDuration, distanceTravelled, GetComponent<PlayerControl>().getNumberOfTimesDiedDuringRace() );
+				GenerateLevel generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
+				PlayerRaceManager.Instance.playerCompletedRace( (officialRacePosition + 1), raceDuration, generateLevel.levelLengthInMeters, GetComponent<PlayerControl>().getNumberOfTimesDiedDuringRace() );
 			}
 		}		
     }

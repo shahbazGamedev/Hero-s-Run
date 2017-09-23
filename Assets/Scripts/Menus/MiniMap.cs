@@ -53,7 +53,6 @@ public class MiniMap : MonoBehaviour {
 		tileSize = LevelManager.Instance.getSelectedCircuit().tileSize;
 	}
 
-	// Use this for initialization
 	public void registerLocalPlayer ( Transform player )
 	{
 		this.player = player;

@@ -80,7 +80,8 @@ public class PlayerInputRPC : PunBehaviour {
 		transform.eulerAngles = new Vector3( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z );
 		//We may have switched lanes because of the position change. Make sure the lane values are accurate.
 		playerControl.recalculateCurrentLane();
-
+		//Important: assumes all tiles in between the TX and RX teleporters have a depth of one.
+		playerControl.tileDistanceTraveled = playerControl.tileDistanceTraveled + numberOfTilesSkippedBecauseOfTeleportation * GenerateLevel.tileSize;
 		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.TELEPORTER, gameObject );
 		lsa.param1 = destinationRotationY;
 		lsa.param2 = numberOfTilesSkippedBecauseOfTeleportation;

@@ -42,7 +42,6 @@ public class LevelManager {
 	public int selectedBotHeroIndex; //index for botHeroCharacterList in HeroManager. Used when in the PlayAgainstEnemy mode.
 	public int selectedBotHeroIndex2; //index for botHeroCharacterList in HeroManager. Used when in the PlayAgainstTwoEnemies mode.
 	public ChatMessageHandler.MatchData matchData;
-	public float distanceTravelled = 0; //See PlayerRace. This value is displayed in the HUD.
 	public bool isRecordingSelected = false; //True if the race should be recorded using ReplayKit
 
 	public static LevelManager Instance

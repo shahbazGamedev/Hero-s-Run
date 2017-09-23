@@ -22,6 +22,8 @@ public class HUDMultiplayer : MonoBehaviour {
 	const float DELAY_BEFORE_COUNTDOWN_STARTS = 5f;
 	const float DELAY_WHEN_NOT_SHOWING_EMOTES = 8f;
 	const float DELAY_WHEN_SHOWING_EMOTES = 11f;
+	PlayerRace localPlayerRace;
+	PlayerControl localPlayerControl;
 	[Header("Distance Remaining")]
 	[SerializeField] GameObject canvasGroupForFading;
 	[SerializeField] Image distanceRemainingCounterRed;  //Radial 360 image
@@ -77,6 +79,12 @@ public class HUDMultiplayer : MonoBehaviour {
 
 		userMessageText.gameObject.SetActive( false );
 		canvasGroupForFading.SetActive( false );
+	}
+
+	public void registerLocalPlayer ( Transform localPlayer )
+	{
+		localPlayerRace = localPlayer.GetComponent<PlayerRace>();
+		localPlayerControl = localPlayer.GetComponent<PlayerControl>();
 	}
 
 	public HealthBarHandler getHealthBarHandler()
@@ -205,17 +213,6 @@ public class HUDMultiplayer : MonoBehaviour {
 		float elapsedTime = 0;
 		float startTimeScale = 1f;
 
-		//Get a reference to the local player
-		PlayerRace localPlayerRace = null;
-		for(int i=0; i<PlayerRace.players.Count;i++)
-		{
-			if( PlayerRace.players[i].GetComponent<PhotonView>().isMine && PlayerRace.players[i].GetComponent<PlayerAI>() == null )
-			{
-			 	localPlayerRace = PlayerRace.players[i];
-				break;
-			}
-		}
-
 		//If the local player has crossed the finish line, don't delay any further and leave the room.
 		if( localPlayerRace.playerCrossedFinishLine )
 		{
@@ -294,10 +291,11 @@ public class HUDMultiplayer : MonoBehaviour {
 	void Update()
 	{
 		if( debugInfoType != DebugInfoType.NONE ) debugInfo.text = getDebugInfo();
-		float distance = generateLevel.levelLengthInMeters - LevelManager.Instance.distanceTravelled;
-		if( distance < 0 ) distance = 0; //Added as a safeguard.
-		distanceText.text = distance.ToString("N0") + " <color=#FF396D><size=32><sub>M</sub></size></color>";
-		distanceRemainingCounterRed.fillAmount = LevelManager.Instance.distanceTravelled/generateLevel.levelLengthInMeters;
+
+		float distance = generateLevel.levelLengthInMeters - ( localPlayerControl.tileDistanceTraveled + localPlayerRace.distanceTravelled );
+		if( distance <= 0.5f ) distance = 0; //Added as a safeguard.
+		distanceText.text = distance.ToString("N0") + " <color=#FF396D><size=36><sub>M</sub></size></color>";
+		distanceRemainingCounterRed.fillAmount = distance/generateLevel.levelLengthInMeters;
 	}
 
 	string getDebugInfo()

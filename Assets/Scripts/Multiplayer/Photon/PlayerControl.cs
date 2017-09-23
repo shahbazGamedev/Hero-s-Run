@@ -205,6 +205,10 @@ public class PlayerControl : Photon.PunBehaviour {
 	Coroutine angledTurnCoroutine = null;
 	#endregion
 
+	#region Related to distance remaining
+	public float tileDistanceTraveled = 0;
+	#endregion
+
 	void Awake ()
 	{
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
@@ -2011,8 +2015,22 @@ public class PlayerControl : Photon.PunBehaviour {
 					//This flag is set to avoid tileEntranceCrossed being called multiple time which can happen with onTriggerEnter.
 					//This flag is set to false when a tile is added.
 					si.entranceCrossed = true;
-					//Not great, but at least guarantees arriving at the finish line with 0 meters left on the meter in the HUD.
-					if( si.tileType == TileType.End ) playerRace.distanceTravelled = generateLevel.levelLengthInMeters - 29f;
+					//The distance remaining displayed on the HUD is equal to: The length of the level - the total distance traveled by the player.
+					//The total distance traveled by the player is equal to the distance traveled for all previous tiles plus the distance traveled on the current tile.
+					//The distance traveled for all previous tiles is maintained by PlayerControl because it gets updated each time an entrance is crossed.
+					//The distance traveled on the current tile is maintained in PlayerRace.
+					playerRace.distanceTravelled = 0;
+					int previousTileDepth = currentTile.GetComponent<SegmentInfo>().tileDepth;
+					TileType previousTileType = currentTile.GetComponent<SegmentInfo>().tileType;
+					//Note: see Teleporter class for how teleporters affect tile distance traveled
+					if( previousTileType == TileType.Start )
+					{
+						tileDistanceTraveled = tileDistanceTraveled + GenerateLevel.tileSize * 0.5f;
+					}
+					else
+					{
+						tileDistanceTraveled = tileDistanceTraveled + GenerateLevel.tileSize * previousTileDepth;
+					}
 					//Every time a new tile is entered, force synchronization
 					forcePositionSynchronization();
 				}
