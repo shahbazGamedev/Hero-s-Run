@@ -205,7 +205,7 @@ public class TreasureIslandManager : MonoBehaviour {
 		if( chest.IsOpened()  ) return;
 
 		//Only continue if the player has a key or else, display a message on how he can get a key
-		if( PlayerStatsManager.Instance.getTreasureKeysOwned() > 0 || PlayerStatsManager.Instance.getHasInfiniteTreasureIslandKeys() )
+		if( PlayerStatsManager.Instance.getTreasureKeysOwned() > 0 )
 		{
 			chest.Unlock();
 			if( forceChestGiftType ==ChestGiftType.None )

@@ -33,7 +33,8 @@ public class UserNameHandler : MonoBehaviour {
 		}
 
 		Debug.Log("User Name is : " + userNameText.text );
-		PlayerStatsManager.Instance.setFirstTimePlaying( false );
+		GameManager.Instance.playerConfiguration.setFirstTimePlaying( false );
+		GameManager.Instance.playerConfiguration.serializePlayerConfiguration( false );
 		GameManager.Instance.playerProfile.saveUserName( userNameText.text );
 		//Now that we have a user name, we can connect to chat.
 		ChatManager.Instance.ChatConnect();

@@ -13,6 +13,7 @@ public class PlayerDataManager : MonoBehaviour {
 	public PlayerInventory playerInventory;
 	public PlayerIcons playerIcons;
 	public PlayerVoiceLines playerVoiceLines;
+	public PlayerConfiguration playerConfiguration;
 	public PlayerDebugConfiguration playerDebugConfiguration;
 
 	// Use this for initialization
@@ -123,6 +124,17 @@ public class PlayerDataManager : MonoBehaviour {
 			
 		}
 		GameManager.Instance.playerVoiceLines = playerVoiceLines;
+
+		if( PlayerStatsManager.Instance.getPlayerConfiguration() != string.Empty )
+		{
+			 playerConfiguration = JsonUtility.FromJson<PlayerConfiguration>(PlayerStatsManager.Instance.getPlayerConfiguration());
+		}
+		else
+		{
+			playerConfiguration = new PlayerConfiguration();
+			playerConfiguration.createNewConfiguration();
+		}
+		GameManager.Instance.playerConfiguration = playerConfiguration;
 
 		if( PlayerStatsManager.Instance.getDebugConfiguration() != string.Empty )
 		{

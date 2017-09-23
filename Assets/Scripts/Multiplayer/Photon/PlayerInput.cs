@@ -26,7 +26,7 @@ public class PlayerInput : PunBehaviour {
 		if( !this.photonView.isMine ) this.enabled = false;
 		playerControl = GetComponent<PlayerControl>();
 		calculateMinimumSwipeDistance();
-		isTiltingEnabled = PlayerStatsManager.Instance.getTiltEnabled();
+		isTiltingEnabled = GameManager.Instance.playerConfiguration.getTiltEnabled();
 	}
 	
 	//Calculate the minimum swipe distance in pixels.

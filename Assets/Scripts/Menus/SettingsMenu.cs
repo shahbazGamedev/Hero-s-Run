@@ -52,7 +52,7 @@ public class SettingsMenu : MonoBehaviour {
 			facebookText.text = LocalizationManager.Instance.getText("MENU_LOGGED_OUT");
 		}
 		achievementsText.text = LocalizationManager.Instance.getText("MENU_ACHIEVEMENTS");
-		if( PlayerStatsManager.Instance.getTiltEnabled() )
+		if( GameManager.Instance.playerConfiguration.getTiltEnabled() )
 		{
 			enableTiltText.text = LocalizationManager.Instance.getText("MENU_TILT_ENABLED");
 		}
@@ -66,8 +66,8 @@ public class SettingsMenu : MonoBehaviour {
 		optionsScrollView.horizontal = Debug.isDebugBuild;
 		dotsPanel.SetActive( Debug.isDebugBuild );
 
-		soundFxVolumeSlider.value = PlayerStatsManager.Instance.getSoundFxVolume();
-		musicVolumeSlider.value = PlayerStatsManager.Instance.getMusicVolume();
+		soundFxVolumeSlider.value = GameManager.Instance.playerConfiguration.getSoundFxVolume();
+		musicVolumeSlider.value = GameManager.Instance.playerConfiguration.getMusicVolume();
 	}
 
 	public void OnClickReturnToMainMenu()
@@ -79,13 +79,13 @@ public class SettingsMenu : MonoBehaviour {
 
 	public void setSoundFxVolume( Slider volume )
 	{
-		PlayerStatsManager.Instance.setSoundFxVolume(volume.value);
+		GameManager.Instance.playerConfiguration.setSoundFxVolume(volume.value);
 		mainMixer.SetFloat( "SoundEffectsVolume", volume.value );
 	}
 
 	public void setMusicVolume( Slider volume )
 	{
-		PlayerStatsManager.Instance.setMusicVolume(volume.value);
+		GameManager.Instance.playerConfiguration.setMusicVolume(volume.value);
 		mainMixer.SetFloat( "MusicVolume", volume.value );
 	}
 
@@ -115,8 +115,8 @@ public class SettingsMenu : MonoBehaviour {
 	{
 		Debug.Log("OnClickToggleTilt");
 		UISoundManager.uiSoundManager.playButtonClick();
-		PlayerStatsManager.Instance.setEnableTilt( !PlayerStatsManager.Instance.getTiltEnabled() );
-		if( PlayerStatsManager.Instance.getTiltEnabled() )
+		GameManager.Instance.playerConfiguration.setEnableTilt( !GameManager.Instance.playerConfiguration.getTiltEnabled() );
+		if( GameManager.Instance.playerConfiguration.getTiltEnabled() )
 		{
 			enableTiltText.text = LocalizationManager.Instance.getText("MENU_TILT_ENABLED");
 		}
@@ -135,6 +135,7 @@ public class SettingsMenu : MonoBehaviour {
 
 	void OnSceneUnloaded( Scene scene )
 	{
+		GameManager.Instance.playerConfiguration.serializePlayerConfiguration( false );
 		PlayerStatsManager.Instance.savePlayerStats();
 		SceneManager.sceneUnloaded -= OnSceneUnloaded;
 	}

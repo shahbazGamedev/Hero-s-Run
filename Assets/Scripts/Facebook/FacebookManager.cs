@@ -179,8 +179,8 @@ public class FacebookManager
 		firstName = null;
 		FBUserId = string.Empty;
 		playerPortrait = null;
-		PlayerStatsManager.Instance.setUsesFacebook( false );
-		PlayerStatsManager.Instance.savePlayerStats();
+		GameManager.Instance.playerConfiguration.setUsesFacebook( false );
+		GameManager.Instance.playerConfiguration.serializePlayerConfiguration( true );
 		setFacebookState(FacebookState.LoggedOut);
 	}
 

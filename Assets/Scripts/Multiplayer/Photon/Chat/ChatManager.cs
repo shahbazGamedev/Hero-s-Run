@@ -42,7 +42,7 @@ public class ChatManager : PunBehaviour, IChatClientListener {
 	{
 		//If this is a new player, don't try to connect to chat yet as we don't have a user name.
 		//We will connect to chat when a user name has been entered.
-		if( PlayerStatsManager.Instance.isFirstTimePlaying() ) return;
+		if( GameManager.Instance.playerConfiguration.isFirstTimePlaying() ) return;
 
 		//Verify that the mandatory Photon Chat App Id is configured
 		if (string.IsNullOrEmpty(PhotonNetwork.PhotonServerSettings.ChatAppID))

@@ -37,8 +37,8 @@ public class FacebookConnectionHandler : MonoBehaviour {
 		CancelInvoke();
 		if( Application.internetReachability != NetworkReachability.NotReachable )
 		{
-			PlayerStatsManager.Instance.setUsesFacebook( true );
-			PlayerStatsManager.Instance.savePlayerStats();
+			GameManager.Instance.playerConfiguration.setUsesFacebook( true );
+			GameManager.Instance.playerConfiguration.serializePlayerConfiguration( true );
 			FacebookManager.Instance.CallFBInit();
 		}
 		else

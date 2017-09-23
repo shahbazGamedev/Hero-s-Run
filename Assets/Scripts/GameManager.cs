@@ -93,6 +93,7 @@ public class GameManager {
 	public PlayerInventory playerInventory;
 	public PlayerIcons playerIcons;
 	public PlayerVoiceLines playerVoiceLines;
+	public PlayerConfiguration playerConfiguration;
 	public PlayerDebugConfiguration playerDebugConfiguration;
 	PlayMode playMode = PlayMode.PlayTwoPlayers;
 

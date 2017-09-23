@@ -35,20 +35,10 @@ public class PlayerStatsManager {
 	//The index is the episode number. The value is the score for that episode (sum of coins collected and distance run). The initial values are 0.
 	int[] highScoreArray = new int[LevelData.NUMBER_OF_EPISODES];
 	float distanceTravelled = 0;
-	bool firstTimePlaying = true;
 	bool sharedOnFacebook = false;	//Has the player shared an image on Facebook?
 
 	int lives = 0;
 	const int INITIAL_NUMBER_LIVES = 6;
-
-	//If the user has logged in with Facebook this value is true, if he is logged in as guest, this value is false.
-	bool usesFacebook = false;
-
-	//If true, tilting the device will allow the player to switch lanes or turn corners
-	bool isTiltEnabled = false;
-
-	//DateTime when player last started WorldMapHandler
-	DateTime dateLastPlayed;
 
 	//For stats and achievements
 	static EventCounter novice_runner = new EventCounter( GameCenterManager.NoviceRunner, 1, CounterType.Total_any_level, 1000 );
@@ -65,11 +55,6 @@ public class PlayerStatsManager {
 	//By default, the upgrade level for each is 0.
 	//Format is : PowerUpType,quantity,upgrade level
 	const string defaultPowerUpsForNewPlayer = "1,0,0,2,0,0,3,3,0,4,3,0,5,3,0,6,3,0";
-	
-	//Sound effects volume between -80db and 0f.
-	float soundFxVolume = 0f;
-	//Music volume between -80db and 0f.
-	float musicVolume = 0f;
 
 	//The number of times the player was revived for the current run.
 	//This is used to calculate the cost to revive since the cost increases by one each time the player is revived.
@@ -86,11 +71,6 @@ public class PlayerStatsManager {
 	int[] deathInEpisodesArray = new int[LevelData.NUMBER_OF_EPISODES];
 
 	List<string> treasureKeysFound = new List<string>();
-
-	//For debugging
-	//Cheat
-	bool hasInfiniteLives = false;
-	bool hasInfiniteTreasureIslandKeys = false;
 
 	PowerUpType powerUpSelected = PowerUpType.MagicBoots;
 	//The avatar the player has chosen in the character selection screen. 
@@ -111,6 +91,7 @@ public class PlayerStatsManager {
 	string playerInventory = String.Empty; //List of the player's inventory including gem balance.
 	string playerIcons = String.Empty; //List of the player icons available in the game. Include both locked and unlocked icons.
 	string voiceLines = String.Empty; //List of the voice lines available in the game. Include both locked and unlocked voice lines.
+	string playerConfiguration = String.Empty; //Player configuration such as sound FX volume, music volume, etc.
 	string debugConfiguration = String.Empty; //Debug configuration. See Debug menu for the various options.
 
 	public static PlayerStatsManager Instance
@@ -136,18 +117,6 @@ public class PlayerStatsManager {
 			novice_runner.incrementCounter();
 		}
 
-	}
-
-	//For debugging
-	//Cheat
-	public bool getHasInfiniteLives()
-	{
-		return hasInfiniteLives;
-	}
-
-	public bool getHasInfiniteTreasureIslandKeys()
-	{
-		return hasInfiniteTreasureIslandKeys;
 	}
 	
 	public Avatar getAvatar()
@@ -238,16 +207,6 @@ public class PlayerStatsManager {
 	public void resetDistanceTravelled()
 	{
 		distanceTravelled = 0;
-	}
-
-	public void setDateLastPlayed()
-	{
-		dateLastPlayed = DateTime.Now;
-	}
-
-	public DateTime getDateLastPlayed()
-	{
-		return dateLastPlayed;
 	}
 
 	//The name of the coin indicates how many coins to give
@@ -641,17 +600,6 @@ public class PlayerStatsManager {
 		return treasureKeysFound.Contains( treasureKeyID );
 	}
 
-	//Used to identify if the player is a new user and it is his first time launching the game
-	public bool isFirstTimePlaying()
-	{
-		return firstTimePlaying;
-	}
-
-	public void setFirstTimePlaying( bool value )
-	{
-		firstTimePlaying = value;
-	}
-
 	public void setSharedOnFacebook( bool value )
 	{
 		sharedOnFacebook = value;
@@ -671,46 +619,6 @@ public class PlayerStatsManager {
 	public bool getOwnsCoinDoubler()
 	{
 		return ownsCoinDoubler;
-	}
-
-	public float getMusicVolume()
-	{
-		return musicVolume;
-	}
-	
-	public void setMusicVolume( float volume )
-	{
-		musicVolume = volume;
-	}
-
-	public float getSoundFxVolume()
-	{
-		return soundFxVolume;
-	}
-	
-	public void setSoundFxVolume( float volume )
-	{
-		soundFxVolume = volume;
-	}
-
-	public void setUsesFacebook( bool value )
-	{
-		usesFacebook = value;
-	}
-	
-	public bool getUsesFacebook()
-	{
-		return usesFacebook;
-	}
-
-	public void setEnableTilt( bool value )
-	{
-		isTiltEnabled = value;
-	}
-	
-	public bool getTiltEnabled()
-	{
-		return isTiltEnabled;
 	}
 
 	void setLives( int value )
@@ -975,6 +883,16 @@ public class PlayerStatsManager {
 		return voiceLines;
 	}
 
+	public void setPlayerConfiguration( string playerConfiguration )
+	{
+		this.playerConfiguration = playerConfiguration;
+	}
+
+	public string getPlayerConfiguration()
+	{
+		return playerConfiguration;
+	}
+
 	public void setDebugConfiguration( string debugConfiguration )
 	{
 		this.debugConfiguration = debugConfiguration;
@@ -1006,15 +924,6 @@ public class PlayerStatsManager {
 			}
 			setLives( PlayerPrefs.GetInt("Lives", INITIAL_NUMBER_LIVES) );
 			setTreasureKeysOwned( PlayerPrefs.GetInt("treasureKeysOwned", 0) );
-			string firstTimePlayingString = PlayerPrefs.GetString("First Time Playing", "true" );
-			if( firstTimePlayingString == "true" )
-			{
-				firstTimePlaying = true;
-			}
-			else
-			{
-				firstTimePlaying = false;	
-			}
 			string sharedOnFacebookString = PlayerPrefs.GetString("sharedOnFacebook", "false" );
 			if( sharedOnFacebookString == "true" )
 			{
@@ -1034,36 +943,6 @@ public class PlayerStatsManager {
 				setOwnsCoinDoubler( false );
 			}
 
-			string usesFacebookString = PlayerPrefs.GetString("usesFacebook", "false" );
-			if( usesFacebookString == "true" )
-			{
-				usesFacebook = true;
-			}
-			else
-			{
-				usesFacebook = false;	
-			}
-			string isTiltEnabledString = PlayerPrefs.GetString("isTiltEnabled", "false" );
-			if( isTiltEnabledString == "true" )
-			{
-				isTiltEnabled = true;
-			}
-			else
-			{
-				isTiltEnabled = false;	
-			}
-			string dateLastPlayedString = PlayerPrefs.GetString( "dateLastPlayed", "" );
-			if( dateLastPlayedString == "" )
-			{
-				dateLastPlayed = DateTime.Now;
-			}
-			else
-			{
-				dateLastPlayed = DateTime.Parse( dateLastPlayedString );
-			}
-
-			setSoundFxVolume( PlayerPrefs.GetFloat("soundFxVolume", 0f ) );
-			setMusicVolume( PlayerPrefs.GetFloat("musicVolume", 0f ) );
 			currentCoins = PlayerPrefs.GetInt("currentCoins", 0);
 			lifetimeCoins = PlayerPrefs.GetInt("lifetimeCoins", 0);
 			loadDisplayStars();
@@ -1084,8 +963,8 @@ public class PlayerStatsManager {
 			playerInventory = PlayerPrefs.GetString("playerInventory", "" );
 			playerIcons = PlayerPrefs.GetString("playerIcons", "" );
 			voiceLines = PlayerPrefs.GetString("voiceLines", "" );
+			playerConfiguration = PlayerPrefs.GetString("playerConfiguration", "" );
 			debugConfiguration = PlayerPrefs.GetString("debugConfiguration", "" );
-			//Debug.Log ("loadPlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " Next Episode To Complete: " + nextEpisodeToComplete + " Highest Episode Completed: " + highestEpisodeCompleted + " Finished game: " + LevelManager.Instance.getPlayerFinishedTheGame() + " Lives: " + lives + " Date Last Played: " + dateLastPlayed + " difficultyLevel " + difficultyLevel + " treasureKeysOwned " + treasureKeysOwned );
 		}
 		catch (Exception e)
 		{
@@ -1109,14 +988,6 @@ public class PlayerStatsManager {
 		{
 			PlayerPrefs.SetString( "Finished Game", "false" );
 		}
-		if( firstTimePlaying )
-		{
-			PlayerPrefs.SetString( "First Time Playing", "true" );
-		}
-		else
-		{
-			PlayerPrefs.SetString( "First Time Playing", "false" );
-		}
 		if( sharedOnFacebook )
 		{
 			PlayerPrefs.SetString( "sharedOnFacebook", "true" );
@@ -1133,26 +1004,6 @@ public class PlayerStatsManager {
 		{
 			PlayerPrefs.SetString( "ownsCoinDoubler", "false" );
 		}
-		if( usesFacebook )
-		{
-			PlayerPrefs.SetString( "usesFacebook", "true" );
-		}
-		else
-		{
-			PlayerPrefs.SetString( "usesFacebook", "false" );
-		}
-		if( isTiltEnabled )
-		{
-			PlayerPrefs.SetString( "isTiltEnabled", "true" );
-		}
-		else
-		{
-			PlayerPrefs.SetString( "isTiltEnabled", "false" );
-		}
-		PlayerPrefs.SetString( "dateLastPlayed", dateLastPlayed.ToString() );
-
-		PlayerPrefs.SetFloat("soundFxVolume", soundFxVolume );
-		PlayerPrefs.SetFloat("musicVolume", musicVolume );
 
 		PlayerPrefs.SetInt("currentCoins", currentCoins );
 		PlayerPrefs.SetInt("lifetimeCoins", lifetimeCoins );
@@ -1173,9 +1024,9 @@ public class PlayerStatsManager {
 		PlayerPrefs.SetString( "playerInventory", playerInventory );
 		PlayerPrefs.SetString( "playerIcons", playerIcons );
 		PlayerPrefs.SetString( "voiceLines", voiceLines );
+		PlayerPrefs.SetString( "playerConfiguration", playerConfiguration );
 		PlayerPrefs.SetString( "debugConfiguration", debugConfiguration );
 		PlayerPrefs.Save();
-		//Debug.Log ("savePlayerStats-firstTimePlaying: " + firstTimePlaying + " ownsCoinDoubler: " + ownsCoinDoubler + " usesFacebook: "  + usesFacebook + " Date Last Played: " + dateLastPlayed );
 	}
 	
 	//Used for debugging

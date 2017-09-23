@@ -28,7 +28,7 @@ public class MainMenu : MonoBehaviour {
 		updateNumberOfPlayerIcons();
 		//If this is a new user, display the user name panel.
 		//Entering a user name is mandatory.
-		if( PlayerStatsManager.Instance.isFirstTimePlaying() )
+		if( GameManager.Instance.playerConfiguration.isFirstTimePlaying() )
 		{
 			gameObject.SetActive( false ); //To increase legibility, hide the main menu and top bar while the user name panel is played.
 			UniversalTopBar.Instance.showTopBar( false );
