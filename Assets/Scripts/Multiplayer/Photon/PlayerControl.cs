@@ -206,7 +206,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Related to distance remaining
-	public float tileDistanceTraveled = 0;
+	public float tileDistanceTraveled = 0; //Note that this value is NOT updated for bots.
 	#endregion
 
 	void Awake ()
@@ -2008,12 +2008,13 @@ public class PlayerControl : Photon.PunBehaviour {
 			SegmentInfo si = other.transform.parent.GetComponent<SegmentInfo>();
 			if( si != null )
 			{
-				if( !si.entranceCrossed )
+				if( !si.entranceCrossed && photonView.isMine && playerAI == null )
 				{
 					//We might recycle currentTile (the one prior to the one we just entered), this is why we are passing it as a parameter.
 					generateLevel.tileEntranceCrossed( other.transform.parent );
 					//This flag is set to avoid tileEntranceCrossed being called multiple time which can happen with onTriggerEnter.
 					//This flag is set to false when a tile is added.
+					//Only the local player (not bots and not remote players) should set this flag.
 					si.entranceCrossed = true;
 					//The distance remaining displayed on the HUD is equal to: The length of the level - the total distance traveled by the player.
 					//The total distance traveled by the player is equal to the distance traveled for all previous tiles plus the distance traveled on the current tile.
