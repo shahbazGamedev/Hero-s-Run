@@ -907,54 +907,6 @@ public class PlayerStatsManager {
 	{
 		try
 		{
-			int nextEpisodeToComplete = PlayerPrefs.GetInt("Next Episode To Complete", 0 );
-			LevelManager.Instance.setNextEpisodeToComplete( nextEpisodeToComplete );
-			GameMode savedGameMode = (GameMode)PlayerPrefs.GetInt("Game Mode", (int)GameMode.Story);
-			GameManager.Instance.setGameMode( savedGameMode );
-			int highestEpisodeCompleted = PlayerPrefs.GetInt("Highest Episode Completed", 0 );
-			LevelManager.Instance.setHighestEpisodeCompleted( highestEpisodeCompleted );
-			string playerFinishedTheGameString = PlayerPrefs.GetString("Finished Game", "false" );
-			if( playerFinishedTheGameString == "true" )
-			{
-				LevelManager.Instance.setPlayerFinishedTheGame( true );
-			}
-			else
-			{
-				LevelManager.Instance.setPlayerFinishedTheGame( false );
-			}
-			setLives( PlayerPrefs.GetInt("Lives", INITIAL_NUMBER_LIVES) );
-			setTreasureKeysOwned( PlayerPrefs.GetInt("treasureKeysOwned", 0) );
-			string sharedOnFacebookString = PlayerPrefs.GetString("sharedOnFacebook", "false" );
-			if( sharedOnFacebookString == "true" )
-			{
-				sharedOnFacebook = true;
-			}
-			else
-			{
-				sharedOnFacebook = false;	
-			}
-			string ownsCoinDoublerString = PlayerPrefs.GetString("ownsCoinDoubler", "false" );
-			if( ownsCoinDoublerString == "true" )
-			{
-				setOwnsCoinDoubler( true );
-			}
-			else
-			{
-				setOwnsCoinDoubler( false );
-			}
-
-			currentCoins = PlayerPrefs.GetInt("currentCoins", 0);
-			lifetimeCoins = PlayerPrefs.GetInt("lifetimeCoins", 0);
-			loadDisplayStars();
-			loadHighScores();
-			loadDeathInEpisodes();
-			loadKeysFoundInEpisode();
-			loadTreasureKeysFound();
-			powerUpSelected = (PowerUpType)PlayerPrefs.GetInt("powerUpSelected", (int)PowerUpType.SlowTime);
-			avatar = (Avatar)PlayerPrefs.GetInt("avatar", (int)Avatar.None);
-			loadPowerUpInventory();
-			challenges = PlayerPrefs.GetString("challenges", "" );
-			journalEntries = PlayerPrefs.GetString("journalEntries", "" );
 			playerProfile = PlayerPrefs.GetString("playerProfile", "" );
 			playerStatistics = PlayerPrefs.GetString("playerStatistics", "" );
 			playerDeck = PlayerPrefs.GetString("playerDeck", "" );
@@ -975,47 +927,6 @@ public class PlayerStatsManager {
 	
 	public void savePlayerStats()
 	{
-		PlayerPrefs.SetInt("Next Episode To Complete", LevelManager.Instance.getNextEpisodeToComplete() );
-		PlayerPrefs.SetInt("Game Mode", (int) GameManager.Instance.getGameMode() );
-		PlayerPrefs.SetInt("Highest Episode Completed", LevelManager.Instance.getHighestEpisodeCompleted() );
-		PlayerPrefs.SetInt("Lives", lives );
-		PlayerPrefs.SetInt("treasureKeysOwned", treasureKeysOwned );
-		if( LevelManager.Instance.getPlayerFinishedTheGame() )
-		{
-			PlayerPrefs.SetString( "Finished Game", "true" );
-		}
-		else
-		{
-			PlayerPrefs.SetString( "Finished Game", "false" );
-		}
-		if( sharedOnFacebook )
-		{
-			PlayerPrefs.SetString( "sharedOnFacebook", "true" );
-		}
-		else
-		{
-			PlayerPrefs.SetString( "sharedOnFacebook", "false" );
-		}
-		if( ownsCoinDoubler )
-		{
-			PlayerPrefs.SetString( "ownsCoinDoubler", "true" );
-		}
-		else
-		{
-			PlayerPrefs.SetString( "ownsCoinDoubler", "false" );
-		}
-
-		PlayerPrefs.SetInt("currentCoins", currentCoins );
-		PlayerPrefs.SetInt("lifetimeCoins", lifetimeCoins );
-		saveDisplayStars();
-		saveHighScores();
-		saveDeathInEpisodes();
-		saveKeysFoundInEpisode();
-		saveTreasureKeysFound();
-		PlayerPrefs.SetInt("powerUpSelected", (int)powerUpSelected );
-		PlayerPrefs.SetInt("avatar", (int)avatar );
-		savePowerUpInventory();
-		PlayerPrefs.SetString( "challenges", challenges );
 		PlayerPrefs.SetString( "playerProfile", playerProfile );
 		PlayerPrefs.SetString( "playerStatistics", playerStatistics );
 		PlayerPrefs.SetString( "playerDeck", playerDeck );
