@@ -1829,6 +1829,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//For example, if you die during a double jump, after you get resurrected and start running again, if you do another double jump, only part of the double jump animation will play, never the full animation.
 			anim.Rebind();
 			//Make player fall from sky, land and start running again
+			enablePlayerMovement( true );
 			fall( true );
 		}
 		else

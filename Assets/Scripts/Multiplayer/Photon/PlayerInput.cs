@@ -39,12 +39,12 @@ public class PlayerInput : PunBehaviour {
 
 	void Update()
 	{
+		#if UNITY_EDITOR
+		handleKeyboard();
+		#endif
+
 		if( playerControl.isPlayerControlEnabled() )
 		{
-			#if UNITY_EDITOR
-			handleKeyboard();
-			#endif
-	
 			//Handle accelerometer. If you tilt left or right quickly, you can change lanes.
 			handleAccelerometer();
 	
