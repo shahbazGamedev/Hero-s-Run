@@ -11,6 +11,10 @@ public class StasisController : CardSpawnedObject {
 	PlayerControl affectedPlayerControl;
 	const float DISTANCE_ABOVE_GROUND = 3.5f;
 	const float Y_POS_PLAYER_IN_SPHERE = -0.35f;
+	//if you tap quickly on the Stasis sphere, you can break free without waiting for the spell expires.
+	public int tapsDetected = 0;
+	public int tapsRequiredToBreakStasis = 3;
+	Coroutine destroyStasisSphereCoroutine;
 
 	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
@@ -77,12 +81,14 @@ public class StasisController : CardSpawnedObject {
 				//The Stasis Sphere has a limited lifespan which depends on the level of the Card.
 				float spellDuration = (float) data[1];
 				affectedPlayerTransform.GetComponent<PlayerSpell>().displayCardTimerOnHUD(CardName.Stasis, spellDuration );
-				StartCoroutine( destroyStasisSphere( spellDuration ) );
+				destroyStasisSphereCoroutine = StartCoroutine( destroyStasisSphere( spellDuration * 100 ) );
 
 				//Display the Stasis secondary icon on the minimap
 				MiniMap.Instance.displaySecondaryIcon( affectedPlayerTransform.GetComponent<PhotonView>().viewID, (int) CardName.Stasis, spellDuration );
 
 				//We can now make the sphere visible and collidable
+				//In order to detect taps/mouse-clicks properly, we need to change the layer to Default (it was Ignore Raycast).
+				gameObject.layer = 0; //Default is 0
 				GetComponent<SphereCollider>().enabled = true;
 				GetComponent<MeshRenderer>().enabled = true;
 				break;
@@ -102,6 +108,13 @@ public class StasisController : CardSpawnedObject {
 	IEnumerator destroyStasisSphere( float delayBeforeSpellExpires )
 	{
 		yield return new WaitForSeconds(delayBeforeSpellExpires);
+		destroyStasisSphereImmediately();
+	}
+
+	void destroyStasisSphereImmediately()
+	{
+		if( destroyStasisSphereCoroutine != null ) StopCoroutine( destroyStasisSphereCoroutine );
+
 		MiniMap.Instance.hideSecondaryIcon( affectedPlayerTransform.gameObject );
 		affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = false;
 		affectedPlayerTransform.GetComponent<Animator>().speed = 1f;
@@ -112,4 +125,59 @@ public class StasisController : CardSpawnedObject {
 		Destroy( gameObject );
 	}
 
+	void Update () {
+
+		if( affectedPlayerTransform == null ) return;
+
+		#if UNITY_EDITOR
+		// User pressed the left mouse up
+		if (Input.GetMouseButtonUp(0))
+		{
+			MouseButtonUp(0);
+		}
+		#else
+		detectTaps();
+		#endif
+	}
+
+	void MouseButtonUp(int Button)
+	{
+		validateTappedObject(Input.mousePosition);
+	}
+
+	void detectTaps()
+	{
+		if ( Input.touchCount > 0 )
+		{
+			Touch touch = Input.GetTouch(0);
+			if( touch.tapCount == 1 )
+			{
+				if( touch.phase == TouchPhase.Ended  )
+				{
+					validateTappedObject(Input.GetTouch(0).position);
+				}
+			}
+		}
+	}
+
+	void validateTappedObject( Vector2 touchPosition )
+	{
+		// We need to actually hit an object
+		RaycastHit hit;
+		if (Physics.Raycast(Camera.main.ScreenPointToRay(touchPosition), out hit, 10))
+		{
+			if ( hit.collider )
+			{
+				if( hit.collider.gameObject == gameObject )
+				{
+					tapsDetected++;
+					if( tapsDetected == tapsRequiredToBreakStasis )
+					{
+						print("Stasis broken ...");
+						destroyStasisSphereImmediately();
+					}
+				}
+			}
+		}
+	}
 }
