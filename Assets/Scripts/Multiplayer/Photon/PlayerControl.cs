@@ -184,6 +184,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	float PRONE_CAPSULE_CENTER_Y = 0.57f;
 	string tileWherePlayerDied = string.Empty;
 	int numberOfTimesDiedDuringRace = 0; //Used by PlayerStatistics to determine if the player had a perfect race, that is, he did not die a single time.
+	const float DELAY_BEFORE_RESURRECTING = 1.75f;
 	#endregion
 
 	#region Other variables
@@ -1656,11 +1657,11 @@ public class PlayerControl : Photon.PunBehaviour {
 	    switch (deathType)
 		{
 	        case DeathType.Cliff:
-				StartCoroutine( waitBeforeResurrecting(2f) );	
+				StartCoroutine( waitBeforeResurrecting(DELAY_BEFORE_RESURRECTING) );	
 				break;
 	                
 	        case DeathType.Enemy:
-				StartCoroutine( waitBeforeResurrecting(2f) );	
+				StartCoroutine( waitBeforeResurrecting(DELAY_BEFORE_RESURRECTING) );	
 				break;
 	                
 			case DeathType.Zombie:
@@ -1688,7 +1689,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				break;
 
 	        case DeathType.GreatFall:
-				StartCoroutine( waitBeforeResurrecting(2.5f) );
+				StartCoroutine( waitBeforeResurrecting(DELAY_BEFORE_RESURRECTING) );
 				break;
 
 			default:
@@ -1718,13 +1719,13 @@ public class PlayerControl : Photon.PunBehaviour {
 	public void death_completed ( AnimationEvent eve )
 	{
 		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.25f, 0.7f, 1f ) );
-		StartCoroutine( waitBeforeResurrecting(2f) );
+		StartCoroutine( waitBeforeResurrecting(DELAY_BEFORE_RESURRECTING) );
 	}
 
 	public void fall_forward_completed ( AnimationEvent eve )
 	{
 		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.25f, 0.7f, 1f ) );
-		StartCoroutine( waitBeforeResurrecting(2f) );
+		StartCoroutine( waitBeforeResurrecting(DELAY_BEFORE_RESURRECTING) );
 	}
 
 	IEnumerator waitBeforeResurrecting ( float duration )
