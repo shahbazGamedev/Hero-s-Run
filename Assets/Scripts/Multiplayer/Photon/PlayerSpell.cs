@@ -27,6 +27,13 @@ public class PlayerSpell : PunBehaviour {
 	Coroutine enlargeCoroutine;
 	#endregion
 
+	#region Hacked
+	[SerializeField] Renderer omniToolRenderer;
+	[SerializeField] Color omniToolNormalColor;
+	[SerializeField] Color omniToolHackedColor;
+	[SerializeField] ParticleSystem omniToolHackedFX;
+	#endregion
+
 	#region Linked Fate spell
 	bool castLinkedFate = false;
 	[SerializeField] AudioClip linkedFateSound;
@@ -271,8 +278,9 @@ public class PlayerSpell : PunBehaviour {
 		//Display the Hacked secondary icon on the minimap
 		MiniMap.Instance.displaySecondaryIcon( photonView.viewID, (int) CardName.Hack, spellDuration );
 
-		//To Do
-		//Add a reddish glow and electric sparks to the omni-tool so it appears broken.
+		//Change color of omni-tool and play hacked particle system so it appears broken.
+		if( omniToolRenderer) omniToolRenderer.material.SetColor ("_EmissionColor", omniToolHackedColor);
+		if( omniToolHackedFX ) omniToolHackedFX.Play();
 
 		//Only affect the turn-ribbon on the HUD if you are the local player and not a bot
 		if( photonView.isMine && playerAI == null ) turnRibbonHandler.playerIsHacked( true );
@@ -282,6 +290,8 @@ public class PlayerSpell : PunBehaviour {
 	{
 		CancelInvoke( "cancelHack" );
 		print("PlayerSpell cancelHack for " + gameObject.name );
+		if( omniToolRenderer) omniToolRenderer.material.SetColor ("_EmissionColor", omniToolNormalColor);
+		if( omniToolHackedFX ) omniToolHackedFX.Stop();
 		removeActiveCard( CardName.Hack );
 		//Only affect the turn-ribbon on the HUD if you are the local player and not a bot
 		if( photonView.isMine && playerAI == null ) turnRibbonHandler.playerIsHacked( false );
