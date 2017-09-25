@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CrazyMinnow.SALSA;
 
 public class PlayerVisuals : Photon.PunBehaviour {
 
+	[SerializeField] Salsa3D headSalsa3D = null;
 	//Particles
 	public ParticleSystem dustPuff;
 	public ParticleSystem waterSplashWhileSliding; //Plays when player slides in water.It loops.
@@ -84,6 +86,8 @@ public class PlayerVisuals : Photon.PunBehaviour {
 			heroSkin.transform.localPosition = Vector3.zero;
 			heroSkin.transform.localRotation = Quaternion.identity;
 			anim.avatar = heroSkin.GetComponent<PlayerSkinInfo>().animatorAvatar;
+			//For lip-sync
+			if( headSalsa3D) GetComponent<PlayerVoiceOvers>().setLipSyncComponent( headSalsa3D );
 			anim.Rebind(); //Important
 			//For debugging only
 			if( Debug.isDebugBuild && GameManager.Instance.playerDebugConfiguration.getAutoPilot() && photonView.isMine ) gameObject.AddComponent<HyperFocus>();
@@ -126,6 +130,8 @@ public class PlayerVisuals : Photon.PunBehaviour {
 			heroSkin.transform.localPosition = Vector3.zero;
 			heroSkin.transform.localRotation = Quaternion.identity;
 			anim.avatar = heroSkin.GetComponent<PlayerSkinInfo>().animatorAvatar;
+			//For lip-sync
+			if( headSalsa3D) GetComponent<PlayerVoiceOvers>().setLipSyncComponent( headSalsa3D );
 			anim.Rebind(); //Important
 		}
 		//Register with the minimap
