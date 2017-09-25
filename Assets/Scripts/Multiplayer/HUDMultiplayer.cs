@@ -47,6 +47,9 @@ public class HUDMultiplayer : MonoBehaviour {
 	[Header("Health Bar")]
 	[SerializeField] HealthBarHandler healthBarHandler;
 	[SerializeField] Image damageTakenEffect;
+	[Header("Play Bonus")]
+	[SerializeField] RectTransform playBonusHolder;
+	[SerializeField] GameObject playBonusPrefab;
 
 	#region Other variables
 	GenerateLevel generateLevel;
@@ -296,6 +299,32 @@ public class HUDMultiplayer : MonoBehaviour {
 		if( distance <= 0.5f ) distance = 0; //Added as a safeguard.
 		distanceText.text = distance.ToString("N0") + " <color=#FF396D><size=36><sub>M</sub></size></color>";
 		distanceRemainingCounterRed.fillAmount = distance/generateLevel.levelLengthInMeters;
+
+		#if UNITY_EDITOR
+		handleKeyboard();
+		#endif
+	}
+
+	private void handleKeyboard()
+	{
+		//Also support keys for debugging
+		if ( Input.GetKeyDown (KeyCode.B) ) 
+		{
+			StartCoroutine( showPlayBonus( "Trap Activated +25 XP" ) );
+		}
+	}
+
+	public IEnumerator showPlayBonus( string bonusText )
+	{
+		//Fade in 0.8 sec,stay 2.6 sec, fade-out 0.6 sec
+		GameObject playBonus = GameObject.Instantiate( playBonusPrefab );
+		RectTransform playBonusRectTransform = playBonus.GetComponent<RectTransform>();
+		playBonusRectTransform.localScale = Vector3.one;
+		playBonusRectTransform.SetParent( playBonusHolder );
+		playBonus.SetActive( true );
+		yield return new WaitForSeconds( 2.6f );
+		playBonus.GetComponent<FadeInCanvasGroup>().fadeOut();
+		Destroy( playBonus, 1.3f );
 	}
 
 	string getDebugInfo()

@@ -4,7 +4,8 @@ using UnityEngine.UI;
 
 public class FadeInCanvasGroup : MonoBehaviour {
 	
-	public float fadeInDuration = 0.5f;
+	[SerializeField] float fadeInDuration = 0.5f;
+	[SerializeField] float fadeOutDuration = 0.5f;
 
 	void OnEnable ()
 	{
@@ -14,6 +15,11 @@ public class FadeInCanvasGroup : MonoBehaviour {
 	void OnDisable ()
 	{
 		GetComponent<CanvasGroup>().alpha = 0;		
+	}
+
+	public void fadeOut ()
+	{
+		LeanTween.alphaCanvas( GetComponent<CanvasGroup>(), 0f, fadeOutDuration );		
 	}
 	
 }
