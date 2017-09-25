@@ -7,13 +7,15 @@ using UnityEngine;
 /// </summary>
 public class StasisController : CardSpawnedObject {
 
+	[SerializeField] ParticleSystem tapParticleSystem;
+	[SerializeField] AudioClip tapSound;
 	Transform affectedPlayerTransform;
 	PlayerControl affectedPlayerControl;
 	const float DISTANCE_ABOVE_GROUND = 3.5f;
 	const float Y_POS_PLAYER_IN_SPHERE = -0.35f;
 	//if you tap quickly on the Stasis sphere, you can break free without waiting for the spell expires.
-	public int tapsDetected = 0;
-	public int tapsRequiredToBreakStasis = 3;
+	int tapsDetected = 0;
+	int tapsRequiredToBreakStasis = 3;
 	Coroutine destroyStasisSphereCoroutine;
 
 	#region Initialisation
@@ -34,6 +36,8 @@ public class StasisController : CardSpawnedObject {
 	void findAffectedPlayer(object[] data) 
 	{
 		int viewIdOfAffectedPlayer = (int) data[0];
+		tapsRequiredToBreakStasis = (int) data[2];
+
 		for( int i = 0; i < PlayerRace.players.Count; i ++ )
 		{
 			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == viewIdOfAffectedPlayer )
@@ -171,9 +175,12 @@ public class StasisController : CardSpawnedObject {
 				if( hit.collider.gameObject == gameObject )
 				{
 					tapsDetected++;
+					ParticleSystem ps = GameObject.Instantiate( tapParticleSystem, hit.point, Quaternion.identity );
+					Destroy( ps.gameObject, 2.5f );
+					GetComponent<AudioSource>().PlayOneShot( tapSound );
+					tapParticleSystem.Play();
 					if( tapsDetected == tapsRequiredToBreakStasis )
 					{
-						print("Stasis broken ...");
 						destroyStasisSphereImmediately();
 					}
 				}

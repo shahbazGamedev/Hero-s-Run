@@ -48,7 +48,7 @@ public class CardStasis : Card {
 			//3) Play an appropriate VO such as "Gotcha!" for Stasis.
 			if( randomTarget != playerTransform ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
 
-			object[] data = new object[2];
+			object[] data = new object[3];
 	
 			//We will need to find a reference to the player we are targeting
 			data[0] = randomTarget.GetComponent<PhotonView>().viewID;
@@ -56,6 +56,9 @@ public class CardStasis : Card {
 			//We want the stasis sphere to disappear after a while
 			data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
 	
+			//Number of taps required to break free early
+			data[2] = (int) cd.getCardPropertyValue( CardPropertyType.TAPS, level );
+
 			PhotonNetwork.InstantiateSceneObject( prefabName, randomTarget.position, randomTarget.rotation, 0, data );
 		}
 		else
