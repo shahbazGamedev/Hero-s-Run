@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CrazyMinnow.SALSA;
 
 public class OnSkinCreated : MonoBehaviour
 {
+
+	[SerializeField] Salsa3D headSalsa3D = null;
 
 	//When the player skin is instantiated, attach it to the player whose name is stored in the data object array.
 	//This is for non-MasterClient players. See PlayerVisuals for the MasterClient players.
@@ -31,6 +34,8 @@ public class OnSkinCreated : MonoBehaviour
 				transform.localPosition = Vector3.zero;
 				transform.localRotation = Quaternion.identity;
 				anim.avatar = GetComponent<PlayerSkinInfo>().animatorAvatar;
+				//For lip-sync
+				if( headSalsa3D) myOwner.GetComponent<PlayerVoiceOvers>().setLipSyncComponent( headSalsa3D );
 				anim.Rebind(); //Important
 				if( Debug.isDebugBuild && GameManager.Instance.playerDebugConfiguration.getAutoPilot() && transform.root.GetComponent<PhotonView>().isMine ) transform.root.gameObject.AddComponent<HyperFocus>();
 			}

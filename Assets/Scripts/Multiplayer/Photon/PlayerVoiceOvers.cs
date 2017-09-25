@@ -1,18 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CrazyMinnow.SALSA;
 
 
 public class PlayerVoiceOvers : MonoBehaviour {
 
 	[Header("Voice Overs")]
 	[SerializeField] AudioSource voiceOverAudioSource;
+	public Salsa3D headSalsa3D = null;
 	List<VoiceOverManager.VoiceOverData> voiceOverList = new List<VoiceOverManager.VoiceOverData>();
 
 	// Use this for initialization
 	public void initializeVoiceOvers ( HeroName heroName )
 	{
 		voiceOverList = VoiceOverManager.Instance.getHeroVoiceOverList( heroName );	
+	}
+
+	// Called by OnSkinCreated so that PlayerVoiceOver can have access to the component in charge of lip-sync.
+	public void setLipSyncComponent ( Salsa3D headSalsa3D )
+	{
+		this.headSalsa3D = headSalsa3D;	
 	}
 
 	[PunRPC]
@@ -41,13 +49,13 @@ public class PlayerVoiceOvers : MonoBehaviour {
 		{
 			if( vodList.Count == 1 )
 			{
-				voiceOverAudioSource.PlayOneShot( vodList[0].clip );
+				playVO( vodList[0].clip );
 			}
 			else
 			{
 				//We have multiple entries that match. Let's play a random one.
 				int random = Random.Range( 0, vodList.Count );
-				voiceOverAudioSource.PlayOneShot(  vodList[random].clip );
+				playVO(  vodList[random].clip );
 			}
 		}
 	}
@@ -75,7 +83,7 @@ public class PlayerVoiceOvers : MonoBehaviour {
 	/// <param name="voiceLineId">Voice line identifier.</param>
 	public void playTaunt ( AudioClip clip, int voiceLineId )
 	{
-		voiceOverAudioSource.PlayOneShot( clip );
+		playVO( clip );
 		GetComponent<PhotonView>().RPC("playTauntRPC", PhotonTargets.Others, voiceLineId );
 	}
 
@@ -86,8 +94,22 @@ public class PlayerVoiceOvers : MonoBehaviour {
 		VoiceOverManager.VoiceOverData equippedVoiceLine = VoiceOverManager.Instance.getAllTaunts ().Find(vo => vo.uniqueId == uniqueId );
 		if( equippedVoiceLine != null )
 		{
-			voiceOverAudioSource.PlayOneShot( equippedVoiceLine.clip );
+			playVO( equippedVoiceLine.clip );
 		}
+	}
+
+	void playVO( AudioClip clip )
+	{
+		if( headSalsa3D != null )
+		{
+			headSalsa3D.SetAudioClip(clip);
+			headSalsa3D.Play();
+		}
+		else
+		{
+			voiceOverAudioSource.PlayOneShot( clip );
+		}
+
 	}
 
 	/// <summary>
@@ -96,6 +118,7 @@ public class PlayerVoiceOvers : MonoBehaviour {
 	/// </summary>
 	public void stopAudioSource()
 	{
+		if( headSalsa3D != null ) headSalsa3D.Stop();
 		voiceOverAudioSource.Stop();
 	}
 	
