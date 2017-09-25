@@ -17,6 +17,7 @@ public class StasisController : CardSpawnedObject {
 	int tapsDetected = 0;
 	int tapsRequiredToBreakStasis = 3;
 	Coroutine destroyStasisSphereCoroutine;
+	bool isLocalPlayer = false;
 
 	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
@@ -45,6 +46,10 @@ public class StasisController : CardSpawnedObject {
 				//We found the spell's target
 				affectedPlayerTransform = PlayerRace.players[i].transform;
 				affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = true;
+
+				//isLocalPlayer is used by the code that allows a player to break out early by tapping on the stasis sphere.
+				//It is used to ensure that you can only tap on the sphere the local player is trapped in.
+				isLocalPlayer = ( affectedPlayerTransform.GetComponent<PhotonView>().isMine && affectedPlayerTransform.GetComponent<PlayerAI>() == null );
 	
 				affectedPlayerControl = affectedPlayerTransform.GetComponent<PlayerControl>();
 
@@ -85,7 +90,7 @@ public class StasisController : CardSpawnedObject {
 				//The Stasis Sphere has a limited lifespan which depends on the level of the Card.
 				float spellDuration = (float) data[1];
 				affectedPlayerTransform.GetComponent<PlayerSpell>().displayCardTimerOnHUD(CardName.Stasis, spellDuration );
-				destroyStasisSphereCoroutine = StartCoroutine( destroyStasisSphere( spellDuration * 100 ) );
+				destroyStasisSphereCoroutine = StartCoroutine( destroyStasisSphere( spellDuration ) );
 
 				//Display the Stasis secondary icon on the minimap
 				MiniMap.Instance.displaySecondaryIcon( affectedPlayerTransform.GetComponent<PhotonView>().viewID, (int) CardName.Stasis, spellDuration );
@@ -131,7 +136,7 @@ public class StasisController : CardSpawnedObject {
 
 	void Update () {
 
-		if( affectedPlayerTransform == null ) return;
+		if( !isLocalPlayer ) return;
 
 		#if UNITY_EDITOR
 		// User pressed the left mouse up
