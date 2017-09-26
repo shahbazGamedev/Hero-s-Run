@@ -210,6 +210,22 @@ public class PlayerControl : Photon.PunBehaviour {
 	public float tileDistanceTraveled = 0; //Note that this value is NOT updated for bots.
 	#endregion
 
+	#region bezier curves
+	bool usesBezierCurve = false;
+	float bezierEndRotationY;
+	GameObject dummyObject;
+	Transform dummyTransform;
+	//A tile can have multiple splines. They are stored in curveList when the player crosses an Entrance.
+	List<SegmentInfo.BezierData> curveList;
+	//A index pointing to the current curve that the player is travelling on.
+	int curveListIndex = 0;
+	//Two point along the bezier curve
+	Vector3 point1;
+	Vector3 point2;
+	//The current curve the player is on
+	Bezier currentBezierCurve;
+	#endregion
+
 	void Awake ()
 	{
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
@@ -272,6 +288,10 @@ public class PlayerControl : Photon.PunBehaviour {
 			Skybox skyBox = cutSceneCamera.GetComponent<Skybox>();
 			skyBox.material = LevelManager.Instance.getLevelData().skyBoxMaterial;
 		}
+
+		GameObject dummyObject = new GameObject();
+		dummyObject.name = "Dummy";
+		dummyTransform = dummyObject.transform;
 
 		//Tell the MasterClient that we are ready to go. Our level has been loaded and our player created.
 		//The MasterClient will initiate the countdown
@@ -446,7 +466,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				}
 			}
 
-			if( useLanes )
+			if( !usesBezierCurve )
 			{
 				verifyIfDesiredLaneReached();
 			}
@@ -512,6 +532,51 @@ public class PlayerControl : Photon.PunBehaviour {
 		// Move the controller
 		if( playerCharacterState != PlayerCharacterState.Ziplining )
 		{
+			// We are moving along a bezier curve
+			if( usesBezierCurve )
+			{
+				float bezierTime = currentBezierCurve.ClosestTimeOnBezier( transform.position );
+				//bezierTime can complete with a value around 0.98f, hence the +0.025f.
+				if( bezierTime + 0.025f > 1f )
+				{
+					//We reached the end of this curve since the value is bigger than 1.
+					curveListIndex++;
+					if( curveListIndex == curveList.Count )
+					{
+						//No more bezier curves
+						usesBezierCurve = false;
+						
+					}
+					else
+					{
+						//Yes, there is another curve
+						createBezier();
+						bezierTime = currentBezierCurve.ClosestTimeOnBezier( transform.position );
+						Debug.Log ("NEW CURVE BEZIER VALUE IS " + bezierTime );
+					}
+				}
+					
+				//1) Get two points along the curve
+				point1 = currentBezierCurve.PointOnBezier( bezierTime );
+				point2 = currentBezierCurve.PointOnBezier( bezierTime + 0.017f );
+				
+				//2) Set the rotation of the player to be tangentiel to the curve
+				//Place our dummy object on the curve
+				dummyTransform.position = new Vector3( point1.x, point1.y, point1.z );
+				//Have the dummy object look at the next point on the curve
+				dummyTransform.LookAt( point2 );
+				//Use that Y rotation and give it to the player
+				transform.rotation = Quaternion.Euler( 0, dummyTransform.eulerAngles.y, 0 );	
+				
+				//3) If there are no more bezier curves, the player is exiting the tile.
+				//If this is the case, give the player an orthogonal rotation like 0, 90, 270 etc. based on the rotation
+				//of the end point of the last curve.
+				if( !usesBezierCurve )
+				{	
+					transform.rotation = Quaternion.Euler( 0, bezierEndRotationY, 0 );
+				}
+			}
+
 			//1) Get the direction of the player
 			forward = transform.TransformDirection(Vector3.forward);			
 			//2) Scale vector based on run speed
@@ -1070,7 +1135,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			moveDirection.x = 0;
 
 			//Make sure the lane data is correct in case a collision forced us out of our lane
-			recalculateCurrentLane();
+			//recalculateCurrentLane();
 
 			float currentSideMoveSpeed;
 			if( Time.timeScale < 1f )
@@ -1086,7 +1151,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 			if ( isGoingRight )
 			{
-				desiredLane = Lanes.Right;
+				//desiredLane = Lanes.Right;
 				setCharacterState( PlayerCharacterState.SideMove );
 				moveDirection.x = currentSideMoveSpeed;
 				playerSounds.playSideMoveSound();
@@ -1095,7 +1160,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			}
 			else
 			{
-				desiredLane = Lanes.Left;
+				//desiredLane = Lanes.Left;
 				setCharacterState( PlayerCharacterState.SideMove );
 				moveDirection.x = -currentSideMoveSpeed;
 				playerSounds.playSideMoveSound();
@@ -1195,6 +1260,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void sideSwipe( bool isGoingRight )
 	{
+		//if( usesBezierCurve ) return;
 		if (isInDeadEnd )
 		{	
 			//We want to turn the corner
@@ -1203,7 +1269,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		else
 		{
 			//we want to change lanes
-			if( useLanes )
+			if( !usesBezierCurve )
 			{
 				changeLane ( isGoingRight );
 			}
@@ -2040,6 +2106,14 @@ public class PlayerControl : Photon.PunBehaviour {
 				currentTilePos = si.transform.position;
 				currentTile = si.gameObject;
 				tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
+				usesBezierCurve = si.usesBezierCurve;
+				if( usesBezierCurve )
+				{
+					//reset
+					curveListIndex = 0;
+					curveList = si.curveList;
+					createBezier();
+				}
 				playerRace.tilesLeftBeforeReachingEnd--;
 			}
 			else
@@ -2174,5 +2248,50 @@ public class PlayerControl : Photon.PunBehaviour {
 	}
 	#endregion
 
+	#region Bezier curves
+	void LateUpdate()
+	{
+		//Make sure the character stays within the limits of the lanes (unless he is dying or falling or ziplining )
+		if ( playerCharacterState != PlayerCharacterState.Dying && playerCharacterState != PlayerCharacterState.Falling && playerCharacterState != PlayerCharacterState.Ziplining )
+		{
+			if( usesBezierCurve )
+			{
+				//Player is following a bezier curve
+				Vector3 closest = currentBezierCurve.ClosestPointOnBezier( transform.position );
+				closest = new Vector3( closest.x, transform.position.y, closest.z );
+				float dist =  Vector3.Distance( closest, transform.position );
+				
+				bool playerIsToTheRightOfTheCurve = Utilities.onWhichSide( point1, point2, transform.position );
+	
+				Vector3 relPos;
+				if( dist > 1.3f )
+				{
+					if( playerIsToTheRightOfTheCurve )
+					{
+						relPos = new Vector3( laneLimit , 0 , 0 );
+					}
+					else
+					{
+						relPos = new Vector3( -laneLimit , 0 , 0 );
+						
+					}
+					dummyTransform.position = new Vector3( closest.x, transform.position.y, closest.z );
+					dummyTransform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
+					Vector3 exactPos = dummyTransform.TransformPoint(relPos);
+					transform.position = exactPos;
+					Debug.Log( "+STAY ON PATH BEZIER: p pos " + transform.position + " p rot " + transform.eulerAngles + " dist " + dist  );
+				}
+			}
+		}
+	}
+
+	private void createBezier()
+	{
+		SegmentInfo.BezierData bezierData = curveList[curveListIndex];
+		currentBezierCurve = new Bezier( bezierData.bezierStart.position, bezierData.bezierControl1.position, bezierData.bezierControl2.position, bezierData.bezierEnd.position );
+		bezierEndRotationY = bezierData.bezierEnd.eulerAngles.y;
+	}
+
+	#endregion
 
 }

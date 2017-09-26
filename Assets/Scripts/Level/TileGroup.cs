@@ -168,7 +168,8 @@ public enum TileGroupType {
 	Jousting_Flamethrower = 10011,	//Straight_River
 	Jousting_Broken_Path = 10012,	//Straight_River_Log_Crossing
 	Jousting_Pipes = 10013,			//Landmark_Clocktower
-	Jousting_Angle = 10014			//Angled
+	Jousting_Angle = 10014,			//Angled
+	Jousting_Bezier = 10015			//Straight_Bezier
 
 }
 
