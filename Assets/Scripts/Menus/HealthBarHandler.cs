@@ -73,7 +73,7 @@ public class HealthBarHandler : MonoBehaviour {
 	public void changeArmor (int currentArmor, int newArmor, System.Action onFinish = null )
 	{
 		float fillAmount = newArmor/(float)PlayerHealth.MAXIMUM_ARMOR;
-		armorRadial.GetComponent<UIAnimateRadialImage>().animateFillAmount( newArmor, ANIMATION_DURATION_FAST, null, onFinish );
+		armorRadial.GetComponent<UIAnimateRadialImage>().animateFillAmount( fillAmount, ANIMATION_DURATION_FAST, null, onFinish );
 	}
 
 	public void removeAllArmor ()
