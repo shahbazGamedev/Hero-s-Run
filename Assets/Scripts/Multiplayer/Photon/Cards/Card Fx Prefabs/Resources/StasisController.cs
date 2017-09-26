@@ -95,6 +95,9 @@ public class StasisController : CardSpawnedObject {
 				//Display the Stasis secondary icon on the minimap
 				MiniMap.Instance.displaySecondaryIcon( affectedPlayerTransform.GetComponent<PhotonView>().viewID, (int) CardName.Stasis, spellDuration );
 
+				string tapInstructions = LocalizationManager.Instance.getText("CARD_STASIS_TAP_INSTRUCTIONS");
+				HUDMultiplayer.hudMultiplayer.showTapInstructions( tapInstructions );
+
 				//We can now make the sphere visible and collidable
 				//In order to detect taps/mouse-clicks properly, we need to change the layer to Default (it was Ignore Raycast).
 				gameObject.layer = 0; //Default is 0
@@ -123,7 +126,7 @@ public class StasisController : CardSpawnedObject {
 	void destroyStasisSphereImmediately()
 	{
 		if( destroyStasisSphereCoroutine != null ) StopCoroutine( destroyStasisSphereCoroutine );
-
+		HUDMultiplayer.hudMultiplayer.hideTapInstructions();
 		MiniMap.Instance.hideSecondaryIcon( affectedPlayerTransform.gameObject );
 		affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = false;
 		affectedPlayerTransform.GetComponent<Animator>().speed = 1f;
@@ -140,16 +143,16 @@ public class StasisController : CardSpawnedObject {
 
 		#if UNITY_EDITOR
 		// User pressed the left mouse up
-		if (Input.GetMouseButtonUp(0))
+		if (Input.GetMouseButtonDown(0))
 		{
-			MouseButtonUp(0);
+			MouseButtonDown(0);
 		}
 		#else
 		detectTaps();
 		#endif
 	}
 
-	void MouseButtonUp(int Button)
+	void MouseButtonDown(int Button)
 	{
 		validateTappedObject(Input.mousePosition);
 	}
@@ -161,7 +164,7 @@ public class StasisController : CardSpawnedObject {
 			Touch touch = Input.GetTouch(0);
 			if( touch.tapCount == 1 )
 			{
-				if( touch.phase == TouchPhase.Ended  )
+				if( touch.phase == TouchPhase.Began  )
 				{
 					validateTappedObject(Input.GetTouch(0).position);
 				}

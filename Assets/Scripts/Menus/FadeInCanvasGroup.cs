@@ -4,17 +4,23 @@ using UnityEngine.UI;
 
 public class FadeInCanvasGroup : MonoBehaviour {
 	
+	[SerializeField] bool fadeInOnEnable = true;
 	[SerializeField] float fadeInDuration = 0.5f;
 	[SerializeField] float fadeOutDuration = 0.5f;
 
 	void OnEnable ()
 	{
-		LeanTween.alphaCanvas( GetComponent<CanvasGroup>(), 1f, fadeInDuration );		
+		if( fadeInOnEnable ) LeanTween.alphaCanvas( GetComponent<CanvasGroup>(), 1f, fadeInDuration );		
 	}
 
 	void OnDisable ()
 	{
-		GetComponent<CanvasGroup>().alpha = 0;		
+		if( fadeInOnEnable ) GetComponent<CanvasGroup>().alpha = 0;		
+	}
+
+	public void fadeIn ()
+	{
+		LeanTween.alphaCanvas( GetComponent<CanvasGroup>(), 1f, fadeInDuration );		
 	}
 
 	public void fadeOut ()

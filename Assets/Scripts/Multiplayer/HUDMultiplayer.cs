@@ -50,6 +50,8 @@ public class HUDMultiplayer : MonoBehaviour {
 	[Header("Play Bonus")]
 	[SerializeField] RectTransform playBonusHolder;
 	[SerializeField] GameObject playBonusPrefab;
+	[Header("Stasis Tap Instructions")]
+	[SerializeField] GameObject stasisTapInstructions;
 
 	#region Other variables
 	GenerateLevel generateLevel;
@@ -326,6 +328,19 @@ public class HUDMultiplayer : MonoBehaviour {
 		playBonus.GetComponent<FadeInCanvasGroup>().fadeOut();
 		Destroy( playBonus, 1.3f );
 	}
+
+	#region Stasis Tap Instructions
+	public void showTapInstructions( string tapInstructions )
+	{
+		stasisTapInstructions.GetComponentInChildren<TextMeshProUGUI>().text = tapInstructions;
+		stasisTapInstructions.GetComponent<FadeInCanvasGroup>().fadeIn();
+	}
+
+	public void hideTapInstructions()
+	{
+		stasisTapInstructions.GetComponent<FadeInCanvasGroup>().fadeOut();
+	}
+	#endregion
 
 	string getDebugInfo()
 	{
