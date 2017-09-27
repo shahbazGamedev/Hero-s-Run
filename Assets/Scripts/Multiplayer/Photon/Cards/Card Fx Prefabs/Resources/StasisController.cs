@@ -159,15 +159,11 @@ public class StasisController : CardSpawnedObject {
 
 	void detectTaps()
 	{
-		if ( Input.touchCount > 0 )
+		for ( int i = 0; i < Input.touchCount; i++ )
 		{
-			Touch touch = Input.GetTouch(0);
-			if( touch.tapCount == 1 )
+			if( Input.GetTouch(i).phase == TouchPhase.Began  )
 			{
-				if( touch.phase == TouchPhase.Began  )
-				{
-					validateTappedObject(Input.GetTouch(0).position);
-				}
+				validateTappedObject(Input.GetTouch(i).position);
 			}
 		}
 	}
