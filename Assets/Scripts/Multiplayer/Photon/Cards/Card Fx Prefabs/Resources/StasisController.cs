@@ -96,7 +96,7 @@ public class StasisController : CardSpawnedObject {
 				MiniMap.Instance.displaySecondaryIcon( affectedPlayerTransform.GetComponent<PhotonView>().viewID, (int) CardName.Stasis, spellDuration );
 
 				string tapInstructions = LocalizationManager.Instance.getText("CARD_STASIS_TAP_INSTRUCTIONS");
-				HUDMultiplayer.hudMultiplayer.showTapInstructions( tapInstructions );
+				if( isLocalPlayer ) HUDMultiplayer.hudMultiplayer.showTapInstructions( tapInstructions );
 
 				//We can now make the sphere visible and collidable
 				//In order to detect taps/mouse-clicks properly, we need to change the layer to Default (it was Ignore Raycast).
@@ -126,7 +126,7 @@ public class StasisController : CardSpawnedObject {
 	void destroyStasisSphereImmediately()
 	{
 		if( destroyStasisSphereCoroutine != null ) StopCoroutine( destroyStasisSphereCoroutine );
-		HUDMultiplayer.hudMultiplayer.hideTapInstructions();
+		if( isLocalPlayer ) HUDMultiplayer.hudMultiplayer.hideTapInstructions();
 		MiniMap.Instance.hideSecondaryIcon( affectedPlayerTransform.gameObject );
 		affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = false;
 		affectedPlayerTransform.GetComponent<Animator>().speed = 1f;
