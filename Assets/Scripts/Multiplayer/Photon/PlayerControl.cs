@@ -1909,7 +1909,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	{
 		//The OnControllerColliderHit function can send multiple collision events during a single
 		//stumble, so ignore any new events while in the stumbling state.
-		if ( playerCharacterState != PlayerCharacterState.Stumbling && playerCharacterState != PlayerCharacterState.Dying )
+		if ( playerCharacterState != PlayerCharacterState.Stumbling && playerCharacterState != PlayerCharacterState.Dying && playerCharacterState != PlayerCharacterState.Ziplining )
 		{	
 			Debug.Log ("Player stumbled");
 			setCharacterState( PlayerCharacterState.Stumbling );
