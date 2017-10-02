@@ -77,6 +77,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	int AttachToZiplineTrigger = Animator.StringToHash("Zipline_Attach");
 	int DetachFromZiplineTrigger = Animator.StringToHash("Zipline_Detach");
 	int OmniToolTrigger = Animator.StringToHash("OmniTool");
+	int RunRightTrigger = Animator.StringToHash("Run_Right");
+	int RunLeftTrigger = Animator.StringToHash("Run_Left");
 	#endregion
 
 	#region Falling variables
@@ -952,6 +954,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	void turnNow()
 	{
 		wantToTurn = false;
+
 		deadEndTurnDone = true;
 		currentLane = desiredLane;
 		if( currentDeadEndType == DeadEndType.LeftRight )
@@ -972,11 +975,13 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			transform.rotation = Quaternion.Euler( 0,playerRotY + 90f,0 );
 			tileRotationY = tileRotationY + 90f;
+			anim.SetTrigger( RunRightTrigger );
 		}
 		else
 		{
 			transform.rotation = Quaternion.Euler( 0,playerRotY - 90f,0 );
 			tileRotationY = tileRotationY - 90f;
+			anim.SetTrigger( RunLeftTrigger );
 		}
 
 		if( playerCharacterState == PlayerCharacterState.Turning_and_sliding )
@@ -1000,6 +1005,15 @@ public class PlayerControl : Photon.PunBehaviour {
 		if ( playerCharacterState == PlayerCharacterState.Running || ( playerCharacterState == PlayerCharacterState.SideMove && this.isGoingRight != isGoingRight ) )
 		{
 			this.isGoingRight = isGoingRight;
+
+			if( isGoingRight )
+			{
+				anim.SetTrigger( RunRightTrigger );
+			}
+			else
+			{
+				anim.SetTrigger( RunLeftTrigger );
+			}
 
 			//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
 			moveDirection.x = 0;
