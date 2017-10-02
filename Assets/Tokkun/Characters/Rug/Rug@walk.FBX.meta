@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: f798ce5fb7ee9ad4797dac5ce0576701
-timeCreated: 1506323178
+timeCreated: 1506668031
 licenseType: Free
 ModelImporter:
   serializedVersion: 21
@@ -510,11 +510,6 @@ ModelImporter:
       position: {x: 0.00000017881393, y: 0.00000019557774, z: 0.11550261}
       rotation: {x: -0.027470713, y: 0.9956698, z: 0.0013110918, w: 0.08879909}
       scale: {x: 1, y: 0.99999994, z: 0.99999994}
-    - name: IK Chain002
-      parentName: Rug L Thigh
-      position: {x: -0.2677219, y: 0.11737551, z: -0.014750689}
-      rotation: {x: 0.7668358, y: 0.018496698, z: 0.6412539, w: -0.02035277}
-      scale: {x: 1.0000001, y: 1, z: 1}
     - name: Rug L Calf
       parentName: Rug L Thigh
       position: {x: -0.30322874, y: 0, z: -0.000000029802322}
@@ -530,32 +525,16 @@ ModelImporter:
       position: {x: -0.11618008, y: 0.16443402, z: 0}
       rotation: {x: 0.000000015454312, y: -0.000000015454312, z: -0.7071068, w: 0.7071068}
       scale: {x: 0.99999994, y: 1, z: 0.99999994}
-    - name: Rug L Toe0Nub
-      parentName: Rug L Toe0
-      position: {x: -0.090020195, y: 0.000000007450581, z: 0.000000014901161}
-      rotation: {x: 9.553441e-16, y: 1.75553e-30, z: 1, w: -1.8375893e-15}
-      scale: {x: -0.99999994, y: -1, z: -0.99999994}
     - name: Rug_Knee_L
       parentName: Rug L Calf
       position: {x: -0.16484386, y: 0.04585415, z: 0.0024157763}
       rotation: {x: -0.11253082, y: 0.99194443, z: -0.050166804, w: -0.02943539}
       scale: {x: 1, y: 1.0000001, z: 1}
-    - name: Point002
-      parentName: Rug_Knee_L
-      position: {x: -0.24343741, y: -0.00023474544, z: 0.00022533536}
-      rotation: {x: 0.00000001117587, y: 0.000000014901167, z: -0.000000029802333,
-        w: 1}
-      scale: {x: 0.99999976, y: 1.0000002, z: 1}
     - name: Rug R Thigh
       parentName: Rug Pelvis
       position: {x: -0.00000017881393, y: -0.00000012479722, z: -0.11550261}
       rotation: {x: -0.02747059, y: 0.99566966, z: -0.0013124316, w: -0.08880059}
       scale: {x: 1, y: 0.99999994, z: 1}
-    - name: IK Chain001
-      parentName: Rug R Thigh
-      position: {x: -0.2673428, y: 0.117864996, z: 0.0145739615}
-      rotation: {x: 0.6412539, y: 0.020351816, z: 0.76683575, w: -0.018497678}
-      scale: {x: 1.0000001, y: 1, z: 1}
     - name: Rug R Calf
       parentName: Rug R Thigh
       position: {x: -0.30322874, y: -0.0000000037252903, z: -0.000000029802322}
@@ -571,22 +550,11 @@ ModelImporter:
       position: {x: -0.11618008, y: 0.164434, z: 0}
       rotation: {x: -0.000000015454312, y: 0.000000015454312, z: -0.7071068, w: 0.7071068}
       scale: {x: 0.99999994, y: 1, z: 0.99999994}
-    - name: Rug R Toe0Nub
-      parentName: Rug R Toe0
-      position: {x: -0.090020195, y: 0.000000007450581, z: 0.000000014901161}
-      rotation: {x: 1.6970273e-30, y: -9.553415e-16, z: 1.776357e-15, w: 1}
-      scale: {x: 0.99999994, y: 1, z: 0.99999994}
     - name: Rug_Knee_R
       parentName: Rug R Calf
       position: {x: -0.16484898, y: 0.04585523, z: -0.0023870468}
       rotation: {x: -0.039600093, y: 0.04157266, z: 0.9923543, w: -0.10925485}
       scale: {x: 0.9999999, y: 1.0000001, z: 1}
-    - name: Point001
-      parentName: Rug_Knee_R
-      position: {x: -0.24400678, y: 0.00000008940697, z: 0.000000014901161}
-      rotation: {x: 0.000000040978193, y: -0.000000011175871, z: 0.000000029802326,
-        w: 1}
-      scale: {x: 0.99999994, y: 1, z: 1}
     - name: Rug Spine
       parentName: Rug Pelvis
       position: {x: -0.1004855, y: -0.033873707, z: 0.0000002326426}
@@ -640,7 +608,7 @@ ModelImporter:
     - name: Rug L Finger0
       parentName: Rug L Hand
       position: {x: -0.029448628, y: 0.026368976, z: -0.056212857}
-      rotation: {x: 0.10920105, y: -0.36318713, z: 0.0049513266, w: 0.9252814}
+      rotation: {x: 0.10920106, y: -0.36318716, z: 0.004951327, w: 0.92528147}
       scale: {x: 1, y: 1, z: 1}
     - name: Rug L Finger01
       parentName: Rug L Finger0
@@ -652,11 +620,6 @@ ModelImporter:
       position: {x: -0.04004082, y: 0, z: 0}
       rotation: {x: -0.000000027516126, y: -0.000000018790574, z: 0.13509052, w: 0.9908333}
       scale: {x: 1.0000001, y: 1, z: 1}
-    - name: Rug L Finger0Nub
-      parentName: Rug L Finger02
-      position: {x: -0.046090305, y: -0.000000029802322, z: 0.00000011920929}
-      rotation: {x: 2.2204455e-16, y: -0.000000014901159, z: 0.000000014901159, w: 1}
-      scale: {x: 1.0000001, y: 1, z: 1.0000001}
     - name: Rug L Finger1
       parentName: Rug L Hand
       position: {x: -0.12845987, y: -0.01069665, z: -0.005914733}
@@ -672,11 +635,6 @@ ModelImporter:
       position: {x: -0.04004079, y: 0, z: -0.000000007450581}
       rotation: {x: -8.676024e-11, y: -0.0000000037406203, z: -0.116402216, w: 0.9932022}
       scale: {x: 0.99999994, y: 1, z: 1}
-    - name: Rug L Finger1Nub
-      parentName: Rug L Finger12
-      position: {x: -0.04004079, y: 0, z: -0.000000007450581}
-      rotation: {x: -0.000000003317837, y: 0, z: -0, w: 1}
-      scale: {x: 1, y: 0.99999994, z: 1}
     - name: Rug Neck
       parentName: Rug Spine2
       position: {x: -0.3301283, y: 0.023100171, z: 0.00000003234493}
@@ -687,11 +645,6 @@ ModelImporter:
       position: {x: -0.0769546, y: -4.656613e-10, z: -8.881784e-16}
       rotation: {x: -7.2656e-14, y: -0.0000000011042733, z: 0.00039883057, w: 0.99999994}
       scale: {x: 1, y: 1, z: 1}
-    - name: Rug HeadNub
-      parentName: Rug Head
-      position: {x: -0.23139703, y: 0, z: 8.881784e-16}
-      rotation: {x: -4.1174657e-20, y: -3.3881318e-21, z: -1.39505e-40, w: 1}
-      scale: {x: 1, y: 0.99999994, z: 0.99999994}
     - name: Rug R Clavicle
       parentName: Rug Spine2
       position: {x: -0.3101735, y: 0.000035351142, z: -0.058536198}
@@ -720,7 +673,7 @@ ModelImporter:
     - name: Rug R Finger0
       parentName: Rug R Hand
       position: {x: -0.029448628, y: 0.026368976, z: 0.056212857}
-      rotation: {x: -0.52748895, y: 0.34767544, z: 0.18455178, w: 0.75287306}
+      rotation: {x: -0.52748895, y: 0.34767547, z: 0.18455178, w: 0.7528731}
       scale: {x: 1, y: 0.9999999, z: 0.9999999}
     - name: Rug R Finger01
       parentName: Rug R Finger0
@@ -732,11 +685,6 @@ ModelImporter:
       position: {x: -0.04004082, y: 0, z: 0}
       rotation: {x: 0.00000001275156, y: 0.000000016777571, z: 0.13509056, w: 0.9908333}
       scale: {x: 1, y: 1, z: 1}
-    - name: Rug R Finger0Nub
-      parentName: Rug R Finger02
-      position: {x: -0.046090335, y: -0.000000029802322, z: 0}
-      rotation: {x: 0, y: 0, z: 1, w: -0.000000044703487}
-      scale: {x: -0.99999994, y: -1, z: -0.99999994}
     - name: Rug R Finger1
       parentName: Rug R Hand
       position: {x: -0.12845993, y: -0.01069653, z: 0.005914718}
@@ -752,21 +700,11 @@ ModelImporter:
       position: {x: -0.04004079, y: -0.000000059604645, z: -0.000000014901161}
       rotation: {x: -0.0000000036132062, y: 0.000000004174252, z: -0.11640222, w: 0.99320215}
       scale: {x: 0.9999998, y: 1, z: 0.99999994}
-    - name: Rug R Finger1Nub
-      parentName: Rug R Finger12
-      position: {x: -0.04004079, y: 0, z: 0.000000007450581}
-      rotation: {x: -1.9959473e-25, y: -0.0000000032596292, z: 1, w: 6.123234e-17}
-      scale: {x: -1, y: -0.99999994, z: -1}
     - name: Rug Xtra01
       parentName: Rug Spine2
       position: {x: -0.17688048, y: -0.1939568, z: -0.045564055}
       rotation: {x: -0.29518247, y: -0.25544468, z: 0.6424534, w: 0.659446}
       scale: {x: 0.99999994, y: 1, z: 0.99999994}
-    - name: Rug Xtra01Nub
-      parentName: Rug Xtra01
-      position: {x: -0.09174973, y: -0.000000059604645, z: 0.000000059604645}
-      rotation: {x: 0.7073882, y: -0.7068252, z: -0.0000009473649, w: -0.000000949244}
-      scale: {x: 1.0000001, y: 1, z: 1}
     - name: RugBody
       parentName: Rug(Clone)
       position: {x: -0, y: 0, z: 0.0000000018626451}

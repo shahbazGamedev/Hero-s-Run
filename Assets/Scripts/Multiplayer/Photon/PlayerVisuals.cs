@@ -86,6 +86,7 @@ public class PlayerVisuals : Photon.PunBehaviour {
 			heroSkin.transform.localPosition = Vector3.zero;
 			heroSkin.transform.localRotation = Quaternion.identity;
 			anim.avatar = heroSkin.GetComponent<PlayerSkinInfo>().animatorAvatar;
+			anim.runtimeAnimatorController = heroSkin.GetComponent<PlayerSkinInfo>().runtimeAnimatorController;
 			//For lip-sync
 			if( headSalsa3D) GetComponent<PlayerVoiceOvers>().setLipSyncComponent( headSalsa3D );
 			anim.Rebind(); //Important
@@ -130,6 +131,7 @@ public class PlayerVisuals : Photon.PunBehaviour {
 			heroSkin.transform.localPosition = Vector3.zero;
 			heroSkin.transform.localRotation = Quaternion.identity;
 			anim.avatar = heroSkin.GetComponent<PlayerSkinInfo>().animatorAvatar;
+			anim.runtimeAnimatorController = GetComponent<PlayerSkinInfo>().runtimeAnimatorController;
 			//For lip-sync
 			if( headSalsa3D) GetComponent<PlayerVoiceOvers>().setLipSyncComponent( headSalsa3D );
 			anim.Rebind(); //Important

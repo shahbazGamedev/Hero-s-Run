@@ -393,7 +393,7 @@ public class PlayerRun : Photon.PunBehaviour {
 	/// </summary>
 	/// <returns>Slows down the player after he crosses the finish line.</returns>
 	/// <param name="distance">Distance.</param>
-	public IEnumerator slowDownPlayerAfterFinishLine( float distance )
+	public IEnumerator slowDownPlayerAfterFinishLine( int officialRacePosition, float distance )
 	{
 		GetComponent<Rigidbody>().velocity = new Vector3( 0,playerControl.moveDirection.y,0 );
 		playerControl.enablePlayerControl( false );
@@ -429,7 +429,14 @@ public class PlayerRun : Photon.PunBehaviour {
 		}
 		//We have arrived. Stop player movement.
 		playerControl.enablePlayerMovement( false );
-		playerControl.playVictoryAnimation();
+		if( officialRacePosition == 0 )
+		{
+			playerControl.playVictoryAnimation();
+		}
+		else
+		{
+			playerControl.playLoseAnimation();
+		}
 	}
 
 	/// <summary>

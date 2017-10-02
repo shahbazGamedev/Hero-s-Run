@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PlayerSkinInfo : MonoBehaviour {
 	
-		public Avatar skin;
 		public UnityEngine.Avatar animatorAvatar;
+		public RuntimeAnimatorController runtimeAnimatorController;
 
 
 }

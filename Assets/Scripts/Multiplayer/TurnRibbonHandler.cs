@@ -298,6 +298,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		PlayerDeck.PlayerCardData playerCardData = GameManager.Instance.playerDeck.getCardByName( cardName );
 		Debug.Log("TurnRibbonHandler-activateCard: playing card: " + cardName );
 		HeroManager.HeroCharacter selectedHero = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex );
+		playerControl.playOmniToolAnimation();
 		cardHandler.activateCard( playerControl.GetComponent<PhotonView>(), cardName, selectedHero.name.ToString(), playerCardData.level );
 		//Increase the card usage count. This is used to determine the player's favorite card.
 		playerCardData.timesUsed++;

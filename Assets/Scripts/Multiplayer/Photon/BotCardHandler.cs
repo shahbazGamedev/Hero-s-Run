@@ -213,6 +213,7 @@ public sealed class BotCardHandler : MonoBehaviour {
 		PlayerDeck.PlayerCardData botCardData = getCardByName( cardName );
 		if( botCardData != null )
 		{
+			playerControl.playOmniToolAnimation();
 			cardHandler.activateCard( GetComponent<PhotonView>(), cardName, botHero.userName, botCardData.level );
 			playerSpell.playedCard( cardName );
 		}

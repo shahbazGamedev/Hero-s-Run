@@ -160,6 +160,14 @@ public class PlayerInput : PunBehaviour {
 				Time.timeScale = 0.5f;
 			}
 		}
+		else if ( Input.GetKeyDown (KeyCode.J ) )
+		{
+			playerControl.stumble();
+		}
+		else if ( Input.GetKeyDown (KeyCode.H ) )
+		{
+			playerControl.jump(true, 18f);
+		}
 	}
 
 	void handleSwipes()

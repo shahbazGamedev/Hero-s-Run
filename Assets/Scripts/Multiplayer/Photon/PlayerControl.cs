@@ -63,7 +63,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	//Hash IDs for player animations. These are used to improve performance.
 	int RunTrigger = Animator.StringToHash("Run");
 	int FallTrigger = Animator.StringToHash("Fall");
-	int FallLoopTrigger = Animator.StringToHash("Fall_Loop");
 	int LandTrigger = Animator.StringToHash("Land");
 	int Double_JumpTrigger = Animator.StringToHash("Double Jump");
 	int JumpTrigger = Animator.StringToHash("Jump");
@@ -74,6 +73,10 @@ public class PlayerControl : Photon.PunBehaviour {
 	int FallForwardTrigger = Animator.StringToHash("Fall_Forward");
 	int Idle_LookTrigger = Animator.StringToHash("Idle_Look");
 	int Finish_LineTrigger = Animator.StringToHash("Finish_Line");
+	int LoseTrigger = Animator.StringToHash("Lose");
+	int AttachToZiplineTrigger = Animator.StringToHash("Zipline_Attach");
+	int DetachFromZiplineTrigger = Animator.StringToHash("Zipline_Detach");
+	int OmniToolTrigger = Animator.StringToHash("OmniTool");
 	#endregion
 
 	#region Falling variables
@@ -685,10 +688,10 @@ public class PlayerControl : Photon.PunBehaviour {
 		gravity = DEFAULT_GRAVITY * 2f;
 		playerCamera.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING * 9f;
 		setCharacterState(PlayerCharacterState.Falling);
+//CLEANUP
 		if( useFallLoop )
 		{
-			//Going straight to fall loop is better when respawning and falling from the sky
-			setAnimationTrigger(FallLoopTrigger);
+			setAnimationTrigger(FallTrigger);
 		}
 		else
 		{
@@ -1485,9 +1488,9 @@ public class PlayerControl : Photon.PunBehaviour {
 			//To avoid drifting along the X axis when we detach from the zipline, make sure we reset moveDirection.
 			moveDirection = Vector3.zero;
 			capsuleCollider.attachedRigidbody.isKinematic = true;
-			setAnimationTrigger(Idle_LookTrigger);
+			setAnimationTrigger(AttachToZiplineTrigger);
 			ziplineAttachPoint = transform.FindChild("Zipline Attach Point");
-			ziplineAttachPoint.localPosition = new Vector3( 0, 2.15f, 0 );
+			ziplineAttachPoint.localPosition = new Vector3( -0.17f, 2.3f, 0 );
 			ziplineAttachPoint.localEulerAngles = new Vector3( 0, 0, 0 );
 			ziplineAttachPoint.GetComponent<AudioSource>().Play();
 			ziplineAttachPoint.SetParent(null);
@@ -1524,6 +1527,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				transform.eulerAngles = new Vector3(0,270f,0); //we turned left while ziplining
 				//We may have switched lanes because of the position change. Make sure the lane values are accurate.
 				recalculateCurrentLane();
+				setAnimationTrigger(DetachFromZiplineTrigger);
 				fall( true );
 			}
 			else
@@ -1538,7 +1542,20 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Animation
 	public void playVictoryAnimation()
 	{
+		anim.applyRootMotion = true;
 		setAnimationTrigger( Finish_LineTrigger );
+		//setAnimationTrigger( LoseTrigger );
+	}
+
+	public void playLoseAnimation()
+	{
+		anim.applyRootMotion = true;
+		setAnimationTrigger( LoseTrigger );
+	}
+
+	public void playOmniToolAnimation()
+	{
+		setAnimationTrigger( OmniToolTrigger );
 	}
 
 	void setAnimationTrigger( int animationTrigger )

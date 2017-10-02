@@ -1,0 +1,701 @@
+fileFormatVersion: 2
+guid: e395c9b5890345f4381e802813f97856
+timeCreated: 1506668031
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Bone003
+    100002: Bone006
+    100004: pockets_A
+    100006: pockets_B
+    100008: Rug
+    100010: Rug Head
+    100012: Rug L Calf
+    100014: Rug L Clavicle
+    100016: Rug L Finger0
+    100018: Rug L Finger01
+    100020: Rug L Finger02
+    100022: Rug L Finger1
+    100024: Rug L Finger11
+    100026: Rug L Finger12
+    100028: Rug L Foot
+    100030: Rug L Forearm
+    100032: Rug L Hand
+    100034: Rug L Thigh
+    100036: Rug L Toe0
+    100038: Rug L UpperArm
+    100040: Rug Neck
+    100042: Rug Pelvis
+    100044: Rug R Calf
+    100046: Rug R Clavicle
+    100048: Rug R Finger0
+    100050: Rug R Finger01
+    100052: Rug R Finger02
+    100054: Rug R Finger1
+    100056: Rug R Finger11
+    100058: Rug R Finger12
+    100060: Rug R Foot
+    100062: Rug R Forearm
+    100064: Rug R Hand
+    100066: Rug R Thigh
+    100068: Rug R Toe0
+    100070: Rug R UpperArm
+    100072: Rug Spine
+    100074: Rug Spine1
+    100076: Rug Spine2
+    100078: Rug Xtra01
+    100080: //RootNode
+    400000: Bone003
+    400002: Bone006
+    400004: pockets_A
+    400006: pockets_B
+    400008: Rug
+    400010: Rug Head
+    400012: Rug L Calf
+    400014: Rug L Clavicle
+    400016: Rug L Finger0
+    400018: Rug L Finger01
+    400020: Rug L Finger02
+    400022: Rug L Finger1
+    400024: Rug L Finger11
+    400026: Rug L Finger12
+    400028: Rug L Foot
+    400030: Rug L Forearm
+    400032: Rug L Hand
+    400034: Rug L Thigh
+    400036: Rug L Toe0
+    400038: Rug L UpperArm
+    400040: Rug Neck
+    400042: Rug Pelvis
+    400044: Rug R Calf
+    400046: Rug R Clavicle
+    400048: Rug R Finger0
+    400050: Rug R Finger01
+    400052: Rug R Finger02
+    400054: Rug R Finger1
+    400056: Rug R Finger11
+    400058: Rug R Finger12
+    400060: Rug R Foot
+    400062: Rug R Forearm
+    400064: Rug R Hand
+    400066: Rug R Thigh
+    400068: Rug R Toe0
+    400070: Rug R UpperArm
+    400072: Rug Spine
+    400074: Rug Spine1
+    400076: Rug Spine2
+    400078: Rug Xtra01
+    400080: //RootNode
+    7400000: Tumble
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
+      might lower retargeting quality:\n\t'Rug Spine2' has translation animation that
+      will be discarded.\n"
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Tumble
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 32
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 1
+        functionName: stumble_completed
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 1
+  humanDescription:
+    serializedVersion: 2
+    human:
+    - boneName: Rug Pelvis
+      humanName: Hips
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug L Thigh
+      humanName: LeftUpperLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug R Thigh
+      humanName: RightUpperLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug L Calf
+      humanName: LeftLowerLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug R Calf
+      humanName: RightLowerLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug L Foot
+      humanName: LeftFoot
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug R Foot
+      humanName: RightFoot
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug Spine
+      humanName: Spine
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug Spine1
+      humanName: Chest
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug Neck
+      humanName: Neck
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug Head
+      humanName: Head
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug L Clavicle
+      humanName: LeftShoulder
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug R Clavicle
+      humanName: RightShoulder
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug L UpperArm
+      humanName: LeftUpperArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug R UpperArm
+      humanName: RightUpperArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug L Forearm
+      humanName: LeftLowerArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug R Forearm
+      humanName: RightLowerArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug L Hand
+      humanName: LeftHand
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug R Hand
+      humanName: RightHand
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug L Toe0
+      humanName: LeftToes
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug R Toe0
+      humanName: RightToes
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug L Finger0
+      humanName: Left Thumb Proximal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug L Finger01
+      humanName: Left Thumb Intermediate
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug L Finger02
+      humanName: Left Thumb Distal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug L Finger1
+      humanName: Left Index Proximal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug L Finger11
+      humanName: Left Index Intermediate
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug L Finger12
+      humanName: Left Index Distal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug R Finger0
+      humanName: Right Thumb Proximal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug R Finger01
+      humanName: Right Thumb Intermediate
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug R Finger02
+      humanName: Right Thumb Distal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug R Finger1
+      humanName: Right Index Proximal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug R Finger11
+      humanName: Right Index Intermediate
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug R Finger12
+      humanName: Right Index Distal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Rug Spine2
+      humanName: UpperChest
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    skeleton:
+    - name: Rug(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Omnitool
+      parentName: Rug(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -1.7112914e-15, y: 1, z: -0.000000021855694, w: -0.0000000754979}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Rug
+      parentName: Rug(Clone)
+      position: {x: -0, y: 0.81704026, z: 0.016329754}
+      rotation: {x: -0.50000036, y: 0.49999964, z: 0.49999964, w: 0.50000036}
+      scale: {x: 0.99999994, y: 0.99999994, z: 1}
+    - name: Rug Pelvis
+      parentName: Rug
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.5, y: 0.5, z: 0.4999993, w: 0.5000007}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: Rug L Thigh
+      parentName: Rug Pelvis
+      position: {x: 0.00000017881393, y: 0.00000019557774, z: 0.11550261}
+      rotation: {x: -0.027470713, y: 0.9956698, z: 0.0013110918, w: 0.08879909}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: Rug L Calf
+      parentName: Rug L Thigh
+      position: {x: -0.30322874, y: 0, z: -0.000000029802322}
+      rotation: {x: -5.9727956e-10, y: -0.000000007656622, z: 0.16635114, w: 0.9860666}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Rug L Foot
+      parentName: Rug L Calf
+      position: {x: -0.34899384, y: 0, z: 0}
+      rotation: {x: 0.016065437, y: 0.087344304, z: -0.13854288, w: 0.98636645}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Rug L Toe0
+      parentName: Rug L Foot
+      position: {x: -0.11618008, y: 0.16443402, z: 0}
+      rotation: {x: 0.000000015454312, y: -0.000000015454312, z: -0.7071068, w: 0.7071068}
+      scale: {x: 0.99999994, y: 1, z: 0.99999994}
+    - name: Rug_Knee_L
+      parentName: Rug L Calf
+      position: {x: -0.16484386, y: 0.04585415, z: 0.0024157763}
+      rotation: {x: -0.11253082, y: 0.99194443, z: -0.050166804, w: -0.02943539}
+      scale: {x: 1, y: 1.0000001, z: 1}
+    - name: Rug R Thigh
+      parentName: Rug Pelvis
+      position: {x: -0.00000017881393, y: -0.00000012479722, z: -0.11550261}
+      rotation: {x: -0.02747059, y: 0.99566966, z: -0.0013124316, w: -0.08880059}
+      scale: {x: 1, y: 0.99999994, z: 1}
+    - name: Rug R Calf
+      parentName: Rug R Thigh
+      position: {x: -0.30322874, y: -0.0000000037252903, z: -0.000000029802322}
+      rotation: {x: 0, y: 0, z: 0.16635112, w: 0.9860666}
+      scale: {x: 1, y: 0.99999994, z: 1.0000001}
+    - name: Rug R Foot
+      parentName: Rug R Calf
+      position: {x: -0.34899384, y: 0, z: 0.000000029802322}
+      rotation: {x: -0.016065449, y: -0.087344386, z: -0.13854288, w: 0.98636645}
+      scale: {x: 0.99999994, y: 1, z: 1}
+    - name: Rug R Toe0
+      parentName: Rug R Foot
+      position: {x: -0.11618008, y: 0.164434, z: 0}
+      rotation: {x: -0.000000015454312, y: 0.000000015454312, z: -0.7071068, w: 0.7071068}
+      scale: {x: 0.99999994, y: 1, z: 0.99999994}
+    - name: Rug_Knee_R
+      parentName: Rug R Calf
+      position: {x: -0.16484898, y: 0.04585523, z: -0.0023870468}
+      rotation: {x: -0.039600093, y: 0.04157266, z: 0.9923543, w: -0.10925485}
+      scale: {x: 0.9999999, y: 1.0000001, z: 1}
+    - name: Rug Spine
+      parentName: Rug Pelvis
+      position: {x: -0.1004855, y: -0.033873707, z: 0.0000002326426}
+      rotation: {x: -0.000002080476, y: 0.000000693676, z: -0.000398159, w: 0.99999994}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: Bone003
+      parentName: Rug Spine
+      position: {x: 0.010654449, y: 0.051121518, z: 0.22352143}
+      rotation: {x: -0.22751865, y: 0.47264886, z: 0.85089105, w: -0.028685013}
+      scale: {x: 1, y: 1, z: 0.9999999}
+    - name: pockets_A
+      parentName: Rug Spine
+      position: {x: -0.033889472, y: -0.020936837, z: 0.1975264}
+      rotation: {x: -0.10263359, y: 0.518247, z: 0.83094734, w: 0.17439313}
+      scale: {x: 1, y: 1.0000001, z: 1.0000002}
+    - name: pockets_B
+      parentName: Rug Spine
+      position: {x: -0.031770885, y: 0.017519033, z: -0.23091935}
+      rotation: {x: 0.08904401, y: 0.70147747, z: 0.7014071, w: -0.08960281}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Rug Spine1
+      parentName: Rug Spine
+      position: {x: -0.114082515, y: -0.000090841204, z: -2.5195668e-10}
+      rotation: {x: -3.0117673e-14, y: 0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Rug Spine2
+      parentName: Rug Spine1
+      position: {x: -0.114082575, y: -0.00028218143, z: -7.826575e-10}
+      rotation: {x: -3.0117673e-14, y: 0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Rug L Clavicle
+      parentName: Rug Spine2
+      position: {x: -0.3101735, y: 0.000035027042, z: 0.05853619}
+      rotation: {x: 0.6087614, y: 0, z: -0.7933534, w: 0}
+      scale: {x: 1.0000001, y: 1, z: 1.0000001}
+    - name: Rug L UpperArm
+      parentName: Rug L Clavicle
+      position: {x: -0.31307164, y: -0.0000000018626451, z: 0}
+      rotation: {x: -0.39656472, y: 0.09585887, z: 0.041680627, w: 0.91203636}
+      scale: {x: 0.9999999, y: 0.9999999, z: 0.99999994}
+    - name: Rug L Forearm
+      parentName: Rug L UpperArm
+      position: {x: -0.21793652, y: 0, z: -0.000000059604645}
+      rotation: {x: 0.08715578, y: 0, z: 0, w: 0.9961947}
+      scale: {x: 1.0000001, y: 1, z: 1}
+    - name: Rug L Hand
+      parentName: Rug L Forearm
+      position: {x: -0.21594593, y: -0.000000059604645, z: 0.000000059604645}
+      rotation: {x: -0.42261827, y: 0, z: 0, w: 0.9063079}
+      scale: {x: 0.9999999, y: 1, z: 1}
+    - name: Rug L Finger0
+      parentName: Rug L Hand
+      position: {x: -0.029448628, y: 0.026368976, z: -0.056212857}
+      rotation: {x: 0.10920106, y: -0.36318716, z: 0.004951327, w: 0.92528147}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Rug L Finger01
+      parentName: Rug L Finger0
+      position: {x: -0.06522146, y: 0.000000029802322, z: -0.00000011920929}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 0.9999999, y: 1, z: 1}
+    - name: Rug L Finger02
+      parentName: Rug L Finger01
+      position: {x: -0.04004082, y: 0, z: 0}
+      rotation: {x: -0.000000027516126, y: -0.000000018790574, z: 0.13509052, w: 0.9908333}
+      scale: {x: 1.0000001, y: 1, z: 1}
+    - name: Rug L Finger1
+      parentName: Rug L Hand
+      position: {x: -0.12845987, y: -0.01069665, z: -0.005914733}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 0.99999994, z: 0.9999998}
+    - name: Rug L Finger11
+      parentName: Rug L Finger1
+      position: {x: -0.04004079, y: 0, z: 0.000000014901161}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 0.99999994, z: 1}
+    - name: Rug L Finger12
+      parentName: Rug L Finger11
+      position: {x: -0.04004079, y: 0, z: -0.000000007450581}
+      rotation: {x: -8.676024e-11, y: -0.0000000037406203, z: -0.116402216, w: 0.9932022}
+      scale: {x: 0.99999994, y: 1, z: 1}
+    - name: Rug Neck
+      parentName: Rug Spine2
+      position: {x: -0.3301283, y: 0.023100171, z: 0.00000003234493}
+      rotation: {x: -3.0117673e-14, y: 0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Rug Head
+      parentName: Rug Neck
+      position: {x: -0.0769546, y: -4.656613e-10, z: -8.881784e-16}
+      rotation: {x: -7.2656e-14, y: -0.0000000011042733, z: 0.00039883057, w: 0.99999994}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Rug R Clavicle
+      parentName: Rug Spine2
+      position: {x: -0.3101735, y: 0.000035351142, z: -0.058536198}
+      rotation: {x: -0.60876155, y: 0, z: -0.7933533, w: -0}
+      scale: {x: 1.0000001, y: 1, z: 1.0000001}
+    - name: Bone006
+      parentName: Rug R Clavicle
+      position: {x: -0.31276697, y: 0.0058536585, z: -0.09130001}
+      rotation: {x: 0.54682004, y: -0.4271891, z: 0.4243938, w: 0.58171064}
+      scale: {x: 1, y: 1, z: 0.9999999}
+    - name: Rug R UpperArm
+      parentName: Rug R Clavicle
+      position: {x: -0.31307164, y: -0.0000000018626451, z: 0}
+      rotation: {x: 0.39656472, y: -0.09585896, z: 0.041680664, w: 0.91203636}
+      scale: {x: 0.9999999, y: 0.9999999, z: 1}
+    - name: Rug R Forearm
+      parentName: Rug R UpperArm
+      position: {x: -0.21793652, y: -0.000000059604645, z: 0}
+      rotation: {x: -0.08715578, y: 0, z: 0, w: 0.9961947}
+      scale: {x: 1.0000001, y: 1.0000001, z: 1}
+    - name: Rug R Hand
+      parentName: Rug R Forearm
+      position: {x: -0.21594611, y: -0.000000059604645, z: -0.000000059604645}
+      rotation: {x: 0.42261827, y: 0, z: 0, w: 0.9063079}
+      scale: {x: 1.0000001, y: 1, z: 1}
+    - name: Rug R Finger0
+      parentName: Rug R Hand
+      position: {x: -0.029448628, y: 0.026368976, z: 0.056212857}
+      rotation: {x: -0.52748895, y: 0.34767547, z: 0.18455178, w: 0.7528731}
+      scale: {x: 1, y: 0.9999999, z: 0.9999999}
+    - name: Rug R Finger01
+      parentName: Rug R Finger0
+      position: {x: -0.06522149, y: 0.000000029802322, z: 0}
+      rotation: {x: -0.000000029802308, y: 0.000000089406925, z: -0.035408657, w: 0.99937296}
+      scale: {x: 0.99999994, y: 1, z: 1}
+    - name: Rug R Finger02
+      parentName: Rug R Finger01
+      position: {x: -0.04004082, y: 0, z: 0}
+      rotation: {x: 0.00000001275156, y: 0.000000016777571, z: 0.13509056, w: 0.9908333}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Rug R Finger1
+      parentName: Rug R Hand
+      position: {x: -0.12845993, y: -0.01069653, z: 0.005914718}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: Rug R Finger11
+      parentName: Rug R Finger1
+      position: {x: -0.04004082, y: 0, z: -0.000000007450581}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1.0000001, y: 1, z: 1}
+    - name: Rug R Finger12
+      parentName: Rug R Finger11
+      position: {x: -0.04004079, y: -0.000000059604645, z: -0.000000014901161}
+      rotation: {x: -0.0000000036132062, y: 0.000000004174252, z: -0.11640222, w: 0.99320215}
+      scale: {x: 0.9999998, y: 1, z: 0.99999994}
+    - name: Rug Xtra01
+      parentName: Rug Spine2
+      position: {x: -0.17688048, y: -0.1939568, z: -0.045564055}
+      rotation: {x: -0.29518247, y: -0.25544468, z: 0.6424534, w: 0.659446}
+      scale: {x: 0.99999994, y: 1, z: 0.99999994}
+    - name: RugBody
+      parentName: Rug(Clone)
+      position: {x: -0, y: 0, z: 0.0000000018626451}
+      rotation: {x: -0.00000004371139, y: 1, z: -0.00000000596243, w: -0.00000023841858}
+      scale: {x: 1, y: 1, z: 1}
+    - name: RugHead
+      parentName: Rug(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -1.7112914e-15, y: 1, z: -0.000000021855694, w: -0.0000000754979}
+      scale: {x: 1, y: 1, z: 1}
+    armTwist: 0.496
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 1
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 7d2248243fa16c241bf53e156602fe2e,
+    type: 3}
+  animationType: 3
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

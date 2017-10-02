@@ -34,6 +34,7 @@ public class OnSkinCreated : MonoBehaviour
 				transform.localPosition = Vector3.zero;
 				transform.localRotation = Quaternion.identity;
 				anim.avatar = GetComponent<PlayerSkinInfo>().animatorAvatar;
+				anim.runtimeAnimatorController = GetComponent<PlayerSkinInfo>().runtimeAnimatorController;
 				//For lip-sync
 				if( headSalsa3D) myOwner.GetComponent<PlayerVoiceOvers>().setLipSyncComponent( headSalsa3D );
 				anim.Rebind(); //Important
