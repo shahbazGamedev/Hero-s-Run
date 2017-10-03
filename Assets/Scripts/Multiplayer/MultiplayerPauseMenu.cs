@@ -19,6 +19,7 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 		titleText.text = LocalizationManager.Instance.getText("MENU_PAUSE");
 		resumeButtonText.text = LocalizationManager.Instance.getText("MENU_RESUME");
 		quitButtonText.text = LocalizationManager.Instance.getText("MENU_QUIT");
+  		pauseButton.GetComponent<CanvasGroup>().alpha = 0;
 	}
 
 	//If the device is paused by pressing the Home button, because of a low battery warning or a phone call, the game will automatically display the pause menu.
@@ -75,7 +76,7 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 
 	public void hidePauseButton()
 	{
-		pauseButton.SetActive( false );
+		pauseButton.GetComponent<FadeInCanvasGroup>().fadeOut();
 	}
 
 	void OnEnable()
@@ -95,7 +96,7 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 	{
 		if( newState == PlayerCharacterState.Dying )
 		{
-  			pauseButton.SetActive( false );
+  			pauseButton.GetComponent<FadeInCanvasGroup>().fadeOut();
 		}
 	}
 
@@ -103,7 +104,7 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 	{
 		if( newState == GameState.Normal )
 		{
- 			pauseButton.SetActive( true );
+ 			pauseButton.GetComponent<FadeInCanvasGroup>().fadeIn();
 		}
 	}
 }
