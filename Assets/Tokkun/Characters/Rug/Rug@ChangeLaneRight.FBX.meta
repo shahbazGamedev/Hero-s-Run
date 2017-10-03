@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 3b7f62b3fefa7ac44a82d057cce13ff1
-timeCreated: 1506668202
+guid: a8a219189073eed43922753cfc0d2f8c
+timeCreated: 1506946967
 licenseType: Free
 ModelImporter:
   serializedVersion: 21
@@ -46,10 +46,6 @@ ModelImporter:
     100076: Rug Spine2
     100078: Rug Xtra01
     100080: //RootNode
-    100082: Rug_Knee_L
-    100084: Rug_Knee_R
-    100086: Omnitool
-    100088: RugHead
     400000: Bone003
     400002: Bone006
     400004: pockets_A
@@ -91,16 +87,8 @@ ModelImporter:
     400076: Rug Spine2
     400078: Rug Xtra01
     400080: //RootNode
-    400082: Rug_Knee_L
-    400084: Rug_Knee_R
-    400086: Omnitool
-    400088: RugHead
-    4300000: Omnitool
-    4300002: RugHead
-    7400000: ZipLineAttach
+    7400000: ChangeLaneRight
     9500000: //RootNode
-    13700000: Omnitool
-    13700002: RugHead
   materials:
     importMaterials: 1
     materialName: 0
@@ -126,19 +114,19 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: ZipLineAttach
+      name: ChangeLaneRight
       takeName: Take 001
       firstFrame: 0
-      lastFrame: 10
+      lastFrame: 20
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
-      loopBlendOrientation: 1
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
       loopBlendPositionY: 1
       loopBlendPositionXZ: 1
       keepOriginalOrientation: 1

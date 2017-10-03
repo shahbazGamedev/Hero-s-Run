@@ -3,7 +3,7 @@ guid: 6af35c4f405b96240a0e7989f56603ef
 timeCreated: 1506668202
 licenseType: Free
 ModelImporter:
-  serializedVersion: 19
+  serializedVersion: 21
   fileIDToRecycleName:
     100000: Bone003
     100002: Bone006
@@ -48,6 +48,8 @@ ModelImporter:
     100080: //RootNode
     100082: Rug_Knee_L
     100084: Rug_Knee_R
+    100086: Omnitool
+    100088: RugHead
     400000: Bone003
     400002: Bone006
     400004: pockets_A
@@ -91,8 +93,14 @@ ModelImporter:
     400080: //RootNode
     400082: Rug_Knee_L
     400084: Rug_Knee_R
+    400086: Omnitool
+    400088: RugHead
+    4300000: Omnitool
+    4300002: RugHead
     7400000: ZipLineLoop
     9500000: //RootNode
+    13700000: Omnitool
+    13700002: RugHead
   materials:
     importMaterials: 1
     materialName: 0
@@ -115,26 +123,27 @@ ModelImporter:
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
       name: ZipLineLoop
       takeName: Take 001
-      firstFrame: 15
-      lastFrame: 45
+      firstFrame: 10
+      lastFrame: 40
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
-      hasAdditiveReferencePose: 1
+      hasAdditiveReferencePose: 0
       loopTime: 1
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
+      loopBlend: 1
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
       keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
+      keepOriginalPositionXZ: 1
       heightFromFeet: 0
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
@@ -150,7 +159,10 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    importVisibility: 1
     importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
@@ -166,6 +178,7 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
+    normalCalculationMode: 4
   importAnimation: 1
   copyAvatar: 1
   humanDescription:

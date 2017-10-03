@@ -104,8 +104,7 @@ ModelImporter:
     animationImportErrors: 
     animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
       might lower retargeting quality:\n\t'Rug Spine2' has translation animation that
-      will be discarded.\nEvent death_completed has a time (1.600000) outside the
-      clip's valid range (0.000000..1.600000). It will never be fired"
+      will be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     animationCompression: 3
@@ -128,125 +127,25 @@ ModelImporter:
       hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
       keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
+      keepOriginalPositionXZ: 1
       heightFromFeet: 0
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.5816092
+      - time: 0.67356324
         functionName: death_completed
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      transformMask:
-      - path: 
-        weight: 1
-      - path: Rug
-        weight: 1
-      - path: Rug/Rug Pelvis
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug L Thigh
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug L Thigh/Rug L Calf
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug L Thigh/Rug L Calf/Rug L Foot
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug L Thigh/Rug L Calf/Rug L Foot/Rug L Toe0
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug R Thigh
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug R Thigh/Rug R Calf
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug R Thigh/Rug R Calf/Rug R Foot
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug R Thigh/Rug R Calf/Rug R Foot/Rug R Toe0
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Bone003
-        weight: 0
-      - path: Rug/Rug Pelvis/Rug Spine/pockets_A
-        weight: 0
-      - path: Rug/Rug Pelvis/Rug Spine/pockets_B
-        weight: 0
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm/Rug L Forearm
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm/Rug L Forearm/Rug L Hand
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm/Rug L Forearm/Rug L Hand/Rug L Finger0
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm/Rug L Forearm/Rug L Hand/Rug L Finger0/Rug L Finger01
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm/Rug L Forearm/Rug L Hand/Rug L Finger0/Rug L Finger01/Rug L Finger02
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm/Rug L Forearm/Rug L Hand/Rug L Finger1
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm/Rug L Forearm/Rug L Hand/Rug L Finger1/Rug L Finger11
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm/Rug L Forearm/Rug L Hand/Rug L Finger1/Rug L Finger11/Rug L Finger12
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug Neck
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug Neck/Rug Head
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Bone006
-        weight: 0
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm/Rug R Forearm
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm/Rug R Forearm/Rug R Hand
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm/Rug R Forearm/Rug R Hand/Rug R Finger0
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm/Rug R Forearm/Rug R Hand/Rug R Finger0/Rug R Finger01
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm/Rug R Forearm/Rug R Hand/Rug R Finger0/Rug R Finger01/Rug R Finger02
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm/Rug R Forearm/Rug R Hand/Rug R Finger1
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm/Rug R Forearm/Rug R Hand/Rug R Finger1/Rug R Finger11
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm/Rug R Forearm/Rug R Hand/Rug R Finger1/Rug R Finger11/Rug R Finger12
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug Xtra01
-        weight: 0
+      transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0

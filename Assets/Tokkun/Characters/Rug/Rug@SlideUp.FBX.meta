@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 3b7f62b3fefa7ac44a82d057cce13ff1
-timeCreated: 1506668202
+guid: e9855279b27876e408eae7d3339e7a47
+timeCreated: 1506950800
 licenseType: Free
 ModelImporter:
   serializedVersion: 21
@@ -48,8 +48,6 @@ ModelImporter:
     100080: //RootNode
     100082: Rug_Knee_L
     100084: Rug_Knee_R
-    100086: Omnitool
-    100088: RugHead
     400000: Bone003
     400002: Bone006
     400004: pockets_A
@@ -93,14 +91,8 @@ ModelImporter:
     400080: //RootNode
     400082: Rug_Knee_L
     400084: Rug_Knee_R
-    400086: Omnitool
-    400088: RugHead
-    4300000: Omnitool
-    4300002: RugHead
-    7400000: ZipLineAttach
+    7400000: SlideUp
     9500000: //RootNode
-    13700000: Omnitool
-    13700002: RugHead
   materials:
     importMaterials: 1
     materialName: 0
@@ -126,10 +118,10 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: ZipLineAttach
+      name: SlideUp
       takeName: Take 001
-      firstFrame: 0
-      lastFrame: 10
+      firstFrame: 32
+      lastFrame: 48
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

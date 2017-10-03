@@ -3,7 +3,7 @@ guid: 28c686bd7ac917a4d929190372882a50
 timeCreated: 1506668610
 licenseType: Free
 ModelImporter:
-  serializedVersion: 19
+  serializedVersion: 21
   fileIDToRecycleName:
     100000: Bone003
     100002: Bone006
@@ -115,6 +115,7 @@ ModelImporter:
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
       name: Land
@@ -129,122 +130,18 @@ ModelImporter:
       hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
       keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
+      keepOriginalPositionXZ: 1
       heightFromFeet: 0
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events: []
-      transformMask:
-      - path: 
-        weight: 1
-      - path: Rug
-        weight: 1
-      - path: Rug/Rug Pelvis
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug L Thigh
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug L Thigh/Rug L Calf
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug L Thigh/Rug L Calf/Rug L Foot
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug L Thigh/Rug L Calf/Rug L Foot/Rug L Toe0
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug L Thigh/Rug L Calf/Rug_Knee_L
-        weight: 0
-      - path: Rug/Rug Pelvis/Rug R Thigh
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug R Thigh/Rug R Calf
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug R Thigh/Rug R Calf/Rug R Foot
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug R Thigh/Rug R Calf/Rug R Foot/Rug R Toe0
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug R Thigh/Rug R Calf/Rug_Knee_R
-        weight: 0
-      - path: Rug/Rug Pelvis/Rug Spine
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Bone003
-        weight: 0
-      - path: Rug/Rug Pelvis/Rug Spine/pockets_A
-        weight: 0
-      - path: Rug/Rug Pelvis/Rug Spine/pockets_B
-        weight: 0
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm/Rug L Forearm
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm/Rug L Forearm/Rug L Hand
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm/Rug L Forearm/Rug L Hand/Rug L Finger0
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm/Rug L Forearm/Rug L Hand/Rug L Finger0/Rug L Finger01
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm/Rug L Forearm/Rug L Hand/Rug L Finger0/Rug L Finger01/Rug L Finger02
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm/Rug L Forearm/Rug L Hand/Rug L Finger1
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm/Rug L Forearm/Rug L Hand/Rug L Finger1/Rug L Finger11
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug L Clavicle/Rug L
-          UpperArm/Rug L Forearm/Rug L Hand/Rug L Finger1/Rug L Finger11/Rug L Finger12
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug Neck
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug Neck/Rug Head
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Bone006
-        weight: 0
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm/Rug R Forearm
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm/Rug R Forearm/Rug R Hand
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm/Rug R Forearm/Rug R Hand/Rug R Finger0
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm/Rug R Forearm/Rug R Hand/Rug R Finger0/Rug R Finger01
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm/Rug R Forearm/Rug R Hand/Rug R Finger0/Rug R Finger01/Rug R Finger02
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm/Rug R Forearm/Rug R Hand/Rug R Finger1
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm/Rug R Forearm/Rug R Hand/Rug R Finger1/Rug R Finger11
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug R Clavicle/Rug R
-          UpperArm/Rug R Forearm/Rug R Hand/Rug R Finger1/Rug R Finger11/Rug R Finger12
-        weight: 1
-      - path: Rug/Rug Pelvis/Rug Spine/Rug Spine1/Rug Spine2/Rug Xtra01
-        weight: 0
+      transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
@@ -254,7 +151,10 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    importVisibility: 1
     importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
@@ -270,6 +170,7 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
+    normalCalculationMode: 4
   importAnimation: 1
   copyAvatar: 1
   humanDescription:
