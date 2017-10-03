@@ -225,6 +225,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	{
 		//Cache components for performance
 		anim = GetComponent<Animator>();
+		GetComponent<Ragdoll>().controlRagdoll( false );
 		capsuleCollider = GetComponent<CapsuleCollider>();
 		controllerOriginalCenter = capsuleCollider.center;
 		playerCamera = GetComponent<PlayerCamera>();
@@ -1750,12 +1751,14 @@ public class PlayerControl : Photon.PunBehaviour {
 	public void death_completed ( AnimationEvent eve )
 	{
 		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.25f, 0.7f, 1f ) );
+		GetComponent<Ragdoll>().controlRagdoll( true );
 		StartCoroutine( waitBeforeResurrecting(DELAY_BEFORE_RESURRECTING) );
 	}
 
 	public void fall_forward_completed ( AnimationEvent eve )
 	{
 		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.25f, 0.7f, 1f ) );
+		GetComponent<Ragdoll>().controlRagdoll( true );
 		StartCoroutine( waitBeforeResurrecting(DELAY_BEFORE_RESURRECTING) );
 	}
 
@@ -1819,6 +1822,8 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		//Reset data
 		resetSharedLevelData(true);
+
+		GetComponent<Ragdoll>().controlRagdoll( false );
 		
 		//Reposition dead body at the respawn location.
 		//Don't use the currentTile which is local since it may be out of sync.

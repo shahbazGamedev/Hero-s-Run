@@ -104,7 +104,8 @@ ModelImporter:
     animationImportErrors: 
     animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
       might lower retargeting quality:\n\t'Rug Spine2' has translation animation that
-      will be discarded.\n"
+      will be discarded.\nEvent death_completed has a time (1.600000) outside the
+      clip's valid range (0.000000..1.600000). It will never be fired"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     animationCompression: 3
@@ -138,7 +139,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 1
+      - time: 0.5816092
         functionName: death_completed
         data: 
         objectReferenceParameter: {instanceID: 0}
