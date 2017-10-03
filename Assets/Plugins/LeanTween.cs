@@ -1,8 +1,10 @@
-// LeanTween version 2.42 - http://dentedpixel.com/developer-diary/
+//namespace DentedPixel{
+
+// LeanTween version 2.45 - http://dentedpixel.com/developer-diary/
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2016 Russell Savage - Dented Pixel
+// Copyright (c) 2017 Russell Savage - Dented Pixel
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
 
 
 /*
@@ -228,11 +231,14 @@ public class LeanTween : MonoBehaviour {
 	public static float tau = Mathf.PI*2.0f; 
 	public static float PI_DIV2 = Mathf.PI / 2.0f; 
 
+	private static LTSeq[] sequences;
+
 	private static LTDescr[] tweens;
 	private static int[] tweensFinished;
 	private static LTDescr tween;
 	private static int tweenMaxSearch = -1;
 	private static int maxTweens = 400;
+	private static int maxSequences = 400;
 	private static int frameRendered= -1;
 	private static GameObject _tweenEmpty;
 	public static float dtEstimated = -1f;
@@ -241,6 +247,7 @@ public class LeanTween : MonoBehaviour {
 	private static float previousRealTime;
 	#endif
 	public static float dtActual;
+	private static uint global_counter = 0;
 	private static int i;
 	private static int j;
 	private static int finishedCnt;
@@ -290,7 +297,11 @@ public class LeanTween : MonoBehaviour {
 	* @example
 	*   LeanTween.init( 800 );
 	*/
-	public static void init(int maxSimultaneousTweens){
+	public static void init(int maxSimultaneousTweens ){
+		init(maxSimultaneousTweens, maxSequences);
+	}
+		
+	public static void init(int maxSimultaneousTweens, int maxSimultaneousSequences){
 		if(tweens==null){
 			maxTweens = maxSimultaneousTweens;
 			tweens = new LTDescr[maxTweens];
@@ -302,7 +313,12 @@ public class LeanTween : MonoBehaviour {
 			#if !UNITY_EDITOR
 			_tweenEmpty.hideFlags = HideFlags.HideAndDontSave;
 			#endif
+			#if UNITY_EDITOR
+			if(Application.isPlaying)
+				DontDestroyOnLoad( _tweenEmpty );
+			#else
 			DontDestroyOnLoad( _tweenEmpty );
+			#endif
 			for(int i = 0; i < maxTweens; i++){
 				tweens[i] = new LTDescr();
 			}
@@ -310,6 +326,12 @@ public class LeanTween : MonoBehaviour {
 			#if UNITY_5_4_OR_NEWER
 			UnityEngine.SceneManagement.SceneManager.sceneLoaded += onLevelWasLoaded54;
 			#endif
+
+			sequences = new LTSeq[ maxSimultaneousSequences ]; 
+
+			for(int i = 0; i < maxSimultaneousSequences; i++){
+				sequences[i] = new LTSeq();
+			}
 		}
 	}
 
@@ -324,7 +346,7 @@ public class LeanTween : MonoBehaviour {
 		Destroy(_tweenEmpty);
 	}
 
-	public void FixedUpdate(){
+	public void Update(){
 		LeanTween.update();
 	}
 
@@ -364,8 +386,8 @@ public class LeanTween : MonoBehaviour {
 			//			 Debug.Log("tweenMaxSearch:"+tweenMaxSearch +" maxTweens:"+maxTweens);
 			for( int i = 0; i <= tweenMaxSearch && i < maxTweens; i++){
 				tween = tweens[i];
-				//				if(i==0 && tweens[i].toggle)
-				//					Debug.Log("tweens["+i+"]"+tweens[i]);
+//				if(i==0 && tweens[i].toggle)
+//					Debug.Log("tweens["+i+"]"+tweens[i]);
 				if(tween.toggle){
 					maxTweenReached = i;
 
@@ -383,9 +405,9 @@ public class LeanTween : MonoBehaviour {
 			for(int i = 0; i < finishedCnt; i++){
 				j = tweensFinished[i];
 				tween = tweens[ j ];
-//				Debug.Log("removing tween:"+tween);
+				//				Debug.Log("removing tween:"+tween);
 				removeTween(j);
-                if(tween.hasExtraOnCompletes && tween.trans!=null)
+				if(tween.hasExtraOnCompletes && tween.trans!=null)
 					tween.callOnCompletes();
 			}
 
@@ -499,14 +521,32 @@ public class LeanTween : MonoBehaviour {
 		}
 	}
 
-	public static void cancel( GameObject gameObject, int uniqueId ){
+	public static void cancel( RectTransform rect ){
+		cancel( rect.gameObject, false);
+	}
+
+//	public static void cancel( GameObject gameObject, int uniqueId ){
+//		if(uniqueId>=0){
+//			init();
+//			int backId = uniqueId & 0xFFFF;
+//			int backCounter = uniqueId >> 16;
+//			// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" counter:"+backCounter + " setCounter:"+ tweens[backId].counter + " tweens[id].type:"+tweens[backId].type);
+//			if(tweens[backId].trans==null || (tweens[backId].trans.gameObject == gameObject && tweens[backId].counter==backCounter))
+//				removeTween((int)backId);
+//		}
+//	}
+
+	public static void cancel( GameObject gameObject, int uniqueId, bool callOnComplete = false ){
 		if(uniqueId>=0){
 			init();
 			int backId = uniqueId & 0xFFFF;
 			int backCounter = uniqueId >> 16;
-			// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" counter:"+backCounter + " setCounter:"+ tweens[backId].counter + " tweens[id].type:"+tweens[backId].type);
-			if(tweens[backId].trans==null || (tweens[backId].trans.gameObject == gameObject && tweens[backId].counter==backCounter))
+				// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" counter:"+backCounter + " setCounter:"+ tw     eens[backId].counter + " tweens[id].type:"+tweens[backId].type);
+			if(tweens[backId].trans==null || (tweens[backId].trans.gameObject == gameObject && tweens[backId].counter==backCounter)) {
+				if (callOnComplete && tweens[backId].optional.onComplete != null)
+					tweens[backId].optional.onComplete();
 				removeTween((int)backId);
+		    }
 		}
 	}
 
@@ -538,11 +578,26 @@ public class LeanTween : MonoBehaviour {
 			init();
 			int backId = uniqueId & 0xFFFF;
 			int backCounter = uniqueId >> 16;
-			// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
-			if(tweens[backId].counter==backCounter){
-				if(callOnComplete && tweens[backId].optional.onComplete != null)
-					tweens[backId].optional.onComplete();
-				removeTween((int)backId);
+			if (backId > tweens.Length - 1) { // sequence
+				int sequenceId = backId - tweens.Length;
+				LTSeq seq = sequences[sequenceId];
+				for (int i = 0; i < maxSequences; i++) {
+					if (seq.current.tween != null) {
+						int tweenId = seq.current.tween.uniqueId;
+						int tweenIndex = tweenId & 0xFFFF;
+						removeTween(tweenIndex);
+					}
+					if (seq.previous == null)
+						break;
+					seq.current = seq.previous;
+				}
+			} else { // tween
+				// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
+				if (tweens[backId].counter == backCounter) {
+					if (callOnComplete && tweens[backId].optional.onComplete != null)
+						tweens[backId].optional.onComplete();
+					removeTween((int)backId);
+				}
 			}
 		}
 	}
@@ -721,6 +776,10 @@ public class LeanTween : MonoBehaviour {
 		return false;
 	}
 
+	public static bool isTweening( RectTransform rect ){
+		return isTweening(rect.gameObject);
+	}
+
 	/**
 	* Test whether or not a tween is active or not
 	* 
@@ -817,8 +876,10 @@ public class LeanTween : MonoBehaviour {
 
 		bool found = false;
 		//		Debug.Log("Search start");
-		for(j=0, i = startSearch; j < maxTweens; i++){
-			if(i>=maxTweens-1)
+		for(j=0, i = startSearch; j <= maxTweens; i++){
+			if(j >= maxTweens)
+				return logError("LeanTween - You have run out of available spaces for tweening. To avoid this error increase the number of spaces to available for tweening when you initialize the LeanTween class ex: LeanTween.init( "+(maxTweens*2)+" );") as LTDescr;
+			if(i>=maxTweens)
 				i = 0;
 			//			Debug.Log("searching i:"+i);
 			if(tweens[i].toggle==false){
@@ -830,18 +891,22 @@ public class LeanTween : MonoBehaviour {
 			}
 
 			j++;
-			if(j >= maxTweens)
-				return logError("LeanTween - You have run out of available spaces for tweening. To avoid this error increase the number of spaces to available for tweening when you initialize the LeanTween class ex: LeanTween.init( "+(maxTweens*2)+" );") as LTDescr;
 		}
 		if(found==false)
 			logError("no available tween found!");
 
 		// Debug.Log("new tween with i:"+i+" counter:"+tweens[i].counter+" tweenMaxSearch:"+tweenMaxSearch+" tween:"+tweens[i]);
 		tweens[i].reset();
-		tweens[i].setId( (uint)i );
+
+		global_counter++;
+		if(global_counter>0x8000)
+			global_counter = 0;
+		
+		tweens[i].setId( (uint)i, global_counter );
 
 		return tweens[i];
 	}
+
 
 	public static GameObject tweenEmpty{
 		get{
@@ -904,6 +969,49 @@ public class LeanTween : MonoBehaviour {
 		#endif
 		return lt;
 	}
+
+	/**
+	* Retrieve a sequencer object where you can easily chain together tweens and methods one after another
+	* 
+	* @method LeanTween.sequence
+	* @return {LTSeq} LTSeq an object that you can add tweens, methods and time on to
+	* @example
+	* var seq = LeanTween.sequence();<br>
+	* seq.add(1f); // delay everything one second<br>
+	* seq.add( () => { // fire an event before start<br>
+	* &nbsp;Debug.Log("I have started");<br>
+	* });<br>
+	* seq.add( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br>
+	* seq.add( () => { // fire event after tween<br>
+	* &nbsp;Debug.Log("We are done now");<br>
+	* });;<br>
+	*/
+	public static LTSeq sequence( bool initSequence = true){
+		init(maxTweens);
+		// Loop through and find available sequence
+		for (int i = 0; i < sequences.Length; i++) {
+//			Debug.Log("i:" + i + " sequences[i]:" + sequences[i]);
+			if (sequences[i].tween==null || sequences[i].tween.toggle == false) {
+				if (sequences[i].toggle == false) {
+					LTSeq seq = sequences[i];
+					if (initSequence) {
+						seq.init((uint)(i + tweens.Length), global_counter);
+
+						global_counter++;
+						if (global_counter > 0x8000)
+							global_counter = 0;
+					} else {
+						seq.reset();
+					}
+				
+					return seq;
+				}
+			}
+		}
+
+		return null;
+	}
+
 
 	/**
 	* Fade a GUI Object
@@ -1231,7 +1339,6 @@ public class LeanTween : MonoBehaviour {
 	* @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
 	* @param {Vector3} Vector3 to The final positin with which to move to
 	* @param {float} float time The time to complete the tween in
-	* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	*/
 	public static LTDescr moveLocal(GameObject gameObject, Vector3 to, float time){
@@ -1248,9 +1355,9 @@ public class LeanTween : MonoBehaviour {
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	* @example
 	* <i>Javascript:</i><br>
-	* LeanTween.move(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br><br>
+	* LeanTween.moveLocal(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br><br>
 	* <i>C#:</i><br>
-	* LeanTween.move(gameObject, new Vector3[]{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
+	* LeanTween.moveLocal(gameObject, new Vector3[]{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
 	*/
 	public static LTDescr moveLocal(GameObject gameObject, Vector3[] to, float time){
 		d = options().setMoveCurvedLocal();
@@ -2315,6 +2422,14 @@ public class LeanTween : MonoBehaviour {
 		return removeListener( tweenEmpty, eventId, callback);
 	}
 
+	public static bool removeListener( int eventId ){
+		int point = eventId*INIT_LISTENERS_MAX + i;
+		eventListeners[ point ] = null;
+		goListeners[ point ] = null;
+		return true;
+	}
+
+
 	/**
 	* Remove an event listener you have added
 	* @method LeanTween.removeListener
@@ -2552,9 +2667,9 @@ public class LTBezierPath {
 		transform.localPosition = point( ratio );
 		ratio += 0.001f;
 		if(ratio<=1.0f){
-			Vector3 v3Dir = transform.parent.TransformPoint( point( ratio ) ) - transform.localPosition;
+			Vector3 v3Dir = point( ratio ) - transform.localPosition;
 			float angle = Mathf.Atan2(v3Dir.y, v3Dir.x) * Mathf.Rad2Deg;
-			transform.eulerAngles = new Vector3(0, 0, angle);
+			transform.localEulerAngles = new Vector3(0, 0, angle);
 		}
 	}
 
@@ -2850,12 +2965,18 @@ public class LTSpline {
 	}
 
 	public void placeLocal2d( Transform transform, float ratio ){
+		Transform trans = transform.parent;
+		if(trans==null){ // this has no parent, just do a regular transform
+			place2d(transform, ratio);
+			return;
+		}
 		transform.localPosition = point( ratio );
 		ratio += 0.001f;
 		if(ratio<=1.0f){
-			Vector3 v3Dir = transform.parent.TransformPoint( point( ratio ) ) - transform.localPosition;
+			Vector3 ptAhead = point( ratio );//trans.TransformPoint(  );
+			Vector3 v3Dir =  ptAhead - transform.localPosition;
 			float angle = Mathf.Atan2(v3Dir.y, v3Dir.x) * Mathf.Rad2Deg;
-			transform.eulerAngles = new Vector3(0, 0, angle);
+			transform.localEulerAngles = new Vector3(0, 0, angle);
 		}
 	}
 
@@ -3575,3 +3696,6 @@ public class LTGUI {
 	}
 
 }
+
+namespace DentedPixel { public class LeanDummy {}  }
+//}

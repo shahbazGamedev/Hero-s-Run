@@ -7,19 +7,15 @@ using UnityEngine.SceneManagement;
 public class MultiplayerPauseMenu : MonoBehaviour {
 
 	[SerializeField] GameObject pausePanel;
-	[SerializeField] Text titleText;
-	[SerializeField] Text resumeButtonText;
-	[SerializeField] Text quitButtonText;
 	[SerializeField] GameObject pauseButton;
 
 	// Use this for initialization
 	void Awake ()
 	{
 		if( !GameManager.Instance.isMultiplayer() ) Destroy( gameObject );
-		titleText.text = LocalizationManager.Instance.getText("MENU_PAUSE");
-		resumeButtonText.text = LocalizationManager.Instance.getText("MENU_RESUME");
-		quitButtonText.text = LocalizationManager.Instance.getText("MENU_QUIT");
   		pauseButton.GetComponent<CanvasGroup>().alpha = 0;
+		pausePanel.GetComponent<CanvasGroup>().interactable = false;
+ 		pausePanel.GetComponent<CanvasGroup>().alpha = 0;
 	}
 
 	//If the device is paused by pressing the Home button, because of a low battery warning or a phone call, the game will automatically display the pause menu.
@@ -51,12 +47,14 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 			GameManager.Instance.setGameState( GameState.Paused );
 			//Take this opportunity to do a garbage collection
 			System.GC.Collect();
-			pausePanel.SetActive( true );
+			pausePanel.GetComponent<CanvasGroup>().interactable = true;
+			pausePanel.GetComponent<FadeInCanvasGroup>().fadeIn();
 		}
 		else if( GameManager.Instance.getGameState() == GameState.Paused )
 		{
 			//We were paused. Resume game.
-			pausePanel.SetActive( false );
+			pausePanel.GetComponent<CanvasGroup>().interactable = false;
+			pausePanel.GetComponent<FadeInCanvasGroup>().fadeOut();
 			GameManager.Instance.setGameState( GameState.Normal );
 		}
 	}
