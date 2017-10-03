@@ -24,8 +24,8 @@ public class HUDMultiplayer : MonoBehaviour {
 	const float DELAY_WHEN_SHOWING_EMOTES = 11f;
 	PlayerRace localPlayerRace;
 	PlayerControl localPlayerControl;
-	[Header("Distance Remaining")]
 	[SerializeField] GameObject canvasGroupForFading;
+	[Header("Distance Remaining")]
 	[SerializeField] Image distanceRemainingCounterRed;  //Radial 360 image
 	[SerializeField] TextMeshProUGUI distanceText;
 	[Header("Countdowm")]
@@ -83,7 +83,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		fpsCalculator.enabled = (debugInfoType == DebugInfoType.FPS);
 
 		userMessageText.gameObject.SetActive( false );
-		canvasGroupForFading.SetActive( false );
+		canvasGroupForFading.GetComponent<CanvasGroup>().alpha = 0;
 	}
 
 	public void registerLocalPlayer ( Transform localPlayer )
@@ -167,7 +167,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		//Race is starting
 		raceHasStarted = true;
 		displayRacePosition( true );	
-		canvasGroupForFading.SetActive( true );
+		canvasGroupForFading.GetComponent<FadeInCanvasGroup>().fadeIn();
 		
 	}
 
@@ -393,15 +393,15 @@ public class HUDMultiplayer : MonoBehaviour {
 		switch (position)
 		{
 			case 1:
-				ordinalIndicator = "1<size=38><sup>st</sup></size>";
+				ordinalIndicator = "1<size=64><sup>st</sup></size>";
 				break;
 				
 			case 2:
-				ordinalIndicator = "2<size=38><sup>nd</sup></size>";
+				ordinalIndicator = "2<size=64><sup>nd</sup></size>";
 				break;
 
 			case 3:
-				ordinalIndicator = "3<size=38><sup>rd</sup></size>";
+				ordinalIndicator = "3<size=64><sup>rd</sup></size>";
 				break;
 
 			default:
