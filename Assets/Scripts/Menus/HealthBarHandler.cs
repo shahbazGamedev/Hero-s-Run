@@ -16,6 +16,8 @@ public class HealthBarHandler : MonoBehaviour {
 
 	void Awake()
 	{
+		//Hide the marker when you have full health
+		healthBarMarker.GetComponent<CanvasGroup>().alpha = 0;
 	}
 
 	void OnEnable()
@@ -44,11 +46,26 @@ public class HealthBarHandler : MonoBehaviour {
 		{
 			//Player will die because his health is zero so animate super fast.
 			animationSpeed = ANIMATION_DURATION_FAST;
-			healthBarMarker.gameObject.SetActive( false );
 		}
 		else
 		{
 			animationSpeed = ANIMATION_DURATION_NORMAL;
+		}
+		if( newHealth < PlayerHealth.DEFAULT_HEALTH )
+		{
+			if( newHealth == 0 )
+			{
+				healthBarMarker.GetComponent<FadeInCanvasGroup>().fadeOut();	
+			}
+			else
+			{
+				healthBarMarker.GetComponent<FadeInCanvasGroup>().fadeIn();	
+			}
+		}
+		else
+		{
+			//Hide the marker when you have full health
+			healthBarMarker.GetComponent<FadeInCanvasGroup>().fadeOut();	
 		}
 		//Low and full radial images should always be in sync
 		float fillAmount = newHealth/(float)PlayerHealth.DEFAULT_HEALTH;
@@ -61,7 +78,9 @@ public class HealthBarHandler : MonoBehaviour {
 		lowHealthRadial.fillAmount = 1f;			
 		fullHealthRadial.fillAmount = 1f;
 		healthBarMarker.gameObject.SetActive( true );
-		positionHealthBarMarker( 1f );		
+		positionHealthBarMarker( 1f );
+		//Hide the marker when you have full health
+		healthBarMarker.GetComponent<CanvasGroup>().alpha = 0;
 	}
 
 	void positionHealthBarMarker( float fillAmount )
