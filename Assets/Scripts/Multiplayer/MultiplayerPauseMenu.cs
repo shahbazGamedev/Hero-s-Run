@@ -14,6 +14,7 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 	{
 		if( !GameManager.Instance.isMultiplayer() ) Destroy( gameObject );
   		pauseButton.GetComponent<CanvasGroup>().alpha = 0;
+		pauseButton.GetComponent<CanvasGroup>().interactable = false;
 		pausePanel.GetComponent<CanvasGroup>().interactable = false;
  		pausePanel.GetComponent<CanvasGroup>().alpha = 0;
 	}
@@ -74,6 +75,7 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 
 	public void hidePauseButton()
 	{
+		pauseButton.GetComponent<CanvasGroup>().interactable = false;
 		pauseButton.GetComponent<FadeInCanvasGroup>().fadeOut();
 	}
 
@@ -94,6 +96,7 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 	{
 		if( newState == PlayerCharacterState.Dying )
 		{
+			pauseButton.GetComponent<CanvasGroup>().interactable = false;
   			pauseButton.GetComponent<FadeInCanvasGroup>().fadeOut();
 		}
 	}
@@ -102,6 +105,7 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 	{
 		if( newState == GameState.Normal )
 		{
+			pauseButton.GetComponent<CanvasGroup>().interactable = true;
  			pauseButton.GetComponent<FadeInCanvasGroup>().fadeIn();
 		}
 	}
