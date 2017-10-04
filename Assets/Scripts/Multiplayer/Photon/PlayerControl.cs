@@ -77,8 +77,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	int AttachToZiplineTrigger = Animator.StringToHash("Zipline_Attach");
 	int DetachFromZiplineTrigger = Animator.StringToHash("Zipline_Detach");
 	int OmniToolTrigger = Animator.StringToHash("OmniTool");
-	int RunRightTrigger = Animator.StringToHash("Run_Right");
-	int RunLeftTrigger = Animator.StringToHash("Run_Left");
+	int leaningBlendFactor = Animator.StringToHash("Leaning");
+
 	#endregion
 
 	#region Falling variables
@@ -195,6 +195,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	#region Other variables
 	GenerateLevel generateLevel;
+	Coroutine changeLeaningBlendFactorCoroutine;
 	#endregion
 
 	#region Events
@@ -977,13 +978,13 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			transform.rotation = Quaternion.Euler( 0,playerRotY + 90f,0 );
 			tileRotationY = tileRotationY + 90f;
-			anim.SetTrigger( RunRightTrigger );
+			lean( 0.6f, 0.3f );
 		}
 		else
 		{
 			transform.rotation = Quaternion.Euler( 0,playerRotY - 90f,0 );
 			tileRotationY = tileRotationY - 90f;
-			anim.SetTrigger( RunLeftTrigger );
+			lean( -0.6f, 0.3f );
 		}
 
 		if( playerCharacterState == PlayerCharacterState.Turning_and_sliding )
@@ -994,8 +995,41 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			setCharacterState( PlayerCharacterState.Running );
 		}
+		Invoke( "cancelLeaningAfterTurn", 0.3f );
 		//Debug.Log ("turnNow completed " + isGoingRight + " " + transform.eulerAngles.y + " " + playerCharacterState );
 
+	}
+
+	/// <summary>
+	/// Lean left or right for the specified duration.
+	/// leaningEndBlendFactor is a value between -1 (full lean left) and +1 (full lean right) with 0 meaning there is no leaning.
+	/// </summary>
+	/// <param name="leaningEndBlendFactor">Leaning end blend factor.</param>
+	/// <param name="duration">Duration.</param>
+	void lean( float leaningEndBlendFactor, float duration )
+	{
+		if( changeLeaningBlendFactorCoroutine != null ) StopCoroutine( changeLeaningBlendFactorCoroutine );
+		changeLeaningBlendFactorCoroutine = StartCoroutine( changeLeaningBlendFactor( leaningEndBlendFactor, duration ) );
+	}
+
+	IEnumerator changeLeaningBlendFactor( float leaningEndBlendFactor, float duration )
+	{
+		float elapsedTime = 0;
+		
+		float leaningStartBlendFactor = anim.GetFloat( leaningBlendFactor );
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			anim.SetFloat( leaningBlendFactor, Mathf.Lerp( leaningStartBlendFactor, leaningEndBlendFactor, elapsedTime/duration ) );
+			yield return new WaitForEndOfFrame();  
+			
+		} while ( elapsedTime < duration );
+		anim.SetFloat( leaningBlendFactor, leaningEndBlendFactor );
+	}
+
+	void cancelLeaningAfterTurn()
+	{
+		lean( 0, 0.3f );
 	}
 
 	//move the player to the left lane if false,
@@ -1010,11 +1044,11 @@ public class PlayerControl : Photon.PunBehaviour {
 
 			if( isGoingRight )
 			{
-				anim.SetTrigger( RunRightTrigger );
+				lean( 0.3f, 0.3f );
 			}
 			else
 			{
-				anim.SetTrigger( RunLeftTrigger );
+				lean( -0.3f, 0.3f );
 			}
 
 			//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
@@ -1133,6 +1167,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			setCharacterState( PlayerCharacterState.Running );					
 		}
+		lean( 0, 0.3f );
 		moveDirection.x = 0;
 		currentLane = desiredLane;
 	}
@@ -1885,7 +1920,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		currentLane = Lanes.Center;
 		desiredLane = Lanes.Center;
 		myLane = 0;
-
+		anim.SetFloat( leaningBlendFactor, 0 );
 		jumping = false;
 		queueSlide = false;
 		queueJump = false;
