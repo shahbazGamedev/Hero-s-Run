@@ -138,7 +138,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.67126435
+      - time: 1
         functionName: fall_forward_completed
         data: 
         objectReferenceParameter: {instanceID: 0}
