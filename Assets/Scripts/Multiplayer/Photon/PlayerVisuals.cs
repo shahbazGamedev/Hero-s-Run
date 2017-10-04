@@ -5,7 +5,6 @@ using CrazyMinnow.SALSA;
 
 public class PlayerVisuals : Photon.PunBehaviour {
 
-	[SerializeField] Salsa3D headSalsa3D = null;
 	//Particles
 	public ParticleSystem dustPuff;
 	public ParticleSystem waterSplashWhileSliding; //Plays when player slides in water.It loops.
@@ -89,7 +88,7 @@ public class PlayerVisuals : Photon.PunBehaviour {
 			GetComponent<Ragdoll>().initializeRagdoll ( anim, heroSkin.GetComponent<PlayerSkinInfo>().ragdollRigidBodyParent, GetComponent<CapsuleCollider>() );
 			anim.runtimeAnimatorController = heroSkin.GetComponent<PlayerSkinInfo>().runtimeAnimatorController;
 			//For lip-sync
-			if( headSalsa3D) GetComponent<PlayerVoiceOvers>().setLipSyncComponent( headSalsa3D );
+			GetComponent<PlayerVoiceOvers>().setLipSyncComponent( heroSkin.GetComponent<PlayerSkinInfo>().headSalsa3D );
 			anim.Rebind(); //Important
 			//For debugging only
 			if( Debug.isDebugBuild && GameManager.Instance.playerDebugConfiguration.getAutoPilot() && photonView.isMine ) gameObject.AddComponent<HyperFocus>();
@@ -135,7 +134,7 @@ public class PlayerVisuals : Photon.PunBehaviour {
 			GetComponent<Ragdoll>().initializeRagdoll ( anim, heroSkin.GetComponent<PlayerSkinInfo>().ragdollRigidBodyParent, GetComponent<CapsuleCollider>() );
 			anim.runtimeAnimatorController = GetComponent<PlayerSkinInfo>().runtimeAnimatorController;
 			//For lip-sync
-			if( headSalsa3D) GetComponent<PlayerVoiceOvers>().setLipSyncComponent( headSalsa3D );
+			GetComponent<PlayerVoiceOvers>().setLipSyncComponent( heroSkin.GetComponent<PlayerSkinInfo>().headSalsa3D );
 			anim.Rebind(); //Important
 		}
 		//Register with the minimap
