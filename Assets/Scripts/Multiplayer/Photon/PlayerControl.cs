@@ -138,6 +138,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Zipline variables
+	[SerializeField] Vector3 ziplinePlayerOffset = new Vector3( -0.28f, 2.67f, 0 );
 	public bool isInZiplineTrigger;
 	Transform ziplineAttachPoint;
 	#endregion
@@ -1505,7 +1506,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			capsuleCollider.attachedRigidbody.isKinematic = true;
 			setAnimationTrigger(AttachToZiplineTrigger);
 			ziplineAttachPoint = transform.FindChild("Zipline Attach Point");
-			ziplineAttachPoint.localPosition = new Vector3( -0.17f, 2.3f, 0 );
+			ziplineAttachPoint.localPosition = ziplinePlayerOffset;
 			ziplineAttachPoint.localEulerAngles = new Vector3( 0, 0, 0 );
 			ziplineAttachPoint.GetComponent<AudioSource>().Play();
 			ziplineAttachPoint.SetParent(null);
