@@ -571,22 +571,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &1645978463924998
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 4594076941472618}
-  - component: {fileID: 137153450556775722}
-  m_Layer: 0
-  m_Name: Omnitool
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &1650764500380144
 GameObject:
   m_ObjectHideFlags: 1
@@ -1340,7 +1324,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4594076941472618}
   - {fileID: 4577555091963242}
   - {fileID: 4524512066811638}
   - {fileID: 4873669333203016}
@@ -1414,7 +1397,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4454634732214018}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4568137569244794
 Transform:
@@ -1442,7 +1425,7 @@ Transform:
   m_Children:
   - {fileID: 4166393736790826}
   m_Father: {fileID: 4454634732214018}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4591432220936248
 Transform:
@@ -1458,19 +1441,6 @@ Transform:
   - {fileID: 4847204078737564}
   m_Father: {fileID: 4236279896607192}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4594076941472618
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1645978463924998}
-  m_LocalRotation: {x: -1.7112914e-15, y: 1, z: -0.000000021855694, w: -0.0000000754979}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4454634732214018}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4640041021454764
 Transform:
@@ -1706,7 +1676,7 @@ Transform:
   m_Children:
   - {fileID: 4821289131634160}
   m_Father: {fileID: 4454634732214018}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4918113321322558
 Transform:
@@ -1988,51 +1958,6 @@ MonoBehaviour:
     sayMedium: 0
     sayLarge: 0
   prevAudioUpdateDelay: 0
---- !u!137 &137153450556775722
-SkinnedMeshRenderer:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1645978463924998}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_Materials:
-  - {fileID: 2100000, guid: 48d2bd011cadf124cb9953104facd793, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  serializedVersion: 2
-  m_Quality: 0
-  m_UpdateWhenOffscreen: 0
-  m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 4300002, guid: 7d2248243fa16c241bf53e156602fe2e, type: 3}
-  m_Bones:
-  - {fileID: 4727845173899778}
-  m_BlendShapeWeights: []
-  m_RootBone: {fileID: 4727845173899778}
-  m_AABB:
-    m_Center: {x: -0.1230147, y: -0.022260487, z: 0.020780325}
-    m_Extent: {x: 0.1720817, y: 0.12688899, z: 0.12412116}
-  m_DirtyAABB: 0
 --- !u!137 &137386422756489022
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
@@ -2047,6 +1972,7 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 2100000, guid: 114df4fe953279f44a2cc11779ce3dda, type: 2}
+  - {fileID: 2100000, guid: 48d2bd011cadf124cb9953104facd793, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2157,7 +2083,19 @@ SkinnedMeshRenderer:
   m_Bones:
   - {fileID: 4645392173081490}
   - {fileID: 4237186172815924}
-  m_BlendShapeWeights: []
+  m_BlendShapeWeights:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 63.26
   m_RootBone: {fileID: 4237186172815924}
   m_AABB:
     m_Center: {x: -0.15, y: -0, z: 0}

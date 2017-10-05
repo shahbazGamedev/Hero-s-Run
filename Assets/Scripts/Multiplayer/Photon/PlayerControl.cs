@@ -1783,7 +1783,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 	}
 
-	public void death_completed ( AnimationEvent eve )
+	public void fall_backward_completed ( AnimationEvent eve )
 	{
 		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.25f, 0.7f, 1f ) );
 		GetComponent<Ragdoll>().controlRagdoll( true );
