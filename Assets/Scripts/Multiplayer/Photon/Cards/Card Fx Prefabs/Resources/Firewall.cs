@@ -15,6 +15,7 @@ public class Firewall : CardSpawnedObject {
 		{
 			GetComponent<AudioSource>().PlayOneShot(onFlameContact);
 			other.GetComponent<PlayerHealth>().deductHealth( flameDamage );
+			addSkillBonus( 25, "SKILL_BONUS_FIREWALL" );
 		}
 	}
 
@@ -36,7 +37,8 @@ public class Firewall : CardSpawnedObject {
 	{
 		object[] data = gameObject.GetPhotonView ().instantiationData;
 
-		casterName = data[0].ToString();
+		casterTransform = getCaster( (int) data[0] );
+		setCasterName( casterTransform.name );
 
 		float delayBeforeSpellExpires = (float) data[1];
 

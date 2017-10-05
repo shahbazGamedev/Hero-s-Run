@@ -29,7 +29,7 @@ public class CardFirewall : Card {
 		object[] data = new object[3];
 
 		//We want the caster to be immune to the firewall
-		data[0] = playerTransform.name;
+		data[0] = photonViewID;
 
 		//We want the firewall to disappear after a while
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );

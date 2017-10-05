@@ -2087,7 +2087,7 @@ ModelImporter:
       curves: []
       events:
       - time: 1
-        functionName: death_completed
+        functionName: fall_backward_completed
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

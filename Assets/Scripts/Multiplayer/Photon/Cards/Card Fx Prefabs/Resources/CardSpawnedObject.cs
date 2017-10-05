@@ -68,6 +68,23 @@ public class CardSpawnedObject : MonoBehaviour {
 		return caster;
 	}
 
+	protected void addSkillBonus( int skillPoints, string skillTextID )
+	{
+		if( casterTransform != null )
+		{
+			if( casterTransform.GetComponent<PhotonView>().isMine && casterTransform.GetComponent<PlayerAI>() == null )
+			{
+				string skillText = LocalizationManager.Instance.getText(skillTextID);
+				skillText = string.Format( skillText, skillPoints );
+				SkillBonusHandler.Instance.addSkillBonus( skillText );
+			}
+		}
+		else
+		{
+			Debug.LogError("CardSpawnedObject-addSkillBonus called for " + name + " with text ID " + skillTextID + ", but casterTransform is null. Ignoring." ); 
+		}
+	}
+
 	/// <summary>
 	/// Positions the spawned object in the center of the tile, flush with the ground if possible. The tile will become the parent of the object.
 	/// </summary>

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class SkillBonusHandler : MonoBehaviour {
 
@@ -9,6 +10,7 @@ public class SkillBonusHandler : MonoBehaviour {
 	[SerializeField] GameObject skillBonusPrefab;
 
 	public static SkillBonusHandler Instance;
+	Coroutine showSkillBonusCoroutine;
 
 	// Use this for initialization
 	void Awake ()
@@ -32,12 +34,19 @@ public class SkillBonusHandler : MonoBehaviour {
 		}
 	}
 
-	public IEnumerator showSkillBonus( string bonusText )
+	public void addSkillBonus( string formattedSkillText )
+	{
+		showSkillBonusCoroutine = StartCoroutine( showSkillBonus( formattedSkillText ) );
+	}
+
+	IEnumerator showSkillBonus( string formattedSkillText )
 	{
 		//Fade in 0.8 sec,stay 2.6 sec, fade-out 0.6 sec
 		GameObject skillBonus = GameObject.Instantiate( skillBonusPrefab );
 		skillBonus.GetComponent<CanvasGroup>().alpha = 0;
 		skillBonus.GetComponent<FadeInCanvasGroup>().fadeIn();
+		TextMeshProUGUI skillText = skillBonus.GetComponentInChildren<TextMeshProUGUI>();
+		skillText.text = formattedSkillText;
 		RectTransform skillBonusRectTransform = skillBonus.GetComponent<RectTransform>();
 		skillBonusRectTransform.SetParent( skillBonusHolder );
 		skillBonusRectTransform.localScale = Vector3.one;
