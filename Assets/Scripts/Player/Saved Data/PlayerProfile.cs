@@ -52,6 +52,10 @@ public sealed class PlayerProfile {
  	//Not serialized. trophiesEarnedOrLost is set by PlayerRaceManager in the Level scene, but must be read by GameEndManager in the Matchmaking Scene.
 	private int trophiesEarnedLastRace = 0;
 
+	//Skill points are obtained during a race and awarded as an XP bonus when the race is completed.
+	//Therefore there is no need to serialize since they get added to the player's XP total.
+	[System.NonSerialized] int skillBonus = 0;
+
 	//Delegate used to communicate to other classes when the a value changes
 	public delegate void PlayerProfileChanged( PlayerProfileEvent eventType, int previousValue = 0, int newValue = 0 );
 	public static event PlayerProfileChanged playerProfileChanged;
@@ -90,6 +94,23 @@ public sealed class PlayerProfile {
 	{
 		completedTutorial = true;
 		serializePlayerprofile();
+	}
+	#endregion
+
+	#region Skill Bonus
+	public int getSkillBonus()
+	{
+		return skillBonus;
+	}
+
+	public void addToSkillBonus( int value )
+	{
+		skillBonus = skillBonus + value;
+	}
+
+	public void resetSkillBonus()
+	{
+		skillBonus = 0;
 	}
 	#endregion
 

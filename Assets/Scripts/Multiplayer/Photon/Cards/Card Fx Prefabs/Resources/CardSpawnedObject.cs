@@ -77,6 +77,9 @@ public class CardSpawnedObject : MonoBehaviour {
 				string skillText = LocalizationManager.Instance.getText(skillTextID);
 				skillText = string.Format( skillText, skillPoints );
 				SkillBonusHandler.Instance.addSkillBonus( skillText );
+				//Also update the skill bonus total in player profile
+				//so we can convert those bonuses to XP at the end of the race.
+				GameManager.Instance.playerProfile.addToSkillBonus( skillPoints );
 			}
 		}
 		else
