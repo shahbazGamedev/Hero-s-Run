@@ -132,7 +132,7 @@ public class PlayerVisuals : Photon.PunBehaviour {
 			heroSkin.transform.localRotation = Quaternion.identity;
 			anim.avatar = heroSkin.GetComponent<PlayerSkinInfo>().animatorAvatar;
 			GetComponent<Ragdoll>().initializeRagdoll ( anim, heroSkin.GetComponent<PlayerSkinInfo>().ragdollRigidBodyParent, GetComponent<CapsuleCollider>() );
-			anim.runtimeAnimatorController = GetComponent<PlayerSkinInfo>().runtimeAnimatorController;
+			anim.runtimeAnimatorController = heroSkin.GetComponent<PlayerSkinInfo>().runtimeAnimatorController;
 			//For lip-sync
 			GetComponent<PlayerVoiceOvers>().setLipSyncComponent( heroSkin.GetComponent<PlayerSkinInfo>().headSalsa3D );
 			anim.Rebind(); //Important
