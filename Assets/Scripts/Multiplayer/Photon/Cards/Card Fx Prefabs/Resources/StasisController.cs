@@ -130,7 +130,7 @@ public class StasisController : CardSpawnedObject {
 		MiniMap.Instance.hideSecondaryIcon( affectedPlayerTransform.gameObject );
 		affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = false;
 		affectedPlayerTransform.GetComponent<Animator>().speed = 1f;
-		affectedPlayerControl.fall( true );
+		affectedPlayerControl.fall();
 		affectedPlayerControl.enablePlayerMovement( true );
 		affectedPlayerControl.enablePlayerControl( true );
 		affectedPlayerTransform.GetComponent<PlayerSpell>().cardDurationExpired(CardName.Stasis);

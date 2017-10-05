@@ -448,7 +448,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					}
 					if( !isLeftFootOnGround && !isRightFootOnGround )
 					{
-						fall( false );
+						fall();
 					}
 				}
 			}
@@ -681,7 +681,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Fall and Land
-	public void fall( bool useFallLoop )
+	public void fall()
 	{
 		if( playerCharacterState == PlayerCharacterState.Falling || playerCharacterState == PlayerCharacterState.Jumping ) return; //ignore, we are already falling or jumping
 
@@ -692,16 +692,8 @@ public class PlayerControl : Photon.PunBehaviour {
 		gravity = DEFAULT_GRAVITY * 2f;
 		playerCamera.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING * 9f;
 		setCharacterState(PlayerCharacterState.Falling);
-//CLEANUP
-		if( useFallLoop )
-		{
-			setAnimationTrigger(FallTrigger);
-		}
-		else
-		{
-			//This fall animation blends with the run animation
-			setAnimationTrigger(FallTrigger);
-		}
+		//This fall animation blends with the run animation
+		setAnimationTrigger(FallTrigger);
 		//playSound( fallingSound, false );
 		print ( "fall started " + distanceToGround + " " + MIN_DISTANCE_FOR_FALL + " " + playerCharacterState );
 	}
@@ -1578,7 +1570,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				//We may have switched lanes because of the position change. Make sure the lane values are accurate.
 				recalculateCurrentLane();
 				setAnimationTrigger(DetachFromZiplineTrigger);
-				fall( true );
+				fall();
 			}
 			else
 			{
@@ -1901,7 +1893,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			anim.Rebind();
 			//Make player fall from sky, land and start running again
 			enablePlayerMovement( true );
-			fall( true );
+			fall();
 		}
 		else
 		{
