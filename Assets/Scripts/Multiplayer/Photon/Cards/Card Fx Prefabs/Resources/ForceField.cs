@@ -25,12 +25,15 @@ public class ForceField : CardSpawnedObject {
 		//Read the data
 		object[] data = this.gameObject.GetPhotonView ().instantiationData;
 		
+		casterTransform = getCaster( (int) data[0] );
+		setCasterName( casterTransform.name );
+
 		//Destroy the force field when it expires
-		float duration = (float) data[0];
+		float duration = (float) data[1];
 		StartCoroutine( destroySpawnedObject( duration, DELAY_BEFORE_DESTROY_EFFECTS ) );
 
 		//Adjust the height
-		float height = (float) data[1];
+		float height = (float) data[2];
 		transform.localScale = new Vector3( 8f, height, 1f );
 
 		//Display the force field icon on the minimap
@@ -59,6 +62,10 @@ public class ForceField : CardSpawnedObject {
 	{
 		//Play collision sound
 		GetComponent<AudioSource>().PlayOneShot( collisionSound );
+		if( collision.collider.CompareTag("Player") && collision.collider.name != casterName )
+		{
+			addSkillBonus( 25, "SKILL_BONUS_FORCE_FIELD" );
+		}
   	}
 
 	public override void destroySpawnedObjectNow()

@@ -24,13 +24,17 @@ public class CardForceField : Card {
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
-		object[] data = new object[2];
+		object[] data = new object[3];
+
+		//Caster PhotonView ID.
+		data[0] = photonViewID;
 
 		//We want the force field to disappear after a while.
-		data[0] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
+		data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
 
 		//Height.
-		data[1] = cd.getCardPropertyValue( CardPropertyType.HEIGHT, level );
+		data[2] = cd.getCardPropertyValue( CardPropertyType.HEIGHT, level );
+
 
 		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( spawnOffset ), playerTransform.rotation, 0, data );
 	}
