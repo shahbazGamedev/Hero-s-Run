@@ -62,20 +62,19 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Hash IDs for player animations	
 	//Hash IDs for player animations. These are used to improve performance.
 	int RunTrigger = Animator.StringToHash("Run");
+	int StumbleTrigger = Animator.StringToHash("Stumble");
+	int JumpTrigger = Animator.StringToHash("Jump");
+	int DoubleJumpTrigger = Animator.StringToHash("Double Jump");
 	int FallTrigger = Animator.StringToHash("Fall");
 	int LandTrigger = Animator.StringToHash("Land");
-	int Double_JumpTrigger = Animator.StringToHash("Double Jump");
-	int JumpTrigger = Animator.StringToHash("Jump");
-	int Slide_DownTrigger = Animator.StringToHash("Slide Down");
-	int Slide_UpTrigger = Animator.StringToHash("Slide Up");
-	int DeathWallTrigger = Animator.StringToHash("DeathWall");
-	int StumbleTrigger = Animator.StringToHash("Stumble");
-	int FallForwardTrigger = Animator.StringToHash("Fall_Forward");
-	int Idle_LookTrigger = Animator.StringToHash("Idle_Look");
-	int Finish_LineTrigger = Animator.StringToHash("Finish_Line");
+	int SlideDownTrigger = Animator.StringToHash("Slide Down");
+	int SlideUpTrigger = Animator.StringToHash("Slide Up");
+	int FallBackwardTrigger = Animator.StringToHash("Fall Backward");
+	int FallForwardTrigger = Animator.StringToHash("Fall Forward");
+	int WinTrigger = Animator.StringToHash("Win");
 	int LoseTrigger = Animator.StringToHash("Lose");
-	int AttachToZiplineTrigger = Animator.StringToHash("Zipline_Attach");
-	int DetachFromZiplineTrigger = Animator.StringToHash("Zipline_Detach");
+	int AttachToZiplineTrigger = Animator.StringToHash("Zipline Attach");
+	int DetachFromZiplineTrigger = Animator.StringToHash("Zipline Detach");
 	int OmniToolTrigger = Animator.StringToHash("OmniTool");
 	int leaningBlendFactor = Animator.StringToHash("Leaning");
 
@@ -636,7 +635,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			if( doingDoubleJump )
 			{
 				moveDirection.y = doubleJumpSpeed;
-				setAnimationTrigger(Double_JumpTrigger);
+				setAnimationTrigger(DoubleJumpTrigger);
 				jumpStarted = true;
 				queueJump = false;
 			}
@@ -666,7 +665,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				if( doingDoubleJump )
 				{
 					moveDirection.y = doubleJumpSpeed;
-					setAnimationTrigger(Double_JumpTrigger);
+					setAnimationTrigger(DoubleJumpTrigger);
 				}
 				else
 				{
@@ -780,7 +779,7 @@ public class PlayerControl : Photon.PunBehaviour {
 						playerVisuals.playDustPuff( true );
 					}
 
-					setAnimationTrigger(Slide_DownTrigger);
+					setAnimationTrigger(SlideDownTrigger);
 				}
 			}
 		}
@@ -810,7 +809,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				{
 					setCharacterState( PlayerCharacterState.Running );
 				}
-				setAnimationTrigger(Slide_UpTrigger);
+				setAnimationTrigger(SlideUpTrigger);
 				//Reset capsule collider to upright position
 				changeColliderAxis( Axis.Y );
 			}
@@ -1594,7 +1593,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	public void playVictoryAnimation()
 	{
 		anim.applyRootMotion = true;
-		setAnimationTrigger( Finish_LineTrigger );
+		setAnimationTrigger( WinTrigger );
 		//setAnimationTrigger( LoseTrigger );
 	}
 
@@ -1735,18 +1734,18 @@ public class PlayerControl : Photon.PunBehaviour {
 			case DeathType.Zombie:
 				//Play collision sound
 				playerSounds.playDyingSound();
-				setAnimationTrigger(DeathWallTrigger);
+				setAnimationTrigger(FallBackwardTrigger);
 				break;
 		
 			case DeathType.Flame:
-				setAnimationTrigger(DeathWallTrigger);
+				setAnimationTrigger(FallBackwardTrigger);
 				break;
 	                
 	        case DeathType.Obstacle:
 				//Play collision sound
 				playerSounds.playDyingSound();
 				playerCamera.Shake();
-				setAnimationTrigger(DeathWallTrigger);
+				setAnimationTrigger(FallBackwardTrigger);
 				break;
 
 	        case DeathType.FallForward:
@@ -1761,7 +1760,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				break;
 
 			default:
-				setAnimationTrigger(DeathWallTrigger);
+				setAnimationTrigger(FallBackwardTrigger);
 				break;
 		}
 	}
