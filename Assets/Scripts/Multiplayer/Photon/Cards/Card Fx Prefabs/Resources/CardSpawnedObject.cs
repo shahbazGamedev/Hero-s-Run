@@ -74,12 +74,7 @@ public class CardSpawnedObject : MonoBehaviour {
 		{
 			if( casterTransform.GetComponent<PhotonView>().isMine && casterTransform.GetComponent<PlayerAI>() == null )
 			{
-				string skillText = LocalizationManager.Instance.getText(skillTextID);
-				skillText = string.Format( skillText, skillPoints );
-				SkillBonusHandler.Instance.addSkillBonus( skillText );
-				//Also update the skill bonus total in player profile
-				//so we can convert those bonuses to XP at the end of the race.
-				GameManager.Instance.playerProfile.addToSkillBonus( skillPoints );
+				SkillBonusHandler.Instance.addSkillBonus( skillPoints, skillTextID );
 			}
 		}
 		else

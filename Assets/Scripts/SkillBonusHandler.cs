@@ -30,23 +30,28 @@ public class SkillBonusHandler : MonoBehaviour {
 		//Also support keys for debugging
 		if ( Input.GetKeyDown (KeyCode.B) ) 
 		{
-			StartCoroutine( showSkillBonus( "Trap Activated +25 XP" ) );
+			addSkillBonus( 69, "SKILL_BONUS_FIREWALL" );
 		}
 	}
 
-	public void addSkillBonus( string formattedSkillText )
+	public void addSkillBonus( int skillPoints, string skillTextID )
 	{
-		showSkillBonusCoroutine = StartCoroutine( showSkillBonus( formattedSkillText ) );
+		string localizedSkillText = LocalizationManager.Instance.getText(skillTextID);
+		localizedSkillText = string.Format( localizedSkillText, skillPoints );
+		//Also update the skill bonus total in player profile
+		//so we can convert those bonuses to XP at the end of the race.
+		GameManager.Instance.playerProfile.addToSkillBonus( skillPoints );
+		showSkillBonusCoroutine = StartCoroutine( showSkillBonus( localizedSkillText ) );
 	}
 
-	IEnumerator showSkillBonus( string formattedSkillText )
+	IEnumerator showSkillBonus( string localizedSkillText )
 	{
 		//Fade in 0.8 sec,stay 2.6 sec, fade-out 0.6 sec
 		GameObject skillBonus = GameObject.Instantiate( skillBonusPrefab );
 		skillBonus.GetComponent<CanvasGroup>().alpha = 0;
 		skillBonus.GetComponent<FadeInCanvasGroup>().fadeIn();
 		TextMeshProUGUI skillText = skillBonus.GetComponentInChildren<TextMeshProUGUI>();
-		skillText.text = formattedSkillText;
+		skillText.text = localizedSkillText;
 		RectTransform skillBonusRectTransform = skillBonus.GetComponent<RectTransform>();
 		skillBonusRectTransform.SetParent( skillBonusHolder );
 		skillBonusRectTransform.localScale = Vector3.one;

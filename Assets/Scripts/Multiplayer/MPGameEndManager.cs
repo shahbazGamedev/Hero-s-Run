@@ -164,8 +164,6 @@ public class MPGameEndManager : MonoBehaviour {
 		GameManager.Instance.playerProfile.serializePlayerprofile();
 		//Also update the matchmaking screen if the player has leveled up so that the player frame gets updated
 		if( numberOfTimesLeveledUp > 0 ) matchmakingManager.configureLocalPlayerData();
-		//Now that we have attributed the XP, reset the skill bonus to 0
-		GameManager.Instance.playerProfile.resetSkillBonus();
 	}
 
 	public IEnumerator animateSlider( float fromValue, float toValue, Slider slider, System.Action onFinish = null  )

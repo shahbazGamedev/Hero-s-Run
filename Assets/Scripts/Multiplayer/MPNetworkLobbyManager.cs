@@ -57,6 +57,9 @@ public class MPNetworkLobbyManager : PunBehaviour
 	{
 		Debug.Log("startMatch " + GameManager.Instance.getPlayMode() );
 
+		//Make sure we reset the skill bonus to 0 at the beginning of every match.
+		GameManager.Instance.playerProfile.resetSkillBonus();
+
 		//Does the selected play mode require Internet?
 		if( !GameManager.Instance.isOnlinePlayMode() )
 		{
