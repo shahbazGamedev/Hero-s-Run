@@ -107,7 +107,12 @@ public class PlayerCollisions : Photon.PunBehaviour {
 								//So the damage will vary between RAGING_BULL_BASE_DAMAGE and MAX_OVERALL_SPEED_MULTIPLIER * RAGING_BULL_BASE_DAMAGE
 								//Using current numbers, that is between 25 and 42.5.
 								otherPlayer.GetComponent<PlayerHealth>().deductHealth( (int) (RAGING_BULL_BASE_DAMAGE *  damageMultiplier) );
-								otherPlayer.stumble();			
+								otherPlayer.stumble();
+								if( GetComponent<PhotonView>().isMine && GetComponent<PlayerAI>() == null )
+								{
+									//Grant skill bonus
+									SkillBonusHandler.Instance.addSkillBonus( 25, "SKILL_BONUS_RAGING_BULL" );
+								}			
 							}
 						}
 					}
