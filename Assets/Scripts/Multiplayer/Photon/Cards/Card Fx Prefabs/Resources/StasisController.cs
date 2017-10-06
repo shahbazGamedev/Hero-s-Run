@@ -78,9 +78,7 @@ public class StasisController : CardSpawnedObject {
 				}
 				affectedPlayerTransform.position = transform.TransformPoint( new Vector3( 0, Y_POS_PLAYER_IN_SPHERE, 0 ) );
 				affectedPlayerTransform.gameObject.layer = MaskHandler.playerLayer; //Restore to Player
-				//Slow down the anim speed to give the impression of the player being stuck
-				affectedPlayerTransform.GetComponent<Animator>().speed = 0.3f;
-				affectedPlayerTransform.GetComponent<Animator>().Play( "Fall_Loop" );
+				affectedPlayerTransform.GetComponent<Animator>().SetTrigger( "Stasis" );
 				//Set the player state to Idle so that other spells don't affect the player while he is in Statis.
 				affectedPlayerControl.setCharacterState( PlayerCharacterState.Idle );
 
@@ -129,7 +127,6 @@ public class StasisController : CardSpawnedObject {
 		if( isLocalPlayer ) HUDMultiplayer.hudMultiplayer.hideTapInstructions();
 		MiniMap.Instance.hideSecondaryIcon( affectedPlayerTransform.gameObject );
 		affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = false;
-		affectedPlayerTransform.GetComponent<Animator>().speed = 1f;
 		affectedPlayerControl.fall();
 		affectedPlayerControl.enablePlayerMovement( true );
 		affectedPlayerControl.enablePlayerControl( true );
