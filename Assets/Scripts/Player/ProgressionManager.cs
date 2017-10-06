@@ -8,7 +8,8 @@ public enum XPAwardType
 	FINISHED_RACE = 1,
 	WON = 2,
 	FIRST_WIN_OF_THE_DAY = 3,
-	CONSECUTIVE_RACE = 4
+	CONSECUTIVE_RACE = 4,
+	SKILL_BONUS = 5
 }
 
 public enum EloRating
@@ -117,7 +118,12 @@ public class ProgressionManager : MonoBehaviour {
 
 	public XPAward getXPAward( XPAwardType awardType )
 	{
-		return xpAwardList.Find(award => award.awardType == awardType);
+		XPAward xpAward = xpAwardList.Find(award => award.awardType == awardType);
+		if( xpAward.awardType == XPAwardType.SKILL_BONUS )
+		{
+			xpAward.xpAmount = GameManager.Instance.playerProfile.getSkillBonus();
+		}
+		return xpAward;
 	}
 
 	[System.Serializable]

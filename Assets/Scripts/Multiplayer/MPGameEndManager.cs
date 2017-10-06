@@ -39,8 +39,8 @@ public class MPGameEndManager : MonoBehaviour {
 		configureRacePanel();
 
 		//Individual XP Awards
-		StartCoroutine( displayIndividualAwards() );
 		int xpEarnedFromRace = calculatedTotalXPAwarded();
+		StartCoroutine( displayIndividualAwards() );
 
 		if( !xpTestingMode ) StartCoroutine( configureXPPanel(xpEarnedFromRace) );
 	}

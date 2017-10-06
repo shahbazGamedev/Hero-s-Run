@@ -100,7 +100,8 @@ public class PlayerRaceManager {
 		this.raceDuration = raceDuration;
 		raceStatus = RaceStatus.COMPLETED;
 		grantXPAward(XPAwardType.FINISHED_RACE);
-		if( racePosition == 1 ) grantXPAward(XPAwardType.WON);
+		if( GameManager.Instance.playerProfile.getSkillBonus() > 0 ) grantXPAward(XPAwardType.SKILL_BONUS);
+		if( racePosition == 1 && GameManager.Instance.isOnlinePlayMode() ) grantXPAward(XPAwardType.WON);
 
 		//Did the player complete this match in the allocated time to get the consecutive race XP award?
 		TimeSpan utcNowTimeSpan = new TimeSpan( DateTime.UtcNow.Ticks );
@@ -122,7 +123,7 @@ public class PlayerRaceManager {
 		{
 			//Is this the next day?
 			Debug.Log("PlayerRaceManager-test for first win :" + DateTime.UtcNow.Date.ToString() + " vs " + GameManager.Instance.playerProfile.getLastMatchWonTime().ToString() );
-			if( DateTime.UtcNow.Date > GameManager.Instance.playerProfile.getLastMatchWonTime() )
+			if( GameManager.Instance.isOnlinePlayMode() && DateTime.UtcNow.Date > GameManager.Instance.playerProfile.getLastMatchWonTime() )
 			{
 				grantXPAward(XPAwardType.FIRST_WIN_OF_THE_DAY);
 				GameManager.Instance.playerProfile.setLastMatchWonTime( DateTime.UtcNow );
