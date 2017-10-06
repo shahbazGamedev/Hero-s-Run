@@ -224,7 +224,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 				buttonOfCardPlayed.interactable = false;
 
 				//Play the card effect
-				activateCard( playedCard.name );
+				playerControl.playOmniToolAnimation( playedCard.name );
 
 				//When you play the Steal card, it does not get replaced by the card in the Next slot but by the card
 				//you are stealing.
@@ -293,12 +293,11 @@ public class TurnRibbonHandler : MonoBehaviour {
 		
 	}
 
-	void activateCard( CardName cardName )
+	public void activateCard( CardName cardName )
 	{
 		PlayerDeck.PlayerCardData playerCardData = GameManager.Instance.playerDeck.getCardByName( cardName );
 		Debug.Log("TurnRibbonHandler-activateCard: playing card: " + cardName );
 		HeroManager.HeroCharacter selectedHero = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex );
-		playerControl.playOmniToolAnimation();
 		cardHandler.activateCard( playerControl.GetComponent<PhotonView>(), cardName, selectedHero.name.ToString(), playerCardData.level );
 		//Increase the card usage count. This is used to determine the player's favorite card.
 		playerCardData.timesUsed++;

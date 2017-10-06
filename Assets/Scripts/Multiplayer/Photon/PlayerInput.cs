@@ -133,15 +133,15 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.N ) )
 		{
-			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Stasis, GameManager.Instance.playerProfile.getUserName(), 2 );
+			playerControl.playOmniToolAnimation( CardName.Stasis );
 		}
 		else if ( Input.GetKeyDown (KeyCode.O ) )
 		{
-			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Firewall, GameManager.Instance.playerProfile.getUserName(), 4 );
+			playerControl.playOmniToolAnimation( CardName.Firewall );
 		}
 		else if ( Input.GetKeyDown (KeyCode.T ) )
 		{
-			GameObject.FindObjectOfType<CardHandler>().activateCard( this.photonView, CardName.Force_Field, GameManager.Instance.playerProfile.getUserName(), 1);
+			playerControl.playOmniToolAnimation( CardName.Force_Field );
 		}
 		else if ( Input.GetKeyDown (KeyCode.P ) )
 		{

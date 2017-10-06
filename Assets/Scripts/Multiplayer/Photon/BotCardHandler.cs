@@ -180,7 +180,7 @@ public sealed class BotCardHandler : MonoBehaviour {
 		deductPower( playedCard.manaCost );
 
 		//Activate the card
-		activateCard( playedCard.name );
+		playOmniToolAnimation( playedCard.name );
 
 		//When you play the Steal card, it does not get replaced by the card in the Next slot but by the card
 		//you are stealing.
@@ -208,15 +208,20 @@ public sealed class BotCardHandler : MonoBehaviour {
 
 	}
 
-	public void activateCard( CardName cardName )
+	public void playOmniToolAnimation( CardName cardName )
 	{
 		PlayerDeck.PlayerCardData botCardData = getCardByName( cardName );
 		if( botCardData != null )
 		{
-			playerControl.playOmniToolAnimation();
-			cardHandler.activateCard( GetComponent<PhotonView>(), cardName, botHero.userName, botCardData.level );
-			playerSpell.playedCard( cardName );
+			playerControl.playOmniToolAnimation( cardName );
 		}
+	}
+
+	public void activateCard( CardName cardName )
+	{
+		PlayerDeck.PlayerCardData botCardData = getCardByName( cardName );
+		cardHandler.activateCard( GetComponent<PhotonView>(), cardName, botHero.userName, botCardData.level );
+		playerSpell.playedCard( cardName );
 	}
 
 	void deductPower( int powerCost )

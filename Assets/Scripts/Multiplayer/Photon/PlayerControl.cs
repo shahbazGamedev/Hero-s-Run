@@ -216,6 +216,11 @@ public class PlayerControl : Photon.PunBehaviour {
 	public float tileDistanceTraveled = 0; //Note that this value is NOT updated for bots.
 	#endregion
 
+	#region OmniTool
+	TurnRibbonHandler turnRibbonHandler;
+	CardName activeCardName; //Card that will be played when the OmniTool animation completes
+	#endregion
+
 	void Awake ()
 	{
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
@@ -239,6 +244,8 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerSpell = GetComponent<PlayerSpell>();
 		playerRace = GetComponent<PlayerRace>();
 		playerHealth = GetComponent<PlayerHealth>();
+		turnRibbonHandler = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
+
 
 		//Cache the string to avoid the runtime lookup
 		backInTheGameString = LocalizationManager.Instance.getText( "MINIMAP_BACK_IN_GAME" );
@@ -1586,7 +1593,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	{
 		anim.applyRootMotion = true;
 		setAnimationTrigger( WinTrigger );
-		//setAnimationTrigger( LoseTrigger );
 	}
 
 	public void playLoseAnimation()
@@ -1595,9 +1601,26 @@ public class PlayerControl : Photon.PunBehaviour {
 		setAnimationTrigger( LoseTrigger );
 	}
 
-	public void playOmniToolAnimation()
+	public void playOmniToolAnimation( CardName cardName )
 	{
+		print("playOmniToolAnimation for " + name + " Card " + cardName );
+		//Store this value. We will use it when the OmniTool animation completes.
+		activeCardName = cardName;
 		setAnimationTrigger( OmniToolTrigger );
+	}
+
+	public void OmniTool_completed ( AnimationEvent eve )
+	{
+		print("OmniTool_completed-playing card: " + activeCardName + " for " + name );
+		if( playerAI == null )
+		{
+			turnRibbonHandler.activateCard( activeCardName );
+		}
+		else
+		{
+			GetComponent<BotCardHandler>().activateCard( activeCardName );
+		}
+		activeCardName = CardName.None;
 	}
 
 	void setAnimationTrigger( int animationTrigger )
