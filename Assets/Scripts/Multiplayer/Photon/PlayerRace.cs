@@ -66,9 +66,27 @@ public class PlayerRace : Photon.PunBehaviour
 	bool wasPowerBoostUsed = false;
 	#endregion
 
+	#regionCached for performance
+	PlayerAI playerAI;
+	PlayerRun playerRun;
+	PlayerVoiceOvers playerVoiceOvers;
+	PlayerControl playerControl;
+	PlayerSpell playerSpell;
+	PlayerIK playerIK;
+	#endregion
+
 	void Start()
 	{
-		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
+		//Cached for performance
+		playerAI = GetComponent<PlayerAI>();
+		playerRun = GetComponent<PlayerRun>();
+		playerVoiceOvers = GetComponent<PlayerVoiceOvers>();
+		playerControl = GetComponent<PlayerControl>();
+		playerSpell = GetComponent<PlayerSpell>();
+		playerIK = GetComponent<PlayerIK>();
+
+
+		if( this.photonView.isMine && playerAI == null )
 		{	
 			//Reset value. PlayerRaceManager is an instance and does not get re-created when the level reloads	
 			PlayerRaceManager.Instance.setRaceStatus( RaceStatus.NOT_STARTED );
@@ -100,7 +118,7 @@ public class PlayerRace : Photon.PunBehaviour
             players.Remove (this);
 		}
 		Debug.Log("PlayerRace: OnDisable() Players Count: " + players.Count + " " + gameObject.name );
-		if( !playerCrossedFinishLine && this.photonView.isMine && GetComponent<PlayerAI>() == null )
+		if( !playerCrossedFinishLine && this.photonView.isMine && playerAI == null )
 		{
 			PlayerRaceManager.Instance.playerAbandonedRace();
 		}
@@ -110,7 +128,7 @@ public class PlayerRace : Photon.PunBehaviour
 	{
 		Debug.Log("PlayerRace: received StartRunningEvent " + gameObject.name );
 		raceStarted = true;
-		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
+		if( this.photonView.isMine && playerAI == null )
 		{			
 			PlayerRaceManager.Instance.setRaceStatus( RaceStatus.IN_PROGRESS );
 			GameManager.Instance.playerStatistics.incrementNumberRacesRun();
@@ -134,7 +152,7 @@ public class PlayerRace : Photon.PunBehaviour
 
 				//We only want the host to calculate the race position and race duration. We don't want a bot to do it.
 				//The host is the master client who is owned by this device (so IsMasterClient is true and IsMine is true).
-				if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
+				if( this.photonView.isMine && playerAI == null )
 				{
 					//Update the race position of the players i.e. 1st place, 2nd place, and so forth
 					players = players.OrderBy( p => p.tilesLeftBeforeReachingEnd ).ThenByDescending( p => p.numberPlayersBehindMe ).ToList();
@@ -204,12 +222,12 @@ public class PlayerRace : Photon.PunBehaviour
 	void activatePowerBoostRPC()
 	{
 		isPowerBoostActive = true;
-		if( photonView.isMine && GetComponent<PlayerAI>() == null )
+		if( photonView.isMine && playerAI == null )
 		{
 			HUDMultiplayer.hudMultiplayer.activateUserMessage( LocalizationManager.Instance.getText("RACE_EMERGENCY_POWER_ENGAGED"), 0, 2.5f );
 			turnRibbonHandler.increaseRefillRate();
 		}
-		GetComponent<PlayerRun>().addSpeedMultiplier( SpeedMultiplierType.Power_Speed_Boost );
+		playerRun.addSpeedMultiplier( SpeedMultiplierType.Power_Speed_Boost );
 
 		Invoke( "disablePowerBoost", POWER_BOOST_DURATION );
 		print("Activating power boost for " + gameObject.name );
@@ -218,12 +236,12 @@ public class PlayerRace : Photon.PunBehaviour
 	void disablePowerBoost()
 	{
 		isPowerBoostActive = false;
-		if( photonView.isMine && GetComponent<PlayerAI>() == null )
+		if( photonView.isMine && playerAI == null )
 		{
 			HUDMultiplayer.hudMultiplayer.activateUserMessage( LocalizationManager.Instance.getText("RACE_EMERGENCY_POWER_DISENGAGED"), 0, 2.5f );
 			turnRibbonHandler.resetRefillRate();
 		}
-		GetComponent<PlayerRun>().removeSpeedMultiplier( SpeedMultiplierType.Power_Speed_Boost );
+		playerRun.removeSpeedMultiplier( SpeedMultiplierType.Power_Speed_Boost );
 		print("Deactivating power boost for " + gameObject.name );
 	}
 
@@ -307,7 +325,7 @@ public class PlayerRace : Photon.PunBehaviour
 
 			racePosition = newRacePosition;
 			//The bot has a photon view. This photon view, just like the player's, has isMine set to true. But we don't want a bot to affect the HUD, hence we make sure we are not a bot.
-			if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
+			if( this.photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
 			//Debug.Log("PlayerRace: OnRacePositionChanged " +  (racePosition + 1 )  + " name " + gameObject.name );
 			if( players.Count >= 2)
 			{
@@ -320,7 +338,7 @@ public class PlayerRace : Photon.PunBehaviour
 				{
 					CancelInvoke("tookTheLead");
 					//We want the player to look at the other player overtaking him to add some emotion
-					GetComponent<PlayerIK>().isOvertaking( racePosition );
+					playerIK.isOvertaking( racePosition );
 				}
 			}
 		}
@@ -337,7 +355,7 @@ public class PlayerRace : Photon.PunBehaviour
 			{
 				//Display a minimap message that this player or bot took the lead.
 				string heroName;
-				if( GetComponent<PlayerAI>() == null )
+				if( playerAI == null )
 				{
 					//We're the player
 					heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name.ToString();
@@ -345,11 +363,11 @@ public class PlayerRace : Photon.PunBehaviour
 				else
 				{
 					//We're a bot
-					heroName = 	GetComponent<PlayerAI>().botHero.userName;
+					heroName = playerAI.botHero.userName;
 				}
 				print("tookTheLead " + heroName + " " + gameObject.name );
 				MiniMap.Instance.displayMessage( string.Format( tookTheLeadString, heroName ) );
-				GetComponent<PlayerVoiceOvers>().playVoiceOver(VoiceOverType.VO_Took_Lead);
+				playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Took_Lead);
 			}
 		}
 	}
@@ -370,12 +388,12 @@ public class PlayerRace : Photon.PunBehaviour
 			" raceDuration: " + raceDuration + " officialRacePosition: " + officialRacePosition );
 
 		//Cancel all spell effects
-		GetComponent<PlayerSpell>().cancelAllSpells();
+		playerSpell.cancelAllSpells();
 
 		racePosition = officialRacePosition;
 
 		//We want to slow down any player that reaches the finish line
-		StartCoroutine( GetComponent<PlayerRun>().slowDownPlayerAfterFinishLine( officialRacePosition, 5f - (officialRacePosition * 1.5f) ) );
+		StartCoroutine( playerRun.slowDownPlayerAfterFinishLine( officialRacePosition, 5f - (officialRacePosition * 1.5f) ) );
 
 		//Sanity check
 		//tilesLeftBeforeReachingEnd should ALWAYS be zero when reaching the End tile. If it's not the case, make sure the tilePenalty
@@ -389,10 +407,10 @@ public class PlayerRace : Photon.PunBehaviour
 		{
 			//Set the character state to idle. When a character is idle, cards can't affect him. For example, we don't want a CardLightning spell to affect someone
 			//who has crossed the finish line.
-			GetComponent<PlayerControl>().setCharacterState(PlayerCharacterState.Idle);
+			playerControl.setCharacterState(PlayerCharacterState.Idle);
 			//Send a crossedFinishLine event to tell the HUD to remove the card timers
-			if( crossedFinishLine != null ) crossedFinishLine( transform, officialRacePosition, GetComponent<PlayerAI>() != null );
-			if( GetComponent<PlayerAI>() == null )
+			if( crossedFinishLine != null ) crossedFinishLine( transform, officialRacePosition, playerAI != null );
+			if( playerAI == null )
 			{
 				CancelInvoke("tookTheLead");
 				string victory = LocalizationManager.Instance.getText("RACE_VICTORY");
@@ -400,7 +418,7 @@ public class PlayerRace : Photon.PunBehaviour
 				HUDMultiplayer.hudMultiplayer.updateRacePosition(officialRacePosition + 1);
 				GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
 				GenerateLevel generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
-				PlayerRaceManager.Instance.playerCompletedRace( (officialRacePosition + 1), raceDuration, generateLevel.levelLengthInMeters, GetComponent<PlayerControl>().getNumberOfTimesDiedDuringRace() );
+				PlayerRaceManager.Instance.playerCompletedRace( (officialRacePosition + 1), raceDuration, generateLevel.levelLengthInMeters, playerControl.getNumberOfTimesDiedDuringRace() );
 			}
 		}		
     }
@@ -411,7 +429,7 @@ public class PlayerRace : Photon.PunBehaviour
 		if( racePosition == 0 )
 		{
 			//Play a win Voice Over
-			GetComponent<PlayerVoiceOvers>().playVoiceOver(VoiceOverType.VO_Win);
+			playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Win);
 		}
 	}
 	#endregion
