@@ -219,6 +219,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region OmniTool
 	TurnRibbonHandler turnRibbonHandler;
 	CardName activeCardName; //Card that will be played when the OmniTool animation completes
+	//Temporary - used to support old skins
+	public bool hasOmniToolAnimation = true;
 	#endregion
 
 	void Awake ()
@@ -1603,10 +1605,20 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void playOmniToolAnimation( CardName cardName )
 	{
-		print("playOmniToolAnimation for " + name + " Card " + cardName );
-		//Store this value. We will use it when the OmniTool animation completes.
-		activeCardName = cardName;
-		setAnimationTrigger( OmniToolTrigger );
+		//Old skins (Hero_prefab and dHeroine_prefab) don't have the OmniTool animation. Therefore the OmniTool_completed event will never be received.
+		//So for old skins, directly call OmniTool_completed.
+		if( hasOmniToolAnimation )
+		{
+			print("playOmniToolAnimation for " + name + " Card " + cardName );
+			//Store this value. We will use it when the OmniTool animation completes.
+			activeCardName = cardName;
+			setAnimationTrigger( OmniToolTrigger );
+		}
+		else
+		{
+			activeCardName = cardName;
+			OmniTool_completed ( null );
+		}
 	}
 
 	public void OmniTool_completed ( AnimationEvent eve )

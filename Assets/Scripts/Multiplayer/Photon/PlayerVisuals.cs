@@ -71,6 +71,9 @@ public class PlayerVisuals : Photon.PunBehaviour {
 	{
 		gameObject.name = info.sender.NickName;
 		HeroManager.HeroCharacter selectedHero = HeroManager.Instance.getHeroCharacter( (int)info.sender.CustomProperties["Hero"] );
+		//temporary - clean-up after
+		if( selectedHero.skinPrefabName == "Hero_prefab" || selectedHero.skinPrefabName == "Heroine_prefab" ) GetComponent<PlayerControl>().hasOmniToolAnimation = false;
+
 		//Load the voice overs for that hero
 		GetComponent<PlayerVoiceOvers>().initializeVoiceOvers( selectedHero.name );
 		Debug.Log("PlayerVisuals-OnPhotonInstantiate-Hero name: " + selectedHero.name + " Hero Index " + (int)info.sender.CustomProperties["Hero"] + " isMasterClient: " + PhotonNetwork.isMasterClient + " Name: " + info.sender.NickName );
@@ -113,6 +116,9 @@ public class PlayerVisuals : Photon.PunBehaviour {
 	void instantiateBot( PhotonMessageInfo info )
 	{
 		HeroManager.BotHeroCharacter botHero = GetComponent<PlayerAI>().botHero;
+		//temporary - clean-up after
+		if( botHero.skinPrefabName == "Hero_prefab" || botHero.skinPrefabName == "Heroine_prefab" ) GetComponent<PlayerControl>().hasOmniToolAnimation = false;
+
 		//Load the voice overs for that hero
 		GetComponent<PlayerVoiceOvers>().initializeVoiceOvers( botHero.name );
 

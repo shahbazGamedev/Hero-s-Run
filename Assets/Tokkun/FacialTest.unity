@@ -147,6 +147,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 137733154668131440, guid: fb4edfcef375d024b8bf0c76adc059ec,
+        type: 2}
+      propertyPath: m_BlendShapeWeights.Array.data[11]
+      value: 100
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fb4edfcef375d024b8bf0c76adc059ec, type: 2}
   m_IsPrefabParent: 0
