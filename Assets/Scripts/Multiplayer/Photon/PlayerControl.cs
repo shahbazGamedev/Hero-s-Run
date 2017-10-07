@@ -67,6 +67,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	int DoubleJumpTrigger = Animator.StringToHash("Double Jump");
 	int FallTrigger = Animator.StringToHash("Fall");
 	int LandTrigger = Animator.StringToHash("Land");
+	int LandAfterRespawnTrigger = Animator.StringToHash("Land After Respawn");
 	int SlideDownTrigger = Animator.StringToHash("Slide Down");
 	int SlideUpTrigger = Animator.StringToHash("Slide Up");
 	int FallBackwardTrigger = Animator.StringToHash("Fall Backward");
@@ -716,20 +717,28 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerCamera.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING;
 		setCharacterState( PlayerCharacterState.Running );
 		float fallDistance = fallStartYPos - transform.position.y;
-		if( fallDistance < DISTANCE_FOR_LAND_ANIMATION )
-		{
-			setAnimationTrigger(LandTrigger);
-		}
-		else
-		{
-			setAnimationTrigger(StumbleTrigger);
-		}
-		print ( "player landed. Fall distance was: " + 	fallDistance );
 		//Was I dead before?
 		if( deathType != DeathType.Alive )
 		{
+			//The player was dead.
+			//We have a different Land animation that plays when you respawn that is more heroic.
+			setAnimationTrigger(LandAfterRespawnTrigger);
 			resurrectEnd();
 		}
+		else
+		{
+			//The player was alive
+			//If he fell a short distance, play the normal Land animation, else make the character Stumble.
+			if( fallDistance < DISTANCE_FOR_LAND_ANIMATION )
+			{
+				setAnimationTrigger(LandTrigger);
+			}
+			else
+			{
+				setAnimationTrigger(StumbleTrigger);
+			}
+		}
+		print ( "player landed. Fall distance was: " + 	fallDistance );
 	}
 
 	void calculateFallDistance()
@@ -978,13 +987,13 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			transform.rotation = Quaternion.Euler( 0,playerRotY + 90f,0 );
 			tileRotationY = tileRotationY + 90f;
-			lean( 0.6f, 0.3f );
+			lean( 0.55f, 0.3f );
 		}
 		else
 		{
 			transform.rotation = Quaternion.Euler( 0,playerRotY - 90f,0 );
 			tileRotationY = tileRotationY - 90f;
-			lean( -0.6f, 0.3f );
+			lean( -0.55f, 0.3f );
 		}
 
 		if( playerCharacterState == PlayerCharacterState.Turning_and_sliding )
@@ -1044,11 +1053,11 @@ public class PlayerControl : Photon.PunBehaviour {
 
 			if( isGoingRight )
 			{
-				lean( 0.3f, 0.3f );
+				lean( 0.25f, 0.3f );
 			}
 			else
 			{
-				lean( -0.3f, 0.3f );
+				lean( -0.25f, 0.3f );
 			}
 
 			//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision

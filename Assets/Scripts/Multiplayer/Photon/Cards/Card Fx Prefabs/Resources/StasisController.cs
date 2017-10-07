@@ -9,10 +9,10 @@ public class StasisController : CardSpawnedObject {
 
 	[SerializeField] ParticleSystem tapParticleSystem;
 	[SerializeField] AudioClip tapSound;
+	[SerializeField] float y_pos_player_in_sphere = -0.45f;
 	Transform affectedPlayerTransform;
 	PlayerControl affectedPlayerControl;
 	const float DISTANCE_ABOVE_GROUND = 3.5f;
-	const float Y_POS_PLAYER_IN_SPHERE = -0.35f;
 	//if you tap quickly on the Stasis sphere, you can break free without waiting for the spell expires.
 	int tapsDetected = 0;
 	int tapsRequiredToBreakStasis = 3;
@@ -76,7 +76,7 @@ public class StasisController : CardSpawnedObject {
 				{
 					Debug.LogWarning("StasisController-there is no ground below the affected player: " + affectedPlayerControl.name );
 				}
-				affectedPlayerTransform.position = transform.TransformPoint( new Vector3( 0, Y_POS_PLAYER_IN_SPHERE, 0 ) );
+				affectedPlayerTransform.position = transform.TransformPoint( new Vector3( 0, y_pos_player_in_sphere, 0 ) );
 				affectedPlayerTransform.gameObject.layer = MaskHandler.playerLayer; //Restore to Player
 				affectedPlayerTransform.GetComponent<Animator>().SetTrigger( "Stasis" );
 				//Set the player state to Idle so that other spells don't affect the player while he is in Statis.
