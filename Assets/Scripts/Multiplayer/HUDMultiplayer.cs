@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Apple.ReplayKit;
 using System;
+using System.Text;
 
 public enum DebugInfoType
 {
@@ -315,22 +316,28 @@ public class HUDMultiplayer : MonoBehaviour {
 
 	string getDebugInfo()
 	{
-		string infoToDisplay = string.Empty;
+		StringBuilder infoToDisplay = new StringBuilder();
 		switch( debugInfoType )
 		{
 			case DebugInfoType.FPS:
-				infoToDisplay = " FPS: " + fpsCalculator.getFPS(); 
+				infoToDisplay.Append( " FPS: " );
+			 	infoToDisplay.Append( fpsCalculator.getFPS() ); 
 			break;
 
 			case DebugInfoType.NETWORK:
-				infoToDisplay = " isMaster: " + PhotonNetwork.isMasterClient + " " + getDebugInfoForAllPlayers(); 
+				infoToDisplay.Append( " isMaster: " );
+				infoToDisplay.Append( PhotonNetwork.isMasterClient );
+				infoToDisplay.Append( getDebugInfoForAllPlayers() );
 			break;
 
 			case DebugInfoType.LATENCY:
-				infoToDisplay = " isMaster: " + PhotonNetwork.isMasterClient + " Latency: " + PhotonNetwork.networkingPeer.RoundTripTime.ToString(); 
+				infoToDisplay.Append( " isMaster: " );
+				infoToDisplay.Append( PhotonNetwork.isMasterClient );
+				infoToDisplay.Append( " Latency: " );
+				infoToDisplay.Append(  PhotonNetwork.networkingPeer.RoundTripTime );
 			break;
 		}
-		return infoToDisplay;
+		return infoToDisplay.ToString();
 	}
 
 	string getDebugInfoForAllPlayers()
