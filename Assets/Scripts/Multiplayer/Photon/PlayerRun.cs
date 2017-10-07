@@ -443,7 +443,7 @@ public class PlayerRun : Photon.PunBehaviour {
 	/// Sets the sprint blend factor. If the value is 0, we play only the run animation; if the value is 1, we play only the Sprint animation.
 	/// </summary>
 	/// <param name="blendFactor">Blend factor.</param>
-	public void setSprintBlendFactor( float blendFactor )
+	void setSprintBlendFactor( float blendFactor )
 	{
 		//If the blendFactor is set to one we will only play the Sprint animation
 		//and the Run animation will stop playing. Because of that, we will no longer hear any footsteps.
