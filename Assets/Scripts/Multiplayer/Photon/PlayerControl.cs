@@ -139,7 +139,6 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	#region Zipline variables
 	[SerializeField] Vector3 ziplinePlayerOffset = new Vector3( -0.28f, 2.67f, 0 );
-	public bool isInZiplineTrigger;
 	Transform ziplineAttachPoint;
 	#endregion
 
@@ -1534,6 +1533,10 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Zipline
+	public void attach_to_zipline_completed ( AnimationEvent eve )
+	{
+	}
+
 	public void attachToZipline()
 	{
 		SegmentInfo si = currentTile.GetComponent<SegmentInfo>();
@@ -1574,7 +1577,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			ziplineAttachPoint.localScale = new Vector3( 1f, 1f, 1f ); 	//Just because of rounding when changing parent
 			ziplineAttachPoint.GetComponent<AudioSource>().Stop();
 			playerCamera.reactivateMaincamera();
-			isInZiplineTrigger = false; //Reset in case player died inside trigger
 			capsuleCollider.attachedRigidbody.isKinematic = false;
 			transform.localScale = new Vector3( 1f, 1f, 1f ); 	//Just because of rounding when changing parent
 			//The player might have died while ziplining.
@@ -2158,7 +2160,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			//Cancel the speedboost if active before ziplining
 			playerSpell.cancelRagingBull();
-			isInZiplineTrigger = true;
+			this.photonView.RPC("attachToZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 		}
  		else if( other.CompareTag( "DetachZiplineTrigger" ) )
 		{
@@ -2267,11 +2269,6 @@ public class PlayerControl : Photon.PunBehaviour {
 				deadEndTurnDone = false;
 				deadEndTrigger = null;
 				wantToTurn = false;
-			}
-			else if( other.name == "ZiplineTrigger" )
-			{
-				//Player is no longer in the zipline trigger
-				isInZiplineTrigger = false;
 			}
 			else if( other.CompareTag( "Angled Tile Exit" ) )
 			{

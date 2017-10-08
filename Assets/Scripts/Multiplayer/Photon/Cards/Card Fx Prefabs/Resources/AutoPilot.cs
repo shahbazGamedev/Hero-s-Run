@@ -207,10 +207,6 @@ public class AutoPilot : Photon.PunBehaviour {
 				playerInput.sideSwipe( true );
 			}
 		}
-		else if( other.CompareTag( "AttachZiplineTrigger" ) )
-		{
-			if( playerControl.getCharacterState() != PlayerCharacterState.Ziplining ) playerInput.attachToZipline();
-		}
 		else if( other.CompareTag( "MoveToCenterLane" ) )
 		{
 			moveToCenterLane();

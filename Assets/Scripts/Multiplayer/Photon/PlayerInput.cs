@@ -77,14 +77,6 @@ public class PlayerInput : PunBehaviour {
 		this.photonView.RPC("doubleJumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, doubleJumpSpeed );
 	}
 
-	public void attachToZipline()
-	{
-		//stop the player control and movement immediately locally
-		playerControl.enablePlayerControl( false );
-		playerControl.enablePlayerMovement( false );
-		this.photonView.RPC("attachToZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
-	}
-
 	private void handleAccelerometer()
 	{
 		if( isTiltingEnabled )
@@ -117,14 +109,7 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.Space)  ) 
 		{
-			if( playerControl.isInZiplineTrigger && playerControl.getCharacterState() != PlayerCharacterState.Ziplining )
-			{
-				attachToZipline();
-			}
-			else
-			{
-				jump();
-			}
+			jump();
 		}
 		else if ( Input.GetKeyDown (KeyCode.K ) )
 		{
@@ -241,14 +226,7 @@ public class PlayerInput : PunBehaviour {
 			else
 			{
 				//player swiped UP
-				if( playerControl.isInZiplineTrigger && playerControl.getCharacterState() != PlayerCharacterState.Ziplining )
-				{
-					attachToZipline();
-				}
-				else
-				{
-					jump();
-				}
+				jump();
 	        }
 		}
 	}
