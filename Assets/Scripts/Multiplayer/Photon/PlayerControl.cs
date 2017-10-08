@@ -75,7 +75,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	int WinTrigger = Animator.StringToHash("Win");
 	int LoseTrigger = Animator.StringToHash("Lose");
 	int AttachToZiplineTrigger = Animator.StringToHash("Zipline Attach");
-	int DetachFromZiplineTrigger = Animator.StringToHash("Zipline Detach");
 	int OmniToolTrigger = Animator.StringToHash("OmniTool");
 	int leaningBlendFactor = Animator.StringToHash("Leaning");
 
@@ -1589,7 +1588,6 @@ public class PlayerControl : Photon.PunBehaviour {
 				transform.eulerAngles = new Vector3(0,270f,0); //we turned left while ziplining
 				//We may have switched lanes because of the position change. Make sure the lane values are accurate.
 				recalculateCurrentLane();
-				setAnimationTrigger(DetachFromZiplineTrigger);
 				fall();
 			}
 			else
