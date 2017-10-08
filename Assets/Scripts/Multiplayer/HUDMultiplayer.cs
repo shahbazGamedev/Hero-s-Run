@@ -12,7 +12,8 @@ public enum DebugInfoType
 	NONE = 0,
 	FPS = 1,
 	NETWORK = 2,
-	LATENCY = 3
+	LATENCY = 3,
+	FRAME_RATE_TEST = 4
 }
 
 public class HUDMultiplayer : MonoBehaviour {
@@ -78,7 +79,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		debugInfoType = GameManager.Instance.playerDebugConfiguration.getDebugInfoType();
 		debugInfo.gameObject.SetActive( debugInfoType != DebugInfoType.NONE );
 		fpsCalculator = GetComponent<FPSCalculator>();
-		fpsCalculator.enabled = (debugInfoType == DebugInfoType.FPS);
+		fpsCalculator.enabled = (debugInfoType == DebugInfoType.FPS || debugInfoType == DebugInfoType.FRAME_RATE_TEST );
 
 		userMessageText.gameObject.SetActive( false );
 		canvasGroupForFading.GetComponent<CanvasGroup>().alpha = 0;
@@ -319,6 +320,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		StringBuilder infoToDisplay = new StringBuilder();
 		switch( debugInfoType )
 		{
+			case DebugInfoType.FRAME_RATE_TEST:
 			case DebugInfoType.FPS:
 				infoToDisplay.Append( " FPS: " );
 			 	infoToDisplay.Append( fpsCalculator.getFPS() ); 
@@ -342,12 +344,17 @@ public class HUDMultiplayer : MonoBehaviour {
 
 	string getDebugInfoForAllPlayers()
 	{
-		string infoForAllPlayers = string.Empty;
+		StringBuilder infoForAllPlayers = new StringBuilder();
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
-			infoForAllPlayers = infoForAllPlayers + "| " + PlayerRace.players[i].name + " isMine: " + PlayerRace.players[i].GetComponent<PhotonView>().isMine + " " + PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState();
+			infoForAllPlayers.Append( " ");
+		 	infoForAllPlayers.Append( PlayerRace.players[i].name );
+			infoForAllPlayers.Append( " isMine: " );
+			infoForAllPlayers.Append( PlayerRace.players[i].GetComponent<PhotonView>().isMine );
+			infoForAllPlayers.Append( " " );
+			infoForAllPlayers.Append( PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() );
 		}
-		return infoForAllPlayers;
+		return infoForAllPlayers.ToString();
 	}
 
 	void hideGoText()

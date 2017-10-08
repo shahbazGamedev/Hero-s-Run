@@ -62,51 +62,51 @@ public class PlayerAI : AutoPilot {
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha0) )
 		{
-			bch.playOmniToolAnimation( CardName.Firewall );
+			bch.playCard( CardName.Firewall );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha1) )
 		{
-			bch.playOmniToolAnimation( CardName.Stasis );
+			bch.playCard( CardName.Stasis );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha2 ) )
 		{
-			bch.playOmniToolAnimation( CardName.Hack );
+			bch.playCard( CardName.Hack );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha3 ) )
 		{
-			bch.playOmniToolAnimation( CardName.Grenade );
+			bch.playCard( CardName.Grenade );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha4 ) )
 		{
-			bch.playOmniToolAnimation( CardName.Trip_Mine );
+			bch.playCard( CardName.Trip_Mine );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha5 ) )
 		{
-			bch.playOmniToolAnimation( CardName.Lightning );
+			bch.playCard( CardName.Lightning );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha6 ) )
 		{
-			bch.playOmniToolAnimation( CardName.Linked_Fate );
+			bch.playCard( CardName.Linked_Fate );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha7 ) )
 		{
-			bch.playOmniToolAnimation( CardName.Shrink );
+			bch.playCard( CardName.Shrink );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha8 ) )
 		{
-			bch.playOmniToolAnimation( CardName.Raging_Bull );
+			bch.playCard( CardName.Raging_Bull );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha9 ) )
 		{
-			bch.playOmniToolAnimation( CardName.Sprint );
+			bch.playCard( CardName.Sprint );
 		}
 		else if ( Input.GetKeyDown (KeyCode.X ) )
 		{
-			bch.playOmniToolAnimation( CardName.Sentry );
+			bch.playCard( CardName.Sentry );
 		}
 		else if ( Input.GetKeyDown (KeyCode.I ) )
 		{
-			bch.playOmniToolAnimation( CardName.Force_Field );
+			bch.playCard( CardName.Force_Field );
 		}
 	}
 

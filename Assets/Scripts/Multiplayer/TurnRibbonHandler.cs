@@ -137,6 +137,10 @@ public class TurnRibbonHandler : MonoBehaviour {
 	/// <param name="Card">Card.</param>
 	void isEffective( int indexInTurnRibbon, CardManager.CardData card )
 	{
+		//These 2 lines are to test the impact of isEffective on the FPS
+		DebugInfoType debugType = GameManager.Instance.playerDebugConfiguration.getDebugInfoType();
+		if( debugType == DebugInfoType.FRAME_RATE_TEST ) return;
+
 		if( card.doesCardHaveThisProperty( CardPropertyType.RANGE ) )
 		{
 			PlayerDeck.PlayerCardData pcd = GameManager.Instance.playerDeck.getCardByName( card.name );
@@ -224,7 +228,17 @@ public class TurnRibbonHandler : MonoBehaviour {
 				buttonOfCardPlayed.interactable = false;
 
 				//Play the card effect
-				playerControl.playOmniToolAnimation( playedCard.name );
+				if( playedCard.usesOmniToolAnimation )
+				{
+					//Play the OmniTool animation before activating the card.
+					//The animation callback will activate the card.
+					playerControl.playOmniToolAnimation( playedCard.name );
+				}
+				else
+				{
+					//Activate the card directly
+					activateCard( cardName );
+				}
 
 				//When you play the Steal card, it does not get replaced by the card in the Next slot but by the card
 				//you are stealing.

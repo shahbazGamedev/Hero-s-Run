@@ -412,6 +412,8 @@ public class CardManager : MonoBehaviour {
 		public bool affectsPlayerDirectly = false;
 		//If set to true, a new player will automatically get this card in his deck after a fresh install.
 		public bool isDefaultCard = false;
+		//If set to true, the hero will play the OmniTool animation. When the OmniTool_completed animation event gets called, it will trigger the card effect.
+		public bool usesOmniToolAnimation = false;
 
 		public float getCardPropertyValue( CardPropertyType type, int level )
 		{
