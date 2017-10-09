@@ -7,7 +7,7 @@ using CrazyMinnow.SALSA;
 public class PlayerVoiceOvers : MonoBehaviour {
 
 	[Header("Voice Overs")]
-	[SerializeField] AudioSource voiceOverAudioSource;
+	public AudioSource voiceOverAudioSource;
 	public Salsa3D headSalsa3D = null;
 	List<VoiceOverManager.VoiceOverData> voiceOverList = new List<VoiceOverManager.VoiceOverData>();
 

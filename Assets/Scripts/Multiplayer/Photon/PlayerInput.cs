@@ -39,10 +39,6 @@ public class PlayerInput : PunBehaviour {
 
 	void Update()
 	{
-		#if UNITY_EDITOR
-		handleKeyboard();
-		#endif
-
 		if( playerControl.isPlayerControlEnabled() )
 		{
 			//Handle accelerometer. If you tilt left or right quickly, you can change lanes.
@@ -50,6 +46,10 @@ public class PlayerInput : PunBehaviour {
 	
 			//Handle mobile device swipes
 			handleSwipes();
+
+			#if UNITY_EDITOR
+			handleKeyboard();
+			#endif
 		}
 	}
 
@@ -67,6 +67,7 @@ public class PlayerInput : PunBehaviour {
 
 	public void jump()
 	{
+		if( playerControl.getCharacterState() == PlayerCharacterState.Ziplining ) Debug.LogError("jump called while ziplining.");
 		playerControl.jump( false );
 		this.photonView.RPC("jumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 	}

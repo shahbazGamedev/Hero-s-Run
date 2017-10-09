@@ -37,8 +37,14 @@ public class OnSkinCreated : MonoBehaviour
 				anim.avatar = GetComponent<PlayerSkinInfo>().animatorAvatar;
 				myOwner.GetComponent<Ragdoll>().initializeRagdoll ( anim, GetComponent<PlayerSkinInfo>().ragdollRigidBodyParent, myOwner.GetComponent<CapsuleCollider>() );
 				anim.runtimeAnimatorController = GetComponent<PlayerSkinInfo>().runtimeAnimatorController;
+	
 				//For lip-sync
 				myOwner.GetComponent<PlayerVoiceOvers>().setLipSyncComponent( GetComponent<PlayerSkinInfo>().headSalsa3D );
+				//We want to use the PlayerVoiceOvers's AudioSource and not the AudioSource component that gets created when you attach a Salsa3D component to the head.
+				//If we use the Salsa3D AudioSource component, its world position remains at 0,0,0 and therefore the head-to-AudioListener distance soons becomes greater than the sound range and we don't hear
+				//the voice over anymore.
+				if( GetComponent<PlayerSkinInfo>().headSalsa3D != null ) GetComponent<PlayerSkinInfo>().headSalsa3D.audioSrc = myOwner.GetComponent<PlayerVoiceOvers>().voiceOverAudioSource;
+
 				anim.Rebind(); //Important
 				enableNightEmission( gameObject );
 				if( Debug.isDebugBuild && GameManager.Instance.playerDebugConfiguration.getAutoPilot() && transform.root.GetComponent<PhotonView>().isMine ) transform.root.gameObject.AddComponent<HyperFocus>();

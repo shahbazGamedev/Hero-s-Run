@@ -93,8 +93,14 @@ public class PlayerVisuals : Photon.PunBehaviour {
 			anim.avatar = heroSkin.GetComponent<PlayerSkinInfo>().animatorAvatar;
 			GetComponent<Ragdoll>().initializeRagdoll ( anim, heroSkin.GetComponent<PlayerSkinInfo>().ragdollRigidBodyParent, GetComponent<CapsuleCollider>() );
 			anim.runtimeAnimatorController = heroSkin.GetComponent<PlayerSkinInfo>().runtimeAnimatorController;
+
 			//For lip-sync
 			GetComponent<PlayerVoiceOvers>().setLipSyncComponent( heroSkin.GetComponent<PlayerSkinInfo>().headSalsa3D );
+			//We want to use the PlayerVoiceOvers's AudioSource and not the AudioSource component that gets created when you attach a Salsa3D component to the head.
+			//If we use the Salsa3D AudioSource component, its world position remains at 0,0,0 and therefore the head-to-AudioListener distance soons becomes greater than the sound range and we don't hear
+			//the voice over anymore.
+			if( heroSkin.GetComponent<PlayerSkinInfo>().headSalsa3D != null ) heroSkin.GetComponent<PlayerSkinInfo>().headSalsa3D.audioSrc = GetComponent<PlayerVoiceOvers>().voiceOverAudioSource;
+
 			anim.Rebind(); //Important
 			enableNightEmission( heroSkin );
 			//For debugging only
@@ -143,8 +149,14 @@ public class PlayerVisuals : Photon.PunBehaviour {
 			anim.avatar = heroSkin.GetComponent<PlayerSkinInfo>().animatorAvatar;
 			GetComponent<Ragdoll>().initializeRagdoll ( anim, heroSkin.GetComponent<PlayerSkinInfo>().ragdollRigidBodyParent, GetComponent<CapsuleCollider>() );
 			anim.runtimeAnimatorController = heroSkin.GetComponent<PlayerSkinInfo>().runtimeAnimatorController;
+
 			//For lip-sync
 			GetComponent<PlayerVoiceOvers>().setLipSyncComponent( heroSkin.GetComponent<PlayerSkinInfo>().headSalsa3D );
+			//We want to use the PlayerVoiceOvers's AudioSource and not the AudioSource component that gets created when you attach a Salsa3D component to the head.
+			//If we use the Salsa3D AudioSource component, its world position remains at 0,0,0 and therefore the head-to-AudioListener distance soons becomes greater than the sound range and we don't hear
+			//the voice over anymore.
+			if( heroSkin.GetComponent<PlayerSkinInfo>().headSalsa3D != null ) heroSkin.GetComponent<PlayerSkinInfo>().headSalsa3D.audioSrc = GetComponent<PlayerVoiceOvers>().voiceOverAudioSource;
+
 			anim.Rebind(); //Important
 			enableNightEmission( heroSkin );
 		}
