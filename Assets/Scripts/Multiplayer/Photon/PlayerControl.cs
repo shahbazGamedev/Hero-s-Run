@@ -1534,6 +1534,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Zipline
 	public void attach_to_zipline_completed ( AnimationEvent eve )
 	{
+		//Have the hero say something on the zipline
+		playerVoiceOvers.playVoiceOver( VoiceOverType.VO_Zipline );
 	}
 
 	public void attachToZipline()
