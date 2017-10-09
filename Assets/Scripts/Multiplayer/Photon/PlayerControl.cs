@@ -67,6 +67,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	int DoubleJumpTrigger = Animator.StringToHash("Double Jump");
 	int FallTrigger = Animator.StringToHash("Fall");
 	int LandTrigger = Animator.StringToHash("Land");
+	int RespawnTrigger = Animator.StringToHash("Respawn");
 	int LandAfterRespawnTrigger = Animator.StringToHash("Land After Respawn");
 	int SlideDownTrigger = Animator.StringToHash("Slide Down");
 	int SlideUpTrigger = Animator.StringToHash("Slide Up");
@@ -689,9 +690,13 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Fall and Land
-	public void fall()
+	public void fall( bool isRespawning = false )
 	{
 		if( playerCharacterState == PlayerCharacterState.Falling || playerCharacterState == PlayerCharacterState.Jumping ) return; //ignore, we are already falling or jumping
+
+		//You can't queue a slide or jump when falling
+		queueSlide = false;
+		queueJump = false;
 
 		//Give a little downward impetus
 		moveDirection.y = -1f;
@@ -700,10 +705,16 @@ public class PlayerControl : Photon.PunBehaviour {
 		gravity = DEFAULT_GRAVITY * 2f;
 		playerCamera.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING * 9f;
 		setCharacterState(PlayerCharacterState.Falling);
-		//This fall animation blends with the run animation
-		setAnimationTrigger(FallTrigger);
+		if( isRespawning )
+		{
+			setAnimationTrigger(RespawnTrigger);
+		}
+		else
+		{
+			setAnimationTrigger(FallTrigger);
+		}
 		//playSound( fallingSound, false );
-		print ( "fall started " + distanceToGround + " " + MIN_DISTANCE_FOR_FALL + " " + playerCharacterState );
+		print ( "fall started " + distanceToGround + " " + MIN_DISTANCE_FOR_FALL + " " + name );
 	}
 
 	public void land()
@@ -1934,12 +1945,9 @@ public class PlayerControl : Photon.PunBehaviour {
 			setCharacterState( PlayerCharacterState.StartRunning );
 			changeColliderAxis( Axis.Y );
 			ignorePlayerCollisions( false );
-			//Mecanim Hack - we call rebind because the animation states are not reset properly when you die in the middle of an animation.
-			//For example, if you die during a double jump, after you get resurrected and start running again, if you do another double jump, only part of the double jump animation will play, never the full animation.
-			anim.Rebind();
 			//Make player fall from sky, land and start running again
 			enablePlayerMovement( true );
-			fall();
+			fall( true );
 		}
 		else
 		{
@@ -2040,8 +2048,8 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void setCharacterState( PlayerCharacterState newState )
 	{
+		//if( playerAI == null ) Debug.Log("PlayerControl-setCharacterState to: " + newState + " for " + gameObject.name + " previous state was " + playerCharacterState );
 		playerCharacterState = newState;
-		//Debug.Log("PlayerControl-setCharacterState to: " + newState + " for " + gameObject.name );
 		//Send an event to interested classes if you are a human player
 		if(multiplayerStateChanged != null && this.photonView.isMine && playerAI == null ) multiplayerStateChanged( playerCharacterState );
 		
