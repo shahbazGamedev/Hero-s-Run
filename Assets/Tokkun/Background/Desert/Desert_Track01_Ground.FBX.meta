@@ -1,0 +1,204 @@
+fileFormatVersion: 2
+guid: 316539d5969d20e488f45e22f6a6c49c
+timeCreated: 1507298993
+licenseType: Free
+ModelImporter:
+  serializedVersion: 21
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Desert_Track01_Ground
+    100004: Desert_Track01_Road
+    100006: Object001
+    100008: Rock_Mix
+    100010: sand
+    100012: Plane001
+    100014: Plane002
+    100016: Plane003
+    100018: Plane004
+    100020: Plane005
+    100022: Plane006
+    100024: Plane007
+    100026: Plane008
+    100028: Plane009
+    100030: Plane010
+    100032: Plane011
+    100034: Plane012
+    100036: Plane013
+    100038: Plane014
+    100040: Plane015
+    100042: Plane016
+    100044: Plane017
+    100046: Plane018
+    100048: Plane019
+    400000: //RootNode
+    400002: Desert_Track01_Ground
+    400004: Desert_Track01_Road
+    400006: Object001
+    400008: Rock_Mix
+    400010: sand
+    400012: Plane001
+    400014: Plane002
+    400016: Plane003
+    400018: Plane004
+    400020: Plane005
+    400022: Plane006
+    400024: Plane007
+    400026: Plane008
+    400028: Plane009
+    400030: Plane010
+    400032: Plane011
+    400034: Plane012
+    400036: Plane013
+    400038: Plane014
+    400040: Plane015
+    400042: Plane016
+    400044: Plane017
+    400046: Plane018
+    400048: Plane019
+    2300000: Desert_Track01_Ground
+    2300002: Desert_Track01_Road
+    2300004: Object001
+    2300006: Rock_Mix
+    2300008: sand
+    2300010: Plane001
+    2300012: Plane002
+    2300014: Plane003
+    2300016: Plane004
+    2300018: Plane005
+    2300020: Plane006
+    2300022: Plane007
+    2300024: Plane008
+    2300026: Plane009
+    2300028: Plane010
+    2300030: Plane011
+    2300032: Plane012
+    2300034: Plane013
+    2300036: Plane014
+    2300038: Plane015
+    2300040: Plane016
+    2300042: Plane017
+    2300044: Plane018
+    2300046: Plane019
+    3300000: Desert_Track01_Ground
+    3300002: Desert_Track01_Road
+    3300004: Object001
+    3300006: Rock_Mix
+    3300008: sand
+    3300010: Plane001
+    3300012: Plane002
+    3300014: Plane003
+    3300016: Plane004
+    3300018: Plane005
+    3300020: Plane006
+    3300022: Plane007
+    3300024: Plane008
+    3300026: Plane009
+    3300028: Plane010
+    3300030: Plane011
+    3300032: Plane012
+    3300034: Plane013
+    3300036: Plane014
+    3300038: Plane015
+    3300040: Plane016
+    3300042: Plane017
+    3300044: Plane018
+    3300046: Plane019
+    4300000: Desert_Track01_Ground
+    4300002: Desert_Track01_Road
+    4300004: sand
+    4300006: Rock_Mix
+    4300008: Object001
+    4300010: Plane001
+    4300012: Plane002
+    4300014: Plane003
+    4300016: Plane004
+    4300018: Plane005
+    4300020: Plane006
+    4300022: Plane007
+    4300024: Plane008
+    4300026: Plane009
+    4300028: Plane010
+    4300030: Plane011
+    4300032: Plane012
+    4300034: Plane013
+    4300036: Plane014
+    4300038: Plane015
+    4300040: Plane016
+    4300042: Plane017
+    4300044: Plane018
+    4300046: Plane019
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

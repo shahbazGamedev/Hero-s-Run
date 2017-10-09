@@ -1,130 +1,106 @@
 fileFormatVersion: 2
-guid: f798ce5fb7ee9ad4797dac5ce0576701
-timeCreated: 1506668031
+guid: ebc11cd57a6266f43b68f2e8828691c4
+timeCreated: 1507561157
 licenseType: Free
 ModelImporter:
   serializedVersion: 21
   fileIDToRecycleName:
     100000: Bone003
     100002: Bone006
-    100004: IK Chain001
-    100006: IK Chain002
-    100008: Omnitool
-    100010: pockets_A
-    100012: pockets_B
-    100014: Point001
-    100016: Point002
-    100018: Rug
-    100020: Rug Head
-    100022: Rug HeadNub
-    100024: Rug L Calf
-    100026: Rug L Clavicle
-    100028: Rug L Finger0
-    100030: Rug L Finger01
-    100032: Rug L Finger02
-    100034: Rug L Finger0Nub
-    100036: Rug L Finger1
-    100038: Rug L Finger11
-    100040: Rug L Finger12
-    100042: Rug L Finger1Nub
-    100044: Rug L Foot
-    100046: Rug L Forearm
-    100048: Rug L Hand
-    100050: Rug L Thigh
-    100052: Rug L Toe0
-    100054: Rug L Toe0Nub
-    100056: Rug L UpperArm
-    100058: Rug Neck
-    100060: Rug Pelvis
-    100062: Rug R Calf
-    100064: Rug R Clavicle
-    100066: Rug R Finger0
-    100068: Rug R Finger01
-    100070: Rug R Finger02
-    100072: Rug R Finger0Nub
-    100074: Rug R Finger1
-    100076: Rug R Finger11
-    100078: Rug R Finger12
-    100080: Rug R Finger1Nub
-    100082: Rug R Foot
-    100084: Rug R Forearm
-    100086: Rug R Hand
-    100088: Rug R Thigh
-    100090: Rug R Toe0
-    100092: Rug R Toe0Nub
-    100094: Rug R UpperArm
-    100096: Rug Spine
-    100098: Rug Spine1
-    100100: Rug Spine2
-    100102: Rug Xtra01
-    100104: Rug Xtra01Nub
-    100106: //RootNode
-    100108: Rug_Knee_L
-    100110: Rug_Knee_R
-    100112: RugBody
-    100114: RugHead
+    100004: Omnitool
+    100006: pockets_A
+    100008: pockets_B
+    100010: Rug
+    100012: Rug Head
+    100014: Rug L Calf
+    100016: Rug L Clavicle
+    100018: Rug L Finger0
+    100020: Rug L Finger01
+    100022: Rug L Finger02
+    100024: Rug L Finger1
+    100026: Rug L Finger11
+    100028: Rug L Finger12
+    100030: Rug L Foot
+    100032: Rug L Forearm
+    100034: Rug L Hand
+    100036: Rug L Thigh
+    100038: Rug L Toe0
+    100040: Rug L UpperArm
+    100042: Rug Neck
+    100044: Rug Pelvis
+    100046: Rug R Calf
+    100048: Rug R Clavicle
+    100050: Rug R Finger0
+    100052: Rug R Finger01
+    100054: Rug R Finger02
+    100056: Rug R Finger1
+    100058: Rug R Finger11
+    100060: Rug R Finger12
+    100062: Rug R Foot
+    100064: Rug R Forearm
+    100066: Rug R Hand
+    100068: Rug R Thigh
+    100070: Rug R Toe0
+    100072: Rug R UpperArm
+    100074: Rug Spine
+    100076: Rug Spine1
+    100078: Rug Spine2
+    100080: Rug Xtra01
+    100082: //RootNode
+    100084: Rug_Knee_L
+    100086: Rug_Knee_R
+    100088: RugBody
+    100090: RugHead
     400000: Bone003
     400002: Bone006
-    400004: IK Chain001
-    400006: IK Chain002
-    400008: Omnitool
-    400010: pockets_A
-    400012: pockets_B
-    400014: Point001
-    400016: Point002
-    400018: Rug
-    400020: Rug Head
-    400022: Rug HeadNub
-    400024: Rug L Calf
-    400026: Rug L Clavicle
-    400028: Rug L Finger0
-    400030: Rug L Finger01
-    400032: Rug L Finger02
-    400034: Rug L Finger0Nub
-    400036: Rug L Finger1
-    400038: Rug L Finger11
-    400040: Rug L Finger12
-    400042: Rug L Finger1Nub
-    400044: Rug L Foot
-    400046: Rug L Forearm
-    400048: Rug L Hand
-    400050: Rug L Thigh
-    400052: Rug L Toe0
-    400054: Rug L Toe0Nub
-    400056: Rug L UpperArm
-    400058: Rug Neck
-    400060: Rug Pelvis
-    400062: Rug R Calf
-    400064: Rug R Clavicle
-    400066: Rug R Finger0
-    400068: Rug R Finger01
-    400070: Rug R Finger02
-    400072: Rug R Finger0Nub
-    400074: Rug R Finger1
-    400076: Rug R Finger11
-    400078: Rug R Finger12
-    400080: Rug R Finger1Nub
-    400082: Rug R Foot
-    400084: Rug R Forearm
-    400086: Rug R Hand
-    400088: Rug R Thigh
-    400090: Rug R Toe0
-    400092: Rug R Toe0Nub
-    400094: Rug R UpperArm
-    400096: Rug Spine
-    400098: Rug Spine1
-    400100: Rug Spine2
-    400102: Rug Xtra01
-    400104: Rug Xtra01Nub
-    400106: //RootNode
-    400108: Rug_Knee_L
-    400110: Rug_Knee_R
-    400112: RugBody
-    400114: RugHead
+    400004: Omnitool
+    400006: pockets_A
+    400008: pockets_B
+    400010: Rug
+    400012: Rug Head
+    400014: Rug L Calf
+    400016: Rug L Clavicle
+    400018: Rug L Finger0
+    400020: Rug L Finger01
+    400022: Rug L Finger02
+    400024: Rug L Finger1
+    400026: Rug L Finger11
+    400028: Rug L Finger12
+    400030: Rug L Foot
+    400032: Rug L Forearm
+    400034: Rug L Hand
+    400036: Rug L Thigh
+    400038: Rug L Toe0
+    400040: Rug L UpperArm
+    400042: Rug Neck
+    400044: Rug Pelvis
+    400046: Rug R Calf
+    400048: Rug R Clavicle
+    400050: Rug R Finger0
+    400052: Rug R Finger01
+    400054: Rug R Finger02
+    400056: Rug R Finger1
+    400058: Rug R Finger11
+    400060: Rug R Finger12
+    400062: Rug R Foot
+    400064: Rug R Forearm
+    400066: Rug R Hand
+    400068: Rug R Thigh
+    400070: Rug R Toe0
+    400072: Rug R UpperArm
+    400074: Rug Spine
+    400076: Rug Spine1
+    400078: Rug Spine2
+    400080: Rug Xtra01
+    400082: //RootNode
+    400084: Rug_Knee_L
+    400086: Rug_Knee_R
+    400088: RugBody
+    400090: RugHead
     4300000: Omnitool
     4300002: RugHead
     4300004: RugBody
-    7400000: walk
+    7400000: Idle3
     9500000: //RootNode
     13700000: Omnitool
     13700002: RugBody
@@ -145,7 +121,7 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    animationCompression: 3
+    animationCompression: 0
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -154,10 +130,10 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: walk
+      name: Idle3
       takeName: Take 001
       firstFrame: 0
-      lastFrame: 32
+      lastFrame: 70
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -165,13 +141,13 @@ ModelImporter:
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
+      loopBlend: 1
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
       keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
+      keepOriginalPositionXZ: 1
       heightFromFeet: 0
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
