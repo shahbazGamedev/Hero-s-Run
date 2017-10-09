@@ -11,6 +11,7 @@ public class PlayerSounds : MonoBehaviour {
 	[SerializeField] AudioClip 	landWaterSound;
 	[SerializeField] AudioClip 	stumblingSound;
 	[SerializeField] AudioClip 	fallingSound;
+	[SerializeField] AudioClip 	ziplineSound;
 	[Header("Dying")]
 	[SerializeField] AudioClip 	deathFireSound;
 	[SerializeField] AudioClip 	dyingSound;
@@ -52,6 +53,11 @@ public class PlayerSounds : MonoBehaviour {
 	public void playDyingSound()
 	{
 		playSound( dyingSound, false );
+	}
+
+	public void playZiplineSound()
+	{
+		playSound( ziplineSound, true );
 	}
 
 	public void groundTypeChanged( string groundType )

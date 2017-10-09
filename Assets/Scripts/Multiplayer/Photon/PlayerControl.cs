@@ -1554,7 +1554,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			ziplineAttachPoint = transform.FindChild("Zipline Attach Point");
 			ziplineAttachPoint.localPosition = ziplinePlayerOffset;
 			ziplineAttachPoint.localEulerAngles = new Vector3( 0, 0, 0 );
-			ziplineAttachPoint.GetComponent<AudioSource>().Play();
 			ziplineAttachPoint.SetParent(null);
 			transform.SetParent( ziplineAttachPoint );
 			transform.eulerAngles =  new Vector3(transform.eulerAngles.x,transform.eulerAngles.y,6f);
@@ -1563,6 +1562,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			LTBezierPath ltBezier = new LTBezierPath( new Vector3[] { bezierData.bezierStart.position, bezierData.bezierControl2.position, bezierData.bezierControl1.position, bezierData.bezierEnd.position } );
 			LeanTween.move(ziplineAttachPoint.gameObject, ltBezier.pts, 3.5f).setOrientToPath(true).setEase(LeanTweenType.easeOutQuad);
 			playerCamera.playCutscene(CutsceneType.Ziplining);
+			playerSounds.playZiplineSound();
 		}
 	}
 
@@ -1574,7 +1574,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			transform.SetParent( null );
 			ziplineAttachPoint.SetParent( transform, false );
 			ziplineAttachPoint.localScale = new Vector3( 1f, 1f, 1f ); 	//Just because of rounding when changing parent
-			ziplineAttachPoint.GetComponent<AudioSource>().Stop();
 			playerCamera.reactivateMaincamera();
 			capsuleCollider.attachedRigidbody.isKinematic = false;
 			transform.localScale = new Vector3( 1f, 1f, 1f ); 	//Just because of rounding when changing parent
@@ -1595,6 +1594,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				//If the player is dead, it looks nicer with the camera locked.
 				playerCamera.lockCamera( true );
 			}
+			playerSounds.stopAudioSource();
 		}
 	}
 	#endregion
