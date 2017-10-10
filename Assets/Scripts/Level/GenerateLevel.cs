@@ -104,7 +104,6 @@ public enum TileType {
 	Teleport_Rx = 99,
 	Jump_Pad = 100,
 	Finish_Line = 101,
-	Left_Straight = 102,
 	Angled = 103
 
 }
@@ -614,7 +613,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		tileDepthMult= si.tileDepth;
 		previousTileType = si.tileSubType; //for constructing the level, we use the simpler types like straight, left and right
 		tileEndHeight = si.tileEndHeight;
-		si.entranceCrossed = false;
 		previousTilePos = tilePos;
 		previousTileRot = tileRot;
 		if( !GameManager.Instance.isMultiplayer() ) powerUpManager.considerAddingPowerUp( go, tileCreationIndex );
@@ -947,7 +945,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		if( endIndex >= worldRoadSegments.Count ) endIndex = worldRoadSegments.Count - 1;
 		for( int i=startIndex; i <= endIndex; i++ )
 		{
-			getSegmentInfo(worldRoadSegments[i]).entranceCrossed = false;
 			worldRoadSegments[i].SetActive( true );
 			onTileActivation(i);
 		}
@@ -961,7 +958,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		if( endIndex >= worldRoadSegments.Count ) endIndex = worldRoadSegments.Count - 1;
 		for( int i=playerTileIndex; i <= endIndex; i++ )
 		{
-			getSegmentInfo(worldRoadSegments[i]).entranceCrossed = false;
 			worldRoadSegments[i].SetActive( true );
 			onTileActivation(i);
 		}

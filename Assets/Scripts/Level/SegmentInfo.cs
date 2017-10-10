@@ -11,8 +11,6 @@ public class SegmentInfo : MonoBehaviour {
 	public List<BezierData> curveList = new List<BezierData>();
 	//For drawing, each curve is divided into small line segments.
 	public const int CURVE_DISTANCE_STEPS = 200;
-	//This flag is used to avoid tileEntranceCrossed being called multiple time which can happen with onTriggerEnter
-	public bool entranceCrossed = false;
 	public bool addJumpBoost = false; //If true, give an extra boost when jumping
 	public float tileEndHeight = 0; //if not zero, the height of the NEXT tile will be adjusted
 	public float tileHorizontalShift = 0; //if not zero, the X position of the NEXT tile will be adjusted

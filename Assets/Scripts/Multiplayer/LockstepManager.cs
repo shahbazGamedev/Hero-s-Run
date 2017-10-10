@@ -103,7 +103,6 @@ public class LockstepManager : MonoBehaviour {
 				lockstepAction.actor.transform.position = lockstepAction.param3;
 				lockstepAction.actor.transform.eulerAngles = new Vector3( lockstepAction.actor.transform.eulerAngles.x, lockstepAction.param1, lockstepAction.actor.transform.eulerAngles.z );
 				lockstepAction.actor.GetComponent<PlayerControl>().enablePlayerMovement( true );
-				lockstepAction.actor.GetComponent<PlayerRace>().tilesLeftBeforeReachingEnd -= lockstepAction.param2; //numberOfTilesSkippedBecauseOfTeleportation
 				//We may have switched lanes because of the position change. Make sure the lane values are accurate.
 				lockstepAction.actor.GetComponent<PlayerControl>().recalculateCurrentLane();
 				GenerateLevel generateLevel = GameObject.FindObjectOfType<GenerateLevel>();

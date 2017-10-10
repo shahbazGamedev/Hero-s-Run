@@ -1398,7 +1398,7 @@ public sealed class PlayerController : MonoBehaviour {
 					if ( isGoingRight )
 					{
 						//Verify if the player is doing a side-move in an allowed direction
-						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight || currentDeadEndType == DeadEndType.RightStraight)
+						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight )
 						{
 							//Turn is valid
 							desiredLane = Lanes.Left;
@@ -1437,7 +1437,7 @@ public sealed class PlayerController : MonoBehaviour {
 					if ( isGoingRight )
 					{
 						//Verify if the player is doing a side-move in an allowed direction
-						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight || currentDeadEndType == DeadEndType.RightStraight)
+						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight )
 						{
 							//Turn is valid
 							setDesiredLane( sideMoveInitiatedZ );
@@ -2327,14 +2327,8 @@ public sealed class PlayerController : MonoBehaviour {
 			SegmentInfo si = other.transform.parent.GetComponent<SegmentInfo>();
 			if( si != null )
 			{
-				if( !si.entranceCrossed )
-				{
-					//We might recycle currentTile (the one prior to the one we just entered), this is why we are passing it as a parameter.
-					generateLevel.tileEntranceCrossed( other.transform.parent );
-					//This flag is set to avoid tileEntranceCrossed being called multiple time which can happen with onTriggerEnter.
-					//This flag is set to false when a tile is added.
-					si.entranceCrossed = true;
-				}
+				//We might recycle currentTile (the one prior to the one we just entered), this is why we are passing it as a parameter.
+				generateLevel.tileEntranceCrossed( other.transform.parent );
 				currentTilePos = si.transform.position;
 				currentTile = si.gameObject;
 				tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
@@ -2476,7 +2470,7 @@ public sealed class PlayerController : MonoBehaviour {
 		{
 			if( other.CompareTag( "deadEnd" ) )
 			{
-				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight)
+				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None )
 				{
 					reasonDiedAtTurn = "EXITED DEAD END NO TURN";
 					Debug.LogWarning("OnTriggerExit player exited dead end without turning " + other.name + " " + isInDeadEnd + " " + deadEndTurnDone + " " + currentDeadEndType );

@@ -179,6 +179,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	Vector3 currentTilePos = Vector3.zero;
 	GameObject currentTile;
 	public float tileRotationY = 0; //Since we use this value often, we will store it.
+	//This flag is used to avoid entrance crossed being called multiple times which can happen with OnTriggerEnter
+	bool wasEntranceCrossed = false;
  	#endregion
 
 	#region Death variables
@@ -301,7 +303,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		currentTile = firstTile;
 		tileRotationY = firstTile.transform.eulerAngles.y;
 		currentTilePos = firstTile.transform.position;
-		playerRace.tilesLeftBeforeReachingEnd = generateLevel.getNumberOfTiles();
 	}
 
 	void OnEnable()
@@ -900,7 +901,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					if ( isGoingRight )
 					{
 						//Verify if the player is doing a side-move in an allowed direction
-						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight || currentDeadEndType == DeadEndType.RightStraight)
+						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight )
 						{
 							//Turn is valid
 							desiredLane = Lanes.Left;
@@ -915,7 +916,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					}
 					else
 					{
-						if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight  || currentDeadEndType == DeadEndType.LeftStraight)
+						if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight )
 						{
 							//Turn is valid
 							desiredLane = Lanes.Right;
@@ -937,7 +938,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					if ( isGoingRight )
 					{
 						//Verify if the player is doing a side-move in an allowed direction
-						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight || currentDeadEndType == DeadEndType.RightStraight)
+						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight )
 						{
 							//Turn is valid
 							setDesiredLane( sideMoveInitiatedZ );
@@ -951,7 +952,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					}
 					else
 					{
-						if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight || currentDeadEndType == DeadEndType.LeftStraight )
+						if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight )
 						{
 							//Turn is valid
 							setDesiredLane( sideMoveInitiatedZ );
@@ -2098,11 +2099,11 @@ public class PlayerControl : Photon.PunBehaviour {
 			bool autoTurn = true;
 			if( autoTurn && playerAI == null && !photonView.isMine )
 			{
-				if ( currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftStraight )
+				if ( currentDeadEndType == DeadEndType.Left )
 				{
 					sideSwipe( false );
 				}
-				else if ( currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.RightStraight)
+				else if ( currentDeadEndType == DeadEndType.Right )
 				{
 					sideSwipe( true );
 				}
@@ -2124,40 +2125,37 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		else if( other.CompareTag( "Entrance" ) )
 		{
+			if( wasEntranceCrossed ) return;
 			SegmentInfo si = other.transform.parent.GetComponent<SegmentInfo>();
 			if( si != null )
 			{
-				if( !si.entranceCrossed && photonView.isMine && playerAI == null )
+				//wasEntranceCrossed is used to prevent multiple OnTriggerEnter from occuring.
+				wasEntranceCrossed = true;
+				Invoke( "resetEntranceCrossed", 0.5f );
+				//We might recycle currentTile (the one prior to the one we just entered), this is why we are passing it as a parameter.
+				generateLevel.tileEntranceCrossed( other.transform.parent );
+
+				//The distance remaining displayed on the HUD and stored in PlayerRace is equal to: The length of the level - the total distance traveled by the player.
+				//The total distance traveled by the player is equal to the distance traveled for all previous tiles plus the distance traveled on the current tile.
+				//The distance traveled for all previous tiles is maintained by PlayerControl because it gets updated each time an entrance is crossed.
+				//The distance traveled on the current tile is maintained in PlayerRace.
+				playerRace.distanceTravelledOnThisTile = 0;
+				int previousTileDepth = currentTile.GetComponent<SegmentInfo>().tileDepth;
+				TileType previousTileType = currentTile.GetComponent<SegmentInfo>().tileType;
+				//Note: see Teleporter class for how teleporters affect tile distance traveled
+				if( previousTileType == TileType.Start )
 				{
-					//We might recycle currentTile (the one prior to the one we just entered), this is why we are passing it as a parameter.
-					generateLevel.tileEntranceCrossed( other.transform.parent );
-					//This flag is set to avoid tileEntranceCrossed being called multiple time which can happen with onTriggerEnter.
-					//This flag is set to false when a tile is added.
-					//Only the local player (not bots and not remote players) should set this flag.
-					si.entranceCrossed = true;
-					//The distance remaining displayed on the HUD is equal to: The length of the level - the total distance traveled by the player.
-					//The total distance traveled by the player is equal to the distance traveled for all previous tiles plus the distance traveled on the current tile.
-					//The distance traveled for all previous tiles is maintained by PlayerControl because it gets updated each time an entrance is crossed.
-					//The distance traveled on the current tile is maintained in PlayerRace.
-					playerRace.distanceTravelled = 0;
-					int previousTileDepth = currentTile.GetComponent<SegmentInfo>().tileDepth;
-					TileType previousTileType = currentTile.GetComponent<SegmentInfo>().tileType;
-					//Note: see Teleporter class for how teleporters affect tile distance traveled
-					if( previousTileType == TileType.Start )
-					{
-						tileDistanceTraveled = tileDistanceTraveled + GenerateLevel.tileSize * 0.5f;
-					}
-					else
-					{
-						tileDistanceTraveled = tileDistanceTraveled + GenerateLevel.tileSize * previousTileDepth;
-					}
-					//Every time a new tile is entered, force synchronization
-					forcePositionSynchronization();
+					tileDistanceTraveled = tileDistanceTraveled + GenerateLevel.tileSize * 0.5f;
 				}
+				else
+				{
+					tileDistanceTraveled = tileDistanceTraveled + GenerateLevel.tileSize * previousTileDepth;
+				}
+				//Every time a new tile is entered, force synchronization
+				forcePositionSynchronization();
 				currentTilePos = si.transform.position;
 				currentTile = si.gameObject;
 				tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
-				playerRace.tilesLeftBeforeReachingEnd--;
 			}
 			else
 			{
@@ -2176,6 +2174,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
   	}
 
+	void resetEntranceCrossed()
+	{
+		wasEntranceCrossed = false;
+	}
+	
 	IEnumerator angledTurn( float endRotationY, float duration )
 	{
 		float elapsedTime = 0;
@@ -2193,7 +2196,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void forcePositionSynchronization()
 	{
-		if( photonView.isMine ) this.photonView.RPC("positionSynchronizationRPC", PhotonTargets.Others, transform.position, capsuleCollider.attachedRigidbody.velocity, PhotonNetwork.time );
+		if( photonView.isMine && playerAI == null ) this.photonView.RPC("positionSynchronizationRPC", PhotonTargets.Others, transform.position, capsuleCollider.attachedRigidbody.velocity, PhotonNetwork.time );
 	}
 
 	[PunRPC]
@@ -2267,7 +2270,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			if( other.CompareTag( "deadEnd" ) )
 			{
-				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight && currentDeadEndType != DeadEndType.LeftStraight )
+				if( !deadEndTurnDone )
 				{
 					Debug.LogWarning("OnTriggerExit player exited dead end without turning " + other.name + " " + isInDeadEnd + " " + deadEndTurnDone + " " + currentDeadEndType );
 					killPlayer ( DeathType.Exited_Without_Turning );

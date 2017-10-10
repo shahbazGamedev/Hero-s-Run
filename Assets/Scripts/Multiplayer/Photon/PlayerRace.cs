@@ -26,9 +26,9 @@ public class PlayerRace : Photon.PunBehaviour
 	//Race position (1st place, 2nd place, etc.
 	public int racePosition = -1;
 	int previousRacePosition = -2;	//Used to avoid updating if the value has not changed
-	//Distance travelled. This is used to determine who is in 1st place, 2nd place, etc.
+	//Distance travelled on the current tile. This is used to calculate the distance remaining.
+	public float distanceTravelledOnThisTile = 0;
 	Vector3 previousPlayerPosition = Vector3.zero;
-	public float distanceTravelled = 0;
 	const float REQUIRED_LEAD_DISTANCE = 5f;
 	//Cache the string to avoid the runtime lookup
 	string tookTheLeadString;
@@ -48,10 +48,8 @@ public class PlayerRace : Photon.PunBehaviour
 	public delegate void CrossedFinishLine( Transform player, int officialRacePosition, bool isBot );
 	public static event CrossedFinishLine crossedFinishLine;
 
-	//Number of tiles left to travel before reaching the end tile. Used to determine this player's race position.
-	public int tilesLeftBeforeReachingEnd;
-	public int numberPlayersBehindMe = 0;
-	int previousNumberPlayersBehindMe = -1;
+	//Used to determine this player's race position.
+	public float distanceRemaining;
 
 	#region Emergency Power Boost
 	//The power boost is activated when a player is losing significantly to give him a chance to get back in the lead.
@@ -59,8 +57,8 @@ public class PlayerRace : Photon.PunBehaviour
 	//The effect of the power boost is to increase the refill rate of the power bar and to increase the player's run speed.
 	//Whether the power boost is active or not.
 	bool isPowerBoostActive = false;
-	//The number of tiles the player must be losing by for the power boost to activate.
-	const int TILE_DIFFERENCE_ACTIVATOR = 3;
+	//The distance the player must be losing by for the power boost to activate.
+	const float PLAYER_DISTANCE_ACTIVATOR = 175f;
 	TurnRibbonHandler turnRibbonHandler;
 	const float POWER_BOOST_DURATION = 15f;
 	bool wasPowerBoostUsed = false;
@@ -73,6 +71,7 @@ public class PlayerRace : Photon.PunBehaviour
 	PlayerControl playerControl;
 	PlayerSpell playerSpell;
 	PlayerIK playerIK;
+	GenerateLevel generateLevel;
 	#endregion
 
 	void Start()
@@ -84,7 +83,8 @@ public class PlayerRace : Photon.PunBehaviour
 		playerControl = GetComponent<PlayerControl>();
 		playerSpell = GetComponent<PlayerSpell>();
 		playerIK = GetComponent<PlayerIK>();
-
+		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
+		distanceRemaining = generateLevel.levelLengthInMeters;
 
 		if( this.photonView.isMine && playerAI == null )
 		{	
@@ -144,18 +144,18 @@ public class PlayerRace : Photon.PunBehaviour
 		//Only calculate distance travelled, race position and race duration if the race is in progress. 
 		if( raceStarted && !playerCrossedFinishLine )
 		{
-			//We use the distance travelled to determine the race position. All players on the master client need to do this.
+			//We use distanceRemaining to determine the race position.
 			updateDistanceTravelled();
+			distanceRemaining = generateLevel.levelLengthInMeters - ( playerControl.tileDistanceTraveled + distanceTravelledOnThisTile );
+
 			if( PhotonNetwork.isMasterClient )
 			{
-				calculateNumberPlayersBehindMe();
-
 				//We only want the host to calculate the race position and race duration. We don't want a bot to do it.
 				//The host is the master client who is owned by this device (so IsMasterClient is true and IsMine is true).
 				if( this.photonView.isMine && playerAI == null )
 				{
 					//Update the race position of the players i.e. 1st place, 2nd place, and so forth
-					players = players.OrderBy( p => p.tilesLeftBeforeReachingEnd ).ThenByDescending( p => p.numberPlayersBehindMe ).ToList();
+					players = players.OrderBy( p => p.distanceRemaining ).ToList();
 
 					for(int i=0; i<players.Count;i++)
 					{
@@ -206,12 +206,11 @@ public class PlayerRace : Photon.PunBehaviour
 		//Get a list of players ordered by position.
 		List<PlayerRace> playersOrderedByRacePosition = players.OrderBy( p => p.racePosition ).ToList();
 
-		//Calculate the tile difference between this player and the player immediately ahead.
+		//Calculate the distance between this player and the player immediately ahead.
 		int indexOfPlayerImmediatelyAhead = racePosition - 1;
-		int tileDifference = playersOrderedByRacePosition[racePosition].tilesLeftBeforeReachingEnd - playersOrderedByRacePosition[indexOfPlayerImmediatelyAhead].tilesLeftBeforeReachingEnd;
-
-		//If this player is behind by more than TILE_DIFFERENCE_ACTIVATOR tiles the person ahead of him, activate the power boost.
-		if( tileDifference > TILE_DIFFERENCE_ACTIVATOR )
+		float distanceDifference = playersOrderedByRacePosition[racePosition].distanceRemaining - playersOrderedByRacePosition[indexOfPlayerImmediatelyAhead].distanceRemaining;
+		//If this player is behind by more than PLAYER_DISTANCE_ACTIVATOR tiles the person ahead of him, activate the power boost.
+		if( distanceDifference > PLAYER_DISTANCE_ACTIVATOR )
 		{
 			wasPowerBoostUsed = true;
 			this.photonView.RPC("activatePowerBoostRPC", PhotonTargets.AllViaServer );
@@ -257,7 +256,7 @@ public class PlayerRace : Photon.PunBehaviour
 		//Do not take height into consideration for distance travelled
 		Vector3 current = new Vector3(transform.position.x, 0, transform.position.z);
 		Vector3 previous = new Vector3(previousPlayerPosition.x, 0, previousPlayerPosition.z);
-		distanceTravelled = distanceTravelled + Vector3.Distance( current, previous );
+		distanceTravelledOnThisTile = distanceTravelledOnThisTile + Vector3.Distance( current, previous );
 		previousPlayerPosition = transform.position;
 	}
 
@@ -395,11 +394,6 @@ public class PlayerRace : Photon.PunBehaviour
 		//We want to slow down any player that reaches the finish line
 		StartCoroutine( playerRun.slowDownPlayerAfterFinishLine( officialRacePosition, 5f - (officialRacePosition * 1.5f) ) );
 
-		//Sanity check
-		//tilesLeftBeforeReachingEnd should ALWAYS be zero when reaching the End tile. If it's not the case, make sure the tilePenalty
-		//values are correct on shortcut tiles and that the teleporter has the right number of tiles skipped.
-		if( tilesLeftBeforeReachingEnd != 0 ) Debug.LogError("The race is completed but tilesLeftBeforeReachingEnd is not equal to 0. Make sure the tilePenalty values are correct on shortcut tiles and that the teleporter has the right number of tiles skipped.");
-
 		//Note: if the player won, a voice over will be triggered by the victory animation. See Victory_win_start.
 
 		//However, in terms of changing HUD elements, XP, player stats, etc. We only want to proceed if the player is local and not a bot.
@@ -434,7 +428,7 @@ public class PlayerRace : Photon.PunBehaviour
 	}
 	#endregion
 
-	void calculateNumberPlayersBehindMe()
+	/*void calculateNumberPlayersBehindMe()
 	{
 		int count = 0;
 		for(int i=0; i<players.Count;i++)
@@ -463,5 +457,5 @@ public class PlayerRace : Photon.PunBehaviour
 		{
 			return 0;
 		}
-	}
+	}*/
 }
