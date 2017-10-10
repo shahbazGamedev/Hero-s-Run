@@ -172,15 +172,18 @@ public enum TileGroupType {
 	Desert_Start = 20000,
 	Desert_End = 20001,
 	Desert_Straight = 20002,
-	Desert_Teleporter = 20003, 		//Teleporter_Tx, Straight, Teleporter_Rx
-	Desert_Jump_Pad = 20004,		//Jump_Pad
-	Desert_Left_Turn = 20005,		//Left
-	Desert_Right_Turn = 20006,		//Right
-	Desert_Log = 20007,				//Straight_Log
-	Desert_Zipline = 20008,			//zipline, left, straight_log, right
-	Desert_Bridge = 20009,			//Straight_Slope, Landmark_Broken_Bridge
-	Desert_Angle = 20010			//Angled
-
+	Desert_Straight_Double = 20003,	//Straight_Double
+	Desert_Zipline = 20004,			//zipline, left, straight_log, right
+	Desert_Jump_Pad = 20005,		//Jump_Pad
+	Desert_Bridge = 20006,			//Straight_Slope, Landmark_Broken_Bridge
+	Desert_Left_Turn = 20007,		//Left
+	Desert_Right_Turn = 20008,		//Right
+	Desert_Log = 20009,				//Straight_Log
+	Desert_Slope = 20010,			//Straight_Slope
+	Desert_Angle = 20011,			//Angled
+	Desert_Original_1 = 20012,		//Original_1
+	Desert_Original_2 = 20013,		//Original_2
+	Desert_Original_3 = 20014,		//Original_3
 }
 
 [System.Serializable]

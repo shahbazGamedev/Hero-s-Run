@@ -105,7 +105,10 @@ public enum TileType {
 	Teleport_Rx = 99,
 	Jump_Pad = 100,
 	Finish_Line = 101,
-	Angled = 103
+	Angled = 103,
+	Original_1 = 104,
+	Original_2 = 105,
+	Original_3 = 106
 
 }
 
