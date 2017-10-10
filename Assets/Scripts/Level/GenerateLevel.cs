@@ -12,7 +12,8 @@ public enum SegmentTheme {
 		Caves = 11,
 		Hell = 12,
 		Dragon_Lair = 13,
-		Jousting = 14
+		Jousting = 14,
+		Desert = 15
 }
 
 public enum TileType {

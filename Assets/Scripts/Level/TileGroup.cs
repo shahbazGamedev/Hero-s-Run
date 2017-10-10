@@ -167,7 +167,19 @@ public enum TileGroupType {
 	Jousting_Flamethrower = 10011,	//Straight_River
 	Jousting_Broken_Path = 10012,	//Straight_River_Log_Crossing
 	Jousting_Pipes = 10013,			//Landmark_Clocktower
-	Jousting_Angle = 10014			//Angled
+	Jousting_Angle = 10014,			//Angled
+
+	Desert_Start = 20000,
+	Desert_End = 20001,
+	Desert_Straight = 20002,
+	Desert_Teleporter = 20003, 		//Teleporter_Tx, Straight, Teleporter_Rx
+	Desert_Jump_Pad = 20004,		//Jump_Pad
+	Desert_Left_Turn = 20005,		//Left
+	Desert_Right_Turn = 20006,		//Right
+	Desert_Log = 20007,				//Straight_Log
+	Desert_Zipline = 20008,			//zipline, left, straight_log, right
+	Desert_Bridge = 20009,			//Straight_Slope, Landmark_Broken_Bridge
+	Desert_Angle = 20010			//Angled
 
 }
 
