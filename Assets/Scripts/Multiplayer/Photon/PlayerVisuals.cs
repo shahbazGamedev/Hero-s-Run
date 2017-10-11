@@ -9,8 +9,11 @@ public class PlayerVisuals : Photon.PunBehaviour {
 	[Range(0,1)]
 	[SerializeField] float nightEmission = 0.33f;
 	//Particles
-	public ParticleSystem dustPuff;
-	public ParticleSystem waterSplashWhileSliding; //Plays when player slides in water.It loops.
+	[SerializeField]  ParticleSystem dustPuff;
+	[SerializeField]  ParticleSystem waterSplashWhileSliding; //Plays when player slides in water.It loops.
+	[Tooltip("The impact VFX plays when the player hits an obstacle and falls backward. It should include an AudioSource with the associated impact sound. The AudioSource should have PlayOnAwake set to true.")]
+	[SerializeField]  ParticleSystem impactVFXPrefab;
+	[SerializeField]  Vector3 impactVFXoffset = new Vector3( 0, 1.8f, 0.3f );
 	//Casts a circular shadow at the feet of the player
 	Projector shadowProjector;
 
@@ -23,6 +26,21 @@ public class PlayerVisuals : Photon.PunBehaviour {
 		}
 		shadowProjector = blobShadowProjectorObject.GetComponent<Projector>();
 		
+	}
+
+	public void playImpactVFX()
+	{
+		if( impactVFXPrefab != null )
+		{
+			ParticleSystem impactVFX = GameObject.Instantiate( impactVFXPrefab ) as ParticleSystem;
+			impactVFX.transform.position = transform.TransformPoint( impactVFXoffset );
+			impactVFX.Play();
+			GameObject.Destroy( impactVFX, 2f );
+		}
+		else
+		{
+			Debug.LogWarning("PlayerVisuals-error: playImpactVFX called but impactVFXPrefab is null. Ignoring." );
+		}
 	}
 
 	public void playDustPuff( bool activate, bool loop = true )

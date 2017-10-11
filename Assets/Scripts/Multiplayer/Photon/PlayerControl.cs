@@ -1797,8 +1797,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	                
 	        case DeathType.Obstacle:
 				//Play collision sound
-				playerSounds.playDyingSound();
 				playerCamera.Shake();
+				playerVisuals.playImpactVFX(); //The impact VFX has a sound associated with it
 				setAnimationTrigger(FallBackwardTrigger);
 				break;
 
