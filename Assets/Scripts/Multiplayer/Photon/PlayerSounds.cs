@@ -15,6 +15,7 @@ public class PlayerSounds : MonoBehaviour {
 	[Header("Dying")]
 	[SerializeField] AudioClip 	deathFireSound;
 	[SerializeField] AudioClip 	dyingSound;
+	[SerializeField] AudioClip 	punchSound;
 	[Header("Footsteps")]
 	[SerializeField] AudioClip 	footstepLeftSound;
 	[SerializeField] AudioClip 	footstepRightSound;
@@ -112,6 +113,12 @@ public class PlayerSounds : MonoBehaviour {
 	public void Slide_sound_stop ( AnimationEvent eve )
 	{
 		audioSource.Stop();
+	}
+
+	//See Rug lose animation
+	public void punch_ground ( AnimationEvent eve )
+	{
+		audioSource.PlayOneShot( punchSound );
 	}
 
 }
