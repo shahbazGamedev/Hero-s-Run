@@ -120,7 +120,7 @@ ModelImporter:
       name: Lose
       takeName: Take 001
       firstFrame: 0
-      lastFrame: 100
+      lastFrame: 135
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -140,14 +140,14 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.75953645
+      - time: 0.5488727
         functionName: punch_ground
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.91610557
+      - time: 0.66504854
         functionName: punch_ground
         data: 
         objectReferenceParameter: {instanceID: 0}
