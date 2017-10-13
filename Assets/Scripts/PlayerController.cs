@@ -1199,7 +1199,7 @@ public sealed class PlayerController : MonoBehaviour {
 				//Don't accelerate during a jump (also it would reset the newRunSpeed variable).
 				allowRunSpeedToIncrease = false;
 				setCharacterState( PlayerCharacterState.Jumping );
-				if( currentTile.GetComponent<SegmentInfo>().addJumpBoost )
+				if( false )
 				{
 					//if you are on a steep slope, the normal jump speed is insufficient to make you feel you are jumping high.
 					//So use a higher value instead.

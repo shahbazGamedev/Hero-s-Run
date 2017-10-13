@@ -1610,10 +1610,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			}
 			playerSounds.stopAudioSource();
 		}
-		else
-		{
-			Debug.LogError( name + " can't detach from zipline because player is not in the ZIPLINING state.");
-		}
 	}
 	#endregion
 

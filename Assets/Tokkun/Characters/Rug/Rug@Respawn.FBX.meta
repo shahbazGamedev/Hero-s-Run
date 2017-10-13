@@ -3,7 +3,7 @@ guid: fdfcb1ece1f0e2b4b94d29d63875b31d
 timeCreated: 1506693421
 licenseType: Free
 ModelImporter:
-  serializedVersion: 21
+  serializedVersion: 19
   fileIDToRecycleName:
     100000: Bone003
     100002: Bone006
@@ -48,6 +48,10 @@ ModelImporter:
     100080: //RootNode
     100082: Rug_Knee_L
     100084: Rug_Knee_R
+    100086: Omnitool
+    100088: Rug Footsteps
+    100090: RugBody
+    100092: RugHead
     400000: Bone003
     400002: Bone006
     400004: pockets_A
@@ -91,8 +95,18 @@ ModelImporter:
     400080: //RootNode
     400082: Rug_Knee_L
     400084: Rug_Knee_R
+    400086: Omnitool
+    400088: Rug Footsteps
+    400090: RugBody
+    400092: RugHead
+    4300000: Omnitool
+    4300002: RugHead
+    4300004: RugBody
     7400000: Respawn
     9500000: //RootNode
+    13700000: Omnitool
+    13700002: RugBody
+    13700004: RugHead
   materials:
     importMaterials: 1
     materialName: 0
@@ -115,7 +129,6 @@ ModelImporter:
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
       name: Respawn
@@ -133,9 +146,9 @@ ModelImporter:
       loopBlendOrientation: 1
       loopBlendPositionY: 1
       loopBlendPositionXZ: 1
-      keepOriginalOrientation: 0
+      keepOriginalOrientation: 1
       keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
+      keepOriginalPositionXZ: 1
       heightFromFeet: 0
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
@@ -151,10 +164,7 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
-    importVisibility: 1
     importBlendShapes: 1
-    importCameras: 1
-    importLights: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
@@ -170,7 +180,6 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
-    normalCalculationMode: 4
   importAnimation: 1
   copyAvatar: 1
   humanDescription:
