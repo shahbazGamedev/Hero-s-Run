@@ -21,11 +21,9 @@ public class StatisticsMenu : MonoBehaviour {
 
 	void configureEntries()
 	{
-		List<PlayerStatistics.StatisticData> statisticEntriesList = GameManager.Instance.playerStatistics.getStatisticEntriesList();
-
 		for( int i=0; i < statisticEntriesList.Count; i++ )
 		{
-			createStatisticEntry( i, statisticEntriesList[i].type, getIcon( statisticEntriesList[i].type ), statisticEntriesList[i].value  );
+			createStatisticEntry( i, statisticEntriesList[i].type, statisticEntriesList[i].icon, GameManager.Instance.playerStatistics.getStatisticData( statisticEntriesList[i].type ) );
 		}
 	}
 
@@ -35,11 +33,6 @@ public class StatisticsMenu : MonoBehaviour {
 		go.transform.SetParent(statisticEntriesPanel,false);
 		go.GetComponent<StatisticEntryUI>().configureEntry( index, type, icon, value );
 	}
-
-	Sprite getIcon( StatisticDataType type )
-	{
-		return statisticEntriesList.Find( data => data.type == type).icon;
-	}	
 
 	[System.Serializable]
 	public class StatisticEntryIcon
