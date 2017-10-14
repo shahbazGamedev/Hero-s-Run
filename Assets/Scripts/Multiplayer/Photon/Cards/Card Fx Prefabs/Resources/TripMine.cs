@@ -24,7 +24,8 @@ public class TripMine : CardSpawnedObject {
 	{
 		object[] data = this.gameObject.GetPhotonView ().instantiationData;
 
-		casterName = data[0].ToString();
+		casterTransform = getCaster( (int) data[0] );
+		setCasterName( casterTransform.name );
 
 		float delayBeforeExpires = (float) data[1];
 		GameObject.Destroy( gameObject, delayBeforeExpires );
@@ -59,6 +60,7 @@ public class TripMine : CardSpawnedObject {
 	void detonate()
 	{
 		destroyAllTargetsWithinBlastRadius( blastRadius, MaskHandler.getMaskWithPlayerWithLevelDestructible() );
+		addSkillBonus( 25, "SKILL_BONUS_TRIP_MINE" );
 		explode();
 		GameObject.Destroy( gameObject );
 	}
