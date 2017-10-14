@@ -22,7 +22,9 @@ public enum StatisticDataType
 										//If playing alone or against AI, the player can select any unlocked race track via the circuit selection menu.
 										//If inviting a friend to race, the inviter can select any unlocked race track even if the invitee has not unlocked that track yet. 
 	
-	FAVORITE_CARD = 10					//The card most frequently played.
+	FAVORITE_CARD = 10,					//The card most frequently played.
+	AVERAGE_SKILL_BONUS = 11			//The player's average skill bonus.
+
 }
 
 [System.Serializable]
@@ -54,6 +56,8 @@ public class PlayerStatistics {
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.DEATHS_LIFETIME, 0 ) );
 
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.DISTANCE_TRAVELED_LIFETIME, 0 ) );
+
+		statisticEntriesList.Add( new StatisticData( StatisticDataType.AVERAGE_SKILL_BONUS, 0 ) );
 	}
 
 	public List<StatisticData> getStatisticEntriesList()
@@ -134,7 +138,7 @@ public class PlayerStatistics {
 	/// <summary>
 	/// Called when the player has completed the race.
 	/// </summary>
-	public void updateRaceStatistics( int racePosition, float distanceTravelled, int numberOfTimesDiedDuringRace )
+	public void updateRaceStatistics( int racePosition, float distanceTravelled, int numberOfTimesDiedDuringRace, int skillBonusEarned )
 	{
 		int distanceTravelledLifetime = getStatisticData(StatisticDataType.DISTANCE_TRAVELED_LIFETIME);
 		setStatisticData( StatisticDataType.DISTANCE_TRAVELED_LIFETIME, (int) (distanceTravelledLifetime + distanceTravelled) );
@@ -162,7 +166,30 @@ public class PlayerStatistics {
 			int perfectRacesLifetime = getStatisticData(StatisticDataType.PERFECT_RACES_LIFETIME);
 			setStatisticData( StatisticDataType.PERFECT_RACES_LIFETIME, perfectRacesLifetime + 1 );
 		}
+
+		updateAverageSkillBonus( skillBonusEarned );
+
 		serializePlayerStatistics( false );
+	}
+
+	/// <summary>
+	/// Updates the average skill bonus. Called when the player has completed the race.
+	/// </summary>
+	/// <param name="skillBonusEarned">Skill bonus earned.</param>
+	void updateAverageSkillBonus( int skillBonusEarned )
+	{
+		int currentAverageSkillBonus = getStatisticData(StatisticDataType.AVERAGE_SKILL_BONUS);
+		//When this is called for the first time, the initial skill bonus average will be 0.
+		//In this case, simply add the full skill bonus amount.
+		//If this is not the first time, average the two values.
+		if( currentAverageSkillBonus == 0 )
+		{
+			setStatisticData( StatisticDataType.AVERAGE_SKILL_BONUS, skillBonusEarned );
+		}
+		else
+		{
+			setStatisticData( StatisticDataType.AVERAGE_SKILL_BONUS, (int) ( ( currentAverageSkillBonus + skillBonusEarned ) * 0.5f ) );
+		}
 	}
 
 	public void serializePlayerStatistics( bool saveImmediately )
