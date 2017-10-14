@@ -5,9 +5,10 @@ using System;
 
 public enum StatisticDataType
  {
-	RACES_RUN = 0,						//Player at least started the race, may did not finish it.
+	RACES_RUN = 0,						//Player at least started the race, maybe did not finish it.
 	RACES_WON = 1,						//Player completed race in first position.
 	RACES_ABANDONED = 2,				//Player used the quit button during a race.
+	RACES_COMPLETED = 12,				//Player completed the race. He might have won or lost.
 
 	DISTANCE_TRAVELED_LIFETIME = 3,		//Sum of the distance travelled for all the completed races.
 	DEATHS_LIFETIME = 4,				//Sum of all the times the player died during a race, whether it was completed or not.
@@ -51,6 +52,7 @@ public class PlayerStatistics {
 
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.RACES_WON, 0 ) );
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.RACES_RUN, 0 ) );
+		statisticEntriesList.Add( new StatisticData( StatisticDataType.RACES_COMPLETED, 0 ) );
 
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.RACES_ABANDONED, 0 ) );
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.DEATHS_LIFETIME, 0 ) );
@@ -126,13 +128,22 @@ public class PlayerStatistics {
 	}
 
 	/// <summary>
-	/// Increments the number of number of deaths, lifetime. Called each time the player dies.
+	/// Increments the number of deaths, lifetime. Called each time the player dies.
 	/// </summary>
 	public void incrementNumberOfDeathsLifetime()
 	{
 		int numberOfDeathsLifetime = getStatisticData(StatisticDataType.DEATHS_LIFETIME);
 		setStatisticData( StatisticDataType.DEATHS_LIFETIME, numberOfDeathsLifetime + 1 );
 		serializePlayerStatistics( true );
+	}
+
+	/// <summary>
+	/// Increments the number of races completed.
+	/// </summary>
+	public void incrementNumberOfRacesCompleted()
+	{
+		int numberOfRacesCompleted = getStatisticData(StatisticDataType.RACES_COMPLETED);
+		setStatisticData( StatisticDataType.RACES_COMPLETED, numberOfRacesCompleted + 1 );
 	}
 
 	/// <summary>
@@ -167,6 +178,7 @@ public class PlayerStatistics {
 			setStatisticData( StatisticDataType.PERFECT_RACES_LIFETIME, perfectRacesLifetime + 1 );
 		}
 
+		incrementNumberOfRacesCompleted();
 		updateAverageSkillBonus( skillBonusEarned );
 
 		serializePlayerStatistics( false );
@@ -179,17 +191,7 @@ public class PlayerStatistics {
 	void updateAverageSkillBonus( int skillBonusEarned )
 	{
 		int currentAverageSkillBonus = getStatisticData(StatisticDataType.AVERAGE_SKILL_BONUS);
-		//When this is called for the first time, the initial skill bonus average will be 0.
-		//In this case, simply add the full skill bonus amount.
-		//If this is not the first time, average the two values.
-		if( currentAverageSkillBonus == 0 )
-		{
-			setStatisticData( StatisticDataType.AVERAGE_SKILL_BONUS, skillBonusEarned );
-		}
-		else
-		{
-			setStatisticData( StatisticDataType.AVERAGE_SKILL_BONUS, (int) ( ( currentAverageSkillBonus + skillBonusEarned ) * 0.5f ) );
-		}
+		setStatisticData( StatisticDataType.AVERAGE_SKILL_BONUS, (int) ( ( currentAverageSkillBonus + skillBonusEarned ) / (float) getStatisticData(StatisticDataType.RACES_COMPLETED) ) );
 	}
 
 	public void serializePlayerStatistics( bool saveImmediately )
