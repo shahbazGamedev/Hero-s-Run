@@ -123,8 +123,8 @@ public class Card : Photon.PunBehaviour {
 			//Is this player within range?
 			if( sqrMagnitude > sqrRange ) continue;
 
-			//Is the player dead or Idle? If so, ignore.
-			if( PlayerRace.players[i].GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
+			//Is the player dead or Idle or Ziplining? If so, ignore.
+			if( PlayerRace.players[i].GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Ziplining ) continue;
 
 			//Is the player using the Cloak card? If so, ignore.
 			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) continue;
