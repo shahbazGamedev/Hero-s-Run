@@ -104,10 +104,11 @@ ModelImporter:
     animationImportErrors: 
     animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
       might lower retargeting quality:\n\t'Rug Spine2' has translation animation that
-      will be discarded.\n"
+      will be discarded.\nEvent fall_backward_completed has a time (1.600000) outside
+      the clip's valid range (0.000000..1.600000). It will never be fired"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    animationCompression: 3
+    animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
