@@ -85,12 +85,22 @@ public class PlayerSounds : MonoBehaviour {
 
 	public void Footstep_left ( AnimationEvent eve )
 	{
-		audioSource.PlayOneShot( leftFootstep, 0.1f  );
+		audioSource.PlayOneShot( leftFootstep, 0.12f  );
 	}
 
 	public void Footstep_right ( AnimationEvent eve )
 	{
-		audioSource.PlayOneShot( rightFootstep, 0.1f  );
+		audioSource.PlayOneShot( rightFootstep, 0.12f  );
+	}
+
+	public void Win_footstep_left ( AnimationEvent eve )
+	{
+		audioSource.PlayOneShot( leftFootstep  );
+	}
+
+	public void Win_footstep_right ( AnimationEvent eve )
+	{
+		audioSource.PlayOneShot( rightFootstep  );
 	}
 
 	//The Land_sound event must be set at the beginning of the animation or else you might not hear it because of how the blending is set up.
