@@ -497,6 +497,8 @@ public class PlayerControl : Photon.PunBehaviour {
 				{
 					playerVisuals.playDustPuff( false );
 				}
+				//Remove any leaning when you land
+				lean( 0, 0.15f );
 				setAnimationTrigger(LandTrigger);
 				jumping = false;
 				if ( queueSlide )

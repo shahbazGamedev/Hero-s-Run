@@ -93,6 +93,7 @@ public class PlayerSounds : MonoBehaviour {
 		audioSource.PlayOneShot( rightFootstep, 0.1f  );
 	}
 
+	//The Land_sound event must be set at the beginning of the animation or else you might not hear it because of how the blending is set up.
 	public void Land_sound ( AnimationEvent eve )
 	{
 		if( groundType != "Water" )
