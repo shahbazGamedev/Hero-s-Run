@@ -1822,8 +1822,6 @@ public class PlayerControl : Photon.PunBehaviour {
 				break;
 
 	        case DeathType.FallForward:
-				//Play collision sound
-				playerSounds.playDyingSound();
 				playerCamera.Shake();
 				setAnimationTrigger(FallForwardTrigger);
 				break;

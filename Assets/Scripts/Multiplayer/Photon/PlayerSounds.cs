@@ -131,7 +131,13 @@ public class PlayerSounds : MonoBehaviour {
 		audioSource.Stop();
 	}
 
-	//See Rug lose animation
+	//See Rug Fall Foward animation
+	public void fall_forward_belly_hits_ground ( AnimationEvent eve )
+	{
+		audioSource.PlayOneShot( dyingSound );
+	}
+
+	//See Rug Lose animation
 	public void punch_ground ( AnimationEvent eve )
 	{
 		audioSource.PlayOneShot( punchSound );
