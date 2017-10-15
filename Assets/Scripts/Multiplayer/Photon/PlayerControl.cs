@@ -39,7 +39,8 @@ public enum PlayerCharacterState {
 	Falling = 10,
 	Turning = 11,
 	Turning_and_sliding = 12,
-	Ziplining = 13
+	Ziplining = 13,
+	DoubleJumping = 14
 }
 
 public class PlayerControl : Photon.PunBehaviour {
@@ -508,7 +509,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				{
 					setCharacterState( PlayerCharacterState.Running );
 					queueJump = false;
-					jump( false );
+					jump();
 				}
 				else
 				{
@@ -623,11 +624,9 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	#region Jump and Double Jump
 	/// <summary>
-	/// Makes the player jump. If doingDoubleJump is set to true, the player will do a higher double-jump.
+	/// Makes the player jump.
 	/// </summary>
-	/// <param name="doingDoubleJump">If set to <c>true</c> player will do a double-jump.</param>
-	/// <param name="doubleJumpSpeed">Double jump speed.</param>
-	public void jump( bool doingDoubleJump, float doubleJumpSpeed = 0 )
+	public void jump()
 	{
 		if( jumping )
 		{
@@ -636,25 +635,11 @@ public class PlayerControl : Photon.PunBehaviour {
 			queueJump = true;
 			queueSlide = false;
 		}
-
-		if (playerCharacterState == PlayerCharacterState.Jumping )
-		{
-			//Player is already jumping.
-			//If we're being asked to do a normal jump, ignore because we are already jumping.
-			//If we're asked to do a double jump, simply update the jump speed.
-			if( doingDoubleJump )
-			{
-				moveDirection.y = doubleJumpSpeed;
-				setAnimationTrigger(DoubleJumpTrigger);
-				jumpStarted = true;
-				queueJump = false;
-			}
-		}
 		else
 		{
 			//Player is not jumping.
 			//Allow jump if the player is either near the ground or above ground marked as Collapsing.
- 			//The Collapsing tag is used in the CollapsingBridge code.
+			//The Collapsing tag is used in the CollapsingBridge code.
 			if ( distanceToGround < 0.5f || playerCollisions.getGroundType() == "Collapsing" )
 			{
 				//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
@@ -672,16 +657,52 @@ public class PlayerControl : Photon.PunBehaviour {
 				jumpStarted = true;
 	
 				setCharacterState( PlayerCharacterState.Jumping );
-				if( doingDoubleJump )
-				{
-					moveDirection.y = doubleJumpSpeed;
-					setAnimationTrigger(DoubleJumpTrigger);
-				}
-				else
-				{
-					moveDirection.y = jumpSpeed;
-					setAnimationTrigger(JumpTrigger);
-				}
+				moveDirection.y = jumpSpeed;
+				setAnimationTrigger(JumpTrigger);
+				//for debugging
+				//remove jump sound for now because it is annoying
+				//playSound( jumpingSound, false );
+			}
+		}
+	}
+
+	/// <summary>
+	/// Makes the player do a higher double-jump.
+	/// </summary>
+	/// <param name="doubleJumpSpeed">Double jump speed.</param>
+	public void doubleJump( float doubleJumpSpeed = 0 )
+	{
+		if( jumping )
+		{
+			//Delay the second jump request until we are on the ground
+			//Cancel any slide queue since we can only queue one movement at a time
+			queueJump = true;
+			queueSlide = false;
+		}
+		else
+		{
+			//Player is not jumping.
+			//Allow jump if the player is either near the ground or above ground marked as Collapsing.
+			//The Collapsing tag is used in the CollapsingBridge code.
+			if ( distanceToGround < 0.5f || playerCollisions.getGroundType() == "Collapsing" )
+			{
+				//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
+				moveDirection.x = 0;
+				
+				//Make sure the lane data is correct in case a collision forced us out of our lane
+				recalculateCurrentLane();
+	
+				//We are allowed to jump from the slide state.
+				playerSounds.stopAudioSource();							//stop the sliding sound if any
+				playerVisuals.playDustPuff( false );					//stop the dust puff that loops while we are sliding
+				playerVisuals.playWaterSplashWhileSliding( false );
+	
+				jumping = true;
+				jumpStarted = true;
+	
+				setCharacterState( PlayerCharacterState.DoubleJumping );
+				moveDirection.y = doubleJumpSpeed;
+				setAnimationTrigger(DoubleJumpTrigger);
 				//for debugging
 				//remove jump sound for now because it is annoying
 				//playSound( jumpingSound, false );
@@ -693,7 +714,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Fall and Land
 	public void fall( bool isRespawning = false )
 	{
-		if( playerCharacterState == PlayerCharacterState.Falling || playerCharacterState == PlayerCharacterState.Jumping ) return; //ignore, we are already falling or jumping
+		if( playerCharacterState == PlayerCharacterState.Falling || playerCharacterState == PlayerCharacterState.Jumping || playerCharacterState == PlayerCharacterState.DoubleJumping ) return; //ignore, we are already falling or jumping
 
 		//You can't queue a slide or jump when falling
 		queueSlide = false;
@@ -859,7 +880,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void turnCorner( bool isGoingRight )
 	{
-		if ( playerCharacterState == PlayerCharacterState.Running || playerCharacterState == PlayerCharacterState.Jumping || playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.SideMove || playerCharacterState == PlayerCharacterState.Stumbling )
+		if ( playerCharacterState == PlayerCharacterState.Running || playerCharacterState == PlayerCharacterState.Jumping || playerCharacterState == PlayerCharacterState.DoubleJumping || playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.SideMove || playerCharacterState == PlayerCharacterState.Stumbling )
 		{
 			this.isGoingRight = isGoingRight;
 
@@ -1968,6 +1989,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		myLane = 0;
 		anim.SetFloat( leaningBlendFactor, 0 );
 		jumping = false;
+		jumpStarted = false;
 		queueSlide = false;
 		queueJump = false;
 		isInDeadEnd = false;

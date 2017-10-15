@@ -103,6 +103,7 @@ public class PlayerRun : Photon.PunBehaviour {
 				runSpeed = levelRunStartSpeed;
 				break;
 	                
+			case PlayerCharacterState.DoubleJumping:
 			case PlayerCharacterState.Jumping:
 				calculateRunSpeedDuringJump();
 				break;
@@ -265,7 +266,7 @@ public class PlayerRun : Photon.PunBehaviour {
 		//This is why we return immediately when the player is jumping as we don't want to change the run speed.
 		//Example: Player plays Raging Bull right after jumping. We do not want the player's run speed to be affected while he
 		//is in the air.
-		if( playerControl.getCharacterState() == PlayerCharacterState.Jumping ) return;
+		if( playerControl.getCharacterState() == PlayerCharacterState.Jumping || playerControl.getCharacterState() == PlayerCharacterState.DoubleJumping ) return;
 
 		//When the player dies, we stop all coroutines on this behavior.
 		//However, it may take a few frames for the coroutines to be fully stopped (typically 3 frames if you are curious).

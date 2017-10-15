@@ -24,7 +24,7 @@ public class CardDoubleJump : Card {
 	[PunRPC]
 	void cardDoubleJumpRPC( float doubleJumpSpeed, int photonViewID )
 	{
-		getPlayerControl( photonViewID ).jump( true, doubleJumpSpeed );
+		getPlayerControl( photonViewID ).doubleJump( doubleJumpSpeed );
 	}
 
 }

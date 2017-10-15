@@ -68,13 +68,13 @@ public class PlayerInput : PunBehaviour {
 	public void jump()
 	{
 		if( playerControl.getCharacterState() == PlayerCharacterState.Ziplining ) Debug.LogError("jump called while ziplining.");
-		playerControl.jump( false );
+		playerControl.jump();
 		this.photonView.RPC("jumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 	}
 
 	public void doubleJump( float doubleJumpSpeed )
 	{
-		playerControl.jump( true, doubleJumpSpeed );
+		playerControl.doubleJump( doubleJumpSpeed );
 		this.photonView.RPC("doubleJumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, doubleJumpSpeed );
 	}
 
@@ -152,7 +152,7 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.H ) )
 		{
-			playerControl.jump(true, 18f);
+			playerControl.doubleJump( 18f);
 		}
 	}
 

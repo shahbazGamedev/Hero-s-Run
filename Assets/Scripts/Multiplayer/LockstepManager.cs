@@ -96,7 +96,7 @@ public class LockstepManager : MonoBehaviour {
 
 			case LockstepActionType.JUMP_PAD:
 				lockstepAction.actor.GetComponent<PlayerControl>().enablePlayerMovement( true );
-				lockstepAction.actor.GetComponent<PlayerControl>().jump( true, lockstepAction.param1 );
+				lockstepAction.actor.GetComponent<PlayerControl>().doubleJump( lockstepAction.param1 );
 			break;
 
 			case LockstepActionType.TELEPORTER:
