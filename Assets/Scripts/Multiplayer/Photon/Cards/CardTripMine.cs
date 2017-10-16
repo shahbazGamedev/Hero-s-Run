@@ -26,7 +26,7 @@ public class CardTripMine : Card {
 		object[] data = new object[3];
 
 		//We want the caster to be immune to the spell
-		data[0] = playerTransform.name;
+		data[0] = photonViewID;
 
 		//We want the trip mine to disappear after a while
 		data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
