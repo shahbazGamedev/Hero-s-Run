@@ -226,6 +226,11 @@ public class PlayerControl : Photon.PunBehaviour {
 	public bool hasOmniToolAnimation = true;
 	#endregion
 
+	#region Skill Bonuses
+	SkillBonusEventCounter doubleKillEventCounter;
+	#endregion
+
+
 	void Awake ()
 	{
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
@@ -254,6 +259,11 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		//Cache the string to avoid the runtime lookup
 		backInTheGameString = LocalizationManager.Instance.getText( "MINIMAP_BACK_IN_GAME" );
+
+		#region Skill Bonuses
+		doubleKillEventCounter = gameObject.AddComponent<SkillBonusEventCounter>();
+		doubleKillEventCounter.initialize( "SKILL_BONUS_DOUBLE_KILL", 50, 3, 25f );
+		#endregion
 
 		//The character is in idle while waiting to run. 
 		setCharacterState( PlayerCharacterState.Idle );
@@ -1706,7 +1716,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	/// <summary>
 	/// This is the official way to kill the player. Do not call playerDiedRPC directly.
-	/// This method verifies that isMine is true before sending the playerDiedRPC.
+	/// This method verifies that isMaster is true before sending the playerDiedRPC.
 	/// The playerDiedRPC call is sent to All.
 	/// </summary>
 	/// <param name="deathTypeValue">Death type value.</param>
@@ -1723,6 +1733,11 @@ public class PlayerControl : Photon.PunBehaviour {
 	[PunRPC]
 	void playerDiedRPC( DeathType deathTypeValue, string tileWherePlayerDied )
 	{
+
+		//Skill bonus tracking
+		//Next line for testing only
+		//if ( photonView.isMine ) doubleKillEventCounter.incrementCounter();
+
 		this.tileWherePlayerDied = tileWherePlayerDied;
 		
 		//When entering an angled tile, a coroutine makes the player turn to match the orientation of the tile.

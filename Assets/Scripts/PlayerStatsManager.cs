@@ -39,10 +39,6 @@ public class PlayerStatsManager {
 
 	int lives = 0;
 	const int INITIAL_NUMBER_LIVES = 6;
-
-	//For stats and achievements
-	static EventCounter novice_runner = new EventCounter( GameCenterManager.NoviceRunner, 1, CounterType.Total_any_level, 1000 );
-	static EventCounter coin_hoarder = new EventCounter( GameCenterManager.CoinHoarder, 1, CounterType.Total_any_level, 50000 );
 	
 	//Dictionary where the key is the PowerUpType and the value represents the amount of power-ups the player has either purchased or found in the episodes.
 	//This inventory is only relevant for consumable power-ups.
@@ -111,12 +107,6 @@ public class PlayerStatsManager {
 	public void addToDistanceTravelled( float addDistanceTravelled )
 	{
 		distanceTravelled = distanceTravelled + addDistanceTravelled;
-		//We have an achievement when the player runs 1000 meters for the first time.
-		if( distanceTravelled >= novice_runner.valueNeededToSucceed )
-		{
-			novice_runner.incrementCounter();
-		}
-
 	}
 	
 	public Avatar getAvatar()
@@ -258,10 +248,6 @@ public class PlayerStatsManager {
 		if( incrementLifetimeCoins )
 		{
 			lifetimeCoins = lifetimeCoins + coins;
-			if( lifetimeCoins >= coin_hoarder.valueNeededToSucceed )
-			{
-				coin_hoarder.incrementCounter();
-			}
 		}
 	}
 

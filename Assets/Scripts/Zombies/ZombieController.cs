@@ -21,9 +21,6 @@ public sealed class ZombieController : Creature, ICreature {
 	public AudioClip moanHigh;
 	public AudioClip win;
 
-	//For stats and achievements
-	static EventCounter zombie_bowling = new EventCounter( GameCenterManager.ZombieBowling, 3, 3000 );
-
 	// Use this for initialization
 	new void Awake () {
 		base.Awake();
@@ -88,7 +85,6 @@ public sealed class ZombieController : Creature, ICreature {
 	//The zombie falls over backwards, typically because the player slid into him.
 	public void fallToBack()
 	{
-		zombie_bowling.incrementCounter();
 		knockback();
 	}
 

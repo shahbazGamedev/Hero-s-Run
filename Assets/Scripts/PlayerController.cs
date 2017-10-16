@@ -213,11 +213,6 @@ public sealed class PlayerController : MonoBehaviour {
 	//Event management used to notify other classes when the resurrection begins (for example to hide zombies)
 	public delegate void ResurrectionBegin();
 	public static event ResurrectionBegin resurrectionBegin;
-
-	//For stats and achievements
-	static EventCounter boots_of_jumping 	= new EventCounter( GameCenterManager.BootsOfJumping, 1, CounterType.Total_any_level );
-	static EventCounter watch_your_step 	= new EventCounter( GameCenterManager.WatchYourStep, 1, CounterType.Total_any_level );
-	static EventCounter chicken_chaser 		= new EventCounter( GameCenterManager.ChickenChaser, 1, CounterType.Total_any_level );
 	
 	//Hash IDs for player animations. These are used to improve performance.
 	int RunTrigger = Animator.StringToHash("Run");
@@ -1210,7 +1205,6 @@ public sealed class PlayerController : MonoBehaviour {
 				{
 					moveDirection.y = doubleJumpSpeed;
 					setAnimationTrigger(Double_JumpTrigger);
-					boots_of_jumping.incrementCounter();
 				}
 				else
 				{
@@ -1921,9 +1915,6 @@ public sealed class PlayerController : MonoBehaviour {
 						//Display coin total picked up icon
 						HUDHandler.hudHandler.displayCoinPickup( 10 );
 
-						//Give the Chicken Chaser achievement
-						chicken_chaser.incrementCounter();
-
 						//The faster the player runs, the further the chicken will fly
 						float pushPower = newRunSpeed * 2.5f;
 
@@ -2019,7 +2010,6 @@ public sealed class PlayerController : MonoBehaviour {
 						{
 							//We landed on the zombie's head
 							land ();
-							watch_your_step.incrementCounter();
 						}
 					}
 				}
