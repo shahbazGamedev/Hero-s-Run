@@ -10,7 +10,8 @@ public enum VoiceOverType {
 	VO_Affected_by_Spell = 4,
 	VO_Taunt = 5,
 	VO_Win = 6,
-	VO_Zipline = 7
+	VO_Zipline = 7,
+	VO_Stumble = 8
 }
 
 public class VoiceOverManager : MonoBehaviour {

@@ -2053,6 +2053,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		{	
 			Debug.Log ("Player stumbled");
 			setCharacterState( PlayerCharacterState.Stumbling );
+			playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Stumble);
 			//The player stumbles but recovers
 			setAnimationTrigger(StumbleTrigger);
 		}
