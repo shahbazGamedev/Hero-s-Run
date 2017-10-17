@@ -106,7 +106,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 								//Note that the maximum multiplier is: PlayerRun.MAX_OVERALL_SPEED_MULTIPLIER which is currently set to 1.7.
 								//So the damage will vary between RAGING_BULL_BASE_DAMAGE and MAX_OVERALL_SPEED_MULTIPLIER * RAGING_BULL_BASE_DAMAGE
 								//Using current numbers, that is between 25 and 42.5.
-								otherPlayer.GetComponent<PlayerHealth>().deductHealth( (int) (RAGING_BULL_BASE_DAMAGE *  damageMultiplier) );
+								otherPlayer.GetComponent<PlayerHealth>().deductHealth( (int) (RAGING_BULL_BASE_DAMAGE * damageMultiplier), playerControl );
 								otherPlayer.stumble();
 								if( GetComponent<PhotonView>().isMine && GetComponent<PlayerAI>() == null )
 								{

@@ -49,7 +49,7 @@ public class CardLightning : Card {
 	
 			//Damage nearest target
 			int damageAmount = (int) cd.getCardPropertyValue( CardPropertyType.DAMAGE, level );
-			bestTarget.GetComponent<PlayerHealth>().deductHealth( damageAmount );
+			bestTarget.GetComponent<PlayerHealth>().deductHealth( damageAmount, playerTransform.GetComponent<PlayerControl>() );
 			MiniMap.Instance.displaySecondaryIcon( bestTarget.GetComponent<PhotonView>().viewID, (int)CardName.Lightning, 2.5f );
 
 		}

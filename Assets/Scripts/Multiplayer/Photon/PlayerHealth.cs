@@ -18,9 +18,17 @@ public class PlayerHealth : Photon.PunBehaviour {
 	}
 
 	#region Health
-	public void deductHealth ( int amountToDeduct )
+	public void deductHealth ( int amountToDeduct, PlayerControl playerWhoCausedDamage = null )
 	{
-		Debug.Log("deductHealth " + gameObject.name + " amountToDeduct " + amountToDeduct + " currentHealth " + currentHealth);
+		if( playerWhoCausedDamage )
+		{
+			Debug.Log("deductHealth " + gameObject.name + " amountToDeduct " + amountToDeduct + " currentHealth " + currentHealth + " playerWhoCausedDamage: " + playerWhoCausedDamage.name );
+		}
+		else
+		{
+			Debug.Log("deductHealth " + gameObject.name + " amountToDeduct " + amountToDeduct + " currentHealth " + currentHealth);
+		}
+
 		if( amountToDeduct <= 0 )
 		{
 			Debug.LogWarning("PlayerHealth: you cannot deduct from health a value less or equal to 0.");
@@ -56,6 +64,8 @@ public class PlayerHealth : Photon.PunBehaviour {
 			{
 				//Player died because his health is zero.
 				GetComponent<PlayerControl>().killPlayer( DeathType.NO_MORE_HEALTH );
+				//Give the kill to the player who caused the death blow
+				if( playerWhoCausedDamage != null ) playerWhoCausedDamage.incrementKillCounter();
 			}
 			if( PhotonNetwork.isMasterClient ) this.photonView.RPC("changeHealthRPC", PhotonTargets.All, newHealth );
 		}
