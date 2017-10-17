@@ -322,7 +322,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 				if( currentMultiplayer.rainAudio != null )
 				{
 					wsm.mainAmbienceAudioSource.clip = currentMultiplayer.rainAudio;
-					StartCoroutine( wsm.crossFadeToMainAmbience( 3f ) );
 				}
 				else
 				{
@@ -333,15 +332,14 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			{
 				//It's not raining this time.
 				LevelManager.Instance.rainType = RainType.No_Rain;
-				wsm.mainAmbienceAudioSource.clip = null;
 			}
 		}
 		else
 		{
 			//It doesn't rain in this level.
 			LevelManager.Instance.rainType = RainType.No_Rain;
-			wsm.mainAmbienceAudioSource.clip = null;
 		}
+		StartCoroutine( wsm.crossFadeToMainAmbience( 3f ) );
 
 		generateMultiplayerLevel( currentMultiplayer.numberOfTileGroups, currentMultiplayer.tileGroupList, currentMultiplayer.endTileGroupList  );
 
