@@ -270,7 +270,7 @@ public class CardSpawnedObject : MonoBehaviour {
 		}
 	}
 
-	protected void destroyAllTargetsWithinBlastRadius( float blastRadius, int mask )
+	protected void destroyAllTargetsWithinBlastRadius( float blastRadius, int mask, Transform caster = null )
 	{
 		//To add a dramatic effect, make all of the objects that have the Movable layer and a rigidbody move because of the shockwave.
 		float halfRadius = blastRadius * 0.5f;
@@ -289,12 +289,12 @@ public class CardSpawnedObject : MonoBehaviour {
 		{
 			if( isTargetValid( hitColliders[i].transform ) )
 			{
-				destroyValidTarget( hitColliders[i].transform, blastRadius );
+				destroyValidTarget( hitColliders[i].transform, blastRadius, caster );
 			}
 		}
 	}
 
-	void destroyValidTarget( Transform potentialTarget, float blastRadius )
+	void destroyValidTarget( Transform potentialTarget, float blastRadius, Transform caster = null )
 	{
 		bool valid = false;
    		switch (potentialTarget.gameObject.layer)
@@ -308,7 +308,7 @@ public class CardSpawnedObject : MonoBehaviour {
 					if( potentialTarget.name != casterName )
 					{
 						valid = true;
-						assessPlayerDamage( potentialTarget, blastRadius );
+						assessPlayerDamage( potentialTarget, blastRadius, caster );
 					}
 				}
 				break;
@@ -339,7 +339,7 @@ public class CardSpawnedObject : MonoBehaviour {
 
 	//If the player-to-explosion distance is within MAXIMUM_IMPACT_DISTANCE_PERCENTAGE of the blast radius, the player gets maximum damage.
 	//If the player-to-explosion distance is bigger than MAXIMUM_IMPACT_DISTANCE_PERCENTAGE of the blast radius, the amount of damage decreases linearly based on the distance.
-	void assessPlayerDamage( Transform potentialTarget, float blastRadius )
+	void assessPlayerDamage( Transform potentialTarget, float blastRadius, Transform caster = null )
 	{
 		float distance = Vector3.Distance( potentialTarget.position, transform.position );
 
@@ -356,6 +356,8 @@ public class CardSpawnedObject : MonoBehaviour {
 				//Explosion is behind player. He falls forward.
 				potentialTarget.GetComponent<PlayerControl>().killPlayer( DeathType.FallForward );
 			}
+			//Attribute skill bonus
+			if( caster != null ) caster.GetComponent<PlayerControl>().incrementKillCounter();
 		}
 		else
 		{
@@ -389,6 +391,8 @@ public class CardSpawnedObject : MonoBehaviour {
 					//Explosion is behind player. He falls forward.
 					potentialTarget.GetComponent<PlayerControl>().killPlayer( DeathType.FallForward );
 				}
+				//Attribute skill bonus
+				if( caster != null ) caster.GetComponent<PlayerControl>().incrementKillCounter();
 			}
 		}
 	}

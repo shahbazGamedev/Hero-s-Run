@@ -53,29 +53,20 @@ public class SentryController : CardSpawnedObject {
 	void findOwner(object[] data) 
 	{
 		int viewIdOfOwner = (int) data[0];
-		GameObject[] playersArray = GameObject.FindGameObjectsWithTag("Player");
-		for( int i = 0; i < playersArray.Length; i ++ )
+		casterTransform = getCaster( viewIdOfOwner );
+		if( casterTransform != null )
 		{
-			if( playersArray[i].GetPhotonView().viewID == viewIdOfOwner )
-			{
-				float spellDuration = (float) data[1];
-				aimRange = (float) data[2];
-				accuracy = (float) data[3];
-				casterGameObject = playersArray[i];
-				casterName = casterGameObject.name;
-				casterTransform = casterGameObject.transform;
-				playSoundEffect( Emotion.Happy );
-				StartCoroutine( changeMaterialOnCreate( 2f ) );
-				casterGameObject.GetComponent<PlayerSpell>().registerSentry( this );
-				//The Sentry has a limited lifespan which depends on the level of the Card.
-				StartCoroutine( destroySpawnedObject( spellDuration, DELAY_BEFORE_DESTROY_EFFECTS ) );
-				//Display the Sentry secondary icon on the minimap
-				MiniMap.Instance.displaySecondaryIcon( casterTransform.GetComponent<PhotonView>().viewID, (int) CardName.Sentry, spellDuration );
-				break;
-			}
-		}
-		if( casterGameObject != null )
-		{
+			setCasterName( casterTransform.name );
+			float spellDuration = (float) data[1];
+			aimRange = (float) data[2];
+			accuracy = (float) data[3];
+			playSoundEffect( Emotion.Happy );
+			StartCoroutine( changeMaterialOnCreate( 2f ) );
+			casterTransform.GetComponent<PlayerSpell>().registerSentry( this );
+			//The Sentry has a limited lifespan which depends on the level of the Card.
+			StartCoroutine( destroySpawnedObject( spellDuration, DELAY_BEFORE_DESTROY_EFFECTS ) );
+			//Display the Sentry secondary icon on the minimap
+			MiniMap.Instance.displaySecondaryIcon( casterTransform.GetComponent<PhotonView>().viewID, (int) CardName.Sentry, spellDuration );
 			Debug.Log("SentryController-The owner of this sentry is: " + casterName );
 		}
 		else
@@ -199,11 +190,13 @@ public class SentryController : CardSpawnedObject {
 			direction.z += Random.Range( -accuracy, accuracy );
 	
 			//Create missile
-			object[] data = new object[3];
-			data[0] = direction;
-			data[1] = GetComponent<PhotonView>().viewID;
+			object[] data = new object[4];
+			data[0] = casterTransform.GetComponent<PhotonView>().viewID;
+
+			data[1] = direction;
+			data[2] = GetComponent<PhotonView>().viewID;
 			//Self-destruct time for missile
-			data[2] = 10f;
+			data[3] = 10f;
 			PhotonNetwork.InstantiateSceneObject( "Sentry Missile", transform.position + transform.forward.normalized, Quaternion.Euler( direction ), 0, data );
 		}
 	}

@@ -72,6 +72,7 @@ public class PlayerDeck {
 			addCard( CardName.Armor, 2, 1, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS );
 			addCard( CardName.Supercharger, 2, 1, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS );
 			addCard( CardName.Trip_Mine, 2, 1, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS );
+			addCard( CardName.Homing_Missile, 2, 1, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS );
 		}
 	}
 

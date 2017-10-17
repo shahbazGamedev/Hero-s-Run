@@ -21,7 +21,8 @@ public class HomingMissile : CardSpawnedObject {
 	{
 		object[] data = gameObject.GetPhotonView ().instantiationData;
 
-		casterName = (string) data[0];
+		casterTransform = getCaster( (int) data[0] );
+		setCasterName( casterTransform.name );
 
 		//We want the homing missile to self-destruct after a while
 		GameObject.Destroy( gameObject, (float) data[1] );
@@ -31,7 +32,7 @@ public class HomingMissile : CardSpawnedObject {
 
 	IEnumerator launchMissile()
 	{
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(0.25f);
 
 		homingMissile = GetComponent<Rigidbody>();
 		target = getNearestTargetWithinRange( Mathf.Infinity, MaskHandler.getMaskOnlyPlayer() );
@@ -88,7 +89,7 @@ public class HomingMissile : CardSpawnedObject {
 			GameObject.Destroy( impactParticleSystem, 5f );
 		}
 
-		destroyAllTargetsWithinBlastRadius( 15f, MaskHandler.getMaskWithPlayerWithLevelDestructible() );
+		destroyAllTargetsWithinBlastRadius( 15f, MaskHandler.getMaskWithPlayerWithLevelDestructible(), casterTransform );
 
 		GameObject.Destroy( gameObject );
 		

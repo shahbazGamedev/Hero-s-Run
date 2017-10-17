@@ -262,7 +262,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		#region Skill Bonuses
 		doubleKillEventCounter = gameObject.AddComponent<SkillBonusEventCounter>();
-		doubleKillEventCounter.initialize( "SKILL_BONUS_DOUBLE_KILL", 50, 3, 25f );
+		doubleKillEventCounter.initialize( "SKILL_BONUS_DOUBLE_KILL", 50, 2, 5f );
 		#endregion
 
 		//The character is in idle while waiting to run. 
@@ -1714,29 +1714,15 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 	}
 
-	/// <summary>
-	/// This is the official way to kill the player. Do not call playerDiedRPC directly.
-	/// This method verifies that isMaster is true before sending the playerDiedRPC.
-	/// The playerDiedRPC call is sent to All.
-	/// </summary>
-	/// <param name="deathTypeValue">Death type value.</param>
-	public void killPlayerIsMaster( DeathType deathTypeValue )
+	//Skill bonus tracking
+	public void incrementKillCounter()
 	{
-		//Only proceed if not dying already
-		if ( PhotonNetwork.isMasterClient && playerCharacterState != PlayerCharacterState.Dying )
-		{
-			Debug.Log("PlayerControl-killPlayerMaster : " + deathTypeValue + " name " + gameObject.name );
-			photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, deathTypeValue, currentTile.name );
-		}
+		if ( photonView.isMine ) doubleKillEventCounter.incrementCounter();
 	}
 
 	[PunRPC]
 	void playerDiedRPC( DeathType deathTypeValue, string tileWherePlayerDied )
 	{
-
-		//Skill bonus tracking
-		//Next line for testing only
-		//if ( photonView.isMine ) doubleKillEventCounter.incrementCounter();
 
 		this.tileWherePlayerDied = tileWherePlayerDied;
 		

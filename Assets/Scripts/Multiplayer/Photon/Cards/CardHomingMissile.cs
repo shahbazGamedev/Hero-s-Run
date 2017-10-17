@@ -25,7 +25,7 @@ public class CardHomingMissile : Card {
 
 		//Create homing missile
 		object[] data = new object[2];
-		data[0] = playerTransform.name; 		//Caster Name
+		data[0] = photonViewID;
 		//We want the homing missile to self-destruct after a while
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
 		data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );

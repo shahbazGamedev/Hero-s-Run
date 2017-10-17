@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class MultiplayerProjectile : MonoBehaviour {
+public class MultiplayerProjectile : CardSpawnedObject {
 
 	[SerializeField] Light fireLight;
 	[SerializeField] ParticleSystem fireParticleSystem;
@@ -15,8 +15,13 @@ public class MultiplayerProjectile : MonoBehaviour {
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
 		object[] data = gameObject.GetPhotonView ().instantiationData;
-		launchProjectile((Vector3) data[0], (float) data[2] );
-		int sentryPhotonViewID = (int) data[1]; 
+
+		//The caster of this projectile
+		casterTransform = getCaster( (int) data[0] );
+
+		launchProjectile((Vector3) data[1], (float) data[3] );
+
+		int sentryPhotonViewID = (int) data[2];
 		if( sentryPhotonViewID == -1 ) return;
 		//Find out which Sentry fired this projectile.
 		//If the projectile hits a target, we can tell the Sentry to play a victory sound and animation.
@@ -84,6 +89,8 @@ public class MultiplayerProjectile : MonoBehaviour {
 						//Explosion is behind player. He falls forward.
 						potentialTarget.GetComponent<PlayerControl>().killPlayer( DeathType.FallForward );
 					}
+					//Attribute skill bonus
+					casterTransform.GetComponent<PlayerControl>().incrementKillCounter();
 				}
 				break;
 	                
