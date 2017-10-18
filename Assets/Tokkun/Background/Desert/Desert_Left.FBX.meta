@@ -8,15 +8,19 @@ ModelImporter:
     100000: //RootNode
     100002: Desert_TurnLeft_L
     100004: Desert_TurnLeft_R
+    100006: Desert_TurnLeft_Road
     400000: //RootNode
     400002: Desert_TurnLeft_L
     400004: Desert_TurnLeft_R
+    400006: Desert_TurnLeft_Road
     2300000: //RootNode
     2300002: Desert_TurnLeft_L
     2300004: Desert_TurnLeft_R
+    2300006: Desert_TurnLeft_Road
     3300000: //RootNode
     3300002: Desert_TurnLeft_L
     3300004: Desert_TurnLeft_R
+    3300006: Desert_TurnLeft_Road
     4300000: Desert_TurnLeft_Road
     4300002: Desert_TurnLeft_R
     4300004: Desert_TurnLeft_L
