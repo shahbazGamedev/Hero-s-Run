@@ -274,6 +274,17 @@ public class PlayerCamera : Photon.PunBehaviour {
 		shake_intensity = 0.12f;
 		shake_decay = 0.006f;
 	}
+
+	//This method gets called when the player crosses the finish line.
+	//It repositions the main camera.
+	public void raceEndCamera()
+	{
+		cameraState = CameraState.Cutscene;
+		mainCamera.GetComponent<Camera>().fieldOfView = 60f;
+		Vector3 cameraPosition = transform.TransformPoint( 0, 0, 12f );
+		cameraPosition = new Vector3( 0, 3.25f, cameraPosition.z );
+		mainCamera.SetPositionAndRotation( cameraPosition, Quaternion.Euler( 2, 180f, 0 ) );
+	}
 	
 	public void playCutscene( CutsceneType type )
 	{
