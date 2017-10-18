@@ -282,7 +282,7 @@ public class PlayerCamera : Photon.PunBehaviour {
 		cameraState = CameraState.Cutscene;
 		mainCamera.GetComponent<Camera>().fieldOfView = 60f;
 		Vector3 cameraPosition = transform.TransformPoint( 0, 0, 12f );
-		cameraPosition = new Vector3( 0, 3.25f, cameraPosition.z );
+		cameraPosition = new Vector3( cameraPosition.x, transform.position.y + 3.25f, cameraPosition.z );
 		mainCamera.SetPositionAndRotation( cameraPosition, Quaternion.Euler( 2, 180f, 0 ) );
 	}
 	
