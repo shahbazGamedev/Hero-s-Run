@@ -2135,7 +2135,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		else if( other.CompareTag( "Angled Tile Entrance" ) )
 		{
-			angledTurnCoroutine = StartCoroutine( angledTurn( -25.692f, 0.5f ) );
+			angledTurnCoroutine = StartCoroutine( angledTurn( other.transform.root.GetComponent<SegmentInfo>().turnAngle, 0.4f ) );
 		}
 		//For the Great Fall trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
 		else if( other.CompareTag( "Great Fall" ) )
@@ -2311,7 +2311,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			}
 			else if( other.CompareTag( "Angled Tile Exit" ) )
 			{
-				angledTurnCoroutine = StartCoroutine( angledTurn( 0, 0.5f ) );
+				angledTurnCoroutine = StartCoroutine( angledTurn( 0, 0.4f ) );
 			}
 		}
 	}
