@@ -40,6 +40,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	Vector3 previousTilePos = new Vector3( 0,0,0 );
 	Quaternion previousTileRot = Quaternion.identity;
 	TileSubType previousTileType = TileSubType.None;
+	float previousTileHorizontalShift = 0;
 
 	//This number is used to make sure that the subsequent tiles are at the proper height.
 	float  tileEndHeight = 0;
@@ -500,15 +501,16 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			Debug.LogError("addTile: could not find prefab for the tile type: " + type + " in the current theme " + currentTheme + " folder." );
 		}
 
+		go = (GameObject)Instantiate(prefab);
+		go.name = type.ToString() + " " + tileCreationIndex.ToString();
+		SegmentInfo si = getSegmentInfo( go );
 		tileRot = getTileRotation();
 		tilePos = getTilePosition();
-		go = (GameObject)Instantiate(prefab, tilePos, tileRot );
-		go.name = type.ToString() + " " + tileCreationIndex.ToString();
-
-		SegmentInfo si = getSegmentInfo( go );
+		go.transform.SetPositionAndRotation( tilePos, tileRot );
 		tileDepthMult= si.tileDepth;
 		previousTileType = si.tileSubType; //for constructing the level, we use the simpler types like straight, left and right
 		tileEndHeight = si.tileEndHeight;
+		previousTileHorizontalShift = si.tileHorizontalShift;
 		previousTilePos = tilePos;
 		previousTileRot = tileRot;
 		if( !GameManager.Instance.isMultiplayer() ) powerUpManager.considerAddingPowerUp( go, tileCreationIndex );
@@ -534,15 +536,16 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			case TileSubType.Angled:
 			if( previousTileRotY == 0 )
 			{
-				tilePos.Set ( previousTilePos.x -20.5f, tileHeight, previousTilePos.z + tileDepth );
+				tilePos.Set ( previousTilePos.x + previousTileHorizontalShift, tileHeight, previousTilePos.z + tileDepth );
+				print( previousTileType + " HS " + previousTileHorizontalShift + " tilePos " + tilePos );
 			}
 			else if( previousTileRotY == 270f || previousTileRotY == -90f )
 			{
-				tilePos.Set ( previousTilePos.x - tileDepth, tileHeight, previousTilePos.z );				
+				tilePos.Set ( previousTilePos.x - tileDepth, tileHeight, previousTilePos.z + previousTileHorizontalShift );				
 			}
 			else
 			{
-				tilePos.Set ( previousTilePos.x + tileDepth, tileHeight, previousTilePos.z  );				
+				tilePos.Set ( previousTilePos.x + tileDepth, tileHeight, previousTilePos.z - previousTileHorizontalShift  );				
 			}
 			return tilePos;
 
