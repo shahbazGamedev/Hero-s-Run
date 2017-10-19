@@ -19,9 +19,10 @@ public class ResultsScreenHandler : MonoBehaviour {
 
 	void adjustSizeOfResultsScreen( int playerCount )
 	{
+		float titleHeight = resultPrefab.GetComponent<RectTransform>().sizeDelta.y; //It has the same height as a result entry
 		float singleEntryHeight = resultPrefab.GetComponent<RectTransform>().sizeDelta.y;
 		float spacing = GetComponent<VerticalLayoutGroup>().spacing;
-		float desiredHeight = playerCount * singleEntryHeight + ( playerCount - 1 ) * spacing;
+		float desiredHeight = titleHeight + playerCount * singleEntryHeight + ( playerCount - 1 ) * spacing;
 		resultsHolder.sizeDelta = new Vector2( resultsHolder.sizeDelta.x, desiredHeight );
 		print("ResultsScreenHandler-adjustSizeOfResultsScreen " + desiredHeight + " playerCount " + playerCount );
 	}
