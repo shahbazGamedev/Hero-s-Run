@@ -51,6 +51,8 @@ public class HUDMultiplayer : MonoBehaviour {
 	[SerializeField] Image damageTakenEffect;
 	[Header("Stasis Tap Instructions")]
 	[SerializeField] GameObject stasisTapInstructions;
+	[Header("Results Screen")]
+	[SerializeField] GameObject resultsScreen;
 
 	#region Other variables
 	GenerateLevel generateLevel;
@@ -83,6 +85,7 @@ public class HUDMultiplayer : MonoBehaviour {
 
 		userMessageText.gameObject.SetActive( false );
 		canvasGroupForFading.GetComponent<CanvasGroup>().alpha = 0;
+		resultsScreen.GetComponent<CanvasGroup>().alpha = 0;
 	}
 
 	public void registerLocalPlayer ( Transform localPlayer )
