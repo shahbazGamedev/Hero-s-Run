@@ -382,6 +382,8 @@ public class MPNetworkLobbyManager : PunBehaviour
 		matchmakingManager.setConnectionProgress( "Traveling to " + sectorName + " ..." );
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
 		matchmakingManager.setRemotePlayerData( 1, botHero.userName, botHero.level, botHero.playerIcon );
+		PlayerMatchData pmd = new PlayerMatchData( botHero.userName, botHero.playerIcon, botHero.level, 0 );
+		LevelManager.Instance.playerMatchDataList.Add( pmd );
 		LoadArena();
 	}
 
@@ -392,6 +394,8 @@ public class MPNetworkLobbyManager : PunBehaviour
 		matchmakingManager.setConnectionProgress( "Traveling to " + sectorName + " ..." );
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
 		matchmakingManager.setRemotePlayerData( 1, botHero.userName, botHero.level, botHero.playerIcon );
+		PlayerMatchData pmd = new PlayerMatchData( botHero.userName, botHero.playerIcon, botHero.level, 0 );
+		LevelManager.Instance.playerMatchDataList.Add( pmd );
 
 		Invoke("displayBotsInfoPart2", Random.Range(0.4f, 0.9f ) );
 	}
@@ -400,6 +404,8 @@ public class MPNetworkLobbyManager : PunBehaviour
 	{
 		HeroManager.BotHeroCharacter botHero2 = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex2 );
 		matchmakingManager.setRemotePlayerData( 2, botHero2.userName, botHero2.level, botHero2.playerIcon );
+		PlayerMatchData pmd = new PlayerMatchData( botHero2.userName, botHero2.playerIcon, botHero2.level, 0 );
+		LevelManager.Instance.playerMatchDataList.Add( pmd );
 
 		LoadArena();
 	}
