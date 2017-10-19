@@ -444,4 +444,12 @@ public class HUDMultiplayer : MonoBehaviour {
 	{
 		return minimapPhotonView;
 	}
+
+	public void displayResultsScreen()
+	{
+		resultsScreen.GetComponent<ResultsScreenHandler>().showResults();
+		resultsScreen.gameObject.SetActive( true );
+
+	}
+
 }

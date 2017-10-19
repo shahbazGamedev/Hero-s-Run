@@ -288,6 +288,8 @@ public class PlayerRace : Photon.PunBehaviour
 				playerCrossedFinishLine = true;
 				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllViaServer, raceDuration, racePosition );
 
+				HUDMultiplayer.hudMultiplayer.displayResultsScreen();
+
 				if( PhotonNetwork.isMasterClient )
 				{
 					if( !officialRacePositionList.Contains(this) ) officialRacePositionList.Add( this );
