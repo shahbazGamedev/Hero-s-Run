@@ -34,7 +34,7 @@ public class PlayerRace : Photon.PunBehaviour
 	string tookTheLeadString;
 	
 	//Race duration which will get displayed in the end of race screen
-	float raceDuration = 0;
+	public float raceDuration = 0;
 
 	//Control variables
 	bool raceStarted = false;
@@ -421,6 +421,7 @@ public class PlayerRace : Photon.PunBehaviour
 				HUDMultiplayer.hudMultiplayer.updateRacePosition(officialRacePosition + 1);
 				GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
 				GenerateLevel generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
+				this.raceDuration = raceDuration;
 				PlayerRaceManager.Instance.playerCompletedRace( (officialRacePosition + 1), raceDuration, generateLevel.levelLengthInMeters, playerControl.getNumberOfTimesDiedDuringRace() );
 				//if the player did not die a single time during the race and there is more than one player active, grant him a skill bonus.
 				if( photonView.isMine && players.Count > 1 && playerControl.getNumberOfTimesDiedDuringRace() == 0 ) SkillBonusHandler.Instance.addSkillBonus( 50, "SKILL_BONUS_DID_NOT_DIE" );

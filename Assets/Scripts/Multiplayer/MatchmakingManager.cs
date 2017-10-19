@@ -58,6 +58,10 @@ public class MatchmakingManager : MonoBehaviour {
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
+
+		//Reset the player match data
+		LevelManager.Instance.playerMatchDataList.Clear();
+
 		originalPlayButtonTextColor = playButtonText.color;
 		//Configure the lobby according to the number of players in the race
 		configureLobby();
@@ -70,6 +74,10 @@ public class MatchmakingManager : MonoBehaviour {
 
 		//The left portrait is always the local player.
 		configureLocalPlayerData();
+
+		//Player Match Data is used by results screen at the end of the race.
+		PlayerMatchData pmd = new PlayerMatchData( GameManager.Instance.playerProfile.getUserName(), GameManager.Instance.playerProfile.getPlayerIconId(), GameManager.Instance.playerProfile.getLevel(), GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK) );
+		LevelManager.Instance.playerMatchDataList.Add( pmd );
 
 		//Localize
 		versusText.text = LocalizationManager.Instance.getText( "CIRCUIT_VERSUS" );

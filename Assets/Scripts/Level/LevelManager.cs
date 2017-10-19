@@ -44,6 +44,9 @@ public class LevelManager {
 	public ChatMessageHandler.MatchData matchData;
 	public bool isRecordingSelected = false; //True if the race should be recorded using ReplayKit
 
+	//Player Match Data
+	public List<PlayerMatchData> playerMatchDataList = new List<PlayerMatchData>();
+
 	public static LevelManager Instance
 	{
         get
@@ -57,6 +60,23 @@ public class LevelManager {
             return levelManager;
         }
     } 
+
+	#region Results screen
+	public PlayerMatchData getPlayerMatchDataByName( string playerName )
+	{
+		PlayerMatchData pmd = playerMatchDataList.Find(data => data.playerName == playerName);
+		if( pmd != null )
+		{
+			return pmd;
+		}
+		else
+		{
+			Debug.LogError("LevelManager-getPlayerMatchDataByName: Could not find match data for player named " + playerName );
+			return null;
+		}
+	}
+	#endregion
+
 
 	#region General
 	//Called by TitleScreenHandler on Awake()
