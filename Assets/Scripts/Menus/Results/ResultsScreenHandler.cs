@@ -27,6 +27,7 @@ public class ResultsScreenHandler : MonoBehaviour {
 		resultsHolder.sizeDelta = new Vector2( resultsHolder.sizeDelta.x, desiredHeight );
 	}
 
+	//Note that win streak is not used for now. An animated flame will be used in the future to convey the win streak, this is why I am keeping the code.
 	void createResultEntry( PlayerRace playerRace )
 	{
 		int racePosition = playerRace.racePosition;
@@ -47,7 +48,7 @@ public class ResultsScreenHandler : MonoBehaviour {
 		string raceDurationString = dt.ToString("mm:ss");
 		GameObject go = (GameObject)Instantiate(resultPrefab);
 		go.transform.SetParent(resultsHolder,false);
-		go.GetComponent<ResultEntry>().configureEntry( racePosition + 1, winStreak, pmd.level, pmd.playerName, playerIconSprite, raceDurationString );
+		go.GetComponent<ResultEntry>().configureEntry( racePosition + 1, pmd.level, pmd.playerName, playerIconSprite, raceDurationString );
 	}
 
 }
