@@ -360,6 +360,9 @@ public class MPNetworkLobbyManager : PunBehaviour
 		PlayerRaceManager.Instance.setTrophiesOwnedByOpponent( numberRemotePlayerConnected, (int)player.CustomProperties["Trophies"] );
 		PlayerFriends.FriendData playerData = new PlayerFriends.FriendData( player.NickName, (int)player.CustomProperties["Icon"], (int)player.CustomProperties["Level"], (int)player.CustomProperties["WinStreak"] );		
 		GameManager.Instance.recentPlayers.addRecentPlayer( playerData );
+		PlayerMatchData pmd = new PlayerMatchData( player.NickName, (int)player.CustomProperties["Icon"], (int)player.CustomProperties["Level"], (int)player.CustomProperties["WinStreak"] );
+		LevelManager.Instance.playerMatchDataList.Add( pmd );
+
 	}
 
 	void setUpBot()
