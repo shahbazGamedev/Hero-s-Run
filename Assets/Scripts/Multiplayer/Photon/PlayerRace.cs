@@ -288,8 +288,6 @@ public class PlayerRace : Photon.PunBehaviour
 				playerCrossedFinishLine = true;
 				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllViaServer, raceDuration, racePosition );
 
-				HUDMultiplayer.hudMultiplayer.displayResultsScreen();
-
 				if( PhotonNetwork.isMasterClient )
 				{
 					if( !officialRacePositionList.Contains(this) ) officialRacePositionList.Add( this );
@@ -302,6 +300,7 @@ public class PlayerRace : Photon.PunBehaviour
 					}
 					else if( officialRacePositionList.Count == players.Count )
 					{
+						HUDMultiplayer.hudMultiplayer.displayResultsScreen();
 						//Every player has crossed the finish line. We can stop the countdown and return everyone to the lobby.
 						this.photonView.RPC("CancelEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
 					}
@@ -399,6 +398,7 @@ public class PlayerRace : Photon.PunBehaviour
 		playerSpell.cancelAllSpells();
 
 		racePosition = officialRacePosition;
+		this.raceDuration = raceDuration;
 
 		//We want to slow down any player that reaches the finish line
 		StartCoroutine( playerRun.slowDownPlayerAfterFinishLine( officialRacePosition, 5f - (officialRacePosition * 1.5f) ) );
@@ -421,7 +421,6 @@ public class PlayerRace : Photon.PunBehaviour
 				HUDMultiplayer.hudMultiplayer.updateRacePosition(officialRacePosition + 1);
 				GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
 				GenerateLevel generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
-				this.raceDuration = raceDuration;
 				PlayerRaceManager.Instance.playerCompletedRace( (officialRacePosition + 1), raceDuration, generateLevel.levelLengthInMeters, playerControl.getNumberOfTimesDiedDuringRace() );
 				//if the player did not die a single time during the race and there is more than one player active, grant him a skill bonus.
 				if( photonView.isMine && players.Count > 1 && playerControl.getNumberOfTimesDiedDuringRace() == 0 ) SkillBonusHandler.Instance.addSkillBonus( 50, "SKILL_BONUS_DID_NOT_DIE" );
