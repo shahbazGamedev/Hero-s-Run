@@ -280,30 +280,27 @@ public class PlayerRace : Photon.PunBehaviour
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( this.photonView.isMine )
+		if( other.CompareTag("Finish Line") )
 		{
-			if( other.CompareTag("Finish Line") )
-			{
-				//Player has reached the finish line
-				playerCrossedFinishLine = true;
-				this.photonView.RPC("OnRaceCompleted", PhotonTargets.AllViaServer, raceDuration, racePosition );
+			//Player has reached the finish line
+			playerCrossedFinishLine = true;
 
-				if( PhotonNetwork.isMasterClient )
+			if( PhotonNetwork.isMasterClient )
+			{
+				photonView.RPC("OnRaceCompleted", PhotonTargets.AllViaServer, raceDuration, racePosition );
+
+				if( !officialRacePositionList.Contains(this) ) officialRacePositionList.Add( this );
+				int officialRacePosition = officialRacePositionList.FindIndex(playerRace => playerRace == this);
+				Debug.Log ("Finish Line crossed by " + gameObject.name + " in race position " + officialRacePosition + " players " + players.Count);
+				//if this is the first player to cross the finish line, start the End of Race countdown, but only if there is more than 1 player in the race.
+				if( officialRacePositionList.Count == 1 && players.Count > 1 )
 				{
-					if( !officialRacePositionList.Contains(this) ) officialRacePositionList.Add( this );
-					int officialRacePosition = officialRacePositionList.FindIndex(playerRace => playerRace == this);
-					Debug.Log ("Finish Line crossed by " + gameObject.name + " in race position " + officialRacePosition + " players " + players.Count);
-					//if this is the first player to cross the finish line, start the End of Race countdown.
-					if( officialRacePositionList.Count == 1 )
-					{
-						this.photonView.RPC("StartEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
-					}
-					else if( officialRacePositionList.Count == players.Count )
-					{
-						HUDMultiplayer.hudMultiplayer.displayResultsScreen();
-						//Every player has crossed the finish line. We can stop the countdown and return everyone to the lobby.
-						this.photonView.RPC("CancelEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
-					}
+					photonView.RPC("StartEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
+				}
+				else if( officialRacePositionList.Count == players.Count )
+				{
+					//Every player has crossed the finish line. We can stop the countdown and return everyone to the lobby.
+					photonView.RPC("CancelEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
 				}
 			}
 		}
@@ -324,6 +321,7 @@ public class PlayerRace : Photon.PunBehaviour
 	void CancelEndOfRaceCountdownRPC()
 	{
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.leaveRoomShortly() );
+		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayResultsScreen() );
 	}
 
 	[PunRPC]

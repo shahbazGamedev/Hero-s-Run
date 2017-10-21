@@ -22,8 +22,8 @@ public class HUDMultiplayer : MonoBehaviour {
 	public static HUDMultiplayer hudMultiplayer;
 	bool raceHasStarted = false;
 	const float DELAY_BEFORE_COUNTDOWN_STARTS = 3f;
-	const float DELAY_WHEN_NOT_SHOWING_EMOTES = 8f;
-	const float DELAY_WHEN_SHOWING_EMOTES = 11f;
+	const float DELAY_WHEN_NOT_SHOWING_EMOTES = 9f;
+	const float DELAY_WHEN_SHOWING_EMOTES = 12f;
 	PlayerRace localPlayerRace;
 	PlayerControl localPlayerControl;
 	[SerializeField] GameObject canvasGroupForFading;
@@ -445,11 +445,13 @@ public class HUDMultiplayer : MonoBehaviour {
 		return minimapPhotonView;
 	}
 
-	public void displayResultsScreen()
+	public IEnumerator displayResultsScreen()
 	{
+		//The Victory message remains on screen for 2.25 seconds.
+		//So let's wait for 2.75 seconds before displaying the results.
+		yield return new WaitForSeconds( 2.75f );
 		resultsScreen.GetComponent<ResultsScreenHandler>().showResults();
 		resultsScreen.gameObject.SetActive( true );
-
 	}
 
 }
