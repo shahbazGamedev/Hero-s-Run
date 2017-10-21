@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Linq;
 
 public class ResultsScreenHandler : MonoBehaviour {
 
@@ -11,6 +12,10 @@ public class ResultsScreenHandler : MonoBehaviour {
 	public void showResults()
 	{
 		adjustSizeOfResultsScreen( PlayerRace.players.Count );
+
+		//Order by the race position of the players i.e. 1st place, 2nd place, and so forth
+		PlayerRace.players = PlayerRace.players.OrderBy( p => p.racePosition ).ToList();
+
 		for(int i=0; i<PlayerRace.players.Count;i++)
 		{
 			//For each player, create a result entry
