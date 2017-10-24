@@ -1585,6 +1585,11 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void attachToZipline()
 	{
+		//The player might die in the short time between jumping to catch the zipline and the zipline actually starting.
+		//Remember, the zipline is activated by a lockstep.
+		//If the player is dead, simply ignore the request to attach to the zipline.
+		if( deathType != DeathType.Alive ) return;
+
 		SegmentInfo si = currentTile.GetComponent<SegmentInfo>();
 		if( si != null )
 		{
@@ -2149,6 +2154,10 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		else if( other.CompareTag( "Entrance" ) )
 		{
+			//When the player is respawning, he might be transported through an Entrance trigger.
+			//If the player is not alive, ignore.
+			if( deathType != DeathType.Alive ) return;
+
 			if( wasEntranceCrossed ) return;
 			SegmentInfo si = other.transform.parent.GetComponent<SegmentInfo>();
 			if( si != null )
