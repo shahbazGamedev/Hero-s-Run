@@ -100,13 +100,11 @@ public class LockstepManager : MonoBehaviour {
 			break;
 
 			case LockstepActionType.TELEPORTER:
+				//Simply move the player to the teleporter receiver.
+				//See the Teleporter class for what happens when the receiver is triggered.
 				lockstepAction.actor.transform.position = lockstepAction.param3;
-				lockstepAction.actor.transform.eulerAngles = new Vector3( lockstepAction.actor.transform.eulerAngles.x, lockstepAction.param1, lockstepAction.actor.transform.eulerAngles.z );
-				lockstepAction.actor.GetComponent<PlayerControl>().enablePlayerMovement( true );
-				//We may have switched lanes because of the position change. Make sure the lane values are accurate.
-				lockstepAction.actor.GetComponent<PlayerControl>().recalculateCurrentLane();
-				GenerateLevel generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
-				generateLevel.activateTilesAfterTeleport();
+				Quaternion postTeleportRotation = Quaternion.Euler( lockstepAction.actor.transform.eulerAngles.x, lockstepAction.param1, lockstepAction.actor.transform.eulerAngles.z );
+				lockstepAction.actor.transform.SetPositionAndRotation( lockstepAction.param3, postTeleportRotation );
 			break;
 
 			case LockstepActionType.CARD:

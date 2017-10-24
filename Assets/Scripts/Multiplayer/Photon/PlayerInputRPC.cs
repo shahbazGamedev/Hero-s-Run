@@ -72,19 +72,10 @@ public class PlayerInputRPC : PunBehaviour {
 	}
 
 	[PunRPC]
-	//Sent by the Master client only.
-	void teleportRPC( Vector3 syncPosition, float syncRotationY, Vector3 destinationPosition, float destinationRotationY, int numberOfTilesSkippedBecauseOfTeleportation )
+	void teleportRPC( Vector3 destinationPosition, float destinationRotationY )
 	{
-		//Force all clients to be on the teleporter
-		transform.position = syncPosition;
-		transform.eulerAngles = new Vector3( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z );
-		//We may have switched lanes because of the position change. Make sure the lane values are accurate.
-		playerControl.recalculateCurrentLane();
-		//Important: assumes all tiles in between the TX and RX teleporters have a depth of one.
-		playerControl.tileDistanceTraveled = playerControl.tileDistanceTraveled + numberOfTilesSkippedBecauseOfTeleportation * GenerateLevel.tileSize;
 		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.TELEPORTER, gameObject );
 		lsa.param1 = destinationRotationY;
-		lsa.param2 = numberOfTilesSkippedBecauseOfTeleportation;
 		lsa.param3 = destinationPosition;
 		LockstepManager.Instance.addActionToQueue( lsa );
 	}
