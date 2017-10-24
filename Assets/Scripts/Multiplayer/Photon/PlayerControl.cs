@@ -1975,6 +1975,14 @@ public class PlayerControl : Photon.PunBehaviour {
 			ignorePlayerCollisions( false );
 			//Make player fall from sky, land and start running again
 			enablePlayerMovement( true );
+
+			//Recalculate the distance travelled on this tile. Ignore Y in the distance calculation.
+			Transform tileEntrance = tileWherePlayerDiedGameObject.transform.Find("Entrance");
+			Vector3 tileEntrancePosition = new Vector3( tileEntrance.position.x, 0, tileEntrance.position.z );
+			Vector3 respawnPosition = new Vector3( respawn.position.x, 0, respawn.position.z );
+			float distanceTravelledOnThisTile = Vector3.Distance( tileEntrancePosition, respawnPosition );
+			playerRace.distanceTravelledOnThisTile = distanceTravelledOnThisTile;
+
 			fall( true );
 		}
 		else
@@ -2154,10 +2162,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		else if( other.CompareTag( "Entrance" ) )
 		{
-			//When the player is respawning, he might be transported through an Entrance trigger.
-			//If the player is not alive, ignore.
-			if( deathType != DeathType.Alive ) return;
-
 			if( wasEntranceCrossed ) return;
 			SegmentInfo si = other.transform.parent.GetComponent<SegmentInfo>();
 			if( si != null )
