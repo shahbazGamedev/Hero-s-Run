@@ -90,13 +90,11 @@ public class Lightning : MonoBehaviour {
 
 	void OnEnable()
 	{
-		GameManager.gameStateEvent += GameStateChange;
 		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
 	}
 	
 	void OnDisable()
 	{
-		GameManager.gameStateEvent -= GameStateChange;
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 	
@@ -114,7 +112,6 @@ public class Lightning : MonoBehaviour {
 			//Ignore if already started
 			if( !lightningActive )
 			{
-				print ("Lightning-controlLightning GameEvent.Start_Lightning");
 				Invoke ("FlashRepeat", Random.Range(minInterval, maxInterval));
 				lightningActive = true;
 			}
@@ -159,10 +156,6 @@ public class Lightning : MonoBehaviour {
 			StopCoroutine("DecayOnce");
 			resetLight();
 		}
-	}
-
-	void GameStateChange( GameState newState )
-	{
 	}
 
 }

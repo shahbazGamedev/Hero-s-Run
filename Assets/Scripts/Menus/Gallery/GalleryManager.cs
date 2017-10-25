@@ -179,7 +179,7 @@ public class GalleryManager : MonoBehaviour {
 		//Verify if the player swiped across the screen
 		if (Input.touchCount > 0)
 		{
-			var touch = Input.touches[0];
+           	Touch touch = Input.GetTouch( 0 );
 
 			switch (touch.phase)
 			{
@@ -318,7 +318,7 @@ public class GalleryManager : MonoBehaviour {
 			break;
 			case (int)Characters.Hero:
 				//Character Name
-				characterName.text = PlayerStatsManager.Instance.getUserName();
+				characterName.text = GameManager.Instance.playerProfile.getUserName();
 				if( PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
 				{
 					//Character Bio
@@ -426,7 +426,7 @@ public class GalleryManager : MonoBehaviour {
 	{
 		if( !levelLoading )
 		{
-			SoundManager.soundManager.playButtonClick();
+			UISoundManager.uiSoundManager.playButtonClick();
 			levelLoading = true;
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);

@@ -24,6 +24,11 @@ public class TileIndexGroupActivator : MonoBehaviour {
 	// Use this for initialization
 	void OnEnable ()
 	{
+		if( groupToActivate == null )
+		{
+			Debug.LogWarning("TileIndexGroupActivator - the group to activate is null. You should either assign it a GameObject or remove this component.");
+			return;
+		}
 		//Assume it will not be activated
 		groupToActivate.SetActive( false );
 	

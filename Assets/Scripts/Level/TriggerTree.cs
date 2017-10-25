@@ -8,7 +8,7 @@ public class TriggerTree : MonoBehaviour {
 	//Only trigger if by hero or zombie
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero" || other.name.StartsWith("Zombie") )
+		if( other.CompareTag("Player") || other.CompareTag("Zombie") )
 		{
 			TreeController treeController = treeToTrigger.GetComponent<TreeController>();
 			treeController.wakeUp();

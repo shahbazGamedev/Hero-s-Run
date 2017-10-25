@@ -13,7 +13,8 @@ public enum NewTutorialEvent {
 	Slide = 8,
 	Slide_Breakable = 9,
 	Tilt = 10,
-	Activate_Power_Up = 11
+	Activate_Power_Up = 11,
+	Attach_to_Zipline = 12
 }
 
 public class NewTutorialTrigger : MonoBehaviour {
@@ -26,7 +27,7 @@ public class NewTutorialTrigger : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero" )
+		if( other.CompareTag("Player") )
 		{
 			if( tutorialEventTriggered != null ) tutorialEventTriggered( tutorialEvent );
 		}

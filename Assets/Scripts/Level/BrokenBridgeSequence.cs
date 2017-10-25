@@ -29,14 +29,8 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	public List<HexagonRowData> hexagonsActivePerRow = new List<HexagonRowData>(NUMBER_OF_ROWS);
 
 	// Use this for initialization
-	void Awake () {
-
-		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		playerController = playerObject.GetComponent<PlayerController>();
-
-		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
-		fairyController = fairyObject.GetComponent<FairyController>();
-
+	void Awake ()
+	{
 		lane1StartLocalPos = lane3StartLocalPos + HEXAGON_SIZE; 	//Leftmost lane
 		lane2StartLocalPos = lane3StartLocalPos + HALF_HEXAGON_SIZE; 	
 		lane4StartLocalPos = lane3StartLocalPos; 	
@@ -47,17 +41,23 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	
 	void Start()
 	{
+		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
+		fairyController = fairyObject.GetComponent<FairyController>();
+
 		dragonController.placeDragon( transform, new Vector3( 34.5f, 35.2f, 79.93f), new Vector3( 23, 210, 0), "G_Idle", 12f );
 		dragonController.enableAttack( false );
 	}
 
-	void startSequence()
+	void startSequence( Transform trigger )
 	{
+		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+		playerController = playerObject.GetComponent<PlayerController>();
+
 		//Slowdown player and remove player control
 		print ("Start of broken bridge sequence");
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(18.1f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(18.1f, afterPlayerSlowdown, trigger ) );
 	}
 
 	void afterPlayerSlowdown()
@@ -72,8 +72,8 @@ public class BrokenBridgeSequence : MonoBehaviour {
 	//Fairy tells something to player
 	void step1()
 	{
-		fairyController.speak("FAIRY_DRAGON_BRIDGE", 3.6f, false );
-		Invoke ("step2", 3.75f );
+		fairyController.speak("FAIRY_DRAGON_BRIDGE", 4.6f, false );
+		Invoke ("step2", 4.75f );
 	}
 
 	//Fairy cast spell;
@@ -175,21 +175,20 @@ public class BrokenBridgeSequence : MonoBehaviour {
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 	
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			CancelInvoke();
 		}
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Broken_Bridge && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
-
-			startSequence();
+			startSequence( trigger.transform );
 		}
 	}
 

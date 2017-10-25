@@ -9,7 +9,7 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	Transform darkQueen;
 	DarkQueenController darkQueenController;
 	public ParticleSystem lightningStrike;
-	public float walkDistance = 10.7f;
+	public float walkDistance = 7.55f;
 	public Vector3 fairyPositionBehindPlayer = new Vector3( 0, 1f, -0.3f );
 
 	bool hasBeenTriggered = false;
@@ -18,10 +18,7 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	public static event SkeletonsSummoned skeletonsSummoned;
 
 	// Use this for initialization
-	void Awake () {
-
-		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		playerController = playerObject.GetComponent<PlayerController>();
+	void Start () {
 
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
@@ -44,33 +41,33 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 	
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			CancelInvoke();
 		}
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Summon_Skeletons_Sequence && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
-
-			startSequence();
+			startSequence(trigger.transform);
 		}
 	}
 
-	//Dark Queen sequence that summon skeletons in the battlefield
-	void startSequence()
+	//Dark Queen sequence that summon skeletons
+	void startSequence( Transform trigger )
 	{
-		print ("Start of Dark Queen summon skeletons sequence.");
+		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+		playerController = playerObject.GetComponent<PlayerController>();
 
 		//Slowdown player and remove player control
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(19f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(18.6f, afterPlayerSlowdown, trigger ) );
 		arriveAndCastSpell();
 	}
 	
@@ -149,7 +146,7 @@ public class SummonSkeletonsSequence : MonoBehaviour {
 	
 	void lookOverEdge()
 	{
-		StartCoroutine( playerController.walkForDistance( walkDistance, 3.5f, edgeReached ) );
+		StartCoroutine( playerController.walkForDistance( walkDistance, 3.5f, edgeReached, true ) );
 	}
 
 	void edgeReached()

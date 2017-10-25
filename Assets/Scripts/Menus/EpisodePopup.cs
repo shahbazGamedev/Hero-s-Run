@@ -20,10 +20,7 @@ public class EpisodePopup : MonoBehaviour {
 
 	Animator anim;
 	int episodeNumber;
-	int levelNumber;
 	LevelData levelData;
-	ClockTimeSetter clockTimeSetter;
-
 
 	// Use this for initialization
 	void Awake () {
@@ -39,14 +36,11 @@ public class EpisodePopup : MonoBehaviour {
 		//Get the episode data. Level data has the parameters for all the episodes and levels of the game.
 		levelData = LevelManager.Instance.getLevelData();
 
-		clockTimeSetter = GetComponentInChildren<ClockTimeSetter>();
-
 	}
 
-	public void showEpisodePopup( int episodeNumber, int levelNumber )
+	public void showEpisodePopup( int episodeNumber )
 	{
 		this.episodeNumber = episodeNumber;
-		this.levelNumber = levelNumber;
 		loadEpisodeData();
 		anim.Play("Panel Slide In");
 	}
@@ -73,21 +67,19 @@ public class EpisodePopup : MonoBehaviour {
 		episodeDescriptionText.text = LocalizationManager.Instance.getText("EPISODE_DESCRIPTION_" + levelNumberString);
 		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( episodeNumber ) + "/" + selectedEpisode.numberOfChestKeys;
 
-		//Update pocket watch and Time Left
-		clockTimeSetter.updateTime( episodeNumber, levelNumber, Level_Progress.LEVEL_START );
 	}
 
 	public void closeEpisodeMenu()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		anim.Play("Panel Slide Out");
 	}
 
 	public void play()
 	{
-		Debug.Log("EpisodePopup-Play button pressed: Episode: " + episodeNumber + " Level: " + levelNumber );
-		SoundManager.soundManager.playButtonClick();
-		newWorldMapHandler.play( episodeNumber, levelNumber );
+		Debug.Log("EpisodePopup-Play button pressed: Episode: " + episodeNumber );
+		UISoundManager.uiSoundManager.playButtonClick();
+		newWorldMapHandler.play( episodeNumber );
 	}
 	
 }

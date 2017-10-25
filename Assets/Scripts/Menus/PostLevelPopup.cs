@@ -17,18 +17,15 @@ public class PostLevelPopup : MonoBehaviour {
 	public NewWorldMapHandler newWorldMapHandler;
 	public EpisodePopup episodePopup;
 	public StoryCompletedPopup storyCompletedPopup;
-	public ConnectToFacebookPopup connectToFacebookPopup;
 	[Header("Score Meter")]
 	public GameObject scoreMeter;
 
-	ClockTimeSetter clockTimeSetter;
 	const float UPDATE_SEQUENCE_DELAY = 0.9f;
 
 	// Use this for initialization
-	void Awake () {
-
+	void Awake ()
+	{
 		postLevelButtonText.text = LocalizationManager.Instance.getText("POST_LEVEL_RETRY");
-		clockTimeSetter = GetComponentInChildren<ClockTimeSetter>();
 	}
 
 	public void showPostLevelPopup(LevelData levelData)
@@ -58,15 +55,15 @@ public class PostLevelPopup : MonoBehaviour {
 
 		int numberOfStars = 0;
 
-		if ( score >= currentEpisode.starsRequired.x && score < currentEpisode.starsRequired.y )
+		if ( score >= currentEpisode.coinsRequired.x && score < currentEpisode.coinsRequired.y )
 		{
 			numberOfStars = 1;
 		}
-		else if ( score >= currentEpisode.starsRequired.y && score < currentEpisode.starsRequired.z )
+		else if ( score >= currentEpisode.coinsRequired.y && score < currentEpisode.coinsRequired.z )
 		{
 			numberOfStars = 2;
 		}
-		else if ( score >= currentEpisode.starsRequired.z )
+		else if ( score >= currentEpisode.coinsRequired.z )
 		{
 			numberOfStars = 3;
 		}
@@ -90,11 +87,10 @@ public class PostLevelPopup : MonoBehaviour {
 		if( LevelManager.Instance.getPlayerFinishedTheGame() )
 		{
 			postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_COMPLETED_STORY");
-			clockTimeSetter.updateTime( episodeNumber, LevelManager.Instance.getNextLevelToComplete(), Level_Progress.LEVEL_END_WITH_GAME_COMPLETED );
 		}
 		else
 		{
-			if( LevelManager.Instance.getLevelChanged() )
+			if( LevelManager.Instance.getEpisodeChanged() )
 			{
 				//The player has passed at least one checkpoint. Congratulate him.
 				postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_MADE_PROGRESS");
@@ -105,13 +101,11 @@ public class PostLevelPopup : MonoBehaviour {
     				postLevelButton.onClick.RemoveAllListeners();
 					postLevelButton.onClick.AddListener( showNextEpisodePopup );
 				}
-				clockTimeSetter.updateTime( episodeNumber, LevelManager.Instance.getNextLevelToComplete(), Level_Progress.LEVEL_END_WITH_PROGRESS );
 			}
 			else
 			{
 				//The player did not finish the current level. Encourage him.
 				postLevelDescriptionText.text = LocalizationManager.Instance.getText("POST_LEVEL_LUCK_NEXT_TIME");
-				clockTimeSetter.updateTime( episodeNumber, LevelManager.Instance.getNextLevelToComplete(), Level_Progress.LEVEL_END_WITH_NO_PROGRESS );
 			}
 		}
 		episodeKeysText.text = PlayerStatsManager.Instance.getNumberKeysFoundInEpisode( episodeNumber ) + "/" + selectedEpisode.numberOfChestKeys;
@@ -128,7 +122,7 @@ public class PostLevelPopup : MonoBehaviour {
 
 	public void closePostLevelPopup()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		if( LevelManager.Instance.wasEpisodeCompleted() )
 		{
 			LevelManager.Instance.incrementCurrentEpisodeNumber();
@@ -136,10 +130,9 @@ public class PostLevelPopup : MonoBehaviour {
 			newWorldMapHandler.updatePlayerPortrait();
 			PlayerStatsManager.Instance.savePlayerStats();
 		}
-		//Reset the level changed value
-		LevelManager.Instance.setLevelChanged( false );
+		//Reset the episode changed value
+		LevelManager.Instance.setEpisodeChanged( false );
 		GetComponent<Animator>().Play("Panel Slide Out");
-		GameManager.Instance.setGameState(GameState.Menu);
 		if( LevelManager.Instance.getPlayerFinishedTheGame() )
 		{
 			StartCoroutine( showStoryCompletedPopupThread() );
@@ -155,31 +148,19 @@ public class PostLevelPopup : MonoBehaviour {
 	{
 		Debug.Log("Continue button pressed: ");
 		//Reset the level changed value
-		LevelManager.Instance.setLevelChanged( false );
+		LevelManager.Instance.setEpisodeChanged( false );
 		LevelManager.Instance.incrementCurrentEpisodeNumber();
-		GameManager.Instance.setGameState(GameState.Menu);
 		GetComponent<Animator>().Play("Panel Slide Out");
 		yield return new WaitForSeconds(2f);
 
-		//So if we are here, it means that the player successfully completed the episode.
-		//Before we allow him to continue to the next one, if the user does not use Facebook currently and we have network connectivity,
-		//then encourage the player to connect to Facebook.
-		//We will encourage him to connect to Facebook after completing episode 2, 4, 6, and 8.
-		if ( LevelManager.Instance.getCurrentEpisodeNumber()%2 == 0 && !PlayerStatsManager.Instance.getUsesFacebook() && Application.internetReachability != NetworkReachability.NotReachable )
-		{
-			connectToFacebookPopup.showConnectToFacebookPopup();
-		}
-		else
-		{
-			episodePopup.showEpisodePopup( LevelManager.Instance.getCurrentEpisodeNumber(), LevelManager.Instance.getNextLevelToComplete() );
-		}
+		episodePopup.showEpisodePopup( LevelManager.Instance.getCurrentEpisodeNumber() );
 	}
 
 	public void retry()
 	{
 		Debug.Log("PostLevelPopup-Retry button pressed.");
-		SoundManager.soundManager.playButtonClick();
-		newWorldMapHandler.play( LevelManager.Instance.getCurrentEpisodeNumber(), LevelManager.Instance.getNextLevelToComplete() );
+		UISoundManager.uiSoundManager.playButtonClick();
+		newWorldMapHandler.play( LevelManager.Instance.getCurrentEpisodeNumber() );
 	}
 
 	IEnumerator showStoryCompletedPopupThread()

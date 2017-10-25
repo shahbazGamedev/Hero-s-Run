@@ -50,12 +50,7 @@ public class TrollController : MonoBehaviour {
 	bool deactivateTroll = false; //Used for debugging so troll does not pursue player. Normal value is false.
 
 	public bool playerStumbledPreviously = false;
-
-	void Awake ()
-	{
-		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = player.GetComponent<PlayerController>();
-	}
+	private Vector3 forward;
 
 	void Start()
 	{
@@ -65,6 +60,7 @@ public class TrollController : MonoBehaviour {
 		if (Physics.Raycast(new Vector3(transform.position.x,transform.position.y + 10f,transform.position.z), Vector3.down, out hit, 20.0F ))
 		{
 			transform.position = new Vector3( transform.position.x, hit.point.y, transform.position.z);
+			//The troll is initially hidden.
 			gameObject.SetActive( false );
 		}
 	}
@@ -80,7 +76,7 @@ public class TrollController : MonoBehaviour {
 
 		//Give the enemy the same speed as the player. Since the player's
 		//speed increases gradually, unless he stumbles, the enemy should not catch him.
-		Speed = PlayerController.getPlayerSpeed() + SPEED_BOOST;
+		Speed = playerController.getSpeed() + SPEED_BOOST;
 		Debug.Log ("TrollController-startPursuing: start position : " + transform.position + " Troll speed " + Speed);
 	}
 	
@@ -99,17 +95,17 @@ public class TrollController : MonoBehaviour {
 		{
 			if( trollState == TrollState.StartRunning || trollState == TrollState.Running || trollState == TrollState.Smashing )
 			{
-
 		 		float distance = Vector3.Distance(player.position,transform.position);
 
 				if( distance > MINIMUM_DISTANCE )
 				{
 					//Only move the troll forward if the distance between the troll and the player is greater than minimum distance.
 					//We do not want the troll to overrun the player.
-					transform.position += transform.forward * Speed * Time.deltaTime;
+					forward = transform.forward * Speed * Time.deltaTime;
+					forward =  Vector3.ClampMagnitude(forward, distance );
+					transform.position += forward;
 					transform.LookAt(player);
 				}
-
 
 				if( distance > deactivationDistance )
 				{
@@ -251,14 +247,9 @@ public class TrollController : MonoBehaviour {
 		if( deactivateTroll ) return;
 		gameObject.SetActive( true );
 
-		if( !gameObject.activeSelf )
-		{
-			gameObject.SetActive( true );
-		}
-
 		//Give the enemy about the same speed as the player. Since the player's
 		//speed increases gradually, unless he stumbles, the enemy should not catch him.
-		Speed = PlayerController.getPlayerSpeed() - 0.2f;
+		Speed = playerController.getSpeed() - 0.2f;
 
 		//Place enemy 3 meters behind player
 		Vector3 relativePos = new Vector3(0 , 0 , -3f );
@@ -280,11 +271,11 @@ public class TrollController : MonoBehaviour {
 
 	public void runBehindPlayer()
 	{
-		if( !gameObject.activeSelf ) gameObject.SetActive( true );
+		gameObject.SetActive( true );
 
 		//Give the enemy about the same speed as the player. Since the player's
 		//speed increases gradually, unless he stumbles, the enemy should not catch him.
-		Speed = PlayerController.getPlayerSpeed() + 0.2f;
+		Speed = playerController.getSpeed() + 0.2f;
 		
 		//Place troll a few meters behind player
 		Vector3 relativePos = new Vector3(0 , 0 , -STOP_DISTANCE );
@@ -319,15 +310,17 @@ public class TrollController : MonoBehaviour {
 	{
 		GameManager.gameStateEvent += GameStateChange;
 		PlayerController.playerStateChanged += PlayerStateChange;
+		PlayerController.localPlayerCreated += LocalPlayerCreated;
 	}
 
 	void OnDisable()
 	{
 		GameManager.gameStateEvent -= GameStateChange;
 		PlayerController.playerStateChanged -= PlayerStateChange;
+		PlayerController.localPlayerCreated -= LocalPlayerCreated;
 	}
 	
-	void GameStateChange( GameState newState )
+	void GameStateChange( GameState previousState, GameState newState )
 	{
 		if( newState == GameState.Paused )
 		{
@@ -339,9 +332,9 @@ public class TrollController : MonoBehaviour {
 		}
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			if( trollState == TrollState.Running || trollState == TrollState.StartRunning || trollState == TrollState.Smashing )
 			{
@@ -357,6 +350,17 @@ public class TrollController : MonoBehaviour {
 				setTrollState(TrollState.Laughing);
 			}
 		}
+		else if( newState == PlayerCharacterState.Falling )
+		{
+			//We don't want the creature to follow the player down a ravine ...
+			stopPursuing();
+		}
+	}
+
+	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
+	{
+		this.playerController = playerController;
+		this.player = playerTransform;
 	}
 
 }

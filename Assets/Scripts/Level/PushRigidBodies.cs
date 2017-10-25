@@ -17,19 +17,21 @@ public class PushRigidBodies : MonoBehaviour {
 	public float distanceMultiplier = 1f;
 
 	Transform player;
+	PlayerController playerController;
 	bool avalancheOccurred = false;
 
-	void Awake ()
+	void Start ()
 	{
 		if( activationtype == ActivationType.PlayerDistance )
 		{
 			player = GameObject.FindGameObjectWithTag("Player").transform;
+			playerController = player.GetComponent<PlayerController>();
 		}
 	}
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero")
+		if( other.CompareTag("Player") )
 		{
 			startAvalanche();
 		}
@@ -45,7 +47,7 @@ public class PushRigidBodies : MonoBehaviour {
 		if( !avalancheOccurred )
 		{
 			float distance = Vector3.Distance(player.position, transform.position);
-			float  collapseDistance = distanceMultiplier * PlayerController.getPlayerSpeed();
+			float  collapseDistance = distanceMultiplier * playerController.getSpeed();
 			if( distance < collapseDistance  )
 			{
 				avalancheOccurred = true;

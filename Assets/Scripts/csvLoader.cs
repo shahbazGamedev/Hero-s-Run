@@ -18,8 +18,6 @@ public class csvLoader {
 
 		Dictionary<string, string> gameText = new Dictionary<string, string>(rows.Length);
 
-		Debug.Log("Localized text file has " + rows.Length + " rows.");
-
 		string[] rowContent;
 		//Don't import the CSV value header (i.e. row zero)
 		for( int i=1; i < rows.Length; i++ )
@@ -32,7 +30,14 @@ public class csvLoader {
 				//Commas in the text are identified by <comma>
 				text = text.Replace("<comma>", "," );
 				//Debug.Log( "row: " + i + " " + rowContent[0] + ", " + rowContent[languageIndex] );
-				gameText.Add( rowContent[0].Trim (), text );
+				if( !gameText.ContainsKey( rowContent[0].Trim() ) )
+				{
+					gameText.Add( rowContent[0].Trim (), text );
+				}
+				else
+				{
+					Debug.LogWarning("csvLoader-The game text identifier, " + rowContent[0].Trim () + ", already exists in the dictionary. Skipping it.");
+				}
 			}
 		}
 		return gameText;

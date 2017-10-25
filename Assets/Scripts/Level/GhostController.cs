@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GhostController : BaseClass {
+public class GhostController : MonoBehaviour {
 	
 	public enum GhostState {
 		None = 0,
@@ -56,7 +56,7 @@ public class GhostController : BaseClass {
 	// Update is called once per frame
 	void LateUpdate ()
 	{
-		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && ghostState == GhostState.Hover && playerController.getCharacterState() != CharacterState.Dying )
+		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && ghostState == GhostState.Hover && playerController.getCharacterState() != PlayerCharacterState.Dying )
 		{
 			positionGhost ();
 		}
@@ -114,7 +114,7 @@ public class GhostController : BaseClass {
 	public void Arrive( float timeToArrive )
 	{
 		ghostState = GhostState.Arrive;
-		Vector3 arrivalStartPos = new Vector3( 0, 12f, PlayerController.getPlayerSpeed() * 2f );
+		Vector3 arrivalStartPos = new Vector3( 0, 12f, player.GetComponent<PlayerController>().getSpeed() * 2f );
 		Vector3 exactPos = player.TransformPoint(arrivalStartPos);
 		transform.position = exactPos;
 		float wantedRotationAngle = player.eulerAngles.y + 180f;
@@ -168,7 +168,7 @@ public class GhostController : BaseClass {
 			//Tilt the fairy down
 			transform.rotation = Quaternion.Euler( -8f, transform.eulerAngles.y, transform.eulerAngles.z );
 			
-			yield return _sync();  
+			yield return new WaitForFixedUpdate();  
 			
 		}
 		ghostState = GhostState.Hover;
@@ -207,13 +207,13 @@ public class GhostController : BaseClass {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero" )
+		if( other.CompareTag("Player") )
 		{
 			print ("Player is touching ghost");
 		}
 	}
 	
-	void GameStateChange( GameState newState )
+	void GameStateChange( GameState previousState, GameState newState )
 	{
 		if( newState == GameState.Paused )
 		{

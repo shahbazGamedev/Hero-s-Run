@@ -9,13 +9,10 @@ public class Projectile : MonoBehaviour {
 	public ParticleSystem impactParticleSystem;
 	public AudioClip inFlightSound;
 	public AudioClip collisionSound;
-	PlayerController playerController;
 	PowerUpManager powerUpManager;
 
 	void Start()
 	{
-		GameObject player = GameObject.FindGameObjectWithTag("Player");
-		playerController = player.GetComponent<PlayerController>();
 		powerUpManager = GameObject.FindGameObjectWithTag("PowerUpManager").GetComponent<PowerUpManager>();
 	}
 
@@ -43,7 +40,7 @@ public class Projectile : MonoBehaviour {
 			impactParticleSystem.gameObject.SetActive(true);
 		}
 		if( GetComponent<MeshRenderer>() != null ) GetComponent<MeshRenderer>().enabled = false;
-		if( collision.gameObject.name == "Hero" )
+		if( collision.gameObject.CompareTag("Player") )
 		{
 			//Is the player protected by a Shield Power Up?
 			if( PowerUpManager.isThisPowerUpActive( PowerUpType.Shield ) )
@@ -55,7 +52,7 @@ public class Projectile : MonoBehaviour {
 			{
 				if( !PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
 				{
-					playerController.managePlayerDeath ( DeathType.Obstacle );
+					collision.gameObject.GetComponent<PlayerController>().managePlayerDeath ( DeathType.Obstacle );
 				}
 			}
 		}

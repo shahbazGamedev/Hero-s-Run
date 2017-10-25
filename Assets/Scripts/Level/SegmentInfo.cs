@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class SegmentInfo : MonoBehaviour {
 	
-	public GameObject tile;
 	public TileType tileType;
 	//Does this tile use straight corridors or bezier curves?
 	public bool usesBezierCurve = false;
@@ -12,18 +11,20 @@ public class SegmentInfo : MonoBehaviour {
 	public List<BezierData> curveList = new List<BezierData>();
 	//For drawing, each curve is divided into small line segments.
 	public const int CURVE_DISTANCE_STEPS = 200;
-	//This flag is used to avoid tileEntranceCrossed being called multiple time which can happen with onTriggerEnter
-	public bool entranceCrossed = false;
-	public bool addJumpBoost = false; //If true, give an extra boost when jumping
-	public bool isCheckpoint = false;
-	public bool isFirstTileOfLevel = false;
 	public float tileEndHeight = 0; //if not zero, the height of the NEXT tile will be adjusted
+	public float tileHorizontalShift = 0; //if not zero, the position of the NEXT tile will be adjusted
+	public float turnAngle = 0; //Only used for angled tiles. See Angled Tile Entrance in PlayerControl
 	//tileIndex is populated at runtime. The Start tile has an index of 0, the second tile in the level has an index of 1, etc.
 	public int tileIndex = -1;
+	public int tileDepth = 1;
+	public TileSubType tileSubType = TileSubType.Straight;
+	public Sprite tileSprite;
+	public bool drawBezierGizmo = true;
+
 	//Display the bezier curve(s) if any.
 	void OnDrawGizmos ()
 	{
-		if( usesBezierCurve )
+		if( curveList.Count > 0 && drawBezierGizmo )
 		{
 			Gizmos.color = Color.red;
 			SegmentInfo.BezierData bezierData;
@@ -43,6 +44,7 @@ public class SegmentInfo : MonoBehaviour {
 			}
 		}
 	}
+
 	[System.Serializable]
 	public class BezierData
 	{

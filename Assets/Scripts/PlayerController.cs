@@ -3,43 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityStandardAssets.ImageEffects;
 
-public enum DeathType {
-		Alive = 0,
-		Obstacle = 1,
-		Cliff = 2,
-		Flame = 3,
-		Trap = 4,
-		Enemy = 5,
-		Water = 6,
-		Turn = 7,
-		Lava = 8,
-		Fireball = 9,
-		Zombie = 10,
-		VortexTrap = 11,
-		MagicGate = 12,
-		SpecialFall = 13,
-		GreatFall = 14
-}
 
-public enum CharacterState {
-	None = -1,
-	Idle = 0,
-	SideMove = 1,
-	Sliding = 2,
-	Running = 3,
-	Jumping = 4,
-	Dying = 5,
-	Stumbling = 6,
-	Winning = 7,
-	Flying = 8,
-	StartRunning = 9,
-	Falling = 10,
-	Turning = 11,
-	Turning_and_sliding = 12,
-	Ziplining = 13
-}
-
-public sealed class PlayerController : BaseClass {
+public sealed class PlayerController : MonoBehaviour {
 	
 	private Transform mainCamera;
 
@@ -70,7 +35,7 @@ public sealed class PlayerController : BaseClass {
 
 	//Particles
 	public ParticleSystem dustPuff;
-	public ParticleSystem appearFX; //Called by teleportLeaveComplete
+	public ParticleSystem appearFX; //Called by Teleport_leave_complete
 
 	//Components
 	public Animator anim;
@@ -114,16 +79,22 @@ public sealed class PlayerController : BaseClass {
 	bool playerMovementEnabled = true;
 	public float jumpSpeed = 8.8f;
 	public float doubleJumpSpeed = 12.4f;
-	public float slopeJumpSpeed = 15f;
-	public float sideMoveSpeed = 6f; 
+	public float slopeJumpSpeed = 14f;
+	public float sideMoveSpeed = 8f; 
 	//when a new level starts or if the player dies and he is revived, he will
 	//start running at runStartSpeed.
 	float runStartSpeed = 0;
 	//The running speed will increase with time to make it harder for the player,
-	public static float runSpeed = 0;
+	public static float runSpeed = 0; //NOT USED
+	private float newRunSpeed = 0;
 	//The run speed at time of death is needed because we want to start running again (in case of revive) at a 
 	//percentage of this value.
 	float runSpeedAtTimeOfDeath = 0;
+	public float runSpeedAtTimeOfTurn;
+	public float runSpeedTurnMultiplier;
+	public float runSpeedAtTimeOfStumble;
+	public float stumbleRunSpeedMultiplier = 0.9f; //If the player stumbles, his speed will be multiplied by this number.
+
 	const float MAX_RUN_SPEED = 42f;
 	const float SLOW_DOWN_END_SPEED = 5f;
 	//Used to modify the blend amount between Run and Sprint animations based on the current run speed. Also used by the troll.
@@ -147,7 +118,7 @@ public sealed class PlayerController : BaseClass {
 	//Casts a circular shadow at the feet of the player
 	Projector shadowProjector;
 
-	public static CharacterState _characterState;
+	PlayerCharacterState playerCharacterState;
 	
 	// Are we jumping? (Initiated with jump button and not grounded yet)
 	public bool jumping = false;
@@ -193,13 +164,12 @@ public sealed class PlayerController : BaseClass {
 	//If the fall distance is less than DISTANCE_FOR_LAND_ANIMATION meters, the hero plays the Land animation; above, he plays the Stumble animation.
 	const float DISTANCE_FOR_LAND_ANIMATION = 34f;
 
-	public TrollController trollController;
+	TrollController trollController;
 	FairyController fairyController;
 	PowerUpManager powerUpManager;
-	public TakeScreenshot takeScreenshot;
 
-	public SimpleCamera sc;
-	GenerateLevel gl;
+	public PlayerCamera sc;
+	GenerateLevel generateLevel;
 	
 	public static DeathType deathType = DeathType.Alive;
 
@@ -232,18 +202,17 @@ public sealed class PlayerController : BaseClass {
 	//The current curve the player is on
 	Bezier currentBezierCurve;
 
+	//Event management used to notify other classes when the Hero has been created
+	public delegate void LocalPlayerCreated( Transform value, PlayerController playerController );
+	public static event LocalPlayerCreated localPlayerCreated;
+
 	//Event management used to notify other classes when the character state has changed
-	public delegate void PlayerState( CharacterState value );
+	public delegate void PlayerState( PlayerCharacterState value );
 	public static event PlayerState playerStateChanged;
 	
 	//Event management used to notify other classes when the resurrection begins (for example to hide zombies)
 	public delegate void ResurrectionBegin();
 	public static event ResurrectionBegin resurrectionBegin;
-
-	//For stats and achievements
-	static EventCounter boots_of_jumping 	= new EventCounter( GameCenterManager.BootsOfJumping, 1, CounterType.Total_any_level );
-	static EventCounter watch_your_step 	= new EventCounter( GameCenterManager.WatchYourStep, 1, CounterType.Total_any_level );
-	static EventCounter chicken_chaser 		= new EventCounter( GameCenterManager.ChickenChaser, 1, CounterType.Total_any_level );
 	
 	//Hash IDs for player animations. These are used to improve performance.
 	int RunTrigger = Animator.StringToHash("Run");
@@ -261,6 +230,7 @@ public sealed class PlayerController : BaseClass {
 	int speedBlendFactor = Animator.StringToHash("Speed");
 	int lookbackBlendFactor = Animator.StringToHash("Look_Back");
 	int Idle_LookTrigger = Animator.StringToHash("Idle_Look");
+	int Finish_LineTrigger = Animator.StringToHash("Finish_Line");
 
 	//For debugging swipes
 	public string reasonDiedAtTurn;
@@ -273,51 +243,33 @@ public sealed class PlayerController : BaseClass {
 	public GameObject Hero_Prefab;
 	public GameObject Heroine_Prefab;
 
-	bool inZiplineTrigger;
+	bool isInZiplineTrigger;
 	Transform ziplineAttachPoint;
 
 	void Awake()
 	{
-		GameObject hero;
-		if(PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
-		{
-			hero = (GameObject)Instantiate(Hero_Prefab, Vector3.zero, Quaternion.identity ) ;
-		}
-		else
-		{
-			hero = (GameObject)Instantiate(Heroine_Prefab, Vector3.zero, Quaternion.identity ) ;
-		}
-		Transform blobShadowProjectorObject = hero.transform.FindChild("Blob Shadow Projector");
+		Transform blobShadowProjectorObject = transform.FindChild("Blob Shadow Projector");
 		if( blobShadowProjectorObject == null )
 		{
-			Debug.LogError("PlayerController-error: Unable to find, Blob Shadow Projector, in the " + hero.name + " prefab." );
+			Debug.LogError("PlayerController-error: Unable to find, Blob Shadow Projector." );
 		}
 		shadowProjector = blobShadowProjectorObject.GetComponent<Projector>();
-
-		hero.transform.parent = transform;
-		hero.name = "Hero";
-		hero.SetActive( true );
 
 		//Calculate the minimum swipe distance in pixels
         float screenDiagonalSize = Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height);
         minSwipeDistancePixels = minSwipeDistance * screenDiagonalSize; 
 
 		//Get a copy of the components
-		anim = hero.GetComponent<Animator>();
+		anim = GetComponent<Animator>();
 		audioSource = GetComponent<AudioSource>();
+
+		loadPlayerSkin();
 
 		controller = GetComponent<CharacterController>();
 		controllerOriginalCenter = controller.center;
 		controllerOriginalRadius = controller.radius;
 
-
-		GameObject Troll = GameObject.FindGameObjectWithTag("Troll");
-		trollController = Troll.GetComponent<TrollController>();
-		sc = GetComponent<SimpleCamera>();
-		gl = GetComponent<GenerateLevel>();
-
-		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
-		fairyController = fairyObject.GetComponent<FairyController>();
+		sc = GetComponent<PlayerCamera>();
 
 		//For coins
 		Vector2 coinIconPos = HUDHandler.hudHandler.getCoinIconPos();
@@ -336,75 +288,74 @@ public sealed class PlayerController : BaseClass {
 		leftFootstep = footstepLeftSound;
 		rightFootstep = footstepRightSound;
 
+		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
+		if( localPlayerCreated != null ) localPlayerCreated( transform, this );
+		Transform cutSceneCamera = transform.FindChild("CutsceneCamera");
+		Skybox skyBox = (Skybox) cutSceneCamera.GetComponent("Skybox");
+		skyBox.material = LevelManager.Instance.getLevelData().skyBoxMaterial;
+	}
+
+	void loadPlayerSkin()
+	{
+		GameObject hero;
+		if(PlayerStatsManager.Instance.getAvatar() == Avatar.Hero )
+		{
+			hero = (GameObject)Instantiate(Hero_Prefab, Vector3.zero, Quaternion.identity ) ;
+		}
+		else
+		{
+			hero = (GameObject)Instantiate(Heroine_Prefab, Vector3.zero, Quaternion.identity ) ;
+		}
+		hero.transform.parent = transform;
+		hero.transform.localPosition = Vector3.zero;
+		hero.transform.localRotation = Quaternion.identity;
+
+		hero.name = "Hero";
+		GetComponent<Animator>().avatar = hero.GetComponent<PlayerSkinInfo>().animatorAvatar;
+		anim.Rebind();
+		hero.SetActive( true );
 	}
 
 	void Start()
 	{
+		//The player controller needs info about the tile the player is on.
+		generateLevel.setFirstTileInfoInPlayer( this );
 
 		determineRunSpeed();
 
+		//Place the character at the start position which is always 0,ground height,0
+		//Calculate the ground height
+		RaycastHit hit;
+		if (Physics.Raycast(new Vector3( transform.position.x, 10f, transform.position.z ), Vector3.down, out hit, 12.0F ))
+		{
+			transform.position = new Vector3( transform.position.x, hit.point.y, transform.position.z);
+			//Also adjust the camera height
+			mainCamera.position = new Vector3(mainCamera.position.x, mainCamera.position.y + hit.point.y, mainCamera.transform.position.z); 
+			sc.positionCameraNow();
+		}
+
+		//The character is in idle while waiting for the player to press the Run! button. 
+		setCharacterState( PlayerCharacterState.Idle );
 		if( currentTileType != TileType.Opening )
 		{
-			//Should we display the Tap to Play message right away by changing the game state to GameState.Menu or will the game state be set by another script?
-			if( !LevelManager.Instance.getLevelInfo().waitForTapToPlay )
-			{
-				GameManager.Instance.setGameState(GameState.Menu);
-			}
-
-			//Place the character at the start position which is always 0,ground height,0
-			//Calculate the ground height
-			RaycastHit hit;
-			if (Physics.Raycast(new Vector3(0,10f,0), Vector3.down, out hit, 12.0F ))
-			{
-				transform.position = new Vector3( 0, hit.point.y, 0);
-			}
-			//Also adjust the camera height
-			Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y + hit.point.y, Camera.main.transform.position.z); 
-			sc.positionCameraNow();
-
-			//The character is in idle while waiting for the player to press the Run! button. 
-			setCharacterState( CharacterState.Idle );		
+			sc.playCutscene(CutsceneType.Checkpoint);
 		}
-	}
-
-	string getCurrentStateName()
-	{
-		//Use anim.GetLayerName(0)) to get the layer name. The layer with index 0 is "Base Layer".
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Move") ) return "Move";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Fall") ) return "Fall";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Land") ) return "Land";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Jump_double") ) return "Jump_double";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Jump") ) return "Jump";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Slide Down") ) return "Slide Down";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Slide Up") ) return "Slide Up";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Victory") ) return "Victory";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("DeathRiver") ) return "DeathRiver";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("DeathWall") ) return "DeathWall";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Stumble") ) return "Stumble";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Fall_Forward") ) return "Fall_Forward";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Speed") ) return "Speed";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Look_Back") ) return "Look_Back";
-		if( anim.GetCurrentAnimatorStateInfo(0).IsName("Idle_Look") ) return "Idle_Look";
-
-		return "Unknown animation state";
 	}
 
 	void determineRunSpeed()
 	{
-		//Use the level data to determine what the start run speed and run acceleration should be since they can vary
-		//from level to level. Final levels are more difficult than earlier levels.
-		LevelData.LevelInfo levelInfo = LevelManager.Instance.getLevelInfo();
-		//Note: getRunStartSpeed & getRunAcceleration return the values adjusted according to the difficulty level of the game.
-		//The RunStartSpeed is higher in Heroic mode than in normal mode for example.
-		levelRunStartSpeed = levelInfo.getRunStartSpeed();
-		runAcceleration = levelInfo.getRunAcceleration();
+		//Determine what the start run speed and run acceleration should be since they can vary
+		//from episode to episode. Final episodes are more difficult than earlier levels.
+		levelRunStartSpeed = LevelManager.Instance.getCurrentEpisodeInfo().RunStartSpeed;
+		runAcceleration = LevelManager.Instance.getCurrentEpisodeInfo().RunAcceleration;
 		//We need to set this here so that the troll can get the player's speed.
-		runSpeed = levelRunStartSpeed;
+		newRunSpeed = levelRunStartSpeed;
+		runSpeedTurnMultiplier = 0.9f;
 	}
 	
 	public void startRunning()
 	{
-		startRunning( false && currentTileType == TileType.Start );
+		startRunning( false );
 	}
 
 	public void startRunning( bool playCutscene )
@@ -422,22 +373,21 @@ public sealed class PlayerController : BaseClass {
 		anim.Rebind();
 
 		//The player starts off running
-		anim.SetTrigger(RunTrigger);
-		setCharacterState( CharacterState.StartRunning );
-		setCharacterState( CharacterState.Running );
+		setAnimationTrigger(RunTrigger);
+		setCharacterState( PlayerCharacterState.StartRunning );
+		setCharacterState( PlayerCharacterState.Running );
 
 		//This time is captured so we can slowly accelerate the run speed
 		timeSessionStarted = Time.time;
 
-		StartCoroutine( SoundManager.soundManager.fadeInMusic(2f) );
 		GameManager.Instance.setGameState( GameState.Normal );
 
 		if( playCutscene )
 		{
 			sc.playCutscene( CutsceneType.Start );
 			runStartSpeed = levelRunStartSpeed;
-			runSpeed = runStartSpeed;
-			trollController.startPursuing();
+			newRunSpeed = runStartSpeed;
+			controlTrollPursuit( true );
 		}
 		else
 		{
@@ -447,7 +397,7 @@ public sealed class PlayerController : BaseClass {
 			//The minimum speed is levelRunStartSpeed
 			if( newRunStartSpeed < levelRunStartSpeed ) newRunStartSpeed = levelRunStartSpeed;
 			runStartSpeed = newRunStartSpeed;
-			runSpeed = runStartSpeed;
+			newRunSpeed = runStartSpeed;
 			//If we are in the opening cutscene, the OpeningSequence class will take care of enabling player controls at the right time.
 			if( currentTileType != TileType.Opening )
 			{
@@ -459,11 +409,11 @@ public sealed class PlayerController : BaseClass {
 
 	void updateRunSpeed()
 	{
-		if( allowRunSpeedToIncrease && runSpeed <= MAX_RUN_SPEED )
+		if( allowRunSpeedToIncrease && newRunSpeed <= MAX_RUN_SPEED )
 		{
-			runSpeed = (Time.time - timeSessionStarted) * runAcceleration + runStartSpeed; //in seconds
+			newRunSpeed = (Time.time - timeSessionStarted) * runAcceleration + runStartSpeed; //in seconds
 			//Update the blend amount between Run and Sprint animations based on the current run speed
-			blendFactor = (runSpeed - runStartSpeed)/(MAX_RUN_SPEED-runStartSpeed);
+			blendFactor = (newRunSpeed - runStartSpeed)/(MAX_RUN_SPEED-runStartSpeed);
 			//If the blendFactor is set to one we will only play the Sprint animation
 			//and the Run animation will stop playing. Because of that, we will no longer hear any footsteps.
 			//For this reason, cap the blend factor to 0.98f so that we always blend in a little of the run animation and therefore
@@ -475,20 +425,25 @@ public sealed class PlayerController : BaseClass {
 	
 	public static float getPlayerSpeed()
 	{
-		return runSpeed;
+		return runSpeed; //DON'T USE
 	}
 
-	public CharacterState getCharacterState()
+	public float getSpeed()
 	{
-		return _characterState;
+		return newRunSpeed;
 	}
 
-	private void setCharacterState( CharacterState newState )
+	public PlayerCharacterState getCharacterState()
 	{
-		//print ("***setCharacterState from " + _characterState + " to new " + newState );
-		_characterState = newState;
+		return playerCharacterState;
+	}
+
+	private void setCharacterState( PlayerCharacterState newState )
+	{
+		//print ("***setCharacterState from " + playerCharacterState + " to new " + newState );
+		playerCharacterState = newState;
 		//Send an event to interested classes
-		if(playerStateChanged != null) playerStateChanged( _characterState );
+		if(playerStateChanged != null) playerStateChanged( playerCharacterState );
 
 	}
 
@@ -541,7 +496,14 @@ public sealed class PlayerController : BaseClass {
 	//It is useful to know on which tile the player is on.
 	public string getCurrentTileName()
 	{
-		return currentTile.name;
+		if( currentTile != null )
+		{
+			return currentTile.name;
+		}
+		else
+		{
+			return string.Empty;
+		}
 	}
 
 	void Update()
@@ -558,7 +520,7 @@ public sealed class PlayerController : BaseClass {
 
 				//Verify if the player is falling.
 				//Also ignore if we are already falling or dying.
-				if( _characterState != CharacterState.Falling && _characterState != CharacterState.Dying && _characterState != CharacterState.Ziplining )
+				if( playerCharacterState != PlayerCharacterState.Falling && playerCharacterState != PlayerCharacterState.Dying && playerCharacterState != PlayerCharacterState.Ziplining )
 				{
 					//Verify how far is the ground
 					if( distanceToGround > MIN_DISTANCE_FOR_FALL )
@@ -586,8 +548,6 @@ public sealed class PlayerController : BaseClass {
 						}
 						if( !isLeftFootOnGround && !isRightFootOnGround )
 						{
-							//you don't want the troll to follow the player falling down a ravine
-							trollController.stopPursuing();
 							fall();
 						}
 					}
@@ -600,31 +560,31 @@ public sealed class PlayerController : BaseClass {
 
 	void fall()
 	{
-		if( _characterState == CharacterState.Falling || _characterState == CharacterState.Jumping ) return; //ignore, we are already falling or jumping
+		if( playerCharacterState == PlayerCharacterState.Falling || playerCharacterState == PlayerCharacterState.Jumping ) return; //ignore, we are already falling or jumping
 
 		//Reset moveDirection.y to 0 so we dont start falling very fast
 		moveDirection.y = 0f;
 		allowRunSpeedToIncrease = false;
-		runSpeed = runSpeed * 0.65f;
+		newRunSpeed = newRunSpeed * 0.65f;
 		//Remember at what height the player started to fall because this will help us calculate the fall distance.
 		fallStartYPos = transform.position.y;
 		gravity = DEFAULT_GRAVITY * 2f;
-		sc.heightDamping = SimpleCamera.DEFAULT_HEIGHT_DAMPING * 9f;
+		sc.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING * 9f;
 		allowDistanceTravelledCalculations = false;
-		setCharacterState(CharacterState.Falling);
-		anim.SetTrigger(FallTrigger);
+		setCharacterState(PlayerCharacterState.Falling);
+		setAnimationTrigger(FallTrigger);
 		//playSound( fallingSound, false );
-		print ( "fall started " + distanceToGround + " " + MIN_DISTANCE_FOR_FALL + " " + _characterState );
+		print ( "fall started " + distanceToGround + " " + MIN_DISTANCE_FOR_FALL + " " + playerCharacterState );
 	}
 
 	void land()
 	{
 		//Reset values that we changed in the fall() method
 		gravity = DEFAULT_GRAVITY;
-		sc.heightDamping = SimpleCamera.DEFAULT_HEIGHT_DAMPING;
+		sc.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING;
 		allowRunSpeedToIncrease = true;
 		allowDistanceTravelledCalculations = true;
-		setCharacterState( CharacterState.Running );
+		setCharacterState( PlayerCharacterState.Running );
 		float fallDistance = fallStartYPos - transform.position.y;
 		if( fallDistance < DISTANCE_FOR_LAND_ANIMATION )
 		{
@@ -642,7 +602,7 @@ public sealed class PlayerController : BaseClass {
 
 	void updateDistanceTravelled()
 	{
-		if( _characterState == CharacterState.Falling )
+		if( playerCharacterState == PlayerCharacterState.Falling )
 		{
 			//Calculate the fall distance
 			float fallDistance = fallStartYPos - transform.position.y;
@@ -670,7 +630,7 @@ public sealed class PlayerController : BaseClass {
 		if (Time.deltaTime == 0) return;
 
 		//Make sure the character stays within the limits of the lanes (unless he is dying or falling or ziplining )
-		if ( _characterState != CharacterState.Dying && _characterState != CharacterState.Falling && _characterState != CharacterState.Ziplining )
+		if ( playerCharacterState != PlayerCharacterState.Dying && playerCharacterState != PlayerCharacterState.Falling && playerCharacterState != PlayerCharacterState.Ziplining )
 		{
 			if( usesBezierCurve )
 			{
@@ -761,7 +721,7 @@ public sealed class PlayerController : BaseClass {
 
 	void handlePowerUp()
 	{
-		if( GameManager.Instance.getGameState() == GameState.Normal && _characterState != CharacterState.Dying )
+		if( GameManager.Instance.getGameState() == GameState.Normal && playerCharacterState != PlayerCharacterState.Dying )
 		{
 			powerUpManager.activatePowerUp( PlayerStatsManager.Instance.getPowerUpSelected() );
 		}
@@ -779,7 +739,7 @@ public sealed class PlayerController : BaseClass {
 		//Verify if the player swiped across the screen
 		if (Input.touchCount > 0)
 		{
-            var touch = Input.touches[0];
+            Touch touch = Input.GetTouch( 0 );
             
             switch (touch.phase)
 			{
@@ -846,7 +806,7 @@ public sealed class PlayerController : BaseClass {
 			else
 			{
 				//player swiped UP
-				if( inZiplineTrigger )
+				if( isInZiplineTrigger && playerCharacterState != PlayerCharacterState.Ziplining )
 				{
 					attachToZipline();
 				}
@@ -867,7 +827,7 @@ public sealed class PlayerController : BaseClass {
 		{
 			//If we we were falling and just landed,reset values and go back to running state.
 			//However, before deciding to land, also check that the distance to the ground is less than 10 cm to avoid false positives (controller.isGrounded is not perfect).
-			if( _characterState == CharacterState.Falling && distanceToGround < 0.1f )
+			if( playerCharacterState == PlayerCharacterState.Falling && distanceToGround < 0.1f )
 			{
 				land();
 			}
@@ -880,15 +840,15 @@ public sealed class PlayerController : BaseClass {
 					dustPuff.loop = false;
 					dustPuff.Play();
 				}
-				anim.SetTrigger(LandTrigger);
+				setAnimationTrigger(LandTrigger);
 				moveDirection.y = 0f;
 				jumping = false;
 				doingDoubleJump = false;
-				runSpeed = runSpeedBeforeJump;
-				if( _characterState != CharacterState.Dying )
+				newRunSpeed = runSpeedBeforeJump;
+				if( playerCharacterState != PlayerCharacterState.Dying )
 				{
 					//Don't allow the run speed to increase if the player is dead because this will cause
-					//the player to continue to move forward even if he is dead because runSpeed won't stay at 0.
+					//the player to continue to move forward even if he is dead because newRunSpeed won't stay at 0.
 					allowRunSpeedToIncrease = true;
 				}
 				if ( queueSlide )
@@ -899,16 +859,16 @@ public sealed class PlayerController : BaseClass {
 				}
 				else if ( queueJump )
 				{
-					setCharacterState( CharacterState.Running );
+					setCharacterState( PlayerCharacterState.Running );
 					queueJump = false;
 					jump();
 				}
 				else
 				{
 					//Resume running, but only if we are not dying
-					if( _characterState != CharacterState.Dying )
+					if( playerCharacterState != PlayerCharacterState.Dying )
 					{
-						setCharacterState( CharacterState.Running );
+						setCharacterState( PlayerCharacterState.Running );
 					}
 				}
 			}
@@ -980,12 +940,12 @@ public sealed class PlayerController : BaseClass {
 		}
 		else
 		{
-			if( _characterState != CharacterState.Ziplining )
+			if( playerCharacterState != PlayerCharacterState.Ziplining )
 			{
 				//1) Get the direction of the player
 				forward = transform.TransformDirection(Vector3.forward);			
 				//2) Scale vector based on run speed
-				forward = forward * Time.deltaTime * runSpeed;
+				forward = forward * Time.deltaTime * newRunSpeed;
 				//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
 				forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
 				//4) Get a unit vector that is orthogonal to the direction of the player
@@ -1022,7 +982,12 @@ public sealed class PlayerController : BaseClass {
 				//7) Add the X component to the forward direction
 				forward = forward + xVector;
 				//8) Move the controller
+				#if UNITY_EDITOR
+				if( controller.enabled ) controller.Move( forward );
+				#else
 				controller.Move( forward );
+				#endif
+
 			}
 			else
 			{
@@ -1100,6 +1065,7 @@ public sealed class PlayerController : BaseClass {
 			moveDirection = new Vector3( -forwardCurrentStrength, moveDirection.y, sideCurrentStrength );
 		}
 		forward = moveDirection * Time.deltaTime;
+				print("playerSweptAwayByRiver " + moveDirection + " tile Y " + currentTile.transform.eulerAngles.y);
 		controller.Move( forward );
 	}
 
@@ -1120,7 +1086,7 @@ public sealed class PlayerController : BaseClass {
 		}
 		else if ( Input.GetKeyDown (KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.Space)  ) 
 		{
-			if( inZiplineTrigger )
+			if( isInZiplineTrigger && playerCharacterState != PlayerCharacterState.Ziplining )
 			{
 				attachToZipline();
 			}
@@ -1153,12 +1119,6 @@ public sealed class PlayerController : BaseClass {
 		{
 			handlePowerUp();
 		}
-		else if ( Input.GetKeyDown (KeyCode.R ) )
-		{
-			Debug.Log("Resetting tile with keyboard " + currentTile.name );
-			TileReset tr = currentTile.GetComponent<TileReset>();
-			tr.resetTile();
-		}
 		else if ( Input.GetKeyDown (KeyCode.Q ) )
 		{
 			Debug.Log("Activating shield powerup " );
@@ -1175,15 +1135,15 @@ public sealed class PlayerController : BaseClass {
 	{
 		if( activate )
 		{
-			trollController.stopPursuing();
+			controlTrollPursuit( false );
 			mainCamera.GetComponent<MotionBlur>().enabled = true;			
 			allowRunSpeedToIncrease = false;
-			runSpeed = runSpeed * PowerUpManager.SPEED_BOOST_MULTIPLIER;
+			newRunSpeed = newRunSpeed * PowerUpManager.SPEED_BOOST_MULTIPLIER;
 		}
 		else
 		{
 			mainCamera.GetComponent<MotionBlur>().enabled = false;			
-			if( _characterState != CharacterState.Dying ) allowRunSpeedToIncrease = true;
+			if( playerCharacterState != PlayerCharacterState.Dying ) allowRunSpeedToIncrease = true;
 		}
 	}
 
@@ -1209,7 +1169,7 @@ public sealed class PlayerController : BaseClass {
 			//Only allow a jump if we are not already jumping and if we are on the ground.
 			//However, if the ground type below the player is of type Collapsing, still allow him to jump.
 			//The Collapsing tag is used in the CollapsingBridge code.
-			if (_characterState != CharacterState.Jumping && ( distanceToGround < 0.5f || groundType == "Collapsing" ) )
+			if (playerCharacterState != PlayerCharacterState.Jumping && ( distanceToGround < 0.5f || groundType == "Collapsing" ) )
 			{
 				//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
 				moveDirection.x = 0;
@@ -1218,40 +1178,38 @@ public sealed class PlayerController : BaseClass {
 				recalculateCurrentLane();
 
 				//We are allowed to jump from the slide state.
-				audioSource.Stop ();							//stop the sliding sound if any
 				dustPuff.Stop();						//stop the dust puff that loops while we are sliding
 				slideWaterSplash.Stop();
 				deactivateOverheadObstacles( true );	//reactivate overhead obstacles since they would have been deactivated if we were sliding
 
 				jumping = true;
-				trollController.jump();
+				if( trollController != null ) trollController.jump();
 
 				//Memorize the run speed
-				runSpeedBeforeJump = runSpeed;
+				runSpeedBeforeJump = newRunSpeed;
 				//Lower the run speed during a jump
-				runSpeed = runSpeed * JUMP_RUN_SPEED_MODIFIER;
+				newRunSpeed = newRunSpeed * JUMP_RUN_SPEED_MODIFIER;
 				//Don't go lower then levelRunStartSpeed
-				if( runSpeed < levelRunStartSpeed ) runSpeed = levelRunStartSpeed;
-				//Don't accelerate during a jump (also it would reset the runSpeed variable).
+				if( newRunSpeed < levelRunStartSpeed ) newRunSpeed = levelRunStartSpeed;
+				//Don't accelerate during a jump (also it would reset the newRunSpeed variable).
 				allowRunSpeedToIncrease = false;
-				setCharacterState( CharacterState.Jumping );
-				if( currentTileType == TileType.Straight_Slope && currentTile.GetComponent<SegmentInfo>().addJumpBoost )
+				setCharacterState( PlayerCharacterState.Jumping );
+				if( false )
 				{
 					//if you are on a steep slope, the normal jump speed is insufficient to make you feel you are jumping high.
 					//So use a higher value instead.
 					moveDirection.y = slopeJumpSpeed;
-					anim.SetTrigger(JumpTrigger);
+					setAnimationTrigger(JumpTrigger);
 				}
 				else if( doingDoubleJump )
 				{
 					moveDirection.y = doubleJumpSpeed;
-					anim.SetTrigger(Double_JumpTrigger);
-					boots_of_jumping.incrementCounter();
+					setAnimationTrigger(Double_JumpTrigger);
 				}
 				else
 				{
 					moveDirection.y = jumpSpeed;
-					anim.SetTrigger(JumpTrigger);
+					setAnimationTrigger(JumpTrigger);
 				}
 				//for debugging
 				//remove jump sound for now because it is annoying
@@ -1267,10 +1225,12 @@ public sealed class PlayerController : BaseClass {
 		{
 			curveList = si.curveList;
 			SegmentInfo.BezierData bezierData = curveList[0];
-			setCharacterState( CharacterState.Ziplining );
+			setCharacterState( PlayerCharacterState.Ziplining );
 			enablePlayerControl( false );
-			anim.SetTrigger(Idle_LookTrigger);
+			setAnimationTrigger(Idle_LookTrigger);
 			ziplineAttachPoint = transform.FindChild("Zipline Attach Point");
+			ziplineAttachPoint.localPosition = new Vector3( 0, 2.15f, 0 );
+			ziplineAttachPoint.localEulerAngles = new Vector3( 0, 0, 0 );
 			ziplineAttachPoint.GetComponent<AudioSource>().Play();
 			ziplineAttachPoint.SetParent(null);
 			transform.SetParent( ziplineAttachPoint );
@@ -1285,26 +1245,26 @@ public sealed class PlayerController : BaseClass {
 
 	void detachFromZipline()
 	{
-		inZiplineTrigger = false;
 		LeanTween.cancel( gameObject );
 		transform.SetParent( null );
-		ziplineAttachPoint.SetParent( transform );
+		ziplineAttachPoint.SetParent( transform, false );
+		ziplineAttachPoint.localScale = new Vector3( 1f, 1f, 1f ); 	//Just because of rounding when changing parent
 		ziplineAttachPoint.GetComponent<AudioSource>().Stop();
 		enablePlayerControl( true );
 		sc.reactivateMaincamera();
-		transform.eulerAngles = new Vector3(0,270f,0);
+		transform.eulerAngles = new Vector3(0,270f,0); //we turned left while ziplining
 		fall();
 	}
 
 	void setDesiredLane( float sideMoveInitiatedZ )
 	{
-		if( _characterState == CharacterState.Sliding )
+		if( playerCharacterState == PlayerCharacterState.Sliding )
 		{
-			setCharacterState( CharacterState.Turning_and_sliding );
+			setCharacterState( PlayerCharacterState.Turning_and_sliding );
 		}
 		else
 		{
-			setCharacterState( CharacterState.Turning );
+			setCharacterState( PlayerCharacterState.Turning );
 		}
 
 		if (sideMoveInitiatedZ < -laneLimit )
@@ -1389,7 +1349,7 @@ public sealed class PlayerController : BaseClass {
 
 	void turnCorner( bool isGoingRight )
 	{
-		if ( _characterState == CharacterState.Running || _characterState == CharacterState.Jumping || _characterState == CharacterState.Sliding || _characterState == CharacterState.SideMove || _characterState == CharacterState.Stumbling )
+		if ( playerCharacterState == PlayerCharacterState.Running || playerCharacterState == PlayerCharacterState.Jumping || playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.SideMove || playerCharacterState == PlayerCharacterState.Stumbling )
 		{
 			this.isGoingRight = isGoingRight;
 
@@ -1422,7 +1382,7 @@ public sealed class PlayerController : BaseClass {
 				{	
 					Debug.LogWarning("turnCorner: game over - player turned too late." );
 					reasonDiedAtTurn = "TURNED TOO LATE";
-					managePlayerDeath ( DeathType.Turn );
+					managePlayerDeath ( DeathType.Turned_Too_Late );
 					return;
 				}
 
@@ -1432,7 +1392,7 @@ public sealed class PlayerController : BaseClass {
 					if ( isGoingRight )
 					{
 						//Verify if the player is doing a side-move in an allowed direction
-						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight || currentDeadEndType == DeadEndType.RightStraight)
+						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight )
 						{
 							//Turn is valid
 							desiredLane = Lanes.Left;
@@ -1443,7 +1403,7 @@ public sealed class PlayerController : BaseClass {
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way too late." );
 							reasonDiedAtTurn = "LATE WRONG WAY 3";
-							managePlayerDeath ( DeathType.Turn );
+							managePlayerDeath ( DeathType.Turned_Too_Late );
 						}				
 					}
 					else
@@ -1459,7 +1419,7 @@ public sealed class PlayerController : BaseClass {
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way too late." );
 							reasonDiedAtTurn = "LATE WRONG WAY 4";
-							managePlayerDeath ( DeathType.Turn );
+							managePlayerDeath ( DeathType.Turned_Too_Late );
 						}
 					}
 					return;
@@ -1471,7 +1431,7 @@ public sealed class PlayerController : BaseClass {
 					if ( isGoingRight )
 					{
 						//Verify if the player is doing a side-move in an allowed direction
-						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight || currentDeadEndType == DeadEndType.RightStraight)
+						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight )
 						{
 							//Turn is valid
 							setDesiredLane( sideMoveInitiatedZ );
@@ -1481,7 +1441,7 @@ public sealed class PlayerController : BaseClass {
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way." );
 							reasonDiedAtTurn = "WRONG WAY 1";
-							managePlayerDeath ( DeathType.Turn );
+							managePlayerDeath ( DeathType.Turned_Wrong_Way );
 						}				
 					}
 					else
@@ -1496,7 +1456,7 @@ public sealed class PlayerController : BaseClass {
 							//Player turned the wrong way
 							Debug.LogWarning("turnCorner: game over - player turned wrong way." );
 							reasonDiedAtTurn = "WRONG WAY 2";
-							managePlayerDeath ( DeathType.Turn );
+							managePlayerDeath ( DeathType.Turned_Wrong_Way );
 						}
 					}
 				}
@@ -1517,7 +1477,7 @@ public sealed class PlayerController : BaseClass {
 	{
 		//You can only change lanes while running
 		//You can also change your mind 
-		if ( _characterState == CharacterState.Running || ( _characterState == CharacterState.SideMove && this.isGoingRight != isGoingRight ) )
+		if ( playerCharacterState == PlayerCharacterState.Running || ( playerCharacterState == PlayerCharacterState.SideMove && this.isGoingRight != isGoingRight ) )
 		{
 			this.isGoingRight = isGoingRight;
 
@@ -1544,7 +1504,7 @@ public sealed class PlayerController : BaseClass {
 				if ( isGoingRight )
 				{
 					desiredLane = Lanes.Right;
-					setCharacterState( CharacterState.SideMove );
+					setCharacterState( PlayerCharacterState.SideMove );
 					moveDirection.x = currentSideMoveSpeed;
 					audioSource.PlayOneShot( sideMoveSound );
 					//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
@@ -1553,7 +1513,7 @@ public sealed class PlayerController : BaseClass {
 				else
 				{
 					desiredLane = Lanes.Left;
-					setCharacterState( CharacterState.SideMove );
+					setCharacterState( PlayerCharacterState.SideMove );
 					moveDirection.x = -currentSideMoveSpeed;
 					audioSource.PlayOneShot( sideMoveSound );
 					//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
@@ -1562,7 +1522,7 @@ public sealed class PlayerController : BaseClass {
 			else if ( currentLane == Lanes.Right && !isGoingRight )
 			{
 				desiredLane = Lanes.Center;
-				setCharacterState( CharacterState.SideMove );
+				setCharacterState( PlayerCharacterState.SideMove );
 				moveDirection.x = -currentSideMoveSpeed;
 				audioSource.PlayOneShot( sideMoveSound );
 				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
@@ -1570,7 +1530,7 @@ public sealed class PlayerController : BaseClass {
 			else if ( currentLane == Lanes.Left && isGoingRight )
 			{
 				desiredLane = Lanes.Center;
-				setCharacterState( CharacterState.SideMove );
+				setCharacterState( PlayerCharacterState.SideMove );
 				moveDirection.x = currentSideMoveSpeed;
 				audioSource.PlayOneShot( sideMoveSound );
 				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
@@ -1582,11 +1542,11 @@ public sealed class PlayerController : BaseClass {
 	{
 		if (jumping)
 		{
-			setCharacterState( CharacterState.Jumping );
+			setCharacterState( PlayerCharacterState.Jumping );
 		}
 		else
 		{
-			setCharacterState( CharacterState.Running );					
+			setCharacterState( PlayerCharacterState.Running );					
 		}
 		moveDirection.x = 0;
 		currentLane = desiredLane;
@@ -1594,7 +1554,7 @@ public sealed class PlayerController : BaseClass {
 
 	void verifyIfDesiredLaneReached()
 	{
-		if ( _characterState == CharacterState.SideMove || _characterState == CharacterState.Stumbling )
+		if ( playerCharacterState == PlayerCharacterState.SideMove || playerCharacterState == PlayerCharacterState.Stumbling )
 		{
 			float playerRotationY = Mathf.Floor( transform.eulerAngles.y );
 			if ( currentLane == Lanes.Center )
@@ -1735,7 +1695,7 @@ public sealed class PlayerController : BaseClass {
 	{
 		if( playerControlsEnabled )
 		{
-			if( _characterState != CharacterState.SideMove )
+			if( playerCharacterState != PlayerCharacterState.SideMove && playerCharacterState != PlayerCharacterState.Falling )
 			{
 				if( jumping )
 				{
@@ -1753,7 +1713,7 @@ public sealed class PlayerController : BaseClass {
 					//Slides cant be prolonged indefinitely. This is why you can reset the start time.
 					slideStartTime = Time.time;
 					//Don't reset values for nothing if we are extending the slide
-					if( _characterState != CharacterState.Sliding )
+					if( playerCharacterState != PlayerCharacterState.Sliding )
 					{
 						/*I used to change the controller capsule height,radius and position.
 						  However, when sliding across the Entrance trigger, it would cause multiple
@@ -1763,7 +1723,7 @@ public sealed class PlayerController : BaseClass {
 						  overhead obstacles.*/
 
 						deactivateOverheadObstacles( false );
-						setCharacterState( CharacterState.Sliding );
+						setCharacterState( PlayerCharacterState.Sliding );
 						if( groundType == "Water" )
 						{
 							slideWaterSplash.Play();
@@ -1774,9 +1734,8 @@ public sealed class PlayerController : BaseClass {
 							dustPuff.Play();
 						}
 
-						anim.SetTrigger(Slide_DownTrigger);
+						setAnimationTrigger(Slide_DownTrigger);
 
-						playSound( slidingSound, true );
 					}
 				}
 			}
@@ -1785,7 +1744,7 @@ public sealed class PlayerController : BaseClass {
 
 	void verifySlide()
 	{
-		if ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding )
+		if ( playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.Turning_and_sliding )
 		{
 			//For as long as we have a collider above the character's head, prolong the slide duration
 			if ( checkAbove() )
@@ -1799,16 +1758,15 @@ public sealed class PlayerController : BaseClass {
 				dustPuff.Stop();
 				slideWaterSplash.Stop();
 
-				if( _characterState == CharacterState.Turning_and_sliding )
+				if( playerCharacterState == PlayerCharacterState.Turning_and_sliding )
 				{
-					setCharacterState( CharacterState.Sliding );
+					setCharacterState( PlayerCharacterState.Sliding );
 				}
 				else
 				{
-					setCharacterState( CharacterState.Running );
+					setCharacterState( PlayerCharacterState.Running );
 				}
-				anim.SetTrigger(Slide_UpTrigger);
-				audioSource.Stop();
+				setAnimationTrigger(Slide_UpTrigger);
 				deactivateOverheadObstacles( true );
 			}
 		}
@@ -1855,15 +1813,15 @@ public sealed class PlayerController : BaseClass {
 			time -= Time.deltaTime;
 			Vector3 coinDestination = mainCamera.GetComponent<Camera>().ScreenToWorldPoint (coinScreenPos);
 
-			if (coin.gameObject != null )
+			if (coin != null )
 			{
 				coin.position = Vector3.Lerp( coinDestination, originalPos, time / originalTime );
 				coin.rotation = mainCamera.rotation;
 			}
 			
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		}
-		if (coin.gameObject != null )
+		if (coin != null )
 		{
 			Destroy ( coin.gameObject );
 		}
@@ -1893,7 +1851,7 @@ public sealed class PlayerController : BaseClass {
 	
 	void OnControllerColliderHit (ControllerColliderHit hit )
 	{
-		if( _characterState != CharacterState.Dying )
+		if( playerCharacterState != PlayerCharacterState.Dying )
 		{
 			groundType = hit.gameObject.tag;
 			if( groundType != previousGroundType )
@@ -1928,7 +1886,7 @@ public sealed class PlayerController : BaseClass {
 					managePlayerDeath ( DeathType.Obstacle );
 				}
 			}
-			else if( hit.collider.name.StartsWith("Chicken") )
+			else if( hit.gameObject.CompareTag("Chicken") )
 			{
 				Transform chickenTransform = hit.transform.FindChild("Chicken Trigger");
 				if( chickenTransform == null )
@@ -1939,7 +1897,7 @@ public sealed class PlayerController : BaseClass {
 
 				ChickenController chickenController = chickenTransform.gameObject.GetComponent<ChickenController>();
 
-				if( _characterState == CharacterState.Sliding )
+				if( playerCharacterState == PlayerCharacterState.Sliding )
 				{
 					//We can have multiple collisions. Only give stars on the first collision.
 					//However, if the chicken falls on the road, we want the player to be able to collide with it a second time.
@@ -1955,13 +1913,10 @@ public sealed class PlayerController : BaseClass {
 						PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
 						
 						//Display coin total picked up icon
-						HUDHandler.hudHandler.displayStarPickup( 10, Color.yellow );
-
-						//Give the Chicken Chaser achievement
-						chicken_chaser.incrementCounter();
+						HUDHandler.hudHandler.displayCoinPickup( 10 );
 
 						//The faster the player runs, the further the chicken will fly
-						float pushPower = runSpeed * 4f;
+						float pushPower = newRunSpeed * 2.5f;
 
 						//Make the chicken go flying
 						Rigidbody body = hit.collider.attachedRigidbody;
@@ -1996,27 +1951,27 @@ public sealed class PlayerController : BaseClass {
 			{
 				Stumble();
 			}
-			else if (hit.collider.name.StartsWith( "Zombie" ) )
+			else if (hit.gameObject.CompareTag( "Zombie" ) )
 			{
 				ZombieController zombieController = (ZombieController) hit.gameObject.GetComponent("ZombieController");
 				//Ignore collision event if Zombie already dead.
 				if( zombieController.getCreatureState() != CreatureState.Dying )
 				{
 					//You can't make a crawling zombie fall backwards
-					if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding || PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) ) && zombieController.getCreatureState() != CreatureState.Crawling )
+					if( ( playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.Turning_and_sliding || PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) ) && zombieController.getCreatureState() != CreatureState.Crawling )
 					{
 						//Give stars
 						PlayerStatsManager.Instance.modifyCurrentCoins( ZombieManager.NUMBER_STARS_PER_ZOMBIE, true, false );
 						
 						//Display coin total picked up icon
-						HUDHandler.hudHandler.displayStarPickup( ZombieManager.NUMBER_STARS_PER_ZOMBIE, Color.yellow );
+						HUDHandler.hudHandler.displayCoinPickup( ZombieManager.NUMBER_STARS_PER_ZOMBIE );
 
 						zombieController.fallToBack();
 						
 					}
 					else
 					{
-						Debug.Log( "Player collided with zombie: " + hit.collider.name + " Normal" + hit.normal.y + " but CANT TOPPLE HIM " + _characterState + "  STATE Z "+ zombieController.getCreatureState());
+						Debug.Log( "Player collided with zombie: " + hit.collider.name + " Normal" + hit.normal.y + " but CANT TOPPLE HIM " + playerCharacterState + "  STATE Z "+ zombieController.getCreatureState());
 						if( hit.normal.y < 0.4f )
 						{
 							//Player is running up Z axis
@@ -2055,7 +2010,6 @@ public sealed class PlayerController : BaseClass {
 						{
 							//We landed on the zombie's head
 							land ();
-							watch_your_step.incrementCounter();
 						}
 					}
 				}
@@ -2114,14 +2068,14 @@ public sealed class PlayerController : BaseClass {
 					Debug.Log( "PLayer collided with breakable: " + hit.collider.name );
 					//We pass the player collider to triggerBreak() because we do not want the barrel fragments to collide with the player.
 					bo.triggerBreak( GetComponent<Collider>() );
-					if( _characterState == CharacterState.Sliding )
+					if( playerCharacterState == PlayerCharacterState.Sliding )
 					{
 						//Give stars
 						PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
 
 						//To do
 						//Display coin total picked up icon
-						HUDHandler.hudHandler.displayStarPickup( 10, Color.yellow );
+						HUDHandler.hudHandler.displayCoinPickup( 10 );
 
 					}	
 					else
@@ -2149,14 +2103,14 @@ public sealed class PlayerController : BaseClass {
 				Debug.Log( "PLayer collided with breakable: " + hit.collider.name );
 				//We pass the player collider to triggerBreak() because we do not want the barrel fragments to collide with the player.
 				bo.triggerBreak( GetComponent<Collider>() );
-				if( _characterState == CharacterState.Sliding )
+				if( playerCharacterState == PlayerCharacterState.Sliding )
 				{
 					//Give stars
 					PlayerStatsManager.Instance.modifyCurrentCoins( 10, true, false );
 					
 					//To do
 					//Display coin total picked up icon
-					HUDHandler.hudHandler.displayStarPickup( 10, Color.yellow );
+					HUDHandler.hudHandler.displayCoinPickup( 10 );
 					
 				}	
 				else
@@ -2215,15 +2169,15 @@ public sealed class PlayerController : BaseClass {
 	void handleCreatureCollision( ControllerColliderHit hit, ICreature creature )
 	{
 		//Ignore collision event if the creature is already dead.
-		if( creature.getCreatureState() != CreatureState.Dying )
+		if( creature != null && creature.getCreatureState() != CreatureState.Dying )
 		{
-			if( ( _characterState == CharacterState.Sliding || _characterState == CharacterState.Turning_and_sliding ) || PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
+			if( ( playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.Turning_and_sliding ) || PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
 			{
 				//Give stars
-				PlayerStatsManager.Instance.modifyCurrentCoins( CreatureManager.NUMBER_STARS_PER_CREATURE, true, false );
+				PlayerStatsManager.Instance.modifyCurrentCoins( CreatureManager.NUMBER_SOFT_CURRENCY_PER_CREATURE, true, false );
 				
 				//Display coin total picked up icon
-				HUDHandler.hudHandler.displayStarPickup( CreatureManager.NUMBER_STARS_PER_CREATURE, Color.yellow );
+				HUDHandler.hudHandler.displayCoinPickup( CreatureManager.NUMBER_SOFT_CURRENCY_PER_CREATURE );
 
 				creature.knockback();
 				
@@ -2276,7 +2230,7 @@ public sealed class PlayerController : BaseClass {
 	{
 		//Carefull, if you turn right inside a deadEnd OnTriggerEnter will be called a second time (but not if your turn left).
 		//This is probably a Unity bug.
-		if( other.name == "deadEnd" )
+		if( other.CompareTag( "deadEnd" ) )
 		{
 			//Deactivate the speedboost if active because it is really hard to turn when you are going super fast
 			if( PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) )
@@ -2286,9 +2240,12 @@ public sealed class PlayerController : BaseClass {
 			isInDeadEnd = true;
 			wantToTurn = false;
 
-			deadEnd deadEndComponent = (deadEnd) other.GetComponent(typeof(deadEnd));
-			currentDeadEndType = deadEndComponent.deadEndType;
+			currentDeadEndType = other.GetComponent<deadEnd>().deadEndType;
 			deadEndTrigger = other;
+			//Slow dow the player to make it easier to turn
+			allowRunSpeedToIncrease = false;
+			runSpeedAtTimeOfTurn = newRunSpeed;
+			newRunSpeed = newRunSpeed * runSpeedTurnMultiplier;
 		}
 		else if ( other.name.StartsWith( "Coin" ) && !PowerUpManager.isThisPowerUpActive( PowerUpType.Magnet ) )
 		{
@@ -2306,26 +2263,26 @@ public sealed class PlayerController : BaseClass {
 			lavaSpurt.transform.position = new Vector3( transform.position.x, transform.position.y, transform.position.z );
 			lavaSpurt.loop = false;
 			lavaSpurt.Play();
-			trollController.stopPursuing();
+			controlTrollPursuit( false );
 			sc.lockCamera( true );
 			managePlayerDeath( DeathType.Lava );
 		}
 		//For the Great Fall trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
-		else if( other.name == "Great Fall" )
+		else if( other.CompareTag( "Great Fall" ) )
 		{
 			Debug.Log ("Player is having a great fall.");
-			trollController.stopPursuing();
+			controlTrollPursuit( false );
 			managePlayerDeath( DeathType.GreatFall );
 		}
 		//For the Lock Camera trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
-		else if( other.name == "Lock Camera" )
+		else if( other.CompareTag( "Lock Camera" ) )
 		{
 			Debug.Log ("Locking camera.");
 			sc.lockCamera( true );
 		}
 		else if( other.name .StartsWith("BallOfFire") )
 		{
-			if( _characterState != CharacterState.Sliding )
+			if( playerCharacterState != PlayerCharacterState.Sliding )
 			{
 				Debug.Log ("Player was hit by fireball.");
 				managePlayerDeath ( DeathType.Fireball);
@@ -2333,7 +2290,7 @@ public sealed class PlayerController : BaseClass {
 		}
  		else if( other.name == "RiverCollider" )
 		{
-			if( _characterState != CharacterState.Dying )
+			if( playerCharacterState != PlayerCharacterState.Dying )
 			{
 				//Create a water splash
 				Debug.Log ("Player fell into river.");
@@ -2351,27 +2308,19 @@ public sealed class PlayerController : BaseClass {
 		{
 			//Player has successfully completed the current level.
 			Debug.Log ("Checkpoint triggered ");
-			trollController.stopPursuing ();
-			StartCoroutine( SoundManager.soundManager.fadeOutMusic( 6.3f ) );
-			StartCoroutine( SoundManager.soundManager.fadeOutAmbience( 6.3f ) );
+			controlTrollPursuit( false );
 			GameManager.Instance.setGameState(GameState.Checkpoint);
-			StartCoroutine( slowDownPlayer( 16f, afterPlayerSlowdown ) );
+			StartCoroutine( slowDownPlayer( 16f, afterPlayerSlowdown, other.transform ) );
 		}
-		else if( other.name == "Entrance" )
+		else if( other.CompareTag( "Entrance" ) )
 		{
 			SegmentInfo si = other.transform.parent.GetComponent<SegmentInfo>();
 			if( si != null )
 			{
-				if( !si.entranceCrossed )
-				{
-					//We might recycle currentTile (the one prior to the one we just entered), this is why we are passing it as a parameter.
-					gl.tileEntranceCrossed( other.transform.parent );
-					//This flag is set to avoid tileEntranceCrossed being called multiple time which can happen with onTriggerEnter.
-					//This flag is set to false when a tile is added.
-					si.entranceCrossed = true;
-				}
-				currentTilePos = si.tile.transform.position;
-				currentTile = si.tile;
+				//We might recycle currentTile (the one prior to the one we just entered), this is why we are passing it as a parameter.
+				generateLevel.tileEntranceCrossed( other.transform.parent );
+				currentTilePos = si.transform.position;
+				currentTile = si.gameObject;
 				tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
 				currentTileType = si.tileType;
 				usesBezierCurve = si.usesBezierCurve;
@@ -2399,7 +2348,7 @@ public sealed class PlayerController : BaseClass {
 			{
 				powerUpManager.deactivatePowerUp(PowerUpType.SpeedBoost, true );
 			}
-			inZiplineTrigger = true;
+			isInZiplineTrigger = true;
 		}
  		else if( other.name == "DetachZiplineTrigger" )
 		{
@@ -2411,7 +2360,7 @@ public sealed class PlayerController : BaseClass {
 	public void placePlayerInCenterLane()
 	{
 		print ("placePlayerInCenterLane called");
-		trollController.stopPursuing();
+		controlTrollPursuit( false );
 		//We do not want the player to be jumping or sliding as he reaches the end location.
 		//Disable run acceleration as well.
 		allowRunSpeedToIncrease = false;
@@ -2421,14 +2370,13 @@ public sealed class PlayerController : BaseClass {
 		powerUpManager.deactivatePowerUp(PowerUpType.SlowTime, true );
 		powerUpManager.deactivatePowerUp(PowerUpType.SpeedBoost, true );
 		//If he was sliding, making him run again
-		if ( _characterState == CharacterState.Sliding )
+		if ( playerCharacterState == PlayerCharacterState.Sliding )
 		{
 			//We are stopping sliding
 			dustPuff.Stop();
 			slideWaterSplash.Stop();
-			setCharacterState( CharacterState.Running );
-			anim.SetTrigger(Slide_UpTrigger);
-			audioSource.Stop();
+			setCharacterState( PlayerCharacterState.Running );
+			setAnimationTrigger(Slide_UpTrigger);
 		}
 
 		//Clear move direction of any values. If we still have an x component for example, we will drift.
@@ -2437,18 +2385,18 @@ public sealed class PlayerController : BaseClass {
 		usesAccelerometer = false;
 		accelerometerPreviousFrameX = 0;
 		recalculateCurrentLane();  //make sure our currentLane info is valid
-		//Side move speed is divided by 2 because it just looks better.
+		//Side move speed is divided by 1.6 because it just looks better.
 		if ( currentLane == Lanes.Left )
 		{
 			desiredLane = Lanes.Center;
-			setCharacterState( CharacterState.SideMove );
-			moveDirection.x = sideMoveSpeed/2f;
+			setCharacterState( PlayerCharacterState.SideMove );
+			moveDirection.x = sideMoveSpeed/1.6f;
 		}
 		else if ( currentLane == Lanes.Right )
 		{
 			desiredLane = Lanes.Center;
-			setCharacterState( CharacterState.SideMove );
-			moveDirection.x = -sideMoveSpeed/2f;
+			setCharacterState( PlayerCharacterState.SideMove );
+			moveDirection.x = -sideMoveSpeed/1.6f;
 		}
 	}
 
@@ -2508,15 +2456,15 @@ public sealed class PlayerController : BaseClass {
 
 	void OnTriggerExit(Collider other)
 	{
-		if( GameManager.Instance.getGameState() != GameState.Resurrect )
+		if( getCharacterState() != PlayerCharacterState.Dying )
 		{
-			if( other.name == "deadEnd" )
+			if( other.CompareTag( "deadEnd" ) )
 			{
-				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None && currentDeadEndType != DeadEndType.RightStraight)
+				if( !deadEndTurnDone && currentDeadEndType != DeadEndType.None )
 				{
 					reasonDiedAtTurn = "EXITED DEAD END NO TURN";
 					Debug.LogWarning("OnTriggerExit player exited dead end without turning " + other.name + " " + isInDeadEnd + " " + deadEndTurnDone + " " + currentDeadEndType );
-					managePlayerDeath ( DeathType.Turn );
+					managePlayerDeath ( DeathType.Exited_Without_Turning );
 				}
 				//Reset values
 				isInDeadEnd = false;
@@ -2532,12 +2480,15 @@ public sealed class PlayerController : BaseClass {
 					powerUpManager.deactivatePowerUp( PowerUpType.Shield, false );
 				}
 			}
-			
-			//Debug.Log ("OnTriggerExit " + other.name);
+			else if( other.name == "ZiplineTrigger" )
+			{
+				//Player is no longer in the zipline trigger
+				isInZiplineTrigger = false;
+			}
 		}
 	}
 
-	public void teleportLeaveComplete()
+	public void Teleport_leave_complete( AnimationEvent eve )
 	{
 		appearFX.Play ();
 		transform.localScale = new Vector3( 0.002f, 0.002f, 0.002f );
@@ -2545,15 +2496,23 @@ public sealed class PlayerController : BaseClass {
 
 	}
 	
-	public IEnumerator slowDownPlayer( float distance, System.Action onFinish )
+	//We pass the trigger value because we need its position. We cannot rely on the position of the player at the moment of trigger because it can fluctuate based on frame rate and such.
+	//Therefore the final destination is based on the trigger's Z position plus the desired distance (and not the player's z position plus the desired distance, which is slightly inaccurate).
+	public IEnumerator slowDownPlayer( float distance, System.Action onFinish, Transform trigger )
 	{
-
+		if( currentTile.transform.rotation.y != 0 ) Debug.LogError("PlayerController-slowDownPlayer error: slow down only works with tiles with a zero rotation for now.");
 		float percentageComplete = 0;
 
-		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, transform.position.z );
+		//Center player perfectly in the middle of the tile
+		transform.SetParent( currentTile.transform );
+		transform.localPosition = new Vector3( 0, transform.localPosition.y, transform.localPosition.z );
+		transform.SetParent( null );
+
+		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, trigger.position.z );
+		Vector3 finalPlayerPosition = initialPlayerPosition + (transform.TransformDirection(Vector3.forward) * distance);
 		float distanceTravelled = 0;
 		float brakeFactor = 0.7f; //brake the player before slowing him down
-		float startSpeed = getPlayerSpeed() * brakeFactor;
+		float startSpeed = newRunSpeed * brakeFactor;
 		float endSpeed = SLOW_DOWN_END_SPEED;
 
 		float startBlendFactor = blendFactor;
@@ -2567,7 +2526,7 @@ public sealed class PlayerController : BaseClass {
 			percentageComplete = distanceTravelled/distance;
 
 			//Update run speed
-			runSpeed =  Mathf.Lerp( startSpeed, endSpeed, percentageComplete );
+			newRunSpeed =  Mathf.Lerp( startSpeed, endSpeed, percentageComplete );
 
 			//Update the blend amount between Run and Sprint animations based on the current run speed
 			blendFactor =  Mathf.Lerp( startBlendFactor, 0, percentageComplete );
@@ -2580,7 +2539,7 @@ public sealed class PlayerController : BaseClass {
 			//1) Get the direction of the player
 			forward = transform.TransformDirection(Vector3.forward);
 			//2) Scale vector based on run speed
-			forward = forward * Time.deltaTime * runSpeed;
+			forward = forward * Time.deltaTime * newRunSpeed;
 			//3) Add Y component for gravity. Both the x and y components are stored in moveDirection.
 			forward.Set( forward.x, moveDirection.y * Time.deltaTime, forward.z );
 			//4) Get a unit vector that is orthogonal to the direction of the player
@@ -2597,27 +2556,33 @@ public sealed class PlayerController : BaseClass {
 			}
 			//7) Add the X component to the forward direction
 			forward = forward + xVector;
+			forward =  Vector3.ClampMagnitude(forward, Vector3.Distance( transform.position, finalPlayerPosition ) );
+
 			//8) Move the controller
 			controller.Move( forward );
 			verifyIfDesiredLaneReached();
 			yield return new WaitForFixedUpdate(); 
 		}
+		//Position the player exactly where he should be as we might have overshot the distance in the while loop
+		transform.position = new Vector3( finalPlayerPosition.x, transform.position.y, finalPlayerPosition.z );
 		onFinish.Invoke();
 	}
 
-	void afterPlayerSlowdown()
+
+	public void afterPlayerSlowdown()
 	{
-		setCharacterState( CharacterState.Winning );
-		anim.SetTrigger(VictoryTrigger);
+		setCharacterState( PlayerCharacterState.Winning );
+		setAnimationTrigger(VictoryTrigger);
 		//See Cullis Gate for next steps.
 	}
 
-	public IEnumerator walkForDistance( float distance, float walkSpeed, System.Action onFinish )
+	public IEnumerator walkForDistance( float distance, float walkSpeed, System.Action onFinish, bool playIdleLookAfterWalkCompleted )
 	{
 		Vector3 initialPlayerPosition = new Vector3( transform.position.x, transform.position.y, transform.position.z );
+		Vector3 finalPlayerPosition = initialPlayerPosition + (transform.TransformDirection(Vector3.forward) * distance);
 		float distanceTravelled = 0;
 		anim.SetFloat(speedBlendFactor, 0 );
-		anim.SetTrigger( RunTrigger );
+		setAnimationTrigger( RunTrigger );
 		anim.speed = 1f;
 
 		while ( distanceTravelled <= distance )
@@ -2635,7 +2600,9 @@ public sealed class PlayerController : BaseClass {
 			controller.Move( forward );
 			yield return new WaitForFixedUpdate(); 
 		}
-		anim.SetTrigger("Idle_Look");
+		//Position the player exactly where he should be as we might have overshot the distance in the while loop
+		transform.position = new Vector3( finalPlayerPosition.x, transform.position.y, finalPlayerPosition.z );
+		if( playIdleLookAfterWalkCompleted ) setAnimationTrigger(Idle_LookTrigger);
 		onFinish.Invoke();	
 	}
 
@@ -2651,7 +2618,7 @@ public sealed class PlayerController : BaseClass {
 			//so he can activate the proper tiles and, if needed, move the tiles on the Right of the T-Junction to 
 			//the Left assuming the player decided to turn that way.
 			//We want to do this early to avoid the tiles popping into view.
-			gl.playerTurnedAtTJunction( isGoingRight, currentTile );
+			generateLevel.playerTurnedAtTJunction( isGoingRight, currentTile );
 		}
 
 		audioSource.PlayOneShot( sideMoveSound );
@@ -2668,23 +2635,26 @@ public sealed class PlayerController : BaseClass {
 			tileRotationY = tileRotationY - 90f;
 		}
 
-		if( _characterState == CharacterState.Turning_and_sliding )
+		if( playerCharacterState == PlayerCharacterState.Turning_and_sliding )
 		{
-			setCharacterState( CharacterState.Sliding );
+			setCharacterState( PlayerCharacterState.Sliding );
 		}
 		else
 		{
-			setCharacterState( CharacterState.Running );
+			setCharacterState( PlayerCharacterState.Running );
 		}
+		//Reset the run speed to what it was at the beginning of the turn.
+		allowRunSpeedToIncrease = true;
+		newRunSpeed = runSpeedAtTimeOfTurn;
 
-		//Debug.Log ("turnNow completed " + isGoingRight + " " + transform.eulerAngles.y + " " + _characterState );
+		//Debug.Log ("turnNow completed " + isGoingRight + " " + transform.eulerAngles.y + " " + playerCharacterState );
 
 	}
 
 	public void managePlayerDeath( DeathType deathTypeValue )
 	{
 		//Only proceed if the player is not dying already
-		if ( _characterState != CharacterState.Dying )
+		if ( playerCharacterState != PlayerCharacterState.Dying )
 		{
 			//Remember how we died
 			deathType = deathTypeValue;
@@ -2709,22 +2679,22 @@ public sealed class PlayerController : BaseClass {
 			//Remember the run speed at time of death because we want to start running again (in case of revive) at a 
 			//percentage of this value.
 			//When we jump, the run speed is reduced.
-			//If we died while jumping, we want to use runSpeedBeforeJump and not runSpeed.
-			if( _characterState == CharacterState.Jumping )
+			//If we died while jumping, we want to use runSpeedBeforeJump and not newRunSpeed.
+			if( playerCharacterState == PlayerCharacterState.Jumping )
 			{
 				runSpeedAtTimeOfDeath = runSpeedBeforeJump;
 			}
 			else
 			{
-				runSpeedAtTimeOfDeath = runSpeed;
+				runSpeedAtTimeOfDeath = newRunSpeed;
 			}
 
-			runSpeed = 0;
+			newRunSpeed = 0;
 			runSpeedBeforeJump = 0;
 			allowRunSpeedToIncrease = false;
 
 			//Change character state
-			setCharacterState( CharacterState.Dying );
+			setCharacterState( PlayerCharacterState.Dying );
 
 			//Stop the dust particle system. It might be playing if we died while sliding.
 			dustPuff.Stop();
@@ -2739,9 +2709,6 @@ public sealed class PlayerController : BaseClass {
 
 			//Reset move direction and forward
 			moveDirection = new Vector3( 0,moveDirection.y,0 );
-
-			//Fade out the music
-			StartCoroutine( SoundManager.soundManager.fadeOutMusic(1f, 0.25f) );
 
 			//Stop any currently playing sound
 			audioSource.Stop();
@@ -2760,32 +2727,32 @@ public sealed class PlayerController : BaseClass {
 				case DeathType.Zombie:
 					//Play collision sound
 					playSound( dyingSound, false );
-					anim.SetTrigger(DeathWallTrigger);
+					setAnimationTrigger(DeathWallTrigger);
 					break;
 			
 				case DeathType.Flame:
 					playSound( deathFireSound, false );
-					anim.SetTrigger(DeathWallTrigger);
+					setAnimationTrigger(DeathWallTrigger);
 					break;
 		                
 		        case DeathType.Obstacle:
 					//Play collision sound
 					playSound( dyingSound, false );
 					sc.Shake();
-					anim.SetTrigger(DeathWallTrigger);
+					setAnimationTrigger(DeathWallTrigger);
 					break;
 
 		        case DeathType.Water:
 					sc.lockCamera ( true );
 					anim.speed = 2.8f;
-					anim.SetTrigger(DeathRiverTrigger);
+					setAnimationTrigger(DeathRiverTrigger);
 					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2.5f) );
 					break;
 
 		        case DeathType.VortexTrap:
 					sc.lockCamera ( true );
 					anim.speed = 3.8f;
-					anim.SetTrigger(FallTrigger);
+					setAnimationTrigger(FallTrigger);
 					LeanTween.moveLocalY( gameObject, transform.position.y - TrapVortex.distanceTravelledDown, TrapVortex.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutExpo).setDelay(TrapVortex.delayBeforeBeingPulledDown);
 					StartCoroutine( waitBeforeDisplayingSaveMeScreen(5f) );
 					break;
@@ -2797,22 +2764,13 @@ public sealed class PlayerController : BaseClass {
 		        case DeathType.SpecialFall:
 					sc.lockCamera ( true );
 					anim.speed = 3.8f;
-					anim.SetTrigger(FallTrigger);
+					setAnimationTrigger(FallTrigger);
 					LeanTween.moveLocalY( gameObject, transform.position.y - TrapVortex.distanceTravelledDown, TrapVortex.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutExpo).setDelay(0);
 					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2.5f) );
 					break;
 
-		        case DeathType.MagicGate:
-					sc.lockCamera ( true );
-					sc.playCutscene( CutsceneType.MagicGate );
-					anim.speed = 3.8f;
-					anim.SetTrigger(FallTrigger);
-					LeanTween.moveLocalY( gameObject, transform.position.y - TrapMagicGate.distanceTravelledDown, TrapMagicGate.timeRequiredToGoDown ).setEase(LeanTweenType.easeOutQuad).setDelay(TrapMagicGate.delayBeforeBeingPulledDown);
-					StartCoroutine( waitBeforeResurrecting(3.2f) );
-					break;
-
 				default:
-					anim.SetTrigger(DeathWallTrigger);
+					setAnimationTrigger(DeathWallTrigger);
 					break;
 			}
 		}
@@ -2860,7 +2818,7 @@ public sealed class PlayerController : BaseClass {
 		GameManager.Instance.setGameState( GameState.Resurrect );
 		anim.speed = 1f;
 		yield return new WaitForSeconds(duration);
-		sc.setCameraParameters( 18f, SimpleCamera.DEFAULT_DISTANCE, SimpleCamera.DEFAULT_HEIGHT, SimpleCamera.DEFAULT_Y_ROTATION_OFFSET );
+		sc.setCameraParameters( 18f, PlayerCamera.DEFAULT_DISTANCE, PlayerCamera.DEFAULT_HEIGHT, PlayerCamera.DEFAULT_Y_ROTATION_OFFSET );
 		sc.activateMainCamera();
 		sc.positionCameraNow();
 		sc.resetCameraParameters();
@@ -2869,32 +2827,63 @@ public sealed class PlayerController : BaseClass {
 
 	public void stumble_completed ( AnimationEvent eve )
 	{
-		setCharacterState( CharacterState.Running );
+		setCharacterState( PlayerCharacterState.Running );
+		runSpeed = runSpeedAtTimeOfStumble;
+		allowRunSpeedToIncrease = true;
 	}
 	
 	void Stumble()
 	{
 		//The OnControllerColliderHit function can send multiple collision events during a single
 		//stumble, so ignore any new events while in the stumbling state.
-		if ( _characterState != CharacterState.Stumbling && _characterState != CharacterState.Dying )
+		if ( playerCharacterState != PlayerCharacterState.Stumbling && playerCharacterState != PlayerCharacterState.Dying )
 		{	
 			Debug.Log ("Player stumbled");
 			//Play player stumble animation by setting the state
-			setCharacterState( CharacterState.Stumbling );
+			setCharacterState( PlayerCharacterState.Stumbling );
+			//If the player stumbles, he loses a bit of speed and momentarily stops accelerating.
+			allowRunSpeedToIncrease = false;
+			runSpeedAtTimeOfStumble = runSpeed;
+			runSpeed = stumbleRunSpeedMultiplier * runSpeed; //lower speed a bit
 			//audio.PlayOneShot( stumblingSound );
-			//Make enemy appear right behind player
+			//Make troll appear right behind player
 			//Note that "placeTrollBehindPlayer" may change the state of the character to Dying
 			if( trollController.didPlayerStumblePreviously() )
 			{
 				//The player falls forward and dies (killed by the troll)
-				anim.SetTrigger(FallForwardTrigger);
+				setAnimationTrigger(FallForwardTrigger);
 			}
 			else
 			{
 				//The player stumbles but recovers
-				anim.SetTrigger(StumbleTrigger);
+				setAnimationTrigger(StumbleTrigger);
 			}
 			trollController.placeTrollBehindPlayer();
+		}
+	}
+
+	public void setTrollController( TrollController trollController )
+	{
+		this.trollController = trollController;
+	}
+
+	public void setFairyController( FairyController fairyController )
+	{
+		this.fairyController = fairyController;
+	}
+
+	void controlTrollPursuit( bool startPursuit )
+	{
+		if( trollController != null )
+		{
+			if( startPursuit )
+			{
+				trollController.startPursuing();
+			}
+			else
+			{
+				trollController.stopPursuing();
+			}
 		}
 	}
 
@@ -2989,14 +2978,10 @@ public sealed class PlayerController : BaseClass {
 	{
 		Debug.Log("PlayerController - resetSharedLevelData: unlockCamera: " + unlockCamera );
 		//Reset values
-		//teleportLeaveComplete changes the scale value so we need to reset it
+		//Teleport_leave_complete changes the scale value so we need to reset it
 		transform.localScale = new Vector3( 1f, 1f, 1f );
 
 		disableLookOverShoulder();
-
-		//Re-enable the player's blob shadow
-		//Moved to get_up_completed
-		//shadowProjector.enabled = true;
 
 		//Variable for swipe
 		touchStarted = false;
@@ -3027,17 +3012,20 @@ public sealed class PlayerController : BaseClass {
 
 		reasonDiedAtTurn = "";
 
-		sc.heightDamping = SimpleCamera.DEFAULT_HEIGHT_DAMPING;
+		sc.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING;
 
 	}
 	
 	public void resurrectBegin( bool calledByMagicGate )
 	{
+		GameManager.Instance.setGameState(GameState.Resurrect);
+
 		//0) Reset data
+
 		resetSharedLevelData(true);
 		
 		//1) Stop pursuit
-		trollController.stopPursuing ();
+		controlTrollPursuit( false );
 
 		//2) Hide and reset all zombies and goblins etc. by sending an event
 		if(resurrectionBegin != null) resurrectionBegin();
@@ -3050,7 +3038,7 @@ public sealed class PlayerController : BaseClass {
 		anim.Play("DeathWall_Loop");
 		GameObject respawnLocationObject;
 
-		if( getCurrentTileType() == TileType.T_Junction || getCurrentTileType() == TileType.T_Junction_Landmark_Cemetery )
+		if( getCurrentTileType() == TileType.T_Junction || getCurrentTileType() == TileType.T_Junction_2 )
 		{
 			//If the player's rotation is zero, this means he has not turned yet.
 			//If this is the case, we will assume he turned right.
@@ -3058,7 +3046,7 @@ public sealed class PlayerController : BaseClass {
 			if( playerRotationY == 0 )
 			{
 				respawnLocationObject = currentTile.transform.Find("respawnLocationRight").gameObject;
-				gl.playerTurnedAtTJunction( true, currentTile );
+				generateLevel.playerTurnedAtTJunction( true, currentTile );
 				
 			}
 			else
@@ -3228,10 +3216,46 @@ public sealed class PlayerController : BaseClass {
 		}
 		if( calculatedLane != currentLane )
 		{
-			Debug.LogWarning("recalculateCurrentLane changed current lane from: " + currentLane + " to: " + calculatedLane + " relative pos " + relativePos );
+			//Debug.LogWarning("recalculateCurrentLane changed current lane from: " + currentLane + " to: " + calculatedLane + " relative pos " + relativePos );
 			currentLane = calculatedLane;
 			desiredLane = currentLane;
 		}
+	}
+
+	void OnEnable()
+	{
+		HUDMultiplayer.startRunningEvent += StartRunningEvent;
+	}
+
+	void OnDisable()
+	{
+		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
+	}
+
+	void StartRunningEvent()
+	{
+		Debug.Log("Multiplayer - PlayerController: received StartRunningEvent");
+		startRunning( false );
+	}
+
+	public void playVictoryAnimation()
+	{
+		setAnimationTrigger( Finish_LineTrigger );
+	}
+
+	void setAnimationTrigger( int animationTrigger )
+	{
+		anim.SetTrigger( animationTrigger );
+	}
+
+	public void Slide_sound_start ( AnimationEvent eve )
+	{
+		playSound( slidingSound, true );
+	}
+
+	public void Slide_sound_stop ( AnimationEvent eve )
+	{
+		audioSource.Stop();
 	}
 
 } 

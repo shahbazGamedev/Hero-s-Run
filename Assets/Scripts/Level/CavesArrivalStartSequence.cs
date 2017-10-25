@@ -6,15 +6,11 @@ public class CavesArrivalStartSequence : MonoBehaviour {
 	FairyController fairyController;
 	public Rigidbody skull;
 
-	// Use this for initialization
-	void Awake ()
+	void Start ()
 	{
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
-	}
 
-	void Start ()
-	{
 		if( GameManager.Instance.getGameMode() == GameMode.Story )
 		{
 			Invoke("step1", 1.5f );
@@ -35,7 +31,7 @@ public class CavesArrivalStartSequence : MonoBehaviour {
 	{
 		skull.isKinematic = false;
 		skull.AddForce( 0,10f,5f);
-		Invoke("showTapToPlay", 3f );
+		Invoke("showTapToPlay", 2.7f );
 	}
 
 	void showTapToPlay()

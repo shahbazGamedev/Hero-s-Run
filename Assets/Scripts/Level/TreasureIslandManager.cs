@@ -8,7 +8,7 @@ public class TreasureIslandManager : MonoBehaviour {
 
 	public enum ChestGiftType {
 		None=0,
-		Stars=1,	
+		Coins=1,	
 		PowerUp = 2,
 		Life = 3,
 		Customization = 4	//Future implementation
@@ -26,7 +26,6 @@ public class TreasureIslandManager : MonoBehaviour {
 	public GameObject female;
 	Animation maleAnimation;
 	Animation femaleAnimation;
-	public AudioClip ambientSound;
 	public Canvas fadeCanvas;
 
 
@@ -44,7 +43,7 @@ public class TreasureIslandManager : MonoBehaviour {
 
 	FCMain lastOpenChest;
 
-	public GameObject propStar;
+	public GameObject propCoin;
 	public GameObject propLife;
 	public GameObject propMagicBoots;
 	public GameObject propSlowTime;
@@ -52,7 +51,7 @@ public class TreasureIslandManager : MonoBehaviour {
 	public GameObject propCustomization;
 	PowerUpType giftPowerUp;
 
-	public GameObject propStarParticle;
+	public GameObject propCoinParticle;
 	public GameObject propLifeParticle;
 	public GameObject propMagicBootsParticle;
 	public GameObject propSlowTimeParticle;
@@ -84,7 +83,6 @@ public class TreasureIslandManager : MonoBehaviour {
 		Handheld.StopActivityIndicator();
 		loadHero();
 		spawnRandomChest();
-		StartCoroutine( SoundManager.soundManager.fadeInAmbience( ambientSound, 3f ) );
 
 		if( PlayerStatsManager.Instance.getTreasureKeysOwned() > 0 )
 		{
@@ -186,11 +184,11 @@ public class TreasureIslandManager : MonoBehaviour {
 		Debug.Log("Close Treasure island " + levelLoading );
 		if( !levelLoading )
 		{
-			SoundManager.soundManager.playButtonClick();
+			UISoundManager.uiSoundManager.playButtonClick();
 			levelLoading = true;
-			SoundManager.soundManager.stopAmbience();
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);
+			GameManager.Instance.setGameState(GameState.WorldMapNoPopup);
 			SceneManager.LoadScene( (int)GameScenes.WorldMap );
 		}
 	}
@@ -207,7 +205,7 @@ public class TreasureIslandManager : MonoBehaviour {
 		if( chest.IsOpened()  ) return;
 
 		//Only continue if the player has a key or else, display a message on how he can get a key
-		if( PlayerStatsManager.Instance.getTreasureKeysOwned() > 0 || PlayerStatsManager.Instance.getHasInfiniteTreasureIslandKeys() )
+		if( PlayerStatsManager.Instance.getTreasureKeysOwned() > 0 )
 		{
 			chest.Unlock();
 			if( forceChestGiftType ==ChestGiftType.None )
@@ -256,8 +254,8 @@ public class TreasureIslandManager : MonoBehaviour {
 		switch (chestGiftType)
 		{
 			
-		case ChestGiftType.Stars:
-			fcProp.m_Prefab = propStar;
+		case ChestGiftType.Coins:
+			fcProp.m_Prefab = propCoin;
 			//Position
 			fcProp.m_PosBegin = new Vector3( 0, 0.4f, 0 );
 			fcProp.m_PosEnd = new Vector3( 0, 0.6f, 0 );
@@ -277,7 +275,7 @@ public class TreasureIslandManager : MonoBehaviour {
 			fcProp.m_ScaleDelay = 0.5f;
 			fcProp.m_ScaleDuration = 1f;
 			//Prop particle
-			fcPropParticle.m_Prefab = propStarParticle;
+			fcPropParticle.m_Prefab = propCoinParticle;
 			break;
 			
 		case ChestGiftType.PowerUp:
@@ -287,6 +285,7 @@ public class TreasureIslandManager : MonoBehaviour {
 			GameObject powerUpProp = null;
 			switch (giftPowerUp)
 			{
+				case PowerUpType.SpeedBoost:
 				case PowerUpType.MagicBoots:
 					powerUpProp = propMagicBoots;
 					fcProp.m_Prefab = powerUpProp;
@@ -436,12 +435,12 @@ public class TreasureIslandManager : MonoBehaviour {
 			Debug.Log("giftPlayerWithTreasure: gave " + quantityToGive + " power-ups of type " + giftPowerUp + " to Hero.");
 			break;
 			
-		case ChestGiftType.Stars:
+		case ChestGiftType.Coins:
 			PlayerStatsManager.Instance.modifyCurrentCoins( quantityToGive, false, false );
-			entryText = LocalizationManager.Instance.getText( "TREASURE_CHEST_STARS" );
+			entryText = LocalizationManager.Instance.getText( "TREASURE_CHEST_SOFT_CURRENCY" );
 			entryText = entryText.Replace("<quantity>", quantityToGive.ToString("N0") );
 			chestContentText.text = entryText;
-			Debug.Log("giftPlayerWithTreasure: gave " + quantityToGive + " stars to Hero.");
+			Debug.Log("giftPlayerWithTreasure: gave " + quantityToGive + " coins to Hero.");
 			break;
 			
 		case ChestGiftType.Life:

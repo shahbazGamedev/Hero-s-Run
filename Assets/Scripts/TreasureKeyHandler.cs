@@ -7,9 +7,11 @@ public class TreasureKeyHandler : MonoBehaviour {
 	public bool playKeyTutorial = false;
 	[Tooltip("You can only get a key once even if you replay an episode. Keys found only get reset if you complete the game and start over. Eack key has a unique id. The id format is THEME_TILE_NAME_X, where X is a number. You cannot find treasure keys in the endless mode, only in the story mode.")]
 	public string treasureKeyID = "THEME_TILE_NAME_X";
+	public Transform associatedChestLid;
 
 	PlayerController playerController;
 	FairyController fairyController;
+	const float CHEST_LID_ANGLE_WHEN_OPEN = -48f;
 
 	
 	void Start ()
@@ -34,6 +36,18 @@ public class TreasureKeyHandler : MonoBehaviour {
 				GameObject treasureKeyPrefab = Resources.Load( "Level/Props/Treasure Key/Treasure Key") as GameObject;
 				GameObject go = (GameObject)Instantiate(treasureKeyPrefab, gameObject.transform.position, gameObject.transform.rotation );
 				go.gameObject.transform.parent = gameObject.transform;
+			}
+			else
+			{
+				//Remind the player that he already picked up this key by having the chest open (instead of closed)
+				if( associatedChestLid != null )
+				{
+					associatedChestLid.localEulerAngles = new Vector3( CHEST_LID_ANGLE_WHEN_OPEN, associatedChestLid.localEulerAngles.y, associatedChestLid.localEulerAngles.z );
+				}
+				else
+				{
+					Debug.LogWarning("TreasureKeyHandler: there is no associated chest for the key with the ID: " + treasureKeyID );
+				}
 			}
 		}
 	}

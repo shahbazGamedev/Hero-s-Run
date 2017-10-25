@@ -7,29 +7,36 @@ public class HUDHandler : MonoBehaviour {
 
 	public static HUDHandler hudHandler = null;
 	[Header("HUD Handler")]
- 	public GameObject saveMeCanvas;
-	public Text hudDebugInfo;	//Used to display FPS, player speed, etc.
-	public Button pauseButton;
+ 	[SerializeField] GameObject saveMeCanvas;
+	[SerializeField] Text hudDebugInfo;	//Used to display FPS, player speed, etc.
+	[SerializeField] Button pauseButton;
 	[Header("Level Name Panel")]
-	public RectTransform levelNamePanel;
-	public Text levelNameText;	//Used to display FPS, player speed, etc.
-	public Image levelIcon;
+	[SerializeField] RectTransform episodeNamePanel;
+	[SerializeField] Text episodeNameText;
 	[Header("Tap To Play")]
 	//Tap to play button (the size of the canvas) with the Tap to play label
 	//This is displayed when you start a level WHEN the game state changes to the MENU state.
 	//Also see the waitForTapToPlay bool in LevelData
-	public Button tapToPlayButton; 
-	public Text tapToPlayText;
+	[SerializeField] Button tapToPlayButton; 
+	[SerializeField] Text tapToPlayText;
 	//User Message is used to display the Go! message after resurrection.
 	//It appears in the center of the screen.
 	[Header("User Message")]
-	public Text userMessageText;
-	[Header("Star and Treasure Key Display")]
-	public RectTransform hudCanvas;
-	public GameObject starPrefab;
-	public GameObject treasurePrefab;
-	
-	//Used to track the items picked up by the player such as Stars and Treasure Keys. Multiple icons can be displayed at the same time with an offset.
+	[SerializeField] Text userMessageText;
+	[Header("Coin and Treasure Key Display")]
+	[SerializeField] RectTransform hudCanvas;
+	public GameObject coinPrefab;
+	[SerializeField] GameObject treasurePrefab;
+	[SerializeField] GameObject restartFromCheckpointPanel; //Used to inform the player that he is restarting from a checkpoint and not from the begining
+	[SerializeField] Text restartFromCheckpointText; 
+	[Header("Used for fading effects")]
+	[SerializeField] Image fadeImage;
+	[SerializeField] CanvasGroup canvasGroup;
+	System.Action onFinish;
+	[Header("Journal")]
+	[SerializeField] GameObject journalCanvas;
+
+	//Used to track the items picked up by the player such as Coins and Treasure Keys. Multiple icons can be displayed at the same time with an offset.
 	List<PickupDisplay> pickupDisplayList = new List<PickupDisplay>();
 	const float PICKUP_DISPLAY_DURATION = 4f;
 
@@ -40,35 +47,47 @@ public class HUDHandler : MonoBehaviour {
 	int fpsFrameCounter = 0;
 	int fpsWaitFrames = 30;
 	
-	HUDSaveMe hudSaveMe;
+	//HUDSaveMe hudSaveMe;
 	PlayerController playerController;
-	Rect coinIconRect; //Used to position the stars collected at the top of the HUD
+	Rect coinIconRect; //Used to position the coins collected at the top of the HUD
 
 	// Use this for initialization
 	void Awake ()
 	{
+		if( GameManager.Instance.isMultiplayer() ) Destroy( gameObject );
 		hudHandler = this;
-		playerController = GetComponent<PlayerController>();
-		hudSaveMe = saveMeCanvas.GetComponent<HUDSaveMe>();
+		//hudSaveMe = saveMeCanvas.GetComponent<HUDSaveMe>();
 		tapToPlayText.text = LocalizationManager.Instance.getText("MENU_TAP_TO_PLAY");
-		hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
+		restartFromCheckpointText.text = LocalizationManager.Instance.getText("MENU_RESTART_FROM_CHECKPOINT");
+		//hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
+		hudDebugInfo.gameObject.SetActive( false );
 		coinIconRect = new Rect ( Screen.width * 0.6f, 10f, Screen.width * 0.09f, Screen.width * 0.09f );
 	}
 	
 	void Start()
 	{
 		//Display the name of the current level
-		slideInLevelName();
+		slideInEpisodeName();
 	}
 		
 	// Update is called once per frame
 	void Update ()
 	{
-		updateFPS();
-		if( hudDebugInfo.gameObject.activeSelf ) hudDebugInfo.text = "Troll: " + playerController.trollController.didPlayerStumblePreviously() + " FPS: " + fps + "-" + LevelManager.Instance.getNextLevelToComplete() + "-" + playerController.getCurrentTileName() + "-" + PlayerStatsManager.Instance.getTimesPlayerRevivedInLevel() + "-" + PlayerController.getPlayerSpeed().ToString("N1");
+		//updateFPS();
+		if( hudDebugInfo.gameObject.activeSelf ) hudDebugInfo.text = " FPS: " + fps;
 		managePickUps();
+		//Also support keys for debugging
+		if ( Input.GetKeyDown (KeyCode.U) ) 
+		{
+			fadeEffect( true );
+		}
+		else if ( Input.GetKeyDown (KeyCode.I) ) 
+		{
+			fadeEffect( false );
+		}
 	}
 	
+
 	void updateFPS()
 	{
 		//average out the fps over a number of frames
@@ -82,28 +101,27 @@ public class HUDHandler : MonoBehaviour {
 		}
 	}
 
-	void startPlaying()
+	//Start playing is called when the tapToPlayButton is pressed
+	public void startPlaying()
 	{
-		//If we are in the Menu state simply start running, but if we are in the OpeningSequence state
-		//initiate the opening sequence instead.
-		if (GameManager.Instance.getGameState() == GameState.Menu  )
+		//Disable the Tap to play button (and the associated Tap to Play label) since we do not need it anymore.
+		tapToPlayButton.gameObject.SetActive( false );
+		//Hide the text that might be showing telling the player he is restarting from a checkpoint
+		restartFromCheckpointPanel.SetActive( false );
+
+		//Hide the level name panel in case it is showing
+		hideLevelName();
+		if( playerController.getCurrentTileType() == TileType.Opening )
 		{
-			//Disable the Tap to play button (and the associated Tap to Play label) since we do not need it anymore.
-			tapToPlayButton.gameObject.SetActive( false );
-			//Hide the level name panel in case it is showing
-			hideLevelName();
-			if( playerController.getCurrentTileType() == TileType.Opening )
-			{
-				SoundManager.soundManager.playButtonClick();
-				GameObject gameEventManagerObject = GameObject.FindGameObjectWithTag("GameEventManager");
-				GameEventManager gem = gameEventManagerObject.GetComponent<GameEventManager>();
-				gem.playOpeningSequence();
-			}
-			else
-			{
-				SoundManager.soundManager.playButtonClick();
-				playerController.startRunning();
-			}
+			UISoundManager.uiSoundManager.playButtonClick();
+			GameObject gameEventManagerObject = GameObject.FindGameObjectWithTag("GameEventManager");
+			GameEventManager gem = gameEventManagerObject.GetComponent<GameEventManager>();
+			gem.playOpeningSequence();
+		}
+		else
+		{
+			UISoundManager.uiSoundManager.playButtonClick();
+			playerController.startRunning();
 		}
 	}
 	
@@ -122,22 +140,25 @@ public class HUDHandler : MonoBehaviour {
 		userMessageText.gameObject.SetActive( false );
 	}
 
-	void slideInLevelName()
+	void slideInEpisodeName()
 	{
-		levelNameText.text = LevelManager.Instance.getCurrentLevelName(); 
-		LeanTween.move( levelNamePanel, new Vector2(0, -levelNamePanel.rect.height/2f), 0.5f ).setEase(LeanTweenType.easeOutQuad).setOnComplete(slideOutLevelName).setOnCompleteParam(gameObject);
+		//EPISODE_NAME_X is the text ID to use to get the localised episode name where X is the episode name indexed starting at 1.
+		int episodeNumber = LevelManager.Instance.getCurrentEpisodeNumber();
+		string episodeNumberString = (episodeNumber + 1).ToString();
+		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + episodeNumberString );
+		LeanTween.move( episodeNamePanel, new Vector2(0, -episodeNamePanel.rect.height/2f), 0.5f ).setEase(LeanTweenType.easeOutQuad).setOnComplete(slideOutEpisodeName).setOnCompleteParam(gameObject);
 	}
 		
-	void slideOutLevelName()
+	void slideOutEpisodeName()
 	{
 		//Wait a little before sliding back up
-		LeanTween.move( levelNamePanel, new Vector2(0, levelNamePanel.rect.height/2f ), 0.5f ).setEase(LeanTweenType.easeOutQuad).setDelay(2.4f);
+		LeanTween.move( episodeNamePanel, new Vector2(0, episodeNamePanel.rect.height/2f ), 0.5f ).setEase(LeanTweenType.easeOutQuad).setDelay(2.5f);
 	}
 	
 	void hideLevelName()
 	{
 		LeanTween.cancel(gameObject);
-		levelNamePanel.anchoredPosition = new Vector2( 0, levelNamePanel.rect.height/2f );
+		episodeNamePanel.anchoredPosition = new Vector2( 0, episodeNamePanel.rect.height/2f );
 	}
 
 	public Vector2 getCoinIconPos()
@@ -148,13 +169,12 @@ public class HUDHandler : MonoBehaviour {
 		return iconPos;
 	}
 	
-	public void displayStarPickup( int quantity, Color starColor )
+	public void displayCoinPickup( int quantity )
 	{
-		if( PlayerStatsManager.Instance.getOwnsStarDoubler() ) quantity = quantity * 2;
+		if( PlayerStatsManager.Instance.getOwnsCoinDoubler() ) quantity = quantity * 2;
 
-		GameObject go = (GameObject)Instantiate(starPrefab);
+		GameObject go = (GameObject)Instantiate(coinPrefab);
 		go.transform.SetParent( hudCanvas.transform, false );
-		go.GetComponent<Image>().color = starColor;
 		Text quantityText = go.GetComponentInChildren<Text>();
 		quantityText.text = "+" + quantity.ToString();
 		RectTransform rt = go.GetComponent<RectTransform>();
@@ -200,46 +220,61 @@ public class HUDHandler : MonoBehaviour {
 	{
 		GameManager.gameStateEvent += GameStateChange;
 		PlayerController.playerStateChanged += PlayerStateChange;
+		PlayerController.localPlayerCreated += LocalPlayerCreated;
 	}
 	
 	void OnDisable()
 	{
 		GameManager.gameStateEvent -= GameStateChange;
 		PlayerController.playerStateChanged -= PlayerStateChange;
+		PlayerController.localPlayerCreated -= LocalPlayerCreated;
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			pauseButton.gameObject.SetActive( false );
 		}
 	}
 
-	void GameStateChange( GameState newState )
+	void GameStateChange( GameState previousState, GameState newState )
 	{
 		if( newState == GameState.Menu )
 		{
 			//Display the tap to play button
 			tapToPlayButton.gameObject.SetActive( true );
+			//If the player is restarting from a checkpoint, tell him
+			if( LevelManager.Instance.getNumberOfCheckpointsPassed() > 0 )
+			{
+				restartFromCheckpointPanel.SetActive( true );
+			}
 		}
 		else if( newState == GameState.SaveMe )
 		{
-			hudSaveMe.showSaveMeMenu();
+			//hudSaveMe.showSaveMeMenu();
 		}
 
 		if( newState == GameState.Normal )
 		{
-			hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
+			//hudDebugInfo.gameObject.SetActive( PlayerStatsManager.Instance.getShowDebugInfoOnHUD() );
+			hudDebugInfo.gameObject.SetActive( false );
 			pauseButton.gameObject.SetActive( true );
+			journalCanvas.gameObject.SetActive( true );
 		}
 		else
 		{
+			journalCanvas.gameObject.SetActive( false );
 			hudDebugInfo.gameObject.SetActive( false );
 			pauseButton.gameObject.SetActive( false );
 			userMessageText.gameObject.SetActive( false );
 			destroyAllPickupsDisplayed();
 		}
+	}
+
+	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
+	{
+		this.playerController = playerController;
 	}
 
 	void destroyAllPickupsDisplayed()
@@ -258,5 +293,28 @@ public class HUDHandler : MonoBehaviour {
 		public float startTime = 0;
 	}
 
+	public void fadeEffect( bool fadeInEffect, System.Action onFinish = null )
+	{
+		this.onFinish = onFinish;
+		if( fadeInEffect )
+		{
+			//Fade-out UI elements like the pause button
+			LeanTween.alphaCanvas( canvasGroup, 0, 2f );
+			//Fade-in the white overlay
+			LeanTween.color( fadeImage.GetComponent<RectTransform>(), new Color( 1f, 1f, 1f, 1f ), 5f ).setOnComplete(fadeCompleted).setOnCompleteParam(gameObject);;
+		}
+		else
+		{
+			//Fade-in UI elements like the pause button
+			LeanTween.alphaCanvas( canvasGroup, 1f, 2f );
+			//Fade-out the white overlay
+			LeanTween.color( fadeImage.GetComponent<RectTransform>(), new Color( 1f, 1f, 1f, 0f ), 5f ).setOnComplete(fadeCompleted).setOnCompleteParam(gameObject);;
+		}
+	}
+
+	void fadeCompleted()
+	{
+		if( onFinish != null ) onFinish.Invoke();
+	}
 }
 

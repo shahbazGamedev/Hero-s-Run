@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 public enum Level_Progress {
 	
-	LEVEL_START = 0,
-	LEVEL_END_WITH_NO_PROGRESS = 1,
-	LEVEL_END_WITH_PROGRESS = 2,
-	LEVEL_END_WITH_GAME_COMPLETED = 3
+	EPISODE_START = 0,
+	EPISODE_END_WITH_NO_PROGRESS = 1,
+	EPISODE_END_WITH_PROGRESS = 2,
+	EPISODE_END_WITH_GAME_COMPLETED = 3
 }
 
 //This class is a Singleton
@@ -15,16 +15,37 @@ public class LevelManager {
 
 	private static LevelManager levelManager = null;
 	private LevelData levelData = null;
-	private int nextLevelToComplete = 0;
-	private int highestLevelCompleted = 0;
-	private LevelData.LevelInfo currentLevelInfo = null;
-	private bool levelHasChanged = false;
+
+	//Campaign mode
+	private int nextEpisodeToComplete = 0;
+	private int highestEpisodeCompleted = 0;
+	private bool episodeHasChanged = false;
 	private bool playerFinishedTheGame = false;
-	private int levelNumberOflastCheckpoint = 0; //Either the first level of the current theme OR the level of the last checkpoint
- 	private int score = 0; //currently is equal to the number of stars you picked up while running for a single episode
+	private int numberOfCheckpointsPassed = 0; //Number of checkpoints passed for the current episode
+	//Number of coins the player had when he passed the last checkpoint.
+	//If the player dies and restarts at a checkpoint, this will be the number of coins he will have.
+	private int numberOfCoinsAtLastCheckpoint = 0;
+ 	private int score = 0; //currently is equal to the number of coins you picked up while running for a single episode
 	private int currentEpisode = 0;
 	private bool episodeCompleted = false;
 	private bool enableTorches = true;
+	//onlyUseUniqueTiles is only used for testing. This value is not saved. When enabled, only tile groups with a Frequency of Unique will appear
+	//in the level while in Story mode. This allows you to have shorter episodes with only the essential tile groups, typically, Start, any scripted sequence, and End.
+	bool onlyUseUniqueTiles = false;
+
+	//Weather
+	public RainType rainType = RainType.No_Rain;
+
+	//Racing mode
+	byte numberOfPlayersRequired;
+	private LevelData.MultiplayerInfo selectedCircuit; //the race track selected.
+	public int selectedBotHeroIndex; //index for botHeroCharacterList in HeroManager. Used when in the PlayAgainstEnemy mode.
+	public int selectedBotHeroIndex2; //index for botHeroCharacterList in HeroManager. Used when in the PlayAgainstTwoEnemies mode.
+	public ChatMessageHandler.MatchData matchData;
+	public bool isRecordingSelected = false; //True if the race should be recorded using ReplayKit
+
+	//Player Match Data
+	public List<PlayerMatchData> playerMatchDataList = new List<PlayerMatchData>();
 
 	public static LevelManager Instance
 	{
@@ -40,80 +61,130 @@ public class LevelManager {
         }
     } 
 
-	//Called by PlayerStatsManager
-	public void setNextLevelToComplete( int levelToComplete )
+	#region Results screen
+	public PlayerMatchData getPlayerMatchDataByName( string playerName )
 	{
-		if( levelToComplete > nextLevelToComplete )
+		PlayerMatchData pmd = playerMatchDataList.Find(data => data.playerName == playerName);
+		if( pmd != null )
 		{
-			nextLevelToComplete = levelToComplete;
-			Debug.Log ("LevelManager-setNextLevelToComplete: nextLevelToComplete " + nextLevelToComplete );
-			
+			return pmd;
+		}
+		else
+		{
+			Debug.LogError("LevelManager-getPlayerMatchDataByName: Could not find match data for player named " + playerName );
+			return null;
+		}
+	}
+	#endregion
+
+
+	#region General
+	//Called by TitleScreenHandler on Awake()
+	public void setLevelData( LevelData levelData )
+	{
+		this.levelData = levelData;
+	}
+
+	public LevelData getLevelData()
+	{
+		return levelData;
+	}
+	#endregion
+
+	#region Campaign Mode
+	//Called by PlayerStatsManager
+	public void setNextEpisodeToComplete( int episodeToComplete )
+	{
+		if( episodeToComplete > nextEpisodeToComplete )
+		{
+			nextEpisodeToComplete = episodeToComplete;
 		}
 	}
 
-	public int getNextLevelToComplete()
+	public int getNextEpisodeToComplete()
 	{
-		return nextLevelToComplete;
+		return nextEpisodeToComplete;
 	}
 
-	public void setLevelNumberOfLastCheckpoint( int previousCheckpoint )
+	public void incrementNumberOfCheckpointsPassed()
 	{
-		levelNumberOflastCheckpoint = previousCheckpoint;
-		Debug.Log ("LevelManager-setLevelNumberOflastCheckpoint: " + levelNumberOflastCheckpoint );
+		numberOfCheckpointsPassed++;
+		Debug.Log ("LevelManager-incrementNumberOfCheckpointsPassed: " + numberOfCheckpointsPassed );
 	}
 
-	public int getLevelNumberOfLastCheckpoint()
+	public int getNumberOfCheckpointsPassed()
 	{
-		Debug.Log ("LevelManager-getLevelNumberOfLastCheckpoint: " + levelNumberOflastCheckpoint );
-		return levelNumberOflastCheckpoint;
+		Debug.Log ("LevelManager-getNumberOfCheckpointsPassed: " + numberOfCheckpointsPassed );
+		return numberOfCheckpointsPassed;
 	}
 
-	//Called by EpisodePopup to access any level directly
-	public void forceNextLevelToComplete( int levelToComplete )
+	public void resetNumberOfCheckpointsPassed()
 	{
-		nextLevelToComplete = levelToComplete;
-		Debug.Log ("LevelManager-forceNextLevelToComplete: " + nextLevelToComplete );
+		Debug.Log ("LevelManager-resetNumberOfCheckpointsPassed" );
+		numberOfCheckpointsPassed = 0;
+	}
+
+	public void setCoinsAtLastCheckpoint( int value )
+	{
+		numberOfCoinsAtLastCheckpoint = value;
+		Debug.Log ("LevelManager-setCoinsAtLastCheckpoint: " + numberOfCoinsAtLastCheckpoint );
+	}
+
+	public int getCoinsAtLastCheckpoint()
+	{
+		Debug.Log ("LevelManager-getCoinsAtLastCheckpoint: " + numberOfCoinsAtLastCheckpoint );
+		return numberOfCoinsAtLastCheckpoint;
+	}
+
+	public void resetCoinsAtLastCheckpoint()
+	{
+		Debug.Log ("LevelManager-resetCoinsAtLastCheckpoint" );
+		numberOfCoinsAtLastCheckpoint = 0;
+	}
+
+	//Called by EpisodePopup to access any episode directly
+	public void forceNextEpisodeToComplete( int episodeToComplete )
+	{
+		nextEpisodeToComplete = episodeToComplete;
+		Debug.Log ("LevelManager-forceNextEpisodeToComplete: " + nextEpisodeToComplete );
 	}
 	
-	public void setHighestLevelCompleted( int levelCompleted )
+	public void setHighestEpisodeCompleted( int episodeCompleted )
 	{
-		if( levelCompleted > highestLevelCompleted )
+		if( episodeCompleted > highestEpisodeCompleted )
 		{
-			highestLevelCompleted = levelCompleted;
-			Debug.Log ("LevelManager-setHighestLevelCompleted: highestLevelCompleted " + highestLevelCompleted );
-			
+			highestEpisodeCompleted = episodeCompleted;
 		}
 	}
 
-	public int getHighestLevelCompleted()
+	public int getHighestEpisodeCompleted()
 	{
-		return highestLevelCompleted;
+		return highestEpisodeCompleted;
 	}
 
-	public void unlockAllLevels()
+	public void unlockAllEpisodes()
 	{
-		highestLevelCompleted = levelData.levelList.Count -1;
+		highestEpisodeCompleted = levelData.episodeList.Count -1;
 	}
 
-	//Called when the cullis gate activation is complete or 
-	//when a level checkpoint is triggered.
+	//Called when the cullis gate activation is complete.
 	//Returns true if the final level has been completed (and therefore the game is finished) and false otherwise.
-	public bool incrementNextLevelToComplete()
+	public bool incrementNextEpisodeToComplete()
 	{
-		int newLevel = nextLevelToComplete + 1;
-		if( newLevel < levelData.levelList.Count )
+		int newEpisode = nextEpisodeToComplete + 1;
+		if( newEpisode < levelData.episodeList.Count )
 		{
-			nextLevelToComplete = newLevel;
-			setLevelChanged( true );
-			setHighestLevelCompleted( newLevel );
-			Debug.Log("LevelManager-incrementNextLevelToComplete : nextLevelToComplete: " + nextLevelToComplete + " " + levelHasChanged );
+			nextEpisodeToComplete = newEpisode;
+			setEpisodeChanged( true );
+			setHighestEpisodeCompleted( newEpisode );
+			Debug.Log("LevelManager-incrementNextEpisodeToComplete : nextEpisodeToComplete: " + nextEpisodeToComplete + " " + episodeHasChanged );
 			return false;
 
 		}
 		else
 		{
-			Debug.Log("LevelManager-incrementNextLevelToComplete : you have finished the game. Congratulations." );
-			setHighestLevelCompleted( levelData.levelList.Count - 1 );
+			Debug.Log("LevelManager-incrementNextEpisodeToComplete : you have finished the game. Congratulations." );
+			setHighestEpisodeCompleted( levelData.episodeList.Count - 1 );
 			setPlayerFinishedTheGame( true );
 			return true;
 		}
@@ -174,128 +245,22 @@ public class LevelManager {
 	public void setPlayerFinishedTheGame( bool didCompleteGame )
 	{
 		playerFinishedTheGame = didCompleteGame;
-		Debug.Log ("LevelManager-setPlayerFinishedTheGame: " + playerFinishedTheGame );
 	}
 
-	public int getNumberOfLevels()
+	public void setEpisodeChanged( bool hasChanged )
 	{
-		return levelData.levelList.Count;
+		episodeHasChanged = hasChanged;
+		Debug.Log("LevelManager-setEpisodeChanged: " + episodeHasChanged );
+	}
+
+	public bool getEpisodeChanged()
+	{
+		return episodeHasChanged;
 	}
 	
-	//Called by TitleScreenHandler on Awake()
-	public void setLevelData( LevelData levelData )
-	{
-		this.levelData = levelData;
-		currentEpisode = getEpisodeNumberFromLevelNumber( nextLevelToComplete );
-		Debug.Log ("LevelManager-setLevelData: currentEpisode " + currentEpisode );
-	}
-
-	public int getEpisodeNumberFromLevelNumber( int levelNumber )
-	{
-		//Figure out which episode this level corresponds to
-		int episodeCounter = -1;
-		List<LevelData.LevelInfo> levelList = levelData.getLevelList();		
-		for( int i = 0; i < levelList.Count; i++ )
-		{
-			if(levelList[i].levelType == LevelType.Episode ) episodeCounter++;
-			if( i == levelNumber ) break;
-		}
-		//Debug.Log ("LevelManager-getEpisodeNumberFromLevelNumber: levelNumber " + levelNumber + " " + episodeCounter );
-		return episodeCounter;
-	}
-
-	public int getLevelNumberFromEpisodeNumber( int episodeNumber )
-	{
-		//Figure out which level this corresponds to
-		int episodeCounter = -1;
-		int levelCounter = -1;
-		List<LevelData.LevelInfo> levelList = levelData.getLevelList();		
-		foreach( LevelData.LevelInfo aLevel in levelList )
-		{
-			if( aLevel.levelType == LevelType.Episode ) episodeCounter++;
-			levelCounter++;
-			if( episodeCounter >= episodeNumber ) break;
-		}
-		//Debug.Log ("LevelManager-getLevelNumberFromEpisodeNumber : " + episodeNumber  + " corresponds to level " + levelCounter );
-		return levelCounter;
-	}
-
-	public LevelData getLevelData()
-	{
-		return levelData;
-	}
-
-	//Returns true if locked, false otherwise.
-	public bool isLevelLocked( int levelNumber )
-	{
-		return levelData.getLevelInfo( levelNumber ).isLevelLocked;
-	}
-
-	public void setLevelChanged( bool hasChanged )
-	{
-		levelHasChanged = hasChanged;
-		Debug.Log("LevelManager-setLevelChanged: " + levelHasChanged );
-	}
-
-	public bool getLevelChanged()
-	{
-		return levelHasChanged;
-	}
-	
-	//Called by GenerateLevel on Start()
-	//Sets the level info for the current level.
-	public void setLevelInfo( LevelData.LevelInfo levelInfo )
-	{
-		currentLevelInfo = levelInfo;
-	}
-		
-	public LevelData.LevelInfo getLevelInfo()
-	{
-		return currentLevelInfo;
-	}
-	
-	public LevelData.LevelInfo getLevelInfo( int levelNumber )
-	{
-		return levelData.levelList[levelNumber];
-	}
-
 	public LevelData.EpisodeInfo getCurrentEpisodeInfo()
 	{
 		return levelData.episodeList[currentEpisode];
-	}
-
-	public string getCurrentLevelName()
-	{
-		return LocalizationManager.Instance.getText( currentLevelInfo.LevelName );
-	}
-
-	public string getNextLevelName()
-	{
-		int nextLevel = nextLevelToComplete + 1;
-		if( nextLevel < levelData.levelList.Count )
-		{
-			string levelName = LocalizationManager.Instance.getText( levelData.levelList[nextLevel].LevelName );
-			if( levelName == "NOT FOUND" ) 
-			{
-				return levelData.levelList[nextLevel].LevelName;
-			}
-			else
-			{
-				return levelName;
-			}
-		}
-		else
-		{
-			string levelName = LocalizationManager.Instance.getText( levelData.FinalDestinationName );
-			if( levelName == "NOT FOUND" ) 
-			{
-				return levelData.FinalDestinationName;
-			}
-			else
-			{
-				return levelName;
-			}
-		}
 	}
 
 	//See also TorchHandler.
@@ -308,5 +273,39 @@ public class LevelManager {
 	{
 		return enableTorches;
 	}
+
+	public void setOnlyUseUniqueTiles( bool value )
+	{
+		onlyUseUniqueTiles = value;
+	}
+
+	public bool getOnlyUseUniqueTiles()
+	{
+		return onlyUseUniqueTiles;
+	}
+	#endregion
+
+	#region Racing Mode
+	public void setNumberOfPlayersRequired( byte value )
+	{
+		numberOfPlayersRequired = value;
+	}
+
+	public byte getNumberOfPlayersRequired()
+	{
+		return numberOfPlayersRequired;
+	}
+
+	public LevelData.MultiplayerInfo getSelectedCircuit()
+	{
+		return selectedCircuit;
+    }
+
+	public void setSelectedCircuit( LevelData.MultiplayerInfo selectedCircuit  )
+	{
+		this.selectedCircuit = selectedCircuit;
+		Debug.Log( "setSelectedCircuit " + selectedCircuit.circuitInfo.raceTrackName );
+    }
+	#endregion
 
 }

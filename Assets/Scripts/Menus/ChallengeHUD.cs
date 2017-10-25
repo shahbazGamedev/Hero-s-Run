@@ -9,7 +9,6 @@ public class ChallengeHUD : MonoBehaviour {
 	const float SLIDE_DURATION = 0.3f;
 	const float START_X_POSITION = 160f;
 
-	ChallengeBoard cb;
 	bool hasChallenger = false;
 	public Image portrait;
 	public Text score;
@@ -22,7 +21,6 @@ public class ChallengeHUD : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		cb = GameManager.Instance.challengeBoard;
 		initializeChallenger();
 	}
 
@@ -114,15 +112,15 @@ public class ChallengeHUD : MonoBehaviour {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			hideImmediately();
 		}
 	}
 
-	void GameStateChange( GameState newState )
+	void GameStateChange( GameState previousState, GameState newState )
 	{
 		if( newState == GameState.Normal )
 		{

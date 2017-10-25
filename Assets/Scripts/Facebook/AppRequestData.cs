@@ -26,6 +26,7 @@ public class AppRequestData {
 	public RequestDataType dataType = RequestDataType.Unknown;
 	public int dataNumber1 = 0; 	//e.g. number of lives or score in endless running mode
 	public int dataNumber2 = -1; 	//e.g. episode number in endless running mode
+	public string dataString1 = string.Empty; 	//e.g. for future use. Could be used for challenger rank for example
 	//date field are returned as ISO-8601 formatted strings from the App Request and are stored as DateTime objects.
 	public DateTime created_time;
 	public DateTime processed_time;
@@ -33,10 +34,10 @@ public class AppRequestData {
 
 	public void printAppRequestData()
 	{
-		string printStr = appRequestID + " " + fromFirstName  + " " + fromLastName + " " + fromID + " " + dataType + " " + dataNumber1 + " " + dataNumber2 + " " + created_time + " " + hasBeenProcessed + " " + processed_time;
+		string printStr = appRequestID + " " + fromFirstName  + " " + fromLastName + " " + fromID + " " + dataType + " " + dataNumber1 + " " + dataNumber2 + " " + dataString1 + " " + created_time + " " + hasBeenProcessed + " " + processed_time;
 		Debug.Log( "AppRequestData: " + printStr );
 		//Example:
-		//AppRequestData: 634435613405942_120734471723307 Commander Sheppard 130364490758658 Ask_Give_Life 1 -1 09/30/2016 22:09:42 false 09/30/2016 22:09:42
+		//AppRequestData: 634435613405942_120734471723307 Commander Sheppard 130364490758658 Ask_Give_Life 1 -1 Bronze 09/30/2016 22:09:42 false 09/30/2016 22:09:42
 	}
 
 	//Stores the dataType as an enum

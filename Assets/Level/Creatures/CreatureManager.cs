@@ -14,27 +14,22 @@ public enum CreatureState {
 	Attacking = 7,
 	Dying = 8,
 	Victory = 9,
-	Jumping = 10
+	Jumping = 10,
+	Glide = 11
 }
 
-public class CreatureManager : BaseClass {
+public sealed class CreatureManager : MonoBehaviour {
 
 	Transform player;
 	PlayerController playerController;
-	public const int NUMBER_STARS_PER_CREATURE = 20;
+	public const int NUMBER_SOFT_CURRENCY_PER_CREATURE = 20;
+	const float DEACTIVATE_DIAMETER = 60f;
 	int zombieLayer = 9;
 	int goblinLayer = 11;
 	int demonLayer = 12;
 	int cerberusLayer = 13;
 	int wraithLayer = 14;
 	int skeletonLayer = 15;
-
-	// Use this for initialization
-	void Awake ()
-	{
-		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = player.gameObject.GetComponent<PlayerController>();
-	}
 
 	int getKnockbackCreatureMask()
 	{
@@ -53,8 +48,8 @@ public class CreatureManager : BaseClass {
 		Vector3 relativePos = new Vector3(0f , 0f , impactDiameter/2f );
 		Vector3 exactPos = player.TransformPoint(relativePos);
 
-		//Count the number of creatures that are knocked back so we can give the player stars.
-		//The more creatures he topples, the more stars he gets.
+		//Count the number of creatures that are knocked back so we can give the player coins.
+		//The more creatures he topples, the more coins he gets.
 		int numberOfCreatures = 0;
 		Collider[] hitColliders = Physics.OverlapSphere(exactPos, impactDiameter, getKnockbackCreatureMask() );
 		for( int i =0; i < hitColliders.Length; i++ )
@@ -68,12 +63,12 @@ public class CreatureManager : BaseClass {
 		}
 		if( numberOfCreatures != 0 )
 		{
-			int totalStars = numberOfCreatures * NUMBER_STARS_PER_CREATURE;
-			//Give stars
-			PlayerStatsManager.Instance.modifyCurrentCoins( totalStars, true, false );
+			int totalCoins = numberOfCreatures * NUMBER_SOFT_CURRENCY_PER_CREATURE;
+			//Give coins
+			PlayerStatsManager.Instance.modifyCurrentCoins( totalCoins, true, false );
 			
-			//Display star total picked up icon
-			HUDHandler.hudHandler.displayStarPickup( totalStars, Color.magenta );
+			//Display coin total picked up icon
+			HUDHandler.hudHandler.displayCoinPickup( totalCoins );
 
 		}
 	}
@@ -82,12 +77,14 @@ public class CreatureManager : BaseClass {
 	{
 		PowerUpManager.zNukeExploded += ZNukeExploded;
 		PlayerController.resurrectionBegin += ResurrectionBegin;
+		PlayerController.localPlayerCreated += LocalPlayerCreated;
 	}
 	
 	void OnDisable()
 	{
 		PowerUpManager.zNukeExploded -= ZNukeExploded;
 		PlayerController.resurrectionBegin -= ResurrectionBegin;
+		PlayerController.localPlayerCreated -= LocalPlayerCreated;
 	}
 
 	void ZNukeExploded( float impactDiameter )
@@ -100,11 +97,17 @@ public class CreatureManager : BaseClass {
 		ICreature[] allCreatureControllers = playerController.currentTile.GetComponentsInChildren<ICreature>();
 		for( int i = 0; i < allCreatureControllers.Length; i++ )
 		{
-			allCreatureControllers[i].resetCreature();
+			allCreatureControllers[i].deactivate();
 		}
 		//And for good measure, any other that are too close but maybe not on the current tile
-		resetCreatures( 54f );
+		deactivateCreatures( DEACTIVATE_DIAMETER );
 
+	}
+
+	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
+	{
+		this.playerController = playerController;
+		this.player = playerTransform;
 	}
 
 	//Note that the ZombieManager class, handles reseting zombies.
@@ -118,7 +121,7 @@ public class CreatureManager : BaseClass {
 		return mask;
 	}
 
-	void resetCreatures( float resetDiameter )
+	void deactivateCreatures( float resetDiameter )
 	{
 		//Use a sphere that starts resetDiameter/2 meters in front of the player
 		Vector3 relativePos = new Vector3(0f , 0f , resetDiameter/2f );
@@ -130,7 +133,7 @@ public class CreatureManager : BaseClass {
 			ICreature creatureController = hitColliders[i].GetComponent<ICreature>();
 			if( creatureController.getCreatureState() != CreatureState.Dying )
 			{
-				creatureController.resetCreature();
+				creatureController.deactivate();
 			}
 		}
 	}

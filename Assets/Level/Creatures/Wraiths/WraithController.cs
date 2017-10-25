@@ -30,11 +30,16 @@ public sealed class WraithController : Creature, ICreature {
 		walk_and_talk = 5,
 		do_nothing = 6
 	}
+	[Range(0,1f)]
+	public float percentageWillAttack = 0.5f;
 	public float floatDuration = 5f;
 	public enum WeaponType {
 		Axe = 1,
 		Scythe = 2
 	}
+
+	//Original setup used when reseting the Creature
+	AttackType originalAttackType;
 
 	//Movement related
 	Vector3 forward;
@@ -50,6 +55,19 @@ public sealed class WraithController : Creature, ICreature {
 		base.Awake();
 		configureSelectedWeapon();
 		mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+		saveOriginalSetup();
+	}
+
+	new void saveOriginalSetup()
+	{
+		base.saveOriginalSetup();
+		originalAttackType = attackType;
+	}
+
+	new public void resetCreature()
+	{
+		base.resetCreature();
+		attackType = originalAttackType;
 	}
 
 	public void sideCollision ()
@@ -58,7 +76,7 @@ public sealed class WraithController : Creature, ICreature {
 
 	void configureSelectedWeapon()
 	{
-		if( attackType == AttackType.charge_and_attack || attackType == AttackType.stand_and_big_attack || attackType == AttackType.stand_and_normal_attack || attackType == AttackType.walk_and_talk )
+		if( attackType != AttackType.do_nothing )
 		{
 			if( weaponType == WeaponType.Scythe )
 			{
@@ -112,12 +130,13 @@ public sealed class WraithController : Creature, ICreature {
 	{
 		if( creatureState != CreatureState.Attacking && creatureState != CreatureState.Dying && creatureState != CreatureState.Victory )
 		{
-			float distance = Vector3.Distance(player.position,transform.position);
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float attackDistance;
+			float playerSpeed = getPlayerController().getSpeed();
 		    switch (attackType)
 			{
 		        case AttackType.stand_and_normal_attack:
-					attackDistance = 0.64f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.64f * playerSpeed;
 					if( distance < attackDistance )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -126,7 +145,7 @@ public sealed class WraithController : Creature, ICreature {
 					break;
 		                
 		        case AttackType.stand_and_big_attack:
-					attackDistance = 0.64f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.64f * playerSpeed;
 					if( distance < attackDistance )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -135,8 +154,8 @@ public sealed class WraithController : Creature, ICreature {
 					break;
 		                
 				case AttackType.charge_and_attack:
-					float chargeDistance = 2.3f * PlayerController.getPlayerSpeed();
-					attackDistance = 0.65f * PlayerController.getPlayerSpeed();
+					float chargeDistance = 2.3f * playerSpeed;
+					attackDistance = 0.65f * playerSpeed;
 					if( distance < chargeDistance )
 					{
 						if( distance >= attackDistance )
@@ -146,7 +165,7 @@ public sealed class WraithController : Creature, ICreature {
 								//Charge
 								mainCamera.GetComponent<MotionBlur>().enabled = true;			
 								followsPlayer = true;
-								moveSpeed = getAdjustedChargeSpeed();
+								moveSpeed = NORMAL_CHARGE_SPEED;
 								setCreatureState( CreatureState.Running );
 								anim.CrossFadeInFixedTime( "move" , CROSS_FADE_DURATION );
 								audioSource.PlayOneShot( charge );
@@ -163,25 +182,23 @@ public sealed class WraithController : Creature, ICreature {
 					break;
 				
 				case AttackType.walk_and_talk:
-					float startWalkingDistance = 3.4f * PlayerController.getPlayerSpeed();
+					float startWalkingDistance = 3.4f * playerSpeed;
 					if( distance < startWalkingDistance )
 					{
-						if( getCreatureState() != CreatureState.BurrowUp )
+						if( getCreatureState() != CreatureState.Glide )
 						{
 							followsPlayer = false;
-							setCreatureState( CreatureState.BurrowUp );
-							controller.enabled = false;
+							setCreatureState( CreatureState.Glide );
 							anim.Play( "move" );
-							//50% of the time turn to face player and attack, the other 50%, just continue straight
-							if( Random.value <= 0.5f )
+							//percentageWillAttack of the time, the wraith will turn to face the player and attack. The rest of the time, the wraith will just continue straight.
+							if( Random.value < percentageWillAttack )
 							{
-								controller.enabled = true; //Needed for znuke to work
 								Invoke("removeDotProduct", floatDuration * 0.65f );
 								LeanTween.moveLocal( gameObject, new Vector3( transform.localPosition.x - 12f, transform.localPosition.y, transform.localPosition.z ), floatDuration ).setOnComplete(turnToFacePlayer).setOnCompleteParam(gameObject).setEase(LeanTweenType.easeInOutQuad);
 							}
 							else
 							{
-								LeanTween.moveLocal( gameObject, new Vector3( transform.localPosition.x - 24f, transform.localPosition.y + 0.3f, transform.localPosition.z ), floatDuration * 2.5f );
+								LeanTween.moveLocal( gameObject, new Vector3( transform.localPosition.x - 24f, transform.localPosition.y + 0.3f, transform.localPosition.z ), floatDuration * 2f );
 							}
 						}
 					}
@@ -213,27 +230,6 @@ public sealed class WraithController : Creature, ICreature {
 		anim.CrossFadeInFixedTime( "idle" , CROSS_FADE_DURATION );
 	}
 
-	public float getAdjustedChargeSpeed()
-	{
-		float adjustedChargeSpeed = NORMAL_CHARGE_SPEED;
-		switch (PlayerStatsManager.Instance.getDifficultyLevel())
-		{
-			case DifficultyLevel.Normal:
-			adjustedChargeSpeed = NORMAL_CHARGE_SPEED; //Base value is Normal, so no multiplier
-			break;
-				
-			case DifficultyLevel.Heroic:
-			adjustedChargeSpeed = NORMAL_CHARGE_SPEED * 1.1f;
-			break;
-				
-			case DifficultyLevel.Legendary:
-			adjustedChargeSpeed = NORMAL_CHARGE_SPEED * 1.3f;
-			break;
-			
-		}
-		return adjustedChargeSpeed;
-	}
-
 	public void victory( bool playWinSound )
 	{
 		if( creatureState != CreatureState.Dying )
@@ -256,9 +252,9 @@ public sealed class WraithController : Creature, ICreature {
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if( PlayerController._characterState == CharacterState.Dying )
+		if( getPlayerController().getCharacterState() == PlayerCharacterState.Dying )
 		{
-			if( hit.collider.name.StartsWith("Wraith") || hit.collider.name.StartsWith("Hero") )
+			if( hit.collider.name.StartsWith("Wraith") || hit.gameObject.CompareTag("Player") )
 			{
 				//If a wraith collides with another wraith or the Hero while the player is dead, have him stop moving and play the victory sequence.
 				victory( false );
@@ -276,12 +272,12 @@ public sealed class WraithController : Creature, ICreature {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			Stop_Weapon_Trail ( null );
-			float distance = Vector3.Distance(player.position,transform.position);
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float nearby = 5f;
 			if( distance < nearby )
 			{

@@ -45,7 +45,7 @@ public class DoorController : MonoBehaviour {
 		}
 	}
 
-	void GameStateChange( GameState newState )
+	void GameStateChange( GameState previousState, GameState newState )
 	{
 		if( newState == GameState.Paused )
 		{

@@ -9,7 +9,7 @@ public class ChickenController : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero" )
+		if( other.CompareTag("Player") )
 		{
 			Animation anim = transform.parent.GetComponent<Animation>();
 			anim.CrossFade("A_Chicken_Panic");
@@ -28,12 +28,11 @@ public class ChickenController : MonoBehaviour {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying && wasTriggered )
+		if( newState == PlayerCharacterState.Dying && wasTriggered )
 		{
 			//Only destroy the chicken that was involved
-			StartCoroutine( SoundManager.soundManager.fadeOutClip( transform.parent.GetComponent<AudioSource>(), transform.parent.GetComponent<AudioSource>().clip, SoundManager.STANDARD_FADE_TIME ) );
 			DestroyObject(transform.parent.gameObject );
 		}
 	}

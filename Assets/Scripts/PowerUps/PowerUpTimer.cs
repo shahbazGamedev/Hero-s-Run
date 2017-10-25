@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class PowerUpTimer : BaseClass {
+public class PowerUpTimer : MonoBehaviour {
 
 	public Text timeRemaining;
 	private IEnumerator coroutine;

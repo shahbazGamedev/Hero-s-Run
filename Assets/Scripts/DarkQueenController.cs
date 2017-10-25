@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class DarkQueenController : BaseClass {
+public class DarkQueenController : MonoBehaviour {
 	
 	enum  DarkQueenState {
 		None = 0,
@@ -22,6 +22,8 @@ public class DarkQueenController : BaseClass {
 
 	public ParticleSystem floatDownFx;		//Bluish lights that play when she floats down from the sky
 	public ParticleSystem spellFx;			//Electric fx that plays when she casts a spell
+	[Header("Audio")]
+	public AudioSource voiceOverAudioSource;
 	public AudioClip spellSound;			//Sound fx that plays when she casts a spell
 
 	PlayerController playerController;
@@ -38,8 +40,6 @@ public class DarkQueenController : BaseClass {
 
 	void Awake()
 	{
-		Transform player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = player.GetComponent<PlayerController>();
 		controller = GetComponent<CharacterController>();
 	}
 
@@ -51,7 +51,7 @@ public class DarkQueenController : BaseClass {
 	// Update is called once per frame
 	void LateUpdate ()
 	{
-		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && darkQueenState == DarkQueenState.Walk && playerController.getCharacterState() != CharacterState.Dying )
+		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && darkQueenState == DarkQueenState.Walk && getPlayerController().getCharacterState() != PlayerCharacterState.Dying )
 		{
 			//1) Get the direction of the dark queen
 			forward = transform.TransformDirection(Vector3.forward);			
@@ -179,7 +179,16 @@ public class DarkQueenController : BaseClass {
 	public void speak( string voiceOverID, float textDisplayDuration, bool hasVoiceOver )
 	{
 		DialogManager.dialogManager.activateDisplayDarkQueen( LocalizationManager.Instance.getText( voiceOverID ), textDisplayDuration );
-		if( hasVoiceOver ) GetComponent<AudioSource>().PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
+		if( hasVoiceOver ) voiceOverAudioSource.PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
+	}
+
+	PlayerController getPlayerController()
+	{
+		if( playerController == null )
+		{
+			playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+		}
+		return playerController;
 	}
 
 }

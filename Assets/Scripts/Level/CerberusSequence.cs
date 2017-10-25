@@ -6,14 +6,13 @@ public class CerberusSequence : MonoBehaviour {
 	PlayerController playerController;
 	FairyController fairyController;
 	CerberusController cerberusController;
+	public float delayBeforeTakingPicture = 6.66f;
+	public TakePictureTrigger takePictureTrigger;
 
 	bool hasBeenTriggered = false;
 
 	// Use this for initialization
-	void Awake () {
-
-		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		playerController = playerObject.GetComponent<PlayerController>();
+	void Start () {
 
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
@@ -22,13 +21,15 @@ public class CerberusSequence : MonoBehaviour {
 		cerberusController = cerberusObject.GetComponent<CerberusController>();
 	}
 	
-	void startSequence()
+	void startSequence( Transform trigger )
 	{
 		//Slowdown player and remove player control
-		print ("Start of Cerberus sequence");
+		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+		playerController = playerObject.GetComponent<PlayerController>();
+
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(4f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(4f, afterPlayerSlowdown, trigger ) );
 		cerberusController.walk();
 		Invoke ("stopWalking", 3.5f );
 	}
@@ -51,18 +52,24 @@ public class CerberusSequence : MonoBehaviour {
 	void step1()
 	{
 		fairyController.speak("FAIRY_CERBERUS_UH_OH", 1.4f, false );
-		Invoke ("step2", 3f );
-		Invoke ("step3", 7f );
+		Invoke ("fairyTalks", 3f );
+		Invoke ("takePicture", delayBeforeTakingPicture );
+		Invoke ("playerStartsRunningAgain", 7f );
 	}
 
-	void step2()
+	void fairyTalks()
 	{
 		fairyController.speak("FAIRY_CERBERUS_GOOD_BOY", 3f, false );
 	}
 
+	void takePicture()
+	{
+		takePictureTrigger.takePicture();
+	}
+
 	//Make the fairy disappear
 	//Player starts running again
-	void step3()
+	void playerStartsRunningAgain()
 	{
 		fairyController.Disappear ();
 		playerController.allowRunSpeedToIncrease = true;
@@ -82,21 +89,20 @@ public class CerberusSequence : MonoBehaviour {
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 	
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			CancelInvoke();
 		}
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Start_Cerberus_encounter && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
-
-			startSequence();
+			startSequence( trigger.transform );
 		}
 	}
 }

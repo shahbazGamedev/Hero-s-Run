@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DragonController : BaseClass {
+public class DragonController : MonoBehaviour {
 	
 	enum DragonState {
 		None = 0,
@@ -66,8 +66,6 @@ public class DragonController : BaseClass {
 		//Get a copy of the components
 		dragonAnimation = GetComponent<Animation>();
 		controller = GetComponent<CharacterController>();
-		player = GameObject.FindGameObjectWithTag("Player").transform;
-
 	}
 
 	void Start()
@@ -96,6 +94,11 @@ public class DragonController : BaseClass {
 
 	public void placeDragon( Transform tile, Vector3 localPosition, Vector3 localRotation, string initialAnimation, float flyingSpeed )
 	{
+		if( player == null )
+		{
+			GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+			player = playerObject.transform;
+		}
 		this.flyingSpeed = flyingSpeed;
 		transform.parent = tile;
 		transform.localPosition = localPosition;
@@ -146,7 +149,7 @@ public class DragonController : BaseClass {
 	public void Arrive( )
 	{
 		print ("*******Dragon arrive");
-		Vector3 arrivalStartPos = new Vector3( -100f, 8.5f, PlayerController.getPlayerSpeed() * 16.1f );
+		Vector3 arrivalStartPos = new Vector3( -100f, 8.5f, player.GetComponent<PlayerController>().getSpeed() * 16.1f );
 		Vector3 exactPos = player.TransformPoint(arrivalStartPos);
 		transform.position = exactPos;
 		transform.rotation = Quaternion.Euler( 0, player.transform.eulerAngles.y + 90f, transform.eulerAngles.z );
@@ -185,7 +188,7 @@ public class DragonController : BaseClass {
 			transform.LookAt( player );
 			transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y -10f, 0 );
 
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		}
 	}
 
@@ -219,7 +222,7 @@ public class DragonController : BaseClass {
 	}
 	
 
-	void GameStateChange( GameState newState )
+	void GameStateChange( GameState previousState, GameState newState )
 	{
 		if( dragonAnimation != null )
 		{
@@ -258,7 +261,7 @@ public class DragonController : BaseClass {
 			//Tilt the fairy down
 			transform.rotation = Quaternion.Euler( -8f, transform.eulerAngles.y, transform.eulerAngles.z );
 			
-			yield return _sync();  
+			yield return new WaitForFixedUpdate();  
 			
 		}
 		dragonState = DragonState.Fly;

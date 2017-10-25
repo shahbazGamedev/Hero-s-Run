@@ -2,51 +2,30 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
+using System;
 
 public class TitleScreenHandler : MonoBehaviour {
 
 	[Header("Title Screen")]
-	public Text gameTitle;
-	public Button playButton;
-	public Text playButtonText;
-	public Button connectButton;
-	public Text connectButtonText;
-
-	[Header("Connection Status Popup")]
-	public GameObject connectionPopup;
-	public Text connectionTitleText;
-	public Text connectionContentText;
-	public Text connectionOkayButtonText;
-
+	[SerializeField] AudioMixer mainMixer;
+	[SerializeField] Slider progressBar;
+	[SerializeField] Text progressBarPercentage;
 
 	void Awake ()
 	{
-		Handheld.StopActivityIndicator();
-
+		//Handheld.StopActivityIndicator();
 		initialiseGame();
-
-		//Title Screen
-		gameTitle.text = LocalizationManager.Instance.getText("GAME_TITLE");
-		playButtonText.text = LocalizationManager.Instance.getText("MENU_PLAY");
-		connectButtonText.text = LocalizationManager.Instance.getText("MENU_CONNECT");
-
-		//Connection status popup (connecting, connected, failure)
-		connectionOkayButtonText.text = LocalizationManager.Instance.getText("MENU_OK");
-
-		//If not already connected to Facebook, show the Connect button on the main menu to encourage player to login.
-		connectButton.gameObject.SetActive( !FacebookManager.Instance.isLoggedIn() );
-
-		//Get the level data. Level data has the parameters for all the levels of the game.
-		GameObject levelDataObject = GameObject.Find("LevelData");
-		LevelData levelData = (LevelData) levelDataObject.GetComponent("LevelData");
-		//Now set it in the LevelManager
-		LevelManager.Instance.setLevelData( levelData );		
-
 	}
 
 	void initialiseGame()
 	{
 		Application.targetFrameRate = 60;
+
+		//Get the level data. Level Data has the parameters for all the levels of the game.
+		LevelData levelData = GameObject.FindObjectOfType<LevelData>();
+		//Now set it in the LevelManager
+		LevelManager.Instance.setLevelData( levelData );
 
 		#if UNITY_IPHONE
 		Handheld.SetActivityIndicatorStyle(UnityEngine.iOS.ActivityIndicatorStyle.WhiteLarge);
@@ -66,88 +45,37 @@ public class TitleScreenHandler : MonoBehaviour {
 
 		PlayerStatsManager.Instance.loadPlayerStats();
 
-		Debug.Log("TitleScreenHandler: Start : uses Facebook " + PlayerStatsManager.Instance.getUsesFacebook() );
-		//If the player agreed to use Facebook, auto-login for him
-		if( PlayerStatsManager.Instance.getUsesFacebook() && Application.internetReachability != NetworkReachability.NotReachable )
-		{
-			FacebookManager.Instance.CallFBInit( updateState );
-		}
 	}
 
-	public void play()
+	void Start()
 	{
-		SoundManager.soundManager.playButtonClick();
-		StartCoroutine("loadWorldMap");
+		//If the player agreed to use Facebook, auto-login for him
+		//We don't want to do this in the Editor as it slows the work flow since it causes a popup to appear
+		#if !UNITY_EDITOR
+		if( GameManager.Instance.playerConfiguration.getUsesFacebook() && Application.internetReachability != NetworkReachability.NotReachable )
+		{
+			FacebookManager.Instance.CallFBInit();
+		}
+		#endif
+		mainMixer.SetFloat( "SoundEffectsVolume", GameManager.Instance.playerConfiguration.getSoundFxVolume() );
+		mainMixer.SetFloat( "MusicVolume", GameManager.Instance.playerConfiguration.getMusicVolume() );
+		StartCoroutine( loadMainMenu( 2.5f ) );
 	}
 	
-	IEnumerator loadWorldMap()
+	IEnumerator loadMainMenu( float timeToLoad )
 	{
-		Handheld.StartActivityIndicator();
-		yield return new WaitForSeconds(0);
-		if( PlayerStatsManager.Instance.getAvatar() == Avatar.None )
+		float elapsedTime = 0;
+		do
 		{
-			//Bring the player to the character selection screen
-			SceneManager.LoadScene( (int)GameScenes.CharacterSelection );
-		}
-		else
-		{
-			//Player has already selected an avatar, display the world map
-			SceneManager.LoadScene( (int)GameScenes.WorldMap);
-		}
+			elapsedTime = elapsedTime + Time.deltaTime;
+			progressBar.value = elapsedTime/timeToLoad;
+			progressBarPercentage.text = String.Format("{0:P0}", progressBar.value );
+			yield return new WaitForFixedUpdate();  
+			
+		} while ( elapsedTime <= timeToLoad );
+		SceneManager.LoadScene( (int)GameScenes.MainMenu);
 	}
 
-	public void loginWithFacebook()
-	{
-		SoundManager.soundManager.playButtonClick();
-		//Hide Play and Connect buttons while showing the popup
-		playButton.gameObject.SetActive( false );
-		connectButton.gameObject.SetActive( false );
 
-		connectionPopup.gameObject.SetActive( true );
-		if( Application.internetReachability != NetworkReachability.NotReachable )
-		{
-			PlayerStatsManager.Instance.setUsesFacebook( true );
-			PlayerStatsManager.Instance.savePlayerStats();
-			connectionTitleText.text = LocalizationManager.Instance.getText("MENU_CONNECTING_TITLE");
-			connectionContentText.text = LocalizationManager.Instance.getText("MENU_CONNECTING_TEXT");
-			FacebookManager.Instance.CallFBInit( updateState );
-		}
-		else
-		{
-			connectionTitleText.text = LocalizationManager.Instance.getText("MENU_CONNECTION_FAILED_TITLE");
-			connectionContentText.text = LocalizationManager.Instance.getText("MENU_CONNECTION_FAILED_TEXT");
-		}
-	}
-
-	public void closeConnectionPopup()
-	{
-		SoundManager.soundManager.playButtonClick();
-		connectionPopup.gameObject.SetActive( false );
-		//Show Play and Connect buttons since we are dismissing the popup
-		playButton.gameObject.SetActive( true );
-		//If not already connected to Facebook, show the Connect button on the main menu to encourage player to login.
-		connectButton.gameObject.SetActive( !FacebookManager.Instance.isLoggedIn() );
-	}
-
-	public void updateState( FacebookState newState )
-	{
-		if( newState == FacebookState.LoggedIn )
-		{
-			connectionTitleText.text = LocalizationManager.Instance.getText("MENU_SUCCESS_TITLE");
-			connectionContentText.text = LocalizationManager.Instance.getText("MENU_SUCCESS_TEXT");
-			//Hide the Connect button since the player successfully connected
-			connectButton.gameObject.SetActive( false );
-		}
-		else if ( newState == FacebookState.Error )
-		{
-			connectionTitleText.text = LocalizationManager.Instance.getText("MENU_FB_ERROR_TITLE");
-			connectionContentText.text = LocalizationManager.Instance.getText("MENU_FB_ERROR_TEXT");
-		}
-		else if ( newState == FacebookState.Canceled )
-		{
-			connectionTitleText.text = LocalizationManager.Instance.getText("MENU_CONNECTION_CANCELED_TITLE");
-			connectionContentText.text = LocalizationManager.Instance.getText("MENU_CONNECTION_CANCELED_TEXT");
-		}
-	}
 	
 }

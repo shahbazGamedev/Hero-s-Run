@@ -11,14 +11,11 @@ public class TrapFlame : MonoBehaviour {
 	//a) while the player is sliding
 	//b) during the grace period after the player died which lasts a few seconds
 	public bool isActive = true;
-	PlayerController playerController;
 	PowerUpManager powerUpManager;
 
 	// Use this for initialization
 	void Awake ()
 	{
-		GameObject player = GameObject.FindGameObjectWithTag("Player");
-		playerController = player.GetComponent<PlayerController>();
 		GameObject powerUpManagerObject = GameObject.FindGameObjectWithTag("PowerUpManager");
 		powerUpManager = powerUpManagerObject.GetComponent<PowerUpManager>();
 
@@ -26,7 +23,7 @@ public class TrapFlame : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero" && isActive )
+		if( other.CompareTag("Player") && isActive )
 		{
 			//Is the player protected by a Shield Power Up?
 			if( PowerUpManager.isThisPowerUpActive( PowerUpType.Shield ) )
@@ -36,8 +33,7 @@ public class TrapFlame : MonoBehaviour {
 			}
 			else
 			{
-				playerController.managePlayerDeath ( DeathType.Flame );
-
+				other.GetComponent<PlayerController>().managePlayerDeath ( DeathType.Flame );
 			}
 		}
 	}

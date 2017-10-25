@@ -87,9 +87,9 @@ public class CoachController : MonoBehaviour {
 		} 
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			print ("Player collided with coach horses.");
 			//The player collided with the front of the horses

@@ -3,45 +3,46 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SocialPlatforms.GameCenter;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class SettingsMenu : MonoBehaviour {
 
-
 	[Header("Settings Menu")]
-	public Canvas settingsMenuCanvas;
-	public Text titleText;
 	[Header("Sound")]
-	public Text soundVolumeText;
-	public Slider soundVolumeSlider;
+	[SerializeField] AudioMixer mainMixer;
+	[SerializeField] Text soundFxVolumeText;
+	[SerializeField] Slider soundFxVolumeSlider;
+	[SerializeField] Text musicVolumeText;
+	[SerializeField] Slider musicVolumeSlider;
 	[Header("Facebook")]
-	public Text facebookText;
-	[Header("Difficulty")]
-	public Text difficultyText;
+	[SerializeField] Text facebookText;
 	[Header("Achievements")] //Game Center
-	public Text achievementsText;
+	[SerializeField] Text achievementsText;
+	[Header("Enable tilt to turn or switch lanes")]
+	[SerializeField] Text enableTiltText;
 	[Header("Privacy Policy")]
-	public Text privacyPolicyText;
-	public string privacyPolicyURL = "http://www.google.com/";
-	[Header("Restore Purchases")]
-	public Text restorePurchasesText;
+	[SerializeField] Text privacyPolicyText;
+	[SerializeField] string privacyPolicyURL = "http://www.google.com/";
 	[Header("Debug Menu")]
-	public Button debugMenuButton;
-	public Text debugMenuText;
-	public Canvas debugMenuCanvas;
-	[Header("Version Number")]
-	public Text versionNumberText;
+	[SerializeField] ScrollRect  optionsScrollView; 
+	[SerializeField] GameObject  dotsPanel; 
+	bool levelLoading = false;
 
-	// Use this for initialization
+	void OnEnable ()
+	{
+		SceneManager.sceneUnloaded += OnSceneUnloaded;
+	}
+
 	void Start () {
-	
+
+		Handheld.StopActivityIndicator();
+
 		#if UNITY_EDITOR
 		LocalizationManager.Instance.initialize(); //For debugging, so I can see the text displayed without going through the load menu
 		#endif
 
-		//Text Inititialization
-		titleText.text = LocalizationManager.Instance.getText("POPUP_TITLE_SETTINGS");
-
-		soundVolumeText.text = LocalizationManager.Instance.getText("MENU_SOUND_VOLUME");
+		soundFxVolumeText.text = LocalizationManager.Instance.getText("MENU_SOUND_FX_VOLUME");
+		musicVolumeText.text = LocalizationManager.Instance.getText("MENU_MUSIC_VOLUME");
 		if( FacebookManager.Instance.isLoggedIn() )
 		{
 			facebookText.text = LocalizationManager.Instance.getText("POPUP_BUTTON_FB_DISCONNECT");
@@ -50,51 +51,52 @@ public class SettingsMenu : MonoBehaviour {
 		{
 			facebookText.text = LocalizationManager.Instance.getText("MENU_LOGGED_OUT");
 		}
-		difficultyText.text = PlayerStatsManager.Instance.getDifficultyLevelName();
 		achievementsText.text = LocalizationManager.Instance.getText("MENU_ACHIEVEMENTS");
-		privacyPolicyText.text = LocalizationManager.Instance.getText("MENU_PRIVACY_POLICY");
-		restorePurchasesText.text = LocalizationManager.Instance.getText("MENU_RESTORE_PURCHASES");
-		debugMenuText.text = LocalizationManager.Instance.getText("MENU_SHOW_DEBUG");
-		if( Debug.isDebugBuild )
+		if( GameManager.Instance.playerConfiguration.getTiltEnabled() )
 		{
-			debugMenuButton.gameObject.SetActive( true );
+			enableTiltText.text = LocalizationManager.Instance.getText("MENU_TILT_ENABLED");
 		}
 		else
 		{
-			debugMenuButton.gameObject.SetActive( false );
+			enableTiltText.text = LocalizationManager.Instance.getText("MENU_TILT_DISABLED");
 		}
-		versionNumberText.text = "v" + GameManager.Instance.getVersionNumber();
+		privacyPolicyText.text = LocalizationManager.Instance.getText("MENU_PRIVACY_POLICY");
+		
+		//Important: Disable horizontal scrolling when not in a Development Build to prevent access to debug options.
+		optionsScrollView.horizontal = Debug.isDebugBuild;
+		dotsPanel.SetActive( Debug.isDebugBuild );
 
-		soundVolumeSlider.value = PlayerStatsManager.Instance.getSoundVolume();
+		soundFxVolumeSlider.value = GameManager.Instance.playerConfiguration.getSoundFxVolume();
+		musicVolumeSlider.value = GameManager.Instance.playerConfiguration.getMusicVolume();
 	}
 
-	public void showSettingsMenu()
+	public void OnClickReturnToMainMenu()
 	{
-		SoundManager.soundManager.playButtonClick();
-		settingsMenuCanvas.gameObject.SetActive( true );
-	}
-
-	public void closeSettingsMenu()
-	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		PlayerStatsManager.Instance.savePlayerStats();
-		settingsMenuCanvas.gameObject.SetActive( false );
+		StartCoroutine( loadScene(GameScenes.MainMenu) );
 	}
 
-	public void setSoundVolume( Slider volume )
+	public void setSoundFxVolume( Slider volume )
 	{
-		PlayerStatsManager.Instance.setSoundVolume(volume.value);
+		GameManager.Instance.playerConfiguration.setSoundFxVolume(volume.value);
+		mainMixer.SetFloat( "SoundEffectsVolume", volume.value );
 	}
 
-	public void handleFacebookConnect()
+	public void setMusicVolume( Slider volume )
 	{
-		Debug.Log("handleFacebookConnect");
-		SoundManager.soundManager.playButtonClick();
+		GameManager.Instance.playerConfiguration.setMusicVolume(volume.value);
+		mainMixer.SetFloat( "MusicVolume", volume.value );
+	}
+
+	public void OnClickHandleFacebookConnect()
+	{
+		Debug.Log("OnClickHandleFacebookConnect");
+		UISoundManager.uiSoundManager.playButtonClick();
 		if( FacebookManager.Instance.isLoggedIn() )
 		{
 			//Logout
 			FacebookManager.Instance.CallFBLogout();
-			PlayerStatsManager.Instance.setUsesFacebook( false );
 		}
 		else
 		{
@@ -102,50 +104,52 @@ public class SettingsMenu : MonoBehaviour {
 		}
 	}
 
-	public void changeDifficultyLevel()
+	public void OnClickShowAchievements()
 	{
-		Debug.Log("changeDifficultyLevel");
-		SoundManager.soundManager.playButtonClick();
-		DifficultyLevel newDifficultyLevel = PlayerStatsManager.Instance.getNextDifficultyLevel();
-		//setDifficultyLevel takes care of saving the new value
-		PlayerStatsManager.Instance.setDifficultyLevel(newDifficultyLevel);
-		difficultyText.text = PlayerStatsManager.Instance.getDifficultyLevelName();
-	}
-
-	public void showAchievements()
-	{
-		Debug.Log("showAchievements");
-		SoundManager.soundManager.playButtonClick();
+		Debug.Log("OnClickShowAchievements");
+		UISoundManager.uiSoundManager.playButtonClick();
 		Social.ShowAchievementsUI();
 	}
 
-	public void showPrivacyPolicy()
+	public void OnClickToggleTilt()
 	{
-		Debug.Log("showPrivacyPolicy");
-		SoundManager.soundManager.playButtonClick();
+		Debug.Log("OnClickToggleTilt");
+		UISoundManager.uiSoundManager.playButtonClick();
+		GameManager.Instance.playerConfiguration.setEnableTilt( !GameManager.Instance.playerConfiguration.getTiltEnabled() );
+		if( GameManager.Instance.playerConfiguration.getTiltEnabled() )
+		{
+			enableTiltText.text = LocalizationManager.Instance.getText("MENU_TILT_ENABLED");
+		}
+		else
+		{
+			enableTiltText.text = LocalizationManager.Instance.getText("MENU_TILT_DISABLED");
+		}
+	}
+
+	public void OnClickShowPrivacyPolicy()
+	{
+		Debug.Log("OnClickShowPrivacyPolicy");
+		UISoundManager.uiSoundManager.playButtonClick();
 		Application.OpenURL(privacyPolicyURL);
 	}
 
-	public void restorePurchases()
+	void OnSceneUnloaded( Scene scene )
 	{
-		Debug.LogWarning("restorePurchases - Not implemented.");
-		SoundManager.soundManager.playButtonClick();
+		GameManager.Instance.playerConfiguration.serializePlayerConfiguration( false );
+		PlayerStatsManager.Instance.savePlayerStats();
+		SceneManager.sceneUnloaded -= OnSceneUnloaded;
 	}
 
-	public void showDebugMenu()
+	IEnumerator loadScene(GameScenes value)
 	{
-		Debug.Log("showDebugMenu");
-		SoundManager.soundManager.playButtonClick();
-		settingsMenuCanvas.gameObject.SetActive( false );
-		debugMenuCanvas.gameObject.SetActive( true );
-	}
-
-	public void closeDebugMenu()
-	{
-		Debug.Log("closeDebugMenu");
-		SoundManager.soundManager.playButtonClick();
-		settingsMenuCanvas.gameObject.SetActive( true );
-		debugMenuCanvas.gameObject.SetActive( false );
+		if( !levelLoading )
+		{
+			UISoundManager.uiSoundManager.playButtonClick();
+			levelLoading = true;
+			Handheld.StartActivityIndicator();
+			yield return new WaitForSeconds(0);
+			SceneManager.LoadScene( (int)value );
+		}
 	}
 	
 }

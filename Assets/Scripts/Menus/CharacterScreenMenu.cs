@@ -78,7 +78,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 
 	public void changeSelection()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		if( toggle )
 		{
 			//if toggle is true, the male hero is in the front and the female hero is in the back right
@@ -108,7 +108,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 
 	public void moveNextToPopup()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		if( toggle )
 		{
 			//if toggle is true, the male hero is in the front
@@ -126,7 +126,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 	}
 	public void showUserNamePopup()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 
 		//hide content below popup
 		titleText.gameObject.SetActive( false );
@@ -150,7 +150,7 @@ public class CharacterScreenMenu : MonoBehaviour {
 
 	public void confirmSelection()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		
 		//Save a default user name if the user has not entered anything
 		if( userNameText.text == "")
@@ -165,18 +165,17 @@ public class CharacterScreenMenu : MonoBehaviour {
 			}
 		}
 		Debug.Log("User Name is : " + userNameText.text );
-		PlayerStatsManager.Instance.saveUserName( userNameText.text );
-		LocalizationManager.Instance.replaceUserName( userNameText.text );
+		GameManager.Instance.playerProfile.saveUserName( userNameText.text );
 		PlayerStatsManager.Instance.setAvatar(selectedAvatar);
-		StartCoroutine( loadWorldMapAfterDelay( 0.9f ) );
+		StartCoroutine( loadMainMenuAfterDelay( 0.9f ) );
 	}
 
-	IEnumerator loadWorldMapAfterDelay( float waitPeriod )
+	IEnumerator loadMainMenuAfterDelay( float waitPeriod )
 	{
 		//Give time to the player to understand what is going on before loading the world map
 		Handheld.StartActivityIndicator();
 		yield return new WaitForSeconds( waitPeriod );
-		SceneManager.LoadScene( (int) GameScenes.WorldMap );
+		SceneManager.LoadScene( (int) GameScenes.MainMenu );
 	}
 
 	void playHerofrontAnims()

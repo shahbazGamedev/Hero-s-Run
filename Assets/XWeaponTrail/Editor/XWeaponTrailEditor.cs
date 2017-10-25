@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
-using Xft;
+using XftWeapon;
 
 [CustomEditor(typeof(XWeaponTrail))]
 [CanEditMultipleObjects]

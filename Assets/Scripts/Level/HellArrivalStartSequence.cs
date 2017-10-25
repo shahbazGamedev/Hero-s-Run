@@ -5,14 +5,10 @@ public class HellArrivalStartSequence : MonoBehaviour {
 
 	FairyController fairyController;
 
-	// Use this for initialization
-	void Awake () {
-
+	void Start ()
+	{
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
-	
-	}
-	void Start () {
 
 		Invoke("step1", 2f );
 	}

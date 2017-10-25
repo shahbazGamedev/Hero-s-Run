@@ -2,11 +2,12 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class Creature : BaseClass {
+public class Creature : MonoBehaviour {
 
 	protected CreatureState creatureState = CreatureState.Idle;
 	[Header("Other")]
-	protected Transform player;
+	Transform player;
+	PlayerController playerController;
 	protected CharacterController controller;
 	protected Animator anim;
 	protected AudioSource audioSource;
@@ -16,6 +17,7 @@ public class Creature : BaseClass {
 	[Tooltip("Speed at which to lock on player.")]
 	public float enemyAimSpeed = 7.6f;
 	[Header("Audio")]
+	public AudioSource voiceOverAudioSource;
 	public AudioClip knockbackSound;
 	[Header("Look At IK")]
 	public float lookAtWeight = 0.8f;
@@ -28,13 +30,33 @@ public class Creature : BaseClass {
 	bool lookAtActive = false;
 	bool enableIK = true;
 
+	//Original setup used when reseting the Creature
+	protected Vector3 originalLocalPosition;
+	protected Quaternion originalLocalRotation;
+	protected CreatureState originalCreatureState;
+	[Tooltip("originalAnimation should match the default animation in the animator controller.")]
+	public string originalAnimation = "idle";
+	protected bool originalFollowsPlayer;
+
 	protected void Awake ()
 	{
 		controller = GetComponent<CharacterController>();
 		GameObject playerGameObject = GameObject.FindGameObjectWithTag("Player");
-		if( playerGameObject != null ) player = playerGameObject.transform;
+		if( playerGameObject != null )
+		{
+			player = playerGameObject.transform;
+			playerController = player.GetComponent<PlayerController>();
+		}
 		anim = GetComponent<Animator>();
 		audioSource = GetComponent<AudioSource>();
+	}
+
+	protected void saveOriginalSetup()
+	{
+		originalLocalPosition = transform.localPosition;
+		originalLocalRotation = transform.localRotation;
+		originalCreatureState = creatureState;
+		originalFollowsPlayer = followsPlayer;
 	}
 
 	public CreatureState getCreatureState()
@@ -70,13 +92,16 @@ public class Creature : BaseClass {
 		transform.rotation = Quaternion.Lerp( transform.rotation, desiredRotation, Time.deltaTime * enemyAimSpeed );
 	}
 
-	public void resetCreature()
+	protected void resetCreature()
 	{
-		setCreatureState( CreatureState.Idle );
-		anim.CrossFadeInFixedTime( "idle", CROSS_FADE_DURATION );
-		gameObject.SetActive( false );
-		followsPlayer = false;
-		controller.enabled = true;
+		anim = GetComponent<Animator>(); //For some reason, Unity seems to lose the reference and anim becomes null, so fetch it again.
+		creatureState = originalCreatureState;
+		transform.localPosition = originalLocalPosition;
+		transform.localRotation = originalLocalRotation;
+		followsPlayer = originalFollowsPlayer;
+		Debug.LogWarning("Creature - resetCreature called for: " + gameObject.name + " " + originalAnimation );
+
+		if( controller != null ) controller.enabled = true;
 		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
 		for( int i = 0; i < capsuleColliders.Length; i++ )
 		{
@@ -84,6 +109,13 @@ public class Creature : BaseClass {
 		}
 		if( GetComponent<Rigidbody>() != null ) GetComponent<Rigidbody>().isKinematic = true;
 		enableIK = true;
+		anim.Play( originalAnimation );
+		gameObject.SetActive( true );
+	}
+
+	public void deactivate()
+	{
+		gameObject.SetActive( false );
 	}
 
 	//The creature falls over backwards, typically because the player slid into him or because of a ZNuke
@@ -164,6 +196,31 @@ public class Creature : BaseClass {
 		
 		lookAtWeight = finalWeight;
 	
+	}
+
+	//Called when the player starts falling (like down a ravine). We don't want the creature to follow.
+	protected void halt()
+	{
+		setCreatureState(CreatureState.Idle);
+		anim.CrossFadeInFixedTime( originalAnimation, CROSS_FADE_DURATION );
+	}
+
+	protected Transform getPlayer()
+	{
+		if( player == null )
+		{
+			player = GameObject.FindGameObjectWithTag("Player").transform;
+		}
+		return player;
+	}
+
+	protected PlayerController getPlayerController()
+	{
+		if( playerController == null )
+		{
+			playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+		}
+		return playerController;
 	}
 
 }

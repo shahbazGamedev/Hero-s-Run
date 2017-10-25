@@ -6,11 +6,11 @@ public class GameEventManager : MonoBehaviour {
 
 	public GenerateLevel generateLevel;
 	public WeatherManager weatherManager;
-	public SimpleCamera simpleCamera;
+	PlayerCamera playerCamera;
 	public Lightning lightning;
-	public TrollController trollController;
-	public Transform player;
-	public PlayerController playerController;
+	TrollController trollController;
+	Transform player;
+	PlayerController playerController;
 	public Transform fairy;
 	public FairyController fairyController;
 
@@ -52,6 +52,12 @@ public class GameEventManager : MonoBehaviour {
 	List<ParticleSystem> zombieHandsDustList = new List<ParticleSystem>( ZOMBIE_HANDS_FACTORY_SIZE );
 	int zombieHandsDustIndex = 0;
 
+	void Start()
+	{
+		GameObject trollGameObject = GameObject.FindGameObjectWithTag("Troll");
+		if( !GameManager.Instance.isMultiplayer() ) trollController = trollGameObject.GetComponent<TrollController>();
+	}
+
 	//Dark Queen sequence that plays before the Kraken tentacles sequence
 	public void setOpeningSequence( DarkQueenKrakenSequence darkQueenKrakenSequence )
 	{
@@ -62,7 +68,7 @@ public class GameEventManager : MonoBehaviour {
 		darkQueenController = darkQueen.GetComponent<DarkQueenController>();
 	}
 
-	void startDarkQueenKrakenSequence()
+	void startDarkQueenKrakenSequence( Transform trigger )
 	{
 		print ("Start of dark queen Kraken sequence");
 		isTentacleSequenceActive = true;
@@ -71,7 +77,7 @@ public class GameEventManager : MonoBehaviour {
 		//Slowdown player and remove player control
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(19f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(19f, afterPlayerSlowdown, trigger ) );
 
 		arriveAndCastSpell();
 
@@ -245,7 +251,7 @@ public class GameEventManager : MonoBehaviour {
 
 	void startPierceUp()
 	{
-		float attackDistance = 1.2f * PlayerController.getPlayerSpeed();
+		float attackDistance = 1.2f * player.GetComponent<PlayerController>().getSpeed();
 		//Pick random X location
 		float xPos;
 		int laneChoice = Random.Range(0, 3);
@@ -323,7 +329,7 @@ public class GameEventManager : MonoBehaviour {
 
 	void sideStartPierceUp()
 	{
-		float attackDistance = 1.2f * PlayerController.getPlayerSpeed() + Random.Range( -3,1 );
+		float attackDistance = 1.2f * player.GetComponent<PlayerController>().getSpeed() + Random.Range( -3,1 );
 		//Pick random X location on either side of main path
 		float xPos;
 		int laneChoice = Random.Range(0, 4);
@@ -402,11 +408,11 @@ public class GameEventManager : MonoBehaviour {
 		darkQueen = GameObject.FindGameObjectWithTag("DarkQueen").transform;
 		darkQueenController = darkQueen.GetComponent<DarkQueenController>();
 		
-		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("CreatureManager");
+		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("Zombie Manager");
 		zombieManager = zombieManagerObject.GetComponent<ZombieManager>();
 	}
 	
-	void startDarkQueenCemeterySequence()
+	void startDarkQueenCemeterySequence( Transform trigger )
 	{
 		print ("Start of Dark Queen cemetery sequence");
 		isZombieHandsSequenceActive = true;
@@ -416,7 +422,7 @@ public class GameEventManager : MonoBehaviour {
 		//Slowdown player and remove player control
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(19f, cemeteryAfterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(19f, cemeteryAfterPlayerSlowdown, trigger ) );
 		cemeteryArriveAndCastSpell();
 	}
 	
@@ -577,7 +583,7 @@ public class GameEventManager : MonoBehaviour {
 	
 	void startZombieHandPierceUp()
 	{
-		float attackDistance = 1.1f * PlayerController.getPlayerSpeed();
+		float attackDistance = 1.1f * player.GetComponent<PlayerController>().getSpeed();
 		//Pick random X location
 		float xPos;
 		int laneChoice = Random.Range(0, 3);
@@ -645,7 +651,7 @@ public class GameEventManager : MonoBehaviour {
 	
 	void sideStartZombieHandPierceUp()
 	{
-		float attackDistance = 1.1f * PlayerController.getPlayerSpeed() + Random.Range( -3,1 );
+		float attackDistance = 1.1f * player.GetComponent<PlayerController>().getSpeed() + Random.Range( -3,1 );
 		//Pick random X location on either side of main path
 		float xPos;
 		int laneChoice = Random.Range(0, 4);
@@ -756,13 +762,12 @@ public class GameEventManager : MonoBehaviour {
 	{
 		op = openingSequence;
 
-		weatherManager.setFogTarget( simpleCamera.cutsceneCamera, 30f );
 		weatherManager.setWeatherTarget( op.rainLocation, 0 );
 		weatherManager.activateRain( true );
 		lightning.controlLightning(GameEvent.Start_Lightning);
 		//Position player near the top of the tower
 		player.position = new Vector3( 0, 79.34f, -2f );
-		simpleCamera.playCutscene( CutsceneType.OpeningSequence );
+		playerCamera.playCutscene( CutsceneType.OpeningSequence );
 		trollController.stopPursuing();
 		op.InvokeRepeating("playCrowSound", 3.5f, 10f );
 		Invoke ( "enableTapToPlay", 1.2f );
@@ -817,18 +822,17 @@ public class GameEventManager : MonoBehaviour {
 	//Camera is positioned in back of player but at a different X rotation angle
 	void step4()
 	{
-		simpleCamera.setCameraParameters( 18f, SimpleCamera.DEFAULT_DISTANCE, SimpleCamera.DEFAULT_HEIGHT, SimpleCamera.DEFAULT_Y_ROTATION_OFFSET );
-		simpleCamera.activateMainCamera();
-		simpleCamera.positionCameraNow();
+		playerCamera.setCameraParameters( 18f, PlayerCamera.DEFAULT_DISTANCE, PlayerCamera.DEFAULT_HEIGHT, PlayerCamera.DEFAULT_Y_ROTATION_OFFSET );
+		playerCamera.activateMainCamera();
+		playerCamera.positionCameraNow();
 		weatherManager.setWeatherTarget( player, 8f );
-		weatherManager.setFogTarget( player, 30f );
 		Invoke ("step5", 2.1f );
 	}
 
 	void step5()
 	{
 		//Camera default X rotation angle is restored
-		simpleCamera.resetCameraParameters();
+		playerCamera.resetCameraParameters();
 		//Give player control
 		playerController.allowPlayerMovement(true );
 		//Stop the lightning
@@ -883,6 +887,7 @@ public class GameEventManager : MonoBehaviour {
 		PlayerController.playerStateChanged += PlayerStateChange;
 		PlayerTrigger.playerEnteredTrigger += PlayerEnteredTrigger;
 		GameManager.gameStateEvent += GameStateChange;
+		PlayerController.localPlayerCreated += LocalPlayerCreated;
 	}
 	
 	void OnDisable()
@@ -890,9 +895,10 @@ public class GameEventManager : MonoBehaviour {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 		GameManager.gameStateEvent -= GameStateChange;
+		PlayerController.localPlayerCreated -= LocalPlayerCreated;
 	}
 
-	void GameStateChange( GameState newState )
+	void GameStateChange( GameState previousState, GameState newState )
 	{
 		if( newState == GameState.Paused )
 		{
@@ -911,33 +917,32 @@ public class GameEventManager : MonoBehaviour {
 				}
 			}
 		}
-		print ("GEM GameStateChange " +previousGameState + " " +  newState);
 		previousGameState = newState;
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			CancelInvoke();
 			StopCoroutine( "pierceUp" );
 			StopCoroutine( "sidePierceUp" );
 		}
-		else if( newState == CharacterState.StartRunning && isTentacleSequenceActive )
+		else if( newState == PlayerCharacterState.StartRunning && isTentacleSequenceActive )
 		{
 			playTentaclesSequence();
 		}
-		else if( newState == CharacterState.StartRunning && isZombieHandsSequenceActive )
+		else if( newState == PlayerCharacterState.StartRunning && isZombieHandsSequenceActive )
 		{
 			//playZombieHandsSequence();
 		}
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Start_Kraken && !isTentacleSequenceActive )
 		{
-			startDarkQueenKrakenSequence();
+			startDarkQueenKrakenSequence( trigger.transform );
 		}
 		else if( eventType == GameEvent.Stop_Kraken && isTentacleSequenceActive )
 		{
@@ -945,12 +950,19 @@ public class GameEventManager : MonoBehaviour {
 		}
 		else if( eventType == GameEvent.Start_Cemetery_Sequence && !isZombieHandsSequenceActive )
 		{
-			startDarkQueenCemeterySequence();
+			startDarkQueenCemeterySequence( trigger.transform );
 		}
 		else if( eventType == GameEvent.Stop_Cemetery_Sequence && isZombieHandsSequenceActive )
 		{
 			stopZombieHandsSequence();
 		}
+	}
+
+	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
+	{
+		player = playerTransform;
+		playerCamera = player.GetComponent<PlayerCamera>();
+		this.playerController = playerController;
 	}
 
 }

@@ -52,12 +52,33 @@ public sealed class SkeletonController : Creature, ICreature {
 	
 	public float bolt_force = 900f;
 
+	//Original setup used when reseting the Creature
+	AttackType originalAttackType;
+
 	//Movement related
 	Vector3 forward;
 	const float RUN_SPEED = 4.6f; //good value so feet don't slide
 	float WALK_SPEED = 3.2f; //good value so feet don't slide
 	float moveSpeed = 0;
 	bool previouslyGrounded = true;
+
+	new void Awake ()
+	{
+		base.Awake();
+		saveOriginalSetup();
+	}
+
+	new void saveOriginalSetup()
+	{
+		base.saveOriginalSetup();
+		originalAttackType = attackType;
+	}
+
+	new public void resetCreature()
+	{
+		base.resetCreature();
+		attackType = originalAttackType;
+	}
 
 	void Start ()
 	{
@@ -126,12 +147,13 @@ public sealed class SkeletonController : Creature, ICreature {
 	{
 		if( creatureState != CreatureState.Attacking && creatureState != CreatureState.Dying && creatureState != CreatureState.Victory )
 		{
-			float distance = Vector3.Distance(player.position,transform.position);
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float attackDistance;
+			float playerSpeed = getPlayerController().getSpeed();
 		    switch (attackType)
 			{
 		        case AttackType.Short_range_sword_1:
-					attackDistance = 0.7f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.7f * playerSpeed;
 					if( distance < attackDistance && getDotProduct() > 0.9f )
 					{
 						followsPlayer = true;
@@ -141,7 +163,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					break;
 		                
 		        case AttackType.Short_range_sword_2:
-					attackDistance = 0.7f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.7f * playerSpeed;
 					if( distance < attackDistance && getDotProduct() > 0.9f )
 					{
 						followsPlayer = true;
@@ -151,8 +173,8 @@ public sealed class SkeletonController : Creature, ICreature {
 					break;
 		                
 				case AttackType.Charge_and_attack:
-					float chargeDistance = 2.3f * PlayerController.getPlayerSpeed();
-					attackDistance = 0.75f * PlayerController.getPlayerSpeed();
+					float chargeDistance = 2.3f * playerSpeed;
+					attackDistance = 0.75f * playerSpeed;
 					if( distance < chargeDistance )
 					{
 						if( distance >= attackDistance )
@@ -176,7 +198,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					break;
 			
 				case AttackType.Bow:
-					attackDistance = missilePlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					attackDistance = missilePlayerDistanceMultiplier * playerSpeed;
 					//Only attack if the player is inside a 30 degree arc in front of skeleton
 					if( distance < attackDistance && getDotProduct() > 0.8f )
 					{
@@ -185,7 +207,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					}
 					break;
 				case AttackType.Fire_magic_missile:
-					attackDistance = magicMissilePlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					attackDistance = magicMissilePlayerDistanceMultiplier * playerSpeed;
 					//Only attack if the player is inside a 30 degree arc in front of skeleton
 					if( distance < attackDistance && getDotProduct() > 0.8f )
 					{
@@ -194,7 +216,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					}
 					break;
 				case AttackType.Summon_skeletons:
-					attackDistance = summonSkeletonsPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					attackDistance = summonSkeletonsPlayerDistanceMultiplier * playerSpeed;
 					//Only attack if the player is inside a 30 degree arc in front of skeleton
 					if( distance < attackDistance && getDotProduct() > 0.8f )
 					{
@@ -203,8 +225,8 @@ public sealed class SkeletonController : Creature, ICreature {
 					}
 					break;
 				case AttackType.Jump_and_attack:
-					float jumpDistance = jumpPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
-					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
+					float jumpDistance = jumpPlayerDistanceMultiplier * playerSpeed;
+					attackDistance = 0.85f * playerSpeed;
 					if( distance < jumpDistance )
 					{
 						if( distance >= attackDistance )
@@ -226,7 +248,7 @@ public sealed class SkeletonController : Creature, ICreature {
 					}
 					break;
 				case AttackType.Jump_and_long_range_attack:
-					float jumpLongDistance = jumpPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					float jumpLongDistance = jumpPlayerDistanceMultiplier * playerSpeed;
 					if( distance < jumpLongDistance )
 					{
 						if( creatureState != CreatureState.Running && creatureState != CreatureState.Jumping )
@@ -245,7 +267,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	
 	void fireMagicMissile()
 	{
-		transform.LookAt( player );
+		transform.LookAt( getPlayer() );
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 		magicMissile = createMagicMissile();
 		anim.CrossFadeInFixedTime("Fire Magic Missile", CROSS_FADE_DURATION );
@@ -267,7 +289,7 @@ public sealed class SkeletonController : Creature, ICreature {
 		Physics.IgnoreCollision(magicMissile.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(magicMissile.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
 		magicMissile.GetComponent<Rigidbody>().isKinematic = false;
-		magicMissile.GetComponent<Rigidbody>().AddForce( ( new Vector3( player.position.x, player.position.y + 0.4f, player.position.z ) - magicMissile.transform.position).normalized * getAdjustedBoltForce() );
+		magicMissile.GetComponent<Rigidbody>().AddForce( ( new Vector3( getPlayer().position.x, getPlayer().position.y + 0.4f, getPlayer().position.z ) - magicMissile.transform.position).normalized * bolt_force );
 		magicMissile.GetComponent<Projectile>().launchProjectile();
 		GameObject.Destroy( magicMissile, 10f );
 	}
@@ -328,7 +350,7 @@ public sealed class SkeletonController : Creature, ICreature {
 
 	void fireCrossbow()
 	{
-		transform.LookAt( player );
+		transform.LookAt( getPlayer() );
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 		arrow = createArrow();
 		anim.SetTrigger("Fire");
@@ -351,30 +373,9 @@ public sealed class SkeletonController : Creature, ICreature {
 		Physics.IgnoreCollision(arrow.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(arrow.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
 		arrow.GetComponent<Rigidbody>().isKinematic = false;
-		arrow.GetComponent<Rigidbody>().AddForce( (new Vector3( player.position.x, player.position.y + 0.2f, player.position.z ) - arrow.transform.position).normalized * getAdjustedBoltForce() );
+		arrow.GetComponent<Rigidbody>().AddForce( (new Vector3( getPlayer().position.x, getPlayer().position.y + 0.2f, getPlayer().position.z ) - arrow.transform.position).normalized * bolt_force );
 		arrow.GetComponent<Projectile>().launchProjectile();
 		GameObject.Destroy( arrow, 10f );
-	}
-
-	public float getAdjustedBoltForce()
-	{
-		float adjustedBoltForce = bolt_force;
-		switch (PlayerStatsManager.Instance.getDifficultyLevel())
-		{
-			case DifficultyLevel.Normal:
-			adjustedBoltForce = bolt_force; //Base value is Normal, so no multiplier
-			break;
-				
-			case DifficultyLevel.Heroic:
-			adjustedBoltForce = bolt_force * 1.3f;
-			break;
-				
-			case DifficultyLevel.Legendary:
-			adjustedBoltForce = bolt_force * 1.6f;
-			break;
-			
-		}
-		return adjustedBoltForce;
 	}
 
 	public void sideCollision()
@@ -405,10 +406,10 @@ public sealed class SkeletonController : Creature, ICreature {
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if( PlayerController._characterState == CharacterState.Dying )
+		if( getPlayerController().getCharacterState() == PlayerCharacterState.Dying )
 		{
 			//The Pendulum (bad name, yes I know) is the spike road block
-			if( hit.collider.name.StartsWith("Skeleton") || hit.collider.name.StartsWith("Hero") || hit.collider.name.StartsWith("Pendulum") )
+			if( hit.collider.name.StartsWith("Skeleton") || hit.gameObject.CompareTag("Player") || hit.collider.name.StartsWith("Pendulum") )
 			{
 				//If a Skeleton collides with another Skeleton, the road block or the Hero while the player is dead, have him stop moving and play the victory sequence.
 				victory( false );
@@ -428,12 +429,12 @@ public sealed class SkeletonController : Creature, ICreature {
 		SummonSkeletonsSequence.skeletonsSummoned -= SkeletonsSummoned;
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			Stop_Weapon_Trail ( null );
-			float distance = Vector3.Distance(player.position,transform.position);
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float nearby = 4f;
 			if( distance < nearby )
 			{

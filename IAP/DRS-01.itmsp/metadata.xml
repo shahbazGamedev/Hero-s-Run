@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<package xmlns="http://apple.com/itunes/importer" version="software5.2">
+    <provider>5ZY9W9WVNR</provider>
+    <software>
+        <vendor_id>DRS-01</vendor_id>
+        <software_metadata>
+            <in_app_purchases>
+                <in_app_purchase>
+                    <locales>
+                        <locale name="en-us">
+                            <title>Stack of Coins</title>
+                            <description>Stack of Coins</description>
+                        </locale>
+                    </locales>
+                    <product_id>coins-small</product_id>
+                    <reference_name>coins-small</reference_name>
+                    <type>consumable</type>
+                    <products>
+                        <product>
+                            <cleared_for_sale>true</cleared_for_sale>
+                            <intervals>
+                                <interval>
+                                    <wholesale_price_tier>1</wholesale_price_tier>
+                                </interval>
+                            </intervals>
+                        </product>
+                    </products>
+                </in_app_purchase>
+                <in_app_purchase>
+                    <locales>
+                        <locale name="en-us">
+                            <title>Pile of Coins</title>
+                            <description>Pile of Coins</description>
+                        </locale>
+                    </locales>
+                    <product_id>coins-medium</product_id>
+                    <reference_name>coins-medium</reference_name>
+                    <type>consumable</type>
+                    <products>
+                        <product>
+                            <cleared_for_sale>true</cleared_for_sale>
+                            <intervals>
+                                <interval>
+                                    <wholesale_price_tier>7</wholesale_price_tier>
+                                </interval>
+                            </intervals>
+                        </product>
+                    </products>
+                </in_app_purchase>
+                <in_app_purchase>
+                    <locales>
+                        <locale name="en-us">
+                            <title>Bag of Coins</title>
+                            <description>Bag of Coins</description>
+                        </locale>
+                    </locales>
+                    <product_id>coins-large</product_id>
+                    <reference_name>coins-large</reference_name>
+                    <type>consumable</type>
+                    <products>
+                        <product>
+                            <cleared_for_sale>true</cleared_for_sale>
+                            <intervals>
+                                <interval>
+                                    <wholesale_price_tier>28</wholesale_price_tier>
+                                </interval>
+                            </intervals>
+                        </product>
+                    </products>
+                </in_app_purchase>
+                <in_app_purchase>
+                    <locales>
+                        <locale name="en-us">
+                            <title>Chest of Coins</title>
+                            <description>Chest of Coins</description>
+                        </locale>
+                    </locales>
+                    <product_id>coins-very large</product_id>
+                    <reference_name>coins-very large</reference_name>
+                    <type>consumable</type>
+                    <products>
+                        <product>
+                            <cleared_for_sale>true</cleared_for_sale>
+                            <intervals>
+                                <interval>
+                                    <wholesale_price_tier>54</wholesale_price_tier>
+                                </interval>
+                            </intervals>
+                        </product>
+                    </products>
+                </in_app_purchase>
+                <in_app_purchase>
+                    <locales>
+                        <locale name="en-us">
+                            <title>Vault of Coins</title>
+                            <description>Vault of Coins</description>
+                        </locale>
+                    </locales>
+                    <product_id>coins-huge</product_id>
+                    <reference_name>coins-huge</reference_name>
+                    <type>consumable</type>
+                    <products>
+                        <product>
+                            <cleared_for_sale>true</cleared_for_sale>
+                            <intervals>
+                                <interval>
+                                    <wholesale_price_tier>65</wholesale_price_tier>
+                                </interval>
+                            </intervals>
+                        </product>
+                    </products>
+                </in_app_purchase>
+                <in_app_purchase>
+                    <locales>
+                        <locale name="en-us">
+                            <title>Bunch of Lives</title>
+                            <description>Bunch of Lives</description>
+                        </locale>
+                    </locales>
+                    <product_id>lives-medium</product_id>
+                    <reference_name>lives-medium</reference_name>
+                    <type>consumable</type>
+                    <products>
+                        <product>
+                            <cleared_for_sale>true</cleared_for_sale>
+                            <intervals>
+                                <interval>
+                                    <wholesale_price_tier>7</wholesale_price_tier>
+                                </interval>
+                            </intervals>
+                        </product>
+                    </products>
+                </in_app_purchase>
+                <in_app_purchase>
+                    <locales>
+                        <locale name="en-us">
+                            <title>Heap of Lives</title>
+                            <description>Heap of Lives</description>
+                        </locale>
+                    </locales>
+                    <product_id>lives-large</product_id>
+                    <reference_name>lives-large</reference_name>
+                    <type>consumable</type>
+                    <products>
+                        <product>
+                            <cleared_for_sale>true</cleared_for_sale>
+                            <intervals>
+                                <interval>
+                                    <wholesale_price_tier>28</wholesale_price_tier>
+                                </interval>
+                            </intervals>
+                        </product>
+                    </products>
+                </in_app_purchase>
+                <in_app_purchase>
+                    <locales>
+                        <locale name="en-us">
+                            <title>Sack of Lives</title>
+                            <description>Sack of Lives</description>
+                        </locale>
+                    </locales>
+                    <product_id>lives-very large</product_id>
+                    <reference_name>lives-very large</reference_name>
+                    <type>consumable</type>
+                    <products>
+                        <product>
+                            <cleared_for_sale>true</cleared_for_sale>
+                            <intervals>
+                                <interval>
+                                    <wholesale_price_tier>54</wholesale_price_tier>
+                                </interval>
+                            </intervals>
+                        </product>
+                    </products>
+                </in_app_purchase>
+                <in_app_purchase>
+                    <locales>
+                        <locale name="en-us">
+                            <title>Crate of Lives</title>
+                            <description>Crate of Lives</description>
+                        </locale>
+                    </locales>
+                    <product_id>lives-huge</product_id>
+                    <reference_name>lives-huge</reference_name>
+                    <type>consumable</type>
+                    <products>
+                        <product>
+                            <cleared_for_sale>true</cleared_for_sale>
+                            <intervals>
+                                <interval>
+                                    <wholesale_price_tier>65</wholesale_price_tier>
+                                </interval>
+                            </intervals>
+                        </product>
+                    </products>
+                </in_app_purchase>
+                <in_app_purchase>
+                    <locales>
+                        <locale name="en-us">
+                            <title>Double Coins</title>
+                            <description>Double all coin pickups</description>
+                        </locale>
+                    </locales>
+                    <product_id>double-coins</product_id>
+                    <reference_name>double-coins</reference_name>
+                    <type>non-consumable</type>
+                    <products>
+                        <product>
+                            <cleared_for_sale>true</cleared_for_sale>
+                            <intervals>
+                                <interval>
+                                    <wholesale_price_tier>7</wholesale_price_tier>
+                                </interval>
+                            </intervals>
+                        </product>
+                    </products>
+                </in_app_purchase>
+                <in_app_purchase>
+                    <locales>
+                        <locale name="en-us">
+                            <title>Starter Pack</title>
+                            <description>Starter Pack</description>
+                        </locale>
+                    </locales>
+                    <product_id>starter-pack-1</product_id>
+                    <reference_name>starter-pack-1</reference_name>
+                    <type>consumable</type>
+                    <products>
+                        <product>
+                            <cleared_for_sale>true</cleared_for_sale>
+                            <intervals>
+                                <interval>
+                                    <wholesale_price_tier>2</wholesale_price_tier>
+                                </interval>
+                            </intervals>
+                        </product>
+                    </products>
+                </in_app_purchase>
+            </in_app_purchases>
+        </software_metadata>
+    </software>
+</package>

@@ -20,7 +20,7 @@ public class FallingRock : MonoBehaviour {
 	    //Debug.Log("FallingRock-OnCollisionEnter with " + collision.gameObject.name + " " + collision.contacts[0].normal );
 		//Play collision sound
 		//GetComponent<AudioSource>().Play();
-		if( collision.gameObject.name == "Hero" && collision.contacts[0].normal.y <= 0f )
+		if( collision.gameObject.CompareTag("Player") && collision.contacts[0].normal.y <= 0f )
 		{
 	   		Debug.LogWarning("FallingRock-OnCollisionEnter with " + collision.gameObject.name + " " + collision.contacts[0].normal );
 			//Is the player protected by a Shield Power Up?

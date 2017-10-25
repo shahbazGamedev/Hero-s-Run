@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class ZombieManager : BaseClass {
+public class ZombieManager : MonoBehaviour {
 
 	public List<GameObject> zombieFactory = new List<GameObject>();
 	int zombieFactoryIndex = 0;
@@ -12,13 +12,6 @@ public class ZombieManager : BaseClass {
 	public static int numberOfZombieWavesTriggered = 0; //could eventually put that number in the player stats
 	public const int NUMBER_STARS_PER_ZOMBIE = 20;
 	public ParticleSystem debris; //Particle fx that plays when a zombie burrows up
-
-	// Use this for initialization
-	void Awake () {
-		player = GameObject.FindGameObjectWithTag("Player").transform;
-		playerController = player.gameObject.GetComponent<PlayerController>();
-
-	}
 
 	void Start () {
 		//Hides zombies
@@ -181,7 +174,7 @@ public class ZombieManager : BaseClass {
 		//-1 left, 0 center, 1 right lane
 		int selectedLane = Random.Range(-1,2);
 		//The faster the player, the further away we need to place the zombies to give enough time to the player to avoid them.
-		float distanceToPlayer = PlayerController.getPlayerSpeed() * 5f;
+		float distanceToPlayer = player.GetComponent<PlayerController>().getSpeed() * 5f;
 		
 		Transform tile = playerController.currentTile.transform;
 		
@@ -220,16 +213,24 @@ public class ZombieManager : BaseClass {
 	void OnEnable()
 	{
 		PlayerController.resurrectionBegin += ResurrectionBegin;
+		PlayerController.localPlayerCreated += LocalPlayerCreated;
 	}
 	
 	void OnDisable()
 	{
 		PlayerController.resurrectionBegin -= ResurrectionBegin;
+		PlayerController.localPlayerCreated -= LocalPlayerCreated;
 	}
 
 	void ResurrectionBegin()
 	{
 		resetAllZombies();
+	}
+
+	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
+	{
+		player = playerTransform;
+		this.playerController = playerController;
 	}
 
 }

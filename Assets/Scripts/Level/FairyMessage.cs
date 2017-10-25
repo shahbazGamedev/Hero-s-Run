@@ -11,19 +11,20 @@ public class FairyMessage : MonoBehaviour {
 	public FairyEmotion fairyEmotion = FairyEmotion.Happy;
 
 	// Use this for initialization
-	void Awake () {
-
-		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		playerController = playerObject.GetComponent<PlayerController>();
+	void Start () {
 
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
-
 	}
-	
 
 	public void displayFairyMessage()
 	{
+		if( playerController == null )
+		{
+			GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+			playerController = playerObject.GetComponent<PlayerController>();
+		}
+
 		//Call fairy
 		fairyController.Appear ( fairyEmotion );
 
@@ -59,9 +60,9 @@ public class FairyMessage : MonoBehaviour {
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 	
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			CancelInvoke();
 		}

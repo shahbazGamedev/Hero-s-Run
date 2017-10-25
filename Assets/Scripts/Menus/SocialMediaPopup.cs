@@ -54,10 +54,10 @@ public class SocialMediaPopup : MonoBehaviour {
 	public void closeSocialMediaPopup()
 	{
 		Debug.Log("closeSocialMediaPopup");
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		freeUpPictureMemory();
 		GetComponent<Animator>().Play("Panel Slide Out");
-		Invoke("showPostLevelPopup", 1f );
+		if( GameManager.Instance.getGameState() == GameState.PostLevelPopup ) Invoke("showPostLevelPopup", 1f );
 		CancelInvoke("animateEllipsis");
 	}
 
@@ -82,7 +82,7 @@ public class SocialMediaPopup : MonoBehaviour {
 	public void shareOnFacebook()
 	{
 		shareButton.interactable = false;
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		WWWForm wwwForm = new WWWForm();
         wwwForm.AddBinaryData("image", GameManager.Instance.selfieBytes, "Hello!");
         wwwForm.AddField("message", facebookMessage );

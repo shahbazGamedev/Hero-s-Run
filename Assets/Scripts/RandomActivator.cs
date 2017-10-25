@@ -9,9 +9,9 @@ If the random number is less or equal than the chanceDisplayed number, the game 
 */
 public class RandomActivator : MonoBehaviour {
 	
-	public float chanceDisplayed = 0.3f;
+	[SerializeField] float chanceDisplayed = 0.3f;
 	
-	void Start ()
+	void OnEnable ()
 	{
 		if( Random.value <= chanceDisplayed )
 		{

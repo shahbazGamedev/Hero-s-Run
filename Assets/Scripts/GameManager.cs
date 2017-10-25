@@ -15,7 +15,10 @@ public enum GameState {
 	Menu = 6,
 	Checkpoint = 7,
 	BeforeTapToPlayAllowed = 8,
-	PostLevelPopup = 9
+	PostLevelPopup = 9,
+	WorldMapNoPopup = 10,
+	MultiplayerEndOfGame = 11,
+	Matchmaking = 12
 }
 
 //The GameScenes enum entries must match the scene numbering in Build Settings.
@@ -23,25 +26,40 @@ public enum GameState {
 public enum GameScenes {	
 	
 	TitleScreen = 0,
-	CharacterSelection = 1,
-	WorldMap = 2,
-	Level = 3,
-	TreasureIsland = 4,
-	CharacterGallery = 5,
-	Store = 6
-}
+	Level = 1,
+	CircuitSelection = 2,
+	HeroSelection = 3,
+	Matchmaking = 4,
+	CareerProfile = 5,
+	MainMenu = 6,
+	PlayModes = 7,
+	Options = 8,
+	Training = 9,
+	Social = 10,
+	LootBox = 11,
 
-public enum DifficultyLevel {
-	
-	Normal = 1,
-	Heroic = 2,
-	Legendary = 3
+	//Not used
+	WorldMap = 12,
+	TreasureIsland = 13,
+	CharacterGallery = 14,
+	Journal = 15
 }
 
 public enum GameMode {
 	
 	Story = 1,
 	Endless = 2
+}
+
+public enum PlayMode {
+	
+	PlayTwoPlayers = 1,
+	PlayWithFriends = 2,
+	PlayAgainstEnemy = 3,
+	PlayAlone = 4,
+	PlayThreePlayers = 5,
+	PlayAgainstTwoEnemies = 6
+
 }
 
 
@@ -54,22 +72,30 @@ public class GameManager {
 	private static GameManager gameManager = null;
 
 	//Event management used to notify other classes when the game state has changed
-	public delegate void GameStateEvent( GameState value );
+	public delegate void GameStateEvent( GameState previousValue, GameState newValue );
 	public static event GameStateEvent gameStateEvent;
 
 	private GameMode gameMode = GameMode.Story;
-
-	public const int TIME_PENALTY_IN_MINUTES = 5;
-	/*The last level starts at 11PM. The player must have finished by midnight.
-	this gives him a 1 hour buffer. The TIME_PENALTY_IN_MINUTES is 5 minutes.
-	This gives the player 60 minutes/5 = 12 attempts.*/
-	public const int MAX_NUMBER_OF_ATTEMPTS = 18;
-
+	private bool multiplayerMode = true;
 	public Sprite selfie;
 	public byte[] selfieBytes;
 
 	//We keep a reference to the ChallengeBoard here because we need to access it from the level scene
 	public ChallengeBoard challengeBoard;
+	//We keep a reference to the JournalData and JournalAssetManager here because we need to access it from multiple scenes
+	public JournalData journalData;
+	public JournalAssetManager journalAssetManager;
+	public PlayerProfile playerProfile;
+	public PlayerStatistics playerStatistics;
+	public PlayerDeck playerDeck;
+	public PlayerFriends playerFriends;
+	public RecentPlayers recentPlayers;
+	public PlayerInventory playerInventory;
+	public PlayerIcons playerIcons;
+	public PlayerVoiceLines playerVoiceLines;
+	public PlayerConfiguration playerConfiguration;
+	public PlayerDebugConfiguration playerDebugConfiguration;
+	PlayMode playMode = PlayMode.PlayTwoPlayers;
 
 	public static GameManager Instance
 	{
@@ -79,29 +105,96 @@ public class GameManager {
 			{
 
                 gameManager = new GameManager();
-				if( Debug.isDebugBuild )
-				{
-					Debug.Log("GameManager: the quality setting for this device is: " + QualitySettings.GetQualityLevel() );
-				}
-
             }
             return gameManager;
         }
     } 
 	
-	public void setGameState( GameState state )
+	public void setGameState( GameState newState )
 	{
-		gameState = state;
-		Debug.Log("setGameState: new state is " + state );
 		//Send an event to interested classes
-		if(gameStateEvent != null) gameStateEvent( gameState );
-	}
+		if(gameStateEvent != null) gameStateEvent( gameState, newState );
+		gameState = newState;
+		Debug.Log("GameManager-setGameState: new state is " + gameState );
+	} 
 
 	public GameState getGameState()
 	{
 		return gameState;
 	}
 
+	/// <summary>
+	/// Sets the play mode. This also sets the number of required players in LevelManager to the correct number.
+	/// </summary>
+	/// <param name="playMode">Play mode.</param>
+	public void setPlayMode( PlayMode playMode )
+	{
+		this.playMode = playMode;
+		Debug.Log("GameManager-setPlayMode: new mode is " + playMode );
+		switch ( playMode )
+		{
+			case PlayMode.PlayAgainstTwoEnemies:
+			case PlayMode.PlayAgainstEnemy:
+				LevelManager.Instance.setNumberOfPlayersRequired( 1 );
+			break;
+
+			case PlayMode.PlayAlone:
+				LevelManager.Instance.setNumberOfPlayersRequired( 1 );
+			break;
+
+			case PlayMode.PlayTwoPlayers:
+				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
+			break;
+
+			case PlayMode.PlayThreePlayers:
+				LevelManager.Instance.setNumberOfPlayersRequired( 3 );
+			break;
+
+			case PlayMode.PlayWithFriends:
+				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
+			break;
+		}
+		// we don't join the lobby. There is no need to join a lobby to get the list of rooms.
+		PhotonNetwork.autoJoinLobby = false;
+		//Are we playing online or doing an offline PvE/solo match?
+		if( getPlayMode() == PlayMode.PlayAgainstEnemy || getPlayMode() == PlayMode.PlayAgainstTwoEnemies || getPlayMode() == PlayMode.PlayAlone )
+		{
+			//PvE is an offline mode. We will not connect. We will also set Photon to offline.
+			if( PhotonNetwork.connected ) PhotonNetwork.Disconnect();
+			PhotonNetwork.offlineMode = true;
+		}
+		else
+		{
+			//All other play modes are online.
+			PhotonNetwork.offlineMode = false;
+
+			//Users are separated from each other by game version (which allows you to make breaking changes).
+			//Don't attempt to connect if you are already connected.
+			if ( !PhotonNetwork.connectedAndReady && !PhotonNetwork.connecting )
+			{
+				//We must first and foremost connect to Photon Online Server.
+				//Users are separated from each other by game version (which allows you to make breaking changes).
+				//In PhotonServerSettings, Hosting is set to Best Region excluding South Korea, Asia and Japan
+				if( playerDebugConfiguration.getOverrideCloudRegionCode() != CloudRegionCode.none ) PhotonNetwork.OverrideBestCloudServer( playerDebugConfiguration.getOverrideCloudRegionCode() );
+				PhotonNetwork.ConnectUsingSettings(GameManager.Instance.getVersionNumber());
+				Debug.Log("GameManager-PhotonNetwork.versionPUN is " + PhotonNetwork.versionPUN );
+			}
+		}
+	} 
+
+	public PlayMode getPlayMode()
+	{
+		return playMode;
+	}
+
+	/// <summary>
+	/// Returns true for the following play modes: 2-player, 3-player, and play with friends.
+	/// </summary>
+	/// <returns><c>true</c>, for the following play modes: 2-player, 3-player and play with friends, <c>false</c> otherwise.</returns>
+	public bool isOnlinePlayMode()
+	{
+		return playMode == PlayMode.PlayTwoPlayers || playMode == PlayMode.PlayThreePlayers || playMode == PlayMode.PlayWithFriends;
+	}
 
 	//Note the version number stored in version.txt should match the bundle version in PlayerSettings.
 	public void loadVersionNumber()
@@ -132,7 +225,16 @@ public class GameManager {
 	public void setGameMode( GameMode value )
 	{
 		gameMode = value;
-		Debug.Log("Game Mode set to " + value.ToString() );
+	}
+
+	public void setMultiplayerMode( bool value )
+	{
+		multiplayerMode = value;
+	}
+
+	public bool isMultiplayer()
+	{
+		return multiplayerMode;
 	}
 
 	//The global coin multiplier is used to increase (value bigger than 1) or decrease (value smaller than 1) the

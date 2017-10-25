@@ -33,6 +33,9 @@ public sealed class DemonController : Creature, ICreature {
 		do_nothing = 6
 	}
 	
+	//Original setup used when reseting the Creature
+	AttackType originalAttackType;
+
 	//Movement related
 	Vector3 forward;
 	const float RUN_SPEED = 4.6f; //good value so feet don't slide
@@ -46,6 +49,19 @@ public sealed class DemonController : Creature, ICreature {
 		{
 			transform.Find("demon_weapon").gameObject.SetActive( false );
 		}
+		saveOriginalSetup();
+	}
+
+	new void saveOriginalSetup()
+	{
+		base.saveOriginalSetup();
+		originalAttackType = attackType;
+	}
+
+	new public void resetCreature()
+	{
+		base.resetCreature();
+		attackType = originalAttackType;
 	}
 
 	void Update ()
@@ -77,13 +93,14 @@ public sealed class DemonController : Creature, ICreature {
 	{
 		if( creatureState != CreatureState.Attacking && creatureState != CreatureState.Dying && creatureState != CreatureState.Victory )
 		{
-			float distance = Vector3.Distance(player.position,transform.position);
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float attackDistance;
+			float playerSpeed = getPlayerController().getSpeed();
 		    switch (attackType)
 			{
 		        case AttackType.stand_and_normal_attack:
-					attackDistance = 0.76f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance )
+					attackDistance = 0.76f * playerSpeed;
+					if( distance < attackDistance && getDotProduct() > 0.95f )
 					{
 						setCreatureState( CreatureState.Attacking );
 						anim.CrossFadeInFixedTime( "Attack" , CROSS_FADE_DURATION );
@@ -91,8 +108,8 @@ public sealed class DemonController : Creature, ICreature {
 					break;
 		                
 		        case AttackType.stand_and_big_attack:
-					attackDistance = 0.95f * PlayerController.getPlayerSpeed();
-					if( distance < attackDistance )
+					attackDistance = 0.95f * playerSpeed;
+					if( distance < attackDistance && getDotProduct() > 0.95f )
 					{
 						setCreatureState( CreatureState.Attacking );
 						anim.CrossFadeInFixedTime( "Skill" , CROSS_FADE_DURATION );
@@ -100,9 +117,9 @@ public sealed class DemonController : Creature, ICreature {
 					break;
 		                
 				case AttackType.charge_and_attack:
-					float chargeDistance = 2.3f * PlayerController.getPlayerSpeed();
-					attackDistance = 0.97f * PlayerController.getPlayerSpeed();
-					if( distance < chargeDistance )
+					float chargeDistance = 2.3f * playerSpeed;
+					attackDistance = 0.97f * playerSpeed;
+					if( distance < chargeDistance && getDotProduct() > 0.9f )
 					{
 						if( distance >= attackDistance )
 						{
@@ -125,9 +142,9 @@ public sealed class DemonController : Creature, ICreature {
 					break;
 				
 				case AttackType.walk_and_attack:
-					float walkDistance = 2.5f * PlayerController.getPlayerSpeed();
-					attackDistance = 0.97f * PlayerController.getPlayerSpeed();
-					if( distance < walkDistance )
+					float walkDistance = 2.5f * playerSpeed;
+					attackDistance = 0.97f * playerSpeed;
+					if( distance < walkDistance && getDotProduct() > 0.9f )
 					{
 						if( distance >= attackDistance )
 						{
@@ -147,7 +164,7 @@ public sealed class DemonController : Creature, ICreature {
 					break;
 
 				case AttackType.walk_and_talk:
-					float startWalkingDistance = 3.3f * PlayerController.getPlayerSpeed();
+					float startWalkingDistance = 3.3f * playerSpeed;
 					if( distance < startWalkingDistance )
 					{
 						if( getCreatureState() != CreatureState.Walking )
@@ -206,10 +223,10 @@ public sealed class DemonController : Creature, ICreature {
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if( PlayerController._characterState == CharacterState.Dying )
+		if( getPlayerController().getCharacterState() == PlayerCharacterState.Dying )
 		{
 			//The Pendulum (bad name, yes I know) is the spike road block
-			if( hit.collider.name.StartsWith("Demon") || hit.collider.name.StartsWith("Hero") || hit.collider.name.StartsWith("Pendulum") )
+			if( hit.collider.name.StartsWith("Demon") || hit.gameObject.CompareTag("Player") || hit.collider.name.StartsWith("Pendulum") )
 			{
 				//If a demon collides with another demon, the road block or the Hero while the player is dead, have him stop moving and play the victory sequence.
 				victory( false );
@@ -227,12 +244,12 @@ public sealed class DemonController : Creature, ICreature {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			Stop_Weapon_Trail ( null );
-			float distance = Vector3.Distance(player.position,transform.position);
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float nearby = 4f;
 			if( distance < nearby )
 			{
@@ -271,6 +288,6 @@ public sealed class DemonController : Creature, ICreature {
 	public void speak( string voiceOverID, float textDisplayDuration, bool hasVoiceOver )
 	{
 		DialogManager.dialogManager.activateDisplayGeneric( LocalizationManager.Instance.getText( voiceOverID ), demonPortrait, textDisplayDuration );
-		if( hasVoiceOver ) audioSource.PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
+		if( hasVoiceOver ) voiceOverAudioSource.PlayOneShot( DialogManager.dialogManager.getVoiceOver( voiceOverID ) );
 	}
 }

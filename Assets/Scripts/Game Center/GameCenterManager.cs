@@ -63,7 +63,7 @@ public class GameCenterManager : MonoBehaviour {
 				}
 				else
 				{
-					Debug.Log ("No achievements returned");
+					//Debug.Log ("No achievements returned");
 				}
 			});
 
@@ -165,7 +165,7 @@ public class GameCenterManager : MonoBehaviour {
  		#if !UNITY_EDITOR
 		if( GameManager.Instance.getGameMode() == GameMode.Endless )
 		{
-			//The score is the sum of the Stars collected and the Distance run.
+			//The score is the sum of the Coins collected and the Distance run.
 			int playerScore = LevelManager.Instance.getScore() + PlayerStatsManager.Instance.getDistanceTravelled();
 			//For now, we only have a global leaderboard, which is used regardless of which episode you play
 			GameCenterManager.reportLeaderboard( GameCenterManager.DistanceRunAllLevels, playerScore );

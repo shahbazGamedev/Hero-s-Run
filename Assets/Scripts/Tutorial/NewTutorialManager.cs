@@ -17,9 +17,9 @@ public class NewTutorialManager : MonoBehaviour {
 	NewTutorialEvent activeTutorial;
 	PowerUpType powerUpUsedInTutorial = PowerUpType.SpeedBoost;
 	const float HORIZONTAL_DURATION = 0.9f;
-	const float VERTICAL_DURATION = 0.9f;
+	const float VERTICAL_DURATION = 0.8f;
 	const float TILT_DURATION = 0.9f;
-	const float FADE_IN_DURATION = 0.35f;
+	const float FADE_IN_DURATION = 0.25f;
 	const float PAUSE_DELAY = 0.5f;
 	Vector2 leftArrow;
 	Vector2 rightArrow;
@@ -43,6 +43,7 @@ public class NewTutorialManager : MonoBehaviour {
 		tutorialTexts.Add(NewTutorialEvent.Slide_Breakable, LocalizationManager.Instance.getText("TUTORIAL_SLIDE_BREAKABLE"));
 		tutorialTexts.Add(NewTutorialEvent.Tilt, LocalizationManager.Instance.getText("TUTORIAL_TILT_CHANGE_LANES"));
 		tutorialTexts.Add(NewTutorialEvent.Activate_Power_Up, LocalizationManager.Instance.getText("TUTORIAL_ACTIVATE_POWER_UP"));
+		tutorialTexts.Add(NewTutorialEvent.Attach_to_Zipline, LocalizationManager.Instance.getText("TUTORIAL_ATTACH_TO_ZIPLINE"));
 
 		//Text used in the Save Me screen if the player failed a tutorial
 		tutorialTextsIfFailed.Clear();
@@ -56,6 +57,7 @@ public class NewTutorialManager : MonoBehaviour {
 		tutorialTextsIfFailed.Add(NewTutorialEvent.Slide_Breakable, LocalizationManager.Instance.getText("TUTORIAL_SLIDE_BREAKABLE_FAIL"));
 		tutorialTextsIfFailed.Add(NewTutorialEvent.Tilt, LocalizationManager.Instance.getText("TUTORIAL_TRY_AGAIN"));
 		tutorialTextsIfFailed.Add(NewTutorialEvent.Activate_Power_Up, LocalizationManager.Instance.getText("TUTORIAL_TRY_AGAIN"));
+		tutorialTextsIfFailed.Add(NewTutorialEvent.Attach_to_Zipline, LocalizationManager.Instance.getText("TUTORIAL_ATTACH_TO_ZIPLINE"));
 
 		leftArrow = new Vector2( -100f, -130f );
 		rightArrow = new Vector2( 400f, -130f );
@@ -174,6 +176,14 @@ public class NewTutorialManager : MonoBehaviour {
 			LeanTween.color(tapDevice.GetComponent<RectTransform>(), new Color(1f,1f,1f, 1f ), FADE_IN_DURATION );
 			break;
 
+		case NewTutorialEvent.Attach_to_Zipline:
+			methodToInvoke = "startUpSlide";
+			instructionText.GetComponent<RectTransform>().anchoredPosition = highText;
+			instructionText.text = tutorialTexts[NewTutorialEvent.Attach_to_Zipline];
+			instructionText.gameObject.SetActive( true );
+			instructionText.color = new Color(1f,1f,1f, 0 );
+			LeanTween.colorText(instructionText.GetComponent<RectTransform>(), new Color(1f,1f,1f, 1f ), FADE_IN_DURATION ).setOnComplete(startUpSlide).setOnCompleteParam(gameObject);
+			break;
 		}
 	}
 
@@ -294,7 +304,7 @@ public class NewTutorialManager : MonoBehaviour {
 		handleTutorialEvent( tutorialEvent );
 	}
 
-	void GameStateChange( GameState newState )
+	void GameStateChange( GameState previousState, GameState newState )
 	{
 		if( newState == GameState.Normal )
 		{
@@ -307,9 +317,9 @@ public class NewTutorialManager : MonoBehaviour {
 		}
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			//Hide any active tutorial
 			panel.SetActive( false );

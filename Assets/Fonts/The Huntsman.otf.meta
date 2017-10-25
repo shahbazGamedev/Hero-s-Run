@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 7ea4011ce8c59403a9a9007e6abc0cf5
+timeCreated: 1483497229
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: The Huntsman
+  fontNames:
+  - The Huntsman
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -12,10 +12,11 @@ public enum PowerUpType {
 	MagicBoots = 4,
 	SlowTime = 5,
 	SpeedBoost = 6,
-	Life = 7
+	Life = 7,
+	StoryUnlock = 8
 }
 
-public class PowerUpManager : BaseClass {
+public class PowerUpManager : MonoBehaviour {
 
 	const float SLIDE_DURATION = 0.3f;
 	const float START_X_POSITION = -160f;
@@ -46,7 +47,7 @@ public class PowerUpManager : BaseClass {
 
 	//List of each powerup available.
 	public List<PowerUpData> powerUpList = new List<PowerUpData>(7);
-	static Dictionary<PowerUpType,PowerUpData> powerUpDictionary = new Dictionary<PowerUpType,PowerUpData>(7);
+	static Dictionary<PowerUpType,PowerUpData> powerUpDictionary = new Dictionary<PowerUpType,PowerUpData>(8);
 
 	//Base diameter is the value if upgrade level is 0. It is used by zNuke.
 	const float BASE_DIAMETER = 18f; 	//in meters
@@ -60,12 +61,11 @@ public class PowerUpManager : BaseClass {
 
 	void Awake()
 	{
+		if( GameManager.Instance.isMultiplayer() ) Destroy( gameObject );
 		fillDictionary();
-		player = GameObject.FindGameObjectWithTag("Player").transform;	
-		playerController = player.GetComponent<PlayerController>();
 		audioSource = GetComponent<AudioSource>();
 	}
-	
+
 	public void changeSelectedPowerUp(PowerUpType newPowerUpType )
 	{
 		PlayerStatsManager.Instance.setPowerUpSelected( newPowerUpType );
@@ -117,7 +117,7 @@ public class PowerUpManager : BaseClass {
 		do
 		{
 			elapsed = elapsed + Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( elapsed < duration );
 		//Duration has expired. Deactivate power up.
 		deactivatePowerUp( pud.powerUpType, false );
@@ -132,7 +132,7 @@ public class PowerUpManager : BaseClass {
 		do
 		{
 			elapsed = elapsed + Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( elapsed < duration );
 		//Duration has expired. Deactivate power up.
 		deactivatePowerUp( pud.powerUpType, false );
@@ -147,7 +147,7 @@ public class PowerUpManager : BaseClass {
 		do
 		{
 			elapsed = elapsed + Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( elapsed < duration );
 		//Duration has expired. Deactivate power up.
 		deactivatePowerUp( pud.powerUpType, false );
@@ -162,7 +162,7 @@ public class PowerUpManager : BaseClass {
 		do
 		{
 			elapsed = elapsed + Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( elapsed < duration );
 		//Duration has expired. Deactivate power up.
 		deactivatePowerUp( pud.powerUpType, false );
@@ -176,7 +176,6 @@ public class PowerUpManager : BaseClass {
 	public void pickUpPowerUp( PowerUpType powerUpType )
 	{
 		PowerUpData pud = powerUpDictionary[powerUpType];
-
 		//Play pick-up sound
 		audioSource.PlayOneShot( pickUpSound );
 		//Play a pick-up particle effect if one has been specified
@@ -193,6 +192,11 @@ public class PowerUpManager : BaseClass {
 			PlayerStatsManager.Instance.increaseLives(1);
 			PlayerStatsManager.Instance.savePlayerStats();
 			print("Life - pickUpPowerUp : adding 1 life. New total is " + PlayerStatsManager.Instance.getLives() );
+		}
+		//Story Unlock is a special case. The inventory is maintained separately in JournalData.
+		else if( powerUpType == PowerUpType.StoryUnlock )
+		{
+			GameManager.Instance.journalData.newPartAcquired();
 		}
 		else
 		{
@@ -386,7 +390,7 @@ public class PowerUpManager : BaseClass {
 		{
 			elapsedTime = elapsedTime + Time.deltaTime;
 			Time.timeScale = Mathf.Lerp( currentTimeScale, 1f, elapsedTime/duration );
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( elapsedTime < duration );
 
 		//Fix any left-overs
@@ -423,8 +427,8 @@ public class PowerUpManager : BaseClass {
 
 	public void considerAddingPowerUp( GameObject newTile, int tileIndex )
 	{
-		LevelData.LevelInfo levelInfo = LevelManager.Instance.getLevelInfo();
-		int powerUpDensity = levelInfo.powerUpDensity;
+		LevelData.EpisodeInfo episodeInfo = LevelManager.Instance.getCurrentEpisodeInfo();
+		int powerUpDensity = episodeInfo.powerUpDensity;
 		
 		//Should we add a Power-up?
 		if( powerUpDensity != 0 )
@@ -439,7 +443,7 @@ public class PowerUpManager : BaseClass {
 				{
 					if( forcePowerUpType == PowerUpType.None )
 					{
-						int rdPowerUp = Random.Range( 1,8 );
+						int rdPowerUp = Random.Range( 1,9 );
 						if( rdPowerUp == (int)PowerUpType.Shield )
 						{
 							addPowerUp( PowerUpType.Shield, placeholder, newTile );
@@ -464,6 +468,18 @@ public class PowerUpManager : BaseClass {
 						{
 							addPowerUp( PowerUpType.SpeedBoost, placeholder, newTile );
 						}
+						else if( rdPowerUp == (int)PowerUpType.StoryUnlock )
+						{
+							//If the player has unlocked all journal entries, spawn a magnet instead. 
+							if( GameManager.Instance.journalData.areAllEntriesUnlocked() )
+							{
+								addPowerUp( PowerUpType.Magnet, placeholder, newTile );
+							}
+							else
+							{
+								addPowerUp( PowerUpType.StoryUnlock, placeholder, newTile );
+							}
+						}
 						else if( rdPowerUp == (int)PowerUpType.Life )
 						{
 							//Create a Life power-up
@@ -486,6 +502,7 @@ public class PowerUpManager : BaseClass {
 	private void addPowerUp ( PowerUpType type, Transform powerUpPlaceholder, GameObject newTile )
 	{
 		GameObject powerUpPrefab = powerUpDictionary[type].powerUpToSpawn;
+		powerUpPrefab.SetActive( true );
 		//Always place the power-up at the same height
 		RaycastHit hit;
 		if (Physics.Raycast(new Vector3(powerUpPlaceholder.position.x, powerUpPlaceholder.position.y + 3f, powerUpPlaceholder.position.z), Vector3.down, out hit, 10f ))
@@ -504,6 +521,7 @@ public class PowerUpManager : BaseClass {
 		PlayerController.playerStateChanged += PlayerStateChange;
 		GameManager.gameStateEvent += GameStateChange;
 		PlayerStatsManager.powerUpInventoryChanged += PowerUpInventoryChanged;
+		PlayerController.localPlayerCreated += LocalPlayerCreated;
 	}
 
 	void OnDisable()
@@ -511,6 +529,7 @@ public class PowerUpManager : BaseClass {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 		GameManager.gameStateEvent -= GameStateChange;
 		PlayerStatsManager.powerUpInventoryChanged -= PowerUpInventoryChanged;
+		PlayerController.localPlayerCreated -= LocalPlayerCreated;
 	}
 
 	void resetAllPowerUps()
@@ -522,12 +541,18 @@ public class PowerUpManager : BaseClass {
 		activePowerUps.Clear();
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			resetAllPowerUps();
 		}
+	}
+
+	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
+	{
+		this.playerController = playerController;
+		this.player = playerTransform;
 	}
 
 	void PowerUpInventoryChanged()
@@ -547,7 +572,7 @@ public class PowerUpManager : BaseClass {
 		slideOutPowerUp( equippedPowerUp );
 	}
 
-	void GameStateChange( GameState newState )
+	void GameStateChange( GameState previousState, GameState newState )
 	{
 		if( newState == GameState.Checkpoint )
 		{
@@ -594,7 +619,7 @@ public class PowerUpManager : BaseClass {
 			elapsed = elapsed + Time.deltaTime;
 			posX = initialPosX + elapsed/SLIDE_DURATION * distance;
 			uiElement.anchoredPosition = new Vector2( posX, uiElement.anchoredPosition.y );
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( elapsed < SLIDE_DURATION );
 		uiElement.anchoredPosition = new Vector2( FINAL_X_POSITION, uiElement.anchoredPosition.y );
 		
@@ -617,7 +642,7 @@ public class PowerUpManager : BaseClass {
 			elapsed = elapsed + Time.deltaTime;
 			posX = initialPosX - elapsed/SLIDE_DURATION * distance;
 			uiElement.anchoredPosition = new Vector2( posX, uiElement.anchoredPosition.y );
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( elapsed < SLIDE_DURATION );
 		uiElement.anchoredPosition = new Vector2( START_X_POSITION, uiElement.anchoredPosition.y );
 	}

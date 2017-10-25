@@ -1,0 +1,12 @@
+SKU	Product ID	Reference Name	Type	Cleared For Sale	Wholesale Price Tier	Displayed Name	Description	Screenshot Path	Effective Date	End Date	Review Notes	Hosted Content Path
+DRS-01	coins-small	coins-small	Consumable	yes	1	Stack of Coins	Stack of Coins					
+DRS-01	coins-medium	coins-medium	Consumable	yes	7	Pile of Coins	Pile of Coins					
+DRS-01	coins-large	coins-large	Consumable	yes	28	Bag of Coins	Bag of Coins					
+DRS-01	coins-very large	coins-very large	Consumable	yes	54	Chest of Coins	Chest of Coins					
+DRS-01	coins-huge	coins-huge	Consumable	yes	65	Vault of Coins	Vault of Coins					
+DRS-01	lives-medium	lives-medium	Consumable	yes	7	Bunch of Lives	Bunch of Lives					
+DRS-01	lives-large	lives-large	Consumable	yes	28	Heap of Lives	Heap of Lives					
+DRS-01	lives-very large	lives-very large	Consumable	yes	54	Sack of Lives	Sack of Lives					
+DRS-01	lives-huge	lives-huge	Consumable	yes	65	Crate of Lives	Crate of Lives					
+DRS-01	double-coins	double-coins	Non-Consumable	yes	7	Double Coins	Double all coin pickups					
+DRS-01	starter-pack-1	starter-pack-1	Consumable	yes	2	Starter Pack	Starter Pack					

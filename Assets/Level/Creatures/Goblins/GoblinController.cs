@@ -18,9 +18,11 @@ public sealed class GoblinController : Creature, ICreature {
 	[Tooltip("There is 30% chance that each of the following cloth item will be hidden. This is so not all goblins look alike.")]
 	public GameObject clothItem1;
 	public GameObject clothItem2;
-	[Header("Barrel")]
-	[Tooltip("The breakable barrel that the goblin will push on top of the player.")]
-	public Rigidbody barrel;
+	[Header("Pushed/thrown object like a barrel or a big snow ball")]
+	[Tooltip("The rigid body of the object that the goblin will push on top of the player.")]
+	Rigidbody pushedObject;
+	public Transform locationOfPushedObject;
+	public GameObject pushedObjectPrefab;
 	[Tooltip("The forward (based on the goblin's transform) force to apply on the barrel.")]
 	public float barrelForwardForce = 1300f; //Based on 10 kilograms
 	[Tooltip("Player distance multiplier used to decide to throw barrel.")]
@@ -37,7 +39,7 @@ public sealed class GoblinController : Creature, ICreature {
 		short_range_Spear_2 = 2,
 		long_range_Spear = 3,
 		Crossbow = 4,
-		Throw_Barrel = 5,
+		Push_Object = 5,
 		jump_and_attack = 6,
 		jump_and_long_range_attack = 7
 	}
@@ -47,6 +49,8 @@ public sealed class GoblinController : Creature, ICreature {
 	//Only use for the scout goblin with the crossbow
 	Vector3 initialBoltPositionOffset = new Vector3( 0f, 0.47f, 0.46f );
 
+	//Original setup used when reseting the Creature
+	AttackType originalAttackType;
 
 	//Movement related
 	Vector3 forward;
@@ -57,6 +61,19 @@ public sealed class GoblinController : Creature, ICreature {
 	{
 		base.Awake();
 		randomizeLook();
+		saveOriginalSetup();
+	}
+
+	new void saveOriginalSetup()
+	{
+		base.saveOriginalSetup();
+		originalAttackType = attackType;
+	}
+
+	new public void resetCreature()
+	{
+		base.resetCreature();
+		attackType = originalAttackType;
 	}
 
 	void Start ()
@@ -123,12 +140,13 @@ public sealed class GoblinController : Creature, ICreature {
 	{
 		if( creatureState != CreatureState.Attacking && creatureState != CreatureState.Dying && creatureState != CreatureState.Victory )
 		{
-			float distance = Vector3.Distance(player.position,transform.position);
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float attackDistance;
+			float playerSpeed = getPlayerController().getSpeed();
 		    switch (attackType)
 			{
 		        case AttackType.short_range_Spear_1:
-					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.85f * playerSpeed;
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -137,7 +155,7 @@ public sealed class GoblinController : Creature, ICreature {
 					break;
 		                
 		        case AttackType.short_range_Spear_2:
-					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
+					attackDistance = 0.85f * playerSpeed;
 					if( distance < attackDistance && getDotProduct() > 0.98f )
 					{
 						setCreatureState( CreatureState.Attacking );
@@ -146,7 +164,7 @@ public sealed class GoblinController : Creature, ICreature {
 					break;
 		                
 				case AttackType.long_range_Spear:
-					attackDistance = 2f * PlayerController.getPlayerSpeed();
+					attackDistance = 2f * playerSpeed;
 					if( distance < attackDistance )
 					{
 						followsPlayer = true;
@@ -156,7 +174,7 @@ public sealed class GoblinController : Creature, ICreature {
 					break;
 			
 				case AttackType.Crossbow:
-					attackDistance = 2.2f * PlayerController.getPlayerSpeed();
+					attackDistance = 2.2f * playerSpeed;
 					//Only attack if the player is inside a 30 degree arc in front of goblin
 					if( distance < attackDistance && getDotProduct() > 0.85f )
 					{
@@ -164,17 +182,17 @@ public sealed class GoblinController : Creature, ICreature {
 						fireCrossbow();
 					}
 					break;
-				case AttackType.Throw_Barrel:
-					attackDistance = barrelPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+				case AttackType.Push_Object:
+					attackDistance = barrelPlayerDistanceMultiplier * playerSpeed;
 					if( distance < attackDistance )
 					{
 						setCreatureState( CreatureState.Attacking );
-						throwBarrel();
+						pushObject();
 					}
 					break;
 				case AttackType.jump_and_attack:
-					float jumpDistance = jumpPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
-					attackDistance = 0.85f * PlayerController.getPlayerSpeed();
+					float jumpDistance = jumpPlayerDistanceMultiplier * playerSpeed;
+					attackDistance = 0.85f * playerSpeed;
 					if( distance < jumpDistance )
 					{
 						if( distance >= attackDistance )
@@ -196,7 +214,7 @@ public sealed class GoblinController : Creature, ICreature {
 					}
 					break;
 				case AttackType.jump_and_long_range_attack:
-					float jumpLongDistance = jumpPlayerDistanceMultiplier * PlayerController.getPlayerSpeed();
+					float jumpLongDistance = jumpPlayerDistanceMultiplier * playerSpeed;
 					if( distance < jumpLongDistance )
 					{
 						if( creatureState != CreatureState.Running && creatureState != CreatureState.Jumping )
@@ -222,7 +240,7 @@ public sealed class GoblinController : Creature, ICreature {
 	{
 		yield return new WaitForSeconds( Random.value * 1f );
 		GameObject bolt = (GameObject)Instantiate(boltPrefab);
-		transform.LookAt( player );
+		transform.LookAt( getPlayer() );
 		bolt.transform.rotation = Quaternion.Euler( transform.eulerAngles.x, transform.eulerAngles.y, 0 );
 		transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 		Vector3 initialBoltPosition = transform.TransformPoint( initialBoltPositionOffset );
@@ -230,42 +248,21 @@ public sealed class GoblinController : Creature, ICreature {
 		anim.CrossFadeInFixedTime( "attack", CROSS_FADE_DURATION );
 		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CapsuleCollider>());
 		Physics.IgnoreCollision(bolt.GetComponent<Collider>(), transform.GetComponent<CharacterController>());
-		bolt.GetComponent<Rigidbody>().AddForce(bolt.transform.forward * getAdjustedBoltForce() );
+		bolt.GetComponent<Rigidbody>().AddForce(bolt.transform.forward * BOLT_FORCE );
 		bolt.GetComponent<Projectile>().launchProjectile();
 		//destroy the bolt after 8 seconds
 		GameObject.Destroy( bolt, 8f );
 	}
 
-	public float getAdjustedBoltForce()
-	{
-		float adjustedBoltForce = BOLT_FORCE;
-		switch (PlayerStatsManager.Instance.getDifficultyLevel())
-		{
-			case DifficultyLevel.Normal:
-			adjustedBoltForce = BOLT_FORCE; //Base value is Normal, so no multiplier
-			break;
-				
-			case DifficultyLevel.Heroic:
-			adjustedBoltForce = BOLT_FORCE * 1.3f;
-			break;
-				
-			case DifficultyLevel.Legendary:
-			adjustedBoltForce = BOLT_FORCE * 1.6f;
-			break;
-			
-		}
-		return adjustedBoltForce;
-	}
-
-	void throwBarrel()
+	void pushObject()
 	{
 		if( playGoblinTaunt ) audioSource.PlayOneShot( win, 0.7f );
 		//Push barrels in the direction of the goblin and add a small upward force
 		Vector3 forces = transform.forward * barrelForwardForce + new Vector3( 0, 400f, 0 );
-		barrel.isKinematic = false;
-		barrel.AddForce( forces );
-		barrel.AddTorque( new Vector3( 0, 300f, 0 ) );
-		anim.CrossFadeInFixedTime( "attack2", CROSS_FADE_DURATION );
+		pushedObject.isKinematic = false;
+		pushedObject.AddForce( forces );
+		pushedObject.AddTorque( new Vector3( 0, 300f, 0 ) );
+		anim.CrossFadeInFixedTime( "push", CROSS_FADE_DURATION );
 	}
 
 
@@ -309,10 +306,10 @@ public sealed class GoblinController : Creature, ICreature {
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if( PlayerController._characterState == CharacterState.Dying )
+		if( getPlayerController().getCharacterState() == PlayerCharacterState.Dying )
 		{
 			//The Pendulum (bad name, yes I know) is the spike road block
-			if( hit.collider.name.StartsWith("Goblin") || hit.collider.name.StartsWith("Hero") || hit.collider.name.StartsWith("Pendulum") )
+			if( hit.collider.name.StartsWith("Goblin") || hit.gameObject.CompareTag("Player") || hit.collider.name.StartsWith("Pendulum") )
 			{
 				//If a goblin collides with another goblin, the road block or the Hero while the player is dead, have him stop moving and play the victory sequence.
 				victory( false );
@@ -323,24 +320,52 @@ public sealed class GoblinController : Creature, ICreature {
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
+		createPushedObject();
 	}
 	
 	void OnDisable()
 	{
 		PlayerController.playerStateChanged -= PlayerStateChange;
+		destroyPushedObject();
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void createPushedObject()
 	{
-		if( newState == CharacterState.Dying )
+		if( locationOfPushedObject != null && pushedObjectPrefab != null )
 		{
-			float distance = Vector3.Distance(player.position,transform.position);
+			GameObject go = (GameObject)Instantiate(pushedObjectPrefab);
+			go.transform.SetParent( transform.parent );
+			go.name = "Fence";
+			go.transform.localPosition = locationOfPushedObject.localPosition;
+			go.transform.localRotation = locationOfPushedObject.localRotation;
+			pushedObject = go.GetComponent<Rigidbody>();
+		}
+	}
+
+	void destroyPushedObject()
+	{
+		if( locationOfPushedObject != null && pushedObjectPrefab != null )
+		{
+			GameObject.Destroy( pushedObject.gameObject );
+			pushedObject = null;
+		}
+	}
+
+	void PlayerStateChange( PlayerCharacterState newState )
+	{
+		if( newState == PlayerCharacterState.Dying )
+		{
+			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float nearby = 4f;
 			if( distance < nearby )
 			{
 				victory( false );
 				Debug.Log("Goblin PlayerStateChange - player is dead and nearby");
 			}
+		}
+		else if( newState == PlayerCharacterState.Falling )
+		{
+			halt();
 		}
 	}
 

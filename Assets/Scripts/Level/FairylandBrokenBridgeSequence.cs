@@ -28,10 +28,7 @@ public class FairylandBrokenBridgeSequence : MonoBehaviour {
 	public List<HexagonRowData> hexagonsActivePerRow = new List<HexagonRowData>(NUMBER_OF_ROWS);
 
 	// Use this for initialization
-	void Awake () {
-
-		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-		playerController = playerObject.GetComponent<PlayerController>();
+	void Start () {
 
 		GameObject fairyObject = GameObject.FindGameObjectWithTag("Fairy");
 		fairyController = fairyObject.GetComponent<FairyController>();
@@ -44,11 +41,14 @@ public class FairylandBrokenBridgeSequence : MonoBehaviour {
 
 	}
 	
-	public void startSequence()
+	public void startSequence( Transform trigger )
 	{
+		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+		playerController = playerObject.GetComponent<PlayerController>();
+
 		//Slowdown player and remove player control (this is done via a trigger)
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(18.1f, afterPlayerSlowdown ) );
+		StartCoroutine( playerController.slowDownPlayer(18.1f, afterPlayerSlowdown, trigger ) );
 	}
 
 	void afterPlayerSlowdown()
@@ -163,13 +163,12 @@ public class FairylandBrokenBridgeSequence : MonoBehaviour {
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Broken_Bridge && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
-
-			startSequence();
+			startSequence( trigger.transform );
 		}
 	}
 

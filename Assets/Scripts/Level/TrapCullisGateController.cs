@@ -31,7 +31,7 @@ public class TrapCullisGateController : MonoBehaviour {
 	//Step 0 - player arrives in the middle of the cullis gate and activates the trigger
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.name == "Hero" && !isActive )
+		if( other.CompareTag("Player") && !isActive )
 		{
 			isActive = true;
 			playerEnteredCullisGate();
@@ -87,10 +87,10 @@ public class TrapCullisGateController : MonoBehaviour {
 		//Center player in the exact center of the cullis gate
 		player.transform.SetParent( transform );
 		player.transform.localPosition = new Vector3 ( 0, 0.54f, 0 );
-		player.GetComponent<SimpleCamera>().lockCamera( true );
+		player.GetComponent<PlayerCamera>().lockCamera( true );
 		player.GetComponent<PlayerController>().anim.speed = 3.8f;
 		player.GetComponent<PlayerController>().anim.CrossFadeInFixedTime("Fall", 0.25f);
-		LeanTween.moveLocalY( player, transform.position.y - 4f, 5f ).setEase(LeanTweenType.easeOutExpo);
+		LeanTween.moveY( player, transform.position.y - 4f, 5f ).setEase(LeanTweenType.easeOutExpo);
 		Invoke("quit", 5.5f );
 	}
 
@@ -100,7 +100,7 @@ public class TrapCullisGateController : MonoBehaviour {
 		player.transform.SetParent( null );
 		//Save the player stats before continuing
 		PlayerStatsManager.Instance.savePlayerStats();
-		bool isGameFinished = LevelManager.Instance.incrementNextLevelToComplete();
+		bool isGameFinished = LevelManager.Instance.incrementNextEpisodeToComplete();
 		if( isGameFinished )
 		{
 		}
@@ -109,8 +109,6 @@ public class TrapCullisGateController : MonoBehaviour {
 			LevelManager.Instance.setEpisodeCompleted( true );
 		}
 		FacebookManager.Instance.postHighScore( LevelManager.Instance.getCurrentEpisodeNumber() + 1 );
-		SoundManager.soundManager.stopMusic();
-		SoundManager.soundManager.stopAmbience();
 		GameManager.Instance.setGameState(GameState.PostLevelPopup);
 		SceneManager.LoadScene( (int) GameScenes.WorldMap );
 	}

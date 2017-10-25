@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TreeController : BaseClass {
+public class TreeController : MonoBehaviour {
 	
 
 	enum TreeState {
@@ -22,6 +22,7 @@ public class TreeController : BaseClass {
 	public AudioClip wakeUp2;
 
 	Transform player;
+	PlayerController playerController;
 	bool hasAttackedPlayer = false;
 	public bool appearsOnRandomRoadSide = true;
 
@@ -33,8 +34,6 @@ public class TreeController : BaseClass {
 	{
 		//Get a copy of the components
 		treeAnimation = GetComponent<Animation>();
-
-		player = GameObject.FindGameObjectWithTag("Player").transform;
 
 		if( appearsOnRandomRoadSide )
 		{
@@ -53,10 +52,14 @@ public class TreeController : BaseClass {
 				if( treeToMove != null ) treeToMove.localPosition = new Vector3( -transform.localPosition.x, transform.localPosition.y, transform.localPosition.z );
 				//We want the leaves particle system to shift to the left side of the tree.
 				fallingLeaves.transform.localPosition = new Vector3( -fallingLeaves.transform.localPosition.x, fallingLeaves.transform.localPosition.y, fallingLeaves.transform.localPosition.z );
-
 			}
 		}
+	}
 
+	void Start()
+	{
+		player = GameObject.FindGameObjectWithTag("Player").transform;
+		playerController = player.GetComponent<PlayerController>();
 	}
 
 	//Called by the TriggerTree script
@@ -117,7 +120,7 @@ public class TreeController : BaseClass {
 		{
 			float distance = Vector3.Distance(player.position,transform.position);
 
-			float attackDistance = 0.81f * PlayerController.getPlayerSpeed();
+			float attackDistance = 0.81f * playerController.getSpeed();
 			if( distance < attackDistance )
 			{
 				attackPlayer();
@@ -128,6 +131,10 @@ public class TreeController : BaseClass {
 	void OnEnable()
 	{
 		PlayerController.playerStateChanged += PlayerStateChange;
+		//Reset values
+		treeState = TreeState.Sleeping;
+		hasAttackedPlayer = false;
+		treeAnimation.Stop();
 	}
 	
 	void OnDisable()
@@ -135,9 +142,9 @@ public class TreeController : BaseClass {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 	}
 	
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			if( treeState == TreeState.Sleeping )
 			{

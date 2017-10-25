@@ -11,7 +11,6 @@ public sealed class ZombieController : Creature, ICreature {
 		Any = 3, //Either walk or crawl
 	}
 
-	PlayerController playerController;
 	Animation legacyAnim;
 	public Vector3 forward;
 	float walkSpeed = 1.65f; //good value so feet don't slide
@@ -21,9 +20,6 @@ public sealed class ZombieController : Creature, ICreature {
 	public AudioClip moanLow;
 	public AudioClip moanHigh;
 	public AudioClip win;
-
-	//For stats and achievements
-	static EventCounter zombie_bowling = new EventCounter( GameCenterManager.ZombieBowling, 3, 3000 );
 
 	// Use this for initialization
 	new void Awake () {
@@ -40,7 +36,6 @@ public sealed class ZombieController : Creature, ICreature {
 			zombiePrefab = transform.FindChild("zombieGirl");
 		}
 		legacyAnim = zombiePrefab.GetComponent<Animation>();
-		playerController = player.gameObject.GetComponent<PlayerController>();
 
 	}
 
@@ -66,7 +61,7 @@ public sealed class ZombieController : Creature, ICreature {
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
 			{
-				transform.LookAt( player );
+				transform.LookAt( getPlayer() );
 				transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
 			}
 			//1) Get the direction of the zombie
@@ -90,7 +85,6 @@ public sealed class ZombieController : Creature, ICreature {
 	//The zombie falls over backwards, typically because the player slid into him.
 	public void fallToBack()
 	{
-		zombie_bowling.incrementCounter();
 		knockback();
 	}
 
@@ -211,7 +205,7 @@ public sealed class ZombieController : Creature, ICreature {
 		do
 		{
 			duration = duration - Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( duration > 0 );
 
 		controller.enabled = true;
@@ -243,7 +237,7 @@ public sealed class ZombieController : Creature, ICreature {
 		do
 		{
 			duration = duration - Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( duration > 0 );
 
 		string walkType = selectRandomWalk( ZombieMoveType.Walking );
@@ -283,9 +277,9 @@ public sealed class ZombieController : Creature, ICreature {
 		PlayerController.playerStateChanged -= PlayerStateChange;
 	}
 
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			CancelInvoke( "groan" );
 		}
@@ -293,9 +287,9 @@ public sealed class ZombieController : Creature, ICreature {
 		
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if( PlayerController._characterState == CharacterState.Dying )
+		if( getPlayerController().getCharacterState() == PlayerCharacterState.Dying )
 		{
-			if( hit.collider.name.StartsWith("Zombie") )
+			if( hit.gameObject.CompareTag("Zombie") )
 			{
 				//If a zombie collides with another zombie while the player is dead, have him stop moving and play the victory sequence.
 				victory( false );
@@ -311,10 +305,10 @@ public sealed class ZombieController : Creature, ICreature {
 		do
 		{
 			elapsedTime = elapsedTime + Time.deltaTime;
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		} while ( elapsedTime < recycleDelay );
 		
-		if( playerController.getCharacterState() != CharacterState.Dying )
+		if( getPlayerController().getCharacterState() != PlayerCharacterState.Dying )
 		{
 			//Only deactivate the zombie if the player is not dead as we dont want the zombie to pop out of view.
 			setCreatureState( CreatureState.Available );

@@ -5,7 +5,7 @@ public class BatController : MonoBehaviour {
 
 	Transform player;
 
-	void Awake ()
+	void Start ()
 	{
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 	}

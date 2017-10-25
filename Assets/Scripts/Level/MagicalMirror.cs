@@ -42,7 +42,6 @@ public class MagicalMirror : MonoBehaviour {
 
 	void fadeOutFinished()
 	{
-		StartCoroutine( SoundManager.soundManager.fadeOutClip( GetComponent<AudioSource>(), GetComponent<AudioSource>().clip, SoundManager.STANDARD_FADE_TIME ) );
 		tasteOfHellSequence.visionEnded();
 	}
 

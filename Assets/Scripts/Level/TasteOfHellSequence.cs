@@ -12,7 +12,7 @@ public class TasteOfHellSequence : MonoBehaviour {
 	bool hasBeenTriggered = false;
 
 	// Use this for initialization
-	void Awake () {
+	void Start () {
 
 		GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
 		playerController = playerObject.GetComponent<PlayerController>();
@@ -22,14 +22,13 @@ public class TasteOfHellSequence : MonoBehaviour {
 	
 	}
 	
-	void startSequence()
+	void startSequence( Transform trigger )
 	{
 		//Slowdown player and remove player control
 		print ("Start of Hell Cave sequence");
 		playerController.placePlayerInCenterLane();
 		GameManager.Instance.setGameState(GameState.Checkpoint);
-		StartCoroutine( playerController.slowDownPlayer(4f, afterPlayerSlowdown ) );
-		StartCoroutine( SoundManager.soundManager.fadeOutMusic(1f, 0f ) );
+		StartCoroutine( playerController.slowDownPlayer(4f, afterPlayerSlowdown, trigger ) );
 	}
 
 	void afterPlayerSlowdown()
@@ -83,21 +82,20 @@ public class TasteOfHellSequence : MonoBehaviour {
 		PlayerTrigger.playerEnteredTrigger -= PlayerEnteredTrigger;
 	}
 	
-	void PlayerStateChange( CharacterState newState )
+	void PlayerStateChange( PlayerCharacterState newState )
 	{
-		if( newState == CharacterState.Dying )
+		if( newState == PlayerCharacterState.Dying )
 		{
 			CancelInvoke();
 		}
 	}
 
-	void PlayerEnteredTrigger( GameEvent eventType, GameObject uniqueGameObjectIdentifier )
+	void PlayerEnteredTrigger( GameEvent eventType, GameObject trigger )
 	{
 		if( eventType == GameEvent.Taste_Hell_Sequence && !hasBeenTriggered )
 		{
 			hasBeenTriggered = true;
-
-			startSequence();
+			startSequence( trigger.transform );
 		}
 	}
 }

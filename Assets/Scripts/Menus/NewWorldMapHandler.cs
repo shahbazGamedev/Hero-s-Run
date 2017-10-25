@@ -10,17 +10,14 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public RectTransform map;
 	bool levelLoading = false;
 	private LevelData levelData;
-	List<LevelData.LevelInfo> levelList;
-	public Canvas settingsMenuCanvas;
 	public Text numberOfKeysText;
 	public Text numberOfLivesText;
-	public Text numberOfStarsText;
+	public Text numberOfCoinsText;
 	public string inviteFriendsCustomImageUri = "http://i.imgur.com/zkYlB.jpg";
 	public Image playerPortrait;
 	[Header("Message Center")]
 	public GameObject messageCenterPanel;
 	public Text numberOfMessages;
-	StoreManager storeManager;
 	[Header("Facebook Ask Lives")]
 	public GameObject facebookAskLivesPanel;
 	[Header("Facebook Offer Lives")]
@@ -46,29 +43,29 @@ public class NewWorldMapHandler : MonoBehaviour {
 	[Header("Menu Prefabs")]
 	public GameObject episodeStationPrefab;
 	public GameObject starDisplayPrefab;
+	[Header("Journal")]
+	public Text newEntriesIndicator;
 
-	public List<FacebookPortraitHandler> facebookPortraitList = new List<FacebookPortraitHandler>( LevelData.NUMBER_OF_EPISODES );
+	private List<FacebookPortraitHandler> facebookPortraitList = new List<FacebookPortraitHandler>( LevelData.NUMBER_OF_EPISODES );
 	private Outline nextLevelToPlayGlowingOutline;
 	private const float OUTLINE_FLASH_SPEED = 2.25f;
+	private List<ChallengeDetails> challengeDetailsList = new List<ChallengeDetails>( LevelData.NUMBER_OF_EPISODES );
 
 
 	void Awake ()
 	{
-		SceneManager.LoadScene( (int)GameScenes.Store, LoadSceneMode.Additive );
+		//We need to update <User name> in the text dictionary after character selection has happened. This is why we do it here.
+		LocalizationManager.Instance.replaceUserName( GameManager.Instance.playerProfile.getUserName() );
 
 		episodePopup = episodePopupPanel.GetComponent<EpisodePopup>();
 
 		//Get the level data. Level data has the parameters for all the levels of the game.
 		levelData = LevelManager.Instance.getLevelData();
-		levelList = levelData.getLevelList();
 	}
 
 	// Use this for initialization
 	void Start ()
 	{
-		GameObject storeManagerObject = GameObject.FindGameObjectWithTag("Store");
-		storeManager = storeManagerObject.GetComponent<StoreManager>();
-
 		Handheld.StopActivityIndicator();
 
 		//If we quit from the pause menu, the audio listener was paused.
@@ -118,6 +115,8 @@ public class NewWorldMapHandler : MonoBehaviour {
 		InvokeRepeating("getAllAppRequests", 0, 60 );
 		//The score of the player's friends gets refreshed when loading the scene and if the app resume after being paused.
 		getUpdatedScores();
+
+		updateNumberOfEntries();
 	}
 
 	void getAllAppRequests()
@@ -130,6 +129,14 @@ public class NewWorldMapHandler : MonoBehaviour {
 		FacebookManager.Instance.QueryScores();
 	}
 
+	public void updateNumberOfEntries()
+	{
+		//Update the number of new journal entries
+		int newEntries = GameManager.Instance.journalData.getNumberOfNewEntries();
+		newEntriesIndicator.text = newEntries.ToString();
+	}
+
+
 	void Update()
 	{
 		//Outline color is white.
@@ -139,18 +146,14 @@ public class NewWorldMapHandler : MonoBehaviour {
 
 	public void drawLevelMarkers()
 	{
-		int episodeCounter = 0;
-		LevelData.LevelInfo levelInfo;
+		GameManager.Instance.challengeBoard.printAllChallenges(); //for debugging
 
-		for( int i=0; i < levelList.Count; i++ )
+		List<LevelData.EpisodeInfo> episodeList = levelData.episodeList;
+
+		for( int i=0; i < episodeList.Count; i++ )
 		{
-			levelInfo = levelList[i];
-			if( levelInfo.levelType == LevelType.Episode )
-			{
-				drawEpisodeLevelMarker( i, episodeCounter );
-				drawDisplayStars( i, episodeCounter );
-				episodeCounter++;
-			}
+			drawEpisodeLevelMarker( i );
+			drawDisplayStars( i );
 		}
 	}
 
@@ -186,43 +189,52 @@ public class NewWorldMapHandler : MonoBehaviour {
 		}
 	}
 
-	void levelButtonClick( int episodeNumber, int levelNumber )
+	public void updateChallengeDetails()
 	{
-		Debug.Log("Level Station click-Episode: " + episodeNumber + " Level: " + levelNumber );
-		SoundManager.soundManager.playButtonClick();
-		if( GameManager.Instance.getGameMode() == GameMode.Story )
+		for( int i=0; i < challengeDetailsList.Count; i++ )
 		{
-			LevelManager.Instance.setCurrentEpisodeNumber( episodeNumber );
-			episodePopup.showEpisodePopup( episodeNumber, levelNumber );
-		}
-		else
-		{
-			play( episodeNumber, levelNumber );
+			challengeDetailsList[i].configure( i );
 		}
 	}
 
-	void drawEpisodeLevelMarker( int levelNumber, int episodeCounter )
+	void episodeButtonClick( int episodeNumber )
+	{
+		Debug.Log("Episode Station click-Episode: " + episodeNumber );
+		UISoundManager.uiSoundManager.playButtonClick();
+		if( GameManager.Instance.getGameMode() == GameMode.Story )
+		{
+			LevelManager.Instance.setCurrentEpisodeNumber( episodeNumber );
+			episodePopup.showEpisodePopup( episodeNumber );
+		}
+		else
+		{
+			play( episodeNumber );
+		}
+	}
+
+	void drawEpisodeLevelMarker( int episodeNumber )
 	{
 		GameObject go = (GameObject)Instantiate(episodeStationPrefab);
 		go.transform.SetParent(map.transform,false);
 		Button levelStationButton = go.GetComponent<Button>();
 		RectTransform levelStationButtonRectTransform = levelStationButton.GetComponent<RectTransform>();
-		levelStationButtonRectTransform.SetParent( episodeStationLocations[episodeCounter], false );
+		levelStationButtonRectTransform.SetParent( episodeStationLocations[episodeNumber], false );
 		levelStationButtonRectTransform.anchoredPosition = new Vector2( 0, 0 );
-		levelStationButton.onClick.AddListener(() => levelButtonClick(episodeCounter, levelNumber));
+		levelStationButton.onClick.AddListener(() => episodeButtonClick(episodeNumber));
 		Text[] episodeStationTexts = levelStationButton.GetComponentsInChildren<Text>();
-		episodeStationTexts[0].text = (episodeCounter + 1).ToString();
-		string levelNumberString = (episodeCounter + 1).ToString();
+		episodeStationTexts[0].text = (episodeNumber + 1).ToString();
+		string levelNumberString = (episodeNumber + 1).ToString();
 		episodeStationTexts[1].text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
 
-		if( levelNumber > LevelManager.Instance.getHighestLevelCompleted() )
+		if( episodeNumber > LevelManager.Instance.getHighestEpisodeCompleted() )
 		{
-			//Level is not unlocked yet. Make button non-interactable and dim the level number text
+			//Level is not unlocked yet.
 			levelStationButton.interactable = false;
-			episodeStationTexts[0].enabled = false;
-			episodeStationTexts[1].enabled = true;
+			episodeStationTexts[0].enabled = false;	//episode number
+			episodeStationTexts[1].enabled = true;	//episode name
+			episodeStationTexts[2].enabled = false;	//episode difficulty level
 		}
-		if ( episodeCounter == LevelManager.Instance.getCurrentEpisodeNumber() )
+		if ( episodeNumber == LevelManager.Instance.getCurrentEpisodeNumber() )
 		{
 			//This is the current episode. Enable outline.
 			levelStationButton.GetComponent<Outline>().enabled = true;
@@ -232,7 +244,12 @@ public class NewWorldMapHandler : MonoBehaviour {
 			playerPortrait.rectTransform.SetParent( levelStationButtonRectTransform );
 			playerPortrait.rectTransform.anchoredPosition = new Vector2( levelStationButtonRectTransform.anchoredPosition.x - 57.2f, levelStationButtonRectTransform.anchoredPosition.y -14f );
 		}
-		prepareFriendPicture( levelStationButtonRectTransform, episodeCounter );
+		prepareFriendPicture( levelStationButtonRectTransform, episodeNumber );
+	
+		//Display the gauntlet and the number of challengers (if more than 0)
+		ChallengeDetails challengeDetails = go.transform.FindChild("Challenge Details").GetComponent<ChallengeDetails>();
+		challengeDetailsList.Add( challengeDetails );
+		challengeDetails.configure( episodeNumber );
 	}
 
 	//Set up data for friend picture, which sits to the right of the shield
@@ -243,22 +260,22 @@ public class NewWorldMapHandler : MonoBehaviour {
 		facebookPortraitList.Add( fph );
 	}
 
-	void drawDisplayStars( int levelNumber, int episodeCounter )
+	void drawDisplayStars( int episodeNumber )
 	{
-		if( levelNumber <= LevelManager.Instance.getHighestLevelCompleted() )
+		if( episodeNumber <= LevelManager.Instance.getHighestEpisodeCompleted() )
 		{
 			//Level is unlocked so show the stars.
 			GameObject go = (GameObject)Instantiate(starDisplayPrefab);
 			go.transform.SetParent(map.transform,false);
-			go.name = "Star Meter " + (episodeCounter + 1).ToString();
+			go.name = "Star Meter " + (episodeNumber + 1).ToString();
 			RectTransform goRectTransform = go.GetComponent<RectTransform>();
-			goRectTransform.SetParent( episodeStationLocations[episodeCounter], false );
+			goRectTransform.SetParent( episodeStationLocations[episodeNumber], false );
 			goRectTransform.anchoredPosition = new Vector2( 0, 55f );
 			//Store it so we can easily update the stars later
-			starLocations[episodeCounter] = goRectTransform;
+			starLocations[episodeNumber] = goRectTransform;
 			//numberOfStars is between 0 and 3
-			int numberOfStars = PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( episodeCounter );
-			updateDisplayStars( episodeCounter, numberOfStars );
+			int numberOfStars = PlayerStatsManager.Instance.getNumberDisplayStarsForEpisode( episodeNumber );
+			updateDisplayStars( episodeNumber, numberOfStars );
 		}
 	}
 
@@ -287,27 +304,22 @@ public class NewWorldMapHandler : MonoBehaviour {
  	
 	}
 
-	public string getEpisodeDifficultyText( EpisodeDifficulty episodeDifficulty )
-	{
-		return LocalizationManager.Instance.getText( "EPISODE_DIFFICULTY_" + episodeDifficulty.ToString().ToUpper() );
-	}
-
 	public void showStoreScreen()
 	{
-		SoundManager.soundManager.playButtonClick();
-		storeManager.showStore( StoreTab.Store, StoreReason.None );
+		UISoundManager.uiSoundManager.playButtonClick();
+		StoreManager.Instance.showStore( StoreTab.Store );
 	}
 
 	public void showShopScreen()
 	{
-		SoundManager.soundManager.playButtonClick();
-		storeManager.showStore( StoreTab.Shop, StoreReason.None );
+		UISoundManager.uiSoundManager.playButtonClick();
+		StoreManager.Instance.showStore( StoreTab.Shop );
 	}
 
 	//Middle Panel
 	public void showMessageCenter()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		messageCenterPanel.GetComponent<MessageManager>().refreshMessages();
 		messageCenterPanel.GetComponent<Animator>().Play("Panel Slide In");
 	}
@@ -315,73 +327,75 @@ public class NewWorldMapHandler : MonoBehaviour {
 	//Bottom panel
 	public void showInviteFriends()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		FacebookManager.Instance.inviteFriends( inviteFriendsCustomImageUri );
 	}
 
-	public void showCharacterGallery()
+	public void OnClickShowCharacterGallery()
 	{
-		SoundManager.soundManager.playButtonClick();
-		StartCoroutine( loadCharacterGallery() );
-	}
-
-	IEnumerator loadCharacterGallery()
-	{
-		if( !levelLoading )
-		{
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)GameScenes.CharacterGallery );
-		}	
+		StartCoroutine( loadScene(GameScenes.CharacterGallery) );
 	}
 
 	public void showAskLivesPopup()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		facebookAskLivesPanel.GetComponent<Animator>().Play("Panel Slide In");
 	}
 
 	public void hideAskLivesPopup()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		facebookAskLivesPanel.GetComponent<Animator>().Play("Panel Slide Out");
 	}
 
 	public void showOfferLivesPopup()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		facebookOfferLivesPanel.GetComponent<Animator>().Play("Panel Slide In");
 	}
 
 	public void hideOfferLivesPopup()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		facebookOfferLivesPanel.GetComponent<Animator>().Play("Panel Slide Out");
 	}
 
-	public void showSettingsMenu()
+	public void OnClickOpenMainMenu()
 	{
-		SoundManager.soundManager.playButtonClick();
-		settingsMenuCanvas.GetComponent<SettingsMenu>().showSettingsMenu();
+		UISoundManager.uiSoundManager.playButtonClick();
+		GameManager.Instance.setMultiplayerMode( true );
+		StartCoroutine( loadScene(GameScenes.MainMenu) );
 	}
 
 	//Treasure island
-	public void showTreasureIsland()
+	public void OnClickShowTreasureIsland()
 	{
-		SoundManager.soundManager.playButtonClick();
-		StartCoroutine( loadTreasureIsland() );
+		StartCoroutine( loadScene(GameScenes.TreasureIsland) );
 	}
 
-	IEnumerator loadTreasureIsland()
+	//Journal
+	public void OnClickShowJournal()
+	{
+		if( GameManager.Instance.journalAssetManager.journalAssetsLoadedSuccessfully )
+		{
+			StartCoroutine( loadScene(GameScenes.Journal) );
+		}
+		else
+		{
+			Debug.LogWarning("NewWorldMapHandler-openJournal-will not open journal because journal assets were not loaded sussefully.");
+		}
+	}
+
+	IEnumerator loadScene(GameScenes value)
 	{
 		if( !levelLoading )
 		{
+			UISoundManager.uiSoundManager.playButtonClick();
 			levelLoading = true;
 			Handheld.StartActivityIndicator();
 			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)GameScenes.TreasureIsland );
-		}	
+			SceneManager.LoadScene( (int)value );
+		}
 	}
 
 	void OnEnable()
@@ -409,20 +423,23 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public void cheatButton()
 	{
 		Debug.Log("cheatButton called.");
+		UISoundManager.uiSoundManager.playButtonClick();
 		//postLevelPopupPanel.GetComponent<PostLevelPopup>().showPostLevelPopup(levelData);
 		GameObject CoreManagers = GameObject.FindGameObjectWithTag("CoreManagers");
-		CoreManagers.GetComponent<NotificationServicesHandler>().sendTestLocalNotification();
-		PlayerStatsManager.Instance.resetDeathInLevels();
+		PlayerStatsManager.Instance.resetDeathInEpisodes();
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		PlayerStatsManager.Instance.resetTreasureKeysFound();
 		PlayerStatsManager.Instance.setChallenges(string.Empty);
+		PlayerStatsManager.Instance.setJournalEntries(string.Empty);
+		PlayerStatsManager.Instance.setPlayerProfile(string.Empty);
+		PlayerStatsManager.Instance.setPlayerStatistics(string.Empty);
 		PlayerStatsManager.Instance.savePlayerStats();
 		showOfferLivesPopup();
 	}
 
 	public void toggleGameMode()
 	{
-		SoundManager.soundManager.playButtonClick();
+		UISoundManager.uiSoundManager.playButtonClick();
 		if( GameManager.Instance.getGameMode() == GameMode.Story )
 		{
 			gameModeButtonText.text = LocalizationManager.Instance.getText("MENU_GAME_MODE_ENDLESS");
@@ -437,20 +454,14 @@ public class NewWorldMapHandler : MonoBehaviour {
 		updateFriendPortraits();
 	}
 
-	public void play( int episodeNumber, int levelNumber )
+	public void play( int episodeNumber )
 	{
 		//Reset the level changed value
-		LevelManager.Instance.setLevelChanged( false );
+		LevelManager.Instance.setEpisodeChanged( false );
 
 		//Reset value in case a player who did previously finish the game, replays earlier levels
 		LevelManager.Instance.setPlayerFinishedTheGame( false );
 
-		//When you restart an episode, the number of deaths for that episode and all subsequent episodes are reset
-		LevelData.LevelInfo level = LevelManager.Instance.getLevelInfo( levelNumber );
-		if( level.levelType == LevelType.Episode )
-		{
-			PlayerStatsManager.Instance.resetNumberDeathsStartingAtLevel( levelNumber );
-		}
 		PlayerStatsManager.Instance.resetTimesPlayerRevivedInLevel();
 		//We are starting a new run, reset some values
 		LevelManager.Instance.setEnableTorches( true );
@@ -458,20 +469,11 @@ public class NewWorldMapHandler : MonoBehaviour {
 		PlayerStatsManager.Instance.resetDistanceTravelled();
 		LevelManager.Instance.setCurrentEpisodeNumber( episodeNumber );
 		LevelManager.Instance.setEpisodeCompleted( false );
-		LevelManager.Instance.forceNextLevelToComplete( levelNumber );
+		LevelManager.Instance.forceNextEpisodeToComplete( episodeNumber );
+		LevelManager.Instance.resetNumberOfCheckpointsPassed();
+		LevelManager.Instance.resetCoinsAtLastCheckpoint();
 
-		StartCoroutine( loadLevel() );
-	}
-
-	IEnumerator loadLevel()
-	{
-		if( !levelLoading )
-		{
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int) GameScenes.Level );
-		}
+		StartCoroutine( loadScene(GameScenes.Level) );
 	}
 
 	//When the application resumes, the game will refresh both the friend portraits and the message center.

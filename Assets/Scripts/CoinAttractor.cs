@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CoinAttractor : BaseClass {
+public class CoinAttractor : MonoBehaviour {
 
 	private Transform mainCamera;
 
@@ -38,7 +38,7 @@ public class CoinAttractor : BaseClass {
 
 			coin.position = Vector3.Lerp( coinDestination, originalPos, time / originalTime );
 			
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		}
 		
 		//Second, move the coin to the coin counter at the top of the screen
@@ -64,7 +64,7 @@ public class CoinAttractor : BaseClass {
 
 			}
 			
-			yield return _sync();
+			yield return new WaitForFixedUpdate();  
 		}
 		if( coin != null )
 		{

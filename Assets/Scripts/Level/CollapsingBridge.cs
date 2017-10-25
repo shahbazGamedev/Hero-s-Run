@@ -8,12 +8,13 @@ public class CollapsingBridge : MonoBehaviour {
 	public GameObject rightFarTile;
 
 	Transform player;
+	PlayerController playerController;
 	bool hasCollapsed = false;
 
-	void Awake ()
+	void Start ()
 	{
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-
+		playerController = player.GetComponent<PlayerController>();
 	}
 	
 	// Update is called once per frame
@@ -27,7 +28,7 @@ public class CollapsingBridge : MonoBehaviour {
 		{
 			float distance = Vector3.Distance(player.position,middleFarTile.transform.position);
 			float collapseDistance;
-			collapseDistance = 1f * PlayerController.getPlayerSpeed();
+			collapseDistance = 1f * playerController.getSpeed();
 			if( distance < collapseDistance  )
 			{
 				hasCollapsed = true;
