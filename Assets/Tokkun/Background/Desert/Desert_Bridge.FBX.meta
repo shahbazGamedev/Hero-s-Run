@@ -9,19 +9,34 @@ ModelImporter:
     100002: Desert_Bridge_L
     100004: Desert_Bridge_R
     100006: Desert_Bridge_Road
+    100008: Desert_StraightDouble_L
+    100010: Desert_StraightDouble_R
+    100012: Desert_StraightDouble_Road
     400000: //RootNode
     400002: Desert_Bridge_L
     400004: Desert_Bridge_R
     400006: Desert_Bridge_Road
+    400008: Desert_StraightDouble_L
+    400010: Desert_StraightDouble_R
+    400012: Desert_StraightDouble_Road
     2300000: Desert_Bridge_L
     2300002: Desert_Bridge_R
     2300004: Desert_Bridge_Road
+    2300006: Desert_StraightDouble_L
+    2300008: Desert_StraightDouble_R
+    2300010: Desert_StraightDouble_Road
     3300000: Desert_Bridge_L
     3300002: Desert_Bridge_R
     3300004: Desert_Bridge_Road
+    3300006: Desert_StraightDouble_L
+    3300008: Desert_StraightDouble_R
+    3300010: Desert_StraightDouble_Road
     4300000: Desert_Bridge_Road
     4300002: Desert_Bridge_R
     4300004: Desert_Bridge_L
+    4300006: Desert_StraightDouble_L
+    4300008: Desert_StraightDouble_Road
+    4300010: Desert_StraightDouble_R
   materials:
     importMaterials: 1
     materialName: 1

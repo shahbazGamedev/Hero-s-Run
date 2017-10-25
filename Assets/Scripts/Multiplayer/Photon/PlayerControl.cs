@@ -141,6 +141,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Zipline variables
 	[SerializeField] Vector3 ziplinePlayerOffset = new Vector3( -0.28f, 2.67f, 0 );
 	Transform ziplineAttachPoint;
+	float ziplineExitAngle = 0;
 	#endregion
 
 	#region Lane variables
@@ -1593,6 +1594,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		SegmentInfo si = currentTile.GetComponent<SegmentInfo>();
 		if( si != null )
 		{
+			//Store the ziplineExitAngle for later
+			ziplineExitAngle = currentTile.GetComponent<Zipline>().ziplineExitAngle;
+
+			float ziplineDuration = currentTile.GetComponent<Zipline>().ziplineDuration;
+
 			List<SegmentInfo.BezierData>  curveList = si.curveList;
 			SegmentInfo.BezierData bezierData = curveList[0];
 			setCharacterState( PlayerCharacterState.Ziplining );
@@ -1612,7 +1618,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//A set of points that define one or many bezier paths (the paths should be passed in multiples of 4, which correspond to each individual bezier curve)
 			//It goes in the order: startPoint,endControl,startControl,endPoint
 			LTBezierPath ltBezier = new LTBezierPath( new Vector3[] { bezierData.bezierStart.position, bezierData.bezierControl2.position, bezierData.bezierControl1.position, bezierData.bezierEnd.position } );
-			LeanTween.move(ziplineAttachPoint.gameObject, ltBezier.pts, 3.5f).setOrientToPath(true).setEase(LeanTweenType.easeOutQuad);
+			LeanTween.move(ziplineAttachPoint.gameObject, ltBezier.pts, ziplineDuration).setOrientToPath(true).setEase(LeanTweenType.easeOutQuad);
 			playerCamera.playCutscene(CutsceneType.Ziplining);
 			playerSounds.playZiplineSound();
 		}
@@ -1636,7 +1642,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			{
 				enablePlayerControl( true );
 				enablePlayerMovement( true );
-				transform.eulerAngles = new Vector3(0,270f,0); //we turned left while ziplining
+				transform.eulerAngles = new Vector3( 0, ziplineExitAngle, 0 );
 				//We may have switched lanes because of the position change. Make sure the lane values are accurate.
 				recalculateCurrentLane();
 				fall();

@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class Zipline : MonoBehaviour {
 
+	public float ziplineExitAngle = 0;
+	public float ziplineDuration = 3.5f;
+
 	SegmentInfo.BezierData bezierData;
 	//For drawing, each curve is divided into small line segments.
 	const int LINE_VERTEX_COUNT = 200;
