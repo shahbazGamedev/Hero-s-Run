@@ -54,7 +54,15 @@ public class EmoteHandler : MonoBehaviour {
 	#region Send and receive emotes
 	public void sendEmote( byte uniqueID )
 	{
-		GetComponent<PhotonView>().RPC("emoteRPC", PhotonTargets.Others, uniqueID );
+		if( GameManager.Instance.playerDebugConfiguration.getDebugInfoType() == DebugInfoType.EMOTES_TEST )
+		{
+			//This allows you to send emotes to yourself for testing
+			GetComponent<PhotonView>().RPC("emoteRPC", PhotonTargets.All, uniqueID );
+		}
+		else
+		{
+			GetComponent<PhotonView>().RPC("emoteRPC", PhotonTargets.Others, uniqueID );
+		}
 	}
 
 	[PunRPC]

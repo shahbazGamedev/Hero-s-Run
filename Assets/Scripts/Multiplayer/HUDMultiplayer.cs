@@ -13,7 +13,8 @@ public enum DebugInfoType
 	FPS = 1,
 	NETWORK = 2,
 	LATENCY = 3,
-	FRAME_RATE_TEST = 4
+	FRAME_RATE_TEST = 4,
+	EMOTES_TEST = 5
 }
 
 public class HUDMultiplayer : MonoBehaviour {
@@ -24,6 +25,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	const float DELAY_BEFORE_COUNTDOWN_STARTS = 3f;
 	const float DELAY_WHEN_NOT_SHOWING_EMOTES = 9f;
 	const float DELAY_WHEN_SHOWING_EMOTES = 12f;
+	const float DELAY_WHEN_TESTING_EMOTES = 60f;
 	PlayerRace localPlayerRace;
 	PlayerControl localPlayerControl;
 	[SerializeField] GameObject canvasGroupForFading;
@@ -255,7 +257,12 @@ public class HUDMultiplayer : MonoBehaviour {
 		raceEndingText.gameObject.SetActive( false );
 		StopCoroutine("endOfRaceCountdown");
 		showEmotePanel();
-		if( GameManager.Instance.isOnlinePlayMode() && PlayerRace.players.Count > 1 )
+		if( debugInfoType == DebugInfoType.EMOTES_TEST )
+		{
+			//Stay longer because we are testing emotes
+			yield return new WaitForSecondsRealtime( DELAY_WHEN_TESTING_EMOTES );
+		}
+		else if( GameManager.Instance.isOnlinePlayMode() && PlayerRace.players.Count > 1 )
 		{
 			//Stay longer in case the players want to exchange emotes
 			yield return new WaitForSecondsRealtime( DELAY_WHEN_SHOWING_EMOTES );
@@ -286,9 +293,9 @@ public class HUDMultiplayer : MonoBehaviour {
 	/// </summary>
 	void showEmotePanel()
 	{
-		if( GameManager.Instance.isOnlinePlayMode() )
+		if( GameManager.Instance.isOnlinePlayMode() || debugInfoType == DebugInfoType.EMOTES_TEST )
 		{
-			if( PlayerRace.players.Count > 1 )
+			if( PlayerRace.players.Count > 1 || debugInfoType == DebugInfoType.EMOTES_TEST )
 			{
 				emotePanel.SetActive ( true );
 			}
