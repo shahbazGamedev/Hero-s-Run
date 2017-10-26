@@ -321,7 +321,7 @@ public class PlayerRace : Photon.PunBehaviour
 	void CancelEndOfRaceCountdownRPC()
 	{
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.leaveRoomShortly() );
-		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayResultsScreen() );
+		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayResultsAndEmotesScreen() );
 	}
 
 	[PunRPC]
