@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
@@ -8,6 +9,7 @@ public class ResultsScreenHandler : MonoBehaviour {
 
 	[SerializeField] RectTransform resultsHolder;
 	[SerializeField] GameObject resultPrefab;
+	public List<GameObject> emotesList = new List<GameObject>();
 
 	public void showResults()
 	{
@@ -54,6 +56,14 @@ public class ResultsScreenHandler : MonoBehaviour {
 		GameObject go = (GameObject)Instantiate(resultPrefab);
 		go.transform.SetParent(resultsHolder,false);
 		go.GetComponent<ResultEntry>().configureEntry( racePosition + 1, pmd.level, pmd.playerName, playerIconSprite, raceDurationString );
+		go.GetComponent<ResultEntry>().emoteGameObject.name = pmd.playerName;
+		emotesList.Add( go.GetComponent<ResultEntry>().emoteGameObject );
 	}
 
+	public GameObject getEmoteGameObjectForPlayerNamed( string playerName )
+	{
+		GameObject emote = emotesList.Find( go => go.name == playerName);
+		if ( emote == null ) Debug.LogError("ResultsScreenHandler-could not find emote game object for player " + playerName );
+		return emote;
+	}
 }

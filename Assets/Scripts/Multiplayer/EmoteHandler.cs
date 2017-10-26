@@ -13,14 +13,9 @@ using TMPro;
 
 public class EmoteHandler : MonoBehaviour {
 
-	const float DELAY_BEFORE_HIDING = 3.5f;
-
 	[Header("For Sending Emotes")]
  	[SerializeField] GameObject textEmotePrefab;
  	[SerializeField] Transform textEmoteHolder;
-
-	[Header("For Receiving Emotes")]
-	[SerializeField] GameObject receivingEmote;
 
 	[Header("Configuration")]
 	[SerializeField] List<EmoteData> emoteList = new List<EmoteData>();
@@ -54,39 +49,36 @@ public class EmoteHandler : MonoBehaviour {
 	#region Send and receive emotes
 	public void sendEmote( byte uniqueID )
 	{
+		string senderName = HUDMultiplayer.hudMultiplayer.getLocalPlayerName();
+
 		if( GameManager.Instance.playerDebugConfiguration.getDebugInfoType() == DebugInfoType.EMOTES_TEST )
 		{
 			//This allows you to send emotes to yourself for testing
-			GetComponent<PhotonView>().RPC("emoteRPC", PhotonTargets.All, uniqueID );
+			GetComponent<PhotonView>().RPC("emoteRPC", PhotonTargets.All, uniqueID, senderName );
 		}
 		else
 		{
-			GetComponent<PhotonView>().RPC("emoteRPC", PhotonTargets.Others, uniqueID );
+			GetComponent<PhotonView>().RPC("emoteRPC", PhotonTargets.Others, uniqueID, senderName );
 		}
 	}
 
 	[PunRPC]
-	void emoteRPC( byte emoteID )
+	void emoteRPC( byte emoteID, string senderName )
 	{
-		Debug.Log("emoteRPC " + emoteID );
+		Debug.Log("emoteRPC " + emoteID + " sent by " + senderName );
 		CancelInvoke("hideEmoteAfterDelay");
 		EmoteData ed = emoteList.Find(emoteData => emoteData.uniqueID == emoteID);
 		if( ed != null )
 		{
-			receivingEmote.GetComponent<EmoteUI>().displayEmote( ed );
+			GameObject go = HUDMultiplayer.hudMultiplayer.getEmoteGameObjectForPlayerNamed( senderName );
+			go.GetComponent<EmoteUI>().displayEmote( ed );
 		}
 		else
 		{
 			Debug.Log("EmoteHandler-Emote Data with the unique ID " + emoteID + " was not found. Ignoring." );
 		}
-		Invoke( "hideEmoteAfterDelay", DELAY_BEFORE_HIDING );
 	}
 	#endregion
-
-	void hideEmoteAfterDelay()
-	{
-		receivingEmote.gameObject.SetActive( false );
-	}
 
 	[System.Serializable]
 	public class EmoteData

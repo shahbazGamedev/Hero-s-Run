@@ -11,6 +11,7 @@ public class ResultEntry : MonoBehaviour {
 	//[SerializeField] Image playerFrame; //Not implemented
 	[SerializeField] Image playerIcon;
 	[SerializeField] TextMeshProUGUI raceDurationText;
+	public GameObject emoteGameObject;
 
 	public void configureEntry( int racePosition, int level, string playerName, Sprite playerIconSprite, string raceDuration  )
 	{

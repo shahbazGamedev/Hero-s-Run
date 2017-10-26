@@ -96,6 +96,11 @@ public class HUDMultiplayer : MonoBehaviour {
 		localPlayerControl = localPlayer.GetComponent<PlayerControl>();
 	}
 
+	public string getLocalPlayerName ()
+	{
+		return localPlayerRace.name;
+	}
+
 	public HealthBarHandler getHealthBarHandler()
 	{
 		return healthBarHandler;
@@ -459,6 +464,11 @@ public class HUDMultiplayer : MonoBehaviour {
 		resultsScreen.GetComponent<ResultsScreenHandler>().showResults();
 		resultsScreen.gameObject.SetActive( true );
 		showEmotePanel();
+	}
+
+	public GameObject getEmoteGameObjectForPlayerNamed( string playerName )
+	{
+		return resultsScreen.GetComponent<ResultsScreenHandler>().getEmoteGameObjectForPlayerNamed( playerName );
 	}
 
 }

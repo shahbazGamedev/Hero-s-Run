@@ -22,6 +22,8 @@ public class EmoteUI : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI emoteText;
 	[SerializeField] AudioSource audioSourceForSoundByte; //Not used by video
 
+	const float DELAY_BEFORE_HIDING = 3.5f;
+
 	public void displayEmote ( EmoteHandler.EmoteData ed )
 	{
 		gameObject.SetActive( true );
@@ -59,5 +61,13 @@ public class EmoteUI : MonoBehaviour {
 		{
 			emoteImage.gameObject.SetActive( false );
 		}
+		Invoke( "hideEmoteAfterDelay", DELAY_BEFORE_HIDING );
 	}
+
+	void hideEmoteAfterDelay()
+	{
+		gameObject.SetActive( false );
+	}
+
+
 }
