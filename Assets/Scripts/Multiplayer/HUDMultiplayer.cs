@@ -25,7 +25,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	const float DELAY_BEFORE_COUNTDOWN_STARTS = 3f;
 	const float DELAY_WHEN_NOT_SHOWING_EMOTES = 9f;
 	const float DELAY_WHEN_SHOWING_EMOTES = 12f;
-	const float DELAY_WHEN_TESTING_EMOTES = 120f;
+	const float DELAY_WHEN_TESTING_EMOTES = 60f;
 	PlayerRace localPlayerRace;
 	PlayerControl localPlayerControl;
 	[SerializeField] GameObject canvasGroupForFading;
@@ -459,7 +459,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	public IEnumerator displayResultsAndEmotesScreen()
 	{
 		//The Victory message remains on screen for 2.25 seconds.
-		//So let's wait for 2.75 seconds before displaying the results.
+		//So let's wait for 2.75 seconds before displaying the results and emotes panel.
 		yield return new WaitForSeconds( 2.75f );
 		resultsScreen.GetComponent<ResultsScreenHandler>().showResults();
 		resultsScreen.gameObject.SetActive( true );
