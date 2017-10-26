@@ -21,7 +21,8 @@ public enum SunType
 	Caves = 11,
 	Countryside = 12,
 	Sky_city = 13,
-	Sky_city_night = 14
+	Sky_city_night = 14,
+	Desert = 15
 
 }
 
@@ -116,6 +117,15 @@ public class LevelData : MonoBehaviour {
 				Sun.GetComponent<Light>().color = Color.white;
 				break;
 								
+			case SunType.Desert:
+				skyBoxName = "Desert";
+				lightIntensity = 0.74f;
+				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
+				shadowStrength = 0.4f;
+				sunDirection = Quaternion.Euler( 78f,75f,4f );
+				Sun.GetComponent<Light>().color = Color.white;
+				break;
+
 			case SunType.Blizzard:
 				skyBoxName = "Blizzard";
 				lightIntensity = 0.3f;
