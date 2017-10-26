@@ -27,6 +27,8 @@ public class EmoteUI : MonoBehaviour {
 	public void displayEmote ( EmoteHandler.EmoteData ed )
 	{
 		gameObject.SetActive( true );
+		CancelInvoke( "emptyEmoteTextAfterDelay" );
+
 		//The game object displaying the video will be activated when the video starts playing. See VideoPlayerHandler.
 		//If we do not do that, we will see a white texture for a few frame while the video prepares.
 		rawImageForVideo.gameObject.SetActive( false );
@@ -61,12 +63,12 @@ public class EmoteUI : MonoBehaviour {
 		{
 			emoteImage.gameObject.SetActive( false );
 		}
-		Invoke( "hideEmoteAfterDelay", DELAY_BEFORE_HIDING );
+		Invoke( "emptyEmoteTextAfterDelay", DELAY_BEFORE_HIDING );
 	}
 
-	void hideEmoteAfterDelay()
+	void emptyEmoteTextAfterDelay()
 	{
-		gameObject.SetActive( false );
+		emoteText.text = string.Empty;
 	}
 
 

@@ -50,23 +50,13 @@ public class EmoteHandler : MonoBehaviour {
 	public void sendEmote( byte uniqueID )
 	{
 		string senderName = HUDMultiplayer.hudMultiplayer.getLocalPlayerName();
-
-		if( GameManager.Instance.playerDebugConfiguration.getDebugInfoType() == DebugInfoType.EMOTES_TEST )
-		{
-			//This allows you to send emotes to yourself for testing
-			GetComponent<PhotonView>().RPC("emoteRPC", PhotonTargets.All, uniqueID, senderName );
-		}
-		else
-		{
-			GetComponent<PhotonView>().RPC("emoteRPC", PhotonTargets.Others, uniqueID, senderName );
-		}
+		GetComponent<PhotonView>().RPC("emoteRPC", PhotonTargets.All, uniqueID, senderName );
 	}
 
 	[PunRPC]
 	void emoteRPC( byte emoteID, string senderName )
 	{
 		Debug.Log("emoteRPC " + emoteID + " sent by " + senderName );
-		CancelInvoke("hideEmoteAfterDelay");
 		EmoteData ed = emoteList.Find(emoteData => emoteData.uniqueID == emoteID);
 		if( ed != null )
 		{
