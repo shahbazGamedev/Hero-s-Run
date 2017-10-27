@@ -67,7 +67,6 @@ public class PlayerInput : PunBehaviour {
 
 	public void jump()
 	{
-		if( playerControl.getCharacterState() == PlayerCharacterState.Ziplining ) Debug.LogError("jump called while ziplining.");
 		playerControl.jump();
 		this.photonView.RPC("jumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 	}
