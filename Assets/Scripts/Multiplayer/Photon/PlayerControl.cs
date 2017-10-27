@@ -1595,6 +1595,10 @@ public class PlayerControl : Photon.PunBehaviour {
 		if( si != null )
 		{
 			//Store the ziplineExitAngle for later
+			if( currentTile.GetComponent<Zipline>() == null )
+			{
+				Debug.LogError("PlayerControl-attachToZipline error-The current tile " + currentTile.name + " for " + name + " doesn't have a Zipline component." );
+			}
 			ziplineExitAngle = currentTile.GetComponent<Zipline>().ziplineExitAngle;
 
 			float ziplineDuration = currentTile.GetComponent<Zipline>().ziplineDuration;
@@ -1947,6 +1951,12 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Don't use the currentTile which is local since it may be out of sync.
 		//Use the name of the tile sent when the player died.
 		GameObject tileWherePlayerDiedGameObject = GameObject.Find( tileWherePlayerDied );
+
+		//Now, make sure to update these local values based on the tile that was sent.
+		currentTile = tileWherePlayerDiedGameObject;
+		currentTilePos = tileWherePlayerDiedGameObject.transform.position;
+		tileRotationY = Mathf.Floor ( tileWherePlayerDiedGameObject.transform.eulerAngles.y );
+
 		GameObject respawnLocationObject = tileWherePlayerDiedGameObject.transform.Find("respawnLocation").gameObject;
 
 		if( respawnLocationObject != null )
@@ -2207,9 +2217,12 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		else if( other.CompareTag( "AttachZiplineTrigger" ) )
 		{
-			//In Unity, OnTriggerEnter can get called multiple times. Only attach to the zipline, if we are not already ziplining.
-			if( getCharacterState() != PlayerCharacterState.Ziplining )
+			//OnTriggerEnter can get called multiple times. Only attach to the zipline, if the player is not already ziplining and is alive.
+			if( photonView.isMine && getCharacterState() != PlayerCharacterState.Ziplining && deathType == DeathType.Alive )
 			{
+				//It takes a bit of time for the RPC to be received and for the lockstep action to take place.
+				//This is why we set the state to Ziplining right away.
+				setCharacterState(PlayerCharacterState.Ziplining);
 				//Cancel the speedboost if active before ziplining
 				playerSpell.cancelRagingBull();
 				this.photonView.RPC("attachToZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
@@ -2217,7 +2230,8 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
  		else if( other.CompareTag( "DetachZiplineTrigger" ) )
 		{
-			if( photonView.isMine ) this.photonView.RPC("detachFromZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
+			//In Unity, OnTriggerEnter can get called multiple times. Only detach from the zipline, if the player is ziplining.
+			if( photonView.isMine && getCharacterState() == PlayerCharacterState.Ziplining ) this.photonView.RPC("detachFromZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
 		}
   	}
 
