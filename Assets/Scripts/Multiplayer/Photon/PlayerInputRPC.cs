@@ -32,8 +32,7 @@ public class PlayerInputRPC : PunBehaviour {
 	void attachToZiplineRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent )
 	{
 		//force all players to be at the beginning of the zipline
-		transform.position = syncPosition;
-		transform.eulerAngles = new Vector3( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z );
+		transform.SetPositionAndRotation( syncPosition, Quaternion.Euler( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z ) );
 		LockstepManager.Instance.addActionToQueue( new LockstepManager.LockstepAction( LockstepActionType.ATTACH_TO_ZIPLINE, gameObject ) );
 	}
 
@@ -41,8 +40,7 @@ public class PlayerInputRPC : PunBehaviour {
 	void detachFromZiplineRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent )
 	{
 		//force all players to be at the end of the zipline
-		transform.position = syncPosition;
-		transform.eulerAngles = new Vector3( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z );
+		transform.SetPositionAndRotation( syncPosition, Quaternion.Euler( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z ) );
 		LockstepManager.Instance.addActionToQueue( new LockstepManager.LockstepAction( LockstepActionType.DETACH_FROM_ZIPLINE, gameObject ) );
 	}
 
@@ -63,8 +61,7 @@ public class PlayerInputRPC : PunBehaviour {
 	void jumpPadRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float doubleJumpSpeed )
 	{
 		//Force all clients to be on the jump pad, but preserve the Y value.
-		transform.position = new Vector3( syncPosition.x, transform.position.y, syncPosition.z );
-		transform.eulerAngles = new Vector3( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z );
+		transform.SetPositionAndRotation( new Vector3( syncPosition.x, transform.position.y, syncPosition.z ), Quaternion.Euler( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z ) );
 		//We may have switched lanes because of the position change. Make sure the lane values are accurate.
 		playerControl.recalculateCurrentLane();
 
