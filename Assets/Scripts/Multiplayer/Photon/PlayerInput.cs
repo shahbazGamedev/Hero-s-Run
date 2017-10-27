@@ -56,25 +56,25 @@ public class PlayerInput : PunBehaviour {
 	public void startSlide()
 	{
 		playerControl.startSlide();
-		this.photonView.RPC("startSlideRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
+		this.photonView.RPC("startSlideRPC", PhotonTargets.Others );
 	}
 
 	public void sideSwipe( bool isGoingRight )
 	{
 		playerControl.sideSwipe( isGoingRight );
-		this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, isGoingRight, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
+		this.photonView.RPC("sideSwipeRPC", PhotonTargets.Others, isGoingRight );
 	}
 
 	public void jump()
 	{
 		playerControl.jump();
-		this.photonView.RPC("jumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
+		this.photonView.RPC("jumpRPC", PhotonTargets.Others );
 	}
 
 	public void doubleJump( float doubleJumpSpeed )
 	{
 		playerControl.doubleJump( doubleJumpSpeed );
-		this.photonView.RPC("doubleJumpRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, PhotonNetwork.time, doubleJumpSpeed );
+		this.photonView.RPC("doubleJumpRPC", PhotonTargets.Others, doubleJumpSpeed );
 	}
 
 	private void handleAccelerometer()

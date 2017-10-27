@@ -2225,13 +2225,13 @@ public class PlayerControl : Photon.PunBehaviour {
 				setCharacterState(PlayerCharacterState.Ziplining);
 				//Cancel the speedboost if active before ziplining
 				playerSpell.cancelRagingBull();
-				this.photonView.RPC("attachToZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
+				this.photonView.RPC("attachToZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y );
 			}
 		}
  		else if( other.CompareTag( "DetachZiplineTrigger" ) )
 		{
 			//In Unity, OnTriggerEnter can get called multiple times. Only detach from the zipline, if the player is ziplining.
-			if( photonView.isMine && getCharacterState() == PlayerCharacterState.Ziplining ) this.photonView.RPC("detachFromZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
+			if( photonView.isMine && getCharacterState() == PlayerCharacterState.Ziplining ) this.photonView.RPC("detachFromZiplineRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y );
 		}
   	}
 

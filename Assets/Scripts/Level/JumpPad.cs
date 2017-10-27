@@ -24,7 +24,7 @@ public class JumpPad : Device {
 					GetComponent<AudioSource>().Play();
 					other.GetComponent<PlayerControl>().enablePlayerMovement( false );
 
-					other.GetComponent<PhotonView>().RPC("jumpPadRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time, doubleJumpSpeed );
+					other.GetComponent<PhotonView>().RPC("jumpPadRPC", PhotonTargets.All, transform.position, transform.eulerAngles.y, doubleJumpSpeed );
 				}
 			}
 			else if( other.attachedRigidbody != null )

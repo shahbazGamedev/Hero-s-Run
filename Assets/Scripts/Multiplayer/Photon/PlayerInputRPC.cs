@@ -16,20 +16,19 @@ public class PlayerInputRPC : PunBehaviour {
 	}
 
 	[PunRPC]
-	void sideSwipeRPC( bool direction, Vector3 syncPosition, float syncRotationY, double timeRPCSent )
+	void sideSwipeRPC( bool direction )
 	{
 		playerControl.sideSwipe( direction );
 	}
 
 	[PunRPC]
-	void startSlideRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent )
+	void startSlideRPC()
 	{
-		//Debug.Log("startSlide RPC received " + gameObject.name );
 		playerControl.startSlide();
 	}
 	
 	[PunRPC]
-	void attachToZiplineRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent )
+	void attachToZiplineRPC( Vector3 syncPosition, float syncRotationY )
 	{
 		//force all players to be at the beginning of the zipline
 		transform.SetPositionAndRotation( syncPosition, Quaternion.Euler( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z ) );
@@ -37,7 +36,7 @@ public class PlayerInputRPC : PunBehaviour {
 	}
 
 	[PunRPC]
-	void detachFromZiplineRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent )
+	void detachFromZiplineRPC( Vector3 syncPosition, float syncRotationY )
 	{
 		//force all players to be at the end of the zipline
 		transform.SetPositionAndRotation( syncPosition, Quaternion.Euler( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z ) );
@@ -45,20 +44,20 @@ public class PlayerInputRPC : PunBehaviour {
 	}
 
 	[PunRPC]
-	void jumpRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent )
+	void jumpRPC()
 	{
 		playerControl.jump();
 	}
 
 	[PunRPC]
-	void doubleJumpRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float doubleJumpSpeed )
+	void doubleJumpRPC( float doubleJumpSpeed )
 	{
 		playerControl.doubleJump( doubleJumpSpeed );
 	}
 
 	[PunRPC]
 	//Sent by the Master client only.
-	void jumpPadRPC( Vector3 syncPosition, float syncRotationY, double timeRPCSent, float doubleJumpSpeed )
+	void jumpPadRPC( Vector3 syncPosition, float syncRotationY, float doubleJumpSpeed )
 	{
 		//Force all clients to be on the jump pad, but preserve the Y value.
 		transform.SetPositionAndRotation( new Vector3( syncPosition.x, transform.position.y, syncPosition.z ), Quaternion.Euler( transform.eulerAngles.x, syncRotationY, transform.eulerAngles.z ) );

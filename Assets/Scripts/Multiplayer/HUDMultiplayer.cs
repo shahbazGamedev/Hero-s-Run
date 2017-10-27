@@ -24,7 +24,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	bool raceHasStarted = false;
 	const float DELAY_BEFORE_COUNTDOWN_STARTS = 3f;
 	const float DELAY_WHEN_NOT_SHOWING_EMOTES = 9f;
-	const float DELAY_WHEN_SHOWING_EMOTES = 12f;
+	const float DELAY_WHEN_SHOWING_EMOTES = 14f;
 	const float DELAY_WHEN_TESTING_EMOTES = 60f;
 	PlayerRace localPlayerRace;
 	PlayerControl localPlayerControl;
