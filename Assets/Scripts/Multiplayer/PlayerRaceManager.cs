@@ -138,7 +138,6 @@ public class PlayerRaceManager {
 			GameManager.Instance.playerProfile.incrementConsecutiveWins();
 
 			//Grant victor a loot box
-			int playerLevel = GameManager.Instance.playerProfile.level;
 			int currentSector = LevelManager.Instance.getLevelData().getRaceTrackByTrophies().circuitInfo.sectorNumber;
 			GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.RACE_WON, currentSector, LootBoxState.READY_TO_UNLOCK ) );
 		}

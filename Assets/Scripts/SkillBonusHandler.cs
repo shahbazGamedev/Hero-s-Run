@@ -10,7 +10,6 @@ public class SkillBonusHandler : MonoBehaviour {
 	[SerializeField] GameObject skillBonusPrefab;
 
 	public static SkillBonusHandler Instance;
-	Coroutine showSkillBonusCoroutine;
 
 	// Use this for initialization
 	void Awake ()
@@ -41,7 +40,7 @@ public class SkillBonusHandler : MonoBehaviour {
 		//Also update the skill bonus total in player profile
 		//so we can convert those bonuses to XP at the end of the race.
 		GameManager.Instance.playerProfile.addToSkillBonus( skillPoints );
-		showSkillBonusCoroutine = StartCoroutine( showSkillBonus( localizedSkillText ) );
+		StartCoroutine( showSkillBonus( localizedSkillText ) );
 	}
 
 	IEnumerator showSkillBonus( string localizedSkillText )

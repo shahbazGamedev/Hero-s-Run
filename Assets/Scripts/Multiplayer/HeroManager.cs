@@ -80,7 +80,14 @@ public class HeroManager : MonoBehaviour {
 		List<CardName> heroCards = new List<CardName>();
 		for( int i = 0; i < heroCharacterList.Count; i++ )
 		{
-			if(  heroCharacterList[i].reservedCard != null ) heroCards.Add( heroCharacterList[i].reservedCard );
+			if(  heroCharacterList[i].reservedCard != CardName.None )
+			{
+				heroCards.Add( heroCharacterList[i].reservedCard );
+			}
+			else
+			{
+				Debug.LogError("HeroManager-getHeroCards error: The hero " + heroCharacterList[i].name + " doesn't have a reserved card." );
+			}
 		}
 		return heroCards;
 	}
