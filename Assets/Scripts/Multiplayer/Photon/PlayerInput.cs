@@ -118,7 +118,8 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.N ) )
 		{
-			playerControl.playOmniToolAnimation( CardName.Stasis );
+			//playerControl.playOmniToolAnimation( CardName.Stasis );
+			StartCoroutine( playerControl.push( 8000f, 1.1f ) );
 		}
 		else if ( Input.GetKeyDown (KeyCode.O ) )
 		{
