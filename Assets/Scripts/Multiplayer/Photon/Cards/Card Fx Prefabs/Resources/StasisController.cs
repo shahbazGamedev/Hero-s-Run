@@ -44,13 +44,18 @@ public class StasisController : CardSpawnedObject {
 			{
 				//We found the spell's target
 				affectedPlayerTransform = PlayerRace.players[i].transform;
+				affectedPlayerControl = affectedPlayerTransform.GetComponent<PlayerControl>();
+
+				//If in the short time between the card being cast and the card being activated
+				//the player has died or is IDLE, simply ignore.
+				if( affectedPlayerControl.deathType != DeathType.Alive || affectedPlayerControl.getCharacterState() == PlayerCharacterState.Idle ) return;
+
 				affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = true;
 
 				//isLocalPlayer is used by the code that allows a player to break out early by tapping on the stasis sphere.
 				//It is used to ensure that you can only tap on the sphere the local player is trapped in.
 				isLocalPlayer = ( affectedPlayerTransform.GetComponent<PhotonView>().isMine && affectedPlayerTransform.GetComponent<PlayerAI>() == null );
 	
-				affectedPlayerControl = affectedPlayerTransform.GetComponent<PlayerControl>();
 
 				//If the player is affected by shrink, cancel it. The player will enlarge back to his normal size.
 				affectedPlayerTransform.GetComponent<PlayerSpell>().cancelShrinkSpell();
