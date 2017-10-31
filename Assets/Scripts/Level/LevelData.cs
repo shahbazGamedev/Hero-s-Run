@@ -41,6 +41,24 @@ public enum RewardType
 	Customization = 4	//Future implementation
 }
 
+/*
+Fog notes
+Symptoms
+
+I am changing the fog settings of my built game scene at runtime using the RenderSettings.fog API to include fog
+in my scene but it's not showing.
+
+Cause
+
+By default, shader variants used to handle Fog modes that are not used by any of the scenes are
+not included in the game data. This is done to help cut down on shader data size.
+
+Resolution
+
+In the Graphics settings panel under Edit -> Project Settings -> Graphics there is a Fog modes drop down box.
+By default, the drop down is set to Automatic. This will strip the Fogging variants of the shader if it is not
+found on any of the scenes. You can set these to be overridden by setting the drop down property to Manual.
+*/
 public class LevelData : MonoBehaviour {
 	
 	public List<EpisodeInfo> episodeList = new List<EpisodeInfo>();
@@ -118,12 +136,29 @@ public class LevelData : MonoBehaviour {
 				break;
 								
 			case SunType.Desert:
-				skyBoxName = "Desert";
-				lightIntensity = 0.74f;
+				//Directional light
+				Sun.GetComponent<Light>().color = new Color(255f/255f,201f/255f,124f/255f);
+				lightIntensity = 0.7f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
-				shadowStrength = 0.4f;
-				sunDirection = Quaternion.Euler( 78f,75f,4f );
-				Sun.GetComponent<Light>().color = Color.white;
+				sunDirection = Quaternion.Euler( 45.57f,-329f,-159.54f );
+				shadowStrength = 1f;
+
+				//Sky box
+				skyBoxName = "Desert";
+				RenderSettings.sun = Sun.GetComponent<Light>();
+				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
+				RenderSettings.ambientSkyColor = new Color(183f/255f,233f/255f,251f/255f);
+				RenderSettings.ambientEquatorColor = new Color(234f/255f,169f/255f,162f/255f);
+				RenderSettings.ambientGroundColor = new Color(206f/255f,98f/255f,0);
+
+				RenderSettings.reflectionIntensity = 0.614f;
+
+				//Fog
+				RenderSettings.fog = true;
+				RenderSettings.fogMode = FogMode.Linear;
+				RenderSettings.fogColor = new Color(204f/255f,182f/255f,229f/255f);
+				RenderSettings.fogStartDistance = -1.4f;
+				RenderSettings.fogEndDistance = 84.93f;
 				break;
 
 			case SunType.Blizzard:
