@@ -1309,6 +1309,9 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		else
 		{
+			//For now you cannot change lanes in an Angled tile. It is not coded.
+			if( currentTile.GetComponent<SegmentInfo>().tileType == TileType.Angled ) return;
+
 			//we want to change lanes
 			if( useLanes )
 			{
