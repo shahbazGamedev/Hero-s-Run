@@ -12,6 +12,7 @@ using UnityEngine;
 public class CardStasis : Card {
 
 	[SerializeField]  string prefabName = "Statis";
+	const float DISTANCE_ABOVE_GROUND = 3.5f;
 
 	public void activateCard ( int photonViewId, int level )
 	{
@@ -48,6 +49,22 @@ public class CardStasis : Card {
 			//3) Play an appropriate VO such as "Gotcha!" for Stasis.
 			if( randomTarget != playerTransform ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
 
+			//We want the statis sphere to float DISTANCE_ABOVE_GROUND above ground.
+			//We add 0.1f because we do not want to start the raycast at the player's feet.
+			//The Stasis prefab has the ignoreRaycast layer.
+			randomTarget.gameObject.layer = MaskHandler.ignoreRaycastLayer; //change temporarily to Ignore Raycast
+			RaycastHit hit;
+			Vector3 stasisPosition = randomTarget.position;
+			if (Physics.Raycast(new Vector3( randomTarget.position.x, randomTarget.position.y + 0.1f, randomTarget.position.z ), Vector3.down, out hit, 30.0F ))
+			{
+				stasisPosition = new Vector3( randomTarget.position.x, hit.point.y + DISTANCE_ABOVE_GROUND, randomTarget.position.z );
+			}
+			else
+			{
+				Debug.LogWarning("CardStasis-there is no ground below the affected player: " + randomTarget.name );
+			}
+			randomTarget.gameObject.layer = MaskHandler.playerLayer; //Restore to Player
+
 			object[] data = new object[3];
 	
 			//We will need to find a reference to the player we are targeting
@@ -59,7 +76,7 @@ public class CardStasis : Card {
 			//Number of taps required to break free early
 			data[2] = (int) cd.getCardPropertyValue( CardPropertyType.TAPS, level );
 
-			PhotonNetwork.InstantiateSceneObject( prefabName, randomTarget.position, randomTarget.rotation, 0, data );
+			PhotonNetwork.InstantiateSceneObject( prefabName, stasisPosition, randomTarget.rotation, 0, data );
 		}
 		else
 		{

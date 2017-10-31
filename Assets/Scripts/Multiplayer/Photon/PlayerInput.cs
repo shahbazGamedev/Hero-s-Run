@@ -123,7 +123,7 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.O ) )
 		{
-			playerControl.playOmniToolAnimation( CardName.Firewall );
+			playerControl.playOmniToolAnimation( CardName.Stasis );
 		}
 		else if ( Input.GetKeyDown (KeyCode.T ) )
 		{
