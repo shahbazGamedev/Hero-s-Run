@@ -109,7 +109,7 @@ public class PlayerVisuals : Photon.PunBehaviour {
 			heroSkin.transform.localPosition = Vector3.zero;
 			heroSkin.transform.localRotation = Quaternion.identity;
 			anim.avatar = heroSkin.GetComponent<PlayerSkinInfo>().animatorAvatar;
-			GetComponent<Ragdoll>().initializeRagdoll ( anim, heroSkin.GetComponent<PlayerSkinInfo>().ragdollRigidBodyParent, GetComponent<CapsuleCollider>() );
+			if( GetComponent<Ragdoll>() != null ) GetComponent<Ragdoll>().initializeRagdoll ( anim, heroSkin.GetComponent<PlayerSkinInfo>().ragdollRigidBodyParent, GetComponent<CapsuleCollider>() );
 			anim.runtimeAnimatorController = heroSkin.GetComponent<PlayerSkinInfo>().runtimeAnimatorController;
 
 			//For lip-sync
@@ -165,7 +165,7 @@ public class PlayerVisuals : Photon.PunBehaviour {
 			heroSkin.transform.localPosition = Vector3.zero;
 			heroSkin.transform.localRotation = Quaternion.identity;
 			anim.avatar = heroSkin.GetComponent<PlayerSkinInfo>().animatorAvatar;
-			GetComponent<Ragdoll>().initializeRagdoll ( anim, heroSkin.GetComponent<PlayerSkinInfo>().ragdollRigidBodyParent, GetComponent<CapsuleCollider>() );
+			if( GetComponent<Ragdoll>() != null ) GetComponent<Ragdoll>().initializeRagdoll ( anim, heroSkin.GetComponent<PlayerSkinInfo>().ragdollRigidBodyParent, GetComponent<CapsuleCollider>() );
 			anim.runtimeAnimatorController = heroSkin.GetComponent<PlayerSkinInfo>().runtimeAnimatorController;
 
 			//For lip-sync

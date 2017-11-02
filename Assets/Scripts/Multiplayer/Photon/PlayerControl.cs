@@ -58,6 +58,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	PlayerSpell playerSpell;
 	PlayerRace playerRace;
 	PlayerHealth playerHealth;
+	PlayerIK playerIK;	//This is an optional component
+	Ragdoll ragdoll; 	//This is an optional component
 	#endregion
 
 	#region Hash IDs for player animations	
@@ -242,7 +244,9 @@ public class PlayerControl : Photon.PunBehaviour {
 	{
 		//Cache components for performance
 		anim = GetComponent<Animator>();
-		GetComponent<Ragdoll>().controlRagdoll( false );
+		ragdoll = GetComponent<Ragdoll>();
+		if( ragdoll != null ) ragdoll.controlRagdoll( false );
+		playerIK = GetComponent<PlayerIK>();
 		capsuleCollider = GetComponent<CapsuleCollider>();
 		controllerOriginalCenter = capsuleCollider.center;
 		playerCamera = GetComponent<PlayerCamera>();
@@ -256,7 +260,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerRace = GetComponent<PlayerRace>();
 		playerHealth = GetComponent<PlayerHealth>();
 		turnRibbonHandler = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
-
 
 		//Cache the string to avoid the runtime lookup
 		backInTheGameString = LocalizationManager.Instance.getText( "MINIMAP_BACK_IN_GAME" );
@@ -337,7 +340,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		setCharacterState( PlayerCharacterState.Running );
 	
 		//When the GameState is NORMAL, we display the HUD
-		if( this.photonView.isMine && GetComponent<PlayerAI>() == null ) GameManager.Instance.setGameState( GameState.Normal );
+		if( this.photonView.isMine && playerAI == null ) GameManager.Instance.setGameState( GameState.Normal );
 
 		enablePlayerControl( true );
 	}
@@ -1757,7 +1760,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		if( deathTypeValue != DeathType.NO_MORE_HEALTH ) playerHealth.deductAllHealth();
 
 		//Update the player statistics		
-		if( this.photonView.isMine && GetComponent<PlayerAI>() == null )
+		if( this.photonView.isMine && playerAI == null )
 		{
 			GameManager.Instance.playerStatistics.incrementNumberOfDeathsLifetime();
 		
@@ -1780,10 +1783,10 @@ public class PlayerControl : Photon.PunBehaviour {
 		setCharacterState( PlayerCharacterState.Dying );
 
 		//The PlayerSpell component needs to know that the player died
-		GetComponent<PlayerSpell>().playerDied();
+		playerSpell.playerDied();
 
 		//The PlayerIK component needs to know that the player died
-		GetComponent<PlayerIK>().playerDied();
+		if( playerIK !=null ) playerIK.playerDied();
 
 		//Reset the icon on the Minimap. The alpha might have been changed during Cloak.
 		MiniMap.Instance.changeAlphaOfRadarObject( this, 1f );
@@ -1810,7 +1813,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerVoiceOvers.stopAudioSource();
 
 		//Also tell PlayerRace. For example, we need to cancel the took the lead invoke that might be pending.
-		GetComponent<PlayerRace>().playerDied();
+		playerRace.playerDied();
 
 		//Make adjustments depending on death type
 	    switch (deathType)
@@ -1865,7 +1868,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//We want a dead player to not collided with an alive player
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
-			if( PlayerRace.players[i] != GetComponent<PlayerRace>() )
+			if( PlayerRace.players[i] != playerRace )
 			{
 				//print("Changing collision with: " +  PlayerRace.players[i].name + " Collision is ignored: " + ignore );
 				Physics.IgnoreCollision(capsuleCollider, PlayerRace.players[i].GetComponent<Collider>(), ignore );
@@ -1876,14 +1879,14 @@ public class PlayerControl : Photon.PunBehaviour {
 	public void fall_backward_completed ( AnimationEvent eve )
 	{
 		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.25f, 0.7f, 1f ) );
-		GetComponent<Ragdoll>().controlRagdoll( true );
+		if( ragdoll != null ) ragdoll.controlRagdoll( true );
 		StartCoroutine( waitBeforeResurrecting(DELAY_BEFORE_RESURRECTING) );
 	}
 
 	public void fall_forward_completed ( AnimationEvent eve )
 	{
 		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.25f, 0.7f, 1f ) );
-		GetComponent<Ragdoll>().controlRagdoll( true );
+		if( ragdoll != null ) ragdoll.controlRagdoll( true );
 		StartCoroutine( waitBeforeResurrecting(DELAY_BEFORE_RESURRECTING) );
 	}
 
@@ -1948,7 +1951,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Reset data
 		resetSharedLevelData(true);
 
-		GetComponent<Ragdoll>().controlRagdoll( false );
+		if( ragdoll != null ) ragdoll.controlRagdoll( false );
 		
 		//Reposition dead body at the respawn location.
 		//Don't use the currentTile which is local since it may be out of sync.
@@ -2049,7 +2052,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		else
 		{
 			//We're a bot
-			heroName = 	GetComponent<PlayerAI>().botHero.userName;
+			heroName = 	playerAI.botHero.userName;
 		}
 		this.photonView.RPC("playerResurrectedRPC", PhotonTargets.AllViaServer, heroName );
 

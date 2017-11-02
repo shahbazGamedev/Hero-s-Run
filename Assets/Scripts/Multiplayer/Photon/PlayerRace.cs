@@ -354,7 +354,8 @@ public class PlayerRace : Photon.PunBehaviour
 				{
 					CancelInvoke("tookTheLead");
 					//We want the player to look at the other player overtaking him to add some emotion
-					playerIK.isOvertaking( racePosition );
+					//The playerIK is optional and can be removed to improve performance. This is why we test that it is not null.
+					if( playerIK != null) playerIK.isOvertaking( racePosition );
 				}
 			}
 		}
