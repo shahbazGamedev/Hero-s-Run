@@ -2228,11 +2228,11 @@ public class PlayerControl : Photon.PunBehaviour {
 				{
 					tileDistanceTraveled = tileDistanceTraveled + GenerateLevel.tileSize * previousTileDepth;
 				}
-				//Every time a new tile is entered, force synchronization
-				forcePositionSynchronization();
 				currentTilePos = si.transform.position;
 				currentTile = si.gameObject;
 				tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
+				//Every time a new tile is entered, force synchronization
+				forcePositionSynchronization();
 			}
 			else
 			{
@@ -2293,6 +2293,20 @@ public class PlayerControl : Photon.PunBehaviour {
 		float syncDelay = (float) (PhotonNetwork.time - photonTime);
 		transform.position = syncPosition + syncVelocity * syncDelay;
 		recalculateCurrentLane();
+		//Determine on which tile we are on
+		RaycastHit hit;
+		if (Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, out hit, 10f ))
+		{
+			string previousCurrenTileName = currentTile.name;
+			currentTile = hit.collider.transform.root.gameObject;
+			currentTilePos = currentTile.transform.position;
+			tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
+			//if( previousCurrenTileName != currentTile.name ) Debug.LogWarning( "PlayerControl-positionSynchronizationRPC: tile changed after sync. Old tile: " + previousCurrenTileName + " New: " + currentTile.name );
+		}
+		else
+		{
+			Debug.LogWarning( "PlayerControl-There is no ground below the player named " + name + " after positionSynchronizationRPC." );
+		}
 	}
 
 	void OnTriggerStay(Collider other)
