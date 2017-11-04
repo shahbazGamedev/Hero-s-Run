@@ -563,8 +563,6 @@ public class LevelData : MonoBehaviour {
 		public string raceTrackName = string.Empty;
 		[Tooltip("Bigger rectangular image.")]
 		public Sprite circuitImage;
-		[Tooltip("Square icon used at the beginning of the match.")]
-		public Sprite circuitIcon;
 		[Tooltip("The sector number is displayed in various UI elements. The training sector is 0.")]
 		public int sectorNumber;
 		[Tooltip("The background color is used in various UI elements to match the main color of the sector image.")]
