@@ -381,15 +381,19 @@ public class HUDMultiplayer : MonoBehaviour {
 		racePosition.SetActive( display );
 	}
 
-	public void updateRacePosition( int position )
+	/// <summary>
+	/// Updates the race position displayed in the HUD.
+	/// </summary>
+	/// <param name="position">Zero-indexed position i.e., 0 is the first place, 1, is second place, etc..</param>
+	public void updateRacePosition( int racePosition )
 	{
-		racePositionText.text = getRacePositionAsString(position);
+		racePositionText.text = getRacePositionAsString( racePosition + 1 );
 	}
 
-	string getRacePositionAsString( int position )
+	string getRacePositionAsString( int racePosition )
 	{		
 		string ordinalIndicator;
-		switch (position)
+		switch (racePosition)
 		{
 			case 1:
 				ordinalIndicator = "1<size=64><sup>st</sup></size>";
