@@ -7,12 +7,14 @@ public class PowerBar : MonoBehaviour {
 	[SerializeField] Image powerBarFill;
 	[SerializeField] Color normalPowerBarFillColor;
 	[SerializeField] Color emergencyPowerEngagedFillColor;
+	[SerializeField] Color superchargerPowerBarFillColor;
 	[SerializeField] RectTransform powerBarLitTipRect;  //Should be anchored bottom, center
 	[SerializeField] Image powerBarLitTip;
 
 	public const float MAX_POWER_POINT = 10f;
 	public const float START_POWER_POINT = 0;
 	public const float DEFAULT_POWER_REFILL_RATE = 2.8f; //Seconds needed to gain 1 power point
+	const float SUPERCHARGER_POWER_REFILL_RATE = 1.8f; //Seconds needed to gain 1 power point
 	public const float FAST_POWER_REFILL_RATE = 1.4f; //Seconds needed to gain 1 power point
 	float powerBarFillLength;
 	float powerRefillRate = DEFAULT_POWER_REFILL_RATE;
@@ -80,6 +82,13 @@ public class PowerBar : MonoBehaviour {
 			power = power - powerToRemove;
 			updatePower ();
 		}
+	}
+
+	public void increaseRefillRateForSupercharger()
+	{
+		powerRefillRate = SUPERCHARGER_POWER_REFILL_RATE;
+		powerBarFill.color = superchargerPowerBarFillColor;
+		powerBarLitTip.color = superchargerPowerBarFillColor;
 	}
 
 	public void increaseRefillRate()

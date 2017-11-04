@@ -404,6 +404,11 @@ public class TurnRibbonHandler : MonoBehaviour {
 		return value;
 	}
 
+	public void increaseRefillRateForSupercharger()
+	{
+		powerBar.increaseRefillRateForSupercharger();
+	}
+
 	public void increaseRefillRate()
 	{
 		powerBar.increaseRefillRate();

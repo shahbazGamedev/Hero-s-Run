@@ -374,6 +374,9 @@ public class PlayerSpell : PunBehaviour {
 		//Display the Supercharger secondary icon on the minimap
 		MiniMap.Instance.displaySecondaryIcon( photonView.viewID, (int) CardName.Supercharger, spellDuration );
 
+		//While supercharged, increase the power bar refill rate.
+		turnRibbonHandler.increaseRefillRateForSupercharger();
+
 		//To Do
 		//Display a Supercharger timer on the HUD so the player knows when it is going to run out.
 		//Add a cool glow to the omni-tool
@@ -383,6 +386,8 @@ public class PlayerSpell : PunBehaviour {
 	void cancelSupercharger()
 	{
 		CancelInvoke("cancelSupercharger" );
+		//Reset the power bar refill rate.
+		turnRibbonHandler.resetRefillRate();
 		removeActiveCard( CardName.Supercharger );
 	}
 	#endregion
