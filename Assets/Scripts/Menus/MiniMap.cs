@@ -122,16 +122,16 @@ public class MiniMap : MonoBehaviour {
 		}
 	}
 
-	public void displayMessage( string heroName, CardName cardName )
+	void displayMessage( string userName, CardName cardName )
 	{
 		CardManager.CardData lastCardPlayed = CardManager.Instance.getCardByName( cardName );
-		displayMessage( heroName, lastCardPlayed );
+		displayMessage( userName, lastCardPlayed );
 	}
 
-	public void displayMessage( string heroName, CardManager.CardData lastCardPlayed )
+	void displayMessage( string userName, CardManager.CardData lastCardPlayed )
 	{
 		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + lastCardPlayed.name.ToString().ToUpper() );
-		string message = string.Format( LocalizationManager.Instance.getText("MINIMAP_CARD_PLAYED"), heroName, CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ), localizedCardName );
+		string message = string.Format( LocalizationManager.Instance.getText("MINIMAP_CARD_PLAYED"), userName, CardManager.Instance.getCardColorHexValue( lastCardPlayed.rarity ), localizedCardName );
 		addMessage( message );
 	}
 
@@ -334,10 +334,10 @@ public class MiniMap : MonoBehaviour {
 	}
 
 	[PunRPC]
-	void minimapRPC( string heroName, int card )
+	void minimapRPC( string userName, int card )
 	{
 		//Display a message under the minimap.
-		displayMessage( heroName, (CardName)card );
+		displayMessage( userName, (CardName)card );
 	}
 
 	public void displaySecondaryIcon( int photonViewID, int card, float duration )

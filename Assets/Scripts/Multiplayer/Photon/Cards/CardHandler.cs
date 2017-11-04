@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CardHandler : MonoBehaviour {
 
-	public void activateCard ( PhotonView casterPhotonView, CardName name, string heroName, int level )
+	public void activateCard ( PhotonView casterPhotonView, CardName name, string userName, int level )
 	{
 		int photonViewId = casterPhotonView.viewID;
 
@@ -281,18 +281,17 @@ public class CardHandler : MonoBehaviour {
 		}
 
 		//Send message to minimap saying which hero played which card
-		sendMinimapMessage( heroName, (int)name );
+		sendMinimapMessage( userName, (int)name );
 
 		//Play the activate card voice over if there is one
 		playActivateCardVoiceOver( casterPhotonView, name );
 	}
 
-	//revisit this code. Not sure I need the for loop. Would need to handle bot (which is not a photon player).
-	void sendMinimapMessage( string heroName, int card )
+	void sendMinimapMessage( string userName, int card )
 	{
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
-			PlayerRace.players[i].getMinimapPhotonView().RPC( "minimapRPC", PhotonTargets.All, heroName, card );
+			PlayerRace.players[i].getMinimapPhotonView().RPC( "minimapRPC", PhotonTargets.All, userName, card );
 		}
 	}
 

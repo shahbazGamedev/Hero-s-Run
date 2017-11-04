@@ -2043,18 +2043,18 @@ public class PlayerControl : Photon.PunBehaviour {
 	private void resurrectEnd()
 	{		
 		//Display a minimap message that this player or bot is back in the game.
-		string heroName;
+		string userName;
 		if( playerAI == null )
 		{
 			//We're the player
-			heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name.ToString();
+			userName = GameManager.Instance.playerProfile.getUserName();
 		}
 		else
 		{
 			//We're a bot
-			heroName = 	playerAI.botHero.userName;
+			userName = 	playerAI.botHero.userName;
 		}
-		this.photonView.RPC("playerResurrectedRPC", PhotonTargets.AllViaServer, heroName );
+		this.photonView.RPC("playerResurrectedRPC", PhotonTargets.AllViaServer, userName );
 
 
 		//The GameState was Resurrect - change it back to Normal
@@ -2068,9 +2068,9 @@ public class PlayerControl : Photon.PunBehaviour {
 	}
 
 	[PunRPC]
-	public void playerResurrectedRPC( string heroName )
+	public void playerResurrectedRPC( string userName )
 	{
-		MiniMap.Instance.displayMessage( string.Format( backInTheGameString, heroName ) );
+		MiniMap.Instance.displayMessage( string.Format( backInTheGameString, userName ) );
 		playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Resurrect);
 	}
 

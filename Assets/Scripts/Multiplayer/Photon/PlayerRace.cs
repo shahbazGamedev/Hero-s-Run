@@ -72,7 +72,7 @@ public class PlayerRace : Photon.PunBehaviour
 	PlayerSpell playerSpell;
 	PlayerIK playerIK;
 	GenerateLevel generateLevel;
-	string heroName;
+	string userName;
 	#endregion
 
 	void Start()
@@ -86,7 +86,7 @@ public class PlayerRace : Photon.PunBehaviour
 		playerIK = GetComponent<PlayerIK>();
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
 		distanceRemaining = generateLevel.levelLengthInMeters;
-		storeHeroName();
+		storeUserName();
 
 		if( this.photonView.isMine && playerAI == null )
 		{	
@@ -104,17 +104,17 @@ public class PlayerRace : Photon.PunBehaviour
 		tookTheLeadString = LocalizationManager.Instance.getText( "MINIMAP_TOOK_LEAD" );
 	}
 
-	void storeHeroName()
+	void storeUserName()
 	{
 		if( playerAI == null )
 		{
 			//We're the player
-			heroName = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex ).name.ToString();
+			userName = GameManager.Instance.playerProfile.getUserName();
 		}
 		else
 		{
 			//We're a bot
-			heroName = playerAI.botHero.userName;
+			userName = playerAI.botHero.userName;
 		}
 	}
 
@@ -246,7 +246,7 @@ public class PlayerRace : Photon.PunBehaviour
 
 		Invoke( "disablePowerBoost", POWER_BOOST_DURATION );
 		string emergencyPowerEngagedString = LocalizationManager.Instance.getText( "MINIMAP_EMERGENCY_POWER_ENGAGED" );
-		MiniMap.Instance.displayMessage( string.Format( emergencyPowerEngagedString, heroName ) );
+		MiniMap.Instance.displayMessage( string.Format( emergencyPowerEngagedString, userName ) );
 		print("Activating power boost for " + gameObject.name );
 	}
 
@@ -371,8 +371,8 @@ public class PlayerRace : Photon.PunBehaviour
 			if( Vector3.Distance( transform.position, p2.transform.position) >= REQUIRED_LEAD_DISTANCE )
 			{
 				//Display a minimap message that this player or bot took the lead.
-				print("tookTheLead " + heroName + " " + gameObject.name );
-				MiniMap.Instance.displayMessage( string.Format( tookTheLeadString, heroName ) );
+				print("tookTheLead " + userName + " " + gameObject.name );
+				MiniMap.Instance.displayMessage( string.Format( tookTheLeadString, userName ) );
 				playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Took_Lead);
 			}
 		}

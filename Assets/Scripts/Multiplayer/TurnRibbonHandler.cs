@@ -35,6 +35,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 	PlayerRace playerRace;
 	PlayerSpell playerSpell;
 	PlayerHealth playerHealth;
+	string userName;
 
 	//Delegate used to communicate to other classes when the local player has played a card
 	public delegate void CardPlayedEvent( CardName name, int level );
@@ -68,6 +69,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		playerRace = playerControl.GetComponent<PlayerRace>();
 		playerSpell = playerControl.GetComponent<PlayerSpell>();
 		playerHealth = playerControl.GetComponent<PlayerHealth>();
+		userName = GameManager.Instance.playerProfile.getUserName();
 	}
 
 	void addCardToTurnRibbon( int index, CardName cardName )
@@ -311,8 +313,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 	{
 		PlayerDeck.PlayerCardData playerCardData = GameManager.Instance.playerDeck.getCardByName( cardName );
 		Debug.Log("TurnRibbonHandler-activateCard: playing card: " + cardName );
-		HeroManager.HeroCharacter selectedHero = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex );
-		cardHandler.activateCard( playerControl.GetComponent<PhotonView>(), cardName, selectedHero.name.ToString(), playerCardData.level );
+		cardHandler.activateCard( playerControl.GetComponent<PhotonView>(), cardName, userName, playerCardData.level );
 		//Increase the card usage count. This is used to determine the player's favorite card.
 		playerCardData.timesUsed++;
 	}
