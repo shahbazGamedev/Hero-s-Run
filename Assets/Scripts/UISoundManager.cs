@@ -28,6 +28,6 @@ public class UISoundManager : MonoBehaviour {
 
 	public void playAudioClip( AudioClip clip )
 	{
-		uiAudioSource.PlayOneShot( clip );
+		if( clip != null ) uiAudioSource.PlayOneShot( clip );
 	}
 }

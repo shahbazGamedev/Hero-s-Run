@@ -163,7 +163,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		{
 			goMessageText.text = countdownNumber.ToString();
 			goMessageText.gameObject.SetActive( true );
-			//UISoundManager.uiSoundManager.playAudioClip( beep );
+			UISoundManager.uiSoundManager.playAudioClip( beep );
 			yield return new WaitForSecondsRealtime( 1f);
 			countdownNumber--;
 			goMessageText.gameObject.SetActive( false );
