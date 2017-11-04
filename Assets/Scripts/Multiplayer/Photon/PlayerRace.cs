@@ -341,7 +341,7 @@ public class PlayerRace : Photon.PunBehaviour
 
 			racePosition = newRacePosition;
 			//The bot has a photon view. This photon view, just like the player's, has isMine set to true. But we don't want a bot to affect the HUD, hence we make sure we are not a bot.
-			if( this.photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.updateRacePosition(racePosition + 1); //1 is first place, 2 is second place, etc.
+			if( this.photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.updateRacePosition( racePosition );
 			//Debug.Log("PlayerRace: OnRacePositionChanged " +  (racePosition + 1 )  + " name " + gameObject.name );
 			if( players.Count >= 2)
 			{
@@ -417,7 +417,7 @@ public class PlayerRace : Photon.PunBehaviour
 				CancelInvoke("tookTheLead");
 				string victory = LocalizationManager.Instance.getText("RACE_VICTORY");
 				if( racePosition == 0 ) HUDMultiplayer.hudMultiplayer.activateUserMessage( victory, 0, 2.25f );
-				HUDMultiplayer.hudMultiplayer.updateRacePosition(officialRacePosition + 1);
+				HUDMultiplayer.hudMultiplayer.updateRacePosition( officialRacePosition );
 				GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
 				GenerateLevel generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
 				PlayerRaceManager.Instance.playerCompletedRace( (officialRacePosition + 1), raceDuration, generateLevel.levelLengthInMeters, playerControl.getNumberOfTimesDiedDuringRace() );
