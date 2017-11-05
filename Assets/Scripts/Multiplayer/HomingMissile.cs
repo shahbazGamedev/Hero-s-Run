@@ -4,8 +4,7 @@ using System.Collections;
 
 public class HomingMissile : CardSpawnedObject {
 
-	[SerializeField] Light fireLight;
-	[SerializeField] ParticleSystem fireParticleSystem;
+	[SerializeField] ParticleSystem inFlightParticleSystem;
 	[SerializeField] ParticleSystem impactParticleSystem;
 	[SerializeField] AudioClip inFlightSound;
 	[SerializeField] AudioClip collisionSound;
@@ -41,8 +40,7 @@ public class HomingMissile : CardSpawnedObject {
 		homingMissile.isKinematic = false;
 		GetComponent<AudioSource>().clip = inFlightSound;
 		GetComponent<AudioSource>().Play();
-		if( fireLight != null ) fireLight.enabled = true;
-		if( fireParticleSystem != null ) fireParticleSystem.gameObject.SetActive(true);
+		if( inFlightParticleSystem != null ) inFlightParticleSystem.gameObject.SetActive(true);
 
 		//Add an icon on the minimap
 		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
