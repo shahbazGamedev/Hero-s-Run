@@ -2,12 +2,15 @@
 using UnityEngine.UI;
 using System.Collections;
 
+/// <summary>
+/// Homing missile.
+/// The Homing Missile prefab should have an AudioSource component with Play on Awake and Loop set to true. It should have the in-flight audio clip.
+/// The Impact particle system should have an AudioSource component with Play on Awake set to true and Loop set to false. It should have the impact audio clip.
+/// </summary>
 public class HomingMissile : CardSpawnedObject {
 
 	[SerializeField] ParticleSystem inFlightParticleSystem;
 	[SerializeField] ParticleSystem impactParticleSystem;
-	[SerializeField] AudioClip inFlightSound;
-	[SerializeField] AudioClip collisionSound;
 	float missileVelocity = 42f;
 	//Important: if the turn value is too small, you may see the missile spin around the target without ever hitting it because the turn radius is too big.
 	//A turn value of 24 for a missile velocity of 40 works well.
@@ -31,15 +34,13 @@ public class HomingMissile : CardSpawnedObject {
 
 	IEnumerator launchMissile()
 	{
-		yield return new WaitForSeconds(0.25f);
+		yield return new WaitForSeconds(0.35f);
 
 		homingMissile = GetComponent<Rigidbody>();
 		target = getNearestTargetWithinRange( Mathf.Infinity, MaskHandler.getMaskOnlyPlayer() );
 		if( target != null ) targetPlayerControl = target.GetComponent<PlayerControl>();
 		//if( target != null ) print("Homing Missile target is " + target.name );
 		homingMissile.isKinematic = false;
-		GetComponent<AudioSource>().clip = inFlightSound;
-		GetComponent<AudioSource>().Play();
 		if( inFlightParticleSystem != null ) inFlightParticleSystem.gameObject.SetActive(true);
 
 		//Add an icon on the minimap
@@ -77,17 +78,14 @@ public class HomingMissile : CardSpawnedObject {
 		homingMissile.velocity = Vector3.zero;
 		homingMissile = null;
 
-		//Play collision sound.
-		GetComponent<AudioSource>().PlayOneShot( collisionSound );
-
 		if( impactParticleSystem != null )
 		{
 			impactParticleSystem.transform.SetParent( null );
 			impactParticleSystem.gameObject.SetActive(true);
-			GameObject.Destroy( impactParticleSystem, 5f );
+			GameObject.Destroy( impactParticleSystem.gameObject, 5f );
 		}
 
-		destroyAllTargetsWithinBlastRadius( 15f, MaskHandler.getMaskWithPlayerWithLevelDestructible(), casterTransform );
+		destroyAllTargetsWithinBlastRadius( 15f, MaskHandler.getMaskWithPlayerWithoutDevices(), casterTransform );
 
 		GameObject.Destroy( gameObject );
 		
