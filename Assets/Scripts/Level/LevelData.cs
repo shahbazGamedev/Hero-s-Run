@@ -61,6 +61,7 @@ found on any of the scenes. You can set these to be overridden by setting the dr
 */
 public class LevelData : MonoBehaviour {
 	
+	public List<LightingData> lightingDataList = new List<LightingData>();
 	public List<EpisodeInfo> episodeList = new List<EpisodeInfo>();
 	public List<MultiplayerInfo> multiplayerList = new List<MultiplayerInfo>();
 
@@ -102,14 +103,12 @@ public class LevelData : MonoBehaviour {
 			float lightIntensity;
 			float shadowStrength = 0f;
 			Quaternion sunDirection;
-			string skyBoxName;
 			RenderSettings.ambientLight = new Color(0,0,0);
 			RenderSettings.fog = false;
 
 			switch (sunType)
 			{
 			case SunType.Morning:
-				skyBoxName = "CartoonSkybox";
 				lightIntensity = 0.74f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				shadowStrength = 0.3f;
@@ -118,7 +117,6 @@ public class LevelData : MonoBehaviour {
 				break;
 				
 			case SunType.Noon:
-				skyBoxName = "CartoonSkybox";
 				lightIntensity = 0.58f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				shadowStrength = 0.5f;
@@ -127,7 +125,6 @@ public class LevelData : MonoBehaviour {
 				break;
 				
 			case SunType.Afternoon:
-				skyBoxName = "CartoonSkybox";
 				lightIntensity = 0.74f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				shadowStrength = 0.4f;
@@ -144,7 +141,6 @@ public class LevelData : MonoBehaviour {
 				shadowStrength = 1f;
 
 				//Sky box
-				skyBoxName = "Desert";
 				RenderSettings.sun = Sun.GetComponent<Light>();
 				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
 				RenderSettings.ambientSkyColor = new Color(183f/255f,233f/255f,251f/255f);
@@ -162,7 +158,6 @@ public class LevelData : MonoBehaviour {
 				break;
 
 			case SunType.Blizzard:
-				skyBoxName = "Blizzard";
 				lightIntensity = 0.3f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				shadowStrength = 0.6f;
@@ -179,7 +174,6 @@ public class LevelData : MonoBehaviour {
 				break;
 
 			case SunType.Jungle:
-				skyBoxName = "Jungle";
 				lightIntensity = 1.15f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				shadowStrength = 0.6f;
@@ -196,7 +190,6 @@ public class LevelData : MonoBehaviour {
 				break;
 
 			case SunType.Caves:
-				skyBoxName = "None";
 				lightIntensity = 0.27f;
 				Sun.GetComponent<Light>().color = new Color(0.855f,0.855f,0.855f); //light grey
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
@@ -213,7 +206,6 @@ public class LevelData : MonoBehaviour {
 				break;
 
 			case SunType.Night:
-				skyBoxName = "Skybox_Cartoon_Night";
 				lightIntensity = 0.65f;
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 32f,13f,-63f );
@@ -221,7 +213,6 @@ public class LevelData : MonoBehaviour {
 				break;
 
 			case SunType.Overcast:
-				skyBoxName = "Overcast2 Skybox";
 				lightIntensity = 1.2f;
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 38.28f,119.5f,87.52f );
@@ -229,7 +220,6 @@ public class LevelData : MonoBehaviour {
 				break;
 
 			case SunType.Elfland:
-				skyBoxName = "Overcast2 Skybox";
 				lightIntensity = 0.75f;
 				shadowStrength = 0.3f;
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
@@ -238,7 +228,6 @@ public class LevelData : MonoBehaviour {
 				break;
 
 			case SunType.Hell:
-				skyBoxName = "Skybox Hell";
 				lightIntensity = 0.3f;
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 32f,13f,-63f );
@@ -247,7 +236,6 @@ public class LevelData : MonoBehaviour {
 				break;
 
 			case SunType.Cemetery:
-				skyBoxName = "Skybox Cemetery";
 				lightIntensity = 0.28f;
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				sunDirection = Quaternion.Euler( 32f,13f,-63f );
@@ -257,8 +245,6 @@ public class LevelData : MonoBehaviour {
 				break;
 
 			case SunType.Sky_city:
-				skyBoxName = "Skybox_backgound";
-
 				lightIntensity = 1.15f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				shadowStrength = 0.42f;
@@ -280,8 +266,6 @@ public class LevelData : MonoBehaviour {
 				break;
 
 			case SunType.Sky_city_night:
-				skyBoxName = "Skybox_backgound_night";
-
 				lightIntensity = 2.5f;
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
 				Sun.GetComponent<Light>().color = new Color(44f/255f,96f/255f,146f/255f); //purple
@@ -300,7 +284,6 @@ public class LevelData : MonoBehaviour {
 				break;
 
 			case SunType.Countryside:
-				skyBoxName = "Countryside";
 				lightIntensity = 0.8f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				shadowStrength = 0.75f;
@@ -317,7 +300,6 @@ public class LevelData : MonoBehaviour {
 				break;
 
 			default:
-				skyBoxName = "CartoonSkybox";
 				lightIntensity = 0.54f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				shadowStrength = 0.62f;
@@ -325,7 +307,7 @@ public class LevelData : MonoBehaviour {
 				Sun.GetComponent<Light>().color = Color.white;
 				break;
 			}
-			if( skyBoxName != "None" ) skyBoxMaterial = Resources.Load( "Skybox/" + skyBoxName ) as Material;
+			skyBoxMaterial = getSkyBox( sunType );
 			if( skyBoxMaterial != null )
 			{
 				RenderSettings.skybox = skyBoxMaterial;
@@ -567,6 +549,27 @@ public class LevelData : MonoBehaviour {
 		public int sectorNumber;
 		[Tooltip("The background color is used in various UI elements to match the main color of the sector image.")]
 		public Color backgroundColor;
+	}
+
+	[System.Serializable]
+	public class LightingData
+	{
+		public SunType sunType; 
+		public Material skyBox;
+	}
+
+	Material getSkyBox( SunType sunType )
+	{
+		LightingData lightingData = lightingDataList.Find( ld => ld.sunType == sunType );
+		if( lightingData != null )
+		{
+			return lightingData.skyBox;
+		}
+		else
+		{
+			Debug.LogError("LevelData-getSkyBox: There is no lighting data associated with the sun type: " + sunType );
+			return null;
+		}
 	}
 
 }
