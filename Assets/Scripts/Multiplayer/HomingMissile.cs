@@ -6,6 +6,7 @@ using System.Collections;
 /// Homing missile.
 /// The Homing Missile prefab should have an AudioSource component with Play on Awake and Loop set to true. It should have the in-flight audio clip.
 /// The Impact particle system should have an AudioSource component with Play on Awake set to true and Loop set to false. It should have the impact audio clip.
+/// Put the Rigidbody collision detection to Continuous Dynamic or else the missile will fly right through the player frequently.
 /// </summary>
 public class HomingMissile : CardSpawnedObject {
 

@@ -2141,24 +2141,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		return playerMovementEnabled;
 	}
 
-	public IEnumerator push( float force, float duration )
-	{
-		enablePlayerMovement( false );
-		enablePlayerControl( false );
-		setAnimationTrigger( StumbleTrigger );
-		float elapsedTime = 0;
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			capsuleCollider.attachedRigidbody.AddRelativeForce( forward * force );
-			yield return new WaitForFixedUpdate();  
-			
-		} while ( elapsedTime < duration );
-		setAnimationTrigger( RunTrigger );
-		enablePlayerMovement( true );
-		enablePlayerControl( true );
-	}
-
 	#region OnTriggerEnter, OnTriggerStay, OnTriggerExit
 	void OnTriggerEnter(Collider other)
 	{

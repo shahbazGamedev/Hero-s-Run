@@ -2,13 +2,16 @@
 using UnityEngine.UI;
 using System.Collections;
 
+/// <summary>
+/// Multiplayer projectile.
+/// The In-flight particle system should have an AudioSource component with Play on Awake and Loop set to true. It should have the in-flight audio clip.
+/// The Impact particle system should have an AudioSource component with Play on Awake set to true and Loop set to false. It should have the impact audio clip.
+/// Put the Rigidbody collision detection to Continuous Dynamic or else the missile will fly right through the player frequently.
+/// </summary>
 public class MultiplayerProjectile : CardSpawnedObject {
 
-	[SerializeField] Light fireLight;
-	[SerializeField] ParticleSystem fireParticleSystem;
+	[SerializeField] ParticleSystem inFlightParticleSystem;
 	[SerializeField] ParticleSystem impactParticleSystem;
-	[SerializeField] AudioClip inFlightSound;
-	[SerializeField] AudioClip collisionSound;
 	float bolt_force = 1600f;
 	SentryController sentryController;
 
@@ -40,24 +43,18 @@ public class MultiplayerProjectile : CardSpawnedObject {
 		GetComponent<Rigidbody>().isKinematic = false;
 		GetComponent<Rigidbody>().AddForce( direction.normalized * bolt_force );
 		GameObject.Destroy( gameObject, selfDestructTime );
-		GetComponent<AudioSource>().clip = inFlightSound;
-		GetComponent<AudioSource>().Play();
-		if( fireLight != null ) fireLight.enabled = true;
-		if( fireParticleSystem != null ) fireParticleSystem.gameObject.SetActive(true);
+		if( inFlightParticleSystem != null ) inFlightParticleSystem.gameObject.SetActive(true);
 	}
 
 	void OnCollisionEnter(Collision collision)
 	{
 	    GetComponent<Rigidbody>().velocity = Vector3.zero;
 
-		//Play collision sound.
-		GetComponent<AudioSource>().PlayOneShot( collisionSound );
-
 		if( impactParticleSystem != null )
 		{
 			impactParticleSystem.transform.SetParent( null );
 			impactParticleSystem.gameObject.SetActive(true);
-			GameObject.Destroy( impactParticleSystem, 5f );
+			GameObject.Destroy( impactParticleSystem.gameObject, 5f );
 		}
 
 		if( collision.transform.GetComponent<FracturedObject>() != null ) collision.transform.GetComponent<FracturedObject>().Explode( collision.contacts[0].point, 400f );
