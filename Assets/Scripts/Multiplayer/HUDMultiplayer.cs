@@ -45,7 +45,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	DebugInfoType debugInfoType;
 	FPSCalculator fpsCalculator;
 	[Header("Race About To End Message")]
-	[SerializeField] Text raceEndingText;
+	[SerializeField] TextMeshProUGUI raceEndingText;
 	[Header("Minimap")]
 	[SerializeField] PhotonView minimapPhotonView;
 	[Header("Emotes")]
