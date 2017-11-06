@@ -2,16 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using TMPro;
 
 public class NewTutorialManager : MonoBehaviour {
 
 	[Header("Tutorial Manager")]
-	public bool isTutorialActive = false;
-	public GameObject panel;
-	public Text instructionText;
-	public Image pointingFinger;
-	public Image tiltDevice;
-	public Image tapDevice;
+	public bool isTutorialActive = false; //Not used
+	[SerializeField] GameObject panel;
+	[SerializeField] TextMeshProUGUI instructionText;
+	[SerializeField] Image pointingFinger;
+	[SerializeField] Image tiltDevice;
+	[SerializeField] Image tapDevice;
 	Dictionary<NewTutorialEvent,string> tutorialTexts = new Dictionary<NewTutorialEvent, string>(9);
 	Dictionary<NewTutorialEvent,string> tutorialTextsIfFailed = new Dictionary<NewTutorialEvent, string>(9);
 	NewTutorialEvent activeTutorial;
@@ -68,10 +69,15 @@ public class NewTutorialManager : MonoBehaviour {
 		middleText = new Vector2( 150f, -230f );
 		highText = new Vector2( 150f, 28f );
 
+		instructionText.gameObject.SetActive( false );
+		pointingFinger.gameObject.SetActive( false );
+		tiltDevice.gameObject.SetActive( false );
+		tapDevice.gameObject.SetActive( false );
 	}
 
 	void handleTutorialEvent( NewTutorialEvent tutorialEvent )
 	{
+		if( !isTutorialActive ) return;
 		Debug.Log("TutorialEventTriggered " + tutorialEvent );
 		activeTutorial = tutorialEvent;
 
@@ -182,7 +188,8 @@ public class NewTutorialManager : MonoBehaviour {
 			instructionText.text = tutorialTexts[NewTutorialEvent.Attach_to_Zipline];
 			instructionText.gameObject.SetActive( true );
 			instructionText.color = new Color(1f,1f,1f, 0 );
-			LeanTween.colorText(instructionText.GetComponent<RectTransform>(), new Color(1f,1f,1f, 1f ), FADE_IN_DURATION ).setOnComplete(startUpSlide).setOnCompleteParam(gameObject);
+			startUpSlide();
+			//LeanTween.colorText(instructionText.GetComponent<RectTransform>(), new Color(1f,1f,1f, 1f ), FADE_IN_DURATION ).setOnComplete(startUpSlide).setOnCompleteParam(gameObject);
 			break;
 		}
 	}
