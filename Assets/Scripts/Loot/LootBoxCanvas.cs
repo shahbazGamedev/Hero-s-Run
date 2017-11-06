@@ -76,6 +76,7 @@ public class LootBoxCanvas : MonoBehaviour {
 	int currentIndex = -1;
 	int lootBoxesOwned;
 	LootBoxOwnedData selectedLootBoxData;
+	Coroutine configureLootBoxCoroutine;
 
 	void Start ()
 	{
@@ -207,7 +208,12 @@ public class LootBoxCanvas : MonoBehaviour {
 
 	public void configureLootBox()
 	{
-		StopAllCoroutines();
+		if( configureLootBoxCoroutine != null ) StopCoroutine( configureLootBoxCoroutine );
+		configureLootBoxCoroutine = StartCoroutine( StartConfigureLootBoxCoroutine() );
+	}
+
+	IEnumerator StartConfigureLootBoxCoroutine()
+	{
 		//Get the LootBoxOwned data
 		selectedLootBoxData = GameManager.Instance.playerInventory.getLootBoxAt( currentIndex );
 		//Localize the loot box name
@@ -215,7 +221,8 @@ public class LootBoxCanvas : MonoBehaviour {
 		//Get the LootBoxData
 		LootBoxData lootBoxData = getLootBoxData( selectedLootBoxData.type );
 		//Destroy the previous loot box model
-		GameObject.DestroyImmediate( lootBox );
+		if( lootBox != null ) GameObject.Destroy( lootBox );
+		yield return new WaitForFixedUpdate(); //Give time for the loot box to be destroyed before creating a new one and do NOT use DestroyImmediate.
 		//Create a new loot box model
 		lootBox = GameObject.Instantiate( lootBoxData.lootBoxPrefab, lootBoxSpawnLocation.position, lootBoxSpawnLocation.rotation );
 		lootBox.transform.SetParent( holder3D );
