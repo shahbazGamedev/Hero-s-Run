@@ -249,10 +249,17 @@ public class MatchmakingManager : MonoBehaviour {
 	//Do not allow the player to exit the matchmaking screen if he has initiated matchmaking and a remote player has joined.
 	//If the player still wants to quit, he will be able to do so via the pause menu.
 	//Also, hide the preloader.
-	public void disableExitButton()
+	public void enableExitButton( bool enable )
 	{
-		enablePreloader( false );
-		UniversalTopBar.Instance.enableCloseButton( false );
+		if( enable )
+		{
+			UniversalTopBar.Instance.enableCloseButton( true );
+		}
+		else
+		{
+			enablePreloader( false );
+			UniversalTopBar.Instance.enableCloseButton( false );
+		}
 	}
 
 	public void OnClickReturnToMainMenu()
@@ -278,7 +285,7 @@ public class MatchmakingManager : MonoBehaviour {
 		}
 	}
 
-	void enablePlayButton( bool enable )
+	public void enablePlayButton( bool enable )
 	{
 		if( enable )
 		{

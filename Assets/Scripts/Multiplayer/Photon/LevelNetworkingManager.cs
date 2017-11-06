@@ -103,12 +103,26 @@ public class LevelNetworkingManager : PunBehaviour
 	public override void OnPhotonPlayerDisconnected( PhotonPlayer other  )
 	{
 		Debug.Log( "LevelNetworkingManager: OnPhotonPlayerDisconnected() " + other.NickName ); // seen when other disconnects
-		//Only display the disconnect message on the HUD if the race is not completed
-		if( PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED )
+		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.NOT_STARTED )
 		{
+			//The race has not started yet, send everyone back to the matchmaking screen.
+			string leftTheRace = LocalizationManager.Instance.getText("MULTI_LEFT_THE_RACE");
+			HUDMultiplayer.hudMultiplayer.activateUserMessage( string.Format( leftTheRace, other.NickName ), 0, 2f );
+			//Give time for the player to read the message before leaving the room.
+			Invoke( "LeaveRoom", 3f );
+		}
+		else if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
+		{
+			//The race is in progress, display a message.
+			//If the race is completed, we do not show any message as it is not useful to the other player(s).
 			string leftTheRace = LocalizationManager.Instance.getText("MULTI_LEFT_THE_RACE");
 			HUDMultiplayer.hudMultiplayer.activateUserMessage( string.Format( leftTheRace, other.NickName ), 0, 2f );
 		}
+	}
+
+	void LeaveRoom()
+	{
+	    PhotonNetwork.LeaveRoom();
 	}
 
 	IEnumerator loadScene(GameScenes value)
@@ -121,12 +135,6 @@ public class LevelNetworkingManager : PunBehaviour
 			yield return new WaitForSeconds(0);
 			SceneManager.LoadScene( (int)value );
 		}
-	}
-
-	//Not used yet. Need to hook up to pause menu and save-me menu.
-	public void OnClickLeaveRoom()
-	{
-	    PhotonNetwork.LeaveRoom();
 	}
 		
 	//Only the master client gets these calls.

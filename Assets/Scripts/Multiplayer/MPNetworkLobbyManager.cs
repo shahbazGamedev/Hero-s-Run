@@ -231,6 +231,9 @@ public class MPNetworkLobbyManager : PunBehaviour
 	    Debug.LogWarning("MPNetworkLobbyManager: OnDisconnectedFromPhoton() was called by PUN");  
 		matchmakingManager.setConnectionProgress( "Disconnected ..." );   
 		matchmakingManager.setPhotonCloudRegionText( "N/A" );
+		//Now make sure we re-enable the play button and the exit button in the matchmaking scene or else the player will be stuck.
+		matchmakingManager.enableExitButton( true );
+		matchmakingManager.enablePlayButton( true );
 	}
 	 
 	public override void OnPhotonRandomJoinFailed (object[] codeAndMsg)
@@ -353,7 +356,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	void OnRemotePlayerConnect( PhotonPlayer player )
 	{
 		numberRemotePlayerConnected++;
-		matchmakingManager.disableExitButton();
+		matchmakingManager.enableExitButton( false );
 		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + LevelManager.Instance.getSelectedCircuit().circuitInfo.sectorNumber.ToString() );
 		matchmakingManager.setConnectionProgress( "Traveling to " + sectorName + " ..." ); 
 		matchmakingManager.setRemotePlayerData( numberRemotePlayerConnected, player.NickName, (int)player.CustomProperties["Level"], (int)player.CustomProperties["Icon"] );
@@ -380,7 +383,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 	void displayBotInfo()
 	{
-		matchmakingManager.disableExitButton();
+		matchmakingManager.enableExitButton( false );
 		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + LevelManager.Instance.getSelectedCircuit().circuitInfo.sectorNumber.ToString() );
 		matchmakingManager.setConnectionProgress( "Traveling to " + sectorName + " ..." );
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
@@ -392,7 +395,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 	void displayBotsInfoPart1()
 	{
-		matchmakingManager.disableExitButton();
+		matchmakingManager.enableExitButton( false );
 		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + LevelManager.Instance.getSelectedCircuit().circuitInfo.sectorNumber.ToString() );
 		matchmakingManager.setConnectionProgress( "Traveling to " + sectorName + " ..." );
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
