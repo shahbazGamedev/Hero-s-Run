@@ -222,7 +222,7 @@ public class LootBoxCanvas : MonoBehaviour {
 		LootBoxData lootBoxData = getLootBoxData( selectedLootBoxData.type );
 		//Destroy the previous loot box model
 		if( lootBox != null ) GameObject.Destroy( lootBox );
-		yield return new WaitForFixedUpdate(); //Give time for the loot box to be destroyed before creating a new one and do NOT use DestroyImmediate.
+		yield return new WaitForEndOfFrame(); //Give time for the loot box to be destroyed before creating a new one and do NOT use DestroyImmediate.
 		//Create a new loot box model
 		lootBox = GameObject.Instantiate( lootBoxData.lootBoxPrefab, lootBoxSpawnLocation.position, lootBoxSpawnLocation.rotation );
 		lootBox.transform.SetParent( holder3D );
