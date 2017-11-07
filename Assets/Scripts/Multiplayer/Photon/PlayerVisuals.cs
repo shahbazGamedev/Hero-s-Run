@@ -9,6 +9,7 @@ public class PlayerVisuals : Photon.PunBehaviour {
 	[Range(0,1)]
 	[SerializeField] float nightEmission = 0.33f;
 	//Particles
+	[SerializeField]  ParticleSystem runVFX;
 	[SerializeField]  ParticleSystem dustPuff;
 	[SerializeField]  ParticleSystem waterSplashWhileSliding; //Plays when player slides in water.It loops.
 	[Tooltip("The impact VFX plays when the player hits an obstacle and falls backward. It should include an AudioSource with the associated impact sound. The AudioSource should have PlayOnAwake set to true.")]
@@ -26,6 +27,65 @@ public class PlayerVisuals : Photon.PunBehaviour {
 		}
 		shadowProjector = blobShadowProjectorObject.GetComponent<Projector>();
 		
+	}
+
+	public void pausePlayer( bool isPaused )
+	{
+		if( isPaused )
+		{
+			if( runVFX.isPlaying ) runVFX.Pause();
+			if( dustPuff.isPlaying ) dustPuff.Pause();
+		}
+		else
+		{
+			if( runVFX.isPaused ) runVFX.Play();
+			if( dustPuff.isPaused ) dustPuff.Play();
+		}
+	}
+
+	public void handlePlayerStateChange( PlayerCharacterState newState )
+	{
+		if( runVFX == null ) return;
+
+	    switch (newState)
+		{
+	        case PlayerCharacterState.Dying:
+				runVFX.Stop();
+				break;
+	                
+	        case PlayerCharacterState.StartRunning:
+				runVFX.Play();
+				break;
+	                
+			case PlayerCharacterState.DoubleJumping:
+			case PlayerCharacterState.Jumping:
+				runVFX.Stop();
+				break;
+		
+			case PlayerCharacterState.Turning:
+				break;
+	                
+	        case PlayerCharacterState.Sliding:
+			case PlayerCharacterState.Turning_and_sliding:
+				runVFX.Stop();
+				break;
+
+	        case PlayerCharacterState.Stumbling:
+				break;
+
+	        case PlayerCharacterState.Falling:
+				runVFX.Stop();
+				break;
+
+	        case PlayerCharacterState.Idle:
+	        case PlayerCharacterState.Ziplining:
+				runVFX.Stop();
+				break;
+
+	        case PlayerCharacterState.Running:
+				if( !runVFX.isPlaying ) runVFX.Play();
+				break;
+		}
 	}
 
 	public void playImpactVFX()

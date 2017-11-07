@@ -432,6 +432,8 @@ public class PlayerControl : Photon.PunBehaviour {
 			enablePlayerMovement( true );
 			anim.speed = animSpeedAtTimeOfPause;
 		}
+		//Also pause various VFX
+		playerVisuals.pausePlayer( isPaused );
 	}
 	#endregion
 
@@ -2114,6 +2116,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		if(multiplayerStateChanged != null && this.photonView.isMine && playerAI == null ) multiplayerStateChanged( playerCharacterState );
 		
 		playerRun.handlePlayerStateChange( playerCharacterState );
+		playerVisuals.handlePlayerStateChange( playerCharacterState );
 	}
 
 	public void enablePlayerControl( bool enabled )
