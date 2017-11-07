@@ -402,6 +402,11 @@ public class PlayerSpell : PunBehaviour {
 			ColorCorrectionCurves ccc = Camera.main.GetComponent<ColorCorrectionCurves>();
 	 		ccc.enabled = false;
 			ccc.saturation = 1f;
+
+			//Also reset the cutscene camera
+			ColorCorrectionCurves ccc_cutscene = GetComponent<PlayerCamera>().cutsceneCamera.GetComponent<ColorCorrectionCurves>();
+ 			ccc_cutscene.enabled = false;
+			ccc_cutscene.saturation = 1f;
 		}
 		makePlayerVisible();
 		removeActiveCard( CardName.Cloak );
