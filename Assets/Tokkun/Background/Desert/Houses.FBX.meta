@@ -8,15 +8,20 @@ ModelImporter:
     100000: House_A
     100002: House_B
     100004: //RootNode
+    100006: House_C
     400000: House_A
     400002: House_B
     400004: //RootNode
+    400006: House_C
     2300000: House_A
     2300002: House_B
+    2300004: House_C
     3300000: House_A
     3300002: House_B
+    3300004: House_C
     4300000: House_A
     4300002: House_B
+    4300004: House_C
   materials:
     importMaterials: 1
     materialName: 0
