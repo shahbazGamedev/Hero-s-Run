@@ -1,0 +1,134 @@
+fileFormatVersion: 2
+guid: 7c69ee5c000dddd40bdf29ad8a788634
+timeCreated: 1510002359
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: BridgeBeam_A
+    100004: BridgeBeam_B
+    100006: BridgeFabric_00
+    100008: BridgeFabric_01
+    100010: BridgeFabric_02
+    100012: BridgeFabric_03
+    100014: BridgePart_A
+    100016: BridgeSides
+    100018: BrigdePlate_A
+    100020: BrigdePlate_B
+    100022: BrigdePlate_C
+    400000: //RootNode
+    400002: BridgeBeam_A
+    400004: BridgeBeam_B
+    400006: BridgeFabric_00
+    400008: BridgeFabric_01
+    400010: BridgeFabric_02
+    400012: BridgeFabric_03
+    400014: BridgePart_A
+    400016: BridgeSides
+    400018: BrigdePlate_A
+    400020: BrigdePlate_B
+    400022: BrigdePlate_C
+    2300000: BridgeBeam_A
+    2300002: BridgeBeam_B
+    2300004: BridgeFabric_00
+    2300006: BridgeFabric_01
+    2300008: BridgeFabric_02
+    2300010: BridgeFabric_03
+    2300012: BridgePart_A
+    2300014: BridgeSides
+    2300016: BrigdePlate_A
+    2300018: BrigdePlate_B
+    2300020: BrigdePlate_C
+    3300000: BridgeBeam_A
+    3300002: BridgeBeam_B
+    3300004: BridgeFabric_00
+    3300006: BridgeFabric_01
+    3300008: BridgeFabric_02
+    3300010: BridgeFabric_03
+    3300012: BridgePart_A
+    3300014: BridgeSides
+    3300016: BrigdePlate_A
+    3300018: BrigdePlate_B
+    3300020: BrigdePlate_C
+    4300000: BridgeFabric_03
+    4300002: BridgeFabric_02
+    4300004: BridgeFabric_00
+    4300006: BridgeFabric_01
+    4300008: BridgeBeam_B
+    4300010: BridgeBeam_A
+    4300012: BridgePart_A
+    4300014: BridgeSides
+    4300016: BrigdePlate_A
+    4300018: BrigdePlate_B
+    4300020: BrigdePlate_C
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

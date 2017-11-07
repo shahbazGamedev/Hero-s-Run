@@ -38,6 +38,12 @@ ModelImporter:
     100060: TrashBag
     100062: ZipWireAttach
     100064: Cactus_C
+    100066: Box_A
+    100068: Box_B
+    100070: Sign_Cafe
+    100072: Sign_D
+    100074: Sign_E
+    100076: ElectricPole
     400000: ConcreteBlock
     400002: Light
     400004: MetalPlate_A
@@ -71,6 +77,12 @@ ModelImporter:
     400060: TrashBag
     400062: ZipWireAttach
     400064: Cactus_C
+    400066: Box_A
+    400068: Box_B
+    400070: Sign_Cafe
+    400072: Sign_D
+    400074: Sign_E
+    400076: ElectricPole
     2300000: ConcreteBlock
     2300002: Light
     2300004: MetalPlate_A
@@ -103,6 +115,12 @@ ModelImporter:
     2300058: TrashBag
     2300060: ZipWireAttach
     2300062: Cactus_C
+    2300064: Box_A
+    2300066: Box_B
+    2300068: Sign_Cafe
+    2300070: Sign_D
+    2300072: Sign_E
+    2300074: ElectricPole
     3300000: ConcreteBlock
     3300002: Light
     3300004: MetalPlate_A
@@ -135,6 +153,12 @@ ModelImporter:
     3300058: TrashBag
     3300060: ZipWireAttach
     3300062: Cactus_C
+    3300064: Box_A
+    3300066: Box_B
+    3300068: Sign_Cafe
+    3300070: Sign_D
+    3300072: Sign_E
+    3300074: ElectricPole
     4300000: Light
     4300002: MetalPlate_B
     4300004: MetalPlate_A
@@ -167,6 +191,12 @@ ModelImporter:
     4300058: Converve
     4300060: TrashBag
     4300062: Cactus_C
+    4300064: Box_A
+    4300066: Box_B
+    4300068: Sign_D
+    4300070: Sign_E
+    4300072: Sign_Cafe
+    4300074: ElectricPole
     9500000: //RootNode
   materials:
     importMaterials: 1
