@@ -353,6 +353,12 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		//Make the first few tiles active
 		activateInitialTiles(0);
 
+		//Create the ZombieManager because it does not exist in the level scene.
+		if( currentMultiplayer.hasZombies )
+		{
+			GameObject zombieManager = (GameObject)Instantiate( zombieManagerPrefab );
+		}
+
 		//Configure fog, if any
 		Camera.main.GetComponent<DynamicFogAndMist.DynamicFog>().enabled = currentMultiplayer.isFogEnabled;
 		if( currentMultiplayer.isFogEnabled ) levelData.setFogParameters(currentMultiplayer.sunType);

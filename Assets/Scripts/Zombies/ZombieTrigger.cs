@@ -11,6 +11,8 @@ public class ZombieTrigger : MonoBehaviour {
 	void Start () {
 	
 		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("Zombie Manager");
+		//You need to enable hasZombies in Level Data for the zombie manager to be created as it is optional.
+		if( zombieManagerObject == null ) return;
 		zombieManager = zombieManagerObject.GetComponent<ZombieManager>();
 	}
 	
@@ -24,6 +26,8 @@ public class ZombieTrigger : MonoBehaviour {
 	
 	public void activateNextWave()
 	{
+		//You need to enable hasZombies in Level Data for the zombie manager to be created as it is optional.
+		if( zombieManager == null ) return;
 		Debug.Log ("Zombie wave number: " + ZombieManager.numberOfZombieWavesTriggered );
 		if( ZombieManager.numberOfZombieWavesTriggered < zombieWaveList.Count )
 		{

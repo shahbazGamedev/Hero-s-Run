@@ -18,6 +18,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 	PlayerSounds playerSounds;
 	PlayerSpell playerSpell;
 	PlayerRun playerRun;
+	PlayerAI playerAI;
 	#region Ground type variables
 	string groundType = "Floor"; //Other choices are Water and Collapsing
 	string previousGroundType = "Floor"; //Other choices are Water and Collapsing
@@ -31,6 +32,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 		playerSounds = GetComponent<PlayerSounds>();	
 		playerSpell = GetComponent<PlayerSpell>();	
 		playerRun = GetComponent<PlayerRun>();	
+		playerAI = GetComponent<PlayerAI>();	
 	}
 
 	/// <summary>
@@ -63,8 +65,6 @@ public class PlayerCollisions : Photon.PunBehaviour {
 				playerSounds.groundTypeChanged( groundType );
 			}
 			previousGroundType = groundType;
-
-			//Debug.Log ("OnControllerColliderHit  " + hit.collider.name  );
 
 		    switch (collided.tag)
 			{
@@ -142,7 +142,82 @@ public class PlayerCollisions : Photon.PunBehaviour {
 						}
 					}
 					break;
+
+		        case "Zombie":
+					handleZombieCollision( collided, normal );
+					break;
 			}
 		}
 	}
+
+	void handleZombieCollision( Transform collided, Vector3 normal )
+	{
+		ZombieController zombieController = (ZombieController) collided.GetComponent("ZombieController");
+		//Ignore collision event if Zombie already dead.
+		if( zombieController.getCreatureState() != CreatureState.Dying )
+		{
+			//You can't make a crawling zombie fall backwards
+			if( ( playerControl.getCharacterState() == PlayerCharacterState.Sliding || playerControl.getCharacterState() == PlayerCharacterState.Turning_and_sliding || playerSpell.isRagingBullActive ) && zombieController.getCreatureState() != CreatureState.Crawling )
+			{
+				//Give XP bonus
+				addSkillBonus( 25, "SKILL_BONUS_TOPPLED_ZOMBIE" );
+				zombieController.fallToBack();	
+			}
+			else
+			{
+				Debug.Log( "Player collided with zombie: " + collided.name + " Normal" + normal.y + " but CANT TOPPLE HIM " + playerControl.getCharacterState() + "  STATE Z "+ zombieController.getCreatureState());
+				if( normal.y < 0.4f )
+				{
+					//Player is running up Z axis
+					if( Mathf.Floor( transform.eulerAngles.y ) == 0 )
+					{
+						if( Mathf.Abs( normal.x ) > Mathf.Abs( normal.z ) )
+						{
+							//Player collided with zombie on the side, just play an animation on the zombie
+							zombieController.sideCollision();
+						}
+						else
+						{
+							//Player collided squarely with zombie. Kill the player.
+							playerControl.killPlayer ( DeathType.Zombie );
+						}
+					}
+					//Player is running along X axis
+					else 
+					{
+						if( Mathf.Abs( normal.z ) > Mathf.Abs( normal.x ) )
+						{
+							//Player collided with zombie on the side, just play an animation on the zombie
+							zombieController.sideCollision();
+						}
+						else
+						{
+							//Player collided squarely with zombie. Kill the player.
+							playerControl.killPlayer ( DeathType.Zombie );
+							zombieController.victory( true );
+						}
+					}
+					Debug.Log( "PLayer collided with: " + collided.name + " Normal" + normal );
+				}
+				else
+				{
+					//We landed on the zombie's head
+	//land ();
+				}
+			}
+		}
+		else
+		{
+			Debug.LogError("Zombie already dead");
+		}
+	}
+
+	void addSkillBonus( int skillPoints, string skillTextID )
+	{
+		if( photonView.isMine && playerAI == null )
+		{
+			SkillBonusHandler.Instance.addSkillBonus( skillPoints, skillTextID );
+		}
+	}
+
 }

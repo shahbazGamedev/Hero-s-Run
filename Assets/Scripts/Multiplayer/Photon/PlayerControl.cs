@@ -1831,6 +1831,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			case DeathType.Zombie:
 				//Play collision sound
 				playerSounds.playDyingSound();
+				playerVisuals.playImpactVFX(); //The impact VFX has a sound associated with it
 				setAnimationTrigger(FallBackwardTrigger);
 				break;
 		

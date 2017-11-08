@@ -20,6 +20,7 @@ public sealed class ZombieController : Creature, ICreature {
 	public AudioClip moanLow;
 	public AudioClip moanHigh;
 	public AudioClip win;
+	[SerializeField] Sprite zombieIcon;
 
 	// Use this for initialization
 	new void Awake () {
@@ -80,6 +81,7 @@ public sealed class ZombieController : Creature, ICreature {
 		base.knockback();
 		CancelInvoke( "groan" );
 		legacyAnim.CrossFade("fallToBack", 0.25f);
+
 	}
 
 	//The zombie falls over backwards, typically because the player slid into him.
@@ -287,14 +289,14 @@ public sealed class ZombieController : Creature, ICreature {
 		
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if( getPlayerController().getCharacterState() == PlayerCharacterState.Dying )
-		{
+		//if( getPlayerController().getCharacterState() == PlayerCharacterState.Dying )
+		//{
 			if( hit.gameObject.CompareTag("Zombie") )
 			{
 				//If a zombie collides with another zombie while the player is dead, have him stop moving and play the victory sequence.
 				victory( false );
 			}
-		}
+		//}
 	}
 
 	//Recycle zombie after a few seconds
