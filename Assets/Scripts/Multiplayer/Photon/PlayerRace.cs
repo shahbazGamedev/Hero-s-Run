@@ -423,7 +423,7 @@ public class PlayerRace : Photon.PunBehaviour
 				PlayerRaceManager.Instance.playerCompletedRace( (officialRacePosition + 1), raceDuration, generateLevel.levelLengthInMeters, playerControl.getNumberOfTimesDiedDuringRace() );
 				//if the player did not die a single time during the race and there is more than one player active, grant him a skill bonus.
 				if( photonView.isMine && players.Count > 1 && playerControl.getNumberOfTimesDiedDuringRace() == 0 ) SkillBonusHandler.Instance.addSkillBonus( 50, "SKILL_BONUS_DID_NOT_DIE" );
-				GetComponent<PlayerCamera>().raceEndCamera();
+				useFinishLineCamera();
 			}
 		}		
     }
@@ -438,6 +438,16 @@ public class PlayerRace : Photon.PunBehaviour
 		}
 	}
 	#endregion
+
+	void useFinishLineCamera()
+	{
+		Transform cameraLocation = playerControl.currentTile.transform.Find("End Camera");
+
+		if( cameraLocation != null )
+		{
+			cameraLocation.GetComponent<Camera>().enabled = true;
+		}
+	}
 
 	/*void calculateNumberPlayersBehindMe()
 	{

@@ -181,7 +181,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	#region Current tile variables
 	Vector3 currentTilePos = Vector3.zero;
-	GameObject currentTile;
+	public GameObject currentTile;
 	public float tileRotationY = 0; //Since we use this value often, we will store it.
 	//This flag is used to avoid entrance crossed being called multiple times which can happen with OnTriggerEnter
 	bool wasEntranceCrossed = false;
