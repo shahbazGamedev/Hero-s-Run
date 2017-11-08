@@ -518,7 +518,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		worldRoadSegments.Add( go );
 		si.tileIndex = tileCreationIndex;
 		tileCreationIndex++;
-		MiniMap.Instance.registerTileObject( go.name, go.transform.position, si.tileSprite, go.transform.eulerAngles.y, tileDepthMult );
+		MiniMap.Instance.registerTileObject( go.name, go.transform.position, si.tileSprite, go.transform.eulerAngles.y, tileDepthMult, si.tileHorizontalShift );
 		//Update the length of the map in meters
 		levelLengthInMeters = levelLengthInMeters + tileDepthMult * tileSize;
 		return go;

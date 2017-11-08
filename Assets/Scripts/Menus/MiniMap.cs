@@ -44,6 +44,7 @@ public class MiniMap : MonoBehaviour {
 	[SerializeField] RectTransform levelMap;
 	[SerializeField] Image tileMinimapPrefab;
 	float tileSize = 0;
+	float nextTileHorizontalShift;
 	#endregion
 
 	// Use this for initialization
@@ -68,7 +69,7 @@ public class MiniMap : MonoBehaviour {
 		radarObjects.Add( new RadarObject(){ owner = go, icon = image, playerControl = pc, secondaryIcon = secondaryImage } );
 	}
 
-	public void registerTileObject( string tileName, Vector3 tilePosition, Sprite minimapSprite, float tileYRotation, int tileDepth )
+	public void registerTileObject( string tileName, Vector3 tilePosition, Sprite minimapSprite, float tileYRotation, int tileDepth, float tileHorizontalShift )
 	{
 		tileYRotation = Mathf.Floor( tileYRotation );
 		int tileDepthOverOne = tileDepth - 1;
@@ -93,11 +94,28 @@ public class MiniMap : MonoBehaviour {
 		{
 			image.rectTransform.anchoredPosition = new Vector2( radarPos.x, radarPos.z + (tileDepthOverOne * tileSize * 0.5f)  );
 		}
-		else
+		//Tile is facing right.
+		else if( tileYRotation == 90f || tileYRotation == -270f )
 		{
 			image.rectTransform.anchoredPosition = new Vector2( radarPos.x + (tileDepthOverOne * tileSize * 0.5f), radarPos.z );
 		}
+		//Tile is facing left.
+		else if( tileYRotation == -90f || tileYRotation == 270f )
+		{
+			image.rectTransform.anchoredPosition = new Vector2( radarPos.x - (tileDepthOverOne * tileSize * 0.5f), radarPos.z );
+		}
+
+		if( nextTileHorizontalShift > 0 )
+		{
+			image.rectTransform.anchoredPosition = new Vector2( radarPos.x + nextTileHorizontalShift, image.rectTransform.anchoredPosition.y );
+			nextTileHorizontalShift = 0;
+		}
+
 		image.rectTransform.sizeDelta = new Vector2( tileSize, tileSize * tileDepth );
+
+		//If tileHorizontalShift is bigger then 0, we will need to shift the next tile. Store the value.
+		if( tileHorizontalShift > 0 ) nextTileHorizontalShift = tileHorizontalShift;
+
 	}
 
 	public void updateLevelMapPosition()
