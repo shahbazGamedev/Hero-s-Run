@@ -127,7 +127,15 @@ public class MiniMap : MonoBehaviour {
 	public void removeRadarObject( GameObject go )
 	{
 		RadarObject ro = radarObjects.FirstOrDefault(radarObject => radarObject.owner == go);
-		if(ro != null) radarObjects.Remove(ro);
+		if(ro != null)
+		{
+			radarObjects.Remove(ro);
+			Destroy( ro.icon );
+		}
+		else
+		{
+			Debug.LogWarning("MiniMap-removeRadarObject: couldn't find game object named " + go.name );
+		}
 	}
 
 	public void changeAlphaOfRadarObject( PlayerControl pc, float alpha )

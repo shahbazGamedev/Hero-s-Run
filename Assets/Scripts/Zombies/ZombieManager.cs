@@ -13,7 +13,11 @@ public class ZombieManager : MonoBehaviour {
 	public const int NUMBER_STARS_PER_ZOMBIE = 20;
 	public ParticleSystem debris; //Particle fx that plays when a zombie burrows up
 
-	void Start () {
+	void Start ()
+	{
+		//Reset this static value
+		numberOfZombieWavesTriggered = 0;
+
 		//Hides zombies
 		for( int i=0; i < zombieFactory.Count; i++ )
 		{
@@ -136,6 +140,8 @@ public class ZombieManager : MonoBehaviour {
 				coffinAnimator.SetTrigger("open");
 			}
 			zombieController.followsPlayer = zsd.followsPlayer;
+			//Register the zombie on the minimap.
+			if( zombieController.zombieIcon != null ) MiniMap.Instance.registerRadarObject( zombie, zombieController.zombieIcon );
 
 		}
 		else

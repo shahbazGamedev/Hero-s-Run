@@ -20,7 +20,8 @@ public sealed class ZombieController : Creature, ICreature {
 	public AudioClip moanLow;
 	public AudioClip moanHigh;
 	public AudioClip win;
-	[SerializeField] Sprite zombieIcon;
+	[Tooltip("The icon to use on the minimap. It is optional.")]
+	public Sprite zombieIcon;
 
 	// Use this for initialization
 	new void Awake () {
@@ -79,6 +80,7 @@ public sealed class ZombieController : Creature, ICreature {
 	public new void knockback()
 	{
 		base.knockback();
+		if( zombieIcon != null ) MiniMap.Instance.removeRadarObject( gameObject );
 		CancelInvoke( "groan" );
 		legacyAnim.CrossFade("fallToBack", 0.25f);
 
