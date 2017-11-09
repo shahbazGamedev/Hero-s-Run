@@ -4,7 +4,9 @@ using System.Collections.Generic;
 
 public class Zipline : MonoBehaviour {
 
+	[Tooltip("Rotation given to player when he detaches from the zipline.")]
 	public float ziplineExitAngle = 0;
+	[Tooltip("Time in seconds to cross the zipline.")]
 	public float ziplineDuration = 3.5f;
 
 	SegmentInfo.BezierData bezierData;

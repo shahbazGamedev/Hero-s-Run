@@ -40,6 +40,7 @@ public class ZombieTrigger : MonoBehaviour {
 			configureWave( Random.Range(0, zombieWaveList.Count ) );
 		}
 		ZombieManager.numberOfZombieWavesTriggered++;
+		HUDMultiplayer.hudMultiplayer.activateUserMessage( "Wave " + ZombieManager.numberOfZombieWavesTriggered + "!", 0, 2.5f );
 	}
 
 	//Called by TileReset
