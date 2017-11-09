@@ -114,6 +114,10 @@ public class AutoPilot : Photon.PunBehaviour {
 				{
 					moveToCenterLane();
 				}
+				else if( hit.collider.CompareTag( "Zombie" ) )
+				{
+					handleZombieCollision( hit.collider.transform );
+				}
 			}
 		}
 
@@ -227,6 +231,27 @@ public class AutoPilot : Photon.PunBehaviour {
 		else if( playerControl.currentLane == PlayerControl.Lanes.Right )
 		{
 			playerInput.sideSwipe( false );
+		}
+	}
+
+	void handleZombieCollision( Transform collided )
+	{
+		ZombieController zombieController = collided.GetComponent<ZombieController>();
+
+		if( zombieController.getCreatureState() == CreatureState.Crawling )
+		{
+			//The zombie is crawling. Jump over him.
+			playerInput.jump();
+		}
+		else if( zombieController.getCreatureState() == CreatureState.BurrowUp )
+		{
+			//The zombie is burrowing up. Jump over him.
+			playerInput.jump();
+		}
+		else
+		{
+			//The zombie is walking. Slide into it to make it fall.
+			playerInput.startSlide();
 		}
 	}
 
