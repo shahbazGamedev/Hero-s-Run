@@ -21,7 +21,6 @@ public class Device : MonoBehaviour {
 	public DeviceCategory category = DeviceCategory.Teleporter;
 	[SerializeField] Sprite  minimapIcon;
 	[SerializeField] GameObject Teleport_VFX1;
-	[SerializeField] GameObject Teleport_VFX2;
 	[SerializeField] ParticleSystem brokenVFX;
 	[SerializeField] AudioClip brokenAudioClip;
 	Color originalColor;
@@ -52,7 +51,6 @@ public class Device : MonoBehaviour {
 
 			case DeviceState.Off:
 				Teleport_VFX1.SetActive( false );
-				Teleport_VFX2.SetActive( false );
 				MiniMap.Instance.removeRadarObject( gameObject );
 			break;
 
@@ -74,7 +72,6 @@ public class Device : MonoBehaviour {
 	void changeColor( Color newColor )
 	{
 		Teleport_VFX1.GetComponent<MeshRenderer>().material.SetColor("_TintColor", newColor);
-		Teleport_VFX2.GetComponent<MeshRenderer>().material.SetColor("_TintColor", newColor);
 	}
 
 }
