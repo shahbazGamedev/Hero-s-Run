@@ -11,7 +11,7 @@ public class AutoPilot : Photon.PunBehaviour {
 	protected float percentageWillTryToAvoidObstacle;
 	protected float percentageWillTurnSuccesfully;
 	protected const float BASE_RUN_SPEED = 18f;
-	protected const float BASE_OBSTACLE_DETECTION_LOW_DISTANCE = 5.2f; //assuming a run speed of BASE_RUN_SPEED
+	protected const float BASE_OBSTACLE_DETECTION_LOW_DISTANCE = 6f; //assuming a run speed of BASE_RUN_SPEED
 	protected const float BASE_OBSTACLE_DETECTION_HIGH_DISTANCE = 8f; //assuming a run speed of BASE_RUN_SPEED
 	protected Vector3 xOffsetStartLow = new Vector3( 0, 0.5f, 0 );	//For low obstacles
 	protected Vector3 xOffsetStartHigh = new Vector3( 0, 1.5f, 0 );	//For high obstacles
