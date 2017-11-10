@@ -22,8 +22,8 @@ public enum SunType
 	Countryside = 12,
 	Sky_city = 13,
 	Sky_city_night = 14,
-	Desert = 15
-
+	Desert = 15,
+	Desert_night = 16
 }
 
 public enum LevelType 
@@ -133,6 +133,31 @@ public class LevelData : MonoBehaviour {
 				break;
 								
 			case SunType.Desert:
+				//Directional light
+				Sun.GetComponent<Light>().color = new Color(255f/255f,201f/255f,124f/255f);
+				lightIntensity = 0.7f;
+				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
+				sunDirection = Quaternion.Euler( 45.57f,-329f,-159.54f );
+				shadowStrength = 1f;
+
+				//Sky box
+				RenderSettings.sun = Sun.GetComponent<Light>();
+				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
+				RenderSettings.ambientSkyColor = new Color(183f/255f,233f/255f,251f/255f);
+				RenderSettings.ambientEquatorColor = new Color(234f/255f,169f/255f,162f/255f);
+				RenderSettings.ambientGroundColor = new Color(206f/255f,98f/255f,0);
+
+				RenderSettings.reflectionIntensity = 0.614f;
+
+				//Fog
+				RenderSettings.fog = true;
+				RenderSettings.fogMode = FogMode.Linear;
+				RenderSettings.fogColor = new Color(204f/255f,182f/255f,229f/255f);
+				RenderSettings.fogStartDistance = -1.4f;
+				RenderSettings.fogEndDistance = 84.93f;
+				break;
+
+			case SunType.Desert_night:
 				//Directional light
 				Sun.GetComponent<Light>().color = new Color(255f/255f,201f/255f,124f/255f);
 				lightIntensity = 0.7f;
