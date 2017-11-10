@@ -243,6 +243,14 @@ public class CardSpawnedObject : MonoBehaviour {
 				//as a simple wall or a bridge.
 				valid = true;
                 break;
+
+	        case MaskHandler.creatureLayer:
+				ICreature creatureController = potentialTarget.GetComponent<ICreature>();
+				if( creatureController != null && creatureController.getCreatureState() != CreatureState.Dying )
+				{
+					valid = true;
+				}
+                break;
 		}
 		//if( valid ) Debug.Log("isTargetValid " + potentialTarget.name );
 		return valid;
@@ -329,6 +337,11 @@ public class CardSpawnedObject : MonoBehaviour {
 				valid = true;
 				if( potentialTarget.GetComponent<FracturedObject>() != null ) potentialTarget.GetComponent<FracturedObject>().Explode( potentialTarget.transform.position, 15f );
 				Destroy( potentialTarget.gameObject );
+               break;
+
+	        case MaskHandler.creatureLayer:
+				valid = true;
+				potentialTarget.GetComponent<ICreature>().knockback();
                break;
 		}
 		if( valid )
