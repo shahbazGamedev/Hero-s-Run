@@ -109,7 +109,7 @@ public class SentryController : CardSpawnedObject {
 		{
 			if( spawnedObjectState == SpawnedObjectState.Functioning )
 			{
-				nearestTarget = getNearestTargetWithinRange( aimRange, MaskHandler.getMaskWithPlayerWithoutLevelDestructible() );
+				nearestTarget = getNearestTargetWithinRange( aimRange, MaskHandler.getMaskWithPlayersWithCreatures() );
 			}
 		}
 	}
@@ -126,7 +126,7 @@ public class SentryController : CardSpawnedObject {
 	Quaternion getDesiredRotation( float forwardAdjustment )
 	{
 		float heightAdjustment = 0;
-		if( nearestTarget.CompareTag("Player") )
+		if( nearestTarget.CompareTag("Player") || nearestTarget.CompareTag("Zombie") )
 		{
 			//The transform position of the player is at his feet. Let's aim at his neck.
 			heightAdjustment = 1.2f;

@@ -106,6 +106,11 @@ public class MultiplayerProjectile : CardSpawnedObject {
 				valid = true;
 				GameObject.Destroy( potentialTarget.gameObject );
                 break;
+
+	        case MaskHandler.creatureLayer:
+				valid = true;
+				if( potentialTarget.GetComponent<ICreature>() != null ) potentialTarget.GetComponent<ICreature>().knockback();
+               break;
 		}
 		if( valid )
 		{

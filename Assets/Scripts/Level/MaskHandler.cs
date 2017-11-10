@@ -15,6 +15,7 @@ public class MaskHandler : MonoBehaviour {
 	static int maskWithPlayerWithoutLevelDestructible;
 	static int maskWithoutPlayerWithLevelDestructible;
 	static int maskOnlyPlayer;
+	static int maskWithPlayersWithCreatures;
 	static int maskOnlyMovable;
 	static int maskWithPlayerWithoutDevices;
 
@@ -48,6 +49,9 @@ public class MaskHandler : MonoBehaviour {
 
 		maskOnlyPlayer = 1 << playerLayer;
 
+		maskWithPlayersWithCreatures = 1 << playerLayer;
+		maskWithPlayersWithCreatures |= 1 << creatureLayer;
+
 		maskOnlyMovable = 1 << movableLayer;
 	}
 
@@ -69,6 +73,11 @@ public class MaskHandler : MonoBehaviour {
 	public static int getMaskOnlyPlayer()
 	{
 		return maskOnlyPlayer;
+	}
+
+	public static int getMaskWithPlayersWithCreatures()
+	{
+		return maskWithPlayersWithCreatures;
 	}
 
 	public static int getMaskOnlyMovable()

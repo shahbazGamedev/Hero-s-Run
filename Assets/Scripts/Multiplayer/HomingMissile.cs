@@ -38,7 +38,7 @@ public class HomingMissile : CardSpawnedObject {
 		yield return new WaitForSeconds(0.35f);
 
 		homingMissile = GetComponent<Rigidbody>();
-		target = getNearestTargetWithinRange( Mathf.Infinity, MaskHandler.getMaskOnlyPlayer() );
+		target = getNearestTargetWithinRange( Mathf.Infinity, MaskHandler.getMaskWithPlayersWithCreatures() );
 		if( target != null ) targetPlayerControl = target.GetComponent<PlayerControl>();
 		//if( target != null ) print("Homing Missile target is " + target.name );
 		homingMissile.isKinematic = false;
