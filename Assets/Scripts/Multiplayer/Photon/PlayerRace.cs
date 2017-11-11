@@ -23,33 +23,39 @@ using System.Linq;
 /// </summary>
 public class PlayerRace : Photon.PunBehaviour
 {
-	//Race position (1st place, 2nd place, etc.
-	public int racePosition = -1;
-	public int previousRacePosition = -2;	//Used to avoid updating if the value has not changed
-	//Distance travelled on the current tile. This is used to calculate the distance remaining.
-	public float distanceTravelledOnThisTile = 0;
-	Vector3 previousPlayerPosition = Vector3.zero;
-	const float REQUIRED_LEAD_DISTANCE = 5f;
-	//Cache the string to avoid the runtime lookup
-	string tookTheLeadString;
-	
-	//Race duration which will get displayed in the end of race screen
-	public float raceDuration = 0;
-
-	//Control variables
-	bool raceStarted = false;
-	public bool playerCrossedFinishLine = false;
-
 	//List of all PlayerRaces including the opponent(s)
 	static public List<PlayerRace> players = new List<PlayerRace> ();
 
+	#region Race position
+	public int racePosition = -1;
+	public int previousRacePosition = -2;	//Used to avoid updating if the value has not changed
+	#endregion
+
+	#region Distance traveled on this tile.
+	//Distance travelled on the current tile. This is used to calculate the distance remaining.
+	public float distanceTravelledOnThisTile = 0;
+	Vector3 previousPlayerPosition = Vector3.zero;
+	public float distanceRemaining; //Used to determine the player's race position. The player with the smallest distance remaining is in the lead.
+	#endregion
+
+	#region Took the lead
+	const float REQUIRED_LEAD_DISTANCE = 5f;
+	//Cache the string to avoid the runtime lookup
+	string tookTheLeadString;
+	#endregion
+	
+	#region Race duration
+	//Race duration which will get displayed in the end of race screen
+	public float raceDuration = 0;
+	#endregion
+
+	#region Finish line
+	public bool playerCrossedFinishLine = false;
 	//Delegate used to communicate to other classes when the local player (and not a bot) has crossed the finish line.
 	public delegate void CrossedFinishLine( Transform player, int officialRacePosition, bool isBot );
 	public static event CrossedFinishLine crossedFinishLine;
-
-	//Used to determine this player's race position.
-	public float distanceRemaining;
-
+	#endregion
+	
 	#region Emergency Power Boost
 	//The power boost is activated when a player is losing significantly to give him a chance to get back in the lead.
 	//The power boost activates only once during a race.
@@ -88,6 +94,8 @@ public class PlayerRace : Photon.PunBehaviour
 		levelNetworkingManager = GameObject.FindGameObjectWithTag("Level Networking Manager").GetComponent<LevelNetworkingManager>();
 		distanceRemaining = generateLevel.levelLengthInMeters;
 		storeUserName();
+		//Cache the string to avoid the runtime lookup
+		tookTheLeadString = LocalizationManager.Instance.getText( "MINIMAP_TOOK_LEAD" );
 
 		if( this.photonView.isMine && playerAI == null )
 		{	
@@ -100,8 +108,6 @@ public class PlayerRace : Photon.PunBehaviour
 		{
             players.Add (this);
 		}
-		//Cache the string to avoid the runtime lookup
-		tookTheLeadString = LocalizationManager.Instance.getText( "MINIMAP_TOOK_LEAD" );
 	}
 
 	void storeUserName()
@@ -143,7 +149,6 @@ public class PlayerRace : Photon.PunBehaviour
 	void StartRunningEvent()
 	{
 		Debug.Log("PlayerRace: received StartRunningEvent " + gameObject.name );
-		raceStarted = true;
 		if( this.photonView.isMine && playerAI == null )
 		{			
 			PlayerRaceManager.Instance.setRaceStatus( RaceStatus.IN_PROGRESS );
