@@ -4,11 +4,12 @@ using UnityEngine;
 using System;
 using UnityEngine.Apple.ReplayKit;
 
+//This is a global status (i.e. for all players).
 public enum RaceStatus {
 	
-	NOT_STARTED = 1,
-	IN_PROGRESS = 2,
-	COMPLETED = 3
+	NOT_STARTED = 1,	//Initial value.
+	IN_PROGRESS = 2,	//Set when the start countdown has finished.
+	COMPLETED = 3 		//Set when all players have crossed the finish line.
 }
 
 public class PlayerRaceManager {
@@ -92,13 +93,11 @@ public class PlayerRaceManager {
 		}
 	}
 
-	//Note: racePosition: 1 is the winner, 2 is second place, and so forth.
 	public void playerCompletedRace( int racePosition, float raceDuration, float distanceTravelled, int numberOfTimesDiedDuringRace )
 	{
 		raceAwardList.Clear();
-		this.racePosition = racePosition;
+		this.racePosition = racePosition + 1;
 		this.raceDuration = raceDuration;
-		raceStatus = RaceStatus.COMPLETED;
 		grantXPAward(XPAwardType.FINISHED_RACE);
 		if( GameManager.Instance.playerProfile.getSkillBonus() > 0 ) grantXPAward(XPAwardType.SKILL_BONUS);
 		if( racePosition == 1 && GameManager.Instance.isOnlinePlayMode() ) grantXPAward(XPAwardType.WON);

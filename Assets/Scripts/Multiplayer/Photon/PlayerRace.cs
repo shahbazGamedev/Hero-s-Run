@@ -235,6 +235,7 @@ public sealed class PlayerRace : Photon.PunBehaviour
 	[PunRPC]
 	void CancelEndOfRaceCountdownRPC()
 	{
+		PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.leaveRoomShortly() );
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayResultsAndEmotesScreen() );
 	}
@@ -311,49 +312,64 @@ public sealed class PlayerRace : Photon.PunBehaviour
 	}
 	#endregion
 
-	//This method is called when the player has crossed the finish line to let the client know the official race duration and distance travelled
-	//as calculated by the MasterClient.
+	#region Race completed
 	[PunRPC]
-	void OnRaceCompleted( float raceDuration, int officialRacePosition )
+	void OnRaceCompletedRPC( float raceDuration )
     {
-		Debug.Log("PlayerRace: OnRaceCompleted RPC received for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient +
-			" isMine: " + this.photonView.isMine +
-			" raceDuration: " + raceDuration + " officialRacePosition: " + officialRacePosition );
+		Debug.Log("PlayerRace: OnRaceCompleted RPC received for: " +  name + " raceDuration: " + raceDuration );
+
+		this.raceDuration = raceDuration;
 
 		//Cancel all spell effects
 		playerSpell.cancelAllSpells();
 
-		racePosition = officialRacePosition;
-		this.raceDuration = raceDuration;
-
 		//We want to slow down any player that reaches the finish line
-		StartCoroutine( playerRun.slowDownPlayerAfterFinishLine( officialRacePosition, 5f - (officialRacePosition * 1.5f) ) );
+		StartCoroutine( playerRun.slowDownPlayerAfterFinishLine( racePosition, 5f - (racePosition * 1.5f) ) );
 
 		//Note: if the player won, a voice over will be triggered by the victory animation. See Victory_win_start.
 
-		//However, in terms of changing HUD elements, XP, player stats, etc. We only want to proceed if the player is local and not a bot.
-		if( this.photonView.isMine )
+		//Set the character state to idle. When a character is idle, cards can't affect him. For example, we don't want a CardLightning spell to affect someone
+		//who has crossed the finish line.
+		playerControl.setCharacterState(PlayerCharacterState.Idle);
+
+		//Don't activate took the lead if you have completed the race
+		CancelInvoke("tookTheLead");
+
+		if( this.photonView.isMine && playerAI == null )
 		{
-			//Set the character state to idle. When a character is idle, cards can't affect him. For example, we don't want a CardLightning spell to affect someone
-			//who has crossed the finish line.
-			playerControl.setCharacterState(PlayerCharacterState.Idle);
 			//Send a crossedFinishLine event to tell the HUD to remove the card timers
-			if( crossedFinishLine != null ) crossedFinishLine( transform, officialRacePosition, playerAI != null );
-			if( playerAI == null )
+			if( crossedFinishLine != null ) crossedFinishLine( transform, racePosition, playerAI != null );
+
+			//If the player has won, display a victory message.
+			if( racePosition == 0 )
 			{
-				CancelInvoke("tookTheLead");
 				string victory = LocalizationManager.Instance.getText("RACE_VICTORY");
-				if( racePosition == 0 ) HUDMultiplayer.hudMultiplayer.activateUserMessage( victory, 0, 2.25f );
-				HUDMultiplayer.hudMultiplayer.updateRacePosition( officialRacePosition );
-				GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
-				GenerateLevel generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
-				PlayerRaceManager.Instance.playerCompletedRace( (officialRacePosition + 1), raceDuration, generateLevel.levelLengthInMeters, playerControl.getNumberOfTimesDiedDuringRace() );
-				//if the player did not die a single time during the race and there is more than one player active, grant him a skill bonus.
-				if( photonView.isMine && players.Count > 1 && playerControl.getNumberOfTimesDiedDuringRace() == 0 ) SkillBonusHandler.Instance.addSkillBonus( 50, "SKILL_BONUS_DID_NOT_DIE" );
-				useFinishLineCamera();
+				HUDMultiplayer.hudMultiplayer.activateUserMessage( victory, 0, 2.25f );
 			}
+
+			//Hide the pause menu
+			GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
+
+			//Save the race data in player race manager.
+			GenerateLevel generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
+			PlayerRaceManager.Instance.playerCompletedRace( racePosition, raceDuration, generateLevel.levelLengthInMeters, playerControl.getNumberOfTimesDiedDuringRace() );
+
+			//if the player did not die a single time during the race and there is more than one player active, grant him a skill bonus.
+			if( players.Count > 1 && playerControl.getNumberOfTimesDiedDuringRace() == 0 ) SkillBonusHandler.Instance.addSkillBonus( 50, "SKILL_BONUS_DID_NOT_DIE" );
+			activateFinishLineCamera();
 		}		
     }
+
+	void activateFinishLineCamera()
+	{
+		Transform cameraLocation = playerControl.currentTile.transform.Find("End Camera");
+
+		if( cameraLocation != null )
+		{
+			cameraLocation.GetComponent<Camera>().enabled = true;
+		}
+	}
+	#endregion
 
 	#region End of match voice over
 	public void Victory_win_start ( AnimationEvent eve )
@@ -365,45 +381,4 @@ public sealed class PlayerRace : Photon.PunBehaviour
 		}
 	}
 	#endregion
-
-	void useFinishLineCamera()
-	{
-		Transform cameraLocation = playerControl.currentTile.transform.Find("End Camera");
-
-		if( cameraLocation != null )
-		{
-			cameraLocation.GetComponent<Camera>().enabled = true;
-		}
-	}
-
-	/*void calculateNumberPlayersBehindMe()
-	{
-		int count = 0;
-		for(int i=0; i<players.Count;i++)
-		{
-			//Ignore yourself
-			if( players[i] == this ) continue;
-			count += getDotProduct( transform, players[i].transform.position );
-			
-		}
-		if( count != previousNumberPlayersBehindMe )
-		{
-			numberPlayersBehindMe = count;
-			previousNumberPlayersBehindMe = numberPlayersBehindMe;
-		}
-	}
-
-	int getDotProduct( Transform player1, Vector3 player2Position )
-	{
-		Vector3 forward = player1.TransformDirection(Vector3.forward);
-		Vector3 toOther = player2Position - player1.position;
-		if (Vector3.Dot(forward, toOther) < 0)
-		{
-			return 1;
-		}
-		else
-		{
-			return 0;
-		}
-	}*/
 }

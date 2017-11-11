@@ -263,7 +263,7 @@ public sealed class LevelNetworkingManager : PunBehaviour
 		{
 			PhotonView playerPhotonView = playerRace.GetComponent<PhotonView>();
 
-			playerPhotonView.RPC("OnRaceCompleted", PhotonTargets.AllViaServer, raceDuration, playerRace.racePosition );
+			playerPhotonView.RPC("OnRaceCompletedRPC", PhotonTargets.AllViaServer, raceDuration );
 
 			if( !playersWhoHaveCrossedTheFinishLine.Contains(playerRace) ) playersWhoHaveCrossedTheFinishLine.Add( playerRace );
 
@@ -277,6 +277,7 @@ public sealed class LevelNetworkingManager : PunBehaviour
 			else if( playersWhoHaveCrossedTheFinishLine.Count ==  PlayerRace.players.Count )
 			{
 				//Every player has crossed the finish line. We can stop the countdown and return everyone to the lobby.
+				PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
 				playerPhotonView.RPC("CancelEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
 			}
 		}
