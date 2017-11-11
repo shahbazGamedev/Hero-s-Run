@@ -8,7 +8,7 @@ using Photon;
 using UnityEngine.Apple.ReplayKit;
 using System.Linq;
 
-public class LevelNetworkingManager : PunBehaviour
+public sealed class LevelNetworkingManager : PunBehaviour
 {
 	[SerializeField] HUDMultiplayer hudMultiplayer;
 	[SerializeField] GameObject playerPrefab;
@@ -29,6 +29,11 @@ public class LevelNetworkingManager : PunBehaviour
 	#region Race duration
 	//Race duration which will get displayed in the end of race screen
 	public float raceDuration = 0;
+	#endregion
+
+	#region Power boost
+	//The distance the player must be losing by for the power boost to activate.
+	const float REQUIRED_POWER_BOOST_DISTANCE = 100f;
 	#endregion
 
 	IEnumerator Start()
@@ -170,39 +175,35 @@ public class LevelNetworkingManager : PunBehaviour
 		LockstepManager.Instance.initiateFirstAction ( timeWhenFirstActionShouldBeProcessed - PhotonNetwork.time );
 	}
 
-
-	//Note that calculate race positions uses the distance remaining value which gets calculated by PlayerRace in the Update method.
 	void LateUpdate()
 	{
-		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
+		if( PhotonNetwork.isMasterClient && PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
 		{
 			calculateRacePositions();
 			calculateRaceDuration();
-			//verifyIfPlayerNeedsEmergencyBoost();
+			verifyIfPlayerNeedsAPowerBoost();
 		}
 	}
 
 	#region Race position
+	//Note that calculate race positions uses the distance remaining value which gets calculated by PlayerRace in the Update method.
 	void calculateRacePositions()
 	{
-		if( PhotonNetwork.isMasterClient )
-		{
-			//Update the race position of the players.
-			//The player with the smallest distance remaining is in first place.
-			List<PlayerRace> players = PlayerRace.players.OrderBy( p => p.distanceRemaining ).ToList();
+		//Update the race position of the players.
+		//The player with the smallest distance remaining is in first place.
+		List<PlayerRace> players = PlayerRace.players.OrderBy( p => p.distanceRemaining ).ToList();
 
-			for( int i = 0; i<players.Count; i++ )
+		for( int i = 0; i<players.Count; i++ )
+		{
+			//Verify if this player's position has changed.
+			if( i != players[i].previousRacePosition )
 			{
-				//Verify if this player's position has changed.
-				if( i != players[i].previousRacePosition )
-				{
-					//Yes, it has.
-					//Save the new values
-					players[i].racePosition = i;
-					players[i].previousRacePosition = i;
-					//If this player has not yet crossed the finish line, inform the player of his new position so that he can update it on the HUD.
-					if( !players[i].playerCrossedFinishLine ) players[i].photonView.RPC("OnRacePositionChanged", PhotonTargets.AllViaServer, i );
-				}
+				//Yes, it has.
+				//Save the new values
+				players[i].racePosition = i;
+				players[i].previousRacePosition = i;
+				//If this player has not yet crossed the finish line, inform the player of his new position so that he can update it on the HUD.
+				if( !players[i].playerCrossedFinishLine ) players[i].photonView.RPC("OnRacePositionChanged", PhotonTargets.AllViaServer, i );
 			}
 		}
 	}
@@ -213,6 +214,45 @@ public class LevelNetworkingManager : PunBehaviour
 	{
 		//Calculate the race duration. It will be sent at the end of the race.
 		raceDuration = raceDuration + Time.deltaTime;
+	}
+	#endregion
+
+	#region Power Boost
+	/// <summary>
+	/// Verifies if a power boost is needed. Only called by the MasterClient.
+	/// The power boost activates only once during a race.
+	/// The effect of the power boost is to increase the refill rate of the power bar.
+ 	/// Power is what is used to play cards during a race. The power bar recharges at a constant rate up to a maximum.
+	/// If a player is losing significantly, his recharge rate will be increased thus allowing him to play more cards, and hopefully get him back into the lead.
+	/// In addition, the player's run speed increases for the duration.
+	/// </summary>
+	void verifyIfPlayerNeedsAPowerBoost()
+	{
+		//The emergency power boost is irrelevant if you are playing alone.
+		if( PlayerRace.players.Count == 1 ) return;
+
+		for( int i = 0; i < PlayerRace.players.Count; i++ )
+		{
+			PlayerRace pr = PlayerRace.players[i];
+
+			//The emergency power boost only triggers once per player during a race.
+			if( pr.wasPowerBoostUsed ) continue;
+	
+			//The emergency power never triggers for a player in first place.
+			if( pr.racePosition == 0 ) continue;
+	
+			//Find the player who is just ahead of you.
+			PlayerRace playerAhead = PlayerRace.players.Find(a => a.racePosition == pr.racePosition - 1 );
+
+			float distanceDifference = pr.distanceRemaining -playerAhead.distanceRemaining;
+
+			//If the player is behind by more than REQUIRED_POWER_BOOST_DISTANCE meters, activate the power boost.
+			if( distanceDifference > REQUIRED_POWER_BOOST_DISTANCE )
+			{
+				pr.wasPowerBoostUsed = true;
+				pr.GetComponent<PhotonView>().RPC("activatePowerBoostRPC", PhotonTargets.AllViaServer );
+			}
+		}
 	}
 	#endregion
 

@@ -12,16 +12,8 @@ using ExitGames.Client.Photon;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
-/// <summary>
-/// This class handles only race related events such as:
-/// 1) Player position (e.g. 1st, 2nd, 3rd position). This is displayed in the HUD and used to decide the victor.
-/// 2) Race Duration. This is displayed in the end of match screen.
-/// 3) Whether the player crossed the finish line.
-/// 4) Updating the HUD with race related events
-/// </summary>
-public class PlayerRace : Photon.PunBehaviour
+public sealed class PlayerRace : Photon.PunBehaviour
 {
 	//List of all PlayerRaces including the opponent(s)
 	static public List<PlayerRace> players = new List<PlayerRace> ();
@@ -31,7 +23,7 @@ public class PlayerRace : Photon.PunBehaviour
 	public int previousRacePosition = -2;	//Used to avoid updating if the value has not changed
 	#endregion
 
-	#region Distance traveled on this tile.
+	#region Distance
 	//Distance travelled on the current tile. This is used to calculate the distance remaining.
 	public float distanceTravelledOnThisTile = 0;
 	Vector3 previousPlayerPosition = Vector3.zero;
@@ -62,12 +54,10 @@ public class PlayerRace : Photon.PunBehaviour
 	//The power boost activates only once during a race.
 	//The effect of the power boost is to increase the refill rate of the power bar and to increase the player's run speed.
 	//Whether the power boost is active or not.
-	bool isPowerBoostActive = false;
-	//The distance the player must be losing by for the power boost to activate.
-	const float PLAYER_DISTANCE_ACTIVATOR = 175f;
+	bool isPowerBoostActive = false; //only used by bots
 	TurnRibbonHandler turnRibbonHandler;
 	const float POWER_BOOST_DURATION = 15f;
-	bool wasPowerBoostUsed = false;
+	public bool wasPowerBoostUsed = false;
 	#endregion
 
 	#regionCached for performance
@@ -183,43 +173,8 @@ public class PlayerRace : Photon.PunBehaviour
 		distanceTravelledOnThisTile = distanceTravelledOnThisTile + Vector3.Distance( current, previous );
 		previousPlayerPosition = transform.position;
 	}
-
-	#region Power Boost
-	/// <summary>
-	/// Verifies if a power boost is needed. Only called by the MasterClient.
-	/// The power boost activates only once during a race.
-	/// The effect of the power boost is to increase the refill rate of the power bar.
- 	/// Power is what is used to play cards during a race. The power bar recharges at a constant rate up to a maximum.
-	/// If a player is losing significantly, his recharge rate will be increased thus allowing him to play more cards, and hopefully get him back into the lead.
-	/// In addition, his run speed increases for the duration.
-	/// </summary>
-	void verifyIfPowerBoostNeeded()
-	{
-		//The emergency power boost only triggers once during a race.
-		if( wasPowerBoostUsed ) return;
-
-		//The emergency power boost is irrelevant if you are playing alone.
-		if( players.Count == 1 ) return;
-
-		//The emergency power never triggers if you are in first place.
-		if( racePosition == 0 ) return;
-
-		//If we are here, it means that there are multiple players and this player is not in first place.
 	
-		//Get a list of players ordered by position.
-		List<PlayerRace> playersOrderedByRacePosition = players.OrderBy( p => p.racePosition ).ToList();
-
-		//Calculate the distance between this player and the player immediately ahead.
-		int indexOfPlayerImmediatelyAhead = racePosition - 1;
-		float distanceDifference = playersOrderedByRacePosition[racePosition].distanceRemaining - playersOrderedByRacePosition[indexOfPlayerImmediatelyAhead].distanceRemaining;
-		//If this player is behind by more than PLAYER_DISTANCE_ACTIVATOR tiles the person ahead of him, activate the power boost.
-		if( distanceDifference > PLAYER_DISTANCE_ACTIVATOR )
-		{
-			wasPowerBoostUsed = true;
-			this.photonView.RPC("activatePowerBoostRPC", PhotonTargets.AllViaServer );
-		}
-	}
-
+	#region Power boost
 	[PunRPC]
 	void activatePowerBoostRPC()
 	{
@@ -234,7 +189,6 @@ public class PlayerRace : Photon.PunBehaviour
 		Invoke( "disablePowerBoost", POWER_BOOST_DURATION );
 		string emergencyPowerEngagedString = LocalizationManager.Instance.getText( "MINIMAP_EMERGENCY_POWER_ENGAGED" );
 		MiniMap.Instance.displayMessage( string.Format( emergencyPowerEngagedString, userName ) );
-		print("Activating power boost for " + gameObject.name );
 	}
 
 	void disablePowerBoost()
@@ -246,7 +200,6 @@ public class PlayerRace : Photon.PunBehaviour
 			turnRibbonHandler.resetRefillRate();
 		}
 		playerRun.removeSpeedMultiplier( SpeedMultiplierType.Power_Speed_Boost );
-		print("Deactivating power boost for " + gameObject.name );
 	}
 
 	//This method is only used by bots.
