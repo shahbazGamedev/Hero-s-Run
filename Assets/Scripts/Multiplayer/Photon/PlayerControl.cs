@@ -125,6 +125,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	Vector3 forward;
 	//We set the anim speed to 0 when we pause, so we need to remember the value when we unpause
 	float animSpeedAtTimeOfPause;
+	//Remember if the rigidbody was kinematic or not at the time of pause.
+	bool wasKinematicAtTimeOfPause;
 	//The state of the character i.e. running, jumping, sliding, etc.
 	public PlayerCharacterState playerCharacterState;
 	//True if the player is allowed to move, false otherwise. This flag is useful during camera cut-scenes to prevent the player from moving.
@@ -402,8 +404,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//double predictedDistanceDelta = (PhotonNetwork.time - timeRPCSent) * playerRun.getRunSpeed();
 		//Debug.Log("pauseRemotePlayers-real distance delta: " +  realDistanceDelta + " predictedDistanceDelta " + predictedDistanceDelta );
 		//Debug.Log("pauseRemotePlayers-distancePrediction accuracy: " + ((predictedDistanceDelta - realDistanceDelta) * 100).ToString("N1") + "%" );
-		transform.position = positionAtTimeOfPause;
-		transform.eulerAngles = new Vector3( transform.eulerAngles.x, yRotationAtTimeOfpause, transform.eulerAngles.z );
+		transform.SetPositionAndRotation( positionAtTimeOfPause, new Vector3( transform.eulerAngles.x, yRotationAtTimeOfpause, transform.eulerAngles.z ) );
 		recalculateCurrentLane();
 		pausePlayer( true );
 	}
@@ -425,9 +426,16 @@ public class PlayerControl : Photon.PunBehaviour {
 			anim.speed = 0;
 			enablePlayerControl( false );
 			enablePlayerMovement( false );
+			//Temporarily remove collider so as to not block the path for other players and
+			//make the rigidbody kinetic so it does not fall through the ground because of gravity.
+			wasKinematicAtTimeOfPause = capsuleCollider.attachedRigidbody.isKinematic;
+			capsuleCollider.attachedRigidbody.isKinematic = true;		
+			capsuleCollider.enabled = false;
 		}
 		else
 		{
+			capsuleCollider.enabled = true;
+			capsuleCollider.attachedRigidbody.isKinematic = wasKinematicAtTimeOfPause;	//reset value
 			enablePlayerControl( true );
 			enablePlayerMovement( true );
 			anim.speed = animSpeedAtTimeOfPause;

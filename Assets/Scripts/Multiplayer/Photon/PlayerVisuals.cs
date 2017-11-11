@@ -33,12 +33,12 @@ public class PlayerVisuals : Photon.PunBehaviour {
 	{
 		if( isPaused )
 		{
-			if( runVFX.isPlaying ) runVFX.Pause();
+			if( runVFX != null && runVFX.isPlaying ) runVFX.Pause();
 			if( dustPuff.isPlaying ) dustPuff.Pause();
 		}
 		else
 		{
-			if( runVFX.isPaused ) runVFX.Play();
+			if( runVFX != null && runVFX.isPaused ) runVFX.Play();
 			if( dustPuff.isPaused ) dustPuff.Play();
 		}
 	}

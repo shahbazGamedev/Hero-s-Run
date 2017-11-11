@@ -252,7 +252,7 @@ public sealed class PlayerRace : Photon.PunBehaviour
 	void OnRacePositionChanged( int newRacePosition )
 	{
 		if( this.photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.updateRacePosition( newRacePosition );
-		Debug.Log("PlayerRace: OnRacePositionChanged " +  (newRacePosition + 1 )  + " name " + gameObject.name );
+		//Debug.Log("PlayerRace: OnRacePositionChanged " +  (newRacePosition + 1 )  + " name " + gameObject.name );
 
 		racePosition = newRacePosition;
 

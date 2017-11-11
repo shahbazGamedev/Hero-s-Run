@@ -45,7 +45,7 @@ public class SkillBonusHandler : MonoBehaviour {
 
 	IEnumerator showSkillBonus( string localizedSkillText )
 	{
-		//Fade in 0.8 sec,stay 2.8 sec, fade-out 0.6 sec
+		//Fade in 0.8 sec,stay 3 sec, fade-out 0.6 sec
 		GameObject skillBonus = GameObject.Instantiate( skillBonusPrefab );
 		skillBonus.GetComponent<CanvasGroup>().alpha = 0;
 		skillBonus.GetComponent<FadeInCanvasGroup>().fadeIn();
@@ -55,7 +55,7 @@ public class SkillBonusHandler : MonoBehaviour {
 		skillBonusRectTransform.SetParent( skillBonusHolder );
 		skillBonusRectTransform.localScale = Vector3.one;
 		skillBonusRectTransform.anchoredPosition = new Vector2( 0,0 );
-		yield return new WaitForSeconds( 2.8f );
+		yield return new WaitForSeconds( 3f );
 		LeanTween.moveLocalY( skillBonus, skillBonusRectTransform.anchoredPosition.y + skillBonusRectTransform.sizeDelta.y, 1f );
 		skillBonus.GetComponent<FadeInCanvasGroup>().fadeOut();
 		Destroy( skillBonus, 1f );
