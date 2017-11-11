@@ -25,7 +25,7 @@ public class PlayerRace : Photon.PunBehaviour
 {
 	//Race position (1st place, 2nd place, etc.
 	public int racePosition = -1;
-	int previousRacePosition = -2;	//Used to avoid updating if the value has not changed
+	public int previousRacePosition = -2;	//Used to avoid updating if the value has not changed
 	//Distance travelled on the current tile. This is used to calculate the distance remaining.
 	public float distanceTravelledOnThisTile = 0;
 	Vector3 previousPlayerPosition = Vector3.zero;
@@ -42,7 +42,6 @@ public class PlayerRace : Photon.PunBehaviour
 
 	//List of all PlayerRaces including the opponent(s)
 	static public List<PlayerRace> players = new List<PlayerRace> ();
-	static public List<PlayerRace> officialRacePositionList = new List<PlayerRace> ();
 
 	//Delegate used to communicate to other classes when the local player (and not a bot) has crossed the finish line.
 	public delegate void CrossedFinishLine( Transform player, int officialRacePosition, bool isBot );
@@ -72,6 +71,7 @@ public class PlayerRace : Photon.PunBehaviour
 	PlayerSpell playerSpell;
 	PlayerIK playerIK;
 	GenerateLevel generateLevel;
+	LevelNetworkingManager levelNetworkingManager;
 	string userName;
 	#endregion
 
@@ -85,6 +85,7 @@ public class PlayerRace : Photon.PunBehaviour
 		playerSpell = GetComponent<PlayerSpell>();
 		playerIK = GetComponent<PlayerIK>();
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
+		levelNetworkingManager = GameObject.FindGameObjectWithTag("Level Networking Manager").GetComponent<LevelNetworkingManager>();
 		distanceRemaining = generateLevel.levelLengthInMeters;
 		storeUserName();
 
@@ -93,7 +94,6 @@ public class PlayerRace : Photon.PunBehaviour
 			//Reset value. PlayerRaceManager is an instance and does not get re-created when the level reloads	
 			PlayerRaceManager.Instance.setRaceStatus( RaceStatus.NOT_STARTED );
 			players.Clear();
-			officialRacePositionList.Clear();
 			turnRibbonHandler = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
 		}
  		if (!players.Contains (this))
@@ -151,50 +151,28 @@ public class PlayerRace : Photon.PunBehaviour
 		}
 	}
 
-	/// <summary>
-	/// This method handles distance travelled, race position and race duration.
-	///	We only want this to run on the master client as we don't want conflicting opinions about the race position for example. 
-	/// </summary>
-	void FixedUpdate()
+	void Update()
 	{
-		//Only calculate distance travelled, race position and race duration if the race is in progress. 
-		if( raceStarted && !playerCrossedFinishLine )
+		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
 		{
-			//We use distanceRemaining to determine the race position.
-			updateDistanceTravelled();
-			distanceRemaining = generateLevel.levelLengthInMeters - ( playerControl.tileDistanceTraveled + distanceTravelledOnThisTile );
-
-			if( PhotonNetwork.isMasterClient )
-			{
-				//We only want the host to calculate the race position and race duration. We don't want a bot to do it.
-				//The host is the master client who is owned by this device (so IsMasterClient is true and IsMine is true).
-				if( this.photonView.isMine && playerAI == null )
-				{
-					//Update the race position of the players i.e. 1st place, 2nd place, and so forth
-					players = players.OrderBy( p => p.distanceRemaining ).ToList();
-
-					for(int i=0; i<players.Count;i++)
-					{
-						//Find out where this player sits in the list
-						int newPosition = players.FindIndex(a => a.gameObject == players[i].gameObject);
-
-						//Verify if his position has changed
-						if( newPosition != players[i].previousRacePosition )
-						{
-							//Yes, it has.
-							//Save the new values
-							players[i].racePosition = newPosition;
-							players[i].previousRacePosition = newPosition;
-							//Inform the player of his new position so that he can update it on the HUD
-							if( !officialRacePositionList.Contains( this ) ) players[i].photonView.RPC("OnRacePositionChanged", PhotonTargets.AllViaServer, newPosition );
-						}
-					}
-				}
-				//Calculate the race duration. It will be sent at the end of the race.
-				raceDuration = raceDuration + Time.deltaTime;
-				verifyIfPowerBoostNeeded();
-			}
+			calculateDistanceRemaining();
 		}
+	}
+
+	void calculateDistanceRemaining()
+	{
+		//distanceRemaining is used to determine the race position.
+		updateDistanceTravelled();
+		distanceRemaining = generateLevel.levelLengthInMeters - ( playerControl.tileDistanceTraveled + distanceTravelledOnThisTile );
+	}
+
+	void updateDistanceTravelled()
+	{
+		//Do not take height into consideration for distance travelled
+		Vector3 current = new Vector3(transform.position.x, 0, transform.position.z);
+		Vector3 previous = new Vector3(previousPlayerPosition.x, 0, previousPlayerPosition.z);
+		distanceTravelledOnThisTile = distanceTravelledOnThisTile + Vector3.Distance( current, previous );
+		previousPlayerPosition = transform.position;
 	}
 
 	#region Power Boost
@@ -269,40 +247,15 @@ public class PlayerRace : Photon.PunBehaviour
 	}
 	#endregion
 
-	void updateDistanceTravelled()
-	{
-		//Do not take height into consideration for distance travelled
-		Vector3 current = new Vector3(transform.position.x, 0, transform.position.z);
-		Vector3 previous = new Vector3(previousPlayerPosition.x, 0, previousPlayerPosition.z);
-		distanceTravelledOnThisTile = distanceTravelledOnThisTile + Vector3.Distance( current, previous );
-		previousPlayerPosition = transform.position;
-	}
-
 	void OnTriggerEnter(Collider other)
 	{
 		if( other.CompareTag("Finish Line") )
 		{
 			//Player has reached the finish line
 			playerCrossedFinishLine = true;
+			
+			levelNetworkingManager.playerHasCrossedFinishLine( this );
 
-			if( PhotonNetwork.isMasterClient )
-			{
-				photonView.RPC("OnRaceCompleted", PhotonTargets.AllViaServer, raceDuration, racePosition );
-
-				if( !officialRacePositionList.Contains(this) ) officialRacePositionList.Add( this );
-				int officialRacePosition = officialRacePositionList.FindIndex(playerRace => playerRace == this);
-				Debug.Log ("Finish Line crossed by " + gameObject.name + " in race position " + officialRacePosition + " players " + players.Count);
-				//if this is the first player to cross the finish line, start the End of Race countdown, but only if there is more than 1 player in the race.
-				if( officialRacePositionList.Count == 1 && players.Count > 1 )
-				{
-					photonView.RPC("StartEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
-				}
-				else if( officialRacePositionList.Count == players.Count )
-				{
-					//Every player has crossed the finish line. We can stop the countdown and return everyone to the lobby.
-					photonView.RPC("CancelEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
-				}
-			}
 		}
 	}
 
@@ -328,11 +281,18 @@ public class PlayerRace : Photon.PunBehaviour
 	void readyToGo()
 	{
 		//Only MasterClient gets this RPC call
-		GameObject.FindGameObjectWithTag("Level Networking Manager").GetComponent<LevelNetworkingManager>().playerReady();
+		levelNetworkingManager.playerReady();
 		Debug.Log("A new player is ready to go " + gameObject.name );
 	}
 
 	[PunRPC]
+	void OnRacePositionChanged( int newRacePosition )
+	{
+		if( this.photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.updateRacePosition( newRacePosition );
+		Debug.Log("PlayerRace: OnRacePositionChanged " +  (newRacePosition + 1 )  + " name " + gameObject.name );
+	}
+
+/*	[PunRPC]
 	void OnRacePositionChanged( int newRacePosition )
 	{
 		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
@@ -360,7 +320,7 @@ public class PlayerRace : Photon.PunBehaviour
 			}
 		}
 	}
-
+*/
 	void tookTheLead()
 	{
 		//Only proceed if we have at least two players. One or more players may have just disconnected.

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Photon;
 using UnityEngine.Apple.ReplayKit;
+using System.Linq;
 
 public class LevelNetworkingManager : PunBehaviour
 {
@@ -21,6 +22,15 @@ public class LevelNetworkingManager : PunBehaviour
 	Vector3 centerStartPosition = new Vector3( 0, 1f, 0 );
 	const double DELAY_TO_ALLOW_ALL_PACKETS_TO_ARRIVE = 0.5;
 	
+	#region Finish Line
+	List<PlayerRace> playersWhoHaveCrossedTheFinishLine = new List<PlayerRace> ();
+	#endregion
+
+	#region Race duration
+	//Race duration which will get displayed in the end of race screen
+	public float raceDuration = 0;
+	#endregion
+
 	IEnumerator Start()
 	{
 		if( GameManager.Instance.isMultiplayer() )
@@ -159,5 +169,80 @@ public class LevelNetworkingManager : PunBehaviour
 		Debug.Log("initiateCountdown We have everyone ready. Start countdown " + (timeWhenFirstActionShouldBeProcessed - PhotonNetwork.time) );
 		LockstepManager.Instance.initiateFirstAction ( timeWhenFirstActionShouldBeProcessed - PhotonNetwork.time );
 	}
+
+
+	//Note that calculate race positions uses the distance remaining value which gets calculated by PlayerRace in the Update method.
+	void LateUpdate()
+	{
+		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
+		{
+			calculateRacePositions();
+			calculateRaceDuration();
+			//verifyIfPlayerTookTheLead();
+			//verifyIfPlayerNeedsEmergencyBoost();
+			//playVOWhenPlayerIsFarAheadOfOtherPlayers();
+		}
+	}
+
+	#region Race position
+	void calculateRacePositions()
+	{
+		if( PhotonNetwork.isMasterClient )
+		{
+			//Update the race position of the players.
+			//The player with the smallest distance remaining is in first place.
+			List<PlayerRace> players = PlayerRace.players.OrderBy( p => p.distanceRemaining ).ToList();
+
+			for( int i = 0; i<players.Count; i++ )
+			{
+				//Verify if this player's position has changed.
+				if( i != players[i].previousRacePosition )
+				{
+					//Yes, it has.
+					//Save the new values
+					players[i].racePosition = i;
+					players[i].previousRacePosition = i;
+					//If this player has not yet crossed the finish line, inform the player of his new position so that he can update it on the HUD.
+					if( !players[i].playerCrossedFinishLine ) players[i].photonView.RPC("OnRacePositionChanged", PhotonTargets.AllViaServer, i );
+				}
+			}
+		}
+	}
+	#endregion
+
+	#region Race duration
+	void calculateRaceDuration()
+	{
+		//Calculate the race duration. It will be sent at the end of the race.
+		raceDuration = raceDuration + Time.deltaTime;
+	}
+	#endregion
+
+	#region Finish Line
+	public void playerHasCrossedFinishLine( PlayerRace playerRace )
+	{
+		if( PhotonNetwork.isMasterClient )
+		{
+			PhotonView playerPhotonView = playerRace.GetComponent<PhotonView>();
+
+			playerPhotonView.RPC("OnRaceCompleted", PhotonTargets.AllViaServer, raceDuration, playerRace.racePosition );
+
+			if( !playersWhoHaveCrossedTheFinishLine.Contains(playerRace) ) playersWhoHaveCrossedTheFinishLine.Add( playerRace );
+
+			Debug.Log ("playerHasCrossedFinishLine " + gameObject.name + " in race position " + playerRace.racePosition + " players " + PlayerRace.players.Count);
+
+			//if this is the first player to cross the finish line, start the End of Race countdown, but only if there is more than 1 player in the race.
+			if( playersWhoHaveCrossedTheFinishLine.Count == 1 &&  PlayerRace.players.Count > 1 )
+			{
+				playerPhotonView.RPC("StartEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
+			}
+			else if( playersWhoHaveCrossedTheFinishLine.Count ==  PlayerRace.players.Count )
+			{
+				//Every player has crossed the finish line. We can stop the countdown and return everyone to the lobby.
+				playerPhotonView.RPC("CancelEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
+			}
+		}
+	}
+	#endregion
 
 }
