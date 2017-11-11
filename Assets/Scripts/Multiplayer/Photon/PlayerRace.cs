@@ -39,7 +39,8 @@ public class PlayerRace : Photon.PunBehaviour
 	#endregion
 
 	#region Took the lead
-	const float REQUIRED_LEAD_DISTANCE = 5f;
+	const float REQUIRED_LEAD_DISTANCE_SQUARED = 5f * 5f;
+	const float REQUIRED_LEAD_TIME = 1f;
 	//Cache the string to avoid the runtime lookup
 	string tookTheLeadString;
 	#endregion
@@ -75,11 +76,16 @@ public class PlayerRace : Photon.PunBehaviour
 	PlayerVoiceOvers playerVoiceOvers;
 	PlayerControl playerControl;
 	PlayerSpell playerSpell;
-	PlayerIK playerIK;
 	GenerateLevel generateLevel;
 	LevelNetworkingManager levelNetworkingManager;
 	string userName;
 	#endregion
+
+	void Awake()
+	{
+		//Cached for performance
+		levelNetworkingManager = GameObject.FindGameObjectWithTag("Level Networking Manager").GetComponent<LevelNetworkingManager>();
+	}
 
 	void Start()
 	{
@@ -89,9 +95,7 @@ public class PlayerRace : Photon.PunBehaviour
 		playerVoiceOvers = GetComponent<PlayerVoiceOvers>();
 		playerControl = GetComponent<PlayerControl>();
 		playerSpell = GetComponent<PlayerSpell>();
-		playerIK = GetComponent<PlayerIK>();
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
-		levelNetworkingManager = GameObject.FindGameObjectWithTag("Level Networking Manager").GetComponent<LevelNetworkingManager>();
 		distanceRemaining = generateLevel.levelLengthInMeters;
 		storeUserName();
 		//Cache the string to avoid the runtime lookup
@@ -295,48 +299,52 @@ public class PlayerRace : Photon.PunBehaviour
 	{
 		if( this.photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.updateRacePosition( newRacePosition );
 		Debug.Log("PlayerRace: OnRacePositionChanged " +  (newRacePosition + 1 )  + " name " + gameObject.name );
+
+		racePosition = newRacePosition;
+
+		verifyIfPlayerTookTheLead();
 	}
 
-/*	[PunRPC]
-	void OnRacePositionChanged( int newRacePosition )
+	#region Took the lead
+	/// <summary>
+	/// Verifies if this player took the lead.
+	/// Two things happen when the player takes the lead:
+	/// a) A message is displayed on the minimap: "X took the lead."
+	/// b) The player says a voice over.
+	/// If after REQUIRED_LEAD_TIME, this player is still in first place and the distance between him and the player in second place is sufficient,
+	/// then the message and VO will be activated.
+	/// Nothing happens if there is only one player in the race.
+	/// </summary>
+	void verifyIfPlayerTookTheLead()
 	{
-		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
+		if( players.Count > 1 )
 		{
-				print("OnRacePositionChanged new " + newRacePosition + " old " + racePosition + " " + gameObject.name );
-
-			racePosition = newRacePosition;
-			//The bot has a photon view. This photon view, just like the player's, has isMine set to true. But we don't want a bot to affect the HUD, hence we make sure we are not a bot.
-			if( this.photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.updateRacePosition( racePosition );
-			//Debug.Log("PlayerRace: OnRacePositionChanged " +  (racePosition + 1 )  + " name " + gameObject.name );
-			if( players.Count >= 2)
+			if( racePosition == 0 )
 			{
-				if( racePosition == 0 )
-				{
-					CancelInvoke("tookTheLead");
-					Invoke("tookTheLead", 1f );
-				}
-				else
-				{
-					CancelInvoke("tookTheLead");
-					//We want the player to look at the other player overtaking him to add some emotion
-					//The playerIK is optional and can be removed to improve performance. This is why we test that it is not null.
-					if( playerIK != null) playerIK.isOvertaking( racePosition );
-				}
+				//The player took the lead.
+				Invoke("tookTheLead", REQUIRED_LEAD_TIME );
+			}
+			else
+			{
+				//The player is not in the lead.
+				CancelInvoke("tookTheLead");
 			}
 		}
 	}
-*/
+
 	void tookTheLead()
 	{
-		//Only proceed if we have at least two players. One or more players may have just disconnected.
+		//Only proceed if we have more than one player. One or more players may have disconnected.
 		if( players.Count > 1 )
 		{
+			//Find the player in second place.
 			PlayerRace p2 = players.Find(a => a.racePosition == 1 );
 
-			if( Vector3.Distance( transform.position, p2.transform.position) >= REQUIRED_LEAD_DISTANCE )
+			//Is this player sufficiently ahead?
+			if( Vector3.SqrMagnitude( transform.position - p2.transform.position ) > REQUIRED_LEAD_DISTANCE_SQUARED )
 			{
-				//Display a minimap message that this player or bot took the lead.
-				print("tookTheLead " + userName + " " + gameObject.name );
+				//Yes.
+				//Display a minimap message that this player or bot took the lead and play a voice over.
 				MiniMap.Instance.displayMessage( string.Format( tookTheLeadString, userName ) );
 				playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Took_Lead);
 			}
@@ -348,6 +356,7 @@ public class PlayerRace : Photon.PunBehaviour
 		//We don't want the player so say he is in the lead when he just died.
 		CancelInvoke("tookTheLead");
 	}
+	#endregion
 
 	//This method is called when the player has crossed the finish line to let the client know the official race duration and distance travelled
 	//as calculated by the MasterClient.
