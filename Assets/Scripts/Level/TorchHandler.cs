@@ -30,7 +30,7 @@ public class TorchHandler : MonoBehaviour {
 	
 	void extinguishTorch()
 	{
-		transform.FindChild("torch fire").GetComponent<ParticleSystem>().Stop();
-		transform.FindChild("torch light").GetComponent<Light>().enabled = false;
+		transform.Find("torch fire").GetComponent<ParticleSystem>().Stop();
+		transform.Find("torch light").GetComponent<Light>().enabled = false;
 	}
 }

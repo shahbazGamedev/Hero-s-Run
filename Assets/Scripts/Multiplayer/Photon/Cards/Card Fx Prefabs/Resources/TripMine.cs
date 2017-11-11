@@ -39,8 +39,8 @@ public class TripMine : CardSpawnedObject {
 
 		//We can now make the trip mine visible and triggerable
 		GetComponent<BoxCollider>().enabled = true;
-		transform.FindChild("Sci-fi Mine base").GetComponent<MeshRenderer>().enabled = true;
-		transform.FindChild("Sci-fi Mine leg").GetComponent<MeshRenderer>().enabled = true;
+		transform.Find("Sci-fi Mine base").GetComponent<MeshRenderer>().enabled = true;
+		transform.Find("Sci-fi Mine leg").GetComponent<MeshRenderer>().enabled = true;
 	}
 
 	void OnTriggerEnter(Collider other)

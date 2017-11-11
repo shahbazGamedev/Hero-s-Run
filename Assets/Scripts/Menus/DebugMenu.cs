@@ -181,7 +181,7 @@ public class DebugMenu : MonoBehaviour {
 	{
 		Debug.Log("OnClickClearAssetBundleCache");
 		UISoundManager.uiSoundManager.playButtonClick();
-		bool result = Caching.CleanCache();
+		bool result = Caching.ClearCache();
 		if( result )
 		{
 			clearAssetBundleCacheText.text = clearAssetBundleCacheText.text + ": Success";

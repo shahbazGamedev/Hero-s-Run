@@ -36,7 +36,7 @@ public class Shockwave : CardSpawnedObject {
 		//Shake the camera
 		caster.GetComponent<PlayerCamera>().Shake();
 
-		Transform shockwaveEffect = transform.FindChild("Shockwave Effect");
+		Transform shockwaveEffect = transform.Find("Shockwave Effect");
 		shockwaveEffect.gameObject.SetActive( true );
 		destroyAllTargetsWithinBlastRadius( radius, MaskHandler.getMaskWithPlayerWithoutDevices() );
 		GameObject.Destroy( gameObject, 3 );

@@ -3,6 +3,7 @@ guid: 0dd587a97dfa347d39f6ca1d88bf5c56
 timeCreated: 1501726596
 licenseType: Free
 VideoClipImporter:
+  externalObjects: {}
   serializedVersion: 2
   useLegacyImporter: 0
   quality: 0.5
@@ -21,6 +22,8 @@ VideoClipImporter:
   sourceHasAlpha: 0
   flipVertical: 0
   flipHorizontal: 0
+  pixelAspectRatioNumerator: 1
+  pixelAspectRatioDenominator: 1
   importAudio: 1
   sourceAudioChannelCount: 0200
   sourceAudioSampleRate: 44ac0000
@@ -52,7 +55,7 @@ VideoClipImporter:
     streamedResource:
       source: library/metadata/0d/0dd587a97dfa347d39f6ca1d88bf5c56.resource
       offset: 0
-      size: 13610262
+      size: 13609092
   userData: 
   assetBundleName: 
   assetBundleVariant: 

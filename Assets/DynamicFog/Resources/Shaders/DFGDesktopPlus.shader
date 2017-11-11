@@ -8,11 +8,15 @@ Shader "DynamicFog/Image Effect/Desktop Plus" {
 		_FogHeightData ("Baseline Height", Vector) = (1,0,0,0.1)  // x = height, y = base height, z = clipping minimum height, w = height fall off
 		_FogColor ("Color", Color) = (1,1,1,1)
 		_FogColor2 ("Color 2", Color) = (1,1,1,1)
-		_FogNoiseData ("Noise Data", Vector) = (0,0,0)
-		_FogSpeed ("Speed", Range (0, 0.5)) = 0.1
+		_FogNoiseData ("Noise Data", Vector) = (0,0,0,0.1)
+		_FogSpeed ("Speed", Range (0, 5.0)) = 0.1
+		_FogSkyData("Sky Data", Vector) = (1,1,1,1)
 		_FogOfWarCenter("Fog Of War Center", Vector) = (0,0,0)
 		_FogOfWarSize("Fog Of War Size", Vector) = (1,1,1)
 		_FogOfWar ("Fog of War Mask", 2D) = "white" {}
+		_SunDir ("Sun Direction", Vector) = (0,0,0)
+		_SunColor ("Sun Color", Color) = (1,1,0.8,0)
+		_FogDither ("Fog Dither Strength", Float) = 0.03
 	}
 	SubShader {
     ZTest Always Cull Off ZWrite Off
@@ -26,80 +30,23 @@ Shader "DynamicFog/Image Effect/Desktop Plus" {
 	#pragma multi_compile __ FOG_OF_WAR_ON
 	#pragma multi_compile __ DITHER_ON
 	#pragma target 3.0
-
-	#include "UnityCG.cginc"
+	#include "DynamicFogCommon.cginc"
 	#define DYNAMIC_FOG_STEPS 5
 
-	sampler2D _MainTex;
 	sampler2D _NoiseTex;
 	sampler2D _Noise2Tex;
-	sampler2D_float _CameraDepthTexture;
-	float4 _MainTex_ST;
-	float4 _MainTex_TexelSize;
-	float _FogAlpha;
 	float4 _FogDistance; // x = min distance, y = min distance falloff, x = max distance, y = max distance fall off
 	float4 _FogHeightData;
-	float3 _FogNoiseData; // x = noise, y = turbulence, z = depth attenuation
+	float4 _FogNoiseData; // x = noise, y = turbulence, z = depth attenuation
 	float4 _FogSkyData; // x = haze, y = speed, z = noise, w = alpha
 	float _FogSpeed;
 	fixed4 _FogColor, _FogColor2;
-
-    #if FOG_OF_WAR_ON 
-    sampler2D _FogOfWar;
-    float3 _FogOfWarCenter;
-    float3 _FogOfWarSize;
-    float3 _FogOfWarCenterAdjusted;
-    #endif
-
-    float4x4 _ClipToWorld;
     float3 wsCameraPos;
 
-    struct appdata {
-    	float4 vertex : POSITION;
-		half2 texcoord : TEXCOORD0;
-    };
-    
-    
-	struct v2f {
-	    float4 pos : SV_POSITION;
-	    float2 uv: TEXCOORD0;
-    	float2 depthUV : TEXCOORD1;
-    	float3 cameraToFarPlane : TEXCOORD2;
-	};
+    fixed4 _SunColor;
+    float3 _SunDir;
 
-	v2f vert(appdata v) {
-    	v2f o;
-    	o.pos = UnityObjectToClipPos(v.vertex);
-    	o.uv = UnityStereoScreenSpaceUVAdjust(v.texcoord, _MainTex_ST);
-    	o.depthUV = o.uv;
-   	      
-    	#if UNITY_UV_STARTS_AT_TOP
-    	if (_MainTex_TexelSize.y < 0) {
-	        // Depth texture is inverted WRT the main texture
-    	    o.depthUV.y = 1 - o.depthUV.y;
-    	}
-    	#endif
-               
-    	// Clip space X and Y coords
-    	float2 clipXY = o.pos.xy / o.pos.w;
-               
-    	// Position of the far plane in clip space
-    	float4 farPlaneClip = float4(clipXY, 1, 1);
-               
-    	// Homogeneous world position on the far plane
-    	farPlaneClip *= float4(1,_ProjectionParams.x,1,1);    	
-    	float4 farPlaneWorld4 = mul(_ClipToWorld, farPlaneClip);
-               
-    	// World position on the far plane
-    	float3 farPlaneWorld = farPlaneWorld4.xyz / farPlaneWorld4.w;
-               
-    	// Vector from the camera to the far plane
-    	o.cameraToFarPlane = farPlaneWorld - _WorldSpaceCameraPos;
  
-    	return o;
-	}
-
-	
 	fixed4 computeSkyColor(fixed4 color, float3 worldPos) {
 		float wpy = abs(worldPos.y) + 2.0;
 		float2 np = worldPos.xz/wpy;
@@ -126,8 +73,7 @@ Shader "DynamicFog/Image Effect/Desktop Plus" {
     	return worldPos;
     }
 
-
-	half4 getFogColor(float2 uv, float3 worldPos, float depth, fixed4 color) {
+	fixed4 getFogColor(float2 uv, float3 worldPos, float depth, fixed4 color) {
 		
 		// early exit if fog is not crossed
 		if (wsCameraPos.y>_FogHeightData.x && worldPos.y>_FogHeightData.x) {
@@ -189,18 +135,17 @@ Shader "DynamicFog/Image Effect/Desktop Plus" {
 			float fh = (_FogHeightData.x - pos.y) / (_FogHeightData.x * _FogHeightData.w) - 0.1;
 			float fl = (distanceToFog - _FogDistance.x) / _FogDistance.y;
 			fh = min(fh, fl);
-			float noise = noise3D(pos * 0.1 + _Time.www * _FogSpeed * 5.0);
+			float noise = noise3D(pos * _FogNoiseData.w + _Time.www * _FogSpeed);
 			fixed4 col = lerp(_FogColor, _FogColor2, saturate( pos.y / _FogHeightData.x) );
 			col.a *= saturate ( fh * (1.0 - noise * _FogNoiseData.x ));
 			col.rgb *= col.a;
 			fogColor += col * (1.0 - fogColor.a);
 		}
-		#if DITHER_ON
-		float dither = dot(float2(2.4084507, 3.2535211), uv * _MainTex_TexelSize.zw);
-		dither = frac(dither) - 0.4;
-		fogColor *= 1.0 + dither * 0.01;
-		#endif
 		fogColor *= voidAlpha * _FogAlpha;
+
+		float sunAmount = max( dot( adir / adirLength, _SunDir) * _SunColor.a, 0.0 );
+		fogColor.rgb = lerp( fogColor.rgb, _SunColor.rgb, pow(sunAmount, 8) * fogColor.a );
+
 	 	return color * (1.0 - fogColor.a) + fogColor;
 	}
 
@@ -213,7 +158,11 @@ Shader "DynamicFog/Image Effect/Desktop Plus" {
 		if (depth>0.999) {
 	    	color = computeSkyColor(color, worldPos);
 		}
-		return getFogColor(i.uv, worldPos, depth, color);
+		color = getFogColor(i.uv, worldPos, depth, color);
+		#if DITHER_ON
+		ApplyColor(i.uv, color);
+		#endif
+		return color;
 	}
 	ENDCG
 	}

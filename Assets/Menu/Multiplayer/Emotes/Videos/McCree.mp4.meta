@@ -3,6 +3,7 @@ guid: ef4626d048cc34cd7b0c82ffcc09c9f7
 timeCreated: 1495445058
 licenseType: Free
 VideoClipImporter:
+  externalObjects: {}
   serializedVersion: 2
   useLegacyImporter: 0
   quality: 0.5
@@ -21,6 +22,8 @@ VideoClipImporter:
   sourceHasAlpha: 0
   flipVertical: 0
   flipHorizontal: 0
+  pixelAspectRatioNumerator: 1
+  pixelAspectRatioDenominator: 1
   importAudio: 0
   sourceAudioChannelCount: 
   sourceAudioSampleRate: 

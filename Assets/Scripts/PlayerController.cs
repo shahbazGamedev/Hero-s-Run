@@ -248,7 +248,7 @@ public sealed class PlayerController : MonoBehaviour {
 
 	void Awake()
 	{
-		Transform blobShadowProjectorObject = transform.FindChild("Blob Shadow Projector");
+		Transform blobShadowProjectorObject = transform.Find("Blob Shadow Projector");
 		if( blobShadowProjectorObject == null )
 		{
 			Debug.LogError("PlayerController-error: Unable to find, Blob Shadow Projector." );
@@ -290,7 +290,7 @@ public sealed class PlayerController : MonoBehaviour {
 
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
 		if( localPlayerCreated != null ) localPlayerCreated( transform, this );
-		Transform cutSceneCamera = transform.FindChild("CutsceneCamera");
+		Transform cutSceneCamera = transform.Find("CutsceneCamera");
 		Skybox skyBox = (Skybox) cutSceneCamera.GetComponent("Skybox");
 		skyBox.material = LevelManager.Instance.getLevelData().skyBoxMaterial;
 	}
@@ -1228,7 +1228,7 @@ public sealed class PlayerController : MonoBehaviour {
 			setCharacterState( PlayerCharacterState.Ziplining );
 			enablePlayerControl( false );
 			setAnimationTrigger(Idle_LookTrigger);
-			ziplineAttachPoint = transform.FindChild("Zipline Attach Point");
+			ziplineAttachPoint = transform.Find("Zipline Attach Point");
 			ziplineAttachPoint.localPosition = new Vector3( 0, 2.15f, 0 );
 			ziplineAttachPoint.localEulerAngles = new Vector3( 0, 0, 0 );
 			ziplineAttachPoint.GetComponent<AudioSource>().Play();
@@ -1888,7 +1888,7 @@ public sealed class PlayerController : MonoBehaviour {
 			}
 			else if( hit.gameObject.CompareTag("Chicken") )
 			{
-				Transform chickenTransform = hit.transform.FindChild("Chicken Trigger");
+				Transform chickenTransform = hit.transform.Find("Chicken Trigger");
 				if( chickenTransform == null )
 				{
 					Debug.LogError("PlayerController-OnControllerColliderHit: chicken collision error. Could not find chicken trigger.");
@@ -2298,7 +2298,7 @@ public sealed class PlayerController : MonoBehaviour {
 				other.GetComponent<ParticleSystem>().Play();
 				other.GetComponent<AudioSource>().PlayOneShot(other.GetComponent<AudioSource>().clip);
 				//Also hide the coin pack since it gets in the way of the camera
-				Transform riverCoinPack = currentTile.transform.FindChild("CoinPack8x1_1x10_river");
+				Transform riverCoinPack = currentTile.transform.Find("CoinPack8x1_1x10_river");
 				if( riverCoinPack != null ) riverCoinPack.gameObject.SetActive(false);
 				allowDistanceTravelledCalculations = false;
 				managePlayerDeath ( DeathType.Water );

@@ -39,9 +39,9 @@ public class Torch : MonoBehaviour {
 			//Show the torch in the hero's hand.
 			torch.SetActive( enable );
 			//Enable or disable to torch fire particle system
-			torch.transform.FindChild("Torch fire").gameObject.SetActive( enable );
+			torch.transform.Find("Torch fire").gameObject.SetActive( enable );
 			//Get a refence to the light attached to the torch
-			GameObject torchLight = torch.transform.FindChild("Torch light").gameObject;
+			GameObject torchLight = torch.transform.Find("Torch light").gameObject;
 			if( enable )
 			{
 				isUsingTorch = true;

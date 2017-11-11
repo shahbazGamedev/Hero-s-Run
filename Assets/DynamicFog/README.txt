@@ -1,6 +1,6 @@
 ************************************
 *        DYNAMIC FOG & MIST        *
-* (C) Copyright 2015-2016 Kronnect * 
+* (C) Copyright 2015-2017 Kronnect * 
 *           README FILE            *
 ************************************
 
@@ -46,6 +46,40 @@ Of course, all updates of Dynamic Fog & Mist will be eventually available on the
 
 Version history
 ---------------
+
+V5.0
+- New Fog Profiles
+- Fog volumes now handle full set of fog properies by setting target fog profile
+- Dithering option extended to all fog variants
+
+V4.3
+- Added light scattering option to Desktop Plus variant
+
+V4.2
+- New fog variant: orthogonal - takes depth and height separately for computing fog
+- New fog variant: desktop plus orthogonal - takes depth and height separately for computing fog
+- Added noise scale parameter to some fog variants
+
+V4.1
+- Fog volumes: added option to specify custom fog colors
+
+V4.0.1
+- [Fix] Fixed issue with Post-Processing Stack
+
+V4.0
+- New fog of war prefab and mode!
+- Updated demo scene "Orthographic" with fog of war functionality
+
+V3.1:
+- New fog variant "Basic" for low end mobile devices
+- [Fix] Fixed Single Pass Stereo with OpenVR SDK
+
+V3.0:
+- Support for orthographic camera
+
+V2.4:
+- Compatibility with Unity 5.5
+- VR: Compatibility with Single Pass Stereo Rendering
 
 V2.3:
 - Additional fog materials for reflection support

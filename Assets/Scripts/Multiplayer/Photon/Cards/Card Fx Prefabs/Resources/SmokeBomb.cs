@@ -24,7 +24,7 @@ public class SmokeBomb : CardSpawnedObject {
 	IEnumerator activate()
 	{
 		//Separate the smoke from the canister.
-		Transform smoke = transform.FindChild("Smoke");
+		Transform smoke = transform.Find("Smoke");
 		smoke.SetParent( null, true );
 
 		//Activate the smoke and hiss sound by activating the object

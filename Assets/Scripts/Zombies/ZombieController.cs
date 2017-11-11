@@ -31,11 +31,11 @@ public sealed class ZombieController : Creature, ICreature {
 		Transform zombiePrefab;
 		if( gameObject.name == "Zombie Boy" )
 		{
-			zombiePrefab = transform.FindChild("zombieBoy");
+			zombiePrefab = transform.Find("zombieBoy");
 		}
 		else
 		{
-			zombiePrefab = transform.FindChild("zombieGirl");
+			zombiePrefab = transform.Find("zombieGirl");
 		}
 		legacyAnim = zombiePrefab.GetComponent<Animation>();
 

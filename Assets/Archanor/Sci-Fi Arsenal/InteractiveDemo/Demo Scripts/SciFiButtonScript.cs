@@ -25,7 +25,7 @@ public class SciFiButtonScript : MonoBehaviour
 	{
 		effectScript = GameObject.Find("SciFiFireProjectile").GetComponent<SciFiFireProjectile>();
 		getProjectileNames();
-		MyButtonText = Button.transform.FindChild("Text").GetComponent<Text>();
+		MyButtonText = Button.transform.Find("Text").GetComponent<Text>();
 		MyButtonText.text = projectileParticleName;
 	}
 

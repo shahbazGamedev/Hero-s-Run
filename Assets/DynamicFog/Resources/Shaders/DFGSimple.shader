@@ -8,6 +8,7 @@ Shader "DynamicFog/Image Effect/Simple" {
 		_FogOfWarCenter("Fog Of War Center", Vector) = (0,0,0)
 		_FogOfWarSize("Fog Of War Size", Vector) = (1,1,1)
 		_FogOfWar ("Fog of War Mask", 2D) = "white" {}
+		_FogDither ("Fog Dither Strength", Float) = 0.03
 	}
 	SubShader {
     ZTest Always Cull Off ZWrite Off
@@ -20,106 +21,50 @@ Shader "DynamicFog/Image Effect/Simple" {
 	#pragma fragmentoption ARB_precision_hint_fastest
 	#pragma multi_compile __ FOG_OF_WAR_ON
 	#pragma multi_compile __ DITHER_ON
+	#pragma target 3.0
 
-	#include "UnityCG.cginc"
+	#include "DynamicFogCommon.cginc"
 	#define DYNAMIC_FOG_STEPS 2
 
-	sampler2D _MainTex;
-	sampler2D_float _CameraDepthTexture;
-	float4 _MainTex_TexelSize;
-	float4 _MainTex_ST;
-	float _FogAlpha;
 	float4 _FogDistance; // x = min distance, y = min distance falloff, x = max distance, y = max distance fall off
 	float4 _FogHeightData;
 	fixed4 _FogColor;
-
-    #if FOG_OF_WAR_ON 
-    sampler2D _FogOfWar;
-    float3 _FogOfWarCenter;
-    float3 _FogOfWarSize;
-    float3 _FogOfWarCenterAdjusted;
-    #endif
-
-    float4x4 _ClipToWorld;
+    float3 wsCameraPos;
     
-    struct appdata {
-    	float4 vertex : POSITION;
-		half2 texcoord : TEXCOORD0;
-    };
-    
-    
-	struct v2f {
-	    float4 pos : SV_POSITION;
-	    float2 uv: TEXCOORD0;
-    	float2 depthUV : TEXCOORD1;
-    	float3 cameraToFarPlane : TEXCOORD2;
-	};
 
-	v2f vert(appdata v) {
-    	v2f o;
-    	o.pos = UnityObjectToClipPos(v.vertex);
-    	o.uv = UnityStereoScreenSpaceUVAdjust(v.texcoord, _MainTex_ST);
-    	o.depthUV = o.uv;
-   	      
-    	#if UNITY_UV_STARTS_AT_TOP
-    	if (_MainTex_TexelSize.y < 0) {
-	        // Depth texture is inverted WRT the main texture
-    	    o.depthUV.y = 1 - o.depthUV.y;
-    	}
-    	#endif
-               
-    	// Clip space X and Y coords
-    	float2 clipXY = o.pos.xy / o.pos.w;
-               
-    	// Position of the far plane in clip space
-    	float4 farPlaneClip = float4(clipXY, 1, 1);
-               
-    	// Homogeneous world position on the far plane
-    	farPlaneClip *= float4(1,_ProjectionParams.x,1,1);    	
-    	float4 farPlaneWorld4 = mul(_ClipToWorld, farPlaneClip);
-               
-    	// World position on the far plane
-    	float3 farPlaneWorld = farPlaneWorld4.xyz / farPlaneWorld4.w;
-               
-    	// Vector from the camera to the far plane
-    	o.cameraToFarPlane = farPlaneWorld - _WorldSpaceCameraPos;
- 
-    	return o;
-	}
-		
 	float3 getWorldPos(v2f i, float depth01) {
     	// Reconstruct the world position of the pixel
-     	_WorldSpaceCameraPos.y -= _FogHeightData.y;
-    	float3 worldPos = (i.cameraToFarPlane * depth01) + _WorldSpaceCameraPos;
+     	wsCameraPos = float3(_WorldSpaceCameraPos.x, _WorldSpaceCameraPos.y - _FogHeightData.y, _WorldSpaceCameraPos.z);
+    	float3 worldPos = (i.cameraToFarPlane * depth01) + wsCameraPos;
+    	worldPos.y += 0.00001; // fixes artifacts when worldPos.y = _WorldSpaceCameraPos.y which is really rare but occurs at y = 0
     	return worldPos;
     }
 
-
-	half4 getFogColor(float2 uv, float3 worldPos, float depth, fixed4 color) {
+	fixed4 getFogColor(float2 uv, float3 worldPos, float depth, fixed4 color) {
 		
 		// early exit if fog is not crossed
-		if (_WorldSpaceCameraPos.y>_FogHeightData.x && worldPos.y>_FogHeightData.x) {
+		if (wsCameraPos.y>_FogHeightData.x && worldPos.y>_FogHeightData.x) {
 			return color;		
 		}
 
-		half voidAlpha = _FogAlpha;
+		fixed voidAlpha = _FogAlpha;
 
 		// Determine "fog length" and initial ray position between object and camera, cutting by fog distance params
-		float3 adir = worldPos - _WorldSpaceCameraPos;
+		float3 adir = worldPos - wsCameraPos;
 		
 		// ceiling cut
 		float delta = length(adir.xz);
 		float2 ndirxz = adir.xz / delta;
 		delta /= adir.y;
 		
-		float h = min(_WorldSpaceCameraPos.y, _FogHeightData.x);
-		float xh = delta * (_WorldSpaceCameraPos.y - h);
-		float2 xz = _WorldSpaceCameraPos.xz - ndirxz * xh;
+		float h = min(wsCameraPos.y, _FogHeightData.x);
+		float xh = delta * (wsCameraPos.y - h);
+		float2 xz = wsCameraPos.xz - ndirxz * xh;
 		float3 fogCeilingCut = float3(xz.x, h, xz.y);
 		
 		// does fog stars after pixel? If it does, exit now
 		float dist = length(adir);
-		float distanceToFog = distance(fogCeilingCut, _WorldSpaceCameraPos);
+		float distanceToFog = distance(fogCeilingCut, wsCameraPos);
 		if (distanceToFog>=dist) return color;
 
 		// floor cut
@@ -130,8 +75,8 @@ Shader "DynamicFog/Image Effect/Simple" {
 		} else if (delta<0 && worldPos.y < 0.5) {
 			hf = worldPos.y;
 		}
-		float xf = delta * ( hf - _WorldSpaceCameraPos.y ); 
-		float2 xzb = _WorldSpaceCameraPos.xz - ndirxz * xf;
+		float xf = delta * ( hf - wsCameraPos.y ); 
+		float2 xzb = wsCameraPos.xz - ndirxz * xf;
 		float3 fogFloorCut = float3(xzb.x, hf, xzb.y);
 
 		// fog length is...
@@ -162,11 +107,6 @@ Shader "DynamicFog/Image Effect/Simple" {
 			col.rgb *= col.a;
 			fogColor += col * (1.0 - fogColor.a);
 		}
-		#if DITHER_ON
-		float dither = dot(float2(2.4084507, 3.2535211), uv * _MainTex_TexelSize.zw);
-		dither = frac(dither) - 0.4;
-		fogColor *= 1.0 + dither * 0.1;
-		#endif
 		fogColor *= voidAlpha;
 	 	return color * (1.0 - fogColor.a) + fogColor;
 	}
@@ -176,7 +116,11 @@ Shader "DynamicFog/Image Effect/Simple" {
    		fixed4 color = tex2D(_MainTex, i.uv);
 		float depth = Linear01Depth(UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, i.depthUV)));
 		float3 worldPos = getWorldPos(i, depth);
-		return getFogColor(i.uv, worldPos, depth, color);
+		color = getFogColor(i.uv, worldPos, depth, color);
+		#if DITHER_ON
+		ApplyColor(i.uv, color);
+		#endif
+		return color;
 	}
 	ENDCG
 	}

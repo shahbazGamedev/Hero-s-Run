@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace DynamicFogAndMist
 {
 	[ExecuteInEditMode]
-	[HelpURL ("http://kronnect.com/taptapgo")]
+	[@HelpURL ("http://kronnect.com/taptapgo")]
 	public class DynamicFogManager : MonoBehaviour
 	{
 

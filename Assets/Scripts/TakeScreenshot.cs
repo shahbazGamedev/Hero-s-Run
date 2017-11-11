@@ -196,9 +196,9 @@ public class TakeScreenshot : MonoBehaviour {
 
 	public void initialise( Transform playerTransform )
 	{
-		GameObject screenShotCameraObject = playerTransform.FindChild("screenShotCamera").gameObject;
+		GameObject screenShotCameraObject = playerTransform.Find("screenShotCamera").gameObject;
 		screenShotCamera = screenShotCameraObject.GetComponent<Camera>();
-		cameraFlash = screenShotCameraObject.transform.FindChild("Camera Flash").GetComponent<Light>();
+		cameraFlash = screenShotCameraObject.transform.Find("Camera Flash").GetComponent<Light>();
 		screenShotCamera.enabled = false;
 		cameraFlash.gameObject.SetActive( false );
 		createRenderTexture();

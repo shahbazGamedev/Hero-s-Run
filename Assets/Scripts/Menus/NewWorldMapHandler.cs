@@ -170,7 +170,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		for( int i=0; i < episodeStationLocations.Length; i++ )
 		{
 			RectTransform episodeStationLocationRect = episodeStationLocations[i];
-			Button episodeStationButton = episodeStationLocationRect.FindChild("Episode Station(Clone)").GetComponent<Button>();
+			Button episodeStationButton = episodeStationLocationRect.Find("Episode Station(Clone)").GetComponent<Button>();
 			if ( i == LevelManager.Instance.getCurrentEpisodeNumber() )
 			{
 				//This is the current episode. Enable outline.
@@ -247,7 +247,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		prepareFriendPicture( levelStationButtonRectTransform, episodeNumber );
 	
 		//Display the gauntlet and the number of challengers (if more than 0)
-		ChallengeDetails challengeDetails = go.transform.FindChild("Challenge Details").GetComponent<ChallengeDetails>();
+		ChallengeDetails challengeDetails = go.transform.Find("Challenge Details").GetComponent<ChallengeDetails>();
 		challengeDetailsList.Add( challengeDetails );
 		challengeDetails.configure( episodeNumber );
 	}
@@ -255,7 +255,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 	//Set up data for friend picture, which sits to the right of the shield
 	void prepareFriendPicture( RectTransform levelStationButtonRectTransform, int episodeCounter )
 	{
-		FacebookPortraitHandler fph = levelStationButtonRectTransform.FindChild("Friend Portrait").GetComponent<FacebookPortraitHandler>();
+		FacebookPortraitHandler fph = levelStationButtonRectTransform.Find("Friend Portrait").GetComponent<FacebookPortraitHandler>();
 		fph.episodeNumber = episodeCounter;
 		facebookPortraitList.Add( fph );
 	}

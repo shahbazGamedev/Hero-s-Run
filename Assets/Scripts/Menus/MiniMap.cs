@@ -62,7 +62,7 @@ public class MiniMap : MonoBehaviour {
 	public void registerRadarObject( GameObject go, Sprite minimapSprite, PlayerControl pc = null )
 	{
 		Image image = Instantiate( playerMinimapPrefab );
-		Image secondaryImage = image.transform.FindChild("Secondary Image").GetComponent<Image>();
+		Image secondaryImage = image.transform.Find("Secondary Image").GetComponent<Image>();
 		image.transform.SetParent( mapWithPeriphery );
 		image.rectTransform.localScale = Vector3.one;
 		image.sprite = minimapSprite;

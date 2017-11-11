@@ -20,7 +20,7 @@ public class PlayerVisuals : Photon.PunBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Transform blobShadowProjectorObject = transform.FindChild("Blob Shadow Projector");
+		Transform blobShadowProjectorObject = transform.Find("Blob Shadow Projector");
 		if( blobShadowProjectorObject == null )
 		{
 			Debug.LogError("PlayerVisuals-error: Unable to find, Blob Shadow Projector." );

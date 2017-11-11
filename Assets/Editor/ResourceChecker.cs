@@ -282,12 +282,6 @@ public class ResourceChecker : EditorWindow {
 			return 8;
 		case TextureFormat.BGRA32://	 Format returned by iPhone camera
 			return 32;
-			#if !UNITY_5
-			case TextureFormat.ATF_RGB_DXT1://	 Flash-specific RGB DXT1 compressed color texture format.
-			case TextureFormat.ATF_RGBA_JPG://	 Flash-specific RGBA JPG-compressed color texture format.
-			case TextureFormat.ATF_RGB_JPG://	 Flash-specific RGB JPG-compressed color texture format.
-			return 0; //Not supported yet  
-			#endif
 		}
 		return 0;
 	}
@@ -775,7 +769,7 @@ public class ResourceChecker : EditorWindow {
 			{
 				#if UNITY_4_6 || UNITY_4_5 || UNITY_4_4 || UNITY_4_3
 				UnityEditorInternal.AnimatorController ac = anim.runtimeAnimatorController as UnityEditorInternal.AnimatorController;
-				#elif UNITY_5
+				#elif UNITY_5 || UNITY_2017_1_OR_NEWER
 				UnityEditor.Animations.AnimatorController ac = anim.runtimeAnimatorController as UnityEditor.Animations.AnimatorController;
 				#endif
 
@@ -788,7 +782,7 @@ public class ResourceChecker : EditorWindow {
 					#if UNITY_4_6 || UNITY_4_5 || UNITY_4_4 || UNITY_4_3
 					UnityEditorInternal.StateMachine sm = ac.GetLayer(x).stateMachine;
 					int cnt = sm.stateCount;
-					#elif UNITY_5
+					#elif UNITY_5 || UNITY_2017_1_OR_NEWER
 					UnityEditor.Animations.AnimatorStateMachine sm = ac.layers[x].stateMachine;
 					int cnt = sm.states.Length;
 					#endif
@@ -798,7 +792,7 @@ public class ResourceChecker : EditorWindow {
 						#if UNITY_4_6 || UNITY_4_5 || UNITY_4_4 || UNITY_4_3
 						UnityEditorInternal.State state = sm.GetState(i);
 						Motion m = state.GetMotion();
-						#elif UNITY_5
+						#elif UNITY_5 || UNITY_2017_1_OR_NEWER
 						UnityEditor.Animations.AnimatorState state = sm.states[i].state;
 						Motion m = state.motion;
 						#endif

@@ -301,7 +301,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//The bot does not have a cutscene camera.
 		if( playerAI == null )
 		{
-			Transform cutSceneCamera = transform.FindChild("CutsceneCamera");
+			Transform cutSceneCamera = transform.Find("CutsceneCamera");
 			Skybox skyBox = cutSceneCamera.GetComponent<Skybox>();
 			skyBox.material = LevelManager.Instance.getLevelData().skyBoxMaterial;
 		}
@@ -1621,7 +1621,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			moveDirection = Vector3.zero;
 			capsuleCollider.attachedRigidbody.isKinematic = true;
 			setAnimationTrigger(AttachToZiplineTrigger);
-			ziplineAttachPoint = transform.FindChild("Zipline Attach Point");
+			ziplineAttachPoint = transform.Find("Zipline Attach Point");
 			ziplineAttachPoint.localPosition = ziplinePlayerOffset;
 			ziplineAttachPoint.localEulerAngles = new Vector3( 0, 0, 0 );
 			ziplineAttachPoint.SetParent(null);

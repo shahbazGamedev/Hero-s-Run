@@ -66,7 +66,7 @@ function Awake() {
 }
 function triggerBreak( playerCollider: Collider ) {
 	GetComponent.<AudioSource>().Play();
-    transform.Destroy(transform.FindChild("object").gameObject);
+    transform.Destroy(transform.Find("object").gameObject);
     Destroy(transform.GetComponent.<Collider>());
     Destroy(transform.GetComponent.<Rigidbody>());
     breakObject( playerCollider );
@@ -80,7 +80,7 @@ function breakObject( playerCollider: Collider ) {// breaks object
     		Destroy(ps.gameObject, ps.duration); // destroys particle system after duration of particle system
     	}
 		fragmentd.gameObject.SetActive( true );
-        var frags: Transform = fragmentd.FindChild("fragments");
+        var frags: Transform = fragmentd.Find("fragments");
 		if( playerCollider != null )
 		{
 	        var forward: Vector3 = playerCollider.transform.TransformDirection(Vector3.forward);
@@ -101,7 +101,7 @@ function breakObject( playerCollider: Collider ) {// breaks object
             }
         }
 		//transform.position.y -=1000;	// Positions the object out of view to avoid further interaction
-        if (transform.FindChild("particles") != null) transform.FindChild("particles").GetComponent.<ParticleEmitter>().emit = false;
+        if (transform.Find("particles") != null) transform.Find("particles").GetComponent.<ParticleEmitter>().emit = false;
         removeColliders();
         removeRigids();
         if (waitForDestroy > 0) { // destroys fragments after "waitForDestroy" delay
@@ -118,7 +118,7 @@ function breakObject( playerCollider: Collider ) {// breaks object
 function removeRigids() {// removes rigidbodies from fragments after "waitForRemoveRigid" delay
     if (waitForRemoveRigid > 0 && waitForRemoveRigid != waitForDestroy) {
         yield(WaitForSeconds(waitForRemoveRigid));
-        for (var child: Transform in fragmentd.FindChild("fragments")) {
+        for (var child: Transform in fragmentd.Find("fragments")) {
             child.gameObject.Destroy(child.GetComponent(Rigidbody));
         }
     }
@@ -127,7 +127,7 @@ function removeRigids() {// removes rigidbodies from fragments after "waitForRem
 function removeColliders() {// removes colliders from fragments "waitForRemoveCollider" delay
     if (waitForRemoveCollider > 0){
         yield(WaitForSeconds(waitForRemoveCollider));
-        for (var child: Transform in fragmentd.FindChild("fragments")) {
+        for (var child: Transform in fragmentd.Find("fragments")) {
             child.gameObject.Destroy(child.GetComponent(Collider));
         }
     }

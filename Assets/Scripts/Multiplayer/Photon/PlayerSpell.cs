@@ -419,7 +419,7 @@ public class PlayerSpell : PunBehaviour {
 		go.transform.position = transform.TransformPoint( 0, 1.2f, 0 );
 		go.Play();
 		GameObject.Destroy( go, 2f );
-		Transform heroSkin = transform.FindChild("Hero Skin");
+		Transform heroSkin = transform.Find("Hero Skin");
 		SkinnedMeshRenderer[] smr = heroSkin.GetComponentsInChildren<SkinnedMeshRenderer>();
 		for( int i = 0; i < smr.Length; i++ )
 		{
@@ -437,7 +437,7 @@ public class PlayerSpell : PunBehaviour {
 			go.transform.position = transform.TransformPoint( 0, 1.2f, 0 );
 			go.Play();
 			GameObject.Destroy( go, 2f );
-			Transform heroSkin = transform.FindChild("Hero Skin");
+			Transform heroSkin = transform.Find("Hero Skin");
 			SkinnedMeshRenderer[] smr = heroSkin.GetComponentsInChildren<SkinnedMeshRenderer>();
 			for( int i = 0; i < smr.Length; i++ )
 			{

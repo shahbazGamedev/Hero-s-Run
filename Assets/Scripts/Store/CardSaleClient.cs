@@ -65,10 +65,10 @@ public class CardSaleClient : MonoBehaviour {
 		cardButton.onClick.RemoveAllListeners();
 		cardButton.onClick.AddListener(() => OnClickCardOnSale( go, pcd, cd ));
 		//Card image and progress bar
-		Transform card = go.transform.FindChild("Card");
+		Transform card = go.transform.Find("Card");
 		card.GetComponent<CardUIDetails>().configureCard( pcd, cd );
 		//Cost
-		Transform costHolder = go.transform.FindChild("Cost Holder");
+		Transform costHolder = go.transform.Find("Cost Holder");
 		int costToPurchaseOneCard = 2;
 		costHolder.GetComponentInChildren<TextMeshProUGUI>().text = costToPurchaseOneCard.ToString("N0");
 	}

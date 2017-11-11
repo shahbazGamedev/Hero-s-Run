@@ -102,7 +102,7 @@ public class CardSpawnedObject : MonoBehaviour {
 				Transform tile = hit.collider.transform.root;
 				transform.SetParent( tile );
 		
-				Transform currentDeadEnd = tile.FindChild("deadEnd");
+				Transform currentDeadEnd = tile.Find("deadEnd");
 				if( currentDeadEnd != null )
 				{
 					//We are trying to spawn the object in either a left or right turn tile
