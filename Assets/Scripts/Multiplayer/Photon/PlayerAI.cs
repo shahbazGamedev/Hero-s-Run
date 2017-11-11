@@ -117,14 +117,14 @@ public class PlayerAI : AutoPilot {
 		{
 			// This is called as the bot is exiting a bridge.
 			// If the bot has a CardGrenade, is allowed to play cards, is not affected by Hack, has enough mana, and is leading, drop a grenade to destroy the bridge.
-			if( isBotLeading() ) GetComponent<BotCardHandler>().tryToPlayCard( CardName.Grenade );
+			if( playerRace.racePosition == 0 ) GetComponent<BotCardHandler>().tryToPlayCard( CardName.Grenade );
 		}
 	}
 
 	void playTaunt()
 	{
 		//Only be cocky if you are in the lead. This also avoids having 2 bots saying a taunt at the same time.
-		if( isBotLeading() && PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED && GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
+		if( playerRace.racePosition == 0 && PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED && GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
 		{
 			VoiceOverManager.VoiceOverData vod = VoiceOverManager.Instance.getRandomHeroTaunt ( botHero.name );
 			if( vod != null )
@@ -132,17 +132,5 @@ public class PlayerAI : AutoPilot {
 				GetComponent<PlayerVoiceOvers>().playTaunt( vod.clip, vod.uniqueId );
 			}
 		}
-	}
-
-	bool isBotLeading()
-	{
-		bool isLeading = true;
-		for( int i = 0; i < PlayerRace.players.Count; i++ )
-		{
-			//Ignore the caster
-			if( PlayerRace.players[i] == playerRace ) continue;
-			if( PlayerRace.players[i].racePosition < playerRace.racePosition ) return false;
-		}
-		return isLeading;
 	}
 }

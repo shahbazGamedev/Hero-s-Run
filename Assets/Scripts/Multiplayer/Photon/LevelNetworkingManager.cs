@@ -178,9 +178,7 @@ public class LevelNetworkingManager : PunBehaviour
 		{
 			calculateRacePositions();
 			calculateRaceDuration();
-			//verifyIfPlayerTookTheLead();
 			//verifyIfPlayerNeedsEmergencyBoost();
-			//playVOWhenPlayerIsFarAheadOfOtherPlayers();
 		}
 	}
 
