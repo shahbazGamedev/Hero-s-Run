@@ -1958,15 +1958,25 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Stumble
 	public void stumble()
 	{
-		//The OnControllerColliderHit function can send multiple collision events during a single
+		//The OnCollisionEnter function can send multiple collision events during a single
 		//stumble, so ignore any new events while in the stumbling state.
 		if ( playerCharacterState != PlayerCharacterState.Stumbling && playerCharacterState != PlayerCharacterState.Dying && playerCharacterState != PlayerCharacterState.Ziplining )
 		{	
-			Debug.Log ("Player stumbled");
-			setCharacterState( PlayerCharacterState.Stumbling );
-			playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Stumble);
-			//The player stumbles but recovers
-			setAnimationTrigger(StumbleTrigger);
+			if( playerSpell.isCardActive( CardName.Shrink ) )
+			{
+				//The player is shrunk. He will never get over the stumble, and worse, he may become stuck.
+				//So kill him.
+				killPlayer( DeathType.Obstacle );
+			}
+			else
+			{
+				//Player is normal size. Simply stumble.
+				Debug.Log ("Player stumbled");
+				setCharacterState( PlayerCharacterState.Stumbling );
+				playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Stumble);
+				//The player stumbles but recovers
+				setAnimationTrigger(StumbleTrigger);
+			}
 		}
 	}
 
