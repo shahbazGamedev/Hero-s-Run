@@ -2147,7 +2147,8 @@ public class PlayerControl : Photon.PunBehaviour {
 				else
 				{
 					//If you are in the last position in the race, deactivates the tile with an index of (currentTileIndex - two) to help performance.
-					if( playerRace.isInLastPosition() ) generateLevel.deactivatePreviousTile( si.tileIndex );
+					//Race position is not yet reliable, so comment out next line for now.
+					//if( playerRace.isInLastPosition() ) generateLevel.deactivatePreviousTile( si.tileIndex );
 				}
 			}
 			else
