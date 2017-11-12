@@ -2101,6 +2101,16 @@ public class PlayerControl : Photon.PunBehaviour {
 				tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
 				//Every time a new tile is entered, force synchronization
 				forcePositionSynchronization();
+				//If you just entered the End tile reactivate some tiles since the camera does a 180.
+				if( si.tileType == TileType.End )
+				{
+					generateLevel.activateTilesForCamera();
+				}
+				else
+				{
+					//If you are in the last position in the race, deactivates the tile with an index of (currentTileIndex - two) to help performance.
+					if( playerRace.isInLastPosition() ) generateLevel.deactivatePreviousTile( si.tileIndex );
+				}
 			}
 			else
 			{

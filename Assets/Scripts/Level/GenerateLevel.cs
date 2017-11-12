@@ -855,6 +855,29 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Activates the last 5 tiles of the level (this includes the End tile).
+	/// </summary>
+	public void activateTilesForCamera()
+	{
+		int startIndex = worldRoadSegments.Count - 5;
+		if( startIndex < 0 ) startIndex = 0;
+		for( int i = startIndex; i < worldRoadSegments.Count; i++ )
+		{
+			worldRoadSegments[i].SetActive( true );
+		}
+	}
+
+	/// <summary>
+	/// Deactivates the tile with an index of currentTileIndex - two.
+	/// </summary>
+	/// <param name="currentTileIndex">Current tile index.</param>
+	public void deactivatePreviousTile( int currentTileIndex )
+	{
+		int indexOfTileToDeactivate = currentTileIndex - 2;
+		if( indexOfTileToDeactivate >= 0 ) worldRoadSegments[indexOfTileToDeactivate].SetActive( false );
+	}
+
 	public void activateTilesAfterTeleport()
 	{
 		playerTileIndex = playerTileIndex + 2; //The teleport tile group is composed of the transmitter tile plus two additional tiles

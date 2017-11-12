@@ -259,6 +259,13 @@ public sealed class PlayerRace : Photon.PunBehaviour
 		verifyIfPlayerTookTheLead();
 	}
 
+	#region Last position
+	public bool isInLastPosition()
+	{
+		return ( players.Count - 1 ) == racePosition;
+	}
+	#endregion
+
 	#region Took the lead
 	/// <summary>
 	/// Verifies if this player took the lead.
