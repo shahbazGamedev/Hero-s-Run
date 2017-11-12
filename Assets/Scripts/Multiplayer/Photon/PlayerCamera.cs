@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Cinemachine;
 
 //If the player starts off on a Start tile, the camera will be looking at the front of player and do a rotation when the player starts running.
 //However, if the player is not on a Start tile and is starting at a Checkpoint, we want the camera to look at the back of the player (and therefore, there is no need for a rotation when the player starts running).
@@ -58,7 +59,7 @@ public class PlayerCamera : Photon.PunBehaviour {
 	//moving (because he is dead for example), when the shake occurs.
 	private float shake_decay = 0;
 	private float shake_intensity = 0;
-	public bool isCameraLocked = false;
+	public bool isCameraLocked = true;
 	
 	private CameraState cameraState = CameraState.Cutscene;
 
@@ -68,6 +69,8 @@ public class PlayerCamera : Photon.PunBehaviour {
 	//Use 0 if you want the camera to be looking at the back of the target and 180 if you want the camera to be looking at the front of the target.
 	public const float DEFAULT_Y_ROTATION_OFFSET = 0;
 	float yRotationOffset = DEFAULT_Y_ROTATION_OFFSET;
+
+	CinemachineVirtualCamera cmvc;
 
 	PlayerController playerController;
 	PlayerControl playerControl;
@@ -84,6 +87,13 @@ public class PlayerCamera : Photon.PunBehaviour {
 		playerController = GetComponent<PlayerController>();
 		playerControl = GetComponent<PlayerControl>();
 		playerAI = GetComponent<PlayerAI>(); //Null for everyone except bots
+
+		if( isAllowed() )
+		{
+			cmvc = GameObject.FindObjectOfType<CinemachineVirtualCamera>();
+			cmvc.m_Follow = transform;
+			cmvc.m_LookAt = transform;
+		}
 	}
 	
 	//When moving a player using rigid bodies, you need to use FixedUpdate or else you will have jitter.
@@ -91,7 +101,7 @@ public class PlayerCamera : Photon.PunBehaviour {
 	{
 		if( cameraState == CameraState.Normal )
 		{
-			if( !isCameraLocked )
+			if( !isCameraLocked && cmvc == null )
 			{
 				positionCamera ();
 			}

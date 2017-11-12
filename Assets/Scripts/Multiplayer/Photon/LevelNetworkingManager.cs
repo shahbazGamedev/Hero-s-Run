@@ -17,9 +17,9 @@ public sealed class LevelNetworkingManager : PunBehaviour
 	int numberOfPlayersReadyToRace = 0;	
 	bool levelLoading = false;
 	//The ground height is 1 meter.
-	Vector3 leftStartPosition = new Vector3( -2f, 1f, 0 );
-	Vector3 rightStartPosition = new Vector3( 2f, 1f, 0 );
-	Vector3 centerStartPosition = new Vector3( 0, 1f, 0 );
+	Vector3 leftStartPosition = new Vector3( -2f, 0f, 0 );
+	Vector3 rightStartPosition = new Vector3( 2f, 0f, 0 );
+	Vector3 centerStartPosition = new Vector3( 0, 0f, 0 );
 	const double DELAY_TO_ALLOW_ALL_PACKETS_TO_ARRIVE = 0.5;
 	
 	#region Finish Line
@@ -46,21 +46,24 @@ public sealed class LevelNetworkingManager : PunBehaviour
 			}
 			else
 			{
+				LevelData.CircuitInfo selectedCircuit = LevelManager.Instance.getSelectedCircuit().circuitInfo;
+				float spawnHeight = selectedCircuit.spawnHeight;
+
 				//We're in the level. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
 				int playerPosition = (int) PhotonNetwork.player.CustomProperties["PlayerPosition"];
 				Debug.Log("We are Instantiating LocalPlayer. He is in player position: " + playerPosition );
 				Vector3 startPosition = Vector3.zero;
 				if ( playerPosition == 1 )
 				{
-					startPosition = leftStartPosition;
+					startPosition = new Vector3( leftStartPosition.x, spawnHeight, leftStartPosition.z );
 				}
 				else if ( playerPosition == 2 )
 				{
-					startPosition = rightStartPosition;
+					startPosition = new Vector3( rightStartPosition.x, spawnHeight, rightStartPosition.z );
 				}
 				else if ( playerPosition == 3 )
 				{
-					startPosition = centerStartPosition;
+					startPosition = new Vector3( centerStartPosition.x, spawnHeight, centerStartPosition.z );
 				}
 				PhotonNetwork.Instantiate(this.playerPrefab.name, startPosition, Quaternion.identity, 0);
 

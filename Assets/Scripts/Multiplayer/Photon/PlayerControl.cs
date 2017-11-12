@@ -280,18 +280,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			transform.position = new Vector3( transform.position.x, hit.point.y, transform.position.z);
 			//Debug.Log( "There is ground underneath the player on Start. The collider is: " + hit.collider.name + " at height: " + hit.point.y );
-			//Also adjust the camera height
-			if( this.photonView.isMine && playerAI == null )
-			{
-				Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y + hit.point.y, Camera.main.transform.position.z);
-			}
-			playerCamera.positionCameraNow();
 		}
 		else
 		{
-			Debug.LogError( "There is no ground below the player during PlayerControl Start. Check LevelNetworkingManager to see if the spawn position height values are correct." );
+			Debug.LogError( "There is no ground below the player during PlayerControl Start. Check that the Spawn Height property in CircuitInfo is correct." );
 		}
-		playerCamera.playCutscene(CutsceneType.Checkpoint);
 
 		getFirstTileInfo();
 

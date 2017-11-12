@@ -576,6 +576,8 @@ public class LevelData : MonoBehaviour {
 		public int sectorNumber;
 		[Tooltip("The background color is used in various UI elements to match the main color of the sector image.")]
 		public Color backgroundColor;
+		[Tooltip("Spawn height")]
+		public float spawnHeight = 0;
 	}
 
 	[System.Serializable]
