@@ -13,19 +13,13 @@ public class ZombieTrigger : MonoBehaviour {
 		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("Zombie Manager");
 		//You need to enable hasZombies in Level Data for the zombie manager to be created as it is optional.
 		if( zombieManagerObject == null ) return;
-		zombieManager = zombieManagerObject.GetComponent<ZombieManager>();
-	}
-	
-	private void configureWave( int waveToUse )
-	{
-		GameObject zombieWaveObject = zombieWaveList[waveToUse];
-		zombieWaveObject.SetActive( true );
-		ZombieWave activeZombieWave = zombieWaveObject.GetComponent<ZombieWave>();
-		zombieManager.triggerZombieWave( activeZombieWave.spawnLocations );
+		zombieManager = zombieManagerObject.GetComponent<ZombieManager>();	
 	}
 	
 	public void activateNextWave()
 	{
+		if( !LevelManager.Instance.getSelectedCircuit().hasZombies ) return;
+
 		//You need to enable hasZombies in Level Data for the zombie manager to be created as it is optional.
 		if( zombieManager == null ) return;
 		Debug.Log ("Zombie wave number: " + ZombieManager.numberOfZombieWavesTriggered );
@@ -41,6 +35,14 @@ public class ZombieTrigger : MonoBehaviour {
 		}
 		ZombieManager.numberOfZombieWavesTriggered++;
 		HUDMultiplayer.hudMultiplayer.activateUserMessage( "Wave " + ZombieManager.numberOfZombieWavesTriggered + "!", 0, 2.5f );
+	}
+
+	private void configureWave( int waveToUse )
+	{
+		GameObject zombieWaveObject = zombieWaveList[waveToUse];
+		zombieWaveObject.SetActive( true );
+		ZombieWave activeZombieWave = zombieWaveObject.GetComponent<ZombieWave>();
+		zombieManager.triggerZombieWave( activeZombieWave.spawnLocations );
 	}
 	
 	//Only trigger if by hero or zombie
