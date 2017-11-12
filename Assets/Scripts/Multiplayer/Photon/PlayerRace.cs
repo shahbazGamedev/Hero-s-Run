@@ -332,14 +332,17 @@ public sealed class PlayerRace : Photon.PunBehaviour
 		//who has crossed the finish line.
 		playerControl.setCharacterState(PlayerCharacterState.Idle);
 
-		//Don't activate took the lead if you have completed the race
+		//Don't activate took the lead if you have completed the race.
 		CancelInvoke("tookTheLead");
+
+		//Don't display a power boost disengaged message if you have completed the race.
+		CancelInvoke( "disablePowerBoost" );
+
+		//Send a crossedFinishLine event to interested classes.
+		if( crossedFinishLine != null ) crossedFinishLine( transform, racePosition, playerAI != null );
 
 		if( this.photonView.isMine && playerAI == null )
 		{
-			//Send a crossedFinishLine event to tell the HUD to remove the card timers
-			if( crossedFinishLine != null ) crossedFinishLine( transform, racePosition, playerAI != null );
-
 			//If the player has won, display a victory message.
 			if( racePosition == 0 )
 			{
