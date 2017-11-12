@@ -481,9 +481,55 @@ public class PlayerControl : Photon.PunBehaviour {
 			}
 
 			verifyIfDesiredLaneReached();
+			stayWithinLanes();
 		}
 	}
 
+	//Make sure the player stays within the lane limits (unless he is dying or falling or ziplining ).
+	void stayWithinLanes()
+	{
+		if ( playerCharacterState != PlayerCharacterState.Dying && playerCharacterState != PlayerCharacterState.Falling && playerCharacterState != PlayerCharacterState.Ziplining )
+		{
+			//Player is following a corridor
+			if( transform.eulerAngles.y > -0.01f && transform.eulerAngles.y < 0.01f )
+			{
+				transform.rotation = Quaternion.identity;
+			}
+			float playerRotationY = Mathf.Floor ( transform.eulerAngles.y );
+			if( playerRotationY == 0 )
+			{
+				//Round to two decimal places to avoid small rounding errors
+				float delta = Mathf.Round( (transform.position.x - currentTilePos.x) * 100.0f) / 100.0f;
+				if( delta < -laneLimit )
+				{
+					Debug.LogWarning ( "-laneLimit player x " + transform.position.x + " currentTilePos.x " + currentTilePos.x + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
+					transform.position = new Vector3 (  currentTilePos.x -laneLimit, transform.position.y, transform.position.z );
+				}
+				else if( delta > laneLimit )
+				{
+					Debug.LogWarning ( "+laneLimit player x " + transform.position.x + " currentTilePos.x " + currentTilePos.x + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
+					transform.position = new Vector3 (  currentTilePos.x + laneLimit, transform.position.y, transform.position.z );
+				}
+			
+			}
+			else
+			{
+				//Round to two decimal places to avoid small rounding errors
+				float delta = Mathf.Round( (transform.position.z - currentTilePos.z) * 100.0f) / 100.0f;
+				if( delta < -laneLimit )
+				{
+					Debug.LogWarning ( "+laneLimit player z " + transform.position.z + " currentTilePos.z " + currentTilePos.z + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
+					transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z - laneLimit );
+				}
+				else if( delta > laneLimit )
+				{
+					Debug.LogWarning ( "+laneLimit player z " + transform.position.z + " currentTilePos.z " + currentTilePos.z + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
+					transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z + laneLimit );
+				}
+			}
+		}
+	}
+	
 	void moveCharacter()
 	{
 		verifySlide();
@@ -1172,7 +1218,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		lean( 0, 0.3f );
 		moveDirection.x = 0;
 		currentLane = desiredLane;
-		forcePositionSynchronization();
 	}
 
 	void setDesiredLane( float sideMoveInitiatedZ )
