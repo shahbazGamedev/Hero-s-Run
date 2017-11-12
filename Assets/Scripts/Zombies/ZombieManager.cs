@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class ZombieManager : MonoBehaviour {
 
+	[SerializeField] string zombieBoyPrefabName;
+	[SerializeField] string zombieGirlPrefabName;
+
 	public List<GameObject> zombieFactory = new List<GameObject>();
 	int zombieFactoryIndex = 0;
 
@@ -86,68 +89,16 @@ public class ZombieManager : MonoBehaviour {
 		}
 		else
 		{
-			Debug.LogError("ZombieManager-spawnZombie - solid ground below spawnLocation: " + spawnLocation.localPosition + " was not found. Using a Y value of 0 in tile " + spawnLocation.parent.parent );
+			Debug.LogError("ZombieManager-spawnZombie - solid ground below spawnLocation: " + spawnLocation.localPosition + " was not found. Using a Y value of 0 in tile " + spawnLocation.root.name );
 		}
 
 		yield return new WaitForSeconds(zsd.spawnDelay);
 
-		//Select an available zombie from the factory
-		GameObject zombie = getAvailableZombie();
-		
-		if( zombie != null )
-		{
-			//Make the tile (which is the grandparent of the spawn location object) the parent of the zombie. This will be usefull later when we will want to
-			//reset the zombies in endless mode.
-			//The parent of the spawnLocation object is a ZombieWave object and the parent of a ZombieWave object is the tile.
-			zombie.transform.parent = spawnLocation.parent.parent;
-
-			//Place the zombie at the spawn location
-			zombie.transform.position = new Vector3( spawnLocation.position.x, zombieHeight, spawnLocation.position.z );
-			Debug.Log("ZombieManager-spawnZombie with location: zombieHeight " +  zombieHeight + " with parent " + zombie.transform.parent );
-			zombie.transform.rotation = spawnLocation.rotation;
-
-			//Verify the the Zombie spawn type: burrow, walk, crawl or get up
-			ZombieController zombieController = (ZombieController) zombie.GetComponent("ZombieController");
-
-
-			if( zsd.spawnType == ZombieSpawnType.BurrowUp )
-			{
-				//Make the zombie burrow out of the ground
-				zombieController.burrowUp( debris );
-			}
-			else if ( zsd.spawnType == ZombieSpawnType.StandUpFromBack )
-			{
-				//The zombie is lying flat on his back and gets up
-				zombieController.standUpFromBack();
-			}
-			else if ( zsd.spawnType == ZombieSpawnType.Walk )
-			{
-				//The zombie walks immediately
-				zombieController.walk();
-			}
-			else if ( zsd.spawnType == ZombieSpawnType.Crawl )
-			{
-				//The zombie crawls immediately
-				zombieController.crawl();
-			}
-
-
-			//Play the open coffin animation if a coffin game object exists
-			if( zsd.coffin != null )
-			{
-				Animator coffinAnimator = (Animator) zsd.coffin.GetComponent("Animator");
-				coffinAnimator.speed = 0.6f;
-				coffinAnimator.SetTrigger("open");
-			}
-			zombieController.followsPlayer = zsd.followsPlayer;
-			//Register the zombie on the minimap.
-			if( zombieController.zombieIcon != null ) MiniMap.Instance.registerRadarObject( zombie, zombieController.zombieIcon );
-
-		}
-		else
-		{
-			Debug.LogError("ZombieManager-spawnZombie with location: no zombies available.");
-		}
+		object[] data = new object[2];
+		data[0] = (int) zsd.spawnType;
+		data[1] = zsd.followsPlayer;
+		PhotonNetwork.InstantiateSceneObject( zombieBoyPrefabName, new Vector3( spawnLocation.position.x, zombieHeight, spawnLocation.position.z ), spawnLocation.rotation, 0, data );
+	
 	}
 
 	void spawnZombie()

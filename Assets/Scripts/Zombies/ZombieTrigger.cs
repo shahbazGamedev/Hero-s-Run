@@ -8,8 +8,8 @@ public class ZombieTrigger : MonoBehaviour {
 	public List<GameObject> zombieWaveList = new List<GameObject>();
 
 	// Use this for initialization
-	void Start () {
-	
+	void Start ()
+	{
 		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("Zombie Manager");
 		//You need to enable hasZombies in Level Data for the zombie manager to be created as it is optional.
 		if( zombieManagerObject == null ) return;
@@ -41,15 +41,6 @@ public class ZombieTrigger : MonoBehaviour {
 		}
 		ZombieManager.numberOfZombieWavesTriggered++;
 		HUDMultiplayer.hudMultiplayer.activateUserMessage( "Wave " + ZombieManager.numberOfZombieWavesTriggered + "!", 0, 2.5f );
-	}
-
-	//Called by TileReset
-	public void reset()
-	{
-		for( int i = 0; i < zombieWaveList.Count; i++ )
-		{
-			zombieWaveList[i].SetActive( false );
-		}
 	}
 	
 	//Only trigger if by hero or zombie

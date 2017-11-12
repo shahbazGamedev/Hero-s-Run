@@ -22,14 +22,16 @@ public sealed class ZombieController : Creature, ICreature {
 	public AudioClip win;
 	[Tooltip("The icon to use on the minimap. It is optional.")]
 	public Sprite zombieIcon;
+	public ParticleSystem debris; //Particle fx that plays when a zombie burrows up
 
 	// Use this for initialization
-	new void Awake () {
+	new void Awake ()
+	{
 		base.Awake();
 		creatureState = CreatureState.Available;
 		controller.enabled = false;
 		Transform zombiePrefab;
-		if( gameObject.name == "Zombie Boy" )
+		if( gameObject.name == "Zombie Boy(Clone)" )
 		{
 			zombiePrefab = transform.Find("zombieBoy");
 		}
@@ -38,11 +40,51 @@ public sealed class ZombieController : Creature, ICreature {
 			zombiePrefab = transform.Find("zombieGirl");
 		}
 		legacyAnim = zombiePrefab.GetComponent<Animation>();
+	}
 
+	void OnPhotonInstantiate( PhotonMessageInfo info )
+	{
+		activate();
+	}
+
+	void activate()
+	{
+		object[] data = gameObject.GetPhotonView ().instantiationData;
+
+		ZombieSpawnType spawnType = (ZombieSpawnType) data[0];
+		switch( spawnType )
+		{
+			case ZombieSpawnType.BurrowUp:
+				//Make the zombie burrow out of the ground
+				burrowUp( debris );
+			break;
+
+			case ZombieSpawnType.StandUpFromBack:
+				//The zombie is lying flat on his back and gets up
+				standUpFromBack();
+			break;
+
+			case ZombieSpawnType.Walk:
+				//The zombie walks immediately
+				walk();
+			break;
+
+			case ZombieSpawnType.Crawl:
+				//The zombie crawls immediately
+				crawl();
+			break;
+
+		}
+
+		followsPlayer = (bool) data[1];
+
+		//Register the zombie on the minimap.
+		if( zombieIcon != null ) MiniMap.Instance.registerRadarObject( gameObject, zombieIcon );
 	}
 
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 		moveZombie();
 	}
 
