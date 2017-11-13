@@ -132,7 +132,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	//True if the player is allowed to move, false otherwise. This flag is useful during camera cut-scenes to prevent the player from moving.
 	bool playerMovementEnabled = true;
  	//Are inputs allowed?
-	bool playerControlsEnabled = true;
+	bool playerControlsEnabled = false;
 	#endregion
 
 	#region Powerup variables
