@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using Photon;
 
-public class Creature : MonoBehaviour {
+public class Creature : PunBehaviour {
 
 	protected CreatureState creatureState = CreatureState.Idle;
 	[Header("Other")]
@@ -118,9 +119,18 @@ public class Creature : MonoBehaviour {
 		gameObject.SetActive( false );
 	}
 
-	//The creature falls over backwards, typically because the player slid into him or because of a ZNuke
 	public void knockback()
 	{
+		knockbackRPC();
+		this.photonView.RPC("knockbackRPC", PhotonTargets.Others );
+	}
+
+	//The creature falls over backwards, typically because the player slid into him or because of a ZNuke
+	[PunRPC]
+	void knockbackRPC()
+	{
+		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
+
 		setCreatureState( CreatureState.Dying );
 		controller.enabled = false;
 		//Some creatures (usually the ones carrying a weapon) have more than one capsule colliders.
