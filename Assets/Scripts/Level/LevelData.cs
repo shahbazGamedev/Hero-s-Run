@@ -97,6 +97,8 @@ public class LevelData : MonoBehaviour {
 	//for the current level. The skybox materials should be located under the Skybox directory under Resources.
 	public void setSunParameters( SunType sunType )
 	{
+		LightingData lightingData = lightingDataList.Find( ld => ld.sunType == sunType );
+
 		if( Sun != null )
 		{
 			skyBoxMaterial = null;
@@ -134,7 +136,8 @@ public class LevelData : MonoBehaviour {
 								
 			case SunType.Desert:
 				//Directional light
-				Sun.GetComponent<Light>().color = new Color(255f/255f,201f/255f,124f/255f);
+				Sun.GetComponent<Light>().color = lightingData.sunColor;
+
 				lightIntensity = 0.7f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				sunDirection = Quaternion.Euler( 45.57f,-329f,-159.54f );
@@ -143,41 +146,40 @@ public class LevelData : MonoBehaviour {
 				//Sky box
 				RenderSettings.sun = Sun.GetComponent<Light>();
 				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
-				RenderSettings.ambientSkyColor = new Color(183f/255f,233f/255f,251f/255f);
-				RenderSettings.ambientEquatorColor = new Color(234f/255f,169f/255f,162f/255f);
-				RenderSettings.ambientGroundColor = new Color(206f/255f,98f/255f,0);
-
+				RenderSettings.ambientSkyColor = lightingData.skyColor;
+				RenderSettings.ambientEquatorColor = lightingData.equatorColor;
+				RenderSettings.ambientGroundColor = lightingData.groundColor;
 				RenderSettings.reflectionIntensity = 0.614f;
 
 				//Fog
 				RenderSettings.fog = true;
 				RenderSettings.fogMode = FogMode.Linear;
-				RenderSettings.fogColor = new Color(204f/255f,182f/255f,229f/255f);
+				RenderSettings.fogColor = lightingData.fogColor;
 				RenderSettings.fogStartDistance = -1.4f;
 				RenderSettings.fogEndDistance = 84.93f;
 				break;
 
 			case SunType.Desert_night:
 				//Directional light
-				Sun.GetComponent<Light>().color = new Color(255f/255f,201f/255f,124f/255f);
+				Sun.GetComponent<Light>().color = lightingData.sunColor;
 				lightIntensity = 0.7f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				sunDirection = Quaternion.Euler( 45.57f,-329f,-159.54f );
-				shadowStrength = 1f;
+				shadowStrength = 0.635f;
 
 				//Sky box
 				RenderSettings.sun = Sun.GetComponent<Light>();
 				RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
-				RenderSettings.ambientSkyColor = new Color(183f/255f,233f/255f,251f/255f);
-				RenderSettings.ambientEquatorColor = new Color(234f/255f,169f/255f,162f/255f);
-				RenderSettings.ambientGroundColor = new Color(206f/255f,98f/255f,0);
+				RenderSettings.ambientSkyColor = lightingData.skyColor;
+				RenderSettings.ambientEquatorColor = lightingData.equatorColor;
+				RenderSettings.ambientGroundColor = lightingData.groundColor;
 
 				RenderSettings.reflectionIntensity = 0.614f;
 
 				//Fog
 				RenderSettings.fog = true;
 				RenderSettings.fogMode = FogMode.Linear;
-				RenderSettings.fogColor = new Color(204f/255f,182f/255f,229f/255f);
+				RenderSettings.fogColor = lightingData.fogColor;
 				RenderSettings.fogStartDistance = -1.4f;
 				RenderSettings.fogEndDistance = 84.93f;
 				break;
@@ -585,6 +587,11 @@ public class LevelData : MonoBehaviour {
 	{
 		public SunType sunType; 
 		public Material skyBox;
+		public Color sunColor;
+		public Color skyColor;
+		public Color equatorColor;
+		public Color groundColor;
+		public Color fogColor;
 	}
 
 	Material getSkyBox( SunType sunType )
