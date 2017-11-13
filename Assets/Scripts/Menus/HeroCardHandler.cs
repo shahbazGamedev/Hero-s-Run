@@ -18,7 +18,7 @@ public class HeroCardHandler : MonoBehaviour {
 		cardImage.sprite = cd.icon;
 		//Legendary cards have special effects
 		cardImage.material = cd.cardMaterial;
-		TextMeshProUGUI cardNameText = heroCardButton.GetComponentInChildren<TextMeshProUGUI>();
+		TextMeshProUGUI cardNameText = GetComponentInChildren<TextMeshProUGUI>();
 		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + cd.name.ToString().ToUpper() );
 		cardNameText.text = localizedCardName;
 	}

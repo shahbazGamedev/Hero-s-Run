@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 public class VoiceLinesMenu : MonoBehaviour {
 
 	[Header("General")]
 	[SerializeField] Transform voiceLineHolder;
 	[SerializeField] GameObject voiceLinePrefab;
-
-	[Header("Top Section")]
-	[SerializeField] Image heroIcon;
-	[SerializeField] TextMeshProUGUI heroName;
 
 	[Header("Entry")]
 	[SerializeField] Sprite lockIcon;
@@ -24,7 +21,6 @@ public class VoiceLinesMenu : MonoBehaviour {
 	void Start ()
 	{
 		HeroManager.HeroCharacter hero = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex );
-		updateHero( hero );
 		createVoiceLines( hero );
 	}
 
@@ -41,14 +37,7 @@ public class VoiceLinesMenu : MonoBehaviour {
 	void HeroChangedEvent( int selectedHeroIndex )
 	{
 		HeroManager.HeroCharacter hero = HeroManager.Instance.getHeroCharacter( selectedHeroIndex );
-		updateHero( hero );
 		createVoiceLines( hero );
-	}
-
-	void updateHero( HeroManager.HeroCharacter hero )
-	{
-		heroIcon.sprite = hero.icon;
-		heroName.text = hero.name.ToString();
 	}
 
 	void createVoiceLines( HeroManager.HeroCharacter hero )
@@ -60,7 +49,9 @@ public class VoiceLinesMenu : MonoBehaviour {
 			GameObject.Destroy( child.gameObject );
 		}
 		//Get all of the voice lines that the player has in his inventory
-		List<PlayerVoiceLines.VoiceLineData> playerVoiceOverList = GameManager.Instance.playerVoiceLines.getVoiceLinesForHero ( hero.name ); 
+		List<PlayerVoiceLines.VoiceLineData> playerVoiceOverList = GameManager.Instance.playerVoiceLines.getVoiceLinesForHero ( hero.name );
+		//Sort order: equipped first, then unlocked, then locked
+		playerVoiceOverList = playerVoiceOverList.OrderByDescending( vo => vo.isEquipped ).ThenByDescending( vo => vo.isNew ).ThenByDescending( vo => !vo.isLocked ).ToList();
 
 		//Get all of the taunts that exist for that hero
 		List<VoiceOverManager.VoiceOverData> allHeroTaunts = VoiceOverManager.Instance.getHeroTaunts ( hero.name );
@@ -102,17 +93,18 @@ public class VoiceLinesMenu : MonoBehaviour {
 		if( vo.isLocked )
 		{
 			images[1].sprite = lockIcon;
-			texts[0].color = Color.gray;
+			texts[0].fontStyle = FontStyles.Normal;
 		}
 		else
 		{
-			texts[0].color = Color.black;
 			if( vo.isEquipped )
 			{
+				texts[0].fontStyle = FontStyles.Italic;
 				images[1].sprite = equippedIcon;
 			}
 			else
 			{
+				texts[0].fontStyle = FontStyles.Normal;
 				images[1].gameObject.SetActive( false );
 			}
 		}
