@@ -23,7 +23,7 @@ public class HeroCarousel : MonoBehaviour {
 	[SerializeField] HeroCardHandler heroCardhandler;
 
 	//Delegate used to communicate to other classes when the selected hero has changed.
-	public delegate void HeroChangedEvent( int selectedHeroIndex );
+	public delegate void HeroChangedEvent( int selectedHeroIndex, GameObject heroSkin );
 	public static event HeroChangedEvent heroChangedEvent;
 
 	// Use this for initialization
@@ -64,7 +64,6 @@ public class HeroCarousel : MonoBehaviour {
 		
 		//Remember the selected hero as we will need to access it later
 		GameManager.Instance.playerProfile.selectedHeroIndex = currentIndex;
-		if( heroChangedEvent != null ) heroChangedEvent( currentIndex );
 
 		centerIcon.sprite = hero.icon;
 
@@ -91,6 +90,7 @@ public class HeroCarousel : MonoBehaviour {
 		updateCarouselImages();
 		//configure card
 		heroCardhandler.configureHeroCard( hero.reservedCard );
+		if( heroChangedEvent != null ) heroChangedEvent( currentIndex, heroSkinList[hero.skinIndex] );
 	}
 
 	void configureSkin( GameObject selectedSkin )

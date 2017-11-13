@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
+using CrazyMinnow.SALSA;
 
 public class VoiceLinesMenu : MonoBehaviour {
 
@@ -16,6 +17,8 @@ public class VoiceLinesMenu : MonoBehaviour {
 	[SerializeField] Sprite equippedIcon;
 	[SerializeField] TextMeshProUGUI voiceLineText;
 	[SerializeField] AudioClip lockedSound;
+
+	Salsa3D heroSalsa3D;
 
 	// Use this for initialization
 	void Start ()
@@ -34,10 +37,11 @@ public class VoiceLinesMenu : MonoBehaviour {
 		HeroCarousel.heroChangedEvent -= HeroChangedEvent;
 	}
 
-	void HeroChangedEvent( int selectedHeroIndex )
+	void HeroChangedEvent( int selectedHeroIndex, GameObject heroSkin )
 	{
 		HeroManager.HeroCharacter hero = HeroManager.Instance.getHeroCharacter( selectedHeroIndex );
 		createVoiceLines( hero );
+		heroSalsa3D = heroSkin.GetComponentInChildren<Salsa3D>();
 	}
 
 	void createVoiceLines( HeroManager.HeroCharacter hero )
@@ -118,20 +122,24 @@ public class VoiceLinesMenu : MonoBehaviour {
 		}
 		else
 		{
-			if( vo.isEquipped )
-			{
-				AudioClip clip = VoiceOverManager.Instance.getTauntClip( vo.heroName, vo.uniqueId );
-				GetComponent<AudioSource>().PlayOneShot( clip );
-			}
-			else
+			AudioClip clip = VoiceOverManager.Instance.getTauntClip( vo.heroName, vo.uniqueId );
+			if( !vo.isEquipped )
 			{
 				GameManager.Instance.playerVoiceLines.equipVoiceLine( vo.uniqueId, vo.heroName );
 				GameManager.Instance.playerVoiceLines.serializeVoiceLines( true );
-				AudioClip clip = VoiceOverManager.Instance.getTauntClip( vo.heroName, vo.uniqueId );
-				GetComponent<AudioSource>().PlayOneShot( clip );
-
 				HeroManager.HeroCharacter hero = HeroManager.Instance.getHeroCharacter( GameManager.Instance.playerProfile.selectedHeroIndex );
 				createVoiceLines( hero );
+			}
+			if( heroSalsa3D != null )
+			{
+				//Have hero speak the voice line.
+				heroSalsa3D.SetAudioClip( clip );
+				heroSalsa3D.Play();
+			}
+			else
+			{
+				//Have the audio source play the voice line.
+				GetComponent<AudioSource>().PlayOneShot( clip );
 			}
 		}
 	}
