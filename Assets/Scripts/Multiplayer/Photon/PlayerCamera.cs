@@ -91,7 +91,7 @@ public class PlayerCamera : Photon.PunBehaviour {
 
 		if( isAllowed() )
 		{
-			cmvc = GameObject.FindObjectOfType<CinemachineVirtualCamera>();
+			cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
 			cmvc.m_Follow = transform;
 			cmvc.m_LookAt = transform;
 		}
