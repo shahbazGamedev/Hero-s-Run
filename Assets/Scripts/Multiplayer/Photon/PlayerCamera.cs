@@ -71,6 +71,7 @@ public class PlayerCamera : Photon.PunBehaviour {
 	float yRotationOffset = DEFAULT_Y_ROTATION_OFFSET;
 
 	CinemachineVirtualCamera cmvc;
+	Coroutine shakeCoroutine;
 
 	PlayerController playerController;
 	PlayerControl playerControl;
@@ -282,8 +283,17 @@ public class PlayerCamera : Photon.PunBehaviour {
 	public void Shake()
 	{
 		if( !isAllowed() ) return;
-		shake_intensity = 0.12f;
-		shake_decay = 0.006f;
+		if( shakeCoroutine != null ) StopCoroutine( shakeCoroutine );
+		shakeCoroutine = StartCoroutine( startShakeCoroutine( 0.3f, 0.8f, 0.75f ) );
+	}
+
+	IEnumerator startShakeCoroutine( float amplitudeGain, float frequencyGain, float duration )
+	{
+		cmvc.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = amplitudeGain;
+		cmvc.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_FrequencyGain = frequencyGain;
+		yield return new WaitForSeconds( duration );
+		cmvc.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = 0f;
+		cmvc.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_FrequencyGain = 0f;
 	}
 
 	public void playCutscene( CutsceneType type )
