@@ -54,11 +54,6 @@ public class PlayerCamera : Photon.PunBehaviour {
 	public float heightDamping = DEFAULT_HEIGHT_DAMPING;
 	float rotationDamping = 16f;
 
-	//Used for camera shake
-	//For now, the code assumes the player is not
-	//moving (because he is dead for example), when the shake occurs.
-	private float shake_decay = 0;
-	private float shake_intensity = 0;
 	public bool isCameraLocked = true;
 	
 	private CameraState cameraState = CameraState.Cutscene;
@@ -73,19 +68,17 @@ public class PlayerCamera : Photon.PunBehaviour {
 	CinemachineVirtualCamera cmvc;
 	Coroutine shakeCoroutine;
 
-	PlayerController playerController;
 	PlayerControl playerControl;
 	PlayerAI playerAI;
 
 	// Use this for initialization
 	void Awake ()
  	{
-		//If we are in multiplayer but not the owner of this component, disable it.
-		if( GameManager.Instance.isMultiplayer() && !isAllowed() ) this.enabled = false;
+		//If we are not the local owner of this component, disable it.
+		this.enabled = isAllowed();
 
 		mainCamera = Camera.main.transform;
 		cameraTarget = transform; //Set the player as the camera target by default
-		playerController = GetComponent<PlayerController>();
 		playerControl = GetComponent<PlayerControl>();
 		playerAI = GetComponent<PlayerAI>(); //Null for everyone except bots
 
@@ -94,28 +87,6 @@ public class PlayerCamera : Photon.PunBehaviour {
 			cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
 			cmvc.m_Follow = transform;
 			cmvc.m_LookAt = transform;
-		}
-	}
-	
-	//When moving a player using rigid bodies, you need to use FixedUpdate or else you will have jitter.
-	void FixedUpdate ()
-	{
-		if( cameraState == CameraState.Normal )
-		{
-			if( !isCameraLocked && cmvc == null )
-			{
-				positionCamera ();
-			}
-			if (shake_intensity > 0)
-			{
-				mainCamera.position = mainCamera.position + Random.insideUnitSphere * shake_intensity;
-				mainCamera.rotation = new Quaternion(
-					mainCamera.rotation.x + Random.Range (-shake_intensity,shake_intensity) * .2f,
-					mainCamera.rotation.y + Random.Range (-shake_intensity,shake_intensity) * .2f,
-					mainCamera.rotation.z + Random.Range (-shake_intensity,shake_intensity) * .2f,
-					mainCamera.rotation.w + Random.Range (-shake_intensity,shake_intensity) * .2f);
-				shake_intensity -= shake_decay;
-			}
 		}
 	}
 
@@ -190,39 +161,6 @@ public class PlayerCamera : Photon.PunBehaviour {
 		//Give back control to the main camera
 		cameraState = CameraState.Normal;
 		cutsceneCamera.gameObject.SetActive( false );
-	}
-
-	private void positionCamera ()
-	{
-		// Calculate the current rotation angles
-		float wantedRotationAngle = cameraTarget.eulerAngles.y + yRotationOffset;
-		float wantedHeight = cameraTarget.position.y + height;
-			
-		float currentRotationAngle = mainCamera.eulerAngles.y;
-		float currentHeight = mainCamera.position.y;
-		
-		// Damp the rotation around the y-axis
-		currentRotationAngle = Mathf.LerpAngle (currentRotationAngle, wantedRotationAngle, rotationDamping * Time.deltaTime);
-	
-		// Damp the height
-		currentHeight = Mathf.Lerp (currentHeight, wantedHeight, heightDamping * Time.deltaTime);
-	
-		// Convert the angle into a rotation
-		Quaternion currentRotation = Quaternion.Euler (0, currentRotationAngle, 0);
-		
-		// Set the position of the camera on the x-z plane to:
-		// distance meters behind the target
-		mainCamera.position = cameraTarget.position;
-		mainCamera.position -= currentRotation * Vector3.forward * distance;
-	
-		// Set the height of the camera
-		mainCamera.position = new Vector3( mainCamera.position.x, currentHeight, mainCamera.position.z );
-		
-		// Always look at the target
-		mainCamera.LookAt (cameraTarget);
-		
-		//Tilt the camera down
-		mainCamera.rotation = Quaternion.Euler( cameraXrotation, mainCamera.eulerAngles.y, mainCamera.eulerAngles.z );
 	}
 	
 	public void positionCameraNow ()
@@ -299,7 +237,6 @@ public class PlayerCamera : Photon.PunBehaviour {
 	public void playCutscene( CutsceneType type )
 	{
 		if( cutsceneCamera == null || !isAllowed() ) return;
-		if( playerController != null ) playerController.enablePlayerControl( false );
 		if( playerControl != null ) playerControl.enablePlayerControl( false );
 		cutsceneCamera.gameObject.SetActive( true );
 		cameraState = CameraState.Cutscene;
@@ -417,7 +354,6 @@ public class PlayerCamera : Photon.PunBehaviour {
 			mainCamera.transform.rotation = Quaternion.Euler( cutsceneCamera.eulerAngles.x, cutsceneCamera.eulerAngles.y, cutsceneCamera.eulerAngles.z );
 			cameraState = CameraState.Normal;
 			cutsceneCamera.gameObject.SetActive( false );
-			if( playerController != null ) playerController.enablePlayerControl( true );
 			if( playerControl != null ) playerControl.enablePlayerControl( true );
 		}
 
@@ -488,13 +424,6 @@ public class PlayerCamera : Photon.PunBehaviour {
 	/// <returns><c>true</c>, if allowed, <c>false</c> otherwise.</returns>
 	bool isAllowed()
 	{
-		if( GameManager.Instance.isMultiplayer() )
-		{
-			return this.photonView.isMine && playerAI == null;
-		}
-		else
-		{
-			return true;
-		}
+		return this.photonView.isMine && playerAI == null;
 	}
 }
