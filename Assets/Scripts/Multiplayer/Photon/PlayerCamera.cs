@@ -276,6 +276,7 @@ public class PlayerCamera : Photon.PunBehaviour {
 	{
 		if( !isAllowed() ) return;
 		this.isCameraLocked = isCameraLocked;
+		cmvc.enabled = !isCameraLocked;
 	}
 	
 	public void Shake()
