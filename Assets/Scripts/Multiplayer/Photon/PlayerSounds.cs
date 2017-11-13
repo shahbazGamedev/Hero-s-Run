@@ -113,7 +113,7 @@ public class PlayerSounds : MonoBehaviour {
 	{
 		if( groundType != "Water" )
 		{
-			audioSource.PlayOneShot( landGroundSound, 0.28f );
+			audioSource.PlayOneShot( landGroundSound );
 		}
 		else
 		{
