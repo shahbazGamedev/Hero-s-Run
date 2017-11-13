@@ -314,16 +314,16 @@ public sealed class ZombieController : Creature, ICreature {
 
 	void OnEnable()
 	{
-		PlayerController.playerStateChanged += PlayerStateChange;
+		PlayerControl.multiplayerStateChanged += MultiplayerStateChanged;
 	}
 
 	void OnDisable()
 	{
 		CancelInvoke( "groan" );
-		PlayerController.playerStateChanged -= PlayerStateChange;
+		PlayerControl.multiplayerStateChanged -= MultiplayerStateChanged;
 	}
 
-	void PlayerStateChange( PlayerCharacterState newState )
+	void MultiplayerStateChanged( PlayerCharacterState newState )
 	{
 		if( newState == PlayerCharacterState.Dying )
 		{
