@@ -182,7 +182,6 @@ public class PlayerRun : Photon.PunBehaviour {
 		}
 		else
 		{
-			Debug.LogError("PlayerRun error: could not find active speed multiplier of type " + type + " in activeSpeedMultipliersList.");
 			return null;
 		}
 	}
@@ -320,6 +319,12 @@ public class PlayerRun : Photon.PunBehaviour {
 		}
 		overallSpeedMultiplier = defaultOverallSpeedMultiplier;
 		overallSpeedMultiplier = overallSpeedMultiplier * getSpeedMultiplierByType(SpeedMultiplierType.Jumping).multiplier;
+
+		//The only speed multiplier we will keep is SHRINK. We don't want the player to suddenly accelerate
+		//when jumping while shrunk.
+		SpeedMultiplier sm = getActiveSpeedMultiplierByType( SpeedMultiplierType.Shrink );
+		if( sm != null ) overallSpeedMultiplier = overallSpeedMultiplier * sm.multiplier;
+
 		//Cap the overall speed multiplier to MAX_OVERALL_SPEED_MULTIPLIER
 		overallSpeedMultiplier = Mathf.Min( overallSpeedMultiplier, MAX_OVERALL_SPEED_MULTIPLIER );
 		runSpeed = levelRunStartSpeed * overallSpeedMultiplier;
