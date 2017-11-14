@@ -275,6 +275,17 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardArmor component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+			case CardName.Freeze:
+				CardFreeze cardFreeze = GetComponent<CardFreeze>();
+				if( cardFreeze != null )
+				{
+					cardFreeze.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardFreeze component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -378,6 +389,13 @@ public class CardHandler : MonoBehaviour {
 				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
 					return GetComponent<CardStasis>().isThereATargetWithinRange( caster.transform, level );
+				}
+			break;
+			//Freeze is effective whenever your opponent is far ahead of you
+			case CardName.Freeze:
+				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
+				{
+					return GetComponent<CardFreeze>().isThereATargetWithinRange( caster.transform, level );
 				}
 			break;
 			//The following cards are effective whenever your opponent is far ahead of you

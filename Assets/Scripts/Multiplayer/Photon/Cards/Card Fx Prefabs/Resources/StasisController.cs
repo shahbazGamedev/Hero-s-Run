@@ -81,7 +81,7 @@ public class StasisController : CardSpawnedObject {
 				//Display the Stasis secondary icon on the minimap
 				MiniMap.Instance.displaySecondaryIcon( affectedPlayerTransform.GetComponent<PhotonView>().viewID, (int) CardName.Stasis, spellDuration );
 
-				string tapInstructions = LocalizationManager.Instance.getText("CARD_STASIS_TAP_INSTRUCTIONS");
+				string tapInstructions = LocalizationManager.Instance.getText("CARD_TAP_INSTRUCTIONS");
 				if( isLocalPlayer ) HUDMultiplayer.hudMultiplayer.showTapInstructions( tapInstructions );
 
 				//We can now make the sphere visible and collidable

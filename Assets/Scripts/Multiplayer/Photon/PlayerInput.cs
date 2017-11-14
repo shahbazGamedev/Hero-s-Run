@@ -6,7 +6,7 @@ using Photon;
 public class PlayerInput : PunBehaviour {
 
 	PlayerControl playerControl;
-
+		public GameObject freezePS;
 	#region Swipe variables
     float minSwipeDistancePixels;
     bool touchStarted = false;
@@ -118,7 +118,7 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.N ) )
 		{
-			playerControl.playOmniToolAnimation( CardName.Sentry );
+			playerControl.playOmniToolAnimation( CardName.Freeze );
 		}
 		else if ( Input.GetKeyDown (KeyCode.O ) )
 		{
@@ -153,6 +153,15 @@ public class PlayerInput : PunBehaviour {
 		{
 			playerControl.doubleJump( 18f);
 		}
+		else if ( Input.GetKeyDown (KeyCode.W ) )
+		{
+			freeze();
+		}
+	}
+
+	void freeze()
+	{
+		Instantiate( freezePS, transform.TransformPoint( 0, 1f, 5f ), transform.rotation );
 	}
 
 	void handleSwipes()

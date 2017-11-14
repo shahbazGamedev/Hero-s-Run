@@ -33,7 +33,7 @@ public class CardSaleClient : MonoBehaviour {
 		//cardOnSaleList.Add(CardName.Health_Boost);
 		cardOnSaleList.Add(CardName.Shrink);
 		cardOnSaleList.Add(CardName.Shockwave);
-		cardOnSaleList.Add(CardName.Smoke_Bomb);
+		cardOnSaleList.Add(CardName.Freeze);
 
 		createCardsOnSale();
 

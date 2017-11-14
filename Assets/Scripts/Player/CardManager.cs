@@ -70,6 +70,7 @@ public enum CardName
 	Smoke_Bomb = 6,
 	Heal = 7,
 	Armor = 8,
+	Freeze = 9,
 
 	//Rare
 	Firewall = 100,
