@@ -34,7 +34,7 @@ public class ForceField : CardSpawnedObject {
 
 		//Adjust the height
 		float height = (float) data[2];
-		transform.localScale = new Vector3( 8f, height, 1f );
+		transform.localScale = new Vector3( 0.1f, height, 1f );
 
 		//Display the force field icon on the minimap
 		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
@@ -45,6 +45,7 @@ public class ForceField : CardSpawnedObject {
 		//We can now make the force field visible and collidable
 		GetComponent<MeshRenderer>().enabled = true;
 		GetComponent<BoxCollider>().enabled = true;
+		LeanTween.scaleX( gameObject, 8f, 0.33f ).setEaseOutQuart();
 
 		//The activation delay is so the caster can run through it before it becomes solid.
 		yield return new WaitForSeconds(delayBeforeActivation);
@@ -56,17 +57,29 @@ public class ForceField : CardSpawnedObject {
 
 		//Play looping particle effect
 		activeForceFieldFx.Play();
+
+		//Play energy sound loop
+		GetComponent<AudioSource>().Play();
 	}
 
 	void OnCollisionEnter(Collision collision)
 	{
 		//Play collision sound
 		GetComponent<AudioSource>().PlayOneShot( collisionSound );
-		if( collision.collider.CompareTag("Player") && collision.collider.name != casterName )
+		if( collision.collider.CompareTag("Player") )
+		{
+			if( collision.collider.name != casterName )
+			{
+				addSkillBonus( 25, "SKILL_BONUS_FORCE_FIELD" );
+			}
+		}
+ 		else if( collision.collider.CompareTag("Zombie") )
 		{
 			addSkillBonus( 25, "SKILL_BONUS_FORCE_FIELD" );
+			ICreature creatureController = collision.collider.GetComponent<ICreature>();
+			creatureController.knockback();
 		}
-  	}
+ 	}
 
 	public override void destroySpawnedObjectNow()
 	{
