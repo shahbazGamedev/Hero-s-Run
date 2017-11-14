@@ -416,6 +416,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 
 	public void resetRefillRate()
 	{
+		if( playerSpell.isCardActive(CardName.Supercharger) || playerRace.isPowerBoostActivated() ) return;
 		powerBar.resetRefillRate();
 	}
 

@@ -50,9 +50,17 @@ public class ResultsScreenHandler : MonoBehaviour {
 		Sprite playerIconSprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( pmd.playerIcon ).icon;
 
 		//Race time
-		TimeSpan ts = TimeSpan.FromSeconds( playerRace.raceDuration );
-		DateTime dt = new DateTime(ts.Ticks);
-		string raceDurationString = dt.ToString("mm:ss");
+		string raceDurationString;
+		if( playerRace.playerCrossedFinishLine )
+		{
+			TimeSpan ts = TimeSpan.FromSeconds( playerRace.raceDuration );
+			DateTime dt = new DateTime(ts.Ticks);
+			raceDurationString = dt.ToString("mm:ss");
+		}
+		else
+		{
+			raceDurationString = LocalizationManager.Instance.getText( "RESULTS_NOT_AVAILABLE" );
+		}
 		GameObject go = (GameObject)Instantiate(resultPrefab);
 		go.transform.SetParent(resultsHolder,false);
 		go.GetComponent<ResultEntry>().configureEntry( racePosition + 1, pmd.level, pmd.playerName, playerIconSprite, raceDurationString );

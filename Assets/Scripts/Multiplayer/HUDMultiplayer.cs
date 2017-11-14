@@ -26,6 +26,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	const float DELAY_WHEN_NOT_SHOWING_EMOTES = 9f;
 	const float DELAY_WHEN_SHOWING_EMOTES = 14f;
 	const float DELAY_WHEN_TESTING_EMOTES = 60f;
+	const float DELAY_WHEN_NOT_ALL_PLAYERS_ARRIVED = 6f;
 	PlayerRace localPlayerRace;
 	PlayerControl localPlayerControl;
 	[SerializeField] GameObject canvasGroupForFading;
@@ -228,10 +229,16 @@ public class HUDMultiplayer : MonoBehaviour {
 		float duration = 2.5f;
 		float elapsedTime = 0;
 		float startTimeScale = 1f;
-
 		//If the local player has crossed the finish line, don't delay any further and leave the room.
 		if( localPlayerRace.playerCrossedFinishLine )
 		{
+			//If we are here, it means that the 10 second end of race countdown has completed.
+			//The local player has crossed the finish line.
+			//Display the results.
+			//If opponents have not crossed the finish line at this time, their result will still be displayed, but
+			//their race duration will be "N/A".
+			StartCoroutine( displayResultsAndEmotesScreen( 0 ) );
+			yield return new WaitForSeconds( DELAY_WHEN_NOT_ALL_PLAYERS_ARRIVED );
 			GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 			PhotonNetwork.LeaveRoom();
 			yield break;
@@ -462,11 +469,9 @@ public class HUDMultiplayer : MonoBehaviour {
 		return minimapPhotonView;
 	}
 
-	public IEnumerator displayResultsAndEmotesScreen()
+	public IEnumerator displayResultsAndEmotesScreen( float displayDelay )
 	{
-		//The Victory message remains on screen for 2.25 seconds.
-		//So let's wait for 2.75 seconds before displaying the results and emotes panel.
-		yield return new WaitForSeconds( 2.75f );
+		yield return new WaitForSeconds( displayDelay );
 		resultsScreen.GetComponent<ResultsScreenHandler>().showResults();
 		resultsScreen.gameObject.SetActive( true );
 		showEmotePanel();
