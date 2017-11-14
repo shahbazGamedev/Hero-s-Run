@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
-public class HeroSelectionManager : MonoBehaviour {
+public class HeroSelectionManager : MonoBehaviour, IPointerDownHandler {
 
 	[Header("Hero Selection Manager")]
 	[SerializeField] GameObject voiceLinesPanel;
@@ -28,6 +29,12 @@ public class HeroSelectionManager : MonoBehaviour {
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		voiceLinesPanel.SetActive( !voiceLinesPanel.activeSelf );
+	}
+
+	public void OnPointerDown(PointerEventData eventData )
+	{
+		//If the player clicks on the voice line panel outside of the button area, dismiss the panel.
+		if( voiceLinesPanel.activeSelf ) voiceLinesPanel.SetActive( false );
 	}
 
 	IEnumerator loadScene(GameScenes value)
