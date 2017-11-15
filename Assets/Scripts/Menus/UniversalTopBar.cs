@@ -105,7 +105,7 @@ public class UniversalTopBar : MonoBehaviour {
 			break;
 
 			case GameScenes.LootBox:
-				showTopBar( true );
+				showTopBar( false );
 			break;
 
 			case GameScenes.Social:

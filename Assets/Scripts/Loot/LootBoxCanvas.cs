@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
+using UnityEngine.SceneManagement;
 
 public enum LootBoxState
 {
@@ -77,6 +78,7 @@ public class LootBoxCanvas : MonoBehaviour {
 	int lootBoxesOwned;
 	LootBoxOwnedData selectedLootBoxData;
 	Coroutine configureLootBoxCoroutine;
+	bool levelLoading = false;
 
 	void Start ()
 	{
@@ -476,6 +478,24 @@ public class LootBoxCanvas : MonoBehaviour {
 		lootBoxOwnedData.state = LootBoxState.UNLOCKED;
 		GameManager.Instance.playerInventory.serializePlayerInventory( true );
 		configureLootBox();
+	}
+
+
+	public void OnClickReturnToMainMenu()
+	{
+		StartCoroutine( loadScene(GameScenes.MainMenu) );
+	}
+
+	IEnumerator loadScene(GameScenes value)
+	{
+		if( !levelLoading )
+		{
+			UISoundManager.uiSoundManager.playButtonClick();
+			levelLoading = true;
+			Handheld.StartActivityIndicator();
+			yield return new WaitForSeconds(0);
+			SceneManager.LoadScene( (int)value );
+		}
 	}
 
 }
