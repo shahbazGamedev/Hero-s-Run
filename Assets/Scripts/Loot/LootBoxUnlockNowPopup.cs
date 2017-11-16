@@ -139,6 +139,7 @@ public class LootBoxUnlockNowPopup : MonoBehaviour {
 		lootBoxOwnedData.setUnlockStartTime( DateTime.UtcNow );
 		lootBoxOwnedData.state = LootBoxState.UNLOCKING;
 		GameManager.Instance.playerInventory.serializePlayerInventory( true );
+		lootBoxCanvas.updateRaceWonData();
 		OnClickHide();
 	}
 
@@ -171,7 +172,6 @@ public class LootBoxUnlockNowPopup : MonoBehaviour {
 		gameObject.SetActive( false );
 		//Show the canvas
 		lootBoxCanvas.gameObject.SetActive( true );
-		lootBoxCanvas.configureLootBox();
 	}
 	
 }

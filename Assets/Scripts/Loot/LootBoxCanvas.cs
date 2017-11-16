@@ -77,16 +77,16 @@ public class LootBoxCanvas : MonoBehaviour {
 	int currentIndex = -1;
 	int lootBoxesOwned;
 	LootBoxOwnedData selectedLootBoxData;
-	Coroutine configureLootBoxCoroutine;
 	bool levelLoading = false;
 
-	void Start ()
+	void Awake ()
 	{
 		Handheld.StopActivityIndicator();
 		radialTimerButton.setOnInitialClickCallback( OnInitialClick );
 		loadHero();
 		addLootBoxesForTesting ();
 		updateNumberOfLootBoxesReadyToOpen();
+		configureLootBox();
 	}
 	
 	void loadHero()
@@ -134,7 +134,6 @@ public class LootBoxCanvas : MonoBehaviour {
 		{
 			currentIndex = 0;
 		}
-		configureLootBox();
 	}
 
 	/// <summary>
@@ -159,6 +158,10 @@ public class LootBoxCanvas : MonoBehaviour {
 		}
 		updateNumberOfLootBoxesReadyToOpen();
 
+		//Destroy the previous loot box model
+		if( lootBox != null ) GameObject.Destroy( lootBox );
+		radialTimerButton.isActive = false;
+		radialTimerText.text = LocalizationManager.Instance.getText( "LOOT_BOX_OPENED" );
 	}
 
 	public void OpenRaceWonLootBoxImmediately()
@@ -166,6 +169,13 @@ public class LootBoxCanvas : MonoBehaviour {
 		LootBoxClientManager.Instance.requestLootBox( selectedLootBoxData.type );
 		GameManager.Instance.playerInventory.removeLootBoxAt( currentIndex );
 		updateNumberOfLootBoxesReadyToOpen();
+		//Destroy the previous loot box model
+		if( lootBox != null ) GameObject.Destroy( lootBox );
+		radialTimerButton.isActive = false;
+		radialTimerText.text = LocalizationManager.Instance.getText( "LOOT_BOX_OPENED" );
+		timeRemaining.SetActive( false );
+		timeToUnlockInformation.SetActive( false );
+		unlockInformation.SetActive( false );
 	}
 
 	public void OnInitialClick()
@@ -210,8 +220,8 @@ public class LootBoxCanvas : MonoBehaviour {
 
 	public void configureLootBox()
 	{
-		if( configureLootBoxCoroutine != null ) StopCoroutine( configureLootBoxCoroutine );
-		configureLootBoxCoroutine = StartCoroutine( StartConfigureLootBoxCoroutine() );
+		StopAllCoroutines();
+		StartCoroutine( StartConfigureLootBoxCoroutine() );
 	}
 
 	IEnumerator StartConfigureLootBoxCoroutine()
@@ -309,6 +319,12 @@ public class LootBoxCanvas : MonoBehaviour {
 		radialTimerText.text = LocalizationManager.Instance.getText( "LOOT_BOX_HOLD_OPEN" );
 	}
 
+	public void updateRaceWonData()
+	{
+		LootBoxData lootBoxData = getLootBoxData( LootBoxType.RACE_WON );
+		configureRaceWonUI( lootBoxData, selectedLootBoxData );
+	}
+
 	void configureRaceWonUI( LootBoxData lootBoxData, LootBoxOwnedData lootBoxOwnedData )
 	{
 		//Configure the UI
@@ -361,6 +377,8 @@ public class LootBoxCanvas : MonoBehaviour {
 	{
 		currentIndex--;
 		if( currentIndex < 0 ) currentIndex = lootBoxesOwned  - 1;
+		CancelInvoke( "hideFreeLootBoxExplanationText" );
+		hideFreeLootBoxExplanationText();
 		configureLootBox();
 	}
 
@@ -371,6 +389,8 @@ public class LootBoxCanvas : MonoBehaviour {
 		{
 			currentIndex = 0;
 		}
+		CancelInvoke( "hideFreeLootBoxExplanationText" );
+		hideFreeLootBoxExplanationText();
 		configureLootBox();
 	}
 	
