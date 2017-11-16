@@ -98,7 +98,6 @@ public class LootBoxCanvas : MonoBehaviour {
 			hero = GameObject.Instantiate( heroCharacter.skinPrefab, heroSpawnLocation.position, heroSpawnLocation.rotation );
 			hero.transform.SetParent( holder3D );
 			hero.transform.localScale = Vector3.one;
-			hero.AddComponent<HeroLootBoxInteractions>();
 		}
 	}
 

@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class HeroLootBoxInteractions : MonoBehaviour {
 
+	[SerializeField] AudioClip footStep;
+
 	void OnEnable()
 	{
 		LootBoxHandler.lootBoxEvent += LootBoxEvent;
@@ -21,5 +23,20 @@ public class HeroLootBoxInteractions : MonoBehaviour {
 				GetComponent<Animator>().SetTrigger("LootBoxLanded");
 				break;
 		}
+	}
+
+	public void Victory_win_start ( AnimationEvent eve )
+	{
+		//Not used.
+	}
+
+	public void Win_footstep_left ( AnimationEvent eve )
+	{
+		GetComponent<AudioSource>().PlayOneShot( footStep, 0.2f  );
+	}
+
+	public void Win_footstep_right ( AnimationEvent eve )
+	{
+		GetComponent<AudioSource>().PlayOneShot( footStep, 0.2f  );
 	}
 }
