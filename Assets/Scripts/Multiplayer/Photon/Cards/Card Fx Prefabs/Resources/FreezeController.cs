@@ -81,8 +81,8 @@ public class FreezeController : CardSpawnedObject {
 				//The Freeze has a limited lifespan which depends on the level of the Card.
 				float spellDuration = (float) data[1];
 				
-				//To do Adjust spell effects based on card duration. For now it works well with a value of 7.
-				spellDuration = 7f;
+				//TO DO Adjust spell effects based on card duration. For now it works well with a value of 6.5.
+				spellDuration = 6.5f;
 
 				affectedPlayerTransform.GetComponent<PlayerSpell>().displayCardTimerOnHUD(CardName.Stasis, spellDuration );
 				destroyIceCoroutine = StartCoroutine( destroyIce( spellDuration ) );
