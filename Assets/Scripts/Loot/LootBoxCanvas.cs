@@ -98,6 +98,7 @@ public class LootBoxCanvas : MonoBehaviour {
 			hero = GameObject.Instantiate( heroCharacter.skinPrefab, heroSpawnLocation.position, heroSpawnLocation.rotation );
 			hero.transform.SetParent( holder3D );
 			hero.transform.localScale = Vector3.one;
+			hero.AddComponent<HeroLootBoxInteractions>();
 		}
 	}
 
@@ -229,7 +230,8 @@ public class LootBoxCanvas : MonoBehaviour {
 		lootBox = GameObject.Instantiate( lootBoxData.lootBoxPrefab, lootBoxSpawnLocation.position, lootBoxSpawnLocation.rotation );
 		lootBox.transform.SetParent( holder3D );
 		lootBox.transform.localScale = new Vector3( lootBoxData.lootBoxPrefab.transform.localScale.x, lootBoxData.lootBoxPrefab.transform.localScale.y, lootBoxData.lootBoxPrefab.transform.localScale.z );
-		
+		lootBox.AddComponent<LootBoxHandler>();
+
 		radialTimerButton.isActive = true;
 		nextOneText.SetActive( false );
 		earnedForBaseText.gameObject.SetActive( false );
