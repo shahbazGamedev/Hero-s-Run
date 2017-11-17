@@ -5,20 +5,18 @@ using TMPro;
 
 public class CoopResultEntry : MonoBehaviour {
 
-	[SerializeField] TextMeshProUGUI racePositionText; //1<size=58><sup>st</sup></size>
 	[SerializeField] TextMeshProUGUI levelText;
 	[SerializeField] TextMeshProUGUI playerNameText;
 	//[SerializeField] Image playerFrame; //Not implemented
 	[SerializeField] Image playerIcon;
-	[SerializeField] TextMeshProUGUI raceDurationText;
+	[SerializeField] TextMeshProUGUI scoreText;
 	public GameObject emoteGameObject;
 
-	public void configureEntry( int racePosition, int level, string playerName, Sprite playerIconSprite, string raceDuration  )
+	public void configureEntry( int level, string playerName, Sprite playerIconSprite, string score  )
 	{
-		racePositionText.text = racePosition.ToString() + "<size=58><sup>st</sup></size>";
 		levelText.text = level.ToString();
 		playerNameText.text = playerName;
 		playerIcon.sprite = playerIconSprite;
-		raceDurationText.text = raceDuration;
+		scoreText.text = score;
 	}
 }

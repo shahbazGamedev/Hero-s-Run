@@ -1835,7 +1835,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				//Go into spectating mode.
 				//Display the message "SPECTATING partner name" on the HUD.
 				//Change the follow and aim of the main camera to your coop partner
-				HUDMultiplayer.hudMultiplayer.activateUserMessage( "SPECTATING " + coopPartner.name , 0, 2.5f );
+				if( photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.activateUserMessage( "SPECTATING " + coopPartner.name , 0, 2.5f );
 				CinemachineVirtualCamera cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
 				cmvc.m_Follow = coopPartner.transform;
 				cmvc.m_LookAt = coopPartner.transform;

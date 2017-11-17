@@ -4,15 +4,23 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Linq;
+using TMPro;
 
 public class CoopResultsScreenHandler : MonoBehaviour {
 
 	[SerializeField] RectTransform coopResultsHolder;
 	[SerializeField] GameObject coopResultPrefab;
+	[SerializeField] TextMeshProUGUI highestWavesBeaten;
 	public List<GameObject> emotesList = new List<GameObject>();
 
 	public void showResults()
 	{
+		int wavesBeaten = ZombieManager.numberOfZombieWavesTriggered - 1;
+		if( wavesBeaten < 0 ) wavesBeaten = 0;
+		string wavesBeatenString = LocalizationManager.Instance.getText( "COOP_RESULTS_WAVES_BEATEN" );
+		wavesBeatenString = string.Format( wavesBeatenString, wavesBeaten );
+		highestWavesBeaten.text = wavesBeatenString;
+
 		adjustSizeOfResultsScreen( PlayerRace.players.Count );
 
 		//Order by the race position of the players i.e. 1st place, 2nd place, and so forth
@@ -28,9 +36,10 @@ public class CoopResultsScreenHandler : MonoBehaviour {
 	void adjustSizeOfResultsScreen( int playerCount )
 	{
 		float titleHeight = coopResultPrefab.GetComponent<RectTransform>().sizeDelta.y; //It has the same height as a result entry
+		float wavesBeatenHeight = coopResultPrefab.GetComponent<RectTransform>().sizeDelta.y; //It has the same height as a result entry
 		float singleEntryHeight = coopResultPrefab.GetComponent<RectTransform>().sizeDelta.y;
 		float spacing = GetComponent<VerticalLayoutGroup>().spacing;
-		float desiredHeight = titleHeight + playerCount * ( singleEntryHeight + spacing );
+		float desiredHeight = titleHeight + wavesBeatenHeight + playerCount * ( singleEntryHeight + spacing );
 		coopResultsHolder.sizeDelta = new Vector2( coopResultsHolder.sizeDelta.x, desiredHeight );
 	}
 
@@ -63,7 +72,7 @@ public class CoopResultsScreenHandler : MonoBehaviour {
 		}
 		GameObject go = (GameObject)Instantiate(coopResultPrefab);
 		go.transform.SetParent(coopResultsHolder,false);
-		go.GetComponent<CoopResultEntry>().configureEntry( racePosition + 1, pmd.level, pmd.playerName, playerIconSprite, raceDurationString );
+		go.GetComponent<CoopResultEntry>().configureEntry( pmd.level, pmd.playerName, playerIconSprite, UnityEngine.Random.Range(0, 100000).ToString("N0") );
 		go.GetComponent<CoopResultEntry>().emoteGameObject.name = pmd.playerName;
 		emotesList.Add( go.GetComponent<CoopResultEntry>().emoteGameObject );
 	}
@@ -71,7 +80,7 @@ public class CoopResultsScreenHandler : MonoBehaviour {
 	public GameObject getEmoteGameObjectForPlayerNamed( string playerName )
 	{
 		GameObject emote = emotesList.Find( go => go.name == playerName);
-		if ( emote == null ) Debug.LogError("ResultsScreenHandler-could not find emote game object for player " + playerName );
+		if ( emote == null ) Debug.LogError("CoopResultsScreenHandler-could not find emote game object for player " + playerName );
 		return emote;
 	}
 }
