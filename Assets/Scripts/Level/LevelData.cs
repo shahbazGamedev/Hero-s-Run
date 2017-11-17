@@ -540,9 +540,20 @@ public class LevelData : MonoBehaviour {
 	/// Gets the sorted race track list. It is sorted in ascending order based on the number of trophies required.
 	/// </summary>
 	/// <returns>The sorted race track list.</returns>
-	public List<MultiplayerInfo> getSortedRaceTrackList()
+	/// <param name="excludeCoop">If set to <c>true</c> exclude coop tracks.</param>
+	public List<MultiplayerInfo> getSortedRaceTrackList( bool excludeCoop )
 	{
-		return multiplayerList.OrderBy( entry => entry.trophiesNeededToUnlock ).ToList();
+		if( excludeCoop )
+		{
+			//Return only non-coop tracks.
+			List<MultiplayerInfo> coopList = multiplayerList.FindAll( entry => entry.isCoop == false ).ToList();
+			return coopList.OrderBy( entry => entry.trophiesNeededToUnlock ).ToList();
+		}
+		else
+		{
+			//Return all tracks, including coop tracks.
+			return multiplayerList.OrderBy( entry => entry.trophiesNeededToUnlock ).ToList();
+		}
 	}
 
 	[System.Serializable]
