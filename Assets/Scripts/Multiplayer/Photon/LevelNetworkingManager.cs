@@ -245,6 +245,9 @@ public sealed class LevelNetworkingManager : PunBehaviour
 		//The emergency power boost is irrelevant if you are playing alone.
 		if( PlayerRace.players.Count == 1 ) return;
 
+		//The emergency power boost is irrelevant when playing in a coop mode since you're not racing.
+		if( GameManager.Instance.isCoopPlayMode() ) return;
+
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
 			PlayerRace pr = PlayerRace.players[i];

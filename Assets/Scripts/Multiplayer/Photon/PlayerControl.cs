@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.ImageEffects;
+using Cinemachine;
 
 public enum DeathType {
 		Alive = 0,
@@ -1806,7 +1807,50 @@ public class PlayerControl : Photon.PunBehaviour {
 	IEnumerator waitBeforeResurrecting ( float duration )
 	{
 		yield return new WaitForSeconds(duration);
-		LockstepManager.Instance.addActionToQueue( new LockstepManager.LockstepAction( LockstepActionType.RESURRECT, gameObject ) );
+		if( GameManager.Instance.isCoopPlayMode() )
+		{
+			//Coop is a 2-player mode. Find out who your partner is.
+			PlayerRace coopPartner = null;
+			for( int i = 0; i < PlayerRace.players.Count; i ++ )
+			{
+				if( PlayerRace.players[i] != playerRace ) 
+				{
+					coopPartner = PlayerRace.players[i];
+					break;
+				}
+			}
+			//Is your coop partner dead or alive?
+			if( coopPartner.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
+			{
+				//Your coop partner is also dead.
+				//This means game over.
+				//Display the results screen (players, score, and maximum wave reached) and return to the lobby.
+				PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
+				StartCoroutine( HUDMultiplayer.hudMultiplayer.leaveRoomShortly() );
+				StartCoroutine( HUDMultiplayer.hudMultiplayer.displayCoopResultsAndEmotesScreen( 0.25f ) );
+			}
+			else
+			{
+				//Your coop partner is alive.
+				//Go into spectating mode.
+				//Display the message "SPECTATING partner name" on the HUD.
+				//Change the follow and aim of the main camera to your coop partner
+				HUDMultiplayer.hudMultiplayer.activateUserMessage( "SPECTATING " + coopPartner.name , 0, 2.5f );
+				CinemachineVirtualCamera cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
+				cmvc.m_Follow = coopPartner.transform;
+				cmvc.m_LookAt = coopPartner.transform;
+	
+				//This player will resurrect when the next wave starts.
+
+			}
+		//Next line is needed until coop code is finished.
+		//LockstepManager.Instance.addActionToQueue( new LockstepManager.LockstepAction( LockstepActionType.RESURRECT, gameObject ) );
+		}
+		else
+		{
+			//Resurrect at the next lock step.
+			LockstepManager.Instance.addActionToQueue( new LockstepManager.LockstepAction( LockstepActionType.RESURRECT, gameObject ) );
+		}
 	}
 
 	void changeColliderAxis( Axis axis )

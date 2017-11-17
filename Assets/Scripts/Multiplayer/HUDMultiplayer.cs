@@ -56,8 +56,10 @@ public class HUDMultiplayer : MonoBehaviour {
 	[SerializeField] Image damageTakenEffect;
 	[Header("Stasis Tap Instructions")]
 	[SerializeField] GameObject stasisTapInstructions;
-	[Header("Results Screen")]
+	[Header("Results Screen - not coop")]
 	[SerializeField] GameObject resultsScreen;
+	[Header("Results Screen - coop")]
+	[SerializeField] GameObject coopResultsScreen;
 
 	#region Other variables
 	GenerateLevel generateLevel;
@@ -92,6 +94,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		goMessageText.gameObject.SetActive( false );
 		canvasGroupForFading.GetComponent<CanvasGroup>().alpha = 0;
 		resultsScreen.GetComponent<CanvasGroup>().alpha = 0;
+		coopResultsScreen.GetComponent<CanvasGroup>().alpha = 0;
 	}
 
 	public void registerLocalPlayer ( Transform localPlayer )
@@ -295,7 +298,7 @@ public class HUDMultiplayer : MonoBehaviour {
     	}
 		yield return new WaitForEndOfFrame();
 		#endif
-		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
+		if( !GameManager.Instance.isCoopPlayMode() ) GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 		PhotonNetwork.LeaveRoom();
 	}
 
@@ -480,6 +483,19 @@ public class HUDMultiplayer : MonoBehaviour {
 	public GameObject getEmoteGameObjectForPlayerNamed( string playerName )
 	{
 		return resultsScreen.GetComponent<ResultsScreenHandler>().getEmoteGameObjectForPlayerNamed( playerName );
+	}
+
+	public IEnumerator displayCoopResultsAndEmotesScreen( float displayDelay )
+	{
+		yield return new WaitForSeconds( displayDelay );
+		coopResultsScreen.GetComponent<CoopResultsScreenHandler>().showResults();
+		coopResultsScreen.gameObject.SetActive( true );
+		showEmotePanel();
+	}
+
+	public GameObject getCoopEmoteGameObjectForPlayerNamed( string playerName )
+	{
+		return coopResultsScreen.GetComponent<CoopResultsScreenHandler>().getEmoteGameObjectForPlayerNamed( playerName );
 	}
 
 }
