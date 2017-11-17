@@ -482,7 +482,14 @@ public class HUDMultiplayer : MonoBehaviour {
 
 	public GameObject getEmoteGameObjectForPlayerNamed( string playerName )
 	{
-		return resultsScreen.GetComponent<ResultsScreenHandler>().getEmoteGameObjectForPlayerNamed( playerName );
+		if( GameManager.Instance.isCoopPlayMode() )
+		{
+			return coopResultsScreen.GetComponent<CoopResultsScreenHandler>().getEmoteGameObjectForPlayerNamed( playerName );
+		}
+		else
+		{
+			return resultsScreen.GetComponent<ResultsScreenHandler>().getEmoteGameObjectForPlayerNamed( playerName );
+		}
 	}
 
 	public IEnumerator displayCoopResultsAndEmotesScreen( float displayDelay )
@@ -491,11 +498,6 @@ public class HUDMultiplayer : MonoBehaviour {
 		coopResultsScreen.GetComponent<CoopResultsScreenHandler>().showResults();
 		coopResultsScreen.gameObject.SetActive( true );
 		showEmotePanel();
-	}
-
-	public GameObject getCoopEmoteGameObjectForPlayerNamed( string playerName )
-	{
-		return coopResultsScreen.GetComponent<CoopResultsScreenHandler>().getEmoteGameObjectForPlayerNamed( playerName );
 	}
 
 }
