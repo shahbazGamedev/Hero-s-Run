@@ -53,12 +53,17 @@ public enum GameMode {
 
 public enum PlayMode {
 	
-	PlayTwoPlayers = 1,
-	PlayWithFriends = 2,
-	PlayAgainstEnemy = 3,
-	PlayAlone = 4,
-	PlayThreePlayers = 5,
-	PlayAgainstTwoEnemies = 6
+	PlayAlone = 1,
+	PlayAgainstOnePlayer = 2,
+	PlayAgainstTwoPlayers = 3,
+
+	PlayAgainstOneFriend = 4,
+
+	PlayAgainstOneBot = 6,
+	PlayAgainstTwoBots = 7,
+
+	PlayCoopWithOnePlayer = 8,
+	PlayCoopWithOneBot = 9
 
 }
 
@@ -95,7 +100,7 @@ public class GameManager {
 	public PlayerVoiceLines playerVoiceLines;
 	public PlayerConfiguration playerConfiguration;
 	public PlayerDebugConfiguration playerDebugConfiguration;
-	PlayMode playMode = PlayMode.PlayTwoPlayers;
+	PlayMode playMode;
 
 	public static GameManager Instance
 	{
@@ -133,8 +138,9 @@ public class GameManager {
 		Debug.Log("GameManager-setPlayMode: new mode is " + playMode );
 		switch ( playMode )
 		{
-			case PlayMode.PlayAgainstTwoEnemies:
-			case PlayMode.PlayAgainstEnemy:
+			case PlayMode.PlayAgainstOneBot:
+			case PlayMode.PlayAgainstTwoBots:
+			case PlayMode.PlayCoopWithOneBot:
 				LevelManager.Instance.setNumberOfPlayersRequired( 1 );
 			break;
 
@@ -142,22 +148,23 @@ public class GameManager {
 				LevelManager.Instance.setNumberOfPlayersRequired( 1 );
 			break;
 
-			case PlayMode.PlayTwoPlayers:
+			case PlayMode.PlayAgainstOnePlayer:
 				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
 			break;
 
-			case PlayMode.PlayThreePlayers:
+			case PlayMode.PlayAgainstTwoPlayers:
 				LevelManager.Instance.setNumberOfPlayersRequired( 3 );
 			break;
 
-			case PlayMode.PlayWithFriends:
+			case PlayMode.PlayAgainstOneFriend:
+			case PlayMode.PlayCoopWithOnePlayer:		
 				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
 			break;
 		}
 		// we don't join the lobby. There is no need to join a lobby to get the list of rooms.
 		PhotonNetwork.autoJoinLobby = false;
 		//Are we playing online or doing an offline PvE/solo match?
-		if( getPlayMode() == PlayMode.PlayAgainstEnemy || getPlayMode() == PlayMode.PlayAgainstTwoEnemies || getPlayMode() == PlayMode.PlayAlone )
+		if( getPlayMode() == PlayMode.PlayAgainstOneBot || getPlayMode() == PlayMode.PlayAgainstTwoBots || getPlayMode() == PlayMode.PlayAlone || getPlayMode()  == PlayMode.PlayCoopWithOneBot )
 		{
 			//PvE is an offline mode. We will not connect. We will also set Photon to offline.
 			if( PhotonNetwork.connected ) PhotonNetwork.Disconnect();
@@ -188,12 +195,17 @@ public class GameManager {
 	}
 
 	/// <summary>
-	/// Returns true for the following play modes: 2-player, 3-player, and play with friends.
+	/// Returns true for the following play modes: PlayAgainstOnePlayer, PlayAgainstTwoPlayers, PlayAgainstOneFriend, and PlayCoopWithOnePlayer.
 	/// </summary>
-	/// <returns><c>true</c>, for the following play modes: 2-player, 3-player and play with friends, <c>false</c> otherwise.</returns>
+	/// <returns><c>true</c>, for the following play modes: PlayAgainstOnePlayer, PlayAgainstTwoPlayers, PlayAgainstOneFriend, and PlayCoopWithOnePlayer</returns>
 	public bool isOnlinePlayMode()
 	{
-		return playMode == PlayMode.PlayTwoPlayers || playMode == PlayMode.PlayThreePlayers || playMode == PlayMode.PlayWithFriends;
+		return playMode == PlayMode.PlayAgainstOnePlayer || playMode == PlayMode.PlayAgainstTwoPlayers || playMode == PlayMode.PlayAgainstOneFriend || playMode == PlayMode.PlayCoopWithOnePlayer;
+	}
+
+	public bool isCoopPlayMode()
+	{
+		return playMode == PlayMode.PlayCoopWithOneBot || playMode == PlayMode.PlayCoopWithOnePlayer;
 	}
 
 	//Note the version number stored in version.txt should match the bundle version in PlayerSettings.

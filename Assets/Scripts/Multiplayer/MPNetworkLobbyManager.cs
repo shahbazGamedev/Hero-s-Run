@@ -41,7 +41,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	void Start()
 	{
 		matchmakingManager = GameObject.FindGameObjectWithTag("Matchmaking").GetComponent<MatchmakingManager>();
-		if( GameManager.Instance.getPlayMode() == PlayMode.PlayWithFriends )
+		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
 		{
 			matchmakingManager.setRemotePlayerData( 1, LevelManager.Instance.matchData.sender, LevelManager.Instance.matchData.level, LevelManager.Instance.matchData.playerIcon );
 			ChatMessageHandler.MatchData md = LevelManager.Instance.matchData;
@@ -68,11 +68,11 @@ public class MPNetworkLobbyManager : PunBehaviour
 			//Do not call PhotonNetwork.ConnectUsingSettings(...) as it does not make sense when playing offline.
 			//The method tryToJoinRoom will behave as expected even when not connected.
 			tryToJoinRoom();
-			if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstEnemy )
+			if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneBot )
 			{
 				setUpBot();
 			}
-			else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoEnemies )
+			else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoBots )
 			{
 				setUpBots();
 			}
@@ -159,7 +159,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 	    	setConnectionProgressOnTryToJoinRoom();
 
-			if( GameManager.Instance.getPlayMode() == PlayMode.PlayWithFriends )
+			if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
 			{
 				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRaceTrackByName( LevelManager.Instance.matchData.raceTrackName ) );
 				RoomOptions roomOptions = new RoomOptions();
@@ -188,11 +188,11 @@ public class MPNetworkLobbyManager : PunBehaviour
 	{
 		switch ( GameManager.Instance.getPlayMode() )
 		{
-			case PlayMode.PlayAgainstEnemy:
+			case PlayMode.PlayAgainstOneBot:
 				matchmakingManager.setConnectionProgress( "Setting up Player vs. AI race" );   
 			break;
 
-			case PlayMode.PlayAgainstTwoEnemies:
+			case PlayMode.PlayAgainstTwoBots:
 				matchmakingManager.setConnectionProgress( "Setting up Player vs. Two AI race" );   
 			break;
 
@@ -200,15 +200,15 @@ public class MPNetworkLobbyManager : PunBehaviour
 				matchmakingManager.setConnectionProgress( "Playing alone" );   
 			break;
 
-			case PlayMode.PlayTwoPlayers:
+			case PlayMode.PlayAgainstOnePlayer:
 				matchmakingManager.setConnectionProgress( "Looking for worthy opponent ..." );   
 			break;
 
-			case PlayMode.PlayThreePlayers:
+			case PlayMode.PlayAgainstTwoPlayers:
 				matchmakingManager.setConnectionProgress( "Looking for worthy opponents ..." );   
 			break;
 
-			case PlayMode.PlayWithFriends:
+			case PlayMode.PlayAgainstOneFriend:
 				matchmakingManager.setConnectionProgress( "Waiting for friend to join ..." );   
 			break;
 
@@ -258,7 +258,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	{
 		switch ( GameManager.Instance.getPlayMode() )
 		{
-			case PlayMode.PlayAgainstEnemy:
+			case PlayMode.PlayAgainstOneBot:
 				//PlayerPosition 3 is the center lane.
 				playerCustomProperties.Add("PlayerPosition", 3 );
 				PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
@@ -267,7 +267,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 				//Note: In this case, LoadArena() gets called by displayBotInfo
 			break;
 
-			case PlayMode.PlayAgainstTwoEnemies:
+			case PlayMode.PlayAgainstTwoBots:
 				//PlayerPosition 3 is the center lane.
 				playerCustomProperties.Add("PlayerPosition", 3 );
 				PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
@@ -285,7 +285,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 				//Note: In this case, LoadArena() never gets called. We load the level directly.
 			break;
 
-			case PlayMode.PlayTwoPlayers:
+			case PlayMode.PlayAgainstOnePlayer:
 				foreach(PhotonPlayer player in PhotonNetwork.playerList)
 				{
 					if( !player.IsLocal )
@@ -300,7 +300,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 				//Note: In this case, LoadArena() gets called when the remote player connects
 			break;
 
-			case PlayMode.PlayThreePlayers:
+			case PlayMode.PlayAgainstTwoPlayers:
 				foreach(PhotonPlayer player in PhotonNetwork.playerList)
 				{
 					if( !player.IsLocal )
@@ -315,7 +315,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 				//Note: In this case, LoadArena() gets called when the remote player connects
 			break;
 
-			case PlayMode.PlayWithFriends:
+			case PlayMode.PlayAgainstOneFriend:
 				foreach(PhotonPlayer player in PhotonNetwork.playerList)
 				{
 					if( !player.IsLocal )

@@ -57,13 +57,13 @@ public class TrophyManager : MonoBehaviour {
 	public bool canEarnTrophies()
 	{
 		PlayMode playMode = GameManager.Instance.getPlayMode();
-		return Debug.isDebugBuild || playMode == PlayMode.PlayTwoPlayers || playMode == PlayMode.PlayThreePlayers;
+		return Debug.isDebugBuild || playMode == PlayMode.PlayAgainstOnePlayer || playMode == PlayMode.PlayAgainstTwoPlayers;
 	}
 
 	public int getTrophiesEarned( PlayMode playMode, int racePosition, int playersTrophies, int opponentTrophies )
 	{
 		int trophies = 0;
-		if( playMode == PlayMode.PlayTwoPlayers || playMode == PlayMode.PlayThreePlayers )
+		if( playMode == PlayMode.PlayAgainstOnePlayer || playMode == PlayMode.PlayAgainstTwoPlayers )
 		{
 			if( playersTrophies == opponentTrophies )
 			{
@@ -88,7 +88,7 @@ public class TrophyManager : MonoBehaviour {
 			{
 				trophies = MAX_CHANGE_IN_TROPHIES;
 			}
-			else if( playMode == PlayMode.PlayAgainstEnemy || playMode == PlayMode.PlayAgainstTwoEnemies )
+			else if( playMode == PlayMode.PlayAgainstOneBot || playMode == PlayMode.PlayAgainstTwoBots )
 			{
 				if( racePosition == 1 )
 				{
@@ -99,7 +99,7 @@ public class TrophyManager : MonoBehaviour {
 					trophies = -BASE_TROPHIES;
 				}
 			}
-			else if( playMode == PlayMode.PlayWithFriends )
+			else if( playMode == PlayMode.PlayAgainstOneFriend )
 			{
 				if( racePosition == 1 )
 				{

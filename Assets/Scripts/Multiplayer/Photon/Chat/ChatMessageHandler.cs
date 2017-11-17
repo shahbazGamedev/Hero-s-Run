@@ -184,7 +184,7 @@ public class ChatMessageHandler {
 	public void startMatch()
 	{
 		//Since we are skipping the PlayModes scene, make sure we set the play mode.
-		GameManager.Instance.setPlayMode(PlayMode.PlayWithFriends);
+		GameManager.Instance.setPlayMode(PlayMode.PlayAgainstOneFriend);
 		SceneManager.LoadScene( (int) GameScenes.Matchmaking );
 	}
 

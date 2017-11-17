@@ -226,9 +226,7 @@ public class PlayerSpell : PunBehaviour {
 		}
 
 		//For the player affected by Linked Fate, change the color of his icon on the map
-		//The local player does not have an icon on the minimap.
-		//If a bot cast the linked fate spell, do not attempt to change the icon color since it does not exist.
-		if( isCardActive(CardName.Linked_Fate) &&  GameManager.Instance.getPlayMode() != PlayMode.PlayAgainstEnemy ) MiniMap.Instance.changeColorOfRadarObject( GetComponent<PlayerControl>(), Color.magenta );
+		if( isCardActive(CardName.Linked_Fate) ) MiniMap.Instance.changeColorOfRadarObject( GetComponent<PlayerControl>(), Color.magenta );
 
 		//Cancel the spell once the duration has run out
 		Invoke("cancelLinkedFateSpell", spellDuration );
@@ -238,7 +236,7 @@ public class PlayerSpell : PunBehaviour {
 	void cancelLinkedFateSpell()
 	{
 		CancelInvoke( "cancelLinkedFateSpell" );
-		if( isCardActive(CardName.Linked_Fate) &&  GameManager.Instance.getPlayMode() != PlayMode.PlayAgainstEnemy ) MiniMap.Instance.changeColorOfRadarObject( GetComponent<PlayerControl>(), Color.white );
+		if( isCardActive(CardName.Linked_Fate) ) MiniMap.Instance.changeColorOfRadarObject( GetComponent<PlayerControl>(), Color.white );
 		castLinkedFate = false;
 		removeActiveCard( CardName.Linked_Fate );
 	}
@@ -519,7 +517,7 @@ public class PlayerSpell : PunBehaviour {
 					PlayerRace.players[i].GetComponent<PlayerControl>().killPlayer( DeathType.Obstacle );
 					playerControl.incrementKillCounter();
 					//Reset the color
-					if( GameManager.Instance.getPlayMode() != PlayMode.PlayAgainstEnemy) MiniMap.Instance.changeColorOfRadarObject( PlayerRace.players[i].GetComponent<PlayerControl>(), Color.white );
+					MiniMap.Instance.changeColorOfRadarObject( PlayerRace.players[i].GetComponent<PlayerControl>(), Color.white );
 				}
 			}
 		}

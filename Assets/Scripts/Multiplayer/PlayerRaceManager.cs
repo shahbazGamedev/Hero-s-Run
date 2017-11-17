@@ -128,7 +128,7 @@ public class PlayerRaceManager {
 				GameManager.Instance.playerProfile.setLastMatchWonTime( DateTime.UtcNow );
 			}
 			//The victor is given coins but only in certain play modes.
-			if( GameManager.Instance.getPlayMode() == PlayMode.PlayTwoPlayers || GameManager.Instance.getPlayMode() == PlayMode.PlayThreePlayers )
+			if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOnePlayer || GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoPlayers )
 			{
 				int coinsAwardedOnVictory = LevelManager.Instance.getSelectedCircuit().coinsAwardedOnVictory;
 				GameManager.Instance.playerInventory.addCoins( coinsAwardedOnVictory );

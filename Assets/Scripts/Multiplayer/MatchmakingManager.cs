@@ -98,11 +98,11 @@ public class MatchmakingManager : MonoBehaviour {
 			//If the player is playing alone or against AI, the race track has been selected in
 			//the circuit selection screen.
 			//If the player is inviting a friend, they will race in a track based on the inviter's number of trophies.
-			if( GameManager.Instance.getPlayMode() == PlayMode.PlayTwoPlayers || GameManager.Instance.getPlayMode() == PlayMode.PlayThreePlayers )
+			if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOnePlayer || GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoPlayers )
 			{
 				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomLevel() );
 			}
-			else if( GameManager.Instance.getPlayMode() == PlayMode.PlayWithFriends )
+			else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
 			{
 				//Use the race track name saved in the match data
 				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRaceTrackByName( LevelManager.Instance.matchData.raceTrackName ) );
@@ -124,16 +124,16 @@ public class MatchmakingManager : MonoBehaviour {
 				singlePlayerPanel.SetActive( true );
 			break;
 
-			case PlayMode.PlayAgainstEnemy:
-			case PlayMode.PlayTwoPlayers:
-			case PlayMode.PlayWithFriends:
+			case PlayMode.PlayAgainstOneBot:
+			case PlayMode.PlayAgainstOnePlayer:
+			case PlayMode.PlayAgainstOneFriend:
 				twoPlayerPanel.SetActive( true );
 				//Use default values for remote player portrait until he connects
 				setRemotePlayerData( 1, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
 			break;
 
-			case PlayMode.PlayAgainstTwoEnemies:
-			case PlayMode.PlayThreePlayers:
+			case PlayMode.PlayAgainstTwoBots:
+			case PlayMode.PlayAgainstTwoPlayers:
 				threePlayerPanel.SetActive( true );
 				//Use default values for remote player portraits until they connect
 				setRemotePlayerData( 1, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
@@ -155,16 +155,16 @@ public class MatchmakingManager : MonoBehaviour {
 				playerIcon1P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 			break;
 
-			case PlayMode.PlayAgainstEnemy:
-			case PlayMode.PlayTwoPlayers:
-			case PlayMode.PlayWithFriends:
+			case PlayMode.PlayAgainstOneBot:
+			case PlayMode.PlayAgainstOnePlayer:
+			case PlayMode.PlayAgainstOneFriend:
 				playerName2P.text = GameManager.Instance.playerProfile.getUserName();
 				playerIcon2P.GetComponent<Outline>().effectColor = frameColor;
 				playerIcon2P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 			break;
 
-			case PlayMode.PlayAgainstTwoEnemies:
-			case PlayMode.PlayThreePlayers:
+			case PlayMode.PlayAgainstTwoBots:
+			case PlayMode.PlayAgainstTwoPlayers:
 				playerName3P.text = GameManager.Instance.playerProfile.getUserName();
 				playerIcon3P.GetComponent<Outline>().effectColor = frameColor;
 				playerIcon3P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
@@ -188,16 +188,16 @@ public class MatchmakingManager : MonoBehaviour {
 
 		switch ( GameManager.Instance.getPlayMode() )
 		{
-			case PlayMode.PlayAgainstEnemy:
-			case PlayMode.PlayTwoPlayers:
-			case PlayMode.PlayWithFriends:
+			case PlayMode.PlayAgainstOneBot:
+			case PlayMode.PlayAgainstOnePlayer:
+			case PlayMode.PlayAgainstOneFriend:
 				remotePlayer1Name2P.text = name;
 				remotePlayer1Icon2P.GetComponent<Outline>().effectColor = frameColor;
 				remotePlayer1Icon2P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( iconId ).icon;
 			break;
 
-			case PlayMode.PlayAgainstTwoEnemies:
-			case PlayMode.PlayThreePlayers:
+			case PlayMode.PlayAgainstTwoBots:
+			case PlayMode.PlayAgainstTwoPlayers:
 				if( index == 1 )
 				{
 					remotePlayer1Name3P.text = name;
