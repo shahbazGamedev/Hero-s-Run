@@ -107,6 +107,10 @@ public class MatchmakingManager : MonoBehaviour {
 				//Use the race track name saved in the match data
 				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRaceTrackByName( LevelManager.Instance.matchData.raceTrackName ) );
 			}
+			else if( GameManager.Instance.isCoopPlayMode() )
+			{
+				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomCoopLevel() );
+			}
 			configureCircuitData( LevelManager.Instance.getSelectedCircuit().circuitInfo );
 			endOfGameCanvas.SetActive( false );
 		}
@@ -127,7 +131,9 @@ public class MatchmakingManager : MonoBehaviour {
 			case PlayMode.PlayAgainstOneBot:
 			case PlayMode.PlayAgainstOnePlayer:
 			case PlayMode.PlayAgainstOneFriend:
-				twoPlayerPanel.SetActive( true );
+			case PlayMode.PlayCoopWithOneBot:
+			case PlayMode.PlayCoopWithOnePlayer:
+					twoPlayerPanel.SetActive( true );
 				//Use default values for remote player portrait until he connects
 				setRemotePlayerData( 1, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
 			break;
@@ -158,6 +164,8 @@ public class MatchmakingManager : MonoBehaviour {
 			case PlayMode.PlayAgainstOneBot:
 			case PlayMode.PlayAgainstOnePlayer:
 			case PlayMode.PlayAgainstOneFriend:
+			case PlayMode.PlayCoopWithOneBot:
+			case PlayMode.PlayCoopWithOnePlayer:
 				playerName2P.text = GameManager.Instance.playerProfile.getUserName();
 				playerIcon2P.GetComponent<Outline>().effectColor = frameColor;
 				playerIcon2P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
@@ -191,6 +199,8 @@ public class MatchmakingManager : MonoBehaviour {
 			case PlayMode.PlayAgainstOneBot:
 			case PlayMode.PlayAgainstOnePlayer:
 			case PlayMode.PlayAgainstOneFriend:
+			case PlayMode.PlayCoopWithOneBot:
+			case PlayMode.PlayCoopWithOnePlayer:
 				remotePlayer1Name2P.text = name;
 				remotePlayer1Icon2P.GetComponent<Outline>().effectColor = frameColor;
 				remotePlayer1Icon2P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( iconId ).icon;

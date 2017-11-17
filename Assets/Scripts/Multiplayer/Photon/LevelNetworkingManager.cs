@@ -104,8 +104,8 @@ public sealed class LevelNetworkingManager : PunBehaviour
 	
 	void createBot()
 	{
-		//In the play against enemy mode, the player plays offline against a bot.
-		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneBot )
+		//the player plays offline against a bot or with a bot.
+		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneBot || GameManager.Instance.getPlayMode() == PlayMode.PlayCoopWithOneBot )
 		{
 			object[] dataBot1 = new object[1];
 			dataBot1[0] = LevelManager.Instance.selectedBotHeroIndex;

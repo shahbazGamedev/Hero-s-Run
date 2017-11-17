@@ -426,7 +426,7 @@ public class LevelData : MonoBehaviour {
 
 	/// <summary>
 	/// Gets a random level excluding level zero which is the training level.
-	/// If 'show debug info' is set to true, it will ALWAYS return level 2 to facilitate online testing.
+	/// For testing, use the override in the debug menu to specify which sector you want to play in.
 	/// </summary>
 	/// <returns>The random level.</returns>
 	public MultiplayerInfo getRandomLevel()
@@ -441,6 +441,34 @@ public class LevelData : MonoBehaviour {
 			//0 is the training level. We want to exclude it.
 			int random = Random.Range( 1, multiplayerList.Count);
 			return multiplayerList[random];
+		}
+	}
+
+	/// <summary>
+	/// Gets a random coop level.
+	/// For testing, use the override in the debug menu to specify which sector you want to play in.
+	/// </summary>
+	/// <returns>The random level.</returns>
+	public MultiplayerInfo getRandomCoopLevel()
+	{
+		if( GameManager.Instance.playerDebugConfiguration.getOverrideSector() != -1 )
+		{
+			//For testing, use the override to specify which sector you want to play in
+			return multiplayerList[GameManager.Instance.playerDebugConfiguration.getOverrideSector()];
+		}
+		else
+		{
+			List<MultiplayerInfo> coopList = multiplayerList.FindAll( entry => entry.isCoop == true ).ToList();
+			if( coopList.Count > 0 )
+			{
+				int random = Random.Range( 0, coopList.Count);
+				return coopList[random];
+			}
+			else
+			{
+				Debug.LogError("LevelData-getRandomCoopLevel was called but no MultiplayerInfo with isCoop set to true has been found. Returning null." );
+				return null;
+			}
 		}
 	}
 
@@ -561,8 +589,8 @@ public class LevelData : MonoBehaviour {
 		public int trophiesNeededToUnlock;
 		[Tooltip("Coins awarded on victory. This number varies per track.")]
 		public int coinsAwardedOnVictory;
-		[Tooltip("Set to true if you want zombies. You also need to add a ZombieTrigger component to each tile that has a zombie wave and configure it.")]
-		public bool hasZombies = false;
+		[Tooltip("Set to true if this level if for the coop mode. You also need to add a ZombieTrigger component to each tile that has a zombie wave and configure it.")]
+		public bool isCoop = false;
 		
 	}
 

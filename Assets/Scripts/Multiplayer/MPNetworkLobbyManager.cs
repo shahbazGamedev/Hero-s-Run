@@ -68,7 +68,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 			//Do not call PhotonNetwork.ConnectUsingSettings(...) as it does not make sense when playing offline.
 			//The method tryToJoinRoom will behave as expected even when not connected.
 			tryToJoinRoom();
-			if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneBot )
+			if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneBot || GameManager.Instance.getPlayMode() == PlayMode.PlayCoopWithOneBot )
 			{
 				setUpBot();
 			}
@@ -192,6 +192,10 @@ public class MPNetworkLobbyManager : PunBehaviour
 				matchmakingManager.setConnectionProgress( "Setting up Player vs. AI race" );   
 			break;
 
+			case PlayMode.PlayCoopWithOneBot:
+				matchmakingManager.setConnectionProgress( "Setting up Coop with AI race" );   
+			break;
+
 			case PlayMode.PlayAgainstTwoBots:
 				matchmakingManager.setConnectionProgress( "Setting up Player vs. Two AI race" );   
 			break;
@@ -202,6 +206,10 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 			case PlayMode.PlayAgainstOnePlayer:
 				matchmakingManager.setConnectionProgress( "Looking for worthy opponent ..." );   
+			break;
+
+			case PlayMode.PlayCoopWithOnePlayer:
+				matchmakingManager.setConnectionProgress( "Looking for worthy coop partner ..." );   
 			break;
 
 			case PlayMode.PlayAgainstTwoPlayers:
@@ -259,6 +267,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		switch ( GameManager.Instance.getPlayMode() )
 		{
 			case PlayMode.PlayAgainstOneBot:
+			case PlayMode.PlayCoopWithOneBot:
 				//PlayerPosition 3 is the center lane.
 				playerCustomProperties.Add("PlayerPosition", 3 );
 				PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
@@ -286,6 +295,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 			break;
 
 			case PlayMode.PlayAgainstOnePlayer:
+			case PlayMode.PlayCoopWithOnePlayer:
 				foreach(PhotonPlayer player in PhotonNetwork.playerList)
 				{
 					if( !player.IsLocal )

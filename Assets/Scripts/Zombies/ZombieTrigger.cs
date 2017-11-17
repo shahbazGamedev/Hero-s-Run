@@ -18,7 +18,7 @@ public class ZombieTrigger : MonoBehaviour {
 	
 	public void activateNextWave()
 	{
-		if( !LevelManager.Instance.getSelectedCircuit().hasZombies ) return;
+		if( !LevelManager.Instance.getSelectedCircuit().isCoop ) return;
 
 		//You need to enable hasZombies in Level Data for the zombie manager to be created as it is optional.
 		if( zombieManager == null ) return;
