@@ -37,6 +37,10 @@ public sealed class LevelNetworkingManager : PunBehaviour
 	const float REQUIRED_POWER_BOOST_DISTANCE = 100f;
 	#endregion
 
+	#region Coop
+	const float COOP_DELAY_BEFORE_RESURRECTING = 1.5f;
+	#endregion
+
 	void Awake()
 	{
 		adjustStartPositions();
@@ -343,6 +347,58 @@ public sealed class LevelNetworkingManager : PunBehaviour
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.leaveRoomShortly() );
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayCoopResultsAndEmotesScreen( 0.25f ) );
 	}
+
+	public void nextWaveActivated( string nameOfTileEntered )
+	{
+		print("LevelNetworkingManager-nextWaveActivated " + ZombieManager.numberOfZombieWavesTriggered + " nameOfTileEntered " + nameOfTileEntered );
+		//Coop is a 2-player mode. Is anyone dead?
+		PlayerRace deadCoopPartner = null;
+		for( int i = 0; i < PlayerRace.players.Count; i ++ )
+		{
+			if( PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying ) 
+			{
+				//Yes, someone is dead.
+				deadCoopPartner = PlayerRace.players[i];
+				break;
+			}
+		}
+
+		if( deadCoopPartner != null )
+		{
+			//Let's resurrect him.
+			print("LevelNetworkingManager-nextWaveActivated-resurrecting: " + deadCoopPartner.name );
+			StartCoroutine( coopResurrectPlayer( nameOfTileEntered, deadCoopPartner.GetComponent<PhotonView>().viewID ) );
+		}
+	}
+
+	IEnumerator coopResurrectPlayer( string nameOfTileEntered, int photonViewIdOfPlayerToResurrect )
+	{
+		yield return new WaitForSeconds( COOP_DELAY_BEFORE_RESURRECTING );
+		photonView.RPC("coopResurrectPlayerRPC", PhotonTargets.All, nameOfTileEntered, photonViewIdOfPlayerToResurrect );
+	}
+
+	[PunRPC]
+	void coopResurrectPlayerRPC( string nameOfTileEntered, int photonViewIdOfPlayerToResurrect )
+	{
+		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.COMPLETED ) return; //ignore. The other player died in the meantime.
+		PlayerControl playerToResurrect = null;
+		for( int i = 0; i < PlayerRace.players.Count; i ++ )
+		{
+			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewIdOfPlayerToResurrect ) 
+			{
+				playerToResurrect = PlayerRace.players[i].GetComponent<PlayerControl>();
+				print("LevelNetworkingManager-coopResurrectPlayerRPC: " + playerToResurrect.name );
+				break;
+			}
+		}
+		if( playerToResurrect != null )
+		{
+			//Let's resurrect him.
+			playerToResurrect.coopResurrectBegin( nameOfTileEntered );
+		}
+		
+	}
+
 	#endregion
 
 }

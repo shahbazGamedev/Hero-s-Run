@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.ImageEffects;
+using Cinemachine;
 
 public enum DeathType {
 		Alive = 0,
@@ -1810,6 +1811,8 @@ public class PlayerControl : Photon.PunBehaviour {
 		yield return new WaitForSeconds(duration);
 		if( GameManager.Instance.isCoopPlayMode() )
 		{
+			//Remove the vignetting
+			if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0f, 0f, 0.25f ) );
 			levelNetworkingManager.coopPlayerDied( playerRace );
 		}
 		else
@@ -1856,6 +1859,20 @@ public class PlayerControl : Photon.PunBehaviour {
 		vAcA.intensity = endVignettingFactor;
 		vAcA.blur = endBlurFactor;
 		if( vAcA.intensity == 0 ) vAcA.enabled = false;
+	}
+
+	public void coopResurrectBegin( string resurrectOnThisTile )
+	{
+		//Also stop the spectating.
+		if( photonView.isMine && playerAI == null )
+		{
+			//Have the main camera track the player's coop partner.
+			CinemachineVirtualCamera cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
+			cmvc.m_Follow = transform;
+			cmvc.m_LookAt = transform;
+		}
+		tileWherePlayerDied = resurrectOnThisTile;
+		resurrectBegin();
 	}
 
 	//LockstepManager is in charge of calling this. Do not call directly.
@@ -2030,7 +2047,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void stumble_completed ( AnimationEvent eve )
 	{
-		setCharacterState( PlayerCharacterState.Running );
+		if( getCharacterState() != PlayerCharacterState.Dying ) setCharacterState( PlayerCharacterState.Running );
 	}
 	#endregion
 

@@ -50,6 +50,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	//For adding power-ups in tiles
 	public PowerUpManager powerUpManager;
 	public TileGroupManager tileGroupManager;
+	[SerializeField] LevelNetworkingManager levelNetworkingManager;
 	
 	SegmentTheme currentTheme;
 	
@@ -784,7 +785,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			surroundingPlane.position = new Vector3( currentTile.position.x, currentTile.position.y -UNDERNEATH_TILE_BY, currentTile.position.z );
 		}
 
-		updateActiveTiles();
+		updateActiveTiles( currentTile.name );
 			
 	}
 
@@ -885,7 +886,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	//The current tile
 	//The preceding tile
 	//The nbrVisibleTiles tiles that come after the current tile
-	private void updateActiveTiles()
+	private void updateActiveTiles( string nameOfTileEntered )
 	{
 		//Disable tile two behind the player
 		int index = playerTileIndex - 2;
@@ -914,6 +915,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			if( zombieTrigger != null )
 			{
 				zombieTrigger.activateNextWave();
+				levelNetworkingManager.nextWaveActivated( nameOfTileEntered );
 			}
 		}
 	}
