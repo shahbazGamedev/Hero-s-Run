@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using Photon;
 using UnityEngine.Apple.ReplayKit;
 using System.Linq;
+using Cinemachine;
 
 public sealed class LevelNetworkingManager : PunBehaviour
 {
@@ -52,53 +53,50 @@ public sealed class LevelNetworkingManager : PunBehaviour
 
 	IEnumerator Start()
 	{
-		if( GameManager.Instance.isMultiplayer() )
+		if (playerPrefab == null)
 		{
-			if (playerPrefab == null)
+			Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it in LevelNetworkingManager.");
+		}
+		else
+		{
+			//We're in the level. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
+			int playerPosition = (int) PhotonNetwork.player.CustomProperties["PlayerPosition"];
+			Debug.Log("We are Instantiating LocalPlayer. He is in player position: " + playerPosition );
+			Vector3 startPosition = Vector3.zero;
+			if ( playerPosition == 1 )
 			{
-				Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it in LevelNetworkingManager.");
+				startPosition = leftStartPosition;
 			}
-			else
+			else if ( playerPosition == 2 )
 			{
-				//We're in the level. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-				int playerPosition = (int) PhotonNetwork.player.CustomProperties["PlayerPosition"];
-				Debug.Log("We are Instantiating LocalPlayer. He is in player position: " + playerPosition );
-				Vector3 startPosition = Vector3.zero;
-				if ( playerPosition == 1 )
-				{
-					startPosition = leftStartPosition;
-				}
-				else if ( playerPosition == 2 )
-				{
-					startPosition = rightStartPosition;
-				}
-				else if ( playerPosition == 3 )
-				{
-					startPosition = centerStartPosition;
-				}
-				PhotonNetwork.Instantiate(this.playerPrefab.name, startPosition, Quaternion.identity, 0);
-
-				createBot();
-				
-				//The yield is to prevent having one frame of the matchmaking screen in the video
-				yield return new WaitForEndOfFrame();
-
-				//Verify if the player wants to record the race
-				#if UNITY_IOS
-				if( LevelManager.Instance.isRecordingSelected  )
-				{
-					try
-					{
-						ReplayKit.StartRecording();
-					}
-			   		catch (Exception e)
-					{
-						Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
-			    	}
-				}
-				#endif
-
+				startPosition = rightStartPosition;
 			}
+			else if ( playerPosition == 3 )
+			{
+				startPosition = centerStartPosition;
+			}
+			PhotonNetwork.Instantiate(this.playerPrefab.name, startPosition, Quaternion.identity, 0);
+
+			createBot();
+			
+			//The yield is to prevent having one frame of the matchmaking screen in the video
+			yield return new WaitForEndOfFrame();
+
+			//Verify if the player wants to record the race
+			#if UNITY_IOS
+			if( LevelManager.Instance.isRecordingSelected  )
+			{
+				try
+				{
+					ReplayKit.StartRecording();
+				}
+		   		catch (Exception e)
+				{
+					Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
+		    	}
+			}
+			#endif
+
 		}
 	}
 	
@@ -298,6 +296,52 @@ public sealed class LevelNetworkingManager : PunBehaviour
 				playerPhotonView.RPC("CancelEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
 			}
 		}
+	}
+	#endregion
+
+	#region Coop mode
+	public void coopPlayerDied( PlayerRace playerRace )
+	{
+		//Coop is a 2-player mode. Find out who your partner is.
+		PlayerRace coopPartner = null;
+		for( int i = 0; i < PlayerRace.players.Count; i ++ )
+		{
+			if( PlayerRace.players[i] != playerRace ) 
+			{
+				coopPartner = PlayerRace.players[i];
+				break;
+			}
+		}
+		//Is your coop partner dead or alive?
+		if( coopPartner.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
+		{
+			//Your coop partner is also dead.
+			//This means game over.
+			photonView.RPC("coopGameOverRPC", PhotonTargets.All );
+		}
+		else
+		{
+			//Your coop partner is alive.
+			//Go into spectating mode. The player will be revived if his coop partner survives to the next wave.
+			if( playerRace.GetComponent<PhotonView>().isMine && playerRace.GetComponent<PlayerAI>() == null )
+			{
+				//Display the message "SPECTATING partner name" on the HUD.
+				HUDMultiplayer.hudMultiplayer.activateUserMessage( "SPECTATING " + coopPartner.name , 0, 2.5f );
+				//Have the main camera track the player's coop partner.
+				CinemachineVirtualCamera cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
+				cmvc.m_Follow = coopPartner.transform;
+				cmvc.m_LookAt = coopPartner.transform;
+			}
+		}
+	}
+
+	[PunRPC]
+	void coopGameOverRPC()
+	{
+		//Display the results screen (players, score, and maximum wave reached) and return to the lobby.
+		PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
+		StartCoroutine( HUDMultiplayer.hudMultiplayer.leaveRoomShortly() );
+		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayCoopResultsAndEmotesScreen( 0.25f ) );
 	}
 	#endregion
 

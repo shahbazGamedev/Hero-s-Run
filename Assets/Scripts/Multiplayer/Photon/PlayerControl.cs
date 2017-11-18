@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.ImageEffects;
-using Cinemachine;
 
 public enum DeathType {
 		Alive = 0,
@@ -61,6 +60,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	PlayerHealth playerHealth;
 	PlayerIK playerIK;	//This is an optional component
 	Ragdoll ragdoll; 	//This is an optional component
+	LevelNetworkingManager levelNetworkingManager;
 	#endregion
 
 	#region Hash IDs for player animations	
@@ -262,6 +262,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerRace = GetComponent<PlayerRace>();
 		playerHealth = GetComponent<PlayerHealth>();
 		turnRibbonHandler = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
+		levelNetworkingManager = GameObject.FindGameObjectWithTag("Level Networking Manager").GetComponent<LevelNetworkingManager>();
 
 		//Cache the string to avoid the runtime lookup
 		backInTheGameString = LocalizationManager.Instance.getText( "MINIMAP_BACK_IN_GAME" );
@@ -1809,42 +1810,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		yield return new WaitForSeconds(duration);
 		if( GameManager.Instance.isCoopPlayMode() )
 		{
-			//Coop is a 2-player mode. Find out who your partner is.
-			PlayerRace coopPartner = null;
-			for( int i = 0; i < PlayerRace.players.Count; i ++ )
-			{
-				if( PlayerRace.players[i] != playerRace ) 
-				{
-					coopPartner = PlayerRace.players[i];
-					break;
-				}
-			}
-			//Is your coop partner dead or alive?
-			if( coopPartner.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
-			{
-				//Your coop partner is also dead.
-				//This means game over.
-				//Display the results screen (players, score, and maximum wave reached) and return to the lobby.
-				PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
-				StartCoroutine( HUDMultiplayer.hudMultiplayer.leaveRoomShortly() );
-				StartCoroutine( HUDMultiplayer.hudMultiplayer.displayCoopResultsAndEmotesScreen( 0.25f ) );
-			}
-			else
-			{
-				//Your coop partner is alive.
-				//Go into spectating mode.
-				//Display the message "SPECTATING partner name" on the HUD.
-				//Change the follow and aim of the main camera to your coop partner
-				if( photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.activateUserMessage( "SPECTATING " + coopPartner.name , 0, 2.5f );
-				CinemachineVirtualCamera cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
-				cmvc.m_Follow = coopPartner.transform;
-				cmvc.m_LookAt = coopPartner.transform;
-	
-				//This player will resurrect when the next wave starts.
-
-			}
-		//Next line is needed until coop code is finished.
-		//LockstepManager.Instance.addActionToQueue( new LockstepManager.LockstepAction( LockstepActionType.RESURRECT, gameObject ) );
+			levelNetworkingManager.coopPlayerDied( playerRace );
 		}
 		else
 		{
