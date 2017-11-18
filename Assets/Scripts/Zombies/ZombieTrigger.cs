@@ -11,7 +11,6 @@ public class ZombieTrigger : MonoBehaviour {
 	void Start ()
 	{
 		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("Zombie Manager");
-		//You need to enable hasZombies in Level Data for the zombie manager to be created as it is optional.
 		if( zombieManagerObject == null ) return;
 		zombieManager = zombieManagerObject.GetComponent<ZombieManager>();	
 	}

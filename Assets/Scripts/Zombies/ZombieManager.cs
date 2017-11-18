@@ -6,6 +6,8 @@ public class ZombieManager : MonoBehaviour {
 
 	[SerializeField] string zombieBoyPrefabName;
 	[SerializeField] string zombieGirlPrefabName;
+	[SerializeField] List<Material> zombieGirlMaterials = new List<Material>(4);
+	[SerializeField] List<Material> zombieBoyMaterials = new List<Material>(4);
 
 	public List<GameObject> zombieFactory = new List<GameObject>();
 	int zombieFactoryIndex = 0;
@@ -37,6 +39,22 @@ public class ZombieManager : MonoBehaviour {
 			ZombieController zombieController = zombieFactory[i].GetComponent<ZombieController>();
 			zombieController.resetCreature();
 		}
+	}
+
+	public Material getRandomZombieMaterial( Sex sex )
+	{
+		Material zombieMaterial = null;
+		if( sex == Sex.FEMALE )
+		{
+			int rnd = Random.Range( 0, zombieGirlMaterials.Count );
+			zombieMaterial = zombieGirlMaterials[rnd];
+		}
+		else
+		{
+			int rnd = Random.Range( 0, zombieBoyMaterials.Count );
+			zombieMaterial = zombieBoyMaterials[rnd];
+		}
+		return zombieMaterial;
 	}
 
 	GameObject getAvailableZombie()
@@ -97,7 +115,17 @@ public class ZombieManager : MonoBehaviour {
 		object[] data = new object[2];
 		data[0] = (int) zsd.spawnType;
 		data[1] = zsd.followsPlayer;
-		PhotonNetwork.InstantiateSceneObject( zombieBoyPrefabName, new Vector3( spawnLocation.position.x, zombieHeight, spawnLocation.position.z ), spawnLocation.rotation, 0, data );
+		float rnd = Random.value;
+		string prefabName;
+		if( rnd < 0.5f )
+		{
+			prefabName = zombieBoyPrefabName;
+		}
+		else
+		{
+			prefabName = zombieGirlPrefabName;
+		}
+		PhotonNetwork.InstantiateSceneObject( prefabName, new Vector3( spawnLocation.position.x, zombieHeight, spawnLocation.position.z ), spawnLocation.rotation, 0, data );
 	
 	}
 

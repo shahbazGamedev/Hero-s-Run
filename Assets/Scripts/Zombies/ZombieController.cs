@@ -30,14 +30,25 @@ public sealed class ZombieController : Creature, ICreature {
 		base.Awake();
 		creatureState = CreatureState.Available;
 		controller.enabled = false;
+
+		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("Zombie Manager");
+		ZombieManager zombieManager = zombieManagerObject.GetComponent<ZombieManager>();
+
 		Transform zombiePrefab;
+		Material zombieMaterial;
 		if( gameObject.name == "Zombie Boy(Clone)" )
 		{
 			zombiePrefab = transform.Find("zombieBoy");
+			zombieMaterial = zombieManager.getRandomZombieMaterial( Sex.MALE );
 		}
 		else
 		{
 			zombiePrefab = transform.Find("zombieGirl");
+			zombieMaterial = zombieManager.getRandomZombieMaterial( Sex.FEMALE );
+		}
+		if( zombieMaterial != null )
+		{
+			zombiePrefab.GetComponentInChildren<SkinnedMeshRenderer>().material = zombieMaterial;
 		}
 		legacyAnim = zombiePrefab.GetComponent<Animation>();
 	}
