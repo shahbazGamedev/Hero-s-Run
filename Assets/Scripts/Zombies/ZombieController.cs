@@ -2,6 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// Zombie controller.
+/// A zombie prefab needs to have a "Zombie" tag and a "Creature" layer.
+/// </summary>
 public sealed class ZombieController : Creature, ICreature {
 
 
