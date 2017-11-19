@@ -180,6 +180,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 						{
 							//Player collided squarely with zombie. Kill the player.
 							playerControl.killPlayer ( DeathType.Zombie );
+							zombieController.victory( true );
 						}
 					}
 					//Player is running along X axis
