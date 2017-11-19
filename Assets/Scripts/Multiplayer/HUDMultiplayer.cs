@@ -276,6 +276,8 @@ public class HUDMultiplayer : MonoBehaviour {
 			{
 				elapsedTime = elapsedTime + Time.unscaledDeltaTime;
 				Time.timeScale = Mathf.Lerp( startTimeScale, 0, elapsedTime/duration );
+				//Also change Time.fixedDeltaTime or else the Cinemachine camera will become jerky
+				Time.fixedDeltaTime = GameManager.DEFAULT_FIXED_DELTA_TIME * Time.timeScale;
 				yield return new WaitForEndOfFrame();  
 				
 			} while ( elapsedTime < duration );

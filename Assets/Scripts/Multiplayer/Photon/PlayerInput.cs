@@ -139,10 +139,13 @@ public class PlayerInput : PunBehaviour {
 			if( Time.timeScale < 1f )
 			{
 				Time.timeScale = 1f;
+				Time.fixedDeltaTime = GameManager.DEFAULT_FIXED_DELTA_TIME;
 			}
 			else 
 			{
 				Time.timeScale = 0.5f;
+				//Also change Time.fixedDeltaTime or else the Cinemachine camera will become jerky.
+				Time.fixedDeltaTime = Time.fixedDeltaTime * Time.timeScale;
 			}
 		}
 		else if ( Input.GetKeyDown (KeyCode.J ) )

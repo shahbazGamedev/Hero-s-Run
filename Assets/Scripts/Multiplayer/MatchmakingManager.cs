@@ -71,6 +71,7 @@ public class MatchmakingManager : MonoBehaviour {
 		//Same for the timeScale.
 		AudioListener.pause = false;
 		Time.timeScale = 1f;
+		Time.fixedDeltaTime = GameManager.DEFAULT_FIXED_DELTA_TIME;
 
 		//The left portrait is always the local player.
 		configureLocalPlayerData();
