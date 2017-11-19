@@ -31,6 +31,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	PlayerControl localPlayerControl;
 	[SerializeField] GameObject canvasGroupForFading;
 	[Header("Distance Remaining")]
+	[SerializeField] GameObject distanceRemaining; 	//Distance remaining gets hidden in coop mode.
 	[SerializeField] Image distanceRemainingCounterRed;  //Radial 360 image
 	[SerializeField] TextMeshProUGUI distanceText;
 	[Header("Countdown")]
@@ -45,8 +46,8 @@ public class HUDMultiplayer : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI debugInfo;
 	DebugInfoType debugInfoType;
 	FPSCalculator fpsCalculator;
-	[Header("Race About To End Message")]
-	[SerializeField] TextMeshProUGUI raceEndingText;
+	[Header("Race About To End Message or Spectating message")]
+	[SerializeField] TextMeshProUGUI topMessageText;
 	[Header("Minimap")]
 	[SerializeField] PhotonView minimapPhotonView;
 	[Header("Emotes")]
@@ -95,6 +96,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		canvasGroupForFading.GetComponent<CanvasGroup>().alpha = 0;
 		resultsScreen.GetComponent<CanvasGroup>().alpha = 0;
 		coopResultsScreen.GetComponent<CanvasGroup>().alpha = 0;
+		distanceRemaining.SetActive( !GameManager.Instance.isCoopPlayMode() );
 	}
 
 	public void registerLocalPlayer ( Transform localPlayer )
@@ -106,6 +108,20 @@ public class HUDMultiplayer : MonoBehaviour {
 	public string getLocalPlayerName ()
 	{
 		return localPlayerRace.name;
+	}
+
+	public void displayTopMessage ( string message )
+	{
+		if( string.IsNullOrEmpty( message ) )
+		{
+			topMessageText.text = string.Empty;
+			topMessageText.gameObject.SetActive( false );
+		}
+		else
+		{
+			topMessageText.text = message;
+			topMessageText.gameObject.SetActive( true );
+		}
 	}
 
 	public HealthBarHandler getHealthBarHandler()
@@ -202,17 +218,17 @@ public class HUDMultiplayer : MonoBehaviour {
 
 	IEnumerator endOfRaceCountdown()
 	{
-		raceEndingText.gameObject.SetActive( true );
+		topMessageText.gameObject.SetActive( true );
 
 		int countdownNumber = 10;
 		while( countdownNumber > 0 )
 		{
-			raceEndingText.text = "Race ends in " + countdownNumber.ToString() + " sec.";
+			topMessageText.text = "Race ends in " + countdownNumber.ToString() + " sec.";
 			//UISoundManager.uiSoundManager.playAudioClip( beep );
 			yield return new WaitForSecondsRealtime( 1f);
 			countdownNumber--;
 		}	
-		raceEndingText.gameObject.SetActive( false );
+		topMessageText.gameObject.SetActive( false );
 		#if UNITY_IOS
 		try
 		{
@@ -271,7 +287,7 @@ public class HUDMultiplayer : MonoBehaviour {
 
 	public IEnumerator leaveRoomShortly()
 	{
-		raceEndingText.gameObject.SetActive( false );
+		topMessageText.gameObject.SetActive( false );
 		StopCoroutine("endOfRaceCountdown");
 		if( debugInfoType == DebugInfoType.EMOTES_TEST )
 		{

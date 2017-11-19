@@ -1866,10 +1866,10 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Also stop the spectating.
 		if( photonView.isMine && playerAI == null )
 		{
-			//Have the main camera track the player's coop partner.
 			CinemachineVirtualCamera cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
 			cmvc.m_Follow = transform;
 			cmvc.m_LookAt = transform;
+			HUDMultiplayer.hudMultiplayer.displayTopMessage( string.Empty );
 		}
 		tileWherePlayerDied = resurrectOnThisTile;
 		resurrectBegin();

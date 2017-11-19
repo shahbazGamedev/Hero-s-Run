@@ -329,8 +329,8 @@ public sealed class LevelNetworkingManager : PunBehaviour
 			//Go into spectating mode. The player will be revived if his coop partner survives to the next wave.
 			if( playerRace.GetComponent<PhotonView>().isMine && playerRace.GetComponent<PlayerAI>() == null )
 			{
-				//Display the message "SPECTATING partner name" on the HUD.
-				HUDMultiplayer.hudMultiplayer.activateUserMessage( "SPECTATING " + coopPartner.name , 0, 2.5f );
+				//Display the message "SPECTATING" on the HUD.
+				HUDMultiplayer.hudMultiplayer.displayTopMessage( LocalizationManager.Instance.getText( "COOP_SPECTATING" ) );
 				//Have the main camera track the player's coop partner.
 				CinemachineVirtualCamera cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
 				cmvc.m_Follow = coopPartner.transform;
