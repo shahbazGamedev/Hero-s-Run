@@ -72,7 +72,8 @@ public class MultiplayerProjectile : CardSpawnedObject {
 			case MaskHandler.playerLayer:
 				//The player is immune to projectiles while in the IDLE state.
 				//The player is in the IDLE state after crossing the finish line for example.
-				if( potentialTarget.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle )
+				//The player is immune in coop mode.
+				if( potentialTarget.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle && !GameManager.Instance.isCoopPlayMode() )
 				{
 					valid = true;
 					//The projectile knocked down a player. Send him an RPC.

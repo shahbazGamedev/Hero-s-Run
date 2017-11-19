@@ -15,7 +15,7 @@ public class FreezeController : CardSpawnedObject {
 
 	Transform affectedPlayerTransform;
 	PlayerControl affectedPlayerControl;
-	//if you tap quickly on the Stasis sphere, you can break free without waiting for the spell expires.
+	//Not implemented: if you tap quickly on the ice, you can break free without waiting for the spell expires.
 	int tapsDetected = 0;
 	int tapsRequiredToBreak = 3;
 	Coroutine destroyIceCoroutine;
@@ -56,7 +56,7 @@ public class FreezeController : CardSpawnedObject {
 
 				affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = true;
 
-				//isLocalPlayer is used by the code that allows a player to break out early by tapping on the stasis sphere.
+				//isLocalPlayer is used by the code that allows a player to break out early by tapping on the ice.
 				//It is used to ensure that you can only tap on the sphere the local player is trapped in.
 				isLocalPlayer = ( affectedPlayerTransform.GetComponent<PhotonView>().isMine && affectedPlayerTransform.GetComponent<PlayerAI>() == null );
 	
@@ -84,12 +84,12 @@ public class FreezeController : CardSpawnedObject {
 				//TO DO Adjust spell effects based on card duration. For now it works well with a value of 6.5.
 				spellDuration = 6.5f;
 
-				affectedPlayerTransform.GetComponent<PlayerSpell>().displayCardTimerOnHUD(CardName.Stasis, spellDuration );
+				affectedPlayerTransform.GetComponent<PlayerSpell>().displayCardTimerOnHUD(CardName.Freeze, spellDuration );
 				destroyIceCoroutine = StartCoroutine( destroyIce( spellDuration ) );
 				startDelayHandler.Delay = spellDuration;
 
 				//Display the Freeze secondary icon on the minimap
-				MiniMap.Instance.displaySecondaryIcon( affectedPlayerTransform.GetComponent<PhotonView>().viewID, (int) CardName.Stasis, spellDuration );
+				MiniMap.Instance.displaySecondaryIcon( affectedPlayerTransform.GetComponent<PhotonView>().viewID, (int) CardName.Freeze, spellDuration );
 
 				//Taps to break ice not implemented yet.
 				//string tapInstructions = LocalizationManager.Instance.getText("CARD_TAP_INSTRUCTIONS");
@@ -137,7 +137,7 @@ public class FreezeController : CardSpawnedObject {
 
 		affectedPlayerControl.enablePlayerMovement( true );
 		affectedPlayerControl.enablePlayerControl( true );
-		affectedPlayerTransform.GetComponent<PlayerSpell>().cardDurationExpired(CardName.Stasis);
+		affectedPlayerTransform.GetComponent<PlayerSpell>().cardDurationExpired(CardName.Freeze);
 		Destroy( gameObject );
 	}
 

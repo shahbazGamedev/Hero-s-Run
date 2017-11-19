@@ -70,6 +70,8 @@ public class ForceField : CardSpawnedObject {
 		{
 			if( collision.collider.name != casterName )
 			{
+				//The force field collider has the Obstacle_F tag.
+				//Killing the player is done in playerCollision.
 				addSkillBonus( 25, "SKILL_BONUS_FORCE_FIELD" );
 			}
 		}

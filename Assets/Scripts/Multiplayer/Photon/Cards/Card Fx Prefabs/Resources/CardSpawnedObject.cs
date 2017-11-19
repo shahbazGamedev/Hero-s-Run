@@ -212,10 +212,13 @@ public class CardSpawnedObject : MonoBehaviour {
 				//He is alive.
 				//He is not in the Idle state. The player is in the Idle state once the race finishes for example.
 				//It is not yourself.
+				//The player is not cloaked.
+				//The game mode is not Coop.
 				valid = pc.deathType == DeathType.Alive;
  				valid = valid && pc.getCharacterState() != PlayerCharacterState.Idle;
 				valid = valid && casterName != potentialTarget.name;
 				valid = valid && !pc.GetComponent<PlayerSpell>().isCardActive(CardName.Cloak);
+				valid = valid && !GameManager.Instance.isCoopPlayMode();
 				break;
 	                
 	        case MaskHandler.deviceLayer:
