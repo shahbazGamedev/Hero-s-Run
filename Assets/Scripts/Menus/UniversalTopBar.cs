@@ -7,33 +7,34 @@ using TMPro;
 public class UniversalTopBar : MonoBehaviour {
 
 	public static UniversalTopBar Instance;
-	const float SOFT_CURRENCY_STORE_VERTICAL_POSITION = 2508f;
-	const float HARD_CURRENCY_STORE_VERTICAL_POSITION = 1550f;
 	const float NUMBER_SPIN_DURATION = 1.25f;
+
+	[Header("Top Panel")]
+	[SerializeField] GameObject topPanel; //contains everything except settings and close buttons
 
 	[Header("For Store Access")]
 	RectTransform horizontalContent;
 	RectTransform storeVerticalContent;
-	[Header("Top Panel")]
-	[SerializeField] GameObject topPanel;
+	const float SOFT_CURRENCY_STORE_VERTICAL_POSITION = 2508f;
+	const float HARD_CURRENCY_STORE_VERTICAL_POSITION = 1420f;
 
-	[Header("Top Section")]
-	[SerializeField] GameObject balanceHolder;
-	[SerializeField] GameObject progressHolder;
-
+	[Header("Level")]
 	[SerializeField] TextMeshProUGUI playerLevelText;
+
+	[Header("XP")]
+	[SerializeField] Image xpFill;
 	[SerializeField] TextMeshProUGUI currentAndNeededXPText;
-	[SerializeField] Slider progressBarSlider;
 
-	[SerializeField] TextMeshProUGUI numberOfCoinsText;
+	[Header("Soft Currency")]
+	[SerializeField] TextMeshProUGUI softCurrencyAmountText;
 
-	[SerializeField] TextMeshProUGUI numberOfGemsText;
+	[Header("Hard Currency")]
+	[SerializeField] TextMeshProUGUI hardCurrencyAmountText;
 
+	[Header("Close and Settings buttons")]
 	[SerializeField] Button closeButton;
 	[SerializeField] TextMeshProUGUI closeButtonText;
-
 	[SerializeField] Button settingsButton;
-
 
 	int residualXP = 0;
 
@@ -144,11 +145,11 @@ public class UniversalTopBar : MonoBehaviour {
 	{
 		playerLevelText.text = GameManager.Instance.playerProfile.getLevel().ToString();
 		currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.totalXPEarned.ToString("N0"), ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ).ToString("N0") );
-		progressBarSlider.value = GameManager.Instance.playerProfile.totalXPEarned/ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
+		xpFill.fillAmount = GameManager.Instance.playerProfile.totalXPEarned/ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
 	
-		numberOfCoinsText.text = GameManager.Instance.playerInventory.getCoinBalance().ToString("N0");
+		softCurrencyAmountText.text = GameManager.Instance.playerInventory.getCoinBalance().ToString("N0");
 	
-		numberOfGemsText.text = GameManager.Instance.playerInventory.getGemBalance().ToString("N0");
+		hardCurrencyAmountText.text = GameManager.Instance.playerInventory.getGemBalance().ToString("N0");
 	}
 
 	void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int previousValue, int newValue )
@@ -156,11 +157,11 @@ public class UniversalTopBar : MonoBehaviour {
 		switch (eventType)
 		{
 			case PlayerInventoryEvent.Gem_Balance_Changed:
-				numberOfGemsText.GetComponent<UISpinNumber>().spinNumber( "{0}", previousValue, newValue, NUMBER_SPIN_DURATION, false );
+				hardCurrencyAmountText.GetComponent<UISpinNumber>().spinNumber( "{0}", previousValue, newValue, NUMBER_SPIN_DURATION, false );
 			break;
 
 			case PlayerInventoryEvent.Coin_Changed:
-				numberOfCoinsText.GetComponent<UISpinNumber>().spinNumber( "{0}", previousValue, newValue, NUMBER_SPIN_DURATION, true );
+				softCurrencyAmountText.GetComponent<UISpinNumber>().spinNumber( "{0}", previousValue, newValue, NUMBER_SPIN_DURATION, true );
 			break;
 		}
 	}
@@ -172,7 +173,7 @@ public class UniversalTopBar : MonoBehaviour {
 			case PlayerProfileEvent.Level_Changed:
 				playerLevelText.text = newValue.ToString();
 				currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.totalXPEarned, ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ) );
-				progressBarSlider.value = GameManager.Instance.playerProfile.totalXPEarned/(float)ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
+				xpFill.fillAmount = GameManager.Instance.playerProfile.totalXPEarned/(float)ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
 			break;
 
 			case PlayerProfileEvent.XP_Changed:
@@ -199,22 +200,22 @@ public class UniversalTopBar : MonoBehaviour {
 	void animateProgressBar( int previousValue, int newValue, float duration, System.Action<int> onFinish = null )
 	{
 		//Only proceed if the progress bar is displayed. A coroutine cannot be started on an inactive object.
-		if( progressHolder.gameObject.activeSelf )
+		if( xpFill.gameObject.activeSelf )
 		{
 			//Animate Text
 			string currentAndNeededXPString = "{0}/" + ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ).ToString();
 			currentAndNeededXPText.GetComponent<UISpinNumber>().spinNumber( currentAndNeededXPString, previousValue, newValue, duration, true, onFinish );
 	
-			//Animate Slider
+			//Animate horizontal image
 			float toValue = newValue/(float)ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
-			progressBarSlider.GetComponent<UIAnimateSlider>().animateSlider( toValue, duration );
+			xpFill.GetComponent<UIAnimateRadialImage>().animateFillAmount( toValue, duration );
 		}
 		else
 		{
 			//Update the values, but don't animate.
 			playerLevelText.text = GameManager.Instance.playerProfile.getLevel().ToString();
 			currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.totalXPEarned, ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ) );
-			progressBarSlider.value = GameManager.Instance.playerProfile.totalXPEarned/ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
+			xpFill.fillAmount = GameManager.Instance.playerProfile.totalXPEarned/ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
 		}
 	}
 
@@ -225,7 +226,7 @@ public class UniversalTopBar : MonoBehaviour {
 	void animationCompletedCallback( int value )
 	{
 		GameManager.Instance.playerProfile.incrementLevel();
-		progressBarSlider.value = 0;
+		xpFill.fillAmount = 0;
 		animateProgressBar( 0, residualXP, 3f );
 	}
 
@@ -320,9 +321,7 @@ public class UniversalTopBar : MonoBehaviour {
 
 	void onlyShowCloseButton( bool closeButtonOnly )
 	{
-		balanceHolder.gameObject.SetActive( !closeButtonOnly );
-		progressHolder.gameObject.SetActive( !closeButtonOnly );
-		topPanel.GetComponent<Image>().enabled = !closeButtonOnly;
+		topPanel.SetActive( !closeButtonOnly );
 	}
 
 }
