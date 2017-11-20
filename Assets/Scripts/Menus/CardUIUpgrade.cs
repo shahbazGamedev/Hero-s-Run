@@ -6,8 +6,6 @@ using UnityEngine.EventSystems;
 
 public class CardUIUpgrade : MonoBehaviour, IPointerDownHandler
 {
-	[Header("General")]
-	[SerializeField] ScrollRect horizontalScrollview;
 	[Tooltip("The card image.")]
 	[SerializeField] Image cardImage;
 	[Tooltip("The card name.")]
@@ -88,8 +86,6 @@ public class CardUIUpgrade : MonoBehaviour, IPointerDownHandler
     {
 		gameObject.SetActive( false );
 		transform.parent.gameObject.SetActive( false );
-		//Re-enable scrolling since the popups are dismissed.
-		horizontalScrollview.enabled = true;
 		UniversalTopBar.Instance.showTopBar( true );
     }
 }

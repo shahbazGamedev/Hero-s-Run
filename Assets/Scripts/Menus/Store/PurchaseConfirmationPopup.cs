@@ -8,12 +8,9 @@ public class PurchaseConfirmationPopup : MonoBehaviour {
 	[SerializeField] Text descriptionText;
 	[SerializeField] Button confirmButton;
 	[SerializeField] Text confirmButtonText;
-	[SerializeField] ScrollRect horizontalScrollview;
 
 	public void Show( int priceInHardCurrency, string packageName, int softCurrencyQuantity )
 	{
-		//Disable scrolling while popup is displayed
-		horizontalScrollview.enabled = false;
 		confirmButton.onClick.RemoveAllListeners();
 		confirmButton.onClick.AddListener(() => OnClickPurchase( priceInHardCurrency, softCurrencyQuantity ));
 		gameObject.SetActive( true );
@@ -30,16 +27,12 @@ public class PurchaseConfirmationPopup : MonoBehaviour {
 		gameObject.SetActive( false );
 		GameManager.Instance.playerInventory.deductGems( priceInHardCurrency );
 		GameManager.Instance.playerInventory.addCoins( softCurrencyQuantity );
-		//Re-enable scrolling
-		horizontalScrollview.enabled = true;
 	}
 
 	public void OnClickHide()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		gameObject.SetActive( false );
-		//Re-enable scrolling
-		horizontalScrollview.enabled = true;
 	}
 
 }

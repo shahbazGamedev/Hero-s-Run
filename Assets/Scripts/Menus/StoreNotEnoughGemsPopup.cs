@@ -7,7 +7,6 @@ public class StoreNotEnoughGemsPopup : MonoBehaviour {
 	[SerializeField] Text titleText;
 	[SerializeField] Text descriptionText;
 	[SerializeField] Text goToShopButtonText;
-	[SerializeField] ScrollRect horizontalScrollview;
 
 	void Start()
 	{
@@ -18,8 +17,6 @@ public class StoreNotEnoughGemsPopup : MonoBehaviour {
 
 	public void Show()
 	{
-		//Disable scrolling while popup is displayed
-		horizontalScrollview.enabled = false;
 		gameObject.SetActive( true );
 	}
 
@@ -27,8 +24,6 @@ public class StoreNotEnoughGemsPopup : MonoBehaviour {
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		gameObject.SetActive( false );
-		//Re-enable scrolling
-		horizontalScrollview.enabled = true;
 		UniversalTopBar.Instance.OnClickShowHardCurrencyStore();
 	}
 
@@ -36,8 +31,6 @@ public class StoreNotEnoughGemsPopup : MonoBehaviour {
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		gameObject.SetActive( false );
-		//Re-enable scrolling
-		horizontalScrollview.enabled = true;
 	}
 
 }

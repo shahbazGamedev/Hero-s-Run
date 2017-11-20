@@ -7,7 +7,6 @@ using System.Collections.Generic;
 public class CardDetailPopup : MonoBehaviour {
 	
 	[SerializeField] CardCollectionManager cardCollectionManager;
-	[SerializeField] ScrollRect horizontalScrollview;
 	[SerializeField] Text topPanelText;
 	[SerializeField] GameObject card;
 	[Header("Rarity")]
@@ -40,9 +39,6 @@ public class CardDetailPopup : MonoBehaviour {
 
 	public void configureCard( GameObject go, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
-		//Disable scrolling while popup is displayed
-		horizontalScrollview.enabled = false;
-
 		//Title
 		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + pcd.name.ToString().ToUpper() );
 		topPanelText.text = string.Format(LocalizationManager.Instance.getText( "CARD_LEVEL_TITLE" ), pcd.level, localizedCardName );
@@ -223,8 +219,6 @@ public class CardDetailPopup : MonoBehaviour {
 	public void OnClickHide()
 	{
 		gameObject.SetActive( false );
-		//Re-enable scrolling
-		horizontalScrollview.enabled = true;
 	}
 
 }

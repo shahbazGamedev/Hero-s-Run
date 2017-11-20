@@ -13,8 +13,7 @@ public class UniversalTopBar : MonoBehaviour {
 	[SerializeField] GameObject topPanel; //contains everything except settings and close buttons
 
 	[Header("For Store Access")]
-	RectTransform horizontalContent;
-	RectTransform storeVerticalContent;
+	MainMenuManager mainMenuManager;
 	const float SOFT_CURRENCY_STORE_VERTICAL_POSITION = 2508f;
 	const float HARD_CURRENCY_STORE_VERTICAL_POSITION = 1420f;
 
@@ -67,6 +66,7 @@ public class UniversalTopBar : MonoBehaviour {
 		//In the main menu, the Close button becomes a Settings button
 		if( gameScene == GameScenes.MainMenu )
 		{
+			mainMenuManager = GameObject.FindObjectOfType<MainMenuManager>();
 			closeButton.gameObject.SetActive( false );
 			settingsButton.gameObject.SetActive( true );
 		}
@@ -82,11 +82,6 @@ public class UniversalTopBar : MonoBehaviour {
 		switch( gameScene )
 		{
 			case GameScenes.MainMenu:
-				//We need to get references to these values every time we load the main menu since when we leave the main menu, the references get lost.
-				//horizontalContent holds the main menu, the card collection and the store
-				horizontalContent = GameObject.FindGameObjectWithTag("Horizontal Content").GetComponent<RectTransform>();
-				//storeVerticalContent holds the store
-				storeVerticalContent = GameObject.FindGameObjectWithTag("Store Vertical Content").GetComponent<RectTransform>();
 				showTopBar( true );
 				onlyShowCloseButton( false );
 			break;
@@ -235,6 +230,7 @@ public class UniversalTopBar : MonoBehaviour {
 		//The store button only works when you are in the main menu
 		if( SceneManager.GetActiveScene().buildIndex == (int)GameScenes.MainMenu )
 		{
+			mainMenuManager.OnClickShowStore();
 			UISoundManager.uiSoundManager.playButtonClick();
 			StartCoroutine( scrollToStorePosition( 0.4f, SOFT_CURRENCY_STORE_VERTICAL_POSITION ) );
 			showTopBar( true );
@@ -250,6 +246,7 @@ public class UniversalTopBar : MonoBehaviour {
 		//The store button only works when you are in the main menu
 		if( SceneManager.GetActiveScene().buildIndex == (int)GameScenes.MainMenu )
 		{
+			mainMenuManager.OnClickShowStore();
 			UISoundManager.uiSoundManager.playButtonClick();
 			StartCoroutine( scrollToStorePosition( 0.4f, HARD_CURRENCY_STORE_VERTICAL_POSITION ) );
 			showTopBar( true );
@@ -263,22 +260,20 @@ public class UniversalTopBar : MonoBehaviour {
 	IEnumerator scrollToStorePosition( float duration, float verticalPosition )
 	{
 		float elapsedTime = 0;
+		//We need to get references to these values every time we load the main menu since when we leave the main menu, the references get lost.
+		//storeVerticalContent holds the store
+		RectTransform storeVerticalContent = GameObject.FindGameObjectWithTag("Store Vertical Content").GetComponent<RectTransform>();
 		
-		Vector2 startHorizontalPosition = horizontalContent.anchoredPosition;
-		Vector2 endHorizontalPosition = new Vector2( 0, horizontalContent.anchoredPosition.y );
-
 		Vector2 startVerticalPosition = storeVerticalContent.anchoredPosition;
 		Vector2 endVerticalPosition = new Vector2( storeVerticalContent.anchoredPosition.x, verticalPosition );
 
 		do
 		{
 			elapsedTime = elapsedTime + Time.deltaTime;
-			horizontalContent.anchoredPosition = Vector2.Lerp( startHorizontalPosition, endHorizontalPosition, elapsedTime/duration );
 			storeVerticalContent.anchoredPosition = Vector2.Lerp( startVerticalPosition, endVerticalPosition, elapsedTime/duration );
 			yield return new WaitForFixedUpdate();  
 			
 		} while ( elapsedTime < duration );
-		horizontalContent.anchoredPosition = new Vector2( 0, horizontalContent.anchoredPosition.y );
 		storeVerticalContent.anchoredPosition = new Vector2( storeVerticalContent.anchoredPosition.x, verticalPosition );
 	}
 
