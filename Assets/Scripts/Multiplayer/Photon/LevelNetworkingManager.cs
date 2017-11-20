@@ -306,6 +306,7 @@ public sealed class LevelNetworkingManager : PunBehaviour
 	#region Coop mode
 	public void coopPlayerDied( PlayerRace playerRace )
 	{
+		//print("coopPlayerDied " + playerRace.name );
 		//Coop is a 2-player mode. Find out who your partner is.
 		PlayerRace coopPartner = null;
 		for( int i = 0; i < PlayerRace.players.Count; i ++ )
@@ -321,6 +322,7 @@ public sealed class LevelNetworkingManager : PunBehaviour
 		{
 			//Your coop partner is also dead.
 			//This means game over.
+			//print("coopPlayerDied: partner name " + coopPartner.name );
 			photonView.RPC("coopGameOverRPC", PhotonTargets.All );
 		}
 		else
@@ -342,10 +344,10 @@ public sealed class LevelNetworkingManager : PunBehaviour
 	[PunRPC]
 	void coopGameOverRPC()
 	{
-		//Display the results screen (players, score, and maximum wave reached) and return to the lobby.
+		//Display the results screen (player details, score, rounds survived, etc.) and return to the lobby.
 		PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.leaveRoomShortly() );
-		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayCoopResultsAndEmotesScreen( 0.25f ) );
+		if( !HUDMultiplayer.hudMultiplayer.isCoopResultsScreenActive() ) StartCoroutine( HUDMultiplayer.hudMultiplayer.displayCoopResultsAndEmotesScreen( 0.25f ) );
 	}
 
 	public void nextWaveActivated( string nameOfTileEntered )

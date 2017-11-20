@@ -10,16 +10,26 @@ public class CoopResultsScreenHandler : MonoBehaviour {
 
 	[SerializeField] RectTransform coopResultsHolder;
 	[SerializeField] GameObject coopResultPrefab;
-	[SerializeField] TextMeshProUGUI highestWavesBeaten;
+	[SerializeField] TextMeshProUGUI roundsSurvivedText;
+	[SerializeField] Transform footer;
 	public List<GameObject> emotesList = new List<GameObject>();
 
 	public void showResults()
 	{
+		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayPermanentDamageEffect() );
 		int wavesBeaten = ZombieManager.numberOfZombieWavesTriggered - 1;
 		if( wavesBeaten < 0 ) wavesBeaten = 0;
-		string wavesBeatenString = LocalizationManager.Instance.getText( "COOP_RESULTS_WAVES_BEATEN" );
+		string wavesBeatenString;
+		if( wavesBeaten <= 1 )
+		{
+			wavesBeatenString = LocalizationManager.Instance.getText( "COOP_RESULTS_ROUNDS_SINGULAR" );
+		}
+		else
+		{
+			wavesBeatenString = LocalizationManager.Instance.getText( "COOP_RESULTS_ROUNDS_PLURAL" );
+		}
 		wavesBeatenString = string.Format( wavesBeatenString, wavesBeaten );
-		highestWavesBeaten.text = wavesBeatenString;
+		roundsSurvivedText.text = wavesBeatenString;
 
 		adjustSizeOfResultsScreen( PlayerRace.players.Count );
 
@@ -31,15 +41,16 @@ public class CoopResultsScreenHandler : MonoBehaviour {
 			//For each player, create a result entry
 			createResultEntry( PlayerRace.players[i] );
 		}
+
+		//we want the footer at the bottom
+		footer.SetAsLastSibling();
 	}
 
 	void adjustSizeOfResultsScreen( int playerCount )
 	{
-		float titleHeight = coopResultPrefab.GetComponent<RectTransform>().sizeDelta.y; //It has the same height as a result entry
-		float wavesBeatenHeight = coopResultPrefab.GetComponent<RectTransform>().sizeDelta.y; //It has the same height as a result entry
 		float singleEntryHeight = coopResultPrefab.GetComponent<RectTransform>().sizeDelta.y;
 		float spacing = GetComponent<VerticalLayoutGroup>().spacing;
-		float desiredHeight = titleHeight + wavesBeatenHeight + playerCount * ( singleEntryHeight + spacing );
+		float desiredHeight = 390f + playerCount * ( singleEntryHeight + spacing );
 		coopResultsHolder.sizeDelta = new Vector2( coopResultsHolder.sizeDelta.x, desiredHeight );
 	}
 

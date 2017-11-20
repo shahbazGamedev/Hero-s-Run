@@ -173,6 +173,28 @@ public class HUDMultiplayer : MonoBehaviour {
 		} while ( elapsedTime < duration );
 	}
 
+	/// <summary>
+	/// Displays a permanent damage effect on the HUD.
+	/// </summary>
+	public IEnumerator displayPermanentDamageEffect()
+	{
+		float duration = 0.5f;
+		float elapsedTime = 0;	
+
+		float startAlpha = 0;
+		damageTakenEffect.color = new Color( damageTakenEffect.color.r, damageTakenEffect.color.g, damageTakenEffect.color.b, startAlpha );
+
+		float endAlpha = 0.85f;
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			float alpha = Mathf.Lerp( startAlpha, endAlpha, elapsedTime/duration );
+			damageTakenEffect.color = new Color( damageTakenEffect.color.r, damageTakenEffect.color.g, damageTakenEffect.color.b, alpha );
+			yield return new WaitForEndOfFrame();  
+			
+		} while ( elapsedTime < duration );
+	}
+
 	IEnumerator countdown()
 	{
 		//Give a few seconds for the player to get used to the scene before starting the countdown
@@ -510,11 +532,16 @@ public class HUDMultiplayer : MonoBehaviour {
 		}
 	}
 
+	public bool isCoopResultsScreenActive()
+	{
+		return coopResultsScreen.activeSelf;
+	}
+
 	public IEnumerator displayCoopResultsAndEmotesScreen( float displayDelay )
 	{
 		yield return new WaitForSeconds( displayDelay );
-		coopResultsScreen.GetComponent<CoopResultsScreenHandler>().showResults();
 		coopResultsScreen.gameObject.SetActive( true );
+		coopResultsScreen.GetComponent<CoopResultsScreenHandler>().showResults();
 		showEmotePanel();
 	}
 
