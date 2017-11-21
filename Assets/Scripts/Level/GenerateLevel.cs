@@ -87,21 +87,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		}
 	}
 
-	void Start()
-	{
-		//The Tap to Play concept does not exist in multiplayer
-		if( !GameManager.Instance.isMultiplayer() )
-		{
-			//If the episode uses waitForTapToPlay, then another script is responsible for changing the game state to menu. If not,
-			//GenerateLevel needs to do it.
-			//Note that the waitForTapToPlay concept does not apply when restarting at a checkpoint.
-			if( !LevelManager.Instance.getCurrentEpisodeInfo().waitForTapToPlay || LevelManager.Instance.getNumberOfCheckpointsPassed() > 0 )
-			{
-				GameManager.Instance.setGameState( GameState.Menu );
-			}
-		}
-	}
-
 	private void loadTilePrefabs( SegmentTheme theme )
 	{
 		//Don't bother reloading the prefabs if they have already been loaded
@@ -397,16 +382,19 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			}
 		}
 
-		//Fourth, add one random end tile
-		if( endTileGroupList.Count > 0 )
+		//Fourth, add one random End tile but only if we are not in coop mode
+		if( !GameManager.Instance.isCoopPlayMode() )
 		{
-			int random = Random.Range(0, endTileGroupList.Count );
-			TileGroupType etgt = endTileGroupList[random];
-			multiplayerTileGroupList.Add( etgt );
-		}
-		else
-		{
-			Debug.LogError("GenerateLevel: Error while generating multiplayer level. The endTileGroupList is empty. It must contain at least one tile.");
+			if( endTileGroupList.Count > 0 )
+			{
+				int random = Random.Range(0, endTileGroupList.Count );
+				TileGroupType etgt = endTileGroupList[random];
+				multiplayerTileGroupList.Add( etgt );
+			}
+			else
+			{
+				Debug.LogError("GenerateLevel: Error while generating multiplayer level. The endTileGroupList is empty. It must contain at least one tile.");
+			}
 		}
 
 		//Five, create the individual tiles
@@ -772,8 +760,8 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 		//print ("tileEntranceCrossed: player entered " + currentTile.name + " and the player tile index is: " + playerTileIndex );
 
-		//If in endless runner mode, each time we enter a new tile, add a new tile at the end
-		if( GameManager.Instance.getGameMode() == GameMode.Endless &&  !GameManager.Instance.isMultiplayer() )
+		//If in coop mode, each time we enter a new tile, add a new tile at the end
+		if( GameManager.Instance.isCoopPlayMode() )
 		{
 			//Add a tile at the end
 			addTileInEndlessMode();
