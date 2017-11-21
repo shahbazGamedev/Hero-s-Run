@@ -55,6 +55,11 @@ public class MatchmakingManager : MonoBehaviour {
 	bool levelLoading = false;
 	private Color originalPlayButtonTextColor;
 
+	void Awake ()
+	{
+		Screen.orientation = ScreenOrientation.Portrait;
+	}
+
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();

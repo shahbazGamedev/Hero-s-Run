@@ -43,6 +43,7 @@ public sealed class LevelNetworkingManager : PunBehaviour
 
 	void Awake()
 	{
+		Screen.orientation = ScreenOrientation.AutoRotation;
 		adjustStartPositions();
 	}
 
