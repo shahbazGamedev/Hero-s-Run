@@ -70,17 +70,9 @@ public class HUDMultiplayer : MonoBehaviour {
 	public delegate void StartRunningEvent();
 	public static event StartRunningEvent startRunningEvent;
 
-	//Ensure there is only one HUDMultiplayer
 	void Awake()
 	{
-		//We don't want to display multiplayer information in Single player or call update for nothing
-		if( !GameManager.Instance.isMultiplayer() ) Destroy( gameObject );
-		
-		if (hudMultiplayer == null)
-			hudMultiplayer = this;
-		else if (hudMultiplayer != this)
-			Destroy (gameObject);
-
+		hudMultiplayer = this;
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
 
 		displayRacePosition( false );
