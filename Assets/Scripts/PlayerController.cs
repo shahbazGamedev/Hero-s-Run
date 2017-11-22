@@ -2318,7 +2318,7 @@ public sealed class PlayerController : MonoBehaviour {
 			if( si != null )
 			{
 				//We might recycle currentTile (the one prior to the one we just entered), this is why we are passing it as a parameter.
-				generateLevel.tileEntranceCrossed( other.transform.parent );
+				generateLevel.tileEntranceCrossed( other.transform.parent, null );
 				currentTilePos = si.transform.position;
 				currentTile = si.gameObject;
 				tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );

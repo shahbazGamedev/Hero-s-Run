@@ -15,7 +15,7 @@ public class ZombieTrigger : MonoBehaviour {
 	}
 	
 	//Only the master should call this method.
-	public void activateNextWave( LevelNetworkingManager levelNetworkingManager, string nameOfTileEntered )
+	public void activateNextWave( LevelNetworkingManager levelNetworkingManager, string nameOfTileEntered, PlayerRace playerRace )
 	{
 		if( zombieManager == null ) return;
 
@@ -25,7 +25,7 @@ public class ZombieTrigger : MonoBehaviour {
 
 		configureWave( Random.Range(0, zombieWaveList.Count ) );
 
-		levelNetworkingManager.nextWaveActivated( nameOfTileEntered );
+		levelNetworkingManager.nextWaveActivated( nameOfTileEntered, playerRace );
 	}
 
 	private void configureWave( int waveToUse )

@@ -776,7 +776,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		}
 	}
 
-	public void tileEntranceCrossed( Transform currentTile )
+	public void tileEntranceCrossed( Transform currentTile, PlayerRace playerRace  )
 	{
 		playerTileIndex++;
 		SegmentInfo si = getSegmentInfo( currentTile.gameObject );
@@ -796,7 +796,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			surroundingPlane.position = new Vector3( currentTile.position.x, currentTile.position.y -UNDERNEATH_TILE_BY, currentTile.position.z );
 		}
 		int tileIndex = si.tileIndex;
-		updateActiveTiles( currentTile.name, tileIndex );
+		updateActiveTiles( currentTile.name, tileIndex, playerRace );
 			
 	}
 
@@ -897,7 +897,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	//The current tile
 	//The preceding tile
 	//The nbrVisibleTiles tiles that come after the current tile
-	private void updateActiveTiles( string nameOfTileEntered, int tileIndex )
+	private void updateActiveTiles( string nameOfTileEntered, int tileIndex, PlayerRace playerRace )
 	{
 		//Disable tile two behind the player
 		//int index = playerTileIndex - 2;
@@ -926,7 +926,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 				ZombieTrigger zombieTrigger = worldRoadSegments[nextTileIndex].GetComponent<ZombieTrigger>();
 				if( zombieTrigger != null )
 				{
-					zombieTrigger.activateNextWave( levelNetworkingManager, nameOfTileEntered );
+					zombieTrigger.activateNextWave( levelNetworkingManager, nameOfTileEntered, playerRace );
 				}
 			}
 		}

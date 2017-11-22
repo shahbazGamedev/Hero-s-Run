@@ -2146,7 +2146,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				wasEntranceCrossed = true;
 				Invoke( "resetEntranceCrossed", 0.5f );
 				//We might recycle currentTile (the one prior to the one we just entered), this is why we are passing it as a parameter.
-				generateLevel.tileEntranceCrossed( other.transform.parent );
+				generateLevel.tileEntranceCrossed( other.transform.parent, playerRace );
 
 				//The distance remaining displayed on the HUD and stored in PlayerRace is equal to: The length of the level - the total distance traveled by the player.
 				//The total distance traveled by the player is equal to the distance traveled for all previous tiles plus the distance traveled on the current tile.

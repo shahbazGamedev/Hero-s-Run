@@ -352,7 +352,7 @@ public sealed class LevelNetworkingManager : PunBehaviour
 	}
 
 	//Only called by the master.
-	public void nextWaveActivated( string nameOfTileEntered )
+	public void nextWaveActivated( string nameOfTileEntered, PlayerRace playerRace )
 	{
 		photonView.RPC("zombieWaveRPC", PhotonTargets.All, ZombieManager.numberOfZombieWavesTriggered );
 
@@ -361,9 +361,9 @@ public sealed class LevelNetworkingManager : PunBehaviour
 		PlayerRace deadCoopPartner = null;
 		for( int i = 0; i < PlayerRace.players.Count; i ++ )
 		{
-			if( PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying ) 
+			if( PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying && PlayerRace.players[i] != playerRace ) 
 			{
-				//Yes, someone is dead.
+				//Yes, the partner of the player who activated the wave is dead.
 				deadCoopPartner = PlayerRace.players[i];
 				break;
 			}
