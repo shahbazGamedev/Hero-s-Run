@@ -1811,9 +1811,12 @@ public class PlayerControl : Photon.PunBehaviour {
 		yield return new WaitForSeconds(duration);
 		if( GameManager.Instance.isCoopPlayMode() )
 		{
-			//Remove the vignetting
-			if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0f, 0f, 0.25f ) );
-			levelNetworkingManager.coopPlayerDied( playerRace );
+			if( this.photonView.isMine && playerAI == null )
+			{
+				//Remove the vignetting
+				StartCoroutine( controlVignetting( 0f, 0f, 0.25f ) );
+				levelNetworkingManager.coopPlayerDied( playerRace );
+			}
 		}
 		else
 		{

@@ -526,11 +526,6 @@ public class HUDMultiplayer : MonoBehaviour {
 		}
 	}
 
-	public bool isCoopResultsScreenActive()
-	{
-		return coopResultsScreen.activeSelf;
-	}
-
 	public IEnumerator displayCoopResultsAndEmotesScreen( float displayDelay )
 	{
 		yield return new WaitForSeconds( displayDelay );

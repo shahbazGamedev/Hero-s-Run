@@ -323,7 +323,7 @@ public sealed class LevelNetworkingManager : PunBehaviour
 		{
 			//Your coop partner is also dead.
 			//This means game over.
-			//print("coopPlayerDied: partner name " + coopPartner.name );
+			Debug.Log("coopPlayerDied: game over partner name " + coopPartner.name );
 			photonView.RPC("coopGameOverRPC", PhotonTargets.All );
 		}
 		else
@@ -348,7 +348,7 @@ public sealed class LevelNetworkingManager : PunBehaviour
 		//Display the results screen (player details, score, rounds survived, etc.) and return to the lobby.
 		PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.leaveRoomShortly() );
-		if( !HUDMultiplayer.hudMultiplayer.isCoopResultsScreenActive() ) StartCoroutine( HUDMultiplayer.hudMultiplayer.displayCoopResultsAndEmotesScreen( 0.25f ) );
+		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayCoopResultsAndEmotesScreen( 0.25f ) );
 	}
 
 	//Only called by the master.

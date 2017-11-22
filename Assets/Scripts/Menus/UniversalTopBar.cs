@@ -31,6 +31,7 @@ public class UniversalTopBar : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI hardCurrencyAmountText;
 
 	[Header("Close and Settings buttons")]
+	[SerializeField] GameObject buttons; //contains the settings and close buttons
 	[SerializeField] Button closeButton;
 	[SerializeField] TextMeshProUGUI closeButtonText;
 	[SerializeField] Button settingsButton;
@@ -312,6 +313,7 @@ public class UniversalTopBar : MonoBehaviour {
 	public void showTopBar( bool showTopBar )
 	{
 		topPanel.SetActive( showTopBar );
+		buttons.SetActive( showTopBar );
 	}
 
 	void onlyShowCloseButton( bool closeButtonOnly )
