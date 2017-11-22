@@ -15,7 +15,7 @@ public class ZombieTrigger : MonoBehaviour {
 	}
 	
 	//Only the master should call this method.
-	public void activateNextWave( LevelNetworkingManager levelNetworkingManager, string nameOfTileEntered, PlayerRace playerRace )
+	public void activateNextWave( LevelNetworkingManager levelNetworkingManager, string nameOfTileEntered )
 	{
 		if( zombieManager == null ) return;
 
@@ -25,7 +25,7 @@ public class ZombieTrigger : MonoBehaviour {
 
 		configureWave( Random.Range(0, zombieWaveList.Count ) );
 
-		levelNetworkingManager.nextWaveActivated( nameOfTileEntered, playerRace );
+		levelNetworkingManager.nextWaveActivated( nameOfTileEntered );
 	}
 
 	private void configureWave( int waveToUse )
@@ -33,6 +33,7 @@ public class ZombieTrigger : MonoBehaviour {
 		GameObject zombieWaveObject = zombieWaveList[waveToUse];
 		zombieWaveObject.SetActive( true );
 		ZombieWave activeZombieWave = zombieWaveObject.GetComponent<ZombieWave>();
+		//trigger zombie wave takes care of instantiating the zombies using Photon.
 		zombieManager.triggerZombieWave( activeZombieWave.spawnLocations );
 		zombieWaveWasTriggered = true;
 	}

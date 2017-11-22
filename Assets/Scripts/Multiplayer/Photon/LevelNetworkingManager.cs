@@ -37,9 +37,6 @@ public sealed class LevelNetworkingManager : PunBehaviour
 	const float REQUIRED_POWER_BOOST_DISTANCE = 100f;
 	#endregion
 
-	#region Coop
-	const float COOP_DELAY_BEFORE_RESURRECTING = 1.5f;
-	#endregion
 
 	void Awake()
 	{
@@ -305,114 +302,26 @@ public sealed class LevelNetworkingManager : PunBehaviour
 	#endregion
 
 	#region Coop mode
-	public void coopPlayerDied( PlayerRace playerRace )
+	//Called by ZombieTrigger. Only called by the master. Only called in Coop mode.
+	public void nextWaveActivated( string nameOfTileEntered )
 	{
-		//print("coopPlayerDied " + playerRace.name );
-		//Coop is a 2-player mode. Find out who your partner is.
-		PlayerRace coopPartner = null;
-		for( int i = 0; i < PlayerRace.players.Count; i ++ )
-		{
-			if( PlayerRace.players[i] != playerRace ) 
-			{
-				coopPartner = PlayerRace.players[i];
-				break;
-			}
-		}
-		//Is your coop partner dead or alive?
-		if( coopPartner.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
-		{
-			//Your coop partner is also dead.
-			//This means game over.
-			Debug.Log("coopPlayerDied: game over partner name " + coopPartner.name );
-			photonView.RPC("coopGameOverRPC", PhotonTargets.All );
-		}
-		else
-		{
-			//Your coop partner is alive.
-			//Go into spectating mode. The player will be revived if his coop partner survives to the next wave.
-			if( playerRace.GetComponent<PhotonView>().isMine && playerRace.GetComponent<PlayerAI>() == null )
-			{
-				//Display the message "SPECTATING" on the HUD.
-				HUDMultiplayer.hudMultiplayer.displayTopMessage( LocalizationManager.Instance.getText( "COOP_SPECTATING" ) );
-				//Have the main camera track the player's coop partner.
-				CinemachineVirtualCamera cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
-				cmvc.m_Follow = coopPartner.transform;
-				cmvc.m_LookAt = coopPartner.transform;
-			}
-		}
+		photonView.RPC("coopWaveRPC", PhotonTargets.All, nameOfTileEntered );
 	}
 
 	[PunRPC]
-	void coopGameOverRPC()
-	{
-		//Display the results screen (player details, score, rounds survived, etc.) and return to the lobby.
-		PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
-		StartCoroutine( HUDMultiplayer.hudMultiplayer.leaveRoomShortly() );
-		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayCoopResultsAndEmotesScreen( 0.25f ) );
-	}
-
-	//Only called by the master.
-	public void nextWaveActivated( string nameOfTileEntered, PlayerRace playerRace )
-	{
-		photonView.RPC("zombieWaveRPC", PhotonTargets.All, ZombieManager.numberOfZombieWavesTriggered );
-
-		Debug.Log("LevelNetworkingManager-nextWaveActivated " + ZombieManager.numberOfZombieWavesTriggered + " nameOfTileEntered " + nameOfTileEntered );
-		//Coop is a 2-player mode. Is anyone dead?
-		PlayerRace deadCoopPartner = null;
-		for( int i = 0; i < PlayerRace.players.Count; i ++ )
-		{
-			if( PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying && PlayerRace.players[i] != playerRace ) 
-			{
-				//Yes, the partner of the player who activated the wave is dead.
-				deadCoopPartner = PlayerRace.players[i];
-				break;
-			}
-		}
-
-		if( deadCoopPartner != null )
-		{
-			//Let's resurrect him.
-			Debug.Log("LevelNetworkingManager-nextWaveActivated-resurrecting: " + deadCoopPartner.name );
-			StartCoroutine( coopResurrectPlayer( nameOfTileEntered, deadCoopPartner.GetComponent<PhotonView>().viewID ) );
-		}
-	}
-
-	[PunRPC]
-	void zombieWaveRPC( int waveNumber )
+	void coopWaveRPC( string nameOfTileEntered )
 	{
 		ZombieManager.numberOfZombieWavesTriggered++;
-		Debug.Log("LevelNetworkingManager-zombieWaveRPC: " + ZombieManager.numberOfZombieWavesTriggered );
-		HUDMultiplayer.hudMultiplayer.activateUserMessage( "Wave " + ZombieManager.numberOfZombieWavesTriggered + "!", 0, 2.5f );
-	}
-
-	IEnumerator coopResurrectPlayer( string nameOfTileEntered, int photonViewIdOfPlayerToResurrect )
-	{
-		yield return new WaitForSeconds( COOP_DELAY_BEFORE_RESURRECTING );
-		photonView.RPC("coopResurrectPlayerRPC", PhotonTargets.All, nameOfTileEntered, photonViewIdOfPlayerToResurrect );
-	}
-
-	[PunRPC]
-	void coopResurrectPlayerRPC( string nameOfTileEntered, int photonViewIdOfPlayerToResurrect )
-	{
-		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.COMPLETED ) return; //ignore. The other player died in the meantime.
-		PlayerControl playerToResurrect = null;
+		Debug.Log("LevelNetworkingManager-coopWaveRPC: " + ZombieManager.numberOfZombieWavesTriggered );
+		string waveString = LocalizationManager.Instance.getText("COOP_WAVE"); //Wave {0}!
+		waveString = string.Format( waveString, ZombieManager.numberOfZombieWavesTriggered );
+		HUDMultiplayer.hudMultiplayer.activateUserMessage( waveString, 0, 2.5f );
+		//Also tell the players that a new wave has been activated.
 		for( int i = 0; i < PlayerRace.players.Count; i ++ )
 		{
-			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewIdOfPlayerToResurrect ) 
-			{
-				playerToResurrect = PlayerRace.players[i].GetComponent<PlayerControl>();
-				print("LevelNetworkingManager-coopResurrectPlayerRPC: " + playerToResurrect.name );
-				break;
-			}
-		}
-		if( playerToResurrect != null )
-		{
-			//Let's resurrect him.
-			playerToResurrect.coopResurrectBegin( nameOfTileEntered );
-		}
-		
+			PlayerRace.players[i].GetComponent<PlayerCoop>().nextWaveActivated( nameOfTileEntered );
+		}		
 	}
-
 	#endregion
 
 }

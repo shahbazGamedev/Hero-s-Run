@@ -776,7 +776,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		}
 	}
 
-	public void tileEntranceCrossed( Transform currentTile, PlayerRace playerRace  )
+	public void tileEntranceCrossed( Transform currentTile  )
 	{
 		playerTileIndex++;
 		SegmentInfo si = getSegmentInfo( currentTile.gameObject );
@@ -796,7 +796,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			surroundingPlane.position = new Vector3( currentTile.position.x, currentTile.position.y -UNDERNEATH_TILE_BY, currentTile.position.z );
 		}
 		int tileIndex = si.tileIndex;
-		updateActiveTiles( currentTile.name, tileIndex, playerRace );
+		updateActiveTiles( currentTile.name, tileIndex );
 			
 	}
 
@@ -897,7 +897,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	//The current tile
 	//The preceding tile
 	//The nbrVisibleTiles tiles that come after the current tile
-	private void updateActiveTiles( string nameOfTileEntered, int tileIndex, PlayerRace playerRace )
+	private void updateActiveTiles( string nameOfTileEntered, int tileIndex )
 	{
 		//Disable tile two behind the player
 		//int index = playerTileIndex - 2;
@@ -917,7 +917,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		}
 
 		//Activate zombies (if any) on the tile one further.
-		//Only the master is allowed to activate a zombie wave.
+		//Only the master is allowed to activate a wave.
 		if( GameManager.Instance.isCoopPlayMode() && PhotonNetwork.isMasterClient )
 		{
 			int nextTileIndex = tileIndex + 1;
@@ -926,7 +926,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 				ZombieTrigger zombieTrigger = worldRoadSegments[nextTileIndex].GetComponent<ZombieTrigger>();
 				if( zombieTrigger != null )
 				{
-					zombieTrigger.activateNextWave( levelNetworkingManager, nameOfTileEntered, playerRace );
+					zombieTrigger.activateNextWave( levelNetworkingManager, nameOfTileEntered );
 				}
 			}
 		}

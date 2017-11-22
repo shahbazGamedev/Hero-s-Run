@@ -61,6 +61,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	PlayerHealth playerHealth;
 	PlayerIK playerIK;	//This is an optional component
 	Ragdoll ragdoll; 	//This is an optional component
+	PlayerCoop playerCoop; 	//This is an optional component
 	LevelNetworkingManager levelNetworkingManager;
 	#endregion
 
@@ -262,6 +263,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerSpell = GetComponent<PlayerSpell>();
 		playerRace = GetComponent<PlayerRace>();
 		playerHealth = GetComponent<PlayerHealth>();
+		playerCoop = GetComponent<PlayerCoop>();
 		turnRibbonHandler = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
 		levelNetworkingManager = GameObject.FindGameObjectWithTag("Level Networking Manager").GetComponent<LevelNetworkingManager>();
 
@@ -1811,11 +1813,12 @@ public class PlayerControl : Photon.PunBehaviour {
 		yield return new WaitForSeconds(duration);
 		if( GameManager.Instance.isCoopPlayMode() )
 		{
-			if( this.photonView.isMine && playerAI == null )
+			if( this.photonView.isMine )
 			{
 				//Remove the vignetting
-				StartCoroutine( controlVignetting( 0f, 0f, 0.25f ) );
-				levelNetworkingManager.coopPlayerDied( playerRace );
+				if( playerAI == null ) StartCoroutine( controlVignetting( 0f, 0f, 0.25f ) );
+
+				playerCoop.playerDied();				
 			}
 		}
 		else
@@ -2145,8 +2148,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				//wasEntranceCrossed is used to prevent multiple OnTriggerEnter from occuring.
 				wasEntranceCrossed = true;
 				Invoke( "resetEntranceCrossed", 0.5f );
-				//We might recycle currentTile (the one prior to the one we just entered), this is why we are passing it as a parameter.
-				generateLevel.tileEntranceCrossed( other.transform.parent, playerRace );
+				generateLevel.tileEntranceCrossed( other.transform.parent );
 
 				//The distance remaining displayed on the HUD and stored in PlayerRace is equal to: The length of the level - the total distance traveled by the player.
 				//The total distance traveled by the player is equal to the distance traveled for all previous tiles plus the distance traveled on the current tile.
