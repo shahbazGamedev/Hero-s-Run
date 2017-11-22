@@ -15,11 +15,14 @@ public class CoopResultEntry : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI revivesText;
 	public GameObject emoteGameObject;
 
-	public void configureEntry( int level, string playerName, Sprite playerIconSprite, string score  )
+	public void configureEntry( int level, string playerName, Sprite playerIconSprite, int score, int kills, int downs, int revives )
 	{
 		levelText.text = level.ToString();
 		playerNameText.text = playerName;
 		playerIcon.sprite = playerIconSprite;
-		scoreText.text = score;
+		scoreText.text = score.ToString("N0");
+		killsText.text = kills.ToString("N0");
+		downsText.text = downs.ToString("N0");
+		revivesText.text = revives.ToString("N0");
 	}
 }

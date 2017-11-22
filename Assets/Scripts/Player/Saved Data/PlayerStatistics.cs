@@ -24,7 +24,11 @@ public enum StatisticDataType
 										//If inviting a friend to race, the inviter can select any unlocked race track even if the invitee has not unlocked that track yet. 
 	
 	FAVORITE_CARD = 10,					//The card most frequently played.
-	AVERAGE_SKILL_BONUS = 11			//The player's average skill bonus.
+	AVERAGE_SKILL_BONUS = 11,			//The player's average skill bonus.
+
+	//Coop
+	COOP_HIGH_SCORE_WAVES = 100,
+	COOP_HIGH_SCORE = 101,
 
 }
 
@@ -60,6 +64,11 @@ public class PlayerStatistics {
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.DISTANCE_TRAVELED_LIFETIME, 0 ) );
 
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.AVERAGE_SKILL_BONUS, 0 ) );
+
+		//Coop related
+		statisticEntriesList.Add( new StatisticData( StatisticDataType.COOP_HIGH_SCORE_WAVES, 0 ) );
+		statisticEntriesList.Add( new StatisticData( StatisticDataType.COOP_HIGH_SCORE, 0 ) );
+
 	}
 
 	public List<StatisticData> getStatisticEntriesList()

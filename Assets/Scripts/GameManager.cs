@@ -106,6 +106,7 @@ public class GameManager {
 	//When we reset Time.scale to 1, we also need to reset fixedDeltaTime to it's original value, so let's save it.
 	//@see TimeManager settings.
 	public const float DEFAULT_FIXED_DELTA_TIME = 0.03333333f;
+	public const int SCORE_PER_WAVE = 100; //coop - score points awarded per wave beaten.
 
 	public static GameManager Instance
 	{

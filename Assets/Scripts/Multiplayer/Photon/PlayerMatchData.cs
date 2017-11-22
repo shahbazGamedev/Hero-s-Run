@@ -8,6 +8,11 @@ public class PlayerMatchData {
 	public int playerIcon;
 	public int level;
 	public int currentWinStreak;
+	//Coop
+	public int score = 1;
+	public int kills = 2;
+	public int downs = 3;
+	public int revives = 4;
 
 	public PlayerMatchData ( string playerName, int playerIcon, int level, int currentWinStreak )
 	{

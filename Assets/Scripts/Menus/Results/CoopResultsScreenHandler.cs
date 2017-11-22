@@ -85,7 +85,7 @@ public class CoopResultsScreenHandler : MonoBehaviour, IPointerDownHandler {
 		}
 		GameObject go = (GameObject)Instantiate(coopResultPrefab);
 		go.transform.SetParent(coopResultsHolder,false);
-		go.GetComponent<CoopResultEntry>().configureEntry( pmd.level, pmd.playerName, playerIconSprite, UnityEngine.Random.Range(0, 100000).ToString("N0") );
+		go.GetComponent<CoopResultEntry>().configureEntry( pmd.level, pmd.playerName, playerIconSprite, pmd.score, pmd.kills, pmd.downs, pmd.revives );
 		go.GetComponent<CoopResultEntry>().emoteGameObject.name = pmd.playerName;
 		emotesList.Add( go.GetComponent<CoopResultEntry>().emoteGameObject );
 	}
