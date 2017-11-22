@@ -203,13 +203,9 @@ public class PlayerCollisions : Photon.PunBehaviour {
 				else
 				{
 					//We landed on the zombie's head
-	//land ();
+					playerControl.land ();
 				}
 			}
-		}
-		else
-		{
-			Debug.LogError("Zombie already dead");
 		}
 	}
 

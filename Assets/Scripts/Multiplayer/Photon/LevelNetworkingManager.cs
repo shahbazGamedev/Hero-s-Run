@@ -351,9 +351,12 @@ public sealed class LevelNetworkingManager : PunBehaviour
 		if( !HUDMultiplayer.hudMultiplayer.isCoopResultsScreenActive() ) StartCoroutine( HUDMultiplayer.hudMultiplayer.displayCoopResultsAndEmotesScreen( 0.25f ) );
 	}
 
+	//Only called by the master.
 	public void nextWaveActivated( string nameOfTileEntered )
 	{
-		print("LevelNetworkingManager-nextWaveActivated " + ZombieManager.numberOfZombieWavesTriggered + " nameOfTileEntered " + nameOfTileEntered );
+		photonView.RPC("zombieWaveRPC", PhotonTargets.All, ZombieManager.numberOfZombieWavesTriggered );
+
+		Debug.Log("LevelNetworkingManager-nextWaveActivated " + ZombieManager.numberOfZombieWavesTriggered + " nameOfTileEntered " + nameOfTileEntered );
 		//Coop is a 2-player mode. Is anyone dead?
 		PlayerRace deadCoopPartner = null;
 		for( int i = 0; i < PlayerRace.players.Count; i ++ )
@@ -369,9 +372,17 @@ public sealed class LevelNetworkingManager : PunBehaviour
 		if( deadCoopPartner != null )
 		{
 			//Let's resurrect him.
-			print("LevelNetworkingManager-nextWaveActivated-resurrecting: " + deadCoopPartner.name );
+			Debug.Log("LevelNetworkingManager-nextWaveActivated-resurrecting: " + deadCoopPartner.name );
 			StartCoroutine( coopResurrectPlayer( nameOfTileEntered, deadCoopPartner.GetComponent<PhotonView>().viewID ) );
 		}
+	}
+
+	[PunRPC]
+	void zombieWaveRPC( int waveNumber )
+	{
+		ZombieManager.numberOfZombieWavesTriggered++;
+		Debug.Log("LevelNetworkingManager-zombieWaveRPC: " + ZombieManager.numberOfZombieWavesTriggered );
+		HUDMultiplayer.hudMultiplayer.activateUserMessage( "Wave " + ZombieManager.numberOfZombieWavesTriggered + "!", 0, 2.5f );
 	}
 
 	IEnumerator coopResurrectPlayer( string nameOfTileEntered, int photonViewIdOfPlayerToResurrect )

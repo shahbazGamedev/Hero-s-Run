@@ -17,6 +17,8 @@ public class SegmentInfo : MonoBehaviour {
 	//tileIndex is populated at runtime. The Start tile has an index of 0, the second tile in the level has an index of 1, etc.
 	public int tileIndex = -1;
 	public int tileDepth = 1;
+	//Used in coop (which is an endless mode) to prevent a subsequent player to add a tile if one was already added.
+	public bool wasTileAdded = false; 
 	public TileSubType tileSubType = TileSubType.Straight;
 	public Sprite tileSprite;
 	public bool drawBezierGizmo = true;

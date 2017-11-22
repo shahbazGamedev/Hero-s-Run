@@ -249,8 +249,12 @@ public class MPNetworkLobbyManager : PunBehaviour
 	    Debug.Log("MPNetworkLobbyManager:OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one.");
 	    //We failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
 		int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
+		//In multiplayer games, we want all the players to have the same results when using the random generator. This is why we seed it.
+		//The seed is set by the master when the room is created.
 		RoomOptions roomOptions = new RoomOptions();
-		roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", LevelManager.Instance.getSelectedCircuit().circuitInfo.raceTrackName }, { "Elo", playerEloRating } };
+		int randomSeed = Random.Range( 0, 777777 );
+		Debug.Log("Matchmaking randomSeed " + randomSeed );
+		roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", LevelManager.Instance.getSelectedCircuit().circuitInfo.raceTrackName }, { "Elo", playerEloRating }, { "Seed", randomSeed } };
 		roomOptions.MaxPlayers = LevelManager.Instance.getNumberOfPlayersRequired();
 		//Mandatory - you must also set customRoomPropertiesForLobby
 		//With customRoomPropertiesForLobby, you define which key-values are relevant for matchmaking.
