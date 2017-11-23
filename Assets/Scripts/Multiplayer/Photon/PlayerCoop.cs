@@ -8,10 +8,13 @@ public class PlayerCoop : PunBehaviour {
 	public Transform coopPartner; //Assumes coop is only 2 players.
 	const float COOP_DELAY_BEFORE_RESURRECTING = 1.4f;
 	Coroutine coopResurrectPlayerCoroutine;
+	const int SCORE_PER_WAVE = 100; //coop - score points awarded per wave beaten.
+	PlayerAI playerAI;
 
 	void Awake ()
 	{
 		enabled = GameManager.Instance.isCoopPlayMode();
+		playerAI = GetComponent<PlayerAI>();
 	}
 
 	void Start ()
@@ -31,6 +34,9 @@ public class PlayerCoop : PunBehaviour {
 	public void playerDied()
 	{
 		//You just died.
+		PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( name );
+		pmd.downs++;
+
 		//Is your coop partner dead or alive?
 		if( coopPartner.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
 		{
@@ -72,11 +78,15 @@ public class PlayerCoop : PunBehaviour {
 	//Called by LevelNetworkingManager when a new wave starts.
 	public void nextWaveActivated( string nameOfTileEntered )
 	{
-		//If the race is not completed and this player is dead, resurrect this player.
 		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.COMPLETED ) return;
 
-		if( GetComponent<PlayerControl>().deathType == DeathType.Alive ) return;
+		//Each completed wave survived increases the player's score.
+		PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( name );
+		int wavesCompleted = ZombieManager.numberOfZombieWavesTriggered - 1;
+		if( wavesCompleted < 0 ) wavesCompleted = 0;
+		pmd.score = pmd.score + wavesCompleted * SCORE_PER_WAVE;
 
+		if( GetComponent<PlayerControl>().deathType == DeathType.Alive ) return;
 		if( coopResurrectPlayerCoroutine != null ) StopCoroutine( coopResurrectPlayerCoroutine );
 		coopResurrectPlayerCoroutine = StartCoroutine( coopResurrectPlayer( nameOfTileEntered ) );
 	}
@@ -86,7 +96,33 @@ public class PlayerCoop : PunBehaviour {
 		yield return new WaitForSeconds( COOP_DELAY_BEFORE_RESURRECTING );
 
 		GetComponent<PlayerControl>().coopResurrectBegin( nameOfTileEntered );
+		//You were resurrected thanks to your partner.
+		//Increase his Revives count.
+		PlayerMatchData partner_pmd = LevelManager.Instance.getPlayerMatchDataByName( coopPartner.name );
+		partner_pmd.revives++;
 	}
 
+	/// <summary>
+	/// Adds the score bonus.
+	/// </summary>
+	/// <param name="bonusPoints">Bonus points.</param>
+	/// <param name="bonusTextID">Bonus text ID.</param>
+	public void addScoreBonus( int bonusPoints, string bonusTextID )
+	{
+		if( !GameManager.Instance.isCoopPlayMode() ) return;
+
+		if( !photonView.isMine ) return;
+
+		//Add score to player match data
+		PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( name );
+		pmd.score = pmd.score + bonusPoints;
+
+		if( playerAI == null )
+		{
+			string localizedText = LocalizationManager.Instance.getText(bonusTextID);
+			localizedText = string.Format( localizedText, bonusPoints );
+			StartCoroutine( SkillBonusHandler.Instance.showBonus( localizedText ) );
+		}
+	}
 	
 }

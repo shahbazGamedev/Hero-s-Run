@@ -19,6 +19,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 	PlayerSpell playerSpell;
 	PlayerRun playerRun;
 	PlayerAI playerAI;
+	PlayerCoop playerCoop;
 	#region Ground type variables
 	string groundType = "Floor"; //Other choices are Water and Collapsing
 	string previousGroundType = "Floor"; //Other choices are Water and Collapsing
@@ -33,6 +34,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 		playerSpell = GetComponent<PlayerSpell>();	
 		playerRun = GetComponent<PlayerRun>();	
 		playerAI = GetComponent<PlayerAI>();	
+		playerCoop = GetComponent<PlayerCoop>();	
 	}
 
 	/// <summary>
@@ -152,16 +154,16 @@ public class PlayerCollisions : Photon.PunBehaviour {
 
 	void handleZombieCollision( Transform collided, Vector3 normal )
 	{
-		ZombieController zombieController = (ZombieController) collided.GetComponent("ZombieController");
+		ZombieController zombieController = collided.GetComponent<ZombieController>();
 		//Ignore collision event if Zombie already dead.
 		if( zombieController.getCreatureState() != CreatureState.Dying )
 		{
 			//You can't make a crawling zombie fall backwards
 			if( ( playerControl.getCharacterState() == PlayerCharacterState.Sliding || playerControl.getCharacterState() == PlayerCharacterState.Turning_and_sliding || playerSpell.isRagingBullActive ) && zombieController.getCreatureState() != CreatureState.Crawling )
 			{
-				//Give XP bonus
-				addSkillBonus( 25, "SKILL_BONUS_TOPPLED_ZOMBIE" );
-				zombieController.fallToBack();	
+				//Give score bonus
+				playerCoop.addScoreBonus( 25, "COOP_SCORE_BONUS_TOPPLED_ZOMBIE" );
+				zombieController.knockback();	
 			}
 			else
 			{

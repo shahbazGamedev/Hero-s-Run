@@ -9,10 +9,10 @@ public class PlayerMatchData {
 	public int level;
 	public int currentWinStreak;
 	//Coop
-	public int score = 1;
-	public int kills = 2;
-	public int downs = 3;
-	public int revives = 4;
+	public int score = 0;
+	public int kills = 0;
+	public int downs = 0;
+	public int revives = 0;
 
 	public PlayerMatchData ( string playerName, int playerIcon, int level, int currentWinStreak )
 	{

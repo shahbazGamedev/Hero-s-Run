@@ -143,12 +143,6 @@ public sealed class ZombieController : Creature, ICreature {
 
 	}
 
-	//The zombie falls over backwards, typically because the player slid into him.
-	public void fallToBack()
-	{
-		knockback();
-	}
-
 	public void victory( bool playWinSound )
 	{
 		if( creatureState != CreatureState.Dying )

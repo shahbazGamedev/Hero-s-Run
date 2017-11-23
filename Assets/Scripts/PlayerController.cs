@@ -1966,7 +1966,7 @@ public sealed class PlayerController : MonoBehaviour {
 						//Display coin total picked up icon
 						HUDHandler.hudHandler.displayCoinPickup( ZombieManager.NUMBER_STARS_PER_ZOMBIE );
 
-						zombieController.fallToBack();
+						zombieController.knockback();
 						
 					}
 					else
