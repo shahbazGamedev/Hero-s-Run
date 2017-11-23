@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Linq;
+using UnityEngine.EventSystems;
+using UnityEngine.Apple.ReplayKit;
 
-public class ResultsScreenHandler : MonoBehaviour {
+public class ResultsScreenHandler : MonoBehaviour, IPointerDownHandler {
 
 	[SerializeField] RectTransform resultsHolder;
 	[SerializeField] GameObject resultPrefab;
@@ -74,4 +76,27 @@ public class ResultsScreenHandler : MonoBehaviour {
 		if ( emote == null ) Debug.LogError("ResultsScreenHandler-could not find emote game object for player " + playerName );
 		return emote;
 	}
+
+	//The player can click on the coop results screen to dismiss it immediately.
+    public void OnPointerDown(PointerEventData data)
+    {
+		StartCoroutine( exitNow() );
+    }
+
+    IEnumerator  exitNow()
+    {
+ 		#if UNITY_IOS
+		try
+		{
+			if( ReplayKit.isRecording ) ReplayKit.StopRecording();
+		}
+   		catch (Exception e)
+		{
+			Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
+    	}
+		yield return new WaitForEndOfFrame();
+		#endif
+		PhotonNetwork.LeaveRoom();
+   }
+
 }
