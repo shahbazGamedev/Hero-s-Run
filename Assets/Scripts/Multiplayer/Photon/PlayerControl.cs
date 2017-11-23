@@ -2169,8 +2169,11 @@ public class PlayerControl : Photon.PunBehaviour {
 				currentTilePos = si.transform.position;
 				currentTile = si.gameObject;
 				tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
-				//Every time a new tile is entered, force synchronization
-				forcePositionSynchronization();
+				//Every time a new tile is entered, force synchronization.
+				//However, we don't want to force synchronization when entering a turn.
+				//Because of the RPC delay, the rotation could end up being wrong.
+				//For turns, we will syncronize when the player has successfully exited the turn (deadEnd).
+				if( si.tileType != TileType.Left && si.tileType != TileType.Right ) forcePositionSynchronization();
 				//If you just entered the End tile reactivate some tiles since the camera does a 180.
 				if( si.tileType == TileType.End )
 				{
@@ -2230,17 +2233,17 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void forcePositionSynchronization()
 	{
-		if( photonView.isMine && playerAI == null ) this.photonView.RPC("positionSynchronizationRPC", PhotonTargets.Others, transform.position, capsuleCollider.attachedRigidbody.velocity, PhotonNetwork.time );
+		if( photonView.isMine && playerAI == null ) this.photonView.RPC("positionSynchronizationRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, capsuleCollider.attachedRigidbody.velocity, PhotonNetwork.time );
 	}
 
 	[PunRPC]
-	void positionSynchronizationRPC( Vector3 syncPosition, Vector3 syncVelocity, double photonTime )
+	void positionSynchronizationRPC( Vector3 syncPosition, float syncYRotation, Vector3 syncVelocity, double photonTime )
 	{
 		//Discard old packets
 		if( PhotonNetwork.time - photonTime > 0.5 ) return;
 
 		float syncDelay = (float) (PhotonNetwork.time - photonTime);
-		transform.position = syncPosition + syncVelocity * syncDelay;
+		transform.SetPositionAndRotation( syncPosition + syncVelocity * syncDelay, Quaternion.Euler( transform.eulerAngles.x, syncYRotation, transform.eulerAngles.z ) );
 		recalculateCurrentLane();
 		//Determine on which tile we are on
 		RaycastHit hit;
@@ -2328,6 +2331,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				deadEndTurnDone = false;
 				deadEndTrigger = null;
 				wantToTurn = false;
+				forcePositionSynchronization();
 			}
 			else if( other.CompareTag( "Angled Tile Exit" ) )
 			{
