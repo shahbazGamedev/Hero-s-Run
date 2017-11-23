@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class SkillBonusHandler : MonoBehaviour {
+public sealed class SkillBonusHandler : MonoBehaviour {
 
 	[Header("Skill Bonus")]
 	[SerializeField] RectTransform skillBonusHolder;
@@ -17,6 +17,7 @@ public class SkillBonusHandler : MonoBehaviour {
 		Instance = this;
 	}
 
+	#region Not-Coop
 	void Update()
 	{
 		#if UNITY_EDITOR
@@ -49,7 +50,72 @@ public class SkillBonusHandler : MonoBehaviour {
 		GameManager.Instance.playerProfile.addToSkillBonus( skillPoints );
 		StartCoroutine( showBonus( localizedSkillText ) );
 	}
+	#endregion
 
+	#region Coop
+	private Transform getPlayerByPhotonViewID( int photonViewID )
+	{
+		Transform player = null;
+		for( int i = 0; i < PlayerRace.players.Count; i ++ )
+		{
+			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewID )
+			{
+				//We found the player
+				player = PlayerRace.players[i].transform;
+				break;
+			}
+		}
+		return player;
+	}
+
+	public void grantScoreBonus( int bonusPoints, string bonusTextID, int attackerPhotonViewID )
+	{
+		if( !GameManager.Instance.isCoopPlayMode() ) return;
+
+		Transform attacker = getPlayerByPhotonViewID( attackerPhotonViewID );
+		grantScoreBonus( bonusPoints, bonusTextID, attacker );
+	}
+
+	public void grantScoreBonus( int bonusPoints, string bonusTextID, Transform attacker )
+	{
+		if( !GameManager.Instance.isCoopPlayMode() ) return;
+
+		if( attacker != null )
+		{
+			if( attacker.CompareTag("Player") )
+			{
+				PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( attacker.name );
+				if( pmd != null )
+				{
+					//Grants the attacker one kill and the specified bonus points.
+					pmd.score += bonusPoints;
+					pmd.kills++;
+					if( attacker.GetComponent<PhotonView>().isMine && attacker.GetComponent<PlayerAI>() == null )
+					{
+						//show a bonus message on the HUD.
+						string localizedSkillText = LocalizationManager.Instance.getText(bonusTextID);
+						localizedSkillText = string.Format( localizedSkillText, bonusPoints );
+						showBonus( localizedSkillText );
+					}
+				}
+				else
+				{
+					Debug.LogWarning("SkillBonusHandler-grantScoreBonus: the attacker specified doesn't have player match data: " + attacker.name + " .Not granting bonus." );
+				}
+			}
+			else
+			{
+				Debug.LogWarning("SkillBonusHandler-grantScoreBonus: the attacker specified is not a player: " + attacker.name + " .Not granting bonus." );
+			}
+		}
+		else
+		{
+			Debug.LogWarning("SkillBonusHandler-grantScoreBonus: the attacker specified is null. Not granting bonus." );
+		}
+	}
+	#endregion
+
+	#region Shared
 	public IEnumerator showBonus( string localizedText )
 	{
 		//Fade in 0.8 sec,stay 3 sec, fade-out 0.6 sec
@@ -67,5 +133,5 @@ public class SkillBonusHandler : MonoBehaviour {
 		skillBonus.GetComponent<FadeInCanvasGroup>().fadeOut();
 		Destroy( skillBonus, 1f );
 	}
-	
+	#endregion
 }

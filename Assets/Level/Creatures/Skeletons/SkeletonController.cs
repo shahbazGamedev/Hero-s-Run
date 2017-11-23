@@ -396,10 +396,10 @@ public sealed class SkeletonController : Creature, ICreature {
 	}
 
 	//The skeleton falls over backwards, typically because the player slid into him or because of a ZNuke
-	public new void knockback()
+	public new void knockback(  Transform attacker )
 	{
 		StopCoroutine( wakeUp(0) );
-		base.knockback();
+		base.knockback( attacker );
 		anim.CrossFadeInFixedTime( "death", CROSS_FADE_DURATION );
 		Debug.Log("Skeleton PlayerStateChange - knockback " + gameObject.name + " " + creatureState );
 	}

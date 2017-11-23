@@ -24,7 +24,7 @@ public class CardGrenade : Card {
 		object[] data = new object[2];
 
 		//We want the caster to be immune to the blast
-		data[0] = playerTransform.name;
+		data[0] = photonViewID;
 
 		//We want to transmit the blast radius
 		data[1] = cd.getCardPropertyValue( CardPropertyType.RADIUS, level );

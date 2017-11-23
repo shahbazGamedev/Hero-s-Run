@@ -22,7 +22,9 @@ public class Grenade : CardSpawnedObject {
 	{
 		object[] data = this.gameObject.GetPhotonView ().instantiationData;
 
-		casterName = data[0].ToString();
+		int casterViewId = (int) data[0];
+		casterTransform = getCaster( casterViewId );
+		casterName = casterTransform.name;
 
 		//We can now make the Grenade visible
 		GetComponent<MeshRenderer>().enabled = true;
@@ -36,7 +38,7 @@ public class Grenade : CardSpawnedObject {
 		//the bomb beeps lasts 0.94 seconds
 		yield return new WaitForSeconds(0.94f);
 
-		destroyAllTargetsWithinBlastRadius( blastRadius, MaskHandler.getMaskWithPlayerWithLevelDestructible() );
+		destroyAllTargetsWithinBlastRadius( blastRadius, MaskHandler.getMaskWithPlayerWithLevelDestructible(), casterTransform );
 		explode();
 		GameObject.Destroy( gameObject );
 	}

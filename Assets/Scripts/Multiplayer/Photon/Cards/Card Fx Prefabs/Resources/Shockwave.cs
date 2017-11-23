@@ -17,8 +17,8 @@ public class Shockwave : CardSpawnedObject {
 	{
 		object[] data = this.gameObject.GetPhotonView ().instantiationData;
 		int casterViewId = (int) data[0];
-		Transform caster = getCaster( casterViewId );
-		casterName = caster.name;
+		casterTransform = getCaster( casterViewId );
+		casterName = casterTransform.name;
 
 		//Do a ripple effect on the minimap
 		//To do
@@ -27,18 +27,18 @@ public class Shockwave : CardSpawnedObject {
 		//Position flush with the ground and try to center it in the middle of the road if possible.
 		positionSpawnedObject();
 
-		if( caster != null ) shockwave( caster, (float) data[1] );
+		if( casterTransform != null ) shockwave( (float) data[1] );
 
 	}
 
-	void shockwave( Transform caster, float radius )
+	void shockwave( float radius )
 	{
 		//Shake the camera
-		caster.GetComponent<PlayerCamera>().Shake();
+		casterTransform.GetComponent<PlayerCamera>().Shake();
 
 		Transform shockwaveEffect = transform.Find("Shockwave Effect");
 		shockwaveEffect.gameObject.SetActive( true );
-		destroyAllTargetsWithinBlastRadius( radius, MaskHandler.getMaskWithPlayerWithoutDevices() );
+		destroyAllTargetsWithinBlastRadius( radius, MaskHandler.getMaskWithPlayerWithoutDevices(), casterTransform );
 		GameObject.Destroy( gameObject, 3 );
 	}
 

@@ -57,7 +57,7 @@ public sealed class CreatureManager : MonoBehaviour {
 			ICreature creatureController = hitColliders[i].GetComponent<ICreature>();
 			if( creatureController.getCreatureState() != CreatureState.Dying )
 			{
-				creatureController.knockback();
+				creatureController.knockback( player );
 				numberOfCreatures++;
 			}
 		}

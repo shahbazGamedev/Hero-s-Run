@@ -136,9 +136,9 @@ public sealed class CerberusController : Creature, ICreature {
 	}
 
 	//The cerberus falls over backwards, typically because of a ZNuke
-	public new void knockback()
+	public new void knockback( Transform attacker )
 	{
-		base.knockback();
+		base.knockback( attacker );
 		stopBreathingFire();
 		anim.Play("deathAggressive");
 	}

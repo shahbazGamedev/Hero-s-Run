@@ -215,9 +215,9 @@ public sealed class DemonController : Creature, ICreature {
 	}
 
 	//The demon falls over backwards, typically because the player slid into him or because of a ZNuke
-	public new void knockback()
+	public new void knockback( Transform attacker )
 	{
-		base.knockback();
+		base.knockback( attacker );
 		anim.SetTrigger("Knockback");
 	}
 	

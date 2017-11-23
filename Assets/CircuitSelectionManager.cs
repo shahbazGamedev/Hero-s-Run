@@ -36,7 +36,7 @@ public class CircuitSelectionManager : MonoBehaviour {
 	void createRaceTracks()
 	{
 		//If we are playing alone, include coop tracks. For all other play modes, exclude coop tracks.
-		List<LevelData.MultiplayerInfo> raceTrackList = LevelManager.Instance.getLevelData().getSortedRaceTrackList( GameManager.Instance.getPlayMode() != PlayMode.PlayAlone );
+		List<LevelData.MultiplayerInfo> raceTrackList = LevelManager.Instance.getLevelData().getSortedRaceTrackList( true );
 		for( int i = 0; i < raceTrackList.Count; i++ )
 		{
 			createRaceTrack( i, raceTrackList[i] );

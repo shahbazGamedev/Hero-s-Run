@@ -77,9 +77,9 @@ public class ForceField : CardSpawnedObject {
 		}
  		else if( collision.collider.CompareTag("Zombie") )
 		{
-			addSkillBonus( 25, "SKILL_BONUS_FORCE_FIELD" );
+			SkillBonusHandler.Instance.grantScoreBonus( 25, "COOP_SCORE_BONUS_FORCE_FIELD", casterTransform );
 			ICreature creatureController = collision.collider.GetComponent<ICreature>();
-			creatureController.knockback();
+			creatureController.knockback( casterTransform );
 		}
  	}
 

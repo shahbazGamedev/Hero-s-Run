@@ -101,28 +101,5 @@ public class PlayerCoop : PunBehaviour {
 		PlayerMatchData partner_pmd = LevelManager.Instance.getPlayerMatchDataByName( coopPartner.name );
 		partner_pmd.revives++;
 	}
-
-	/// <summary>
-	/// Adds the score bonus.
-	/// </summary>
-	/// <param name="bonusPoints">Bonus points.</param>
-	/// <param name="bonusTextID">Bonus text ID.</param>
-	public void addScoreBonus( int bonusPoints, string bonusTextID )
-	{
-		if( !GameManager.Instance.isCoopPlayMode() ) return;
-
-		if( !photonView.isMine ) return;
-
-		//Add score to player match data
-		PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( name );
-		pmd.score = pmd.score + bonusPoints;
-
-		if( playerAI == null )
-		{
-			string localizedText = LocalizationManager.Instance.getText(bonusTextID);
-			localizedText = string.Format( localizedText, bonusPoints );
-			StartCoroutine( SkillBonusHandler.Instance.showBonus( localizedText ) );
-		}
-	}
 	
 }

@@ -45,9 +45,18 @@ public class TripMine : CardSpawnedObject {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.CompareTag("Player") && other.name != casterName )
+		if( other.CompareTag("Player") )
+		{
+			if( other.name != casterName )
+			{
+				startDetonationCountdown();
+				addSkillBonus( 25, "SKILL_BONUS_TRIP_MINE" );
+			}
+		}
+ 		else if( other.CompareTag("Zombie") )
 		{
 			startDetonationCountdown();
+			SkillBonusHandler.Instance.grantScoreBonus( 25, "COOP_SCORE_BONUS_TRIP_MINE", casterTransform );
 		}
 	}
 
@@ -60,7 +69,6 @@ public class TripMine : CardSpawnedObject {
 	void detonate()
 	{
 		destroyAllTargetsWithinBlastRadius( blastRadius, MaskHandler.getMaskWithPlayerWithLevelDestructible() );
-		addSkillBonus( 25, "SKILL_BONUS_TRIP_MINE" );
 		explode();
 		GameObject.Destroy( gameObject );
 	}

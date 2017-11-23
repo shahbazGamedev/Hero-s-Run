@@ -344,7 +344,7 @@ public class CardSpawnedObject : MonoBehaviour {
 
 	        case MaskHandler.creatureLayer:
 				valid = true;
-				potentialTarget.GetComponent<ICreature>().knockback();
+				potentialTarget.GetComponent<ICreature>().knockback( caster );
                break;
 		}
 		if( valid )

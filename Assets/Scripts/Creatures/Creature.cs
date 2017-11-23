@@ -119,27 +119,18 @@ public class Creature : PunBehaviour {
 		gameObject.SetActive( false );
 	}
 
-	public void knockback()
-	{
-		knockbackRPC();
-		this.photonView.RPC("knockbackRPC", PhotonTargets.Others );
-	}
-
-	//The creature falls over backwards, typically because the player slid into him or because of a ZNuke
-	[PunRPC]
-	void knockbackRPC()
+	public virtual void knockback( Transform attacker )
 	{
 		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
 
-		setCreatureState( CreatureState.Dying );
-		controller.enabled = false;
-		//Some creatures (usually the ones carrying a weapon) have more than one capsule colliders.
-		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
-		for( int i = 0; i < capsuleColliders.Length; i++ )
+		if( attacker != null )
 		{
-			capsuleColliders[i].enabled = false;
+			this.photonView.RPC("knockbackRPC", PhotonTargets.All, attacker.GetComponent<PhotonView>().viewID );
 		}
-		audioSource.PlayOneShot( knockbackSound );
+		else
+		{
+			Debug.LogWarning("Creature-knockback: the attacker specified is null." );
+		}
 	}
 
 	//For SetLookAtPosition to work, there are 2 conditions:

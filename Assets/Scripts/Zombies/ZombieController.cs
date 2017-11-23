@@ -27,6 +27,7 @@ public sealed class ZombieController : Creature, ICreature {
 	[Tooltip("The icon to use on the minimap. It is optional.")]
 	public Sprite zombieIcon;
 	public ParticleSystem debris; //Particle fx that plays when a zombie burrows up
+	const int SCORE_PER_KNOCKBACK = 20; //coop - score points awarded per knockback.
 
 	// Use this for initialization
 	new void Awake ()
@@ -131,16 +132,33 @@ public sealed class ZombieController : Creature, ICreature {
 			//3) Move the controller
 			controller.Move( forward );
 		}
-
 	}
 
-	public new void knockback()
+	public override void knockback( Transform attacker )
 	{
-		base.knockback();
+		base.knockback( attacker );
 		if( zombieIcon != null ) MiniMap.Instance.removeRadarObject( gameObject );
 		CancelInvoke( "groan" );
 		legacyAnim.CrossFade("fallToBack", 0.25f);
+	}
 
+	//The creature falls over backwards and dies.
+	[PunRPC]
+	void knockbackRPC( int attackerPhotonViewID )
+	{		
+		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
+
+		setCreatureState( CreatureState.Dying );
+		controller.enabled = false;
+		//Some creatures (usually the ones carrying a weapon) have more than one capsule colliders.
+		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
+		for( int i = 0; i < capsuleColliders.Length; i++ )
+		{
+			capsuleColliders[i].enabled = false;
+		}
+		audioSource.PlayOneShot( knockbackSound );
+
+		SkillBonusHandler.Instance.grantScoreBonus( SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_TOPPLED_ZOMBIE", attackerPhotonViewID );
 	}
 
 	public void victory( bool playWinSound )

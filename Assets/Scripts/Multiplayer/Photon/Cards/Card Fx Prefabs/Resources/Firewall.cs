@@ -24,8 +24,8 @@ public class Firewall : CardSpawnedObject {
 		{
 			GetComponent<AudioSource>().PlayOneShot(onFlameContact);
 			ICreature creatureController = other.GetComponent<Collider>().GetComponent<ICreature>();
-			creatureController.knockback();
-			addSkillBonus( 25, "SKILL_BONUS_FIREWALL" );
+			creatureController.knockback( casterTransform );
+			SkillBonusHandler.Instance.grantScoreBonus( 25, "COOP_SCORE_BONUS_FIREWALL", casterTransform );
 		}
 	}
 
