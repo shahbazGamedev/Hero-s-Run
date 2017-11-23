@@ -162,10 +162,10 @@ public class LevelData : MonoBehaviour {
 			case SunType.Desert_night:
 				//Directional light
 				Sun.GetComponent<Light>().color = lightingData.sunColor;
-				lightIntensity = 0.7f;
+				lightIntensity = 0.65f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				sunDirection = Quaternion.Euler( 45.57f,-329f,-159.54f );
-				shadowStrength = 0.635f;
+				shadowStrength = 0.6f;
 
 				//Sky box
 				RenderSettings.sun = Sun.GetComponent<Light>();
@@ -181,7 +181,7 @@ public class LevelData : MonoBehaviour {
 				RenderSettings.fogMode = FogMode.Linear;
 				RenderSettings.fogColor = lightingData.fogColor;
 				RenderSettings.fogStartDistance = -1.4f;
-				RenderSettings.fogEndDistance = 84.93f;
+				RenderSettings.fogEndDistance = 100f;
 				break;
 
 			case SunType.Blizzard:

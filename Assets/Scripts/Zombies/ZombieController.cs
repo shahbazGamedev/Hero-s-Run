@@ -28,6 +28,7 @@ public sealed class ZombieController : Creature, ICreature {
 	public Sprite zombieIcon;
 	public ParticleSystem debris; //Particle fx that plays when a zombie burrows up
 	const int SCORE_PER_KNOCKBACK = 20; //coop - score points awarded per knockback.
+	const float ZOMBIE_LIFESPAN = 30f;
 
 	// Use this for initialization
 	new void Awake ()
@@ -96,6 +97,9 @@ public sealed class ZombieController : Creature, ICreature {
 
 		//Register the zombie on the minimap.
 		if( zombieIcon != null ) MiniMap.Instance.registerRadarObject( gameObject, zombieIcon );
+
+		//Destroy zombie after ZOMBIE_LIFESPAN seconds
+		GameObject.Destroy( gameObject, ZOMBIE_LIFESPAN ); 
 	}
 
 	// Update is called once per frame
