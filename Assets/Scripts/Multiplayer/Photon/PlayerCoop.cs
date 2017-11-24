@@ -15,8 +15,11 @@ public class PlayerCoop : PunBehaviour {
 		enabled = GameManager.Instance.isCoopPlayMode();
 	}
 
-	void Start ()
+	IEnumerator Start ()
 	{
+		//The yield is to ensure PlayerRace.players has all the players.
+		yield return new WaitForFixedUpdate();
+
 		//Save a reference to our coop partner.
 		for( int i = 0; i < PlayerRace.players.Count; i ++ )
 		{
@@ -25,7 +28,8 @@ public class PlayerCoop : PunBehaviour {
 				coopPartner = PlayerRace.players[i].transform;
 				break;
 			}
-		}		
+		}
+		if( coopPartner == null ) Debug.LogError("PlayerCoop-could not find coop partner for " + name + ". Player count is: " + PlayerRace.players.Count );		
 	}
 
 	//Called by PlayerControl if the game mode is coop.
@@ -40,12 +44,13 @@ public class PlayerCoop : PunBehaviour {
 		{
 			//Your coop partner is also dead.
 			//This means game over.
-			Debug.Log("playerDied: game over! Your name: " + name + " Your partner's name: "  + coopPartner.name );
+			Debug.Log("playerDied: game over! Your name: " + name + " Your partner's name: "  + coopPartner.name + " downs " + pmd.downs );
 			//Inform all via an RPC.
 			photonView.RPC("coopGameOverRPC", PhotonTargets.All );
 		}
 		else
 		{
+			Debug.Log("playerDied: start spectating Your name: " + name + " Your partner's name: "  + coopPartner.name );
 			//Your coop partner is alive.
 			//Start spectating your partner. You will be revived if your coop partner survives to the next wave.
 			//Display the message "SPECTATING" on the HUD.
@@ -60,9 +65,13 @@ public class PlayerCoop : PunBehaviour {
 	[PunRPC]
 	void coopGameOverRPC()
 	{
+		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.COMPLETED ) return;
+
 		if( coopResurrectPlayerCoroutine != null ) StopCoroutine( coopResurrectPlayerCoroutine );
 
-		if( photonView.isMine && GetComponent<PlayerAI>() == null )
+		Debug.Log( name + " coopGameOverRPC isMine: " + photonView.isMine );
+
+		if( photonView.isMine )
 		{
 			//Display the results screen (player details, score, rounds survived, etc.) and return to the lobby.
 			PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
