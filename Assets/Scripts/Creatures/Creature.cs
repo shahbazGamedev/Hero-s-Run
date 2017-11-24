@@ -1,14 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using Photon;
 
-public class Creature : PunBehaviour {
+public class Creature : MonoBehaviour {
 
 	protected CreatureState creatureState = CreatureState.Idle;
 	[Header("Other")]
 	Transform player;
-	PlayerController playerController;
 	protected CharacterController controller;
 	protected Animator anim;
 	protected AudioSource audioSource;
@@ -42,22 +40,8 @@ public class Creature : PunBehaviour {
 	protected void Awake ()
 	{
 		controller = GetComponent<CharacterController>();
-		GameObject playerGameObject = GameObject.FindGameObjectWithTag("Player");
-		if( playerGameObject != null )
-		{
-			player = playerGameObject.transform;
-			playerController = player.GetComponent<PlayerController>();
-		}
 		anim = GetComponent<Animator>();
 		audioSource = GetComponent<AudioSource>();
-	}
-
-	protected void saveOriginalSetup()
-	{
-		originalLocalPosition = transform.localPosition;
-		originalLocalRotation = transform.localRotation;
-		originalCreatureState = creatureState;
-		originalFollowsPlayer = followsPlayer;
 	}
 
 	public CreatureState getCreatureState()
@@ -93,27 +77,6 @@ public class Creature : PunBehaviour {
 		transform.rotation = Quaternion.Lerp( transform.rotation, desiredRotation, Time.deltaTime * enemyAimSpeed );
 	}
 
-	protected void resetCreature()
-	{
-		anim = GetComponent<Animator>(); //For some reason, Unity seems to lose the reference and anim becomes null, so fetch it again.
-		creatureState = originalCreatureState;
-		transform.localPosition = originalLocalPosition;
-		transform.localRotation = originalLocalRotation;
-		followsPlayer = originalFollowsPlayer;
-		Debug.LogWarning("Creature - resetCreature called for: " + gameObject.name + " " + originalAnimation );
-
-		if( controller != null ) controller.enabled = true;
-		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
-		for( int i = 0; i < capsuleColliders.Length; i++ )
-		{
-			capsuleColliders[i].enabled = true;
-		}
-		if( GetComponent<Rigidbody>() != null ) GetComponent<Rigidbody>().isKinematic = true;
-		enableIK = true;
-		anim.Play( originalAnimation );
-		gameObject.SetActive( true );
-	}
-
 	public void deactivate()
 	{
 		gameObject.SetActive( false );
@@ -125,7 +88,7 @@ public class Creature : PunBehaviour {
 
 		if( attacker != null )
 		{
-			this.photonView.RPC("knockbackRPC", PhotonTargets.All, attacker.GetComponent<PhotonView>().viewID );
+			GetComponent<PhotonView>().RPC("knockbackRPC", PhotonTargets.All, attacker.GetComponent<PhotonView>().viewID );
 		}
 		else
 		{
@@ -210,18 +173,62 @@ public class Creature : PunBehaviour {
 	{
 		if( player == null )
 		{
-			player = GameObject.FindGameObjectWithTag("Player").transform;
+			player = getNearestTargetWithinRange( 30f, MaskHandler.getMaskOnlyPlayer() );
+			//if( player != null ) print("Zombie named: " + name + " selected target: " + player.name );
 		}
 		return player;
 	}
 
-	protected PlayerController getPlayerController()
+	protected Transform getNearestTargetWithinRange( float range, int mask )
 	{
-		if( playerController == null )
+		Transform nearestTarget;
+		Collider[] hitColliders = Physics.OverlapSphere( transform.position, range, mask );
+		nearestTarget = getNearestValidTarget( hitColliders );
+		return nearestTarget;
+	}
+
+	Transform getNearestValidTarget( Collider[] hitColliders )
+	{
+		Transform nearestTarget = null;
+		float nearestDistance = Mathf.Infinity;
+		for( int i =0; i < hitColliders.Length; i++ )
 		{
-			playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+			//Is the target valid?
+			if( !isTargetValid( hitColliders[i].transform ) ) continue;
+
+			//Calculate the distance between this object and the potential target.
+			float distanceToTarget = Vector3.Distance( transform.position, hitColliders[i].transform.position );
+
+			//Is it the closest target?
+			if( distanceToTarget < nearestDistance )
+			{
+				nearestTarget = hitColliders[i].transform;
+				nearestDistance = distanceToTarget;
+			}
 		}
-		return playerController;
+		return nearestTarget;
+	}
+
+	bool isTargetValid( Transform potentialTarget )
+	{
+		bool valid = false;
+   		switch (potentialTarget.gameObject.layer)
+		{
+	        case MaskHandler.playerLayer:
+				PlayerControl pc = potentialTarget.GetComponent<PlayerControl>();
+				//A player is a valid target if:
+				//He is alive.
+				//He is not in the Idle state. The player is in the Idle state once the race finishes for example.
+				//It is not yourself.
+				//The player is not cloaked.
+				//The game mode is not Coop.
+				valid = pc.deathType == DeathType.Alive;
+ 				valid = valid && pc.getCharacterState() != PlayerCharacterState.Idle;
+				valid = valid && !pc.GetComponent<PlayerSpell>().isCardActive(CardName.Cloak);
+				break;
+		}
+		//if( valid ) Debug.Log("isTargetValid " + potentialTarget.name );
+		return valid;
 	}
 
 }

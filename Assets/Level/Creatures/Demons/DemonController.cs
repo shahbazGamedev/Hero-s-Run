@@ -49,19 +49,6 @@ public sealed class DemonController : Creature, ICreature {
 		{
 			transform.Find("demon_weapon").gameObject.SetActive( false );
 		}
-		saveOriginalSetup();
-	}
-
-	new void saveOriginalSetup()
-	{
-		base.saveOriginalSetup();
-		originalAttackType = attackType;
-	}
-
-	new public void resetCreature()
-	{
-		base.resetCreature();
-		attackType = originalAttackType;
 	}
 
 	void Update ()
@@ -95,7 +82,7 @@ public sealed class DemonController : Creature, ICreature {
 		{
 			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float attackDistance;
-			float playerSpeed = getPlayerController().getSpeed();
+			float playerSpeed = getPlayer().GetComponent<PlayerRun>().getRunSpeed();
 		    switch (attackType)
 			{
 		        case AttackType.stand_and_normal_attack:
@@ -223,7 +210,7 @@ public sealed class DemonController : Creature, ICreature {
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if( getPlayerController().getCharacterState() == PlayerCharacterState.Dying )
+		if( getPlayer().GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
 		{
 			//The Pendulum (bad name, yes I know) is the spike road block
 			if( hit.collider.name.StartsWith("Demon") || hit.gameObject.CompareTag("Player") || hit.collider.name.StartsWith("Pendulum") )

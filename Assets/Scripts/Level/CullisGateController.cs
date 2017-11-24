@@ -47,7 +47,6 @@ public class CullisGateController : MonoBehaviour {
 			LevelManager.Instance.setEpisodeCompleted( true );
 		}
 		FacebookManager.Instance.postHighScore( LevelManager.Instance.getCurrentEpisodeNumber() + 1 );
-		resetAllZombies();
 		Invoke("quit", WAIT_DURATION );
 	}
 
@@ -71,16 +70,6 @@ public class CullisGateController : MonoBehaviour {
 			GetComponent<AudioSource>().loop = false;
 			GetComponent<AudioSource>().Play();
 		}
-	}
-
-	void resetAllZombies()
-	{
-		//We might have zombies nearby.
-		//Zombies play a groan sound every few seconds.
-		//We need to cancel the Invoke call in the zombie controller and might as well reset all zombies while we're at it.
-		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("Zombie Manager");
-		ZombieManager zombieManager = zombieManagerObject.GetComponent<ZombieManager>();
-		zombieManager.resetAllZombies();
 	}
 
 }

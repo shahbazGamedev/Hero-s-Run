@@ -55,19 +55,6 @@ public sealed class WraithController : Creature, ICreature {
 		base.Awake();
 		configureSelectedWeapon();
 		mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-		saveOriginalSetup();
-	}
-
-	new void saveOriginalSetup()
-	{
-		base.saveOriginalSetup();
-		originalAttackType = attackType;
-	}
-
-	new public void resetCreature()
-	{
-		base.resetCreature();
-		attackType = originalAttackType;
 	}
 
 	public void sideCollision ()
@@ -132,7 +119,7 @@ public sealed class WraithController : Creature, ICreature {
 		{
 			float distance = Vector3.Distance(getPlayer().position,transform.position);
 			float attackDistance;
-			float playerSpeed = getPlayerController().getSpeed();
+			float playerSpeed =  getPlayer().GetComponent<PlayerRun>().getRunSpeed();
 		    switch (attackType)
 			{
 		        case AttackType.stand_and_normal_attack:
@@ -252,7 +239,7 @@ public sealed class WraithController : Creature, ICreature {
 	
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if( getPlayerController().getCharacterState() == PlayerCharacterState.Dying )
+		if( getPlayer().GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
 		{
 			if( hit.collider.name.StartsWith("Wraith") || hit.gameObject.CompareTag("Player") )
 			{

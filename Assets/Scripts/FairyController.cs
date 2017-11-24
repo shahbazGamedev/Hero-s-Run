@@ -75,7 +75,7 @@ public class FairyController : Creature {
 	// Update is called once per frame
 	void LateUpdate ()
 	{
-		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && fairyState == FairyState.Hover && getPlayerController().getCharacterState() != PlayerCharacterState.Dying )
+		if( ( GameManager.Instance.getGameState() == GameState.Normal || GameManager.Instance.getGameState() == GameState.Checkpoint ) && fairyState == FairyState.Hover && getPlayer().GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
 		{
 			positionFairy ();
 		}
@@ -138,7 +138,7 @@ public class FairyController : Creature {
 	public void Arrive( float timeToArrive )
 	{
 		fairyState = FairyState.Arrive;
-		Vector3 arrivalStartPos = new Vector3( -18f, 12f, getPlayerController().getSpeed() * 2f );
+		Vector3 arrivalStartPos = new Vector3( -18f, 12f,  getPlayer().GetComponent<PlayerRun>().getRunSpeed() * 2f );
 		Vector3 exactPos = getPlayer().TransformPoint(arrivalStartPos);
 		transform.position = exactPos;
 		transform.rotation = Quaternion.Euler( 0, getPlayer().transform.eulerAngles.y + 90f, transform.eulerAngles.z );
@@ -350,7 +350,7 @@ public class FairyController : Creature {
 
 	private void continueResurection()
 	{
-		getPlayerController().resurrectMiddle();
+		//getPlayerController().resurrectMiddle();
 	}
 
 	//the voiceOverID is used both as text ID and as the name of the audio clip. They need to be identical.

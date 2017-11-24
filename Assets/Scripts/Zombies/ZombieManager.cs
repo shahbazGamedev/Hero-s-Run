@@ -9,36 +9,13 @@ public class ZombieManager : MonoBehaviour {
 	[SerializeField] List<Material> zombieGirlMaterials = new List<Material>(4);
 	[SerializeField] List<Material> zombieBoyMaterials = new List<Material>(4);
 
-	public List<GameObject> zombieFactory = new List<GameObject>();
-	int zombieFactoryIndex = 0;
-
-	Transform player;
-	PlayerController playerController;
 	public static int numberOfZombieWavesTriggered = 0; //could eventually put that number in the player stats
-	public const int NUMBER_STARS_PER_ZOMBIE = 20;
 	public ParticleSystem debris; //Particle fx that plays when a zombie burrows up
 
 	void Start ()
 	{
 		//Reset this static value
 		numberOfZombieWavesTriggered = 0;
-
-		//Hides zombies
-		for( int i=0; i < zombieFactory.Count; i++ )
-		{
-			zombieFactory[i].SetActive( false );
-		}
-	}
-
-	//Called when the player resurrects
-	public void resetAllZombies()
-	{
-		//Reset our zombies
-		for( int i=0; i < zombieFactory.Count; i++ )
-		{
-			ZombieController zombieController = zombieFactory[i].GetComponent<ZombieController>();
-			zombieController.resetCreature();
-		}
 	}
 
 	public Material getRandomZombieMaterial( Sex sex )
@@ -55,20 +32,6 @@ public class ZombieManager : MonoBehaviour {
 			zombieMaterial = zombieBoyMaterials[rnd];
 		}
 		return zombieMaterial;
-	}
-
-	GameObject getAvailableZombie()
-	{
-		GameObject zombie = zombieFactory[zombieFactoryIndex];
-		zombieFactoryIndex++;
-		if( zombieFactoryIndex == zombieFactory.Count ) zombieFactoryIndex = 0;
-		ZombieController zombieController = zombie.GetComponent<ZombieController>();
-		//Reset his values before returning him spic and span. 
-		zombieController.setCreatureState( CreatureState.Reserved );
-		zombie.SetActive( true );
-		CapsuleCollider capsuleCollider = zombie.GetComponent<CapsuleCollider>();
-		capsuleCollider.enabled = true;
-		return zombie;
 	}
 
 	//Called by a zombie trigger
@@ -127,95 +90,6 @@ public class ZombieManager : MonoBehaviour {
 		}
 		PhotonNetwork.InstantiateSceneObject( prefabName, new Vector3( spawnLocation.position.x, zombieHeight, spawnLocation.position.z ), spawnLocation.rotation, 0, data );
 	
-	}
-
-	void spawnZombie()
-	{
-		//Select an available zombie from the factory
-		GameObject zombie = getAvailableZombie();
-
-		if( zombie != null )
-		{
-			//Place the zombie somewhere in front of the player
-			zombie.transform.position = selectRandomLane();
-
-			//Make sure the zombie faces the player
-			zombie.transform.eulerAngles = new Vector3 ( 0, player.eulerAngles.y + 180f, 0 );
-
-			//Make the zombie burrow out of the ground
-			Animation zombieBoyAnimator = (Animation) zombie.GetComponent("Animation");
-			ZombieController zombieController = (ZombieController) zombie.GetComponent("ZombieController");
-			zombieController.setCreatureState( CreatureState.BurrowUp );
-			zombieBoyAnimator.CrossFade("burrowUp", 0.1f, 0 );
-		}
-		else
-		{
-			Debug.LogWarning("ZombieManager-spawnZombie: no zombies available.");
-		}
-	}
-
-	Vector3 selectRandomLane()
-	{
-		//-1 left, 0 center, 1 right lane
-		int selectedLane = Random.Range(-1,2);
-		//The faster the player, the further away we need to place the zombies to give enough time to the player to avoid them.
-		float distanceToPlayer = player.GetComponent<PlayerController>().getSpeed() * 5f;
-		
-		Transform tile = playerController.currentTile.transform;
-		
-		Vector3 zombiePosition = Vector3.zero;
-		
-		float tileRotationY = Mathf.Floor( tile.eulerAngles.y );
-		if( tileRotationY == 0 )
-		{
-			if( selectedLane == -1 )
-			{
-				//Left
-				zombiePosition.Set ( tile.position.x - PlayerController.laneLimit, 0.28f, player.position.z + distanceToPlayer );
-			}
-			else if ( selectedLane == 0 )
-			{
-				//Center
-				zombiePosition.Set ( tile.position.x, 0.28f, player.position.z + distanceToPlayer );
-			}
-			else
-			{
-				//Right
-				zombiePosition.Set ( tile.position.x + PlayerController.laneLimit, 0.28f, player.position.z + distanceToPlayer );
-			}
-		}
-		else if( tileRotationY == 90f || tileRotationY == -270f )
-		{
-		}
-		else if( tileRotationY == -90f || tileRotationY == 270f )
-		{
-		}
-		
-		return zombiePosition;
-		
-	}
-
-	void OnEnable()
-	{
-		PlayerController.resurrectionBegin += ResurrectionBegin;
-		PlayerController.localPlayerCreated += LocalPlayerCreated;
-	}
-	
-	void OnDisable()
-	{
-		PlayerController.resurrectionBegin -= ResurrectionBegin;
-		PlayerController.localPlayerCreated -= LocalPlayerCreated;
-	}
-
-	void ResurrectionBegin()
-	{
-		resetAllZombies();
-	}
-
-	void LocalPlayerCreated( Transform playerTransform, PlayerController playerController )
-	{
-		player = playerTransform;
-		this.playerController = playerController;
 	}
 
 }

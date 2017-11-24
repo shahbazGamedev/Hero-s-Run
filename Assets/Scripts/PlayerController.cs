@@ -1961,10 +1961,10 @@ public sealed class PlayerController : MonoBehaviour {
 					if( ( playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.Turning_and_sliding || PowerUpManager.isThisPowerUpActive( PowerUpType.SpeedBoost ) ) && zombieController.getCreatureState() != CreatureState.Crawling )
 					{
 						//Give stars
-						PlayerStatsManager.Instance.modifyCurrentCoins( ZombieManager.NUMBER_STARS_PER_ZOMBIE, true, false );
+						//PlayerStatsManager.Instance.modifyCurrentCoins( ZombieManager.NUMBER_STARS_PER_ZOMBIE, true, false );
 						
 						//Display coin total picked up icon
-						HUDHandler.hudHandler.displayCoinPickup( ZombieManager.NUMBER_STARS_PER_ZOMBIE );
+						//HUDHandler.hudHandler.displayCoinPickup( ZombieManager.NUMBER_STARS_PER_ZOMBIE );
 
 						zombieController.knockback( transform );
 						

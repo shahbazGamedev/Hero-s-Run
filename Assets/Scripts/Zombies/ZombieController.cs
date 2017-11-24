@@ -108,16 +108,6 @@ public sealed class ZombieController : Creature, ICreature {
 		moveZombie();
 	}
 
-	public new void resetCreature()
-	{
-		StopCoroutine("recycleZombie");
-		CancelInvoke();
-		setCreatureState( CreatureState.Available );
-		gameObject.SetActive( false );
-		followsPlayer = false;
-		if( controller != null )controller.enabled = true;
-	}
-
 	void moveZombie()
 	{
 		if( creatureState == CreatureState.Walking || creatureState == CreatureState.Crawling )
@@ -372,25 +362,6 @@ public sealed class ZombieController : Creature, ICreature {
 				victory( false );
 			}
 		//}
-	}
-
-	//Recycle zombie after a few seconds
-	public IEnumerator recycleZombie( float recycleDelay )
-	{
-		float elapsedTime = 0;
-		
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			yield return new WaitForFixedUpdate();  
-		} while ( elapsedTime < recycleDelay );
-		
-		if( getPlayerController().getCharacterState() != PlayerCharacterState.Dying )
-		{
-			//Only deactivate the zombie if the player is not dead as we dont want the zombie to pop out of view.
-			setCreatureState( CreatureState.Available );
-			gameObject.SetActive( false );
-		}
 	}
 
 }
