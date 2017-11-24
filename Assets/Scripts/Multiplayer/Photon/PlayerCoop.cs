@@ -30,7 +30,7 @@ public class PlayerCoop : PunBehaviour {
 		}		
 	}
 
-	//Called by PlayerControl is isMine is true and the game mode is coop.
+	//Called by PlayerControl if the game mode is coop.
 	public void playerDied()
 	{
 		//You just died.
