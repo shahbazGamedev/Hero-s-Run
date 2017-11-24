@@ -13,11 +13,15 @@ public class Creature : MonoBehaviour {
 	protected const float CROSS_FADE_DURATION = 0.5f;
 	//If true, the creature heads for the player as opposed to staying in his lane
 	public bool followsPlayer = false;
+	const float GET_PLAYER_DISTANCE = 40f;
+
 	[Tooltip("Speed at which to lock on player.")]
 	public float enemyAimSpeed = 7.6f;
+
 	[Header("Audio")]
 	public AudioSource voiceOverAudioSource;
 	public AudioClip knockbackSound;
+
 	[Header("Look At IK")]
 	public float lookAtWeight = 0.8f;
 	public float bodyWeight = 0.7f;
@@ -28,14 +32,6 @@ public class Creature : MonoBehaviour {
 	public float dotProductIK = 0.55f;
 	bool lookAtActive = false;
 	bool enableIK = true;
-
-	//Original setup used when reseting the Creature
-	protected Vector3 originalLocalPosition;
-	protected Quaternion originalLocalRotation;
-	protected CreatureState originalCreatureState;
-	[Tooltip("originalAnimation should match the default animation in the animator controller.")]
-	public string originalAnimation = "idle";
-	protected bool originalFollowsPlayer;
 
 	protected void Awake ()
 	{
@@ -166,14 +162,14 @@ public class Creature : MonoBehaviour {
 	protected void halt()
 	{
 		setCreatureState(CreatureState.Idle);
-		anim.CrossFadeInFixedTime( originalAnimation, CROSS_FADE_DURATION );
+		//anim.CrossFadeInFixedTime( idleAnimationName, CROSS_FADE_DURATION );
 	}
 
 	protected Transform getPlayer()
 	{
 		if( player == null )
 		{
-			player = getNearestTargetWithinRange( 30f, MaskHandler.getMaskOnlyPlayer() );
+			player = getNearestTargetWithinRange( GET_PLAYER_DISTANCE, MaskHandler.getMaskOnlyPlayer() );
 			//if( player != null ) print("Zombie named: " + name + " selected target: " + player.name );
 		}
 		return player;

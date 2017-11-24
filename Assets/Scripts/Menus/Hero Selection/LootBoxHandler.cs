@@ -12,7 +12,6 @@ public enum LootBoxStatus
 public class LootBoxHandler : MonoBehaviour {
 
 	[SerializeField] float fallEventDelay = 0.4f;
-	LootBoxStatus state = LootBoxStatus.NOT_INITIALIZED;
 	bool hasHitTheGround = false;
 
 	#region Events

@@ -52,7 +52,6 @@ public class PlayerCamera : Photon.PunBehaviour {
 	// How much we 
 	public const float DEFAULT_HEIGHT_DAMPING = 3f;
 	public float heightDamping = DEFAULT_HEIGHT_DAMPING;
-	float rotationDamping = 16f;
 
 	public bool isCameraLocked = true;
 	

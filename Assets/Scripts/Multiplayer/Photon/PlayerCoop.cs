@@ -9,12 +9,10 @@ public class PlayerCoop : PunBehaviour {
 	const float COOP_DELAY_BEFORE_RESURRECTING = 1.4f;
 	Coroutine coopResurrectPlayerCoroutine;
 	const int SCORE_PER_WAVE = 100; //coop - score points awarded per wave beaten.
-	PlayerAI playerAI;
 
 	void Awake ()
 	{
 		enabled = GameManager.Instance.isCoopPlayMode();
-		playerAI = GetComponent<PlayerAI>();
 	}
 
 	void Start ()

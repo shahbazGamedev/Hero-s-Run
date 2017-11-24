@@ -24,6 +24,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 	string previousGroundType = "Floor"; //Other choices are Water and Collapsing
 	#endregion
 	const float RAGING_BULL_BASE_DAMAGE = 25;
+	const float SIDE_COLLISION_SENSITIVITY = 0.4f; 
 
 	// Use this for initialization
 	void Awake ()
@@ -163,13 +164,15 @@ public class PlayerCollisions : Photon.PunBehaviour {
 			}
 			else
 			{
-				Debug.Log( "Player collided with zombie: " + collided.name + " Normal" + normal.y + " but CANT TOPPLE HIM " + playerControl.getCharacterState() + "  STATE Z "+ zombieController.getCreatureState());
+				//Debug.Log( name + " collided with zombie: " + collided.name + " Normal: " + normal );
 				if( normal.y < 0.4f )
 				{
+					//If normal.y < 0.4f it means the player didn't land on the zombie's head.
+
 					//Player is running up Z axis
 					if( Mathf.Floor( transform.eulerAngles.y ) == 0 )
 					{
-						if( Mathf.Abs( normal.x ) > Mathf.Abs( normal.z ) )
+						if( Mathf.Abs( normal.x ) > ( Mathf.Abs( normal.z ) + SIDE_COLLISION_SENSITIVITY ) )
 						{
 							//Player collided with zombie on the side, just play an animation on the zombie
 							zombieController.sideCollision();
@@ -184,7 +187,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 					//Player is running along X axis
 					else 
 					{
-						if( Mathf.Abs( normal.z ) > Mathf.Abs( normal.x ) )
+						if( Mathf.Abs( normal.z ) > ( Mathf.Abs( normal.x ) + SIDE_COLLISION_SENSITIVITY ) )
 						{
 							//Player collided with zombie on the side, just play an animation on the zombie
 							zombieController.sideCollision();
@@ -196,12 +199,6 @@ public class PlayerCollisions : Photon.PunBehaviour {
 							zombieController.victory( true );
 						}
 					}
-					Debug.Log( "PLayer collided with: " + collided.name + " Normal" + normal );
-				}
-				else
-				{
-					//We landed on the zombie's head
-					playerControl.land ();
 				}
 			}
 		}
