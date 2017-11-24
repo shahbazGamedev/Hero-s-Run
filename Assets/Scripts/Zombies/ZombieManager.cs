@@ -10,7 +10,6 @@ public class ZombieManager : MonoBehaviour {
 	[SerializeField] List<Material> zombieBoyMaterials = new List<Material>(4);
 
 	public static int numberOfZombieWavesTriggered = 0; //could eventually put that number in the player stats
-	public ParticleSystem debris; //Particle fx that plays when a zombie burrows up
 
 	void Start ()
 	{
