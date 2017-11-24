@@ -62,7 +62,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	PlayerIK playerIK;	//This is an optional component
 	Ragdoll ragdoll; 	//This is an optional component
 	PlayerCoop playerCoop; 	//This is an optional component
-	LevelNetworkingManager levelNetworkingManager;
 	#endregion
 
 	#region Hash IDs for player animations	
@@ -265,7 +264,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerHealth = GetComponent<PlayerHealth>();
 		playerCoop = GetComponent<PlayerCoop>();
 		turnRibbonHandler = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
-		levelNetworkingManager = GameObject.FindGameObjectWithTag("Level Networking Manager").GetComponent<LevelNetworkingManager>();
 
 		//Cache the string to avoid the runtime lookup
 		backInTheGameString = LocalizationManager.Instance.getText( "MINIMAP_BACK_IN_GAME" );
@@ -1813,13 +1811,9 @@ public class PlayerControl : Photon.PunBehaviour {
 		yield return new WaitForSeconds(duration);
 		if( GameManager.Instance.isCoopPlayMode() )
 		{
-			if( this.photonView.isMine )
-			{
-				//Remove the vignetting
-				if( playerAI == null ) StartCoroutine( controlVignetting( 0f, 0f, 0.25f ) );
-
-				playerCoop.playerDied();				
-			}
+			//Remove the vignetting
+			if( playerAI == null ) StartCoroutine( controlVignetting( 0f, 0f, 0.25f ) );
+			playerCoop.playerDied();				
 		}
 		else
 		{
