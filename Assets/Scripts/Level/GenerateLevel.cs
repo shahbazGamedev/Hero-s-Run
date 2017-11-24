@@ -404,19 +404,16 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			}
 		}
 
-		//Fourth, add one random End tile but only if we are not in coop mode
-		if( !GameManager.Instance.isCoopPlayMode() )
+		//Fourth, add one random End tile.
+		if( endTileGroupList.Count > 0 )
 		{
-			if( endTileGroupList.Count > 0 )
-			{
-				int random = Random.Range(0, endTileGroupList.Count );
-				TileGroupType etgt = endTileGroupList[random];
-				multiplayerTileGroupList.Add( etgt );
-			}
-			else
-			{
-				Debug.LogError("GenerateLevel: Error while generating multiplayer level. The endTileGroupList is empty. It must contain at least one tile.");
-			}
+			int random = Random.Range(0, endTileGroupList.Count );
+			TileGroupType etgt = endTileGroupList[random];
+			multiplayerTileGroupList.Add( etgt );
+		}
+		else
+		{
+			Debug.LogError("GenerateLevel: Error while generating multiplayer level. The endTileGroupList is empty. It must contain at least one tile.");
 		}
 
 		//Five, create the individual tiles
@@ -782,8 +779,8 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		SegmentInfo si = getSegmentInfo( currentTile.gameObject );
 		//print ("tileEntranceCrossed: player entered " + currentTile.name + " and the player tile index is: " + playerTileIndex );
 
-		//If in coop mode, each time we enter a new tile, add a new tile at the end
-		if( GameManager.Instance.isCoopPlayMode() && !si.wasTileAdded )
+		//If in endless mode, each time we enter a new tile, add a new tile at the end
+		if( GameManager.Instance.getGameMode() == GameMode.Endless && !si.wasTileAdded )
 		{
 			si.wasTileAdded = true;
 			//Add a tile at the end
