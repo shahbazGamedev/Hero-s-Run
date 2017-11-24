@@ -287,7 +287,6 @@ public class PlayerSpell : PunBehaviour {
 	void cancelHack()
 	{
 		CancelInvoke( "cancelHack" );
-		print("PlayerSpell cancelHack for " + gameObject.name );
 		if( omniToolRenderer) omniToolRenderer.material.SetColor ("_EmissionColor", omniToolNormalColor);
 		if( omniToolHackedFX ) omniToolHackedFX.Stop();
 		removeActiveCard( CardName.Hack );
@@ -357,7 +356,6 @@ public class PlayerSpell : PunBehaviour {
 	void cancelReflect()
 	{
 		CancelInvoke( "cancelReflect" );
-		print("PlayerSpell cancelReflect for " + gameObject.name );
 		removeActiveCard( CardName.Reflect );
 	}
 	#endregion
@@ -378,7 +376,6 @@ public class PlayerSpell : PunBehaviour {
 		//To Do
 		//Display a Supercharger timer on the HUD so the player knows when it is going to run out.
 		//Add a cool glow to the omni-tool
-		print("PlayerSpell cardSuperchargerRPC received " + gameObject.name );
 	}
 
 	void cancelSupercharger()
