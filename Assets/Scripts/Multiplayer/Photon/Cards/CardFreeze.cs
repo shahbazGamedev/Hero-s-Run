@@ -31,7 +31,7 @@ public class CardFreeze : Card {
 		if( GameManager.Instance.isCoopPlayMode() )
 		{
 			//Find a creature to target
-			Transform randomTarget = getNearestCreatureWithinRange( playerTransform, cd.getCardPropertyValue( CardPropertyType.RANGE, level ), MaskHandler.getMaskOnlyCreatures() );
+			Transform randomTarget = getNearestCreatureWithinRange( playerTransform, cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
 
 			//Only continue if we found a target
 			if( randomTarget != null )

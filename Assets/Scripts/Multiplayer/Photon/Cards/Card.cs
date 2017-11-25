@@ -274,22 +274,28 @@ public class Card : Photon.PunBehaviour {
 	}
 
 	#region Target detection
-	protected Transform getNearestCreatureWithinRange( Transform caster, float range, int mask )
+	/// <summary>
+	/// Gets the nearest creature within range that is in front of the caster.
+	/// </summary>
+	/// <returns>The nearest creature within range that is in front of the caster.</returns>
+	/// <param name="caster">Caster.</param>
+	/// <param name="range">Range.</param>
+	protected Transform getNearestCreatureWithinRange( Transform caster, float range )
 	{
 		Transform nearestTarget;
-		Collider[] hitColliders = Physics.OverlapSphere( caster.position, range, mask );
-		nearestTarget = getNearestValidTarget( hitColliders );
+		Collider[] hitColliders = Physics.OverlapSphere( caster.position, range, MaskHandler.getMaskOnlyCreatures() );
+		nearestTarget = getNearestValidTarget( caster, hitColliders );
 		return nearestTarget;
 	}
 
-	Transform getNearestValidTarget( Collider[] hitColliders )
+	Transform getNearestValidTarget( Transform caster, Collider[] hitColliders )
 	{
 		Transform nearestTarget = null;
 		float nearestDistance = Mathf.Infinity;
 		for( int i =0; i < hitColliders.Length; i++ )
 		{
 			//Is the target valid?
-			if( !isTargetValid( hitColliders[i].transform ) ) continue;
+			if( !isTargetValid( caster, hitColliders[i].transform ) ) continue;
 
 			//Calculate the distance between this object and the potential target.
 			float distanceToTarget = Vector3.Distance( transform.position, hitColliders[i].transform.position );
@@ -301,24 +307,48 @@ public class Card : Photon.PunBehaviour {
 				nearestDistance = distanceToTarget;
 			}
 		}
+		if( nearestTarget != null ) Debug.Log( name + " getNearestValidTarget: " + nearestTarget.name );
+
 		return nearestTarget;
 	}
 
-	bool isTargetValid( Transform potentialTarget )
+	bool isTargetValid( Transform caster, Transform target )
 	{
 		bool valid = false;
-   		switch (potentialTarget.gameObject.layer)
+   		switch (target.gameObject.layer)
 		{
 	        case MaskHandler.creatureLayer:
-				ICreature creatureController = potentialTarget.GetComponent<ICreature>();
+				ICreature creatureController = target.GetComponent<ICreature>();
 				if( creatureController != null && creatureController.getCreatureState() != CreatureState.Dying && creatureController.getCreatureState() != CreatureState.Immobilized )
 				{
 					valid = true;
 				}
+				valid = valid && getDotProduct( caster, target );
+
                 break;
 		}
-		if( valid ) Debug.Log("isTargetValid " + potentialTarget.name );
+		//if( valid ) Debug.Log("isTargetValid " + target.name );
 		return valid;
+	}
+
+	/// <summary>
+	/// Returns true if the target is in front of the caster, false otherwise.
+	/// </summary>
+	/// <returns><c>true</c>, if the target is in front of the caster, <c>false</c> otherwise.</returns>
+	/// <param name="caster">Caster.</param>
+	/// <param name="potentialTarget">Potential target.</param>
+	bool getDotProduct( Transform caster, Transform target )
+	{
+		Vector3 forward = caster.TransformDirection(Vector3.forward);
+		Vector3 toOther = target.position - caster.position;
+		if (Vector3.Dot(forward, toOther) < 0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
 	#endregion
 
@@ -329,4 +359,5 @@ public class Card : Photon.PunBehaviour {
 		if( casterPhotonView.GetComponent<PlayerVoiceOvers>().isSpellVoiceOverAvailable( cardName, false ) ) casterPhotonView.RPC( "activateCardVoiceOverRPC", PhotonTargets.All, (int)cardName );
 	}
 	#endregion
+
 }
