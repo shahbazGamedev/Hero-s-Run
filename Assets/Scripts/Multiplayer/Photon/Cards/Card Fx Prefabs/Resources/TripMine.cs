@@ -45,18 +45,24 @@ public class TripMine : CardSpawnedObject {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.CompareTag("Player") )
+		if( GameManager.Instance.isCoopPlayMode() )
 		{
-			if( other.name != casterName )
+	 		if( other.CompareTag("Zombie") )
 			{
 				startDetonationCountdown();
-				addSkillBonus( 25, "SKILL_BONUS_TRIP_MINE" );
+				SkillBonusHandler.Instance.grantScoreBonus( 25, "COOP_SCORE_BONUS_TRIP_MINE", casterTransform );
 			}
 		}
- 		else if( other.CompareTag("Zombie") )
+ 		else
 		{
-			startDetonationCountdown();
-			SkillBonusHandler.Instance.grantScoreBonus( 25, "COOP_SCORE_BONUS_TRIP_MINE", casterTransform );
+			if( other.CompareTag("Player") )
+			{
+				if( other.name != casterName )
+				{
+					startDetonationCountdown();
+					addSkillBonus( 25, "SKILL_BONUS_TRIP_MINE" );
+				}
+			}
 		}
 	}
 
