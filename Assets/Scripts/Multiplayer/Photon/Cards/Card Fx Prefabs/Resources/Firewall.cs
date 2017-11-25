@@ -11,21 +11,27 @@ public class Firewall : CardSpawnedObject {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.CompareTag("Player") )
+		if( GameManager.Instance.isCoopPlayMode() )
 		{
-			if( other.name != casterName )
+			if( other.CompareTag("Zombie") )
 			{
 				GetComponent<AudioSource>().PlayOneShot(onFlameContact);
-				other.GetComponent<PlayerHealth>().deductHealth( flameDamage, casterTransform.GetComponent<PlayerControl>() );
-				addSkillBonus( 25, "SKILL_BONUS_FIREWALL" );
+				ICreature creatureController = other.GetComponent<Collider>().GetComponent<ICreature>();
+				creatureController.knockback( casterTransform );
+				SkillBonusHandler.Instance.grantScoreBonus( 25, "COOP_SCORE_BONUS_FIREWALL", casterTransform );
 			}
 		}
-		else if( other.CompareTag("Zombie") )
+ 		else
 		{
-			GetComponent<AudioSource>().PlayOneShot(onFlameContact);
-			ICreature creatureController = other.GetComponent<Collider>().GetComponent<ICreature>();
-			creatureController.knockback( casterTransform );
-			SkillBonusHandler.Instance.grantScoreBonus( 25, "COOP_SCORE_BONUS_FIREWALL", casterTransform );
+			if( other.CompareTag("Player") )
+			{
+				if( other.name != casterName )
+				{
+					GetComponent<AudioSource>().PlayOneShot(onFlameContact);
+					other.GetComponent<PlayerHealth>().deductHealth( flameDamage, casterTransform.GetComponent<PlayerControl>() );
+					addSkillBonus( 25, "SKILL_BONUS_FIREWALL" );
+				}
+			}
 		}
 	}
 
