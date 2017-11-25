@@ -3,8 +3,9 @@ using System.Collections;
 
 public class ForceField : CardSpawnedObject {
 	
-	[SerializeField] ParticleSystem activeForceFieldFx; //Used to visually indicate that the force field is active
+	[SerializeField] ParticleSystem activeForceFieldFx;
 	[SerializeField] AudioClip collisionSound;
+	const float FORCE_FIELD_WIDTH = 8f;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
@@ -17,11 +18,6 @@ public class ForceField : CardSpawnedObject {
 
 	public override void activateCard()
 	{
-		StartCoroutine( activate( 0.8f ) );
-	}
-
-	IEnumerator activate( float delayBeforeActivation )
-	{
 		//Read the data
 		object[] data = this.gameObject.GetPhotonView ().instantiationData;
 		
@@ -30,7 +26,7 @@ public class ForceField : CardSpawnedObject {
 
 		//Destroy the force field when it expires
 		float duration = (float) data[1];
-		StartCoroutine( destroySpawnedObject( duration, DELAY_BEFORE_DESTROY_EFFECTS ) );
+		Invoke( "scaleDownForceField", duration );
 
 		//Adjust the height
 		float height = (float) data[2];
@@ -45,15 +41,9 @@ public class ForceField : CardSpawnedObject {
 		//We can now make the force field visible and collidable
 		GetComponent<MeshRenderer>().enabled = true;
 		GetComponent<BoxCollider>().enabled = true;
-		LeanTween.scaleX( gameObject, 8f, 0.33f ).setEaseOutQuart();
-
-		//The activation delay is so the caster can run through it before it becomes solid.
-		yield return new WaitForSeconds(delayBeforeActivation);
+		LeanTween.scaleX( gameObject, FORCE_FIELD_WIDTH, 0.33f ).setEaseOutQuart();
 
 		setSpawnedObjectState(SpawnedObjectState.Functioning);
-
-		//Make it solid.
-		GetComponent<BoxCollider>().isTrigger = false;
 
 		//Play looping particle effect
 		activeForceFieldFx.Play();
@@ -62,40 +52,48 @@ public class ForceField : CardSpawnedObject {
 		GetComponent<AudioSource>().Play();
 	}
 
-	void OnCollisionEnter(Collision collision)
+	void scaleDownForceField()
+	{
+		//Stop looping particle effect
+		activeForceFieldFx.Stop();
+
+		//Stop the energy sound loop
+		GetComponent<AudioSource>().Stop();
+
+		//Scale down the force field
+		LeanTween.scaleX( gameObject, 0, 0.33f ).setEaseOutQuart().setOnComplete( destroyForceField ).setOnCompleteParam( gameObject );
+	}
+
+	void destroyForceField()
+	{
+		GameObject.Destroy( gameObject );
+	}
+
+	void OnTriggerEnter(Collider other)
 	{
 		//Play collision sound
 		GetComponent<AudioSource>().PlayOneShot( collisionSound );
-		if( collision.collider.CompareTag("Player") )
+
+		if( GameManager.Instance.isCoopPlayMode() )
 		{
-			if( collision.collider.name != casterName )
+	 		if( other.CompareTag("Zombie") )
 			{
-				//The force field collider has the Obstacle_F tag.
-				//Killing the player is done in playerCollision.
-				addSkillBonus( 25, "SKILL_BONUS_FORCE_FIELD" );
+				SkillBonusHandler.Instance.grantScoreBonus( 25, "COOP_SCORE_BONUS_FORCE_FIELD", casterTransform );
+				ICreature creatureController = other.GetComponent<ICreature>();
+				creatureController.knockback( casterTransform );
 			}
 		}
- 		else if( collision.collider.CompareTag("Zombie") )
+ 		else
 		{
-			SkillBonusHandler.Instance.grantScoreBonus( 25, "COOP_SCORE_BONUS_FORCE_FIELD", casterTransform );
-			ICreature creatureController = collision.collider.GetComponent<ICreature>();
-			creatureController.knockback( casterTransform );
+			if( other.CompareTag("Player") )
+			{
+				if( other.name != casterName )
+				{
+					addSkillBonus( 25, "SKILL_BONUS_FORCE_FIELD" );
+					//Player ran into force field. He falls backwards.
+					other.GetComponent<PlayerControl>().killPlayer( DeathType.Obstacle );
+				}
+			}
 		}
  	}
-
-	public override void destroySpawnedObjectNow()
-	{
-		StartCoroutine( destroySpawnedObject( 0, DELAY_BEFORE_DESTROY_EFFECTS ) );
-	}
-
-	IEnumerator destroySpawnedObject( float delayBeforeExpires, float delayBeforeDestroyEffects )
-	{
-		yield return new WaitForSeconds(delayBeforeExpires);
-		GetComponent<BoxCollider>().isTrigger = true;
-		setSpawnedObjectState(SpawnedObjectState.BeingDestroyed);
-		StopCoroutine( "activate" );
-		activeForceFieldFx.Stop();
-		yield return new WaitForSeconds(delayBeforeDestroyEffects);
-		Destroy( gameObject );
-	}
 }
