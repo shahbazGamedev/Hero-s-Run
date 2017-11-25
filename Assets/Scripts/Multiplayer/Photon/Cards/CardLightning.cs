@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -19,45 +18,79 @@ public class CardLightning : Card {
 	[PunRPC]
 	void cardLightningMasterRPC( int level, int photonViewID )
 	{
+		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
+
 		//Get the transform of the player who activated the card
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
-		//Find a target
-		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
-		Transform bestTarget = detectBestTarget( playerTransform.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
-
-		if( bestTarget != null )
+		if( GameManager.Instance.isCoopPlayMode() )
 		{
-			if( bestTarget.GetComponent<PlayerSpell>().isCardActive( CardName.Reflect) )
+			//Find a creature to target
+			Transform target = getNearestCreatureWithinRange( playerTransform, cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
+
+			//Only continue if we found a target
+			if( target != null )
 			{
-				MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, bestTarget.GetComponent<PhotonView>().viewID );
-
-				//The target has the Reflect spell active.
-				//Reflect to caster
-				bestTarget = playerTransform;
-			
-			}
-
-			//1) We do have a target.
-			//2) The target is not the caster.
-			//3) Play an appropriate VO such as "Gotcha!" for Stasis.
-			if( bestTarget != playerTransform ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
-
-			//Spawn a lightning on the nearest player or creature
-			Vector3 lightningPosition = bestTarget.transform.TransformPoint( spawnOffset );
-			PhotonNetwork.InstantiateSceneObject( lightningPrefabName, lightningPosition, bestTarget.rotation, 0, null );
 	
-			//Damage nearest target
-			int damageAmount = (int) cd.getCardPropertyValue( CardPropertyType.DAMAGE, level );
-			bestTarget.GetComponent<PlayerHealth>().deductHealth( damageAmount, playerTransform.GetComponent<PlayerControl>() );
-			MiniMap.Instance.displaySecondaryIcon( bestTarget.GetComponent<PhotonView>().viewID, (int)CardName.Lightning, 2.5f );
+				//We do have a target. Play an appropriate VO such as "Gotcha!".
+				playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
+	
+				//Spawn a lightning on the creature
+				Vector3 lightningPosition = target.transform.TransformPoint( spawnOffset );
+				PhotonNetwork.InstantiateSceneObject( lightningPrefabName, lightningPosition, target.rotation, 0, null );
+		
+				//Kill creature
+				ICreature creatureController = target.GetComponent<ICreature>();
+				creatureController.knockback( target );
 
+				MiniMap.Instance.displaySecondaryIcon( target.GetComponent<PhotonView>().viewID, (int)CardName.Lightning, 2.5f );
+	
+			}
+			else
+			{
+				//Display a Minimap message stating that no target was found in range
+				playerTransform.GetComponent<PhotonView>().RPC("cardNoTargetRPC", PhotonTargets.All );
+				Debug.Log("CardLightning: no target found." );
+			}
 		}
 		else
 		{
-			//Display a Minimap message stating that no target was found in range
-			playerTransform.GetComponent<PhotonView>().RPC("cardNoTargetRPC", PhotonTargets.All );
-			Debug.Log("CardLightning: no target found." );
+			//Find a player target
+			Transform target = detectBestTarget( playerTransform.GetComponent<PlayerRace>(), cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
+	
+			if( target != null )
+			{
+				if( target.GetComponent<PlayerSpell>().isCardActive( CardName.Reflect) )
+				{
+					MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, target.GetComponent<PhotonView>().viewID );
+	
+					//The target has the Reflect spell active.
+					//Reflect to caster
+					target = playerTransform;
+				
+				}
+	
+				//1) We do have a target.
+				//2) The target is not the caster.
+				//3) Play an appropriate VO such as "Gotcha!" for Stasis.
+				if( target != playerTransform ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
+	
+				//Spawn a lightning on the player
+				Vector3 lightningPosition = target.transform.TransformPoint( spawnOffset );
+				PhotonNetwork.InstantiateSceneObject( lightningPrefabName, lightningPosition, target.rotation, 0, null );
+		
+				//Damage nearest target
+				int damageAmount = (int) cd.getCardPropertyValue( CardPropertyType.DAMAGE, level );
+				target.GetComponent<PlayerHealth>().deductHealth( damageAmount, playerTransform.GetComponent<PlayerControl>() );
+				MiniMap.Instance.displaySecondaryIcon( target.GetComponent<PhotonView>().viewID, (int)CardName.Lightning, 2.5f );
+	
+			}
+			else
+			{
+				//Display a Minimap message stating that no target was found in range
+				playerTransform.GetComponent<PhotonView>().RPC("cardNoTargetRPC", PhotonTargets.All );
+				Debug.Log("CardLightning: no target found." );
+			}
 		}
 	}
 
