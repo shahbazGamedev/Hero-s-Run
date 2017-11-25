@@ -139,10 +139,6 @@ public class TurnRibbonHandler : MonoBehaviour {
 	/// <param name="Card">Card.</param>
 	void isEffective( int indexInTurnRibbon, CardManager.CardData card )
 	{
-		//These 2 lines are to test the impact of isEffective on the FPS
-		DebugInfoType debugType = GameManager.Instance.playerDebugConfiguration.getDebugInfoType();
-		if( debugType == DebugInfoType.FRAME_RATE_TEST ) return;
-
 		if( card.doesCardHaveThisProperty( CardPropertyType.RANGE ) )
 		{
 			PlayerDeck.PlayerCardData pcd = GameManager.Instance.playerDeck.getCardByName( card.name );
