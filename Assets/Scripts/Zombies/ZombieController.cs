@@ -30,6 +30,8 @@ public sealed class ZombieController : Creature, ICreature {
 	const int SCORE_PER_KNOCKBACK = 20; //coop - score points awarded per knockback.
 	const float ZOMBIE_LIFESPAN = 30f;
 
+	CreatureState previousCreatureState;
+
 	// Use this for initialization
 	new void Awake ()
 	{
@@ -113,7 +115,7 @@ public sealed class ZombieController : Creature, ICreature {
 		if( creatureState == CreatureState.Walking || creatureState == CreatureState.Crawling )
 		{
 			//0) Target the player but we only want the Y rotation
-			if( followsPlayer )
+			if( followsPlayer && getCreatureState() != CreatureState.Immobilized )
 			{
 				transform.LookAt( getPlayer() );
 				transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
@@ -125,6 +127,20 @@ public sealed class ZombieController : Creature, ICreature {
 			if( applyGravity ) forward.y -= 16f * Time.deltaTime;
 			//3) Move the controller
 			controller.Move( forward );
+		}
+	}
+
+	public void immobilize( bool value )
+	{
+		if( value )
+		{
+			setCreatureState( CreatureState.Immobilized );
+			legacyAnim.enabled = false;
+		}
+		else
+		{
+			setCreatureState( previousCreatureState );
+			legacyAnim.enabled = true;
 		}
 	}
 

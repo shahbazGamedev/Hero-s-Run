@@ -273,6 +273,55 @@ public class Card : Photon.PunBehaviour {
 		return false;
 	}
 
+	#region Target detection
+	protected Transform getNearestCreatureWithinRange( Transform caster, float range, int mask )
+	{
+		Transform nearestTarget;
+		Collider[] hitColliders = Physics.OverlapSphere( caster.position, range, mask );
+		nearestTarget = getNearestValidTarget( hitColliders );
+		return nearestTarget;
+	}
+
+	Transform getNearestValidTarget( Collider[] hitColliders )
+	{
+		Transform nearestTarget = null;
+		float nearestDistance = Mathf.Infinity;
+		for( int i =0; i < hitColliders.Length; i++ )
+		{
+			//Is the target valid?
+			if( !isTargetValid( hitColliders[i].transform ) ) continue;
+
+			//Calculate the distance between this object and the potential target.
+			float distanceToTarget = Vector3.Distance( transform.position, hitColliders[i].transform.position );
+
+			//Is it the closest target?
+			if( distanceToTarget < nearestDistance )
+			{
+				nearestTarget = hitColliders[i].transform;
+				nearestDistance = distanceToTarget;
+			}
+		}
+		return nearestTarget;
+	}
+
+	bool isTargetValid( Transform potentialTarget )
+	{
+		bool valid = false;
+   		switch (potentialTarget.gameObject.layer)
+		{
+	        case MaskHandler.creatureLayer:
+				ICreature creatureController = potentialTarget.GetComponent<ICreature>();
+				if( creatureController != null && creatureController.getCreatureState() != CreatureState.Dying && creatureController.getCreatureState() != CreatureState.Immobilized )
+				{
+					valid = true;
+				}
+                break;
+		}
+		if( valid ) Debug.Log("isTargetValid " + potentialTarget.name );
+		return valid;
+	}
+	#endregion
+
 	#region Voice Overs activated by Cards
 	public void playActivateCardVoiceOver( PhotonView casterPhotonView )
 	{
