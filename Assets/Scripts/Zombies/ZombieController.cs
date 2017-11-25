@@ -18,7 +18,6 @@ public sealed class ZombieController : Creature, ICreature {
 	Animation legacyAnim;
 	public Vector3 forward;
 	float walkSpeed = 1.65f; //good value so feet don't slide
-	public bool applyGravity = true;
 
 	public List<string> walkTypes = new List<string>();
 	public AudioClip moanLow;
@@ -115,7 +114,7 @@ public sealed class ZombieController : Creature, ICreature {
 		if( creatureState == CreatureState.Walking || creatureState == CreatureState.Crawling )
 		{
 			//0) Target the player but we only want the Y rotation
-			if( followsPlayer && getCreatureState() != CreatureState.Immobilized )
+			if( followsPlayer )
 			{
 				transform.LookAt( getPlayer() );
 				transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
@@ -124,13 +123,13 @@ public sealed class ZombieController : Creature, ICreature {
 			forward = transform.TransformDirection(Vector3.forward);			
 			//2) Scale vector based on run speed
 			forward = forward * Time.deltaTime * walkSpeed;
-			if( applyGravity ) forward.y -= 16f * Time.deltaTime;
+			forward.y -= 16f * Time.deltaTime;
 			//3) Move the controller
 			controller.Move( forward );
 		}
 	}
 
-	public void immobilize( bool value )
+	public void freeze( bool value )
 	{
 		if( value )
 		{
@@ -141,6 +140,22 @@ public sealed class ZombieController : Creature, ICreature {
 		{
 			setCreatureState( previousCreatureState );
 			legacyAnim.enabled = true;
+		}
+	}
+
+	public void stasis( bool value )
+	{
+		if( value )
+		{
+			setCreatureState( CreatureState.Immobilized );
+			legacyAnim.CrossFade(selectRandomIdle(), 0.4f );
+		}
+		else
+		{
+			legacyAnim.CrossFade("fallCycle", 0.3f );
+			string walkType = selectRandomWalk( ZombieMoveType.Walking );
+			legacyAnim.CrossFadeQueued(walkType, 0.4f);
+			setCreatureState( CreatureState.Walking );
 		}
 	}
 

@@ -7,16 +7,25 @@ using UnityEngine;
 /// </summary>
 public class StasisController : CardSpawnedObject {
 
+	[Header("Tap to break free")]
+	//if you tap quickly on the Stasis sphere, you can break free without waiting for the spell expires.
 	[SerializeField] ParticleSystem tapParticleSystem;
 	[SerializeField] AudioClip tapSound;
-	[SerializeField] float y_pos_player_in_sphere = -0.45f;
+	int tapsDetected = 0;
+	int tapsRequiredToBreakStasis;
+	bool isLocalPlayer = false;
+
+	[Header("Player")]
 	Transform affectedPlayerTransform;
 	PlayerControl affectedPlayerControl;
-	//if you tap quickly on the Stasis sphere, you can break free without waiting for the spell expires.
-	int tapsDetected = 0;
-	int tapsRequiredToBreakStasis = 3;
 	Coroutine destroyStasisSphereCoroutine;
-	bool isLocalPlayer = false;
+
+	[Header("Creature")]
+	Transform affectedCreatureTransform;
+	Coroutine destroyStasisSphereCreatureCoroutine;
+
+	[Header("Other")]
+	[SerializeField] float y_pos_player_in_sphere = -0.45f;
 
 	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
@@ -30,9 +39,76 @@ public class StasisController : CardSpawnedObject {
 
 	public override void activateCard()
 	{
-		findAffectedPlayer( gameObject.GetPhotonView ().instantiationData );
+		if( GameManager.Instance.isCoopPlayMode() )
+		{
+			findAffectedCreature( gameObject.GetPhotonView ().instantiationData );
+		}
+		else
+		{
+			findAffectedPlayer( gameObject.GetPhotonView ().instantiationData );
+		}
+	}
+	#endregion
+
+	#region Creature
+	void findAffectedCreature(object[] data) 
+	{
+		int viewIdOfAffectedCreature = (int) data[0];
+
+		ZombieController[] zombies = GameObject.FindObjectsOfType<ZombieController>();
+		for( int i = 0; i < zombies.Length; i ++ )
+		{
+			if( zombies[i].GetComponent<PhotonView>().viewID == viewIdOfAffectedCreature )
+			{
+				//We found the spell's target
+				affectedCreatureTransform = zombies[i].transform;
+
+				//If in the short time between the card being cast and the card being activated
+				//the creature has died, simply ignore.
+				if( zombies[i].getCreatureState() == CreatureState.Dying  ) return;
+
+				//Freeze the creature's movement.
+				zombies[i].stasis( true );
+
+				affectedCreatureTransform.position = transform.TransformPoint( new Vector3( 0, y_pos_player_in_sphere, 0 ) );
+
+				//The Stasis Sphere has a limited lifespan which depends on the level of the Card.
+				float spellDuration = (float) data[1];
+				destroyStasisSphereCreatureCoroutine = StartCoroutine( destroyStasisSphereCreature( spellDuration ) );
+
+				//We can now make the sphere visible and collidable
+				//In order to detect taps/mouse-clicks properly, we need to change the layer to Default (it was Ignore Raycast).
+				gameObject.layer = 0; //Default is 0
+				GetComponent<SphereCollider>().enabled = true;
+				GetComponent<MeshRenderer>().enabled = true;
+				break;
+			}
+		}
+		if( affectedCreatureTransform != null )
+		{
+			Debug.Log("Stasis-The creature affected by the Stasis Sphere is: " + affectedCreatureTransform.name );
+		}
+		else
+		{
+			Debug.LogError("StasisController error: could not find the target creature with the Photon view id of " + viewIdOfAffectedCreature );
+		}
 	}
 
+	IEnumerator destroyStasisSphereCreature( float delayBeforeSpellExpires )
+	{
+		yield return new WaitForSeconds(delayBeforeSpellExpires);
+		destroyStasisSphereImmediatelyCreature();
+	}
+
+	void destroyStasisSphereImmediatelyCreature()
+	{
+		if( destroyStasisSphereCreatureCoroutine != null ) StopCoroutine( destroyStasisSphereCreatureCoroutine );
+		affectedCreatureTransform.GetComponent<ZombieController>().stasis( false );
+		Destroy( gameObject );
+	}
+	#endregion
+
+	#region Player
 	void findAffectedPlayer(object[] data) 
 	{
 		int viewIdOfAffectedPlayer = (int) data[0];
@@ -101,7 +177,6 @@ public class StasisController : CardSpawnedObject {
 			Debug.LogError("StasisController error: could not find the target player with the Photon view id of " + viewIdOfAffectedPlayer );
 		}
 	}
-	#endregion
 
 	IEnumerator destroyStasisSphere( float delayBeforeSpellExpires )
 	{
@@ -176,4 +251,5 @@ public class StasisController : CardSpawnedObject {
 			}
 		}
 	}
+	#endregion
 }

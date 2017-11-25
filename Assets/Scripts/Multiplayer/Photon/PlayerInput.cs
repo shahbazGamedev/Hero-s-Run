@@ -122,7 +122,7 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.O ) )
 		{
-			playerControl.playOmniToolAnimation( CardName.Homing_Missile );
+			playerControl.playOmniToolAnimation( CardName.Stasis );
 		}
 		else if ( Input.GetKeyDown (KeyCode.T ) )
 		{

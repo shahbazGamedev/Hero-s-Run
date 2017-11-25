@@ -150,7 +150,7 @@ public class FreezeController : CardSpawnedObject {
 				if( zombies[i].getCreatureState() == CreatureState.Dying  ) return;
 
 				//Freeze the creature's movement.
-				zombies[i].immobilize( true );
+				zombies[i].freeze( true );
 
 				affectedCreatureTransform.position = transform.position;
 
@@ -190,7 +190,7 @@ public class FreezeController : CardSpawnedObject {
 	{
 		if( destroyIceCreatureCoroutine != null ) StopCoroutine( destroyIceCreatureCoroutine );
 		
-		affectedCreatureTransform.GetComponent<ZombieController>().immobilize( false );
+		affectedCreatureTransform.GetComponent<ZombieController>().freeze( false );
 		Destroy( gameObject );
 	}
 	#endregion
