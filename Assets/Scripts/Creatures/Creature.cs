@@ -172,6 +172,11 @@ public class Creature : MonoBehaviour {
 			player = getNearestTargetWithinRange( GET_PLAYER_DISTANCE, MaskHandler.getMaskOnlyPlayer() );
 			//if( player != null ) print("Zombie named: " + name + " selected target: " + player.name );
 		}
+		else if( player.GetComponent<PlayerSpell>().isCardActive( CardName.Cloak ) )
+		{
+			//Our target has activated cloak. Forget our target.
+			player = null;
+		}
 		return player;
 	}
 
