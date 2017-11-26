@@ -70,10 +70,11 @@ public class PlayerCoop : PunBehaviour {
 	{
 
 		if( coopResurrectPlayerCoroutine != null ) StopCoroutine( coopResurrectPlayerCoroutine );
+		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.COMPLETED ) return;
 
 		Debug.Log( name + " coopGameOverRPC isMine: " + photonView.isMine );
 
-		if( photonView.isMine && GetComponent<PlayerAI>() == null )
+		if( photonView.isMine )
 		{
 			//Display the results screen (player details, score, rounds survived, etc.) and return to the lobby.
 			PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
@@ -98,6 +99,7 @@ public class PlayerCoop : PunBehaviour {
 		if( GetComponent<PlayerControl>().deathType == DeathType.Alive ) return;
 		if( coopResurrectPlayerCoroutine != null ) StopCoroutine( coopResurrectPlayerCoroutine );
 		coopResurrectPlayerCoroutine = StartCoroutine( coopResurrectPlayer( nameOfTileEntered ) );
+		GetComponent<PlayerRun>().calculateOverallSpeedMultiplier();
 	}
 
 	IEnumerator coopResurrectPlayer( string nameOfTileEntered )

@@ -25,7 +25,7 @@ public class PlayerRun : Photon.PunBehaviour {
 	float levelRunStartSpeed = 0;
 
 	//The run speed of the player
-	float runSpeed = 0;
+	public float runSpeed = 0;
 
 	//List of active speed multipliers.
 	public List<SpeedMultiplier> activeSpeedMultipliersList =  new List<SpeedMultiplier>();
@@ -258,7 +258,7 @@ public class PlayerRun : Photon.PunBehaviour {
 	/// <summary>
 	/// Calculates the overall speed multiplier. If the player is jumping, this method returns immediately.
 	/// </summary>
-	void calculateOverallSpeedMultiplier()
+	public void calculateOverallSpeedMultiplier()
 	{
 		//When the player jumps, we want exact control of where he lands.
 		//Therefore we want the run speed to be constant during a jump.
@@ -281,8 +281,17 @@ public class PlayerRun : Photon.PunBehaviour {
 		{
 			overallSpeedMultiplier = overallSpeedMultiplier * activeSpeedMultipliersList[i].multiplier;
 		}
+
+		//If in coop mode, increase the run speed with each consecutive wave.
+		if( GameManager.Instance.isCoopPlayMode() )
+		{
+			float waveSpeedMultiplier = ZombieManager.numberOfZombieWavesTriggered * 0.01f;
+			overallSpeedMultiplier = overallSpeedMultiplier * ( 1f + waveSpeedMultiplier );
+		}
+
 		//Cap the overall speed multiplier to MAX_OVERALL_SPEED_MULTIPLIER
 		overallSpeedMultiplier = Mathf.Min( overallSpeedMultiplier, MAX_OVERALL_SPEED_MULTIPLIER );
+
 		runSpeed = levelRunStartSpeed * overallSpeedMultiplier;
 		
 		//Now update the run/sprint blend factor
