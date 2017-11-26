@@ -76,7 +76,7 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 		grantScoreBonus( bonusPoints, bonusTextID, attacker );
 	}
 
-	public void grantScoreBonus( int bonusPoints, string bonusTextID, Transform attacker )
+	public void grantScoreBonus( int bonusPoints, string bonusTextID, Transform attacker, bool incrementKills = true )
 	{
 		if( !GameManager.Instance.isCoopPlayMode() ) return;
 
@@ -89,7 +89,7 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 				{
 					//Grants the attacker one kill and the specified bonus points.
 					pmd.score += bonusPoints;
-					pmd.kills++;
+					if( incrementKills ) pmd.kills++;
 					if( attacker.GetComponent<PhotonView>().isMine && attacker.GetComponent<PlayerAI>() == null )
 					{
 						//show a bonus message on the HUD.

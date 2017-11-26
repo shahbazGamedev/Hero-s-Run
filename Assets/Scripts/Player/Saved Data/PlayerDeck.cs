@@ -74,6 +74,7 @@ public class PlayerDeck {
 			addCard( CardName.Trip_Mine, 2, 1, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS );
 			addCard( CardName.Homing_Missile, 2, 1, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS );
 			addCard( CardName.Freeze, 3, 100, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS );
+			addCard( CardName.Linked_Fate, 3, 100, BattleDeck.REMOVE_FROM_ALL_BATTLE_DECKS );
 		}
 	}
 

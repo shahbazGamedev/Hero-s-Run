@@ -117,7 +117,7 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.N ) )
 		{
-			playerControl.playOmniToolAnimation( CardName.Freeze );
+			playerControl.playOmniToolAnimation( CardName.Linked_Fate );
 		}
 		else if ( Input.GetKeyDown (KeyCode.O ) )
 		{
