@@ -92,6 +92,20 @@ public class Creature : MonoBehaviour {
 		}
 	}
 
+	public virtual void shrink( Transform caster, bool value )
+	{
+		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
+
+		if( caster != null )
+		{
+			GetComponent<PhotonView>().RPC("shrinkRPC", PhotonTargets.All, value, caster.GetComponent<PhotonView>().viewID );
+		}
+		else
+		{
+			Debug.LogWarning("Creature-shrink: the caster specified is null." );
+		}
+	}
+
 	//For SetLookAtPosition to work, there are 2 conditions:
 	//The rig must be Humanoid
 	//In the Animator windows, under Layers, under Settings, you must have the IK Pass toggled on.

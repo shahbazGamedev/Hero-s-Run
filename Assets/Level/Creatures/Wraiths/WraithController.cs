@@ -61,6 +61,10 @@ public sealed class WraithController : Creature, ICreature {
 	{
 	}
 
+	public void shrink( Transform caster, bool value )
+	{
+	}
+
 	void configureSelectedWeapon()
 	{
 		if( attackType != AttackType.do_nothing )

@@ -273,7 +273,27 @@ public class Card : Photon.PunBehaviour {
 		return false;
 	}
 
-	#region Target detection
+	#region Multiple target detection
+	protected List<ICreature> getAllCreaturesWithinRange( Transform caster, float range )
+	{
+		List<ICreature> creatures = new List<ICreature>();
+
+		Collider[] hitColliders = Physics.OverlapSphere( caster.position, range, MaskHandler.getMaskOnlyCreatures() );
+		ICreature creature;
+		for( int i =0; i < hitColliders.Length; i++ )
+		{
+			//Is the target valid?
+			if( !isTargetValid( caster, hitColliders[i].transform ) ) continue;
+
+			creature = hitColliders[i].GetComponent<ICreature>();
+			creatures.Add( creature );
+		}
+		return creatures;
+	}
+	#endregion
+
+
+	#region Single target detection
 	/// <summary>
 	/// Gets the nearest creature within range that is in front of the caster.
 	/// </summary>
@@ -311,6 +331,7 @@ public class Card : Photon.PunBehaviour {
 
 		return nearestTarget;
 	}
+	#endregion
 
 	bool isTargetValid( Transform caster, Transform target )
 	{
@@ -350,7 +371,6 @@ public class Card : Photon.PunBehaviour {
 			return true;
 		}
 	}
-	#endregion
 
 	#region Voice Overs activated by Cards
 	public void playActivateCardVoiceOver( PhotonView casterPhotonView )

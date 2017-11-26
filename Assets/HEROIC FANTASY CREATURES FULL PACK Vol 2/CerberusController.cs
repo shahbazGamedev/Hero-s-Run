@@ -54,6 +54,10 @@ public sealed class CerberusController : Creature, ICreature {
 	{
 	}
 
+	public void shrink( Transform caster, bool value )
+	{
+	}
+
 	public void victory ( bool playWinSound )
 	{
 	}

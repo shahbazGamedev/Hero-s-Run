@@ -179,9 +179,12 @@ public class PlayerCollisions : Photon.PunBehaviour {
 						}
 						else
 						{
-							//Player collided squarely with zombie. Kill the player.
-							playerControl.killPlayer ( DeathType.Zombie );
-							zombieController.victory( true );
+							//Player collided squarely with zombie. Kill the player, but only if the zombie is not shrunk.
+							if( !zombieController.isShrunk )
+							{
+								playerControl.killPlayer ( DeathType.Zombie );
+								zombieController.victory( true );
+							}
 						}
 					}
 					//Player is running along X axis
@@ -194,9 +197,12 @@ public class PlayerCollisions : Photon.PunBehaviour {
 						}
 						else
 						{
-							//Player collided squarely with zombie. Kill the player.
-							playerControl.killPlayer ( DeathType.Zombie );
-							zombieController.victory( true );
+							//Player collided squarely with zombie. Kill the player, but only if the zombie is not shrunk.
+							if( !zombieController.isShrunk )
+							{
+								playerControl.killPlayer ( DeathType.Zombie );
+								zombieController.victory( true );
+							}
 						}
 					}
 				}

@@ -28,6 +28,8 @@ public sealed class ZombieController : Creature, ICreature {
 	public ParticleSystem debris; //Particle fx that plays when a zombie burrows up
 	const int SCORE_PER_KNOCKBACK = 20; //coop - score points awarded per knockback.
 	const float ZOMBIE_LIFESPAN = 30f;
+	const float SHRINK_SIZE = 0.4f;
+	public bool isShrunk = false;
 
 	CreatureState previousCreatureState;
 
@@ -162,9 +164,6 @@ public sealed class ZombieController : Creature, ICreature {
 	public override void knockback( Transform attacker )
 	{
 		base.knockback( attacker );
-		if( zombieIcon != null ) MiniMap.Instance.removeRadarObject( gameObject );
-		CancelInvoke( "groan" );
-		legacyAnim.CrossFade("fallToBack", 0.25f);
 	}
 
 	//The creature falls over backwards and dies.
@@ -174,6 +173,9 @@ public sealed class ZombieController : Creature, ICreature {
 		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
 
 		setCreatureState( CreatureState.Dying );
+		if( zombieIcon != null ) MiniMap.Instance.removeRadarObject( gameObject );
+		CancelInvoke( "groan" );
+		legacyAnim.CrossFade("fallToBack", 0.25f);
 		controller.enabled = false;
 		//Some creatures (usually the ones carrying a weapon) have more than one capsule colliders.
 		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
@@ -247,6 +249,25 @@ public sealed class ZombieController : Creature, ICreature {
 		audioSource.PlayOneShot( moanLow );
 		legacyAnim.CrossFade("hit2");
 		legacyAnim.CrossFadeQueued(selectRandomWalk( ZombieMoveType.Walking ));
+	}
+
+	public override void shrink( Transform caster, bool value )
+	{
+		base.shrink( caster, value );
+	}
+
+	[PunRPC]
+	void shrinkRPC( bool value, int attackerPhotonViewID )
+	{		
+		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
+		if( value )
+		{
+			//Make their voice higher pitch, just for fun
+			GetComponent<AudioSource>().pitch = 1.3f;
+			//For now, once shrunk, they stay shrunk. The lifespan of a zombie is only 30 seconds anyway.
+			LeanTween.scale( gameObject, new Vector3( SHRINK_SIZE, SHRINK_SIZE, SHRINK_SIZE ), 1f );
+			isShrunk = true;
+		}
 	}
 
 	string selectRandomWalk( ZombieMoveType zmt )

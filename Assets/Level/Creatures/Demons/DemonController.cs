@@ -191,6 +191,10 @@ public sealed class DemonController : Creature, ICreature {
 		anim.CrossFadeInFixedTime( "Damage" , CROSS_FADE_DURATION );
 	}
 
+	public void shrink( Transform caster, bool value )
+	{
+	}
+
 	public void victory( bool playWinSound )
 	{
 		if( creatureState != CreatureState.Dying )

@@ -10,6 +10,8 @@ using UnityEngine;
 /// </summary>
 public class CardShrink : Card {
 
+	const float CREATURE_SHRINK_RADIUS = 30f; //in meters
+
 	public void activateCard ( int photonViewId, int level )
 	{
 		this.photonView.RPC("cardShrinkMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
@@ -19,41 +21,54 @@ public class CardShrink : Card {
 	[PunRPC]
 	void cardShrinkMasterRPC( int level, int photonViewID )
 	{
-		//Get the transform of the player who activated the card
-		Transform playerTransform = getPlayerTransform( photonViewID );
-
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
 
-		//Send the RPC to everyone excluding the caster
-		//Shrink affects all opponents
+		//Get the transform of the player who activated the card
+		Transform playerTransform = getPlayerTransform( photonViewID );
 		bool atLeastOneTarget = false;
-		for( int i = 0; i < PlayerRace.players.Count; i++ )
+
+		if( GameManager.Instance.isCoopPlayMode() )
 		{
-			if( PlayerRace.players[i].name != playerTransform.name )
+			List<ICreature> creatures = getAllCreaturesWithinRange( playerTransform, CREATURE_SHRINK_RADIUS );
+			for( int i = 0; i < creatures.Count; i++ )
 			{
-				//You can't shrink a player who is ziplining because it causes too many bugs
-				if( !isPlayerImmune( PlayerRace.players[i].transform ) && PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Ziplining )
+				creatures[i].shrink( playerTransform, true );
+			}
+			if( creatures.Count > 0 ) atLeastOneTarget = true;
+
+		}
+		else
+		{
+			//Send the RPC to everyone excluding the caster
+			//Shrink affects all opponents
+			for( int i = 0; i < PlayerRace.players.Count; i++ )
+			{
+				if( PlayerRace.players[i].name != playerTransform.name )
 				{
-					if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive( CardName.Reflect) )
+					//You can't shrink a player who is ziplining because it causes too many bugs
+					if( !isPlayerImmune( PlayerRace.players[i].transform ) && PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Ziplining )
 					{
-						MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, PlayerRace.players[i].GetComponent<PhotonView>().viewID );
-	
-						//The target has the Reflect spell active.
-						//Reflect to caster
-						playerTransform.GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
-					
-					}
-					else
-					{
-						PlayerRace.players[i].GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
-						atLeastOneTarget = true;
+						if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive( CardName.Reflect) )
+						{
+							MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, PlayerRace.players[i].GetComponent<PhotonView>().viewID );
+		
+							//The target has the Reflect spell active.
+							//Reflect to caster
+							playerTransform.GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
+						
+						}
+						else
+						{
+							PlayerRace.players[i].GetComponent<PhotonView>().RPC("shrinkSpellRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
+							atLeastOneTarget = true;
+						}
 					}
 				}
 			}
+			//1) We do have at least one target.
+			//2) Play an appropriate VO such as "Wicked!" for Shrink.
+			if( atLeastOneTarget ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
 		}
-		//1) We do have at least one target.
-		//2) Play an appropriate VO such as "Wicked!" for Shrink.
-		if( atLeastOneTarget ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
 	}
 	#endregion
 

@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-interface ICreature
+public interface ICreature
 {
-	void knockback( Transform attacker );
+	void knockback( Transform caster );
 	CreatureState getCreatureState();
 	void sideCollision();
 	void victory( bool playWinSound );
 	void deactivate();
-
+	void shrink( Transform caster, bool value );
 }

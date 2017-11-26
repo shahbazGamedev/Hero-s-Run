@@ -371,6 +371,10 @@ public sealed class SkeletonController : Creature, ICreature {
 		anim.CrossFadeInFixedTime( "damage", CROSS_FADE_DURATION );
 	}
 
+	public void shrink( Transform caster, bool value )
+	{
+	}
+
 	public void victory( bool playWinSound )
 	{
 		if( creatureState != CreatureState.Dying )
