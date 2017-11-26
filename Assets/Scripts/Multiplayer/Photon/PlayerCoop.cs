@@ -39,39 +39,41 @@ public class PlayerCoop : PunBehaviour {
 		PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( name );
 		pmd.downs++;
 
-		//Is your coop partner dead or alive?
-		if( coopPartner.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
+		if( photonView.isMine )
 		{
-			//Your coop partner is also dead.
-			//This means game over.
-			Debug.Log("playerDied: game over! Your name: " + name + " Your partner's name: "  + coopPartner.name + " downs " + pmd.downs );
-			//Inform all via an RPC.
-			photonView.RPC("coopGameOverRPC", PhotonTargets.All );
-		}
-		else
-		{
-			Debug.Log("playerDied: start spectating Your name: " + name + " Your partner's name: "  + coopPartner.name );
-			//Your coop partner is alive.
-			//Start spectating your partner. You will be revived if your coop partner survives to the next wave.
-			//Display the message "SPECTATING" on the HUD.
-			if( GetComponent<PlayerAI>() == null ) HUDMultiplayer.hudMultiplayer.displayTopMessage( LocalizationManager.Instance.getText( "COOP_SPECTATING" ) );
-			//Have the main camera track your partner.
-			CinemachineVirtualCamera cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
-			cmvc.m_Follow = coopPartner;
-			cmvc.m_LookAt = coopPartner;
+			//Is your coop partner dead or alive?
+			if( coopPartner.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
+			{
+				//Your coop partner is also dead.
+				//This means game over.
+				Debug.Log( name + " playerDied: game over! Your partner's name: "  + coopPartner.name + " downs " + pmd.downs );
+				//Inform all via an RPC.
+				photonView.RPC("coopGameOverRPC", PhotonTargets.All );
+			}
+			else
+			{
+				Debug.Log( name  + " playerDied: start spectating partner: "  + coopPartner.name );
+				//Your coop partner is alive.
+				//Start spectating your partner. You will be revived if your coop partner survives to the next wave.
+				//Display the message "SPECTATING" on the HUD.
+				if( GetComponent<PlayerAI>() == null ) HUDMultiplayer.hudMultiplayer.displayTopMessage( LocalizationManager.Instance.getText( "COOP_SPECTATING" ) );
+				//Have the main camera track your partner.
+				CinemachineVirtualCamera cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
+				cmvc.m_Follow = coopPartner;
+				cmvc.m_LookAt = coopPartner;
+			}
 		}
 	}
 
 	[PunRPC]
 	void coopGameOverRPC()
 	{
-		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.COMPLETED ) return;
 
 		if( coopResurrectPlayerCoroutine != null ) StopCoroutine( coopResurrectPlayerCoroutine );
 
 		Debug.Log( name + " coopGameOverRPC isMine: " + photonView.isMine );
 
-		if( photonView.isMine )
+		if( photonView.isMine && GetComponent<PlayerAI>() == null )
 		{
 			//Display the results screen (player details, score, rounds survived, etc.) and return to the lobby.
 			PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
