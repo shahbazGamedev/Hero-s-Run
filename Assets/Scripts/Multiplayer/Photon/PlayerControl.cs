@@ -188,6 +188,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	public float tileRotationY = 0; //Since we use this value often, we will store it.
 	//This flag is used to avoid entrance crossed being called multiple times which can happen with OnTriggerEnter
 	bool wasEntranceCrossed = false;
+	public int tileIndex;
  	#endregion
 
 	#region Death variables
@@ -505,12 +506,12 @@ public class PlayerControl : Photon.PunBehaviour {
 				float delta = Mathf.Round( (transform.position.x - currentTilePos.x) * 100.0f) / 100.0f;
 				if( delta < -laneLimit )
 				{
-					Debug.LogWarning ( "-laneLimit player x " + transform.position.x + " currentTilePos.x " + currentTilePos.x + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
+					//Debug.LogWarning ( "-laneLimit player x " + transform.position.x + " currentTilePos.x " + currentTilePos.x + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
 					transform.position = new Vector3 (  currentTilePos.x -laneLimit, transform.position.y, transform.position.z );
 				}
 				else if( delta > laneLimit )
 				{
-					Debug.LogWarning ( "+laneLimit player x " + transform.position.x + " currentTilePos.x " + currentTilePos.x + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
+					//Debug.LogWarning ( "+laneLimit player x " + transform.position.x + " currentTilePos.x " + currentTilePos.x + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
 					transform.position = new Vector3 (  currentTilePos.x + laneLimit, transform.position.y, transform.position.z );
 				}
 			
@@ -521,12 +522,12 @@ public class PlayerControl : Photon.PunBehaviour {
 				float delta = Mathf.Round( (transform.position.z - currentTilePos.z) * 100.0f) / 100.0f;
 				if( delta < -laneLimit )
 				{
-					Debug.LogWarning ( "+laneLimit player z " + transform.position.z + " currentTilePos.z " + currentTilePos.z + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
+					//Debug.LogWarning ( "+laneLimit player z " + transform.position.z + " currentTilePos.z " + currentTilePos.z + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
 					transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z - laneLimit );
 				}
 				else if( delta > laneLimit )
 				{
-					Debug.LogWarning ( "+laneLimit player z " + transform.position.z + " currentTilePos.z " + currentTilePos.z + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
+					//Debug.LogWarning ( "+laneLimit player z " + transform.position.z + " currentTilePos.z " + currentTilePos.z + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
 					transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z + laneLimit );
 				}
 			}
@@ -2143,7 +2144,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				wasEntranceCrossed = true;
 				Invoke( "resetEntranceCrossed", 0.5f );
 				generateLevel.tileEntranceCrossed( other.transform.parent );
-
+				tileIndex++;
 				//The distance remaining displayed on the HUD and stored in PlayerRace is equal to: The length of the level - the total distance traveled by the player.
 				//The total distance traveled by the player is equal to the distance traveled for all previous tiles plus the distance traveled on the current tile.
 				//The distance traveled for all previous tiles is maintained by PlayerControl because it gets updated each time an entrance is crossed.
@@ -2233,6 +2234,9 @@ public class PlayerControl : Photon.PunBehaviour {
 	[PunRPC]
 	void positionSynchronizationRPC( Vector3 syncPosition, float syncYRotation, Vector3 syncVelocity, double photonTime )
 	{
+		//Ignore if you died during the RPC transit.
+		if( getCharacterState() == PlayerCharacterState.Dying ) return;
+
 		//Discard old packets
 		if( PhotonNetwork.time - photonTime > 0.5 ) return;
 

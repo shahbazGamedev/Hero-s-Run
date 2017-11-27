@@ -963,4 +963,31 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		return tileCreationIndex - 1;
 	}
 
+	public GameObject getTileForNextWave( int tileIndex )
+	{
+		GameObject potentialTile = null;
+
+		if( tileIndex < worldRoadSegments.Count )
+		{
+			potentialTile = worldRoadSegments[tileIndex];
+
+			SegmentInfo si = getSegmentInfo( potentialTile );
+			//Never return a tile with a turn. It would be complicated to spawn creatures correctly on those.
+			if( si.tileSubType == TileSubType.Left || si.tileSubType == TileSubType.Right )
+			{
+				//Use next tile instead.
+				tileIndex++;
+				if( tileIndex < worldRoadSegments.Count )
+				{
+					potentialTile = worldRoadSegments[tileIndex];
+				}
+				else
+				{
+					potentialTile = null;
+				}
+			}
+		}
+		return potentialTile;
+	}
+	
 }

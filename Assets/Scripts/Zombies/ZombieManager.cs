@@ -36,40 +36,38 @@ public class ZombieManager : MonoBehaviour {
 	//Called by a zombie trigger
 	public void triggerZombieWave( List<GameObject> spawnLocations )
 	{
-		GameObject locationObject;
 		ZombieSpawnData zsd;
 		for( int i=0; i < spawnLocations.Count; i++ )
 		{
-			locationObject = spawnLocations[i];
-			if( locationObject != null )
+			if( spawnLocations[i] != null )
 			{
-				zsd = locationObject.GetComponent<ZombieSpawnData>();
+				zsd = spawnLocations[i].GetComponent<ZombieSpawnData>();
 				if( zsd != null )
 				{
-					//Debug.Log(  " triggerZombieWave " + i + " delay " + zsd.spawnDelay + " pos " + locationObject.transform.position );
-					StartCoroutine( spawnZombie( locationObject.transform, zsd ) );
+					StartCoroutine( spawnZombie( spawnLocations[i].transform.position, spawnLocations[i].transform.rotation, zsd ) );
 				}
 			}
 			else
 			{
-				Debug.LogWarning( "ZombieManager: triggerZombieWave locationObject is null. spawnLocations.Count: " + spawnLocations.Count  );
+				Debug.LogWarning( "ZombieManager: triggerZombieWave spawnLocations is null. spawnLocations.Count: " + spawnLocations.Count  );
 			}
 		}
 	}
 
-	IEnumerator spawnZombie( Transform spawnLocation, ZombieSpawnData zsd )
+	IEnumerator spawnZombie( Vector3 spawnPosition, Quaternion spawnRotation, ZombieSpawnData zsd )
 	{
 		//Verify where is the ground before the spawn delay
 		RaycastHit hit;
 		float zombieHeight = 0;
-		Vector3 rayCastStart = spawnLocation.position;
-		if (Physics.Raycast(rayCastStart, Vector3.down, out hit, 10f ))
+		Vector3 rayCastStart = new Vector3( spawnPosition.x, spawnPosition.y + 10f, spawnPosition.z );
+		if (Physics.Raycast(rayCastStart, Vector3.down, out hit, 20f ))
 		{
 			zombieHeight = hit.point.y + 0.09f;
 		}
 		else
 		{
-			Debug.LogError("ZombieManager-spawnZombie - solid ground below spawnLocation: " + spawnLocation.localPosition + " was not found. Using a Y value of 0 in tile " + spawnLocation.root.name );
+			Debug.LogWarning("ZombieManager-spawnZombie - No solid ground below spawnLocation: " + spawnPosition + ". Not spawning." );
+			yield return null;
 		}
 
 		yield return new WaitForSeconds(zsd.spawnDelay);
@@ -87,7 +85,7 @@ public class ZombieManager : MonoBehaviour {
 		{
 			prefabName = zombieGirlPrefabName;
 		}
-		PhotonNetwork.InstantiateSceneObject( prefabName, new Vector3( spawnLocation.position.x, zombieHeight, spawnLocation.position.z ), spawnLocation.rotation, 0, data );
+		PhotonNetwork.InstantiateSceneObject( prefabName, new Vector3( spawnPosition.x, zombieHeight, spawnPosition.z ), spawnRotation, 0, data );
 	
 	}
 
