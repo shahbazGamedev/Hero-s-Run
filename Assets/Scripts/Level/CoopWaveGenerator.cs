@@ -7,11 +7,18 @@ using Cinemachine;
 public class CoopWaveGenerator : PunBehaviour {
 
 	#region Waves
-	[SerializeField] List<GameObject> waveList = new List<GameObject>();
+	[SerializeField] List<GameObject> easyWaveList = new List<GameObject>();
+	[SerializeField] List<GameObject> mediumWaveList = new List<GameObject>();
+	[SerializeField] List<GameObject> hardWaveList = new List<GameObject>();
 	public static int numberOfWavesTriggered = 0;
 	public int tileIndexOfLastWave;
 	public delegate void CoopNewWave( int waveNumber );
 	public static event CoopNewWave coopNewWave;
+
+	public float easyWaveProbability; //public only for debugging. Do not change in editor.
+	public float mediumWaveProbability;
+	public float hardWaveProbability; //this value is not required but makes debugging easier.
+
 	#endregion
 
 	#region Players
@@ -65,6 +72,8 @@ public class CoopWaveGenerator : PunBehaviour {
 	{
 		GameObject tile = getAppropriateTile( getLeadingTileIndex() );
 
+		setWaveDifficultyProbabilities();
+
 		GameObject wave = getAppropriateWave();
 		
 		if( wave != null && tile != null )
@@ -102,16 +111,65 @@ public class CoopWaveGenerator : PunBehaviour {
 		}
 	}
 
-	private GameObject getAppropriateWave()
+	private void setWaveDifficultyProbabilities()
 	{
-		if( waveList.Count > 0 ) 
+		if( numberOfWavesTriggered < 10 )
 		{
-			return waveList[0];
+			easyWaveProbability = 0.3f;
+			mediumWaveProbability = 0.7f;
+			hardWaveProbability = 0;
+		}
+		else if( numberOfWavesTriggered < 20 )
+		{
+			easyWaveProbability = 0.2f;
+			mediumWaveProbability = 0.7f;
+			hardWaveProbability = 0.1f;
+		}
+		else if( numberOfWavesTriggered < 30 )
+		{
+			easyWaveProbability = 0.1f;
+			mediumWaveProbability = 0.6f;
+			hardWaveProbability = 0.3f;
+		}
+		else if( numberOfWavesTriggered < 40 )
+		{
+			easyWaveProbability = 0.05f;
+			mediumWaveProbability = 0.55f;
+			hardWaveProbability = 0.4f;
+		}
+		else if( numberOfWavesTriggered < 50 )
+		{
+			easyWaveProbability = 0.05f;
+			mediumWaveProbability = 0.4f;
+			hardWaveProbability = 0.55f;
 		}
 		else
 		{
-			Debug.LogWarning("CoopWaveGenerator-getAppropriateWave is returning null. You need to add waves in the wave list.");
-			return null;
+			easyWaveProbability = 0.05f;
+			mediumWaveProbability = 0.35f;
+			hardWaveProbability = 0.6f;
+		}
+	}
+
+	private GameObject getAppropriateWave()
+	{
+		float rdn = Random.value;
+		int randomIndex;
+
+		if( rdn <= easyWaveProbability )
+		{
+			randomIndex = Random.Range( 0, easyWaveList.Count );
+			return easyWaveList[randomIndex];
+		}
+		else if( rdn <= mediumWaveProbability )
+		{
+			randomIndex = Random.Range( 0, mediumWaveList.Count );
+			return mediumWaveList[randomIndex];
+		}
+		else
+		{
+			randomIndex = Random.Range( 0, hardWaveList.Count );
+			return hardWaveList[randomIndex];
 		}
 	}
 
