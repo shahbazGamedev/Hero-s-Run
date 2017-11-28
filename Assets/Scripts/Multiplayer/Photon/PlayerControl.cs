@@ -1900,6 +1900,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		currentTile = tileWherePlayerDiedGameObject;
 		currentTilePos = tileWherePlayerDiedGameObject.transform.position;
 		tileRotationY = Mathf.Floor ( tileWherePlayerDiedGameObject.transform.eulerAngles.y );
+		tileIndex = tileWherePlayerDiedGameObject.GetComponent<SegmentInfo>().tileIndex;
 
 		GameObject respawnLocationObject = tileWherePlayerDiedGameObject.transform.Find("respawnLocation").gameObject;
 
