@@ -33,18 +33,16 @@ public class CoopWaveGenerator : PunBehaviour {
 
 	void Awake ()
 	{
-		if ( PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode() )
-		{
-			Instance = this;
-			generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
-			zombieManager = GameObject.FindObjectOfType<ZombieManager>();
-			numberOfWavesTriggered = 0; //important to reset since this is a static value.
-		}
+		enabled = PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode();
+		Instance = this;
 	}
 
 	void Start ()
 	{
-		if( PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode() ) Invoke("activateNewWave", 10f );
+		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
+		zombieManager = GameObject.FindObjectOfType<ZombieManager>();
+		numberOfWavesTriggered = 0; //important to reset since this is a static value.
+		Invoke("activateNewWave", 10f );
 	}
 	
 	void OnEnable()

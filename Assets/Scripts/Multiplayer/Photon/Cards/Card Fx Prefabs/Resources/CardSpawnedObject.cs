@@ -241,12 +241,6 @@ public class CardSpawnedObject : MonoBehaviour {
 				valid = valid && casterName != cso.getCasterName();
                 break;
 
-	        case MaskHandler.levelDestructibleLayer:
-				//A destructible object that is part of the level and does not have any special functionality such
-				//as a simple wall or a bridge.
-				valid = true;
-                break;
-
 	        case MaskHandler.creatureLayer:
 				ICreature creatureController = potentialTarget.GetComponent<ICreature>();
 				if( creatureController != null && creatureController.getCreatureState() != CreatureState.Dying )
@@ -284,13 +278,25 @@ public class CardSpawnedObject : MonoBehaviour {
 	protected void destroyAllTargetsWithinBlastRadius( float blastRadius, int mask, Transform caster = null )
 	{
 		//To add a dramatic effect, make all of the objects that have the Movable layer and a rigidbody move because of the shockwave.
+		//Also affect level destructible objects.
 		float halfRadius = blastRadius * 0.5f;
-		Collider[] movableHitColliders = Physics.OverlapSphere( transform.position, blastRadius, MaskHandler.getMaskOnlyMovable() );
+		Collider[] movableHitColliders = Physics.OverlapSphere( transform.position, blastRadius, MaskHandler.getMaskMovableAndLevelDestructible() );
 		for( int i = 0; i < movableHitColliders.Length; i++ )
 		{
 			if( movableHitColliders[i].attachedRigidbody != null )
 			{
-				movableHitColliders[i].attachedRigidbody.AddExplosionForce( EXPLOSION_FORCE, movableHitColliders[i].transform.position, halfRadius, EXPLOSION_FORCE );
+				if( movableHitColliders[i].gameObject.layer == MaskHandler.movableLayer )
+				{
+					//Handle movables such as barrels, crates, and cones.
+					movableHitColliders[i].attachedRigidbody.AddExplosionForce( EXPLOSION_FORCE, movableHitColliders[i].transform.position, halfRadius, EXPLOSION_FORCE );
+				}
+				else
+				{
+					//Handle level destructibles such as bridges
+					movableHitColliders[i].attachedRigidbody.isKinematic = false;
+					movableHitColliders[i].attachedRigidbody.AddExplosionForce( EXPLOSION_FORCE, movableHitColliders[i].transform.position, halfRadius, EXPLOSION_FORCE );
+					GameObject.Destroy( movableHitColliders[i].gameObject, 3.5f );
+				}
 			}
 		}
 
@@ -335,12 +341,6 @@ public class CardSpawnedObject : MonoBehaviour {
 				if( potentialTarget.GetComponent<FracturedObject>() != null ) potentialTarget.GetComponent<FracturedObject>().Explode( potentialTarget.transform.position, 400f );
 				Destroy( potentialTarget.gameObject );
                 break;
-
-	        case MaskHandler.levelDestructibleLayer:
-				valid = true;
-				if( potentialTarget.GetComponent<FracturedObject>() != null ) potentialTarget.GetComponent<FracturedObject>().Explode( potentialTarget.transform.position, 15f );
-				Destroy( potentialTarget.gameObject );
-               break;
 
 	        case MaskHandler.creatureLayer:
 				valid = true;

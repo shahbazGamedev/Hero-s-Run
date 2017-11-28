@@ -86,7 +86,7 @@ public class HomingMissile : CardSpawnedObject {
 			GameObject.Destroy( impactParticleSystem.gameObject, 5f );
 		}
 
-		destroyAllTargetsWithinBlastRadius( 15f, MaskHandler.getMaskWithPlayerWithoutDevices(), casterTransform );
+		destroyAllTargetsWithinBlastRadius( 15f, MaskHandler.getMaskAllWithoutDevices(), casterTransform );
 
 		GameObject.Destroy( gameObject );
 		

@@ -38,7 +38,7 @@ public class Grenade : CardSpawnedObject {
 		//the bomb beeps lasts 0.94 seconds
 		yield return new WaitForSeconds(0.94f);
 
-		destroyAllTargetsWithinBlastRadius( blastRadius, MaskHandler.getMaskWithPlayerWithLevelDestructible(), casterTransform );
+		destroyAllTargetsWithinBlastRadius( blastRadius, MaskHandler.getMaskAll(), casterTransform );
 		explode();
 		GameObject.Destroy( gameObject );
 	}
