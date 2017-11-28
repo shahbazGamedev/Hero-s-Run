@@ -16,7 +16,6 @@ public class CoopWaveGenerator : PunBehaviour {
 
 	#region Players
 	[SerializeField] List<Transform> deadPlayerList = new List<Transform>();
-	public int numberDeadPlayers = 0;
 	#endregion
 
 	#region Other
@@ -27,8 +26,7 @@ public class CoopWaveGenerator : PunBehaviour {
 
 	void Awake ()
 	{
-		//if ( PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode() )
-		if ( PhotonNetwork.isMasterClient )
+		if ( PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode() )
 		{
 			Instance = this;
 			generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
@@ -39,8 +37,7 @@ public class CoopWaveGenerator : PunBehaviour {
 
 	void Start ()
 	{
-		//if( PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode() ) Invoke("activateNewWave", 10f );
-		if( PhotonNetwork.isMasterClient ) Invoke("activateNewWave", 10f );
+		if( PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode() ) Invoke("activateNewWave", 10f );
 	}
 	
 	void OnEnable()
@@ -56,7 +53,6 @@ public class CoopWaveGenerator : PunBehaviour {
 	void FixedUpdate ()
 	{
 		if( isWaveFinished() ) Invoke("activateNewWave", 3f );
-		numberDeadPlayers = deadPlayerList.Count; //for debugging
 	}
 
 	private bool isWaveFinished()
