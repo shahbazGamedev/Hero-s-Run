@@ -912,21 +912,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		{
 			Debug.LogWarning("prout index." + index + " " + worldRoadSegments.Count );
 		}
-
-		//Activate zombies (if any) on the tile one further.
-		//Only the master is allowed to activate a wave.
-		if( GameManager.Instance.isCoopPlayMode() && PhotonNetwork.isMasterClient )
-		{
-			int nextTileIndex = tileIndex + 1;
-			if( nextTileIndex < worldRoadSegments.Count )
-			{
-				ZombieTrigger zombieTrigger = worldRoadSegments[nextTileIndex].GetComponent<ZombieTrigger>();
-				if( zombieTrigger != null )
-				{
-					zombieTrigger.activateNextWave( levelNetworkingManager, nameOfTileEntered );
-				}
-			}
-		}
 	}
 
 	private void onTileActivation( int index )

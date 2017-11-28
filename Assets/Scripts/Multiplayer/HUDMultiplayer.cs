@@ -464,11 +464,13 @@ public class HUDMultiplayer : MonoBehaviour {
 	void OnEnable()
 	{
 		GameManager.gameStateEvent += GameStateChange;
+		CoopWaveGenerator.coopNewWave += CoopNewWave;
 	}
 	
 	void OnDisable()
 	{
 		GameManager.gameStateEvent -= GameStateChange;
+		CoopWaveGenerator.coopNewWave -= CoopNewWave;
 	}
 
 	void GameStateChange( GameState previousState, GameState newState )
@@ -484,6 +486,13 @@ public class HUDMultiplayer : MonoBehaviour {
 			debugInfo.gameObject.SetActive( false );
 			userMessageText.gameObject.SetActive( false );
 		}
+	}
+
+	void CoopNewWave( int waveNumber )
+	{
+		string waveString = LocalizationManager.Instance.getText("COOP_WAVE"); //Wave {0}!
+		waveString = string.Format( waveString, waveNumber );
+		activateUserMessage( waveString, 0, 2.5f );
 	}
 
 	//Activates a horizontally centered text with a drop-shadow.

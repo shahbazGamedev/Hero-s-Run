@@ -300,28 +300,4 @@ public sealed class LevelNetworkingManager : PunBehaviour
 		}
 	}
 	#endregion
-
-	#region Coop mode
-	//Called by ZombieTrigger. Only called by the master. Only called in Coop mode.
-	public void nextWaveActivated( string nameOfTileEntered )
-	{
-		photonView.RPC("coopWaveRPC", PhotonTargets.All, nameOfTileEntered );
-	}
-
-	[PunRPC]
-	void coopWaveRPC( string nameOfTileEntered )
-	{
-		ZombieManager.numberOfZombieWavesTriggered++;
-		Debug.Log("LevelNetworkingManager-coopWaveRPC: " + ZombieManager.numberOfZombieWavesTriggered );
-		string waveString = LocalizationManager.Instance.getText("COOP_WAVE"); //Wave {0}!
-		waveString = string.Format( waveString, ZombieManager.numberOfZombieWavesTriggered );
-		HUDMultiplayer.hudMultiplayer.activateUserMessage( waveString, 0, 2.5f );
-		//Also tell the players that a new wave has been activated.
-		for( int i = 0; i < PlayerRace.players.Count; i ++ )
-		{
-			PlayerRace.players[i].GetComponent<PlayerCoop>().nextWaveActivated( nameOfTileEntered );
-		}		
-	}
-	#endregion
-
 }

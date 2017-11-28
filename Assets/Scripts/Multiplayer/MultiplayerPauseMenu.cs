@@ -92,12 +92,15 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 	}
 
 
-	void MultiplayerStateChanged( PlayerCharacterState newState )
+	void MultiplayerStateChanged( Transform player, PlayerCharacterState newState )
 	{
-		if( newState == PlayerCharacterState.Dying )
+		if( player.GetComponent<PlayerAI>() == null )
 		{
-			pauseButton.GetComponent<CanvasGroup>().interactable = false;
-  			pauseButton.GetComponent<FadeInCanvasGroup>().fadeOut();
+			if( newState == PlayerCharacterState.Dying )
+			{
+				pauseButton.GetComponent<CanvasGroup>().interactable = false;
+	  			pauseButton.GetComponent<FadeInCanvasGroup>().fadeOut();
+			}
 		}
 	}
 

@@ -61,7 +61,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	PlayerHealth playerHealth;
 	PlayerIK playerIK;	//This is an optional component
 	Ragdoll ragdoll; 	//This is an optional component
-	PlayerCoop playerCoop; 	//This is an optional component
 	#endregion
 
 	#region Hash IDs for player animations	
@@ -209,7 +208,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	#region Events
 	//Event management used to notify other classes when the character state has changed
-	public delegate void MultiplayerStateChanged( PlayerCharacterState value );
+	public delegate void MultiplayerStateChanged( Transform player, PlayerCharacterState value );
 	public static event MultiplayerStateChanged multiplayerStateChanged;
 	#endregion
 
@@ -263,7 +262,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerSpell = GetComponent<PlayerSpell>();
 		playerRace = GetComponent<PlayerRace>();
 		playerHealth = GetComponent<PlayerHealth>();
-		playerCoop = GetComponent<PlayerCoop>();
 		turnRibbonHandler = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
 
 		//Cache the string to avoid the runtime lookup
@@ -1492,7 +1490,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		if( calculatedLane != currentLane )
 		{
-			Debug.LogWarning("recalculateCurrentLane changed current lane from: " + currentLane + " to: " + calculatedLane + " relative pos " + relativePos );
+			//Debug.LogWarning("recalculateCurrentLane changed current lane from: " + currentLane + " to: " + calculatedLane + " relative pos " + relativePos );
 			currentLane = calculatedLane;
 			desiredLane = currentLane;
 		}
@@ -1814,7 +1812,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			//Remove the vignetting
 			if( playerAI == null ) StartCoroutine( controlVignetting( 0f, 0f, 0.25f ) );
-			playerCoop.playerDied();				
 		}
 		else
 		{
@@ -2062,7 +2059,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//if( playerAI == null ) Debug.Log("PlayerControl-setCharacterState to: " + newState + " for " + gameObject.name + " previous state was " + playerCharacterState );
 		playerCharacterState = newState;
 		//Send an event to interested classes if you are a human player
-		if(multiplayerStateChanged != null && this.photonView.isMine && playerAI == null ) multiplayerStateChanged( playerCharacterState );
+		if(multiplayerStateChanged != null && this.photonView.isMine ) multiplayerStateChanged( transform, playerCharacterState );
 		
 		playerRun.handlePlayerStateChange( playerCharacterState );
 		playerVisuals.handlePlayerStateChange( playerCharacterState );

@@ -66,11 +66,14 @@ public class CardTimerHandler : MonoBehaviour {
 		return go;
 	}
 
-	void MultiplayerStateChanged( PlayerCharacterState newState )
+	void MultiplayerStateChanged( Transform player, PlayerCharacterState newState )
 	{
-		if( newState == PlayerCharacterState.Dying )
+		if( player.GetComponent<PlayerAI>() == null )
 		{
-			removeAllTimers();
+			if( newState == PlayerCharacterState.Dying )
+			{
+				removeAllTimers();
+			}
 		}
 	}
 

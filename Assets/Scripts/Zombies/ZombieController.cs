@@ -135,6 +135,7 @@ public sealed class ZombieController : Creature, ICreature {
 	{
 		if( value )
 		{
+			previousCreatureState = getCreatureState();
 			setCreatureState( CreatureState.Immobilized );
 			legacyAnim.enabled = false;
 		}
@@ -396,11 +397,14 @@ public sealed class ZombieController : Creature, ICreature {
 		PlayerControl.multiplayerStateChanged -= MultiplayerStateChanged;
 	}
 
-	void MultiplayerStateChanged( PlayerCharacterState newState )
+	void MultiplayerStateChanged( Transform player, PlayerCharacterState newState )
 	{
-		if( newState == PlayerCharacterState.Dying )
+		if( player.GetComponent<PlayerAI>() == null )
 		{
-			CancelInvoke( "groan" );
+			if( newState == PlayerCharacterState.Dying )
+			{
+				CancelInvoke( "groan" );
+			}
 		}
 	}
 		

@@ -9,14 +9,6 @@ public class ZombieManager : MonoBehaviour {
 	[SerializeField] List<Material> zombieGirlMaterials = new List<Material>(4);
 	[SerializeField] List<Material> zombieBoyMaterials = new List<Material>(4);
 
-	public static int numberOfZombieWavesTriggered = 0; //could eventually put that number in the player stats
-
-	void Start ()
-	{
-		//Reset this static value
-		numberOfZombieWavesTriggered = 0;
-	}
-
 	public Material getRandomZombieMaterial( Sex sex )
 	{
 		Material zombieMaterial = null;
@@ -33,7 +25,6 @@ public class ZombieManager : MonoBehaviour {
 		return zombieMaterial;
 	}
 
-	//Called by a zombie trigger
 	public void triggerZombieWave( List<GameObject> spawnLocations )
 	{
 		ZombieSpawnData zsd;

@@ -19,7 +19,7 @@ public class CoopResultsScreenHandler : MonoBehaviour, IPointerDownHandler {
 	public void showResults()
 	{
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayPermanentDamageEffect() );
-		int wavesBeaten = ZombieManager.numberOfZombieWavesTriggered - 1;
+		int wavesBeaten = CoopWaveGenerator.numberOfWavesTriggered - 1;
 		if( wavesBeaten < 0 ) wavesBeaten = 0;
 		string wavesBeatenString;
 		if( wavesBeaten <= 1 )

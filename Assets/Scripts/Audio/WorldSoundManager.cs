@@ -144,15 +144,18 @@ public class WorldSoundManager : MonoBehaviour {
 		}
 	}
 
-	void MultiplayerStateChanged( PlayerCharacterState newState )
+	void MultiplayerStateChanged( Transform player, PlayerCharacterState newState )
 	{
-		if( newState == PlayerCharacterState.StartRunning )
+		if( player.GetComponent<PlayerAI>() == null )
 		{
-			startMusic();
-		}
-		else if( newState == PlayerCharacterState.Dying )
-		{
-         	lowMusic.TransitionTo(1f);
+			if( newState == PlayerCharacterState.StartRunning )
+			{
+				startMusic();
+			}
+			else if( newState == PlayerCharacterState.Dying )
+			{
+	         	lowMusic.TransitionTo(1f);
+			}
 		}
 	}
 

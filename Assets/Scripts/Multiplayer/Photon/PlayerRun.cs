@@ -285,7 +285,7 @@ public class PlayerRun : Photon.PunBehaviour {
 		//If in coop mode, increase the run speed with each consecutive wave.
 		if( GameManager.Instance.isCoopPlayMode() )
 		{
-			float waveSpeedMultiplier = ZombieManager.numberOfZombieWavesTriggered * 0.01f;
+			float waveSpeedMultiplier = CoopWaveGenerator.numberOfWavesTriggered * 0.01f;
 			overallSpeedMultiplier = overallSpeedMultiplier * ( 1f + waveSpeedMultiplier );
 		}
 
