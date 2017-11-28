@@ -180,7 +180,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 						else
 						{
 							//Player collided squarely with zombie. Kill the player, but only if the zombie is not shrunk.
-							if( !zombieController.isShrunk )
+							if( !zombieController.isInoffensive )
 							{
 								playerControl.killPlayer ( DeathType.Zombie );
 								zombieController.victory( true );
@@ -198,7 +198,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 						else
 						{
 							//Player collided squarely with zombie. Kill the player, but only if the zombie is not shrunk.
-							if( !zombieController.isShrunk )
+							if( !zombieController.isInoffensive )
 							{
 								playerControl.killPlayer ( DeathType.Zombie );
 								zombieController.victory( true );

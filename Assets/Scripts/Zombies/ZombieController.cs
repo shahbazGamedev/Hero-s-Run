@@ -8,7 +8,6 @@ using System.Collections.Generic;
 /// </summary>
 public sealed class ZombieController : Creature, ICreature {
 
-
 	public enum ZombieMoveType {
 		Walking = 1,
 		Crawling = 2,
@@ -29,7 +28,7 @@ public sealed class ZombieController : Creature, ICreature {
 	const int SCORE_PER_KNOCKBACK = 20; //coop - score points awarded per knockback.
 	const float ZOMBIE_LIFESPAN = 30f;
 	const float SHRINK_SIZE = 0.4f;
-	public bool isShrunk = false;
+	public bool isInoffensive = false;
 
 	CreatureState previousCreatureState;
 
@@ -127,7 +126,7 @@ public sealed class ZombieController : Creature, ICreature {
 			forward = forward * Time.deltaTime * walkSpeed;
 			forward.y -= 16f * Time.deltaTime;
 			//3) Move the controller
-			controller.Move( forward );
+			if( controller.enabled ) controller.Move( forward );
 		}
 	}
 
@@ -267,7 +266,26 @@ public sealed class ZombieController : Creature, ICreature {
 			GetComponent<AudioSource>().pitch = 1.3f;
 			//For now, once shrunk, they stay shrunk. The lifespan of a zombie is only 30 seconds anyway.
 			LeanTween.scale( gameObject, new Vector3( SHRINK_SIZE, SHRINK_SIZE, SHRINK_SIZE ), 1f );
-			isShrunk = true;
+			isInoffensive = true;
+		}
+	}
+
+	public override void confuse( Transform caster, bool value )
+	{
+		base.confuse( caster, value );
+	}
+
+	[PunRPC]
+	void confuseRPC( bool value, int attackerPhotonViewID )
+	{		
+		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
+		if( value )
+		{
+			setCreatureState(CreatureState.Immobilized);
+			player = null;
+			legacyAnim.CrossFade("no", 0.4f);
+			legacyAnim.CrossFadeQueued(selectRandomIdle(), 0.4f);
+			isInoffensive = true;
 		}
 	}
 

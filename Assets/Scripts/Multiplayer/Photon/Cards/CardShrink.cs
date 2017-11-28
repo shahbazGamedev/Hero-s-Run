@@ -10,7 +10,7 @@ using UnityEngine;
 /// </summary>
 public class CardShrink : Card {
 
-	const float CREATURE_SHRINK_RADIUS = 30f; //in meters
+	const float CREATURE_SHRINK_RADIUS = 35f; //in meters
 
 	public void activateCard ( int photonViewId, int level )
 	{

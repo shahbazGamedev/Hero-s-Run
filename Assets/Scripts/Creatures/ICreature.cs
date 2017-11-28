@@ -9,4 +9,5 @@ public interface ICreature
 	void victory( bool playWinSound );
 	void deactivate();
 	void shrink( Transform caster, bool value );
+	void confuse( Transform caster, bool value );
 }

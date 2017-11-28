@@ -6,7 +6,7 @@ public class Creature : MonoBehaviour {
 
 	protected CreatureState creatureState = CreatureState.Idle;
 	[Header("Other")]
-	Transform player;
+	protected Transform player;
 	protected CharacterController controller;
 	protected Animator anim;
 	protected AudioSource audioSource;
@@ -103,6 +103,20 @@ public class Creature : MonoBehaviour {
 		else
 		{
 			Debug.LogWarning("Creature-shrink: the caster specified is null." );
+		}
+	}
+
+	public virtual void confuse( Transform caster, bool value )
+	{
+		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
+
+		if( caster != null )
+		{
+			GetComponent<PhotonView>().RPC("confuseRPC", PhotonTargets.All, value, caster.GetComponent<PhotonView>().viewID );
+		}
+		else
+		{
+			Debug.LogWarning("Creature-confuse: the caster specified is null." );
 		}
 	}
 

@@ -7,6 +7,8 @@ using UnityEngine;
 /// </summary>
 public class CardHack : Card {
 
+	const float CREATURE_HACK_RADIUS = 35f; //in meters
+
 	public void activateCard ( int photonViewId, int level )
 	{
 		this.photonView.RPC("cardHackMasterRPC", PhotonTargets.MasterClient, level, photonViewId );	
@@ -20,26 +22,37 @@ public class CardHack : Card {
 		Transform playerTransform = getPlayerTransform( photonViewID );
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
 
-		//Send the RPC to everyone excluding the caster
-		//Hack affects all opponents
-		for( int i = 0; i < PlayerRace.players.Count; i++ )
+		if( GameManager.Instance.isCoopPlayMode() )
 		{
-			if( PlayerRace.players[i].name != playerTransform.name )
+			List<ICreature> creatures = getAllCreaturesWithinRange( playerTransform, CREATURE_HACK_RADIUS );
+			for( int i = 0; i < creatures.Count; i++ )
 			{
-				if( !isPlayerImmune( PlayerRace.players[i].transform  ) )
+				creatures[i].confuse( playerTransform, true );
+			}
+		}
+		else
+		{
+			//Send the RPC to everyone excluding the caster
+			//Hack affects all opponents
+			for( int i = 0; i < PlayerRace.players.Count; i++ )
+			{
+				if( PlayerRace.players[i].name != playerTransform.name )
 				{
-					if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive( CardName.Reflect) )
+					if( !isPlayerImmune( PlayerRace.players[i].transform  ) )
 					{
-						MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, PlayerRace.players[i].GetComponent<PhotonView>().viewID );
-	
-						//The target has the Reflect spell active.
-						//Reflect to caster
-						playerTransform.GetComponent<PhotonView>().RPC("cardHackRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
-					
-					}
-					else
-					{
-						PlayerRace.players[i].GetComponent<PhotonView>().RPC("cardHackRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
+						if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive( CardName.Reflect) )
+						{
+							MiniMap.Instance.reflectMessage( photonViewID, (int)cardName, PlayerRace.players[i].GetComponent<PhotonView>().viewID );
+		
+							//The target has the Reflect spell active.
+							//Reflect to caster
+							playerTransform.GetComponent<PhotonView>().RPC("cardHackRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
+						
+						}
+						else
+						{
+							PlayerRace.players[i].GetComponent<PhotonView>().RPC("cardHackRPC", PhotonTargets.AllViaServer, cd.getCardPropertyValue( CardPropertyType.DURATION, level ) );
+						}
 					}
 				}
 			}
