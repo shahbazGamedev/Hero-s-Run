@@ -33,7 +33,6 @@ public class CoopWaveGenerator : PunBehaviour {
 
 	void Awake ()
 	{
-		enabled = PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode();
 		Instance = this;
 	}
 
@@ -58,21 +57,30 @@ public class CoopWaveGenerator : PunBehaviour {
 
 	void StartRunningEvent()
 	{
-		Invoke("activateNewWave", 10f );
+		if( PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode() ) Invoke("activateNewWave", 10f );
+	}
+
+	void OnMasterClientSwitched( PhotonPlayer newMaster )
+	{
+		Debug.LogWarning("OnMasterClientSwitched. New master is: " + newMaster.NickName );
+		if( GameManager.Instance.isCoopPlayMode() ) Invoke("activateNewWave", 10f );
 	}
 
 	#region Waves
 	void activateNewWave ()
 	{
-		GameObject tile = getAppropriateTile( getLeadingTileIndex() );
-
-		setWaveDifficultyProbabilities();
-
-		GameObject wave = getAppropriateWave();
-		
-		if( wave != null && tile != null )
+		if( PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode() )
 		{
-			createWave( wave, tile );
+			GameObject tile = getAppropriateTile( getLeadingTileIndex() );
+	
+			setWaveDifficultyProbabilities();
+	
+			GameObject wave = getAppropriateWave();
+			
+			if( wave != null && tile != null )
+			{
+				createWave( wave, tile );
+			}
 		}
 	}
 
@@ -194,7 +202,7 @@ public class CoopWaveGenerator : PunBehaviour {
 	#region Players
 	void MultiplayerStateChanged( Transform player, PlayerCharacterState newState )
 	{
-		if( PhotonNetwork.isMasterClient && PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED )
+		if( PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode() && PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED )
 		{
 			if( newState == PlayerCharacterState.Dying )
 			{
