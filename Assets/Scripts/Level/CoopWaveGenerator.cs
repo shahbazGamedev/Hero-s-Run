@@ -4,9 +4,10 @@ using UnityEngine;
 using Photon;
 using Cinemachine;
 
-public class CoopWaveGenerator : PunBehaviour {
+public sealed class CoopWaveGenerator : PunBehaviour {
 
 	#region Waves
+	[SerializeField] float timeBetweenWave = 12f;
 	[SerializeField] List<GameObject> easyWaveList = new List<GameObject>();
 	[SerializeField] List<GameObject> mediumWaveList = new List<GameObject>();
 	[SerializeField] List<GameObject> hardWaveList = new List<GameObject>();
@@ -18,7 +19,6 @@ public class CoopWaveGenerator : PunBehaviour {
 	public float easyWaveProbability; //public only for debugging. Do not change in editor.
 	public float mediumWaveProbability;
 	public float hardWaveProbability; //this value is not required but makes debugging easier.
-
 	#endregion
 
 	#region Players
@@ -45,25 +45,23 @@ public class CoopWaveGenerator : PunBehaviour {
 	
 	void OnEnable()
 	{
-		PlayerControl.multiplayerStateChanged += MultiplayerStateChanged;
 		HUDMultiplayer.startRunningEvent += StartRunningEvent;
 	}
 	
 	void OnDisable()
 	{
-		PlayerControl.multiplayerStateChanged -= MultiplayerStateChanged;
 		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
 	}
 
 	void StartRunningEvent()
 	{
-		if( PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode() ) Invoke("activateNewWave", 10f );
+		if( PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode() ) Invoke("activateNewWave", timeBetweenWave );
 	}
 
 	void OnMasterClientSwitched( PhotonPlayer newMaster )
 	{
 		Debug.LogWarning("OnMasterClientSwitched. New master is: " + newMaster.NickName );
-		if( GameManager.Instance.isCoopPlayMode() ) Invoke("activateNewWave", 10f );
+		if( GameManager.Instance.isCoopPlayMode() ) Invoke("activateNewWave", timeBetweenWave );
 	}
 
 	#region Waves
@@ -177,7 +175,6 @@ public class CoopWaveGenerator : PunBehaviour {
 
 	private void createWave( GameObject wave, GameObject tile )
 	{
-		Invoke("activateNewWave", 10f );
 		Debug.LogWarning("createWave on tile " + tile.name + " for wave " + numberOfWavesTriggered + " tileEndex " + tileIndexOfLastWave );
 		//trigger zombie wave takes care of instantiating the zombies using Photon.
 		GameObject clone = Instantiate( wave, tile.transform );
@@ -186,6 +183,7 @@ public class CoopWaveGenerator : PunBehaviour {
 		DebugInfoType debugInfoType = GameManager.Instance.playerDebugConfiguration.getDebugInfoType();
 		if( debugInfoType != DebugInfoType.DONT_SPAWN_ZOMBIES ) zombieManager.triggerZombieWave( activeZombieWave.spawnLocations );
 		photonView.RPC("coopWaveRPC", PhotonTargets.All );
+		Invoke("activateNewWave", timeBetweenWave );
 	}
 
 	[PunRPC]
@@ -202,45 +200,44 @@ public class CoopWaveGenerator : PunBehaviour {
 	#endregion
 
 	#region Players
-	void MultiplayerStateChanged( Transform player, PlayerCharacterState newState )
+	public void playerDied( Transform player )
 	{
-		if( PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode() && PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED )
-		{
-			if( newState == PlayerCharacterState.Dying )
+	if( PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED )
+	{
+			if( !deadPlayerList.Contains( player ) )
 			{
-				if( !deadPlayerList.Contains( player ) )
-				{
-					deadPlayerList.Add( player );
-					Debug.Log("Coop MultiplayerStateChanged " + player.name + " died " + deadPlayerList.Count );
-					PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( player.name );
-					pmd.downs++;
-				}
+				deadPlayerList.Add( player );
+				Debug.Log("Coop playerDied " + player.name + " died " + deadPlayerList.Count );
+				PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( player.name );
+				pmd.downs++;
+			}
 
-				//There are normally 2 players in the Coop mode.
-				//However, a player may have quit the match.
-				//In that case, allow the remaining player to continue until he dies,
-				//and then it will be game over.
-				if( PlayerRace.players.Count == 2 )
+			//There are normally 2 players in the Coop mode.
+			//However, a player may have quit the match.
+			//In that case, allow the remaining player to continue until he dies,
+			//and then it will be game over.
+			if( PlayerRace.players.Count == 2 )
+			{
+				//We have 2 players.
+				if( deadPlayerList.Count == 2 )
 				{
-					//We have 2 players.
-					if( deadPlayerList.Count == 2 )
-					{
-						CancelInvoke("activateNewWave");
-						//Both players are dead, this means game over. Send an RPC.
-						photonView.RPC("coopGameOverRPC", PhotonTargets.All );
-					}
-					else
-					{
-						//Only one player is dead.
-						photonView.RPC("onePlayerDeadRPC", PhotonTargets.All, player.GetComponent<PhotonView>().viewID );	
-					}
+					PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
+					CancelInvoke("activateNewWave");
+					//Both players are dead, this means game over. Send an RPC.
+					photonView.RPC("coopGameOverRPC", PhotonTargets.All );
 				}
 				else
 				{
-					//There is only one player left and he died. This means game over. Send an RPC.
-					CancelInvoke("activateNewWave");				
-					photonView.RPC("coopGameOverRPC", PhotonTargets.All );
+					//Only one player is dead.
+					photonView.RPC("onePlayerDeadRPC", PhotonTargets.All, player.GetComponent<PhotonView>().viewID );	
 				}
+			}
+			else
+			{
+				//There is only one player left and he died. This means game over. Send an RPC.
+				PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
+				CancelInvoke("activateNewWave");				
+				photonView.RPC("coopGameOverRPC", PhotonTargets.All );
 			}
 		}
 	}
@@ -265,6 +262,9 @@ public class CoopWaveGenerator : PunBehaviour {
 	void onePlayerDeadRPC( int deadPlayerPhotonViewID )
 	{
 		Transform deadPlayer = getPlayerByPhotonViewID( deadPlayerPhotonViewID );
+		
+		Debug.LogError( " deadPlayerPhotonViewID isMasterClient: " + PhotonNetwork.isMasterClient + " dead player name: " + deadPlayer.name + " dead player isMine: " + deadPlayer.GetComponent<PhotonView>().isMine + " is AI null: " + (deadPlayer.GetComponent<PlayerAI>() == null) );
+
 		if( deadPlayer != null && deadPlayer.GetComponent<PhotonView>().isMine && deadPlayer.GetComponent<PlayerAI>() == null )
 		{
 			//Display the message "SPECTATING" on the HUD.
@@ -305,6 +305,11 @@ public class CoopWaveGenerator : PunBehaviour {
 	{
 		Debug.Log( "coopGameOverRPC received." );
 		PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
+		//Tell all the players that is is game over so that they can stop attempting to resurrect.
+		for( int i = 0; i < PlayerRace.players.Count; i++ )
+		{
+			PlayerRace.players[i].GetComponent<PlayerCoop>().gameOver();
+		}
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.leaveRoomShortly() );
 		//Display the results screen (player details, score, rounds survived, etc.) and return to the lobby.
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayCoopResultsAndEmotesScreen( 0.25f ) );

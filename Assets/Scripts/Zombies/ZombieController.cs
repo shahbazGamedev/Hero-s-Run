@@ -30,6 +30,10 @@ public sealed class ZombieController : Creature, ICreature {
 	const float SHRINK_SIZE = 0.4f;
 	public bool isInoffensive = false;
 	[SerializeField] ParticleSystem confusedVFX;
+	[SerializeField] Vector3 controllerCenterWhenCrawling = new Vector3( 0, 0.5f, 0.38f );
+	[SerializeField] Vector3 controllerCenterOther = new Vector3( 0, 0.9f, 0f );
+	[SerializeField] float controllerHeightWhenCrawling = 1.1f;
+	[SerializeField] float controllerHeightOther = 1.8f;
 
 	CreatureState previousCreatureState;
 
@@ -37,7 +41,7 @@ public sealed class ZombieController : Creature, ICreature {
 	new void Awake ()
 	{
 		base.Awake();
-		creatureState = CreatureState.Available;
+		creatureState = CreatureState.Idle;
 		controller.enabled = false;
 
 		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("Zombie Manager");
@@ -60,6 +64,12 @@ public sealed class ZombieController : Creature, ICreature {
 			zombiePrefab.GetComponentInChildren<SkinnedMeshRenderer>().material = zombieMaterial;
 		}
 		legacyAnim = zombiePrefab.GetComponent<Animation>();
+	}
+
+	public override void setCreatureState( CreatureState newState )
+	{
+		base.setCreatureState( newState );
+		adjustCollider();
 	}
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
@@ -178,12 +188,6 @@ public sealed class ZombieController : Creature, ICreature {
 		CancelInvoke( "groan" );
 		legacyAnim.CrossFade("fallToBack", 0.25f);
 		controller.enabled = false;
-		//Some creatures (usually the ones carrying a weapon) have more than one capsule colliders.
-		CapsuleCollider[] capsuleColliders = GetComponentsInChildren<CapsuleCollider>();
-		for( int i = 0; i < capsuleColliders.Length; i++ )
-		{
-			capsuleColliders[i].enabled = false;
-		}
 		audioSource.PlayOneShot( knockbackSound );
 
 		SkillBonusHandler.Instance.grantScoreBonus( SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_TOPPLED_ZOMBIE", attackerPhotonViewID );
@@ -405,39 +409,47 @@ public sealed class ZombieController : Creature, ICreature {
 		setCreatureState( CreatureState.Crawling );
 
 	}
-
-	void OnEnable()
+		
+	public void stop()
 	{
-		PlayerControl.multiplayerStateChanged += MultiplayerStateChanged;
+		setCreatureState(CreatureState.Idle);
+		legacyAnim.CrossFade( selectRandomIdle(), 0.3f );
 	}
 
-	void OnDisable()
+	void adjustCollider()
 	{
-		CancelInvoke( "groan" );
-		PlayerControl.multiplayerStateChanged -= MultiplayerStateChanged;
-	}
-
-	void MultiplayerStateChanged( Transform player, PlayerCharacterState newState )
-	{
-		if( player.GetComponent<PlayerAI>() == null )
+		if( getCreatureState() == CreatureState.Crawling)
 		{
-			if( newState == PlayerCharacterState.Dying )
-			{
-				CancelInvoke( "groan" );
-			}
+			//Crawling
+			controller.center = controllerCenterWhenCrawling;
+			controller.height = controllerHeightWhenCrawling;
+		}
+		else
+		{
+			//All other
+			controller.center = controllerCenterOther;
+			controller.height = controllerHeightOther;
 		}
 	}
-		
+
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		//if( getPlayerController().getCharacterState() == PlayerCharacterState.Dying )
-		//{
-			if( hit.gameObject.CompareTag("Zombie") )
+		if( hit.gameObject.CompareTag("Zombie") )
+		{
+			//If a zombie collides with another zombie have him halt.
+			stop();
+		}
+		else if( hit.gameObject.CompareTag("Player") )
+		{
+			if( hit.gameObject.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
 			{
-				//If a zombie collides with another zombie while the player is dead, have him stop moving and play the victory sequence.
-				victory( false );
+				//If a zombie collides with a dead player and he is not in the victory state, have him play victory also.
+				if( getCreatureState() != CreatureState.Victory )
+				{
+					victory( false );
+				}
 			}
-		//}
+		}
 	}
 
 }

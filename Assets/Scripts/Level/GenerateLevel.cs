@@ -905,7 +905,8 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		if( index >= worldRoadSegments.Count ) index = worldRoadSegments.Count - 1; //needed in case the player turns right at a T-Junction and the Checkpoint tile is right after the T-Junction
 		if( index < worldRoadSegments.Count )
 		{
-			worldRoadSegments[index].SetActive(true);
+			if( !worldRoadSegments[index].activeSelf ) worldRoadSegments[index].SetActive(true);
+			Debug.Log("updateActiveTiles nameOfTileEntered " + " tileIndex " + tileIndex + " tile we are activating " + worldRoadSegments[index].name );
 			onTileActivation(index);
 		}
 		else

@@ -37,11 +37,11 @@ public class PlayerCoop : MonoBehaviour {
 		if( GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
 		{
 			if( coopResurrectPlayerCoroutine != null ) StopCoroutine( coopResurrectPlayerCoroutine );
-			coopResurrectPlayerCoroutine = StartCoroutine( coopResurrectPlayer( "caca" ) );
+			coopResurrectPlayerCoroutine = StartCoroutine( coopResurrectPlayer() );
 		}
 	}
 
-	IEnumerator coopResurrectPlayer( string nameOfTileWhereYourPartnerIs )
+	IEnumerator coopResurrectPlayer()
 	{
 		PlayerRace partner = getPartner( GetComponent<PlayerRace>() );
 		if( partner != null )
@@ -60,6 +60,12 @@ public class PlayerCoop : MonoBehaviour {
 		{
 			yield return null;
 		}
+	}
+
+	public void gameOver()
+	{
+		Debug.Log( name + " PlayerCoop - game over called. " );
+		if( coopResurrectPlayerCoroutine != null ) StopCoroutine( coopResurrectPlayerCoroutine );
 	}
 
 	PlayerRace getPartner( PlayerRace playerRace )

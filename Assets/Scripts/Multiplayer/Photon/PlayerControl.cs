@@ -203,6 +203,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	#region Other variables
 	GenerateLevel generateLevel;
+	CoopWaveGenerator coopWaveGenerator;
 	Coroutine changeLeaningBlendFactorCoroutine;
 	#endregion
 
@@ -263,6 +264,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerRace = GetComponent<PlayerRace>();
 		playerHealth = GetComponent<PlayerHealth>();
 		turnRibbonHandler = GameObject.FindGameObjectWithTag("Turn-Ribbon").GetComponent<TurnRibbonHandler>();
+		coopWaveGenerator = GameObject.FindObjectOfType<CoopWaveGenerator>();
 
 		//Cache the string to avoid the runtime lookup
 		backInTheGameString = LocalizationManager.Instance.getText( "MINIMAP_BACK_IN_GAME" );
@@ -1812,6 +1814,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			//Remove the vignetting
 			if( playerAI == null ) StartCoroutine( controlVignetting( 0f, 0f, 0.25f ) );
+			if( PhotonNetwork.isMasterClient ) coopWaveGenerator.playerDied( transform );
 		}
 		else
 		{
@@ -2134,54 +2137,60 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		else if( other.CompareTag( "Entrance" ) )
 		{
-			if( wasEntranceCrossed ) return;
-			SegmentInfo si = other.transform.parent.GetComponent<SegmentInfo>();
-			if( si != null )
+			if( !wasEntranceCrossed )
 			{
-				//wasEntranceCrossed is used to prevent multiple OnTriggerEnter from occuring.
-				wasEntranceCrossed = true;
-				Invoke( "resetEntranceCrossed", 0.5f );
-				generateLevel.tileEntranceCrossed( other.transform.parent );
-				tileIndex++;
-				//The distance remaining displayed on the HUD and stored in PlayerRace is equal to: The length of the level - the total distance traveled by the player.
-				//The total distance traveled by the player is equal to the distance traveled for all previous tiles plus the distance traveled on the current tile.
-				//The distance traveled for all previous tiles is maintained by PlayerControl because it gets updated each time an entrance is crossed.
-				//The distance traveled on the current tile is maintained in PlayerRace.
-				playerRace.distanceTravelledOnThisTile = 0;
-				int previousTileDepth = currentTile.GetComponent<SegmentInfo>().tileDepth;
-				TileType previousTileType = currentTile.GetComponent<SegmentInfo>().tileType;
-				//Note: see Teleporter class for how teleporters affect tile distance traveled
-				if( previousTileType == TileType.Start )
+				SegmentInfo si = other.transform.parent.GetComponent<SegmentInfo>();
+				if( si != null )
 				{
-					tileDistanceTraveled = tileDistanceTraveled + GenerateLevel.tileSize * 0.5f;
+					//wasEntranceCrossed is used to prevent multiple OnTriggerEnter from occuring.
+					wasEntranceCrossed = true;
+					StartCoroutine( resetEntranceCrossed() );
+					generateLevel.tileEntranceCrossed( other.transform.parent );
+					tileIndex++;
+					//The distance remaining displayed on the HUD and stored in PlayerRace is equal to: The length of the level - the total distance traveled by the player.
+					//The total distance traveled by the player is equal to the distance traveled for all previous tiles plus the distance traveled on the current tile.
+					//The distance traveled for all previous tiles is maintained by PlayerControl because it gets updated each time an entrance is crossed.
+					//The distance traveled on the current tile is maintained in PlayerRace.
+					playerRace.distanceTravelledOnThisTile = 0;
+					int previousTileDepth = currentTile.GetComponent<SegmentInfo>().tileDepth;
+					TileType previousTileType = currentTile.GetComponent<SegmentInfo>().tileType;
+					//Note: see Teleporter class for how teleporters affect tile distance traveled
+					if( previousTileType == TileType.Start )
+					{
+						tileDistanceTraveled = tileDistanceTraveled + GenerateLevel.tileSize * 0.5f;
+					}
+					else
+					{
+						tileDistanceTraveled = tileDistanceTraveled + GenerateLevel.tileSize * previousTileDepth;
+					}
+					currentTilePos = si.transform.position;
+					currentTile = si.gameObject;
+					tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
+					//Every time a new tile is entered, force synchronization.
+					//However, we don't want to force synchronization when entering a turn.
+					//Because of the RPC delay, the rotation could end up being wrong.
+					//For turns, we will syncronize when the player has successfully exited the turn (deadEnd).
+					if( si.tileType != TileType.Left && si.tileType != TileType.Right ) forcePositionSynchronization();
+					//If you just entered the End tile reactivate some tiles since the camera does a 180.
+					if( si.tileType == TileType.End )
+					{
+						generateLevel.activateTilesForCamera();
+					}
+					else
+					{
+						//If you are in the last position in the race, deactivates the tile with an index of (currentTileIndex - two) to help performance.
+						//Race position is not yet reliable, so comment out next line for now.
+						//if( playerRace.isInLastPosition() ) generateLevel.deactivatePreviousTile( si.tileIndex );
+					}
 				}
 				else
 				{
-					tileDistanceTraveled = tileDistanceTraveled + GenerateLevel.tileSize * previousTileDepth;
-				}
-				currentTilePos = si.transform.position;
-				currentTile = si.gameObject;
-				tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
-				//Every time a new tile is entered, force synchronization.
-				//However, we don't want to force synchronization when entering a turn.
-				//Because of the RPC delay, the rotation could end up being wrong.
-				//For turns, we will syncronize when the player has successfully exited the turn (deadEnd).
-				if( si.tileType != TileType.Left && si.tileType != TileType.Right ) forcePositionSynchronization();
-				//If you just entered the End tile reactivate some tiles since the camera does a 180.
-				if( si.tileType == TileType.End )
-				{
-					generateLevel.activateTilesForCamera();
-				}
-				else
-				{
-					//If you are in the last position in the race, deactivates the tile with an index of (currentTileIndex - two) to help performance.
-					//Race position is not yet reliable, so comment out next line for now.
-					//if( playerRace.isInLastPosition() ) generateLevel.deactivatePreviousTile( si.tileIndex );
+					Debug.LogError("PlayerControl-OnTriggerEnter: " + other.transform.parent.name + " tile does not have a SegmentInfo component attached to it.");
 				}
 			}
 			else
 			{
-				Debug.LogError("PlayerControl-OnTriggerEnter: " + other.transform.parent.name + " tile does not have a SegmentInfo component attached to it.");
+				Debug.LogError("PlayerControl-OnTriggerEnter: wasEntranceCrossed was enabled by another player. Player named " + name + " will NOT activate entrance crossed code." );
 			}
 		}
 		else if( other.CompareTag( "AttachZiplineTrigger" ) )
@@ -2204,8 +2213,9 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
   	}
 
-	void resetEntranceCrossed()
+	IEnumerator resetEntranceCrossed()
 	{
+		yield return new WaitForFixedUpdate();
 		wasEntranceCrossed = false;
 	}
 	

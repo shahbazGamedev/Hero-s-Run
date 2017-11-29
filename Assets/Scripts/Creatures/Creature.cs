@@ -2,6 +2,22 @@
 using UnityEngine.UI;
 using System.Collections;
 
+public enum CreatureState {
+	
+	Idle = 1,
+	Walking = 2,
+	Running = 3,
+	Crawling = 4,
+	BurrowUp = 5,
+	StandUpFromBack = 6,
+	Attacking = 7,
+	Dying = 8,
+	Victory = 9,
+	Jumping = 10,
+	Glide = 11,
+	Immobilized = 12
+}
+
 public class Creature : MonoBehaviour {
 
 	protected CreatureState creatureState = CreatureState.Idle;
@@ -45,7 +61,7 @@ public class Creature : MonoBehaviour {
 		return creatureState;
 	}
 
-	public void setCreatureState( CreatureState state )
+	public virtual void setCreatureState( CreatureState state )
 	{
 		creatureState = state;
 		if( creatureState == CreatureState.Dying ) enableIK = false;
