@@ -14,7 +14,8 @@ public enum DebugInfoType
 	NETWORK = 2,
 	LATENCY = 3,
 	FRAME_RATE_TEST = 4,
-	EMOTES_TEST = 5
+	EMOTES_TEST = 5,
+	DONT_SPAWN_ZOMBIES = 6
 }
 
 public class HUDMultiplayer : MonoBehaviour {

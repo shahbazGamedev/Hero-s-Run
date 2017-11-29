@@ -182,7 +182,9 @@ public class CoopWaveGenerator : PunBehaviour {
 		//trigger zombie wave takes care of instantiating the zombies using Photon.
 		GameObject clone = Instantiate( wave, tile.transform );
 		ZombieWave activeZombieWave = clone.GetComponent<ZombieWave>();
-		zombieManager.triggerZombieWave( activeZombieWave.spawnLocations );
+		//To facilitate testing
+		DebugInfoType debugInfoType = GameManager.Instance.playerDebugConfiguration.getDebugInfoType();
+		if( debugInfoType != DebugInfoType.DONT_SPAWN_ZOMBIES ) zombieManager.triggerZombieWave( activeZombieWave.spawnLocations );
 		photonView.RPC("coopWaveRPC", PhotonTargets.All );
 	}
 
