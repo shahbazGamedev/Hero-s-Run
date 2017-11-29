@@ -793,7 +793,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			surroundingPlane.position = new Vector3( currentTile.position.x, currentTile.position.y -UNDERNEATH_TILE_BY, currentTile.position.z );
 		}
 		int tileIndex = si.tileIndex;
-		updateActiveTiles( currentTile.name, tileIndex );
+		updateActiveTiles( tileIndex );
 			
 	}
 
@@ -894,7 +894,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	//The current tile
 	//The preceding tile
 	//The nbrVisibleTiles tiles that come after the current tile
-	private void updateActiveTiles( string nameOfTileEntered, int tileIndex )
+	private void updateActiveTiles( int tileIndex )
 	{
 		//Disable tile two behind the player
 		//int index = playerTileIndex - 2;
@@ -906,7 +906,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		if( index < worldRoadSegments.Count )
 		{
 			if( !worldRoadSegments[index].activeSelf ) worldRoadSegments[index].SetActive(true);
-			Debug.Log("updateActiveTiles nameOfTileEntered " + " tileIndex " + tileIndex + " tile we are activating " + worldRoadSegments[index].name );
 			onTileActivation(index);
 		}
 		else
