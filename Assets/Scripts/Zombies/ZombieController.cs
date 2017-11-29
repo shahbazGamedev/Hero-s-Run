@@ -29,6 +29,7 @@ public sealed class ZombieController : Creature, ICreature {
 	const float ZOMBIE_LIFESPAN = 30f;
 	const float SHRINK_SIZE = 0.4f;
 	public bool isInoffensive = false;
+	[SerializeField] ParticleSystem confusedVFX;
 
 	CreatureState previousCreatureState;
 
@@ -286,6 +287,7 @@ public sealed class ZombieController : Creature, ICreature {
 			legacyAnim.CrossFade("no", 0.4f);
 			legacyAnim.CrossFadeQueued(selectRandomIdle(), 0.4f);
 			isInoffensive = true;
+			if( confusedVFX != null ) confusedVFX.gameObject.SetActive( true );
 		}
 	}
 

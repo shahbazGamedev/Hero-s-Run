@@ -42,27 +42,23 @@ public class CoopWaveGenerator : PunBehaviour {
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
 		zombieManager = GameObject.FindObjectOfType<ZombieManager>();
 		numberOfWavesTriggered = 0; //important to reset since this is a static value.
-		Invoke("activateNewWave", 10f );
 	}
 	
 	void OnEnable()
 	{
 		PlayerControl.multiplayerStateChanged += MultiplayerStateChanged;
+		HUDMultiplayer.startRunningEvent += StartRunningEvent;
 	}
 	
 	void OnDisable()
 	{
 		PlayerControl.multiplayerStateChanged -= MultiplayerStateChanged;
+		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
 	}
 
-	void FixedUpdate ()
+	void StartRunningEvent()
 	{
-		if( isWaveFinished() ) Invoke("activateNewWave", 3f );
-	}
-
-	private bool isWaveFinished()
-	{
-		return false;
+		Invoke("activateNewWave", 10f );
 	}
 
 	#region Waves
@@ -113,8 +109,8 @@ public class CoopWaveGenerator : PunBehaviour {
 	{
 		if( numberOfWavesTriggered < 10 )
 		{
-			easyWaveProbability = 0.3f;
-			mediumWaveProbability = 0.7f;
+			easyWaveProbability = 0.4f;
+			mediumWaveProbability = 0.6f;
 			hardWaveProbability = 0;
 		}
 		else if( numberOfWavesTriggered < 20 )
@@ -210,18 +206,30 @@ public class CoopWaveGenerator : PunBehaviour {
 					pmd.downs++;
 				}
 
-				//There are 2 players in the Coop mode.
-				if( deadPlayerList.Count == 2 )
+				//There are normally 2 players in the Coop mode.
+				//However, a player may have quit the match.
+				//In that case, allow the remaining player to continue until he dies,
+				//and then it will be game over.
+				if( PlayerRace.players.Count == 2 )
 				{
-					CancelInvoke("activateNewWave");
-					//Both players are dead, this means game over. Send an RPC.
-					photonView.RPC("coopGameOverRPC", PhotonTargets.All );
+					//We have 2 players.
+					if( deadPlayerList.Count == 2 )
+					{
+						CancelInvoke("activateNewWave");
+						//Both players are dead, this means game over. Send an RPC.
+						photonView.RPC("coopGameOverRPC", PhotonTargets.All );
+					}
+					else
+					{
+						//Only one player is dead.
+						photonView.RPC("onePlayerDeadRPC", PhotonTargets.All, player.GetComponent<PhotonView>().viewID );	
+					}
 				}
 				else
 				{
-					//Only one player is dead.
-					photonView.RPC("onePlayerDeadRPC", PhotonTargets.All, player.GetComponent<PhotonView>().viewID );
-	
+					//There is only one player left and he died. This means game over. Send an RPC.
+					CancelInvoke("activateNewWave");				
+					photonView.RPC("coopGameOverRPC", PhotonTargets.All );
 				}
 			}
 		}
