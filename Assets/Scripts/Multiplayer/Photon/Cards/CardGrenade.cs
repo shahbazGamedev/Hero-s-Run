@@ -30,7 +30,7 @@ public class CardGrenade : Card {
 		data[1] = cd.getCardPropertyValue( CardPropertyType.RADIUS, level );
 
 		//Drop the grenade in front of the player at arm's length. It has a rigidbody and hence it has gravity and will fall to the ground.
-		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( spawnOffset ), playerTransform.rotation, 0, data );
+		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( getSpawnOffset() ), playerTransform.rotation, 0, data );
 	}
 	#endregion
 

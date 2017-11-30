@@ -7,7 +7,8 @@ public class Card : Photon.PunBehaviour {
 
 	public CardName  cardName;
 	[Tooltip("The spawn offset is used to determine where to spawn the object relative to the caster. This value is ALSO used to determine if you are allowed to spawn an object in certain areas. For example, we would not want the player to spawn an object inside the finish line area.")]
-	public Vector3 spawnOffset;
+	[SerializeField] Vector3 spawnOffset;
+	[SerializeField]  Vector3 coopSpawnOffset;
 
 	protected PlayerControl getPlayerControl( int photonViewID )
 	{
@@ -36,6 +37,19 @@ public class Card : Photon.PunBehaviour {
 		}
 		return playerTransform;
 	}
+
+	protected Vector3 getSpawnOffset()
+	{
+		if( GameManager.Instance.isCoopPlayMode() )
+		{
+			return coopSpawnOffset;
+		}
+		else
+		{
+			return spawnOffset;
+		}
+	}
+
 
 	/// <summary>
 	/// Returns true if the player is immune to spells.

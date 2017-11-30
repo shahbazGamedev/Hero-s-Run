@@ -36,7 +36,7 @@ public class CardLightning : Card {
 				playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
 	
 				//Spawn a lightning on the creature
-				Vector3 lightningPosition = target.transform.TransformPoint( spawnOffset );
+				Vector3 lightningPosition = target.transform.TransformPoint( getSpawnOffset() );
 				PhotonNetwork.InstantiateSceneObject( lightningPrefabName, lightningPosition, target.rotation, 0, null );
 		
 				//Kill creature
@@ -76,7 +76,7 @@ public class CardLightning : Card {
 				if( target != playerTransform ) playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
 	
 				//Spawn a lightning on the player
-				Vector3 lightningPosition = target.transform.TransformPoint( spawnOffset );
+				Vector3 lightningPosition = target.transform.TransformPoint( getSpawnOffset() );
 				PhotonNetwork.InstantiateSceneObject( lightningPrefabName, lightningPosition, target.rotation, 0, null );
 		
 				//Damage nearest target

@@ -23,7 +23,7 @@ public class CardFirewall : Card {
 		Transform playerTransform = getPlayerTransform( photonViewID );
 
 		//Spawn a firewall a few meters in front of the player
-		Vector3 firewallPosition = playerTransform.TransformPoint( spawnOffset );
+		Vector3 firewallPosition = playerTransform.TransformPoint( getSpawnOffset() );
 		Quaternion firewallRotation = playerTransform.rotation;
 
 		object[] data = new object[3];

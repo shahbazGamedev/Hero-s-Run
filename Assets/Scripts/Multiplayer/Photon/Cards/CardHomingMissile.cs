@@ -29,7 +29,7 @@ public class CardHomingMissile : Card {
 		//We want the homing missile to self-destruct after a while
 		CardManager.CardData cd = CardManager.Instance.getCardByName( cardName );
 		data[1] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
-		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( spawnOffset ), playerTransform.rotation, 0, data );
+		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( getSpawnOffset() ), playerTransform.rotation, 0, data );
 
 	}
 	#endregion

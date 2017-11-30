@@ -29,7 +29,7 @@ public class CardShockwave : Card {
 		//Level related parameters
 		data[1] = cd.getCardPropertyValue( CardPropertyType.RADIUS, level );
 
-		PhotonNetwork.InstantiateSceneObject( "Shockwave", playerTransform.TransformPoint( spawnOffset ), playerTransform.rotation, 0, data );
+		PhotonNetwork.InstantiateSceneObject( "Shockwave", playerTransform.TransformPoint( getSpawnOffset() ), playerTransform.rotation, 0, data );
 	}
 	#endregion
 }

@@ -35,7 +35,7 @@ public class CardTripMine : Card {
 		data[2] = cd.getCardPropertyValue( CardPropertyType.RADIUS, level );
 
 		//Spawn a mine on the floor a few meters in front of the player
-		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( spawnOffset ), playerTransform.rotation, 0, data );
+		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( getSpawnOffset() ), playerTransform.rotation, 0, data );
 	}
 	#endregion
 

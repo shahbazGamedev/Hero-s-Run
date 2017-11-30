@@ -36,7 +36,7 @@ public class CardForceField : Card {
 		data[2] = cd.getCardPropertyValue( CardPropertyType.HEIGHT, level );
 
 
-		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( spawnOffset ), playerTransform.rotation, 0, data );
+		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( getSpawnOffset() ), playerTransform.rotation, 0, data );
 	}
 	#endregion
 
