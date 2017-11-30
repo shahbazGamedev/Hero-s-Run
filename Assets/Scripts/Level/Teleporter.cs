@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Teleporter : Device {
@@ -9,24 +8,19 @@ public class Teleporter : Device {
 		Receiver = 1
 	}
 
-	[Tooltip("The transmitter and the receiver must be on the same tile.")]
+	[Tooltip("The teleporter only works for players. The transmitter and the receiver pods must be on the same tile.")]
 	[SerializeField] Transform teleporterRx;
 	[SerializeField] TeleporterType type = TeleporterType.Transmitter;
-	[Tooltip("The name of the move-to-center-lane game object. This game object is disabled when the teleporter type is set to Receiver.")]
-	[SerializeField] GameObject moveToCenterLaneTrigger;
 	[Tooltip("The particle effect to play when teleporting a player.")]
 	[SerializeField] ParticleSystem activationEffect;
-	const float playerHeightForRx = 0.16f;
-	const float teleportDelay = 0.25f;
+	[Tooltip("Used to place the player on top of the pod after the teleport. Basically, this should be the height of the pod base.")]
+	[SerializeField] float playerHeightForRx = 0.16f;
+	[Tooltip("Delay used when teleporting.")]
+	[SerializeField] float teleportDelay = 0.25f;
 
 	new void Start ()
 	{
 		base.Start ();
-		if( type == TeleporterType.Receiver )
-		{
-			//The move to center lane trigger for bots is not needed for the receiver
-			moveToCenterLaneTrigger.SetActive( false );
-		}
 	}
 
 	void OnTriggerEnter(Collider other)
@@ -59,7 +53,6 @@ public class Teleporter : Device {
 					activationEffect.Play();
 
 					StartCoroutine( allowMoveAfterDelay( other.transform ) );	
-
 				}
 			}
 		}
