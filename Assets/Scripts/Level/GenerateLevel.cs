@@ -942,11 +942,13 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		if( tileIndex < worldRoadSegments.Count )
 		{
 			potentialTile = worldRoadSegments[tileIndex];
-
 			SegmentInfo si = getSegmentInfo( potentialTile );
+
+			if( si.tileType == TileType.Teleport_Tx || si.tileType == TileType.Landmark_Zipline ) return null;
+
 			//Never return a tile with a turn. It would be complicated to spawn creatures correctly on those.
 			//In addition, do not spawn zombies on the teleporter tile.
-			if( si.tileSubType == TileSubType.Left || si.tileSubType == TileSubType.Right || si.tileType == TileType.Teleport_Tx )
+			if( si.tileSubType == TileSubType.Left || si.tileSubType == TileSubType.Right )
 			{
 				//Use next tile instead.
 				tileIndex++;
@@ -956,9 +958,17 @@ public sealed class GenerateLevel  : MonoBehaviour {
 				}
 				else
 				{
-					potentialTile = null;
+					return null;
 				}
 			}
+		}
+		//What was the preceding tile?
+		int precedingTileIndex = tileIndex-1;
+		if( precedingTileIndex >= 0 )
+		{
+			GameObject precedingTile = worldRoadSegments[precedingTileIndex];
+			SegmentInfo si = getSegmentInfo( precedingTile );
+			if( si.tileType == TileType.Teleport_Tx || si.tileType == TileType.Landmark_Zipline ) return null;
 		}
 		return potentialTile;
 	}

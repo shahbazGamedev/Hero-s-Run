@@ -79,6 +79,11 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 			{
 				createWave( wave, tile );
 			}
+			else
+			{
+				//Try again a bit later. Six seconds is enough time to clear a 100 meter long tile at 18 m/s.
+				Invoke("activateNewWave", 6f );
+			}
 		}
 	}
 
