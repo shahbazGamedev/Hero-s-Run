@@ -945,7 +945,8 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 			SegmentInfo si = getSegmentInfo( potentialTile );
 			//Never return a tile with a turn. It would be complicated to spawn creatures correctly on those.
-			if( si.tileSubType == TileSubType.Left || si.tileSubType == TileSubType.Right )
+			//In addition, do not spawn zombies on the teleporter tile.
+			if( si.tileSubType == TileSubType.Left || si.tileSubType == TileSubType.Right || si.tileType == TileType.Teleport_Tx )
 			{
 				//Use next tile instead.
 				tileIndex++;
