@@ -9,13 +9,15 @@ public class Teleporter : Device {
 		Receiver = 1
 	}
 
-	[Tooltip("Assuming that the teleporter tile group is composed of three tiles (Teleporter_Tx, Straight and Teleporter_Rx), this number should be 2. Assumes a tile depth of 1 for Teleporter_Rx and any tile between Teleporter_Tx and Teleporter_Rx.")]
-	[SerializeField] int numberOfTilesSkippedBecauseOfTeleportation = 2; //important for the race position to be exact
+	[Tooltip("The transmitter and the receiver must be on the same tile.")]
+	[SerializeField] Transform teleporterRx;
 	[SerializeField] TeleporterType type = TeleporterType.Transmitter;
 	[Tooltip("The name of the move-to-center-lane game object. This game object is disabled when the teleporter type is set to Receiver.")]
 	[SerializeField] GameObject moveToCenterLaneTrigger;
 	[Tooltip("The particle effect to play when teleporting a player.")]
 	[SerializeField] ParticleSystem activationEffect;
+	const float playerHeightForRx = 0.16f;
+	const float teleportDelay = 0.25f;
 
 	new void Start ()
 	{
@@ -43,12 +45,8 @@ public class Teleporter : Device {
 					other.GetComponent<PlayerControl>().enablePlayerMovement( false );
 
 					other.GetComponent<PlayerSpell>().isBeingTeleported = true;
-	
-					float distanceBetweenTeleporters = numberOfTilesSkippedBecauseOfTeleportation * GenerateLevel.tileSize;
-					Vector3 destinationTeleporterPosition = new Vector3( transform.position.x, transform.position.y, transform.position.z + distanceBetweenTeleporters);
-					float destinationTeleporterYRotation = transform.eulerAngles.y;
-	
-					other.GetComponent<PhotonView>().RPC("teleportRPC", PhotonTargets.All, destinationTeleporterPosition, destinationTeleporterYRotation );
+
+					StartCoroutine( teleportAfterDelay( other.transform ) );	
 				}
 			}
 			else if( type == TeleporterType.Receiver )
@@ -60,23 +58,50 @@ public class Teleporter : Device {
 					GetComponent<AudioSource>().Play();
 					activationEffect.Play();
 
-					PlayerControl playerControl = other.GetComponent<PlayerControl>();
+					StartCoroutine( allowMoveAfterDelay( other.transform ) );	
 
-					//We may have switched lanes because of the position change. Make sure the lane values are accurate.
-					playerControl.recalculateCurrentLane();
-
-					GameObject.FindObjectOfType<GenerateLevel>().activateTilesAfterTeleport();
-
-					//Adjust the distance remaining
-					float distanceBetweenTeleporters = numberOfTilesSkippedBecauseOfTeleportation * GenerateLevel.tileSize;
-					playerControl.tileDistanceTraveled = playerControl.tileDistanceTraveled + distanceBetweenTeleporters;
-					other.GetComponent<PlayerRace>().distanceTravelledOnThisTile = other.GetComponent<PlayerRace>().distanceTravelledOnThisTile - distanceBetweenTeleporters;
-
-					other.GetComponent<PlayerSpell>().isBeingTeleported = false;
-
-					playerControl.enablePlayerMovement( true );
 				}
 			}
 		}
 	}
+
+	IEnumerator teleportAfterDelay( Transform player )
+	{
+		yield return new WaitForSeconds( teleportDelay );
+		makePlayerInvisible( player, false );
+		yield return new WaitForSeconds( teleportDelay );
+		Vector3 destinationTeleporterPosition = new Vector3( teleporterRx.position.x, teleporterRx.position.y + playerHeightForRx, teleporterRx.position.z );
+		player.GetComponent<PhotonView>().RPC("teleportRPC", PhotonTargets.All, destinationTeleporterPosition );
+	}
+
+	IEnumerator allowMoveAfterDelay( Transform player )
+	{
+		PlayerControl playerControl = player.GetComponent<PlayerControl>();
+		playerControl.stumble();
+
+		yield return new WaitForSeconds( 0.4f );
+
+		if( !player.GetComponent<PlayerSpell>().isCardActive( CardName.Cloak ) ) makePlayerInvisible( player, true );
+
+		yield return new WaitForSeconds( teleportDelay );
+
+		player.GetComponent<PlayerSpell>().isBeingTeleported = false;
+
+		//We may have switched lanes because of the position change. Make sure the lane values are accurate.
+		playerControl.recalculateCurrentLane();
+
+		playerControl.enablePlayerMovement( true );
+	}
+
+	void makePlayerInvisible( Transform player, bool isVisible )
+	{
+		Transform heroSkin = player.Find("Hero Skin");
+		SkinnedMeshRenderer[] smr = heroSkin.GetComponentsInChildren<SkinnedMeshRenderer>();
+		for( int i = 0; i < smr.Length; i++ )
+		{
+			smr[i].enabled = isVisible;
+		} 
+		player.GetComponent<PlayerVisuals>().enablePlayerShadow( isVisible );
+	}
+
 }

@@ -115,15 +115,15 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 	{
 		if( numberOfWavesTriggered < 10 )
 		{
-			easyWaveProbability = 0.4f;
-			mediumWaveProbability = 0.6f;
+			easyWaveProbability = 0.6f;
+			mediumWaveProbability = 0.4f;
 			hardWaveProbability = 0;
 		}
 		else if( numberOfWavesTriggered < 20 )
 		{
-			easyWaveProbability = 0.2f;
+			easyWaveProbability = 0.3f;
 			mediumWaveProbability = 0.7f;
-			hardWaveProbability = 0.1f;
+			hardWaveProbability = 0f;
 		}
 		else if( numberOfWavesTriggered < 30 )
 		{

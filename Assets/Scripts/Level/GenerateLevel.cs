@@ -877,19 +877,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		if( indexOfTileToDeactivate >= 0 ) worldRoadSegments[indexOfTileToDeactivate].SetActive( false );
 	}
 
-	public void activateTilesAfterTeleport()
-	{
-		playerTileIndex = playerTileIndex + 2; //The teleport tile group is composed of the transmitter tile plus two additional tiles
-		//Activate the current plus nbrVisibleTiles prefabs that are next on the player's path
-		int endIndex = playerTileIndex + nbrVisibleTiles;
-		if( endIndex >= worldRoadSegments.Count ) endIndex = worldRoadSegments.Count - 1;
-		for( int i=playerTileIndex; i <= endIndex; i++ )
-		{
-			worldRoadSegments[i].SetActive( true );
-			onTileActivation(i);
-		}
-	}
-
 	//At any given time, there are 5 active tiles:
 	//The current tile
 	//The preceding tile

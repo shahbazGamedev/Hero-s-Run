@@ -103,8 +103,6 @@ public class LockstepManager : MonoBehaviour {
 				//Simply move the player to the teleporter receiver.
 				//See the Teleporter class for what happens when the receiver is triggered.
 				lockstepAction.actor.transform.position = lockstepAction.param3;
-				Quaternion postTeleportRotation = Quaternion.Euler( lockstepAction.actor.transform.eulerAngles.x, lockstepAction.param1, lockstepAction.actor.transform.eulerAngles.z );
-				lockstepAction.actor.transform.SetPositionAndRotation( lockstepAction.param3, postTeleportRotation );
 			break;
 
 			case LockstepActionType.CARD:

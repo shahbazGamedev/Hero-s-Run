@@ -68,10 +68,9 @@ public class PlayerInputRPC : PunBehaviour {
 	}
 
 	[PunRPC]
-	void teleportRPC( Vector3 destinationPosition, float destinationRotationY )
+	void teleportRPC( Vector3 destinationPosition )
 	{
 		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.TELEPORTER, gameObject );
-		lsa.param1 = destinationRotationY;
 		lsa.param3 = destinationPosition;
 		LockstepManager.Instance.addActionToQueue( lsa );
 	}
