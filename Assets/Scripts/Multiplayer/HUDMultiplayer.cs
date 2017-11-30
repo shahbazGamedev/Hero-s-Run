@@ -191,7 +191,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	IEnumerator countdown()
 	{
 		//Give a few seconds for the player to get used to the scene before starting the countdown
-		yield return new WaitForSecondsRealtime( DELAY_BEFORE_COUNTDOWN_STARTS );
+		yield return new WaitForSeconds( DELAY_BEFORE_COUNTDOWN_STARTS );
 
 		int countdownNumber = 3;
 		while( countdownNumber > 0 )
@@ -199,7 +199,7 @@ public class HUDMultiplayer : MonoBehaviour {
 			goMessageText.text = countdownNumber.ToString();
 			goMessageText.gameObject.SetActive( true );
 			UISoundManager.uiSoundManager.playAudioClip( beep );
-			yield return new WaitForSecondsRealtime( 1f);
+			yield return new WaitForSeconds( 1f);
 			countdownNumber--;
 			goMessageText.gameObject.SetActive( false );
 		}
@@ -240,7 +240,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		{
 			topMessageText.text = "Race ends in " + countdownNumber.ToString() + " sec.";
 			//UISoundManager.uiSoundManager.playAudioClip( beep );
-			yield return new WaitForSecondsRealtime( 1f);
+			yield return new WaitForSeconds( 1f);
 			countdownNumber--;
 		}	
 		topMessageText.gameObject.SetActive( false );
@@ -309,16 +309,16 @@ public class HUDMultiplayer : MonoBehaviour {
 		if( debugInfoType == DebugInfoType.EMOTES_TEST )
 		{
 			//Stay longer because we are testing emotes
-			yield return new WaitForSecondsRealtime( DELAY_WHEN_TESTING_EMOTES );
+			yield return new WaitForSeconds( DELAY_WHEN_TESTING_EMOTES );
 		}
 		else if( GameManager.Instance.isOnlinePlayMode() && PlayerRace.players.Count > 1 )
 		{
 			//Stay longer in case the players want to exchange emotes
-			yield return new WaitForSecondsRealtime( DELAY_WHEN_SHOWING_EMOTES );
+			yield return new WaitForSeconds( DELAY_WHEN_SHOWING_EMOTES );
 		}
 		else
 		{
-			yield return new WaitForSecondsRealtime( DELAY_WHEN_NOT_SHOWING_EMOTES );
+			yield return new WaitForSeconds( DELAY_WHEN_NOT_SHOWING_EMOTES );
 		}
 		#if UNITY_IOS
 		try
