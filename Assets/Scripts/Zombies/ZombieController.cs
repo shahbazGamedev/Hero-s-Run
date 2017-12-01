@@ -128,8 +128,7 @@ public sealed class ZombieController : Creature, ICreature {
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
 			{
-				transform.LookAt( getPlayer() );
-				transform.rotation = Quaternion.Euler( 0, transform.eulerAngles.y, 0 );
+				targetPlayer();
 			}
 			//1) Get the direction of the zombie
 			forward = transform.TransformDirection(Vector3.forward);			

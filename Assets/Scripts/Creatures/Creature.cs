@@ -82,6 +82,13 @@ public class Creature : MonoBehaviour {
 
 	protected void targetPlayer()
 	{
+		if( player == null )
+		{
+			getPlayer();
+		}
+
+		if( player == null ) return;
+
 		Vector3 relativePos = player.position - transform.position;
 		Quaternion desiredRotation = Quaternion.LookRotation( relativePos ); 
 		desiredRotation.x = 0f;
