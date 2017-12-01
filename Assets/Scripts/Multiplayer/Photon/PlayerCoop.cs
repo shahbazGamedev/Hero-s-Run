@@ -6,6 +6,7 @@ public class PlayerCoop : MonoBehaviour {
 	const int SCORE_PER_WAVE = 100; //coop - score points awarded per wave beaten.
 	Coroutine coopResurrectPlayerCoroutine;
 	const float COOP_DELAY_BEFORE_RESURRECTING = 1f;
+	bool wasHighScoreReached = false; //Only announce to the player the first time he reaches a new high score.
 
 	void Awake ()
 	{
@@ -39,6 +40,22 @@ public class PlayerCoop : MonoBehaviour {
 			if( coopResurrectPlayerCoroutine != null ) StopCoroutine( coopResurrectPlayerCoroutine );
 			coopResurrectPlayerCoroutine = StartCoroutine( coopResurrectPlayer() );
 		}
+
+		//A new wave started. Did we beat our previous high score?
+		if( !wasHighScoreReached && GetComponent<PhotonView>().isMine && GetComponent<PlayerAI>() == null ) StartCoroutine( checkForHighScore( waveNumber ) );
+	}
+
+	IEnumerator checkForHighScore( int waveNumber )
+	{
+		//Wait until the Wave x! message disappears.
+		yield return new WaitForSeconds( 3f );
+		int currentHighScoreWaves = GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.COOP_HIGH_SCORE_WAVES);
+		if( waveNumber > currentHighScoreWaves )
+		{
+			//Yes, this is a new high score. Congrats!
+			wasHighScoreReached = true;
+			HUDMultiplayer.hudMultiplayer.activateUserMessage( LocalizationManager.Instance.getText("COOP_HIGH_SCORE_WAVES"), 0, 2.5f );
+		}
 	}
 
 	IEnumerator coopResurrectPlayer()
@@ -66,6 +83,10 @@ public class PlayerCoop : MonoBehaviour {
 	{
 		Debug.Log( name + " PlayerCoop - game over called. " );
 		if( coopResurrectPlayerCoroutine != null ) StopCoroutine( coopResurrectPlayerCoroutine );
+		if( GetComponent<PhotonView>().isMine && GetComponent<PlayerAI>() == null )
+		{
+			GameManager.Instance.playerStatistics.updateCoopHighScoreWaves( CoopWaveGenerator.numberOfWavesTriggered );
+		}
 	}
 
 	PlayerRace getPartner( PlayerRace playerRace )

@@ -27,9 +27,7 @@ public enum StatisticDataType
 	AVERAGE_SKILL_BONUS = 11,			//The player's average skill bonus.
 
 	//Coop
-	COOP_HIGH_SCORE_WAVES = 100,
-	COOP_HIGH_SCORE = 101,
-
+	COOP_HIGH_SCORE_WAVES = 100
 }
 
 [System.Serializable]
@@ -66,8 +64,7 @@ public class PlayerStatistics {
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.AVERAGE_SKILL_BONUS, 0 ) );
 
 		//Coop related
-		statisticEntriesList.Add( new StatisticData( StatisticDataType.COOP_HIGH_SCORE_WAVES, 0 ) );
-		statisticEntriesList.Add( new StatisticData( StatisticDataType.COOP_HIGH_SCORE, 0 ) );
+		statisticEntriesList.Add( new StatisticData( StatisticDataType.COOP_HIGH_SCORE_WAVES, 1 ) );
 
 	}
 
@@ -202,6 +199,18 @@ public class PlayerStatistics {
 		int currentAverageSkillBonus = getStatisticData(StatisticDataType.AVERAGE_SKILL_BONUS);
 		setStatisticData( StatisticDataType.AVERAGE_SKILL_BONUS, (int) ( ( currentAverageSkillBonus + skillBonusEarned ) / (float) getStatisticData(StatisticDataType.RACES_COMPLETED) ) );
 	}
+
+	#region Coop
+	public void updateCoopHighScoreWaves( int waveReached )
+	{
+		int currentHighScoreWaves = getStatisticData(StatisticDataType.COOP_HIGH_SCORE_WAVES);
+		if( waveReached > currentHighScoreWaves )
+		{
+			setStatisticData( StatisticDataType.COOP_HIGH_SCORE_WAVES, waveReached );
+			serializePlayerStatistics( true );
+		}
+	}
+	#endregion
 
 	public void serializePlayerStatistics( bool saveImmediately )
 	{
