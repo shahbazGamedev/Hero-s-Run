@@ -113,9 +113,9 @@ public class PlayerAI : AutoPilot {
 	void OnTriggerEnter(Collider other)
 	{
 		base.OnTriggerEnter( other );
-		if( other.CompareTag( "DropGrenade" ) )
+		if( other.CompareTag( "DropGrenade" ) && !GameManager.Instance.isCoopPlayMode() )
 		{
-			// This is called as the bot is exiting a bridge.
+			// This is called as the bot is exiting a bridge, but not in coop.
 			// If the bot has a CardGrenade, is allowed to play cards, is not affected by Hack, has enough mana, and is leading, drop a grenade to destroy the bridge.
 			if( playerRace.racePosition == 0 ) GetComponent<BotCardHandler>().tryToPlayCard( CardName.Grenade );
 		}
