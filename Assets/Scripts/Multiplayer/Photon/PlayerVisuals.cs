@@ -95,7 +95,6 @@ public class PlayerVisuals : Photon.PunBehaviour {
 			ParticleSystem impactVFX = GameObject.Instantiate( impactVFXPrefab ) as ParticleSystem;
 			impactVFX.transform.position = transform.TransformPoint( impactVFXoffset );
 			impactVFX.Play();
-			GameObject.Destroy( impactVFX, 2f );
 		}
 		else
 		{

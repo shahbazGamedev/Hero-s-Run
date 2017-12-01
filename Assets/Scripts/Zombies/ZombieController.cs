@@ -15,16 +15,16 @@ public sealed class ZombieController : Creature, ICreature {
 	}
 
 	Animation legacyAnim;
-	public Vector3 forward;
+	Vector3 forward;
 	float walkSpeed = 1.65f; //good value so feet don't slide
 
-	public List<string> walkTypes = new List<string>();
-	public AudioClip moanLow;
-	public AudioClip moanHigh;
-	public AudioClip win;
+	[SerializeField] List<string> walkTypes = new List<string>();
+	[SerializeField] AudioClip moanLow;
+	[SerializeField] AudioClip moanHigh;
+	[SerializeField] AudioClip win;
 	[Tooltip("The icon to use on the minimap. It is optional.")]
-	public Sprite zombieIcon;
-	public ParticleSystem debris; //Particle fx that plays when a zombie burrows up
+	[SerializeField] Sprite zombieIcon;
+	[SerializeField] ParticleSystem spurtPrefab; //Particle fx that plays when a zombie burrows up
 	const int SCORE_PER_KNOCKBACK = 20; //coop - score points awarded per knockback.
 	const float ZOMBIE_LIFESPAN = 30f;
 	const float SHRINK_SIZE = 0.4f;
@@ -86,7 +86,7 @@ public sealed class ZombieController : Creature, ICreature {
 		{
 			case ZombieSpawnType.BurrowUp:
 				//Make the zombie burrow out of the ground
-				burrowUp( debris );
+				burrowUp();
 			break;
 
 			case ZombieSpawnType.StandUpFromBack:
@@ -331,16 +331,17 @@ public sealed class ZombieController : Creature, ICreature {
 		}
 	}
  
-	public void burrowUp( ParticleSystem debris )
+	public void burrowUp()
 	{
 		controller.enabled = false;
 		setCreatureState( CreatureState.BurrowUp );
 		legacyAnim.Play("burrowUp");
 		StartCoroutine("burrowUpCompleted");
-		debris = (ParticleSystem)Instantiate(debris, transform.position, transform.rotation );
-		Destroy ( debris, 4f );
-		debris.Play ();
-
+		if( spurtPrefab != null )
+		{
+			ParticleSystem burrowUpEffect = Instantiate( spurtPrefab, transform.position, transform.rotation ) as ParticleSystem;
+			burrowUpEffect.Play();
+		}
 	}
 	
 	public IEnumerator burrowUpCompleted( )
