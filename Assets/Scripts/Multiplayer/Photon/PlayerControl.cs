@@ -797,7 +797,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			setAnimationTrigger(FallTrigger);
 		}
 		//playSound( fallingSound, false );
-		print ( "fall started " + distanceToGround + " " + MIN_DISTANCE_FOR_FALL + " " + name );
+		//print ( "fall started " + distanceToGround + " " + MIN_DISTANCE_FOR_FALL + " " + name );
 	}
 
 	public void land()
@@ -830,7 +830,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				setAnimationTrigger(StumbleTrigger);
 			}
 		}
-		print ( "player landed. Fall distance was: " + 	fallDistance );
+		//print ( "player landed. Fall distance was: " + 	fallDistance );
 	}
 
 	void calculateFallDistance()
@@ -2060,7 +2060,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void setCharacterState( PlayerCharacterState newState )
 	{
-		if( playerAI == null ) Debug.Log( name + "PlayerControl-setCharacterState to: " + newState + " previous state was " + playerCharacterState );
+		//if( playerAI == null ) Debug.Log( name + "PlayerControl-setCharacterState to: " + newState + " previous state was " + playerCharacterState );
 		playerCharacterState = newState;
 		//Send an event to interested classes if you are a human player
 		if(multiplayerStateChanged != null && this.photonView.isMine ) multiplayerStateChanged( transform, playerCharacterState );
