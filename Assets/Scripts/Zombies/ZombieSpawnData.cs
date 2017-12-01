@@ -14,7 +14,6 @@ public class ZombieSpawnData : MonoBehaviour {
 
 	//Delay before zombie is spawned
 	public float spawnDelay = 0;
-	public float recycleDelay = 10f;
 	public ZombieSpawnType spawnType = ZombieSpawnType.BurrowUp;
 	//If a coffin is specified, the coffin open animation will be played at the same time as the zombie is spawned
 	public GameObject coffin;
