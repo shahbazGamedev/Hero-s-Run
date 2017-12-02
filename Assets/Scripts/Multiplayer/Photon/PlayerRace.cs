@@ -280,7 +280,7 @@ public sealed class PlayerRace : Photon.PunBehaviour
 	/// </summary>
 	void verifyIfPlayerTookTheLead()
 	{
-		if( players.Count > 1 )
+		if( players.Count > 1 && !GameManager.Instance.isCoopPlayMode() )
 		{
 			if( racePosition == 0 )
 			{
