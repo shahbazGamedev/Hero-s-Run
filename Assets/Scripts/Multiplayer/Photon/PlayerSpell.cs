@@ -511,7 +511,7 @@ public class PlayerSpell : PunBehaviour {
 			{
 				if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Linked_Fate) && !PlayerRace.players[i].GetComponent<PlayerSpell>().hasCastLinkedFate() )
 				{
-					PlayerRace.players[i].GetComponent<PlayerControl>().killPlayer( DeathType.Obstacle );
+					PlayerRace.players[i].GetComponent<PhotonView>().RPC("playerDiedRPC", PhotonTargets.AllViaServer, DeathType.Obstacle, PlayerRace.players[i].GetComponent<PlayerControl>().currentTile.name );
 					playerControl.incrementKillCounter();
 					//Reset the color
 					MiniMap.Instance.changeColorOfRadarObject( PlayerRace.players[i].GetComponent<PlayerControl>(), Color.white );
