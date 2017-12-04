@@ -840,8 +840,10 @@ public class PlayerControl : Photon.PunBehaviour {
 			//Calculate the fall distance
 			float fallDistance = fallStartYPos - transform.position.y;
 			if( fallDistance > FALL_TO_DEATH_DISTANCE )
-			{
-				killPlayer(DeathType.Cliff);
+			{	
+				//Regardless of whether this player isMine or not, if he has fallen more than FALL_TO_DEATH_DISTANCE, 
+				//kill him so that he can respawn. 
+				if ( playerCharacterState != PlayerCharacterState.Dying ) photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, DeathType.Cliff, currentTile.name );
 			}
 		}
 	}
