@@ -29,7 +29,7 @@ public class Teleporter : Device {
 		{
 			if( type == TeleporterType.Transmitter )
 			{
-				if( other.CompareTag("Player") && other.GetComponent<PhotonView>().isMine )
+				if( other.CompareTag("Player") )
 				{
 					//Play a teleport VFX and sound
 					GetComponent<AudioSource>().Play();
@@ -64,7 +64,7 @@ public class Teleporter : Device {
 		makePlayerInvisible( player, false );
 		yield return new WaitForSeconds( teleportDelay );
 		Vector3 destinationTeleporterPosition = new Vector3( teleporterRx.position.x, teleporterRx.position.y + playerHeightForRx, teleporterRx.position.z );
-		player.GetComponent<PhotonView>().RPC("teleportRPC", PhotonTargets.All, destinationTeleporterPosition );
+		if( player.GetComponent<PhotonView>().isMine ) player.GetComponent<PhotonView>().RPC("teleportRPC", PhotonTargets.All, destinationTeleporterPosition );
 	}
 
 	IEnumerator allowMoveAfterDelay( Transform player )
