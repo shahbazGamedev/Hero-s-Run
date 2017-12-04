@@ -2248,14 +2248,17 @@ public class PlayerControl : Photon.PunBehaviour {
 		if( getCharacterState() == PlayerCharacterState.Dying ) return;
 
 		//Discard old packets
-		if( PhotonNetwork.time - photonTime > 0.5 ) return;
-
 		float syncDelay = (float) (PhotonNetwork.time - photonTime);
+		if( syncDelay > 0.5 ) return;
+
 		transform.SetPositionAndRotation( syncPosition + syncVelocity * syncDelay, Quaternion.Euler( transform.eulerAngles.x, syncYRotation, transform.eulerAngles.z ) );
 		recalculateCurrentLane();
-		//Determine on which tile we are on
+		//Determine on which tile we're on.
+		//Given an average latency of 60 msec. and an average run speed of 20 m/s, the player has been positioned 1.2 meters further.
+		//If we are positioned on a tile sloping upward, we want to make sure to start our raycast quite a bit higher than the feet, hence the 0.5f.
+		//Also, the player can jump quite high with double jump, so let's make sure our raycast is long enough to hit the ground.
 		RaycastHit hit;
-		if (Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, out hit, 10f ))
+		if (Physics.Raycast(transform.position + (Vector3.up * 0.5f), Vector3.down, out hit, 20f ))
 		{
 			string previousCurrenTileName = currentTile.name;
 			currentTile = hit.collider.transform.root.gameObject;
@@ -2265,7 +2268,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		else
 		{
-			Debug.LogWarning( "PlayerControl-There is no ground below the player named " + name + " after positionSynchronizationRPC." );
+			Debug.LogError( "PlayerControl-There is no ground below the player named " + name + " at position " + transform.position + " after positionSynchronizationRPC." );
 		}
 	}
 
