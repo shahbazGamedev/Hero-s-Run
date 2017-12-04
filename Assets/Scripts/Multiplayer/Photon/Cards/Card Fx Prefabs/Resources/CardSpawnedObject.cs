@@ -94,8 +94,8 @@ public class CardSpawnedObject : MonoBehaviour {
 		gameObject.layer = MaskHandler.ignoreRaycastLayer;
 
 		//Are we trying to spawn the object in a dead end?
-		//Important: we need the +2f to start a bit above ground, or else the raycast may start a tad below the road and miss.
-		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + 2f, transform.position.z ), Vector3.down, out hit, 15f ))
+		//Important: we need the +6f to start above ground, or else the raycast may start below the road and miss (especially on a slope).
+		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + 6f, transform.position.z ), Vector3.down, out hit, 20f ))
 		{
 			if(  hit.collider.transform.root.GetComponent<SegmentInfo>() != null )
 			{
