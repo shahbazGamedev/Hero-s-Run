@@ -38,6 +38,9 @@ public class Teleporter : Device {
 					//The player stops moving until the RPC action gets processed.			
 					other.GetComponent<PlayerControl>().enablePlayerMovement( false );
 
+					//While waiting to be teleported, remove player control.
+					other.GetComponent<PlayerControl>().enablePlayerControl( false );
+
 					other.GetComponent<PlayerSpell>().isBeingTeleported = true;
 
 					StartCoroutine( teleportAfterDelay( other.transform ) );	
@@ -82,6 +85,8 @@ public class Teleporter : Device {
 
 		//We may have switched lanes because of the position change. Make sure the lane values are accurate.
 		playerControl.recalculateCurrentLane();
+
+		playerControl.enablePlayerControl( true );
 
 		playerControl.enablePlayerMovement( true );
 	}
