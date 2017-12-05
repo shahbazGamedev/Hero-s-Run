@@ -268,7 +268,7 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 	{
 		Transform deadPlayer = getPlayerByPhotonViewID( deadPlayerPhotonViewID );
 		
-		Debug.LogError( " deadPlayerPhotonViewID isMasterClient: " + PhotonNetwork.isMasterClient + " dead player name: " + deadPlayer.name + " dead player isMine: " + deadPlayer.GetComponent<PhotonView>().isMine + " is AI null: " + (deadPlayer.GetComponent<PlayerAI>() == null) );
+		Debug.LogWarning( " deadPlayerPhotonViewID isMasterClient: " + PhotonNetwork.isMasterClient + " dead player name: " + deadPlayer.name + " dead player isMine: " + deadPlayer.GetComponent<PhotonView>().isMine + " is AI null: " + (deadPlayer.GetComponent<PlayerAI>() == null) );
 
 		if( deadPlayer != null && deadPlayer.GetComponent<PhotonView>().isMine && deadPlayer.GetComponent<PlayerAI>() == null )
 		{
