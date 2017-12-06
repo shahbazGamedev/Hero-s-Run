@@ -147,9 +147,11 @@ public sealed class ZombieController : Creature, ICreature {
 			previousCreatureState = getCreatureState();
 			setCreatureState( CreatureState.Immobilized );
 			legacyAnim.enabled = false;
+			controller.enabled = false;
 		}
 		else
 		{
+			controller.enabled = true;
 			setCreatureState( previousCreatureState );
 			legacyAnim.enabled = true;
 		}
