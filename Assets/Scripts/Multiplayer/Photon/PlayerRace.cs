@@ -56,7 +56,7 @@ public sealed class PlayerRace : Photon.PunBehaviour
 	//Whether the power boost is active or not.
 	bool isPowerBoostActive = false; //only used by bots
 	TurnRibbonHandler turnRibbonHandler;
-	const float POWER_BOOST_DURATION = 15f;
+	const float POWER_BOOST_DURATION = 19f;
 	public bool wasPowerBoostUsed = false;
 	#endregion
 

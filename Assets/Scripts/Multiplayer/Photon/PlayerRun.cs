@@ -122,8 +122,12 @@ public class PlayerRun : Photon.PunBehaviour {
 				break;
 
 	        case PlayerCharacterState.Idle:
-	        case PlayerCharacterState.Ziplining:
 				removeAllSpeedMultipliers( true );
+				calculateOverallSpeedMultiplier();
+				break;
+
+	        case PlayerCharacterState.Ziplining:
+				removeAllSpeedMultipliers( false );
 				calculateOverallSpeedMultiplier();
 				break;
 
@@ -136,7 +140,7 @@ public class PlayerRun : Photon.PunBehaviour {
 
 	void CrossedFinishLine( Transform player, int officialRacePosition, bool isBot )
 	{
-		removeAllSpeedMultipliers( true );
+		activeSpeedMultipliersList.Clear();
 	}
 
 	/// <summary>
@@ -354,20 +358,23 @@ public class PlayerRun : Photon.PunBehaviour {
 	}
 
 	/// <summary>
-	/// Removes all speed multipliers.
+	/// Removes all speed multipliers except Power_Speed_Boost. The power speed boost is kept even if you die as it is a way to help you catch up.
 	/// </summary>
 	/// <param name="includeCardBased">If set to <c>true</c> include card based spreed modifiers.</param>
 	void removeAllSpeedMultipliers( bool includeCardBased )
 	{
 		if( includeCardBased )
 		{
-			activeSpeedMultipliersList.Clear();
+			for( int i = activeSpeedMultipliersList.Count-1; i >= 0; i-- )
+			{
+				if( activeSpeedMultipliersList[i].type != SpeedMultiplierType.Power_Speed_Boost ) activeSpeedMultipliersList.RemoveAt( i );
+			}
 		}
 		else
 		{
 			for( int i = activeSpeedMultipliersList.Count-1; i >= 0; i-- )
 			{
-				if( !activeSpeedMultipliersList[i].isCardBased ) activeSpeedMultipliersList.RemoveAt( i );
+				if( !activeSpeedMultipliersList[i].isCardBased && activeSpeedMultipliersList[i].type != SpeedMultiplierType.Power_Speed_Boost) activeSpeedMultipliersList.RemoveAt( i );
 			}
 		}
 	}

@@ -34,7 +34,7 @@ public sealed class LevelNetworkingManager : PunBehaviour
 
 	#region Power boost
 	//The distance the player must be losing by for the power boost to activate.
-	const float REQUIRED_POWER_BOOST_DISTANCE = 100f;
+	const float REQUIRED_POWER_BOOST_DISTANCE = 75f;
 	#endregion
 
 
