@@ -195,7 +195,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	//When the player dies, we change the center and radius.
 	//We need to be able to reset these values when the player is revived.
 	Vector3 controllerOriginalCenter;
-	float PRONE_CAPSULE_CENTER_Y = 0.57f;
+	const float PRONE_CAPSULE_CENTER_Y = 0.57f;
+	const float PRONE_CAPSULE_CENTER_Z = -1.4f;
 	string tileWherePlayerDied = string.Empty;
 	int numberOfTimesDiedDuringRace = 0; //Used by PlayerStatistics to determine if the player had a perfect race, that is, he did not die a single time.
 	const float DELAY_BEFORE_RESURRECTING = 1.75f;
@@ -1800,6 +1801,9 @@ public class PlayerControl : Photon.PunBehaviour {
 		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.25f, 0.7f, 1f ) );
 		if( ragdoll != null ) ragdoll.controlRagdoll( true );
 		StartCoroutine( waitBeforeResurrecting(DELAY_BEFORE_RESURRECTING) );
+		//The fall backward animation moves the  mesh of the body outside of the capsule collider.
+		//This is why we change the capsule collider center. If we don't do this, zombies can walk through the player's body.
+		capsuleCollider.center = new Vector3( controllerOriginalCenter.x, PRONE_CAPSULE_CENTER_Y, PRONE_CAPSULE_CENTER_Z );
 	}
 
 	public void fall_forward_completed ( AnimationEvent eve )
