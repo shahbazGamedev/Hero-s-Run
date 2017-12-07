@@ -5,10 +5,13 @@ using TMPro;
 
 public sealed class SkillBonusHandler : MonoBehaviour {
 
-	[Header("Skill Bonus")]
+	[Header("Skill (Competition) and Score (COOP) Bonuses")]
 	[SerializeField] RectTransform skillBonusHolder;
 	[SerializeField] GameObject skillBonusPrefab;
-
+	Queue<GameObject> bonusQueue = new Queue<GameObject>();
+	const float BONUS_STAY_TIME = 2.5f; //in seconds
+	const float BONUS_FEED_TTL = 3.8f; //in seconds
+	float timeOfLastBonus;
 	public static SkillBonusHandler Instance;
 
 	// Use this for initialization
@@ -17,12 +20,13 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 		Instance = this;
 	}
 
-	#region Not-Coop
+	#region Shared
 	void Update()
 	{
 		#if UNITY_EDITOR
 		handleKeyboard();
 		#endif
+		processQueue();
 	}
 
 	private void handleKeyboard()
@@ -34,11 +38,49 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 		}
 	}
 
+	void processQueue()
+	{
+		if( bonusQueue.Count > 0 )
+		{
+			if( Time.time - timeOfLastBonus > BONUS_FEED_TTL )
+			{
+				StartCoroutine( showBonus( bonusQueue.Dequeue() ) );
+				timeOfLastBonus = Time.time;
+			}
+		}
+	}
+
+	void createBonus( string localizedText )
+	{
+		GameObject bonus = GameObject.Instantiate( skillBonusPrefab );
+		bonus.GetComponent<CanvasGroup>().alpha = 0;
+		TextMeshProUGUI skillText = bonus.GetComponentInChildren<TextMeshProUGUI>();
+		skillText.text = localizedText;
+		RectTransform skillBonusRectTransform = bonus.GetComponent<RectTransform>();
+		skillBonusRectTransform.SetParent( skillBonusHolder );
+		skillBonusRectTransform.localScale = Vector3.one;
+		skillBonusRectTransform.anchoredPosition = new Vector2( 0,0 );
+		bonusQueue.Enqueue( bonus );
+	}
+
+	//Fade in 0.8 sec,stay 3 sec, fade-out 0.6 sec
+	IEnumerator showBonus( GameObject objectInQueue )
+	{
+		objectInQueue.GetComponent<FadeInCanvasGroup>().fadeIn();
+		yield return new WaitForSeconds( BONUS_STAY_TIME );
+		RectTransform rt = objectInQueue.GetComponent<RectTransform>();
+		LeanTween.moveLocalY( objectInQueue, rt.anchoredPosition.y + rt.sizeDelta.y, 1f );
+		objectInQueue.GetComponent<FadeInCanvasGroup>().fadeOut();
+		Destroy( objectInQueue, 0.7f );
+	}
+	#endregion
+
+	#region Competition
 	/// <summary>
 	/// Adds the skill bonus. This only applies when not in coop mode.
 	/// </summary>
 	/// <param name="skillPoints">Skill points.</param>
-	/// <param name="skillTextID">Skill text I.</param>
+	/// <param name="skillTextID">Skill text ID.</param>
 	public void addSkillBonus( int skillPoints, string skillTextID )
 	{
 		if( GameManager.Instance.isCoopPlayMode() ) return;
@@ -48,7 +90,7 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 		//Also update the skill bonus total in player profile
 		//so we can convert those bonuses to XP at the end of the race.
 		GameManager.Instance.playerProfile.addToSkillBonus( skillPoints );
-		StartCoroutine( showBonus( localizedSkillText ) );
+		createBonus( localizedSkillText );
 	}
 	#endregion
 
@@ -95,7 +137,7 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 						//show a bonus message on the HUD.
 						string localizedSkillText = LocalizationManager.Instance.getText(bonusTextID);
 						localizedSkillText = string.Format( localizedSkillText, bonusPoints );
-						StartCoroutine( showBonus( localizedSkillText ) );
+						createBonus( localizedSkillText );
 					}
 				}
 				else
@@ -115,23 +157,4 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 	}
 	#endregion
 
-	#region Shared
-	public IEnumerator showBonus( string localizedText )
-	{
-		//Fade in 0.8 sec,stay 3 sec, fade-out 0.6 sec
-		GameObject skillBonus = GameObject.Instantiate( skillBonusPrefab );
-		skillBonus.GetComponent<CanvasGroup>().alpha = 0;
-		skillBonus.GetComponent<FadeInCanvasGroup>().fadeIn();
-		TextMeshProUGUI skillText = skillBonus.GetComponentInChildren<TextMeshProUGUI>();
-		skillText.text = localizedText;
-		RectTransform skillBonusRectTransform = skillBonus.GetComponent<RectTransform>();
-		skillBonusRectTransform.SetParent( skillBonusHolder );
-		skillBonusRectTransform.localScale = Vector3.one;
-		skillBonusRectTransform.anchoredPosition = new Vector2( 0,0 );
-		yield return new WaitForSeconds( 3f );
-		LeanTween.moveLocalY( skillBonus, skillBonusRectTransform.anchoredPosition.y + skillBonusRectTransform.sizeDelta.y, 1f );
-		skillBonus.GetComponent<FadeInCanvasGroup>().fadeOut();
-		Destroy( skillBonus, 1f );
-	}
-	#endregion
 }
