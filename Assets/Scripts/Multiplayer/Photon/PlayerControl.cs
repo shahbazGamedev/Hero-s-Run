@@ -1815,16 +1815,17 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	IEnumerator waitBeforeResurrecting ( float duration )
 	{
-		yield return new WaitForSeconds(duration);
 		if( GameManager.Instance.isCoopPlayMode() )
 		{
 			//Remove the vignetting
 			if( playerAI == null ) StartCoroutine( controlVignetting( 0f, 0f, 0.25f ) );
 			if( PhotonNetwork.isMasterClient ) coopWaveGenerator.playerDied( transform );
+			yield return null;
 		}
 		else
 		{
 			//Resurrect at the next lock step.
+			yield return new WaitForSeconds(duration);
 			LockstepManager.Instance.addActionToQueue( new LockstepManager.LockstepAction( LockstepActionType.RESURRECT, gameObject ) );
 		}
 	}
