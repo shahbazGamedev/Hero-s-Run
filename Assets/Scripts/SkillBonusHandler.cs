@@ -10,7 +10,7 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 	[SerializeField] GameObject skillBonusPrefab;
 	Queue<GameObject> bonusQueue = new Queue<GameObject>();
 	const float BONUS_STAY_TIME = 2.5f; //in seconds
-	const float BONUS_FEED_TTL = 3.8f; //in seconds
+	const float BONUS_FEED_TTL = 3.4f; //in seconds
 	float timeOfLastBonus;
 	public static SkillBonusHandler Instance;
 
@@ -63,7 +63,7 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 		bonusQueue.Enqueue( bonus );
 	}
 
-	//Fade in 0.8 sec,stay 3 sec, fade-out 0.6 sec
+	//Fade in 0.8 sec,stay 2.5 sec, fade-out 0.6 sec
 	IEnumerator showBonus( GameObject objectInQueue )
 	{
 		objectInQueue.GetComponent<FadeInCanvasGroup>().fadeIn();
