@@ -204,9 +204,10 @@ public class PlayerStatistics {
 	public void updateCoopHighScoreWaves( int waveReached )
 	{
 		int currentHighScoreWaves = getStatisticData(StatisticDataType.COOP_HIGH_SCORE_WAVES);
-		if( waveReached > currentHighScoreWaves )
+		int waveCompleted = waveReached - 1;
+		if( waveCompleted > currentHighScoreWaves )
 		{
-			setStatisticData( StatisticDataType.COOP_HIGH_SCORE_WAVES, waveReached );
+			setStatisticData( StatisticDataType.COOP_HIGH_SCORE_WAVES, waveCompleted );
 			serializePlayerStatistics( true );
 		}
 	}
