@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+using TMPro;
 
 class PlayerIconManager : MonoBehaviour {
 
 	[Header("General")]
-	bool levelLoading = false;
 	[SerializeField] Transform content;
 	[SerializeField] GameObject playerIconPrefab;
 	[Header("On Select")]
@@ -16,17 +15,13 @@ class PlayerIconManager : MonoBehaviour {
 	[SerializeField] Text onSelectPlayerName;
 	[Header("Name and Icon")]
 	[SerializeField] Image playerIcon;
-	[SerializeField] Text playerNameText;
+	[SerializeField] TextMeshProUGUI playerNameText;
 
 	List<PlayerIcons.PlayerIconData> sortedPlayerIconList;
 
 	// Use this for initialization
 	void Start ()
 	{
-		Handheld.StopActivityIndicator();
-		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
-		playerNameText.text = GameManager.Instance.playerProfile.getUserName();
-
 		//Newly unlocked icons appear first.
 		sortedPlayerIconList = GameManager.Instance.playerIcons.getSortedPlayerIconList();
 
@@ -115,25 +110,6 @@ class PlayerIconManager : MonoBehaviour {
 	void hide()
 	{
 		onSelectButton.SetActive( false );
-	}
-
-	public void OnClickOpenMainMenu()
-	{
-		//Save the player profile. The user may have changed his player icon.
-		GameManager.Instance.playerProfile.serializePlayerprofile();
-		StartCoroutine( loadScene(GameScenes.MainMenu) );
-	}
-
-	IEnumerator loadScene(GameScenes value)
-	{
-		if( !levelLoading )
-		{
-			UISoundManager.uiSoundManager.playButtonClick();
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)value );
-		}
 	}
 
 }
