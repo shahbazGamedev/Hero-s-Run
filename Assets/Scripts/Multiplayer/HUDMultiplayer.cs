@@ -15,7 +15,8 @@ public enum DebugInfoType
 	LATENCY = 3,
 	FRAME_RATE_TEST = 4,
 	EMOTES_TEST = 5,
-	DONT_SPAWN_ZOMBIES = 6
+	DONT_SPAWN_ZOMBIES = 6,
+	SHOW_RUN_SPEED = 7
 }
 
 public class HUDMultiplayer : MonoBehaviour {
@@ -30,6 +31,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	const float DELAY_WHEN_NOT_ALL_PLAYERS_ARRIVED = 6f;
 	PlayerRace localPlayerRace;
 	PlayerControl localPlayerControl;
+	PlayerRun localPlayerRun;
 	[SerializeField] GameObject canvasGroupForFading;
 	[Header("Distance Remaining")]
 	[SerializeField] GameObject distanceRemaining; 	//Distance remaining gets hidden in coop mode.
@@ -96,6 +98,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	{
 		localPlayerRace = localPlayer.GetComponent<PlayerRace>();
 		localPlayerControl = localPlayer.GetComponent<PlayerControl>();
+		localPlayerRun = localPlayer.GetComponent<PlayerRun>();
 	}
 
 	public string getLocalPlayerName ()
@@ -398,6 +401,11 @@ public class HUDMultiplayer : MonoBehaviour {
 				infoToDisplay.Append( PhotonNetwork.isMasterClient );
 				infoToDisplay.Append( " Latency: " );
 				infoToDisplay.Append(  PhotonNetwork.networkingPeer.RoundTripTime );
+			break;
+
+			case DebugInfoType.SHOW_RUN_SPEED:
+				infoToDisplay.Append( " Local player run speed: " );
+				infoToDisplay.Append( localPlayerRun.getRunSpeed() );
 			break;
 		}
 		return infoToDisplay.ToString();
