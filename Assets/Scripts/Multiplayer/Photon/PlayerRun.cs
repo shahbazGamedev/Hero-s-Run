@@ -31,7 +31,6 @@ public class PlayerRun : Photon.PunBehaviour {
 	public List<SpeedMultiplier> activeSpeedMultipliersList =  new List<SpeedMultiplier>();
 
 	float defaultOverallSpeedMultiplier = 1f; //this value may be overriden in the debug menu
-	float overallSpeedMultiplier; //this value is multiplied by levelRunStartSpeed to give the run speed
 	//Used to cap the speed multiplier value so the player does not run too fast especially when stacking up
 	//multiple multipliers (Sprint, plus Raging Bull, plus Cloak for instance).
 	const float MAX_OVERALL_SPEED_MULTIPLIER = 1.7f;
@@ -64,29 +63,21 @@ public class PlayerRun : Photon.PunBehaviour {
 	void Start ()
 	{
 		defaultOverallSpeedMultiplier = GameManager.Instance.playerDebugConfiguration.getSpeedOverrideMultiplier();
-		overallSpeedMultiplier = defaultOverallSpeedMultiplier;
 
 		//Get the base run speed from the level data.
-		levelRunStartSpeed = LevelManager.Instance.getSelectedCircuit().RunStartSpeed * defaultOverallSpeedMultiplier;
+		levelRunStartSpeed = LevelManager.Instance.getSelectedCircuit().RunStartSpeed;
 		baseBlend = RUN_SPEED_FOR_FULL_BLENDING - levelRunStartSpeed;
 		if ( baseBlend < 0 ) baseBlend = 1f;
 	}
 
 	void OnEnable()
 	{
-		HUDMultiplayer.startRunningEvent += StartRunningEvent;
 		PlayerRace.crossedFinishLine += CrossedFinishLine;
 	}
 
 	void OnDisable()
 	{
-		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
 		PlayerRace.crossedFinishLine -= CrossedFinishLine;
-	}
-
-	void StartRunningEvent()
-	{
-		runSpeed = levelRunStartSpeed;
 	}
 
 	public void handlePlayerStateChange( PlayerCharacterState newState )
@@ -97,10 +88,6 @@ public class PlayerRun : Photon.PunBehaviour {
 				StopAllCoroutines();
 				runSpeed = 0;
 				removeAllSpeedMultipliers( true );
-				break;
-	                
-	        case PlayerCharacterState.StartRunning:
-				runSpeed = levelRunStartSpeed;
 				break;
 	                
 			case PlayerCharacterState.DoubleJumping:
@@ -280,7 +267,7 @@ public class PlayerRun : Photon.PunBehaviour {
 			runSpeed = 0;
 			return;
 		}
-		overallSpeedMultiplier = defaultOverallSpeedMultiplier;
+		float overallSpeedMultiplier = defaultOverallSpeedMultiplier;
 		for( int i = 0; i < activeSpeedMultipliersList.Count; i++ )
 		{
 			overallSpeedMultiplier = overallSpeedMultiplier * activeSpeedMultipliersList[i].multiplier;
@@ -309,7 +296,7 @@ public class PlayerRun : Photon.PunBehaviour {
 			setSprintBlendFactor( blendFactor );
 
 		}
-		//print("PlayerRun calculateOverallSpeedMultiplier: " + overallSpeedMultiplier + " runSpeed: " +  runSpeed + " defaultOverallSpeedMultiplier: " + defaultOverallSpeedMultiplier + " " + getActiveSpeedMultipliers() );
+		//print("PlayerRun calculateOverallSpeedMultiplier: " + overallSpeedMultiplier + " runSpeed: " +  runSpeed + " defaultOverallSpeedMultiplier: " + defaultOverallSpeedMultiplier + " " + getActiveSpeedMultipliers() + " levelRunStartSpeed " + levelRunStartSpeed );
 
 	}
 
@@ -330,7 +317,7 @@ public class PlayerRun : Photon.PunBehaviour {
 			runSpeed = 0;
 			return;
 		}
-		overallSpeedMultiplier = defaultOverallSpeedMultiplier;
+		float overallSpeedMultiplier = defaultOverallSpeedMultiplier;
 		overallSpeedMultiplier = overallSpeedMultiplier * getSpeedMultiplierByType(SpeedMultiplierType.Jumping).multiplier;
 
 		//The only speed multiplier we will keep is SHRINK. We don't want the player to suddenly accelerate
