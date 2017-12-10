@@ -15,7 +15,7 @@ public class RecentPlayerUIDetails : MonoBehaviour {
 	[SerializeField] Text addFriendButtonText;
 	[SerializeField] Image onlineStatusIcon;
 	[SerializeField] Text onlineText;
-	Color lightGray = new Color( 180f/255f, 180f/255f, 180f/255f, 0.5f );
+	Color lightGray = new Color( 180f/255f, 180f/255f, 180f/255f, 0.8f );
 	Color darkGray = Color.gray;
 	[HideInInspector]
 	public string user;

@@ -1,25 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using ExitGames.Client.Photon.Chat;
+using TMPro;
 
 public class SocialMenu : MonoBehaviour {
 
 	[Header("Social Menu")]
 	[Header("Friend List")]
+	[SerializeField] GameObject socialPanel;	
 	[SerializeField] Transform friendsHolder;
 	[SerializeField] GameObject friendEntryPrefab;
 	[SerializeField] InputField addFriendInputField;
-	[SerializeField] Text addFriendPlaceholderText;
+	[SerializeField] TextMeshProUGUI addFriendPlaceholderText;
 	[SerializeField] GameObject noFriendsPanel;
-	[SerializeField] Text noFriendsText;
+	[SerializeField] TextMeshProUGUI noFriendsText;
 	[Header("Recent Player List")]
+	[SerializeField] GameObject recentPlayersPanel;	
 	[SerializeField] Transform recentPlayersHolder;
 	[SerializeField] GameObject recentPlayerPrefab;
 	[SerializeField] GameObject noRecentPlayersPanel;
-	[SerializeField] Text noRecentPlayersText;
+	[SerializeField] TextMeshProUGUI noRecentPlayersText;
 	[Header("Chat Online Indicator")]
 	[SerializeField] Image onlineIndicator;
 	[Header("Invite Facebook Friends")]
@@ -264,6 +266,20 @@ public class SocialMenu : MonoBehaviour {
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
 		inviteFacebookFriendsPanel.SetActive( true );
+	}
+	#endregion
+
+	#region Bottom Bar
+	public void OnClickShowSocial()
+	{
+		socialPanel.SetActive( true );
+		recentPlayersPanel.SetActive( false );
+	}
+
+	public void OnClickShowRecentPlayers()
+	{
+		socialPanel.SetActive( false );
+		recentPlayersPanel.SetActive( true );
 	}
 	#endregion
 
