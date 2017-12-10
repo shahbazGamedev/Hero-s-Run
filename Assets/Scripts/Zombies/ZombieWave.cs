@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class ZombieWave : MonoBehaviour {
 	
 	public List<GameObject> spawnLocations = new List<GameObject>();
-
+	[SerializeField] Mesh zombieMesh;
 	void OnDrawGizmos ()
 	{
 		GameObject locationObject;
@@ -33,10 +33,17 @@ public class ZombieWave : MonoBehaviour {
 				case ZombieSpawnType.Crawl:
 					Gizmos.color = Color.red;
 					break;
+				case ZombieSpawnType.Jump:
+					Gizmos.color = Color.gray;
+					break;
+				case ZombieSpawnType.Run:
+					Gizmos.color = Color.magenta;
+					break;
 				}
-				Gizmos.DrawSphere( locationObject.transform.position, 0.06f);
+				float groundHeight = getGroundHeight( locationObject.transform.position );
+				Vector3 groundPosition = new Vector3( locationObject.transform.position.x, groundHeight, locationObject.transform.position.z );
+				if( zombieMesh != null ) Gizmos.DrawMesh( zombieMesh, groundPosition, Quaternion.Euler( -90f, 180f, 0 )  );
 	
-				Gizmos.DrawLine ( locationObject.transform.position, exactPos );
 			}
 			else
 			{
@@ -44,4 +51,19 @@ public class ZombieWave : MonoBehaviour {
 			}
 		}
 	}
+
+	float getGroundHeight( Vector3 startPosition )
+	{
+		//Calculate the ground height
+		RaycastHit hit;
+		if (Physics.Raycast( startPosition , Vector3.down, out hit, 10f ))
+		{
+			return  hit.point.y;
+		}
+		else
+		{
+			return startPosition.y;
+		}
+	}
+
 }
