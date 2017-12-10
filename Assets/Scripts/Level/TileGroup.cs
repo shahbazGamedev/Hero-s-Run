@@ -179,13 +179,15 @@ public enum TileGroupType {
 	Desert_Left_Turn = 20007,		//Left
 	Desert_Right_Turn = 20008,		//Right
 	Desert_Log = 20009,				//Straight_Log
-	Desert_Slope = 20010,			//Straight_Slope
+	Desert_Slope = 20010,			//Straight_Slope (goes up)
 	Desert_Angle = 20011,			//Angled
 	Desert_Original_1 = 20012,		//Original_1
 	Desert_Original_2 = 20013,		//Original_2
 	Desert_Original_3 = 20014,		//Original_3
 	Desert_Teleporter = 20015,		//Single tile teleporter
-	Desert_River = 20016			//Straight_River_Crossing
+	Desert_River = 20016,			//Straight_River_Crossing
+	Desert_Slope_Down = 20017		//Straight_Slope_Down
+
 }
 
 [System.Serializable]
