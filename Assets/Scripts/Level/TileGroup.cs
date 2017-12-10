@@ -184,7 +184,8 @@ public enum TileGroupType {
 	Desert_Original_1 = 20012,		//Original_1
 	Desert_Original_2 = 20013,		//Original_2
 	Desert_Original_3 = 20014,		//Original_3
-	Desert_Teleporter = 20015		//Single tile teleporter
+	Desert_Teleporter = 20015,		//Single tile teleporter
+	Desert_River = 20016			//Straight_River_Crossing
 }
 
 [System.Serializable]
