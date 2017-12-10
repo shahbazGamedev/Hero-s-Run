@@ -7,7 +7,9 @@ public enum ZombieSpawnType
 	BurrowUp = 1,
 	StandUpFromBack = 2,
 	Walk = 3,
-	Crawl = 4
+	Crawl = 4,
+	Jump = 5,
+	Run = 6
 }
 
 public class ZombieSpawnData : MonoBehaviour {

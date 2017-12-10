@@ -11,12 +11,14 @@ public sealed class ZombieController : Creature, ICreature {
 	public enum ZombieMoveType {
 		Walking = 1,
 		Crawling = 2,
-		Any = 3, //Either walk or crawl
+		Any = 3 //Either walk or crawl
 	}
 
 	Animation legacyAnim;
 	Vector3 forward;
 	float walkSpeed = 1.65f; //good value so feet don't slide
+	float runSpeed = 3.8f; //good value so feet don't slide
+	float movementSpeed;
 
 	[SerializeField] List<string> walkTypes = new List<string>();
 	[SerializeField] AudioClip moanLow;
@@ -99,6 +101,16 @@ public sealed class ZombieController : Creature, ICreature {
 				walk();
 			break;
 
+			case ZombieSpawnType.Run:
+				//The zombie runs immediately
+				run();
+			break;
+
+			case ZombieSpawnType.Jump:
+				//The zombie jumps up and down.
+				jump();
+			break;
+
 			case ZombieSpawnType.Crawl:
 				//The zombie crawls immediately
 				crawl();
@@ -123,7 +135,7 @@ public sealed class ZombieController : Creature, ICreature {
 
 	void moveZombie()
 	{
-		if( creatureState == CreatureState.Walking || creatureState == CreatureState.Crawling )
+		if( creatureState == CreatureState.Walking || creatureState == CreatureState.Running || creatureState == CreatureState.Crawling )
 		{
 			//0) Target the player but we only want the Y rotation
 			if( followsPlayer )
@@ -133,7 +145,7 @@ public sealed class ZombieController : Creature, ICreature {
 			//1) Get the direction of the zombie
 			forward = transform.TransformDirection(Vector3.forward);			
 			//2) Scale vector based on run speed
-			forward = forward * Time.deltaTime * walkSpeed;
+			forward = forward * Time.deltaTime * movementSpeed;
 			forward.y -= 16f * Time.deltaTime;
 			//3) Move the controller
 			if( controller.enabled ) controller.Move( forward );
@@ -395,11 +407,29 @@ public sealed class ZombieController : Creature, ICreature {
 
 	public void walk()
 	{
+		movementSpeed = walkSpeed;
 		controller.enabled = true;
 		string walkType = selectRandomWalk( ZombieMoveType.Walking );
 		legacyAnim.Play(walkType);
 		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
 		setCreatureState( CreatureState.Walking );
+	}
+
+	public void run()
+	{
+		movementSpeed = runSpeed;
+		controller.enabled = true;
+		legacyAnim.Play("run");
+		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
+		setCreatureState( CreatureState.Running );
+	}
+
+	public void jump()
+	{
+		controller.enabled = true;
+		legacyAnim.Play("jump");
+		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
+		setCreatureState( CreatureState.Jumping );
 	}
 
 	public void crawl()
