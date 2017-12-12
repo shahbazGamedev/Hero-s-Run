@@ -16,9 +16,9 @@ public sealed class ZombieController : Creature, ICreature {
 
 	Animation legacyAnim;
 	Vector3 forward;
-	float walkSpeed = 1.65f; //good value so feet don't slide
-	float runSpeed = 3.8f; //good value so feet don't slide
-	float movementSpeed;
+	float walkSpeed = 2.1f; //good value so feet don't slide
+	float runSpeed = 4.2f; //good value so feet don't slide
+	public float movementSpeed;
 
 	[SerializeField] List<string> walkTypes = new List<string>();
 	[SerializeField] AudioClip moanLow;
@@ -36,6 +36,7 @@ public sealed class ZombieController : Creature, ICreature {
 	[SerializeField] Vector3 controllerCenterOther = new Vector3( 0, 0.9f, 0f );
 	[SerializeField] float controllerHeightWhenCrawling = 1.1f;
 	[SerializeField] float controllerHeightOther = 1.8f;
+	CapsuleCollider capsuleCollider;
 
 	CreatureState previousCreatureState;
 
@@ -44,7 +45,6 @@ public sealed class ZombieController : Creature, ICreature {
 	{
 		base.Awake();
 		creatureState = CreatureState.Idle;
-		controller.enabled = false;
 
 		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("Zombie Manager");
 		ZombieManager zombieManager = zombieManagerObject.GetComponent<ZombieManager>();
@@ -66,6 +66,7 @@ public sealed class ZombieController : Creature, ICreature {
 			zombiePrefab.GetComponentInChildren<SkinnedMeshRenderer>().material = zombieMaterial;
 		}
 		legacyAnim = zombiePrefab.GetComponent<Animation>();
+		capsuleCollider = GetComponent<CapsuleCollider>();
 	}
 
 	public override void setCreatureState( CreatureState newState )
@@ -127,8 +128,7 @@ public sealed class ZombieController : Creature, ICreature {
 		GameObject.Destroy( gameObject, ZOMBIE_LIFESPAN ); 
 	}
 
-	// Update is called once per frame
-	void Update ()
+	void FixedUpdate ()
 	{
 		moveZombie();
 	}
@@ -146,9 +146,8 @@ public sealed class ZombieController : Creature, ICreature {
 			forward = transform.TransformDirection(Vector3.forward);			
 			//2) Scale vector based on run speed
 			forward = forward * Time.deltaTime * movementSpeed;
-			forward.y -= 16f * Time.deltaTime;
-			//3) Move the controller
-			if( controller.enabled ) controller.Move( forward );
+			//3) Move the zombie
+			capsuleCollider.attachedRigidbody.velocity = forward * 25f;
 		}
 	}
 
@@ -159,13 +158,14 @@ public sealed class ZombieController : Creature, ICreature {
 			previousCreatureState = getCreatureState();
 			setCreatureState( CreatureState.Immobilized );
 			legacyAnim.enabled = false;
-			controller.enabled = false;
+			capsuleCollider.attachedRigidbody.velocity = Vector3.zero;
+			capsuleCollider.attachedRigidbody.isKinematic = true;		
 		}
 		else
 		{
-			controller.enabled = true;
 			setCreatureState( previousCreatureState );
 			legacyAnim.enabled = true;
+			capsuleCollider.attachedRigidbody.isKinematic = false;		
 		}
 	}
 
@@ -175,6 +175,8 @@ public sealed class ZombieController : Creature, ICreature {
 		{
 			setCreatureState( CreatureState.Immobilized );
 			legacyAnim.CrossFade(selectRandomIdle(), 0.4f );
+			capsuleCollider.attachedRigidbody.velocity = Vector3.zero;
+			capsuleCollider.attachedRigidbody.isKinematic = true;		
 		}
 		else
 		{
@@ -182,6 +184,7 @@ public sealed class ZombieController : Creature, ICreature {
 			string walkType = selectRandomWalk( ZombieMoveType.Walking );
 			legacyAnim.CrossFadeQueued(walkType, 0.4f);
 			setCreatureState( CreatureState.Walking );
+			capsuleCollider.attachedRigidbody.isKinematic = false;		
 		}
 	}
 
@@ -200,7 +203,8 @@ public sealed class ZombieController : Creature, ICreature {
 		if( zombieIcon != null ) MiniMap.Instance.removeRadarObject( gameObject );
 		CancelInvoke( "groan" );
 		legacyAnim.CrossFade("fallToBack", 0.25f);
-		controller.enabled = false;
+		capsuleCollider.attachedRigidbody.isKinematic = true;
+		capsuleCollider.enabled = false;
 		audioSource.PlayOneShot( knockbackSound );
 
 		SkillBonusHandler.Instance.grantScoreBonus( SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_TOPPLED_ZOMBIE", attackerPhotonViewID );
@@ -211,6 +215,7 @@ public sealed class ZombieController : Creature, ICreature {
 		if( creatureState != CreatureState.Dying )
 		{
 			CancelInvoke( "groan" );
+			capsuleCollider.attachedRigidbody.isKinematic = true;
 			if( playWinSound ) audioSource.PlayOneShot( win );
 			if( creatureState == CreatureState.StandUpFromBack )
 			{
@@ -346,7 +351,8 @@ public sealed class ZombieController : Creature, ICreature {
  
 	public void burrowUp()
 	{
-		controller.enabled = false;
+		capsuleCollider.attachedRigidbody.useGravity = false;
+		capsuleCollider.enabled = false;
 		setCreatureState( CreatureState.BurrowUp );
 		legacyAnim.Play("burrowUp");
 		StartCoroutine("burrowUpCompleted");
@@ -366,24 +372,28 @@ public sealed class ZombieController : Creature, ICreature {
 			yield return new WaitForFixedUpdate();  
 		} while ( duration > 0 );
 
-		controller.enabled = true;
+		capsuleCollider.enabled = true;
+		capsuleCollider.attachedRigidbody.useGravity = true;
 		string walkType = selectRandomWalk( ZombieMoveType.Walking );
 		legacyAnim.CrossFade(walkType);
 		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
 		if( walkType == "crouchMove" || walkType == "crawl" )
 		{
 			setCreatureState( CreatureState.Crawling );
+			movementSpeed = walkSpeed;
 		}
 		else
 		{
 			setCreatureState( CreatureState.Walking );
+			movementSpeed = walkSpeed;
 		}
 	}
 
 	public void standUpFromBack()
 	{
 		groan ();
-		controller.enabled = false;
+		capsuleCollider.attachedRigidbody.useGravity = false;
+		capsuleCollider.enabled = false;
 		setCreatureState( CreatureState.StandUpFromBack );
 		legacyAnim.Play("standUpFromBack");
 		StartCoroutine("standUpFromBackCompleted");
@@ -401,14 +411,15 @@ public sealed class ZombieController : Creature, ICreature {
 		string walkType = selectRandomWalk( ZombieMoveType.Walking );
 		legacyAnim.CrossFade(walkType);
 		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
-		controller.enabled = true;
+		capsuleCollider.enabled = true;
+		capsuleCollider.attachedRigidbody.useGravity = true;
 		setCreatureState( CreatureState.Walking );
+		movementSpeed = walkSpeed;
 	}
 
 	public void walk()
 	{
 		movementSpeed = walkSpeed;
-		controller.enabled = true;
 		string walkType = selectRandomWalk( ZombieMoveType.Walking );
 		legacyAnim.Play(walkType);
 		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
@@ -418,7 +429,6 @@ public sealed class ZombieController : Creature, ICreature {
 	public void run()
 	{
 		movementSpeed = runSpeed;
-		controller.enabled = true;
 		legacyAnim.Play("run");
 		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
 		setCreatureState( CreatureState.Running );
@@ -426,7 +436,6 @@ public sealed class ZombieController : Creature, ICreature {
 
 	public void jump()
 	{
-		controller.enabled = true;
 		legacyAnim.Play("jump");
 		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
 		setCreatureState( CreatureState.Jumping );
@@ -434,7 +443,6 @@ public sealed class ZombieController : Creature, ICreature {
 
 	public void crawl()
 	{
-		controller.enabled = true;
 		string walkType = selectRandomWalk( ZombieMoveType.Crawling );
 		legacyAnim.Play(walkType);
 		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
@@ -450,30 +458,39 @@ public sealed class ZombieController : Creature, ICreature {
 
 	void adjustCollider()
 	{
-		if( getCreatureState() == CreatureState.Crawling)
+		if( getCreatureState() == CreatureState.Crawling )
 		{
 			//Crawling
-			controller.center = controllerCenterWhenCrawling;
-			controller.height = controllerHeightWhenCrawling;
+			capsuleCollider.direction = (int)Axis.Z;
+			capsuleCollider.center = controllerCenterWhenCrawling;
+			capsuleCollider.height = controllerHeightWhenCrawling;
+		}
+		else if( getCreatureState() == CreatureState.Dying )
+		{
+			//Dying
+			capsuleCollider.direction = (int)Axis.Z;
+			capsuleCollider.center = new Vector3( 0, 0.25f, -0.9f );
+			capsuleCollider.radius = 0.25f;
 		}
 		else
 		{
 			//All other
-			controller.center = controllerCenterOther;
-			controller.height = controllerHeightOther;
+			capsuleCollider.direction = (int)Axis.Y;
+			capsuleCollider.center = controllerCenterOther;
+			capsuleCollider.height = controllerHeightOther;
 		}
 	}
 
-	void OnControllerColliderHit(ControllerColliderHit hit)
+	void OnCollisionEnter(Collision collision)
 	{
-		if( hit.gameObject.CompareTag("Zombie") )
+		if( collision.gameObject.CompareTag("Zombie") )
 		{
 			//If a zombie collides with another zombie have him halt.
 			stop();
 		}
-		else if( hit.gameObject.CompareTag("Player") )
+		else if( collision.gameObject.CompareTag("Player") )
 		{
-			if( hit.gameObject.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
+			if( collision.gameObject.GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
 			{
 				//If a zombie collides with a dead player and he is not in the victory state, have him play victory also.
 				if( getCreatureState() != CreatureState.Victory )

@@ -7,18 +7,10 @@ using Cinemachine;
 public sealed class CoopWaveGenerator : PunBehaviour {
 
 	#region Waves
-	[SerializeField] float timeBetweenWave = 12f;
-	[SerializeField] List<GameObject> easyWaveList = new List<GameObject>();
-	[SerializeField] List<GameObject> mediumWaveList = new List<GameObject>();
-	[SerializeField] List<GameObject> hardWaveList = new List<GameObject>();
+	[SerializeField] List<GameObject> waveList = new List<GameObject>();
 	public static int numberOfWavesTriggered = 0;
-	public int tileIndexOfLastWave;
 	public delegate void CoopNewWave( int waveNumber );
 	public static event CoopNewWave coopNewWave;
-
-	public float easyWaveProbability; //public only for debugging. Do not change in editor.
-	public float mediumWaveProbability;
-	public float hardWaveProbability; //this value is not required but makes debugging easier.
 	#endregion
 
 	#region Players
@@ -42,153 +34,26 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 		zombieManager = GameObject.FindObjectOfType<ZombieManager>();
 		numberOfWavesTriggered = 0; //important to reset since this is a static value.
 	}
-	
-	void OnEnable()
-	{
-		HUDMultiplayer.startRunningEvent += StartRunningEvent;
-	}
-	
-	void OnDisable()
-	{
-		HUDMultiplayer.startRunningEvent -= StartRunningEvent;
-	}
-
-	void StartRunningEvent()
-	{
-		if( PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode() ) Invoke("activateNewWave", timeBetweenWave );
-	}
-
-	void OnMasterClientSwitched( PhotonPlayer newMaster )
-	{
-		Debug.LogWarning("OnMasterClientSwitched. New master is: " + newMaster.NickName );
-		if( GameManager.Instance.isCoopPlayMode() ) Invoke("activateNewWave", timeBetweenWave );
-	}
 
 	#region Waves
-	void activateNewWave ()
+	public void activateNewWave ()
 	{
 		if( PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode() )
 		{
-			GameObject tile = getAppropriateTile( getLeadingTileIndex() );
-	
-			setWaveDifficultyProbabilities();
-	
-			GameObject wave = getAppropriateWave();
-			
-			if( wave != null && tile != null )
-			{
-				createWave( wave, tile );
-			}
-			else
-			{
-				//Try again a bit later. Six seconds is enough time to clear a 100 meter long tile at 18 m/s.
-				Invoke("activateNewWave", 6f );
-			}
+			createWave( waveList[numberOfWavesTriggered] );
 		}
 	}
 
-	private int getLeadingTileIndex()
+	private void createWave( GameObject wave )
 	{
-		int highestTileIndex = 0;
-		for( int i = 0; i< PlayerRace.players.Count; i++ )
-		{
-			if( PlayerRace.players[i].GetComponent<PlayerControl>().tileIndex > highestTileIndex ) highestTileIndex = PlayerRace.players[i].GetComponent<PlayerControl>().tileIndex;
-		}
-		return highestTileIndex;
-	}
-
-	private GameObject getAppropriateTile( int highestTileIndex )
-	{
-		//Now that we have the highest tile index, ask generate level for a tile that we are going to use
-		//to spawn the creatures in.
-		//We want to spawn the creatures 2 tiles further than where the leading player is.
-		int desiredTileIndex = highestTileIndex + 2;
-		GameObject tile = generateLevel.getTileForNextWave( desiredTileIndex );
-		if( tile != null ) 
-		{
-			tileIndexOfLastWave = tile.GetComponent<SegmentInfo>().tileIndex;
-			return tile;
-		}
-		else
-		{
-			Debug.LogWarning("CoopWaveGenerator-getAppropriateTile did not find an appropriate tile. Returning null.");
-			return null;
-		}
-	}
-
-	private void setWaveDifficultyProbabilities()
-	{
-		if( numberOfWavesTriggered < 10 )
-		{
-			easyWaveProbability = 0.6f;
-			mediumWaveProbability = 0.4f;
-			hardWaveProbability = 0;
-		}
-		else if( numberOfWavesTriggered < 20 )
-		{
-			easyWaveProbability = 0.3f;
-			mediumWaveProbability = 0.7f;
-			hardWaveProbability = 0f;
-		}
-		else if( numberOfWavesTriggered < 30 )
-		{
-			easyWaveProbability = 0.1f;
-			mediumWaveProbability = 0.6f;
-			hardWaveProbability = 0.3f;
-		}
-		else if( numberOfWavesTriggered < 40 )
-		{
-			easyWaveProbability = 0.05f;
-			mediumWaveProbability = 0.55f;
-			hardWaveProbability = 0.4f;
-		}
-		else if( numberOfWavesTriggered < 50 )
-		{
-			easyWaveProbability = 0.05f;
-			mediumWaveProbability = 0.4f;
-			hardWaveProbability = 0.55f;
-		}
-		else
-		{
-			easyWaveProbability = 0.05f;
-			mediumWaveProbability = 0.35f;
-			hardWaveProbability = 0.6f;
-		}
-	}
-
-	private GameObject getAppropriateWave()
-	{
-		float rdn = Random.value;
-		int randomIndex;
-
-		if( rdn <= easyWaveProbability )
-		{
-			randomIndex = Random.Range( 0, easyWaveList.Count );
-			return easyWaveList[randomIndex];
-		}
-		else if( rdn <= mediumWaveProbability )
-		{
-			randomIndex = Random.Range( 0, mediumWaveList.Count );
-			return mediumWaveList[randomIndex];
-		}
-		else
-		{
-			randomIndex = Random.Range( 0, hardWaveList.Count );
-			return hardWaveList[randomIndex];
-		}
-	}
-
-	private void createWave( GameObject wave, GameObject tile )
-	{
-		Debug.LogWarning("createWave on tile " + tile.name + " for wave " + numberOfWavesTriggered + " tileEndex " + tileIndexOfLastWave );
+		Debug.LogWarning("Creating wave: " + numberOfWavesTriggered  );
 		//trigger zombie wave takes care of instantiating the zombies using Photon.
-		GameObject clone = Instantiate( wave, tile.transform );
+		GameObject clone = Instantiate( wave );
 		ZombieWave activeZombieWave = clone.GetComponent<ZombieWave>();
 		//To facilitate testing
 		DebugInfoType debugInfoType = GameManager.Instance.playerDebugConfiguration.getDebugInfoType();
 		if( debugInfoType != DebugInfoType.DONT_SPAWN_ZOMBIES ) zombieManager.triggerZombieWave( activeZombieWave.spawnLocations );
 		photonView.RPC("coopWaveRPC", PhotonTargets.All );
-		Invoke("activateNewWave", timeBetweenWave );
 	}
 
 	[PunRPC]
@@ -226,7 +91,6 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 					if( deadPlayerList.Count == 2 )
 					{
 						PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
-						CancelInvoke("activateNewWave");
 						//Both players are dead, this means game over. Send an RPC.
 						photonView.RPC("coopGameOverRPC", PhotonTargets.All );
 					}
@@ -240,7 +104,6 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 				{
 					//There is only one player left and he died. This means game over. Send an RPC.
 					PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
-					CancelInvoke("activateNewWave");				
 					photonView.RPC("coopGameOverRPC", PhotonTargets.All );
 				}
 			}

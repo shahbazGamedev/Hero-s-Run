@@ -20,7 +20,7 @@ public enum CreatureState {
 
 public class Creature : MonoBehaviour {
 
-	protected CreatureState creatureState = CreatureState.Idle;
+	public CreatureState creatureState = CreatureState.Idle;
 	[Header("Other")]
 	protected Transform player;
 	protected CharacterController controller;

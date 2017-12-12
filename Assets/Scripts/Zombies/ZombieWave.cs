@@ -42,7 +42,7 @@ public class ZombieWave : MonoBehaviour {
 				}
 				float groundHeight = getGroundHeight( locationObject.transform.position );
 				Vector3 groundPosition = new Vector3( locationObject.transform.position.x, groundHeight, locationObject.transform.position.z );
-				if( zombieMesh != null ) Gizmos.DrawMesh( zombieMesh, groundPosition, Quaternion.Euler( -90f, 180f, 0 )  );
+				if( zombieMesh != null ) Gizmos.DrawMesh( zombieMesh, groundPosition, Quaternion.Euler( -90f, locationObject.transform.eulerAngles.y, 0 )  );
 	
 			}
 			else
