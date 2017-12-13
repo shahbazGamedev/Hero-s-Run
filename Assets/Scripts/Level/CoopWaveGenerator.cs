@@ -25,7 +25,14 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 
 	void Awake ()
 	{
-		Instance = this;
+		if( GameManager.Instance.isCoopPlayMode() )
+		{
+			Instance = this;
+		}
+		else
+		{
+			Destroy( gameObject );
+		}
 	}
 
 	void Start ()
