@@ -292,7 +292,7 @@ public sealed class PlayerController : MonoBehaviour {
 		if( localPlayerCreated != null ) localPlayerCreated( transform, this );
 		Transform cutSceneCamera = transform.Find("CutsceneCamera");
 		Skybox skyBox = (Skybox) cutSceneCamera.GetComponent("Skybox");
-		skyBox.material = LevelManager.Instance.getLevelData().skyBoxMaterial;
+		//skyBox.material = LevelManager.Instance.getLevelData().skyBoxMaterial;
 	}
 
 	void loadPlayerSkin()

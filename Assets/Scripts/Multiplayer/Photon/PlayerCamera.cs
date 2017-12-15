@@ -54,6 +54,7 @@ public class PlayerCamera : Photon.PunBehaviour {
 	public float heightDamping = DEFAULT_HEIGHT_DAMPING;
 
 	public bool isCameraLocked = true;
+	public bool isBeingSpectated = false;
 	
 	private CameraState cameraState = CameraState.Cutscene;
 
@@ -214,7 +215,7 @@ public class PlayerCamera : Photon.PunBehaviour {
 	{
 		if( !isAllowed() ) return;
 		this.isCameraLocked = isCameraLocked;
-		cmvc.enabled = !isCameraLocked;
+		if( cmvc != null ) cmvc.enabled = !isCameraLocked;
 	}
 	
 	public void Shake()
@@ -279,8 +280,8 @@ public class PlayerCamera : Photon.PunBehaviour {
 		}
 		else if( type == CutsceneType.Ziplining )
 		{
-			cutsceneCamera.localPosition = new Vector3( 0.3f, 2.9f, -10f );
-			cutsceneCamera.rotation = Quaternion.Euler( 17f,2.8f, 0f );
+			cutsceneCamera.gameObject.SetActive( true );
+			cutsceneCamera.GetComponent<CinemachineVirtualCamera>().enabled = true;
 		}
 	}
 	
@@ -409,12 +410,9 @@ public class PlayerCamera : Photon.PunBehaviour {
 	{
 		if( !isAllowed() ) return;
 		//Give back control to the main camera
-		resetCameraParameters();
-		mainCamera.transform.position = new Vector3( cutsceneCamera.position.x, cutsceneCamera.transform.position.y, cutsceneCamera.position.z );
-		mainCamera.transform.rotation = Quaternion.Euler( cutsceneCamera.eulerAngles.x, cutsceneCamera.eulerAngles.y, cutsceneCamera.eulerAngles.z );
 		cameraState = CameraState.Normal;
 		cutsceneCamera.gameObject.SetActive( false );
-		cutsceneCamera.transform.parent = transform;
+		cutsceneCamera.GetComponent<CinemachineVirtualCamera>().enabled = false;
 	}
 
 	/// <summary>
@@ -423,6 +421,6 @@ public class PlayerCamera : Photon.PunBehaviour {
 	/// <returns><c>true</c>, if allowed, <c>false</c> otherwise.</returns>
 	bool isAllowed()
 	{
-		return this.photonView.isMine && playerAI == null;
+		return (this.photonView.isMine && playerAI == null) || isBeingSpectated;
 	}
 }

@@ -72,6 +72,7 @@ public class PlayerCoop : MonoBehaviour {
 			yield return new WaitForSeconds( COOP_DELAY_BEFORE_RESURRECTING );
 
 			GetComponent<PlayerControl>().coopResurrectBegin( partner.GetComponent<PlayerControl>().currentTile.name );
+			partner.GetComponent<PlayerCamera>().isBeingSpectated = false;
 		}
 		else
 		{

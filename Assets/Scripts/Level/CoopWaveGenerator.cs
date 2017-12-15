@@ -155,6 +155,7 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 				CinemachineVirtualCamera cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
 				cmvc.m_Follow = partner.transform;
 				cmvc.m_LookAt = partner.transform;
+				partner.GetComponent<PlayerCamera>().isBeingSpectated = true;
 			}
 		}
 	}

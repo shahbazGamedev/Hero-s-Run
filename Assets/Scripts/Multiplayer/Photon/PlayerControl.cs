@@ -296,15 +296,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		//We may not have been spawned in the center lane. Make sure the lane values are accurate.
 		recalculateCurrentLane();
 
-		//We want the cutscene camera which is a child of the player to use the same skybox as the main camera.
-		//The bot does not have a cutscene camera.
-		if( playerAI == null )
-		{
-			Transform cutSceneCamera = transform.Find("CutsceneCamera");
-			Skybox skyBox = cutSceneCamera.GetComponent<Skybox>();
-			skyBox.material = LevelManager.Instance.getLevelData().skyBoxMaterial;
-		}
-
 		//Tell the MasterClient that we are ready to go. Our level has been loaded and our player created.
 		//The MasterClient will initiate the countdown
 		this.photonView.RPC("readyToGo", PhotonTargets.MasterClient );	

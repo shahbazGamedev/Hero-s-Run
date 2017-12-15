@@ -68,7 +68,7 @@ public class LevelData : MonoBehaviour {
 	public const int NUMBER_OF_EPISODES = 9;
 	//This should be the directional light in the scene
 	GameObject Sun;
-	public Material skyBoxMaterial; //needed so that the cutscene camera can access it
+	Material skyBoxMaterial;
 
 	public void initialise()
 	{
