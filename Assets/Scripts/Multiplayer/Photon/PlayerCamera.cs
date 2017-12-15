@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Cinemachine;
+using UnityEngine.PostProcessing;
+using Cinemachine.PostFX;
 
-//If the player starts off on a Start tile, the camera will be looking at the front of player and do a rotation when the player starts running.
-//However, if the player is not on a Start tile and is starting at a Checkpoint, we want the camera to look at the back of the player (and therefore, there is no need for a rotation when the player starts running).
+
 public enum CutsceneType 
 {
 	Start = 0,
@@ -22,6 +23,13 @@ public enum CameraState
 	Locked = 1,
 	Cutscene = 2
 }
+
+public enum PostProcessingProfileType 
+{
+	Blank = 0,
+	Cloak = 1
+}
+
 
 /*
 This camera smoothes out rotation around the y-axis and height.
@@ -67,6 +75,8 @@ public class PlayerCamera : Photon.PunBehaviour {
 
 	CinemachineVirtualCamera cmvc;
 	Coroutine shakeCoroutine;
+	[SerializeField] PostProcessingProfile blank;
+	[SerializeField] PostProcessingProfile cloak;
 
 	PlayerControl playerControl;
 	PlayerAI playerAI;
@@ -82,9 +92,9 @@ public class PlayerCamera : Photon.PunBehaviour {
 		playerControl = GetComponent<PlayerControl>();
 		playerAI = GetComponent<PlayerAI>(); //Null for everyone except bots
 
+		cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
 		if( isAllowed() )
 		{
-			cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
 			cmvc.m_Follow = transform;
 			cmvc.m_LookAt = transform;
 		}
@@ -215,7 +225,7 @@ public class PlayerCamera : Photon.PunBehaviour {
 	{
 		if( !isAllowed() ) return;
 		this.isCameraLocked = isCameraLocked;
-		if( cmvc != null ) cmvc.enabled = !isCameraLocked;
+		cmvc.enabled = !isCameraLocked;
 	}
 	
 	public void Shake()
@@ -413,6 +423,25 @@ public class PlayerCamera : Photon.PunBehaviour {
 		cameraState = CameraState.Normal;
 		cutsceneCamera.gameObject.SetActive( false );
 		cutsceneCamera.GetComponent<CinemachineVirtualCamera>().enabled = false;
+	}
+
+	public void setCameraProfile( PostProcessingProfileType newProfileType )
+	{
+		//print( name + " setCameraProfile " + newProfileType );
+		//We change the main camera (cmvc) only if we're allowed to.
+		//However, we can always change the cutscene camera since all players (including bots) have their own.
+		switch( newProfileType )
+		{
+			case PostProcessingProfileType.Blank:
+				if( isAllowed() ) cmvc.GetComponent<CinemachinePostFX>().m_Profile = blank;
+				cutsceneCamera.GetComponent<CinemachinePostFX>().m_Profile = blank;
+			break;
+
+			case PostProcessingProfileType.Cloak:
+				if( isAllowed() ) cmvc.GetComponent<CinemachinePostFX>().m_Profile = cloak;
+				cutsceneCamera.GetComponent<CinemachinePostFX>().m_Profile = cloak;
+			break;
+		}
 	}
 
 	/// <summary>

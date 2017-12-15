@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityStandardAssets.ImageEffects;
 
 public class CardCloak : Card {
 
@@ -32,8 +31,8 @@ public class CardCloak : Card {
 		playerRun.GetComponent<PlayerSounds>().playSound( soundFx, false );
 		StartCoroutine( playerRun.addVariableSpeedMultiplier( SpeedMultiplierType.Cloak, speedMultiplier, 0.8f ) );
 		StartCoroutine( stopCloaking( spellDuration, playerRun, isMine, isHuman ) );
-		//Only affect the camera for the local non-bot player
-		if( isMine && isHuman ) StartCoroutine( controlSaturation( 0f, 0.8f, playerRun ) );
+ 		playerRun.GetComponent<PlayerCamera>().setCameraProfile( PostProcessingProfileType.Cloak );
+
 		//Hide the player's icon on the minimap
 		MiniMap.Instance.changeAlphaOfRadarObject( playerRun.GetComponent<PlayerControl>(), 0 );
 		//Make the online remote players invisible but not the local player.
@@ -47,39 +46,11 @@ public class CardCloak : Card {
 		yield return new WaitForSeconds( spellDuration );
 		playerRun.GetComponent<PlayerSounds>().playSound( soundFx, false );
 		StartCoroutine( playerRun.removeVariableSpeedMultiplier( SpeedMultiplierType.Cloak, 0.8f ) );
-		//Only affect the camera for the local non-bot player
-		if( isMine && isHuman ) StartCoroutine( controlSaturation( 1f, 0.8f, playerRun ) );
+ 		playerRun.GetComponent<PlayerCamera>().setCameraProfile( PostProcessingProfileType.Blank );
+
 		MiniMap.Instance.changeAlphaOfRadarObject( playerRun.GetComponent<PlayerControl>(), 1f );
 		if( !isMine || !isHuman )  playerRun.GetComponent<PlayerSpell>().makePlayerVisible();
 		playerRun.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Cloak);
-	}
-
-	IEnumerator controlSaturation( float endSaturationLevel, float duration, PlayerRun playerRun )
-	{
-		ColorCorrectionCurves ccc = Camera.main.GetComponent<ColorCorrectionCurves>();
- 		ccc.enabled = true;
-
-		//Also do the cutscene camera which is attached to the player
-		ColorCorrectionCurves ccc_cutscene = playerRun.GetComponent<PlayerCamera>().cutsceneCamera.GetComponent<ColorCorrectionCurves>();
- 		ccc_cutscene.enabled = true;
-
-		float elapsedTime = 0;
-		
-		float startSaturationLevel = ccc.saturation;
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			ccc.saturation = Mathf.Lerp( startSaturationLevel, endSaturationLevel, elapsedTime/duration );
-			ccc_cutscene.saturation = ccc.saturation;
-			yield return new WaitForFixedUpdate();  
-			
-		} while ( elapsedTime < duration );
-		
-		ccc.saturation = endSaturationLevel;
-		if( ccc.saturation == 1f ) ccc.enabled = false;
-
-		ccc_cutscene.saturation = endSaturationLevel;
-		if( ccc_cutscene.saturation == 1f ) ccc_cutscene.enabled = false;
 	}
 	
 }

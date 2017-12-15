@@ -390,19 +390,7 @@ public class PlayerSpell : PunBehaviour {
 	#region Cloak
 	public void cancelCloak()
 	{
-		//Don't change camera settings if you are a bot.
-		if( playerAI == null )
-		{
-			//Reset the color correction curves used by Cloak.
-			ColorCorrectionCurves ccc = Camera.main.GetComponent<ColorCorrectionCurves>();
-	 		ccc.enabled = false;
-			ccc.saturation = 1f;
-
-			//Also reset the cutscene camera
-			ColorCorrectionCurves ccc_cutscene = GetComponent<PlayerCamera>().cutsceneCamera.GetComponent<ColorCorrectionCurves>();
- 			ccc_cutscene.enabled = false;
-			ccc_cutscene.saturation = 1f;
-		}
+		playerRun.GetComponent<PlayerCamera>().setCameraProfile( PostProcessingProfileType.Blank );
 		makePlayerVisible();
 		removeActiveCard( CardName.Cloak );
 	}
