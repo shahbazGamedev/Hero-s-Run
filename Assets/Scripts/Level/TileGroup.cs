@@ -175,7 +175,7 @@ public enum TileGroupType {
 	Desert_Straight_Double = 20003,	//Original_1, Straight, Straight_Double
 	Desert_Zipline = 20004,			//zipline, straight_log
 	Desert_Jump_Pad = 20005,		//Jump_Pad
-	Desert_Bridge = 20006,			//Straight_Slope, Landmark_Broken_Bridge
+	Desert_Bridge = 20006,			//Straight, Straight_Slope, Landmark_Broken_Bridge
 	Desert_Left_Turn = 20007,		//Left
 	Desert_Right_Turn = 20008,		//Right
 	Desert_Log = 20009,				//Straight_Log
