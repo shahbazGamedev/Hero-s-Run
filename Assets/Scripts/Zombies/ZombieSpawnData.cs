@@ -18,7 +18,7 @@ public class ZombieSpawnData : MonoBehaviour {
 	public float spawnDelay = 0;
 	public ZombieSpawnType spawnType = ZombieSpawnType.BurrowUp;
 	//If a coffin is specified, the coffin open animation will be played at the same time as the zombie is spawned
-	public GameObject coffin;
+	public bool addCoffin;
 	//If true, the zombie heads for the player (as opposed to staying in its lane).
 	public bool followsPlayer = false;
 }

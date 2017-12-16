@@ -16,8 +16,8 @@ public sealed class ZombieController : Creature, ICreature {
 
 	Animation legacyAnim;
 	Vector3 forward;
-	float walkSpeed = 2.1f; //good value so feet don't slide
-	float runSpeed = 4.2f; //good value so feet don't slide
+	float walkSpeed = 2f; //good value so feet don't slide
+	float runSpeed = 4f; //good value so feet don't slide
 	public float movementSpeed;
 
 	[SerializeField] List<string> walkTypes = new List<string>();
@@ -375,18 +375,10 @@ public sealed class ZombieController : Creature, ICreature {
 		capsuleCollider.enabled = true;
 		capsuleCollider.attachedRigidbody.useGravity = true;
 		string walkType = selectRandomWalk( ZombieMoveType.Walking );
-		legacyAnim.CrossFade(walkType);
+		legacyAnim.CrossFade("funnierWalk");
 		InvokeRepeating( "groan", Random.Range( 0.1f, 4f), 8f );
-		if( walkType == "crouchMove" || walkType == "crawl" )
-		{
-			setCreatureState( CreatureState.Crawling );
-			movementSpeed = walkSpeed;
-		}
-		else
-		{
-			setCreatureState( CreatureState.Walking );
-			movementSpeed = walkSpeed;
-		}
+		setCreatureState( CreatureState.Walking );
+		movementSpeed = walkSpeed;
 	}
 
 	public void standUpFromBack()

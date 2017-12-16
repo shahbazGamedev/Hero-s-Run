@@ -6,6 +6,7 @@ public class ZombieManager : MonoBehaviour {
 
 	[SerializeField] string zombieBoyPrefabName;
 	[SerializeField] string zombieGirlPrefabName;
+	[SerializeField] string coffinPrefabName;
 	[SerializeField] List<Material> zombieGirlMaterials = new List<Material>(4);
 	[SerializeField] List<Material> zombieBoyMaterials = new List<Material>(4);
 
@@ -76,8 +77,9 @@ public class ZombieManager : MonoBehaviour {
 		{
 			prefabName = zombieGirlPrefabName;
 		}
-		PhotonNetwork.InstantiateSceneObject( prefabName, new Vector3( spawnPosition.x, zombieHeight, spawnPosition.z ), spawnRotation, 0, data );
-	
+		Vector3 zombieSpawnPosition = new Vector3( spawnPosition.x, zombieHeight, spawnPosition.z );
+		PhotonNetwork.InstantiateSceneObject( prefabName, zombieSpawnPosition, spawnRotation, 0, data );
+		if( zsd.addCoffin ) PhotonNetwork.InstantiateSceneObject( coffinPrefabName, zombieSpawnPosition, spawnRotation, 0, null );
 	}
 
 }
