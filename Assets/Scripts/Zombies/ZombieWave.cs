@@ -7,18 +7,18 @@ public class ZombieWave : MonoBehaviour {
 	
 	public List<GameObject> spawnLocations = new List<GameObject>();
 	[SerializeField] Mesh zombieMesh;
+
+	//Important: make sure you display the zombies with the gizmo in the same way that the ZombieManager spawns zombies during the game.
+	//We want the results in the Editor to be the same as in the game. see spawnZombies method in ZombieManager.
 	void OnDrawGizmos ()
 	{
-		GameObject locationObject;
+		Transform spawnLocation;
 		for( int i=0; i < spawnLocations.Count; i++ )
 		{
-			locationObject = spawnLocations[i];
-			if( locationObject != null )
-			{
-				Vector3 relativePos = new Vector3( 0 , 0 , 1f );
-				Vector3 exactPos = locationObject.transform.TransformPoint(relativePos);
-	
-				ZombieSpawnData zsd = locationObject.GetComponent<ZombieSpawnData>();
+			spawnLocation = spawnLocations[i].transform;
+			if( spawnLocation != null )
+			{	
+				ZombieSpawnData zsd = spawnLocation.GetComponent<ZombieSpawnData>();
 				switch (zsd.spawnType)
 				{
 				case ZombieSpawnType.BurrowUp:
@@ -40,30 +40,34 @@ public class ZombieWave : MonoBehaviour {
 					Gizmos.color = Color.magenta;
 					break;
 				}
-				float groundHeight = getGroundHeight( locationObject.transform.position );
-				Vector3 groundPosition = new Vector3( locationObject.transform.position.x, groundHeight, locationObject.transform.position.z );
-				if( zombieMesh != null ) Gizmos.DrawMesh( zombieMesh, groundPosition, Quaternion.Euler( -90f, locationObject.transform.eulerAngles.y, 0 )  );
+				float groundHeight = getGroundHeight( spawnLocation.position );
+				Vector3 groundPosition = new Vector3( spawnLocation.position.x, groundHeight, spawnLocation.position.z );
+				if( zombieMesh != null ) Gizmos.DrawMesh( zombieMesh, groundPosition, Quaternion.Euler( -90f, spawnLocation.eulerAngles.y, 0 )  );
 	
 			}
 			else
 			{
-				Debug.LogWarning("ZombieWave-one of the spawn locations used by " + this.transform.parent.name + " is null." );
+				Debug.LogWarning("ZombieWave-the spawn location at index " + i + " is null." );
 			}
 		}
 	}
 
-	float getGroundHeight( Vector3 startPosition )
+	float getGroundHeight( Vector3 spawnPosition )
 	{
-		//Calculate the ground height
+		//Determine the ground height
 		RaycastHit hit;
-		if (Physics.Raycast( startPosition , Vector3.down, out hit, 10f ))
+		float groundHeight = 0;
+		Vector3 rayCastStart = new Vector3( spawnPosition.x, spawnPosition.y + 10f, spawnPosition.z );
+		if (Physics.Raycast(rayCastStart, Vector3.down, out hit, 20f ))
 		{
-			return  hit.point.y;
+			groundHeight = hit.point.y + 0.05f;
 		}
 		else
 		{
-			return startPosition.y;
+			//Debug.LogWarning("ZombieWave-getGroundHeight - No ground below spawnPosition: " + spawnPosition + ". Keeping original Y value." );
+			groundHeight = spawnPosition.y;
 		}
+		return groundHeight;
 	}
 
 }

@@ -54,12 +54,11 @@ public class ZombieManager : MonoBehaviour {
 		Vector3 rayCastStart = new Vector3( spawnPosition.x, spawnPosition.y + 10f, spawnPosition.z );
 		if (Physics.Raycast(rayCastStart, Vector3.down, out hit, 20f ))
 		{
-			zombieHeight = hit.point.y + 0.09f;
+			zombieHeight = hit.point.y + 0.05f;
 		}
 		else
 		{
-			Debug.LogWarning("ZombieManager-spawnZombie - No solid ground below spawnLocation: " + spawnPosition + ". Not spawning." );
-			yield return null;
+			Debug.LogWarning("ZombieManager-spawnZombie - No solid ground below spawn position: " + spawnPosition );
 		}
 
 		yield return new WaitForSeconds(zsd.spawnDelay);
