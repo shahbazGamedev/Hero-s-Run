@@ -9,8 +9,8 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 	[SerializeField] RectTransform skillBonusHolder;
 	[SerializeField] GameObject skillBonusPrefab;
 	Queue<GameObject> bonusQueue = new Queue<GameObject>();
-	const float BONUS_STAY_TIME = 2.5f; //in seconds
-	const float BONUS_FEED_TTL = 3.4f; //in seconds
+	const float BONUS_STAY_TIME = 2.4f; //in seconds
+	const float BONUS_FEED_TTL = 3.3f; //in seconds
 	float timeOfLastBonus;
 	public static SkillBonusHandler Instance;
 
@@ -153,6 +153,44 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 		else
 		{
 			Debug.LogWarning("SkillBonusHandler-grantScoreBonus: the attacker specified is null. Not granting bonus." );
+		}
+	}
+
+	public void grantComboScoreBonus( int bonusPoints, string bonusTextID, Transform attacker, int numberOfKills, bool incrementKills = true )
+	{
+		if( !GameManager.Instance.isCoopPlayMode() ) return;
+
+		if( attacker != null )
+		{
+			if( attacker.CompareTag("Player") )
+			{
+				PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( attacker.name );
+				if( pmd != null )
+				{
+					//Grants the attacker one kill and the specified bonus points.
+					pmd.score = pmd.score + bonusPoints * numberOfKills;
+					if( incrementKills ) pmd.kills = pmd.kills + numberOfKills;
+					if( attacker.GetComponent<PhotonView>().isMine && attacker.GetComponent<PlayerAI>() == null )
+					{
+						//show a bonus message on the HUD.
+						string localizedSkillText = LocalizationManager.Instance.getText(bonusTextID);
+						localizedSkillText = string.Format( localizedSkillText, bonusPoints * numberOfKills, numberOfKills );
+						createBonus( localizedSkillText );
+					}
+				}
+				else
+				{
+					Debug.LogWarning("SkillBonusHandler-grantComboScoreBonus: the attacker specified doesn't have player match data: " + attacker.name + " .Not granting bonus." );
+				}
+			}
+			else
+			{
+				Debug.LogWarning("SkillBonusHandler-grantComboScoreBonus: the attacker specified is not a player: " + attacker.name + " .Not granting bonus." );
+			}
+		}
+		else
+		{
+			Debug.LogWarning("SkillBonusHandler-grantComboScoreBonus: the attacker specified is null. Not granting bonus." );
 		}
 	}
 	#endregion

@@ -390,7 +390,7 @@ public sealed class SkeletonController : Creature, ICreature {
 	public new void knockback(  Transform attacker )
 	{
 		StopCoroutine( wakeUp(0) );
-		base.knockback( attacker );
+		base.knockback( attacker, false );
 		anim.CrossFadeInFixedTime( "death", CROSS_FADE_DURATION );
 		Debug.Log("Skeleton PlayerStateChange - knockback " + gameObject.name + " " + creatureState );
 	}

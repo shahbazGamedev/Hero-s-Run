@@ -80,7 +80,7 @@ public class ForceField : CardSpawnedObject {
 			{
 				SkillBonusHandler.Instance.grantScoreBonus( 25, "COOP_SCORE_BONUS_FORCE_FIELD", casterTransform );
 				ICreature creatureController = other.GetComponent<ICreature>();
-				creatureController.knockback( casterTransform );
+				creatureController.knockback( casterTransform, false );
 			}
 		}
  		else

@@ -110,7 +110,7 @@ public class MultiplayerProjectile : CardSpawnedObject {
 
 	        case MaskHandler.creatureLayer:
 				valid = true;
-				if( potentialTarget.GetComponent<ICreature>() != null ) potentialTarget.GetComponent<ICreature>().knockback( casterTransform );
+				if( potentialTarget.GetComponent<ICreature>() != null ) potentialTarget.GetComponent<ICreature>().knockback( casterTransform, true );
                break;
 		}
 		if( valid )

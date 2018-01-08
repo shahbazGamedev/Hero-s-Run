@@ -3,7 +3,7 @@ using System.Collections;
 
 public interface ICreature
 {
-	void knockback( Transform caster );
+	void knockback( Transform caster, bool grantPoints );
 	CreatureState getCreatureState();
 	void sideCollision();
 	void victory( bool playWinSound );

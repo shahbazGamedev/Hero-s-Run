@@ -101,13 +101,13 @@ public class Creature : MonoBehaviour {
 		gameObject.SetActive( false );
 	}
 
-	public virtual void knockback( Transform attacker )
+	public virtual void knockback( Transform attacker, bool grantPoints )
 	{
 		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
 
 		if( attacker != null )
 		{
-			GetComponent<PhotonView>().RPC("knockbackRPC", PhotonTargets.All, attacker.GetComponent<PhotonView>().viewID );
+			GetComponent<PhotonView>().RPC("knockbackRPC", PhotonTargets.All, attacker.GetComponent<PhotonView>().viewID, grantPoints );
 		}
 		else
 		{

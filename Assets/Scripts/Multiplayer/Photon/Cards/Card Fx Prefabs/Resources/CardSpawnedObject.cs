@@ -275,8 +275,18 @@ public class CardSpawnedObject : MonoBehaviour {
 		}
 	}
 
-	protected void destroyAllTargetsWithinBlastRadius( float blastRadius, int mask, Transform caster = null )
+	/// <summary>
+	/// Destroys all valid targets within the blast radius.
+	/// </summary>
+	/// <returns>The number of players or zombies affected by the blast.</returns>
+	/// <param name="blastRadius">Blast radius.</param>
+	/// <param name="mask">Mask.</param>
+	/// <param name="caster">Caster.</param>
+	protected int destroyAllTargetsWithinBlastRadius( float blastRadius, int mask, Transform caster = null )
 	{
+		//number of players or zombies (in coop) successfully targeted by this blast.
+		int numberOfBlastVictims = 0;
+
 		//To add a dramatic effect, make all of the objects that have the Movable layer and a rigidbody move because of the shockwave.
 		//Also affect level destructible objects.
 		float halfRadius = blastRadius * 0.5f;
@@ -306,14 +316,17 @@ public class CardSpawnedObject : MonoBehaviour {
 		{
 			if( isTargetValid( hitColliders[i].transform ) )
 			{
-				destroyValidTarget( hitColliders[i].transform, blastRadius, caster );
+				bool isPlayerOrCreature = destroyValidTarget( hitColliders[i].transform, blastRadius, caster );
+				if( isPlayerOrCreature ) numberOfBlastVictims++;
 			}
 		}
+		return numberOfBlastVictims;
 	}
 
-	void destroyValidTarget( Transform potentialTarget, float blastRadius, Transform caster = null )
+	bool destroyValidTarget( Transform potentialTarget, float blastRadius, Transform caster = null )
 	{
 		bool valid = false;
+		bool isPlayerOrCreature = false;
    		switch (potentialTarget.gameObject.layer)
 		{
 			case MaskHandler.playerLayer:
@@ -326,6 +339,7 @@ public class CardSpawnedObject : MonoBehaviour {
 					{
 						valid = true;
 						assessPlayerDamage( potentialTarget, blastRadius, caster );
+						isPlayerOrCreature = true;
 					}
 				}
 				break;
@@ -344,13 +358,15 @@ public class CardSpawnedObject : MonoBehaviour {
 
 	        case MaskHandler.creatureLayer:
 				valid = true;
-				potentialTarget.GetComponent<ICreature>().knockback( caster );
+				potentialTarget.GetComponent<ICreature>().knockback( caster, false );
+				isPlayerOrCreature = true;
                break;
 		}
 		if( valid )
 		{
 			 Debug.Log("destroyValidTarget " + potentialTarget.name );
-		}		
+		}
+		return isPlayerOrCreature;		
 	}
 
 	//If the player-to-explosion distance is within MAXIMUM_IMPACT_DISTANCE_PERCENTAGE of the blast radius, the player gets maximum damage.

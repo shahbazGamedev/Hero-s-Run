@@ -10,6 +10,7 @@ public class TripMine : CardSpawnedObject {
 	
 	[SerializeField] ParticleSystem explosionEffect;
 	float blastRadius;
+	bool hasBeenTriggered = false;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
@@ -45,6 +46,8 @@ public class TripMine : CardSpawnedObject {
 
 	void OnTriggerEnter(Collider other)
 	{
+		 if( hasBeenTriggered ) return;
+
 		if( GameManager.Instance.isCoopPlayMode() )
 		{
 	 		if( other.CompareTag("Zombie") )
@@ -68,13 +71,22 @@ public class TripMine : CardSpawnedObject {
 
 	void startDetonationCountdown()
 	{
+		hasBeenTriggered = true;
 		GetComponent<AudioSource>().Play();
 		Invoke( "detonate", 0.94f ); //the bomb beeps lasts 0.94 seconds
 	}
 
 	void detonate()
 	{
-		destroyAllTargetsWithinBlastRadius( blastRadius, MaskHandler.getMaskAll(), casterTransform );
+		int numberOfBlastVictims = destroyAllTargetsWithinBlastRadius( blastRadius, MaskHandler.getMaskAll(), casterTransform );
+		if( numberOfBlastVictims == 1 )
+		{
+			SkillBonusHandler.Instance.grantComboScoreBonus( ZombieController.SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_TOPPLED_ZOMBIE", casterTransform, numberOfBlastVictims );
+		}
+		else if( numberOfBlastVictims > 1 )
+		{
+			SkillBonusHandler.Instance.grantComboScoreBonus( ZombieController.SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_COMBO_ZOMBIE", casterTransform, numberOfBlastVictims );
+		}
 		explode();
 		GameObject.Destroy( gameObject );
 	}

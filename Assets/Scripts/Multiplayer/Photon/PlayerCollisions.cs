@@ -163,7 +163,7 @@ public class PlayerCollisions : Photon.PunBehaviour {
 			//You can't make a crawling zombie fall backwards
 			if( ( playerControl.getCharacterState() == PlayerCharacterState.Sliding || playerControl.getCharacterState() == PlayerCharacterState.Turning_and_sliding || playerSpell.isRagingBullActive ) && zombieController.getCreatureState() != CreatureState.Crawling )
 			{
-				zombieController.knockback( transform );	
+				zombieController.knockback( transform, true );	
 			}
 			else
 			{

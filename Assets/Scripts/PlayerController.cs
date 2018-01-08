@@ -1966,7 +1966,7 @@ public sealed class PlayerController : MonoBehaviour {
 						//Display coin total picked up icon
 						//HUDHandler.hudHandler.displayCoinPickup( ZombieManager.NUMBER_STARS_PER_ZOMBIE );
 
-						zombieController.knockback( transform );
+						zombieController.knockback( transform, false );
 						
 					}
 					else
@@ -2179,7 +2179,7 @@ public sealed class PlayerController : MonoBehaviour {
 				//Display coin total picked up icon
 				//HUDHandler.hudHandler.displayCoinPickup( CreatureManager.NUMBER_SOFT_CURRENCY_PER_CREATURE );
 
-				creature.knockback( transform );
+				creature.knockback( transform, false );
 				
 			}
 			else
