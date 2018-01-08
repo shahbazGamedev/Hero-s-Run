@@ -8,6 +8,8 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 
 	#region Waves
 	[SerializeField] List<GameObject> waveList = new List<GameObject>();
+	[SerializeField] List<GameObject> waveTriggerList = new List<GameObject>();
+	public int overrideStartPosition = 0; //for testing only
 	public static int numberOfWavesTriggered = 0;
 	public delegate void CoopNewWave( int waveNumber );
 	public static event CoopNewWave coopNewWave;
@@ -39,7 +41,14 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 	{
 		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
 		zombieManager = GameObject.FindObjectOfType<ZombieManager>();
-		numberOfWavesTriggered = 0; //important to reset since this is a static value.
+		if( CoopWaveGenerator.Instance.overrideStartPosition > 0 )
+		{
+			numberOfWavesTriggered = CoopWaveGenerator.Instance.overrideStartPosition + 1; //important to reset since this is a static value.
+		}
+		else
+		{
+			numberOfWavesTriggered = 0;
+		}
 	}
 
 	#region Waves
@@ -195,4 +204,9 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayCoopResultsAndEmotesScreen( 0.25f ) );
 	}
 	#endregion
+
+	public Transform getOverrideStartPosition()
+	{
+		return waveTriggerList[ overrideStartPosition ].transform;
+	}
 }

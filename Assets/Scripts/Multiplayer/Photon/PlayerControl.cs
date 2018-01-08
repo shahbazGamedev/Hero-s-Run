@@ -131,7 +131,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	//The state of the character i.e. running, jumping, sliding, etc.
 	public PlayerCharacterState playerCharacterState;
 	//True if the player is allowed to move, false otherwise. This flag is useful during camera cut-scenes to prevent the player from moving.
-	bool playerMovementEnabled = true;
+	bool playerMovementEnabled = false;
  	//Are inputs allowed?
 	bool playerControlsEnabled = false;
 	#endregion
@@ -163,7 +163,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	Lanes desiredLane = Lanes.Center;
 	int myLane = 0; //0 is uninitialized, 1 is the nearest, 2 is in the center and 3 is the furthest
 	public float sideMoveSpeed = 5.8f; //At what speed do you change lanes.
-	Vector3 playerPositionWhenSideMoveStarted;
 	#endregion
 
 	#region Turning corners variables
@@ -281,7 +280,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Calculate the ground height
 		RaycastHit hit;
 
-		if (Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, out hit, 10f ))
+		if (Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, out hit, 50f ))
 		{
 			transform.position = new Vector3( transform.position.x, hit.point.y, transform.position.z);
 			//Debug.Log( "There is ground underneath the player on Start. The collider is: " + hit.collider.name + " at height: " + hit.point.y );
@@ -332,6 +331,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//When the GameState is NORMAL, we display the HUD
 		if( this.photonView.isMine && playerAI == null ) GameManager.Instance.setGameState( GameState.Normal );
 
+		enablePlayerMovement( true );
 		enablePlayerControl( true );
 	}
 

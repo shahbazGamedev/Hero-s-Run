@@ -518,7 +518,14 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		previousTilePos = tilePos;
 		previousTileRot = tileRot;
 		if( !GameManager.Instance.isMultiplayer() ) powerUpManager.considerAddingPowerUp( go, tileCreationIndex );
-		go.SetActive( false );
+		if (CoopWaveGenerator.Instance != null && CoopWaveGenerator.Instance.overrideStartPosition > 0 )
+		{
+			go.SetActive( true );
+		}
+		else
+		{
+			go.SetActive( false );
+		}
 		worldRoadSegments.Add( go );
 		si.tileIndex = tileCreationIndex;
 		tileCreationIndex++;
