@@ -121,7 +121,7 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.O ) )
 		{
-			playerControl.playOmniToolAnimation( CardName.Firewall );
+			playerControl.playOmniToolAnimation( CardName.Homing_Missile );
 		}
 		else if ( Input.GetKeyDown (KeyCode.T ) )
 		{

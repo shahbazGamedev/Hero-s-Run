@@ -68,6 +68,42 @@ public class CardSpawnedObject : MonoBehaviour {
 		return caster;
 	}
 
+	protected float getHeightAdjusment( GameObject target )
+	{
+		float heightAdjustment = 0;
+		if( target.CompareTag("Player") )
+		{
+			PlayerControl pc = target.GetComponent<PlayerControl>();
+
+			if( pc.getCharacterState() == PlayerCharacterState.Sliding || pc.getCharacterState() == PlayerCharacterState.Turning_and_sliding )
+			{
+				//The player is sliding.
+				heightAdjustment = 0.3f;
+			}
+			else
+			{
+				//The transform position of the player is at his feet. Let's aim at his torso.
+				heightAdjustment = 1.2f;
+			}
+		}
+		else if( target.CompareTag("Zombie") )
+		{
+			ZombieController zc = target.GetComponent<ZombieController>();
+
+			if( zc.getCreatureState() == CreatureState.Crawling )
+			{
+				//The zombie is crawling.
+				heightAdjustment = 0.3f;
+			}
+			else
+			{
+				//The transform position of the zombie is at his feet. Let's aim at his torso.
+				heightAdjustment = 1.2f;
+			}
+		}
+		return heightAdjustment; 
+	}
+
 	protected void addSkillBonus( int skillPoints, string skillTextID )
 	{
 		if( casterTransform != null )
@@ -171,15 +207,15 @@ public class CardSpawnedObject : MonoBehaviour {
 	{
 	}
 
-	protected Transform getNearestTargetWithinRange( float range, int mask )
+	protected Transform getNearestTargetWithinRange( float range, int mask, bool useDotProduct )
 	{
 		Transform nearestTarget;
 		Collider[] hitColliders = Physics.OverlapSphere( transform.position, range, mask );
-		nearestTarget = getNearestValidTarget( hitColliders );
+		nearestTarget = getNearestValidTarget( hitColliders, useDotProduct );
 		return nearestTarget;
 	}
 
-	Transform getNearestValidTarget( Collider[] hitColliders )
+	Transform getNearestValidTarget( Collider[] hitColliders, bool useDotProduct )
 	{
 		Transform nearestTarget = null;
 		float nearestDistance = Mathf.Infinity;
@@ -187,6 +223,8 @@ public class CardSpawnedObject : MonoBehaviour {
 		{
 			//Is the target valid?
 			if( !isTargetValid( hitColliders[i].transform ) ) continue;
+
+			if( useDotProduct && !getDotProduct( hitColliders[i].transform.position ) ) continue;
 
 			//Calculate the distance between this object and the potential target.
 			float distanceToTarget = Vector3.Distance( transform.position, hitColliders[i].transform.position );

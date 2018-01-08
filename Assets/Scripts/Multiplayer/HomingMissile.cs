@@ -13,11 +13,10 @@ public class HomingMissile : CardSpawnedObject {
 	[SerializeField] ParticleSystem inFlightParticleSystem;
 	[SerializeField] ParticleSystem impactParticleSystem;
 	float missileVelocity = 42f;
-	//Important: if the turn value is too small, you may see the missile spin around the target without ever hitting it because the turn radius is too big.
-	//A turn value of 24 for a missile velocity of 40 works well.
-	float turn = 24f;
+	float maxDegreesDelta = 15f;
 	Rigidbody homingMissile;
 	Transform target;
+	float heightAdjustment = 0;
 	PlayerControl targetPlayerControl;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
@@ -38,8 +37,12 @@ public class HomingMissile : CardSpawnedObject {
 		yield return new WaitForSeconds(0.35f);
 
 		homingMissile = GetComponent<Rigidbody>();
-		target = getNearestTargetWithinRange( Mathf.Infinity, MaskHandler.getMaskWithPlayersWithCreatures() );
-		if( target != null ) targetPlayerControl = target.GetComponent<PlayerControl>();
+		target = getNearestTargetWithinRange( Mathf.Infinity, MaskHandler.getMaskWithPlayersWithCreatures(), true );
+		if( target != null )
+		{
+			targetPlayerControl = target.GetComponent<PlayerControl>();
+			heightAdjustment = getHeightAdjusment( target.gameObject );
+		}
 		//if( target != null ) print("Homing Missile target is " + target.name );
 		homingMissile.isKinematic = false;
 		if( inFlightParticleSystem != null ) inFlightParticleSystem.gameObject.SetActive(true);
@@ -68,8 +71,8 @@ public class HomingMissile : CardSpawnedObject {
 		{
 			homingMissile.velocity = transform.forward * missileVelocity;
 			//Aim for the torso, not the feet
-			Quaternion targetRotation = Quaternion.LookRotation( new Vector3( target.position.x, target.position.y + 1.4f, target.position.z ) - transform.position ); 
-			homingMissile.MoveRotation( Quaternion.RotateTowards( transform.rotation, targetRotation, turn ) );
+			Quaternion targetRotation = Quaternion.LookRotation( new Vector3( target.position.x, target.position.y + heightAdjustment, target.position.z ) - transform.position ); 
+			homingMissile.MoveRotation( Quaternion.RotateTowards( transform.rotation, targetRotation, maxDegreesDelta ) );
 		}
 	}
 
@@ -83,10 +86,9 @@ public class HomingMissile : CardSpawnedObject {
 		{
 			impactParticleSystem.transform.SetParent( null );
 			impactParticleSystem.gameObject.SetActive(true);
-			GameObject.Destroy( impactParticleSystem.gameObject, 5f );
 		}
 
-		int numberOfBlastVictims = destroyAllTargetsWithinBlastRadius( 15f, MaskHandler.getMaskAllWithoutDevices(), casterTransform );
+		int numberOfBlastVictims = destroyAllTargetsWithinBlastRadius( 10f, MaskHandler.getMaskAllWithoutDevices(), casterTransform );
 		if( numberOfBlastVictims == 1 )
 		{
 			SkillBonusHandler.Instance.grantComboScoreBonus( ZombieController.SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_TOPPLED_ZOMBIE", casterTransform, numberOfBlastVictims );

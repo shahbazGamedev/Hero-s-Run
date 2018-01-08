@@ -109,7 +109,7 @@ public class SentryController : CardSpawnedObject {
 		{
 			if( spawnedObjectState == SpawnedObjectState.Functioning )
 			{
-				nearestTarget = getNearestTargetWithinRange( aimRange, MaskHandler.getMaskWithPlayersWithCreatures() );
+				nearestTarget = getNearestTargetWithinRange( aimRange, MaskHandler.getMaskWithPlayersWithCreatures(), false );
 			}
 		}
 	}
