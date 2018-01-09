@@ -84,7 +84,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		debugInfoType = GameManager.Instance.playerDebugConfiguration.getDebugInfoType();
 		debugInfo.gameObject.SetActive( debugInfoType != DebugInfoType.NONE );
 		fpsCalculator = GetComponent<FPSCalculator>();
-		fpsCalculator.enabled = (debugInfoType == DebugInfoType.FPS || debugInfoType == DebugInfoType.FRAME_RATE_TEST );
+		fpsCalculator.enabled = (debugInfoType == DebugInfoType.FPS || debugInfoType == DebugInfoType.FRAME_RATE_TEST || debugInfoType == DebugInfoType.DONT_SPAWN_ZOMBIES );
 
 		userMessageText.gameObject.SetActive( false );
 		goMessageText.gameObject.SetActive( false );
@@ -384,6 +384,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		StringBuilder infoToDisplay = new StringBuilder();
 		switch( debugInfoType )
 		{
+			case DebugInfoType.DONT_SPAWN_ZOMBIES:
 			case DebugInfoType.FRAME_RATE_TEST:
 			case DebugInfoType.FPS:
 				infoToDisplay.Append( " FPS: " );
