@@ -352,8 +352,8 @@ public sealed class PlayerRace : Photon.PunBehaviour
 
 		if( this.photonView.isMine && playerAI == null )
 		{
-			//If the player has won, display a victory message.
-			if( racePosition == 0 )
+			//If the player has won, display a victory message (but not in coop).
+			if( racePosition == 0 && !GameManager.Instance.isCoopPlayMode() )
 			{
 				string victory = LocalizationManager.Instance.getText("RACE_VICTORY");
 				HUDMultiplayer.hudMultiplayer.activateUserMessage( victory, 0, 2.25f );

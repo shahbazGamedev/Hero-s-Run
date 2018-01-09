@@ -3,7 +3,7 @@ guid: 316539d5969d20e488f45e22f6a6c49c
 timeCreated: 1507298993
 licenseType: Free
 ModelImporter:
-  serializedVersion: 21
+  serializedVersion: 22
   fileIDToRecycleName:
     100000: //RootNode
     100002: Desert_Track01_Ground
@@ -127,10 +127,22 @@ ModelImporter:
     4300042: Plane017
     4300044: Plane018
     4300046: Plane019
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: DesertGroundAtlas
+    second: {fileID: 2100000, guid: cc424cb9b038c494a957c7efe6dffc33, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: DesertRoad
+    second: {fileID: 2100000, guid: 44645a2fc10597745bc595fe0d77cbc9, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
@@ -143,6 +155,7 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
@@ -155,7 +168,7 @@ ModelImporter:
   meshes:
     lODScreenPercentages: []
     globalScale: 1
-    meshCompression: 0
+    meshCompression: 1
     addColliders: 0
     importVisibility: 1
     importBlendShapes: 1

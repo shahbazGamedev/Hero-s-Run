@@ -288,24 +288,38 @@ public sealed class LevelNetworkingManager : PunBehaviour
 	{
 		if( PhotonNetwork.isMasterClient )
 		{
-			PhotonView playerPhotonView = playerRace.GetComponent<PhotonView>();
-
-			playerPhotonView.RPC("OnRaceCompletedRPC", PhotonTargets.AllViaServer, raceDuration );
-
-			if( !playersWhoHaveCrossedTheFinishLine.Contains(playerRace) ) playersWhoHaveCrossedTheFinishLine.Add( playerRace );
-
-			Debug.Log ("playerHasCrossedFinishLine " + gameObject.name + " in race position " + playerRace.racePosition + " players " + PlayerRace.players.Count);
-
-			//if this is the first player to cross the finish line, start the End of Race countdown, but only if there is more than 1 player in the race.
-			if( playersWhoHaveCrossedTheFinishLine.Count == 1 &&  PlayerRace.players.Count > 1 )
+			if( GameManager.Instance.isCoopPlayMode() )
 			{
-				playerPhotonView.RPC("StartEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
+				if( PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED )
+				{
+					CoopWaveGenerator.Instance.photonView.RPC("coopGameOverRPC", PhotonTargets.All );
+					PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
+				}
+
+				PhotonView playerPhotonView = playerRace.GetComponent<PhotonView>();
+				playerPhotonView.RPC("OnRaceCompletedRPC", PhotonTargets.AllViaServer, raceDuration );
 			}
-			else if( playersWhoHaveCrossedTheFinishLine.Count ==  PlayerRace.players.Count )
+			else
 			{
-				//Every player has crossed the finish line. We can stop the countdown and return everyone to the lobby.
-				PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
-				playerPhotonView.RPC("CancelEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
+				PhotonView playerPhotonView = playerRace.GetComponent<PhotonView>();
+	
+				playerPhotonView.RPC("OnRaceCompletedRPC", PhotonTargets.AllViaServer, raceDuration );
+	
+				if( !playersWhoHaveCrossedTheFinishLine.Contains(playerRace) ) playersWhoHaveCrossedTheFinishLine.Add( playerRace );
+	
+				Debug.Log ("playerHasCrossedFinishLine " + gameObject.name + " in race position " + playerRace.racePosition + " players " + PlayerRace.players.Count);
+	
+				//if this is the first player to cross the finish line, start the End of Race countdown, but only if there is more than 1 player in the race.
+				if( playersWhoHaveCrossedTheFinishLine.Count == 1 &&  PlayerRace.players.Count > 1 )
+				{
+					playerPhotonView.RPC("StartEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
+				}
+				else if( playersWhoHaveCrossedTheFinishLine.Count ==  PlayerRace.players.Count )
+				{
+					//Every player has crossed the finish line. We can stop the countdown and return everyone to the lobby.
+					PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
+					playerPhotonView.RPC("CancelEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
+				}
 			}
 		}
 	}
