@@ -186,7 +186,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	public float tileRotationY = 0; //Since we use this value often, we will store it.
 	//This flag is used to avoid entrance crossed being called multiple times which can happen with OnTriggerEnter
 	bool wasEntranceCrossed = false;
-	public int tileIndex;
+	public int tileIndex; //The index of the tile the player is currently on.
  	#endregion
 
 	#region Death variables
@@ -223,7 +223,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Related to distance remaining
-	public float tileDistanceTraveled = 0; //Note that this value is NOT updated for bots.
+	public float tileDistanceTraveled = 0;
 	#endregion
 
 	#region OmniTool
@@ -2261,6 +2261,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			currentTile = hit.collider.transform.root.gameObject;
 			currentTilePos = currentTile.transform.position;
 			tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
+			tileIndex = currentTile.GetComponent<SegmentInfo>().tileIndex;
 			//if( previousCurrenTileName != currentTile.name ) Debug.LogWarning( "PlayerControl-positionSynchronizationRPC: tile changed after sync. Old tile: " + previousCurrenTileName + " New: " + currentTile.name );
 		}
 		else

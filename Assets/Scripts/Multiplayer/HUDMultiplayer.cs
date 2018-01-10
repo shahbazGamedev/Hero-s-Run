@@ -16,7 +16,8 @@ public enum DebugInfoType
 	FRAME_RATE_TEST = 4,
 	EMOTES_TEST = 5,
 	DONT_SPAWN_ZOMBIES = 6,
-	SHOW_RUN_SPEED = 7
+	SHOW_RUN_SPEED = 7,
+	RACE_POSITION = 8
 }
 
 public class HUDMultiplayer : MonoBehaviour {
@@ -408,6 +409,10 @@ public class HUDMultiplayer : MonoBehaviour {
 				infoToDisplay.Append( " Local player run speed: " );
 				infoToDisplay.Append( localPlayerRun.getRunSpeed() );
 			break;
+
+			case DebugInfoType.RACE_POSITION:
+				infoToDisplay.Append( getRacePositionsForAllPlayers() );
+			break;
 		}
 		return infoToDisplay.ToString();
 	}
@@ -417,12 +422,35 @@ public class HUDMultiplayer : MonoBehaviour {
 		StringBuilder infoForAllPlayers = new StringBuilder();
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
-			infoForAllPlayers.Append( " ");
+			infoForAllPlayers.Append( " " );
 		 	infoForAllPlayers.Append( PlayerRace.players[i].name );
 			infoForAllPlayers.Append( " isMine: " );
 			infoForAllPlayers.Append( PlayerRace.players[i].GetComponent<PhotonView>().isMine );
 			infoForAllPlayers.Append( " " );
 			infoForAllPlayers.Append( PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() );
+		}
+		return infoForAllPlayers.ToString();
+	}
+
+	string getRacePositionsForAllPlayers()
+	{
+		StringBuilder infoForAllPlayers = new StringBuilder();
+		for( int i = 0; i < PlayerRace.players.Count; i++ )
+		{
+			infoForAllPlayers.Append( " " );
+		 	infoForAllPlayers.Append( "<color=#FF396D>" );
+		 	infoForAllPlayers.Append( PlayerRace.players[i].name );
+		 	infoForAllPlayers.Append( "</color>" );
+			infoForAllPlayers.Append( " Tile Index: " );
+			infoForAllPlayers.Append( PlayerRace.players[i].GetComponent<PlayerControl>().tileIndex );
+			infoForAllPlayers.Append( " POS: " );
+		 	infoForAllPlayers.Append( "<color=#FF396D>" );
+			infoForAllPlayers.Append( PlayerRace.players[i].racePosition + 1 );
+		 	infoForAllPlayers.Append( "</color>" );
+			infoForAllPlayers.Append( " This Tile: " );
+			infoForAllPlayers.Append( PlayerRace.players[i].distanceTravelledOnThisTile.ToString( "N0" ) );
+			infoForAllPlayers.Append( " Previous Tiles: " );
+			infoForAllPlayers.Append( PlayerRace.players[i].GetComponent<PlayerControl>().tileDistanceTraveled );
 		}
 		return infoForAllPlayers.ToString();
 	}
