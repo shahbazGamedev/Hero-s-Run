@@ -434,12 +434,12 @@ public class CardHandler : MonoBehaviour {
 
 	bool isCasterLeading( PlayerRace caster )
 	{
-		bool isLeading = true;
+		bool isLeading = false;
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
 			//Ignore the caster
 			if( PlayerRace.players[i] == caster ) continue;
-			if( PlayerRace.players[i].racePosition < caster.racePosition ) return false;
+			if( caster.racePosition < PlayerRace.players[i].racePosition  ) isLeading = true;
 		}
 		return isLeading;
 	}
