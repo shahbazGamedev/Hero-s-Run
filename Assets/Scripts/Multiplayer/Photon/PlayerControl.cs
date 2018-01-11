@@ -2153,8 +2153,6 @@ public class PlayerControl : Photon.PunBehaviour {
 					//The distance traveled for all previous tiles is maintained by PlayerControl because it gets updated each time an entrance is crossed.
 					//The distance traveled on the current tile is maintained in PlayerRace.
 					playerRace.distanceTravelledOnThisTile = 0;
-					int previousTileDepth = currentTile.GetComponent<SegmentInfo>().tileDepth;
-					TileType previousTileType = currentTile.GetComponent<SegmentInfo>().tileType;
 					currentTilePos = si.transform.position;
 					currentTile = si.gameObject;
 					tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
