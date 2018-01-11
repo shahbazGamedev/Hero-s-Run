@@ -1903,6 +1903,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		currentTilePos = tileWherePlayerDiedGameObject.transform.position;
 		tileRotationY = Mathf.Floor ( tileWherePlayerDiedGameObject.transform.eulerAngles.y );
 		tileIndex = tileWherePlayerDiedGameObject.GetComponent<SegmentInfo>().tileIndex;
+		tileDistanceTraveled = generateLevel.getLevelLength( tileIndex );
 
 		GameObject respawnLocationObject = tileWherePlayerDiedGameObject.transform.Find("respawnLocation").gameObject;
 
@@ -2145,7 +2146,8 @@ public class PlayerControl : Photon.PunBehaviour {
 					wasEntranceCrossed = true;
 					StartCoroutine( resetEntranceCrossed() );
 					generateLevel.tileEntranceCrossed( other.transform.parent );
-					tileIndex++;
+					tileIndex = si.tileIndex;
+					tileDistanceTraveled = generateLevel.getLevelLength( tileIndex );
 					//The distance remaining displayed on the HUD and stored in PlayerRace is equal to: The length of the level - the total distance traveled by the player.
 					//The total distance traveled by the player is equal to the distance traveled for all previous tiles plus the distance traveled on the current tile.
 					//The distance traveled for all previous tiles is maintained by PlayerControl because it gets updated each time an entrance is crossed.
@@ -2153,15 +2155,6 @@ public class PlayerControl : Photon.PunBehaviour {
 					playerRace.distanceTravelledOnThisTile = 0;
 					int previousTileDepth = currentTile.GetComponent<SegmentInfo>().tileDepth;
 					TileType previousTileType = currentTile.GetComponent<SegmentInfo>().tileType;
-					//Note: see Teleporter class for how teleporters affect tile distance traveled
-					if( previousTileType == TileType.Start )
-					{
-						tileDistanceTraveled = tileDistanceTraveled + GenerateLevel.tileSize * 0.5f;
-					}
-					else
-					{
-						tileDistanceTraveled = tileDistanceTraveled + GenerateLevel.tileSize * previousTileDepth;
-					}
 					currentTilePos = si.transform.position;
 					currentTile = si.gameObject;
 					tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
@@ -2262,7 +2255,16 @@ public class PlayerControl : Photon.PunBehaviour {
 			currentTilePos = currentTile.transform.position;
 			tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
 			tileIndex = currentTile.GetComponent<SegmentInfo>().tileIndex;
+			tileDistanceTraveled = generateLevel.getLevelLength( tileIndex );
+
 			//if( previousCurrenTileName != currentTile.name ) Debug.LogWarning( "PlayerControl-positionSynchronizationRPC: tile changed after sync. Old tile: " + previousCurrenTileName + " New: " + currentTile.name );
+
+			//Recalculate the distance travelled on this tile. Ignore Y in the distance calculation.
+			Transform tileEntrance = currentTile.transform.Find("Entrance");
+			Vector3 tileEntrancePosition = new Vector3( tileEntrance.position.x, 0, tileEntrance.position.z );
+			Vector3 playerPosition = new Vector3( transform.position.x, 0, transform.position.z );
+			float distanceTravelledOnThisTile = Vector3.Distance( tileEntrancePosition, playerPosition );
+			playerRace.distanceTravelledOnThisTile = distanceTravelledOnThisTile;
 		}
 		else
 		{

@@ -948,4 +948,32 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		return tileCreationIndex - 1;
 	}
 	
+	/// <summary>
+	/// Return the length of all of the tiles up to (but excluding) tileIndex.
+	/// Expected behavior: 
+	/// If you pass a tileIndex of 0, the value will be 0.
+	/// If you pass a tileIndex of 1, assuming the first tile is the Start tile, the value will be 25.
+	/// If you pass a tileIndex of 2, assuming the first tile is the Start tile and the subsequent tile is of double length, the value will be 125.
+	/// Etc.
+	/// </summary>
+	/// <returns>The length of all of the tiles up to (but excluding) tileIndex.</returns>
+	/// <param name="tileIndex">Tile index.</param>
+	public float getLevelLength( int tileIndex )
+	{
+		float levelLength = 0;
+		for( int i = 1; i <= tileIndex; i++ )
+		{
+			SegmentInfo si = worldRoadSegments[i-1].GetComponent<SegmentInfo>(); //we want the previous tile, hence the -1.
+			if( si.tileType == TileType.Start )
+			{
+				//The player starts in the center of the Start tile. That's why we're multiplying by 0.5f.
+				levelLength = levelLength + tileSize * 0.5f;
+			}
+			else
+			{
+				levelLength = levelLength + tileSize * si.tileDepth;
+			}
+		}
+		return levelLength;
+	}
 }
