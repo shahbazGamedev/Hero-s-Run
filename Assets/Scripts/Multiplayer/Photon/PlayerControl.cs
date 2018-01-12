@@ -1898,13 +1898,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Use the name of the tile sent when the player died.
 		GameObject tileWherePlayerDiedGameObject = GameObject.Find( tileWherePlayerDied );
 
-		//Now, make sure to update these local values based on the tile that was sent.
-		currentTile = tileWherePlayerDiedGameObject;
-		currentTilePos = tileWherePlayerDiedGameObject.transform.position;
-		tileRotationY = Mathf.Floor ( tileWherePlayerDiedGameObject.transform.eulerAngles.y );
-		tileIndex = tileWherePlayerDiedGameObject.GetComponent<SegmentInfo>().tileIndex;
-		tileDistanceTraveled = generateLevel.getLevelLength( tileIndex );
-
 		GameObject respawnLocationObject = tileWherePlayerDiedGameObject.transform.Find("respawnLocation").gameObject;
 
 		if( respawnLocationObject != null )
@@ -1937,16 +1930,10 @@ public class PlayerControl : Photon.PunBehaviour {
 			setCharacterState( PlayerCharacterState.StartRunning );
 			changeColliderAxis( Axis.Y );
 			ignorePlayerCollisions( false );
+			updateCurrentTileInfo ( tileWherePlayerDiedGameObject );
+
 			//Make player fall from sky, land and start running again
 			enablePlayerMovement( true );
-
-			//Recalculate the distance travelled on this tile. Ignore Y in the distance calculation.
-			Transform tileEntrance = tileWherePlayerDiedGameObject.transform.Find("Entrance");
-			Vector3 tileEntrancePosition = new Vector3( tileEntrance.position.x, 0, tileEntrance.position.z );
-			Vector3 respawnPosition = new Vector3( respawn.position.x, 0, respawn.position.z );
-			float distanceTravelledOnThisTile = Vector3.Distance( tileEntrancePosition, respawnPosition );
-			playerRace.distanceTravelledOnThisTile = distanceTravelledOnThisTile;
-
 			fall( true );
 		}
 		else
@@ -2241,33 +2228,58 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		transform.SetPositionAndRotation( syncPosition + syncVelocity * syncDelay, Quaternion.Euler( transform.eulerAngles.x, syncYRotation, transform.eulerAngles.z ) );
 		recalculateCurrentLane();
+
 		//Determine on which tile we're on.
 		//Given an average latency of 60 msec. and an average run speed of 20 m/s, the player has been positioned 1.2 meters further.
-		//If we are positioned on a tile sloping upward, we want to make sure to start our raycast quite a bit higher than the feet, hence the 5f.
+		//If we are positioned on a tile sloping upward, we want to make sure to start our raycast quite a bit higher than the feet, hence the 1.5f.
 		//Also, the player can jump quite high with double jump, so let's make sure our raycast is long enough to hit the ground.
 		RaycastHit hit;
-		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + 5f, transform.position.z ), Vector3.down, out hit, 50f ))
+		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + 1.5f, transform.position.z ), Vector3.down, out hit, 50f ))
 		{
-			string previousCurrenTileName = currentTile.name;
-			currentTile = hit.collider.transform.root.gameObject;
-			currentTilePos = currentTile.transform.position;
-			tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
-			tileIndex = currentTile.GetComponent<SegmentInfo>().tileIndex;
-			tileDistanceTraveled = generateLevel.getLevelLength( tileIndex );
+			GameObject objectUnderRaycast = hit.collider.transform.root.gameObject;
 
-			//if( previousCurrenTileName != currentTile.name ) Debug.LogWarning( "PlayerControl-positionSynchronizationRPC: tile changed after sync. Old tile: " + previousCurrenTileName + " New: " + currentTile.name );
+			//Let's make sure the raycast hit a tile and not another object like a player.
+			if( objectUnderRaycast.CompareTag("Player") )
+			{
+				//Crap, our raycast hit a player.
+				//That player should have the correct current tile, so let's use that.
+				updateCurrentTileInfo( objectUnderRaycast.GetComponent<PlayerControl>().currentTile );
+			}
+			else
+			{
+				if( objectUnderRaycast.GetComponent<SegmentInfo>() != null )
+				{
+					//Good! The object has a SegmentInfo component. That guarantees that this is a tile.
+					updateCurrentTileInfo( objectUnderRaycast );
+				}
+				else
+				{
+					Debug.LogError( "PlayerControl-positionSynchronizationRPC: The object that the raycast hit " +  objectUnderRaycast + " is neither a player or tile. Unable to set current tile info for " + name + " at position " + transform.position );
 
-			//Recalculate the distance travelled on this tile. Ignore Y in the distance calculation.
-			Transform tileEntrance = currentTile.transform.Find("Entrance");
-			Vector3 tileEntrancePosition = new Vector3( tileEntrance.position.x, 0, tileEntrance.position.z );
-			Vector3 playerPosition = new Vector3( transform.position.x, 0, transform.position.z );
-			float distanceTravelledOnThisTile = Vector3.Distance( tileEntrancePosition, playerPosition );
-			playerRace.distanceTravelledOnThisTile = distanceTravelledOnThisTile;
+				}
+			}
 		}
 		else
 		{
-			Debug.LogError( "PlayerControl-There is no ground below the player named " + name + " at position " + transform.position + " after positionSynchronizationRPC." );
+			Debug.LogError( "PlayerControl-positionSynchronizationRPC: There is no ground below the player named " + name + " at position " + transform.position );
 		}
+	}
+
+	void updateCurrentTileInfo( GameObject tile )
+	{
+		currentTile = tile;
+		currentTilePos = currentTile.transform.position;
+		tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
+
+		tileIndex = currentTile.GetComponent<SegmentInfo>().tileIndex;
+		tileDistanceTraveled = generateLevel.getLevelLength( tileIndex );
+
+		//Recalculate the distance travelled on this tile. Ignore Y in the distance calculation.
+		Transform tileEntrance = currentTile.transform.Find("Entrance");
+		Vector3 tileEntrancePosition = new Vector3( tileEntrance.position.x, 0, tileEntrance.position.z );
+		Vector3 playerPosition = new Vector3( transform.position.x, 0, transform.position.z );
+		float distanceTravelledOnThisTile = Vector3.Distance( tileEntrancePosition, playerPosition );
+		playerRace.distanceTravelledOnThisTile = distanceTravelledOnThisTile;
 	}
 
 	void OnTriggerStay(Collider other)

@@ -19,7 +19,7 @@ public class ForceField : CardSpawnedObject {
 	public override void activateCard()
 	{
 		//Read the data
-		object[] data = this.gameObject.GetPhotonView ().instantiationData;
+		object[] data = gameObject.GetPhotonView ().instantiationData;
 		
 		casterTransform = getCaster( (int) data[0] );
 		setCasterName( casterTransform.name );
