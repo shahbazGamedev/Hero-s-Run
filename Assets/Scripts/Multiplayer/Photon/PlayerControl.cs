@@ -2231,10 +2231,10 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		//Determine on which tile we're on.
 		//Given an average latency of 60 msec. and an average run speed of 20 m/s, the player has been positioned 1.2 meters further.
-		//If we are positioned on a tile sloping upward, we want to make sure to start our raycast quite a bit higher than the feet, hence the 1.5f.
+		//If we are positioned on a tile sloping upward, we want to make sure to start our raycast quite a bit higher than the feet, hence the 1.75f.
 		//Also, the player can jump quite high with double jump, so let's make sure our raycast is long enough to hit the ground.
 		RaycastHit hit;
-		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + 1.5f, transform.position.z ), Vector3.down, out hit, 50f ))
+		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + 1.75f, transform.position.z ), Vector3.down, out hit, 50f ))
 		{
 			GameObject objectUnderRaycast = hit.collider.transform.root.gameObject;
 
