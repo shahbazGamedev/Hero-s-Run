@@ -914,6 +914,19 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Activates the next nbrVisibleTiles tiles excluding tileIndex.
+	/// </summary>
+	/// <param name="tileIndex">Tile index.</param>
+	public void activeNextTiles( int tileIndex )
+	{
+		int endIndex = Mathf.Min( tileIndex + 1 + nbrVisibleTiles, worldRoadSegments.Count );
+		for( int i = tileIndex + 1; i < endIndex; i++ )
+		{
+			if( !worldRoadSegments[i].activeSelf ) worldRoadSegments[i].SetActive(true);
+		}
+	}
+
 	private void onTileActivation( int index )
 	{
 		//If the tile we just activated is a T-Junction
