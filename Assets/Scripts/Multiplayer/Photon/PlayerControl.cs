@@ -2010,11 +2010,13 @@ public class PlayerControl : Photon.PunBehaviour {
 	#endregion
 
 	#region Stumble
+	/// <summary>
+	/// The player stumbles briefly.
+	/// A player can only stumble if he is in the Running state.
+	/// </summary>
 	public void stumble()
 	{
-		//The OnCollisionEnter function can send multiple collision events during a single
-		//stumble, so ignore any new events while in the stumbling state.
-		if ( playerCharacterState != PlayerCharacterState.Stumbling && playerCharacterState != PlayerCharacterState.Dying && playerCharacterState != PlayerCharacterState.Ziplining )
+		if ( playerCharacterState == PlayerCharacterState.Running )
 		{	
 			if( playerSpell.isCardActive( CardName.Shrink ) )
 			{
@@ -2274,8 +2276,9 @@ public class PlayerControl : Photon.PunBehaviour {
 		tileIndex = currentTile.GetComponent<SegmentInfo>().tileIndex;
 		tileDistanceTraveled = generateLevel.getLevelLength( tileIndex );
 
-		//In coop, you get resurrected when your partner triggers the next wave, which could be a couple of tiles further than where you died.
-		//Make sure subsequent tiles are active since a player may not have activated them by crossing the tile entrance trigger.
+		//In coop, you get resurrected when your partner triggers the next wave which could be a couple of tiles further than where you died.
+		//Also, in any multiplayer mode, a force position sync could make the player skip a tile if the lag is high enough.
+		//Therefore, make sure subsequent tiles are active since a player may not have activated them by crossing the tile entrance trigger.
 		generateLevel.activeNextTiles( tileIndex );
 
 		//Recalculate the distance travelled on this tile. Ignore Y in the distance calculation.
