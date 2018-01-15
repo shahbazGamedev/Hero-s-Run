@@ -48,19 +48,9 @@ public sealed class LevelNetworkingManager : PunBehaviour
 	{
 		LevelData.CircuitInfo selectedCircuit = LevelManager.Instance.getSelectedCircuit().circuitInfo;
 		float spawnHeight = selectedCircuit.spawnHeight;
-		if (CoopWaveGenerator.Instance != null && CoopWaveGenerator.Instance.overrideStartPosition > 0 )
-		{
-			Transform waveTriggerTransform = CoopWaveGenerator.Instance.getOverrideStartPosition();
-			leftStartPosition = waveTriggerTransform.TransformPoint( new Vector3( -2f, 0f, 3f ) );
-			rightStartPosition = waveTriggerTransform.TransformPoint( new Vector3( +2f, 0f, 3f ) );
-			centerStartPosition = waveTriggerTransform.TransformPoint( new Vector3( 0, 0f, 3f ) );
-		}
-		else
-		{
-			leftStartPosition = new Vector3( leftStartPosition.x, spawnHeight, leftStartPosition.z );
-			rightStartPosition = new Vector3( rightStartPosition.x, spawnHeight, rightStartPosition.z );
-			centerStartPosition = new Vector3( centerStartPosition.x, spawnHeight, centerStartPosition.z );
-		}
+		leftStartPosition = new Vector3( leftStartPosition.x, spawnHeight, leftStartPosition.z );
+		rightStartPosition = new Vector3( rightStartPosition.x, spawnHeight, rightStartPosition.z );
+		centerStartPosition = new Vector3( centerStartPosition.x, spawnHeight, centerStartPosition.z );
 	}
 
 	IEnumerator Start()
