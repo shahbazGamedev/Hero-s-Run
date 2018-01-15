@@ -86,7 +86,6 @@ public class MatchmakingManager : MonoBehaviour {
 		LevelManager.Instance.playerMatchDataList.Add( pmd );
 
 		//Localize
-		versusText.text = LocalizationManager.Instance.getText( "CIRCUIT_VERSUS" );
 		playButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_PLAY" );
 
 		//Only show the Photon Cloud Region text when playing in an online mode.
@@ -137,20 +136,27 @@ public class MatchmakingManager : MonoBehaviour {
 			case PlayMode.PlayAgainstOneBot:
 			case PlayMode.PlayAgainstOnePlayer:
 			case PlayMode.PlayAgainstOneFriend:
+				twoPlayerPanel.SetActive( true );
+				//Use default values for remote player portrait until he connects
+				versusText.text = LocalizationManager.Instance.getText( "CIRCUIT_VERSUS" );
+				setRemotePlayerData( 1, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
+				break;
 			case PlayMode.PlayCoopWithOneBot:
 			case PlayMode.PlayCoopWithOnePlayer:
-					twoPlayerPanel.SetActive( true );
+				twoPlayerPanel.SetActive( true );
 				//Use default values for remote player portrait until he connects
-				setRemotePlayerData( 1, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
-			break;
+				versusText.text = LocalizationManager.Instance.getText( "CIRCUIT_COOP_AND" );
+				setRemotePlayerData( 1, LocalizationManager.Instance.getText( "CIRCUIT_COOP_PARTNER" ), 1, 0  );
+				break;
 
 			case PlayMode.PlayAgainstTwoBots:
 			case PlayMode.PlayAgainstTwoPlayers:
 				threePlayerPanel.SetActive( true );
 				//Use default values for remote player portraits until they connect
+				//Note: The word Vs. is not displayed in the 3 player panel.
 				setRemotePlayerData( 1, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
 				setRemotePlayerData( 2, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
-			break;
+				break;
 		}
 	}
 
