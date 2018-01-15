@@ -608,7 +608,7 @@ public sealed class PlayerController : MonoBehaviour {
 			float fallDistance = fallStartYPos - transform.position.y;
 			if( fallDistance > FALL_TO_DEATH_DISTANCE )
 			{
-				managePlayerDeath(DeathType.Cliff);
+				managePlayerDeath(DeathType.GreatFall);
 			}
 		}
 
@@ -2716,10 +2716,6 @@ public sealed class PlayerController : MonoBehaviour {
 			//Make adjustments depending on death type
 		    switch (deathType)
 			{
-		        case DeathType.Cliff:
-					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2f) );	
-					break;
-		                
 		        case DeathType.Enemy:
 					StartCoroutine( waitBeforeDisplayingSaveMeScreen(2f) );	
 					break;

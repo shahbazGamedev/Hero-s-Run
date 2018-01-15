@@ -7,7 +7,6 @@ using Cinemachine;
 public enum DeathType {
 		Alive = 0,
 		Obstacle = 1,
-		Cliff = 2,
 		Flame = 3,
 		Trap = 4,
 		Enemy = 5,
@@ -841,7 +840,11 @@ public class PlayerControl : Photon.PunBehaviour {
 			{	
 				//Regardless of whether this player isMine or not (and this is why we don't call killPlayer instead), if he has fallen more than FALL_TO_DEATH_DISTANCE, 
 				//kill him so that he can respawn.
-				photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, DeathType.Cliff, currentTile.name );
+				//Because of network latency, there is always a delay to receive an RPC.
+				//In addition, multiple collision or trigger events can be sent by the physics engine.
+				//In order to avoid sending the playerDiedRPC multiple times, set the player state immediately to DYING.
+				setCharacterState( PlayerCharacterState.Dying );
+				photonView.RPC( "playerDiedRPC", PhotonTargets.AllViaServer, DeathType.GreatFall, currentTile.name );
 			}
 		}
 	}
@@ -1650,8 +1653,8 @@ public class PlayerControl : Photon.PunBehaviour {
 			//Because of network latency, there is always a delay to receive an RPC.
 			//In addition, multiple collision or trigger events can be sent by the physics engine.
 			//In order to avoid sending the playerDiedRPC multiple times, set the player state immediately to DYING.
-			setCharacterState( PlayerCharacterState.Dying );
 			Debug.Log( name + " PlayerControl-killPlayer: " + deathTypeValue + " " + playerCharacterState );
+			setCharacterState( PlayerCharacterState.Dying );
 			photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, deathTypeValue, currentTile.name );
 		}
 	}
@@ -1738,11 +1741,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		//Make adjustments depending on death type
 	    switch (deathType)
-		{
-	        case DeathType.Cliff:
-				StartCoroutine( waitBeforeResurrecting(DELAY_BEFORE_RESURRECTING) );	
-				break;
-	                
+		{	                
 	        case DeathType.Enemy:
 				StartCoroutine( waitBeforeResurrecting(DELAY_BEFORE_RESURRECTING) );	
 				break;
