@@ -237,6 +237,10 @@ public class PlayerControl : Photon.PunBehaviour {
 	SkillBonusEventCounter doubleKillEventCounter;
 	#endregion
 
+	#region For debugging
+	public float animSpeed;
+	#endregion
+
 
 	void Awake ()
 	{
@@ -435,6 +439,8 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void FixedUpdate()
 	{
+		//for debugging
+		if( anim != null ) animSpeed = anim.speed;
 		calculateFallDistance();
 		if( playerMovementEnabled )
 		{
@@ -833,9 +839,9 @@ public class PlayerControl : Photon.PunBehaviour {
 			float fallDistance = fallStartYPos - transform.position.y;
 			if( fallDistance > FALL_TO_DEATH_DISTANCE )
 			{	
-				//Regardless of whether this player isMine or not, if he has fallen more than FALL_TO_DEATH_DISTANCE, 
-				//kill him so that he can respawn. 
-				if ( playerCharacterState != PlayerCharacterState.Dying ) photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, DeathType.Cliff, currentTile.name );
+				//Regardless of whether this player isMine or not (and this is why we don't call killPlayer instead), if he has fallen more than FALL_TO_DEATH_DISTANCE, 
+				//kill him so that he can respawn.
+				photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, DeathType.Cliff, currentTile.name );
 			}
 		}
 	}
@@ -1641,7 +1647,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Only proceed if not dying already
 		if ( photonView.isMine && playerCharacterState != PlayerCharacterState.Dying )
 		{
-			Debug.Log("PlayerControl-killPlayer : " + deathTypeValue + " name " + gameObject.name );
+			//Because of network latency, there is always a delay to receive an RPC.
+			//In addition, multiple collision or trigger events can be sent by the physics engine.
+			//In order to avoid sending the playerDiedRPC multiple times, set the player state immediately to DYING.
+			setCharacterState( PlayerCharacterState.Dying );
+			Debug.Log( name + " PlayerControl-killPlayer: " + deathTypeValue + " " + playerCharacterState );
 			photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, deathTypeValue, currentTile.name );
 		}
 	}
@@ -2256,8 +2266,36 @@ public class PlayerControl : Photon.PunBehaviour {
 				}
 				else
 				{
-					Debug.LogError( "PlayerControl-positionSynchronizationRPC: The object that the raycast hit " +  objectUnderRaycast + " is neither a player or tile. Unable to set current tile info for " + name + " at position " + transform.position );
-
+					//The object that the raycast hit is neither a player or tile.
+					//Let's start another raycast but this time starting from the hit object. Hopefully, we will hit the tile underneath.
+					if (Physics.Raycast( new Vector3( objectUnderRaycast.transform.position.x, objectUnderRaycast.transform.position.y + 0.05f, objectUnderRaycast.transform.position.z ), Vector3.down, out hit, 50f ))
+					{
+						GameObject objectUnderSecondRaycast = hit.collider.transform.root.gameObject;
+			
+						//Let's make sure the second raycast hit a tile and not another object like a player.
+						if( objectUnderSecondRaycast.CompareTag("Player") )
+						{
+							//Crap, our second raycast hit a player.
+							//That player should have the correct current tile, so let's use that.
+							updateCurrentTileInfo( objectUnderSecondRaycast.GetComponent<PlayerControl>().currentTile );
+						}
+						else
+						{
+							if( objectUnderSecondRaycast.GetComponent<SegmentInfo>() != null )
+							{
+								//Good! The object has a SegmentInfo component. That guarantees that this is a tile.
+								updateCurrentTileInfo( objectUnderSecondRaycast );
+							}
+							else
+							{
+								Debug.LogError( "PlayerControl-positionSynchronizationRPC: The object that the second raycast hit " +  objectUnderSecondRaycast.name + " is neither a player or tile. Unable to set current tile info for " + name + " at position " + transform.position );
+							}
+						}
+					}
+					else
+					{
+						Debug.LogError( "PlayerControl-positionSynchronizationRPC: There is no ground below the player named " + name + " at position " + transform.position + " after second raycast." );
+					}
 				}
 			}
 		}
