@@ -195,7 +195,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	Vector3 controllerOriginalCenter;
 	const float PRONE_CAPSULE_CENTER_Y = 0.57f;
 	const float PRONE_CAPSULE_CENTER_Z = -1.4f;
-	string tileWherePlayerDied = string.Empty;
+	string resurrectOnThisTile = string.Empty;
 	int numberOfTimesDiedDuringRace = 0; //Used by PlayerStatistics to determine if the player had a perfect race, that is, he did not die a single time.
 	const float DELAY_BEFORE_RESURRECTING = 1.75f;
 	#endregion
@@ -1666,10 +1666,10 @@ public class PlayerControl : Photon.PunBehaviour {
 	}
 
 	[PunRPC]
-	void playerDiedRPC( DeathType deathTypeValue, string tileWherePlayerDied )
+	void playerDiedRPC( DeathType deathTypeValue, string resurrectOnThisTile )
 	{
 
-		this.tileWherePlayerDied = tileWherePlayerDied;
+		this.resurrectOnThisTile = resurrectOnThisTile;
 		
 		//When entering an angled tile, a coroutine makes the player turn to match the orientation of the tile.
 		//When a player dies, we need to make sure to stop that coroutine or else
@@ -1880,7 +1880,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			cmvc.m_LookAt = transform;
 			HUDMultiplayer.hudMultiplayer.displayTopMessage( string.Empty );
 		}
-		tileWherePlayerDied = resurrectOnThisTile;
+		this.resurrectOnThisTile = resurrectOnThisTile;
 		resurrectBegin();
 	}
 
@@ -1905,9 +1905,9 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Reposition dead body at the respawn location.
 		//Don't use the currentTile which is local since it may be out of sync.
 		//Use the name of the tile sent when the player died.
-		GameObject tileWherePlayerDiedGameObject = GameObject.Find( tileWherePlayerDied );
+		GameObject resurrectOnThisTileGameObject = GameObject.Find( resurrectOnThisTile );
 
-		GameObject respawnLocationObject = tileWherePlayerDiedGameObject.transform.Find("respawnLocation").gameObject;
+		GameObject respawnLocationObject = resurrectOnThisTileGameObject.transform.Find("respawnLocation").gameObject;
 
 		if( respawnLocationObject != null )
 		{
@@ -1925,10 +1925,9 @@ public class PlayerControl : Photon.PunBehaviour {
 			transform.position = new Vector3( respawn.position.x, groundHeight, respawn.position.z );
 			//The respawnLocationObject is always point in the correct direction for the resurrected hero
 			//temporarily set the tile has the parent of the hero and simply use the local rotation of the respawn location object
-			transform.SetParent( currentTile.transform );
+			transform.SetParent( resurrectOnThisTileGameObject.transform );
 			transform.localRotation = Quaternion.Euler ( 0, respawn.localEulerAngles.y, 0 );
 			transform.SetParent( null );
-			tileRotationY = Mathf.Floor ( transform.eulerAngles.y );
 			transform.GetComponent<Collider>().enabled = true;
 			//Re-enable the player's blob shadow
 			playerVisuals.enablePlayerShadow( true );
@@ -1939,7 +1938,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			setCharacterState( PlayerCharacterState.StartRunning );
 			changeColliderAxis( Axis.Y );
 			ignorePlayerCollisions( false );
-			updateCurrentTileInfo ( tileWherePlayerDiedGameObject );
+			updateCurrentTileInfo ( resurrectOnThisTileGameObject );
 
 			//Make player fall from sky, land and start running again
 			enablePlayerMovement( true );
@@ -2224,7 +2223,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void forcePositionSynchronization()
 	{
-		if( photonView.isMine && playerAI == null ) this.photonView.RPC("positionSynchronizationRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, capsuleCollider.attachedRigidbody.velocity, PhotonNetwork.time );
+		if( photonView.isMine && playerAI == null && getCharacterState() != PlayerCharacterState.Dying ) this.photonView.RPC("positionSynchronizationRPC", PhotonTargets.Others, transform.position, transform.eulerAngles.y, capsuleCollider.attachedRigidbody.velocity, PhotonNetwork.time );
 	}
 
 	[PunRPC]
@@ -2309,6 +2308,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		currentTile = tile;
 		currentTilePos = currentTile.transform.position;
 		tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
+		//Debug.LogWarning( name + " updateCurrentTileInfo-tileRotationY: " + tileRotationY + " Player rotation: " + transform.eulerAngles + " name of current tile: " + currentTile.name ); 
 
 		tileIndex = currentTile.GetComponent<SegmentInfo>().tileIndex;
 		tileDistanceTraveled = generateLevel.getLevelLength( tileIndex );

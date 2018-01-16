@@ -136,6 +136,8 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 					{
 						//show a bonus message on the HUD.
 						string localizedSkillText = LocalizationManager.Instance.getText(bonusTextID);
+						Debug.LogWarning("SkillBonusHandler-grantScoreBonus: localizedSkillText: " + bonusTextID + " " + localizedSkillText + " " + bonusPoints );
+
 						localizedSkillText = string.Format( localizedSkillText, bonusPoints );
 						createBonus( localizedSkillText );
 					}
