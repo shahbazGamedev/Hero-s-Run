@@ -100,6 +100,7 @@ public class Teleporter : Device {
 			smr[i].enabled = isVisible;
 		} 
 		player.GetComponent<PlayerVisuals>().enablePlayerShadow( isVisible );
+		Debug.LogWarning( "Teleporter-makePlayerInvisible for " + player.name + " Visible: " + isVisible );
 	}
 
 }
