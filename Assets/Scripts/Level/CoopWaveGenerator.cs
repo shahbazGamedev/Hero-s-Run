@@ -19,7 +19,6 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 
 	#region Other
 	public static CoopWaveGenerator Instance;
-	GenerateLevel generateLevel;
 	ZombieManager zombieManager;
 	#endregion
 
@@ -37,7 +36,6 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 
 	void Start ()
 	{
-		generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
 		zombieManager = GameObject.FindObjectOfType<ZombieManager>();
 		//important to reset since this is a static value.
 		numberOfWavesTriggered = 0;
