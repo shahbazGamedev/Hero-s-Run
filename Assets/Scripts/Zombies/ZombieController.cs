@@ -45,7 +45,6 @@ public sealed class ZombieController : Creature, ICreature {
 	new void Awake ()
 	{
 		base.Awake();
-		setCreatureState( CreatureState.Idle );
 
 		GameObject zombieManagerObject = GameObject.FindGameObjectWithTag("Zombie Manager");
 		ZombieManager zombieManager = zombieManagerObject.GetComponent<ZombieManager>();
@@ -69,6 +68,7 @@ public sealed class ZombieController : Creature, ICreature {
 		legacyAnim = zombiePrefab.GetComponent<Animation>();
 		capsuleCollider = GetComponent<CapsuleCollider>();
 		rigidBody = GetComponent<Rigidbody>();
+		setCreatureState( CreatureState.Idle );
 	}
 
 	public override void setCreatureState( CreatureState newState )
@@ -354,8 +354,8 @@ public sealed class ZombieController : Creature, ICreature {
 	public void burrowUp()
 	{
 		rigidBody.useGravity = false;
-		capsuleCollider.enabled = false;
 		setCreatureState( CreatureState.BurrowUp );
+		capsuleCollider.enabled = false;
 		legacyAnim.Play("burrowUp");
 		StartCoroutine("burrowUpCompleted");
 		if( spurtPrefab != null )
@@ -387,8 +387,8 @@ public sealed class ZombieController : Creature, ICreature {
 	{
 		groan ();
 		rigidBody.useGravity = false;
-		capsuleCollider.enabled = false;
 		setCreatureState( CreatureState.StandUpFromBack );
+		capsuleCollider.enabled = false;
 		legacyAnim.Play("standUpFromBack");
 		StartCoroutine("standUpFromBackCompleted");
 	}
