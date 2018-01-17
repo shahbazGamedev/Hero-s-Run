@@ -154,10 +154,10 @@ public class PlayerControl : Photon.PunBehaviour {
 		Center = 0,
 		Right = 1,
 	}
-	static float laneLimit = 2f;
+	const float LANE_WIDTH = 2f; //In meters.
 	//Due to rounding errors, the player may not reach exactly the lane limit. If there is less than 1% of the distance
 	//remaining, assume that he did reach the lane limit which will allow us to finalize the side move.
-	float adjustedLaneLimit = laneLimit * 0.99f;
+	float adjustedLaneLimit = LANE_WIDTH * 0.99f;
 	public Lanes currentLane = Lanes.Center;
 	Lanes desiredLane = Lanes.Center;
 	int myLane = 0; //0 is uninitialized, 1 is the nearest, 2 is in the center and 3 is the furthest
@@ -501,15 +501,15 @@ public class PlayerControl : Photon.PunBehaviour {
 			{
 				//Round to two decimal places to avoid small rounding errors
 				float delta = Mathf.Round( (transform.position.x - currentTilePos.x) * 100.0f) / 100.0f;
-				if( delta < -laneLimit )
+				if( delta < -LANE_WIDTH )
 				{
-					//Debug.LogWarning ( "-laneLimit player x " + transform.position.x + " currentTilePos.x " + currentTilePos.x + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
-					transform.position = new Vector3 (  currentTilePos.x -laneLimit, transform.position.y, transform.position.z );
+					//Debug.LogWarning ( "-LANE_WIDTH player x " + transform.position.x + " currentTilePos.x " + currentTilePos.x + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
+					transform.position = new Vector3 (  currentTilePos.x -LANE_WIDTH, transform.position.y, transform.position.z );
 				}
-				else if( delta > laneLimit )
+				else if( delta > LANE_WIDTH )
 				{
-					//Debug.LogWarning ( "+laneLimit player x " + transform.position.x + " currentTilePos.x " + currentTilePos.x + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
-					transform.position = new Vector3 (  currentTilePos.x + laneLimit, transform.position.y, transform.position.z );
+					//Debug.LogWarning ( "+LANE_WIDTH player x " + transform.position.x + " currentTilePos.x " + currentTilePos.x + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
+					transform.position = new Vector3 (  currentTilePos.x + LANE_WIDTH, transform.position.y, transform.position.z );
 				}
 			
 			}
@@ -517,15 +517,15 @@ public class PlayerControl : Photon.PunBehaviour {
 			{
 				//Round to two decimal places to avoid small rounding errors
 				float delta = Mathf.Round( (transform.position.z - currentTilePos.z) * 100.0f) / 100.0f;
-				if( delta < -laneLimit )
+				if( delta < -LANE_WIDTH )
 				{
-					//Debug.LogWarning ( "+laneLimit player z " + transform.position.z + " currentTilePos.z " + currentTilePos.z + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
-					transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z - laneLimit );
+					//Debug.LogWarning ( "+LANE_WIDTH player z " + transform.position.z + " currentTilePos.z " + currentTilePos.z + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
+					transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z - LANE_WIDTH );
 				}
-				else if( delta > laneLimit )
+				else if( delta > LANE_WIDTH )
 				{
-					//Debug.LogWarning ( "+laneLimit player z " + transform.position.z + " currentTilePos.z " + currentTilePos.z + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
-					transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z + laneLimit );
+					//Debug.LogWarning ( "+LANE_WIDTH player z " + transform.position.z + " currentTilePos.z " + currentTilePos.z + " playerRotationY " + playerRotationY + " currentTile.name " + currentTile.name );
+					transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z + LANE_WIDTH );
 				}
 			}
 		}
@@ -623,11 +623,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			if( totalX >=0 )
 			{
-				maxDist = currentTilePos.x + laneLimit - transform.position.x;
+				maxDist = currentTilePos.x + LANE_WIDTH - transform.position.x;
 			}
 			else
 			{
-				maxDist = currentTilePos.x - laneLimit - transform.position.x;
+				maxDist = currentTilePos.x - LANE_WIDTH - transform.position.x;
 			}
 			
 		}
@@ -636,11 +636,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			if( totalX >=0 )
 			{
-				maxDist = currentTilePos.z - laneLimit - transform.position.z;
+				maxDist = currentTilePos.z - LANE_WIDTH - transform.position.z;
 			}
 			else
 			{
-				maxDist = currentTilePos.z + laneLimit - transform.position.z;
+				maxDist = currentTilePos.z + LANE_WIDTH - transform.position.z;
 			}
 		}
 		//Player is facing left.
@@ -648,11 +648,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			if( totalX >=0 )
 			{
-				maxDist = currentTilePos.z + laneLimit - transform.position.z;
+				maxDist = currentTilePos.z + LANE_WIDTH - transform.position.z;
 			}
 			else
 			{
-				maxDist = currentTilePos.z - laneLimit - transform.position.z;
+				maxDist = currentTilePos.z - LANE_WIDTH - transform.position.z;
 			}
 		}
 		return maxDist;
@@ -957,19 +957,16 @@ public class PlayerControl : Photon.PunBehaviour {
 
 				//We have 3 cases:
 				//Case 1: Player turned early or normally
-				//Condition: player turned before -1.3 meters (0 is center of tile).
 				//What we want to do: wait until player reaches the next available lane (left, center of right) and then turn
 
 				//Case 2: Player turned late
-				//Condition: player turned after +1.3 meters (0 is center of tile), but before +1.9 meters. Math is 1.3 lane width + 0.5 is player radius + 0.1 meters is margin
 				//What we want to do: turn immediately
 
 				//Case 3: Player turned too late
-				//Condition: player turned after +1.9 meters (0 is center of tile).
 				//What we want to do: kill the player. He missed the turn.
 
 				//Case 3: Player turned too late, we want to kill him
-				if (sideMoveInitiatedZ > 2f )
+				if ( sideMoveInitiatedZ > 2f )
 				{	
 					Debug.LogWarning("turnCorner: game over - player turned too late." );
 					killPlayer ( DeathType.Turned_Too_Late );
@@ -977,7 +974,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				}
 
 				//Case 2: Player turned late, we want to turn now
-				if ( sideMoveInitiatedZ > laneLimit && sideMoveInitiatedZ < 2f )
+				if ( sideMoveInitiatedZ > LANE_WIDTH && sideMoveInitiatedZ < 2f )
 				{	
 					if ( isGoingRight )
 					{
@@ -1014,7 +1011,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				}
 
 				//Case 1: Player turned early or normally
-				if (sideMoveInitiatedZ < laneLimit )
+				if ( sideMoveInitiatedZ < LANE_WIDTH )
 				{	
 					if ( isGoingRight )
 					{
@@ -1234,7 +1231,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			setCharacterState( PlayerCharacterState.Turning );
 		}
 
-		if (sideMoveInitiatedZ < -laneLimit )
+		if (sideMoveInitiatedZ < -LANE_WIDTH )
 		{
 			//Lane 1 is the nearest to the player
 			//Depending on whether the player is turning left or right
@@ -1329,7 +1326,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					{
 						if( transform.position.x - currentTilePos.x >= adjustedLaneLimit )
 						{
-							transform.position = new Vector3 (  currentTilePos.x + laneLimit, transform.position.y, transform.position.z );
+							transform.position = new Vector3 (  currentTilePos.x + LANE_WIDTH, transform.position.y, transform.position.z );
 							finalizeSideMove();
 						}
 					
@@ -1339,7 +1336,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					{
 						if( transform.position.z - currentTilePos.z <= -adjustedLaneLimit )
 						{
-							transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z - laneLimit );
+							transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z - LANE_WIDTH );
 							finalizeSideMove();
 						}
 					}
@@ -1348,7 +1345,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					{
 						if( transform.position.z - currentTilePos.z >= adjustedLaneLimit )
 						{
-							transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z + laneLimit );
+							transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z + LANE_WIDTH );
 							finalizeSideMove();
 						}
 					}
@@ -1361,7 +1358,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					{
 						if( transform.position.x - currentTilePos.x <= -adjustedLaneLimit )
 						{
-							transform.position = new Vector3 (  currentTilePos.x -laneLimit, transform.position.y, transform.position.z );
+							transform.position = new Vector3 (  currentTilePos.x -LANE_WIDTH, transform.position.y, transform.position.z );
 							finalizeSideMove();
 						}
 					
@@ -1371,7 +1368,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					{
 						if( transform.position.z - currentTilePos.z >= adjustedLaneLimit )
 						{
-							transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z + laneLimit );
+							transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z + LANE_WIDTH );
 							finalizeSideMove();
 						}
 					}
@@ -1380,7 +1377,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					{
 						if( transform.position.z - currentTilePos.z <= -adjustedLaneLimit )
 						{
-							transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z - laneLimit );
+							transform.position = new Vector3 (  transform.position.x, transform.position.y, currentTilePos.z - LANE_WIDTH );
 							finalizeSideMove();
 						}
 					}
@@ -1510,7 +1507,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//The player might die in the short time between jumping to catch the zipline and the zipline actually starting.
 		//Remember, the zipline is activated by a lockstep.
 		//If the player is dead, simply ignore the request to attach to the zipline.
-		if( deathType != DeathType.Alive ) return;
+		if( getCharacterState() == PlayerCharacterState.Dying ) return;
 
 		SegmentInfo si = currentTile.GetComponent<SegmentInfo>();
 		if( si != null )
@@ -1566,9 +1563,8 @@ public class PlayerControl : Photon.PunBehaviour {
 		capsuleCollider.attachedRigidbody.isKinematic = false;
 		transform.localScale = new Vector3( 1f, 1f, 1f ); 	//Just because of rounding when changing parent
 		//The player might have died while ziplining.
-		//managePlayerDeath calls detachFromZipline().
 		//We only do the last steps if the player is alive.
-		if( deathType == DeathType.Alive )
+		if( getCharacterState() != PlayerCharacterState.Dying )
 		{
 			enablePlayerControl( true );
 			enablePlayerMovement( true );
@@ -2180,7 +2176,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		else if( other.CompareTag( "AttachZiplineTrigger" ) )
 		{
 			//OnTriggerEnter can get called multiple times. Only attach to the zipline, if the player is not already ziplining and is alive.
-			if( photonView.isMine && getCharacterState() != PlayerCharacterState.Ziplining && deathType == DeathType.Alive )
+			if( photonView.isMine && getCharacterState() != PlayerCharacterState.Ziplining && getCharacterState() != PlayerCharacterState.Dying )
 			{
 				//It takes a bit of time for the RPC to be received and for the lockstep action to take place.
 				//This is why we set the state to Ziplining right away.
@@ -2350,7 +2346,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//Lane 1 is the nearest to the player
 			if ( myLane == 1 )
 			{
-				if ( currentZ <= laneLimit )
+				if ( currentZ <= LANE_WIDTH )
 				{
 					//We can turn now
 					turnNow();					
@@ -2368,7 +2364,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//Lane 3 is the furthest from the player
 			else if ( myLane == 3 )
 			{
-				if ( currentZ <= -laneLimit )
+				if ( currentZ <= -LANE_WIDTH )
 				{
 					//We can turn now
 					turnNow();
