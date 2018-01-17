@@ -847,6 +847,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				//In order to avoid sending the playerDiedRPC multiple times, set the player state immediately to DYING.
 				setCharacterState( PlayerCharacterState.Dying );
 				Debug.LogError( name + " fell a big distance so we're forcing the player to respawn-Fall distance: " + fallDistance + " Current tile: " + currentTile.name );
+				HUDMultiplayer.hudMultiplayer.activateUserMessage( "Unfortunately, your player fell through the floor on tile " + currentTile.name + ". Respawing you in safe location.", 0, 3f );
 				photonView.RPC( "playerDiedRPC", PhotonTargets.AllViaServer, DeathType.GreatFall, currentTile.name );
 			}
 		}
@@ -1550,7 +1551,11 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void detachFromZipline()
 	{
-		if( getCharacterState() != PlayerCharacterState.Ziplining ) Debug.LogError( name + " PlayerControl-detachFromZipline: the player is NOT in the ziplining state. He is in this state: " + getCharacterState() );
+		if( getCharacterState() != PlayerCharacterState.Ziplining )
+		{
+			Debug.LogError( name + " PlayerControl-detachFromZipline: the player is NOT in the ziplining state. He is in this state: " + getCharacterState() );
+			HUDMultiplayer.hudMultiplayer.activateUserMessage( "Hmmm, your player should be detaching from the zipline, but he isn't in the ziplining state. He is in this state: " + getCharacterState(), 0, 3.5f );
+		}
 
 		LeanTween.cancel( gameObject );
 		transform.SetParent( null );
