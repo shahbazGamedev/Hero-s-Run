@@ -281,7 +281,7 @@ public class CardSpawnedObject : MonoBehaviour {
 
 	        case MaskHandler.creatureLayer:
 				ICreature creatureController = potentialTarget.GetComponent<ICreature>();
-				if( creatureController != null && creatureController.getCreatureState() != CreatureState.Dying )
+				if( creatureController != null && creatureController.getCreatureState() != CreatureState.Dying && creatureController.getCreatureState() != CreatureState.Immobilized )
 				{
 					valid = true;
 				}
