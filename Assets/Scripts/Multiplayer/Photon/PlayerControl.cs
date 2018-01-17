@@ -710,7 +710,9 @@ public class PlayerControl : Photon.PunBehaviour {
 				playerSounds.stopAudioSource();							//stop the sliding sound if any
 				playerVisuals.playDustPuff( false );					//stop the dust puff that loops while we are sliding
 				playerVisuals.playWaterSplashWhileSliding( false );
-	
+				//We are jumping. Reset the collider to vertical.
+				changeColliderAxis( Axis.Y );
+
 				jumping = true;
 				jumpStarted = true;
 	
@@ -871,7 +873,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				//Slides cant be prolonged indefinitely. This is why you can reset the start time.
 				slideStartTime = Time.time;
 				//Don't reset values for nothing if we are extending the slide
-				if( playerCharacterState != PlayerCharacterState.Sliding )
+				if( playerCharacterState != PlayerCharacterState.Sliding && playerCharacterState != PlayerCharacterState.Turning_and_sliding )
 				{
 					changeColliderAxis( Axis.Z );
 					setCharacterState( PlayerCharacterState.Sliding );
@@ -905,15 +907,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				//We are stopping sliding
 				playerVisuals.playDustPuff( false );
 				playerVisuals.playWaterSplashWhileSliding( false );
-
-				if( playerCharacterState == PlayerCharacterState.Turning_and_sliding )
-				{
-					setCharacterState( PlayerCharacterState.Sliding );
-				}
-				else
-				{
-					setCharacterState( PlayerCharacterState.Running );
-				}
+				setCharacterState( PlayerCharacterState.Running );
 				setAnimationTrigger(SlideUpTrigger);
 				//Reset capsule collider to upright position
 				changeColliderAxis( Axis.Y );
