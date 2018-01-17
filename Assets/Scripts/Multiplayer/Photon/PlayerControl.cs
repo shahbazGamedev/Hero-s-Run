@@ -846,6 +846,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				//In addition, multiple collision or trigger events can be sent by the physics engine.
 				//In order to avoid sending the playerDiedRPC multiple times, set the player state immediately to DYING.
 				setCharacterState( PlayerCharacterState.Dying );
+				Debug.LogError( name + " fell a big distance so we're forcing the player to respawn-Fall distance: " + fallDistance + " Current tile: " + currentTile.name );
 				photonView.RPC( "playerDiedRPC", PhotonTargets.AllViaServer, DeathType.GreatFall, currentTile.name );
 			}
 		}
@@ -1549,35 +1550,34 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void detachFromZipline()
 	{
-		if( getCharacterState() == PlayerCharacterState.Ziplining )
+		if( getCharacterState() != PlayerCharacterState.Ziplining ) Debug.LogError( name + " PlayerControl-detachFromZipline: the player is NOT in the ziplining state. He is in this state: " + getCharacterState() );
+
+		LeanTween.cancel( gameObject );
+		transform.SetParent( null );
+		if( ziplineAttachPoint == null ) Debug.LogError( "PlayerControl-detachFromZipline: the zipline attach point for " + name + " is null." );
+		ziplineAttachPoint.SetParent( transform, false );
+		ziplineAttachPoint.localScale = new Vector3( 1f, 1f, 1f ); 	//Just because of rounding when changing parent
+		playerCamera.reactivateMaincamera();
+		capsuleCollider.attachedRigidbody.isKinematic = false;
+		transform.localScale = new Vector3( 1f, 1f, 1f ); 	//Just because of rounding when changing parent
+		//The player might have died while ziplining.
+		//managePlayerDeath calls detachFromZipline().
+		//We only do the last steps if the player is alive.
+		if( deathType == DeathType.Alive )
 		{
-			LeanTween.cancel( gameObject );
-			transform.SetParent( null );
-			if( ziplineAttachPoint == null ) Debug.LogError( "PlayerControl-detachFromZipline: the zipline attach point for " + name + " is null." );
-			ziplineAttachPoint.SetParent( transform, false );
-			ziplineAttachPoint.localScale = new Vector3( 1f, 1f, 1f ); 	//Just because of rounding when changing parent
-			playerCamera.reactivateMaincamera();
-			capsuleCollider.attachedRigidbody.isKinematic = false;
-			transform.localScale = new Vector3( 1f, 1f, 1f ); 	//Just because of rounding when changing parent
-			//The player might have died while ziplining.
-			//managePlayerDeath calls detachFromZipline().
-			//We only do the last steps if the player is alive.
-			if( deathType == DeathType.Alive )
-			{
-				enablePlayerControl( true );
-				enablePlayerMovement( true );
-				transform.eulerAngles = new Vector3( 0, ziplineExitAngle, 0 );
-				//We may have switched lanes because of the position change. Make sure the lane values are accurate.
-				recalculateCurrentLane();
-				fall();
-			}
-			else
-			{
-				//If the player is dead, it looks nicer with the camera locked.
-				playerCamera.lockCamera( true );
-			}
-			playerSounds.stopAudioSource();
+			enablePlayerControl( true );
+			enablePlayerMovement( true );
+			transform.eulerAngles = new Vector3( 0, ziplineExitAngle, 0 );
+			//We may have switched lanes because of the position change. Make sure the lane values are accurate.
+			recalculateCurrentLane();
+			fall();
 		}
+		else
+		{
+			//If the player is dead, it looks nicer with the camera locked.
+			playerCamera.lockCamera( true );
+		}
+		playerSounds.stopAudioSource();
 	}
 	#endregion
 
@@ -1688,9 +1688,6 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		//Remember how we died
 		deathType = deathTypeValue;
-
-		//If we were ziplining, detach from the zipline
-		detachFromZipline();
 
 		//Disable the player's shadow
 		playerVisuals.enablePlayerShadow( false );
@@ -1933,7 +1930,6 @@ public class PlayerControl : Photon.PunBehaviour {
 			changeColliderAxis( Axis.Y );
 			ignorePlayerCollisions( false );
 			updateCurrentTileInfo ( resurrectOnThisTileGameObject );
-
 			//Make player fall from sky, land and start running again
 			enablePlayerMovement( true );
 			fall( true );
@@ -1968,6 +1964,8 @@ public class PlayerControl : Photon.PunBehaviour {
 		moveDirection = new Vector3(0,0,0);
 		playerCamera.heightDamping = PlayerCamera.DEFAULT_HEIGHT_DAMPING;
 		playerHealth.resetHealth();
+		anim.Rebind(); //Not sure useful. Added back to see if it fixes the random bug where the player falls in T-position after respawning.
+
 	}
 
 	//Called when a player lands after respawn.
