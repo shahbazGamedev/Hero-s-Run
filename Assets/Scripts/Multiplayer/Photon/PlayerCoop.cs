@@ -5,7 +5,7 @@ public class PlayerCoop : MonoBehaviour {
 
 	const int SCORE_PER_WAVE = 100; //coop - score points awarded per wave beaten.
 	Coroutine coopResurrectPlayerCoroutine;
-	const float COOP_DELAY_BEFORE_RESURRECTING = 1f;
+	const float COOP_DELAY_BEFORE_RESURRECTING = 0.1f;
 	bool wasHighScoreReached = false; //Only announce to the player the first time he reaches a new high score.
 
 	void Awake ()
@@ -60,23 +60,27 @@ public class PlayerCoop : MonoBehaviour {
 
 	IEnumerator coopResurrectPlayer()
 	{
-		PlayerRace partner = getPartner( GetComponent<PlayerRace>() );
-		if( partner != null )
-		{
-			PlayerMatchData partner_pmd = LevelManager.Instance.getPlayerMatchDataByName( partner.name );
-			//You were resurrected thanks to your partner.
-			//Increase his Revives count.
-			partner_pmd.revives++;
-			CoopWaveGenerator.Instance.removeDeadPlayer( transform );
+		//Wait a tiny bit after the new wave starts before resurrecting the player.
+		yield return new WaitForSeconds( COOP_DELAY_BEFORE_RESURRECTING );
 
-			yield return new WaitForSeconds( COOP_DELAY_BEFORE_RESURRECTING );
-
-			GetComponent<PlayerControl>().coopResurrectBegin( partner.GetComponent<PlayerControl>().currentTile.name );
-			partner.GetComponent<PlayerCamera>().isBeingSpectated = false;
-		}
-		else
+		//Make sure that during that short time, this player didn't get resurrected and is still dead before continuing.
+		if( GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Dying )
 		{
-			yield return null;
+			PlayerRace partner = getPartner( GetComponent<PlayerRace>() );
+			if( partner != null )
+			{
+				PlayerMatchData partner_pmd = LevelManager.Instance.getPlayerMatchDataByName( partner.name );
+				//You were resurrected thanks to your partner.
+				//Increase his Revives count.
+				partner_pmd.revives++;
+				CoopWaveGenerator.Instance.removeDeadPlayer( transform );
+				GetComponent<PlayerControl>().coopResurrectBegin( partner.GetComponent<PlayerControl>().currentTile.name );
+				partner.GetComponent<PlayerCamera>().isBeingSpectated = false;
+			}
+			else
+			{
+				yield return null;
+			}
 		}
 	}
 

@@ -28,7 +28,7 @@ public enum DeathType {
 public enum PlayerCharacterState {
 	None = -1,
 	Idle = 0,
-	SideMove = 1,
+	SideMove = 1, //No longer used. Kept because PlayerController references it.
 	Sliding = 2,
 	Running = 3,
 	Jumping = 4,
@@ -162,6 +162,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	Lanes desiredLane = Lanes.Center;
 	int myLane = 0; //0 is uninitialized, 1 is the nearest, 2 is in the center and 3 is the furthest
 	public float sideMoveSpeed = 5.8f; //At what speed do you change lanes.
+	public bool isChangingLanes = false;
 	#endregion
 
 	#region Turning corners variables
@@ -702,6 +703,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			{
 				//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
 				moveDirection.x = 0;
+				isChangingLanes = false;
 				
 				//Make sure the lane data is correct in case a collision forced us out of our lane
 				recalculateCurrentLane();
@@ -748,7 +750,8 @@ public class PlayerControl : Photon.PunBehaviour {
 			{
 				//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
 				moveDirection.x = 0;
-				
+				isChangingLanes = false;
+
 				//Make sure the lane data is correct in case a collision forced us out of our lane
 				recalculateCurrentLane();
 	
@@ -801,6 +804,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void land()
 	{
+		recalculateCurrentLane();
 		//Reset values that we changed in the fall() method
 		playerVisuals.playDustPuff( true, false );
 		playerCamera.lockCamera( false );
@@ -857,7 +861,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Sliding
 	public void startSlide()
 	{
-		if( playerCharacterState != PlayerCharacterState.SideMove && playerCharacterState != PlayerCharacterState.Falling )
+		if( playerCharacterState != PlayerCharacterState.Falling )
 		{
 			if( jumping )
 			{
@@ -940,12 +944,13 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void turnCorner( bool isGoingRight )
 	{
-		if ( playerCharacterState == PlayerCharacterState.Running || playerCharacterState == PlayerCharacterState.Jumping || playerCharacterState == PlayerCharacterState.DoubleJumping || playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.SideMove || playerCharacterState == PlayerCharacterState.Stumbling )
+		if ( playerCharacterState == PlayerCharacterState.Running || playerCharacterState == PlayerCharacterState.Jumping || playerCharacterState == PlayerCharacterState.DoubleJumping || playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.Stumbling )
 		{
 			this.isGoingRight = isGoingRight;
 
 			//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
 			moveDirection.x = 0;
+			isChangingLanes = false;
 
 			//Make sure the lane data is correct in case a collision forced us out of our lane
 			recalculateCurrentLane();
@@ -1133,9 +1138,9 @@ public class PlayerControl : Photon.PunBehaviour {
 	//and to the right lane if true
 	void changeLane( bool isGoingRight )
 	{
-		//You can only change lanes while running
-		//You can also change your mind 
-		if ( playerCharacterState == PlayerCharacterState.Running || ( playerCharacterState == PlayerCharacterState.SideMove && this.isGoingRight != isGoingRight ) )
+		//You can only change lanes while running.
+		//You can also change your mind and change direction.
+		if ( playerCharacterState == PlayerCharacterState.Running || ( isChangingLanes && this.isGoingRight != isGoingRight ) )
 		{
 			this.isGoingRight = isGoingRight;
 
@@ -1150,6 +1155,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 			//Hack - put moveDirection.x to zero in case finalizeSideMove was never called because of a collision
 			moveDirection.x = 0;
+			isChangingLanes = false;
 
 			//Make sure the lane data is correct in case a collision forced us out of our lane
 			recalculateCurrentLane();
@@ -1171,7 +1177,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				if ( isGoingRight )
 				{
 					desiredLane = Lanes.Right;
-					setCharacterState( PlayerCharacterState.SideMove );
+					isChangingLanes = true;
 					moveDirection.x = currentSideMoveSpeed;
 					playerSounds.playSideMoveSound();
 					//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
@@ -1180,7 +1186,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				else
 				{
 					desiredLane = Lanes.Left;
-					setCharacterState( PlayerCharacterState.SideMove );
+					isChangingLanes = true;
 					moveDirection.x = -currentSideMoveSpeed;
 					playerSounds.playSideMoveSound();
 					//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
@@ -1189,7 +1195,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			else if ( currentLane == Lanes.Right && !isGoingRight )
 			{
 				desiredLane = Lanes.Center;
-				setCharacterState( PlayerCharacterState.SideMove );
+				isChangingLanes = true;
 				moveDirection.x = -currentSideMoveSpeed;
 				playerSounds.playSideMoveSound();
 				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
@@ -1197,7 +1203,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			else if ( currentLane == Lanes.Left && isGoingRight )
 			{
 				desiredLane = Lanes.Center;
-				setCharacterState( PlayerCharacterState.SideMove );
+				isChangingLanes = true;
 				moveDirection.x = currentSideMoveSpeed;
 				playerSounds.playSideMoveSound();
 				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
@@ -1207,19 +1213,13 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void finalizeSideMove()
 	{
-		if (jumping)
-		{
-			setCharacterState( PlayerCharacterState.Jumping );
-		}
-		else
-		{
-			setCharacterState( PlayerCharacterState.Running );					
-		}
+		isChangingLanes = false;
 		lean( 0, 0.3f );
 		moveDirection.x = 0;
 		currentLane = desiredLane;
 	}
 
+	//SetDesiredlane is only used while turning.
 	void setDesiredLane( float sideMoveInitiatedZ )
 	{
 		if( playerCharacterState == PlayerCharacterState.Sliding )
@@ -1313,7 +1313,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	void verifyIfDesiredLaneReached()
 	{
-		if ( playerCharacterState == PlayerCharacterState.SideMove || playerCharacterState == PlayerCharacterState.Stumbling )
+		if ( isChangingLanes )
 		{
 			float playerRotationY = Mathf.Floor( transform.eulerAngles.y );
 			if ( currentLane == Lanes.Center )
@@ -1958,6 +1958,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		queueJump = false;
 		isInDeadEnd = false;
 		deadEndTrigger = null;
+		isChangingLanes = false;
 		wantToTurn = false;
 		deadEndTurnDone = false;
 		if( unlockCamera ) playerCamera.lockCamera ( false );

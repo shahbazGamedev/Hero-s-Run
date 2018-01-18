@@ -52,7 +52,6 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 
 	private void createWave( GameObject wave )
 	{
-		Debug.LogWarning("Creating wave: " + numberOfWavesTriggered  );
 		//trigger zombie wave takes care of instantiating the zombies using Photon.
 		GameObject clone = Instantiate( wave );
 		ZombieWave activeZombieWave = clone.GetComponent<ZombieWave>();
@@ -83,7 +82,7 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 			if( !deadPlayerList.Contains( player ) )
 			{
 				deadPlayerList.Add( player );
-				Debug.Log("Coop playerDied " + player.name + " died " + deadPlayerList.Count );
+				Debug.Log( player.name + " ADDED to list of dead players. The count of dead players is: " + deadPlayerList.Count );
 				PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( player.name );
 				pmd.downs++;
 
@@ -115,7 +114,7 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 			}
 			else
 			{
-				Debug.LogError("Coop playerDied " + player.name + " is already in the dead player list. Count: " + deadPlayerList.Count );
+				Debug.LogError("CoopWaveGenerator-playerDied " + player.name + " is already in the dead player list. Count: " + deadPlayerList.Count );
 			}
 		}
 	}
@@ -141,8 +140,6 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 	{
 		Transform deadPlayer = getPlayerByPhotonViewID( deadPlayerPhotonViewID );
 		
-		Debug.LogWarning( " deadPlayerPhotonViewID isMasterClient: " + PhotonNetwork.isMasterClient + " dead player name: " + deadPlayer.name + " dead player isMine: " + deadPlayer.GetComponent<PhotonView>().isMine + " is AI null: " + (deadPlayer.GetComponent<PlayerAI>() == null) );
-
 		if( deadPlayer != null && deadPlayer.GetComponent<PhotonView>().isMine && deadPlayer.GetComponent<PlayerAI>() == null )
 		{
 			//Display the message "SPECTATING" on the HUD.
@@ -176,13 +173,20 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 
 	public void removeDeadPlayer( Transform player )
 	{
-		if( deadPlayerList.Contains( player ) ) deadPlayerList.Remove( player );
+		if( deadPlayerList.Contains( player ) )
+		{
+			deadPlayerList.Remove( player );
+			Debug.Log( player.name + " SUCCESSfULLY removed this dead player." );
+		}
+		else
+		{
+			Debug.LogError( player.name + " UNABLE to remove this dead player because he isn't in the list." );
+		}
 	}
 
 	[PunRPC]
 	void coopGameOverRPC()
 	{
-		Debug.Log( "coopGameOverRPC received." );
 		PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
 		//Tell all the players that is is game over so that they can stop attempting to resurrect.
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
