@@ -339,15 +339,16 @@ public sealed class ZombieController : Creature, ICreature {
 	{
 		if( gameObject.activeSelf )
 		{
-			float rd = Random.Range( 0, 1f );
-			if( rd < 0.5f )
+			float rd = Random.value;
+			if( rd < 0.35f )
 			{
 				audioSource.PlayOneShot( moanLow );
 			}
-			else
+			else if( rd < 0.7f )
 			{
 				audioSource.PlayOneShot( moanHigh );
 			}
+			//if over 0.7f, don't play anything. This is to avoid having too many zombies groaning.
 		}
 	}
  
