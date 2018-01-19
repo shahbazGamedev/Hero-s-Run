@@ -29,7 +29,9 @@ public class Teleporter : Device {
 		{
 			if( type == TeleporterType.Transmitter )
 			{
-				if( other.CompareTag("Player") )
+				//Remember that OnTriggerEnter can be called multiple times.
+				//If this player is already being teleported, ignore the event.
+				if( other.CompareTag("Player") && !other.GetComponent<PlayerSpell>().isBeingTeleported )
 				{
 					//Play a teleport VFX and sound
 					GetComponent<AudioSource>().Play();
@@ -100,7 +102,7 @@ public class Teleporter : Device {
 			smr[i].enabled = isVisible;
 		} 
 		player.GetComponent<PlayerVisuals>().enablePlayerShadow( isVisible );
-		Debug.LogWarning( "Teleporter-makePlayerInvisible for " + player.name + " Visible: " + isVisible );
+		//Debug.LogWarning( "Teleporter-makePlayerInvisible for " + player.name + " Visible: " + isVisible );
 	}
 
 }

@@ -1524,6 +1524,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			//It is possible for a change lane to be in progress when we attach to the zipline.
 			//To avoid drifting along the X axis when we detach from the zipline, make sure we reset moveDirection.
 			moveDirection = Vector3.zero;
+			isChangingLanes = false;
 			capsuleCollider.attachedRigidbody.isKinematic = true;
 			setAnimationTrigger(AttachToZiplineTrigger);
 			ziplineAttachPoint = transform.Find("Zipline Attach Point");
