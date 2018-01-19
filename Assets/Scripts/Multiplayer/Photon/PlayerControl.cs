@@ -383,22 +383,17 @@ public class PlayerControl : Photon.PunBehaviour {
 	[PunRPC]
 	public void pauseRemotePlayersMaster()
 	{
-		this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.All, transform.position, transform.eulerAngles.y, PhotonNetwork.time );
+		this.photonView.RPC( "pauseRemotePlayers", PhotonTargets.All, transform.position, transform.eulerAngles.y, currentTile.name );
 	}
 
 	[PunRPC]
-	public void pauseRemotePlayers( Vector3 positionAtTimeOfPause, float yRotationAtTimeOfpause, double timeRPCSent )
+	public void pauseRemotePlayers( Vector3 positionAtTimeOfPause, float yRotationAtTimeOfpause, string tileName )
 	{
-		//Debug.Log("pauseRemotePlayers RPC received for: " +  gameObject.name + " isMasterClient: " + PhotonNetwork.isMasterClient + " isMine: " + this.photonView.isMine + " isLocal: " + PhotonNetwork.player.IsLocal + " view ID: " + this.photonView.viewID + " owner ID: " + this.photonView.ownerId );		
-		//Debug.Log("pauseRemotePlayers-positionAtTimeOfPause: " + positionAtTimeOfPause + " yRotationAtTimeOfpause: " + yRotationAtTimeOfpause );		
-		//Debug.Log("pauseRemotePlayers-current position: " +  transform.position + " current rotation: " + transform.eulerAngles.y );
-		//float realDistanceDelta = Vector3.Distance( transform.position, positionAtTimeOfPause);
-		//double predictedDistanceDelta = (PhotonNetwork.time - timeRPCSent) * playerRun.getRunSpeed();
-		//Debug.Log("pauseRemotePlayers-real distance delta: " +  realDistanceDelta + " predictedDistanceDelta " + predictedDistanceDelta );
-		//Debug.Log("pauseRemotePlayers-distancePrediction accuracy: " + ((predictedDistanceDelta - realDistanceDelta) * 100).ToString("N1") + "%" );
-		transform.SetPositionAndRotation( positionAtTimeOfPause, Quaternion.Euler( transform.eulerAngles.x, yRotationAtTimeOfpause, transform.eulerAngles.z ) );
-		recalculateCurrentLane();
 		pausePlayer( true );
+		transform.SetPositionAndRotation( positionAtTimeOfPause, Quaternion.Euler( transform.eulerAngles.x, yRotationAtTimeOfpause, transform.eulerAngles.z ) );
+		GameObject tileGameObject = GameObject.Find( tileName );
+		updateCurrentTileInfo( tileGameObject );
+		recalculateCurrentLane();
 	}
 
 	[PunRPC]
@@ -2231,7 +2226,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		if( syncDelay > 0.5 ) return;
 
 		transform.SetPositionAndRotation( syncPosition + syncVelocity * syncDelay, Quaternion.Euler( transform.eulerAngles.x, syncYRotation, transform.eulerAngles.z ) );
-		recalculateCurrentLane();
 
 		//Determine on which tile we're on.
 		//Given an average latency of 60 msec. and an average run speed of 20 m/s, the player has been positioned 1.2 meters further.
@@ -2295,6 +2289,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		{
 			Debug.LogError( "PlayerControl-positionSynchronizationRPC: There is no ground below the player named " + name + " at position " + transform.position );
 		}
+		recalculateCurrentLane();
 	}
 
 	void updateCurrentTileInfo( GameObject tile )
