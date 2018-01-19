@@ -400,10 +400,12 @@ public class CardSpawnedObject : MonoBehaviour {
 				isPlayerOrCreature = true;
                break;
 		}
+		#if UNITY_EDITOR
 		if( valid )
 		{
 			 Debug.Log("destroyValidTarget " + potentialTarget.name );
 		}
+		#endif
 		return isPlayerOrCreature;		
 	}
 

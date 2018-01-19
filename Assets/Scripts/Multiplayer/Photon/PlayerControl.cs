@@ -1764,6 +1764,8 @@ public class PlayerControl : Photon.PunBehaviour {
 				setAnimationTrigger(FallBackwardTrigger);
 				break;
 		}
+		if( GameManager.Instance.isCoopPlayMode() && PhotonNetwork.isMasterClient ) coopWaveGenerator.playerDied( transform );
+
 	}
 
 	/// <summary>
@@ -1786,7 +1788,7 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void fall_backward_completed ( AnimationEvent eve )
 	{
-		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.25f, 0.7f, 1f ) );
+		if( this.photonView.isMine && playerAI == null && !GameManager.Instance.isCoopPlayMode() ) StartCoroutine( controlVignetting( 0.25f, 0.7f, 1f ) );
 		if( ragdoll != null ) ragdoll.controlRagdoll( true );
 		StartCoroutine( waitBeforeResurrecting(DELAY_BEFORE_RESURRECTING) );
 		//The fall backward animation moves the  mesh of the body outside of the capsule collider.
@@ -1796,21 +1798,14 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void fall_forward_completed ( AnimationEvent eve )
 	{
-		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0.25f, 0.7f, 1f ) );
+		if( this.photonView.isMine && playerAI == null && !GameManager.Instance.isCoopPlayMode() ) StartCoroutine( controlVignetting( 0.25f, 0.7f, 1f ) );
 		if( ragdoll != null ) ragdoll.controlRagdoll( true );
 		StartCoroutine( waitBeforeResurrecting(DELAY_BEFORE_RESURRECTING) );
 	}
 
 	IEnumerator waitBeforeResurrecting ( float duration )
 	{
-		if( GameManager.Instance.isCoopPlayMode() )
-		{
-			//Remove the vignetting
-			if( playerAI == null ) StartCoroutine( controlVignetting( 0f, 0f, 0.25f ) );
-			if( PhotonNetwork.isMasterClient ) coopWaveGenerator.playerDied( transform );
-			yield return null;
-		}
-		else
+		if( !GameManager.Instance.isCoopPlayMode() )
 		{
 			//Resurrect at the next lock step.
 			yield return new WaitForSeconds(duration);
@@ -1879,7 +1874,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		playerCamera.positionCameraNow();
 		playerCamera.resetCameraParameters();
 
-		if( this.photonView.isMine && playerAI == null ) StartCoroutine( controlVignetting( 0f, 0f, 0f ) );
+		if( this.photonView.isMine && playerAI == null && !GameManager.Instance.isCoopPlayMode() ) StartCoroutine( controlVignetting( 0f, 0f, 0f ) );
 
 		//Only send an event if we are the local player and we are not a bot.
 		if( this.photonView.isMine && playerAI == null ) GameManager.Instance.setGameState( GameState.Resurrect );

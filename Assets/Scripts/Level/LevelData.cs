@@ -600,7 +600,7 @@ public class LevelData : MonoBehaviour {
 		public int trophiesNeededToUnlock;
 		[Tooltip("Coins awarded on victory. This number varies per track.")]
 		public int coinsAwardedOnVictory;
-		[Tooltip("Set to true if this level if for the coop mode. You also need to add a ZombieTrigger component to each tile that has a zombie wave and configure it.")]
+		[Tooltip("Set to true if this level is for the coop mode.")]
 		public bool isCoop = false;
 		
 	}

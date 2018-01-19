@@ -20,6 +20,8 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 	#region Other
 	public static CoopWaveGenerator Instance;
 	ZombieManager zombieManager;
+	Coroutine spectatingCoroutine;
+	const float DELAY_BEFORE_SPECTATING = 2.25f;
 	#endregion
 
 	void Awake ()
@@ -68,6 +70,8 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 
 		Debug.Log("CoopWaveGenerator-coopWaveRPC: " + numberOfWavesTriggered );
 
+		if( spectatingCoroutine != null ) StopCoroutine( spectatingCoroutine );
+
 		//Send a new wave event to interested classes.
 		if( coopNewWave != null ) coopNewWave( numberOfWavesTriggered );
 
@@ -101,8 +105,9 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 					}
 					else
 					{
-						//Only one player is dead.
-						photonView.RPC("onePlayerDeadRPC", PhotonTargets.All, player.GetComponent<PhotonView>().viewID );	
+						//Only one player is dead so the match continues.
+						//Start spectating his partner.
+						photonView.RPC("spectatingRPC", PhotonTargets.All, player.GetComponent<PhotonView>().viewID );	
 					}
 				}
 				else
@@ -136,18 +141,27 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 	}
 
 	[PunRPC]
-	void onePlayerDeadRPC( int deadPlayerPhotonViewID )
+	void spectatingRPC( int deadPlayerPhotonViewID )
 	{
+		if( spectatingCoroutine != null ) StopCoroutine( spectatingCoroutine );
+		spectatingCoroutine = StartCoroutine( startSpectating( deadPlayerPhotonViewID ) );
+	}
+
+	IEnumerator startSpectating( int deadPlayerPhotonViewID )
+	{
+		//We do not start spectating right away to give the player time to see how his character died.
+		yield return new WaitForSeconds(DELAY_BEFORE_SPECTATING);
+
 		Transform deadPlayer = getPlayerByPhotonViewID( deadPlayerPhotonViewID );
 		
 		if( deadPlayer != null && deadPlayer.GetComponent<PhotonView>().isMine && deadPlayer.GetComponent<PlayerAI>() == null )
 		{
-			//Display the message "SPECTATING" on the HUD.
-			HUDMultiplayer.hudMultiplayer.displayTopMessage( LocalizationManager.Instance.getText( "COOP_SPECTATING" ) );
 			//Have the main camera track his partner.
 			PlayerRace partner = getPartner( deadPlayer.GetComponent<PlayerRace>() );
 			if( partner != null )
 			{
+				//Display the message "SPECTATING" on the HUD.
+				HUDMultiplayer.hudMultiplayer.displayTopMessage( LocalizationManager.Instance.getText( "COOP_SPECTATING" ) );
 				CinemachineVirtualCamera cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
 				cmvc.m_Follow = partner.transform;
 				cmvc.m_LookAt = partner.transform;
@@ -187,6 +201,8 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 	[PunRPC]
 	void coopGameOverRPC()
 	{
+		if( spectatingCoroutine != null ) StopCoroutine( spectatingCoroutine );
+
 		PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
 		//Tell all the players that is is game over so that they can stop attempting to resurrect.
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
