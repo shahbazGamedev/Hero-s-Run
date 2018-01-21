@@ -1765,7 +1765,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				setAnimationTrigger(FallBackwardTrigger);
 				break;
 		}
-		if( GameManager.Instance.isCoopPlayMode() && PhotonNetwork.isMasterClient ) coopWaveGenerator.playerDied( transform );
+		if( GameManager.Instance.isCoopPlayMode() ) coopWaveGenerator.playerDied( transform );
 
 	}
 

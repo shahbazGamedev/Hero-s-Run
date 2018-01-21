@@ -4,6 +4,8 @@ using UnityEngine;
 using Photon;
 using Cinemachine;
 
+//The version of CoopWaveGenerator to use is always the Master one. Make sure that all public methods check for isMaster before executing.
+//Note that all devices have an instance of the CoopWaveGenerator in case a player quits and the Master authority needs to be transfered to another player.
 public sealed class CoopWaveGenerator : PunBehaviour {
 
 	#region Waves
@@ -52,7 +54,7 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 		}
 	}
 
-	private void createWave( GameObject wave )
+	void createWave( GameObject wave )
 	{
 		//trigger zombie wave takes care of instantiating the zombies using Photon.
 		GameObject clone = Instantiate( wave );
@@ -81,45 +83,48 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 	#region Players
 	public void playerDied( Transform player )
 	{
-		if( PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED )
+		if( PhotonNetwork.isMasterClient )
 		{
-			if( !deadPlayerList.Contains( player ) )
+			if( PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED )
 			{
-				deadPlayerList.Add( player );
-				Debug.Log( player.name + " ADDED to list of dead players. The count of dead players is: " + deadPlayerList.Count );
-				PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( player.name );
-				pmd.downs++;
-
-				//There are normally 2 players in the Coop mode.
-				//However, a player may have quit the match.
-				//In that case, allow the remaining player to continue until he dies,
-				//and then it will be game over.
-				if( PlayerRace.players.Count == 2 )
+				if( !deadPlayerList.Contains( player ) )
 				{
-					//We have 2 players.
-					if( deadPlayerList.Count == 2 )
+					deadPlayerList.Add( player );
+					Debug.Log( player.name + " ADDED to list of dead players. The count of dead players is: " + deadPlayerList.Count );
+					PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( player.name );
+					pmd.downs++;
+	
+					//There are normally 2 players in the Coop mode.
+					//However, a player may have quit the match.
+					//In that case, allow the remaining player to continue until he dies,
+					//and then it will be game over.
+					if( PlayerRace.players.Count == 2 )
 					{
-						PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
-						//Both players are dead, this means game over. Send an RPC.
-						photonView.RPC("coopGameOverRPC", PhotonTargets.All );
+						//We have 2 players.
+						if( deadPlayerList.Count == 2 )
+						{
+							PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
+							//Both players are dead, this means game over. Send an RPC.
+							photonView.RPC("coopGameOverRPC", PhotonTargets.All );
+						}
+						else
+						{
+							//Only one player is dead so the match continues.
+							//Start spectating his partner.
+							photonView.RPC("spectatingRPC", PhotonTargets.All, player.GetComponent<PhotonView>().viewID );	
+						}
 					}
 					else
 					{
-						//Only one player is dead so the match continues.
-						//Start spectating his partner.
-						photonView.RPC("spectatingRPC", PhotonTargets.All, player.GetComponent<PhotonView>().viewID );	
+						//There is only one player left and he died. This means game over. Send an RPC.
+						PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
+						photonView.RPC("coopGameOverRPC", PhotonTargets.All );
 					}
 				}
 				else
 				{
-					//There is only one player left and he died. This means game over. Send an RPC.
-					PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
-					photonView.RPC("coopGameOverRPC", PhotonTargets.All );
+					Debug.LogError("CoopWaveGenerator-playerDied " + player.name + " is already in the dead player list. Count: " + deadPlayerList.Count );
 				}
-			}
-			else
-			{
-				Debug.LogError("CoopWaveGenerator-playerDied " + player.name + " is already in the dead player list. Count: " + deadPlayerList.Count );
 			}
 		}
 	}
@@ -187,14 +192,17 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 
 	public void removeDeadPlayer( Transform player )
 	{
-		if( deadPlayerList.Contains( player ) )
+		if( PhotonNetwork.isMasterClient )
 		{
-			deadPlayerList.Remove( player );
-			Debug.Log( player.name + " SUCCESSfULLY removed this dead player." );
-		}
-		else
-		{
-			Debug.LogError( player.name + " UNABLE to remove this dead player because he isn't in the list." );
+			if( deadPlayerList.Contains( player ) )
+			{
+				deadPlayerList.Remove( player );
+				Debug.Log( player.name + " SUCCESSfULLY removed this dead player." );
+			}
+			else
+			{
+				Debug.LogError( player.name + " UNABLE to remove this dead player because he isn't in the list." );
+			}
 		}
 	}
 
