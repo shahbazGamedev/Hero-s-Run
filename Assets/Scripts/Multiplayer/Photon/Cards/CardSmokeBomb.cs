@@ -28,7 +28,7 @@ public class CardSmokeBomb : Card {
 
 		//Drop the smoke bomb in front of the player. It has a rigidbody and hence it has gravity and will fall to the ground.
 		//We change the rotation so that the canister topples.
-		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( getSpawnOffset() ), Quaternion.Euler( -50f, playerTransform.rotation.y, 10f ), 0, data );
+		PhotonNetwork.InstantiateSceneObject( prefabName, playerTransform.TransformPoint( getSpawnOffset() ), Quaternion.Euler( -50f, playerTransform.eulerAngles.y, 10f ), 0, data );
 	}
 	#endregion
 

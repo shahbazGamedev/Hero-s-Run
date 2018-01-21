@@ -121,7 +121,7 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.O ) )
 		{
-			playerControl.playOmniToolAnimation( CardName.Stasis );
+			playerControl.playOmniToolAnimation( CardName.Quantum_Rift );
 		}
 		else if ( Input.GetKeyDown (KeyCode.T ) )
 		{

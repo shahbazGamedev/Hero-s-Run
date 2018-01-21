@@ -62,7 +62,7 @@ public class PlayerAI : AutoPilot {
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha0) )
 		{
-			bch.playCard( CardName.Freeze );
+			bch.playCard( CardName.Quantum_Rift );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha1) )
 		{

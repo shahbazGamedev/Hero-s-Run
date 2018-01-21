@@ -286,6 +286,17 @@ public class CardHandler : MonoBehaviour {
 					Debug.LogError("CardHandler-The CardFreeze component is not attached to the CardHandler in the Level scene.");
 				}
 			break;
+			case CardName.Quantum_Rift:
+				CardQuantumRift cardQuantumRift = GetComponent<CardQuantumRift>();
+				if( cardQuantumRift != null )
+				{
+					cardQuantumRift.activateCard( photonViewId, level );
+				}
+				else
+				{
+					Debug.LogError("CardHandler-The CardQuantumRift component is not attached to the CardHandler in the Level scene.");
+				}
+			break;
 			default:
 				Debug.LogWarning("CardHandler-The card name specified, " + name + ", is unknown.");
 			break;
@@ -396,6 +407,13 @@ public class CardHandler : MonoBehaviour {
 				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
 				{
 					return GetComponent<CardFreeze>().isThereATargetWithinRange( caster.transform, level );
+				}
+			break;
+			//Quantum Rift is effective whenever your opponent is far ahead of you
+			case CardName.Quantum_Rift:
+				if( !isCasterLeading( caster.GetComponent<PlayerRace>() ) )
+				{
+					return GetComponent<CardQuantumRift>().isThereATargetWithinRange( caster.transform, level );
 				}
 			break;
 			//The following cards are effective whenever your opponent is far ahead of you

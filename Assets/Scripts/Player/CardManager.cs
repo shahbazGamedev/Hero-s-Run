@@ -87,6 +87,7 @@ public enum CardName
 	Homing_Missile = 203,
 	Shockwave = 205,
 	Cloak = 206,
+	Quantum_Rift = 207,
 
 	//Legendary
 	Hack = 301,
