@@ -13,8 +13,6 @@ using UnityEngine;
 /// c) have a card icon (currently using smoke bomb)
 /// Questions:
 /// a) Is aiming necessary?
-/// Bugs:
-/// a) secondary icon appears outside of the lanes.
 /// </summary>
 public class CardQuantumRift : Card {
 
@@ -52,9 +50,6 @@ public class CardQuantumRift : Card {
 				object[] data = new object[1];
 				data[0] = photonViewID;
 				PhotonNetwork.InstantiateSceneObject( quantumRiftPrefabName, riftPosition, Quaternion.Euler( 0, playerTransform.eulerAngles.y, 0 ) , 0, data );
-		
-				MiniMap.Instance.displaySecondaryIcon( target.GetComponent<PhotonView>().viewID, (int)CardName.Lightning, 2.5f );
-	
 			}
 			else
 			{

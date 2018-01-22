@@ -41,10 +41,7 @@ public class CardLightning : Card {
 		
 				//Kill creature
 				ICreature creatureController = target.GetComponent<ICreature>();
-				creatureController.knockback( target, true );
-
-				MiniMap.Instance.displaySecondaryIcon( target.GetComponent<PhotonView>().viewID, (int)CardName.Lightning, 2.5f );
-	
+				creatureController.knockback( target, true );	
 			}
 			else
 			{
