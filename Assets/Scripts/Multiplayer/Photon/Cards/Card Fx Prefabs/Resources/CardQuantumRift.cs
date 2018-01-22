@@ -13,10 +13,8 @@ using UnityEngine;
 /// c) have a card icon (currently using smoke bomb)
 /// Questions:
 /// a) Is aiming necessary?
-/// b) Does reflect work?
 /// Bugs:
 /// a) secondary icon appears outside of the lanes.
-/// b) the rock gemotry gets clipped by the portal
 /// </summary>
 public class CardQuantumRift : Card {
 

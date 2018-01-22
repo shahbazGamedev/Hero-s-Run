@@ -7,6 +7,7 @@ public class QuantumRift : CardSpawnedObject {
 
 	const float HEIGHT_GROUND_OFFSET = 4f;
 	[SerializeField] Transform rock;
+	[SerializeField] MeshCollider rockCollider;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
@@ -15,6 +16,16 @@ public class QuantumRift : CardSpawnedObject {
 		
 		casterTransform = getCaster( (int) data[0] );
 		setCasterName( casterTransform.name );
+
+		Transform target = getCaster( (int) data[2] );
+
+		//We don't want the caster to be hit by the rock.
+		//However, the caster could be the target if the opponent had the Reflect card active.
+		if( target != null && casterTransform != null && casterTransform != target )
+		{
+			//Make the caster ignore collisions with the rock.
+			Physics.IgnoreCollision( rockCollider, casterTransform.GetComponent<CapsuleCollider>() );
+		}
 
 		RaycastHit hit;
 		int originalLayer = rock.gameObject.layer;
@@ -30,7 +41,7 @@ public class QuantumRift : CardSpawnedObject {
 		//Orient the rock that will be launched towards the target.
 		if( !GameManager.Instance.isCoopPlayMode() )
 		{
-			 rock.LookAt( getCaster( (int) data[2] ) );
+			 rock.LookAt( target );
 		}
 		Destroy( gameObject, 10f );
 	}
