@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// The Double Jump card is a Common card with 13 levels. The player will jump higher and further than normal.
+/// The Double Jump card is a Common card with 11 levels. The player will jump higher and further than normal.
 /// </summary>
 public class CardDoubleJump : Card {
 

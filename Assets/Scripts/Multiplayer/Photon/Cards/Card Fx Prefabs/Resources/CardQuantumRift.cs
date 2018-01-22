@@ -2,8 +2,21 @@
 using UnityEngine;
 
 /// <summary>
-/// The Quantum Rift card is an Epic card with 8 levels.
-/// A rift opens in the sky in front of the nearest leading player within range. The rift spews rocks. Each rock causes some damage.
+/// Quantum Rift card.
+/// A rift opens in the sky spewing a rock which shatters upon impact.
+/// The reflect card affects this card.
+/// Competition: The rift opens in the sky in front of the nearest, leading player within range. The rock causes damage to the player and makes him stumble if he is running.
+/// Coop: The rift opens in the sky in front of the nearest zombie within range. The rock knocks back any zombies it touches.
+/// To do:
+/// a) secondary icon for rift.
+/// b) have each hero play an appropriate VO.
+/// c) have a card icon (currently using smoke bomb)
+/// Questions:
+/// a) Is aiming necessary?
+/// b) Does reflect work?
+/// Bugs:
+/// a) secondary icon appears outside of the lanes.
+/// b) the rock gemotry gets clipped by the portal
 /// </summary>
 public class CardQuantumRift : Card {
 
@@ -38,10 +51,8 @@ public class CardQuantumRift : Card {
 	
 				//Spawn the rift in front of the creature
 				Vector3 riftPosition = target.TransformPoint( getSpawnOffset() );
-
 				object[] data = new object[1];
 				data[0] = photonViewID;
-
 				PhotonNetwork.InstantiateSceneObject( quantumRiftPrefabName, riftPosition, Quaternion.Euler( 0, playerTransform.eulerAngles.y, 0 ) , 0, data );
 		
 				MiniMap.Instance.displaySecondaryIcon( target.GetComponent<PhotonView>().viewID, (int)CardName.Lightning, 2.5f );
@@ -98,8 +109,6 @@ public class CardQuantumRift : Card {
 			}
 		}
 	}
-
-
 	#endregion
 
 }

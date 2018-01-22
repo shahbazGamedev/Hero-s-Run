@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+/// To do:
+/// Make sure it uses lockstep for card activation.
 public class QuantumRift : CardSpawnedObject {
 
 	const float HEIGHT_GROUND_OFFSET = 4f;
@@ -15,18 +17,17 @@ public class QuantumRift : CardSpawnedObject {
 		setCasterName( casterTransform.name );
 
 		RaycastHit hit;
-		int originalLayer = gameObject.layer;
-		gameObject.layer = MaskHandler.ignoreRaycastLayer;
-		//Important: we need the +2f to start a bit above ground, or else the raycast may start a tad below the road and miss.
-		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + 2f, transform.position.z ), Vector3.down, out hit, 25f ))
+		int originalLayer = rock.gameObject.layer;
+		rock.gameObject.layer = MaskHandler.ignoreRaycastLayer;
+		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y, transform.position.z ), Vector3.down, out hit, 25f ))
 		{
-			//Position it flush with the ground
+			//Position above the ground at HEIGHT_GROUND_OFFSET
 			transform.position = new Vector3( transform.position.x, hit.point.y + HEIGHT_GROUND_OFFSET, transform.position.z );
 		}
-		//Now that our raycast is finished, reset the object's layer to its original value.
-		gameObject.layer = originalLayer;
+		//Now that our raycast is finished, reset the rock's layer to its original value.
+		rock.gameObject.layer = originalLayer;
 
-		//Orient the rock that will be launched to the target.
+		//Orient the rock that will be launched towards the target.
 		if( !GameManager.Instance.isCoopPlayMode() )
 		{
 			 rock.LookAt( getCaster( (int) data[2] ) );
@@ -36,8 +37,6 @@ public class QuantumRift : CardSpawnedObject {
 	
 	public void rockHitSomeone ( GameObject targetHit )
 	{
-		//Play collision sound
-		//GetComponent<AudioSource>().PlayOneShot( collisionSound );
 		if( GameManager.Instance.isCoopPlayMode() )
 		{
 	 		if( targetHit.CompareTag("Zombie") )
@@ -52,12 +51,9 @@ public class QuantumRift : CardSpawnedObject {
 		{
 			if( targetHit.CompareTag("Player") )
 			{
-				if( targetHit.name != casterName )
-				{
-					addSkillBonus( 25, "SKILL_BONUS_QUANTUM_RIFT" );
-					//Player was hit by rock launched by rift. Deduct some health. If the player was running, he will stumble.
-					targetHit.GetComponent<PlayerHealth>().deductHealth( (int) gameObject.GetPhotonView ().instantiationData[1] );
-				}
+				addSkillBonus( 25, "SKILL_BONUS_QUANTUM_RIFT" );
+				//Player was hit by rock launched by rift. Deduct some health. If the player was running, he will stumble.
+				targetHit.GetComponent<PlayerHealth>().deductHealth( (int) gameObject.GetPhotonView ().instantiationData[1] );
 			}
 		}
 	}

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// The Firewall card is a Rare card with 11 levels. The firewall appears a few meters in front of the player. The duration of the firewall depends on the level of the caster.
+/// The Firewall card is a Rare card with 9 levels. The firewall appears a few meters in front of the player. The duration of the firewall depends on the level of the caster.
 /// The player is immune to its effect.
 /// </summary>
 public class CardFirewall : Card {

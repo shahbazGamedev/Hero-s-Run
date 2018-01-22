@@ -66,7 +66,7 @@ public class PlayerAI : AutoPilot {
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha1) )
 		{
-			bch.playCard( CardName.Stasis );
+			bch.playCard( CardName.Reflect );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha2 ) )
 		{
