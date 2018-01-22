@@ -1,8 +1,8 @@
 	#include "UnityCG.cginc"
 	#include "DynamicFogDither.cginc"
 
-	sampler2D _MainTex;
-	sampler2D_float _CameraDepthTexture;
+	UNITY_DECLARE_SCREENSPACE_TEXTURE(_MainTex);
+	UNITY_DECLARE_DEPTH_TEXTURE(_CameraDepthTexture);
 	float4 _MainTex_ST;
 	fixed _FogAlpha;
 
@@ -18,6 +18,7 @@
     struct appdata {
     	float4 vertex : POSITION;
 		float2 texcoord : TEXCOORD0;
+		UNITY_VERTEX_INPUT_INSTANCE_ID
     };
 
 	struct v2f {
@@ -25,10 +26,15 @@
 	    float2 uv: TEXCOORD0;
     	float2 depthUV : TEXCOORD1;
     	float3 cameraToFarPlane : TEXCOORD2;
+		UNITY_VERTEX_INPUT_INSTANCE_ID
+		UNITY_VERTEX_OUTPUT_STEREO
 	};
 
 	v2f vert(appdata v) {
     	v2f o;
+		UNITY_SETUP_INSTANCE_ID(v);
+		UNITY_TRANSFER_INSTANCE_ID(v, o);
+		UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
     	o.pos = UnityObjectToClipPos(v.vertex);
     	o.uv = UnityStereoScreenSpaceUVAdjust(v.texcoord, _MainTex_ST);
     	o.depthUV = o.uv;

@@ -41,7 +41,7 @@ namespace DynamicFogAndMist {
 								const int FOG_OF_WAR = 2;
 								SerializedProperty effectType, preset, useFogVolumes, enableDithering, ditherStrength, useSinglePassStereoRenderingMatrix;
 								SerializedProperty alpha, noiseStrength, noiseScale, distance, distanceFallOff, maxDistance, maxDistanceFallOff, height, maxHeight;
-								SerializedProperty heightFallOff, baselineHeight, clipUnderBaseline, turbulence, speed, color, color2;
+								SerializedProperty heightFallOff, baselineHeight, clipUnderBaseline, turbulence, speed, windDirection, color, color2;
 								SerializedProperty skyHaze, skySpeed, skyNoiseStrength, skyAlpha, sun, scattering, scatteringColor;
 								SerializedProperty fogOfWarEnabled, fogOfWarCenter, fogOfWarSize, fogOfWarTextureSize;
 								bool profileChanges;
@@ -75,6 +75,7 @@ namespace DynamicFogAndMist {
 												clipUnderBaseline = serializedObject.FindProperty ("_clipUnderBaseline");
 												turbulence = serializedObject.FindProperty ("_turbulence");
 												speed = serializedObject.FindProperty ("_speed");
+												windDirection = serializedObject.FindProperty ("_windDirection");
 
 												color = serializedObject.FindProperty ("_color");
 												color2 = serializedObject.FindProperty ("_color2");
@@ -205,15 +206,23 @@ namespace DynamicFogAndMist {
 												EditorGUILayout.PropertyField (useFogVolumes, new GUIContent ("Use Fog Volumes", "Enables fog volumes. These are zones which changes the transparency of the fog automatically, either making it disappear or appear."));
 
 												#if UNITY_5_4_OR_NEWER
-												#if UNITY_5_5_OR_NEWER
-												useSinglePassStereoRenderingMatrix.boolValue = PlayerSettings.stereoRenderingPath == StereoRenderingPath.SinglePass;
-												#else
+
+												if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.Android) {
+																#if UNITY_5_5_OR_NEWER
+																useSinglePassStereoRenderingMatrix.boolValue = PlayerSettings.stereoRenderingPath == StereoRenderingPath.SinglePass;
+																#else
 												useSinglePassStereoRenderingMatrix.boolValue = PlayerSettings.singlePassStereoRendering;
-												#endif
-												GUI.enabled = false;
+																#endif
+																GUI.enabled = false;
+												}
+
 												EditorGUILayout.PropertyField (useSinglePassStereoRenderingMatrix, new GUIContent ("Single Pass Stereo", "Enables Single Pass Stereo Rendering when using in VR (automatically set based on player settings."));
 												GUI.enabled = true;
 												#endif
+
+												if (useSinglePassStereoRenderingMatrix.boolValue && EditorUserBuildSettings.activeBuildTarget == BuildTarget.Android) {
+																EditorGUILayout.HelpBox("Single Pass Stereo is not supported on all Android devices.", MessageType.Info);
+												}
 
 												int effect = effectType.intValue;
 
@@ -238,7 +247,7 @@ namespace DynamicFogAndMist {
 
 												if (expandSection [FOG_PROPERTIES]) {
 																EditorGUILayout.PropertyField (alpha, new GUIContent ("Alpha", "Global fog transparency. You can also change the transparency at color level."));
-																if (effect != 4 && effect != 5) {
+																if (effect != 4 && effect != 5 && effect != 6) {
 																				EditorGUILayout.PropertyField (noiseStrength, new GUIContent ("Noise Strength", "Set this value to zero to use solid colors."));
 																				EditorGUILayout.PropertyField (noiseScale, new GUIContent ("Noise Scale", "Scale factor for sampling noise."));
 																}
@@ -264,6 +273,7 @@ namespace DynamicFogAndMist {
 
 																if (effect < 4 || effect == (int)FOG_TYPE.DesktopFogPlusOrthogonal) {
 																				EditorGUILayout.PropertyField (speed, new GUIContent ("Speed", "Speed of fog animation if noise strength or turbulence > 0 (turbulence not available in Desktop Fog Plus mode)."));
+																				EditorGUILayout.PropertyField (windDirection, new GUIContent ("Wind Direction", "Direction of the wind to take into account for the fog animation."));
 																}
 
 																EditorGUILayout.PropertyField (color);

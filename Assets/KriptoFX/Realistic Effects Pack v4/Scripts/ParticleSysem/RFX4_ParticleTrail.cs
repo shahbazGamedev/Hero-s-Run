@@ -3,8 +3,6 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Configuration;
-using System.Timers;
 
 [RequireComponent(typeof(ParticleSystem))]
 public class RFX4_ParticleTrail : MonoBehaviour

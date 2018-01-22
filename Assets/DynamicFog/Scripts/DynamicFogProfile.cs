@@ -52,6 +52,7 @@ namespace DynamicFogAndMist {
 								[Range (0, 5.0f)]
 								public float
 												speed = 0.1f;
+								public Vector3 windDirection = new Vector3 (1, 0, 1);
 								public Color color = Color.white;
 								public Color color2 = Color.gray;
 								[Range (0, 500)]
@@ -95,6 +96,7 @@ namespace DynamicFogAndMist {
 												fog.clipUnderBaseline = clipUnderBaseline;
 												fog.turbulence = turbulence;
 												fog.speed = speed;
+												fog.windDirection = windDirection;
 												fog.color = color;
 												fog.color2 = color2;
 												fog.skyHaze = skyHaze;
@@ -128,6 +130,7 @@ namespace DynamicFogAndMist {
 												clipUnderBaseline = fog.clipUnderBaseline;
 												turbulence = fog.turbulence;
 												speed = fog.speed;
+												windDirection = fog.windDirection;
 												color = fog.color;
 												color2 = fog.color2;
 												skyHaze = fog.skyHaze;
@@ -163,6 +166,7 @@ namespace DynamicFogAndMist {
 												fog.clipUnderBaseline = t < 0.5f ? profile1.clipUnderBaseline : profile2.clipUnderBaseline;
 												fog.turbulence = profile1.turbulence * (1f - t) + profile2.turbulence * t;
 												fog.speed = profile1.speed * (1f - t) + profile2.speed * t;
+												fog.windDirection = profile1.windDirection * (1f - t) + profile2.windDirection * t;
 												fog.color = profile1.color * (1f - t) + profile2.color * t;
 												fog.color2 = profile1.color2 * (1f - t) + profile2.color * t;
 												fog.skyHaze = profile1.skyHaze * (1f - t) + profile2.skyHaze * t;

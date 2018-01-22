@@ -106,8 +106,9 @@ Shader "DynamicFog/Image Effect/Basic" {
 
 	// Fragment Shader
 	fixed4 frag (v2f i) : SV_Target {
-   		fixed4 color = tex2D(_MainTex, i.uv);
-		float depth = Linear01Depth(UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, i.depthUV)));
+		UNITY_SETUP_INSTANCE_ID(i);
+   		fixed4 color = UNITY_SAMPLE_SCREENSPACE_TEXTURE(_MainTex, i.uv);
+		float depth = Linear01Depth(UNITY_SAMPLE_DEPTH(UNITY_SAMPLE_SCREENSPACE_TEXTURE(_CameraDepthTexture, i.depthUV)));
 		float3 worldPos = getWorldPos(i, depth);
 		color = getFogColor(i.uv, worldPos, depth, color);
 		#if DITHER_ON

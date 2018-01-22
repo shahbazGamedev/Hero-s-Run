@@ -8,7 +8,7 @@ Shader "DynamicFog/Image Effect/Only Fog" {
 		_FogColor ("Color", Color) = (1,1,1,1)
 		_FogColor2 ("Color 2", Color) = (1,1,1,1)
 		_FogNoiseData ("Noise Data", Vector) = (0,0,0,0.1)
-		_FogSpeed ("Speed", Range (0, 0.5)) = 0.1
+		_FogSpeed ("Speed", Vector) = (0.1,0,0.1)
 		_FogOfWarCenter("Fog Of War Center", Vector) = (0,0,0)
 		_FogOfWarSize("Fog Of War Size", Vector) = (1,1,1)
 		_FogOfWar ("Fog of War Mask", 2D) = "white" {}
@@ -32,15 +32,17 @@ Shader "DynamicFog/Image Effect/Only Fog" {
 	float4 _FogDistance; // x = min distance, y = min distance falloff, x = max distance, y = max distance fall off
 	float4 _FogHeightData;
 	float4 _FogNoiseData; // x = noise, y = turbulence, z = depth attenuation
-	float _FogSpeed;
+	float3 _FogSpeed;
 	fixed4 _FogColor, _FogColor2;
 
 	//Fragment Shader
 	fixed4 frag (v2f i) : SV_Target {
-   		fixed4 color = tex2D(_MainTex, i.uv);
+		UNITY_SETUP_INSTANCE_ID(i);
+
+   		fixed4 color = UNITY_SAMPLE_SCREENSPACE_TEXTURE(_MainTex, i.uv);
 
     	// Reconstruct the world position of the pixel
-		float depth = Linear01Depth(UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, i.depthUV)));
+		float depth = Linear01Depth(UNITY_SAMPLE_DEPTH(UNITY_SAMPLE_SCREENSPACE_TEXTURE(_CameraDepthTexture, i.depthUV)));
 		if (depth > _FogDistance.z) return color;
 		
     	float3 worldPos = (i.cameraToFarPlane * depth) + _WorldSpaceCameraPos;
@@ -55,7 +57,7 @@ Shader "DynamicFog/Image Effect/Only Fog" {
    		#endif
 		
     	// Compute noise
-		float noise = tex2D(_NoiseTex, worldPos.xz * _FogNoiseData.w * 0.1 + _Time[1]*_FogSpeed).g;
+		float noise = tex2D(_NoiseTex, worldPos.xz * _FogNoiseData.w * 0.1 + _Time.yy * _FogSpeed.xz).g;
 		float nt = noise * _FogNoiseData.y;
 		noise /= (depth*_FogNoiseData.z); // attenuate with distance
 

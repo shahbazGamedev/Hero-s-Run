@@ -72,9 +72,7 @@ public class RFX4_RaycastCollision : MonoBehaviour
     {
        
         RaycastHit raycastHit;
-        if (Physics.Raycast(transform.position, transform.forward, out raycastHit, RaycastDistance))
-		{
-			if( !raycastHit.transform.CompareTag("Player") ) return;
+        if (Physics.Raycast(transform.position, transform.forward, out raycastHit, RaycastDistance)) {
             Vector3 position;
             if (UsePivotPosition)
                 position = raycastHit.transform.position;

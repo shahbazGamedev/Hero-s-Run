@@ -28,7 +28,7 @@ using System.IO;
 public static class PhotonNetwork
 {
     /// <summary>Version number of PUN. Also used in GameVersion to separate client version from each other.</summary>
-    public const string versionPUN = "1.85";
+    public const string versionPUN = "1.88";
 
     /// <summary>Version string for your this build. Can be used to separate incompatible clients. Sent during connect.</summary>
     /// <remarks>This is only sent when you connect so that is also the place you set it usually (e.g. in ConnectUsingSettings).</remarks>
@@ -53,10 +53,6 @@ public static class PhotonNetwork
 
     /// <summary>Name of the PhotonServerSettings file (used to load and by PhotonEditor to save new files).</summary>
     internal const string serverSettingsAssetFile = "PhotonServerSettings";
-
-    /// <summary>Path to the PhotonServerSettings file (used by PhotonEditor).</summary>
-    internal const string serverSettingsAssetPath = "Assets/Photon Unity Networking/Resources/" + PhotonNetwork.serverSettingsAssetFile + ".asset";
-
 
     /// <summary>Serialized server settings, written by the Setup Wizard for use in ConnectUsingSettings.</summary>
     public static ServerSettings PhotonServerSettings = (ServerSettings)Resources.Load(PhotonNetwork.serverSettingsAssetFile, typeof(ServerSettings));
@@ -934,7 +930,8 @@ public static class PhotonNetwork
     }
 
     /// <summary>
-    /// Count of users currently playing your app in some room (sent every 5sec by Master Server). Use playerList.Count to get the count of players in the room you're in!
+    /// Count of users currently playing your app in some room (sent every 5sec by Master Server). 
+    /// Use PhotonNetwork.playerList.Length or PhotonNetwork.room.PlayerCount to get the count of players in the room you're in!
     /// </summary>
     public static int countOfPlayersInRooms
     {
@@ -1056,6 +1053,22 @@ public static class PhotonNetwork
         }
     }
 
+    /// <summary>Switch to alternative ports for a UDP connection to the Public Cloud.</summary>
+    /// <remarks>
+    /// This should be used when a customer has issues with connection stability. Some players
+    /// reported better connectivity for Steam games. The effect might vary, which is why the 
+    /// alternative ports are not the new default.
+    /// 
+    /// The alternative (server) ports are 27000 up to 27003. 
+    /// 
+    /// The values are appplied by replacing any incoming server-address string accordingly.
+    /// You only need to set this to true though.
+    /// 
+    /// This value does not affect TCP or WebSocket connections.
+    /// </remarks>
+    public static bool UseAlternativeUdpPorts { get; set; }
+
+
     /// <summary>
     /// Defines the delegate usable in OnEventCall.
     /// </summary>
@@ -1129,8 +1142,7 @@ public static class PhotonNetwork
 
 
         #if UNITY_XBOXONE
-        networkingPeer.AuthMode = AuthModeOption.AuthOnceWss;
-        networkingPeer.EncryptionMode = EncryptionMode.DatagramEncryption;
+        networkingPeer.AuthMode = AuthModeOption.Auth;
         #endif
 
         if (UsePreciseTimer)
@@ -2022,6 +2034,8 @@ public static class PhotonNetwork
     {
         offlineModeRoom = new Room(roomName, roomOptions);
         networkingPeer.ChangeLocalID(1);
+        networkingPeer.State = ClientState.ConnectingToGameserver;
+        networkingPeer.OnStatusChanged(StatusCode.Connect);
         offlineModeRoom.MasterClientId = 1;
 
         if (createdRoom)
@@ -2142,8 +2156,15 @@ public static class PhotonNetwork
     /// Returns to the Master Server.
     ///
     /// In OfflineMode, the local "fake" room gets cleaned up and OnLeftRoom gets called immediately.
+    /// 
+    /// In a room with playerTTL &lt; 0, LeaveRoom just turns a client inactive. The player stays in the room's player list
+    /// and can return later on. Setting becomeInactive to false deliberately, means to "abandon" the room, despite the
+    /// playerTTL allowing you to come back.
+    /// 
+    /// In a room with playerTTL == 0, become inactive has no effect (clients are removed from the room right away).
     /// </remarks>
-    public static bool LeaveRoom()
+    /// <param name="becomeInactive">If this client becomes inactive in a room with playerTTL &lt; 0. Defaults to true.</param>
+    public static bool LeaveRoom(bool becomeInactive = true)
     {
         if (offlineMode)
         {
@@ -2156,7 +2177,11 @@ public static class PhotonNetwork
             {
                 Debug.LogWarning("PhotonNetwork.room is null. You don't have to call LeaveRoom() when you're not in one. State: " + PhotonNetwork.connectionStateDetailed);
             }
-            return networkingPeer.OpLeave();
+            else
+            {
+                becomeInactive = becomeInactive && room.PlayerTtl != 0; // in a room with playerTTL == 0, the operation "leave" will never turn a client inactive
+            }
+            return networkingPeer.OpLeaveRoom(becomeInactive);
         }
 
         return true;
@@ -2179,7 +2204,9 @@ public static class PhotonNetwork
     }
 
     /// <summary>
-    /// Gets currently known rooms as RoomInfo array. This is available and updated while in a lobby (check insideLobby).
+    /// Gets currently cached rooms of the last rooms list sent by the server as RoomInfo array. 
+    /// This list is either available and updated automatically and periodically while in a lobby (check insideLobby) or
+    /// received as a response to PhotonNetwork.GetCustomRoomList().
     /// </summary>
     /// <remarks>
     /// This list is a cached copy of the internal rooms list so it can be accessed each frame if needed.
@@ -2190,7 +2217,7 @@ public static class PhotonNetwork
     /// Closed rooms are also listed by lobbies but they can't be joined. While in a room, any player can set
     /// Room.visible and Room.open to hide rooms from matchmaking and close them.
     /// </remarks>
-    /// <returns>RoomInfo[] of current rooms in lobby.</returns>
+    /// <returns>Cached RoomInfo[] of last room list sent by the server.</returns>
     public static RoomInfo[] GetRoomList()
     {
         if (offlineMode || networkingPeer == null)
@@ -2312,6 +2339,19 @@ public static class PhotonNetwork
         return networkingPeer.OpRaiseEvent(eventCode, eventContent, sendReliable, options);
     }
 
+    #if PHOTON_LIB_MIN_4_1_2
+    public static bool RaiseEvent(byte eventCode, object eventContent, RaiseEventOptions raiseEventOptions, SendOptions sendOptions)
+    {
+        if (!inRoom || eventCode >= 200)
+        {
+            Debug.LogWarning("RaiseEvent() failed. Your event is not being sent! Check if your are in a Room and the eventCode must be less than 200 (0..199).");
+            return false;
+        }
+
+        return networkingPeer.OpRaiseEvent(eventCode, eventContent, raiseEventOptions, sendOptions);
+    }
+    #endif 
+
     /// <summary>
     /// Allocates a viewID that's valid for the current/local player.
     /// </summary>
@@ -2432,7 +2472,7 @@ public static class PhotonNetwork
     /// <param name="rotation">Rotation Quaternion to apply on instantiation.</param>
     /// <param name="group">The group for this PhotonView.</param>
     /// <returns>The new instance of a GameObject with initialized PhotonView.</returns>
-    public static GameObject Instantiate(string prefabName, Vector3 position, Quaternion rotation, int group)
+    public static GameObject Instantiate(string prefabName, Vector3 position, Quaternion rotation, byte group)
     {
         return Instantiate(prefabName, position, rotation, group, null);
     }
@@ -2447,7 +2487,7 @@ public static class PhotonNetwork
     /// <param name="group">The group for this PhotonView.</param>
     /// <param name="data">Optional instantiation data. This will be saved to it's PhotonView.instantiationData.</param>
     /// <returns>The new instance of a GameObject with initialized PhotonView.</returns>
-    public static GameObject Instantiate(string prefabName, Vector3 position, Quaternion rotation, int group, object[] data)
+    public static GameObject Instantiate(string prefabName, Vector3 position, Quaternion rotation, byte group, object[] data)
     {
         if (!connected || (InstantiateInRoomOnly && !inRoom))
         {
@@ -2507,7 +2547,7 @@ public static class PhotonNetwork
     /// <param name="group">The group for this PhotonView.</param>
     /// <param name="data">Optional instantiation data. This will be saved to it's PhotonView.instantiationData.</param>
     /// <returns>The new instance of a GameObject with initialized PhotonView.</returns>
-    public static GameObject InstantiateSceneObject(string prefabName, Vector3 position, Quaternion rotation, int group, object[] data)
+    public static GameObject InstantiateSceneObject(string prefabName, Vector3 position, Quaternion rotation, byte group, object[] data)
     {
         if (!connected || (InstantiateInRoomOnly && !inRoom))
         {
@@ -3270,6 +3310,74 @@ public static class PhotonNetwork
 
 
 #if UNITY_EDITOR
+
+
+	/// <summary>
+	/// Finds the asset path base on its name or search query: https://docs.unity3d.com/ScriptReference/AssetDatabase.FindAssets.html
+	/// </summary>
+	/// <returns>The asset path.</returns>
+	/// <param name="asset">Asset.</param>
+	public static string FindAssetPath(string asset)
+	{
+		string[] guids = AssetDatabase.FindAssets (asset, null);
+		if (guids.Length != 1)
+		{
+			return string.Empty;
+		} else
+		{
+			return AssetDatabase.GUIDToAssetPath (guids [0]);
+		}
+	}
+
+
+	/// <summary>
+	/// Finds the pun asset folder. Something like Assets/Photon Unity Networking/Resources/
+	/// </summary>
+	/// <returns>The pun asset folder.</returns>
+	public static string FindPunAssetFolder()
+	{
+		string _thisPath =	FindAssetPath("PhotonClasses");
+		string _PunFolderPath = string.Empty;
+
+		_PunFolderPath = GetParent(_thisPath,"Photon Unity Networking");
+
+		if (_PunFolderPath != null)
+		{
+			return "Assets" + _PunFolderPath.Substring(Application.dataPath.Length)+"/";
+		}
+
+		return "Assets/Photon Unity Networking/";
+	}
+
+	/// <summary>
+	/// Gets the parent directory of a path. Recursive Function, will return null if parentName not found
+	/// </summary>
+	/// <returns>The parent directory</returns>
+	/// <param name="path">Path.</param>
+	/// <param name="parentName">Parent name.</param>
+	public static string GetParent(string path, string parentName)
+	{
+		var dir = new DirectoryInfo(path);
+
+		if (dir.Parent == null)
+		{
+			return null;
+		}
+
+		if (string.IsNullOrEmpty(parentName))
+		{
+			return  dir.Parent.FullName;
+		}
+
+		if (dir.Parent.Name == parentName)
+		{
+			return dir.Parent.FullName;
+		}
+
+		return GetParent(dir.Parent.FullName, parentName);
+	}
+
+
     [Conditional("UNITY_EDITOR")]
     public static void CreateSettings()
     {
@@ -3292,7 +3400,13 @@ public static class PhotonNetwork
         // if still not loaded, create one
         if (PhotonNetwork.PhotonServerSettings == null)
         {
-            string settingsPath = Path.GetDirectoryName(PhotonNetwork.serverSettingsAssetPath);
+			string _PunResourcesPath = PhotonNetwork.FindPunAssetFolder();
+
+			_PunResourcesPath += "Resources/";
+
+
+			string serverSettingsAssetPath = _PunResourcesPath+ PhotonNetwork.serverSettingsAssetFile + ".asset";
+			string settingsPath = Path.GetDirectoryName(serverSettingsAssetPath);
             if (!Directory.Exists(settingsPath))
             {
                 Directory.CreateDirectory(settingsPath);
@@ -3302,7 +3416,7 @@ public static class PhotonNetwork
             PhotonNetwork.PhotonServerSettings = (ServerSettings)ScriptableObject.CreateInstance("ServerSettings");
             if (PhotonNetwork.PhotonServerSettings != null)
             {
-                AssetDatabase.CreateAsset(PhotonNetwork.PhotonServerSettings, PhotonNetwork.serverSettingsAssetPath);
+				AssetDatabase.CreateAsset(PhotonNetwork.PhotonServerSettings, serverSettingsAssetPath);
             }
             else
             {

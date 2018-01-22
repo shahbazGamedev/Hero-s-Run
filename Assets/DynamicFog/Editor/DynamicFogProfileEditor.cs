@@ -33,7 +33,7 @@ namespace DynamicFogAndMist {
 								const int SKY_PROPERTIES = 1;
 								SerializedProperty effectType, enableDithering, ditherStrength;
 								SerializedProperty alpha, noiseStrength, noiseScale, distance, distanceFallOff, maxDistance, maxDistanceFallOff, height, maxHeight;
-								SerializedProperty heightFallOff, baselineHeight, clipUnderBaseline, turbulence, speed, color, color2;
+								SerializedProperty heightFallOff, baselineHeight, clipUnderBaseline, turbulence, speed, windDirection, color, color2;
 								SerializedProperty skyHaze, skySpeed, skyNoiseStrength, skyAlpha, scattering, scatteringColor;
 
 								void OnEnable () {
@@ -57,6 +57,7 @@ namespace DynamicFogAndMist {
 												clipUnderBaseline = serializedObject.FindProperty ("clipUnderBaseline");
 												turbulence = serializedObject.FindProperty ("turbulence");
 												speed = serializedObject.FindProperty ("speed");
+												windDirection = serializedObject.FindProperty ("windDirection");
 
 												color = serializedObject.FindProperty ("color");
 												color2 = serializedObject.FindProperty ("color2");
@@ -69,11 +70,11 @@ namespace DynamicFogAndMist {
 								}
 
 								public override void OnInspectorGUI () {
-												serializedObject.Update();
+												serializedObject.Update ();
 									
 												EditorGUILayout.Separator ();
 
-												DrawTitleLabel("General Settings");
+												DrawTitleLabel ("General Settings");
 
 												EditorGUILayout.IntPopup (effectType, FOG_TYPE_OPTIONS, FOG_TYPE_VALUES, new GUIContent ("Effect Type", "Choose a shader variant. Each variant provides different capabilities. Read documentation for explanation."));
 												switch (effectType.intValue) {
@@ -105,7 +106,7 @@ namespace DynamicFogAndMist {
 
 												int effect = effectType.intValue;
 
-															EditorGUILayout.PropertyField (enableDithering, new GUIContent ("Enable Dithering", "Reduces banding artifacts."));
+												EditorGUILayout.PropertyField (enableDithering, new GUIContent ("Enable Dithering", "Reduces banding artifacts."));
 												if (enableDithering.boolValue) {
 																EditorGUILayout.PropertyField (ditherStrength, new GUIContent ("   Dither Strength", "Intensity of dither blending."));
 												}
@@ -116,46 +117,47 @@ namespace DynamicFogAndMist {
 
 												EditorGUILayout.Separator ();
 												DrawTitleLabel ("Fog Settings");
-																EditorGUILayout.PropertyField (alpha, new GUIContent ("Alpha", "Global fog transparency. You can also change the transparency at color level."));
-																if (effect != 4 && effect != 5) {
-																				EditorGUILayout.PropertyField (noiseStrength, new GUIContent ("Noise Strength", "Set this value to zero to use solid colors."));
-																				EditorGUILayout.PropertyField (noiseScale, new GUIContent ("Noise Scale", "Scale factor for sampling noise."));
-																}
-																EditorGUILayout.PropertyField (distance, new GUIContent ("Distance", "The starting distance of the fog measure in linear 0-1 values (0=camera near clip, 1=camera far clip)."));
-																EditorGUILayout.PropertyField (distanceFallOff, new GUIContent ("Distance Fall Off", "Makes the fog appear smoothly on the near distance."));
-																if (effect < 4)
-																				EditorGUILayout.PropertyField (maxDistance, new GUIContent ("Max Distance", "The end distance of the fog measure in linear 0-1 values (0=camera near clip, 1=camera far clip)."));
-																if (effect < 3) {
-																				EditorGUILayout.PropertyField (maxDistanceFallOff, new GUIContent ("Distance Fall Off", "Makes the fog disappear smoothly on the far distance."));
-																}
+												EditorGUILayout.PropertyField (alpha, new GUIContent ("Alpha", "Global fog transparency. You can also change the transparency at color level."));
+												if (effect != 4 && effect != 5 && effect != 6) {
+																EditorGUILayout.PropertyField (noiseStrength, new GUIContent ("Noise Strength", "Set this value to zero to use solid colors."));
+																EditorGUILayout.PropertyField (noiseScale, new GUIContent ("Noise Scale", "Scale factor for sampling noise."));
+												}
+												EditorGUILayout.PropertyField (distance, new GUIContent ("Distance", "The starting distance of the fog measure in linear 0-1 values (0=camera near clip, 1=camera far clip)."));
+												EditorGUILayout.PropertyField (distanceFallOff, new GUIContent ("Distance Fall Off", "Makes the fog appear smoothly on the near distance."));
+												if (effect < 4)
+																EditorGUILayout.PropertyField (maxDistance, new GUIContent ("Max Distance", "The end distance of the fog measure in linear 0-1 values (0=camera near clip, 1=camera far clip)."));
+												if (effect < 3) {
+																EditorGUILayout.PropertyField (maxDistanceFallOff, new GUIContent ("Distance Fall Off", "Makes the fog disappear smoothly on the far distance."));
+												}
 
-																if (effect == (int)FOG_TYPE.MobileFogOrthogonal || effect == (int)FOG_TYPE.DesktopFogPlusOrthogonal) {
-																				EditorGUILayout.PropertyField (maxHeight, new GUIContent ("Max Height", "Max. height of the fog in meters."));
-																}
-																EditorGUILayout.PropertyField (height, new GUIContent ("Height", "Height of the fog in meters."));
-																EditorGUILayout.PropertyField (heightFallOff, new GUIContent ("Height Fall Off", "Increase to make the fog change gradually its density based on height."));
-																EditorGUILayout.PropertyField (baselineHeight, new GUIContent ("Baseline Height", "Vertical position of the fog in meters. Height is counted above this baseline height."));
+												if (effect == (int)FOG_TYPE.MobileFogOrthogonal || effect == (int)FOG_TYPE.DesktopFogPlusOrthogonal) {
+																EditorGUILayout.PropertyField (maxHeight, new GUIContent ("Max Height", "Max. height of the fog in meters."));
+												}
+												EditorGUILayout.PropertyField (height, new GUIContent ("Height", "Height of the fog in meters."));
+												EditorGUILayout.PropertyField (heightFallOff, new GUIContent ("Height Fall Off", "Increase to make the fog change gradually its density based on height."));
+												EditorGUILayout.PropertyField (baselineHeight, new GUIContent ("Baseline Height", "Vertical position of the fog in meters. Height is counted above this baseline height."));
 
-																if (effect < 3) {
-																				EditorGUILayout.PropertyField (clipUnderBaseline, new GUIContent ("Clip Under Baseline", "Enable this property to only render fog above baseline height."));
-																				EditorGUILayout.PropertyField (turbulence, new GUIContent ("Turbulence", "Amount of fog turbulence."));
-																}
+												if (effect < 3) {
+																EditorGUILayout.PropertyField (clipUnderBaseline, new GUIContent ("Clip Under Baseline", "Enable this property to only render fog above baseline height."));
+																EditorGUILayout.PropertyField (turbulence, new GUIContent ("Turbulence", "Amount of fog turbulence."));
+												}
 
-																if (effect < 4 || effect == (int)FOG_TYPE.DesktopFogPlusOrthogonal) {
-																				EditorGUILayout.PropertyField (speed, new GUIContent ("Speed", "Speed of fog animation if noise strength or turbulence > 0 (turbulence not available in Desktop Fog Plus mode)."));
-																}
+												if (effect < 4 || effect == (int)FOG_TYPE.DesktopFogPlusOrthogonal) {
+																EditorGUILayout.PropertyField (speed, new GUIContent ("Speed", "Speed of fog animation if noise strength or turbulence > 0 (turbulence not available in Desktop Fog Plus mode)."));
+																EditorGUILayout.PropertyField (windDirection, new GUIContent ("Wind Direction", "Direction of the wind to take into account for the fog animation."));
+												}
 
-																EditorGUILayout.PropertyField (color);
-																if (effect != 4 && effect != 5)
-																				EditorGUILayout.PropertyField (color2);
+												EditorGUILayout.PropertyField (color);
+												if (effect != 4 && effect != 5)
+																EditorGUILayout.PropertyField (color2);
 												
 												if (effect != 2 && effect != 4 && effect != 5 && effect != (int)FOG_TYPE.DesktopFogPlusOrthogonal) {
 																EditorGUILayout.Separator ();
 																DrawTitleLabel ("Sky Settings");
-																				EditorGUILayout.PropertyField (skyHaze, new GUIContent ("Haze", "Vertical range for the sky haze."));
-																				EditorGUILayout.PropertyField (skySpeed, new GUIContent ("Speed", "Speed of sky haze animation."));
-																				EditorGUILayout.PropertyField (skyNoiseStrength, new GUIContent ("Noise Strength", "Amount of noise for the sky haze effect."));
-																				EditorGUILayout.PropertyField (skyAlpha, new GUIContent ("Alpha", "Transparency of sky haze."));
+																EditorGUILayout.PropertyField (skyHaze, new GUIContent ("Haze", "Vertical range for the sky haze."));
+																EditorGUILayout.PropertyField (skySpeed, new GUIContent ("Speed", "Speed of sky haze animation."));
+																EditorGUILayout.PropertyField (skyNoiseStrength, new GUIContent ("Noise Strength", "Amount of noise for the sky haze effect."));
+																EditorGUILayout.PropertyField (skyAlpha, new GUIContent ("Alpha", "Transparency of sky haze."));
 												}
 											
 												EditorGUILayout.Separator ();

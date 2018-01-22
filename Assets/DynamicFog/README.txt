@@ -47,6 +47,11 @@ Of course, all updates of Dynamic Fog & Mist will be eventually available on the
 Version history
 ---------------
 
+V5.1
+- VR: support for Single Pass Instanced (Unity 2017.2+)
+- Support for Timeline animations
+- Added wind direction
+
 V5.0
 - New Fog Profiles
 - Fog volumes now handle full set of fog properies by setting target fog profile

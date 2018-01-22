@@ -136,6 +136,7 @@ public class PhotonPingManager
     public static bool IgnoreInitialAttempt = true;
     public static int MaxMilliseconsPerPing = 800; // enter a value you're sure some server can beat (have a lower rtt)
 
+	private const string wssProtocolString = "wss://";
 
     public Region BestRegion
     {
@@ -214,8 +215,16 @@ public class PhotonPingManager
             regionAddress = regionAddress.Substring(0, indexOfColon);
         }
 
+		// we also need to remove the protocol or Dns.GetHostAddresses(hostName) will throw an exception
+		// This is for xBox One for example.
+		int indexOfProtocol = regionAddress.IndexOf(PhotonPingManager.wssProtocolString);
+		if (indexOfProtocol > -1)
+		{
+			regionAddress = regionAddress.Substring(indexOfProtocol+PhotonPingManager.wssProtocolString.Length);
+		}
         regionAddress = ResolveHost(regionAddress);
 
+        Debug.Log("Ping Debug - PhotonHandler.PingImplementation: " + PhotonHandler.PingImplementation + " ping.GetType():" + ping.GetType() + " regionAddress:" + regionAddress);
         for (int i = 0; i < Attempts; i++)
         {
             bool overtime = false;
@@ -294,7 +303,7 @@ public class PhotonPingManager
     /// <remarks>
     /// To be compatible with most platforms, the address family is checked like this:</br>
     /// if (ipAddress.AddressFamily.ToString().Contains("6")) // ipv6...
-    /// </reamrks>
+    /// </remarks>
     /// <param name="hostName">Hostname to resolve.</param>
     /// <returns>IP string or empty string if resolution fails</returns>
     public static string ResolveHost(string hostName)

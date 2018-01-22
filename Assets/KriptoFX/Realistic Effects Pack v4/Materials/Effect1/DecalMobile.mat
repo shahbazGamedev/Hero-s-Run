@@ -38,21 +38,14 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _ParallaxMap
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _OcclusionMap
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
           name: _EmissionMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _ParallaxMap
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
@@ -73,6 +66,13 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
+          name: _OcclusionMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
           name: _MetallicGlossMap
         second:
           m_Texture: {fileID: 0}
@@ -80,14 +80,14 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _Mask
+          name: _DistortTex
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _DistortTex
+          name: _Mask
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
@@ -118,32 +118,16 @@ Material:
         second: 0.5
       data:
         first:
-          name: _InvFade
-        second: 1
-      data:
-        first:
-          name: SrcMode
-        second: 5
-      data:
-        first:
-          name: DstMode
-        second: 10
-      data:
-        first:
-          name: _Glossiness
-        second: 0.5
-      data:
-        first:
-          name: _Metallic
-        second: 0
-      data:
-        first:
           name: _Parallax
         second: 0.02
       data:
         first:
           name: _ZWrite
         second: 1
+      data:
+        first:
+          name: _Glossiness
+        second: 0.5
       data:
         first:
           name: _BumpScale
@@ -166,12 +150,28 @@ Material:
         second: 0
       data:
         first:
-          name: _Cutout
-        second: 0.2
+          name: _Metallic
+        second: 0
+      data:
+        first:
+          name: _InvFade
+        second: 1
       data:
         first:
           name: _Speed
         second: 1
+      data:
+        first:
+          name: SrcMode
+        second: 5
+      data:
+        first:
+          name: DstMode
+        second: 10
+      data:
+        first:
+          name: _Cutout
+        second: 0.2
       data:
         first:
           name: _MaskPow

@@ -9,7 +9,7 @@ Shader "DynamicFog/Image Effect/Orthographic Desktop Plus Orthogonal" {
 		_FogColor2 ("Color 2", Color) = (1,1,1,1)
 		_FogNoiseData ("Noise Data", Vector) = (0,0,0,0.1)
 		_FogSkyData("Sky Data", Vector) = (1,1,1,1)
-		_FogSpeed ("Speed", Range (0, 5.0)) = 0.1
+		_FogSpeed ("Speed", Vector) = (0.1,0,0.1)
 		_FogOfWarCenter("Fog Of War Center", Vector) = (0,0,0)
 		_FogOfWarSize("Fog Of War Size", Vector) = (1,1,1)
 		_FogOfWar ("Fog of War Mask", 2D) = "white" {}
@@ -36,7 +36,7 @@ Shader "DynamicFog/Image Effect/Orthographic Desktop Plus Orthogonal" {
 	float4 _FogHeightData;
 	float4 _FogNoiseData; // x = noise, y = turbulence, z = depth attenuation
 	float4 _FogSkyData; // x = haze, y = speed, z = noise, w = alpha
-	float _FogSpeed;
+	float3 _FogSpeed;
 	fixed4 _FogColor, _FogColor2;
 	float3 wsCameraPos;
     float3 _ClipDir;
@@ -134,8 +134,9 @@ Shader "DynamicFog/Image Effect/Orthographic Desktop Plus Orthogonal" {
 
 	// Fragment Shader
 	fixed4 frag (v2f i) : SV_Target {
-   		fixed4 color = tex2D(_MainTex, i.uv);
-		float depth = UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, i.depthUV));
+		UNITY_SETUP_INSTANCE_ID(i);
+   		fixed4 color = UNITY_SAMPLE_SCREENSPACE_TEXTURE(_MainTex, i.uv);
+		float depth = UNITY_SAMPLE_DEPTH(UNITY_SAMPLE_SCREENSPACE_TEXTURE(_CameraDepthTexture, i.depthUV));
 		#if UNITY_REVERSED_Z
 		depth = 1.0 - depth;
 		#endif

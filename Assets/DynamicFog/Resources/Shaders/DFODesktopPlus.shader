@@ -10,7 +10,7 @@ Shader "DynamicFog/Image Effect/Orthographic Desktop Plus" {
 		_FogColor2 ("Color 2", Color) = (1,1,1,1)
 		_FogNoiseData ("Noise Data", Vector) = (0,0,0)
 		_FogSkyData("Sky Data", Vector) = (1,1,1,1)
-		_FogSpeed ("Speed", Range (0, 0.5)) = 0.1
+		_FogSpeed ("Speed", Vector) = (0.1,0,0.1)
 		_FogOfWarCenter("Fog Of War Center", Vector) = (0,0,0)
 		_FogOfWarSize("Fog Of War Size", Vector) = (1,1,1)
 		_FogOfWar ("Fog of War Mask", 2D) = "white" {}
@@ -45,7 +45,7 @@ Shader "DynamicFog/Image Effect/Orthographic Desktop Plus" {
 	float4 _FogHeightData;
 	float3 _FogNoiseData; // x = noise, y = turbulence, z = depth attenuation
 	float4 _FogSkyData; // x = haze, y = speed, z = noise, w = alpha
-	float _FogSpeed;
+	float3 _FogSpeed;
 	fixed4 _FogColor, _FogColor2;
 
     #if FOG_OF_WAR_ON 
@@ -194,7 +194,7 @@ Shader "DynamicFog/Image Effect/Orthographic Desktop Plus" {
 			float fh = (_FogHeightData.x - pos.y) / (_FogHeightData.x * _FogHeightData.w) - 0.1;
 			float fl = (distanceToFog - _FogDistance.x) / _FogDistance.y;
 			fh = min(fh, fl);
-			float noise = noise3D(pos * 0.1 + _Time.www * _FogSpeed * 5.0);
+			float noise = noise3D(pos * 0.1 + _Time.www * _FogSpeed);
 			fixed4 col = lerp(_FogColor, _FogColor2, saturate( pos.y / _FogHeightData.x) );
 			col.a *= saturate ( fh * (1.0 - noise * _FogNoiseData.x ));
 			col.rgb *= col.a;

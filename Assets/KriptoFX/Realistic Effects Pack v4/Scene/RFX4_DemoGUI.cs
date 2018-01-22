@@ -17,8 +17,8 @@ public class RFX4_DemoGUI : MonoBehaviour
 
 	private int currentNomber;
 	private GameObject currentInstance;
-	private GUIStyle guiStyleHeader = new GUIStyle();
-    private GUIStyle guiStyleHeaderMobile = new GUIStyle();
+	public  GUIStyle guiStyleHeader = new GUIStyle();
+    public GUIStyle guiStyleHeaderMobile = new GUIStyle();
     float dpiScale;
     private bool isDay;
     private float colorHUE;
@@ -34,7 +34,7 @@ public class RFX4_DemoGUI : MonoBehaviour
         if (Screen.dpi < 200) dpiScale = 1;
         else dpiScale = Screen.dpi / 200f;
         guiStyleHeader.fontSize = (int)(15f * dpiScale);
-		guiStyleHeader.normal.textColor = new Color(0.15f,0.15f,0.15f);
+		    //guiStyleHeader.normal.textColor = new Color(0.15f,0.15f,0.15f);
         guiStyleHeaderMobile.fontSize = (int)(17f * dpiScale);
 
         ChangeCurrent(0);
@@ -78,8 +78,8 @@ public class RFX4_DemoGUI : MonoBehaviour
                 isUsedMobileBloom = !isUsedMobileBloom;
                 RFX4_DistortionAndBloom.UseBloom = isUsedMobileBloom;
             }
-            if(!isUsedMobileBloom) guiStyleHeaderMobile.normal.textColor = new Color(0.8f, 0.2f, 0.2f);
-            else guiStyleHeaderMobile.normal.textColor = new Color(0.1f, 0.6f, 0.1f);
+            //if(!isUsedMobileBloom) guiStyleHeaderMobile.normal.textColor = new Color(0.8f, 0.2f, 0.2f);
+            //else guiStyleHeaderMobile.normal.textColor = new Color(0.1f, 0.6f, 0.1f);
             GUI.Label(new Rect(400 * dpiScale, 15 * dpiScale, 100 * dpiScale, 20 * dpiScale), "Bloom is "+ (isUsedMobileBloom?"Enabled":"Disabled"), guiStyleHeaderMobile);
         }
         if (GUI.Button(new Rect(10*dpiScale, 63*dpiScale + offset, 285*dpiScale, 37*dpiScale), "Day / Night") || (!isButtonPressed && Input.GetKeyDown(KeyCode.DownArrow)))
@@ -99,9 +99,11 @@ public class RFX4_DemoGUI : MonoBehaviour
             isDay = !isDay;
         }
 
-        GUI.Label(new Rect(400*dpiScale, 15*dpiScale + offset / 2, 100*dpiScale, 20*dpiScale),
-            "Prefab name is \"" + Prefabs[currentNomber].name +
-            "\"  \r\nHold any mouse button that would move the camera", guiStyleHeader);
+        GUI.Label(new Rect(350 * dpiScale, 15 * dpiScale + offset / 2, 500 * dpiScale, 20 * dpiScale),
+            "press left mouse button for the camera rotating and scroll wheel for zooming", guiStyleHeader);
+        GUI.Label(new Rect(350*dpiScale, 35*dpiScale + offset / 2, 160*dpiScale, 20*dpiScale),
+            "prefab name is: " + Prefabs[currentNomber].name, guiStyleHeader);
+        
 
         GUI.DrawTexture(new Rect(12*dpiScale, 120*dpiScale + offset, 285*dpiScale, 15*dpiScale), HUETexture, ScaleMode.StretchToFill, false, 0);
        

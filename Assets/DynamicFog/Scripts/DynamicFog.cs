@@ -2,28 +2,27 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
-namespace DynamicFogAndMist
-{
-	public enum FOG_TYPE
-	{
-		DesktopFogWithSkyHaze = 0,
-		MobileFogWithSkyHaze = 1,
-		MobileFogOnlyGround = 2,
-		DesktopFogPlusWithSkyHaze = 3,
-		MobileFogSimple = 4,
-		MobileFogBasic = 5,
-		MobileFogOrthogonal = 6,
-		DesktopFogPlusOrthogonal = 7
-	}
+namespace DynamicFogAndMist {
+				public enum FOG_TYPE {
+								DesktopFogWithSkyHaze = 0,
+								MobileFogWithSkyHaze = 1,
+								MobileFogOnlyGround = 2,
+								DesktopFogPlusWithSkyHaze = 3,
+								MobileFogSimple = 4,
+								MobileFogBasic = 5,
+								MobileFogOrthogonal = 6,
+								DesktopFogPlusOrthogonal = 7
+				}
 
-	static class FOG_TYPE_Ext
-	{
-		public static bool isPlus (this FOG_TYPE fogType)
-		{
-			return fogType == FOG_TYPE.DesktopFogPlusWithSkyHaze || fogType == FOG_TYPE.MobileFogSimple || fogType == FOG_TYPE.MobileFogBasic || fogType == FOG_TYPE.MobileFogOrthogonal || fogType == FOG_TYPE.DesktopFogPlusOrthogonal;
-		}
-	}
+				static class FOG_TYPE_Ext {
+								public static bool isPlus (this FOG_TYPE fogType) {
+												return fogType == FOG_TYPE.DesktopFogPlusWithSkyHaze || fogType == FOG_TYPE.MobileFogSimple || fogType == FOG_TYPE.MobileFogBasic || fogType == FOG_TYPE.MobileFogOrthogonal || fogType == FOG_TYPE.DesktopFogPlusOrthogonal;
+								}
+				}
 
 				public enum FOG_PRESET {
 								Clear,
@@ -38,10 +37,10 @@ namespace DynamicFogAndMist
 
 				[ExecuteInEditMode]
 				[RequireComponent (typeof(Camera))]
-				[@HelpURL ("http://kronnect.com/taptapgo")]
-	#if UNITY_5_4_OR_NEWER
+				[HelpURL ("http://kronnect.com/taptapgo")]
+#if UNITY_5_4_OR_NEWER
 				[ImageEffectAllowedInSceneView]
-				#endif
+#endif
 				public class DynamicFog : MonoBehaviour {
 
 								[SerializeField]
@@ -310,6 +309,21 @@ namespace DynamicFogAndMist
 												}
 								}
 
+
+								[SerializeField]
+								Vector3 _windDirection = new Vector3(1,0,1);
+
+								public Vector3 windDirection {
+												get { return _windDirection; }
+												set {
+																if (value != _windDirection) {
+																				_windDirection = value;
+																				UpdateMaterialProperties ();
+																}
+												}
+								}
+
+
 								[SerializeField]
 								Color _color = Color.white;
 
@@ -572,10 +586,10 @@ namespace DynamicFogAndMist
 												if (fogMatVol != null) {
 																DestroyImmediate (fogMatVol);
 																fogMatVol = null;
-if (fogMatDesktopPlusOrthogonal != null) {
-				DestroyImmediate (fogMatDesktopPlusOrthogonal);
-				fogMatDesktopPlusOrthogonal = null;
-			}
+																if (fogMatDesktopPlusOrthogonal != null) {
+																				DestroyImmediate (fogMatDesktopPlusOrthogonal);
+																				fogMatDesktopPlusOrthogonal = null;
+																}
 												}
 												if (fogMatAdv != null) {
 																DestroyImmediate (fogMatAdv);
@@ -618,10 +632,21 @@ if (fogMatDesktopPlusOrthogonal != null) {
 												UpdateFogOfWarTexture ();
 												if (_profile != null)
 																_profile.Load (this);
-								}
 
-								// Check possible alpha transition
-								void Update () {
+#if UNITY_EDITOR
+            if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.Android)
+            {
+#if UNITY_5_5_OR_NEWER
+                _useSinglePassStereoRenderingMatrix = PlayerSettings.stereoRenderingPath == StereoRenderingPath.SinglePass;
+#else
+												_useSinglePassStereoRenderingMatrix = PlayerSettings.singlePassStereoRendering;
+#endif
+            }
+#endif
+        }
+
+        // Check possible alpha transition
+        void Update () {
 												if (fogMat == null)
 																return;
 												
@@ -709,6 +734,10 @@ if (fogMatDesktopPlusOrthogonal != null) {
 																				UpdateFogColor ();
 												}
 
+								}
+
+								void OnDidApplyAnimationProperties () {   // support for animating property based fields
+												shouldUpdateMaterialProperties = true;
 								}
 
 								public void CheckPreset () {
@@ -857,7 +886,7 @@ if (fogMatDesktopPlusOrthogonal != null) {
 																				ResetMaterial ();
 												}
 
-												if (useSinglePassStereoRenderingMatrix && UnityEngine.XR.XRSettings.enabled) {
+												if (_useSinglePassStereoRenderingMatrix && UnityEngine.XR.XRSettings.enabled) {
 																fogMat.SetMatrix ("_ClipToWorld", currentCamera.cameraToWorldMatrix);
 												} else {
 																fogMat.SetMatrix ("_ClipToWorld", currentCamera.cameraToWorldMatrix * currentCamera.projectionMatrix.inverse);
@@ -976,20 +1005,20 @@ if (fogMatDesktopPlusOrthogonal != null) {
 																}
 																fogMat = fogMatOrthogonal;
 																break;
-	case FOG_TYPE.DesktopFogPlusOrthogonal:
-				if (fogMatDesktopPlusOrthogonal == null) {
-					if (currentCamera.orthographic) {
-						matOrtho = true;
-						matName = "Materials/DFODesktopPlusOrthogonal";
-					} else {
-						matOrtho = false;
-						matName = "Materials/DFGDesktopPlusOrthogonal";
-					}
-					fogMatDesktopPlusOrthogonal = Instantiate (Resources.Load<Material> (matName)) as Material;
-					fogMatDesktopPlusOrthogonal.hideFlags = HideFlags.DontSave;
-				}
-				fogMat = fogMatDesktopPlusOrthogonal;
-				break;
+												case FOG_TYPE.DesktopFogPlusOrthogonal:
+																if (fogMatDesktopPlusOrthogonal == null) {
+																				if (currentCamera.orthographic) {
+																								matOrtho = true;
+																								matName = "Materials/DFODesktopPlusOrthogonal";
+																				} else {
+																								matOrtho = false;
+																								matName = "Materials/DFGDesktopPlusOrthogonal";
+																				}
+																				fogMatDesktopPlusOrthogonal = Instantiate (Resources.Load<Material> (matName)) as Material;
+																				fogMatDesktopPlusOrthogonal.hideFlags = HideFlags.DontSave;
+																}
+																fogMat = fogMatDesktopPlusOrthogonal;
+																break;
 												default:
 																if (fogMatAdv == null) {
 																				if (currentCamera.orthographic) {
@@ -1012,7 +1041,8 @@ if (fogMatDesktopPlusOrthogonal != null) {
 												if (currentCamera == null)
 																currentCamera = GetComponent<Camera> ();
 
-												fogMat.SetFloat ("_FogSpeed", effectType == FOG_TYPE.DesktopFogPlusWithSkyHaze ? _speed * 5f : _speed);
+												float sp = effectType == FOG_TYPE.DesktopFogPlusWithSkyHaze ? _speed * 5f : _speed;
+												fogMat.SetVector ("_FogSpeed", -_windDirection.normalized * sp);
 
 												Vector4 noiseData = new Vector4 (_noiseStrength, _turbulence, currentCamera.farClipPlane * 15.0f / 1000f, _noiseScale);
 												fogMat.SetVector ("_FogNoiseData", noiseData);
@@ -1053,7 +1083,7 @@ if (fogMatDesktopPlusOrthogonal != null) {
 																shaderKeywords.Add ("FOG_OF_WAR_ON");
 												} 
 												if (_enableDithering) {
-																fogMat.SetFloat("_FogDither", _ditherStrength);
+																fogMat.SetFloat ("_FogDither", _ditherStrength);
 																shaderKeywords.Add ("DITHER_ON");
 												}
 												fogMat.shaderKeywords = shaderKeywords.ToArray ();
@@ -1094,12 +1124,12 @@ if (fogMatDesktopPlusOrthogonal != null) {
 												fogMat.SetColor ("_FogColor", fogIntensity * currentFogColor1 * sunColor);
 												fogMat.SetColor ("_FogColor2", fogIntensity * currentFogColor2 * sunColor);
 												Color sColor = fogIntensity * scatteringColor;
-												fogMat.SetColor ("_SunColor", new Vector4(sColor.r, sColor.g, sColor.b, scattering));
-												fogMat.SetVector("_SunDir", -sunDirection);
+												fogMat.SetColor ("_SunColor", new Vector4 (sColor.r, sColor.g, sColor.b, scattering));
+												fogMat.SetVector ("_SunDir", -sunDirection);
 
 								}
 
-								#region Fog Volume
+#region Fog Volume
 
 								public void SetTargetProfile (DynamicFogProfile targetProfile, float duration) {
 												if (!_useFogVolumes)
@@ -1155,9 +1185,9 @@ if (fogMatDesktopPlusOrthogonal != null) {
 												SetTargetColors (color, color2, duration);
 								}
 
-								#endregion
+#endregion
 
-								#region Fog of War stuff
+#region Fog of War stuff
 
 								void UpdateFogOfWarTexture () {
 												if (!fogOfWarEnabled)
@@ -1279,7 +1309,7 @@ if (fogMatDesktopPlusOrthogonal != null) {
 												return size * 4;
 								}
 
-								#endregion
+#endregion
 
 				}
 

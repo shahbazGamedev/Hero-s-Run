@@ -1,24 +1,27 @@
 Pack includes prefabs of main effects + additional effects (character effects, collision effects, etc). 
 For unity 5.5 use "Optimized" if it possible. Optimized effects uses native unity turbulence (it faster then myself turbulence).
 
-NOTE:
+------------------------------------------------------------------------------------------------------------------------------------------
+NOTE for PC:
+If you want to use posteffect for PC like in the demo:
 
-For correct work as in demo scene you need enable "HDR" on main camera and add realistic bloom(or use RFX4_BloomAndDistortion). 
-https://www.assetstore.unity3d.com/en/#!/content/51515 link on free unity physically correct bloom.
-Use follow settings:
-Threshold 2
-Radius 7
-Intencity 1
-High quality true
-Anti flicker true
+*) Remove "RFX4_Bloom.cs" from camera if you used this script before. 
+1) Download unity free posteffects 
+https://assetstore.unity.com/packages/essentials/post-processing-stack-83912
+2) Add "PostProcessingBehaviour.cs" on main Camera.
+3) Set the "PostEffects" profile. (path "Assets\KriptoFX\Realistic Effects Pack v4\PostEffects.asset")
+4) You should turn on "HDR" on main camera for correct posteffects. 
+If you have forward rendering path (by default in Unity), you need disable antialiasing "edit->project settings->quality->antialiasing"
+or turn of "MSAA" on main camera, because HDR does not works with msaa. If you want to use HDR and MSAA then use "post effect msaa". 
 
-In forward mode, HDR does not work with antialiasing. So you need disable antialiasing (edit->project settings->quality)
-or use deffered rendering mode.
+------------------------------------------------------------------------------------------------------------------------------------------
+NOTE for MOBILES:
+For correct work on mobiles in your project scene you need:
 
+1) Add script "RFX4_DistortionAndBloom.cs" on main camera. It's allow you to see correct distortion, soft particles and physical bloom 
+The mobile bloom posteffect work if mobiles supported HDR textures or supported openGLES 3.0
 
-
-
-
+------------------------------------------------------------------------------------------------------------------------------------------
 Support platforms:
 
 PC/Mobile/Consoles/VR
@@ -26,11 +29,9 @@ For mobile platform use myself script for optimized distortions and optimized ph
 Just add script "RFX4_DistortionAndBloom.cs" to main camera.
 VR distortions and bloom supported. All effects tested on Oculus Rift CV1 with single and dual mode rendering and work perfect. 
 
-
-
-
-
+------------------------------------------------------------------------------------------------------------------------------------------
 Using effects:
+
 Just drag and drop prefab of effect on scene and use that :)
 If you want use effects in runtime, use follow code:
 
@@ -49,10 +50,9 @@ private void Tm_CollisionEnter(object sender, RFX4_TransformMotion.RFX4_Collisio
 }
 
 
-
-
-
+------------------------------------------------------------------------------------------------------------------------------------------
 Effect modification:
+
 All effects includes helpers scripts (collision behaviour, light/shader animation etc) for work out of box. 
 Also you can add additional scripts for easy change of base effects settings.
  
