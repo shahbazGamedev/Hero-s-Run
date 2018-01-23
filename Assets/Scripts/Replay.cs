@@ -1,7 +1,5 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 #if UNITY_IOS
 using UnityEngine.Apple.ReplayKit;
 
@@ -17,11 +15,11 @@ public class Replay : MonoBehaviour
 		{
 			recordingToggle.isOn = LevelManager.Instance.isRecordingSelected;
 			recordingToggle.gameObject.SetActive( true );
-			previewButton.gameObject.SetActive( ReplayKit.recordingAvailable );
+			previewButton.gameObject.SetActive( true );
 		}
 		else
 		{
-			if( recordingToggle != null ) recordingToggle.gameObject.SetActive( false );
+			recordingToggle.gameObject.SetActive( false );
 			previewButton.gameObject.SetActive( false );
 		}
 	}
