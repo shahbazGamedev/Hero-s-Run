@@ -117,7 +117,7 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.N ) )
 		{
-			playerControl.playOmniToolAnimation( CardName.Shockwave );
+			playerControl.playOmniToolAnimation( CardName.Steal );
 		}
 		else if ( Input.GetKeyDown (KeyCode.O ) )
 		{
@@ -125,7 +125,7 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.T ) )
 		{
-			playerControl.playOmniToolAnimation( CardName.Hack );
+			playerControl.playOmniToolAnimation( CardName.Grenade );
 		}
 		else if ( Input.GetKeyDown (KeyCode.P ) )
 		{

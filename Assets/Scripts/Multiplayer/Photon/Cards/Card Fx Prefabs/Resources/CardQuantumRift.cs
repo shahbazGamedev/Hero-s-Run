@@ -8,9 +8,8 @@ using UnityEngine;
 /// Competition: The rift opens in the sky in front of the nearest, leading player within range. The rock causes damage to the player and makes him stumble if he is running.
 /// Coop: The rift opens in the sky in front of the nearest zombie within range. The rock knocks back any zombies it touches.
 /// To do:
-/// a) secondary icon for rift.
-/// b) have each hero play an appropriate VO.
-/// c) have a card icon (currently using smoke bomb)
+/// a) have each hero play an appropriate VO.
+/// b) have a card icon (currently using smoke bomb)
 /// Questions:
 /// a) Is aiming necessary?
 /// </summary>
@@ -89,10 +88,7 @@ public class CardQuantumRift : Card {
 				data[1] = damageAmount;
 				//Send the viewID of the target
 				data[2] = target.GetComponent<PhotonView>().viewID;
-				PhotonNetwork.InstantiateSceneObject( quantumRiftPrefabName, riftPosition, target.rotation, 0, data );
-		
-				MiniMap.Instance.displaySecondaryIcon( target.GetComponent<PhotonView>().viewID, (int)CardName.Lightning, 2.5f );
-	
+				PhotonNetwork.InstantiateSceneObject( quantumRiftPrefabName, riftPosition, target.rotation, 0, data );	
 			}
 			else
 			{

@@ -78,9 +78,7 @@ public class CardLightning : Card {
 		
 				//Damage nearest target
 				int damageAmount = (int) cd.getCardPropertyValue( CardPropertyType.DAMAGE, level );
-				target.GetComponent<PlayerHealth>().deductHealth( damageAmount, playerTransform.GetComponent<PlayerControl>() );
-				MiniMap.Instance.displaySecondaryIcon( target.GetComponent<PhotonView>().viewID, (int)CardName.Lightning, 2.5f );
-	
+				target.GetComponent<PlayerHealth>().deductHealth( damageAmount, playerTransform.GetComponent<PlayerControl>() );	
 			}
 			else
 			{
