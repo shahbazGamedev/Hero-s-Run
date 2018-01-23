@@ -109,7 +109,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 			Image radialMask = turnRibbonButtonList[i].GetComponent<CardTurnRibbon>().radialMask;
 			if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS && playerControl.isPlayerControlEnabled() && !playerSpell.isCardActive(CardName.Hack) )
 			{
-				if( powerBar.hasEnoughPower( turnRibbonList[i].manaCost ) )
+				if( powerBar.hasEnoughPower( turnRibbonList[i].powerCost ) )
 				{
 					//We have enough power to play this card.
 					radialMask.fillAmount = 0;
@@ -117,7 +117,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 				else
 				{
 					//We don't have enough power to play this card.
-					float fillAmount = 1f - powerBar.getPowerAmount()/turnRibbonList[i].manaCost;
+					float fillAmount = 1f - powerBar.getPowerAmount()/turnRibbonList[i].powerCost;
 					if( fillAmount < 0 ) fillAmount = 0;
 					radialMask.fillAmount = fillAmount;
 				}
@@ -209,7 +209,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 	{
 		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS && playerControl.isPlayerControlEnabled() && !playerSpell.isCardActive(CardName.Hack) )
 		{
-			if( powerBar.hasEnoughPower( turnRibbonList[indexOfCardPlayed].manaCost ) )
+			if( powerBar.hasEnoughPower( turnRibbonList[indexOfCardPlayed].powerCost ) )
 			{
 				//On which card did the player click?
 				CardName cardName = turnRibbonList[indexOfCardPlayed].name;
@@ -218,7 +218,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 				CardManager.CardData playedCard = CardManager.Instance.getCardByName( cardName );
 		
 				//Deduct the power
-				powerBar.deductPower( playedCard.manaCost );
+				powerBar.deductPower( playedCard.powerCost );
 			
 				Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
 
@@ -287,7 +287,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		{
 			buttonOfCardPlayed.GetComponent<CardTurnRibbon>().overrideCardImage( null );
 			//Card name text and power cost text
-			buttonOfCardPlayed.GetComponent<CardTurnRibbon>().configureCardTexts( getCardNameAsString( nextCard.name ), nextCard.manaCost.ToString(), string.Empty );
+			buttonOfCardPlayed.GetComponent<CardTurnRibbon>().configureCardTexts( getCardNameAsString( nextCard.name ), nextCard.powerCost.ToString(), string.Empty );
 			//Reset the color to white
 			buttonOfCardPlayed.GetComponent<CardTurnRibbon>().changeCardNameColor( Color.white );
 		}
@@ -338,7 +338,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 				Button buttonOfRestoredCard = turnRibbonButtonList[i];
 				buttonOfRestoredCard.GetComponent<CardTurnRibbon>().overrideCardImage( null );
 				//Card name text and power cost text
-				buttonOfRestoredCard.GetComponent<CardTurnRibbon>().configureCardTexts( getCardNameAsString( restoredCard.name ), restoredCard.manaCost.ToString(), string.Empty );
+				buttonOfRestoredCard.GetComponent<CardTurnRibbon>().configureCardTexts( getCardNameAsString( restoredCard.name ), restoredCard.powerCost.ToString(), string.Empty );
 				buttonOfRestoredCard.GetComponent<CardTurnRibbon>().additionalText.color = Color.white;
 			}
 		}
@@ -382,7 +382,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 		buttonOfCardPlayed.GetComponent<CardTurnRibbon>().cardImage.sprite = stolenCard.icon;
 		//Card name text and power cost text
 		buttonOfCardPlayed.GetComponent<CardTurnRibbon>().cardName.text = getCardNameAsString( stolenCard.name );
-		buttonOfCardPlayed.GetComponent<CardTurnRibbon>().powerCost.text = stolenCard.manaCost.ToString();
+		buttonOfCardPlayed.GetComponent<CardTurnRibbon>().powerCost.text = stolenCard.powerCost.ToString();
 
 	}
 	#endregion

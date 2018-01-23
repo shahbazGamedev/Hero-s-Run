@@ -16,7 +16,7 @@ public class CardTurnRibbon : MonoBehaviour {
 		cardImage.sprite = cardData.icon;
 		//Card name text and power cost text
 		cardName.text = LocalizationManager.Instance.getText( "CARD_NAME_" + cardData.name.ToString().ToUpper() );
-		powerCost.text = cardData.manaCost.ToString();
+		powerCost.text = cardData.powerCost.ToString();
 		
 	}
 

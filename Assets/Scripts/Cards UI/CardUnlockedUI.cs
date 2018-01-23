@@ -35,7 +35,7 @@ public class CardUnlockedUI : MonoBehaviour {
 		//Legendary cards have special effects
 		cardIcon.material = cd.cardMaterial;
 
-		cardManaText.text = cd.manaCost.ToString();
+		cardManaText.text = cd.powerCost.ToString();
 
 		//Description
 		string localizedCardDescription = LocalizationManager.Instance.getText( "CARD_DESCRIPTION_" + cd.name.ToString().ToUpper() );

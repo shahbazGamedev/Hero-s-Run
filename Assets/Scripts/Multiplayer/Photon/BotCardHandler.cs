@@ -177,7 +177,7 @@ public sealed class BotCardHandler : MonoBehaviour {
 		CardManager.CardData playedCard = CardManager.Instance.getCardByName( cardName );
 
 		//Deduct the power
-		deductPower( playedCard.manaCost );
+		deductPower( playedCard.powerCost );
 
 		//Activate the card
 		playCard( playedCard.name );
@@ -338,7 +338,7 @@ public sealed class BotCardHandler : MonoBehaviour {
 		List<PlayerDeck.PlayerCardData> playableCardsList = new List<PlayerDeck.PlayerCardData>();
 		for( int i = 0; i < turnRibbonList.Count; i++ )
 		{
-			if( turnRibbonList[i].manaCost <=powerAmount )
+			if( turnRibbonList[i].powerCost <=powerAmount )
 			{
 				playableCardsList.Add( getCardByName( turnRibbonList[i].name ) );
 			}

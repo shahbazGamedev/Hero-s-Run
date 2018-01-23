@@ -396,7 +396,7 @@ public class CardManager : MonoBehaviour {
 		//Double Jump doesn't have a secondary icon, but Sentry does for example.
 		public Sprite secondaryIcon;
 		[Range(1,9)]
-		public int manaCost;
+		public int powerCost;
 		//The sector needed for this card to be unlocked
 		[Range(1,10)]
 		public int sector;

@@ -10,7 +10,7 @@ public class CardUIDetails : MonoBehaviour {
 	[SerializeField] Image cardImage;
 	[SerializeField] GameObject newRibbon; //in some instances this value is null and it is normal
 	[Tooltip("The mana needed to use the card.")]
-	[SerializeField] Text manaCost;
+	[SerializeField] Text powerCost;
 
 	[Header("Level")]
 	[Tooltip("The level text is displayed on top of the card image. For example: 'Level 5' or 'Max Level'. The text color varies with the card rarity.")]
@@ -50,7 +50,7 @@ public class CardUIDetails : MonoBehaviour {
 		//Legendary cards have special effects
 		cardImage.material = cd.cardMaterial;
 
-		if( manaCost != null ) manaCost.text = cd.manaCost.ToString();
+		if( powerCost != null ) powerCost.text = cd.powerCost.ToString();
 
 		//Level section
 		//Level background

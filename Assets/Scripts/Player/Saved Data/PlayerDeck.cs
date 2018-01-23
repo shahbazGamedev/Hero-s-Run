@@ -143,7 +143,7 @@ public class PlayerDeck {
 
 		if( cardSortMode == CardSortMode.BY_POWER_COST )
 		{
-			cardDeck.Sort((x, y) => x.manaCost.CompareTo(y.manaCost));
+			cardDeck.Sort((x, y) => x.powerCost.CompareTo(y.powerCost));
 		}
 		else if( cardSortMode == CardSortMode.BY_RARITY )
 		{
@@ -161,14 +161,14 @@ public class PlayerDeck {
 		return playerCardDataList.Count;
 	}
 
-	public float getAverageManaCost()
+	public float getAveragePowerCost()
 	{
 		List<PlayerCardData> battleDeck = getBattleDeck();
 		float totalBattleDeckMana = 0;
 		for( int i = 0; i < battleDeck.Count; i++ )
 		{
 			CardManager.CardData cd = CardManager.Instance.getCardByName( battleDeck[i].name );
-			totalBattleDeckMana += cd.manaCost;
+			totalBattleDeckMana += cd.powerCost;
 		}
 		return totalBattleDeckMana/battleDeck.Count;
 	}
