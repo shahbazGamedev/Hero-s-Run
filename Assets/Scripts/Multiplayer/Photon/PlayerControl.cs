@@ -185,7 +185,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	#region Current tile variables
 	Vector3 currentTilePos = Vector3.zero;
 	public GameObject currentTile;
-	public float tileRotationY = 0; //Since we use this value often, we will store it.
 	//This flag is used to avoid entrance crossed being called multiple times which can happen with OnTriggerEnter
 	bool wasEntranceCrossed = false;
 	public int tileIndex; //The index of the tile the player is currently on.
@@ -311,7 +310,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	{	
 		GameObject firstTile = generateLevel.getFirstTile();
 		currentTile = firstTile;
-		tileRotationY = firstTile.transform.eulerAngles.y;
 		currentTilePos = firstTile.transform.position;
 	}
 
@@ -1076,13 +1074,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		if ( isGoingRight )
 		{
 			transform.rotation = Quaternion.Euler( 0,playerRotY + 90f,0 );
-			tileRotationY = tileRotationY + 90f;
 			lean( 0.55f, 0.3f );
 		}
 		else
 		{
 			transform.rotation = Quaternion.Euler( 0,playerRotY - 90f,0 );
-			tileRotationY = tileRotationY - 90f;
 			lean( -0.55f, 0.3f );
 		}
 
@@ -2140,7 +2136,6 @@ public class PlayerControl : Photon.PunBehaviour {
 					playerRace.distanceTravelledOnThisTile = 0;
 					currentTilePos = si.transform.position;
 					currentTile = si.gameObject;
-					tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
 					//Every time a new tile is entered, force synchronization.
 					//However, we don't want to force synchronization when entering a turn.
 					//Because of the RPC delay, the rotation could end up being wrong.
@@ -2295,8 +2290,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	{
 		currentTile = tile;
 		currentTilePos = currentTile.transform.position;
-		tileRotationY = Mathf.Floor ( currentTile.transform.eulerAngles.y );
-		//Debug.LogWarning( name + " updateCurrentTileInfo-tileRotationY: " + tileRotationY + " Player rotation: " + transform.eulerAngles + " name of current tile: " + currentTile.name ); 
+		//Debug.LogWarning( name + " updateCurrentTileInfo-Player rotation: " + transform.eulerAngles + " name of current tile: " + currentTile.name ); 
 
 		tileIndex = currentTile.GetComponent<SegmentInfo>().tileIndex;
 		tileDistanceTraveled = generateLevel.getLevelLength( tileIndex );
