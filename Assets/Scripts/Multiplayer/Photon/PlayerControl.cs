@@ -155,6 +155,8 @@ public class PlayerControl : Photon.PunBehaviour {
 		Right = 1,
 	}
 	const float LANE_WIDTH = 2f; //In meters.
+	const float LANE_LEFT_BOUNDARY  = -LANE_WIDTH * 0.5f;
+	const float LANE_RIGHT_BOUNDARY = +LANE_WIDTH * 0.5f;
 	//Due to rounding errors, the player may not reach exactly the lane limit. If there is less than 1% of the distance
 	//remaining, assume that he did reach the lane limit which will allow us to finalize the side move.
 	float adjustedLaneLimit = LANE_WIDTH * 0.99f;
@@ -1175,7 +1177,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					isChangingLanes = true;
 					moveDirection.x = currentSideMoveSpeed;
 					playerSounds.playSideMoveSound();
-					//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
+					//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane + " current lane " + currentLane );
 
 				}
 				else
@@ -1184,7 +1186,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					isChangingLanes = true;
 					moveDirection.x = -currentSideMoveSpeed;
 					playerSounds.playSideMoveSound();
-					//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
+					//Debug.LogError ("changeLane completed " + isGoingRight + " to lane " + desiredLane + " current lane " + currentLane );
 				}
 			}
 			else if ( currentLane == Lanes.Right && !isGoingRight )
@@ -1193,7 +1195,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				isChangingLanes = true;
 				moveDirection.x = -currentSideMoveSpeed;
 				playerSounds.playSideMoveSound();
-				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
+				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane + " current lane " + currentLane );
 			}
 			else if ( currentLane == Lanes.Left && isGoingRight )
 			{
@@ -1201,7 +1203,7 @@ public class PlayerControl : Photon.PunBehaviour {
 				isChangingLanes = true;
 				moveDirection.x = currentSideMoveSpeed;
 				playerSounds.playSideMoveSound();
-				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane );
+				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane + " current lane " + currentLane );
 			}
 		}
 	}
@@ -1449,38 +1451,39 @@ public class PlayerControl : Photon.PunBehaviour {
 	//Called every frame to ensure that the critical current lane value is always accurate
 	public void recalculateCurrentLane()
 	{
-		float min = -0.65f;
-		float max = 0.65f;
 		float relativePos = 0;
-		Lanes calculatedLane;
+		Lanes calculatedLane = currentLane;
+		float playerYRotation = Mathf.Floor ( transform.eulerAngles.y );
 
-		if( tileRotationY == 0 )
+		if( playerYRotation == 0 )
 		{
 			//X axis
 			relativePos = transform.position.x - currentTilePos.x;	
 		}
-		else if( tileRotationY == 90f || tileRotationY == -270f )
+		else if( playerYRotation == 90f || playerYRotation == -270f )
 		{
 			//Z axis facing left
 			relativePos = currentTilePos.z - transform.position.z;
 		}
-		else if( tileRotationY == -90f || tileRotationY == 270f )
+		else if( playerYRotation == -90f || playerYRotation == 270f )
 		{
 			//Z axis facing right
 			relativePos = transform.position.z - currentTilePos.z;
 		}
-		if( relativePos > min && relativePos < max)
+
+		if( relativePos > LANE_LEFT_BOUNDARY && relativePos < LANE_RIGHT_BOUNDARY )
 		{
 			calculatedLane = Lanes.Center;
 		}
-		else if( relativePos < min )
+		else if( relativePos <= LANE_LEFT_BOUNDARY )
 		{
 			calculatedLane = Lanes.Left;
 		}
-		else
+		else if( relativePos >= LANE_RIGHT_BOUNDARY )
 		{
-			calculatedLane = Lanes.Right;		
+			calculatedLane = Lanes.Right;
 		}
+
 		if( calculatedLane != currentLane )
 		{
 			//Debug.LogWarning("recalculateCurrentLane changed current lane from: " + currentLane + " to: " + calculatedLane + " relative pos " + relativePos );
