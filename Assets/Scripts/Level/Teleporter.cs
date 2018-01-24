@@ -43,6 +43,10 @@ public class Teleporter : Device {
 					//While waiting to be teleported, remove player control.
 					other.GetComponent<PlayerControl>().enablePlayerControl( false );
 
+					//The player might have been changing lanes when the teleportation was triggered.
+					//Stop the change lane or else the player will continue to change lanes when he reaches the other side.
+					other.GetComponent<PlayerControl>().stopSideMove();
+
 					other.GetComponent<PlayerSpell>().isBeingTeleported = true;
 
 					StartCoroutine( teleportAfterDelay( other.transform ) );	

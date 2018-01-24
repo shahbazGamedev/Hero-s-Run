@@ -206,6 +206,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	GenerateLevel generateLevel;
 	CoopWaveGenerator coopWaveGenerator;
 	Coroutine changeLeaningBlendFactorCoroutine;
+	const float PACKET_EXPIRY = 0.5f; //Used to discard synchronization packets that are too old.
 	#endregion
 
 	#region Events
@@ -1202,6 +1203,14 @@ public class PlayerControl : Photon.PunBehaviour {
 				//Debug.Log ("changeLane completed " + isGoingRight + " to lane " + desiredLane + " current lane " + currentLane );
 			}
 		}
+	}
+
+	public void stopSideMove()
+	{
+		isChangingLanes = false;
+		lean( 0, 0.3f );
+		moveDirection.x = 0;
+		recalculateCurrentLane();
 	}
 
 	void finalizeSideMove()
@@ -2217,16 +2226,20 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		//Discard old packets
 		float syncDelay = (float) (PhotonNetwork.time - photonTime);
-		if( syncDelay > 0.5 ) return;
+		if( syncDelay > PACKET_EXPIRY ) return;
 
-		transform.SetPositionAndRotation( syncPosition + syncVelocity * syncDelay, Quaternion.Euler( transform.eulerAngles.x, syncYRotation, transform.eulerAngles.z ) );
+		Vector3 newPosition = syncPosition + syncVelocity * syncDelay;
+
+		//Note that MovePosition/MoveRotation are not immediate. They take effect at the next FixedUpdate() call.
+		capsuleCollider.attachedRigidbody.MovePosition( newPosition );
+		capsuleCollider.attachedRigidbody.MoveRotation( Quaternion.Euler( transform.eulerAngles.x, syncYRotation, transform.eulerAngles.z ) );
 
 		//Determine on which tile we're on.
 		//Given an average latency of 60 msec. and an average run speed of 20 m/s, the player has been positioned 1.2 meters further.
 		//If we are positioned on a tile sloping upward, we want to make sure to start our raycast quite a bit higher than the feet, hence the 2f.
 		//Also, the player can jump quite high with double jump, so let's make sure our raycast is long enough to hit the ground.
 		RaycastHit hit;
-		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + 2f, transform.position.z ), Vector3.down, out hit, 50f ))
+		if (Physics.Raycast( new Vector3( newPosition.x, newPosition.y + 2f, newPosition.z ), Vector3.down, out hit, 50f ))
 		{
 			GameObject objectUnderRaycast = hit.collider.transform.root.gameObject;
 
@@ -2274,14 +2287,14 @@ public class PlayerControl : Photon.PunBehaviour {
 					}
 					else
 					{
-						Debug.LogError( "PlayerControl-positionSynchronizationRPC: There is no ground below the player named " + name + " at position " + transform.position + " after second raycast." );
+						Debug.LogError( "PlayerControl-positionSynchronizationRPC: There is no ground below the player named " + name + " at position " + newPosition + " after second raycast." );
 					}
 				}
 			}
 		}
 		else
 		{
-			Debug.LogError( "PlayerControl-positionSynchronizationRPC: There is no ground below the player named " + name + " at position " + transform.position );
+			Debug.LogError( "PlayerControl-positionSynchronizationRPC: There is no ground below the player named " + name + " at position " + newPosition );
 		}
 		recalculateCurrentLane();
 	}

@@ -102,7 +102,8 @@ public class LockstepManager : MonoBehaviour {
 			case LockstepActionType.TELEPORTER:
 				//Simply move the player to the teleporter receiver.
 				//See the Teleporter class for what happens when the receiver is triggered.
-				lockstepAction.actor.transform.position = lockstepAction.param3;
+				//Note that MovePosition is not immediate. It takes effect at the next FixedUpdate() call.
+				lockstepAction.actor.transform.GetComponent<Rigidbody>().MovePosition( lockstepAction.param3 );
 			break;
 
 			case LockstepActionType.CARD:
