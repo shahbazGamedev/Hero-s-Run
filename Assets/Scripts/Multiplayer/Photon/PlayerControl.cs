@@ -2238,57 +2238,38 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Given an average latency of 60 msec. and an average run speed of 20 m/s, the player has been positioned 1.2 meters further.
 		//If we are positioned on a tile sloping upward, we want to make sure to start our raycast quite a bit higher than the feet, hence the 2f.
 		//Also, the player can jump quite high with double jump, so let's make sure our raycast is long enough to hit the ground.
+		//Ignore Players when raycasting as well as triggers.
 		RaycastHit hit;
-		if (Physics.Raycast( new Vector3( newPosition.x, newPosition.y + 2f, newPosition.z ), Vector3.down, out hit, 50f ))
+		if (Physics.Raycast( new Vector3( newPosition.x, newPosition.y + 2f, newPosition.z ), Vector3.down, out hit, 50f, ~(1 << MaskHandler.playerLayer ), QueryTriggerInteraction.Ignore ) )
 		{
 			GameObject objectUnderRaycast = hit.collider.transform.root.gameObject;
 
-			//Let's make sure the raycast hit a tile and not another object like a player.
-			if( objectUnderRaycast.CompareTag("Player") )
+			if( objectUnderRaycast.GetComponent<SegmentInfo>() != null )
 			{
-				//Crap, our raycast hit a player.
-				//That player should have the correct current tile, so let's use that.
-				updateCurrentTileInfo( objectUnderRaycast.GetComponent<PlayerControl>().currentTile );
+				//Good! The object has a SegmentInfo component. That guarantees that this is a tile.
+				updateCurrentTileInfo( objectUnderRaycast );
 			}
 			else
 			{
-				if( objectUnderRaycast.GetComponent<SegmentInfo>() != null )
+				//The object that the raycast hit is not a tile.
+				//Let's start another raycast but this time starting from the hit object. Hopefully, we will hit the tile underneath.
+				if (Physics.Raycast( new Vector3( objectUnderRaycast.transform.position.x, objectUnderRaycast.transform.position.y + 0.05f, objectUnderRaycast.transform.position.z ), Vector3.down, out hit, 50f, ~(1 << MaskHandler.playerLayer ), QueryTriggerInteraction.Ignore ) )
 				{
-					//Good! The object has a SegmentInfo component. That guarantees that this is a tile.
-					updateCurrentTileInfo( objectUnderRaycast );
-				}
-				else
-				{
-					//The object that the raycast hit is neither a player or tile.
-					//Let's start another raycast but this time starting from the hit object. Hopefully, we will hit the tile underneath.
-					if (Physics.Raycast( new Vector3( objectUnderRaycast.transform.position.x, objectUnderRaycast.transform.position.y + 0.05f, objectUnderRaycast.transform.position.z ), Vector3.down, out hit, 50f ))
+					GameObject objectUnderSecondRaycast = hit.collider.transform.root.gameObject;
+		
+					if( objectUnderSecondRaycast.GetComponent<SegmentInfo>() != null )
 					{
-						GameObject objectUnderSecondRaycast = hit.collider.transform.root.gameObject;
-			
-						//Let's make sure the second raycast hit a tile and not another object like a player.
-						if( objectUnderSecondRaycast.CompareTag("Player") )
-						{
-							//Crap, our second raycast hit a player.
-							//That player should have the correct current tile, so let's use that.
-							updateCurrentTileInfo( objectUnderSecondRaycast.GetComponent<PlayerControl>().currentTile );
-						}
-						else
-						{
-							if( objectUnderSecondRaycast.GetComponent<SegmentInfo>() != null )
-							{
-								//Good! The object has a SegmentInfo component. That guarantees that this is a tile.
-								updateCurrentTileInfo( objectUnderSecondRaycast );
-							}
-							else
-							{
-								Debug.LogError( "PlayerControl-positionSynchronizationRPC: The object that the second raycast hit " +  objectUnderSecondRaycast.name + " is neither a player or tile. Unable to set current tile info for " + name + " at position " + transform.position );
-							}
-						}
+						//Good! The object has a SegmentInfo component. That guarantees that this is a tile.
+						updateCurrentTileInfo( objectUnderSecondRaycast );
 					}
 					else
 					{
-						Debug.LogError( "PlayerControl-positionSynchronizationRPC: There is no ground below the player named " + name + " at position " + newPosition + " after second raycast." );
+						Debug.LogError( "PlayerControl-positionSynchronizationRPC: The object that the second raycast hit " +  objectUnderSecondRaycast.name + " is not a tile. Unable to set current tile info for " + name + " at position " + newPosition );
 					}
+				}
+				else
+				{
+					Debug.LogError( "PlayerControl-positionSynchronizationRPC: There is no ground below the player named " + name + " at position " + newPosition + " after second raycast." );
 				}
 			}
 		}
@@ -2303,7 +2284,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	{
 		currentTile = tile;
 		currentTilePos = currentTile.transform.position;
-		//Debug.LogWarning( name + " updateCurrentTileInfo-Player rotation: " + transform.eulerAngles + " name of current tile: " + currentTile.name ); 
+		Debug.LogWarning( name + " updateCurrentTileInfo-Player rotation: " + transform.eulerAngles + " name of current tile: " + currentTile.name ); 
 
 		tileIndex = currentTile.GetComponent<SegmentInfo>().tileIndex;
 		tileDistanceTraveled = generateLevel.getLevelLength( tileIndex );
