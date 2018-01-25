@@ -206,7 +206,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	GenerateLevel generateLevel;
 	CoopWaveGenerator coopWaveGenerator;
 	Coroutine changeLeaningBlendFactorCoroutine;
-	const float PACKET_EXPIRY = 0.5f; //Used to discard synchronization packets that are too old.
+	const float PACKET_EXPIRY = 0.375f; //Used to discard synchronization packets that are too old.
 	#endregion
 
 	#region Events

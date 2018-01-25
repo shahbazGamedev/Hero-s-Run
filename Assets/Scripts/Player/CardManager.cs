@@ -398,7 +398,7 @@ public class CardManager : MonoBehaviour {
 		[Range(1,9)]
 		public int powerCost;
 		//The sector needed for this card to be unlocked
-		[Range(1,10)]
+		[Range(0,4)]
 		public int sector;
 		[System.NonSerialized]
 		public RectTransform rectTransform;
