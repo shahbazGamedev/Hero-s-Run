@@ -17,14 +17,20 @@ public class QuantumRift : CardSpawnedObject {
 		casterTransform = getCaster( (int) data[0] );
 		setCasterName( casterTransform.name );
 
-		Transform target = getCaster( (int) data[2] );
-
-		//We don't want the caster to be hit by the rock.
-		//However, the caster could be the target if the opponent had the Reflect card active.
-		if( target != null && casterTransform != null && casterTransform != target )
+		if( !GameManager.Instance.isCoopPlayMode() )
 		{
-			//Make the caster ignore collisions with the rock.
-			Physics.IgnoreCollision( rockCollider, casterTransform.GetComponent<CapsuleCollider>() );
+			//Note: In coop, data length is 1. In competition, data length is 3.
+			Transform target = getCaster( (int) data[2] );
+
+			//We don't want the caster to be hit by the rock.
+			//However, the caster could be the target if the opponent had the Reflect card active.
+			if( target != null && casterTransform != null && casterTransform != target )
+			{
+				//Make the caster ignore collisions with the rock.
+				Physics.IgnoreCollision( rockCollider, casterTransform.GetComponent<CapsuleCollider>() );
+				//Orient the rock that will be launched towards the target.
+				rock.LookAt( target );
+			}
 		}
 
 		RaycastHit hit;
@@ -38,11 +44,6 @@ public class QuantumRift : CardSpawnedObject {
 		//Now that our raycast is finished, reset the rock's layer to its original value.
 		rock.gameObject.layer = originalLayer;
 
-		//Orient the rock that will be launched towards the target.
-		if( !GameManager.Instance.isCoopPlayMode() )
-		{
-			 rock.LookAt( target );
-		}
 		Destroy( gameObject, 10f );
 	}
 	
