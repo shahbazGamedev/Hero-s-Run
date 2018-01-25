@@ -399,6 +399,7 @@ public class CardManager : MonoBehaviour {
 		public int powerCost;
 		//The sector needed for this card to be unlocked
 		[Range(0,4)]
+		[Tooltip("isDefaultCard cards and Hero cards have a sector of 0. All other cards have a sector ranging between 1 and 4. if a player unlocks sector 1 by earning enough trophies, he will unlock the cards assigned to sector 1. These cards then become available in loot boxes.")]
 		public int sector;
 		[System.NonSerialized]
 		public RectTransform rectTransform;
