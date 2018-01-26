@@ -13,7 +13,6 @@ public class FreezeController : CardSpawnedObject {
 	[SerializeField] GameObject iceGroundDecal;
    	[SerializeField] AnimationCurve appearIceDecalCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
    	[SerializeField] AnimationCurve disappearIceDecalCurve = AnimationCurve.EaseInOut(0, 1, 3, 0);
-	bool displayGroundIceDecal = false; //We don't want to display the ground decal if there is no ground underneath the target.
     int cutOffPropertyID; 		//cached for performance
 	Material decalMaterial;		//cached for performance
 	#endregion
@@ -45,7 +44,7 @@ public class FreezeController : CardSpawnedObject {
 	PlayerControl affectedPlayerControl;
 	Coroutine destroyIceCoroutine;
 	float animSpeedAtTimeOfFreeze;
-	bool isLocalPlayer = true;
+	bool isLocalPlayer = false;
 	#endregion
 
 	#region creature
@@ -146,9 +145,9 @@ public class FreezeController : CardSpawnedObject {
 	#region Player
 	void findAffectedPlayer(object[] data) 
 	{
-		tapsRequiredToBreakFreeze = (int) data[3];
+		tapsRequiredToBreakFreeze = (int) data[2];
 
-		casterTransform = getPlayerByViewID( (int) data[4] );
+		casterTransform = getPlayerByViewID( (int) data[3] );
 		setCasterName( casterTransform.name );
 
 		affectedPlayerTransform = getPlayerByViewID( (int) data[0] );
@@ -186,7 +185,7 @@ public class FreezeController : CardSpawnedObject {
 			affectedPlayerTransform.GetComponent<PlayerSpell>().cancelSentrySpell();
 
 			//Freeze has a limited lifespan.
-			float spellDuration =  (float) data[2];
+			float spellDuration =  (float) data[1];
 			affectedPlayerTransform.GetComponent<PlayerSpell>().displayCardTimerOnHUD(CardName.Freeze, spellDuration );
 	//destroyIceCoroutine = StartCoroutine( destroyIce( spellDuration ) );
 			//Display the Freeze secondary icon on the minimap
@@ -195,14 +194,12 @@ public class FreezeController : CardSpawnedObject {
 			string tapInstructions = LocalizationManager.Instance.getText("CARD_TAP_INSTRUCTIONS");
 			if( isLocalPlayer ) HUDMultiplayer.hudMultiplayer.showTapInstructions( tapInstructions );
 
-			//We can now make the ice visible and collidable
+			//We can now make the ice visible and collidable.
 			ice.GetComponent<MeshCollider>().enabled = true;
 			ice.GetComponent<MeshRenderer>().enabled = true;
+			iceGroundDecal.GetComponent<MeshRenderer>().enabled = true;
+			StartCoroutine( fadeGroundDecal( 0.9f, true ) );
 
-			//Display the ground ice decal?
-			displayGroundIceDecal = (bool) data[1];
-			iceGroundDecal.GetComponent<MeshRenderer>().enabled = displayGroundIceDecal; 
-			if( displayGroundIceDecal ) StartCoroutine( fadeGroundDecal( 0.9f, true ) );
 			Debug.Log("FreezeController-The player affected by the Freeze is: " + affectedPlayerTransform.name );
 		}
 		else
@@ -258,19 +255,15 @@ public class FreezeController : CardSpawnedObject {
 				affectedCreatureTransform.position = transform.position;
 
 				//The Freeze has a limited lifespan.
-				float spellDuration =  6.5f;
+				float spellDuration =  (float) data[1];
 
-				destroyIceCreatureCoroutine = StartCoroutine( destroyIceCreature( spellDuration ) );
+				//destroyIceCreatureCoroutine = StartCoroutine( destroyIceCreature( spellDuration ) );
 
-				//We can now make the ice visible and collidable
-				//In order to detect taps/mouse-clicks properly, we need to change the layer to Default (it was Ignore Raycast).
-				ice.layer = 0; //Default is 0
+				//We can now make the ice visible and collidable.
 				ice.GetComponent<MeshCollider>().enabled = true;
 				ice.GetComponent<MeshRenderer>().enabled = true;
-				//Display the ground ice decal?
-				displayGroundIceDecal = (bool) data[1];
-				iceGroundDecal.GetComponent<MeshRenderer>().enabled = displayGroundIceDecal;
-				if( displayGroundIceDecal ) StartCoroutine( fadeGroundDecal( 0.9f, true ) );
+				iceGroundDecal.GetComponent<MeshRenderer>().enabled = true;
+				StartCoroutine( fadeGroundDecal( 0.9f, true ) );
 				break;
 			}
 		}
@@ -365,7 +358,7 @@ public class FreezeController : CardSpawnedObject {
 					ice.gameObject.SetActive( false );
 					iceShardsOwner.gameObject.SetActive( false );
 					GetComponent<AudioSource>().PlayOneShot( destroyedSound );
-					if( displayGroundIceDecal ) StartCoroutine( fadeGroundDecal( 3f, false ) );
+					StartCoroutine( fadeGroundDecal( 3f, false ) );
 					destroyIceImmediately();
 				}
 				else
