@@ -18,7 +18,7 @@ public class FreezeController : CardSpawnedObject {
 	[SerializeField] AudioClip tapSound; 
 	[SerializeField] AudioClip destroyedSound;
 	public int tapsDetected = 0;
-	public int tapsRequiredToBreakFreeze;
+	public int tapsRequiredToBreakFreeze; //7 base + 9 upgrade per level = 16
 	public bool isLocalPlayer = true;
 	[SerializeField] Material tapMaterial;
 	public List<GameObject> iceShardsList = new List<GameObject>();
@@ -299,7 +299,11 @@ public class FreezeController : CardSpawnedObject {
 					iceShard.GetComponent<MeshRenderer>().material = tapMaterial;
 					Destroy( iceShard, 4f );
 					Color currentIceColor = ice.GetComponent<MeshRenderer>().material.GetColor("_Color");
-					ice.GetComponent<MeshRenderer>().material.SetColor("_Color", new Color( currentIceColor.r, currentIceColor.g, currentIceColor.b, currentIceColor.a - 20/255f ) );
+					//We want the Ice object transparency to be 0.4 when tapsDetected is equal to tapsRequiredToBreakFreeze. This is so it looks nice.
+					//Freeze is a Rare card with 9 upgrade levels.
+					//The number of taps required will vary between 8 (base + 1) and 16 (base + 9).
+					float iceAlpha = (0.4f - 1f)/tapsRequiredToBreakFreeze * tapsDetected + 1f;
+					ice.GetComponent<MeshRenderer>().material.SetColor("_Color", new Color( currentIceColor.r, currentIceColor.g, currentIceColor.b, iceAlpha ) );
 					if( tapsDetected == tapsRequiredToBreakFreeze )
 					{
 						ice.gameObject.SetActive( false );
