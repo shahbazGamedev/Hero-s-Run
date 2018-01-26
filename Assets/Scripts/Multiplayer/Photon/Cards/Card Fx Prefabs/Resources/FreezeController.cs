@@ -9,8 +9,16 @@ public class FreezeController : CardSpawnedObject {
 
 	[SerializeField] GameObject ice;
 	[SerializeField] GameObject iceGroundDecal;
-	[SerializeField] Transform iceShardsOwner;
+	bool displayGroundIceDecal = false;
+   	[SerializeField] AnimationCurve appearIceDecalCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+   	[SerializeField] AnimationCurve disappearIceDecalCurve = AnimationCurve.EaseInOut(0, 1, 3, 0);
+ 	[SerializeField] Transform iceShardsOwner;
 	[SerializeField] GameObject topmostIceShard;
+   	public RFX4_ShaderProperties ShaderFloatProperty = RFX4_ShaderProperties._Cutoff;
+    public string shaderProperty;
+    public int propertyID;
+	public Material decalMaterial;
+
 
 	[Header("Tap to break free")]
 	//if you tap quickly on the Stasis sphere, you can break free without waiting for the spell expires.
@@ -38,6 +46,7 @@ public class FreezeController : CardSpawnedObject {
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
 		populateIceShards();
+		setDecalShaderProperty();
 		//Note that the Freeze prefab has its MeshRenderer and MeshCollider disabled.
 		//We will enable them when the card gets activated by the lockstep manager.
 		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Freeze );
@@ -59,6 +68,35 @@ public class FreezeController : CardSpawnedObject {
 		{
 			Debug.LogError("FreezeController-populateIceShards: iceShardsOwner has not been set." );
 		}
+	}
+
+	void setDecalShaderProperty()
+	{
+        decalMaterial = iceGroundDecal.GetComponent<Renderer>().material; 
+        shaderProperty = ShaderFloatProperty.ToString();
+        if (decalMaterial.HasProperty(shaderProperty)) propertyID = Shader.PropertyToID(shaderProperty);
+        decalMaterial.SetFloat(propertyID, 0);
+	}
+
+	IEnumerator fadeGroundDecal( float duration, bool appear )
+	{
+ 		float elapsedTime = 0;
+		
+		float startValue = decalMaterial.GetFloat(propertyID);
+		do
+		{
+			elapsedTime = elapsedTime + Time.deltaTime;
+			if( appear)
+			{
+				decalMaterial.SetFloat( propertyID, appearIceDecalCurve.Evaluate( elapsedTime ) );
+			}
+			else
+			{
+				decalMaterial.SetFloat( propertyID, disappearIceDecalCurve.Evaluate( elapsedTime ) );
+			}
+			yield return new WaitForEndOfFrame();  
+			
+		} while ( elapsedTime < duration );
 	}
 
 	GameObject getRandomIceShard()
@@ -152,8 +190,9 @@ public class FreezeController : CardSpawnedObject {
 				ice.GetComponent<MeshCollider>().enabled = true;
 				ice.GetComponent<MeshRenderer>().enabled = true;
 				//Display the ground ice decal?
-				bool displayGroundIceDecal = (bool) data[1];
+				displayGroundIceDecal = (bool) data[1];
 				iceGroundDecal.GetComponent<MeshRenderer>().enabled = displayGroundIceDecal; 
+				if( displayGroundIceDecal ) StartCoroutine( fadeGroundDecal( 0.9f, true ) );
 				break;
 			}
 		}
@@ -224,8 +263,9 @@ public class FreezeController : CardSpawnedObject {
 				ice.GetComponent<MeshCollider>().enabled = true;
 				ice.GetComponent<MeshRenderer>().enabled = true;
 				//Display the ground ice decal?
-				bool displayGroundIceDecal = (bool) data[1];
-				iceGroundDecal.GetComponent<MeshRenderer>().enabled = displayGroundIceDecal; 
+				displayGroundIceDecal = (bool) data[1];
+				iceGroundDecal.GetComponent<MeshRenderer>().enabled = displayGroundIceDecal;
+				if( displayGroundIceDecal ) StartCoroutine( fadeGroundDecal( 0.9f, true ) );
 				break;
 			}
 		}
@@ -316,6 +356,7 @@ public class FreezeController : CardSpawnedObject {
 						ice.gameObject.SetActive( false );
 						iceShardsOwner.gameObject.SetActive( false );
 						GetComponent<AudioSource>().PlayOneShot( destroyedSound );
+						if( displayGroundIceDecal ) StartCoroutine( fadeGroundDecal( 3f, false ) );
 						destroyIceImmediately();
 					}
 					else
