@@ -68,6 +68,9 @@ public class CardFreeze : Card {
 				//If there ground below the target. This will be used to decide if we put the ground ice decal or not.
 				data[1] = isThereGroundBelowPlayer;
 	
+				//We want the freese to disappear after a while
+				data[2] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
+
 				PhotonNetwork.InstantiateSceneObject( prefabName, freezePosition, randomTarget.rotation, 0, data );
 			}
 			else
@@ -120,13 +123,23 @@ public class CardFreeze : Card {
 	
 				randomTarget.gameObject.layer = MaskHandler.playerLayer; //Restore to Player
 	
-				object[] data = new object[2];
-		
+				object[] data = new object[5];
+
 				//We will need to find a reference to the player we are targeting
 				data[0] = randomTarget.GetComponent<PhotonView>().viewID;
 		
 				//If there ground below the target. This will be used to decide if we put the ground ice decal or not.
 				data[1] = isThereGroundBelowPlayer;
+
+				//We want the freese to disappear after a while
+				data[2] = cd.getCardPropertyValue( CardPropertyType.DURATION, level );
+		
+				//Number of taps required to break free early
+				data[3] = (int) cd.getCardPropertyValue( CardPropertyType.TAPS, level );
+
+				//Caster viewID
+				data[4] = photonViewID;
+				
 	
 				PhotonNetwork.InstantiateSceneObject( prefabName, freezePosition, randomTarget.rotation, 0, data );
 			}

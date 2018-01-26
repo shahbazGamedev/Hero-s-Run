@@ -9,7 +9,7 @@ public class StasisController : CardSpawnedObject {
 
 	[Header("Tap to break free")]
 	//if you tap quickly on the Stasis sphere, you can break free without waiting for the spell expires.
-	[SerializeField] ParticleSystem tapParticleSystem;
+	[SerializeField] ParticleSystem tapParticleSystem; //Put the stop action to Destroy
 	[SerializeField] AudioClip tapSound;
 	int tapsDetected = 0;
 	int tapsRequiredToBreakStasis;

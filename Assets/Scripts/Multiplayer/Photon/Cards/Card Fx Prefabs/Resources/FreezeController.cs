@@ -9,6 +9,17 @@ public class FreezeController : CardSpawnedObject {
 
 	[SerializeField] GameObject ice;
 	[SerializeField] GameObject iceGroundDecal;
+	[SerializeField] Transform iceShardsOwner;
+
+	[Header("Tap to break free")]
+	//if you tap quickly on the Stasis sphere, you can break free without waiting for the spell expires.
+	[SerializeField] ParticleSystem tapParticleSystem; //Put the stop action to Destroy
+	[SerializeField] AudioClip tapSound;
+	public int tapsDetected = 0;
+	public int tapsRequiredToBreakFreeze;
+	public bool isLocalPlayer = true;
+	[SerializeField] Material tapMaterial;
+	public List<GameObject> iceShardsList = new List<GameObject>();
 
 	//For player
 	Transform affectedPlayerTransform;
@@ -23,11 +34,43 @@ public class FreezeController : CardSpawnedObject {
 	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
+		populateIceShards();
 		//Note that the Freeze prefab has its MeshRenderer and MeshCollider disabled.
 		//We will enable them when the card gets activated by the lockstep manager.
 		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Freeze );
 		lsa.cardSpawnedObject = this;
 		LockstepManager.Instance.addActionToQueue( lsa );
+	}
+
+	void populateIceShards()
+	{
+		if( iceShardsOwner != null  )
+		{
+			for( int i = 0; i < iceShardsOwner.childCount; i++ )
+			{
+				GameObject child = iceShardsOwner.GetChild( i ).gameObject;
+				if( child.GetComponent<Rigidbody>() != null ) iceShardsList.Add( child );
+			}
+		}
+		else
+		{
+			Debug.LogError("FreezeController-populateIceShards: iceShardsOwner has not been set." );
+		}
+	}
+
+	GameObject getRandomIceShard()
+	{
+		if( iceShardsList.Count > 0 )
+		{
+			int random = Random.Range( 0, iceShardsList.Count );
+			GameObject iceShard = iceShardsList[random];
+			iceShardsList.RemoveAt( random );
+			return iceShard;
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	public override void activateCard()
@@ -47,6 +90,9 @@ public class FreezeController : CardSpawnedObject {
 	void findAffectedPlayer(object[] data) 
 	{
 		int viewIdOfAffectedPlayer = (int) data[0];
+		tapsRequiredToBreakFreeze = (int) data[3];
+		casterTransform = getCaster( (int) data[4] );
+		setCasterName( casterTransform.name );
 
 		for( int i = 0; i < PlayerRace.players.Count; i ++ )
 		{
@@ -62,6 +108,10 @@ public class FreezeController : CardSpawnedObject {
 
 				affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = true;
 
+				//isLocalPlayer is used by the code that allows a player to break out early by tapping on the ice.
+				//It is used to ensure that you can only tap on the ice the local player is trapped in.
+				//isLocalPlayer = ( affectedPlayerTransform.GetComponent<PhotonView>().isMine && affectedPlayerTransform.GetComponent<PlayerAI>() == null );
+				isLocalPlayer = true;
 				//If the player is affected by shrink, cancel it. The player will enlarge back to his normal size.
 				affectedPlayerTransform.GetComponent<PlayerSpell>().cancelShrinkSpell();
 
@@ -83,7 +133,7 @@ public class FreezeController : CardSpawnedObject {
 				float spellDuration =  6.5f;
 
 				affectedPlayerTransform.GetComponent<PlayerSpell>().displayCardTimerOnHUD(CardName.Freeze, spellDuration );
-				destroyIceCoroutine = StartCoroutine( destroyIce( spellDuration ) );
+				//destroyIceCoroutine = StartCoroutine( destroyIce( spellDuration ) );
 
 				//Display the Freeze secondary icon on the minimap
 				MiniMap.Instance.displaySecondaryIcon( affectedPlayerTransform.GetComponent<PhotonView>().viewID, (int) CardName.Freeze, spellDuration );
@@ -194,4 +244,70 @@ public class FreezeController : CardSpawnedObject {
 		Destroy( gameObject );
 	}
 	#endregion
+
+	#region Tap
+	void Update () {
+
+		if( !isLocalPlayer ) return;
+
+		#if UNITY_EDITOR
+		// User pressed the left mouse up
+		if (Input.GetMouseButtonDown(0))
+		{
+			MouseButtonDown(0);
+		}
+		#else
+		detectTaps();
+		#endif
+	}
+
+	void MouseButtonDown(int Button)
+	{
+		validateTappedObject(Input.mousePosition);
+	}
+
+	void detectTaps()
+	{
+		for ( int i = 0; i < Input.touchCount; i++ )
+		{
+			if( Input.GetTouch(i).phase == TouchPhase.Began  )
+			{
+				validateTappedObject(Input.GetTouch(i).position);
+			}
+		}
+	}
+
+	void validateTappedObject( Vector2 touchPosition )
+	{
+		// We need to actually hit an object
+		RaycastHit hit;
+		if (Physics.Raycast(Camera.main.ScreenPointToRay(touchPosition), out hit, 20))
+		{
+			if ( hit.collider )
+			{
+				if( hit.collider.gameObject == ice )
+				{
+					tapsDetected++;
+					ParticleSystem ps = GameObject.Instantiate( tapParticleSystem, hit.point, Quaternion.identity );
+					GetComponent<AudioSource>().PlayOneShot( tapSound );
+					tapParticleSystem.Play();
+					GameObject iceShard = getRandomIceShard();
+					iceShard.transform.parent = null;
+					iceShard.GetComponent<Collider>().enabled = true;
+					iceShard.GetComponent<Rigidbody>().isKinematic = false;
+					iceShard.GetComponent<MeshRenderer>().material = tapMaterial;
+					Destroy( iceShard, 4f );
+					Color currentIceColor = ice.GetComponent<MeshRenderer>().material.GetColor("_Color");
+					ice.GetComponent<MeshRenderer>().material.SetColor("_Color", new Color( currentIceColor.r, currentIceColor.g, currentIceColor.b, currentIceColor.a - 20/255f ) );
+					if( tapsDetected == tapsRequiredToBreakFreeze )
+					{
+						ice.gameObject.SetActive( false );
+						destroyIceImmediately();
+					}
+				}
+			}
+		}
+	}
+	#endregion
+
 }
