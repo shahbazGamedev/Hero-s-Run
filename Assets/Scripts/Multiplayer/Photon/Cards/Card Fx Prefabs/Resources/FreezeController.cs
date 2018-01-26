@@ -48,7 +48,7 @@ public class FreezeController : CardSpawnedObject {
 	#region other
 	Transform affectedTargetTransform;
 	Coroutine destroyIceCoroutine;
-	const float DELAY_BEFORE_DESTROYING = 3f;
+	const float DELAY_BEFORE_DESTROYING = 3.5f;
 	#endregion
 
 	#region Initialisation
@@ -216,7 +216,9 @@ public class FreezeController : CardSpawnedObject {
 			Debug.LogError("FreezeController error: couldn't find the target player with the Photon view id of " + (int) data[0] );
 		}
 	}
+	#endregion
 
+	#region Ice destroyed
 	IEnumerator destroyIce( float delayBeforeSpellExpires )
 	{
 		yield return new WaitForSeconds(delayBeforeSpellExpires);
@@ -229,7 +231,38 @@ public class FreezeController : CardSpawnedObject {
 		if( destroyIceCoroutine != null ) StopCoroutine( destroyIceCoroutine );
 
 		ice.gameObject.SetActive( false );
-		iceShardsOwner.gameObject.SetActive( false );
+
+		//Ice shards.
+		//We have several cases to consider.
+		//Bots and zombies don't tap to break the ice. For them, play a final ice explosion animation.
+		//For players, we have 2 cases. If the player has tapped to break free, hide remaining shards.
+		//If however the player did not tap to break free, then play the final ice explosion animation.
+		if( affectedTargetTransform.gameObject.CompareTag( "Player" ) )
+		{
+			if( affectedTargetTransform.GetComponent<PlayerAI>() == null )
+			{
+				//The target was a player and is not a bot.
+				if( tapsDetected == 0 )
+				{
+					iceShardsOwner.GetComponent<Animator>().enabled = true;
+				}
+				else
+				{
+					iceShardsOwner.gameObject.SetActive( false );
+				}
+			}
+			else
+			{
+				//The target was a bot.
+				iceShardsOwner.GetComponent<Animator>().enabled = true;
+			}
+		}
+		else if( affectedTargetTransform.gameObject.CompareTag( "Zombie" ) )
+		{
+			//The target was a creature.
+			iceShardsOwner.GetComponent<Animator>().enabled = true;
+		}
+
 		GetComponent<AudioSource>().PlayOneShot( destroyedSound );
 		StartCoroutine( fadeGroundDecal( DELAY_BEFORE_DESTROYING , false ) );
 
