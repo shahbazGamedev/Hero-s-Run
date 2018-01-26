@@ -10,6 +10,7 @@ public class FreezeController : CardSpawnedObject {
 	[SerializeField] GameObject ice;
 	[SerializeField] GameObject iceGroundDecal;
 	[SerializeField] Transform iceShardsOwner;
+	[SerializeField] GameObject topmostIceShard;
 
 	[Header("Tap to break free")]
 	//if you tap quickly on the Stasis sphere, you can break free without waiting for the spell expires.
@@ -51,7 +52,7 @@ public class FreezeController : CardSpawnedObject {
 			for( int i = 0; i < iceShardsOwner.childCount; i++ )
 			{
 				GameObject child = iceShardsOwner.GetChild( i ).gameObject;
-				if( child.GetComponent<Rigidbody>() != null ) iceShardsList.Add( child );
+				if( child.GetComponent<Rigidbody>() != null && child != topmostIceShard ) iceShardsList.Add( child );
 			}
 		}
 		else
@@ -62,6 +63,8 @@ public class FreezeController : CardSpawnedObject {
 
 	GameObject getRandomIceShard()
 	{
+		if( tapsDetected == 1 ) return topmostIceShard;
+
 		if( iceShardsList.Count > 0 )
 		{
 			int random = Random.Range( 0, iceShardsList.Count );
@@ -140,6 +143,9 @@ public class FreezeController : CardSpawnedObject {
 				//Display the Freeze secondary icon on the minimap
 				MiniMap.Instance.displaySecondaryIcon( affectedPlayerTransform.GetComponent<PhotonView>().viewID, (int) CardName.Freeze, spellDuration );
 
+				string tapInstructions = LocalizationManager.Instance.getText("CARD_TAP_INSTRUCTIONS");
+				if( isLocalPlayer ) HUDMultiplayer.hudMultiplayer.showTapInstructions( tapInstructions );
+
 				//We can now make the ice visible and collidable
 				//In order to detect taps/mouse-clicks properly, we need to change the layer to Default (it was Ignore Raycast).
 				ice.layer = 0; //Default is 0
@@ -170,6 +176,7 @@ public class FreezeController : CardSpawnedObject {
 	void destroyIceImmediately()
 	{
 		if( destroyIceCoroutine != null ) StopCoroutine( destroyIceCoroutine );
+		if( isLocalPlayer ) HUDMultiplayer.hudMultiplayer.hideTapInstructions();
 		MiniMap.Instance.hideSecondaryIcon( affectedPlayerTransform.gameObject );
 		affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = false;
 		affectedPlayerTransform.GetComponent<Animator>().speed = animSpeedAtTimeOfFreeze;
@@ -297,7 +304,7 @@ public class FreezeController : CardSpawnedObject {
 					iceShard.GetComponent<Collider>().enabled = true;
 					iceShard.GetComponent<Rigidbody>().isKinematic = false;
 					iceShard.GetComponent<MeshRenderer>().material = tapMaterial;
-					Destroy( iceShard, 4f );
+					Destroy( iceShard, 6f );
 					Color currentIceColor = ice.GetComponent<MeshRenderer>().material.GetColor("_Color");
 					//We want the Ice object transparency to be 0.4 when tapsDetected is equal to tapsRequiredToBreakFreeze. This is so it looks nice.
 					//Freeze is a Rare card with 9 upgrade levels.
