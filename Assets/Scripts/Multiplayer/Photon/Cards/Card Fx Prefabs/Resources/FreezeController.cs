@@ -40,16 +40,15 @@ public class FreezeController : CardSpawnedObject {
 	#endregion
 
 	#region player
-	Transform affectedPlayerTransform;
 	PlayerControl affectedPlayerControl;
-	Coroutine destroyIceCoroutine;
 	float animSpeedAtTimeOfFreeze;
 	bool isLocalPlayer = false;
 	#endregion
 
-	#region creature
-	Transform affectedCreatureTransform;
-	Coroutine destroyIceCreatureCoroutine;
+	#region other
+	Transform affectedTargetTransform;
+	Coroutine destroyIceCoroutine;
+	const float DELAY_BEFORE_DESTROYING = 3f;
 	#endregion
 
 	#region Initialisation
@@ -142,6 +141,16 @@ public class FreezeController : CardSpawnedObject {
 		}
 	}
 
+	void breakOffIceShard()
+	{
+		GameObject iceShard = getRandomIceShard();
+		iceShard.transform.parent = null;
+		iceShard.GetComponent<Collider>().enabled = true;
+		iceShard.GetComponent<Rigidbody>().isKinematic = false; //This will make it break away and fall.
+		iceShard.GetComponent<MeshRenderer>().material = tapMaterial;
+		Destroy( iceShard, 6f );
+	}
+
 	#region Player
 	void findAffectedPlayer(object[] data) 
 	{
@@ -150,46 +159,46 @@ public class FreezeController : CardSpawnedObject {
 		casterTransform = getPlayerByViewID( (int) data[3] );
 		setCasterName( casterTransform.name );
 
-		affectedPlayerTransform = getPlayerByViewID( (int) data[0] );
+		affectedTargetTransform = getPlayerByViewID( (int) data[0] );
 
-		if( affectedPlayerTransform != null )
+		if( affectedTargetTransform != null )
 		{
 			//We found the spell's target
-			affectedPlayerControl = affectedPlayerTransform.GetComponent<PlayerControl>();
+			affectedPlayerControl = affectedTargetTransform.GetComponent<PlayerControl>();
 
 			//If in the short time between the card being cast and the card being activated
 			//the player has died or is IDLE, simply ignore.
 			if( affectedPlayerControl.getCharacterState() == PlayerCharacterState.Dying || affectedPlayerControl.getCharacterState() == PlayerCharacterState.Idle ) return;
 
-			affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = true;
+			affectedTargetTransform.GetComponent<Rigidbody>().isKinematic = true;
 
 			//isLocalPlayer is used by the code that allows a player to break out early by tapping.
 			//It is used to ensure that you can only tap on the ice the local player is trapped in.
-			isLocalPlayer = ( affectedPlayerTransform.GetComponent<PhotonView>().isMine && affectedPlayerTransform.GetComponent<PlayerAI>() == null );
+			isLocalPlayer = ( affectedTargetTransform.GetComponent<PhotonView>().isMine && affectedTargetTransform.GetComponent<PlayerAI>() == null );
 
 			//If the player is affected by shrink, cancel it. The player will enlarge back to his normal size.
-			affectedPlayerTransform.GetComponent<PlayerSpell>().cancelShrinkSpell();
+			affectedTargetTransform.GetComponent<PlayerSpell>().cancelShrinkSpell();
 
 			//Freeze the player's movement and remove player control.
 			affectedPlayerControl.enablePlayerMovement( false );
 			affectedPlayerControl.enablePlayerControl( false );
 
-			affectedPlayerTransform.position = transform.position;
+			affectedTargetTransform.position = transform.position;
 
-			animSpeedAtTimeOfFreeze = affectedPlayerTransform.GetComponent<Animator>().speed;
-			affectedPlayerTransform.GetComponent<Animator>().speed = 0;
+			animSpeedAtTimeOfFreeze = affectedTargetTransform.GetComponent<Animator>().speed;
+			affectedTargetTransform.GetComponent<Animator>().speed = 0;
 			//Set the player state to Idle so that other spells don't affect the player while he is frozen.
 			affectedPlayerControl.setCharacterState( PlayerCharacterState.Idle );
 
 			//If the player has a Sentry, it will be destroyed.
-			affectedPlayerTransform.GetComponent<PlayerSpell>().cancelSentrySpell();
+			affectedTargetTransform.GetComponent<PlayerSpell>().cancelSentrySpell();
 
 			//Freeze has a limited lifespan.
 			float spellDuration =  (float) data[1];
-			affectedPlayerTransform.GetComponent<PlayerSpell>().displayCardTimerOnHUD(CardName.Freeze, spellDuration );
-	//destroyIceCoroutine = StartCoroutine( destroyIce( spellDuration ) );
+			affectedTargetTransform.GetComponent<PlayerSpell>().displayCardTimerOnHUD(CardName.Freeze, spellDuration );
+			destroyIceCoroutine = StartCoroutine( destroyIce( spellDuration ) );
 			//Display the Freeze secondary icon on the minimap
-			MiniMap.Instance.displaySecondaryIcon( affectedPlayerTransform.GetComponent<PhotonView>().viewID, (int) CardName.Freeze, spellDuration );
+			MiniMap.Instance.displaySecondaryIcon( affectedTargetTransform.GetComponent<PhotonView>().viewID, (int) CardName.Freeze, spellDuration );
 
 			string tapInstructions = LocalizationManager.Instance.getText("CARD_TAP_INSTRUCTIONS");
 			if( isLocalPlayer ) HUDMultiplayer.hudMultiplayer.showTapInstructions( tapInstructions );
@@ -200,7 +209,7 @@ public class FreezeController : CardSpawnedObject {
 			iceGroundDecal.GetComponent<MeshRenderer>().enabled = true;
 			StartCoroutine( fadeGroundDecal( 0.9f, true ) );
 
-			Debug.Log("FreezeController-The player affected by the Freeze is: " + affectedPlayerTransform.name );
+			Debug.Log("FreezeController-The player affected by the Freeze is: " + affectedTargetTransform.name );
 		}
 		else
 		{
@@ -216,19 +225,36 @@ public class FreezeController : CardSpawnedObject {
 
 	void destroyIceImmediately()
 	{
+		//Common
 		if( destroyIceCoroutine != null ) StopCoroutine( destroyIceCoroutine );
-		if( isLocalPlayer ) HUDMultiplayer.hudMultiplayer.hideTapInstructions();
-		MiniMap.Instance.hideSecondaryIcon( affectedPlayerTransform.gameObject );
-		affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = false;
-		affectedPlayerTransform.GetComponent<Animator>().speed = animSpeedAtTimeOfFreeze;
-		//The player starts off running
-		affectedPlayerTransform.GetComponent<Animator>().SetTrigger( "Run" );
-		affectedPlayerTransform.GetComponent<PlayerControl>().setCharacterState( PlayerCharacterState.Running );
 
-		affectedPlayerControl.enablePlayerMovement( true );
-		affectedPlayerControl.enablePlayerControl( true );
-		affectedPlayerTransform.GetComponent<PlayerSpell>().cardDurationExpired(CardName.Freeze);
-		Destroy( gameObject, 3f );
+		ice.gameObject.SetActive( false );
+		iceShardsOwner.gameObject.SetActive( false );
+		GetComponent<AudioSource>().PlayOneShot( destroyedSound );
+		StartCoroutine( fadeGroundDecal( DELAY_BEFORE_DESTROYING , false ) );
+
+		Destroy( gameObject, DELAY_BEFORE_DESTROYING );
+
+
+		if( affectedTargetTransform.gameObject.CompareTag( "Player" ) )
+		{
+			if( isLocalPlayer ) HUDMultiplayer.hudMultiplayer.hideTapInstructions();
+			MiniMap.Instance.hideSecondaryIcon( affectedTargetTransform.gameObject );
+			affectedTargetTransform.GetComponent<Rigidbody>().isKinematic = false;
+			affectedTargetTransform.GetComponent<Animator>().speed = animSpeedAtTimeOfFreeze;
+			//The player starts off running
+			affectedTargetTransform.GetComponent<Animator>().SetTrigger( "Run" );
+			affectedTargetTransform.GetComponent<PlayerControl>().setCharacterState( PlayerCharacterState.Running );
+	
+			affectedPlayerControl.enablePlayerMovement( true );
+			affectedPlayerControl.enablePlayerControl( true );
+			affectedTargetTransform.GetComponent<PlayerSpell>().cardDurationExpired(CardName.Freeze);
+		}
+		else if( affectedTargetTransform.gameObject.CompareTag( "Zombie" ) )
+		{
+			affectedTargetTransform.GetComponent<ZombieController>().freeze( false );
+		}
+	
 	}
 	#endregion
 
@@ -243,7 +269,7 @@ public class FreezeController : CardSpawnedObject {
 			if( zombies[i].GetComponent<PhotonView>().viewID == viewIdOfAffectedCreature )
 			{
 				//We found the spell's target
-				affectedCreatureTransform = zombies[i].transform;
+				affectedTargetTransform = zombies[i].transform;
 
 				//If in the short time between the card being cast and the card being activated
 				//the creature has died, simply ignore.
@@ -252,12 +278,12 @@ public class FreezeController : CardSpawnedObject {
 				//Freeze the creature's movement.
 				zombies[i].freeze( true );
 
-				affectedCreatureTransform.position = transform.position;
+				affectedTargetTransform.position = transform.position;
 
 				//The Freeze has a limited lifespan.
 				float spellDuration =  (float) data[1];
 
-				//destroyIceCreatureCoroutine = StartCoroutine( destroyIceCreature( spellDuration ) );
+				destroyIceCoroutine = StartCoroutine( destroyIce( spellDuration ) );
 
 				//We can now make the ice visible and collidable.
 				ice.GetComponent<MeshCollider>().enabled = true;
@@ -267,28 +293,14 @@ public class FreezeController : CardSpawnedObject {
 				break;
 			}
 		}
-		if( affectedCreatureTransform != null )
+		if( affectedTargetTransform != null )
 		{
-			Debug.Log("FreezeController-The creature affected by the Freeze is: " + affectedCreatureTransform.name );
+			Debug.Log("FreezeController-The creature affected by the Freeze is: " + affectedTargetTransform.name );
 		}
 		else
 		{
 			Debug.LogError("FreezeController error: could not find the target creature with the Photon view id of " + viewIdOfAffectedCreature );
 		}
-	}
-
-	IEnumerator destroyIceCreature( float delayBeforeSpellExpires )
-	{
-		yield return new WaitForSeconds(delayBeforeSpellExpires);
-		destroyIceImmediatelyCreature();
-	}
-
-	void destroyIceImmediatelyCreature()
-	{
-		if( destroyIceCreatureCoroutine != null ) StopCoroutine( destroyIceCreatureCoroutine );
-		
-		affectedCreatureTransform.GetComponent<ZombieController>().freeze( false );
-		Destroy( gameObject );
 	}
 	#endregion
 
@@ -338,12 +350,7 @@ public class FreezeController : CardSpawnedObject {
 				ParticleSystem ps = GameObject.Instantiate( tapParticleSystem, hit.point, Quaternion.identity );
 
 				//Break off an ice shard and change its material.
-				GameObject iceShard = getRandomIceShard();
-				iceShard.transform.parent = null;
-				iceShard.GetComponent<Collider>().enabled = true;
-				iceShard.GetComponent<Rigidbody>().isKinematic = false; //This will make it break away and fall.
-				iceShard.GetComponent<MeshRenderer>().material = tapMaterial;
-				Destroy( iceShard, 6f );
+				breakOffIceShard();
 
 				//We want the Ice object transparency to be 0.4 when tapsDetected is equal to tapsRequiredToBreakFreeze. This is so it looks nice.
 				//Freeze is a Rare card with 9 upgrade levels.
@@ -355,10 +362,6 @@ public class FreezeController : CardSpawnedObject {
 				if( tapsDetected == tapsRequiredToBreakFreeze )
 				{
 					//The player can finally break free.
-					ice.gameObject.SetActive( false );
-					iceShardsOwner.gameObject.SetActive( false );
-					GetComponent<AudioSource>().PlayOneShot( destroyedSound );
-					StartCoroutine( fadeGroundDecal( 3f, false ) );
 					destroyIceImmediately();
 				}
 				else
