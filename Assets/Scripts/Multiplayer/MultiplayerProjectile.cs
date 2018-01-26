@@ -20,7 +20,7 @@ public class MultiplayerProjectile : CardSpawnedObject {
 		object[] data = gameObject.GetPhotonView ().instantiationData;
 
 		//The caster of this projectile
-		casterTransform = getCaster( (int) data[0] );
+		casterTransform = getPlayerByViewID( (int) data[0] );
 
 		launchProjectile((Vector3) data[1], (float) data[3] );
 

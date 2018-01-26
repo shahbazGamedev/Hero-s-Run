@@ -53,19 +53,19 @@ public class CardSpawnedObject : MonoBehaviour {
 	{
 	}
 
-	protected Transform getCaster( int casterPhotonViewId )
+	protected Transform getPlayerByViewID( int photonViewId )
 	{
-		Transform caster = null;
+		Transform player = null;
 		for( int i = 0; i < PlayerRace.players.Count; i ++ )
 		{
-			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == casterPhotonViewId )
+			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewId )
 			{
-				//We found the caster
-				caster = PlayerRace.players[i].transform;
+				//We found the player
+				player = PlayerRace.players[i].transform;
 				break;
 			}
 		}
-		return caster;
+		return player;
 	}
 
 	protected float getHeightAdjusment( GameObject target )

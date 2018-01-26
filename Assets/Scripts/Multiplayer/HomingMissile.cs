@@ -23,7 +23,7 @@ public class HomingMissile : CardSpawnedObject {
 	{
 		object[] data = gameObject.GetPhotonView ().instantiationData;
 
-		casterTransform = getCaster( (int) data[0] );
+		casterTransform = getPlayerByViewID( (int) data[0] );
 		setCasterName( casterTransform.name );
 
 		//We want the homing missile to self-destruct after a while

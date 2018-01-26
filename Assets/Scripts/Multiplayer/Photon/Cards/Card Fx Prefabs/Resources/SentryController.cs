@@ -53,7 +53,7 @@ public class SentryController : CardSpawnedObject {
 	void findOwner(object[] data) 
 	{
 		int viewIdOfOwner = (int) data[0];
-		casterTransform = getCaster( viewIdOfOwner );
+		casterTransform = getPlayerByViewID( viewIdOfOwner );
 		if( casterTransform != null )
 		{
 			setCasterName( casterTransform.name );

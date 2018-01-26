@@ -25,7 +25,7 @@ public class TripMine : CardSpawnedObject {
 	{
 		object[] data = this.gameObject.GetPhotonView ().instantiationData;
 
-		casterTransform = getCaster( (int) data[0] );
+		casterTransform = getPlayerByViewID( (int) data[0] );
 		setCasterName( casterTransform.name );
 
 		float delayBeforeExpires = (float) data[1];

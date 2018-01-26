@@ -14,13 +14,13 @@ public class QuantumRift : CardSpawnedObject {
 		//Read the data
 		object[] data = gameObject.GetPhotonView ().instantiationData;
 		
-		casterTransform = getCaster( (int) data[0] );
+		casterTransform = getPlayerByViewID( (int) data[0] );
 		setCasterName( casterTransform.name );
 
 		if( !GameManager.Instance.isCoopPlayMode() )
 		{
 			//Note: In coop, data length is 1. In competition, data length is 3.
-			Transform target = getCaster( (int) data[2] );
+			Transform target = getPlayerByViewID( (int) data[2] );
 
 			//We don't want the caster to be hit by the rock.
 			//However, the caster could be the target if the opponent had the Reflect card active.

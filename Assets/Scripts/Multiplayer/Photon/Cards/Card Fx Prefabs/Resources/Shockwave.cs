@@ -17,7 +17,7 @@ public class Shockwave : CardSpawnedObject {
 	{
 		object[] data = this.gameObject.GetPhotonView ().instantiationData;
 		int casterViewId = (int) data[0];
-		casterTransform = getCaster( casterViewId );
+		casterTransform = getPlayerByViewID( casterViewId );
 		casterName = casterTransform.name;
 
 		//Do a ripple effect on the minimap

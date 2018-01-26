@@ -53,7 +53,7 @@ public class Firewall : CardSpawnedObject {
 	{
 		object[] data = gameObject.GetPhotonView ().instantiationData;
 
-		casterTransform = getCaster( (int) data[0] );
+		casterTransform = getPlayerByViewID( (int) data[0] );
 		setCasterName( casterTransform.name );
 
 		float delayBeforeSpellExpires = (float) data[1];
