@@ -13,8 +13,10 @@ public class FreezeController : CardSpawnedObject {
 
 	[Header("Tap to break free")]
 	//if you tap quickly on the Stasis sphere, you can break free without waiting for the spell expires.
-	[SerializeField] ParticleSystem tapParticleSystem; //Put the stop action to Destroy
-	[SerializeField] AudioClip tapSound;
+	[SerializeField] ParticleSystem tapParticleSystem; //Set the stop action to Destroy on the particle system.
+	[Tooltip("Abc")]
+	[SerializeField] AudioClip tapSound; 
+	[SerializeField] AudioClip destroyedSound;
 	public int tapsDetected = 0;
 	public int tapsRequiredToBreakFreeze;
 	public bool isLocalPlayer = true;
@@ -110,8 +112,8 @@ public class FreezeController : CardSpawnedObject {
 
 				//isLocalPlayer is used by the code that allows a player to break out early by tapping on the ice.
 				//It is used to ensure that you can only tap on the ice the local player is trapped in.
-				//isLocalPlayer = ( affectedPlayerTransform.GetComponent<PhotonView>().isMine && affectedPlayerTransform.GetComponent<PlayerAI>() == null );
-				isLocalPlayer = true;
+				isLocalPlayer = ( affectedPlayerTransform.GetComponent<PhotonView>().isMine && affectedPlayerTransform.GetComponent<PlayerAI>() == null );
+
 				//If the player is affected by shrink, cancel it. The player will enlarge back to his normal size.
 				affectedPlayerTransform.GetComponent<PlayerSpell>().cancelShrinkSpell();
 
@@ -178,7 +180,7 @@ public class FreezeController : CardSpawnedObject {
 		affectedPlayerControl.enablePlayerMovement( true );
 		affectedPlayerControl.enablePlayerControl( true );
 		affectedPlayerTransform.GetComponent<PlayerSpell>().cardDurationExpired(CardName.Freeze);
-		Destroy( gameObject );
+		Destroy( gameObject, 3f );
 	}
 	#endregion
 
@@ -289,7 +291,6 @@ public class FreezeController : CardSpawnedObject {
 				{
 					tapsDetected++;
 					ParticleSystem ps = GameObject.Instantiate( tapParticleSystem, hit.point, Quaternion.identity );
-					GetComponent<AudioSource>().PlayOneShot( tapSound );
 					tapParticleSystem.Play();
 					GameObject iceShard = getRandomIceShard();
 					iceShard.transform.parent = null;
@@ -302,7 +303,13 @@ public class FreezeController : CardSpawnedObject {
 					if( tapsDetected == tapsRequiredToBreakFreeze )
 					{
 						ice.gameObject.SetActive( false );
+						iceShardsOwner.gameObject.SetActive( false );
+						GetComponent<AudioSource>().PlayOneShot( destroyedSound );
 						destroyIceImmediately();
+					}
+					else
+					{
+						GetComponent<AudioSource>().PlayOneShot( tapSound );
 					}
 				}
 			}
