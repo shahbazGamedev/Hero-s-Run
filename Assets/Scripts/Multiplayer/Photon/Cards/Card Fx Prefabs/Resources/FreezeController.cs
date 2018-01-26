@@ -141,9 +141,8 @@ public class FreezeController : CardSpawnedObject {
 		}
 	}
 
-	void breakOffIceShard()
+	void breakOffIceShard( GameObject iceShard )
 	{
-		GameObject iceShard = getRandomIceShard();
 		iceShard.transform.parent = null;
 		iceShard.GetComponent<Collider>().enabled = true;
 		iceShard.GetComponent<Rigidbody>().isKinematic = false; //This will make it break away and fall.
@@ -235,7 +234,7 @@ public class FreezeController : CardSpawnedObject {
 		//Ice shards.
 		//We have several cases to consider.
 		//Bots and zombies don't tap to break the ice. For them, play a final ice explosion animation.
-		//For players, we have 2 cases. If the player has tapped to break free, hide remaining shards.
+		//For players, we have 2 cases. If the player has tapped to break free, break off all remaining shards.
 		//If however the player did not tap to break free, then play the final ice explosion animation.
 		if( affectedTargetTransform.gameObject.CompareTag( "Player" ) )
 		{
@@ -248,6 +247,11 @@ public class FreezeController : CardSpawnedObject {
 				}
 				else
 				{
+					//Break off remaining shards automatically.
+					for( int i = 0; i < iceShardsList.Count; i++ )
+					{
+						breakOffIceShard( iceShardsList[i] );
+					}
 					iceShardsOwner.gameObject.SetActive( false );
 				}
 			}
@@ -383,7 +387,7 @@ public class FreezeController : CardSpawnedObject {
 				ParticleSystem ps = GameObject.Instantiate( tapParticleSystem, hit.point, Quaternion.identity );
 
 				//Break off an ice shard and change its material.
-				breakOffIceShard();
+				breakOffIceShard( getRandomIceShard() );
 
 				//We want the Ice object transparency to be 0.4 when tapsDetected is equal to tapsRequiredToBreakFreeze. This is so it looks nice.
 				//Freeze is a Rare card with 9 upgrade levels.
