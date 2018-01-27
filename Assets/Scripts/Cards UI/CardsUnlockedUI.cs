@@ -30,11 +30,8 @@ public class CardsUnlockedUI : MonoBehaviour {
 
 	void createUnlockedCards()
 	{
-		//Determine the player's current sector.
-		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getLevelData().getRaceTrackByTrophies();
-
 		//Get all the cards assigned to that sector and display them
-		List<CardManager.CardData> allCardsForSectorList = CardManager.Instance.getAllCardsForSector( multiplayerInfo.circuitInfo.sectorNumber );
+		List<CardManager.CardData> allCardsForSectorList = CardManager.Instance.getAllCardsForSector( GameManager.Instance.playerProfile.getCurrentSector() );
 		for( int i = 0; i < allCardsForSectorList.Count; i++ )
 		{
 			createUnlockedCard( allCardsForSectorList[i] );

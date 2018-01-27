@@ -32,35 +32,35 @@ public class LootBoxServerManager : MonoBehaviour {
 		}
 	}
 
-	public void requestLootBox( LootBoxType lootBoxType, int raceTrackLevel )
+	public void requestLootBox( LootBoxType lootBoxType, int sector )
 	{
 		Debug.Log( GameManager.Instance.playerProfile.getUserName() + " is requesting from the server a loot box of type " + lootBoxType );
 		string lootBoxJson = string.Empty;
 		switch (lootBoxType)
 		{
 			case LootBoxType.FREE:
-				lootBoxJson = getFreeLootBox( raceTrackLevel );
+				lootBoxJson = getFreeLootBox( sector );
 			break;
 			case LootBoxType.SHOP_GIANT:
-				lootBoxJson = getGiantLootBox( raceTrackLevel );
+				lootBoxJson = getGiantLootBox( sector );
 			break;
 			case LootBoxType.SHOP_SUPER_SIZED:
-				lootBoxJson = getSupersizedLootBox( raceTrackLevel );
+				lootBoxJson = getSupersizedLootBox( sector );
 			break;
 			case LootBoxType.SHOP_MEGA:
-				lootBoxJson = getMegaLootBox( raceTrackLevel );
+				lootBoxJson = getMegaLootBox( sector );
 			break;
 			case LootBoxType.BASE_UNLOCKED:
 			case LootBoxType.LEVEL_UP:
 			case LootBoxType.RACE_WON:
-				lootBoxJson = getCrownLootBox( raceTrackLevel );
+				lootBoxJson = getCrownLootBox( sector );
 			break;
 		}
 
 		LootBoxClientManager.Instance.lootBoxGranted( lootBoxJson );
 	}
 
-	string getFreeLootBox( int raceTrackLevel )
+	string getFreeLootBox( int sector )
 	{
 		LootBox lootBox = new LootBox();
 
@@ -76,14 +76,14 @@ public class LootBoxServerManager : MonoBehaviour {
 
 		loot = new LootBox.Loot();
 		loot.type = LootType.CARDS;
-		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, CardRarity.COMMON );
+		loot.cardName = CardManager.Instance.getRandomCard( sector, CardRarity.COMMON );
 		loot.quantity = 5;
 		lootBox.addLoot( loot );
 
 		loot = new LootBox.Loot();
 		loot.type = LootType.CARDS;
 		CardRarity rarity;
-		if( raceTrackLevel <= 3 )
+		if( sector <= 3 )
 		{
 			rarity = CardRarity.RARE;
 		}
@@ -91,7 +91,7 @@ public class LootBoxServerManager : MonoBehaviour {
 		{
 			rarity = CardRarity.EPIC;
 		}
-		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, rarity );
+		loot.cardName = CardManager.Instance.getRandomCard( sector, rarity );
 		loot.quantity = 1;
 		lootBox.addLoot( loot );
 
@@ -104,7 +104,7 @@ public class LootBoxServerManager : MonoBehaviour {
 	Giant chests can be purchased in the Shop and are the cheapest chest (not counting special offers).
 	The cost depends on the Arena the player is in. The higher the Arena, the more expensive it will be, though it will guarantee more cards in higher Arenas.
 	*/
-	string getGiantLootBox( int raceTrackLevel )
+	string getGiantLootBox( int sector )
 	{
 		LootBox lootBox = new LootBox();
 
@@ -115,14 +115,14 @@ public class LootBoxServerManager : MonoBehaviour {
 
 		loot = new LootBox.Loot();
 		loot.type = LootType.CARDS;
-		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, CardRarity.COMMON );
+		loot.cardName = CardManager.Instance.getRandomCard( sector, CardRarity.COMMON );
 		loot.quantity = 50;
 		lootBox.addLoot( loot );
 
 		loot = new LootBox.Loot();
 		loot.type = LootType.CARDS;
 		CardRarity rarity;
-		if( raceTrackLevel <= 3 )
+		if( sector <= 3 )
 		{
 			rarity = CardRarity.RARE;
 		}
@@ -130,7 +130,7 @@ public class LootBoxServerManager : MonoBehaviour {
 		{
 			rarity = CardRarity.EPIC;
 		}
-		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, rarity );
+		loot.cardName = CardManager.Instance.getRandomCard( sector, rarity );
 		loot.quantity = 1;
 		lootBox.addLoot( loot );
 
@@ -151,7 +151,7 @@ public class LootBoxServerManager : MonoBehaviour {
 		return lootBox.getJson();
 	}
 
-	string getSupersizedLootBox( int raceTrackLevel )
+	string getSupersizedLootBox( int sector )
 	{
 		LootBox lootBox = new LootBox();
 
@@ -162,14 +162,14 @@ public class LootBoxServerManager : MonoBehaviour {
 
 		loot = new LootBox.Loot();
 		loot.type = LootType.CARDS;
-		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, CardRarity.COMMON );
+		loot.cardName = CardManager.Instance.getRandomCard( sector, CardRarity.COMMON );
 		loot.quantity = 5;
 		lootBox.addLoot( loot );
 
 		loot = new LootBox.Loot();
 		loot.type = LootType.CARDS;
 		CardRarity rarity;
-		if( raceTrackLevel <= 3 )
+		if( sector <= 3 )
 		{
 			rarity = CardRarity.RARE;
 		}
@@ -177,7 +177,7 @@ public class LootBoxServerManager : MonoBehaviour {
 		{
 			rarity = CardRarity.EPIC;
 		}
-		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, rarity );
+		loot.cardName = CardManager.Instance.getRandomCard( sector, rarity );
 		loot.quantity = 1;
 		lootBox.addLoot( loot );
 
@@ -191,7 +191,7 @@ public class LootBoxServerManager : MonoBehaviour {
 		return lootBox.getJson();
 	}
 
-	string getMegaLootBox( int raceTrackLevel )
+	string getMegaLootBox( int sector )
 	{
 		LootBox lootBox = new LootBox();
 
@@ -202,14 +202,14 @@ public class LootBoxServerManager : MonoBehaviour {
 
 		loot = new LootBox.Loot();
 		loot.type = LootType.CARDS;
-		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, CardRarity.COMMON );
+		loot.cardName = CardManager.Instance.getRandomCard( sector, CardRarity.COMMON );
 		loot.quantity = 5;
 		lootBox.addLoot( loot );
 
 		loot = new LootBox.Loot();
 		loot.type = LootType.CARDS;
 		CardRarity rarity;
-		if( raceTrackLevel <= 3 )
+		if( sector <= 3 )
 		{
 			rarity = CardRarity.RARE;
 		}
@@ -217,7 +217,7 @@ public class LootBoxServerManager : MonoBehaviour {
 		{
 			rarity = CardRarity.EPIC;
 		}
-		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, rarity );
+		loot.cardName = CardManager.Instance.getRandomCard( sector, rarity );
 		loot.quantity = 1;
 		lootBox.addLoot( loot );
 
@@ -231,7 +231,7 @@ public class LootBoxServerManager : MonoBehaviour {
 		return lootBox.getJson();
 	}
 
-	string getCrownLootBox( int raceTrackLevel )
+	string getCrownLootBox( int sector )
 	{
 		LootBox lootBox = new LootBox();
 
@@ -247,14 +247,14 @@ public class LootBoxServerManager : MonoBehaviour {
 
 		loot = new LootBox.Loot();
 		loot.type = LootType.CARDS;
-		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, CardRarity.COMMON );
+		loot.cardName = CardManager.Instance.getRandomCard( sector, CardRarity.COMMON );
 		loot.quantity = 5;
 		lootBox.addLoot( loot );
 
 		loot = new LootBox.Loot();
 		loot.type = LootType.CARDS;
 		CardRarity rarity;
-		if( raceTrackLevel <= 3 )
+		if( sector <= 3 )
 		{
 			rarity = CardRarity.RARE;
 		}
@@ -262,7 +262,7 @@ public class LootBoxServerManager : MonoBehaviour {
 		{
 			rarity = CardRarity.EPIC;
 		}
-		loot.cardName = CardManager.Instance.getRandomCard( raceTrackLevel, rarity );
+		loot.cardName = CardManager.Instance.getRandomCard( sector, rarity );
 		loot.quantity = 1;
 		lootBox.addLoot( loot );
 

@@ -53,7 +53,8 @@ public class ChatMessageHandler {
 	#region Race Me
 	public void sendMatchRequestMessage ( string target )
 	{
-		string raceTrackName = LevelManager.Instance.getLevelData().getRaceTrackByTrophies().circuitInfo.raceTrackName;
+		//string raceTrackName = LevelManager.Instance.getLevelData().getRaceTrackByTrophies().circuitInfo.raceTrackName;
+		string raceTrackName = "BAD-needs to be fixed";
 		string roomName = GameManager.Instance.playerProfile.getUserName() + "_" + target;
 		int playerIcon = GameManager.Instance.playerProfile.getPlayerIconId();
 		int level = GameManager.Instance.playerProfile.getLevel();

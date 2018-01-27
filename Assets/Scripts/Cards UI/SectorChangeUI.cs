@@ -18,16 +18,14 @@ public class SectorChangeUI : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		//Determine the player's current sector.
-		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getLevelData().getRaceTrackByTrophies();
-
+		int currentSector = GameManager.Instance.playerProfile.getCurrentSector();
 		//Now that we know the sector, initialize the various UI elements.
- 		sectorNumberText.text = string.Format( LocalizationManager.Instance.getText( "SECTOR_NUMBER" ), multiplayerInfo.circuitInfo.sectorNumber );
-		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + multiplayerInfo.circuitInfo.sectorNumber.ToString() );
+ 		sectorNumberText.text = string.Format( LocalizationManager.Instance.getText( "SECTOR_NUMBER" ), currentSector );
+		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + currentSector.ToString() );
 		sectorNameText.text = sectorName;
-		trophiesNeededText.text = multiplayerInfo.trophiesNeededToUnlock.ToString() + "+";
-		sectorImage.sprite = multiplayerInfo.circuitInfo.circuitImage;
-		sectorBackground.color = multiplayerInfo.circuitInfo.backgroundColor;
+		trophiesNeededText.text = SectorManager.Instance.getTrophiesRequired( currentSector ).ToString() + "+";
+		sectorImage.sprite = SectorManager.Instance.getSectorImage( currentSector );
+		sectorBackground.color = SectorManager.Instance.getSectorColor( currentSector );;
 		newSectorRibbon.SetActive( PlayerRaceManager.Instance.sectorStatus == SectorStatus.WENT_UP_AND_NEW );
 		//Reset value
 		PlayerRaceManager.Instance.sectorStatus = SectorStatus.NO_CHANGE;

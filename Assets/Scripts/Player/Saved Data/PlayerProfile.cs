@@ -146,39 +146,41 @@ public sealed class PlayerProfile {
 		}
 		else
 		{
-			Debug.LogWarning("PlayerProfile-the number of trophies to change " + value + " is incorrect. It needs to be between " + (-TrophyManager.MAX_CHANGE_IN_TROPHIES) + " and " + TrophyManager.MAX_CHANGE_IN_TROPHIES.ToString() + ".");
+			Debug.LogWarning("PlayerProfile-the number of trophies to change " + value + " is incorrect. It needs to be between " + (-TrophyManager.MAX_CHANGE_IN_TROPHIES).ToString() + " and " + TrophyManager.MAX_CHANGE_IN_TROPHIES.ToString() + ".");
 		}
 	}
 
 	public void setNumberOfTrophies( int value )
 	{
-		//Verify if the player changed sector because of the change in trophies.
-		int highestTrophies = GameManager.Instance.playerStatistics.getStatisticData( StatisticDataType.HIGHEST_TROPHIES );
-		int highestSector = LevelManager.Instance.getLevelData().getRaceTrackByTrophies( highestTrophies ).circuitInfo.sectorNumber;
-		int previousSector = LevelManager.Instance.getLevelData().getRaceTrackByTrophies( numberOfTrophies ).circuitInfo.sectorNumber;
-		int newSector = LevelManager.Instance.getLevelData().getRaceTrackByTrophies( value ).circuitInfo.sectorNumber;
-
-		if( newSector > previousSector )
-		{
-			if( newSector > highestSector )
-			{
-				if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_UP_AND_NEW, previousSector, newSector );
-			}
-			else if( newSector <= highestSector )
-			{
-				if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_UP, previousSector, newSector );
-			}
-		}
-		else if( newSector < previousSector )
-		{
-			if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_DOWN, previousSector, newSector );
-		}
-
 		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Trophies_Changed, numberOfTrophies, value );
 
 		numberOfTrophies = value;
 		GameManager.Instance.playerStatistics.setHighestNumberOfTrophies( numberOfTrophies );
+		//Verify if the player changed sector because of the change in trophies.
+		verifyIfSectorChanged();
 		Debug.Log("PlayerProfile-setNumberOfTrophies to: " + value );
+	}
+
+	public void verifyIfSectorChanged()
+	{
+		int sectorAfterTrophyChange = SectorManager.Instance.getSectorByTrophies( numberOfTrophies );
+
+		if( sectorAfterTrophyChange > currentSector )
+		{
+			if( sectorAfterTrophyChange > highestSector )
+			{
+				if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_UP_AND_NEW, currentSector, sectorAfterTrophyChange );
+			}
+			else
+			{
+				if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_UP, currentSector, sectorAfterTrophyChange );
+			}
+		}
+		else if( sectorAfterTrophyChange < currentSector )
+		{
+			if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_DOWN, currentSector, sectorAfterTrophyChange );
+		}
+		setCurrentSector( sectorAfterTrophyChange );
 	}
 	#endregion
 
@@ -195,7 +197,6 @@ public sealed class PlayerProfile {
 
 		if( value > 0 && value <= SectorManager.MAX_SECTOR )
 		{
-			if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_DOWN, currentSector, value );
 			if( value > currentSector ) highestSector = value;
 			currentSector = value;
 			serializePlayerprofile();

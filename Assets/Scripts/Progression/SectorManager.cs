@@ -8,6 +8,7 @@ public class SectorManager : MonoBehaviour {
 	public const int MAX_SECTOR = 4;
 	public const int DEFAULT_TROPHY_DELTA = 299;
 	[SerializeField] List<int> trophiesRequiredPerSector = new List<int>(MAX_SECTOR);
+	[SerializeField] Sprite genericSectorImage;
 
 	void Awake ()
 	{
@@ -74,8 +75,43 @@ public class SectorManager : MonoBehaviour {
 		}
 	}
 	
-	public void updateSector( int numberOfTrophies )
+	public int getTrophiesRequired( int sector )
 	{
-
+		if( sector < 0 || sector > MAX_SECTOR )
+		{
+			Debug.LogError("PlayerProfile-the sector specified " + sector + " is incorrect. It needs to be between 0 and " + SectorManager.MAX_SECTOR.ToString() + ".");
+			return -1;
+		}
+		else
+		{
+			return trophiesRequiredPerSector[sector];
+		}
 	}
+
+	public Sprite getSectorImage( int sector )
+	{
+		if( sector < 0 || sector > MAX_SECTOR )
+		{
+			Debug.LogError("PlayerProfile-the sector specified " + sector + " is incorrect. It needs to be between 0 and " + SectorManager.MAX_SECTOR.ToString() + ".");
+			return null;
+		}
+		else
+		{
+			return genericSectorImage;
+		}
+	}
+
+	public Color getSectorColor( int sector )
+	{
+		if( sector < 0 || sector > MAX_SECTOR )
+		{
+			Debug.LogError("PlayerProfile-the sector specified " + sector + " is incorrect. It needs to be between 0 and " + SectorManager.MAX_SECTOR.ToString() + ".");
+			return Color.red;
+		}
+		else
+		{
+			return Color.blue;
+		}
+	}
+
 }

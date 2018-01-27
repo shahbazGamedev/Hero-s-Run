@@ -485,58 +485,6 @@ public class LevelData : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Gets the appropriate multiplayer info based on the number of trophies the player has.
-	/// </summary>
-	/// <returns>The multiplayer info based on the number of trophies the player has.</returns>
-	public MultiplayerInfo getRaceTrackByTrophies()
-	{
-		return getRaceTrackByTrophies( GameManager.Instance.playerProfile.getTrophies() );
-	}
-
-	/// <summary>
-	/// Gets the appropriate multiplayer info based on the number of trophies specified.
-	/// If the tutorial has not been completed, it will return the tutorial track.
-	/// Race track 0 is the tutorial.
-	/// Race Track 1 is unlocked upon completing the tutorial.
-	/// 400 Trophy unlocks Race Track 2.
-	/// 800 Trophy unlocks Race Track 3.
-	/// 1,200 Trophy unlocks Race Track 4.
-	/// 1,600 Trophy unlocks Race Track 5.
-	/// 2,000 Trophy unlocks Race Track 6.
-	/// </summary>
-	/// <returns>The appropriate multiplayer info based on the number of trophies specified</returns>
-	/// <param name="numberOfTrophies">Number of trophies.</param>
-	public MultiplayerInfo getRaceTrackByTrophies( int numberOfTrophies )
-	{
-		if( numberOfTrophies < 0 )
-		{
-			Debug.LogError("LevelData-getRaceTrackByTrophies: The number of trophies must be greater than 0." );
-			return null;
-		}
-		MultiplayerInfo multiplayerInfo = null;
-		if( !GameManager.Instance.playerProfile.hasCompletedTutorial() )
-		{
-			multiplayerInfo = multiplayerList[0];
-		}
-		else
-		{
-			List<MultiplayerInfo> firstElement = new List<MultiplayerInfo>();
-			firstElement.Add( multiplayerList[0] ); //exclude the tutorial track
-			var sortedList = multiplayerList.Except(firstElement).OrderByDescending( entry => entry.trophiesNeededToUnlock );
-			foreach( MultiplayerInfo mi in sortedList )
-			{
-				if( numberOfTrophies >= mi.trophiesNeededToUnlock )
-				{
-					multiplayerInfo = mi;
-					//print( "getRaceTrackByTrophies-the one we want is " + mi.circuitInfo.raceTrackName + " " + mi.trophiesNeededToUnlock + " needed: " + numberOfTrophies );
-					break;
-				}
-			}
-		}
-		return multiplayerInfo;
-	}
-
-	/// <summary>
 	/// Gets the sorted race track list. It is sorted in ascending order based on the number of trophies required.
 	/// </summary>
 	/// <returns>The sorted race track list.</returns>
@@ -546,13 +494,12 @@ public class LevelData : MonoBehaviour {
 		if( excludeCoop )
 		{
 			//Return only non-coop tracks.
-			List<MultiplayerInfo> coopList = multiplayerList.FindAll( entry => entry.isCoop == false ).ToList();
-			return coopList.OrderBy( entry => entry.trophiesNeededToUnlock ).ToList();
+			return multiplayerList.FindAll( entry => entry.isCoop == false ).ToList();
 		}
 		else
 		{
 			//Return all tracks, including coop tracks.
-			return multiplayerList.OrderBy( entry => entry.trophiesNeededToUnlock ).ToList();
+			return multiplayerList;
 		}
 	}
 
@@ -596,8 +543,6 @@ public class LevelData : MonoBehaviour {
 		public float rainChance;
 		[Tooltip("The rain clip will use the main ambience audio source.")]
 		public AudioClip rainAudio;
-		[Tooltip("Trophies needed to unlock race track.")]
-		public int trophiesNeededToUnlock;
 		[Tooltip("Coins awarded on victory. This number varies per track.")]
 		public int coinsAwardedOnVictory;
 		[Tooltip("Set to true if this level is for the coop mode.")]

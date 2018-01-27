@@ -137,8 +137,7 @@ public class PlayerRaceManager {
 			GameManager.Instance.playerProfile.incrementConsecutiveWins();
 
 			//Grant victor a loot box
-			int currentSector = LevelManager.Instance.getLevelData().getRaceTrackByTrophies().circuitInfo.sectorNumber;
-			GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.RACE_WON, currentSector, LootBoxState.READY_TO_UNLOCK ) );
+			GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.RACE_WON, GameManager.Instance.playerProfile.getCurrentSector(), LootBoxState.READY_TO_UNLOCK ) );
 		}
 		else
 		{
@@ -176,8 +175,8 @@ public class PlayerRaceManager {
 		if( TrophyManager.Instance.canEarnTrophies() )
 		{
 			// trophiesLost will be negative.
-			// Assume you are in 3rd position if you abandon a race.
-			int trophiesLost = TrophyManager.Instance.getTrophiesEarned( 3, GameManager.Instance.playerProfile.getCurrentSector(), GameManager.Instance.playerProfile.getTrophies(), trophiesOwnedByOpponent1 );
+			// Assume you are in 2nd position if you abandon a race.
+			int trophiesLost = TrophyManager.Instance.getTrophiesEarned( 2, GameManager.Instance.playerProfile.getCurrentSector(), GameManager.Instance.playerProfile.getTrophies(), trophiesOwnedByOpponent1 );
 			GameManager.Instance.playerProfile.changeTrophies( trophiesLost );
 			GameManager.Instance.playerProfile.serializePlayerprofile();
 			Debug.Log("PlayerRaceManager-playerAbandonedRace: trophies lost " + trophiesLost );
