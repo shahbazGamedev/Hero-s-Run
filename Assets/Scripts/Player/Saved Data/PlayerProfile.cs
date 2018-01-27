@@ -8,8 +8,7 @@ public enum PlayerProfileEvent {
 	Player_Icon_Changed = 1,
 	XP_Changed = 2,
 	User_Name_Changed = 3,
-	Trophies_Changed = 4,
-	Sector_Changed = 5
+	Trophies_Changed = 4
 }
 
 public enum SectorStatus {
@@ -196,7 +195,7 @@ public sealed class PlayerProfile {
 
 		if( value > 0 && value <= SectorManager.MAX_SECTOR )
 		{
-			if( sectorChanged != null ) sectorChanged( PlayerProfileEvent.Sector_Changed, currentSector, value );
+			if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_DOWN, currentSector, value );
 			if( value > currentSector ) highestSector = value;
 			currentSector = value;
 			serializePlayerprofile();
@@ -204,7 +203,7 @@ public sealed class PlayerProfile {
 		}
 		else
 		{
-			Debug.LogWarning("PlayerProfile-the sector specified " + value + " is incorrect. It needs to be between 1 and " + SectorManager.MAX_SECTOR.ToString() + ".");
+			Debug.LogError("PlayerProfile-the sector specified " + value + " is incorrect. It needs to be between 1 and " + SectorManager.MAX_SECTOR.ToString() + ".");
 		}
 	}
 

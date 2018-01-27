@@ -149,7 +149,7 @@ public class PlayerRaceManager {
 		if( TrophyManager.Instance.canEarnTrophies() )
 		{
 			//Note: trophiesEarnedLastRace will be negative if the player lost.
-			int trophiesEarnedLastRace = TrophyManager.Instance.getTrophiesEarned( GameManager.Instance.getPlayMode(), racePosition, GameManager.Instance.playerProfile.getTrophies(), trophiesOwnedByOpponent1 );
+			int trophiesEarnedLastRace = TrophyManager.Instance.getTrophiesEarned( racePosition, GameManager.Instance.playerProfile.getCurrentSector(), GameManager.Instance.playerProfile.getTrophies(), trophiesOwnedByOpponent1 );
 			//Store this value temporarily in player profile so the GameEndManager can retrieve it.
 			GameManager.Instance.playerProfile.setTrophiesEarnedLastRace( trophiesEarnedLastRace );
 			GameManager.Instance.playerProfile.changeTrophies( trophiesEarnedLastRace );
@@ -177,7 +177,7 @@ public class PlayerRaceManager {
 		{
 			// trophiesLost will be negative.
 			// Assume you are in 3rd position if you abandon a race.
-			int trophiesLost = TrophyManager.Instance.getTrophiesEarned( GameManager.Instance.getPlayMode(), 3, GameManager.Instance.playerProfile.getTrophies(), trophiesOwnedByOpponent1 );
+			int trophiesLost = TrophyManager.Instance.getTrophiesEarned( 3, GameManager.Instance.playerProfile.getCurrentSector(), GameManager.Instance.playerProfile.getTrophies(), trophiesOwnedByOpponent1 );
 			GameManager.Instance.playerProfile.changeTrophies( trophiesLost );
 			GameManager.Instance.playerProfile.serializePlayerprofile();
 			Debug.Log("PlayerRaceManager-playerAbandonedRace: trophies lost " + trophiesLost );
