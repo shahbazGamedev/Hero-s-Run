@@ -276,8 +276,11 @@ public class PlayerControl : Photon.PunBehaviour {
 		backInTheGameString = LocalizationManager.Instance.getText( "MINIMAP_BACK_IN_GAME" );
 
 		#region Skill Bonuses
-		doubleKillEventCounter = gameObject.AddComponent<SkillBonusEventCounter>();
-		doubleKillEventCounter.initialize( "SKILL_BONUS_DOUBLE_KILL", 50, 2, 5f );
+		if( !GameManager.Instance.isCoopPlayMode() )
+		{
+			doubleKillEventCounter = gameObject.AddComponent<SkillBonusEventCounter>();
+			doubleKillEventCounter.initialize( "SKILL_BONUS_DOUBLE_KILL", 50, 2, 5f );
+		}
 		#endregion
 
 		//The character is in idle while waiting to run. 
@@ -1661,7 +1664,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	//Skill bonus tracking
 	public void incrementKillCounter()
 	{
-		if ( photonView.isMine ) doubleKillEventCounter.incrementCounter();
+		if ( photonView.isMine && !GameManager.Instance.isCoopPlayMode() ) doubleKillEventCounter.incrementCounter();
 	}
 
 	[PunRPC]

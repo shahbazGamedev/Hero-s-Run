@@ -8,7 +8,8 @@ public enum PlayerProfileEvent {
 	Player_Icon_Changed = 1,
 	XP_Changed = 2,
 	User_Name_Changed = 3,
-	Trophies_Changed = 4
+	Trophies_Changed = 4,
+	Sector_Changed = 5
 }
 
 public enum SectorStatus {
@@ -52,6 +53,13 @@ public sealed class PlayerProfile {
  	//Not serialized. trophiesEarnedOrLost is set by PlayerRaceManager in the Level scene, but must be read by GameEndManager in the Matchmaking Scene.
 	private int trophiesEarnedLastRace = 0;
 
+	#region Sector 
+	[SerializeField] int currentSector = 0; 	//Current sector. A new player starts off in sector 0. Between 0 and SectorManager.MAX_SECTOR
+	[SerializeField] int highestSector = 0; 	//Highest sector unlocked. Between 0 and SectorManager.MAX_SECTOR
+	public delegate void SectorChanged( SectorStatus sectorChanged, int previousSector, int newSector );
+	public static event SectorChanged sectorChanged;
+	#endregion
+
 	//Skill points are obtained during a race and awarded as an XP bonus when the race is completed.
 	//Therefore there is no need to serialize since they get added to the player's XP total.
 	[System.NonSerialized] int skillBonus = 0;
@@ -60,8 +68,6 @@ public sealed class PlayerProfile {
 	public delegate void PlayerProfileChanged( PlayerProfileEvent eventType, int previousValue = 0, int newValue = 0 );
 	public static event PlayerProfileChanged playerProfileChanged;
 
-	public delegate void SectorChanged( SectorStatus sectorChanged, int previousSector, int newSector );
-	public static event SectorChanged sectorChanged;
 
 	#region User Name
 	public string getUserName()
@@ -174,6 +180,37 @@ public sealed class PlayerProfile {
 		numberOfTrophies = value;
 		GameManager.Instance.playerStatistics.setHighestNumberOfTrophies( numberOfTrophies );
 		Debug.Log("PlayerProfile-setNumberOfTrophies to: " + value );
+	}
+	#endregion
+
+	#region Sector
+	public int getCurrentSector()
+	{
+		return currentSector;
+	}
+
+	void setCurrentSector( int value )
+	{
+		//Ignore if the sector has not changed.
+		if( value == currentSector ) return;
+
+		if( value > 0 && value <= SectorManager.MAX_SECTOR )
+		{
+			if( sectorChanged != null ) sectorChanged( PlayerProfileEvent.Sector_Changed, currentSector, value );
+			if( value > currentSector ) highestSector = value;
+			currentSector = value;
+			serializePlayerprofile();
+			Debug.Log("PlayerProfile-setting current sector to: " + value );
+		}
+		else
+		{
+			Debug.LogWarning("PlayerProfile-the sector specified " + value + " is incorrect. It needs to be between 1 and " + SectorManager.MAX_SECTOR.ToString() + ".");
+		}
+	}
+
+	public int getHighestSector()
+	{
+		return highestSector;
 	}
 	#endregion
 
