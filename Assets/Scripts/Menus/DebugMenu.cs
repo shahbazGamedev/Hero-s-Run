@@ -19,6 +19,7 @@ public class DebugMenu : MonoBehaviour {
 	[SerializeField] Text speedOverrideMultiplierText;
 	[SerializeField] Slider trophyOverrideMultiplierSlider;
 	[SerializeField] Text trophyOverrideMultiplierText;
+	[SerializeField] Text trophyOverrideSectorText;
 	[SerializeField] Dropdown regionOverrideDropdown;
 	[SerializeField] Dropdown sectorOverrideDropdown;
 
@@ -34,6 +35,7 @@ public class DebugMenu : MonoBehaviour {
 		numberOfTrophies = GameManager.Instance.playerProfile.getTrophies();
 		trophyOverrideMultiplierSlider.value = numberOfTrophies;
 		trophyOverrideMultiplierText.text = numberOfTrophies.ToString("N0");
+		trophyOverrideSectorText.text = SectorManager.Instance.getSectorByTrophies( numberOfTrophies ).ToString("N0");
 
 		if( LevelManager.Instance.getOnlyUseUniqueTiles() )
 		{
@@ -83,6 +85,8 @@ public class DebugMenu : MonoBehaviour {
 	{
 		numberOfTrophies = (int) slider.value;
 		trophyOverrideMultiplierText.text = numberOfTrophies.ToString("N0");
+		trophyOverrideSectorText.text = SectorManager.Instance.getSectorByTrophies( numberOfTrophies ).ToString("N0");
+		GameManager.Instance.playerProfile.setNumberOfTrophies( numberOfTrophies );
 	}
 
 	void OnSceneUnloaded ( Scene scene )
@@ -91,7 +95,6 @@ public class DebugMenu : MonoBehaviour {
 		if( scene.buildIndex == (int) GameScenes.Options )
 		{
 			//Set and save the number of trophies since it may have been changed.
-			GameManager.Instance.playerProfile.setNumberOfTrophies( numberOfTrophies );
 			GameManager.Instance.playerDebugConfiguration.serializeDebugConfiguration( false );
 			GameManager.Instance.playerProfile.serializePlayerprofile();
 		}

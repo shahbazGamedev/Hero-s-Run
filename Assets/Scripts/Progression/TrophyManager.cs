@@ -44,7 +44,7 @@ public class TrophyManager : MonoBehaviour {
 			DontDestroyOnLoad(gameObject);
 			Instance = this;
 
-			print( "***" );
+			/*print( "***" );
 			print( "Sector 0 0 getTrophiesEarned " + getTrophiesEarned( 3, 0, 100, 100 ) );
 
 			//Player won
@@ -65,7 +65,7 @@ public class TrophyManager : MonoBehaviour {
 			//Player lost
 			print( "lost sector 2 same -30 getTrophiesEarned " + getTrophiesEarned( 2, 3, 600, 600 ) );	//Same
 			print( "lost sector 2 max -45 getTrophiesEarned " + getTrophiesEarned( 2, 3, 800, 401 ) );	//Player has more Max
-			print( "lost sector 2 min -15 getTrophiesEarned " + getTrophiesEarned( 2, 3, 401, 800 ) );	//Opponent has more max
+			print( "lost sector 2 min -15 getTrophiesEarned " + getTrophiesEarned( 2, 3, 401, 800 ) );	//Opponent has more max*/
 
 		}
 	}

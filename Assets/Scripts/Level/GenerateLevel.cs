@@ -75,6 +75,8 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		//The activity indicator may have been started
 		Handheld.StopActivityIndicator();
 
+		levelData = LevelManager.Instance.getLevelData();
+
 		//In order to configure the zombie waves, a Tile Holder game object containing the entire zombie map exists in the Level scene.
 		//We do not need it during runtime. This is just used for editing purposes.
 		//Delete this object if it exists to save memory.
@@ -98,12 +100,22 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			{
 				Debug.Log("customRoomProperties does not contain the key Seed " + PhotonNetwork.room.Name );
 			}
+			if( customRoomProperties.ContainsKey("Track") )
+			{
+				string raceTrackName = PhotonNetwork.room.CustomProperties["Track"].ToString();
+				Debug.Log("GenerateLevel Awake Track " + raceTrackName );
+				LevelData.MultiplayerInfo mi = levelData.getMultiplayerInfoByRaceTrackName( raceTrackName );
+				LevelManager.Instance.setSelectedCircuit( mi );
+			}
+			else
+			{
+				Debug.Log("customRoomProperties does not contain the key Track " + PhotonNetwork.room.Name );
+			}
 		}
 		else
 		{
 			Debug.Log("customRoomProperties is null" );
 		}
-		levelData = LevelManager.Instance.getLevelData();
 
 		if( GameManager.Instance.isMultiplayer() )
 		{

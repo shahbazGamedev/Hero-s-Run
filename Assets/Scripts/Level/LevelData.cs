@@ -444,6 +444,19 @@ public class LevelData : MonoBehaviour {
 		}
 	}
 
+	public MultiplayerInfo getMultiplayerInfoByRaceTrackName( string raceTrackName )
+	{
+		for( int i = 0; i < multiplayerList.Count; i++ )
+		{
+			if( multiplayerList[i].circuitInfo.raceTrackName == raceTrackName )
+			{
+				//Found it.
+				return multiplayerList[i];
+			}
+		}
+		return null;
+	}
+
 	/// <summary>
 	/// Gets a random coop level.
 	/// For testing, use the override in the debug menu to specify which sector you want to play in.

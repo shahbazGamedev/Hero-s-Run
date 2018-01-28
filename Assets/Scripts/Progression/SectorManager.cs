@@ -20,7 +20,7 @@ public class SectorManager : MonoBehaviour {
 		{
 			DontDestroyOnLoad(gameObject);
 			Instance = this;
-			print(" 0 getSectorByTrophies 0:   " + getSectorByTrophies( 0 ) );
+			/*print(" 0 getSectorByTrophies 0:   " + getSectorByTrophies( 0 ) );
 			print(" 1 getSectorByTrophies 1:   " + getSectorByTrophies( 1 ) );
 			print(" 1 getSectorByTrophies 100:   " + getSectorByTrophies( 100 ) );
 			print(" 1 getSectorByTrophies 400:   " + getSectorByTrophies( 400 ) );
@@ -40,7 +40,7 @@ public class SectorManager : MonoBehaviour {
 			print(" 2 getTrophyRange 2:   " + getTrophyRange( 2 ) );
 			print(" 3 getTrophyRange 3:   " + getTrophyRange( 3 ) );
 			print(" 4 getTrophyRange 4:   " + getTrophyRange( 4 ) );
-			print(" Error 5 getTrophyRange 5:   " + getTrophyRange( 5 ) );
+			print(" Error 5 getTrophyRange 5:   " + getTrophyRange( 5 ) );*/
 		}
 	}
 

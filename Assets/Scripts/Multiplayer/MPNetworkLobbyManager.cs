@@ -170,15 +170,13 @@ public class MPNetworkLobbyManager : PunBehaviour
 			}
 			else
 			{
+				int currentSector = GameManager.Instance.playerProfile.getCurrentSector();
 				LevelData.CircuitInfo selectedCircuit = LevelManager.Instance.getSelectedCircuit().circuitInfo;
 				//Join the selected circuit such as CIRUIT_PRACTICE_RUN.
-				Debug.Log("MPNetworkLobbyManager-tryToJoinRoom-The circuit selected by the player is: " + selectedCircuit.raceTrackName );
-		
-				//In addition, join a match that corresponds to the player's elo rating.
-				int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
+				Debug.Log("MPNetworkLobbyManager-tryToJoinRoom-The circuit selected by the player is: " + selectedCircuit.raceTrackName + " for Sector " + currentSector );
 		
 				//Try to join an existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
-				ExitGames.Client.Photon.Hashtable desiredRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", selectedCircuit.raceTrackName }, { "Elo", playerEloRating } };
+				ExitGames.Client.Photon.Hashtable desiredRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Sector", currentSector } };
 				PhotonNetwork.JoinRandomRoom( desiredRoomProperties, LevelManager.Instance.getNumberOfPlayersRequired() );
 			}
 		}
@@ -246,21 +244,20 @@ public class MPNetworkLobbyManager : PunBehaviour
 	 
 	public override void OnPhotonRandomJoinFailed (object[] codeAndMsg)
 	{
-	    Debug.Log("MPNetworkLobbyManager:OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one.");
+		int currentSector = GameManager.Instance.playerProfile.getCurrentSector();
+	    Debug.Log("MPNetworkLobbyManager:OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one. " + LevelManager.Instance.getSelectedCircuit().circuitInfo.raceTrackName + " for sector " + currentSector );
 	    //We failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
-		int playerEloRating = ProgressionManager.Instance.getEloRating( GameManager.Instance.playerProfile.getLevel() );
 		//In multiplayer games, we want all the players to have the same results when using the random generator. This is why we seed it.
 		//The seed is set by the master when the room is created.
 		RoomOptions roomOptions = new RoomOptions();
 		int randomSeed = Random.Range( 0, 777777 );
 		Debug.Log("Matchmaking randomSeed " + randomSeed );
-		roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", LevelManager.Instance.getSelectedCircuit().circuitInfo.raceTrackName }, { "Elo", playerEloRating }, { "Seed", randomSeed } };
+		roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", LevelManager.Instance.getSelectedCircuit().circuitInfo.raceTrackName }, { "Sector", currentSector }, { "Seed", randomSeed } };
 		roomOptions.MaxPlayers = LevelManager.Instance.getNumberOfPlayersRequired();
 		//Mandatory - you must also set customRoomPropertiesForLobby
 		//With customRoomPropertiesForLobby, you define which key-values are relevant for matchmaking.
-		string[] customRoomPropertiesForLobbyStringArray = new string[2];
-		customRoomPropertiesForLobbyStringArray[0] = "Track";
-		customRoomPropertiesForLobbyStringArray[1] = "Elo";
+		string[] customRoomPropertiesForLobbyStringArray = new string[1];
+		customRoomPropertiesForLobbyStringArray[0] = "Sector";
 		roomOptions.CustomRoomPropertiesForLobby = customRoomPropertiesForLobbyStringArray;
 		//In CreateRoom, do not specify a match name. Let the server assign a random name.
 	    PhotonNetwork.CreateRoom(null, roomOptions, TypedLobby.Default);
