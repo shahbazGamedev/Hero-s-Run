@@ -116,7 +116,13 @@ public class MatchmakingManager : MonoBehaviour {
 			{
 				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomCoopLevel() );
 			}
-			configureCircuitData( LevelManager.Instance.getSelectedCircuit().circuitInfo );
+
+			if( !GameManager.Instance.isOnlinePlayMode() || GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
+			{
+				//Only configure the circuit/map image and title and etc. when offline or when you are inviting a friend to a match.
+				//For online competition matches, the circuit/map image and title and etc. will get updated when a remote player connects.
+				configureCircuitData( LevelManager.Instance.getSelectedCircuit().circuitInfo );
+			}
 			endOfGameCanvas.SetActive( false );
 		}
 	}
@@ -240,6 +246,7 @@ public class MatchmakingManager : MonoBehaviour {
 	{
 		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + circuitInfo.sectorNumber.ToString() );
 		circuitName.text = sectorName;
+		circuitImage.color = Color.white;
 		circuitImage.sprite = circuitInfo.circuitImage;
 		backgroundImage.color = circuitInfo.backgroundColor;
 		enablePlayButton( true );
@@ -305,6 +312,11 @@ public class MatchmakingManager : MonoBehaviour {
 			yield return new WaitForSeconds(0);
 			SceneManager.LoadScene( (int)value );
 		}
+	}
+
+	public void hidePlayButton()
+	{
+		playButton.gameObject.SetActive( false );
 	}
 
 	public void enablePlayButton( bool enable )
