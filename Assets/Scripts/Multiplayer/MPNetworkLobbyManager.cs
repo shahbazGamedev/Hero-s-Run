@@ -17,7 +17,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	ExitGames.Client.Photon.Hashtable playerCustomProperties = new ExitGames.Client.Photon.Hashtable();
 	//The delay to wait before loading the level. We have this delay so that the player can see the opponent's name and icon for
 	//a few seconds before the match begins.
-	const float DELAY_BEFORE_LOADING_LEVEL = 1.5f;
+	const float DELAY_BEFORE_LOADING_LEVEL = 1.75f;
 	const float DELAY_BEFORE_DISPLAY_BOT = 1.5f;
 	HUDMultiplayer hudMultiplayer;
 	bool connecting = false; //true if the player pressed the Play button (which calls startMatch). This bool is to prevent rejoining a room automatically after a race.
@@ -368,8 +368,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 	{
 		numberRemotePlayerConnected++;
 		matchmakingManager.enableExitButton( false );
-		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + LevelManager.Instance.getSelectedCircuit().circuitInfo.sectorNumber.ToString() );
-		matchmakingManager.setConnectionProgress( "Traveling to " + sectorName + " ..." ); 
 		matchmakingManager.setRemotePlayerData( numberRemotePlayerConnected, player.NickName, (int)player.CustomProperties["Level"], (int)player.CustomProperties["Icon"] );
 		PlayerRaceManager.Instance.setTrophiesOwnedByOpponent( numberRemotePlayerConnected, (int)player.CustomProperties["Trophies"] );
 		PlayerFriends.FriendData playerData = new PlayerFriends.FriendData( player.NickName, (int)player.CustomProperties["Icon"], (int)player.CustomProperties["Level"], (int)player.CustomProperties["WinStreak"] );		
@@ -396,8 +394,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	void displayBotInfo()
 	{
 		matchmakingManager.enableExitButton( false );
-		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + LevelManager.Instance.getSelectedCircuit().circuitInfo.sectorNumber.ToString() );
-		matchmakingManager.setConnectionProgress( "Traveling to " + sectorName + " ..." );
+		setTravelingConnectionProgress( LevelManager.Instance.getSelectedCircuit().circuitInfo );
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
 		matchmakingManager.setRemotePlayerData( 1, botHero.userName, botHero.level, botHero.playerIcon );
 		PlayerMatchData pmd = new PlayerMatchData( botHero.userName, botHero.playerIcon, botHero.level, 0 );
@@ -408,8 +405,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	void displayBotsInfoPart1()
 	{
 		matchmakingManager.enableExitButton( false );
-		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + LevelManager.Instance.getSelectedCircuit().circuitInfo.sectorNumber.ToString() );
-		matchmakingManager.setConnectionProgress( "Traveling to " + sectorName + " ..." );
+		setTravelingConnectionProgress( LevelManager.Instance.getSelectedCircuit().circuitInfo );
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
 		matchmakingManager.setRemotePlayerData( 1, botHero.userName, botHero.level, botHero.playerIcon );
 		PlayerMatchData pmd = new PlayerMatchData( botHero.userName, botHero.playerIcon, botHero.level, 0 );
@@ -463,6 +459,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 				string raceTrackName = PhotonNetwork.room.CustomProperties["Track"].ToString();
 				Debug.Log("MPNetworkLobbyManager displayMap Track " + raceTrackName );
 				LevelData.MultiplayerInfo mi = LevelManager.Instance.getLevelData().getMultiplayerInfoByRaceTrackName( raceTrackName );
+				setTravelingConnectionProgress( mi.circuitInfo );
 				matchmakingManager.configureCircuitData( mi.circuitInfo );
 				matchmakingManager.hidePlayButton();
 			}
@@ -477,6 +474,13 @@ public class MPNetworkLobbyManager : PunBehaviour
 		}
 	}
  
+	void setTravelingConnectionProgress( LevelData.CircuitInfo circuitInfo )
+	{
+		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + circuitInfo.sectorNumber.ToString() );
+		string travelingTo = string.Format( LocalizationManager.Instance.getText( "MULTI_TRAVELING_TO" ), sectorName );
+		matchmakingManager.setConnectionProgress( travelingTo  ); 
+	}
+
 	void loadLevel()
 	{
 		PhotonNetwork.LoadLevel("Level");
