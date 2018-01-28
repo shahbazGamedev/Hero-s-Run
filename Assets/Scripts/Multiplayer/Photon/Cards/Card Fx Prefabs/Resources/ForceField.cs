@@ -22,6 +22,14 @@ public class ForceField : CardSpawnedObject {
 		object[] data = gameObject.GetPhotonView ().instantiationData;
 		
 		casterTransform = getPlayerByViewID( (int) data[0] );
+		if( casterTransform == null )
+		{
+			Debug.LogError("ForceField-activateCard error casterTransform is null for " + name );
+		}
+		else
+		{
+			Debug.Log("ForceField-activateCard casterTransform name is " + casterTransform + " for " + name );
+		}
 		setCasterName( casterTransform.name );
 
 		//Destroy the force field when it expires
@@ -89,6 +97,14 @@ public class ForceField : CardSpawnedObject {
 			{
 				if( other.name != casterName )
 				{
+					if( casterTransform == null )
+					{
+						Debug.LogError("ForceField-OnTriggerEnter error casterTransform is null for " + name );
+					}
+					else
+					{
+						Debug.Log("ForceField-OnTriggerEnter casterTransform name is " + casterTransform + " for " + name );
+					}
 					addSkillBonus( 25, "SKILL_BONUS_FORCE_FIELD" );
 					//Player ran into force field. He falls backwards.
 					other.GetComponent<PlayerControl>().killPlayer( DeathType.Obstacle );
