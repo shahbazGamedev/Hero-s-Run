@@ -556,8 +556,6 @@ public class LevelData : MonoBehaviour {
 		public float rainChance;
 		[Tooltip("The rain clip will use the main ambience audio source.")]
 		public AudioClip rainAudio;
-		[Tooltip("Coins awarded on victory. This number varies per track.")]
-		public int coinsAwardedOnVictory;
 		[Tooltip("Set to true if this level is for the coop mode.")]
 		public bool isCoop = false;
 		

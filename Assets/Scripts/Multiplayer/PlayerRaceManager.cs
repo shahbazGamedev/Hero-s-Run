@@ -139,8 +139,8 @@ public class PlayerRaceManager {
 			//The victor is given coins but only in certain play modes.
 			if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOnePlayer || GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoPlayers )
 			{
-				int coinsAwardedOnVictory = LevelManager.Instance.getSelectedCircuit().coinsAwardedOnVictory;
-				GameManager.Instance.playerInventory.addCoins( coinsAwardedOnVictory );
+				int softCurrencyAwardedOnVictory = SectorManager.Instance.getSectorVictorySoftCurrency( GameManager.Instance.playerProfile.getCurrentSector() );
+				GameManager.Instance.playerInventory.addCoins( softCurrencyAwardedOnVictory );
 			}
 			//For rate this app
 			GameManager.Instance.playerProfile.incrementConsecutiveWins();

@@ -44,11 +44,11 @@ public class SectorManager : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Returns the sector (between 0 and MAX_SECTOR) based on the number of trophies.
-	/// Returns 0 if the number of trophies is 0.
+	/// Returns the sector (between 0 and MAX_SECTOR) based on the number of competitive points.
+	/// Returns 0 if the number of competitive points is 0.
 	/// </summary>
-	/// <returns>The sector based on the number of trophies.</returns>
-	/// <param name="numberOfTrophies">Number of trophies.</param>
+	/// <returns>The sector based on the number of points.</returns>
+	/// <param name="competitivePoints">Number of competitive points.</param>
 	public int getSectorByPoints( int competitivePoints )
 	{
 		if( competitivePoints == 0 ) return 0;
@@ -113,10 +113,24 @@ public class SectorManager : MonoBehaviour {
 		}
 	}
 
+	public int getSectorVictorySoftCurrency( int sector )
+	{
+		if( sector < 0 || sector > MAX_SECTOR )
+		{
+			Debug.LogError("PlayerProfile-the sector specified " + sector + " is incorrect. It needs to be between 0 and " + SectorManager.MAX_SECTOR.ToString() + ".");
+			return 0;
+		}
+		else
+		{
+			return sectorDataList[sector].victorySoftCurrency;
+		}
+	}
+
 	[System.Serializable]
 	public class SectorData
 	{
 		public int pointsRequired; 
+		public int victorySoftCurrency; 
 		public Sprite sectorImage;
 		public Color sectorColor;
 	}

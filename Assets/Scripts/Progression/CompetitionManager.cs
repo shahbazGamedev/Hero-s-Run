@@ -80,7 +80,7 @@ public class CompetitionManager : MonoBehaviour {
 		//PlayMode playMode = GameManager.Instance.getPlayMode();
 		PlayMode playMode = PlayMode.PlayAgainstOnePlayer;
 
-		float trophyPercentageDifference = ( playerCompetitivePoints - opponentCompetitivePoints )/SectorManager.Instance.getPointsRange( sector );
+		float pointsPercentageDifference = ( playerCompetitivePoints - opponentCompetitivePoints )/SectorManager.Instance.getPointsRange( sector );
 
 		if( playMode == PlayMode.PlayAgainstOnePlayer )
 		{
@@ -93,7 +93,7 @@ public class CompetitionManager : MonoBehaviour {
 				}
 				else
 				{
-					competitivePoints = (int)Math.Ceiling( BASE_COMPETITIVE_POINTS - VARIABLE_COMPETITIVE_POINTS * trophyPercentageDifference );
+					competitivePoints = (int)Math.Ceiling( BASE_COMPETITIVE_POINTS - VARIABLE_COMPETITIVE_POINTS * pointsPercentageDifference );
 				}
 			}
 			else if( racePosition == RacePosition.SECOND_PLACE )
@@ -105,7 +105,7 @@ public class CompetitionManager : MonoBehaviour {
 				}
 				else
 				{
-					competitivePoints = -(int)Math.Ceiling( BASE_COMPETITIVE_POINTS + VARIABLE_COMPETITIVE_POINTS * trophyPercentageDifference );
+					competitivePoints = -(int)Math.Ceiling( BASE_COMPETITIVE_POINTS + VARIABLE_COMPETITIVE_POINTS * pointsPercentageDifference );
 				}
 			}
 			else
