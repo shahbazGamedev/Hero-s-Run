@@ -23,7 +23,7 @@ public class SectorChangeUI : MonoBehaviour {
  		sectorNumberText.text = string.Format( LocalizationManager.Instance.getText( "SECTOR_NUMBER" ), currentSector );
 		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + currentSector.ToString() );
 		sectorNameText.text = sectorName;
-		trophiesNeededText.text = SectorManager.Instance.getTrophiesRequired( currentSector ).ToString() + "+";
+		trophiesNeededText.text = SectorManager.Instance.getPointsRequired( currentSector ).ToString() + "+";
 		sectorImage.sprite = SectorManager.Instance.getSectorImage( currentSector );
 		sectorBackground.color = SectorManager.Instance.getSectorColor( currentSector );;
 		newSectorRibbon.SetActive( PlayerRaceManager.Instance.sectorStatus == SectorStatus.WENT_UP_AND_NEW );

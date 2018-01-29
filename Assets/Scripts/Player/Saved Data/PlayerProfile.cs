@@ -173,7 +173,7 @@ public sealed class PlayerProfile {
 
 	public void verifyIfSectorChanged()
 	{
-		int sectorAfterTrophyChange = SectorManager.Instance.getSectorByTrophies( numberOfTrophies );
+		int sectorAfterTrophyChange = SectorManager.Instance.getSectorByPoints( numberOfTrophies );
 
 		if( sectorAfterTrophyChange > currentSector )
 		{

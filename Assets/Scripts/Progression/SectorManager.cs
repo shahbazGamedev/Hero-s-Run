@@ -6,9 +6,8 @@ public class SectorManager : MonoBehaviour {
 
 	public static SectorManager Instance;
 	public const int MAX_SECTOR = 4;
-	public const int DEFAULT_TROPHY_DELTA = 299;
-	[SerializeField] List<int> trophiesRequiredPerSector = new List<int>(MAX_SECTOR);
-	[SerializeField] Sprite genericSectorImage;
+	public const int DEFAULT_POINTS_DELTA = 299;
+	[SerializeField] List<SectorData> sectorDataList = new List<SectorData>();
 
 	void Awake ()
 	{
@@ -20,27 +19,27 @@ public class SectorManager : MonoBehaviour {
 		{
 			DontDestroyOnLoad(gameObject);
 			Instance = this;
-			/*print(" 0 getSectorByTrophies 0:   " + getSectorByTrophies( 0 ) );
-			print(" 1 getSectorByTrophies 1:   " + getSectorByTrophies( 1 ) );
-			print(" 1 getSectorByTrophies 100:   " + getSectorByTrophies( 100 ) );
-			print(" 1 getSectorByTrophies 400:   " + getSectorByTrophies( 400 ) );
-			print(" 2 getSectorByTrophies 401:   " + getSectorByTrophies( 401 ) );
-			print(" 2 getSectorByTrophies 500:   " + getSectorByTrophies( 500 ) );
-			print(" 2 getSectorByTrophies 800:   " + getSectorByTrophies( 800 ) );
-			print(" 3 getSectorByTrophies 801:   " + getSectorByTrophies( 801 ) );
-			print(" 3 getSectorByTrophies 1100:   " + getSectorByTrophies( 1100 ) );
-			print(" 4 getSectorByTrophies 1101:   " + getSectorByTrophies( 1101 ) );
-			print(" 4 getSectorByTrophies 1400:   " + getSectorByTrophies( 1400 ) );
-			print(" 4 getSectorByTrophies 1401:   " + getSectorByTrophies( 1401 ) );
-			print(" 4 getSectorByTrophies 69000:   " + getSectorByTrophies( 69000 ) );
+			/*print(" 0 getSectorByPoints 0:   " + getSectorByPoints( 0 ) );
+			print(" 1 getSectorByPoints 1:   " + getSectorByPoints( 1 ) );
+			print(" 1 getSectorByPoints 100:   " + getSectorByPoints( 100 ) );
+			print(" 1 getSectorByPoints 400:   " + getSectorByPoints( 400 ) );
+			print(" 2 getSectorByPoints 401:   " + getSectorByPoints( 401 ) );
+			print(" 2 getSectorByPoints 500:   " + getSectorByPoints( 500 ) );
+			print(" 2 getSectorByPoints 800:   " + getSectorByPoints( 800 ) );
+			print(" 3 getSectorByPoints 801:   " + getSectorByPoints( 801 ) );
+			print(" 3 getSectorByPoints 1100:   " + getSectorByPoints( 1100 ) );
+			print(" 4 getSectorByPoints 1101:   " + getSectorByPoints( 1101 ) );
+			print(" 4 getSectorByPoints 1400:   " + getSectorByPoints( 1400 ) );
+			print(" 4 getSectorByPoints 1401:   " + getSectorByPoints( 1401 ) );
+			print(" 4 getSectorByPoints 69000:   " + getSectorByPoints( 69000 ) );
 			print(" *****" );
-			print(" Error -1 getTrophyRange -1:   " + getTrophyRange( -1 ) );
-			print(" 0 getTrophyRange 0:   " + getTrophyRange( 0 ) );
-			print(" 1 getTrophyRange 1:   " + getTrophyRange( 1 ) );
-			print(" 2 getTrophyRange 2:   " + getTrophyRange( 2 ) );
-			print(" 3 getTrophyRange 3:   " + getTrophyRange( 3 ) );
-			print(" 4 getTrophyRange 4:   " + getTrophyRange( 4 ) );
-			print(" Error 5 getTrophyRange 5:   " + getTrophyRange( 5 ) );*/
+			print(" Error -1 getPointsRange -1:   " + getPointsRange( -1 ) );
+			print(" 0 getPointsRange 0:   " + getPointsRange( 0 ) );
+			print(" 1 getPointsRange 1:   " + getPointsRange( 1 ) );
+			print(" 2 getPointsRange 2:   " + getPointsRange( 2 ) );
+			print(" 3 getPointsRange 3:   " + getPointsRange( 3 ) );
+			print(" 4 getPointsRange 4:   " + getPointsRange( 4 ) );
+			print(" Error 5 getPointsRange 5:   " + getPointsRange( 5 ) );*/
 		}
 	}
 
@@ -50,16 +49,16 @@ public class SectorManager : MonoBehaviour {
 	/// </summary>
 	/// <returns>The sector based on the number of trophies.</returns>
 	/// <param name="numberOfTrophies">Number of trophies.</param>
-	public int getSectorByTrophies( int numberOfTrophies )
+	public int getSectorByPoints( int competitivePoints )
 	{
-		if( numberOfTrophies == 0 ) return 0;
+		if( competitivePoints == 0 ) return 0;
 
-		if( numberOfTrophies >= trophiesRequiredPerSector[MAX_SECTOR] ) return MAX_SECTOR;
+		if( competitivePoints >= sectorDataList[MAX_SECTOR].pointsRequired ) return MAX_SECTOR;
 
-		return trophiesRequiredPerSector.FindLastIndex( sector => sector <= numberOfTrophies );
+		return sectorDataList.FindLastIndex( sector => sector.pointsRequired <= competitivePoints );
 	}
 
-	public int getTrophyRange( int sector )
+	public int getPointsRange( int sector )
 	{
 		if( sector < 0 || sector > MAX_SECTOR )
 		{
@@ -69,13 +68,13 @@ public class SectorManager : MonoBehaviour {
 		else
 		{
 			if( sector == 0 ) return 0;
-			if( sector == MAX_SECTOR ) return DEFAULT_TROPHY_DELTA;
+			if( sector == MAX_SECTOR ) return DEFAULT_POINTS_DELTA;
 
-			return trophiesRequiredPerSector[sector+1] - 1 - trophiesRequiredPerSector[sector];
+			return sectorDataList[sector+1].pointsRequired - 1 - sectorDataList[sector].pointsRequired;
 		}
 	}
 	
-	public int getTrophiesRequired( int sector )
+	public int getPointsRequired( int sector )
 	{
 		if( sector < 0 || sector > MAX_SECTOR )
 		{
@@ -84,7 +83,7 @@ public class SectorManager : MonoBehaviour {
 		}
 		else
 		{
-			return trophiesRequiredPerSector[sector];
+			return sectorDataList[sector].pointsRequired;
 		}
 	}
 
@@ -97,7 +96,7 @@ public class SectorManager : MonoBehaviour {
 		}
 		else
 		{
-			return genericSectorImage;
+			return sectorDataList[sector].sectorImage;
 		}
 	}
 
@@ -110,8 +109,16 @@ public class SectorManager : MonoBehaviour {
 		}
 		else
 		{
-			return Color.blue;
+			return sectorDataList[sector].sectorColor;
 		}
+	}
+
+	[System.Serializable]
+	public class SectorData
+	{
+		public int pointsRequired; 
+		public Sprite sectorImage;
+		public Color sectorColor;
 	}
 
 }

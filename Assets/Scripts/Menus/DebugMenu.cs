@@ -35,7 +35,7 @@ public class DebugMenu : MonoBehaviour {
 		numberOfTrophies = GameManager.Instance.playerProfile.getTrophies();
 		trophyOverrideMultiplierSlider.value = numberOfTrophies;
 		trophyOverrideMultiplierText.text = numberOfTrophies.ToString("N0");
-		trophyOverrideSectorText.text = SectorManager.Instance.getSectorByTrophies( numberOfTrophies ).ToString("N0");
+		trophyOverrideSectorText.text = SectorManager.Instance.getSectorByPoints( numberOfTrophies ).ToString("N0");
 
 		if( LevelManager.Instance.getOnlyUseUniqueTiles() )
 		{
@@ -85,7 +85,7 @@ public class DebugMenu : MonoBehaviour {
 	{
 		numberOfTrophies = (int) slider.value;
 		trophyOverrideMultiplierText.text = numberOfTrophies.ToString("N0");
-		trophyOverrideSectorText.text = SectorManager.Instance.getSectorByTrophies( numberOfTrophies ).ToString("N0");
+		trophyOverrideSectorText.text = SectorManager.Instance.getSectorByPoints( numberOfTrophies ).ToString("N0");
 		GameManager.Instance.playerProfile.setNumberOfTrophies( numberOfTrophies );
 	}
 

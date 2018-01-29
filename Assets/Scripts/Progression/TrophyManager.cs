@@ -104,7 +104,7 @@ public class TrophyManager : MonoBehaviour {
 		PlayMode playMode = GameManager.Instance.getPlayMode();
 		//PlayMode playMode = PlayMode.PlayAgainstOnePlayer;
 
-		float trophyPercentageDifference = ( playerTrophies - opponentTrophies )/SectorManager.Instance.getTrophyRange( sector );
+		float trophyPercentageDifference = ( playerTrophies - opponentTrophies )/SectorManager.Instance.getPointsRange( sector );
 
 		if( playMode == PlayMode.PlayAgainstOnePlayer )
 		{
