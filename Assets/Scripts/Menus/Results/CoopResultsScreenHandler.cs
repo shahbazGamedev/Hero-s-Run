@@ -56,33 +56,10 @@ public class CoopResultsScreenHandler : MonoBehaviour, IPointerDownHandler {
 		coopResultsHolder.sizeDelta = new Vector2( coopResultsHolder.sizeDelta.x, desiredHeight );
 	}
 
-	//Note that win streak is not used for now. An animated flame will be used in the future to convey the win streak, this is why I am keeping the code.
 	void createResultEntry( PlayerRace playerRace )
 	{
-		int racePosition = playerRace.racePosition;
-
 		PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( playerRace.name );
-		int winStreak = pmd.currentWinStreak;
-		if( racePosition == 0 )
-		{
-			//If player won the race, increment is win streak
-			winStreak = pmd.currentWinStreak + 1;
-		}
-
 		Sprite playerIconSprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( pmd.playerIcon ).icon;
-
-		//Race time
-		string raceDurationString;
-		if( playerRace.playerCrossedFinishLine )
-		{
-			TimeSpan ts = TimeSpan.FromSeconds( playerRace.raceDuration );
-			DateTime dt = new DateTime(ts.Ticks);
-			raceDurationString = dt.ToString("mm:ss");
-		}
-		else
-		{
-			raceDurationString = LocalizationManager.Instance.getText( "RESULTS_NOT_AVAILABLE" );
-		}
 		GameObject go = (GameObject)Instantiate(coopResultPrefab);
 		go.transform.SetParent(coopResultsHolder,false);
 		go.GetComponent<CoopResultEntry>().configureEntry( pmd.level, pmd.playerName, playerIconSprite, pmd.score, pmd.kills, pmd.downs, pmd.revives );

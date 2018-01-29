@@ -179,10 +179,10 @@ public class PlayerIK : MonoBehaviour {
 		fadeOutLookAtCoroutine = null;
 	}
 
-	public void isOvertaking( int racePosition )
+	public void isOvertaking( RacePosition racePosition )
 	{
 		//Race position has a value of -1 until updated for the first time
-		if( racePosition > 0 )
+		if( racePosition > RacePosition.FIRST_PLACE )
 		{
 			//Find out who is the player overtaking us
 			PlayerRace playerOvertaking = PlayerRace.players.Find(p => p.racePosition == racePosition - 1 );

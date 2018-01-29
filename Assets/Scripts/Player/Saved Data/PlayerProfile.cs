@@ -45,7 +45,7 @@ public sealed class PlayerProfile {
 	[SerializeField] int playerIconId = 0;
 	public int selectedHeroIndex; //index for heroCharacterList in HeroManager
 
-	[SerializeField] bool completedTutorial = true; //TRUE FOR TESTING
+	[SerializeField] bool completedTutorial = false;
 	//Trophies indicate your success in racing. Players gain or lose Trophies by either winning or losing races in online multiplayer races.
 	//The number of trophies you have indicate which race track you will be racing in for multiplayer races.
 	[SerializeField] int numberOfTrophies = 0;
@@ -87,18 +87,16 @@ public sealed class PlayerProfile {
 	#endregion
 
 	#region Tutorial
+	public void setCompletedTutorial( bool value)
+	{
+		completedTutorial = value;
+		Debug.Log("PlayerProfile-setCompletedTutorial: " + value );
+		serializePlayerprofile();
+	}
+
 	public bool hasCompletedTutorial()
 	{
 		return completedTutorial;
-	}
-
-	/// <summary>
-	/// Saves the fact that the player has completed tutorial.
-	/// </summary>
-	public void saveHasCompletedTutorial()
-	{
-		completedTutorial = true;
-		serializePlayerprofile();
 	}
 	#endregion
 
@@ -135,13 +133,17 @@ public sealed class PlayerProfile {
 		return numberOfTrophies;
 	}
 
+	/// <summary>
+	/// Changes the trophies.
+	/// Don't allow the number of trophies to go below 1. If a player loses while in sector 1, we don't want him to go down to sector 0, which is the tutorial.
+	/// </summary>
+	/// <param name="value">Value.</param>
 	public void changeTrophies( int value )
 	{
 		if( value >= -TrophyManager.MAX_CHANGE_IN_TROPHIES && value <= TrophyManager.MAX_CHANGE_IN_TROPHIES )
 		{
 			int newValue = numberOfTrophies + value;
-			//Don't allow the number of trophies to go below 0.
-			if( newValue  < 0 ) newValue = 0;
+			if( newValue  < 1 ) newValue = 1;
 			setNumberOfTrophies( newValue );
 		}
 		else
@@ -155,6 +157,14 @@ public sealed class PlayerProfile {
 		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Trophies_Changed, numberOfTrophies, value );
 
 		numberOfTrophies = value;
+		if( numberOfTrophies == 0 )
+		{
+			setCompletedTutorial( false );
+		}
+		else
+		{
+			setCompletedTutorial( true );
+		}
 		GameManager.Instance.playerStatistics.setHighestNumberOfTrophies( numberOfTrophies );
 		//Verify if the player changed sector because of the change in trophies.
 		verifyIfSectorChanged();
@@ -195,7 +205,7 @@ public sealed class PlayerProfile {
 		//Ignore if the sector has not changed.
 		if( value == currentSector ) return;
 
-		if( value > 0 && value <= SectorManager.MAX_SECTOR )
+		if( value >= 0 && value <= SectorManager.MAX_SECTOR )
 		{
 			if( value > currentSector ) highestSector = value;
 			currentSector = value;
@@ -204,7 +214,7 @@ public sealed class PlayerProfile {
 		}
 		else
 		{
-			Debug.LogError("PlayerProfile-the sector specified " + value + " is incorrect. It needs to be between 1 and " + SectorManager.MAX_SECTOR.ToString() + ".");
+			Debug.LogError("PlayerProfile-the sector specified " + value + " is incorrect. It needs to be between 0 and " + SectorManager.MAX_SECTOR.ToString() + ".");
 		}
 	}
 

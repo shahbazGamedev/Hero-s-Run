@@ -155,12 +155,12 @@ public class PlayerStatistics {
 	/// <summary>
 	/// Called when the player has completed the race.
 	/// </summary>
-	public void updateRaceStatistics( int racePosition, float distanceTravelled, int numberOfTimesDiedDuringRace, int skillBonusEarned )
+	public void updateRaceStatistics( RacePosition racePosition, float distanceTravelled, int numberOfTimesDiedDuringRace, int skillBonusEarned )
 	{
 		int distanceTravelledLifetime = getStatisticData(StatisticDataType.DISTANCE_TRAVELED_LIFETIME);
 		setStatisticData( StatisticDataType.DISTANCE_TRAVELED_LIFETIME, (int) (distanceTravelledLifetime + distanceTravelled) );
 
-		if( racePosition == 1 )
+		if( racePosition == RacePosition.FIRST_PLACE )
 		{
 			int numberRacesWon = getStatisticData(StatisticDataType.RACES_WON);
 			setStatisticData( StatisticDataType.RACES_WON, numberRacesWon + 1 );

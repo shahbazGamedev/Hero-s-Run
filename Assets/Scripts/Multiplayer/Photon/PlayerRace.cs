@@ -19,8 +19,8 @@ public sealed class PlayerRace : Photon.PunBehaviour
 	static public List<PlayerRace> players = new List<PlayerRace> ();
 
 	#region Race position
-	public int racePosition = -1;
-	public int previousRacePosition = -2;	//Used to avoid updating if the value has not changed
+	public RacePosition racePosition = RacePosition.NOT_SET_1;
+	public RacePosition previousRacePosition = RacePosition.NOT_SET_2;	//Used to avoid updating if the value has not changed
 	#endregion
 
 	#region Distance
@@ -45,7 +45,7 @@ public sealed class PlayerRace : Photon.PunBehaviour
 	#region Finish line
 	public bool playerCrossedFinishLine = false;
 	//Delegate used to communicate to other classes when the local player (and not a bot) has crossed the finish line.
-	public delegate void CrossedFinishLine( Transform player, int officialRacePosition, bool isBot );
+	public delegate void CrossedFinishLine( Transform player, RacePosition officialRacePosition, bool isBot );
 	public static event CrossedFinishLine crossedFinishLine;
 	#endregion
 	
@@ -251,7 +251,7 @@ public sealed class PlayerRace : Photon.PunBehaviour
 	}
 
 	[PunRPC]
-	void OnRacePositionChanged( int newRacePosition )
+	void OnRacePositionChanged( RacePosition newRacePosition )
 	{
 		if( this.photonView.isMine && playerAI == null ) HUDMultiplayer.hudMultiplayer.updateRacePosition( newRacePosition );
 		//Debug.Log("PlayerRace: OnRacePositionChanged " +  (newRacePosition + 1 )  + " name " + gameObject.name );
@@ -260,13 +260,6 @@ public sealed class PlayerRace : Photon.PunBehaviour
 
 		verifyIfPlayerTookTheLead();
 	}
-
-	#region Last position
-	public bool isInLastPosition()
-	{
-		return ( players.Count - 1 ) == racePosition;
-	}
-	#endregion
 
 	#region Took the lead
 	/// <summary>
@@ -282,7 +275,7 @@ public sealed class PlayerRace : Photon.PunBehaviour
 	{
 		if( players.Count > 1 && !GameManager.Instance.isCoopPlayMode() )
 		{
-			if( racePosition == 0 )
+			if( racePosition == RacePosition.FIRST_PLACE )
 			{
 				//The player took the lead.
 				Invoke("tookTheLead", REQUIRED_LEAD_TIME );
@@ -301,7 +294,7 @@ public sealed class PlayerRace : Photon.PunBehaviour
 		if( players.Count > 1 )
 		{
 			//Find the player in second place.
-			PlayerRace p2 = players.Find(a => a.racePosition == 1 );
+			PlayerRace p2 = players.Find(a => a.racePosition == RacePosition.SECOND_PLACE );
 
 			//Is this player sufficiently ahead?
 			if( Vector3.SqrMagnitude( transform.position - p2.transform.position ) > REQUIRED_LEAD_DISTANCE_SQUARED )
@@ -333,7 +326,7 @@ public sealed class PlayerRace : Photon.PunBehaviour
 		playerSpell.cancelAllSpells();
 
 		//We want to slow down any player that reaches the finish line
-		StartCoroutine( playerRun.slowDownPlayerAfterFinishLine( racePosition, 5f - (racePosition * 1.5f) ) );
+		StartCoroutine( playerRun.slowDownPlayerAfterFinishLine( racePosition, 5f - ((int)racePosition * 1.5f) ) );
 
 		//Note: if the player won, a voice over will be triggered by the victory animation. See Victory_win_start.
 
@@ -353,7 +346,7 @@ public sealed class PlayerRace : Photon.PunBehaviour
 		if( this.photonView.isMine && playerAI == null )
 		{
 			//If the player has won, display a victory message (but not in coop).
-			if( racePosition == 0 && !GameManager.Instance.isCoopPlayMode() )
+			if( racePosition == RacePosition.FIRST_PLACE && !GameManager.Instance.isCoopPlayMode() )
 			{
 				string victory = LocalizationManager.Instance.getText("RACE_VICTORY");
 				HUDMultiplayer.hudMultiplayer.activateUserMessage( victory, 0, 2.25f );
@@ -386,7 +379,7 @@ public sealed class PlayerRace : Photon.PunBehaviour
 	#region End of match voice over
 	public void Victory_win_start ( AnimationEvent eve )
 	{
-		if( racePosition == 0 )
+		if( racePosition == RacePosition.FIRST_PLACE )
 		{
 			//Play a win Voice Over
 			playerVoiceOvers.playVoiceOver(VoiceOverType.VO_Win);

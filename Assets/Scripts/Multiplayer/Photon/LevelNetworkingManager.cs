@@ -210,12 +210,12 @@ public sealed class LevelNetworkingManager : PunBehaviour
 		for( int i = 0; i<players.Count; i++ )
 		{
 			//Verify if this player's position has changed.
-			if( i != players[i].previousRacePosition )
+			if( (RacePosition)i != players[i].previousRacePosition )
 			{
 				//Yes, it has.
 				//Save the new values
-				players[i].racePosition = i;
-				players[i].previousRacePosition = i;
+				players[i].racePosition = (RacePosition)i;
+				players[i].previousRacePosition = (RacePosition)i;
 				//If this player has not yet crossed the finish line, inform the player of his new position so that he can update it on the HUD.
 				if( !players[i].playerCrossedFinishLine ) players[i].photonView.RPC("OnRacePositionChanged", PhotonTargets.AllViaServer, i );
 			}
@@ -256,7 +256,7 @@ public sealed class LevelNetworkingManager : PunBehaviour
 			if( pr.wasPowerBoostUsed ) continue;
 	
 			//The emergency power never triggers for a player in first place.
-			if( pr.racePosition == 0 ) continue;
+			if( pr.racePosition == RacePosition.FIRST_PLACE ) continue;
 	
 			//Find the player who is just ahead of you.
 			PlayerRace playerAhead = PlayerRace.players.Find(a => a.racePosition == pr.racePosition - 1 );

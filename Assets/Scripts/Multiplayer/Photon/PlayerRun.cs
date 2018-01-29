@@ -125,7 +125,7 @@ public class PlayerRun : Photon.PunBehaviour {
 		}
 	}
 
-	void CrossedFinishLine( Transform player, int officialRacePosition, bool isBot )
+	void CrossedFinishLine( Transform player, RacePosition officialRacePosition, bool isBot )
 	{
 		activeSpeedMultipliersList.Clear();
 	}
@@ -402,7 +402,7 @@ public class PlayerRun : Photon.PunBehaviour {
 	/// </summary>
 	/// <returns>Slows down the player after he crosses the finish line.</returns>
 	/// <param name="distance">Distance.</param>
-	public IEnumerator slowDownPlayerAfterFinishLine( int officialRacePosition, float distance )
+	public IEnumerator slowDownPlayerAfterFinishLine( RacePosition officialRacePosition, float distance )
 	{
 		GetComponent<Rigidbody>().velocity = new Vector3( 0,playerControl.moveDirection.y,0 );
 		playerControl.enablePlayerControl( false );
@@ -438,7 +438,7 @@ public class PlayerRun : Photon.PunBehaviour {
 		}
 		//We have arrived. Stop player movement.
 		playerControl.enablePlayerMovement( false );
-		if( officialRacePosition == 0 )
+		if( officialRacePosition == RacePosition.FIRST_PLACE )
 		{
 			playerControl.playVictoryAnimation();
 		}

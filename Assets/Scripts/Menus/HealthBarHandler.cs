@@ -30,7 +30,7 @@ public class HealthBarHandler : MonoBehaviour {
 		PlayerRace.crossedFinishLine -= CrossedFinishLine;
 	}
 
-	void CrossedFinishLine( Transform player, int officialRacePosition, bool isBot )
+	void CrossedFinishLine( Transform player, RacePosition officialRacePosition, bool isBot )
 	{
 		//Only hide the health and armor bars if the player who crossed the finish line is not a bot.
 		if( !isBot )

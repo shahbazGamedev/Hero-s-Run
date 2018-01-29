@@ -72,15 +72,17 @@ public class TrophyManager : MonoBehaviour {
 
 	/// <summary>
 	/// Returns true if trophies can be earned.
+	/// You can only earn trophies if you have completed the tutorial.
 	/// You can earn trophies while playing online against one player.
 	/// You don't earn trophies while playing with a friend, coop, or offline.
-	/// However, trophies can always be earned when playing alone or against one bot in a Debug Build to facilitate testing.
+	/// However, trophies can always be earned when playing alone or against one bot in a Debug Build to facilitate testing as long as you are not in coop.
 	/// </summary>
 	/// <returns><c>true</c>, if trophies can be earned, <c>false</c> otherwise.</returns>
 	public bool canEarnTrophies()
 	{
 		PlayMode playMode = GameManager.Instance.getPlayMode();
-		return Debug.isDebugBuild || playMode == PlayMode.PlayAgainstOnePlayer;
+		if( !GameManager.Instance.playerProfile.hasCompletedTutorial() ) return false;
+		return ( Debug.isDebugBuild && !GameManager.Instance.isCoopPlayMode() ) || playMode == PlayMode.PlayAgainstOnePlayer;
 	}
 
 	/// <summary>
@@ -95,7 +97,7 @@ public class TrophyManager : MonoBehaviour {
 	/// <param name="sector">Sector.</param>
 	/// <param name="playersTrophies">Player trophies.</param>
 	/// <param name="opponentTrophies">Opponent trophies.</param>
-	public int getTrophiesEarned( int racePosition, int sector, int playerTrophies, int opponentTrophies )
+	public int getTrophiesEarned( RacePosition racePosition, int sector, int playerTrophies, int opponentTrophies )
 	{
 		if( sector == 0 ) return 0;
 		int trophies = 0;
@@ -106,7 +108,7 @@ public class TrophyManager : MonoBehaviour {
 
 		if( playMode == PlayMode.PlayAgainstOnePlayer )
 		{
-			if( racePosition == 1 )
+			if( racePosition == RacePosition.FIRST_PLACE )
 			{
 				//Player won.
 				if( playerTrophies == opponentTrophies )
@@ -118,7 +120,7 @@ public class TrophyManager : MonoBehaviour {
 					trophies = (int)Math.Ceiling( BASE_TROPHIES - VARIABLE_TROPHIES * trophyPercentageDifference );
 				}
 			}
-			else if( racePosition == 2 )
+			else if( racePosition == RacePosition.SECOND_PLACE )
 			{
 				//Player lost. The player will lose trophies.
 				if( playerTrophies == opponentTrophies )
@@ -132,7 +134,7 @@ public class TrophyManager : MonoBehaviour {
 			}
 			else
 			{
-				Debug.LogError("TrophyManager-getTrophiesEarned: race position " + racePosition + " is invalid. It should be either one or two.");
+				Debug.LogError("TrophyManager-getTrophiesEarned: race position " + racePosition + " is invalid. It should be either first place or second place.");
 			}
 		}
 		else if( Debug.isDebugBuild )
@@ -144,15 +146,15 @@ public class TrophyManager : MonoBehaviour {
 			}
 			else if( playMode == PlayMode.PlayAgainstOneBot )
 			{
-				if( racePosition == 1 )
+				if( racePosition == RacePosition.FIRST_PLACE )
 				{
 					//Player won
-					trophies = BASE_TROPHIES;
+					trophies = MAX_CHANGE_IN_TROPHIES;
 				}
 				else
 				{
 					//Player lost
-					trophies = -BASE_TROPHIES;
+					trophies = -MAX_CHANGE_IN_TROPHIES;
 				}
 			}
 		}

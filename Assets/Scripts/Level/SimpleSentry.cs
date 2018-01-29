@@ -97,7 +97,7 @@ public class SimpleSentry : MonoBehaviour {
 		PlayerRace.crossedFinishLine -= CrossedFinishLine;
 	}
 
-	void CrossedFinishLine( Transform player, int officialRacePosition, bool isBot )
+	void CrossedFinishLine( Transform player, RacePosition officialRacePosition, bool isBot )
 	{
 		print("SimpleSentry-CrossedFinishLine " + player.name + " officialRacePosition " +  officialRacePosition );
 
@@ -106,7 +106,7 @@ public class SimpleSentry : MonoBehaviour {
 
 		nearestTarget = player;
 
-		if( officialRacePosition == 0 )
+		if( officialRacePosition == RacePosition.FIRST_PLACE )
 		{
 			playSoundEffect( Emotion.Happy );
 		}

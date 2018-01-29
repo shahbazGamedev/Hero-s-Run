@@ -12,13 +12,22 @@ public enum RaceStatus {
 	COMPLETED = 3 		//Set when all players have crossed the finish line.
 }
 
+public enum RacePosition {
+	
+	NOT_SET_1 = -1,
+	NOT_SET_2 = -2,
+	FIRST_PLACE = 0,
+	SECOND_PLACE = 1,
+	THIRD_PLACE = 2
+}
+
 public class PlayerRaceManager {
 
 	[Header("General")]
 	private static PlayerRaceManager playerRaceManager = null;
 	private TimeSpan MAX_TIME_FOR_CONSECUTIVE_RACE = new TimeSpan(0,2,0); //in minutes
 	public float raceDuration;
-	public int racePosition;
+	public RacePosition racePosition;
 
 	public int trophiesOwnedByOpponent1;
 	public int trophiesOwnedByOpponent2;
@@ -93,14 +102,14 @@ public class PlayerRaceManager {
 		}
 	}
 
-	public void playerCompletedRace( int racePosition, float raceDuration, float distanceTravelled, int numberOfTimesDiedDuringRace )
+	public void playerCompletedRace( RacePosition racePosition, float raceDuration, float distanceTravelled, int numberOfTimesDiedDuringRace )
 	{
 		raceAwardList.Clear();
-		this.racePosition = racePosition + 1;
+		this.racePosition = racePosition;
 		this.raceDuration = raceDuration;
 		grantXPAward(XPAwardType.FINISHED_RACE);
 		if( GameManager.Instance.playerProfile.getSkillBonus() > 0 ) grantXPAward(XPAwardType.SKILL_BONUS);
-		if( racePosition == 1 && GameManager.Instance.isOnlinePlayMode() ) grantXPAward(XPAwardType.WON);
+		if( racePosition == RacePosition.FIRST_PLACE && GameManager.Instance.isOnlinePlayMode() ) grantXPAward(XPAwardType.WON);
 
 		//Did the player complete this match in the allocated time to get the consecutive race XP award?
 		TimeSpan utcNowTimeSpan = new TimeSpan( DateTime.UtcNow.Ticks );
@@ -118,7 +127,7 @@ public class PlayerRaceManager {
 		GameManager.Instance.playerProfile.setLastMatchPlayedTime( DateTime.UtcNow );
 
 		//Verify if we should grant the first win of the day XP award
-		if( racePosition == 1 ) 
+		if( racePosition == RacePosition.FIRST_PLACE ) 
 		{
 			//Is this the next day?
 			Debug.Log("PlayerRaceManager-test for first win :" + DateTime.UtcNow.Date.ToString() + " vs " + GameManager.Instance.playerProfile.getLastMatchWonTime().ToString() );
@@ -164,8 +173,16 @@ public class PlayerRaceManager {
 
 	}
 
+	/// <summary>
+	/// Called when a player abandons the race.
+	/// A race is considered abandoned if the player leaves before crossing the finish line.
+	/// This method does nothing when in coop mode.
+	/// However in competition, the player will lose trophies and his races abandoned count will increase.
+	/// </summary>
 	public void playerAbandonedRace()
 	{
+		if( GameManager.Instance.isCoopPlayMode() ) return;
+
 		Debug.Log("PlayerRaceManager-playerAbandonedRace" );
 		GameManager.Instance.playerStatistics.incrementNumberRacesAbandoned();
 		//Save the player deck because every time the players plays a card, we increment the timesUsed value in PlayerCardData.
@@ -176,10 +193,10 @@ public class PlayerRaceManager {
 		{
 			// trophiesLost will be negative.
 			// Assume you are in 2nd position if you abandon a race.
-			int trophiesLost = TrophyManager.Instance.getTrophiesEarned( 2, GameManager.Instance.playerProfile.getCurrentSector(), GameManager.Instance.playerProfile.getTrophies(), trophiesOwnedByOpponent1 );
+			int trophiesLost = TrophyManager.Instance.getTrophiesEarned( RacePosition.SECOND_PLACE, GameManager.Instance.playerProfile.getCurrentSector(), GameManager.Instance.playerProfile.getTrophies(), trophiesOwnedByOpponent1 );
 			GameManager.Instance.playerProfile.changeTrophies( trophiesLost );
 			GameManager.Instance.playerProfile.serializePlayerprofile();
-			Debug.Log("PlayerRaceManager-playerAbandonedRace: trophies lost " + trophiesLost );
+			Debug.Log("PlayerRaceManager-playerAbandonedRace: Trophies lost " + trophiesLost );
 		}
 
 		//For rate this app

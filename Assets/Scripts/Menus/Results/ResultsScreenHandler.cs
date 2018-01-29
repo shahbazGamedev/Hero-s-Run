@@ -39,11 +39,11 @@ public class ResultsScreenHandler : MonoBehaviour, IPointerDownHandler {
 	//Note that win streak is not used for now. An animated flame will be used in the future to convey the win streak, this is why I am keeping the code.
 	void createResultEntry( PlayerRace playerRace )
 	{
-		int racePosition = playerRace.racePosition;
+		RacePosition racePosition = playerRace.racePosition;
 
 		PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( playerRace.name );
 		int winStreak = pmd.currentWinStreak;
-		if( racePosition == 0 )
+		if( racePosition == RacePosition.FIRST_PLACE )
 		{
 			//If player won the race, increment is win streak
 			winStreak = pmd.currentWinStreak + 1;
@@ -65,7 +65,7 @@ public class ResultsScreenHandler : MonoBehaviour, IPointerDownHandler {
 		}
 		GameObject go = (GameObject)Instantiate(resultPrefab);
 		go.transform.SetParent(resultsHolder,false);
-		go.GetComponent<ResultEntry>().configureEntry( racePosition + 1, pmd.level, pmd.playerName, playerIconSprite, raceDurationString );
+		go.GetComponent<ResultEntry>().configureEntry( racePosition, pmd.level, pmd.playerName, playerIconSprite, raceDurationString );
 		go.GetComponent<ResultEntry>().emoteGameObject.name = pmd.playerName;
 		emotesList.Add( go.GetComponent<ResultEntry>().emoteGameObject );
 	}

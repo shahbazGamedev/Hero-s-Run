@@ -49,7 +49,7 @@ public class MPGameEndManager : MonoBehaviour {
 	{
 		LevelData.MultiplayerInfo multiplayerInfo = LevelManager.Instance.getSelectedCircuit();
 		circuitImage.sprite = multiplayerInfo.circuitInfo.circuitImage;
-		raceResult.text = getRacePositionString( PlayerRaceManager.Instance.racePosition );
+		raceResult.text = LocalizationManager.Instance.getText( "EOG_" + PlayerRaceManager.Instance.racePosition.ToString() );
 		playerName.text = GameManager.Instance.playerProfile.getUserName();
 		backgroundImage.color = multiplayerInfo.circuitInfo.backgroundColor;
 
@@ -224,26 +224,6 @@ public class MPGameEndManager : MonoBehaviour {
 			awardedXP.text = awardText + "<color=orange>+" + xpAward.xpAmount.ToString() + "xp</color>";
 			yield return new WaitForSecondsRealtime( 4.0f );
 		}
-	}
-
-	string getRacePositionString( int racePosition )
-	{
-		string racePositionString = string.Empty;
-    	switch (racePosition)
-		{
-	        case 1:
-				racePositionString = LocalizationManager.Instance.getText( "EOG_1ST" );
-                break;
-	                
-	        case 2:
-				racePositionString = LocalizationManager.Instance.getText( "EOG_2ND" );
-                break;
-               
-	        case 3:
-				racePositionString = LocalizationManager.Instance.getText( "EOG_3RD" );
-				break;                
-		}
-		return racePositionString;
 	}
 
 	void showMatchmaking()

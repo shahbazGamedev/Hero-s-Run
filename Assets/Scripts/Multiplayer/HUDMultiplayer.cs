@@ -445,7 +445,7 @@ public class HUDMultiplayer : MonoBehaviour {
 			infoForAllPlayers.Append( PlayerRace.players[i].GetComponent<PlayerControl>().tileIndex );
 			infoForAllPlayers.Append( " POS: " );
 		 	infoForAllPlayers.Append( "<color=#FF396D>" );
-			infoForAllPlayers.Append( PlayerRace.players[i].racePosition + 1 );
+			infoForAllPlayers.Append( PlayerRace.players[i].racePosition );
 		 	infoForAllPlayers.Append( "</color>" );
 			infoForAllPlayers.Append( " This Tile: " );
 			infoForAllPlayers.Append( PlayerRace.players[i].distanceTravelledOnThisTile.ToString( "N0" ) );
@@ -466,37 +466,13 @@ public class HUDMultiplayer : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Updates the race position displayed in the HUD.
+	/// Updates the race position displayed on the HUD.
 	/// </summary>
-	/// <param name="position">Zero-indexed position i.e., 0 is the first place, 1, is second place, etc..</param>
-	public void updateRacePosition( int racePosition )
+	/// <param name="racePosition">Race position.</param>
+	public void updateRacePosition( RacePosition racePosition )
 	{
-		racePositionText.text = getRacePositionAsString( racePosition + 1 );
-	}
-
-	string getRacePositionAsString( int racePosition )
-	{		
-		string ordinalIndicator;
-		switch (racePosition)
-		{
-			case 1:
-				ordinalIndicator = "1<size=64><sup>st</sup></size>";
-				break;
-				
-			case 2:
-				ordinalIndicator = "2<size=64><sup>nd</sup></size>";
-				break;
-
-			case 3:
-				ordinalIndicator = "3<size=64><sup>rd</sup></size>";
-				break;
-
-			default:
-				ordinalIndicator = string.Empty;
-				break;
-			
-		}
-		return ordinalIndicator;
+		string racePositionString = LocalizationManager.Instance.getText( "RACE_" + racePosition.ToString() );
+		racePositionText.text = string.Format( racePositionString, 64 );
 	}
 
 	void OnEnable()

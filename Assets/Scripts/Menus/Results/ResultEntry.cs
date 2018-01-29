@@ -13,9 +13,11 @@ public class ResultEntry : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI raceDurationText;
 	public GameObject emoteGameObject;
 
-	public void configureEntry( int racePosition, int level, string playerName, Sprite playerIconSprite, string raceDuration  )
+	public void configureEntry( RacePosition racePosition, int level, string playerName, Sprite playerIconSprite, string raceDuration  )
 	{
-		racePositionText.text = racePosition.ToString() + "<size=58><sup>st</sup></size>";
+		string racePositionString = LocalizationManager.Instance.getText( "RACE_" + racePosition.ToString() );
+		racePositionString = string.Format( racePositionString, 58 );
+		racePositionText.text = racePositionString;
 		levelText.text = level.ToString();
 		playerNameText.text = playerName;
 		playerIcon.sprite = playerIconSprite;
