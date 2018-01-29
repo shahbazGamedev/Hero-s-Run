@@ -151,7 +151,7 @@ public class MatchmakingManager : MonoBehaviour {
 			case PlayMode.PlayCoopWithOnePlayer:
 				twoPlayerPanel.SetActive( true );
 				//Use default values for remote player portrait until he connects
-				versusText.text = LocalizationManager.Instance.getText( "CIRCUIT_COOP_AND" );
+				versusText.text = LocalizationManager.Instance.getText( "CIRCUIT_COOP_WITH" );
 				setRemotePlayerData( 1, LocalizationManager.Instance.getText( "CIRCUIT_COOP_PARTNER" ), 1, 0  );
 				break;
 
