@@ -286,7 +286,7 @@ public class LevelData : MonoBehaviour {
 
 				RenderSettings.fog = false;
 				RenderSettings.fogMode = FogMode.Linear;
-				RenderSettings.fogColor = new Color(109f/255f, 169f/255f, 226f/255f ); //bluish
+				RenderSettings.fogColor = lightingData.fogColor; //bluish
 				RenderSettings.fogStartDistance = 100f;
 				RenderSettings.fogEndDistance = 120f;
 
@@ -295,7 +295,7 @@ public class LevelData : MonoBehaviour {
 			case SunType.Sky_city_night:
 				lightIntensity = 2.5f;
 				Sun.GetComponent<Light>().shadows = LightShadows.None;
-				Sun.GetComponent<Light>().color = new Color(44f/255f,96f/255f,146f/255f); //purple
+				Sun.GetComponent<Light>().color = lightingData.sunColor; //bluish
 				shadowStrength = 0.1f;
 				sunDirection = Quaternion.Euler( 122.7f,-55.8f,30.7f );
 
@@ -304,7 +304,7 @@ public class LevelData : MonoBehaviour {
 
 				RenderSettings.fog = false;
 				RenderSettings.fogMode = FogMode.Linear;
-				RenderSettings.fogColor = new Color( 2f/255f, 52f/255f, 105f/255f ); //dark purple
+				RenderSettings.fogColor = lightingData.fogColor; //dark purple
 				RenderSettings.fogStartDistance = 100f;
 				RenderSettings.fogEndDistance = 120f;
 
@@ -444,19 +444,6 @@ public class LevelData : MonoBehaviour {
 		}
 	}
 
-	public MultiplayerInfo getMultiplayerInfoByRaceTrackName( string raceTrackName )
-	{
-		for( int i = 0; i < multiplayerList.Count; i++ )
-		{
-			if( multiplayerList[i].circuitInfo.raceTrackName == raceTrackName )
-			{
-				//Found it.
-				return multiplayerList[i];
-			}
-		}
-		return null;
-	}
-
 	/// <summary>
 	/// Gets a random coop level.
 	/// For testing, use the override in the debug menu to specify which sector you want to play in.
@@ -485,11 +472,11 @@ public class LevelData : MonoBehaviour {
 		}
 	}
 
-	public MultiplayerInfo getRaceTrackByName( string raceTrackName )
+	public MultiplayerInfo getMapByName( string mapName )
 	{
 		for( int i =0; i < multiplayerList.Count; i++ )
 		{
-			if( multiplayerList[i].circuitInfo.raceTrackName == raceTrackName )
+			if( multiplayerList[i].circuitInfo.mapName == mapName )
 			{	
 				return multiplayerList[i];
 			}
@@ -520,8 +507,8 @@ public class LevelData : MonoBehaviour {
 	public class MultiplayerInfo
 	{
 		[Header("Multiplayer Parameters")]
-		[Tooltip("Circuit name is not used at runtime. It is only used to make the data easier to read in the editor.")]
-		public string circuitName = "Circuit Name";
+		[Tooltip("Editor map name is not used at runtime. It's only used to make the data easier to read in the editor.")]
+		public string editorMapName;
 		public CircuitInfo circuitInfo = new CircuitInfo();
 		[Tooltip("The type of sun for the level. The sun type will not change until the player starts a new section. The sun type determines characteristics such ambient light, directional light rotation, color, intensity and shadows and skybox material.")]
 		public SunType sunType = SunType.Afternoon;
@@ -566,11 +553,11 @@ public class LevelData : MonoBehaviour {
 	{
 		[Header("Sector Parameters")]
 		[Tooltip("The name to use for matchmaking. It must NOT have any underscore characters '_'.")]
-		public string raceTrackName = string.Empty;
+		public string mapName = string.Empty;
 		[Tooltip("Bigger rectangular image.")]
 		public Sprite circuitImage;
 		[Tooltip("The sector number is displayed in various UI elements. The training sector is 0.")]
-		public int sectorNumber;
+		public int mapNumber;
 		[Tooltip("The background color is used in various UI elements to match the main color of the sector image.")]
 		public Color backgroundColor;
 		[Tooltip("Spawn height")]

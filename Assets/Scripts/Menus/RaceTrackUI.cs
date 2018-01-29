@@ -12,7 +12,7 @@ public class RaceTrackUI : MonoBehaviour {
 	public void configure ( int index, LevelData.MultiplayerInfo info )
 	{
 		raceTrackNumber.text = (index + 1).ToString();
-		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + info.circuitInfo.sectorNumber.ToString() );
+		string sectorName = LocalizationManager.Instance.getText( "MAP_" + info.circuitInfo.mapNumber.ToString() );
 		raceTrackName.text = sectorName;
 		raceTrackImage.sprite = info.circuitInfo.circuitImage;
 		textBackground.color = info.circuitInfo.backgroundColor;

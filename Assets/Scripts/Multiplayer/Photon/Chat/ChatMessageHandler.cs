@@ -53,8 +53,8 @@ public class ChatMessageHandler {
 	#region Race Me
 	public void sendMatchRequestMessage ( string target )
 	{
-		//string raceTrackName = LevelManager.Instance.getLevelData().getRaceTrackByTrophies().circuitInfo.raceTrackName;
-		string raceTrackName = "BAD-needs to be fixed";
+		LevelData.MultiplayerInfo mi = LevelManager.Instance.getLevelData().getRandomLevel();
+		string raceTrackName = mi.circuitInfo.mapName;
 		string roomName = GameManager.Instance.playerProfile.getUserName() + "_" + target;
 		int playerIcon = GameManager.Instance.playerProfile.getPlayerIconId();
 		int level = GameManager.Instance.playerProfile.getLevel();
@@ -73,7 +73,7 @@ public class ChatMessageHandler {
 		int playerIcon = GameManager.Instance.playerProfile.getPlayerIconId();
 		int level = GameManager.Instance.playerProfile.getLevel();
 		int currentWinStreak = GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK);
-		MatchData matchData = new MatchData( GameManager.Instance.playerProfile.getUserName(), LevelManager.Instance.matchData.raceTrackName, LevelManager.Instance.matchData.roomName, playerIcon, level, currentWinStreak );
+		MatchData matchData = new MatchData( GameManager.Instance.playerProfile.getUserName(), LevelManager.Instance.matchData.mapName, LevelManager.Instance.matchData.roomName, playerIcon, level, currentWinStreak );
 
 		ChatMessage chatMessage = new ChatMessage();
 		chatMessage.chatMessageType = ChatMessageType.MATCH_REQUEST_ACCEPTED;
@@ -205,16 +205,16 @@ public class ChatMessageHandler {
 	public class MatchData
 	{
 		public string sender;
-		public string raceTrackName;
+		public string mapName;
 		public string roomName;
 		public int playerIcon;
 		public int level;
 		public int currentWinStreak;
 	
-		public MatchData ( string sender, string raceTrackName, string roomName, int playerIcon, int level, int currentWinStreak )
+		public MatchData ( string sender, string mapName, string roomName, int playerIcon, int level, int currentWinStreak )
 		{
 			this.sender = sender;
-			this.raceTrackName = raceTrackName;
+			this.mapName = mapName;
 			this.roomName = roomName;
 			this.playerIcon = playerIcon;
 			this.level = level;
@@ -228,7 +228,7 @@ public class ChatMessageHandler {
 
 		public void print()
 		{
-			Debug.Log("MatchData-Sender: " + sender + " Race Track Name: " + raceTrackName + " Room Name: " + roomName + " Player Icon: " + playerIcon  + " Level: " + level + " Current Win Streak: " + currentWinStreak );
+			Debug.Log("MatchData-Sender: " + sender + " Map Name: " + mapName + " Room Name: " + roomName + " Player Icon: " + playerIcon  + " Level: " + level + " Current Win Streak: " + currentWinStreak );
 		}
 	}
 }

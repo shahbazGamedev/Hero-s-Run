@@ -161,7 +161,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 			if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
 			{
-				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRaceTrackByName( LevelManager.Instance.matchData.raceTrackName ) );
+				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getMapByName( LevelManager.Instance.matchData.mapName ) );
 				RoomOptions roomOptions = new RoomOptions();
 				roomOptions.MaxPlayers = LevelManager.Instance.getNumberOfPlayersRequired();
 				roomOptions.IsVisible = false;
@@ -173,7 +173,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 				int currentSector = GameManager.Instance.playerProfile.getCurrentSector();
 				LevelData.CircuitInfo selectedCircuit = LevelManager.Instance.getSelectedCircuit().circuitInfo;
 				//Join the selected circuit such as CIRUIT_PRACTICE_RUN.
-				Debug.Log("MPNetworkLobbyManager-tryToJoinRoom-The circuit selected by the player is: " + selectedCircuit.raceTrackName + " for Sector " + currentSector );
+				Debug.Log("MPNetworkLobbyManager-tryToJoinRoom-The circuit selected by the player is: " + selectedCircuit.mapName + " for Sector " + currentSector );
 		
 				//Try to join an existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
 				ExitGames.Client.Photon.Hashtable desiredRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Sector", currentSector } };
@@ -245,14 +245,14 @@ public class MPNetworkLobbyManager : PunBehaviour
 	public override void OnPhotonRandomJoinFailed (object[] codeAndMsg)
 	{
 		int currentSector = GameManager.Instance.playerProfile.getCurrentSector();
-	    Debug.Log("MPNetworkLobbyManager:OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one. " + LevelManager.Instance.getSelectedCircuit().circuitInfo.raceTrackName + " for sector " + currentSector );
+	    Debug.Log("MPNetworkLobbyManager:OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one. " + LevelManager.Instance.getSelectedCircuit().circuitInfo.mapName + " for sector " + currentSector );
 	    //We failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
 		//In multiplayer games, we want all the players to have the same results when using the random generator. This is why we seed it.
 		//The seed is set by the master when the room is created.
 		RoomOptions roomOptions = new RoomOptions();
 		int randomSeed = Random.Range( 0, 777777 );
 		Debug.Log("Matchmaking randomSeed " + randomSeed );
-		roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Track", LevelManager.Instance.getSelectedCircuit().circuitInfo.raceTrackName }, { "Sector", currentSector }, { "Seed", randomSeed } };
+		roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Map", LevelManager.Instance.getSelectedCircuit().circuitInfo.mapName }, { "Sector", currentSector }, { "Seed", randomSeed } };
 		roomOptions.MaxPlayers = LevelManager.Instance.getNumberOfPlayersRequired();
 		//Mandatory - you must also set customRoomPropertiesForLobby
 		//With customRoomPropertiesForLobby, you define which key-values are relevant for matchmaking.
@@ -454,11 +454,11 @@ public class MPNetworkLobbyManager : PunBehaviour
 		ExitGames.Client.Photon.Hashtable customRoomProperties = PhotonNetwork.room.CustomProperties;
 		if( customRoomProperties != null )
 		{
-			if( customRoomProperties.ContainsKey("Track") )
+			if( customRoomProperties.ContainsKey("Map") )
 			{
-				string raceTrackName = PhotonNetwork.room.CustomProperties["Track"].ToString();
-				Debug.Log("MPNetworkLobbyManager displayMap Track " + raceTrackName );
-				LevelData.MultiplayerInfo mi = LevelManager.Instance.getLevelData().getMultiplayerInfoByRaceTrackName( raceTrackName );
+				string mapName = PhotonNetwork.room.CustomProperties["Map"].ToString();
+				Debug.Log("MPNetworkLobbyManager displayMap Map " + mapName );
+				LevelData.MultiplayerInfo mi = LevelManager.Instance.getLevelData().getMapByName( mapName );
 				setTravelingConnectionProgress( mi.circuitInfo );
 				matchmakingManager.configureCircuitData( mi.circuitInfo );
 				matchmakingManager.hidePlayButton();
@@ -476,7 +476,7 @@ public class MPNetworkLobbyManager : PunBehaviour
  
 	void setTravelingConnectionProgress( LevelData.CircuitInfo circuitInfo )
 	{
-		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + circuitInfo.sectorNumber.ToString() );
+		string sectorName = LocalizationManager.Instance.getText( "MAP_" + circuitInfo.mapNumber.ToString() );
 		string travelingTo = string.Format( LocalizationManager.Instance.getText( "MULTI_TRAVELING_TO" ), sectorName );
 		matchmakingManager.setConnectionProgress( travelingTo  ); 
 	}

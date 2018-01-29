@@ -110,7 +110,7 @@ public class MatchmakingManager : MonoBehaviour {
 			else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
 			{
 				//Use the race track name saved in the match data
-				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRaceTrackByName( LevelManager.Instance.matchData.raceTrackName ) );
+				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getMapByName( LevelManager.Instance.matchData.mapName ) );
 			}
 			else if( GameManager.Instance.isCoopPlayMode() )
 			{
@@ -244,7 +244,7 @@ public class MatchmakingManager : MonoBehaviour {
 
 	public void configureCircuitData( LevelData.CircuitInfo circuitInfo )
 	{
-		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + circuitInfo.sectorNumber.ToString() );
+		string sectorName = LocalizationManager.Instance.getText( "MAP_" + circuitInfo.mapNumber.ToString() );
 		circuitName.text = sectorName;
 		circuitImage.color = Color.white;
 		circuitImage.sprite = circuitInfo.circuitImage;

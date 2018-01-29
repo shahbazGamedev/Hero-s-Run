@@ -100,11 +100,11 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			{
 				Debug.Log("customRoomProperties does not contain the key Seed " + PhotonNetwork.room.Name );
 			}
-			if( customRoomProperties.ContainsKey("Track") )
+			if( customRoomProperties.ContainsKey("Map") )
 			{
-				string raceTrackName = PhotonNetwork.room.CustomProperties["Track"].ToString();
-				Debug.Log("GenerateLevel Awake Track " + raceTrackName );
-				LevelData.MultiplayerInfo mi = levelData.getMultiplayerInfoByRaceTrackName( raceTrackName );
+				string mapName = PhotonNetwork.room.CustomProperties["Map"].ToString();
+				Debug.Log("GenerateLevel Awake Track " + mapName );
+				LevelData.MultiplayerInfo mi = levelData.getMapByName( mapName );
 				LevelManager.Instance.setSelectedCircuit( mi );
 			}
 			else
@@ -290,7 +290,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		tileCreationIndex = 0;
 		playerTileIndex = 0;
 
-		Debug.Log("GenerateLevel-createMultiplayerLevel: selected level is: " + LevelManager.Instance.getSelectedCircuit().circuitInfo.raceTrackName );
+		Debug.Log("GenerateLevel-createMultiplayerLevel: selected level is: " + LevelManager.Instance.getSelectedCircuit().circuitInfo.mapName );
 						
 		LevelData.MultiplayerInfo currentMultiplayer = LevelManager.Instance.getSelectedCircuit();
 		if( currentMultiplayer.tileSize == 0 ) Debug.LogError("GenerateLevel error: the tile size for this level is 0. You must set the tile size in MultiplayerInfo. See LevelData.");
@@ -379,7 +379,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		Camera.main.GetComponent<DynamicFogAndMist.DynamicFog>().enabled = currentMultiplayer.isFogEnabled;
 		if( currentMultiplayer.isFogEnabled ) levelData.setFogParameters(currentMultiplayer.sunType);
 
-		Debug.Log("GenerateLevel-CreateLevel: Level " + currentMultiplayer.circuitName + " has been created." );
+		Debug.Log("GenerateLevel-CreateLevel: Level " + currentMultiplayer.circuitInfo.mapName + " has been created." );
 
 	}
 

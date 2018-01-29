@@ -304,7 +304,7 @@ public class LevelManager {
 	public void setSelectedCircuit( LevelData.MultiplayerInfo selectedCircuit  )
 	{
 		this.selectedCircuit = selectedCircuit;
-		Debug.Log( "setSelectedCircuit " + selectedCircuit.circuitInfo.raceTrackName );
+		Debug.Log( "setSelectedCircuit " + selectedCircuit.circuitInfo.mapName );
     }
 	#endregion
 
