@@ -53,7 +53,7 @@ public class MPGameEndManager : MonoBehaviour {
 		playerName.text = GameManager.Instance.playerProfile.getUserName();
 		backgroundImage.color = multiplayerInfo.circuitInfo.backgroundColor;
 
-		if( TrophyManager.Instance.canEarnTrophies() )
+		if( CompetitionManager.Instance.canEarnCompetitivePoints() )
 		{
 			numberOfTrophiesText.gameObject.SetActive( true );
 			int trophiesEarnedLastRace = GameManager.Instance.playerProfile.getTrophiesEarnedLastRace();

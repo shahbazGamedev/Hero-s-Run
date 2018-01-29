@@ -140,7 +140,7 @@ public sealed class PlayerProfile {
 	/// <param name="value">Value.</param>
 	public void changeTrophies( int value )
 	{
-		if( value >= -TrophyManager.MAX_CHANGE_IN_TROPHIES && value <= TrophyManager.MAX_CHANGE_IN_TROPHIES )
+		if( value >= -CompetitionManager.MAX_CHANGE_IN_COMPETITIVE_POINTS && value <= CompetitionManager.MAX_CHANGE_IN_COMPETITIVE_POINTS )
 		{
 			int newValue = numberOfTrophies + value;
 			if( newValue  < 1 ) newValue = 1;
@@ -148,7 +148,7 @@ public sealed class PlayerProfile {
 		}
 		else
 		{
-			Debug.LogWarning("PlayerProfile-the number of trophies to change " + value + " is incorrect. It needs to be between " + (-TrophyManager.MAX_CHANGE_IN_TROPHIES).ToString() + " and " + TrophyManager.MAX_CHANGE_IN_TROPHIES.ToString() + ".");
+			Debug.LogWarning("PlayerProfile-the number of trophies to change " + value + " is incorrect. It needs to be between " + (-CompetitionManager.MAX_CHANGE_IN_COMPETITIVE_POINTS).ToString() + " and " + CompetitionManager.MAX_CHANGE_IN_COMPETITIVE_POINTS.ToString() + ".");
 		}
 	}
 
