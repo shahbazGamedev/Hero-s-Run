@@ -9,13 +9,13 @@ public class StatisticsMenu : MonoBehaviour {
 	[SerializeField] RectTransform statisticEntriesPanel;
 	[SerializeField] GameObject statisticEntryPrefab;
 	[SerializeField] List<StatisticEntryIcon> statisticEntriesList = new List <StatisticEntryIcon>();
-	[Header("Trophies")]
+	[Header("Competitive Points")]
 	[SerializeField] Text numberOfTrophiesText;
 
 	// Use this for initialization
 	void Start ()
 	{	
-		numberOfTrophiesText.text = GameManager.Instance.playerProfile.getTrophies().ToString("N0");
+		numberOfTrophiesText.text = GameManager.Instance.playerProfile.getCompetitivePoints().ToString("N0");
 		configureEntries();
 	}
 

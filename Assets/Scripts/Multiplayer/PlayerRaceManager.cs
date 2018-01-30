@@ -157,10 +157,10 @@ public class PlayerRaceManager {
 		if( CompetitionManager.Instance.canEarnCompetitivePoints() )
 		{
 			//Note: trophiesEarnedLastRace will be negative if the player lost.
-			int trophiesEarnedLastRace = CompetitionManager.Instance.getCompetitivePointsEarned( racePosition, GameManager.Instance.playerProfile.getCurrentSector(), GameManager.Instance.playerProfile.getTrophies(), trophiesOwnedByOpponent1 );
+			int trophiesEarnedLastRace = CompetitionManager.Instance.getCompetitivePointsEarned( racePosition, GameManager.Instance.playerProfile.getCurrentSector(), GameManager.Instance.playerProfile.getCompetitivePoints(), trophiesOwnedByOpponent1 );
 			//Store this value temporarily in player profile so the GameEndManager can retrieve it.
-			GameManager.Instance.playerProfile.setTrophiesEarnedLastRace( trophiesEarnedLastRace );
-			GameManager.Instance.playerProfile.changeTrophies( trophiesEarnedLastRace );
+			GameManager.Instance.playerProfile.setCompetitivePointsEarnedLastRace( trophiesEarnedLastRace );
+			GameManager.Instance.playerProfile.changeCompetitivePoints( trophiesEarnedLastRace );
 		}
 
 		//Update the player statistics
@@ -193,8 +193,8 @@ public class PlayerRaceManager {
 		{
 			// trophiesLost will be negative.
 			// Assume you are in 2nd position if you abandon a race.
-			int trophiesLost = CompetitionManager.Instance.getCompetitivePointsEarned( RacePosition.SECOND_PLACE, GameManager.Instance.playerProfile.getCurrentSector(), GameManager.Instance.playerProfile.getTrophies(), trophiesOwnedByOpponent1 );
-			GameManager.Instance.playerProfile.changeTrophies( trophiesLost );
+			int trophiesLost = CompetitionManager.Instance.getCompetitivePointsEarned( RacePosition.SECOND_PLACE, GameManager.Instance.playerProfile.getCurrentSector(), GameManager.Instance.playerProfile.getCompetitivePoints(), trophiesOwnedByOpponent1 );
+			GameManager.Instance.playerProfile.changeCompetitivePoints( trophiesLost );
 			GameManager.Instance.playerProfile.serializePlayerprofile();
 			Debug.Log("PlayerRaceManager-playerAbandonedRace: Trophies lost " + trophiesLost );
 		}

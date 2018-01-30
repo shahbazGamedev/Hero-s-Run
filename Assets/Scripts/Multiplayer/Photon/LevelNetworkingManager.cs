@@ -77,7 +77,7 @@ public sealed class LevelNetworkingManager : PunBehaviour
 		centerStartPosition = new Vector3( centerStartPosition.x, spawnHeight, centerStartPosition.z );
 	}
 
-	IEnumerator Start()
+	void Start()
 	{
 		if (playerPrefab == null)
 		{
@@ -105,27 +105,30 @@ public sealed class LevelNetworkingManager : PunBehaviour
 
 			createBot();
 			
-			//The yield is to prevent having one frame of the matchmaking screen in the video
-			yield return new WaitForEndOfFrame();
-
-			//Verify if the player wants to record the race
 			#if UNITY_IOS
-			if( LevelManager.Instance.isRecordingSelected  )
-			{
-				try
-				{
-					ReplayKit.StartRecording();
-				}
-		   		catch (Exception e)
-				{
-					Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
-		    	}
-			}
+			//Verify if the player wants to record the race
+			if( LevelManager.Instance.isRecordingSelected  ) StartCoroutine( startRecording() );
 			#endif
-
 		}
 	}
 	
+	IEnumerator startRecording()
+	{
+		//The yield is to prevent having one frame of the matchmaking screen in the video
+		yield return new WaitForEndOfFrame();
+
+		#if UNITY_IOS
+		try
+		{
+			ReplayKit.StartRecording();
+		}
+   		catch (Exception e)
+		{
+			Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
+    	}
+		#endif
+	}
+
 	void createBot()
 	{
 		//the player plays offline against a bot or with a bot.

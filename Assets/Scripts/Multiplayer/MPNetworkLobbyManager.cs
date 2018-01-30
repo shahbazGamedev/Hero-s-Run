@@ -117,7 +117,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		//Set trophies. This is needed to determine trophies won/lost since the value depends on the differences in trophies between the players.
 		//As an example, a player with 400 trophies winning against a player with 800 trophies, will earn 50 trophies, whereas a
 		//player with 600 trophies winning against a player with 800 trophies, will earn 40 trophies.
-		playerCustomProperties.Add("Trophies", GameManager.Instance.playerProfile.getTrophies() );
+		playerCustomProperties.Add("CP", GameManager.Instance.playerProfile.getCompetitivePoints() );
 
 		//Apply values so that they propagate to other players
 		PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
@@ -369,7 +369,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		numberRemotePlayerConnected++;
 		matchmakingManager.enableExitButton( false );
 		matchmakingManager.setRemotePlayerData( numberRemotePlayerConnected, player.NickName, (int)player.CustomProperties["Level"], (int)player.CustomProperties["Icon"] );
-		PlayerRaceManager.Instance.setTrophiesOwnedByOpponent( numberRemotePlayerConnected, (int)player.CustomProperties["Trophies"] );
+		PlayerRaceManager.Instance.setTrophiesOwnedByOpponent( numberRemotePlayerConnected, (int)player.CustomProperties["CP"] );
 		PlayerFriends.FriendData playerData = new PlayerFriends.FriendData( player.NickName, (int)player.CustomProperties["Icon"], (int)player.CustomProperties["Level"], (int)player.CustomProperties["WinStreak"] );		
 		GameManager.Instance.recentPlayers.addRecentPlayer( playerData );
 		PlayerMatchData pmd = new PlayerMatchData( player.NickName, (int)player.CustomProperties["Icon"], (int)player.CustomProperties["Level"], (int)player.CustomProperties["WinStreak"] );

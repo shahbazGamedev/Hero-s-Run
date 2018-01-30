@@ -23,7 +23,7 @@ public class DebugMenu : MonoBehaviour {
 	[SerializeField] Dropdown regionOverrideDropdown;
 	[SerializeField] Dropdown mapOverrideDropdown;
 
-	int numberOfTrophies;
+	int competitivePoints;
 
 	void Start () {
 				
@@ -32,10 +32,10 @@ public class DebugMenu : MonoBehaviour {
 		speedOverrideMultiplierSlider.value = GameManager.Instance.playerDebugConfiguration.getSpeedOverrideMultiplier() * 10;
 		speedOverrideMultiplierText.text = GameManager.Instance.playerDebugConfiguration.getSpeedOverrideMultiplier().ToString();
 
-		numberOfTrophies = GameManager.Instance.playerProfile.getTrophies();
-		trophyOverrideMultiplierSlider.value = numberOfTrophies;
-		trophyOverrideMultiplierText.text = numberOfTrophies.ToString("N0");
-		trophyOverrideSectorText.text = SectorManager.Instance.getSectorByPoints( numberOfTrophies ).ToString("N0");
+		competitivePoints = GameManager.Instance.playerProfile.getCompetitivePoints();
+		trophyOverrideMultiplierSlider.value = competitivePoints;
+		trophyOverrideMultiplierText.text = competitivePoints.ToString("N0");
+		trophyOverrideSectorText.text = SectorManager.Instance.getSectorByPoints( competitivePoints ).ToString("N0");
 
 		if( LevelManager.Instance.getOnlyUseUniqueTiles() )
 		{
@@ -83,10 +83,10 @@ public class DebugMenu : MonoBehaviour {
 
 	public void setTrophyOverride( Slider slider )
 	{
-		numberOfTrophies = (int) slider.value;
-		trophyOverrideMultiplierText.text = numberOfTrophies.ToString("N0");
-		trophyOverrideSectorText.text = SectorManager.Instance.getSectorByPoints( numberOfTrophies ).ToString("N0");
-		GameManager.Instance.playerProfile.setNumberOfTrophies( numberOfTrophies );
+		competitivePoints = (int) slider.value;
+		trophyOverrideMultiplierText.text = competitivePoints.ToString("N0");
+		trophyOverrideSectorText.text = SectorManager.Instance.getSectorByPoints( competitivePoints ).ToString("N0");
+		GameManager.Instance.playerProfile.setCompetitivePoints( competitivePoints );
 	}
 
 	void OnSceneUnloaded ( Scene scene )
@@ -94,7 +94,6 @@ public class DebugMenu : MonoBehaviour {
 		//Only proceed if the unloaded scene is Options
 		if( scene.buildIndex == (int) GameScenes.Options )
 		{
-			//Set and save the number of trophies since it may have been changed.
 			GameManager.Instance.playerDebugConfiguration.serializeDebugConfiguration( false );
 			GameManager.Instance.playerProfile.serializePlayerprofile();
 		}

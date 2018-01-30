@@ -34,7 +34,7 @@ public class MainMenu : MonoBehaviour {
 			UniversalTopBar.Instance.showTopBar( false );
 			userNameCanvas.SetActive(  true );
 		}
-		numberOfTrophiesText.text = GameManager.Instance.playerProfile.getTrophies().ToString("N0");
+		numberOfTrophiesText.text = GameManager.Instance.playerProfile.getCompetitivePoints().ToString("N0");
 		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + GameManager.Instance.playerProfile.getCurrentSector().ToString() );
 		sectorText.text = sectorName + " " + GameManager.Instance.playerProfile.getCurrentSector().ToString() + "/" + GameManager.Instance.playerProfile.getHighestSector().ToString();
 		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;

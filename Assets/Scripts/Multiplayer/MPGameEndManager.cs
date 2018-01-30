@@ -56,7 +56,7 @@ public class MPGameEndManager : MonoBehaviour {
 		if( CompetitionManager.Instance.canEarnCompetitivePoints() )
 		{
 			numberOfTrophiesText.gameObject.SetActive( true );
-			int trophiesEarnedLastRace = GameManager.Instance.playerProfile.getTrophiesEarnedLastRace();
+			int trophiesEarnedLastRace = GameManager.Instance.playerProfile.getCompetitivePointsEarnedLastRace();
 			if( trophiesEarnedLastRace > 0 )
 			{
 				//Add a plus sign to make it clearer
@@ -67,7 +67,7 @@ public class MPGameEndManager : MonoBehaviour {
 				numberOfTrophiesText.text = trophiesEarnedLastRace.ToString();
 			}
 			//Reset value just to be safe
-			GameManager.Instance.playerProfile.setTrophiesEarnedLastRace(0);
+			GameManager.Instance.playerProfile.setCompetitivePointsEarnedLastRace(0);
 		}
 		else
 		{

@@ -15,9 +15,13 @@ public class SectorChangeUI : MonoBehaviour {
 	[SerializeField] Image sectorBackground;
 	[SerializeField] GameObject newSectorRibbon;
 
+	[SerializeField] GameObject cardsUnlockedHolder;
+	[SerializeField] GameObject cardsUnlockedText;
+
 	// Use this for initialization
 	void Start ()
 	{
+		SectorStatus sectorStatus = PlayerRaceManager.Instance.sectorStatus;
 		int currentSector = GameManager.Instance.playerProfile.getCurrentSector();
 		//Now that we know the sector, initialize the various UI elements.
  		sectorNumberText.text = string.Format( LocalizationManager.Instance.getText( "SECTOR_NUMBER" ), currentSector );
@@ -26,7 +30,13 @@ public class SectorChangeUI : MonoBehaviour {
 		trophiesNeededText.text = SectorManager.Instance.getPointsRequired( currentSector ).ToString() + "+";
 		sectorImage.sprite = SectorManager.Instance.getSectorImage( currentSector );
 		sectorBackground.color = SectorManager.Instance.getSectorColor( currentSector );;
-		newSectorRibbon.SetActive( PlayerRaceManager.Instance.sectorStatus == SectorStatus.WENT_UP_AND_NEW );
+		newSectorRibbon.SetActive( sectorStatus == SectorStatus.WENT_UP_AND_NEW );
+
+		//Only display the cards unlocked the first time this sector is unlocked.
+		//Do not display them if the player went down a sector.
+		cardsUnlockedHolder.SetActive( sectorStatus == SectorStatus.WENT_UP_AND_NEW );
+		cardsUnlockedText.SetActive( sectorStatus == SectorStatus.WENT_UP_AND_NEW );
+
 		//Reset value
 		PlayerRaceManager.Instance.sectorStatus = SectorStatus.NO_CHANGE;
 	}

@@ -8,7 +8,7 @@ public enum PlayerProfileEvent {
 	Player_Icon_Changed = 1,
 	XP_Changed = 2,
 	User_Name_Changed = 3,
-	Trophies_Changed = 4
+	Competitive_Points_Changed = 4
 }
 
 public enum SectorStatus {
@@ -46,11 +46,10 @@ public sealed class PlayerProfile {
 	public int selectedHeroIndex; //index for heroCharacterList in HeroManager
 
 	[SerializeField] bool completedTutorial = false;
-	//Trophies indicate your success in racing. Players gain or lose Trophies by either winning or losing races in online multiplayer races.
-	//The number of trophies you have indicate which race track you will be racing in for multiplayer races.
-	[SerializeField] int numberOfTrophies = 0;
- 	//Not serialized. trophiesEarnedOrLost is set by PlayerRaceManager in the Level scene, but must be read by GameEndManager in the Matchmaking Scene.
-	private int trophiesEarnedLastRace = 0;
+	//Competitive points (CP) indicate your success in racing. Players gain or lose CP by either winning or losing races in online multiplayer races.
+	[SerializeField] int competitivePoints = 0;
+ 	//Not serialized. competitivePointsEarnedLastRace is set by PlayerRaceManager in the Level scene, but must be read by GameEndManager in the Matchmaking Scene.
+	private int competitivePointsEarnedLastRace = 0;
 
 	#region Sector 
 	[SerializeField] int currentSector = 0; 	//Current sector. A new player starts off in sector 0. Between 0 and SectorManager.MAX_SECTOR
@@ -117,47 +116,48 @@ public sealed class PlayerProfile {
 	}
 	#endregion
 
-	#region Trophies
-	public int getTrophiesEarnedLastRace()
+	#region Competitive Points (also known as CP)
+	public int getCompetitivePointsEarnedLastRace()
 	{
-		return trophiesEarnedLastRace;
+		return competitivePointsEarnedLastRace;
 	}
 
-	public void setTrophiesEarnedLastRace( int value )
+	public void setCompetitivePointsEarnedLastRace( int value )
 	{
-		trophiesEarnedLastRace = value;
+		competitivePointsEarnedLastRace = value;
 	}
 
-	public int getTrophies()
+	public int getCompetitivePoints()
 	{
-		return numberOfTrophies;
+		return competitivePoints;
 	}
 
 	/// <summary>
-	/// Changes the trophies.
-	/// Don't allow the number of trophies to go below 1. If a player loses while in sector 1, we don't want him to go down to sector 0, which is the tutorial.
+	/// Changes the competitive points.
+	/// Don't allow the number of CP to go below 1. If a player loses while in sector 1, we don't want him to go down to sector 0, which is the tutorial.
 	/// </summary>
 	/// <param name="value">Value.</param>
-	public void changeTrophies( int value )
+	public void changeCompetitivePoints( int value )
 	{
 		if( value >= -CompetitionManager.MAX_CHANGE_IN_COMPETITIVE_POINTS && value <= CompetitionManager.MAX_CHANGE_IN_COMPETITIVE_POINTS )
 		{
-			int newValue = numberOfTrophies + value;
+			int newValue = competitivePoints + value;
 			if( newValue  < 1 ) newValue = 1;
-			setNumberOfTrophies( newValue );
+			setCompetitivePoints( newValue );
 		}
 		else
 		{
-			Debug.LogWarning("PlayerProfile-the number of trophies to change " + value + " is incorrect. It needs to be between " + (-CompetitionManager.MAX_CHANGE_IN_COMPETITIVE_POINTS).ToString() + " and " + CompetitionManager.MAX_CHANGE_IN_COMPETITIVE_POINTS.ToString() + ".");
+			Debug.LogWarning("PlayerProfile-the number of CP to change " + value + " is incorrect. It needs to be between " + (-CompetitionManager.MAX_CHANGE_IN_COMPETITIVE_POINTS).ToString() + " and " + CompetitionManager.MAX_CHANGE_IN_COMPETITIVE_POINTS.ToString() + ".");
 		}
 	}
 
-	public void setNumberOfTrophies( int value )
+	//Use changeCompetitivePoints. Do not call this method directly (except for the debug menu call).
+	public void setCompetitivePoints( int value )
 	{
-		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Trophies_Changed, numberOfTrophies, value );
+		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Competitive_Points_Changed, competitivePoints, value );
 
-		numberOfTrophies = value;
-		if( numberOfTrophies == 0 )
+		competitivePoints = value;
+		if( competitivePoints == 0 )
 		{
 			setCompletedTutorial( false );
 		}
@@ -165,32 +165,32 @@ public sealed class PlayerProfile {
 		{
 			setCompletedTutorial( true );
 		}
-		GameManager.Instance.playerStatistics.setHighestNumberOfCompetitivePoints( numberOfTrophies );
+		GameManager.Instance.playerStatistics.setHighestNumberOfCompetitivePoints( competitivePoints );
 		//Verify if the player changed sector because of the change in CP.
 		verifyIfSectorChanged();
-		Debug.Log("PlayerProfile-setNumberOfTrophies to: " + value );
+		Debug.Log("PlayerProfile-setCompetitivePoints to: " + value );
 	}
 
 	public void verifyIfSectorChanged()
 	{
-		int sectorAfterTrophyChange = SectorManager.Instance.getSectorByPoints( numberOfTrophies );
+		int sectorAfterCPChange = SectorManager.Instance.getSectorByPoints( competitivePoints );
 
-		if( sectorAfterTrophyChange > currentSector )
+		if( sectorAfterCPChange > currentSector )
 		{
-			if( sectorAfterTrophyChange > highestSector )
+			if( sectorAfterCPChange > highestSector )
 			{
-				if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_UP_AND_NEW, currentSector, sectorAfterTrophyChange );
+				if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_UP_AND_NEW, currentSector, sectorAfterCPChange );
 			}
 			else
 			{
-				if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_UP, currentSector, sectorAfterTrophyChange );
+				if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_UP, currentSector, sectorAfterCPChange );
 			}
 		}
-		else if( sectorAfterTrophyChange < currentSector )
+		else if( sectorAfterCPChange < currentSector )
 		{
-			if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_DOWN, currentSector, sectorAfterTrophyChange );
+			if( sectorChanged != null ) sectorChanged( SectorStatus.WENT_DOWN, currentSector, sectorAfterCPChange );
 		}
-		setCurrentSector( sectorAfterTrophyChange );
+		setCurrentSector( sectorAfterCPChange );
 	}
 	#endregion
 
@@ -210,7 +210,7 @@ public sealed class PlayerProfile {
 			if( value > currentSector ) highestSector = value;
 			currentSector = value;
 			serializePlayerprofile();
-			Debug.Log("PlayerProfile-setting current sector to: " + value );
+			Debug.Log("PlayerProfile-setting current sector to: " + value + " Highest Sector is: " + highestSector );
 		}
 		else
 		{
