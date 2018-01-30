@@ -165,8 +165,8 @@ public sealed class PlayerProfile {
 		{
 			setCompletedTutorial( true );
 		}
-		GameManager.Instance.playerStatistics.setHighestNumberOfTrophies( numberOfTrophies );
-		//Verify if the player changed sector because of the change in trophies.
+		GameManager.Instance.playerStatistics.setHighestNumberOfCompetitivePoints( numberOfTrophies );
+		//Verify if the player changed sector because of the change in CP.
 		verifyIfSectorChanged();
 		Debug.Log("PlayerProfile-setNumberOfTrophies to: " + value );
 	}

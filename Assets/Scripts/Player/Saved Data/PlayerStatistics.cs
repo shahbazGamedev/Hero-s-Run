@@ -18,16 +18,13 @@ public enum StatisticDataType
 	BEST_WIN_STREAK_LIFETIME = 7,		//The player's best win streak ever.
 	WIN_LOSS_RATIO = 8,					//Races won divided by races run.
 
-	HIGHEST_TROPHIES = 9,				//Highest number of trophies ever reached. It is used to determine the highest race track you have unlocked.
-										//Here are the rules:
-										//If playing alone or against AI, the player can select any unlocked race track via the circuit selection menu.
-										//If inviting a friend to race, the inviter can select any unlocked race track even if the invitee has not unlocked that track yet. 
+	HIGHEST_COMPETITIVE_POINTS = 9,		//Highest number of competitive points ever reached.
 	
 	FAVORITE_CARD = 10,					//The card most frequently played.
 	AVERAGE_SKILL_BONUS = 11,			//The player's average skill bonus.
 
 	//Coop
-	COOP_HIGH_SCORE_WAVES = 100
+	COOP_HIGH_SCORE_WAVES = 100			//The highest wave completed in coop mode.
 }
 
 [System.Serializable]
@@ -49,7 +46,7 @@ public class PlayerStatistics {
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.WIN_LOSS_RATIO, 0 ) );
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.PERFECT_RACES_LIFETIME, 0 ) );
 
-		statisticEntriesList.Add( new StatisticData( StatisticDataType.HIGHEST_TROPHIES, 0 ) );
+		statisticEntriesList.Add( new StatisticData( StatisticDataType.HIGHEST_COMPETITIVE_POINTS, 0 ) );
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.FAVORITE_CARD, 0 ) );
 
 		statisticEntriesList.Add( new StatisticData( StatisticDataType.RACES_WON, 0 ) );
@@ -83,11 +80,11 @@ public class PlayerStatistics {
 		statisticEntriesList.Find( data => data.type == type).value = value;
 	}
 
-	public void setHighestNumberOfTrophies( int value )
+	public void setHighestNumberOfCompetitivePoints( int value )
 	{
-		if( value > getStatisticData(StatisticDataType.HIGHEST_TROPHIES) )
+		if( value > getStatisticData(StatisticDataType.HIGHEST_COMPETITIVE_POINTS) )
 		{
-			setStatisticData( StatisticDataType.HIGHEST_TROPHIES, value );
+			setStatisticData( StatisticDataType.HIGHEST_COMPETITIVE_POINTS, value );
 			serializePlayerStatistics( true );
 		}
 	}
