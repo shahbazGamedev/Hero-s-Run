@@ -79,33 +79,19 @@ public class CompetitionManager : MonoBehaviour {
 		int competitivePoints = 0;
 		PlayMode playMode = GameManager.Instance.getPlayMode();
 
-		float pointsPercentageDifference = ( playerCompetitivePoints - opponentCompetitivePoints )/SectorManager.Instance.getPointsRange( sector );
-
 		if( playMode == PlayMode.PlayAgainstOnePlayer )
 		{
+			float pointsPercentageDifference = ( playerCompetitivePoints - opponentCompetitivePoints )/(float)SectorManager.Instance.getPointsRange( sector );
+
 			if( racePosition == RacePosition.FIRST_PLACE )
 			{
 				//Player won.
-				if( playerCompetitivePoints == opponentCompetitivePoints )
-				{
-					competitivePoints = BASE_COMPETITIVE_POINTS;
-				}
-				else
-				{
-					competitivePoints = (int)Math.Ceiling( BASE_COMPETITIVE_POINTS - VARIABLE_COMPETITIVE_POINTS * pointsPercentageDifference );
-				}
+				competitivePoints = (int)Math.Ceiling( BASE_COMPETITIVE_POINTS - VARIABLE_COMPETITIVE_POINTS * pointsPercentageDifference );
 			}
 			else if( racePosition == RacePosition.SECOND_PLACE )
 			{
 				//Player lost. The player will lose points.
-				if( playerCompetitivePoints == opponentCompetitivePoints )
-				{
-					competitivePoints = -BASE_COMPETITIVE_POINTS;
-				}
-				else
-				{
-					competitivePoints = -(int)Math.Ceiling( BASE_COMPETITIVE_POINTS + VARIABLE_COMPETITIVE_POINTS * pointsPercentageDifference );
-				}
+				competitivePoints = -(int)Math.Ceiling( BASE_COMPETITIVE_POINTS + VARIABLE_COMPETITIVE_POINTS * pointsPercentageDifference );
 			}
 			else
 			{

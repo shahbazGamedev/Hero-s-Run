@@ -849,8 +849,8 @@ public class PlayerControl : Photon.PunBehaviour {
 				//In addition, multiple collision or trigger events can be sent by the physics engine.
 				//In order to avoid sending the playerDiedRPC multiple times, set the player state immediately to DYING.
 				setCharacterState( PlayerCharacterState.Dying );
-				Debug.LogError( name + " fell a big distance so we're forcing the player to respawn-Fall distance: " + fallDistance + " Current tile: " + currentTile.name );
-				HUDMultiplayer.hudMultiplayer.activateUserMessage( "Unfortunately, your player fell through the floor on tile " + currentTile.name + ". Respawing you in safe location.", 0, 3f );
+				Debug.LogError( name + " fell a big distance so we're forcing the player to respawn-Fall distance: " + fallDistance + " Current tile: " + currentTile.name + " State: " + playerCharacterState );
+				HUDMultiplayer.hudMultiplayer.activateUserMessage( "Your player fell through the ground on tile " + currentTile.name + ". Respawing in safe location.", 0, 3f );
 				photonView.RPC( "playerDiedRPC", PhotonTargets.AllViaServer, DeathType.GreatFall, currentTile.name );
 			}
 		}
@@ -1652,12 +1652,20 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Only proceed if not dying already
 		if ( photonView.isMine && playerCharacterState != PlayerCharacterState.Dying )
 		{
-			//Because of network latency, there is always a delay to receive an RPC.
-			//In addition, multiple collision or trigger events can be sent by the physics engine.
-			//In order to avoid sending the playerDiedRPC multiple times, set the player state immediately to DYING.
-			Debug.Log( name + " PlayerControl-killPlayer: " + deathTypeValue + " " + playerCharacterState );
-			setCharacterState( PlayerCharacterState.Dying );
-			photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, deathTypeValue, currentTile.name );
+			//Added test for debugging
+			if ( playerCharacterState == PlayerCharacterState.Ziplining )
+			{
+				Debug.LogError( name + " PlayerControl-killPlayer was called while player was ziplining: " + deathTypeValue + ". Ignoring." );
+			}
+			else
+			{
+				//Because of network latency, there is always a delay to receive an RPC.
+				//In addition, multiple collision or trigger events can be sent by the physics engine.
+				//In order to avoid sending the playerDiedRPC multiple times, set the player state immediately to DYING.
+				Debug.Log( name + " PlayerControl-killPlayer: " + deathTypeValue + " " + playerCharacterState );
+				setCharacterState( PlayerCharacterState.Dying );
+				photonView.RPC("playerDiedRPC", PhotonTargets.AllViaServer, deathTypeValue, currentTile.name );
+			}
 		}
 	}
 

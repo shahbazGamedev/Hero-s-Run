@@ -287,14 +287,16 @@ public sealed class LevelNetworkingManager : PunBehaviour
 	
 			//Find the player who is just ahead of you.
 			PlayerRace playerAhead = PlayerRace.players.Find(a => a.racePosition == pr.racePosition - 1 );
-
-			float distanceDifference = pr.distanceRemaining -playerAhead.distanceRemaining;
-
-			//If the player is behind by more than REQUIRED_POWER_BOOST_DISTANCE meters, activate the power boost.
-			if( distanceDifference > REQUIRED_POWER_BOOST_DISTANCE )
+			if( playerAhead != null )
 			{
-				pr.wasPowerBoostUsed = true;
-				pr.GetComponent<PhotonView>().RPC("activatePowerBoostRPC", PhotonTargets.AllViaServer );
+				float distanceDifference = pr.distanceRemaining -playerAhead.distanceRemaining;
+	
+				//If the player is behind by more than REQUIRED_POWER_BOOST_DISTANCE meters, activate the power boost.
+				if( distanceDifference > REQUIRED_POWER_BOOST_DISTANCE )
+				{
+					pr.wasPowerBoostUsed = true;
+					pr.GetComponent<PhotonView>().RPC("activatePowerBoostRPC", PhotonTargets.AllViaServer );
+				}
 			}
 		}
 	}

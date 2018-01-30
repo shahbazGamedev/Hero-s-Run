@@ -153,11 +153,28 @@ public class UniversalTopBar : MonoBehaviour {
 		switch (eventType)
 		{
 			case PlayerInventoryEvent.Gem_Balance_Changed:
-				hardCurrencyAmountText.GetComponent<UISpinNumber>().spinNumber( "{0}", previousValue, newValue, NUMBER_SPIN_DURATION, false );
+				//You cannot start a coroutine if the object is not active.
+				//So, if the object is active start the coroutine, if not, update the text field directly.
+				if( topPanel.activeSelf )
+				{
+					hardCurrencyAmountText.GetComponent<UISpinNumber>().spinNumber( "{0}", previousValue, newValue, NUMBER_SPIN_DURATION, false );
+				}
+				else
+				{
+					hardCurrencyAmountText.text = newValue.ToString("N0");
+				}
 			break;
 
 			case PlayerInventoryEvent.Coin_Changed:
-				softCurrencyAmountText.GetComponent<UISpinNumber>().spinNumber( "{0}", previousValue, newValue, NUMBER_SPIN_DURATION, true );
+				if( topPanel.activeSelf )
+				{
+					softCurrencyAmountText.GetComponent<UISpinNumber>().spinNumber( "{0}", previousValue, newValue, NUMBER_SPIN_DURATION, true );
+				}
+				else
+				{
+					softCurrencyAmountText.text = newValue.ToString("N0");
+				}
+
 			break;
 		}
 	}
@@ -196,7 +213,7 @@ public class UniversalTopBar : MonoBehaviour {
 	void animateProgressBar( int previousValue, int newValue, float duration, System.Action<int> onFinish = null )
 	{
 		//Only proceed if the progress bar is displayed. A coroutine cannot be started on an inactive object.
-		if( xpFill.gameObject.activeSelf )
+		if( topPanel.activeSelf )
 		{
 			//Animate Text
 			string currentAndNeededXPString = "{0}/" + ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ).ToString();
