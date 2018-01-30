@@ -6,6 +6,7 @@ public class ForceField : CardSpawnedObject {
 	[SerializeField] ParticleSystem activeForceFieldFx;
 	[SerializeField] AudioClip collisionSound;
 	const float FORCE_FIELD_WIDTH = 8f;
+	const float DELAY_BEFORE_DESTROYING_AFTER_KILL = 1.1f;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
@@ -108,6 +109,12 @@ public class ForceField : CardSpawnedObject {
 					addSkillBonus( 25, "SKILL_BONUS_FORCE_FIELD" );
 					//Player ran into force field. He falls backwards.
 					other.GetComponent<PlayerControl>().killPlayer( DeathType.Obstacle );
+					//We don't want the player to respawn and get killed again by the same force field.
+					//This is why we destroy it after it killed a player.
+					//Cancel the original request set during ActivateCard.
+					CancelInvoke( "scaleDownForceField" );
+					//Destroy the force field before the player respawns.
+					Invoke( "scaleDownForceField", DELAY_BEFORE_DESTROYING_AFTER_KILL );
 				}
 			}
 		}

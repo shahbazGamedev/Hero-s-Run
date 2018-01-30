@@ -6,8 +6,7 @@ using TMPro;
 public class HealthBarHandler : MonoBehaviour {
 
 	[Header("Health Bar")]
-	[SerializeField] GameObject healthBarHolder;	//Parent of the 3 radial images.
-	[SerializeField] Image lowHealthRadial; 		//The first 3 boxes (out of 10) are orange to indicate low health (30/100). The other 7 are gray.
+	[SerializeField] GameObject healthBarHolder;	//Parent of the 2 radial images.
 	[SerializeField] Image fullHealthRadial; 		//All 10 boxes are blue. Blue means healthy.
 	[SerializeField] RectTransform healthBarMarker;	//the vertical line. Anchor should be Left, Center.
 	[SerializeField] Image armorRadial;				//the armor indicator sits on top of the full health radial.
@@ -69,13 +68,11 @@ public class HealthBarHandler : MonoBehaviour {
 		}
 		//Low and full radial images should always be in sync
 		float fillAmount = newHealth/(float)PlayerHealth.DEFAULT_HEALTH;
-		lowHealthRadial.GetComponent<UIAnimateRadialImage>().animateFillAmount( fillAmount, animationSpeed, healthBarMarker, onFinish );
 		fullHealthRadial.GetComponent<UIAnimateRadialImage>().animateFillAmount( fillAmount, animationSpeed, healthBarMarker, onFinish );
 	}
 
 	public void resetHealth ()
 	{
-		lowHealthRadial.fillAmount = 1f;			
 		fullHealthRadial.fillAmount = 1f;
 		healthBarMarker.gameObject.SetActive( true );
 		positionHealthBarMarker( 1f );
