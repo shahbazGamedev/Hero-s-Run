@@ -77,8 +77,7 @@ public class CompetitionManager : MonoBehaviour {
 	{
 		if( sector == 0 ) return 0;
 		int competitivePoints = 0;
-		//PlayMode playMode = GameManager.Instance.getPlayMode();
-		PlayMode playMode = PlayMode.PlayAgainstOnePlayer;
+		PlayMode playMode = GameManager.Instance.getPlayMode();
 
 		float pointsPercentageDifference = ( playerCompetitivePoints - opponentCompetitivePoints )/SectorManager.Instance.getPointsRange( sector );
 
