@@ -465,7 +465,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 			}
 			else
 			{
-				Debug.LogError("MPNetworkLobbyManager-displayMap: customRoomProperties does not contain the key Track " + PhotonNetwork.room.Name );
+				Debug.LogError("MPNetworkLobbyManager-displayMap: customRoomProperties does not contain the key 'Map'." );
 			}
 		}
 		else

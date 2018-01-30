@@ -98,18 +98,18 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			}
 			else
 			{
-				Debug.Log("customRoomProperties does not contain the key Seed " + PhotonNetwork.room.Name );
+				Debug.Log("customRoomProperties does not contain the key 'Seed'." );
 			}
 			if( customRoomProperties.ContainsKey("Map") )
 			{
 				string mapName = PhotonNetwork.room.CustomProperties["Map"].ToString();
-				Debug.Log("GenerateLevel Awake Track " + mapName );
+				Debug.Log("GenerateLevel Awake Map " + mapName );
 				LevelData.MultiplayerInfo mi = levelData.getMapByName( mapName );
 				LevelManager.Instance.setSelectedCircuit( mi );
 			}
 			else
 			{
-				Debug.Log("customRoomProperties does not contain the key Track " + PhotonNetwork.room.Name );
+				Debug.Log("customRoomProperties does not contain the key 'Map'." );
 			}
 		}
 		else

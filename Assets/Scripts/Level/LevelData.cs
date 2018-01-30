@@ -467,8 +467,17 @@ public class LevelData : MonoBehaviour {
 		}
 		else
 		{
-			Debug.LogError("LevelData-getRandomCoopMap was called but no MultiplayerInfo with isCoop set to true has been found. Returning null." );
-			return null;
+			List<MultiplayerInfo> coopList = multiplayerList.FindAll( entry => entry.isCoop == true ).ToList();
+			if( coopList.Count > 0 )
+			{
+				int random = Random.Range( 0, coopList.Count);
+				return coopList[random];
+			}
+			else
+			{
+				Debug.LogError("LevelData-getRandomCoopMap was called but no MultiplayerInfo with isCoop set to true has been found. Returning null." );
+				return null;
+			}
 		}
 	}
 
