@@ -425,50 +425,50 @@ public class LevelData : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Gets a random level excluding level zero which is the training level.
-	/// For testing, use the override in the debug menu to specify which sector you want to play in.
+	/// Gets a random map excluding coop maps and the training map.
+	/// For testing, use the override in the debug menu to specify which map you want to play in.
 	/// </summary>
-	/// <returns>The random level.</returns>
-	public MultiplayerInfo getRandomLevel()
+	/// <returns>The random map.</returns>
+	public MultiplayerInfo getRandomMap()
 	{
-		if( GameManager.Instance.playerDebugConfiguration.getOverrideSector() != -1 )
+		if( GameManager.Instance.playerDebugConfiguration.getOverrideMap() != -1 )
 		{
-			//For testing, use the override to specify which sector you want to play in
-			return multiplayerList[GameManager.Instance.playerDebugConfiguration.getOverrideSector()];
+			//For testing, use the override to specify which map you want to play in.
+			return multiplayerList[GameManager.Instance.playerDebugConfiguration.getOverrideMap()];
 		}
 		else
 		{
-			//0 is the training level. We want to exclude it.
-			int random = Random.Range( 1, multiplayerList.Count);
-			return multiplayerList[random];
+			List<MultiplayerInfo> competitionList = multiplayerList.FindAll( entry => entry.isCoop == false ).ToList();
+			if( competitionList.Count > 0 )
+			{
+				//0 is the training map. We want to exclude it.
+				int random = Random.Range( 1, competitionList.Count);
+				return competitionList[random];
+			}
+			else
+			{
+				Debug.LogError("LevelData-getRandomMap was called but no MultiplayerInfo with isCoop set to false has been found. Returning null." );
+				return null;
+			}
 		}
 	}
 
 	/// <summary>
-	/// Gets a random coop level.
-	/// For testing, use the override in the debug menu to specify which sector you want to play in.
+	/// Gets a random coop map.
+	/// For testing, use the override in the debug menu to specify which map you want to play in.
 	/// </summary>
-	/// <returns>The random level.</returns>
-	public MultiplayerInfo getRandomCoopLevel()
+	/// <returns>The random map.</returns>
+	public MultiplayerInfo getRandomCoopMap()
 	{
-		if( GameManager.Instance.playerDebugConfiguration.getOverrideSector() != -1 )
+		if( GameManager.Instance.playerDebugConfiguration.getOverrideMap() != -1 )
 		{
-			//For testing, use the override to specify which sector you want to play in
-			return multiplayerList[GameManager.Instance.playerDebugConfiguration.getOverrideSector()];
+			//For testing, use the override to specify which map you want to play in.
+			return multiplayerList[GameManager.Instance.playerDebugConfiguration.getOverrideMap()];
 		}
 		else
 		{
-			List<MultiplayerInfo> coopList = multiplayerList.FindAll( entry => entry.isCoop == true ).ToList();
-			if( coopList.Count > 0 )
-			{
-				int random = Random.Range( 0, coopList.Count);
-				return coopList[random];
-			}
-			else
-			{
-				Debug.LogError("LevelData-getRandomCoopLevel was called but no MultiplayerInfo with isCoop set to true has been found. Returning null." );
-				return null;
-			}
+			Debug.LogError("LevelData-getRandomCoopMap was called but no MultiplayerInfo with isCoop set to true has been found. Returning null." );
+			return null;
 		}
 	}
 
@@ -551,14 +551,14 @@ public class LevelData : MonoBehaviour {
 	[System.Serializable]
 	public class CircuitInfo
 	{
-		[Header("Sector Parameters")]
+		[Header("Map Parameters")]
 		[Tooltip("The name to use for matchmaking. It must NOT have any underscore characters '_'.")]
 		public string mapName = string.Empty;
 		[Tooltip("Bigger rectangular image.")]
 		public Sprite circuitImage;
-		[Tooltip("The sector number is displayed in various UI elements. The training sector is 0.")]
+		[Tooltip("The map number is displayed in various UI elements. The training map is 0.")]
 		public int mapNumber;
-		[Tooltip("The background color is used in various UI elements to match the main color of the sector image.")]
+		[Tooltip("The background color is used in various UI elements to match the main color of the map image.")]
 		public Color backgroundColor;
 		[Tooltip("Spawn height")]
 		public float spawnHeight = 0;

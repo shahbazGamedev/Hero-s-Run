@@ -53,7 +53,7 @@ public class ChatMessageHandler {
 	#region Race Me
 	public void sendMatchRequestMessage ( string target )
 	{
-		LevelData.MultiplayerInfo mi = LevelManager.Instance.getLevelData().getRandomLevel();
+		LevelData.MultiplayerInfo mi = LevelManager.Instance.getLevelData().getRandomMap();
 		string raceTrackName = mi.circuitInfo.mapName;
 		string roomName = GameManager.Instance.playerProfile.getUserName() + "_" + target;
 		int playerIcon = GameManager.Instance.playerProfile.getPlayerIconId();

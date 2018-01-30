@@ -105,7 +105,7 @@ public class MatchmakingManager : MonoBehaviour {
 			//If the player is inviting a friend, they will race in a track based on the inviter's number of trophies.
 			if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOnePlayer || GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoPlayers )
 			{
-				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomLevel() );
+				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomMap() );
 			}
 			else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
 			{
@@ -114,7 +114,7 @@ public class MatchmakingManager : MonoBehaviour {
 			}
 			else if( GameManager.Instance.isCoopPlayMode() )
 			{
-				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomCoopLevel() );
+				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomCoopMap() );
 			}
 
 			if( !GameManager.Instance.isOnlinePlayMode() || GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )

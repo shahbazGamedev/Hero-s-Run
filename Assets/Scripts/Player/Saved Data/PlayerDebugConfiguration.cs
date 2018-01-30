@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerDebugConfiguration {
 
 	[SerializeField] CloudRegionCode overrideCloudRegionCode = CloudRegionCode.none;
-	[SerializeField] int overrideSector = -1;
+	[SerializeField] int overrideMap = -1;
 	[SerializeField] DebugInfoType debugInfoType = DebugInfoType.NONE; //The type of debug information to display on the HUD such as FPS, Latency, etc.
 	[SerializeField] float speedOverrideMultiplier = 1f;
 	[SerializeField] bool allowBotToPlayCards = true;
@@ -27,14 +27,14 @@ public class PlayerDebugConfiguration {
 		return overrideCloudRegionCode;
 	}
 
-	public void setOverrideSector( int overrideSector )
+	public void setOverrideMap( int overrideMap )
 	{
-		this.overrideSector = overrideSector;
+		this.overrideMap = overrideMap;
 	}
 
-	public int getOverrideSector()
+	public int getOverrideMap()
 	{
-		return overrideSector;
+		return overrideMap;
 	}
 
 	public void setDebugInfoType( DebugInfoType debugInfoType )

@@ -21,7 +21,7 @@ public class DebugMenu : MonoBehaviour {
 	[SerializeField] Text trophyOverrideMultiplierText;
 	[SerializeField] Text trophyOverrideSectorText;
 	[SerializeField] Dropdown regionOverrideDropdown;
-	[SerializeField] Dropdown sectorOverrideDropdown;
+	[SerializeField] Dropdown mapOverrideDropdown;
 
 	int numberOfTrophies;
 
@@ -64,7 +64,7 @@ public class DebugMenu : MonoBehaviour {
 
 		updateFacebookName();
 		populatePhotonCloudRegionDropdown();
-		populateSectorDropdown();
+		populateMapDropdown();
 		populateDebugInfoTypeDropdown();
 	}
 
@@ -223,31 +223,31 @@ public class DebugMenu : MonoBehaviour {
 	}
 	#endregion
 
-	#region Sector override
-	void populateSectorDropdown()
+	#region Map override
+	void populateMapDropdown()
 	{
-		List<string> sectors = new List<string>();
-		string sectorName;
+		List<string> maps = new List<string>();
+		string mapName;
 		for( int i = -1; i < LevelManager.Instance.getLevelData().getNumberOfMultiplayerLevels(); i++ )
 		{
 			if( i == -1 )
 			{
-				sectors.Add( "Don't override" );
+				maps.Add( "Don't override" );
 			}
 			else
 			{
-		 		sectorName = LocalizationManager.Instance.getText( "SECTOR_" + i.ToString() );
-				sectors.Add( sectorName );
+		 		mapName = LocalizationManager.Instance.getText( "MAP_" + i.ToString() );
+				maps.Add( mapName );
 			}
 		}
-		sectorOverrideDropdown.AddOptions( sectors );
+		mapOverrideDropdown.AddOptions( maps );
 		//A value of -1 (None) means do not override
-		sectorOverrideDropdown.value = GameManager.Instance.playerDebugConfiguration.getOverrideSector() + 1; //we are starting from -1
+		mapOverrideDropdown.value = GameManager.Instance.playerDebugConfiguration.getOverrideMap() + 1; //we are starting from -1
 	}
 
-	public void OnSectorDropdownValueChanged()
+	public void OnMapDropdownValueChanged()
 	{
-		GameManager.Instance.playerDebugConfiguration.setOverrideSector( sectorOverrideDropdown.value - 1 ); //we are starting from -1
+		GameManager.Instance.playerDebugConfiguration.setOverrideMap( mapOverrideDropdown.value - 1 ); //we are starting from -1
 	}
 	#endregion
 
