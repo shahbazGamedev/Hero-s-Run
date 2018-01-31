@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using TMPro;
 
 public class FacebookConnectionHandler : MonoBehaviour {
 
@@ -10,11 +11,13 @@ public class FacebookConnectionHandler : MonoBehaviour {
 	[SerializeField] Image connectionStatusImage;
 	[SerializeField] Sprite connectionSuccessSprite;
 	[SerializeField] Sprite connectionFailureSprite;
+	[SerializeField] TextMeshProUGUI funText;
 	const float DELAY_BEFORE_HIDING_STATUS = 5f;
 
 	void Awake ()
 	{
 		Handheld.StopActivityIndicator();
+		funText.text = string.Format( LocalizationManager.Instance.getText("FACEBOOK_MORE_FUN_WITH_FRIENDS"), LocalizationManager.Instance.getText("GAME_TITLE") );
 		connectionStatusImage.gameObject.SetActive( false );
 		if( FacebookManager.Instance.isLoggedIn() )
 		{

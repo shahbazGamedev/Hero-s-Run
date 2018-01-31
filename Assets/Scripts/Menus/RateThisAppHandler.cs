@@ -1,7 +1,7 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
+using TMPro;
 
 public class RateThisAppHandler : MonoBehaviour {
 
@@ -16,10 +16,12 @@ public class RateThisAppHandler : MonoBehaviour {
 	const string TEST_RATE_THIS_APP_URL = "itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=1078466627";
 
 	[SerializeField] GameObject rateThisAppPanel;
+	[SerializeField] TextMeshProUGUI rateThisAppTitle;
 
 	// Use this for initialization
 	void Start ()
  	{
+		rateThisAppTitle.text = string.Format( LocalizationManager.Instance.getText("RATE_THIS_APP_TITLE"), LocalizationManager.Instance.getText("GAME_TITLE") );
 		decideForRateThisApp();	
 	}
 	

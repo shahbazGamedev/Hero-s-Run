@@ -24,7 +24,7 @@ public class SocialMediaPopup : MonoBehaviour {
 		string levelNumberString = (episodeNumber + 1).ToString();
 		episodeNameText.text = LocalizationManager.Instance.getText("EPISODE_NAME_" + levelNumberString );
 		shareButtonText.text = LocalizationManager.Instance.getText("SOCIAL_MEDIA_SHARE_BUTTON");
-		facebookMessage = LocalizationManager.Instance.getText("SOCIAL_MEDIA_FACEBOOK_MESSAGE");
+		facebookMessage = string.Format( LocalizationManager.Instance.getText("SOCIAL_MEDIA_FACEBOOK_MESSAGE"), LocalizationManager.Instance.getText("GAME_TITLE") );
 	}
 	
 	public void showSocialMediaPopup()
