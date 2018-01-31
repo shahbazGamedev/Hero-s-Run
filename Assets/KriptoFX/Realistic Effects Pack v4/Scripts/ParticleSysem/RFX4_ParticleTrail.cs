@@ -48,6 +48,7 @@ public class RFX4_ParticleTrail : MonoBehaviour
     TrailRenderer[] trails;
     private Color psColor;
     private Transform targetT;
+	[SerializeField] Vector3 targetOffset;
     private int layer;
     private bool isLocalSpace = true;
     private Transform t;
@@ -95,7 +96,8 @@ public class RFX4_ParticleTrail : MonoBehaviour
 
     private void Update()
     {
-        if (dict.Count > 10)
+       if (Target != null) targetT = Target.transform;
+       if (dict.Count > 10)
             RemoveEmptyTrails();
 
         int count = ps.GetParticles(particles);
@@ -161,8 +163,8 @@ public class RFX4_ParticleTrail : MonoBehaviour
 #else
                      var time = 1 - particles[i].remainingLifetime / particles[i].startLifetime;
 #endif
-                    var pos = Vector3.Lerp(particles[i].position, targetT.position, time);
-                    trail.transform.position = Vector3.Lerp(pos, targetT.position, Time.deltaTime * time);
+                    var pos = Vector3.Lerp(particles[i].position, targetT.position + targetOffset, time);
+                    trail.transform.position = Vector3.Lerp(pos, targetT.position + targetOffset, Time.deltaTime * time);
                 }
                 else {
                     trail.transform.position = isLocalSpace ? ps.transform.TransformPoint(particles[i].position) : particles[i].position;

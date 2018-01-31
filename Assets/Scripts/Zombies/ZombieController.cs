@@ -201,6 +201,8 @@ public sealed class ZombieController : Creature, ICreature {
 	{		
 		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
 
+		StopAllCoroutines();
+
 		setCreatureState( CreatureState.Dying );
 		if( zombieIcon != null ) MiniMap.Instance.removeRadarObject( gameObject );
 		CancelInvoke( "groan" );
@@ -211,6 +213,40 @@ public sealed class ZombieController : Creature, ICreature {
 
 		if( grantPoints ) SkillBonusHandler.Instance.grantScoreBonus( SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_TOPPLED_ZOMBIE", attackerPhotonViewID );
 	}
+
+	#region Zap
+	public override void zap( Transform attacker, bool grantPoints )
+	{
+		base.zap( attacker, grantPoints );
+	}
+
+	//The creature plays a hit animation because it has been zapped by lightning before falling over backwards and dying.
+	[PunRPC]
+	void zapRPC( int attackerPhotonViewID, bool grantPoints )
+	{		
+		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
+
+		setCreatureState( CreatureState.Immobilized );
+		legacyAnim.CrossFade("hit1", 0.25f);
+
+		StartCoroutine( killAfterZap( legacyAnim["hit1"].length, attackerPhotonViewID, grantPoints ) );
+	}
+
+	IEnumerator killAfterZap( float duration, int attackerPhotonViewID, bool grantPoints )
+	{
+		yield return new WaitForSeconds( duration );
+	
+		setCreatureState( CreatureState.Dying );
+		if( zombieIcon != null ) MiniMap.Instance.removeRadarObject( gameObject );
+		CancelInvoke( "groan" );
+		legacyAnim.CrossFadeQueued("fallToBack", 0.25f);
+		rigidBody.isKinematic = true;
+		capsuleCollider.enabled = false;
+		audioSource.PlayOneShot( knockbackSound );
+
+		if( grantPoints ) SkillBonusHandler.Instance.grantScoreBonus( SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_TOPPLED_ZOMBIE", attackerPhotonViewID );
+	}
+	#endregion
 
 	public void victory( bool playWinSound )
 	{
@@ -368,12 +404,7 @@ public sealed class ZombieController : Creature, ICreature {
 	
 	public IEnumerator burrowUpCompleted( )
 	{
-		float duration = legacyAnim["burrowUp"].length;
-		do
-		{
-			duration = duration - Time.deltaTime;
-			yield return new WaitForFixedUpdate();  
-		} while ( duration > 0 );
+		yield return new WaitForSeconds(legacyAnim["burrowUp"].length);
 
 		capsuleCollider.enabled = true;
 		rigidBody.useGravity = true;
@@ -396,12 +427,7 @@ public sealed class ZombieController : Creature, ICreature {
 
 	public IEnumerator standUpFromBackCompleted()
 	{
-		float duration = legacyAnim["standUpFromBack"].length;
-		do
-		{
-			duration = duration - Time.deltaTime;
-			yield return new WaitForFixedUpdate();  
-		} while ( duration > 0 );
+		yield return new WaitForSeconds(legacyAnim["standUpFromBack"].length);
 
 		string walkType = selectRandomWalk( ZombieMoveType.Walking );
 		legacyAnim.CrossFade(walkType);

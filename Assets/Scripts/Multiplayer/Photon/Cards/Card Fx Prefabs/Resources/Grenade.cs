@@ -8,6 +8,7 @@ using System.Collections;
 public class Grenade : CardSpawnedObject {
 	
 	[SerializeField] ParticleSystem explosionEffect;
+	[SerializeField] GameObject burntGroundDecal;
 
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
@@ -53,6 +54,10 @@ public class Grenade : CardSpawnedObject {
 
 	void explode()
 	{
+		//Place a burnt decal on the ground underneath the grenade.
+		Vector3 decalPosition = transform.TransformPoint( new Vector3(0,1f,0) );
+		spawnDecalOnTheGround( burntGroundDecal, decalPosition, burntGroundDecal.transform.rotation, 8f );
+
 		ParticleSystem effect = GameObject.Instantiate( explosionEffect, transform.position, transform.rotation );
 		effect.GetComponent<AudioSource>().Play ();
 		effect.Play();

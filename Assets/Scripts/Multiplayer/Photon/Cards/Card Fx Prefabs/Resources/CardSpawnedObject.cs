@@ -68,6 +68,29 @@ public class CardSpawnedObject : MonoBehaviour {
 		return player;
 	}
 
+	protected void spawnDecalOnTheGround( GameObject decalPrefab, Vector3 decalPosition, Quaternion decalRotation, float lifespan, float heightOffset = 0.02f )
+	{
+		if ( decalPrefab != null )
+		{		
+			RaycastHit hit;
+			if (Physics.Raycast( decalPosition, Vector3.down, out hit, 10, ~LayerMask.GetMask("Creature") ))
+			{		
+				GameObject decal = GameObject.Instantiate( decalPrefab, decalPosition, decalRotation );
+	  			decal.transform.position = new Vector3( decalPosition.x, hit.point.y + heightOffset, decalPosition.z );
+				Debug.Log( "There is ground underneath the decal called " + decalPrefab.name + ". The collider underneath is: " + hit.collider.name + " at height: " + hit.point.y );
+				Destroy( decal, lifespan );
+			}
+			else
+			{
+				Debug.LogError( "There is no ground underneath the decal called: " + decalPrefab.name + " at position " + decalPosition );
+			}
+		}
+		else
+		{
+			Debug.LogError( "The ground decal specified is null." );
+		}
+	}
+
 	protected float getHeightAdjusment( GameObject target )
 	{
 		float heightAdjustment = 0;

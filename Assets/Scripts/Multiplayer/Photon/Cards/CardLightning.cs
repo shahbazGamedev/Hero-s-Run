@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -8,6 +9,7 @@ using UnityEngine;
 public class CardLightning : Card {
 
 	[SerializeField]  string lightningPrefabName = "Lightning";
+	[SerializeField]  string coopLightningPrefabName = "Lightning Coop";
 
 	public void activateCard ( int photonViewId, int level )
 	{
@@ -25,29 +27,41 @@ public class CardLightning : Card {
 
 		if( GameManager.Instance.isCoopPlayMode() )
 		{
-			//Find a creature to target
-			Transform target = getNearestCreatureWithinRange( playerTransform, cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
+			object[] data = new object[2];
 
-			//Only continue if we found a target
-			if( target != null )
+			//Caster PhotonView ID.
+			data[0] = photonViewID;
+			data[1] = cd.getCardPropertyValue( CardPropertyType.RANGE, level );
+
+			//Find one or more creatures to target that are within range.
+			List<Transform> creatureList = getAllCreatureTransformsWithinRange( playerTransform, cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
+ 
+			//Only continue if we found at least one target.
+			if( creatureList.Count > 0 )
 			{
-	
-				//We do have a target. Play an appropriate VO such as "Gotcha!".
+				//We have at least one target. Play an appropriate VO such as "Gotcha!".
 				playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
-	
-				//Spawn a lightning on the creature
-				Vector3 lightningPosition = target.transform.TransformPoint( getSpawnOffset() );
-				PhotonNetwork.InstantiateSceneObject( lightningPrefabName, lightningPosition, target.rotation, 0, null );
-		
-				//Kill creature
-				ICreature creatureController = target.GetComponent<ICreature>();
-				creatureController.knockback( target, true );	
+
+				for( int i = 0; i < creatureList.Count; i++ )
+				{
+					//Spawn a lightning system over the first creature.
+					//We only need one lightning system even though we might be striking several creatures.
+					if( i == 0 )
+					{
+						Vector3 lightningPosition = creatureList[i].TransformPoint( getSpawnOffset() );
+						PhotonNetwork.InstantiateSceneObject( coopLightningPrefabName, lightningPosition, creatureList[i].rotation, 0, data );
+					}
+			
+					//Zap creature
+					ICreature creatureController = creatureList[i].GetComponent<ICreature>();
+					creatureController.zap( playerTransform, false );
+				}
 			}
 			else
 			{
 				//Display a Minimap message stating that no target was found in range
 				playerTransform.GetComponent<PhotonView>().RPC("cardNoTargetRPC", PhotonTargets.All );
-				Debug.Log("CardLightning: no target found." );
+				Debug.Log("CardLightning: no target(s) found." );
 			}
 		}
 		else

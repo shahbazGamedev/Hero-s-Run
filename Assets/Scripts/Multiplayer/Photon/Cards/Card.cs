@@ -304,6 +304,23 @@ public class Card : Photon.PunBehaviour {
 		}
 		return creatures;
 	}
+
+	protected List<Transform> getAllCreatureTransformsWithinRange( Transform caster, float range )
+	{
+		List<Transform> creatures = new List<Transform>();
+
+		Collider[] hitColliders = Physics.OverlapSphere( caster.position, range, MaskHandler.getMaskOnlyCreatures() );
+		Transform creature;
+		for( int i =0; i < hitColliders.Length; i++ )
+		{
+			//Is the target valid?
+			if( !isTargetValid( caster, hitColliders[i].transform ) ) continue;
+
+			creature = hitColliders[i].transform;
+			creatures.Add( creature );
+		}
+		return creatures;
+	}
 	#endregion
 
 

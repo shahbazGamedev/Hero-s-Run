@@ -115,6 +115,20 @@ public class Creature : MonoBehaviour {
 		}
 	}
 
+	public virtual void zap( Transform attacker, bool grantPoints )
+	{
+		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
+
+		if( attacker != null )
+		{
+			GetComponent<PhotonView>().RPC("zapRPC", PhotonTargets.All, attacker.GetComponent<PhotonView>().viewID, grantPoints );
+		}
+		else
+		{
+			Debug.LogWarning("Creature-zap: the attacker specified is null." );
+		}
+	}
+
 	public virtual void shrink( Transform caster, bool value )
 	{
 		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
