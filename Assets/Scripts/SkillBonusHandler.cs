@@ -118,6 +118,34 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 		grantScoreBonus( bonusPoints, bonusTextID, attacker );
 	}
 
+	[PunRPC]
+	public void grantComboScoreBonusRPC( int bonusPoints, string bonusTextID, int attackerPhotonViewID, int numberOfKills, bool incrementKills )
+	{
+		Transform attacker = getPlayerByViewID( attackerPhotonViewID );
+		if( attacker != null )
+		{
+			if( attacker.GetComponent<PhotonView>().isMine )
+			{
+				grantComboScoreBonus( bonusPoints, bonusTextID, attacker, numberOfKills, incrementKills );
+			}
+		}
+	}
+
+	Transform getPlayerByViewID( int photonViewId )
+	{
+		Transform player = null;
+		for( int i = 0; i < PlayerRace.players.Count; i ++ )
+		{
+			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == photonViewId )
+			{
+				//We found the player
+				player = PlayerRace.players[i].transform;
+				break;
+			}
+		}
+		return player;
+	}
+
 	public void grantScoreBonus( int bonusPoints, string bonusTextID, Transform attacker, bool incrementKills = true )
 	{
 		if( !GameManager.Instance.isCoopPlayMode() ) return;

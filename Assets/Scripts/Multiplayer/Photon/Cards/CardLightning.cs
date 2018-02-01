@@ -10,6 +10,8 @@ public class CardLightning : Card {
 
 	[SerializeField]  string lightningPrefabName = "Lightning";
 	[SerializeField]  string coopLightningPrefabName = "Lightning Coop";
+	const float COOP_MIN_SPAWN_DELAY = 0.1f;
+	public const float COOP_MAX_SPAWN_DELAY = 0.4f;
 
 	public void activateCard ( int photonViewId, int level )
 	{
@@ -27,14 +29,13 @@ public class CardLightning : Card {
 
 		if( GameManager.Instance.isCoopPlayMode() )
 		{
-			object[] data = new object[2];
+			object[] data = new object[1];
 
 			//Caster PhotonView ID.
 			data[0] = photonViewID;
-			data[1] = cd.getCardPropertyValue( CardPropertyType.RANGE, level );
 
 			//Find one or more creatures to target that are within range.
-			List<Transform> creatureList = getAllCreatureTransformsWithinRange( playerTransform, cd.getCardPropertyValue( CardPropertyType.RANGE, level ) );
+			List<Transform> creatureList = getAllCreatureTransformsWithinRange( playerTransform, cd.getCardPropertyValue( CardPropertyType.RADIUS, level ) );
  
 			//Only continue if we found at least one target.
 			if( creatureList.Count > 0 )
@@ -42,20 +43,25 @@ public class CardLightning : Card {
 				//We have at least one target. Play an appropriate VO such as "Gotcha!".
 				playActivateCardVoiceOver( playerTransform.GetComponent<PhotonView>() );
 
-				for( int i = 0; i < creatureList.Count; i++ )
+				GameObject lightningSystem = null;
+
+				int maxTargets = (int) Mathf.Min( cd.getCardPropertyValue( CardPropertyType.MAX_TARGETS, level ), creatureList.Count );
+				for( int i = 0; i < maxTargets; i++ )
 				{
 					//Spawn a lightning system over the first creature.
 					//We only need one lightning system even though we might be striking several creatures.
 					if( i == 0 )
 					{
 						Vector3 lightningPosition = creatureList[i].TransformPoint( getSpawnOffset() );
-						PhotonNetwork.InstantiateSceneObject( coopLightningPrefabName, lightningPosition, creatureList[i].rotation, 0, data );
+						lightningSystem = PhotonNetwork.InstantiateSceneObject( coopLightningPrefabName, lightningPosition, creatureList[i].rotation, 0, data );
 					}
 			
 					//Zap creature
 					ICreature creatureController = creatureList[i].GetComponent<ICreature>();
-					creatureController.zap( playerTransform, false );
+					float smallDelay = Random.Range( COOP_MIN_SPAWN_DELAY, COOP_MAX_SPAWN_DELAY );
+					creatureController.zap( lightningSystem.GetComponent<PhotonView>().viewID, smallDelay );
 				}
+				SkillBonusHandler.Instance.GetComponent<PhotonView>().RPC("grantComboScoreBonusRPC", PhotonTargets.All, ZombieController.SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_COMBO_ZAP_ZOMBIE", photonViewID, maxTargets, true );
 			}
 			else
 			{

@@ -115,18 +115,11 @@ public class Creature : MonoBehaviour {
 		}
 	}
 
-	public virtual void zap( Transform attacker, bool grantPoints )
+	public virtual void zap( int lightningSystemPhotonViewID, float zapDelay  )
 	{
 		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
 
-		if( attacker != null )
-		{
-			GetComponent<PhotonView>().RPC("zapRPC", PhotonTargets.All, attacker.GetComponent<PhotonView>().viewID, grantPoints );
-		}
-		else
-		{
-			Debug.LogWarning("Creature-zap: the attacker specified is null." );
-		}
+		GetComponent<PhotonView>().RPC("zapRPC", PhotonTargets.All, lightningSystemPhotonViewID, zapDelay );
 	}
 
 	public virtual void shrink( Transform caster, bool value )
@@ -154,6 +147,29 @@ public class Creature : MonoBehaviour {
 		else
 		{
 			Debug.LogWarning("Creature-confuse: the caster specified is null." );
+		}
+	}
+
+	protected void spawnDecalOnTheGround( GameObject decalPrefab, Vector3 decalPosition, Quaternion decalRotation, float lifespan, float heightOffset = 0.02f )
+	{
+		if ( decalPrefab != null )
+		{		
+			RaycastHit hit;
+			if (Physics.Raycast( decalPosition, Vector3.down, out hit, 10, ~LayerMask.GetMask("Creature") ))
+			{		
+				GameObject decal = GameObject.Instantiate( decalPrefab, decalPosition, decalRotation );
+	  			decal.transform.position = new Vector3( decalPosition.x, hit.point.y + heightOffset, decalPosition.z );
+				//Debug.Log( "There is ground underneath the decal called " + decalPrefab.name + ". The collider underneath is: " + hit.collider.name + " at height: " + hit.point.y );
+				Destroy( decal, lifespan );
+			}
+			else
+			{
+				Debug.LogError( "There is no ground underneath the decal called: " + decalPrefab.name + " at position " + decalPosition );
+			}
+		}
+		else
+		{
+			Debug.LogError( "The ground decal specified is null." );
 		}
 	}
 

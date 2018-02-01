@@ -26,7 +26,8 @@ public enum CardPropertyType
 	DAMAGE = 11,
 	HEALTH = 12,
 	ARMOR = 13,
-	TAPS = 14
+	TAPS = 14,
+	MAX_TARGETS = 15
 }
 
 public enum CardPropertyTargetType

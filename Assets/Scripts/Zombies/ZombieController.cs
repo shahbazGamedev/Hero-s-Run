@@ -38,6 +38,9 @@ public sealed class ZombieController : Creature, ICreature {
 	[SerializeField] float controllerHeightOther = 1.8f;
 	CapsuleCollider capsuleCollider;
 	Rigidbody rigidBody;
+	[SerializeField] GameObject lightningTrail;
+	[SerializeField] GameObject lightningDecal;
+	private GameObject activeLightningTrail;
 
 	CreatureState previousCreatureState;
 
@@ -215,24 +218,56 @@ public sealed class ZombieController : Creature, ICreature {
 	}
 
 	#region Zap
-	public override void zap( Transform attacker, bool grantPoints )
+	public override void zap( int lightningSystemPhotonViewID, float zapDelay )
 	{
-		base.zap( attacker, grantPoints );
+		base.zap( lightningSystemPhotonViewID, zapDelay );
 	}
 
 	//The creature plays a hit animation because it has been zapped by lightning before falling over backwards and dying.
 	[PunRPC]
-	void zapRPC( int attackerPhotonViewID, bool grantPoints )
+	void zapRPC( int lightningSystemPhotonViewID, float zapDelay )
 	{		
 		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
 
-		setCreatureState( CreatureState.Immobilized );
-		legacyAnim.CrossFade("hit1", 0.25f);
-
-		StartCoroutine( killAfterZap( legacyAnim["hit1"].length, attackerPhotonViewID, grantPoints ) );
+		StartCoroutine( zapAfterDelay( lightningSystemPhotonViewID, zapDelay ) );
 	}
 
-	IEnumerator killAfterZap( float duration, int attackerPhotonViewID, bool grantPoints )
+	IEnumerator zapAfterDelay( int lightningSystemPhotonViewID, float zapDelay )
+	{
+		yield return new WaitForSeconds( zapDelay );
+
+		if( getCreatureState() == CreatureState.Dying ) yield return null; //Ignore. The creature is already dead.
+
+		LightningSpell[] lightningSpells = GameObject.FindObjectsOfType<LightningSpell>();
+		Transform lightningSystem = null;
+
+		for(int i = 0; i < lightningSpells.Length; i++ )
+		{
+			if( lightningSpells[i].GetComponent<PhotonView>().viewID == lightningSystemPhotonViewID )
+			{
+				lightningSystem = lightningSpells[i].transform;
+				break;
+			}
+		}
+
+		if( lightningSystem != null )
+		{
+			//Spawn a lightning trail that starts from the Lightning System (which has a plasma ball effect) and ends on the torso of the creature.
+			activeLightningTrail = GameObject.Instantiate( lightningTrail, lightningSystem );
+			activeLightningTrail.GetComponent<RFX4_ParticleTrail>().Target = gameObject;
+
+			//Place a burnt decal on the ground underneath the creature.
+			Vector3 decalPosition = transform.TransformPoint( new Vector3(0,1f,0) );
+        	spawnDecalOnTheGround( lightningDecal, decalPosition, lightningDecal.transform.rotation, 10f );
+
+			setCreatureState( CreatureState.Immobilized );
+			legacyAnim.CrossFade("hit1", 0.25f);
+	
+			StartCoroutine( killAfterZap( legacyAnim["hit1"].length ) );
+		}
+	}
+
+	IEnumerator killAfterZap( float duration )
 	{
 		yield return new WaitForSeconds( duration );
 	
@@ -243,8 +278,7 @@ public sealed class ZombieController : Creature, ICreature {
 		rigidBody.isKinematic = true;
 		capsuleCollider.enabled = false;
 		audioSource.PlayOneShot( knockbackSound );
-
-		if( grantPoints ) SkillBonusHandler.Instance.grantScoreBonus( SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_TOPPLED_ZOMBIE", attackerPhotonViewID );
+		Destroy( activeLightningTrail, legacyAnim["fallToBack"].length );
 	}
 	#endregion
 
