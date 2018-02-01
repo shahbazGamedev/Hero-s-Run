@@ -11,7 +11,7 @@ public class CardLightning : Card {
 	[SerializeField]  string lightningPrefabName = "Lightning";
 	[SerializeField]  string coopLightningPrefabName = "Lightning Coop";
 	const float COOP_MIN_SPAWN_DELAY = 0.1f;
-	public const float COOP_MAX_SPAWN_DELAY = 0.4f;
+	public const float COOP_MAX_SPAWN_DELAY = 0.3f;
 
 	public void activateCard ( int photonViewId, int level )
 	{

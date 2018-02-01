@@ -12,8 +12,8 @@ public class LightningSpell : CardSpawnedObject {
 			casterTransform = getPlayerByViewID( (int) data[0] );
 			setCasterName( casterTransform.name );
 			positionSpawnedObject( 4f );
-			//Up to 10 targets with a max. random delay of 0.4f per target plus time for the last target to fall down.
-			GameObject.Destroy( gameObject, 5f );
+			//Up to 10 targets with a max. random delay of 0.3f per target plus time for the last target to fall down.
+			GameObject.Destroy( gameObject, 4.5f );
 		}
 		else
 		{

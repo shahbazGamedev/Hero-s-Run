@@ -117,6 +117,9 @@ public class PlayerControl : Photon.PunBehaviour {
 	//when in the air, you can queue a slide request so that you will slide
 	//as soon as you touch the ground
 	bool queueSlide = false;
+	const float COLLIDER_ABOVE_DISTANCE = 1f; //In meters.
+	[Tooltip("If set to true, the player will continue sliding automatically as long as there is a collider just above his head. You can set it to false to save on performance.")]
+	[SerializeField] bool checkForColliderAbove = false;
 	#endregion
 
 	#region General movement variables
@@ -901,8 +904,8 @@ public class PlayerControl : Photon.PunBehaviour {
 	{
 		if ( playerCharacterState == PlayerCharacterState.Sliding || playerCharacterState == PlayerCharacterState.Turning_and_sliding )
 		{
-			//For as long as we have a collider above the character's head, prolong the slide duration
-			if ( checkAbove() )
+			//For as long as we have a collider above the character's head, prolong the slide duration if this option is enabled.
+			if ( checkForColliderAbove && checkAbove() )
 			{
 				slideStartTime = slideStartTime + Time.deltaTime;
 				
@@ -920,22 +923,20 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 	}	
 
-	//Returns true if there is a collider less than 1.5 meters above the player
+	/// <summary>
+	/// Returns true if there is a collider above the player's head within COLLIDER_ABOVE_DISTANCE.
+	/// </summary>
+	/// <returns><c>true</c>, if there is a collider, <c>false</c> otherwise.</returns>
 	bool checkAbove()
 	{
- 		//Temporarily use Ignore Raycast layer so we don't detect the player
-		gameObject.layer = 2;
-        if (Physics.Raycast(transform.position, Vector3.up, 1.5f ))
-		{
- 			gameObject.layer = 8;
-            return true;
-		}
-		else
-		{
-			gameObject.layer = 8;
- 			return false;
-		}
-       
+		//This method is used while sliding only. Therefore the axis collider will be Axis.Z.
+		//Start the raycast in the center of the collider.
+		//By starting from within the center of the collider, the raycast will not collide with this player.
+		Vector3 rayCastStartPosition = new Vector3( transform.position.x,  transform.position.y + capsuleCollider.radius, transform.position.z );
+		float rayCastLength = COLLIDER_ABOVE_DISTANCE + capsuleCollider.radius;
+		//For debugging.
+		//Debug.DrawLine(rayCastStartPosition, rayCastStartPosition + Vector3.up * rayCastLength, Color.magenta );
+        return (Physics.Raycast(rayCastStartPosition, Vector3.up, rayCastLength ));
 	}
 	#endregion
 

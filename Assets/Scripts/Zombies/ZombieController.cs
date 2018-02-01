@@ -278,7 +278,7 @@ public sealed class ZombieController : Creature, ICreature {
 		rigidBody.isKinematic = true;
 		capsuleCollider.enabled = false;
 		audioSource.PlayOneShot( knockbackSound );
-		Destroy( activeLightningTrail, legacyAnim["fallToBack"].length );
+		Destroy( activeLightningTrail, legacyAnim["fallToBack"].length + 0.5f );
 	}
 	#endregion
 
