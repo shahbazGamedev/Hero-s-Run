@@ -40,14 +40,7 @@ public class Grenade : CardSpawnedObject {
 		yield return new WaitForSeconds(0.94f);
 
 		int numberOfBlastVictims = destroyAllTargetsWithinBlastRadius( blastRadius, MaskHandler.getMaskAll(), casterTransform );
-		if( numberOfBlastVictims == 1 )
-		{
-			SkillBonusHandler.Instance.grantComboScoreBonus( ZombieController.SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_TOPPLED_ZOMBIE", casterTransform, numberOfBlastVictims );
-		}
-		else if( numberOfBlastVictims > 1 )
-		{
-			SkillBonusHandler.Instance.grantComboScoreBonus( ZombieController.SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_COMBO_ZOMBIE", casterTransform, numberOfBlastVictims );
-		}
+		SkillBonusHandler.Instance.grantComboScoreBonus( ZombieController.SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_COMBO_ZOMBIE", casterTransform, numberOfBlastVictims );
 		explode();
 		GameObject.Destroy( gameObject );
 	}

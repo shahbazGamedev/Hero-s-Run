@@ -119,14 +119,14 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 	}
 
 	[PunRPC]
-	public void grantComboScoreBonusRPC( int bonusPoints, string bonusTextID, int attackerPhotonViewID, int numberOfKills, bool incrementKills )
+	public void grantComboScoreBonusRPC( int bonusPoints, string bonusTextID, int attackerPhotonViewID, int numberOfKills )
 	{
 		Transform attacker = getPlayerByViewID( attackerPhotonViewID );
 		if( attacker != null )
 		{
 			if( attacker.GetComponent<PhotonView>().isMine )
 			{
-				grantComboScoreBonus( bonusPoints, bonusTextID, attacker, numberOfKills, incrementKills );
+				grantComboScoreBonus( bonusPoints, bonusTextID, attacker, numberOfKills );
 			}
 		}
 	}
@@ -146,7 +146,13 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 		return player;
 	}
 
-	public void grantScoreBonus( int bonusPoints, string bonusTextID, Transform attacker, bool incrementKills = true )
+	/// <summary>
+	/// Grants the score bonus.
+	/// </summary>
+	/// <param name="bonusPoints">Bonus points.</param>
+	/// <param name="bonusTextID">Bonus text ID.</param>
+	/// <param name="attacker">Attacker.</param>
+	public void grantScoreBonus( int bonusPoints, string bonusTextID, Transform attacker )
 	{
 		if( !GameManager.Instance.isCoopPlayMode() ) return;
 
@@ -159,7 +165,7 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 				{
 					//Grants the attacker one kill and the specified bonus points.
 					pmd.score += bonusPoints;
-					if( incrementKills ) pmd.kills++;
+					pmd.kills++;
 					if( attacker.GetComponent<PhotonView>().isMine && attacker.GetComponent<PlayerAI>() == null )
 					{
 						//show a bonus message on the HUD.
@@ -186,7 +192,15 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 		}
 	}
 
-	public void grantComboScoreBonus( int bonusPoints, string bonusTextID, Transform attacker, int numberOfKills, bool incrementKills = true )
+	/// <summary>
+	/// Grants a combo score bonus.
+	/// Before fetching the localized text, this method will append to bonusTextID "_SINGULAR" if the number of kills is one and "_PLURAL" otherwise.
+	/// </summary>
+	/// <param name="bonusPoints">Bonus points.</param>
+	/// <param name="bonusTextID">Bonus text ID.</param>
+	/// <param name="attacker">Attacker.</param>
+	/// <param name="numberOfKills">Number of kills.</param>
+	public void grantComboScoreBonus( int bonusPoints, string bonusTextID, Transform attacker, int numberOfKills )
 	{
 		if( !GameManager.Instance.isCoopPlayMode() ) return;
 
@@ -197,13 +211,21 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 				PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( attacker.name );
 				if( pmd != null )
 				{
-					//Grants the attacker one kill and the specified bonus points.
 					pmd.score = pmd.score + bonusPoints * numberOfKills;
-					if( incrementKills ) pmd.kills = pmd.kills + numberOfKills;
+					pmd.kills = pmd.kills + numberOfKills;
 					if( attacker.GetComponent<PhotonView>().isMine && attacker.GetComponent<PlayerAI>() == null )
 					{
 						//show a bonus message on the HUD.
-						string localizedSkillText = LocalizationManager.Instance.getText(bonusTextID);
+						string suffix;
+						if(  numberOfKills == 1 )
+						{
+							suffix = "_SINGULAR";
+						}
+						else
+						{
+							suffix = "_PLURAL";
+						}
+						string localizedSkillText = LocalizationManager.Instance.getText( bonusTextID + suffix );
 						localizedSkillText = string.Format( localizedSkillText, bonusPoints * numberOfKills, numberOfKills );
 						createBonus( localizedSkillText );
 					}

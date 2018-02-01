@@ -45,8 +45,8 @@ public class CardLightning : Card {
 
 				GameObject lightningSystem = null;
 
-				int maxTargets = (int) Mathf.Min( cd.getCardPropertyValue( CardPropertyType.MAX_TARGETS, level ), creatureList.Count );
-				for( int i = 0; i < maxTargets; i++ )
+				int numberOfTargets = (int) Mathf.Min( cd.getCardPropertyValue( CardPropertyType.MAX_TARGETS, level ), creatureList.Count );
+				for( int i = 0; i < numberOfTargets; i++ )
 				{
 					//Spawn a lightning system over the first creature.
 					//We only need one lightning system even though we might be striking several creatures.
@@ -61,7 +61,7 @@ public class CardLightning : Card {
 					float smallDelay = Random.Range( COOP_MIN_SPAWN_DELAY, COOP_MAX_SPAWN_DELAY );
 					creatureController.zap( lightningSystem.GetComponent<PhotonView>().viewID, smallDelay );
 				}
-				SkillBonusHandler.Instance.GetComponent<PhotonView>().RPC("grantComboScoreBonusRPC", PhotonTargets.All, ZombieController.SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_COMBO_ZAP_ZOMBIE", photonViewID, maxTargets, true );
+				SkillBonusHandler.Instance.GetComponent<PhotonView>().RPC("grantComboScoreBonusRPC", PhotonTargets.All, ZombieController.SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_COMBO_ZAP_ZOMBIE", photonViewID, numberOfTargets );
 			}
 			else
 			{

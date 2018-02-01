@@ -39,14 +39,7 @@ public class Shockwave : CardSpawnedObject {
 		Transform shockwaveEffect = transform.Find("Shockwave Effect");
 		shockwaveEffect.gameObject.SetActive( true );
 		int numberOfBlastVictims = destroyAllTargetsWithinBlastRadius( radius, MaskHandler.getMaskAllWithoutDevices(), casterTransform );
-		if( numberOfBlastVictims == 1 )
-		{
-			SkillBonusHandler.Instance.grantComboScoreBonus( ZombieController.SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_TOPPLED_ZOMBIE", casterTransform, numberOfBlastVictims );
-		}
-		else if( numberOfBlastVictims > 1 )
-		{
-			SkillBonusHandler.Instance.grantComboScoreBonus( ZombieController.SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_COMBO_ZOMBIE", casterTransform, numberOfBlastVictims );
-		}
+		SkillBonusHandler.Instance.grantComboScoreBonus( ZombieController.SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_COMBO_ZOMBIE", casterTransform, numberOfBlastVictims );
 		GameObject.Destroy( gameObject, 3 );
 	}
 
