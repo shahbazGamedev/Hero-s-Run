@@ -4,7 +4,6 @@ using System.Collections;
 public enum DeadEndType {
 		Left = 0,
 		Right = 1,
-		LeftRight = 2,
 		None = 3
 	}
 

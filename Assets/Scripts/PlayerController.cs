@@ -1392,7 +1392,8 @@ public sealed class PlayerController : MonoBehaviour {
 					if ( isGoingRight )
 					{
 						//Verify if the player is doing a side-move in an allowed direction
-						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight )
+						//if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight )
+						if (currentDeadEndType == DeadEndType.Right )
 						{
 							//Turn is valid
 							desiredLane = Lanes.Left;
@@ -1408,7 +1409,8 @@ public sealed class PlayerController : MonoBehaviour {
 					}
 					else
 					{
-						if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight )
+						//if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight )
+						if (currentDeadEndType == DeadEndType.Left )
 						{
 							//Turn is valid
 							desiredLane = Lanes.Right;
@@ -1431,7 +1433,8 @@ public sealed class PlayerController : MonoBehaviour {
 					if ( isGoingRight )
 					{
 						//Verify if the player is doing a side-move in an allowed direction
-						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight )
+						//if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight )
+						if (currentDeadEndType == DeadEndType.Right )
 						{
 							//Turn is valid
 							setDesiredLane( sideMoveInitiatedZ );
@@ -1446,7 +1449,8 @@ public sealed class PlayerController : MonoBehaviour {
 					}
 					else
 					{
-						if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight )
+						//if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight )
+						if (currentDeadEndType == DeadEndType.Left )
 						{
 							//Turn is valid
 							setDesiredLane( sideMoveInitiatedZ );
@@ -2611,7 +2615,7 @@ public sealed class PlayerController : MonoBehaviour {
 		wantToTurn = false;
 		deadEndTurnDone = true;
 		currentLane = desiredLane;
-		if( currentDeadEndType == DeadEndType.LeftRight )
+		/*if( currentDeadEndType == DeadEndType.LeftRight )
 		{
 			Debug.Log("PlayerController-turnNow: player turned " + isGoingRight + " at T-Junction." + currentTile.name );
 			//Now that we know which way the player is turning, tell the level generator right away
@@ -2619,7 +2623,7 @@ public sealed class PlayerController : MonoBehaviour {
 			//the Left assuming the player decided to turn that way.
 			//We want to do this early to avoid the tiles popping into view.
 			generateLevel.playerTurnedAtTJunction( isGoingRight, currentTile );
-		}
+		}*/
 
 		audioSource.PlayOneShot( sideMoveSound );
 		float playerRotY = transform.eulerAngles.y;
@@ -3034,34 +3038,7 @@ public sealed class PlayerController : MonoBehaviour {
 		anim.Play("DeathWall_Loop");
 		GameObject respawnLocationObject;
 
-		if( getCurrentTileType() == TileType.T_Junction || getCurrentTileType() == TileType.T_Junction_2 )
-		{
-			//If the player's rotation is zero, this means he has not turned yet.
-			//If this is the case, we will assume he turned right.
-			float playerRotationY = Mathf.Floor ( transform.eulerAngles.y );
-			if( playerRotationY == 0 )
-			{
-				respawnLocationObject = currentTile.transform.Find("respawnLocationRight").gameObject;
-				generateLevel.playerTurnedAtTJunction( true, currentTile );
-				
-			}
-			else
-			{
-				//Player has already turned at the T-Junction
-				if( isGoingRight )
-				{
-					respawnLocationObject = currentTile.transform.Find("respawnLocationRight").gameObject;
-				}
-				else
-				{
-					respawnLocationObject = currentTile.transform.Find("respawnLocationLeft").gameObject;
-				}
-			}
-		}
-		else
-		{
-			respawnLocationObject = currentTile.transform.Find("respawnLocation").gameObject;
-		}
+		respawnLocationObject = currentTile.transform.Find("respawnLocation").gameObject;
 
 		deathType = DeathType.Alive;
 

@@ -29,7 +29,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	
 	//worldRoadSegments is a List of game object tiles
 	List<GameObject> worldRoadSegments = new List<GameObject>(300);
-	int playerTileIndex = 0;		//Index of the active tile (the one the player is on).
 
 	//tileCreationIndex is incremented each time a new tile is added.
 	//It is also used to control the power up density as we add a power up every 'X' tiles.
@@ -39,7 +38,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	Vector3 previousTilePos = new Vector3( 0,0,0 );
 	Quaternion previousTileRot = Quaternion.identity;
 	TileSubType previousTileType = TileSubType.None;
-	float previousTileHorizontalShift = 0;
 
 	//This number is used to make sure that the subsequent tiles are at the proper height.
 	float  tileEndHeight = 0;
@@ -69,6 +67,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 	List<int> indexOfCheckpointTiles = new List<int>();
 
 	public float levelLengthInMeters = 0;
+	int seed = 0; //Random generator seed to use when online.
 
 	void Awake ()
 	{
@@ -92,7 +91,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		{
 			if( customRoomProperties.ContainsKey("Seed") )
 			{
-				int seed = (int) PhotonNetwork.room.CustomProperties["Seed"];
+				seed = (int) PhotonNetwork.room.CustomProperties["Seed"];
 				Debug.Log("Random seed " + seed );
 				Random.InitState( seed );
 			}
@@ -158,7 +157,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		//Reset values
 		worldRoadSegments.Clear();
 		tileCreationIndex = 0;
-		playerTileIndex = 0;
 		tileSize = TILE_SIZE_CAMPAIGN;
 						
 		LevelData.EpisodeInfo currentEpisode = LevelManager.Instance.getCurrentEpisodeInfo();
@@ -198,8 +196,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			generateEndlessLevel( tileGroupList );
 		}
 
-		//Make the first few tiles active
-		activateInitialTiles(0);
+		deactivateTiles();
 
 		//Configure fog, if any
 		Camera.main.GetComponent<DynamicFogAndMist.DynamicFog>().enabled = currentEpisode.isFogEnabled;
@@ -244,7 +241,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 					{
 						indexOfCheckpointTiles.Add( tileCreationIndex );
 					}
-					addTileNew( individualTiles[j] );
+					addTile( individualTiles[j] );
 				}
 			}
 		}
@@ -276,7 +273,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			List<TileType> individualTiles = tg.tileList;
 			for( int j=0; j < individualTiles.Count; j++ )
 			{
-				addTileNew( individualTiles[j] );
+				addTile( individualTiles[j] );
 			}
 		}
 		//Now add a first random tile group to the endless tiles Queue
@@ -288,7 +285,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		//Reset values
 		worldRoadSegments.Clear();
 		tileCreationIndex = 0;
-		playerTileIndex = 0;
 
 		Debug.Log("GenerateLevel-createMultiplayerLevel: selected level is: " + LevelManager.Instance.getSelectedCircuit().circuitInfo.mapName );
 						
@@ -372,8 +368,11 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		//When we added the length of the End tile, we added its full length. However, the finish line is located at 28.9 meters. So we added 50 - 28.9 = 21.1 meters too much.
 		levelLengthInMeters = levelLengthInMeters - 21.1f;
 
-		//Make the first few tiles active
-		activateInitialTiles(0);
+		//Some game objects have a random activator component. You need to call this method BEFORE deactivateTiles.
+		enableRandomActivators();
+
+		//To help performance, deactivate all the tiles except the first ones.
+		deactivateTiles();
 
 		//Configure fog, if any
 		Camera.main.GetComponent<DynamicFogAndMist.DynamicFog>().enabled = currentMultiplayer.isFogEnabled;
@@ -381,6 +380,37 @@ public sealed class GenerateLevel  : MonoBehaviour {
 
 		Debug.Log("GenerateLevel-CreateLevel: Level " + currentMultiplayer.circuitInfo.mapName + " has been created." );
 
+	}
+
+	/// <summary>
+	/// Fetches all game objects with a RandomActivator component and decides whether that game object should be active or not.
+	/// RandomActivator is used on tile game objects to make sure that all tile instances don't look the same.
+	/// For example, you can have a tree cluster on a Straight tile. With a random activator, the cluster will only appear on a Straight tile when the random number generated 
+	/// is less or equal than the chanceDisplayed number.
+	/// RamdomActivator works in multiplayer. If an object is active on one device, the same object is guaranteed to be active on all other devices.
+	/// </summary>
+	void enableRandomActivators()
+	{
+		//Seed the random generator so that we have consistent results across all devices.
+		if( GameManager.Instance.isOnlinePlayMode() ) Random.InitState( seed );
+
+		RandomActivator[] randomActivators = GameObject.FindObjectsOfType<RandomActivator>();
+		int isActiveCount = 0; //for debugging
+		for( int i = 0; i < randomActivators.Length; i++ )
+		{
+			if( Random.value <= randomActivators[i].chanceDisplayed )
+			{
+				//We want it active
+				randomActivators[i].gameObject.SetActive( true );
+				isActiveCount++;
+			}
+			else
+			{
+				//We want it inactive
+				randomActivators[i].gameObject.SetActive( false );
+			}
+		}
+		Debug.Log("GenerateLevel-enableRandomActivators: there are " + randomActivators.Length + " activators in the scene and the number activated was " + isActiveCount + ". The seed used was " + seed );	
 	}
 
 	//Note that the level is generated in two steps:
@@ -456,7 +486,7 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		List <TileType> tiles = tg.tileList;
 		for( int j=0; j < tiles.Count; j++ )
 		{
-			addTileNew( tiles[j] );
+			addTile( tiles[j] );
 		}
 	}
 
@@ -500,8 +530,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		currentTheme = newTheme;
 	}
 
-	//Important: as previousTileType value, use one of the three basic tile types (Straight, Left or Right). Do
-	//not use the precise tile type (such as Straight_double) or else the method ensureTileHasZeroRotation won't work as intended.
 	private GameObject addTile ( TileType type )
 	{
 		GameObject go = null;
@@ -532,15 +560,13 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		tileDepthMult= si.tileDepth;
 		previousTileType = si.tileSubType; //for constructing the level, we use the simpler types like straight, left and right
 		tileEndHeight = si.tileEndHeight;
-		previousTileHorizontalShift = si.tileHorizontalShift;
 		previousTilePos = tilePos;
 		previousTileRot = tileRot;
 		if( !GameManager.Instance.isMultiplayer() ) powerUpManager.considerAddingPowerUp( go, tileCreationIndex );
-		go.SetActive( false );
 		worldRoadSegments.Add( go );
 		si.tileIndex = tileCreationIndex;
 		tileCreationIndex++;
-		MiniMap.Instance.registerTileObject( go.name, go.transform.position, si.tileSprite, go.transform.eulerAngles.y, tileDepthMult, si.tileHorizontalShift );
+		MiniMap.Instance.registerTileObject( go.name, go.transform.position, si.tileSprite, go.transform.eulerAngles.y, tileDepthMult );
 		//Update the length of the map in meters
 		levelLengthInMeters = levelLengthInMeters + tileDepthMult * tileSize;
 		return go;
@@ -555,22 +581,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		float tileHeight = tileEndHeight + previousTilePos.y;
 		switch (previousTileType)
 		{
-			case TileSubType.Angled:
-			if( previousTileRotY == 0 )
-			{
-				tilePos.Set ( previousTilePos.x + previousTileHorizontalShift, tileHeight, previousTilePos.z + tileDepth );
-				print( previousTileType + " HS " + previousTileHorizontalShift + " tilePos " + tilePos );
-			}
-			else if( previousTileRotY == 270f || previousTileRotY == -90f )
-			{
-				tilePos.Set ( previousTilePos.x - tileDepth, tileHeight, previousTilePos.z + previousTileHorizontalShift );				
-			}
-			else
-			{
-				tilePos.Set ( previousTilePos.x + tileDepth, tileHeight, previousTilePos.z - previousTileHorizontalShift  );				
-			}
-			return tilePos;
-
 			case TileSubType.Straight:
 			if( previousTileRotY == 0 )
 			{
@@ -601,10 +611,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			}
 			return tilePos;
 		
-	        case TileSubType.T_Junction:
-			tilePos.Set ( previousTilePos.x + tileDepth, tileHeight, previousTilePos.z );
-			return tilePos;
-
 			case TileSubType.Right:
 			if( previousTileRotY == 0 )
 			{
@@ -635,7 +641,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			case TileSubType.None:
 			return Quaternion.identity;
 		
-			case TileSubType.Angled:
 			case TileSubType.Straight:
 			tileRot =  Quaternion.Euler( 0, previousTileRot.eulerAngles.y, 0 );
 			return tileRot;
@@ -676,85 +681,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 			return tileRot;
 		}
 	}
-	
-	private void addTileNew ( TileType tileType )
-	{
-        switch (tileType)
-		{
-			case TileType.T_Junction:
-			case TileType.T_Junction_2:
-				addRandomTJunction(tileType);
-				break;
-			default:
-				addTile( tileType );
-				break;
-		}
-	}
-
-	//Add tiles such as to garanty that the tile added after these will have a zero Y rotation.
-	private void ensureTileHasZeroRotation()
-	{
-		float yRot = Mathf.Floor( previousTileRot.eulerAngles.y );
-
-		switch (previousTileType)
-		{
-			case TileSubType.Left:
-			if( yRot == 0 )
-			{
-				addTile ( TileType.Right );
-			}
-			return;
-
-			case TileSubType.Right:
-			if( yRot == 0 )
-			{
-				addTile ( TileType.Left );
-			}
-			return;
-
-			case TileSubType.Straight:
-			if( yRot == 270f || yRot == -90f )
-			{
-				addTile ( TileType.Right );
-			}
-			else if( yRot == -270f || yRot == 90f )
-			{
-				addTile ( TileType.Left );
-			}
-			return;
-		}
-	}
-
-	private void addRandomTJunction( TileType tileType )
-	{
-		//We want the T-Junction tile to have a 0 degree rotation.
-		ensureTileHasZeroRotation();
-		//Adding T-Junction
-		GameObject  tJunction = addTile ( tileType );
-		if( tJunction.transform.eulerAngles.y != 0 )
-		{
-			Debug.LogError("addRandomTJunction: ERROR added non zero rotation T-Junction.");
-		}
-		//Adding 4 tiles to the left of the T-Junction
-		//If the player chooses to go Left, we will put all of the tiles that belong to the Right path in an empty game object called T-Junction
-		//and move that group so it aligns with the last left tile we added.
-		previousTileType = TileSubType.Left;
-		addTile ( TileType.Straight );
-		addTile ( TileType.Right );
-		addTile ( TileType.Straight );
-		addTile ( TileType.Right );
-		//Reset values so that the Right path gets constructed normally
-		SegmentInfo si = getSegmentInfo( tJunction );
-		float tJunctionTileEndHeight = si.tileEndHeight; //For some T-Junction (notably the one in Fairyland), the end of the tile is lower than the begining of the tile
-		previousTilePos = new Vector3( tJunction.transform.position.x, tJunction.transform.position.y + tJunctionTileEndHeight, tJunction.transform.position.z );
-		previousTileRot = tJunction.transform.rotation;
-		previousTileType = TileSubType.Right;
-		//Also, add two tiles to the right to avoid the possibility
-		//of a second random next T-Junction overlaping this one.
-		addTile ( TileType.Left );
-		addTile ( TileType.Straight );
-
-	}
 
 	public void enableSurroundingPlane( bool enable )
 	{
@@ -780,22 +706,20 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		if( endlessTileList.Count > 0 )
 		{
 			//Yes, we still have tiles in the queue
-			addTileNew( endlessTileList.Dequeue() );
+			addTile( endlessTileList.Dequeue() );
 		}
 		else
 		{
 			//We have run out of tiles. Add a random tile group.
 			addRandomTileGroupToEndlessTilesQueue();
 			//Now that we have added additional tiles, we can get one
-			addTileNew( endlessTileList.Dequeue() );
+			addTile( endlessTileList.Dequeue() );
 		}
 	}
 
 	public void tileEntranceCrossed( Transform currentTile  )
 	{
-		playerTileIndex++;
 		SegmentInfo si = getSegmentInfo( currentTile.gameObject );
-		//print ("tileEntranceCrossed: player entered " + currentTile.name + " and the player tile index is: " + playerTileIndex );
 
 		//If in endless mode, each time we enter a new tile, add a new tile at the end
 		if( GameManager.Instance.getGameMode() == GameMode.Endless && !si.wasTileAdded )
@@ -810,65 +734,19 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		{
 			surroundingPlane.position = new Vector3( currentTile.position.x, currentTile.position.y -UNDERNEATH_TILE_BY, currentTile.position.z );
 		}
-		int tileIndex = si.tileIndex;
-		updateActiveTiles( tileIndex );
+		activateNextTile( si.tileIndex );
 			
 	}
-
-	public void playerTurnedAtTJunction( bool isGoingRight, GameObject tile )
-	{
-		if( !isGoingRight )
-		{
-			//Player took the Left path.
-			//Player did not take the main path (which is always to the right).
-			//Move all the tiles from the right path to the tip of the left path of the T-Junction.
-			//We are adding 5 to the index because:
-			//The T-Junction tile itself plus the 4 tiles that are created on the left make 5.
-			int startValue = playerTileIndex + 5;
-			for ( int j=startValue; j < worldRoadSegments.Count; j++ )
-		    {
-				//Move the tiles on the right path to the left path. 
-				worldRoadSegments[j].transform.position = new Vector3( worldRoadSegments[j].transform.position.x - (2 * tileSize), worldRoadSegments[j].transform.position.y, worldRoadSegments[j].transform.position.z + (2 * tileSize) );
-			}
-			//Also change the previousTilePos so that new tiles get added at the right place
-			previousTilePos = new Vector3( previousTilePos.x - (2 * tileSize), previousTilePos.y, previousTilePos.z + (2 * tileSize) );
-
-		}
-		else
-		{
-			//Player took the Right path.
-			//We need to update which tiles are active.
-			//Remember, the first tile to the right of the T-Junction tile has a higher index (not just +1)
-			//because we inserted tiles to the left of the T-Junction tile when it got created.
-
-			//Deactivate 4 left tiles
-			//if( playerTileIndex + 1 < worldRoadSegments.Count ) worldRoadSegments[playerTileIndex + 1].SetActive(false);
-			//if( playerTileIndex + 2 < worldRoadSegments.Count ) worldRoadSegments[playerTileIndex + 2].SetActive(false);
-			//if( playerTileIndex + 3 < worldRoadSegments.Count ) worldRoadSegments[playerTileIndex + 3].SetActive(false);
-			//if( playerTileIndex + 4 < worldRoadSegments.Count ) worldRoadSegments[playerTileIndex + 4].SetActive(false);
-
-
-			//Activate nbrVisiblesTiles to the right
-			for( int i = ( playerTileIndex + 5 ); i < ( playerTileIndex + 5 + nbrVisibleTiles ); i++ )
-			{
-				if( i < worldRoadSegments.Count ) worldRoadSegments[i].SetActive(true);
-			}
-
-			//Adjust player tile index
-			playerTileIndex = playerTileIndex + 4;
-
-		}
-	}
 	
-	private void activateInitialTiles( int startIndex )
+	/// <summary>
+	/// Deactivates all the tiles starting at nbrVisibleTiles + 1.
+	/// This is done on game start to help with performance.
+	/// </summary>
+	private void deactivateTiles()
 	{
-		//Activate the current plus nbrVisibleTiles prefabs that are next on the player's path
-		int endIndex = startIndex + nbrVisibleTiles;
-		if( endIndex >= worldRoadSegments.Count ) endIndex = worldRoadSegments.Count - 1;
-		for( int i=startIndex; i <= endIndex; i++ )
+		for( int i= nbrVisibleTiles + 1; i < worldRoadSegments.Count; i++ )
 		{
-			worldRoadSegments[i].SetActive( true );
-			onTileActivation(i);
+			worldRoadSegments[i].SetActive( false );
 		}
 	}
 
@@ -895,27 +773,22 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		if( indexOfTileToDeactivate >= 0 ) worldRoadSegments[indexOfTileToDeactivate].SetActive( false );
 	}
 
-	//At any given time, there are 5 active tiles:
-	//The current tile
-	//The preceding tile
-	//The nbrVisibleTiles tiles that come after the current tile
-	private void updateActiveTiles( int tileIndex )
+	/// <summary>
+	/// Activates the next tile.
+	/// This would be the tile with this index: tileIndex + nbrVisibleTiles.
+	/// At any given time, there are 5 active tiles (assuming nbrVisibleTiles is equal to 3):
+	/// The current tile
+	/// The preceding tile
+	/// The 3 tiles that come after the current tile
+	/// </summary>
+	/// <param name="tileIndex">Index of the tile just entered by the player.</param>
+	private void activateNextTile( int tileIndex )
 	{
-		//Disable tile two behind the player
-		//int index = playerTileIndex - 2;
-		//if( index >= 0 ) worldRoadSegments[index].SetActive(false);
-			
-		//Enable next tile nbrVisibleTiles in front of player
-		int index = tileIndex + nbrVisibleTiles;
-		if( index >= worldRoadSegments.Count ) index = worldRoadSegments.Count - 1; //needed in case the player turns right at a T-Junction and the Checkpoint tile is right after the T-Junction
-		if( index < worldRoadSegments.Count )
+		int indexOfTileToActivate = tileIndex + nbrVisibleTiles;
+		
+		if( indexOfTileToActivate < worldRoadSegments.Count )
 		{
-			if( !worldRoadSegments[index].activeSelf ) worldRoadSegments[index].SetActive(true);
-			onTileActivation(index);
-		}
-		else
-		{
-			Debug.LogWarning("prout index." + index + " " + worldRoadSegments.Count );
+			if( !worldRoadSegments[indexOfTileToActivate].activeSelf ) worldRoadSegments[indexOfTileToActivate].SetActive(true);
 		}
 	}
 
@@ -932,28 +805,9 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		}
 	}
 
-	private void onTileActivation( int index )
-	{
-		//If the tile we just activated is a T-Junction
-		//also enable the first two tiles on its right side which have an index of + 5 and +6 respectively compared to the T-Junction tile itself.
-		SegmentInfo si = getSegmentInfo(worldRoadSegments[index]);
-		if( si.tileSubType == TileSubType.T_Junction )
-		{
-			int firstTileToTheRight = index + 5;
-			int secondTileToTheRight = index + 6;
-			if( firstTileToTheRight < worldRoadSegments.Count ) worldRoadSegments[firstTileToTheRight].SetActive(true);
-			if( secondTileToTheRight < worldRoadSegments.Count ) worldRoadSegments[secondTileToTheRight].SetActive(true);
-		}
-	}
-
 	TileType getTileType( GameObject tile )
 	{
 		return getSegmentInfo(tile).tileType;
-	}
-
-	public float getEpisodeProgress()
-	{
-		return (float)playerTileIndex/(tileCreationIndex - 1);
 	}
 
 	public List<int> getIndexOfCheckpointTiles()

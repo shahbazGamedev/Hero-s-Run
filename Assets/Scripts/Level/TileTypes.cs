@@ -14,8 +14,6 @@ public enum TileType {
 	Forest_Statue = 9,
 	Straight_Slope_Down = 12,
 	Landmark_Clocktower = 13,
-	T_Junction_2 = 14,
-	T_Junction = 15,
 	Straight_River_Crossing = 16,
 	Straight_Slope = 17,
 	Straight_Double = 18,
@@ -102,9 +100,7 @@ public enum TileSubType {
 	None = -1,
 	Straight = 3,
 	Left = 4,
-	Right = 5,
-	Angled = 6,
-	T_Junction = 15,
+	Right = 5
 }
 
 public class TileTypes {

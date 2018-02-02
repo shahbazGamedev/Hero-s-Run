@@ -49,7 +49,8 @@ public class EpisodeProgressIndicator : MonoBehaviour {
 
 	public void updatePlayerIconPosition ()
 	{
-		float xPosition = generateLevel.getEpisodeProgress() * progressBarLength;
+		//float xPosition = generateLevel.getEpisodeProgress() * progressBarLength;
+		float xPosition = 1f;
 		playerIcon.anchoredPosition = new Vector2( xPosition, playerIcon.anchoredPosition.y);
 	}
 }

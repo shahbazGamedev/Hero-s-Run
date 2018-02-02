@@ -12,8 +12,6 @@ public class SegmentInfo : MonoBehaviour {
 	//For drawing, each curve is divided into small line segments.
 	public const int CURVE_DISTANCE_STEPS = 200;
 	public float tileEndHeight = 0; //if not zero, the height of the NEXT tile will be adjusted
-	public float tileHorizontalShift = 0; //if not zero, the position of the NEXT tile will be adjusted
-	public float turnAngle = 0; //Only used for angled tiles. See Angled Tile Entrance in PlayerControl
 	//tileIndex is populated at runtime. The Start tile has an index of 0, the second tile in the level has an index of 1, etc.
 	public int tileIndex = -1;
 	public int tileDepth = 1;

@@ -98,7 +98,6 @@ public class CardFreeze : Card {
 				//We add 0.1f because we do not want to start the raycast at the player's feet.
 				RaycastHit hit;
 				Vector3 freezePosition = randomTarget.position;
-				bool isThereGroundBelowPlayer;
 				if (Physics.Raycast(new Vector3( randomTarget.position.x, randomTarget.position.y + 0.1f, randomTarget.position.z ), Vector3.down, out hit, 20f, ~(1 << MaskHandler.playerLayer ), QueryTriggerInteraction.Ignore ) )
 				{
 					freezePosition = new Vector3( randomTarget.position.x, hit.point.y + 0.02f, randomTarget.position.z );

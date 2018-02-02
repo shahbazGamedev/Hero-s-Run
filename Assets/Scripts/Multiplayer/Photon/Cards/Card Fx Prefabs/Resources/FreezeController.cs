@@ -384,7 +384,7 @@ public class FreezeController : CardSpawnedObject {
 				tapsDetected++;
 		
 				//Play a VFX at the hit location.
-				ParticleSystem ps = GameObject.Instantiate( tapParticleSystem, hit.point, Quaternion.identity );
+				GameObject.Instantiate( tapParticleSystem, hit.point, Quaternion.identity );
 
 				//Break off an ice shard and change its material.
 				breakOffIceShard( getRandomIceShard() );

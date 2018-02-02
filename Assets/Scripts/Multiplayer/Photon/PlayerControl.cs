@@ -223,10 +223,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	string backInTheGameString;
 	#endregion
 
-	#region Related to angled tiles
-	Coroutine angledTurnCoroutine = null;
-	#endregion
-
 	#region Related to distance remaining
 	public float tileDistanceTraveled = 0;
 	#endregion
@@ -984,7 +980,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					if ( isGoingRight )
 					{
 						//Verify if the player is doing a side-move in an allowed direction
-						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight )
+						if (currentDeadEndType == DeadEndType.Right )
 						{
 							//Turn is valid
 							desiredLane = Lanes.Left;
@@ -999,7 +995,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					}
 					else
 					{
-						if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight )
+						if (currentDeadEndType == DeadEndType.Left )
 						{
 							//Turn is valid
 							desiredLane = Lanes.Right;
@@ -1021,7 +1017,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					if ( isGoingRight )
 					{
 						//Verify if the player is doing a side-move in an allowed direction
-						if (currentDeadEndType == DeadEndType.Right || currentDeadEndType == DeadEndType.LeftRight )
+						if (currentDeadEndType == DeadEndType.Right )
 						{
 							//Turn is valid
 							setDesiredLane( sideMoveInitiatedZ );
@@ -1035,7 +1031,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					}
 					else
 					{
-						if (currentDeadEndType == DeadEndType.Left || currentDeadEndType == DeadEndType.LeftRight )
+						if (currentDeadEndType == DeadEndType.Left )
 						{
 							//Turn is valid
 							setDesiredLane( sideMoveInitiatedZ );
@@ -1062,15 +1058,6 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		deadEndTurnDone = true;
 		currentLane = desiredLane;
-		if( currentDeadEndType == DeadEndType.LeftRight )
-		{
-			Debug.Log("PlayerController-turnNow: player turned " + isGoingRight + " at T-Junction." + currentTile.name );
-			//Now that we know which way the player is turning, tell the level generator right away
-			//so he can activate the proper tiles and, if needed, move the tiles on the Right of the T-Junction to 
-			//the Left assuming the player decided to turn that way.
-			//We want to do this early to avoid the tiles popping into view.
-			generateLevel.playerTurnedAtTJunction( isGoingRight, currentTile );
-		}
 
 		playerSounds.playSideMoveSound();
 
@@ -1309,9 +1296,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		else
 		{
-			//For now you cannot change lanes in an Angled tile. It is not coded.
-			if( currentTile.GetComponent<SegmentInfo>().tileType == TileType.Angled ) return;
-
 			//we want to change lanes
 			changeLane ( isGoingRight );
 		}
@@ -1682,11 +1666,6 @@ public class PlayerControl : Photon.PunBehaviour {
 
 		this.resurrectOnThisTile = resurrectOnThisTile;
 		
-		//When entering an angled tile, a coroutine makes the player turn to match the orientation of the tile.
-		//When a player dies, we need to make sure to stop that coroutine or else
-		//the player's rotation will continue to change.
-		if( angledTurnCoroutine != null ) StopCoroutine( angledTurnCoroutine );
-
 		changeColliderAxis( Axis.Z );
 		ignorePlayerCollisions( true );
 
@@ -2123,10 +2102,6 @@ public class PlayerControl : Photon.PunBehaviour {
 				}
 			}
 		}
-		else if( other.CompareTag( "Angled Tile Entrance" ) )
-		{
-			angledTurnCoroutine = StartCoroutine( angledTurn( other.transform.root.GetComponent<SegmentInfo>().turnAngle, 0.4f ) );
-		}
 		//For the Great Fall trigger collider, don't forget to put in the ignoreRaycast layer or else the distanceToGround value will be incorrect.
 		else if( other.CompareTag( "Great Fall" ) )
 		{
@@ -2208,21 +2183,6 @@ public class PlayerControl : Photon.PunBehaviour {
 	{
 		yield return new WaitForFixedUpdate();
 		wasEntranceCrossed = false;
-	}
-	
-	IEnumerator angledTurn( float endRotationY, float duration )
-	{
-		float elapsedTime = 0;
-		Quaternion startRotation = transform.rotation;
-		Quaternion endRotation = Quaternion.Euler( 0, endRotationY, 0 );
-		do
-		{
-			elapsedTime = elapsedTime + Time.deltaTime;
-			transform.rotation = Quaternion.Lerp( transform.rotation, endRotation, elapsedTime/duration );
-			yield return new WaitForFixedUpdate();  
-			
-		} while ( elapsedTime < duration );
-		transform.rotation = endRotation;
 	}
 
 	void forcePositionSynchronization()
@@ -2385,10 +2345,6 @@ public class PlayerControl : Photon.PunBehaviour {
 				deadEndTrigger = null;
 				wantToTurn = false;
 				forcePositionSynchronization();
-			}
-			else if( other.CompareTag( "Angled Tile Exit" ) )
-			{
-				angledTurnCoroutine = StartCoroutine( angledTurn( 0, 0.4f ) );
 			}
 		}
 	}
