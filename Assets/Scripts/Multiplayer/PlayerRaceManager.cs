@@ -102,7 +102,7 @@ public class PlayerRaceManager {
 		}
 	}
 
-	public void playerCompletedRace( RacePosition racePosition, float raceDuration, float distanceTravelled, int numberOfTimesDiedDuringRace )
+	public void playerCompletedRace( RacePosition racePosition, float raceDuration, int numberOfTimesDiedDuringRace )
 	{
 		raceAwardList.Clear();
 		this.racePosition = racePosition;
@@ -164,7 +164,9 @@ public class PlayerRaceManager {
 		}
 
 		//Update the player statistics
-		GameManager.Instance.playerStatistics.updateRaceStatistics( racePosition, distanceTravelled, numberOfTimesDiedDuringRace, GameManager.Instance.playerProfile.getSkillBonus() );
+		GenerateLevel generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
+		float distanceTraveled = generateLevel.levelLengthInMeters;
+		GameManager.Instance.playerStatistics.updateRaceStatistics( racePosition, distanceTraveled, numberOfTimesDiedDuringRace, GameManager.Instance.playerProfile.getSkillBonus() );
 		//Save the dates in the player profile
 		GameManager.Instance.playerProfile.serializePlayerprofile();
 		//Save the player deck because every time the players plays a card, we increment the timesUsed value in PlayerCardData.

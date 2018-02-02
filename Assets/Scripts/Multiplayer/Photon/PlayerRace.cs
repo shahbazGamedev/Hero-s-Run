@@ -211,14 +211,87 @@ public sealed class PlayerRace : Photon.PunBehaviour
 
 	void OnTriggerEnter(Collider other)
 	{
-		if( other.CompareTag("Finish Line") )
+		//Remember that Unity's physic engine can generate multiple OnTriggerEnter events for the same collision.
+		//Only proceed if this player hasn't already crossed the finish line.
+		if( other.CompareTag("Finish Line") && !playerCrossedFinishLine )
 		{
-			//Player has reached the finish line
-			playerCrossedFinishLine = true;
-			
-			levelNetworkingManager.playerHasCrossedFinishLine( this );
-
+			reachedFinishLine();
 		}
+	}
+
+	void reachedFinishLine()
+	{
+		//Player has reached the finish line.
+		//We cannot guarantee whether it is the local (i.e. isMine) or the remote player that will cross the finish line first.
+		//We cannot guarantee whether it will be the Master or not-Master player that will cross the finish line first either.
+		//Additionaly, with a latency of 300 msec. and a player speed of 20 m/sec, if we wait for an RPC sent by player A to player B before taking action,
+		//player B will have traveled a whooping 6 meters.
+		//Consequently, there are a some things we need to do immediately and some that can wait on an RPC to arrive.
+
+		//Things to do immediately:
+		//a) Set a local flag that the player crossed the finish line.
+		//b) Cancel player spells.
+		//c) Send a CrossedFinishLine event to interested classes.
+		//d) Slow down the player.
+		//e) Set the character state to Idle so this player cannot be affected by cards.
+		//f) Cancel the took-the-lead invoke.
+		//g) Cancel any power boost disengaged message.
+		//h) Display a victory message.
+		//i) Hide the Pause button.
+		//j) Grant a "did-not-die-once" skill bonus if this is the case.
+		//k) Activate the finish line camera.
+
+		Debug.Log("PlayerRace-OnTriggerEnter: " +  name + " crossed the finish line in race position: " + racePosition );
+
+		playerCrossedFinishLine = true;
+
+		//Cancel all spell effects
+		playerSpell.cancelAllSpells();
+
+		//Send a crossedFinishLine event to interested classes.
+		if( crossedFinishLine != null ) crossedFinishLine( transform, racePosition, playerAI != null );
+
+		//We want to gradually slow down the player
+		StartCoroutine( playerRun.slowDownPlayerAfterFinishLine( racePosition, 5f - ((int)racePosition * 1.5f) ) );
+
+		//Note: if the player won, a voice over will be triggered by the victory animation. See Victory_win_start.
+
+		//Set the character state to idle. When a character is idle, cards can't affect him. For example, we don't want a CardLightning spell to affect someone
+		//who has crossed the finish line.
+		playerControl.setCharacterState(PlayerCharacterState.Idle);
+
+		//Don't activate took the lead if you have completed the race.
+		CancelInvoke("tookTheLead");
+
+		//Don't display a power boost disengaged message if you have completed the race.
+		CancelInvoke( "disablePowerBoost" );
+
+		if( this.photonView.isMine && playerAI == null )
+		{
+			//If the player won, display a victory message (but not in coop).
+			if( racePosition == RacePosition.FIRST_PLACE && !GameManager.Instance.isCoopPlayMode() )
+			{
+				string victory = LocalizationManager.Instance.getText("RACE_VICTORY");
+				HUDMultiplayer.hudMultiplayer.activateUserMessage( victory, 0, 2.25f );
+			}
+		
+			//Hide the pause button
+			GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
+					
+			//if the player did not die a single time during the race and there is more than one player active, grant him a skill bonus.
+			if( players.Count > 1 && playerControl.getNumberOfTimesDiedDuringRace() == 0 ) SkillBonusHandler.Instance.addSkillBonus( 50, "SKILL_BONUS_DID_NOT_DIE" );
+
+			//Activate the finish line camera
+			activateFinishLineCamera();
+		}		
+		
+		//Things that can wait on the RPC to arrive:
+		//a) Saving the official race data in player race manager.
+
+		//This method informs the Level Networking Manager that a player has crossed the finish in line.
+		//If this player is on Master, the Level Networking Manager will then send a OnRaceCompletedRPC to everyone.
+		//This RPC will take care of saving the player race data.
+		levelNetworkingManager.playerHasCrossedFinishLine( this );
 	}
 
 	public PhotonView getMinimapPhotonView()
@@ -319,49 +392,12 @@ public sealed class PlayerRace : Photon.PunBehaviour
 	void OnRaceCompletedRPC( float raceDuration )
     {
 		Debug.Log("PlayerRace: OnRaceCompleted RPC received for: " +  name + " raceDuration: " + raceDuration );
-
 		this.raceDuration = raceDuration;
-
-		//Cancel all spell effects
-		playerSpell.cancelAllSpells();
-
-		//We want to slow down any player that reaches the finish line
-		StartCoroutine( playerRun.slowDownPlayerAfterFinishLine( racePosition, 5f - ((int)racePosition * 1.5f) ) );
-
-		//Note: if the player won, a voice over will be triggered by the victory animation. See Victory_win_start.
-
-		//Set the character state to idle. When a character is idle, cards can't affect him. For example, we don't want a CardLightning spell to affect someone
-		//who has crossed the finish line.
-		playerControl.setCharacterState(PlayerCharacterState.Idle);
-
-		//Don't activate took the lead if you have completed the race.
-		CancelInvoke("tookTheLead");
-
-		//Don't display a power boost disengaged message if you have completed the race.
-		CancelInvoke( "disablePowerBoost" );
-
-		//Send a crossedFinishLine event to interested classes.
-		if( crossedFinishLine != null ) crossedFinishLine( transform, racePosition, playerAI != null );
 
 		if( this.photonView.isMine && playerAI == null )
 		{
-			//If the player has won, display a victory message (but not in coop).
-			if( racePosition == RacePosition.FIRST_PLACE && !GameManager.Instance.isCoopPlayMode() )
-			{
-				string victory = LocalizationManager.Instance.getText("RACE_VICTORY");
-				HUDMultiplayer.hudMultiplayer.activateUserMessage( victory, 0, 2.25f );
-			}
-
-			//Hide the pause menu
-			GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<MultiplayerPauseMenu>().hidePauseButton();
-
 			//Save the race data in player race manager.
-			GenerateLevel generateLevel = GameObject.FindObjectOfType<GenerateLevel>();
-			PlayerRaceManager.Instance.playerCompletedRace( racePosition, raceDuration, generateLevel.levelLengthInMeters, playerControl.getNumberOfTimesDiedDuringRace() );
-
-			//if the player did not die a single time during the race and there is more than one player active, grant him a skill bonus.
-			if( players.Count > 1 && playerControl.getNumberOfTimesDiedDuringRace() == 0 ) SkillBonusHandler.Instance.addSkillBonus( 50, "SKILL_BONUS_DID_NOT_DIE" );
-			activateFinishLineCamera();
+			PlayerRaceManager.Instance.playerCompletedRace( racePosition, raceDuration, playerControl.getNumberOfTimesDiedDuringRace() );
 		}		
     }
 

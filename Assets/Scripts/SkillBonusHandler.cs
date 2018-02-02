@@ -193,7 +193,7 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Grants a combo score bonus.
+	/// Grants a combo score bonus if the number of kills is greater than zero.
 	/// Before fetching the localized text, this method will append to bonusTextID "_SINGULAR" if the number of kills is one and "_PLURAL" otherwise.
 	/// </summary>
 	/// <param name="bonusPoints">Bonus points.</param>
@@ -203,6 +203,8 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 	public void grantComboScoreBonus( int bonusPoints, string bonusTextID, Transform attacker, int numberOfKills )
 	{
 		if( !GameManager.Instance.isCoopPlayMode() ) return;
+
+		if( numberOfKills <= 0 ) return;
 
 		if( attacker != null )
 		{

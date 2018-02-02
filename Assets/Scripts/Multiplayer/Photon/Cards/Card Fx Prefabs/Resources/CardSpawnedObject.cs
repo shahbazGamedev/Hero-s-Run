@@ -82,7 +82,7 @@ public class CardSpawnedObject : MonoBehaviour {
 			}
 			else
 			{
-				Debug.LogError( "There is no ground underneath the decal called: " + decalPrefab.name + " at position " + decalPosition );
+				Debug.LogWarning( "There is no ground underneath the decal called: " + decalPrefab.name + " at position " + decalPosition );
 			}
 		}
 		else
