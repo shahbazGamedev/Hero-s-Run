@@ -83,16 +83,19 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 	#region Players
 	public void playerDied( Transform player )
 	{
-		if( PhotonNetwork.isMasterClient )
+		if( PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED )
 		{
-			if( PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED )
+			if( !deadPlayerList.Contains( player ) )
 			{
-				if( !deadPlayerList.Contains( player ) )
+				//Update the number of downs regardless of whether you are master or not.
+				PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( player.name );
+				pmd.downs++;
+
+				//Master maintains the dead player list and takes decisions accordingly.
+				if( PhotonNetwork.isMasterClient )
 				{
 					deadPlayerList.Add( player );
-					Debug.Log( player.name + " ADDED to list of dead players. The count of dead players is: " + deadPlayerList.Count );
-					PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( player.name );
-					pmd.downs++;
+					Debug.Log( player.name + " ADDED to list of dead players on MASTER. The count of dead players is: " + deadPlayerList.Count );
 	
 					//There are normally 2 players in the Coop mode.
 					//However, a player may have quit the match.
@@ -121,10 +124,10 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 						photonView.RPC("coopGameOverRPC", PhotonTargets.All );
 					}
 				}
-				else
-				{
-					Debug.LogError("CoopWaveGenerator-playerDied " + player.name + " is already in the dead player list. Count: " + deadPlayerList.Count );
-				}
+			}
+			else
+			{
+				Debug.LogError("CoopWaveGenerator-playerDied " + player.name + " is already in the dead player list. Count: " + deadPlayerList.Count );
 			}
 		}
 	}
