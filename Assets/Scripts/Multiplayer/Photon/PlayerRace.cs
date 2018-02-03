@@ -252,7 +252,7 @@ public sealed class PlayerRace : Photon.PunBehaviour
 		if( crossedFinishLine != null ) crossedFinishLine( transform, racePosition, playerAI != null );
 
 		//We want to gradually slow down the player
-		StartCoroutine( playerRun.slowDownPlayerAfterFinishLine( racePosition, 5f - ((int)racePosition * 1.5f) ) );
+		StartCoroutine( playerRun.slowDownPlayerAfterFinishLine( racePosition, 4.75f - ((int)racePosition * 2.25f) ) );
 
 		//Note: if the player won, a voice over will be triggered by the victory animation. See Victory_win_start.
 
