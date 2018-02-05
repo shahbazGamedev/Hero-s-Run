@@ -170,6 +170,7 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 			{
 				//Have the partner say a reassuring VO such as "Don't worry. I've got this."
 				partner.GetComponent<PlayerVoiceOvers>().playVoiceOver( VoiceOverType.VO_COOP_PARTNER_DIED );
+				partner.GetComponent<PlayerCamera>().isBeingSpectated = true;
 
 				if( deadPlayer.GetComponent<PhotonView>().isMine && deadPlayer.GetComponent<PlayerAI>() == null )
 				{
@@ -178,7 +179,6 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 					CinemachineVirtualCamera cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
 					cmvc.m_Follow = partner.transform;
 					cmvc.m_LookAt = partner.transform;
-					partner.GetComponent<PlayerCamera>().isBeingSpectated = true;
 				}
 			}
 		}
