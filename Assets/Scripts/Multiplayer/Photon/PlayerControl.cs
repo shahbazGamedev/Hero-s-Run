@@ -2089,16 +2089,15 @@ public class PlayerControl : Photon.PunBehaviour {
 			deadEndTrigger = other;
 
 			//Auto-turn
-			bool autoTurn = true;
-			if( autoTurn && playerAI == null && !photonView.isMine )
+			if( playerAI == null && !photonView.isMine )
 			{
 				if ( currentDeadEndType == DeadEndType.Left )
 				{
-					sideSwipe( false );
+					turnCorner( false );
 				}
 				else if ( currentDeadEndType == DeadEndType.Right )
 				{
-					sideSwipe( true );
+					turnCorner( true );
 				}
 			}
 		}
