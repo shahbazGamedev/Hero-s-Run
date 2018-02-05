@@ -123,7 +123,9 @@ public class PlayerSounds : MonoBehaviour {
 
 	public void Slide_sound_start ( AnimationEvent eve )
 	{
-		playSound( slidingSound, true );
+		//It's possible to have the player die and receive a Slide_sound_start callback a few milliseconds later.
+		//This is why we test whether the player is dead or not. We don't want to start a sliding sound if the player is dead.
+		if( GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying ) playSound( slidingSound, true );
 	}
 
 	public void Slide_sound_stop ( AnimationEvent eve )
