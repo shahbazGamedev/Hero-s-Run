@@ -11,7 +11,8 @@ public enum VoiceOverType {
 	VO_Taunt = 5,
 	VO_Win = 6,
 	VO_Zipline = 7,
-	VO_Stumble = 8
+	VO_Stumble = 8,
+	VO_COOP_PARTNER_DIED = 9
 }
 
 public class VoiceOverManager : MonoBehaviour {

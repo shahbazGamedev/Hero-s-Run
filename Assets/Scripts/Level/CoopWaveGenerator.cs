@@ -162,18 +162,24 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 
 		Transform deadPlayer = getPlayerByPhotonViewID( deadPlayerPhotonViewID );
 		
-		if( deadPlayer != null && deadPlayer.GetComponent<PhotonView>().isMine && deadPlayer.GetComponent<PlayerAI>() == null )
+		if( deadPlayer != null )
 		{
 			//Have the main camera track his partner.
 			PlayerRace partner = getPartner( deadPlayer.GetComponent<PlayerRace>() );
 			if( partner != null )
 			{
-				//Display the message "SPECTATING" on the HUD.
-				HUDMultiplayer.hudMultiplayer.displayTopMessage( LocalizationManager.Instance.getText( "COOP_SPECTATING" ) );
-				CinemachineVirtualCamera cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
-				cmvc.m_Follow = partner.transform;
-				cmvc.m_LookAt = partner.transform;
-				partner.GetComponent<PlayerCamera>().isBeingSpectated = true;
+				//Have the partner say a reassuring VO such as "Don't worry. I've got this."
+				partner.GetComponent<PlayerVoiceOvers>().playVoiceOver( VoiceOverType.VO_COOP_PARTNER_DIED );
+
+				if( deadPlayer.GetComponent<PhotonView>().isMine && deadPlayer.GetComponent<PlayerAI>() == null )
+				{
+					//Display the message "SPECTATING" on the HUD.
+					HUDMultiplayer.hudMultiplayer.displayTopMessage( LocalizationManager.Instance.getText( "COOP_SPECTATING" ) );
+					CinemachineVirtualCamera cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
+					cmvc.m_Follow = partner.transform;
+					cmvc.m_LookAt = partner.transform;
+					partner.GetComponent<PlayerCamera>().isBeingSpectated = true;
+				}
 			}
 		}
 	}
