@@ -291,9 +291,15 @@ public class MatchmakingManager : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Called when you press the X button in the matchmaking screen.
+	/// </summary>
 	public void OnClickReturnToMainMenu()
 	{
-		if( PhotonNetwork.inRoom ) PhotonNetwork.LeaveRoom();
+		if( PhotonNetwork.inRoom )
+		{
+			PhotonNetwork.LeaveRoom();
+		}
 		LevelManager.Instance.matchData = null;
 		#if UNITY_IOS
 		//When returning to the main menu, discard any video that might have been recorded

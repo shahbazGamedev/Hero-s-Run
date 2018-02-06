@@ -126,8 +126,7 @@ public class UniversalTopBar : MonoBehaviour {
 			break;
 
 			case GameScenes.Matchmaking:
-				showTopBar( true );
-				onlyShowCloseButton( true );
+				showTopBar( false );
 			break;
 
 			case GameScenes.WorldMap:
