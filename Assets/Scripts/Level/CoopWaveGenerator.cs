@@ -179,6 +179,10 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 					CinemachineVirtualCamera cmvc = GameObject.FindGameObjectWithTag("Main Virtual Camera").GetComponent<CinemachineVirtualCamera>();
 					cmvc.m_Follow = partner.transform;
 					cmvc.m_LookAt = partner.transform;
+					//As he died, the player may have locked the camera (typically because of a great fall). See lockCamera in the PlayerCamera class.
+					//This disables the CinemachineVirtualCamera.
+					//Since we are now spectating, make sure it is enabled.
+					cmvc.enabled = true;
 				}
 			}
 		}
