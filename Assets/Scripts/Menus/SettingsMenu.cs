@@ -3,9 +3,8 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SocialPlatforms.GameCenter;
 using UnityEngine.Audio;
-using UnityEngine.SceneManagement;
 
-public class SettingsMenu : MonoBehaviour {
+public class SettingsMenu : Menu {
 
 	[Header("Settings Menu")]
 	[Header("Sound")]
@@ -26,12 +25,7 @@ public class SettingsMenu : MonoBehaviour {
 	[Header("Debug Menu")]
 	[SerializeField] ScrollRect  optionsScrollView; 
 	[SerializeField] GameObject  dotsPanel; 
-	bool levelLoading = false;
 
-	void OnEnable ()
-	{
-		SceneManager.sceneUnloaded += OnSceneUnloaded;
-	}
 
 	void Start () {
 
@@ -70,11 +64,11 @@ public class SettingsMenu : MonoBehaviour {
 		musicVolumeSlider.value = GameManager.Instance.playerConfiguration.getMusicVolume();
 	}
 
-	public void OnClickReturnToMainMenu()
+	public new void OnClickReturnToMainMenu()
 	{
-		UISoundManager.uiSoundManager.playButtonClick();
+		GameManager.Instance.playerConfiguration.serializePlayerConfiguration( false );
 		PlayerStatsManager.Instance.savePlayerStats();
-		StartCoroutine( loadScene(GameScenes.MainMenu) );
+		base.OnClickReturnToMainMenu();
 	}
 
 	public void setSoundFxVolume( Slider volume )
@@ -132,24 +126,4 @@ public class SettingsMenu : MonoBehaviour {
 		UISoundManager.uiSoundManager.playButtonClick();
 		Application.OpenURL(privacyPolicyURL);
 	}
-
-	void OnSceneUnloaded( Scene scene )
-	{
-		GameManager.Instance.playerConfiguration.serializePlayerConfiguration( false );
-		PlayerStatsManager.Instance.savePlayerStats();
-		SceneManager.sceneUnloaded -= OnSceneUnloaded;
-	}
-
-	IEnumerator loadScene(GameScenes value)
-	{
-		if( !levelLoading )
-		{
-			UISoundManager.uiSoundManager.playButtonClick();
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)value );
-		}
-	}
-	
 }

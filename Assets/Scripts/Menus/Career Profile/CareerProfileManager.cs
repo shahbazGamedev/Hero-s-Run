@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class CareerProfileManager : MonoBehaviour {
+public class CareerProfileManager : Menu {
 
 	[SerializeField] GameObject statisticsPanel;
 	[SerializeField] GameObject playerIconsPanel;

@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using UnityEngine.Apple.ReplayKit;
 
-public class MatchmakingManager : MonoBehaviour {
+public class MatchmakingManager : Menu {
 
 	[Header("General")]
 	[SerializeField] GameObject endOfGameCanvas;
 	[SerializeField] Image backgroundImage;
 	[SerializeField] Button playButton;
+	[SerializeField] Button closeButton;
 	[SerializeField] Text playButtonText;
 	[SerializeField] Text versusText;
 	[Tooltip("The label to inform the user that the connection progress.")]
@@ -52,7 +52,6 @@ public class MatchmakingManager : MonoBehaviour {
 	[SerializeField] Text remotePlayer2Name3P;
 	[SerializeField] GameObject preloader23P; //animates while looking for an opponent for the match
 
-	bool levelLoading = false;
 	private Color originalPlayButtonTextColor;
 
 	void Awake ()
@@ -278,23 +277,23 @@ public class MatchmakingManager : MonoBehaviour {
 	//Do not allow the player to exit the matchmaking screen if he has initiated matchmaking and a remote player has joined.
 	//If the player still wants to quit, he will be able to do so via the pause menu.
 	//Also, hide the preloader.
-	public void enableExitButton( bool enable )
+	public void enableCloseButton( bool enable )
 	{
 		if( enable )
 		{
-			UniversalTopBar.Instance.enableCloseButton( true );
+			closeButton.interactable = true;
 		}
 		else
 		{
 			enablePreloader( false );
-			UniversalTopBar.Instance.enableCloseButton( false );
+			closeButton.interactable = false;
 		}
 	}
 
 	/// <summary>
 	/// Called when you press the X button in the matchmaking screen.
 	/// </summary>
-	public void OnClickReturnToMainMenu()
+	public new void OnClickReturnToMainMenu()
 	{
 		if( PhotonNetwork.inRoom )
 		{
@@ -305,19 +304,7 @@ public class MatchmakingManager : MonoBehaviour {
 		//When returning to the main menu, discard any video that might have been recorded
 		if( ReplayKit.APIAvailable ) ReplayKit.Discard();
 		#endif
-		StartCoroutine( loadScene(GameScenes.MainMenu) );
-	}
-
-	IEnumerator loadScene(GameScenes value)
-	{
-		if( !levelLoading )
-		{
-			UISoundManager.uiSoundManager.playButtonClick();
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)value );
-		}
+		base.OnClickReturnToMainMenu();
 	}
 
 	public void hidePlayButton()

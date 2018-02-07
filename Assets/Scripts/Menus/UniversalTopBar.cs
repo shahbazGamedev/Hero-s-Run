@@ -1,19 +1,18 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
-public class UniversalTopBar : MonoBehaviour {
+public class UniversalTopBar : Menu {
 
-	public static UniversalTopBar Instance;
 	const float NUMBER_SPIN_DURATION = 1.25f;
+	public static UniversalTopBar Instance;
 
 	[Header("Top Panel")]
 	[SerializeField] GameObject topPanel; //contains everything except settings and close buttons
 
 	[Header("For Store Access")]
-	MainMenuManager mainMenuManager;
+	[SerializeField] MainMenuManager mainMenuManager;
 	const float SOFT_CURRENCY_STORE_VERTICAL_POSITION = 2508f;
 	const float HARD_CURRENCY_STORE_VERTICAL_POSITION = 1420f;
 
@@ -30,110 +29,28 @@ public class UniversalTopBar : MonoBehaviour {
 	[Header("Hard Currency")]
 	[SerializeField] TextMeshProUGUI hardCurrencyAmountText;
 
-	[Header("Close and Settings buttons")]
-	[SerializeField] GameObject buttons; //contains the settings and close buttons
-	[SerializeField] Button closeButton;
-	[SerializeField] TextMeshProUGUI closeButtonText;
-	[SerializeField] Button settingsButton;
-
 	int residualXP = 0;
 
 	void Awake ()
 	{
-		if(Instance)
-		{
-			DestroyImmediate(gameObject);
-		}
-		else
-		{
-			Instance = this;
-			DontDestroyOnLoad(gameObject);
-			SceneManager.sceneLoaded += OnSceneLoaded;
-			PlayerProfile.playerProfileChanged += PlayerProfileChanged;
-			PlayerInventory.playerInventoryChangedNew += PlayerInventoryChangedNew;
-		}
+		Instance = this;
 	}
 
-	// Use this for initialization
+	void OnEnable ()
+	{
+		PlayerProfile.playerProfileChanged += PlayerProfileChanged;
+		PlayerInventory.playerInventoryChangedNew += PlayerInventoryChangedNew;
+	}
+
+	void OnDisable ()
+	{
+		PlayerProfile.playerProfileChanged -= PlayerProfileChanged;
+		PlayerInventory.playerInventoryChangedNew -= PlayerInventoryChangedNew;
+	}
+
 	void Start ()
 	{
 		configureUI();
-	}	
-
-	void OnSceneLoaded ( Scene scene, LoadSceneMode mode )
-	{
-		GameScenes gameScene = (GameScenes) scene.buildIndex;
-
-		//In the main menu, the Close button becomes a Settings button
-		if( gameScene == GameScenes.MainMenu )
-		{
-			mainMenuManager = GameObject.FindObjectOfType<MainMenuManager>();
-			closeButton.gameObject.SetActive( false );
-			settingsButton.gameObject.SetActive( true );
-		}
-		else
-		{
-			closeButton.gameObject.SetActive( true );
-			settingsButton.gameObject.SetActive( false );
-		}
-
-		//In all cases, reset value
-		enableCloseButton( true );
-
-		switch( gameScene )
-		{
-			case GameScenes.MainMenu:
-				showTopBar( true );
-				onlyShowCloseButton( false );
-			break;
-
-			case GameScenes.PlayModes:
-				showTopBar( true );
-				onlyShowCloseButton( true );
-			break;
-
-			case GameScenes.Training:
-				showTopBar( true );
-				onlyShowCloseButton( true );
-			break;
-
-			case GameScenes.HeroSelection:
-				showTopBar( false );
-			break;
-
-			case GameScenes.LootBox:
-				showTopBar( false );
-			break;
-
-			case GameScenes.Social:
-				showTopBar( true );
-				onlyShowCloseButton( true );
-			break;
-
-			case GameScenes.CareerProfile:
-				showTopBar( true );
-				onlyShowCloseButton( true );
-			break;
-
-			case GameScenes.Options:
-				showTopBar( true );
-				onlyShowCloseButton( true );
-			break;
-
-			case GameScenes.CircuitSelection:
-				showTopBar( true );
-				onlyShowCloseButton( true );
-			break;
-
-			case GameScenes.Matchmaking:
-				showTopBar( false );
-			break;
-
-			case GameScenes.WorldMap:
-			case GameScenes.Level:
-				showTopBar( false );
-			break;
-		}
 	}	
 	
 	void configureUI()
@@ -244,34 +161,16 @@ public class UniversalTopBar : MonoBehaviour {
 
 	public void OnClickShowSoftCurrencyStore()
 	{
-		//The store button only works when you are in the main menu
-		if( SceneManager.GetActiveScene().buildIndex == (int)GameScenes.MainMenu )
-		{
-			mainMenuManager.OnClickShowStore();
-			UISoundManager.uiSoundManager.playButtonClick();
-			StartCoroutine( scrollToStorePosition( 0.4f, SOFT_CURRENCY_STORE_VERTICAL_POSITION ) );
-			showTopBar( true );
-		}
-		else
-		{
-			Debug.LogWarning("OnClickShowSoftCurrencyStore: you can only access the store from the main menu."); 
-		}
+		mainMenuManager.OnClickShowStore();
+		UISoundManager.uiSoundManager.playButtonClick();
+		StartCoroutine( scrollToStorePosition( 0.4f, SOFT_CURRENCY_STORE_VERTICAL_POSITION ) );
 	}
 
 	public void OnClickShowHardCurrencyStore()
 	{
-		//The store button only works when you are in the main menu
-		if( SceneManager.GetActiveScene().buildIndex == (int)GameScenes.MainMenu )
-		{
-			mainMenuManager.OnClickShowStore();
-			UISoundManager.uiSoundManager.playButtonClick();
-			StartCoroutine( scrollToStorePosition( 0.4f, HARD_CURRENCY_STORE_VERTICAL_POSITION ) );
-			showTopBar( true );
-		}
-		else
-		{
-			Debug.LogWarning("OnClickShowHardCurrencyStore: you can only access the store from the main menu."); 
-		}
+		mainMenuManager.OnClickShowStore();
+		UISoundManager.uiSoundManager.playButtonClick();
+		StartCoroutine( scrollToStorePosition( 0.4f, HARD_CURRENCY_STORE_VERTICAL_POSITION ) );
 	}
 
 	IEnumerator scrollToStorePosition( float duration, float verticalPosition )
@@ -294,47 +193,14 @@ public class UniversalTopBar : MonoBehaviour {
 		storeVerticalContent.anchoredPosition = new Vector2( storeVerticalContent.anchoredPosition.x, verticalPosition );
 	}
 
-	public void OnClose()
-	{
-		StartCoroutine( loadScene(GameScenes.MainMenu) );
-	}
-
 	public void OnClickOpenOptionsMenu()
 	{
 		StartCoroutine( loadScene(GameScenes.Options) );
 	}
 
-	IEnumerator loadScene( GameScenes value )
-	{
-		UISoundManager.uiSoundManager.playButtonClick();
-		Handheld.StartActivityIndicator();
-		yield return new WaitForSeconds(0);
-		SceneManager.LoadScene( (int)value );
-	}
-
-	public void enableCloseButton( bool enable )
-	{
-		if( enable )
-		{
-			closeButton.interactable = true;
-			closeButtonText.color = Color.white;
-		}
-		else
-		{
-			closeButton.interactable = false;
-			closeButtonText.color = Color.gray;
-		}
-	}
-
 	public void showTopBar( bool showTopBar )
 	{
 		topPanel.SetActive( showTopBar );
-		buttons.SetActive( showTopBar );
-	}
-
-	void onlyShowCloseButton( bool closeButtonOnly )
-	{
-		topPanel.SetActive( !closeButtonOnly );
 	}
 
 }

@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
-public class CircuitSelectionManager : MonoBehaviour {
+
+public class CircuitSelectionManager : Menu {
 
 	[Header("Race Track Details")]
 	[SerializeField] Transform raceTrackHolder;
 	[SerializeField] GameObject raceTrackPrefab;
-	bool levelLoading = false;
 
 	// Use this for initialization
 	void Start ()
@@ -57,18 +56,6 @@ public class CircuitSelectionManager : MonoBehaviour {
 	{
 		LevelManager.Instance.setSelectedCircuit( info );
 		StartCoroutine( loadScene(GameScenes.Matchmaking) );
-	}
-
-	IEnumerator loadScene(GameScenes value)
-	{
-		if( !levelLoading )
-		{
-			UISoundManager.uiSoundManager.playButtonClick();
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)value );
-		}
 	}
 	#endregion
 

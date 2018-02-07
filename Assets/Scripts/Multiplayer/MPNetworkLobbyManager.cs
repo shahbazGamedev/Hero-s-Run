@@ -238,7 +238,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		matchmakingManager.setConnectionProgress( "Disconnected ..." );   
 		matchmakingManager.setPhotonCloudRegionText( "N/A" );
 		//Now make sure we re-enable the play button and the exit button in the matchmaking scene or else the player will be stuck.
-		matchmakingManager.enableExitButton( true );
+		matchmakingManager.enableCloseButton( true );
 		matchmakingManager.enablePlayButton( true );
 	}
 	 
@@ -367,7 +367,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	void OnRemotePlayerConnect( PhotonPlayer player )
 	{
 		numberRemotePlayerConnected++;
-		matchmakingManager.enableExitButton( false );
+		matchmakingManager.enableCloseButton( false );
 		matchmakingManager.setRemotePlayerData( numberRemotePlayerConnected, player.NickName, (int)player.CustomProperties["Level"], (int)player.CustomProperties["Icon"] );
 		PlayerRaceManager.Instance.setTrophiesOwnedByOpponent( numberRemotePlayerConnected, (int)player.CustomProperties["CP"] );
 		PlayerFriends.FriendData playerData = new PlayerFriends.FriendData( player.NickName, (int)player.CustomProperties["Icon"], (int)player.CustomProperties["Level"], (int)player.CustomProperties["WinStreak"] );		
@@ -393,7 +393,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 	void displayBotInfo()
 	{
-		matchmakingManager.enableExitButton( false );
+		matchmakingManager.enableCloseButton( false );
 		setTravelingConnectionProgress( LevelManager.Instance.getSelectedCircuit().circuitInfo );
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
 		matchmakingManager.setRemotePlayerData( 1, botHero.userName, botHero.level, botHero.playerIcon );
@@ -404,7 +404,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 	void displayBotsInfoPart1()
 	{
-		matchmakingManager.enableExitButton( false );
+		matchmakingManager.enableCloseButton( false );
 		setTravelingConnectionProgress( LevelManager.Instance.getSelectedCircuit().circuitInfo );
 		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
 		matchmakingManager.setRemotePlayerData( 1, botHero.userName, botHero.level, botHero.playerIcon );

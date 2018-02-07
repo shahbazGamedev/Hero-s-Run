@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using ExitGames.Client.Photon.Chat;
 using TMPro;
 
-public class SocialMenu : MonoBehaviour {
+public class SocialMenu : Menu {
 
 	[Header("Social Menu")]
 	[Header("Friend List")]

@@ -1,12 +1,7 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class PlayModes : MonoBehaviour {
-
-	[Header("Play Menu")]
-	bool levelLoading = false;
+public class PlayModes : Menu {
 
 	// Use this for initialization
 	void Start ()
@@ -42,17 +37,5 @@ public class PlayModes : MonoBehaviour {
 		//A random coop race track will be automatically chosen.
 		//We head directly to matchmaking.
 		StartCoroutine( loadScene(GameScenes.Matchmaking) );
-	}
-
-	IEnumerator loadScene(GameScenes value)
-	{
-		if( !levelLoading )
-		{
-			UISoundManager.uiSoundManager.playButtonClick();
-			levelLoading = true;
-			Handheld.StartActivityIndicator();
-			yield return new WaitForSeconds(0);
-			SceneManager.LoadScene( (int)value );
-		}
 	}
 }
