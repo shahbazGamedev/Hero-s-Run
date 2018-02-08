@@ -51,6 +51,8 @@ public class EmoteHandler : MonoBehaviour {
 	{
 		string senderName = HUDMultiplayer.hudMultiplayer.getLocalPlayerName();
 		GetComponent<PhotonView>().RPC("emoteRPC", PhotonTargets.All, uniqueID, senderName );
+		//Hide the emote panel once you have sent an emote.
+		textEmoteHolder.gameObject.SetActive( false );
 	}
 
 	[PunRPC]

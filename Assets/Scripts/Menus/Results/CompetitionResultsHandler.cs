@@ -2,20 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 using System.Linq;
-using UnityEngine.EventSystems;
-using UnityEngine.Apple.ReplayKit;
+using System;
 
-public class ResultsScreenHandler : MonoBehaviour, IPointerDownHandler {
+
+public class CompetitionResultsHandler : ResultsHandler {
 
 	[SerializeField] RectTransform resultsHolder;
 	[SerializeField] GameObject resultPrefab;
 	public List<GameObject> emotesList = new List<GameObject>();
 
-	public void showResults()
+	public void showResults( RacePosition racePosition )
 	{
 		adjustSizeOfResultsScreen( PlayerRace.players.Count );
+
+		#region Reward boxes
+		//Loot Box.
+		//You only get a loot box if you won.
+		if( racePosition == RacePosition.FIRST_PLACE ) displayLootBox();
+
+		//Soft Currency.
+		//You only win soft currency if you won. The amount is determined by the player's current sector.
+		if( racePosition == RacePosition.FIRST_PLACE )
+		{
+			int currentSector = GameManager.Instance.playerProfile.getCurrentSector();
+			int softCurrencyGranted = SectorManager.Instance.getSectorVictorySoftCurrency( currentSector );
+			displaySoftCurrency( softCurrencyGranted );
+		}
+
+		//XP
+		//You always earn XP regardless of whether you won or lost.
+		displayXP();	  		
+		#endregion
 
 		//Order by the race position of the players i.e. 1st place, 2nd place, and so forth
 		PlayerRace.players = PlayerRace.players.OrderBy( p => p.racePosition ).ToList();
@@ -31,7 +49,7 @@ public class ResultsScreenHandler : MonoBehaviour, IPointerDownHandler {
 	{
 		float titleHeight = resultPrefab.GetComponent<RectTransform>().sizeDelta.y; //It has the same height as a result entry
 		float singleEntryHeight = resultPrefab.GetComponent<RectTransform>().sizeDelta.y;
-		float spacing = GetComponent<VerticalLayoutGroup>().spacing;
+		float spacing = resultsHolder.GetComponent<VerticalLayoutGroup>().spacing;
 		float desiredHeight = titleHeight + playerCount * ( singleEntryHeight + spacing );
 		resultsHolder.sizeDelta = new Vector2( resultsHolder.sizeDelta.x, desiredHeight );
 	}
@@ -77,26 +95,5 @@ public class ResultsScreenHandler : MonoBehaviour, IPointerDownHandler {
 		return emote;
 	}
 
-	//The player can click on the coop results screen to dismiss it immediately.
-    public void OnPointerDown(PointerEventData data)
-    {
-		StartCoroutine( exitNow() );
-    }
-
-    IEnumerator  exitNow()
-    {
- 		#if UNITY_IOS
-		try
-		{
-			if( ReplayKit.isRecording ) ReplayKit.StopRecording();
-		}
-   		catch (Exception e)
-		{
-			Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
-    	}
-		yield return new WaitForEndOfFrame();
-		#endif
-		PhotonNetwork.LeaveRoom();
-   }
 
 }

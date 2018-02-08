@@ -21,11 +21,15 @@ public class FadeInCanvasGroup : MonoBehaviour {
 	public void fadeIn ()
 	{
 		LeanTween.alphaCanvas( GetComponent<CanvasGroup>(), 1f, fadeInDuration ).setIgnoreTimeScale( true );		
+		GetComponent<CanvasGroup>().interactable = true;
+		GetComponent<CanvasGroup>().blocksRaycasts = true;
 	}
 
 	public void fadeOut ()
 	{
-		LeanTween.alphaCanvas( GetComponent<CanvasGroup>(), 0f, fadeOutDuration ).setIgnoreTimeScale( true );	
+		LeanTween.alphaCanvas( GetComponent<CanvasGroup>(), 0f, fadeOutDuration ).setIgnoreTimeScale( true );
+		GetComponent<CanvasGroup>().interactable = false;
+		GetComponent<CanvasGroup>().blocksRaycasts = false;
 	}
 	
 }

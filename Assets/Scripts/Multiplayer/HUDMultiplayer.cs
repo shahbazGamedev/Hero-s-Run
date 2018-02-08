@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+#if UNITY_IOS
 using UnityEngine.Apple.ReplayKit;
+#endif
 using System;
 using System.Text;
 
@@ -55,14 +57,19 @@ public class HUDMultiplayer : MonoBehaviour {
 	[Header("Minimap")]
 	[SerializeField] PhotonView minimapPhotonView;
 	[Header("Emotes")]
+	[SerializeField] Button displayEmotes;
 	[SerializeField] GameObject emotePanel;
 	[Header("Health Bar")]
 	[SerializeField] HealthBarHandler healthBarHandler;
 	[SerializeField] Image damageTakenEffect;
 	[Header("Stasis Tap Instructions")]
 	[SerializeField] GameObject stasisTapInstructions;
-	[Header("Results Screen - not coop")]
-	[SerializeField] GameObject resultsScreen;
+	[Header("Level UI")]
+	[SerializeField] FadeInCanvasGroup levelUICanvasGroup;
+	[Header("Results UI")]
+	[SerializeField] FadeInCanvasGroup resultsUICanvasGroup;
+	[Header("Results Screen - competition")]
+	[SerializeField] GameObject competitionResultsScreen;
 	[Header("Results Screen - coop")]
 	[SerializeField] GameObject coopResultsScreen;
 
@@ -90,8 +97,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		userMessageText.gameObject.SetActive( false );
 		goMessageText.gameObject.SetActive( false );
 		canvasGroupForFading.GetComponent<CanvasGroup>().alpha = 0;
-		resultsScreen.GetComponent<CanvasGroup>().alpha = 0;
-		coopResultsScreen.GetComponent<CanvasGroup>().alpha = 0;
+		resultsUICanvasGroup.GetComponent<CanvasGroup>().alpha = 0;
 		distanceRemaining.SetActive( !GameManager.Instance.isCoopPlayMode() );
 	}
 
@@ -275,7 +281,7 @@ public class HUDMultiplayer : MonoBehaviour {
 			//Display the results.
 			//If opponents have not crossed the finish line at this time, their result will still be displayed, but
 			//their race duration will be "N/A".
-			StartCoroutine( displayResultsAndEmotesScreen( 0 ) );
+			StartCoroutine( displayResultsAndEmotesScreen( 0.25f, localPlayerRace.racePosition ) );
 			yield return new WaitForSeconds( DELAY_WHEN_NOT_ALL_PLAYERS_ARRIVED );
 			GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 			PhotonNetwork.LeaveRoom();
@@ -344,15 +350,31 @@ public class HUDMultiplayer : MonoBehaviour {
 	/// We are in one of these play modes: PlayTwoPlayers, PlayThreePlayers or PlayWithFriends.
 	/// There are at least two players at the end of the race. Some players may have quit or lost connection. That's why we check.
 	/// </summary>
-	void showEmotePanel()
+	void enableEmoteButton()
 	{
 		if( GameManager.Instance.isOnlinePlayMode() || debugInfoType == DebugInfoType.EMOTES_TEST )
 		{
 			if( PlayerRace.players.Count > 1 || debugInfoType == DebugInfoType.EMOTES_TEST )
 			{
-				emotePanel.SetActive ( true );
+				displayEmotes.gameObject.SetActive ( true );
+			}
+			else
+			{
+				displayEmotes.gameObject.SetActive ( false );
 			}
 		}
+		else
+		{
+			displayEmotes.gameObject.SetActive ( false );
+		}
+	}
+
+	/// <summary>
+	/// Toggles the emote panel on and off.
+	/// </summary>
+	public void toggleEmotePanel()
+	{
+		emotePanel.SetActive ( !emotePanel.activeSelf );
 	}
 
 	void Update()
@@ -529,32 +551,38 @@ public class HUDMultiplayer : MonoBehaviour {
 		return minimapPhotonView;
 	}
 
-	public IEnumerator displayResultsAndEmotesScreen( float displayDelay )
+	public IEnumerator displayResultsAndEmotesScreen( float displayDelay, RacePosition racePosition )
 	{
+		competitionResultsScreen.SetActive( true );
 		yield return new WaitForSeconds( displayDelay );
-		resultsScreen.GetComponent<ResultsScreenHandler>().showResults();
-		resultsScreen.gameObject.SetActive( true );
-		showEmotePanel();
+		levelUICanvasGroup.fadeOut();
+		yield return new WaitForSeconds( 0.4f );
+		resultsUICanvasGroup.fadeIn();
+		competitionResultsScreen.GetComponent<CompetitionResultsHandler>().showResults( racePosition );
+		competitionResultsScreen.gameObject.SetActive( true );
+		enableEmoteButton();
 	}
 
 	public GameObject getEmoteGameObjectForPlayerNamed( string playerName )
 	{
 		if( GameManager.Instance.isCoopPlayMode() )
 		{
-			return coopResultsScreen.GetComponent<CoopResultsScreenHandler>().getEmoteGameObjectForPlayerNamed( playerName );
+			return coopResultsScreen.GetComponent<CoopResultsHandler>().getEmoteGameObjectForPlayerNamed( playerName );
 		}
 		else
 		{
-			return resultsScreen.GetComponent<ResultsScreenHandler>().getEmoteGameObjectForPlayerNamed( playerName );
+			return competitionResultsScreen.GetComponent<CompetitionResultsHandler>().getEmoteGameObjectForPlayerNamed( playerName );
 		}
 	}
 
 	public IEnumerator displayCoopResultsAndEmotesScreen( float displayDelay )
 	{
-		yield return new WaitForSeconds( displayDelay );
 		coopResultsScreen.gameObject.SetActive( true );
-		coopResultsScreen.GetComponent<CoopResultsScreenHandler>().showResults();
-		showEmotePanel();
+		yield return new WaitForSeconds( displayDelay );
+		levelUICanvasGroup.fadeOut();
+		yield return new WaitForSeconds( 0.4f );
+		resultsUICanvasGroup.fadeIn();
+		coopResultsScreen.GetComponent<CoopResultsHandler>().showResults();
+		enableEmoteButton();
 	}
-
 }

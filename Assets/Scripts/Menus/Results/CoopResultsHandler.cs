@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 using System.Linq;
 using TMPro;
-using UnityEngine.EventSystems;
-using UnityEngine.Apple.ReplayKit;
 
-public class CoopResultsScreenHandler : MonoBehaviour, IPointerDownHandler {
+
+public class CoopResultsHandler : ResultsHandler {
 
 	[SerializeField] RectTransform coopResultsHolder;
 	[SerializeField] GameObject coopResultPrefab;
@@ -18,6 +16,7 @@ public class CoopResultsScreenHandler : MonoBehaviour, IPointerDownHandler {
 
 	public void showResults()
 	{
+
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayPermanentDamageEffect() );
 		int wavesBeaten = CoopWaveGenerator.numberOfWavesTriggered - 1;
 		if( wavesBeaten < 0 ) wavesBeaten = 0;
@@ -35,6 +34,24 @@ public class CoopResultsScreenHandler : MonoBehaviour, IPointerDownHandler {
 
 		adjustSizeOfResultsScreen( PlayerRace.players.Count );
 
+		#region Reward boxes
+		//Loot Box.
+		//You do not get a loot box in coop.
+
+		//Soft Currency.
+		//You win X soft currency per wave completed.
+		int softCurrencyGranted = wavesBeaten * CoopWaveGenerator.SOFT_CURRENCY_EARNED_PER_WAVE;
+		displaySoftCurrency( softCurrencyGranted );
+
+		//XP
+		//You always earn XP regardless of whether you won or lost.
+		displayXP();	  		
+
+		//Challenge
+		//Allow the player to challenge someone to beat his high score.
+		displayChallenge();	  		
+		#endregion
+
 		//Order by the race position of the players i.e. 1st place, 2nd place, and so forth
 		PlayerRace.players = PlayerRace.players.OrderBy( p => p.racePosition ).ToList();
 
@@ -51,7 +68,7 @@ public class CoopResultsScreenHandler : MonoBehaviour, IPointerDownHandler {
 	void adjustSizeOfResultsScreen( int playerCount )
 	{
 		float singleEntryHeight = coopResultPrefab.GetComponent<RectTransform>().sizeDelta.y;
-		float spacing = GetComponent<VerticalLayoutGroup>().spacing;
+		float spacing = coopResultsHolder.GetComponent<VerticalLayoutGroup>().spacing;
 		float desiredHeight = 390f + playerCount * ( singleEntryHeight + spacing );
 		coopResultsHolder.sizeDelta = new Vector2( coopResultsHolder.sizeDelta.x, desiredHeight );
 	}
@@ -73,27 +90,5 @@ public class CoopResultsScreenHandler : MonoBehaviour, IPointerDownHandler {
 		if ( emote == null ) Debug.LogError("CoopResultsScreenHandler-could not find emote game object for player " + playerName );
 		return emote;
 	}
-
-	//The player can click on the coop results screen to dismiss it immediately.
-    public void OnPointerDown(PointerEventData data)
-    {
-		StartCoroutine( exitNow() );
-    }
-
-    IEnumerator  exitNow()
-    {
- 		#if UNITY_IOS
-		try
-		{
-			if( ReplayKit.isRecording ) ReplayKit.StopRecording();
-		}
-   		catch (Exception e)
-		{
-			Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
-    	}
-		yield return new WaitForEndOfFrame();
-		#endif
-		PhotonNetwork.LeaveRoom();
-   }
 
 }

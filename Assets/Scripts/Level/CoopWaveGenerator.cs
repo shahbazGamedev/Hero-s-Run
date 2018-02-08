@@ -24,6 +24,7 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 	ZombieManager zombieManager;
 	Coroutine spectatingCoroutine;
 	const float DELAY_BEFORE_SPECTATING = 2.25f;
+	public const int SOFT_CURRENCY_EARNED_PER_WAVE = 2;
 	#endregion
 
 	void Awake ()
