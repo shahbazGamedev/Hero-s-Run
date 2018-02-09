@@ -12,10 +12,13 @@ public class CoopResultsHandler : ResultsHandler {
 	[SerializeField] GameObject coopResultPrefab;
 	[SerializeField] TextMeshProUGUI roundsSurvivedText;
 	[SerializeField] Transform footer;
+	[SerializeField] Button okayButton;
 	public List<GameObject> emotesList = new List<GameObject>();
 
 	public void showResults()
 	{
+		okayButton.onClick.RemoveAllListeners();
+		okayButton.onClick.AddListener(() => OnClickOkay() );
 
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayPermanentDamageEffect() );
 		int wavesBeaten = CoopWaveGenerator.numberOfWavesTriggered - 1;

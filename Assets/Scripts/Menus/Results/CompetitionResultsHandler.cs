@@ -10,11 +10,14 @@ public class CompetitionResultsHandler : ResultsHandler {
 
 	[SerializeField] RectTransform resultsHolder;
 	[SerializeField] GameObject resultPrefab;
+	[SerializeField] Button okayButton;
 	public List<GameObject> emotesList = new List<GameObject>();
 
 	public void showResults( RacePosition racePosition )
 	{
-		adjustSizeOfResultsScreen( PlayerRace.players.Count );
+		okayButton.onClick.RemoveAllListeners();
+		okayButton.onClick.AddListener(() => OnClickOkay() );
+		//adjustSizeOfResultsScreen( PlayerRace.players.Count );
 
 		#region Reward boxes
 		//Loot Box.
@@ -41,7 +44,7 @@ public class CompetitionResultsHandler : ResultsHandler {
 		for(int i=0; i<PlayerRace.players.Count;i++)
 		{
 			//For each player, create a result entry
-			createResultEntry( PlayerRace.players[i] );
+			//createResultEntry( PlayerRace.players[i] );
 		}
 	}
 
