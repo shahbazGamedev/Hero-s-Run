@@ -18,6 +18,7 @@ public class EmoteHandler : MonoBehaviour {
  	[SerializeField] Transform textEmoteHolder;
 
 	[Header("Configuration")]
+	[SerializeField] ResultsHandler resultsHandler;
 	[SerializeField] List<EmoteData> emoteList = new List<EmoteData>();
 
 	// Use this for initialization

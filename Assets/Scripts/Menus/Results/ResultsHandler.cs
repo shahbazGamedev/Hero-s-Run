@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Apple.ReplayKit;
 using System;
 using TMPro;
+using System.Collections.Generic;
 
 
 public class ResultsHandler : MonoBehaviour {
@@ -14,7 +15,25 @@ public class ResultsHandler : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI reasonAwardedXP;
 	[SerializeField] TextMeshProUGUI totalXPAwarded;
 	[SerializeField] GameObject challengeReward;
+	public List<GameObject> emotesList = new List<GameObject>();
 
+	protected PlayerRace getOtherPlayer( PlayerRace localPlayerRace )
+	{
+		for(int i=0; i<PlayerRace.players.Count;i++)
+		{
+			if( PlayerRace.players[i] != localPlayerRace ) return PlayerRace.players[i];
+		}
+		return null;
+	}
+
+	public GameObject getEmoteGameObjectForPlayerNamed( string playerName )
+	{
+		GameObject emote = emotesList.Find( go => go.name == playerName);
+		if ( emote == null ) Debug.LogError("ResultsHandler-could not find emote game object for player " + playerName );
+		return emote;
+	}
+
+	#region Exit
 	public void OnClickOkay()
 	{
 		Debug.Log( name + " OnClickOkay active: " + gameObject.activeSelf );
@@ -38,6 +57,7 @@ public class ResultsHandler : MonoBehaviour {
 		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
 		PhotonNetwork.LeaveRoom();
 	}
+	#endregion
 
 	#region Reward Boxes
 	public void displayLootBox()
@@ -63,7 +83,7 @@ public class ResultsHandler : MonoBehaviour {
 		//Example: "CONSECUTIVE MATCH<color=orange>+200xp</color>"
 		XPAwardType awardType;
 		int xpAwarded = 0;
-		string xpAwardedLocalized = LocalizationManager.Instance.getText( "XP_AWARD_TOTAL_AWARDED" );
+		string xpAwardedLocalized = LocalizationManager.Instance.getText( "RESULTS_XP_TOTAL_AWARDED" );
 		ProgressionManager.XPAward xpAward;
 		for( int i = 0; i < PlayerRaceManager.Instance.raceAwardList.Count; i++ )
 		{

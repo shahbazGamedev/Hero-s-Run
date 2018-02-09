@@ -13,7 +13,6 @@ public class CoopResultsHandler : ResultsHandler {
 	[SerializeField] TextMeshProUGUI roundsSurvivedText;
 	[SerializeField] Transform footer;
 	[SerializeField] Button okayButton;
-	public List<GameObject> emotesList = new List<GameObject>();
 
 	public void showResults()
 	{
@@ -85,13 +84,6 @@ public class CoopResultsHandler : ResultsHandler {
 		go.GetComponent<CoopResultEntry>().configureEntry( pmd.level, pmd.playerName, playerIconSprite, pmd.score, pmd.kills, pmd.downs, pmd.revives );
 		go.GetComponent<CoopResultEntry>().emoteGameObject.name = pmd.playerName;
 		emotesList.Add( go.GetComponent<CoopResultEntry>().emoteGameObject );
-	}
-
-	public GameObject getEmoteGameObjectForPlayerNamed( string playerName )
-	{
-		GameObject emote = emotesList.Find( go => go.name == playerName);
-		if ( emote == null ) Debug.LogError("CoopResultsScreenHandler-could not find emote game object for player " + playerName );
-		return emote;
 	}
 
 }

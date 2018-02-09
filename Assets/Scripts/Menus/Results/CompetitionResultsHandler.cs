@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using System;
+using TMPro;
 
 
 public class CompetitionResultsHandler : ResultsHandler {
@@ -11,10 +12,63 @@ public class CompetitionResultsHandler : ResultsHandler {
 	[SerializeField] RectTransform resultsHolder;
 	[SerializeField] GameObject resultPrefab;
 	[SerializeField] Button okayButton;
-	public List<GameObject> emotesList = new List<GameObject>();
 
-	public void showResults( RacePosition racePosition )
+	#region Opponent area
+	[SerializeField] TextMeshProUGUI winnerOpponent;
+	[SerializeField] Image iconOpponent;
+	[SerializeField] TextMeshProUGUI nameOpponent;
+	public GameObject emoteGameObjectOpponent;
+	#endregion
+
+	#region Player area
+	[SerializeField] TextMeshProUGUI winnerPlayer;
+	[SerializeField] Image iconPlayer;
+	[SerializeField] TextMeshProUGUI namePlayer;
+	public GameObject emoteGameObjectPlayer;
+	[SerializeField] TextMeshProUGUI cpPlayer;
+	#endregion
+
+	//Note: Issue if two players have the same name with pmd data.
+
+
+	public void showResults( PlayerRace localPlayerRace )
 	{
+		//From top to bottom
+		#region Opponent area
+		PlayerRace opponent = getOtherPlayer( localPlayerRace );
+		PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( opponent.name );
+		winnerOpponent.gameObject.SetActive( opponent.racePosition == RacePosition.FIRST_PLACE ) ;
+		Sprite opponentIconSprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( pmd.playerIcon ).icon;
+		iconOpponent.sprite = opponentIconSprite;
+		nameOpponent.text = opponent.name;
+		emoteGameObjectOpponent.name = opponent.name;
+		emotesList.Add( emoteGameObjectOpponent );
+		#endregion
+
+		#region Player area
+		pmd = LevelManager.Instance.getPlayerMatchDataByName( localPlayerRace.name );
+		winnerPlayer.gameObject.SetActive( localPlayerRace.racePosition == RacePosition.FIRST_PLACE ) ;
+		Sprite playerIconSprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( pmd.playerIcon ).icon;
+		iconPlayer.sprite = playerIconSprite;
+		namePlayer.text = localPlayerRace.name;
+		int competitivePointsEarnedLastRace = GameManager.Instance.playerProfile.getCompetitivePointsEarnedLastRace();
+		if( competitivePointsEarnedLastRace > 0 )
+		{
+			cpPlayer.text = "+" + competitivePointsEarnedLastRace.ToString();
+		}
+		else if( competitivePointsEarnedLastRace < 0 )
+		{
+			cpPlayer.text = "-" + competitivePointsEarnedLastRace.ToString();
+		}
+		else
+		{
+			cpPlayer.text = competitivePointsEarnedLastRace.ToString();
+		}
+		emoteGameObjectPlayer.name = localPlayerRace.name;
+		emotesList.Add( emoteGameObjectPlayer );
+		#endregion
+
+
 		okayButton.onClick.RemoveAllListeners();
 		okayButton.onClick.AddListener(() => OnClickOkay() );
 		//adjustSizeOfResultsScreen( PlayerRace.players.Count );
@@ -22,11 +76,11 @@ public class CompetitionResultsHandler : ResultsHandler {
 		#region Reward boxes
 		//Loot Box.
 		//You only get a loot box if you won.
-		if( racePosition == RacePosition.FIRST_PLACE ) displayLootBox();
+		if( localPlayerRace.racePosition == RacePosition.FIRST_PLACE ) displayLootBox();
 
 		//Soft Currency.
 		//You only win soft currency if you won. The amount is determined by the player's current sector.
-		if( racePosition == RacePosition.FIRST_PLACE )
+		if( localPlayerRace.racePosition == RacePosition.FIRST_PLACE )
 		{
 			int currentSector = GameManager.Instance.playerProfile.getCurrentSector();
 			int softCurrencyGranted = SectorManager.Instance.getSectorVictorySoftCurrency( currentSector );
@@ -89,13 +143,6 @@ public class CompetitionResultsHandler : ResultsHandler {
 		go.GetComponent<ResultEntry>().configureEntry( racePosition, pmd.level, pmd.playerName, playerIconSprite, raceDurationString );
 		go.GetComponent<ResultEntry>().emoteGameObject.name = pmd.playerName;
 		emotesList.Add( go.GetComponent<ResultEntry>().emoteGameObject );
-	}
-
-	public GameObject getEmoteGameObjectForPlayerNamed( string playerName )
-	{
-		GameObject emote = emotesList.Find( go => go.name == playerName);
-		if ( emote == null ) Debug.LogError("ResultsScreenHandler-could not find emote game object for player " + playerName );
-		return emote;
 	}
 
 

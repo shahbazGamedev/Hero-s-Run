@@ -558,7 +558,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		levelUICanvasGroup.fadeOut();
 		yield return new WaitForSeconds( 0.4f );
 		resultsUICanvasGroup.fadeIn();
-		competitionResultsScreen.GetComponent<CompetitionResultsHandler>().showResults( racePosition );
+		competitionResultsScreen.GetComponent<CompetitionResultsHandler>().showResults( localPlayerRace );
 		competitionResultsScreen.gameObject.SetActive( true );
 		enableEmoteButton();
 	}
