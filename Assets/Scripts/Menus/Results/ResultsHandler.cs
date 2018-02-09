@@ -56,7 +56,7 @@ public class ResultsHandler : MonoBehaviour {
 		yield return new WaitForEndOfFrame();
 		#endif
 		Debug.Log( "ResultsHandler-exitNow" );
-		GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
+		GameManager.Instance.setGameState(GameState.Matchmaking);
 		PhotonNetwork.LeaveRoom();
 	}
 	#endregion

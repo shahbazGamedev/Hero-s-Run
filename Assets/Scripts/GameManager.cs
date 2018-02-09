@@ -17,7 +17,6 @@ public enum GameState {
 	BeforeTapToPlayAllowed = 8,
 	PostLevelPopup = 9,
 	WorldMapNoPopup = 10,
-	MultiplayerEndOfGame = 11,
 	Matchmaking = 12
 }
 

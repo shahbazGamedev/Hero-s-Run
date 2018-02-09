@@ -7,7 +7,6 @@ using UnityEngine.Apple.ReplayKit;
 public class MatchmakingManager : Menu {
 
 	[Header("General")]
-	[SerializeField] GameObject endOfGameCanvas;
 	[SerializeField] Image backgroundImage;
 	[SerializeField] Button playButton;
 	[SerializeField] Button closeButton;
@@ -52,6 +51,9 @@ public class MatchmakingManager : Menu {
 	[SerializeField] Text remotePlayer2Name3P;
 	[SerializeField] GameObject preloader23P; //animates while looking for an opponent for the match
 
+	[Header("Sector Change Popup")]
+	[SerializeField] GameObject sectorChangePopup;
+
 	private Color originalPlayButtonTextColor;
 
 	void Awake ()
@@ -62,6 +64,8 @@ public class MatchmakingManager : Menu {
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
+
+		verifyIfSectorChanged();
 
 		//Reset the player match data
 		LevelManager.Instance.playerMatchDataList.Clear();
@@ -90,39 +94,30 @@ public class MatchmakingManager : Menu {
 		//Only show the Photon Cloud Region text when playing in an online mode.
 		PhotonCloudRegionText.gameObject.SetActive( GameManager.Instance.isOnlinePlayMode() );
 
-		//If we are returning to the lobby after a race has completed, show the end of game screen which displays XP awarded
-		if( GameManager.Instance.getGameState() == GameState.MultiplayerEndOfGame )
+		//If we are playing a 2 or 3 player online multiplayer match, the level is
+		//selected randomly (excluding level zero which is the training level).
+		//If the player is playing alone or against AI, the race track has been selected in
+		//the circuit selection screen.
+		//If the player is inviting a friend, they will race in a track based on the inviter's number of trophies.
+		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOnePlayer || GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoPlayers )
 		{
-			endOfGameCanvas.SetActive( true );
+			LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomMap() );
 		}
-		else
+		else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
 		{
-			//If we are playing a 2 or 3 player online multiplayer match, the level is
-			//selected randomly (excluding level zero which is the training level).
-			//If the player is playing alone or against AI, the race track has been selected in
-			//the circuit selection screen.
-			//If the player is inviting a friend, they will race in a track based on the inviter's number of trophies.
-			if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOnePlayer || GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoPlayers )
-			{
-				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomMap() );
-			}
-			else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
-			{
-				//Use the race track name saved in the match data
-				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getMapByName( LevelManager.Instance.matchData.mapName ) );
-			}
-			else if( GameManager.Instance.isCoopPlayMode() )
-			{
-				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomCoopMap() );
-			}
+			//Use the race track name saved in the match data
+			LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getMapByName( LevelManager.Instance.matchData.mapName ) );
+		}
+		else if( GameManager.Instance.isCoopPlayMode() )
+		{
+			LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomCoopMap() );
+		}
 
-			if( !GameManager.Instance.isOnlinePlayMode() || GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
-			{
-				//Only configure the circuit/map image and title and etc. when offline or when you are inviting a friend to a match.
-				//For online competition matches, the circuit/map image and title and etc. will get updated when a remote player connects.
-				configureCircuitData( LevelManager.Instance.getSelectedCircuit().circuitInfo );
-			}
-			endOfGameCanvas.SetActive( false );
+		if( !GameManager.Instance.isOnlinePlayMode() || GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
+		{
+			//Only configure the circuit/map image and title and etc. when offline or when you are inviting a friend to a match.
+			//For online competition matches, the circuit/map image and title and etc. will get updated when a remote player connects.
+			configureCircuitData( LevelManager.Instance.getSelectedCircuit().circuitInfo );
 		}
 	}
 
@@ -341,6 +336,16 @@ public class MatchmakingManager : Menu {
 			preloader12P.SetActive( false );
 			preloader13P.SetActive( false );
 			preloader23P.SetActive( false );
+		}
+	}
+	/// <summary>
+	/// Verify if the player has changed sector. If he did, display the Sector Change popup.
+	/// </summary>
+	void verifyIfSectorChanged()
+	{
+		if( PlayerRaceManager.Instance.sectorStatus != SectorStatus.NO_CHANGE )
+		{
+			sectorChangePopup.SetActive( true );
 		}
 	}
 

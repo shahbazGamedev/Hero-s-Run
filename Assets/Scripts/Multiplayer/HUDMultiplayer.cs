@@ -283,7 +283,7 @@ public class HUDMultiplayer : MonoBehaviour {
 			//their race duration will be "N/A".
 			StartCoroutine( displayResultsAndEmotesScreen( 0.25f, localPlayerRace.racePosition ) );
 			yield return new WaitForSeconds( DELAY_WHEN_NOT_ALL_PLAYERS_ARRIVED );
-			GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
+			GameManager.Instance.setGameState(GameState.Matchmaking);
 			PhotonNetwork.LeaveRoom();
 			yield break;
 		}
@@ -307,7 +307,7 @@ public class HUDMultiplayer : MonoBehaviour {
 				
 			} while ( elapsedTime < duration );
 			//Leave room
-			GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
+			GameManager.Instance.setGameState(GameState.Matchmaking);
 			PhotonNetwork.LeaveRoom();
 		}
 	}
@@ -341,7 +341,7 @@ public class HUDMultiplayer : MonoBehaviour {
     	}
 		yield return new WaitForEndOfFrame();
 		#endif
-		if( !GameManager.Instance.isCoopPlayMode() ) GameManager.Instance.setGameState(GameState.MultiplayerEndOfGame);
+		GameManager.Instance.setGameState(GameState.Matchmaking);
 		PhotonNetwork.LeaveRoom();
 	}
 
