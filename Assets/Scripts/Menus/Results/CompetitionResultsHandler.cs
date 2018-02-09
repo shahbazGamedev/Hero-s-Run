@@ -1,34 +1,25 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
-using System;
 using TMPro;
 
-
+//To Do
+//Note: Issue with pmd data if two players have the same name.
+//Add an animated flame if the win streak is 5 or more.
 public class CompetitionResultsHandler : ResultsHandler {
 
-	[SerializeField] RectTransform resultsHolder;
-	[SerializeField] GameObject resultPrefab;
-
-	#region Opponent area
+	[Header("Opponent")]
 	[SerializeField] TextMeshProUGUI winnerOpponent;
 	[SerializeField] Image iconOpponent;
 	[SerializeField] TextMeshProUGUI nameOpponent;
-	public GameObject emoteGameObjectOpponent;
-	#endregion
+	[SerializeField] GameObject emoteGameObjectOpponent;
 
-	#region Player area
+	[Header("Player")]
 	[SerializeField] TextMeshProUGUI winnerPlayer;
 	[SerializeField] Image iconPlayer;
 	[SerializeField] TextMeshProUGUI namePlayer;
-	public GameObject emoteGameObjectPlayer;
+	[SerializeField] GameObject emoteGameObjectPlayer;
 	[SerializeField] TextMeshProUGUI cpPlayer;
-	#endregion
-
-	//Note: Issue if two players have the same name with pmd data.
-
 
 	public void showResults( PlayerRace localPlayerRace )
 	{
@@ -67,11 +58,6 @@ public class CompetitionResultsHandler : ResultsHandler {
 		emotesList.Add( emoteGameObjectPlayer );
 		#endregion
 
-
-		okayButton.onClick.RemoveAllListeners();
-		okayButton.onClick.AddListener(() => this.OnClickOkay() );
-		//adjustSizeOfResultsScreen( PlayerRace.players.Count );
-
 		#region Reward boxes
 		//Loot Box.
 		//You only get a loot box if you won.
@@ -91,58 +77,8 @@ public class CompetitionResultsHandler : ResultsHandler {
 		displayXP();	  		
 		#endregion
 
-		//Order by the race position of the players i.e. 1st place, 2nd place, and so forth
-		PlayerRace.players = PlayerRace.players.OrderBy( p => p.racePosition ).ToList();
-
-		for(int i=0; i<PlayerRace.players.Count;i++)
-		{
-			//For each player, create a result entry
-			//createResultEntry( PlayerRace.players[i] );
-		}
+		//Okay button
+		okayButton.onClick.RemoveAllListeners();
+		okayButton.onClick.AddListener(() => this.OnClickOkay() );
 	}
-
-	void adjustSizeOfResultsScreen( int playerCount )
-	{
-		float titleHeight = resultPrefab.GetComponent<RectTransform>().sizeDelta.y; //It has the same height as a result entry
-		float singleEntryHeight = resultPrefab.GetComponent<RectTransform>().sizeDelta.y;
-		float spacing = resultsHolder.GetComponent<VerticalLayoutGroup>().spacing;
-		float desiredHeight = titleHeight + playerCount * ( singleEntryHeight + spacing );
-		resultsHolder.sizeDelta = new Vector2( resultsHolder.sizeDelta.x, desiredHeight );
-	}
-
-	//Note that win streak is not used for now. An animated flame will be used in the future to convey the win streak, this is why I am keeping the code.
-	void createResultEntry( PlayerRace playerRace )
-	{
-		RacePosition racePosition = playerRace.racePosition;
-
-		PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( playerRace.name );
-		int winStreak = pmd.currentWinStreak;
-		if( racePosition == RacePosition.FIRST_PLACE )
-		{
-			//If player won the race, increment is win streak
-			winStreak = pmd.currentWinStreak + 1;
-		}
-
-		Sprite playerIconSprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( pmd.playerIcon ).icon;
-
-		//Race time
-		string raceDurationString;
-		if( playerRace.playerCrossedFinishLine )
-		{
-			TimeSpan ts = TimeSpan.FromSeconds( playerRace.raceDuration );
-			DateTime dt = new DateTime(ts.Ticks);
-			raceDurationString = dt.ToString("mm:ss");
-		}
-		else
-		{
-			raceDurationString = LocalizationManager.Instance.getText( "RESULTS_NOT_AVAILABLE" );
-		}
-		GameObject go = (GameObject)Instantiate(resultPrefab);
-		go.transform.SetParent(resultsHolder,false);
-		go.GetComponent<ResultEntry>().configureEntry( racePosition, pmd.level, pmd.playerName, playerIconSprite, raceDurationString );
-		go.GetComponent<ResultEntry>().emoteGameObject.name = pmd.playerName;
-		emotesList.Add( go.GetComponent<ResultEntry>().emoteGameObject );
-	}
-
-
 }

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class GameEventManager : MonoBehaviour {
 
 	public GenerateLevel generateLevel;
-	public WeatherManager weatherManager;
 	PlayerCamera playerCamera;
 	public Lightning lightning;
 	TrollController trollController;
@@ -762,8 +761,8 @@ public class GameEventManager : MonoBehaviour {
 	{
 		op = openingSequence;
 
-		weatherManager.setWeatherTarget( op.rainLocation, 0 );
-		weatherManager.activateRain( true );
+		//weatherManager.setWeatherTarget( op.rainLocation, 0 );
+		//weatherManager.activateRain( true );
 		lightning.controlLightning(GameEvent.Start_Lightning);
 		//Position player near the top of the tower
 		player.position = new Vector3( 0, 79.34f, -2f );
@@ -825,7 +824,7 @@ public class GameEventManager : MonoBehaviour {
 		playerCamera.setCameraParameters( 18f, PlayerCamera.DEFAULT_DISTANCE, PlayerCamera.DEFAULT_HEIGHT, PlayerCamera.DEFAULT_Y_ROTATION_OFFSET );
 		playerCamera.activateMainCamera();
 		playerCamera.positionCameraNow();
-		weatherManager.setWeatherTarget( player, 8f );
+		//weatherManager.setWeatherTarget( player, 8f );
 		Invoke ("step5", 2.1f );
 	}
 

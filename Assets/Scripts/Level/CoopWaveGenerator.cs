@@ -25,8 +25,7 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 	Coroutine spectatingCoroutine;
 	const float DELAY_BEFORE_SPECTATING = 2.25f;
 	public const int SOFT_CURRENCY_EARNED_PER_WAVE = 2;
-	public const int XP_EARNED_PER_WAVE = 20;
-	public const int SCORE_PER_WAVE = 25; //coop - score points awarded per wave beaten.
+	public const int XP_EARNED_PER_WAVE = 25;
 	#endregion
 
 	void Awake ()
