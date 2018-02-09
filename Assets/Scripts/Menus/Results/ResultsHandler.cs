@@ -4,6 +4,7 @@ using UnityEngine.Apple.ReplayKit;
 using System;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 
 public class ResultsHandler : MonoBehaviour {
@@ -15,6 +16,7 @@ public class ResultsHandler : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI reasonAwardedXP;
 	[SerializeField] TextMeshProUGUI totalXPAwarded;
 	[SerializeField] GameObject challengeReward;
+	public Button okayButton;
 	public List<GameObject> emotesList = new List<GameObject>();
 
 	protected PlayerRace getOtherPlayer( PlayerRace localPlayerRace )
@@ -89,7 +91,11 @@ public class ResultsHandler : MonoBehaviour {
 		{
 			awardType = PlayerRaceManager.Instance.raceAwardList[i];
 			xpAward = ProgressionManager.Instance.getXPAward( awardType );
-			string awardText = LocalizationManager.Instance.getText( xpAward.awardTextID );
+
+			//Don't display an XP award where the XP amount is 0.
+			if( xpAward.xpAmount == 0 ) continue;
+
+			string awardText = LocalizationManager.Instance.getText( "XP_AWARD_" + awardType.ToString() );
 			reasonAwardedXP.text = awardText + "<color=orange>+" + xpAward.xpAmount.ToString() + "xp</color>";
 
 			//Update the xpAwarded

@@ -12,14 +12,24 @@ public class CoopResultsHandler : ResultsHandler {
 	[SerializeField] GameObject coopResultPrefab;
 	[SerializeField] TextMeshProUGUI roundsSurvivedText;
 	[SerializeField] Transform footer;
-	[SerializeField] Button okayButton;
+	#region Partner area
+	[SerializeField] Image iconPartner;
+	[SerializeField] TextMeshProUGUI namePartner;
+	public GameObject emoteGameObjectPartner;
+	[SerializeField] TextMeshProUGUI scorePartner;
+	#endregion
 
-	public void showResults()
+	#region Player area
+	[SerializeField] Image iconPlayer;
+	[SerializeField] TextMeshProUGUI namePlayer;
+	public GameObject emoteGameObjectPlayer;
+	[SerializeField] TextMeshProUGUI scorePlayer;
+	#endregion
+
+	public void showResults( PlayerRace localPlayerRace )
 	{
-		okayButton.onClick.RemoveAllListeners();
-		okayButton.onClick.AddListener(() => OnClickOkay() );
-
-		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayPermanentDamageEffect() );
+		//From top to bottom
+		#region Waves survived
 		int wavesBeaten = CoopWaveGenerator.numberOfWavesTriggered - 1;
 		if( wavesBeaten < 0 ) wavesBeaten = 0;
 		string wavesBeatenString;
@@ -33,8 +43,40 @@ public class CoopResultsHandler : ResultsHandler {
 		}
 		wavesBeatenString = string.Format( wavesBeatenString, wavesBeaten );
 		roundsSurvivedText.text = wavesBeatenString;
+		#endregion
 
-		adjustSizeOfResultsScreen( PlayerRace.players.Count );
+		int wavesCompleted = CoopWaveGenerator.numberOfWavesTriggered - 1;
+		if( wavesCompleted < 0 ) wavesCompleted = 0;
+		//The wave bonus is the same for the player and his partner.
+		int waveBonus = wavesCompleted * CoopWaveGenerator.SCORE_PER_WAVE;
+
+		#region Partner area
+		PlayerRace partner = getOtherPlayer( localPlayerRace );
+		PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( partner.name );
+		Sprite opponentIconSprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( pmd.playerIcon ).icon;
+		iconPartner.sprite = opponentIconSprite;
+		namePartner.text = partner.name;
+		emoteGameObjectPartner.name = partner.name;
+		emotesList.Add( emoteGameObjectPartner );
+		scorePartner.text = ( pmd.score + waveBonus ).ToString("N0");
+		#endregion
+
+		#region Player area
+		pmd = LevelManager.Instance.getPlayerMatchDataByName( localPlayerRace.name );
+		Sprite playerIconSprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( pmd.playerIcon ).icon;
+		iconPlayer.sprite = playerIconSprite;
+		namePlayer.text = localPlayerRace.name;
+		emoteGameObjectPlayer.name = localPlayerRace.name;
+		emotesList.Add( emoteGameObjectPlayer );
+		scorePlayer.text = ( pmd.score + waveBonus ).ToString("N0");
+		#endregion
+
+		okayButton.onClick.RemoveAllListeners();
+		okayButton.onClick.AddListener(() => this.OnClickOkay() );
+
+		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayPermanentDamageEffect() );
+
+		//adjustSizeOfResultsScreen( PlayerRace.players.Count );
 
 		#region Reward boxes
 		//Loot Box.
@@ -60,11 +102,11 @@ public class CoopResultsHandler : ResultsHandler {
 		for(int i=0; i<PlayerRace.players.Count;i++)
 		{
 			//For each player, create a result entry
-			createResultEntry( PlayerRace.players[i] );
+			//createResultEntry( PlayerRace.players[i] );
 		}
 
 		//we want the footer at the bottom
-		footer.SetAsLastSibling();
+		//footer.SetAsLastSibling();
 	}
 
 	void adjustSizeOfResultsScreen( int playerCount )
@@ -84,6 +126,11 @@ public class CoopResultsHandler : ResultsHandler {
 		go.GetComponent<CoopResultEntry>().configureEntry( pmd.level, pmd.playerName, playerIconSprite, pmd.score, pmd.kills, pmd.downs, pmd.revives );
 		go.GetComponent<CoopResultEntry>().emoteGameObject.name = pmd.playerName;
 		emotesList.Add( go.GetComponent<CoopResultEntry>().emoteGameObject );
+	}
+
+	public void OnClickChallenge()
+	{
+		Debug.LogWarning("CoopResultsHandler-Challenge mode not implemented yet.");
 	}
 
 }

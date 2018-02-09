@@ -220,7 +220,7 @@ public class MPGameEndManager : MonoBehaviour {
 		{
 			awardType = PlayerRaceManager.Instance.raceAwardList[i];
 			xpAward = ProgressionManager.Instance.getXPAward( awardType );
-			string awardText = LocalizationManager.Instance.getText( xpAward.awardTextID );
+			string awardText = LocalizationManager.Instance.getText( "XP_AWARD_" + awardType.ToString() );
 			awardedXP.text = awardText + "<color=orange>+" + xpAward.xpAmount.ToString() + "xp</color>";
 			yield return new WaitForSecondsRealtime( 4.0f );
 		}

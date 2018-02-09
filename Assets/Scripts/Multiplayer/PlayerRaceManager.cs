@@ -89,7 +89,7 @@ public class PlayerRaceManager {
 		}
 	}
 
-	private void grantXPAward( XPAwardType awardType )
+	public void grantXPAward( XPAwardType awardType )
 	{
 		if ( raceAwardList.Contains( awardType ) )
 		{

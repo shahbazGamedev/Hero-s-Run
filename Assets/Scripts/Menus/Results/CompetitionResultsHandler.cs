@@ -11,7 +11,6 @@ public class CompetitionResultsHandler : ResultsHandler {
 
 	[SerializeField] RectTransform resultsHolder;
 	[SerializeField] GameObject resultPrefab;
-	[SerializeField] Button okayButton;
 
 	#region Opponent area
 	[SerializeField] TextMeshProUGUI winnerOpponent;
@@ -70,7 +69,7 @@ public class CompetitionResultsHandler : ResultsHandler {
 
 
 		okayButton.onClick.RemoveAllListeners();
-		okayButton.onClick.AddListener(() => OnClickOkay() );
+		okayButton.onClick.AddListener(() => this.OnClickOkay() );
 		//adjustSizeOfResultsScreen( PlayerRace.players.Count );
 
 		#region Reward boxes

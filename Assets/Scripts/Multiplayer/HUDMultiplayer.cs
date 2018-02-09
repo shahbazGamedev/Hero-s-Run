@@ -582,7 +582,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		levelUICanvasGroup.fadeOut();
 		yield return new WaitForSeconds( 0.4f );
 		resultsUICanvasGroup.fadeIn();
-		coopResultsScreen.GetComponent<CoopResultsHandler>().showResults();
+		coopResultsScreen.GetComponent<CoopResultsHandler>().showResults( localPlayerRace );
 		enableEmoteButton();
 	}
 }

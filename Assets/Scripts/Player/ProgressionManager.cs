@@ -5,11 +5,15 @@ using System.Linq;
 
 public enum XPAwardType
  {
+	//Competition
 	FINISHED_RACE = 1,
 	WON = 2,
 	FIRST_WIN_OF_THE_DAY = 3,
 	CONSECUTIVE_RACE = 4,
-	SKILL_BONUS = 5
+	SKILL_BONUS = 5,
+	//Coop
+	SCORE_BONUS = 100,
+	WAVE_BONUS = 101
 }
 
 public class ProgressionManager : MonoBehaviour {
@@ -91,6 +95,17 @@ public class ProgressionManager : MonoBehaviour {
 		{
 			xpAward.xpAmount = GameManager.Instance.playerProfile.getSkillBonus();
 		}
+		else if( xpAward.awardType == XPAwardType.SCORE_BONUS )
+		{
+			PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( GameManager.Instance.playerProfile.getUserName() );
+			xpAward.xpAmount = pmd.score;
+		}
+		else if( xpAward.awardType == XPAwardType.WAVE_BONUS )
+		{
+			int waves = CoopWaveGenerator.numberOfWavesTriggered - 1;
+			if( waves < 0 ) waves = 0;
+			xpAward.xpAmount = CoopWaveGenerator.XP_EARNED_PER_WAVE * waves;
+		}
 		return xpAward;
 	}
 
@@ -98,7 +113,6 @@ public class ProgressionManager : MonoBehaviour {
 	public class XPAward
 	{
 		public XPAwardType awardType;
-		public string awardTextID = string.Empty;
 		public int xpAmount = 0;
 	}
 	

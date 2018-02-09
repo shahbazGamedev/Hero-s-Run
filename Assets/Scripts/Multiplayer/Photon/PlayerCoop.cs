@@ -25,12 +25,6 @@ public class PlayerCoop : MonoBehaviour {
 
 	void CoopNewWave( int waveNumber )
 	{
-		//Each wave survived increases the player's score.
-		PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( name );
-		int wavesCompleted = waveNumber - 1;
-		if( wavesCompleted < 0 ) wavesCompleted = 0;
-		pmd.score = pmd.score + wavesCompleted * SCORE_PER_WAVE;
-
 		//With each new wave, the run speed increases slightly.
 		GetComponent<PlayerRun>().calculateOverallSpeedMultiplier();
 
@@ -91,6 +85,10 @@ public class PlayerCoop : MonoBehaviour {
 		if( GetComponent<PhotonView>().isMine && GetComponent<PlayerAI>() == null )
 		{
 			GameManager.Instance.playerStatistics.updateCoopHighScoreWaves( CoopWaveGenerator.numberOfWavesTriggered );
+			//Grant XP
+			PlayerRaceManager.Instance.raceAwardList.Clear();
+			PlayerRaceManager.Instance.grantXPAward(XPAwardType.SCORE_BONUS );
+			PlayerRaceManager.Instance.grantXPAward(XPAwardType.WAVE_BONUS );
 		}
 	}
 
