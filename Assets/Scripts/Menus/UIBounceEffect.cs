@@ -17,12 +17,12 @@ public class UIBounceEffect : MonoBehaviour
 	{
 		CancelInvoke("scaleDown");
 		LeanTween.cancel( gameObject );
-		LeanTween.scale( gameObject.GetComponent<RectTransform>(), new Vector3( scale, scale, scale ), scaleUpDuration ).setOnComplete(scaleDown).setOnCompleteParam(gameObject).setDelay( scaleUpStartDelay );
+				LeanTween.scale( gameObject.GetComponent<RectTransform>(), new Vector3( scale, scale, scale ), scaleUpDuration ).setOnComplete(scaleDown).setOnCompleteParam(gameObject).setDelay( scaleUpStartDelay ).setIgnoreTimeScale( true );
 	}
 	
 	void scaleDown()
 	{
-		LeanTween.scale( gameObject.GetComponent<RectTransform>(), Vector3.one, scaleDownDuration );
+		LeanTween.scale( gameObject.GetComponent<RectTransform>(), Vector3.one, scaleDownDuration ).setIgnoreTimeScale( true );
 	}
 
 	void OnEnable()
