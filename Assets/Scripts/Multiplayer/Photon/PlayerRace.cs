@@ -252,7 +252,7 @@ public sealed class PlayerRace : Photon.PunBehaviour
 		if( crossedFinishLine != null ) crossedFinishLine( transform, racePosition, playerAI != null );
 
 		//We want to gradually slow down the player
-		StartCoroutine( playerRun.slowDownPlayerAfterFinishLine( racePosition, 4.75f - ((int)racePosition * 2.25f) ) );
+		playerRun.slowDownPlayer( 4.75f - ((int)racePosition * 2.25f), onArrivalCallback );
 
 		//Note: if the player won, a voice over will be triggered by the victory animation. See Victory_win_start.
 
@@ -292,6 +292,18 @@ public sealed class PlayerRace : Photon.PunBehaviour
 		//If this player is on Master, the Level Networking Manager will then send a OnRaceCompletedRPC to everyone.
 		//This RPC will take care of saving the player race data.
 		levelNetworkingManager.playerHasCrossedFinishLine( this );
+	}
+
+	void onArrivalCallback()
+	{
+		if( racePosition == RacePosition.FIRST_PLACE )
+		{
+			playerControl.playVictoryAnimation();
+		}
+		else
+		{
+			playerControl.playLoseAnimation();
+		}
 	}
 
 	public PhotonView getMinimapPhotonView()
@@ -401,13 +413,17 @@ public sealed class PlayerRace : Photon.PunBehaviour
 		}		
     }
 
+	//Activates the finish line camera (if it exists) when the local player crosses the finish line.
 	void activateFinishLineCamera()
 	{
-		Transform cameraLocation = playerControl.currentTile.transform.Find("End Camera");
-
-		if( cameraLocation != null )
+		if( this.photonView.isMine && playerAI == null )
 		{
-			cameraLocation.GetComponent<Camera>().enabled = true;
+			Transform cameraLocation = playerControl.currentTile.transform.Find("End Camera");
+	
+			if( cameraLocation != null )
+			{
+				cameraLocation.GetComponent<Camera>().enabled = true;
+			}
 		}
 	}
 	#endregion

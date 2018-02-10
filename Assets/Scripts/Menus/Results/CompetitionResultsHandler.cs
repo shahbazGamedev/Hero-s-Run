@@ -9,10 +9,14 @@ using TMPro;
 public class CompetitionResultsHandler : ResultsHandler {
 
 	[Header("Opponent")]
+	[SerializeField] GameObject ribbonOpponent;
 	[SerializeField] TextMeshProUGUI winnerOpponent;
 	[SerializeField] Image iconOpponent;
 	[SerializeField] TextMeshProUGUI nameOpponent;
 	[SerializeField] GameObject emoteGameObjectOpponent;
+
+	[Header("Versus Text")]
+	[SerializeField] GameObject versusText;
 
 	[Header("Player")]
 	[SerializeField] TextMeshProUGUI winnerPlayer;
@@ -21,18 +25,31 @@ public class CompetitionResultsHandler : ResultsHandler {
 	[SerializeField] GameObject emoteGameObjectPlayer;
 	[SerializeField] TextMeshProUGUI cpPlayer;
 
+	[Header("Reward Text")]
+	[SerializeField] GameObject rewardText;
+
 	public void showResults( PlayerRace localPlayerRace )
 	{
 		//From top to bottom
+		PlayerMatchData pmd;
 		#region Opponent area
-		PlayerRace opponent = getOtherPlayer( localPlayerRace );
-		PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( opponent.name );
-		winnerOpponent.gameObject.SetActive( opponent.racePosition == RacePosition.FIRST_PLACE ) ;
-		Sprite opponentIconSprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( pmd.playerIcon ).icon;
-		iconOpponent.sprite = opponentIconSprite;
-		nameOpponent.text = opponent.name;
-		emoteGameObjectOpponent.name = opponent.name;
-		emotesList.Add( emoteGameObjectOpponent );
+		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAlone )
+		{
+			winnerOpponent.gameObject.SetActive( false );
+			ribbonOpponent.SetActive( false ); //also hides the name, and the icon.
+			versusText.SetActive( false );
+		}
+		else
+		{
+			PlayerRace opponent = getOtherPlayer( localPlayerRace );
+			pmd = LevelManager.Instance.getPlayerMatchDataByName( opponent.name );
+			winnerOpponent.gameObject.SetActive( opponent.racePosition == RacePosition.FIRST_PLACE ) ;
+			Sprite opponentIconSprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( pmd.playerIcon ).icon;
+			iconOpponent.sprite = opponentIconSprite;
+			nameOpponent.text = opponent.name;
+			emoteGameObjectOpponent.name = opponent.name;
+			emotesList.Add( emoteGameObjectOpponent );
+		}
 		#endregion
 
 		#region Player area
@@ -59,22 +76,30 @@ public class CompetitionResultsHandler : ResultsHandler {
 		#endregion
 
 		#region Reward boxes
-		//Loot Box.
-		//You only get a loot box if you won.
-		if( localPlayerRace.racePosition == RacePosition.FIRST_PLACE ) displayLootBox();
-
-		//Soft Currency.
-		//You only win soft currency if you won. The amount is determined by the player's current sector.
-		if( localPlayerRace.racePosition == RacePosition.FIRST_PLACE )
+		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAlone )
 		{
-			int currentSector = GameManager.Instance.playerProfile.getCurrentSector();
-			int softCurrencyGranted = SectorManager.Instance.getSectorVictorySoftCurrency( currentSector );
-			displaySoftCurrency( softCurrencyGranted );
+			//You do not get any rewards when playing alone.
+			rewardText.SetActive( false );
 		}
-
-		//XP
-		//You always earn XP regardless of whether you won or lost.
-		displayXP();	  		
+		else
+		{
+			//Loot Box.
+			//You only get a loot box if you won.
+			if( localPlayerRace.racePosition == RacePosition.FIRST_PLACE ) displayLootBox();
+	
+			//Soft Currency.
+			//You only win soft currency if you won. The amount is determined by the player's current sector.
+			if( localPlayerRace.racePosition == RacePosition.FIRST_PLACE )
+			{
+				int currentSector = GameManager.Instance.playerProfile.getCurrentSector();
+				int softCurrencyGranted = SectorManager.Instance.getSectorVictorySoftCurrency( currentSector );
+				displaySoftCurrency( softCurrencyGranted );
+			}
+	
+			//XP
+			//You always earn XP regardless of whether you won or lost.
+			displayXP();	  		
+		}
 		#endregion
 
 		//Okay button

@@ -37,6 +37,7 @@ public class PlayerRun : Photon.PunBehaviour {
 
 	//The speed to reduce to after crossing finish line
 	const float SLOW_DOWN_END_SPEED = 5f;
+	Coroutine slowDownPlayerCoroutine;
 	#endregion
 
 	#region Run to Sprint animations blending
@@ -390,7 +391,7 @@ public class PlayerRun : Photon.PunBehaviour {
 	}
 
 	/// <summary>
-	/// Slows down player after he crosses the finish line.
+	/// Slows down the player to an halt.
 	/// The player will travel the distance specified starting from his current position.
 	/// Note: Because we are not using the Z position of the finish line trigger, the end position of the player will vary depending on latency.
 	/// This method only guarantees that the distance travelled will be the one specified.
@@ -400,9 +401,15 @@ public class PlayerRun : Photon.PunBehaviour {
 	/// To summarize, this method does not guarantee the same end position for a player crossing the finish line across all clients, however it
 	/// does ensure that every player will travel the distance specified.
 	/// </summary>
-	/// <returns>Slows down the player after he crosses the finish line.</returns>
 	/// <param name="distance">Distance.</param>
-	public IEnumerator slowDownPlayerAfterFinishLine( RacePosition officialRacePosition, float distance )
+	/// <param name="onArrivalCallback">Optional method to call once the player has traveled the distance.</param>
+	public void slowDownPlayer( float distance, System.Action onArrivalCallback = null )
+	{
+		if( slowDownPlayerCoroutine != null ) StopCoroutine( slowDownPlayerCoroutine );
+		slowDownPlayerCoroutine = StartCoroutine( coroutineSlowDownPlayer( distance, onArrivalCallback ) );
+	}
+
+	IEnumerator coroutineSlowDownPlayer( float distance, System.Action onArrivalCallback = null )
 	{
 		GetComponent<Rigidbody>().velocity = new Vector3( 0,playerControl.moveDirection.y,0 );
 		playerControl.enablePlayerControl( false );
@@ -433,19 +440,11 @@ public class PlayerRun : Photon.PunBehaviour {
 
 			//update animation speed
 			anim.speed = Mathf.Lerp( startAnimationSpeed, endAnimationSpeed, percentageComplete );
-
 			yield return new WaitForEndOfFrame(); 
 		}
 		//We have arrived. Stop player movement.
 		playerControl.enablePlayerMovement( false );
-		if( officialRacePosition == RacePosition.FIRST_PLACE )
-		{
-			playerControl.playVictoryAnimation();
-		}
-		else
-		{
-			playerControl.playLoseAnimation();
-		}
+		if( onArrivalCallback != null ) onArrivalCallback();
 	}
 
 	/// <summary>

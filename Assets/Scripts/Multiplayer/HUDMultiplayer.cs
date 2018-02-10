@@ -28,10 +28,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	public static HUDMultiplayer hudMultiplayer;
 	bool raceHasStarted = false;
 	const float DELAY_BEFORE_COUNTDOWN_STARTS = 3f;
-	const float DELAY_WHEN_NOT_SHOWING_EMOTES = 9f;
-	const float DELAY_WHEN_SHOWING_EMOTES = 15f;
-	const float DELAY_WHEN_TESTING_EMOTES = 60f;
-	const float DELAY_WHEN_NOT_ALL_PLAYERS_ARRIVED = 6f;
+	const float AUTOMATIC_RETURN_DELAY = 20f;
 	PlayerRace localPlayerRace;
 	PlayerControl localPlayerControl;
 	PlayerRun localPlayerRun;
@@ -265,71 +262,61 @@ public class HUDMultiplayer : MonoBehaviour {
     	}
 		yield return new WaitForEndOfFrame();
 		#endif 
-		StartCoroutine( endOfRaceSlowdown() );
+		endOfRaceSlowdown();
 	}
 
-	IEnumerator endOfRaceSlowdown()
+	//Called once the 10 second end of race countdown has completed.
+	void endOfRaceSlowdown()
 	{
-		float duration = 2.5f;
-		float elapsedTime = 0;
-		float startTimeScale = 1f;
-		//If the local player has crossed the finish line, don't delay any further and leave the room.
+		//If the local player has crossed the finish line, display the results.
 		if( localPlayerRace.playerCrossedFinishLine )
 		{
-			//If we are here, it means that the 10 second end of race countdown has completed.
-			//The local player has crossed the finish line.
 			//Display the results.
-			//If opponents have not crossed the finish line at this time, their result will still be displayed, but
-			//their race duration will be "N/A".
 			StartCoroutine( displayResultsAndEmotesScreen( 0.25f, localPlayerRace.racePosition ) );
-			yield return new WaitForSeconds( DELAY_WHEN_NOT_ALL_PLAYERS_ARRIVED );
-			GameManager.Instance.setGameState(GameState.Matchmaking);
-			PhotonNetwork.LeaveRoom();
-			yield break;
+
+			//Automatically return to the matchmaking screen after a delay. The player can always return quicker by pressing
+			//the OK button.
+			StartCoroutine( returnToMatchmakingAfterDelay( AUTOMATIC_RETURN_DELAY ) );
 		}
 		//However, if the local player has not crossed the finish line by the time the 10 second countdown has finished,
-		//remove player control, gradually slowdown the world, and then leave the room.
+		//remove player control, display the "Defeat" text, gradually slow him down, and play the lose animation.
 		else
 		{
 			//Remove player control
 			localPlayerRace.GetComponent<PlayerControl>().enablePlayerControl( false );
+
 			//Display a Defeat text
 			string defeat = LocalizationManager.Instance.getText("RACE_DEFEAT");
 			activateUserMessage( defeat, 0, 2f );
-			//Slowdown the world
-			do
-			{
-				elapsedTime = elapsedTime + Time.unscaledDeltaTime;
-				Time.timeScale = Mathf.Lerp( startTimeScale, 0, elapsedTime/duration );
-				//Also change Time.fixedDeltaTime or else the Cinemachine camera will become jerky
-				Time.fixedDeltaTime = GameManager.DEFAULT_FIXED_DELTA_TIME * Time.timeScale;
-				yield return new WaitForEndOfFrame();  
-				
-			} while ( elapsedTime < duration );
-			//Leave room
-			GameManager.Instance.setGameState(GameState.Matchmaking);
-			PhotonNetwork.LeaveRoom();
+
+			//Slowdown the player
+			localPlayerRun.slowDownPlayer( 10, playLoseAnimation );
+
+			//Display the results.
+			StartCoroutine( displayResultsAndEmotesScreen( 2.25f, localPlayerRace.racePosition ) );
+
+			//Automatically return to the matchmaking screen after a delay. The player can always return quicker by pressing
+			//the OK button.
+			StartCoroutine( returnToMatchmakingAfterDelay( AUTOMATIC_RETURN_DELAY ) );
 		}
+	}
+
+	IEnumerator returnToMatchmakingAfterDelay( float delay )
+	{
+		yield return new WaitForSeconds( delay );
+		GameManager.Instance.setGameState(GameState.Matchmaking);
+		PhotonNetwork.LeaveRoom();
+	}
+
+	void playLoseAnimation()
+	{
+		localPlayerRun.GetComponent<PlayerControl>().playLoseAnimation();
 	}
 
 	public IEnumerator leaveRoomShortly()
 	{
 		topMessageText.gameObject.SetActive( false );
 		StopCoroutine("endOfRaceCountdown");
-		if( debugInfoType == DebugInfoType.EMOTES_TEST )
-		{
-			//Stay longer because we are testing emotes
-			yield return new WaitForSeconds( DELAY_WHEN_TESTING_EMOTES );
-		}
-		else if( GameManager.Instance.isOnlinePlayMode() && PlayerRace.players.Count > 1 )
-		{
-			//Stay longer in case the players want to exchange emotes
-			yield return new WaitForSeconds( DELAY_WHEN_SHOWING_EMOTES );
-		}
-		else
-		{
-			yield return new WaitForSeconds( DELAY_WHEN_NOT_SHOWING_EMOTES );
-		}
 		#if UNITY_IOS
 		try
 		{
@@ -341,8 +328,9 @@ public class HUDMultiplayer : MonoBehaviour {
     	}
 		yield return new WaitForEndOfFrame();
 		#endif
-		GameManager.Instance.setGameState(GameState.Matchmaking);
-		PhotonNetwork.LeaveRoom();
+		//Automatically return to the matchmaking screen after a delay. The player can always return quicker by pressing
+		//the OK button.
+		StartCoroutine( returnToMatchmakingAfterDelay( AUTOMATIC_RETURN_DELAY ) );
 	}
 
 	/// <summary>

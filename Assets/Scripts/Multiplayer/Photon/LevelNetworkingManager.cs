@@ -335,7 +335,7 @@ public sealed class LevelNetworkingManager : PunBehaviour
 				}
 				else if( playersWhoHaveCrossedTheFinishLine.Count ==  PlayerRace.players.Count )
 				{
-					//Every player has crossed the finish line. We can stop the countdown and return everyone to the lobby.
+					//Every player has crossed the finish line. We can stop the countdown.
 					PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
 					playerPhotonView.RPC("CancelEndOfRaceCountdownRPC", PhotonTargets.AllViaServer );
 				}
