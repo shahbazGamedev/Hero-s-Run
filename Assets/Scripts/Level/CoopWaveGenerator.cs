@@ -233,7 +233,7 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 			PlayerRace.players[i].GetComponent<PlayerCoop>().gameOver();
 		}
 		HUDMultiplayer.hudMultiplayer.leaveRoomShortly();
-		//Display the results screen (player details, score, rounds survived, etc.) and return to the lobby.
+		//Display the results screen (player details, score, rounds survived, etc.).
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayCoopResultsAndEmotesScreen( 0.25f ) );
 	}
 	#endregion

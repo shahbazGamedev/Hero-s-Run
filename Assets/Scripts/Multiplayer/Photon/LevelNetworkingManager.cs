@@ -312,11 +312,7 @@ public sealed class LevelNetworkingManager : PunBehaviour
 				if( PlayerRaceManager.Instance.getRaceStatus() != RaceStatus.COMPLETED )
 				{
 					CoopWaveGenerator.Instance.photonView.RPC("coopGameOverRPC", PhotonTargets.All );
-					PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
 				}
-
-				PhotonView playerPhotonView = playerRace.GetComponent<PhotonView>();
-				playerPhotonView.RPC("OnRaceCompletedRPC", PhotonTargets.AllViaServer, raceDuration );
 			}
 			else
 			{
