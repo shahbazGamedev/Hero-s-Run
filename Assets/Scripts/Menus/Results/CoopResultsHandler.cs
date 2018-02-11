@@ -82,9 +82,9 @@ public class CoopResultsHandler : ResultsHandler {
 		//In coop, you gain XP for each wave that you complete as well as score bonuses (for example, because you knocked back a zombie).
 		displayXP();	  		
 
-		//Challenge
-		//Allow the player to challenge someone to beat his high score.
-		displayChallenge();	  		
+		//Stay as team
+		//Allow the players to stay as a team.
+		displayStayAsTeam();	  		
 		#endregion
 
 		//Okay button
@@ -92,9 +92,9 @@ public class CoopResultsHandler : ResultsHandler {
 		okayButton.onClick.AddListener(() => this.OnClickOkay() );
 	}
 
-	public void OnClickChallenge()
+	public void OnClickStayAsTeam()
 	{
-		Debug.LogWarning("CoopResultsHandler-Challenge mode is not implemented yet.");
+		Debug.LogWarning("CoopResultsHandler-Stay-as-team option not implemented yet.");
 	}
 
 }

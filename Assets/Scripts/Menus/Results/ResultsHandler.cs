@@ -15,7 +15,7 @@ public class ResultsHandler : MonoBehaviour {
 	[SerializeField] GameObject xpReward;
 	[SerializeField] TextMeshProUGUI reasonAwardedXP;
 	[SerializeField] TextMeshProUGUI totalXPAwarded;
-	[SerializeField] GameObject challengeReward;
+	[SerializeField] GameObject stayAsTeamReward;
 	public Button okayButton;
 	public List<GameObject> emotesList = new List<GameObject>();
 
@@ -91,9 +91,9 @@ public class ResultsHandler : MonoBehaviour {
 		reasonAwardedXP.gameObject.SetActive( false );
 	}
 
-	public void displayChallenge()
+	public void displayStayAsTeam()
 	{
-		challengeReward.SetActive( true );
+		stayAsTeamReward.SetActive( true );
 	}
 	#endregion
 
