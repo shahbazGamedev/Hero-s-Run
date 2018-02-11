@@ -319,7 +319,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		localPlayerRun.GetComponent<PlayerControl>().playLoseAnimation();
 	}
 
-	public IEnumerator leaveRoomShortly()
+	public void leaveRoomShortly()
 	{
 		topMessageText.gameObject.SetActive( false );
 		StopCoroutine("endOfRaceCountdown");

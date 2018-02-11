@@ -63,10 +63,6 @@ public class PlayerCoop : MonoBehaviour {
 			PlayerRace partner = getPartner( GetComponent<PlayerRace>() );
 			if( partner != null )
 			{
-				PlayerMatchData partner_pmd = LevelManager.Instance.getPlayerMatchDataByName( partner.name );
-				//You were resurrected thanks to your partner.
-				//Increase his Revives count.
-				partner_pmd.revives++;
 				CoopWaveGenerator.Instance.removeDeadPlayer( transform );
 				GetComponent<PlayerControl>().coopResurrectBegin( partner.GetComponent<PlayerControl>().currentTile.name );
 				partner.GetComponent<PlayerCamera>().isBeingSpectated = false;

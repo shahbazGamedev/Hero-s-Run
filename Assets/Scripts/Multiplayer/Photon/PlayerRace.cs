@@ -321,7 +321,7 @@ public sealed class PlayerRace : Photon.PunBehaviour
 	void CancelEndOfRaceCountdownRPC()
 	{
 		PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
-		StartCoroutine( HUDMultiplayer.hudMultiplayer.leaveRoomShortly() );
+		HUDMultiplayer.hudMultiplayer.leaveRoomShortly();
 		//The Victory message remains on screen for 2.25 seconds.
 		//So let's wait for 2.75 seconds before displaying the results and emotes panel.
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayResultsAndEmotesScreen( 2.75f, racePosition ) );
