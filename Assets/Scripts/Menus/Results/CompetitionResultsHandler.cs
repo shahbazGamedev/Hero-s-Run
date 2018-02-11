@@ -63,10 +63,6 @@ public class CompetitionResultsHandler : ResultsHandler {
 		{
 			cpPlayer.text = "+" + competitivePointsEarnedLastRace.ToString();
 		}
-		else if( competitivePointsEarnedLastRace < 0 )
-		{
-			cpPlayer.text = "-" + competitivePointsEarnedLastRace.ToString();
-		}
 		else
 		{
 			cpPlayer.text = competitivePointsEarnedLastRace.ToString();
