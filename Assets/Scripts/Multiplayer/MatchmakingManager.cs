@@ -297,9 +297,11 @@ public class MatchmakingManager : Menu {
 		}
 		LevelManager.Instance.matchData = null;
 		#if UNITY_IOS
-		//When returning to the main menu, discard any video that might have been recorded	
+		//When returning to the main menu, discard any video that might have been recorded.
+		//Also set isRecordingSelected to false.
 		try
 		{
+			LevelManager.Instance.isRecordingSelected = false;
 			if( ReplayKit.APIAvailable ) ReplayKit.Discard();
 		}
    		catch (Exception e)
