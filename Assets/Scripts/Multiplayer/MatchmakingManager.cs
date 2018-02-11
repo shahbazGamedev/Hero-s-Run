@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Apple.ReplayKit;
+using System;
 
 public class MatchmakingManager : Menu {
 
@@ -296,8 +297,15 @@ public class MatchmakingManager : Menu {
 		}
 		LevelManager.Instance.matchData = null;
 		#if UNITY_IOS
-		//When returning to the main menu, discard any video that might have been recorded
-		if( ReplayKit.APIAvailable ) ReplayKit.Discard();
+		//When returning to the main menu, discard any video that might have been recorded	
+		try
+		{
+			if( ReplayKit.APIAvailable ) ReplayKit.Discard();
+		}
+   		catch (Exception e)
+		{
+			Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
+    	}
 		#endif
 		base.OnClickReturnToMainMenu();
 	}

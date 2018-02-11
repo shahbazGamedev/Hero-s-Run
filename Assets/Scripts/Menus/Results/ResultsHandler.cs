@@ -19,6 +19,9 @@ public class ResultsHandler : MonoBehaviour {
 	public Button okayButton;
 	public List<GameObject> emotesList = new List<GameObject>();
 
+	const float SPIN_DURATION = 2f;
+	const float DELAY_BETWEEN_XP_AWARDS = 3.75f;
+
 	protected PlayerRace getOtherPlayer( PlayerRace localPlayerRace )
 	{
 		for(int i=0; i<PlayerRace.players.Count;i++)
@@ -35,29 +38,10 @@ public class ResultsHandler : MonoBehaviour {
 		return emote;
 	}
 
-	#region Exit
+	#region Okay button
 	public void OnClickOkay()
 	{
-		Debug.Log( name + " OnClickOkay active: " + gameObject.activeSelf );
-		StartCoroutine( exitNow() );
-	}
-	
-	IEnumerator  exitNow()
-	{
-		#if UNITY_IOS
-		try
-		{
-			if( ReplayKit.isRecording ) ReplayKit.StopRecording();
-		}
-		catch (Exception e)
-		{
-			Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
-		}
-		yield return new WaitForEndOfFrame();
-		#endif
-		Debug.Log( "ResultsHandler-exitNow" );
-		GameManager.Instance.setGameState(GameState.Matchmaking);
-		PhotonNetwork.LeaveRoom();
+		StartCoroutine( HUDMultiplayer.hudMultiplayer.returnToMatchmakingAfterDelay( 0 ) );
 	}
 	#endregion
 
@@ -99,9 +83,9 @@ public class ResultsHandler : MonoBehaviour {
 			reasonAwardedXP.text = awardText + "<color=orange>+" + xpAward.xpAmount.ToString() + "xp</color>";
 
 			//Update the xpAwarded
-			totalXPAwarded.GetComponent<UISpinNumber>().spinNumber( "{0}", xpAwarded, xpAwarded + xpAward.xpAmount, 2f, true );
+			totalXPAwarded.GetComponent<UISpinNumber>().spinNumber( "{0}", xpAwarded, xpAwarded + xpAward.xpAmount, SPIN_DURATION, true );
 			xpAwarded = xpAwarded + xpAward.xpAmount;
-			yield return new WaitForSecondsRealtime( 3.5f );
+			yield return new WaitForSecondsRealtime( DELAY_BETWEEN_XP_AWARDS );
 		}
 		//Remove the last award text after a moment to make the XP total stand out more.
 		reasonAwardedXP.gameObject.SetActive( false );

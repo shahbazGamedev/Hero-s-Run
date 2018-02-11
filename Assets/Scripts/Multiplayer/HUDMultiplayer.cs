@@ -28,7 +28,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	public static HUDMultiplayer hudMultiplayer;
 	bool raceHasStarted = false;
 	const float DELAY_BEFORE_COUNTDOWN_STARTS = 3f;
-	const float AUTOMATIC_RETURN_DELAY = 20f;
+	const float AUTOMATIC_RETURN_DELAY = 25f;
 	PlayerRace localPlayerRace;
 	PlayerControl localPlayerControl;
 	PlayerRun localPlayerRun;
@@ -251,17 +251,6 @@ public class HUDMultiplayer : MonoBehaviour {
 			countdownNumber--;
 		}	
 		topMessageText.gameObject.SetActive( false );
-		#if UNITY_IOS
-		try
-		{
-			if( ReplayKit.isRecording ) ReplayKit.StopRecording();
-		}
-   		catch (Exception e)
-		{
-			Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
-    	}
-		yield return new WaitForEndOfFrame();
-		#endif 
 		endOfRaceSlowdown();
 	}
 
@@ -301,9 +290,26 @@ public class HUDMultiplayer : MonoBehaviour {
 		}
 	}
 
-	IEnumerator returnToMatchmakingAfterDelay( float delay )
+	/// <summary>
+	/// Returns to matchmaking after the specified delay.
+	/// Also stops the video recording if necessary.
+	/// </summary>
+	/// <returns>The to matchmaking after delay.</returns>
+	/// <param name="delay">Delay.</param>
+	public IEnumerator returnToMatchmakingAfterDelay( float delay )
 	{
 		yield return new WaitForSeconds( delay );
+		#if UNITY_IOS
+		try
+		{
+			if( ReplayKit.isRecording ) ReplayKit.StopRecording();
+		}
+		catch (Exception e)
+		{
+			Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
+		}
+		yield return new WaitForEndOfFrame();
+		#endif
 		GameManager.Instance.setGameState(GameState.Matchmaking);
 		PhotonNetwork.LeaveRoom();
 	}
@@ -317,17 +323,6 @@ public class HUDMultiplayer : MonoBehaviour {
 	{
 		topMessageText.gameObject.SetActive( false );
 		StopCoroutine("endOfRaceCountdown");
-		#if UNITY_IOS
-		try
-		{
-			if( ReplayKit.isRecording ) ReplayKit.StopRecording();
-		}
-   		catch (Exception e)
-		{
-			Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
-    	}
-		yield return new WaitForEndOfFrame();
-		#endif
 		//Automatically return to the matchmaking screen after a delay. The player can always return quicker by pressing
 		//the OK button.
 		StartCoroutine( returnToMatchmakingAfterDelay( AUTOMATIC_RETURN_DELAY ) );

@@ -190,7 +190,7 @@ public class PlayerRaceManager {
 		//Save the player deck because every time the players plays a card, we increment the timesUsed value in PlayerCardData.
 		//We don't want to save every time the player plays a card while racing, so we do it once at the end of the race or if he quits.
 		GameManager.Instance.playerDeck.serializePlayerDeck(true);
-		//Remove trophies when you abandon a race
+		//The player loses competitive points when he abandons a race.
 		if( CompetitionManager.Instance.canEarnCompetitivePoints() )
 		{
 			// trophiesLost will be negative.
@@ -205,14 +205,10 @@ public class PlayerRaceManager {
 		GameManager.Instance.playerProfile.resetConsecutiveWins();
 
 		#if UNITY_IOS
-		//When the player quits the race stop the recording and discard the video
+		//When the player quits the race stop the recording.
 		try
 		{
-			if( ReplayKit.isRecording )
-			{
-				ReplayKit.StopRecording();
-				ReplayKit.Discard();
-			}
+			if( ReplayKit.isRecording ) ReplayKit.StopRecording();
 		}
    		catch (Exception e)
 		{
