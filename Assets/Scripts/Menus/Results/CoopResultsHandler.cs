@@ -70,6 +70,28 @@ public class CoopResultsHandler : ResultsHandler {
 		#endregion
 		
 		#region Reward boxes
+		if( GameManager.Instance.getPlayMode() == PlayMode.PlayCoopWithOnePlayer )
+		{
+			grantCoopRewards( wavesBeaten );
+		}
+		else if( GameManager.Instance.getPlayMode() == PlayMode.PlayCoopWithOneBot )
+		{
+			if( Debug.isDebugBuild )
+			{
+				//PlayCoopWithOneBot is a mode that only exists for testing purposes.
+				//Grant the same rewards as for PlayCoopWithOnePlayer if it is a debug build.
+				grantCoopRewards( wavesBeaten );
+			}
+		}
+		#endregion
+
+		//Okay button
+		okayButton.onClick.RemoveAllListeners();
+		okayButton.onClick.AddListener(() => this.OnClickOkay() );
+	}
+
+	private void grantCoopRewards( int wavesBeaten )
+	{
 		//Loot Box.
 		//You do not get a loot box in coop.
 
@@ -84,17 +106,14 @@ public class CoopResultsHandler : ResultsHandler {
 
 		//Stay as team
 		//Allow the players to stay as a team.
-		displayStayAsTeam();	  		
-		#endregion
+		displayStayAsTeam();
 
-		//Okay button
-		okayButton.onClick.RemoveAllListeners();
-		okayButton.onClick.AddListener(() => this.OnClickOkay() );
+		//Save the rewards
+		saveRewards();	
 	}
 
 	public void OnClickStayAsTeam()
 	{
 		Debug.LogWarning("CoopResultsHandler-Stay-as-team option not implemented yet.");
 	}
-
 }

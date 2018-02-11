@@ -87,7 +87,7 @@ class PlayerIconManager : MonoBehaviour {
 			//Update the player icon at the top right
 			playerIcon.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 			//Save the player profile. The user may have changed his player icon.
-			GameManager.Instance.playerProfile.serializePlayerprofile();
+			GameManager.Instance.playerProfile.serializePlayerprofile( true );
 		}
 	}
 

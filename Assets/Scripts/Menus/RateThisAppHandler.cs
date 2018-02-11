@@ -57,7 +57,7 @@ public class RateThisAppHandler : MonoBehaviour {
 		#if UNITY_IOS
 		rateThisAppPanel.SetActive( false );
 		GameManager.Instance.playerProfile.didPlayerRateApp = true;
-		GameManager.Instance.playerProfile.serializePlayerprofile();
+		GameManager.Instance.playerProfile.serializePlayerprofile( true );
 		Application.OpenURL( IOS_RATE_THIS_APP_URL );
 		#endif
 	}

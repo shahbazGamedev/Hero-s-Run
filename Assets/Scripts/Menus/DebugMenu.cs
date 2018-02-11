@@ -95,7 +95,7 @@ public class DebugMenu : MonoBehaviour {
 		if( scene.buildIndex == (int) GameScenes.Options )
 		{
 			GameManager.Instance.playerDebugConfiguration.serializeDebugConfiguration( false );
-			GameManager.Instance.playerProfile.serializePlayerprofile();
+			GameManager.Instance.playerProfile.serializePlayerprofile( true );
 		}
 	}
 

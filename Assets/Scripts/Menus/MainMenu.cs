@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class MainMenu : MonoBehaviour {
 
@@ -14,8 +15,8 @@ public class MainMenu : MonoBehaviour {
 	[SerializeField] GameObject newPlayerIconsIndicator;
 	[Header("User Name Selector")]
 	[SerializeField] GameObject userNameCanvas;
-	[Header("Trophies, current race track, icon and name Panel")]
-	[SerializeField] Text numberOfTrophiesText;
+	[Header("CP, current sector, icon and name Panel")]
+	[SerializeField] TextMeshProUGUI numberOfCompetitivePoints;
 	[SerializeField] Text sectorText;
 	[SerializeField] Image playerIcon;
 	[SerializeField] Text playerNameText;
@@ -34,7 +35,7 @@ public class MainMenu : MonoBehaviour {
 			UniversalTopBar.Instance.showTopBar( false );
 			userNameCanvas.SetActive(  true );
 		}
-		numberOfTrophiesText.text = GameManager.Instance.playerProfile.getCompetitivePoints().ToString("N0");
+		numberOfCompetitivePoints.text = GameManager.Instance.playerProfile.getCompetitivePoints().ToString("N0");
 		string sectorName = LocalizationManager.Instance.getText( "SECTOR_" + GameManager.Instance.playerProfile.getCurrentSector().ToString() );
 		sectorText.text = sectorName + " " + GameManager.Instance.playerProfile.getCurrentSector().ToString() + "/" + GameManager.Instance.playerProfile.getHighestSector().ToString();
 		playerIcon.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;

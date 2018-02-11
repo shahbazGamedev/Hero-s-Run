@@ -21,7 +21,7 @@ public class HeroSelectionManager : MonoBehaviour, IPointerDownHandler {
 	public void OnClickReturnToMainMenu()
 	{
 		//Save the selection
-		GameManager.Instance.playerProfile.serializePlayerprofile();
+		GameManager.Instance.playerProfile.serializePlayerprofile( true );
 		StartCoroutine( loadScene(GameScenes.MainMenu) );
 	}
 

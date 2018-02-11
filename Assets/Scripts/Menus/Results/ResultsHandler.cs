@@ -38,6 +38,20 @@ public class ResultsHandler : MonoBehaviour {
 		return emote;
 	}
 
+	#region Save rewards
+	protected void saveRewards()
+	{
+		Debug.Log( "ResultsHandler-saving rewards." );
+		//Soft currency and loot box
+		GameManager.Instance.playerInventory.serializePlayerInventory( false );
+		//Xp
+		GameManager.Instance.playerProfile.serializePlayerprofile( false );
+
+		//Now save
+		PlayerStatsManager.Instance.savePlayerStats();		
+	}
+	#endregion
+
 	#region Okay button
 	public void OnClickOkay()
 	{
@@ -46,21 +60,42 @@ public class ResultsHandler : MonoBehaviour {
 	#endregion
 
 	#region Reward Boxes
-	public void displayLootBox()
+	protected void displayLootBox()
 	{
 		lootBoxReward.SetActive( true );
+		GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.RACE_WON, GameManager.Instance.playerProfile.getCurrentSector(), LootBoxState.READY_TO_UNLOCK ) );
+		Debug.Log( "ResultsHandler-displayLootBox: addLootBox: " + LootBoxType.RACE_WON );
 	}
 
-	public void displaySoftCurrency( int softCurrencyGranted )
+	protected void displaySoftCurrency( int softCurrencyGranted )
 	{
 		softCurrencyReward.SetActive( true );
 		softCurrencyAmount.text = softCurrencyGranted.ToString();
+		GameManager.Instance.playerInventory.addCoins( softCurrencyGranted );
+		Debug.Log( "ResultsHandler-displaySoftCurrency: addCoins: " + softCurrencyGranted );
 	}
 
-	public void displayXP()
+	protected void displayXP()
 	{
 		xpReward.SetActive( true );
+		int xpAwarded = calculateTotalXPEarned();
+		GameManager.Instance.playerProfile.addToTotalXPEarned( xpAwarded, false );
+		Debug.Log( "ResultsHandler-displayXP: addToTotalXPEarned: " + xpAwarded );
 		StartCoroutine( displayIndividualAwards() );
+	}
+
+	int calculateTotalXPEarned()
+	{
+		XPAwardType awardType;
+		int xpAwarded = 0;
+		ProgressionManager.XPAward xpAward;
+		for( int i = 0; i < PlayerRaceManager.Instance.raceAwardList.Count; i++ )
+		{
+			awardType = PlayerRaceManager.Instance.raceAwardList[i];
+			xpAward = ProgressionManager.Instance.getXPAward( awardType );
+			xpAwarded = xpAwarded + xpAward.xpAmount;
+		}
+		return xpAwarded;
 	}
 
 	IEnumerator displayIndividualAwards()
@@ -91,7 +126,7 @@ public class ResultsHandler : MonoBehaviour {
 		reasonAwardedXP.gameObject.SetActive( false );
 	}
 
-	public void displayStayAsTeam()
+	protected void displayStayAsTeam()
 	{
 		stayAsTeamReward.SetActive( true );
 	}

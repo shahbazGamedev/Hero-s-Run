@@ -81,7 +81,7 @@ public sealed class PlayerProfile {
 	{
 		userName = value;
 		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.User_Name_Changed );
-		serializePlayerprofile();
+		serializePlayerprofile( true );
 	}
 	#endregion
 
@@ -90,7 +90,7 @@ public sealed class PlayerProfile {
 	{
 		completedTutorial = value;
 		Debug.Log("PlayerProfile-setCompletedTutorial: " + value );
-		serializePlayerprofile();
+		serializePlayerprofile( true );
 	}
 
 	public bool hasCompletedTutorial()
@@ -209,7 +209,7 @@ public sealed class PlayerProfile {
 		{
 			if( value > currentSector ) highestSector = value;
 			currentSector = value;
-			serializePlayerprofile();
+			serializePlayerprofile( true );
 			Debug.Log("PlayerProfile-setting current sector to: " + value + " Highest Sector is: " + highestSector );
 		}
 		else
@@ -254,7 +254,7 @@ public sealed class PlayerProfile {
 		int previousAmount = totalXPEarned;
 		totalXPEarned = totalXPEarned + xpAmount;
 		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.XP_Changed, previousAmount, totalXPEarned );
-		if( saveImmediately ) serializePlayerprofile();
+		if( saveImmediately ) serializePlayerprofile( true );
 		Debug.Log("PlayerProfile-addXP: adding XP: " + xpAmount + " New total is: " +  totalXPEarned );
 	}
 
@@ -287,7 +287,7 @@ public sealed class PlayerProfile {
 	{
 		this.lastTimeRateThisAppWasShown = lastTimeRateThisAppWasShown;
 		lastTimeRateThisAppWasShownString = lastTimeRateThisAppWasShown.ToString();
-		serializePlayerprofile();
+		serializePlayerprofile( true );
 	}
 
 	public DateTime getLastTimeRateThisAppWasShown()
@@ -332,10 +332,10 @@ public sealed class PlayerProfile {
 	}
 	#endregion
 
-	public void serializePlayerprofile()
+	public void serializePlayerprofile( bool saveImmediately )
 	{
 		string json  = JsonUtility.ToJson( this );
 		PlayerStatsManager.Instance.setPlayerProfile( json );
-		PlayerStatsManager.Instance.savePlayerStats();
+		if( saveImmediately ) PlayerStatsManager.Instance.savePlayerStats();
 	}
 }

@@ -136,17 +136,8 @@ public class PlayerRaceManager {
 				grantXPAward(XPAwardType.FIRST_WIN_OF_THE_DAY);
 				GameManager.Instance.playerProfile.setLastMatchWonTime( DateTime.UtcNow );
 			}
-			//The victor is given coins but only in certain play modes.
-			if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOnePlayer || GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoPlayers )
-			{
-				int softCurrencyAwardedOnVictory = SectorManager.Instance.getSectorVictorySoftCurrency( GameManager.Instance.playerProfile.getCurrentSector() );
-				GameManager.Instance.playerInventory.addCoins( softCurrencyAwardedOnVictory );
-			}
 			//For rate this app
 			GameManager.Instance.playerProfile.incrementConsecutiveWins();
-
-			//Grant victor a loot box
-			GameManager.Instance.playerInventory.addLootBox( new LootBoxOwnedData( LootBoxType.RACE_WON, GameManager.Instance.playerProfile.getCurrentSector(), LootBoxState.READY_TO_UNLOCK ) );
 		}
 		else
 		{
@@ -168,7 +159,7 @@ public class PlayerRaceManager {
 		float distanceTraveled = generateLevel.levelLengthInMeters;
 		GameManager.Instance.playerStatistics.updateRaceStatistics( racePosition, distanceTraveled, numberOfTimesDiedDuringRace, GameManager.Instance.playerProfile.getSkillBonus() );
 		//Save the dates in the player profile
-		GameManager.Instance.playerProfile.serializePlayerprofile();
+		GameManager.Instance.playerProfile.serializePlayerprofile( true );
 		//Save the player deck because every time the players plays a card, we increment the timesUsed value in PlayerCardData.
 		//We don't want to save every time the player plays a card while racing, so we do it once at the end of the race or if he quits.
 		GameManager.Instance.playerDeck.serializePlayerDeck(true);
@@ -197,7 +188,7 @@ public class PlayerRaceManager {
 			// Assume you are in 2nd position if you abandon a race.
 			int trophiesLost = CompetitionManager.Instance.getCompetitivePointsEarned( RacePosition.SECOND_PLACE, GameManager.Instance.playerProfile.getCurrentSector(), GameManager.Instance.playerProfile.getCompetitivePoints(), trophiesOwnedByOpponent1 );
 			GameManager.Instance.playerProfile.changeCompetitivePoints( trophiesLost );
-			GameManager.Instance.playerProfile.serializePlayerprofile();
+			GameManager.Instance.playerProfile.serializePlayerprofile( true );
 			Debug.Log("PlayerRaceManager-playerAbandonedRace: Trophies lost " + trophiesLost );
 		}
 

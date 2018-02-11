@@ -74,10 +74,23 @@ public class CompetitionResultsHandler : ResultsHandler {
 		#region Reward boxes
 		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAlone )
 		{
-			//You do not get any rewards when playing alone.
+			//You don't get any rewards when playing alone.
 			rewardText.SetActive( false );
 		}
-		else
+		else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
+		{
+			//You don't get a loot box when playing with a friend, even if you won.
+	
+			//You don't get soft currency when playing with a friend, even if you won.
+	
+			//XP
+			//You earn XP when playing with a friend, regardless of whether you won or lost.
+			displayXP();	  		
+
+			//Save the rewards
+			saveRewards();	
+		}
+		else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOnePlayer )
 		{
 			//Loot Box.
 			//You only get a loot box if you won.
@@ -93,8 +106,48 @@ public class CompetitionResultsHandler : ResultsHandler {
 			}
 	
 			//XP
-			//You always earn XP regardless of whether you won or lost.
+			//You earn XP regardless of whether you won or lost.
 			displayXP();	  		
+
+			//Save the rewards
+			saveRewards();	
+		}
+		else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneBot )
+		{
+			if( Debug.isDebugBuild )
+			{
+				//You normally only earn XP when playing against a bot.
+				//However, to facilitate testing, we grant the same rewards as PlayAgainstOnePlayer if this is a Debug build.
+
+				//Loot Box.
+				//You only get a loot box if you won.
+				if( localPlayerRace.racePosition == RacePosition.FIRST_PLACE ) displayLootBox();
+		
+				//Soft Currency.
+				//You only win soft currency if you won. The amount is determined by the player's current sector.
+				if( localPlayerRace.racePosition == RacePosition.FIRST_PLACE )
+				{
+					int currentSector = GameManager.Instance.playerProfile.getCurrentSector();
+					int softCurrencyGranted = SectorManager.Instance.getSectorVictorySoftCurrency( currentSector );
+					displaySoftCurrency( softCurrencyGranted );
+				}
+		
+				//XP
+				//You always earn XP regardless of whether you won or lost.
+				displayXP();	  		
+			}
+			else
+			{
+				//You don't get a loot box when playing against a bot, even if you won.
+		
+				//You don't get soft currency when playing against a bot, even if you won.
+		
+				//XP
+				//You can earn XP when playing against a bot, regardless of whether you won or lost.
+				displayXP();	  		
+			}
+			//Save the rewards
+			saveRewards();	
 		}
 		#endregion
 
