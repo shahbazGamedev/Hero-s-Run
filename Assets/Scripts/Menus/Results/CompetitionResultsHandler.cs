@@ -10,7 +10,7 @@ public class CompetitionResultsHandler : ResultsHandler {
 
 	[Header("Opponent")]
 	[SerializeField] GameObject ribbonOpponent;
-	[SerializeField] TextMeshProUGUI winnerOpponent;
+	[SerializeField] GameObject winnerOpponent;
 	[SerializeField] Image iconOpponent;
 	[SerializeField] TextMeshProUGUI nameOpponent;
 	[SerializeField] GameObject emoteGameObjectOpponent;
@@ -19,7 +19,7 @@ public class CompetitionResultsHandler : ResultsHandler {
 	[SerializeField] GameObject versusText;
 
 	[Header("Player")]
-	[SerializeField] TextMeshProUGUI winnerPlayer;
+	[SerializeField] GameObject winnerPlayer;
 	[SerializeField] Image iconPlayer;
 	[SerializeField] TextMeshProUGUI namePlayer;
 	[SerializeField] GameObject emoteGameObjectPlayer;
@@ -35,7 +35,7 @@ public class CompetitionResultsHandler : ResultsHandler {
 		#region Opponent area
 		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAlone )
 		{
-			winnerOpponent.gameObject.SetActive( false );
+			winnerOpponent.SetActive( false );
 			ribbonOpponent.SetActive( false ); //also hides the name, and the icon.
 			versusText.SetActive( false );
 		}
@@ -54,7 +54,7 @@ public class CompetitionResultsHandler : ResultsHandler {
 
 		#region Player area
 		pmd = LevelManager.Instance.getPlayerMatchDataByName( localPlayerRace.name );
-		winnerPlayer.gameObject.SetActive( localPlayerRace.racePosition == RacePosition.FIRST_PLACE ) ;
+		winnerPlayer.SetActive( localPlayerRace.racePosition == RacePosition.FIRST_PLACE ) ;
 		Sprite playerIconSprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( pmd.playerIcon ).icon;
 		iconPlayer.sprite = playerIconSprite;
 		namePlayer.text = localPlayerRace.name;
