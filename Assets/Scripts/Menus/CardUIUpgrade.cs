@@ -21,8 +21,6 @@ public class CardUIUpgrade : MonoBehaviour, IPointerDownHandler
 
 	public void configureUpgradePanel( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
-		UniversalTopBar.Instance.showTopBar( false );
-
 		//Card name
 		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + pcd.name.ToString().ToUpper() );
 		cardName.text = localizedCardName;
@@ -86,6 +84,5 @@ public class CardUIUpgrade : MonoBehaviour, IPointerDownHandler
     {
 		gameObject.SetActive( false );
 		transform.parent.gameObject.SetActive( false );
-		UniversalTopBar.Instance.showTopBar( true );
     }
 }

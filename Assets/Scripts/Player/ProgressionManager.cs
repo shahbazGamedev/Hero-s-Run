@@ -24,7 +24,7 @@ public class ProgressionManager : MonoBehaviour {
 	public const int MIN_LEVEL = 1;
 	public const int MAX_LEVEL = 100;
 	public const int LEVEL_BANDS = 10;
-	public const int MAX_XP_IN_ONE_RACE = 2450; //The maximum amount of XP a player can earn in a single race. Used for security checks.
+	public const int MAX_XP_IN_ONE_RACE = 5000; //The maximum amount of XP a player can earn in a single race. Used for security checks.
 	[SerializeField] List<int> xpNeededPerLevel = new List<int>(MAX_LEVEL);
 	[SerializeField] List<XPData> xpPerLevel = new List<XPData>(MAX_LEVEL);
 	[SerializeField] List<XPAward> xpAwardList = new List<XPAward>();

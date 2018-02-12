@@ -52,8 +52,38 @@ public class UniversalTopBar : Menu {
 	{
 		configureUI();
 	}	
-	
+
+	#if UNITY_EDITOR
+	//For testing
+	void Update()
+	{
+		handleKeyboard();
+	}
+
+	private void handleKeyboard()
+	{
+		//Also support keys for debugging
+		if ( Input.GetKeyDown (KeyCode.Q) ) 
+		{
+			GameManager.Instance.playerProfile.addToTotalXPEarned( 100, false );
+		}
+		else if ( Input.GetKeyDown (KeyCode.W) ) 
+		{
+			GameManager.Instance.playerProfile.addToTotalXPEarned( 2000, false );
+		}
+	}
+	#endif
+
 	void configureUI()
+	{
+		configureXP();
+	
+		softCurrencyAmountText.text = GameManager.Instance.playerInventory.getCoinBalance().ToString("N0");
+	
+		hardCurrencyAmountText.text = GameManager.Instance.playerInventory.getGemBalance().ToString("N0");
+	}
+
+	void configureXP()
 	{
 		int currentPlayerLevel = GameManager.Instance.playerProfile.getLevel();
 
@@ -72,12 +102,8 @@ public class UniversalTopBar : Menu {
 			int nextPlayerLevel = currentPlayerLevel + 1;
 			int xpNeededToReachNextLevel = ProgressionManager.Instance.getTotalXPRequired( nextPlayerLevel );
 			currentAndNeededXPText.text = string.Format( "{0}/{1}", currentXP.ToString("N0"), xpNeededToReachNextLevel.ToString("N0") );
-			xpFill.fillAmount = currentXP/xpNeededToReachNextLevel;
+			xpFill.fillAmount = currentXP/(float)xpNeededToReachNextLevel;
 		}
-	
-		softCurrencyAmountText.text = GameManager.Instance.playerInventory.getCoinBalance().ToString("N0");
-	
-		hardCurrencyAmountText.text = GameManager.Instance.playerInventory.getGemBalance().ToString("N0");
 	}
 
 	void PlayerInventoryChangedNew( PlayerInventoryEvent eventType, int previousValue, int newValue )
@@ -85,28 +111,11 @@ public class UniversalTopBar : Menu {
 		switch (eventType)
 		{
 			case PlayerInventoryEvent.Gem_Balance_Changed:
-				//You cannot start a coroutine if the object is not active.
-				//So, if the object is active start the coroutine, if not, update the text field directly.
-				if( topPanel.activeSelf )
-				{
-					hardCurrencyAmountText.GetComponent<UISpinNumber>().spinNumber( "{0}", previousValue, newValue, NUMBER_SPIN_DURATION, false );
-				}
-				else
-				{
-					hardCurrencyAmountText.text = newValue.ToString("N0");
-				}
+				hardCurrencyAmountText.GetComponent<UISpinNumber>().spinNumber( "{0}", previousValue, newValue, NUMBER_SPIN_DURATION, false );
 			break;
 
 			case PlayerInventoryEvent.Coin_Changed:
-				if( topPanel.activeSelf )
-				{
-					softCurrencyAmountText.GetComponent<UISpinNumber>().spinNumber( "{0}", previousValue, newValue, NUMBER_SPIN_DURATION, true );
-				}
-				else
-				{
-					softCurrencyAmountText.text = newValue.ToString("N0");
-				}
-
+				softCurrencyAmountText.GetComponent<UISpinNumber>().spinNumber( "{0}", previousValue, newValue, NUMBER_SPIN_DURATION, true );
 			break;
 		}
 	}
@@ -115,12 +124,6 @@ public class UniversalTopBar : Menu {
 	{
 		switch (eventType)
 		{
-			case PlayerProfileEvent.Level_Changed:
-				playerLevelText.text = newValue.ToString();
-				currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.getTotalXPEarned(), ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ) );
-				xpFill.fillAmount = GameManager.Instance.playerProfile.getTotalXPEarned()/(float)ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
-			break;
-
 			case PlayerProfileEvent.XP_Changed:
 				handleXPChanged( previousValue, newValue, 1.5f );
 			break;
@@ -129,11 +132,13 @@ public class UniversalTopBar : Menu {
 
 	void handleXPChanged( int previousValue, int newValue, float duration )
 	{
-		if( newValue > ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ) )
+		int currentPlayerLevel = ProgressionManager.Instance.getLevel( previousValue );
+		int playerLevelBasedOnNewValue = ProgressionManager.Instance.getLevel( newValue );
+
+		if( playerLevelBasedOnNewValue > currentPlayerLevel )
 		{
-			//Player is leveling up. Bravo!
-			residualXP = newValue - ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
-			animateProgressBar( previousValue, ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ), duration, animationCompletedCallback );
+			//Player is leveling up. Bravo! Don't animate. Set the values directly.
+			configureXP();
 		}
 		else
 		{
@@ -144,36 +149,17 @@ public class UniversalTopBar : Menu {
 
 	void animateProgressBar( int previousValue, int newValue, float duration, System.Action<int> onFinish = null )
 	{
-		//Only proceed if the progress bar is displayed. A coroutine cannot be started on an inactive object.
-		if( topPanel.activeSelf )
-		{
-			//Animate Text
-			string currentAndNeededXPString = "{0}/" + ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ).ToString();
-			currentAndNeededXPText.GetComponent<UISpinNumber>().spinNumber( currentAndNeededXPString, previousValue, newValue, duration, true, onFinish );
-	
-			//Animate horizontal image
-			float toValue = newValue/(float)ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
-			xpFill.GetComponent<UIAnimateRadialImage>().animateFillAmount( toValue, duration );
-		}
-		else
-		{
-			//Update the values, but don't animate.
-			playerLevelText.text = GameManager.Instance.playerProfile.getLevel().ToString();
-			currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.getTotalXPEarned(), ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ) );
-			xpFill.fillAmount = GameManager.Instance.playerProfile.getTotalXPEarned()/ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
-		}
+		//Animate Text
+		int xpRequiredToReachNextLevel = ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() + 1 );
+		string currentAndNeededXPString = "{0}/" + xpRequiredToReachNextLevel.ToString();
+		currentAndNeededXPText.GetComponent<UISpinNumber>().spinNumber( currentAndNeededXPString, previousValue, newValue, duration, true, onFinish );
+
+		//Animate horizontal image
+		float toValue = newValue/(float)ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() + 1 );
+		xpFill.GetComponent<UIAnimateRadialImage>().animateFillAmount( toValue, duration );
 	}
 
-	/// <summary>
-	/// Animation completed callback. This is called when the progress bar text has finished animating.
-	/// It will trigger a second animation since the player has leveled up in this case.
-	/// </summary>
-	void animationCompletedCallback( int value )
-	{
-		xpFill.fillAmount = 0;
-		animateProgressBar( 0, residualXP, 3f );
-	}
-
+	#region Store
 	public void OnClickShowSoftCurrencyStore()
 	{
 		mainMenuManager.OnClickShowStore();
@@ -207,12 +193,20 @@ public class UniversalTopBar : Menu {
 		} while ( elapsedTime < duration );
 		storeVerticalContent.anchoredPosition = new Vector2( storeVerticalContent.anchoredPosition.x, verticalPosition );
 	}
+	#endregion
 
+	/// <summary>
+	/// Opens the options menu.
+	/// </summary>
 	public void OnClickOpenOptionsMenu()
 	{
 		StartCoroutine( loadScene(GameScenes.Options) );
 	}
 
+	/// <summary>
+	/// Shows the top bar.
+	/// </summary>
+	/// <param name="showTopBar">If set to <c>true</c> show top bar.</param>
 	public void showTopBar( bool showTopBar )
 	{
 		topPanel.SetActive( showTopBar );

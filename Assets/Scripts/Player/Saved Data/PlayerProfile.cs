@@ -4,7 +4,6 @@ using UnityEngine;
 using System;
 
 public enum PlayerProfileEvent {
-	Level_Changed = 0,
 	Player_Icon_Changed = 1,
 	XP_Changed = 2,
 	User_Name_Changed = 3,
@@ -223,12 +222,18 @@ public sealed class PlayerProfile {
 
 	public void addToTotalXPEarned( int xpAmount, bool saveImmediately )
 	{
-		if( xpAmount <= 0 || xpAmount > ProgressionManager.MAX_XP_IN_ONE_RACE ) return;
-		int previousAmount = totalXPEarned;
-		totalXPEarned = totalXPEarned + xpAmount;
-		if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.XP_Changed, previousAmount, totalXPEarned );
-		if( saveImmediately ) serializePlayerprofile( true );
-		Debug.Log("PlayerProfile-addXP: adding XP: " + xpAmount + " New total is: " +  totalXPEarned );
+		if( xpAmount > 0 && xpAmount <= ProgressionManager.MAX_XP_IN_ONE_RACE )
+		{
+			int previousAmount = totalXPEarned;
+			totalXPEarned = totalXPEarned + xpAmount;
+			if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.XP_Changed, previousAmount, totalXPEarned );
+			if( saveImmediately ) serializePlayerprofile( true );
+			Debug.Log("PlayerProfile-addXP: adding XP: " + xpAmount + " New total is: " +  totalXPEarned );
+		}
+		else
+		{
+			Debug.LogError("PlayerProfile-the xp amount specified " + xpAmount + " is incorrect. It needs to be between 1 and " + ProgressionManager.MAX_XP_IN_ONE_RACE.ToString() + ".");
+		}
 	}
 
 	public void setLastMatchPlayedTime( DateTime timeMatchPlayed )
