@@ -55,9 +55,25 @@ public class UniversalTopBar : Menu {
 	
 	void configureUI()
 	{
-		playerLevelText.text = GameManager.Instance.playerProfile.getLevel().ToString();
-		currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.totalXPEarned.ToString("N0"), ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ).ToString("N0") );
-		xpFill.fillAmount = GameManager.Instance.playerProfile.totalXPEarned/ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
+		int currentPlayerLevel = GameManager.Instance.playerProfile.getLevel();
+
+		if(  currentPlayerLevel == ProgressionManager.MAX_LEVEL )
+		{
+			playerLevelText.text = currentPlayerLevel.ToString();
+			int currentXP = GameManager.Instance.playerProfile.getTotalXPEarned();
+			string maxLevelString = LocalizationManager.Instance.getText( "MAIN_MENU_MAX_LEVEL" );
+			currentAndNeededXPText.text = string.Format( "{0}/{1}", currentXP.ToString("N0"), maxLevelString );
+			xpFill.fillAmount = 1f;
+		}
+		else
+		{
+			playerLevelText.text = currentPlayerLevel.ToString();
+			int currentXP = GameManager.Instance.playerProfile.getTotalXPEarned();
+			int nextPlayerLevel = currentPlayerLevel + 1;
+			int xpNeededToReachNextLevel = ProgressionManager.Instance.getTotalXPRequired( nextPlayerLevel );
+			currentAndNeededXPText.text = string.Format( "{0}/{1}", currentXP.ToString("N0"), xpNeededToReachNextLevel.ToString("N0") );
+			xpFill.fillAmount = currentXP/xpNeededToReachNextLevel;
+		}
 	
 		softCurrencyAmountText.text = GameManager.Instance.playerInventory.getCoinBalance().ToString("N0");
 	
@@ -101,8 +117,8 @@ public class UniversalTopBar : Menu {
 		{
 			case PlayerProfileEvent.Level_Changed:
 				playerLevelText.text = newValue.ToString();
-				currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.totalXPEarned, ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ) );
-				xpFill.fillAmount = GameManager.Instance.playerProfile.totalXPEarned/(float)ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
+				currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.getTotalXPEarned(), ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ) );
+				xpFill.fillAmount = GameManager.Instance.playerProfile.getTotalXPEarned()/(float)ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
 			break;
 
 			case PlayerProfileEvent.XP_Changed:
@@ -143,8 +159,8 @@ public class UniversalTopBar : Menu {
 		{
 			//Update the values, but don't animate.
 			playerLevelText.text = GameManager.Instance.playerProfile.getLevel().ToString();
-			currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.totalXPEarned, ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ) );
-			xpFill.fillAmount = GameManager.Instance.playerProfile.totalXPEarned/ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
+			currentAndNeededXPText.text = string.Format( "{0}/{1}", GameManager.Instance.playerProfile.getTotalXPEarned(), ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() ) );
+			xpFill.fillAmount = GameManager.Instance.playerProfile.getTotalXPEarned()/ProgressionManager.Instance.getTotalXPRequired( GameManager.Instance.playerProfile.getLevel() );
 		}
 	}
 
@@ -154,7 +170,6 @@ public class UniversalTopBar : Menu {
 	/// </summary>
 	void animationCompletedCallback( int value )
 	{
-		GameManager.Instance.playerProfile.incrementLevel();
 		xpFill.fillAmount = 0;
 		animateProgressBar( 0, residualXP, 3f );
 	}

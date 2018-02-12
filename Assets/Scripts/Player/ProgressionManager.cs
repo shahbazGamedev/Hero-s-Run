@@ -21,10 +21,12 @@ public class ProgressionManager : MonoBehaviour {
 	[Header("General")]
 	public static ProgressionManager Instance;
 	public const int MAX_NUMBER_OF_TRACKS = 10;
+	public const int MIN_LEVEL = 1;
 	public const int MAX_LEVEL = 100;
 	public const int LEVEL_BANDS = 10;
 	public const int MAX_XP_IN_ONE_RACE = 2450; //The maximum amount of XP a player can earn in a single race. Used for security checks.
 	[SerializeField] List<int> xpNeededPerLevel = new List<int>(MAX_LEVEL);
+	[SerializeField] List<XPData> xpPerLevel = new List<XPData>(MAX_LEVEL);
 	[SerializeField] List<XPAward> xpAwardList = new List<XPAward>();
 	[SerializeField] List<Color> frameColorList = new List<Color>(LEVEL_BANDS);
 	[SerializeField] List<IconData> iconList = new List<IconData>();
@@ -40,42 +42,82 @@ public class ProgressionManager : MonoBehaviour {
 		{
 			DontDestroyOnLoad(gameObject);
 			Instance = this;
+			copyXPData();
+			//testMethods();
 		}
 	}
 
-	//Returns the level between 1 and 100
-	public int getLevel( int xp )
+	private void copyXPData()
 	{
 		int xpSum = 0;
+		XPData xpData;
 		for( int i = 0; i < xpNeededPerLevel.Count; i++ )
 		{
 			xpSum = xpSum + xpNeededPerLevel[i];
-			if( xpSum >= xp ) return (i + 1 ); //levels start at 1 not 0
+			xpData = new XPData( xpNeededPerLevel[i], xpSum );
+			xpPerLevel.Add( xpData );
 		}
-		return MAX_LEVEL;
 	}
 
-	public int getXPRequired( int level )
+	private void testMethods()
 	{
-		level--;
-		return xpNeededPerLevel[level];
+		Debug.Log("ProgressionManager-getLevel XP:\t0 Answer: 1\tResults: " + getLevel(    0 ) );
+		Debug.Log("ProgressionManager-getLevel XP:\t1000 Answer: 1\tResults: " + getLevel( 1000 ) );
+		Debug.Log("ProgressionManager-getLevel XP:\t1500 Answer: 2\tResults: " + getLevel( 1500 ) );
+		Debug.Log("ProgressionManager-getLevel XP:\t1501 Answer: 2\tResults: " + getLevel( 1501 ) );
+		Debug.Log("ProgressionManager-getLevel XP:\t2000 Answer: 2\tResults: " + getLevel( 2000 ) );
+		Debug.Log("ProgressionManager-getLevel XP:\t3001 Answer: 2\tResults: " + getLevel( 3001 ) );
+		Debug.Log("ProgressionManager-getLevel XP:\t3500 Answer: 2\tResults: " + getLevel( 3500 ) );
+		Debug.Log("ProgressionManager-getLevel XP:\t4500 Answer: 3\tResults: " + getLevel( 4500 ) );
+		Debug.Log("ProgressionManager-getLevel XP:\t4501 Answer: 3\tResults: " + getLevel( 4501 ) );
+		Debug.Log("ProgressionManager-getLevel XP:\t2000000 Answer: 100\tResults: " + getLevel( 2000000 ) );
+		Debug.Log("\n" );
+		Debug.Log("ProgressionManager-getTotalXPRequired LVL:\t0 Answer: 0\tResults: " + getTotalXPRequired( 0 ) );
+		Debug.Log("ProgressionManager-getTotalXPRequired LVL:\t1 Answer: 0\tResults: " + getTotalXPRequired( MIN_LEVEL ) );
+		Debug.Log("ProgressionManager-getTotalXPRequired LVL:\t2 Answer: 1500\tResults: " + getTotalXPRequired( 2 ) );
+		Debug.Log("ProgressionManager-getTotalXPRequired LVL:\t3 Answer: 4500\tResults: " + getTotalXPRequired( 3 ) );
+		Debug.Log("ProgressionManager-getTotalXPRequired LVL:\t100 Answer: 1986500\tResults: " + getTotalXPRequired( MAX_LEVEL ) );
 	}
 
+	/// <summary>
+	/// Returns the level based on the numper of XPs.
+	/// The level returned is between MIN_LEVEL and MAX_LEVEL.
+	/// A new player with 0 XP has a level of MIN_LEVEL.
+	/// </summary>
+	/// <returns>The level.</returns>
+	/// <param name="xp">Xp.</param>
+	public int getLevel( int xp )
+	{
+		if( xp == 0 ) return MIN_LEVEL;
+
+		if( xp >= xpPerLevel[MAX_LEVEL].totalXPRequired ) return MAX_LEVEL;
+
+		return xpPerLevel.FindLastIndex( xpd => xpd.totalXPRequired <= xp );
+	}
+
+	/// <summary>
+	/// Returns the XP needed to reach the specicied level.
+	/// </summary>
+	/// <returns>The total XP required.</returns>
+	/// <param name="level">Level.</param>
 	public int getTotalXPRequired( int level )
 	{
-		int xpSum = 0;
-		for( int i = 0; i < level; i++ )
+		if( level >= MIN_LEVEL && level <= ProgressionManager.MAX_LEVEL )
 		{
-			xpSum = xpSum + xpNeededPerLevel[i];
+		return xpPerLevel[level].totalXPRequired;
 		}
-		return xpSum;
+		else
+		{
+			Debug.LogWarning("ProgressionManager-getTotalXPRequired: the level specified," + level + " is incorrect. It needs to be between " + MIN_LEVEL.ToString() + " and " + MAX_LEVEL.ToString() );
+			return 0;
+		}
 	}
 
-	//Level parameter is between 1 and MAX_LEVEL
+	//Level parameter is between MIN_LEVEL and MAX_LEVEL
 	//There are 10 level bands each with LEVEL_BANDS levels.
 	public Color getFrameColor( int level )
 	{
-		if( level > 0 && level <= ProgressionManager.MAX_LEVEL )
+		if( level >= MIN_LEVEL && level <= ProgressionManager.MAX_LEVEL )
 		{
 			level--; //frameColorList is zero indexed
 			int frameIndex = (int)Mathf.Floor(level/(float)LEVEL_BANDS);
@@ -83,7 +125,7 @@ public class ProgressionManager : MonoBehaviour {
 		}
 		else
 		{
-			Debug.LogWarning("ProgressionManager-getFrameColor: the level specified," + level + " is incorrect. It needs to be between 1 and 100.");
+			Debug.LogWarning("ProgressionManager-getFrameColor: the level specified," + level + " is incorrect. It needs to be between " + MIN_LEVEL.ToString() + " and " + MAX_LEVEL.ToString() );
 			return Color.clear;
 		}
 	}
@@ -166,6 +208,19 @@ public class ProgressionManager : MonoBehaviour {
 		//New players have a few icons that are immediately available to them.
 		//All other icons need to be found, for example in loot boxes.
 		public bool isDefaultIcon;
+	}
+
+	[System.Serializable]
+	public class XPData
+	{
+		public int XPNeededToChangeLevel = 0; 
+		public int totalXPRequired = 0;
+
+		public XPData( int XPNeededToChangeLevel, int totalXPRequired )
+		{
+			this.XPNeededToChangeLevel = XPNeededToChangeLevel;
+			this.totalXPRequired = totalXPRequired;
+		}
 	}
 	#endregion
 	

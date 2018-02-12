@@ -23,9 +23,8 @@ public enum SectorStatus {
 public sealed class PlayerProfile {
 
 	[SerializeField] string userName;
-	public int totalXPEarned = 0;
-	public int xpProgressToNextLevel = 0;
-	public int level = 1;
+
+	[SerializeField] int totalXPEarned = 0;
 	public string lastMatchPlayedTimeString = "01/01/1970 00:00:00";
 	public string lastMatchWonTimeString = "01/01/1970 00:00:00";
 	private DateTime lastMatchPlayedTime = new DateTime(1970,01,01);
@@ -214,26 +213,12 @@ public sealed class PlayerProfile {
 
 	public int getLevel()
 	{
-		return level;
+		return ProgressionManager.Instance.getLevel( totalXPEarned );
 	}
 
-	public void incrementLevel()
+	public int getTotalXPEarned()
 	{
-		setLevel( level + 1 );
-	}
-
-	void setLevel( int value )
-	{
-		if( value > 0 && value <= ProgressionManager.MAX_LEVEL )
-		{
-			if( playerProfileChanged != null ) playerProfileChanged( PlayerProfileEvent.Level_Changed, level, value );
-			level = value;
-			Debug.Log("PlayerProfile-setting level to: " + value );
-		}
-		else
-		{
-			Debug.LogWarning("PlayerProfile-the level specified " + value + " is incorrect. It needs to be between 1 and " + ProgressionManager.MAX_LEVEL.ToString() + ".");
-		}
+		return totalXPEarned;
 	}
 
 	public void addToTotalXPEarned( int xpAmount, bool saveImmediately )
