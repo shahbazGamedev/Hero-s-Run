@@ -24,7 +24,6 @@ public class CompetitionResultsHandler : ResultsHandler {
 	[SerializeField] Image iconPlayer;
 	[SerializeField] TextMeshProUGUI namePlayer;
 	[SerializeField] GameObject emoteGameObjectPlayer;
-	[SerializeField] TextMeshProUGUI cpPlayer;
 
 	[Header("Player Solo")]
 	[SerializeField] GameObject ribbonPlayerSolo;
@@ -91,15 +90,6 @@ public class CompetitionResultsHandler : ResultsHandler {
 			Sprite playerIconSprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( pmd.playerIcon ).icon;
 			iconPlayer.sprite = playerIconSprite;
 			namePlayer.text = localPlayerRace.name;
-			int competitivePointsEarnedLastRace = GameManager.Instance.playerProfile.getCompetitivePointsEarnedLastRace();
-			if( competitivePointsEarnedLastRace > 0 )
-			{
-				cpPlayer.text = "+" + competitivePointsEarnedLastRace.ToString();
-			}
-			else
-			{
-				cpPlayer.text = competitivePointsEarnedLastRace.ToString();
-			}
 			emoteGameObjectPlayer.name = localPlayerRace.name;
 			emotesList.Add( emoteGameObjectPlayer );
 			#endregion
@@ -120,25 +110,7 @@ public class CompetitionResultsHandler : ResultsHandler {
 			}
 			else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOnePlayer )
 			{
-				//Loot Box.
-				//You only get a loot box if you won.
-				if( localPlayerRace.racePosition == RacePosition.FIRST_PLACE ) displayLootBox();
-		
-				//Soft Currency.
-				//You only win soft currency if you won. The amount is determined by the player's current sector.
-				if( localPlayerRace.racePosition == RacePosition.FIRST_PLACE )
-				{
-					int currentSector = GameManager.Instance.playerProfile.getCurrentSector();
-					int softCurrencyGranted = SectorManager.Instance.getSectorVictorySoftCurrency( currentSector );
-					displaySoftCurrency( softCurrencyGranted );
-				}
-		
-				//XP
-				//You earn XP regardless of whether you won or lost.
-				displayXP();	  		
-	
-				//Save the rewards
-				saveRewards();	
+				grantCompetitonRewards( localPlayerRace );
 			}
 			else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneBot )
 			{
@@ -146,23 +118,7 @@ public class CompetitionResultsHandler : ResultsHandler {
 				{
 					//You normally only earn XP when playing against a bot.
 					//However, to facilitate testing, we grant the same rewards as PlayAgainstOnePlayer if this is a Debug build.
-	
-					//Loot Box.
-					//You only get a loot box if you won.
-					if( localPlayerRace.racePosition == RacePosition.FIRST_PLACE ) displayLootBox();
-			
-					//Soft Currency.
-					//You only win soft currency if you won. The amount is determined by the player's current sector.
-					if( localPlayerRace.racePosition == RacePosition.FIRST_PLACE )
-					{
-						int currentSector = GameManager.Instance.playerProfile.getCurrentSector();
-						int softCurrencyGranted = SectorManager.Instance.getSectorVictorySoftCurrency( currentSector );
-						displaySoftCurrency( softCurrencyGranted );
-					}
-			
-					//XP
-					//You always earn XP regardless of whether you won or lost.
-					displayXP();	  		
+					grantCompetitonRewards( localPlayerRace );
 				}
 				else
 				{
@@ -173,9 +129,9 @@ public class CompetitionResultsHandler : ResultsHandler {
 					//XP
 					//You can earn XP when playing against a bot, regardless of whether you won or lost.
 					displayXP();	  		
+					//Save the rewards
+					saveRewards();	
 				}
-				//Save the rewards
-				saveRewards();	
 			}
 			#endregion
 		}
@@ -183,5 +139,32 @@ public class CompetitionResultsHandler : ResultsHandler {
 		//Okay button
 		okayButton.onClick.RemoveAllListeners();
 		okayButton.onClick.AddListener(() => this.OnClickOkay() );
+	}
+
+	private void grantCompetitonRewards( PlayerRace localPlayerRace )
+	{
+		//Competitive Points
+		//You win or lose CP depending on whether you won or lost.
+		displayCompetitivePoints( localPlayerRace );
+
+		//Loot Box.
+		//You only get a loot box if you won.
+		if( localPlayerRace.racePosition == RacePosition.FIRST_PLACE ) displayLootBox();
+
+		//Soft Currency.
+		//You only win soft currency if you won. The amount is determined by the player's current sector.
+		if( localPlayerRace.racePosition == RacePosition.FIRST_PLACE )
+		{
+			int currentSector = GameManager.Instance.playerProfile.getCurrentSector();
+			int softCurrencyGranted = SectorManager.Instance.getSectorVictorySoftCurrency( currentSector );
+			displaySoftCurrency( softCurrencyGranted );
+		}
+
+		//XP
+		//You earn XP regardless of whether you won or lost.
+		displayXP();	  		
+
+		//Save the rewards
+		saveRewards();	
 	}
 }

@@ -16,6 +16,8 @@ public class ResultsHandler : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI reasonAwardedXP;
 	[SerializeField] TextMeshProUGUI totalXPAwarded;
 	[SerializeField] GameObject stayAsTeamReward;
+	[SerializeField] GameObject competitivePoints;
+	[SerializeField] TextMeshProUGUI cpPlayer;
 	public Button okayButton;
 	public List<GameObject> emotesList = new List<GameObject>();
 
@@ -60,6 +62,26 @@ public class ResultsHandler : MonoBehaviour {
 	#endregion
 
 	#region Reward Boxes
+	protected void displayCompetitivePoints( PlayerRace localPlayerRace )
+	{
+		if( CompetitionManager.Instance.canEarnCompetitivePoints() )
+		{
+			competitivePoints.SetActive( true );
+
+			//Note: competitivePointsEarned will be negative if the player lost.
+			int competitivePointsEarned = CompetitionManager.Instance.getCompetitivePointsEarned( localPlayerRace.racePosition, GameManager.Instance.playerProfile.getCurrentSector(), GameManager.Instance.playerProfile.getCompetitivePoints(), PlayerRaceManager.Instance.getOpponentCompetitivePoints() );
+			GameManager.Instance.playerProfile.changeCompetitivePoints( competitivePointsEarned );
+			if( competitivePointsEarned > 0 )
+			{
+				cpPlayer.text = "+" + competitivePointsEarned.ToString();
+			}
+			else
+			{
+				cpPlayer.text = competitivePointsEarned.ToString();
+			}
+		}
+	}
+	
 	protected void displayLootBox()
 	{
 		lootBoxReward.SetActive( true );

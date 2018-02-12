@@ -29,8 +29,7 @@ public class PlayerRaceManager {
 	public float raceDuration;
 	public RacePosition racePosition;
 
-	public int trophiesOwnedByOpponent1;
-	public int trophiesOwnedByOpponent2;
+	public int opponentCompetitivePoints;
 
 	RaceStatus raceStatus = RaceStatus.NOT_STARTED;
 	public List<XPAwardType> raceAwardList = new List<XPAwardType>();
@@ -71,22 +70,14 @@ public class PlayerRaceManager {
 		return raceStatus;
 	}
 
-	public void setTrophiesOwnedByOpponent( int opponentNumber, int trophiesOwned )
+	public void setOpponentCompetitivePoints( int opponentCompetitivePoints )
 	{
-		if( opponentNumber == 1 )
-		{
-			trophiesOwnedByOpponent1 = trophiesOwned;
-			Debug.Log("setTrophiesOwnedByOpponent " + opponentNumber + " " + trophiesOwned );
-		}
-		else if( opponentNumber == 2 )
-		{
-			trophiesOwnedByOpponent2 = trophiesOwned;
-			Debug.Log("setTrophiesOwnedByOpponent " + opponentNumber + " " + trophiesOwned );
-		}
-		else
-		{
-			Debug.LogError( "setTrophiesOwnedByOpponent-the opponent number specified " + opponentNumber + " is invalid. It should be 1 or 2.");
-		}
+		this.opponentCompetitivePoints = opponentCompetitivePoints;
+	}
+
+	public int getOpponentCompetitivePoints()
+	{
+		return opponentCompetitivePoints;
 	}
 
 	public void grantXPAward( XPAwardType awardType )
@@ -117,7 +108,7 @@ public class PlayerRaceManager {
 
 		if( utcNowTimeSpan <= (lastMatchPlayedTimestampTimeSpan + MAX_TIME_FOR_CONSECUTIVE_RACE) )
 		{
-			PlayerRaceManager.Instance.grantXPAward(XPAwardType.CONSECUTIVE_RACE);
+			grantXPAward(XPAwardType.CONSECUTIVE_RACE);
 			Debug.Log("PlayerRaceManager-playerCrossedFinishLine: GRANT CONSECUTIVE_RACE " + ((lastMatchPlayedTimestampTimeSpan + MAX_TIME_FOR_CONSECUTIVE_RACE) - utcNowTimeSpan ).Seconds.ToString() );
 		}
 		else
@@ -143,15 +134,6 @@ public class PlayerRaceManager {
 		{
 			//For rate this app
 			GameManager.Instance.playerProfile.resetConsecutiveWins();
-		}
-
-		if( CompetitionManager.Instance.canEarnCompetitivePoints() )
-		{
-			//Note: trophiesEarnedLastRace will be negative if the player lost.
-			int trophiesEarnedLastRace = CompetitionManager.Instance.getCompetitivePointsEarned( racePosition, GameManager.Instance.playerProfile.getCurrentSector(), GameManager.Instance.playerProfile.getCompetitivePoints(), trophiesOwnedByOpponent1 );
-			//Store this value temporarily in player profile so the GameEndManager can retrieve it.
-			GameManager.Instance.playerProfile.setCompetitivePointsEarnedLastRace( trophiesEarnedLastRace );
-			GameManager.Instance.playerProfile.changeCompetitivePoints( trophiesEarnedLastRace );
 		}
 
 		//Update the player statistics
@@ -186,7 +168,7 @@ public class PlayerRaceManager {
 		{
 			// trophiesLost will be negative.
 			// Assume you are in 2nd position if you abandon a race.
-			int trophiesLost = CompetitionManager.Instance.getCompetitivePointsEarned( RacePosition.SECOND_PLACE, GameManager.Instance.playerProfile.getCurrentSector(), GameManager.Instance.playerProfile.getCompetitivePoints(), trophiesOwnedByOpponent1 );
+			int trophiesLost = CompetitionManager.Instance.getCompetitivePointsEarned( RacePosition.SECOND_PLACE, GameManager.Instance.playerProfile.getCurrentSector(), GameManager.Instance.playerProfile.getCompetitivePoints(), getOpponentCompetitivePoints() );
 			GameManager.Instance.playerProfile.changeCompetitivePoints( trophiesLost );
 			GameManager.Instance.playerProfile.serializePlayerprofile( true );
 			Debug.Log("PlayerRaceManager-playerAbandonedRace: Trophies lost " + trophiesLost );

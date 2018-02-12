@@ -369,7 +369,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 		numberRemotePlayerConnected++;
 		matchmakingManager.enableCloseButton( false );
 		matchmakingManager.setRemotePlayerData( numberRemotePlayerConnected, player.NickName, (int)player.CustomProperties["Level"], (int)player.CustomProperties["Icon"] );
-		PlayerRaceManager.Instance.setTrophiesOwnedByOpponent( numberRemotePlayerConnected, (int)player.CustomProperties["CP"] );
+		PlayerRaceManager.Instance.setOpponentCompetitivePoints( (int)player.CustomProperties["CP"] );
 		PlayerFriends.FriendData playerData = new PlayerFriends.FriendData( player.NickName, (int)player.CustomProperties["Icon"], (int)player.CustomProperties["Level"], (int)player.CustomProperties["WinStreak"] );		
 		GameManager.Instance.recentPlayers.addRecentPlayer( playerData );
 		PlayerMatchData pmd = new PlayerMatchData( player.NickName, (int)player.CustomProperties["Icon"], (int)player.CustomProperties["Level"], (int)player.CustomProperties["WinStreak"] );
