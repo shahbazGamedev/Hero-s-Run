@@ -126,7 +126,6 @@ public class ResultsHandler : MonoBehaviour {
 		//Example: "CONSECUTIVE MATCH<color=orange>+200xp</color>"
 		XPAwardType awardType;
 		int xpAwarded = 0;
-		string xpAwardedLocalized = LocalizationManager.Instance.getText( "RESULTS_XP_TOTAL_AWARDED" );
 		ProgressionManager.XPAward xpAward;
 		for( int i = 0; i < PlayerRaceManager.Instance.raceAwardList.Count; i++ )
 		{
