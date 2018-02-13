@@ -52,8 +52,41 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 	{
 		if( PhotonNetwork.isMasterClient && GameManager.Instance.isCoopPlayMode() )
 		{
-			createWave( waveList[numberOfWavesTriggered] );
+			if( numberOfWavesTriggered == waveList.Count )
+			{
+				endOfWaves ();
+			}
+			else
+			{
+				createWave( waveList[numberOfWavesTriggered] );
+			}
 		}
+	}
+
+	void endOfWaves ()
+	{
+		HUDMultiplayer.hudMultiplayer.activateUserMessage( "End of Demo", 0, 2.75f );
+
+		for( int i = 0; i < PlayerRace.players.Count; i ++ )
+		{
+			if( PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying ) 
+			{
+				PlayerRace.players[i].GetComponent<PlayerRun>().slowDownPlayer( 12f - 2.5f * (int)PlayerRace.players[i].racePosition, gameOver );
+			}
+		}
+	}
+
+	void gameOver()
+	{
+		for( int i = 0; i < PlayerRace.players.Count; i ++ )
+		{
+			if( PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying ) 
+			{
+				PlayerRace.players[i].GetComponent<PlayerControl>().playVictoryAnimation();
+			}
+		}
+		PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
+		photonView.RPC("coopGameOverRPC", PhotonTargets.All );
 	}
 
 	void createWave( GameObject wave )
