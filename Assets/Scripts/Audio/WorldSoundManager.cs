@@ -56,9 +56,12 @@ public class WorldSoundManager : MonoBehaviour {
 
     void PlaySting()
     {
-        int randClip = Random.Range (0, stings.Length);
-        stingAudioSource.clip = stings[randClip];
-        stingAudioSource.Play();
+		if( stings.Length > 0 )
+		{
+	        int randClip = Random.Range (0, stings.Length);
+	        stingAudioSource.clip = stings[randClip];
+	        stingAudioSource.Play();
+		}
     }
 
 	public void crossFadeToSecondaryAmbience( float timeToReach )
