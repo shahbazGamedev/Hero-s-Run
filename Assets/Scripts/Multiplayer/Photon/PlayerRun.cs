@@ -35,7 +35,7 @@ public class PlayerRun : Photon.PunBehaviour {
 	//multiple multipliers (Sprint, plus Raging Bull, plus Cloak for instance).
 	const float MAX_OVERALL_SPEED_MULTIPLIER = 1.7f;
 
-	//The speed to reduce to after crossing finish line
+	//The speed to reduce to after a slow down.
 	const float SLOW_DOWN_END_SPEED = 5f;
 	Coroutine slowDownPlayerCoroutine;
 	#endregion
