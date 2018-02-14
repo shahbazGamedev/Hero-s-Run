@@ -4,17 +4,18 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Audio;
 using System;
+using TMPro;
 
 public class TitleScreenHandler : MonoBehaviour {
 
 	[Header("Title Screen")]
 	[SerializeField] AudioMixer mainMixer;
 	[SerializeField] Image progressBar;
-	[SerializeField] Text progressBarPercentage;
+	[SerializeField] TextMeshProUGUI progressBarPercentage;
+	const float DELAY_BEFORE_LOADING_MENU = 5f;
 
 	void Awake ()
 	{
-		//Handheld.StopActivityIndicator();
 		initialiseGame();
 	}
 
@@ -59,7 +60,7 @@ public class TitleScreenHandler : MonoBehaviour {
 		#endif
 		mainMixer.SetFloat( "SoundEffectsVolume", GameManager.Instance.playerConfiguration.getSoundFxVolume() );
 		mainMixer.SetFloat( "MusicVolume", GameManager.Instance.playerConfiguration.getMusicVolume() );
-		StartCoroutine( loadMainMenu( 2.5f ) );
+		StartCoroutine( loadMainMenu( DELAY_BEFORE_LOADING_MENU ) );
 	}
 	
 	IEnumerator loadMainMenu( float timeToLoad )
