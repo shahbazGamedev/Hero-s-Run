@@ -22,7 +22,7 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 	[SerializeField] Transform battleDeckCardHolder;
 	[SerializeField] GameObject cardPrefab;
 	[SerializeField] Text battleDeckTitle;
-	[SerializeField] Text averagePowerCost;
+	[SerializeField] TextMeshProUGUI averagePowerCost;
 	[SerializeField] TextMeshProUGUI heroCardExplanationText;
 	[Header("Replace Card Area")]
 	[SerializeField] GameObject replaceCardArea;

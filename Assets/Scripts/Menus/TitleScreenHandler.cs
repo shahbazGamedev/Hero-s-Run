@@ -12,7 +12,7 @@ public class TitleScreenHandler : MonoBehaviour {
 	[SerializeField] AudioMixer mainMixer;
 	[SerializeField] Image progressBar;
 	[SerializeField] TextMeshProUGUI progressBarPercentage;
-	const float DELAY_BEFORE_LOADING_MENU = 5f;
+	const float DELAY_BEFORE_LOADING_MENU = 4.5f;
 
 	void Awake ()
 	{

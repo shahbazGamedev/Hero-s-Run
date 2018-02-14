@@ -454,30 +454,21 @@ public class LevelData : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Gets a random coop map.
-	/// For testing, use the override in the debug menu to specify which map you want to play in.
+	/// Gets a random coop map. There is no override.
 	/// </summary>
-	/// <returns>The random map.</returns>
+	/// <returns>The random coop map.</returns>
 	public MultiplayerInfo getRandomCoopMap()
 	{
-		if( GameManager.Instance.playerDebugConfiguration.getOverrideMap() != -1 )
+		List<MultiplayerInfo> coopList = multiplayerList.FindAll( entry => entry.isCoop == true ).ToList();
+		if( coopList.Count > 0 )
 		{
-			//For testing, use the override to specify which map you want to play in.
-			return multiplayerList[GameManager.Instance.playerDebugConfiguration.getOverrideMap()];
+			int random = Random.Range( 0, coopList.Count);
+			return coopList[random];
 		}
 		else
 		{
-			List<MultiplayerInfo> coopList = multiplayerList.FindAll( entry => entry.isCoop == true ).ToList();
-			if( coopList.Count > 0 )
-			{
-				int random = Random.Range( 0, coopList.Count);
-				return coopList[random];
-			}
-			else
-			{
-				Debug.LogError("LevelData-getRandomCoopMap was called but no MultiplayerInfo with isCoop set to true has been found. Returning null." );
-				return null;
-			}
+			Debug.LogError("LevelData-getRandomCoopMap was called but no MultiplayerInfo with isCoop set to true has been found. Returning null." );
+			return null;
 		}
 	}
 

@@ -44,7 +44,7 @@ public class LootBoxUnlockNowPopup : MonoBehaviour {
 		//Localize the loot box name
 		titleText.text = LocalizationManager.Instance.getText( "LOOT_BOX_NAME_" + lootBoxData.type.ToString().ToUpper() );
 		//Earned at base
-		string earnedForString = string.Format( LocalizationManager.Instance.getText( "LOOTBOX_BASE" ), lootBoxOwnedData.earnedInBase );
+		string earnedForString = string.Format( LocalizationManager.Instance.getText( "LOOTBOX_BASE" ), lootBoxOwnedData.earnedInSector );
 		earnedAtBaseText.text = earnedForString;
 	
 		//Credit range

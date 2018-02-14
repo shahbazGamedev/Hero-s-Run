@@ -313,7 +313,7 @@ public class LootBoxCanvas : MonoBehaviour {
 		unlockInformation.SetActive (false);
 
 		earnedFor.SetActive (true);
-		string earnedForString = string.Format( LocalizationManager.Instance.getText( "LOOTBOX_EARNED_FOR_UNLOCKING_BASE" ), lootBoxOwnedData.earnedInBase );
+		string earnedForString = string.Format( LocalizationManager.Instance.getText( "LOOTBOX_EARNED_FOR_UNLOCKING_BASE" ), lootBoxOwnedData.earnedInSector );
 		lootBoxDetailsText.text = earnedForString;
 
 		radialTimerText.text = LocalizationManager.Instance.getText( "LOOT_BOX_HOLD_OPEN" );
@@ -330,7 +330,7 @@ public class LootBoxCanvas : MonoBehaviour {
 		//Configure the UI
 		//Configure the base number located under the loot box sprite
 		earnedForBaseText.gameObject.SetActive( true );
-		string earnedForString = string.Format( LocalizationManager.Instance.getText( "LOOTBOX_BASE" ), lootBoxOwnedData.earnedInBase );
+		string earnedForString = string.Format( LocalizationManager.Instance.getText( "LOOTBOX_BASE" ), lootBoxOwnedData.earnedInSector );
 		earnedForBaseText.text = earnedForString;
 
 		switch( lootBoxOwnedData.state )
