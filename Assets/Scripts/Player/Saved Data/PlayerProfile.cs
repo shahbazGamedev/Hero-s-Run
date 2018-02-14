@@ -45,10 +45,10 @@ public sealed class PlayerProfile {
 
 	[SerializeField] bool completedTutorial = false;
 	//Competitive points (CP) indicate your success in racing. Players gain or lose CP by either winning or losing races in online multiplayer races.
-	[SerializeField] int competitivePoints = 0;
+	[SerializeField] int competitivePoints = 1; //Normal value is 0 for a new player. Setting to 1 for demo.
 
 	#region Sector 
-	[SerializeField] int currentSector = 0; 	//Current sector. A new player starts off in sector 0. Between 0 and SectorManager.MAX_SECTOR
+	[SerializeField] int currentSector = 1; 	//Current sector. A new player starts off in sector 0. Between 0 and SectorManager.MAX_SECTOR.
 	[SerializeField] int highestSector = 0; 	//Highest sector unlocked. Between 0 and SectorManager.MAX_SECTOR
 	public delegate void SectorChanged( SectorStatus sectorChanged, int previousSector, int newSector );
 	public static event SectorChanged sectorChanged;

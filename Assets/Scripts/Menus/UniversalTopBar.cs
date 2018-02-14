@@ -13,7 +13,7 @@ public class UniversalTopBar : Menu {
 
 	[Header("For Store Access")]
 	[SerializeField] MainMenuManager mainMenuManager;
-	const float SOFT_CURRENCY_STORE_VERTICAL_POSITION = 2508f;
+	const float SOFT_CURRENCY_STORE_VERTICAL_POSITION = 2488f;
 	const float HARD_CURRENCY_STORE_VERTICAL_POSITION = 1420f;
 
 	[Header("Level")]
@@ -188,7 +188,7 @@ public class UniversalTopBar : Menu {
 		{
 			elapsedTime = elapsedTime + Time.deltaTime;
 			storeVerticalContent.anchoredPosition = Vector2.Lerp( startVerticalPosition, endVerticalPosition, elapsedTime/duration );
-			yield return new WaitForFixedUpdate();  
+			yield return new WaitForEndOfFrame();  
 			
 		} while ( elapsedTime < duration );
 		storeVerticalContent.anchoredPosition = new Vector2( storeVerticalContent.anchoredPosition.x, verticalPosition );
