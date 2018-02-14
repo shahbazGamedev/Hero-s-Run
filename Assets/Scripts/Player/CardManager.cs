@@ -33,11 +33,7 @@ public enum CardPropertyType
 public enum CardPropertyTargetType
  {
 	NOT_APPLICABLE = 0,
-	NEAREST = 1,
-	RANDOM = 2,
-	ALL = 3,
-	SELECTED = 4,
-	LEADING = 5
+	IN_FRONT = 1
 }
 
 public enum CardSortMode

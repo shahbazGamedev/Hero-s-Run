@@ -2255,7 +2255,7 @@ public class PlayerControl : Photon.PunBehaviour {
 	{
 		currentTile = tile;
 		currentTilePos = currentTile.transform.position;
-		Debug.LogWarning( name + " updateCurrentTileInfo-Player rotation: " + transform.eulerAngles + " name of current tile: " + currentTile.name ); 
+		//Debug.LogWarning( name + " updateCurrentTileInfo-Player rotation: " + transform.eulerAngles + " name of current tile: " + currentTile.name ); 
 
 		tileIndex = currentTile.GetComponent<SegmentInfo>().tileIndex;
 		tileDistanceTraveled = generateLevel.getLevelLength( tileIndex );

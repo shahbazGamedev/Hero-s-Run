@@ -121,8 +121,8 @@ public class TurnRibbonHandler : MonoBehaviour {
 					if( fillAmount < 0 ) fillAmount = 0;
 					radialMask.fillAmount = fillAmount;
 				}
-				//Verify if this card is effective.
-				isEffective( i, turnRibbonList[i] );
+				//Verify if this card is effective if we are in competition.
+				if( !GameManager.Instance.isCoopPlayMode() ) isEffective( i, turnRibbonList[i] );
 			}
 			else
 			{
@@ -149,7 +149,13 @@ public class TurnRibbonHandler : MonoBehaviour {
 			//This means that the RANGE is not infinite. Check for targets.
 			if( range > 0 )
 			{
-				if( isThereAtLeastOnePlayerWithinRange( range ) )
+				bool useDotProduct = false;
+				if( card.doesCardHaveThisProperty( CardPropertyType.TARGET ) )
+				{
+					CardPropertyTargetType targetType = card.getCardPropertyTargetType();
+					useDotProduct = ( targetType == CardPropertyTargetType.IN_FRONT );
+				}
+				if( isThereAtLeastOnePlayerWithinRange( range, useDotProduct ) )
 				{
 					//We have at least one target within range. Make the text white.
 					buttonOfCard.GetComponent<CardTurnRibbon>().changeCardNameColor( Color.white );				
@@ -176,10 +182,10 @@ public class TurnRibbonHandler : MonoBehaviour {
 				//No. Make the text white.
 				buttonOfCard.GetComponent<CardTurnRibbon>().changeCardNameColor( Color.white );				
 			}
-		}
+		} 
 	}
 
-	bool isThereAtLeastOnePlayerWithinRange( float range )
+	bool isThereAtLeastOnePlayerWithinRange( float range, bool useDotProduct )
 	{
 		float sqrRange = range * range;
 		for( int i =0; i < PlayerRace.players.Count; i++ )
@@ -199,10 +205,33 @@ public class TurnRibbonHandler : MonoBehaviour {
 			//Is the player using the Cloak card? If so, ignore.
 			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) continue;
 
+			//If we are using the dot product, make sure that the target is in front.
+			if( useDotProduct && !getDotProduct( playerRace.transform, PlayerRace.players[i].transform.position ) ) continue;
+
 			//We found at least one target
 			return true;
 		}
 		return false;
+	}
+
+	/// <summary>
+	/// Gets the dot product.
+	/// </summary>
+	/// <returns><c>true</c>, if the other player is in front of the caster, <c>false</c> otherwise.</returns>
+	/// <param name="caster">Caster.</param>
+	/// <param name="otherPlayerPosition">The other player's position.</param>
+	bool getDotProduct( Transform caster, Vector3 otherPlayerPosition )
+	{
+		Vector3 forward = caster.TransformDirection(Vector3.forward);
+		Vector3 toOther = otherPlayerPosition - caster.position;
+		if (Vector3.Dot(forward, toOther) < 0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
 
 	public void OnClickCard( int indexOfCardPlayed )

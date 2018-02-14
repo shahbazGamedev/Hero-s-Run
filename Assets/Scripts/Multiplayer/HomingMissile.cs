@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 
 /// <summary>
@@ -18,31 +17,94 @@ public class HomingMissile : CardSpawnedObject {
 	Transform target;
 	float heightAdjustment = 0;
 	PlayerControl targetPlayerControl;
+	const float LIFESPAN = 30f;
 
+	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
-		object[] data = gameObject.GetPhotonView ().instantiationData;
-
-		casterTransform = getPlayerByViewID( (int) data[0] );
-		setCasterName( casterTransform.name );
-
-		//We want the homing missile to self-destruct after a while
-		GameObject.Destroy( gameObject, (float) data[1] );
-
-		StartCoroutine( launchMissile() );
+		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Homing_Missile );
+		lsa.cardSpawnedObject = this;
+		LockstepManager.Instance.addActionToQueue( lsa );
 	}
 
-	IEnumerator launchMissile()
+	public override void activateCard()
 	{
-		yield return new WaitForSeconds(0.35f);
+		object[] data = gameObject.GetPhotonView ().instantiationData;
+		casterTransform = getPlayerByViewID( (int) data[1] );
+		setCasterName( casterTransform.name );
 
-		homingMissile = GetComponent<Rigidbody>();
-		target = getNearestTargetWithinRange( Mathf.Infinity, MaskHandler.getMaskWithPlayersWithCreatures(), true );
+		if( GameManager.Instance.isCoopPlayMode() )
+		{
+			target = findAffectedCreature( (int) data[0] );
+		}
+		else
+		{
+			target = findAffectedPlayer( (int) data[0] );
+			if( target != null ) targetPlayerControl = target.GetComponent<PlayerControl>();
+		}
 		if( target != null )
 		{
-			targetPlayerControl = target.GetComponent<PlayerControl>();
 			heightAdjustment = getHeightAdjusment( target.gameObject );
+		 	launchMissile();
 		}
+
+		//We want the homing missile to be destroyed if it has not collided with anything after LIFESPAN seconds.
+		GameObject.Destroy( gameObject, LIFESPAN );
+	}
+	#endregion
+
+	#region Creature
+	Transform findAffectedCreature( int viewIdOfAffectedCreature ) 
+	{
+		ZombieController[] zombies = GameObject.FindObjectsOfType<ZombieController>();
+		for( int i = 0; i < zombies.Length; i++ )
+		{
+			if( zombies[i].GetComponent<PhotonView>().viewID == viewIdOfAffectedCreature )
+			{
+				//If in the short time between the card being cast and the card being activated
+				//the creature has died, simply ignore.
+				if( zombies[i].getCreatureState() == CreatureState.Dying  )
+				{
+					return null;
+				}
+				else
+				{
+					return zombies[i].transform;
+				}
+			}
+		}
+		return null;
+	}
+	#endregion
+
+	#region Player
+	Transform findAffectedPlayer( int viewIdOfAffectedPlayer ) 
+	{
+		for( int i = 0; i < PlayerRace.players.Count; i++ )
+		{
+			if( PlayerRace.players[i].GetComponent<PhotonView>().viewID == viewIdOfAffectedPlayer )
+			{
+				PlayerControl affectedPlayerControl = PlayerRace.players[i].GetComponent<PlayerControl>();
+
+				//If in the short time between the card being cast and the card being activated
+				//the player has died, simply ignore.
+				if( affectedPlayerControl.getCharacterState() == PlayerCharacterState.Dying || affectedPlayerControl.getCharacterState() == PlayerCharacterState.Idle )
+				{
+					return null;
+				}
+				else
+				{
+					return affectedPlayerControl.transform;
+				}
+			}
+		}
+		return null;
+	}
+	#endregion
+
+	void launchMissile()
+	{
+		homingMissile = GetComponent<Rigidbody>();
 		//if( target != null ) print("Homing Missile target is " + target.name );
 		homingMissile.isKinematic = false;
 		if( inFlightParticleSystem != null ) inFlightParticleSystem.gameObject.SetActive(true);

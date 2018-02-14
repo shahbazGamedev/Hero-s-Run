@@ -122,7 +122,7 @@ public class Card : Photon.PunBehaviour {
 	/// <returns>A player target or null if none were found within the range.</returns>
 	/// <param name="playerRace">Player race of the caster.</param>
 	/// <param name="range">Range.</param>
-	protected Transform detectBestTarget( PlayerRace playerRace, float range )
+	protected Transform detectBestTarget( PlayerRace playerRace, float range, bool useDotProduct = false )
 	{
 		List<PlayerRace> potentialTargets = new List<PlayerRace>();
 		float sqrRange = range * range;
@@ -142,6 +142,9 @@ public class Card : Photon.PunBehaviour {
 
 			//Is the player using the Cloak card? If so, ignore.
 			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) continue;
+
+			//If we are using the dot product, make sure that the target is in front.
+			if( useDotProduct && !getDotProduct( playerRace.transform, PlayerRace.players[i].transform.position ) ) continue;
 
 			//We have a potential target
 			potentialTargets.Add( PlayerRace.players[i] );

@@ -124,7 +124,7 @@ public class StasisController : CardSpawnedObject {
 
 				//If in the short time between the card being cast and the card being activated
 				//the player has died or is IDLE, simply ignore.
-				if( affectedPlayerControl.deathType != DeathType.Alive || affectedPlayerControl.getCharacterState() == PlayerCharacterState.Idle ) return;
+				if( affectedPlayerControl.getCharacterState() == PlayerCharacterState.Dying || affectedPlayerControl.getCharacterState() == PlayerCharacterState.Idle ) return;
 
 				affectedPlayerTransform.GetComponent<Rigidbody>().isKinematic = true;
 

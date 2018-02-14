@@ -11,7 +11,6 @@ public class CardPropertyUI : MonoBehaviour {
 	[SerializeField] Text propertyValue;
 	Color lightBackground = new Color( 180f/255f, 180f/255f, 180f/255f, 0.5f );
 	Color darkerBackground = Color.gray;
-	Color upgradeBackground = new Color( 40f/255f, 218f/255f, 78f/255f, 1f ); //Greenish
 
 	public void configureProperty( int index, CardManager.CardProperty cp, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd, bool displayIncrease )
 	{
@@ -73,7 +72,6 @@ public class CardPropertyUI : MonoBehaviour {
 			float currentValueAsPercentage = 1f - cd.getCardPropertyValue( cp.type, level );
 			float increase = currentValueAsPercentage - previousValueAsPercentage;
 			propertyValue.text = propertyValue.text + "  <color=#1CF26DFF>+" + string.Format("{0:P}", increase ) + "</color>";
-			propertyBackground.color = upgradeBackground;
 		}
 		else if( cp.type == CardPropertyType.RANGE )
 		{
@@ -85,7 +83,6 @@ public class CardPropertyUI : MonoBehaviour {
 				float currentValue = cd.getCardPropertyValue( cp.type, level );
 				float increase = currentValue - previousValue;
 				propertyValue.text = propertyValue.text + "  <color=#1CF26DFF>+" + increase.ToString("N0") + "</color>";
-				propertyBackground.color = upgradeBackground;
 			}
 		}
 		else if( cp.type == CardPropertyType.TARGET )
@@ -98,7 +95,6 @@ public class CardPropertyUI : MonoBehaviour {
 			float currentValue = cd.getCardPropertyValue( cp.type, level );
 			float increase = currentValue - previousValue;
 			propertyValue.text = propertyValue.text + "  <color=#1CF26DFF>+" + increase.ToString("0.##") + "</color>";
-			propertyBackground.color = upgradeBackground;
 		}
 	}
 }
