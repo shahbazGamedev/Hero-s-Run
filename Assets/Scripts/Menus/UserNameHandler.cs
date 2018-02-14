@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UserNameHandler : MonoBehaviour {
 
 	[Header("User Name")]
-	[SerializeField] Text userNameTitleText;
+	[SerializeField] TextMeshProUGUI userNameTitleText;
 	[SerializeField] InputField userNameText;
 	[SerializeField] Text userNamePlaceholderText;
 	[SerializeField] Text confirmButtonText;

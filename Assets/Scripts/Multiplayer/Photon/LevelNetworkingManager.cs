@@ -138,16 +138,6 @@ public sealed class LevelNetworkingManager : PunBehaviour
 			dataBot1[0] = LevelManager.Instance.selectedBotHeroIndex;
 			PhotonNetwork.InstantiateSceneObject(this.botPrefab.name, rightStartPosition, Quaternion.identity, 0, dataBot1 );
 		}
-		else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoBots )
-		{
-			object[] dataBot1 = new object[1];
-			dataBot1[0] =  LevelManager.Instance.selectedBotHeroIndex;
-			PhotonNetwork.InstantiateSceneObject(this.botPrefab.name, leftStartPosition, Quaternion.identity, 0, dataBot1 );
-
-			object[] dataBot2 = new object[1];
-			dataBot2[0] =  LevelManager.Instance.selectedBotHeroIndex2;
-			PhotonNetwork.InstantiateSceneObject(this.botPrefab.name, rightStartPosition, Quaternion.identity, 0, dataBot2 );
-		}
 	}
 
 	//Called when the local player left the room. We need to load the matchmaking scene.

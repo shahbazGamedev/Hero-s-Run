@@ -26,7 +26,7 @@ public enum GameScenes {
 	
 	TitleScreen = 0,
 	Level = 1,
-	CircuitSelection = 2,
+	MapSelection = 2,
 	HeroSelection = 3,
 	Matchmaking = 4,
 	CareerProfile = 5,
@@ -54,12 +54,10 @@ public enum PlayMode {
 	
 	PlayAlone = 1,
 	PlayAgainstOnePlayer = 2,
-	PlayAgainstTwoPlayers = 3,
 
 	PlayAgainstOneFriend = 4,
 
 	PlayAgainstOneBot = 6,
-	PlayAgainstTwoBots = 7,
 
 	PlayCoopWithOnePlayer = 8,
 	PlayCoopWithOneBot = 9
@@ -143,7 +141,6 @@ public class GameManager {
 		switch ( playMode )
 		{
 			case PlayMode.PlayAgainstOneBot:
-			case PlayMode.PlayAgainstTwoBots:
 			case PlayMode.PlayCoopWithOneBot:
 				LevelManager.Instance.setNumberOfPlayersRequired( 1 );
 			break;
@@ -156,10 +153,6 @@ public class GameManager {
 				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
 			break;
 
-			case PlayMode.PlayAgainstTwoPlayers:
-				LevelManager.Instance.setNumberOfPlayersRequired( 3 );
-			break;
-
 			case PlayMode.PlayAgainstOneFriend:
 			case PlayMode.PlayCoopWithOnePlayer:		
 				LevelManager.Instance.setNumberOfPlayersRequired( 2 );
@@ -168,7 +161,7 @@ public class GameManager {
 		// we don't join the lobby. There is no need to join a lobby to get the list of rooms.
 		PhotonNetwork.autoJoinLobby = false;
 		//Are we playing online or doing an offline PvE/solo match?
-		if( getPlayMode() == PlayMode.PlayAgainstOneBot || getPlayMode() == PlayMode.PlayAgainstTwoBots || getPlayMode() == PlayMode.PlayAlone || getPlayMode()  == PlayMode.PlayCoopWithOneBot )
+		if( getPlayMode() == PlayMode.PlayAgainstOneBot || getPlayMode() == PlayMode.PlayAlone || getPlayMode() == PlayMode.PlayCoopWithOneBot )
 		{
 			//PvE is an offline mode. We will not connect. We will also set Photon to offline.
 			if( PhotonNetwork.connected ) PhotonNetwork.Disconnect();
@@ -204,7 +197,7 @@ public class GameManager {
 	/// <returns><c>true</c>, for the following play modes: PlayAgainstOnePlayer, PlayAgainstTwoPlayers, PlayAgainstOneFriend, and PlayCoopWithOnePlayer</returns>
 	public bool isOnlinePlayMode()
 	{
-		return playMode == PlayMode.PlayAgainstOnePlayer || playMode == PlayMode.PlayAgainstTwoPlayers || playMode == PlayMode.PlayAgainstOneFriend || playMode == PlayMode.PlayCoopWithOnePlayer;
+		return playMode == PlayMode.PlayAgainstOnePlayer || playMode == PlayMode.PlayAgainstOneFriend || playMode == PlayMode.PlayCoopWithOnePlayer;
 	}
 
 	public bool isCoopPlayMode()

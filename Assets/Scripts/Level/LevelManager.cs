@@ -39,8 +39,7 @@ public class LevelManager {
 	//Racing mode
 	byte numberOfPlayersRequired;
 	private LevelData.MultiplayerInfo selectedCircuit; //the race track selected.
-	public int selectedBotHeroIndex; //index for botHeroCharacterList in HeroManager. Used when in the PlayAgainstEnemy mode.
-	public int selectedBotHeroIndex2; //index for botHeroCharacterList in HeroManager. Used when in the PlayAgainstTwoEnemies mode.
+	public int selectedBotHeroIndex; //index for botHeroCharacterList in HeroManager. Used when in the PlayAgainstOneBot mode.
 	public ChatMessageHandler.MatchData matchData;
 	public bool isRecordingSelected = false; //True if the race should be recorded using ReplayKit
 

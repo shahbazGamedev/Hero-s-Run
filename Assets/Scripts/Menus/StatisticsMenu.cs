@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class StatisticsMenu : MonoBehaviour {
 
@@ -10,12 +11,12 @@ public class StatisticsMenu : MonoBehaviour {
 	[SerializeField] GameObject statisticEntryPrefab;
 	[SerializeField] List<StatisticEntryIcon> statisticEntriesList = new List <StatisticEntryIcon>();
 	[Header("Competitive Points")]
-	[SerializeField] Text numberOfTrophiesText;
+	[SerializeField] TextMeshProUGUI competitivePoints;
 
 	// Use this for initialization
 	void Start ()
 	{	
-		numberOfTrophiesText.text = GameManager.Instance.playerProfile.getCompetitivePoints().ToString("N0");
+		competitivePoints.text = GameManager.Instance.playerProfile.getCompetitivePoints().ToString("N0");
 		configureEntries();
 	}
 

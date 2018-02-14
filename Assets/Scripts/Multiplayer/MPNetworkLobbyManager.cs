@@ -72,10 +72,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 			{
 				setUpBot();
 			}
-			else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoBots )
-			{
-				setUpBots();
-			}
 		}
 		else
 		{
@@ -194,10 +190,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 				matchmakingManager.setConnectionProgress( "Setting up Coop with AI race" );   
 			break;
 
-			case PlayMode.PlayAgainstTwoBots:
-				matchmakingManager.setConnectionProgress( "Setting up Player vs. Two AI race" );   
-			break;
-
 			case PlayMode.PlayAlone:
 				matchmakingManager.setConnectionProgress( "Playing alone" );   
 			break;
@@ -208,10 +200,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 			case PlayMode.PlayCoopWithOnePlayer:
 				matchmakingManager.setConnectionProgress( "Looking for worthy coop partner ..." );   
-			break;
-
-			case PlayMode.PlayAgainstTwoPlayers:
-				matchmakingManager.setConnectionProgress( "Looking for worthy opponents ..." );   
 			break;
 
 			case PlayMode.PlayAgainstOneFriend:
@@ -277,15 +265,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 				//Note: In this case, LoadArena() gets called by displayBotInfo
 			break;
 
-			case PlayMode.PlayAgainstTwoBots:
-				//PlayerPosition 3 is the center lane.
-				playerCustomProperties.Add("PlayerPosition", 3 );
-				PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
-				//Fake searching for players for a few seconds ...
-				Invoke( "displayBotsInfoPart1", DELAY_BEFORE_DISPLAY_BOT );
-				//Note: In this case, LoadArena() gets called by displayBotsInfoPart2
-			break;
-
 			case PlayMode.PlayAlone:
 				//PlayerPosition 3 is the center lane.
 				playerCustomProperties.Add("PlayerPosition", 3 );
@@ -297,21 +276,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 			case PlayMode.PlayAgainstOnePlayer:
 			case PlayMode.PlayCoopWithOnePlayer:
-				foreach(PhotonPlayer player in PhotonNetwork.playerList)
-				{
-					if( !player.IsLocal )
-					{
-						OnRemotePlayerConnect( player );
-					}
-				}
-				//PlayerPosition will be used to determine the start position. We don't want players to spawn on top of each other.
-				//PlayerPosition 1 is the left lane. PlayerPosition 2 is the right lane.
-				playerCustomProperties.Add("PlayerPosition", PhotonNetwork.room.PlayerCount );
-				PhotonNetwork.player.SetCustomProperties(playerCustomProperties);
-				//Note: In this case, LoadArena() gets called when the remote player connects
-			break;
-
-			case PlayMode.PlayAgainstTwoPlayers:
 				foreach(PhotonPlayer player in PhotonNetwork.playerList)
 				{
 					if( !player.IsLocal )
@@ -385,12 +349,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 		LevelManager.Instance.selectedBotHeroIndex = botHeroIndex;
 	}
 
-	void setUpBots()
-	{
-		LevelManager.Instance.selectedBotHeroIndex = 0;
-		LevelManager.Instance.selectedBotHeroIndex2 = 1;
-	}
-
 	void displayBotInfo()
 	{
 		matchmakingManager.enableCloseButton( false );
@@ -399,28 +357,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 		matchmakingManager.setRemotePlayerData( 1, botHero.userName, botHero.level, botHero.playerIcon );
 		PlayerMatchData pmd = new PlayerMatchData( botHero.userName, botHero.playerIcon, botHero.level, 0 );
 		LevelManager.Instance.playerMatchDataList.Add( pmd );
-		LoadArena();
-	}
-
-	void displayBotsInfoPart1()
-	{
-		matchmakingManager.enableCloseButton( false );
-		setTravelingConnectionProgress( LevelManager.Instance.getSelectedCircuit().circuitInfo );
-		HeroManager.BotHeroCharacter botHero = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex );
-		matchmakingManager.setRemotePlayerData( 1, botHero.userName, botHero.level, botHero.playerIcon );
-		PlayerMatchData pmd = new PlayerMatchData( botHero.userName, botHero.playerIcon, botHero.level, 0 );
-		LevelManager.Instance.playerMatchDataList.Add( pmd );
-
-		Invoke("displayBotsInfoPart2", Random.Range(0.4f, 0.9f ) );
-	}
-
-	void displayBotsInfoPart2()
-	{
-		HeroManager.BotHeroCharacter botHero2 = HeroManager.Instance.getBotHeroCharacter( LevelManager.Instance.selectedBotHeroIndex2 );
-		matchmakingManager.setRemotePlayerData( 2, botHero2.userName, botHero2.level, botHero2.playerIcon );
-		PlayerMatchData pmd = new PlayerMatchData( botHero2.userName, botHero2.playerIcon, botHero2.level, 0 );
-		LevelManager.Instance.playerMatchDataList.Add( pmd );
-
 		LoadArena();
 	}
 

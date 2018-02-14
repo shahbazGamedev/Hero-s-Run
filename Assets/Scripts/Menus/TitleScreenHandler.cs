@@ -9,7 +9,7 @@ public class TitleScreenHandler : MonoBehaviour {
 
 	[Header("Title Screen")]
 	[SerializeField] AudioMixer mainMixer;
-	[SerializeField] Slider progressBar;
+	[SerializeField] Image progressBar;
 	[SerializeField] Text progressBarPercentage;
 
 	void Awake ()
@@ -68,8 +68,8 @@ public class TitleScreenHandler : MonoBehaviour {
 		do
 		{
 			elapsedTime = elapsedTime + Time.deltaTime;
-			progressBar.value = elapsedTime/timeToLoad;
-			progressBarPercentage.text = String.Format("{0:P0}", progressBar.value );
+			progressBar.fillAmount = elapsedTime/timeToLoad;
+			progressBarPercentage.text = String.Format("{0:P0}", progressBar.fillAmount );
 			yield return new WaitForFixedUpdate();  
 			
 		} while ( elapsedTime <= timeToLoad );

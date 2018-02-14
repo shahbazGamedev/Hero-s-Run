@@ -38,20 +38,6 @@ public class MatchmakingManager : Menu {
 	[SerializeField] Text remotePlayer1Name2P;
 	[SerializeField] GameObject preloader12P; //animates while looking for an opponent for the match
 
-	[Header("Three Player Panel")]
-	[SerializeField] GameObject threePlayerPanel;
-	[Header("Local Player")]
-	[SerializeField] Image playerIcon3P;
-	[SerializeField] Text playerName3P;
-	[Header("Remote Player 1")]
-	[SerializeField] Image remotePlayer1Icon3P;
-	[SerializeField] Text remotePlayer1Name3P;
-	[SerializeField] GameObject preloader13P; //animates while looking for an opponent for the match
-	[Header("Remote Player 2")]
-	[SerializeField] Image remotePlayer2Icon3P;
-	[SerializeField] Text remotePlayer2Name3P;
-	[SerializeField] GameObject preloader23P; //animates while looking for an opponent for the match
-
 	[Header("Sector Change Popup")]
 	[SerializeField] GameObject sectorChangePopup;
 
@@ -100,7 +86,7 @@ public class MatchmakingManager : Menu {
 		//If the player is playing alone or against AI, the race track has been selected in
 		//the circuit selection screen.
 		//If the player is inviting a friend, they will race in a track based on the inviter's number of trophies.
-		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOnePlayer || GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstTwoPlayers )
+		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOnePlayer )
 		{
 			LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomMap() );
 		}
@@ -126,7 +112,6 @@ public class MatchmakingManager : Menu {
 	{
 		singlePlayerPanel.SetActive( false );
 		twoPlayerPanel.SetActive( false );
-		threePlayerPanel.SetActive( false );
 
 		switch ( GameManager.Instance.getPlayMode() )
 		{
@@ -148,15 +133,6 @@ public class MatchmakingManager : Menu {
 				//Use default values for remote player portrait until he connects
 				versusText.text = LocalizationManager.Instance.getText( "CIRCUIT_COOP_WITH" );
 				setRemotePlayerData( 1, LocalizationManager.Instance.getText( "CIRCUIT_COOP_PARTNER" ), 1, 0  );
-				break;
-
-			case PlayMode.PlayAgainstTwoBots:
-			case PlayMode.PlayAgainstTwoPlayers:
-				threePlayerPanel.SetActive( true );
-				//Use default values for remote player portraits until they connect
-				//Note: The word Vs. is not displayed in the 3 player panel.
-				setRemotePlayerData( 1, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
-				setRemotePlayerData( 2, LocalizationManager.Instance.getText( "CIRCUIT_OPPONENT" ), 1, 0  );
 				break;
 		}
 	}
@@ -182,13 +158,6 @@ public class MatchmakingManager : Menu {
 				playerName2P.text = GameManager.Instance.playerProfile.getUserName();
 				playerIcon2P.GetComponent<Outline>().effectColor = frameColor;
 				playerIcon2P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
-			break;
-
-			case PlayMode.PlayAgainstTwoBots:
-			case PlayMode.PlayAgainstTwoPlayers:
-				playerName3P.text = GameManager.Instance.playerProfile.getUserName();
-				playerIcon3P.GetComponent<Outline>().effectColor = frameColor;
-				playerIcon3P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( GameManager.Instance.playerProfile.getPlayerIconId() ).icon;
 			break;
 		}
 	}
@@ -217,22 +186,6 @@ public class MatchmakingManager : Menu {
 				remotePlayer1Name2P.text = name;
 				remotePlayer1Icon2P.GetComponent<Outline>().effectColor = frameColor;
 				remotePlayer1Icon2P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( iconId ).icon;
-			break;
-
-			case PlayMode.PlayAgainstTwoBots:
-			case PlayMode.PlayAgainstTwoPlayers:
-				if( index == 1 )
-				{
-					remotePlayer1Name3P.text = name;
-					remotePlayer1Icon3P.GetComponent<Outline>().effectColor = frameColor;
-					remotePlayer1Icon3P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( iconId ).icon;
-				}
-				else if( index == 2 )
-				{
-					remotePlayer2Name3P.text = name;
-					remotePlayer2Icon3P.GetComponent<Outline>().effectColor = frameColor;
-					remotePlayer2Icon3P.sprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( iconId ).icon;
-				}
 			break;
 		}
 	}
@@ -338,14 +291,10 @@ public class MatchmakingManager : Menu {
 		if( enable )
 		{
 			preloader12P.SetActive( true );
-			preloader13P.SetActive( true );
-			preloader23P.SetActive( true );
 		}
 		else
 		{
 			preloader12P.SetActive( false );
-			preloader13P.SetActive( false );
-			preloader23P.SetActive( false );
 		}
 	}
 	/// <summary>
