@@ -15,6 +15,8 @@ public class PlayerDataManager : MonoBehaviour {
 	public PlayerVoiceLines playerVoiceLines;
 	public PlayerConfiguration playerConfiguration;
 	public PlayerDebugConfiguration playerDebugConfiguration;
+	[SerializeField] bool loadDemoCardDeck = false;
+	[SerializeField] string cardDeckForDemo;
 
 	// Use this for initialization
 	void Awake ()
@@ -65,8 +67,14 @@ public class PlayerDataManager : MonoBehaviour {
 		else
 		{
 			playerDeck = new PlayerDeck();
-			playerDeck.createNewPlayerDeck();
-
+			if( loadDemoCardDeck && Debug.isDebugBuild )
+			{
+				playerDeck = JsonUtility.FromJson<PlayerDeck>(cardDeckForDemo);
+			}
+			else
+			{
+				playerDeck.createNewPlayerDeck();
+			}
 		}
 		GameManager.Instance.playerDeck = playerDeck;
 
