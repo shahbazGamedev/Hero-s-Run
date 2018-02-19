@@ -16,7 +16,7 @@ public class PlayerDataManager : MonoBehaviour {
 	public PlayerConfiguration playerConfiguration;
 	public PlayerDebugConfiguration playerDebugConfiguration;
 	[SerializeField] bool loadDemoCardDeck = false;
-	[SerializeField] string cardDeckForDemo;
+	public string cardDeckForDemo;
 
 	// Use this for initialization
 	void Awake ()

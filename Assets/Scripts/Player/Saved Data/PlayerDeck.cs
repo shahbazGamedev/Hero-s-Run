@@ -302,6 +302,7 @@ public class PlayerDeck {
 	public void serializePlayerDeck( bool saveImmediately )
 	{
 		string json  = JsonUtility.ToJson( this );
+		//PlayerDataManager.Instance.cardDeckForDemo = json;
 		PlayerStatsManager.Instance.setPlayerDeck( json );
 		if( saveImmediately ) PlayerStatsManager.Instance.savePlayerStats();
 	}
