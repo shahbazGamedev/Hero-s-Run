@@ -161,11 +161,6 @@ public class LevelManager {
 		return highestEpisodeCompleted;
 	}
 
-	public void unlockAllEpisodes()
-	{
-		highestEpisodeCompleted = levelData.episodeList.Count -1;
-	}
-
 	//Called when the cullis gate activation is complete.
 	//Returns true if the final level has been completed (and therefore the game is finished) and false otherwise.
 	public bool incrementNextEpisodeToComplete()
@@ -271,16 +266,6 @@ public class LevelManager {
 	public bool getEnableTorches()
 	{
 		return enableTorches;
-	}
-
-	public void setOnlyUseUniqueTiles( bool value )
-	{
-		onlyUseUniqueTiles = value;
-	}
-
-	public bool getOnlyUseUniqueTiles()
-	{
-		return onlyUseUniqueTiles;
 	}
 	#endregion
 

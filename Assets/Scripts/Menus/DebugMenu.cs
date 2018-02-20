@@ -10,16 +10,14 @@ public class DebugMenu : MonoBehaviour {
 
 	[Header("Debug Menu")]
 	[SerializeField] Dropdown debugInfoTypeDropdown;
-	[SerializeField] Text toggleOnlyUseUniqueTilesText;
-	[SerializeField] Text clearAssetBundleCacheText;
 	[SerializeField] Text facebookName;
 	[SerializeField] Text allowBotToPlayCardsText;
 	[SerializeField] Text autoPilotText;
 	[SerializeField] Slider speedOverrideMultiplierSlider;
 	[SerializeField] Text speedOverrideMultiplierText;
-	[SerializeField] Slider trophyOverrideMultiplierSlider;
-	[SerializeField] Text trophyOverrideMultiplierText;
-	[SerializeField] Text trophyOverrideSectorText;
+	[SerializeField] Slider competitivePointsOverrideSlider;
+	[SerializeField] Text competitivePointsText;
+	[SerializeField] Text sectorText;
 	[SerializeField] Dropdown regionOverrideDropdown;
 	[SerializeField] Dropdown mapOverrideDropdown;
 
@@ -33,18 +31,10 @@ public class DebugMenu : MonoBehaviour {
 		speedOverrideMultiplierText.text = GameManager.Instance.playerDebugConfiguration.getSpeedOverrideMultiplier().ToString();
 
 		competitivePoints = GameManager.Instance.playerProfile.getCompetitivePoints();
-		trophyOverrideMultiplierSlider.value = competitivePoints;
-		trophyOverrideMultiplierText.text = competitivePoints.ToString("N0");
-		trophyOverrideSectorText.text = SectorManager.Instance.getSectorByPoints( competitivePoints ).ToString("N0");
+		competitivePointsOverrideSlider.value = competitivePoints;
+		competitivePointsText.text = competitivePoints.ToString("N0");
+		sectorText.text = SectorManager.Instance.getSectorByPoints( competitivePoints ).ToString("N0");
 
-		if( LevelManager.Instance.getOnlyUseUniqueTiles() )
-		{
-			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: On";
-		}
-		else
-		{
-			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: Off";
-		}
 		if( GameManager.Instance.playerDebugConfiguration.getAllowBotToPlayCards() )
 		{
 			allowBotToPlayCardsText.text = "Bot plays cards: On";
@@ -68,27 +58,6 @@ public class DebugMenu : MonoBehaviour {
 		populateDebugInfoTypeDropdown();
 	}
 
-	public void OnClickResetSavedData()
-	{
-		Debug.Log("OnClickResetSavedData");
-		UISoundManager.uiSoundManager.playButtonClick();
-		PlayerStatsManager.Instance.resetPlayerStats();
-	}
-
-	public void setSpeedOverride( Slider slider )
-	{
-		GameManager.Instance.playerDebugConfiguration.setSpeedOverrideMultiplier( slider.value/10 ); //We want 1.1 not 1.123567. Slider uses whole numbers from 0 to 30 converted to 0 to 3.
-		speedOverrideMultiplierText.text = (slider.value/10).ToString();
-	}
-
-	public void setTrophyOverride( Slider slider )
-	{
-		competitivePoints = (int) slider.value;
-		trophyOverrideMultiplierText.text = competitivePoints.ToString("N0");
-		trophyOverrideSectorText.text = SectorManager.Instance.getSectorByPoints( competitivePoints ).ToString("N0");
-		GameManager.Instance.playerProfile.setCompetitivePoints( competitivePoints );
-	}
-
 	void OnSceneUnloaded ( Scene scene )
 	{
 		//Only proceed if the unloaded scene is Options
@@ -99,6 +68,34 @@ public class DebugMenu : MonoBehaviour {
 		}
 	}
 
+	#region Reset Saved Data
+	public void OnClickResetSavedData()
+	{
+		Debug.Log("OnClickResetSavedData");
+		UISoundManager.uiSoundManager.playButtonClick();
+		PlayerStatsManager.Instance.resetPlayerStats();
+	}
+	#endregion
+
+	#region Speed override
+	public void setSpeedOverride( Slider slider )
+	{
+		GameManager.Instance.playerDebugConfiguration.setSpeedOverrideMultiplier( slider.value/10 ); //We want 1.1 not 1.123567. Slider uses whole numbers from 0 to 30 converted to 0 to 3.
+		speedOverrideMultiplierText.text = (slider.value/10).ToString();
+	}
+	#endregion
+
+	#region Competitive Points override
+	public void setCPOverride( Slider slider )
+	{
+		competitivePoints = (int) slider.value;
+		competitivePointsText.text = competitivePoints.ToString("N0");
+		sectorText.text = SectorManager.Instance.getSectorByPoints( competitivePoints ).ToString("N0");
+		GameManager.Instance.playerProfile.setCompetitivePoints( competitivePoints );
+	}
+	#endregion
+
+	#region Bots
 	public void OnClickAllowBotToPlayCards()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
@@ -112,14 +109,9 @@ public class DebugMenu : MonoBehaviour {
 			allowBotToPlayCardsText.text = "Bot plays cards: Off";
 		}
 	}
+	#endregion
 
-	public void OnClickDeleteRequests()
-	{
-		Debug.Log("OnClickDeleteRequests");
-		UISoundManager.uiSoundManager.playButtonClick();
-		StartCoroutine( FacebookManager.Instance.deleteAllAppRequests() );
-	}
-
+	#region Game Center
 	public void OnClickResetAchievements()
 	{
 		Debug.Log("OnClickResetAchievements");
@@ -129,7 +121,9 @@ public class DebugMenu : MonoBehaviour {
 		});
 		GameCenterManager.resetAchievementsCompleted();
 	}
+	#endregion
 
+	#region Auto-pilot
 	public void OnClickToggleAutoPilot()
 	{
 		UISoundManager.uiSoundManager.playButtonClick();
@@ -143,57 +137,9 @@ public class DebugMenu : MonoBehaviour {
 			autoPilotText.text = "Auto-pilot: Off";
 		}
 	}
+	#endregion
 
-	public void OnClickUnlockAllLevels()
-	{
-		Debug.Log("OnClickUnlockAllLevels");
-		UISoundManager.uiSoundManager.playButtonClick();
-		LevelManager.Instance.unlockAllEpisodes();
-		PlayerStatsManager.Instance.savePlayerStats();
-	}
-
-	public void OnClickUnlockAllStories()
-	{
-		Debug.Log("OnClickUnlockAllStories");
-		UISoundManager.uiSoundManager.playButtonClick();
-		//I am not sure if I will release with the Journal code. For now, it only gets initialized
-		//when entering the world map and not when entering the main menu. Because of this, test for null value.
-		if( GameManager.Instance.journalData != null )
-		{
-			GameManager.Instance.journalData.unlockAllEntries(); //also takes care of saving
-		}
-	}
-
-	public void OnClickToggleOnlyUseUniqueTiles()
-	{
-		Debug.Log("OnClickToggleOnlyUseUniqueTiles");
-		UISoundManager.uiSoundManager.playButtonClick();
-		LevelManager.Instance.setOnlyUseUniqueTiles( !LevelManager.Instance.getOnlyUseUniqueTiles() );
-		if( LevelManager.Instance.getOnlyUseUniqueTiles() )
-		{
-			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: On";
-		}
-		else
-		{
-			toggleOnlyUseUniqueTilesText.text = "Only Use Unique Tiles: Off";
-		}
-	}
-
-	public void OnClickClearAssetBundleCache()
-	{
-		Debug.Log("OnClickClearAssetBundleCache");
-		UISoundManager.uiSoundManager.playButtonClick();
-		bool result = Caching.ClearCache();
-		if( result )
-		{
-			clearAssetBundleCacheText.text = clearAssetBundleCacheText.text + ": Success";
-		}
-		else
-		{
-			clearAssetBundleCacheText.text = clearAssetBundleCacheText.text + ": Failure";
-		}
-	}
-
+	#region Facebook
 	void updateFacebookName()
 	{
 		if( FacebookManager.Instance.firstName == null )
@@ -205,6 +151,14 @@ public class DebugMenu : MonoBehaviour {
 			facebookName.text = "First Name: " + FacebookManager.Instance.firstName;
 		}
 	}
+
+	public void OnClickDeleteRequests()
+	{
+		Debug.Log("OnClickDeleteRequests");
+		UISoundManager.uiSoundManager.playButtonClick();
+		StartCoroutine( FacebookManager.Instance.deleteAllAppRequests() );
+	}
+	#endregion
 
 	#region Photon Cloud Region override
 	void populatePhotonCloudRegionDropdown()

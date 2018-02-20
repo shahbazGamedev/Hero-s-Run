@@ -230,7 +230,6 @@ public sealed class GenerateLevel  : MonoBehaviour {
 				episodeCheckpointIndex++;
 			}
 			if( numbersOfCheckpointsPassed > episodeCheckpointIndex ) continue; //we want to restart at the last passed checkpoint, not from the Start tile
-			if( LevelManager.Instance.getOnlyUseUniqueTiles() && tg.frequency != TileGroup.FrequencyType.Unique ) continue;
 			if( tg.frequency != TileGroup.FrequencyType.Never && (tg.validGameMode == ValidGameMode.Any || tg.validGameMode == ValidGameMode.Story) )
 			{
 				setCurrentTheme(tg.theme );
