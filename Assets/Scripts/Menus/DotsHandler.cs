@@ -8,6 +8,8 @@ public class DotsHandler : MonoBehaviour {
 
 	[SerializeField] List<Image> dotsList = new List<Image>();
 	[SerializeField] bool travelsLeft = true;
+	[SerializeField] Color colorOn = Color.white;
+	[SerializeField] Color colorOff = Color.gray;
 	public int activePanel;
 
 	void Start()
@@ -31,12 +33,12 @@ public class DotsHandler : MonoBehaviour {
 			int index = (int) (i * (dotsList.Count-1));
 			if( i == xPosition )
 			{
-				dotsList[index].color = Color.white;
+				dotsList[index].color = colorOn;
 				activePanel = index;
 			}
 			else			
 			{
-				dotsList[index].color = Color.gray;
+				dotsList[index].color = colorOff;
 			}
 		}
 	}
