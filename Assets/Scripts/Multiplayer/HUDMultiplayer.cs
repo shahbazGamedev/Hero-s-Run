@@ -367,7 +367,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		{
 			float distance = generateLevel.levelLengthInMeters - ( localPlayerControl.tileDistanceTraveled + localPlayerRace.distanceTravelledOnThisTile );
 			if( distance <= 0.5f ) distance = 0; //Added as a safeguard.
-			distanceText.text = distance.ToString("N0") + " <color=#FF396D><size=38><sub>M</sub></size></color>";
+			distanceText.text = distance.ToString("N0") + " <color=#FF396D><sub>M</sub></color>";
 			distanceRemainingCounterRed.fillAmount = distance/generateLevel.levelLengthInMeters;
 		}
 	}
