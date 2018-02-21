@@ -162,7 +162,7 @@ public class LevelData : MonoBehaviour {
 			case SunType.Desert_night:
 				//Directional light
 				Sun.GetComponent<Light>().color = lightingData.sunColor;
-				lightIntensity = 0.65f;
+				lightIntensity = 0.62f;
 				Sun.GetComponent<Light>().shadows = LightShadows.Soft;
 				sunDirection = Quaternion.Euler( 45.57f,-329f,-159.54f );
 				shadowStrength = 0.6f;
@@ -177,7 +177,7 @@ public class LevelData : MonoBehaviour {
 				RenderSettings.reflectionIntensity = 0.614f;
 
 				//Fog
-				RenderSettings.fog = true;
+				RenderSettings.fog = false;
 				RenderSettings.fogMode = FogMode.Linear;
 				RenderSettings.fogColor = lightingData.fogColor;
 				RenderSettings.fogStartDistance = -1.4f;
