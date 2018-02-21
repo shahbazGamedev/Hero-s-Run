@@ -43,11 +43,6 @@ public class MatchmakingManager : Menu {
 
 	private Color originalPlayButtonTextColor;
 
-	void Awake ()
-	{
-		Screen.orientation = ScreenOrientation.Portrait;
-	}
-
 	void Start ()
 	{
 		Handheld.StopActivityIndicator();
