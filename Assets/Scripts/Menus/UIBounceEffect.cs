@@ -12,17 +12,20 @@ public class UIBounceEffect : MonoBehaviour
 	[SerializeField] float scale = 1.014f;
 	[SerializeField] float scaleUpDuration = 0.18f;
 	[SerializeField] float scaleDownDuration = 0.25f;
+	Vector3 initialScale;
 
 	public void scaleUp()
 	{
+		initialScale = gameObject.GetComponent<RectTransform>().localScale;
+		Vector3 increasedScale = initialScale * scale;
 		CancelInvoke("scaleDown");
 		LeanTween.cancel( gameObject );
-				LeanTween.scale( gameObject.GetComponent<RectTransform>(), new Vector3( scale, scale, scale ), scaleUpDuration ).setOnComplete(scaleDown).setOnCompleteParam(gameObject).setDelay( scaleUpStartDelay ).setIgnoreTimeScale( true );
+		LeanTween.scale( gameObject.GetComponent<RectTransform>(), increasedScale, scaleUpDuration ).setOnComplete(scaleDown).setOnCompleteParam(gameObject).setDelay( scaleUpStartDelay ).setIgnoreTimeScale( true );
 	}
 	
 	void scaleDown()
 	{
-		LeanTween.scale( gameObject.GetComponent<RectTransform>(), Vector3.one, scaleDownDuration ).setIgnoreTimeScale( true );
+		LeanTween.scale( gameObject.GetComponent<RectTransform>(), initialScale, scaleDownDuration ).setIgnoreTimeScale( true );
 	}
 
 	void OnEnable()

@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class MultiplayerPauseMenu : MonoBehaviour {
 
 	[SerializeField] GameObject pausePanel;
 	[SerializeField] GameObject pauseButton;
+	[SerializeField] GameObject quitConfirmationPopup;
+	[SerializeField] GameObject quitConfirmationDescription;
 
 	// Use this for initialization
 	void Awake ()
@@ -37,7 +40,34 @@ public class MultiplayerPauseMenu : MonoBehaviour {
 
 	public void OnClickQuit()
 	{
+		configureQuitConfirmationPopup();
+		quitConfirmationPopup.SetActive( true );
+	}
+
+	void configureQuitConfirmationPopup()
+	{
+		switch ( GameManager.Instance.getPlayMode() )
+		{
+			case PlayMode.PlayAgainstOnePlayer:
+				quitConfirmationDescription.GetComponent<TextMeshProUGUI>().text = LocalizationManager.Instance.getText( "QUIT_CONFIRMATION_DESCRIPTION" );
+				quitConfirmationDescription.SetActive( true );
+			break;
+		
+			default:
+				quitConfirmationDescription.SetActive( false );
+			break;
+		}
+	}
+
+	public void OnClickYes()
+	{
 		quit();
+	}
+
+	public void OnClickCancel()
+	{
+		quitConfirmationPopup.SetActive( false );
+		togglePause();
 	}
 
 	void togglePause()

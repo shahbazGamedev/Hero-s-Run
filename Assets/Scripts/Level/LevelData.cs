@@ -177,7 +177,7 @@ public class LevelData : MonoBehaviour {
 				RenderSettings.reflectionIntensity = 0.614f;
 
 				//Fog
-				RenderSettings.fog = false;
+				RenderSettings.fog = true;
 				RenderSettings.fogMode = FogMode.Linear;
 				RenderSettings.fogColor = lightingData.fogColor;
 				RenderSettings.fogStartDistance = -1.4f;
