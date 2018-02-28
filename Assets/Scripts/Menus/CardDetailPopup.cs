@@ -39,6 +39,10 @@ public class CardDetailPopup : MonoBehaviour {
 	[SerializeField] Image heroIcon;
 	[Header("Description Mode")]
 	[SerializeField] TextMeshProUGUI modeButtonText;
+	[SerializeField] Color competitionModeColor;
+	[SerializeField] Color zombieModeColor;
+	[SerializeField] Image background;
+	[SerializeField] GameObject zombieModeDecorations;
 	private bool isShowingCompetitionMode = true;
 
 	private GameObject go;
@@ -54,11 +58,15 @@ public class CardDetailPopup : MonoBehaviour {
 
 		if( isShowingCompetitionMode )
 		{
-			modeButtonText.text = "SHOW ZOMBIE";
+			modeButtonText.text = LocalizationManager.Instance.getText( "CARD_MODE_COMPETITION" );
+			background.color = competitionModeColor;
+			zombieModeDecorations.SetActive( false );
 		}
 		else
 		{
-			modeButtonText.text = "SHOW NORMAL";
+			modeButtonText.text = LocalizationManager.Instance.getText( "CARD_MODE_ZOMBIE" );
+			background.color = zombieModeColor;
+			zombieModeDecorations.SetActive( true );
 		}
 
 		//Title
@@ -126,20 +134,23 @@ public class CardDetailPopup : MonoBehaviour {
 			GameObject.Destroy( child.gameObject );
 		}
 
+		int indexForBackground = 0;
 		for( int i=0; i < cd.cardProperties.Count; i++ )
 		{
 			if( isShowingCompetitionMode )
 			{
 				if( cd.cardProperties[i].mode == CardPropertyMode.SHARED || cd.cardProperties[i].mode == CardPropertyMode.COMPETITION_ONLY )
 				{
-					createCardProperty( i, cd.cardProperties[i], pcd, cd );
+					createCardProperty( indexForBackground, cd.cardProperties[i], pcd, cd );
+					indexForBackground++;
 				}		
 			}
 			else
 			{
 				if( cd.cardProperties[i].mode == CardPropertyMode.SHARED || cd.cardProperties[i].mode == CardPropertyMode.COOP_ONLY )
 				{
-					createCardProperty( i, cd.cardProperties[i], pcd, cd );
+					createCardProperty( indexForBackground, cd.cardProperties[i], pcd, cd );
+					indexForBackground++;
 				}		
 			}
 		}
