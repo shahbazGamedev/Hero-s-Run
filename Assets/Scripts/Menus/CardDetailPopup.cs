@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
+using TMPro;
 
 public class CardDetailPopup : MonoBehaviour {
 	
@@ -36,17 +37,37 @@ public class CardDetailPopup : MonoBehaviour {
 	[SerializeField]  CardUIUpgrade cardUIUpgrade;
 	[Header("Only for Hero Card")]
 	[SerializeField] Image heroIcon;
+	[Header("Description Mode")]
+	[SerializeField] TextMeshProUGUI modeButtonText;
+	private bool isShowingCompetitionMode = true;
+
+	private GameObject go;
+	private PlayerDeck.PlayerCardData pcd;
+	private CardManager.CardData cd;
 
 	public void configureCard( GameObject go, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
+		//Store
+		this.go = go;
+		this.pcd = pcd;
+		this.cd = cd;
+
+		if( isShowingCompetitionMode )
+		{
+			modeButtonText.text = "SHOW ZOMBIE";
+		}
+		else
+		{
+			modeButtonText.text = "SHOW NORMAL";
+		}
+
 		//Title
 		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + pcd.name.ToString().ToUpper() );
 		topPanelText.text = string.Format(LocalizationManager.Instance.getText( "CARD_LEVEL_TITLE" ), pcd.level, localizedCardName );
 		//Card
 		card.GetComponent<CardUIDetails>().configureCard( pcd, cd );
 		//Description
-		string localizedCardDescription = LocalizationManager.Instance.getText( "CARD_DESCRIPTION_" + pcd.name.ToString().ToUpper() );
-		descriptionText.text = localizedCardDescription;
+		setCardDescription();
 		//Rarity
 		Color rarityColor;
 		ColorUtility.TryParseHtmlString (CardManager.Instance.getCardColorHexValue(cd.rarity), out rarityColor);
@@ -78,6 +99,24 @@ public class CardDetailPopup : MonoBehaviour {
 		}
 	}
 
+	void setCardDescription()
+	{
+		//Description
+		string localizedCardDescription = string.Empty;
+		if( isShowingCompetitionMode )
+		{
+			localizedCardDescription = LocalizationManager.Instance.getText( "CARD_DESCRIPTION_" + pcd.name.ToString().ToUpper() );
+		}
+		else
+		{
+			localizedCardDescription = LocalizationManager.Instance.getText( "CARD_DESCRIPTION_COOP_" + pcd.name.ToString().ToUpper() );
+			//Some cards have the exact same description for both modes.
+			//If there is no coop description, simply use the one for competition.
+			if( localizedCardDescription == "NOT FOUND" ) localizedCardDescription = LocalizationManager.Instance.getText( "CARD_DESCRIPTION_" + pcd.name.ToString().ToUpper() );
+		}
+		descriptionText.text = localizedCardDescription;
+	}
+
 	void configureCardProperties( PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
 		//Make sure we removed properties that were previously generated first
@@ -89,12 +128,26 @@ public class CardDetailPopup : MonoBehaviour {
 
 		for( int i=0; i < cd.cardProperties.Count; i++ )
 		{
-			createCardProperty( i, cd.cardProperties[i], pcd, cd );
+			if( isShowingCompetitionMode )
+			{
+				if( cd.cardProperties[i].mode == CardPropertyMode.SHARED || cd.cardProperties[i].mode == CardPropertyMode.COMPETITION_ONLY )
+				{
+					createCardProperty( i, cd.cardProperties[i], pcd, cd );
+				}		
+			}
+			else
+			{
+				if( cd.cardProperties[i].mode == CardPropertyMode.SHARED || cd.cardProperties[i].mode == CardPropertyMode.COOP_ONLY )
+				{
+					createCardProperty( i, cd.cardProperties[i], pcd, cd );
+				}		
+			}
 		}
 	}
 
 	void createCardProperty( int index, CardManager.CardProperty cp, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
 	{
+
 		GameObject go = (GameObject)Instantiate(cardPropertyPrefab);
 		go.transform.SetParent(propertiesPanel,false);
 		go.GetComponent<CardPropertyUI>().configureProperty( index, cp, pcd, cd, canUpgrade );
@@ -220,5 +273,12 @@ public class CardDetailPopup : MonoBehaviour {
 	{
 		gameObject.SetActive( false );
 	}
+
+	public void OnClickToggleMode()
+	{
+		isShowingCompetitionMode = !isShowingCompetitionMode;
+		configureCard( go, pcd, cd );
+	}
+
 
 }

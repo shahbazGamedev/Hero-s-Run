@@ -36,6 +36,13 @@ public enum CardPropertyTargetType
 	IN_FRONT = 1
 }
 
+public enum CardPropertyMode
+{
+	SHARED = 0,
+	COMPETITION_ONLY = 1,
+	COOP_ONLY = 2
+}
+
 public enum CardSortMode
 {
 	BY_RARITY = 0,
@@ -462,7 +469,8 @@ public class CardManager : MonoBehaviour {
 	[System.Serializable]
 	public class CardProperty
 	{
-		public CardPropertyType type; 
+		public CardPropertyType type;
+		public CardPropertyMode mode;
 		public float baseValue;
 		public float upgradeValue;
 		public CardPropertyTargetType targetType;
