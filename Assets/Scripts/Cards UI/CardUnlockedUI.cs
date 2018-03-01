@@ -17,6 +17,15 @@ public class CardUnlockedUI : MonoBehaviour {
 	[Header("Properties Panel")]
 	[SerializeField] RectTransform propertiesPanel;
 	[SerializeField] GameObject cardPropertyPrefab;
+	[Header("Description Mode")]
+	[SerializeField] TextMeshProUGUI modeButtonText;
+	[SerializeField] Color competitionModeColor;
+	[SerializeField] Color zombieModeColor;
+	[SerializeField] Image background;
+	[SerializeField] GameObject zombieModeDecorations;
+	private bool isShowingCompetitionMode = true;
+
+	private CardManager.CardData cd;
 
 	#region Events
 	//Event management used to notify other classes when this popup is displayed or hidden
@@ -26,6 +35,22 @@ public class CardUnlockedUI : MonoBehaviour {
 
 	public void configureCard( CardManager.CardData cd )
 	{
+		//Store
+		this.cd = cd;
+
+		if( isShowingCompetitionMode )
+		{
+			modeButtonText.text = LocalizationManager.Instance.getText( "CARD_MODE_COMPETITION" );
+			background.color = competitionModeColor;
+			zombieModeDecorations.SetActive( false );
+		}
+		else
+		{
+			modeButtonText.text = LocalizationManager.Instance.getText( "CARD_MODE_ZOMBIE" );
+			background.color = zombieModeColor;
+			zombieModeDecorations.SetActive( true );
+		}
+
 		//Title
 		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + cd.name.ToString().ToUpper() );
 		topPanelText.text = string.Format(LocalizationManager.Instance.getText( "CARD_LEVEL_TITLE" ), 1, localizedCardName );
@@ -38,8 +63,7 @@ public class CardUnlockedUI : MonoBehaviour {
 		cardManaText.text = cd.powerCost.ToString();
 
 		//Description
-		string localizedCardDescription = LocalizationManager.Instance.getText( "CARD_DESCRIPTION_" + cd.name.ToString().ToUpper() );
-		descriptionText.text = localizedCardDescription;
+		setCardDescription();
 
 		//Rarity
 		Color rarityColor;
@@ -51,6 +75,24 @@ public class CardUnlockedUI : MonoBehaviour {
 		configureCardProperties( cd );
 	}
 
+	void setCardDescription()
+	{
+		//Description
+		string localizedCardDescription = string.Empty;
+		if( isShowingCompetitionMode )
+		{
+			localizedCardDescription = LocalizationManager.Instance.getText( "CARD_DESCRIPTION_" + cd.name.ToString().ToUpper() );
+		}
+		else
+		{
+			localizedCardDescription = LocalizationManager.Instance.getText( "CARD_DESCRIPTION_COOP_" + cd.name.ToString().ToUpper() );
+			//Some cards have the exact same description for both modes.
+			//If there is no coop description, simply use the one for competition.
+			if( localizedCardDescription == "NOT FOUND" ) localizedCardDescription = LocalizationManager.Instance.getText( "CARD_DESCRIPTION_" + cd.name.ToString().ToUpper() );
+		}
+		descriptionText.text = localizedCardDescription;
+	}
+
 	void configureCardProperties( CardManager.CardData cd )
 	{
 		//Make sure we removed properties that were previously generated first
@@ -60,9 +102,25 @@ public class CardUnlockedUI : MonoBehaviour {
 			GameObject.Destroy( child.gameObject );
 		}
 
+		int indexForBackground = 0;
 		for( int i=0; i < cd.cardProperties.Count; i++ )
 		{
-			createCardProperty( i, cd.cardProperties[i], cd );
+			if( isShowingCompetitionMode )
+			{
+				if( cd.cardProperties[i].mode == CardPropertyMode.SHARED || cd.cardProperties[i].mode == CardPropertyMode.COMPETITION_ONLY )
+				{
+					createCardProperty( indexForBackground, cd.cardProperties[i], cd );
+					indexForBackground++;
+				}		
+			}
+			else
+			{
+				if( cd.cardProperties[i].mode == CardPropertyMode.SHARED || cd.cardProperties[i].mode == CardPropertyMode.COOP_ONLY )
+				{
+					createCardProperty( indexForBackground, cd.cardProperties[i], cd );
+					indexForBackground++;
+				}		
+			}
 		}
 	}
 
@@ -84,6 +142,10 @@ public class CardUnlockedUI : MonoBehaviour {
 		gameObject.SetActive( value );
 	}
 
-
+	public void OnClickToggleMode()
+	{
+		isShowingCompetitionMode = !isShowingCompetitionMode;
+		configureCard( cd );
+	}
 
 }
