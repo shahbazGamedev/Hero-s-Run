@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PowerBar : MonoBehaviour {
 
@@ -10,6 +11,7 @@ public class PowerBar : MonoBehaviour {
 	[SerializeField] Color superchargerPowerBarFillColor;
 	[SerializeField] RectTransform powerBarLitTipRect;  //Should be anchored bottom, center
 	[SerializeField] Image powerBarLitTip;
+	[SerializeField] TextMeshProUGUI currentPowerLevel;
 
 	public const float MAX_POWER_POINT = 10f;
 	public const float START_POWER_POINT = 0;
@@ -50,6 +52,7 @@ public class PowerBar : MonoBehaviour {
 		{
 			if( powerBarLitTipRect.gameObject.activeSelf ) powerBarLitTipRect.gameObject.SetActive( false );
 		}
+		currentPowerLevel.text = ( (int)power ).ToString();
 	}
 
 	/// <summary>
