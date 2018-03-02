@@ -106,6 +106,20 @@ public class HeroManager : MonoBehaviour {
 		}
 	}
 
+	public Sprite getHeroMinimapSpriteByCardName( CardName cardName )
+	{
+		HeroCharacter hc = heroCharacterList.Find(hero => hero.reservedCard == cardName );
+		if( hc != null )
+		{
+			return hc.minimapIcon;
+		}
+		else
+		{
+			Debug.LogError("HeroManager-There are no heroes associated to the specified card " + cardName );
+			return null;
+		}
+	}
+
 	public bool isHeroCard( CardName cardName )
 	{
 		return heroCharacterList.Exists(hero => hero.reservedCard == cardName );

@@ -11,6 +11,7 @@ public class CardUIDetails : MonoBehaviour {
 	[SerializeField] GameObject newRibbon; //in some instances this value is null and it is normal
 	[Tooltip("The mana needed to use the card.")]
 	[SerializeField] Text powerCost;
+	[SerializeField] Image heroIcon; //Only displayed for Hero Cards
 
 	[Header("Level")]
 	[Tooltip("The level text is displayed on top of the card image. For example: 'Level 5' or 'Max Level'. The text color varies with the card rarity.")]
@@ -43,6 +44,17 @@ public class CardUIDetails : MonoBehaviour {
 
 		//Card image and mana cost
 		cardImage.sprite = cd.icon;
+
+		//White Hero Icon on top left corner
+		if( HeroManager.Instance.isHeroCard( cd.name ) )
+		{
+			heroIcon.sprite = HeroManager.Instance.getHeroMinimapSpriteByCardName( cd.name );
+			heroIcon.gameObject.SetActive( true );
+		}
+		else
+		{
+			heroIcon.gameObject.SetActive( false );
+		}
 
 		//New ribbon
 		if( newRibbon != null ) newRibbon.SetActive( pcd.isNew );
