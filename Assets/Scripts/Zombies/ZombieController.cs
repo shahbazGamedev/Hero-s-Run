@@ -218,25 +218,23 @@ public sealed class ZombieController : Creature, ICreature {
 	}
 
 	#region Zap
-	public override void zap( int lightningSystemPhotonViewID, float zapDelay )
+	public override void zap( int lightningSystemPhotonViewID )
 	{
-		base.zap( lightningSystemPhotonViewID, zapDelay );
+		base.zap( lightningSystemPhotonViewID );
 	}
 
 	//The creature plays a hit animation because it has been zapped by lightning before falling over backwards and dying.
 	[PunRPC]
-	void zapRPC( int lightningSystemPhotonViewID, float zapDelay )
+	void zapRPC( int lightningSystemPhotonViewID )
 	{		
 		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
 
-		StartCoroutine( zapAfterDelay( lightningSystemPhotonViewID, zapDelay ) );
+		zapAfterDelay( lightningSystemPhotonViewID );
 	}
 
-	IEnumerator zapAfterDelay( int lightningSystemPhotonViewID, float zapDelay )
+	void zapAfterDelay( int lightningSystemPhotonViewID )
 	{
-		yield return new WaitForSeconds( zapDelay );
-
-		if( getCreatureState() == CreatureState.Dying ) yield return null; //Ignore. The creature is already dead.
+		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
 
 		LightningSpell[] lightningSpells = GameObject.FindObjectsOfType<LightningSpell>();
 		Transform lightningSystem = null;

@@ -10,8 +10,6 @@ public class CardLightning : Card {
 
 	[SerializeField]  string lightningPrefabName = "Lightning";
 	[SerializeField]  string coopLightningPrefabName = "Lightning Coop";
-	const float COOP_MIN_SPAWN_DELAY = 0.1f;
-	public const float COOP_MAX_SPAWN_DELAY = 0.3f;
 
 	public void activateCard ( int photonViewId, int level )
 	{
@@ -58,8 +56,7 @@ public class CardLightning : Card {
 			
 					//Zap creature
 					ICreature creatureController = creatureList[i].GetComponent<ICreature>();
-					float smallDelay = Random.Range( COOP_MIN_SPAWN_DELAY, COOP_MAX_SPAWN_DELAY );
-					creatureController.zap( lightningSystem.GetComponent<PhotonView>().viewID, smallDelay );
+					creatureController.zap( lightningSystem.GetComponent<PhotonView>().viewID );
 				}
 				SkillBonusHandler.Instance.GetComponent<PhotonView>().RPC("grantComboScoreBonusRPC", PhotonTargets.All, ZombieController.SCORE_PER_KNOCKBACK, "COOP_SCORE_BONUS_COMBO_ZAP_ZOMBIE", photonViewID, numberOfTargets );
 			}

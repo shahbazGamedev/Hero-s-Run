@@ -115,11 +115,11 @@ public class Creature : MonoBehaviour {
 		}
 	}
 
-	public virtual void zap( int lightningSystemPhotonViewID, float zapDelay  )
+	public virtual void zap( int lightningSystemPhotonViewID  )
 	{
 		if( getCreatureState() == CreatureState.Dying ) return; //Ignore. The creature is already dead.
 
-		GetComponent<PhotonView>().RPC("zapRPC", PhotonTargets.All, lightningSystemPhotonViewID, zapDelay );
+		GetComponent<PhotonView>().RPC("zapRPC", PhotonTargets.All, lightningSystemPhotonViewID );
 	}
 
 	public virtual void shrink( Transform caster, bool value )

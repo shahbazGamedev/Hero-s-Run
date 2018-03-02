@@ -10,5 +10,5 @@ public interface ICreature
 	void deactivate();
 	void shrink( Transform caster, bool value );
 	void confuse( Transform caster, bool value );
-	void zap( int lightningSystemPhotonViewID, float zapDelay );
+	void zap( int lightningSystemPhotonViewID );
 }
