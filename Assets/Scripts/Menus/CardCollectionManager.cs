@@ -27,7 +27,7 @@ class CardCollectionManager : MonoBehaviour, IPointerDownHandler {
 	[Header("Replace Card Area")]
 	[SerializeField] GameObject replaceCardArea;
 	[SerializeField] RectTransform cardVerticalContent;
-	const float CARD_REPLACEMENT_POSITION = 370f;
+	const float CARD_REPLACEMENT_POSITION = 282f;
 	[SerializeField] GameObject cardToAddToBattleDeck;
 	CardName cardToAddToBattleDeckName;
 	[SerializeField] ScrollRect cardCollectionScollRect;

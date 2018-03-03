@@ -45,15 +45,18 @@ public class CardUIDetails : MonoBehaviour {
 		//Card image and mana cost
 		cardImage.sprite = cd.icon;
 
-		//White Hero Icon on top left corner
-		if( HeroManager.Instance.isHeroCard( cd.name ) )
+		if( heroIcon != null )
 		{
-			heroIcon.sprite = HeroManager.Instance.getHeroMinimapSpriteByCardName( cd.name );
-			heroIcon.gameObject.SetActive( true );
-		}
-		else
-		{
-			heroIcon.gameObject.SetActive( false );
+			//White Hero Icon on top left corner
+			if( HeroManager.Instance.isHeroCard( cd.name ) )
+			{
+				heroIcon.sprite = HeroManager.Instance.getHeroMinimapSpriteByCardName( cd.name );
+				heroIcon.gameObject.SetActive( true );
+			}
+			else
+			{
+				heroIcon.gameObject.SetActive( false );
+			}
 		}
 
 		//New ribbon
