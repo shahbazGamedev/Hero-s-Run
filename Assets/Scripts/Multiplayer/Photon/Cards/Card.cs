@@ -392,7 +392,7 @@ public class Card : Photon.PunBehaviour {
 	/// <returns><c>true</c>, if the target is in front of the caster, <c>false</c> otherwise.</returns>
 	/// <param name="caster">Caster.</param>
 	/// <param name="potentialTarget">Potential target.</param>
-	bool getDotProduct( Transform caster, Transform target )
+	protected bool getDotProduct( Transform caster, Transform target )
 	{
 		Vector3 forward = caster.TransformDirection(Vector3.forward);
 		Vector3 toOther = target.position - caster.position;
