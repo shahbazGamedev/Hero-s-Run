@@ -12,6 +12,7 @@ public class UIBounceEffect : MonoBehaviour
 	[SerializeField] float scale = 1.014f;
 	[SerializeField] float scaleUpDuration = 0.18f;
 	[SerializeField] float scaleDownDuration = 0.25f;
+	[SerializeField] bool scaleUpOnEnable = true;
 	Vector3 initialScale;
 
 	public void scaleUp()
@@ -30,6 +31,6 @@ public class UIBounceEffect : MonoBehaviour
 
 	void OnEnable()
 	{
-		scaleUp();
+		if( scaleUpOnEnable ) scaleUp();
 	}
 }

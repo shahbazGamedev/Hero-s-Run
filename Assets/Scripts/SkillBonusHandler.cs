@@ -83,6 +83,8 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 	/// <param name="skillTextID">Skill text ID.</param>
 	public void addSkillBonus( int skillPoints, string skillTextID )
 	{
+		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.COMPLETED ) return;
+
 		if( GameManager.Instance.isCoopPlayMode() ) return;
 
 		string localizedSkillText = LocalizationManager.Instance.getText(skillTextID);
@@ -112,6 +114,8 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 
 	public void grantScoreBonus( int bonusPoints, string bonusTextID, int attackerPhotonViewID )
 	{
+		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.COMPLETED ) return;
+
 		if( !GameManager.Instance.isCoopPlayMode() ) return;
 
 		Transform attacker = getPlayerByPhotonViewID( attackerPhotonViewID );
@@ -154,6 +158,8 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 	/// <param name="attacker">Attacker.</param>
 	public void grantScoreBonus( int bonusPoints, string bonusTextID, Transform attacker )
 	{
+		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.COMPLETED ) return;
+
 		if( !GameManager.Instance.isCoopPlayMode() ) return;
 
 		if( attacker != null )
@@ -202,6 +208,8 @@ public sealed class SkillBonusHandler : MonoBehaviour {
 	/// <param name="numberOfKills">Number of kills.</param>
 	public void grantComboScoreBonus( int bonusPoints, string bonusTextID, Transform attacker, int numberOfKills )
 	{
+		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.COMPLETED ) return;
+
 		if( !GameManager.Instance.isCoopPlayMode() ) return;
 
 		if( numberOfKills <= 0 ) return;

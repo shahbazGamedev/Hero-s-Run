@@ -37,6 +37,9 @@ public class TurnRibbonHandler : MonoBehaviour {
 	PlayerHealth playerHealth;
 	string userName;
 
+	//When a card is ready to be played, scale it up and down slightly to draw attention to it.
+	bool[] cardBounceDone = new bool[CardManager.CARDS_IN_TURN_RIBBON];
+
 	//Delegate used to communicate to other classes when the local player has played a card
 	public delegate void CardPlayedEvent( CardName name, int level );
 	public static event CardPlayedEvent cardPlayedEvent;
@@ -113,6 +116,12 @@ public class TurnRibbonHandler : MonoBehaviour {
 				{
 					//We have enough power to play this card.
 					radialMask.fillAmount = 0;
+					if( !cardBounceDone[i] )
+					{
+						//When a card is ready to be played, scale it up and down slightly to draw attention to it.
+						turnRibbonButtonList[i].GetComponentInChildren<Image>().GetComponent<UIBounceEffect>().scaleUp();
+						cardBounceDone[i] = true;
+					}
 				}
 				else
 				{
@@ -249,6 +258,12 @@ public class TurnRibbonHandler : MonoBehaviour {
 				//Deduct the power
 				powerBar.deductPower( playedCard.powerCost );
 			
+				//Review the card's bounce flag.
+				cardBounceDone[0] = powerBar.hasEnoughPower( turnRibbonList[0].powerCost ); 
+				cardBounceDone[1] = powerBar.hasEnoughPower( turnRibbonList[1].powerCost ); 
+				cardBounceDone[2] = powerBar.hasEnoughPower( turnRibbonList[2].powerCost ); 
+				cardBounceDone[3] = powerBar.hasEnoughPower( turnRibbonList[3].powerCost ); 
+
 				Button buttonOfCardPlayed = turnRibbonButtonList[indexOfCardPlayed];
 
 				//Disable the button to avoid multiple clicks
@@ -324,6 +339,8 @@ public class TurnRibbonHandler : MonoBehaviour {
 		//In the turn-ribbon list, replace the card played by the card held in Next
 		turnRibbonList.RemoveAt(indexOfCardPlayed);
 		turnRibbonList.Insert( indexOfCardPlayed, nextCard );
+
+		cardBounceDone[indexOfCardPlayed] = powerBar.hasEnoughPower( nextCard.powerCost ); 
 
 		//Dequeue the oldest card and place it in Next
 		CardManager.CardData oldestCardInQueue = cardQueue.Dequeue();
