@@ -57,7 +57,7 @@ public class ResultsHandler : MonoBehaviour {
 	#region Okay button
 	public void OnClickOkay()
 	{
-		StartCoroutine( HUDMultiplayer.hudMultiplayer.returnToMatchmakingAfterDelay( 0 ) );
+		StartCoroutine( HUDMultiplayer.hudMultiplayer.returnToMatchmakingAfterDelay( 0, GameState.Matchmaking ) );
 	}
 	#endregion
 
@@ -147,8 +147,9 @@ public class ResultsHandler : MonoBehaviour {
 		reasonAwardedXP.gameObject.SetActive( false );
 	}
 
-	protected void displayStayAsTeam()
+	protected void displayStayAsTeam( string localPlayerName, string partnerName )
 	{
+		stayAsTeamReward.GetComponent<Rematch>().setPlayerNames( localPlayerName, partnerName );
 		stayAsTeamReward.SetActive( true );
 	}
 	#endregion

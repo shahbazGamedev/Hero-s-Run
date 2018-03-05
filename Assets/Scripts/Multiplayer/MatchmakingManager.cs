@@ -41,20 +41,21 @@ public class MatchmakingManager : Menu {
 	[Header("Sector Change Popup")]
 	[SerializeField] GameObject sectorChangePopup;
 
+	[Header("Rematch")]
+	[SerializeField] GameObject rematchBackground;
+
 	private Color originalPlayButtonTextColor;
 
-	void Start ()
+	void Awake ()
 	{
 		Handheld.StopActivityIndicator();
 
-		verifyIfSectorChanged();
+		//If the players are doing a rematch, display a dark background screen while the level loads.
+		rematchBackground.SetActive( GameManager.Instance.getGameState() == GameState.Rematch );
+	}
 
-		//Reset the player match data
-		LevelManager.Instance.playerMatchDataList.Clear();
-
-		originalPlayButtonTextColor = playButtonText.color;
-		//Configure the lobby according to the number of players in the race
-		configureLobby();
+	void Start ()
+	{
 
 		//Make sure the audio listener is not paused.
 		//It gets set to true when you Pause the game in offline mode.
@@ -63,43 +64,61 @@ public class MatchmakingManager : Menu {
 		Time.timeScale = 1f;
 		Time.fixedDeltaTime = GameManager.DEFAULT_FIXED_DELTA_TIME;
 
-		//The left portrait is always the local player.
-		configureLocalPlayerData();
-
-		//Player Match Data is used by results screen at the end of the race.
-		PlayerMatchData pmd = new PlayerMatchData( GameManager.Instance.playerProfile.getUserName(), GameManager.Instance.playerProfile.getPlayerIconId(), GameManager.Instance.playerProfile.getLevel(), GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK) );
-		LevelManager.Instance.playerMatchDataList.Add( pmd );
-
-		//Localize
-		playButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_PLAY" );
-
-		//Only show the Photon Cloud Region text when playing in an online mode.
-		PhotonCloudRegionText.gameObject.SetActive( GameManager.Instance.isOnlinePlayMode() );
-
-		//If we are playing a 2 or 3 player online multiplayer match, the level is
-		//selected randomly (excluding level zero which is the training level).
-		//If the player is playing alone or against AI, the race track has been selected in
-		//the circuit selection screen.
-		//If the player is inviting a friend, they will race in a track based on the inviter's number of trophies.
-		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOnePlayer )
+		if( GameManager.Instance.getGameState() == GameState.Rematch )
 		{
-			LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomMap() );
+			//On a rematch, start the match immediately.
+			MPNetworkLobbyManager.Instance.startMatch();
 		}
-		else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
+		else
 		{
-			//Use the race track name saved in the match data
-			LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getMapByName( LevelManager.Instance.matchData.mapName ) );
-		}
-		else if( GameManager.Instance.isCoopPlayMode() )
-		{
-			LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomCoopMap() );
-		}
+			verifyIfSectorChanged();
+	
+			//Reset the player match data
+			LevelManager.Instance.playerMatchDataList.Clear();
 
-		if( !GameManager.Instance.isOnlinePlayMode() || GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
-		{
-			//Only configure the circuit/map image and title and etc. when offline or when you are inviting a friend to a match.
-			//For online competition matches, the circuit/map image and title and etc. will get updated when a remote player connects.
-			configureCircuitData( LevelManager.Instance.getSelectedCircuit().circuitInfo );
+			originalPlayButtonTextColor = playButtonText.color;
+
+			//Configure the lobby according to the number of players in the race
+			configureLobby();
+	
+			//The left portrait is always the local player.
+			configureLocalPlayerData();
+	
+			//Player Match Data is used by results screen at the end of the race.
+			PlayerMatchData pmd = new PlayerMatchData( GameManager.Instance.playerProfile.getUserName(), GameManager.Instance.playerProfile.getPlayerIconId(), GameManager.Instance.playerProfile.getLevel(), GameManager.Instance.playerStatistics.getStatisticData(StatisticDataType.CURRENT_WIN_STREAK) );
+			LevelManager.Instance.playerMatchDataList.Add( pmd );
+	
+			//Localize
+			playButtonText.text = LocalizationManager.Instance.getText( "CIRCUIT_PLAY" );
+	
+			//Only show the Photon Cloud Region text when playing in an online mode.
+			PhotonCloudRegionText.gameObject.SetActive( GameManager.Instance.isOnlinePlayMode() );
+	
+			//If we are playing a 2 or 3 player online multiplayer match, the level is
+			//selected randomly (excluding level zero which is the training level).
+			//If the player is playing alone or against AI, the race track has been selected in
+			//the circuit selection screen.
+			//If the player is inviting a friend, they will race in a track based on the inviter's number of trophies.
+			if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOnePlayer )
+			{
+				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomMap() );
+			}
+			else if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
+			{
+				//Use the race track name saved in the match data
+				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getMapByName( LevelManager.Instance.matchData.mapName ) );
+			}
+			else if( GameManager.Instance.isCoopPlayMode() )
+			{
+				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getRandomCoopMap() );
+			}
+	
+			if( !GameManager.Instance.isOnlinePlayMode() || GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
+			{
+				//Only configure the circuit/map image and title and etc. when offline or when you are inviting a friend to a match.
+				//For online competition matches, the circuit/map image and title and etc. will get updated when a remote player connects.
+				configureCircuitData( LevelManager.Instance.getSelectedCircuit().circuitInfo );
+			}
 		}
 	}
 
@@ -239,10 +258,7 @@ public class MatchmakingManager : Menu {
 	/// </summary>
 	public new void OnClickReturnToMainMenu()
 	{
-		if( PhotonNetwork.inRoom )
-		{
-			PhotonNetwork.LeaveRoom();
-		}
+		PhotonNetwork.Disconnect();
 		LevelManager.Instance.matchData = null;
 		#if UNITY_IOS
 		//When returning to the main menu, discard any video that might have been recorded.

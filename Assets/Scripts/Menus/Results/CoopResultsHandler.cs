@@ -72,7 +72,7 @@ public class CoopResultsHandler : ResultsHandler {
 		#region Reward boxes
 		if( GameManager.Instance.getPlayMode() == PlayMode.PlayCoopWithOnePlayer )
 		{
-			grantCoopRewards( wavesBeaten );
+			grantCoopRewards( wavesBeaten, localPlayerRace.name, partner.name );
 		}
 		else if( GameManager.Instance.getPlayMode() == PlayMode.PlayCoopWithOneBot )
 		{
@@ -80,7 +80,7 @@ public class CoopResultsHandler : ResultsHandler {
 			{
 				//PlayCoopWithOneBot is a mode that only exists for testing purposes.
 				//Grant the same rewards as for PlayCoopWithOnePlayer if it is a debug build.
-				grantCoopRewards( wavesBeaten );
+				grantCoopRewards( wavesBeaten, localPlayerRace.name, partner.name );
 			}
 		}
 		#endregion
@@ -90,7 +90,7 @@ public class CoopResultsHandler : ResultsHandler {
 		okayButton.onClick.AddListener(() => this.OnClickOkay() );
 	}
 
-	private void grantCoopRewards( int wavesBeaten )
+	private void grantCoopRewards( int wavesBeaten, string localPlayerName, string partnerName )
 	{
 		//Loot Box.
 		//You do not get a loot box in coop.
@@ -106,7 +106,7 @@ public class CoopResultsHandler : ResultsHandler {
 
 		//Stay as team
 		//Allow the players to stay as a team.
-		displayStayAsTeam();
+		displayStayAsTeam( localPlayerName, partnerName );
 
 		//Save the rewards
 		saveRewards();	

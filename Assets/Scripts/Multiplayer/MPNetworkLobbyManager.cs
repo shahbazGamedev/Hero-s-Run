@@ -28,6 +28,7 @@ public class MPNetworkLobbyManager : PunBehaviour
 	void Awake()
 	{
 		Instance = this;
+		matchmakingManager = GameObject.FindGameObjectWithTag("Matchmaking").GetComponent<MatchmakingManager>();
 
 		PhotonNetwork.logLevel = Loglevel;
 		
@@ -40,7 +41,6 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 	void Start()
 	{
-		matchmakingManager = GameObject.FindGameObjectWithTag("Matchmaking").GetComponent<MatchmakingManager>();
 		if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
 		{
 			matchmakingManager.setRemotePlayerData( 1, LevelManager.Instance.matchData.sender, LevelManager.Instance.matchData.level, LevelManager.Instance.matchData.playerIcon );
@@ -155,25 +155,36 @@ public class MPNetworkLobbyManager : PunBehaviour
 
 	    	setConnectionProgressOnTryToJoinRoom();
 
-			if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
+			if( GameManager.Instance.getGameState() == GameState.Rematch )
 			{
-				LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getMapByName( LevelManager.Instance.matchData.mapName ) );
 				RoomOptions roomOptions = new RoomOptions();
 				roomOptions.MaxPlayers = LevelManager.Instance.getNumberOfPlayersRequired();
 				roomOptions.IsVisible = false;
-			    Debug.Log("tryToJoinRoom: with friends " + LevelManager.Instance.matchData.roomName + " Max " +  LevelManager.Instance.getNumberOfPlayersRequired() );
-				PhotonNetwork.JoinOrCreateRoom( LevelManager.Instance.matchData.roomName, roomOptions, TypedLobby.Default );
+			    Debug.Log("tryToJoinRoom: Rematch: " + LevelManager.Instance.rematchRoomName + " Max " +  LevelManager.Instance.getNumberOfPlayersRequired() );
+				PhotonNetwork.JoinOrCreateRoom( LevelManager.Instance.rematchRoomName, roomOptions, TypedLobby.Default );
 			}
 			else
 			{
-				int currentSector = GameManager.Instance.playerProfile.getCurrentSector();
-				LevelData.CircuitInfo selectedCircuit = LevelManager.Instance.getSelectedCircuit().circuitInfo;
-				//Join the selected circuit such as CIRUIT_PRACTICE_RUN.
-				Debug.Log("MPNetworkLobbyManager-tryToJoinRoom-The circuit selected by the player is: " + selectedCircuit.mapName + " for Sector " + currentSector );
-		
-				//Try to join an existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
-				ExitGames.Client.Photon.Hashtable desiredRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Sector", currentSector } };
-				PhotonNetwork.JoinRandomRoom( desiredRoomProperties, LevelManager.Instance.getNumberOfPlayersRequired() );
+				if( GameManager.Instance.getPlayMode() == PlayMode.PlayAgainstOneFriend )
+				{
+					LevelManager.Instance.setSelectedCircuit( LevelManager.Instance.getLevelData().getMapByName( LevelManager.Instance.matchData.mapName ) );
+					RoomOptions roomOptions = new RoomOptions();
+					roomOptions.MaxPlayers = LevelManager.Instance.getNumberOfPlayersRequired();
+					roomOptions.IsVisible = false;
+				    Debug.Log("tryToJoinRoom: with friends " + LevelManager.Instance.matchData.roomName + " Max " +  LevelManager.Instance.getNumberOfPlayersRequired() );
+					PhotonNetwork.JoinOrCreateRoom( LevelManager.Instance.matchData.roomName, roomOptions, TypedLobby.Default );
+				}
+				else
+				{
+					int currentSector = GameManager.Instance.playerProfile.getCurrentSector();
+					LevelData.CircuitInfo selectedCircuit = LevelManager.Instance.getSelectedCircuit().circuitInfo;
+					//Join the selected circuit such as CIRUIT_PRACTICE_RUN.
+					Debug.Log("MPNetworkLobbyManager-tryToJoinRoom-The circuit selected by the player is: " + selectedCircuit.mapName + " for Sector " + currentSector );
+			
+					//Try to join an existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
+					ExitGames.Client.Photon.Hashtable desiredRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "Sector", currentSector } };
+					PhotonNetwork.JoinRandomRoom( desiredRoomProperties, LevelManager.Instance.getNumberOfPlayersRequired() );
+				}
 			}
 		}
 	}	 

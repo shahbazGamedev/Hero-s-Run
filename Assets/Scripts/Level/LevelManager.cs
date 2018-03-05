@@ -46,6 +46,9 @@ public class LevelManager {
 	//Player Match Data
 	public List<PlayerMatchData> playerMatchDataList = new List<PlayerMatchData>();
 
+	//Rematch
+	public string rematchRoomName;
+
 	public static LevelManager Instance
 	{
         get

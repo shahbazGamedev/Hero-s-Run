@@ -17,7 +17,8 @@ public enum GameState {
 	BeforeTapToPlayAllowed = 8,
 	PostLevelPopup = 9,
 	WorldMapNoPopup = 10,
-	Matchmaking = 12
+	Matchmaking = 12,
+	Rematch = 14
 }
 
 //The GameScenes enum entries must match the scene numbering in Build Settings.
@@ -102,6 +103,7 @@ public class GameManager {
 	//fixedDeltaTime by the same amount or else the camera will be jerky.
 	//When we reset Time.scale to 1, we also need to reset fixedDeltaTime to it's original value, so let's save it.
 	//@see TimeManager settings.
+	//Important: changing DEFAULT_FIXED_DELTA_TIME will impact the FPS. It will also impact the run speed.
 	public const float DEFAULT_FIXED_DELTA_TIME = 0.03333333f;
 
 	public static GameManager Instance

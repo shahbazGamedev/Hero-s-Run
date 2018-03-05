@@ -265,7 +265,7 @@ public class HUDMultiplayer : MonoBehaviour {
 
 			//Automatically return to the matchmaking screen after a delay. The player can always return quicker by pressing
 			//the OK button.
-			StartCoroutine( returnToMatchmakingAfterDelay( AUTOMATIC_RETURN_DELAY ) );
+			StartCoroutine( returnToMatchmakingAfterDelay( AUTOMATIC_RETURN_DELAY, GameState.Matchmaking ) );
 		}
 		//However, if the local player has not crossed the finish line by the time the 10 second countdown has finished,
 		//remove player control, display the "Defeat" text, gradually slow him down, and play the lose animation.
@@ -286,7 +286,7 @@ public class HUDMultiplayer : MonoBehaviour {
 
 			//Automatically return to the matchmaking screen after a delay. The player can always return quicker by pressing
 			//the OK button.
-			StartCoroutine( returnToMatchmakingAfterDelay( AUTOMATIC_RETURN_DELAY ) );
+			StartCoroutine( returnToMatchmakingAfterDelay( AUTOMATIC_RETURN_DELAY, GameState.Matchmaking ) );
 		}
 	}
 
@@ -296,7 +296,7 @@ public class HUDMultiplayer : MonoBehaviour {
 	/// </summary>
 	/// <returns>The to matchmaking after delay.</returns>
 	/// <param name="delay">Delay.</param>
-	public IEnumerator returnToMatchmakingAfterDelay( float delay )
+	public IEnumerator returnToMatchmakingAfterDelay( float delay, GameState newGameState )
 	{
 		yield return new WaitForSeconds( delay );
 		#if UNITY_IOS
@@ -310,7 +310,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		}
 		yield return new WaitForEndOfFrame();
 		#endif
-		GameManager.Instance.setGameState(GameState.Matchmaking);
+		GameManager.Instance.setGameState(newGameState);
 		PhotonNetwork.LeaveRoom();
 	}
 
@@ -325,7 +325,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		StopCoroutine("endOfRaceCountdown");
 		//Automatically return to the matchmaking screen after a delay. The player can always return quicker by pressing
 		//the OK button.
-		StartCoroutine( returnToMatchmakingAfterDelay( AUTOMATIC_RETURN_DELAY ) );
+		StartCoroutine( returnToMatchmakingAfterDelay( AUTOMATIC_RETURN_DELAY, GameState.Matchmaking ) );
 	}
 
 	/// <summary>
