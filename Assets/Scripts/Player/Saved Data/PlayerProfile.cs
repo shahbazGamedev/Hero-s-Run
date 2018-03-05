@@ -222,7 +222,7 @@ public sealed class PlayerProfile {
 
 	public void addToTotalXPEarned( int xpAmount, bool saveImmediately )
 	{
-		if( xpAmount > 0 && xpAmount <= ProgressionManager.MAX_XP_IN_ONE_RACE )
+		if( xpAmount >= 0 && xpAmount <= ProgressionManager.MAX_XP_IN_ONE_RACE )
 		{
 			int previousAmount = totalXPEarned;
 			totalXPEarned = totalXPEarned + xpAmount;
@@ -232,7 +232,7 @@ public sealed class PlayerProfile {
 		}
 		else
 		{
-			Debug.LogError("PlayerProfile-the xp amount specified " + xpAmount + " is incorrect. It needs to be between 1 and " + ProgressionManager.MAX_XP_IN_ONE_RACE.ToString() + ".");
+			Debug.LogError("PlayerProfile-the xp amount specified " + xpAmount + " is incorrect. It needs to be between 0 and " + ProgressionManager.MAX_XP_IN_ONE_RACE.ToString() + ".");
 		}
 	}
 
