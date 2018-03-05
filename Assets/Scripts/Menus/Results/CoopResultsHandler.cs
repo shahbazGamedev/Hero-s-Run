@@ -111,9 +111,4 @@ public class CoopResultsHandler : ResultsHandler {
 		//Save the rewards
 		saveRewards();	
 	}
-
-	public void OnClickStayAsTeam()
-	{
-		Debug.LogWarning("CoopResultsHandler-Stay-as-team option not implemented yet.");
-	}
 }
