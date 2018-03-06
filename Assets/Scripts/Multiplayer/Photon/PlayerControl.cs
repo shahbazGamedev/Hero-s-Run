@@ -2328,8 +2328,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		Transform tileEntrance = currentTile.transform.Find("Entrance");
 		Vector3 tileEntrancePosition = new Vector3( tileEntrance.position.x, 0, tileEntrance.position.z );
 		Vector3 playerPosition = new Vector3( transform.position.x, 0, transform.position.z );
-		float distanceTravelledOnThisTile = Vector3.Distance( tileEntrancePosition, playerPosition );
-		playerRace.distanceTravelledOnThisTile = distanceTravelledOnThisTile;
+		playerRace.distanceTravelledOnThisTile = Vector3.Distance( tileEntrancePosition, playerPosition );
 	}
 
 	void OnTriggerStay(Collider other)
