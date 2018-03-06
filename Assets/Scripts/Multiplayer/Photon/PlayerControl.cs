@@ -1889,11 +1889,9 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Use the name of the tile sent when the player died.
 		GameObject resurrectOnThisTileGameObject = GameObject.Find( resurrectOnThisTile );
 
-		GameObject respawnLocationObject = resurrectOnThisTileGameObject.transform.Find("respawnLocation").gameObject;
-
-		if( respawnLocationObject != null )
+		if( resurrectOnThisTileGameObject != null )
 		{
-			Transform respawn = respawnLocationObject.transform;
+			Transform respawn = findNearestRespawnLocation( resurrectOnThisTileGameObject );
 			RaycastHit hit;
 			float groundHeight = 0f;
 	        if (Physics.Raycast(respawn.position, Vector3.down, out hit, 4.0F ))
@@ -1927,7 +1925,68 @@ public class PlayerControl : Photon.PunBehaviour {
 		}
 		else
 		{
-			Debug.LogError("PlayerControl-ResurrectBegin: Unable to find respawnLocation game object in tile : " + currentTile.name );
+			Debug.LogError("PlayerControl-ResurrectBegin: Unable to find tile: " + resurrectOnThisTile );
+		}
+	}
+
+	/// <summary>
+	/// Finds the nearest respawn location in front of where the player died.
+	/// If there is no respawn location in front of the player, returns the last one in the respawn location list, which should be the furthest.
+	/// </summary>
+	/// <returns>The nearest respawn location.</returns>
+	/// <param name="tile">The tile where the player died.</param>
+	Transform findNearestRespawnLocation( GameObject tile )
+	{
+		List<Transform> respawnLocationList = tile.GetComponent<SegmentInfo>().respawnLocationList;
+		if( respawnLocationList.Count > 0 )
+		{
+			//Select respawn locations that are in front of the player.
+			List<Transform> respawnLocationListInFront = new List<Transform>(respawnLocationList.Count);
+			for( int i = 0; i < respawnLocationList.Count; i++ )
+			{
+				if( getDotProduct( transform, respawnLocationList[i].position ) ) respawnLocationListInFront.Add( respawnLocationList[i] ) ;
+			}
+
+			//If there are no respawn location in front of the player, take the last one in the list which should be the furthest.
+			if( respawnLocationListInFront.Count == 0 )
+			{
+				return respawnLocationList[respawnLocationList.Count-1];
+			}
+			else
+			{
+				//Select the nearest respawn location.
+				float distanceBetweenPlayerAndRespawn = Mathf.Infinity;
+				Transform nearestRespawnLocation = null;
+				for( int i = 0; i < respawnLocationListInFront.Count; i++ )
+				{
+					float distance = Vector3.Distance( transform.position, respawnLocationListInFront[i].position );
+					if( distance < distanceBetweenPlayerAndRespawn )
+					{
+						distanceBetweenPlayerAndRespawn = distance;
+						nearestRespawnLocation = respawnLocationListInFront[i];
+					}
+				}
+				return nearestRespawnLocation;
+			}
+		}
+		else
+		{
+			Debug.LogError("PlayerControl-findNearestRespawnLocation: Tile: " + tile.name + " has no respawn locations. Every tile should have at least one respawn location." );
+			return null;
+		}
+	}
+
+	bool getDotProduct( Transform player, Vector3 respawnLocation )
+	{
+		Vector3 forward = player.TransformDirection(Vector3.forward);
+		Vector3 toOther = respawnLocation - player.position;
+		if (Vector3.Dot(forward, toOther) < 0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
 		}
 	}
 

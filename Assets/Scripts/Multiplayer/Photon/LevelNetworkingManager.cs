@@ -250,7 +250,6 @@ public sealed class LevelNetworkingManager : PunBehaviour
 	#region Power Boost
 	/// <summary>
 	/// Verifies if a power boost is needed. Only called by the MasterClient.
-	/// The power boost activates only once during a race.
 	/// The effect of the power boost is to increase the refill rate of the power bar.
  	/// Power is what is used to play cards during a race. The power bar recharges at a constant rate up to a maximum.
 	/// If a player is losing significantly, his recharge rate will be increased thus allowing him to play more cards, and hopefully get him back into the lead.
@@ -267,10 +266,9 @@ public sealed class LevelNetworkingManager : PunBehaviour
 		for( int i = 0; i < PlayerRace.players.Count; i++ )
 		{
 			PlayerRace pr = PlayerRace.players[i];
-
-			//The emergency power boost only triggers once per player during a race.
-			if( pr.wasPowerBoostUsed ) continue;
 	
+			if( pr.isPowerBoostActivated() ) continue;
+
 			//The emergency power never triggers for a player in first place.
 			if( pr.racePosition == RacePosition.FIRST_PLACE ) continue;
 	
@@ -283,7 +281,6 @@ public sealed class LevelNetworkingManager : PunBehaviour
 				//If the player is behind by more than REQUIRED_POWER_BOOST_DISTANCE meters, activate the power boost.
 				if( distanceDifference > REQUIRED_POWER_BOOST_DISTANCE )
 				{
-					pr.wasPowerBoostUsed = true;
 					pr.GetComponent<PhotonView>().RPC("activatePowerBoostRPC", PhotonTargets.AllViaServer );
 				}
 			}

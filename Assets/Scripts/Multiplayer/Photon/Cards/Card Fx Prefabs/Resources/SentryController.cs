@@ -31,7 +31,7 @@ public class SentryController : CardSpawnedObject {
 
 	//Shooting related
 	float aimSpeed = 7.6f;
-	float weaponCoolDown = 3f;
+	float weaponCoolDown = 3.5f;
 	float timeOfLastShot;
 	float aimRange = 40f;
 	float accuracy = 0.002f;

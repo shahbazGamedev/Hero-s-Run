@@ -20,6 +20,8 @@ public class SegmentInfo : MonoBehaviour {
 	public TileSubType tileSubType = TileSubType.Straight;
 	public Sprite tileSprite;
 	public bool drawBezierGizmo = true;
+	[Tooltip("When the player dies, he will respawn at the nearest location in front of where he died. Respawn locations should be ordered from the closest to the tile's entrance to the furthest. There needs to be at least one respawn location.")]
+	public List<Transform> respawnLocationList = new List<Transform>();
 
 	//Display the bezier curve(s) if any.
 	void OnDrawGizmos ()

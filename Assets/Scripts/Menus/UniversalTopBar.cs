@@ -29,8 +29,6 @@ public class UniversalTopBar : Menu {
 	[Header("Hard Currency")]
 	[SerializeField] TextMeshProUGUI hardCurrencyAmountText;
 
-	int residualXP = 0;
-
 	void Awake ()
 	{
 		Instance = this;
