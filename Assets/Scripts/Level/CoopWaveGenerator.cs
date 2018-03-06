@@ -54,7 +54,7 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 		{
 			if( numberOfWavesTriggered == waveList.Count )
 			{
-				endOfWaves ();
+				photonView.RPC("endOfWavesRPC", PhotonTargets.All );
 			}
 			else
 			{
@@ -63,7 +63,8 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 		}
 	}
 
-	void endOfWaves ()
+	[PunRPC]
+	void endOfWavesRPC ()
 	{
 		HUDMultiplayer.hudMultiplayer.activateUserMessage( "End of Demo", 0, 2.75f );
 
