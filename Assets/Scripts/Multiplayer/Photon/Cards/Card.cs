@@ -105,6 +105,9 @@ public class Card : Photon.PunBehaviour {
 			//Is the player using the Cloak card? If so, ignore.
 			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) continue;
 
+			//Is the player teleporting? If so, ignore.
+			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isBeingTeleported ) continue;
+
 			//Is it the closest player?
 			if( distanceToTarget < nearestDistance )
 			{
@@ -142,6 +145,9 @@ public class Card : Photon.PunBehaviour {
 
 			//Is the player using the Cloak card? If so, ignore.
 			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) continue;
+
+			//Is the player teleporting? If so, ignore.
+			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isBeingTeleported ) continue;
 
 			//If we are using the dot product, make sure that the target is in front.
 			if( useDotProduct && !getDotProduct( playerRace.transform, PlayerRace.players[i].transform.position ) ) continue;
@@ -218,6 +224,9 @@ public class Card : Photon.PunBehaviour {
 
 			//Is the player using the Cloak card? If so, ignore.
 			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) continue;
+
+			//Is the player teleporting? If so, ignore.
+			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isBeingTeleported ) continue;
 
 			//We found at least one target
 			return true;
