@@ -37,6 +37,7 @@ public class PlayerSpell : PunBehaviour {
 	#region Linked Fate spell
 	bool castLinkedFate = false;
 	[SerializeField] AudioClip linkedFateSound;
+	[SerializeField] GameObject linkedFateParticleSystem;
 	#endregion
 
 	#region Sentry spell
@@ -499,7 +500,8 @@ public class PlayerSpell : PunBehaviour {
 			{
 				if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Linked_Fate) && !PlayerRace.players[i].GetComponent<PlayerSpell>().hasCastLinkedFate() )
 				{
-					PlayerRace.players[i].GetComponent<PhotonView>().RPC("playerDiedRPC", PhotonTargets.AllViaServer, DeathType.Obstacle, PlayerRace.players[i].GetComponent<PlayerControl>().currentTile.name );
+					PlayerRace.players[i].GetComponent<PhotonView>().RPC("playerDiedRPC", PhotonTargets.AllViaServer, DeathType.Spell, PlayerRace.players[i].GetComponent<PlayerControl>().currentTile.name ); 
+					GameObject.Instantiate( linkedFateParticleSystem, PlayerRace.players[i].transform.TransformPoint( 0, 1.2f, 0), PlayerRace.players[i].transform.rotation );
 					playerControl.incrementKillCounter();
 					//Reset the color
 					MiniMap.Instance.changeColorOfRadarObject( PlayerRace.players[i].GetComponent<PlayerControl>(), Color.white );

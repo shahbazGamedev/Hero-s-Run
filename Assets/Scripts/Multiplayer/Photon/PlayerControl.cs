@@ -21,7 +21,8 @@ public enum DeathType {
 		FallForward = 14,
 		Turned_Wrong_Way = 15,
 		Exited_Without_Turning = 16,
-		NO_MORE_HEALTH = 17
+		NO_MORE_HEALTH = 17,
+		Spell = 18
 
 }
 
@@ -1745,9 +1746,13 @@ public class PlayerControl : Photon.PunBehaviour {
 				break;
 	                
 	        case DeathType.Obstacle:
-				//Play collision sound
 				playerCamera.Shake();
 				playerVisuals.playImpactVFX(); //The impact VFX has a sound associated with it
+				setAnimationTrigger(FallBackwardTrigger);
+				break;
+
+	        case DeathType.Spell:
+				playerCamera.Shake();
 				setAnimationTrigger(FallBackwardTrigger);
 				break;
 
