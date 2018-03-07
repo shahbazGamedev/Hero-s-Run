@@ -54,29 +54,7 @@ public class CardSaleClient : MonoBehaviour {
 		CardManager.CardData cd = CardManager.Instance.getCardByName( pcd.name );
 		GameObject go = (GameObject)Instantiate(cardOnSalePrefab);
 		go.transform.SetParent(cardSaleHolder,false);
-
-		TextMeshProUGUI[]texts = go.GetComponentsInChildren<TextMeshProUGUI>();
-		//Card name
-		texts[0].text = LocalizationManager.Instance.getText( "CARD_NAME_" + pcd.name.ToString().ToUpper() );
-		//Card rarity
-		texts[1].text = LocalizationManager.Instance.getText( "CARD_RARITY_" + cd.rarity.ToString().ToUpper() );
-		//Listener
-		Button cardButton = go.GetComponent<Button>();
-		cardButton.onClick.RemoveAllListeners();
-		cardButton.onClick.AddListener(() => OnClickCardOnSale( go, pcd, cd ));
-		//Card image and progress bar
-		Transform card = go.transform.Find("Card");
-		card.GetComponent<CardUIDetails>().configureCard( pcd, cd );
-		//Cost
-		Transform costHolder = go.transform.Find("Cost Holder");
-		int costToPurchaseOneCard = 2;
-		costHolder.GetComponentInChildren<TextMeshProUGUI>().text = costToPurchaseOneCard.ToString("N0");
+		go.GetComponent<CardSaleUI>().configureCard( pcd, cd, 40, 400 );
 	}
-
-	public void OnClickCardOnSale( GameObject go, PlayerDeck.PlayerCardData pcd, CardManager.CardData cd )
-	{
-		print("OnClickCardOnSale " + pcd.name );
-	}
-
 	#endregion
 }
