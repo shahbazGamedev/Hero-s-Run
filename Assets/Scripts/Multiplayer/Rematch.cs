@@ -8,6 +8,7 @@ public class Rematch : Photon.PunBehaviour {
 	[SerializeField] Color rematchTextColor;
 	[SerializeField] TextMeshProUGUI rematchText;
 	[SerializeField] TextMeshProUGUI rematchAcceptedCounterText;
+	[SerializeField] Button okayButton;
 	int rematchAcceptedCounter = 0;
 	bool rematchAcceptedLocally = false;
 	string localPlayerName;
@@ -73,8 +74,9 @@ public class Rematch : Photon.PunBehaviour {
 	[PunRPC]
 	void rematchRPC( string roomName )
 	{
-		//Since all players accepted the rematch, disable the button.
+		//Since all players accepted the rematch, disable the buttons.
 		GetComponent<Button>().interactable = false;
+		okayButton.interactable = false;
 
 		//Return to the matchmaking screen but set the game state to Rematch.
 		//The small delay is to give time to the player to notice that the counter has changed value.
