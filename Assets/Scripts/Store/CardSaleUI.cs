@@ -35,9 +35,7 @@ public class CardSaleUI : MonoBehaviour {
 
 	public void OnClickCardOnSale( CardManager.CardData cd, int cardQuantity, int cost )
 	{
-		print("CardSaleUI " + cd.name );
-		bool hasEnoughFunds = true;
-		if( hasEnoughFunds )
+		if( cost <= GameManager.Instance.playerInventory.getCoinBalance() )
 		{
 			progressBar.SetActive( false );
 			purchasedHolder.SetActive( true );
