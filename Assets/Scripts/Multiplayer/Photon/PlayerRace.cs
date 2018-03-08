@@ -25,7 +25,7 @@ public sealed class PlayerRace : Photon.PunBehaviour
 
 	#region Distance
 	//Distance travelled on the current tile. This is used to calculate the distance remaining.
-	public float distanceTravelledOnThisTile = 0;
+	float distanceTravelledOnThisTile = 0;
 	Vector3 previousPlayerPosition = Vector3.zero;
 	public float distanceRemaining; //Used to determine the player's race position. The player with the smallest distance remaining is in the lead.
 	#endregion
@@ -172,7 +172,19 @@ public sealed class PlayerRace : Photon.PunBehaviour
 		distanceTravelledOnThisTile = distanceTravelledOnThisTile + Vector3.Distance( current, previous );
 		previousPlayerPosition = transform.position;
 	}
+
+	public void setDistanceTravelledOnThisTile( float distanceTravelled )
+	{
+		//Important to reset the previous player position when setting the value.
+		previousPlayerPosition = transform.position;
+		distanceTravelledOnThisTile = distanceTravelled;
+	}
 	
+	public float getDistanceTravelledOnThisTile()
+	{
+		return distanceTravelledOnThisTile;
+	}
+
 	#region Power boost
 	[PunRPC]
 	void activatePowerBoostRPC()

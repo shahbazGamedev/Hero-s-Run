@@ -2192,7 +2192,7 @@ public class PlayerControl : Photon.PunBehaviour {
 					//The total distance traveled by the player is equal to the distance traveled for all previous tiles plus the distance traveled on the current tile.
 					//The distance traveled for all previous tiles is maintained by PlayerControl because it gets updated each time an entrance is crossed.
 					//The distance traveled on the current tile is maintained in PlayerRace.
-					playerRace.distanceTravelledOnThisTile = 0;
+					playerRace.setDistanceTravelledOnThisTile( 0 );
 					currentTilePos = si.transform.position;
 					currentTile = si.gameObject;
 					//Every time a new tile is entered, force synchronization.
@@ -2333,7 +2333,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		Transform tileEntrance = currentTile.transform.Find("Entrance");
 		Vector3 tileEntrancePosition = new Vector3( tileEntrance.position.x, 0, tileEntrance.position.z );
 		Vector3 playerPosition = new Vector3( transform.position.x, 0, transform.position.z );
-		playerRace.distanceTravelledOnThisTile = Vector3.Distance( tileEntrancePosition, playerPosition );
+		playerRace.setDistanceTravelledOnThisTile( Vector3.Distance( tileEntrancePosition, playerPosition ) );
 	}
 
 	void OnTriggerStay(Collider other)

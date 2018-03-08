@@ -364,8 +364,8 @@ public sealed class GenerateLevel  : MonoBehaviour {
 		//Adjust the length of the level
 		//When we added the length of the Start tile, we added its full length. However, the player starts in the center of the Start tile. So we added 50 - 25 = 25 meters too much.
 		levelLengthInMeters = levelLengthInMeters - 25f;
-		//When we added the length of the End tile, we added its full length. However, the finish line is located at 28.9 meters. So we added 50 - 28.9 = 21.1 meters too much.
-		levelLengthInMeters = levelLengthInMeters - 21.1f;
+		//When we added the length of the End tile, we added its full length. However, the finish line is located at 28.9 meters. So we added 50 - 29.3 = 20.7 meters too much.
+		levelLengthInMeters = levelLengthInMeters - 20.7f;
 
 		//Some game objects have a random activator component. You need to call this method BEFORE deactivateTiles.
 		enableRandomActivators();
