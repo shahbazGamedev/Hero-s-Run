@@ -272,6 +272,9 @@ public sealed class LevelNetworkingManager : PunBehaviour
 			//The emergency power never triggers for a player in first place.
 			if( pr.racePosition == RacePosition.FIRST_PLACE ) continue;
 	
+			//The emergency power never triggers while a player is being teleported.
+			if( pr.GetComponent<PlayerSpell>().isBeingTeleported ) continue;
+
 			//Find the player who is just ahead of you.
 			PlayerRace playerAhead = PlayerRace.players.Find(a => a.racePosition == pr.racePosition - 1 );
 			if( playerAhead != null )

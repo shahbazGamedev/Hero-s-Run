@@ -45,7 +45,7 @@ public class ForceField : CardSpawnedObject {
 		MiniMap.Instance.registerRadarObject( gameObject, minimapIcon );
 
 		//Position it flush with the ground and try to center it in the middle of the road if possible.
-		positionSpawnedObject();
+		positionSpawnedObject( height * 0.5f );
 
 		//We can now make the force field visible and collidable
 		GetComponent<MeshRenderer>().enabled = true;

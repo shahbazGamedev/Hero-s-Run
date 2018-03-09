@@ -117,11 +117,11 @@ public class PlayerInput : PunBehaviour {
 		}
 		else if ( Input.GetKeyDown (KeyCode.N ) )
 		{
-			playerControl.playOmniToolAnimation( CardName.Linked_Fate );
+			playerControl.playOmniToolAnimation( CardName.Force_Field );
 		}
 		else if ( Input.GetKeyDown (KeyCode.O ) )
 		{
-			playerControl.playOmniToolAnimation( CardName.Quantum_Rift );
+			playerControl.playOmniToolAnimation( CardName.Linked_Fate );
 		}
 		else if ( Input.GetKeyDown (KeyCode.T ) )
 		{

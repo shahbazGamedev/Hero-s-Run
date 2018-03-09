@@ -73,7 +73,7 @@ public class CardSpawnedObject : MonoBehaviour {
 		if ( decalPrefab != null )
 		{		
 			RaycastHit hit;
-			if (Physics.Raycast( decalPosition, Vector3.down, out hit, 10, ~MaskHandler.getMaskWithPlayersWithCreatures() ))
+			if (Physics.Raycast( decalPosition, Vector3.down, out hit, 10, ~MaskHandler.getMaskWithPlayersWithCreaturesWithIgnore() ))
 			{		
 				GameObject decal = GameObject.Instantiate( decalPrefab, decalPosition, decalRotation );
 	  			decal.transform.position = new Vector3( decalPosition.x, hit.point.y + heightOffset, decalPosition.z );
@@ -154,7 +154,7 @@ public class CardSpawnedObject : MonoBehaviour {
 
 		//Are we trying to spawn the object in a dead end?
 		//Important: we need the +6f to start above ground, or else the raycast may start below the road and miss (especially on a slope).
-		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + 6f, transform.position.z ), Vector3.down, out hit, 20f, ~MaskHandler.getMaskWithPlayersWithCreatures() ))
+		if (Physics.Raycast( new Vector3( transform.position.x, transform.position.y + 6f, transform.position.z ), Vector3.down, out hit, 20f, ~MaskHandler.getMaskWithPlayersWithCreaturesWithIgnore() ))
 		{
 			if(  hit.collider.transform.root.GetComponent<SegmentInfo>() != null )
 			{
@@ -210,7 +210,7 @@ public class CardSpawnedObject : MonoBehaviour {
 		int originalLayer = objectToCenter.gameObject.layer;
 		objectToCenter.gameObject.layer = MaskHandler.ignoreRaycastLayer;
 		//Important: we need the +2f to start a bit above ground, or else the raycast may start a tad below the road and miss.
-		if (Physics.Raycast( new Vector3( objectToCenter.position.x, objectToCenter.position.y + 2f, objectToCenter.position.z ), Vector3.down, out hit, 15f, ~MaskHandler.getMaskWithPlayersWithCreatures() ))
+		if (Physics.Raycast( new Vector3( objectToCenter.position.x, objectToCenter.position.y + 2f, objectToCenter.position.z ), Vector3.down, out hit, 15f, ~MaskHandler.getMaskWithPlayersWithCreaturesWithIgnore() ))
 		{
 			if(  hit.collider.transform.root.GetComponent<SegmentInfo>() != null )
 			{

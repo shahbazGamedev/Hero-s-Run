@@ -51,12 +51,10 @@ public sealed class PlayerRace : Photon.PunBehaviour
 	
 	#region Emergency Power Boost
 	//The power boost is activated when a player is losing significantly to give him a chance to get back in the lead.
-	//The power boost activates only once during a race.
 	//The effect of the power boost is to increase the refill rate of the power bar and to increase the player's run speed.
-	//Whether the power boost is active or not.
-	bool isPowerBoostActive = false; //only used by bots
+	bool isPowerBoostActive = false;
 	TurnRibbonHandler turnRibbonHandler;
-	const float POWER_BOOST_DURATION = 19f;
+	const float POWER_BOOST_DURATION = 18f;
 	#endregion
 
 	#regionCached for performance

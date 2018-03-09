@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerDebugConfiguration {
 
 	[SerializeField] CloudRegionCode overrideCloudRegionCode = CloudRegionCode.none;
-	[SerializeField] int overrideMap = 3; //Normal value is -1. For the demo, we will override this value to 3 (which is Hanging Rock).
+	[SerializeField] int overrideMap = -1;
 	[SerializeField] DebugInfoType debugInfoType = DebugInfoType.NONE; //The type of debug information to display on the HUD such as FPS, Latency, etc.
 	[SerializeField] float speedOverrideMultiplier = 1f;
 	[SerializeField] bool allowBotToPlayCards = true;

@@ -1594,7 +1594,6 @@ public class PlayerControl : Photon.PunBehaviour {
 		//So for old skins, directly call OmniTool_completed.
 		if( hasOmniToolAnimation )
 		{
-			print("playOmniToolAnimation for " + name + " Card " + cardName );
 			//Store this value. We will use it when the OmniTool animation completes.
 			activeCardName = cardName;
 			setAnimationTrigger( OmniToolTrigger );
@@ -1608,7 +1607,6 @@ public class PlayerControl : Photon.PunBehaviour {
 
 	public void OmniTool_completed ( AnimationEvent eve )
 	{
-		print("OmniTool_completed-playing card: " + activeCardName + " for " + name );
 		if( playerAI == null )
 		{
 			turnRibbonHandler.activateCard( activeCardName );

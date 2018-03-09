@@ -14,6 +14,7 @@ public class MaskHandler : MonoBehaviour {
 	static int maskAll;
 	static int maskAllExceptDevices;
 	static int maskWithPlayersWithCreatures;
+	static int maskWithPlayersWithCreaturesWithIgnore;
 	static int maskAllExceptPlayers;
 	static int maskMovableAndLevelDestructible;
 
@@ -38,6 +39,10 @@ public class MaskHandler : MonoBehaviour {
 
 		maskWithPlayersWithCreatures = 1 << playerLayer;
 		maskWithPlayersWithCreatures |= 1 << creatureLayer;
+
+		maskWithPlayersWithCreaturesWithIgnore = 1 << playerLayer;
+		maskWithPlayersWithCreaturesWithIgnore |= 1 << creatureLayer;
+		maskWithPlayersWithCreaturesWithIgnore |= 1 << ignoreRaycastLayer;
 
 		maskAllExceptPlayers = 1 << creatureLayer;
 		maskAllExceptPlayers |= 1 << destructibleLayer;
@@ -65,6 +70,11 @@ public class MaskHandler : MonoBehaviour {
 	public static int getMaskWithPlayersWithCreatures()
 	{
 		return maskWithPlayersWithCreatures;
+	}
+
+	public static int getMaskWithPlayersWithCreaturesWithIgnore()
+	{
+		return maskWithPlayersWithCreaturesWithIgnore;
 	}
 
 	public static int getMaskAllExceptPlayers()
