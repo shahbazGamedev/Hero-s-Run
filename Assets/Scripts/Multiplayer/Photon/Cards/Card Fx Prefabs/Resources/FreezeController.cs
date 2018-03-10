@@ -285,7 +285,7 @@ public class FreezeController : CardSpawnedObject {
 	
 			affectedPlayerControl.enablePlayerMovement( true );
 			affectedPlayerControl.enablePlayerControl( true );
-			affectedTargetTransform.GetComponent<PlayerSpell>().cardDurationExpired(CardName.Freeze);
+			affectedTargetTransform.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Freeze, true );
 		}
 		else if( affectedTargetTransform.gameObject.CompareTag( "Zombie" ) )
 		{

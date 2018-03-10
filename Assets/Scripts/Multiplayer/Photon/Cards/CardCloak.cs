@@ -50,7 +50,7 @@ public class CardCloak : Card {
 
 		MiniMap.Instance.changeAlphaOfRadarObject( playerRun.GetComponent<PlayerControl>(), 1f );
 		if( !isMine || !isHuman )  playerRun.GetComponent<PlayerSpell>().makePlayerVisible();
-		playerRun.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Cloak);
+		playerRun.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Cloak, false );
 	}
 	
 }

@@ -147,7 +147,9 @@ public sealed class LevelNetworkingManager : PunBehaviour
 
 	public override void OnPhotonPlayerDisconnected( PhotonPlayer other  )
 	{
+		if( GameManager.Instance.isCoopPlayMode() ) return;
 		Debug.Log( "LevelNetworkingManager: OnPhotonPlayerDisconnected() " + other.NickName ); // seen when other disconnects
+
 		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.NOT_STARTED )
 		{
 			//The race has not started yet, send everyone back to the matchmaking screen.

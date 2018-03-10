@@ -116,11 +116,14 @@ public class PlayerSpell : PunBehaviour {
 	/// <summary>
 	/// Call this function when a card duration has expired normally and the card should be removed from the activeCardList.
 	/// Note: use a cancel function if you need to stop an active card before expiry.
+	/// The associated card timer on the HUD will also be removed.
 	/// </summary>
 	/// <param name="name">Name.</param>
-	public void cardDurationExpired( CardName name )
+	public void cardDurationExpired( CardName name, bool playedByOpponent )
 	{
 		removeActiveCard( name );
+		//The cancel event will remove the timer from the HUD.
+		sendCancelCardEvent( name, playedByOpponent );
 	}
 
 	#region Shrink spell
@@ -174,7 +177,7 @@ public class PlayerSpell : PunBehaviour {
 		} while ( elapsedTime < shrinkDuration );
 		transform.localScale = endScale;	
 		playerVoiceOvers.resetPitch();
-		cardDurationExpired( CardName.Shrink );
+		cardDurationExpired( CardName.Shrink, true );
 	}
 
 	public void cancelShrinkSpell()

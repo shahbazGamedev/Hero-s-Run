@@ -2273,7 +2273,7 @@ public class PlayerControl : Photon.PunBehaviour {
 		//Also, the player can jump quite high with double jump, so let's make sure our raycast is long enough to hit the ground.
 		//Ignore Players when raycasting as well as triggers.
 		RaycastHit hit;
-		if (Physics.Raycast( new Vector3( newPosition.x, newPosition.y + 2f, newPosition.z ), Vector3.down, out hit, 50f, ~(1 << MaskHandler.playerLayer ), QueryTriggerInteraction.Ignore ) )
+		if (Physics.Raycast( new Vector3( newPosition.x, newPosition.y + 2f, newPosition.z ), Vector3.down, out hit, 50f, ~MaskHandler.getMaskWithPlayersWithCreaturesWithIgnore() ) )
 		{
 			GameObject objectUnderRaycast = hit.collider.transform.root.gameObject;
 
@@ -2286,7 +2286,7 @@ public class PlayerControl : Photon.PunBehaviour {
 			{
 				//The object that the raycast hit is not a tile.
 				//Let's start another raycast but this time starting from the hit object. Hopefully, we will hit the tile underneath.
-				if (Physics.Raycast( new Vector3( objectUnderRaycast.transform.position.x, objectUnderRaycast.transform.position.y + 0.05f, objectUnderRaycast.transform.position.z ), Vector3.down, out hit, 50f, ~(1 << MaskHandler.playerLayer ), QueryTriggerInteraction.Ignore ) )
+				if (Physics.Raycast( new Vector3( objectUnderRaycast.transform.position.x, objectUnderRaycast.transform.position.y + 0.05f, objectUnderRaycast.transform.position.z ), Vector3.down, out hit, 50f, ~MaskHandler.getMaskWithPlayersWithCreaturesWithIgnore() ) )
 				{
 					GameObject objectUnderSecondRaycast = hit.collider.transform.root.gameObject;
 		

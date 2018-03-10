@@ -74,6 +74,20 @@ public class LevelManager {
 			return null;
 		}
 	}
+
+	public PlayerMatchData getPartnerMatchDataByName( string localPlayerName )
+	{
+		PlayerMatchData pmd = playerMatchDataList.Find(data => data.playerName != localPlayerName);
+		if( pmd != null )
+		{
+			return pmd;
+		}
+		else
+		{
+			Debug.LogError("LevelManager-getPartnerMatchDataByName: Could not find match data for " + localPlayerName + "'s partner." );
+			return null;
+		}
+	}
 	#endregion
 
 

@@ -47,32 +47,34 @@ public class CoopResultsHandler : ResultsHandler {
 		int waveBonus = wavesBeaten * CoopWaveGenerator.XP_EARNED_PER_WAVE;
 
 		#region Partner area
-		PlayerRace partner = getOtherPlayer( localPlayerRace );
-		PlayerMatchData pmd = LevelManager.Instance.getPlayerMatchDataByName( partner.name );
-		Sprite opponentIconSprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( pmd.playerIcon ).icon;
+		PlayerMatchData partner_pmd = LevelManager.Instance.getPartnerMatchDataByName( localPlayerRace.name ) ;
+		Sprite opponentIconSprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( partner_pmd.playerIcon ).icon;
 		iconPartner.sprite = opponentIconSprite;
-		namePartner.text = partner.name;
-		emoteGameObjectPartner.name = partner.name;
+		namePartner.text = partner_pmd.playerName;
+		emoteGameObjectPartner.name = partner_pmd.playerName;
 		emotesList.Add( emoteGameObjectPartner );
 		//The score is the sum of the score bonus and the wave bonus.
-		scorePartner.text = ( pmd.score + waveBonus ).ToString("N0");
+		scorePartner.text = ( partner_pmd.score + waveBonus ).ToString("N0");
 		#endregion
 
 		#region Player area
-		pmd = LevelManager.Instance.getPlayerMatchDataByName( localPlayerRace.name );
-		Sprite playerIconSprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( pmd.playerIcon ).icon;
+		PlayerMatchData local_player_pmd = LevelManager.Instance.getPlayerMatchDataByName( localPlayerRace.name );
+		Sprite playerIconSprite = ProgressionManager.Instance.getPlayerIconSpriteByUniqueId( local_player_pmd.playerIcon ).icon;
 		iconPlayer.sprite = playerIconSprite;
 		namePlayer.text = localPlayerRace.name;
 		emoteGameObjectPlayer.name = localPlayerRace.name;
 		emotesList.Add( emoteGameObjectPlayer );
 		//The score is the sum of the score bonus and the wave bonus.
-		scorePlayer.text = ( pmd.score + waveBonus ).ToString("N0");
+		scorePlayer.text = ( local_player_pmd.score + waveBonus ).ToString("N0");
 		#endregion
 		
 		#region Reward boxes
+		//Allow the players to stay as a team but only if the other player is still connected.
+		bool stayAsTeamEnabled = getOtherPlayer( localPlayerRace ) != null;
+
 		if( GameManager.Instance.getPlayMode() == PlayMode.PlayCoopWithOnePlayer )
 		{
-			grantCoopRewards( wavesBeaten, localPlayerRace.name, partner.name );
+			grantCoopRewards( wavesBeaten, local_player_pmd.playerName, partner_pmd.playerName, stayAsTeamEnabled );
 		}
 		else if( GameManager.Instance.getPlayMode() == PlayMode.PlayCoopWithOneBot )
 		{
@@ -80,7 +82,7 @@ public class CoopResultsHandler : ResultsHandler {
 			{
 				//PlayCoopWithOneBot is a mode that only exists for testing purposes.
 				//Grant the same rewards as for PlayCoopWithOnePlayer if it is a debug build.
-				grantCoopRewards( wavesBeaten, localPlayerRace.name, partner.name );
+				grantCoopRewards( wavesBeaten, local_player_pmd.playerName, partner_pmd.playerName, stayAsTeamEnabled );
 			}
 		}
 		#endregion
@@ -90,7 +92,7 @@ public class CoopResultsHandler : ResultsHandler {
 		okayButton.onClick.AddListener(() => this.OnClickOkay() );
 	}
 
-	private void grantCoopRewards( int wavesBeaten, string localPlayerName, string partnerName )
+	private void grantCoopRewards( int wavesBeaten, string localPlayerName, string partnerName, bool stayAsTeamEnabled )
 	{
 		//Loot Box.
 		//You do not get a loot box in coop.
@@ -105,8 +107,7 @@ public class CoopResultsHandler : ResultsHandler {
 		displayXP();	  		
 
 		//Stay as team
-		//Allow the players to stay as a team.
-		displayStayAsTeam( localPlayerName, partnerName );
+		if( stayAsTeamEnabled ) displayStayAsTeam( localPlayerName, partnerName );
 
 		//Save the rewards
 		saveRewards();	

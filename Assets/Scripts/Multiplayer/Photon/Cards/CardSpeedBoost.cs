@@ -53,7 +53,7 @@ public class CardSpeedBoost : Card {
 		if( isMine ) Camera.main.GetComponent<MotionBlur>().enabled = false;
 		playerRun.GetComponent<PlayerSounds>().stopAudioSource();
 		StartCoroutine( playerRun.removeVariableSpeedMultiplier( SpeedMultiplierType.Raging_Bull, 0.5f ) );
-		playerRun.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Raging_Bull );
+		playerRun.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Raging_Bull, false );
 		playerRun.GetComponent<PlayerSpell>().isRagingBullActive = false;
 	}
 

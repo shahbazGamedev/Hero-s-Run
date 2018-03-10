@@ -239,6 +239,21 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 		return player;
 	}
 
+	PlayerControl getPlayerWhoRemains( string nameOfPlayerWhoLeft )
+	{
+		PlayerControl player = null;
+		for( int i = 0; i < PlayerRace.players.Count; i ++ )
+		{
+			if( PlayerRace.players[i].name != nameOfPlayerWhoLeft )
+			{
+				//We found the player
+				player = PlayerRace.players[i].GetComponent<PlayerControl>();
+				break;
+			}
+		}
+		return player;
+	}
+
 	public void removeDeadPlayer( Transform player )
 	{
 		if( PhotonNetwork.isMasterClient )
@@ -269,6 +284,51 @@ public sealed class CoopWaveGenerator : PunBehaviour {
 		HUDMultiplayer.hudMultiplayer.leaveRoomShortly();
 		//Display the results screen (player details, score, rounds survived, etc.).
 		StartCoroutine( HUDMultiplayer.hudMultiplayer.displayCoopResultsAndEmotesScreen( 0.25f ) );
+	}
+
+	/// <summary>
+	/// Called when a remote player left the room. This PhotonPlayer is already removed from the playerlist at this time.
+	/// If the remaining player is alive, he can continue the match. However, if the remaining player is dead, it's game over.
+	/// </summary>
+	/// <remarks>When your client calls PhotonNetwork.leaveRoom, PUN will call this method on the remaining clients.
+	/// When a remote client drops connection or gets closed, this callback gets executed. after a timeout
+	/// of several seconds.</remarks>
+	/// <param name="other">Other.</param>
+	public override void OnPhotonPlayerDisconnected( PhotonPlayer other  )
+	{
+		if( !GameManager.Instance.isCoopPlayMode() ) return;
+
+		Debug.Log( "CoopWaveGenerator- OnPhotonPlayerDisconnected: " + other.NickName + " left the match. isMaster: " + PhotonNetwork.isMasterClient + " Race Status: " + PlayerRaceManager.Instance.getRaceStatus() );
+
+		if( PlayerRaceManager.Instance.getRaceStatus() == RaceStatus.IN_PROGRESS )
+		{
+			PlayerControl playerWhoRemains = getPlayerWhoRemains( other.NickName );
+			Debug.Log( "CoopWaveGenerator- OnPhotonPlayerDisconnected: Player who remains character state: " + playerWhoRemains.name + " " + playerWhoRemains.getCharacterState() );
+
+			//The match is in progress, display a message.
+			//If the match is completed, we do not show any message as it is not useful to the other player.
+			string leftTheRace = LocalizationManager.Instance.getText("MULTI_LEFT_THE_RACE");
+			HUDMultiplayer.hudMultiplayer.activateUserMessage( string.Format( leftTheRace, other.NickName ), 0, 2f );
+
+			if( PhotonNetwork.isMasterClient )
+			{
+				if( playerWhoRemains.getCharacterState() == PlayerCharacterState.Dying )
+				{
+					Debug.Log( "CoopWaveGenerator- OnPhotonPlayerDisconnected: Player who remains is dead: " + playerWhoRemains.name );
+					PlayerRaceManager.Instance.setRaceStatus( RaceStatus.COMPLETED );
+
+					//There is only one player left and he is dead. This means game over. Send an RPC.
+					//Give a few seconds for the player to read the HUD message before calling game over.
+					StartCoroutine( gameOverBecausePlayerLeft( 3f ) );
+				}
+			}
+		}
+	}
+
+	IEnumerator gameOverBecausePlayerLeft( float waitTime )
+	{
+		yield return new WaitForSeconds( waitTime );
+		photonView.RPC("coopGameOverRPC", PhotonTargets.All );
 	}
 	#endregion
 }

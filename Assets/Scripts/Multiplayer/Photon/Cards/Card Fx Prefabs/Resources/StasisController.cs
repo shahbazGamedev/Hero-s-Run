@@ -193,7 +193,7 @@ public class StasisController : CardSpawnedObject {
 		affectedPlayerControl.fall();
 		affectedPlayerControl.enablePlayerMovement( true );
 		affectedPlayerControl.enablePlayerControl( true );
-		affectedPlayerTransform.GetComponent<PlayerSpell>().cardDurationExpired(CardName.Stasis);
+		affectedPlayerTransform.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Stasis, true );
 		Destroy( gameObject );
 	}
 

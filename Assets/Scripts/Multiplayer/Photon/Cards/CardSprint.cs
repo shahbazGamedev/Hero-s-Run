@@ -47,7 +47,7 @@ public class CardSprint : Card {
 		yield return new WaitForSeconds( spellDuration );
 		playerRun.GetComponent<PlayerSounds>().stopAudioSource();
 		StartCoroutine( playerRun.removeVariableSpeedMultiplier( SpeedMultiplierType.Sprint, 0.5f ) );
-		playerRun.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Sprint );
+		playerRun.GetComponent<PlayerSpell>().cardDurationExpired( CardName.Sprint, false );
 	}
 
 }
