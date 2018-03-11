@@ -52,7 +52,7 @@ public class CardHack : Card {
 			{
 				if( PlayerRace.players[i].name != playerTransform.name )
 				{
-					if( !isPlayerImmune( PlayerRace.players[i].transform  ) )
+					if( TargetManager.Instance.isPlayerValidTarget( PlayerRace.players[i].transform, false, true, false  ) )
 					{
 						if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive( CardName.Reflect) )
 						{

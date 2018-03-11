@@ -49,33 +49,6 @@ public class Card : Photon.PunBehaviour {
 			return spawnOffset;
 		}
 	}
-
-
-	/// <summary>
-	/// Returns true if the player is immune to spells.
-	/// A player is immune when in the Idle or Dying state.
-	/// Having the Cloak card active also makes the player immune.
-	/// </summary>
-	/// <returns><c>true</c>, if the player is immune, <c>false</c> otherwise.</returns>
-	/// <param name="player">Player.</param>
-	protected bool isPlayerImmune( Transform player  )
-	{
-		if( player.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Idle && player.GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Dying )
-		{
-			if( player.GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) )
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
-			return true;
-		}
-	}
 	
 	/// <summary>
 	/// Returns the transform of the nearest player within spell range.
@@ -99,14 +72,8 @@ public class Card : Photon.PunBehaviour {
 			//Is this player within spell range?
 			if( distanceToTarget > spellRange ) continue;
 
-			//Is the player dead or Idle? If so, ignore.
-			if( PlayerRace.players[i].GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
-
-			//Is the player using the Cloak card? If so, ignore.
-			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) continue;
-
-			//Is the player teleporting? If so, ignore.
-			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isBeingTeleported ) continue;
+			//Is the player a valid target?
+			if( !TargetManager.Instance.isPlayerValidTarget( PlayerRace.players[i].transform ) ) continue;
 
 			//Is it the closest player?
 			if( distanceToTarget < nearestDistance )
@@ -140,14 +107,8 @@ public class Card : Photon.PunBehaviour {
 			//Is this player within range?
 			if( sqrMagnitude > sqrRange ) continue;
 
-			//Is the player dead or Idle or Ziplining? If so, ignore.
-			if( PlayerRace.players[i].GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Ziplining ) continue;
-
-			//Is the player using the Cloak card? If so, ignore.
-			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) continue;
-
-			//Is the player teleporting? If so, ignore.
-			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isBeingTeleported ) continue;
+			//Is the player a valid target?
+			if( !TargetManager.Instance.isPlayerValidTarget( PlayerRace.players[i].transform ) ) continue;
 
 			//If we are using the dot product, make sure that the target is in front.
 			if( useDotProduct && !getDotProduct( playerRace.transform, PlayerRace.players[i].transform.position ) ) continue;
@@ -219,14 +180,8 @@ public class Card : Photon.PunBehaviour {
 			//Is this player within aiming range?
 			if( distanceToTarget > aimRange ) continue;
 
-			//Is the player dead or Idle? If so, ignore.
-			if( PlayerRace.players[i].GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle ) continue;
-
-			//Is the player using the Cloak card? If so, ignore.
-			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) continue;
-
-			//Is the player teleporting? If so, ignore.
-			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isBeingTeleported ) continue;
+			//Is the player a valid target?
+			if( !TargetManager.Instance.isPlayerValidTarget( PlayerRace.players[i].transform ) ) continue;
 
 			//We found at least one target
 			return true;
@@ -309,7 +264,7 @@ public class Card : Photon.PunBehaviour {
 		for( int i =0; i < hitColliders.Length; i++ )
 		{
 			//Is the target valid?
-			if( !isTargetValid( caster, hitColliders[i].transform ) ) continue;
+			if( !TargetManager.Instance.isCreatureTargetValid( caster, hitColliders[i].transform ) ) continue;
 
 			creature = hitColliders[i].GetComponent<ICreature>();
 			creatures.Add( creature );
@@ -326,7 +281,7 @@ public class Card : Photon.PunBehaviour {
 		for( int i =0; i < hitColliders.Length; i++ )
 		{
 			//Is the target valid?
-			if( !isTargetValid( caster, hitColliders[i].transform ) ) continue;
+			if( !TargetManager.Instance.isCreatureTargetValid( caster, hitColliders[i].transform ) ) continue;
 
 			creature = hitColliders[i].transform;
 			creatures.Add( creature );
@@ -358,7 +313,7 @@ public class Card : Photon.PunBehaviour {
 		for( int i =0; i < hitColliders.Length; i++ )
 		{
 			//Is the target valid?
-			if( !isTargetValid( caster, hitColliders[i].transform ) ) continue;
+			if( !TargetManager.Instance.isCreatureTargetValid( caster, hitColliders[i].transform ) ) continue;
 
 			//Calculate the distance between this object and the potential target.
 			float distanceToTarget = Vector3.Distance( transform.position, hitColliders[i].transform.position );
@@ -375,25 +330,6 @@ public class Card : Photon.PunBehaviour {
 		return nearestTarget;
 	}
 	#endregion
-
-	bool isTargetValid( Transform caster, Transform target )
-	{
-		bool valid = false;
-   		switch (target.gameObject.layer)
-		{
-	        case MaskHandler.creatureLayer:
-				ICreature creatureController = target.GetComponent<ICreature>();
-				if( creatureController != null && creatureController.getCreatureState() != CreatureState.Dying && creatureController.getCreatureState() != CreatureState.Immobilized )
-				{
-					valid = true;
-				}
-				valid = valid && getDotProduct( caster, target );
-
-                break;
-		}
-		//if( valid ) Debug.Log("isTargetValid " + target.name );
-		return valid;
-	}
 
 	/// <summary>
 	/// Returns true if the target is in front of the caster, false otherwise.

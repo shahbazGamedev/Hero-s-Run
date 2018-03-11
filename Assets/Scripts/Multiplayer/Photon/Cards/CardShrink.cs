@@ -57,8 +57,7 @@ public class CardShrink : Card {
 			{
 				if( PlayerRace.players[i].name != playerTransform.name )
 				{
-					//You can't shrink a player who is ziplining because it causes too many bugs
-					if( !isPlayerImmune( PlayerRace.players[i].transform ) && PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() != PlayerCharacterState.Ziplining )
+					if( TargetManager.Instance.isPlayerValidTarget( PlayerRace.players[i].transform, true, true, false ) )
 					{
 						if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive( CardName.Reflect) )
 						{
