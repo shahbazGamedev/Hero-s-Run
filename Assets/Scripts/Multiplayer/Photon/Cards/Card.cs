@@ -264,7 +264,7 @@ public class Card : Photon.PunBehaviour {
 		for( int i =0; i < hitColliders.Length; i++ )
 		{
 			//Is the target valid?
-			if( !TargetManager.Instance.isCreatureTargetValid( caster, hitColliders[i].transform ) ) continue;
+			if( !TargetManager.Instance.isCreatureTargetValid( hitColliders[i].transform, true, caster ) ) continue;
 
 			creature = hitColliders[i].GetComponent<ICreature>();
 			creatures.Add( creature );
@@ -281,7 +281,7 @@ public class Card : Photon.PunBehaviour {
 		for( int i =0; i < hitColliders.Length; i++ )
 		{
 			//Is the target valid?
-			if( !TargetManager.Instance.isCreatureTargetValid( caster, hitColliders[i].transform ) ) continue;
+			if( !TargetManager.Instance.isCreatureTargetValid( hitColliders[i].transform, true, caster ) ) continue;
 
 			creature = hitColliders[i].transform;
 			creatures.Add( creature );
@@ -313,7 +313,7 @@ public class Card : Photon.PunBehaviour {
 		for( int i =0; i < hitColliders.Length; i++ )
 		{
 			//Is the target valid?
-			if( !TargetManager.Instance.isCreatureTargetValid( caster, hitColliders[i].transform ) ) continue;
+			if( !TargetManager.Instance.isCreatureTargetValid( hitColliders[i].transform, true, caster ) ) continue;
 
 			//Calculate the distance between this object and the potential target.
 			float distanceToTarget = Vector3.Distance( transform.position, hitColliders[i].transform.position );

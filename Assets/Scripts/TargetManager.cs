@@ -23,6 +23,9 @@ public class TargetManager : MonoBehaviour {
 	/// </summary>
 	/// <returns><c>true</c>, if the player is a valid target, <c>false</c> otherwise.</returns>
 	/// <param name="player">Player.</param>
+	/// <param name="testForZiplining">If set to <c>true</c> test for ziplining.</param>
+	/// <param name="testForCloak">If set to <c>true</c> test for cloak.</param>
+	/// <param name="testForTeleporting">If set to <c>true</c> test for teleporting.</param>
 	public bool isPlayerValidTarget( Transform player, bool testForZiplining = true, bool testForCloak = true, bool testForTeleporting = true )
 	{
 		bool isValid = true;
@@ -55,23 +58,63 @@ public class TargetManager : MonoBehaviour {
 	/// It is in front of the caster.
 	/// </summary>
 	/// <returns><c>true</c>, if the creature is a valid target, <c>false</c> otherwise.</returns>
-	/// <param name="caster">Caster.</param>
 	/// <param name="creature">Creature.</param>
-	public bool isCreatureTargetValid( Transform caster, Transform creature )
+	/// <param name="useDotProduct">If set to <c>true</c> use dot product.</param>
+	/// <param name="caster">Caster.</param>
+	public bool isCreatureTargetValid( Transform creature, bool useDotProduct = true, Transform caster = null )
 	{
 		bool isValid = false;
 		ICreature creatureController = creature.GetComponent<ICreature>();
 		if( creatureController != null && creatureController.getCreatureState() != CreatureState.Dying && creatureController.getCreatureState() != CreatureState.Immobilized )
 		{
 			isValid = true;
+			if( useDotProduct ) isValid = isValid && getDotProduct( caster, creature );
 		}
-		isValid = isValid && getDotProduct( caster, creature );
 		return isValid;
 	}
 	#endregion
 
 
 	#region Shared
+	public bool isGeneralTargetValid( Transform potentialTarget, Transform caster )
+	{
+		bool valid = false;
+   		switch (potentialTarget.gameObject.layer)
+		{
+	        case MaskHandler.playerLayer:
+				valid = isPlayerValidTarget( potentialTarget );
+				valid = valid && caster.name != potentialTarget.name;
+				valid = valid && !GameManager.Instance.isCoopPlayMode();
+				break;
+	                
+	        case MaskHandler.deviceLayer:
+				//A device is a valid target if:
+				//The device is not in the Broken state.
+				//Additional we want to only destroy devices that are behind the player.
+				//For example: We don't want to destroy the jump pad in front of us which we'll most likely want to use.
+				//We do however want to destroy the jump pad if it is behind us to prevent others players from using it.
+				Device dev = potentialTarget.GetComponent<Device>();
+				valid = dev.state != DeviceState.Broken;
+				valid = valid && !getDotProduct( caster, potentialTarget );
+                break;
+
+	        case MaskHandler.destructibleLayer:
+				//A destructible object is a valid target if:
+				//The destructible object is in the Functioning state.
+				//You do not own the target. For example, if you create an Ice Wall, you don't want your Sentry to destroy it.
+				CardSpawnedObject cso = potentialTarget.GetComponent<CardSpawnedObject>();
+				valid = cso.spawnedObjectState == SpawnedObjectState.Functioning;
+				valid = valid && caster.name != cso.getCasterName();
+                break;
+
+	        case MaskHandler.creatureLayer:
+				valid = isCreatureTargetValid( potentialTarget, false );
+                break;
+		}
+		//if( valid ) Debug.Log("isTargetValid " + potentialTarget.name );
+		return valid;
+	}
+
 	/// <summary>
 	/// Returns true if the target is in front of the caster, false otherwise.
 	/// </summary>

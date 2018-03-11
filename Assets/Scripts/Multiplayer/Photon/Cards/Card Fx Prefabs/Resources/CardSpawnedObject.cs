@@ -44,7 +44,7 @@ public class CardSpawnedObject : MonoBehaviour {
 		this.casterName = casterName;
 	}
 
-	protected string getCasterName()
+	public string getCasterName()
 	{
 		return casterName;
 	}
@@ -245,7 +245,7 @@ public class CardSpawnedObject : MonoBehaviour {
 		for( int i =0; i < hitColliders.Length; i++ )
 		{
 			//Is the target valid?
-			if( !isTargetValid( hitColliders[i].transform ) ) continue;
+			if( !TargetManager.Instance.isGeneralTargetValid( hitColliders[i].transform, casterTransform ) ) continue;
 
 			if( useDotProduct && !getDotProduct( hitColliders[i].transform.position ) ) continue;
 
@@ -262,57 +262,6 @@ public class CardSpawnedObject : MonoBehaviour {
 		return nearestTarget;
 	}
 
-	bool isTargetValid( Transform potentialTarget )
-	{
-		bool valid = false;
-   		switch (potentialTarget.gameObject.layer)
-		{
-	        case MaskHandler.playerLayer:
-				PlayerControl pc = potentialTarget.GetComponent<PlayerControl>();
-				//A player is a valid target if:
-				//He is alive.
-				//He is not in the Idle state. The player is in the Idle state once the race finishes for example.
-				//It is not yourself.
-				//The player is not cloaked.
-				//The game mode is not Coop.
-				valid = pc.deathType == DeathType.Alive;
- 				valid = valid && pc.getCharacterState() != PlayerCharacterState.Idle;
-				valid = valid && casterName != potentialTarget.name;
-				valid = valid && !pc.GetComponent<PlayerSpell>().isCardActive(CardName.Cloak);
-				valid = valid && !GameManager.Instance.isCoopPlayMode();
-				break;
-	                
-	        case MaskHandler.deviceLayer:
-				//A device is a valid target if:
-				//The device is not in the Broken state.
-				//Additional we want to only destroy devices that are behind the player.
-				//For example: We don't want to destroy the jump pad in front of us which we'll most likely want to use.
-				//We do however want to destroy the jump pad if it is behind us to prevent others players from using it.
-				Device dev = potentialTarget.GetComponent<Device>();
-				valid = dev.state != DeviceState.Broken;
-				valid = valid && !getDotProduct( potentialTarget.position );
-                break;
-
-	        case MaskHandler.destructibleLayer:
-				//A destructible object is a valid target if:
-				//The destructible object is in the Functioning state.
-				//You do not own the target. For example, if you create an Ice Wall, you don't want your Sentry to destroy it.
-				CardSpawnedObject cso = potentialTarget.GetComponent<CardSpawnedObject>();
-				valid = cso.spawnedObjectState == SpawnedObjectState.Functioning;
-				valid = valid && casterName != cso.getCasterName();
-                break;
-
-	        case MaskHandler.creatureLayer:
-				ICreature creatureController = potentialTarget.GetComponent<ICreature>();
-				if( creatureController != null && creatureController.getCreatureState() != CreatureState.Dying && creatureController.getCreatureState() != CreatureState.Immobilized )
-				{
-					valid = true;
-				}
-                break;
-		}
-		//if( valid ) Debug.Log("isTargetValid " + potentialTarget.name );
-		return valid;
-	}
 
 	/// <summary>
 	/// Gets the dot product.
@@ -375,7 +324,7 @@ public class CardSpawnedObject : MonoBehaviour {
 
 		for( int i = 0; i < hitColliders.Length; i++ )
 		{
-			if( isTargetValid( hitColliders[i].transform ) )
+			if( TargetManager.Instance.isGeneralTargetValid( hitColliders[i].transform, casterTransform ) )
 			{
 				bool isPlayerOrCreature = destroyValidTarget( hitColliders[i].transform, blastRadius, caster );
 				if( isPlayerOrCreature ) numberOfBlastVictims++;
