@@ -59,27 +59,27 @@ public class Card : Photon.PunBehaviour {
 	protected Transform detectNearestTarget( PlayerRace playerRace, float spellRange )
 	{
 		Transform nearestTarget = null;
-		float nearestDistance = 100000;
+		float nearestSqrDistance = Mathf.Infinity;
 		//Keep nearest target only
 		for( int i =0; i < PlayerRace.players.Count; i++ )
 		{
 			//Ignore the caster
 			if( PlayerRace.players[i] == playerRace ) continue;
 
-			//Calculate the distance to the other player
-			float distanceToTarget = Vector3.Distance( playerRace.transform.position, PlayerRace.players[i].transform.position );
+			//Calculate the square magnitude to the other player
+			float sqrMagnitude = Vector3.SqrMagnitude( playerRace.transform.position - PlayerRace.players[i].transform.position );
 
 			//Is this player within spell range?
-			if( distanceToTarget > spellRange ) continue;
+			if( sqrMagnitude > ( spellRange * spellRange ) ) continue;
 
 			//Is the player a valid target?
 			if( !TargetManager.Instance.isPlayerValidTarget( PlayerRace.players[i].transform ) ) continue;
 
 			//Is it the closest player?
-			if( distanceToTarget < nearestDistance )
+			if( sqrMagnitude < nearestSqrDistance )
 			{
 				nearestTarget = PlayerRace.players[i].transform;
-				nearestDistance = distanceToTarget;
+				nearestSqrDistance = sqrMagnitude;
 			}
 		}
 		return nearestTarget;
@@ -174,11 +174,11 @@ public class Card : Photon.PunBehaviour {
 			//Ignore the potential sentry owner
 			if( PlayerRace.players[i] == playerRace ) continue;
 
-			//Calculate the distance to the other player
-			float distanceToTarget = Vector3.Distance( playerRace.transform.position, PlayerRace.players[i].transform.position );
+			//Calculate the square magnitude to the other player
+			float sqrMagnitude = Vector3.SqrMagnitude( playerRace.transform.position - PlayerRace.players[i].transform.position );
 
 			//Is this player within aiming range?
-			if( distanceToTarget > aimRange ) continue;
+			if( sqrMagnitude > ( aimRange * aimRange ) ) continue;
 
 			//Is the player a valid target?
 			if( !TargetManager.Instance.isPlayerValidTarget( PlayerRace.players[i].transform ) ) continue;
