@@ -208,11 +208,7 @@ public class TurnRibbonHandler : MonoBehaviour {
 			//Is this player within range?
 			if( sqrMagnitude > sqrRange ) continue;
 
-			//Is the player dead or Idle or Ziplining? If so, ignore.
-			if( PlayerRace.players[i].GetComponent<PlayerControl>().deathType != DeathType.Alive || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Idle || PlayerRace.players[i].GetComponent<PlayerControl>().getCharacterState() == PlayerCharacterState.Ziplining ) continue;
-
-			//Is the player using the Cloak card? If so, ignore.
-			if( PlayerRace.players[i].GetComponent<PlayerSpell>().isCardActive(CardName.Cloak) ) continue;
+			if( !TargetManager.Instance.isPlayerValidTarget( PlayerRace.players[i].transform ) ) continue;
 
 			//If we are using the dot product, make sure that the target is in front.
 			if( useDotProduct && !getDotProduct( playerRace.transform, PlayerRace.players[i].transform.position ) ) continue;

@@ -76,6 +76,13 @@ public class TargetManager : MonoBehaviour {
 
 
 	#region Shared
+	/// <summary>
+	/// Returns true if the general target is valid. The target's game object needs to have a layer.
+	/// Supported layers are: player, device, destructible, or creature.
+	/// </summary>
+	/// <returns><c>true</c>, if the general target is valid, <c>false</c> otherwise.</returns>
+	/// <param name="potentialTarget">Potential target.</param>
+	/// <param name="caster">Caster.</param>
 	public bool isGeneralTargetValid( Transform potentialTarget, Transform caster )
 	{
 		bool valid = false;
