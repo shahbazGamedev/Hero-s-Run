@@ -28,10 +28,8 @@ public class PlayerSpell : PunBehaviour {
 	#endregion
 
 	#region Hacked
-	[SerializeField] Renderer omniToolRenderer;
-	[SerializeField] Color omniToolNormalColor;
-	[SerializeField] Color omniToolHackedColor;
-	[SerializeField] ParticleSystem omniToolHackedFX;
+	[SerializeField] GameObject hackedVFXPrefab;
+	GameObject hackedVFXInstance;
 	#endregion
 
 	#region Linked Fate spell
@@ -280,9 +278,11 @@ public class PlayerSpell : PunBehaviour {
 		//Display the Hacked secondary icon on the minimap
 		MiniMap.Instance.displaySecondaryIcon( photonView.viewID, (int) CardName.Hack, spellDuration );
 
-		//Change color of omni-tool and play hacked particle system so it appears broken.
-		if( omniToolRenderer) omniToolRenderer.material.SetColor ("_EmissionColor", omniToolHackedColor);
-		if( omniToolHackedFX ) omniToolHackedFX.Play();
+		if( hackedVFXPrefab != null )
+		{
+			hackedVFXInstance = GameObject.Instantiate( hackedVFXPrefab );
+			hackedVFXInstance.transform.SetParent( transform, false );
+		}
 
 		//Only affect the turn-ribbon on the HUD if you are the local player and not a bot
 		if( photonView.isMine && playerAI == null ) turnRibbonHandler.playerIsHacked( true );
@@ -291,8 +291,7 @@ public class PlayerSpell : PunBehaviour {
 	void cancelHack()
 	{
 		CancelInvoke( "cancelHack" );
-		if( omniToolRenderer) omniToolRenderer.material.SetColor ("_EmissionColor", omniToolNormalColor);
-		if( omniToolHackedFX ) omniToolHackedFX.Stop();
+		GameObject.Destroy( hackedVFXInstance );
 		removeActiveCard( CardName.Hack );
 		//Only affect the turn-ribbon on the HUD if you are the local player and not a bot
 		if( photonView.isMine && playerAI == null ) turnRibbonHandler.playerIsHacked( false );
