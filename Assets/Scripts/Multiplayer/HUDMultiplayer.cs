@@ -303,6 +303,7 @@ public class HUDMultiplayer : MonoBehaviour {
 		try
 		{
 			if( ReplayKit.isRecording ) ReplayKit.StopRecording();
+			if( ReplayKit.broadcastingAPIAvailable && ReplayKit.isBroadcasting ) ReplayKit.StopBroadcasting();
 		}
 		catch (Exception e)
 		{

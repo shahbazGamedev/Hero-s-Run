@@ -182,6 +182,7 @@ public class PlayerRaceManager {
 		try
 		{
 			if( ReplayKit.isRecording ) ReplayKit.StopRecording();
+			if( ReplayKit.broadcastingAPIAvailable && ReplayKit.isBroadcasting ) ReplayKit.StopBroadcasting();
 		}
    		catch (Exception e)
 		{

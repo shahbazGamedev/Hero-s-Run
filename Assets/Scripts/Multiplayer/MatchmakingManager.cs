@@ -261,17 +261,21 @@ public class MatchmakingManager : Menu {
 		PhotonNetwork.Disconnect();
 		LevelManager.Instance.matchData = null;
 		#if UNITY_IOS
-		//When returning to the main menu, discard any video that might have been recorded.
-		//Also set isRecordingSelected to false.
-		try
+		if( ReplayKit.APIAvailable )
 		{
-			LevelManager.Instance.isRecordingSelected = false;
-			if( ReplayKit.APIAvailable ) ReplayKit.Discard();
+			//When returning to the main menu, discard any video that might have been recorded. Stop any broadcast.
+			//Also set isRecordingSelected to false.
+			try
+			{
+				LevelManager.Instance.isRecordingSelected = false;
+				if( ReplayKit.APIAvailable ) ReplayKit.Discard();
+				if( ReplayKit.broadcastingAPIAvailable && ReplayKit.isBroadcasting ) ReplayKit.StopBroadcasting();
+			}
+	   		catch (Exception e)
+			{
+				Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
+	    	}
 		}
-   		catch (Exception e)
-		{
-			Debug.LogError( "Replay exception: " +  e.ToString() + " ReplayKit.lastError: " + ReplayKit.lastError );
-    	}
 		#endif
 		base.OnClickReturnToMainMenu();
 	}
