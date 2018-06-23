@@ -403,8 +403,7 @@ public class MiniMap : MonoBehaviour {
 		print("Minimap-reflectMessageRPC: casterPhotonViewID: " + casterPhotonViewID + " cardName " + (CardName)cardName + " playerWithReflectPhotonViewID: " + playerWithReflectPhotonViewID );
 		string nameOfPlayerWithReflect = getPlayerControl( playerWithReflectPhotonViewID ).name;
 		string localizedCardName = LocalizationManager.Instance.getText( "CARD_NAME_" + ((CardName)cardName).ToString().ToUpper() );
-		string nameOfPlayerWhoCastSpell = getPlayerControl( casterPhotonViewID ).name;
-		displayMessage2( string.Format( "{0} reflected {1} activated by {2}", nameOfPlayerWithReflect, localizedCardName, nameOfPlayerWhoCastSpell ), Color.white );
+        displayMessage2( string.Format( LocalizationManager.Instance.getText( "CARD_REFLECTED" ), nameOfPlayerWithReflect, localizedCardName ), Color.white );
 	}
 
 	public void hideSecondaryIcon( GameObject go )

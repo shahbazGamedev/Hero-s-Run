@@ -63,7 +63,8 @@ public class MatchmakingManager : Menu {
 		AudioListener.pause = false;
 		Time.timeScale = 1f;
 		Time.fixedDeltaTime = GameManager.DEFAULT_FIXED_DELTA_TIME;
-
+        Screen.orientation = ScreenOrientation.AutoRotation;
+   
 		if( GameManager.Instance.getGameState() == GameState.Rematch )
 		{
 			//On a rematch, start the match immediately.
@@ -182,7 +183,6 @@ public class MatchmakingManager : Menu {
 	/// In a 3-player match, there is the local player and two remote players.
 	/// Use an index of 1 for remote player one and 2 for remote player two.
 	/// </summary>
-	/// <param name="remotePlayerIndex">Remote player index.</param>
 	public void setRemotePlayerData( int index, string name, int level, int iconId  )
 	{
 		Debug.Log("MatchmakingManager-setRemotePlayerData Index: " + index + " Name: " + name + " Level: " + level + " Icon ID: " + iconId );
@@ -278,6 +278,8 @@ public class MatchmakingManager : Menu {
 		}
 		#endif
 		base.OnClickReturnToMainMenu();
+        Screen.orientation = ScreenOrientation.Portrait;
+ 
 	}
 
 	public void hidePlayButton()
