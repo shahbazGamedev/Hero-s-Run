@@ -11,7 +11,7 @@ public class SmokeBomb : CardSpawnedObject {
 		//Note that the Smoke child object is disabled.
 		//We will enable it when the card gets activated by the lockstep manager.
 		//This will cause both the particle system and audio to play.
-		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Smoke_Bomb );
+        LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.ACTIVATE_CARD, gameObject, CardName.Smoke_Bomb );
 		lsa.cardSpawnedObject = this;
 		LockstepManager.Instance.addActionToQueue( lsa );
 	}

@@ -53,7 +53,11 @@ public class CardSpawnedObject : MonoBehaviour {
 	{
 	}
 
-	protected Transform getPlayerByViewID( int photonViewId )
+    public virtual void deactivateCard()
+    {
+    }
+
+    protected Transform getPlayerByViewID( int photonViewId )
 	{
 		Transform player = null;
 		for( int i = 0; i < PlayerRace.players.Count; i ++ )

@@ -70,7 +70,7 @@ public class PlayerAI : AutoPilot {
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha2 ) )
 		{
-			bch.playCard( CardName.Hack );
+            bch.playCard( CardName.Stasis );
 		}
 		else if ( Input.GetKeyDown (KeyCode.Alpha3 ) )
 		{

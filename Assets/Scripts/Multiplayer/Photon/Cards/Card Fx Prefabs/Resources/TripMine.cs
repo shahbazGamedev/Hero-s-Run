@@ -16,7 +16,7 @@ public class TripMine : CardSpawnedObject {
 	{
 		//Note that the Trip Mine prefab has its MeshRenderer disabled and trigger box collider.
 		//We will enable them only when the card gets activated by the lockstep manager.
-		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Trip_Mine );
+        LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.ACTIVATE_CARD, gameObject, CardName.Trip_Mine );
 		lsa.cardSpawnedObject = this;
 		LockstepManager.Instance.addActionToQueue( lsa );
 	}

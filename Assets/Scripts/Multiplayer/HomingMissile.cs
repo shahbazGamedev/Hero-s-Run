@@ -22,7 +22,7 @@ public class HomingMissile : CardSpawnedObject {
 	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
-		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Homing_Missile );
+		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.ACTIVATE_CARD, gameObject, CardName.Homing_Missile );
 		lsa.cardSpawnedObject = this;
 		LockstepManager.Instance.addActionToQueue( lsa );
 	}

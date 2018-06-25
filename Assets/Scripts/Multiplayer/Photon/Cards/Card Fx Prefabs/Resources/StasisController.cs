@@ -32,7 +32,7 @@ public class StasisController : CardSpawnedObject {
 	{
 		//Note that the Stasis sphere prefab has its MeshRenderer and SphereCollider disabled.
 		//We will enable them when the card gets activated by the lockstep manager.
-		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Stasis );
+        LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.ACTIVATE_CARD, gameObject, CardName.Stasis );
 		lsa.cardSpawnedObject = this;
 		LockstepManager.Instance.addActionToQueue( lsa );
 	}
@@ -48,6 +48,18 @@ public class StasisController : CardSpawnedObject {
 			findAffectedPlayer( gameObject.GetPhotonView ().instantiationData );
 		}
 	}
+    public override void deactivateCard()
+    {
+        destroyStasisSphereImmediately();
+    }
+
+    [PunRPC]
+    public void destroyStasisRPC()
+    {
+        LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction(LockstepActionType.DEACTIVATE_CARD, gameObject, CardName.Stasis );
+        lsa.cardSpawnedObject = this;
+        LockstepManager.Instance.addActionToQueue(lsa);
+    }
 	#endregion
 
 	#region Creature
@@ -97,8 +109,8 @@ public class StasisController : CardSpawnedObject {
 	IEnumerator destroyStasisSphereCreature( float delayBeforeSpellExpires )
 	{
 		yield return new WaitForSeconds(delayBeforeSpellExpires);
-		destroyStasisSphereImmediatelyCreature();
-	}
+        destroyStasisSphereImmediatelyCreature();
+    }
 
 	void destroyStasisSphereImmediatelyCreature()
 	{
@@ -150,7 +162,7 @@ public class StasisController : CardSpawnedObject {
 				affectedPlayerTransform.GetComponent<PlayerSpell>().cancelSentrySpell();
 
 				//The Stasis Sphere has a limited lifespan which depends on the level of the Card.
-				float spellDuration = (float) data[1];
+				float spellDuration = (float) data[1] + 5f;
 				affectedPlayerTransform.GetComponent<PlayerSpell>().displayCardTimerOnHUD(CardName.Stasis, spellDuration );
 				destroyStasisSphereCoroutine = StartCoroutine( destroyStasisSphere( spellDuration ) );
 
@@ -181,8 +193,8 @@ public class StasisController : CardSpawnedObject {
 	IEnumerator destroyStasisSphere( float delayBeforeSpellExpires )
 	{
 		yield return new WaitForSeconds(delayBeforeSpellExpires);
-		destroyStasisSphereImmediately();
-	}
+        destroyStasisSphereImmediately();
+    }
 
 	void destroyStasisSphereImmediately()
 	{
@@ -245,7 +257,8 @@ public class StasisController : CardSpawnedObject {
 					tapParticleSystem.Play();
 					if( tapsDetected == tapsRequiredToBreakStasis )
 					{
-						destroyStasisSphereImmediately();
+                        //The player can finally break free. Tell all instances.
+                        GetComponent<PhotonView>().RPC("destroyStasisRPC", PhotonTargets.AllViaServer);
 					}
 				}
 			}

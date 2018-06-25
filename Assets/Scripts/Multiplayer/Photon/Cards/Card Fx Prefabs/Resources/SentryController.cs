@@ -40,7 +40,7 @@ public class SentryController : CardSpawnedObject {
 	#region Initialisation
 	void OnPhotonInstantiate( PhotonMessageInfo info )
 	{
-		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Sentry );
+        LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.ACTIVATE_CARD, gameObject, CardName.Sentry );
 		lsa.cardSpawnedObject = this;
 		LockstepManager.Instance.addActionToQueue( lsa );
 	}

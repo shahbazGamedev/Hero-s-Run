@@ -58,7 +58,7 @@ public class FreezeController : CardSpawnedObject {
 		setIceDecalProperties();
 		//Note that the Freeze prefab has its MeshRenderer and MeshCollider disabled.
 		//We will enable them when the card gets activated by the lockstep manager.
-		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Freeze );
+        LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.ACTIVATE_CARD, gameObject, CardName.Freeze );
 		lsa.cardSpawnedObject = this;
 		LockstepManager.Instance.addActionToQueue( lsa );
 	}
@@ -97,6 +97,19 @@ public class FreezeController : CardSpawnedObject {
 			findAffectedPlayer( gameObject.GetPhotonView ().instantiationData );
 		}
 	}
+
+    public override void deactivateCard()
+    {
+        destroyIceImmediately();
+    }
+
+    [PunRPC]
+    public void destroyIceRPC()
+    {
+        LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction(LockstepActionType.DEACTIVATE_CARD, gameObject, CardName.Freeze);
+        lsa.cardSpawnedObject = this;
+        LockstepManager.Instance.addActionToQueue(lsa);
+    }
 	#endregion
 
 	IEnumerator fadeGroundDecal( float duration, bool appear )
@@ -193,7 +206,7 @@ public class FreezeController : CardSpawnedObject {
 			affectedTargetTransform.GetComponent<PlayerSpell>().cancelSentrySpell();
 
 			//Freeze has a limited lifespan.
-			float spellDuration =  (float) data[1];
+			float spellDuration =  (float) data[1] + 5f;
 			affectedTargetTransform.GetComponent<PlayerSpell>().displayCardTimerOnHUD(CardName.Freeze, spellDuration );
 			destroyIceCoroutine = StartCoroutine( destroyIce( spellDuration ) );
 			//Display the Freeze secondary icon on the minimap
@@ -221,8 +234,8 @@ public class FreezeController : CardSpawnedObject {
 	IEnumerator destroyIce( float delayBeforeSpellExpires )
 	{
 		yield return new WaitForSeconds(delayBeforeSpellExpires);
-		destroyIceImmediately();
-	}
+        destroyIceImmediately();
+    }
 
 	void destroyIceImmediately()
 	{
@@ -398,9 +411,9 @@ public class FreezeController : CardSpawnedObject {
 
 				if( tapsDetected == tapsRequiredToBreakFreeze )
 				{
-					//The player can finally break free.
-					destroyIceImmediately();
-				}
+					//The player can finally break free. Tell all instances.
+                    GetComponent<PhotonView>().RPC("destroyIceRPC", PhotonTargets.AllViaServer );
+ 				}
 				else
 				{
 					//Not enough taps to break free.

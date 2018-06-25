@@ -12,7 +12,8 @@ public enum LockstepActionType {
 	DETACH_FROM_ZIPLINE = 5,
 	JUMP_PAD = 6,
 	TELEPORTER = 7,
-	CARD = 8
+	ACTIVATE_CARD = 8,
+    DEACTIVATE_CARD = 9
 }
 
 public class LockstepManager : MonoBehaviour {
@@ -106,9 +107,13 @@ public class LockstepManager : MonoBehaviour {
 				lockstepAction.actor.transform.GetComponent<Rigidbody>().MovePosition( lockstepAction.param3 );
 			break;
 
-			case LockstepActionType.CARD:
+			case LockstepActionType.ACTIVATE_CARD:
 				if( lockstepAction.cardSpawnedObject != null ) lockstepAction.cardSpawnedObject.activateCard();
 			break;
+
+            case LockstepActionType.DEACTIVATE_CARD:
+                if (lockstepAction.cardSpawnedObject != null) lockstepAction.cardSpawnedObject.deactivateCard();
+            break;
 		}
 	}
 

@@ -14,7 +14,7 @@ public class Grenade : CardSpawnedObject {
 	{
 		//Note that the Grenade prefab has its MeshRenderer disabled.
 		//We will enable it when the card gets activated by the lockstep manager.
-		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Grenade );
+        LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.ACTIVATE_CARD, gameObject, CardName.Grenade );
 		lsa.cardSpawnedObject = this;
 		LockstepManager.Instance.addActionToQueue( lsa );
 	}

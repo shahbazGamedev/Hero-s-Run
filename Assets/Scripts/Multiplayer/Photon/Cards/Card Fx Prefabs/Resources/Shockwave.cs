@@ -8,7 +8,7 @@ public class Shockwave : CardSpawnedObject {
 		//Note that the Shockwave Effect child object is disabled.
 		//We will enable it when the card gets activated by the lockstep manager.
 		//This will cause both the particle system and audio to play.
-		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Shockwave );
+        LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.ACTIVATE_CARD, gameObject, CardName.Shockwave );
 		lsa.cardSpawnedObject = this;
 		LockstepManager.Instance.addActionToQueue( lsa );
 	}

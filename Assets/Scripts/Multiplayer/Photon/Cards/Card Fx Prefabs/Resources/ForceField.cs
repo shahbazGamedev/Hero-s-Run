@@ -12,7 +12,7 @@ public class ForceField : CardSpawnedObject {
 	{
 		//Note that the Force Field prefab has its MeshRenderer and BoxCollider disabled.
 		//We will enable them when the card gets activated by the lockstep manager.
-		LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.CARD, gameObject, CardName.Force_Field );
+        LockstepManager.LockstepAction lsa = new LockstepManager.LockstepAction( LockstepActionType.ACTIVATE_CARD, gameObject, CardName.Force_Field );
 		lsa.cardSpawnedObject = this;
 		LockstepManager.Instance.addActionToQueue( lsa );
 	}
