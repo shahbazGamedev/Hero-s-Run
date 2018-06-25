@@ -48,7 +48,7 @@ public class PlayerCoop : MonoBehaviour {
 		{
 			//Yes, this is a new high score. Congrats!
 			wasHighScoreReached = true;
-			HUDMultiplayer.hudMultiplayer.activateUserMessage( LocalizationManager.Instance.getText("COOP_HIGH_SCORE_WAVES"), 0, 2.5f );
+			HUDMultiplayer.hudMultiplayer.activateUserMessage( LocalizationManager.Instance.getText("COOP_HIGH_SCORE_WAVES"), 0, 2.5f, 225f );
 		}
 	}
 

@@ -512,20 +512,22 @@ public class HUDMultiplayer : MonoBehaviour {
 	{
 		string waveString = LocalizationManager.Instance.getText("COOP_WAVE"); //Wave {0}!
 		waveString = string.Format( waveString, waveNumber );
-		activateUserMessage( waveString, 0, 2.5f );
-	}
+		activateUserMessage( waveString, 0, 2.5f, 225f );
+    }
 
-	//Activates a horizontally centered text with a drop-shadow.
-	//User Message is only displayed in the Normal game state.
-	public void activateUserMessage( string text, float angle, float duration )
-	{
-		userMessageText.text = text;
-		userMessageText.rectTransform.localRotation = Quaternion.Euler( 0, 0, angle );
-		Invoke( "hideUserMessage", duration );
-		userMessageText.gameObject.SetActive( true );
-	}
-		
-	void hideUserMessage()
+    //Activates a horizontally centered text with a drop-shadow.
+    //User Message is only displayed in the Normal game state.
+    public void activateUserMessage(string text, float angle, float duration, float posY = 0f )
+    {
+        userMessageText.text = text;
+        userMessageText.rectTransform.localRotation = Quaternion.Euler(0, 0, angle);
+        Invoke("hideUserMessage", duration);
+        RectTransform userMessageRectTransform = userMessageText.GetComponent<RectTransform>();
+        userMessageRectTransform.localPosition = new Vector2( userMessageRectTransform.localPosition.x, posY );
+        userMessageText.gameObject.SetActive(true);
+    }
+
+    void hideUserMessage()
 	{
 		userMessageText.gameObject.SetActive( false );
 	}
