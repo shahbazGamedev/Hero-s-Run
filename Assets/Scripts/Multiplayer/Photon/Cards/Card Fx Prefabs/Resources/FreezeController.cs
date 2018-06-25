@@ -206,7 +206,7 @@ public class FreezeController : CardSpawnedObject {
 			affectedTargetTransform.GetComponent<PlayerSpell>().cancelSentrySpell();
 
 			//Freeze has a limited lifespan.
-			float spellDuration =  (float) data[1] + 5f;
+			float spellDuration =  (float) data[1];
 			affectedTargetTransform.GetComponent<PlayerSpell>().displayCardTimerOnHUD(CardName.Freeze, spellDuration );
 			destroyIceCoroutine = StartCoroutine( destroyIce( spellDuration ) );
 			//Display the Freeze secondary icon on the minimap

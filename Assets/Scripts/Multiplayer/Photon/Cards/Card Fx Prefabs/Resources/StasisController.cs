@@ -162,7 +162,7 @@ public class StasisController : CardSpawnedObject {
 				affectedPlayerTransform.GetComponent<PlayerSpell>().cancelSentrySpell();
 
 				//The Stasis Sphere has a limited lifespan which depends on the level of the Card.
-				float spellDuration = (float) data[1] + 5f;
+				float spellDuration = (float) data[1];
 				affectedPlayerTransform.GetComponent<PlayerSpell>().displayCardTimerOnHUD(CardName.Stasis, spellDuration );
 				destroyStasisSphereCoroutine = StartCoroutine( destroyStasisSphere( spellDuration ) );
 
