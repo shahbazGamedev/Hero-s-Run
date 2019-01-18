@@ -1,6 +1,11 @@
 ﻿<Properties StartupConfiguration="{76CF30B8-DFE8-2D6C-6D9D-F2146D1654B2}|">
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Level/Drone/DroneHandler.cs">
+    <Files>
+      <File FileName="Assets/Scripts/Level/Drone/DroneProjectiles.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Level/Drone/DroneHandler.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

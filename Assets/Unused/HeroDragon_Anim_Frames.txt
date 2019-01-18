@@ -1,2 +1,0 @@
-SitDragon: 0-45 all
-DragonHappy: 60-110 all

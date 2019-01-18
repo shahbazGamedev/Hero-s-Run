@@ -5,7 +5,7 @@ using UnityEngine;
 public class DroneHandler : MonoBehaviour {
 
 	[Header("Drone")]
-	[SerializeField] float projectileSpeed = 1000;
+	[SerializeField] float projectileSpeed = 1800;
     [SerializeField] Transform spawnPositionLeft;
     [SerializeField] Transform spawnPositionRight;
 	[SerializeField] Sprite  minimapIcon;
@@ -103,8 +103,8 @@ public class DroneHandler : MonoBehaviour {
 					//Create projectiles
 					object[] data = new object[5];
 					data[0] = projectileSpeed;
-					data[1] = nearestTarget.TransformPoint(0.2f,1.2f,0);
-					data[2] = nearestTarget.TransformPoint(-0.2f,1.2f,0);
+					data[1] = nearestTarget.TransformPoint(0.2f,0,0);
+					data[2] = nearestTarget.TransformPoint(-0.2f,0,0);
 					data[3] = spawnPositionLeft.position;
 					data[4] = spawnPositionRight.position;
 					PhotonNetwork.InstantiateSceneObject( "Drone Projectiles", transform.position, transform.rotation, 0, data );

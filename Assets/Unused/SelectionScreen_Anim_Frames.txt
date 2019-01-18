@@ -1,8 +1,0 @@
-Waiting_In_The_Back: 0-185 all
-Hero_Idle: 200-260 all
-Hero_Var1: 270-390 all
-Hero_Var2: 400-575 all
-Heroine_Kiss: 610-715 all
-Heroine_Idle: 720-760 all
-Heroine_Var1: 770-820 all
-Heroine_Var2: 830-875 all
