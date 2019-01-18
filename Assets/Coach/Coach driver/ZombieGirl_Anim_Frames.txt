@@ -1,5 +1,0 @@
-ZombieGirl_DriveCoach: 0-40 all
-ZombieGirl_PlayerRunOver: 50-160 no loop
-ZombieGirl_Idle: 170-270 all
-
-
