@@ -193,15 +193,7 @@ public class PowerUpManager : MonoBehaviour {
 			PlayerStatsManager.Instance.savePlayerStats();
 			print("Life - pickUpPowerUp : adding 1 life. New total is " + PlayerStatsManager.Instance.getLives() );
 		}
-		//Story Unlock is a special case. The inventory is maintained separately in JournalData.
-		else if( powerUpType == PowerUpType.StoryUnlock )
-		{
-			GameManager.Instance.journalData.newPartAcquired();
-		}
-		else
-		{
-			PlayerStatsManager.Instance.incrementPowerUpInventory(powerUpType);
-		}
+		PlayerStatsManager.Instance.incrementPowerUpInventory(powerUpType);
 	}
 
 	//Called by the PowerUp prefab onTriggerEnter function
@@ -470,15 +462,7 @@ public class PowerUpManager : MonoBehaviour {
 						}
 						else if( rdPowerUp == (int)PowerUpType.StoryUnlock )
 						{
-							//If the player has unlocked all journal entries, spawn a magnet instead. 
-							if( GameManager.Instance.journalData.areAllEntriesUnlocked() )
-							{
-								addPowerUp( PowerUpType.Magnet, placeholder, newTile );
-							}
-							else
-							{
-								addPowerUp( PowerUpType.StoryUnlock, placeholder, newTile );
-							}
+							addPowerUp( PowerUpType.StoryUnlock, placeholder, newTile );
 						}
 						else if( rdPowerUp == (int)PowerUpType.Life )
 						{

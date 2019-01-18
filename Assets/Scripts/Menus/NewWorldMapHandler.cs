@@ -115,9 +115,7 @@ public class NewWorldMapHandler : MonoBehaviour {
 		InvokeRepeating("getAllAppRequests", 0, 60 );
 		//The score of the player's friends gets refreshed when loading the scene and if the app resume after being paused.
 		getUpdatedScores();
-
-		updateNumberOfEntries();
-	}
+        	}
 
 	void getAllAppRequests()
 	{
@@ -128,14 +126,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 	{
 		FacebookManager.Instance.QueryScores();
 	}
-
-	public void updateNumberOfEntries()
-	{
-		//Update the number of new journal entries
-		int newEntries = GameManager.Instance.journalData.getNumberOfNewEntries();
-		newEntriesIndicator.text = newEntries.ToString();
-	}
-
 
 	void Update()
 	{
@@ -371,19 +361,6 @@ public class NewWorldMapHandler : MonoBehaviour {
 	public void OnClickShowTreasureIsland()
 	{
 		StartCoroutine( loadScene(GameScenes.TreasureIsland) );
-	}
-
-	//Journal
-	public void OnClickShowJournal()
-	{
-		if( GameManager.Instance.journalAssetManager.journalAssetsLoadedSuccessfully )
-		{
-			StartCoroutine( loadScene(GameScenes.Journal) );
-		}
-		else
-		{
-			Debug.LogWarning("NewWorldMapHandler-openJournal-will not open journal because journal assets were not loaded sussefully.");
-		}
 	}
 
 	IEnumerator loadScene(GameScenes value)

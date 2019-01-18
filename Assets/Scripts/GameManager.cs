@@ -85,9 +85,6 @@ public class GameManager {
 
 	//We keep a reference to the ChallengeBoard here because we need to access it from the level scene
 	public ChallengeBoard challengeBoard;
-	//We keep a reference to the JournalData and JournalAssetManager here because we need to access it from multiple scenes
-	public JournalData journalData;
-	public JournalAssetManager journalAssetManager;
 	public PlayerProfile playerProfile;
 	public PlayerStatistics playerStatistics;
 	public PlayerDeck playerDeck;
