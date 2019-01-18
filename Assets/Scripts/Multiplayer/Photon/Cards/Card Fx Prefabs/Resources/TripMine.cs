@@ -73,7 +73,7 @@ public class TripMine : CardSpawnedObject {
 	{
 		hasBeenTriggered = true;
 		GetComponent<AudioSource>().Play();
-		Invoke( "detonate", 0.94f ); //the bomb beeps lasts 0.94 seconds
+		Invoke( "detonate", 0.4f );
 	}
 
 	void detonate()
