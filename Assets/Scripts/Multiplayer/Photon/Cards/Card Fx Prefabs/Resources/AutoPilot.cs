@@ -30,6 +30,8 @@ public class AutoPilot : Photon.PunBehaviour {
 		playerRun = GetComponent<PlayerRun>();
 	}
 
+    //IMPORTANT: Queries Hit Triggers is set to false in the Physic settings.
+    //This means that the raycast will NOT detect trigger colliders.
 	protected void detectObstacles()
 	{
 		//Step 1) Adjust the obstacle detection range based on our run speed. If we are running fast, we need more time to react.
@@ -104,7 +106,7 @@ public class AutoPilot : Photon.PunBehaviour {
 				}
 				else if( hit.collider.CompareTag( "Obstacle_L" ) )
 				{
-					playerInput.jump();
+                    playerInput.jump();
 				}
 				else if( hit.collider.CompareTag( "Obstacle_S" ) )
 				{
@@ -171,7 +173,7 @@ public class AutoPilot : Photon.PunBehaviour {
 		}
 	}
 
-	bool shouldAvoidObstacle()
+    bool shouldAvoidObstacle()
 	{
 		if (Random.value <= percentageWillTryToAvoidObstacle )
 		{
