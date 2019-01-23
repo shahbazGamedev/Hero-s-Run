@@ -13,8 +13,6 @@ public class UniversalTopBar : Menu {
 
 	[Header("For Store Access")]
 	[SerializeField] MainMenuManager mainMenuManager;
-	const float SOFT_CURRENCY_STORE_VERTICAL_POSITION = 2488f;
-	const float HARD_CURRENCY_STORE_VERTICAL_POSITION = 1420f;
 
 	[Header("Level")]
 	[SerializeField] TextMeshProUGUI playerLevelText;
@@ -25,9 +23,11 @@ public class UniversalTopBar : Menu {
 
 	[Header("Soft Currency")]
 	[SerializeField] TextMeshProUGUI softCurrencyAmountText;
+    [SerializeField] RectTransform softCurrencyPanel;
 
 	[Header("Hard Currency")]
 	[SerializeField] TextMeshProUGUI hardCurrencyAmountText;
+    [SerializeField] RectTransform hardCurrencyPanel;
 
 	void Awake ()
 	{
@@ -162,14 +162,14 @@ public class UniversalTopBar : Menu {
 	{
 		mainMenuManager.OnClickShowStore();
 		UISoundManager.uiSoundManager.playButtonClick();
-		StartCoroutine( scrollToStorePosition( 0.4f, SOFT_CURRENCY_STORE_VERTICAL_POSITION ) );
+        StartCoroutine( scrollToStorePosition( 0.4f, -( softCurrencyPanel.anchoredPosition.y + softCurrencyPanel.sizeDelta.y * 0.5f ) ) );
 	}
 
 	public void OnClickShowHardCurrencyStore()
 	{
 		mainMenuManager.OnClickShowStore();
 		UISoundManager.uiSoundManager.playButtonClick();
-		StartCoroutine( scrollToStorePosition( 0.4f, HARD_CURRENCY_STORE_VERTICAL_POSITION ) );
+        StartCoroutine(scrollToStorePosition(0.4f, -(hardCurrencyPanel.anchoredPosition.y + hardCurrencyPanel.sizeDelta.y * 0.5f)));
 	}
 
 	IEnumerator scrollToStorePosition( float duration, float verticalPosition )
